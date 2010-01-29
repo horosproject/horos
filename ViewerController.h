@@ -896,13 +896,13 @@ enum
 #pragma mark-
 #pragma mark Key Objects
 
-/** Creates a Key Object note for the current key Images */
-- (IBAction)createKeyObjectNote:(id)sender;
-
-/** End sheet method for creating key Object notes
-* Called internally 
-*/
-- (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(id)contextInfo;
+///** Creates a Key Object note for the current key Images */
+//- (IBAction)createKeyObjectNote:(id)sender;
+//
+///** End sheet method for creating key Object notes
+//* Called internally 
+//*/
+//- (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(id)contextInfo;
 
 
 /**  return flag indicating whether only the key images are being displayed */

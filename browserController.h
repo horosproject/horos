@@ -182,7 +182,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSTimeInterval					databaseLastModification;
 	
-	StructuredReportController		*structuredReportController;
+//	StructuredReportController		*structuredReportController;
 	
 	NSMutableArray					*deleteQueueArray;
 	NSLock							*deleteQueue, *deleteInProgress;
@@ -497,7 +497,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (IBAction) generateReport: (id) sender;
 - (IBAction) deleteReport: (id) sender;
-- (IBAction)srReports: (id)sender;
+//- (IBAction)srReports: (id)sender;
 
 - (IBAction) rebuildThumbnails:(id) sender;
 

@@ -156,7 +156,7 @@ static NSLock *currentHostLock = nil;
 	
 	if( [_dicomServices containsObject: aNetService])
 	{
-		NSLog( @"didRemove retainCout: %d", [aNetService retainCount]);
+//		NSLog( @"didRemove retainCout: %d", [aNetService retainCount]);
 		[_dicomServices removeObject: aNetService];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMNetServicesDidChange" object:nil];
 	}

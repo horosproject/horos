@@ -1302,16 +1302,10 @@
 		B7CDAD030AB30E7700068D70 /* pdf.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD010AB30E7600068D70 /* pdf.tif */; };
 		BF00C95C06F3F43900715191 /* DCMCursor.h in Headers */ = {isa = PBXBuildFile; fileRef = BF00C95806F3F43900715191 /* DCMCursor.h */; };
 		BF00C95D06F3F43A00715191 /* DCMCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = BF00C95906F3F43900715191 /* DCMCursor.m */; };
-		BF038E880A3FB49700663EBB /* KeyObjectController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF038E7C0A3FB49700663EBB /* KeyObjectController.h */; };
-		BF038E890A3FB49700663EBB /* KeyObjectController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */; };
-		BF038E8A0A3FB49700663EBB /* KeyObjectReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF038E7E0A3FB49700663EBB /* KeyObjectReport.h */; };
-		BF038E8B0A3FB49700663EBB /* KeyObjectReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */; };
 		BF06806E0A9E602E000F3152 /* viewHTMLSelected.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF06806C0A9E602E000F3152 /* viewHTMLSelected.tif */; };
 		BF06806F0A9E602E000F3152 /* viewXMLSelected.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF06806D0A9E602E000F3152 /* viewXMLSelected.tif */; };
 		BF09B13F0B2E681D00AA97E2 /* OSIWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF09B13D0B2E681D00AA97E2 /* OSIWindowController.h */; };
 		BF09B1400B2E681D00AA97E2 /* OSIWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF09B13E0B2E681D00AA97E2 /* OSIWindowController.m */; };
-		BF0AAEB30A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */ = {isa = PBXBuildFile; fileRef = BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */; };
-		BF0AAEB40A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */; };
 		BF1745D408E0C7E200822756 /* LogWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1745D208E0C7E200822756 /* LogWindowController.h */; };
 		BF1745D508E0C7E200822756 /* LogWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF1745D308E0C7E200822756 /* LogWindowController.m */; };
 		BF1833D109AD833D0046C295 /* FlipHorizontal.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF1833CF09AD833D0046C295 /* FlipHorizontal.tif */; };
@@ -1475,19 +1469,11 @@
 		BF47CBD60A2E31B100700AA9 /* viewHTML.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCD0A2E31B100700AA9 /* viewHTML.tif */; };
 		BF47CBD70A2E31B100700AA9 /* viewSR.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCE0A2E31B100700AA9 /* viewSR.tif */; };
 		BF47CBD80A2E31B100700AA9 /* viewXML.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCF0A2E31B100700AA9 /* viewXML.tif */; };
-		BF47CC370A2E4AD900700AA9 /* StructuredReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF47CC310A2E4AD800700AA9 /* StructuredReport.h */; };
-		BF47CC380A2E4AD900700AA9 /* StructuredReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */; };
 		BF4CEBD609CB736D0073E928 /* dcmqrcnf.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */; };
-		BF55377E0A9A294A00D83CE3 /* PathForImage.h in Headers */ = {isa = PBXBuildFile; fileRef = BF55377C0A9A294A00D83CE3 /* PathForImage.h */; };
-		BF55377F0A9A294A00D83CE3 /* PathForImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF55377D0A9A294A00D83CE3 /* PathForImage.mm */; };
 		BF5C0187065320A800BAFCF7 /* ImageAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */; };
 		BF5C0188065320A800BAFCF7 /* ImageAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0186065320A800BAFCF7 /* ImageAndTextCell.m */; };
 		BF61E58E06A5BB9E001C0B29 /* DCMCalendarDate.h in Headers */ = {isa = PBXBuildFile; fileRef = BF61E58C06A5BB9E001C0B29 /* DCMCalendarDate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF61E58F06A5BB9E001C0B29 /* DCMCalendarDate.m in Sources */ = {isa = PBXBuildFile; fileRef = BF61E58D06A5BB9E001C0B29 /* DCMCalendarDate.m */; };
-		BF62905B0A2B7D5000BB0B62 /* StructuredReportController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6290550A2B7D5000BB0B62 /* StructuredReportController.h */; };
-		BF62905C0A2B7D5000BB0B62 /* StructuredReportController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF6290560A2B7D5000BB0B62 /* StructuredReportController.mm */; };
-		BF62907B0A2B7E8600BB0B62 /* SRArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6290750A2B7E8600BB0B62 /* SRArrayController.h */; };
-		BF62907C0A2B7E8600BB0B62 /* SRArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6290760A2B7E8600BB0B62 /* SRArrayController.m */; };
 		BF6F18DC0CAD6ACF006DE602 /* FlyThruStepsArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6F18DA0CAD6ACF006DE602 /* FlyThruStepsArrayController.h */; };
 		BF6F18DD0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6F18DB0CAD6ACF006DE602 /* FlyThruStepsArrayController.m */; };
 		BF76A59906ACC6FD00FABE42 /* ButtonAndTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = BF76A59706ACC6FD00FABE42 /* ButtonAndTextField.h */; };
@@ -1746,12 +1732,6 @@
 		BF9999010A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */; };
 		BFA7D2180A51D1460013F76E /* BrowserControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */; };
 		BFA7D2190A51D1460013F76E /* BrowserControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */; };
-		BFAA08310A901AD0002DB3DD /* DragMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA082B0A901AD0002DB3DD /* DragMatrix.h */; };
-		BFAA08320A901AD0002DB3DD /* DragMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA082C0A901AD0002DB3DD /* DragMatrix.m */; };
-		BFAA08450A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA083F0A901BDB002DB3DD /* AllKeyImagesArrayController.h */; };
-		BFAA08460A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA08400A901BDB002DB3DD /* AllKeyImagesArrayController.m */; };
-		BFAA0D090A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA0D050A916CB6002DB3DD /* SelectedKeyImagesArrayController.h */; };
-		BFAA0D0A0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA0D060A916CB6002DB3DD /* SelectedKeyImagesArrayController.m */; };
 		BFAEB3FA06BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB3F606BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFAEB3FB06BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB3F706BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.m */; };
 		BFAEB40A06BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB40606BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -3936,7 +3916,6 @@
 		CE3F99470C84724B00CB38F1 /* LogWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */; };
 		CE3F99480C84724B00CB38F1 /* FlyThru.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EC0C84724B00CB38F1 /* FlyThru.xib */; };
 		CE3F994A0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */; };
-		CE3F994B0C84724B00CB38F1 /* KeyObjectReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F20C84724B00CB38F1 /* KeyObjectReport.xib */; };
 		CE3F994D0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */; };
 		CE3F99500C84724B00CB38F1 /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FC0C84724B00CB38F1 /* Splash.xib */; };
 		CE3F99510C84724B00CB38F1 /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FE0C84724B00CB38F1 /* ROI.xib */; };
@@ -3988,8 +3967,6 @@
 		CE4CD8E00890DAC700CF4FE4 /* Receiving.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE4CD8DB0890DAC700CF4FE4 /* Receiving.tif */; };
 		CE4CD8E10890DAC700CF4FE4 /* Realised1.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE4CD8DC0890DAC700CF4FE4 /* Realised1.tif */; };
 		CE4E00BF0830B72F008DAFAE /* Revert.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE4E00BE0830B72F008DAFAE /* Revert.tif */; };
-		CE51509E0A6AD2CB00408C38 /* KeyObjectPopupController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */; };
-		CE51509F0A6AD2CC00408C38 /* KeyObjectPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */; };
 		CE52264F077C48D900EED851 /* Sync.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE522648077C48D900EED851 /* Sync.tif */; };
 		CE542D2B0C6F8F7B0021A0E7 /* NrrdIO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */; };
 		CE5487410989346800CF4C60 /* BrushPalette.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5487400989346800CF4C60 /* BrushPalette.tif */; };
@@ -6079,7 +6056,6 @@
 		CEC7069910A5C844008935EA /* ROIVolumeManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E60C84724B00CB38F1 /* ROIVolumeManager.xib */; };
 		CEC7069B10A5C844008935EA /* LogWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */; };
 		CEC7069D10A5C844008935EA /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */; };
-		CEC7069E10A5C844008935EA /* KeyObjectReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F20C84724B00CB38F1 /* KeyObjectReport.xib */; };
 		CEC7069F10A5C844008935EA /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */; };
 		CEC706A010A5C844008935EA /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FC0C84724B00CB38F1 /* Splash.xib */; };
 		CEC706A110A5C844008935EA /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FE0C84724B00CB38F1 /* ROI.xib */; };
@@ -6387,24 +6363,13 @@
 		CEC7088F10A5C844008935EA /* ReportPluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */; };
 		CEC7089010A5C844008935EA /* MoveManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF90551D09EB4985009C30D1 /* MoveManager.m */; };
 		CEC7089210A5C844008935EA /* LogManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF5D23F09F93B3F0077E16B /* LogManager.mm */; };
-		CEC7089410A5C844008935EA /* StructuredReportController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF6290560A2B7D5000BB0B62 /* StructuredReportController.mm */; };
-		CEC7089510A5C844008935EA /* SRArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6290760A2B7E8600BB0B62 /* SRArrayController.m */; };
-		CEC7089610A5C844008935EA /* StructuredReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */; };
-		CEC7089710A5C844008935EA /* KeyObjectController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */; };
-		CEC7089810A5C844008935EA /* KeyObjectReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */; };
 		CEC7089910A5C844008935EA /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
 		CEC708A210A5C844008935EA /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
 		CEC708A410A5C844008935EA /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
-		CEC708A510A5C844008935EA /* KeyObjectPopupController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */; };
 		CEC708A610A5C844008935EA /* QTExportHTMLSummary.m in Sources */ = {isa = PBXBuildFile; fileRef = A95B98A30A6E65B100E476D4 /* QTExportHTMLSummary.m */; };
 		CEC708A710A5C844008935EA /* PapyJpeg8.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6A20A755124001C27C4 /* PapyJpeg8.c */; };
 		CEC708A810A5C844008935EA /* PapyJpeg16.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F90A7552E0001C27C4 /* PapyJpeg16.c */; };
 		CEC708A910A5C844008935EA /* PapyJpeg12.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */; };
-		CEC7096A10A5C844008935EA /* DragMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA082C0A901AD0002DB3DD /* DragMatrix.m */; };
-		CEC7096B10A5C844008935EA /* AllKeyImagesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA08400A901BDB002DB3DD /* AllKeyImagesArrayController.m */; };
-		CEC7096C10A5C844008935EA /* SelectedKeyImagesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA0D060A916CB6002DB3DD /* SelectedKeyImagesArrayController.m */; };
-		CEC7096D10A5C844008935EA /* PathForImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF55377D0A9A294A00D83CE3 /* PathForImage.mm */; };
-		CEC7096E10A5C844008935EA /* DragMatrixWithDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */; };
 		CEC7096F10A5C844008935EA /* SRAnnotation.mm in Sources */ = {isa = PBXBuildFile; fileRef = A958370D0AAEBC2A0001D415 /* SRAnnotation.mm */; };
 		CEC7097010A5C844008935EA /* ROISRConverter.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDDDD4F0AE6E3FE00888882 /* ROISRConverter.mm */; };
 		CEC7097310A5C844008935EA /* printView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6692D90AF545F90073D923 /* printView.m */; };
@@ -6828,22 +6793,11 @@
 		CEC7FEA510A5C844008935EA /* ReportPluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */; };
 		CEC7FEA610A5C844008935EA /* MoveManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BF90551C09EB4985009C30D1 /* MoveManager.h */; };
 		CEC7FEA710A5C844008935EA /* LogManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF5D23E09F93B3F0077E16B /* LogManager.h */; };
-		CEC7FEA910A5C844008935EA /* StructuredReportController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6290550A2B7D5000BB0B62 /* StructuredReportController.h */; };
-		CEC7FEAA10A5C844008935EA /* SRArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6290750A2B7E8600BB0B62 /* SRArrayController.h */; };
-		CEC7FEAB10A5C844008935EA /* StructuredReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF47CC310A2E4AD800700AA9 /* StructuredReport.h */; };
-		CEC7FEAC10A5C844008935EA /* KeyObjectController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF038E7C0A3FB49700663EBB /* KeyObjectController.h */; };
-		CEC7FEAD10A5C844008935EA /* KeyObjectReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF038E7E0A3FB49700663EBB /* KeyObjectReport.h */; };
 		CEC7FEAE10A5C844008935EA /* DefaultsOsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */; };
 		CEC7FEB610A5C844008935EA /* BrowserControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */; };
 		CEC7FEB710A5C844008935EA /* DicomFileDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */; };
 		CEC7FEB910A5C844008935EA /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
-		CEC7FEBA10A5C844008935EA /* KeyObjectPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */; };
 		CEC7FEBB10A5C844008935EA /* QTExportHTMLSummary.h in Headers */ = {isa = PBXBuildFile; fileRef = A95B98A20A6E65B100E476D4 /* QTExportHTMLSummary.h */; };
-		CEC7FEE310A5C844008935EA /* DragMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA082B0A901AD0002DB3DD /* DragMatrix.h */; };
-		CEC7FEE410A5C844008935EA /* AllKeyImagesArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA083F0A901BDB002DB3DD /* AllKeyImagesArrayController.h */; };
-		CEC7FEE510A5C844008935EA /* SelectedKeyImagesArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA0D050A916CB6002DB3DD /* SelectedKeyImagesArrayController.h */; };
-		CEC7FEE610A5C844008935EA /* PathForImage.h in Headers */ = {isa = PBXBuildFile; fileRef = BF55377C0A9A294A00D83CE3 /* PathForImage.h */; };
-		CEC7FEE710A5C844008935EA /* DragMatrixWithDelete.h in Headers */ = {isa = PBXBuildFile; fileRef = BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */; };
 		CEC7FEE810A5C844008935EA /* SRAnnotation.h in Headers */ = {isa = PBXBuildFile; fileRef = A958370C0AAEBC2A0001D415 /* SRAnnotation.h */; };
 		CEC7FEE910A5C844008935EA /* ROISRConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDDD4E0AE6E3FE00888882 /* ROISRConverter.h */; };
 		CEC7FEEC10A5C844008935EA /* printView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6692D80AF545F90073D923 /* printView.h */; };
@@ -8599,18 +8553,10 @@
 		B7CDAD010AB30E7600068D70 /* pdf.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = pdf.tif; sourceTree = "<group>"; };
 		BF00C95806F3F43900715191 /* DCMCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCursor.h; sourceTree = "<group>"; };
 		BF00C95906F3F43900715191 /* DCMCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCursor.m; sourceTree = "<group>"; };
-		BF038E7C0A3FB49700663EBB /* KeyObjectController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = KeyObjectController.h; sourceTree = "<group>"; };
-		BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyObjectController.mm; sourceTree = "<group>"; };
-		BF038E7E0A3FB49700663EBB /* KeyObjectReport.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = KeyObjectReport.h; sourceTree = "<group>"; };
-		BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyObjectReport.mm; sourceTree = "<group>"; };
 		BF06806C0A9E602E000F3152 /* viewHTMLSelected.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewHTMLSelected.tif; sourceTree = "<group>"; };
 		BF06806D0A9E602E000F3152 /* viewXMLSelected.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewXMLSelected.tif; sourceTree = "<group>"; };
 		BF09B13D0B2E681D00AA97E2 /* OSIWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWindowController.h; sourceTree = "<group>"; };
 		BF09B13E0B2E681D00AA97E2 /* OSIWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIWindowController.m; sourceTree = "<group>"; };
-		BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragMatrixWithDelete.h; sourceTree = "<group>"; };
-		BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragMatrixWithDelete.m; sourceTree = "<group>"; };
-		BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyObjectPopupController.h; sourceTree = "<group>"; };
-		BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyObjectPopupController.mm; sourceTree = "<group>"; };
 		BF1745D208E0C7E200822756 /* LogWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogWindowController.h; sourceTree = "<group>"; };
 		BF1745D308E0C7E200822756 /* LogWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogWindowController.m; sourceTree = "<group>"; };
 		BF17E98F088768CA00ECF621 /* LogTableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LogTableView.h; sourceTree = "<group>"; };
@@ -8647,20 +8593,12 @@
 		BF47CBCD0A2E31B100700AA9 /* viewHTML.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewHTML.tif; sourceTree = "<group>"; };
 		BF47CBCE0A2E31B100700AA9 /* viewSR.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewSR.tif; sourceTree = "<group>"; };
 		BF47CBCF0A2E31B100700AA9 /* viewXML.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewXML.tif; sourceTree = "<group>"; };
-		BF47CC310A2E4AD800700AA9 /* StructuredReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructuredReport.h; sourceTree = "<group>"; };
-		BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = StructuredReport.mm; sourceTree = "<group>"; };
 		BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcnf.mm; sourceTree = "<group>"; };
-		BF55377C0A9A294A00D83CE3 /* PathForImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathForImage.h; sourceTree = "<group>"; };
-		BF55377D0A9A294A00D83CE3 /* PathForImage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PathForImage.mm; sourceTree = "<group>"; };
 		BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ImageAndTextCell.h; sourceTree = "<group>"; };
 		BF5C0186065320A800BAFCF7 /* ImageAndTextCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ImageAndTextCell.m; sourceTree = "<group>"; };
 		BF5F14C20B14E12700B309B9 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		BF61E58C06A5BB9E001C0B29 /* DCMCalendarDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCalendarDate.h; sourceTree = "<group>"; };
 		BF61E58D06A5BB9E001C0B29 /* DCMCalendarDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCalendarDate.m; sourceTree = "<group>"; };
-		BF6290550A2B7D5000BB0B62 /* StructuredReportController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructuredReportController.h; sourceTree = "<group>"; };
-		BF6290560A2B7D5000BB0B62 /* StructuredReportController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = StructuredReportController.mm; sourceTree = "<group>"; };
-		BF6290750A2B7E8600BB0B62 /* SRArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SRArrayController.h; sourceTree = "<group>"; };
-		BF6290760A2B7E8600BB0B62 /* SRArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SRArrayController.m; sourceTree = "<group>"; };
 		BF6F18DA0CAD6ACF006DE602 /* FlyThruStepsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyThruStepsArrayController.h; sourceTree = "<group>"; };
 		BF6F18DB0CAD6ACF006DE602 /* FlyThruStepsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlyThruStepsArrayController.m; sourceTree = "<group>"; };
 		BF746FB50CC6811A00198387 /* Documentation */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Documentation; path = ../Documentation; sourceTree = SOURCE_ROOT; };
@@ -8691,12 +8629,6 @@
 		BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKPrintSCU.mm; sourceTree = "<group>"; };
 		BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserControllerDCMTKCategory.h; sourceTree = "<group>"; };
 		BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BrowserControllerDCMTKCategory.mm; sourceTree = "<group>"; };
-		BFAA082B0A901AD0002DB3DD /* DragMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragMatrix.h; sourceTree = "<group>"; };
-		BFAA082C0A901AD0002DB3DD /* DragMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragMatrix.m; sourceTree = "<group>"; };
-		BFAA083F0A901BDB002DB3DD /* AllKeyImagesArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AllKeyImagesArrayController.h; sourceTree = "<group>"; };
-		BFAA08400A901BDB002DB3DD /* AllKeyImagesArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AllKeyImagesArrayController.m; sourceTree = "<group>"; };
-		BFAA0D050A916CB6002DB3DD /* SelectedKeyImagesArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectedKeyImagesArrayController.h; sourceTree = "<group>"; };
-		BFAA0D060A916CB6002DB3DD /* SelectedKeyImagesArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectedKeyImagesArrayController.m; sourceTree = "<group>"; };
 		BFAEB10506BF2C4E00C7EF1E /* ijg8.dsp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ijg8.dsp; sourceTree = "<group>"; };
 		BFAEB10606BF2C4E00C7EF1E /* jaricom.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jaricom.c; sourceTree = "<group>"; };
 		BFAEB10706BF2C4E00C7EF1E /* jcapimin.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcapimin.c; sourceTree = "<group>"; };
@@ -11393,7 +11325,6 @@
 		CE3F98EB0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LogWindow.xib; sourceTree = "<group>"; };
 		CE3F98ED0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/FlyThru.xib; sourceTree = "<group>"; };
 		CE3F98F10C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ToolbarPanel.xib; sourceTree = "<group>"; };
-		CE3F98F30C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/KeyObjectReport.xib; sourceTree = "<group>"; };
 		CE3F98F70C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PreferencePanesViewer.xib; sourceTree = "<group>"; };
 		CE3F98FD0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Splash.xib; sourceTree = "<group>"; };
 		CE3F98FF0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROI.xib; sourceTree = "<group>"; };
@@ -12079,7 +12010,6 @@
 				CE3F98EC0C84724B00CB38F1 /* FlyThru.xib */,
 				CE3F99140C84724B00CB38F1 /* Histogram.xib */,
 				CE3F99100C84724B00CB38F1 /* ITKSegmentation.xib */,
-				CE3F98F20C84724B00CB38F1 /* KeyObjectReport.xib */,
 				CE3F990C0C84724B00CB38F1 /* LLMPR.xib */,
 				CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */,
 				CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */,
@@ -13150,7 +13080,6 @@
 		ABD9E69C05B49D6C0077115D /* Database */ = {
 			isa = PBXGroup;
 			children = (
-				BF6290670A2B7E2900BB0B62 /* Reports */,
 				CE9DD29A086B35740058DD2A /* CoreData */,
 				A99B7E4F08858D0D004328C0 /* Bonjour */,
 				CE9101AA0C86A6B800D8D273 /* Web Server */,
@@ -13226,6 +13155,8 @@
 				CE9762FC08FABDA600E6F8B0 /* ROIManagerController.m */,
 				CE9762FE08FABDA600E6F8B0 /* PaletteController.h */,
 				CE9762FF08FABDA600E6F8B0 /* PaletteController.m */,
+				A958370C0AAEBC2A0001D415 /* SRAnnotation.h */,
+				A958370D0AAEBC2A0001D415 /* SRAnnotation.mm */,
 			);
 			name = "2D Viewer";
 			sourceTree = "<group>";
@@ -13332,37 +13263,6 @@
 				BF3485770951270C00B05AD2 /* SendController.m */,
 			);
 			name = Sending;
-			sourceTree = "<group>";
-		};
-		BF6290670A2B7E2900BB0B62 /* Reports */ = {
-			isa = PBXGroup;
-			children = (
-				BFAA083F0A901BDB002DB3DD /* AllKeyImagesArrayController.h */,
-				BFAA08400A901BDB002DB3DD /* AllKeyImagesArrayController.m */,
-				BFAA082B0A901AD0002DB3DD /* DragMatrix.h */,
-				BFAA082C0A901AD0002DB3DD /* DragMatrix.m */,
-				BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */,
-				BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */,
-				BF038E7C0A3FB49700663EBB /* KeyObjectController.h */,
-				BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */,
-				BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */,
-				BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */,
-				BF038E7E0A3FB49700663EBB /* KeyObjectReport.h */,
-				BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */,
-				BF55377C0A9A294A00D83CE3 /* PathForImage.h */,
-				BF55377D0A9A294A00D83CE3 /* PathForImage.mm */,
-				BFAA0D050A916CB6002DB3DD /* SelectedKeyImagesArrayController.h */,
-				BFAA0D060A916CB6002DB3DD /* SelectedKeyImagesArrayController.m */,
-				A958370C0AAEBC2A0001D415 /* SRAnnotation.h */,
-				A958370D0AAEBC2A0001D415 /* SRAnnotation.mm */,
-				BF6290750A2B7E8600BB0B62 /* SRArrayController.h */,
-				BF6290760A2B7E8600BB0B62 /* SRArrayController.m */,
-				BF47CC310A2E4AD800700AA9 /* StructuredReport.h */,
-				BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */,
-				BF6290550A2B7D5000BB0B62 /* StructuredReportController.h */,
-				BF6290560A2B7D5000BB0B62 /* StructuredReportController.mm */,
-			);
-			name = Reports;
 			sourceTree = "<group>";
 		};
 		BF9201E70883664600A3D77B /* Network */ = {
@@ -17160,11 +17060,6 @@
 				BF90552209EB4985009C30D1 /* MoveManager.h in Headers */,
 				BFF5D24009F93B3F0077E16B /* LogManager.h in Headers */,
 				BF9999000A1E695800F50753 /* DCMTKPrintSCU.h in Headers */,
-				BF62905B0A2B7D5000BB0B62 /* StructuredReportController.h in Headers */,
-				BF62907B0A2B7E8600BB0B62 /* SRArrayController.h in Headers */,
-				BF47CC370A2E4AD900700AA9 /* StructuredReport.h in Headers */,
-				BF038E880A3FB49700663EBB /* KeyObjectController.h in Headers */,
-				BF038E8A0A3FB49700663EBB /* KeyObjectReport.h in Headers */,
 				AB6FF59B0A47D08000C501F0 /* DefaultsOsiriX.h in Headers */,
 				A93CFFA60A516A5100078038 /* LLMPRController.h in Headers */,
 				A93CFFA80A516A5100078038 /* LLMPRView.h in Headers */,
@@ -17177,7 +17072,6 @@
 				BF2425510A51D39500D3D76B /* DicomFileDCMTKCategory.h in Headers */,
 				A9944C110A52A54D004C5E0A /* LLDCMView.h in Headers */,
 				BF26843D0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
-				CE51509F0A6AD2CC00408C38 /* KeyObjectPopupController.h in Headers */,
 				A95B98A40A6E65B100E476D4 /* QTExportHTMLSummary.h in Headers */,
 				ABE46F9A0A76410F00327466 /* jchuff12.h in Headers */,
 				ABE46FA40A76410F00327466 /* jconfig12.h in Headers */,
@@ -17218,11 +17112,6 @@
 				ABE471120A76412700327466 /* jpegint8.h in Headers */,
 				ABE471130A76412700327466 /* jpeglib8.h in Headers */,
 				ABE471170A76412700327466 /* jversion8.h in Headers */,
-				BFAA08310A901AD0002DB3DD /* DragMatrix.h in Headers */,
-				BFAA08450A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */,
-				BFAA0D090A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
-				BF55377E0A9A294A00D83CE3 /* PathForImage.h in Headers */,
-				BF0AAEB30A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
 				A95837B50AAF0DCB0001D415 /* SRAnnotation.h in Headers */,
 				BFDDDD520AE6E3FE00888882 /* ROISRConverter.h in Headers */,
 				AB80EBAB0AF1F5B600E7E934 /* AYDicomPrintWindowController.h in Headers */,
@@ -19340,22 +19229,11 @@
 				CEC7FEA510A5C844008935EA /* ReportPluginFilter.h in Headers */,
 				CEC7FEA610A5C844008935EA /* MoveManager.h in Headers */,
 				CEC7FEA710A5C844008935EA /* LogManager.h in Headers */,
-				CEC7FEA910A5C844008935EA /* StructuredReportController.h in Headers */,
-				CEC7FEAA10A5C844008935EA /* SRArrayController.h in Headers */,
-				CEC7FEAB10A5C844008935EA /* StructuredReport.h in Headers */,
-				CEC7FEAC10A5C844008935EA /* KeyObjectController.h in Headers */,
-				CEC7FEAD10A5C844008935EA /* KeyObjectReport.h in Headers */,
 				CEC7FEAE10A5C844008935EA /* DefaultsOsiriX.h in Headers */,
 				CEC7FEB610A5C844008935EA /* BrowserControllerDCMTKCategory.h in Headers */,
 				CEC7FEB710A5C844008935EA /* DicomFileDCMTKCategory.h in Headers */,
 				CEC7FEB910A5C844008935EA /* DicomImageDCMTKCategory.h in Headers */,
-				CEC7FEBA10A5C844008935EA /* KeyObjectPopupController.h in Headers */,
 				CEC7FEBB10A5C844008935EA /* QTExportHTMLSummary.h in Headers */,
-				CEC7FEE310A5C844008935EA /* DragMatrix.h in Headers */,
-				CEC7FEE410A5C844008935EA /* AllKeyImagesArrayController.h in Headers */,
-				CEC7FEE510A5C844008935EA /* SelectedKeyImagesArrayController.h in Headers */,
-				CEC7FEE610A5C844008935EA /* PathForImage.h in Headers */,
-				CEC7FEE710A5C844008935EA /* DragMatrixWithDelete.h in Headers */,
 				CEC7FEE810A5C844008935EA /* SRAnnotation.h in Headers */,
 				CEC7FEE910A5C844008935EA /* ROISRConverter.h in Headers */,
 				CEC7FEEC10A5C844008935EA /* printView.h in Headers */,
@@ -21781,7 +21659,6 @@
 				CE3F99470C84724B00CB38F1 /* LogWindow.xib in Resources */,
 				CE3F99480C84724B00CB38F1 /* FlyThru.xib in Resources */,
 				CE3F994A0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */,
-				CE3F994B0C84724B00CB38F1 /* KeyObjectReport.xib in Resources */,
 				CE3F994D0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */,
 				CE3F99500C84724B00CB38F1 /* Splash.xib in Resources */,
 				CE3F99510C84724B00CB38F1 /* ROI.xib in Resources */,
@@ -22162,7 +22039,6 @@
 				CEC7069910A5C844008935EA /* ROIVolumeManager.xib in Resources */,
 				CEC7069B10A5C844008935EA /* LogWindow.xib in Resources */,
 				CEC7069D10A5C844008935EA /* ToolbarPanel.xib in Resources */,
-				CEC7069E10A5C844008935EA /* KeyObjectReport.xib in Resources */,
 				CEC7069F10A5C844008935EA /* PreferencePanesViewer.xib in Resources */,
 				CEC706A010A5C844008935EA /* Splash.xib in Resources */,
 				CEC706A110A5C844008935EA /* ROI.xib in Resources */,
@@ -22986,11 +22862,6 @@
 				BF8B2A4C09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
 				BFF5D24109F93B3F0077E16B /* LogManager.mm in Sources */,
 				BF9999010A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */,
-				BF62905C0A2B7D5000BB0B62 /* StructuredReportController.mm in Sources */,
-				BF62907C0A2B7E8600BB0B62 /* SRArrayController.m in Sources */,
-				BF47CC380A2E4AD900700AA9 /* StructuredReport.mm in Sources */,
-				BF038E890A3FB49700663EBB /* KeyObjectController.mm in Sources */,
-				BF038E8B0A3FB49700663EBB /* KeyObjectReport.mm in Sources */,
 				AB6FF59C0A47D08000C501F0 /* DefaultsOsiriX.m in Sources */,
 				A93CFFA70A516A5100078038 /* LLMPRController.m in Sources */,
 				A93CFFA90A516A5100078038 /* LLMPRView.m in Sources */,
@@ -23003,7 +22874,6 @@
 				BF2425520A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */,
 				A9944C120A52A54D004C5E0A /* LLDCMView.m in Sources */,
 				BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
-				CE51509E0A6AD2CB00408C38 /* KeyObjectPopupController.mm in Sources */,
 				A95B98A50A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */,
 				CE16A6A50A755124001C27C4 /* PapyJpeg8.c in Sources */,
 				CE16A6FB0A7552E0001C27C4 /* PapyJpeg16.c in Sources */,
@@ -23200,11 +23070,6 @@
 				ABE471140A76412700327466 /* jquant1.c in Sources */,
 				ABE471150A76412700327466 /* jquant2.c in Sources */,
 				ABE471160A76412700327466 /* jutils.c in Sources */,
-				BFAA08320A901AD0002DB3DD /* DragMatrix.m in Sources */,
-				BFAA08460A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */,
-				BFAA0D0A0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
-				BF55377F0A9A294A00D83CE3 /* PathForImage.mm in Sources */,
-				BF0AAEB40A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 				A95837B40AAF0DC80001D415 /* SRAnnotation.mm in Sources */,
 				BFDDDD530AE6E3FE00888882 /* ROISRConverter.mm in Sources */,
 				AB80EBAC0AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */,
@@ -24141,24 +24006,13 @@
 				CEC7088F10A5C844008935EA /* ReportPluginFilter.m in Sources */,
 				CEC7089010A5C844008935EA /* MoveManager.m in Sources */,
 				CEC7089210A5C844008935EA /* LogManager.mm in Sources */,
-				CEC7089410A5C844008935EA /* StructuredReportController.mm in Sources */,
-				CEC7089510A5C844008935EA /* SRArrayController.m in Sources */,
-				CEC7089610A5C844008935EA /* StructuredReport.mm in Sources */,
-				CEC7089710A5C844008935EA /* KeyObjectController.mm in Sources */,
-				CEC7089810A5C844008935EA /* KeyObjectReport.mm in Sources */,
 				CEC7089910A5C844008935EA /* DefaultsOsiriX.m in Sources */,
 				CEC708A210A5C844008935EA /* DicomFileDCMTKCategory.mm in Sources */,
 				CEC708A410A5C844008935EA /* DicomImageDCMTKCategory.mm in Sources */,
-				CEC708A510A5C844008935EA /* KeyObjectPopupController.mm in Sources */,
 				CEC708A610A5C844008935EA /* QTExportHTMLSummary.m in Sources */,
 				CEC708A710A5C844008935EA /* PapyJpeg8.c in Sources */,
 				CEC708A810A5C844008935EA /* PapyJpeg16.c in Sources */,
 				CEC708A910A5C844008935EA /* PapyJpeg12.c in Sources */,
-				CEC7096A10A5C844008935EA /* DragMatrix.m in Sources */,
-				CEC7096B10A5C844008935EA /* AllKeyImagesArrayController.m in Sources */,
-				CEC7096C10A5C844008935EA /* SelectedKeyImagesArrayController.m in Sources */,
-				CEC7096D10A5C844008935EA /* PathForImage.mm in Sources */,
-				CEC7096E10A5C844008935EA /* DragMatrixWithDelete.m in Sources */,
 				CEC7096F10A5C844008935EA /* SRAnnotation.mm in Sources */,
 				CEC7097010A5C844008935EA /* ROISRConverter.mm in Sources */,
 				CEC7097310A5C844008935EA /* printView.m in Sources */,
@@ -24682,14 +24536,6 @@
 				CE3F98F10C84724B00CB38F1 /* English */,
 			);
 			name = ToolbarPanel.xib;
-			sourceTree = "<group>";
-		};
-		CE3F98F20C84724B00CB38F1 /* KeyObjectReport.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F98F30C84724B00CB38F1 /* English */,
-			);
-			name = KeyObjectReport.xib;
 			sourceTree = "<group>";
 		};
 		CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */ = {

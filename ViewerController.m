@@ -18911,18 +18911,18 @@ sourceRef);
 
 #pragma mark-
 #pragma mark Key Objects
-- (IBAction)createKeyObjectNote:(id)sender
-{
-	id study = [[imageView seriesObj] valueForKey:@"study"];
-	KeyObjectController *controller = [[KeyObjectController alloc] initWithStudy:(id)study];
-	[NSApp beginSheet:[controller window]  modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(keyObjectSheetDidEnd:returnCode:contextInfo:) contextInfo:controller];
-}
-
-- (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(id)contextInfo
-{
-	[contextInfo autorelease];
-	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
-}
+//- (IBAction)createKeyObjectNote:(id)sender
+//{
+//	id study = [[imageView seriesObj] valueForKey:@"study"];
+//	KeyObjectController *controller = [[KeyObjectController alloc] initWithStudy:(id)study];
+//	[NSApp beginSheet:[controller window]  modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(keyObjectSheetDidEnd:returnCode:contextInfo:) contextInfo:controller];
+//}
+//
+//- (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(id)contextInfo
+//{
+//	[contextInfo autorelease];
+//	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
+//}
 
 - (BOOL)displayOnlyKeyImages
 {

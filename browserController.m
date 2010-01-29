@@ -59,7 +59,7 @@
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
 #import "WindowLayoutManager.h"
-#import "StructuredReportController.h"
+//#import "StructuredReportController.h"
 #import "QTExportHTMLSummary.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "BrowserMatrix.h"
@@ -17148,26 +17148,26 @@ static volatile int numberOfThreadsForJPEG = 0;
 #pragma mark -
 #pragma mark Report functions
 
-- (IBAction)srReports: (id)sende
-{
-	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
-	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
-
-	NSManagedObject *studySelected;
-	
-	if (item)
-	{
-		if ([[[item entity] name] isEqual:@"Study"])
-			studySelected = item;
-		else
-			studySelected = [item valueForKey:@"study"];
-		
-		if (structuredReportController)
-			[structuredReportController release];
-		
-		structuredReportController = [[StructuredReportController alloc] initWithStudy:studySelected];
-	}
-}
+//- (IBAction)srReports: (id)sende
+//{
+//	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
+//	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
+//
+//	NSManagedObject *studySelected;
+//	
+//	if (item)
+//	{
+//		if ([[[item entity] name] isEqual:@"Study"])
+//			studySelected = item;
+//		else
+//			studySelected = [item valueForKey:@"study"];
+//		
+//		if (structuredReportController)
+//			[structuredReportController release];
+//		
+//		structuredReportController = [[StructuredReportController alloc] initWithStudy:studySelected];
+//	}
+//}
 
 - (void) syncReportsIfNecessary
 {
@@ -17410,13 +17410,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						if (reportsMode != 3)
 							[[NSWorkspace sharedWorkspace] openFile: [studySelected valueForKey:@"reportURL"]];
-						else
-						{
-							//structured report code here
-							//Osirix will open DICOM Structured Reports
-							//Release Old Controller
-							[self srReports:sender];
-						}
+//						else
+//						{
+//							//structured report code here
+//							//Osirix will open DICOM Structured Reports
+//							//Release Old Controller
+//							[self srReports:sender];
+//						}
 					}
 					else
 					{
@@ -17427,13 +17427,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 							[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", [self documentsDirectory]] type:reportsMode];					
 							[report release];
 						}
-						else
-						{
-							//structured report code here
-							//Osirix will open DICOM Structured Reports
-							//Release Old Controller
-							[self srReports:sender];
-						}
+//						else
+//						{
+//							//structured report code here
+//							//Osirix will open DICOM Structured Reports
+//							//Release Old Controller
+//							[self srReports:sender];
+//						}
 					}
 				}
 			}
