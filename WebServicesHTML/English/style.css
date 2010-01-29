@@ -495,6 +495,27 @@ a.report
 	padding-top:2px;
 }
 
+/* Study Sharing */
+#userDestination
+{
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+#shareStudy
+{
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+#shareStudyMessage
+{
+	width: 600px;
+	height: 120px;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
 /* Footer */
 #footer
 {
