@@ -156,15 +156,15 @@ static PSGenerator *generator = nil;
 		@try
 		{
 			NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-			[request setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey:@"Study"]];
+			[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 			[request setPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: *value]];
 			
 			NSError *err = nil;
-			[[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: request error: &err];
+			[[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: request error: &err];
 			
 			if( err)
 			{
-				NSDictionary *info = [NSDictionary dictionaryWithObject: NSLocalizedString( @"Syntax Error in Study Filter.", nil) forKey: NSLocalizedDescriptionKey];
+				NSDictionary *info = [NSDictionary dictionaryWithObject: [NSString stringWithFormat: NSLocalizedString( @"Syntax Error in Study Filter: %@", nil), [err localizedDescription]] forKey: NSLocalizedDescriptionKey];
 				*error = [NSError errorWithDomain: @"OsiriXDomain" code: -31 userInfo: info];
 				return NO;
 			}
@@ -172,7 +172,7 @@ static PSGenerator *generator = nil;
 		@catch ( NSException *e)
 		{
 			NSLog( @"******* validateValue UserTable exception: %@", e);
-			NSDictionary *info = [NSDictionary dictionaryWithObject: NSLocalizedString( @"Syntax Error in Study Filter.", nil) forKey: NSLocalizedDescriptionKey];
+			NSDictionary *info = [NSDictionary dictionaryWithObject: [NSString stringWithFormat: NSLocalizedString( @"Syntax Error in Study Filter: %@", nil), e] forKey: NSLocalizedDescriptionKey];
 			*error = [NSError errorWithDomain: @"OsiriXDomain" code: -31 userInfo: info];
 			return NO;
 		}
