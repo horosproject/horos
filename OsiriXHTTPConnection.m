@@ -791,11 +791,14 @@ NSString* notNil( NSString *s)
 			NSString *dicomNodeDescription = @"This Computer";
 			
 			NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-			if([[settings valueForKey:@"iPhone"] boolValue]) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 			[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString: notNil( dicomNodeAddress) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 			[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString: notNil( dicomNodePort) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 			[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString: notNil( dicomNodeAETitle) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 			[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString: notNil( dicomNodeSyntax) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+
+			if(![[settings valueForKey:@"iPhone"] boolValue])
+				dicomNodeDescription = [dicomNodeDescription stringByAppendingFormat:@" [%@:%@]", notNil( dicomNodeAddress), notNil( dicomNodePort)];
+			
 			[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString: notNil( dicomNodeDescription) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 			
 			[returnHTML appendString:tempHTML];
@@ -813,11 +816,14 @@ NSString* notNil( NSString *s)
 				NSString *dicomNodeDescription = notNil( [node objectForKey:@"Description"]);
 				
 				NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-				if([[settings valueForKey:@"iPhone"] boolValue]) [tempHTML replaceOccurrencesOfString:@"[%dicomNodeAddress%:%dicomNodePort%]" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString: notNil( dicomNodeAddress) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 				[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString: notNil( dicomNodePort) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString: notNil( dicomNodeAETitle) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 				[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString: notNil( dicomNodeSyntax) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				
+				if(![[settings valueForKey:@"iPhone"] boolValue])
+					dicomNodeDescription = [dicomNodeDescription stringByAppendingFormat:@" [%@:%@]", notNil( dicomNodeAddress), notNil( dicomNodePort)];
+				
 				[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString: notNil( dicomNodeDescription) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 				
 				NSString *selected = @"";
@@ -910,6 +916,12 @@ NSString* notNil( NSString *s)
 					
 					[tempHTML replaceOccurrencesOfString:@"%username%" withString: notNil( [user valueForKey: @"name"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 					[tempHTML replaceOccurrencesOfString:@"%email%" withString: notNil( [user valueForKey: @"email"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+					
+					NSString *userDescription = [NSString stringWithString:notNil([user valueForKey:@"name"])];
+					if(![[settings valueForKey:@"iPhone"] boolValue])
+						userDescription = [userDescription stringByAppendingFormat:@" (%@)", notNil([user valueForKey:@"email"])];
+					
+					[tempHTML replaceOccurrencesOfString:@"%userDescription%" withString: notNil(userDescription) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 					
 					[returnHTML appendString: tempHTML];
 				}

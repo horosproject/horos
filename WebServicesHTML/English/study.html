@@ -133,7 +133,7 @@
 					Send selected series to:
 					<select name="dicomDestination" id="dicomDestination">
 						%dicomNodesListItem%
-						<option value="%dicomNodeAddress%:%dicomNodePort%:%dicomNodeAETitle%:%dicomNodeSyntax%" %selected% >%dicomNodeDescription% [%dicomNodeAddress%:%dicomNodePort%]</option>
+						<option value="%dicomNodeAddress%:%dicomNodePort%:%dicomNodeAETitle%:%dicomNodeSyntax%" %selected% >%dicomNodeDescription%</option>
 						%/dicomNodesListItem%
 					</select>
 					<input type="submit" name="dicomSend" id="dicomSend" value="Send"/>
@@ -146,7 +146,7 @@
 			<div>Share This Study with user:<div>
 			<select name="userDestination" id="userDestination">
 				%userListItem%
-				<option value="%username%" %selected% >%username% (%email%)</option>
+				<option value="%username%" %selected% >%userDescription%</option>
 				%/userListItem%
 			</select>
 			<div>Message:</div>
