@@ -638,6 +638,8 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 
 	} /* while */
 	
+	long allocatedLength = theLength;
+	
 	theCompressedP = malloc( theLength);
 
 	Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) (inPixelStart + inOffsetTableP [inImageNb - 1]));
@@ -659,7 +661,7 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		theUShort1 = Extract2Bytes (inFileNb, theTmpBufP, &thePos);
 		theUShort2 = Extract2Bytes (inFileNb, theTmpBufP, &thePos);
 		theULong = Extract4Bytes (inFileNb, theTmpBufP, &thePos);
-
+		
 		/* offset table found ? */
 		if ((theUShort1 == 0xFFFE) && (theUShort2 == 0xE000))
 		{
@@ -671,6 +673,9 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 			} /* if */
 			
 			theLength += theULong;
+			
+			if( theLength > allocatedLength)
+				printf( "****** theLength > allocatedLength\r\r");
 			
 			//Papy3FSeek (gPapyFile [inFileNb], SEEK_CUR, theULong);
 		} /* if */
@@ -688,6 +693,8 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 	{
 		PapyrusLockFunction( 0);
 		succeed = read_JPEG2000_file( ioImage8P, (char*) theCompressedP, theLength);
+		if( succeed == 0)
+			printf( "**** OpenJPEG 2000 failed to open this file. Will try Jasper2000.\r");
 		PapyrusLockFunction( 1);
 	}
 	
