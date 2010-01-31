@@ -5683,8 +5683,11 @@ static ViewerController *draggedController = nil;
 	
 	[seriesView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage:0 level:'i' reset:YES];	//[pixList[0] count]/2
 	
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:[[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"]], @"toolIndex", nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultToolModifiedNotification object:nil userInfo: userInfo];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"RestoreLeftMouseTool"])
+	{
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:[[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"]], @"toolIndex", nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultToolModifiedNotification object:nil userInfo: userInfo];
+	}
 	
 	displayOnlyKeyImages = NO;
 	

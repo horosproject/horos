@@ -98,9 +98,7 @@
 		[_authView setEnabled: NO];
 	}
 	[_authView updateStatus:self];
-
 	
-	[checkSaveLoadROI setState :[defaults boolForKey: @"SAVEROIS"]];
 	[sizeMatrix selectCellWithTag: [defaults boolForKey: @"ORIGINALSIZE"]];
 	
 	[openViewerCheck setState: [defaults boolForKey: @"OPENVIEWER"]];
@@ -156,11 +154,6 @@
 - (IBAction) setExportSize: (id) sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: @"ORIGINALSIZE"];
-}
-
-- (IBAction) setSaveLoadROI: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey: @"SAVEROIS"];
 }
 
 - (IBAction) setReverseScrollWheel: (id) sender

@@ -17,8 +17,7 @@
 
 @interface OSIViewerPreferencePanePref : NSPreferencePane 
 {
-	IBOutlet NSButton						*checkSaveLoadROI,
-											*autoHideMatrix,
+	IBOutlet NSButton						*autoHideMatrix,
 											*openViewerCheck,
 											*reverseScrollWheelCheck,
 											*tilingCheck,
@@ -37,7 +36,6 @@
 - (void) mainViewDidLoad;
 - (IBAction) setToolbarMatrix: (id) sender;
 - (IBAction) setExportSize: (id) sender;
-- (IBAction) setSaveLoadROI: (id) sender;
 - (IBAction) setReverseScrollWheel: (id) sender;
 - (IBAction) setOpenViewerBut: (id) sender;
 - (IBAction) setMultipleScreens: (id) sender;

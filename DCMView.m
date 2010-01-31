@@ -5922,7 +5922,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: self];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 	
-	if( [self is2DViewer])
+	if( [self is2DViewer] && [[NSUserDefaults standardUserDefaults] boolForKey: @"RestoreLeftMouseTool"])
 		currentTool =  [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"];
 	else
 		currentTool = tWL;
