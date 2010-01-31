@@ -318,7 +318,7 @@ void* dcm_read_JPEG2000_file (char *inputdata, size_t inputlength, size_t *outpu
 {
   opj_dparameters_t parameters;  /* decompression parameters */
   opj_event_mgr_t event_mgr;    /* event manager */
-  opj_image_t *image;
+  opj_image_t *image = nil;
   opj_dinfo_t* dinfo;  /* handle to a decompressor */
   opj_cio_t *cio;
   unsigned char *src = (unsigned char*)inputdata; 
@@ -464,7 +464,8 @@ void* dcm_read_JPEG2000_file (char *inputdata, size_t inputlength, size_t *outpu
   }
 
   /* free image data structure */
-  opj_image_destroy(image);
+  if( image)
+	opj_image_destroy(image);
 
   return raw;
 }

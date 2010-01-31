@@ -429,17 +429,24 @@ Papy3GetElement (SElement *inGrOrModP, int inElement, PapyULong *outNbValueP, in
 /**
 sample error callback expecting a FILE* client object
 */
-static void error_callback(const char *msg, void *a) {
+static void error_callback(const char *msg, void *a)
+{
+//	printf( "%s\r\r", msg);
 }
 /**
 sample warning callback expecting a FILE* client object
 */
-static void warning_callback(const char *msg, void *a) {
+static void warning_callback(const char *msg, void *a)
+{
+//	printf( "%s\r\r", msg);
 }
+
 /**
 sample debug callback expecting no client object
 */
-static void info_callback(const char *msg, void *a) {
+static void info_callback(const char *msg, void *a)
+{
+//	printf( "%s\r\r", msg);
 }
 
 static inline int int_ceildivpow2(int a, int b) {
@@ -450,7 +457,7 @@ bool read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 {
 	opj_dparameters_t parameters;  /* decompression parameters */
 	opj_event_mgr_t event_mgr;    /* event manager */
-	opj_image_t *image;
+	opj_image_t *image = nil;
 	opj_dinfo_t* dinfo;  /* handle to a decompressor */
 	opj_cio_t *cio;
 	unsigned char *src = (unsigned char*)inputdata; 
@@ -581,7 +588,8 @@ bool read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
   }
 
   /* free image data structure */
-  opj_image_destroy(image);
+  if( image)
+	opj_image_destroy(image);
 
   return true;
 }
