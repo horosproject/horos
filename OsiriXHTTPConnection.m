@@ -2929,10 +2929,9 @@ NSString* notNil( NSString *s)
 					NSString *name = [NSString stringWithFormat:@"%@",[urlParameters objectForKey:@"id"]]; //[[series lastObject] valueForKey:@"id"];
 					name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
 					
-					NSMutableString *fileName = [NSMutableString stringWithString: [path stringByAppendingPathComponent: name]];
-					
+					NSMutableString *fileName = [NSMutableString stringWithString:name];
 					[BrowserController replaceNotAdmitted: fileName];
-					
+					fileName = [NSMutableString stringWithString:[path stringByAppendingPathComponent: fileName]];
 					[fileName appendString:@".mov"];
 					
 					NSString *outFile;
