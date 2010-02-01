@@ -1865,7 +1865,7 @@ NSString* notNil( NSString *s)
 				[templateString replaceOccurrencesOfString:@"%UserPhoneLabel%" withString: notNil([currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			}
 			
-			templateString = [self setBlock: @"AuthorizedUploadDICOMFiles" visible: ( currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue]) forString: templateString];
+			templateString = [self setBlock: @"AuthorizedUploadDICOMFiles" visible: ( currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] && !isiPhone) forString: templateString];
 			
 			if( currentUser == nil || (currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] == YES))
 				[self supportsPOST: nil withSize: 0];

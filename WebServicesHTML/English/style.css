@@ -34,8 +34,9 @@ h2
 {
 	position:absolute;
 	top:35%;
-	margin-left:30%;
-	margin-right:30%;
+	left:30%;
+	right:30%;
+	width:40%;
 	padding:20px;
 	vertical-align:middle;
 	text-align: center;	
@@ -60,8 +61,9 @@ h2
 {
 	position:absolute;
 	top:35%;
-	margin-left:30%;
-	margin-right:30%;
+	left:30%;
+	right:30%;
+	width:40%;
 	padding:20px;
 	vertical-align:middle;
 	text-align: center;	
