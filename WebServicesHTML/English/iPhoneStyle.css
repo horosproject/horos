@@ -18,6 +18,92 @@ h2
 	font-size:14pt;
 }
 
+#error
+{
+	background-color:#ffFFff;
+	opacity:0.9;
+	position:absolute;
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+	height:480px;
+	width:320px;
+}
+
+#errorMessage
+{
+	position:absolute;
+	top:35%;
+	left:10px;
+	right:10px;
+	padding:20px;
+	vertical-align:middle;
+	text-align: center;	
+	background-color:#aa0000;
+	border:thin solid #330000;
+	color:#ffFFff;
+	font-size:14pt;
+}
+
+#notification
+{
+	background-color:#ffFFff;
+	opacity:0.9;
+	position:absolute;
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+	height:480px;
+	width:320px;
+}
+
+#notificationMessage
+{
+	position:absolute;
+	top:35%;
+	left:10px;
+	right:10px;
+	padding:20px;
+	vertical-align:middle;
+	text-align: center;	
+	background-color:#333333;
+	border:thin solid black;
+	color:#ffFFff;
+	font-size:14pt;
+}
+
+input[type=button]
+{
+	font-size:14pt;
+	width:100%;
+	text-align:center;	
+	margin-top:10px;
+}
+
+input[type=submit]
+{
+	font-size:14pt;
+	width:100%;
+	text-align:center;	
+	margin-top:10px;
+}
+
+input[type=text]
+{
+	font-size:12pt;
+	width:95%;
+	height:30px;
+}
+
+input[type=password]
+{
+	font-size:12pt;
+	width:95%;
+	height:30px;
+}
+
 ul
 {
 	list-style-type: none;
@@ -201,25 +287,8 @@ a.report
 	display:inline;
 }
 
-#search
-{
-	font-size:12pt;
-	width:95%;
-	height:30px;
-}
-
-#searchID
-{
-	font-size:12pt;
-	width:95%;
-	height:30px;
-}
-
 #searchButton
 {
-	font-size:14pt;
-	margin-top:10px;
-	width:100%;
 	text-align:center;
 }
 
