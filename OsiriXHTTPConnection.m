@@ -2025,8 +2025,12 @@ NSString* notNil( NSString *s)
 								NSString *name = [NSString stringWithFormat:@"%@",[urlParameters objectForKey:@"id"]];
 								name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
 								
-								NSString *fileName = [path stringByAppendingPathComponent:name];
-								fileName = [fileName stringByAppendingString:@".mov"];
+								NSMutableString *fileName = [NSMutableString stringWithString: [path stringByAppendingPathComponent:name]];
+								
+								[BrowserController replaceNotAdmitted: fileName];
+								
+								[fileName appendString:@".mov"];
+								
 								NSString *outFile;
 								if( isiPhone)
 									outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
@@ -2831,7 +2835,7 @@ NSString* notNil( NSString *s)
 			err = NO;
 		}
 	#pragma mark movie
-		else if([fileURL isEqualToString:@"/movie.mov"])
+		else if( [fileURL isEqualToString:@"/movie.mov"] || [fileURL isEqualToString:@"/movie.m4v"])
 		{
 			NSPredicate *browsePredicate;
 			if([[urlParameters allKeys] containsObject:@"id"])
@@ -2869,11 +2873,15 @@ NSString* notNil( NSString *s)
 					NSString *path = @"/tmp/osirixwebservices";
 					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 					
-					NSString *name = [NSString stringWithFormat:@"%@",[urlParameters objectForKey:@"id"]];//[[series lastObject] valueForKey:@"id"];
+					NSString *name = [NSString stringWithFormat:@"%@",[urlParameters objectForKey:@"id"]]; //[[series lastObject] valueForKey:@"id"];
 					name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
 					
-					NSString *fileName = [path stringByAppendingPathComponent:name];
-					fileName = [fileName stringByAppendingString:@".mov"];
+					NSMutableString *fileName = [NSMutableString stringWithString: [path stringByAppendingPathComponent: name]];
+					
+					[BrowserController replaceNotAdmitted: fileName];
+					
+					[fileName appendString:@".mov"];
+					
 					NSString *outFile;
 					
 					if( isiPhone)
@@ -2894,14 +2902,14 @@ NSString* notNil( NSString *s)
 			
 			err = NO;
 		}
-		#pragma mark m4v
-		else if([fileURL hasSuffix:@".m4v"])
-		{
-			data = [NSData dataWithContentsOfFile:requestedFile];
-			totalLength = [data length];
-			
-			err = NO;
-		}
+//		#pragma mark m4v
+//		else if([fileURL hasSuffix:@".m4v"]) -- I DONT UNDERSTAND WHERE THIS IS NEEDED...
+//		{
+//			data = [NSData dataWithContentsOfFile: requestedFile];
+//			totalLength = [data length];
+//			
+//			err = NO;
+//		}
 		#pragma mark password forgotten
 		else if( [fileURL isEqualToString: @"/password_forgotten"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"])
 		{

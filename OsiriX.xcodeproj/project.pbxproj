@@ -192,7 +192,6 @@
 		841721C610D8D745001A833F /* HTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B210D8D745001A833F /* HTTPResponse.h */; };
 		841721C710D8D745001A833F /* HTTPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B310D8D745001A833F /* HTTPResponse.m */; };
 		841721C910D8D745001A833F /* HTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B510D8D745001A833F /* HTTPServer.m */; };
-		841721CA10D8D745001A833F /* SSCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B610D8D745001A833F /* SSCrypto.h */; };
 		841721CB10D8D745001A833F /* SSCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B710D8D745001A833F /* SSCrypto.m */; };
 		841721FC10D8D8A0001A833F /* HTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B410D8D745001A833F /* HTTPServer.h */; };
 		8417221310D8DB72001A833F /* TCPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8417221110D8DB72001A833F /* TCPServer.h */; };
@@ -1021,6 +1020,7 @@
 		ABD7BC5F063F00A900E24B0E /* GrayRainbow.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC51063F00A900E24B0E /* GrayRainbow.plist */; };
 		ABD7BC60063F00A900E24B0E /* HotIron.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC52063F00A900E24B0E /* HotIron.plist */; };
 		ABD908D80AF2119200E47345 /* AYDicomPrint.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABD908C60AF2119200E47345 /* AYDicomPrint.prefPane */; };
+		ABDB79C91117109600CC1EC5 /* SSCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B610D8D745001A833F /* SSCrypto.h */; };
 		ABDC3C760670FF440042069D /* ToolBarNSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDC3C720670FF440042069D /* ToolBarNSWindow.m */; };
 		ABDC3C770670FF440042069D /* ToolBarNSWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDC3C730670FF440042069D /* ToolBarNSWindow.h */; };
 		ABDE6E1906398E3400F0C5DD /* port.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E0B06398E3400F0C5DD /* port.h */; };
@@ -18774,7 +18774,6 @@
 				841721C210D8D745001A833F /* HTTPAuthenticationRequest.h in Headers */,
 				841721C410D8D745001A833F /* HTTPConnection.h in Headers */,
 				841721C610D8D745001A833F /* HTTPResponse.h in Headers */,
-				841721CA10D8D745001A833F /* SSCrypto.h in Headers */,
 				841721FC10D8D8A0001A833F /* HTTPServer.h in Headers */,
 				8417221310D8DB72001A833F /* TCPServer.h in Headers */,
 				8417221910D8DB93001A833F /* basicHTTPServer.h in Headers */,
@@ -18787,6 +18786,7 @@
 				CEDDD87F10DCC93500FFE72B /* PSGenerator.h in Headers */,
 				CE2119C910E4C25300F9C50C /* CSMailMailClient.h in Headers */,
 				A9C5496510FF2C9F0026EA70 /* DICOMTLS.h in Headers */,
+				ABDB79C91117109600CC1EC5 /* SSCrypto.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
