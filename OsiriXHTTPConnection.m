@@ -2268,49 +2268,56 @@ NSString* notNil( NSString *s)
 			if( [[urlParameters allKeys] containsObject:@"dicomSend"])
 			{
 				NSString *dicomDestination = [[[urlParameters objectForKey:@"dicomDestination"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-				NSArray *tempArray = [dicomDestination componentsSeparatedByString:@"%3A"];
-				NSString *dicomDestinationAddress = [[[tempArray objectAtIndex:0]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-				NSString *dicomDestinationPort = [tempArray objectAtIndex:1];
-				NSString *dicomDestinationAETitle = [[[tempArray objectAtIndex:2]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-				NSString *dicomDestinationSyntax = [tempArray objectAtIndex:3];
+				NSArray *tempArray = [dicomDestination componentsSeparatedByString:@":"];
 				
-				if( dicomDestinationAddress && dicomDestinationPort && dicomDestinationAETitle && dicomDestinationSyntax)
+				if( [tempArray count] >= 4)
 				{
-					[selectedDICOMNode release];
-					selectedDICOMNode = [NSMutableDictionary dictionary];
-					[selectedDICOMNode setObject:dicomDestinationAddress forKey:@"Address"];
-					[selectedDICOMNode setObject:dicomDestinationPort forKey:@"Port"];
-					[selectedDICOMNode setObject:dicomDestinationAETitle forKey:@"AETitle"];
-					[selectedDICOMNode setObject:dicomDestinationSyntax forKey:@"TransferSyntax"];
-					[selectedDICOMNode retain];
+					NSString *dicomDestinationAddress = [[[tempArray objectAtIndex:0]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					NSString *dicomDestinationPort = [tempArray objectAtIndex:1];
+					NSString *dicomDestinationAETitle = [[[tempArray objectAtIndex:2]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					NSString *dicomDestinationSyntax = [tempArray objectAtIndex:3];
 					
-					[selectedImages release];
-					selectedImages = [NSMutableArray array];
-					NSArray *seriesArray;
-					for(NSString* selectedID in [urlParameters objectForKey:@"selected"])
+					if( dicomDestinationAddress && dicomDestinationPort && dicomDestinationAETitle && dicomDestinationSyntax)
 					{
-						NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"id"], [[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+						[selectedDICOMNode release];
+						selectedDICOMNode = [NSMutableDictionary dictionary];
+						[selectedDICOMNode setObject:dicomDestinationAddress forKey:@"Address"];
+						[selectedDICOMNode setObject:dicomDestinationPort forKey:@"Port"];
+						[selectedDICOMNode setObject:dicomDestinationAETitle forKey:@"AETitle"];
+						[selectedDICOMNode setObject:dicomDestinationSyntax forKey:@"TransferSyntax"];
+						[selectedDICOMNode retain];
 						
-						seriesArray = [self seriesForPredicate: pred];
-						for(NSManagedObject *series in seriesArray)
+						[selectedImages release];
+						selectedImages = [NSMutableArray array];
+						NSArray *seriesArray;
+						for(NSString* selectedID in [urlParameters objectForKey:@"selected"])
 						{
-							NSArray *images = [[series valueForKey:@"images"] allObjects];
-							[selectedImages addObjectsFromArray:images];
+							NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"id"], [[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+							
+							seriesArray = [self seriesForPredicate: pred];
+							for(NSManagedObject *series in seriesArray)
+							{
+								NSArray *images = [[series valueForKey:@"images"] allObjects];
+								[selectedImages addObjectsFromArray:images];
+							}
+						}
+						
+						[selectedImages retain];
+						
+						if( [selectedImages count])
+						{
+							[self dicomSend: self];
+							
+							message = [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
 						}
 					}
 					
-					[selectedImages retain];
-					
-					if( [selectedImages count])
-					{
-						[self dicomSend: self];
-						
-						message = [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
-					}
+					if( message == nil)
+						message = [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed to node : %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
 				}
 				
 				if( message == nil)
-					message = [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed to node : %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
+					message = [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed to node : cannot identify DICOM node.", nil)];
 			}
 			
 			NSArray *studies = [self studiesForPredicate:browsePredicate];
@@ -2389,13 +2396,17 @@ NSString* notNil( NSString *s)
 				
 				[html replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				
-				if( [[urlParameters allKeys] containsObject:@"dicomSend"])
-				{
-					NSString *dicomDestination = [urlParameters objectForKey:@"dicomDestination"];
-					NSArray *tempArray = [dicomDestination componentsSeparatedByString:@"%3A"];
-					NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-					NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-				}
+//				if( [[urlParameters allKeys] containsObject:@"dicomSend"])
+//				{
+//					NSString *dicomDestination = [urlParameters objectForKey:@"dicomDestination"];
+//					NSArray *tempArray = [dicomDestination componentsSeparatedByString:@":"];
+//					
+//					if( [tempArray count] >= 3)
+//					{
+//						NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+//						NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+//					}
+//				}
 				
 				[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: notNil( message) options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				
@@ -2499,6 +2510,7 @@ NSString* notNil( NSString *s)
 			[templateString replaceOccurrencesOfString:@"%album%" withString: [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
 			[templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%MovieExtension%" withString: isiPhone? @"m4v":@"mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
 			NSPredicate *browsePredicate;
 			if([[urlParameters allKeys] containsObject:@"id"])
@@ -2568,7 +2580,13 @@ NSString* notNil( NSString *s)
 				[templateString replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				[templateString replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
-				NSString *url = [NSString stringWithFormat: @"/movie.mov?id=%@&studyID=%@", [urlParameters objectForKey:@"id"], [urlParameters objectForKey:@"studyID"]];
+				NSString *url = nil;
+				
+				if( isiPhone)
+					url = [NSString stringWithFormat: @"/movie.m4v?id=%@&studyID=%@", [urlParameters objectForKey:@"id"], [urlParameters objectForKey:@"studyID"]];
+				else
+					url = [NSString stringWithFormat: @"/movie.mov?id=%@&studyID=%@", [urlParameters objectForKey:@"id"], [urlParameters objectForKey:@"studyID"]];
+					
 				[templateString replaceOccurrencesOfString:@"%DownloadMovieURL%" withString: [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, NSLocalizedString( @"Link to Quicktime Movie File", nil)] options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
 			}
 			
