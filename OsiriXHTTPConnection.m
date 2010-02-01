@@ -2791,7 +2791,7 @@ NSString* notNil( NSString *s)
 				browsePredicate = [NSPredicate predicateWithValue:NO];
 			
 			NSArray *series = [self seriesForPredicate:browsePredicate];
-			if([series count]==1)
+			if( [series count] == 1)
 			{
 				NSMutableArray *imagesArray = [NSMutableArray array];
 				NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
@@ -2880,9 +2880,9 @@ NSString* notNil( NSString *s)
 					[newImage unlockFocus];
 				}
 				
-				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
-				NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
-				data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
+				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [newImage TIFFRepresentation]];
+				NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
+				data = [imageRep representationUsingType:NSPNGFileType properties: imageProps];
 			}
 			
 			err = NO;
