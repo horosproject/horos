@@ -264,8 +264,40 @@
 	if(imagesCount>1 && [[[series valueForKeyPath:@"images.width"] allObjects] count] > 0 )
 	{
 		[tempHTML replaceOccurrencesOfString:@"%series_mov%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%width%" withString:[NSString stringWithFormat:@"%@", [[[series valueForKeyPath:@"images.width"] allObjects] objectAtIndex:0]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-		[tempHTML replaceOccurrencesOfString:@"%height%" withString:[NSString stringWithFormat:@"%d", [[[[series valueForKeyPath:@"images.height"] allObjects] objectAtIndex:0] intValue]+15] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])]; // +15 is for the movie's controller
+	
+		int width = [[NSString stringWithFormat:@"%@", [[series valueForKeyPath:@"images.width"] anyObject]] intValue];
+		int height = [[NSString stringWithFormat:@"%@", [[series valueForKeyPath:@"images.height"] anyObject]] intValue];
+		
+		// SEE BROWSERCONTROLLER EXPORT QUICKTIME FOR THESE VALUES
+		int maxWidth = 1024, maxHeight = 1024;
+		int minWidth = 300, minHeight = 300;
+		
+		if(width > maxWidth)
+		{
+			height = height * maxWidth / width;
+			width = maxWidth;
+		}
+		
+		if(width < minWidth)
+		{
+			height = height * minWidth / width;
+			width = minWidth;
+		}
+		
+		if(height > maxHeight)
+		{
+			width = width * maxHeight / height;
+			height = maxHeight;
+		}
+		
+		if(height < minHeight)
+		{
+			width = width * minHeight / height;
+			height = minHeight;
+		}
+		
+		[tempHTML replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height + 15] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])]; // +15 is for the movie's controller
 		components = [tempHTML componentsSeparatedByString:@"%series_img%"];
 		
 	}
@@ -278,6 +310,7 @@
 	NSMutableString *filledTemplate;
 	filledTemplate = [NSMutableString stringWithString:[components objectAtIndex:0]];
 	[filledTemplate appendString:[components objectAtIndex:2]];
+	
 	return filledTemplate;
 }
 

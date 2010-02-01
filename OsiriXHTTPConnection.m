@@ -95,6 +95,8 @@ NSString* notNil( NSString *s)
 		{
 			[newImage lockFocus];
 			
+			[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
+			
 			NSRect thumbnailRect;
 			thumbnailRect.origin = thumbnailPoint;
 			thumbnailRect.size.width = scaledWidth;
@@ -102,14 +104,17 @@ NSString* notNil( NSString *s)
 			
 			[sourceImage drawInRect: thumbnailRect
 						   fromRect: NSZeroRect
-						  operation: NSCompositeSourceOver
+						  operation: NSCompositeCopy
 						   fraction: 1.0];
 			
 			[newImage unlockFocus];
 		}
 	}
 	
-	return [newImage autorelease];
+	if( newImage == nil)
+		return nil;
+	
+	return [[[NSImage alloc] initWithData: [newImage TIFFRepresentation]] autorelease];
 }
 @end
 
@@ -1549,6 +1554,7 @@ NSString* notNil( NSString *s)
 	if( ![[NSFileManager defaultManager] fileExistsAtPath: outFile])
 	{
 		int maxWidth, maxHeight;
+		int minWidth, minHeight;
 		
 		if( isiPhone)
 		{
@@ -1561,6 +1567,8 @@ NSString* notNil( NSString *s)
 			maxHeight = maxResolution;
 		}
 		
+		minWidth = 300;
+		minHeight = 300;
 		
 		NSMutableArray *pixs = [NSMutableArray arrayWithCapacity: [dicomImageArray count]];
 		
@@ -1602,17 +1610,31 @@ NSString* notNil( NSString *s)
 			
 			BOOL resize = NO;
 			
-			if(width>maxWidth)
+			if(width > maxWidth)
 			{
 				height = height * maxWidth / width;
 				width = maxWidth;
 				resize = YES;
 			}
 			
-			if(height>maxHeight)
+			if(width < minWidth)
+			{
+				height = height * minWidth / width;
+				width = minWidth;
+				resize = YES;
+			}
+			
+			if(height > maxHeight)
 			{
 				width = width * maxHeight / height;
 				height = maxHeight;
+				resize = YES;
+			}
+			
+			if(height < minHeight)
+			{
+				width = width * minHeight / height;
+				height = minHeight;
 				resize = YES;
 			}
 			
@@ -2554,6 +2576,10 @@ NSString* notNil( NSString *s)
 				
 				int maxWidth = width;
 				int maxHeight = height;
+				int minWidth, minHeight;
+				
+				minWidth = 300;
+				minHeight = 300;
 				
 				if( isiPhone)
 				{
@@ -2566,16 +2592,28 @@ NSString* notNil( NSString *s)
 					maxHeight = maxResolution;
 				}
 				
-				if(width>maxWidth)
+				if(width > maxWidth)
 				{
 					height = (float)height * (float)maxWidth / (float)width;
 					width = maxWidth;
 				}
 				
-				if(height>maxHeight)
+				if(height > maxHeight)
 				{
 					width = (float)width * (float)maxHeight / (float)height;
 					height = maxHeight;
+				}
+				
+				if(width < minWidth)
+				{
+					height = (float)height * (float)minWidth / (float)width;
+					width = minWidth;
+				}
+				
+				if(height < minHeight)
+				{
+					width = (float)width * (float)minHeight / (float)height;
+					height = minHeight;
 				}
 				
 				height += 15; // quicktime controller height
@@ -2790,6 +2828,7 @@ NSString* notNil( NSString *s)
 				
 				int maxWidth = width;
 				int maxHeight = height;
+				int minWidth = 300, minHeight = 300;
 				
 				maxWidth = maxResolution;
 				maxHeight = maxResolution;
@@ -2806,6 +2845,20 @@ NSString* notNil( NSString *s)
 				{
 					width = width * maxHeight / height;
 					height = maxHeight;
+					resize = YES;
+				}
+				
+				if(width < minWidth)
+				{
+					height = (float)height * (float)minWidth / (float)width;
+					width = minWidth;
+					resize = YES;
+				}
+				
+				if(height < minHeight)
+				{
+					width = (float)width * (float)minHeight / (float)height;
+					height = minHeight;
 					resize = YES;
 				}
 				

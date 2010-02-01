@@ -120,6 +120,10 @@ NSString *asciiString( NSString* name)
 	return outString;
 }
 
+@interface NSImage (ProportionalScaling)
+- (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
+@end
+
 @implementation BrowserController
 
 static NSString* 	DatabaseToolbarIdentifier			= @"DicomDatabase Toolbar Identifier";
@@ -14935,8 +14939,55 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[dcmPix checkImageAvailble :curWW :curWL];
 					else
 						[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+
+					NSImage *im = [dcmPix image];
 					
-					[imagesArray addObject: [dcmPix image]];
+					int width = [dcmPix pwidth];
+					int height = [dcmPix pheight];
+					
+					BOOL resize = NO;
+					
+					// SEE QTEXPORTHTMLSUMMARY FOR THESE VALUES
+					int maxWidth = 1024, maxHeight = 1024;
+					int minWidth = 300, minHeight = 300;
+					
+					if(width > maxWidth)
+					{
+						height = height * maxWidth / width;
+						width = maxWidth;
+						resize = YES;
+					}
+					
+					if(width < minWidth)
+					{
+						height = height * minWidth / width;
+						width = minWidth;
+						resize = YES;
+					}
+					
+					if(height > maxHeight)
+					{
+						width = width * maxHeight / height;
+						height = maxHeight;
+						resize = YES;
+					}
+					
+					if(height < minHeight)
+					{
+						width = width * minHeight / height;
+						height = minHeight;
+						resize = YES;
+					}
+					
+					NSImage *newImage;
+					
+					if( resize)
+						newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
+					else
+						newImage = im;
+					
+					[imagesArray addObject: newImage];
+					
 					[dcmPix release];
 				}
 			}
