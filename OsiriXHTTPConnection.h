@@ -35,4 +35,7 @@ extern NSString* asciiString (NSString* name);
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate sortBy: (NSString*) sortValue;
 - (NSArray*)studiesForAlbum:(NSString *)albumName sortBy: (NSString*) sortValue;
 
+#pragma mark JSON
+- (NSString*)jsonStudyListForStudies:(NSArray*)studies;
+
 @end

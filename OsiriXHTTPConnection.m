@@ -3439,7 +3439,7 @@ NSString* notNil( NSString *s)
 
 #pragma mark JSON
 
-- (NSString*)jsonStudyListForStudies:(NSArray*)studies
+- (NSString*)jsonStudyListForStudies:(NSArray*)studies;
 {
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
