@@ -19,6 +19,8 @@
 #import "DicomFile.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 
+#import "JSON.h"
+
 #include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -2157,7 +2159,7 @@ NSString* notNil( NSString *s)
 			}
 		}
 	#pragma mark studyList
-		else if([fileURL isEqualToString:@"/studyList"])
+		else if([fileURL isEqualToString:@"/studyList"] || [fileURL isEqualToString:@"/studyList.json"])
 		{
 			NSPredicate *browsePredicate;
 			NSString *pageTitle;
@@ -2228,54 +2230,64 @@ NSString* notNil( NSString *s)
 				pageTitle = NSLocalizedString(@"Study List", nil);
 			}
 			
-			NSMutableString *html = [self htmlStudyListForStudies: [self studiesForPredicate: browsePredicate sortBy: [urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", [NSNumber numberWithBool: isiPhone], @"iPhone", nil]];
-			
-			if([urlParameters objectForKey:@"album"])
+			if([fileURL isEqualToString:@"/studyList"])
 			{
-				if(![[urlParameters objectForKey:@"album"] isEqualToString:@""])
+				NSMutableString *html = [self htmlStudyListForStudies: [self studiesForPredicate: browsePredicate sortBy: [urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", [NSNumber numberWithBool: isiPhone], @"iPhone", nil]];
+				
+				if([urlParameters objectForKey:@"album"])
 				{
-					html = [self htmlStudyListForStudies: [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] sortBy:[urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
-					pageTitle = [OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					if(![[urlParameters objectForKey:@"album"] isEqualToString:@""])
+					{
+						html = [self htmlStudyListForStudies: [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] sortBy:[urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
+						pageTitle = [OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					}
 				}
-			}
-			
-			[html replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( pageTitle) options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-			
-			if([urlParameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-			else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]; 
-			
-			if([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-			else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]; 
-			
-			if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-			else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-			
-			if([urlParameters objectForKey:@"album"])[html replaceOccurrencesOfString:@"%album%" withString:[NSString stringWithFormat:@"&album=%@",[urlParameters objectForKey:@"album"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-			else [html replaceOccurrencesOfString:@"%album%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				
+				[html replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( pageTitle) options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				
+				if([urlParameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]; 
+				
+				if([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]; 
+				
+				if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				
+				if([urlParameters objectForKey:@"album"])[html replaceOccurrencesOfString:@"%album%" withString:[NSString stringWithFormat:@"&album=%@",[urlParameters objectForKey:@"album"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				else [html replaceOccurrencesOfString:@"%album%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 
-			if([urlParameters objectForKey:@"order"])
-			{
-				if([[urlParameters objectForKey:@"order"] isEqualToString:@"name"])
+				if([urlParameters objectForKey:@"order"])
 				{
-					[html replaceOccurrencesOfString:@"%orderByName%" withString:@"sortedBy" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-					[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+					if([[urlParameters objectForKey:@"order"] isEqualToString:@"name"])
+					{
+						[html replaceOccurrencesOfString:@"%orderByName%" withString:@"sortedBy" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+						[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+					}
+					else
+					{
+						[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+						[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+					}
 				}
 				else
 				{
 					[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 					[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				}
+				
+				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: notNil( portString) options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				
+				data = [html dataUsingEncoding:NSUTF8StringEncoding];
+				err = NO;
 			}
-			else
+			else if([fileURL isEqualToString:@"/studyList.json"])
 			{
-				[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-				[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				NSArray *studies = [self studiesForPredicate:browsePredicate sortBy:[urlParameters objectForKey:@"order"]];
+				NSString *json = [self jsonStudyListForStudies:studies];
+				data = [json dataUsingEncoding:NSUTF8StringEncoding];
+				err = NO;
 			}
-			
-			[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: notNil( portString) options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-			
-			data = [html dataUsingEncoding:NSUTF8StringEncoding];
-			err = NO;
 		}
 	#pragma mark study
 		else if([fileURL isEqualToString:@"/study"])
@@ -3424,5 +3436,58 @@ NSString* notNil( NSString *s)
 			[self closeFileHandleAndClean];
 	}
 }
+
+#pragma mark JSON
+
+- (NSString*)jsonStudyListForStudies:(NSArray*)studies
+{
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	
+	[context lock];
+	
+	NSMutableArray *jsonStudiesArray = [NSMutableArray array];
+	
+	int lineNumber = 0;
+	for(DicomStudy *study in studies)
+	{
+		NSMutableDictionary *studyDictionary = [NSMutableDictionary dictionary];
+		
+		[studyDictionary setObject:notNil([study valueForKey:@"name"]) forKey:@"name"];
+		
+		NSArray *seriesArray = [study valueForKey:@"imageSeries"];
+		int count = 0;
+		for(DicomSeries *series in seriesArray)
+		{
+			count++;
+		}
+		
+		[studyDictionary setObject:[NSString stringWithFormat:@"%d", count] forKey:@"seriesCount"];
+		
+		
+		NSDateFormatter *dateFormat = [[[NSDateFormatter alloc] init] autorelease];
+		[dateFormat setDateFormat:[[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat2"]];
+		NSString *date = [dateFormat stringFromDate:[study valueForKey:@"date"]];		
+		[studyDictionary setObject:date forKey:@"date"];		
+		
+		[studyDictionary setObject:notNil([study valueForKey:@"comment"]) forKey:@"comment"];
+
+		[studyDictionary setObject:notNil([study valueForKey:@"studyName"]) forKey:@"studyName"];
+
+		[studyDictionary setObject:notNil([study valueForKey:@"modality"]) forKey:@"modality"];
+		
+		NSString *stateText = @"";
+		if( [[study valueForKey:@"stateText"] intValue])
+			stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKey:@"stateText"] intValue]];
+		
+		[studyDictionary setObject:notNil(stateText) forKey:@"stateText"];
+
+		[studyDictionary setObject:notNil([study valueForKey:@"studyInstanceUID"]) forKey:@"studyInstanceUID"];
+		
+		[jsonStudiesArray addObject:studyDictionary];
+	}	
+	
+	return [jsonStudiesArray JSONRepresentation];
+}
+
 
 @end
