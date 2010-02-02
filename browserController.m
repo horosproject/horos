@@ -16114,10 +16114,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSTask *t;
 	NSArray *args;
 	
-	if( hasMacOSXSnowLeopard() == NO && [password length] > 0 && [NSThread isMainThread])
+	if( hasMacOSXSnowLeopard() == NO)
 	{
 		password = nil;
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);
+		return;
 	}
 	
 	[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
@@ -16185,10 +16186,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSTask *t;
 	NSArray *args;
 	
-	if( hasMacOSXSnowLeopard() == NO && [password length] > 0 && [NSThread isMainThread])
+	if( hasMacOSXSnowLeopard() == NO && [NSThread isMainThread])
 	{
 		password = nil;
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);
+		return;
 	}
 	
 	[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];

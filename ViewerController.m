@@ -6298,7 +6298,16 @@ static ViewerController *draggedController = nil;
 	
 	[imageView computeColor];
 	
-	[self propagateSettings];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"propagateSettingsFromNewViewer"])
+		[self propagateSettings];
+	else
+	{
+		for( ViewerController * v in [ViewerController getDisplayed2DViewers])
+		{
+			if( v != self)
+				[v propagateSettings];
+		}
+	}
 	
 	loadingPauseDelay = 0;
 }

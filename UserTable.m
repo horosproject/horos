@@ -16,6 +16,8 @@
 #import "PSGenerator.h"
 #import "BrowserController.h"
 
+extern BOOL hasMacOSXSnowLeopard();
+
 static PSGenerator *generator = nil;
 
 @implementation UserTable
@@ -107,6 +109,19 @@ static PSGenerator *generator = nil;
 	
 	if( [key isEqualToString: @"password"])
 		[self setPrimitiveValue: [NSDate date] forKey: @"passwordCreationDate"];
+	
+	if( [key isEqualToString: @"downloadZIP"])
+	{
+		if( hasMacOSXSnowLeopard() == NO)
+		{
+			if( error)
+			{
+				NSDictionary *info = [NSDictionary dictionaryWithObject: NSLocalizedString( @"ZIP download requires MacOS 10.6 or higher.", nil) forKey: NSLocalizedDescriptionKey];
+				*error = [NSError errorWithDomain: @"OsiriXDomain" code: -31 userInfo: info];
+			}	
+			return NO;
+		}
+	}
 	
 	if( [key isEqualToString: @"name"])
 	{
