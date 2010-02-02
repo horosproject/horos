@@ -11545,6 +11545,8 @@ END_CREATE_ROIS:
 	SUVConverted = NO;
 	fullww = 0;
 	fullwl = 0;
+	
+	[self kill8bitsImage];
 
 	[frameOfReferenceUID release];				frameOfReferenceUID = nil;
 	[acquisitionTime release];					acquisitionTime = nil;
