@@ -136,7 +136,7 @@ int executeProcess(int argc, char *argv[])
 			NSNetServiceBrowser *browser = [[NSNetServiceBrowser alloc] init];
 			
 			[browser setDelegate: mainClass];
-			[browser searchForServicesOfType:@"_osirixdbsharing._tcp." inDomain:@""];
+			[browser searchForServicesOfType:@"_osirixdb._tcp." inDomain:@""];
 			
 			[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow: 1]];
 			

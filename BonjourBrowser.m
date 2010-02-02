@@ -139,7 +139,7 @@ extern const char *GetPrivateIP();
 		[browser setDelegate:self];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DoNotSearchForBonjourServices"] == NO)
-			[browser searchForServicesOfType:@"_osirixdbsharing._tcp." inDomain:@""];
+			[browser searchForServicesOfType:@"_osirixdb._tcp." inDomain:@""];
 		
 //		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		

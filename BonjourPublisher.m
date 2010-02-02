@@ -166,7 +166,7 @@ extern const char *GetPrivateIP();
 	{
         // lazily instantiate the NSNetService object that will advertise on our behalf.  Passing in "" for the domain causes the service
         // to be registered in the default registration domain, which will currently always be "local"
-        netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdbsharing._tcp." name: serviceName port:chosenPort];
+        netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdb._tcp." name: serviceName port:chosenPort];
         [netService setDelegate:self];
 		
 		NSMutableDictionary *params = [NSMutableDictionary dictionary];
