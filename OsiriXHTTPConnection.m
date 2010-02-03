@@ -2128,7 +2128,7 @@ NSString* notNil( NSString *s)
 									newImage = image;
 								
 								NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
-								NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
+								NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
 								
 								if( [contentType isEqualToString: @"image/gif"])
 									data = [imageRep representationUsingType: NSGIFFileType properties:imageProps];
@@ -2790,7 +2790,7 @@ NSString* notNil( NSString *s)
 			}
 		}
 	#pragma mark image
-		else if([fileURL isEqualToString:@"/image.png"])
+		else if([fileURL hasPrefix:@"/image."])
 		{
 			NSPredicate *browsePredicate;
 			if( [[urlParameters allKeys] containsObject:@"id"])
@@ -2894,8 +2894,18 @@ NSString* notNil( NSString *s)
 				}
 				
 				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [newImage TIFFRepresentation]];
-				NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
-				data = [imageRep representationUsingType:NSPNGFileType properties: imageProps];
+				
+				if( [[fileURL pathExtension] isEqualToString: @"png"])
+				{
+					NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
+					data = [imageRep representationUsingType:NSPNGFileType properties: imageProps];
+				}
+				else if( [[fileURL pathExtension] isEqualToString: @"jpg"])
+				{
+					NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
+					data = [imageRep representationUsingType: NSJPEGFileType properties: imageProps];
+				}
+				else NSLog( @"***** unknown path extension: %@", [fileURL pathExtension]);
 			}
 			
 			err = NO;

@@ -21,7 +21,7 @@
 
 extern NSString *privateRunLoop;
 
-static NSRecursiveLock *globalLock = nil;
+static NSRecursiveLock *globalLock = nil, *doBytesAvailableLock = nil;
 
 #pragma mark Declarations
 
@@ -2457,6 +2457,10 @@ Failed:
 	// Also, if there is a read request, but no read stream setup yet, we can't process any data yet.
 	if((theCurrentRead != nil) && (theReadStream != NULL))
 	{
+		if( doBytesAvailableLock == nil)
+			doBytesAvailableLock = [[NSRecursiveLock alloc] init];
+		[doBytesAvailableLock lock];
+		
 		// Note: This method is not called if theCurrentRead is an AsyncSpecialPacket (startTLS packet)
 
 		CFIndex totalBytesRead = 0;
@@ -2469,114 +2473,130 @@ Failed:
 		{
 			BOOL didPreBuffer = NO;
 			
-			// If reading all available data, make sure there's room in the packet buffer.
-			if(theCurrentRead->readAllAvailableData == YES)
+			if( [theCurrentRead->buffer isKindOfClass: [NSData class]])
 			{
-				// Make sure there is at least READALL_CHUNKSIZE bytes available.
-				// We don't want to increase the buffer any more than this or we'll waste space.
-				// With prebuffering it's possible to read in a small chunk on the first read.
-				
-				unsigned buffInc = READALL_CHUNKSIZE - ([theCurrentRead->buffer length] - theCurrentRead->bytesDone);
-				[theCurrentRead->buffer increaseLengthBy:buffInc];
-			}
-
-			// If reading until data, we may only want to read a few bytes.
-			// Just enough to ensure we don't go past our term or over our max limit.
-			// Unless pre-buffering is enabled, in which case we may want to read in a larger chunk.
-			if(theCurrentRead->term != nil)
-			{
-				// If we already have data pre-buffered, we obviously don't want to pre-buffer it again.
-				// So in this case we'll just read as usual.
-				
-				if(([partialReadBuffer length] > 0) || !(theFlags & kEnablePreBuffering))
+				// If reading all available data, make sure there's room in the packet buffer.
+				if(theCurrentRead->readAllAvailableData == YES)
 				{
-					unsigned maxToRead = [theCurrentRead readLengthForTerm];
+					// Make sure there is at least READALL_CHUNKSIZE bytes available.
+					// We don't want to increase the buffer any more than this or we'll waste space.
+					// With prebuffering it's possible to read in a small chunk on the first read.
 					
-					unsigned bufInc = maxToRead - ([theCurrentRead->buffer length] - theCurrentRead->bytesDone);
-					[theCurrentRead->buffer increaseLengthBy:bufInc];
-				}
-				else
-				{
-					didPreBuffer = YES;
-					unsigned maxToRead = [theCurrentRead prebufferReadLengthForTerm];
-					
-					unsigned buffInc = maxToRead - ([theCurrentRead->buffer length] - theCurrentRead->bytesDone);
+					unsigned buffInc = READALL_CHUNKSIZE - ([theCurrentRead->buffer length] - theCurrentRead->bytesDone);
 					[theCurrentRead->buffer increaseLengthBy:buffInc];
-
 				}
-			}
-			
-			// Number of bytes to read is space left in packet buffer.
-			CFIndex bytesToRead = [theCurrentRead->buffer length] - theCurrentRead->bytesDone;
-			
-			// Read data into packet buffer
-			UInt8 *subBuffer = (UInt8 *)([theCurrentRead->buffer mutableBytes] + theCurrentRead->bytesDone);
-			CFIndex bytesRead = [self readIntoBuffer:subBuffer maxLength:bytesToRead];
-			
-			// Check results
-			if(bytesRead < 0)
-			{
-				socketError = YES;
-			}
-			else
-			{
-				// Update total amound read for the current read
-				theCurrentRead->bytesDone += bytesRead;
-				
-				// Update total amount read in this method invocation
-				totalBytesRead += bytesRead;
-			}
 
-			// Is packet done?
-			if(theCurrentRead->readAllAvailableData != YES)
-			{
+				// If reading until data, we may only want to read a few bytes.
+				// Just enough to ensure we don't go past our term or over our max limit.
+				// Unless pre-buffering is enabled, in which case we may want to read in a larger chunk.
 				if(theCurrentRead->term != nil)
 				{
-					if(didPreBuffer)
+					// If we already have data pre-buffered, we obviously don't want to pre-buffer it again.
+					// So in this case we'll just read as usual.
+					
+					if(([partialReadBuffer length] > 0) || !(theFlags & kEnablePreBuffering))
 					{
-						// Search for the terminating sequence within the big chunk we just read.
-						CFIndex overflow = [theCurrentRead searchForTermAfterPreBuffering:bytesRead];
+						unsigned maxToRead = [theCurrentRead readLengthForTerm];
 						
-						if(overflow > 0)
-						{
-							// Copy excess data into partialReadBuffer
-							NSMutableData *buffer = theCurrentRead->buffer;
-							const void *overflowBuffer = [buffer bytes] + theCurrentRead->bytesDone - overflow;
-							
-							[partialReadBuffer appendBytes:overflowBuffer length:overflow];
-							
-							// Update the bytesDone variable.
-							// Note: The completeCurrentRead method will trim the buffer for us.
-							theCurrentRead->bytesDone -= overflow;
-						}
-						
-						done = (overflow >= 0);
+						unsigned bufInc = maxToRead - ([theCurrentRead->buffer length] - theCurrentRead->bytesDone);
+						[theCurrentRead->buffer increaseLengthBy:bufInc];
 					}
 					else
 					{
-						// Search for the terminating sequence at the end of the buffer
-						int termlen = [theCurrentRead->term length];
-						if(theCurrentRead->bytesDone >= termlen)
-						{
-							const void *buf = [theCurrentRead->buffer bytes] + (theCurrentRead->bytesDone - termlen);
-							const void *seq = [theCurrentRead->term bytes];
-							done = (memcmp (buf, seq, termlen) == 0);
-						}
+						didPreBuffer = YES;
+						unsigned maxToRead = [theCurrentRead prebufferReadLengthForTerm];
+						
+						unsigned buffInc = maxToRead - ([theCurrentRead->buffer length] - theCurrentRead->bytesDone);
+						[theCurrentRead->buffer increaseLengthBy:buffInc];
+
 					}
-					
-					if(!done && theCurrentRead->maxLength >= 0 && theCurrentRead->bytesDone >= theCurrentRead->maxLength)
-					{
-						// There's a set maxLength, and we've reached that maxLength without completing the read
-						maxoutError = YES;
-					}
+				}
+				
+				// Number of bytes to read is space left in packet buffer.
+				CFIndex bytesToRead = 0;
+				@try
+				{
+					bytesToRead = [theCurrentRead->buffer length] - theCurrentRead->bytesDone;
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"*********** EXCEPTION bytesToRead = [theCurrentRead->buffer length] - theCurrentRead->bytesDone;");
+				}
+				
+				// Read data into packet buffer
+				UInt8 *subBuffer = (UInt8 *)([theCurrentRead->buffer mutableBytes] + theCurrentRead->bytesDone);
+				CFIndex bytesRead = [self readIntoBuffer:subBuffer maxLength:bytesToRead];
+				
+				// Check results
+				if(bytesRead < 0)
+				{
+					socketError = YES;
 				}
 				else
 				{
-					// Done when (sized) buffer is full.
-					done = ([theCurrentRead->buffer length] == theCurrentRead->bytesDone);
+					// Update total amound read for the current read
+					theCurrentRead->bytesDone += bytesRead;
+					
+					// Update total amount read in this method invocation
+					totalBytesRead += bytesRead;
 				}
+
+				// Is packet done?
+				if(theCurrentRead->readAllAvailableData != YES)
+				{
+					if(theCurrentRead->term != nil)
+					{
+						if(didPreBuffer)
+						{
+							// Search for the terminating sequence within the big chunk we just read.
+							CFIndex overflow = [theCurrentRead searchForTermAfterPreBuffering:bytesRead];
+							
+							if(overflow > 0)
+							{
+								// Copy excess data into partialReadBuffer
+								NSMutableData *buffer = theCurrentRead->buffer;
+								const void *overflowBuffer = [buffer bytes] + theCurrentRead->bytesDone - overflow;
+								
+								[partialReadBuffer appendBytes:overflowBuffer length:overflow];
+								
+								// Update the bytesDone variable.
+								// Note: The completeCurrentRead method will trim the buffer for us.
+								theCurrentRead->bytesDone -= overflow;
+							}
+							
+							done = (overflow >= 0);
+						}
+						else
+						{
+							// Search for the terminating sequence at the end of the buffer
+							int termlen = [theCurrentRead->term length];
+							if(theCurrentRead->bytesDone >= termlen)
+							{
+								const void *buf = [theCurrentRead->buffer bytes] + (theCurrentRead->bytesDone - termlen);
+								const void *seq = [theCurrentRead->term bytes];
+								done = (memcmp (buf, seq, termlen) == 0);
+							}
+						}
+						
+						if(!done && theCurrentRead->maxLength >= 0 && theCurrentRead->bytesDone >= theCurrentRead->maxLength)
+						{
+							// There's a set maxLength, and we've reached that maxLength without completing the read
+							maxoutError = YES;
+						}
+					}
+					else
+					{
+						// Done when (sized) buffer is full.
+						done = ([theCurrentRead->buffer length] == theCurrentRead->bytesDone);
+					}
+				}
+				// else readAllAvailable doesn't end until all readable is read.
 			}
-			// else readAllAvailable doesn't end until all readable is read.
+			else
+			{
+				NSLog( @"********* [theCurrentRead->buffer isKindOfClass: [NSData class]]");
+				socketError = YES;
+			}
 		}
 		
 		if(theCurrentRead->readAllAvailableData && theCurrentRead->bytesDone > 0)
@@ -2595,7 +2615,9 @@ Failed:
 				[theDelegate onSocket:self didReadPartialDataOfLength:totalBytesRead tag:theCurrentRead->tag];
 			}
 		}
-
+		
+		[doBytesAvailableLock unlock];
+		
 		if(socketError)
 		{
 			CFStreamError err = CFReadStreamGetError(theReadStream);
