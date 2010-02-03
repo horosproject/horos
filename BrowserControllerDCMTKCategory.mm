@@ -18,6 +18,7 @@
 #import <OsiriX/DCMTransferSyntax.h>
 #import "AppController.h"
 #import "DCMPix.h"
+#import "WaitRendering.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -327,6 +328,14 @@ extern NSRecursiveLock *PapyrusLock;
 
 - (BOOL) testFiles: (NSArray*) files;
 {
+	WaitRendering *splash = nil;
+	
+	if( [NSThread isMainThread])
+	{
+		splash = [[WaitRendering alloc] init: NSLocalizedString( @"Validating files...", nil)];
+		[splash showWindow:self];
+	}
+	
 	BOOL succeed = YES;
 	
 	int total = [files count];
@@ -374,6 +383,9 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		i += no;
 	}
+	
+	[splash close];
+	[splash release];
 	
 	if( succeed == NO)
 		NSLog( @"******* test Files FAILED : one of more of these files are corrupted : %@", files);

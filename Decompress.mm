@@ -27,7 +27,10 @@
 #include "dcdict.h"
 #include "dcdeftag.h"
 
-
+extern "C"
+{
+	extern short Papy3Init ();
+}
 
 NSLock					*PapyrusLock = 0L;
 NSThread				*mainThread = 0L;
@@ -331,6 +334,8 @@ int main(int argc, const char *argv[])
 		
 		if( [what isEqualToString: @"testFiles"])
 		{
+			Papy3Init();
+			
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
 			
 			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
@@ -342,19 +347,20 @@ int main(int argc, const char *argv[])
 				
 				// Simply try to load and generate the image... will it crash?
 				
-				DCMPix *dcmPix = [[DCMPix alloc] initWithPath: curFile :0 :0 :nil :0 :0 isBonjour: NO imageObj: nil];
+				DCMPix *dcmPix = [[DCMPix alloc] initWithPath: curFile :0 :1 :nil :0 :0 isBonjour: NO imageObj: nil];
 				
 				if( dcmPix)
 				{
+					[dcmPix changeWLWW: [dcmPix savedWL] :[dcmPix savedWW]];
 					[dcmPix compute8bitRepresentation];
-					NSLog( @"Succeed: %@", [curFile lastPathComponent]);
+					
+					NSLog( @"%d %d", [dcmPix pwidth], [dcmPix pheight]);
 					
 					//*(long*)0 = 0xDEADBEEF;
 					
 					[dcmPix release];
 				}
-				else
-					NSLog( @"Failed: %@", [curFile lastPathComponent]);
+				else NSLog( @"dcmPix == nil");
 			}
 		}
 		

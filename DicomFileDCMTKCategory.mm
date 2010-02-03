@@ -232,7 +232,7 @@ extern NSRecursiveLock *PapyrusLock;
 				NSString	*commentsField;
 				DcmTagKey key = DcmTagKey([self commentsGroup], [self commentsElement]);
 				if (dataset->findAndGetString(key, string, OFFalse).good() && string != NULL){
-					commentsField = [NSString stringWithCString:string];
+					commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
 					[dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
 
 				}
@@ -242,7 +242,7 @@ extern NSRecursiveLock *PapyrusLock;
 			{
 				NSString	*album = nil;
 				if (dataset->findAndGetString(DCM_ImageComments, string, OFFalse).good() && string != NULL){
-					album = [NSString stringWithCString:string];					
+					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
 					if( [album length] >= 2)
 					{
 						if( [[album substringToIndex:2] isEqualToString: @"LV"])
@@ -255,7 +255,7 @@ extern NSRecursiveLock *PapyrusLock;
 				
 				DcmTagKey albumKey = DcmTagKey(0x0040, 0x0280); 
 				if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL){
-					album = [NSString stringWithCString:string];					
+					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
 					if( [album length] >= 2)
 					{
 						if( [[album substringToIndex:2] isEqualToString: @"LV"])
@@ -268,7 +268,7 @@ extern NSRecursiveLock *PapyrusLock;
 				
 				 albumKey = DcmTagKey(0x0040, 0x1400); 
 				 if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL){
-					album = [NSString stringWithCString:string];					
+					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
 					if( [album length] >= 2)
 					{
 						if( [[album substringToIndex:2] isEqualToString: @"LV"])
@@ -306,7 +306,7 @@ extern NSRecursiveLock *PapyrusLock;
 		//Character Set
 		if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
 		{
-			NSArray	*c = [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"];
+			NSArray	*c = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
 			
 			if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
 			
@@ -336,7 +336,7 @@ extern NSRecursiveLock *PapyrusLock;
 		//SOPInstanceUID
 		if (dataset->findAndGetString(DCM_SOPInstanceUID, string, OFFalse).good() && string != NULL)
 		{
-			SOPUID = [[NSString stringWithCString:string] retain];
+			SOPUID = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] retain];
 		}
 		else
 			SOPUID = nil;

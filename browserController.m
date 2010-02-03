@@ -1356,7 +1356,16 @@ static NSArray*	statesArray = nil;
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
-		[self testFiles: filesArray];
+	{
+		BOOL succeed = [self testFiles: filesArray];
+		
+		if( succeed == NO)
+		{
+			[filesArray removeAllObjects];
+			
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Corrupted Files",nil), NSLocalizedString(@"These files are corrupted: they cannot be imported in OsiriX.",nil), NSLocalizedString( @"OK",nil), nil, nil);
+		}
+	}
 	
 	NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded: filesArray];
 	
@@ -3117,7 +3126,7 @@ static NSArray*	statesArray = nil;
 	return [self saveDatabase: path context: self.managedObjectContext];
 }
 
-- (void)selectThisStudy: (id)study
+- (void) selectThisStudy: (id)study
 {
 	NSLog( @"%@", [study description]);
 	[self outlineViewRefresh];
@@ -3126,7 +3135,7 @@ static NSArray*	statesArray = nil;
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
-- (void)copyFilesThread : (NSArray*)filesInput
+- (void) copyFilesThread: (NSArray*) filesInput
 {
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
 	NSString				*INpath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEFPATH];
@@ -3140,6 +3149,14 @@ static NSArray*	statesArray = nil;
 	BOOL first = YES;
 	
 	copyThread = YES;
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
+	{
+		BOOL succeed = [self testFiles: filesInput];
+		
+		if( succeed == NO)
+			filesInput = nil;
+	}
 	
 	for( NSString *srcPath in filesInput)
 	{
@@ -13732,10 +13749,22 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				[self autoCleanDatabaseFreeSpace: self];
 				
-				NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray async: YES];
+				NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded: filesArray async: YES];
 				
 				if( newfilesArray == filesArray)
 				{
+					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
+					{
+						BOOL succeed = [self testFiles: filesArray];
+						
+						if( succeed == NO)
+						{
+							[filesArray removeAllObjects];
+							
+							NSRunCriticalAlertPanel( NSLocalizedString(@"Corrupted Files",nil), NSLocalizedString(@"These files are corrupted: they cannot be imported in OsiriX.",nil), NSLocalizedString( @"OK",nil), nil, nil);
+						}
+					}
+					
 					mountedVolume = YES;
 					NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
 					mountedVolume = NO;
