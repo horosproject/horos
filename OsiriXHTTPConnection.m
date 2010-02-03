@@ -2547,7 +2547,8 @@ NSString* notNil( NSString *s)
 			[templateString replaceOccurrencesOfString:@"%search%" withString: [OsiriXHTTPConnection decodeURLString:search] options: NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			[templateString replaceOccurrencesOfString:@"%album%" withString: [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
-			[templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			// This is probably wrong...
+			// [templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			[templateString replaceOccurrencesOfString:@"%MovieExtension%" withString: isiPhone? @"m4v":@"mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 			
 			NSPredicate *browsePredicate;
