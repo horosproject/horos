@@ -1821,7 +1821,7 @@ NSString* notNil( NSString *s)
 			{
 				[selected addObject:[p lastObject]];
 			}
-			else
+			else if([p count]==2)
 				[urlParameters setObject:[p lastObject] forKey:[p objectAtIndex:0]];
 		}
 		
@@ -2283,7 +2283,17 @@ NSString* notNil( NSString *s)
 			}
 			else if([fileURL isEqualToString:@"/studyList.json"])
 			{
-				NSArray *studies = [self studiesForPredicate:browsePredicate sortBy:[urlParameters objectForKey:@"order"]];
+				NSArray *studies;
+				
+				if([urlParameters objectForKey:@"album"])
+				{
+					if(![[urlParameters objectForKey:@"album"] isEqualToString:@""])
+					{
+						studies = [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] sortBy:[urlParameters objectForKey:@"order"]];
+					}
+				}
+				else
+					studies = [self studiesForPredicate:browsePredicate sortBy:[urlParameters objectForKey:@"order"]];
 				NSString *json = [self jsonStudyListForStudies:studies];
 				data = [json dataUsingEncoding:NSUTF8StringEncoding];
 				err = NO;
@@ -3164,6 +3174,13 @@ NSString* notNil( NSString *s)
 				err = NO;
 			}
 		}
+		#pragma mark Albums (JSON)
+		else if([fileURL isEqualToString:@"/albums.json"])
+		{
+			NSString *json = [self jsonAlbumsList];
+			data = [json dataUsingEncoding:NSUTF8StringEncoding];
+			err = NO;
+		}
 	}
 	
 	@catch( NSException *e)
@@ -3497,8 +3514,35 @@ NSString* notNil( NSString *s)
 		[jsonStudiesArray addObject:studyDictionary];
 	}	
 	
+	[context unlock];
+	
 	return [jsonStudiesArray JSONRepresentation];
 }
 
+- (NSString*)jsonAlbumsList;
+{
+	NSMutableArray *jsonAlbumsArray = [NSMutableArray array];
+	
+	NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
+	for(NSManagedObject *album in albumArray)
+	{
+		if(![[album valueForKey:@"name"] isEqualToString: NSLocalizedString(@"Database", nil)])
+		{
+			NSMutableDictionary *albumDictionary = [NSMutableDictionary dictionary];
+
+			[albumDictionary setObject:notNil([album valueForKey:@"name"]) forKey:@"name"];
+			[albumDictionary setObject:notNil([OsiriXHTTPConnection encodeURLString: [album valueForKey:@"name"]]) forKey:@"nameURLSafe"];
+						
+			if([[album valueForKey:@"smartAlbum"] intValue] == 1)
+				[albumDictionary setObject:@"SmartAlbum" forKey:@"type"];
+			else
+				[albumDictionary setObject:@"Album" forKey:@"type"];
+			
+			[jsonAlbumsArray addObject:albumDictionary];
+		}
+	}
+	
+	return [jsonAlbumsArray JSONRepresentation];
+}
 
 @end
