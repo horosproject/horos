@@ -34,8 +34,11 @@
 #endif
 #import "DicomFileDCMTKCategory.h"
 #import "PluginManager.h"
+
+#ifndef DECOMPRESS_APP
 #include "nifti1.h"
 #include "nifti1_io.h"
+#endif
 
 extern NSString * convertDICOM( NSString *inputfile);
 extern NSRecursiveLock *PapyrusLock;
@@ -324,6 +327,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return success;
 }
 
+#ifndef DECOMPRESS_APP
 + (BOOL) isNIfTIFile:(NSString *) file
 {
 	// NIfTI support developed by Zack Mahdavi at the Center for Neurological Imaging, a division of Harvard Medical School
@@ -355,6 +359,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	}
 	return success;
 }
+#endif
 
 + (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed image:(BOOL*) image
 {
@@ -1502,6 +1507,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return -1;
 }
 
+#ifndef DECOMPRESS_APP
 -(short) getNIfTI
 {
 	// NIfTI support developed by Zack Mahdavi at the Center for Neurological Imaging, a division of Harvard Medical School
@@ -1568,7 +1574,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	return -1;
 }
-	
+
 +(NSXMLDocument *) getNIfTIXML : (NSString *) file 
 {
 	NSString	*returnString;
@@ -1657,7 +1663,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	}
 	return xmlDoc;
 } 
-		
+#endif
+
 -(short) getDicomFilePapyrus :(BOOL) forceConverted
 {
 	int					itemType, returnValue = -1;
@@ -1687,9 +1694,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			return 0;
 		}
 		
+		#ifndef DECOMPRESS_APP
 		// And if it failed, try to convert it...
 		converted = convertDICOM( filePath);
 		fileNb = Papy3FileOpen (  (char*) [converted UTF8String], (PAPY_FILE) 0, TRUE, 0);
+		#endif
 	}
 	
 	if (fileNb >= 0)
@@ -3051,10 +3060,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				returnVal = self;
 			}
+			#ifndef DECOMPRESS_APP
 			else if( [self getNIfTI] == 0)
 			{
 				returnVal = self;
 			}
+			#endif
 			else if( [self getLSM] == 0)
 			{
 				returnVal = self;

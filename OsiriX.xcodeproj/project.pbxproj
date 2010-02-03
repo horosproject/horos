@@ -2304,6 +2304,38 @@
 		CE0E3A560D87C56D008135A8 /* ThreeDPanView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0E3A540D87C56D008135A8 /* ThreeDPanView.m */; };
 		CE1335EA06B02DC000B7FC03 /* iChat.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1335E806B02DC000B7FC03 /* iChat.icns */; };
 		CE1366B50B41D0F200944876 /* mpeg2.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE1366B40B41D0F200944876 /* mpeg2.tif */; };
+		CE142E7F1119DA53000F4A8C /* DCMPix.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0CB16F084A623C00C6385F /* DCMPix.m */; };
+		CE142E861119DB4E000F4A8C /* jpeg_memdest.c in Sources */ = {isa = PBXBuildFile; fileRef = 848631C20FE77E1F00B96E99 /* jpeg_memdest.c */; };
+		CE142E871119DB4E000F4A8C /* jpeg_memsrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */; };
+		CE142E881119DB4E000F4A8C /* PapyFileSystemUnix3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD73505646ED100BED927 /* PapyFileSystemUnix3.c */; };
+		CE142E891119DB4E000F4A8C /* PapyEallocUnix3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD75705646FD800BED927 /* PapyEallocUnix3.c */; };
+		CE142E8A1119DB4E000F4A8C /* PapyDataSetWrite3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5B405646BBF00BED927 /* PapyDataSetWrite3.c */; };
+		CE142E8B1119DB4E000F4A8C /* PapyDataSetRead3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB4E3C0505ADD50F001411D1 /* PapyDataSetRead3.c */; };
+		CE142E8C1119DB4E000F4A8C /* PapyError3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5B605646BBF00BED927 /* PapyError3.c */; };
+		CE142E8D1119DB4E000F4A8C /* PapyFiles3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5B705646BBF00BED927 /* PapyFiles3.c */; };
+		CE142E8E1119DB4E000F4A8C /* PapyGetGlobalVar3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5B905646BBF00BED927 /* PapyGetGlobalVar3.c */; };
+		CE142E8F1119DB4E000F4A8C /* PapyInit3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5BA05646BBF00BED927 /* PapyInit3.c */; };
+		CE142E901119DB4E000F4A8C /* PapyInitGroups3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5BB05646BBF00BED927 /* PapyInitGroups3.c */; };
+		CE142E911119DB4E000F4A8C /* PapyInitModules3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5BC05646BBF00BED927 /* PapyInitModules3.c */; };
+		CE142E921119DB4E000F4A8C /* PapyList3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5BD05646BBF00BED927 /* PapyList3.c */; };
+		CE142E931119DB4E000F4A8C /* PapyJpeg8.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6A20A755124001C27C4 /* PapyJpeg8.c */; };
+		CE142E941119DB4E000F4A8C /* PapyJpeg12.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */; };
+		CE142E951119DB4E000F4A8C /* PapyJpeg16.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F90A7552E0001C27C4 /* PapyJpeg16.c */; };
+		CE142E961119DB4E000F4A8C /* PapyRead3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5BF05646BBF00BED927 /* PapyRead3.c */; };
+		CE142E971119DB4E000F4A8C /* PapyUtils3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C005646BBF00BED927 /* PapyUtils3.c */; };
+		CE142E981119DB4E000F4A8C /* PapyVars3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C105646BBF00BED927 /* PapyVars3.c */; };
+		CE142E991119DB4E000F4A8C /* PapyWrite3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C205646BBF00BED927 /* PapyWrite3.c */; };
+		CE142E9A1119DB4E000F4A8C /* PapyWild3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C305646BBF00BED927 /* PapyWild3.c */; };
+		CE142E9B1119DB4E000F4A8C /* PapyWildexit3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C405646BBF00BED927 /* PapyWildexit3.c */; };
+		CE142ED71119DE4F000F4A8C /* dicomFile.m in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* dicomFile.m */; };
+		CE142ED81119DE4F000F4A8C /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
+		CE142EDD1119DEA3000F4A8C /* DicomDirDatasetRead.c in Sources */ = {isa = PBXBuildFile; fileRef = CE778E340FDA636A00CC4C7D /* DicomDirDatasetRead.c */; };
+		CE142EDE1119DEA4000F4A8C /* DicomDirFiles.c in Sources */ = {isa = PBXBuildFile; fileRef = CE778E330FDA636A00CC4C7D /* DicomDirFiles.c */; };
+		CE142EDF1119DEA4000F4A8C /* DicomDirInit.c in Sources */ = {isa = PBXBuildFile; fileRef = CE778E320FDA636A00CC4C7D /* DicomDirInit.c */; };
+		CE142EE01119DEA5000F4A8C /* DicomDirInitRecords.c in Sources */ = {isa = PBXBuildFile; fileRef = CE778E310FDA636A00CC4C7D /* DicomDirInitRecords.c */; };
+		CE142EE11119DEA5000F4A8C /* DicomDirDataSetWrite.c in Sources */ = {isa = PBXBuildFile; fileRef = CE778E300FDA636A00CC4C7D /* DicomDirDataSetWrite.c */; };
+		CE142F251119DF84000F4A8C /* DCMObjectDBImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E172F550933CAE00057BCE8 /* DCMObjectDBImport.m */; };
+		CE142F261119DF84000F4A8C /* DCMObjectDBImport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E172F540933CAE00057BCE8 /* DCMObjectDBImport.h */; };
 		CE16066E0769EFE60036CAD3 /* VR Muscles-Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */; };
 		CE16A6A50A755124001C27C4 /* PapyJpeg8.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6A20A755124001C27C4 /* PapyJpeg8.c */; };
 		CE16A6FB0A7552E0001C27C4 /* PapyJpeg16.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F90A7552E0001C27C4 /* PapyJpeg16.c */; };
@@ -9698,6 +9730,7 @@
 		CE0E3A540D87C56D008135A8 /* ThreeDPanView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreeDPanView.m; sourceTree = "<group>"; };
 		CE1335E806B02DC000B7FC03 /* iChat.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iChat.icns; sourceTree = "<group>"; };
 		CE1366B40B41D0F200944876 /* mpeg2.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = mpeg2.tif; sourceTree = "<group>"; };
+		CE142EC91119DD27000F4A8C /* Decompres_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Decompres_Prefix.pch; sourceTree = "<group>"; };
 		CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "VR Muscles-Bones.plist"; sourceTree = "<group>"; };
 		CE16A6A20A755124001C27C4 /* PapyJpeg8.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyJpeg8.c; path = Papyrus3/PapyJpeg8.c; sourceTree = "<group>"; };
 		CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyJpeg12.c; path = Papyrus3/PapyJpeg12.c; sourceTree = "<group>"; };
@@ -12640,6 +12673,7 @@
 		AB724F1C0ADE6CFC00A212A0 /* DecompressDICOM */ = {
 			isa = PBXGroup;
 			children = (
+				CE142EC91119DD27000F4A8C /* Decompres_Prefix.pch */,
 				AB724F1E0ADE6D9C00A212A0 /* Decompress.mm */,
 			);
 			name = DecompressDICOM;
@@ -18913,6 +18947,7 @@
 				CE9CEEAD0C75BE3200752D4B /* jversion8.h in Headers */,
 				ABDEB3940D1827440079C938 /* openjpeg.h in Headers */,
 				CE79D98A0FD84C350043DD73 /* DCMAbstractSyntaxUID.h in Headers */,
+				CE142F261119DF84000F4A8C /* DCMObjectDBImport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23587,6 +23622,36 @@
 				AB7252370ADE791700A212A0 /* jcapistd.c in Sources */,
 				A98FFBEA0CA92B58000291C8 /* altivecFunctions.c in Sources */,
 				ABE59B850F494CA1004EBF28 /* DefaultsOsiriX.m in Sources */,
+				CE142E7F1119DA53000F4A8C /* DCMPix.m in Sources */,
+				CE142E861119DB4E000F4A8C /* jpeg_memdest.c in Sources */,
+				CE142E871119DB4E000F4A8C /* jpeg_memsrc.c in Sources */,
+				CE142E881119DB4E000F4A8C /* PapyFileSystemUnix3.c in Sources */,
+				CE142E891119DB4E000F4A8C /* PapyEallocUnix3.c in Sources */,
+				CE142E8A1119DB4E000F4A8C /* PapyDataSetWrite3.c in Sources */,
+				CE142E8B1119DB4E000F4A8C /* PapyDataSetRead3.c in Sources */,
+				CE142E8C1119DB4E000F4A8C /* PapyError3.c in Sources */,
+				CE142E8D1119DB4E000F4A8C /* PapyFiles3.c in Sources */,
+				CE142E8E1119DB4E000F4A8C /* PapyGetGlobalVar3.c in Sources */,
+				CE142E8F1119DB4E000F4A8C /* PapyInit3.c in Sources */,
+				CE142E901119DB4E000F4A8C /* PapyInitGroups3.c in Sources */,
+				CE142E911119DB4E000F4A8C /* PapyInitModules3.c in Sources */,
+				CE142E921119DB4E000F4A8C /* PapyList3.c in Sources */,
+				CE142E931119DB4E000F4A8C /* PapyJpeg8.c in Sources */,
+				CE142E941119DB4E000F4A8C /* PapyJpeg12.c in Sources */,
+				CE142E951119DB4E000F4A8C /* PapyJpeg16.c in Sources */,
+				CE142E961119DB4E000F4A8C /* PapyRead3.c in Sources */,
+				CE142E971119DB4E000F4A8C /* PapyUtils3.c in Sources */,
+				CE142E981119DB4E000F4A8C /* PapyVars3.c in Sources */,
+				CE142E991119DB4E000F4A8C /* PapyWrite3.c in Sources */,
+				CE142E9A1119DB4E000F4A8C /* PapyWild3.c in Sources */,
+				CE142E9B1119DB4E000F4A8C /* PapyWildexit3.c in Sources */,
+				CE142ED71119DE4F000F4A8C /* dicomFile.m in Sources */,
+				CE142ED81119DE4F000F4A8C /* DicomFileDCMTKCategory.mm in Sources */,
+				CE142EDD1119DEA3000F4A8C /* DicomDirDatasetRead.c in Sources */,
+				CE142EDE1119DEA4000F4A8C /* DicomDirFiles.c in Sources */,
+				CE142EDF1119DEA4000F4A8C /* DicomDirInit.c in Sources */,
+				CE142EE01119DEA5000F4A8C /* DicomDirInitRecords.c in Sources */,
+				CE142EE11119DEA5000F4A8C /* DicomDirDataSetWrite.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23807,6 +23872,7 @@
 				CE9CEEAB0C75BE3200752D4B /* jquant2.c in Sources */,
 				CE9CEEAC0C75BE3200752D4B /* jutils.c in Sources */,
 				CE79D98B0FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */,
+				CE142F251119DF84000F4A8C /* DCMObjectDBImport.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25192,6 +25258,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/LibTiff,

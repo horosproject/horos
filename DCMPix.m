@@ -36,8 +36,12 @@
 #include "FVTiff.h"
 #endif
 #include "Analyze.h"
+
+#ifndef DECOMPRESS_APP
 #include "nifti1.h"
 #include "nifti1_io.h"
+#endif
+
 #include <Accelerate/Accelerate.h>
 #include "AppController.h"
 
@@ -8689,6 +8693,7 @@ END_CREATE_ROIS:
 				{
 					[self LoadFVTiff];
 				}
+				#ifndef DECOMPRESS_APP
 				else if( (( [extension isEqualToString:@"hdr"] == YES) && 
 						  ([[NSFileManager defaultManager] fileExistsAtPath:[[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)) ||
 						( [extension isEqualToString:@"nii"] == YES))
@@ -9234,6 +9239,7 @@ END_CREATE_ROIS:
 					free( NIfTI);
 					NIfTI = nil;
 				}
+				#endif
 				else if( [extension isEqualToString:@"jpg"] == YES ||
 						[extension isEqualToString:@"jpeg"] == YES ||
 						[extension isEqualToString:@"pdf"] == YES ||

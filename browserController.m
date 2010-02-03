@@ -1355,6 +1355,9 @@ static NSArray*	statesArray = nil;
 		}
 	}
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
+		[self testFiles: filesArray];
+	
 	NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded: filesArray];
 	
 	if( newfilesArray == filesArray)

@@ -6,6 +6,7 @@
 #import "DefaultsOsiriX.h"
 #import "AppController.h"
 #import "QTKit/QTMovie.h"
+#import "DCMPix.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -25,6 +26,15 @@
 #include "dcuid.h"
 #include "dcdict.h"
 #include "dcdeftag.h"
+
+
+
+NSLock					*PapyrusLock = 0L;
+NSThread				*mainThread = 0L;
+BOOL					NEEDTOREBUILD = NO;
+NSMutableDictionary		*DATABASECOLUMNS = 0L;
+short					Altivec = 0;
+short					UseOpenJpeg = 0;
 
 extern void dcmtkSetJPEGColorSpace( int);
 
@@ -316,6 +326,35 @@ int main(int argc, const char *argv[])
 					else
 						NSLog( @"compress : cannot read file: %@", curFile);
 				}
+			}
+		}
+		
+		if( [what isEqualToString: @"testFiles"])
+		{
+			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
+			
+			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
+			
+			int i;
+			for( i = 3; i < argc ; i++)
+			{
+				NSString *curFile = [NSString stringWithUTF8String: argv[ i]];
+				
+				// Simply try to load and generate the image... will it crash?
+				
+				DCMPix *dcmPix = [[DCMPix alloc] initWithPath: curFile :0 :0 :nil :0 :0 isBonjour: NO imageObj: nil];
+				
+				if( dcmPix)
+				{
+					[dcmPix compute8bitRepresentation];
+					NSLog( @"Succeed: %@", [curFile lastPathComponent]);
+					
+					//*(long*)0 = 0xDEADBEEF;
+					
+					[dcmPix release];
+				}
+				else
+					NSLog( @"Failed: %@", [curFile lastPathComponent]);
 			}
 		}
 		

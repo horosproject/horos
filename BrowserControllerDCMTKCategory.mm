@@ -38,6 +38,8 @@
 #include "dcdict.h"
 #include "dcdeftag.h"
 
+#define CHUNK_SUBPROCESS 500
+
 extern NSRecursiveLock *PapyrusLock;
 
 @implementation BrowserController (BrowserControllerDCMTKCategory)
@@ -214,7 +216,6 @@ extern NSRecursiveLock *PapyrusLock;
 	if( dest == nil)
 		dest = @"sameAsDestination";
 	
-	#define CHUNK 500
 	
 	int total = [paths count];
 	
@@ -222,8 +223,8 @@ extern NSRecursiveLock *PapyrusLock;
 	{
 		int no;
 		
-		if( i + CHUNK >= total) no = total - i; 
-		else no = CHUNK;
+		if( i + CHUNK_SUBPROCESS >= total) no = total - i; 
+		else no = CHUNK_SUBPROCESS;
 		
 		NSRange range = NSMakeRange( i, no);
 		
@@ -237,7 +238,7 @@ extern NSRecursiveLock *PapyrusLock;
 			NSTask *theTask = [[NSTask alloc] init];
 			@try
 			{
-				[theTask setArguments: [[NSArray arrayWithObjects: dest, @"compress", nil] arrayByAddingObjectsFromArray: paths]];
+				[theTask setArguments: [[NSArray arrayWithObjects: dest, @"compress", nil] arrayByAddingObjectsFromArray: subArray]];
 				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 				[theTask launch];
 				while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
@@ -279,16 +280,14 @@ extern NSRecursiveLock *PapyrusLock;
 	if( dest == nil)
 		dest = @"sameAsDestination";
 	
-	#define CHUNK 500
-	
 	int total = [files count];
 	
 	for( int i = 0; i < total;)
 	{
 		int no;
 		
-		if( i + CHUNK >= total) no = total - i; 
-		else no = CHUNK;
+		if( i + CHUNK_SUBPROCESS >= total) no = total - i; 
+		else no = CHUNK_SUBPROCESS;
 		
 		NSRange range = NSMakeRange( i, no);
 		
@@ -303,7 +302,7 @@ extern NSRecursiveLock *PapyrusLock;
 			
 			@try
 			{
-				NSArray *parameters = [[NSArray arrayWithObjects: dest, @"decompressList", nil] arrayByAddingObjectsFromArray: files];
+				NSArray *parameters = [[NSArray arrayWithObjects: dest, @"decompressList", nil] arrayByAddingObjectsFromArray: subArray];
 				
 				[theTask setArguments: parameters];
 				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
@@ -324,6 +323,62 @@ extern NSRecursiveLock *PapyrusLock;
 	}
 	
 	return YES;
+}
+
+- (BOOL) testFiles: (NSArray*) files;
+{
+	BOOL succeed = YES;
+	
+	int total = [files count];
+	
+	for( int i = 0; i < total;)
+	{
+		int no;
+		
+		if( i + CHUNK_SUBPROCESS >= total) no = total - i; 
+		else no = CHUNK_SUBPROCESS;
+		
+		NSRange range = NSMakeRange( i, no);
+		
+		id *objs = (id*) malloc( no * sizeof( id));
+		if( objs)
+		{
+			[files getObjects: objs range: range];
+			
+			NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
+			
+			NSTask *theTask = [[NSTask alloc] init];
+			
+			@try
+			{
+				NSArray *parameters = [[NSArray arrayWithObjects: @"unused", @"testFiles", nil] arrayByAddingObjectsFromArray: subArray];
+				
+				[theTask setArguments: parameters];
+				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+				[theTask launch];
+				
+				while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+				
+				if( [theTask terminationStatus] != 0)
+					succeed = NO;
+			}
+			@catch ( NSException *e)
+			{
+				NSLog( @"***** testList exception : %@", e);
+				succeed = NO;
+			}
+			[theTask release];
+			
+			free( objs);
+		}
+		
+		i += no;
+	}
+	
+	if( succeed == NO)
+		NSLog( @"******* test Files FAILED : one of more of these files are corrupted : %@", files);
+	
+	return succeed;
 }
 
 #endif
