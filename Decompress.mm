@@ -351,8 +351,7 @@ int main(int argc, const char *argv[])
 				
 				if( dcmPix)
 				{
-					[dcmPix changeWLWW: [dcmPix savedWL] :[dcmPix savedWW]];
-					[dcmPix compute8bitRepresentation];
+					[dcmPix CheckLoad];
 					
 					NSLog( @"%d %d", [dcmPix pwidth], [dcmPix pheight]);
 					
