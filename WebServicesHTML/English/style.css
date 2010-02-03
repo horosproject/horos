@@ -1,10 +1,17 @@
 body
 {
-    margin: 30px;
+    margin: 0px;
     font-family: Helvetica;
 	font-size:12pt;
-    background: #FFFFFF;
-    color: #000000;
+    background:#ffFFff;
+    color:#000000;
+}
+
+#pageContent
+{
+	background-color:#ffFFff;
+	margin:0px;
+	padding:30px;
 }
 
 h1

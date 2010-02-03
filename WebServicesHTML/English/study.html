@@ -31,134 +31,136 @@
 </head> 
 
 <body>
-    <h1 id="pageTitle">%PageTitle%</h1>
-    <a id="backButton" class="button" href="studyList?dicomcstoreport=%DicomCStorePort%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">%LocalizedLabel_StudyList%</a>
-	<div id="Home" class="panel">
-		<h2>%LocalizedLabel_SendStatus%</h2>
+	<div id="pageContent">
+	    <h1 id="pageTitle">%PageTitle%</h1>
+	    <a id="backButton" class="button" href="studyList?dicomcstoreport=%DicomCStorePort%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">%LocalizedLabel_StudyList%</a>
+		<div id="Home" class="panel">
+			<h2>%LocalizedLabel_SendStatus%</h2>
 
-		<div class="block">
-			<h2>Study Informations</h2>
-			<table class="StudyInformation">
-				<tr>
-					<td class="StudyInformationLabel">Patient&nbsp;ID</td>
-					<td>%PatientID%</td>
-				</tr>
-				<tr>
-					<td class="StudyInformationLabel">Patient&nbsp;name</td>
-					<td>%PatientName%</td>
-				</tr>
-				<tr>
-					<td class="StudyInformationLabel">Date&nbsp;of&nbsp;birth</td>
-					<td>%PatientDOB%</td>
-				</tr>
-				<tr>
-					<td class="StudyInformationLabel">Study&nbsp;Date</td>
-					<td>%StudyDate%</td>
-				</tr>
-				<tr>
-					<td class="StudyInformationLabel">Modality</td>
-					<td>%StudyModality%</td>
-				</tr>
-				<tr>
-					<td class="StudyInformationLabel">Description</td>
-					<td>%StudyDescription%</td>
-				</tr>
-				<tr>
-					<td class="StudyInformationLabel">Comment</td>
-					<td>%StudyComment%</td>
-				</tr>
-				<tr>
-					<td class="StudyInformationLabel">Study&nbsp;State</td>
-					<td>%StudyState%</td>
-				</tr>
-				%Report%
-				<tr>
-					<td class="StudyInformationLabel">Report</td>
-					<td><a href="report.%reportExtension%?dicomcstoreport=%DicomCStorePort%&id=%StudyID%" class="report">Download Report</a></td>
-				</tr>
-				%/Report%
-			</table>
-		</div>
-		
-		<form id="selectDicomDestination" name="selectDicomDestination">
-			
 			<div class="block">
-				<h2>Series</h2>
-				<table id="imageList" class="images">
-					%SeriesListItem%
-						<tr class="image%lineParity%">				
-							%SendingFunctions1%
-							<td class="tdCheckbox">
-								<input type="checkbox" class="checkbox" name="selected" value="%SeriesID%" %checked% />
-							</td>
-							%/SendingFunctions1%
-							<td class="tdThumbnail">
-								<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
-									<img src="%thumbnail%" class="thumbnail">
-								</a>
-							</td>
-							<td class="tdSeriesInfo">
-								<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
-									<span class="SeriesName">%SeriesName% %SeriesComment% %SeriesState%</span>
-									<span class="SeriesImageNumber">%SeriesImageNumber%</span>
-								</a>
-							</td>
-				
-							<td class="tdDownloadAsZIP">
-								%ZIPFunctions%
-								<a class="series" title="Download as zip" href="%PatientName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
-									<div class="DownloadAsZIP"></div>
-								</a>
-								%/ZIPFunctions%
-							</td>
-						</tr>
-					%/SeriesListItem%
-
-					%SendingFunctions2%
-					<tr class="image%lineParity%" id="CheckAll" %CheckAllStyle% >
-						<td><input type="checkbox" class="checkbox" name="CheckAll" onClick="if(document.selectDicomDestination.CheckAll.checked == true){checkAll(document.selectDicomDestination.selected);} else {uncheckAll(document.selectDicomDestination.selected);}" %CheckAllChecked% /></td>
-						<td colspan="3"><span id="CheckAllLabel" class="SeriesName">Check All</span></td>
+				<h2>Study Informations</h2>
+				<table class="StudyInformation">
+					<tr>
+						<td class="StudyInformationLabel">Patient&nbsp;ID</td>
+						<td>%PatientID%</td>
 					</tr>
-					%/SendingFunctions2%
+					<tr>
+						<td class="StudyInformationLabel">Patient&nbsp;name</td>
+						<td>%PatientName%</td>
+					</tr>
+					<tr>
+						<td class="StudyInformationLabel">Date&nbsp;of&nbsp;birth</td>
+						<td>%PatientDOB%</td>
+					</tr>
+					<tr>
+						<td class="StudyInformationLabel">Study&nbsp;Date</td>
+						<td>%StudyDate%</td>
+					</tr>
+					<tr>
+						<td class="StudyInformationLabel">Modality</td>
+						<td>%StudyModality%</td>
+					</tr>
+					<tr>
+						<td class="StudyInformationLabel">Description</td>
+						<td>%StudyDescription%</td>
+					</tr>
+					<tr>
+						<td class="StudyInformationLabel">Comment</td>
+						<td>%StudyComment%</td>
+					</tr>
+					<tr>
+						<td class="StudyInformationLabel">Study&nbsp;State</td>
+						<td>%StudyState%</td>
+					</tr>
+					%Report%
+					<tr>
+						<td class="StudyInformationLabel">Report</td>
+						<td><a href="report.%reportExtension%?dicomcstoreport=%DicomCStorePort%&id=%StudyID%" class="report">Download Report</a></td>
+					</tr>
+					%/Report%
 				</table>
-				<input type="hidden" name="id" value="%StudyID%"/>
-				<input type="hidden" name="search" value="%search%"/>
-				<input type="hidden" name="browse" value="%browse%"/>
-				<input type="hidden" name="browseParameter" value="%browseParameter%"/>
-				<input type="hidden" name="album" value="%album%"/>
-				<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
-		
-			%SendingFunctions3%
-				<h2>DICOM Transfer</h2>
-					Send selected series to:
-					<select name="dicomDestination" id="dicomDestination">
-						%dicomNodesListItem%
-						<option value="%dicomNodeAddress%:%dicomNodePort%:%dicomNodeAETitle%:%dicomNodeSyntax%" %selected% >%dicomNodeDescription%</option>
-						%/dicomNodesListItem%
-					</select>
-					<input type="submit" name="dicomSend" id="dicomSend" value="Send"/>
-			%/SendingFunctions3%
-		</div>
-				
-		%SharingFunctions%
-		<div class="blockEnd">
-			<h2>Share This Study</h2>
-			<div>Share This Study with user:<div>
-			<select name="userDestination" id="userDestination">
-				%userListItem%
-				<option value="%username%" %selected% >%userDescription%</option>
-				%/userListItem%
-			</select>
-			<div>Message:</div>
-			<div>
-				<textarea name="message" id="shareStudyMessage">Enter here a message for this user. He will receive it by email.</textarea>
 			</div>
-			<input type="submit" name="shareStudy" id="shareStudy" value="Send"/>
-		</div>
-		%/SharingFunctions%
+		
+			<form id="selectDicomDestination" name="selectDicomDestination">
+			
+				<div class="block">
+					<h2>Series</h2>
+					<table id="imageList" class="images">
+						%SeriesListItem%
+							<tr class="image%lineParity%">				
+								%SendingFunctions1%
+								<td class="tdCheckbox">
+									<input type="checkbox" class="checkbox" name="selected" value="%SeriesID%" %checked% />
+								</td>
+								%/SendingFunctions1%
+								<td class="tdThumbnail">
+									<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
+										<img src="%thumbnail%" class="thumbnail">
+									</a>
+								</td>
+								<td class="tdSeriesInfo">
+									<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
+										<span class="SeriesName">%SeriesName% %SeriesComment% %SeriesState%</span>
+										<span class="SeriesImageNumber">%SeriesImageNumber%</span>
+									</a>
+								</td>
+				
+								<td class="tdDownloadAsZIP">
+									%ZIPFunctions%
+									<a class="series" title="Download as zip" href="%PatientName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
+										<div class="DownloadAsZIP"></div>
+									</a>
+									%/ZIPFunctions%
+								</td>
+							</tr>
+						%/SeriesListItem%
 
-		</form>
-    </div>
-	<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.<div>
+						%SendingFunctions2%
+						<tr class="image%lineParity%" id="CheckAll" %CheckAllStyle% >
+							<td><input type="checkbox" class="checkbox" name="CheckAll" onClick="if(document.selectDicomDestination.CheckAll.checked == true){checkAll(document.selectDicomDestination.selected);} else {uncheckAll(document.selectDicomDestination.selected);}" %CheckAllChecked% /></td>
+							<td colspan="3"><span id="CheckAllLabel" class="SeriesName">Check All</span></td>
+						</tr>
+						%/SendingFunctions2%
+					</table>
+					<input type="hidden" name="id" value="%StudyID%"/>
+					<input type="hidden" name="search" value="%search%"/>
+					<input type="hidden" name="browse" value="%browse%"/>
+					<input type="hidden" name="browseParameter" value="%browseParameter%"/>
+					<input type="hidden" name="album" value="%album%"/>
+					<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
+		
+				%SendingFunctions3%
+					<h2>DICOM Transfer</h2>
+						Send selected series to:
+						<select name="dicomDestination" id="dicomDestination">
+							%dicomNodesListItem%
+							<option value="%dicomNodeAddress%:%dicomNodePort%:%dicomNodeAETitle%:%dicomNodeSyntax%" %selected% >%dicomNodeDescription%</option>
+							%/dicomNodesListItem%
+						</select>
+						<input type="submit" name="dicomSend" id="dicomSend" value="Send"/>
+				%/SendingFunctions3%
+			</div>
+				
+			%SharingFunctions%
+			<div class="blockEnd">
+				<h2>Share This Study</h2>
+				<div>Share This Study with user:<div>
+				<select name="userDestination" id="userDestination">
+					%userListItem%
+					<option value="%username%" %selected% >%userDescription%</option>
+					%/userListItem%
+				</select>
+				<div>Message:</div>
+				<div>
+					<textarea name="message" id="shareStudyMessage">Enter here a message for this user. He will receive it by email.</textarea>
+				</div>
+				<input type="submit" name="shareStudy" id="shareStudy" value="Send"/>
+			</div>
+			%/SharingFunctions%
+
+			</form>
+	    </div>
+		<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.<div>
+	</div>
   </body>
 </html>

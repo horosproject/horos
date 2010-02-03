@@ -39,67 +39,69 @@
 </head>
 
 <body onorientationchange="updateOrientation()">
-    <h1 id="pageTitle">%PageTitle%</h1>
+	<div id="pageContent">
+	    <h1 id="pageTitle">%PageTitle%</h1>
  	
-	<div id="toolbar">
-		<a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">Home</a>
-		<span id="sortBy">
-			Sorted by:
-			<a id="sortByName" class='%orderByName%' href="javascript:insertParam('order', 'name');">Name</a>
-			<a id="sortByDate" class='%orderByDate%'href="javascript:insertParam('order', 'date');">Date</a>
-		</span>
-	</div>
+		<div id="toolbar">
+			<a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">Home</a>
+			<span id="sortBy">
+				Sorted by:
+				<a id="sortByName" class='%orderByName%' href="javascript:insertParam('order', 'name');">Name</a>
+				<a id="sortByDate" class='%orderByDate%'href="javascript:insertParam('order', 'date');">Date</a>
+			</span>
+		</div>
 		
-	<table id="studyList" title="Study List" class="studyList">
-        %StudyListItem%
-			<tr title="%StudyListItemName%" class="studyListItem%lineParity%">	
-				<td>
-					<a href="study?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%" class="studyListItem">
-					<span class="StudyListItemName">%StudyListItemName%</span>
-					%StudyModalityBlock%
-					<span class="StudyListItemDetailItem">%StudyModality%</span>
-					%/StudyModalityBlock%
-					%SeriesCountBlock%
-					<span class="StudyListItemDetailItem">%SeriesCount%</span>
-					%/SeriesCountBlock%
+		<table id="studyList" title="Study List" class="studyList">
+	        %StudyListItem%
+				<tr title="%StudyListItemName%" class="studyListItem%lineParity%">	
+					<td>
+						<a href="study?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%" class="studyListItem">
+						<span class="StudyListItemName">%StudyListItemName%</span>
+						%StudyModalityBlock%
+						<span class="StudyListItemDetailItem">%StudyModality%</span>
+						%/StudyModalityBlock%
+						%SeriesCountBlock%
+						<span class="StudyListItemDetailItem">%SeriesCount%</span>
+						%/SeriesCountBlock%
 				
 				
-					<div class="StudyListItemDetails">
-						%StudyDescriptionBlock%
-						<div>
-							<span class="StudyListItemDetailItem">%StudyDescription%</span>
+						<div class="StudyListItemDetails">
+							%StudyDescriptionBlock%
+							<div>
+								<span class="StudyListItemDetailItem">%StudyDescription%</span>
+							</div>
+							%/StudyDescriptionBlock%
+				
+							%StudyCommentBlock%
+								<span class="StudyListItemLabel">Comment: </span>
+								<span class="StudyListItemComment">%StudyComment%</span>
+							%/StudyCommentBlock%
 						</div>
-						%/StudyDescriptionBlock%
+						</a>
+					</td>
 				
-						%StudyCommentBlock%
-							<span class="StudyListItemLabel">Comment: </span>
-							<span class="StudyListItemComment">%StudyComment%</span>
-						%/StudyCommentBlock%
-					</div>
-					</a>
-				</td>
-				
-				<td align="right">
-					%StudyDateBlock%
-					<span class="StudyListItemDate">%StudyDate%</span>
-					%/StudyDateBlock%
+					<td align="right">
+						%StudyDateBlock%
+						<span class="StudyListItemDate">%StudyDate%</span>
+						%/StudyDateBlock%
 			
-					%StudyStateBlock%
-					<span class="StudyListItemState">%StudyState%</span>
-					%/StudyStateBlock%						
-				</td>
+						%StudyStateBlock%
+						<span class="StudyListItemState">%StudyState%</span>
+						%/StudyStateBlock%						
+					</td>
 				
-				%ZIPFunctions%
-				<td width="32px" class="tdDownloadAsZIP">
-					<a title="Download as zip" href="%StudyListItemName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
-						<div class="DownloadAsZIP"></div>
-					</a>
-				</td>
-				%/ZIPFunctions%
-			</tr>
-		%/StudyListItem%
-    </table>
+					%ZIPFunctions%
+					<td width="32px" class="tdDownloadAsZIP">
+						<a title="Download as zip" href="%StudyListItemName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
+							<div class="DownloadAsZIP"></div>
+						</a>
+					</td>
+					%/ZIPFunctions%
+				</tr>
+			%/StudyListItem%
+	    </table>
 
-	<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.<div>
+		<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.<div>
+	</div>
   </body>
 </html>
