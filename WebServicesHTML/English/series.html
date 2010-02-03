@@ -27,10 +27,8 @@
 	<OBJECT CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="%width%" HEIGHT="%height%" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">
 	<PARAM name="SRC" VALUE="/image.jpg?id=%SeriesID%&studyID=%StudyID%&previewForMovie">
 	<param name="HREF" value="/movie.%MovieExtension%?id=%SeriesID%&studyID=%StudyID%">
-	<PARAM name="AUTOPLAY" VALUE="true">
-	<PARAM name="LOOP" VALUE="true">
-	<PARAM name="CONTROLLER" VALUE="true">
-	<embed src="/image.jpg?id=%SeriesID%&studyID=%StudyID%&previewForMovie" href="/movie.%MovieExtension%?id=%SeriesID%&studyID=%StudyID%" width="%width%" height="%height%" target="myself" scale="1" loop="true" controller="true">
+	<PARAM name="TYPE" VALUE="video/quicktime">
+	<embed src="/image.jpg?id=%SeriesID%&studyID=%StudyID%&previewForMovie" href="/movie.%MovieExtension%?id=%SeriesID%&studyID=%StudyID%" width="%width%" height="%height%" target="myself" type="video/quicktime">
 	</EMBED>
 	</OBJECT>
 	</div>
