@@ -353,7 +353,7 @@ int main(int argc, const char *argv[])
 				{
 					[dcmPix CheckLoad];
 					
-					*(long*)0 = 0xDEADBEEF;
+//					*(long*)0 = 0xDEADBEEF;
 					
 					[dcmPix release];
 				}
