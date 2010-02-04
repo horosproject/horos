@@ -694,14 +694,28 @@ NSString* notNil( NSString *s)
 	[returnHTML replaceOccurrencesOfString:@"%PageTitle%" withString:notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	[returnHTML replaceOccurrencesOfString:@"%PatientID%" withString:notNil( [study valueForKey:@"patientID"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	[returnHTML replaceOccurrencesOfString:@"%PatientName%" withString:notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-	[returnHTML replaceOccurrencesOfString:@"%StudyComment%" withString:notNil( [study valueForKey:@"comment"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	[returnHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:notNil( [study valueForKey:@"studyName"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	[returnHTML replaceOccurrencesOfString:@"%StudyModality%" withString:notNil( [study valueForKey:@"modality"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-	
+
+	if(![study valueForKey:@"comment"])
+		returnHTML = [self setBlock:@"StudyCommentBlock" visible:NO forString:returnHTML];
+	else
+	{
+		returnHTML = [self setBlock:@"StudyCommentBlock" visible:YES forString:returnHTML];
+		[returnHTML replaceOccurrencesOfString:@"%StudyComment%" withString:notNil([study valueForKey:@"comment"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	}
+
 	NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKey:@"stateText"] intValue]];
 	if( [[study valueForKey:@"stateText"] intValue] == 0)
 		stateText = nil;
-	[returnHTML replaceOccurrencesOfString:@"%StudyState%" withString:notNil( stateText) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	
+	if(!stateText)
+		returnHTML = [self setBlock:@"StudyStateBlock" visible:NO forString:returnHTML];
+	else
+	{
+		returnHTML = [self setBlock:@"StudyStateBlock" visible:YES forString:returnHTML];
+		[returnHTML replaceOccurrencesOfString:@"%StudyState%" withString:notNil(stateText) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	}
 	
 	NSDateFormatter *dobDateFormat = [[[NSDateFormatter alloc] init] autorelease];
 	[dobDateFormat setDateFormat:[[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateOfBirthFormat2"]];
