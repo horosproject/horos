@@ -14673,11 +14673,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void)checkIncomingNow: (id) sender
+- (void) checkIncomingNow: (id) sender
 {
 	if( DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
 	if( managedObjectContext == nil) return;
-	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 0.5) return;
+	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 0.4) return;
 	if( DICOMDIRCDMODE) return;
 	
 	[checkIncomingLock lock];
