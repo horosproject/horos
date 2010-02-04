@@ -1093,45 +1093,57 @@ NSString* notNil( NSString *s)
 	
 	@try
 	{
+		NSArray *allUserStudies = [[user valueForKey: @"studies"] allObjects];
+		NSArray *userStudies = [allUserStudies filteredArrayUsingPredicate: predicate];
+		
+		// Find all studies of the DB
+		NSError *error = nil;
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+		
+		error = nil;
+		NSArray *studiesArray = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
+		
 		if( truePredicate == NO)
 		{
 			NSMutableArray *mutableArray = [NSMutableArray arrayWithArray: array];
-			[mutableArray removeObjectsInArray: [[user valueForKey: @"studies"] allObjects]];
-			array = mutableArray;
-		}
-		
-		NSArray *userStudies = [[[user valueForKey: @"studies"] allObjects] filteredArrayUsingPredicate: predicate];
-		
-		if( [userStudies count])
-		{
-			// Find all studies of the DB
-			NSError *error = nil;
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 			
-			error = nil;
-			NSArray *studiesArray = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
-			
-			for( NSManagedObject *study in userStudies)
+			// First remove all user studies from array, we will re-add them after, if necessary
+			for( NSManagedObject *study in allUserStudies)
 			{
 				NSArray *obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", [study valueForKey: @"patientUID"], [study valueForKey: @"studyInstanceUID"]]];
 				
 				if( [obj count] == 1)
 				{
-					if( [array containsObject: [obj lastObject]] == NO && [specificArray containsObject: [obj lastObject]] == NO)
-						[specificArray addObject: [obj lastObject]];
+					if( [mutableArray containsObject: [obj lastObject]])
+						[mutableArray removeObject: [obj lastObject]];
 				}
 				else if( [obj count] > 1)
 					NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
-				else if( truePredicate && [obj count] == 0)
-				{
-					// It means this study doesnt exist in the entire DB -> remove it from this user list
-					NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
-					[[[BrowserController currentBrowser] userManagedObjectContext] deleteObject: study];
-				}
 			}
-		 }
+			
+			array = mutableArray;
+		}
+		
+		for( NSManagedObject *study in userStudies)
+		{
+			NSArray *obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", [study valueForKey: @"patientUID"], [study valueForKey: @"studyInstanceUID"]]];
+			
+			if( [obj count] == 1)
+			{
+				if( [array containsObject: [obj lastObject]] == NO && [specificArray containsObject: [obj lastObject]] == NO)
+					[specificArray addObject: [obj lastObject]];
+			}
+			else if( [obj count] > 1)
+				NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
+			else if( truePredicate && [obj count] == 0)
+			{
+				// It means this study doesnt exist in the entire DB -> remove it from this user list
+				NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
+				[[[BrowserController currentBrowser] userManagedObjectContext] deleteObject: study];
+			}
+		}
 	}
 	@catch (NSException * e)
 	{
