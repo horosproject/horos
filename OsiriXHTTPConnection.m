@@ -1917,8 +1917,13 @@ NSString* notNil( NSString *s)
 					[returnHTML appendString:tempString];
 				}
 			}
-			
+						
 			[returnHTML appendString:templateStringEnd];
+			
+			BOOL showAlbums = YES;
+			if([albumArray count]==1) // this is the Database 'Album'
+				showAlbums = NO;
+			returnHTML = [self setBlock:@"Albums" visible:showAlbums forString:returnHTML];
 			
 			[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: notNil( portString) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 			
