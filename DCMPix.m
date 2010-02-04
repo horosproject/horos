@@ -1162,7 +1162,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize frameOfReferenceUID;
 @synthesize repetitiontime, echotime;
 @synthesize flipAngle, laterality;
-@synthesize protocolName, viewPosition, patientPosition;
+@synthesize viewPosition, patientPosition;
 
 @synthesize serieNo, pixArray;
 @synthesize pixPos, transferFunctionPtr;
@@ -3400,7 +3400,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	copy->flipAngle = [self->flipAngle retain];
 	copy->laterality = [self->laterality retain];
 	copy->repetitiontime = [self->repetitiontime retain];
-	copy->protocolName = [self->protocolName retain];
 	copy->viewPosition = [self->viewPosition retain];
 	copy->patientPosition = [self->patientPosition retain];
 	copy->annotationsDictionary = [self->annotationsDictionary retain];
@@ -5045,11 +5044,6 @@ END_CREATE_ROIS:
 		[flipAngle release];
 		flipAngle = [[dcmObject attributeValueWithName:@"FlipAngle"] retain];
 	}
-	if( [dcmObject attributeValueWithName:@"ProtocolName"])
-	{
-		[protocolName release];
-		protocolName = [[dcmObject attributeValueWithName:@"ProtocolName"] retain];
-	}
 	if( [dcmObject attributeValueWithName:@"ViewPosition"])
 	{
 		[viewPosition release];
@@ -6229,7 +6223,7 @@ END_CREATE_ROIS:
 	if ( val)
 	{
 		[frameOfReferenceUID release];
-		frameOfReferenceUID = [[NSString stringWithCString:val->a] retain];
+		frameOfReferenceUID = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papSliceThicknessGr, &nbVal, &elemType);
@@ -6267,18 +6261,11 @@ END_CREATE_ROIS:
 		flipAngle = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
 	}
 	
-	val = Papy3GetElement (theGroupP, papProtocolNameGr, &nbVal, &elemType);
-	if ( val)
-	{
-		[protocolName release];
-		protocolName = [[NSString stringWithCString:val->a] retain];
-	}
-	
 	val = Papy3GetElement (theGroupP, papViewPositionGr, &nbVal, &elemType);
 	if ( val)
 	{
 		[viewPosition release];
-		viewPosition = [[NSString stringWithCString:val->a] retain];
+		viewPosition = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papPositionerPrimaryAngleGr, &nbVal, &elemType);
@@ -6299,7 +6286,7 @@ END_CREATE_ROIS:
 	if ( val)
 	{
 		[patientPosition release];
-		patientPosition = [[NSString stringWithCString:val->a] retain];
+		patientPosition = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
@@ -6397,7 +6384,7 @@ END_CREATE_ROIS:
 			
 			for( i = 0 ; i < nbVal; i++)
 			{
-				if( [[NSString stringWithCString:val->a] isEqualToString:@"RECTANGULAR"])
+				if( [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] isEqualToString:@"RECTANGULAR"])
 				{
 					DCMPixShutterOnOff = YES;
 					
@@ -6413,7 +6400,7 @@ END_CREATE_ROIS:
 					tmp = Papy3GetElement (theGroupP, papShutterLowerHorizontalEdgeGr, &nbtmp, &elemType);
 					if (tmp != NULL) shutterRect_h = atoi( tmp->a) - shutterRect_y;
 				}
-				else if( [[NSString stringWithCString:val->a] isEqualToString:@"CIRCULAR"])
+				else if( [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] isEqualToString:@"CIRCULAR"])
 				{
 					DCMPixShutterOnOff = YES;
 					
@@ -6428,7 +6415,7 @@ END_CREATE_ROIS:
 					tmp = Papy3GetElement (theGroupP, papRadiusofCircularShutterGr, &nbtmp, &elemType);
 					if (tmp != NULL) shutterCircular_radius = atoi( tmp->a);
 				}
-				else if( [[NSString stringWithCString:val->a] isEqualToString:@"POLYGONAL"])
+				else if( [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] isEqualToString:@"POLYGONAL"])
 				{
 					DCMPixShutterOnOff = YES;
 					
@@ -6447,7 +6434,7 @@ END_CREATE_ROIS:
 						shutterPolygonalSize++;
 					}
 				}
-				else NSLog( @"Shutter not supported: %@", [NSString stringWithCString:val->a]);
+				else NSLog( @"Shutter not supported: %@", [NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding]);
 				
 				val++;
 			}
@@ -6507,7 +6494,7 @@ END_CREATE_ROIS:
 	if ( val)
 	{
 		[laterality release];
-		laterality = [[NSString stringWithCString:val->a] retain];
+		laterality = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 	}
 	
 	if( laterality == nil)
@@ -6516,7 +6503,7 @@ END_CREATE_ROIS:
 		if ( val)
 		{
 			[laterality release];
-			laterality = [[NSString stringWithCString:val->a] retain];
+			laterality = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 		}
 	}
 }
@@ -7054,7 +7041,6 @@ END_CREATE_ROIS:
 	repetitiontime = 0;
 	echotime = 0;
 	flipAngle = 0;
-	protocolName = 0;
 	viewPosition = 0;
 	patientPosition = 0;
 	width = height = 0;
@@ -7175,11 +7161,11 @@ END_CREATE_ROIS:
 				if( theGroupP)
 				{
 					val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType);
-					if( val) units = [[NSString stringWithCString:val->a] retain];
+					if( val) units = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 					else units = nil;
 					
 					val = Papy3GetElement (theGroupP, papDecayCorrectionGr, &pos, &elemType);
-					if( val) decayCorrection = [[NSString stringWithCString:val->a] retain];
+					if( val) decayCorrection = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 					else decayCorrection = nil;
 					
 	//				val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType);
@@ -11562,7 +11548,6 @@ END_CREATE_ROIS:
 	[echotime release];							echotime = nil;
 	[flipAngle release];						flipAngle = nil;
 	[laterality release];						laterality = nil;
-	[protocolName release];						protocolName = nil;
 	[viewPosition release];						viewPosition = nil;
 	[patientPosition release];					patientPosition = nil;
 	[units release];							units = nil;
@@ -11605,7 +11590,6 @@ END_CREATE_ROIS:
 	[flipAngle release];
 	[laterality release];
 	[units release];
-	[protocolName release];
 	[patientPosition release];
 	[viewPosition release];
 	[decayCorrection release];

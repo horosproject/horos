@@ -353,9 +353,7 @@ int main(int argc, const char *argv[])
 				{
 					[dcmPix CheckLoad];
 					
-					NSLog( @"%d %d", [dcmPix pwidth], [dcmPix pheight]);
-					
-					//*(long*)0 = 0xDEADBEEF;
+					*(long*)0 = 0xDEADBEEF;
 					
 					[dcmPix release];
 				}

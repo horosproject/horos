@@ -2,17 +2,17 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10B504</string>
+		<string key="IBDocument.SystemVersion">10C540</string>
 		<string key="IBDocument.InterfaceBuilderVersion">732</string>
-		<string key="IBDocument.AppKitVersion">1038.2</string>
-		<string key="IBDocument.HIToolboxVersion">437.00</string>
+		<string key="IBDocument.AppKitVersion">1038.25</string>
+		<string key="IBDocument.HIToolboxVersion">458.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">732</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="132"/>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -134,7 +134,7 @@
 															<object class="NSMutableArray" key="NSCells">
 																<bool key="EncodedWithXMLCoder">YES</bool>
 																<object class="NSButtonCell" id="1023620656">
-																	<int key="NSCellFlags">67239424</int>
+																	<int key="NSCellFlags">-2080244224</int>
 																	<int key="NSCellFlags2">0</int>
 																	<string key="NSContents">Load only those files described in the DICOMDIR file</string>
 																	<reference key="NSSupport" ref="255335428"/>
@@ -153,7 +153,7 @@
 																	<int key="NSPeriodicInterval">25</int>
 																</object>
 																<object class="NSButtonCell" id="257334181">
-																	<int key="NSCellFlags">-2080244224</int>
+																	<int key="NSCellFlags">67239424</int>
 																	<int key="NSCellFlags2">0</int>
 																	<string key="NSContents">Load all DICOM files available on the CD/DVD, ignoring the DICOMDIR file</string>
 																	<reference key="NSSupport" ref="255335428"/>
@@ -226,8 +226,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 																<int key="NSPeriodicDelay">400</int>
 																<int key="NSPeriodicInterval">75</int>
 															</object>
-															<int key="NSSelectedRow">1</int>
-															<reference key="NSSelectedCell" ref="257334181"/>
+															<reference key="NSSelectedCell" ref="1023620656"/>
 															<object class="NSColor" key="NSBackgroundColor" id="163367439">
 																<int key="NSColorSpace">6</int>
 																<string key="NSCatalogName">System</string>
@@ -663,7 +662,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<object class="NSUserDefaultsController" id="154481161">
 				<object class="NSMutableArray" key="NSDeclaredKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>JPEGinsteadJPEG2000</string>
+					<string>UseDICOMDIRFileCD</string>
 				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
@@ -793,22 +792,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedTag: values.USEDICOMDIR</string>
-						<reference key="source" ref="468243953"/>
-						<reference key="destination" ref="154481161"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="468243953"/>
-							<reference key="NSDestination" ref="154481161"/>
-							<string key="NSLabel">selectedTag: values.USEDICOMDIR</string>
-							<string key="NSBinding">selectedTag</string>
-							<string key="NSKeyPath">values.USEDICOMDIR</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">181</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">selectedTag: values.STILLMOVIEMODE</string>
 						<reference key="source" ref="108541256"/>
 						<reference key="destination" ref="154481161"/>
@@ -854,6 +837,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">187</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: values.UseDICOMDIRFileCD</string>
+						<reference key="source" ref="468243953"/>
+						<reference key="destination" ref="154481161"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="468243953"/>
+							<reference key="NSDestination" ref="154481161"/>
+							<string key="NSLabel">selectedTag: values.UseDICOMDIRFileCD</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">values.UseDICOMDIRFileCD</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">188</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1363,7 +1362,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">187</int>
+			<int key="maxID">188</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

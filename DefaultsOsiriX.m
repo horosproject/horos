@@ -786,7 +786,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"1" forKey: @"CheckOsiriXUpdates2"];
 	[defaultValues setObject: @"1" forKey:@"MOUNT"];
 	[defaultValues setObject: @"1" forKey:@"UNMOUNT"];
-	[defaultValues setObject: @"1" forKey: @"USEDICOMDIR"];
+	[defaultValues setObject: @"1" forKey: @"UseDICOMDIRFileCD"];
 	[defaultValues setObject: @"1" forKey: @"SAVEROIS"];
 	[defaultValues setObject: @"1" forKey: @"NOLOCALIZER"];
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONEFFECT"];
@@ -919,11 +919,11 @@ static NSHost *currentHost = nil;
 	
 	[defaultValues setObject: @"1" forKey: @"COPYSETTINGS"];
 	[defaultValues setObject: @"1" forKey: @"USESTORESCP"];
-	[defaultValues setObject: @"1" forKey:@"splitMultiEchoMR"];
-	[defaultValues setObject: @"0" forKey:@"useSeriesDescription"];
-	[defaultValues setObject: @"1" forKey:@"combineProjectionSeries"];
-	[defaultValues setObject: @"0" forKey:@"combineProjectionSeriesMode"];
-	[defaultValues setObject: @"1" forKey:@"ListenerCompressionSettings"];
+	[defaultValues setObject: @"1" forKey: @"splitMultiEchoMR"];
+	[defaultValues setObject: @"0" forKey: @"useSeriesDescription"];
+	[defaultValues setObject: @"1" forKey: @"combineProjectionSeries"];
+	[defaultValues setObject: @"0" forKey: @"combineProjectionSeriesMode"];
+	[defaultValues setObject: @"1" forKey: @"ListenerCompressionSettings"];
 	
 	//hot key prefs
 	NSMutableDictionary *hotkeys = [NSMutableDictionary dictionary];

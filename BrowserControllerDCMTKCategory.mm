@@ -329,6 +329,8 @@ extern NSRecursiveLock *PapyrusLock;
 - (BOOL) testFiles: (NSArray*) files;
 {
 	WaitRendering *splash = nil;
+	NSMutableArray *tasksArray = [NSMutableArray array];
+	int CHUNK_SIZE;
 	
 	if( [NSThread isMainThread])
 	{
@@ -340,48 +342,58 @@ extern NSRecursiveLock *PapyrusLock;
 	
 	int total = [files count];
 	
-	for( int i = 0; i < total;)
+	CHUNK_SIZE = total / MPProcessors();
+	
+	CHUNK_SIZE += 20;
+	
+	@try
 	{
-		int no;
-		
-		if( i + CHUNK_SUBPROCESS >= total) no = total - i; 
-		else no = CHUNK_SUBPROCESS;
-		
-		NSRange range = NSMakeRange( i, no);
-		
-		id *objs = (id*) malloc( no * sizeof( id));
-		if( objs)
+		for( int i = 0; i < total;)
 		{
-			[files getObjects: objs range: range];
+			int no;
 			
-			NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
+			if( i + CHUNK_SIZE >= total) no = total - i; 
+			else no = CHUNK_SIZE;
 			
-			NSTask *theTask = [[NSTask alloc] init];
+			NSRange range = NSMakeRange( i, no);
 			
-			@try
+			id *objs = (id*) malloc( no * sizeof( id));
+			if( objs)
 			{
+				[files getObjects: objs range: range];
+				
+				NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
+				
+				NSTask *theTask = [[[NSTask alloc] init] autorelease];
+				
+				[tasksArray addObject: theTask];
+				
 				NSArray *parameters = [[NSArray arrayWithObjects: @"unused", @"testFiles", nil] arrayByAddingObjectsFromArray: subArray];
 				
 				[theTask setArguments: parameters];
 				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 				[theTask launch];
 				
-				while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-				
-				if( [theTask terminationStatus] != 0)
-					succeed = NO;
+				free( objs);
 			}
-			@catch ( NSException *e)
-			{
-				NSLog( @"***** testList exception : %@", e);
-				succeed = NO;
-			}
-			[theTask release];
 			
-			free( objs);
+			i += no;
 		}
+	}
+	@catch ( NSException *e)
+	{
+		NSLog( @"***** testList exception : %@", e);
+		succeed = NO;
+	}
+	
+	NSLog( @"Number of sub-process for testFiles: %d", [tasksArray count]);
+	
+	for( NSTask *t in tasksArray)
+	{
+		[t waitUntilExit];
 		
-		i += no;
+		if( [t terminationStatus] != 0)
+			succeed = NO;
 	}
 	
 	[splash close];

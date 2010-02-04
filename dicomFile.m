@@ -379,7 +379,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	else
 	{
 		if( gSOPClassUID [fileNb])
-			isImage = [DCMAbstractSyntaxUID isImageStorage: [NSString stringWithCString: gSOPClassUID [fileNb]]];
+			isImage = [DCMAbstractSyntaxUID isImageStorage: [NSString stringWithCString: gSOPClassUID [fileNb] encoding: NSISOLatin1StringEncoding]];
 		else
 			isImage = NO;
 		
@@ -706,7 +706,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( strNo[ 0] >= '0' && strNo[ 0] <= '9' && strNo[ 1] >= '0' && strNo[ 1] <= '9' && strNo[ 2] >= '0' && strNo[ 2] <= '9'  && strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
 					imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 4] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
+					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 4] stringByAppendingString:[NSString stringWithCString: (char*) strNo encoding: NSISOLatin1StringEncoding]]];
 					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 4]];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 4]];
 				}
@@ -720,7 +720,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					strNo[3] = 0;
 					
 					imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 3] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
+					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 3] stringByAppendingString:[NSString stringWithCString: (char*) strNo encoding: NSISOLatin1StringEncoding]]];
 					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 3]];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 3]];
 				}
@@ -732,7 +732,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					strNo[2] = 0;
 					
 					imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 2] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
+					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 2] stringByAppendingString:[NSString stringWithCString: (char*) strNo encoding: NSISOLatin1StringEncoding]]];
 					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 2]];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 2]];
 				}
@@ -743,7 +743,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					strNo[1] = 0;
 					
 					imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 1] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
+					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 1] stringByAppendingString:[NSString stringWithCString: (char*) strNo encoding: NSISOLatin1StringEncoding]]];
 					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 1]];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 1]];
 				}
@@ -1464,7 +1464,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				serie = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
 				Modality = [[NSString alloc] initWithString:@"ANZ"];
 				
-				date = [[NSCalendarDate alloc] initWithString:[NSString stringWithCString: Analyze->hist.exp_date] calendarFormat:@"%Y%m%d"];
+				date = [[NSCalendarDate alloc] initWithString:[NSString stringWithCString: Analyze->hist.exp_date encoding: NSISOLatin1StringEncoding] calendarFormat:@"%Y%m%d"];
 				if(date == nil) date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
 				
 				short endian = Analyze->dime.dim[ 0];		// dim[0] 
@@ -1748,7 +1748,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									
 									if( theValueP->a)
 									{
-										commentsField = [NSString stringWithCString:theValueP->a];
+										commentsField = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
 										
 										[dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
 									}
@@ -1782,7 +1782,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									
 									if( theValueP->a)
 									{
-										album = [NSString stringWithCString:theValueP->a];
+										album = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
 										
 										if( [album length] >= 2)
 										{
@@ -1819,7 +1819,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									
 									if( theValueP->a)
 									{
-										album = [NSString stringWithCString:theValueP->a];
+										album = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
 										
 										if( [album length] >= 2)
 										{
@@ -1841,7 +1841,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									
 									if( theValueP->a)
 									{
-										album = [NSString stringWithCString:theValueP->a];
+										album = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
 										
 										if( [album length] >= 2)
 										{
@@ -1869,7 +1869,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				val = Papy3GetElement (theGroupP, papSOPClassUIDGr, &nbVal, &itemType);
 				if (val != NULL)
 				{
-					sopClassUID = [NSString stringWithCString:val->a];
+					sopClassUID = [NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding];
 					[dicomElements setObject:sopClassUID forKey:@"SOPClassUID"];					
 				}
 				
@@ -1880,7 +1880,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					{
 						if( z < 10)
 						{
-							characterSet = [NSString stringWithCString:val->a];
+							characterSet = [NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding];
 							encoding[ z] = [NSString encodingForDICOMCharacterSet:characterSet];
 						}
 						else NSLog( @"Encoding number >= 10 ???");
@@ -2210,18 +2210,18 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				{
 					tmp = val;
 					
-					origin[0] = [[NSString stringWithCString:tmp->a] floatValue];
+					origin[0] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
 					
 					if( nbVal > 1)
 					{
 						tmp++;
-						origin[1] = [[NSString stringWithCString:tmp->a] floatValue];
+						origin[1] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
 					}
 					
 					if( nbVal > 2)
 					{
 						tmp++;
-						origin[2] = [[NSString stringWithCString:tmp->a] floatValue];
+						origin[2] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
 					}
 				}
 				
@@ -2240,7 +2240,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					}
 					for (j = 0; j < nbVal; j++)
 					{
-						orientation[ j]  = [[NSString stringWithCString:tmp->a] floatValue];
+						orientation[ j]  = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
 						tmp++;
 					}
 					
@@ -2288,7 +2288,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( seriesNo) [dicomElements setObject:[NSNumber numberWithInt:[seriesNo intValue]]  forKey:@"seriesNumber"];
 				
 				val = Papy3GetElement (theGroupP, papSeriesInstanceUIDGr, &nbVal, &itemType);
-				if( val != NULL) [dicomElements setObject:[NSString stringWithCString:val->a] forKey:@"seriesDICOMUID"];
+				if( val != NULL) [dicomElements setObject:[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] forKey:@"seriesDICOMUID"];
 				
 				if (val != NULL) serieID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 				else serieID = [[NSString alloc] initWithString:name];

@@ -77,9 +77,9 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	NSString			*repetitiontime;
 	NSString			*echotime;
 	NSString			*flipAngle, *laterality;
-	NSString			*protocolName;
 	NSString			*viewPosition;
-	NSString			*patientPosition, *acquisitionDate;
+	NSString			*patientPosition;
+	NSString			*acquisitionDate;
 	BOOL				hasSUV, SUVConverted;
 	NSString			*units, *decayCorrection;
 	float				decayFactor, factorPET2SUV;
@@ -261,7 +261,6 @@ Note setter is different to not break existing usage. :-( */
 @property(retain) NSString *repetitiontime, *echotime;
 @property(readonly) NSString *flipAngle, *laterality;
 
-@property(readonly) NSString *protocolName;
 @property(readonly) NSString *viewPosition;
 @property(readonly) NSString *patientPosition;
 

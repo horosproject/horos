@@ -3150,14 +3150,6 @@ static NSArray*	statesArray = nil;
 	
 	copyThread = YES;
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
-	{
-		BOOL succeed = [self testFiles: filesInput];
-		
-		if( succeed == NO)
-			filesInput = nil;
-	}
-	
 	for( NSString *srcPath in filesInput)
 	{
 		NSString	*dstPath;
@@ -3170,87 +3162,99 @@ static NSArray*	statesArray = nil;
 		{
 			if( copyThread == YES && [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
 			{
-				DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
+				if([extension isEqualToString: @""])
+					extension = [NSString stringWithString: @"dcm"]; 
+				
+				int x = 0;
+				do
+				{
+					dstPath = [incomingPath stringByAppendingPathComponent: [NSString stringWithFormat:@".%d-%@", x, [srcPath lastPathComponent]]];	//We add a '.' at the beginning of the file, to avoid the checkincoming until it is fully copied
+					x++;
+				}
+				while( [[NSFileManager defaultManager] fileExistsAtPath: dstPath]);
+				
+				[[NSFileManager defaultManager] copyPath: srcPath toPath: dstPath handler:nil];
+				
+				DicomFile *curFile = [[[DicomFile alloc] init: srcPath DICOMOnly: YES] autorelease];
 				
 				if( curFile)
 				{
-					if([extension isEqualToString:@""])
-						extension = [NSString stringWithString:@"dcm"]; 
-					
-					int x = 0;
-					do
+					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
 					{
-						dstPath = [incomingPath stringByAppendingPathComponent: [NSString stringWithFormat:@".%d-%@", x, [srcPath lastPathComponent]]];	//We add a '.' at the beginning of the file, to avoid the checkincoming until it is fully copied
-						x++;
+						BOOL succeed = [self testFiles: [NSArray arrayWithObject: srcPath]];
+						
+						if( succeed == NO)
+							curFile = nil;
 					}
-					while( [[NSFileManager defaultManager] fileExistsAtPath: dstPath]);
 					
-					[[NSFileManager defaultManager] copyPath: srcPath toPath: dstPath handler:nil];
-					
-					// Remove the '.'
-					
-					NSString *newDstPath = [[dstPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [[dstPath lastPathComponent] substringFromIndex: 1]];
-					[[NSFileManager defaultManager] removeItemAtPath: newDstPath error: nil];
-					
-					if( [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newDstPath error:nil] == NO)
+					if( curFile)
 					{
-						[NSThread sleepForTimeInterval: 0.5];
+						// Remove the '.'
+						
+						NSString *newDstPath = [[dstPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [[dstPath lastPathComponent] substringFromIndex: 1]];
+						[[NSFileManager defaultManager] removeItemAtPath: newDstPath error: nil];
 						
 						if( [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newDstPath error:nil] == NO)
 						{
-							NSLog( @"***** copyFilesThread FAILED: %@ -> %@", dstPath, newDstPath);
+							[NSThread sleepForTimeInterval: 0.5];
 							
-							[[NSFileManager defaultManager] removeItemAtPath: dstPath error: nil];
+							if( [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newDstPath error:nil] == NO)
+							{
+								NSLog( @"***** copyFilesThread FAILED: %@ -> %@", dstPath, newDstPath);
+								
+								[[NSFileManager defaultManager] removeItemAtPath: dstPath error: nil];
+							}
 						}
-					}
-					
-					dstPath = newDstPath;
-					
-					if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
-					{
-						[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-					}
-					
-					if( first)
-					{
-						[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
-						first = NO;
-					}
-					else if( studySelected == NO)
-					{
-						NSManagedObjectContext	*context = self. managedObjectContext;
 						
-						NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-						[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-						[dbRequest setPredicate: [NSPredicate predicateWithFormat:  @"studyInstanceUID == %@", [curFile elementForKey: @"studyID"]]];
+						dstPath = newDstPath;
 						
-						[context retain];
-						[context lock];
-						
-						NSError *error = nil;
-						NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-						if( [studiesArray count])
+						if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
 						{
-							[context unlock];
-							[context release];
+							[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+						}
+						
+						if( first)
+						{
+							[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
+							first = NO;
+						}
+						else if( studySelected == NO)
+						{
+							NSManagedObjectContext	*context = self. managedObjectContext;
 							
-							[self performSelectorOnMainThread:@selector(selectThisStudy:) withObject:[studiesArray objectAtIndex: 0] waitUntilDone: YES];
-							studySelected = YES;
+							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+							[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+							[dbRequest setPredicate: [NSPredicate predicateWithFormat:  @"studyInstanceUID == %@", [curFile elementForKey: @"studyID"]]];
+							
+							[context retain];
+							[context lock];
+							
+							NSError *error = nil;
+							NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+							if( [studiesArray count])
+							{
+								[context unlock];
+								[context release];
+								
+								[self performSelectorOnMainThread:@selector(selectThisStudy:) withObject:[studiesArray objectAtIndex: 0] waitUntilDone: YES];
+								studySelected = YES;
+							}
+							else
+							{
+								[context unlock];
+								[context release];
+							}
 						}
-						else
+						else if( listenerInterval > 5 && ([NSDate timeIntervalSinceReferenceDate] - lastCheck) > 5)
 						{
-							[context unlock];
-							[context release];
+							lastCheck = [NSDate timeIntervalSinceReferenceDate];
+							[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
 						}
 					}
-					else if( listenerInterval > 5 && ([NSDate timeIntervalSinceReferenceDate] - lastCheck) > 5)
-					{
-						lastCheck = [NSDate timeIntervalSinceReferenceDate];
-						[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
-					}
-					
-					[curFile release];
 				}
+				
+				if( curFile == nil)
+					[[NSFileManager defaultManager]removeItemAtPath: dstPath error: nil];
 			}
 		}
 		@catch (NSException * e)
@@ -13605,7 +13609,7 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				found = YES;
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"])
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseDICOMDIRFileCD"])
 				{
 					NSString *aPath = mediaPath;
 					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
@@ -13676,7 +13680,7 @@ static NSArray*	openSubSeriesArray = nil;
 					}
 				}
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"] == NO || (sender != nil && [filesArray count] == 0))
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseDICOMDIRFileCD"] == NO || (sender != nil && [filesArray count] == 0))
 				{
 					NSString    *pathname;
 					NSString    *aPath = mediaPath;
@@ -13753,18 +13757,6 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				if( newfilesArray == filesArray)
 				{
-					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
-					{
-						BOOL succeed = [self testFiles: filesArray];
-						
-						if( succeed == NO)
-						{
-							[filesArray removeAllObjects];
-							
-							NSRunCriticalAlertPanel( NSLocalizedString(@"Corrupted Files",nil), NSLocalizedString(@"These files are corrupted: they cannot be imported in OsiriX.",nil), NSLocalizedString( @"OK",nil), nil, nil);
-						}
-					}
-					
 					mountedVolume = YES;
 					NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
 					mountedVolume = NO;

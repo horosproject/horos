@@ -45,7 +45,6 @@
 // file functions
 + (BOOL) isTiffFile:(NSString *) file; /**< Test for TIFF file format */
 + (BOOL) isFVTiffFile:(NSString *) file; /**< Test for FV TIFF file format */
-+ (BOOL) isNIfTIFile:(NSString *) file; /**< Test for Nifti file format */
 + (BOOL) isDICOMFile:(NSString *) file; /**< Test for DICOM file format */
 + (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed; /**< Test for DICOM file format, returns YES for compressed BOOL if Transfer syntax is compressed. */
 + (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed image:(BOOL*) image;
@@ -65,7 +64,6 @@
 + (NSString*) NSreplaceBadCharacter: (NSString*) str; 
 + (char *) replaceBadCharacter:(char *) str encoding: (NSStringEncoding) encoding; /**< Same as NSreplaceBadCharacter, but using char* and encodings */
 + (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding; /**< Convert char* str with NSStringEncoding* encoding to NSString */ 
-+(NSXMLDocument *) getNIfTIXML : (NSString *) file; /**< Converts NIfTI to XML */
 
 
 - (long) NoOfFrames; /**< Number of frames in the file */
@@ -100,8 +98,12 @@
 
 
 -(short) getDicomFile;  /**< Decode DICOM.  Returns -1 for failure 0 for success */
--(short) getNIfTI; /**< Decode NIfTI  Returns -1 for failure 0 for success */
 
+#ifndef DECOMPRESS_APP
+-(short) getNIfTI; /**< Decode NIfTI  Returns -1 for failure 0 for success */
++(NSXMLDocument *) getNIfTIXML : (NSString *) file; /**< Converts NIfTI to XML */
++ (BOOL) isNIfTIFile:(NSString *) file; /**< Test for Nifti file format */
+#endif
 
 /** Returns the COMMENTSAUTOFILL default. 
 * If Yes, comments will be filled from the DICOM tag  commentsGroup/commentsElement
