@@ -142,7 +142,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	if( [keyPath isEqualToString: @"selection"])
+	if( [keyPath isEqualToString: @"selection"] && [NSThread isMainThread])
 	{
 		// Automatically display the selected study in the main DB window
 		if( [[studiesArrayController selectedObjects] lastObject])
