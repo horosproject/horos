@@ -383,8 +383,9 @@ NSString* notNil( NSString *s)
 					@try
 					{
 						filteredStudies = [studies filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [user valueForKey: @"studyPredicate"]]];
-						filteredStudies = [OsiriXHTTPConnection addSpecificStudiesToArray: filteredStudies forUser: user predicate: [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]];
-						filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
+						filteredStudies = [OsiriXHTTPConnection addSpecificStudiesToArray: filteredStudies forUser: user predicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]];
+						
+						filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
 						filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
 					}
 					@catch (NSException * e)
@@ -1092,23 +1093,35 @@ NSString* notNil( NSString *s)
 	
 	@try
 	{
-		if( [[[user valueForKey: @"studies"] allObjects] count])
+		if( truePredicate == NO)
 		{
-			// Find all studies
+			NSMutableArray *mutableArray = [NSMutableArray arrayWithArray: array];
+			[mutableArray removeObjectsInArray: [[user valueForKey: @"studies"] allObjects]];
+			array = mutableArray;
+		}
+		
+		NSArray *userStudies = [[[user valueForKey: @"studies"] allObjects] filteredArrayUsingPredicate: predicate];
+		
+		if( [userStudies count])
+		{
+			// Find all studies of the DB
 			NSError *error = nil;
 			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-			[dbRequest setPredicate: predicate];
+			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 			
 			error = nil;
 			NSArray *studiesArray = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
 			
-			for( NSManagedObject *study in [user valueForKey: @"studies"])
+			for( NSManagedObject *study in userStudies)
 			{
 				NSArray *obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", [study valueForKey: @"patientUID"], [study valueForKey: @"studyInstanceUID"]]];
 				
 				if( [obj count] == 1)
-					[specificArray addObject: [obj lastObject]];
+				{
+					if( [array containsObject: [obj lastObject]] == NO && [specificArray containsObject: [obj lastObject]] == NO)
+						[specificArray addObject: [obj lastObject]];
+				}
 				else if( [obj count] > 1)
 					NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
 				else if( truePredicate && [obj count] == 0)
@@ -3325,6 +3338,7 @@ NSString* notNil( NSString *s)
 	
 	NSString *previousPatientUID = nil;
 	NSString *previousStudyInstanceUID = nil;
+	NSMutableArray *dicomFilesArray = [NSMutableArray array];
 	
 	// We want to find this file after db insert: get studyInstanceUID, patientUID and instanceSOPUID
 	for( NSString *oFile in filesArray)
@@ -3333,16 +3347,24 @@ NSString* notNil( NSString *s)
 		
 		if( f)
 		{
-			NSString *studyInstanceUID = [f elementForKey: @"studyID"], *patientUID = [f elementForKey: @"patientUID"];	//, *sopInstanceUID = [f elementForKey: @"SOPUID"];
-			
 			do
 			{
 				file = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebServer Upload %d", inc++]] stringByAppendingPathExtension: [oFile pathExtension]];
 			}
 			while( [[NSFileManager defaultManager] fileExistsAtPath: file]);
-			
-			[[NSFileManager defaultManager] moveItemAtPath: oFile toPath: file error: nil];
 		
+			[[NSFileManager defaultManager] moveItemAtPath: oFile toPath: file error: nil];
+			
+			[dicomFilesArray addObject: f];
+		}
+	}
+	
+	for( DicomFile *f in dicomFilesArray)
+	{
+		if( f)
+		{
+			NSString *studyInstanceUID = [f elementForKey: @"studyID"], *patientUID = [f elementForKey: @"patientUID"];	//, *sopInstanceUID = [f elementForKey: @"SOPUID"];
+			
 			if( [studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID isEqualToString: previousPatientUID] == NO)
 			{
 				previousStudyInstanceUID = [[studyInstanceUID copy] autorelease];
