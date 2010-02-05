@@ -1099,7 +1099,7 @@ NSString* notNil( NSString *s)
 		{
 			NSArray *allUserStudies = [[user valueForKey: @"studies"] allObjects];
 			NSArray *userStudies = [allUserStudies filteredArrayUsingPredicate: predicate];
-			NSMutableArray *excludedStudies = [NSMutableArray arrayWithArray: userStudies];
+			NSMutableArray *excludedStudies = [NSMutableArray arrayWithArray: allUserStudies];
 			
 			[excludedStudies removeObjectsInArray: userStudies];
 			

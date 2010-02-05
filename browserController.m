@@ -680,9 +680,6 @@ static NSArray*	statesArray = nil;
 						}
 						else
 						{
-							if( DICOMROI == NO)
-								[study setValue:today forKey:@"dateAdded"];
-							
 							newObject = NO;
 						}
 						
