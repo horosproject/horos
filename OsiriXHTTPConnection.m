@@ -3259,9 +3259,9 @@ NSString* notNil( NSString *s)
 		else if([fileURL isEqualToString:@"/seriesList.json"])
 		{
 			NSPredicate *browsePredicate;
-			if([[urlParameters allKeys] containsObject:@"studyUID"])
+			if([[urlParameters allKeys] containsObject:@"id"])
 			{
-				browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [urlParameters objectForKey:@"studyUID"]];
+				browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
 			}
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
