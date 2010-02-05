@@ -10,7 +10,7 @@
 #import "HTTPConnection.h"
 
 // Define number of connection threads to run
-#define THREAD_POOL_SIZE  5
+#define THREAD_POOL_SIZE  3
 
 @interface ThreadPoolServer : HTTPServer
 {

@@ -34,7 +34,7 @@ static NSMutableDictionary *movieLock = nil;
 static NSString *webDirectory = nil;
 static NSString *language = nil;
 
-#define maxResolution 1024
+#define maxResolution 800
 
 NSString* notNil( NSString *s)
 {
@@ -1798,6 +1798,64 @@ NSString* notNil( NSString *s)
     return (centerRect);
 }
 
+- (NSData*) produceMovieForSeries: (NSManagedObject *) series isiPhone:(BOOL) isiPhone fileURL: (NSString*) fileURL lockReleased: (BOOL*) lockReleased
+{
+	NSData *data = nil;
+	
+	NSString *path = @"/tmp/osirixwebservices";
+	[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+
+	NSString *name = [NSString stringWithFormat:@"%@",[urlParameters objectForKey:@"id"]]; //[series valueForKey:@"id"];
+	name = [name stringByAppendingFormat:@"-NBIM-%ld", [series valueForKey: @"dateAdded"]];
+
+	NSMutableString *fileName = [NSMutableString stringWithString:name];
+	[BrowserController replaceNotAdmitted: fileName];
+	fileName = [NSMutableString stringWithString:[path stringByAppendingPathComponent: fileName]];
+	[fileName appendString:@".mov"];
+
+	NSString *outFile;
+
+	if( isiPhone)
+		outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
+	else
+		outFile = fileName;
+
+	data = [NSData dataWithContentsOfFile: outFile];
+
+	if( data == nil)
+	{
+		NSArray *dicomImageArray = [[series valueForKey:@"images"] allObjects];
+		
+		if( [dicomImageArray count] > 1)
+		{
+			@try
+			{
+				// Sort images with "instanceNumber"
+				NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
+				NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
+				[sort release];
+				dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors: sortDescriptors];
+				
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"%@", [e description]);
+			}
+			
+			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", urlParameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];	
+			
+			*lockReleased = YES;
+			[self generateMovie: dict];
+			
+			data = [NSData dataWithContentsOfFile: outFile];
+		}
+	}
+
+	return data;
+}
+
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
 {
 	BOOL lockReleased = NO, waitBeforeReturning = NO;
@@ -2707,14 +2765,8 @@ NSString* notNil( NSString *s)
 					[templateString replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 					[templateString replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 					
-					NSString *url = nil;
-					
-					if( isiPhone)
-						url = [NSString stringWithFormat: @"/movie.m4v?id=%@&studyID=%@", [urlParameters objectForKey:@"id"], [urlParameters objectForKey:@"studyID"]];
-					else
-						url = [NSString stringWithFormat: @"/movie.mov?id=%@&studyID=%@", [urlParameters objectForKey:@"id"], [urlParameters objectForKey:@"studyID"]];
-						
-					[templateString replaceOccurrencesOfString:@"%DownloadMovieURL%" withString: [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, NSLocalizedString( @"Link to Quicktime Movie File", nil)] options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
+					// We will generate the movie now, if required... to avoid Quicktime plugin problem waiting for it.
+					[self produceMovieForSeries: [series lastObject] isiPhone: isiPhone fileURL: fileURL lockReleased: &lockReleased];
 				}
 				
 				NSString *seriesName = notNil( [[series lastObject] valueForKey:@"name"]);
@@ -3007,53 +3059,9 @@ NSString* notNil( NSString *s)
 			
 			NSArray *series = [self seriesForPredicate:browsePredicate];
 			
-			if([series count]==1)
+			if( [series count] == 1)
 			{
-				NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
-				
-				@try
-				{
-					// Sort images with "instanceNumber"
-					NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
-					NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
-					[sort release];
-					dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors: sortDescriptors];
-					
-				}
-				@catch (NSException * e)
-				{
-					NSLog( @"%@", [e description]);
-				}
-				
-				if([dicomImageArray count] > 1)
-				{
-					NSString *path = @"/tmp/osirixwebservices";
-					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-					
-					NSString *name = [NSString stringWithFormat:@"%@",[urlParameters objectForKey:@"id"]]; //[[series lastObject] valueForKey:@"id"];
-					name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
-					
-					NSMutableString *fileName = [NSMutableString stringWithString:name];
-					[BrowserController replaceNotAdmitted: fileName];
-					fileName = [NSMutableString stringWithString:[path stringByAppendingPathComponent: fileName]];
-					[fileName appendString:@".mov"];
-					
-					NSString *outFile;
-					
-					if( isiPhone)
-						outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
-					else
-						outFile = fileName;
-					
-					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", urlParameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
-					
-					[[[BrowserController currentBrowser] managedObjectContext] unlock];	
-					
-					lockReleased = YES;
-					[self generateMovie: dict];
-					
-					data = [NSData dataWithContentsOfFile: outFile];
-				}
+				data = [self produceMovieForSeries: [series lastObject] isiPhone: isiPhone fileURL: fileURL lockReleased: &lockReleased];
 			}
 			
 			if( data == nil || [data length] == 0)

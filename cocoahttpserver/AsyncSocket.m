@@ -2797,9 +2797,17 @@ Failed:
 				error = YES;
 			}
 			
-			// Is packet done?
-			theCurrentWrite->bytesDone += bytesWritten;
-			done = ([theCurrentWrite->buffer length] == theCurrentWrite->bytesDone);
+			if( theCurrentWrite)
+			{
+				// Is packet done?
+				theCurrentWrite->bytesDone += bytesWritten;
+				done = ([theCurrentWrite->buffer length] == theCurrentWrite->bytesDone);
+			}
+			else
+			{
+				bytesWritten = 0;
+				error = YES;
+			}
 		}
 
 		if(done)
