@@ -1615,7 +1615,7 @@ ZW1wdHkgbGlzdC4</string>
 							<object class="NSTextFieldCell" key="NSCell" id="827036461">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">71304192</int>
-								<string key="NSContents">Send emails each:</string>
+								<string key="NSContents">Send Emails each:</string>
 								<reference key="NSSupport" ref="349069678"/>
 								<reference key="NSControlView" ref="503036514"/>
 								<reference key="NSBackgroundColor" ref="319257802"/>

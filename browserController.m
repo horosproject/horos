@@ -846,10 +846,7 @@ static NSArray*	statesArray = nil;
 								needDBRefresh = YES;
 								
 								if( DICOMROI == NO)
-								{
-									[study setValue:today forKey:@"dateAdded"];
 									[seriesTable setValue:today forKey:@"dateAdded"];
-								}
 								
 								[image setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
 								
