@@ -1892,7 +1892,7 @@ NSString* notNil( NSString *s)
 	NSString *fileURL = [urlComponenents objectAtIndex:0];
 	
 	NSString *requestedFile, *reportType;
-	NSData *data;
+	NSData *data = nil;
 	BOOL err = YES;
 	
 	if([fileURL isEqualToString:@"/"])
@@ -3044,6 +3044,9 @@ NSString* notNil( NSString *s)
 				}
 			}
 			
+			if( data == nil || [data length] == 0)
+				NSLog( @"****** movie data == nil");
+				
 			err = NO;
 		}
 //		#pragma mark m4v
