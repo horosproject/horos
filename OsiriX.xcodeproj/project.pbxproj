@@ -25545,6 +25545,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/LibTiff,
@@ -25834,6 +25835,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
 				GCC_UNROLL_LOOPS = YES;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

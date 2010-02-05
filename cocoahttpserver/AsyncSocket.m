@@ -3051,8 +3051,8 @@ static void MyCFSocketCallback (CFSocketRef sref, CFSocketCallBackType type, CFD
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	if( globalLock == nil)
-		globalLock = [[NSRecursiveLock alloc] init];
+//	if( globalLock == nil)
+//		globalLock = [[NSRecursiveLock alloc] init];
 	
 	[globalLock lock];
 	
@@ -3072,8 +3072,8 @@ static void MyCFReadStreamCallback (CFReadStreamRef stream, CFStreamEventType ty
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	if( globalLock == nil)
-	globalLock = [[NSRecursiveLock alloc] init];
+//	if( globalLock == nil)
+//		globalLock = [[NSRecursiveLock alloc] init];
 
 	[globalLock lock];
 	
@@ -3093,8 +3093,8 @@ static void MyCFWriteStreamCallback (CFWriteStreamRef stream, CFStreamEventType 
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-	if( globalLock == nil)
-		globalLock = [[NSRecursiveLock alloc] init];
+//	if( globalLock == nil)
+//		globalLock = [[NSRecursiveLock alloc] init];
 	
 	[globalLock lock];
 	
