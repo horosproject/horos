@@ -2340,6 +2340,7 @@ NSString* notNil( NSString *s)
 				data = [html dataUsingEncoding:NSUTF8StringEncoding];
 				err = NO;
 			}
+			#pragma mark studyList (JSON)
 			else if([fileURL isEqualToString:@"/studyList.json"])
 			{
 				NSArray *studies;
@@ -3239,9 +3240,32 @@ NSString* notNil( NSString *s)
 		#pragma mark Albums (JSON)
 		else if([fileURL isEqualToString:@"/albums.json"])
 		{
-			NSString *json = [self jsonAlbumsList];
+			NSString *json = [self jsonAlbumList];
 			data = [json dataUsingEncoding:NSUTF8StringEncoding];
 			err = NO;
+		}
+		#pragma mark seriesList (JSON)
+		else if([fileURL isEqualToString:@"/seriesList.json"])
+		{
+			NSPredicate *browsePredicate;
+			if([[urlParameters allKeys] containsObject:@"studyUID"])
+			{
+				browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [urlParameters objectForKey:@"studyUID"]];
+			}
+			else
+				browsePredicate = [NSPredicate predicateWithValue:NO];
+			
+			
+			NSArray *studies = [self studiesForPredicate:browsePredicate];
+			
+			if([studies count] == 1)
+			{
+				NSArray *seriesArray = [[studies objectAtIndex:0] valueForKey:@"imageSeries"];
+				NSString *json = [self jsonSeriesListForSeries:seriesArray];
+				data = [json dataUsingEncoding:NSUTF8StringEncoding];
+				err = NO;
+			}
+			else err = YES;
 		}
 	}
 	
@@ -3585,6 +3609,32 @@ NSString* notNil( NSString *s)
 
 #pragma mark JSON
 
+- (NSString*)jsonAlbumList;
+{
+	NSMutableArray *jsonAlbumsArray = [NSMutableArray array];
+	
+	NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
+	for(NSManagedObject *album in albumArray)
+	{
+		if(![[album valueForKey:@"name"] isEqualToString: NSLocalizedString(@"Database", nil)])
+		{
+			NSMutableDictionary *albumDictionary = [NSMutableDictionary dictionary];
+			
+			[albumDictionary setObject:notNil([album valueForKey:@"name"]) forKey:@"name"];
+			[albumDictionary setObject:notNil([OsiriXHTTPConnection encodeURLString: [album valueForKey:@"name"]]) forKey:@"nameURLSafe"];
+			
+			if([[album valueForKey:@"smartAlbum"] intValue] == 1)
+				[albumDictionary setObject:@"SmartAlbum" forKey:@"type"];
+			else
+				[albumDictionary setObject:@"Album" forKey:@"type"];
+			
+			[jsonAlbumsArray addObject:albumDictionary];
+		}
+	}
+	
+	return [jsonAlbumsArray JSONRepresentation];
+}
+
 - (NSString*)jsonStudyListForStudies:(NSArray*)studies;
 {
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
@@ -3637,30 +3687,34 @@ NSString* notNil( NSString *s)
 	return [jsonStudiesArray JSONRepresentation];
 }
 
-- (NSString*)jsonAlbumsList;
+- (NSString*)jsonSeriesListForSeries:(NSArray*)series;
 {
-	NSMutableArray *jsonAlbumsArray = [NSMutableArray array];
+	NSMutableArray *jsonSeriesArray = [NSMutableArray array];
 	
-	NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
-	for(NSManagedObject *album in albumArray)
-	{
-		if(![[album valueForKey:@"name"] isEqualToString: NSLocalizedString(@"Database", nil)])
-		{
-			NSMutableDictionary *albumDictionary = [NSMutableDictionary dictionary];
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	[context lock];
 
-			[albumDictionary setObject:notNil([album valueForKey:@"name"]) forKey:@"name"];
-			[albumDictionary setObject:notNil([OsiriXHTTPConnection encodeURLString: [album valueForKey:@"name"]]) forKey:@"nameURLSafe"];
-						
-			if([[album valueForKey:@"smartAlbum"] intValue] == 1)
-				[albumDictionary setObject:@"SmartAlbum" forKey:@"type"];
-			else
-				[albumDictionary setObject:@"Album" forKey:@"type"];
-			
-			[jsonAlbumsArray addObject:albumDictionary];
-		}
+	for(DicomSeries *s in series)
+	{
+		NSMutableDictionary *seriesDictionary = [NSMutableDictionary dictionary];
+		
+		[seriesDictionary setObject:notNil([s valueForKey:@"seriesInstanceUID"]) forKey:@"seriesInstanceUID"];
+		
+		NSArray *dicomImageArray = [[s valueForKey:@"images"] allObjects];
+		DicomImage *im;
+		if([dicomImageArray count] == 1)
+			im = [dicomImageArray lastObject];
+		else
+			im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
+		
+		[seriesDictionary setObject:[im valueForKey:@"sopInstanceUID"] forKey:@"keyInstanceUID"];
+		
+		[jsonSeriesArray addObject:seriesDictionary];
 	}
 	
-	return [jsonAlbumsArray JSONRepresentation];
+	[context unlock];
+	
+	return [jsonSeriesArray JSONRepresentation];
 }
 
 @end
