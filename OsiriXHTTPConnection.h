@@ -39,5 +39,6 @@ extern NSString* asciiString (NSString* name);
 - (NSString*)jsonAlbumList;
 - (NSString*)jsonStudyListForStudies:(NSArray*)studies;
 - (NSString*)jsonSeriesListForSeries:(NSArray*)series;
+- (NSString*)jsonImageListForImages:(NSArray*)images;
 
 @end

@@ -2601,33 +2601,15 @@ NSString* notNil( NSString *s)
 			}
 		}
 	#pragma mark series
-		else if( [fileURL isEqualToString:@"/series"])
+		else if( [fileURL isEqualToString:@"/series"] || [fileURL isEqualToString:@"/series.json"])
 		{
-			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"series.html"]];			
-			[templateString replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"studyID"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%SeriesID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			NSString *browse =  notNil( [urlParameters objectForKey:@"browse"]);
-			NSString *browseParameter =  notNil( [urlParameters objectForKey:@"browseParameter"]);
-			NSString *search =  notNil( [urlParameters objectForKey:@"search"]);
-			NSString *album = notNil( [urlParameters objectForKey:@"album"]);
-			
-			[templateString replaceOccurrencesOfString:@"%browse%" withString: notNil( browse) options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: notNil( browseParameter) options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%search%" withString: [OsiriXHTTPConnection decodeURLString:search] options: NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%album%" withString: [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			// This is probably wrong...
-			// [templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			[templateString replaceOccurrencesOfString:@"%MovieExtension%" withString: isiPhone? @"m4v":@"mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
 			NSPredicate *browsePredicate;
 			if([[urlParameters allKeys] containsObject:@"id"])
 			{
 				if( [[urlParameters allKeys] containsObject:@"studyID"])
 					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 				else
-					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			}
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -2635,96 +2617,125 @@ NSString* notNil( NSString *s)
 			NSArray *series = [self seriesForPredicate:browsePredicate];
 			NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 
-			if([imagesArray count] == 1)
+			if([fileURL isEqualToString:@"/series"])
 			{
-				[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"series.html"]];			
+				[templateString replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"studyID"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%SeriesID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
-				[templateString replaceOccurrencesOfString:@"%movie%" withString:@"<!--" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"-->" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				NSString *browse =  notNil( [urlParameters objectForKey:@"browse"]);
+				NSString *browseParameter =  notNil( [urlParameters objectForKey:@"browseParameter"]);
+				NSString *search =  notNil( [urlParameters objectForKey:@"search"]);
+				NSString *album = notNil( [urlParameters objectForKey:@"album"]);
 				
-				[templateString replaceOccurrencesOfString:@"%image%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%/image%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			}
-			else
-			{
-				[templateString replaceOccurrencesOfString:@"%image%" withString:@"<!--" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%/image%" withString:@"-->" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];			
-				[templateString replaceOccurrencesOfString:@"%movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%browse%" withString: notNil( browse) options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: notNil( browseParameter) options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%search%" withString: [OsiriXHTTPConnection decodeURLString:search] options: NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%album%" withString: [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
-				DicomImage *lastImage = [imagesArray lastObject];
-				int width = [[lastImage valueForKey:@"width"] intValue];
-				int height = [[lastImage valueForKey:@"height"] intValue];
+				// This is probably wrong...
+				// [templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%MovieExtension%" withString: isiPhone? @"m4v":@"mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
-				int maxWidth = width;
-				int maxHeight = height;
-				int minWidth, minHeight;
-				
-				minWidth = 300;
-				minHeight = 300;
-				
-				if( isiPhone)
+				if([imagesArray count] == 1)
 				{
-					maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
-					maxHeight = 310;
-				}
-				else
-				{
-					maxWidth = maxResolution;
-					maxHeight = maxResolution;
-				}
-				
-				if(width > maxWidth)
-				{
-					height = (float)height * (float)maxWidth / (float)width;
-					width = maxWidth;
-				}
-				
-				if(height > maxHeight)
-				{
-					width = (float)width * (float)maxHeight / (float)height;
-					height = maxHeight;
-				}
-				
-				if(width < minWidth)
-				{
-					height = (float)height * (float)minWidth / (float)width;
-					width = minWidth;
-				}
-				
-				if(height < minHeight)
-				{
-					width = (float)width * (float)minHeight / (float)height;
-					height = minHeight;
-				}
-				
-				height += 15; // quicktime controller height
-				
-				//NSLog(@"NEW w: %d, h: %d", width, height);
-				[templateString replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				
-				NSString *url = nil;
-				
-				if( isiPhone)
-					url = [NSString stringWithFormat: @"/movie.m4v?id=%@&studyID=%@", [urlParameters objectForKey:@"id"], [urlParameters objectForKey:@"studyID"]];
-				else
-					url = [NSString stringWithFormat: @"/movie.mov?id=%@&studyID=%@", [urlParameters objectForKey:@"id"], [urlParameters objectForKey:@"studyID"]];
+					[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+					[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 					
-				[templateString replaceOccurrencesOfString:@"%DownloadMovieURL%" withString: [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, NSLocalizedString( @"Link to Quicktime Movie File", nil)] options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
+					[templateString replaceOccurrencesOfString:@"%movie%" withString:@"<!--" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+					[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"-->" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+					
+					[templateString replaceOccurrencesOfString:@"%image%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+					[templateString replaceOccurrencesOfString:@"%/image%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				}
+				else
+				{
+					[templateString replaceOccurrencesOfString:@"%image%" withString:@"<!--" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+					[templateString replaceOccurrencesOfString:@"%/image%" withString:@"-->" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];			
+					[templateString replaceOccurrencesOfString:@"%movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+					[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+					
+					DicomImage *lastImage = [imagesArray lastObject];
+					int width = [[lastImage valueForKey:@"width"] intValue];
+					int height = [[lastImage valueForKey:@"height"] intValue];
+					
+					int maxWidth = width;
+					int maxHeight = height;
+					int minWidth, minHeight;
+					
+					minWidth = 300;
+					minHeight = 300;
+					
+					if( isiPhone)
+					{
+						maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
+						maxHeight = 310;
+					}
+					else
+					{
+						maxWidth = maxResolution;
+						maxHeight = maxResolution;
+					}
+					
+					if(width > maxWidth)
+					{
+						height = (float)height * (float)maxWidth / (float)width;
+						width = maxWidth;
+					}
+					
+					if(height > maxHeight)
+					{
+						width = (float)width * (float)maxHeight / (float)height;
+						height = maxHeight;
+					}
+					
+					if(width < minWidth)
+					{
+						height = (float)height * (float)minWidth / (float)width;
+						width = minWidth;
+					}
+					
+					if(height < minHeight)
+					{
+						width = (float)width * (float)minHeight / (float)height;
+						height = minHeight;
+					}
+					
+					height += 15; // quicktime controller height
+					
+					//NSLog(@"NEW w: %d, h: %d", width, height);
+					[templateString replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+					[templateString replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+					
+					NSString *url = nil;
+					
+					if( isiPhone)
+						url = [NSString stringWithFormat: @"/movie.m4v?id=%@&studyID=%@", [urlParameters objectForKey:@"id"], [urlParameters objectForKey:@"studyID"]];
+					else
+						url = [NSString stringWithFormat: @"/movie.mov?id=%@&studyID=%@", [urlParameters objectForKey:@"id"], [urlParameters objectForKey:@"studyID"]];
+						
+					[templateString replaceOccurrencesOfString:@"%DownloadMovieURL%" withString: [NSString stringWithFormat: @"<a href=\"%@\">%@</a>", url, NSLocalizedString( @"Link to Quicktime Movie File", nil)] options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
+				}
+				
+				NSString *seriesName = notNil( [[series lastObject] valueForKey:@"name"]);
+				[templateString replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( seriesName) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				NSString *studyName = notNil( [[series lastObject] valueForKeyPath:@"study.name"]);
+				[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString: notNil( studyName) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: notNil( portString) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
+				err = NO;
 			}
-			
-			NSString *seriesName = notNil( [[series lastObject] valueForKey:@"name"]);
-			[templateString replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( seriesName) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			NSString *studyName = notNil( [[series lastObject] valueForKeyPath:@"study.name"]);
-			[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString: notNil( studyName) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: notNil( portString) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-			
-			data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
-			err = NO;
+			#pragma mark series (JSON)
+			else if([fileURL isEqualToString:@"/series.json"])
+			{
+				NSString *json = [self jsonImageListForImages:imagesArray];
+				data = [json dataUsingEncoding:NSUTF8StringEncoding];
+				err = NO;			
+			}
+
 		}
 #pragma mark report
 		else if( [fileURL hasPrefix:@"/report"])
@@ -3715,6 +3726,23 @@ NSString* notNil( NSString *s)
 	[context unlock];
 	
 	return [jsonSeriesArray JSONRepresentation];
+}
+
+- (NSString*)jsonImageListForImages:(NSArray*)images;
+{
+	NSMutableArray *jsonImagesArray = [NSMutableArray array];
+	
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	[context lock];
+	
+	for(DicomImage *image in images)
+	{
+		[jsonImagesArray addObject:notNil([image valueForKey:@"sopInstanceUID"])];
+	}
+	
+	[context unlock];
+	
+	return [jsonImagesArray JSONRepresentation];
 }
 
 @end
