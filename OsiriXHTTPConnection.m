@@ -249,7 +249,7 @@ NSString* notNil( NSString *s)
 			if( [filteredStudies count] > 1 && predicate != nil)
 			{
 				[urls appendString: NSLocalizedString( @"To view this entire list, including patients names:\r", nil)]; 
-				[urls appendFormat: @"%@ : %@://%@:%d/studyList?%@\r\r\r\r", NSLocalizedString( @"Click here", nil), http, predicate]; 
+				[urls appendFormat: @"%@ : %@://%@:%d/studyList?%@\r\r\r\r", NSLocalizedString( @"Click here", nil), http, webServerAddress, webPort, predicate]; 
 			}
 			
 			for( NSManagedObject *s in filteredStudies)
@@ -1093,8 +1093,34 @@ NSString* notNil( NSString *s)
 	
 	@try
 	{
-		NSArray *allUserStudies = [[user valueForKey: @"studies"] allObjects];
-		NSArray *userStudies = [allUserStudies filteredArrayUsingPredicate: predicate];
+		NSArray *userStudies = nil;
+		
+		if( truePredicate == NO)
+		{
+			NSArray *allUserStudies = [[user valueForKey: @"studies"] allObjects];
+			NSArray *userStudies = [allUserStudies filteredArrayUsingPredicate: predicate];
+			NSMutableArray *excludedStudies = [NSMutableArray arrayWithArray: userStudies];
+			
+			[excludedStudies removeObjectsInArray: userStudies];
+			
+			NSMutableArray *mutableArray = [NSMutableArray arrayWithArray: array];
+			
+			// First remove all user studies from array, we will re-add them after, if necessary
+			for( NSManagedObject *study in excludedStudies)
+			{
+				NSArray *obj = [mutableArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", [study valueForKey: @"patientUID"], [study valueForKey: @"studyInstanceUID"]]];
+				
+				if( [obj count] == 1)
+				{
+					[mutableArray removeObject: [obj lastObject]];
+				}
+				else if( [obj count] > 1)
+					NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
+			}
+			
+			array = mutableArray;
+		}
+		else userStudies = [[user valueForKey: @"studies"] allObjects];
 		
 		// Find all studies of the DB
 		NSError *error = nil;
@@ -1104,27 +1130,6 @@ NSString* notNil( NSString *s)
 		
 		error = nil;
 		NSArray *studiesArray = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
-		
-		if( truePredicate == NO)
-		{
-			NSMutableArray *mutableArray = [NSMutableArray arrayWithArray: array];
-			
-			// First remove all user studies from array, we will re-add them after, if necessary
-			for( NSManagedObject *study in allUserStudies)
-			{
-				NSArray *obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", [study valueForKey: @"patientUID"], [study valueForKey: @"studyInstanceUID"]]];
-				
-				if( [obj count] == 1)
-				{
-					if( [mutableArray containsObject: [obj lastObject]])
-						[mutableArray removeObject: [obj lastObject]];
-				}
-				else if( [obj count] > 1)
-					NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
-			}
-			
-			array = mutableArray;
-		}
 		
 		for( NSManagedObject *study in userStudies)
 		{
@@ -3350,7 +3355,6 @@ NSString* notNil( NSString *s)
 	
 	NSString *previousPatientUID = nil;
 	NSString *previousStudyInstanceUID = nil;
-	NSMutableArray *dicomFilesArray = [NSMutableArray array];
 	
 	// We want to find this file after db insert: get studyInstanceUID, patientUID and instanceSOPUID
 	for( NSString *oFile in filesArray)
@@ -3367,14 +3371,6 @@ NSString* notNil( NSString *s)
 		
 			[[NSFileManager defaultManager] moveItemAtPath: oFile toPath: file error: nil];
 			
-			[dicomFilesArray addObject: f];
-		}
-	}
-	
-	for( DicomFile *f in dicomFilesArray)
-	{
-		if( f)
-		{
 			NSString *studyInstanceUID = [f elementForKey: @"studyID"], *patientUID = [f elementForKey: @"patientUID"];	//, *sopInstanceUID = [f elementForKey: @"SOPUID"];
 			
 			if( [studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID isEqualToString: previousPatientUID] == NO)
