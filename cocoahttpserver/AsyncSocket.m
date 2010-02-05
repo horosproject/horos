@@ -2913,8 +2913,8 @@ Failed:
 {
 //	if( globalLock == nil)
 //		globalLock = [[NSRecursiveLock alloc] init];
-		
-	[globalLock lock];
+//		
+//	[globalLock lock];
 	
 	// We can't start TLS until:
 	// - All queued reads prior to the user calling StartTLS are complete
@@ -2937,7 +2937,7 @@ Failed:
 		}
 	}
 	
-	[globalLock unlock];
+//	[globalLock unlock];
 }
 
 - (void)onTLSHandshakeSuccessful
@@ -3051,8 +3051,15 @@ static void MyCFSocketCallback (CFSocketRef sref, CFSocketCallBackType type, CFD
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+	if( globalLock == nil)
+		globalLock = [[NSRecursiveLock alloc] init];
+	
+	[globalLock lock];
+	
 	AsyncSocket *theSocket = [[(AsyncSocket *)pInfo retain] autorelease];
 	[theSocket doCFSocketCallback:type forSocket:sref withAddress:(NSData *)address withData:pData];
+	
+	[globalLock unlock];
 	
 	[pool release];
 }
@@ -3065,8 +3072,15 @@ static void MyCFReadStreamCallback (CFReadStreamRef stream, CFStreamEventType ty
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+	if( globalLock == nil)
+	globalLock = [[NSRecursiveLock alloc] init];
+
+	[globalLock lock];
+	
 	AsyncSocket *theSocket = [[(AsyncSocket *)pInfo retain] autorelease];
 	[theSocket doCFReadStreamCallback:type forStream:stream];
+	
+	[globalLock unlock];
 	
 	[pool release];
 }
@@ -3078,9 +3092,16 @@ static void MyCFReadStreamCallback (CFReadStreamRef stream, CFStreamEventType ty
 static void MyCFWriteStreamCallback (CFWriteStreamRef stream, CFStreamEventType type, void *pInfo)
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+	if( globalLock == nil)
+		globalLock = [[NSRecursiveLock alloc] init];
+	
+	[globalLock lock];
 	
 	AsyncSocket *theSocket = [[(AsyncSocket *)pInfo retain] autorelease];
 	[theSocket doCFWriteStreamCallback:type forStream:stream];
+	
+	[globalLock unlock];
 	
 	[pool release];
 }
