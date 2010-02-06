@@ -376,7 +376,7 @@ NSString* notNil( NSString *s)
 			
 			for( NSManagedObject *user in users)
 			{
-				if( [[user valueForKey: @"emailNotification"] boolValue] == YES && [(NSString*) [user valueForKey: @"email"] length] > 2)
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"notificationsEmails"] == YES && [[user valueForKey: @"emailNotification"] boolValue] == YES && [(NSString*) [user valueForKey: @"email"] length] > 2)
 				{
 					NSArray *filteredStudies = studies;
 					
