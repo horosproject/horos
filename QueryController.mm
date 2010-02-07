@@ -1849,6 +1849,9 @@ extern "C"
 {
 	NSMutableArray	*selectedItems = [NSMutableArray array];
 	
+	BOOL showErrorCopy = [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"];
+	[[NSUserDefaults standardUserDefaults] setBool: showGUI forKey: @"showErrorsIfQueryFailed"];
+	
 	if([items count])
 	{
 		for( id item in items)
@@ -1921,6 +1924,8 @@ extern "C"
 			}
 		}
 	}
+	
+	[[NSUserDefaults standardUserDefaults] setBool: showErrorCopy forKey: @"showErrorsIfQueryFailed"];
 }
 
 -(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable forViewing: (BOOL) forViewing

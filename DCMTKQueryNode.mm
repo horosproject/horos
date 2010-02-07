@@ -330,6 +330,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //	}
 }
 
+@interface NSURLRequest (DummyInterface)
++ (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host;
++ (void)setAllowsAnyHTTPSCertificate:(BOOL)allow forHost:(NSString*)host;
+@end
+
 @implementation DCMTKQueryNode
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
@@ -674,9 +679,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			if( firstWadoErrorDisplayed == NO)
 			{
 				firstWadoErrorDisplayed = YES;
-				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
-					[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@ - %@", [error localizedDescription], url], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+				[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@ - %@", [error localizedDescription], url], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 			}
 		}
 		
@@ -700,7 +703,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 - (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
 {
 	NSString *protocol = [[_extraParameters valueForKey: @"WADOhttps"] intValue] ? @"https" : @"http";
+	
 	NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@?requestType=WADO", protocol, _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], [_extraParameters valueForKey: @"WADOUrl"]];
+	
+	if( [protocol isEqualToString: @"https"])
+	{
+		[NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[[NSURL URLWithString: baseURL] host]];
+	}
 	
 	int quality = 100;
 	NSString *ts = [self syntaxStringFor: [[_extraParameters valueForKey: @"WADOTransferSyntax"] intValue] imageQuality: &quality];
@@ -758,6 +767,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		NSLog( @"------ WADO downloading : %d files", [urlToDownload count]);
 		
 		firstWadoErrorDisplayed = NO;
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"] == NO)
+			firstWadoErrorDisplayed = YES; // dont show errors
 		
 		#define NumberOfWADOThreads 3
 		NSRange range = NSMakeRange( 0, 1+ ([urlToDownload count] / NumberOfWADOThreads));

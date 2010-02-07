@@ -17,6 +17,7 @@
 #import <SecurityInterface/SFChooseIdentityPanel.h>
 #import <SecurityInterface/SFCertificateView.h>
 #import "DNDArrayController.h"
+#import <WebKit/WebKit.h>
 
 #if defined(OSIRIX)
 #import "DICOMTLS.h"
@@ -68,6 +69,7 @@
 
 + (BOOL)echoServer:(NSDictionary*)serverParameters;
 
+- (IBAction) testWADOUrl: (id) sender;
 - (IBAction)refreshNodesListURL:(id)sender;
 - (void)mainViewDidLoad;
 - (IBAction)newServer:(id)sender;

@@ -31,6 +31,11 @@
 	@"RLE"
 *************************************************/
 
+@interface NSURLRequest (DummyInterface)
++ (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host;
++ (void)setAllowsAnyHTTPSCertificate:(BOOL)allow forHost:(NSString*)host;
+@end
+
 @implementation OSILocationsPreferencePanePref
 
 @synthesize WADOPort, WADOhttps, WADOTransferSyntax, WADOUrl;
@@ -366,6 +371,29 @@
 - (IBAction) ok:(id)sender
 {
 	[NSApp stopModal];
+}
+
+- (IBAction) testWADOUrl: (id) sender
+{
+	NSString *protocol = WADOhttps ? @"https" : @"http";
+	
+	NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex: [[dicomNodes tableView] selectedRow]];
+	
+	NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@?requestType=WADO", protocol, [aServer valueForKey: @"Address"], WADOPort, WADOUrl];
+	
+	NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&objectUID=%@&contentType=application/dicom%@", @"1", @"1", @"&useOrig=true"]];
+	
+	NSLog( @"URL to test: %@", baseURL);
+	
+	[NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[url host]];
+	
+	NSError *error = nil;
+	[NSData dataWithContentsOfURL: url options: 0 error: &error];
+	
+	if( error)
+		NSRunCriticalAlertPanel( NSLocalizedString( @"URL download Error", nil), [error localizedDescription], NSLocalizedString( @"OK", nil), nil, nil);
+	else
+		NSRunInformationalAlertPanel( NSLocalizedString( @"URL download Succeeded", nil), NSLocalizedString( @"It works !", nil), NSLocalizedString( @"OK", nil), nil, nil);
 }
 
 - (IBAction) editWADO: (id) sender
