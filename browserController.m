@@ -3168,6 +3168,7 @@ static NSArray*	statesArray = nil;
 				while( [[NSFileManager defaultManager] fileExistsAtPath: dstPath]);
 				
 				[[NSFileManager defaultManager] copyPath: srcPath toPath: dstPath handler:nil];
+				[[NSFileManager defaultManager] setAttributes: [NSDictionary dictionaryWithObject: [NSDate date] forKey: NSFileModificationDate] ofItemAtPath: dstPath error: nil];
 				
 				DicomFile *curFile = [[[DicomFile alloc] init: srcPath DICOMOnly: YES] autorelease];
 				
@@ -14427,11 +14428,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if ( [[srcPath lastPathComponent] length] > 0 && [[srcPath lastPathComponent] characterAtIndex: 0] == '.')
 					{
 						NSDictionary *atr = [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
-						
-						if( [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
+						if( [atr fileModificationDate] && [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
 						{
-							NSLog( @"old files with '.' -> delete it : %@", srcPath);
-							[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+							[NSThread sleepForTimeInterval: 0.1]; //We want to be 100% sure...
+							
+							atr = [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
+							if( [atr fileModificationDate] && [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
+							{
+								NSLog( @"old files with '.' -> delete it : %@", srcPath);
+								[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+							}
 						}
 						continue;
 					}

@@ -386,8 +386,6 @@ extern NSRecursiveLock *PapyrusLock;
 		succeed = NO;
 	}
 	
-	NSLog( @"Number of sub-process for testFiles: %d", [tasksArray count]);
-	
 	for( NSTask *t in tasksArray)
 	{
 		[t waitUntilExit];
