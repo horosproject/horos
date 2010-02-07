@@ -108,17 +108,19 @@
 /** Returns the COMMENTSAUTOFILL default. 
 * If Yes, comments will be filled from the DICOM tag  commentsGroup/commentsElement
 */
-- (BOOL)autoFillComments; 
-- (BOOL)splitMultiEchoMR; /**< Returns the splitMultiEchoMR default If YES, splits multi echo series into separate series by Echo number. */
-- (BOOL)useSeriesDescription; /**< Returns the useSeriesDescription default. */
-- (BOOL)noLocalizer; /**< Returns the NOLOCALIZER default. */
-- (BOOL)combineProjectionSeries; /**< Returns the combineProjectionSeries default.  If YES, combines are projection Modalities: CR, DR into one series. */
-- (BOOL)oneFileOnSeriesForUS; /**< Returns the oneFileOnSeriesForUS default */
-- (BOOL)combineProjectionSeriesMode; /**< Returns the combineProjectionSeriesMode default. */
-- (BOOL)checkForLAVIM; /**< Returns the CHECKFORLAVIM default. */
-- (BOOL)separateCardiac4D; /**< Returns the SEPARATECARDIAC4D default. If YES separates cardiac studies into separate gated series. */
-- (int)commentsGroup; /**< Returns the commentsGroup default. The DICOM group to get comments from. */
-- (int)commentsElement; /**< Returns the commentsGroup default.  The DICOM  element to get get comments from. */
+- (BOOL) SeparateCardiacMR;
+- (int) SeparateCardiacMRMode;
+- (BOOL) autoFillComments; 
+- (BOOL) splitMultiEchoMR; /**< Returns the splitMultiEchoMR default If YES, splits multi echo series into separate series by Echo number. */
+- (BOOL) useSeriesDescription; /**< Returns the useSeriesDescription default. */
+- (BOOL) noLocalizer; /**< Returns the NOLOCALIZER default. */
+- (BOOL) combineProjectionSeries; /**< Returns the combineProjectionSeries default.  If YES, combines are projection Modalities: CR, DR into one series. */
+- (BOOL) oneFileOnSeriesForUS; /**< Returns the oneFileOnSeriesForUS default */
+- (BOOL) combineProjectionSeriesMode; /**< Returns the combineProjectionSeriesMode default. */
+- (BOOL) checkForLAVIM; /**< Returns the CHECKFORLAVIM default. */
+- (BOOL) separateCardiac4D; /**< Returns the SEPARATECARDIAC4D default. If YES separates cardiac studies into separate gated series. */
+- (int) commentsGroup; /**< Returns the commentsGroup default. The DICOM group to get comments from. */
+- (int) commentsElement; /**< Returns the commentsGroup default.  The DICOM  element to get get comments from. */
 - (BOOL) containsString: (NSString*) s inArray: (NSArray*) a;
 @end
 

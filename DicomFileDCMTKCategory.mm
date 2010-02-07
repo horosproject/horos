@@ -231,7 +231,8 @@ extern NSRecursiveLock *PapyrusLock;
 			{
 				NSString	*commentsField;
 				DcmTagKey key = DcmTagKey([self commentsGroup], [self commentsElement]);
-				if (dataset->findAndGetString(key, string, OFFalse).good() && string != NULL){
+				if (dataset->findAndGetString(key, string, OFFalse).good() && string != NULL)
+				{
 					commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
 					[dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
 
@@ -241,7 +242,8 @@ extern NSRecursiveLock *PapyrusLock;
 			if([self checkForLAVIM] == YES)
 			{
 				NSString	*album = nil;
-				if (dataset->findAndGetString(DCM_ImageComments, string, OFFalse).good() && string != NULL){
+				if (dataset->findAndGetString(DCM_ImageComments, string, OFFalse).good() && string != NULL)
+				{
 					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
 					if( [album length] >= 2)
 					{
@@ -254,7 +256,8 @@ extern NSRecursiveLock *PapyrusLock;
 				}
 				
 				DcmTagKey albumKey = DcmTagKey(0x0040, 0x0280); 
-				if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL){
+				if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL)
+				{
 					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
 					if( [album length] >= 2)
 					{
@@ -267,7 +270,8 @@ extern NSRecursiveLock *PapyrusLock;
 				} 
 				
 				 albumKey = DcmTagKey(0x0040, 0x1400); 
-				 if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL){
+				 if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL)
+				 {
 					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
 					if( [album length] >= 2)
 					{
@@ -283,7 +287,8 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		//SOPClass
 		NSString *sopClassUID = nil;
-		if (dataset->findAndGetString(DCM_SOPClassUID, string, OFFalse).good() && string != NULL){
+		if (dataset->findAndGetString(DCM_SOPClassUID, string, OFFalse).good() && string != NULL)
+		{
 			[dicomElements setObject:[NSString stringWithCString:string encoding: NSASCIIStringEncoding] forKey:@"SOPClassUID"];
 			sopClassUID = [NSString stringWithCString: string encoding: NSASCIIStringEncoding] ;
 		}
@@ -658,6 +663,40 @@ extern NSRecursiveLock *PapyrusLock;
 			NSString	*n;
 			
 			n = [[NSString alloc] initWithFormat:@"%@ TE-%@", serieID , echoTime];
+			[serieID release];
+			serieID = n;
+		}
+		
+		if( [self SeparateCardiacMR])
+		{
+			if( [self SeparateCardiacMRMode] == 0)
+			{
+				DcmTagKey tag = DcmTagKey( 0x2001, 0x1008); 
+				if (dataset->findAndGetString( tag, string, OFFalse).good() && string != NULL)
+				{
+					[dicomElements setObject: [[[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding] autorelease] forKey: @"SeparateCardiacMR"];
+				}
+			}
+			
+			if( [self SeparateCardiacMRMode] == 1)
+			{
+				DcmTagKey tag = DcmTagKey( 0x2001, 0x100A); 
+				if (dataset->findAndGetString( tag, string, OFFalse).good() && string != NULL)
+				{
+					[dicomElements setObject: [[[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding] autorelease] forKey: @"SeparateCardiacMR"];
+				}
+			}
+		}
+		
+		if( [self SeparateCardiacMR] && [dicomElements objectForKey: @"SeparateCardiacMR"])
+		{
+			NSString	*n;
+			
+			if( [self SeparateCardiacMRMode] == 0) // 3D
+				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
+			else // Cine
+				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
+			
 			[serieID release];
 			serieID = n;
 		}

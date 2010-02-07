@@ -65,6 +65,8 @@
 		strcmp(tagString, "0008,0005") == 0	||	//SpecificCharacterSet
 		strcmp(tagString, "0002,0010") == 0 ||	//Transfer Syntax UID
 		strcmp(tagString, "0042,0011") == 0	||	//EncapsulatedDocument
+		strcmp(tagString, "2001,100A") == 0	||	//CardiacMR
+		strcmp(tagString, "2001,1008") == 0	||	//CardiacMR
 	
 		strcmp(tagString, "0002,0000") == 0
 	)
