@@ -385,7 +385,14 @@
 	
 	NSLog( @"URL to test: %@", baseURL);
 	
-	[NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[url host]];
+	@try
+	{
+		[NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[url host]];
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"******* NSURLRequest setAllowsAnyHTTPSCertificate");
+	}
 	
 	NSError *error = nil;
 	[NSData dataWithContentsOfURL: url options: 0 error: &error];

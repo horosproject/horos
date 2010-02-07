@@ -706,9 +706,14 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@?requestType=WADO", protocol, _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], [_extraParameters valueForKey: @"WADOUrl"]];
 	
-	if( [protocol isEqualToString: @"https"])
+	@try
 	{
-		[NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[[NSURL URLWithString: baseURL] host]];
+		if( [protocol isEqualToString: @"https"])
+			[NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[[NSURL URLWithString: baseURL] host]];
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"******* [NSURLRequest setAllowsAnyHTTPSCertificate");
 	}
 	
 	int quality = 100;
