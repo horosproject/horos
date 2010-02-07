@@ -2414,35 +2414,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x2001);
 				if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 				{
-					SElement *inGrOrModP = theGroupP;
-							
-					int theEnumGrNb = Papy3ToEnumGroup( 0x2001);
-					int theMaxElem = gArrGroup [theEnumGrNb].size;
-					int j;
 					
-					for (j = 0; j < theMaxElem; j++, inGrOrModP++)
+					if( SeparateCardiacMRMode == 0)
 					{
-						if( inGrOrModP->element == 0x1008 && SeparateCardiacMRMode == 0)
-						{
-							if( inGrOrModP->nb_val > 0)
-							{
-								UValue_T *theValueP = inGrOrModP->value;
-								
-								if( theValueP->a)
-									[dicomElements setObject: [NSString stringWithCString: theValueP->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
-							}
-						}
-						
-						if( inGrOrModP->element == 0x100A && SeparateCardiacMRMode == 1)
-						{
-							if( inGrOrModP->nb_val > 0)
-							{
-								UValue_T *theValueP = inGrOrModP->value;
-								
-								if( theValueP->a)
-									[dicomElements setObject: [NSString stringWithCString: theValueP->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
-							}
-						}
+						val = Papy3GetElement (theGroupP, pap2001CineIndexGr, &nbVal, &itemType);
+						if( val->a)
+							[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
+					}
+					
+					if( SeparateCardiacMRMode == 1)
+					{
+						val = Papy3GetElement (theGroupP, pap2001PositionIndexGr, &nbVal, &itemType);
+						if( val->a)
+							[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
 					}
 					
 					theErr = Papy3GroupFree (&theGroupP, TRUE);
