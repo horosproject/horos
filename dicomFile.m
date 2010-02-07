@@ -55,6 +55,8 @@ static int CHECKFORLAVIM = -1;
 static int COMMENTSGROUP = NO;
 static int COMMENTSELEMENT = NO;
 static BOOL SEPARATECARDIAC4D = NO;
+static BOOL SeparateCardiacMR = NO;
+static int SeparateCardiacMRMode = 0;
 static BOOL filesAreFromCDMedia = NO;
 
 char* replaceBadCharacter (char* str, NSStringEncoding encoding) 
@@ -233,6 +235,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			COMMENTSAUTOFILL = [sd boolForKey: @"COMMENTSAUTOFILL"];
 			SEPARATECARDIAC4D = [sd boolForKey: @"SEPARATECARDIAC4D"];
+			SeparateCardiacMR = [sd boolForKey: @"SeparateCardiacMR"];
+			SeparateCardiacMRMode = [sd integerForKey: @"SeparateCardiacMRMode"];
 			
 			COMMENTSGROUP = [[sd objectForKey: @"COMMENTSGROUP"] intValue];
 			COMMENTSELEMENT = [[sd objectForKey: @"COMMENTSELEMENT"] intValue];
@@ -261,6 +265,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER3"] intValue];
 			COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
 			SEPARATECARDIAC4D = [[dict objectForKey: @"SEPARATECARDIAC4D"] intValue];
+			SeparateCardiacMR = [[dict objectForKey: @"SeparateCardiacMR"] intValue];
+			SeparateCardiacMRMode = [[dict objectForKey: @"SeparateCardiacMRMode"] intValue];
 			
 			COMMENTSGROUP = [[dict objectForKey: @"COMMENTSGROUP"] intValue];
 			COMMENTSELEMENT = [[dict objectForKey: @"COMMENTSELEMENT"] intValue];
@@ -1718,7 +1724,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			imageNb = 1;
 			
-			if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+			if (gIsPapyFile [fileNb] == DICOM10)
+				theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 			
 			NSString *characterSet = nil;
 			for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
@@ -2167,7 +2174,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						}
 					}
 				}
-				[dicomElements setObject:[NSNumber numberWithLong: cardiacTime] forKey:@"cardiacTime"];
+				[dicomElements setObject:[NSNumber numberWithLong: cardiacTime] forKey: @"cardiacTime"];
 				
 				val = Papy3GetElement (theGroupP, papProtocolNameGr, &nbVal, &itemType);
 				if (val != NULL) [dicomElements setObject: [DicomFile stringWithBytes: (char*) val->a encodings:encoding] forKey: @"protocolName"];
@@ -2400,6 +2407,67 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NoOfSeries = 1;
 			
 			if( patientID == nil) patientID = [[NSString alloc] initWithString:@""];
+			
+			
+			if( SeparateCardiacMR)
+			{
+				theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x2001);
+				if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+				{
+					SElement *inGrOrModP = theGroupP;
+							
+					int theEnumGrNb = Papy3ToEnumGroup( 0x2001);
+					int theMaxElem = gArrGroup [theEnumGrNb].size;
+					int j;
+					
+					for (j = 0; j < theMaxElem; j++, inGrOrModP++)
+					{
+						if( inGrOrModP->element == 0x1008 && SeparateCardiacMRMode == 0)
+						{
+							if( inGrOrModP->nb_val > 0)
+							{
+								UValue_T *theValueP = inGrOrModP->value;
+								
+								if( theValueP->a)
+									[dicomElements setObject: [NSString stringWithCString: theValueP->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
+							}
+						}
+						
+						if( inGrOrModP->element == 0x100A && SeparateCardiacMRMode == 1)
+						{
+							if( inGrOrModP->nb_val > 0)
+							{
+								UValue_T *theValueP = inGrOrModP->value;
+								
+								if( theValueP->a)
+									[dicomElements setObject: [NSString stringWithCString: theValueP->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
+							}
+						}
+					}
+					
+					theErr = Papy3GroupFree (&theGroupP, TRUE);
+				}
+				
+				
+				if( SeparateCardiacMR && [dicomElements objectForKey: @"SeparateCardiacMR"])
+				{
+					NSString	*n;
+					
+					if( SeparateCardiacMRMode == 0) // 3D
+						n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
+					else // Cine
+						n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
+					
+					[serieID release];
+					serieID = n;
+				}
+				
+				
+				if (gIsPapyFile [fileNb] == DICOM10)
+					theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+				else
+					theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 0L);
+			}
 		}
 		
 		// Go to groups 0x0042 for Encapsulated Document Possible PDF
@@ -2722,9 +2790,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if ([dcmObject attributeValueWithName:@"PatientsSex"])
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"PatientsSex"] forKey:@"patientSex"];
 			
-		if ([dcmObject attributeValueWithName:@"ScanOptions"]){
+		if ([dcmObject attributeValueWithName:@"ScanOptions"])
+		{
 			NSString *scanOptions = [dcmObject attributeValueWithName:@"ScanOptions"];
-			if ([scanOptions length] >= 4 && [scanOptions hasPrefix:@"TP"]){
+			if ([scanOptions length] >= 4 && [scanOptions hasPrefix:@"TP"])
+			{
 				NSString *cardiacString = [scanOptions substringWithRange:NSMakeRange(2,2)];
 				cardiacTime = [cardiacString intValue];	
 				[dicomElements setObject:[NSNumber numberWithLong: cardiacTime] forKey:@"cardiacTime"];			

@@ -206,6 +206,12 @@ papReferencedFilmBoxSequenceGr,
 papEndGroup2000
 };
 
+/*	Group2001		*/
+
+enum {
+papEndGroup2001
+};
+
 /*	Group2010		*/
 
 enum {

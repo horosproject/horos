@@ -1343,6 +1343,14 @@ papReferencedStoredPrintSequenceGr,
 papEndGroup2000
 };
 
+/*	Group2001		*/
+
+enum {
+pap2001CineIndexGr = 1,
+pap2001PositionIndexGr,
+papEndGroup2001
+};
+
 /*	Group2010		*/
 
 enum {

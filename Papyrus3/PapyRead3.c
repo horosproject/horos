@@ -2723,7 +2723,7 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
     
   } /* if ...overlay or UINOverlay group */
   
-  if (inPapyGrNb % 2 != 0 && inPapyGrNb != 0x7053) 			/* is it a shadow group ? */
+  if (inPapyGrNb % 2 != 0 && inPapyGrNb != 0x7053 && inPapyGrNb != 0x2001) 			/* is it a shadow group ? */
   {
     theShadow = TRUE; 
     
