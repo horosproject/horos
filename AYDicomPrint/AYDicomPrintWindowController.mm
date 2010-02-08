@@ -226,7 +226,13 @@
 			from = [entireSeriesTo intValue]-1;
 		}
 		
-		no_of_images = (to - from) / [entireSeriesInterval intValue];
+		int i, count = 0;
+		for( i = from; i < to; i += [entireSeriesInterval intValue])
+		{
+			no_of_images++;
+		}
+		
+//		no_of_images = (to - from) / [entireSeriesInterval intValue];
 	}
 	else if( [[m_ImageSelection selectedCell] tag] == eCurrentImage) no_of_images = 1;
 	else if( [[m_ImageSelection selectedCell] tag] == eKeyImages)
@@ -268,7 +274,7 @@
 	
 	if( no_of_images == 0) [m_pages setIntValue: 1];
 	else if( no_of_images % ipp == 0)  [m_pages setIntValue: no_of_images / ipp];
-	else [m_pages setIntValue: 1 + no_of_images / ipp];
+	else [m_pages setIntValue: 1 + (no_of_images / ipp)];
 }
 
 - (IBAction) setExportMode:(id) sender
