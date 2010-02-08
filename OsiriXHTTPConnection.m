@@ -2783,6 +2783,19 @@ NSString* notNil( NSString *s)
 			#pragma mark series (JSON)
 			else if([fileURL isEqualToString:@"/series.json"])
 			{
+				@try
+				{
+					// Sort images with "instanceNumber"
+					NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
+					NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
+					[sort release];
+					imagesArray = [imagesArray sortedArrayUsingDescriptors: sortDescriptors];
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"%@", [e description]);
+				}
+				
 				NSString *json = [self jsonImageListForImages:imagesArray];
 				data = [json dataUsingEncoding:NSUTF8StringEncoding];
 				err = NO;			
@@ -3718,6 +3731,7 @@ NSString* notNil( NSString *s)
 		NSMutableDictionary *seriesDictionary = [NSMutableDictionary dictionary];
 		
 		[seriesDictionary setObject:notNil([s valueForKey:@"seriesInstanceUID"]) forKey:@"seriesInstanceUID"];
+		[seriesDictionary setObject:notNil([s valueForKey:@"seriesDICOMUID"]) forKey:@"seriesDICOMUID"];
 		
 		NSArray *dicomImageArray = [[s valueForKey:@"images"] allObjects];
 		DicomImage *im;
