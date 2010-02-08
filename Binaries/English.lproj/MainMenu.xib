@@ -12,6 +12,7 @@
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<integer value="13870"/>
+			<integer value="12800"/>
 			<integer value="14015"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
@@ -8744,7 +8745,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="689699258">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSScrollView" id="258915578">
@@ -9110,8 +9111,59 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 								<int key="NSPeriodicInterval">25</int>
 							</object>
 						</object>
+						<object class="NSButton" id="91397173">
+							<reference key="NSNextResponder" ref="689699258"/>
+							<int key="NSvFlags">256</int>
+							<string key="NSFrame">{{182, 161}, {154, 28}}</string>
+							<reference key="NSSuperview" ref="689699258"/>
+							<int key="NSTag">4</int>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSButtonCell" key="NSCell" id="939553385">
+								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags2">134348800</int>
+								<string key="NSContents">Re-Index in 3D in DB</string>
+								<reference key="NSSupport" ref="26"/>
+								<reference key="NSControlView" ref="91397173"/>
+								<int key="NSTag">4</int>
+								<int key="NSButtonFlags">-2038284033</int>
+								<int key="NSButtonFlags2">1</int>
+								<reference key="NSAlternateImage" ref="215877702"/>
+								<string key="NSAlternateContents"/>
+								<object class="NSMutableString" key="NSKeyEquivalent">
+									<characters key="NS.bytes"/>
+								</object>
+								<int key="NSPeriodicDelay">200</int>
+								<int key="NSPeriodicInterval">25</int>
+							</object>
+						</object>
+						<object class="NSButton" id="118889538">
+							<reference key="NSNextResponder" ref="689699258"/>
+							<int key="NSvFlags">256</int>
+							<string key="NSFrame">{{182, 3}, {154, 28}}</string>
+							<reference key="NSSuperview" ref="689699258"/>
+							<int key="NSTag">4</int>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSButtonCell" key="NSCell" id="188811244">
+								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags2">134348800</int>
+								<string key="NSContents">Re-Index in 4D in DB</string>
+								<reference key="NSSupport" ref="26"/>
+								<reference key="NSControlView" ref="118889538"/>
+								<int key="NSTag">4</int>
+								<int key="NSButtonFlags">-2038284033</int>
+								<int key="NSButtonFlags2">1</int>
+								<reference key="NSAlternateImage" ref="215877702"/>
+								<string key="NSAlternateContents"/>
+								<object class="NSMutableString" key="NSKeyEquivalent">
+									<characters key="NS.bytes"/>
+								</object>
+								<int key="NSPeriodicDelay">200</int>
+								<int key="NSPeriodicInterval">25</int>
+							</object>
+						</object>
 					</array>
 					<string key="NSFrameSize">{727, 353}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{213, 129}</string>
@@ -14297,6 +14349,22 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 					<int key="connectionID">14073</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">reparseIn3D:</string>
+						<reference key="source" ref="772029037"/>
+						<reference key="destination" ref="91397173"/>
+					</object>
+					<int key="connectionID">14086</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">reparseIn4D:</string>
+						<reference key="source" ref="772029037"/>
+						<reference key="destination" ref="118889538"/>
+					</object>
+					<int key="connectionID">14087</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -17766,6 +17834,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="870426261"/>
 							<reference ref="621850264"/>
 							<reference ref="494129299"/>
+							<reference ref="91397173"/>
+							<reference ref="118889538"/>
 						</array>
 						<reference key="parent" ref="844471319"/>
 					</object>
@@ -20288,6 +20358,32 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="object" ref="93659742"/>
 						<reference key="parent" ref="963940439"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14080</int>
+						<reference key="object" ref="91397173"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="939553385"/>
+						</array>
+						<reference key="parent" ref="689699258"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14081</int>
+						<reference key="object" ref="939553385"/>
+						<reference key="parent" ref="91397173"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14083</int>
+						<reference key="object" ref="118889538"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="188811244"/>
+						</array>
+						<reference key="parent" ref="689699258"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14084</int>
+						<reference key="object" ref="188811244"/>
+						<reference key="parent" ref="118889538"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -20711,9 +20807,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<integer value="1" key="12356.ImportedFromIB2"/>
 				<string key="12364.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="12364.ImportedFromIB2"/>
-				<string key="12366.IBEditorWindowLastContentRect">{{363, 732}, {505, 184}}</string>
+				<string key="12366.IBEditorWindowLastContentRect">{{363, 1032}, {505, 184}}</string>
 				<string key="12366.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="12366.IBWindowTemplateEditedContentRect">{{363, 732}, {505, 184}}</string>
+				<string key="12366.IBWindowTemplateEditedContentRect">{{363, 1032}, {505, 184}}</string>
 				<integer value="1" key="12366.ImportedFromIB2"/>
 				<string key="12366.editorWindowContentRectSynchronizationRect">{{189, 497}, {490, 180}}</string>
 				<integer value="0" key="12366.windowTemplate.hasMaxSize"/>
@@ -20913,9 +21009,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<integer value="1" key="12785.ImportedFromIB2"/>
 				<string key="12786.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="12786.ImportedFromIB2"/>
-				<string key="12799.IBEditorWindowLastContentRect">{{63, 1112}, {727, 353}}</string>
+				<string key="12799.IBEditorWindowLastContentRect">{{1255, 534}, {727, 353}}</string>
 				<string key="12799.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="12799.IBWindowTemplateEditedContentRect">{{63, 1112}, {727, 353}}</string>
+				<string key="12799.IBWindowTemplateEditedContentRect">{{1255, 534}, {727, 353}}</string>
 				<integer value="1" key="12799.ImportedFromIB2"/>
 				<string key="12799.editorWindowContentRectSynchronizationRect">{{604, 503}, {727, 353}}</string>
 				<integer value="0" key="12799.windowTemplate.hasMaxSize"/>
@@ -21648,9 +21744,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="13856.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13865.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13866.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="13869.IBEditorWindowLastContentRect">{{502, 694}, {813, 462}}</string>
+				<string key="13869.IBEditorWindowLastContentRect">{{502, 1032}, {813, 462}}</string>
 				<string key="13869.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="13869.IBWindowTemplateEditedContentRect">{{502, 694}, {813, 462}}</string>
+				<string key="13869.IBWindowTemplateEditedContentRect">{{502, 1032}, {813, 462}}</string>
 				<boolean value="NO" key="13869.NSWindowTemplate.visibleAtLaunch"/>
 				<boolean value="YES" key="13869.windowTemplate.hasMaxSize"/>
 				<boolean value="YES" key="13869.windowTemplate.hasMinSize"/>
@@ -21808,6 +21904,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="14079.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1408.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="1408.ImportedFromIB2"/>
+				<string key="14080.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<integer value="1" key="14080.ImportedFromIB2"/>
+				<string key="14081.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="14083.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<integer value="1" key="14083.ImportedFromIB2"/>
+				<string key="14084.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1409.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="1409.ImportedFromIB2"/>
 				<string key="143.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -21993,7 +22095,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">14079</int>
+			<int key="maxID">14087</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -22115,6 +22217,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="refreshDatabase:">id</string>
 						<string key="refreshMatrix:">id</string>
 						<string key="regenerateAutoComments:">id</string>
+						<string key="reparseIn3D:">id</string>
+						<string key="reparseIn4D:">id</string>
 						<string key="saveDBListAs:">id</string>
 						<string key="search:">id</string>
 						<string key="selectAll3DSeries:">id</string>
@@ -22127,7 +22231,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="showLogWindow:">id</string>
 						<string key="showhide:">id</string>
 						<string key="smartAlbumHelpButton:">id</string>
-						<string key="srReports:">id</string>
 						<string key="storeSCPComplete:">id</string>
 						<string key="switchSoundex:">id</string>
 						<string key="toggleBonjourSharing:">id</string>
@@ -22576,6 +22679,20 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">JSON/NSObject+SBJSON.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">JSON/SBJsonWriter.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
 					<reference key="sourceIdentifier" ref="717738730"/>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -22612,6 +22729,13 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">DICOMToNSString.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSString</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">JSON/NSString+SBJSON.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -23290,7 +23414,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="contextualMenuEvent:">id</string>
 						<string key="convMatrixAction:">id</string>
 						<string key="copySettingsToOthers:">id</string>
-						<string key="createKeyObjectNote:">id</string>
 						<string key="createLayerROIFromSelectedROI:">id</string>
 						<string key="displayDICOMOverlays:">id</string>
 						<string key="editSUVinjectionTime:">id</string>
@@ -24733,6 +24856,13 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">AppKit.framework/Headers/NSWindowScripting.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSWindow</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">Nitrogen.framework/Headers/N2Window.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

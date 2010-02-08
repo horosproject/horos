@@ -5509,8 +5509,12 @@ static NSArray*	statesArray = nil;
 		 **********/
 		NSManagedObject *studySelected = [[[item entity] name] isEqual:@"Study"] ? item : [item valueForKey:@"study"];
 		
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObject:studySelected forKey:@"Selected Study"];
-		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixNewStudySelectedNotification object:self userInfo:(NSDictionary *)userInfo];
+		NSDictionary *userInfo = nil;
+		if( studySelected)
+		{
+			userInfo = [NSDictionary dictionaryWithObject:studySelected forKey:@"Selected Study"];
+			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixNewStudySelectedNotification object:self userInfo:(NSDictionary *)userInfo];
+		}
 		
 		BOOL	refreshMatrix = YES;
 		long	nowFiles = [[item valueForKey:@"noFiles"] intValue];
@@ -11254,6 +11258,16 @@ static BOOL needToRezoom;
 	[NSApp stopModalWithCode: 6];
 }
 
+- (IBAction) reparseIn3D:(id) sender
+{
+	[NSApp stopModalWithCode: 10];
+}
+
+- (IBAction) reparseIn4D:(id) sender
+{
+	[NSApp stopModalWithCode: 11];
+}
+
 - (IBAction) selectAll4DSeries:(id) sender
 {
 	if( [subOpenMatrix4D isEnabled] == YES)
@@ -11594,6 +11608,145 @@ static BOOL needToRezoom;
 				else if( result == 7)
 				{
 					NSLog( @"Open all 4D");
+				}
+				else if( result == 10)
+				{
+					NSLog( @"Reparse in 3D");
+					
+					// Create the new series
+					
+					NSManagedObjectContext *context = [self managedObjectContext];
+					
+					[context lock];
+					
+					@try
+					{					
+						int reparseIndex = 1;
+						
+						DicomSeries *originalSeries = [[[splittedSeries lastObject] lastObject] valueForKey: @"Series"];
+						
+						for( NSArray *array in splittedSeries)
+						{
+							DicomSeries *newSeries = [NSEntityDescription insertNewObjectForEntityForName: @"Series" inManagedObjectContext: context];
+							
+							for ( NSString *name in [[[NSEntityDescription entityForName: @"Series" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+							{
+								id value = nil;
+								
+								if( [name isEqualToString: @"seriesInstanceUID"])
+									value = [[originalSeries valueForKey: name] stringByAppendingFormat: @"RP-%d", reparseIndex++];
+								else
+									value = [originalSeries valueForKey: name];
+									
+								if( value)
+									[newSeries setValue: value forKey: name];
+							}
+							
+							[newSeries setValue: [originalSeries valueForKey: @"study"] forKey: @"study"];
+							
+							// Add the images
+							for( DicomImage *image in array)
+							{
+								DicomImage *newImage = [NSEntityDescription insertNewObjectForEntityForName: @"Image" inManagedObjectContext: context];
+							
+								for ( NSString *name in [[[NSEntityDescription entityForName: @"Image" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+								{
+									[newImage setValue: [image valueForKey: name] forKey: name];
+								}
+								
+								[image setValue: newSeries forKey: @"series"];
+							}
+							
+							[newSeries setValue: [NSNumber numberWithInt: 0] forKey: @"numberOfImages"];
+							[newSeries setValue: nil forKey:@"thumbnail"];
+						}
+							
+						[context deleteObject: originalSeries];
+						[context save: nil];
+					}
+					@catch (NSException * e)
+					{
+						NSLog( @"***** exception during reparsing : %@", e);
+					}
+					
+					[context unlock];
+					
+					[self refreshDatabase: self];
+					[self refreshMatrix: self];
+					
+					result = 0;
+				}
+				else if( result == 11)
+				{
+					NSLog( @"Reparse in 4D");
+					
+					// Create the new series
+					
+					NSManagedObjectContext *context = [self managedObjectContext];
+					
+					[context lock];
+					
+					@try
+					{					
+						int reparseIndex = 1;
+						
+						DicomSeries *originalSeries = [[[splittedSeries lastObject] lastObject] valueForKey: @"Series"];
+						
+						for( int i = 0; i < [[splittedSeries objectAtIndex: 0] count]; i++)
+						{
+							NSMutableArray	*array4D = [NSMutableArray array];
+							
+							for ( NSArray *array in splittedSeries)
+								[array4D addObject: [array objectAtIndex: i]];
+							
+							DicomSeries *newSeries = [NSEntityDescription insertNewObjectForEntityForName: @"Series" inManagedObjectContext: context];
+							
+							for ( NSString *name in [[[NSEntityDescription entityForName: @"Series" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+							{
+								id value = nil;
+								
+								if( [name isEqualToString: @"seriesInstanceUID"])
+									value = [[originalSeries valueForKey: name] stringByAppendingFormat: @"RP-%d", reparseIndex++];
+								else
+									value = [originalSeries valueForKey: name];
+									
+								if( value)
+									[newSeries setValue: value forKey: name];
+							}
+							
+							[newSeries setValue: [originalSeries valueForKey: @"study"] forKey: @"study"];
+							
+							// Add the images
+							for( DicomImage *image in array4D)
+							{
+								DicomImage *newImage = [NSEntityDescription insertNewObjectForEntityForName: @"Image" inManagedObjectContext: context];
+							
+								for ( NSString *name in [[[NSEntityDescription entityForName: @"Image" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+								{
+									[newImage setValue: [image valueForKey: name] forKey: name];
+								}
+								
+								[image setValue: newSeries forKey: @"series"];
+							}
+							
+							[newSeries setValue: [NSNumber numberWithInt: 0] forKey: @"numberOfImages"];
+							[newSeries setValue: nil forKey:@"thumbnail"];
+						}
+						
+						[context deleteObject: originalSeries];
+						[context save: nil];
+					}
+					@catch (NSException * e)
+					{
+						NSLog( @"***** exception during reparsing : %@", e);
+					}
+					
+					[context unlock];
+					
+					[self refreshDatabase: self];
+					[self refreshMatrix: self];
+					
+					result = 0;
 				}
 				else
 				{

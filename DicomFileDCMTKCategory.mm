@@ -669,6 +669,7 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		if( [self SeparateCardiacMR])
 		{
+			// Philips
 			if( [self SeparateCardiacMRMode] == 0)
 			{
 				DcmTagKey tag = DcmTagKey( 0x2001, 0x1008); 

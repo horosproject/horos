@@ -414,6 +414,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) createDBContextualMenu;
 - (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination;
 - (int) askForZIPPassword: (NSString*) file destination: (NSString*) destination;
+- (IBAction) reparseIn3D:(id) sender;
+- (IBAction) reparseIn4D:(id) sender;
 
 //- (short) createAnonymizedFile:(NSString*) srcFile :(NSString*) dstFile;
 
