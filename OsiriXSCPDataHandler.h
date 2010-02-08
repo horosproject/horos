@@ -57,6 +57,8 @@ typedef struct
 	int moveArraySize;
 	char **moveArray;
 	logStruct *logFiles;
+	
+	NSMutableDictionary *findTemplate;
 }
 
 @property (retain) NSString *callingAET;

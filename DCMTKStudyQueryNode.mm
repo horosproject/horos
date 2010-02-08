@@ -157,6 +157,8 @@
 	dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "SERIES", OFTrue);
 	
+//	dataset->print( COUT);
+	
 	return dataset;
 }
 
@@ -171,6 +173,8 @@
 
 - (void)addChild:(DcmDataset *)dataset
 {
+//	dataset->print( COUT);
+
 	if (!_children)
 		_children = [[NSMutableArray alloc] init];
 	

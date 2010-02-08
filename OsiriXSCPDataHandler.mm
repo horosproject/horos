@@ -57,6 +57,7 @@ extern NSManagedObjectContext *staticContext;
 		[findEnumerator release];
 	
 	[callingAET release];
+	[findTemplate release];
 	
 	[super dealloc];
 }
@@ -1106,23 +1107,37 @@ extern NSManagedObjectContext *staticContext;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	NS_DURING
-	
-	if ([fetchedObject valueForKey:@"sopInstanceUID"])
-		dataset ->putAndInsertString(DCM_SOPInstanceUID, [[fetchedObject valueForKey:@"sopInstanceUID"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+
+	int elemCount = (int)(dataset->card());
+    for (int elemIndex=0; elemIndex<elemCount; elemIndex++)
+	{
+		DcmElement* dcelem = dataset->getElement(elemIndex);
+		DcmTagKey key = dcelem->getTag().getXTag();
 		
-	if ([fetchedObject valueForKey:@"instanceNumber"])
-	{
-		NSString *number = [[fetchedObject valueForKey:@"instanceNumber"] stringValue];
-		dataset ->putAndInsertString(DCM_InstanceNumber, [number cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		if( key == DCM_SOPInstanceUID)
+		{
+			if ([fetchedObject valueForKey: @"sopInstanceUID"] && [findTemplate valueForKey: [NSString stringWithFormat: @"(0x%04x,0x%04x)", key.getGroup(), key.getElement()]])
+				dataset ->putAndInsertString( key, [[fetchedObject valueForKey:@"sopInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		}
+		else if( key == DCM_InstanceNumber)
+		{
+			if ([fetchedObject valueForKey: @"instanceNumber"] && [findTemplate valueForKey: [NSString stringWithFormat: @"(0x%04x,0x%04x)", key.getGroup(), key.getElement()]])
+				dataset ->putAndInsertString( key, [[fetchedObject valueForKey:@"instanceNumber"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		}
+		else if( key == DCM_NumberOfFrames)
+		{
+			if ([fetchedObject valueForKey: @"numberOfFrames"] && [findTemplate valueForKey: [NSString stringWithFormat: @"(0x%04x,0x%04x)", key.getGroup(), key.getElement()]])
+				dataset ->putAndInsertString( key, [[fetchedObject valueForKey:@"numberOfFrames"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		}
+		else
+		{
+//			NSLog( @"--- CFind response not available : (0x%04x,0x%04x)", key.getGroup(), key.getElement());
+			dataset ->insertEmptyElement( key, OFTrue);
+		}
 	}
 	
-	if ([fetchedObject valueForKey:@"numberOfFrames"])
-	{
-		NSString *number = [[fetchedObject valueForKey:@"numberOfFrames"] stringValue];
-		dataset ->putAndInsertString(DCM_NumberOfFrames, [number cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
-	}
 	//UTF 8 Encoding
-	//dataset ->putAndInsertString(DCM_SpecificCharacterSet,  "ISO_IR 192") ;
+	//dataset ->putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 192");
 	
 	dataset ->putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE");
 	
@@ -1144,6 +1159,19 @@ extern NSManagedObjectContext *staticContext;
 	const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	OFCondition cond;
+	
+	[findTemplate release];
+	findTemplate = [[NSMutableDictionary alloc] init];
+	
+	int elemCount = (int)(dataset->card());
+    for (int elemIndex=0; elemIndex<elemCount; elemIndex++)
+	{
+		NSPredicate *predicate = nil;
+		DcmElement* dcelem = dataset->getElement(elemIndex);
+		DcmTagKey key = dcelem->getTag().getXTag();
+		
+		[findTemplate setObject: [NSNumber numberWithBool: YES] forKey: [NSString stringWithFormat: @"(0x%04x,0x%04x)", key.getGroup(), key.getElement()]];
+	}
 	
 	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
