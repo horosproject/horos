@@ -84,9 +84,9 @@ void DcmQueryRetrieveFindContext::callbackHandler(
 
     if (*responseIdentifiers != NULL)
     {
-
-      if (! DU_putStringDOElement(*responseIdentifiers, DCM_RetrieveAETitle, ourAETitle.c_str())) {
-	DcmQueryRetrieveOptions::errmsg("DO Error: adding Retrieve AE Title");
+      if (! DU_putStringDOElement(*responseIdentifiers, DCM_RetrieveAETitle, ourAETitle.c_str()))
+	  {
+		DcmQueryRetrieveOptions::errmsg("DO Error: adding Retrieve AE Title");
       }
     }
 

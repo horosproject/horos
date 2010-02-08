@@ -1105,6 +1105,7 @@ extern NSManagedObjectContext *staticContext;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NS_DURING
+	
 	if ([fetchedObject valueForKey:@"sopInstanceUID"])
 		dataset ->putAndInsertString(DCM_SOPInstanceUID, [[fetchedObject valueForKey:@"sopInstanceUID"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 		
@@ -1113,6 +1114,7 @@ extern NSManagedObjectContext *staticContext;
 		NSString *number = [[fetchedObject valueForKey:@"instanceNumber"] stringValue];
 		dataset ->putAndInsertString(DCM_InstanceNumber, [number cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 	}
+	
 	if ([fetchedObject valueForKey:@"numberOfFrames"])
 	{
 		NSString *number = [[fetchedObject valueForKey:@"numberOfFrames"] stringValue];
@@ -1122,6 +1124,8 @@ extern NSManagedObjectContext *staticContext;
 	//dataset ->putAndInsertString(DCM_SpecificCharacterSet,  "ISO_IR 192") ;
 	
 	dataset ->putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE");
+	
+	dataset->print(COUT);
 	
 	NS_HANDLER
 	NS_ENDHANDLER

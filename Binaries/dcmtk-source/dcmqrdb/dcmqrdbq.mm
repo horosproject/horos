@@ -463,7 +463,9 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
     **** Find Query Level and contruct a list
     **** of query identifiers
     ***/
-
+	
+//	findRequestIdentifiers->print(COUT);
+	
     int elemCount = (int)(findRequestIdentifiers->card());
     for (int elemIndex=0; elemIndex<elemCount; elemIndex++) {
 
