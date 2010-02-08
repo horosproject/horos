@@ -1104,6 +1104,7 @@ extern NSManagedObjectContext *staticContext;
 - (void)imageDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	NS_DURING
 	
 	if ([fetchedObject valueForKey:@"sopInstanceUID"])
@@ -1125,7 +1126,7 @@ extern NSManagedObjectContext *staticContext;
 	
 	dataset ->putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE");
 	
-	dataset->print(COUT);
+//	dataset->print(COUT);
 	
 	NS_HANDLER
 	NS_ENDHANDLER
