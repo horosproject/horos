@@ -962,7 +962,7 @@ extern NSManagedObjectContext *staticContext;
 				else if( key == DCM_StudyTime && [fetchedObject valueForKey:@"date"])
 				{
 					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
-					dataset ->putAndInsertString(DCM_StudyTime, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset ->putAndInsertString(DCM_StudyTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				else if( key == DCM_StudyInstanceUID && [fetchedObject valueForKey:@"studyInstanceUID"])
 				{
@@ -1065,7 +1065,7 @@ extern NSManagedObjectContext *staticContext;
 				else if( key == DCM_SeriesTime && [fetchedObject valueForKey:@"date"])
 				{
 					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
-					dataset ->putAndInsertString(DCM_SeriesTime, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset ->putAndInsertString(DCM_SeriesTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				
 				else if( key == DCM_Modality && [fetchedObject valueForKey:@"modality"])
