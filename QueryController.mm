@@ -708,6 +708,11 @@ extern "C"
 		{
 			[self retrieveAndView: self];
 		}
+		else if( c == 27) //Escape
+		{
+			DCMTKServiceClassUser *u = [queryManager rootNode];
+			u._abortAssociation = YES;
+		}
 		else
 		{
 			[pressedKeys appendString: [event characters]];

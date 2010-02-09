@@ -14,11 +14,12 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class DCMTKRootQueryNode;
 
 /** \brief Controller for performing query */
 @interface QueryArrayController : NSObject
 {
-	id rootNode;
+	DCMTKRootQueryNode *rootNode;
 	NSMutableDictionary *filters;
 	NSString *callingAET;
 	NSString *calledAET;

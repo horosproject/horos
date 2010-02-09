@@ -22,6 +22,8 @@
 
 @implementation DCMTKServiceClassUser
 
+@synthesize _abortAssociation;
+
 - (id) initWithCallingAET:(NSString *)myAET  
 			calledAET:(NSString *)theirAET  
 			hostname:(NSString *)hostname 

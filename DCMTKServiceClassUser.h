@@ -74,6 +74,8 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 	const char *_dhparam;
 }
 
+@property BOOL _abortAssociation;
+
 - (id) initWithCallingAET:(NSString *)myAET  
 			calledAET:(NSString *)theirAET  
 			hostname:(NSString *)hostname 

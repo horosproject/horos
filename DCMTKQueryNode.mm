@@ -1388,7 +1388,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		if (_verbose)
 			printf("Requesting Association\n");
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO && [NSThread currentThread] == [AppController mainThread])
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 		{
 			NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: net], @"net", [NSValue valueWithPointer: params], @"params", nil];
@@ -1397,7 +1397,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			[NSThread detachNewThreadSelector: @selector( requestAssociationThread:) toTarget: self withObject: dict];
 			[NSThread sleepForTimeInterval: 0.1];
 			
-			while( [lock tryLock] == NO && [wait aborted] == NO)
+			while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO)
 			{
 				[wait run];
 			}
@@ -1483,7 +1483,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		{
 			if (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
 			{
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO && [NSThread currentThread] == [AppController mainThread])
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 				{
 					NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
 					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: dataset], @"dataset", nil];
@@ -1492,7 +1492,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 					[NSThread detachNewThreadSelector: @selector( cFindThread:) toTarget: self withObject: dict];
 					[NSThread sleepForTimeInterval: 0.1];
 					
-					while( [lock tryLock] == NO && [wait aborted] == NO)
+					while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO)
 					{
 						[wait run];
 					}
