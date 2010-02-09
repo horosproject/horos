@@ -932,45 +932,45 @@ extern NSManagedObjectContext *staticContext;
 				
 				if( key == DCM_PatientsName && [fetchedObject valueForKey:@"name"])
 				{
-					dataset ->putAndInsertString(DCM_PatientsName, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString(DCM_PatientsName, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:encoding]);
 				}
 				
 				else if( key == DCM_PatientID && [fetchedObject valueForKey:@"patientID"])
 				{
-					dataset ->putAndInsertString(DCM_PatientID, [[fetchedObject valueForKey:@"patientID"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString(DCM_PatientID, [[fetchedObject valueForKey:@"patientID"] cStringUsingEncoding:encoding]);
 				}
 				
 				else if( key == DCM_AccessionNumber && [fetchedObject valueForKey:@"accessionNumber"])
 				{
-					dataset ->putAndInsertString(DCM_AccessionNumber, [[fetchedObject valueForKey:@"accessionNumber"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString(DCM_AccessionNumber, [[fetchedObject valueForKey:@"accessionNumber"] cStringUsingEncoding:encoding]);
 				}
 				
 				else if( key == DCM_StudyDescription && [fetchedObject valueForKey:@"studyName"])
 				{
-					dataset ->putAndInsertString( DCM_StudyDescription, [[fetchedObject valueForKey:@"studyName"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString( DCM_StudyDescription, [[fetchedObject valueForKey:@"studyName"] cStringUsingEncoding:encoding]);
 				}
 				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKey:@"dateOfBirth"])
 				{
 					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"dateOfBirth"]];
-					dataset ->putAndInsertString(DCM_PatientsBirthDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset->putAndInsertString(DCM_PatientsBirthDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				else if( key == DCM_StudyDate && [fetchedObject valueForKey:@"date"])
 				{
 					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
-					dataset ->putAndInsertString(DCM_StudyDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset->putAndInsertString(DCM_StudyDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				else if( key == DCM_StudyTime && [fetchedObject valueForKey:@"date"])
 				{
 					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
-					dataset ->putAndInsertString(DCM_StudyTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset->putAndInsertString(DCM_StudyTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				else if( key == DCM_StudyInstanceUID && [fetchedObject valueForKey:@"studyInstanceUID"])
 				{
-					dataset ->putAndInsertString(DCM_StudyInstanceUID, [[fetchedObject valueForKey:@"studyInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+					dataset->putAndInsertString(DCM_StudyInstanceUID, [[fetchedObject valueForKey:@"studyInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 				}
 				else if( key == DCM_StudyID && [fetchedObject valueForKey:@"id"])
 				{
-					dataset ->putAndInsertString(DCM_StudyID, [[fetchedObject valueForKey:@"id"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+					dataset->putAndInsertString(DCM_StudyID, [[fetchedObject valueForKey:@"id"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 				}
 				else if( key == DCM_ModalitiesInStudy && [fetchedObject valueForKey:@"modality"])
 				{
@@ -991,23 +991,23 @@ extern NSManagedObjectContext *staticContext;
 					if( SC) [modalities addObject: @"SC"];
 					if( SR) [modalities addObject: @"SR"];
 				
-					dataset ->putAndInsertString(DCM_ModalitiesInStudy, [[modalities componentsJoinedByString:@"\\"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset->putAndInsertString(DCM_ModalitiesInStudy, [[modalities componentsJoinedByString:@"\\"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				else if( key == DCM_ReferringPhysiciansName && [fetchedObject valueForKey:@"referringPhysician"])
 				{
-					dataset ->putAndInsertString(DCM_ReferringPhysiciansName, [[fetchedObject valueForKey:@"referringPhysician"] cStringUsingEncoding:NSUTF8StringEncoding]);
+					dataset->putAndInsertString(DCM_ReferringPhysiciansName, [[fetchedObject valueForKey:@"referringPhysician"] cStringUsingEncoding:NSUTF8StringEncoding]);
 				}
 				else if( key == DCM_PerformingPhysiciansName && [fetchedObject valueForKey:@"performingPhysician"])
 				{
-					dataset ->putAndInsertString(DCM_PerformingPhysiciansName, [[fetchedObject valueForKey:@"performingPhysician"] cStringUsingEncoding:NSUTF8StringEncoding]);
+					dataset->putAndInsertString(DCM_PerformingPhysiciansName, [[fetchedObject valueForKey:@"performingPhysician"] cStringUsingEncoding:NSUTF8StringEncoding]);
 				}
 				else if( key == DCM_InstitutionName && [fetchedObject valueForKey:@"institutionName"])
 				{
-					dataset ->putAndInsertString(DCM_InstitutionName, [[fetchedObject valueForKey:@"institutionName"]  cStringUsingEncoding:NSUTF8StringEncoding]);
+					dataset->putAndInsertString(DCM_InstitutionName, [[fetchedObject valueForKey:@"institutionName"]  cStringUsingEncoding:NSUTF8StringEncoding]);
 				}
 				else if( key == DCM_SpecificCharacterSet)
 				{
-					dataset ->putAndInsertString(DCM_SpecificCharacterSet, [specificCharacterSet cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+					dataset->putAndInsertString(DCM_SpecificCharacterSet, [specificCharacterSet cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 				}
 				else if( key == DCM_NumberOfStudyRelatedInstances && [fetchedObject valueForKey:@"noFiles"])
 				{
@@ -1053,34 +1053,34 @@ extern NSManagedObjectContext *staticContext;
 				
 				if( key == DCM_SeriesDescription && [fetchedObject valueForKey:@"name"])
 				{
-					dataset ->putAndInsertString(DCM_SeriesDescription, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:NSUTF8StringEncoding]);
+					dataset->putAndInsertString(DCM_SeriesDescription, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:NSUTF8StringEncoding]);
 				}
 				
 				else if( key == DCM_SeriesDate && [fetchedObject valueForKey:@"date"])
 				{
 					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
-					dataset ->putAndInsertString(DCM_SeriesDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset->putAndInsertString(DCM_SeriesDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				
 				else if( key == DCM_SeriesTime && [fetchedObject valueForKey:@"date"])
 				{
 					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
-					dataset ->putAndInsertString(DCM_SeriesTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset->putAndInsertString(DCM_SeriesTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				
 				else if( key == DCM_Modality && [fetchedObject valueForKey:@"modality"])
 				{
-					dataset ->putAndInsertString(DCM_Modality, [[fetchedObject valueForKey:@"modality"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset->putAndInsertString(DCM_Modality, [[fetchedObject valueForKey:@"modality"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				
 				else if( key == DCM_SeriesNumber && [fetchedObject valueForKey:@"id"])
 				{
-					dataset ->putAndInsertString( DCM_SeriesNumber, [[[fetchedObject valueForKey:@"id"] stringValue] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset->putAndInsertString( DCM_SeriesNumber, [[[fetchedObject valueForKey:@"id"] stringValue] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				
 				else if( key == DCM_SeriesInstanceUID && [fetchedObject valueForKey:@"seriesDICOMUID"])
 				{
-					dataset ->putAndInsertString(DCM_SeriesInstanceUID, [[fetchedObject valueForKey:@"seriesDICOMUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset->putAndInsertString(DCM_SeriesInstanceUID, [[fetchedObject valueForKey:@"seriesDICOMUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				
 				else if( key == DCM_NumberOfSeriesRelatedInstances && [fetchedObject valueForKey:@"noFiles"])
@@ -1088,12 +1088,12 @@ extern NSManagedObjectContext *staticContext;
 					int numberInstances = [[fetchedObject valueForKey:@"noFilesExcludingMultiFrames"] intValue];
 					char value[ 20];
 					sprintf( value, "%d", numberInstances);
-					dataset ->putAndInsertString(DCM_NumberOfSeriesRelatedInstances, value);
+					dataset->putAndInsertString(DCM_NumberOfSeriesRelatedInstances, value);
 				}
 				else dataset ->insertEmptyElement( key, OFTrue);
 			}
 		}
-		dataset ->putAndInsertString(DCM_QueryRetrieveLevel, "SERIES");
+		dataset->putAndInsertString(DCM_QueryRetrieveLevel, "SERIES");
 	}
 	
 	@catch( NSException *e)
@@ -1120,21 +1120,21 @@ extern NSManagedObjectContext *staticContext;
 				
 				if( key == DCM_SOPInstanceUID && [fetchedObject valueForKey: @"sopInstanceUID"])
 				{
-					dataset ->putAndInsertString( key, [[fetchedObject valueForKey:@"sopInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset->putAndInsertString( key, [[fetchedObject valueForKey:@"sopInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				else if( key == DCM_InstanceNumber && [fetchedObject valueForKey: @"instanceNumber"])
 				{
-					dataset ->putAndInsertString( key, [[[fetchedObject valueForKey:@"instanceNumber"] stringValue] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset->putAndInsertString( key, [[[fetchedObject valueForKey:@"instanceNumber"] stringValue] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				else if( key == DCM_NumberOfFrames && [fetchedObject valueForKey: @"numberOfFrames"])
 				{
-					dataset ->putAndInsertString( key, [[[fetchedObject valueForKey:@"numberOfFrames"] stringValue] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+					dataset->putAndInsertString( key, [[[fetchedObject valueForKey:@"numberOfFrames"] stringValue] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
 				else
 					dataset ->insertEmptyElement( key, OFTrue);
 			}
 		}
-		dataset ->putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE");
+		dataset->putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE");
 	}
 	
 	@catch( NSException *e)
