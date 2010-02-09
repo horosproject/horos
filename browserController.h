@@ -185,7 +185,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 //	StructuredReportController		*structuredReportController;
 	
 	NSMutableArray					*deleteQueueArray;
-	NSLock							*deleteQueue, *deleteInProgress;
+	NSRecursiveLock					*deleteQueue, *deleteInProgress;
 	
 	NSMutableArray					*autoroutingQueueArray;
 	NSLock							*autoroutingQueue, *autoroutingInProgress;

@@ -12545,14 +12545,14 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		previewPix = [[NSMutableArray alloc] initWithCapacity:0];
 		
-		timer = [[NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(previewPerformAnimation:) userInfo:self repeats:YES] retain];
+		timer = [[NSTimer scheduledTimerWithTimeInterval: 0.15 target:self selector:@selector(previewPerformAnimation:) userInfo:self repeats:YES] retain];
 		if([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] < 1) [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"LISTENERCHECKINTERVAL"];
 		IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
-		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval:63.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
-		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//*60
-		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval:20*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain];
-		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain];
-		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:35 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain];
+		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 63.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];	//63.33
+		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
+		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 20*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
+		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain]; // 10
+		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 35 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain]; // 35
 		
 		
 		loadPreviewIndex = 0;
@@ -13424,7 +13424,7 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void) emptyDeleteQueueThread
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		
 	[deleteInProgress lock];
 	[deleteQueue lock];
@@ -13445,12 +13445,14 @@ static NSArray*	openSubSeriesArray = nil;
 			[folders addObject: [file stringByDeletingLastPathComponent]];
 		}
 		
+		[deleteInProgress unlock];
+		
 		[folders removeDuplicatedStrings];
+		
+		[checkIncomingLock lock];
 		
 		for( NSString *f in folders)
 		{
-			[checkIncomingLock lock];
-			
 			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: f traverseLink: NO];
 			
 			if( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
@@ -13472,16 +13474,17 @@ static NSArray*	openSubSeriesArray = nil;
 					}
 				}
 			}
-			[checkIncomingLock unlock];
+			
 		}
 		
+		[checkIncomingLock unlock];
 		
 		NSLog(@"delete Queue end");
 		
 		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files removing", nil) description: NSLocalizedString( @"Finished", nil) name:@"delete"];
 	}
+	else [deleteInProgress unlock];
 	
-	[deleteInProgress unlock];
 	[pool release];
 }
 
