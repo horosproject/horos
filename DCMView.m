@@ -3885,277 +3885,284 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		// ROI TOOLS
 		if( [self roiTool:tool] == YES && crossMove == -1 )
 		{
-			[self deleteMouseDownTimer];
-			
-			[[self windowController] addToUndoQueue:@"roi"];
-			
-			BOOL		DoNothing = NO;
-			NSInteger	selected = -1, i;
-			NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
-			tempPt = [self ConvertFromNSView2GL:tempPt];
-			
-			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+			@try 
 			{
-				[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
-				[DCMView setDefaults];
-			}
-			
-			BOOL roiFound = NO;
-			
-			if (!(([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSShiftKeyMask)))
-				for( i = 0; i < [curRoiList count] && !roiFound; i++)
+				[self deleteMouseDownTimer];
+				
+				[[self windowController] addToUndoQueue:@"roi"];
+				
+				BOOL		DoNothing = NO;
+				NSInteger	selected = -1, i;
+				NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
+				tempPt = [self ConvertFromNSView2GL:tempPt];
+				
+				if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 				{
-					if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
-					{
-						selected = i;
-						roiFound = YES;
-					}
+					[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+					[DCMView setDefaults];
 				}
-			
-			if( roiFound == NO)
-			{
-				for( int i = 0; i < [curRoiList count]; i++)
-				{
-					if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
+				
+				BOOL roiFound = NO;
+				
+				if (!(([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSShiftKeyMask)))
+					for( i = 0; i < [curRoiList count] && !roiFound; i++)
 					{
-						selected = i;
-						break;
-					}
-				}
-			}
-					
-			if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask) )
-			{
-				if( selected != -1 )
-				{
-					if( [[curRoiList objectAtIndex: selected] ROImode] == ROI_selected)
-					{
-						[[curRoiList objectAtIndex: selected] setROIMode: ROI_sleep];
-						// unselect all ROIs in the same group
-						[[self windowController] setMode:ROI_sleep toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]];
-						DoNothing = YES;
-					}
-				}
-			}
-			else
-			{
-				if( selected == -1 || ( [[curRoiList objectAtIndex: selected] ROImode] != ROI_selected &&  [[curRoiList objectAtIndex: selected] ROImode] != ROI_selectedModify))
-				{
-					// Unselect previous ROIs
-					for( i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
-				}
-			}
-					
-			if( DoNothing == NO)
-			{
-				if( selected >= 0 && drawingROI == NO)
-				{
-					[curROI release];
-					curROI = nil;
-					
-					// Bring the selected ROI to the first position in array
-					ROI *roi = [curRoiList objectAtIndex: selected];
-					[[self windowController] bringToFrontROI: roi];
-					
-					selected = [curRoiList indexOfObject: roi];//0;
-					
-					long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES];
-					if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO];
-					
-					if( [self is2DViewer])
-						[[self windowController] setMode:roiVal toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]]; // change the mode to the whole group before the selected ROI!
-					[[curRoiList objectAtIndex: selected] setROIMode: roiVal];
-										
-					NSArray *winList = [[NSApplication sharedApplication] windows];
-					BOOL	found = NO;
-					
-					if( [self is2DViewer])
-					{
-						for( int i = 0; i < [winList count]; i++)
+						if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
 						{
-							if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"])
-							{
-								found = YES;
-								
-								[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[self windowController]];
-								if( clickCount > 1)
-									[[winList objectAtIndex:i] makeKeyAndOrderFront: self];
-							}
+							selected = i;
+							roiFound = YES;
 						}
-						
-						if( clickCount > 1)
+					}
+				
+				if( roiFound == NO)
+				{
+					for( int i = 0; i < [curRoiList count]; i++)
+					{
+						if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
 						{
-							if( found == NO)
-							{
-								ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: [curRoiList objectAtIndex: selected] :[self windowController]];
-								[roiWin showWindow:self];
-							}
+							selected = i;
+							break;
 						}
 					}
 				}
-				else // Start drawing a new ROI !
+						
+				if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask) )
 				{
-					if( curROI)
+					if( selected != -1 )
 					{
-						drawingROI = [curROI mouseRoiDown:tempPt :scaleValue];
-						
-						if( drawingROI == NO)
+						if( [[curRoiList objectAtIndex: selected] ROImode] == ROI_selected)
 						{
-							[curROI release];
-							curROI = nil;
+							[[curRoiList objectAtIndex: selected] setROIMode: ROI_sleep];
+							// unselect all ROIs in the same group
+							[[self windowController] setMode:ROI_sleep toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]];
+							DoNothing = YES;
 						}
-						
-						if( [curROI ROImode] == ROI_selected)
-							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: curROI userInfo: nil];
 					}
-					else
+				}
+				else
+				{
+					if( selected == -1 || ( [[curRoiList objectAtIndex: selected] ROImode] != ROI_selected &&  [[curRoiList objectAtIndex: selected] ROImode] != ROI_selectedModify))
 					{
 						// Unselect previous ROIs
-						for( int i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+						for( i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+					}
+				}
 						
-						ROI*		aNewROI;
-						NSString	*roiName = nil, *finalName;
-						long		counter;
-						BOOL		existsAlready;
-						
-						drawingROI = NO;
-						
+				if( DoNothing == NO)
+				{
+					if( selected >= 0 && drawingROI == NO)
+					{
 						[curROI release];
-						curROI = aNewROI = [[[ROI alloc] initWithType: tool : curDCM.pixelSpacingX :curDCM.pixelSpacingY : [DCMPix originCorrectedAccordingToOrientation: curDCM]] autorelease];	//NSMakePoint( curDCM.originX, curDCM.originY)];
-						[curROI retain];
+						curROI = nil;
 						
-						if ( [ROI defaultName] != nil )
+						// Bring the selected ROI to the first position in array
+						ROI *roi = [curRoiList objectAtIndex: selected];
+						[[self windowController] bringToFrontROI: roi];
+						
+						selected = [curRoiList indexOfObject: roi];//0;
+						
+						long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES];
+						if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO];
+						
+						if( [self is2DViewer])
+							[[self windowController] setMode:roiVal toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]]; // change the mode to the whole group before the selected ROI!
+						[[curRoiList objectAtIndex: selected] setROIMode: roiVal];
+											
+						NSArray *winList = [[NSApplication sharedApplication] windows];
+						BOOL	found = NO;
+						
+						if( [self is2DViewer])
 						{
-							[aNewROI setName: [ROI defaultName]];
+							for( int i = 0; i < [winList count]; i++)
+							{
+								if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"])
+								{
+									found = YES;
+									
+									[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[self windowController]];
+									if( clickCount > 1)
+										[[winList objectAtIndex:i] makeKeyAndOrderFront: self];
+								}
+							}
+							
+							if( clickCount > 1)
+							{
+								if( found == NO)
+								{
+									ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: [curRoiList objectAtIndex: selected] :[self windowController]];
+									[roiWin showWindow:self];
+								}
+							}
+						}
+					}
+					else // Start drawing a new ROI !
+					{
+						if( curROI)
+						{
+							drawingROI = [curROI mouseRoiDown:tempPt :scaleValue];
+							
+							if( drawingROI == NO)
+							{
+								[curROI release];
+								curROI = nil;
+							}
+							
+							if( [curROI ROImode] == ROI_selected)
+								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: curROI userInfo: nil];
 						}
 						else
 						{
-							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EmptyNameForNewROIs"] == NO || tool == t2DPoint)
+							// Unselect previous ROIs
+							for( int i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+							
+							ROI*		aNewROI;
+							NSString	*roiName = nil, *finalName;
+							long		counter;
+							BOOL		existsAlready;
+							
+							drawingROI = NO;
+							
+							[curROI release];
+							curROI = aNewROI = [[[ROI alloc] initWithType: tool : curDCM.pixelSpacingX :curDCM.pixelSpacingY : [DCMPix originCorrectedAccordingToOrientation: curDCM]] autorelease];	//NSMakePoint( curDCM.originX, curDCM.originY)];
+							[curROI retain];
+							
+							if ( [ROI defaultName] != nil )
 							{
-								switch( tool)
+								[aNewROI setName: [ROI defaultName]];
+							}
+							else
+							{
+								if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EmptyNameForNewROIs"] == NO || tool == t2DPoint)
 								{
-									case  tOval:
-										roiName = [NSString stringWithString:@"Oval "];
-									break;
-										
-									case tDynAngle:
-										roiName = [NSString stringWithString:@"Dynamic Angle "];
-									break;
-									
-									case tAxis:
-										roiName = [NSString stringWithString:@"Bone Axis "];
-									break;
-									
-									case tOPolygon:
-									case tCPolygon:
-										roiName = [NSString stringWithString:@"Polygon "];
-									break;
-										
-									case tAngle:
-										roiName = [NSString stringWithString:@"Angle "];
-									break;
-										
-									case tArrow:
-										roiName = [NSString stringWithString:@"Arrow "];
-									break;
-									
-									case tPlain:
-									case tPencil:
-										roiName = [NSString stringWithString:@"ROI "];
-									break;
-										
-									case tMesure:
-										roiName = [NSString stringWithString:@"Measurement "];
-									break;
-										
-									case tROI:
-										roiName = [NSString stringWithString:@"Rectangle "];
-									break;
-										
-									case t2DPoint:
-										roiName = [NSString stringWithString:@"Point "];
-									break;
-								}
-								
-								if( roiName )
-								{
-									counter = 1;
-									do
+									switch( tool)
 									{
-										existsAlready = NO;
+										case  tOval:
+											roiName = [NSString stringWithString:@"Oval "];
+										break;
+											
+										case tDynAngle:
+											roiName = [NSString stringWithString:@"Dynamic Angle "];
+										break;
 										
-										finalName = [roiName stringByAppendingFormat:@"%d", counter++];
+										case tAxis:
+											roiName = [NSString stringWithString:@"Bone Axis "];
+										break;
 										
-										for( int i = 0; i < [dcmRoiList count]; i++)
+										case tOPolygon:
+										case tCPolygon:
+											roiName = [NSString stringWithString:@"Polygon "];
+										break;
+											
+										case tAngle:
+											roiName = [NSString stringWithString:@"Angle "];
+										break;
+											
+										case tArrow:
+											roiName = [NSString stringWithString:@"Arrow "];
+										break;
+										
+										case tPlain:
+										case tPencil:
+											roiName = [NSString stringWithString:@"ROI "];
+										break;
+											
+										case tMesure:
+											roiName = [NSString stringWithString:@"Measurement "];
+										break;
+											
+										case tROI:
+											roiName = [NSString stringWithString:@"Rectangle "];
+										break;
+											
+										case t2DPoint:
+											roiName = [NSString stringWithString:@"Point "];
+										break;
+									}
+									
+									if( roiName )
+									{
+										counter = 1;
+										do
 										{
-											for( int x = 0; x < [[dcmRoiList objectAtIndex: i] count]; x++)
+											existsAlready = NO;
+											
+											finalName = [roiName stringByAppendingFormat:@"%d", counter++];
+											
+											for( int i = 0; i < [dcmRoiList count]; i++)
 											{
-												if( [[[[dcmRoiList objectAtIndex: i] objectAtIndex: x] name] isEqualToString: finalName])
+												for( int x = 0; x < [[dcmRoiList objectAtIndex: i] count]; x++)
 												{
-													existsAlready = YES;
+													if( [[[[dcmRoiList objectAtIndex: i] objectAtIndex: x] name] isEqualToString: finalName])
+													{
+														existsAlready = YES;
+													}
 												}
 											}
-										}
+											
+										} while (existsAlready != NO);
 										
-									} while (existsAlready != NO);
-									
-									[aNewROI setName: finalName];
+										[aNewROI setName: finalName];
+									}
 								}
 							}
-						}
-						
-						// Create aliases of current ROI to the entire series
-						if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask))
-						{
-							for( int i = 0; i < [dcmRoiList count]; i++)
+							
+							// Create aliases of current ROI to the entire series
+							if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask))
 							{
-								[[dcmRoiList objectAtIndex: i] addObject: aNewROI];
+								for( int i = 0; i < [dcmRoiList count]; i++)
+								{
+									[[dcmRoiList objectAtIndex: i] addObject: aNewROI];
+								}
+								
+								aNewROI.originalIndexForAlias = curImage;
+								aNewROI.isAliased = YES;
+							}
+							else [curRoiList addObject: aNewROI];
+							
+							[aNewROI setRoiFont: labelFontListGL :labelFontListGLSize :self];
+							
+							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
+							{
+								if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
+									[[self windowController] setKeyImage: self];
 							}
 							
-							aNewROI.originalIndexForAlias = curImage;
-							aNewROI.isAliased = YES;
+							[[self windowController] bringToFrontROI: aNewROI];
+							
+							drawingROI = [aNewROI mouseRoiDown: tempPt :scaleValue];
+							
+							if( drawingROI == NO)
+							{
+								[curROI release];
+								curROI = nil;
+							}
+							if( [aNewROI ROImode] == ROI_selected)
+								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: aNewROI userInfo: nil];
+							
+							NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	aNewROI,							@"ROI",
+																									[NSNumber numberWithInt:curImage],	@"sliceNumber", 
+																									nil];
+							
+							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixAddROINotification object:self userInfo:userInfo];
 						}
-						else [curRoiList addObject: aNewROI];
-						
-						[aNewROI setRoiFont: labelFontListGL :labelFontListGLSize :self];
-						
-						if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
+					}
+				}
+				
+				for( int x = 0; x < [dcmRoiList count]; x++ )
+				{
+					for( int i = 0; i < [[dcmRoiList objectAtIndex: x] count]; i++)
+					{
+						if( [[[dcmRoiList objectAtIndex: x] objectAtIndex: i] valid] == NO)
 						{
-							if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
-								[[self windowController] setKeyImage: self];
+							[[dcmRoiList objectAtIndex: x] removeObjectAtIndex: i];
+							i--;
 						}
-						
-						[[self windowController] bringToFrontROI: aNewROI];
-						
-						drawingROI = [aNewROI mouseRoiDown: tempPt :scaleValue];
-						
-						if( drawingROI == NO)
-						{
-							[curROI release];
-							curROI = nil;
-						}
-						if( [aNewROI ROImode] == ROI_selected)
-							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: aNewROI userInfo: nil];
-						
-						NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	aNewROI,							@"ROI",
-																								[NSNumber numberWithInt:curImage],	@"sliceNumber", 
-																								nil];
-						
-						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixAddROINotification object:self userInfo:userInfo];
 					}
 				}
 			}
-			
-			for( int x = 0; x < [dcmRoiList count]; x++ )
+			@catch (NSException * e)
 			{
-				for( int i = 0; i < [[dcmRoiList objectAtIndex: x] count]; i++)
-				{
-					if( [[[dcmRoiList objectAtIndex: x] objectAtIndex: i] valid] == NO)
-					{
-						[[dcmRoiList objectAtIndex: x] removeObjectAtIndex: i];
-						i--;
-					}
-				}
+				NSLog( @"**** mouseDown ROI : %@", e);
 			}
 		}
 		
@@ -4735,101 +4742,108 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (BOOL) mouseDraggedForROIs:(NSEvent *)event
 {
 	BOOL action = NO;
-	NSPoint current = [self currentPointInView:event];
 	
-	// Command and Alternate rotate ROI
-	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
+	@try
 	{
-		NSPoint rotatePoint = [self ConvertFromNSView2GL: start];
+		NSPoint current = [self currentPointInView:event];
+		
+		// Command and Alternate rotate ROI
+		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
+		{
+			NSPoint rotatePoint = [self ConvertFromNSView2GL: start];
 
-		NSPoint offset;
-		
-		offset.x = - (previous.x - current.x) / scaleValue;
-		offset.y =  (previous.y - current.y) / scaleValue;
-		
-		for( int i = 0; i < [curRoiList count]; i++ )
-		{
-			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+			NSPoint offset;
+			
+			offset.x = - (previous.x - current.x) / scaleValue;
+			offset.y =  (previous.y - current.y) / scaleValue;
+			
+			for( int i = 0; i < [curRoiList count]; i++ )
 			{
-				action = YES;
-				[[curRoiList objectAtIndex:i] rotate: offset.x :rotatePoint];
+				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				{
+					action = YES;
+					[[curRoiList objectAtIndex:i] rotate: offset.x :rotatePoint];
+				}
 			}
 		}
-	}
-	// Command and Shift scale
-	else if (([event modifierFlags] & NSCommandKeyMask) && !([event modifierFlags] & NSShiftKeyMask))
-	{
-		NSPoint rotatePoint = [self ConvertFromNSView2GL: start];
-		
-		double ss = 1.0 - (previous.x - current.x)/200.;
-		
-		if( resizeTotal*ss < 0.2) ss = 0.2 / resizeTotal;
-		if( resizeTotal*ss > 5.) ss = 5. / resizeTotal;
-		
-		resizeTotal *= ss;
-		
-		for( int i = 0; i < [curRoiList count]; i++)
+		// Command and Shift scale
+		else if (([event modifierFlags] & NSCommandKeyMask) && !([event modifierFlags] & NSShiftKeyMask))
 		{
-			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
-			{
-				action = YES;
-				[[curRoiList objectAtIndex:i] resize: ss :rotatePoint];
-			}
-		}
-	}
-	// Move ROI
-	else
-	{
-		BOOL textBoxMove = NO;
-		NSPoint offset;
-		float   xx, yy;
-		
-		offset.x = - (previous.x - current.x) / scaleValue;
-		offset.y =  (previous.y - current.y) / scaleValue;
-		
-		if( xFlipped) offset.x = -offset.x;
-		if( yFlipped) offset.y = -offset.y;
-		
-		xx = offset.x;		yy = offset.y;
-		
-		offset.x = xx*cos(rotation*deg2rad) + yy*sin(rotation*deg2rad);
-		offset.y = -xx*sin(rotation*deg2rad) + yy*cos(rotation*deg2rad);
-		
-		offset.y /=  curDCM.pixelRatio;
-		// hit test for text box
-		for( int i = 0; i < [curRoiList count]; i++ )
-		{
-			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
-			{
-				if( [[curRoiList objectAtIndex: i] clickInTextBox]) textBoxMove = YES;
-			}
-		}
-		// Move text Box
-		if( textBoxMove)
-		{
+			NSPoint rotatePoint = [self ConvertFromNSView2GL: start];
+			
+			double ss = 1.0 - (previous.x - current.x)/200.;
+			
+			if( resizeTotal*ss < 0.2) ss = 0.2 / resizeTotal;
+			if( resizeTotal*ss > 5.) ss = 5. / resizeTotal;
+			
+			resizeTotal *= ss;
+			
 			for( int i = 0; i < [curRoiList count]; i++)
 			{
 				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 				{
 					action = YES;
-					[[curRoiList objectAtIndex: i] setTextBoxOffset: offset];
+					[[curRoiList objectAtIndex:i] resize: ss :rotatePoint];
 				}
 			}
 		}
-		// move ROI
+		// Move ROI
 		else
 		{
-			for( int i = 0; i < [curRoiList count]; i++)
+			BOOL textBoxMove = NO;
+			NSPoint offset;
+			float   xx, yy;
+			
+			offset.x = - (previous.x - current.x) / scaleValue;
+			offset.y =  (previous.y - current.y) / scaleValue;
+			
+			if( xFlipped) offset.x = -offset.x;
+			if( yFlipped) offset.y = -offset.y;
+			
+			xx = offset.x;		yy = offset.y;
+			
+			offset.x = xx*cos(rotation*deg2rad) + yy*sin(rotation*deg2rad);
+			offset.y = -xx*sin(rotation*deg2rad) + yy*cos(rotation*deg2rad);
+			
+			offset.y /=  curDCM.pixelRatio;
+			// hit test for text box
+			for( int i = 0; i < [curRoiList count]; i++ )
 			{
 				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 				{
-					action = YES;
-					[[curRoiList objectAtIndex:i] roiMove: offset];
+					if( [[curRoiList objectAtIndex: i] clickInTextBox]) textBoxMove = YES;
+				}
+			}
+			// Move text Box
+			if( textBoxMove)
+			{
+				for( int i = 0; i < [curRoiList count]; i++)
+				{
+					if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+					{
+						action = YES;
+						[[curRoiList objectAtIndex: i] setTextBoxOffset: offset];
+					}
+				}
+			}
+			// move ROI
+			else
+			{
+				for( int i = 0; i < [curRoiList count]; i++)
+				{
+					if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+					{
+						action = YES;
+						[[curRoiList objectAtIndex:i] roiMove: offset];
+					}
 				}
 			}
 		}
 	}
-	
+	@catch ( NSException *e)
+	{
+		NSLog( @"****** mouseDraggedForROIs: %@", e);
+	}
 	return action;
 }
 
