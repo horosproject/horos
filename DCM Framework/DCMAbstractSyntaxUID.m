@@ -428,6 +428,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			OphthalmicPhotography16BitImageStorage,
 			FujiPrivateCR,
 			MRSpectroscopyStorage,
+//			@"1.3.12.2.1107.5.9.1", Siemens Private SOP Class
 //			RawDataStorage,
 			nil];
 	}
