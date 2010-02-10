@@ -5758,7 +5758,14 @@ static ViewerController *draggedController = nil;
 	
 	for( i = 0; i < maxMovieIndex; i++)
 	{
-		[self saveROI: i];
+		@try
+		{
+			[self saveROI: i];
+		}
+		@catch ( NSException *e)
+		{
+			NSLog( @"*****saveROI exception : %@", e);
+		}
 		
 		for( x = 0; x < [roiList[ i] count] ; x++)
 		{
@@ -10104,102 +10111,109 @@ short				matrix[25];
 		
 		NSManagedObject *roiSRSeries = [[[fileList[ mIndex] lastObject] valueForKeyPath:@"series.study"] roiSRSeries];
 		
-		for( i = 0; i < [fileList[ mIndex] count]; i++)
+		@try
 		{
-			if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
+			for( i = 0; i < [fileList[ mIndex] count]; i++)
 			{
-				DicomImage	*image = [fileList[mIndex] objectAtIndex:i];
-				
+				if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
 				{
-					NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+					DicomImage	*image = [fileList[mIndex] objectAtIndex:i];
 					
-					@try
 					{
-						NSString *str = [image SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
-						NSMutableArray *roisArray = nil;
+						NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 						
-						if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
+						@try
 						{
-							NSMutableArray *aliasROIs = [NSMutableArray array];
+							NSString *str = [image SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
+							NSMutableArray *roisArray = nil;
 							
-							roisArray = [NSMutableArray arrayWithArray: [roiList[ mIndex] objectAtIndex: i]];
-							
-							for( ROI *r in roisArray)
+							if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
 							{
-								[r setPix: [pixList[mIndex] objectAtIndex:i]];
+								NSMutableArray *aliasROIs = [NSMutableArray array];
 								
-								if( r.isAliased && i != r.originalIndexForAlias)
-									[aliasROIs addObject: r];
+								roisArray = [NSMutableArray arrayWithArray: [roiList[ mIndex] objectAtIndex: i]];
+								
+								for( ROI *r in roisArray)
+								{
+									[r setPix: [pixList[mIndex] objectAtIndex:i]];
+									
+									if( r.isAliased && i != r.originalIndexForAlias)
+										[aliasROIs addObject: r];
+								}
+								
+								[roisArray removeObjectsInArray: aliasROIs];
 							}
 							
-							[roisArray removeObjectsInArray: aliasROIs];
-						}
-						
-						if( [roisArray count])
-						{
-							if( [ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image] != nil)
-								[newDICOMSR addObject: str];
-							
-							[allDICOMSR addObject: str];
-						}
-						else
-						{
-							if( [[NSFileManager defaultManager] fileExistsAtPath: str])
+							if( [roisArray count])
 							{
-								[[NSFileManager defaultManager] removeFileAtPath: str handler: nil];
+								if( [ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image] != nil)
+									[newDICOMSR addObject: str];
 								
-								//Check to see if there is already a roi Series.
-								if( roiSRSeries)
+								[allDICOMSR addObject: str];
+							}
+							else
+							{
+								if( [[NSFileManager defaultManager] fileExistsAtPath: str])
 								{
-									//Check to see if there is already this ROI-image
-									NSArray *srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
+									[[NSFileManager defaultManager] removeFileAtPath: str handler: nil];
 									
-									BOOL	found = NO;
-									
-									for( NSManagedObject *item in srs)
+									//Check to see if there is already a roi Series.
+									if( roiSRSeries)
 									{
-										if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-											[toDeleteDICOMSR addObject: [str lastPathComponent]];
+										//Check to see if there is already this ROI-image
+										NSArray *srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
 										
-										else if( [[item valueForKey:@"completePath"] isEqualToString: str])
+										BOOL	found = NO;
+										
+										for( NSManagedObject *item in srs)
 										{
-											NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
+											if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+												[toDeleteDICOMSR addObject: [str lastPathComponent]];
 											
-											[context lock];
-											
-											@try
+											else if( [[item valueForKey:@"completePath"] isEqualToString: str])
 											{
-												[context deleteObject: item];
+												NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
+												
+												[context lock];
+												
+												@try
+												{
+													[context deleteObject: item];
+												}
+												@catch (NSException * e)
+												{
+												}
+												
+												[context unlock];
+												
+												found = YES;
+												break;
 											}
-											@catch (NSException * e)
-											{
-											}
-											
-											[context unlock];
-											
-											found = YES;
-											break;
 										}
-									}
-									
-									if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO)
-									{
-										if( found == NO)
-											NSLog( @"**** strange... corresponding ROI object not found in the ROI Series");
+										
+										if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO)
+										{
+											if( found == NO)
+												NSLog( @"**** strange... corresponding ROI object not found in the ROI Series");
+										}
 									}
 								}
 							}
 						}
+						
+						@catch( NSException *ne)
+						{
+							NSLog( @"saveROI failed: %@", [ne description]);
+						}
+						
+						[pool release];
 					}
-					
-					@catch( NSException *ne)
-					{
-						NSLog( @"saveROI failed: %@", [ne description]);
-					}
-					
-					[pool release];
 				}
 			}
+		}
+		@catch ( NSException *e)
+		{
+			NSLog( @"****** saveROI exception : %@");
 		}
 		
 		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
