@@ -1497,9 +1497,12 @@ extern "C"
 								[tempResultArray addObject: [curResult objectAtIndex: x]];
 							else 
 							{
-								if( [[[tempResultArray objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[curResult objectAtIndex: x] valueForKey: @"numberImages"] intValue])
+								if( [[tempResultArray objectAtIndex: index] valueForKey: @"numberImages"] && [[curResult objectAtIndex: x] valueForKey: @"numberImages"])
 								{
-									[tempResultArray replaceObjectAtIndex: index withObject: [curResult objectAtIndex: x]];
+									if( [[[tempResultArray objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[curResult objectAtIndex: x] valueForKey: @"numberImages"] intValue])
+									{
+										[tempResultArray replaceObjectAtIndex: index withObject: [curResult objectAtIndex: x]];
+									}
 								}
 							}
 						}
@@ -1622,6 +1625,13 @@ extern "C"
 	
 	if( [studyArray count])
 		localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] intValue];
+	
+	if( [item valueForKey:@"numberImages"] == nil)
+	{
+		// We dont know how many images are stored on the distant PACS... add it, if we have no images on our side...
+		if( localFiles == 0)
+			totalFiles = 1;
+	}
 	
 	if( localFiles < totalFiles)
 	{
