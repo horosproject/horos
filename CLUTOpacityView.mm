@@ -119,8 +119,12 @@
 
 - (void)setHUmin:(float)min HUmax:(float)max;
 {
+	if( max - min < 1)
+		max = min + 1;
+	
 	HUmin = min;
 	HUmax = max;
+	
 	NSLog(@"setHUmin: %f - HUmax: %f", HUmin, HUmax);
 }
 

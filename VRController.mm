@@ -427,8 +427,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		if( minimumValue > [[pixList[ i] objectAtIndex: 0] minValueOfSeries]) minimumValue = [[pixList[ i] objectAtIndex: 0] minValueOfSeries];
 	}
 	
-//	NSLog( @"min: %f max: %f", minimumValue, maximumValue);
-
+	if( maximumValue - minimumValue < 1)
+		maximumValue = minimumValue + 1;
+	
 	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
 }
 

@@ -183,7 +183,7 @@ typedef char* vtkMyCallbackVR;
 	vtkColorTransferFunction	*blendingColorTransferFunction;
 	vtkVolumeRayCastCompositeFunction *blendingCompositeFunction;
 	vtkPiecewiseFunction		*blendingOpacityTransferFunction;
-	double						blendingtable[256][3];
+	double						blendingtable[257][3];
 	
 	BOOL						needToFlip, blendingNeedToFlip, firstTime;
 	
@@ -231,8 +231,8 @@ typedef char* vtkMyCallbackVR;
 	float					LOD, lowResLODFactor;
 	float					cosines[ 9];
 	float					blendingcosines[ 9];
-	double					table[256][3];
-	double					alpha[ 256];
+	double					table[257][3];
+	double					alpha[ 257];
 
 	NSCursor				*cursor;
 	BOOL					cursorSet;
