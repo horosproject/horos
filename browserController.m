@@ -5315,7 +5315,7 @@ static NSArray*	statesArray = nil;
 
 - (NSManagedObject *)firstObjectForDatabaseOutlineSelection
 {
-	NSManagedObject		*aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+	NSManagedObject *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
@@ -9247,7 +9247,7 @@ static BOOL withReset = NO;
 	}
 }
 
-- (void) createContextualMenu
+- (void) createContextualMenu // MATRIX contextual menu
 {
 	NSMenuItem		*item;
 	
@@ -12649,7 +12649,7 @@ static NSArray*	openSubSeriesArray = nil;
 	return [[[BrowserController currentBrowser] DateTimeFormat] stringFromDate: d];
 }
 
-- (void) createDBContextualMenu
+- (void) createDBContextualMenu // DATABASE contextual menu
 {
 	NSMenu *menu = [[[NSMenu alloc] initWithTitle:@"Tools"] autorelease];
 	NSMenuItem *item;
@@ -12717,6 +12717,14 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItem:item];
 	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Decompress DICOM files", nil)  action:@selector(decompressSelectedFiles:) keyEquivalent:@""] autorelease];
+	[menu addItem:item];
+	
+	[menu addItem: [NSMenuItem separatorItem]];
+	
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Lock Studies", nil)  action:@selector(lockStudies:) keyEquivalent:@""] autorelease];
+	[menu addItem:item];
+	
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Unlock Studies", nil)  action:@selector(unlockStudies:) keyEquivalent:@""] autorelease];
 	[menu addItem:item];
 	
 	[menu addItem: [NSMenuItem separatorItem]];
@@ -13235,6 +13243,45 @@ static NSArray*	openSubSeriesArray = nil;
 	mainWindow = [[note object] retain];
 }
 
+- (IBAction) unlockStudies: (id) sender
+{
+	NSMutableArray *objects = [NSMutableArray array];
+	
+	NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
+	
+	for( NSInteger x = 0, row; x < selectedRows.count; x++)
+	{
+		if( x == 0) row = selectedRows.firstIndex;
+		else row = [selectedRows indexGreaterThanIndex: row];
+		
+		NSManagedObject	*object = [databaseOutline itemAtRow: row];
+		
+		if( [[object valueForKey:@"type"] isEqualToString: @"Study"] && [[object valueForKey: @"lockedStudy"] boolValue])
+			[object setValue: [NSNumber numberWithBool: NO] forKey: @"lockedStudy"];
+	}
+	
+	[self refreshDatabase: self];
+}
+
+- (IBAction) lockStudies: (id) sender
+{
+	NSMutableArray *objects = [NSMutableArray array];
+	
+	NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
+	
+	for( NSInteger x = 0, row; x < selectedRows.count; x++)
+	{
+		if( x == 0) row = selectedRows.firstIndex;
+		else row = [selectedRows indexGreaterThanIndex: row];
+		
+		NSManagedObject	*object = [databaseOutline itemAtRow: row];
+		
+		if( [[object valueForKey:@"type"] isEqualToString: @"Study"] && [[object valueForKey: @"lockedStudy"] boolValue] == NO)
+			[object setValue: [NSNumber numberWithBool: YES] forKey: @"lockedStudy"];
+	}
+	
+	[self refreshDatabase: self];}
+
 - (BOOL)validateMenuItem: (NSMenuItem*) menuItem
 {
 	if ( menuItem.menu == imageTileMenu)
@@ -13330,6 +13377,40 @@ static NSArray*	openSubSeriesArray = nil;
 			return NO;
 		}
 		else return YES;
+	}
+	else if( [menuItem action] == @selector( lockStudies:))
+	{
+		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
+		
+		for( NSInteger x = 0, row; x < selectedRows.count; x++)
+		{
+			if( x == 0) row = selectedRows.firstIndex;
+			else row = [selectedRows indexGreaterThanIndex: row];
+			
+			NSManagedObject	*object = [databaseOutline itemAtRow: row];
+			
+			if( [[object valueForKey:@"type"] isEqualToString: @"Study"] && [[object valueForKey: @"lockedStudy"] boolValue] == NO)
+				return YES;
+		}
+		
+		return NO;
+	}
+	else if( [menuItem action] == @selector( unlockStudies:))
+	{
+		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
+		
+		for( NSInteger x = 0, row; x < selectedRows.count; x++)
+		{
+			if( x == 0) row = selectedRows.firstIndex;
+			else row = [selectedRows indexGreaterThanIndex: row];
+			
+			NSManagedObject	*object = [databaseOutline itemAtRow: row];
+			
+			if( [[object valueForKey:@"type"] isEqualToString: @"Study"] && [[object valueForKey: @"lockedStudy"] boolValue])
+				return YES;
+		}
+		
+		return NO;
 	}
 	else if( [menuItem action] == @selector( delItem:))
 	{
