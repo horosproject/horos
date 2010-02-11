@@ -13280,7 +13280,8 @@ static NSArray*	openSubSeriesArray = nil;
 			[object setValue: [NSNumber numberWithBool: YES] forKey: @"lockedStudy"];
 	}
 	
-	[self refreshDatabase: self];}
+	[self refreshDatabase: self];
+}
 
 - (BOOL)validateMenuItem: (NSMenuItem*) menuItem
 {

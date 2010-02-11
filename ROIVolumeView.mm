@@ -373,9 +373,7 @@
 		output = (vtkDataSet*) delaunayTriangulator -> GetOutput();
 	}
 	else
-	
-	{	
-		
+	{
 		vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
 		power->SetInput( profile);
 		polyDataNormals = vtkPolyDataNormals::New();
@@ -594,15 +592,17 @@
 	map->Delete();
 	
 	// *****************Texture
-	NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
+	NSString *location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
 	
 	if( location == nil || [location isEqualToString:@""])
 		location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
 	
 	vtkTIFFReader *bmpread = vtkTIFFReader::New();
-	   bmpread->SetFileName( [location UTF8String]);
+	
+	bmpread->SetFileName( [location UTF8String]);
 
-	if (!texture) {
+	if ( !texture)
+	{
 		texture = vtkTexture::New();
 		texture->InterpolateOn();
 	}
@@ -611,11 +611,6 @@
 	bmpread->Delete();
 
 	roiVolumeActor->SetTexture( texture);
-
-
-
-
-
 
 
 //	vtkDecimatePro *isoDeci = vtkDecimatePro::New();
