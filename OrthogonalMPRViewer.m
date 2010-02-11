@@ -815,9 +815,10 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 - (IBAction) changeTool:(id) sender
 {
 	int tag = [sender tag];
-	if( tag>= 0)
+	if( tag >= 0)
     {
-		[self setCurrentTool: [[sender selectedCell] tag]];
+		if( [sender isMemberOfClass: [NSMatrix class]]) [self setCurrentTool: [[sender selectedCell] tag]];
+		else [self setCurrentTool: tag];
     }
 }
 
