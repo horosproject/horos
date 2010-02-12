@@ -20,13 +20,13 @@
 		</div>
 		
 		%image%
-		<div style="margin-top:20px;">
-		<img class="image" src="/image.jpg?id=%SeriesID%&studyID=%StudyID%" />
+		<div id="image">
+			<img src="/image.jpg?id=%SeriesID%&studyID=%StudyID%" />
 		</div>
 		%/image%
 		
 		%movie%
-		<div style="margin-top:20px;">
+		<div id="movie">
 		<OBJECT CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="%width%" HEIGHT="%height%" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">
 		<PARAM name="SRC" VALUE="/image.jpg?id=%SeriesID%&studyID=%StudyID%&previewForMovie=true">
 		<param name="HREF" value="/movie.mov?id=%SeriesID%&studyID=%StudyID%">
@@ -34,7 +34,7 @@
 		<embed src="/image.jpg?id=%SeriesID%&studyID=%StudyID%&previewForMovie=true" type="video/quicktime" href="/movie.mov?id=%SeriesID%&studyID=%StudyID%" width="%width%" height="%height%" target="myself">
 		</embed>
 		</OBJECT>
-		</div>
+
 		<!--
 		Please keep this for testing purposes...
 		<div style="margin-top:20px;">
@@ -44,6 +44,7 @@
 		<br>
 		<span class="small">Viewing this movie requires <a href="http://www.apple.com/quicktime">Apple Quicktime</a></span>
 		<br>
+		</div>
 		%/movie%
 		<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.<div>
 	</div>

@@ -504,6 +504,12 @@ a.report
 	padding-top:2px;
 }
 
+#image, #movie
+{
+	margin-top:20px;
+	text-align:center;
+}
+
 /* Study Sharing */
 #userDestination
 {
