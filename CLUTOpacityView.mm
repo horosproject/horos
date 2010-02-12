@@ -124,8 +124,6 @@
 	
 	HUmin = min;
 	HUmax = max;
-	
-	NSLog(@"setHUmin: %f - HUmax: %f", HUmin, HUmax);
 }
 
 - (void)computeHistogram;
@@ -136,14 +134,15 @@
 	buffer.width = voxelCount;
 	buffer.rowBytes = voxelCount * sizeof(float);
 	
-	NSLog(@"HUmin: %f - HUmax: %f", HUmin, HUmax);
-	
 	histogramSize = (int)((HUmax-HUmin)/2);
+	histogramSize += 100;
+	
 	if(histogram) free(histogram);
+	
 	histogram = (vImagePixelCount*) malloc(sizeof(vImagePixelCount) * (histogramSize*2L));
 	if( histogram)
 	{
-		vImageHistogramCalculation_PlanarF(&buffer, histogram, histogramSize, HUmin, HUmax, kvImageDoNotTile);
+		vImageHistogramCalculation_PlanarF( &buffer, histogram, histogramSize, HUmin, HUmax, kvImageDoNotTile);
 		
 		int i;
 		vImagePixelCount min = histogram[0], max = 0;
