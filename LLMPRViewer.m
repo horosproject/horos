@@ -173,7 +173,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 - (IBAction)changeTool:(id)sender
 {
 	[super changeTool:sender];
-	[injectedMPRController setCurrentTool: [[sender selectedCell] tag]];
+	
+	if( [sender isMemberOfClass: [NSMatrix class]]) [injectedMPRController setCurrentTool: [[sender selectedCell] tag]];
+	else [injectedMPRController setCurrentTool: [sender tag]];
 }
 
 - (void)toggleDisplayResliceAxes

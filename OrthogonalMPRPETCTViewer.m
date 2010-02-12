@@ -905,7 +905,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 }
 
 
-- (void)setCurrentTool:(int)currentTool{
+- (void)setCurrentTool:(int)currentTool
+{
 	if (currentTool >= 0)
 	{
 		[toolsMatrix selectCellWithTag: currentTool];
@@ -916,9 +917,14 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 }
 - (IBAction) changeTool:(id) sender
 {
-	if( [[sender selectedCell] tag] >= 0)
+	int tag;
+	
+	if( [sender isMemberOfClass: [NSMatrix class]]) tag = [[sender selectedCell] tag];
+	else  tag = [sender tag];
+	
+	if(  tag >= 0)
     {
-		[self setCurrentTool: [[sender selectedCell] tag]];
+		[self setCurrentTool: tag];
     }
 }
 
