@@ -3729,7 +3729,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			current.x -= [self frame].size.width/2.;
 			current.y -= [self frame].size.height/2.;
 			
-			rotationStart -= atan2( current.x, current.y) / deg2rad;
+			float sign = 1;
+			
+			if( xFlipped) sign = -sign;
+			if( yFlipped) sign = -sign;
+			
+			rotationStart -= sign*atan2( current.x, current.y) / deg2rad;
 		}
 		
 		if(tool == tRepulsor)
@@ -4908,7 +4913,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	current.x -= [self frame].size.width/2.;
 	current.y -= [self frame].size.height/2.;
 	
-	float rot = rotationStart + atan2( current.x, current.y) / deg2rad;
+	float sign = 1;
+	
+	if( xFlipped) sign = -sign;
+	if( yFlipped) sign = -sign;
+	
+	float rot = rotationStart + sign * atan2( current.x, current.y) / deg2rad;
 	
 	while( rot < 0) rot += 360;
 	while( rot > 360) rot -= 360;
