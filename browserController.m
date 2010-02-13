@@ -12816,13 +12816,11 @@ static NSArray*	openSubSeriesArray = nil;
 	#else
 	if( sizeof( long) == 8)
 	{
-		if( hasMacOSXSnowLeopard()) wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Snow OsiriX 64-bit", nil)];
-		else wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 64-bit", nil)];
+		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 64-bit", nil)];
 	}
 	else
 	{
-		if( hasMacOSXSnowLeopard()) wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Snow OsiriX 32-bit", nil)];
-		else wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 32-bit", nil)];
+		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 32-bit", nil)];
 	}
 	#endif
 	
