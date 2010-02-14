@@ -126,15 +126,17 @@
 	{
 		newResolution = [recalibrateValue floatValue] / pixels;
 		newResolution *= 10.0;
-		NSLog(@"%2.2f", newResolution);
 		
 		NSMutableArray  *array = [curController pixList];
 		
-		
-		for( id loopItem in array)
+		for( DCMPix *pix in [curController pixList])
 		{
-			[loopItem setPixelSpacingX: newResolution];
-			[loopItem setPixelSpacingY: newResolution];
+			float previousX = [pix pixelSpacingX];
+			
+			[pix setPixelSpacingX: newResolution];
+			
+			if( previousX)
+				[pix setPixelSpacingY: [pix pixelSpacingY] * newResolution / previousX];
 		}
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRecomputeROINotification object:curController userInfo: nil];

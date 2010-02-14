@@ -590,7 +590,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	}
 	else
 	{
-		NSLog( @"***** warning pix == [curView curDCM]");
+		NSLog( @"----- warning pix == [curView curDCM]");
 		
 		return pix = [curView.curDCM retain];
 	}
@@ -2316,12 +2316,17 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		intXCenter = center.x;
 		intYCenter = center.y;
 		
+		float ratio = [[self pix] pixelRatio];
+		
+		if( ratio == 0)
+			ratio = 1.0;
+		
 		for( long i = 0; i < intUpper; i++)
 		{ 
-			new_x = cos(theta) * ([[pts objectAtIndex: i] x] - intXCenter) - sin(theta) * ([[pts objectAtIndex: i] y] - intYCenter);
-			new_y = sin(theta) * ([[pts objectAtIndex: i] x] - intXCenter) + cos(theta) * ([[pts objectAtIndex: i] y] - intYCenter);
+			new_x = cos(theta) * ([[pts objectAtIndex: i] x] - intXCenter) - sin(theta) * ([[pts objectAtIndex: i] y] - intYCenter)  * ratio;
+			new_y = sin(theta) * ([[pts objectAtIndex: i] x] - intXCenter) + cos(theta) * ([[pts objectAtIndex: i] y] - intYCenter)  * ratio;
 			
-			[[pts objectAtIndex: i] setPoint: NSMakePoint( new_x + intXCenter, new_y + intYCenter)];
+			[[pts objectAtIndex: i] setPoint: NSMakePoint( new_x + intXCenter, new_y / ratio + intYCenter)];
 		}
 		
 		rtotal = -1;
