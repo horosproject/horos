@@ -2216,7 +2216,9 @@ NSString* notNil( NSString *s)
 							DCMPix* dcmPix = [imageCache valueForKey: @"dcmPix"];
 							
 							if( dcmPix)
-								NSLog( @"dcmPix is in cache!");
+							{
+								// It's in the cache
+							}
 							else if( [images count] > 0)
 							{
 								DicomImage *im = [images lastObject];
@@ -2248,7 +2250,7 @@ NSString* notNil( NSString *s)
 									curWL = [dcmPix savedWL];
 								}
 								
-								data = [imageCache objectForKey: [NSString stringWithFormat: @"%@ %f %f", contentType, curWW, curWL]];
+								data = [imageCache objectForKey: [NSString stringWithFormat: @"%@ %f %f %d %d", contentType, curWW, curWL, columns, rows]];
 								
 								if( data == nil)
 								{
@@ -2296,9 +2298,8 @@ NSString* notNil( NSString *s)
 									else
 										data = [imageRep representationUsingType: NSJPEGFileType properties:imageProps];
 									
-									[imageCache setObject: data forKey: [NSString stringWithFormat: @"%@ %f %f", contentType, curWW, curWL]];
+									[imageCache setObject: data forKey: [NSString stringWithFormat: @"%@ %f %f %d %d", contentType, curWW, curWL, columns, rows]];
 								}
-								else NSLog( @"image data is in cache!");
 								
 								if( data)
 									err = NO;
