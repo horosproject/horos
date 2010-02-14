@@ -33,8 +33,10 @@
 static NSMutableDictionary *movieLock = nil;
 static NSString *webDirectory = nil;
 static NSString *language = nil;
+static NSMutableDictionary *wadoJPEGCache = nil;
 
 #define maxResolution 800
+#define WADOCACHESIZE 1200
 
 NSString* notNil( NSString *s)
 {
@@ -2044,6 +2046,7 @@ NSString* notNil( NSString *s)
 			err = NO;
 		}
 	#pragma mark wado
+		// wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX
 		else if( [fileURL isEqualToString:@"/wado"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
 		{
 			if( [[[urlParameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
@@ -2060,7 +2063,7 @@ NSString* notNil( NSString *s)
 				int columns = [[urlParameters objectForKey:@"columns"] intValue];
 				int windowCenter = [[urlParameters objectForKey:@"windowCenter"] intValue];
 				int windowWidth = [[urlParameters objectForKey:@"windowWidth"] intValue];
-				//				int frameNumber = [[urlParameters objectForKey:@"frameNumber"] intValue]; -> OsiriX stores frames as images
+				//int frameNumber = [[urlParameters objectForKey:@"frameNumber"] intValue]; -> OsiriX stores frames as images
 				int imageQuality = DCMLosslessQuality;
 				
 				if( [urlParameters objectForKey:@"imageQuality"])
@@ -2084,34 +2087,51 @@ NSString* notNil( NSString *s)
 				
 				@try
 				{
-					if( studyUID)
-						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
-					else
-						[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+					NSMutableDictionary *imageCache = nil;
+					NSArray *images = nil;
 					
-					NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
+					if( wadoJPEGCache == nil)
+						wadoJPEGCache = [[NSMutableDictionary alloc] initWithCapacity: WADOCACHESIZE];
 					
-					if( [studies count] == 0)
-						NSLog( @"****** WADO Server : study not found");
+					if( [wadoJPEGCache count] > WADOCACHESIZE)
+						[wadoJPEGCache removeAllObjects];
 					
-					if( [studies count] > 1)
-						NSLog( @"****** WADO Server : more than 1 study with same uid");
+					if( [contentType length] == 0 || [contentType isEqualToString: @"image/jpeg"] || [contentType isEqualToString: @"image/png"] || [contentType isEqualToString: @"image/gif"] || [contentType isEqualToString: @"image/jp2"])
+					{
+						imageCache = [wadoJPEGCache objectForKey: objectUID];
+					}
 					
-					NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
+					if( imageCache == nil)
+					{
+						if( studyUID)
+							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
+						else
+							[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+						
+						NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
+						
+						if( [studies count] == 0)
+							NSLog( @"****** WADO Server : study not found");
+						
+						if( [studies count] > 1)
+							NSLog( @"****** WADO Server : more than 1 study with same uid");
+						
+						NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
+						
+						if( seriesUID)
+							allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
+						
+						NSArray *allImages = [NSArray array];
+						for( id series in allSeries)
+							allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
+						
+						NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
+						NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+						
+						images = [[allImages filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
+					}
 					
-					if( seriesUID)
-						allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
-					
-					NSArray *allImages = [NSArray array];
-					for( id series in allSeries)
-						allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
-					
-					NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
-					NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
-					
-					NSArray *images = [[allImages filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
-					
-					if( [images count])
+					if( [images count] || imageCache != nil)
 					{
 						if( [contentType isEqualToString: @"application/dicom"])
 						{
@@ -2193,13 +2213,25 @@ NSString* notNil( NSString *s)
 						}
 						else // image/jpeg
 						{
-							DicomImage *im = [images lastObject];
+							DCMPix* dcmPix = [imageCache valueForKey: @"dcmPix"];
 							
-							DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :0 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
+							if( dcmPix)
+								NSLog( @"dcmPix is in cache!");
+							else if( [images count] > 0)
+							{
+								DicomImage *im = [images lastObject];
+								
+								dcmPix = [[[DCMPix alloc] initWithPath: [im valueForKey: @"completePathResolved"] :0 :1 :nil :0 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
+								
+								imageCache = [NSMutableDictionary dictionaryWithObject: dcmPix forKey: @"dcmPix"];
+								
+								[wadoJPEGCache setObject: imageCache forKey: objectUID];
+							}
 							
-							if(dcmPix)
+							if( dcmPix)
 							{
 								NSImage *image = nil;
+								NSManagedObject *im =  [dcmPix imageObj];
 								
 								float curWW = windowWidth;
 								float curWL = windowCenter;
@@ -2210,51 +2242,63 @@ NSString* notNil( NSString *s)
 									curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
 								}
 								
-								if( curWW != 0)
-									[dcmPix checkImageAvailble:curWW :curWL];
-								else
-									[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
-								
-								image = [dcmPix image];
-								float width = [image size].width;
-								float height = [image size].height;
-								
-								int maxWidth = columns;
-								int maxHeight = rows;
-								
-								BOOL resize = NO;
-								
-								if(width > maxWidth && maxWidth > 0)
+								if( curWW == 0)
 								{
-									height =  height * maxWidth / width;
-									width = maxWidth;
-									resize = YES;
-								}
-								if(height > maxHeight && maxHeight > 0)
-								{
-									width = width * maxHeight / height;
-									height = maxHeight;
-									resize = YES;
+									curWW = [dcmPix savedWW];
+									curWL = [dcmPix savedWL];
 								}
 								
-								NSImage *newImage;
+								data = [imageCache objectForKey: [NSString stringWithFormat: @"%@ %f %f", contentType, curWW, curWL]];
 								
-								if( resize)
-									newImage = [image imageByScalingProportionallyToSize: NSMakeSize(width, height)];
-								else
-									newImage = image;
-								
-								NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
-								NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
-								
-								if( [contentType isEqualToString: @"image/gif"])
-									data = [imageRep representationUsingType: NSGIFFileType properties:imageProps];
-								else if( [contentType isEqualToString: @"image/png"])
-									data = [imageRep representationUsingType: NSPNGFileType properties:imageProps];
-								else if( [contentType isEqualToString: @"image/jp2"])
-									data = [imageRep representationUsingType: NSJPEG2000FileType properties:imageProps];
-								else
-									data = [imageRep representationUsingType: NSJPEGFileType properties:imageProps];
+								if( data == nil)
+								{
+									[dcmPix checkImageAvailble: curWW :curWL];
+									
+									image = [dcmPix image];
+									float width = [image size].width;
+									float height = [image size].height;
+									
+									int maxWidth = columns;
+									int maxHeight = rows;
+									
+									BOOL resize = NO;
+									
+									if(width > maxWidth && maxWidth > 0)
+									{
+										height =  height * maxWidth / width;
+										width = maxWidth;
+										resize = YES;
+									}
+									
+									if(height > maxHeight && maxHeight > 0)
+									{
+										width = width * maxHeight / height;
+										height = maxHeight;
+										resize = YES;
+									}
+									
+									NSImage *newImage;
+									
+									if( resize)
+										newImage = [image imageByScalingProportionallyToSize: NSMakeSize(width, height)];
+									else
+										newImage = image;
+									
+									NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
+									NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
+									
+									if( [contentType isEqualToString: @"image/gif"])
+										data = [imageRep representationUsingType: NSGIFFileType properties:imageProps];
+									else if( [contentType isEqualToString: @"image/png"])
+										data = [imageRep representationUsingType: NSPNGFileType properties:imageProps];
+									else if( [contentType isEqualToString: @"image/jp2"])
+										data = [imageRep representationUsingType: NSJPEG2000FileType properties:imageProps];
+									else
+										data = [imageRep representationUsingType: NSJPEGFileType properties:imageProps];
+									
+									[imageCache setObject: data forKey: [NSString stringWithFormat: @"%@ %f %f", contentType, curWW, curWL]];
+								}
+								else NSLog( @"image data is in cache!");
 								
 								if( data)
 									err = NO;
@@ -3315,7 +3359,7 @@ NSString* notNil( NSString *s)
 		[NSThread sleepForTimeInterval: 3];
 	
 	if( err)
-		data = [[NSString stringWithString: NSLocalizedString( @"Error 404\r\rFailed to process this request.\r\rOur security team and our webmaster have been notified. They will arrive shortly at this computer location.", nil)] dataUsingEncoding: NSUTF8StringEncoding];
+		data = [[NSString stringWithString: NSLocalizedString( @"Error 404\r\rFailed to process this request.\r\rThis error will be logged and the webmaster will be notified.", nil)] dataUsingEncoding: NSUTF8StringEncoding];
 	
 	return [[[HTTPDataResponse alloc] initWithData: data] autorelease];
 }
