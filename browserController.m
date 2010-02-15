@@ -1349,6 +1349,7 @@ static NSArray*	statesArray = nil;
 		}
 	}
 	
+	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
 	{
 		BOOL succeed = [self testFiles: filesArray];
@@ -1360,6 +1361,7 @@ static NSArray*	statesArray = nil;
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Corrupted Files",nil), NSLocalizedString(@"These files are corrupted: they cannot be imported in OsiriX.",nil), NSLocalizedString( @"OK",nil), nil, nil);
 		}
 	}
+	#endif
 	
 	NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded: filesArray];
 	
@@ -3174,6 +3176,7 @@ static NSArray*	statesArray = nil;
 				
 				if( curFile)
 				{
+					#ifndef OSIRIX_LIGHT
 					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
 					{
 						BOOL succeed = [self testFiles: [NSArray arrayWithObject: srcPath]];
@@ -3181,6 +3184,7 @@ static NSArray*	statesArray = nil;
 						if( succeed == NO)
 							curFile = nil;
 					}
+					#endif
 					
 					if( curFile)
 					{
