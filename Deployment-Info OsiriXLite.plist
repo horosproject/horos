@@ -178,13 +178,13 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>6066M</string>
+	<string>6726M</string>
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright 2004-2009, Antoine Rosset</string>
+	<string>Copyright 2004-2010, Antoine Rosset</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
