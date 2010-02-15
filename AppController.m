@@ -40,7 +40,7 @@
 #import "altivecFunctions.h"
 #ifndef OSIRIX_LIGHT
 #import <ILCrashReporter/ILCrashReporter.h>
-#import <Nitrogen/N2Debug.h>
+#import <N2Debug.h>
 #endif
 #import "PluginManagerController.h"
 #import "OSIWindowController.h"
@@ -2678,9 +2678,7 @@ static BOOL initialized = NO;
 	}
 	
 	#ifndef OSIRIX_LIGHT
-
-	[N2Debug setActive:[[NSUserDefaults standardUserDefaults] boolForKey:@"DEBUG"]];
-
+	
 	@try
 	{
 		[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"crash@osirix-viewer.com"];
