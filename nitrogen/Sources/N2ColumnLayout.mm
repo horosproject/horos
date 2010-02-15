@@ -204,6 +204,7 @@ typedef struct ConstrainedFloat {
 		NSArray* row = [_rows objectAtIndex:r];
 		NSUInteger colNumber = 0;
 //		rowHeights[l] = 0;
+		CGFloat rowHeight = 0;
 		for (N2CellDescriptor* cell in row) {
 			NSUInteger span = [cell colSpan];
 			
@@ -212,11 +213,20 @@ typedef struct ConstrainedFloat {
 				spannedWidth += widths[0][i].value + _separation.width;
 			
 			sizes[r][colNumber] = [cell filled]? NSMakeSize(spannedWidth, [cell optimalSizeForWidth:spannedWidth+[cell sizeAdjust].size.width].height) : [cell optimalSizeForWidth:spannedWidth+[cell sizeAdjust].size.width];
+			rowHeight = std::max(rowHeight, sizes[r][colNumber].height);
 //			rowHeights[l] = std::max(rowHeights[l], sizes[l][i].height);
 	//		NSSize test = sizes[r][colNumber];
 			
 			colNumber += span;
 		}
+		colNumber = 0;
+		for (N2CellDescriptor* cell in row) {
+			NSUInteger span = [cell colSpan];
+			if ([cell filled])
+				sizes[r][colNumber].height = rowHeight;
+			colNumber += span;
+		}
+				
 	}
 	
 //	std::cout << "end" << std::endl;
@@ -240,13 +250,32 @@ typedef struct ConstrainedFloat {
 	return [NSArray arrayWithObjects: resultColWidths, resultSizes, NULL];
 }
 
+-(NSArray*)computeSizesForSize:(NSSize)sizeWithMarginAndSeparations {
+	NSSize size = [self optimalSizeForWidth:sizeWithMarginAndSeparations.width];
+	if (!_forcesSuperviewHeight && size.height > sizeWithMarginAndSeparations.height) {
+		NSUInteger step = std::max(NSUInteger(size.width/10), NSUInteger(1));
+		size.width += step;
+		do { // "decrease width until its height fits the height"
+			size.width -= step;
+			size = [self optimalSizeForWidth:size.width];
+			if (size.height <= sizeWithMarginAndSeparations.height && step > 1) {
+				size.width += step;
+				step = std::max(step/10, NSUInteger(1));
+				size.height = sizeWithMarginAndSeparations.height+1;
+			}
+		} while (size.height > sizeWithMarginAndSeparations.height && size.width > 20);
+	}
+	
+	return [self computeSizesForWidth:size.width];
+}
+
 -(void)layOutImpl {
 	NSUInteger rowsCount = [_rows count];
 	NSUInteger colsCount = [_columnDescriptors count];
 
 	NSSize size = [_view frame].size;
 	
-	NSArray* sizesData = [self computeSizesForWidth:size.width];
+	NSArray* sizesData = [self computeSizesForSize:size];
 	CGFloat colWidth[colsCount];
 	for (NSUInteger i = 0; i < colsCount; ++i)
 		colWidth[i] = [[[sizesData objectAtIndex:0] objectAtIndex:i] floatValue];
@@ -264,18 +293,13 @@ typedef struct ConstrainedFloat {
 	// apply computed column widths
 	
 	CGFloat y = _margin.origin.y;
-	if (!_forcesSuperviewHeight) {
-		CGFloat height = _margin.size.height-_separation.height;
-		for (NSUInteger r = 0; r < rowsCount; ++r)
-			height += rowHeights[r]+_separation.height;
-		y += ([_view bounds].size.height - height)/2;
-	}
+	CGFloat x0 = _margin.origin.x;
 	
 	CGFloat maxX = 0;
 	for (NSInteger r = rowsCount-1; r >= 0; --r) {
 		NSArray* row = [_rows objectAtIndex:r];
 		
-		CGFloat x = _margin.origin.x;
+		CGFloat x = x0;
 		NSUInteger colNumber = 0;
 		for (N2CellDescriptor* cell in row) {
 			NSUInteger span = [cell colSpan];
@@ -317,6 +341,13 @@ typedef struct ConstrainedFloat {
 		y += rowHeights[r]+_separation.height;
 	}
 	y += _margin.size.height-_margin.origin.y - _separation.height;
+	
+	NSRect bounds = [_view frame];
+	if (!_forcesSuperviewWidth)
+		bounds.origin.x = -(bounds.size.width-maxX)/2;
+	if (!_forcesSuperviewHeight)
+		bounds.origin.y = -(bounds.size.height-y)/2;
+	[_view setBounds:bounds];
 	
 	// superview size
 	if (_forcesSuperviewWidth || _forcesSuperviewHeight) {
