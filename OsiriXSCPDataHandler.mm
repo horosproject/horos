@@ -1126,11 +1126,11 @@ extern NSManagedObjectContext *staticContext;
 				
 				if( key == DCM_ImageComments)
 				{
-					if( [[fetchedObject valueForKeyPath: @"series.comment"] length] > 0)
+					if( [(NSString*) [fetchedObject valueForKeyPath: @"series.comment"] length] > 0)
 					{
 						dataset->putAndInsertString( key, [[fetchedObject valueForKeyPath:@"series.comment"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 					}
-					else if( [[fetchedObject valueForKeyPath: @"series.study.comment"] length] > 0)
+					else if( [(NSString*) [fetchedObject valueForKeyPath: @"series.study.comment"] length] > 0)
 					{
 						dataset->putAndInsertString( key, [[fetchedObject valueForKeyPath:@"series.study.comment"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 					}

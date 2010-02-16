@@ -1317,6 +1317,12 @@ static NSDate *lastWarningDate = nil;
 				[[NSUserDefaults standardUserDefaults] setObject: a forKey: @"CompressionSettingsLowRes"];
 			}
 		}
+		
+		if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"] length] == 0)
+		{
+			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"BurnSupplementaryFolder"];
+			[[NSUserDefaults standardUserDefaults] setObject: nil forKey: @"SupplementaryBurnPath"];
+		}
 	}
 	@catch (NSException *e) 
 	{

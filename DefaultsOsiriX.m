@@ -829,7 +829,6 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"1" forKey: @"BurnHtml"];
 	[defaultValues setObject: @"0" forKey: @"BurnSupplementaryFolder"];
 	[defaultValues setObject: @"1" forKey: @"splineForROI"];
-	[defaultValues setObject: @"" forKey: @"SupplementaryBurnPath"];
 	[defaultValues setObject:@"0" forKey:@"ThreeDViewerOnAnotherScreen"];
 	[defaultValues setObject:@"512" forKey:@"SOFTWAREINTERPOLATION_MAX"];
 	[defaultValues setObject:@"1" forKey:@"SOFTWAREINTERPOLATION"];
