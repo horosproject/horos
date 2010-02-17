@@ -601,7 +601,7 @@ NSString* notNil( NSString *s)
 		}
 	}
 	
-	if( v == YES)
+	if( v != NO)
 	{
 		[s replaceOccurrencesOfString: begin withString: @"" options: NSLiteralSearch range: NSMakeRange(0, [s length])];
 		[s replaceOccurrencesOfString: end withString: @"" options: NSLiteralSearch range: NSMakeRange(0, [s length])];
@@ -3305,15 +3305,17 @@ NSString* notNil( NSString *s)
 				NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"account.html"]];
 				
 				NSString *block = @"MessageToWrite";
-				if(messageIsError)
+				if( messageIsError)
 				{
 					block = @"ErrorToWrite";
 					templateString = [self setBlock:@"MessageToWrite" visible:NO forString:templateString];
 				}
 				else
+				{
 					templateString = [self setBlock:@"ErrorToWrite" visible:NO forString:templateString];
+				}
 
-				templateString = [self setBlock:block visible:[message length] forString:templateString];
+				templateString = [self setBlock:block visible: [message length] forString:templateString];
 				
 				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: notNil( message) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
