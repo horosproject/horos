@@ -2037,6 +2037,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	[drawLock lock];
 	
+	if( [self is2DViewer])
+	{
+		currentToolRight = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTRIGHTTOOL"];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"RestoreLeftMouseTool"])
+			currentTool =  [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"];
+	}
+	
 	[curDCM release];
 	curDCM = nil;
 	
@@ -5810,10 +5818,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	cursor = [[NSCursor contrastCursor] retain];
 	syncRelativeDiff = 0;
 	volumicSeries = YES;
-	if( [self is2DViewer])
-		currentToolRight = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTRIGHTTOOL"];
-	else
-		currentToolRight = tZoom;
+
+	currentToolRight = tZoom;
 	
 	thickSlabMode = 0;
 	thickSlabStacks = 0;
@@ -5946,10 +5952,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: self];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 	
-	if( [self is2DViewer] && [[NSUserDefaults standardUserDefaults] boolForKey: @"RestoreLeftMouseTool"])
-		currentTool =  [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"];
-	else
-		currentTool = tWL;
+	currentTool = tWL;
 		
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: nil];
 	
@@ -12004,6 +12007,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		is2DViewerCached = YES;
 		is2DViewerValue = [[self windowController] is2DViewer];
 	}
+//	else NSLog( @"**** NO Window defined");
 	
 	return is2DViewerValue;
 }
