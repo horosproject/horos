@@ -830,7 +830,8 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 #pragma mark-
 #pragma mark NSToolbar Related Methods
 
-- (void) setupToolbar {
+- (void) setupToolbar
+{
     // Create a new toolbar instance, and attach it to our document window 
     toolbar = [[NSToolbar alloc] initWithIdentifier: PETCTToolbarIdentifier];
     

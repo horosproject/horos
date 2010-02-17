@@ -591,9 +591,17 @@ NSString* notNil( NSString *s)
 	{
 		NSArray *tempArray = [s componentsSeparatedByString: begin];
 		NSArray *tempArray2 = [[tempArray lastObject] componentsSeparatedByString: end];
-		s = [NSMutableString stringWithFormat: @"%@%@", [tempArray objectAtIndex:0], [tempArray2 lastObject]];
+		
+		if( [tempArray count] >= 2)
+			s = [NSMutableString stringWithFormat: @"%@%@", [tempArray objectAtIndex:0], [tempArray2 lastObject]];
+		else
+		{
+			v = YES;
+			NSLog( @"**** block separators %@ not found", b);
+		}
 	}
-	else
+	
+	if( v == YES)
 	{
 		[s replaceOccurrencesOfString: begin withString: @"" options: NSLiteralSearch range: NSMakeRange(0, [s length])];
 		[s replaceOccurrencesOfString: end withString: @"" options: NSLiteralSearch range: NSMakeRange(0, [s length])];
@@ -2039,6 +2047,16 @@ NSString* notNil( NSString *s)
 				showAlbums = NO;
 			returnHTML = [self setBlock:@"Albums" visible:showAlbums forString:returnHTML];
 			
+			BOOL accessStudies = YES;
+			
+			if( currentUser)
+			{
+				if( [[self studiesForPredicate: [NSPredicate predicateWithValue:YES] sortBy: nil] count] == 0)
+					accessStudies = NO;
+			}
+			
+			returnHTML = [self setBlock: @"accessStudies" visible: accessStudies forString: returnHTML];
+			
 			[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: notNil( portString) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 			
 			data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
@@ -3460,93 +3478,96 @@ NSString* notNil( NSString *s)
 	NSString *previousPatientUID = nil;
 	NSString *previousStudyInstanceUID = nil;
 	
-	// We want to find this file after db insert: get studyInstanceUID, patientUID and instanceSOPUID
-	for( NSString *oFile in filesArray)
+	if( [[currentUser valueForKey: @"uploadDICOMAddToSpecificStudies"] boolValue])
 	{
-		DicomFile *f = [[[DicomFile alloc] init: oFile DICOMOnly: YES] autorelease];
-		
-		if( f)
+		// We want to find this file after db insert: get studyInstanceUID, patientUID and instanceSOPUID
+		for( NSString *oFile in filesArray)
 		{
-			do
-			{
-				file = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebServer Upload %d", inc++]] stringByAppendingPathExtension: [oFile pathExtension]];
-			}
-			while( [[NSFileManager defaultManager] fileExistsAtPath: file]);
-		
-			[[NSFileManager defaultManager] moveItemAtPath: oFile toPath: file error: nil];
+			DicomFile *f = [[[DicomFile alloc] init: oFile DICOMOnly: YES] autorelease];
 			
-			NSString *studyInstanceUID = [f elementForKey: @"studyID"], *patientUID = [f elementForKey: @"patientUID"];	//, *sopInstanceUID = [f elementForKey: @"SOPUID"];
-			
-			if( [studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID isEqualToString: previousPatientUID] == NO)
+			if( f)
 			{
-				previousStudyInstanceUID = [[studyInstanceUID copy] autorelease];
-				previousPatientUID = [[patientUID copy] autorelease];
-				
-				[[BrowserController currentBrowser] checkIncomingNow: self];
-				[NSThread sleepForTimeInterval: 1];
-				[[BrowserController currentBrowser] checkIncomingNow: self];
-				
-				if( studyInstanceUID && patientUID)
+				do
 				{
-					[[[BrowserController currentBrowser] managedObjectContext] lock];
+					file = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebServer Upload %d", inc++]] stringByAppendingPathExtension: [oFile pathExtension]];
+				}
+				while( [[NSFileManager defaultManager] fileExistsAtPath: file]);
+			
+				[[NSFileManager defaultManager] moveItemAtPath: oFile toPath: file error: nil];
+				
+				NSString *studyInstanceUID = [f elementForKey: @"studyID"], *patientUID = [f elementForKey: @"patientUID"];	//, *sopInstanceUID = [f elementForKey: @"SOPUID"];
+				
+				if( [studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID isEqualToString: previousPatientUID] == NO)
+				{
+					previousStudyInstanceUID = [[studyInstanceUID copy] autorelease];
+					previousPatientUID = [[patientUID copy] autorelease];
 					
-					@try
+					[[BrowserController currentBrowser] checkIncomingNow: self];
+					[NSThread sleepForTimeInterval: 1];
+					[[BrowserController currentBrowser] checkIncomingNow: self];
+					
+					if( studyInstanceUID && patientUID)
 					{
-						NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-						[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
-						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
+						[[[BrowserController currentBrowser] managedObjectContext] lock];
 						
-						NSError *error = nil;
-						NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
-						
-						if( [studies count] == 0)
-							NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST");
-						
-						// Add study to specific study list for this user
-						
-						NSArray *studiesArrayStudyInstanceUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
-						NSArray *studiesArrayPatientUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
-						
-						for( NSManagedObject *study in studies)
+						@try
 						{
-							if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
-								study = [study valueForKey:@"study"];
+							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+							[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
+							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
 							
-							if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+							NSError *error = nil;
+							NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
+							
+							if( [studies count] == 0)
+								NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST");
+							
+							// Add study to specific study list for this user
+							
+							NSArray *studiesArrayStudyInstanceUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+							NSArray *studiesArrayPatientUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+							
+							for( NSManagedObject *study in studies)
 							{
-								NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: [BrowserController currentBrowser].userManagedObjectContext];
+								if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
+									study = [study valueForKey:@"study"];
 								
-								[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
-								[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
-								[studyLink setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]] forKey: @"dateAdded"];
-								
-								[studyLink setValue: currentUser forKey: @"user"];
-								
-								@try
+								if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
 								{
-									[[BrowserController currentBrowser].userManagedObjectContext save: nil];
+									NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: [BrowserController currentBrowser].userManagedObjectContext];
+									
+									[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
+									[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
+									[studyLink setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]] forKey: @"dateAdded"];
+									
+									[studyLink setValue: currentUser forKey: @"user"];
+									
+									@try
+									{
+										[[BrowserController currentBrowser].userManagedObjectContext save: nil];
+									}
+									@catch (NSException * e)
+									{
+										NSLog( @"*********** [[BrowserController currentBrowser].userManagedObjectContext save: nil]");
+									}
+									
+									studiesArrayStudyInstanceUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+									studiesArrayPatientUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+									
+									[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [currentUser valueForKey: @"name"] ip: nil];
 								}
-								@catch (NSException * e)
-								{
-									NSLog( @"*********** [[BrowserController currentBrowser].userManagedObjectContext save: nil]");
-								}
-								
-								studiesArrayStudyInstanceUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
-								studiesArrayPatientUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
-								
-								[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [currentUser valueForKey: @"name"] ip: nil];
 							}
 						}
+						@catch( NSException *e)
+						{
+							NSLog( @"********* OsiriXHTTPConnection closeFileHandleAndClean exception : %@", e);
+						}
+						///
+						
+						[[[BrowserController currentBrowser] managedObjectContext] unlock];
 					}
-					@catch( NSException *e)
-					{
-						NSLog( @"********* OsiriXHTTPConnection closeFileHandleAndClean exception : %@", e);
-					}
-					///
-					
-					[[[BrowserController currentBrowser] managedObjectContext] unlock];
+					else NSLog( @"****** studyInstanceUID && patientUID == nil upload POST");
 				}
-				else NSLog( @"****** studyInstanceUID && patientUID == nil upload POST");
 			}
 		}
 	}
