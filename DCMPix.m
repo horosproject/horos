@@ -978,20 +978,35 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	// top
 	for(y = 0; y <= cy; y++)
 	{
-		for(x = 0; x < width; x++) buf[ x + y*width] = blackIndex;
+		for(x = 0; x < width; x++)
+		{
+			if( y >= 0 && y < height) buf[ x + y*width] = blackIndex;
+		}
 	}
 	
 	// bottom
 	for(y = cy+inw; y < height; y++)
 	{
-		for(x = 0; x < width; x++) buf[ x + y*width] = blackIndex;
+		for(x = 0; x < width; x++)
+		{
+			if( y >= 0 && y < height) buf[ x + y*width] = blackIndex;
+		}
 	}
 	
 	// left + right
 	for(y = cy; y < cy+inw; y++)
 	{
-		for(x = 0; x <= cx; x++) buf[ x + y*width] = blackIndex;
-		for(x = cx+inw; x < width; x++) buf[ x + y*width] = blackIndex;
+		for(x = 0; x <= cx; x++)
+		{
+			if( x < width && y >= 0 && y < height) 
+				buf[ x + y*width] = blackIndex;
+		}
+		
+		for(x = cx+inw; x < width; x++)
+		{
+			if( x >= 0 && y >= 0 && y < height)
+				buf[ x + y*width] = blackIndex;
+		}
 	}
 	
 	for(x = 0; x < rad; x++)

@@ -7710,63 +7710,70 @@ static NSArray*	statesArray = nil;
 	[context retain];
 	[context lock];
 	
-	NSError	*error = nil;
-	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-	
-	if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
+	@try
 	{
-		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
-		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-		[sort release];
+		NSError	*error = nil;
+		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 		
-		studiesArray = [studiesArray sortedArrayUsingDescriptors: sortDescriptors];
-		
-		NSArray	*seriesArray = [NSArray array];
-		
-		for(NSManagedObject	*curStudy in studiesArray)
-			seriesArray = [seriesArray arrayByAddingObjectsFromArray: [self childrenArray: curStudy]];
-		
-		NSInteger index = [seriesArray indexOfObject: currentSeries];
-		
-		if( index != NSNotFound)
+		if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
 		{
-			if( direction == 0)	// Called from loadNextPatient
-			{
-				if( firstViewer == NO) direction = 1;
-			}
+			NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
+			NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
+			[sort release];
 			
-			index += direction*[viewersList count];
-			if( index < 0 && index + [viewersList count] == 0)
-				NSBeep();
-			else 
+			studiesArray = [studiesArray sortedArrayUsingDescriptors: sortDescriptors];
+			
+			NSArray	*seriesArray = [NSArray array];
+			
+			for(NSManagedObject	*curStudy in studiesArray)
+				seriesArray = [seriesArray arrayByAddingObjectsFromArray: [self childrenArray: curStudy]];
+			
+			NSInteger index = [seriesArray indexOfObject: currentSeries];
+			
+			if( index != NSNotFound)
 			{
-				if( index < 0) index = 0;
-				if( index < [seriesArray count])
+				if( direction == 0)	// Called from loadNextPatient
 				{
-					if( index + [viewersList count] > [seriesArray count])
+					if( firstViewer == NO) direction = 1;
+				}
+				
+				index += direction*[viewersList count];
+				if( index < 0 && index + [viewersList count] == 0)
+					NSBeep();
+				else 
+				{
+					if( index < 0) index = 0;
+					if( index < [seriesArray count])
 					{
-						index = [seriesArray count] - [viewersList count];
-						if( index < 0) index = 0;
-					}
-					
-					for( ViewerController *vc in viewersList)
-					{
-						if( index >= 0 && index < [seriesArray count])
+						if( index + [viewersList count] > [seriesArray count])
 						{
-							[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [seriesArray objectAtIndex: index]]] movie: NO viewer:vc keyImagesOnly: keyImages];
-						}
-						else
-						{
-							// Close the viewer
-							[[vc window] performClose: self];
+							index = [seriesArray count] - [viewersList count];
+							if( index < 0) index = 0;
 						}
 						
-						index++;
+						for( ViewerController *vc in viewersList)
+						{
+							if( index >= 0 && index < [seriesArray count])
+							{
+								[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [seriesArray objectAtIndex: index]]] movie: NO viewer:vc keyImagesOnly: keyImages];
+							}
+							else
+							{
+								// Close the viewer
+								[[vc window] performClose: self];
+							}
+							
+							index++;
+						}
 					}
+					else NSBeep();
 				}
-				else NSBeep();
 			}
 		}
+	}
+	@catch ( NSException *e)
+	{
+		NSLog( @"***** loadNextSeries exception : %@", e);
 	}
 		
 	[context unlock];
