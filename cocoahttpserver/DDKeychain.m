@@ -968,7 +968,11 @@ SecPolicySearchCreate:
 		SecIdentityCopyCertificate(identity, &certificateRef);
 		if(certificateRef)
 		{
-			[[SFCertificatePanel sharedCertificatePanel] runModalForCertificates:[NSArray arrayWithObject:(id)certificateRef] showGroup:NO];		
+			NSMutableArray *certificates = [NSMutableArray arrayWithObject:(id)certificateRef];
+			NSArray *certificateChain = [DDKeychain KeychainAccessCertificateChainForIdentity:identity];
+			[certificates addObjectsFromArray:certificateChain];
+			
+			[[SFCertificatePanel sharedCertificatePanel] runModalForCertificates:certificates showGroup:YES];		
 			CFRelease(certificateRef);
 		}
 	}
