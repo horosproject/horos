@@ -25,6 +25,7 @@
 + (void)KeychainAccessSetPreferredIdentity:(SecIdentityRef)identity forName:(NSString*)name keyUse:(int)keyUse;
 + (NSString*)KeychainAccessCertificateCommonNameForIdentity:(SecIdentityRef)identity;
 + (NSImage*)KeychainAccessCertificateIconForIdentity:(SecIdentityRef)identity;
++ (NSArray*)KeychainAccessCertificateChainForIdentity:(SecIdentityRef)identity;
 + (void)KeychainAccessExportCertificateForIdentity:(SecIdentityRef)identity toPath:(NSString*)path;
 + (void)KeychainAccessExportPrivateKeyForIdentity:(SecIdentityRef)identity toPath:(NSString*)path cryptWithPassword:(NSString*)password;
 + (void)KeychainAccessOpenCertificatePanelForIdentity:(SecIdentityRef)identity;

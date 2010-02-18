@@ -544,7 +544,15 @@ NSString* notNil( NSString *s)
 		[DDKeychain createNewIdentity];
 		identity = (id)[DDKeychain KeychainAccessPreferredIdentityForName:@"com.osirixviewer.osirixwebserver" keyUse:CSSM_KEYUSE_ANY];
 	}
-	return [NSArray arrayWithObject:identity];
+	
+	NSMutableArray *array = [NSMutableArray arrayWithObject:identity];
+	
+	// We add the chain of certificates that validates the chosen certificate.
+	// This way we don't have to install the intermediate certificates on the clients systems. Yay!
+	NSArray *certificateChain = [DDKeychain KeychainAccessCertificateChainForIdentity:(SecIdentityRef)identity];
+	[array addObjectsFromArray:certificateChain];
+
+	return [NSArray arrayWithArray:array];
 }
 
 - (id)initWithAsyncSocket:(AsyncSocket *)newSocket forServer:(HTTPServer *)myServer

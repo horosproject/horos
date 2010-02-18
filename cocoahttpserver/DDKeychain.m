@@ -4,6 +4,37 @@
 static NSMutableDictionary *lockedFiles = nil;
 static NSRecursiveLock *lockFile = nil;
 
+/*
+ * Function: SSLSecPolicyCopy
+ * Purpose:
+ *   Returns a copy of the SSL policy.
+ */
+static OSStatus SSLSecPolicyCopy(SecPolicyRef *ret_policy)
+{
+	SecPolicyRef policy;
+	SecPolicySearchRef policy_search;
+	OSStatus status;
+	
+	*ret_policy = NULL;
+	status = SecPolicySearchCreate(CSSM_CERT_X_509v3, &CSSMOID_APPLE_TP_SSL, NULL, &policy_search);
+	//status = SecPolicySearchCreate(CSSM_CERT_X_509v3, &CSSMOID_APPLE_X509_BASIC, NULL, &policy_search);
+	require_noerr(status, SecPolicySearchCreate);
+	
+	status = SecPolicySearchCopyNext(policy_search, &policy);
+	require_noerr(status, SecPolicySearchCopyNext);
+	
+	*ret_policy = policy;
+	
+SecPolicySearchCopyNext:
+	
+	CFRelease(policy_search);
+	
+SecPolicySearchCreate:
+	
+	return (status);
+}
+
+
 @implementation DDKeychain
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -809,6 +840,61 @@ static NSRecursiveLock *lockFile = nil;
 		}	
 	}	
 	return icon;
+}
+
++ (NSArray*)KeychainAccessCertificateChainForIdentity:(SecIdentityRef)identity;
+{
+	OSStatus status;
+		
+	if(identity)
+	{		
+		SecCertificateRef certificateRef = NULL;
+		SecIdentityCopyCertificate(identity, &certificateRef);
+		
+		if(certificateRef)
+		{
+			SecPolicyRef sslPolicy = NULL;		
+			status = SSLSecPolicyCopy(&sslPolicy);
+			
+			if(status==0)
+			{
+				if(sslPolicy)
+				{
+					SecTrustRef trust = NULL;
+					status = SecTrustCreateWithCertificates((CFArrayRef)[NSArray arrayWithObject:(id)certificateRef], sslPolicy, &trust);
+					if(status==0)
+					{
+						SecTrustResultType result;
+						status = SecTrustEvaluate(trust, &result);
+						
+						if(status==0)
+						{
+							CFArrayRef certChain;
+							CSSM_TP_APPLE_EVIDENCE_INFO *statusChain;
+							status = SecTrustGetResult(trust, &result, &certChain, &statusChain);
+							if(status==0)
+							{
+								NSArray *certificatesChain = [NSArray arrayWithArray:(NSArray*)certChain];
+								CFRelease(certChain);
+								return certificatesChain;
+							}
+							else NSLog(@"SecTrustGetResult : error : %@", [DDKeychain stringForError:status]);
+						}
+						else NSLog(@"SecTrustEvaluate : error : %@", [DDKeychain stringForError:status]);	
+						
+						CFRelease(trust);
+					}
+					else NSLog(@"SecTrustCreateWithCertificates : error : %@", [DDKeychain stringForError:status]);
+
+					CFRelease(sslPolicy);
+				}
+			}
+			else NSLog(@"SSLSecPolicyCopy : error : %@", [DDKeychain stringForError:status]);
+
+			CFRelease(certificateRef);
+		}
+	}
+	return NULL;
 }
 
 + (void)KeychainAccessExportCertificateForIdentity:(SecIdentityRef)identity toPath:(NSString*)path;
