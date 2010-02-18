@@ -4486,7 +4486,6 @@
 		CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */; };
 		CEAF4ECF089D6E9400DE46AF /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
 		CEB1DA6908A3B1040058C303 /* smalltrash.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEB1DA6608A3B1040058C303 /* smalltrash.tif */; };
-		CEB57C7811020A06009A7202 /* user.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 8474A3F710DBE7F300D192D0 /* user.xcdatamodel */; };
 		CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
 		CEBA30130EEDB3FF00D920B4 /* libvtkexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE24490D0DA42A7600B8D506 /* libvtkexpat.a */; };
 		CEBA30160EEDB4EB00D920B4 /* libvtkFiltering.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449000DA42A7600B8D506 /* libvtkFiltering.a */; };
@@ -24801,7 +24800,6 @@
 				CEDDD88210DCC93500FFE72B /* PSGenerator.m in Sources */,
 				CE85FF5D10E6764100175CEB /* OpenGLScreenReader.m in Sources */,
 				CEE72C091101F14A00758DCA /* BrowserControllerDCMTKCategory.mm in Sources */,
-				CEB57C7811020A06009A7202 /* user.xcdatamodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

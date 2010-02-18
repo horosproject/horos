@@ -4473,6 +4473,7 @@ static NSArray*	statesArray = nil;
 
 - (NSManagedObjectModel *) userManagedObjectModel
 {
+	#ifndef OSIRIX_LIGHT
     if( userManagedObjectModel) return userManagedObjectModel;
 	
 	NSMutableSet *allBundles = [[NSMutableSet alloc] init];
@@ -4483,10 +4484,14 @@ static NSArray*	statesArray = nil;
     [allBundles release];
     
     return userManagedObjectModel;
+	#else
+	return nil;
+	#endif
 }
 
 - (NSManagedObjectContext *) userManagedObjectContext
 {
+	#ifndef OSIRIX_LIGHT
     NSError *error = nil;
     NSString *localizedDescription;
 	NSFileManager *fileManager;
@@ -4530,6 +4535,9 @@ static NSArray*	statesArray = nil;
 	[self saveUserDatabase];
 	
     return userManagedObjectContext;
+	#else
+	return nil;
+	#endif
 }
 
 
