@@ -351,21 +351,35 @@ char *GetPrivateIP()
 - (IBAction)chooseTLSCertificate:(id)sender;
 {
 	NSArray *certificates = [DDKeychain KeychainAccessCertificatesList];
-	
-	[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")];
-	NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedString(@"Choose a certificate from the following list.", @"Choose a certificate from the following list.")];
-	
-	if(clickedButton==NSOKButton)
-	{
-		SecIdentityRef identity = [[SFChooseIdentityPanel sharedChooseIdentityPanel] identity];
-		if(identity)
+
+	if([certificates count])
+	{	
+		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")];
+		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedString(@"Choose a certificate from the following list.", @"Choose a certificate from the following list.")];
+		
+		if(clickedButton==NSOKButton)
 		{
-			[DDKeychain KeychainAccessSetPreferredIdentity:identity forName:TLS_KEYCHAIN_IDENTITY_NAME_SERVER keyUse:CSSM_KEYUSE_ANY];
-			[self getTLSCertificate];
+			SecIdentityRef identity = [[SFChooseIdentityPanel sharedChooseIdentityPanel] identity];
+			if(identity)
+			{
+				[DDKeychain KeychainAccessSetPreferredIdentity:identity forName:TLS_KEYCHAIN_IDENTITY_NAME_SERVER keyUse:CSSM_KEYUSE_ANY];
+				[self getTLSCertificate];
+			}
 		}
+		else if(clickedButton==NSCancelButton)
+			return;
 	}
-	else if(clickedButton==NSCancelButton)
+	else
+	{
+		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedString(@"No Valid Certificate", nil), NSLocalizedString(@"Your Keychain does not contain any valid certificate.", nil), NSLocalizedString(@"Help", nil), NSLocalizedString(@"Cancel", nil), nil);
+		
+		if(clickedButton==NSOKButton)
+		{
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://osirix.svn.sourceforge.net/viewvc/osirix/Documentation/Security/index.html"]];
+		}
+		
 		return;
+	}
 }
 
 - (IBAction)viewTLSCertificate:(id)sender;
