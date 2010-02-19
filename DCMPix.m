@@ -9446,16 +9446,17 @@ END_CREATE_ROIS:
 			isRGB = NO;
 			notAbleToLoadImage = YES;
 			
-			for( long i = 0; i < 128*128; i++)
+			for( int i = 0; i < 128*128; i++)
 				fImage[ i ] = i;
 		}
 		
 		if( isRGB)	// COMPUTE ALPHA MASK = ALPHA = R+G+B/3
 		{
-			unsigned char*	argbPtr = (unsigned char*) fImage;
-			long			ss = width * height;
+			unsigned char *argbPtr = (unsigned char*) fImage;
+			long ss = width * height;
 			
-			while( ss-->0)	{
+			while( ss-->0)
+			{
 				*argbPtr = (*(argbPtr+1) + *(argbPtr+2) + *(argbPtr+3)) / 3;
 				argbPtr+=4;
 			}
@@ -11467,12 +11468,14 @@ END_CREATE_ROIS:
 	baseAddr = nil;
 	
 	if( isRGB)
-		baseAddr = calloc( ((width*4) + 4) * ((height*4) + 4), 1);
+		baseAddr = calloc( (width + 4) * (height + 4) * 4, 1);
 	else
 		baseAddr = calloc( (width + 4) * (height + 4), 1);
 	
 	if( baseAddr)
 		[self changeWLWW: wl : ww];
+	else
+		NSLog( @"****** allocate8bitRepresentation calloc failed: %d %d", width, height);
 }
 
 - (long)ID { return imID; }
