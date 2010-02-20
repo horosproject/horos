@@ -699,7 +699,7 @@ static float deg2rad = 3.14159265358979/180.0;
     
 	if( c ==  ' ')
 	{
-		[self toogleAxisVisibility:self];
+		[self toogleAxisVisibility: self];
 	}
 	else if(c == 27) // 27 : escape
 	{
@@ -2696,7 +2696,16 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)toogleAxisVisibility:(id) sender;
 {
-	[self selectedView].displayCrossLines = ![self selectedView].displayCrossLines;
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
+	{
+		if( mprView1 != [self selectedView]) mprView1.displayCrossLines = !mprView1.displayCrossLines;
+		if( mprView2 != [self selectedView]) mprView2.displayCrossLines = !mprView2.displayCrossLines;
+		if( mprView3 != [self selectedView]) mprView3.displayCrossLines = !mprView3.displayCrossLines;
+	}
+	else
+	{
+		[self selectedView].displayCrossLines = ![self selectedView].displayCrossLines;
+	}
 	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
