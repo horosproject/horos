@@ -15,6 +15,7 @@
 #import "QTExportHTMLSummary.h"
 #import "AppController.h"
 #import "BrowserController.h"
+#import "DCMAbstractSyntaxUID.h"
 
 @implementation QTExportHTMLSummary
 
@@ -185,15 +186,29 @@
 			
 			tempListItemTemplate = [NSMutableString stringWithString:listItemTemplate];
 			extension = (imagesCount>1)? @"mov": @"jpg";
-			[fileName appendFormat:@".%@",extension];
-			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:[QTExportHTMLSummary nonNilString:htmlName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
+			
+			if( [DCMAbstractSyntaxUID isPDF: [[series objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]])
+			{
+				extension = @"pdf";
+				[fileName appendFormat:@".%@",extension];
+				[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:[QTExportHTMLSummary nonNilString: fileName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
+			
+			}
+			else
+			{
+				[fileName appendFormat:@".%@",extension];
+				[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:[QTExportHTMLSummary nonNilString:htmlName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
+			}
+
+			
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_thumbnail%" withString:[QTExportHTMLSummary nonNilString:thumbnailName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_name%" withString:[QTExportHTMLSummary nonNilString: [[series objectAtIndex:i] valueForKey: @"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_id%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%@",[[series objectAtIndex:i] valueForKey: @"id"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_images_count%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%d",imagesCount]] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempSeriesList appendString:tempListItemTemplate];
 			
-			[self createHTMLSeriesPage:[series objectAtIndex:i] numberOfImages:imagesCount outPutFileName:htmlName];
+			if( [extension isEqualToString: @"pdf"] == NO)
+				[self createHTMLSeriesPage:[series objectAtIndex:i] numberOfImages:imagesCount outPutFileName:htmlName];
 			
 			imagesCount = 0;
 			
@@ -260,13 +275,19 @@
 	[tempHTML replaceOccurrencesOfString:@"%footer_string%" withString:footerString options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 
 	NSArray *components;
-
-	if(imagesCount>1 && [[[series valueForKeyPath:@"images.width"] allObjects] count] > 0 )
+	
+	if( imagesCount > 1 && [[[series valueForKeyPath:@"images.width"] allObjects] count] > 0)
 	{
 		[tempHTML replaceOccurrencesOfString:@"%series_mov%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 	
-		int width = [[NSString stringWithFormat:@"%@", [[series valueForKeyPath:@"images.width"] anyObject]] intValue];
-		int height = [[NSString stringWithFormat:@"%@", [[series valueForKeyPath:@"images.height"] anyObject]] intValue];
+		int width = 0;
+		int height = 0;
+		
+		for( NSNumber *im in [[series valueForKeyPath:@"images.width"] allObjects])
+			if( [im intValue] > width) width = [im intValue];
+		
+		for( NSNumber *im in [[series valueForKeyPath:@"images.height"] allObjects])
+			if( [im intValue] > height) height = [im intValue];
 		
 		// SEE BROWSERCONTROLLER EXPORT QUICKTIME FOR THESE VALUES
 		int maxWidth = 1024, maxHeight = 1024;
@@ -299,7 +320,6 @@
 		[tempHTML replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height + 15] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])]; // +15 is for the movie's controller
 		components = [tempHTML componentsSeparatedByString:@"%series_img%"];
-		
 	}
 	else
 	{

@@ -15155,15 +15155,28 @@ static volatile int numberOfThreadsForJPEG = 0;
 				previousSeriesInstanceUID = [curImage valueForKeyPath: @"series.seriesInstanceUID"];
 				uniqueSeriesID++;
 				
+				// DONT FORGET TO MODIFY THE SAME FUNCTIONS AT THE END OF THIS LOOP !
+				
+				if( [imagesArray count])
+				{
+					id tempID = [[imagesArray lastObject] bestRepresentationForDevice:nil];
+						
+					if( [tempID isKindOfClass: [NSPDFImageRep class]])
+					{
+						[[tempID PDFRepresentation] writeToFile: [previousPath stringByAppendingPathExtension: @"pdf"] atomically: YES];
+						[imagesArray removeAllObjects];
+					}
+				}
+				
 				if( [imagesArray count] > 1)
 				{
-					[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
+					[self writeMovie: imagesArray name: [previousPath stringByAppendingPathExtension: @"mov"]];
 				}
 				else if( [imagesArray count] == 1)
 				{
 					NSArray *representations = [[imagesArray objectAtIndex: 0] representations];
 					NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-					[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
+					[bitmapData writeToFile:[previousPath stringByAppendingPathExtension: @"jpg"] atomically:YES];
 				}
 				
 				//
@@ -15190,84 +15203,111 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			previousPath = [NSString stringWithString: tempPath];
 			
-			int frames = [[curImage valueForKey:@"numberOfFrames"] intValue];
-			
-			if( [curImage valueForKey:@"frameID"]) frames = 1;
-			
-			for (int x = 0; x < frames; x++)
+			if( [DCMAbstractSyntaxUID isPDF: [curImage valueForKeyPath: @"series.seriesSOPClassUID"]])
 			{
-				int frame = x;
+				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [curImage valueForKey: @"completePath"] decodingPixelData:NO];
 				
-				if( [curImage valueForKey:@"frameID"])
-					frame = [[curImage valueForKey:@"frameID"] intValue];
-				
-				DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
-				
-				if( dcmPix)
+				@try
 				{
-					float curWW = 0;
-					float curWL = 0;
-					
-					if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
+					if ([[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
 					{
-						curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-						curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+						NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
+						
+						if( pdfData)
+						{
+							NSImage *im = [[[NSImage alloc] initWithData: pdfData] autorelease];
+							
+							if( im)
+								[imagesArray addObject: im];
+						}
 					}
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"******* pdfData exportQuicktime exception: %@", e);
+				}
+			}
+			else
+			{
+				int frames = [[curImage valueForKey:@"numberOfFrames"] intValue];
+				
+				if( [curImage valueForKey:@"frameID"]) frames = 1;
+				
+				for (int x = 0; x < frames; x++)
+				{
+					int frame = x;
 					
-					if( curWW != 0 && curWW !=curWL)
-						[dcmPix checkImageAvailble :curWW :curWL];
-					else
-						[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+					if( [curImage valueForKey:@"frameID"])
+						frame = [[curImage valueForKey:@"frameID"] intValue];
+					
+					DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
+					
+					if( dcmPix)
+					{
+						float curWW = 0;
+						float curWL = 0;
+						
+						if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
+						{
+							curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+							curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+						}
+						
+						if( curWW != 0 && curWW !=curWL)
+							[dcmPix checkImageAvailble :curWW :curWL];
+						else
+							[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
 
-					NSImage *im = [dcmPix image];
-					
-					int width = [dcmPix pwidth];
-					int height = [dcmPix pheight];
-					
-					BOOL resize = NO;
-					
-					// SEE QTEXPORTHTMLSUMMARY FOR THESE VALUES
-					int maxWidth = 1024, maxHeight = 1024;
-					int minWidth = 300, minHeight = 300;
-					
-					if(width > maxWidth)
-					{
-						height = height * maxWidth / width;
-						width = maxWidth;
-						resize = YES;
+						NSImage *im = [dcmPix image];
+						
+						int width = [dcmPix pwidth];
+						int height = [dcmPix pheight];
+						
+						BOOL resize = NO;
+						
+						// SEE QTEXPORTHTMLSUMMARY FOR THESE VALUES
+						int maxWidth = 1024, maxHeight = 1024;
+						int minWidth = 300, minHeight = 300;
+						
+						if(width > maxWidth)
+						{
+							height = height * maxWidth / width;
+							width = maxWidth;
+							resize = YES;
+						}
+						
+						if(width < minWidth)
+						{
+							height = height * minWidth / width;
+							width = minWidth;
+							resize = YES;
+						}
+						
+						if(height > maxHeight)
+						{
+							width = width * maxHeight / height;
+							height = maxHeight;
+							resize = YES;
+						}
+						
+						if(height < minHeight)
+						{
+							width = width * minHeight / height;
+							height = minHeight;
+							resize = YES;
+						}
+						
+						NSImage *newImage;
+						
+						if( resize)
+							newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
+						else
+							newImage = im;
+						
+						[imagesArray addObject: newImage];
+						
+						[dcmPix release];
 					}
-					
-					if(width < minWidth)
-					{
-						height = height * minWidth / width;
-						width = minWidth;
-						resize = YES;
-					}
-					
-					if(height > maxHeight)
-					{
-						width = width * maxHeight / height;
-						height = maxHeight;
-						resize = YES;
-					}
-					
-					if(height < minHeight)
-					{
-						width = width * minHeight / height;
-						height = minHeight;
-						resize = YES;
-					}
-					
-					NSImage *newImage;
-					
-					if( resize)
-						newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
-					else
-						newImage = im;
-					
-					[imagesArray addObject: newImage];
-					
-					[dcmPix release];
 				}
 			}
 			
@@ -15276,15 +15316,26 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if( [splash aborted]) break;
 		}
 		
+		if( [imagesArray count])
+		{
+			id tempID = [[imagesArray lastObject] bestRepresentationForDevice:nil];
+				
+			if( [tempID isKindOfClass: [NSPDFImageRep class]])
+			{
+				[[tempID PDFRepresentation] writeToFile: [previousPath stringByAppendingPathExtension: @"pdf"] atomically: YES];
+				[imagesArray removeAllObjects];
+			}
+		}
+		
 		if( [imagesArray count] > 1)
 		{
-			[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
+			[self writeMovie: imagesArray name: [previousPath stringByAppendingPathExtension:@"mov"]];
 		}
 		else if( [imagesArray count] == 1)
 		{
 			NSArray *representations = [[imagesArray objectAtIndex: 0] representations];
 			NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-			[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
+			[bitmapData writeToFile:[previousPath stringByAppendingPathExtension:@"jpg"] atomically:YES];
 		}
 		
 		if(createHTML)

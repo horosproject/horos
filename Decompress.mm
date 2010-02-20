@@ -3,6 +3,7 @@
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMTransferSyntax.h>
 #import <OsiriX/DCMPixelDataAttribute.h>
+#import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "DefaultsOsiriX.h"
 #import "AppController.h"
 #import "QTKit/QTMovie.h"
@@ -238,14 +239,17 @@ int main(int argc, const char *argv[])
 								
 								BOOL succeed = NO;
 								
-								@try
+								if( [DCMAbstractSyntaxUID isImageStorage: [dcmObject attributeValueWithName:@"SOPClassUID"]] == YES && [[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]] == NO)
 								{
-									DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-									succeed = [dcmObject writeToFile: curFileDest withTransferSyntax: tsx quality: quality AET:@"OsiriX" atomically:YES];
-								}
-								@catch (NSException *e)
-								{
-									NSLog( @"dcmObject writeToFile failed: %@", e);
+									@try
+									{
+										DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+										succeed = [dcmObject writeToFile: curFileDest withTransferSyntax: tsx quality: quality AET:@"OsiriX" atomically:YES];
+									}
+									@catch (NSException *e)
+									{
+										NSLog( @"dcmObject writeToFile failed: %@", e);
+									}
 								}
 								[dcmObject release];
 								
