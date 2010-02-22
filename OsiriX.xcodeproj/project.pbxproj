@@ -341,9 +341,6 @@
 		A9D4D06D0F73922500483A3A /* loupeMask.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D4D06C0F73922500483A3A /* loupeMask.png */; };
 		A9D780B009A4D2A6004302DC /* ITKBrushROIFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */; };
 		A9D780B109A4D2A6004302DC /* ITKBrushROIFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
-		A9DE9538085E0E910019992B /* FlyThruEnd.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9535085E0E910019992B /* FlyThruEnd.tif */; };
-		A9DE9539085E0E910019992B /* FlyThruStart.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9536085E0E910019992B /* FlyThruStart.tif */; };
-		A9DE953A085E0E910019992B /* FlyThruVia.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9537085E0E910019992B /* FlyThruVia.tif */; };
 		A9E0E4AE11182C480086A15A /* JSON.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4A111182C480086A15A /* JSON.h */; };
 		A9E0E4AF11182C480086A15A /* NSObject+SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4A211182C480086A15A /* NSObject+SBJSON.h */; };
 		A9E0E4B011182C480086A15A /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4A311182C480086A15A /* NSObject+SBJSON.m */; };
@@ -6023,9 +6020,6 @@
 		CEC705DB10A5C844008935EA /* DatabaseWindow.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1E7F5A07E2DD0D00A85908 /* DatabaseWindow.icns */; };
 		CEC705DC10A5C844008935EA /* 3DCut.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEF6A441080324E0001A8BF7 /* 3DCut.tif */; };
 		CEC705DD10A5C844008935EA /* Revert.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE4E00BE0830B72F008DAFAE /* Revert.tif */; };
-		CEC705DE10A5C844008935EA /* FlyThruEnd.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9535085E0E910019992B /* FlyThruEnd.tif */; };
-		CEC705DF10A5C844008935EA /* FlyThruStart.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9536085E0E910019992B /* FlyThruStart.tif */; };
-		CEC705E010A5C844008935EA /* FlyThruVia.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9537085E0E910019992B /* FlyThruVia.tif */; };
 		CEC705E110A5C844008935EA /* 3DRotateCamera.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC3B292086C87D900DFD83E /* 3DRotateCamera.tif */; };
 		CEC705E210A5C844008935EA /* burn_anim00.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171F80874839C0021C3FC /* burn_anim00.tif */; };
 		CEC705E310A5C844008935EA /* burn_anim01.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171F90874839C0021C3FC /* burn_anim01.tif */; };
@@ -8293,9 +8287,6 @@
 		A9D4D06C0F73922500483A3A /* loupeMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loupeMask.png; sourceTree = "<group>"; };
 		A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITKBrushROIFilter.h; sourceTree = "<group>"; };
 		A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ITKBrushROIFilter.mm; sourceTree = "<group>"; };
-		A9DE9535085E0E910019992B /* FlyThruEnd.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruEnd.tif; sourceTree = "<group>"; };
-		A9DE9536085E0E910019992B /* FlyThruStart.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruStart.tif; sourceTree = "<group>"; };
-		A9DE9537085E0E910019992B /* FlyThruVia.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruVia.tif; sourceTree = "<group>"; };
 		A9E0E4A111182C480086A15A /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		A9E0E4A211182C480086A15A /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJSON.h"; sourceTree = "<group>"; };
 		A9E0E4A311182C480086A15A /* NSObject+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJSON.m"; sourceTree = "<group>"; };
@@ -13292,9 +13283,6 @@
 				BF1833CF09AD833D0046C295 /* FlipHorizontal.tif */,
 				BF1833D009AD833D0046C295 /* FlipVertical.tif */,
 				CE1D97CE0883B65E005A3A22 /* FlyThru.tif */,
-				A9DE9535085E0E910019992B /* FlyThruEnd.tif */,
-				A9DE9536085E0E910019992B /* FlyThruStart.tif */,
-				A9DE9537085E0E910019992B /* FlyThruVia.tif */,
 				AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */,
 				CEFBB18A0B358C8F00666FA9 /* Forward.tif */,
 				CEFBB18C0B358C8F00666FA9 /* ForwardDisabled.tif */,
@@ -21896,9 +21884,6 @@
 				CE1E7F5D07E2DD0D00A85908 /* DatabaseWindow.icns in Resources */,
 				CEF6A444080324E0001A8BF7 /* 3DCut.tif in Resources */,
 				CE4E00BF0830B72F008DAFAE /* Revert.tif in Resources */,
-				A9DE9538085E0E910019992B /* FlyThruEnd.tif in Resources */,
-				A9DE9539085E0E910019992B /* FlyThruStart.tif in Resources */,
-				A9DE953A085E0E910019992B /* FlyThruVia.tif in Resources */,
 				CEC3B293086C87D900DFD83E /* 3DRotateCamera.tif in Resources */,
 				CEC172040874839C0021C3FC /* burn_anim00.tif in Resources */,
 				CEC172050874839C0021C3FC /* burn_anim01.tif in Resources */,
@@ -22300,9 +22285,6 @@
 				CEC705DB10A5C844008935EA /* DatabaseWindow.icns in Resources */,
 				CEC705DC10A5C844008935EA /* 3DCut.tif in Resources */,
 				CEC705DD10A5C844008935EA /* Revert.tif in Resources */,
-				CEC705DE10A5C844008935EA /* FlyThruEnd.tif in Resources */,
-				CEC705DF10A5C844008935EA /* FlyThruStart.tif in Resources */,
-				CEC705E010A5C844008935EA /* FlyThruVia.tif in Resources */,
 				CEC705E110A5C844008935EA /* 3DRotateCamera.tif in Resources */,
 				CEC705E210A5C844008935EA /* burn_anim00.tif in Resources */,
 				CEC705E310A5C844008935EA /* burn_anim01.tif in Resources */,
