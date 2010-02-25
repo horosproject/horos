@@ -2179,7 +2179,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if( windowWillClose) return;
 	
-	NSString	*loading = [NSString stringWithString:@"         "];
+	NSString *loading = [NSString stringWithString:@"         "];
 	
 	if( ThreadLoadImage == YES || loadingPercentage == 0)
 	{

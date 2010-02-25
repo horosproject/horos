@@ -532,7 +532,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			if ([key isEqualToString:@"PatientsName"])
 			{	
 				string = [(NSString*)value cStringUsingEncoding:encoding];
-				dataset->putAndInsertString(DCM_PatientsName, string);
+				dataset->putAndInsertString(DCM_PatientsName, string);				
+//				const char *encodingTest;
+//				dataset->findAndGetString(DCM_PatientsName, encodingTest);
+//				NSLog( @"***** encoding test: %@", [NSString stringWithCString: encodingTest encoding: encoding]);
 			}
 			else if ([key isEqualToString:@"ReferringPhysiciansName"])
 			{

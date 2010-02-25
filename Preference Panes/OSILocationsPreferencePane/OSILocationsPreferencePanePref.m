@@ -691,7 +691,6 @@
 			break;
 		case 9: encoding = @"GB18030";
 			break;
-		
 		case 10: encoding = @"ISO 2022 IR 149";
 			break;
 		case 11: encoding = @"ISO 2022 IR 13";

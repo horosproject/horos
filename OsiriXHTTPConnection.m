@@ -324,7 +324,7 @@ NSString* notNil( NSString *s)
 		
 		for( NSManagedObject *user in users)
 		{
-			if( [[user valueForKey: @"autoDelete"] boolValue] == YES && [[user valueForKey: @"deletionDate"] timeIntervalSinceDate: [NSDate date]] < 0)
+			if( [[user valueForKey: @"autoDelete"] boolValue] == YES && [user valueForKey: @"deletionDate"] && [[user valueForKey: @"deletionDate"] timeIntervalSinceDate: [NSDate date]] < 0)
 			{
 				NSLog( @"----- Temporary User reached the EOL (end-of-life) : %@", [user valueForKey: @"name"]);
 				
@@ -2089,7 +2089,7 @@ NSString* notNil( NSString *s)
 				int columns = [[urlParameters objectForKey:@"columns"] intValue];
 				int windowCenter = [[urlParameters objectForKey:@"windowCenter"] intValue];
 				int windowWidth = [[urlParameters objectForKey:@"windowWidth"] intValue];
-				//int frameNumber = [[urlParameters objectForKey:@"frameNumber"] intValue]; -> OsiriX stores frames as images
+				int frameNumber = [[urlParameters objectForKey:@"frameNumber"] intValue];	// -> OsiriX stores frames as images
 				int imageQuality = DCMLosslessQuality;
 				
 				if( [urlParameters objectForKey:@"imageQuality"])
@@ -2124,7 +2124,7 @@ NSString* notNil( NSString *s)
 					
 					if( [contentType length] == 0 || [contentType isEqualToString: @"image/jpeg"] || [contentType isEqualToString: @"image/png"] || [contentType isEqualToString: @"image/gif"] || [contentType isEqualToString: @"image/jp2"])
 					{
-						imageCache = [wadoJPEGCache objectForKey: objectUID];
+						imageCache = [wadoJPEGCache objectForKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
 					}
 					
 					if( imageCache == nil)
@@ -2249,11 +2249,11 @@ NSString* notNil( NSString *s)
 							{
 								DicomImage *im = [images lastObject];
 								
-								dcmPix = [[[DCMPix alloc] initWithPath: [im valueForKey: @"completePathResolved"] :0 :1 :nil :0 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
+								dcmPix = [[[DCMPix alloc] initWithPath: [im valueForKey: @"completePathResolved"] :0 :1 :nil :frameNumber :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
 								
 								imageCache = [NSMutableDictionary dictionaryWithObject: dcmPix forKey: @"dcmPix"];
 								
-								[wadoJPEGCache setObject: imageCache forKey: objectUID];
+								[wadoJPEGCache setObject: imageCache forKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
 							}
 							
 							if( dcmPix)

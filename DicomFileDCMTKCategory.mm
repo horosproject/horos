@@ -186,19 +186,21 @@ extern NSRecursiveLock *PapyrusLock;
 
 -(short) getDicomFileDCMTK
 {
-	int					i;
-	long				cardiacTime = -1;
+	int i;
+	long cardiacTime = -1;
 
-	NSStringEncoding	encoding[ 10];
+	NSStringEncoding encoding[ 10];
 	NSString *echoTime = nil;
 	const char *string = NULL;
 	NSMutableArray *imageTypeArray = nil;
 	
 	DcmFileFormat fileformat;
 	[PapyrusLock lock];
-//	OFCondition status = fileformat.loadFile([filePath UTF8String],  EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
+
 	OFCondition status = fileformat.loadFile([filePath UTF8String],  EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
+
 	[PapyrusLock unlock];
+
 	if (status.good())
 	{
 		for( i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;

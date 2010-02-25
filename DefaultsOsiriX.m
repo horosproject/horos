@@ -870,7 +870,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey: @"ZoomWithHorizonScroll"];
 	[defaultValues setObject:@"1" forKey: @"dcmExportFormat"];
 	[defaultValues setObject:[NSNumber numberWithInt: 2] forKey: @"preferredSyntaxForIncoming"]; // 2 = EXS_LittleEndianExplicit See dcmqrsrv.mm
-	[defaultValues setObject :@"ISO_IR 100" forKey: @"STRINGENCODING"];
+	[defaultValues setObject:@"ISO_IR 192" forKey: @"STRINGENCODING"];
 	[defaultValues setObject:@"1" forKey:@"syncPreviewList"];
 	[defaultValues setObject:@"1" forKey:@"openPDFwithPreview"];
 	[defaultValues setObject:@"1" forKey:@"ROIArrowThickness"];

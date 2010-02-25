@@ -15473,7 +15473,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			int t = 2;
 			while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
 			{
-				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d #%d.%@", tempPath, serieCount, imageNo, t, extension];
+				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, t, extension];
 				t++;
 			}
 			
@@ -16268,7 +16268,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
 		{
 			if (!addDICOMDIR)
-				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d #%d.%@", tempPath, serieCount, imageNo, t, extension];
+				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, t, extension];
 			else
 				dest = [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, t];
 			t++;
@@ -16953,7 +16953,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			long t = 2;
 			while( [[NSFileManager defaultManager] fileExistsAtPath: dstPath])
 			{
-				dstPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d #%d.%@", [[curImage valueForKey:@"instanceNumber"] intValue], t, extension]];
+				dstPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d%4.4d.%@", [[curImage valueForKey:@"instanceNumber"] intValue], t, extension]];
 				t++;
 			}
 					

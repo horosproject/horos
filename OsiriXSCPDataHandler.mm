@@ -35,8 +35,7 @@ extern NSManagedObjectContext *staticContext;
 
 - (void)dealloc
 {
-	if( context)
-		[context release];
+	[context release];
 	context = 0L;
 	
 	for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
@@ -50,11 +49,8 @@ extern NSManagedObjectContext *staticContext;
 	[findArray release];
 	findArray = nil;
 	
-	if( specificCharacterSet)
-		[specificCharacterSet release];
-	
-	if( findEnumerator)
-		[findEnumerator release];
+	[specificCharacterSet release];
+	[findEnumerator release];
 	
 	[callingAET release];
 	[findTemplate release];
@@ -914,10 +910,65 @@ extern NSManagedObjectContext *staticContext;
 	return compoundPredicate;
 }
 
+- (const char*) encodeString: (NSString*) str image: (NSManagedObject*) image
+{
+	const char *a = [str cStringUsingEncoding: encoding];
+	
+	if( a == nil)
+	{
+		NSLog( @"--- cannot encode %@ -> switch to UTF-8 encoding", str);
+		
+		[specificCharacterSet release];
+		specificCharacterSet = [[NSString stringWithString: @"ISO_IR 192"] retain];
+		encoding = [NSString encodingForDICOMCharacterSet: specificCharacterSet];
+		
+		a = [str cStringUsingEncoding:encoding];
+		
+		if( a == nil)
+		{
+			NSLog( @"--- cannot encode %@ -> switch to dcm file encoding", str);
+			
+			DcmFileFormat fileformat;
+			
+			OFCondition status = fileformat.loadFile( [[image valueForKey:@"completePathResolved"] UTF8String], EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
+			
+			DcmDataset *dataset = fileformat.getDataset();
+			
+			const char *string = NULL;
+			
+			if( dataset && dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
+			{
+				NSArray	*c = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
+				
+				for( NSString *encodingString in c)
+				{
+					if( [str cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: encodingString]])
+					{
+						[specificCharacterSet release];
+						specificCharacterSet = [[NSString stringWithString: encodingString] retain];
+						encoding = [NSString encodingForDICOMCharacterSet: specificCharacterSet];
+						
+						a = [str cStringUsingEncoding:encoding];
+						
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	if( a == nil)
+		NSLog( @"***** encodeString FAILED for: %@", [image valueForKey:@"completePathResolved"]);
+	
+	return a;
+}
+
 - (void)studyDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset
 {
 	@try
-	{		
+	{
+		NSManagedObject *image = [[[[fetchedObject valueForKey: @"series"] anyObject] valueForKey: @"images"] anyObject];
+		
 		for( NSString *keyString in [findTemplate allKeys])
 		{
 			NSArray *elementAndGroup = [keyString componentsSeparatedByString: @","];
@@ -932,27 +983,27 @@ extern NSManagedObjectContext *staticContext;
 				
 				if( key == DCM_PatientsName && [fetchedObject valueForKey:@"name"])
 				{
-					dataset->putAndInsertString(DCM_PatientsName, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString( DCM_PatientsName, [self encodeString: [fetchedObject valueForKey:@"name"] image: image]);
 				}
 				
 				else if( key == DCM_PatientID && [fetchedObject valueForKey:@"patientID"])
 				{
-					dataset->putAndInsertString(DCM_PatientID, [[fetchedObject valueForKey:@"patientID"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString(DCM_PatientID, [self encodeString: [fetchedObject valueForKey:@"patientID"] image: image]);
 				}
 				
 				else if( key == DCM_PatientsSex && [fetchedObject valueForKey:@"patientSex"])
 				{
-					dataset->putAndInsertString(DCM_PatientsSex, [[fetchedObject valueForKey:@"patientSex"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString(DCM_PatientsSex, [self encodeString: [fetchedObject valueForKey:@"patientSex"] image: image]);
 				}
 				
 				else if( key == DCM_AccessionNumber && [fetchedObject valueForKey:@"accessionNumber"])
 				{
-					dataset->putAndInsertString(DCM_AccessionNumber, [[fetchedObject valueForKey:@"accessionNumber"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString(DCM_AccessionNumber, [self encodeString: [fetchedObject valueForKey:@"accessionNumber"] image: image]);
 				}
 				
 				else if( key == DCM_StudyDescription && [fetchedObject valueForKey:@"studyName"])
 				{
-					dataset->putAndInsertString( DCM_StudyDescription, [[fetchedObject valueForKey:@"studyName"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKey:@"studyName"] image: image]);
 				}
 				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKey:@"dateOfBirth"])
 				{
@@ -1000,19 +1051,15 @@ extern NSManagedObjectContext *staticContext;
 				}
 				else if( key == DCM_ReferringPhysiciansName && [fetchedObject valueForKey:@"referringPhysician"])
 				{
-					dataset->putAndInsertString(DCM_ReferringPhysiciansName, [[fetchedObject valueForKey:@"referringPhysician"] cStringUsingEncoding:NSUTF8StringEncoding]);
+					dataset->putAndInsertString(DCM_ReferringPhysiciansName, [self encodeString: [fetchedObject valueForKey:@"referringPhysician"] image: image]);
 				}
 				else if( key == DCM_PerformingPhysiciansName && [fetchedObject valueForKey:@"performingPhysician"])
 				{
-					dataset->putAndInsertString(DCM_PerformingPhysiciansName, [[fetchedObject valueForKey:@"performingPhysician"] cStringUsingEncoding:NSUTF8StringEncoding]);
+					dataset->putAndInsertString(DCM_PerformingPhysiciansName, [self encodeString: [fetchedObject valueForKey:@"performingPhysician"] image: image]);
 				}
 				else if( key == DCM_InstitutionName && [fetchedObject valueForKey:@"institutionName"])
 				{
-					dataset->putAndInsertString(DCM_InstitutionName, [[fetchedObject valueForKey:@"institutionName"]  cStringUsingEncoding:NSUTF8StringEncoding]);
-				}
-				else if( key == DCM_SpecificCharacterSet)
-				{
-					dataset->putAndInsertString(DCM_SpecificCharacterSet, [specificCharacterSet cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+					dataset->putAndInsertString(DCM_InstitutionName, [self encodeString: [fetchedObject valueForKey:@"institutionName"] image: image]);
 				}
 				else if( key == DCM_NumberOfStudyRelatedInstances && [fetchedObject valueForKey:@"noFiles"])
 				{
@@ -1031,7 +1078,11 @@ extern NSManagedObjectContext *staticContext;
 				else dataset->insertEmptyElement( key, OFTrue);
 			}
 		}
+		
 		dataset->putAndInsertString(DCM_QueryRetrieveLevel, "STUDY");
+		
+		if( specificCharacterSet)
+			dataset->putAndInsertString(DCM_SpecificCharacterSet, [specificCharacterSet UTF8String]);
 	}
 	
 	@catch (NSException *e)
@@ -1043,7 +1094,9 @@ extern NSManagedObjectContext *staticContext;
 - (void)seriesDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset
 {
 	@try
-	{		
+	{
+		NSManagedObject *image = [[fetchedObject valueForKey: @"images"] anyObject];
+		
 		for( NSString *keyString in [findTemplate allKeys])
 		{
 			NSArray *elementAndGroup = [keyString componentsSeparatedByString: @","];
@@ -1058,7 +1111,7 @@ extern NSManagedObjectContext *staticContext;
 				
 				if( key == DCM_SeriesDescription && [fetchedObject valueForKey:@"name"])
 				{
-					dataset->putAndInsertString(DCM_SeriesDescription, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:NSUTF8StringEncoding]);
+					dataset->putAndInsertString(DCM_SeriesDescription, [self encodeString: [fetchedObject valueForKey:@"name"] image: image]);
 				}
 				
 				else if( key == DCM_SeriesDate && [fetchedObject valueForKey:@"date"])
@@ -1095,10 +1148,114 @@ extern NSManagedObjectContext *staticContext;
 					sprintf( value, "%d", numberInstances);
 					dataset->putAndInsertString(DCM_NumberOfSeriesRelatedInstances, value);
 				}
+				
+				// ******************** STUDY
+				
+				else if( key == DCM_PatientsName && [fetchedObject valueForKeyPath:@"study.name"])
+				{
+					dataset->putAndInsertString(DCM_PatientsName, [self encodeString: [fetchedObject valueForKey:@"study.name"] image: image]);
+				}
+				
+				else if( key == DCM_PatientID && [fetchedObject valueForKeyPath:@"study.patientID"])
+				{
+					dataset->putAndInsertString(DCM_PatientID, [self encodeString: [fetchedObject valueForKey:@"study.patientID"] image: image]);
+				}
+				
+				else if( key == DCM_PatientsSex && [fetchedObject valueForKeyPath:@"study.patientSex"])
+				{
+					dataset->putAndInsertString(DCM_PatientsSex, [self encodeString: [fetchedObject valueForKey:@"study.patientSex"] image: image]);
+				}
+				
+				else if( key == DCM_AccessionNumber && [fetchedObject valueForKeyPath:@"study.accessionNumber"])
+				{
+					dataset->putAndInsertString(DCM_AccessionNumber, [self encodeString: [fetchedObject valueForKey:@"study.accessionNumber"] image: image]);
+				}
+				
+				else if( key == DCM_StudyDescription && [fetchedObject valueForKeyPath:@"study.studyName"])
+				{
+					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKey:@"study.studyName"] image: image]);
+				}
+				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKeyPath:@"study.dateOfBirth"])
+				{
+					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKeyPath:@"study.dateOfBirth"]];
+					dataset->putAndInsertString(DCM_PatientsBirthDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+				}
+				else if( key == DCM_StudyDate && [fetchedObject valueForKeyPath:@"study.date"])
+				{
+					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKeyPath:@"study.date"]];
+					dataset->putAndInsertString(DCM_StudyDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+				}
+				else if( key == DCM_StudyTime && [fetchedObject valueForKeyPath:@"study.date"])
+				{
+					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKeyPath:@"study.date"]];
+					dataset->putAndInsertString(DCM_StudyTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+				}
+				else if( key == DCM_StudyInstanceUID && [fetchedObject valueForKeyPath:@"study.studyInstanceUID"])
+				{
+					dataset->putAndInsertString(DCM_StudyInstanceUID, [[fetchedObject valueForKeyPath:@"study.studyInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+				}
+				else if( key == DCM_StudyID && [fetchedObject valueForKeyPath:@"study.id"])
+				{
+					dataset->putAndInsertString(DCM_StudyID, [[fetchedObject valueForKeyPath:@"study.id"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+				}
+				else if( key == DCM_ModalitiesInStudy && [fetchedObject valueForKeyPath:@"study.modality"])
+				{
+					NSMutableArray *modalities = [NSMutableArray array];
+				
+					BOOL SC = NO, SR = NO;
+					
+					NSManagedObject *study = [fetchedObject valueForKeyPath:@"study"];
+					
+					for( NSString *m in [[study valueForKeyPath:@"modality"] allObjects])
+					{
+						if( [modalities containsString: m] == NO)
+						{
+							if( [m isEqualToString:@"SR"]) SR = YES;
+							else if( [m isEqualToString:@"SC"]) SC = YES;
+							else [modalities addObject: m];
+						}
+					}
+					
+					if( SC) [modalities addObject: @"SC"];
+					if( SR) [modalities addObject: @"SR"];
+				
+					dataset->putAndInsertString(DCM_ModalitiesInStudy, [[modalities componentsJoinedByString:@"\\"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+				}
+				else if( key == DCM_ReferringPhysiciansName && [fetchedObject valueForKeyPath:@"study.referringPhysician"])
+				{
+					dataset->putAndInsertString(DCM_ReferringPhysiciansName, [self encodeString: [fetchedObject valueForKey:@"study.referringPhysician"] image: image]);
+				}
+				else if( key == DCM_PerformingPhysiciansName && [fetchedObject valueForKeyPath:@"study.performingPhysician"])
+				{
+					dataset->putAndInsertString(DCM_PerformingPhysiciansName, [self encodeString: [fetchedObject valueForKey:@"study.performingPhysician"] image: image]);
+				}
+				else if( key == DCM_InstitutionName && [fetchedObject valueForKeyPath:@"study.institutionName"])
+				{
+					dataset->putAndInsertString(DCM_InstitutionName, [self encodeString: [fetchedObject valueForKey:@"study.institutionName"] image: image]);
+				}
+				else if( key == DCM_NumberOfStudyRelatedInstances && [fetchedObject valueForKeyPath:@"study.noFiles"])
+				{
+					int numberInstances = [[fetchedObject valueForKeyPath:@"study.noFilesExcludingMultiFrames"] intValue];
+					char value[10];
+					sprintf(value, "%d", numberInstances);
+					dataset->putAndInsertString(DCM_NumberOfStudyRelatedInstances, value);
+				}
+				else if( key == DCM_NumberOfStudyRelatedSeries)
+				{
+					NSManagedObject *study = [fetchedObject valueForKeyPath:@"study"];
+					
+					int numberInstances = [[study valueForKeyPath:@"series"] count];
+					char value[10];
+					sprintf(value, "%d", numberInstances);
+					dataset->putAndInsertString(DCM_NumberOfStudyRelatedSeries, value);
+				}
+				
 				else dataset ->insertEmptyElement( key, OFTrue);
 			}
 		}
 		dataset->putAndInsertString(DCM_QueryRetrieveLevel, "SERIES");
+		if( specificCharacterSet)
+			dataset->putAndInsertString(DCM_SpecificCharacterSet, [specificCharacterSet UTF8String]);
 	}
 	
 	@catch( NSException *e)
@@ -1111,7 +1268,9 @@ extern NSManagedObjectContext *staticContext;
 - (void)imageDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset
 {
 	@try
-	{		
+	{
+		NSManagedObject *image = fetchedObject;
+		
 		for( NSString *keyString in [findTemplate allKeys])
 		{
 			NSArray *elementAndGroup = [keyString componentsSeparatedByString: @","];
@@ -1128,11 +1287,11 @@ extern NSManagedObjectContext *staticContext;
 				{
 					if( [(NSString*) [fetchedObject valueForKeyPath: @"series.comment"] length] > 0)
 					{
-						dataset->putAndInsertString( key, [[fetchedObject valueForKeyPath:@"series.comment"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+						dataset->putAndInsertString( key, [self encodeString: [fetchedObject valueForKey:@"series.comment"] image: image]);
 					}
 					else if( [(NSString*) [fetchedObject valueForKeyPath: @"series.study.comment"] length] > 0)
 					{
-						dataset->putAndInsertString( key, [[fetchedObject valueForKeyPath:@"series.study.comment"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+						dataset->putAndInsertString( key, [self encodeString: [fetchedObject valueForKey:@"series.study.comment"] image: image]);
 					}
 					else dataset ->insertEmptyElement( key, OFTrue);
 				}
@@ -1159,7 +1318,7 @@ extern NSManagedObjectContext *staticContext;
 				
 				else if( key == DCM_SeriesDescription && [fetchedObject valueForKeyPath: @"series.name"])
 				{
-					dataset->putAndInsertString(DCM_SeriesDescription, [[fetchedObject valueForKeyPath:@"series.name"] cStringUsingEncoding:NSUTF8StringEncoding]);
+					dataset->putAndInsertString(DCM_SeriesDescription, [self encodeString: [fetchedObject valueForKey:@"series.name"] image: image]);
 				}
 				
 				else if( key == DCM_SeriesDate && [fetchedObject valueForKeyPath:@"series.date"])
@@ -1201,27 +1360,27 @@ extern NSManagedObjectContext *staticContext;
 				
 				else if( key == DCM_PatientsName && [fetchedObject valueForKeyPath:@"series.study.name"])
 				{
-					dataset->putAndInsertString(DCM_PatientsName, [[fetchedObject valueForKeyPath:@"series.study.name"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString(DCM_PatientsName, [self encodeString: [fetchedObject valueForKey:@"series.study.name"] image: image]);
 				}
 				
 				else if( key == DCM_PatientID && [fetchedObject valueForKeyPath:@"series.study.patientID"])
 				{
-					dataset->putAndInsertString(DCM_PatientID, [[fetchedObject valueForKeyPath:@"series.study.patientID"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString(DCM_PatientID, [self encodeString: [fetchedObject valueForKey:@"series.study.patientID"] image: image]);
 				}
 				
 				else if( key == DCM_PatientsSex && [fetchedObject valueForKeyPath:@"series.study.patientSex"])
 				{
-					dataset->putAndInsertString(DCM_PatientsSex, [[fetchedObject valueForKeyPath:@"series.study.patientSex"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString(DCM_PatientsSex, [self encodeString: [fetchedObject valueForKey:@"series.study.patientSex"] image: image]);
 				}
 				
 				else if( key == DCM_AccessionNumber && [fetchedObject valueForKeyPath:@"series.study.accessionNumber"])
 				{
-					dataset->putAndInsertString(DCM_AccessionNumber, [[fetchedObject valueForKeyPath:@"series.study.accessionNumber"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString(DCM_AccessionNumber, [self encodeString: [fetchedObject valueForKey:@"series.study.accessionNumber"] image: image]);
 				}
 				
 				else if( key == DCM_StudyDescription && [fetchedObject valueForKeyPath:@"series.study.studyName"])
 				{
-					dataset->putAndInsertString( DCM_StudyDescription, [[fetchedObject valueForKeyPath:@"series.study.studyName"] cStringUsingEncoding:encoding]);
+					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKey:@"series.study.studyName"] image: image]);
 				}
 				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKeyPath:@"series.study.dateOfBirth"])
 				{
@@ -1271,19 +1430,15 @@ extern NSManagedObjectContext *staticContext;
 				}
 				else if( key == DCM_ReferringPhysiciansName && [fetchedObject valueForKeyPath:@"series.study.referringPhysician"])
 				{
-					dataset->putAndInsertString(DCM_ReferringPhysiciansName, [[fetchedObject valueForKeyPath:@"series.study.referringPhysician"] cStringUsingEncoding:NSUTF8StringEncoding]);
+					dataset->putAndInsertString(DCM_ReferringPhysiciansName, [self encodeString: [fetchedObject valueForKey:@"series.study.referringPhysician"] image: image]);
 				}
 				else if( key == DCM_PerformingPhysiciansName && [fetchedObject valueForKeyPath:@"series.study.performingPhysician"])
 				{
-					dataset->putAndInsertString(DCM_PerformingPhysiciansName, [[fetchedObject valueForKeyPath:@"series.study.performingPhysician"] cStringUsingEncoding:NSUTF8StringEncoding]);
+					dataset->putAndInsertString(DCM_PerformingPhysiciansName, [self encodeString: [fetchedObject valueForKey:@"series.study.performingPhysician"] image: image]);
 				}
 				else if( key == DCM_InstitutionName && [fetchedObject valueForKeyPath:@"series.study.institutionName"])
 				{
-					dataset->putAndInsertString(DCM_InstitutionName, [[fetchedObject valueForKeyPath:@"series.study.institutionName"]  cStringUsingEncoding:NSUTF8StringEncoding]);
-				}
-				else if( key == DCM_SpecificCharacterSet)
-				{
-					dataset->putAndInsertString(DCM_SpecificCharacterSet, [specificCharacterSet cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+					dataset->putAndInsertString(DCM_InstitutionName, [self encodeString: [fetchedObject valueForKey:@"series.study.institutionName"] image: image]);
 				}
 				else if( key == DCM_NumberOfStudyRelatedInstances && [fetchedObject valueForKeyPath:@"series.study.noFiles"])
 				{
@@ -1307,6 +1462,8 @@ extern NSManagedObjectContext *staticContext;
 			}
 		}
 		dataset->putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE");
+		if( specificCharacterSet)
+			dataset->putAndInsertString(DCM_SpecificCharacterSet, [specificCharacterSet UTF8String]);
 //		dataset->print(COUT);
 	}
 	

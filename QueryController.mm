@@ -1571,6 +1571,87 @@ extern "C"
 	else [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d studies found", nil), [resultArray count]]];
 }
 
+- (NSString*) exportDBListOnlySelected:(BOOL) onlySelected
+{
+	NSIndexSet *rowIndex;
+	
+	if( onlySelected) rowIndex = [outlineView selectedRowIndexes];
+	else rowIndex = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange( 0, [outlineView numberOfRows])];
+	
+	NSMutableString	*string = [NSMutableString string];
+	NSNumber *row;
+	NSArray	*columns = [[outlineView tableColumns] valueForKey:@"identifier"];
+	NSArray	*descriptions = [[outlineView tableColumns] valueForKey:@"headerCell"];
+	int r;
+	
+	for( NSInteger x = 0; x < rowIndex.count; x++)
+	{
+		if( x == 0) r = rowIndex.firstIndex;
+		else r = [rowIndex indexGreaterThanIndex: r];
+		
+		id aFile = [outlineView itemAtRow: r];
+		
+		if( aFile && [aFile isMemberOfClass: [DCMTKStudyQueryNode class]])
+		{
+			if( [string length])
+				[string appendString: @"\r"];
+			else
+			{
+				int i = 0;
+				for( NSCell *s in descriptions)
+				{
+					@try
+					{
+						if( [aFile valueForKey: [columns objectAtIndex: [descriptions indexOfObject: s]]])
+						{
+							[string appendString: [s stringValue]];
+							i++;
+							if( i !=  [columns count])
+								[string appendFormat: @"%c", NSTabCharacter];
+						}
+					}
+					@catch ( NSException *e)
+					{
+					}
+				}
+				[string appendString: @"\r"];
+			}
+			
+			int i = 0;
+			for( NSString *identifier in columns)
+			{
+				@try
+				{
+					if( [[aFile valueForKey: identifier] description])
+						[string appendString: [[aFile valueForKey: identifier] description]];
+					i++;
+					if( i !=  [columns count])
+						[string appendFormat: @"%c", NSTabCharacter];
+				}
+				@catch ( NSException *e)
+				{
+				}
+			}
+		}	
+	}
+	
+	return string;
+}
+
+- (IBAction) saveDBListAs:(id) sender
+{
+	NSString *list = [self exportDBListOnlySelected: NO];
+	
+	NSSavePanel *sPanel	= [NSSavePanel savePanel];
+		
+	[sPanel setRequiredFileType:@"txt"];
+	
+	if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"OsiriX Database List", nil)] == NSFileHandlingPanelOKButton)
+	{
+		[list writeToFile: [sPanel filename] atomically: YES];
+	}
+}
+
 -(void) query:(id)sender
 {
 	if ([sender isKindOfClass:[NSSearchField class]])
@@ -1848,16 +1929,20 @@ extern "C"
 	[self refresh: self now: YES];
 }
 
--(IBAction) copy:(id) sender
+- (IBAction) copy: (id)sender
 {
-    NSPasteboard	*pb = [NSPasteboard generalPasteboard];
-			
+    NSPasteboard *pb = [NSPasteboard generalPasteboard];
+	
 	[pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
 	
-	id   aFile = [outlineView itemAtRow:[outlineView selectedRow]];
+	NSString *string;
 	
-	if( aFile)
-		[pb setString: [aFile valueForKey:@"name"] forType:NSStringPboardType];
+	if( [[outlineView selectedRowIndexes] count] == 1)
+		string = [[outlineView itemAtRow: [outlineView selectedRowIndexes].firstIndex] valueForKey: @"name"];
+	else 
+		string = [self exportDBListOnlySelected: YES];
+	
+	[pb setString: string forType:NSStringPboardType];
 }
 
 -(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable forViewing: (BOOL) forViewing items:(NSArray*) items showGUI:(BOOL) showGUI
