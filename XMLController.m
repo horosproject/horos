@@ -183,13 +183,54 @@ extern int delayedTileWindows;
 	return nil;
 }
 
-- (NSArray*) updateDB:(NSArray*) files
+- (NSArray*) updateDB:(NSArray*) files objects: (NSArray*) objects
 {
 	[DCMPix purgeCachedDictionaries];
 	
 	dontClose = YES;
 	
 	NSArray *addedObjects = [[BrowserController currentBrowser] addFilesToDatabase: files onlyDICOM:YES safeRebuild:NO produceAddedFiles:YES parseExistingObject:YES];
+	
+	if( objects)
+	{
+		NSMutableArray *previousSeries = [NSMutableArray array];
+		NSMutableArray *newSeries = [NSMutableArray array];
+		
+		for( NSManagedObject *image in objects)
+		{
+			if( [previousSeries containsObject: [image valueForKey: @"series"]] == NO)
+				[previousSeries addObject: [image valueForKey: @"series"]];
+		}
+		
+		for( NSManagedObject *image in addedObjects)
+		{
+			if( [newSeries containsObject: [image valueForKey: @"series"]] == NO)
+				[newSeries addObject: [image valueForKey: @"series"]];
+		}
+		
+		for( NSManagedObject *series in newSeries)
+		{
+			if( [previousSeries containsObject: series] == NO)
+			{
+				[previousSeries removeAllObjects];
+				break;
+			}
+		}
+		
+		if( [previousSeries count] != [newSeries count])
+		{
+			// The database structure changed because of these modifications -> Delete the previous objects WITHOUT deleting the files : we have the SAME original files
+			
+			for( NSManagedObject *image in objects)
+				[image setValue: [NSNumber numberWithBool: NO] forKey: @"inDatabaseFolder"];
+			
+			[[BrowserController currentBrowser] proceedDeleteObjects: objects];
+			
+			[self updateDB: files objects: nil];
+			
+			[[self window] close];
+		}
+	}
 	
 	dontClose = NO;
 	
@@ -223,7 +264,9 @@ extern int delayedTileWindows;
 			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
 			[params addObjectsFromArray:  groupsAndElements];
 			
-			NSMutableArray	*files = [NSMutableArray arrayWithArray: [[self arrayOfFiles] valueForKey:@"completePath"]];
+			NSArray *objects = [self arrayOfFiles];
+			NSMutableArray *files = [NSMutableArray arrayWithArray: [objects valueForKey:@"completePath"]];
+			
 			if( files)
 			{
 				[files removeDuplicatedStrings];
@@ -242,7 +285,7 @@ extern int delayedTileWindows;
 				for( int i = 0; i < [files count]; i++)
 					[[NSFileManager defaultManager] removeFileAtPath:[[files objectAtIndex: i] stringByAppendingString:@".bak"] handler:nil];
 				
-				[self updateDB: files];
+				[self updateDB: files objects: objects];
 				
 				[wait close];
 				[wait release];
@@ -822,7 +865,7 @@ extern int delayedTileWindows;
 		
 		[params addObjectsFromArray:  groupsAndElements];
 		
-		NSMutableArray *objects = [NSMutableArray arrayWithArray: [self arrayOfFiles]];
+		NSArray *objects = [self arrayOfFiles];
 		NSMutableArray *files = [NSMutableArray arrayWithArray: [objects valueForKey:@"completePath"]];
 		
 		if( files)
@@ -831,7 +874,7 @@ extern int delayedTileWindows;
 		
 			[params addObjectsFromArray: files];
 			
-			WaitRendering		*wait = nil;
+			WaitRendering *wait = nil;
 			if( [files count] > 1)
 			{
 				wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
@@ -845,45 +888,7 @@ extern int delayedTileWindows;
 				for( id loopItem in files)
 					[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
 				
-				NSArray *addedObjects = [self updateDB: files];
-				
-				NSMutableArray *previousSeries = [NSMutableArray array];
-				NSMutableArray *newSeries = [NSMutableArray array];
-				
-				for( NSManagedObject *image in objects)
-				{
-					if( [previousSeries containsObject: [image valueForKey: @"series"]] == NO)
-						[previousSeries addObject: [image valueForKey: @"series"]];
-				}
-				
-				for( NSManagedObject *image in addedObjects)
-				{
-					if( [newSeries containsObject: [image valueForKey: @"series"]] == NO)
-						[newSeries addObject: [image valueForKey: @"series"]];
-				}
-				
-				for( NSManagedObject *series in newSeries)
-				{
-					if( [previousSeries containsObject: series] == NO)
-					{
-						[previousSeries removeAllObjects];
-						break;
-					}
-				}
-				
-				if( [previousSeries count] != [newSeries count])
-				{
-					// The database structure changed because of these modifications -> Delete the previous objects WITHOUT deleting the files : we have the SAME original files
-					
-					for( NSManagedObject *image in objects)
-						[image setValue: [NSNumber numberWithBool: NO] forKey: @"inDatabaseFolder"];
-					
-					[[BrowserController currentBrowser] proceedDeleteObjects: objects];
-					
-					[self updateDB: files];
-					
-					[[self window] close];
-				}
+				[self updateDB: files objects: objects];
 			}
 			@catch (NSException * e)
 			{
@@ -1078,7 +1083,8 @@ extern int delayedTileWindows;
 				
 				[params addObjectsFromArray:  groupsAndElements];
 				
-				NSArray	*files = [[self arrayOfFiles] valueForKey:@"completePath"];
+				NSArray *objects = [self arrayOfFiles];
+				NSArray	*files = [objects valueForKey:@"completePath"];
 				
 				if( files)
 				{
@@ -1097,7 +1103,7 @@ extern int delayedTileWindows;
 						for( id loopItem in files)
 							[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
 					
-						[self updateDB: files];
+						[self updateDB: files objects: objects];
 					}
 					@catch (NSException * e)
 					{
