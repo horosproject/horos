@@ -737,7 +737,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		dataset-> insertEmptyElement(DCM_SOPInstanceUID, OFTrue);
 		dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
 		dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE", OFTrue);
-
+		
 		[self queryWithValues: nil dataset: dataset];
 		
 		for( DCMTKImageQueryNode *image in [self children])

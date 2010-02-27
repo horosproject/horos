@@ -33,14 +33,11 @@
 	
 	IBOutlet NSView			*view;
 	IBOutlet NSPopUpButton	*type;
-	IBOutlet NSSlider		*rateSlider;
-	IBOutlet NSTextField	*rateValue;
 }
 
 + (NSString*) generateQTVR:(NSString*) srcPath frames:(int) frames;
 - (id) initWithSelector:(id) o :(SEL) s :(long) f;
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name;
-- (IBAction) setRate:(id) sender;
 - (IBAction) changeExportType:(id) sender;
 @end
 

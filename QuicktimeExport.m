@@ -417,11 +417,6 @@
 	return YES;
 }
 
-- (IBAction) setRate:(id) sender
-{
-	[rateValue setStringValue: [NSString stringWithFormat:@"%d im/s", [sender intValue]]];
-}
-
 - (IBAction) changeExportType:(id) sender
 {
 	if( [exportTypes count])
@@ -492,7 +487,7 @@
 			mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
 			[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 			
-			long long timeValue = 600 / [rateSlider intValue];
+			long long timeValue = 600 / [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"];
 			long timeScale = 600;
 			
 			curTime = QTMakeTime(timeValue, timeScale);

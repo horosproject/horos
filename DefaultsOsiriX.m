@@ -882,6 +882,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"activateCGETSCP"];
 	[defaultValues setObject:@"0" forKey:@"notificationsEmails"];
 	[defaultValues setObject:@"1" forKey:@"validateFilesBeforeImporting"];
+	[defaultValues setObject:@"10" forKey:@"quicktimeExportRateValue"];
 	
 	// ** ROI Default
 	[defaultValues setObject:[NSNumber numberWithFloat: 2] forKey:@"ROIThickness"];

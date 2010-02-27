@@ -15350,15 +15350,17 @@ int i,j,l;
 		default:
 		case 1:
 		case 3:
-			if( [self frameRate] > 0) [mov setRate: [NSNumber numberWithInt: [self frameRate]]];
+			if( [self frameRate] > 0)
+				[[NSUserDefaults standardUserDefaults] setInteger: [self frameRate] forKey: @"quicktimeExportRateValue"];
 		break;
 		
 		case 0:
-			[mov setRate: [NSNumber numberWithInt: 10]];
+			[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
 		break;
 		
 		case 2:
-			if( [self frame4DRate] > 0) [mov setRate: [NSNumber numberWithInt: [self frame4DRate]]];
+			if( [self frame4DRate] > 0)
+				[[NSUserDefaults standardUserDefaults] setInteger: [self frame4DRate] forKey: @"quicktimeExportRateValue"];
 		break;
 	}
 	
