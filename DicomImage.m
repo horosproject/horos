@@ -717,20 +717,15 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 			NSString *pathExtension = [[self valueForKey:@"path"] pathExtension];
 			
 			if( [pathExtension isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
-			{
 				[[BrowserController currentBrowser] addFileToDeleteQueue: [[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
-			}
 			
 			[self setValue:[NSNumber numberWithBool:NO] forKey:@"inDatabaseFolder"];
 		}
+		#endif
 		
 		#ifndef OSIRIX_LIGHT
 		if( [[NSFileManager defaultManager] fileExistsAtPath: [VRController getUniqueFilenameScissorStateFor: self]])
-		{
 			[[NSFileManager defaultManager] removeFileAtPath: [VRController getUniqueFilenameScissorStateFor: self] handler: nil];
-		}
-		#endif
-		
 		#endif
 	}
 	return delete;

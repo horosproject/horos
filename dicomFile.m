@@ -2416,14 +2416,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					if( SeparateCardiacMRMode == 0)
 					{
 						val = Papy3GetElement (theGroupP, pap2001CineIndexGr, &nbVal, &itemType);
-						if( val->a)
+						if( val && val->a)
 							[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
 					}
 					
 					if( SeparateCardiacMRMode == 1)
 					{
 						val = Papy3GetElement (theGroupP, pap2001PositionIndexGr, &nbVal, &itemType);
-						if( val->a)
+						if( val && val->a)
 							[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
 					}
 					

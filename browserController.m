@@ -5872,11 +5872,148 @@ static NSArray*	statesArray = nil;
 	}
 }
 
+- (void) proceedDeleteObjects: (NSArray*) objectsToDelete
+{
+	NSManagedObjectContext *context = self.managedObjectContext;
+	NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
+	NSMutableArray *seriesArray = [NSMutableArray array], *studiesArray = [NSMutableArray array];
+	
+	[context lock];
+	
+	@try
+	{
+		NSManagedObject	*study = nil, *series = nil;
+		
+		NSLog(@"objects to delete : %d", [objectsToDelete count]);
+		
+		for ( NSManagedObject *obj in objectsToDelete)
+		{
+			if( [obj valueForKey:@"series"] != series)
+			{
+				// ********* SERIES
+				
+				series = [obj valueForKey:@"series"];
+				
+				if([seriesArray containsObject: series] == NO)
+				{
+					if( series)
+						[seriesArray addObject: series];
+					
+					// Is a viewer containing this series opened? -> close it
+					for( ViewerController *vc in viewersList)
+					{
+						if( series == [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"])
+							[[vc window] close];
+					}
+				}
+				
+				// ********* STUDY
+				
+				if( [series valueForKey:@"study"] != study)
+				{
+					study = [series valueForKey:@"study"];
+					
+					if([studiesArray containsObject: study] == NO)
+					{
+						if( study)
+							[studiesArray addObject: study];
+						
+						// Is a viewer containing this series opened? -> close it
+						for( ViewerController *vc in viewersList)
+						{
+							if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+								[vc buildMatrixPreview];
+						}
+					}
+				}
+			}
+			
+			[context deleteObject: obj];
+		}
+	}
+	@catch ( NSException *e)
+	{
+		NSLog( @"******** proceedDeleteObjects exception : %", e);
+	}
+	
+	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
+	[wait showWindow:self];
+	
+	@try
+	{
+		[context save: nil];
+	}
+	@catch( NSException *e)
+	{	NSLog( @"context save: nil: %@", e);}
+	
+	@try
+	{
+		// Remove series without images !
+		for( NSManagedObject *series in seriesArray)
+		{
+			@try
+			{
+				if( [[series valueForKey:@"images"] count] == 0)
+				{
+					[context deleteObject: series];
+				}
+				else
+				{
+					[series setValue: [NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+					[series setValue: nil forKey:@"thumbnail"];	
+				}
+			}
+			@catch( NSException *e)
+			{	NSLog( @"context deleteObject: series: %@", e);}
+		}
+		
+		@try
+		{
+			[context save: nil];
+		}
+		@catch( NSException *e)
+		{	NSLog( @"context save: nil: %@", e);}
+			
+		// Remove studies without series !
+		for( NSManagedObject *study in studiesArray)
+		{
+			@try
+			{
+				NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
+				
+				if( [[study valueForKey:@"imageSeries"] count] == 0)
+				{
+					[context deleteObject: study];
+				}
+				else
+				{
+					[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+				}
+			}
+			@catch( NSException *e)
+			{	NSLog( @"context deleteObject: study: %@", e);}
+		}
+		[self saveDatabase: currentDatabasePath];
+		
+	}
+	
+	@catch( NSException *ne)
+	{
+		NSLog( @"Exception during delItem");
+		NSLog( @"%@", [ne description]);
+	}
+	
+	[wait close];
+	[wait release];
+		
+	[context unlock];
+}
+
 - (void) delObjects:(NSMutableArray*) objectsToDelete
-{	
+{
 	NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 	int result;
-	NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers], *studiesArray = [NSMutableArray arrayWithCapacity:0] , *seriesArray = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *studiesArray = [NSMutableArray arrayWithCapacity:0] , *seriesArray = [NSMutableArray arrayWithCapacity:0];
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
 	if( [databaseOutline selectedRow] >= 0)
@@ -5959,60 +6096,9 @@ static NSArray*	statesArray = nil;
 					NSLog( @"Cancel");
 				}
 				else
-				{			
+				{
 					if( result == NSAlertDefaultReturn || result == NSAlertOtherReturn)
-					{
-						NSManagedObject	*study = nil, *series = nil;
-						
-						NSLog(@"objects to delete : %d", [objectsToDelete count]);
-						
-						for ( NSManagedObject *obj in objectsToDelete)
-						{
-							if( [obj valueForKey:@"series"] != series)
-							{
-								// ********* SERIES
-								
-								series = [obj valueForKey:@"series"];
-								
-								if([seriesArray containsObject: series] == NO)
-								{
-									if( series) [seriesArray addObject: series];
-									
-									// Is a viewer containing this series opened? -> close it
-									for( ViewerController *vc in viewersList)
-									{
-										if( series == [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"])
-											[[vc window] close];
-									}
-								}
-								
-								// ********* STUDY
-								
-								if( [series valueForKey:@"study"] != study)
-								{
-									study = [series valueForKey:@"study"];
-									
-									if([studiesArray containsObject: study] == NO)
-									{
-										if( study) [studiesArray addObject: study];
-										
-										// Is a viewer containing this series opened? -> close it
-										for( ViewerController *vc in viewersList)
-										{
-											if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
-											{
-												[vc buildMatrixPreview];
-											}
-										}
-									}
-								}
-							}
-							
-							[context deleteObject: obj ];
-						}
-						
-						[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [selectedRows firstIndex]] byExtendingSelection:NO];
-					}
+						[self proceedDeleteObjects: objectsToDelete];
 					
 					if( result == NSAlertOtherReturn)
 					{
@@ -6037,83 +6123,15 @@ static NSArray*	statesArray = nil;
 							}
 						}
 					}
+					
+					[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [selectedRows firstIndex]] byExtendingSelection:NO];
 				}
 				[wait close];
 				[wait release];
 			}
 		}
 		
-		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
-		[wait showWindow:self];
-		
-		@try
-		{
-			[context save: nil];
-		}
-		@catch( NSException *e)
-		{	NSLog( @"context save: nil: %@", e);}
-		
-		@try
-		{
-			// Remove series without images !
-			for( NSManagedObject *series in seriesArray)
-			{
-				@try
-				{
-					if( [[series valueForKey:@"images"] count] == 0)
-					{
-						[context deleteObject: series];
-					}
-					else
-					{
-						[series setValue: [NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-						[series setValue: nil forKey:@"thumbnail"];	
-					}
-				}
-				@catch( NSException *e)
-				{	NSLog( @"context deleteObject: series: %@", e);}
-			}
-			
-			@try
-			{
-				[context save: nil];
-			}
-			@catch( NSException *e)
-			{	NSLog( @"context save: nil: %@", e);}
-				
-			// Remove studies without series !
-			for( NSManagedObject *study in studiesArray)
-			{
-				@try
-				{
-					NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
-					
-					if( [[study valueForKey:@"imageSeries"] count] == 0)
-					{
-						[context deleteObject: study];
-					}
-					else
-					{
-						[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-					}
-				}
-				@catch( NSException *e)
-				{	NSLog( @"context deleteObject: study: %@", e);}
-			}
-			[self saveDatabase: currentDatabasePath];
-			
-		}
-		
-		@catch( NSException *ne)
-		{
-			NSLog( @"Exception during delItem");
-			NSLog( @"%@", [ne description]);
-		}
-		
 		[context unlock];
-		
-		[wait close];
-		[wait release];
 	}
 }
 
@@ -13125,11 +13143,11 @@ static NSArray*	openSubSeriesArray = nil;
 		[NSThread sleepForTimeInterval: 0.04];
 	
 	[BrowserController tryLock: decompressThreadRunning during: 120];
-	[BrowserController tryLock: deleteInProgress during: 120];
+	[BrowserController tryLock: deleteInProgress during: 600];
 		
 	[self emptyDeleteQueueThread];
 	
-	[BrowserController tryLock: deleteInProgress during: 120];
+	[BrowserController tryLock: deleteInProgress during: 600];
 	[BrowserController tryLock: autoroutingInProgress during: 120];
 	
 	[self emptyAutoroutingQueue:self];
