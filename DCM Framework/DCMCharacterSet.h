@@ -29,5 +29,6 @@
 - (id)initWithCharacterSet:(DCMCharacterSet *)characterSet;
 
 + (NSString *) stringWithBytes:(char *) str length:(unsigned) length encodings: (NSStringEncoding*) encodings;
++ (NSStringEncoding)encodingForDICOMCharacterSet:(NSString *)characterSet;
 
 @end

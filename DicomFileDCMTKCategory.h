@@ -23,6 +23,7 @@
 
 @interface DicomFile (DicomFileDCMTKCategory)
 
++ (NSArray*) getEncodingArrayForFile: (NSString*) file;
 + (BOOL) isDICOMFileDCMTK:(NSString *) file; /**< Check for validity of DICOM using DCMTK */
 + (BOOL) isNRRDFile:(NSString *) file; /**< Test for NRRD file format */
 

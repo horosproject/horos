@@ -1853,7 +1853,7 @@ static NSArray*	statesArray = nil;
 		{
 			if( [autoroutingInProgress tryLock])
 			{
-				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Autorouting", nil) description: NSLocalizedString(@"Autorouting starting...", nil) name: @"newfiles"];
+				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Autorouting", nil) description: NSLocalizedString(@"Autorouting starting...", nil) name: @"autorouting"];
 				
 				[autoroutingInProgress unlock];
 				[NSThread detachNewThreadSelector:@selector(processAutorouting) toTarget:self withObject:nil];
@@ -13071,7 +13071,7 @@ static NSArray*	openSubSeriesArray = nil;
 	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"restartAutoQueryAndRetrieve"] == YES && [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"] != nil)
 	{
-		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Auto-Query", nil) description: NSLocalizedString( @"DICOM Auto-Query is restarting...", nil)  name:@"newfiles"];
+		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Auto-Query", nil) description: NSLocalizedString( @"DICOM Auto-Query is restarting...", nil)  name:@"autoquery"];
 		NSLog( @"-------- automatically restart DICOM AUTO-QUERY --------");
 		
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Restarting Auto Query/Retrieve...", nil)];
@@ -14527,11 +14527,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	switch( tow)
 	{
 		case 'C':
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Compression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to compress %d files", nil), [array count]] name:@"newfiles"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Compression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to compress %d files", nil), [array count]] name:@"result"];
 			break;
 			
 		case 'D':
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Decompression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to decompress %d files", nil), [array count]] name:@"newfiles"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Decompression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to decompress %d files", nil), [array count]] name:@"result"];
 			break;
 	}
 	
@@ -14597,11 +14597,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	switch( tow)
 	{
 		case 'C':
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Compression", nil) description: NSLocalizedString(@"Done !", nil) name:@"newfiles"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Compression", nil) description: NSLocalizedString(@"Done !", nil) name:@"result"];
 			break;
 			
 		case 'D':
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Decompression", nil) description: NSLocalizedString(@"Done !", nil) name:@"newfiles"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Decompression", nil) description: NSLocalizedString(@"Done !", nil) name:@"result"];
 			break;
 	}
 	

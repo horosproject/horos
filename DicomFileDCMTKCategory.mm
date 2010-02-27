@@ -43,6 +43,28 @@ extern NSRecursiveLock *PapyrusLock;
 
 @implementation DicomFile (DicomFileDCMTKCategory)
 
++ (NSArray*) getEncodingArrayForFile: (NSString*) file
+{
+	DcmFileFormat fileformat;
+	NSArray *encodingArray = nil;
+	
+	OFCondition status = fileformat.loadFile( [file UTF8String], EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
+	
+	DcmDataset *dataset = fileformat.getDataset();
+	
+	const char *string = NULL;
+	
+	if( dataset && dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
+	{
+		encodingArray = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
+	}
+	
+	if( encodingArray == nil)
+		encodingArray = [NSArray arrayWithObject: @"ISO_IR 100"];
+	
+	return encodingArray;
+}
+
 + (BOOL) isDICOMFileDCMTK:(NSString *) file{
 	DcmFileFormat fileformat;
 	OFCondition status = fileformat.loadFile([file UTF8String]);

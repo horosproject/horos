@@ -1003,7 +1003,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"%d files to send.\rTo: %@ - %@", nil), [_filesToSend count], _calledAET, _hostname] name:@"result"];
+	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"%d files to send.\rTo: %@ - %@", nil), [_filesToSend count], _calledAET, _hostname] name:@"send"];
 	
 //	NSString *tempFolder = [NSString stringWithFormat:@"/tmp/DICOMSend_%@-%@", _callingAET, [[NSDate date] description]];
 	NSMutableArray *paths = [[NSMutableArray alloc] init];
@@ -1698,12 +1698,12 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			
 			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
 			
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Errors ! %d of %d files generated errors.", nil), _numberErrors, _numberOfFiles]  name:@"result"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Errors ! %d of %d files generated errors.", nil), _numberErrors, _numberOfFiles]  name:@"send"];
 		}
 		else
 		{
 			[userInfo setObject:@"Complete" forKey:@"Message"];
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: NSLocalizedString(@"Done !", nil) name:@"result"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: NSLocalizedString(@"Done !", nil) name:@"send"];
 		}
 		
 		[self updateLogEntry: userInfo];

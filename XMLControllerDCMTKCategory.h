@@ -19,7 +19,7 @@
 
 @interface XMLController (XMLControllerDCMTKCategory)
 
-- (int) modifyDicom:(NSArray*) params;
+- (int) modifyDicom:(NSArray*) params encoding: (NSStringEncoding) encoding;
 - (void) prepareDictionaryArray;
 - (int) getGroupAndElementForName:(NSString*) name group:(int*) gp element:(int*) el;
 

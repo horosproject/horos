@@ -724,21 +724,23 @@
 - (void)addString:(NSString *)string{
 	NSData *data = [string dataUsingEncoding:stringEncoding];
 	[dicomData appendData:data];
-	int length = [string length];
+	int length = [data length];
 	if (length%2)
 		[self addUnsignedChar: ' '];
 	
 }
-- (void)addString:(NSString *)string withEncoding:(NSStringEncoding)encoding{
+
+- (void)addString:(NSString *)string withEncoding:(NSStringEncoding)encoding
+{
 	NSData *data = [string dataUsingEncoding:encoding];
 	[dicomData appendData:data];
-	int length = [string length];
+	int length = [data length];
 	if (length%2)
-		[self addUnsignedChar:' '];
-	
+		[self addUnsignedChar:' '];	
 }
 
-- (void)addStringWithoutPadding:(NSString *)string{
+- (void)addStringWithoutPadding:(NSString *)string
+{
 	NSData *data = [string dataUsingEncoding:stringEncoding];
 	[dicomData appendData:data];
 }

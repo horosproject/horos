@@ -16,7 +16,7 @@
 #import "DCM.h"
 #import "DCMAbstractSyntaxUID.h"
 #import <Accelerate/Accelerate.h>
-//#import "DCMUIDs.h"
+#import "DCMCharacterSet.h"
 
 static NSString *DCM_SecondaryCaptureImageStorage = @"1.2.840.10008.5.1.4.1.1.7";
 static NSString *rootUID = @"1.3.6.1.4.1.19291.2.1";
@@ -1567,7 +1567,7 @@ PixelRepresentation
 		if (attr)
 		{
 			//skip metaheader for dataset
-			if ( attr.attrTag.group == 0x0002)
+			if( attr.attrTag.group == 0x0002)
 			{
 				if ( flag)
 				{
@@ -1583,7 +1583,15 @@ PixelRepresentation
 			{
 				[container setUseMetaheaderTS:NO];
 				
-				if( ![attr writeToDataContainer:container withTransferSyntax: ts])
+				if( attr.attrTag.group == 0x0008 && attr.attrTag.element == 0x0005)
+				{
+					[specificCharacterSet release];
+					specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"//"]];
+				}
+				
+				[attr setCharacterSet: specificCharacterSet];
+				
+				if( ![attr writeToDataContainer: container withTransferSyntax: ts])
 				{
 					exception = [NSException exceptionWithName:@"DCMWriteDataError" reason:[NSString stringWithFormat:@"Cannot write %@ to data with syntax:%@", [attr description], [ts transferSyntax]] userInfo:nil];
 					[exception raise];

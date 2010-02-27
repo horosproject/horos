@@ -20,6 +20,7 @@
 #import "XMLControllerDCMTKCategory.h"
 #import "WaitRendering.h"
 #import "dicomFile.h"
+#import "DicomFileDCMTKCategory.h"
 #import "BrowserController.h"
 #import "ViewerController.h"
 #import <OsiriX/DCMObject.h>
@@ -27,6 +28,7 @@
 #import "DCMPix.h"
 #import "MutableArrayCategory.h"
 #import "Notifications.h"
+#import "DICOMToNSString.h"
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
@@ -219,11 +221,13 @@ extern int delayedTileWindows;
 		
 		if( group > 0 && element >= 0)
 		{
-			NSMutableArray		*groupsAndElements = [NSMutableArray array];
+			NSMutableArray *groupsAndElements = [NSMutableArray array];
 			
-			NSString	*path = [NSString stringWithFormat:@"(%@,%@)", [NSString stringWithFormat:@"%04x", group], [NSString stringWithFormat:@"%04x", element]];
+			NSString *path = [NSString stringWithFormat:@"(%@,%@)", [NSString stringWithFormat:@"%04x", group], [NSString stringWithFormat:@"%04x", element]];
 			
-			[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [[[NSString alloc] initWithData: [[addValue stringValue] dataUsingEncoding: NSASCIIStringEncoding allowLossyConversion: YES] encoding: NSASCIIStringEncoding] autorelease]], nil]];
+			NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: srcFile] objectAtIndex: 0]];
+			
+			[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [[[NSString alloc] initWithData: [[addValue stringValue] dataUsingEncoding: encoding allowLossyConversion: YES] encoding: encoding] autorelease]], nil]];
 			
 			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
 			[params addObjectsFromArray:  groupsAndElements];
@@ -242,7 +246,7 @@ extern int delayedTileWindows;
 					[wait showWindow:self];
 				}
 				
-				[self modifyDicom: params];
+				[self modifyDicom: params encoding: encoding];
 				
 				for( int i = 0; i < [files count]; i++)
 					[[NSFileManager defaultManager] removeFileAtPath:[[files objectAtIndex: i] stringByAppendingString:@".bak"] handler:nil];
@@ -780,12 +784,14 @@ extern int delayedTileWindows;
 
 - (void) setObject:(NSArray*) array
 {
-	NSMutableArray		*groupsAndElements = [NSMutableArray array];
+	NSMutableArray *groupsAndElements = [NSMutableArray array];
 	
 	id item = [array objectAtIndex: 0];
 	id object = [array objectAtIndex: 1];
 	
-	object = [[[NSString alloc] initWithData: [object dataUsingEncoding: NSASCIIStringEncoding allowLossyConversion: YES] encoding: NSASCIIStringEncoding] autorelease];
+	NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: srcFile] objectAtIndex: 0]];
+	
+	object = [[[NSString alloc] initWithData: [object dataUsingEncoding: encoding allowLossyConversion: YES] encoding: encoding] autorelease];
 	
 	if( [table rowForItem: item] > 0)
 	{
@@ -842,7 +848,7 @@ extern int delayedTileWindows;
 			
 			@try
 			{
-				[self modifyDicom: params];
+				[self modifyDicom: params encoding: encoding];
 				
 				for( id loopItem in files)
 					[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
@@ -1057,7 +1063,7 @@ extern int delayedTileWindows;
 					
 					@try
 					{
-						[self modifyDicom: params];
+						[self modifyDicom: params encoding: NSUTF8StringEncoding];
 						for( id loopItem in files)
 							[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
 					

@@ -62,9 +62,15 @@
 			isExplicit:(BOOL) explicitValue
 			forImplicitUseOW:(BOOL)forImplicitUseOW{
 
-	if (self = [super init]) {
+	if (self = [super init])
+	{
 		_vr = [vr retain];
+		
 		characterSet = [specificCharacterSet retain];
+		
+		if( characterSet == nil)
+			characterSet = [[DCMCharacterSet alloc] initWithCode: @"ISO_IR 100"];
+		
 		_tag = [tag retain];
 		_valueLength = vl;
 		_values =  nil;
@@ -149,8 +155,8 @@
 	return [[DCMAttribute allocWithZone:zone] initWithAttribute:self];
 }
 
-- (void)dealloc {
-
+- (void)dealloc
+{
 	[characterSet release];
 	[_vr release];
 	[_tag release];
@@ -160,15 +166,18 @@
 	[super dealloc];
 }
 		
-- (int)group{
+- (int)group
+{
 	return _tag.group;
 }
 
-- (int)element{
+- (int)element
+{
 	return _tag.element;
 }
 
-- (long)valueLength{
+- (long)valueLength
+{
 	const char *chars = [_vr UTF8String];
 	int vr = chars[0]<<8 | chars[1];
 	int length = 0;
@@ -254,13 +263,15 @@
 		case QQ: 
 					//length may be different with different Character Sets
 			string = [_values componentsJoinedByString:@"\\"];
-			length = [string lengthOfBytesUsingEncoding:[characterSet encoding]];
-			 //[string length];
+			
+			if( characterSet == nil)
+				characterSet = [[DCMCharacterSet alloc] initWithCode: @"ISO_IR 100"];
+			
+			length = [string lengthOfBytesUsingEncoding: [characterSet encoding]];
 			break;
 		default: 
 			length = [(NSData *)[_values objectAtIndex:0] length];
 			break;
-
 		}
 		
 	if (length < 0)
@@ -321,21 +332,30 @@
 
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts
 {
+	if( characterSet == nil)
+		characterSet = [[DCMCharacterSet alloc] initWithCode: @"ISO_IR 100"];
+	
 	int i;
 	const char *chars = [_vr UTF8String];
 	int vr = chars[0]<<8 | chars[1];
-
 	int vm = self.valueMultiplicity;
+	
 	NSString *string;
+	
 	[self writeBaseToData:container transferSyntax:ts];
+	
 	if (DCMDEBUG)
 		NSLog(@"Write Attr: %@", [self description]);
-	if ([DCMValueRepresentation isAffectedBySpecificCharacterSet:_vr]) {
-		string =  [_values componentsJoinedByString:@"\\"];
-		[container addString:string withEncoding:[characterSet encoding]];
+		
+	if ([DCMValueRepresentation isAffectedBySpecificCharacterSet:_vr])
+	{
+		string =  [_values componentsJoinedByString: @"\\"];
+		[container addString:string withEncoding: [characterSet encoding]];
 	}
-	else {
-		switch (vr) {
+	else
+	{
+		switch (vr)
+		{
 		// unsigned Short
 		 case US:   //unsigned short
 				for (i = 0; i< vm; i++)

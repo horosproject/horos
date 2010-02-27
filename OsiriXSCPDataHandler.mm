@@ -14,7 +14,8 @@
 
 
 #import "OsiriXSCPDataHandler.h"
-
+#import "DicomFile.h"
+#import "DicomFileDCMTKCategory.h"
 #import "browserController.h"
 #import "AppController.h"
 #import "DicomImage.h"
@@ -928,18 +929,10 @@ extern NSManagedObjectContext *staticContext;
 		{
 			NSLog( @"--- cannot encode %@ -> switch to dcm file encoding", str);
 			
-			DcmFileFormat fileformat;
+			NSArray	*c = [DicomFile getEncodingArrayForFile: [image valueForKey:@"completePathResolved"]];
 			
-			OFCondition status = fileformat.loadFile( [[image valueForKey:@"completePathResolved"] UTF8String], EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
-			
-			DcmDataset *dataset = fileformat.getDataset();
-			
-			const char *string = NULL;
-			
-			if( dataset && dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
+			if( c)
 			{
-				NSArray	*c = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
-				
 				for( NSString *encodingString in c)
 				{
 					if( [str cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: encodingString]])

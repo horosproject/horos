@@ -30,16 +30,16 @@
 
 @implementation XMLController (XMLControllerDCMTKCategory)
 
--(int) modifyDicom:(NSArray*) params
+-(int) modifyDicom:(NSArray*) params encoding: (NSStringEncoding) encoding
 {
-	int			i, argc = [params count];
-	char		*argv[ argc];
+	int i, argc = [params count];
+	char *argv[ argc];
 	
 	NSLog( @"%@", [params description]);
 	
 	for( i = 0; i < argc; i++)
 	{
-		argv[ i] = (char*) [[params objectAtIndex: i] UTF8String];
+		argv[ i] = (char*) [[params objectAtIndex: i] cStringUsingEncoding: encoding];
 	}
 	
     int error_count = 0;

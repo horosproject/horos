@@ -514,7 +514,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	NSString *stringEncoding = [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"];
 	
-	int encoding = [NSString encodingForDICOMCharacterSet:stringEncoding];
+	NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet:stringEncoding];
+	
 	dataset->putAndInsertString(DCM_SpecificCharacterSet, [stringEncoding UTF8String]);
 	const char *queryLevel;
 	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good()){}
@@ -1622,7 +1623,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
 			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 		else
-			[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"newfiles"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"autoquery"];
 		
 		NSLog(@"Exception: %@", [e description]);
 		
@@ -1763,7 +1764,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
 				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 			else
-				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (2)", nil) description: response name: @"newfiles"];
+				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (2)", nil) description: response name: @"autoquery"];
 				
 		}
 				

@@ -124,8 +124,8 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	{
 		NSLog(@"** encoding not found: %@", characterSet);
 	}
+	
 	return encoding;
-
 }
 
 - (id)initWithCode:(NSString *)characterSet
@@ -149,6 +149,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 			else
 				NSLog( @"Encoding number >= 10 ???");
 		}
+		encoding = encodings[ 0];
 	}
 	return self;
 }

@@ -1824,7 +1824,7 @@ extern "C"
 		
 		NSString *desc = [NSString stringWithFormat: NSLocalizedString( @"Will auto-retrieve %d studies", nil), [selectedItems count]];
 		
-		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: desc name: @"newfiles"];
+		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: desc name: @"autoquery"];
 	}
 	else
 	{
@@ -1854,7 +1854,7 @@ extern "C"
 		[self performSelectorOnMainThread: @selector( displayAndRetrieveQueryResults) withObject:0 waitUntilDone: NO];
 	else
 	{
-		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: @"Failed..." name: @"newfiles"];
+		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: @"Failed..." name: @"autoquery"];
 	}
 	
 	[pool release];
@@ -1874,7 +1874,7 @@ extern "C"
 		{
 			if( [autoQueryLock tryLock])
 			{
-				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"newfiles"];
+				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"autoquery"];
 				
 				[self saveSettings];
 				
