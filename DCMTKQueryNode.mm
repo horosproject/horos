@@ -14,6 +14,7 @@
 
 #import "DCMTKStudyQueryNode.h"
 #import "DCMTKSeriesQueryNode.h"
+#import "DCMTKImageQueryNode.h"
 
 #import "WaitRendering.h"
 #import "DCMTKQueryNode.h"
@@ -743,7 +744,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		{
 			if( [image uid])
 			{
-				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [self seriesInstanceUID], [image uid], ts]];
+				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]];
 				[urlToDownload addObject: url];
 			}
 			else NSLog( @"****** no image uid !");
