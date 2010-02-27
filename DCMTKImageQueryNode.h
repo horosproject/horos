@@ -22,4 +22,6 @@
 	NSString *_studyInstanceUID, *_seriesInstanceUID;
 }
 
+- (NSString*) seriesInstanceUID;
+
 @end

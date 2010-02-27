@@ -739,11 +739,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 		[self queryWithValues: nil dataset: dataset];
 		
-		for( DCMTKQueryNode *image in [self children])
+		for( DCMTKImageQueryNode *image in [self children])
 		{
 			if( [image uid])
 			{
-				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image uid], ts]];
+				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [self seriesInstanceUID], [image uid], ts]];
 				[urlToDownload addObject: url];
 			}
 			else NSLog( @"****** no image uid !");
@@ -762,7 +762,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		{
 			if( [image uid])
 			{
-				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [image uid], ts]];
+				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [self uid], [image uid], ts]];
 				[urlToDownload addObject: url];
 			}
 			else NSLog( @"****** no image uid !");

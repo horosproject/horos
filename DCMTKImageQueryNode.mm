@@ -92,6 +92,11 @@
 	return self;
 }
 
+- (NSString*) seriesInstanceUID
+{
+	return _seriesInstanceUID;
+}
+
 - (void) dealloc
 {
 	[_seriesInstanceUID release];
