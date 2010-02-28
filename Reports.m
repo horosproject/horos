@@ -109,11 +109,13 @@ static id aedesc_to_id(AEDesc *desc)
 		[file appendFormat: @"%c", NSTabCharacter];
 	}
 	
-	NSString	*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/Report.txt"];
+	NSString	*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/Report.rtf"];
 	
 	[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 	
-	[file writeToFile: path atomically: YES encoding: NSUTF8StringEncoding error: nil];
+	NSMutableAttributedString	*rtf = [[NSMutableAttributedString alloc] initWithString: file];
+	
+	[[rtf RTFFromRange:NSMakeRange(0, [rtf length]) documentAttributes: nil] writeToFile: path atomically:YES]; // To support full encoding in MicroSoft Word
 	
 	return path;
 }
