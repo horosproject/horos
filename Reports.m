@@ -18,7 +18,7 @@
 #import "BrowserController.h"
 
 // if you want check point log info, define CHECK to the next line, uncommented:
-#define CHECK NSLog(@"result code = %d", ok);
+#define CHECK NSLog(@"Applescript result code = %d", ok);
 
 // This converts an AEDesc into a corresponding NSValue.
 
@@ -189,7 +189,18 @@ static id aedesc_to_id(AEDesc *desc)
 		{
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"doc"];
 			
-			[self runScript: [self reportScriptBody: study path: destinationFile]];
+			// Applescript doesnt support UTF-8 encoding
+
+			NSString *tempPath = [destinationFile stringByDeletingLastPathComponent];
+			tempPath = [tempPath stringByAppendingPathComponent: @"MSTempReport"];
+			tempPath = [tempPath stringByAppendingPathExtension: [destinationFile pathExtension]];
+			
+			[[NSFileManager defaultManager] removeItemAtPath: tempPath error: nil];
+			
+			[self runScript: [self reportScriptBody: study path: tempPath]];
+			
+			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
+			[[NSFileManager defaultManager] moveItemAtPath: tempPath toPath: destinationFile error: nil];
 			
 //			BOOL failed = NO;
 //			
@@ -542,14 +553,9 @@ CHECK;
 
 - (NSString*)generatePagesReportScriptUsingTemplate:(NSString*)aTemplate completeFilePath:(NSString*)aFilePath;
 {
-	// transform path to AppleScript styled path:
-	// '/Users/joris/Documents' will become ':Users:joris:Documents'
-	NSMutableString *asStyledPath = [NSMutableString stringWithString:aFilePath];
-	[asStyledPath replaceOccurrencesOfString:@"/" withString:@":" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [asStyledPath length])];
-
 	NSMutableString *script = [NSMutableString stringWithCapacity:1000];
 	
-	[script appendString:[NSString stringWithFormat:@"set theSaveName to \"%@\"\n", asStyledPath]];
+	[script appendString:[NSString stringWithFormat:@"set theSaveName to \"%@\"\n", [self HFSPathFromPOSIXPath: aFilePath]]];
 	[script appendString:@"tell application \"Pages\"\n"];
 	[script appendString:[NSString stringWithFormat:@"set myDocument to make new document with properties {template name:\"%@\"}\n", aTemplate]];
 	[script appendString:@"close myDocument saving in theSaveName\n"];
@@ -622,8 +628,29 @@ CHECK;
 - (BOOL)createNewPagesReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
 {	
 	// create the Pages file, using the template (not filling the patient's data yet)
-	NSString *creationScript = [self generatePagesReportScriptUsingTemplate:templateName completeFilePath:aPath];
-	[self runScript:creationScript];
+	
+	NSString *tempPath;
+
+	// Applescript doesnt support UTF-8 encoding
+
+	tempPath = [aPath stringByDeletingLastPathComponent];
+	tempPath = [tempPath stringByAppendingPathComponent: @"pagesTempReport"];
+	tempPath = [tempPath stringByAppendingPathExtension: [aPath pathExtension]];
+	
+	[[NSFileManager defaultManager] removeItemAtPath: tempPath error: nil];
+	
+	NSString *creationScript = [self generatePagesReportScriptUsingTemplate:templateName completeFilePath: tempPath];
+	[self runScript: creationScript];
+	
+	[[NSFileManager defaultManager] removeItemAtPath: aPath error: nil];
+	[[NSFileManager defaultManager] moveItemAtPath: tempPath toPath: aPath error: nil];
+	
+	
+	BOOL isDirectory;
+	if( [[NSFileManager defaultManager] fileExistsAtPath: aPath isDirectory: &isDirectory] == NO)
+	{
+		NSRunCriticalAlertPanel( NSLocalizedString( @"Pages", nil),  NSLocalizedString(@"Failed to create the report with Pages.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+	}
 	
 	// decompress the gzipped index.xml.gz file in the .pages bundle
 	NSTask *gzip = [[NSTask alloc] init];

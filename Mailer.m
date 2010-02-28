@@ -19,7 +19,7 @@
 
 
 // if you want check point log info, define CHECK to the next line, uncommented:
-#define CHECK NSLog(@"result code = %d", ok);
+#define CHECK NSLog(@"Applescript result code = %d", ok);
 
 // This converts an AEDesc into a corresponding NSValue.
 

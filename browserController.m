@@ -647,7 +647,7 @@ static NSArray*	statesArray = nil;
 								study = [studiesArray objectAtIndex: index];
 							else
 							{
-								NSLog( @"**** same studyUID (%@), but not same patientUID (%@ versus %@)", [curDict objectForKey: @"studyID"], [curDict objectForKey: @"patientUID"], [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
+								NSLog( @"/*\*/*\*/*\ same studyUID (%@), but not same patientUID (%@ versus %@)", [curDict objectForKey: @"studyID"], [curDict objectForKey: @"patientUID"], [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
 								
 								NSString *curUID = [curDict objectForKey: @"studyID"];
 								for( int i = 0 ; i < [studiesArrayStudyInstanceUID count]; i++)

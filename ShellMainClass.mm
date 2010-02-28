@@ -23,7 +23,7 @@
 #import <arpa/inet.h>
 #import <unistd.h>
 
-#define CHECK NSLog(@"result code = %d", ok);
+#define CHECK NSLog(@"Applescript result code = %d", ok);
 
 @interface ShellMainClass : NSApplication
 {
