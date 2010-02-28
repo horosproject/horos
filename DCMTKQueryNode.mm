@@ -991,7 +991,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	ASC_addPresentationContext(
         params, 1, abstractSyntax,
         transferSyntaxes, numTransferSyntaxes);
-	
+		
 	// For C-GET we also need the storage presentation contexts : the is only one association
 	if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
 		strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
@@ -1000,11 +1000,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 		pid += 2;
 		
-		for (i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++) {
-		cond = ASC_addPresentationContext(
-			params, pid, dcmLongSCUStorageSOPClassUIDs[i],
-			transferSyntaxes, numTransferSyntaxes);
-		pid += 2;	/* only odd presentation context id's */
+		for (i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++)
+		{
+			cond = ASC_addPresentationContext(
+				params, pid, dcmLongSCUStorageSOPClassUIDs[i],
+				transferSyntaxes, numTransferSyntaxes);
+			pid += 2;	/* only odd presentation context id's */
 		}
 	}
 	

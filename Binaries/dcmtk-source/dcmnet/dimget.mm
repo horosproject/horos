@@ -164,7 +164,8 @@ DIMSE_getUser(
 
         cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, 
                 &rsp, statusDetail);
-        if (cond != EC_Normal) {
+        if (cond != EC_Normal)
+		{
             return cond;
         }
 		
