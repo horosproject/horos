@@ -15221,6 +15221,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			previousPath = [NSString stringWithString: tempPath];
 			
+			#ifndef OSIRIX_LIGHT
 			if( [DCMAbstractSyntaxUID isPDF: [curImage valueForKeyPath: @"series.seriesSOPClassUID"]])
 			{
 				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [curImage valueForKey: @"completePath"] decodingPixelData:NO];
@@ -15246,6 +15247,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 			}
 			else
+			#endif
 			{
 				int frames = [[curImage valueForKey:@"numberOfFrames"] intValue];
 				
