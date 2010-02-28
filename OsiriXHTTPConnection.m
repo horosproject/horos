@@ -2276,7 +2276,7 @@ NSString* notNil( NSString *s)
 									curWL = [dcmPix savedWL];
 								}
 								
-								data = [imageCache objectForKey: [NSString stringWithFormat: @"%@ %f %f %d %d", contentType, curWW, curWL, columns, rows]];
+								data = [imageCache objectForKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
 								
 								if( data == nil)
 								{
@@ -2324,7 +2324,7 @@ NSString* notNil( NSString *s)
 									else
 										data = [imageRep representationUsingType: NSJPEGFileType properties:imageProps];
 									
-									[imageCache setObject: data forKey: [NSString stringWithFormat: @"%@ %f %f %d %d", contentType, curWW, curWL, columns, rows]];
+									[imageCache setObject: data forKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
 								}
 								
 								if( data)
