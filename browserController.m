@@ -1008,11 +1008,11 @@ static NSArray*	statesArray = nil;
 			{
 				@try
 				{
-					NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
-					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object: nil userInfo:userInfo];
+					NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
+					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:nil userInfo:userInfo];
 					
-					userInfo = [NSDictionary dictionaryWithObject:completeImagesArray forKey:@"OsiriXAddToDBArray"];
-					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object: nil userInfo:userInfo];
+					userInfo = [NSDictionary dictionaryWithObject:completeImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
+					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBCompleteNotification object:nil userInfo:userInfo];
 				}
 				@catch( NSException *ne)
 				{
