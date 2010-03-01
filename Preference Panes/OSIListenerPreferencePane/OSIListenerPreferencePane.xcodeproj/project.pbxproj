@@ -19,6 +19,7 @@
 		A9C54A0A10FF4A4F0026EA70 /* DNDArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = A9C54A0910FF4A4F0026EA70 /* DNDArrayController.h */; };
 		AB80A1BE0A19C3C000FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A1BD0A19C3C000FED357 /* Security.framework */; };
 		CE162F2310DC2DD300BF9C81 /* browserController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE162F2210DC2DD300BF9C81 /* browserController.h */; };
+		CE3B79D6113BD51F00B64FC2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE3B79D4113BD51F00B64FC2 /* Localizable.strings */; };
 		CE50FF1E0E481B5000959A84 /* DefaultsOsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = CE50FF1D0E481B5000959A84 /* DefaultsOsiriX.h */; };
 		CEB0705D0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB0705B0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib */; };
 /* End PBXBuildFile section */
@@ -37,6 +38,7 @@
 		A9C54A0910FF4A4F0026EA70 /* DNDArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNDArrayController.h; path = ../../DNDArrayController.h; sourceTree = SOURCE_ROOT; };
 		AB80A1BD0A19C3C000FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CE162F2210DC2DD300BF9C81 /* browserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = browserController.h; path = ../../browserController.h; sourceTree = SOURCE_ROOT; };
+		CE3B79D5113BD51F00B64FC2 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE50FF1D0E481B5000959A84 /* DefaultsOsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultsOsiriX.h; path = ../../DefaultsOsiriX.h; sourceTree = SOURCE_ROOT; };
 		CEB0705C0C87502F0011AEE1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIListenerPreferencePanePref.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
@@ -84,6 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				8D202CF70486D31800D8A456 /* Info.plist */,
+				CE3B79D4113BD51F00B64FC2 /* Localizable.strings */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				CEB0705B0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib */,
 			);
@@ -204,6 +207,7 @@
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
 				CEB0705D0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib in Resources */,
+				CE3B79D6113BD51F00B64FC2 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +241,14 @@
 				089C167EFE841241C02AAC07 /* English */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		CE3B79D4113BD51F00B64FC2 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE3B79D5113BD51F00B64FC2 /* English */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 		CEB0705B0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib */ = {

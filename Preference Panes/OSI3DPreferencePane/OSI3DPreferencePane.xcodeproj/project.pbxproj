@@ -14,6 +14,7 @@
 		ABC3989D09F525B0000A6508 /* OSI3DPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC3989B09F525B0000A6508 /* OSI3DPreferencePane.h */; };
 		ABC3989E09F525B0000A6508 /* OSI3DPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC3989C09F525B0000A6508 /* OSI3DPreferencePane.m */; };
 		ABC398A209F525C1000A6508 /* OSI3DPreferencePane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = ABC398A109F525C1000A6508 /* OSI3DPreferencePane_Prefix.pch */; };
+		CE3B7994113BD4BF00B64FC2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE3B7992113BD4BF00B64FC2 /* Localizable.strings */; };
 		CE5C6D3E0CAD9B5700597FEF /* OSI3DPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE5C6D3C0CAD9B5700597FEF /* OSI3DPreferencePanePref.xib */; };
 		CE729C53097075C30064790F /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE729C52097075C30064790F /* IOKit.framework */; };
 /* End PBXBuildFile section */
@@ -29,6 +30,7 @@
 		ABC3989B09F525B0000A6508 /* OSI3DPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSI3DPreferencePane.h; sourceTree = "<group>"; };
 		ABC3989C09F525B0000A6508 /* OSI3DPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OSI3DPreferencePane.m; sourceTree = "<group>"; };
 		ABC398A109F525C1000A6508 /* OSI3DPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSI3DPreferencePane_Prefix.pch; sourceTree = "<group>"; };
+		CE3B7993113BD4BF00B64FC2 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE5C6D3D0CAD9B5700597FEF /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSI3DPreferencePanePref.xib; sourceTree = "<group>"; };
 		CE729C52097075C30064790F /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
@@ -74,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				8D202CF70486D31800D8A456 /* Info.plist */,
+				CE3B7992113BD4BF00B64FC2 /* Localizable.strings */,
 				CE5C6D3C0CAD9B5700597FEF /* OSI3DPreferencePanePref.xib */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 			);
@@ -184,6 +187,7 @@
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
 				CE5C6D3E0CAD9B5700597FEF /* OSI3DPreferencePanePref.xib in Resources */,
+				CE3B7994113BD4BF00B64FC2 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,6 +221,14 @@
 				089C167EFE841241C02AAC07 /* English */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		CE3B7992113BD4BF00B64FC2 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE3B7993113BD4BF00B64FC2 /* English */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 		CE5C6D3C0CAD9B5700597FEF /* OSI3DPreferencePanePref.xib */ = {
