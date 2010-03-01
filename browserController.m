@@ -13674,32 +13674,39 @@ static NSArray*	openSubSeriesArray = nil;
 	[deleteQueue unlock];
 }
 
-+ (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory found: (BOOL)found
++ (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory
 {
 	DicomDirScanDepth++;
 	
 	NSArray *fileNames = nil;
 	NSString *filePath = nil;
-	BOOL isDirectory = FALSE;
+	
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 
 	fileNames = [[NSFileManager defaultManager] directoryContentsAtPath: startDirectory];
-	for( int i = 0; i < [fileNames count] && !found; i++)
+	
+	// First search for files, THEN for directory -> Prefer DICOMDIR at top level !
+	for( NSString *s in fileNames)
 	{
-		filePath = [startDirectory stringByAppendingPathComponent: [fileNames objectAtIndex: i]];
-		NSString *upperString = [[fileNames objectAtIndex: i] uppercaseString];
+		filePath = [startDirectory stringByAppendingPathComponent: s];
+		NSString *upperString = [s uppercaseString];
 		if([upperString isEqualToString: @"DICOMDIR"] || [upperString isEqualToString: @"DICOMDIR."])
 		{
 			return filePath;
 		}
-		else if( [[fileNames objectAtIndex: i] characterAtIndex: 0] != '.')
+	}
+	
+	// Search for directories
+	BOOL isDirectory;
+	for( NSString *s in fileNames)
+	{
+		if( [s characterAtIndex: 0] != '.')
 		{
-			isDirectory = FALSE;
-			if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory])
+			if ([fileManager fileExistsAtPath:filePath isDirectory: &isDirectory])
 			{
 				if(isDirectory == YES && DicomDirScanDepth < 3)
 				{
-					if((filePath = [BrowserController _findFirstDicomdirOnCDMedia: filePath found:found]) != nil)
+					if((filePath = [BrowserController _findFirstDicomdirOnCDMedia: filePath]) != nil)
 						return filePath;
 				}
 			}
@@ -13871,7 +13878,7 @@ static NSArray*	openSubSeriesArray = nil;
 					aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
 				
 				DicomDirScanDepth = 0;
-				aPath = [BrowserController _findFirstDicomdirOnCDMedia: aPath found: FALSE];
+				aPath = [BrowserController _findFirstDicomdirOnCDMedia: aPath];
 				
 				if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
 					hasDICOMDIR = YES;
@@ -13897,7 +13904,7 @@ static NSArray*	openSubSeriesArray = nil;
 					
 					// DICOMDIR should be located at the root level
 					DicomDirScanDepth = 0;
-					aPath = [BrowserController _findFirstDicomdirOnCDMedia: aPath found: FALSE];
+					aPath = [BrowserController _findFirstDicomdirOnCDMedia: aPath];
 					
 					if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
 					{
@@ -14129,7 +14136,7 @@ static NSArray*	openSubSeriesArray = nil;
 							aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
 						
 						DicomDirScanDepth = 0;
-						aPath = [BrowserController _findFirstDicomdirOnCDMedia: aPath found: FALSE];
+						aPath = [BrowserController _findFirstDicomdirOnCDMedia: aPath];
 						
 						if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
 							hasDICOMDIR = YES;
