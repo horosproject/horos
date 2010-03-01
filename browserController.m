@@ -378,7 +378,7 @@ static NSArray*	statesArray = nil;
 	NSString				*roiFolder = [dbFolder stringByAppendingPathComponent:@"/ROIs"];
 	Wait					*splash = nil;
 	NSManagedObjectModel	*model = self.managedObjectModel;
-	NSMutableArray			*addedImagesArray = nil;
+	NSMutableArray			*addedImagesArray = nil, *completeImagesArray = nil;
 	NSMutableArray			*addedSeries = [NSMutableArray arrayWithCapacity: 0];
 	NSMutableArray			*modifiedStudiesArray = nil;
 	long					addFailed = NO;
@@ -554,6 +554,7 @@ static NSArray*	statesArray = nil;
 		if( produceAddedFiles)
 		{
 			addedImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
+			completeImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
 			modifiedStudiesArray = [NSMutableArray arrayWithCapacity: 0];
 		}
 		
@@ -841,6 +842,9 @@ static NSArray*	statesArray = nil;
 								newObject = YES;
 							}
 							
+							if( produceAddedFiles)
+								[completeImagesArray addObject: image];
+							
 							if( newObject || parseExistingObject)
 							{
 								needDBRefresh = YES;
@@ -1005,6 +1009,9 @@ static NSArray*	statesArray = nil;
 				@try
 				{
 					NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
+					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object: nil userInfo:userInfo];
+					
+					userInfo = [NSDictionary dictionaryWithObject:completeImagesArray forKey:@"OsiriXAddToDBArray"];
 					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object: nil userInfo:userInfo];
 				}
 				@catch( NSException *ne)

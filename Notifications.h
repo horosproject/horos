@@ -41,6 +41,7 @@ extern NSString* const OsirixDeletedReportNotification;
 extern NSString* const OsirixServerArrayChangedNotification;
 extern NSString* const OsirixGLFontChangeNotification;
 extern NSString* const OsirixAddToDBNotification;
+extern NSString* const OsirixAddToDBCompleteNotification;
 extern NSString* const OsirixNewStudySelectedNotification;
 extern NSString* const OsirixDidLoadNewObjectNotification;
 extern NSString* const OsirixRTStructNotification;

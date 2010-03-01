@@ -41,6 +41,7 @@ NSString* const OsirixDeletedReportNotification = @"OsirixDeletedReport";
 NSString* const OsirixServerArrayChangedNotification = @"OsiriXServerArray has changed";
 NSString* const OsirixGLFontChangeNotification = @"changeGLFontNotification";
 NSString* const OsirixAddToDBNotification = @"OsirixAddToDBNotification";
+NSString* const OsirixAddToDBCompleteNotification = @"OsirixAddToDBCompleteNotification";
 NSString* const OsirixNewStudySelectedNotification = @"NewStudySelectedNotification";
 NSString* const OsirixDidLoadNewObjectNotification = @"OsiriX Did Load New Object";
 NSString* const OsirixRTStructNotification = @"RTSTRUCTNotification";
