@@ -530,13 +530,16 @@ DcmQueryRetrieveConfig config;
 	// Even a simple NSLog() will cause many many problems......
 	
     /* loop waiting for associations */
-    while (cond.good() && !_abort)
-    {
-		if( _abort == NO)
-			cond = localSCP->waitForAssociation(options.net_);
-		
-		if( _abort == NO)
-			localSCP->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
+	if(cond.good())
+	{
+		while(!_abort)
+		{
+			if( _abort == NO)
+				cond = localSCP->waitForAssociation(options.net_);
+			
+			if( _abort == NO)
+				localSCP->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
+		}
 	}
 	
 	if( _abort)
