@@ -381,7 +381,7 @@
 	
 	NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@?requestType=WADO", protocol, [aServer valueForKey: @"Address"], WADOPort, WADOUrl];
 	
-	NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&objectUID=%@&contentType=application/dicom%@", @"1", @"1", @"&useOrig=true"]];
+	NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", @"1", @"1", @"1", @"&useOrig=true"]];
 	
 	NSLog( @"URL to test: %@", baseURL);
 	
