@@ -5142,10 +5142,17 @@ static NSArray*	statesArray = nil;
 		
 		@try
 		{
+			int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
+			
+			NSSortDescriptor *sort = nil;
+			
 			// Sort images with "instanceNumber"
-			NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
+			if( sortSeriesBySliceLocation == 0)
+				sort = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending:YES] autorelease];
+			else
+				sort = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO] autorelease];
+			
 			NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-			[sort release];
 			
 			sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
 		}
@@ -5168,13 +5175,13 @@ static NSArray*	statesArray = nil;
 		@try
 		{
 			// Sort series with "id" & date
-			NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
-			NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
-			NSArray * sortDescriptors;
+			NSSortDescriptor * sortid = [[[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)] autorelease];
+			NSSortDescriptor * sortdate = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES] autorelease];
+			NSArray * sortDescriptors = nil;
+			
 			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
-			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
-			[sortid release];
-			[sortdate release];
+			else if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
+			else sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
 			
 			if( onlyImages) sortedArray = [[item valueForKey:@"imageSeries"] sortedArrayUsingDescriptors: sortDescriptors];
 			else sortedArray = [[[item valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
