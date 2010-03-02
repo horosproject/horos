@@ -659,6 +659,8 @@ NSString* notNil( NSString *s)
 	
 	[context lock];
 	
+	NSMutableString *returnHTML = nil;
+	
 	@try
 	{
 		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"study.html"]];
@@ -711,7 +713,7 @@ NSString* notNil( NSString *s)
 		NSString *seriesListItemString = [tempArray objectAtIndex:0];
 		NSString *templateStringEnd = [tempArray lastObject];
 		
-		NSMutableString *returnHTML = [NSMutableString stringWithString: templateStringStart];
+		returnHTML = [NSMutableString stringWithString: templateStringStart];
 		
 		[returnHTML replaceOccurrencesOfString:@"%PageTitle%" withString:notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 		[returnHTML replaceOccurrencesOfString:@"%PatientID%" withString:notNil( [study valueForKey:@"patientID"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
@@ -1000,6 +1002,8 @@ NSString* notNil( NSString *s)
 	
 	[context lock];
 	
+	NSMutableString *returnHTML = nil;
+	
 	@try
 	{
 		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"studyList.html"]];
@@ -1014,7 +1018,7 @@ NSString* notNil( NSString *s)
 		NSString *studyListItemString = [tempArray objectAtIndex:0];
 		NSString *templateStringEnd = [tempArray lastObject];
 		
-		NSMutableString *returnHTML = [NSMutableString stringWithString:templateStringStart];
+		returnHTML = [NSMutableString stringWithString:templateStringStart];
 		
 		int lineNumber = 0;
 		for(DicomStudy *study in studies)
@@ -1743,7 +1747,7 @@ NSString* notNil( NSString *s)
 				
 				NSImage *newImage;
 				
-				if( [dcmPix pwidth] > width || [dcmPix pheight] > height)
+				if( [dcmPix pwidth] != width || [dcmPix pheight] != height)
 					newImage = [im imageByScalingProportionallyToSize: NSMakeSize( width, height)];
 				else
 					newImage = im;
@@ -3734,11 +3738,12 @@ NSString* notNil( NSString *s)
 {
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
+	NSMutableArray *jsonStudiesArray = [NSMutableArray array];
+	
 	[context lock];
 	
 	@try
 	{
-		NSMutableArray *jsonStudiesArray = [NSMutableArray array];
 		
 		int lineNumber = 0;
 		for(DicomStudy *study in studies)
