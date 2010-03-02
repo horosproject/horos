@@ -107,7 +107,7 @@ NSString* notNil( NSString *s)
 			thumbnailRect.size.height = scaledHeight;
 			
 			[sourceImage drawInRect: thumbnailRect
-						   fromRect: NSZeroRect
+						   fromRect: NSMakeRect( 0, 0, [sourceImage size].width, [sourceImage size].height)
 						  operation: NSCompositeCopy
 						   fraction: 1.0];
 			
