@@ -1728,6 +1728,7 @@ NSString* notNil( NSString *s)
 		int inc = 0;
 		for( NSImage *img in imagesArray)
 		{
+			//[[img TIFFRepresentation] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
 			[[img TIFFRepresentationUsingCompression: NSTIFFCompressionLZW factor: 1.0] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
 			inc++;
 		}
@@ -2785,8 +2786,15 @@ NSString* notNil( NSString *s)
 					[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 					
 					DicomImage *lastImage = [imagesArray lastObject];
-					int width = [[lastImage valueForKey:@"width"] intValue];
-					int height = [[lastImage valueForKey:@"height"] intValue];
+					
+					int width = 0;
+					int height = 0;
+					
+					for( NSNumber *im in [imagesArray valueForKey: @"width"])
+						if( [im intValue] > width) width = [im intValue];
+					
+					for( NSNumber *im in [imagesArray valueForKey: @"height"])
+						if( [im intValue] > height) height = [im intValue];
 					
 					int maxWidth = width;
 					int maxHeight = height;
