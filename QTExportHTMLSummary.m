@@ -262,7 +262,7 @@
 		if( [im intValue] > *height) *height = [im intValue];
 	
 	int maxWidth = 800, maxHeight = 800;
-	int minWidth = 300, minHeight = 300;
+	int minWidth = 400, minHeight = 400;
 	
 	if( *width > maxWidth)
 	{

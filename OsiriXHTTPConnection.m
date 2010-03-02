@@ -35,7 +35,7 @@ static NSString *webDirectory = nil;
 static NSString *language = nil;
 static NSMutableDictionary *wadoJPEGCache = nil;
 
-#define minResolution 300
+#define minResolution 400
 #define maxResolution 800
 #define WADOCACHESIZE 1200
 
