@@ -94,63 +94,63 @@ NSString* notNil( NSString *s)
 		}
 
 //		***** QuartzCore
-//		
-//		NSSize size = [sourceImage size];
-//		
-//		[sourceImage lockFocus];
-//		
-//		NSBitmapImageRep* rep = [[[NSBitmapImageRep alloc] initWithFocusedViewRect: NSMakeRect(0, 0, size.width, size.height)] autorelease];
-//		CIImage *bitmap = [[[CIImage alloc] initWithBitmapImageRep: rep] autorelease];
-//		
-//		[sourceImage unlockFocus];
-//		
-//		CIFilter *scaleTransformFilter = [CIFilter filterWithName:@"CILanczosScaleTransform"];
-//		
-//        [scaleTransformFilter setDefaults];
-//        [scaleTransformFilter setValue: bitmap forKey:@"inputImage"];
-//		[scaleTransformFilter setValue:[NSNumber numberWithFloat: scaleFactor] forKey:@"inputScale"];
-//		
-//		CIImage *outputCIImage = [scaleTransformFilter valueForKey:@"outputImage"];
-//		
-//		CGRect extent = [outputCIImage extent];
-//		if (CGRectIsInfinite(extent))
-//		{
-//			NSLog(@"*** OUTPUT IMAGE HAS INFINITE EXTENT ***");
-//			return nil;
-//		}
-//		else
-//		{
-//			NSImage *result = [[[NSImage alloc] initWithSize:NSMakeSize(extent.size.width, extent.size.height)] autorelease];
-//			NSCIImageRep *ciImageRep = [NSCIImageRep imageRepWithCIImage:outputCIImage];
-//			[result addRepresentation:ciImageRep];
-//			
-//			return result;
-//		}
-//	}
-
-		***** NSImage
 		
-		newImage = [[NSImage alloc] initWithSize: targetSize];
+		NSSize size = [sourceImage size];
 		
-		if( [newImage size].width > 0 && [newImage size].height > 0)
+		[sourceImage lockFocus];
+		
+		NSBitmapImageRep* rep = [[[NSBitmapImageRep alloc] initWithFocusedViewRect: NSMakeRect(0, 0, size.width, size.height)] autorelease];
+		CIImage *bitmap = [[[CIImage alloc] initWithBitmapImageRep: rep] autorelease];
+		
+		[sourceImage unlockFocus];
+		
+		CIFilter *scaleTransformFilter = [CIFilter filterWithName:@"CILanczosScaleTransform"];
+		
+        [scaleTransformFilter setDefaults];
+        [scaleTransformFilter setValue: bitmap forKey:@"inputImage"];
+		[scaleTransformFilter setValue:[NSNumber numberWithFloat: scaleFactor] forKey:@"inputScale"];
+		
+		CIImage *outputCIImage = [scaleTransformFilter valueForKey:@"outputImage"];
+		
+		CGRect extent = [outputCIImage extent];
+		if (CGRectIsInfinite(extent))
 		{
-			[newImage lockFocus];
+			NSLog( @"****** imageByScalingProportionallyToSize : OUTPUT IMAGE HAS INFINITE EXTENT");
+			return nil;
+		}
+		else
+		{
+			NSImage *result = [[[NSImage alloc] initWithSize:NSMakeSize(extent.size.width, extent.size.height)] autorelease];
+			NSCIImageRep *ciImageRep = [NSCIImageRep imageRepWithCIImage:outputCIImage];
+			[result addRepresentation:ciImageRep];
 			
-			[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
-			
-			NSRect thumbnailRect;
-			thumbnailRect.origin = thumbnailPoint;
-			thumbnailRect.size.width = scaledWidth;
-			thumbnailRect.size.height = scaledHeight;
-			
-			[sourceImage drawInRect: thumbnailRect
-						   fromRect: NSMakeRect( 0, 0, [sourceImage size].width, [sourceImage size].height)
-						  operation: NSCompositeCopy
-						   fraction: 1.0];
-			
-			[newImage unlockFocus];
+			return [[[NSImage alloc] initWithData: [result TIFFRepresentation]] autorelease];
 		}
 	}
+
+//		***** NSImage
+		
+//		newImage = [[NSImage alloc] initWithSize: targetSize];
+//		
+//		if( [newImage size].width > 0 && [newImage size].height > 0)
+//		{
+//			[newImage lockFocus];
+//			
+//			[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
+//			
+//			NSRect thumbnailRect;
+//			thumbnailRect.origin = thumbnailPoint;
+//			thumbnailRect.size.width = scaledWidth;
+//			thumbnailRect.size.height = scaledHeight;
+//			
+//			[sourceImage drawInRect: thumbnailRect
+//						   fromRect: NSMakeRect( 0, 0, [sourceImage size].width, [sourceImage size].height)
+//						  operation: NSCompositeCopy
+//						   fraction: 1.0];
+//			
+//			[newImage unlockFocus];
+//		}
+//	}
 	
 	if( newImage == nil)
 		return nil;

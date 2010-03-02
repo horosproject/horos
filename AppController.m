@@ -1634,7 +1634,13 @@ static NSDate *lastWarningDate = nil;
 //		if( webServer == nil) webServer = [[ThreadPerConnectionServer alloc] init];
 		
 	[webServer setConnectionClass: [OsiriXHTTPConnection class]];
-	[webServer setType:@"_http._tcp."];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"])
+		[webServer setType: @"_https._tcp."];
+	else
+		[webServer setType: @"_http._tcp."];
+	
+	[webServer setName: @"OsiriXWebSharing"];
 	[webServer setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
 	[webServer setDocumentRoot:[NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]]];
 	

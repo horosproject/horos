@@ -2642,7 +2642,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			nc = [NSNotificationCenter defaultCenter];
 			[nc postNotificationName: OsirixUpdateViewNotification object: self userInfo: nil];
 			
-			if( [self is2DViewer]) [[self windowController] setWindowTitle: self];
+			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+				[v setWindowTitle: self];
 		}
         else
         {
@@ -6526,7 +6527,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     nc = [NSNotificationCenter defaultCenter];
     [nc postNotificationName: OsirixUpdateViewNotification object: self userInfo: nil];
 	
-	if( [self is2DViewer]) [[self windowController] setWindowTitle: self];
+	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+		[v setWindowTitle: self];
 }
 
 -(void) syncronize:(id) sender

@@ -44,7 +44,9 @@ static NSTimeInterval lastConnection = 0;
 	if (self != nil)
 	{
 		httpServ = [[basicHTTPServer alloc] init];
+		
 		[httpServ setType:@"_http._tcp."];
+
 		[httpServ setName:@"OsiriXXMLRPCServer"];
 		[httpServ setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpXMLRPCServerPort"]];
 		[httpServ setDelegate:self];
