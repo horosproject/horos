@@ -250,6 +250,45 @@
 	return filledTemplate;
 }
 
++ (void) getMovieWidth: (int*) width height: (int*) height imagesArray: (NSArray*) imagesArray
+{
+	*width = 0;
+	*height = 0;
+	
+	for( NSNumber *im in [imagesArray valueForKey: @"width"])
+		if( [im intValue] > *width) *width = [im intValue];
+	
+	for( NSNumber *im in [imagesArray valueForKey:@"height"])
+		if( [im intValue] > *height) *height = [im intValue];
+	
+	int maxWidth = 800, maxHeight = 800;
+	int minWidth = 300, minHeight = 300;
+	
+	if( *width > maxWidth)
+	{
+		*height = *height * maxWidth / *width;
+		*width = maxWidth;
+	}
+	
+	if( *width < minWidth)
+	{
+		*height = *height * minWidth / *width;
+		*width = minWidth;
+	}
+	
+	if( *height > maxHeight)
+	{
+		*width = *width * maxHeight / *height;
+		*height = maxHeight;
+	}
+	
+	if( *height < minHeight)
+	{
+		*width = *width * minHeight / *height;
+		*height = minHeight;
+	}
+}
+
 - (NSString*)fillSeriesTemplatesForSeries:(NSManagedObject*)series numberOfImages:(int)imagesCount;
 {
 	NSMutableString *tempHTML = [NSMutableString stringWithString:seriesTemplate];
@@ -276,46 +315,13 @@
 
 	NSArray *components;
 	
-	if( imagesCount > 1 && [[[series valueForKeyPath:@"images.width"] allObjects] count] > 0)
+	if( imagesCount > 1 && [[[series valueForKeyPath: @"images.width"] allObjects] count] > 0)
 	{
 		[tempHTML replaceOccurrencesOfString:@"%series_mov%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-	
-		int width = 0;
-		int height = 0;
 		
-		for( NSNumber *im in [[series valueForKeyPath:@"images.width"] allObjects])
-			if( [im intValue] > width) width = [im intValue];
+		int width, height;
 		
-		for( NSNumber *im in [[series valueForKeyPath:@"images.height"] allObjects])
-			if( [im intValue] > height) height = [im intValue];
-		
-		// SEE BROWSERCONTROLLER EXPORT QUICKTIME FOR THESE VALUES
-		int maxWidth = 1024, maxHeight = 1024;
-		int minWidth = 300, minHeight = 300;
-		
-		if(width > maxWidth)
-		{
-			height = height * maxWidth / width;
-			width = maxWidth;
-		}
-		
-		if(width < minWidth)
-		{
-			height = height * minWidth / width;
-			width = minWidth;
-		}
-		
-		if(height > maxHeight)
-		{
-			width = width * maxHeight / height;
-			height = maxHeight;
-		}
-		
-		if(height < minHeight)
-		{
-			width = width * minHeight / height;
-			height = minHeight;
-		}
+		[QTExportHTMLSummary getMovieWidth: &width height: &height imagesArray: [[series valueForKey: @"images"] allObjects]];
 		
 		[tempHTML replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height + 15] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])]; // +15 is for the movie's controller

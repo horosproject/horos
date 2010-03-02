@@ -28,6 +28,7 @@ extern NSString* asciiString (NSString* name);
 }
 
 +(NSString*)nonNilString:(NSString*)aString;
++ (void) getMovieWidth: (int*) width height: (int*) height imagesArray: (NSArray*) imagesArray;
 
 #pragma mark-
 #pragma mark HTML template

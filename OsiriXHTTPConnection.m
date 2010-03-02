@@ -35,6 +35,7 @@ static NSString *webDirectory = nil;
 static NSString *language = nil;
 static NSMutableDictionary *wadoJPEGCache = nil;
 
+#define minResolution 300
 #define maxResolution 800
 #define WADOCACHESIZE 1200
 
@@ -57,7 +58,7 @@ NSString* notNil( NSString *s)
 	NSImage* sourceImage = self;
 	NSImage* newImage = nil;
 	
-	if ([sourceImage isValid])
+	if( [sourceImage isValid])
 	{
 		NSSize imageSize = [sourceImage size];
 		float width  = imageSize.width;
@@ -72,9 +73,8 @@ NSString* notNil( NSString *s)
 		
 		NSPoint thumbnailPoint = NSZeroPoint;
 		
-		if ( NSEqualSizes( imageSize, targetSize ) == NO )
+		if( NSEqualSizes( imageSize, targetSize) == NO)
 		{
-			
 			float widthFactor  = targetWidth / width;
 			float heightFactor = targetHeight / height;
 			
@@ -93,7 +93,7 @@ NSString* notNil( NSString *s)
 				thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
 		}
 		
-		newImage = [[NSImage alloc] initWithSize:targetSize];
+		newImage = [[NSImage alloc] initWithSize: targetSize];
 		
 		if( [newImage size].width > 0 && [newImage size].height > 0)
 		{
@@ -1541,6 +1541,59 @@ NSString* notNil( NSString *s)
 	return [NSString stringWithString:newString];
 }
 
+- (void) getWidth: (int*) width height: (int*) height fromImagesArray: (NSArray*) imagesArray isiPhone: (BOOL) isiPhone;
+{
+	*width = 0;
+	*height = 0;
+	
+	for( NSNumber *im in [imagesArray valueForKey: @"width"])
+		if( [im intValue] > *width) *width = [im intValue];
+
+	for( NSNumber *im in [imagesArray valueForKey: @"height"])
+		if( [im intValue] > *height) *height = [im intValue];
+
+	int maxWidth, maxHeight;
+	int minWidth, minHeight;
+
+	minWidth = minResolution;
+	minHeight = minResolution;
+
+	if( isiPhone)
+	{
+		maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
+		maxHeight = 310;
+	}
+	else
+	{
+		maxWidth = maxResolution;
+		maxHeight = maxResolution;
+	}
+
+	if( *width > maxWidth)
+	{
+		*height = (float) *height * (float)maxWidth / (float) *width;
+		*width = maxWidth;
+	}
+
+	if( *height > maxHeight)
+	{
+		*width = (float) *width * (float)maxHeight / (float) *height;
+		*height = maxHeight;
+	}
+
+	if( *width < minWidth)
+	{
+		*height = (float) *height * (float)minWidth / (float) *width;
+		*width = minWidth;
+	}
+
+	if( *height < minHeight)
+	{
+		*width = (float) *width * (float)minHeight / (float) *height;
+		*height = minHeight;
+	}
+}
+
 - (void) movieWithFile:(NSMutableDictionary*) dict
 {
 	QTMovie *e = [QTMovie movieWithFile:[dict objectForKey:@"file"] error:nil];
@@ -1627,23 +1680,6 @@ NSString* notNil( NSString *s)
 	
 	if( ![[NSFileManager defaultManager] fileExistsAtPath: outFile])
 	{
-		int maxWidth, maxHeight;
-		int minWidth, minHeight;
-		
-		if( isiPhone)
-		{
-			maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
-			maxHeight = 310;
-		}
-		else
-		{
-			maxWidth = maxResolution;
-			maxHeight = maxResolution;
-		}
-		
-		minWidth = 300;
-		minHeight = 300;
-		
 		NSMutableArray *pixs = [NSMutableArray arrayWithCapacity: [dicomImageArray count]];
 		
 		[[[BrowserController currentBrowser] managedObjectContext] lock];
@@ -1674,48 +1710,19 @@ NSString* notNil( NSString *s)
 		}
 		
 		[[[BrowserController currentBrowser] managedObjectContext] unlock];
-				
+		
+		int width, height;
+		
+		[self getWidth: &width height:&height fromImagesArray: dicomImageArray isiPhone: isiPhone];
+		
 		for (DCMPix *dcmPix in pixs)
 		{
 			NSImage *im = [dcmPix image];
 			
-			int width = [dcmPix pwidth];
-			int height = [dcmPix pheight];
-			
-			BOOL resize = NO;
-			
-			if(width > maxWidth)
-			{
-				height = height * maxWidth / width;
-				width = maxWidth;
-				resize = YES;
-			}
-			
-			if(width < minWidth)
-			{
-				height = height * minWidth / width;
-				width = minWidth;
-				resize = YES;
-			}
-			
-			if(height > maxHeight)
-			{
-				width = width * maxHeight / height;
-				height = maxHeight;
-				resize = YES;
-			}
-			
-			if(height < minHeight)
-			{
-				width = width * minHeight / height;
-				height = minHeight;
-				resize = YES;
-			}
-			
 			NSImage *newImage;
 			
-			if( resize)
-				newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
+			if( [dcmPix pwidth] > width || [dcmPix pheight] > height)
+				newImage = [im imageByScalingProportionallyToSize: NSMakeSize( width, height)];
 			else
 				newImage = im;
 			
@@ -2785,58 +2792,9 @@ NSString* notNil( NSString *s)
 					[templateString replaceOccurrencesOfString:@"%movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 					[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 					
-					DicomImage *lastImage = [imagesArray lastObject];
+					int width, height;
 					
-					int width = 0;
-					int height = 0;
-					
-					for( NSNumber *im in [imagesArray valueForKey: @"width"])
-						if( [im intValue] > width) width = [im intValue];
-					
-					for( NSNumber *im in [imagesArray valueForKey: @"height"])
-						if( [im intValue] > height) height = [im intValue];
-					
-					int maxWidth = width;
-					int maxHeight = height;
-					int minWidth, minHeight;
-					
-					minWidth = 300;
-					minHeight = 300;
-					
-					if( isiPhone)
-					{
-						maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
-						maxHeight = 310;
-					}
-					else
-					{
-						maxWidth = maxResolution;
-						maxHeight = maxResolution;
-					}
-					
-					if(width > maxWidth)
-					{
-						height = (float)height * (float)maxWidth / (float)width;
-						width = maxWidth;
-					}
-					
-					if(height > maxHeight)
-					{
-						width = (float)width * (float)maxHeight / (float)height;
-						height = maxHeight;
-					}
-					
-					if(width < minWidth)
-					{
-						height = (float)height * (float)minWidth / (float)width;
-						width = minWidth;
-					}
-					
-					if(height < minHeight)
-					{
-						width = (float)width * (float)minHeight / (float)height;
-						height = minHeight;
-					}
+					[self getWidth: &width height:&height fromImagesArray: imagesArray isiPhone: isiPhone];
 					
 					height += 15; // quicktime controller height
 					
@@ -3031,7 +2989,6 @@ NSString* notNil( NSString *s)
 			NSArray *series = [self seriesForPredicate:browsePredicate];
 			if( [series count] == 1)
 			{
-				NSMutableArray *imagesArray = [NSMutableArray array];
 				NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 				DicomImage *im;
 				if([dicomImageArray count] == 1)
@@ -3039,9 +2996,9 @@ NSString* notNil( NSString *s)
 				else
 					im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
 				
-				DCMPix* dcmPix = [[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+				DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
 				
-				if(dcmPix)
+				if( dcmPix)
 				{
 					float curWW = 0;
 					float curWL = 0;
@@ -3057,80 +3014,75 @@ NSString* notNil( NSString *s)
 					else
 						[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
 					
-					[imagesArray addObject:[dcmPix image]];
-					[dcmPix release];
-				}
-				NSImage *image = [imagesArray lastObject];
-				float width = [image size].width;
-				float height = [image size].height;
-				
-				int maxWidth = width;
-				int maxHeight = height;
-				int minWidth = 300, minHeight = 300;
-				
-				maxWidth = maxResolution;
-				maxHeight = maxResolution;
-				
-				BOOL resize = NO;
-				
-				if(width>maxWidth)
-				{
-					height =  height * maxWidth / width;
-					width = maxWidth;
-					resize = YES;
-				}
-				if(height>maxHeight)
-				{
-					width = width * maxHeight / height;
-					height = maxHeight;
-					resize = YES;
-				}
-				
-				if(width < minWidth)
-				{
-					height = (float)height * (float)minWidth / (float)width;
-					width = minWidth;
-					resize = YES;
-				}
-				
-				if(height < minHeight)
-				{
-					width = (float)width * (float)minHeight / (float)height;
-					height = minHeight;
-					resize = YES;
-				}
-				
-				NSImage *newImage;
-				
-				if( resize)
-					newImage = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];
-				else
-					newImage = image;
-				
-				if( [[urlParameters allKeys] containsObject:@"previewForMovie"])
-				{
-					[newImage lockFocus];
+					NSImage *image = [dcmPix image];
 					
-					NSImage *r = [NSImage imageNamed: @"PlayTemplate.png"];
+					float width = [image size].width;
+					float height = [image size].height;
 					
-					[r drawInRect: [self centerRect: NSMakeRect( 0,  0, [r size].width, [r size].height) inRect: NSMakeRect( 0,  0, [newImage size].width, [newImage size].height)] fromRect: NSMakeRect( 0,  0, [r size].width, [r size].height)  operation: NSCompositeSourceOver fraction: 1.0];
+					int maxWidth = maxResolution, maxHeight = maxResolution;
+					int minWidth = minResolution, minHeight = minResolution;
 					
-					[newImage unlockFocus];
+					BOOL resize = NO;
+					
+					if(width>maxWidth)
+					{
+						height =  height * maxWidth / width;
+						width = maxWidth;
+						resize = YES;
+					}
+					if(height>maxHeight)
+					{
+						width = width * maxHeight / height;
+						height = maxHeight;
+						resize = YES;
+					}
+					
+					if(width < minWidth)
+					{
+						height = (float)height * (float)minWidth / (float)width;
+						width = minWidth;
+						resize = YES;
+					}
+					
+					if(height < minHeight)
+					{
+						width = (float)width * (float)minHeight / (float)height;
+						height = minHeight;
+						resize = YES;
+					}
+					
+					NSImage *newImage;
+					
+					if( resize)
+						newImage = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];
+					else
+						newImage = image;
+					
+					if( [[urlParameters allKeys] containsObject:@"previewForMovie"])
+					{
+						[newImage lockFocus];
+						
+						NSImage *r = [NSImage imageNamed: @"PlayTemplate.png"];
+						
+						[r drawInRect: [self centerRect: NSMakeRect( 0,  0, [r size].width, [r size].height) inRect: NSMakeRect( 0,  0, [newImage size].width, [newImage size].height)] fromRect: NSMakeRect( 0,  0, [r size].width, [r size].height)  operation: NSCompositeSourceOver fraction: 1.0];
+						
+						[newImage unlockFocus];
+					}
+					
+					NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [newImage TIFFRepresentation]];
+					
+					if( [[fileURL pathExtension] isEqualToString: @"png"])
+					{
+						NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
+						data = [imageRep representationUsingType:NSPNGFileType properties: imageProps];
+					}
+					else if( [[fileURL pathExtension] isEqualToString: @"jpg"])
+					{
+						NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
+						data = [imageRep representationUsingType: NSJPEGFileType properties: imageProps];
+					}
+					else NSLog( @"***** unknown path extension: %@", [fileURL pathExtension]);
 				}
-				
-				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [newImage TIFFRepresentation]];
-				
-				if( [[fileURL pathExtension] isEqualToString: @"png"])
-				{
-					NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
-					data = [imageRep representationUsingType:NSPNGFileType properties: imageProps];
-				}
-				else if( [[fileURL pathExtension] isEqualToString: @"jpg"])
-				{
-					NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
-					data = [imageRep representationUsingType: NSJPEGFileType properties: imageProps];
-				}
-				else NSLog( @"***** unknown path extension: %@", [fileURL pathExtension]);
 			}
 			
 			err = NO;

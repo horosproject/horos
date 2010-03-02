@@ -15301,46 +15301,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 						NSImage *im = [dcmPix image];
 						
-						int width = [dcmPix pwidth];
-						int height = [dcmPix pheight];
+						int width, height;
 						
 						BOOL resize = NO;
 						
-						// SEE QTEXPORTHTMLSUMMARY FOR THESE VALUES
-						int maxWidth = 1024, maxHeight = 1024;
-						int minWidth = 300, minHeight = 300;
-						
-						if(width > maxWidth)
-						{
-							height = height * maxWidth / width;
-							width = maxWidth;
-							resize = YES;
-						}
-						
-						if(width < minWidth)
-						{
-							height = height * minWidth / width;
-							width = minWidth;
-							resize = YES;
-						}
-						
-						if(height > maxHeight)
-						{
-							width = width * maxHeight / height;
-							height = maxHeight;
-							resize = YES;
-						}
-						
-						if(height < minHeight)
-						{
-							width = width * minHeight / height;
-							height = minHeight;
-							resize = YES;
-						}
+						[QTExportHTMLSummary getMovieWidth: &width height: &height imagesArray: [NSArray arrayWithObject: curImage]];
 						
 						NSImage *newImage;
 						
-						if( resize)
+						if( [dcmPix pwidth] != width || height != [dcmPix pheight])
 							newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
 						else
 							newImage = im;
