@@ -20,6 +20,7 @@
 #import "ROI.h"
 #import "iPhoto.h"
 #import "Notifications.h"
+#import "ROIWindow.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -741,6 +742,41 @@ static float deg2rad = 3.14159265358979/180.0;
 
 #pragma mark ROI
 
+- (IBAction) roiGetInfo:(id) sender
+{
+	MPRDCMView *s = [self selectedView];
+	
+	for( ROI *r in [s curRoiList])
+	{
+		long mode = [r ROImode];
+		
+		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+		{
+			NSArray *winList = [NSApp windows];
+			BOOL	found = NO;
+			
+			for( id loopItem1 in winList)
+			{
+				if( [[[loopItem1 windowController] windowNibName] isEqualToString:@"ROI"])
+				{
+					if( [[loopItem1 windowController] curROI] == r)
+					{
+						found = YES;
+						[[[loopItem1 windowController] window] makeKeyAndOrderFront:self];
+					}
+				}
+			}
+			
+			if( found == NO)
+			{
+				ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: r :viewer2D];
+				[roiWin showWindow:self];
+			}
+			break;
+		}
+	}
+}
+
 - (void)bringToFrontROI:(ROI*) roi;
 {
 
@@ -776,7 +812,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 -(void) setROIToolTag:(int) roitype
 {
-	if( roitype != tRepulsor && roitype != tText)
+	if( roitype != tRepulsor)
 	{
 		NSImage *im = [self imageForROI: roitype];
 		

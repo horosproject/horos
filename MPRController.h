@@ -143,4 +143,5 @@
 - (void)Apply2DOpacityString:(NSString*)str;
 - (NSImage*) imageForROI: (int) i;
 - (void) setROIToolTag:(int) roitype;
+- (IBAction) roiGetInfo:(id) sender;
 @end

@@ -433,7 +433,7 @@ extern int delayedTileWindows;
 -(void) exportXML:(id) sender
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
-
+	
     [panel setCanSelectHiddenExtension:NO];
     [panel setRequiredFileType:@"xml"];
     
@@ -446,7 +446,7 @@ extern int delayedTileWindows;
 -(void) exportText:(id) sender
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
-
+	
     [panel setCanSelectHiddenExtension:NO];
     [panel setRequiredFileType:@"txt"];
     

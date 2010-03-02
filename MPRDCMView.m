@@ -847,7 +847,7 @@ static BOOL frameZoomed = NO;
 
 -(void) setCurrentTool:(short) i
 {
-	if( i != tRepulsor && i != tText)
+	if( i != tRepulsor)
 		[super setCurrentTool: i];
 }
 
@@ -1220,40 +1220,49 @@ static BOOL frameZoomed = NO;
 	
 	if( clickCount == 2)
 	{
-		if( frameZoomed == NO)
+		long tool = [self getTool: theEvent];
+		
+		if( tool == tText)
 		{
-			splitPosition[ 0] = [[windowController mprView1] frame].origin.y + [[windowController mprView1] frame].size.height;
-			splitPosition[ 1] = [[windowController mprView1] frame].origin.x + [[windowController mprView1] frame].size.width;
-			
-			frameZoomed = YES;
-			switch( viewID)
-			{
-				case 1:
-					[windowController.horizontalSplit setPosition: [windowController.horizontalSplit maxPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
-					[windowController.verticalSplit setPosition: [windowController.verticalSplit maxPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
-				break;
-				
-				case 2:
-					[windowController.horizontalSplit setPosition: [windowController.horizontalSplit minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
-					[windowController.verticalSplit setPosition: [windowController.verticalSplit maxPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
-				break;
-				
-				case 3:
-					[windowController.horizontalSplit setPosition: [windowController.horizontalSplit minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
-					[windowController.verticalSplit setPosition: [windowController.verticalSplit minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
-				break;
-			}
+			[[self windowController] roiGetInfo: self];
 		}
 		else
 		{
-			frameZoomed = NO;
-			[windowController.horizontalSplit setPosition: splitPosition[ 0] ofDividerAtIndex: 0];
-			[windowController.verticalSplit setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
+			if( frameZoomed == NO)
+			{
+				splitPosition[ 0] = [[windowController mprView1] frame].origin.y + [[windowController mprView1] frame].size.height;
+				splitPosition[ 1] = [[windowController mprView1] frame].origin.x + [[windowController mprView1] frame].size.width;
+				
+				frameZoomed = YES;
+				switch( viewID)
+				{
+					case 1:
+						[windowController.horizontalSplit setPosition: [windowController.horizontalSplit maxPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+						[windowController.verticalSplit setPosition: [windowController.verticalSplit maxPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+					break;
+					
+					case 2:
+						[windowController.horizontalSplit setPosition: [windowController.horizontalSplit minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+						[windowController.verticalSplit setPosition: [windowController.verticalSplit maxPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+					break;
+					
+					case 3:
+						[windowController.horizontalSplit setPosition: [windowController.horizontalSplit minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+						[windowController.verticalSplit setPosition: [windowController.verticalSplit minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+					break;
+				}
+			}
+			else
+			{
+				frameZoomed = NO;
+				[windowController.horizontalSplit setPosition: splitPosition[ 0] ofDividerAtIndex: 0];
+				[windowController.verticalSplit setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
+			}
+			
+			[self restoreCamera];
+			windowController.lowLOD = NO;
+			[self updateViewMPR];
 		}
-		
-		[self restoreCamera];
-		windowController.lowLOD = NO;
-		[self updateViewMPR];
 	}
 	else
 	{
