@@ -92,6 +92,43 @@ NSString* notNil( NSString *s)
 			else if ( widthFactor > heightFactor )
 				thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
 		}
+
+//		***** QuartzCore
+//		
+//		NSSize size = [sourceImage size];
+//		
+//		[sourceImage lockFocus];
+//		
+//		NSBitmapImageRep* rep = [[[NSBitmapImageRep alloc] initWithFocusedViewRect: NSMakeRect(0, 0, size.width, size.height)] autorelease];
+//		CIImage *bitmap = [[[CIImage alloc] initWithBitmapImageRep: rep] autorelease];
+//		
+//		[sourceImage unlockFocus];
+//		
+//		CIFilter *scaleTransformFilter = [CIFilter filterWithName:@"CILanczosScaleTransform"];
+//		
+//        [scaleTransformFilter setDefaults];
+//        [scaleTransformFilter setValue: bitmap forKey:@"inputImage"];
+//		[scaleTransformFilter setValue:[NSNumber numberWithFloat: scaleFactor] forKey:@"inputScale"];
+//		
+//		CIImage *outputCIImage = [scaleTransformFilter valueForKey:@"outputImage"];
+//		
+//		CGRect extent = [outputCIImage extent];
+//		if (CGRectIsInfinite(extent))
+//		{
+//			NSLog(@"*** OUTPUT IMAGE HAS INFINITE EXTENT ***");
+//			return nil;
+//		}
+//		else
+//		{
+//			NSImage *result = [[[NSImage alloc] initWithSize:NSMakeSize(extent.size.width, extent.size.height)] autorelease];
+//			NSCIImageRep *ciImageRep = [NSCIImageRep imageRepWithCIImage:outputCIImage];
+//			[result addRepresentation:ciImageRep];
+//			
+//			return result;
+//		}
+//	}
+
+		***** NSImage
 		
 		newImage = [[NSImage alloc] initWithSize: targetSize];
 		
