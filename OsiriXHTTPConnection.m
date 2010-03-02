@@ -789,6 +789,12 @@ NSString* notNil( NSString *s)
 		NSString *imagesLabel = (nbFiles>1)? NSLocalizedString(@"Images", nil) : NSLocalizedString(@"Image", nil);
 		[tempHTML replaceOccurrencesOfString:@"%SeriesImageNumber%" withString: [NSString stringWithFormat:@"%d %@", nbFiles, imagesLabel] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		
+		NSString *comment = [series valueForKey:@"comment"];
+		if( comment == nil)
+			comment = @"";
+		[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString: [series valueForKey:@"comment"] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		
+		
 		NSString *checked = @"";
 		for(NSString* selectedID in [parameters objectForKey:@"selected"])
 		{
