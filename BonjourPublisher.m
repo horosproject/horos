@@ -955,6 +955,19 @@ extern const char *GetPrivateIP();
 							[localPaths addObject: path];
 						}
 						
+						if( [Address isEqualToString: @"127.0.0.1"])
+						{
+							struct sockaddr serverAddress;
+							socklen_t namelen = sizeof( serverAddress);
+							
+							if (getsockname( [incomingConnection fileDescriptor], (struct sockaddr *)&serverAddress, &namelen) >= 0)
+							{
+								char client_ip_address[ 64];
+								sprintf( client_ip_address, "%-d.%-d.%-d.%-d", ((int) serverAddress.sa_data[2]) & 0xff, ((int) serverAddress.sa_data[3]) & 0xff, ((int) serverAddress.sa_data[4]) & 0xff, ((int) serverAddress.sa_data[5]) & 0xff);
+								Address = [NSString stringWithCString: client_ip_address encoding: NSUTF8StringEncoding];
+							}
+						}
+						
 						NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"TransferSyntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
 						
 						[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
