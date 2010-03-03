@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #include <netdb.h>
-
+#import "DCMTKStoreSCU.h"
 #import "BonjourBrowser.h"
 #import "BrowserController.h"
 #import "AppController.h"
@@ -22,7 +22,7 @@
 #include "SimplePing.h"
 #import "DCMNetServiceDelegate.h"
 #import "Notifications.h"
-
+#import "SendController.h"
 #import <sys/socket.h>
 #import <netinet/in.h>
 #import <arpa/inet.h>
@@ -1763,7 +1763,7 @@ extern const char *GetPrivateIP();
 	{
 		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [services objectAtIndex: indexTo]];
 		[dict addEntriesFromDictionary: [self getDICOMDestinationInfo: indexTo]];
-		[services replaceObjectAtIndex:indexTo withObject: dict];
+		[services replaceObjectAtIndex: indexTo withObject: dict];
 		
 		if( [dict valueForKey: @"Port"] == nil) return NO;
 	}
@@ -1772,7 +1772,7 @@ extern const char *GetPrivateIP();
 	{
 		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [services objectAtIndex: indexFrom]];
 		[dict addEntriesFromDictionary: [self getDICOMDestinationInfo: indexFrom]];
-		[services replaceObjectAtIndex:indexFrom withObject: dict];
+		[services replaceObjectAtIndex: indexFrom withObject: dict];
 		
 		if( [dict valueForKey: @"Port"] == nil) return NO;
 	}
@@ -1789,14 +1789,17 @@ extern const char *GetPrivateIP();
 	}
 	else // indexTo == -1: this computer
 	{
-		NSString *address = [NSString stringWithCString:GetPrivateIP()];
+		NSString *address = [NSString stringWithCString: GetPrivateIP()];
 		
-		dicomDestination = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"TransferSyntax", nil];
+		dicomDestination = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", [DCMTKStoreSCU sendSyntaxForListenerSyntax: [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"]], @"TransferSyntax", nil];
 		
 		[dicomDestination retain];
+		
+		if( [address isEqualToString: @"127.0.0.1"])
+			return NO;
 	}
 	
-	[self connectToServer: indexFrom message:@"DCMSE"];
+	[self connectToServer: indexFrom message: @"DCMSE"];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	

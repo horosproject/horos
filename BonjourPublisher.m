@@ -16,7 +16,7 @@
 #import "BonjourBrowser.h"
 #import "DCMPix.h"
 #import "DCMTKStoreSCU.h"
-
+#import "SendController.h"
 // imports required for socket initialization
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -354,7 +354,7 @@ extern const char *GetPrivateIP();
 					}
 					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"GETDI" length: 6]])
 					{
-						NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"TransferSyntax", nil];
+						NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", [DCMTKStoreSCU sendSyntaxForListenerSyntax: [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"]], @"TransferSyntax", nil];
 						
 						representationToSend = [NSMutableData dataWithData: [NSArchiver archivedDataWithRootObject: dictionary]];
 					}
@@ -955,7 +955,7 @@ extern const char *GetPrivateIP();
 							[localPaths addObject: path];
 						}
 						
-						NSDictionary	*todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"TransferSyntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
+						NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"TransferSyntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
 						
 						[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
 					}

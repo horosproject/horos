@@ -54,7 +54,7 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 	TLSCertificateVerificationType certVerification;
 	const char *_dhparam;	
 }
-
++ (int) sendSyntaxForListenerSyntax: (int) listenerSyntax;
 - (id) initWithCallingAET:(NSString *)myAET  
 			calledAET:(NSString *)theirAET  
 			hostname:(NSString *)hostname 

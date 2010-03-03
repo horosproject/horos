@@ -888,6 +888,23 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 
 @implementation DCMTKStoreSCU
 
++ (int) sendSyntaxForListenerSyntax: (int) listenerSyntax
+{
+	switch( listenerSyntax)
+	{
+		case EXS_LittleEndianExplicit:				return SendExplicitLittleEndian;	break;
+		case EXS_JPEG2000:							return SendJPEG2000Lossless;	break;
+		case EXS_JPEGProcess14SV1TransferSyntax:	return SendJPEGLossless;	break;
+		case EXS_JPEGProcess1TransferSyntax:		return SendJPEGLossless;	break;
+		case EXS_JPEGProcess2_4TransferSyntax:		return SendJPEGLossless;	break;
+		case EXS_RLELossless:						return SendRLE;	break;
+		case EXS_LittleEndianImplicit:				return SendImplicitLittleEndian;	break;
+		case EXS_JPEG2000LosslessOnly:				return SendJPEG2000Lossless;	break;
+	}
+	
+	return SendExplicitLittleEndian;
+}
+
 - (id) initWithCallingAET:(NSString *)myAET  
 			calledAET:(NSString *)theirAET  
 			hostname:(NSString *)hostname 

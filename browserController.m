@@ -10708,7 +10708,7 @@ static BOOL needToRezoom;
 					for( DicomImage *img in imagesArray)
 						[packArray addObjectsFromArray: [img SRPaths]];
 					
-					[SendController sendFiles: imagesArray toNode: dcmNode];
+					[SendController sendFiles: imagesArray toNode: dcmNode usingSyntax: [[dcmNode valueForKey: @"TransferSyntax"] intValue]];
 				}
 				else
 				{

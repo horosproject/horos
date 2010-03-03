@@ -33,11 +33,17 @@ static volatile int sendControllerObjects = 0;
 	return sendControllerObjects;
 }
 
-+ (void)sendFiles:(NSArray *)files toNode: (NSDictionary*) node
++ (void) sendFiles:(NSArray *) files toNode: (NSDictionary*) node
+{
+	return [SendController sendFiles: files toNode: node usingSyntax: SendExplicitLittleEndian];
+}
+
++ (void) sendFiles:(NSArray *) files toNode: (NSDictionary*) node usingSyntax: (int) syntax
 {
 	BOOL s = [[NSUserDefaults standardUserDefaults] boolForKey: @"sendROIs"];
 
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"sendROIs"];
+	[[NSUserDefaults standardUserDefaults] setInteger: syntax forKey:@"syntaxListOffis"];
 	
 	SendController *sendController = [[SendController alloc] initWithFiles:files];
 	
@@ -48,7 +54,7 @@ static volatile int sendControllerObjects = 0;
 	[[NSUserDefaults standardUserDefaults] setBool: s forKey: @"sendROIs"];
 }
 
-+ (void)sendFiles:(NSArray *)files
++ (void) sendFiles: (NSArray *) files
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DICOMSENDALLOWED"] == NO)
 	{
@@ -363,10 +369,10 @@ static volatile int sendControllerObjects = 0;
 	storeSCU = nil;
 }
 
-- (void) sendDICOMFilesOffis:(NSArray *) tempObjectsToSend
+- (void) sendDICOMFilesOffis:(NSArray *) tempObjectsToSend 
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
-
+	
 	@try
 	{
 		NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];

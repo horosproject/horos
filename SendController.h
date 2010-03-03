@@ -61,8 +61,10 @@ enum SendServerType { osirixServer, offisServer };
 	IBOutlet NSPopUpButton	*syntaxListOffis;
 }
 
-+ (void)sendFiles:(NSArray *)files;
-+ (void)sendFiles:(NSArray *)files toNode: (NSDictionary*) node;
++ (void) sendFiles:(NSArray *)files;
++ (void) sendFiles:(NSArray *)files toNode: (NSDictionary*) node;
++ (void) sendFiles:(NSArray *)files toNode: (NSDictionary*) node usingSyntax: (int) syntax;
+- (void) sendDICOMFilesOffis:(NSArray *) tempObjectsToSend;
 + (int) sendControllerObjects;
 - (id)initWithFiles:(NSArray *)files;
 - (id)serverAtIndex:(int)index;
