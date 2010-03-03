@@ -867,6 +867,8 @@ NSString* notNil( NSString *s)
 			if([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
 			[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString: notNil( checkAllStyle) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 			
+			BOOL selectedDone = NO;
+			
 			if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES)
 			{
 				NSString *dicomNodeAddress = ipAddressString;
@@ -889,12 +891,33 @@ NSString* notNil( NSString *s)
 				
 				[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString: notNil( dicomNodeDescription) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 				
+				NSString *selected = @"";
+					
+				if( [parameters objectForKey:@"dicomDestination"])
+				{
+					NSString * s = [[parameters objectForKey:@"dicomDestination"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+					
+					NSArray *sArray = [s componentsSeparatedByString: @":"];
+					
+					if( [sArray count] >= 2)
+					{
+						if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && [[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
+						{
+							selected = @"selected";
+							selectedDone = YES;
+						}
+					}
+				}
+				
+				[tempHTML replaceOccurrencesOfString:@"%selected%" withString: notNil( selected) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				
 				[returnHTML appendString:tempHTML];
 			}
 		
 			if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == YES)
 			{
 				NSArray *nodes = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
+				
 				for(NSDictionary *node in nodes)
 				{
 					NSString *dicomNodeAddress = notNil( [node objectForKey:@"Address"]);
@@ -916,7 +939,7 @@ NSString* notNil( NSString *s)
 					
 					NSString *selected = @"";
 					
-					if( [parameters objectForKey:@"dicomDestination"])
+					if( [parameters objectForKey:@"dicomDestination"] && selectedDone == NO)
 					{
 						NSString * s = [[parameters objectForKey:@"dicomDestination"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 						
@@ -924,39 +947,10 @@ NSString* notNil( NSString *s)
 						
 						if( [sArray count] >= 2)
 						{
-							if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && 
-							   [[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
+							if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && [[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
+							{
 								selected = @"selected";
-						}
-					}
-					else if( ipAddressString && [[parameters objectForKey: @"dicomcstoreport"] intValue] == 0)
-					{
-						// Try to match the calling http client in our destination nodes
-						
-						struct sockaddr_in service;
-						const char	*host_name = [[node valueForKey:@"Address"] UTF8String];
-						
-						bzero((char *) &service, sizeof(service));
-						service.sin_family = AF_INET;
-						
-						if( host_name)
-						{
-							if (isalpha(host_name[0]))
-							{
-								struct hostent *hp;
-								
-								hp = gethostbyname( host_name);
-								if( hp) bcopy(hp->h_addr, (char *) &service.sin_addr, hp->h_length);
-								else service.sin_addr.s_addr = inet_addr( host_name);
-							}
-							else service.sin_addr.s_addr = inet_addr( host_name);
-							
-							char buffer[256];
-							
-							if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
-							{
-								if( [[NSString stringWithCString:buffer] isEqualToString: ipAddressString])
-									selected = @"selected";
+								selectedDone = YES;
 							}
 						}
 					}
