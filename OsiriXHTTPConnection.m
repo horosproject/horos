@@ -867,7 +867,7 @@ NSString* notNil( NSString *s)
 			if([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
 			[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString: notNil( checkAllStyle) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 			
-			if( [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES)
+			if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES)
 			{
 				NSString *dicomNodeAddress = ipAddressString;
 				NSString *dicomNodePort = [parameters objectForKey: @"dicomcstoreport"];
@@ -2037,7 +2037,13 @@ NSString* notNil( NSString *s)
 	
 	NSString *portString = [urlParameters objectForKey: @"dicomcstoreport"];
 	if( portString == 0L)
-		portString = @"11112";
+	{
+		// Try to find this ipString with corresponding port
+		[ipAddressString release];
+		ipAddressString = [[asyncSocket connectedHost] copy];
+		
+		
+	}
 	
 	// find the name of the requested file
 	urlComponenents = [(NSString*)[urlComponenents objectAtIndex:0] componentsSeparatedByString:@"?"];
@@ -2623,6 +2629,9 @@ NSString* notNil( NSString *s)
 							
 							message = [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
 						}
+						else
+							message = [NSString stringWithFormat: NSLocalizedString( @"No images selected ! Select one or more series.", nil), dicomDestinationAddress, dicomDestinationAETitle];
+
 					}
 					
 					if( message == nil)
@@ -2703,6 +2712,7 @@ NSString* notNil( NSString *s)
 			
 				[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Display Study"];
 				
+				[ipAddressString release];
 				ipAddressString = [[asyncSocket connectedHost] copy];
 				
 				NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:urlParameters settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"iPhone", [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
