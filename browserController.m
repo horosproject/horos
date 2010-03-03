@@ -10405,7 +10405,7 @@ static BOOL needToRezoom;
 			NSDictionary *object = nil;
 			
 			if( row > 0)
-				object = [[bonjourBrowser services] objectAtIndex: row-1];
+				object = [NSDictionary dictionaryWithDictionary: [[bonjourBrowser services] objectAtIndex: row-1]];
 			
 			if( [[object valueForKey: @"type"] isEqualToString:@"dicomDestination"])
 			{
@@ -10682,11 +10682,11 @@ static BOOL needToRezoom;
 				[splash close];
 				[splash release];
 			}
-			else if( [bonjourServicesList selectedRow] != row)	 // Copying From Local to distant
+			else if( [bonjourServicesList selectedRow] != row && row > 0 && object != nil)	 // Copying From Local to distant
 			{
 				BOOL OnlyDICOM = YES;
 				
-				NSDictionary *dcmNode = [[bonjourBrowser services] objectAtIndex: row-1];
+				NSDictionary *dcmNode = object;
 				
 				if( OnlyDICOM == NO)
 					NSLog( @"Not Only DICOM !");
@@ -10702,13 +10702,11 @@ static BOOL needToRezoom;
 				
 				if( [dcmNode valueForKey:@"Port"] && OnlyDICOM)
 				{
-					NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
+					NSMutableArray *packArray = [NSMutableArray arrayWithCapacity: 10];
 					
 					// Add the ROIs
-					for( DicomImage *img in imagesArray )
-					{
+					for( DicomImage *img in imagesArray)
 						[packArray addObjectsFromArray: [img SRPaths]];
-					}
 					
 					[SendController sendFiles: imagesArray toNode: dcmNode];
 				}

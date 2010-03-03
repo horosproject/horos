@@ -60,7 +60,7 @@ static id aedesc_to_id(AEDesc *desc)
 		ok = AEGetDescData(desc, [outBytes mutableBytes], [outBytes length]);
 		CHECK;
 
-		txt = [[NSString alloc] initWithData:outBytes encoding:[NSString defaultCStringEncoding]];
+		txt = [[NSString alloc] initWithData:outBytes encoding: NSUTF8StringEncoding];
 		[outBytes release];
 		[txt autorelease];
 
@@ -413,7 +413,7 @@ int executeProcess(int argc, char *argv[])
 {
 ComponentInstance myComponent = OpenDefaultComponent(kOSAComponentType, kOSAGenericScriptingComponentSubtype);
 
-NSData *scriptChars = [txt dataUsingEncoding:[NSString defaultCStringEncoding]];
+NSData *scriptChars = [txt dataUsingEncoding: NSUTF8StringEncoding];
 AEDesc source, resultText;
 OSAID scriptId, resultId;
 OSErr ok;

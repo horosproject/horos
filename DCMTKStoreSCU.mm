@@ -502,14 +502,14 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 	OFCondition cond;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 	
-	NSLog( @"SEND - decompress: %s", fname);
+	NSLog( @"SEND - decompress: %@", [NSString stringWithUTF8String: fname]);
 	
 	#ifndef OSIRIX_LIGHT
 	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
 	{
-		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
+		NSString *path = [NSString stringWithCString: fname encoding: NSUTF8StringEncoding];
+		NSString *outpath = [NSString stringWithCString: outfname encoding: NSUTF8StringEncoding];
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData: NO];
 		
 		unlink( outfname);
 		[dcmObject writeToFile: outpath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
@@ -548,8 +548,8 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 	if (opt_networkTransferSyntax == EXS_JPEG2000)
 	{
 		NSLog(@"SEND - Compress JPEG 2000 Lossy (%d) : %s", opt_Quality, fname);
-		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+		NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
+		NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
 		
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 		
@@ -571,8 +571,8 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 	{
 		NSLog(@"SEND - Compress JPEG 2000 Lossless: %s", fname);
 		
-		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+		NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
+		NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
 		
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 		
@@ -720,14 +720,17 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	DcmXfer proposedTransfer(pc.acceptedTransferSyntax);
 	 if (presId != 0)
 	 {
-		if (filexfer.isNotEncapsulated() && proposedTransfer.isNotEncapsulated()) {
+		if (filexfer.isNotEncapsulated() && proposedTransfer.isNotEncapsulated())
+		{
 			// do nothing
 			status = NO;
 		}
-		else if (filexfer.isEncapsulated() && proposedTransfer.isNotEncapsulated()) {
+		else if (filexfer.isEncapsulated() && proposedTransfer.isNotEncapsulated())
+		{
 			status = decompressFile(dcmff, fname, outfname);
 		}
-		else if (filexfer.isNotEncapsulated() && proposedTransfer.isEncapsulated()) {
+		else if (filexfer.isNotEncapsulated() && proposedTransfer.isEncapsulated())
+		{
 			status = compressFile(dcmff, fname, outfname);
 		}
 		else if (filexfer.getXfer() != opt_networkTransferSyntax)

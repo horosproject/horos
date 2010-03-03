@@ -97,7 +97,7 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 	{
 		@try
 		{
-			NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+			NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
 			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 			[[NSFileManager defaultManager] removeFileAtPath:path handler:0L];
 			[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality AET:@"OsiriX" atomically:YES];
@@ -147,8 +147,8 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 	{
 		@try
 		{
-			NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-			NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+			NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
+			NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
 			
 			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 			
@@ -169,8 +169,8 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 	{
 		@try
 		{
-			NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-			NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+			NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
+			NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
 			
 			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 			

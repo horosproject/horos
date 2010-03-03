@@ -1252,7 +1252,8 @@ extern const char *GetPrivateIP();
 		}
 		else
 		{
-			NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", nil), NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", nil), NSLocalizedString(@"OK", nil), 0, 0);
+			if( [NSThread isMainThread])
+				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", nil), NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", nil), NSLocalizedString(@"OK", nil), 0, 0);
 			NSLog( @"***** Unresolved node: %@", dict);
 			
 			resolved = NO;
@@ -1755,7 +1756,6 @@ extern const char *GetPrivateIP();
 
 - (BOOL) retrieveDICOMFilesWithSTORESCU:(int) indexFrom to:(int) indexTo paths:(NSArray*) ip
 {
-	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"] == NO) return NO;
 	
 	//Do we have DICOM Node informations about the destination node?

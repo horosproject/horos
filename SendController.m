@@ -201,7 +201,6 @@ static volatile int sendControllerObjects = 0;
 			preferredTS == SendRLE ||
 			preferredTS == SendJPEGLossless)
 				 [[NSUserDefaults standardUserDefaults] setInteger: preferredTS forKey:@"syntaxListOffis"];
-	
 	}	
 	
 	[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] objectForKey:@"Address"], [[self server] objectForKey:@"Port"]]];
