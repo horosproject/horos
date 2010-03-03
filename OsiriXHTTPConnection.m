@@ -892,7 +892,7 @@ NSString* notNil( NSString *s)
 				[returnHTML appendString:tempHTML];
 			}
 		
-			if( [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == YES)
+			if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == YES)
 			{
 				NSArray *nodes = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 				for(NSDictionary *node in nodes)
@@ -1950,6 +1950,62 @@ NSString* notNil( NSString *s)
 	return data;
 }
 
+- (NSString*) checkPortString: (NSString*) portString
+{
+	if( [portString intValue] == 0L)
+	{
+		[ipAddressString release];
+		ipAddressString = [[asyncSocket connectedHost] copy];
+		
+		NSLog( @"----- Try to find DICOM C-Store Port");
+		
+		for(NSDictionary *node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
+		{
+			NSString *dicomNodeAddress = notNil( [node objectForKey:@"Address"]);
+			NSString *dicomNodePort = [NSString stringWithFormat:@"%d", [[node objectForKey:@"Port"] intValue]];
+			
+			struct sockaddr_in service;
+			const char	*host_name = [[node valueForKey:@"Address"] UTF8String];
+			
+			bzero((char *) &service, sizeof(service));
+			service.sin_family = AF_INET;
+			
+			if( host_name)
+			{
+				if (isalpha(host_name[0]))
+				{
+					struct hostent *hp;
+					
+					hp = gethostbyname( host_name);
+					if( hp) bcopy(hp->h_addr, (char *) &service.sin_addr, hp->h_length);
+					else service.sin_addr.s_addr = inet_addr( host_name);
+				}
+				else service.sin_addr.s_addr = inet_addr( host_name);
+				
+				char buffer[256];
+				
+				if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
+				{
+					if( [[NSString stringWithCString:buffer] isEqualToString: ipAddressString])
+					{
+						portString = [NSString stringWithString: dicomNodePort];
+						
+						NSLog( @"----- Did find it ! %@:%@", ipAddressString, dicomNodePort);
+					}
+				}
+			}
+		}
+		
+		if( [portString intValue] == 0L)
+		{
+			portString = @"11112";
+			NSLog( @"----- Not found, will use 11112");
+		}
+	}
+	
+	return portString;
+}
+
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
 {
 	BOOL lockReleased = NO, waitBeforeReturning = NO;
@@ -2036,14 +2092,6 @@ NSString* notNil( NSString *s)
 	}
 	
 	NSString *portString = [urlParameters objectForKey: @"dicomcstoreport"];
-	if( portString == 0L)
-	{
-		// Try to find this ipString with corresponding port
-		[ipAddressString release];
-		ipAddressString = [[asyncSocket connectedHost] copy];
-		
-		
-	}
 	
 	// find the name of the requested file
 	urlComponenents = [(NSString*)[urlComponenents objectAtIndex:0] componentsSeparatedByString:@"?"];
@@ -2147,7 +2195,7 @@ NSString* notNil( NSString *s)
 			
 			returnHTML = [self setBlock: @"accessStudies" visible: accessStudies forString: returnHTML];
 			
-			[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: notNil( portString) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+			[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 			
 			data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
 			
@@ -2546,7 +2594,7 @@ NSString* notNil( NSString *s)
 					[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				}
 				
-				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: notNil( portString) options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				
 				data = [html dataUsingEncoding:NSUTF8StringEncoding];
 				err = NO;
@@ -2744,7 +2792,7 @@ NSString* notNil( NSString *s)
 				if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				
-				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: notNil( portString) options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
 				
 				data = [html dataUsingEncoding:NSUTF8StringEncoding];
 			}
@@ -2890,7 +2938,7 @@ NSString* notNil( NSString *s)
 				NSString *studyName = notNil( [[series lastObject] valueForKeyPath:@"study.name"]);
 				[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString: notNil( studyName) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
-				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: notNil( portString) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
 				data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
 				err = NO;
@@ -3366,7 +3414,8 @@ NSString* notNil( NSString *s)
 				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: notNil( message) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
 				[templateString replaceOccurrencesOfString: @"%name%" withString: notNil( [currentUser valueForKey: @"name"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: notNil( portString) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				
+				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				
 				[templateString replaceOccurrencesOfString: @"%email%" withString: notNil( [currentUser valueForKey: @"email"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				[templateString replaceOccurrencesOfString: @"%address%" withString: notNil( [currentUser valueForKey: @"address"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
