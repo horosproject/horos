@@ -731,15 +731,15 @@ NSString* soundex4( NSString *inString)
 	return s;
 }
 
-- (BOOL) validateForDelete:(NSError **)error
-{
-	BOOL delete = [super validateForDelete:(NSError **)error];
-	if( delete)
-	{
-		if( [self valueForKey:@"reportURL"])
-			[[NSFileManager defaultManager] removeFileAtPath: [self valueForKey:@"reportURL"] handler:nil];
-	}
-	return delete;
-}
+//- (BOOL) validateForDelete:(NSError **)error
+//{
+//	BOOL delete = [super validateForDelete:(NSError **)error];
+//	if( delete)
+//	{
+//		if( [self valueForKey:@"reportURL"])
+//			[[NSFileManager defaultManager] removeFileAtPath: [self valueForKey:@"reportURL"] handler:nil];
+//	}
+//	return delete;
+//}
 
 @end
