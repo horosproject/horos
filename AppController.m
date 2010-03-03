@@ -2684,6 +2684,8 @@ static BOOL initialized = NO;
 {
 	BOOL dialog = NO;
 	
+//	NSLog(@"%s", __PRETTY_FUNCTION__, nil);
+	
 	if( dialog == NO)
 	{
 		

@@ -368,58 +368,64 @@ static NSArray*	statesArray = nil;
 - (void) checkForExistingReport: (NSManagedObject*) study dbFolder: (NSString*) dbFolder
 {
 	#ifndef OSIRIX_LIGHT
-	
-	// Is there a report?
-	NSString	*basePath = [NSString stringWithFormat: @"%@/REPORTS/", dbFolder];
-	NSString	*reportPath = nil;
-	
-	if( reportPath == nil)
+	@try
 	{
-		reportPath = [basePath stringByAppendingFormat:@"%@.pages",[Reports getUniqueFilename: study]];
-		if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
-		else reportPath = nil;
+		// Is there a report?
+		NSString	*basePath = [NSString stringWithFormat: @"%@/REPORTS/", dbFolder];
+		NSString	*reportPath = nil;
+		
+		if( reportPath == nil)
+		{
+			reportPath = [basePath stringByAppendingFormat:@"%@.pages",[Reports getUniqueFilename: study]];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			else reportPath = nil;
+		}
+		
+		if( reportPath == nil)
+		{
+			reportPath = [basePath stringByAppendingFormat:@"%@.odt",[Reports getUniqueFilename: study]];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			else reportPath = nil;
+		}
+		
+		if( reportPath == nil)
+		{
+			reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getUniqueFilename: study]];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			else reportPath = nil;
+		}
+		
+		if( reportPath == nil)
+		{
+			reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getUniqueFilename: study]];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			else reportPath = nil;
+		}
+		
+		if( reportPath == nil)
+		{
+			reportPath = [basePath stringByAppendingFormat:@"%@.pages",[Reports getOldUniqueFilename: study]];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			else reportPath = nil;
+		}
+		
+		if( reportPath == nil)
+		{
+			reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getOldUniqueFilename: study]];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			else reportPath = nil;
+		}
+		
+		if( reportPath == nil)
+		{
+			reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getOldUniqueFilename: study]];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			else reportPath = nil;
+		}
 	}
-	
-	if( reportPath == nil)
+	@catch ( NSException *e)
 	{
-		reportPath = [basePath stringByAppendingFormat:@"%@.odt",[Reports getUniqueFilename: study]];
-		if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
-		else reportPath = nil;
-	}
-	
-	if( reportPath == nil)
-	{
-		reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getUniqueFilename: study]];
-		if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
-		else reportPath = nil;
-	}
-	
-	if( reportPath == nil)
-	{
-		reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getUniqueFilename: study]];
-		if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
-		else reportPath = nil;
-	}
-	
-	if( reportPath == nil)
-	{
-		reportPath = [basePath stringByAppendingFormat:@"%@.pages",[Reports getOldUniqueFilename: study]];
-		if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
-		else reportPath = nil;
-	}
-	
-	if( reportPath == nil)
-	{
-		reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getOldUniqueFilename: study]];
-		if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
-		else reportPath = nil;
-	}
-	
-	if( reportPath == nil)
-	{
-		reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getOldUniqueFilename: study]];
-		if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
-		else reportPath = nil;
+		NSLog( @"***** checkForExistingReport exception: %@", e);
 	}
 	#endif
 }

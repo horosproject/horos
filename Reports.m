@@ -621,7 +621,8 @@ CHECK;
 	[[NSFileManager defaultManager] removeItemAtPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"OOOsiriX"] error: nil];
 	
 	// open the modified .odt file
-	[[NSWorkspace sharedWorkspace] openFile:aPath withApplication:@"OpenOffice"];
+	if( [[NSWorkspace sharedWorkspace] openFile:aPath withApplication: @"OpenOffice"] == NO)
+		[[NSWorkspace sharedWorkspace] openFile:aPath withApplication: nil];
 	
 	// end
 	return YES;
