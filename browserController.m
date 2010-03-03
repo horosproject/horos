@@ -15487,6 +15487,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 				t++;
 			}
 			
+			if( t != 2)
+			{
+				[[NSFileManager defaultManager] moveItemAtPath: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension]
+												toPath: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension]
+												error: nil];
+			}
+			
 			DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :[[curImage valueForKey:@"frameID"] intValue] :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
 			
 			if( dcmPix)
@@ -16283,6 +16290,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 				dest = [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, t];
 			t++;
 		}
+		
+		if( t != 2)
+		{
+			if (!addDICOMDIR)
+			
+			[[NSFileManager defaultManager] moveItemAtPath: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension]
+											toPath: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension]
+											error: nil];
+			else
+			
+			[[NSFileManager defaultManager] moveItemAtPath: [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, serieCount, imageNo]
+											toPath: [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, 1]
+											error: nil];
+		}
+		
 		
 		NSError *error = nil;
 		if( [[NSFileManager defaultManager] copyItemAtPath:[filesToExport objectAtIndex:i] toPath:dest error: &error] == NO)

@@ -248,8 +248,15 @@
 			int t = 2;
 			while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
 			{
-				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d #%d.%@", tempPath, serieCount, imageNo, t, extension];
+				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, t, extension];
 				t++;
+			}
+			
+			if( t != 2)
+			{
+				[[NSFileManager defaultManager] moveItemAtPath: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension]
+												toPath: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension]
+												error: nil];
 			}
 			
 			//DCMObject *dcm = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
