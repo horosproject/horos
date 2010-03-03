@@ -1382,7 +1382,7 @@ extern const char *GetPrivateIP();
 	[dicomListener release];
 	dicomListener = nil;
 	
-	[self connectToServer: index message:@"GETDI"];
+	[self connectToServer: index message: @"GETDI"];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	

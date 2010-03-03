@@ -191,6 +191,7 @@
 	NSString *file, *currentStudy = 0L;
 	NSManagedObject *dcm;
 	NSArray *tt = [self tags];
+	NSMutableArray *renameArray = [NSMutableArray array];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
@@ -254,9 +255,7 @@
 			
 			if( t != 2)
 			{
-				[[NSFileManager defaultManager] moveItemAtPath: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension]
-												toPath: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension]
-												error: nil];
+				[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension], @"oldName", [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension], @"newName", nil]];
 			}
 			
 			//DCMObject *dcm = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
@@ -278,6 +277,10 @@
 		[pool release];
 		[splash incrementBy:1];
 	}
+	
+	for( NSDictionary *d in renameArray)
+		[[NSFileManager defaultManager] moveItemAtPath: [d objectForKey: @"oldName"] toPath: [d objectForKey: @"newName"] error: nil];
+	
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	

@@ -10404,7 +10404,8 @@ static BOOL needToRezoom;
 			
 			NSDictionary *object = nil;
 			
-			if( row > 0) object = [[bonjourBrowser services] objectAtIndex: row-1];
+			if( row > 0)
+				object = [[bonjourBrowser services] objectAtIndex: row-1];
 			
 			if( [[object valueForKey: @"type"] isEqualToString:@"dicomDestination"])
 			{
@@ -15446,7 +15447,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	long				previousSeries = -1;
 	long				serieCount		= 0;
 	
-	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+	NSMutableArray *dicomFiles2Export = [NSMutableArray array], *renameArray = [NSMutableArray array];
 	NSMutableArray *filesToExport;
 	
 	[self checkResponder];
@@ -15529,9 +15530,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			if( t != 2)
 			{
-				[[NSFileManager defaultManager] moveItemAtPath: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension]
-												toPath: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension]
-												error: nil];
+				[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension], @"oldName", [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension], @"newName", nil]];
 			}
 			
 			DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :[[curImage valueForKey:@"frameID"] intValue] :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
@@ -15573,6 +15572,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			[pool release];
 		}
+		
+		for( NSDictionary *d in renameArray)
+			[[NSFileManager defaultManager] moveItemAtPath: [d objectForKey: @"oldName"] toPath: [d objectForKey: @"newName"] error: nil];
 		
 		//close progress window	
 		[splash close];
@@ -16123,6 +16125,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	BOOL				exportROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddROIsForExport"];
 	DicomStudy			*previousStudy = nil;
 	BOOL				exportAborted = NO;
+	NSMutableArray		*renameArray = [NSMutableArray array];
+	
 	
 	[splash setCancel:YES];
 	[splash showWindow:self];
@@ -16334,17 +16338,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if( t != 2)
 		{
 			if (!addDICOMDIR)
-			
-			[[NSFileManager defaultManager] moveItemAtPath: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension]
-											toPath: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension]
-											error: nil];
+				[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension], @"oldName", [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension], @"newName", nil]];
 			else
-			
-			[[NSFileManager defaultManager] moveItemAtPath: [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, serieCount, imageNo]
-											toPath: [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, 1]
-											error: nil];
+				[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, serieCount, imageNo], @"oldName", [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, 1], @"newName", nil]];
 		}
-		
 		
 		NSError *error = nil;
 		if( [[NSFileManager defaultManager] copyItemAtPath:[filesToExport objectAtIndex:i] toPath:dest error: &error] == NO)
@@ -16405,7 +16402,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[pool release];
 	}
-
+	
+	for( NSDictionary *d in renameArray)
+		[[NSFileManager defaultManager] moveItemAtPath: [d objectForKey: @"oldName"] toPath: [d objectForKey: @"newName"] error: nil];
+	
 	//close progress window	
 	[splash close];
 	[splash release];
