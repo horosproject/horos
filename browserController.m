@@ -4520,7 +4520,6 @@ static NSArray*	statesArray = nil;
 
 - (NSManagedObjectModel *) userManagedObjectModel
 {
-	#ifndef OSIRIX_LIGHT
     if( userManagedObjectModel) return userManagedObjectModel;
 	
 	NSMutableSet *allBundles = [[NSMutableSet alloc] init];
@@ -4531,14 +4530,10 @@ static NSArray*	statesArray = nil;
     [allBundles release];
     
     return userManagedObjectModel;
-	#else
-	return nil;
-	#endif
 }
 
 - (NSManagedObjectContext *) userManagedObjectContext
 {
-	#ifndef OSIRIX_LIGHT
     NSError *error = nil;
     NSString *localizedDescription;
 	NSFileManager *fileManager;
@@ -4559,6 +4554,7 @@ static NSArray*	statesArray = nil;
 	
     NSURL *url = [NSURL fileURLWithPath: [DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath]];
 	
+	#ifndef OSIRIX_LIGHT
 	if( ![userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
 	{
 		NSLog( @"*********** userManagedObjectContext : %@", error);
@@ -4574,6 +4570,7 @@ static NSArray*	statesArray = nil;
 		[[NSFileManager defaultManager] removeItemAtPath: [[[DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"WebUsers.vers"] error: nil];
 		[userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options:nil error: &error];
 	}
+	#endif
 	
 	[[userManagedObjectContext undoManager] setLevelsOfUndo: 1];
 	[[userManagedObjectContext undoManager] disableUndoRegistration];
@@ -4582,9 +4579,6 @@ static NSArray*	statesArray = nil;
 	[self saveUserDatabase];
 	
     return userManagedObjectContext;
-	#else
-	return nil;
-	#endif
 }
 
 
@@ -16514,7 +16508,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSTask *t;
 	NSArray *args;
 	
-	if( hasMacOSXSnowLeopard() == NO)
+	if( hasMacOSXSnowLeopard() == NO && [NSThread isMainThread] && [password length] > 0)
 	{
 		password = nil;
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);
@@ -16586,7 +16580,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSTask *t;
 	NSArray *args;
 	
-	if( hasMacOSXSnowLeopard() == NO && [NSThread isMainThread])
+	if( hasMacOSXSnowLeopard() == NO && [NSThread isMainThread] && [password length] > 0)
 	{
 		password = nil;
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);

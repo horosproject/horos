@@ -2678,6 +2678,14 @@ static BOOL initialized = NO;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
 		[[[BrowserController currentBrowser] window] orderOut: self];
+
+#ifdef OSIRIX_LIGHT
+	int button = NSRunAlertPanel( NSLocalizedString( @"OsiriX Lite", nil), NSLocalizedString( @"This is the lite version of OsiriX: many functions are not available. You can download the full version of OsiriX on the Internet.", nil), NSLocalizedString( @"Continue", nil), NSLocalizedString( @"Download", nil), nil);
+	
+	if (NSCancelButton == button)
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+#endif
+	
 }
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
@@ -2832,14 +2840,7 @@ static BOOL initialized = NO;
 												 object: nil];
 	
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"SAMESTUDY"];
-	
-	#ifdef OSIRIX_LIGHT
-	int button = NSRunAlertPanel( NSLocalizedString( @"OsiriX Lite", nil), NSLocalizedString( @"This is the lite version of OsiriX: many functions are not available. You can download the full version of OsiriX on the Internet.", nil), NSLocalizedString( @"Continue", nil), NSLocalizedString( @"Download", nil), nil);
 		
-	if (NSCancelButton == button)
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
-	#endif
-	
 	[[NSUserDefaults standardUserDefaults] setBool: hasMacOSXSnowLeopard() forKey: @"hasMacOSXSnowLeopard"];
 	
 	if( hasMacOSXSnowLeopard() == NO)
@@ -2849,6 +2850,7 @@ static BOOL initialized = NO;
 	}
 	
 	[self initTilingWindows];
+
 	
 //	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
 }
