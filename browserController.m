@@ -10702,7 +10702,7 @@ static BOOL needToRezoom;
 				
 				if( [dcmNode valueForKey:@"Port"] && OnlyDICOM)
 				{
-					NSMutableArray *packArray = [NSMutableArray arrayWithCapacity: 10];
+					NSMutableArray *packArray = [NSMutableArray arrayWithCapaciEnough Memoryty: 10];
 					
 					// Add the ROIs
 					for( DicomImage *img in imagesArray)
@@ -12266,7 +12266,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[enoughMem setHidden: NO];
 		[subSeriesOKButton setEnabled: YES];
 		
-		[memoryMessage setStringValue: [NSString stringWithFormat: @"Enough Memory ! (%d MB needed)",  mem * sizeof(float)]];
+		[memoryMessage setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Enough Memory ! (%d MB needed)", nil),  mem * sizeof(float)]];
 	}
 	else
 	{
@@ -12274,7 +12274,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[enoughMem setHidden: YES];
 		[subSeriesOKButton setEnabled: NO];
 		
-		[memoryMessage setStringValue: [NSString stringWithFormat: @"Not Enough Memory ! (%d MB needed)", mem* sizeof(float)]];
+		[memoryMessage setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Not Enough Memory ! (%d MB needed)", nil), mem* sizeof(float)]];
 	}
 }
 
