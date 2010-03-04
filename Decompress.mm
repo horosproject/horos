@@ -91,8 +91,7 @@ int main(int argc, const char *argv[])
 	NSAutoreleasePool	*pool	= [[NSAutoreleasePool alloc] init];
 	
 	//	argv[ 1] : in path
-	//	argv[ 2] : out path
-	//	argv[ 2] : what? compress or decompress?
+	//	argv[ 2] : what
 	
 	if( argv[ 1] && argv[ 2])
 	{
