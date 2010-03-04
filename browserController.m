@@ -15166,6 +15166,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		int uniqueSeriesID = 0;
 		BOOL first = YES;
+		
+		int width, height;
+		[QTExportHTMLSummary getMovieWidth: &width height: &height imagesArray: dicomFiles2Export];
+						
 		for( NSManagedObject *curImage in dicomFiles2Export)
 		{
 			NSString *conv = asciiString( [curImage valueForKeyPath: @"series.study.name"]);
@@ -15334,11 +15338,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 						NSImage *im = [dcmPix image];
 						
-						int width, height;
-						
 						BOOL resize = NO;
-						
-						[QTExportHTMLSummary getMovieWidth: &width height: &height imagesArray: [NSArray arrayWithObject: curImage]];
 						
 						NSImage *newImage;
 						
