@@ -1739,7 +1739,7 @@ NSString* notNil( NSString *s)
 	
 	@try
 	{
-		if( ![[NSFileManager defaultManager] fileExistsAtPath: outFile])
+		if( ![[NSFileManager defaultManager] fileExistsAtPath: outFile] || ([[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0))
 		{
 			NSMutableArray *pixs = [NSMutableArray arrayWithCapacity: [dicomImageArray count]];
 			
@@ -1774,7 +1774,13 @@ NSString* notNil( NSString *s)
 			
 			int width, height;
 			
-			[self getWidth: &width height:&height fromImagesArray: dicomImageArray isiPhone: isiPhone];
+			if( [[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0)
+			{
+				width = [[dict objectForKey: @"columns"] intValue];
+				height = [[dict objectForKey: @"rows"] intValue];
+			}
+			else 
+				[self getWidth: &width height:&height fromImagesArray: dicomImageArray isiPhone: isiPhone];
 			
 			for (DCMPix *dcmPix in pixs)
 			{
@@ -2352,7 +2358,7 @@ NSString* notNil( NSString *s)
 								else
 									outFile = fileName;
 								
-								NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", urlParameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
+								NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", urlParameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: columns], @"columns", nil];
 								
 								lockReleased = YES;
 								[[[BrowserController currentBrowser] managedObjectContext] unlock];
