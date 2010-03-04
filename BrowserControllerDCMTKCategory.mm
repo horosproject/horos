@@ -336,6 +336,8 @@ extern NSRecursiveLock *PapyrusLock;
 	{
 		splash = [[WaitRendering alloc] init: NSLocalizedString( @"Validating files...", nil)];
 		[splash showWindow:self];
+		[splash setCancel: YES];
+		[splash start];
 	}
 	
 	BOOL succeed = YES;
@@ -386,14 +388,34 @@ extern NSRecursiveLock *PapyrusLock;
 		succeed = NO;
 	}
 	
-	for( NSTask *t in tasksArray)
+	@try
 	{
-		[t waitUntilExit];
+		for( NSTask *t in tasksArray)
+		{
+			while( [t isRunning] && [splash aborted] == NO)
+			{
+				[NSThread sleepForTimeInterval: 0.05];
+				[splash run];
+			}
+			
+			if( [splash aborted])
+				break;
+			
+			if( [t terminationStatus] != 0)
+				succeed = NO;
+		}
 		
-		if( [t terminationStatus] != 0)
-			succeed = NO;
+		if( [splash aborted])
+		{
+			for( NSTask *t in tasksArray)
+				[t interrupt];
+		}
 	}
-	
+	@catch (NSException * e)
+	{
+		NSLog( @"***** testList exception 2 : %@", e);
+	}
+	[splash end];
 	[splash close];
 	[splash release];
 	

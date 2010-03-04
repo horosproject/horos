@@ -1252,8 +1252,8 @@ extern const char *GetPrivateIP();
 		}
 		else
 		{
-			if( [NSThread isMainThread])
-				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", nil), NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", nil), NSLocalizedString(@"OK", nil), 0, 0);
+			[self performSelectorOnMainThread: @selector(showErrorMessage:) withObject: NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", nil) waitUntilDone: NO];
+			
 			NSLog( @"***** Unresolved node: %@", dict);
 			
 			resolved = NO;

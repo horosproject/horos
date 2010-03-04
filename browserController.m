@@ -10702,7 +10702,7 @@ static BOOL needToRezoom;
 				
 				if( [dcmNode valueForKey:@"Port"] && OnlyDICOM)
 				{
-					NSMutableArray *packArray = [NSMutableArray arrayWithCapacity: 10];
+					NSMutableArray *packArray = [NSMutableArray array];
 					
 					// Add the ROIs
 					for( DicomImage *img in imagesArray)
