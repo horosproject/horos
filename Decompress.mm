@@ -142,8 +142,6 @@ int main(int argc, const char *argv[])
 		
 		if( [what isEqualToString:@"compress"])
 		{
-			int quality = [[NSString stringWithUTF8String:argv[ 3]] intValue];
-			
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
 			
 			NSArray *compressionSettings = [dict valueForKey: @"CompressionSettings"];
