@@ -576,7 +576,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		confidenceFilter->SetMultiplier(multiplier);
 		int numberOfIterations = [[parameters objectAtIndex:1] intValue];
 		confidenceFilter->SetNumberOfIterations(numberOfIterations);
-		int radius = [[parameters objectAtIndex:1] intValue];
+		int radius = [[parameters objectAtIndex:2] intValue];
 		confidenceFilter->SetInitialNeighborhoodRadius(radius);
 		
 		confidenceFilter->SetReplaceValue(255);
