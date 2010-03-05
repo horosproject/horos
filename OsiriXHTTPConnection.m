@@ -95,7 +95,7 @@ NSString* notNil( NSString *s)
 
 //		***** QuartzCore
 		
-		if( thumbnailPoint.x < 1 && thumbnailPoint.y < 1)
+//		if( thumbnailPoint.x < 1 && thumbnailPoint.y < 1)
 		{
 			NSSize size = [sourceImage size];
 			
@@ -122,38 +122,53 @@ NSString* notNil( NSString *s)
 			}
 			else
 			{
-				NSImage *result = [[[NSImage alloc] initWithSize:NSMakeSize(extent.size.width, extent.size.height)] autorelease];
-				NSCIImageRep *ciImageRep = [NSCIImageRep imageRepWithCIImage:outputCIImage];
-				[result addRepresentation:ciImageRep];
+				newImage = [[NSImage alloc] initWithSize: targetSize];
 				
-				return [[[NSImage alloc] initWithData: [result TIFFRepresentation]] autorelease];
+				if( [newImage size].width > 0 && [newImage size].height > 0)
+				{
+					[newImage lockFocus];
+					
+					[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
+					
+					NSRect thumbnailRect;
+					thumbnailRect.origin = thumbnailPoint;
+					thumbnailRect.size.width = extent.size.width;
+					thumbnailRect.size.height = extent.size.height;
+					
+					[outputCIImage drawInRect: thumbnailRect
+								   fromRect: NSMakeRect( extent.origin.x , extent.origin.y, extent.size.width, extent.size.height)
+								  operation: NSCompositeCopy
+								   fraction: 1.0];
+					
+					[newImage unlockFocus];
+				}
 			}
 		}
-		else
-
-//		***** NSImage
-		{
-			newImage = [[NSImage alloc] initWithSize: targetSize];
-			
-			if( [newImage size].width > 0 && [newImage size].height > 0)
-			{
-				[newImage lockFocus];
-				
-				[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
-				
-				NSRect thumbnailRect;
-				thumbnailRect.origin = thumbnailPoint;
-				thumbnailRect.size.width = scaledWidth;
-				thumbnailRect.size.height = scaledHeight;
-				
-				[sourceImage drawInRect: thumbnailRect
-							   fromRect: NSZeroRect
-							  operation: NSCompositeCopy
-							   fraction: 1.0];
-				
-				[newImage unlockFocus];
-			}
-		}
+//		else
+//
+////		***** NSImage
+//		{
+//			newImage = [[NSImage alloc] initWithSize: targetSize];
+//			
+//			if( [newImage size].width > 0 && [newImage size].height > 0)
+//			{
+//				[newImage lockFocus];
+//				
+//				[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
+//				
+//				NSRect thumbnailRect;
+//				thumbnailRect.origin = thumbnailPoint;
+//				thumbnailRect.size.width = scaledWidth;
+//				thumbnailRect.size.height = scaledHeight;
+//				
+//				[sourceImage drawInRect: thumbnailRect
+//							   fromRect: NSZeroRect
+//							  operation: NSCompositeCopy
+//							   fraction: 1.0];
+//				
+//				[newImage unlockFocus];
+//			}
+//		}
 	}
 	
 	if( newImage == nil)
