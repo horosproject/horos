@@ -3377,7 +3377,7 @@ static NSArray*	statesArray = nil;
 	else
 		files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
 	
-	Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying linked files into Database...", nil)];
+	Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying linked files into Database...", nil) :YES];
 		
 	[splash showWindow:self];
 	[[splash progress] setMaxValue:[objects count]];
@@ -9208,7 +9208,6 @@ static BOOL withReset = NO;
 			{
 				if( [splash aborted] == NO)
 				{
-					
 					[selectedFiles addObject: [self getLocalDCMPath: img :50]];
 					
 					[splash incrementBy: 1];
@@ -15154,7 +15153,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableDictionary *htmlExportDictionary = [NSMutableDictionary dictionary];
 	
 	if( [NSThread isMainThread])
-		splash = [[Wait alloc] initWithString: NSLocalizedString( @"Export...", nil) :NO];
+		splash = [[Wait alloc] initWithString: NSLocalizedString( @"Export...", nil) :YES];
 	
 	[splash setCancel:YES];
 	[splash showWindow:self];
@@ -15461,8 +15460,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if ([sPanel runModalForDirectory:nil file:nil types:nil] == NSFileHandlingPanelOKButton)
 	{
-		NSString			*dest, *path = [[sPanel filenames] objectAtIndex:0];
-		Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", nil)];
+		NSString *dest, *path = [[sPanel filenames] objectAtIndex:0];
+		Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", nil) :YES];
 		
 		[splash setCancel:YES];
 		[splash showWindow:self];
@@ -16109,7 +16108,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
 
 	NSString			*dest, *path = location;
-	Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", nil)];
+	Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", nil) :YES];
 	BOOL				addDICOMDIR = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddDICOMDIRForExport"];
 	long				previousSeries = -1;
 	long				serieCount		= 0;
