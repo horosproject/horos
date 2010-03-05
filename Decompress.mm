@@ -93,10 +93,6 @@ int main(int argc, const char *argv[])
 	//	argv[ 1] : in path
 	//	argv[ 2] : what
 	
-	NSLog(@"Decompress with %d args:", argc);
-	for (int i = 0; i < argc; ++i)
-		NSLog(@"\t%d: %s", i, argv[i]);
-	
 	if( argv[ 1] && argv[ 2])
 	{
 		// register global JPEG decompression codecs
