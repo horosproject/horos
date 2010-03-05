@@ -2789,7 +2789,7 @@ static BOOL initialized = NO;
 		switch( NSRunInformationalAlertPanel( NSLocalizedString(@"OsiriX Updates", nil), NSLocalizedString( @"Would you like to activate automatic checking for updates?", nil), NSLocalizedString( @"Yes", nil), NSLocalizedString( @"No", nil), nil))
 		{
 			case 0:
-				[[NSUserDefaults standardUserDefaults] setObject: @"NO" forKey: @"CheckOsiriXUpdates2"];
+				[[NSUserDefaults standardUserDefaults] setObject: @"NO" forKey: @"CheckOsiriXUpdates3"];
 			break;
 		}
 	}
@@ -3025,7 +3025,7 @@ static BOOL initialized = NO;
 			}
 			else
 			{
-				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckOsiriXUpdates2"] || verboseUpdateCheck == YES)
+				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckOsiriXUpdates3"] || verboseUpdateCheck == YES)
 				{
 					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone: NO];
 				}
