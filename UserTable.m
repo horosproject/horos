@@ -110,7 +110,7 @@ static PSGenerator *generator = nil;
 	if( [key isEqualToString: @"password"])
 		[self setPrimitiveValue: [NSDate date] forKey: @"passwordCreationDate"];
 	
-	if( [key isEqualToString: @"downloadZIP"])
+	if( [key isEqualToString: @"downloadZIP"] && [*value boolValue] == YES)
 	{
 		if( hasMacOSXSnowLeopard() == NO)
 		{

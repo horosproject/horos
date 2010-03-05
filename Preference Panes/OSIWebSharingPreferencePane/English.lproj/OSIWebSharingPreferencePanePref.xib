@@ -11,7 +11,7 @@
 			<string key="NS.object.0">732</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="484"/>
+			<integer value="6"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2000,22 +2000,6 @@ ZW1wdHkgbGlzdC4</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.encryptedZIP</string>
-						<reference key="source" ref="839517142"/>
-						<reference key="destination" ref="596395762"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="839517142"/>
-							<reference key="NSDestination" ref="596395762"/>
-							<string key="NSLabel">value: selection.encryptedZIP</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.encryptedZIP</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">502</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">displayPatternValue1: selection.@count</string>
 						<reference key="source" ref="110072123"/>
 						<reference key="destination" ref="596395762"/>
@@ -2819,22 +2803,6 @@ ZW1wdHkgbGlzdC4</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.downloadZIP</string>
-						<reference key="source" ref="785257215"/>
-						<reference key="destination" ref="596395762"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="785257215"/>
-							<reference key="NSDestination" ref="596395762"/>
-							<string key="NSLabel">value: selection.downloadZIP</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.downloadZIP</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">656</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled2: selection.downloadZIP</string>
 						<reference key="source" ref="839517142"/>
 						<reference key="destination" ref="596395762"/>
@@ -2977,22 +2945,6 @@ ZW1wdHkgbGlzdC4</string>
 						</object>
 					</object>
 					<int key="connectionID">677</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.notificationsEmails</string>
-						<reference key="source" ref="426784300"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="426784300"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">value: values.notificationsEmails</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.notificationsEmails</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">679</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -3210,22 +3162,6 @@ ZW1wdHkgbGlzdC4</string>
 						</object>
 					</object>
 					<int key="connectionID">724</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.temporaryUserDuration</string>
-						<reference key="source" ref="160089595"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="160089595"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">value: values.temporaryUserDuration</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.temporaryUserDuration</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">736</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -4185,6 +4121,86 @@ ZW1wdHkgbGlzdC4</string>
 						</object>
 					</object>
 					<int key="connectionID">931</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.downloadZIP</string>
+						<reference key="source" ref="785257215"/>
+						<reference key="destination" ref="596395762"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="785257215"/>
+							<reference key="NSDestination" ref="596395762"/>
+							<string key="NSLabel">value: selection.downloadZIP</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.downloadZIP</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValidatesImmediately</string>
+								<boolean value="YES" key="NS.object.0"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">932</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.encryptedZIP</string>
+						<reference key="source" ref="839517142"/>
+						<reference key="destination" ref="596395762"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="839517142"/>
+							<reference key="NSDestination" ref="596395762"/>
+							<string key="NSLabel">value: selection.encryptedZIP</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.encryptedZIP</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValidatesImmediately</string>
+								<boolean value="YES" key="NS.object.0"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">933</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.notificationsEmails</string>
+						<reference key="source" ref="426784300"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="426784300"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">value: values.notificationsEmails</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.notificationsEmails</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValidatesImmediately</string>
+								<boolean value="YES" key="NS.object.0"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">934</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.temporaryUserDuration</string>
+						<reference key="source" ref="160089595"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="160089595"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">value: values.temporaryUserDuration</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.temporaryUserDuration</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValidatesImmediately</string>
+								<boolean value="YES" key="NS.object.0"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">935</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -5257,11 +5273,11 @@ ZW1wdHkgbGlzdC4</string>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
 				<string key="-3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="12.IBEditorWindowLastContentRect">{{212, 327}, {756, 825}}</string>
+				<string key="12.IBEditorWindowLastContentRect">{{62, 131}, {756, 825}}</string>
 				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="0" key="12.IBViewEditorWindowController.showingBoundsRectangles"/>
 				<integer value="0" key="12.IBViewEditorWindowController.showingLayoutRectangles"/>
-				<string key="12.IBWindowTemplateEditedContentRect">{{212, 327}, {756, 825}}</string>
+				<string key="12.IBWindowTemplateEditedContentRect">{{62, 131}, {756, 825}}</string>
 				<integer value="1" key="12.ImportedFromIB2"/>
 				<string key="12.editorWindowContentRectSynchronizationRect">{{770, 336}, {725, 672}}</string>
 				<integer value="0" key="12.windowTemplate.hasMaxSize"/>
@@ -5469,7 +5485,7 @@ ZW1wdHkgbGlzdC4</string>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">931</int>
+			<int key="maxID">935</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
