@@ -93,6 +93,10 @@ int main(int argc, const char *argv[])
 	//	argv[ 1] : in path
 	//	argv[ 2] : what
 	
+	NSLog(@"Decompress with %d args:", argc);
+	for (int i = 0; i < argc; ++i)
+		NSLog(@"\t%d: %s", i, argv[i]);
+	
 	if( argv[ 1] && argv[ 2])
 	{
 		// register global JPEG decompression codecs
@@ -131,11 +135,22 @@ int main(int argc, const char *argv[])
 		// register RLE decompression codec
 		DcmRLEDecoderRegistration::registerCodecs();
 		
-		NSString	*path = [NSString stringWithUTF8String:argv[ 1]];
-		NSString	*what = [NSString stringWithUTF8String:argv[ 2]];
+		NSString	*path = [NSString stringWithUTF8String:argv[1]];
+		NSString	*what = [NSString stringWithUTF8String:argv[2]];
+		NSInteger fileListFirstItemIndex =3;
 		
-		NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
+		NSMutableDictionary* dict = [DefaultsOsiriX getDefaults];
 		[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
+		
+		if ([what isEqualToString:@"SettingsPlist"]) {
+			@try {
+				[dict addEntriesFromDictionary:[NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithUTF8String:argv[fileListFirstItemIndex]]]];
+				what = [NSString stringWithUTF8String:argv[4]];
+				fileListFirstItemIndex += 2;
+			} @catch (NSException* e) { // ignore evtl failures
+				NSLog(@"Decompress failed reading settings plist at %s: %@", argv[fileListFirstItemIndex], e);
+			}
+		}
 		
 		dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
 		
@@ -155,7 +170,7 @@ int main(int argc, const char *argv[])
 				destDirec = path;
 			
 			int i;
-			for( i = 3; i < argc; i++)
+			for( i = fileListFirstItemIndex; i < argc; i++)
 			{
 				NSString *curFile = [NSString stringWithUTF8String:argv[ i]];
 				OFBool status = YES;
@@ -342,7 +357,7 @@ int main(int argc, const char *argv[])
 			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
 			
 			int i;
-			for( i = 3; i < argc ; i++)
+			for( i = fileListFirstItemIndex; i < argc ; i++)
 			{
 				NSString *curFile = [NSString stringWithUTF8String: argv[ i]];
 				
@@ -373,7 +388,7 @@ int main(int argc, const char *argv[])
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
 			
 			int i;
-			for( i = 3; i < argc ; i++)
+			for( i = fileListFirstItemIndex; i < argc ; i++)
 			{
 				NSString *curFile = [NSString stringWithUTF8String:argv[ i]];
 				
@@ -531,7 +546,7 @@ int main(int argc, const char *argv[])
 			
 			NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObjectsAndKeys: @"jpeg", QTAddImageCodecType, [NSNumber numberWithInt: codecNormalQuality], QTAddImageCodecQuality, nil];
 			
-			NSString *root = [NSString stringWithUTF8String: argv[ 3]];
+			NSString *root = [NSString stringWithUTF8String: argv[fileListFirstItemIndex]];
 			
 			for( NSString *img in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil])
 			{
@@ -552,7 +567,7 @@ int main(int argc, const char *argv[])
 		{
 			NSError *error = nil;
 			
-			NSString *inFile = [NSString stringWithUTF8String: argv[ 3]];
+			NSString *inFile = [NSString stringWithUTF8String: argv[fileListFirstItemIndex]];
 			NSString *outFile = path;
 			
 			QTMovie *aMovie = [QTMovie movieWithFile: inFile error:nil];
