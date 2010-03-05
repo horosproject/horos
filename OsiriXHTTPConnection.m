@@ -1783,6 +1783,17 @@ NSString* notNil( NSString *s)
 					[pixs addObject: dcmPix];
 					[dcmPix release];
 				}
+				else
+				{
+					NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
+					float *imPtr = malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof( float));
+					for( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
+						imPtr[ i] = i;
+					
+					dcmPix = [[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0];
+					[pixs addObject: dcmPix];
+					[dcmPix release];
+				}
 			}
 			
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];
@@ -2399,6 +2410,16 @@ NSString* notNil( NSString *s)
 								DicomImage *im = [images lastObject];
 								
 								dcmPix = [[[DCMPix alloc] initWithPath: [im valueForKey: @"completePathResolved"] :0 :1 :nil :frameNumber :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
+								
+								if( dcmPix == nil)
+								{
+									NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
+									float *imPtr = malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof( float));
+									for( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
+										imPtr[ i] = i;
+									
+									dcmPix = [[[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0] autorelease];
+								}
 								
 								imageCache = [NSMutableDictionary dictionaryWithObject: dcmPix forKey: @"dcmPix"];
 								
@@ -3142,6 +3163,16 @@ NSString* notNil( NSString *s)
 					im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
 				
 				DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
+				
+				if( dcmPix == nil)
+				{
+					NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
+					float *imPtr = malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof( float));
+					for( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
+						imPtr[ i] = i;
+					
+					dcmPix = [[[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0] autorelease];
+				}
 				
 				if( dcmPix)
 				{

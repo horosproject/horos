@@ -23,8 +23,7 @@
 {
 	volatile BOOL burning, isIrisAnimation;
 	NSMutableArray *nodeArray;
-	NSMutableArray *files, *anonymizedFiles;
-	NSArray	*dbObjects;
+	NSMutableArray *files, *anonymizedFiles, *dbObjects, *originalDbObjects;
 	float burnSize;
 	IBOutlet NSTextField *nameField;
 	IBOutlet NSTextField *sizeField, *finalSizeField;

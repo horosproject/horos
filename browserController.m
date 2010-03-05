@@ -15307,11 +15307,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 			else
 			#endif
 			{
-				int frames = [[curImage valueForKey:@"numberOfFrames"] intValue];
-				
-				if( [curImage valueForKey:@"frameID"]) frames = 1;
-				
-				for (int x = 0; x < frames; x++)
+//				int frames = [[curImage valueForKey:@"numberOfFrames"] intValue];
+//				
+//				if( [curImage valueForKey:@"frameID"]) // Is is a multi-
+//					frames = 1;
+//				
+				for (int x = 0; x < 1; x++) // Starting with OsiriX 3.7 multi frames images are treated as single object
 				{
 					int frame = x;
 					
@@ -16691,9 +16692,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		//Burn additional Files. Not just images. Add SRs
 		[self checkResponder];
 		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
-		else filesToBurn = [self filesForDatabaseOutlineSelection:managedObjects onlyImages:NO];
-		
-		[filesToBurn removeDuplicatedStringsInSyncWithThisArray: managedObjects];
+		else filesToBurn = [self filesForDatabaseOutlineSelection: managedObjects onlyImages:NO];
 		
 		burnerWindowController = [[BurnerWindowController alloc] initWithFiles:filesToBurn managedObjects:managedObjects];
 		

@@ -114,8 +114,12 @@ extern NSString* asciiString (NSString* name);
 		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
-		files = [theFiles retain];
-		dbObjects = [managedObjects retain];
+		files = [theFiles mutableCopy];
+		dbObjects = [managedObjects mutableCopy];
+		originalDbObjects = [managedObjects mutableCopy];
+		
+		[files removeDuplicatedStringsInSyncWithThisArray: dbObjects];
+		
 		id managedObject;
 		id patient = nil;
 		_multiplePatients = NO;
@@ -165,6 +169,7 @@ extern NSString* asciiString (NSString* name);
 	[anonymizedFiles release];
 	[filesToBurn release];
 	[dbObjects release];
+	[originalDbObjects release];
 	[cdName release];
 	[password release];
 	
@@ -667,7 +672,7 @@ extern NSString* asciiString (NSString* name);
 
 - (void) produceHtml:(NSString*) burnFolder
 {
-	[[BrowserController currentBrowser] exportQuicktimeInt: dbObjects :burnFolder :YES];
+	[[BrowserController currentBrowser] exportQuicktimeInt: originalDbObjects :burnFolder :YES];
 }
 
 - (NSNumber*) getSizeOfDirectory: (NSString*) path
