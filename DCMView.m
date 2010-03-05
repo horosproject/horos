@@ -3411,7 +3411,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				mouseXPos = imageLocation.x;
 				mouseYPos = imageLocation.y;
 				
-				if( ([theEvent modifierFlags] & (NSShiftKeyMask|NSCommandKeyMask|NSControlKeyMask|NSAlternateKeyMask)) == NSShiftKeyMask && mouseDragging == NO)
+				if( ([theEvent modifierFlags] & NSShiftKeyMask) && ([theEvent modifierFlags] & NSControlKeyMask) && mouseDragging == NO)
+				{
+					[self sync3DPosition];
+				}
+				else if( ([theEvent modifierFlags] & (NSShiftKeyMask|NSCommandKeyMask|NSControlKeyMask|NSAlternateKeyMask)) == NSShiftKeyMask && mouseDragging == NO)
 				{
 					if( [self roiTool: currentTool] == NO)
 					{
@@ -3579,6 +3583,49 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return nil;
 }
 
+- (void) sync3DPosition
+{
+	float location[ 3];
+	
+	[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
+
+	DCMPix	*thickDCM;
+
+	if( curDCM.stack > 1)
+	{
+		long maxVal = curImage+(curDCM.stack-1);
+		if( maxVal < 0) maxVal = 0;
+		if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
+		
+		thickDCM = [dcmPixList objectAtIndex: maxVal];
+	}
+	else thickDCM = nil;
+
+	int pos = flippedData? [dcmPixList count] -1 -curImage : curImage;
+
+	NSMutableDictionary *instructions = [NSMutableDictionary dictionary];
+
+	[instructions setObject: self forKey: @"view"];
+	[instructions setObject: [NSNumber numberWithLong: pos] forKey: @"Pos"];
+	[instructions setObject: [NSNumber numberWithFloat:[[dcmPixList objectAtIndex:curImage] sliceLocation]] forKey: @"Location"];
+
+	if( [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"])
+	[instructions setObject: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"];
+
+	if( curDCM)
+	[instructions setObject: curDCM forKey: @"DCMPix"];
+
+	[instructions setObject: [NSNumber numberWithFloat: syncRelativeDiff] forKey: @"offsetsync"];
+	[instructions setObject: [NSNumber numberWithFloat: location[0]] forKey: @"point3DX"];
+	[instructions setObject: [NSNumber numberWithFloat: location[1]] forKey: @"point3DY"];
+	[instructions setObject: [NSNumber numberWithFloat: location[2]] forKey: @"point3DZ"];
+
+	if( thickDCM)
+	[instructions setObject: thickDCM forKey: @"DCMPix2"];
+
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: self userInfo: instructions];
+}
+
 - (void) mouseDown:(NSEvent *)event
 {	
 	if ([self eventToPlugins:event]) return;
@@ -3687,47 +3734,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [self is2DViewer] == YES)
 				[[self windowController] showCurrentThumbnail: self];
 				
-			float location[ 3];
-			
-			[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
-						
-			DCMPix	*thickDCM;
-		
-			if( curDCM.stack > 1)
-			{
-				long maxVal = curImage+(curDCM.stack-1);
-				if( maxVal < 0) maxVal = 0;
-				if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
-				
-				thickDCM = [dcmPixList objectAtIndex: maxVal];
-			}
-			else thickDCM = nil;
-			
-			int pos = flippedData? [dcmPixList count] -1 -curImage : curImage;
-			
-			NSMutableDictionary *instructions = [NSMutableDictionary dictionary];
-			
-			[instructions setObject: self forKey: @"view"];
-			[instructions setObject: [NSNumber numberWithLong: pos] forKey: @"Pos"];
-			[instructions setObject: [NSNumber numberWithFloat:[[dcmPixList objectAtIndex:curImage] sliceLocation]] forKey: @"Location"];
-			
-			if( [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"])
-				[instructions setObject: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"];
-			
-			if( curDCM)
-				[instructions setObject: curDCM forKey: @"DCMPix"];
-			
-			[instructions setObject: [NSNumber numberWithFloat: syncRelativeDiff] forKey: @"offsetsync"];
-			[instructions setObject: [NSNumber numberWithFloat: location[0]] forKey: @"point3DX"];
-			[instructions setObject: [NSNumber numberWithFloat: location[1]] forKey: @"point3DY"];
-			[instructions setObject: [NSNumber numberWithFloat: location[2]] forKey: @"point3DZ"];
-			
-			if( thickDCM)
-				[instructions setObject: thickDCM forKey: @"DCMPix2"];
-			
 			if( roiHit == NO)
 			{
-				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: self userInfo: instructions];
+				[self sync3DPosition];
 			}
 		}
 		
