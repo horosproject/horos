@@ -1640,6 +1640,7 @@ static NSDate *lastWarningDate = nil;
 	else
 		[webServer setType: @"_http._tcp."];
 	
+	[webServer setTXTRecordDictionary:[NSDictionary dictionaryWithObject:@"OsiriX" forKey:@"ServerType"]];
 	[webServer setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
 	[webServer setDocumentRoot:[NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]]];
 	
