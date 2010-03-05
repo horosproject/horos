@@ -26,13 +26,13 @@
 		port = 0;
 		
 		// Bonjour domain. Use the local domain by default
-		domain = @"local.";
+		[self setDomain: @"local."];
 		
 		// If using an empty string ("") for the service name when registering,
 		// the system will automatically use the "Computer Name".
 		// Passing in an empty string will also handle name conflicts
 		// by automatically appending a digit to the end of the name.
-		name = @"";
+		[self setName: @""];
 		
 		// Initialize an array to hold all the HTTP connections
 		connections = [[NSMutableArray alloc] init];
