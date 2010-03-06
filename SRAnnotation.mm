@@ -376,6 +376,7 @@
 			
 		//Series Description
 		document->setSeriesDescription("OsiriX ROI SR");
+		document->setSpecificCharacterSet( "ISO_IR 192"); // UTF-8
 		
 		if ([study valueForKey:@"name"] )
 			document->setPatientsName([[study valueForKey:@"name"] UTF8String]);
