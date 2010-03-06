@@ -15080,65 +15080,75 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)writeMovie: (NSArray*)imagesArray name: (NSString*)fileName
 {
-	QTMovie *mMovie = nil;
+	NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
 	
-	if( [AppController mainThread] != [NSThread currentThread])
+	@try
 	{
-		[QTMovie enterQTKitOnThread];
+		QTMovie *mMovie = nil;
 		
-		NSMutableDictionary *dict;
+		if( [AppController mainThread] != [NSThread currentThread])
+		{
+			[QTMovie enterQTKitOnThread];
+			
+			NSMutableDictionary *dict;
+			
+			dict = [NSMutableDictionary dictionary];
+			
+			[self performSelectorOnMainThread: @selector( createEmptyMovie:) withObject: dict waitUntilDone: YES];
+			
+			QTMovie *empty = [dict objectForKey:@"movie"];
+			
+			[empty attachToCurrentThread];
+			[empty writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: nil];
+			[empty detachFromCurrentThread];
+			
+			dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [fileName stringByAppendingString:@"temp"], @"file", nil];
+			[self performSelectorOnMainThread: @selector( movieWithFile:) withObject: dict waitUntilDone: YES];
+			
+			mMovie = [dict objectForKey:@"movie"];
+			
+			[mMovie attachToCurrentThread];
+		}
+		else
+		{
+			// Life is so much simplier in a single thread application...
+			
+			[[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: nil];
+			mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
+		}
 		
-		dict = [NSMutableDictionary dictionary];
+		[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 		
-		[self performSelectorOnMainThread: @selector( createEmptyMovie:) withObject: dict waitUntilDone: YES];
+		long long timeValue = 60;
+		long timeScale = 600;
 		
-		QTMovie *empty = [dict objectForKey:@"movie"];
+		QTTime curTime = QTMakeTime(timeValue, timeScale);
 		
-		[empty attachToCurrentThread];
-		[empty writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: nil];
-		[empty detachFromCurrentThread];
+		NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
 		
-		dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [fileName stringByAppendingString:@"temp"], @"file", nil];
-		[self performSelectorOnMainThread: @selector( movieWithFile:) withObject: dict waitUntilDone: YES];
+		for ( id img in imagesArray)
+		{
+			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+			
+			[mMovie addImage: img forDuration:curTime withAttributes: myDict];
+			
+			[pool release];
+		}
 		
-		mMovie = [dict objectForKey:@"movie"];
-		
-		[mMovie attachToCurrentThread];
-	}
-	else
-	{
-		// Life is so much simplier in a single thread application...
-		
-		[[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: nil];
-		mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
-	}
-	
-	[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
-	
-	long long timeValue = 60;
-	long timeScale = 600;
-	
-	QTTime curTime = QTMakeTime(timeValue, timeScale);
-	
-	NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
-	
-	for ( id img in imagesArray)
-	{
-		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-		
-		[mMovie addImage: img forDuration:curTime withAttributes: myDict];
-		
-		[pool release];
-	}
-	
-	[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
-	[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler: nil];
+		[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
+		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler: nil];
 
-	if( [AppController mainThread] != [NSThread currentThread])
-	{
-		[mMovie detachFromCurrentThread];
-		[QTMovie exitQTKitOnThread];
+		if( [AppController mainThread] != [NSThread currentThread])
+		{
+			[mMovie detachFromCurrentThread];
+			[QTMovie exitQTKitOnThread];
+		}
 	}
+	@catch( NSException *e)
+	{
+		NSLog( @"****** writeMovie exception: %@", e);
+	}
+	[pool2 release];
 }
 
 -(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html
@@ -15313,44 +15323,55 @@ static volatile int numberOfThreadsForJPEG = 0;
 //				
 				for (int x = 0; x < 1; x++) // Starting with OsiriX 3.7 multi frames images are treated as single object
 				{
-					int frame = x;
+					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					
-					if( [curImage valueForKey:@"frameID"])
-						frame = [[curImage valueForKey:@"frameID"] intValue];
-					
-					DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
-					
-					if( dcmPix)
+					@try
 					{
-						float curWW = 0;
-						float curWL = 0;
+						int frame = x;
 						
-						if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
+						if( [curImage valueForKey:@"frameID"])
+							frame = [[curImage valueForKey:@"frameID"] intValue];
+						
+						DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
+						
+						if( dcmPix)
 						{
-							curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-							curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
-						}
-						
-						if( curWW != 0 && curWW !=curWL)
-							[dcmPix checkImageAvailble :curWW :curWL];
-						else
-							[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+							float curWW = 0;
+							float curWL = 0;
+							
+							if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
+							{
+								curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+								curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+							}
+							
+							if( curWW != 0 && curWW !=curWL)
+								[dcmPix checkImageAvailble :curWW :curWL];
+							else
+								[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
 
-						NSImage *im = [dcmPix image];
-						
-						BOOL resize = NO;
-						
-						NSImage *newImage;
-						
-						if( [dcmPix pwidth] != width || height != [dcmPix pheight])
-							newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
-						else
-							newImage = im;
-						
-						[imagesArray addObject: newImage];
-						
-						[dcmPix release];
+							NSImage *im = [dcmPix image];
+							
+							BOOL resize = NO;
+							
+							NSImage *newImage;
+							
+							if( [dcmPix pwidth] != width || height != [dcmPix pheight])
+								newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
+							else
+								newImage = im;
+							
+							if( newImage)
+								[imagesArray addObject: newImage];
+							
+							[dcmPix release];
+						}
 					}
+					@catch( NSException *e)
+					{
+						NSLog( @"*** exportQuicktimeInt Loop: %@", e);
+					}
+					[pool release];
 				}
 			}
 			

@@ -55,6 +55,7 @@ NSString* notNil( NSString *s)
 
 - (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSImage* sourceImage = self;
 	NSImage* newImage = nil;
 	
@@ -118,11 +119,10 @@ NSString* notNil( NSString *s)
 			if (CGRectIsInfinite(extent))
 			{
 				NSLog( @"****** imageByScalingProportionallyToSize : OUTPUT IMAGE HAS INFINITE EXTENT");
-				return nil;
 			}
 			else
 			{
-				newImage = [[NSImage alloc] initWithSize: targetSize];
+				newImage = [[[NSImage alloc] initWithSize: targetSize] autorelease];
 				
 				if( [newImage size].width > 0 && [newImage size].height > 0)
 				{
@@ -148,7 +148,7 @@ NSString* notNil( NSString *s)
 //
 ////		***** NSImage
 //		{
-//			newImage = [[NSImage alloc] initWithSize: targetSize];
+//			newImage = [[[NSImage alloc] initWithSize: targetSize] autorelease];
 //			
 //			if( [newImage size].width > 0 && [newImage size].height > 0)
 //			{
@@ -171,10 +171,14 @@ NSString* notNil( NSString *s)
 //		}
 	}
 	
-	if( newImage == nil)
-		return nil;
+	NSImage *returnImage = nil;
 	
-	return [[[NSImage alloc] initWithData: [newImage TIFFRepresentation]] autorelease];
+	if( newImage)
+		returnImage = [[NSImage alloc] initWithData: [newImage TIFFRepresentation]];
+	
+	[pool release];
+	
+	return [returnImage autorelease];
 }
 @end
 
