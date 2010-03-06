@@ -15154,7 +15154,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 -(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html
 {
 	Wait                *splash = nil;
-	NSMutableArray		*imagesArray = [NSMutableArray array];
+	NSMutableArray		*imagesArray = [NSMutableArray array], *imagesArrayObjects = [NSMutableArray array];
 	NSString			*tempPath, *previousPath = nil;
 	long				previousSeries = -1;
 	NSString			*previousStudy = @"", *previousPatientUID = @"", *previousSeriesInstanceUID = @"";
@@ -15176,9 +15176,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		int uniqueSeriesID = 0;
 		BOOL first = YES;
 		
-		int width, height;
-		[QTExportHTMLSummary getMovieWidth: &width height: &height imagesArray: dicomFiles2Export];
-						
 		for( NSManagedObject *curImage in dicomFiles2Export)
 		{
 			NSString *conv = asciiString( [curImage valueForKeyPath: @"series.study.name"]);
@@ -15250,11 +15247,26 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						[[tempID PDFRepresentation] writeToFile: [previousPath stringByAppendingPathExtension: @"pdf"] atomically: YES];
 						[imagesArray removeAllObjects];
+						[imagesArrayObjects removeAllObjects];
 					}
 				}
 				
 				if( [imagesArray count] > 1)
 				{
+					int width, height;
+					[QTExportHTMLSummary getMovieWidth: &width height: &height imagesArray: imagesArrayObjects];
+					
+					for( int index = 0 ; index < [imagesArray count]; index++)
+					{
+						NSImage *im = [imagesArray objectAtIndex: index];
+						
+						if( (int) [im size].width != width || height != (int) [im size].height)
+						{
+							NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
+							[imagesArray replaceObjectAtIndex: index withObject: newImage];
+						}
+					}
+					
 					[self writeMovie: imagesArray name: [previousPath stringByAppendingPathExtension: @"mov"]];
 				}
 				else if( [imagesArray count] == 1)
@@ -15280,6 +15292,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 				}
 				
+				[imagesArrayObjects removeAllObjects];
 				[imagesArray removeAllObjects];
 				previousSeries = [[curImage valueForKeyPath: @"series.id"] intValue];
 			}
@@ -15304,7 +15317,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 							NSImage *im = [[[NSImage alloc] initWithData: pdfData] autorelease];
 							
 							if( im)
+							{
 								[imagesArray addObject: im];
+								[imagesArrayObjects addObject: curImage];
+							}
 						}
 					}
 				}
@@ -15352,17 +15368,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 							NSImage *im = [dcmPix image];
 							
-							BOOL resize = NO;
-							
-							NSImage *newImage;
-							
-							if( [dcmPix pwidth] != width || height != [dcmPix pheight])
-								newImage = [im imageByScalingProportionallyToSize:NSMakeSize(width, height)];
-							else
-								newImage = im;
-							
-							if( newImage)
-								[imagesArray addObject: newImage];
+							if( im)
+							{
+								[imagesArray addObject: im];
+								[imagesArrayObjects addObject: curImage];
+							}
 							
 							[dcmPix release];
 						}
@@ -15388,11 +15398,26 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				[[tempID PDFRepresentation] writeToFile: [previousPath stringByAppendingPathExtension: @"pdf"] atomically: YES];
 				[imagesArray removeAllObjects];
+				[imagesArrayObjects removeAllObjects];
 			}
 		}
 		
 		if( [imagesArray count] > 1)
 		{
+			int width, height;
+			[QTExportHTMLSummary getMovieWidth: &width height: &height imagesArray: imagesArrayObjects];
+			
+			for( int index = 0 ; index < [imagesArray count]; index++)
+			{
+				NSImage *im = [imagesArray objectAtIndex: index];
+				
+				if( (int) [im size].width != width || height != (int) [im size].height)
+				{
+					NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
+					[imagesArray replaceObjectAtIndex: index withObject: newImage];
+				}
+			}
+					
 			[self writeMovie: imagesArray name: [previousPath stringByAppendingPathExtension:@"mov"]];
 		}
 		else if( [imagesArray count] == 1)
