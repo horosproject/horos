@@ -1122,8 +1122,15 @@ extern const char *GetPrivateIP();
     
 	[connectionLock lock];
 	
-	[[aNotification object] acceptConnectionInBackgroundAndNotify];
-	[NSThread detachNewThreadSelector: @selector (subConnectionReceived:) toTarget: self withObject: [[aNotification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem]];
+	@try 
+	{
+		[[aNotification object] acceptConnectionInBackgroundAndNotify];
+		[NSThread detachNewThreadSelector: @selector (subConnectionReceived:) toTarget: self withObject: [[aNotification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem]];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[connectionLock unlock];
 	

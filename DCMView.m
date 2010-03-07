@@ -2935,7 +2935,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
-	[drawLock lock];
+	[drawLock unlock];
 }
 
 - (void) switchShowDescriptionInLarge

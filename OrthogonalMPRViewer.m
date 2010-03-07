@@ -1439,15 +1439,22 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 				
 				for( i = from; i < to; i+=interval)
 				{
-					NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					
-					[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
-					[splitView display];
-					[view display];
-					
-					[producedFiles addObject: [self exportDICOMFileInt:[[dcmFormat selectedCell] tag]]];
-					
-					[splash incrementBy: 1];
+					@try 
+					{
+						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
+						[splitView display];
+						[view display];
+						
+						[producedFiles addObject: [self exportDICOMFileInt:[[dcmFormat selectedCell] tag]]];
+						
+						[splash incrementBy: 1];
+					}
+					@catch (NSException * e) 
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					}
 					
 					[pool release];
 				}

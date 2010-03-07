@@ -2324,7 +2324,14 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 						[modalitySplitView display];
 						
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-						[producedFiles addObject: [self exportDICOMFileInt: YES]];
+						@try 
+						{
+							[producedFiles addObject: [self exportDICOMFileInt: YES]];
+						}
+						@catch (NSException * e) 
+						{
+							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+						}
 						[pool release];
 						
 						[splash incrementBy: 1];
@@ -2343,12 +2350,22 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 						[modalitySplitView display];
 						
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-						[exportDCM setSeriesNumber:nCT];
-						[producedFiles addObject: [self exportDICOMFileInt: YES view:viewCT]];
-						[exportDCM setSeriesNumber:nPETCT];
-						[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPETCT]];
-						[exportDCM setSeriesNumber:nPET];
-						[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPET]];
+						
+						@try 
+						{
+							[exportDCM setSeriesNumber:nCT];
+							[producedFiles addObject: [self exportDICOMFileInt: YES view:viewCT]];
+							[exportDCM setSeriesNumber:nPETCT];
+							[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPETCT]];
+							[exportDCM setSeriesNumber:nPET];
+							[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPET]];
+						
+						}
+						@catch (NSException * e) 
+						{
+							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+						}
+						
 						[pool release];
 						
 						[splash incrementBy: 1];

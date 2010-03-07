@@ -492,12 +492,20 @@ NSString* soundex4( NSString *inString)
 {
 	[[self managedObjectContext] lock];
 	
-	NSSet *sets = [self valueForKeyPath: @"series.images.completePath"];
 	NSMutableSet *set = [NSMutableSet set];
 	
-	for (id subset in sets)
-		[set unionSet: subset];
-		
+	@try 
+	{
+		NSSet *sets = [self valueForKeyPath: @"series.images.completePath"];
+	
+		for (id subset in sets)
+			[set unionSet: subset];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
 	[[self managedObjectContext] unlock];
 	
 	return set;
@@ -511,11 +519,19 @@ NSString* soundex4( NSString *inString)
 	[[self managedObjectContext] lock];
 	
 	NSMutableSet *set = [NSMutableSet set];
-	NSEnumerator *enumerator = [[self primitiveValueForKey: @"series"] objectEnumerator];
 	
-	id object;
-	while (object = [enumerator nextObject])
-		[set unionSet:[object keyImages]];
+	@try 
+	{
+		NSEnumerator *enumerator = [[self primitiveValueForKey: @"series"] objectEnumerator];
+	
+		id object;
+		while (object = [enumerator nextObject])
+			[set unionSet:[object keyImages]];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 		
 	[[self managedObjectContext] unlock];
 	
@@ -610,15 +626,23 @@ NSString* soundex4( NSString *inString)
 - (NSArray *)keyObjectSeries
 {
 	[[self managedObjectContext] lock];
-	
-	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
 	
-	for (id series in array)
+	@try 
 	{
-		if ([[DCMAbstractSyntaxUID keyObjectSelectionDocumentStorage] isEqualToString:[series valueForKey:@"seriesSOPClassUID"]])
-			[newArray addObject:series];
+		NSArray *array = [self primitiveValueForKey: @"series"] ;
+	
+		for (id series in array)
+		{
+			if ([[DCMAbstractSyntaxUID keyObjectSelectionDocumentStorage] isEqualToString:[series valueForKey:@"seriesSOPClassUID"]])
+				[newArray addObject:series];
+		}
 	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
 	
 	[[self managedObjectContext] unlock];
 	
@@ -629,11 +653,19 @@ NSString* soundex4( NSString *inString)
 {
 	[[self managedObjectContext] lock];
 	
-	NSArray *array = [self keyObjectSeries];
 	NSMutableSet *set = [NSMutableSet set];
 	
-	for (id series in array)
-		[set unionSet:[series primitiveValueForKey:@"images"]];
+	@try 
+	{
+		NSArray *array = [self keyObjectSeries];
+	
+		for (id series in array)
+			[set unionSet:[series primitiveValueForKey:@"images"]];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[self managedObjectContext] unlock];
 	
@@ -644,13 +676,21 @@ NSString* soundex4( NSString *inString)
 {
 	[[self managedObjectContext] lock];
 	
-	NSArray *array = [self primitiveValueForKey: @"series"];
 	NSMutableArray *newArray = [NSMutableArray array];
 	
-	for (id series in array)
+	@try 
 	{
-		if ([DCMAbstractSyntaxUID isPresentationState:[series valueForKey:@"seriesSOPClassUID"]])
-			[newArray addObject:series];
+		NSArray *array = [self primitiveValueForKey: @"series"];
+	
+		for (id series in array)
+		{
+			if ([DCMAbstractSyntaxUID isPresentationState:[series valueForKey:@"seriesSOPClassUID"]])
+				[newArray addObject:series];
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -662,13 +702,21 @@ NSString* soundex4( NSString *inString)
 {
 	[[self managedObjectContext] lock];
 	
-	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
 	
-	for (id series in array)
+	@try 
 	{
-		if ([DCMAbstractSyntaxUID isWaveform:[series valueForKey:@"seriesSOPClassUID"]])
-			[newArray addObject:series];
+		NSArray *array = [self primitiveValueForKey: @"series"];
+	
+		for (id series in array)
+		{
+			if ([DCMAbstractSyntaxUID isWaveform:[series valueForKey:@"seriesSOPClassUID"]])
+				[newArray addObject:series];
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -684,18 +732,27 @@ NSString* soundex4( NSString *inString)
 	[[self managedObjectContext] lock];
 	
 	NSMutableArray *newArray = [NSMutableArray array];
-	for( DicomSeries *series in array)
-	{
-		if( [[series valueForKey:@"id"] intValue] == 5002 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
-			[newArray addObject:series];
-	}
 	
-	if( [newArray count] > 1)
+	@try 
 	{
-		NSLog( @"****** multiple (%d) roiSRSeries?? Delete the extra series...", [newArray count]);
 		
-		for( int i = 1 ; i < [newArray count] ; i++)
-			[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
+		for( DicomSeries *series in array)
+		{
+			if( [[series valueForKey:@"id"] intValue] == 5002 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
+				[newArray addObject:series];
+		}
+		
+		if( [newArray count] > 1)
+		{
+			NSLog( @"****** multiple (%d) roiSRSeries?? Delete the extra series...", [newArray count]);
+			
+			for( int i = 1 ; i < [newArray count] ; i++)
+				[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -749,7 +806,15 @@ NSString* soundex4( NSString *inString)
 {
 	[[self managedObjectContext] lock];
 	
-	NSString * s = [[[[self valueForKey: @"albums"] allObjects] valueForKey:@"name"] componentsJoinedByString:@"/"];
+	NSString *s = nil;
+	@try 
+	{
+		s = [[[[self valueForKey: @"albums"] allObjects] valueForKey:@"name"] componentsJoinedByString:@"/"];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[self managedObjectContext] unlock];
 	

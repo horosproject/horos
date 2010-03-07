@@ -58,9 +58,17 @@
 {
 	[[self managedObjectContext] lock];
 	
-	NSManagedObject	*obj = [[self valueForKey:@"images"] anyObject];
+	BOOL local = YES;
 	
-	BOOL local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
+	@try 
+	{
+		NSManagedObject	*obj = [[self valueForKey:@"images"] anyObject];
+		local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[self managedObjectContext] unlock];
 	
@@ -74,31 +82,38 @@
 	
 	if( n == 0)
 	{
-		NSNumber *no;
+		NSNumber *no = nil;
 		
 		[[self managedObjectContext] lock];
 		
-		NSString *sopClassUID = [self valueForKey: @"seriesSOPClassUID"];
-		
-		if( [DCMAbstractSyntaxUID isStructuredReport: sopClassUID] == NO && [DCMAbstractSyntaxUID isPresentationState: sopClassUID] == NO)
+		@try 
 		{
-			int v = [[[[self valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-			
-			int count = [[self valueForKey:@"images"] count];
-			
-			if( v > 1) // There are frames !
-				no = [NSNumber numberWithInt: -count];
-			else
-				no = [NSNumber numberWithInt: count];
-			
-			[self willChangeValueForKey: @"numberOfImages"];
-			[self setPrimitiveValue:no forKey:@"numberOfImages"];
-			[self didChangeValueForKey: @"numberOfImages"];
-			
-			if( v > 1)
-				no = [NSNumber numberWithInt: count]; // For the return
+			NSString *sopClassUID = [self valueForKey: @"seriesSOPClassUID"];
+		
+			if( [DCMAbstractSyntaxUID isStructuredReport: sopClassUID] == NO && [DCMAbstractSyntaxUID isPresentationState: sopClassUID] == NO)
+			{
+				int v = [[[[self valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+				
+				int count = [[self valueForKey:@"images"] count];
+				
+				if( v > 1) // There are frames !
+					no = [NSNumber numberWithInt: -count];
+				else
+					no = [NSNumber numberWithInt: count];
+				
+				[self willChangeValueForKey: @"numberOfImages"];
+				[self setPrimitiveValue:no forKey:@"numberOfImages"];
+				[self didChangeValueForKey: @"numberOfImages"];
+				
+				if( v > 1)
+					no = [NSNumber numberWithInt: count]; // For the return
+			}
+			else no = [NSNumber numberWithInt: 0];
 		}
-		else no = [NSNumber numberWithInt: 0];
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 		
 		[[self managedObjectContext] unlock];
 		
@@ -136,7 +151,15 @@
 {
 	[[self managedObjectContext] lock];
 	
-	NSSet *set = [self valueForKeyPath:@"images.completePath"];
+	NSSet *set = nil;
+	@try 
+	{
+		set = [self valueForKeyPath:@"images.completePath"];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[self managedObjectContext] unlock];
 	
@@ -147,9 +170,17 @@
 {
 	[[self managedObjectContext] lock];
 	
-	NSArray *imageArray = [[self primitiveValueForKey:@"images"] allObjects];
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isKeyImage == YES"]; 
-	NSSet *set = [NSSet setWithArray:[imageArray filteredArrayUsingPredicate:predicate]];
+	NSSet *set = nil;
+	@try 
+	{
+		NSArray *imageArray = [[self primitiveValueForKey:@"images"] allObjects];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isKeyImage == YES"]; 
+		set = [NSSet setWithArray:[imageArray filteredArrayUsingPredicate:predicate]];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[self managedObjectContext] unlock];
 	
@@ -160,11 +191,19 @@
 {
 	[[self managedObjectContext] lock];
 	
-	NSArray *imageArray = [[self primitiveValueForKey:@"images"] allObjects];
+	NSArray *imageArray = nil;
+	NSArray *sortDescriptors = nil;
 	
-	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
-	NSArray *sortDescriptors= [NSArray arrayWithObject:sortDescriptor];
-	[sortDescriptor release];
+	@try 
+	{
+		imageArray = [[self primitiveValueForKey:@"images"] allObjects];
+	
+		sortDescriptors = [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease]];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}	
 	
 	[[self managedObjectContext] unlock];
 	

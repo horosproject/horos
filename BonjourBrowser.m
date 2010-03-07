@@ -1380,10 +1380,17 @@ extern const char *GetPrivateIP();
 {
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	[dicomListener release];
-	dicomListener = nil;
+	@try 
+	{
+		[dicomListener release];
+		dicomListener = nil;
 	
-	[self connectToServer: index message: @"GETDI"];
+		[self connectToServer: index message: @"GETDI"];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
@@ -1402,15 +1409,22 @@ extern const char *GetPrivateIP();
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	[self connectToServer: index message:@"VERSI"];
-	
-	if( localVersion == BonjourDatabaseVersion) result = YES;
-	else result = NO;
-	
-	if( result == NO)
+	@try 
 	{
-		NSLog( @"isBonjourDatabaseUpToDate == NO");
- 		NSLog( @"date: %@ versus: %@", [[NSDate dateWithTimeIntervalSinceReferenceDate:localVersion] description], [[NSDate dateWithTimeIntervalSinceReferenceDate:BonjourDatabaseVersion] description]);
+		[self connectToServer: index message:@"VERSI"];
+	
+		if( localVersion == BonjourDatabaseVersion) result = YES;
+		else result = NO;
+		
+		if( result == NO)
+		{
+			NSLog( @"isBonjourDatabaseUpToDate == NO");
+			NSLog( @"date: %@ versus: %@", [[NSDate dateWithTimeIntervalSinceReferenceDate:localVersion] description], [[NSDate dateWithTimeIntervalSinceReferenceDate:BonjourDatabaseVersion] description]);
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
@@ -1422,21 +1436,28 @@ extern const char *GetPrivateIP();
 {
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	[albumStudies release];
-	[albumUID release];
-	
-	albumStudies = [[NSMutableArray array] retain];
-	for( NSManagedObject *s in studies)
-		[albumStudies addObject: [[[s objectID] URIRepresentation] absoluteString]];
-	
-	albumUID = [[[[album objectID] URIRepresentation] absoluteString] retain];
-	
-	[self connectToServer: index message:@"REMAL"];
-	
-	[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
-	
-	[self connectToServer: index message:@"VERSI"];
-	localVersion = BonjourDatabaseVersion;
+	@try 
+	{
+		[albumStudies release];
+		[albumUID release];
+		
+		albumStudies = [[NSMutableArray array] retain];
+		for( NSManagedObject *s in studies)
+			[albumStudies addObject: [[[s objectID] URIRepresentation] absoluteString]];
+		
+		albumUID = [[[[album objectID] URIRepresentation] absoluteString] retain];
+		
+		[self connectToServer: index message:@"REMAL"];
+		
+		[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
+		
+		[self connectToServer: index message:@"VERSI"];
+		localVersion = BonjourDatabaseVersion;
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
@@ -1451,11 +1472,18 @@ extern const char *GetPrivateIP();
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	messageToSend = [NSDictionary dictionaryWithObjectsAndKeys: @"deleteRois", @"message", [[[dbObjectUID objectID] URIRepresentation] absoluteString], @"objectUID", roiPaths, @"roiPaths", nil];
+	@try 
+	{
+		messageToSend = [NSDictionary dictionaryWithObjectsAndKeys: @"deleteRois", @"message", [[[dbObjectUID objectID] URIRepresentation] absoluteString], @"objectUID", roiPaths, @"roiPaths", nil];
 	
-	[self connectToServer: [[BrowserController currentBrowser] currentBonjourService] message: @"NEWMS"];
-	
-	[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
+		[self connectToServer: [[BrowserController currentBrowser] currentBonjourService] message: @"NEWMS"];
+		
+		[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
@@ -1464,21 +1492,28 @@ extern const char *GetPrivateIP();
 {
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	[albumStudies release];
-	[albumUID release];
-	
-	albumStudies = [[NSMutableArray array] retain];
-	for( NSManagedObject *s in studies)
-		[albumStudies addObject: [[[s objectID] URIRepresentation] absoluteString]];
-	
-	albumUID = [[[[album objectID] URIRepresentation] absoluteString] retain];
-	
-	[self connectToServer: index message:@"ADDAL"];
-	
-	[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
-	
-	[self connectToServer: index message:@"VERSI"];
-	localVersion = BonjourDatabaseVersion;
+	@try 
+	{
+		[albumStudies release];
+		[albumUID release];
+		
+		albumStudies = [[NSMutableArray array] retain];
+		for( NSManagedObject *s in studies)
+			[albumStudies addObject: [[[s objectID] URIRepresentation] absoluteString]];
+		
+		albumUID = [[[[album objectID] URIRepresentation] absoluteString] retain];
+		
+		[self connectToServer: index message:@"ADDAL"];
+		
+		[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
+		
+		[self connectToServer: index message:@"VERSI"];
+		localVersion = BonjourDatabaseVersion;
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
@@ -1487,20 +1522,27 @@ extern const char *GetPrivateIP();
 {
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	[setValueObject release];
-	[setValueValue release];
-	[setValueKey release];
-	
-	setValueObject = [[[[obj objectID] URIRepresentation] absoluteString] retain];
-	setValueValue = [value retain];
-	setValueKey = [key retain];
-	
-	[self connectToServer: index message:@"SETVA"];
-	
-	[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
-	
-	[self connectToServer: index message:@"VERSI"];
-	localVersion = BonjourDatabaseVersion;
+	@try 
+	{
+		[setValueObject release];
+		[setValueValue release];
+		[setValueKey release];
+		
+		setValueObject = [[[[obj objectID] URIRepresentation] absoluteString] retain];
+		setValueValue = [value retain];
+		setValueKey = [key retain];
+		
+		[self connectToServer: index message:@"SETVA"];
+		
+		[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
+		
+		[self connectToServer: index message:@"VERSI"];
+		localVersion = BonjourDatabaseVersion;
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
@@ -1517,15 +1559,22 @@ extern const char *GetPrivateIP();
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	[filePathToLoad release];
-	
-	filePathToLoad = [pathFile retain];
-	
-	[self connectToServer: index message:@"MFILE"];
-	
-	if( resolved == YES)
+	@try 
 	{
-		modificationDate = [NSDate dateWithString: FileModificationDate];
+		[filePathToLoad release];
+	
+		filePathToLoad = [pathFile retain];
+		
+		[self connectToServer: index message:@"MFILE"];
+		
+		if( resolved == YES)
+		{
+			modificationDate = [NSDate dateWithString: FileModificationDate];
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
@@ -1545,14 +1594,21 @@ extern const char *GetPrivateIP();
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	[filePathToLoad release];
-	filePathToLoad = [pathFile retain];
-	
-	[self connectToServer: index message:@"RFILE"];
-	
-	if( resolved == YES)
+	@try 
 	{
-		returnedFile = [BonjourBrowser bonjour2local: filePathToLoad];
+		[filePathToLoad release];
+		filePathToLoad = [pathFile retain];
+		
+		[self connectToServer: index message:@"RFILE"];
+		
+		if( resolved == YES)
+		{
+			returnedFile = [BonjourBrowser bonjour2local: filePathToLoad];
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
@@ -1566,15 +1622,22 @@ extern const char *GetPrivateIP();
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	[filePathToLoad release];
-	
-	filePathToLoad = [pathFile retain];
-	
-	[self connectToServer: index message:@"WFILE"];
-	
-	if( resolved == YES)
+	@try 
 	{
-		succeed = YES;
+		[filePathToLoad release];
+	
+		filePathToLoad = [pathFile retain];
+		
+		[self connectToServer: index message:@"WFILE"];
+		
+		if( resolved == YES)
+		{
+			succeed = YES;
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
@@ -1590,130 +1653,139 @@ extern const char *GetPrivateIP();
 - (NSString*) getDatabaseFile:(int) index showWaitingWindow: (BOOL) showWaitingWindow
 {
 	BOOL newConnection = NO;
+	NSString *returnedPath = nil;
 	
 	if( serviceBeingResolvedIndex != index)
 		newConnection = YES;
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	[dbFileName release];
-	dbFileName = nil;
-	
-	isPasswordProtected = NO;
-
-	if( showWaitingWindow)
-		waitWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
-	else
-		waitWindow = nil;
-
-	BonjourDatabaseIndexFileSize = 0;
-	currentDataPos = 0;
-
-	[waitWindow showWindow:self];
-	[waitWindow setCancel: YES];
-	[waitWindow setCancelDelegate: self];
-	[waitWindow start];
-	
-	if( [self connectToServer: index message:@"DBVER"])
+	@try 
 	{
-		[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
+		[dbFileName release];
+		dbFileName = nil;
 		
-		if( [modelVersion isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"]] == NO)
-		{
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
-			[waitWindow end];
-			[waitWindow release];
-			waitWindow = nil;
-			
-			if( modelVersion == nil || [modelVersion length] == 0)
-				NSLog( @"Failed to connect to the distant computer. Is database sharing activated on the distant computer?");
-			else
-				NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Database structure is not identical. Use the SAME version of OsiriX on clients and servers to correct the problem.", nil), nil, nil, nil);
-			
-			return nil;
-		}
-		
-		if( newConnection)
-		{
-			[self connectToServer: index message:@"ISPWD"];
-			
-			[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
-		}
+		isPasswordProtected = NO;
+
+		if( showWaitingWindow)
+			waitWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
 		else
-		{
-			resolved = YES;
-		}
+			waitWindow = nil;
+
+		BonjourDatabaseIndexFileSize = 0;
+		currentDataPos = 0;
+
+		[waitWindow showWindow:self];
+		[waitWindow setCancel: YES];
+		[waitWindow setCancelDelegate: self];
+		[waitWindow start];
 		
-		if( resolved == YES)
+		if( [self connectToServer: index message:@"DBVER"])
 		{
-			if( isPasswordProtected)
+			[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
+			
+			if( [modelVersion isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"]] == NO)
 			{
-				[password release];
-				password = nil;
+				[[[BrowserController currentBrowser] managedObjectContext] unlock];
+				[waitWindow end];
+				[waitWindow release];
+				waitWindow = nil;
 				
-				password = [[interfaceOsiriX askPassword] retain];
+				if( modelVersion == nil || [modelVersion length] == 0)
+					NSLog( @"Failed to connect to the distant computer. Is database sharing activated on the distant computer?");
+				else
+					NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Database structure is not identical. Use the SAME version of OsiriX on clients and servers to correct the problem.", nil), nil, nil, nil);
 				
-				wrongPassword = YES;
-				[self connectToServer: index message:@"PASWD"];
-				[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
-				
-				if( resolved == NO || wrongPassword == YES)
-				{
-					[[[BrowserController currentBrowser] managedObjectContext] unlock];
-					[waitWindow end];
-					[waitWindow release];
-					waitWindow = nil;
-					
-					NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Wrong password.", nil), nil, nil, nil);
-					serviceBeingResolvedIndex = -1;
-					
-					return nil;
-				}
+				return nil;
 			}
 			
-			if( [self connectToServer: index message: @"DBSIZ"] == YES)
+			if( newConnection)
 			{
-				[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
+				[self connectToServer: index message:@"ISPWD"];
 				
-				if( BonjourDatabaseIndexFileSize)
+				[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
+			}
+			else
+			{
+				resolved = YES;
+			}
+			
+			if( resolved == YES)
+			{
+				if( isPasswordProtected)
 				{
-					NSLog( @"BonjourDatabaseIndexFileSize = %d Kb", BonjourDatabaseIndexFileSize/1024);
+					[password release];
+					password = nil;
 					
-					if( currentDataPtr)
+					password = [[interfaceOsiriX askPassword] retain];
+					
+					wrongPassword = YES;
+					[self connectToServer: index message:@"PASWD"];
+					[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
+					
+					if( resolved == NO || wrongPassword == YES)
 					{
-						[asyncWrite lock];
-						free( currentDataPtr);
-						currentDataPtr = nil;
-						[asyncWrite unlock];
+						[[[BrowserController currentBrowser] managedObjectContext] unlock];
+						[waitWindow end];
+						[waitWindow release];
+						waitWindow = nil;
+						
+						NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Wrong password.", nil), nil, nil, nil);
+						serviceBeingResolvedIndex = -1;
+						
+						return nil;
 					}
+				}
+				
+				if( [self connectToServer: index message: @"DBSIZ"] == YES)
+				{
+					[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
 					
-					// For async writing
-					[[NSFileManager defaultManager] removeFileAtPath: tempDatabaseFile handler: nil];
-					[[NSFileManager defaultManager] createFileAtPath: tempDatabaseFile contents:nil attributes:nil];
-					lastAsyncPos = 0;
-					[asyncWrite lock];
-					[asyncWrite unlock];
-					
-					if( [self connectToServer: index message: @"DATAB"] == YES)
+					if( BonjourDatabaseIndexFileSize)
 					{
-						[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
+						NSLog( @"BonjourDatabaseIndexFileSize = %d Kb", BonjourDatabaseIndexFileSize/1024);
 						
-						[self connectToServer: index message: @"VERSI"];
+						if( currentDataPtr)
+						{
+							[asyncWrite lock];
+							free( currentDataPtr);
+							currentDataPtr = nil;
+							[asyncWrite unlock];
+						}
 						
-						localVersion = BonjourDatabaseVersion;
+						// For async writing
+						[[NSFileManager defaultManager] removeFileAtPath: tempDatabaseFile handler: nil];
+						[[NSFileManager defaultManager] createFileAtPath: tempDatabaseFile contents:nil attributes:nil];
+						lastAsyncPos = 0;
+						[asyncWrite lock];
+						[asyncWrite unlock];
+						
+						if( [self connectToServer: index message: @"DATAB"] == YES)
+						{
+							[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
+							
+							[self connectToServer: index message: @"VERSI"];
+							
+							localVersion = BonjourDatabaseVersion;
+						}
+						else
+						{
+							[dbFileName release];
+							dbFileName = nil;
+						}
+						
+						if( currentDataPtr)
+						{
+							[asyncWrite lock];
+							free( currentDataPtr);
+							currentDataPtr = nil;
+							[asyncWrite unlock];
+						}
 					}
 					else
 					{
 						[dbFileName release];
 						dbFileName = nil;
-					}
-					
-					if( currentDataPtr)
-					{
-						[asyncWrite lock];
-						free( currentDataPtr);
-						currentDataPtr = nil;
-						[asyncWrite unlock];
 					}
 				}
 				else
@@ -1733,21 +1805,20 @@ extern const char *GetPrivateIP();
 			[dbFileName release];
 			dbFileName = nil;
 		}
+		
+		returnedPath = dbFileName;
+		
+		if( [waitWindow aborted]) returnedPath = @"aborted";
+		
+		[waitWindow end];
+		[waitWindow close];
+		[waitWindow release];
+		waitWindow = nil;
 	}
-	else
+	@catch (NSException * e) 
 	{
-		[dbFileName release];
-		dbFileName = nil;
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
-	
-	NSString *returnedPath = dbFileName;
-	
-	if( [waitWindow aborted]) returnedPath = @"aborted";
-	
-	[waitWindow end];
-	[waitWindow close];
-	[waitWindow release];
-	waitWindow = nil;
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
@@ -1779,27 +1850,34 @@ extern const char *GetPrivateIP();
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	[paths release];
-	paths = [ip retain];
-	
-	[dicomDestination release];
-	if( indexTo >= 0)
+	@try 
 	{
-		dicomDestination = [[services objectAtIndex: indexTo] retain];
+		[paths release];
+		paths = [ip retain];
+		
+		[dicomDestination release];
+		if( indexTo >= 0)
+		{
+			dicomDestination = [[services objectAtIndex: indexTo] retain];
+		}
+		else // indexTo == -1: this computer
+		{
+			NSString *address = [NSString stringWithCString: GetPrivateIP()];
+			
+			dicomDestination = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", [NSString stringWithFormat: @"%d", [DCMTKStoreSCU sendSyntaxForListenerSyntax: [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"]]], @"TransferSyntax", nil];
+			
+			[dicomDestination retain];
+			
+			if( [address isEqualToString: @"127.0.0.1"])
+				return NO;
+		}
+		
+		[self connectToServer: indexFrom message: @"DCMSE"];
 	}
-	else // indexTo == -1: this computer
+	@catch (NSException * e) 
 	{
-		NSString *address = [NSString stringWithCString: GetPrivateIP()];
-		
-		dicomDestination = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", [NSString stringWithFormat: @"%d", [DCMTKStoreSCU sendSyntaxForListenerSyntax: [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"]]], @"TransferSyntax", nil];
-		
-		[dicomDestination retain];
-		
-		if( [address isEqualToString: @"127.0.0.1"])
-			return NO;
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
-	
-	[self connectToServer: indexFrom message: @"DCMSE"];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
@@ -1815,10 +1893,19 @@ extern const char *GetPrivateIP();
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	[paths release];
-	paths = [ip retain];
+	BOOL success = NO;
 	
-	BOOL success = [self connectToServer: index message:@"SENDD"];
+	@try 
+	{
+		[paths release];
+		paths = [ip retain];
+	
+		success = [self connectToServer: index message:@"SENDD"];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
@@ -1829,29 +1916,36 @@ extern const char *GetPrivateIP();
 {
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	[dicomFileNames release];
-	dicomFileNames = [[NSMutableArray alloc] initWithCapacity: 0];
-	
-	[paths release];
-	paths = [[NSMutableArray alloc] initWithCapacity: 0];
-	
-	// TRY TO LOAD MULTIPLE DICOM FILES AT SAME TIME -> better network performances
-	
-	NSString	*roistring = [NSString stringWithString:@"ROIs/"];
-	
-	for( id loopItem in roisPaths)
+	@try 
 	{
-		NSString	*local = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/TEMP.noindex/"] stringByAppendingPathComponent: loopItem];
-		 
-		if( [[NSFileManager defaultManager] fileExistsAtPath: local] == NO)
+		[dicomFileNames release];
+		dicomFileNames = [[NSMutableArray alloc] initWithCapacity: 0];
+		
+		[paths release];
+		paths = [[NSMutableArray alloc] initWithCapacity: 0];
+		
+		// TRY TO LOAD MULTIPLE DICOM FILES AT SAME TIME -> better network performances
+		
+		NSString	*roistring = [NSString stringWithString:@"ROIs/"];
+		
+		for( id loopItem in roisPaths)
 		{
-			[paths addObject: [roistring stringByAppendingPathComponent: loopItem]];
-			[dicomFileNames addObject: [BonjourBrowser bonjour2local: loopItem]];
+			NSString	*local = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/TEMP.noindex/"] stringByAppendingPathComponent: loopItem];
+			 
+			if( [[NSFileManager defaultManager] fileExistsAtPath: local] == NO)
+			{
+				[paths addObject: [roistring stringByAppendingPathComponent: loopItem]];
+				[dicomFileNames addObject: [BonjourBrowser bonjour2local: loopItem]];
+			}
 		}
+		
+		if( [dicomFileNames count] > 0)
+			[self connectToServer: index message:@"DICOM"];
 	}
-	
-	if( [dicomFileNames count] > 0)
-		[self connectToServer: index message:@"DICOM"];
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
@@ -1860,84 +1954,86 @@ extern const char *GetPrivateIP();
 {
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	// Does this file already exist?
-	NSString	*dicomFileName = [BonjourBrowser uniqueLocalPath: image];
+	NSString *returnString = nil;
 	
-	if( [[NSFileManager defaultManager] fileExistsAtPath: dicomFileName])
+	@try 
 	{
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
-		return dicomFileName;
-	}
-	
-	[dicomFileNames release];
-	dicomFileNames = [[NSMutableArray alloc] initWithCapacity: 0];
-	
-	[paths release];
-	paths = [[NSMutableArray alloc] initWithCapacity: 0];
-	
-	// TRY TO LOAD MULTIPLE DICOM FILES AT SAME TIME -> better network performances
-	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease];
-	NSArray				*images = [[[[image valueForKey: @"series"] valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
-	NSInteger			size = 0, i = [images indexOfObject: image];
-	
-	do
-	{
-		DicomImage	*curImage = [images objectAtIndex: i];
+		// Does this file already exist?
+		NSString *dicomFileName = [BonjourBrowser uniqueLocalPath: image];
 		
-		dicomFileName = [BonjourBrowser uniqueLocalPath: curImage];
-		
-		if( [[NSFileManager defaultManager] fileExistsAtPath: dicomFileName] == NO)
+		if( [[NSFileManager defaultManager] fileExistsAtPath: dicomFileName])
 		{
-			[paths addObject: [curImage valueForKey:@"path"]];
-			[dicomFileNames addObject: dicomFileName];
-			
-			size += [[curImage valueForKey:@"width"] intValue] * [[curImage valueForKey:@"height"] intValue] * 2 * [[curImage valueForKey:@"numberOfFrames"] intValue];
-			
-			if([[[curImage valueForKey:@"path"] pathExtension] isEqualToString:@"zip"])
-			{
-				// it is a ZIP
-				NSLog(@"BONJOUR ZIP");
-				NSString *xmlPath = [[[curImage valueForKey:@"path"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-				if(![[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
-				{
-					// it has an XML descriptor with it
-					NSLog(@"BONJOUR XML");
-					[paths addObject:xmlPath];
-					[dicomFileNames addObject: [[dicomFileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"]];
-				}
-			}
-			
-//			NSManagedObject	*roiSRSeries = [[curImage valueForKeyPath:@"series.study"] valueForKey:@"roiSRSeries"];
-//			
-//			NSArray	*rois = [curImage SRPaths];
-//			
-//			int x;
-//			for( x = 0; x < [rois count] ; x++)
-//			{
-//				if( [[NSFileManager defaultManager] fileExistsAtPath: [rois objectAtIndex: x]])
-//				{
-//					[paths addObject: [rois objectAtIndex: x]];
-//					[dicomFileNames addObject: [[dicomFileName stringByDeletingLastPathComponent] stringByAppendingPathComponent: [[rois objectAtIndex: x] lastPathComponent]]];
-//				}
-//			}
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			return dicomFileName;
 		}
-		i++;
 		
-	}while( size < FILESSIZE*noOfImages && i < [images count]);
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
-	
-	[self connectToServer: index message:@"DICOM"];
-	
-	NSString	*returnString;
-	
-	if( [dicomFileNames count] == 0) returnString = nil;
-	else if( [[NSFileManager defaultManager] fileExistsAtPath: [dicomFileNames objectAtIndex: 0]] == NO) returnString =  nil;
-	else returnString = [NSString stringWithString: [dicomFileNames objectAtIndex: 0]];
-	
+		[dicomFileNames release];
+		dicomFileNames = [[NSMutableArray alloc] initWithCapacity: 0];
+		
+		[paths release];
+		paths = [[NSMutableArray alloc] initWithCapacity: 0];
+		
+		// TRY TO LOAD MULTIPLE DICOM FILES AT SAME TIME -> better network performances
+		NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease];
+		NSArray				*images = [[[[image valueForKey: @"series"] valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
+		NSInteger			size = 0, i = [images indexOfObject: image];
+		
+		do
+		{
+			DicomImage	*curImage = [images objectAtIndex: i];
+			
+			dicomFileName = [BonjourBrowser uniqueLocalPath: curImage];
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: dicomFileName] == NO)
+			{
+				[paths addObject: [curImage valueForKey:@"path"]];
+				[dicomFileNames addObject: dicomFileName];
+				
+				size += [[curImage valueForKey:@"width"] intValue] * [[curImage valueForKey:@"height"] intValue] * 2 * [[curImage valueForKey:@"numberOfFrames"] intValue];
+				
+				if([[[curImage valueForKey:@"path"] pathExtension] isEqualToString:@"zip"])
+				{
+					// it is a ZIP
+					NSLog(@"BONJOUR ZIP");
+					NSString *xmlPath = [[[curImage valueForKey:@"path"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+					if(![[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
+					{
+						// it has an XML descriptor with it
+						NSLog(@"BONJOUR XML");
+						[paths addObject:xmlPath];
+						[dicomFileNames addObject: [[dicomFileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"]];
+					}
+				}
+				
+	//			NSManagedObject	*roiSRSeries = [[curImage valueForKeyPath:@"series.study"] valueForKey:@"roiSRSeries"];
+	//			
+	//			NSArray	*rois = [curImage SRPaths];
+	//			
+	//			int x;
+	//			for( x = 0; x < [rois count] ; x++)
+	//			{
+	//				if( [[NSFileManager defaultManager] fileExistsAtPath: [rois objectAtIndex: x]])
+	//				{
+	//					[paths addObject: [rois objectAtIndex: x]];
+	//					[dicomFileNames addObject: [[dicomFileName stringByDeletingLastPathComponent] stringByAppendingPathComponent: [[rois objectAtIndex: x] lastPathComponent]]];
+	//				}
+	//			}
+			}
+			i++;
+			
+		}while( size < FILESSIZE*noOfImages && i < [images count]);
+		
+		[self connectToServer: index message:@"DICOM"];
+		
+		if( [dicomFileNames count] == 0) returnString = nil;
+		else if( [[NSFileManager defaultManager] fileExistsAtPath: [dicomFileNames objectAtIndex: 0]] == NO) returnString =  nil;
+		else returnString = [NSString stringWithString: [dicomFileNames objectAtIndex: 0]];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	return returnString;

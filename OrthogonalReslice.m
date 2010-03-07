@@ -87,10 +87,18 @@
 
 - (void) xResliceThread: (NSNumber*) xNum
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
- 	[self xReslice: [xNum intValue]];
+	@try 
+	{
+		[self xReslice: [xNum intValue]];
 	
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+ 	
 //	[resliceLock unlockWithCondition: 1];
 	
 	[pool release];
