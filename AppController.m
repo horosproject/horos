@@ -1858,8 +1858,11 @@ static NSDate *lastWarningDate = nil;
 
 	#ifndef OSIRIX_LIGHT
 	[STORESCP lock];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	@try 
+	{
+		
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseHostNameForAETitle"])
 			[self setAETitleToHostname];
@@ -1878,8 +1881,14 @@ static NSDate *lastWarningDate = nil;
 		dcmtkQRSCP = [[DCMTKQueryRetrieveSCP alloc] initWithPort:port  aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params];
 		[dcmtkQRSCP run];
 		
-		[pool release];
+		
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
+	[pool release];
 	[STORESCP unlock];
 	#endif
 	
@@ -1961,19 +1970,26 @@ static NSDate *lastWarningDate = nil;
 	{
 		[STORESCPTLS lock];
 		
-		NSString *c = [[NSUserDefaults standardUserDefaults] stringForKey:@"TLSStoreSCPAETITLE"];
-		if( [c length] > 16)
+		@try 
 		{
-			c = [c substringToIndex: 16];
-			[[NSUserDefaults standardUserDefaults] setObject: c forKey:@"TLSStoreSCPAETITLE"];
+			NSString *c = [[NSUserDefaults standardUserDefaults] stringForKey:@"TLSStoreSCPAETITLE"];
+			if( [c length] > 16)
+			{
+				c = [c substringToIndex: 16];
+				[[NSUserDefaults standardUserDefaults] setObject: c forKey:@"TLSStoreSCPAETITLE"];
+			}
+			
+			NSString *aeTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"TLSStoreSCPAETITLE"];
+			int port = [[[NSUserDefaults standardUserDefaults] stringForKey: @"TLSStoreSCPAEPORT"] intValue];
+			NSDictionary *params = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"TLSEnabled"];
+			
+			dcmtkQRSCPTLS = [[DCMTKQueryRetrieveSCP alloc] initWithPort:port aeTitle:aeTitle extraParamaters:params];
+			[dcmtkQRSCPTLS run];
 		}
-		
-		NSString *aeTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"TLSStoreSCPAETITLE"];
-		int port = [[[NSUserDefaults standardUserDefaults] stringForKey: @"TLSStoreSCPAEPORT"] intValue];
-		NSDictionary *params = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"TLSEnabled"];
-		
-		dcmtkQRSCPTLS = [[DCMTKQueryRetrieveSCP alloc] initWithPort:port aeTitle:aeTitle extraParamaters:params];
-		[dcmtkQRSCPTLS run];
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 		
 		[STORESCPTLS unlock];
 	}	

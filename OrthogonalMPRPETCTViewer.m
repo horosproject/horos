@@ -2375,8 +2375,16 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 			
 			[[[BrowserController currentBrowser] managedObjectContext] lock];
 			
-			for( NSManagedObject *s in [[[viewer currentStudy] valueForKey: @"series"] allObjects])
+			@try 
+			{
+				for( NSManagedObject *s in [[[viewer currentStudy] valueForKey: @"series"] allObjects])
 				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+			
+			}
+			@catch (NSException * e) 
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 			
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 			

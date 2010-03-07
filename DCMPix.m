@@ -4651,7 +4651,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	request.predicate = [NSCompoundPredicate orPredicateWithSubpredicates: refSeriesUIDPredicates];
 	
 	[moc lock];
-	NSArray *imgObjects = [moc executeFetchRequest: request error: &error];
+	NSArray *imgObjects = nil;
+	@try 
+	{
+		imgObjects = [moc executeFetchRequest: request error: &error];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	[moc unlock];
 	
 	if ( imgObjects.count == 0)
@@ -6059,81 +6067,88 @@ END_CREATE_ROIS:
 	
 	[PapyrusLock lock];
 	
-	NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
-	
-	int fileNb = -1;
-	
-	if( cachedGroupsForThisFile == nil)
+	@try 
 	{
-		fileNb = Papy3FileOpen ( (char*) [srcFile UTF8String], (PAPY_FILE) 0, TRUE, 0);
+		NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
+		
+		int fileNb = -1;
+		
+		if( cachedGroupsForThisFile == nil)
+		{
+			fileNb = Papy3FileOpen ( (char*) [srcFile UTF8String], (PAPY_FILE) 0, TRUE, 0);
+			
+			if( fileNb >= 0)
+			{
+				cachedGroupsForThisFile = [NSMutableDictionary dictionary];
+				[cachedPapyGroups setObject: cachedGroupsForThisFile forKey: srcFile];
+				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: fileNb]  forKey: @"fileNb"];
+				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
+				
+				if( [cachedPapyGroups count] >= kMax_file_open)
+					NSLog( @"******* WARNING: Too much files opened for Papyrus Toolkit");
+					
+				if( gPapyFile[ fileNb] == nil)
+					NSLog( @"******* WARNING: gPapyFile[ fileNb] == nil");
+			}
+			else
+				NSLog( @"Papy3FileOpen failed : %d", fileNb);
+		}
+		else
+		{
+			fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
+			
+			if( group == 0L)
+			{
+				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
+			}
+		}
 		
 		if( fileNb >= 0)
 		{
-			cachedGroupsForThisFile = [NSMutableDictionary dictionary];
-			[cachedPapyGroups setObject: cachedGroupsForThisFile forKey: srcFile];
-			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: fileNb]  forKey: @"fileNb"];
-			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
-			
-			if( [cachedPapyGroups count] >= kMax_file_open)
-				NSLog( @"******* WARNING: Too much files opened for Papyrus Toolkit");
-				
-			if( gPapyFile[ fileNb] == nil)
-				NSLog( @"******* WARNING: gPapyFile[ fileNb] == nil");
-		}
-		else
-			NSLog( @"Papy3FileOpen failed : %d", fileNb);
-	}
-	else
-	{
-		fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
-		
-		if( group == 0L)
-		{
-			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
-		}
-	}
-	
-	if( fileNb >= 0)
-	{
-		if( group == 0)
-		{
-			#if !__LP64__
-			theGroupP = (SElement*) 0xFFFFFFFF;
-			#else
-			theGroupP = (SElement*) 0xFFFFFFFFFFFFFFFF;
-			#endif
-		}
-		else
-		{
-			if( [cachedGroupsForThisFile valueForKey: groupKey] == nil)
+			if( group == 0)
 			{
-				int theErr = 0;
-				
-				if (gIsPapyFile[ fileNb] == DICOM10)
-					theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
-				
-				if( theErr == 0)
-				{
-					theErr = Papy3GotoGroupNb (fileNb, group);
-					
-					if( theErr >= 0)
-					{
-						if( Papy3GroupRead(fileNb, &theGroupP) > 0)
-						{
-							[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: theGroupP] forKey: groupKey];
-						}
-						else
-							NSLog( @"Error while reading a group (Papyrus)");
-					}
-					else
-					{
-						[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: 0L]  forKey: groupKey];
-					}
-				}
+				#if !__LP64__
+				theGroupP = (SElement*) 0xFFFFFFFF;
+				#else
+				theGroupP = (SElement*) 0xFFFFFFFFFFFFFFFF;
+				#endif
 			}
 			else
-				theGroupP = [[cachedGroupsForThisFile valueForKey: groupKey] pointerValue];
+			{
+				if( [cachedGroupsForThisFile valueForKey: groupKey] == nil)
+				{
+					int theErr = 0;
+					
+					if (gIsPapyFile[ fileNb] == DICOM10)
+						theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+					
+					if( theErr == 0)
+					{
+						theErr = Papy3GotoGroupNb (fileNb, group);
+						
+						if( theErr >= 0)
+						{
+							if( Papy3GroupRead(fileNb, &theGroupP) > 0)
+							{
+								[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: theGroupP] forKey: groupKey];
+							}
+							else
+								NSLog( @"Error while reading a group (Papyrus)");
+						}
+						else
+						{
+							[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: 0L]  forKey: groupKey];
+						}
+					}
+				}
+				else
+					theGroupP = [[cachedGroupsForThisFile valueForKey: groupKey] pointerValue];
+			}
 		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[PapyrusLock unlock];
@@ -6149,30 +6164,38 @@ END_CREATE_ROIS:
 	[purgeCacheLock lockWhenCondition: 0];
 	[PapyrusLock lock];
 	
-	[cachedDCMFrameworkFiles removeAllObjects];
-	
-	for( NSString *file in [cachedPapyGroups allKeys])
+	@try 
 	{
-		NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: file];
-		
-		if( cachedGroupsForThisFile)
+		[cachedDCMFrameworkFiles removeAllObjects];
+	
+		for( NSString *file in [cachedPapyGroups allKeys])
 		{
-			int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
-			[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
-			[cachedGroupsForThisFile removeObjectForKey: @"count"];
-				
-			for( NSValue *pointer in [cachedGroupsForThisFile allValues])
+			NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: file];
+			
+			if( cachedGroupsForThisFile)
 			{
-				SElement *theGroupP = (SElement*) [pointer pointerValue];
-				Papy3GroupFree ( &theGroupP, TRUE);
+				int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
+				[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
+				[cachedGroupsForThisFile removeObjectForKey: @"count"];
+					
+				for( NSValue *pointer in [cachedGroupsForThisFile allValues])
+				{
+					SElement *theGroupP = (SElement*) [pointer pointerValue];
+					Papy3GroupFree ( &theGroupP, TRUE);
+				}
+					
+				[cachedPapyGroups removeObjectForKey: file];
+				Papy3FileClose (fileNb, TRUE);
 			}
-				
-			[cachedPapyGroups removeObjectForKey: file];
-			Papy3FileClose (fileNb, TRUE);
 		}
+		
+		[cachedPapyGroups removeAllObjects];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
-	[cachedPapyGroups removeAllObjects];
 	
 	[PapyrusLock unlock];
 	[purgeCacheLock unlock];
@@ -6182,17 +6205,24 @@ END_CREATE_ROIS:
 {
 	[PapyrusLock lock];
 	
-	if( fImage)
+	@try 
 	{
-		NSMutableDictionary *o = [cachedDCMFrameworkFiles valueForKey: srcFile];
-		
-		if( o)
+		if( fImage)
 		{
-			[o setValue: [NSNumber numberWithInt: [[o objectForKey: @"count"] intValue]-1] forKey: @"count"];
+			NSMutableDictionary *o = [cachedDCMFrameworkFiles valueForKey: srcFile];
 			
-			if( [[o objectForKey: @"count"] intValue] <= 0)
-				[cachedDCMFrameworkFiles removeObjectForKey: srcFile];
+			if( o)
+			{
+				[o setValue: [NSNumber numberWithInt: [[o objectForKey: @"count"] intValue]-1] forKey: @"count"];
+				
+				if( [[o objectForKey: @"count"] intValue] <= 0)
+					[cachedDCMFrameworkFiles removeObjectForKey: srcFile];
+			}
 		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[PapyrusLock unlock];
@@ -6202,27 +6232,34 @@ END_CREATE_ROIS:
 {
 	[PapyrusLock lock];
 	
-	NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
-	
-	if( cachedGroupsForThisFile)
+	@try 
 	{
-		[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile objectForKey: @"count"] intValue]-1] forKey: @"count"];
-		
-		if( [[cachedGroupsForThisFile objectForKey: @"count"] intValue] <= 0)
+		NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
+	
+		if( cachedGroupsForThisFile)
 		{
-			int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
-			[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
-			[cachedGroupsForThisFile removeObjectForKey: @"count"];
+			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile objectForKey: @"count"] intValue]-1] forKey: @"count"];
 			
-			for( NSValue *pointer in [cachedGroupsForThisFile allValues])
+			if( [[cachedGroupsForThisFile objectForKey: @"count"] intValue] <= 0)
 			{
-				SElement *theGroupP = (SElement*) [pointer pointerValue];
-				Papy3GroupFree ( &theGroupP, TRUE);
+				int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
+				[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
+				[cachedGroupsForThisFile removeObjectForKey: @"count"];
+				
+				for( NSValue *pointer in [cachedGroupsForThisFile allValues])
+				{
+					SElement *theGroupP = (SElement*) [pointer pointerValue];
+					Papy3GroupFree ( &theGroupP, TRUE);
+				}
+				
+				[cachedPapyGroups removeObjectForKey: srcFile];
+				Papy3FileClose (fileNb, TRUE);
 			}
-			
-			[cachedPapyGroups removeObjectForKey: srcFile];
-			Papy3FileClose (fileNb, TRUE);
 		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[PapyrusLock unlock];
@@ -8486,41 +8523,46 @@ END_CREATE_ROIS:
 		if( quicktimeThreadLock == nil) quicktimeThreadLock = [[NSLock alloc] init];
 		
 		[quicktimeThreadLock lock];
-		
 		[QTMovie enterQTKitOnThreadDisablingThreadSafetyProtection];
 		
-		NSError	*error = nil;
-		
-		QTMovie *movie = [[QTMovie alloc] initWithFile:srcFile error: &error];
-		
-		if( movie)
+		@try 
 		{
-			[movie attachToCurrentThread];
+			NSError	*error = nil;
+		
+			QTMovie *movie = [[QTMovie alloc] initWithFile:srcFile error: &error];
 			
-			int curFrame = 0;
-			[movie gotoBeginning];
-			
-			QTTime previousTime = [movie currentTime];
-			
-			curFrame = 0;
-			
-			while( curFrame != frameNo)
+			if( movie)
 			{
-				previousTime = [movie currentTime];
-				curFrame++;
-				[movie stepForward];
+				[movie attachToCurrentThread];
 				
-				if( QTTimeCompare( previousTime, [movie currentTime]) != NSOrderedAscending) curFrame = frameNo;
+				int curFrame = 0;
+				[movie gotoBeginning];
+				
+				QTTime previousTime = [movie currentTime];
+				
+				curFrame = 0;
+				
+				while( curFrame != frameNo)
+				{
+					previousTime = [movie currentTime];
+					curFrame++;
+					[movie stepForward];
+					
+					if( QTTimeCompare( previousTime, [movie currentTime]) != NSOrderedAscending) curFrame = frameNo;
+				}
+				
+				[self getDataFromNSImage: [movie currentFrameImage]];
+				
+				[movie release];
 			}
-			
-			[self getDataFromNSImage: [movie currentFrameImage]];
-			
-			[movie release];
+			else NSLog( @"movie == nil, %@", [error description]);
 		}
-		else NSLog( @"movie == nil, %@", [error description]);
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 		
 		[QTMovie exitQTKitOnThread];
-		
 		[quicktimeThreadLock unlock];
 	}
 }
@@ -10207,29 +10249,36 @@ END_CREATE_ROIS:
 	
 	[checking lock];
 	
-	if( isRGB)
+	@try 
 	{
-		pixmax = 255;
-		pixmin = 0;
-	}
-	else
-	{
-		float fmin, fmax;
-		
-		vDSP_minv ( fImage,  1, &fmin, width * height);
-		vDSP_maxv ( fImage , 1, &fmax, width * height);
-		
-		pixmax = fmax;
-		pixmin = fmin;
-		
-		if( pixmin == pixmax)
+		if( isRGB)
 		{
-			pixmax = pixmin + 20;
+			pixmax = 255;
+			pixmin = 0;
 		}
+		else
+		{
+			float fmin, fmax;
+			
+			vDSP_minv ( fImage,  1, &fmin, width * height);
+			vDSP_maxv ( fImage , 1, &fmax, width * height);
+			
+			pixmax = fmax;
+			pixmin = fmin;
+			
+			if( pixmin == pixmax)
+			{
+				pixmax = pixmin + 20;
+			}
+		}
+		
+		fullwl = pixmin + (pixmax - pixmin)/2;
+		fullww = (pixmax - pixmin);
 	}
-	
-	fullwl = pixmin + (pixmax - pixmin)/2;
-	fullww = (pixmax - pixmin);
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[checking unlock];
 }
@@ -11552,42 +11601,49 @@ END_CREATE_ROIS:
 	
 	[checking lock];
 	
-	SUVConverted = NO;
-	fullww = 0;
-	fullwl = 0;
-	
-	[self kill8bitsImage];
-
-	[frameOfReferenceUID release];				frameOfReferenceUID = nil;
-	[acquisitionTime release];					acquisitionTime = nil;
-	[acquisitionDate release];					acquisitionDate = nil;
-	[radiopharmaceuticalStartTime release];		radiopharmaceuticalStartTime = nil;
-	[repetitiontime release];					repetitiontime = nil;
-	[echotime release];							echotime = nil;
-	[flipAngle release];						flipAngle = nil;
-	[laterality release];						laterality = nil;
-	[viewPosition release];						viewPosition = nil;
-	[patientPosition release];					patientPosition = nil;
-	[units release];							units = nil;
-	[decayCorrection release];					decayCorrection = nil;
-	
-	if( reloadAnnotations)
-		[self reloadAnnotations];
-	
-	[self clearCachedDCMFrameworkFiles];
-	[self clearCachedPapyGroups];
-	
-	if( fExternalOwnedImage == nil)
+	@try 
 	{
-		if( fImage != nil)
+		SUVConverted = NO;
+		fullww = 0;
+		fullwl = 0;
+		
+		[self kill8bitsImage];
+
+		[frameOfReferenceUID release];				frameOfReferenceUID = nil;
+		[acquisitionTime release];					acquisitionTime = nil;
+		[acquisitionDate release];					acquisitionDate = nil;
+		[radiopharmaceuticalStartTime release];		radiopharmaceuticalStartTime = nil;
+		[repetitiontime release];					repetitiontime = nil;
+		[echotime release];							echotime = nil;
+		[flipAngle release];						flipAngle = nil;
+		[laterality release];						laterality = nil;
+		[viewPosition release];						viewPosition = nil;
+		[patientPosition release];					patientPosition = nil;
+		[units release];							units = nil;
+		[decayCorrection release];					decayCorrection = nil;
+		
+		if( reloadAnnotations)
+			[self reloadAnnotations];
+		
+		[self clearCachedDCMFrameworkFiles];
+		[self clearCachedPapyGroups];
+		
+		if( fExternalOwnedImage == nil)
 		{
-			free(fImage);
-			fImage = nil;
+			if( fImage != nil)
+			{
+				free(fImage);
+				fImage = nil;
+			}
 		}
+		
+		fImage = nil;
+		needToCompute8bitRepresentation = YES;
 	}
-	
-	fImage = nil;
-	needToCompute8bitRepresentation = YES;
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[checking unlock];
 }

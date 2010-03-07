@@ -158,7 +158,16 @@ extern int delayedTileWindows;
 			
 			NSError	*error = nil;
 			NSMutableArray *result = [NSMutableArray array];
-			NSArray *studiesArray = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest:dbRequest error:&error];
+			NSArray *studiesArray = nil;
+			
+			@try 
+			{
+				studiesArray = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest:dbRequest error:&error];
+			}
+			@catch (NSException * e) 
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 			
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 			

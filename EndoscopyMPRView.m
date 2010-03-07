@@ -526,8 +526,15 @@
 			
 			[[[BrowserController currentBrowser] managedObjectContext] lock];
 			
-			for( NSManagedObject *s in [[[[controller viewer] currentStudy] valueForKey: @"series"] allObjects])
-				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+			@try 
+			{
+				for( NSManagedObject *s in [[[[controller viewer] currentStudy] valueForKey: @"series"] allObjects])
+					[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+			}
+			@catch (NSException * e) 
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 			
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 			

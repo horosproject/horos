@@ -253,10 +253,18 @@
 		
 		[[[BrowserController currentBrowser] managedObjectContext] lock];
 		
-		ROIVolumeController *co = [[self window] windowController];
+		@try 
+		{
+			ROIVolumeController *co = [[self window] windowController];
 		
-		for( NSManagedObject *s in [[[[co viewer] currentStudy] valueForKey: @"series"] allObjects])
-			[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+			for( NSManagedObject *s in [[[[co viewer] currentStudy] valueForKey: @"series"] allObjects])
+				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
+		
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 		
 		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 		

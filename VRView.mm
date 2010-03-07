@@ -6346,162 +6346,169 @@ public:
 	
 	BOOL fullDepthCapture = NO;
 	
-	if( force8bits == NO)
-		fullDepthCapture = YES;
-	
-	if( fullDepthCapture)
+	@try 
 	{
-		vImage_Buffer sf, d8;
-		BOOL rgb;
+		if( force8bits == NO)
+			fullDepthCapture = YES;
 		
-		sf.data = [self imageInFullDepthWidth: width height:height isRGB: &rgb];
-		
-		if( rgb)
+		if( fullDepthCapture)
 		{
-			*spp = 3;
-			*bpp = 8;
+			vImage_Buffer sf, d8;
+			BOOL rgb;
 			
-			buf = (unsigned char*) sf.data;
+			sf.data = [self imageInFullDepthWidth: width height:height isRGB: &rgb];
 			
-			int i = *width * *height;
-			unsigned char *t_argb = buf+1;
-			unsigned char *t_rgb = buf;
-			while( i-->0)
+			if( rgb)
 			{
-				*((int*) t_rgb) = *((int*) t_argb);
-				t_argb+=4;
-				t_rgb+=3;
-			}
-		}
-		else
-		{
-			*spp = 1;
-			*bpp = 16;
-			
-			sf.height = *height;
-			sf.width = *width;
-			sf.rowBytes = *width * sizeof( float);
-			
-			d8.height =  *height;
-			d8.width = *width;
-			d8.rowBytes = *width * sizeof( short);
-			
-			float slope = 1;
-			
-			if( [[[controller viewer2D] modality] isEqualToString:@"PT"] == YES)
-				slope = firstObject.appliedFactorPET2SUV * firstObject.slope;
-			
-			buf = (unsigned char*) malloc( *width * *height * *spp * *bpp / 8);
-			if( buf)
-			{
-				d8.data = buf;
+				*spp = 3;
+				*bpp = 8;
 				
-				if( [controller minimumValue] < -1024)
-				{
-					if( isSigned) *isSigned = YES;
-					if( offset) *offset = 0;
-					
-					vImageConvert_FTo16S( &sf, &d8, 0, slope, 0);
-				}
-				else
-				{
-					if( isSigned) *isSigned = NO;
-					
-					if( [controller minimumValue] >= 0)
-					{
-						if( offset) *offset = 0;
-						vImageConvert_FTo16U( &sf, &d8, 0, slope, 0);
-					}
-					else
-					{
-						if( offset) *offset = -1024;
-						vImageConvert_FTo16U( &sf, &d8, -1024, slope, 0);
-					}
-				}
-			}
-			
-			free( sf.data);
-		}
-	}
-	else
-	{
-		int i;
-		
-		NSRect size = [self bounds];
-		
-		*width = (long) size.size.width;
-		*width/=4;
-		*width*=4;
-		*height = (long) size.size.height;
-		*spp = 3;
-		*bpp = 8;
-		
-		[self getVTKRenderWindow]->MakeCurrent();
-		
-		buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
-		if( buf)
-		{
-			CGLContextObj cgl_ctx = (CGLContextObj) [[NSOpenGLContext currentContext] CGLContextObj];
-			
-			glReadBuffer(GL_FRONT);
-			
-			#if __BIG_ENDIAN__
-				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
-			#else
-				glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
-				i = *width * *height;
-				unsigned char	*t_argb = buf;
-				unsigned char	*t_rgb = buf;
+				buf = (unsigned char*) sf.data;
+				
+				int i = *width * *height;
+				unsigned char *t_argb = buf+1;
+				unsigned char *t_rgb = buf;
 				while( i-->0)
 				{
 					*((int*) t_rgb) = *((int*) t_argb);
 					t_argb+=4;
 					t_rgb+=3;
 				}
-			#endif
-			
-			long rowBytes = *width**spp**bpp/8;
-			
+			}
+			else
 			{
-				unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
+				*spp = 1;
+				*bpp = 16;
 				
-				for( i = 0; i < *height/2; i++)
+				sf.height = *height;
+				sf.width = *width;
+				sf.rowBytes = *width * sizeof( float);
+				
+				d8.height =  *height;
+				d8.width = *width;
+				d8.rowBytes = *width * sizeof( short);
+				
+				float slope = 1;
+				
+				if( [[[controller viewer2D] modality] isEqualToString:@"PT"] == YES)
+					slope = firstObject.appliedFactorPET2SUV * firstObject.slope;
+				
+				buf = (unsigned char*) malloc( *width * *height * *spp * *bpp / 8);
+				if( buf)
 				{
-					memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
-					memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
-					memcpy( buf + i*rowBytes, tempBuf, rowBytes);
+					d8.data = buf;
+					
+					if( [controller minimumValue] < -1024)
+					{
+						if( isSigned) *isSigned = YES;
+						if( offset) *offset = 0;
+						
+						vImageConvert_FTo16S( &sf, &d8, 0, slope, 0);
+					}
+					else
+					{
+						if( isSigned) *isSigned = NO;
+						
+						if( [controller minimumValue] >= 0)
+						{
+							if( offset) *offset = 0;
+							vImageConvert_FTo16U( &sf, &d8, 0, slope, 0);
+						}
+						else
+						{
+							if( offset) *offset = -1024;
+							vImageConvert_FTo16U( &sf, &d8, -1024, slope, 0);
+						}
+					}
 				}
 				
-				free( tempBuf);
+				free( sf.data);
 			}
+		}
+		else
+		{
+			int i;
 			
-			//Add the small OsiriX logo at the bottom right of the image
-			NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];
-			NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
+			NSRect size = [self bounds];
 			
-			for( i = 0; i < [TIFFRep pixelsHigh]; i++)
+			*width = (long) size.size.width;
+			*width/=4;
+			*width*=4;
+			*height = (long) size.size.height;
+			*spp = 3;
+			*bpp = 8;
+			
+			[self getVTKRenderWindow]->MakeCurrent();
+			
+			buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
+			if( buf)
 			{
-				unsigned char	*srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-				unsigned char	*dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
+				CGLContextObj cgl_ctx = (CGLContextObj) [[NSOpenGLContext currentContext] CGLContextObj];
 				
-				long x = [TIFFRep bytesPerRow]/3;
-				while( x-->0)
-				{
-					if( srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
+				glReadBuffer(GL_FRONT);
+				
+				#if __BIG_ENDIAN__
+					glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+				#else
+					glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
+					i = *width * *height;
+					unsigned char	*t_argb = buf;
+					unsigned char	*t_rgb = buf;
+					while( i-->0)
 					{
-						dstPtr[ 0] = srcPtr[ 0];
-						dstPtr[ 1] = srcPtr[ 1];
-						dstPtr[ 2] = srcPtr[ 2];
+						*((int*) t_rgb) = *((int*) t_argb);
+						t_argb+=4;
+						t_rgb+=3;
+					}
+				#endif
+				
+				long rowBytes = *width**spp**bpp/8;
+				
+				{
+					unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
+					
+					for( i = 0; i < *height/2; i++)
+					{
+						memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+						memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
+						memcpy( buf + i*rowBytes, tempBuf, rowBytes);
 					}
 					
-					dstPtr += 3;
-					srcPtr += 3;
+					free( tempBuf);
 				}
+				
+				//Add the small OsiriX logo at the bottom right of the image
+				NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];
+				NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
+				
+				for( i = 0; i < [TIFFRep pixelsHigh]; i++)
+				{
+					unsigned char	*srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
+					unsigned char	*dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
+					
+					long x = [TIFFRep bytesPerRow]/3;
+					while( x-->0)
+					{
+						if( srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
+						{
+							dstPtr[ 0] = srcPtr[ 0];
+							dstPtr[ 1] = srcPtr[ 1];
+							dstPtr[ 2] = srcPtr[ 2];
+						}
+						
+						dstPtr += 3;
+						srcPtr += 3;
+					}
+				}
+				
+				[TIFFRep release];
 			}
-			
-			[TIFFRep release];
+			[NSOpenGLContext clearCurrentContext];
 		}
-		[NSOpenGLContext clearCurrentContext];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[drawLock unlock];

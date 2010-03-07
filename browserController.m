@@ -6403,7 +6403,6 @@ static NSArray*	statesArray = nil;
 	NSEnumerator	*enumerator			= [columnsDatabase keyEnumerator];
 	NSString		*key;
 	
-	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	while( key = [enumerator nextObject])
@@ -6432,7 +6431,6 @@ static NSArray*	statesArray = nil;
 	[self buildColumnsMenu];
 	
 	[managedObjectContext unlock];
-	[managedObjectContext release];
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
@@ -6442,7 +6440,6 @@ static NSArray*	statesArray = nil;
 		
 	id returnVal = nil;
 	
-	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	@try
@@ -6462,7 +6459,6 @@ static NSArray*	statesArray = nil;
 	}
 
 	[managedObjectContext unlock];
-	[managedObjectContext release];
 	
 	return returnVal;
 }
@@ -6471,14 +6467,12 @@ static NSArray*	statesArray = nil;
 {
 	BOOL returnVal = NO;
 	
-	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = NO;
 	else returnVal = YES;
 	
 	[managedObjectContext unlock];
-	[managedObjectContext release];
 	
 	return returnVal;
 }
@@ -6490,7 +6484,6 @@ static NSArray*	statesArray = nil;
 	
 	int returnVal = 0;
 	
-	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	if (!item)
@@ -6506,7 +6499,6 @@ static NSArray*	statesArray = nil;
 	}
 	
 	[managedObjectContext unlock];
-	[managedObjectContext release];
 	
 	return returnVal;
 }
@@ -6640,7 +6632,6 @@ static NSArray*	statesArray = nil;
 {
 	DatabaseIsEdited = NO;
 	
-	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	if( isCurrentDatabaseBonjour)
@@ -6661,7 +6652,6 @@ static NSArray*	statesArray = nil;
 	[refreshTimer setFireDate: [NSDate dateWithTimeIntervalSinceNow:0.5]];
 	
 	[managedObjectContext unlock];
-	[managedObjectContext release];
 	
 	[self saveDatabase: currentDatabasePath];
 	
@@ -6702,89 +6692,95 @@ static NSArray*	statesArray = nil;
 	
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
-	[context retain];
 	[context lock];
 	
-	if ([[item valueForKey:@"type"] isEqualToString: @"Study"])
+	@try 
 	{
-		if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: NO];
-		
-		if( originalOutlineViewArray)
+		if ([[item valueForKey:@"type"] isEqualToString: @"Study"])
 		{
-			if( [originalOutlineViewArray containsObject: item]) [cell setFont: [NSFont boldSystemFontOfSize:12]];
-			else [cell setFont: [NSFont systemFontOfSize:12]];
-		}
-		else [cell setFont: [NSFont boldSystemFontOfSize:12]];
-		
-		if( [[tableColumn identifier] isEqualToString:@"name"])
-		{
-			BOOL	icon = NO;
+			if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: NO];
 			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"] && [[self window] firstResponder] == outlineView)
+			if( originalOutlineViewArray)
 			{
-				if( [[[previousItem entity] name] isEqual:@"Study"])
+				if( [originalOutlineViewArray containsObject: item]) [cell setFont: [NSFont boldSystemFontOfSize:12]];
+				else [cell setFont: [NSFont systemFontOfSize:12]];
+			}
+			else [cell setFont: [NSFont boldSystemFontOfSize:12]];
+			
+			if( [[tableColumn identifier] isEqualToString:@"name"])
+			{
+				BOOL	icon = NO;
+				
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"] && [[self window] firstResponder] == outlineView)
 				{
-					NSString *uid = [item valueForKey: @"patientUID"];
-					
-					if( item != previousItem && [uid length] > 1 && [uid isEqualToString: [previousItem valueForKey: @"patientUID"]])
+					if( [[[previousItem entity] name] isEqual:@"Study"])
 					{
-						[cell setDrawsBackground: YES];
-						[cell setBackgroundColor: [NSColor lightGrayColor]];	//secondarySelectedControlColor]];
+						NSString *uid = [item valueForKey: @"patientUID"];
+						
+						if( item != previousItem && [uid length] > 1 && [uid isEqualToString: [previousItem valueForKey: @"patientUID"]])
+						{
+							[cell setDrawsBackground: YES];
+							[cell setBackgroundColor: [NSColor lightGrayColor]];	//secondarySelectedControlColor]];
+						}
+						else
+							[cell setDrawsBackground: NO];
 					}
 					else
 						[cell setDrawsBackground: NO];
 				}
 				else
 					[cell setDrawsBackground: NO];
-			}
-			else
-				[cell setDrawsBackground: NO];
-			
-			if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -24*60*60)	// 24 hours
-			{
-				NSCalendarDate	*now = [NSCalendarDate calendarDate];
-				NSCalendarDate	*start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
-				NSDate			*today = [NSDate dateWithTimeIntervalSinceNow: [start timeIntervalSinceDate: now]];
 				
-				icon = YES;
-				if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -60*10) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Realised1.tif"]];													// 10 min
-				else if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -60*60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Realised2.tif"]];												// 1 hour
-				else if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -4*60*60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Realised3.tif"]];											// 4 hours
-				else if( [[item valueForKey:@"date"] timeIntervalSinceReferenceDate] > [today timeIntervalSinceReferenceDate]) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Realised4.tif"]];	// today
-				else icon = NO;
+				if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -24*60*60)	// 24 hours
+				{
+					NSCalendarDate	*now = [NSCalendarDate calendarDate];
+					NSCalendarDate	*start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
+					NSDate			*today = [NSDate dateWithTimeIntervalSinceNow: [start timeIntervalSinceDate: now]];
+					
+					icon = YES;
+					if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -60*10) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Realised1.tif"]];													// 10 min
+					else if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -60*60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Realised2.tif"]];												// 1 hour
+					else if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -4*60*60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Realised3.tif"]];											// 4 hours
+					else if( [[item valueForKey:@"date"] timeIntervalSinceReferenceDate] > [today timeIntervalSinceReferenceDate]) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Realised4.tif"]];	// today
+					else icon = NO;
+				}
+				
+				if( icon == NO)
+				{
+					if( [[item valueForKey:@"dateAdded"] timeIntervalSinceNow] > -60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Receiving.tif"]];
+				}
+				
+				NSManagedObject *studySelected = [[[item entity] name] isEqual:@"Study"] ? item : [item valueForKey:@"study"];
 			}
 			
-			if( icon == NO)
+			if( [[tableColumn identifier] isEqualToString:@"reportURL"])
 			{
-				if( [[item valueForKey:@"dateAdded"] timeIntervalSinceNow] > -60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Receiving.tif"]];
+				if( (isCurrentDatabaseBonjour && [item valueForKey:@"reportURL"] != nil) || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES || [[item valueForKey:@"reportSeries"] count] > 0)
+				{
+					NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
+					[reportIcon setSize: NSMakeSize(16, 16)];
+					
+					[(ImageAndTextCell*) cell setImage: reportIcon];
+				}
+				else [item setValue: nil forKey:@"reportURL"];
 			}
 			
-			NSManagedObject *studySelected = [[[item entity] name] isEqual:@"Study"] ? item : [item valueForKey:@"study"];
 		}
-		
-		if( [[tableColumn identifier] isEqualToString:@"reportURL"])
+		else
 		{
-			if( (isCurrentDatabaseBonjour && [item valueForKey:@"reportURL"] != nil) || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES || [[item valueForKey:@"reportSeries"] count] > 0)
-			{
-				NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
-				[reportIcon setSize: NSMakeSize(16, 16)];
-				
-				[(ImageAndTextCell*) cell setImage: reportIcon];
-			}
-			else [item setValue: nil forKey:@"reportURL"];
+			if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: YES];
+			
+			[cell setFont: [NSFont boldSystemFontOfSize:10]];
 		}
+		[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 		
 	}
-	else
+	@catch (NSException * e) 
 	{
-		if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: YES];
-		
-		[cell setFont: [NSFont boldSystemFontOfSize:10]];
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
-	[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 	
 	[context unlock];
-	[context release];
 	
 	// doesn't work with NSPopupButtonCell	
 	//	if ([outlineView isEqual:databaseOutline])
@@ -6878,7 +6874,6 @@ static NSArray*	statesArray = nil;
 
 - (void)outlineViewItemWillCollapse:(NSNotification *)notification
 {
-	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
@@ -6900,12 +6895,10 @@ static NSArray*	statesArray = nil;
 	}
 	
 	[managedObjectContext unlock];
-	[managedObjectContext release];
 }
 
 - (void)outlineViewItemWillExpand:(NSNotification *)notification
 {
-	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
@@ -6918,7 +6911,6 @@ static NSArray*	statesArray = nil;
 	[object setValue:[NSNumber numberWithBool: YES] forKey:@"expanded"];
 	
 	[managedObjectContext unlock];
-	[managedObjectContext release];
 }
 
 - (BOOL)isUsingExternalViewer: (NSManagedObject*)item
@@ -7078,44 +7070,49 @@ static NSArray*	statesArray = nil;
 					NSError					*error = nil;
 					NSManagedObjectContext	*context = self.managedObjectContext;
 					
-					[context retain];
 					[context lock];
 					
 					NSMutableArray *seriesForThisViewer =  nil;
 					
-					for( NSString *curSeriesUID in series4D)
+					@try 
 					{
-						NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-						[request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
-						[request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyUID, curSeriesUID]];
-						
-						NSArray	*seriesArray = [context executeFetchRequest:request error:&error];
-						
-						if( [seriesArray count] != 1)
+						for( NSString *curSeriesUID in series4D)
 						{
-							NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, [seriesArray count]);
-						}
-						else
-						{
-							if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] isEqualToString: [item valueForKey: @"patientUID"]])
+							NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+							[request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+							[request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyUID, curSeriesUID]];
+							
+							NSArray	*seriesArray = [context executeFetchRequest:request error:&error];
+							
+							if( [seriesArray count] != 1)
 							{
-								if( seriesForThisViewer == nil)
-								{
-									seriesForThisViewer = [NSMutableArray array];
-									
-									[seriesToOpen addObject: seriesForThisViewer];
-									[viewersToLoad addObject: dict];
-								}
-								
-								[seriesForThisViewer addObject: [seriesArray objectAtIndex: 0]];
+								NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, [seriesArray count]);
 							}
 							else
-								NSLog(@"%@ versus %@", [[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"], [item valueForKey: @"patientUID"]);
+							{
+								if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] isEqualToString: [item valueForKey: @"patientUID"]])
+								{
+									if( seriesForThisViewer == nil)
+									{
+										seriesForThisViewer = [NSMutableArray array];
+										
+										[seriesToOpen addObject: seriesForThisViewer];
+										[viewersToLoad addObject: dict];
+									}
+									
+									[seriesForThisViewer addObject: [seriesArray objectAtIndex: 0]];
+								}
+								else
+									NSLog(@"%@ versus %@", [[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"], [item valueForKey: @"patientUID"]);
+							}
 						}
+					}
+					@catch (NSException * e) 
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 					}
 					
 					[context unlock];
-					[context release];
 				}
 				@catch (NSException *e)
 				{
@@ -7375,24 +7372,34 @@ static NSArray*	statesArray = nil;
 				[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 				
 				[context lock];
-				error = nil;
-				NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 				
-				index = [[studiesArray  valueForKey:@"studyInstanceUID"] indexOfObject:[curFile elementForKey: @"studyID"]];
-				if( index != NSNotFound)
+				@try 
 				{
-					study = [studiesArray objectAtIndex: index];
-					NSArray		*seriesArray = [[study valueForKey:@"series"] allObjects];
-					index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curFile elementForKey: @"seriesID"]];
+					error = nil;
+					NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+					
+					index = [[studiesArray  valueForKey:@"studyInstanceUID"] indexOfObject:[curFile elementForKey: @"studyID"]];
 					if( index != NSNotFound)
 					{
-						seriesTable = [seriesArray objectAtIndex: index];
-						NSArray		*imagesArray = [[seriesTable valueForKey:@"images"] allObjects] ;
-						index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curFile elementForKey: @"SOPUID"]];
-						if( index != NSNotFound) curImage = [imagesArray objectAtIndex: index];
+						study = [studiesArray objectAtIndex: index];
+						NSArray		*seriesArray = [[study valueForKey:@"series"] allObjects];
+						index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curFile elementForKey: @"seriesID"]];
+						if( index != NSNotFound)
+						{
+							seriesTable = [seriesArray objectAtIndex: index];
+							NSArray		*imagesArray = [[seriesTable valueForKey:@"images"] allObjects] ;
+							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curFile elementForKey: @"SOPUID"]];
+							if( index != NSNotFound) curImage = [imagesArray objectAtIndex: index];
+						}
 					}
 				}
+				@catch (NSException * e) 
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				}
+				
 				[curFile release];
+				
 				[context unlock];
 			}
 		}
@@ -8509,13 +8516,19 @@ static BOOL withReset = NO;
 	NSManagedObject		*curObj = [matrixViewArray objectAtIndex: [[sender selectedCell] tag]];
 	NSLog( @"%@", [curObj valueForKey: @"type"]);
 	
-	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
-	if( [[curObj valueForKey:@"type"] isEqualToString: @"Series"] == YES) curObj = [[self childrenArray: curObj] objectAtIndex: 0];
+	@try 
+	{
+		if( [[curObj valueForKey:@"type"] isEqualToString: @"Series"] == YES) curObj = [[self childrenArray: curObj] objectAtIndex: 0];
+	
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[managedObjectContext unlock];
-	[managedObjectContext release];
 	
 	NSLog( @"%@", [curObj valueForKey: @"completePath"]);	
 	
@@ -8590,11 +8603,20 @@ static BOOL withReset = NO;
 	if( [imageRep bitsPerPixel] == 8)
 	{
 		[PapyrusLock lock];
-		int size;
-		unsigned char *p = compressJPEG( 30, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1, &size);
 		
-		if( p)
-			result = [NSData dataWithBytesNoCopy: p length: size freeWhenDone: YES];
+		@try 
+		{
+			int size;
+			unsigned char *p = compressJPEG( 30, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1, &size);
+			
+			if( p)
+				result = [NSData dataWithBytesNoCopy: p length: size freeWhenDone: YES];
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
 		[PapyrusLock unlock];
 	}
 	else
@@ -8694,7 +8716,6 @@ static BOOL withReset = NO;
 			if( r == NSAlertDefaultReturn)
 			{
 				[context lock];
-				[context retain];
 				
 				@try
 				{
@@ -8707,7 +8728,6 @@ static BOOL withReset = NO;
 					NSLog(@"buildAllThumbnails exception: %@", [ne description]);
 				}
 				
-				[context unlock];
 				[context release];
 				
 				[self outlineViewRefresh];
@@ -8768,55 +8788,60 @@ static BOOL withReset = NO;
 	NSInteger				x, row;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
-	[context retain];
 	[context lock];
 	
-	NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
-	
-	if( [databaseOutline selectedRow] >= 0)
+	@try 
 	{
-		for( x = 0; x < [selectedRows count] ; x++)
+		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
+	
+		if( [databaseOutline selectedRow] >= 0)
 		{
-			if( x == 0) row = [selectedRows firstIndex];
-			else row = [selectedRows indexGreaterThanIndex: row];
-			
-			NSManagedObject	*object = [databaseOutline itemAtRow: row];
-			
-			if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
+			for( x = 0; x < [selectedRows count] ; x++)
 			{
-				[[self childrenArray: object] setValue:nil forKey:@"rotationAngle"];
-				[[self childrenArray: object] setValue:nil forKey:@"scale"];
-				[[self childrenArray: object] setValue:nil forKey:@"windowLevel"];
-				[[self childrenArray: object] setValue:nil forKey:@"windowWidth"];
-				[[self childrenArray: object] setValue:nil forKey:@"xFlipped"];
-				[[self childrenArray: object] setValue:nil forKey:@"yFlipped"];
-				[[self childrenArray: object] setValue:nil forKey:@"xOffset"];
-				[[self childrenArray: object] setValue:nil forKey:@"yOffset"];
-				[[self childrenArray: object] setValue:nil forKey:@"displayStyle"];
+				if( x == 0) row = [selectedRows firstIndex];
+				else row = [selectedRows indexGreaterThanIndex: row];
 				
-				[object setValue:nil forKey:@"windowsState"];
-			}
-			else if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
-			{
-				[object setValue:nil forKey:@"rotationAngle"];
-				[object setValue:nil forKey:@"scale"];
-				[object setValue:nil forKey:@"windowLevel"];
-				[object setValue:nil forKey:@"windowWidth"];
-				[object setValue:nil forKey:@"xFlipped"];
-				[object setValue:nil forKey:@"yFlipped"];
-				[object setValue:nil forKey:@"xOffset"];
-				[object setValue:nil forKey:@"yOffset"];
-				[object setValue:nil forKey:@"displayStyle"];
+				NSManagedObject	*object = [databaseOutline itemAtRow: row];
 				
-				[object setValue:nil forKeyPath:@"study.windowsState"];
+				if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
+				{
+					[[self childrenArray: object] setValue:nil forKey:@"rotationAngle"];
+					[[self childrenArray: object] setValue:nil forKey:@"scale"];
+					[[self childrenArray: object] setValue:nil forKey:@"windowLevel"];
+					[[self childrenArray: object] setValue:nil forKey:@"windowWidth"];
+					[[self childrenArray: object] setValue:nil forKey:@"xFlipped"];
+					[[self childrenArray: object] setValue:nil forKey:@"yFlipped"];
+					[[self childrenArray: object] setValue:nil forKey:@"xOffset"];
+					[[self childrenArray: object] setValue:nil forKey:@"yOffset"];
+					[[self childrenArray: object] setValue:nil forKey:@"displayStyle"];
+					
+					[object setValue:nil forKey:@"windowsState"];
+				}
+				else if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
+				{
+					[object setValue:nil forKey:@"rotationAngle"];
+					[object setValue:nil forKey:@"scale"];
+					[object setValue:nil forKey:@"windowLevel"];
+					[object setValue:nil forKey:@"windowWidth"];
+					[object setValue:nil forKey:@"xFlipped"];
+					[object setValue:nil forKey:@"yFlipped"];
+					[object setValue:nil forKey:@"xOffset"];
+					[object setValue:nil forKey:@"yOffset"];
+					[object setValue:nil forKey:@"displayStyle"];
+					
+					[object setValue:nil forKeyPath:@"study.windowsState"];
+				}
 			}
 		}
+		
+		[self saveDatabase: currentDatabasePath];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
-	[self saveDatabase: currentDatabasePath];
-	
 	[context unlock];
-	[context release];
 }
 
 - (IBAction)rebuildThumbnails: (id)sender
@@ -8824,36 +8849,41 @@ static BOOL withReset = NO;
 	NSInteger				row;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
-	[context retain];
 	[context lock];
 	
-	NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
-	
-	if( [databaseOutline selectedRow] >= 0)
+	@try 
 	{
-		for( NSInteger x = 0; x < selectedRows.count; x++)
+		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+	
+		if( [databaseOutline selectedRow] >= 0)
 		{
-			if( x == 0) row = selectedRows.firstIndex;
-			else row = [selectedRows indexGreaterThanIndex: row];
-			
-			NSManagedObject	*object = [databaseOutline itemAtRow: row];
-			
-			if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
+			for( NSInteger x = 0; x < selectedRows.count; x++)
 			{
-				[[self childrenArray: object] setValue:nil forKey:@"thumbnail"];
-			}
-			
-			if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
-			{
-				[object setValue:nil forKey:@"thumbnail"];
+				if( x == 0) row = selectedRows.firstIndex;
+				else row = [selectedRows indexGreaterThanIndex: row];
+				
+				NSManagedObject	*object = [databaseOutline itemAtRow: row];
+				
+				if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
+				{
+					[[self childrenArray: object] setValue:nil forKey:@"thumbnail"];
+				}
+				
+				if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
+				{
+					[object setValue:nil forKey:@"thumbnail"];
+				}
 			}
 		}
+		
+		[self saveDatabase: currentDatabasePath];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
-	[self saveDatabase: currentDatabasePath];
-	
 	[context unlock];
-	[context release];
 	
 	[self refreshMatrix: self];
 }
@@ -9253,34 +9283,41 @@ static BOOL withReset = NO;
 	
 	[self.managedObjectContext lock];
 	
-	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-	NSError *error = nil;
-	NSArray *albumArray = [self.managedObjectContext executeFetchRequest:dbRequest error:&error];
-	
-	if( [albumArray count])
+	@try 
 	{
-		NSManagedObject *album;
-		for( album in albumArray)
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+		NSError *error = nil;
+		NSArray *albumArray = [self.managedObjectContext executeFetchRequest:dbRequest error:&error];
+		
+		if( [albumArray count])
 		{
-			[albums addObject: [NSDictionary dictionaryWithObjectsAndKeys:	[album valueForKey: @"name"], @"name", 
-																			[album valueForKey: @"predicateString"], @"predicateString", 
-																			[album valueForKey: @"smartAlbum"], @"smartAlbum",
-																			nil ]];
+			NSManagedObject *album;
+			for( album in albumArray)
+			{
+				[albums addObject: [NSDictionary dictionaryWithObjectsAndKeys:	[album valueForKey: @"name"], @"name", 
+																				[album valueForKey: @"predicateString"], @"predicateString", 
+																				[album valueForKey: @"smartAlbum"], @"smartAlbum",
+																				nil ]];
+			}
+			
+			NSSavePanel *sPanel	= [NSSavePanel savePanel];
+			
+			[sPanel setRequiredFileType:@"albums"];
+			
+			if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"DatabaseAlbums.albums", nil)] == NSFileHandlingPanelOKButton)
+			{
+				[albums writeToFile: [sPanel filename] atomically: YES];
+			}
 		}
-		
-		NSSavePanel *sPanel	= [NSSavePanel savePanel];
-		
-		[sPanel setRequiredFileType:@"albums"];
-		
-		if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"DatabaseAlbums.albums", nil)] == NSFileHandlingPanelOKButton)
-		{
-			[albums writeToFile: [sPanel filename] atomically: YES];
-		}
+		else NSRunInformationalAlertPanel(NSLocalizedString(@"Save Albums", nil), NSLocalizedString(@"There are no albums to save.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 	}
-	else NSRunInformationalAlertPanel(NSLocalizedString(@"Save Albums", nil), NSLocalizedString(@"There are no albums to save.", nil), NSLocalizedString(@"OK",nil), nil, nil);
-	
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+		
 	[self.managedObjectContext unlock];
 }
 
@@ -9290,31 +9327,38 @@ static BOOL withReset = NO;
 		
 		[self.managedObjectContext lock];
 	
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		NSError *error = nil;
-		NSMutableArray *albumArray = [NSMutableArray arrayWithArray: [self.managedObjectContext executeFetchRequest: dbRequest error: &error]];
-		
-		for( NSDictionary *dict in albums)
+		@try 
 		{
-			if( [[albumArray valueForKey: @"name"] containsString: [dict valueForKey: @"name"]] == NO)
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+			NSError *error = nil;
+			NSMutableArray *albumArray = [NSMutableArray arrayWithArray: [self.managedObjectContext executeFetchRequest: dbRequest error: &error]];
+			
+			for( NSDictionary *dict in albums)
 			{
-				NSManagedObject	*a = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: self.managedObjectContext];
-				
-				[a setValue: [dict valueForKey: @"name"] forKey:@"name"];
-				
-				if( [dict valueForKey: @"smartAlbum"])
-					[a setValue: [dict valueForKey: @"smartAlbum"] forKey:@"smartAlbum"];
-				else
-					[a setValue: [NSNumber numberWithBool: NO]  forKey:@"smartAlbum"];
+				if( [[albumArray valueForKey: @"name"] containsString: [dict valueForKey: @"name"]] == NO)
+				{
+					NSManagedObject	*a = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: self.managedObjectContext];
 					
-				[a setValue: [dict valueForKey: @"predicateString"] forKey:@"predicateString"];
+					[a setValue: [dict valueForKey: @"name"] forKey:@"name"];
+					
+					if( [dict valueForKey: @"smartAlbum"])
+						[a setValue: [dict valueForKey: @"smartAlbum"] forKey:@"smartAlbum"];
+					else
+						[a setValue: [NSNumber numberWithBool: NO]  forKey:@"smartAlbum"];
+						
+					[a setValue: [dict valueForKey: @"predicateString"] forKey:@"predicateString"];
+				}
 			}
+			
+			needDBRefresh = YES;
+			[albumTable reloadData];
 		}
-		
-		needDBRefresh = YES;
-		[albumTable reloadData];
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 		
 		[self.managedObjectContext unlock];
 		
@@ -9528,43 +9572,49 @@ static BOOL withReset = NO;
 		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 		NSManagedObjectContext *context = self.managedObjectContext;
 		
-		[context retain];
 		[context lock];
-		error = nil;
-		NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
 		
-		name = [smartWindowController albumTitle];
-		while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
+		@try 
 		{
-			name = [NSString stringWithFormat:@"%@ #%d", [smartWindowController albumTitle], i++];
-		}
-		
-		NSManagedObject	*album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-		[album setValue:name forKey:@"name"];
-		[album setValue:[NSNumber numberWithBool:YES] forKey:@"smartAlbum"];
-		
-		NSString *format = [NSString string];
-		
-		BOOL first = YES;
-		for( NSString *search in criteria)
-		{
-			if ( first) first = NO;
-			else format = [format stringByAppendingFormat: @" AND "];
+			error = nil;
+			NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
 			
-			format = [format stringByAppendingFormat: @"(%@)", search];
+			name = [smartWindowController albumTitle];
+			while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
+			{
+				name = [NSString stringWithFormat:@"%@ #%d", [smartWindowController albumTitle], i++];
+			}
+			
+			NSManagedObject	*album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+			[album setValue:name forKey:@"name"];
+			[album setValue:[NSNumber numberWithBool:YES] forKey:@"smartAlbum"];
+			
+			NSString *format = [NSString string];
+			
+			BOOL first = YES;
+			for( NSString *search in criteria)
+			{
+				if ( first) first = NO;
+				else format = [format stringByAppendingFormat: @" AND "];
+				
+				format = [format stringByAppendingFormat: @"(%@)", search];
+			}
+			
+			[album setValue:format forKey:@"predicateString"];
+			
+			[self saveDatabase: currentDatabasePath];
+			
+			needDBRefresh = YES;
+			[albumTable reloadData];
+			
+			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject: album]] byExtendingSelection: NO];
 		}
-		
-		[album setValue:format forKey:@"predicateString"];
-		
-		[self saveDatabase: currentDatabasePath];
-		
-		needDBRefresh = YES;
-		[albumTable reloadData];
-		
-		[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject: album]] byExtendingSelection: NO];
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 		
 		[context unlock];
-		[context release];
 		
 		[self outlineViewRefresh];
 	}
@@ -9601,27 +9651,33 @@ static BOOL withReset = NO;
 				
 				NSManagedObjectContext *context = self.managedObjectContext;
 				
-				[context retain];
 				[context lock];
-				NSError *error = nil;
-				NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
 				
-				name = [newAlbumName stringValue];
-				while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
+				@try 
 				{
-					name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
+					NSError *error = nil;
+					NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
+					
+					name = [newAlbumName stringValue];
+					while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
+					{
+						name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
+					}
+					
+					NSManagedObject	*album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+					[album setValue:name forKey:@"name"];
+					
+					[self saveDatabase: currentDatabasePath];
+					
+					needDBRefresh = YES;
+					[albumTable reloadData];
+				}
+				@catch (NSException * e) 
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 				}
 				
-				NSManagedObject	*album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-				[album setValue:name forKey:@"name"];
-				
-				[self saveDatabase: currentDatabasePath];
-				
-				needDBRefresh = YES;
-				[albumTable reloadData];
-				
 				[context unlock];
-				[context release];
 				
 				[self outlineViewRefresh];
 			}
@@ -9646,22 +9702,27 @@ static BOOL withReset = NO;
 				{
 					NSManagedObjectContext	*context = self.managedObjectContext;
 					
-					[context retain];
 					[context lock];
 					
-					if( albumTable.selectedRow > 0)	// We cannot delete the first item !
+					@try 
 					{
-						[context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
+						if( albumTable.selectedRow > 0)	// We cannot delete the first item !
+						{
+							[context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
+						}
+						
+						[albumNoOfStudiesCache removeAllObjects];
+
+						[self saveDatabase: currentDatabasePath];
+						
+						[albumTable reloadData];
+					}
+					@catch (NSException * e) 
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 					}
 					
-					[albumNoOfStudiesCache removeAllObjects];
-
-					[self saveDatabase: currentDatabasePath];
-					
-					[albumTable reloadData];
-					
 					[context unlock];
-					[context release];
 					
 					[self outlineViewRefresh];
 				}
@@ -9772,28 +9833,36 @@ static BOOL needToRezoom;
 				[context retain];
 				[context lock];
 				error = nil;
-				NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
 				
-				if( [[editSmartAlbumName stringValue] isEqualToString: [album valueForKey:@"name"]] == NO)	{
-					name = [editSmartAlbumName stringValue];
-					while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
-					{
-						name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
+				@try 
+				{
+					NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
+				
+					if( [[editSmartAlbumName stringValue] isEqualToString: [album valueForKey:@"name"]] == NO)	{
+						name = [editSmartAlbumName stringValue];
+						while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
+						{
+							name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
+						}
+						
+						[album setValue:name forKey:@"name"];
 					}
 					
-					[album setValue:name forKey:@"name"];
+					[album setValue:[editSmartAlbumQuery stringValue] forKey:@"predicateString"];
+					
+					[self saveDatabase: currentDatabasePath];
+					
+					[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
+					
+					[self outlineViewRefresh];
+					
+					[albumNoOfStudiesCache removeAllObjects];
+					[albumTable reloadData];
 				}
-				
-				[album setValue:[editSmartAlbumQuery stringValue] forKey:@"predicateString"];
-				
-				[self saveDatabase: currentDatabasePath];
-				
-				[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
-				
-				[self outlineViewRefresh];
-				
-				[albumNoOfStudiesCache removeAllObjects];
-				[albumTable reloadData];
+				@catch (NSException * e) 
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				}
 				
 				[context unlock];
 				[context release];
@@ -9827,21 +9896,29 @@ static BOOL needToRezoom;
 					[context retain];
 					[context lock];
 					NSError *error = nil;
-					NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
 					
-					NSString *name = newAlbumName.stringValue;
-					while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
+					@try 
 					{
-						name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
+						NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
+					
+						NSString *name = newAlbumName.stringValue;
+						while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
+						{
+							name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
+						}
+						
+						[album setValue:name forKey:@"name"];
+						
+						[self saveDatabase: currentDatabasePath];
+						
+						[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
+						
+						[albumTable reloadData];
 					}
-					
-					[album setValue:name forKey:@"name"];
-					
-					[self saveDatabase: currentDatabasePath];
-					
-					[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
-					
-					[albumTable reloadData];
+					@catch (NSException * e) 
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					}
 					
 					[context unlock];
 					[context release];
@@ -9944,7 +10021,15 @@ static BOOL needToRezoom;
 					[context retain];
 					[context lock];
 					NSError *error = nil;
-					NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+					NSArray *studiesArray = nil;
+					@try 
+					{
+						studiesArray = [context executeFetchRequest:dbRequest error:&error];
+					}
+					@catch (NSException * e) 
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					}
 					
 					[context unlock];
 					[context release];
@@ -12098,28 +12183,35 @@ static BOOL needToRezoom;
 	
 	[managedObjectContext lock];
 	
-	if (sender == Nil && [[oMatrix selectedCells] count] == 1 && [[item valueForKey:@"type"] isEqualToString:@"Study"] == YES)
+	@try 
 	{
-		NSArray *array = [self databaseSelection];
-		
-		BOOL savedValue = [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"];
-		
-		if( [array count] > 1 && savedValue == YES) [[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"automaticWorkspaceLoad"];
-		
-		for( id obj in array)
+		if (sender == Nil && [[oMatrix selectedCells] count] == 1 && [[item valueForKey:@"type"] isEqualToString:@"Study"] == YES)
 		{
-			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: obj]] byExtendingSelection: NO];
-			[self databaseOpenStudy: obj];
+			NSArray *array = [self databaseSelection];
+			
+			BOOL savedValue = [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"];
+			
+			if( [array count] > 1 && savedValue == YES) [[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"automaticWorkspaceLoad"];
+			
+			for( id obj in array)
+			{
+				[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: obj]] byExtendingSelection: NO];
+				[self databaseOpenStudy: obj];
+			}
+			
+			if( [array count] > 1 && savedValue == YES) [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"automaticWorkspaceLoad"];
 		}
-		
-		if( [array count] > 1 && savedValue == YES) [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"automaticWorkspaceLoad"];
+		else
+		{
+			if( [matrixViewArray count] > [[oMatrix selectedCell] tag] && [self isUsingExternalViewer: [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]]] == NO)
+			{
+				[self viewerDICOMInt:NO	dcmFile: [self databaseSelection] viewer: nil];
+			}
+		}
 	}
-	else
+	@catch (NSException * e) 
 	{
-		if( [matrixViewArray count] > [[oMatrix selectedCell] tag] && [self isUsingExternalViewer: [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]]] == NO)
-		{
-			[self viewerDICOMInt:NO	dcmFile: [self databaseSelection] viewer: nil];
-		}
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[managedObjectContext unlock];
@@ -13614,30 +13706,37 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[checkIncomingLock lock];
 		
-		for( NSString *f in folders)
+		@try 
 		{
-			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: f traverseLink: NO];
-			
-			if( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
+			for( NSString *f in folders)
 			{
-				if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
+				NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: f traverseLink: NO];
+				
+				if( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
 				{
-					int numberOfValidFiles = 0;
-					for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: f error: nil])
+					if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
 					{
-						if( [[s lastPathComponent] characterAtIndex: 0] != '.')
-							numberOfValidFiles++;
-					}
-					
-					if( numberOfValidFiles == 0 && [[f lastPathComponent] isEqualToString: @"ROIs"] == NO)
-					{
-						NSLog( @"delete Queue: delete folder: %@", f);
-						[[NSFileManager defaultManager] removeFileAtPath: f handler: nil];
+						int numberOfValidFiles = 0;
+						for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: f error: nil])
+						{
+							if( [[s lastPathComponent] characterAtIndex: 0] != '.')
+								numberOfValidFiles++;
+						}
 						
+						if( numberOfValidFiles == 0 && [[f lastPathComponent] isEqualToString: @"ROIs"] == NO)
+						{
+							NSLog( @"delete Queue: delete folder: %@", f);
+							[[NSFileManager defaultManager] removeFileAtPath: f handler: nil];
+							
+						}
 					}
 				}
+				
 			}
-			
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
 		
 		[checkIncomingLock unlock];
@@ -13709,7 +13808,8 @@ static NSArray*	openSubSeriesArray = nil;
 	if( deleteInProgress == nil) deleteInProgress = [[NSLock alloc] init];
 	
 	[deleteQueue lock];
-	[deleteQueueArray addObject: file];
+	if( file)
+		[deleteQueueArray addObject: file];
 	[deleteQueue unlock];
 }
 
@@ -14462,7 +14562,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	[decompressThreadRunning lock];
 	[decompressArrayLock lock];
-	[decompressArray addObjectsFromArray: array];
+	if( array)
+		[decompressArray addObjectsFromArray: array];
 	[decompressArrayLock unlock];
 	
 	[self decompressThread: work];
@@ -14496,7 +14597,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[decompressThreadRunning lock];
 		
 		[decompressArrayLock lock];
-		[decompressArray addObjectsFromArray: result];
+		if( result)
+			[decompressArray addObjectsFromArray: result];
 		[decompressArrayLock unlock];
 		
 		[waitCompressionWindow showWindow:self];
@@ -14536,7 +14638,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[decompressThreadRunning lock];
 		[decompressArrayLock lock];
-		[decompressArray addObjectsFromArray: result];
+		if( result)
+			[decompressArray addObjectsFromArray: result];
 		[decompressArrayLock unlock];
 		
 		[waitCompressionWindow showWindow:self];
@@ -14569,127 +14672,133 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void) decompressThread: (NSNumber*) typeOfWork
 {	
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-	
 	[decompressThreadRunning lock];
 	
-	char				tow = [typeOfWork charValue];
-	BOOL				finished;
-	
-	finished = NO;
-	do
+	@try 
 	{
-		[processorsLock lockWhenCondition: 1];
-		if( numberOfThreadsForJPEG <= 0)
+		char tow = [typeOfWork charValue];
+		BOOL finished;
+		
+		finished = NO;
+		do
 		{
-			finished = YES;
-			[processorsLock unlockWithCondition: 1];
+			[processorsLock lockWhenCondition: 1];
+			if( numberOfThreadsForJPEG <= 0)
+			{
+				finished = YES;
+				[processorsLock unlockWithCondition: 1];
+			}
+			else [processorsLock unlockWithCondition: 0];
 		}
-		else [processorsLock unlockWithCondition: 0];
-	}
-	while( finished == NO);
-	
-	[decompressArrayLock lock];
-	NSArray *array = [NSArray arrayWithArray: decompressArray];
-	[decompressArray removeAllObjects];
-	[decompressArrayLock unlock];
-	
-	numberOfThreadsForJPEG = 0;
-	
-	switch( tow)
-	{
-		case 'C':
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Compression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to compress %d files", nil), [array count]] name:@"result"];
-			break;
-			
-		case 'D':
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Decompression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to decompress %d files", nil), [array count]] name:@"result"];
-			break;
-	}
-	
-	int chunk = [array count] / MPProcessors();
-	if( chunk < 15) chunk = 15;
-	
-	if( ([[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES))
-	{
-		if( chunk > 20) chunk = 20;
-	}
-	
-	NSRange range = NSMakeRange( 0, chunk);
-	
-	if( range.location + range.length > [array count])
-		range.length = [array count] - range.location;
-	
-	waitCompressionAbort = NO;
-	do
-	{
-		[self waitForAProcessor];
+		while( finished == NO);
+		
+		[decompressArrayLock lock];
+		NSArray *array = [NSArray arrayWithArray: decompressArray];
+		[decompressArray removeAllObjects];
+		[decompressArrayLock unlock];
+		
+		numberOfThreadsForJPEG = 0;
 		
 		switch( tow)
 		{
 			case 'C':
-				[NSThread detachNewThreadSelector: @selector( compressDICOMJPEG:) toTarget:self withObject: [array subarrayWithRange: range]];
-				break;
-			
-			case 'X':
-				[NSThread detachNewThreadSelector: @selector( compressDICOMJPEGinINCOMING:) toTarget:self withObject: [array subarrayWithRange: range]];
+				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Compression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to compress %d files", nil), [array count]] name:@"result"];
 				break;
 				
 			case 'D':
-				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG:) toTarget:self withObject: [array subarrayWithRange: range]];
-				break;
-				
-			case 'I':
-				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEGinINCOMING:) toTarget:self withObject: [array subarrayWithRange: range]];
+				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Decompression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to decompress %d files", nil), [array count]] name:@"result"];
 				break;
 		}
 		
-		range.location += range.length;
+		int chunk = [array count] / MPProcessors();
+		if( chunk < 15) chunk = 15;
+		
+		if( ([[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES))
+		{
+			if( chunk > 20) chunk = 20;
+		}
+		
+		NSRange range = NSMakeRange( 0, chunk);
+		
 		if( range.location + range.length > [array count])
 			range.length = [array count] - range.location;
-	}
-	while( range.length > 0 && waitCompressionAbort == NO);
-	
-	if( range.length > 0 && waitCompressionAbort == NO)
-		NSLog( @"****** range.length != 0 : (%d, %d)", range.location, range.length);
-	
-	finished = NO;
-	do
-	{
-		[processorsLock lockWhenCondition: 1];
-		if( numberOfThreadsForJPEG <= 0)
+		
+		waitCompressionAbort = NO;
+		do
 		{
-			finished = YES;
-			[processorsLock unlockWithCondition: 1];
-		}
-		else [processorsLock unlockWithCondition: 0];
-	}
-	while( finished == NO);
-	
-	switch( tow)
-	{
-		case 'C':
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Compression", nil) description: NSLocalizedString(@"Done !", nil) name:@"result"];
-			break;
+			[self waitForAProcessor];
 			
-		case 'D':
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Decompression", nil) description: NSLocalizedString(@"Done !", nil) name:@"result"];
+			switch( tow)
+			{
+				case 'C':
+					[NSThread detachNewThreadSelector: @selector( compressDICOMJPEG:) toTarget:self withObject: [array subarrayWithRange: range]];
+					break;
+				
+				case 'X':
+					[NSThread detachNewThreadSelector: @selector( compressDICOMJPEGinINCOMING:) toTarget:self withObject: [array subarrayWithRange: range]];
+					break;
+					
+				case 'D':
+					[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG:) toTarget:self withObject: [array subarrayWithRange: range]];
+					break;
+					
+				case 'I':
+					[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEGinINCOMING:) toTarget:self withObject: [array subarrayWithRange: range]];
+					break;
+			}
+			
+			range.location += range.length;
+			if( range.location + range.length > [array count])
+				range.length = [array count] - range.location;
+		}
+		while( range.length > 0 && waitCompressionAbort == NO);
+		
+		if( range.length > 0 && waitCompressionAbort == NO)
+			NSLog( @"****** range.length != 0 : (%d, %d)", range.location, range.length);
+		
+		finished = NO;
+		do
+		{
+			[processorsLock lockWhenCondition: 1];
+			if( numberOfThreadsForJPEG <= 0)
+			{
+				finished = YES;
+				[processorsLock unlockWithCondition: 1];
+			}
+			else [processorsLock unlockWithCondition: 0];
+		}
+		while( finished == NO);
+		
+		switch( tow)
+		{
+			case 'C':
+				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Compression", nil) description: NSLocalizedString(@"Done !", nil) name:@"result"];
+				break;
+				
+			case 'D':
+				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Decompression", nil) description: NSLocalizedString(@"Done !", nil) name:@"result"];
+				break;
+		}
+		
+		switch( tow)
+		{
+			case 'C':
+			case 'D':
+				if( [AppController mainThread] != [NSThread currentThread])
+					[DCMPix performSelectorOnMainThread: @selector( purgeCachedDictionaries) withObject: nil waitUntilDone: NO];
+				else
+					[DCMPix purgeCachedDictionaries];
 			break;
+		}
 	}
-	
-	[pool release];
-	
-	switch( tow)
+	@catch (NSException * e) 
 	{
-		case 'C':
-		case 'D':
-			if( [AppController mainThread] != [NSThread currentThread])
-				[DCMPix performSelectorOnMainThread: @selector( purgeCachedDictionaries) withObject: nil waitUntilDone: NO];
-			else
-				[DCMPix purgeCachedDictionaries];
-		break;
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[decompressThreadRunning unlock];
+	
+	[pool release];
 }
 #endif
 
@@ -15658,42 +15767,48 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			// Add them to select users
 			
-			for( NSManagedObject *user in [notificationEmailArrayController selectedObjects])
+			@try 
 			{
-				NSArray *studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
-				NSArray *studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
-				
-				for( NSManagedObject *study in [self databaseSelection])
+				for( NSManagedObject *user in [notificationEmailArrayController selectedObjects])
 				{
-					if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
-						study = [study valueForKey:@"study"];
-						
-					if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
-					{
-						NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
+					NSArray *studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+					NSArray *studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
 					
-						[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
-						[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
-						
-						[studyLink setValue: user forKey: @"user"];
-						
-						@try
+					for( NSManagedObject *study in [self databaseSelection])
+					{
+						if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
+							study = [study valueForKey:@"study"];
+							
+						if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
 						{
-							[self.userManagedObjectContext save: nil];
-						}
-						@catch (NSException * e)
-						{
-							NSLog( @"********** [self.userManagedObjectContext save: nil]");
-						}
+							NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
 						
-						studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
-						studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
-						
-						[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
+							[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
+							[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
+							
+							[studyLink setValue: user forKey: @"user"];
+							
+							@try
+							{
+								[self.userManagedObjectContext save: nil];
+							}
+							@catch (NSException * e)
+							{
+								NSLog( @"********** [self.userManagedObjectContext save: nil]");
+							}
+							
+							studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+							studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+							
+							[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
+						}
 					}
 				}
 			}
-			
+			@catch (NSException * e) 
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 			[self.userManagedObjectContext unlock];
 		}
 	}
@@ -17718,66 +17833,80 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[checkBonjourUpToDateThreadLock lock];
 		
-		if ([[[item entity] name] isEqual:@"Study"])
-			studySelected = item;
-		else
-			studySelected = [item valueForKey:@"study"];
-		
-		long result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete report", nil), NSLocalizedString(@"Are you sure you want to delete the selected report?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
-		
-		if( result == NSAlertDefaultReturn)
+		@try 
+		{			
+			if ([[[item entity] name] isEqual:@"Study"])
+				studySelected = item;
+			else
+				studySelected = [item valueForKey:@"study"];
+			
+			long result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete report", nil), NSLocalizedString(@"Are you sure you want to delete the selected report?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+			
+			if( result == NSAlertDefaultReturn)
+			{
+				if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3)
+				{
+					NSBundle *plugin = [[PluginManager reportPlugins] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
+					
+					if( plugin)
+					{
+						PluginFilter* filter = [[plugin principalClass] filter];
+						[filter deleteReportForStudy: studySelected];
+						//[filter report: studySelected action: @"deleteReport"];
+					}
+					else
+					{
+						NSRunAlertPanel( NSLocalizedString(@"Report Error", nil), NSLocalizedString(@"Report Plugin not available.", nil), nil, nil, nil);
+						return;
+					}
+				}
+				else if( [studySelected valueForKey:@"reportURL"] != nil)
+				{
+					if( isCurrentDatabaseBonjour)
+					{
+						[[NSFileManager defaultManager] removeFileAtPath:[BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]] handler:nil];
+						[bonjourReportFilesToCheck removeObjectForKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
+						
+						// Set only LAST component -> the bonjour server will complete the address
+						[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:nil forKey:@"reportURL"];
+						
+						[studySelected setValue: nil forKey:@"reportURL"];
+					}
+					else
+					{
+						[[NSFileManager defaultManager] removeFileAtPath:[studySelected valueForKey:@"reportURL"] handler:nil];
+						[studySelected setValue: nil forKey:@"reportURL"];
+					}
+					[databaseOutline reloadData];
+				}
+				else if( [[item valueForKey:@"reportSeries"] count])
+				{
+					NSManagedObjectContext	*context = self.managedObjectContext;
+					
+					[context lock];
+					
+					@try 
+					{
+						NSArray *array = [item valueForKey:@"reportSeries"];
+					
+						for( NSManagedObject *o in array)
+							[context deleteObject: o];
+					}
+					@catch (NSException * e) 
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					}
+					
+					[context unlock];
+					
+					[self saveDatabase: currentDatabasePath];
+				}
+				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDeletedReportNotification object:nil userInfo:nil];
+			}
+		}
+		@catch (NSException * e) 
 		{
-			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3)
-			{
-				NSBundle *plugin = [[PluginManager reportPlugins] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
-				
-				if( plugin)
-				{
-					PluginFilter* filter = [[plugin principalClass] filter];
-					[filter deleteReportForStudy: studySelected];
-					//[filter report: studySelected action: @"deleteReport"];
-				}
-				else
-				{
-					NSRunAlertPanel( NSLocalizedString(@"Report Error", nil), NSLocalizedString(@"Report Plugin not available.", nil), nil, nil, nil);
-					return;
-				}
-			}
-			else if( [studySelected valueForKey:@"reportURL"] != nil)
-			{
-				if( isCurrentDatabaseBonjour)
-				{
-					[[NSFileManager defaultManager] removeFileAtPath:[BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]] handler:nil];
-					[bonjourReportFilesToCheck removeObjectForKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
-					
-					// Set only LAST component -> the bonjour server will complete the address
-					[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:nil forKey:@"reportURL"];
-					
-					[studySelected setValue: nil forKey:@"reportURL"];
-				}
-				else
-				{
-					[[NSFileManager defaultManager] removeFileAtPath:[studySelected valueForKey:@"reportURL"] handler:nil];
-					[studySelected setValue: nil forKey:@"reportURL"];
-				}
-				[databaseOutline reloadData];
-			}
-			else if( [[item valueForKey:@"reportSeries"] count])
-			{
-				NSManagedObjectContext	*context = self.managedObjectContext;
-				
-				[context lock];
-				
-				NSArray *array = [item valueForKey:@"reportSeries"];
-				
-				for( NSManagedObject *o in array)
-					[context deleteObject: o];
-				
-				[context unlock];
-				
-				[self saveDatabase: currentDatabasePath];
-			}
-			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDeletedReportNotification object:nil userInfo:nil];
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
 		
 		[checkBonjourUpToDateThreadLock unlock];
@@ -17818,11 +17947,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				[checkBonjourUpToDateThreadLock lock];
 				
-				NSLog(@"generate report with plugin");
-				PluginFilter* filter = [[plugin principalClass] filter];
-				[filter createReportForStudy: studySelected];
-				NSLog(@"end generate report with plugin");
-				//[filter report: studySelected action: @"openReport"];
+				@try 
+				{
+					NSLog(@"generate report with plugin");
+					PluginFilter* filter = [[plugin principalClass] filter];
+					[filter createReportForStudy: studySelected];
+					NSLog(@"end generate report with plugin");
+					//[filter report: studySelected action: @"openReport"];
+				}
+				@catch (NSException * e) 
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				}
 				
 				[checkBonjourUpToDateThreadLock unlock];
 			}
@@ -19456,26 +19592,31 @@ static volatile int numberOfThreadsForJPEG = 0;
 	dbRequest.entity = [model.entitiesByName objectForKey:@"Study"];
 	dbRequest.predicate = predicate;
 	
-	[context retain];
 	[context lock];
 	
 	NSError	*error = nil;
 	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 	
-	if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
+	@try 
 	{
-		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
-		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-		[sort release];
-		NSMutableArray* s = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
-		// remove original study from array
-		[s removeObject:study];
-		
-		studiesArray = [NSArray arrayWithArray: s];
+		if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
+		{
+			NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
+			NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
+			[sort release];
+			NSMutableArray* s = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
+			// remove original study from array
+			[s removeObject:study];
+			
+			studiesArray = [NSArray arrayWithArray: s];
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[context unlock];
-	[context release];
 	
 	return studiesArray;
 }
