@@ -5758,6 +5758,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
+	[drawLock lock];
+	
 	BOOL needUpdate = YES;
 	
 	if( r == 0)	// -> BW
@@ -5805,6 +5807,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 	}
+	
+	[drawLock unlock];
 	
 	[self loadTextures];
 	[self updateTilingViews];
@@ -10344,6 +10348,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	BOOL modifiedSourceImage = curDCM.needToCompute8bitRepresentation;
 	BOOL intFULL32BITPIPELINE = FULL32BITPIPELINE;
+	BOOL localColorTransfer = colorTransfer;
+	
+	if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0)
+		localColorTransfer = YES;
 	
 	if( [ViewerController numberOf2DViewer] > 3)
 		intFULL32BITPIPELINE = NO;
@@ -10402,7 +10410,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( isRGB)
 		intFULL32BITPIPELINE = NO;
 	
-	if( (colorTransfer == YES) || (blending == YES))
+	if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
 		intFULL32BITPIPELINE = NO;
 		
 	if( curDCM.needToCompute8bitRepresentation == YES && intFULL32BITPIPELINE == NO)
@@ -10413,7 +10421,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( curDCM.isLUT12Bit)
 		{
 		}
-		else if((colorTransfer == YES) || (blending == YES))
+		else if((localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
 		{
 			vImage_Buffer src, dest;
 			
@@ -10486,7 +10494,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 		}
 	}
-	else if( (colorTransfer == YES) || (blending == YES))
+	else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
 	{
 	    if( *colorBufPtr) free( *colorBufPtr);
 
@@ -10567,7 +10575,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( curDCM.isLUT12Bit)
 				src.data = (char*) curDCM.LUT12baseAddr;
 		}
-		else if( (colorTransfer == YES) || (blending == YES))
+		else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
 		{
 			rowBytes = *tW * 4;
 			
@@ -10611,7 +10619,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			baseAddr = *rAddr;
 			dst.data = baseAddr;
 			
-			if( (colorTransfer == YES) || (blending == YES) || (isRGB == YES) || ([curDCM thickSlabVRActivated] == YES))
+			if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES) || (isRGB == YES) || ([curDCM thickSlabVRActivated] == YES))
 				vImageScale_ARGB8888( &src, &dst, nil, QUALITY);	
 			else
 			{
@@ -10627,7 +10635,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		else
 		{
-			if( (colorTransfer == YES) || (blending == YES))
+			if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
 			{
 				*tW = curDCM.pwidth;
 				rowBytes = curDCM.pwidth;
@@ -10663,7 +10671,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				*tW = curDCM.pwidth;
 			}
 		}
-		else if( (colorTransfer == YES) || (blending == YES))
+		else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
 		{
 			*tW = curDCM.pwidth;
 			rowBytes = curDCM.pwidth;
@@ -10716,7 +10724,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								offsetY * rowBytes +
 								offsetX * 4;
 				}
-				else if( (colorTransfer == YES) || (blending == YES))
+				else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
 					pBuffer =   (unsigned char*) baseAddr +
 								offsetY * rowBytes * 4 +
 								offsetX * 4;
@@ -10775,7 +10783,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					#else
 					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 					#endif
-					else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+					else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 					else
 					{
 						float min = curWL - curWW / 2;
@@ -10801,10 +10809,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					#if __BIG_ENDIAN__
 					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
-					else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+					else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 					#else
 					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-					else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+					else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 					#endif
 					else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
 				}
@@ -11981,8 +11989,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		iChatHeight = height;
 		
 		// Render!
-		
+		iChatDrawing = YES;
         [self drawRect:NSMakeRect(0,0,width,height) withContext:_alternateContext];
+		iChatDrawing = NO;
         return YES;
     }
 	else

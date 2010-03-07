@@ -263,7 +263,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	GLuint			iChatCursorTextureName;
 	NSSize			iChatCursorImageSize;
 	NSPoint			iChatCursorHotSpot;
-	
+	BOOL			iChatDrawing;
 	GLuint			iChatFontListGL;
 	NSFont			*iChatFontGL;
 	long			iChatFontListGLSize[ 256];
