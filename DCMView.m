@@ -3391,7 +3391,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 - (void)makeTextureFromImage:(NSImage*)image forTexture:(GLuint*)texName buffer:(GLubyte*)buffer textureUnit:(GLuint)textureUnit;
-{	
+{
 	NSSize imageSize = [image size];
 	
 	NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithData:[image TIFFRepresentation]];
@@ -8468,7 +8468,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				eventLocation = [self convertFromView2iChat:eventLocation];
 				
 				// generate iChat cursor Texture Buffer (only once)
-				if(!iChatCursorTextureBuffer) {
+				if(!iChatCursorTextureBuffer)
+				{
 					NSLog(@"generate iChatCursor Texture Buffer");
 					NSImage *iChatCursorImage;
 					if (iChatCursorImage = [[NSCursor pointingHandCursor] image])
@@ -11948,8 +11949,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (BOOL)renderIntoOpenGLBuffer:(CVOpenGLBufferRef)buffer onScreen:(int *)screenInOut forTime:(CVTimeStamp*)timeStamp
 {
 	// We ignore the timestamp, signifying that we're providing content for 'now'.	
-	if(!_hasChanged) {
+	if(!_hasChanged)
 		return NO;
+	
+	if( [[self window] isVisible] == NO)
+		return NO;
+	
+	if( [self is2DViewer])
+	{
+		if( [[self windowController] windowWillClose])
+			return NO;
 	}
 	
 	// Make sure we agree on the screen ID.
@@ -11962,7 +11971,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	// Attach the OpenGLBuffer and render into the _alternateContext.
 
 //	if (CVOpenGLBufferAttach(buffer, [_alternateContext CGLContextObj], 0, 0, *screenInOut) == kCVReturnSuccess) {
-	if (CVOpenGLBufferAttach(buffer, cgl_ctx, 0, 0, *screenInOut) == kCVReturnSuccess) {
+	if (CVOpenGLBufferAttach(buffer, cgl_ctx, 0, 0, *screenInOut) == kCVReturnSuccess)
+	{
         // In case the buffers have changed in size, reset the viewport.
         NSDictionary *attributes = (NSDictionary *)CVOpenGLBufferGetAttributes(buffer);
         GLfloat width = [[attributes objectForKey:(NSString *)kCVOpenGLBufferWidth] floatValue];
@@ -11974,7 +11984,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
         [self drawRect:NSMakeRect(0,0,width,height) withContext:_alternateContext];
         return YES;
-    } else {
+    }
+	else
+	{
         // This should never happen.  The safest thing to do if it does it return
         // 'NO' (signifying that the frame has not changed).
         return NO;
