@@ -474,33 +474,41 @@
 	
 	[printing lock];
 	
-	// dicom log path & basename
-	NSString *logPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Logs/AYDicomPrint"];
-	NSString *baseName = [NSString stringWithString: @"AYDicomPrint"];
-
-	// create log directory, if it does not exist
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	if (![fileManager fileExistsAtPath: logPath])
-		[fileManager createDirectoryAtPath: logPath attributes: nil];
-
-	NSTask *theTask = [[NSTask alloc] init];
-	
-	[theTask setArguments: [NSArray arrayWithObjects: logPath, baseName, xmlPath, nil]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/DICOMPrint"]];
-	[theTask launch];
-	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-//	[theTask waitUntilExit];	<- The problem with this: it calls the current running loop.... problems with current Lock !
-	
-	int status = [theTask terminationStatus];
-	[theTask release];
-
-	if (status != 0)
+	@try 
 	{
-		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Print failed", nil), NSLocalizedString(@"Couldn't print images.", nil), NSLocalizedString(@"OK", nil), nil] waitUntilDone:NO];
-	}
+		// dicom log path & basename
+		NSString *logPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Logs/AYDicomPrint"];
+		NSString *baseName = [NSString stringWithString: @"AYDicomPrint"];
 
-	// remove temporary files
-	[[NSFileManager defaultManager] removeFileAtPath: [xmlPath stringByDeletingLastPathComponent] handler: nil];
+		// create log directory, if it does not exist
+		NSFileManager *fileManager = [NSFileManager defaultManager];
+		if (![fileManager fileExistsAtPath: logPath])
+			[fileManager createDirectoryAtPath: logPath attributes: nil];
+
+		NSTask *theTask = [[NSTask alloc] init];
+		
+		[theTask setArguments: [NSArray arrayWithObjects: logPath, baseName, xmlPath, nil]];
+		[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/DICOMPrint"]];
+		[theTask launch];
+		while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+	//	[theTask waitUntilExit];	<- The problem with this: it calls the current running loop.... problems with current Lock !
+		
+		int status = [theTask terminationStatus];
+		[theTask release];
+
+		if (status != 0)
+		{
+			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Print failed", nil), NSLocalizedString(@"Couldn't print images.", nil), NSLocalizedString(@"OK", nil), nil] waitUntilDone:NO];
+		}
+
+		// remove temporary files
+		[[NSFileManager defaultManager] removeFileAtPath: [xmlPath stringByDeletingLastPathComponent] handler: nil];
+		
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[printing unlock];
 	

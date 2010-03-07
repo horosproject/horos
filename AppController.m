@@ -2685,7 +2685,6 @@ static BOOL initialized = NO;
 	if (NSCancelButton == button)
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
 #endif
-	
 }
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification

@@ -167,44 +167,51 @@ NSString* soundex4( NSString *inString)
 
 - (NSString*) modalities
 {
-	[[self managedObjectContext] lock];
-		
-	NSArray *seriesModalities = [[[self valueForKey:@"series"] allObjects] valueForKey:@"modality"];
-	
-	NSMutableArray *r = [NSMutableArray array];
-	
-	BOOL SC = NO, SR = NO, PR = NO;
-	
-	for( NSString *mod in seriesModalities)
-	{
-		if( [mod isEqualToString:@"SR"])
-			SR = YES;
-		else if( [mod isEqualToString:@"SC"])
-			SC = YES;
-		else if( [mod isEqualToString:@"PR"])
-			PR = YES;
-		else if( [mod isEqualToString:@"RTSTRUCT"] == YES && [r containsString: mod] == NO)
-			[r addObject: @"RT"];
-		else if( [mod isEqualToString:@"KO"])
-		{
-		}
-		else if([r containsString: mod] == NO)
-			[r addObject: mod];
-	}
-	
 	NSString *m = nil;
 	
-	if( [r count] == 0)
-	{
-		if( SC) [r addObject: @"SC"];
-		else
-		{
-			if( SR) [r addObject: @"SR"];
-			if( PR) [r addObject: @"PR"];
-		}
-	}
+	[[self managedObjectContext] lock];
 	
-	m = [r componentsJoinedByString:@"\\"];
+	@try 
+	{
+		NSArray *seriesModalities = [[[self valueForKey:@"series"] allObjects] valueForKey:@"modality"];
+		
+		NSMutableArray *r = [NSMutableArray array];
+		
+		BOOL SC = NO, SR = NO, PR = NO;
+		
+		for( NSString *mod in seriesModalities)
+		{
+			if( [mod isEqualToString:@"SR"])
+				SR = YES;
+			else if( [mod isEqualToString:@"SC"])
+				SC = YES;
+			else if( [mod isEqualToString:@"PR"])
+				PR = YES;
+			else if( [mod isEqualToString:@"RTSTRUCT"] == YES && [r containsString: mod] == NO)
+				[r addObject: @"RT"];
+			else if( [mod isEqualToString:@"KO"])
+			{
+			}
+			else if([r containsString: mod] == NO)
+				[r addObject: mod];
+		}
+		
+		if( [r count] == 0)
+		{
+			if( SC) [r addObject: @"SC"];
+			else
+			{
+				if( SR) [r addObject: @"SR"];
+				if( PR) [r addObject: @"PR"];
+			}
+		}
+		
+		m = [r componentsJoinedByString:@"\\"];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 		
 	[[self managedObjectContext] unlock];
 	
@@ -293,11 +300,20 @@ NSString* soundex4( NSString *inString)
 {
 	[[self managedObjectContext] lock];
 	
-	NSManagedObject	*obj = [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
+	BOOL local = YES;
 	
-	BOOL local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
+	@try 
+	{
+		NSManagedObject	*obj = [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
 	
-	[[self managedObjectContext] unlock];
+		local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
+	
+		[[self managedObjectContext] unlock];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	if( local) return @"L";
 	else return @"";
@@ -420,30 +436,39 @@ NSString* soundex4( NSString *inString)
 	{
 		[[self managedObjectContext] lock];
 		
-		NSArray	*array = [[self valueForKey:@"series"] allObjects];
-		
 		int sum = 0;
-		BOOL framesInSeries = NO;
+		NSNumber *no = nil;
 		
-		for( DicomSeries *s in array)
+		@try 
 		{
-			if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO)
+			NSArray	*array = [[self valueForKey:@"series"] allObjects];
+		
+			BOOL framesInSeries = NO;
+			
+			for( DicomSeries *s in array)
 			{
-				sum += [[s valueForKey:@"noFiles"] intValue];
-				
-				if( [[s primitiveValueForKey:@"numberOfImages"] intValue] < 0) // There are frames !
-					framesInSeries = YES;
+				if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO)
+				{
+					sum += [[s valueForKey:@"noFiles"] intValue];
+					
+					if( [[s primitiveValueForKey:@"numberOfImages"] intValue] < 0) // There are frames !
+						framesInSeries = YES;
+				}
 			}
+			
+			if( framesInSeries)
+				sum = -sum;
+			
+			no = [NSNumber numberWithInt: sum];
+			
+			[self willChangeValueForKey: @"numberOfImages"];
+			[self setPrimitiveValue: no forKey:@"numberOfImages"];
+			[self didChangeValueForKey: @"numberOfImages"];
 		}
-		
-		if( framesInSeries)
-			sum = -sum;
-		
-		NSNumber *no = [NSNumber numberWithInt: sum];
-		
-		[self willChangeValueForKey: @"numberOfImages"];
-		[self setPrimitiveValue: no forKey:@"numberOfImages"];
-		[self didChangeValueForKey: @"numberOfImages"];
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 		
 		[[self managedObjectContext] unlock];
 		

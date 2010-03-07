@@ -3822,12 +3822,19 @@ static volatile int numberOfThreadsForRelisce = 0;
 						{
 							[[[BrowserController currentBrowser] managedObjectContext] lock];
 							
-							type = NSLocalizedString( @"Image", nil);
-							int frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-							if( frames > 1)
+							@try 
 							{
-								count = frames;
-								type = NSLocalizedString( @"Frames", @"Frames: for example, 50 Frames in a series");
+								type = NSLocalizedString( @"Image", nil);
+								int frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+								if( frames > 1)
+								{
+									count = frames;
+									type = NSLocalizedString( @"Frames", @"Frames: for example, 50 Frames in a series");
+								}
+							}
+							@catch (NSException * e) 
+							{
+								NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 							}
 							
 							[[[BrowserController currentBrowser] managedObjectContext] unlock];
@@ -6519,96 +6526,103 @@ static ViewerController *draggedController = nil;
 		
 	[ThreadLoadImageLock lock];
 	
-	ThreadLoadImage = YES;
-	
-	loadingPercentage = 0;
-		
-	if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
-	
-	while( [[self window] isVisible] == NO && checkEverythingLoaded == NO && stopThreadLoadImage == NO)
-		[NSThread sleepForTimeInterval: 0.1];
-	
-	[DicomFile isDICOMFile: [[pixList[ 0] objectAtIndex:0] sourceFile] compressed: &compressed];
-	
-	if( compressed)
-		NSLog( @"start loading multiple thread : compressed data");
-	else
-		NSLog( @"start loading single thread");
-		
-	for( x = 0; x < maxMovieIndex; x++)
+	@try 
 	{
-		if( pixList[ x] && fileList[ x])
+		ThreadLoadImage = YES;
+		
+		loadingPercentage = 0;
+			
+		if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
+		
+		while( [[self window] isVisible] == NO && checkEverythingLoaded == NO && stopThreadLoadImage == NO)
+			[NSThread sleepForTimeInterval: 0.1];
+		
+		[DicomFile isDICOMFile: [[pixList[ 0] objectAtIndex:0] sourceFile] compressed: &compressed];
+		
+		if( compressed)
+			NSLog( @"start loading multiple thread : compressed data");
+		else
+			NSLog( @"start loading single thread");
+			
+		for( x = 0; x < maxMovieIndex; x++)
 		{
-			int mpprocessors = MPProcessors();
-//			mpprocessors--;
-			if( mpprocessors < 1)
-				mpprocessors = 1;
-			
-			int numberOfThreadsForCompute = mpprocessors;
-			
-			if( compressed == NO)
-				numberOfThreadsForCompute = 1;
-			
-			if( totalNumberOfLoadingThreads + numberOfThreadsForCompute > mpprocessors)
-				numberOfThreadsForCompute = 1;
-			
-			totalNumberOfLoadingThreads += numberOfThreadsForCompute;
-			
-			if( numberOfThreadsForCompute > 1)
+			if( pixList[ x] && fileList[ x])
 			{
-				[subLoadingThread lock];
-				[subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
+				int mpprocessors = MPProcessors();
+	//			mpprocessors--;
+				if( mpprocessors < 1)
+					mpprocessors = 1;
 				
-				for( i = 0; i < numberOfThreadsForCompute; i++)
+				int numberOfThreadsForCompute = mpprocessors;
+				
+				if( compressed == NO)
+					numberOfThreadsForCompute = 1;
+				
+				if( totalNumberOfLoadingThreads + numberOfThreadsForCompute > mpprocessors)
+					numberOfThreadsForCompute = 1;
+				
+				totalNumberOfLoadingThreads += numberOfThreadsForCompute;
+				
+				if( numberOfThreadsForCompute > 1)
+				{
+					[subLoadingThread lock];
+					[subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
+					
+					for( i = 0; i < numberOfThreadsForCompute; i++)
+					{
+						NSMutableDictionary *d = [NSMutableDictionary dictionary];
+						
+						[d setObject: pixList[ x] forKey: @"pixList"];
+						[d setObject: fileList[ x] forKey: @"fileList"];
+						
+						int from = (i * [pixList[ x] count]) / numberOfThreadsForCompute;
+						int to = ((i+1) * [pixList[ x] count]) / numberOfThreadsForCompute;
+						
+						[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+						[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+						[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
+						
+						[NSThread detachNewThreadSelector: @selector( subLoadingThread:) toTarget: self withObject: d];
+					}
+					
+					[subLoadingThread lockWhenCondition: 0];
+					[subLoadingThread unlock];
+				}
+				else
 				{
 					NSMutableDictionary *d = [NSMutableDictionary dictionary];
 					
 					[d setObject: pixList[ x] forKey: @"pixList"];
 					[d setObject: fileList[ x] forKey: @"fileList"];
 					
-					int from = (i * [pixList[ x] count]) / numberOfThreadsForCompute;
-					int to = ((i+1) * [pixList[ x] count]) / numberOfThreadsForCompute;
+					int from = 0;
+					int to = [pixList[ x] count];
 					
 					[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
 					[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
 					[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
-					
-					[NSThread detachNewThreadSelector: @selector( subLoadingThread:) toTarget: self withObject: d];
+					[self subLoadingThread: d];
 				}
 				
-				[subLoadingThread lockWhenCondition: 0];
-				[subLoadingThread unlock];
+				totalNumberOfLoadingThreads -= numberOfThreadsForCompute;
 			}
-			else
-			{
-				NSMutableDictionary *d = [NSMutableDictionary dictionary];
-				
-				[d setObject: pixList[ x] forKey: @"pixList"];
-				[d setObject: fileList[ x] forKey: @"fileList"];
-				
-				int from = 0;
-				int to = [pixList[ x] count];
-				
-				[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
-				[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
-				[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
-				[self subLoadingThread: d];
-			}
-			
-			totalNumberOfLoadingThreads -= numberOfThreadsForCompute;
 		}
+		NSLog( @"end loading");
+		
+		if( stopThreadLoadImage == YES)
+		{
+			ThreadLoadImage = NO;
+			[pool release];
+			[ThreadLoadImageLock unlock];
+			return;
+		}
+		
+		loadingPercentage = (float) 1.0;
 	}
-	NSLog( @"end loading");
-	
-	if( stopThreadLoadImage == YES)
+	@catch (NSException * e) 
 	{
-		ThreadLoadImage = NO;
-		[pool release];
-		[ThreadLoadImageLock unlock];
-		return;
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
-	
-	loadingPercentage = (float) 1.0;
 	
 	[ThreadLoadImageLock unlock];
 
@@ -12745,26 +12759,34 @@ int i,j,l;
 	
 	[roiLock lock];
 	
-	ITKBrushROIFilter *filter = [[ITKBrushROIFilter alloc] init];
+	ITKBrushROIFilter *filter = nil;
 	
-	// Create the work units.
-	long i;
-	NSMutableSet *unitsSet = [NSMutableSet set];
-	for ( i = 0; i < [rois count]; i++)
+	@try 
 	{
-		[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [rois objectAtIndex:i], @"roi", action, @"action", filter, @"filter", [NSNumber numberWithInt: radius], @"radius", nil]];
+		filter = [[ITKBrushROIFilter alloc] init];
+		
+		// Create the work units.
+		NSMutableSet *unitsSet = [NSMutableSet set];
+		for ( int i = 0; i < [rois count]; i++)
+		{
+			[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [rois objectAtIndex:i], @"roi", action, @"action", filter, @"filter", [NSNumber numberWithInt: radius], @"radius", nil]];
+		}
+		
+		[sched performScheduleForWorkUnits:unitsSet];
+		
+		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+		
+		[sched release];
 	}
-	
-	[sched performScheduleForWorkUnits:unitsSet];
-	
-	while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-	
-	[sched release];
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[roiLock unlock];
 	
 	if( sendNotification)
-		for ( i = 0; i < [rois count]; i++) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:[rois objectAtIndex:i] userInfo: nil];
+		for ( int i = 0; i < [rois count]; i++) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:[rois objectAtIndex:i] userInfo: nil];
 	
 	[filter release];
 	

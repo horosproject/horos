@@ -74,19 +74,26 @@
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	if( roiSRSeries)
+	@try 
 	{
-		//Check to see if there is already this ROI-image
-		NSString		*sopInstanceUID = [sr sopInstanceUID];
-		NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
-		NSPredicate		*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
-		NSPredicate		*notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
-		NSArray			*found = [[srs filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
-		
-		if ([found count] < 1)
-			AddIt = YES;
+		if( roiSRSeries)
+		{
+			//Check to see if there is already this ROI-image
+			NSString		*sopInstanceUID = [sr sopInstanceUID];
+			NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
+			NSPredicate		*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
+			NSPredicate		*notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+			NSArray			*found = [[srs filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
+			
+			if ([found count] < 1)
+				AddIt = YES;
+		}
+		else NSLog( @"********** roiSRSeries == nil -- archiveROIsAsDICOM");
 	}
-	else NSLog( @"********** roiSRSeries == nil -- archiveROIsAsDICOM");
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	

@@ -1554,21 +1554,28 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[drawLock lock];
 	
-	for( i = 0; i < [curRoiList count]; i++)
+	@try 
 	{
-		ROI *r = [curRoiList objectAtIndex:i];
-		if( [r ROImode] == ROI_selected && r.locked == NO)
+		for( i = 0; i < [curRoiList count]; i++)
 		{
-			groupID = [r groupID];
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
-			[curRoiList removeObjectAtIndex:i];
-			i--;
-			if(groupID!=0.0)
-				[self deleteROIGroupID:groupID];
+			ROI *r = [curRoiList objectAtIndex:i];
+			if( [r ROImode] == ROI_selected && r.locked == NO)
+			{
+				groupID = [r groupID];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
+				[curRoiList removeObjectAtIndex:i];
+				i--;
+				if(groupID!=0.0)
+					[self deleteROIGroupID:groupID];
+			}
 		}
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIRemovedFromArrayNotification object: nil userInfo: nil];
 	}
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIRemovedFromArrayNotification object: nil userInfo: nil];
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[drawLock unlock];
 	
@@ -2037,72 +2044,79 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	[drawLock lock];
 	
-	if( [self is2DViewer])
+	@try 
 	{
-		currentToolRight = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTRIGHTTOOL"];
-		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"RestoreLeftMouseTool"])
-			currentTool =  [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"];
-	}
-	
-	[curDCM release];
-	curDCM = nil;
-	
-	volumicData = -1;
-	
-	if( dcmPixList != pixels)
-	{
-		[dcmPixList release];
-		dcmPixList = [pixels retain];
-		
-		volumicSeries = YES;
-		
-		if( [files count] > 0)
+		if( [self is2DViewer])
 		{
-			id sopclassuid = [[files objectAtIndex: 0] valueForKeyPath:@"series.seriesSOPClassUID"];
-			if ([DCMAbstractSyntaxUID isImageStorage: sopclassuid] || [DCMAbstractSyntaxUID isRadiotherapy: sopclassuid] || sopclassuid == nil)
+			currentToolRight = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTRIGHTTOOL"];
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"RestoreLeftMouseTool"])
+				currentTool =  [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"];
+		}
+		
+		[curDCM release];
+		curDCM = nil;
+		
+		volumicData = -1;
+		
+		if( dcmPixList != pixels)
+		{
+			[dcmPixList release];
+			dcmPixList = [pixels retain];
+			
+			volumicSeries = YES;
+			
+			if( [files count] > 0)
 			{
-				
+				id sopclassuid = [[files objectAtIndex: 0] valueForKeyPath:@"series.seriesSOPClassUID"];
+				if ([DCMAbstractSyntaxUID isImageStorage: sopclassuid] || [DCMAbstractSyntaxUID isRadiotherapy: sopclassuid] || sopclassuid == nil)
+				{
+					
+				}
+				else NSLog( @"***Ehh ! ****** It's not a DICOM image.... it will crash !!!!!!!");
 			}
-			else NSLog( @"***Ehh ! ****** It's not a DICOM image.... it will crash !!!!!!!");
+			
+			if( [stringID isEqualToString:@"previewDatabase"] == NO)
+			{
+				if( [dcmPixList count] > 1)
+				{
+					if( [[dcmPixList objectAtIndex: 0] sliceLocation] == [[dcmPixList lastObject] sliceLocation]) volumicSeries = NO;
+				}
+				else volumicSeries = NO;
+			}
 		}
 		
-		if( [stringID isEqualToString:@"previewDatabase"] == NO)
+		if( dcmFilesList != files)
 		{
-			if( [dcmPixList count] > 1)
+			[dcmFilesList release];
+			dcmFilesList = [files retain];
+		}
+		
+		flippedData = NO;
+		
+		if( dcmRoiList != rois)
+		{
+			[dcmRoiList release];
+			dcmRoiList = [rois retain];
+		}
+		
+		listType = level;
+		
+		if( dcmPixList)
+		{
+			if( reset)
 			{
-				if( [[dcmPixList objectAtIndex: 0] sliceLocation] == [[dcmPixList lastObject] sliceLocation]) volumicSeries = NO;
+				[self setIndexWithReset: firstImage :YES];
+				[self updatePresentationStateFromSeries];
 			}
-			else volumicSeries = NO;
 		}
-    }
-	
-	if( dcmFilesList != files)
-	{
-		[dcmFilesList release];
-		dcmFilesList = [files retain];
+		
+		[self setNeedsDisplay:true];
 	}
-	
-	flippedData = NO;
-	
-	if( dcmRoiList != rois)
+	@catch (NSException * e) 
 	{
-		[dcmRoiList release];
-		dcmRoiList = [rois retain];
-    }
-	
-    listType = level;
-	
-	if( dcmPixList)
-	{
-		if( reset)
-		{
-			[self setIndexWithReset: firstImage :YES];
-			[self updatePresentationStateFromSeries];
-		}
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
-	
-    [self setNeedsDisplay:true];
 	
 	[drawLock unlock];
 }
@@ -2275,44 +2289,52 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
-	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+	@try 
 	{
-		if( [[v imageView] seriesObj] == [self seriesObj])
+		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 		{
-			[v imageView].COPYSETTINGSINSERIES = COPYSETTINGSINSERIES;
-			
-			for( int i = 0 ; i < [v  maxMovieIndex]; i++)
+			if( [[v imageView] seriesObj] == [self seriesObj])
 			{
-				for( DCMPix *pix in [v pixList: i])
+				[v imageView].COPYSETTINGSINSERIES = COPYSETTINGSINSERIES;
+				
+				for( int i = 0 ; i < [v  maxMovieIndex]; i++)
 				{
-					[pix changeWLWW :curWL :curWW];
-					
-					if( COPYSETTINGSINSERIES)
+					for( DCMPix *pix in [v pixList: i])
 					{
-						[pix.imageObj setValue: nil forKey:@"windowWidth"];
-						[pix.imageObj setValue: nil forKey:@"windowLevel"];
-						[pix.imageObj setValue: nil forKey:@"scale"];
-						[pix.imageObj setValue: nil forKey:@"rotationAngle"];
-						[pix.imageObj setValue: nil forKey:@"yFlipped"];
-						[pix.imageObj setValue: nil forKey:@"xFlipped"];
-						[pix.imageObj setValue: nil forKey:@"xOffset"];
-						[pix.imageObj setValue: nil forKey:@"yOffset"];
-					}
-					else
-					{
-						[pix.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-						[pix.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-						[pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-						[pix.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-						[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
-						[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
-						[pix.imageObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-						[pix.imageObj setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
+						[pix changeWLWW :curWL :curWW];
+						
+						if( COPYSETTINGSINSERIES)
+						{
+							[pix.imageObj setValue: nil forKey:@"windowWidth"];
+							[pix.imageObj setValue: nil forKey:@"windowLevel"];
+							[pix.imageObj setValue: nil forKey:@"scale"];
+							[pix.imageObj setValue: nil forKey:@"rotationAngle"];
+							[pix.imageObj setValue: nil forKey:@"yFlipped"];
+							[pix.imageObj setValue: nil forKey:@"xFlipped"];
+							[pix.imageObj setValue: nil forKey:@"xOffset"];
+							[pix.imageObj setValue: nil forKey:@"yOffset"];
+						}
+						else
+						{
+							[pix.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+							[pix.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+							[pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+							[pix.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+							[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+							[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
+							[pix.imageObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
+							[pix.imageObj setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
+						}
 					}
 				}
 			}
 		}
 	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
@@ -2325,115 +2347,122 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) setIndex:(short) index
 {
 	[drawLock lock];
-
-	TextureComputed32bitPipeline = NO;
 	
-	BOOL	keepIt;
-	
-	[self stopROIEditing];
-		
-	if( [self is2DViewer] == YES)
-		[[self windowController] setLoadingPause: YES];
-		
-	[[self window] setAcceptsMouseMovedEvents: YES];
-
-	if( dcmPixList && index > -1 && [dcmPixList count] > 0)
+	@try 
 	{
-		if( [[[[dcmFilesList objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"]) noScale = YES;
-		else noScale = NO;
+		TextureComputed32bitPipeline = NO;
+		
+		BOOL	keepIt;
+		
+		[self stopROIEditing];
 			
-        curImage = index;
-        if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
-		if( curImage < 0) curImage = 0;
-		
-		[curDCM release];
-		curDCM = [[dcmPixList objectAtIndex:curImage] retain];
-
-		[curDCM CheckLoad];
-		
-		[curRoiList release];
-		
-		if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
-		else
-			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
-
-		keepIt = NO;
-		for( int i = 0; i < [curRoiList count]; i++ )
-		{
-			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
-			[[curRoiList objectAtIndex:i ] recompute];
-			if( curROI == [curRoiList objectAtIndex:i ]) keepIt = YES;
-		}
-		
-		if( keepIt == NO)
-		{
-			[curROI release];
-			curROI = nil;
-		}
-		
-		BOOL done = NO;
-		
 		if( [self is2DViewer] == YES)
+			[[self windowController] setLoadingPause: YES];
+			
+		[[self window] setAcceptsMouseMovedEvents: YES];
+
+		if( dcmPixList && index > -1 && [dcmPixList count] > 0)
 		{
-			if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+			if( [[[[dcmFilesList objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"]) noScale = YES;
+			else noScale = NO;
+				
+			curImage = index;
+			if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
+			if( curImage < 0) curImage = 0;
+			
+			[curDCM release];
+			curDCM = [[dcmPixList objectAtIndex:curImage] retain];
+
+			[curDCM CheckLoad];
+			
+			[curRoiList release];
+			
+			if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
+			else
+				curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
+
+			keepIt = NO;
+			for( int i = 0; i < [curRoiList count]; i++ )
+			{
+				[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
+				[[curRoiList objectAtIndex:i ] recompute];
+				if( curROI == [curRoiList objectAtIndex:i ]) keepIt = YES;
+			}
+			
+			if( keepIt == NO)
+			{
+				[curROI release];
+				curROI = nil;
+			}
+			
+			BOOL done = NO;
+			
+			if( [self is2DViewer] == YES)
+			{
+				if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+				{
+					if( curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES)
+					{
+						[self reapplyWindowLevel];
+					}
+					else [curDCM checkImageAvailble :curWW :curWL];
+				
+					[self updatePresentationStateFromSeriesOnlyImageLevel: YES];
+					
+					done = YES;
+				}
+			}
+			
+			if( done == NO)
 			{
 				if( curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES)
 				{
 					[self reapplyWindowLevel];
 				}
 				else [curDCM checkImageAvailble :curWW :curWL];
+			}
 			
-				[self updatePresentationStateFromSeriesOnlyImageLevel: YES];
-				
-				done = YES;
-			}
+			[self loadTextures];
+			
+			[yearOld release];
+			
+			if( [[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"] isEqualToString: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOldAcquisition"]])
+				yearOld = [[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"] retain];
+			else
+				yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
+		
+			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMViewIndexChangedNotification object:self];
 		}
-		
-		if( done == NO)
-		{
-			if( curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES)
-			{
-				[self reapplyWindowLevel];
-			}
-			else [curDCM checkImageAvailble :curWW :curWL];
-		}
-		
-        [self loadTextures];
-		
-		[yearOld release];
-		
-		if( [[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"] isEqualToString: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOldAcquisition"]])
-			yearOld = [[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"] retain];
 		else
-			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
-	
-		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMViewIndexChangedNotification object:self];
-	}
-	else
-	{
-		[curDCM release];
-		curDCM = nil;
-		curImage = -1;
-		[curRoiList release];
-		curRoiList = nil;
+		{
+			[curDCM release];
+			curDCM = nil;
+			curImage = -1;
+			[curRoiList release];
+			curRoiList = nil;
+			
+			[curROI release];
+			curROI = nil;
+			[self loadTextures];
+		}
 		
-		[curROI release];
-		curROI = nil;
-		[self loadTextures];
+		if( [self is2DViewer] == YES)
+		{
+			[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( resetLoadingPause:) object: nil];
+			[self performSelector: @selector( resetLoadingPause:) withObject:nil afterDelay: 0.5];
+		}
+		
+		NSEvent *event = [[NSApplication sharedApplication] currentEvent];
+		
+		[self mouseMoved: event];
+		[self setNeedsDisplay:YES];
+		
+		[self updateTilingViews];
 	}
-	
-	if( [self is2DViewer] == YES)
+	@catch (NSException * e) 
 	{
-		[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( resetLoadingPause:) object: nil];
-		[self performSelector: @selector( resetLoadingPause:) withObject:nil afterDelay: 0.5];
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
-	
-	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
-	
-	[self mouseMoved: event];
-	[self setNeedsDisplay:YES];
-	
-	[self updateTilingViews];
 	
 	[drawLock unlock];
 }
@@ -2483,13 +2512,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			[drawLock lock];
 			
-			for( i = 0; i < [curRoiList count]; i++)
+			@try 
 			{
-				ROI *r = [curRoiList objectAtIndex:i];
-				
-				if( [r ROImode] == ROI_selectedModify || [r ROImode] == ROI_drawing)
+				for( i = 0; i < [curRoiList count]; i++)
 				{
-					if( [r deleteSelectedPoint] == NO && r.locked == NO)
+					ROI *r = [curRoiList objectAtIndex:i];
+					
+					if( [r ROImode] == ROI_selectedModify || [r ROImode] == ROI_drawing)
+					{
+						if( [r deleteSelectedPoint] == NO && r.locked == NO)
+						{
+							groupID = [r groupID];
+							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
+							[curRoiList removeObjectAtIndex:i];
+							i--;
+							if(groupID!=0.0)[self deleteROIGroupID:groupID];
+						}
+					}
+				}
+				
+				for( i = 0; i < [curRoiList count]; i++)
+				{
+					ROI *r = [curRoiList objectAtIndex:i];
+					
+					if( [r ROImode] == ROI_selected  && r.locked == NO)
 					{
 						groupID = [r groupID];
 						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
@@ -2498,23 +2544,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						if(groupID!=0.0)[self deleteROIGroupID:groupID];
 					}
 				}
-			}
-			
-			for( i = 0; i < [curRoiList count]; i++)
-			{
-				ROI *r = [curRoiList objectAtIndex:i];
 				
-				if( [r ROImode] == ROI_selected  && r.locked == NO)
-				{
-					groupID = [r groupID];
-					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
-					[curRoiList removeObjectAtIndex:i];
-					i--;
-					if(groupID!=0.0)[self deleteROIGroupID:groupID];
-				}
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIRemovedFromArrayNotification object: nil userInfo: nil];
+				
 			}
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIRemovedFromArrayNotification object: nil userInfo: nil];
+			@catch (NSException * e) 
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 			
 			[drawLock unlock];
 			
@@ -2763,14 +2800,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	[drawLock lock];
 	
-	for( int i=0; i<[curRoiList count]; i++ )
-	{
-		if([[curRoiList objectAtIndex:i] groupID] == groupID)
+	@try 
+	{		
+		for( int i=0; i<[curRoiList count]; i++ )
 		{
-			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:[curRoiList objectAtIndex:i] userInfo:nil];
-			[curRoiList removeObjectAtIndex:i];
-			i--;
+			if([[curRoiList objectAtIndex:i] groupID] == groupID)
+			{
+				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:[curRoiList objectAtIndex:i] userInfo:nil];
+				[curRoiList removeObjectAtIndex:i];
+				i--;
+			}
 		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[drawLock unlock];
@@ -2795,94 +2839,102 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	[drawLock lock];
 	
-	id curSeries = [self seriesObj];
-	id curStudy = [curSeries valueForKey:@"study"];
-	
-	NSArray *viewers = [[ViewerController getDisplayed2DViewers] sortedArrayUsingFunction: studyCompare context: nil];
-	
-	NSMutableArray *studiesArray = [NSMutableArray array];
-	NSMutableArray *seriesArray = [NSMutableArray array];
-	NSMutableDictionary *colorsStudy = [NSMutableDictionary dictionary];
-	NSArray *colors = [NSArray arrayWithObjects:	[NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:0.7f],
-													[NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.4f alpha:0.7f],
-													[NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.4f alpha:0.7f],
-													[NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.0f alpha:0.7f],
-													[NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.0f alpha:0.7f],
-													[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.4f alpha:0.7f],
-													nil];
-	
-	for( ViewerController *v in viewers)
+	@try 
 	{
-		if( [v currentStudy] && [v currentSeries])
+		id curSeries = [self seriesObj];
+		id curStudy = [curSeries valueForKey:@"study"];
+		
+		NSArray *viewers = [[ViewerController getDisplayed2DViewers] sortedArrayUsingFunction: studyCompare context: nil];
+		
+		NSMutableArray *studiesArray = [NSMutableArray array];
+		NSMutableArray *seriesArray = [NSMutableArray array];
+		NSMutableDictionary *colorsStudy = [NSMutableDictionary dictionary];
+		NSArray *colors = [NSArray arrayWithObjects:	[NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:0.7f],
+														[NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.4f alpha:0.7f],
+														[NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.4f alpha:0.7f],
+														[NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.0f alpha:0.7f],
+														[NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.0f alpha:0.7f],
+														[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.4f alpha:0.7f],
+														nil];
+		
+		for( ViewerController *v in viewers)
 		{
-			[studiesArray addObject: [v currentStudy]];
-			[seriesArray addObject: [v currentSeries]];
+			if( [v currentStudy] && [v currentSeries])
+			{
+				[studiesArray addObject: [v currentStudy]];
+				[seriesArray addObject: [v currentSeries]];
+			}
 		}
-	}
-	
-	// Give a different color for each study/patient
-	int color = 0;
-	for( id study in studiesArray)
-	{
-		if( [colorsStudy objectForKey: [study valueForKey:@"studyInstanceUID"]] == nil)
+		
+		// Give a different color for each study/patient
+		int color = 0;
+		for( id study in studiesArray)
 		{
-			[colorsStudy setObject: [colors objectAtIndex: color++] forKey: [study valueForKey:@"studyInstanceUID"]];
-		}	
-		if( color >= [colors count]) color = 0;
-	}
-	
-	NSMutableString *description = [NSMutableString stringWithString:@""];
-	// same patients?
-	if( [self allIdenticalValues: @"name" inArray: studiesArray] == NO)
-	{
-		if( [curStudy valueForKey: @"name"])
-		{
-			if( [description length]) [description appendString:@"\r"];
-			if( [curStudy valueForKey: @"name"]) [description appendString: [curStudy valueForKey: @"name"]];
+			if( [colorsStudy objectForKey: [study valueForKey:@"studyInstanceUID"]] == nil)
+			{
+				[colorsStudy setObject: [colors objectAtIndex: color++] forKey: [study valueForKey:@"studyInstanceUID"]];
+			}	
+			if( color >= [colors count]) color = 0;
 		}
-	}
-	
-	if( [description length]) [description appendString:@"\r"];
-	
-	if( [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]])
-		[description appendString: [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]]];
-	
-	if( [self allIdenticalValues: @"studyName" inArray: studiesArray] == NO)
-	{
-		if( [curStudy valueForKey: @"studyName"])
+		
+		NSMutableString *description = [NSMutableString stringWithString:@""];
+		// same patients?
+		if( [self allIdenticalValues: @"name" inArray: studiesArray] == NO)
 		{
-			if( [description length]) [description appendString:@"\r"];
-			if( [curStudy valueForKey: @"studyName"])
-				[description appendString: [curStudy valueForKey: @"studyName"]];
+			if( [curStudy valueForKey: @"name"])
+			{
+				if( [description length]) [description appendString:@"\r"];
+				if( [curStudy valueForKey: @"name"]) [description appendString: [curStudy valueForKey: @"name"]];
+			}
 		}
-	}
-
-	if( [curSeries valueForKey:@"name"])
-	{
+		
 		if( [description length]) [description appendString:@"\r"];
+		
+		if( [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]])
+			[description appendString: [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]]];
+		
+		if( [self allIdenticalValues: @"studyName" inArray: studiesArray] == NO)
+		{
+			if( [curStudy valueForKey: @"studyName"])
+			{
+				if( [description length]) [description appendString:@"\r"];
+				if( [curStudy valueForKey: @"studyName"])
+					[description appendString: [curStudy valueForKey: @"studyName"]];
+			}
+		}
+
 		if( [curSeries valueForKey:@"name"])
-			[description appendString: [curSeries valueForKey:@"name"]];
+		{
+			if( [description length]) [description appendString:@"\r"];
+			if( [curSeries valueForKey:@"name"])
+				[description appendString: [curSeries valueForKey:@"name"]];
+		}
+		
+		NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
+		[stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size:30] forKey:NSFontAttributeName];
+		
+		if( description == nil)
+			description = [NSMutableString stringWithString:@""]; 
+		
+		NSAttributedString *text = [[[NSAttributedString alloc] initWithString: description attributes: stanStringAttrib] autorelease];
+		
+		NSColor *boxColor = [colorsStudy objectForKey: [curStudy valueForKey:@"studyInstanceUID"]];
+		NSColor *frameColor = [NSColor colorWithDeviceRed: [boxColor redComponent] green:[boxColor greenComponent] blue:[boxColor blueComponent] alpha:1];
+		
+		if( showDescriptionInLargeText == nil)
+			showDescriptionInLargeText = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor: boxColor withBorderColor:frameColor];
+		else
+		{
+			[showDescriptionInLargeText setString: text];
+			[showDescriptionInLargeText setBoxColor: boxColor];
+			[showDescriptionInLargeText setBorderColor: frameColor];
+		}
 	}
-	
-	NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
-	[stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size:30] forKey:NSFontAttributeName];
-	
-	if( description == nil)
-		description = [NSMutableString stringWithString:@""]; 
-	
-	NSAttributedString *text = [[[NSAttributedString alloc] initWithString: description attributes: stanStringAttrib] autorelease];
-	
-	NSColor *boxColor = [colorsStudy objectForKey: [curStudy valueForKey:@"studyInstanceUID"]];
-	NSColor *frameColor = [NSColor colorWithDeviceRed: [boxColor redComponent] green:[boxColor greenComponent] blue:[boxColor blueComponent] alpha:1];
-	
-	if( showDescriptionInLargeText == nil)
-		showDescriptionInLargeText = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor: boxColor withBorderColor:frameColor];
-	else
+	@catch (NSException * e) 
 	{
-		[showDescriptionInLargeText setString: text];
-		[showDescriptionInLargeText setBoxColor: boxColor];
-		[showDescriptionInLargeText setBorderColor: frameColor];
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
+	
 	[drawLock lock];
 }
 
@@ -3003,97 +3055,105 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		[drawLock lock];
 		
-		[self mouseMoved: event];	// Update some variables...
-		
-        if( curImage != startImage && (matrix && [BrowserController currentBrowser]))
-        {
-            NSButtonCell *cell = [matrix cellAtRow:curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
-            [cell performClick:nil];
-            [matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
-        }
-		
-		long tool = currentMouseEventTool;
-		
-		if( crossMove >= 0) tool = tCross;
-		
-		if( tool == tWL || tool == tWLBlended)
+		@try 
 		{
-			if( [self is2DViewer] == YES)
+			[self mouseMoved: event];	// Update some variables...
+		
+			if( curImage != startImage && (matrix && [BrowserController currentBrowser]))
 			{
-				[[[self windowController] thickSlabController] setLowQuality: NO];
-				[self reapplyWindowLevel];
-				[self loadTextures];
+				NSButtonCell *cell = [matrix cellAtRow:curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
+				[cell performClick:nil];
+				[matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
+			}
+			
+			long tool = currentMouseEventTool;
+			
+			if( crossMove >= 0) tool = tCross;
+			
+			if( tool == tWL || tool == tWLBlended)
+			{
+				if( [self is2DViewer] == YES)
+				{
+					[[[self windowController] thickSlabController] setLowQuality: NO];
+					[self reapplyWindowLevel];
+					[self loadTextures];
+					[self setNeedsDisplay:YES];
+				}
+			}
+			
+			if( [self roiTool: tool] )
+			{
+				NSPoint     eventLocation = [event locationInWindow];
+				NSPoint		tempPt = [self convertPoint:eventLocation fromView: nil];
+				
+				tempPt = [self ConvertFromNSView2GL:tempPt];
+				
+				for( long i = 0; i < [curRoiList count]; i++)
+				{
+					[[curRoiList objectAtIndex:i] mouseRoiUp: tempPt];
+					
+					if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+					{
+						[nc postNotificationName: OsirixROISelectedNotification object: [curRoiList objectAtIndex:i] userInfo: nil];
+						break;
+					}
+				}
+				
+				for( long i = 0; i < [curRoiList count]; i++)
+				{
+					if( [[curRoiList objectAtIndex: i] valid] == NO)
+					{
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: [curRoiList objectAtIndex:i] userInfo: nil];
+						[curRoiList removeObjectAtIndex: i];
+						i--;
+					}
+				}
+				
 				[self setNeedsDisplay:YES];
 			}
-		}
-		
-		if( [self roiTool: tool] )
-		{
-			NSPoint     eventLocation = [event locationInWindow];
-			NSPoint		tempPt = [self convertPoint:eventLocation fromView: nil];
 			
-			tempPt = [self ConvertFromNSView2GL:tempPt];
-			
-			for( long i = 0; i < [curRoiList count]; i++)
+			if(repulsorROIEdition)
 			{
-				[[curRoiList objectAtIndex:i] mouseRoiUp: tempPt];
-				
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				currentTool = tRepulsor;
+				tool = tRepulsor;
+				repulsorROIEdition = NO;
+			}
+			
+			if(tool == tRepulsor)
+			{
+				repulsorRadius = 0;
+				if(repulsorColorTimer)
 				{
-					[nc postNotificationName: OsirixROISelectedNotification object: [curRoiList objectAtIndex:i] userInfo: nil];
-					break;
+					[repulsorColorTimer invalidate];
+					[repulsorColorTimer release];
+					repulsorColorTimer = nil;
 				}
+				[self setNeedsDisplay:YES];
 			}
-			
-			for( long i = 0; i < [curRoiList count]; i++)
-			{
-				if( [[curRoiList objectAtIndex: i] valid] == NO)
-				{
-					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: [curRoiList objectAtIndex:i] userInfo: nil];
-					[curRoiList removeObjectAtIndex: i];
-					i--;
-				}
-			}
-			
-			[self setNeedsDisplay:YES];
-		}
-		
-		if(repulsorROIEdition)
-		{
-			currentTool = tRepulsor;
-			tool = tRepulsor;
-			repulsorROIEdition = NO;
-		}
-		
-		if(tool == tRepulsor)
-		{
-			repulsorRadius = 0;
-			if(repulsorColorTimer)
-			{
-				[repulsorColorTimer invalidate];
-				[repulsorColorTimer release];
-				repulsorColorTimer = nil;
-			}
-			[self setNeedsDisplay:YES];
-		}
 
-		if(selectorROIEdition)
+			if(selectorROIEdition)
+			{
+				currentTool = tROISelector;
+				tool = tROISelector;
+				selectorROIEdition = NO;
+			}
+			
+			if(tool == tROISelector)
+			{
+				[ROISelectorSelectedROIList release];
+				ROISelectorSelectedROIList = nil;
+				
+				NSRect rect = NSMakeRect(ROISelectorStartPoint.x-1, ROISelectorStartPoint.y-1, fabsf(ROISelectorEndPoint.x-ROISelectorStartPoint.x)+2, fabsf(ROISelectorEndPoint.y-ROISelectorStartPoint.y)+2);
+				ROISelectorStartPoint = NSMakePoint(0.0, 0.0);
+				ROISelectorEndPoint = NSMakePoint(0.0, 0.0);
+				[self drawRect:rect];
+			}
+		}
+		@catch (NSException * e) 
 		{
-			currentTool = tROISelector;
-			tool = tROISelector;
-			selectorROIEdition = NO;
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
 		
-		if(tool == tROISelector)
-		{
-			[ROISelectorSelectedROIList release];
-			ROISelectorSelectedROIList = nil;
-			
-			NSRect rect = NSMakeRect(ROISelectorStartPoint.x-1, ROISelectorStartPoint.y-1, fabsf(ROISelectorEndPoint.x-ROISelectorStartPoint.x)+2, fabsf(ROISelectorEndPoint.y-ROISelectorStartPoint.y)+2);
-			ROISelectorStartPoint = NSMakePoint(0.0, 0.0);
-			ROISelectorEndPoint = NSMakePoint(0.0, 0.0);
-			[self drawRect:rect];
-		}
 		
 		[drawLock unlock];
     }
@@ -3391,136 +3451,142 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		[drawLock lock];
 		
-		[[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
-		
-//		[self checkCursor];
-		
-		BOOL	needUpdate = NO;
-
-		BOOL mouseOnImage = NO;
-		
-		eventLocation = [self convertPoint:eventLocation fromView:nil];
-		NSPoint imageLocation = [self ConvertFromNSView2GL:eventLocation];
-		
-		if( imageLocation.x >= 0 && imageLocation.x < curDCM.pwidth)	//&& NSPointInRect( eventLocation, size)) <- this doesn't work in MPR Ortho
+		@try 
 		{
-			if( imageLocation.y >= 0 && imageLocation.y < curDCM.pheight)
+			[[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
+			
+	//		[self checkCursor];
+			
+			BOOL	needUpdate = NO;
+
+			BOOL mouseOnImage = NO;
+			
+			eventLocation = [self convertPoint:eventLocation fromView:nil];
+			NSPoint imageLocation = [self ConvertFromNSView2GL:eventLocation];
+			
+			if( imageLocation.x >= 0 && imageLocation.x < curDCM.pwidth)	//&& NSPointInRect( eventLocation, size)) <- this doesn't work in MPR Ortho
 			{
-				mouseOnImage = YES;
-				
-				mouseXPos = imageLocation.x;
-				mouseYPos = imageLocation.y;
-				
-				if( ([theEvent modifierFlags] & NSShiftKeyMask) && ([theEvent modifierFlags] & NSControlKeyMask) && mouseDragging == NO)
+				if( imageLocation.y >= 0 && imageLocation.y < curDCM.pheight)
 				{
-					[self sync3DPosition];
-				}
-				else if( ([theEvent modifierFlags] & (NSShiftKeyMask|NSCommandKeyMask|NSControlKeyMask|NSAlternateKeyMask)) == NSShiftKeyMask && mouseDragging == NO)
-				{
-					if( [self roiTool: currentTool] == NO)
+					mouseOnImage = YES;
+					
+					mouseXPos = imageLocation.x;
+					mouseYPos = imageLocation.y;
+					
+					if( ([theEvent modifierFlags] & NSShiftKeyMask) && ([theEvent modifierFlags] & NSControlKeyMask) && mouseDragging == NO)
 					{
-						[self computeMagnifyLens: imageLocation];
-#ifdef new_loupe
-						[self displayLoupeWithCenter:NSMakePoint([[self window] frame].origin.x+[theEvent locationInWindow].x, [[self window] frame].origin.y+[theEvent locationInWindow].y)];
-#endif
+						[self sync3DPosition];
+					}
+					else if( ([theEvent modifierFlags] & (NSShiftKeyMask|NSCommandKeyMask|NSControlKeyMask|NSAlternateKeyMask)) == NSShiftKeyMask && mouseDragging == NO)
+					{
+						if( [self roiTool: currentTool] == NO)
+						{
+							[self computeMagnifyLens: imageLocation];
+	#ifdef new_loupe
+							[self displayLoupeWithCenter:NSMakePoint([[self window] frame].origin.x+[theEvent locationInWindow].x, [[self window] frame].origin.y+[theEvent locationInWindow].y)];
+	#endif
+						}
+					}
+					
+					int
+						xPos = (int)mouseXPos,
+						yPos = (int)mouseYPos;
+					
+					if( curDCM.isRGB )
+					{
+						pixelMouseValueR = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +1];
+						pixelMouseValueG = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +2];
+						pixelMouseValueB = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +3];
+					}
+					else pixelMouseValue = [curDCM getPixelValueX: xPos Y:yPos];
+				}
+			}
+			
+			if(	cpixelMouseValueR != pixelMouseValueR)	needUpdate = YES;
+			if(	cpixelMouseValueG != pixelMouseValueG)	needUpdate = YES;
+			if(	cpixelMouseValueB != pixelMouseValueB)	needUpdate = YES;
+			if(	cmouseXPos != mouseXPos)	needUpdate = YES;
+			if(	cmouseYPos != mouseYPos)	needUpdate = YES;
+			if(	cpixelMouseValue != pixelMouseValue)	needUpdate = YES;
+			
+			float	cblendingMouseXPos = blendingMouseXPos;
+			float	cblendingMouseYPos = blendingMouseYPos;
+			float	cblendingPixelMouseValue = blendingPixelMouseValue;
+			float	cblendingPixelMouseValueR = blendingPixelMouseValueR;
+			float	cblendingPixelMouseValueG = blendingPixelMouseValueG;
+			float	cblendingPixelMouseValueB = blendingPixelMouseValueB;
+
+			blendingMouseXPos = 0;
+			blendingMouseYPos = 0;
+			blendingPixelMouseValue = 0;
+			blendingPixelMouseValueR = 0;
+			blendingPixelMouseValueG = 0;
+			blendingPixelMouseValueB = 0;
+			
+			// Blended view
+			if( blendingView)
+			{
+				NSPoint blendedLocation = [blendingView ConvertFromNSView2GL: eventLocation];
+				
+				if( blendedLocation.x >= 0 && blendedLocation.x < [[blendingView curDCM] pwidth])
+				{
+					if( blendedLocation.y >= 0 && blendedLocation.y < [[blendingView curDCM] pheight])
+					{
+						blendingMouseXPos = blendedLocation.x;
+						blendingMouseYPos = blendedLocation.y;
+						
+						int xPos = (int)blendingMouseXPos,
+							yPos = (int)blendingMouseYPos;
+						
+						if( [[blendingView curDCM] isRGB])
+						{
+							blendingPixelMouseValueR = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +1];
+							blendingPixelMouseValueG = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +2];
+							blendingPixelMouseValueB = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +3];
+						}
+						else blendingPixelMouseValue = [[blendingView curDCM] getPixelValueX: xPos Y:yPos];
 					}
 				}
+			}
+			
+			if( cblendingMouseXPos != blendingMouseXPos) needUpdate = YES;
+			if( cblendingMouseYPos != blendingMouseYPos) needUpdate = YES;
+			if( cblendingPixelMouseValue != blendingPixelMouseValue) needUpdate = YES;
+			if( cblendingPixelMouseValueR != blendingPixelMouseValueR) needUpdate = YES;
+			if( cblendingPixelMouseValueG != blendingPixelMouseValueG) needUpdate = YES;
+			if( cblendingPixelMouseValueB != blendingPixelMouseValueB) needUpdate = YES;
+			
+			if( needUpdate) [self setNeedsDisplay: YES];
+			
+			// Are we near a ROI point?
+			if( [self roiTool: currentTool])
+			{
+				NSPoint pt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+				pt = [self ConvertFromNSView2GL: pt];
 				
-				int
-					xPos = (int)mouseXPos,
-					yPos = (int)mouseYPos;
+				for( ROI *r in curRoiList)
+					[r displayPointUnderMouse :pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue];
 				
-				if( curDCM.isRGB )
+				if( [theEvent type] == NSMouseMoved)
 				{
-					pixelMouseValueR = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +1];
-					pixelMouseValueG = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +2];
-					pixelMouseValueB = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +3];
+					// Should we change the mouse cursor?
+					if( [theEvent modifierFlags]) [self flagsChanged: theEvent];
 				}
-				else pixelMouseValue = [curDCM getPixelValueX: xPos Y:yPos];
+			}
+			
+			
+			if(!mouseOnImage)
+			{
+	#ifdef new_loupe
+				[self hideLoupe];
+	#endif
 			}
 		}
-		
-		if(	cpixelMouseValueR != pixelMouseValueR)	needUpdate = YES;
-		if(	cpixelMouseValueG != pixelMouseValueG)	needUpdate = YES;
-		if(	cpixelMouseValueB != pixelMouseValueB)	needUpdate = YES;
-		if(	cmouseXPos != mouseXPos)	needUpdate = YES;
-		if(	cmouseYPos != mouseYPos)	needUpdate = YES;
-		if(	cpixelMouseValue != pixelMouseValue)	needUpdate = YES;
-		
-		float	cblendingMouseXPos = blendingMouseXPos;
-		float	cblendingMouseYPos = blendingMouseYPos;
-		float	cblendingPixelMouseValue = blendingPixelMouseValue;
-		float	cblendingPixelMouseValueR = blendingPixelMouseValueR;
-		float	cblendingPixelMouseValueG = blendingPixelMouseValueG;
-		float	cblendingPixelMouseValueB = blendingPixelMouseValueB;
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 
-		blendingMouseXPos = 0;
-		blendingMouseYPos = 0;
-		blendingPixelMouseValue = 0;
-		blendingPixelMouseValueR = 0;
-		blendingPixelMouseValueG = 0;
-		blendingPixelMouseValueB = 0;
-		
-		// Blended view
-		if( blendingView)
-		{
-			NSPoint blendedLocation = [blendingView ConvertFromNSView2GL: eventLocation];
-			
-			if( blendedLocation.x >= 0 && blendedLocation.x < [[blendingView curDCM] pwidth])
-			{
-				if( blendedLocation.y >= 0 && blendedLocation.y < [[blendingView curDCM] pheight])
-				{
-					blendingMouseXPos = blendedLocation.x;
-					blendingMouseYPos = blendedLocation.y;
-					
-					int xPos = (int)blendingMouseXPos,
-						yPos = (int)blendingMouseYPos;
-					
-					if( [[blendingView curDCM] isRGB])
-					{
-						blendingPixelMouseValueR = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +1];
-						blendingPixelMouseValueG = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +2];
-						blendingPixelMouseValueB = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +3];
-					}
-					else blendingPixelMouseValue = [[blendingView curDCM] getPixelValueX: xPos Y:yPos];
-				}
-			}
-		}
-		
-		if( cblendingMouseXPos != blendingMouseXPos) needUpdate = YES;
-		if( cblendingMouseYPos != blendingMouseYPos) needUpdate = YES;
-		if( cblendingPixelMouseValue != blendingPixelMouseValue) needUpdate = YES;
-		if( cblendingPixelMouseValueR != blendingPixelMouseValueR) needUpdate = YES;
-		if( cblendingPixelMouseValueG != blendingPixelMouseValueG) needUpdate = YES;
-		if( cblendingPixelMouseValueB != blendingPixelMouseValueB) needUpdate = YES;
-		
-		if( needUpdate) [self setNeedsDisplay: YES];
-		
-		// Are we near a ROI point?
-		if( [self roiTool: currentTool])
-		{
-			NSPoint pt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-			pt = [self ConvertFromNSView2GL: pt];
-			
-			for( ROI *r in curRoiList)
-				[r displayPointUnderMouse :pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue];
-			
-			if( [theEvent type] == NSMouseMoved)
-			{
-				// Should we change the mouse cursor?
-				if( [theEvent modifierFlags]) [self flagsChanged: theEvent];
-			}
-		}
-		
-		
-		if(!mouseOnImage)
-		{
-#ifdef new_loupe
-			[self hideLoupe];
-#endif
-		}
-		
-		
 		[drawLock unlock];
 	}
 	
@@ -3665,535 +3731,542 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		[drawLock lock];
 		
-		[self deleteLens];
-		
-		[self erase2DPointMarker];
-		if( blendingView) [blendingView erase2DPointMarker];
-		
-        NSPoint     eventLocation = [event locationInWindow];
-        NSRect      size = [self frame];
-        long		tool;
-		
-		[self mouseMoved: event];	// Update some variables...
-		
-		start = previous = [self convertPoint:eventLocation fromView: nil];
-        
-		BOOL roiHit = NO;
-		
-		if( [self roiTool: currentTool])
+		@try 
 		{
-			NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
-			tempPt = [self ConvertFromNSView2GL:tempPt];
-			if( [self clickInROI: tempPt]) roiHit = YES;
-		}
-		
-		if( roiHit == NO)
-			tool = [self getTool: event];
-		else
-			tool = currentTool;
-		
-        startImage = curImage;
-        [self setStartWLWW];
-        startScaleValue = scaleValue;
-        rotationStart = rotation;
-		blendingFactorStart = blendingFactor;
-		scrollMode = 0;
-		resizeTotal = 1;
-		
-        originStart = origin;
-		originOffsetStart = originOffset;
-        
-        mesureB = mesureA = [self convertPoint:eventLocation fromView: nil];
-        mesureB.y = mesureA.y = size.size.height - mesureA.y ;
-        
-        roiRect.origin = [self convertPoint:eventLocation fromView: nil];
-        roiRect.origin.y = size.size.height - roiRect.origin.y;
-		
-		int clickCount = 1;
-		@try
-		{
-			if( [event type] ==	NSLeftMouseDown || [event type] ==	NSRightMouseDown || [event type] ==	NSLeftMouseUp || [event type] == NSRightMouseUp)
-				clickCount = [event clickCount];
-		}
-		@catch (NSException * e)
-		{
-			clickCount = 1;
-		}
-		
-        if( clickCount > 1 && [self window] == [[BrowserController currentBrowser] window])
-        {
-            [[BrowserController currentBrowser] matrixDoublePressed:nil];
-        }
-		else if( clickCount > 1 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask))
-		{
-			if( [self is2DViewer] == YES)
-				[[self windowController] setKeyImage: self];
-		}
-		else if( clickCount > 1 && stringID == nil)
-		{
-			if( [self is2DViewer] == YES)
-				[[self windowController] showCurrentThumbnail: self];
-				
+			[self deleteLens];
+			
+			[self erase2DPointMarker];
+			if( blendingView) [blendingView erase2DPointMarker];
+			
+			NSPoint     eventLocation = [event locationInWindow];
+			NSRect      size = [self frame];
+			long		tool;
+			
+			[self mouseMoved: event];	// Update some variables...
+			
+			start = previous = [self convertPoint:eventLocation fromView: nil];
+			
+			BOOL roiHit = NO;
+			
+			if( [self roiTool: currentTool])
+			{
+				NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
+				tempPt = [self ConvertFromNSView2GL:tempPt];
+				if( [self clickInROI: tempPt]) roiHit = YES;
+			}
+			
 			if( roiHit == NO)
-			{
-				[self sync3DPosition];
-			}
-		}
-		
-		crossMove = -1;
-		
-		if( tool == tRotate)
-		{
-			NSPoint current = [self currentPointInView:event];
-	
-			current.x -= [self frame].size.width/2.;
-			current.y -= [self frame].size.height/2.;
-			
-			float sign = 1;
-			
-			if( xFlipped) sign = -sign;
-			if( yFlipped) sign = -sign;
-			
-			rotationStart -= sign*atan2( current.x, current.y) / deg2rad;
-		}
-		
-		if(tool == tRepulsor)
-		{
-			[self deleteMouseDownTimer];
-			
-			[[self windowController] addToUndoQueue:@"roi"];
-			
-			NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
-			tempPt = [self ConvertFromNSView2GL:tempPt];
-			
-			BOOL clickInROI = NO;
-			for( int i = 0; i < [curRoiList count]; i++)
-			{
-				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
-				{
-					clickInROI = YES;
-				}
-			}
-
-			if(!clickInROI)
-			{
-				for( int i = 0; i < [curRoiList count]; i++)
-				{
-					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
-					{
-						clickInROI = YES;
-					}
-				}
-			}
-			
-			if(clickInROI)
-			{
-				currentTool = tPencil;
-				tool = tPencil;
-				repulsorROIEdition = YES;
-			}
+				tool = [self getTool: event];
 			else
+				tool = currentTool;
+			
+			startImage = curImage;
+			[self setStartWLWW];
+			startScaleValue = scaleValue;
+			rotationStart = rotation;
+			blendingFactorStart = blendingFactor;
+			scrollMode = 0;
+			resizeTotal = 1;
+			
+			originStart = origin;
+			originOffsetStart = originOffset;
+			
+			mesureB = mesureA = [self convertPoint:eventLocation fromView: nil];
+			mesureB.y = mesureA.y = size.size.height - mesureA.y ;
+			
+			roiRect.origin = [self convertPoint:eventLocation fromView: nil];
+			roiRect.origin.y = size.size.height - roiRect.origin.y;
+			
+			int clickCount = 1;
+			@try
 			{
-				[self deleteMouseDownTimer];
-				repulsorColorTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(setAlphaRepulsor:) userInfo:event repeats:YES] retain];
-				repulsorAlpha = 0.1;
-				repulsorAlphaSign = 1.0;
-				repulsorRadius = 0;
-								
-				float pixSpacingRatio = 1.0;
-				if ( self.pixelSpacingY != 0 && self.pixelSpacingX != 0 )
-					pixSpacingRatio = self.pixelSpacingY / self.pixelSpacingX;
-				
-				NSArray *roiArray = [self selectedROIs];
-				if( [roiArray count] == 0) roiArray = curRoiList;
-				
-				float distance = 0;
-				if( [roiArray count]>0)
+				if( [event type] ==	NSLeftMouseDown || [event type] ==	NSRightMouseDown || [event type] ==	NSLeftMouseUp || [event type] == NSRightMouseUp)
+					clickCount = [event clickCount];
+			}
+			@catch (NSException * e)
+			{
+				clickCount = 1;
+			}
+			
+			if( clickCount > 1 && [self window] == [[BrowserController currentBrowser] window])
+			{
+				[[BrowserController currentBrowser] matrixDoublePressed:nil];
+			}
+			else if( clickCount > 1 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask))
+			{
+				if( [self is2DViewer] == YES)
+					[[self windowController] setKeyImage: self];
+			}
+			else if( clickCount > 1 && stringID == nil)
+			{
+				if( [self is2DViewer] == YES)
+					[[self windowController] showCurrentThumbnail: self];
+					
+				if( roiHit == NO)
 				{
-					ROI *r = [roiArray objectAtIndex:0];
-					if( r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle)
-					{
-						NSPoint pt = [[[[roiArray objectAtIndex:0] points] objectAtIndex:0] point];
-						float dx = (pt.x-tempPt.x);
-						float dx2 = dx * dx;
-						float dy = (pt.y-tempPt.y)*pixSpacingRatio;
-						float dy2 = dy * dy;
-						distance = sqrt(dx2 + dy2);
-					}
-				}
-				
-				NSMutableArray *points;
-				for( int i = 0; i < [roiArray count]; i++ )
-				{
-					ROI *r = [roiArray objectAtIndex: i];
-					if( r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle)
-					{
-						points = [r points];
-																																				  
-						for( int j = 0; j < [points count]; j++ )
-						{
-							NSPoint pt = [[points objectAtIndex:j] point];
-							float dx = (pt.x-tempPt.x);
-							float dx2 = dx * dx;
-							float dy = (pt.y-tempPt.y) *pixSpacingRatio;
-							float dy2 = dy * dy;
-							float d = sqrt(dx2 + dy2);
-							distance = (d < distance) ? d : distance ;
-						}
-					}
-				}
-				repulsorRadius = (int) ((distance + 0.5) * 0.8);
-				if(repulsorRadius < 2) repulsorRadius = 2;
-				if(repulsorRadius>curDCM.pwidth/2) repulsorRadius = curDCM.pwidth/2;
-				
-				if( [roiArray count] == 0 || distance == 0)
-				{
-					NSRunCriticalAlertPanel(NSLocalizedString(@"Repulsor",nil),NSLocalizedString(@"The Repulsor tool works only if ROIs (Length ROI, Opened and Closed Polygon ROI and Pencil ROI) are on the image.",nil), NSLocalizedString(@"OK",nil), nil,nil);
+					[self sync3DPosition];
 				}
 			}
-		}
+			
+			crossMove = -1;
+			
+			if( tool == tRotate)
+			{
+				NSPoint current = [self currentPointInView:event];
 		
-		if(tool == tROISelector)
-		{
-			ROISelectorSelectedROIList = [[NSMutableArray arrayWithCapacity:0] retain];
-			
-			// if shift key is pressed, we need to keep track of the ROIs that were selected before the click 
-			if([event modifierFlags] & NSShiftKeyMask)
-			{
-				for( int i=0; i<[curRoiList count]; i++ )
-				{
-					if([[curRoiList objectAtIndex:i] ROImode]==ROI_selected)
-						[ROISelectorSelectedROIList addObject:[curRoiList objectAtIndex:i]];
-				}
+				current.x -= [self frame].size.width/2.;
+				current.y -= [self frame].size.height/2.;
+				
+				float sign = 1;
+				
+				if( xFlipped) sign = -sign;
+				if( yFlipped) sign = -sign;
+				
+				rotationStart -= sign*atan2( current.x, current.y) / deg2rad;
 			}
 			
-			NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
-
-			ROISelectorStartPoint = tempPt;
-			ROISelectorEndPoint = tempPt;
-			
-			ROISelectorStartPoint.y = [self drawingFrameRect].size.height - ROISelectorStartPoint.y;
-			ROISelectorEndPoint.y = [self drawingFrameRect].size.height - ROISelectorEndPoint.y;
-			
-			[self deleteMouseDownTimer];
-			
-			tempPt = [self ConvertFromNSView2GL:tempPt];
-
-			BOOL clickInROI = NO;
-			for( int i = 0; i < [curRoiList count]; i++ )
-			{
-				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
-				{
-					clickInROI = YES;
-				}
-			}
-
-			if(!clickInROI)
-			{
-				for( int i = 0; i < [curRoiList count]; i++)
-				{
-					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
-					{
-						clickInROI = YES;
-					}
-				}
-			}
-			
-			if( clickInROI)
-			{
-				currentTool = tPencil;
-				tool = tPencil;
-				selectorROIEdition = YES;
-			}
-		}
-		
-		// ROI TOOLS
-		if( [self roiTool:tool] == YES && crossMove == -1 )
-		{
-			@try 
+			if(tool == tRepulsor)
 			{
 				[self deleteMouseDownTimer];
 				
 				[[self windowController] addToUndoQueue:@"roi"];
 				
-				BOOL		DoNothing = NO;
-				NSInteger	selected = -1, i;
 				NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 				tempPt = [self ConvertFromNSView2GL:tempPt];
 				
-				if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+				BOOL clickInROI = NO;
+				for( int i = 0; i < [curRoiList count]; i++)
 				{
-					[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
-					[DCMView setDefaults];
-				}
-				
-				BOOL roiFound = NO;
-				
-				if (!(([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSShiftKeyMask)))
-					for( i = 0; i < [curRoiList count] && !roiFound; i++)
+					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
 					{
-						if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
-						{
-							selected = i;
-							roiFound = YES;
-						}
+						clickInROI = YES;
 					}
-				
-				if( roiFound == NO)
+				}
+
+				if(!clickInROI)
 				{
 					for( int i = 0; i < [curRoiList count]; i++)
 					{
-						if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
+						if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
 						{
-							selected = i;
-							break;
-						}
-					}
-				}
-						
-				if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask) )
-				{
-					if( selected != -1 )
-					{
-						if( [[curRoiList objectAtIndex: selected] ROImode] == ROI_selected)
-						{
-							[[curRoiList objectAtIndex: selected] setROIMode: ROI_sleep];
-							// unselect all ROIs in the same group
-							[[self windowController] setMode:ROI_sleep toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]];
-							DoNothing = YES;
-						}
-					}
-				}
-				else
-				{
-					if( selected == -1 || ( [[curRoiList objectAtIndex: selected] ROImode] != ROI_selected &&  [[curRoiList objectAtIndex: selected] ROImode] != ROI_selectedModify))
-					{
-						// Unselect previous ROIs
-						for( i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
-					}
-				}
-						
-				if( DoNothing == NO)
-				{
-					if( selected >= 0 && drawingROI == NO)
-					{
-						[curROI release];
-						curROI = nil;
-						
-						// Bring the selected ROI to the first position in array
-						ROI *roi = [curRoiList objectAtIndex: selected];
-						[[self windowController] bringToFrontROI: roi];
-						
-						selected = [curRoiList indexOfObject: roi];//0;
-						
-						long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES];
-						if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO];
-						
-						if( [self is2DViewer])
-							[[self windowController] setMode:roiVal toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]]; // change the mode to the whole group before the selected ROI!
-						[[curRoiList objectAtIndex: selected] setROIMode: roiVal];
-											
-						NSArray *winList = [[NSApplication sharedApplication] windows];
-						BOOL	found = NO;
-						
-						if( [self is2DViewer])
-						{
-							for( int i = 0; i < [winList count]; i++)
-							{
-								if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"])
-								{
-									found = YES;
-									
-									[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[self windowController]];
-									if( clickCount > 1)
-										[[winList objectAtIndex:i] makeKeyAndOrderFront: self];
-								}
-							}
-							
-							if( clickCount > 1)
-							{
-								if( found == NO)
-								{
-									ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: [curRoiList objectAtIndex: selected] :[self windowController]];
-									[roiWin showWindow:self];
-								}
-							}
-						}
-					}
-					else // Start drawing a new ROI !
-					{
-						if( curROI)
-						{
-							drawingROI = [curROI mouseRoiDown:tempPt :scaleValue];
-							
-							if( drawingROI == NO)
-							{
-								[curROI release];
-								curROI = nil;
-							}
-							
-							if( [curROI ROImode] == ROI_selected)
-								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: curROI userInfo: nil];
-						}
-						else
-						{
-							// Unselect previous ROIs
-							for( int i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
-							
-							ROI*		aNewROI;
-							NSString	*roiName = nil, *finalName;
-							long		counter;
-							BOOL		existsAlready;
-							
-							drawingROI = NO;
-							
-							[curROI release];
-							curROI = aNewROI = [[[ROI alloc] initWithType: tool : curDCM.pixelSpacingX :curDCM.pixelSpacingY : [DCMPix originCorrectedAccordingToOrientation: curDCM]] autorelease];	//NSMakePoint( curDCM.originX, curDCM.originY)];
-							[curROI retain];
-							
-							if ( [ROI defaultName] != nil )
-							{
-								[aNewROI setName: [ROI defaultName]];
-							}
-							else
-							{
-								if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EmptyNameForNewROIs"] == NO || tool == t2DPoint)
-								{
-									switch( tool)
-									{
-										case  tOval:
-											roiName = [NSString stringWithString:@"Oval "];
-										break;
-											
-										case tDynAngle:
-											roiName = [NSString stringWithString:@"Dynamic Angle "];
-										break;
-										
-										case tAxis:
-											roiName = [NSString stringWithString:@"Bone Axis "];
-										break;
-										
-										case tOPolygon:
-										case tCPolygon:
-											roiName = [NSString stringWithString:@"Polygon "];
-										break;
-											
-										case tAngle:
-											roiName = [NSString stringWithString:@"Angle "];
-										break;
-											
-										case tArrow:
-											roiName = [NSString stringWithString:@"Arrow "];
-										break;
-										
-										case tPlain:
-										case tPencil:
-											roiName = [NSString stringWithString:@"ROI "];
-										break;
-											
-										case tMesure:
-											roiName = [NSString stringWithString:@"Measurement "];
-										break;
-											
-										case tROI:
-											roiName = [NSString stringWithString:@"Rectangle "];
-										break;
-											
-										case t2DPoint:
-											roiName = [NSString stringWithString:@"Point "];
-										break;
-									}
-									
-									if( roiName )
-									{
-										counter = 1;
-										do
-										{
-											existsAlready = NO;
-											
-											finalName = [roiName stringByAppendingFormat:@"%d", counter++];
-											
-											for( int i = 0; i < [dcmRoiList count]; i++)
-											{
-												for( int x = 0; x < [[dcmRoiList objectAtIndex: i] count]; x++)
-												{
-													if( [[[[dcmRoiList objectAtIndex: i] objectAtIndex: x] name] isEqualToString: finalName])
-													{
-														existsAlready = YES;
-													}
-												}
-											}
-											
-										} while (existsAlready != NO);
-										
-										[aNewROI setName: finalName];
-									}
-								}
-							}
-							
-							// Create aliases of current ROI to the entire series
-							if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask))
-							{
-								for( int i = 0; i < [dcmRoiList count]; i++)
-								{
-									[[dcmRoiList objectAtIndex: i] addObject: aNewROI];
-								}
-								
-								aNewROI.originalIndexForAlias = curImage;
-								aNewROI.isAliased = YES;
-							}
-							else [curRoiList addObject: aNewROI];
-							
-							[aNewROI setRoiFont: labelFontListGL :labelFontListGLSize :self];
-							
-							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
-							{
-								if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
-									[[self windowController] setKeyImage: self];
-							}
-							
-							[[self windowController] bringToFrontROI: aNewROI];
-							
-							drawingROI = [aNewROI mouseRoiDown: tempPt :scaleValue];
-							
-							if( drawingROI == NO)
-							{
-								[curROI release];
-								curROI = nil;
-							}
-							if( [aNewROI ROImode] == ROI_selected)
-								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: aNewROI userInfo: nil];
-							
-							NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	aNewROI,							@"ROI",
-																									[NSNumber numberWithInt:curImage],	@"sliceNumber", 
-																									nil];
-							
-							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixAddROINotification object:self userInfo:userInfo];
+							clickInROI = YES;
 						}
 					}
 				}
 				
-				for( int x = 0; x < [dcmRoiList count]; x++ )
+				if(clickInROI)
 				{
-					for( int i = 0; i < [[dcmRoiList objectAtIndex: x] count]; i++)
+					currentTool = tPencil;
+					tool = tPencil;
+					repulsorROIEdition = YES;
+				}
+				else
+				{
+					[self deleteMouseDownTimer];
+					repulsorColorTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(setAlphaRepulsor:) userInfo:event repeats:YES] retain];
+					repulsorAlpha = 0.1;
+					repulsorAlphaSign = 1.0;
+					repulsorRadius = 0;
+									
+					float pixSpacingRatio = 1.0;
+					if ( self.pixelSpacingY != 0 && self.pixelSpacingX != 0 )
+						pixSpacingRatio = self.pixelSpacingY / self.pixelSpacingX;
+					
+					NSArray *roiArray = [self selectedROIs];
+					if( [roiArray count] == 0) roiArray = curRoiList;
+					
+					float distance = 0;
+					if( [roiArray count]>0)
 					{
-						if( [[[dcmRoiList objectAtIndex: x] objectAtIndex: i] valid] == NO)
+						ROI *r = [roiArray objectAtIndex:0];
+						if( r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle)
 						{
-							[[dcmRoiList objectAtIndex: x] removeObjectAtIndex: i];
-							i--;
+							NSPoint pt = [[[[roiArray objectAtIndex:0] points] objectAtIndex:0] point];
+							float dx = (pt.x-tempPt.x);
+							float dx2 = dx * dx;
+							float dy = (pt.y-tempPt.y)*pixSpacingRatio;
+							float dy2 = dy * dy;
+							distance = sqrt(dx2 + dy2);
 						}
+					}
+					
+					NSMutableArray *points;
+					for( int i = 0; i < [roiArray count]; i++ )
+					{
+						ROI *r = [roiArray objectAtIndex: i];
+						if( r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle)
+						{
+							points = [r points];
+																																					  
+							for( int j = 0; j < [points count]; j++ )
+							{
+								NSPoint pt = [[points objectAtIndex:j] point];
+								float dx = (pt.x-tempPt.x);
+								float dx2 = dx * dx;
+								float dy = (pt.y-tempPt.y) *pixSpacingRatio;
+								float dy2 = dy * dy;
+								float d = sqrt(dx2 + dy2);
+								distance = (d < distance) ? d : distance ;
+							}
+						}
+					}
+					repulsorRadius = (int) ((distance + 0.5) * 0.8);
+					if(repulsorRadius < 2) repulsorRadius = 2;
+					if(repulsorRadius>curDCM.pwidth/2) repulsorRadius = curDCM.pwidth/2;
+					
+					if( [roiArray count] == 0 || distance == 0)
+					{
+						NSRunCriticalAlertPanel(NSLocalizedString(@"Repulsor",nil),NSLocalizedString(@"The Repulsor tool works only if ROIs (Length ROI, Opened and Closed Polygon ROI and Pencil ROI) are on the image.",nil), NSLocalizedString(@"OK",nil), nil,nil);
 					}
 				}
 			}
-			@catch (NSException * e)
+			
+			if(tool == tROISelector)
 			{
-				NSLog( @"**** mouseDown ROI : %@", e);
+				ROISelectorSelectedROIList = [[NSMutableArray arrayWithCapacity:0] retain];
+				
+				// if shift key is pressed, we need to keep track of the ROIs that were selected before the click 
+				if([event modifierFlags] & NSShiftKeyMask)
+				{
+					for( int i=0; i<[curRoiList count]; i++ )
+					{
+						if([[curRoiList objectAtIndex:i] ROImode]==ROI_selected)
+							[ROISelectorSelectedROIList addObject:[curRoiList objectAtIndex:i]];
+					}
+				}
+				
+				NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
+
+				ROISelectorStartPoint = tempPt;
+				ROISelectorEndPoint = tempPt;
+				
+				ROISelectorStartPoint.y = [self drawingFrameRect].size.height - ROISelectorStartPoint.y;
+				ROISelectorEndPoint.y = [self drawingFrameRect].size.height - ROISelectorEndPoint.y;
+				
+				[self deleteMouseDownTimer];
+				
+				tempPt = [self ConvertFromNSView2GL:tempPt];
+
+				BOOL clickInROI = NO;
+				for( int i = 0; i < [curRoiList count]; i++ )
+				{
+					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
+					{
+						clickInROI = YES;
+					}
+				}
+
+				if(!clickInROI)
+				{
+					for( int i = 0; i < [curRoiList count]; i++)
+					{
+						if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
+						{
+							clickInROI = YES;
+						}
+					}
+				}
+				
+				if( clickInROI)
+				{
+					currentTool = tPencil;
+					tool = tPencil;
+					selectorROIEdition = YES;
+				}
 			}
+			
+			// ROI TOOLS
+			if( [self roiTool:tool] == YES && crossMove == -1 )
+			{
+				@try 
+				{
+					[self deleteMouseDownTimer];
+					
+					[[self windowController] addToUndoQueue:@"roi"];
+					
+					BOOL		DoNothing = NO;
+					NSInteger	selected = -1, i;
+					NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
+					tempPt = [self ConvertFromNSView2GL:tempPt];
+					
+					if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+					{
+						[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+						[DCMView setDefaults];
+					}
+					
+					BOOL roiFound = NO;
+					
+					if (!(([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSShiftKeyMask)))
+						for( i = 0; i < [curRoiList count] && !roiFound; i++)
+						{
+							if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
+							{
+								selected = i;
+								roiFound = YES;
+							}
+						}
+					
+					if( roiFound == NO)
+					{
+						for( int i = 0; i < [curRoiList count]; i++)
+						{
+							if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
+							{
+								selected = i;
+								break;
+							}
+						}
+					}
+							
+					if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask) )
+					{
+						if( selected != -1 )
+						{
+							if( [[curRoiList objectAtIndex: selected] ROImode] == ROI_selected)
+							{
+								[[curRoiList objectAtIndex: selected] setROIMode: ROI_sleep];
+								// unselect all ROIs in the same group
+								[[self windowController] setMode:ROI_sleep toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]];
+								DoNothing = YES;
+							}
+						}
+					}
+					else
+					{
+						if( selected == -1 || ( [[curRoiList objectAtIndex: selected] ROImode] != ROI_selected &&  [[curRoiList objectAtIndex: selected] ROImode] != ROI_selectedModify))
+						{
+							// Unselect previous ROIs
+							for( i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+						}
+					}
+							
+					if( DoNothing == NO)
+					{
+						if( selected >= 0 && drawingROI == NO)
+						{
+							[curROI release];
+							curROI = nil;
+							
+							// Bring the selected ROI to the first position in array
+							ROI *roi = [curRoiList objectAtIndex: selected];
+							[[self windowController] bringToFrontROI: roi];
+							
+							selected = [curRoiList indexOfObject: roi];//0;
+							
+							long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES];
+							if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO];
+							
+							if( [self is2DViewer])
+								[[self windowController] setMode:roiVal toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]]; // change the mode to the whole group before the selected ROI!
+							[[curRoiList objectAtIndex: selected] setROIMode: roiVal];
+												
+							NSArray *winList = [[NSApplication sharedApplication] windows];
+							BOOL	found = NO;
+							
+							if( [self is2DViewer])
+							{
+								for( int i = 0; i < [winList count]; i++)
+								{
+									if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"])
+									{
+										found = YES;
+										
+										[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[self windowController]];
+										if( clickCount > 1)
+											[[winList objectAtIndex:i] makeKeyAndOrderFront: self];
+									}
+								}
+								
+								if( clickCount > 1)
+								{
+									if( found == NO)
+									{
+										ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: [curRoiList objectAtIndex: selected] :[self windowController]];
+										[roiWin showWindow:self];
+									}
+								}
+							}
+						}
+						else // Start drawing a new ROI !
+						{
+							if( curROI)
+							{
+								drawingROI = [curROI mouseRoiDown:tempPt :scaleValue];
+								
+								if( drawingROI == NO)
+								{
+									[curROI release];
+									curROI = nil;
+								}
+								
+								if( [curROI ROImode] == ROI_selected)
+									[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: curROI userInfo: nil];
+							}
+							else
+							{
+								// Unselect previous ROIs
+								for( int i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+								
+								ROI*		aNewROI;
+								NSString	*roiName = nil, *finalName;
+								long		counter;
+								BOOL		existsAlready;
+								
+								drawingROI = NO;
+								
+								[curROI release];
+								curROI = aNewROI = [[[ROI alloc] initWithType: tool : curDCM.pixelSpacingX :curDCM.pixelSpacingY : [DCMPix originCorrectedAccordingToOrientation: curDCM]] autorelease];	//NSMakePoint( curDCM.originX, curDCM.originY)];
+								[curROI retain];
+								
+								if ( [ROI defaultName] != nil )
+								{
+									[aNewROI setName: [ROI defaultName]];
+								}
+								else
+								{
+									if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EmptyNameForNewROIs"] == NO || tool == t2DPoint)
+									{
+										switch( tool)
+										{
+											case  tOval:
+												roiName = [NSString stringWithString:@"Oval "];
+											break;
+												
+											case tDynAngle:
+												roiName = [NSString stringWithString:@"Dynamic Angle "];
+											break;
+											
+											case tAxis:
+												roiName = [NSString stringWithString:@"Bone Axis "];
+											break;
+											
+											case tOPolygon:
+											case tCPolygon:
+												roiName = [NSString stringWithString:@"Polygon "];
+											break;
+												
+											case tAngle:
+												roiName = [NSString stringWithString:@"Angle "];
+											break;
+												
+											case tArrow:
+												roiName = [NSString stringWithString:@"Arrow "];
+											break;
+											
+											case tPlain:
+											case tPencil:
+												roiName = [NSString stringWithString:@"ROI "];
+											break;
+												
+											case tMesure:
+												roiName = [NSString stringWithString:@"Measurement "];
+											break;
+												
+											case tROI:
+												roiName = [NSString stringWithString:@"Rectangle "];
+											break;
+												
+											case t2DPoint:
+												roiName = [NSString stringWithString:@"Point "];
+											break;
+										}
+										
+										if( roiName )
+										{
+											counter = 1;
+											do
+											{
+												existsAlready = NO;
+												
+												finalName = [roiName stringByAppendingFormat:@"%d", counter++];
+												
+												for( int i = 0; i < [dcmRoiList count]; i++)
+												{
+													for( int x = 0; x < [[dcmRoiList objectAtIndex: i] count]; x++)
+													{
+														if( [[[[dcmRoiList objectAtIndex: i] objectAtIndex: x] name] isEqualToString: finalName])
+														{
+															existsAlready = YES;
+														}
+													}
+												}
+												
+											} while (existsAlready != NO);
+											
+											[aNewROI setName: finalName];
+										}
+									}
+								}
+								
+								// Create aliases of current ROI to the entire series
+								if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask))
+								{
+									for( int i = 0; i < [dcmRoiList count]; i++)
+									{
+										[[dcmRoiList objectAtIndex: i] addObject: aNewROI];
+									}
+									
+									aNewROI.originalIndexForAlias = curImage;
+									aNewROI.isAliased = YES;
+								}
+								else [curRoiList addObject: aNewROI];
+								
+								[aNewROI setRoiFont: labelFontListGL :labelFontListGLSize :self];
+								
+								if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
+								{
+									if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
+										[[self windowController] setKeyImage: self];
+								}
+								
+								[[self windowController] bringToFrontROI: aNewROI];
+								
+								drawingROI = [aNewROI mouseRoiDown: tempPt :scaleValue];
+								
+								if( drawingROI == NO)
+								{
+									[curROI release];
+									curROI = nil;
+								}
+								if( [aNewROI ROImode] == ROI_selected)
+									[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: aNewROI userInfo: nil];
+								
+								NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	aNewROI,							@"ROI",
+																										[NSNumber numberWithInt:curImage],	@"sliceNumber", 
+																										nil];
+								
+								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixAddROINotification object:self userInfo:userInfo];
+							}
+						}
+					}
+					
+					for( int x = 0; x < [dcmRoiList count]; x++ )
+					{
+						for( int i = 0; i < [[dcmRoiList objectAtIndex: x] count]; i++)
+						{
+							if( [[[dcmRoiList objectAtIndex: x] objectAtIndex: i] valid] == NO)
+							{
+								[[dcmRoiList objectAtIndex: x] removeObjectAtIndex: i];
+								i--;
+							}
+						}
+					}
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"**** mouseDown ROI : %@", e);
+				}
+			}
+			
+			currentMouseEventTool = tool;
+			
+			[self mouseDragged:event];
 		}
-		
-		currentMouseEventTool = tool;
-		
-		[self mouseDragged:event];
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 		
 		[drawLock unlock];
     }
@@ -4667,75 +4740,82 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     if( dcmPixList)
     {
 		[drawLock lock];
-	
-        NSPoint     eventLocation = [event locationInWindow];
-        NSPoint     current = [self convertPoint:eventLocation fromView: nil];
-        short       tool = currentMouseEventTool;
 		
-		[self mouseMoved: event];	// Update some variables...
-		
-		if( crossMove >= 0) tool = tCross;
-		
-		// if ROI tool is valid continue with drag
-		/**************** ROI actions *********************************/
-		if( [self roiTool: tool])
+		@try 
 		{
-			BOOL	action = NO;
+			NSPoint     eventLocation = [event locationInWindow];
+			NSPoint     current = [self convertPoint:eventLocation fromView: nil];
+			short       tool = currentMouseEventTool;
 			
-			NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
+			[self mouseMoved: event];	// Update some variables...
 			
-			// get point in Open GL
-			tempPt = [self ConvertFromNSView2GL:tempPt];
+			if( crossMove >= 0) tool = tCross;
 			
-			// check rois for hit Test.
-			action = [self checkROIsForHitAtPoint:tempPt forEvent:event];
-			
-			// if we have action the ROI is being drawn. Don't move and rotate ROI
-			if( action == NO) // Is there a selected ROI -> rotate or move it
-				action = [self mouseDraggedForROIs: event];
-		}
-		
-		/********** Actions for Various Tools *********************/
-		else
-		{
-			switch (tool)
+			// if ROI tool is valid continue with drag
+			/**************** ROI actions *********************************/
+			if( [self roiTool: tool])
 			{
-				case t3DRotate:[self mouseDragged3DRotate:event];
-					break;
-				case tCross: [self mouseDraggedCrosshair:event];
-					break;
-				case tZoom: [self mouseDraggedZoom:event];
-					break;
-				case tTranslate:[self mouseDraggedTranslate:event];
-					break;
-				case tRotate:[self mouseDraggedRotate:event];
-					break;
-				case tNext:[self mouseDraggedImageScroll:event];
-					break;
-				case tWLBlended: [self mouseDraggedBlending:event];
-					break;
-				case tWL:[self mouseDraggedWindowLevel:event];
-					break;
-				case tRepulsor: [self mouseDraggedRepulsor:event];
-					break;
-				case tROISelector: [self mouseDraggedROISelector:event];
-					break;
-
-				default:break;
+				BOOL	action = NO;
+				
+				NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
+				
+				// get point in Open GL
+				tempPt = [self ConvertFromNSView2GL:tempPt];
+				
+				// check rois for hit Test.
+				action = [self checkROIsForHitAtPoint:tempPt forEvent:event];
+				
+				// if we have action the ROI is being drawn. Don't move and rotate ROI
+				if( action == NO) // Is there a selected ROI -> rotate or move it
+					action = [self mouseDraggedForROIs: event];
 			}
-		}
-		
-		/****************** Update Display ***********************/
-		
-		previous = current;
-        
-        [self setNeedsDisplay:YES];
-		
-		if( [self is2DViewer] == YES)
-			[[self windowController] propagateSettings];
-		
-		if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
+			
+			/********** Actions for Various Tools *********************/
+			else
+			{
+				switch (tool)
+				{
+					case t3DRotate:[self mouseDragged3DRotate:event];
+						break;
+					case tCross: [self mouseDraggedCrosshair:event];
+						break;
+					case tZoom: [self mouseDraggedZoom:event];
+						break;
+					case tTranslate:[self mouseDraggedTranslate:event];
+						break;
+					case tRotate:[self mouseDraggedRotate:event];
+						break;
+					case tNext:[self mouseDraggedImageScroll:event];
+						break;
+					case tWLBlended: [self mouseDraggedBlending:event];
+						break;
+					case tWL:[self mouseDraggedWindowLevel:event];
+						break;
+					case tRepulsor: [self mouseDraggedRepulsor:event];
+						break;
+					case tROISelector: [self mouseDraggedROISelector:event];
+						break;
 
+					default:break;
+				}
+			}
+			
+			/****************** Update Display ***********************/
+			
+			previous = current;
+			
+			[self setNeedsDisplay:YES];
+			
+			if( [self is2DViewer] == YES)
+				[[self windowController] propagateSettings];
+			
+			if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+        
 		[drawLock unlock];
     }
 }
@@ -7752,351 +7832,339 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[ctx makeCurrentContext];
 	
-	if( needToLoadTexture || iChatRunning)
-		[self loadTexturesCompute];
-	
-	if( noScale)
+	@try 
 	{
-		self.scaleValue = 1.0f;
-		[self setOriginX: 0 Y: 0];
-	}
-	
-	NSPoint offset = { 0.0f, 0.0f };
-	
-	if( NSEqualRects( drawingFrameRect, aRect) == NO && ctx!=_alternateContext)
-	{
-		[[self openGLContext] clearDrawable];
-		[[self openGLContext] setView: self];
-	}
-	
-	if( ctx == _alternateContext)
-		savedDrawingFrameRect = drawingFrameRect;
-	
-	drawingFrameRect = aRect;
-	
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
-	glViewport (0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height); // set the viewport to cover entire window
-	
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear (GL_COLOR_BUFFER_BIT);
-	
-	if( dcmPixList && curImage > -1)
-	{
-		if( blendingView != nil && syncOnLocationImpossible == NO)// && ctx!=_alternateContext)
+		if( needToLoadTexture || iChatRunning)
+			[self loadTexturesCompute];
+		
+		if( noScale)
 		{
-			glBlendFunc(GL_ONE, GL_ONE);
-			glEnable( GL_BLEND);
-		}
-		else
-		{
-			glBlendFunc(GL_ONE, GL_ONE);
-			glDisable( GL_BLEND);
+			self.scaleValue = 1.0f;
+			[self setOriginX: 0 Y: 0];
 		}
 		
-		[self drawRectIn:drawingFrameRect :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
+		NSPoint offset = { 0.0f, 0.0f };
 		
-		BOOL noBlending = NO;
-		
-		if( [self is2DViewer] == YES)
+		if( NSEqualRects( drawingFrameRect, aRect) == NO && ctx!=_alternateContext)
 		{
-			if( isKeyView == NO) noBlending = YES;
-		}	
+			[[self openGLContext] clearDrawable];
+			[[self openGLContext] setView: self];
+		}
 		
-		if( blendingView != nil && syncOnLocationImpossible == NO && noBlending == NO )
+		if( ctx == _alternateContext)
+			savedDrawingFrameRect = drawingFrameRect;
+		
+		drawingFrameRect = aRect;
+		
+		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+		
+		glViewport (0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height); // set the viewport to cover entire window
+		
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear (GL_COLOR_BUFFER_BIT);
+		
+		if( dcmPixList && curImage > -1)
 		{
-			glBlendEquation(GL_FUNC_ADD);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			
-			if( blendingTextureName)
-				[blendingView drawRectIn:drawingFrameRect :blendingTextureName :offset :blendingTextureX :blendingTextureY :blendingTextureWidth :blendingTextureHeight];
+			if( blendingView != nil && syncOnLocationImpossible == NO)// && ctx!=_alternateContext)
+			{
+				glBlendFunc(GL_ONE, GL_ONE);
+				glEnable( GL_BLEND);
+			}
 			else
-				NSLog( @"blendingTextureName == nil");
+			{
+				glBlendFunc(GL_ONE, GL_ONE);
+				glDisable( GL_BLEND);
+			}
 			
-			glDisable( GL_BLEND);
-		}
-		
-		if( [self is2DViewer])
-		{
-			if( [[self windowController] highLighted] > 0)
+			[self drawRectIn:drawingFrameRect :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
+			
+			BOOL noBlending = NO;
+			
+			if( [self is2DViewer] == YES)
+			{
+				if( isKeyView == NO) noBlending = YES;
+			}	
+			
+			if( blendingView != nil && syncOnLocationImpossible == NO && noBlending == NO )
+			{
+				glBlendEquation(GL_FUNC_ADD);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				
+				if( blendingTextureName)
+					[blendingView drawRectIn:drawingFrameRect :blendingTextureName :offset :blendingTextureX :blendingTextureY :blendingTextureWidth :blendingTextureHeight];
+				else
+					NSLog( @"blendingTextureName == nil");
+				
+				glDisable( GL_BLEND);
+			}
+			
+			if( [self is2DViewer])
+			{
+				if( [[self windowController] highLighted] > 0)
+				{
+					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+					glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+					glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+						
+					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+					glEnable(GL_BLEND);
+					
+					glColor4f (249./255., 240./255., 140./255., [[self windowController] highLighted]);
+					glLineWidth(1.0);
+					glBegin(GL_QUADS);
+						glVertex2f(0.0, 0.0);
+						glVertex2f(0.0, drawingFrameRect.size.height);
+						glVertex2f(drawingFrameRect.size.width, drawingFrameRect.size.height);
+						glVertex2f(drawingFrameRect.size.width, 0);
+					glEnd();
+					glDisable(GL_BLEND);
+				}
+			}
+			
+			// highlight the visible part of the view (the part visible through iChat)
+			#ifndef OSIRIX_LIGHT
+			if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
 			{
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
 				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+				NSPoint topLeft;
+				topLeft.x = drawingFrameRect.size.width/2 - iChatWidth/2.0;
+				topLeft.y = drawingFrameRect.size.height/2 - iChatHeight/2.0;
 					
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				glEnable(GL_BLEND);
 				
-				glColor4f (249./255., 240./255., 140./255., [[self windowController] highLighted]);
+				glColor4f (0.0f, 0.0f, 0.0f, 0.7f);
 				glLineWidth(1.0);
 				glBegin(GL_QUADS);
 					glVertex2f(0.0, 0.0);
-					glVertex2f(0.0, drawingFrameRect.size.height);
-					glVertex2f(drawingFrameRect.size.width, drawingFrameRect.size.height);
-					glVertex2f(drawingFrameRect.size.width, 0);
+					glVertex2f(0.0, topLeft.y);
+					glVertex2f(drawingFrameRect.size.width, topLeft.y);
+					glVertex2f(drawingFrameRect.size.width, 0.0);
 				glEnd();
-				glDisable(GL_BLEND);
-			}
-		}
-		
-		// highlight the visible part of the view (the part visible through iChat)
-		#ifndef OSIRIX_LIGHT
-		if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
-		{
-			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-			glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
-			NSPoint topLeft;
-			topLeft.x = drawingFrameRect.size.width/2 - iChatWidth/2.0;
-			topLeft.y = drawingFrameRect.size.height/2 - iChatHeight/2.0;
-				
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glEnable(GL_BLEND);
-			
-			glColor4f (0.0f, 0.0f, 0.0f, 0.7f);
-			glLineWidth(1.0);
-			glBegin(GL_QUADS);
-				glVertex2f(0.0, 0.0);
-				glVertex2f(0.0, topLeft.y);
-				glVertex2f(drawingFrameRect.size.width, topLeft.y);
-				glVertex2f(drawingFrameRect.size.width, 0.0);
-			glEnd();
 
-			glBegin(GL_QUADS);
-				glVertex2f(0.0, topLeft.y);
-				glVertex2f(topLeft.x, topLeft.y);
-				glVertex2f(topLeft.x, topLeft.y+iChatHeight);
-				glVertex2f(0.0, topLeft.y+iChatHeight);
-			glEnd();
+				glBegin(GL_QUADS);
+					glVertex2f(0.0, topLeft.y);
+					glVertex2f(topLeft.x, topLeft.y);
+					glVertex2f(topLeft.x, topLeft.y+iChatHeight);
+					glVertex2f(0.0, topLeft.y+iChatHeight);
+				glEnd();
 
-			glBegin(GL_QUADS);
-				glVertex2f(topLeft.x+iChatWidth, topLeft.y);
-				glVertex2f(drawingFrameRect.size.width, topLeft.y);
-				glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
-				glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
-			glEnd();
+				glBegin(GL_QUADS);
+					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
+					glVertex2f(drawingFrameRect.size.width, topLeft.y);
+					glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
+					glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
+				glEnd();
 
-			glBegin(GL_QUADS);
-				glVertex2f(0.0, topLeft.y+iChatHeight);
-				glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
-				glVertex2f(drawingFrameRect.size.width, drawingFrameRect.size.height);
-				glVertex2f(0.0, drawingFrameRect.size.height);
-			glEnd();
+				glBegin(GL_QUADS);
+					glVertex2f(0.0, topLeft.y+iChatHeight);
+					glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
+					glVertex2f(drawingFrameRect.size.width, drawingFrameRect.size.height);
+					glVertex2f(0.0, drawingFrameRect.size.height);
+				glEnd();
 
-			glColor4f (1.0f, 1.0f, 1.0f, 0.8f);
-			glBegin(GL_LINE_LOOP);
-				glVertex2f(topLeft.x, topLeft.y);
-				glVertex2f(topLeft.x, topLeft.y+iChatHeight);
-				glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
-				glVertex2f(topLeft.x+iChatWidth, topLeft.y);
-			glEnd();
-			
-			glLineWidth(1.0);
-			glDisable(GL_BLEND);
-			
-			// label
-			NSPoint iChatTheatreSharedViewLabelPosition;
-			iChatTheatreSharedViewLabelPosition.x = drawingFrameRect.size.width/2.0;
-			iChatTheatreSharedViewLabelPosition.y = topLeft.y;
-
-			[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
-		}
-		#endif
-		// ***********************
-		// DRAW CLUT BARS ********
-		
-		if( [self is2DViewer] == YES && annotations != annotNone && ctx!=_alternateContext)
-		{
-			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-			glScalef (2.0f /(drawingFrameRect.size.width), -2.0f / (drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
-
-			if( clutBars == barOrigin || clutBars == barBoth)
-			{
-				float			heighthalf = drawingFrameRect.size.height/2 - 1;
-				float			widthhalf = drawingFrameRect.size.width/2 - 1;
-				NSString		*tempString = nil;
-				
-				//#define BARPOSX1 50.f
-				//#define BARPOSX2 20.f
-				
-				#define BARPOSX1 62.f
-				#define BARPOSX2 32.f
-				
-				heighthalf = 0;
-				
-//					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-//					glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f);
+				glColor4f (1.0f, 1.0f, 1.0f, 0.8f);
+				glBegin(GL_LINE_LOOP);
+					glVertex2f(topLeft.x, topLeft.y);
+					glVertex2f(topLeft.x, topLeft.y+iChatHeight);
+					glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
+					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
+				glEnd();
 				
 				glLineWidth(1.0);
-				glBegin(GL_LINES);
-				for( int i = 0; i < 256; i++ )
-				{
-					glColor3ub ( redTable[ i], greenTable[ i], blueTable[ i]);
-					
-					glVertex2f(  widthhalf - BARPOSX1, heighthalf - (-128.f + i));
-					glVertex2f(  widthhalf - BARPOSX2, heighthalf - (-128.f + i));
-				}
-				glColor3ub ( 128, 128, 128);
-				glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX2 , heighthalf - -128.f);
-				glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);			glVertex2f(  widthhalf - BARPOSX2 , heighthalf - 127.f);
-				glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);
-				glVertex2f(  widthhalf - BARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  widthhalf - BARPOSX2, heighthalf - 127.f);
-				glEnd();
+				glDisable(GL_BLEND);
 				
-				if( curWW < 50 )
-				{
-					tempString = [NSString stringWithFormat: @"%0.4f", curWL - curWW/2];
-					[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
-					
-					tempString = [NSString stringWithFormat: @"%0.4f", curWL];
-					[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
-					
-					tempString = [NSString stringWithFormat: @"%0.4f", curWL + curWW/2];
-					[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
-				}
-				else
-				{
-					tempString = [NSString stringWithFormat: @"%0.0f", curWL - curWW/2];
-					[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
-					
-					tempString = [NSString stringWithFormat: @"%0.0f", curWL];
-					[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
-					
-					tempString = [NSString stringWithFormat: @"%0.0f", curWL + curWW/2];
-					[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
-				}
-			} //clutBars == barOrigin || clutBars == barBoth
+				// label
+				NSPoint iChatTheatreSharedViewLabelPosition;
+				iChatTheatreSharedViewLabelPosition.x = drawingFrameRect.size.width/2.0;
+				iChatTheatreSharedViewLabelPosition.y = topLeft.y;
+
+				[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
+			}
+			#endif
+			// ***********************
+			// DRAW CLUT BARS ********
 			
-			if( blendingView )
+			if( [self is2DViewer] == YES && annotations != annotNone && ctx!=_alternateContext)
 			{
-				if( clutBars == barFused || clutBars == barBoth)
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f /(drawingFrameRect.size.width), -2.0f / (drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
+
+				if( clutBars == barOrigin || clutBars == barBoth)
 				{
-					unsigned char	*bred = nil, *bgreen = nil, *bblue = nil;
 					float			heighthalf = drawingFrameRect.size.height/2 - 1;
 					float			widthhalf = drawingFrameRect.size.width/2 - 1;
-					float			bwl, bww;
 					NSString		*tempString = nil;
 					
-					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-					{
-						if( PETredTable == nil)
-							[DCMView computePETBlendingCLUT];
-						
-						bred = PETredTable;
-						bgreen = PETgreenTable;
-						bblue = PETblueTable;
-					}
-					else [blendingView getCLUT:&bred :&bgreen :&bblue];
+					//#define BARPOSX1 50.f
+					//#define BARPOSX2 20.f
 					
-					#define BBARPOSX1 55.f
-					#define BBARPOSX2 25.f
+					#define BARPOSX1 62.f
+					#define BARPOSX2 32.f
 					
 					heighthalf = 0;
 					
+	//					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+	//					glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f);
+					
 					glLineWidth(1.0);
 					glBegin(GL_LINES);
-					
-					if( bred)
+					for( int i = 0; i < 256; i++ )
 					{
-						for( int i = 0; i < 256; i++ )
+						glColor3ub ( redTable[ i], greenTable[ i], blueTable[ i]);
+						
+						glVertex2f(  widthhalf - BARPOSX1, heighthalf - (-128.f + i));
+						glVertex2f(  widthhalf - BARPOSX2, heighthalf - (-128.f + i));
+					}
+					glColor3ub ( 128, 128, 128);
+					glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX2 , heighthalf - -128.f);
+					glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);			glVertex2f(  widthhalf - BARPOSX2 , heighthalf - 127.f);
+					glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);
+					glVertex2f(  widthhalf - BARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  widthhalf - BARPOSX2, heighthalf - 127.f);
+					glEnd();
+					
+					if( curWW < 50 )
+					{
+						tempString = [NSString stringWithFormat: @"%0.4f", curWL - curWW/2];
+						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+						
+						tempString = [NSString stringWithFormat: @"%0.4f", curWL];
+						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+						
+						tempString = [NSString stringWithFormat: @"%0.4f", curWL + curWW/2];
+						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+					}
+					else
+					{
+						tempString = [NSString stringWithFormat: @"%0.0f", curWL - curWW/2];
+						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+						
+						tempString = [NSString stringWithFormat: @"%0.0f", curWL];
+						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+						
+						tempString = [NSString stringWithFormat: @"%0.0f", curWL + curWW/2];
+						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+					}
+				} //clutBars == barOrigin || clutBars == barBoth
+				
+				if( blendingView )
+				{
+					if( clutBars == barFused || clutBars == barBoth)
+					{
+						unsigned char	*bred = nil, *bgreen = nil, *bblue = nil;
+						float			heighthalf = drawingFrameRect.size.height/2 - 1;
+						float			widthhalf = drawingFrameRect.size.width/2 - 1;
+						float			bwl, bww;
+						NSString		*tempString = nil;
+						
+						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
 						{
-							glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
+							if( PETredTable == nil)
+								[DCMView computePETBlendingCLUT];
 							
-							glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - (-128.f + i));
-							glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - (-128.f + i));
+							bred = PETredTable;
+							bgreen = PETgreenTable;
+							bblue = PETblueTable;
+						}
+						else [blendingView getCLUT:&bred :&bgreen :&bblue];
+						
+						#define BBARPOSX1 55.f
+						#define BBARPOSX2 25.f
+						
+						heighthalf = 0;
+						
+						glLineWidth(1.0);
+						glBegin(GL_LINES);
+						
+						if( bred)
+						{
+							for( int i = 0; i < 256; i++ )
+							{
+								glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
+								
+								glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - (-128.f + i));
+								glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - (-128.f + i));
+							}
+						}
+						else
+							NSLog( @"bred == nil");
+						
+						glColor3ub ( 128, 128, 128);
+						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - -128.f);
+						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - 127.f);
+						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);
+						glVertex2f(  -widthhalf + BBARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - 127.f);
+						glEnd();
+						
+						[blendingView getWLWW: &bwl :&bww];
+						
+						if( curWW < 50)
+						{
+							tempString = [NSString stringWithFormat: @"%0.4f", bwl - bww/2];
+							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
+							
+							tempString = [NSString stringWithFormat: @"%0.4f", bwl];
+							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
+							
+							tempString = [NSString stringWithFormat: @"%0.4f", bwl + bww/2];
+							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
+						}
+						else
+						{
+							tempString = [NSString stringWithFormat: @"%0.0f", bwl - bww/2];
+							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
+							
+							tempString = [NSString stringWithFormat: @"%0.0f", bwl];
+							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
+							
+							tempString = [NSString stringWithFormat: @"%0.0f", bwl + bww/2];
+							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
 						}
 					}
-					else
-						NSLog( @"bred == nil");
-					
-					glColor3ub ( 128, 128, 128);
-					glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - -128.f);
-					glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - 127.f);
-					glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);
-					glVertex2f(  -widthhalf + BBARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - 127.f);
-					glEnd();
-					
-					[blendingView getWLWW: &bwl :&bww];
-					
-					if( curWW < 50)
-					{
-						tempString = [NSString stringWithFormat: @"%0.4f", bwl - bww/2];
-						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
-						
-						tempString = [NSString stringWithFormat: @"%0.4f", bwl];
-						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
-						
-						tempString = [NSString stringWithFormat: @"%0.4f", bwl + bww/2];
-						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
-					}
-					else
-					{
-						tempString = [NSString stringWithFormat: @"%0.0f", bwl - bww/2];
-						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
-						
-						tempString = [NSString stringWithFormat: @"%0.0f", bwl];
-						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
-						
-						tempString = [NSString stringWithFormat: @"%0.0f", bwl + bww/2];
-						[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
-					}
-				}
-			} //blendingView
-		} //[self is2DViewer] == YES
-		
-		if (annotations != annotNone)
-		{
-			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-			glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
+				} //blendingView
+			} //[self is2DViewer] == YES
+			
+			if (annotations != annotNone)
+			{
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
 
-			//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST : BORDER AROUND THE IMAGE
-			
-			if(( [ViewerController numberOf2DViewer] > 1 && [self is2DViewer] == YES && stringID == nil) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-			{
-				// draw line around key View
+				//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST : BORDER AROUND THE IMAGE
 				
-				if( [[self window] isMainWindow] && isKeyView && ctx!=_alternateContext)
+				if(( [ViewerController numberOf2DViewer] > 1 && [self is2DViewer] == YES && stringID == nil) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
 				{
-					float heighthalf = drawingFrameRect.size.height/2;
-					float widthhalf = drawingFrameRect.size.width/2;
+					// draw line around key View
 					
-					// red square
-					
-//					glEnable(GL_BLEND);
-					glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
-					glLineWidth(8.0);
-					glBegin(GL_LINE_LOOP);
-						glVertex2f(  -widthhalf, -heighthalf);
-						glVertex2f(  -widthhalf, heighthalf);
-						glVertex2f(  widthhalf, heighthalf);
-						glVertex2f(  widthhalf, -heighthalf);
-					glEnd();
-					glLineWidth(1.0);
-//					glDisable(GL_BLEND);
-				}
-			}  //drawLines for ImageView Frames
-			
-			if ((_imageColumns > 1 || _imageRows > 1) && [self is2DViewer] == YES && stringID == nil )
-			{
-				float heighthalf = drawingFrameRect.size.height/2 - 1;
-				float widthhalf = drawingFrameRect.size.width/2 - 1;
+					if( [[self window] isMainWindow] && isKeyView && ctx!=_alternateContext)
+					{
+						float heighthalf = drawingFrameRect.size.height/2;
+						float widthhalf = drawingFrameRect.size.width/2;
+						
+						// red square
+						
+	//					glEnable(GL_BLEND);
+						glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
+						glLineWidth(8.0);
+						glBegin(GL_LINE_LOOP);
+							glVertex2f(  -widthhalf, -heighthalf);
+							glVertex2f(  -widthhalf, heighthalf);
+							glVertex2f(  widthhalf, heighthalf);
+							glVertex2f(  widthhalf, -heighthalf);
+						glEnd();
+						glLineWidth(1.0);
+	//					glDisable(GL_BLEND);
+					}
+				}  //drawLines for ImageView Frames
 				
-				glColor3f (0.5f, 0.5f, 0.5f);
-				glLineWidth(1.0);
-				glBegin(GL_LINE_LOOP);
-					glVertex2f(  -widthhalf, -heighthalf);
-					glVertex2f(  -widthhalf, heighthalf);
-					glVertex2f(  widthhalf, heighthalf);
-					glVertex2f(  widthhalf, -heighthalf);
-				glEnd();
-				glLineWidth(1.0);
-				if (isKeyView && [[self window] isMainWindow])
+				if ((_imageColumns > 1 || _imageRows > 1) && [self is2DViewer] == YES && stringID == nil )
 				{
 					float heighthalf = drawingFrameRect.size.height/2 - 1;
 					float widthhalf = drawingFrameRect.size.width/2 - 1;
 					
-					glColor3f (1.0f, 0.0f, 0.0f);
-					glLineWidth(2.0);
+					glColor3f (0.5f, 0.5f, 0.5f);
+					glLineWidth(1.0);
 					glBegin(GL_LINE_LOOP);
 						glVertex2f(  -widthhalf, -heighthalf);
 						glVertex2f(  -widthhalf, heighthalf);
@@ -8104,591 +8172,608 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						glVertex2f(  widthhalf, -heighthalf);
 					glEnd();
 					glLineWidth(1.0);
-				}
-			}
-			
-			glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-			glTranslatef( origin.x + originOffset.x, -origin.y - originOffset.y, 0.0f);
-			glScalef( 1.f, curDCM.pixelRatio, 1.f);
-			
-			// Draw ROIs
-			BOOL drawROI = NO;
-			
-			if( [self is2DViewer] == YES) drawROI = [[[self windowController] roiLock] tryLock];
-			else drawROI = YES;
-			
-			if( drawROI )
-			{
-				BOOL resetData = NO;
-				if(_imageColumns > 1 || _imageRows > 1) resetData = YES;	//For alias ROIs
-				
-				NSSortDescriptor * roiSorting = [[[NSSortDescriptor alloc] initWithKey:@"uniqueID" ascending:NO] autorelease];
-				
-				rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
-				
-				for( int i = [curRoiList count]-1; i >= 0; i--)
-				{
-					ROI *r = [[curRoiList objectAtIndex:i] retain];	// If we are not in the main thread (iChat), we want to be sure to keep our ROIs
-					
-					if( resetData) [r recompute];
-					[r setRoiFont: labelFontListGL :labelFontListGLSize :self];
-					[r drawROI: scaleValue : curDCM.pwidth / 2. : curDCM.pheight / 2. : curDCM.pixelSpacingX : curDCM.pixelSpacingY];
-					
-					[r release];
-				}
-				
-				if ( !suppress_labels )
-				{
-					NSArray	*sortedROIs = [curRoiList sortedArrayUsingDescriptors: [NSArray arrayWithObject: roiSorting]];
-					for( int i = [sortedROIs count]-1; i>=0; i-- )
+					if (isKeyView && [[self window] isMainWindow])
 					{
-						ROI *r = [[sortedROIs objectAtIndex:i] retain];
+						float heighthalf = drawingFrameRect.size.height/2 - 1;
+						float widthhalf = drawingFrameRect.size.width/2 - 1;
 						
-						@try
-						{
-							[r drawTextualData];
-						}
-						@catch (NSException * e)
-						{
-							NSLog( @"drawTextualData ROI Exception : %@", e);
-						}
+						glColor3f (1.0f, 0.0f, 0.0f);
+						glLineWidth(2.0);
+						glBegin(GL_LINE_LOOP);
+							glVertex2f(  -widthhalf, -heighthalf);
+							glVertex2f(  -widthhalf, heighthalf);
+							glVertex2f(  widthhalf, heighthalf);
+							glVertex2f(  widthhalf, -heighthalf);
+						glEnd();
+						glLineWidth(1.0);
+					}
+				}
+				
+				glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+				glTranslatef( origin.x + originOffset.x, -origin.y - originOffset.y, 0.0f);
+				glScalef( 1.f, curDCM.pixelRatio, 1.f);
+				
+				// Draw ROIs
+				BOOL drawROI = NO;
+				
+				if( [self is2DViewer] == YES) drawROI = [[[self windowController] roiLock] tryLock];
+				else drawROI = YES;
+				
+				if( drawROI )
+				{
+					BOOL resetData = NO;
+					if(_imageColumns > 1 || _imageRows > 1) resetData = YES;	//For alias ROIs
+					
+					NSSortDescriptor * roiSorting = [[[NSSortDescriptor alloc] initWithKey:@"uniqueID" ascending:NO] autorelease];
+					
+					rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
+					
+					for( int i = [curRoiList count]-1; i >= 0; i--)
+					{
+						ROI *r = [[curRoiList objectAtIndex:i] retain];	// If we are not in the main thread (iChat), we want to be sure to keep our ROIs
+						
+						if( resetData) [r recompute];
+						[r setRoiFont: labelFontListGL :labelFontListGLSize :self];
+						[r drawROI: scaleValue : curDCM.pwidth / 2. : curDCM.pheight / 2. : curDCM.pixelSpacingX : curDCM.pixelSpacingY];
 						
 						[r release];
 					}
-				}
-				
-				[rectArray release];
-				rectArray = nil;
-			}
-			
-			if( drawROI && [self is2DViewer] == YES) [[[self windowController] roiLock] unlock];
-			
-			// Draw 2D point cross (used when double-click in 3D panel)
-			
-			[self draw2DPointMarker];
-			if( blendingView) [blendingView draw2DPointMarker];
-			
-			// Draw any Plugin objects
-			
-			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithFloat: scaleValue], @"scaleValue",
-																					[NSNumber numberWithFloat: curDCM.pwidth /2. ], @"offsetx",
-																					[NSNumber numberWithFloat: curDCM.pheight /2.], @"offsety",
-																					[NSNumber numberWithFloat: curDCM.pixelSpacingX], @"spacingX",
-																					[NSNumber numberWithFloat: curDCM.pixelSpacingY], @"spacingY",
-																					nil];
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawObjectsNotification object: self userInfo: userInfo];
-			
-			//**SLICE CUR FOR 3D MPR
-//			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f);
-//			if( stringID )
-			{
-//				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-				{
-					[self subDrawRect: aRect];
-					self.scaleValue = scaleValue;
-				}
-			}
-			
-			//** SLICE CUT BETWEEN SERIES - CROSS REFERENCES LINES
-			
-			if( (stringID == nil || [stringID isEqualToString:@"export"]) && [[self window] isMainWindow] == NO)
-			{
-				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-				glEnable(GL_BLEND);
-				glEnable(GL_POINT_SMOOTH);
-				glEnable(GL_LINE_SMOOTH);
-				glEnable(GL_POLYGON_SMOOTH);
-				
-				if( DISPLAYCROSSREFERENCELINES)
-				{
-					if( sliceFromTo[ 0][ 0] != HUGE_VALF)
+					
+					if ( !suppress_labels )
 					{
-						if( sliceFromToS[ 0][ 0] != HUGE_VALF)
+						NSArray	*sortedROIs = [curRoiList sortedArrayUsingDescriptors: [NSArray arrayWithObject: roiSorting]];
+						for( int i = [sortedROIs count]-1; i>=0; i-- )
 						{
-							glColor3f (1.0f, 0.6f, 0.0f);
+							ROI *r = [[sortedROIs objectAtIndex:i] retain];
 							
-							glLineWidth(2.0);
-							[self drawCrossLines: sliceFromToS ctx: cgl_ctx perpendicular: NO];
+							@try
+							{
+								[r drawTextualData];
+							}
+							@catch (NSException * e)
+							{
+								NSLog( @"drawTextualData ROI Exception : %@", e);
+							}
 							
-							glLineWidth(2.0);
-							[self drawCrossLines: sliceFromToE ctx: cgl_ctx perpendicular: NO];
+							[r release];
 						}
+					}
+					
+					[rectArray release];
+					rectArray = nil;
+				}
+				
+				if( drawROI && [self is2DViewer] == YES) [[[self windowController] roiLock] unlock];
+				
+				// Draw 2D point cross (used when double-click in 3D panel)
+				
+				[self draw2DPointMarker];
+				if( blendingView) [blendingView draw2DPointMarker];
+				
+				// Draw any Plugin objects
+				
+				NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithFloat: scaleValue], @"scaleValue",
+																						[NSNumber numberWithFloat: curDCM.pwidth /2. ], @"offsetx",
+																						[NSNumber numberWithFloat: curDCM.pheight /2.], @"offsety",
+																						[NSNumber numberWithFloat: curDCM.pixelSpacingX], @"spacingX",
+																						[NSNumber numberWithFloat: curDCM.pixelSpacingY], @"spacingY",
+																						nil];
+				
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawObjectsNotification object: self userInfo: userInfo];
+				
+				//**SLICE CUR FOR 3D MPR
+	//			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f);
+	//			if( stringID )
+				{
+	//				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+					{
+						[self subDrawRect: aRect];
+						self.scaleValue = scaleValue;
+					}
+				}
+				
+				//** SLICE CUT BETWEEN SERIES - CROSS REFERENCES LINES
+				
+				if( (stringID == nil || [stringID isEqualToString:@"export"]) && [[self window] isMainWindow] == NO)
+				{
+					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+					glEnable(GL_BLEND);
+					glEnable(GL_POINT_SMOOTH);
+					glEnable(GL_LINE_SMOOTH);
+					glEnable(GL_POLYGON_SMOOTH);
+					
+					if( DISPLAYCROSSREFERENCELINES)
+					{
+						if( sliceFromTo[ 0][ 0] != HUGE_VALF)
+						{
+							if( sliceFromToS[ 0][ 0] != HUGE_VALF)
+							{
+								glColor3f (1.0f, 0.6f, 0.0f);
+								
+								glLineWidth(2.0);
+								[self drawCrossLines: sliceFromToS ctx: cgl_ctx perpendicular: NO];
+								
+								glLineWidth(2.0);
+								[self drawCrossLines: sliceFromToE ctx: cgl_ctx perpendicular: NO];
+							}
+							
+							glColor3f (0.0f, 0.6f, 0.0f);
+							glLineWidth(2.0);
+							[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
+							
+							if( sliceFromTo2[ 0][ 0] != HUGE_VALF)
+							{
+								glLineWidth(2.0);
+								[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
+							}
+						}
+					}
+					
+					if( slicePoint3D[ 0] != HUGE_VALF)
+					{
+						float tempPoint3D[ 2];
 						
+						glLineWidth(2.0);
+						
+						tempPoint3D[0] = slicePoint3D[ 0] / curDCM.pixelSpacingX;
+						tempPoint3D[1] = slicePoint3D[ 1] / curDCM.pixelSpacingY;
+						
+						tempPoint3D[0] -= curDCM.pwidth * 0.5f;
+						tempPoint3D[1] -= curDCM.pheight * 0.5f;
+
 						glColor3f (0.0f, 0.6f, 0.0f);
 						glLineWidth(2.0);
-						[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
-						
-						if( sliceFromTo2[ 0][ 0] != HUGE_VALF)
+
+						if( sliceFromTo[ 0][ 0] != HUGE_VALF && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
 						{
-							glLineWidth(2.0);
-							[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
+							float a[ 2];
+							// perpendicular vector
+							
+							a[ 1] = sliceFromTo[ 0][ 0] - sliceFromTo[ 1][ 0];
+							a[ 0] = sliceFromTo[ 0][ 1] - sliceFromTo[ 1][ 1];
+							
+							// normalize
+							double t = a[ 1]*a[ 1] + a[ 0]*a[ 0];
+							t = sqrt(t);
+							a[0] = a[0]/t;
+							a[1] = a[1]/t;
+							
+							#define LINELENGTH 15
+							
+							glBegin(GL_LINES);
+								glVertex2f( scaleValue*(tempPoint3D[ 0]-LINELENGTH/curDCM.pixelSpacingX * a[ 0]), scaleValue*(tempPoint3D[ 1]+LINELENGTH/curDCM.pixelSpacingY*(a[ 1])));
+								glVertex2f( scaleValue*(tempPoint3D[ 0]+LINELENGTH/curDCM.pixelSpacingX * a[ 0]), scaleValue*(tempPoint3D[ 1]-LINELENGTH/curDCM.pixelSpacingY*(a[ 1])));
+							glEnd();
+						}
+						else
+						{
+							glBegin(GL_LINES);
+								glVertex2f( scaleValue*(tempPoint3D[ 0]-LINELENGTH/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
+								glVertex2f( scaleValue*(tempPoint3D[ 0]+LINELENGTH/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
+								
+								glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]-LINELENGTH/curDCM.pixelSpacingY));
+								glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]+LINELENGTH/curDCM.pixelSpacingY));
+							glEnd();
+						}
+						glLineWidth(1.0);
+					}
+					
+					glDisable(GL_LINE_SMOOTH);
+					glDisable(GL_POLYGON_SMOOTH);
+					glDisable(GL_POINT_SMOOTH);
+					glDisable(GL_BLEND);
+				}
+				
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+				
+				glColor3f (0.0f, 1.0f, 0.0f);
+				
+				 if( annotations >= annotBase)
+				 {
+					//** PIXELSPACING LINES
+					float yOffset = 24;
+					float xOffset = 32;
+					//float xOffset = 10;
+					//float yOffset = 12;
+					glLineWidth( 1.0);
+					glBegin(GL_LINES);
+					
+					if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingX * 1000.0 < 1)
+					{
+						glVertex2f(scaleValue  * (-0.02/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset); 
+						glVertex2f(scaleValue  * (0.02/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset);
+
+						glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-0.02/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
+						glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (0.02/curDCM.pixelSpacingY*curDCM.pixelRatio));
+						
+						for ( short i = -20; i<=20; i++ )
+						{
+							short length = ( i % 10 == 0 )? 10 : 5;
+							
+							glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
+							glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
+							
+							glVertex2f(-drawingFrameRect.size.width/2 + xOffset +  length,  i* scaleValue *0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
+							glVertex2f(-drawingFrameRect.size.width/2 + xOffset,  i* scaleValue * 0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
 						}
 					}
-				}
-				
-				if( slicePoint3D[ 0] != HUGE_VALF)
-				{
-					float tempPoint3D[ 2];
-					
-					glLineWidth(2.0);
-					
-					tempPoint3D[0] = slicePoint3D[ 0] / curDCM.pixelSpacingX;
-					tempPoint3D[1] = slicePoint3D[ 1] / curDCM.pixelSpacingY;
-					
-					tempPoint3D[0] -= curDCM.pwidth * 0.5f;
-					tempPoint3D[1] -= curDCM.pheight * 0.5f;
-
-					glColor3f (0.0f, 0.6f, 0.0f);
-					glLineWidth(2.0);
-
-					if( sliceFromTo[ 0][ 0] != HUGE_VALF && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
+					else if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0)
 					{
-						float a[ 2];
-						// perpendicular vector
+						glVertex2f(scaleValue  * (-50/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset); 
+						glVertex2f(scaleValue  * (50/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset);
 						
-						a[ 1] = sliceFromTo[ 0][ 0] - sliceFromTo[ 1][ 0];
-						a[ 0] = sliceFromTo[ 0][ 1] - sliceFromTo[ 1][ 1];
+						glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-50/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
+						glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (50/curDCM.pixelSpacingY*curDCM.pixelRatio));
+
+						for ( short i = -5; i<=5; i++ )
+						{
+							short length = (i % 5 == 0) ? 10 : 5;
 						
-						// normalize
-						double t = a[ 1]*a[ 1] + a[ 0]*a[ 0];
-						t = sqrt(t);
-						a[0] = a[0]/t;
-						a[1] = a[1]/t;
-						
-						#define LINELENGTH 15
-						
-						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(tempPoint3D[ 0]-LINELENGTH/curDCM.pixelSpacingX * a[ 0]), scaleValue*(tempPoint3D[ 1]+LINELENGTH/curDCM.pixelSpacingY*(a[ 1])));
-							glVertex2f( scaleValue*(tempPoint3D[ 0]+LINELENGTH/curDCM.pixelSpacingX * a[ 0]), scaleValue*(tempPoint3D[ 1]-LINELENGTH/curDCM.pixelSpacingY*(a[ 1])));
-						glEnd();
-					}
-					else
-					{
-						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(tempPoint3D[ 0]-LINELENGTH/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
-							glVertex2f( scaleValue*(tempPoint3D[ 0]+LINELENGTH/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
+							glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
+							glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
 							
-							glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]-LINELENGTH/curDCM.pixelSpacingY));
-							glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]+LINELENGTH/curDCM.pixelSpacingY));
-						glEnd();
+							glVertex2f(-drawingFrameRect.size.width/2 + xOffset +  length,  i* scaleValue *10/curDCM.pixelSpacingY*curDCM.pixelRatio);
+							glVertex2f(-drawingFrameRect.size.width/2 + xOffset,  i* scaleValue * 10/curDCM.pixelSpacingY*curDCM.pixelRatio);
+						}
 					}
-					glLineWidth(1.0);
-				}
-				
-				glDisable(GL_LINE_SMOOTH);
-				glDisable(GL_POLYGON_SMOOTH);
-				glDisable(GL_POINT_SMOOTH);
-				glDisable(GL_BLEND);
-			}
-			
-			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-			
-			glColor3f (0.0f, 1.0f, 0.0f);
-			
-			 if( annotations >= annotBase)
-			 {
-				//** PIXELSPACING LINES
-				float yOffset = 24;
-				float xOffset = 32;
-				//float xOffset = 10;
-				//float yOffset = 12;
-				glLineWidth( 1.0);
-				glBegin(GL_LINES);
-				
-				if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingX * 1000.0 < 1)
-				{
-					glVertex2f(scaleValue  * (-0.02/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset); 
-					glVertex2f(scaleValue  * (0.02/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset);
-
-					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-0.02/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
-					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (0.02/curDCM.pixelSpacingY*curDCM.pixelRatio));
-					
-					for ( short i = -20; i<=20; i++ )
-					{
-						short length = ( i % 10 == 0 )? 10 : 5;
-						
-						glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
-						glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
-						
-						glVertex2f(-drawingFrameRect.size.width/2 + xOffset +  length,  i* scaleValue *0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
-						glVertex2f(-drawingFrameRect.size.width/2 + xOffset,  i* scaleValue * 0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
-					}
-				}
-				else if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0)
-				{
-					glVertex2f(scaleValue  * (-50/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset); 
-					glVertex2f(scaleValue  * (50/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset);
-					
-					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-50/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
-					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (50/curDCM.pixelSpacingY*curDCM.pixelRatio));
-
-					for ( short i = -5; i<=5; i++ )
-					{
-						short length = (i % 5 == 0) ? 10 : 5;
-					
-						glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
-						glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
-						
-						glVertex2f(-drawingFrameRect.size.width/2 + xOffset +  length,  i* scaleValue *10/curDCM.pixelSpacingY*curDCM.pixelRatio);
-						glVertex2f(-drawingFrameRect.size.width/2 + xOffset,  i* scaleValue * 10/curDCM.pixelSpacingY*curDCM.pixelRatio);
-					}
-				}
-				glEnd();
-				
-				@try
-				{
-					[self drawTextualData: drawingFrameRect :annotations];
-				}
-				
-				@catch (NSException * e)
-				{
-					NSLog( @"drawTextualData Annotations Exception : %@", e);
-				}
-				
-			}
-		
-		} //Annotation  != None
-		
-		if(repulsorRadius != 0)
-		{
-			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-			glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
-			
-			[self drawRepulsorToolArea];
-		}
-		
-		if(ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y)
-		{
-			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-			glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
-			
-			[self drawROISelectorRegion];
-		}
-		
-		if(ctx == _alternateContext && [[NSApplication sharedApplication] isActive]) // iChat Theatre context
-		{
-			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-			glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
-								
-			NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
-			
-			// location of the mouse in the OsiriX View
-			eventLocation = [self convertPoint:eventLocation fromView:nil];
-			eventLocation.y = [self frame].size.height - eventLocation.y;
-			
-
-			// location of the mouse in the iChat Theatre View			
-			eventLocation = [self convertFromView2iChat:eventLocation];
-			
-			// generate iChat cursor Texture Buffer (only once)
-			if(!iChatCursorTextureBuffer) {
-				NSLog(@"generate iChatCursor Texture Buffer");
-				NSImage *iChatCursorImage;
-				if (iChatCursorImage = [[NSCursor pointingHandCursor] image])
-				{
-					iChatCursorHotSpot = [[NSCursor pointingHandCursor] hotSpot];
-					iChatCursorImageSize = [iChatCursorImage size];
-					
-					NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithData:[iChatCursorImage TIFFRepresentation]]; // [NSBitmapImageRep imageRepWithData: [iChatCursorImage TIFFRepresentation]]
-
-					iChatCursorTextureBuffer = malloc([bitmap bytesPerRow] * iChatCursorImageSize.height);
-					memcpy(iChatCursorTextureBuffer, [bitmap bitmapData], [bitmap bytesPerRow] * iChatCursorImageSize.height);
-
-					[bitmap release];
-					
-					iChatCursorTextureName = 0;
-					glGenTextures(1, &iChatCursorTextureName);
-					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
-					glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
-					glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-					glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, iChatCursorImageSize.width, iChatCursorImageSize.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, iChatCursorTextureBuffer);
-				}
-			}
-
-			// draw the cursor in the iChat Theatre View
-			if(iChatCursorTextureBuffer)
-			{
-				eventLocation.x -= iChatCursorHotSpot.x;
-				eventLocation.y -= iChatCursorHotSpot.y;
-				
-				glEnable(GL_TEXTURE_RECTANGLE_EXT);
-				
-				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
-				glBlendEquation(GL_FUNC_ADD);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				glEnable(GL_BLEND);
-				
-				glColor4f(1.0, 1.0, 1.0, 1.0);
-				glBegin(GL_QUAD_STRIP);
-					glTexCoord2f(0, 0);
-					glVertex2f(eventLocation.x, eventLocation.y);
-				
-					glTexCoord2f(iChatCursorImageSize.width, 0);
-					glVertex2f(eventLocation.x + iChatCursorImageSize.width, eventLocation.y);
-				
-					glTexCoord2f(0, iChatCursorImageSize.height);
-					glVertex2f(eventLocation.x, eventLocation.y + iChatCursorImageSize.height);
-				
-					glTexCoord2f(iChatCursorImageSize.width, iChatCursorImageSize.height);
-					glVertex2f(eventLocation.x + iChatCursorImageSize.width, eventLocation.y + iChatCursorImageSize.height);
-				
 					glEnd();
-				glDisable(GL_BLEND);
+					
+					@try
+					{
+						[self drawTextualData: drawingFrameRect :annotations];
+					}
+					
+					@catch (NSException * e)
+					{
+						NSLog( @"drawTextualData Annotations Exception : %@", e);
+					}
+					
+				}
+			
+			} //Annotation  != None
+			
+			if(repulsorRadius != 0)
+			{
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
 				
-				glDisable(GL_TEXTURE_RECTANGLE_EXT);
+				[self drawRepulsorToolArea];
 			}
-		} // end iChat Theatre context	
-		
-		if( showDescriptionInLarge)
-		{
-			glMatrixMode (GL_PROJECTION);
-			glPushMatrix();
-				glLoadIdentity ();
-				glMatrixMode (GL_MODELVIEW);
+			
+			if(ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y)
+			{
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+				
+				[self drawROISelectorRegion];
+			}
+			
+			if(ctx == _alternateContext && [[NSApplication sharedApplication] isActive]) // iChat Theatre context
+			{
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+									
+				NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
+				
+				// location of the mouse in the OsiriX View
+				eventLocation = [self convertPoint:eventLocation fromView:nil];
+				eventLocation.y = [self frame].size.height - eventLocation.y;
+				
+
+				// location of the mouse in the iChat Theatre View			
+				eventLocation = [self convertFromView2iChat:eventLocation];
+				
+				// generate iChat cursor Texture Buffer (only once)
+				if(!iChatCursorTextureBuffer) {
+					NSLog(@"generate iChatCursor Texture Buffer");
+					NSImage *iChatCursorImage;
+					if (iChatCursorImage = [[NSCursor pointingHandCursor] image])
+					{
+						iChatCursorHotSpot = [[NSCursor pointingHandCursor] hotSpot];
+						iChatCursorImageSize = [iChatCursorImage size];
+						
+						NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithData:[iChatCursorImage TIFFRepresentation]]; // [NSBitmapImageRep imageRepWithData: [iChatCursorImage TIFFRepresentation]]
+
+						iChatCursorTextureBuffer = malloc([bitmap bytesPerRow] * iChatCursorImageSize.height);
+						memcpy(iChatCursorTextureBuffer, [bitmap bitmapData], [bitmap bytesPerRow] * iChatCursorImageSize.height);
+
+						[bitmap release];
+						
+						iChatCursorTextureName = 0;
+						glGenTextures(1, &iChatCursorTextureName);
+						glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
+						glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
+						glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+						glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, iChatCursorImageSize.width, iChatCursorImageSize.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, iChatCursorTextureBuffer);
+					}
+				}
+
+				// draw the cursor in the iChat Theatre View
+				if(iChatCursorTextureBuffer)
+				{
+					eventLocation.x -= iChatCursorHotSpot.x;
+					eventLocation.y -= iChatCursorHotSpot.y;
+					
+					glEnable(GL_TEXTURE_RECTANGLE_EXT);
+					
+					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
+					glBlendEquation(GL_FUNC_ADD);
+					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+					glEnable(GL_BLEND);
+					
+					glColor4f(1.0, 1.0, 1.0, 1.0);
+					glBegin(GL_QUAD_STRIP);
+						glTexCoord2f(0, 0);
+						glVertex2f(eventLocation.x, eventLocation.y);
+					
+						glTexCoord2f(iChatCursorImageSize.width, 0);
+						glVertex2f(eventLocation.x + iChatCursorImageSize.width, eventLocation.y);
+					
+						glTexCoord2f(0, iChatCursorImageSize.height);
+						glVertex2f(eventLocation.x, eventLocation.y + iChatCursorImageSize.height);
+					
+						glTexCoord2f(iChatCursorImageSize.width, iChatCursorImageSize.height);
+						glVertex2f(eventLocation.x + iChatCursorImageSize.width, eventLocation.y + iChatCursorImageSize.height);
+					
+						glEnd();
+					glDisable(GL_BLEND);
+					
+					glDisable(GL_TEXTURE_RECTANGLE_EXT);
+				}
+			} // end iChat Theatre context	
+			
+			if( showDescriptionInLarge)
+			{
+				glMatrixMode (GL_PROJECTION);
 				glPushMatrix();
 					glLoadIdentity ();
-					glScalef (2.0f / [self frame].size.width, -2.0f /  [self frame].size.height, 1.0f);
-					glTranslatef (-[self frame].size.width / 2.0f, -[self frame].size.height / 2.0f, 0.0f);
+					glMatrixMode (GL_MODELVIEW);
+					glPushMatrix();
+						glLoadIdentity ();
+						glScalef (2.0f / [self frame].size.width, -2.0f /  [self frame].size.height, 1.0f);
+						glTranslatef (-[self frame].size.width / 2.0f, -[self frame].size.height / 2.0f, 0.0f);
 
-					[showDescriptionInLargeText drawAtPoint:NSMakePoint([self frame].size.width/2 - [showDescriptionInLargeText frameSize].width/2, [self frame].size.height/2 - [showDescriptionInLargeText frameSize].height/2)];
+						[showDescriptionInLargeText drawAtPoint:NSMakePoint([self frame].size.width/2 - [showDescriptionInLargeText frameSize].width/2, [self frame].size.height/2 - [showDescriptionInLargeText frameSize].height/2)];
+						
+						glPopMatrix(); // GL_MODELVIEW
+					glMatrixMode (GL_PROJECTION);
+				glPopMatrix();
+			}
+		}  
+		else
+		{
+			//no valid image  ie curImage = -1
+			//NSLog(@"no IMage");
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear (GL_COLOR_BUFFER_BIT);
+		}
+		
+	#ifndef new_loupe
+		if( lensTexture)
+		{
+			/* creating Loupe textures (mask and border) */
+			
+			NSBundle *bundle = [NSBundle bundleForClass:[DCMView class]];
+			if(!loupeImage)
+			{
+				loupeImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupe.png"]];
+				loupeTextureWidth = [loupeImage size].width;
+				loupeTextureHeight = [loupeImage size].height;
+			}
+			if(!loupeMaskImage)
+			{
+				loupeMaskImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupeMask.png"]];
+				loupeMaskTextureWidth = [loupeMaskImage size].width;
+				loupeMaskTextureHeight = [loupeMaskImage size].height;
+			}
+			
+			if(loupeTextureID==0)
+				[self makeTextureFromImage:loupeImage forTexture:&loupeTextureID buffer:loupeTextureBuffer textureUnit:GL_TEXTURE3];
+			
+			if(loupeMaskTextureID==0)
+				[self makeTextureFromImage:loupeMaskImage forTexture:&loupeMaskTextureID buffer:loupeMaskTextureBuffer textureUnit:GL_TEXTURE0];
 					
-					glPopMatrix(); // GL_MODELVIEW
-				glMatrixMode (GL_PROJECTION);
-			glPopMatrix();
-		}
-	}  
-	else
-	{
-		//no valid image  ie curImage = -1
-		//NSLog(@"no IMage");
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear (GL_COLOR_BUFFER_BIT);
-	}
-	
-#ifndef new_loupe
-	if( lensTexture)
-	{
-		/* creating Loupe textures (mask and border) */
-		
-		NSBundle *bundle = [NSBundle bundleForClass:[DCMView class]];
-		if(!loupeImage)
-		{
-			loupeImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupe.png"]];
-			loupeTextureWidth = [loupeImage size].width;
-			loupeTextureHeight = [loupeImage size].height;
-		}
-		if(!loupeMaskImage)
-		{
-			loupeMaskImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupeMask.png"]];
-			loupeMaskTextureWidth = [loupeMaskImage size].width;
-			loupeMaskTextureHeight = [loupeMaskImage size].height;
-		}
-		
-		if(loupeTextureID==0)
-			[self makeTextureFromImage:loupeImage forTexture:&loupeTextureID buffer:loupeTextureBuffer textureUnit:GL_TEXTURE3];
-		
-		if(loupeMaskTextureID==0)
-			[self makeTextureFromImage:loupeMaskImage forTexture:&loupeMaskTextureID buffer:loupeMaskTextureBuffer textureUnit:GL_TEXTURE0];
-				
-		/* mouse position */
+			/* mouse position */
 
-		NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
-		eventLocation = [self convertPoint:eventLocation fromView:nil];
-		
-		if( xFlipped)
-		{
-			eventLocation.x = drawingFrameRect.size.width - eventLocation.x;
-		}
-		
-		if( yFlipped)
-		{
+			NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
+			eventLocation = [self convertPoint:eventLocation fromView:nil];
+			
+			if( xFlipped)
+			{
+				eventLocation.x = drawingFrameRect.size.width - eventLocation.x;
+			}
+			
+			if( yFlipped)
+			{
+				eventLocation.y = drawingFrameRect.size.height - eventLocation.y;
+			}
+			
 			eventLocation.y = drawingFrameRect.size.height - eventLocation.y;
-		}
-		
-		eventLocation.y = drawingFrameRect.size.height - eventLocation.y;
-		eventLocation.y -= drawingFrameRect.size.height/2;
-		eventLocation.x -= drawingFrameRect.size.width/2;
-		
-		float xx = eventLocation.x*cos(rotation*deg2rad) + eventLocation.y*sin(rotation*deg2rad);
-		float yy = -eventLocation.x*sin(rotation*deg2rad) + eventLocation.y*cos(rotation*deg2rad);
-		
-		eventLocation.x = xx;
-		eventLocation.y = yy;
-		
-		eventLocation.x -= LENSSIZE*2*scaleValue/LENSRATIO;
-		eventLocation.y -= LENSSIZE*2*scaleValue/LENSRATIO;
-		
-		glMatrixMode (GL_MODELVIEW);
-		glLoadIdentity ();
-		
-		glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
-		glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-		
-		/* binding lensTexture */
-		
-		GLuint textID;
-		
-		glEnable(TEXTRECTMODE);
-		glPixelStorei(GL_UNPACK_ROW_LENGTH, LENSSIZE); 
-		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-		glGenTextures(1, &textID);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(TEXTRECTMODE, textID);
-		glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			eventLocation.y -= drawingFrameRect.size.height/2;
+			eventLocation.x -= drawingFrameRect.size.width/2;
 			
-		glColor4f( 1, 1, 1, 1);
-		#if __BIG_ENDIAN__
-		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, lensTexture);
-		#else
-		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, lensTexture);
-		#endif
-		
- 		glEnable(GL_BLEND);
-		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
-		/* multitexturing starts */
-		
-		glActiveTexture(GL_TEXTURE0);
-		glEnable(loupeMaskTextureID);
-		glBindTexture(TEXTRECTMODE, loupeMaskTextureID);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
-		glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
-		glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-		
-		glActiveTexture(GL_TEXTURE1);
-		glEnable(textID);
-		glBindTexture(TEXTRECTMODE, textID);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
-		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
-		glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
-		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-		
-		glActiveTexture(GL_TEXTURE0);
-		glEnable(TEXTRECTMODE);
-		glActiveTexture(GL_TEXTURE1);
-		glEnable(TEXTRECTMODE);
-		
-		glBegin (GL_QUAD_STRIP);
-			glMultiTexCoord2f (GL_TEXTURE1, 0, 0); // lensTexture : upper left in texture coordinates
-			glMultiTexCoord2f (GL_TEXTURE0, 0, 0); // mask texture : upper left in texture coordinates
-			glVertex3d (eventLocation.x, eventLocation.y, 0.0);
-		
-			glMultiTexCoord2f (GL_TEXTURE1, LENSSIZE, 0); // lensTexture : lower left in texture coordinates
-			glMultiTexCoord2f (GL_TEXTURE0, loupeMaskTextureWidth, 0); // mask texture : lower left in texture coordinates
-			glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y, 0.0);
-
-			glMultiTexCoord2f (GL_TEXTURE1, 0, LENSSIZE); // lensTexture : upper right in texture coordinates
-			glMultiTexCoord2f (GL_TEXTURE0, 0, loupeMaskTextureHeight); // mask texture : upper right in texture coordinates
-			glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+			float xx = eventLocation.x*cos(rotation*deg2rad) + eventLocation.y*sin(rotation*deg2rad);
+			float yy = -eventLocation.x*sin(rotation*deg2rad) + eventLocation.y*cos(rotation*deg2rad);
 			
-			glMultiTexCoord2f (GL_TEXTURE1, LENSSIZE, LENSSIZE); // lensTexture : lower right in texture coordinates
-			glMultiTexCoord2f (GL_TEXTURE0, loupeMaskTextureWidth, loupeMaskTextureHeight); // mask texture : lower right in texture coordinates
-			glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
-		glEnd();
-		
-		glActiveTexture(GL_TEXTURE1); // deactivate multitexturing
-		glDisable(TEXTRECTMODE);
-		glDeleteTextures( 1, &textID);
-
-		/* multitexturing ends */
-		
-		// back to single texturing mode:
-		glActiveTexture(GL_TEXTURE0); // activate single texture unit
-		glDisable(TEXTRECTMODE);
-	
-		/* drawing loupe border */
-		BOOL drawLoupeBorder = YES;
-		if(loupeTextureID && drawLoupeBorder)
-		{
-			glEnable(GL_TEXTURE_RECTANGLE_EXT);
+			eventLocation.x = xx;
+			eventLocation.y = yy;
 			
-			glBindTexture(GL_TEXTURE_RECTANGLE_EXT, loupeTextureID);
+			eventLocation.x -= LENSSIZE*2*scaleValue/LENSRATIO;
+			eventLocation.y -= LENSSIZE*2*scaleValue/LENSRATIO;
 			
-			glColor4f(1.0, 1.0, 1.0, 1.0);
+			glMatrixMode (GL_MODELVIEW);
+			glLoadIdentity ();
 			
-			glBegin(GL_QUAD_STRIP);			
-				glTexCoord2f(0, 0);
+			glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
+			glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+			
+			/* binding lensTexture */
+			
+			GLuint textID;
+			
+			glEnable(TEXTRECTMODE);
+			glPixelStorei(GL_UNPACK_ROW_LENGTH, LENSSIZE); 
+			glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+			glGenTextures(1, &textID);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(TEXTRECTMODE, textID);
+			glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				
+			glColor4f( 1, 1, 1, 1);
+			#if __BIG_ENDIAN__
+			glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, lensTexture);
+			#else
+			glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, lensTexture);
+			#endif
+			
+			glEnable(GL_BLEND);
+			glBlendEquation(GL_FUNC_ADD);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			
+			/* multitexturing starts */
+			
+			glActiveTexture(GL_TEXTURE0);
+			glEnable(loupeMaskTextureID);
+			glBindTexture(TEXTRECTMODE, loupeMaskTextureID);
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
+			glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+			glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+			
+			glActiveTexture(GL_TEXTURE1);
+			glEnable(textID);
+			glBindTexture(TEXTRECTMODE, textID);
+			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+			glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
+			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
+			glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
+			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+			
+			glActiveTexture(GL_TEXTURE0);
+			glEnable(TEXTRECTMODE);
+			glActiveTexture(GL_TEXTURE1);
+			glEnable(TEXTRECTMODE);
+			
+			glBegin (GL_QUAD_STRIP);
+				glMultiTexCoord2f (GL_TEXTURE1, 0, 0); // lensTexture : upper left in texture coordinates
+				glMultiTexCoord2f (GL_TEXTURE0, 0, 0); // mask texture : upper left in texture coordinates
 				glVertex3d (eventLocation.x, eventLocation.y, 0.0);
-				glTexCoord2f(loupeTextureWidth, 0);
+			
+				glMultiTexCoord2f (GL_TEXTURE1, LENSSIZE, 0); // lensTexture : lower left in texture coordinates
+				glMultiTexCoord2f (GL_TEXTURE0, loupeMaskTextureWidth, 0); // mask texture : lower left in texture coordinates
 				glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y, 0.0);
-				glTexCoord2f(0, loupeTextureHeight);
+
+				glMultiTexCoord2f (GL_TEXTURE1, 0, LENSSIZE); // lensTexture : upper right in texture coordinates
+				glMultiTexCoord2f (GL_TEXTURE0, 0, loupeMaskTextureHeight); // mask texture : upper right in texture coordinates
 				glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
-				glTexCoord2f(loupeTextureWidth, loupeTextureHeight);
+				
+				glMultiTexCoord2f (GL_TEXTURE1, LENSSIZE, LENSSIZE); // lensTexture : lower right in texture coordinates
+				glMultiTexCoord2f (GL_TEXTURE0, loupeMaskTextureWidth, loupeMaskTextureHeight); // mask texture : lower right in texture coordinates
 				glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
 			glEnd();
 			
-			glDisable(GL_TEXTURE_RECTANGLE_EXT);
-		}
+			glActiveTexture(GL_TEXTURE1); // deactivate multitexturing
+			glDisable(TEXTRECTMODE);
+			glDeleteTextures( 1, &textID);
 
-	
+			/* multitexturing ends */
+			
+			// back to single texturing mode:
+			glActiveTexture(GL_TEXTURE0); // activate single texture unit
+			glDisable(TEXTRECTMODE);
 		
-//		glColor4f ( 0, 0, 0 , 0.8);
-//		glLineWidth( 3);
-//		
-//		int resol = LENSSIZE*4*scaleValue;
-//		
-//		eventLocation.x += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
-//		eventLocation.y += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
-//		
-//		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-//		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-//		glEnable(GL_POINT_SMOOTH);
-//		glEnable(GL_LINE_SMOOTH);
-//		glEnable(GL_POLYGON_SMOOTH);
-//		
-//		float f = ((LENSSIZE-1)*scaleValue*2/LENSRATIO);
-//
-//		glBegin(GL_LINE_LOOP);
-//		for( int i = 0; i < resol ; i++ )
-//		{
-//			float angle = i * 2 * M_PI /resol;
-//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
-//		}
-//		glEnd();
-//		glPointSize( 3);
-//		glBegin( GL_POINTS);
-//		for( int i = 0; i < resol ; i++ )
-//		{
-//			float angle = i * 2 * M_PI /resol;
-//			
-//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
-//		}
-//		glEnd();
-//		glDisable(GL_LINE_SMOOTH);
-//		glDisable(GL_POLYGON_SMOOTH);
-//		glDisable(GL_POINT_SMOOTH);
+			/* drawing loupe border */
+			BOOL drawLoupeBorder = YES;
+			if(loupeTextureID && drawLoupeBorder)
+			{
+				glEnable(GL_TEXTURE_RECTANGLE_EXT);
+				
+				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, loupeTextureID);
+				
+				glColor4f(1.0, 1.0, 1.0, 1.0);
+				
+				glBegin(GL_QUAD_STRIP);			
+					glTexCoord2f(0, 0);
+					glVertex3d (eventLocation.x, eventLocation.y, 0.0);
+					glTexCoord2f(loupeTextureWidth, 0);
+					glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y, 0.0);
+					glTexCoord2f(0, loupeTextureHeight);
+					glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+					glTexCoord2f(loupeTextureWidth, loupeTextureHeight);
+					glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+				glEnd();
+				
+				glDisable(GL_TEXTURE_RECTANGLE_EXT);
+			}
+
 		
-		
-		
-		glDisable(GL_BLEND);
+			
+	//		glColor4f ( 0, 0, 0 , 0.8);
+	//		glLineWidth( 3);
+	//		
+	//		int resol = LENSSIZE*4*scaleValue;
+	//		
+	//		eventLocation.x += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
+	//		eventLocation.y += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
+	//		
+	//		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	//		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	//		glEnable(GL_POINT_SMOOTH);
+	//		glEnable(GL_LINE_SMOOTH);
+	//		glEnable(GL_POLYGON_SMOOTH);
+	//		
+	//		float f = ((LENSSIZE-1)*scaleValue*2/LENSRATIO);
+	//
+	//		glBegin(GL_LINE_LOOP);
+	//		for( int i = 0; i < resol ; i++ )
+	//		{
+	//			float angle = i * 2 * M_PI /resol;
+	//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
+	//		}
+	//		glEnd();
+	//		glPointSize( 3);
+	//		glBegin( GL_POINTS);
+	//		for( int i = 0; i < resol ; i++ )
+	//		{
+	//			float angle = i * 2 * M_PI /resol;
+	//			
+	//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
+	//		}
+	//		glEnd();
+	//		glDisable(GL_LINE_SMOOTH);
+	//		glDisable(GL_POLYGON_SMOOTH);
+	//		glDisable(GL_POINT_SMOOTH);
+			
+			
+			
+			glDisable(GL_BLEND);
+		}
+		#endif
 	}
-#endif
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	// Swap buffer to screen
 	[ctx  flushBuffer];
 //	[NSOpenGLContext clearCurrentContext];
-	
 	
 	drawingFrameRect = [self frame];
 	
 	if( ctx == _alternateContext)
 		drawingFrameRect = savedDrawingFrameRect;
 	
-	
 	if(iChatRunning) [drawLock unlock];
 	
-	(void)[self _checkHasChanged:YES];
+	(void) [self _checkHasChanged:YES];
 	
 }
 
@@ -10852,17 +10937,24 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	[drawLock lock];
 	
-	pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY redTable: redTable greenTable:greenTable blueTable:blueTable textureWidth:&textureWidth textureHeight:&textureHeight resampledBaseAddr:&resampledBaseAddr resampledBaseAddrSize:&resampledBaseAddrSize];
-	
-	if( blendingView)
+	@try 
 	{
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable: PETredTable greenTable:PETgreenTable blueTable:PETblueTable textureWidth:&blendingTextureWidth textureHeight:&blendingTextureHeight resampledBaseAddr:&blendingResampledBaseAddr resampledBaseAddrSize:&blendingResampledBaseAddrSize];
-		else
-			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable:nil greenTable:nil blueTable:nil textureWidth:&blendingTextureWidth textureHeight:&blendingTextureHeight resampledBaseAddr:&blendingResampledBaseAddr resampledBaseAddrSize:&blendingResampledBaseAddrSize];
-	}
+		pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY redTable: redTable greenTable:greenTable blueTable:blueTable textureWidth:&textureWidth textureHeight:&textureHeight resampledBaseAddr:&resampledBaseAddr resampledBaseAddrSize:&resampledBaseAddrSize];
+	
+		if( blendingView)
+		{
+			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+				blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable: PETredTable greenTable:PETgreenTable blueTable:PETblueTable textureWidth:&blendingTextureWidth textureHeight:&blendingTextureHeight resampledBaseAddr:&blendingResampledBaseAddr resampledBaseAddrSize:&blendingResampledBaseAddrSize];
+			else
+				blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable:nil greenTable:nil blueTable:nil textureWidth:&blendingTextureWidth textureHeight:&blendingTextureHeight resampledBaseAddr:&blendingResampledBaseAddr resampledBaseAddrSize:&blendingResampledBaseAddrSize];
+		}
 
-	needToLoadTexture = NO;
+		needToLoadTexture = NO;
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
 	[drawLock unlock];
 }
