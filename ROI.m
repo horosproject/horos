@@ -4636,10 +4636,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			break;
-			//JJCP
+			
 			case tAxis:
 			{
-				//NSLog(@"JJCP--	Plot of ROI tAxis");
 				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 				
 				if( mode == ROI_drawing) 
@@ -4856,7 +4855,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glColor3f (1.0f, 1.0f, 1.0f);			
 			}
 			break;
-				//JJCP
+			
 			case tDynAngle:
 			{
 				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
@@ -5281,7 +5280,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			break;
-			
 		}
 		
 		glPointSize( 1.0);
