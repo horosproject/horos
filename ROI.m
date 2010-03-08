@@ -5014,14 +5014,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				if( mode == ROI_drawing) glLineWidth(thickness * 2);
 				else glLineWidth(thickness);
 				
-
-				if( type == tCPolygon || type == tPencil)	glBegin(GL_LINE_LOOP);
-				else										glBegin(GL_LINE_STRIP);
-				
 				NSMutableArray *splinePoints = [self splinePoints: scaleValue];
 				
 				if( [splinePoints count] > 1)
 				{
+					if( type == tCPolygon || type == tPencil) glBegin(GL_LINE_LOOP);
+					else glBegin(GL_LINE_STRIP);
+					
 					for(long i=0; i<[splinePoints count]; i++)
 					{
 						glVertex2d( ((double) [[splinePoints objectAtIndex:i] x]- (double) offsetx)*(double) scaleValue , ((double) [[splinePoints objectAtIndex:i] y]-(double) offsety)*(double) scaleValue);
