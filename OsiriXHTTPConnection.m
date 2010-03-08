@@ -3341,7 +3341,7 @@ NSString* notNil( NSString *s)
 								if( fromEmailAddress == nil)
 									fromEmailAddress = @"";
 								
-								NSString *emailSubject = NSLocalizedString( @"Your password has been resetted.", nil);
+								NSString *emailSubject = NSLocalizedString( @"Your password has been reset.", nil);
 								NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
 								
 								[user generatePassword];

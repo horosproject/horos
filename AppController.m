@@ -2696,7 +2696,7 @@ static BOOL initialized = NO;
 		[[[BrowserController currentBrowser] window] orderOut: self];
 
 #ifdef OSIRIX_LIGHT
-	int button = NSRunAlertPanel( NSLocalizedString( @"OsiriX Lite", nil), NSLocalizedString( @"This is the lite version of OsiriX: many functions are not available. You can download the full version of OsiriX on the Internet.", nil), NSLocalizedString( @"Continue", nil), NSLocalizedString( @"Download", nil), nil);
+	int button = NSRunAlertPanel( NSLocalizedString( @"OsiriX Lite", nil), NSLocalizedString( @"This is the Lite version of OsiriX: many functions are not available. You can download the full version of OsiriX on the Internet.", nil), NSLocalizedString( @"Continue", nil), NSLocalizedString( @"Download", nil), nil);
 	
 	if (NSCancelButton == button)
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];

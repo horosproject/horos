@@ -13910,7 +13910,7 @@ static NSArray*	openSubSeriesArray = nil;
 			{
 				NSAlert* alert = [[NSAlert new] autorelease];
 				[alert setMessageText: NSLocalizedString(@"Delete ZIP file", nil)];
-				[alert setInformativeText: NSLocalizedString(@"The ZIP file was successfully decompressed and the images sucessfully incorporated in OsiriX database. Should I delete the ZIP file?", nil)];
+				[alert setInformativeText: NSLocalizedString(@"The ZIP file was successfully decompressed and the images successfully incorporated in OsiriX database. Should I delete the ZIP file?", nil)];
 				[alert setShowsSuppressionButton: YES];
 				[alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
 				[alert addButtonWithTitle: NSLocalizedString( @"Cancel", nil)];
@@ -14100,7 +14100,7 @@ static NSArray*	openSubSeriesArray = nil;
 					{
 						if( sender)
 						{
-							NSInteger response = NSRunCriticalAlertPanel(NSLocalizedString(@"DICOMDIR",nil), NSLocalizedString(@"No DICOMDIR file has been found on this CD/DVD. I will try to scan the entier CD/DVD for DICOM files.",nil), NSLocalizedString( @"OK",nil), NSLocalizedString( @"Cancel",nil), nil);
+							NSInteger response = NSRunCriticalAlertPanel(NSLocalizedString(@"DICOMDIR",nil), NSLocalizedString(@"No DICOMDIR file has been found on this CD/DVD. I will try to scan the entire CD/DVD for DICOM files.",nil), NSLocalizedString( @"OK",nil), NSLocalizedString( @"Cancel",nil), nil);
 							
 							if( response != NSAlertDefaultReturn)
 								sender = nil;
@@ -16679,7 +16679,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( hasMacOSXSnowLeopard() == NO && [NSThread isMainThread] && [password length] > 0)
 	{
 		password = nil;
-		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);
+		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher. The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);
 		return;
 	}
 	
@@ -16751,7 +16751,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( hasMacOSXSnowLeopard() == NO && [NSThread isMainThread] && [password length] > 0)
 	{
 		password = nil;
-		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);
+		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher. The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);
 		return;
 	}
 	

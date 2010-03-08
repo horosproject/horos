@@ -3780,7 +3780,7 @@ public:
 				
 				[[controller viewer2D] needsDisplayUpdate];
 			}
-			else NSRunAlertPanel(NSLocalizedString(@"Bone Removing", nil), NSLocalizedString(@"Failed to detect a high dentisty voxel to start growing region.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			else NSRunAlertPanel(NSLocalizedString(@"Bone Removing", nil), NSLocalizedString(@"Failed to detect a high density voxel to start growing region.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 
 			NSLog( @"**** Bone Removal End");
 		}
