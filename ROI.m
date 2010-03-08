@@ -5016,7 +5016,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				NSMutableArray *splinePoints = [self splinePoints: scaleValue];
 				
-				if( [splinePoints count] > 1)
+				if( [splinePoints count] >= 1)
 				{
 					if( type == tCPolygon || type == tPencil) glBegin(GL_LINE_LOOP);
 					else glBegin(GL_LINE_STRIP);
@@ -5064,38 +5064,45 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 								sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 								sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 								
-								if( [curView blendingView])
+								length = 0;
+								
+								if( [splinePoints count] < 2)
 								{
-									DCMPix	*blendedPix = [[curView blendingView] curDCM];
-									
-									ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: blendedPix]] autorelease];
-									
-									NSMutableArray *pts = [[[NSMutableArray alloc] initWithArray: [self points] copyItems:YES] autorelease];
-									
-									for( MyPoint *p in pts)
-										[p setPoint: [curView ConvertFromGL2GL: [p point] toView:[curView blendingView]]];
-									
-									[blendedROI setPoints: pts];
-									[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
-									
-									sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
-									sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
+									sprintf (line5, "Length: %0.3f cm", length);
 								}
 								else
 								{
-									length = 0;
-									long i;
-									
-									for( i = 0; i < [splinePoints count]-1; i++ )
+									if( [curView blendingView])
 									{
-										length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
+										DCMPix	*blendedPix = [[curView blendingView] curDCM];
+										
+										ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: blendedPix]] autorelease];
+										
+										NSMutableArray *pts = [[[NSMutableArray alloc] initWithArray: [self points] copyItems:YES] autorelease];
+										
+										for( MyPoint *p in pts)
+											[p setPoint: [curView ConvertFromGL2GL: [p point] toView:[curView blendingView]]];
+										
+										[blendedROI setPoints: pts];
+										[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+										
+										sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
+										sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
 									}
-									length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:0] point]];
-									
-									if (length < .1)
-										sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
 									else
-										sprintf (line5, "Length: %0.3f cm", length);
+									{
+										int i = 0;
+										for( i = 0; i < [splinePoints count]-1; i++ )
+										{
+											length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
+										}
+										length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:0] point]];
+										
+										if (length < .1)
+											sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
+										else
+											sprintf (line5, "Length: %0.3f cm", length);
+									}
 								}
 							}
 							
@@ -5154,7 +5161,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 										length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
 									}
 									
-									if (length < .1)
+									if( length > 0.0 && length < .1)
 										sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
 									else
 										sprintf (line5, "Length: %0.3f cm", length);
