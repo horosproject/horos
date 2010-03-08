@@ -133,17 +133,21 @@ int main(int argc, const char *argv[])
 		
 		NSString	*path = [NSString stringWithUTF8String:argv[1]];
 		NSString	*what = [NSString stringWithUTF8String:argv[2]];
-		NSInteger fileListFirstItemIndex =3;
+		NSInteger fileListFirstItemIndex = 3;
 		
 		NSMutableDictionary* dict = [DefaultsOsiriX getDefaults];
 		[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
 		
-		if ([what isEqualToString:@"SettingsPlist"]) {
-			@try {
+		if ([what isEqualToString:@"SettingsPlist"])
+		{
+			@try
+			{
 				[dict addEntriesFromDictionary:[NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithUTF8String:argv[fileListFirstItemIndex]]]];
 				what = [NSString stringWithUTF8String:argv[4]];
 				fileListFirstItemIndex += 2;
-			} @catch (NSException* e) { // ignore evtl failures
+			}
+			@catch (NSException* e)
+			{ // ignore evtl failures
 				NSLog(@"Decompress failed reading settings plist at %s: %@", argv[fileListFirstItemIndex], e);
 			}
 		}
