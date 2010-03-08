@@ -709,21 +709,28 @@ static NSArray*	statesArray = nil;
 						
 						if( index != NSNotFound)
 						{
-							if( [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]] == NSOrderedSame)
+							if( [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) // We do this double check only for DICOM files.
+							{
 								study = [studiesArray objectAtIndex: index];
+							}
 							else
 							{
-								NSLog( @"-*-*-*-*-* same studyUID (%@), but not same patientUID (%@ versus %@)", [curDict objectForKey: @"studyID"], [curDict objectForKey: @"patientUID"], [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
-								
-								NSString *curUID = [curDict objectForKey: @"studyID"];
-								for( int i = 0 ; i < [studiesArrayStudyInstanceUID count]; i++)
+								if( [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]] == NSOrderedSame)
+									study = [studiesArray objectAtIndex: index];
+								else
 								{
-									NSString *uid = [studiesArrayStudyInstanceUID objectAtIndex: i];
+									NSLog( @"-*-*-*-*-* same studyUID (%@), but not same patientUID (%@ versus %@)", [curDict objectForKey: @"studyID"], [curDict objectForKey: @"patientUID"], [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
 									
-									if( [uid isEqualToString: curUID])
+									NSString *curUID = [curDict objectForKey: @"studyID"];
+									for( int i = 0 ; i < [studiesArrayStudyInstanceUID count]; i++)
 									{
-										if( [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: i] valueForKey: @"patientUID"]] == NSOrderedSame)
-											study = [studiesArray objectAtIndex: i];
+										NSString *uid = [studiesArrayStudyInstanceUID objectAtIndex: i];
+										
+										if( [uid isEqualToString: curUID])
+										{
+											if( [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: i] valueForKey: @"patientUID"]] == NSOrderedSame)
+												study = [studiesArray objectAtIndex: i];
+										}
 									}
 								}
 							}
