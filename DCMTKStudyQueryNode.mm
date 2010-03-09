@@ -175,14 +175,16 @@
 {
 //	dataset->print( COUT);
 
+	if( dataset == nil)
+		return;
+
 	if (!_children)
 		_children = [[NSMutableArray alloc] init];
 	
-	NSDictionary *dict = _extraParameters;
-	
-	if( [_extraParameters valueForKey: @"StudyInstanceUID"] == nil && _uid != nil)
+	if( [_extraParameters valueForKey: @"StudyInstanceUID"] == nil && _uid != nil && _extraParameters != nil)
 	{
 		NSMutableDictionary *newDict = [NSMutableDictionary dictionaryWithDictionary: _extraParameters];
+		
 		[newDict setValue: _uid forKey: @"StudyInstanceUID"];
 		[_extraParameters release];
 		_extraParameters = [newDict retain];
