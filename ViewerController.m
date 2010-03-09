@@ -18150,6 +18150,9 @@ int i,j,l;
 		[self displayAWarningIfNonTrueVolumicData];
 		[self displayWarningIfGantryTitled];
 		
+		[blendingController displayAWarningIfNonTrueVolumicData];
+		[blendingController displayWarningIfGantryTitled];
+		
 		[self MovieStop: self];
 		
 		OrthogonalMPRViewer *viewer;

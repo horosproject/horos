@@ -6133,7 +6133,10 @@ END_CREATE_ROIS:
 								[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: theGroupP] forKey: groupKey];
 							}
 							else
+							{
+								[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: 0L]  forKey: groupKey];
 								NSLog( @"Error while reading a group (Papyrus)");
+							}
 						}
 						else
 						{
