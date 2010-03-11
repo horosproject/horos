@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="100"/>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -126,7 +126,7 @@
 											<object class="NSButtonCell" key="NSCell" id="143934923">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Preview List - auto hiding</string>
+												<string key="NSContents">Preview List : auto hiding</string>
 												<reference key="NSSupport" ref="835218876"/>
 												<reference key="NSControlView" ref="229787279"/>
 												<int key="NSButtonFlags">1211912703</int>

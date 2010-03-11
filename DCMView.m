@@ -4270,6 +4270,28 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		[drawLock unlock];
     }
+	
+//	float pixPosition[ 3];
+//	float slicePosition[ 3];
+//	float dcmPosition[ 3];
+//	
+//	pixPosition[ 0] = 256;
+//	pixPosition[ 1] = 256;
+//	pixPosition[ 2] = curImage;
+//
+//	NSLog( @"IN - Pixel coordinates in slice: %f %f slice index: %d", pixPosition[ 0], pixPosition[ 1], (int) pixPosition[ 2]);
+//
+//	[[dcmPixList objectAtIndex: curImage] convertPixX: pixPosition[ 0] pixY: pixPosition[ 1] toDICOMCoords: dcmPosition pixelCenter: YES];
+//	
+//	NSLog( @"DICOM coordinates in mm : %f %f %f", dcmPosition[ 0], dcmPosition[ 1], dcmPosition[ 2]);
+//	
+//	[[dcmPixList objectAtIndex: 0] convertDICOMCoords: dcmPosition toSliceCoords: slicePosition pixelCenter: YES];
+//	
+//	slicePosition[ 0] /= [curDCM pixelSpacingX];
+//	slicePosition[ 1] /= [curDCM pixelSpacingY];
+//	slicePosition[ 2] /= [curDCM sliceInterval];
+//	
+//	NSLog( @"OUT - Pixel coordinates in slice: %f %f slice index: %d", slicePosition[ 0], slicePosition[ 1], (int) slicePosition[ 2]);
 }
 
 - (void)scrollWheel:(NSEvent *)theEvent
