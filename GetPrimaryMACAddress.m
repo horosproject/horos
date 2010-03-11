@@ -212,7 +212,7 @@ NSString* getMacAddress( void)
 
     io_iterator_t	intfIterator;
     UInt8			MACAddress[kIOEthernetAddressSize];
-	NSString		*result = @"unknown MAC address";
+	NSString		*result = nil;
 	
     kernResult = FindEthernetInterfaces(&intfIterator);
     

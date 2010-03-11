@@ -14110,8 +14110,8 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseDICOMDIRFileCD"] == NO || (sender != nil && [filesArray count] == 0))
 				{
-					NSString    *pathname;
-					NSString    *aPath = mediaPath;
+					NSString *pathname;
+					NSString *aPath = mediaPath;
 					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 					
 					if( enumer == nil)
@@ -14160,17 +14160,17 @@ static NSArray*	openSubSeriesArray = nil;
 								if( [e length] > 4 || [e length] < 3)
 									e = [NSString stringWithString:@"dcm"];
 								
-								if( [e isEqualToString:@""] || [[e lowercaseString] isEqualToString:@"dcm"] || [[e lowercaseString] isEqualToString:@"img"] || [[e lowercaseString] isEqualToString:@"im"]  || [[e lowercaseString] isEqualToString:@"dicom"])
+								if( [e holdsIntegerValue] || [e isEqualToString:@""] || [[e lowercaseString] isEqualToString:@"dcm"] || [[e lowercaseString] isEqualToString:@"img"] || [[e lowercaseString] isEqualToString:@"im"]  || [[e lowercaseString] isEqualToString:@"dicom"])
 								{
 								}
 								else
-								{
 									addFile = NO;
-								}
 							}
 							
-							if( addFile) [filesArray addObject:itemPath];
-							else NSLog(@"skip this file: %@", [itemPath lastPathComponent]);
+							if( addFile)
+								[filesArray addObject:itemPath];
+							else
+								NSLog(@"skip this file: %@", [itemPath lastPathComponent]);
 						}
 					}
 					

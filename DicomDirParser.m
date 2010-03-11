@@ -14,10 +14,6 @@
 
 extern int maindcmdump(int argc, char *argv[]);
 
-@interface NSString(NumberStuff)
-- (BOOL)holdsIntegerValue;
-@end
-
 @implementation NSString(NumberStuff)
 - (BOOL)holdsIntegerValue
 {
@@ -56,77 +52,77 @@ static int validFilePathDepth = 0;
 
 - (void) _testForValidFilePath: (NSMutableArray*) dicomdirFileList path: (NSString*) startDirectory files: (NSMutableArray*) files
 {
-	NSString *filePath = nil;
-	NSString *cutFilePath = nil;
-	NSArray *fileNames = nil;
-	NSString *uppercaseFilePath;
-	BOOL isDirectory = FALSE;
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	int i = 0;
-	
 	if (startDirectory == Nil || files == Nil) return;
 	
 	validFilePathDepth++;
 	
 	@try 
 	{
-		fileNames = [fileManager directoryContentsAtPath: startDirectory];
-		
-		for (i = 0; i < [fileNames count]; i++)
+		for( NSString *filePath in [[NSFileManager defaultManager] directoryContentsAtPath: startDirectory])
 		{
-			filePath = [startDirectory stringByAppendingPathComponent: [fileNames objectAtIndex: i]];
-			uppercaseFilePath = [filePath uppercaseString];
-			isDirectory = FALSE;
-			if ([fileManager fileExistsAtPath:filePath isDirectory: &isDirectory] && !isDirectory)
+			filePath = [startDirectory stringByAppendingPathComponent: filePath];
+			
+			NSString *uppercaseFilePath = [filePath uppercaseString];
+			
+			BOOL isDirectory = NO;
+			if( [[NSFileManager defaultManager] fileExistsAtPath: filePath isDirectory: &isDirectory])
 			{
-				@try
+				if( isDirectory == NO)
 				{
-					NSString *ext = [uppercaseFilePath pathExtension];
-					
-					// only files with DCM or no extension, or a number like 82873.9982.9928.22
-					if ([ext isEqualToString: @"DCM"] || [ext isEqualToString: @""] || [ext length] > 4 || [ext length] < 3 || [ext holdsIntegerValue] == YES)
+					@try
 					{
-						int j = 0;
+						NSString *ext = [uppercaseFilePath pathExtension];
 						
-						if( [ext length] <= 4 && [ext length] >= 3 && [ext holdsIntegerValue] == NO)
-							cutFilePath = [uppercaseFilePath stringByDeletingPathExtension];
-						else
-							cutFilePath = uppercaseFilePath;
-						
-						if( [cutFilePath length] < 2000)
+						// only files with DCM or no extension, or a number like 82873.9982.9928.22
+						if ([ext isEqualToString: @"DCM"] || [ext isEqualToString: @""] || [ext length] > 4 || [ext length] < 3 || [ext holdsIntegerValue] == YES)
 						{
-							for( NSString *s in dicomdirFileList)
+							NSString *cutFilePath = nil;
+							
+							if( [ext length] <= 4 && [ext length] >= 3 && [ext holdsIntegerValue] == NO)
+								cutFilePath = [uppercaseFilePath stringByDeletingPathExtension];
+							else
+								cutFilePath = uppercaseFilePath;
+							
+							if( [cutFilePath length] < 2000)
 							{
-								if ([cutFilePath isEqualToString: s] || [[cutFilePath stringByDeletingPathExtension] isEqualToString: s] || [filePath isEqualToString: s])
-								{
-									[files addObject: filePath];
-									break;
-								}
+								BOOL found = NO;
 								
-								if( [[s pathExtension] isEqualToString: @""])	/// for this case: 738495.		// GE Scanner
+								for( NSString *s in dicomdirFileList)
 								{
-									if( [[cutFilePath stringByDeletingPathExtension] isEqualToString: [s stringByDeletingPathExtension]])
+									if ([cutFilePath isEqualToString: s] || [[cutFilePath stringByDeletingPathExtension] isEqualToString: s] || [filePath isEqualToString: s])
 									{
 										[files addObject: filePath];
+										found = YES;
 										break;
 									}
+									
+									if( [[s pathExtension] isEqualToString: @""])	/// for this case: 738495.		// GE Scanner
+									{
+										if( [[cutFilePath stringByDeletingPathExtension] isEqualToString: [s stringByDeletingPathExtension]])
+										{
+											[files addObject: filePath];
+											found = YES;
+											break;
+										}
+									}
 								}
+								
+								if( found == NO)
+									NSLog( @"--- Not found in DICOMDIR: %@", cutFilePath);
 							}
 						}
 					}
+					@catch (NSException *e)
+					{
+						NSLog( @"**** _testForValidFilePath exception: %@", e);
+					}
 				}
-				@catch (NSException *e)
-				{
-					NSLog( @"**** _testForValidFilePath exception: %@", e);
-				}
-			}
-			isDirectory = FALSE;
-			if ([fileManager fileExistsAtPath: filePath isDirectory: &isDirectory])
-			{
-				if ( isDirectory == YES && validFilePathDepth < 5)
+				else if( validFilePathDepth < 10)
 				{
 					[self _testForValidFilePath: dicomdirFileList path: filePath files:files];
 				}
+				else
+					NSLog( @"***** validFilePathDepth limit reached");
 			}
 		}
 	}
@@ -148,7 +144,7 @@ static int validFilePathDepth = 0;
 	char *buffer;
 	NSString *file;
 	
-	buffer = (char*)  [data UTF8String];
+	buffer = (char*) [data UTF8String];
 	
 	i = 0;
 	length = [data length];

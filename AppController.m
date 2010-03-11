@@ -1813,7 +1813,9 @@ static NSDate *lastWarningDate = nil;
 		
 		if( [checkSN64String length] > 4 && [otherString length] > 4)
 		{
-			if( [checkSN64String isEqualToString: otherString] == YES && [otherMAC isEqualToString: getMacAddress()] == NO)
+			NSString *myMacAddress = getMacAddress();
+			
+			if( [checkSN64String isEqualToString: otherString] == YES && [otherMAC isEqualToString: myMacAddress] == NO && otherMAC != nil && myMacAddress != nil)
 			{
 				[checkSN64Service release];
 				checkSN64Service = nil;
@@ -1821,7 +1823,9 @@ static NSDate *lastWarningDate = nil;
 				NSLog( @"Other : %@ : %@", otherString, otherMAC);
 				NSLog( @"Self  : %@ : %@", checkSN64String, getMacAddress());
 				
-				NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+				NSString *info = [NSString stringWithFormat: @"Other : %@ : %@\rSelf  : %@ : %@", otherString, otherMAC, checkSN64String, getMacAddress()];
+				
+				NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), [NSString stringWithFormat: NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.\r\r%@", nil), info], NSLocalizedString( @"OK", nil), nil, nil);
 				exit(0);
 			}
 		}
@@ -2685,6 +2689,11 @@ static BOOL initialized = NO;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseOpenJpegForJPEG2000"] == NO)
 		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"Jasper library is selected for JPEG2000. The performance and quality of this toolkit are lower.", nil)  name:@"result"];
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
+	{
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"checkForUpdatesPlugins"];
+	}
+	
 	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
 		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:pluginManager withObject:pluginManager];
@@ -3040,7 +3049,7 @@ static BOOL initialized = NO;
 			}
 			else
 			{
-				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckOsiriXUpdates3"] || verboseUpdateCheck == YES)
+				if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckOsiriXUpdates3"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) || verboseUpdateCheck == YES)
 				{
 					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone: NO];
 				}

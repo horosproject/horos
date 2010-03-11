@@ -1155,7 +1155,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO && [NSThread currentThread] == [AppController mainThread])
 	{
-		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting...", nil)];
+		wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Connecting to %@...", nil), _hostname]];
 		[wait setCancel: YES];
 		[wait start];
 	}
