@@ -17354,7 +17354,7 @@ int i,j,l;
 		{
 			[AppController setUSETOOLBARPANEL: YES];
 			
-			NSArray				*winList = [NSApp windows];
+			NSArray *winList = [NSApp windows];
 			
 			for( int i = 0; i < [winList count]; i++)
 			{

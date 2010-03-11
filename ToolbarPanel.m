@@ -308,6 +308,7 @@ static int increment = 0;
 		[[self window] setShowsToolbarButton:NO];
 		[[[self window] toolbar] setVisible: YES];
 		
+		
 		if( [[viewer window] isKeyWindow])
 			[[self window] orderBack: self];
 	}
