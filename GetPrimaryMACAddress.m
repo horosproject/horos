@@ -181,14 +181,25 @@ static kern_return_t GetMACAddress(io_iterator_t intfIterator, UInt8 *MACAddress
 																 CFSTR(kIOMACAddress),
 																 kCFAllocatorDefault,
 																 0);
-            if (MACAddressAsCFData) {
-                CFShow(MACAddressAsCFData); // for display purposes only; output goes to stderr
-                
+            if( MACAddressAsCFData)
+			{
+				UInt8 tempMac[ kIOEthernetAddressSize];
+				
                 // Get the raw bytes of the MAC address from the CFData
-                CFDataGetBytes(MACAddressAsCFData, CFRangeMake(0, kIOEthernetAddressSize), MACAddress);
+                CFDataGetBytes(MACAddressAsCFData, CFRangeMake(0, kIOEthernetAddressSize), tempMac);
                 CFRelease(MACAddressAsCFData);
+				
+				if( tempMac[ 5] > MACAddress[ 5])
+				{
+					MACAddress[0] = tempMac[ 0];
+					MACAddress[1] = tempMac[ 1];
+					MACAddress[2] = tempMac[ 2];
+					MACAddress[3] = tempMac[ 3];
+					MACAddress[4] = tempMac[ 4];
+					MACAddress[5] = tempMac[ 5];
+				}
             }
-                
+			
             // Done with the parent Ethernet controller object so we release it.
             (void) IOObjectRelease(controllerService);
         }
@@ -231,7 +242,6 @@ NSString* getMacAddress( void)
 		else
 		{
 			result = [NSString stringWithFormat: @"%02x:%02x:%02x:%02x:%02x:%02x", MACAddress[0], MACAddress[1], MACAddress[2], MACAddress[3], MACAddress[4], MACAddress[5]];
-			NSLog( @"MAC Address: %@", result);
 		}
     }
     

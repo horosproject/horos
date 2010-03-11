@@ -61,6 +61,7 @@ static PluginManager *pluginManager = nil;
 static unsigned char *LUT12toRGB = nil;
 static BOOL canDisplay12Bit = NO;
 static NSInvocation *fill12BitBufferInvocation = nil;
+static NSString *appStartingDate = nil;
 
 NSThread				*mainThread = nil;
 BOOL					NEEDTOREBUILD = NO;
@@ -1542,7 +1543,11 @@ static NSDate *lastWarningDate = nil;
 		if( checkSN64String && checkSN64Service)
 		{
 			[checkSN64Service setDelegate: self];
-			[checkSN64Service setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: [NSDictionary dictionaryWithObjectsAndKeys: checkSN64String, @"sn", getMacAddress(), @"MAC", nil]]];
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: checkSN64String, @"sn", getMacAddress(), @"MAC", appStartingDate, @"startingDate", nil];
+			
+			NSLog( @"%@", dict);
+			
+			[checkSN64Service setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: dict]];
 			[checkSN64Service publishWithOptions: NSNetServiceNoAutoRename];
 		}
 	}
@@ -1788,6 +1793,7 @@ static NSDate *lastWarningDate = nil;
 	#endif
 	
 	#if __LP64__
+	appStartingDate = [[[NSDate date] description] retain];
 	checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 8486];
 	checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"sn64"]] retain];
 	
@@ -1809,24 +1815,27 @@ static NSDate *lastWarningDate = nil;
 		
 		NSString *otherString = [[[NSString alloc] initWithData: [d valueForKey: @"sn"] encoding: NSUTF8StringEncoding] autorelease];
 		NSString *otherMAC = [[[NSString alloc] initWithData: [d valueForKey: @"MAC"] encoding: NSUTF8StringEncoding] autorelease];
-		
+		NSString *otherStartingDate = [[[NSString alloc] initWithData: [d valueForKey: @"startingDate"] encoding: NSUTF8StringEncoding] autorelease];
 		
 		if( [checkSN64String length] > 4 && [otherString length] > 4)
 		{
 			NSString *myMacAddress = getMacAddress();
 			
-			if( [checkSN64String isEqualToString: otherString] == YES && [otherMAC isEqualToString: myMacAddress] == NO && otherMAC != nil && myMacAddress != nil)
+			NSLog( @"Other : %@ : %@ : %@", otherString, otherMAC, otherStartingDate);
+			NSLog( @"Self  : %@ : %@ : %@", checkSN64String, myMacAddress, appStartingDate);
+			
+			if( otherMAC != nil && myMacAddress != nil && otherStartingDate != nil && appStartingDate != nil)
 			{
-				[checkSN64Service release];
-				checkSN64Service = nil;
-				
-				NSLog( @"Other : %@ : %@", otherString, otherMAC);
-				NSLog( @"Self  : %@ : %@", checkSN64String, getMacAddress());
-				
-				NSString *info = [NSString stringWithFormat: @"Other : %@ : %@\rSelf  : %@ : %@", otherString, otherMAC, checkSN64String, getMacAddress()];
-				
-				NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), [NSString stringWithFormat: NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.\r\r%@", nil), info], NSLocalizedString( @"OK", nil), nil, nil);
-				exit(0);
+				if( [checkSN64String isEqualToString: otherString] == YES && [otherMAC isEqualToString: myMacAddress] == NO && [otherStartingDate isEqualToString: appStartingDate] == NO)
+				{
+					[checkSN64Service release];
+					checkSN64Service = nil;
+					
+					NSString *info = [NSString stringWithFormat: @"Other : %@ : %@\rSelf  : %@ : %@", otherString, otherMAC, checkSN64String, myMacAddress];
+					
+					NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), [NSString stringWithFormat: NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.\r\r%@", nil), info], NSLocalizedString( @"OK", nil), nil, nil);
+					exit(0);
+				}
 			}
 		}
 	}
