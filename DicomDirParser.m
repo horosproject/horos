@@ -58,7 +58,7 @@ static int validFilePathDepth = 0;
 	
 	@try 
 	{
-		for( NSString *filePath in [[NSFileManager defaultManager] directoryContentsAtPath: startDirectory])
+		for( NSString *filePath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: startDirectory error: nil])
 		{
 			filePath = [startDirectory stringByAppendingPathComponent: filePath];
 			
