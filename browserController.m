@@ -5527,7 +5527,7 @@ static NSArray*	statesArray = nil;
 	NSMutableArray *i = [NSMutableArray arrayWithArray: [[toolbar items] valueForKey: @"itemIdentifier"]];
 	if( [i containsString: OpenKeyImagesAndROIsToolbarItemIdentifier] && isCurrentDatabaseBonjour == NO)
 	{
-		if( [[databaseOutline selectedRowIndexes] count] > 10)	//[[self window] firstResponder] == databaseOutline && 
+		if( [[databaseOutline selectedRowIndexes] count] > 2)	//[[self window] firstResponder] == databaseOutline && 
 			ROIsAndKeyImagesButtonAvailable = YES;
 		else
 		{
@@ -9512,7 +9512,7 @@ static BOOL withReset = NO;
 	
 	// Create alternate contextual menu for RT objects
 	
-	if ( contextualRT == nil) contextualRT	= [contextual copy];
+	if( contextualRT == nil) contextualRT = [contextual copy];
 	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Create ROIs from RTSTRUCT", nil)  action:@selector(createROIsFromRTSTRUCT:) keyEquivalent:@""];
 	[contextualRT insertItem: item atIndex: 0];
