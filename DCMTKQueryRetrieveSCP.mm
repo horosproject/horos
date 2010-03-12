@@ -545,7 +545,9 @@ DcmQueryRetrieveConfig config;
 	if( _abort)
 		NSLog( @"**** store-SCP aborted");
 	
-	delete localSCP;
+	if( tLayer)
+		delete localSCP;
+	
 	localSCP = NULL;
 	
 	if (cond.bad())
@@ -560,7 +562,8 @@ DcmQueryRetrieveConfig config;
 	running = NO;
 	
 #ifdef WITH_OPENSSL // joris
-	delete tLayer;
+	if( tLayer)
+		delete tLayer;
 #endif
 	
 	return;

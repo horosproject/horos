@@ -1640,18 +1640,21 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
     /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
     /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
-    cond = ASC_destroyAssociation(&assoc);
-    if (cond.bad()) {
-        DimseCondition::dump(cond); 
+	if( assoc)
+	{
+		cond = ASC_destroyAssociation(&assoc);
+		if (cond.bad())
+			DimseCondition::dump(cond); 
     }
 	
     /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
     /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
-    cond = ASC_dropNetwork(&net);
-    if (cond.bad()) {
-        DimseCondition::dump(cond);
+	if( net)
+	{
+		cond = ASC_dropNetwork(&net);
+		if (cond.bad())
+			DimseCondition::dump(cond);
     }
-	
 
 #ifdef WITH_OPENSSL
 /*
@@ -1669,7 +1672,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     }
     delete tLayer;
 */
-	delete tLayer;
+	if( tLayer)
+		delete tLayer;
 	
 	// cleanup
 	if (_secureConnection)

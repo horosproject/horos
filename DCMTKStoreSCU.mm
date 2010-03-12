@@ -1176,34 +1176,41 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	#ifdef WITH_OPENSSL
 		if(_cipherSuites)
 		{
-			const char *current = NULL;
-			const char *currentOpenSSL;
-			
-			opt_ciphersuites.clear();
-			
-			for (NSString *suite in _cipherSuites)
+			@try
 			{
-				current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
+				const char *current = NULL;
+				const char *currentOpenSSL;
 				
-				if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
+				opt_ciphersuites.clear();
+				
+				for (NSString *suite in _cipherSuites)
 				{
-					NSLog(@"ciphersuite '%s' is unknown.", current);
-					NSLog(@"Known ciphersuites are:");
-					unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-					for (unsigned long cs=0; cs < numSuites; cs++)
+					current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
+					
+					if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
 					{
-						NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
+						NSLog(@"ciphersuite '%s' is unknown.", current);
+						NSLog(@"Known ciphersuites are:");
+						unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
+						for (unsigned long cs=0; cs < numSuites; cs++)
+						{
+							NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
+						}
+						
+						localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil];
+						[localException raise];
+					}
+					else
+					{
+						if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
+						opt_ciphersuites += currentOpenSSL;
 					}
 					
-					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil];
-					[localException raise];
 				}
-				else
-				{
-					if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
-					opt_ciphersuites += currentOpenSSL;
-				}
-				
+			}
+			@catch ( NSException *e)
+			{
+				NSLog(@"cipherSuites Exception: %@", e);
 			}
 		}
 		
@@ -1623,21 +1630,28 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 
     /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
     /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
-    cond = ASC_destroyAssociation(&assoc);
-    if (cond.bad())
+	if( assoc)
 	{
-        DimseCondition::dump(cond);
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_destroyAssociation %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
-    }
+		cond = ASC_destroyAssociation(&assoc);
+		if (cond.bad())
+		{
+			DimseCondition::dump(cond);
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_destroyAssociation %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+		}
+	}
+	
 	
     /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
     /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
-    cond = ASC_dropNetwork(&net);
-    if (cond.bad())
+	if( net)
 	{
-        DimseCondition::dump(cond);
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_dropNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
-    }
+		cond = ASC_dropNetwork(&net);
+		if (cond.bad())
+		{
+			DimseCondition::dump(cond);
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_dropNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+		}
+	}
 	
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
@@ -1660,7 +1674,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
     }
     delete tLayer;
 */
-	delete tLayer;
+	if( tLayer)
+		delete tLayer;
 
 	// cleanup
 	if( _secureConnection)
