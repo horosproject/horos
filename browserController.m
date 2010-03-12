@@ -9508,8 +9508,6 @@ static BOOL withReset = NO;
 	[contextual addItem:item];
 	[item release];
 	
-	[contextual addItem: [NSMenuItem separatorItem]];
-	
 	[oMatrix setMenu: contextual];
 	
 	// Create alternate contextual menu for RT objects
@@ -12944,14 +12942,14 @@ static NSArray*	openSubSeriesArray = nil;
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy Linked Files to Database Folder", nil)  action:@selector(copyToDBFolder:) keyEquivalent:@""] autorelease];
 	[menu addItem:item];
 	
-	[menu addItem: [NSMenuItem separatorItem]];
-	
-	NSMenu *submenu = [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Apply this Routing Rule to Selection", nil)] autorelease];
-	
 	NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
 	
 	if( [autoroutingRules count])
 	{
+		[menu addItem: [NSMenuItem separatorItem]];
+		
+		NSMenu *submenu = [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Apply this Routing Rule to Selection", nil)] autorelease];
+		
 		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"All routing rules", nil)  action:@selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
 		[submenu addItem: item];
 		[submenu addItem: [NSMenuItem separatorItem]];
@@ -12972,11 +12970,12 @@ static NSArray*	openSubSeriesArray = nil;
 			
 			[submenu addItem: item];
 		}
-	}
 	
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Apply this Routing Rule to Selection", nil)  action: nil keyEquivalent:@""] autorelease];
-	[item setSubmenu: submenu];
-	[menu addItem: item];
+	
+		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Apply this Routing Rule to Selection", nil)  action: nil keyEquivalent:@""] autorelease];
+		[item setSubmenu: submenu];
+		[menu addItem: item];
+	}
 	
 	[databaseOutline setMenu: menu];
 }
