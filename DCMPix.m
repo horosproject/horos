@@ -4536,8 +4536,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	if( halflife > 0 && timebetween > 0)
 		radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf( 2) / halflife);
-	else
-		NSLog(@"*** failed to computeTotalDoseCorrected : halflife: %f timebetween: %f", halflife, timebetween);
 }
 
 #ifndef OSIRIX_LIGHT

@@ -5771,7 +5771,7 @@ static ViewerController *draggedController = nil;
 		}
 		@catch ( NSException *e)
 		{
-			NSLog( @"*****saveROI exception : %@", e);
+			NSLog( @"***** saveROI exception : %@", e);
 		}
 		
 		for( x = 0; x < [roiList[ i] count] ; x++)
@@ -10137,14 +10137,14 @@ short				matrix[25];
 	{
 		[[[BrowserController currentBrowser] managedObjectContext] lock];
 		
-		NSMutableArray *newDICOMSR = [NSMutableArray array];
-		NSMutableArray *allDICOMSR = [NSMutableArray array];
-		NSMutableArray *toDeleteDICOMSR = [NSMutableArray array];
-		
-		NSManagedObject *roiSRSeries = [[[fileList[ mIndex] lastObject] valueForKeyPath:@"series.study"] roiSRSeries];
-		
 		@try
 		{
+			NSMutableArray *newDICOMSR = [NSMutableArray array];
+			NSMutableArray *allDICOMSR = [NSMutableArray array];
+			NSMutableArray *toDeleteDICOMSR = [NSMutableArray array];
+			
+			NSManagedObject *roiSRSeries = [[[fileList[ mIndex] lastObject] valueForKeyPath:@"series.study"] roiSRSeries];
+			
 			for( i = 0; i < [fileList[ mIndex] count]; i++)
 			{
 				if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
