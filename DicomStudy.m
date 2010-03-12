@@ -545,16 +545,14 @@ NSString* soundex4( NSString *inString)
 {
 	[[self managedObjectContext] lock];
 	
-	NSMutableArray *newArray = nil;
+	NSMutableArray *newArray = [NSMutableArray array];
 	
 	@try
 	{
-		NSArray *array = [self primitiveValueForKey: @"series"];
-		
-		newArray = [NSMutableArray array];
-		for (id series in array)
+		for (id series in [self primitiveValueForKey: @"series"])
 		{
-			if ([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil)
+			NSString *uid = [series valueForKey:@"seriesSOPClassUID"];
+			if( uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid] || [DCMAbstractSyntaxUID isRadiotherapy:uid])
 				[newArray addObject:series];
 		}
 	}
@@ -572,14 +570,10 @@ NSString* soundex4( NSString *inString)
 {
 	[[self managedObjectContext] lock];
 	
-	NSMutableArray *newArray = nil;
+	NSMutableArray *newArray = [NSMutableArray array];
 	@try
 	{
-		NSArray *array = [self primitiveValueForKey: @"series"] ;
-		
-		newArray = [NSMutableArray array];
-		
-		for (id series in array)
+		for (id series in [self primitiveValueForKey: @"series"])
 		{
 			if ([DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]])
 			{

@@ -181,7 +181,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	char							cfixedDocumentsDirectory[ 4096], cfixedIncomingDirectory[ 4096];
 	
 	NSTimeInterval					databaseLastModification;
-	
+	NSUInteger						previousFlags;
 //	StructuredReportController		*structuredReportController;
 	
 	NSMutableArray					*deleteQueueArray;

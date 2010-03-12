@@ -18,8 +18,8 @@
 /** \brief  Core Data Entity for a Study */
 @interface DicomStudy : NSManagedObject
 {
-	BOOL		isHidden;
-	NSNumber	*dicomTime;
+	BOOL isHidden;
+	NSNumber *dicomTime;
 }
 
 + (NSString*) soundex: (NSString*) s;

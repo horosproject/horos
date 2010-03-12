@@ -14,6 +14,7 @@
 
 #import "DCMAbstractSyntaxUID.h"
 
+static NSArray *imagesSyntaxes = nil;
 static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 // Images ...
@@ -387,8 +388,10 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	return NO;
 }
 
-+ (NSArray *)imageSyntaxes{
-		return [NSArray arrayWithObjects:ComputedRadiographyImageStorage ,
++ (NSArray *)imageSyntaxes
+{
+	if( imagesSyntaxes == nil)
+		imagesSyntaxes = [[NSArray arrayWithObjects:ComputedRadiographyImageStorage ,
 		    DigitalXRayImageStorageForPresentation ,
 		    DigitalXRayImageStorageForProcessing ,
 		    DigitalMammographyXRayImageStorageForPresentation ,
@@ -430,11 +433,11 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			MRSpectroscopyStorage,
 //			@"1.3.12.2.1107.5.9.1", Siemens Private SOP Class
 //			RawDataStorage,
-			nil];
-	}
+			nil] retain];
+	
 
-
-
+	return imagesSyntaxes;
+}
 	/**
 	 * @param	sopClassUID	UID of the SOP Class, as a String without trailing zero padding
 	 * @return			true if the UID argument matches the Media Storage Directory Storage SOP Class (used for the DICOMDIR)

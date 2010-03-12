@@ -5527,7 +5527,7 @@ static NSArray*	statesArray = nil;
 	NSMutableArray *i = [NSMutableArray arrayWithArray: [[toolbar items] valueForKey: @"itemIdentifier"]];
 	if( [i containsString: OpenKeyImagesAndROIsToolbarItemIdentifier] && isCurrentDatabaseBonjour == NO)
 	{
-		if( [[databaseOutline selectedRowIndexes] count] > 2)	//[[self window] firstResponder] == databaseOutline && 
+		if( [[databaseOutline selectedRowIndexes] count] >= 2)	//[[self window] firstResponder] == databaseOutline && 
 			ROIsAndKeyImagesButtonAvailable = YES;
 		else
 		{
@@ -18228,6 +18228,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) flagsChanged:(NSEvent *)event
 {
+	if( previousFlags == [event modifierFlags])
+		return;
+	
 	for( NSToolbarItem *toolbarItem in [toolbar items])
 	{
 		if( [[toolbarItem itemIdentifier] isEqualToString: OpenKeyImagesAndROIsToolbarItemIdentifier])
@@ -18263,6 +18266,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	[self outlineViewSelectionDidChange: nil];
+	
+	previousFlags = [event modifierFlags];
 }
 
 - (void) setupToolbar
