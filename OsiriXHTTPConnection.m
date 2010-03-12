@@ -3629,23 +3629,23 @@ NSString* notNil( NSString *s)
 	NSString *previousPatientUID = nil;
 	NSString *previousStudyInstanceUID = nil;
 	
-	if( [[currentUser valueForKey: @"uploadDICOMAddToSpecificStudies"] boolValue])
+	// We want to find this file after db insert: get studyInstanceUID, patientUID and instanceSOPUID
+	for( NSString *oFile in filesArray)
 	{
-		// We want to find this file after db insert: get studyInstanceUID, patientUID and instanceSOPUID
-		for( NSString *oFile in filesArray)
+		DicomFile *f = [[[DicomFile alloc] init: oFile DICOMOnly: YES] autorelease];
+		
+		if( f)
 		{
-			DicomFile *f = [[[DicomFile alloc] init: oFile DICOMOnly: YES] autorelease];
-			
-			if( f)
+			do
 			{
-				do
-				{
-					file = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebServer Upload %d", inc++]] stringByAppendingPathExtension: [oFile pathExtension]];
-				}
-				while( [[NSFileManager defaultManager] fileExistsAtPath: file]);
+				file = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebServer Upload %d", inc++]] stringByAppendingPathExtension: [oFile pathExtension]];
+			}
+			while( [[NSFileManager defaultManager] fileExistsAtPath: file]);
+		
+			[[NSFileManager defaultManager] moveItemAtPath: oFile toPath: file error: nil];
 			
-				[[NSFileManager defaultManager] moveItemAtPath: oFile toPath: file error: nil];
-				
+			if( [[currentUser valueForKey: @"uploadDICOMAddToSpecificStudies"] boolValue])
+			{
 				NSString *studyInstanceUID = [f elementForKey: @"studyID"], *patientUID = [f elementForKey: @"patientUID"];	//, *sopInstanceUID = [f elementForKey: @"SOPUID"];
 				
 				if( [studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID isEqualToString: previousPatientUID] == NO)
@@ -3722,6 +3722,7 @@ NSString* notNil( NSString *s)
 			}
 		}
 	}
+	
 	
 	[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/osirixUnzippedFolder" error: nil];
 	
