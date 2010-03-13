@@ -157,7 +157,7 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 			[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality: DCMHighQuality AET:@"OsiriX" atomically:YES];
 			[dcmObject release];
 			
-			printf("\n**** compressFileFormat EXS_JPEG2000\n");
+			printf("\n--- compressFileFormat EXS_JPEG2000\n");
 		}
 		@catch (NSException *e)
 		{
@@ -179,7 +179,7 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 			[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: DCMLosslessQuality AET:@"OsiriX" atomically:YES];
 			[dcmObject release];
 			
-			printf("\n**** compressFileFormat EXS_JPEG2000LosslessOnly\n");
+			printf("\n--- compressFileFormat EXS_JPEG2000LosslessOnly\n");
 		}
 		@catch (NSException *e)
 		{
@@ -225,11 +225,11 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 			status =  (cond.good()) ? YES : NO;
 			
 			if (newXfer == EXS_JPEGProcess14SV1TransferSyntax)
-				printf("\n**** compressFileFormat EXS_JPEGProcess14SV1TransferSyntax\n");
+				printf("\n--- compressFileFormat EXS_JPEGProcess14SV1TransferSyntax\n");
 			else if (newXfer == EXS_JPEGProcess2_4TransferSyntax)
-				printf("\n**** compressFileFormat EXS_JPEGProcess2_4TransferSyntax\n");
+				printf("\n--- compressFileFormat EXS_JPEGProcess2_4TransferSyntax\n");
 			else if (newXfer == EXS_RLELossless)
-				printf("\n**** compressFileFormat EXS_RLELossless\n");
+				printf("\n--- compressFileFormat EXS_RLELossless\n");
 		}
 		else
 		{

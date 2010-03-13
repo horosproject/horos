@@ -5405,7 +5405,7 @@ static NSArray*	statesArray = nil;
 	NSMutableArray *selectedFiles = [NSMutableArray array];
 	NSIndexSet *rowEnumerator = [databaseOutline selectedRowIndexes];
 	
-	if( cachedFilesForDatabaseOutlineSelectionIndex && [[databaseOutline selectedRowIndexes] isEqualToIndexSet: cachedFilesForDatabaseOutlineSelectionIndex]) 
+	if( cachedFilesForDatabaseOutlineSelectionIndex && [[databaseOutline selectedRowIndexes] isEqualToIndexSet: cachedFilesForDatabaseOutlineSelectionIndex] && onlyImages == YES)
 	{
 		[selectedFiles addObjectsFromArray: cachedFilesForDatabaseOutlineSelectionSelectedFiles];
 		
@@ -5504,16 +5504,18 @@ static NSArray*	statesArray = nil;
 	[context release];
 	[context unlock];
 	
-	[cachedFilesForDatabaseOutlineSelectionSelectedFiles release];
-	[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release];
-	[cachedFilesForDatabaseOutlineSelectionIndex release];
-	
-	cachedFilesForDatabaseOutlineSelectionIndex = [[NSIndexSet alloc] initWithIndexSet: [databaseOutline selectedRowIndexes]];
-	cachedFilesForDatabaseOutlineSelectionSelectedFiles = [[NSMutableArray alloc] initWithArray:selectedFiles];
-	cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = [[NSMutableArray alloc] initWithArray:correspondingManagedObjects];
+	if( onlyImages)
+	{
+		[cachedFilesForDatabaseOutlineSelectionSelectedFiles release];
+		[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release];
+		[cachedFilesForDatabaseOutlineSelectionIndex release];
+		
+		cachedFilesForDatabaseOutlineSelectionIndex = [[NSIndexSet alloc] initWithIndexSet: [databaseOutline selectedRowIndexes]];
+		cachedFilesForDatabaseOutlineSelectionSelectedFiles = [[NSMutableArray alloc] initWithArray:selectedFiles];
+		cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = [[NSMutableArray alloc] initWithArray:correspondingManagedObjects];
+	}
 	
 	return selectedFiles;
-	
 }
 
 - (NSMutableArray *)filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects
@@ -17242,8 +17244,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray  *files;
 	
 	[self checkResponder];
-	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) files = [self filesForDatabaseMatrixSelection:objects onlyImages: YES];
-	else files = [self filesForDatabaseOutlineSelection:objects onlyImages: YES];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
+		files = [self filesForDatabaseMatrixSelection:objects onlyImages: YES];
+	else
+		files = [self filesForDatabaseOutlineSelection:objects onlyImages: YES];
 	
 	[files removeDuplicatedStringsInSyncWithThisArray: objects];
 	
