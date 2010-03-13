@@ -55,8 +55,8 @@ static int CHECKFORLAVIM = -1;
 static int COMMENTSGROUP = NO;
 static int COMMENTSELEMENT = NO;
 static BOOL SEPARATECARDIAC4D = NO;
-static BOOL SeparateCardiacMR = NO;
-static int SeparateCardiacMRMode = 0;
+//static BOOL SeparateCardiacMR = NO;
+//static int SeparateCardiacMRMode = 0;
 static BOOL filesAreFromCDMedia = NO;
 
 char* replaceBadCharacter (char* str, NSStringEncoding encoding) 
@@ -235,8 +235,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			COMMENTSAUTOFILL = [sd boolForKey: @"COMMENTSAUTOFILL"];
 			SEPARATECARDIAC4D = [sd boolForKey: @"SEPARATECARDIAC4D"];
-			SeparateCardiacMR = [sd boolForKey: @"SeparateCardiacMR"];
-			SeparateCardiacMRMode = [sd integerForKey: @"SeparateCardiacMRMode"];
+//			SeparateCardiacMR = [sd boolForKey: @"SeparateCardiacMR"];
+//			SeparateCardiacMRMode = [sd integerForKey: @"SeparateCardiacMRMode"];
 			
 			COMMENTSGROUP = [[sd objectForKey: @"COMMENTSGROUP"] intValue];
 			COMMENTSELEMENT = [[sd objectForKey: @"COMMENTSELEMENT"] intValue];
@@ -265,8 +265,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER3"] intValue];
 			COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
 			SEPARATECARDIAC4D = [[dict objectForKey: @"SEPARATECARDIAC4D"] intValue];
-			SeparateCardiacMR = [[dict objectForKey: @"SeparateCardiacMR"] intValue];
-			SeparateCardiacMRMode = [[dict objectForKey: @"SeparateCardiacMRMode"] intValue];
+//			SeparateCardiacMR = [[dict objectForKey: @"SeparateCardiacMR"] intValue];
+//			SeparateCardiacMRMode = [[dict objectForKey: @"SeparateCardiacMRMode"] intValue];
 			
 			COMMENTSGROUP = [[dict objectForKey: @"COMMENTSGROUP"] intValue];
 			COMMENTSELEMENT = [[dict objectForKey: @"COMMENTSELEMENT"] intValue];
@@ -2408,46 +2408,46 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			if( patientID == nil) patientID = [[NSString alloc] initWithString:@""];
 			
-			if( SeparateCardiacMR)
-			{
-				theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x2001);
-				if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
-				{
-					if( SeparateCardiacMRMode == 0)
-					{
-						val = Papy3GetElement (theGroupP, pap2001CineIndexGr, &nbVal, &itemType);
-						if( val && val->a)
-							[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
-					}
-					
-					if( SeparateCardiacMRMode == 1)
-					{
-						val = Papy3GetElement (theGroupP, pap2001PositionIndexGr, &nbVal, &itemType);
-						if( val && val->a)
-							[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
-					}
-					
-					theErr = Papy3GroupFree (&theGroupP, TRUE);
-				}
-				
-				if( SeparateCardiacMR && [dicomElements objectForKey: @"SeparateCardiacMR"])
-				{
-					NSString	*n;
-					
-					if( SeparateCardiacMRMode == 0) // 3D
-						n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
-					else // Cine
-						n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
-					
-					[serieID release];
-					serieID = n;
-				}
-				
-				if (gIsPapyFile [fileNb] == DICOM10)
-					theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
-				else
-					theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 0L);
-			}
+//			if( SeparateCardiacMR)
+//			{
+//				theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x2001);
+//				if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+//				{
+//					if( SeparateCardiacMRMode == 0)
+//					{
+//						val = Papy3GetElement (theGroupP, pap2001CineIndexGr, &nbVal, &itemType);
+//						if( val && val->a)
+//							[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
+//					}
+//					
+//					if( SeparateCardiacMRMode == 1)
+//					{
+//						val = Papy3GetElement (theGroupP, pap2001PositionIndexGr, &nbVal, &itemType);
+//						if( val && val->a)
+//							[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
+//					}
+//					
+//					theErr = Papy3GroupFree (&theGroupP, TRUE);
+//				}
+//				
+//				if( SeparateCardiacMR && [dicomElements objectForKey: @"SeparateCardiacMR"])
+//				{
+//					NSString	*n;
+//					
+//					if( SeparateCardiacMRMode == 0) // 3D
+//						n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
+//					else // Cine
+//						n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
+//					
+//					[serieID release];
+//					serieID = n;
+//				}
+//				
+//				if (gIsPapyFile [fileNb] == DICOM10)
+//					theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+//				else
+//					theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 0L);
+//			}
 		}
 		
 		// Go to groups 0x0042 for Encapsulated Document Possible PDF
@@ -2932,33 +2932,33 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			serieID = n;
 		}
 		
-		if( SeparateCardiacMR)
-		{
-			if( SeparateCardiacMRMode == 0)
-			{
-				if( [dcmObject attributeValueForKey: @"2001,1008"])
-					[dicomElements setObject: [dcmObject attributeValueForKey: @"2001,1008"] forKey: @"SeparateCardiacMR"];
-			}
-			
-			if( SeparateCardiacMRMode == 1)
-			{
-				if( [dcmObject attributeValueForKey: @"2001,100A"])
-					[dicomElements setObject: [dcmObject attributeValueForKey: @"2001,100A"] forKey: @"SeparateCardiacMR"];
-			}
-		}
+//		if( SeparateCardiacMR)
+//		{
+//			if( SeparateCardiacMRMode == 0)
+//			{
+//				if( [dcmObject attributeValueForKey: @"2001,1008"])
+//					[dicomElements setObject: [dcmObject attributeValueForKey: @"2001,1008"] forKey: @"SeparateCardiacMR"];
+//			}
+//			
+//			if( SeparateCardiacMRMode == 1)
+//			{
+//				if( [dcmObject attributeValueForKey: @"2001,100A"])
+//					[dicomElements setObject: [dcmObject attributeValueForKey: @"2001,100A"] forKey: @"SeparateCardiacMR"];
+//			}
+//		}
 		
-		if( SeparateCardiacMR && [dicomElements objectForKey: @"SeparateCardiacMR"])
-		{
-			NSString	*n;
-			
-			if( SeparateCardiacMRMode == 0) // 3D
-				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
-			else // Cine
-				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
-			
-			[serieID release];
-			serieID = n;
-		}
+//		if( SeparateCardiacMR && [dicomElements objectForKey: @"SeparateCardiacMR"])
+//		{
+//			NSString	*n;
+//			
+//			if( SeparateCardiacMRMode == 0) // 3D
+//				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
+//			else // Cine
+//				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
+//			
+//			[serieID release];
+//			serieID = n;
+//		}
 		
 		if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
 		{
@@ -3505,15 +3505,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return self;
 }
 
-- (BOOL) SeparateCardiacMR
-{
-	return SeparateCardiacMR;
-}
-
-- (int) SeparateCardiacMRMode
-{
-	return SeparateCardiacMRMode;
-}
+//- (BOOL) SeparateCardiacMR
+//{
+//	return SeparateCardiacMR;
+//}
+//
+//- (int) SeparateCardiacMRMode
+//{
+//	return SeparateCardiacMRMode;
+//}
 
 - (BOOL) autoFillComments
 {

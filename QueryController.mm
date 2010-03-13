@@ -2259,12 +2259,12 @@ extern "C"
 	
 	[[BrowserController currentBrowser] checkIncoming: self];
 	
-	NSError						*error = nil;
-	NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
-	NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+	NSError *error = nil;
+	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
-	NSArray						*studyArray, *seriesArray;
-	BOOL						success = NO;
+	NSArray *studyArray, *seriesArray;
+	BOOL success = NO;
 	
 	[context lock];
 	
@@ -2281,16 +2281,21 @@ extern "C"
 			if( [studyArray count] > 0)
 			{
 				NSManagedObject	*study = [studyArray objectAtIndex: 0];
-				NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: study] objectAtIndex:0];
+				NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: study];
 				
-				if( [[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO] == NO)
+				if( [seriesArray count])
 				{
-					[[BrowserController currentBrowser] showEntireDatabase];
-					if( [[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO]) success = YES;
+					NSManagedObject	*series =  [seriesArray objectAtIndex: 0];
+					
+					if( [[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO] == NO)
+					{
+						[[BrowserController currentBrowser] showEntireDatabase];
+						if( [[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO]) success = YES;
+					}
+					else success = YES;
+					
+					if( success) [[BrowserController currentBrowser] databaseOpenStudy: study];
 				}
-				else success = YES;
-				
-				if( success) [[BrowserController currentBrowser] databaseOpenStudy: study];
 			}
 		}
 		

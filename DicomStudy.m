@@ -410,6 +410,16 @@ NSString* soundex4( NSString *inString)
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
+- (NSNumber *) rawNoFiles
+{
+	int sum = 0;
+	
+	for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
+		sum += [[s valueForKey: @"rawNoFiles"] intValue];
+	
+	return [NSNumber numberWithInt:sum];
+}
+
 - (NSNumber *) noFilesExcludingMultiFrames
 {
 	if( [[self primitiveValueForKey:@"numberOfImages"] intValue] <= 0) // There are frames !

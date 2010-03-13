@@ -76,6 +76,31 @@
 	else return @"";
 }
 
+- (NSNumber *) rawNoFiles
+{
+	NSNumber *no = nil;
+	
+	[[self managedObjectContext] lock];
+	
+	@try 
+	{
+		int v = [[[[self valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+		
+		if( v > 1)
+			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count] - v + 1];
+		else
+			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
+	return no;
+}
+
 - (NSNumber *) noFiles
 {
 	int n = [[self primitiveValueForKey:@"numberOfImages"] intValue];

@@ -691,40 +691,40 @@ extern NSRecursiveLock *PapyrusLock;
 			serieID = n;
 		}
 		
-		if( [self SeparateCardiacMR])
-		{
-			// Philips
-			if( [self SeparateCardiacMRMode] == 0)
-			{
-				DcmTagKey tag = DcmTagKey( 0x2001, 0x1008); 
-				if (dataset->findAndGetString( tag, string, OFFalse).good() && string != NULL)
-				{
-					[dicomElements setObject: [[[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding] autorelease] forKey: @"SeparateCardiacMR"];
-				}
-			}
-			
-			if( [self SeparateCardiacMRMode] == 1)
-			{
-				DcmTagKey tag = DcmTagKey( 0x2001, 0x100A); 
-				if (dataset->findAndGetString( tag, string, OFFalse).good() && string != NULL)
-				{
-					[dicomElements setObject: [[[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding] autorelease] forKey: @"SeparateCardiacMR"];
-				}
-			}
-		}
+//		if( [self SeparateCardiacMR])
+//		{
+//			// Philips
+//			if( [self SeparateCardiacMRMode] == 0)
+//			{
+//				DcmTagKey tag = DcmTagKey( 0x2001, 0x1008); 
+//				if (dataset->findAndGetString( tag, string, OFFalse).good() && string != NULL)
+//				{
+//					[dicomElements setObject: [[[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding] autorelease] forKey: @"SeparateCardiacMR"];
+//				}
+//			}
+//			
+//			if( [self SeparateCardiacMRMode] == 1)
+//			{
+//				DcmTagKey tag = DcmTagKey( 0x2001, 0x100A); 
+//				if (dataset->findAndGetString( tag, string, OFFalse).good() && string != NULL)
+//				{
+//					[dicomElements setObject: [[[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding] autorelease] forKey: @"SeparateCardiacMR"];
+//				}
+//			}
+//		}
 		
-		if( [self SeparateCardiacMR] && [dicomElements objectForKey: @"SeparateCardiacMR"])
-		{
-			NSString	*n;
-			
-			if( [self SeparateCardiacMRMode] == 0) // 3D
-				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
-			else // Cine
-				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
-			
-			[serieID release];
-			serieID = n;
-		}
+//		if( [self SeparateCardiacMR] && [dicomElements objectForKey: @"SeparateCardiacMR"])
+//		{
+//			NSString	*n;
+//			
+//			if( [self SeparateCardiacMRMode] == 0) // 3D
+//				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
+//			else // Cine
+//				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
+//			
+//			[serieID release];
+//			serieID = n;
+//		}
 		
 		//Study Instance UID
 		if (dataset->findAndGetString(DCM_StudyInstanceUID, string, OFFalse).good() && string != NULL)
