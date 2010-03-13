@@ -52,8 +52,8 @@ static int validFilePathDepth = 0;
 
 - (void) _testForValidFilePath: (NSMutableArray*) dicomdirFileList path: (NSString*) startDirectory files: (NSMutableArray*) files
 {
-	if (startDirectory == Nil || files == Nil) return;
-	
+	if( startDirectory == Nil || files == Nil) return;
+	if( [startDirectory isEqualToString: @""] || [startDirectory isEqualToString: @"/"]) return;
 	validFilePathDepth++;
 	
 	@try 
@@ -107,8 +107,8 @@ static int validFilePathDepth = 0;
 									}
 								}
 								
-								if( found == NO)
-									NSLog( @"--- Not found in DICOMDIR: %@", cutFilePath);
+//								if( found == NO)
+//									NSLog( @"--- Not found in DICOMDIR: %@", cutFilePath);
 							}
 						}
 					}
@@ -117,12 +117,10 @@ static int validFilePathDepth = 0;
 						NSLog( @"**** _testForValidFilePath exception: %@", e);
 					}
 				}
-				else if( validFilePathDepth < 10)
+				else if( validFilePathDepth < 8)
 				{
 					[self _testForValidFilePath: dicomdirFileList path: filePath files:files];
 				}
-				else
-					NSLog( @"***** validFilePathDepth limit reached");
 			}
 		}
 	}

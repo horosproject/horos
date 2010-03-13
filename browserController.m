@@ -1337,96 +1337,97 @@ static NSArray*	statesArray = nil;
 	
 	for( NSString *filename in filenames)
 	{
-		if( [[filename lastPathComponent] characterAtIndex: 0] != '.')
+		@try
 		{
-			if([defaultManager fileExistsAtPath: filename isDirectory:&isDirectory])     // A directory
+			if( [[filename lastPathComponent] characterAtIndex: 0] != '.')
 			{
-				if( isDirectory == YES && [[filename pathExtension] isEqualToString:@"pages"] == NO)
+				if([defaultManager fileExistsAtPath: filename isDirectory:&isDirectory])     // A directory
 				{
-					NSString    *pathname;
-					NSString	*folderSkip = nil;
-					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath: filename];
-					
-					while (pathname = [enumer nextObject])
+					if( isDirectory == YES && [[filename pathExtension] isEqualToString:@"pages"] == NO)
 					{
-						NSString * itemPath = [filename stringByAppendingPathComponent:pathname];
-						id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
+						NSString    *pathname;
+						NSString	*folderSkip = nil;
+						NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath: filename];
 						
-						if ([fileType isEqual:NSFileTypeRegular])
+						while (pathname = [enumer nextObject])
 						{
-							BOOL skip = NO;
-							
-							if( folderSkip && [pathname length] >= [folderSkip length])
-								if( [[pathname substringToIndex: [folderSkip length]] isEqualToString: folderSkip])
-									skip = YES;
-							
-							if( skip == NO)
+							@try
 							{
-								folderSkip = nil;
+								NSString * itemPath = [filename stringByAppendingPathComponent: pathname];
+								id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
 								
-								if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
+								if ([fileType isEqual:NSFileTypeRegular])
 								{
-									[self addDICOMDIR: filename : filesArray];
-								}
-								else
-								{
-									if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
+									BOOL skip = NO;
+									
+									if( folderSkip && [pathname length] >= [folderSkip length])
+										if( [[pathname substringToIndex: [folderSkip length]] isEqualToString: folderSkip])
+											skip = YES;
+									
+									if( skip == NO)
 									{
-										if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
-										{
-											[self askForZIPPassword: filename destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
-										}
-										else if( [[itemPath lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
-										{
-											[commentsAndStatus addObject: itemPath];
-										}
-										else if( [[[itemPath lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
-										{
-											[reports addObject: itemPath];
-										}
-										else if( [[itemPath lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
-										{
+										folderSkip = nil;
 										
+										if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
+										{
+											if( [[itemPath pathExtension] isEqualToString: @"zip"] || [[itemPath pathExtension] isEqualToString: @"osirixzip"])
+												[self askForZIPPassword: itemPath destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
+												
+											else if( [[itemPath lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
+												[commentsAndStatus addObject: itemPath];
+											
+											else if( [[[itemPath lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
+												[reports addObject: itemPath];
+												
+											else if( [[itemPath lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
+											{ }
+											
+											else if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
+												[self addDICOMDIR: itemPath : filesArray];
+											
+											else [filesArray addObject:itemPath];
 										}
-										else [filesArray addObject:itemPath];
 									}
 								}
+								else if( [[pathname pathExtension] isEqualToString:@"pages"])
+								{
+									folderSkip = pathname;
+									
+									if( [[[pathname lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
+										[reports addObject: itemPath];
+								}
+							}
+							@catch( NSException *e)
+							{
+								NSLog( @"addFilesAndFolderToDatabase 2 exception : %@", e);
 							}
 						}
-						else if( [[pathname pathExtension] isEqualToString:@"pages"])
-						{
-							folderSkip = pathname;
-							
-							if( [[[pathname lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
-								[reports addObject: itemPath];
-						}
 					}
-				}
-				else    // A file
-				{
-					if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
+					else    // A file
 					{
-						[self askForZIPPassword: filename destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
-					}
-					else if( [[filename lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
-					{
-						[commentsAndStatus addObject: filename];
-					}
-					else if( [[[filename lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
-					{
-						[reports addObject: filename];
-					}
-					else if( [[filename lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
-					{
+						if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
+							[self askForZIPPassword: filename destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
 						
+						else if( [[filename lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
+							[commentsAndStatus addObject: filename];
+						
+						else if( [[[filename lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
+							[reports addObject: filename];
+						
+						else if( [[filename lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
+						{ }
+						
+						else if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
+							[self addDICOMDIR: filename :filesArray];
+						
+						else [filesArray addObject: filename];
 					}
-					else if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
-					{
-						[self addDICOMDIR: filename :filesArray];
-					}
-					else [filesArray addObject: filename];
 				}
 			}
+		}
+		@catch ( NSException *e)
+		{
+			NSLog( @"addFilesAndFolderToDatabase exception : %@", e);
 		}
 	}
 	
