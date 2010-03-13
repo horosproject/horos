@@ -158,7 +158,7 @@ static NavigatorWindowController *nav = nil;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[viewerController release];
 	[super dealloc];
-	[[AppController sharedAppController] tileWindows:self];
+	[[AppController sharedAppController] tileWindows: nil];
 }
 
 - (void)computeMinAndMaxSize;
