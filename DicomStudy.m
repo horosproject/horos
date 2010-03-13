@@ -414,8 +414,19 @@ NSString* soundex4( NSString *inString)
 {
 	int sum = 0;
 	
-	for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
-		sum += [[s valueForKey: @"rawNoFiles"] intValue];
+	[[self managedObjectContext] lock];
+	
+	@try 
+	{
+		for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
+			sum += [[s valueForKey: @"rawNoFiles"] intValue];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	[[self managedObjectContext] unlock];
 	
 	return [NSNumber numberWithInt:sum];
 }
@@ -424,15 +435,24 @@ NSString* soundex4( NSString *inString)
 {
 	if( [[self primitiveValueForKey:@"numberOfImages"] intValue] <= 0) // There are frames !
 	{
-		NSArray	*array = [[self valueForKey:@"series"] allObjects];
+		[[self managedObjectContext] lock];
 		
 		int sum = 0;
 		
-		for( DicomSeries *s in array)
+		@try 
 		{
-			if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO)
-				sum += [[s valueForKey:@"noFilesExcludingMultiFrames"] intValue];
+			for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
+			{
+				if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO)
+					sum += [[s valueForKey:@"noFilesExcludingMultiFrames"] intValue];
+			}
 		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
+		[[self managedObjectContext] unlock];
 		
 		return [NSNumber numberWithInt:sum];
 	}
@@ -451,11 +471,9 @@ NSString* soundex4( NSString *inString)
 		
 		@try 
 		{
-			NSArray	*array = [[self valueForKey:@"series"] allObjects];
-		
 			BOOL framesInSeries = NO;
 			
-			for( DicomSeries *s in array)
+			for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
 			{
 				if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO)
 				{
