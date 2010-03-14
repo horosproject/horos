@@ -637,11 +637,8 @@ static NSArray*	statesArray = nil;
 				if( [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]])
 				{
 					// Check if it is an OsiriX ROI SR
-					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString:@"OsiriX ROI SR"])
+					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX ROI SR"])
 					{
-						//NSLog( @"*/*/*/ OsiriX ROI SR");
-						//NSLog( [curDict description]);
-						
 						// Move it to the ROIs folder
 						NSString	*uidName = [SRAnnotation getFilenameFromSR: newFile];
 						NSString	*destPath = [roiFolder stringByAppendingPathComponent: uidName];
@@ -667,6 +664,18 @@ static NSArray*	statesArray = nil;
 						
 						newFile = destPath;
 						DICOMROI = YES;
+					}
+					
+					// Check if it is an OsiriX Report SR
+					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
+					{
+						
+					}
+					
+					// Check if it is an OsiriX Comments/Status SR
+					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Comments SR"])
+					{
+						
 					}
 				}
 				
@@ -5227,6 +5236,24 @@ static NSArray*	statesArray = nil;
 			
 			if( onlyImages) sortedArray = [[item valueForKey:@"imageSeries"] sortedArrayUsingDescriptors: sortDescriptors];
 			else sortedArray = [[[item valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
+			
+			if( onlyImages == NO)
+			{
+				// Put the ROI, Comments, Reports, ... at the end of the array
+				NSMutableArray *resortedArray = [NSMutableArray arrayWithArray: sortedArray];
+				NSMutableArray *SRArray = [NSMutableArray array];
+				
+				for( int i = 0 ; i < [resortedArray count]; i++)
+				{
+					if( [DCMAbstractSyntaxUID isStructuredReport: [[resortedArray objectAtIndex: i] valueForKey:@"seriesSOPClassUID"]])
+						[SRArray addObject: [resortedArray objectAtIndex: i]];
+				}
+				
+				[resortedArray removeObjectsInArray: SRArray];
+				[resortedArray addObjectsFromArray: SRArray];
+				
+				sortedArray = resortedArray;
+			}
 		}
 		@catch (NSException * e)
 		{
@@ -10788,12 +10815,6 @@ static BOOL needToRezoom;
 				
 				if( [dcmNode valueForKey:@"Port"] && OnlyDICOM)
 				{
-					NSMutableArray *packArray = [NSMutableArray array];
-					
-					// Add the ROIs
-					for( DicomImage *img in imagesArray)
-						[packArray addObjectsFromArray: [img SRPaths]];
-					
 					[SendController sendFiles: imagesArray toNode: dcmNode usingSyntax: [[dcmNode valueForKey: @"TransferSyntax"] intValue]];
 				}
 				else
@@ -17230,7 +17251,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 #endif
 
-- (void)selectServer: (NSArray*)objects
+- (void) selectServer: (NSArray*)objects
 {
 	if( [objects count] > 0) [SendController sendFiles: objects];
 	else NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"No files are selected...",nil),NSLocalizedString( @"OK",nil), nil, nil);
@@ -17245,9 +17266,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
-		files = [self filesForDatabaseMatrixSelection:objects onlyImages: YES];
+		files = [self filesForDatabaseMatrixSelection:objects onlyImages: NO];
 	else
-		files = [self filesForDatabaseOutlineSelection:objects onlyImages: YES];
+		files = [self filesForDatabaseOutlineSelection:objects onlyImages: NO];
 	
 	[files removeDuplicatedStringsInSyncWithThisArray: objects];
 	
@@ -18921,7 +18942,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 			{
-				NSString	*imagePath = [BonjourBrowser uniqueLocalPath: image];
+				NSString *imagePath = [BonjourBrowser uniqueLocalPath: image];
 				str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
 			}
 			

@@ -322,20 +322,27 @@ static volatile int sendControllerObjects = 0;
 {
 	if( _abort) return;
 	
+	if( sendROIs == NO)
+	{
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX ROI SR", @"5002"];
+		samePatientArray = [samePatientArray filteredArrayUsingPredicate:predicate];
+	}
+	
 	NSArray	*files = [samePatientArray valueForKey: @"completePathResolved"];
 	
-	if( sendROIs)
-	{
-		NSLog( @"add ROIs for DICOM sending");
-		NSMutableArray	*roiFiles = [NSMutableArray array];
-		
-		for( id loopItem in samePatientArray)
-		{
-			[roiFiles addObjectsFromArray: [loopItem valueForKey: @"SRPaths"]];
-		}
-		
-		files = [files arrayByAddingObjectsFromArray: roiFiles];
-	}
+//	if( sendROIs)
+//	{
+//		NSLog( @"add ROIs for DICOM sending");
+//		NSMutableArray	*roiFiles = [NSMutableArray array];
+//		
+//		for( id loopItem in samePatientArray)
+//		{
+//			[roiFiles addObjectsFromArray: [loopItem valueForKey: @"SRPaths"]];
+//		}
+//		
+//		files = [files arrayByAddingObjectsFromArray: roiFiles];
+//	}
+
 	
 	// Send the collected files from the same patient
 	
