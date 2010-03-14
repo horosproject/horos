@@ -27,7 +27,7 @@
 	NSString	*result = nil;
 	DSRDocument	*document = new DSRDocument();
 	
-	OFCondition status;
+	OFCondition status = EC_Normal;
 	
 	if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 	{			
@@ -57,7 +57,7 @@
 	NSString	*result = nil;
 	DSRDocument	*document = new DSRDocument();
 	
-	OFCondition status;
+	OFCondition status = EC_Normal;
 	
 	if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 	{			
@@ -109,7 +109,7 @@
 		_seriesInstanceUID = nil;
 		document = new DSRDocument();
 		_newSR = NO;
-		OFCondition status;
+		OFCondition status = EC_Normal;
 		
 		// load old SR and replace as needed
 		if ([[NSFileManager defaultManager] fileExistsAtPath: path])
@@ -150,7 +150,7 @@
 		_seriesInstanceUID = nil;
 		document = new DSRDocument();
 		_newSR = NO;
-		OFCondition status;
+		OFCondition status = EC_Normal;
 		
 		// load old SR and replace as needed
 		if ([[NSFileManager defaultManager] fileExistsAtPath: path])
@@ -190,7 +190,7 @@
 		_seriesInstanceUID = nil;
 		document = new DSRDocument();
 		_newSR = NO;
-		OFCondition status;
+		OFCondition status = EC_Normal;
 		
 		// load old ROI SR and replace as needed
 		if ([[NSFileManager defaultManager] fileExistsAtPath: path])
@@ -285,7 +285,7 @@
 	if (self = [super init])
 	{
 		document = new DSRDocument();
-		OFCondition status;
+		OFCondition status = EC_Normal;
 		// load old ROI SR and replace as needed
 		if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 		{
@@ -490,7 +490,7 @@
 		document->setManufacturer("OsiriX");
 	}
 	
-	OFCondition status;
+	OFCondition status = EC_Normal;
 	DcmFileFormat *fileformat = new DcmFileFormat();
 	DcmDataset *dataset = NULL;
 	if (fileformat != NULL)

@@ -10489,7 +10489,7 @@ static BOOL needToRezoom;
 		if(draggedItems)
 		{
 			NSString *filePath, *destPath;
-			NSMutableArray *imagesArray = [NSMutableArray arrayWithCapacity:0];
+			NSMutableArray *imagesArray = [NSMutableArray array];
 			
 			for( NSManagedObject *object in draggedItems)
 			{
@@ -10508,6 +10508,21 @@ static BOOL needToRezoom;
 					[imagesArray addObject: object];
 			}
 			
+//			// Add reports
+//			NSMutableArray *studiesArray = [[imagesArray valueForKeyPath: @"series.study"] allObjects];
+//			[studiesArray removeDuplicatedObjects];
+//			
+//			int v = 1;
+//			for( DicomImage *im in studiesArray)
+//			{
+//				SRAnnotation *r = [[SRAnnotation alloc] initWithFile: [im valueForKey: @"report"] path: nil  forImage: im];
+//				[r writeToFileAtPath: [NSString stringWithFormat: @"/tmp/%d", v++]];
+//				[r release];
+//				
+////				[imagesArray addObject: XXXXXXX];
+//			}
+			
+			// remove duplicated paths
 			{
 				NSMutableArray *paths = [NSMutableArray arrayWithArray: [imagesArray valueForKey: @"path"]];
 				[paths removeDuplicatedStringsInSyncWithThisArray: imagesArray];
@@ -10576,12 +10591,6 @@ static BOOL needToRezoom;
 							[packArray addObject: sendPath];
 							
 							[splash incrementBy:1];
-						}
-						
-						// Add the ROIs
-						for( DicomImage *img in imagesArray)
-						{
-							[packArray addObjectsFromArray: [img SRPaths]];
 						}
 						
 						[splash close];
@@ -10835,12 +10844,6 @@ static BOOL needToRezoom;
 								NSString *sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
 								
 								[packArray addObject: sendPath];
-								
-								// Add the ROIs
-								for( i = 0; i < [imagesArray count]; i++)
-								{
-									[packArray addObjectsFromArray: [[imagesArray objectAtIndex: i] SRPaths]];
-								}
 								
 								[splash incrementBy:1];
 							}
