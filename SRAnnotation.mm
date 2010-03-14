@@ -92,18 +92,17 @@
 	if (![super init]) return nil;
 
 	document = new DSRDocument();
-	//document->createNewDocument(DSRTypes::DT_BasicTextSR);
 	document->createNewDocument(DSRTypes::DT_ComprehensiveSR);
 				
 	document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-	//document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("11528-7", "LN", "Radiology Report")); // to do : find a correct concept name
 	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
 	_seriesInstanceUID = nil;
 	_newSR = YES;
+	
 	return self;
 }
 
-- (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path forImage:(NSManagedObject*) im
+- (id)initWithDictionary:(NSDictionary *) dict path:(NSString *) path forImage: (NSManagedObject*) im
 {
 	if (self = [super init])
 	{
@@ -112,8 +111,8 @@
 		_newSR = NO;
 		OFCondition status;
 		
-		// load old ROI SR and replace as needed
-		if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+		// load old SR and replace as needed
+		if ([[NSFileManager defaultManager] fileExistsAtPath: path])
 		{			
 			DcmFileFormat fileformat;
 			status  = fileformat.loadFile([path UTF8String]);
@@ -126,7 +125,8 @@
 		}
 		
 		// create new Doc 
-		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || !status.good()) {
+		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || !status.good())
+		{
 			_newSR = YES;
 			document->createNewDocument(DSRTypes::DT_BasicTextSR);	
 		}
@@ -136,8 +136,88 @@
 		
 		image = [im retain];
 		
-		[self addROIs:ROIs];
+		// ****** to be completed
+	}
+	
+	return self;
+}
+
+
+- (id)initWithFile:(NSString *) file path:(NSString *) path forImage: (NSManagedObject*) im
+{
+	if (self = [super init])
+	{
+		_seriesInstanceUID = nil;
+		document = new DSRDocument();
+		_newSR = NO;
+		OFCondition status;
 		
+		// load old SR and replace as needed
+		if ([[NSFileManager defaultManager] fileExistsAtPath: path])
+		{			
+			DcmFileFormat fileformat;
+			status  = fileformat.loadFile([path UTF8String]);
+			if (status.good()) 				
+				status = document->read(*fileformat.getDataset());
+			
+			//clear old content	Don't want to UIDs if already created
+			if (status.good()) 
+				document->getTree().clear();
+		}
+		
+		// create new Doc 
+		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || !status.good())
+		{
+			_newSR = YES;
+			document->createNewDocument(DSRTypes::DT_BasicTextSR);	
+		}
+			
+		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
+		
+		image = [im retain];
+		
+		// ****** to be completed
+	}
+	
+	return self;
+}
+
+- (id)initWithROIs:(NSArray *)ROIs path:(NSString *) path forImage: (NSManagedObject*) im
+{
+	if (self = [super init])
+	{
+		_seriesInstanceUID = nil;
+		document = new DSRDocument();
+		_newSR = NO;
+		OFCondition status;
+		
+		// load old ROI SR and replace as needed
+		if ([[NSFileManager defaultManager] fileExistsAtPath: path])
+		{			
+			DcmFileFormat fileformat;
+			status  = fileformat.loadFile([path UTF8String]);
+			if (status.good()) 				
+				status = document->read(*fileformat.getDataset());
+			
+			//clear old content	Don't want to UIDs if already created
+			if (status.good()) 
+				document->getTree().clear();
+		}
+		
+		// create new Doc 
+		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || !status.good())
+		{
+			_newSR = YES;
+			document->createNewDocument(DSRTypes::DT_BasicTextSR);	
+		}
+			
+		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
+		
+		image = [im retain];
+		
+		[self addROIs: ROIs];
 		
 		//////
 		
@@ -200,12 +280,15 @@
 	return self;
 }
 
-- (id) initWithContentsOfFile:(NSString *)path{
-	if (self = [super init]) {
+- (id) initWithContentsOfFile:(NSString *)path
+{
+	if (self = [super init])
+	{
 		document = new DSRDocument();
 		OFCondition status;
 		// load old ROI SR and replace as needed
-		if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {			
+		if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+		{
 			DcmFileFormat fileformat;
 			status  = fileformat.loadFile([path UTF8String]);
 			if (status.good()) 				

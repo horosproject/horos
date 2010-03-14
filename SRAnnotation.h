@@ -23,7 +23,8 @@ typedef char DSRDocument;
 
 #import "ROI.h"
 
-@interface SRAnnotation : NSObject {
+@interface SRAnnotation : NSObject
+{
 	DSRDocument			*document;
 	id					image;
 	NSArray				*_rois;
@@ -35,6 +36,8 @@ typedef char DSRDocument;
 + (NSString*) getFilenameFromSR:(NSString*) path;
 - (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path forImage:(NSManagedObject*) im;
 - (id)initWithContentsOfFile:(NSString *)path;
+- (id)initWithDictionary:(NSDictionary *) dict path:(NSString *) path forImage: (NSManagedObject*) im;
+- (id)initWithFile:(NSString *) file path:(NSString *) path forImage: (NSManagedObject*) im;
 - (void)addROIs:(NSArray *)someROIs;
 - (void)addROI:(ROI *)aROI;
 - (NSArray *)ROIs;
