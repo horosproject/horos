@@ -10508,20 +10508,6 @@ static BOOL needToRezoom;
 					[imagesArray addObject: object];
 			}
 			
-//			// Add reports
-//			NSMutableArray *studiesArray = [[imagesArray valueForKeyPath: @"series.study"] allObjects];
-//			[studiesArray removeDuplicatedObjects];
-//			
-//			int v = 1;
-//			for( DicomImage *im in studiesArray)
-//			{
-//				SRAnnotation *r = [[SRAnnotation alloc] initWithFile: [im valueForKey: @"report"] path: nil  forImage: im];
-//				[r writeToFileAtPath: [NSString stringWithFormat: @"/tmp/%d", v++]];
-//				[r release];
-//				
-////				[imagesArray addObject: XXXXXXX];
-//			}
-			
 			// remove duplicated paths
 			{
 				NSMutableArray *paths = [NSMutableArray arrayWithArray: [imagesArray valueForKey: @"path"]];
@@ -16688,7 +16674,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: [tempPath stringByAppendingPathExtension: @"zip"]] == NO)
 			{
-				[BrowserController encryptFolder: tempPath inZIPFile: [tempPath stringByAppendingPathExtension: @"zip"] password: passwordForExportEncryption];
+				[BrowserController encryptFileOrFolder: tempPath inZIPFile: [tempPath stringByAppendingPathExtension: @"zip"] password: passwordForExportEncryption];
 				self.passwordForExportEncryption = @"";
 			}
 		}
@@ -16762,14 +16748,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"**** encryptFolder exception: %@", e);
+		NSLog( @"**** encryptFileOrFolder exception: %@", e);
 	}
 	
 	[wait close];
 	[wait release];
 }
 
-+ (void) encryptFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password
++ (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password
 {
 	NSTask *t;
 	NSArray *args;
@@ -16794,22 +16780,29 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		t = [[[NSTask alloc] init] autorelease];
 		[t setLaunchPath: @"/usr/bin/zip"];
-		[t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
 		
-		if( [password length] > 0)
-			args = [NSArray arrayWithObjects: @"--quiet", @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
-		else
-			args = [NSArray arrayWithObjects: @"--quiet", @"-r", destFile, [srcFolder lastPathComponent], nil];
-		[t setArguments: args];
-		[t launch];
-		[t waitUntilExit];
+		BOOL isDirectory;
 		
-		if( [t terminationStatus] == 0)
-			[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+		if( [[NSFileManager defaultManager] fileExistsAtPath: srcFolder isDirectory: &isDirectory])
+		{
+			[t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
+	
+			if( [password length] > 0)
+				args = [NSArray arrayWithObjects: @"--quiet", @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
+			else
+				args = [NSArray arrayWithObjects: @"--quiet", @"-r", destFile, [srcFolder lastPathComponent], nil];
+			
+			[t setArguments: args];
+			[t launch];
+			[t waitUntilExit];
+			
+			if( [t terminationStatus] == 0)
+				[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+		}
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"**** encryptFolder exception: %@", e);
+		NSLog( @"**** encryptFileOrFolder exception: %@", e);
 	}
 	
 	[wait close];

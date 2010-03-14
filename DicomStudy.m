@@ -17,6 +17,7 @@
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import <OsiriX/DCM.h>
 #import "MutableArrayCategory.h"
+#import "SRAnnotation.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DCMPix.h"
@@ -158,6 +159,45 @@ NSString* soundex4( NSString *inString)
 		[r appendFormat:@" %@", soundex4( w)];
 	
 	return r;
+}
+
+- (void) syncReportAndComments
+{
+	#ifndef OSIRIX_LIGHT
+	// Is there a report attached to this study -> archive it
+	if( [self valueForKey: @"report"])
+	{
+		[[self managedObjectContext] lock];
+		
+		@try
+		{
+			// Find the archived
+			[[self managedObjectContext] deleteObject: [self reportSRSeries]];
+			[[self managedObjectContext] deleteObject: [self commentAndStatusSRSeries]];
+			
+			NSString *zippedFile = @"/tmp/zippedReport";
+			[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: @"/tmp/zippedReport" password: nil];
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
+			{
+				NSString *dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"zip"];
+				
+				// Create the new one
+				SRAnnotation *r = [[SRAnnotation alloc] initWithFile: zippedFile path: nil  forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]];
+				[r writeToFileAtPath: dstPath];
+				[r release];
+				
+				[[BrowserController currentBrowser] addFilesAndFolderToDatabase: [NSArray arrayWithObject: dstPath]];
+			}
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
+		[[self managedObjectContext] unlock];
+	}
+	#endif
 }
 
 - (NSString*) soundex
@@ -652,8 +692,8 @@ NSString* soundex4( NSString *inString)
 	
 	@try 
 	{
-		NSArray *array = [self primitiveValueForKey: @"series"] ;
-	
+		NSArray *array = [self primitiveValueForKey: @"series"];
+		
 		for (id series in array)
 		{
 			if ([[DCMAbstractSyntaxUID keyObjectSelectionDocumentStorage] isEqualToString:[series valueForKey:@"seriesSOPClassUID"]])
@@ -746,6 +786,82 @@ NSString* soundex4( NSString *inString)
 	return newArray;
 }
 
+- (NSManagedObject *) commentAndStatusSRSeries
+{
+	NSArray *array = [self primitiveValueForKey: @"series"] ;
+	if ([array count] < 1)  return nil;
+	
+	[[self managedObjectContext] lock];
+	
+	NSMutableArray *newArray = [NSMutableArray array];
+	
+	@try 
+	{
+		for( DicomSeries *series in array)
+		{
+			if( [[series valueForKey:@"id"] intValue] == 5004 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX Comments SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
+				[newArray addObject:series];
+			
+			if( [newArray count] > 1)
+			{
+				NSLog( @"****** multiple (%d) commentAndStatusSRSeries?? Delete the extra series...", [newArray count]);
+				
+				for( int i = 1 ; i < [newArray count] ; i++)
+					[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
+			}
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
+	if( [newArray count])
+		return [newArray objectAtIndex: 0];
+	
+	return nil;
+}
+
+- (NSManagedObject *) reportSRSeries
+{
+	NSArray *array = [self primitiveValueForKey: @"series"] ;
+	if ([array count] < 1)  return nil;
+	
+	[[self managedObjectContext] lock];
+	
+	NSMutableArray *newArray = [NSMutableArray array];
+	
+	@try 
+	{
+		for( DicomSeries *series in array)
+		{
+			if( [[series valueForKey:@"id"] intValue] == 5003 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX Report SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
+				[newArray addObject:series];
+		}
+		
+		if( [newArray count] > 1)
+		{
+			NSLog( @"****** multiple (%d) reportSRSeries?? Delete the extra series...", [newArray count]);
+			
+			for( int i = 1 ; i < [newArray count] ; i++)
+				[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
+	if( [newArray count])
+		return [newArray objectAtIndex: 0];
+	
+	return nil;
+}
+
 - (NSManagedObject *)roiSRSeries
 {
 	NSArray *array = [self primitiveValueForKey: @"series"] ;
@@ -757,7 +873,6 @@ NSString* soundex4( NSString *inString)
 	
 	@try 
 	{
-		
 		for( DicomSeries *series in array)
 		{
 			if( [[series valueForKey:@"id"] intValue] == 5002 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
