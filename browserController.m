@@ -11571,7 +11571,7 @@ static BOOL needToRezoom;
 	{
 		if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
 		{
-			NSArray			*singleSeries = [toOpenArray objectAtIndex: 0];
+			NSArray			*singleSeries = [[toOpenArray objectAtIndex: 0] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease]]];
 			NSMutableArray	*splittedSeries = [NSMutableArray array];
 			NSMutableArray  *intervalArray = [NSMutableArray array];
 			
