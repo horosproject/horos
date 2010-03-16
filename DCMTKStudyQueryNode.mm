@@ -217,6 +217,8 @@
 				extraParameters: _extraParameters]];
 	}
 	else NSLog( @"******** unknown queryLevel *****");
+	
+	[_children sortUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"time" ascending: YES] autorelease]]];
 }
 
 @end

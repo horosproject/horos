@@ -3014,7 +3014,11 @@ static BOOL initialized = NO;
 	
 	if( [msg isEqualToString:@"UPDATE"])
 	{
+		#if __LP64__
+		int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?\r\rAs a user of OsiriX 64-bit, this OsiriX update will require the new 64-bit extension to run in 64-bit. Contact osirix64@osirix-viewer.com if you didn't receive it by email.", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
+		#else
 		int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
+		#endif
 		
 		if (NSOKButton == button)
 		{
