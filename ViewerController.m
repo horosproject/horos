@@ -1493,21 +1493,25 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		dest.data = malloc( [firstObject pheight] * [firstObject pwidth] * 4);
 		
-		for( x = 0; x < [pixList[ y] count]; x++)
+		if( dest.data)
 		{
-			src.height = dest.height = [firstObject pheight];
-			src.width = dest.width = [firstObject pwidth];
-			src.rowBytes = src.width*4;
-			dest.rowBytes = dest.width*4;
-			src.data = volumeDataPtr;
+			for( x = 0; x < [pixList[ y] count]; x++)
+			{
+				src.height = dest.height = [firstObject pheight];
+				src.width = dest.width = [firstObject pwidth];
+				src.rowBytes = src.width*4;
+				dest.rowBytes = dest.width*4;
+				src.data = volumeDataPtr;
+				
+				vImageVerticalReflect_PlanarF ( &src, &dest, 0);
+				
+				memcpy( src.data, dest.data, [firstObject pheight] * [firstObject pwidth] * 4);
+				volumeDataPtr += [firstObject pheight]*[firstObject pwidth];
+			}
 			
-			vImageVerticalReflect_PlanarF ( &src, &dest, 0);
-			
-			memcpy( src.data, dest.data, [firstObject pheight] * [firstObject pwidth] * 4);
-			volumeDataPtr += [firstObject pheight]*[firstObject pwidth];
+			free( dest.data);
 		}
-		
-		free( dest.data);
+		else NSLog( @"***** not enough memory : vertFlipDataSet");
 	}
 	
 	for( y = 0 ; y < maxMovieIndex; y++)
