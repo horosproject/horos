@@ -15008,7 +15008,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 										[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
 									else
 									{
-										//	NSLog( [ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]);
+										//NSLog( [ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]);
 										
 										if( [[NSFileManager defaultManager] movePath:srcPath toPath:[ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]  handler:nil] == NO)
 											[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
