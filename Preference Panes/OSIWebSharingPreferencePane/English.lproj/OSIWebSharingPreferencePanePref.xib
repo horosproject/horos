@@ -292,7 +292,7 @@
 								<object class="NSButtonCell" id="745131706">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">No password, No authentification</string>
+									<string key="NSContents">No password, No authentication</string>
 									<reference key="NSSupport" ref="349069678"/>
 									<reference key="NSControlView" ref="379674509"/>
 									<int key="NSButtonFlags">1211912703</int>

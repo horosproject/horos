@@ -261,7 +261,7 @@ static volatile int sendControllerObjects = 0;
 //					result = [[[PluginManager plugins] objectForKey:@"ComPACS"] filterImage: [NSString stringWithFormat:@"dicomSEND%@", [[objectsToSend objectAtIndex: 0] valueForKeyPath:@"series.study.patientUID"]]];
 //					if( result != 0)
 //					{
-//						NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"Smart card authentification is required for DICOM sending.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+//						NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"Smart card authentication is required for DICOM sending.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 //						files2Send = nil;
 //					}
 //				}
