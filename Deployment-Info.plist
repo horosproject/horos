@@ -186,6 +186,8 @@
 	<string>6899M</string>
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
+	<key>LSRequiresNativeExecution</key>
+	<true/>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSHumanReadableCopyright</key>
