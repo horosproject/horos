@@ -331,10 +331,18 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 										gSOPClassUID[ theFileNb] = malloc( strlen( theValP->a)+1);
 										strcpy( gSOPClassUID[ theFileNb], theValP->a);
 										
+										// SEE
+										
 										if( strncmp( "1.2.840.10008.5.1.4.1.1.88", gSOPClassUID[ theFileNb], strlen( "1.2.840.10008.5.1.4.1.1.88")) == 0) // SR Files
 											isImage = 0;
 										
 										if( strncmp( "1.2.840.10008.5.1.4.1.1.481", gSOPClassUID[ theFileNb], strlen( "1.2.840.10008.5.1.4.1.1.481")) == 0) // RTSTRUCT Files
+											isImage = 0;
+										
+										if( strncmp( "1.2.840.10008.5.1.4.1.1.11", gSOPClassUID[ theFileNb], strlen( "1.2.840.10008.5.1.4.1.1.11")) == 0) // Presentation States
+											isImage = 0;
+										
+										if( strncmp( "1.2.840.10008.5.1.4.1.1.104.1", gSOPClassUID[ theFileNb], strlen( "1.2.840.10008.5.1.4.1.1.104.1")) == 0) // EncapsulatedPDFStorage
 											isImage = 0;
 									}
 									theErr = Papy3GroupFree (&theGroupP, TRUE);
@@ -359,7 +367,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 						  
                           if( (gIsPapyFile [theFileNb] == DICOM10 || gIsPapyFile [theFileNb] == DICOM_NOT10) && (iResult == papNoError))
                           {
-                            if ((theErr = ExtractDicomDataSetInformation3 (theFileNb)) < 0)
+                            if( isImage && (theErr = ExtractDicomDataSetInformation3 (theFileNb)) < 0)
                             {
 								iResult = theErr;
                             }

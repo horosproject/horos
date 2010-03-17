@@ -454,18 +454,6 @@ ExtractDicomDataSetInformation3 (PapyShort inFileNb)
   PapyULong	theULong;
   PapyULong	theOffsetDataSet, theOffsetImage;
   
-  if( gSOPClassUID[ inFileNb] != 0L && strcmp( gSOPClassUID[ inFileNb], "1.2.840.10008.5.1.4.1.1.104.1") == 0)	// EncapsulatedPDFStorage -> No Pixel Data
-	return 0;
-  
-  if( gSOPClassUID[ inFileNb] != 0L && strncmp( gSOPClassUID[ inFileNb], "1.2.840.10008.5.1.4.1.1.11", strlen( "1.2.840.10008.5.1.4.1.1.11")) == 0)	// Presentation States -> No Pixel Data
-	return 0;
-  
-  if( gSOPClassUID[ inFileNb] != 0L && strncmp( gSOPClassUID[ inFileNb], "1.2.840.10008.5.1.4.1.1.88", strlen( "1.2.840.10008.5.1.4.1.1.88")) == 0)	// SR -> No Pixel Data
-		return 0;
-
-  if( gSOPClassUID[ inFileNb] != 0L && strncmp( gSOPClassUID[ inFileNb], "1.2.840.10008.5.1.4.1.1.481", strlen( "1.2.840.10008.5.1.4.1.1.481")) == 0)	// RTSTRUCT -> No Pixel Data
-		return 0;
-	
   /* move the file pointer to group 0x7FE0 */
   if ((theErr = Papy3GotoGroupNb (inFileNb, 0x7FE0)) < 0) RETURN (theErr);
   
