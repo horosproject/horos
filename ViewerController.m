@@ -5783,6 +5783,16 @@ static ViewerController *draggedController = nil;
 			}
 		}
 		
+		@try
+		{
+			[[fileList[0] objectAtIndex:0] setValue: nil forKeyPath:@"series.thumbnail"];
+			[[BrowserController currentBrowser] buildThumbnail: [[fileList[0] objectAtIndex:0] valueForKey: @"series"]];
+		}
+		@catch ( NSException *e)
+		{
+			NSLog( @"***** finalizeSeriesViewing : %@", e);
+		}
+		
 		[roiList[ i] release];
 		[pixList[ i] release];
 		[fileList[ i] release];

@@ -1543,11 +1543,14 @@ extern NSManagedObjectContext *staticContext;
 			else
 				findArray = [context executeFetchRequest:request error:&error];
 			
-//			NSLog( @"%@", predicate);
-//			NSLog( @"%@", seriesLevelPredicate);
-			
 			if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
 				findArray = [findArray filteredArrayUsingPredicate: compressedSOPInstancePredicate];
+			
+			if( strcmp(sType, "IMAGE") == 0)
+				findArray = [findArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease]]];
+			
+			if( strcmp(sType, "SERIES") == 0)
+			  findArray = [findArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]];
 			
 			[findArray retain];
 		}

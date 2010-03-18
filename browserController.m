@@ -8686,9 +8686,6 @@ static BOOL withReset = NO;
 				
 				if( [image valueForKey:@"frameID"]) frame = [[image valueForKey:@"frameID"] intValue];
 				
-				NSLog( @"Build thumbnail for:");
-				NSLog( @"%@", [image valueForKey:@"completePath"]);
-				
 				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
 				[[[[[series valueForKey:@"study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
 				
@@ -8698,7 +8695,7 @@ static BOOL withReset = NO;
 				
 				if( dcmPix)
 				{
-					NSImage *thumbnail = [dcmPix generateThumbnailImageWithWW:0 WL:0];
+					NSImage *thumbnail = [dcmPix generateThumbnailImageWithWW: [[image valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[image valueForKeyPath: @"series.windowLevel"] floatValue]];
 					
 					if( dcmPix.notAbleToLoadImage == NO)
 					{
@@ -8943,9 +8940,9 @@ static BOOL withReset = NO;
 			thumbnail = [ipreviewPixThumbnails objectAtIndex: i];
 			
 			int frame = 0;
-			if( [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue] > 1) frame = [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue]/2;
+			if( [[[files objectAtIndex: i] valueForKey: @"numberOfFrames"] intValue] > 1) frame = [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue]/2;
 			
-			if( [[files objectAtIndex: i] valueForKey:@"frameID"]) frame = [[[files objectAtIndex: i] valueForKey:@"frameID"] intValue];
+			if( [[files objectAtIndex: i] valueForKey: @"frameID"]) frame = [[[files objectAtIndex: i] valueForKey:@"frameID"] intValue];
 			
 			DCMPix *dcmPix  = [[DCMPix alloc] initWithPath:[filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
 			
@@ -8954,7 +8951,7 @@ static BOOL withReset = NO;
 				if( thumbnail == notFoundImage)
 				{
 					[dcmPix revert: NO];	// <- Kill the raw data
-					thumbnail = [dcmPix generateThumbnailImageWithWW:0 WL:0];
+					thumbnail = [dcmPix generateThumbnailImageWithWW: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[[files objectAtIndex: i] valueForKey: @"series.windowLevel"] floatValue]];
 					[dcmPix revert: NO];	// <- Kill the raw data
 					
 					if( thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
@@ -11727,7 +11724,7 @@ static BOOL needToRezoom;
 					
 					if( dcmPix)
 					{
-						NSImage	 *img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
+						NSImage	 *img = [dcmPix generateThumbnailImageWithWW:[[oob valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[oob valueForKeyPath: @"series.windowLevel"] floatValue]];
 						
 						NSButtonCell *cell = [subOpenMatrix3D cellAtRow:0 column: i];
 						[cell setTransparent:NO];
@@ -11750,7 +11747,7 @@ static BOOL needToRezoom;
 						
 						if( dcmPix)
 						{
-							NSImage	 *img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
+							NSImage	 *img = [dcmPix generateThumbnailImageWithWW:[[oob valueForKeyPath: @"series.windowWidth"] floatValue] WL:[[oob valueForKeyPath: @"series.windowLevel"] floatValue]];
 							
 							NSButtonCell *cell = [subOpenMatrix4D cellAtRow:0 column: i];
 							[cell setTransparent:NO];
