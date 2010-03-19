@@ -3816,6 +3816,8 @@ NSString* notNil( NSString *s)
 						
 						if( eof)
 							[self closeFileHandleAndClean];
+						
+						[file release];
 					}
 					@catch ( NSException *e)
 					{

@@ -3040,11 +3040,14 @@ Papy3GroupRead (PapyShort inFileNb, SElement **ioGroupP)
 
   *ioGroupP = Papy3GroupCreate (theEnumGrNb);
   
+  UValue_T *allocatedPtr = 0L;
+	
   /* if the group do not have the group length element, fill it ... */
   if (theGrLength != 0)
   {
+	allocatedPtr = (UValue_T *) emalloc3 ((PapyULong) sizeof (UValue_T));
     (*ioGroupP)->nb_val    = 1L;
-    (*ioGroupP)->value     = (UValue_T *) emalloc3 ((PapyULong) sizeof (UValue_T));
+    (*ioGroupP)->value     = allocatedPtr;
     (*ioGroupP)->value->ul = theGrLength;
   } /* if ...undefined group length */
   
@@ -3056,7 +3059,13 @@ Papy3GroupRead (PapyShort inFileNb, SElement **ioGroupP)
     efree3 ((void **) &theBuffP);
     RETURN (theErr);
   } /* if */
-
+  
+  if( allocatedPtr)
+  {
+	  if( (*ioGroupP)->value != allocatedPtr)
+		  efree3( (void **) &allocatedPtr);
+  }
+	
   /* frees the read buffer */
   efree3 ((void **) &theBuffP);
   
