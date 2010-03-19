@@ -682,15 +682,17 @@ static NSArray*	statesArray = nil;
 				if( DICOMROI == NO)
 					onlyDICOMROI = NO;
 				
-				// For now, we cannot add non-image DICOM files
-				if( [curDict objectForKey:@"SOPClassUID"] != nil 
-				   && [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO 
-				   && [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]] == NO
-				   && [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]] == NO
-				   && [DCMAbstractSyntaxUID isKeyObjectDocument: [curDict objectForKey: @"SOPClassUID"]] == NO
-				   && [DCMAbstractSyntaxUID isPresentationState: [curDict objectForKey: @"SOPClassUID"]] == NO)
+				NSString *SOPClassUID = [curDict objectForKey:@"SOPClassUID"];
+				
+				if( SOPClassUID != nil 
+				   && [DCMAbstractSyntaxUID isImageStorage: SOPClassUID] == NO 
+				   && [DCMAbstractSyntaxUID isRadiotherapy: SOPClassUID] == NO
+				   && [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] == NO
+				   && [DCMAbstractSyntaxUID isKeyObjectDocument: SOPClassUID] == NO
+				   && [DCMAbstractSyntaxUID isPresentationState: SOPClassUID] == NO
+				   && [DCMAbstractSyntaxUID isSupportedPrivateClasses: SOPClassUID] == NO)
 				{
-					NSLog(@"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", [curDict objectForKey: @"SOPClassUID"], newFile);
+					NSLog(@"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
 					curDict = nil;
 				}
 				

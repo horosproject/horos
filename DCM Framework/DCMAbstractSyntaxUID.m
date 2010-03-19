@@ -431,7 +431,6 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			OphthalmicPhotography16BitImageStorage,
 			FujiPrivateCR,
 			MRSpectroscopyStorage,
-//			@"1.3.12.2.1107.5.9.1", Siemens Private SOP Class
 //			RawDataStorage,
 			nil] retain];
 	
@@ -516,6 +515,13 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			||	[sopClassUID isEqualToString:PseudoColorSoftcopyPresentationStateStorage]
 			||	[sopClassUID isEqualToString:BlendingSoftcopyPresentationStateStorage]
 		);
+}
+
++ (BOOL) isSupportedPrivateClasses:(NSString *)sopClassUID
+{
+	// Dont forget to add them to PapyFiles3.c PapyFileOpen
+	
+	return sopClassUID != nil && ([sopClassUID hasPrefix: @"1.3.46.670589"]); // Philips
 }
 
 		// Waveforms ...

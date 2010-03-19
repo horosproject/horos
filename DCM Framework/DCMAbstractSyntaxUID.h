@@ -69,7 +69,7 @@ htt://www.pixelmed.com
 + (NSString *)RTImageStorage;
 + (BOOL)isImageStorage:(NSString *)sopClassUID;
 + (NSArray *)imageSyntaxes;
-
++ (BOOL) isSupportedPrivateClasses:(NSString *)sopClassUID;
 + (NSString *)mediaStorageDirectoryStorage;
 + (BOOL) isDirectory:(NSString *) sopClassUID;
 
