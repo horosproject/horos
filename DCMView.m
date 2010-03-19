@@ -2073,7 +2073,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					
 				}
-				else NSLog( @"***Ehh ! ****** It's not a DICOM image.... it will crash !!!!!!!");
+				else NSLog( @"***Ehh ! ****** It's not a DICOM image....");
 			}
 			
 			if( [stringID isEqualToString:@"previewDatabase"] == NO)
