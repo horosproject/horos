@@ -2529,7 +2529,6 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 	            if (theErr < 0)
 	            {
 				  printf("error from PutBufferInGroup3 %s\n", gPapyFilePath [inFileNb]);
-	              efree3 ((void **) &ioBuffP);
 	              RETURN (theErr);
 	            } /* if ...theErr */
 		      
@@ -2709,7 +2708,6 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
   theEnumGrNb       = Papy3ToEnumGroup (inPapyGrNb);   /* gr_nb papyrus -> enum */
   if (theEnumGrNb < 0)				 /* unknown group number */
   {
-    efree3 ((void **) &ioBuffP);
     RETURN (papGroupNumber)
   } /* if */
   
@@ -3018,7 +3016,6 @@ Papy3GroupRead (PapyShort inFileNb, SElement **ioGroupP)
   /* read the buffer from the file */
   if (ReadGroup3 (inFileNb, &thePapyGrNb, &theBuffP, &theBytesToRead, &theGrLength) < 0)
   {
-    efree3 ((void **) &theBuffP);
     RETURN (papReadGroup)
   } /* if */
 
