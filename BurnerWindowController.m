@@ -34,11 +34,14 @@ extern NSString* asciiString (NSString* name);
 	
 	[manager removeFileAtPath:imagePath handler:nil];
 	
-	NSTask* makeImageTask = [[[NSTask alloc]init]autorelease];
+	NSTask* makeImageTask = [[[NSTask alloc] init] autorelease];
 
 	[makeImageTask setLaunchPath: @"/bin/sh"];
-
-	NSString* cmdString = [NSString stringWithFormat: @"hdiutil create '%@' -srcfolder '%@'",
+	
+	imagePath = [imagePath stringByReplacingOccurrencesOfString: @"\"" withString: @"\\\""];
+	directoryPath = [directoryPath stringByReplacingOccurrencesOfString: @"\"" withString: @"\\\""];
+	
+	NSString* cmdString = [NSString stringWithFormat: @"hdiutil create \"%@\" -srcfolder \"%@\"",
 													  imagePath,
 													  directoryPath];
 
