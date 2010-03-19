@@ -332,6 +332,8 @@ static id aedesc_to_id(AEDesc *desc)
 			
 			[[rtf RTFFromRange:NSMakeRange(0, [rtf length]) documentAttributes:attr] writeToFile:destinationFile atomically:YES];
 			
+			[rtf release];
+			
 			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"TextEdit"];
 			[study setValue: destinationFile forKey:@"reportURL"];
 		}

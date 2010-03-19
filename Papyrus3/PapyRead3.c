@@ -3046,6 +3046,7 @@ Papy3GroupRead (PapyShort inFileNb, SElement **ioGroupP)
   if (theGrLength != 0)
   {
 	allocatedPtr = (UValue_T *) emalloc3 ((PapyULong) sizeof (UValue_T));
+	
     (*ioGroupP)->nb_val    = 1L;
     (*ioGroupP)->value     = allocatedPtr;
     (*ioGroupP)->value->ul = theGrLength;
@@ -3056,6 +3057,7 @@ Papy3GroupRead (PapyShort inFileNb, SElement **ioGroupP)
   theErr = PutBufferInGroup3 (inFileNb, theBuffP, *ioGroupP, thePapyGrNb, theBytesToRead, &theBufPos, theInitFilePos);
   if (theErr < 0)
   {
+	if( allocatedPtr) efree3( (void **) &allocatedPtr);
     efree3 ((void **) &theBuffP);
     RETURN (theErr);
   } /* if */
