@@ -137,6 +137,8 @@
 			
 			if( previousX)
 				[pix setPixelSpacingY: [pix pixelSpacingY] * newResolution / previousX];
+			else
+				[pix setPixelSpacingY: newResolution];
 		}
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRecomputeROINotification object:curController userInfo: nil];
