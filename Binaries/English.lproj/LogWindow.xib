@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="334"/>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -67,7 +67,7 @@
 								<object class="NSTabViewItem" id="531322208">
 									<string key="NSIdentifier">1</string>
 									<object class="NSView" key="NSView" id="351385457">
-										<reference key="NSNextResponder" ref="883849166"/>
+										<nil key="NSNextResponder"/>
 										<int key="NSvFlags">256</int>
 										<object class="NSMutableArray" key="NSSubviews">
 											<bool key="EncodedWithXMLCoder">YES</bool>
@@ -262,9 +262,6 @@
 																		<object class="NSTextFieldCell" key="NSDataCell" id="175789886">
 																			<int key="NSCellFlags">337772096</int>
 																			<int key="NSCellFlags2">2048</int>
-																			<object class="NSDate" key="NSContents">
-																				<double key="NS.time">-781070400</double>
-																			</object>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="444150343">
 																				<object class="NSMutableDictionary" key="NS.attributes">
@@ -314,9 +311,6 @@
 																		<object class="NSTextFieldCell" key="NSDataCell" id="14317076">
 																			<int key="NSCellFlags">337772096</int>
 																			<int key="NSCellFlags2">2048</int>
-																			<object class="NSDate" key="NSContents">
-																				<double key="NS.time">-781070400</double>
-																			</object>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="323544189">
 																				<object class="NSMutableDictionary" key="NS.attributes">
@@ -640,7 +634,6 @@
 											</object>
 										</object>
 										<string key="NSFrame">{{10, 25}, {1117, 461}}</string>
-										<reference key="NSSuperview" ref="883849166"/>
 									</object>
 									<string key="NSLabel">Receive</string>
 									<object class="NSColor" key="NSColor" id="1032299309">
@@ -832,9 +825,6 @@
 																		<object class="NSTextFieldCell" key="NSDataCell" id="161162775">
 																			<int key="NSCellFlags">337772096</int>
 																			<int key="NSCellFlags2">2048</int>
-																			<object class="NSDate" key="NSContents">
-																				<double key="NS.time">-781070400</double>
-																			</object>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="279167791">
 																				<object class="NSMutableDictionary" key="NS.attributes">
@@ -884,9 +874,6 @@
 																		<object class="NSTextFieldCell" key="NSDataCell" id="817032566">
 																			<int key="NSCellFlags">337772096</int>
 																			<int key="NSCellFlags2">2048</int>
-																			<object class="NSDate" key="NSContents">
-																				<double key="NS.time">-781070400</double>
-																			</object>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="530733436">
 																				<object class="NSMutableDictionary" key="NS.attributes">
@@ -1364,9 +1351,6 @@
 																		<object class="NSTextFieldCell" key="NSDataCell" id="937755896">
 																			<int key="NSCellFlags">337772096</int>
 																			<int key="NSCellFlags2">2048</int>
-																			<object class="NSDate" key="NSContents">
-																				<double key="NS.time">-781070400</double>
-																			</object>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="786631236">
 																				<object class="NSMutableDictionary" key="NS.attributes">
@@ -1416,9 +1400,6 @@
 																		<object class="NSTextFieldCell" key="NSDataCell" id="168645277">
 																			<int key="NSCellFlags">337772096</int>
 																			<int key="NSCellFlags2">2048</int>
-																			<object class="NSDate" key="NSContents">
-																				<double key="NS.time">-781070400</double>
-																			</object>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="358730257">
 																				<object class="NSMutableDictionary" key="NS.attributes">
@@ -1722,7 +1703,7 @@
 								<object class="NSTabViewItem" id="757353650">
 									<string key="NSIdentifier">Item 3</string>
 									<object class="NSView" key="NSView" id="45487594">
-										<nil key="NSNextResponder"/>
+										<reference key="NSNextResponder" ref="883849166"/>
 										<int key="NSvFlags">256</int>
 										<object class="NSMutableArray" key="NSSubviews">
 											<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1885,9 +1866,6 @@
 																		<object class="NSTextFieldCell" key="NSDataCell" id="488791633">
 																			<int key="NSCellFlags">337772096</int>
 																			<int key="NSCellFlags2">2048</int>
-																			<object class="NSDate" key="NSContents">
-																				<double key="NS.time">-781070400</double>
-																			</object>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="188669188">
 																				<object class="NSMutableDictionary" key="NS.attributes">
@@ -2121,20 +2099,21 @@
 											</object>
 										</object>
 										<string key="NSFrame">{{10, 25}, {1117, 461}}</string>
+										<reference key="NSSuperview" ref="883849166"/>
 									</object>
 									<string key="NSLabel">Web Server</string>
 									<reference key="NSColor" ref="1032299309"/>
 									<reference key="NSTabView" ref="883849166"/>
 								</object>
 							</object>
-							<reference key="NSSelectedTabViewItem" ref="531322208"/>
+							<reference key="NSSelectedTabViewItem" ref="757353650"/>
 							<reference key="NSFont" ref="26"/>
 							<int key="NSTvFlags">134217728</int>
 							<bool key="NSAllowTruncatedLabels">YES</bool>
 							<bool key="NSDrawsBackground">YES</bool>
 							<object class="NSMutableArray" key="NSSubviews">
 								<bool key="EncodedWithXMLCoder">YES</bool>
-								<reference ref="351385457"/>
+								<reference ref="45487594"/>
 							</object>
 						</object>
 					</object>
@@ -6862,9 +6841,9 @@
 					<string>QueryLogController</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{423, 649}, {1135, 498}}</string>
+					<string>{{422, 649}, {1135, 498}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{423, 649}, {1135, 498}}</string>
+					<string>{{422, 649}, {1135, 498}}</string>
 					<integer value="1"/>
 					<string>{{46, 216}, {822, 607}}</string>
 					<boolean value="NO"/>
@@ -7011,10 +6990,31 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">NSButton</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">nitrogen/Sources/NSButton+N2.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">NSMenu</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">MenuDictionary.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">JSON/NSObject+SBJSON.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">JSON/SBJsonWriter.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -7036,6 +7036,27 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">cocoahttpserver/AsyncSocket.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">nitrogen/Sources/N2Steps.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">nitrogen/Sources/NSView+N2.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSWindow</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">nitrogen/Sources/N2Window.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -7126,13 +7147,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">AppKit.framework/Headers/NSButton.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSButton</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">Nitrogen.framework/Headers/NSButton+N2.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -7481,49 +7495,7 @@
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">ImageKit.framework/Headers/IKImageBrowserView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">ImageKit.framework/Headers/IKSaveOptions.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">ImageKit.framework/Headers/ImageKitDeprecated.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">InstantMessage.framework/Headers/IMAVManager.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">Nitrogen.framework/Headers/N2Steps.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">PDFKit.framework/Headers/PDFDocument.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">PDFKit.framework/Headers/PDFView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -7586,28 +7558,21 @@
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">QuartzComposer.framework/Headers/QCCompositionParameterView.h</string>
+						<string key="minorKey">QuartzCore.framework/Headers/CAAnimation.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">QuartzComposer.framework/Headers/QCCompositionPickerView.h</string>
+						<string key="minorKey">QuartzCore.framework/Headers/CALayer.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">QuartzFilters.framework/Headers/QuartzFilterManager.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">QuickLookUI.framework/Headers/QLPreviewPanel.h</string>
+						<string key="minorKey">QuartzCore.framework/Headers/CIImageProvider.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -7834,13 +7799,6 @@
 					<string key="className">NSView</string>
 					<string key="superclassName">NSResponder</string>
 					<reference key="sourceIdentifier" ref="580448590"/>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">Nitrogen.framework/Headers/NSView+N2.h</string>
-					</object>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSWindow</string>
