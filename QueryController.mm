@@ -2710,7 +2710,12 @@ extern "C"
 	{
 		NSDictionary *server = [serversArray objectAtIndex: i];
 		
-		[sendToPopup addItemWithTitle: [NSString stringWithFormat:@"%@ - %@/%@:%@", [server valueForKey:@"Description"], [server valueForKey:@"AETitle"], [server valueForKey:@"Address"], [server valueForKey:@"Port"]]];
+		NSString *title = [NSString stringWithFormat:@"%@ - %@/%@:%@", [server valueForKey:@"Description"], [server valueForKey:@"AETitle"], [server valueForKey:@"Address"], [server valueForKey:@"Port"]];
+		
+		while( [sendToPopup indexOfItemWithTitle: title] != -1)
+			title = [title stringByAppendingString: @" "];
+		
+		[sendToPopup addItemWithTitle: title];
 		
 		if( [[[sendToPopup lastItem] title] isEqualToString: previousItem]) [sendToPopup selectItemWithTitle: previousItem];
 	}

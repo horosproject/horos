@@ -480,7 +480,12 @@ static volatile int sendControllerObjects = 0;
 	[newServerList removeAllItems];
 	for( NSDictionary *d in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
 	{
-		[newServerList addItemWithTitle: [NSString stringWithFormat:@"%@ - %@",[d objectForKey:@"AETitle"],[d objectForKey:@"Description"]]];
+		NSString *title = [NSString stringWithFormat:@"%@ - %@",[d objectForKey:@"AETitle"],[d objectForKey:@"Description"]];
+		
+		while( [newServerList indexOfItemWithTitle: title] != -1)
+			title = [title stringByAppendingString: @" "];
+			
+		[newServerList addItemWithTitle: title];
 	}
 	
 	for( NSMenuItem *d in [newServerList itemArray])

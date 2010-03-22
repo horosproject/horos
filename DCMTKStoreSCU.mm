@@ -1197,7 +1197,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 							NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
 						}
 						
-						localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil];
+						localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil] retain];
 						[localException raise];
 					}
 					else
@@ -1316,7 +1316,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			if (tLayer == NULL)
 			{
 				NSLog(@"unable to create TLS transport layer");
-				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:@"unable to create TLS transport layer" userInfo:nil];
+				localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:@"unable to create TLS transport layer" userInfo:nil] retain];
 				[localException raise];
 			}
 			
@@ -1330,7 +1330,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 				{
 					if (TCS_ok != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
 					{
-						localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]] userInfo:nil];
+						localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]] userInfo:nil] retain];
 						[localException raise];
 					}
 				}
@@ -1354,7 +1354,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			
 			if (_dhparam && ! (tLayer->setTempDHParameters(_dhparam)))
 			{
-				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load temporary DH parameter file %s", _dhparam] userInfo:nil];
+				localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load temporary DH parameter file %s", _dhparam] userInfo:nil] retain];
 				[localException raise];
 			}
 			
@@ -1369,26 +1369,26 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 				
 				if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 				{
-					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil];
+					localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil] retain];
 					[localException raise];
 				}
 				
 				if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 				{
-					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil];
+					localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil] retain];
 					[localException raise];
 				}
 				
 				if (!tLayer->checkPrivateKeyMatchesCertificate())
 				{
-					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil];
+					localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil] retain];
 					[localException raise];
 				}
 			}
 			
 			if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
 			{
-				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:@"Unable to set selected cipher suites" userInfo:nil];
+				localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:@"Unable to set selected cipher suites" userInfo:nil] retain];
 				[localException raise];
 			}
 			
@@ -1407,7 +1407,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			if (cond.bad())
 			{
 				DimseCondition::dump(cond);
-				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+				localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 				[localException raise];
 			}
 		}
