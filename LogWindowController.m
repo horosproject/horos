@@ -106,7 +106,7 @@
 	
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO)
 	{
-		if( NSRunInformationalAlertPanel(@"Network Logs", @"Network Logs are currently off. Do you want to activate them?\r\rYou can activate or de-activate them in the Preferences - Listener window.", @"Activate", @"Cancel", nil) == 1)
+		if( NSRunInformationalAlertPanel( NSLocalizedString( @"Network Logs", nil), NSLocalizedString( @"Network Logs are currently off. Do you want to activate them?\r\rYou can activate or de-activate them in the Preferences - Listener window.", nil), NSLocalizedString( @"Activate", nil), NSLocalizedString( @"Cancel", nil), nil) == 1)
 		{
 			[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NETWORKLOGS"];
 			[[BrowserController currentBrowser] setNetworkLogs];
