@@ -2699,25 +2699,28 @@ extern "C"
 	
 	[sendToPopup removeAllItems];
 	
-	serversArray = [[[DCMNetServiceDelegate DICOMServersList] mutableCopy] autorelease];
-	
-	NSString *ip = [NSString stringWithCString:GetPrivateIP()];
-	[sendToPopup addItemWithTitle: [NSString stringWithFormat: NSLocalizedString( @"This Computer - %@/%@:%@", nil), [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], ip, [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]]];
-
-	[[sendToPopup menu] addItem: [NSMenuItem separatorItem]];
-	
-	for( NSUInteger i = 0; i < [serversArray count]; i++)
+	if( sendToPopup)
 	{
-		NSDictionary *server = [serversArray objectAtIndex: i];
+		serversArray = [[[DCMNetServiceDelegate DICOMServersList] mutableCopy] autorelease];
 		
-		NSString *title = [NSString stringWithFormat:@"%@ - %@/%@:%@", [server valueForKey:@"Description"], [server valueForKey:@"AETitle"], [server valueForKey:@"Address"], [server valueForKey:@"Port"]];
+		NSString *ip = [NSString stringWithCString:GetPrivateIP()];
+		[sendToPopup addItemWithTitle: [NSString stringWithFormat: NSLocalizedString( @"This Computer - %@/%@:%@", nil), [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], ip, [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]]];
+
+		[[sendToPopup menu] addItem: [NSMenuItem separatorItem]];
 		
-		while( [sendToPopup indexOfItemWithTitle: title] != -1)
-			title = [title stringByAppendingString: @" "];
-		
-		[sendToPopup addItemWithTitle: title];
-		
-		if( [[[sendToPopup lastItem] title] isEqualToString: previousItem]) [sendToPopup selectItemWithTitle: previousItem];
+		for( NSUInteger i = 0; i < [serversArray count]; i++)
+		{
+			NSDictionary *server = [serversArray objectAtIndex: i];
+			
+			NSString *title = [NSString stringWithFormat:@"%@ - %@/%@:%@", [server valueForKey:@"Description"], [server valueForKey:@"AETitle"], [server valueForKey:@"Address"], [server valueForKey:@"Port"]];
+			
+			while( [sendToPopup indexOfItemWithTitle: title] != -1)
+				title = [title stringByAppendingString: @" "];
+			
+			[sendToPopup addItemWithTitle: title];
+			
+			if( [title isEqualToString: previousItem]) [sendToPopup selectItemWithTitle: previousItem];
+		}
 	}
 	
 	[previousItem release];
