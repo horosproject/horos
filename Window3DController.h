@@ -58,8 +58,15 @@
 	IBOutlet OpacityTransferView	*OpacityView;
 	IBOutlet NSPopUpButton			*OpacityPopup;
     NSString						*curOpacityMenu;
+	
+#ifdef _STEREO_VISION_
+    short							FullScreenOn;
+#else
+	BOOL							FullScreenOn;
+#endif
+	
 
-    BOOL							FullScreenOn;
+//    BOOL							FullScreenOn;
 	NSWindow						*FullScreenWindow;
 	NSWindow						*StartingWindow;
 	NSView							*contentView;
