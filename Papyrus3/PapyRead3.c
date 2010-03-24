@@ -2947,24 +2947,29 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
 				return -1;
 			}
 			
-			if( *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead)
+			if( theArrElemP [theStructPos].element == 0x0000) // Retired attribute - UL Group Length
+				*ioBufPosP += theElemLength;
+			else
 			{
-				printf("****** err length : *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead -- BAD GROUP LENGTH - CORRUPTED DICOM FILE, %s\n", gPapyFilePath [inFileNb]);
-				RETURN (papReadGroup);
+				if( *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead)
+				{
+					printf("****** err length : *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead -- BAD GROUP LENGTH - CORRUPTED DICOM FILE, %s\n", gPapyFilePath [inFileNb]);
+					RETURN (papReadGroup);
+				}
+				
+				/* extract the element depending on the value representation */
+				  if ((theErr = PutBufferInElement3 (inFileNb, ioBuffP, theElemLength, &theArrElemP [theStructPos], ioBufPosP, theInitialFilePos)) < 0)
+				{
+					printf("****** err PutBufferInElement3, %s\n", gPapyFilePath [inFileNb]);
+					RETURN (theErr);  
+				}
+				
+				/* if it was a sequence with an undefined length, move the buffer accordingly */
+				if (theIsUndefSeqLen)
+				  *ioBufPosP += 8L;		//ANTOINE - au lieu de + !!!
+				
+				*ioBufPosP = ccval + theElemLength; //ANTOINE
 			}
-			
-            /* extract the element depending on the value representation */
-	          if ((theErr = PutBufferInElement3 (inFileNb, ioBuffP, theElemLength, &theArrElemP [theStructPos], ioBufPosP, theInitialFilePos)) < 0)
-			{
-				printf("****** err PutBufferInElement3, %s\n", gPapyFilePath [inFileNb]);
-			    RETURN (theErr);  
-            }
-			
-			/* if it was a sequence with an undefined length, move the buffer accordingly */
-            if (theIsUndefSeqLen)
-              *ioBufPosP += 8L;		//ANTOINE - au lieu de + !!!
-			
-			*ioBufPosP = ccval + theElemLength; //ANTOINE
 		  } /* if ...theElemLength > 0 */
         } /* else ...element found */
 	
