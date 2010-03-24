@@ -88,6 +88,19 @@
 #include "vtkCellArray.h"
 #include "vtkProperty2D.h"
 
+#ifdef _STEREO_VISION_
+// Added SilvanWidmer 10-08-09
+// ****************************
+#import	 "vtkCocoaGLView.h"
+#include "vtkCocoaRenderWindowInteractor.h"
+#include "vtkCocoaRenderWindow.h"
+#include "vtkParallelRenderManager.h"
+#include "vtkRendererCollection.h"
+#include "vtkCallbackCommand.h"
+#import	"VTKStereoVRView.h"
+// ****************************
+#endif
+
 #undef id
 
 class vtkMyCallbackVR;
@@ -131,6 +144,20 @@ typedef char* vtkVolumeTextureMapper3D;
 typedef char* vtkOrientationMarkerWidget;
 
 typedef char* vtkMyCallbackVR;
+
+#ifdef _STEREO_VISION_
+// ****************************
+// Added SilvanWidmer 10-08-09
+typedef char* vtkCocoaRenderWindowInteractor;
+typedef char* vtkCocoaRenderWindow;
+typedef char* vtkParallelRenderManager;
+typedef	char* vtkRenderWindow;
+typedef char* vtkRendererCollection;
+typedef char* vtkCocoaGLView;
+typedef char* vtkCallbackCommand;
+typedef char* VTKStereoVRView;
+// ****************************
+#endif
 #endif
 
 #include <Accelerate/Accelerate.h>
@@ -344,7 +371,26 @@ typedef char* vtkMyCallbackVR;
 	float superSampling;
 	BOOL dontResetImage, keep3DRotateCentered;
 	int fullDepthMode;
+	
+#ifdef _STEREO_VISION_
+	//Added SilvanWidmer 10-08-09
+	NSWindow						*LeftFullScreenWindow; 
+	NSWindow						*RightFullScreenWindow;   
+	BOOL							StereoVisionOn;
+	vtkCocoaGLView					*leftView;
+	VTKStereoVRView					*rightView;
+	NSWindow						*rootWindow;
+	NSView							*LeftContentView;
+	NSRect							rootSize;
+	NSSize							rootBorder;
+	vtkCallbackCommand				*rightResponder;
+#endif
 }
+
+#ifdef _STEREO_VISION_
+@property(readwrite) BOOL StereoVisionOn; 
+//@property(readonly) short currentTool;
+#endif
 
 @property BOOL dontUseAutoCropping, clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
 @property int projectionMode;
@@ -565,5 +611,12 @@ typedef char* vtkMyCallbackVR;
 // 3DConnexion SpaceNavigator
 - (void)connect2SpaceNavigator;
 void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageType, void *messageArgument);
+
+#ifdef _STEREO_VISION_
+//Added SilvanWidmer 27-08-09
+- (long) getTool: (NSEvent*) event;
+- (void) computeLength;
+- (void) generateROI;
+#endif
 
 @end

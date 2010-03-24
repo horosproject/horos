@@ -61,6 +61,22 @@
 #import <InstantMessage/IMService.h>
 #import <InstantMessage/IMAVManager.h>
 
+#ifdef _STEREO_VISION_
+// ****************************
+// Added SilvanWidmer 03-08-09
+#import "vtkCocoaGLView.h"
+#include "vtkRenderer.h"
+#include "vtkRenderWindow.h"
+#include "vtkRenderWindowInteractor.h"
+#include "vtkCocoaRenderWindowInteractor.h"
+#include "vtkCocoaRenderWindow.h"
+#include "vtkInteractorStyleTrackballCamera.h"
+#include "vtkParallelRenderManager.h"
+#include "vtkRendererCollection.h"
+// ****************************
+#endif
+
+
 
 #if USE3DCONNEXION
 #include <3DConnexionClient/ConnexionClientAPI.h>
@@ -181,6 +197,12 @@ public:
 };
 
 @implementation VRView
+
+#ifdef _STEREO_VISION_
+//added SilvanWidmer
+@synthesize StereoVisionOn;
+//@synthesize currentTool;
+#endif
 
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
 @synthesize lowResLODFactor, dontUseAutoCropping;
@@ -2641,6 +2663,8 @@ public:
 	[pixelInformation setStringValue: s];
 	
 	[drawLock unlock];
+	
+//	NSLog(@"Mouse moved!!");
 }
 
 - (float) scaleFactor
@@ -2722,6 +2746,8 @@ public:
 - (void)mouseDragged:(NSEvent *)theEvent
 {
 	//snVRView = self;
+	
+	//NSLog(@"Mouse dragged!!");
 	
 	_hasChanged = YES;
 
