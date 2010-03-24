@@ -9042,7 +9042,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	if( isSigned) *isSigned = NO;
 	if( offset) *offset = 0;
-	if( blendingView) allowSmartCropping = NO;
 	
 	if( 
 		#ifndef OSIRIX_LIGHT
@@ -9149,6 +9148,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						dontEnterReshape = YES;
 						[self setFrame: smartCroppedRect];
 						[self setOrigin: NSMakePoint( shiftOrigin.x, shiftOrigin.y)];
+						
+						if( blendingView && [self is2DViewer])
+							[[self windowController] propagateSettings];
 					}
 					
 					[self display];
@@ -9187,6 +9189,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						[self setFrame: cc];
 						[self setOrigin: oo];
+						
+						if( blendingView && [self is2DViewer])
+							[[self windowController] propagateSettings];
 					}
 					
 					dontEnterReshape = NO;
