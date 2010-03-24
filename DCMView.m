@@ -9143,8 +9143,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					NSPoint oo = [self origin];
 					NSRect cc = [self frame];
-					NSPoint boo;
-					NSRect bcc;
 					
 					if( smartCropped)
 					{
@@ -9156,9 +9154,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					[self display];
 					
 					if( smartCropped)
-					{
 						[[self superview] display];	// to avoid the 'white' screen behind
-					}
 					
 					glReadBuffer(GL_FRONT);
 					
