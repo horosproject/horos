@@ -2301,9 +2301,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[[win window] setFrame: frame display: NO];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-		[[AppController sharedAppController] tileWindows: self];
+		[[AppController sharedAppController] tileWindows: nil];
 	else
-		[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
+		[[AppController sharedAppController] checkAllWindowsAreVisible: nil makeKey: YES];
 	
 	return win;
 }
