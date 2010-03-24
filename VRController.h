@@ -143,6 +143,16 @@
 	BOOL					firstTimeDisplayed;
 	
 	NSTimeInterval			flyThruRecordingTimeFrame;
+	
+#ifdef _STEREO_VISION_
+	//Added SilvanWidmer 26-08-09
+	
+	IBOutlet NSWindow       *VRGeometrieSettingsWindow;
+	IBOutlet NSTextField    *distanceValue;
+	IBOutlet NSTextField	*heightValue;
+	IBOutlet NSTextField	*eyeDistance;
+	IBOutlet NSView        *stereoIconView;
+#endif
 }
 
 - (IBAction) applyConvolution:(id) sender;
