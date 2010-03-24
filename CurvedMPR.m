@@ -285,7 +285,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 //			[viewerController setCurvedController: self];
 //			
 //			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-//				[appController tileWindows: self];
+//				[appController tileWindows: nil];
 //			else
 //				[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 //		}
@@ -582,7 +582,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			[viewerController setCurvedController: self];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-				[appController tileWindows: self];
+				[appController tileWindows: nil];
 			else
 				[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 		}
@@ -962,7 +962,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				[[viewerController imageView] setRotation:90];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-				[appController tileWindows: self];
+				[appController tileWindows: nil];
 			else
 				[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 		}

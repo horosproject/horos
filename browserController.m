@@ -7909,7 +7909,7 @@ static NSArray*	statesArray = nil;
 			[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
 		}
 		
-		[[AppController sharedAppController] tileWindows: self];
+		[[AppController sharedAppController] tileWindows: nil];
 	}
 }
 
@@ -12147,7 +12147,7 @@ static BOOL needToRezoom;
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 			{
-				[[AppController sharedAppController] tileWindows: self];
+				[[AppController sharedAppController] tileWindows: nil];
 				
 				if( [viewers count] > 1)
 				{
@@ -19004,7 +19004,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
 	}
 	
-	[[AppController sharedAppController] tileWindows: self];
+	[[AppController sharedAppController] tileWindows: nil];
 }
 
 - (BOOL)validateToolbarItem: (NSToolbarItem *)toolbarItem

@@ -123,7 +123,7 @@ static NavigatorWindowController *nav = nil;
 	[[self window] setFrame: r display:YES];
 	
 	if( r.size.height != height && withTiling == YES)
-		[[AppController sharedAppController] tileWindows:self];
+		[[AppController sharedAppController] tileWindows: nil];
 	
 	dontReEnter = NO;
 }

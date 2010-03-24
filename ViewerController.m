@@ -2320,7 +2320,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) tileWindows
 {
-	[[AppController sharedAppController] tileWindows: self];
+	[[AppController sharedAppController] tileWindows: nil];
 }
 
 - (NSRect)windowWillUseStandardFrame:(NSWindow *)sender defaultFrame:(NSRect)defaultFrame
@@ -3972,7 +3972,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		XMLController * xmlController = [[XMLController alloc] initWithImage: im windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]] viewer: self];
 		
-		[[AppController sharedAppController] tileWindows: self];
+		[[AppController sharedAppController] tileWindows: nil];
 		
 		for( int i = 0; i < 15 ; i++)
 		{
@@ -5891,7 +5891,7 @@ static ViewerController *draggedController = nil;
 	{
 		delayedTileWindows = NO;
 		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
-		[[AppController sharedAppController] tileWindows: self];
+		[[AppController sharedAppController] tileWindows: nil];
 	}
 
 	BOOL		sameSeries = NO;
@@ -18386,7 +18386,7 @@ int i,j,l;
 	{
 		delayedTileWindows = NO;
 		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
-		[[AppController sharedAppController] tileWindows: self];
+		[[AppController sharedAppController] tileWindows: nil];
 	}
 	
 	[[BrowserController currentBrowser] loadNextPatient:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
@@ -18461,7 +18461,7 @@ int i,j,l;
 	{
 		delayedTileWindows = NO;
 		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
-		[[AppController sharedAppController] tileWindows: self];
+		[[AppController sharedAppController] tileWindows: nil];
 	}
 	// tag=-1 backwards, tag=1 forwards, tag=3 ???
 	if( [sender tag] == 3)
@@ -19306,7 +19306,7 @@ sourceRef);
 		
 		NavigatorWindowController *navigatorWindowController = [[NavigatorWindowController alloc] initWithViewer:self];
 		[navigatorWindowController showWindow:self];
-		[[AppController sharedAppController] tileWindows: self];
+		[[AppController sharedAppController] tileWindows: nil];
 	}
 	else [[NavigatorWindowController navigatorWindowController] setViewer:self];
 }
