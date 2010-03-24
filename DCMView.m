@@ -1207,7 +1207,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) blendingPropagate
 {
-	if( blendingView )
+	if( blendingView)
 	{
 		blendingView.scaleValue = scaleValue;
 		
