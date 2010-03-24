@@ -9004,6 +9004,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	frameRect.size = rectSize;
 	frameRect.origin.x = frameRect.origin.y = 0;
 	
+	if( usefulRect.size.width < 256)
+	{
+		usefulRect.origin.x -= (int) ((256 - usefulRect.size.width) / 2);
+		usefulRect.size.width = 256;
+	}
+	
+	if( usefulRect.size.height < 256)
+	{
+		usefulRect.origin.y -= (int) ((256 - usefulRect.size.height) / 2);
+		usefulRect.size.height = 256;
+	}
+	
 	NSRect smartRect = NSIntersectionRect( frameRect, usefulRect);
 	
 	if( ori)
