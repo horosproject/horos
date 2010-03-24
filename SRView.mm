@@ -49,6 +49,21 @@
 
 #include "vtkVectorText.h"
 #include "vtkFollower.h"
+#ifdef _STEREO_VISION_
+// ****************************
+// Added SilvanWidmer 03-08-09
+#import "vtkCocoaGLView.h"
+#include "vtkRenderer.h"
+#include "vtkRenderWindow.h"
+#include "vtkRenderWindowInteractor.h"
+#include "vtkCocoaRenderWindowInteractor.h"
+#include "vtkCocoaRenderWindow.h"
+#include "vtkInteractorStyleTrackballCamera.h"
+#include "vtkParallelRenderManager.h"
+#include "vtkRendererCollection.h"
+// ****************************
+#endif
+
 
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
@@ -98,6 +113,12 @@ typedef struct _xyzArray
 //}
 
 @implementation SRView
+#ifdef _STEREO_VISION_
+//added SilvanWidmer
+@synthesize StereoVisionOn;
+@synthesize currentTool;
+#endif
+
 
 - (void) print:(id) sender
 {

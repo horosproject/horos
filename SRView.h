@@ -88,6 +88,19 @@
 #include "vtkAnnotatedCubeActor.h"
 #include "vtkOrientationMarkerWidget.h"
 #include "vtkTextProperty.h"
+#ifdef _STEREO_VISION_
+// Added SilvanWidmer 10-08-09
+// ****************************
+#import	 "vtkCocoaGLView.h"
+#include "vtkCocoaRenderWindowInteractor.h"
+#include "vtkCocoaRenderWindow.h"
+#include "vtkParallelRenderManager.h"
+#include "vtkRendererCollection.h"
+#include "vtkCallbackCommand.h"
+#import "VTKStereoSRView.h"
+// ****************************
+#endif
+
 #undef id
 
 class vtkMyCallback;
@@ -132,6 +145,20 @@ typedef char* vtkPolyDataNormals;
 typedef char* vtkRenderer;
 typedef char* vtkOrientationMarkerWidget;
 
+#ifdef _STEREO_VISION_
+// ****************************
+// Added SilvanWidmer 10-08-09
+typedef char* vtkCocoaRenderWindowInteractor;
+typedef char* vtkCocoaRenderWindow;
+typedef char* vtkParallelRenderManager;
+typedef	char* vtkRenderWindow;
+typedef char* vtkRendererCollection;
+typedef char* vtkCocoaGLView;
+typedef char* vtkCallbackCommand;
+typedef char* VTKStereoSRView;
+// ****************************
+#endif
+
 #endif
 
 #include <Accelerate/Accelerate.h>
@@ -141,6 +168,25 @@ typedef char* vtkOrientationMarkerWidget;
 @class Camera;
 @class SRController;
 @class DICOMExport;
+
+#ifdef _STEREO_VISION_
+typedef struct renderSurface
+{
+	long actor;
+	float resolution;
+	float transparency;
+	float r;
+	float g;
+	float b;
+	float isocontour;
+	float decimateVal;
+	BOOL useDecimate;
+	BOOL useSmooth;
+	long smoothVal;
+} renderSurface;
+
+#endif
+
 
 
 /** \brief Surface Rendering View */
@@ -266,7 +312,30 @@ typedef char* vtkOrientationMarkerWidget;
 	NSTimer			*snCloseEventTimer;
 	BOOL			snStopped;
 	UInt16			snConnexionClientID;
+	
+#ifdef _STEREO_VISION_
+	//Added SilvanWidmer 10-08-09
+	NSWindow						*LeftFullScreenWindow; 
+	NSWindow						*RightFullScreenWindow;   
+	BOOL							StereoVisionOn;
+	vtkCocoaGLView					*leftView;
+	VTKStereoSRView					*rightView;
+	NSWindow						*rootWindow;
+	NSView							*LeftContentView;
+	NSRect							rootSize;
+	NSSize							rootBorder;
+	
+	renderSurface					first;
+	renderSurface					second;
+	vtkCallbackCommand				*rightResponder;
+#endif
+	
 }
+
+#ifdef _STEREO_VISION_
+@property(readwrite) BOOL StereoVisionOn; 
+@property(readonly) short currentTool;
+#endif
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
 -(NSDate*) startRenderingTime;
@@ -359,5 +428,9 @@ typedef char* vtkOrientationMarkerWidget;
 // 3DConnexion SpaceNavigator
 - (void)connect2SpaceNavigator;
 void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageType, void *messageArgument);
+#ifdef _STEREO_VISION_
+//Added SilvanWidmer 27-08-09
+- (long) getTool: (NSEvent*) event;
+#endif
 
 @end
