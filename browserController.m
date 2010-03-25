@@ -16293,7 +16293,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	long				serieCount = 0;
 	NSMutableArray		*result = [NSMutableArray array];
 	NSMutableArray		*files2Compress = [NSMutableArray array];
-	BOOL				exportROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddROIsForExport"];
 	DicomStudy			*previousStudy = nil;
 	BOOL				exportAborted = NO;
 	NSMutableArray		*renameArray = [NSMutableArray array];
@@ -16307,16 +16306,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
 		NSString		*extension = [[filesToExport objectAtIndex:i] pathExtension];
-		NSString		*roiFolder = nil;
 		
 		if( [curImage valueForKey: @"fileType"])
 		{
 			if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"]) extension = [NSString stringWithString:@"dcm"];
 		}
-		
-		NSArray	*roiFiles = nil;
-		if( exportROIs)
-			roiFiles = [curImage valueForKey: @"SRPaths"];
 		
 		if([extension isEqualToString:@""]) extension = [NSString stringWithString:@"dcm"]; 
 		
@@ -16403,14 +16397,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 			
 			studyPath = tempPath;
-			
-			// Find the ROIs folder
-			if( [roiFiles count])
-			{
-				roiFolder = [tempPath stringByAppendingPathComponent:@"ROI"];
-				
-				if (![[NSFileManager defaultManager] fileExistsAtPath: roiFolder]) [[NSFileManager defaultManager] createDirectoryAtPath: roiFolder attributes:nil];
-			}
 			
 			NSNumber *seriesId = [curImage valueForKeyPath: @"series.id"];
 			NSString *seriesName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]]];
@@ -16538,28 +16524,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
 		{
 			[[NSFileManager defaultManager] copyPath:[[[filesToExport objectAtIndex:i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dest stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-		}
-		
-		if( [roiFiles count])
-		{
-			for( NSString *roiFile in roiFiles)
-			{
-				NSString	*destROIPath = [roiFolder stringByAppendingPathComponent: [roiFile lastPathComponent]];
-				
-				if( addDICOMDIR)
-					destROIPath = [[destROIPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat:@"%4.4d", 1]];
-				
-				t = 2;
-				while( [[NSFileManager defaultManager] fileExistsAtPath: destROIPath])
-				{
-					destROIPath = [[destROIPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat:@"%4.4d", t]];
-					t++;
-				}
-				
-				[[NSFileManager defaultManager] copyPath: roiFile
-												  toPath: destROIPath
-												 handler: nil];
-			}
 		}
 		
 		[splash incrementBy:1];
@@ -16834,11 +16798,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[self checkResponder];
 		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
-		{
-			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: YES];
-			NSLog(@"Files from contextual menu: %d", [filesToExport count]);
-		}
-		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
+			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: NO];
+		else
+			filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
 		
 		[wait close];
 		[wait release];
