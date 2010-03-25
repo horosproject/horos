@@ -16802,6 +16802,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 		else
 			filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
 		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AddROIsForExport" == NO)
+		{
+			NSPredicate *predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX ROI SR", @"5002"];
+			dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
+			
+			filesToExport = [dicomFiles2Export valueForKey: @"completePath"];
+		}
+		
 		[wait close];
 		[wait release];
 		
