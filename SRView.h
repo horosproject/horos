@@ -12,9 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import <AppKit/AppKit.h>
 
 #import "DCMPix.h"
@@ -187,14 +184,13 @@ typedef struct renderSurface
 
 #endif
 
-
+#ifdef __cplusplus
+#else
+#define VTKView NSView
+#endif
 
 /** \brief Surface Rendering View */
-#ifdef __cplusplus
 @interface SRView : VTKView
-#else
-@interface SRView : NSObject
-#endif
 {
 	int							projectionMode;
     NSMutableArray				*blendingPixList;
