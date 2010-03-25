@@ -108,9 +108,6 @@
 	self.ww = newWw;
 }
 
-
-
-
 -(NSString*) description
 {
 	NSMutableString *desc = [NSMutableString stringWithCapacity:0];

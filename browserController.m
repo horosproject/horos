@@ -16807,7 +16807,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			NSPredicate *predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX ROI SR", @"5002"];
 			dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
 			
-			filesToExport = [dicomFiles2Export valueForKey: @"completePath"];
+			filesToExport = [[[dicomFiles2Export valueForKey: @"completePath"] mutableCopy] autorelease];
 		}
 		
 		[wait close];

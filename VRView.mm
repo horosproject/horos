@@ -6871,8 +6871,11 @@ public:
 	parallelScale = [cam parallelScale];
 	
 	// window level
-	if(!advancedCLUT)
-		[self setWLWW:[cam wl] :[cam ww]];
+	if( !advancedCLUT)
+	{
+		if( [cam ww] > 1)
+			[self setWLWW:[cam wl] :[cam ww]];
+	}
 	
 	// cropping box
 	double a[ 6];

@@ -214,6 +214,24 @@
 		84A220E90F25E41800C6C3EB /* Keys.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E70F25E41800C6C3EB /* Keys.tif */; };
 		84A679060EEECF2F00AE5C98 /* jpeg_memsrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */; };
 		84A6790E0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */; };
+		84ADF472115B622D00FE18B2 /* SRController+StereoVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF460115B622D00FE18B2 /* SRController+StereoVision.h */; };
+		84ADF473115B622D00FE18B2 /* SRController+StereoVision.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF461115B622D00FE18B2 /* SRController+StereoVision.mm */; };
+		84ADF474115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF462115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.h */; };
+		84ADF475115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.m in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF463115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.m */; };
+		84ADF476115B622D00FE18B2 /* SRView+StereoVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF464115B622D00FE18B2 /* SRView+StereoVision.h */; };
+		84ADF477115B622D00FE18B2 /* SRView+StereoVision.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF465115B622D00FE18B2 /* SRView+StereoVision.mm */; };
+		84ADF478115B622D00FE18B2 /* VRController+StereoVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF466115B622D00FE18B2 /* VRController+StereoVision.h */; };
+		84ADF479115B622D00FE18B2 /* VRController+StereoVision.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF467115B622D00FE18B2 /* VRController+StereoVision.mm */; };
+		84ADF47A115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF468115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.h */; };
+		84ADF47B115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.m in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF469115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.m */; };
+		84ADF47C115B622D00FE18B2 /* VRView+StereoVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF46A115B622D00FE18B2 /* VRView+StereoVision.h */; };
+		84ADF47D115B622D00FE18B2 /* VRView+StereoVision.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF46B115B622D00FE18B2 /* VRView+StereoVision.mm */; };
+		84ADF47E115B622D00FE18B2 /* VTKStereoSRView.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF46C115B622D00FE18B2 /* VTKStereoSRView.h */; };
+		84ADF47F115B622D00FE18B2 /* VTKStereoSRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF46D115B622D00FE18B2 /* VTKStereoSRView.mm */; };
+		84ADF480115B622D00FE18B2 /* VTKStereoVRView.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF46E115B622D00FE18B2 /* VTKStereoVRView.h */; };
+		84ADF481115B622D00FE18B2 /* VTKStereoVRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF46F115B622D00FE18B2 /* VTKStereoVRView.mm */; };
+		84ADF482115B622D00FE18B2 /* Window3DController+StereoVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF470115B622D00FE18B2 /* Window3DController+StereoVision.h */; };
+		84ADF483115B622D00FE18B2 /* Window3DController+StereoVision.m in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF471115B622D00FE18B2 /* Window3DController+StereoVision.m */; };
 		84C4510B10033B8100138F70 /* OSIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C450F51003384000138F70 /* OSIWindow.m */; };
 		84C4510C10033B8200138F70 /* OSIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C450F41003384000138F70 /* OSIWindow.h */; };
 		84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
@@ -8163,6 +8181,24 @@
 		84A220E70F25E41800C6C3EB /* Keys.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Keys.tif; sourceTree = "<group>"; };
 		84A679050EEECF2F00AE5C98 /* jpeg_memsrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jpeg_memsrc.c; path = Papyrus3/jpeg_memsrc.c; sourceTree = "<group>"; };
 		84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpeg_memsrc.h; path = Papyrus3/jpeg_memsrc.h; sourceTree = "<group>"; };
+		84ADF460115B622D00FE18B2 /* SRController+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SRController+StereoVision.h"; sourceTree = "<group>"; };
+		84ADF461115B622D00FE18B2 /* SRController+StereoVision.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "SRController+StereoVision.mm"; sourceTree = "<group>"; };
+		84ADF462115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SRFlyThruAdapter+StereoVision.h"; sourceTree = "<group>"; };
+		84ADF463115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SRFlyThruAdapter+StereoVision.m"; sourceTree = "<group>"; };
+		84ADF464115B622D00FE18B2 /* SRView+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SRView+StereoVision.h"; sourceTree = "<group>"; };
+		84ADF465115B622D00FE18B2 /* SRView+StereoVision.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "SRView+StereoVision.mm"; sourceTree = "<group>"; };
+		84ADF466115B622D00FE18B2 /* VRController+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "VRController+StereoVision.h"; sourceTree = "<group>"; };
+		84ADF467115B622D00FE18B2 /* VRController+StereoVision.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "VRController+StereoVision.mm"; sourceTree = "<group>"; };
+		84ADF468115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "VRFlyThruAdapter+StereoVision.h"; sourceTree = "<group>"; };
+		84ADF469115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "VRFlyThruAdapter+StereoVision.m"; sourceTree = "<group>"; };
+		84ADF46A115B622D00FE18B2 /* VRView+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "VRView+StereoVision.h"; sourceTree = "<group>"; };
+		84ADF46B115B622D00FE18B2 /* VRView+StereoVision.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "VRView+StereoVision.mm"; sourceTree = "<group>"; };
+		84ADF46C115B622D00FE18B2 /* VTKStereoSRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTKStereoSRView.h; sourceTree = "<group>"; };
+		84ADF46D115B622D00FE18B2 /* VTKStereoSRView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VTKStereoSRView.mm; sourceTree = "<group>"; };
+		84ADF46E115B622D00FE18B2 /* VTKStereoVRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTKStereoVRView.h; sourceTree = "<group>"; };
+		84ADF46F115B622D00FE18B2 /* VTKStereoVRView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VTKStereoVRView.mm; sourceTree = "<group>"; };
+		84ADF470115B622D00FE18B2 /* Window3DController+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Window3DController+StereoVision.h"; sourceTree = "<group>"; };
+		84ADF471115B622D00FE18B2 /* Window3DController+StereoVision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Window3DController+StereoVision.m"; sourceTree = "<group>"; };
 		84C450F41003384000138F70 /* OSIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWindow.h; sourceTree = "<group>"; };
 		84C450F51003384000138F70 /* OSIWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIWindow.m; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
@@ -12036,6 +12072,7 @@
 				CE3E695707AFB6A800541E20 /* Curved MPR */,
 				AB2C25060677863100A08910 /* Plugins */,
 				AB154F8A0627414000BD57AF /* SR 3D */,
+				84ADF45B115B61D200FE18B2 /* StereoVision */,
 				CE0E094306A108E000F2C01C /* ThickSlabVR */,
 				AB6AC6650624AC5C00AFC7AF /* VR/MIP 3D */,
 				183C862E08563EF0000E6A68 /* Fly Thru */,
@@ -12581,6 +12618,31 @@
 				BFF5D23F09F93B3F0077E16B /* LogManager.mm */,
 			);
 			name = "Log Window";
+			sourceTree = "<group>";
+		};
+		84ADF45B115B61D200FE18B2 /* StereoVision */ = {
+			isa = PBXGroup;
+			children = (
+				84ADF460115B622D00FE18B2 /* SRController+StereoVision.h */,
+				84ADF461115B622D00FE18B2 /* SRController+StereoVision.mm */,
+				84ADF462115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.h */,
+				84ADF463115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.m */,
+				84ADF464115B622D00FE18B2 /* SRView+StereoVision.h */,
+				84ADF465115B622D00FE18B2 /* SRView+StereoVision.mm */,
+				84ADF466115B622D00FE18B2 /* VRController+StereoVision.h */,
+				84ADF467115B622D00FE18B2 /* VRController+StereoVision.mm */,
+				84ADF468115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.h */,
+				84ADF469115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.m */,
+				84ADF46A115B622D00FE18B2 /* VRView+StereoVision.h */,
+				84ADF46B115B622D00FE18B2 /* VRView+StereoVision.mm */,
+				84ADF46C115B622D00FE18B2 /* VTKStereoSRView.h */,
+				84ADF46D115B622D00FE18B2 /* VTKStereoSRView.mm */,
+				84ADF46E115B622D00FE18B2 /* VTKStereoVRView.h */,
+				84ADF46F115B622D00FE18B2 /* VTKStereoVRView.mm */,
+				84ADF470115B622D00FE18B2 /* Window3DController+StereoVision.h */,
+				84ADF471115B622D00FE18B2 /* Window3DController+StereoVision.m */,
+			);
+			name = StereoVision;
 			sourceTree = "<group>";
 		};
 		A90D665D094D7071000B425B /* Endoscopy */ = {
@@ -19226,6 +19288,15 @@
 				AB10FB671129338A009EB238 /* NSView+N2.h in Headers */,
 				AB10FB691129338A009EB238 /* NSImageView+N2.h in Headers */,
 				AB10FB6B1129338A009EB238 /* ISO8601DateFormatter.h in Headers */,
+				84ADF472115B622D00FE18B2 /* SRController+StereoVision.h in Headers */,
+				84ADF474115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.h in Headers */,
+				84ADF476115B622D00FE18B2 /* SRView+StereoVision.h in Headers */,
+				84ADF478115B622D00FE18B2 /* VRController+StereoVision.h in Headers */,
+				84ADF47A115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.h in Headers */,
+				84ADF47C115B622D00FE18B2 /* VRView+StereoVision.h in Headers */,
+				84ADF47E115B622D00FE18B2 /* VTKStereoSRView.h in Headers */,
+				84ADF480115B622D00FE18B2 /* VTKStereoVRView.h in Headers */,
+				84ADF482115B622D00FE18B2 /* Window3DController+StereoVision.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23634,6 +23705,15 @@
 				AB10FB681129338A009EB238 /* NSView+N2.mm in Sources */,
 				AB10FB6A1129338A009EB238 /* NSImageView+N2.mm in Sources */,
 				AB10FB6C1129338A009EB238 /* ISO8601DateFormatter.m in Sources */,
+				84ADF473115B622D00FE18B2 /* SRController+StereoVision.mm in Sources */,
+				84ADF475115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.m in Sources */,
+				84ADF477115B622D00FE18B2 /* SRView+StereoVision.mm in Sources */,
+				84ADF479115B622D00FE18B2 /* VRController+StereoVision.mm in Sources */,
+				84ADF47B115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.m in Sources */,
+				84ADF47D115B622D00FE18B2 /* VRView+StereoVision.mm in Sources */,
+				84ADF47F115B622D00FE18B2 /* VTKStereoSRView.mm in Sources */,
+				84ADF481115B622D00FE18B2 /* VTKStereoVRView.mm in Sources */,
+				84ADF483115B622D00FE18B2 /* Window3DController+StereoVision.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25510,6 +25590,7 @@
 				GCC_FAST_OBJC_DISPATCH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = _STEREO_VISION_;
 				GCC_VERSION = 4.2;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
@@ -25687,6 +25768,7 @@
 				GCC_FAST_OBJC_DISPATCH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = _STEREO_VISION_;
 				GCC_VERSION = 4.2;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				HEADER_SEARCH_PATHS = (
@@ -25987,6 +26069,7 @@
 				GCC_FAST_OBJC_DISPATCH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = _STEREO_VISION_;
 				GCC_VERSION = 4.2;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				HEADER_SEARCH_PATHS = (
