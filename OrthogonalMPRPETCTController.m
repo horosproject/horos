@@ -161,13 +161,20 @@
 
 	if ([originalView dcmPixList] != nil)
 	{
-		originalScaleValue = [originalView scaleValue];
-		originalRotation = [originalView rotation];
-		originalOrigin = [originalView origin];
-		originalOldValues = YES;
-		originalFlippedX = [originalView xFlipped];
-		originalFlippedY = [originalView yFlipped];
-		blendingFactor = [originalView blendingFactor];
+		if( sender == originalView && self == [viewer PETController])
+		{
+			NSLog( @"");
+		}
+		else
+		{
+			originalScaleValue = [originalView scaleValue];
+			originalRotation = [originalView rotation];
+			originalOrigin = [originalView origin];
+			originalOldValues = YES;
+			originalFlippedX = [originalView xFlipped];
+			originalFlippedY = [originalView yFlipped];
+			blendingFactor = [originalView blendingFactor];
+		}
 	}
 
 	if ([xReslicedView dcmPixList] != nil)
@@ -255,6 +262,7 @@
 		[yReslicedView setYFlipped:yFlippedY];
 
 	}
+	
 	if(originalOldValues) 
 	{
 		// scale
