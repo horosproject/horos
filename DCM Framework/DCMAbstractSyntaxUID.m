@@ -430,8 +430,6 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			OphthalmicPhotography8BitImageStorage,
 			OphthalmicPhotography16BitImageStorage,
 			FujiPrivateCR,
-			MRSpectroscopyStorage,
-//			RawDataStorage,
 			nil] retain];
 	
 
@@ -521,7 +519,9 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 {
 	// Dont forget to add them to PapyFiles3.c PapyFileOpen
 	
-	return sopClassUID != nil && ([sopClassUID hasPrefix: @"1.3.46.670589"]); // Philips
+	return sopClassUID != nil && (  [sopClassUID hasPrefix: @"1.3.46.670589"] ||
+									[sopClassUID hasPrefix: MRSpectroscopyStorage] ||
+									[sopClassUID hasPrefix: RawDataStorage]);
 }
 
 		// Waveforms ...

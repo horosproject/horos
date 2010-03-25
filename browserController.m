@@ -5460,7 +5460,7 @@ static NSArray*	statesArray = nil;
 			
 			if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
 			{
-				NSArray		*imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
+				NSArray	*imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
 				
 				[correspondingManagedObjects addObjectsFromArray: imagesArray];
 			}
@@ -5473,7 +5473,7 @@ static NSArray*	statesArray = nil;
 				
 				for( NSManagedObject *obj in seriesArray)
 				{
-					NSArray		*imagesArray = [self imagesArray: obj onlyImages: onlyImages];
+					NSArray	*imagesArray = [self imagesArray: obj onlyImages: onlyImages];
 					
 					totImage += [imagesArray count];
 					
@@ -16290,14 +16290,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 	Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", nil) :YES];
 	BOOL				addDICOMDIR = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddDICOMDIRForExport"];
 	long				previousSeries = -1;
-	long				serieCount		= 0;
+	long				serieCount = 0;
 	NSMutableArray		*result = [NSMutableArray array];
 	NSMutableArray		*files2Compress = [NSMutableArray array];
 	BOOL				exportROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddROIsForExport"];
 	DicomStudy			*previousStudy = nil;
 	BOOL				exportAborted = NO;
 	NSMutableArray		*renameArray = [NSMutableArray array];
-	
 	
 	[splash setCancel:YES];
 	[splash showWindow:self];
@@ -16839,7 +16838,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: YES];
 			NSLog(@"Files from contextual menu: %d", [filesToExport count]);
 		}
-		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: YES];
+		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
 		
 		[wait close];
 		[wait release];

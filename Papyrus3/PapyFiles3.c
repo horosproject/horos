@@ -346,6 +346,9 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 										if( strncmp( "1.3.46.670589", gSOPClassUID[ theFileNb], strlen( "1.3.46.670589")) == 0) // Philips Private Storage
 											isImage = 0;
 										
+										if( strncmp( "1.2.840.10008.5.1.4.1.1.66", gSOPClassUID[ theFileNb], strlen( "1.2.840.10008.5.1.4.1.1.66")) == 0) // Raw Data
+											isImage = 0;
+										
 									}
 									theErr = Papy3GroupFree (&theGroupP, TRUE);
 								}

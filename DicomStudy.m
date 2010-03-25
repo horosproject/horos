@@ -483,8 +483,7 @@ NSString* soundex4( NSString *inString)
 		{
 			for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
 			{
-				if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO)
-					sum += [[s valueForKey:@"noFilesExcludingMultiFrames"] intValue];
+				sum += [[s valueForKey:@"noFilesExcludingMultiFrames"] intValue];
 			}
 		}
 		@catch (NSException * e) 
@@ -515,7 +514,9 @@ NSString* soundex4( NSString *inString)
 			
 			for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
 			{
-				if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO)
+				if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
+					[DCMAbstractSyntaxUID isSupportedPrivateClasses: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
+					[DCMAbstractSyntaxUID isPresentationState: [s valueForKey: @"seriesSOPClassUID"]] == NO)
 				{
 					sum += [[s valueForKey:@"noFiles"] intValue];
 					
