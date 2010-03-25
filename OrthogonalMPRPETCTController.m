@@ -156,25 +156,18 @@
 	
 	NSPoint originalOrigin, xOrigin, yOrigin;
 	
-	BOOL	originalOldValues, xOldValues, yOldValues, originalFlippedX, xFlippedX, yFlippedX, originalFlippedY, xFlippedY, yFlippedY;
+	BOOL originalOldValues, xOldValues, yOldValues, originalFlippedX, xFlippedX, yFlippedX, originalFlippedY, xFlippedY, yFlippedY;
 	originalOldValues = xOldValues = yOldValues = originalFlippedX = xFlippedX = yFlippedX = originalFlippedY = xFlippedY = yFlippedY = NO;
 
 	if ([originalView dcmPixList] != nil)
 	{
-		if( sender == originalView && self == [viewer PETController])
-		{
-			NSLog( @"");
-		}
-		else
-		{
-			originalScaleValue = [originalView scaleValue];
-			originalRotation = [originalView rotation];
-			originalOrigin = [originalView origin];
-			originalOldValues = YES;
-			originalFlippedX = [originalView xFlipped];
-			originalFlippedY = [originalView yFlipped];
-			blendingFactor = [originalView blendingFactor];
-		}
+		originalScaleValue = [originalView scaleValue];
+		originalRotation = [originalView rotation];
+		originalOrigin = [originalView origin];
+		originalOldValues = YES;
+		originalFlippedX = [originalView xFlipped];
+		originalFlippedY = [originalView yFlipped];
+		blendingFactor = [originalView blendingFactor];
 	}
 
 	if ([xReslicedView dcmPixList] != nil)

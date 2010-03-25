@@ -350,7 +350,7 @@
 
 - (void) blendingPropagateOriginal:(OrthogonalMPRView*) sender
 {
-	float fValue = [sender scaleValue] / [sender pixelSpacing];
+	double fValue = [sender scaleValue] / [sender pixelSpacing];
 	[originalView setScaleValue: fValue * [originalView pixelSpacing]];
 	[originalView setRotation: [sender rotation]];
 	
@@ -375,7 +375,7 @@
 
 - (void) blendingPropagateX:(OrthogonalMPRView*) sender
 {
-	float fValue = [sender scaleValue] / [sender pixelSpacing];
+	double fValue = [sender scaleValue] / [sender pixelSpacing];
 	[xReslicedView setScaleValue: fValue * [xReslicedView pixelSpacing]];
 	[xReslicedView setRotation: [sender rotation]];
 
@@ -401,7 +401,7 @@
 
 - (void) blendingPropagateY:(OrthogonalMPRView*) sender
 {
-	float fValue = [sender scaleValue] / [sender pixelSpacing];
+	double fValue = [sender scaleValue] / [sender pixelSpacing];
 	[yReslicedView setScaleValue: fValue * [yReslicedView pixelSpacing]];
 	[yReslicedView setRotation: [sender rotation]];
 
