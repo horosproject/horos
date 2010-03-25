@@ -68,7 +68,7 @@
 			{
 				if( [currentAETitle isEqualToString: [[serverList objectAtIndex: i] valueForKey: @"AETitle"]])
 				{
-					NSRunInformationalAlertPanel(NSLocalizedString(@"Same AETitle", 0L), [NSString stringWithFormat: NSLocalizedString(@"This AETitle is not unique: %@. AETitles should be unique, otherwise Q&R (C-Move SCP/SCU) can fail.", 0L), currentAETitle], NSLocalizedString(@"OK",nil), nil, nil);
+					NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"Same AETitle", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), [NSString stringWithFormat: NSLocalizedStringFromTableInBundle(@"This AETitle is not unique: %@. AETitles should be unique, otherwise Q&R (C-Move SCP/SCU) can fail.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), currentAETitle], NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil, nil);
 					
 					i = [serverList count];
 					x = [serverList count];
@@ -398,9 +398,9 @@
 	[NSData dataWithContentsOfURL: url options: 0 error: &error];
 	
 	if( error)
-		NSRunCriticalAlertPanel( NSLocalizedString( @"URL download Error", nil), [error localizedDescription], NSLocalizedString( @"OK", nil), nil, nil);
+		NSRunCriticalAlertPanel( NSLocalizedStringFromTableInBundle( @"URL download Error", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), [error localizedDescription], NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil, nil);
 	else
-		NSRunInformationalAlertPanel( NSLocalizedString( @"URL download Succeeded", nil), NSLocalizedString( @"It works !", nil), NSLocalizedString( @"OK", nil), nil, nil);
+		NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle( @"URL download Succeeded", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"It works !", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil, nil);
 }
 
 - (IBAction) editWADO: (id) sender
@@ -457,7 +457,7 @@
 
 	[sPanel setRequiredFileType:@"plist"];
 	
-	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"OsiriXDB.plist", nil)] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModalForDirectory:0L file:NSLocalizedStringFromTableInBundle(@"OsiriXDB.plist", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil)] == NSFileHandlingPanelOKButton)
 	{
 		[[osiriXServers arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
 	}
@@ -480,9 +480,9 @@
 				
 				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 			}
-			else NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L), NSLocalizedString(@"Cannot download data from this URL.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+			else NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"URL Invalid", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), NSLocalizedStringFromTableInBundle(@"Cannot download data from this URL.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil, nil);
 		}
-		else NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L), NSLocalizedString(@"This URL is invalid. Check syntax.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+		else NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"URL Invalid", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), NSLocalizedStringFromTableInBundle(@"This URL is invalid. Check syntax.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil, nil);
 	}
 }
 
@@ -500,7 +500,7 @@
 		
 		if( r)
 		{
-			if( NSRunInformationalAlertPanel(NSLocalizedString(@"Load locations", 0L), NSLocalizedString(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", 0L), NSLocalizedString(@"Add",nil), NSLocalizedString(@"Replace",nil), nil) == NSAlertDefaultReturn)
+			if( NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"Load locations", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), NSLocalizedStringFromTableInBundle(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), NSLocalizedStringFromTableInBundle(@"Add", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle(@"Replace", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil) == NSAlertDefaultReturn)
 			{
 				
 			}
@@ -545,7 +545,7 @@
 	
 	[self resetTest];
 	
-	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"DICOMNodes.plist", nil)] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModalForDirectory:0L file:NSLocalizedStringFromTableInBundle(@"DICOMNodes.plist", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil)] == NSFileHandlingPanelOKButton)
 	{
 		[[dicomNodes arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
 	}
@@ -568,9 +568,9 @@
 				
 				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 			}
-			else NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L), NSLocalizedString(@"Cannot download data from this URL.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+			else NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"URL Invalid", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), NSLocalizedStringFromTableInBundle(@"Cannot download data from this URL.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil, nil);
 		}
-		else NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L), NSLocalizedString(@"This URL is invalid. Check syntax.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+		else NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"URL Invalid", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), NSLocalizedStringFromTableInBundle(@"This URL is invalid. Check syntax.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil, nil);
 	}
 }
 
@@ -588,7 +588,7 @@
 		
 		if( r)
 		{
-			if( NSRunInformationalAlertPanel(NSLocalizedString(@"Load locations", 0L), NSLocalizedString(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", 0L), NSLocalizedString(@"Add",nil), NSLocalizedString(@"Replace",nil), nil) == NSAlertDefaultReturn)
+			if( NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"Load locations", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), NSLocalizedStringFromTableInBundle(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L), NSLocalizedStringFromTableInBundle(@"Add", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle(@"Replace", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil) == NSAlertDefaultReturn)
 			{
 				
 			}
@@ -820,8 +820,8 @@
 	
 	if([certificates count])
 	{
-		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")];
-		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedString(@"Choose a certificate from the following list.", nil)];
+		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], @"Cancel")];
+		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedStringFromTableInBundle(@"Choose a certificate from the following list.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil)];
 		
 		if(clickedButton==NSOKButton)
 		{
@@ -837,7 +837,7 @@
 	}
 	else
 	{
-		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedString(@"No Valid Certificate", nil), NSLocalizedString(@"Your Keychain does not contain any valid certificate.", nil), NSLocalizedString(@"Help", nil), NSLocalizedString(@"Cancel", nil), nil);
+		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedStringFromTableInBundle(@"No Valid Certificate", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle(@"Your Keychain does not contain any valid certificate.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle(@"Help", nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil), nil);
 		
 		if(clickedButton==NSOKButton)
 		{
@@ -862,15 +862,15 @@
 	
 	if(!name)
 	{
-		name = NSLocalizedString(@"No certificate selected.", @"No certificate selected.");	
+		name = NSLocalizedStringFromTableInBundle(@"No certificate selected.", @"No certificate selected.");	
 		[TLSCertificateButton setHidden:YES];
-		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Choose", @"Choose")];
+		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Choose", @"Choose")];
 	}
 	else
 	{
 		[TLSCertificateButton setHidden:NO];
 		[TLSCertificateButton setImage:icon];
-		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Change", @"Change")];
+		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Change", @"Change")];
 	}
 
 	self.TLSAuthenticationCertificate = name;

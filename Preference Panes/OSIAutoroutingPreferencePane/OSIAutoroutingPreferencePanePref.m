@@ -107,7 +107,7 @@
 		}
 		
 		if( found == NO)
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Unknown Server",nil), [NSString stringWithFormat:NSLocalizedString( @"This server doesn't exist in the Locations list: %@",nil), [[routesArray objectAtIndex: i] valueForKey:@"server"]],NSLocalizedString( @"OK",nil), nil, nil);
+			NSRunCriticalAlertPanel(NSLocalizedStringFromTableInBundle(@"Unknown Server",nil), [NSString stringWithFormat:NSLocalizedStringFromTableInBundle( @"This server doesn't exist in the Locations list: %@",nil), [[routesArray objectAtIndex: i] valueForKey:@"server"]],NSLocalizedStringFromTableInBundle( @"OK",nil), nil, nil);
 	}
 }
 
@@ -206,7 +206,7 @@ static BOOL newRouteMode = NO;
 		
 		if( [serversArray count] == 0)
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"New Route",nil),NSLocalizedString( @"No destination servers exist. Create at least one destination in the Locations preferences.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+			NSRunCriticalAlertPanel(NSLocalizedStringFromTableInBundle(@"New Route",nil),NSLocalizedStringFromTableInBundle( @"No destination servers exist. Create at least one destination in the Locations preferences.",nil),NSLocalizedStringFromTableInBundle( @"OK",nil), nil, nil);
 		}
 		else
 		{

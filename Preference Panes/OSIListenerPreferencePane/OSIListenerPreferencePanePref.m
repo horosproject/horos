@@ -354,8 +354,8 @@ char *GetPrivateIP()
 
 	if([certificates count])
 	{	
-		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")];
-		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedString(@"Choose a certificate from the following list.", nil)];
+		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"Cancel")];
+		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedStringFromTableInBundle(@"Choose a certificate from the following list.", nil)];
 		
 		if(clickedButton==NSOKButton)
 		{
@@ -371,7 +371,7 @@ char *GetPrivateIP()
 	}
 	else
 	{
-		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedString(@"No Valid Certificate", nil), NSLocalizedString(@"Your Keychain does not contain any valid certificate.", nil), NSLocalizedString(@"Help", nil), NSLocalizedString(@"Cancel", nil), nil);
+		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedStringFromTableInBundle(@"No Valid Certificate", nil), NSLocalizedStringFromTableInBundle(@"Your Keychain does not contain any valid certificate.", nil), NSLocalizedStringFromTableInBundle(@"Help", nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil), nil);
 		
 		if(clickedButton==NSOKButton)
 		{
@@ -394,15 +394,15 @@ char *GetPrivateIP()
 	
 	if(!name)
 	{
-		name = NSLocalizedString(@"No certificate selected.", @"No certificate selected.");	
+		name = NSLocalizedStringFromTableInBundle(@"No certificate selected.", @"No certificate selected.");	
 		[TLSCertificateButton setHidden:YES];
-		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Choose", @"Choose")];
+		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Choose", @"Choose")];
 	}
 	else
 	{
 		[TLSCertificateButton setHidden:NO];
 		[TLSCertificateButton setImage:icon];
-		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Change", @"Change")];
+		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Change", @"Change")];
 	}
 	
 	self.TLSAuthenticationCertificate = name;
@@ -444,8 +444,8 @@ char *GetPrivateIP()
 		[textField setStringValue:newStr];
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:newPort] forKey:@"TLSStoreSCPAEPORT"];
 		
-		NSString *msg = [NSString stringWithFormat:NSLocalizedString( @"The port %d is already use by the standard DICOM Listener. The port %d was automatically chosen instead.", nil), submittedPort, newPort];
-		NSRunAlertPanel(NSLocalizedString(@"Port already in use", nil),  msg, NSLocalizedString(@"OK", nil), nil, nil);
+		NSString *msg = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle( @"The port %d is already use by the standard DICOM Listener. The port %d was automatically chosen instead.", nil), submittedPort, newPort];
+		NSRunAlertPanel(NSLocalizedStringFromTableInBundle(@"Port already in use", nil),  msg, NSLocalizedStringFromTableInBundle(@"OK", nil), nil, nil);
 	}
 }
 

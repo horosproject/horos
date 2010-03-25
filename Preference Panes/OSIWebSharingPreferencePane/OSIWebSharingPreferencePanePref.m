@@ -46,15 +46,15 @@ extern BOOL hasMacOSXSnowLeopard();
 	
 	if(!name)
 	{
-		name = NSLocalizedString(@"No certificate selected.", @"No certificate selected.");	
+		name = NSLocalizedStringFromTableInBundle(@"No certificate selected.", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], @"No certificate selected.");	
 		[TLSCertificateButton setHidden:YES];
-		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Choose", @"Choose")];
+		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Choose", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], @"Choose")];
 	}
 	else
 	{
 		[TLSCertificateButton setHidden:NO];
 		[TLSCertificateButton setImage:icon];
-		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Change", @"Change")];
+		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Change", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], @"Change")];
 	}
 
 	self.TLSAuthenticationCertificate = name;
@@ -66,8 +66,8 @@ extern BOOL hasMacOSXSnowLeopard();
 	
 	if([certificates count])
 	{
-		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")];
-		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedString(@"Choose a certificate from the following list.", @"Choose a certificate from the following list.")];
+		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], @"Cancel")];
+		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedStringFromTableInBundle(@"Choose a certificate from the following list.", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], @"Choose a certificate from the following list.")];
 		
 		if(clickedButton==NSOKButton)
 		{
@@ -83,7 +83,7 @@ extern BOOL hasMacOSXSnowLeopard();
 	}
 	else
 	{
-		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedString(@"No Valid Certificate", nil), NSLocalizedString(@"Your Keychain does not contain any valid certificate.", nil), NSLocalizedString(@"Help", nil), NSLocalizedString(@"Cancel", nil), nil);
+		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedStringFromTableInBundle(@"No Valid Certificate", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Your Keychain does not contain any valid certificate.", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Help", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Cancel", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), nil);
 
 		if(clickedButton==NSOKButton)
 		{
@@ -157,7 +157,7 @@ extern BOOL hasMacOSXSnowLeopard();
 	
 	
 	if( hasMacOSXSnowLeopard() == NO)
-		NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the OsiriX Web Server.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+		NSRunCriticalAlertPanel( NSLocalizedStringFromTableInBundle( @"Unsupported", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the OsiriX Web Server.", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil) , nil, nil);
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -197,11 +197,11 @@ extern BOOL hasMacOSXSnowLeopard();
 			[BrowserController currentBrowser].testPredicate = [[BrowserController currentBrowser] smartAlbumPredicateString: [[[userArrayController selectedObjects] lastObject] valueForKey: @"studyPredicate"]];
 			[[BrowserController currentBrowser] outlineViewRefresh];
 			[BrowserController currentBrowser].testPredicate = nil;
-			NSRunInformationalAlertPanel( NSLocalizedString(@"Study Filter",nil), NSLocalizedString(@"The result is now displayed in the Database Window.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+			NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle(@"Study Filter", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"The result is now displayed in the Database Window.", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), nil, nil);
 		}
 		@catch (NSException * e)
 		{
-			NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), e], NSLocalizedString(@"OK",nil), nil, nil);
+			NSRunCriticalAlertPanel( NSLocalizedStringFromTableInBundle(@"Error", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), [NSString stringWithFormat: NSLocalizedStringFromTableInBundle(@"This filter is NOT working: %@", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), e], NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), nil, nil);
 		}
 	}
 }

@@ -21,7 +21,7 @@
 	unichar c = [[event characters] characterAtIndex:0];
 	if ((c == NSDeleteCharacter || c == NSBackspaceCharacter) && [self selectedRow] >= 0 && [self numberOfRows] > 0)
 	{
-		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Route", 0L), NSLocalizedString(@"Are you sure you want to delete the selected route?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn)
+		if( NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"Delete Route", @"Localizable", [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"Are you sure you want to delete the selected route?", [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"OK",nil), NSLocalizedStringFromTableInBundle(@"Cancel", [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil), nil) == NSAlertDefaultReturn)
 			[[self delegate] deleteSelectedRow:self];
 	}
 	else

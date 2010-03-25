@@ -15,6 +15,7 @@
 #import "CIALayoutView.h"
 #import "CIAPlaceHolder.h"
 #import "CIAAnnotation.h"
+#import "OSICustomImageAnnotations.h"
 
 @implementation CIALayoutView
 
@@ -203,14 +204,14 @@
 - (void)setDefaultEnabledText;
 {
 	[enabledText release];
-	enabledText = NSLocalizedString(@"Drag Annotations in the place holders", @"");
+	enabledText = NSLocalizedStringFromTableInBundle( @"Drag Annotations in the place holders", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], @"");
 	[enabledText retain];
 }
 
 - (void)setDefaultDisabledText;
 {
 	[disabledText release];
-	disabledText = NSLocalizedString(@"Same as Default Settings...", @"");
+	disabledText = NSLocalizedStringFromTableInBundle(@"Same as Default Settings...", @"");
 	[disabledText retain];
 }
 

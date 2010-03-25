@@ -184,7 +184,7 @@
 	
 	NSMenuItem *item;
 	item = [[[NSMenuItem alloc] init] autorelease];
-	[item setTitle:NSLocalizedString(@"DICOM Fields", @"")];
+	[item setTitle:NSLocalizedStringFromTableInBundle(@"DICOM Fields", @"")];
 	[item setEnabled:NO];
 	[DICOMFieldsMenu addItem:item];
 	int i;

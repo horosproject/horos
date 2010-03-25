@@ -140,7 +140,7 @@
 //		with = 32;
 //	}
 //	
-//	[recommandations setStringValue: [NSString stringWithFormat: @"%@ (%d MB): %d %@ / %d %@" , NSLocalizedString( @"Recommended for your video board", 0L), vram, without, NSLocalizedString( @"without shading", 0L), with, NSLocalizedString( @"with shading", 0L)]];
+//	[recommandations setStringValue: [NSString stringWithFormat: @"%@ (%d MB): %d %@ / %d %@" , NSLocalizedStringFromTableInBundle( @"Recommended for your video board", 0L), vram, without, NSLocalizedStringFromTableInBundle( @"without shading", 0L), with, NSLocalizedStringFromTableInBundle( @"with shading", 0L)]];
 //
 //	
 //	[bestRenderingSlider setFloatValue: 2.1 - [defaults floatForKey: @"BESTRENDERING"]];
