@@ -16794,15 +16794,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSMutableArray *filesToExport;
 		
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing the files...", nil)];
-		[wait showWindow:self];
+		[wait showWindow: self];
 		
 		[self checkResponder];
-		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
+		if( ([sender isKindOfClass: [NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: NO];
 		else
 			filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AddROIsForExport" == NO)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AddROIsForExport"] == NO)
 		{
 			NSPredicate *predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX ROI SR", @"5002"];
 			dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
