@@ -145,7 +145,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 			
 			if( cur)
 			{
-				if( NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle(@"Settings", nil), NSLocalizedStringFromTableInBundle(@"Are you really sure you want to replace current settings? It will delete the current settings.", nil) , NSLocalizedStringFromTableInBundle(@"OK", nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+				if( NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle(@"Settings", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Are you really sure you want to replace current settings? It will delete the current settings.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil) , NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle(@"Cancel", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), 0L) == NSAlertDefaultReturn)
 				{
 					NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
 				
@@ -160,7 +160,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction) reset: (id) sender
 {
-	if( NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle(@"Settings", nil), NSLocalizedStringFromTableInBundle(@"Are you really sure you want to reset the current default settings? It will delete the current settings.", nil) , NSLocalizedStringFromTableInBundle(@"OK", nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+	if( NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle(@"Settings", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Are you really sure you want to reset the current default settings? It will delete the current settings.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil) , NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle(@"Cancel", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), 0L) == NSAlertDefaultReturn)
 	{
 		NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
 		
@@ -193,7 +193,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 {
 	NSLog(@"OSICustomImageAnnotations willSelect");
 
-	NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedStringFromTableInBundle(@"Default", nil), @"CR", @"CT", @"DX", @"ES", @"MG", @"MR", @"NM", @"OT",@"PT",@"RF",@"SC",@"US",@"XA", nil];
+	NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedStringFromTableInBundle(@"Default", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), @"CR", @"CT", @"DX", @"ES", @"MG", @"MR", @"NM", @"OT",@"PT",@"RF",@"SC",@"US",@"XA", nil];
 	
 	[modalitiesPopUpButton removeAllItems];
 
@@ -342,7 +342,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 	if(state)
 	{
-		if( NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle(@"Default", nil), NSLocalizedStringFromTableInBundle(@"Are you really sure you want to replace current settings with the default settings? It will delete the current settings.", nil) , NSLocalizedStringFromTableInBundle(@"OK", nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil), 0L) == NSAlertDefaultReturn) 
+		if( NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle(@"Default", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Are you really sure you want to replace current settings with the default settings? It will delete the current settings.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil) , NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle(@"Cancel", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), 0L) == NSAlertDefaultReturn) 
 			[layoutController loadAnnotationLayoutForModality:@"Default"];
 		else
 		{

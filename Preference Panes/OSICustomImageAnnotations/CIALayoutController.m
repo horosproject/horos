@@ -103,7 +103,7 @@
 	
 	NSMenuItem *item;
 	item = [[[NSMenuItem alloc] init] autorelease];
-	[item setTitle:NSLocalizedStringFromTableInBundle(@"DICOM Fields", @"")];
+	[item setTitle:NSLocalizedStringFromTableInBundle( @"DICOM Fields", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil)];
 	[item setEnabled:NO];
 	[DICOMFieldsMenu addItem:item];
 	for (i=0; i<[DICOMFieldsArray count]; i++)
@@ -126,7 +126,7 @@
 		[databaseFieldsMenu removeItemAtIndex:i];
 	
 	item = [[[NSMenuItem alloc] init] autorelease];
-	[item setTitle:NSLocalizedStringFromTableInBundle(@"Study level", @"")];
+	[item setTitle:NSLocalizedStringFromTableInBundle( @"Study level", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil)];
 	[item setEnabled:NO];
 	[databaseFieldsMenu addItem:item];
 	for (i=0; i<[databaseStudyFieldsArray count]; i++)
@@ -139,7 +139,7 @@
 
 	[databaseFieldsMenu addItem:[NSMenuItem separatorItem]];	
 	item = [[[NSMenuItem alloc] init] autorelease];
-	[item setTitle:NSLocalizedStringFromTableInBundle(@"Series level", @"")];
+	[item setTitle:NSLocalizedStringFromTableInBundle( @"Series level", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil)];
 	[item setEnabled:NO];
 	[databaseFieldsMenu addItem:item];
 	for (i=0; i<[databaseSeriesFieldsArray count]; i++)
@@ -152,7 +152,7 @@
 	
 	[databaseFieldsMenu addItem:[NSMenuItem separatorItem]];
 	item = [[[NSMenuItem alloc] init] autorelease];
-	[item setTitle:NSLocalizedStringFromTableInBundle(@"Image level", @"")];
+	[item setTitle:NSLocalizedStringFromTableInBundle( @"Image level", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil)];
 	[item setEnabled:NO];
 	[databaseFieldsMenu addItem:item];
 	for (i=0; i<[databaseImageFieldsArray count]; i++)
@@ -563,7 +563,7 @@
 	{
 		if([[[prefPane dicomGroupTextField] stringValue] isEqualToString:@""] || [[[prefPane dicomElementTextField] stringValue] isEqualToString:@""])
 		{
-			NSRunAlertPanel(NSLocalizedStringFromTableInBundle(@"Custom DICOM Field", @""), NSLocalizedStringFromTableInBundle(@"Please provide a value for both \"Group\" and \"Element\" fields.", @""), NSLocalizedStringFromTableInBundle(@"OK", @""), nil, nil);
+			NSRunAlertPanel(NSLocalizedStringFromTableInBundle( @"Custom DICOM Field", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Please provide a value for both \"Group\" and \"Element\" fields.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil, nil);
 			return;
 		}
 		
@@ -770,18 +770,18 @@
 - (NSMutableArray*)specialFieldsLocalizedTitles;
 {
 	NSMutableArray *specialFieldsTitles = [NSMutableArray array];
-	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle(@"Image Size", 0L)];
-	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle(@"View Size", 0L)];
-	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle(@"Window Level / Window Width", 0L)];
-	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle(@"Image Position", 0L)];
-	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle(@"Zoom", 0L)];
-	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle(@"Rotation Angle", 0L)];
-	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle(@"Mouse Position (px)", 0L)];
-	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle(@"Mouse Position (mm)", 0L)];
-	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle(@"Thickness / Location / Position", 0L)];
-	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle(@"Patient's Actual Age", 0L)];
-	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle(@"Patient's Age At Acquisition", 0L)];
-	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle(@"Plugin", 0L)];
+	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle( @"Image Size", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L)];
+	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle( @"View Size", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L)];
+	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle( @"Window Level / Window Width", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L)];
+	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle( @"Image Position", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L)];
+	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle( @"Zoom", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L)];
+	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle( @"Rotation Angle", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L)];
+	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle( @"Mouse Position (px)", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L)];
+	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle( @"Mouse Position (mm)", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L)];
+	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle( @"Thickness / Location / Position", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L)];
+	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle( @"Patient's Actual Age", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L)];
+	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle( @"Patient's Age At Acquisition", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L)];
+	[specialFieldsTitles addObject: NSLocalizedStringFromTableInBundle( @"Plugin", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], 0L)];
 	return specialFieldsTitles;
 }
 
@@ -1056,7 +1056,7 @@
 	{
 		if(![[annotationsArray objectAtIndex:a] placeHolder])
 		{
-			int r = NSRunAlertPanel(NSLocalizedStringFromTableInBundle(@"Saving Annotations", nil), NSLocalizedStringFromTableInBundle(@"Any Annotation left outside the place holders will be lost.", nil), NSLocalizedStringFromTableInBundle(@"OK", nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil), nil);
+			int r = NSRunAlertPanel(NSLocalizedStringFromTableInBundle( @"Saving Annotations", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Any Annotation left outside the place holders will be lost.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Cancel", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil);
 			if(r==NSAlertDefaultReturn)
 				return YES;
 			else
@@ -1093,7 +1093,7 @@
 
 	if(!check || [annotationsArray count]==0)
 	{
-		int r = NSRunAlertPanel(NSLocalizedStringFromTableInBundle(@"Annotation Content", nil), NSLocalizedStringFromTableInBundle(@"Some token have no content. Token such as 'DICOM_', 'DB_', 'Special_' will not be displayed.", nil), NSLocalizedStringFromTableInBundle(@"OK", nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil), nil);
+		int r = NSRunAlertPanel(NSLocalizedStringFromTableInBundle( @"Annotation Content", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Some token have no content. Token such as 'DICOM_', 'DB_', 'Special_' will not be displayed.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Cancel", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil);
 		if(r==NSAlertDefaultReturn)
 			return YES;
 		else
@@ -1124,7 +1124,7 @@
 
 	if(!check || [content count]==0)
 	{
-		int r = NSRunAlertPanel(NSLocalizedStringFromTableInBundle(@"Annotation Content", nil), NSLocalizedStringFromTableInBundle(@"Some token have no content. Token such as 'DICOM_', 'DB_', 'Special_' will not be displayed.", nil), NSLocalizedStringFromTableInBundle(@"OK", nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil), nil);
+		int r = NSRunAlertPanel(NSLocalizedStringFromTableInBundle( @"Annotation Content", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Some token have no content. Token such as 'DICOM_', 'DB_', 'Special_' will not be displayed.", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Cancel", @"Localizable", [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), nil);
 		if(r==NSAlertDefaultReturn)
 			return YES;
 		else

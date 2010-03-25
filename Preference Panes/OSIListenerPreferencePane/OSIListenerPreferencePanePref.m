@@ -354,8 +354,8 @@ char *GetPrivateIP()
 
 	if([certificates count])
 	{	
-		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"Cancel")];
-		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedStringFromTableInBundle(@"Choose a certificate from the following list.", nil)];
+		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"Localizable", [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil)];
+		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedStringFromTableInBundle( @"Choose a certificate from the following list.", @"Localizable", [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil)];
 		
 		if(clickedButton==NSOKButton)
 		{
@@ -371,7 +371,7 @@ char *GetPrivateIP()
 	}
 	else
 	{
-		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedStringFromTableInBundle(@"No Valid Certificate", nil), NSLocalizedStringFromTableInBundle(@"Your Keychain does not contain any valid certificate.", nil), NSLocalizedStringFromTableInBundle(@"Help", nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil), nil);
+		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedStringFromTableInBundle(@"No Valid Certificate", @"Localizable", [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Your Keychain does not contain any valid certificate.", @"Localizable", [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Help", @"Localizable", [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Cancel", @"Localizable", [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil), nil);
 		
 		if(clickedButton==NSOKButton)
 		{
@@ -394,15 +394,15 @@ char *GetPrivateIP()
 	
 	if(!name)
 	{
-		name = NSLocalizedStringFromTableInBundle(@"No certificate selected.", @"No certificate selected.");	
+		name = NSLocalizedStringFromTableInBundle(@"No certificate selected.", @"Localizable", [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil);	
 		[TLSCertificateButton setHidden:YES];
-		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Choose", @"Choose")];
+		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Choose", @"Localizable", [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil)];
 	}
 	else
 	{
 		[TLSCertificateButton setHidden:NO];
 		[TLSCertificateButton setImage:icon];
-		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Change", @"Change")];
+		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Change", @"Localizable", [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil)];
 	}
 	
 	self.TLSAuthenticationCertificate = name;
@@ -444,8 +444,8 @@ char *GetPrivateIP()
 		[textField setStringValue:newStr];
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:newPort] forKey:@"TLSStoreSCPAEPORT"];
 		
-		NSString *msg = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle( @"The port %d is already use by the standard DICOM Listener. The port %d was automatically chosen instead.", nil), submittedPort, newPort];
-		NSRunAlertPanel(NSLocalizedStringFromTableInBundle(@"Port already in use", nil),  msg, NSLocalizedStringFromTableInBundle(@"OK", nil), nil, nil);
+		NSString *msg = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle( @"The port %d is already use by the standard DICOM Listener. The port %d was automatically chosen instead.", @"Localizable", [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil), submittedPort, newPort];
+		NSRunAlertPanel(NSLocalizedStringFromTableInBundle(@"Port already in use", @"Localizable", [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil),  msg, NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil), nil, nil);
 	}
 }
 
