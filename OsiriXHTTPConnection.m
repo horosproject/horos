@@ -2239,6 +2239,7 @@ NSString* notNil( NSString *s)
 		}
 	#pragma mark wado
 		// wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX
+		// 127.0.0.1:3333/wado?requestType=WADO&frameNumber=1&studyUID=1.2.840.113619.2.16.1.155.1066226137.2.5290&seriesUID=1.2.840.113619.2.16.1.155.1066226137.2.5290.1&objectUID=1.2.840.113619.2.16.1.155.1066230214.1.74055
 		else if( [fileURL isEqualToString:@"/wado"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
 		{
 			if( [[[urlParameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
