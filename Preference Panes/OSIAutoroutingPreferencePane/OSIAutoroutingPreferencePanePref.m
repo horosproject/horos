@@ -107,7 +107,7 @@
 		}
 		
 		if( found == NO)
-			NSRunCriticalAlertPanel(NSLocalizedStringFromTableInBundle(@"Unknown Server", @"Localizable", [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil), [NSString stringWithFormat:NSLocalizedStringFromTableInBundle( @"This server doesn't exist in the Locations list: %@", @"Localizable", [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil), [[routesArray objectAtIndex: i] valueForKey:@"server"]],NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil), nil, nil);
+			NSRunCriticalAlertPanel(NSLocalizedStringFromTableInBundle(@"Unknown Server", nil, [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil), [NSString stringWithFormat:NSLocalizedStringFromTableInBundle( @"This server doesn't exist in the Locations list: %@", nil, [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil), [[routesArray objectAtIndex: i] valueForKey:@"server"]],NSLocalizedStringFromTableInBundle( @"OK", nil, [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil), nil, nil);
 	}
 }
 
@@ -206,7 +206,7 @@ static BOOL newRouteMode = NO;
 		
 		if( [serversArray count] == 0)
 		{
-			NSRunCriticalAlertPanel(NSLocalizedStringFromTableInBundle(@"New Route", @"Localizable", [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil),NSLocalizedStringFromTableInBundle( @"No destination servers exist. Create at least one destination in the Locations preferences.", @"Localizable", [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil),NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil), nil, nil);
+			NSRunCriticalAlertPanel(NSLocalizedStringFromTableInBundle(@"New Route", nil, [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil),NSLocalizedStringFromTableInBundle( @"No destination servers exist. Create at least one destination in the Locations preferences.", nil, [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil),NSLocalizedStringFromTableInBundle( @"OK", nil, [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil), nil, nil);
 		}
 		else
 		{

@@ -68,7 +68,7 @@
 			{
 				if( [currentAETitle isEqualToString: [[serverList objectAtIndex: i] valueForKey: @"AETitle"]])
 				{
-					NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"Same AETitle", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), [NSString stringWithFormat: NSLocalizedStringFromTableInBundle(@"This AETitle is not unique: %@. AETitles should be unique, otherwise Q&R (C-Move SCP/SCU) can fail.", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), currentAETitle], NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
+					NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"Same AETitle", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), [NSString stringWithFormat: NSLocalizedStringFromTableInBundle(@"This AETitle is not unique: %@. AETitles should be unique, otherwise Q&R (C-Move SCP/SCU) can fail.", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), currentAETitle], NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
 					
 					i = [serverList count];
 					x = [serverList count];
@@ -398,9 +398,9 @@
 	[NSData dataWithContentsOfURL: url options: 0 error: &error];
 	
 	if( error)
-		NSRunCriticalAlertPanel( NSLocalizedStringFromTableInBundle( @"URL download Error", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), [error localizedDescription], NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
+		NSRunCriticalAlertPanel( NSLocalizedStringFromTableInBundle( @"URL download Error", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), [error localizedDescription], NSLocalizedStringFromTableInBundle( @"OK", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
 	else
-		NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle( @"URL download Succeeded", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"It works !", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
+		NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle( @"URL download Succeeded", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"It works !", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"OK", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
 }
 
 - (IBAction) editWADO: (id) sender
@@ -457,7 +457,7 @@
 
 	[sPanel setRequiredFileType:@"plist"];
 	
-	if ([sPanel runModalForDirectory:0L file:NSLocalizedStringFromTableInBundle(@"OsiriXDB.plist", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil)] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModalForDirectory:0L file:NSLocalizedStringFromTableInBundle(@"OsiriXDB.plist", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil)] == NSFileHandlingPanelOKButton)
 	{
 		[[osiriXServers arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
 	}
@@ -480,9 +480,9 @@
 				
 				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 			}
-			else NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"URL Invalid", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle( @"Cannot download data from this URL.", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
+			else NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"URL Invalid", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle( @"Cannot download data from this URL.", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle( @"OK", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
 		}
-		else NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"URL Invalid", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle( @"This URL is invalid. Check syntax.", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle( @"OK", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
+		else NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"URL Invalid", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle( @"This URL is invalid. Check syntax.", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle( @"OK", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
 	}
 }
 
@@ -500,7 +500,7 @@
 		
 		if( r)
 		{
-			if( NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"Load locations", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"Add", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Replace", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil) == NSAlertDefaultReturn)
+			if( NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"Load locations", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"Add", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Replace", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil) == NSAlertDefaultReturn)
 			{
 				
 			}
@@ -545,7 +545,7 @@
 	
 	[self resetTest];
 	
-	if ([sPanel runModalForDirectory:0L file:NSLocalizedStringFromTableInBundle(@"DICOMNodes.plist", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil)] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModalForDirectory:0L file:NSLocalizedStringFromTableInBundle(@"DICOMNodes.plist", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil)] == NSFileHandlingPanelOKButton)
 	{
 		[[dicomNodes arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
 	}
@@ -568,9 +568,9 @@
 				
 				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 			}
-			else NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"URL Invalid", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"Cannot download data from this URL.", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
+			else NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"URL Invalid", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"Cannot download data from this URL.", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
 		}
-		else NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"URL Invalid", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"This URL is invalid. Check syntax.", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"OK", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
+		else NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"URL Invalid", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"This URL is invalid. Check syntax.", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
 	}
 }
 
@@ -588,7 +588,7 @@
 		
 		if( r)
 		{
-			if( NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"Load locations", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"Add", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Replace", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil) == NSAlertDefaultReturn)
+			if( NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"Load locations", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"Add", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Replace", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil) == NSAlertDefaultReturn)
 			{
 				
 			}
@@ -820,8 +820,8 @@
 	
 	if([certificates count])
 	{
-		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], @"Cancel")];
-		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedStringFromTableInBundle(@"Choose a certificate from the following list.", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil)];
+		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedStringFromTableInBundle(@"Cancel", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], @"Cancel")];
+		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedStringFromTableInBundle(@"Choose a certificate from the following list.", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil)];
 		
 		if(clickedButton==NSOKButton)
 		{
@@ -837,7 +837,7 @@
 	}
 	else
 	{
-		NSInteger clickedButton = NSRunCriticalAlertPanel( NSLocalizedStringFromTableInBundle( @"No Valid Certificate", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"Your Keychain does not contain any valid certificate.", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"Help", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"Cancel", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil);
+		NSInteger clickedButton = NSRunCriticalAlertPanel( NSLocalizedStringFromTableInBundle( @"No Valid Certificate", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"Your Keychain does not contain any valid certificate.", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"Help", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"Cancel", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil);
 		
 		if(clickedButton==NSOKButton)
 		{
@@ -862,15 +862,15 @@
 	
 	if(!name)
 	{
-		name = NSLocalizedStringFromTableInBundle(@"No certificate selected.", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil);	
+		name = NSLocalizedStringFromTableInBundle(@"No certificate selected.", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil);	
 		[TLSCertificateButton setHidden:YES];
-		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Choose", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil)];
+		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Choose", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil)];
 	}
 	else
 	{
 		[TLSCertificateButton setHidden:NO];
 		[TLSCertificateButton setImage:icon];
-		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Change", @"Localizable", [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil)];
+		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Change", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil)];
 	}
 
 	self.TLSAuthenticationCertificate = name;
