@@ -406,69 +406,71 @@ NSString* notNil( NSString *s)
 	
 	// CHECK dateAdded
 	
-	@try
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"notificationsEmails"] == YES)
 	{
-		NSError *error = nil;
-		NSFetchRequest *dbRequest = nil;
-		
-		// Find all studies AFTER the lastCheckDate
-		error = nil;
-		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-		
-		error = nil;
-		NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
-		
-		NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
-		if( [webServerAddress length] == 0)
-			webServerAddress = [[AppController sharedAppController] privateIP];
-		
-		int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
-		
-		if( [studies count] > 0)
+		@try
 		{
-			// Find all users
+			NSError *error = nil;
+			NSFetchRequest *dbRequest = nil;
+			
+			// Find all studies AFTER the lastCheckDate
 			error = nil;
 			dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
 			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 			
 			error = nil;
-			NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+			NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
 			
-			for( NSManagedObject *user in users)
+			NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
+			if( [webServerAddress length] == 0)
+				webServerAddress = [[AppController sharedAppController] privateIP];
+			
+			int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
+			
+			if( [studies count] > 0)
 			{
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"notificationsEmails"] == YES && [[user valueForKey: @"emailNotification"] boolValue] == YES && [(NSString*) [user valueForKey: @"email"] length] > 2)
+				// Find all users
+				error = nil;
+				dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+				[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+				[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+				
+				error = nil;
+				NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+				
+				for( NSManagedObject *user in users)
 				{
-					NSArray *filteredStudies = studies;
-					
-					@try
+					if( [[user valueForKey: @"emailNotification"] boolValue] == YES && [(NSString*) [user valueForKey: @"email"] length] > 2)
 					{
-						filteredStudies = [studies filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [user valueForKey: @"studyPredicate"]]];
-						filteredStudies = [OsiriXHTTPConnection addSpecificStudiesToArray: filteredStudies forUser: user predicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]];
+						NSArray *filteredStudies = studies;
 						
-						filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
-						filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
-					}
-					@catch (NSException * e)
-					{
-						NSLog( @"******* studyPredicate exception : %@ %@", e, user);
-					}
-					
-					if( [filteredStudies count] > 0)
-					{
-						[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] message: nil replyTo: nil customText: nil];
+						@try
+						{
+							filteredStudies = [studies filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [user valueForKey: @"studyPredicate"]]];
+							filteredStudies = [OsiriXHTTPConnection addSpecificStudiesToArray: filteredStudies forUser: user predicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]];
+							
+							filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
+							filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
+						}
+						@catch (NSException * e)
+						{
+							NSLog( @"******* studyPredicate exception : %@ %@", e, user);
+						}
+						
+						if( [filteredStudies count] > 0)
+						{
+							[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] message: nil replyTo: nil customText: nil];
+						}
 					}
 				}
 			}
 		}
+		@catch (NSException *e)
+		{
+			NSLog( @"***** emailNotifications exception: %@", e);
+		}
 	}
-	@catch (NSException *e)
-	{
-		NSLog( @"***** emailNotifications exception: %@", e);
-	}
-	
 	[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	

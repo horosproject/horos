@@ -15137,8 +15137,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( [managedObjectContext tryLock])
 	{
 		[self checkIncomingThread: self];
+		[NSThread sleepForTimeInterval: 1];
 		
 		// Do we have a compression/decompression process? re-checkincoming to include these compression/decompression images
+		[self checkIncomingThread: self];
+		[NSThread sleepForTimeInterval: 1];
+		
 		[self checkIncomingThread: self];
 		
 		[managedObjectContext unlock];
@@ -15154,6 +15158,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		// Do we have a compression/decompression process? re-checkincoming to include these compression/decompression images
 		[self checkIncoming: self];
 		[NSThread sleepForTimeInterval: 1];
+		
+		[self checkIncoming: self];
 		
 		NSLog( @"*** We will not checkIncomingNow, because we can find ourself in a locked in loop....");
 	}
