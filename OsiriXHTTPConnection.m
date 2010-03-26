@@ -37,7 +37,7 @@ static NSMutableDictionary *wadoJPEGCache = nil;
 
 #define minResolution 400
 #define maxResolution 800
-#define WADOCACHESIZE 1200
+#define WADOCACHESIZE 2000
 
 NSString* notNil( NSString *s)
 {
@@ -2321,6 +2321,14 @@ NSString* notNil( NSString *s)
 						NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
 						
 						images = [[allImages filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
+						
+						if( [images count] > 1)
+						{
+							images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending:YES] autorelease]]];
+							
+							if( frameNumber < [images count])
+								images = [NSArray arrayWithObject: [images objectAtIndex: frameNumber]];
+						}
 					}
 					
 					if( [images count] || imageCache != nil)
