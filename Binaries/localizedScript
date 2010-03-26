@@ -36,3 +36,5 @@ cp -R OSIPETPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/antoinero
 rm -R -f /Users/antoinerosset/Desktop/Localized3.7.1/Preference\ Panes/OSIViewerPreferencePane/$1.lproj
 cp -R OSIViewerPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.7.1/Preference\ Panes/OSIViewerPreferencePane
 
+rm -R -f /Users/antoinerosset/Desktop/Localized3.7.1/Preference\ Panes/OSIWebSharingPreferencePane/$1.lproj
+cp -R OSIWebSharingPreferencePane.prefPane/Contents/Resources/$1.lproj /Users/antoinerosset/Desktop/Localized3.7.1/Preference\ Panes/OSIWebSharingPreferencePane
