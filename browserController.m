@@ -15419,6 +15419,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 				if(createHTML)
 				{
 					NSImage	*thumbnail = [[[NSImage alloc] initWithData: [curImage valueForKeyPath: @"series.thumbnail"]] autorelease];
+					
+					@try
+					{
+						if( thumbnail == nil)
+						{
+							[self buildThumbnail: [curImage valueForKey: @"series"]];
+							thumbnail = [[[NSImage alloc] initWithData: [curImage valueForKeyPath: @"series.thumbnail"]] autorelease];
+						}
+					}
+					@catch ( NSException *e)
+					{
+						NSLog( @"Failed to generate the thumbnail : %@", e);
+					}
+					
 					if(!thumbnail)
 						thumbnail = [[NSImage alloc] initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"]];
 					
