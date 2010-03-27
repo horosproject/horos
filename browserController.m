@@ -1354,7 +1354,7 @@ static NSArray*	statesArray = nil;
 			{
 				if([defaultManager fileExistsAtPath: filename isDirectory:&isDirectory])     // A directory
 				{
-					if( isDirectory == YES && [[filename pathExtension] isEqualToString:@"pages"] == NO)
+					if( isDirectory == YES && [[filename pathExtension] isEqualToString: @"pages"] == NO && [[filename pathExtension] isEqualToString: @"app"] == NO)
 					{
 						NSString    *pathname;
 						NSString	*folderSkip = nil;
@@ -1400,6 +1400,10 @@ static NSArray*	statesArray = nil;
 										}
 									}
 								}
+								else if( [[pathname pathExtension] isEqualToString:@"app"])
+								{
+									folderSkip = pathname;
+								}
 								else if( [[pathname pathExtension] isEqualToString:@"pages"])
 								{
 									folderSkip = pathname;
@@ -1430,7 +1434,9 @@ static NSArray*	statesArray = nil;
 						
 						else if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
 							[self addDICOMDIR: filename :filesArray];
-						
+						else if( [[filename pathExtension] isEqualToString: @"app"])
+						{
+						}
 						else [filesArray addObject: filename];
 					}
 				}
