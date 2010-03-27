@@ -38,8 +38,15 @@
 
 - (void) setSeriesNumber: (long) no
 {
-	//If no == -1, take the value of source dcm
-	exportSeriesNumber = no;
+	if( exportSeriesNumber != no)
+	{
+		exportSeriesNumber = no;
+		
+		[exportSeriesUID release];
+		DCMObject *dcmObject = [[[DCMObject alloc] init] autorelease];
+		[dcmObject newSeriesInstanceUID];
+		exportSeriesUID = [[dcmObject attributeValueWithName:@"SeriesInstanceUID"] retain];
+	}
 }
 
 - (id)init

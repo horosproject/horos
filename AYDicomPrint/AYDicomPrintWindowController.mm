@@ -349,7 +349,7 @@
 	// show alert, if displayFormat is invalid
 	if ([[formatPopUp menu] itemWithTitle: imageDisplayFormat] == nil)
 	{
-		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: @"The Format you selected is not valid." waitUntilDone: NO];
+		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: NSLocalizedString( @"The Format you selected is not valid.", nil) waitUntilDone: NO];
 		[pool release];
 		return;
 	}
@@ -370,7 +370,7 @@
 	// create destination directory
 	if ([fileManager fileExistsAtPath: destPath] || ![fileManager createDirectoryAtPath: destPath attributes: nil])
 	{
-		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: @"Can't write to temporary directory." waitUntilDone: NO];
+		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: NSLocalizedString( @"Can't write to temporary directory.", nil) waitUntilDone: NO];
 		[pool release];
 		return;
 	}
@@ -397,7 +397,7 @@
 	// check, if images were collected
 	if ([images count] == 0)
 	{
-		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: @"There are no images selected." waitUntilDone: NO];
+		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: NSLocalizedString( @"There are no images selected.", nil) waitUntilDone: NO];
 		[images release];
 		[pool release];
 		return;
@@ -443,7 +443,7 @@
 	NSLog( @"%@", xmlPath);
 	if (![[document XMLData] writeToFile: xmlPath atomically: YES])
 	{
-		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: @"Can't write to temporary directory." waitUntilDone: NO];
+		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: NSLocalizedString( @"Can't write to temporary directory.", nil) waitUntilDone: NO];
 		[images release];
 		[pool release];
 		return;
@@ -525,7 +525,7 @@
 	if (!message)
 	{
 		[m_ProgressTabView selectFirstTabViewItem: self];
-		[m_ProgressMessage setStringValue: NSLocalizedString(@"Printing images...", nil)];
+		[m_ProgressMessage setStringValue: NSLocalizedString( @"Printing images...", nil)];
 	}
 	else
 	{
