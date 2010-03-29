@@ -2239,16 +2239,19 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 			
 			Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
 			[splash showWindow:self];
-			[[splash progress] setMaxValue:(int)((to-from)/interval)];
 			
 			@try
-			{			
+			{
+				
+				
 				if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 				[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
 				[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 				
 				if([dcmExport3Modalities state]==NSOffState)
 				{
+					[[splash progress] setMaxValue:(int)((to-from)/interval)];
+					
 					for( i = from; i < to; i+=interval)
 					{
 						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
@@ -2270,11 +2273,14 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 				}
 				else
 				{	
+					[[splash progress] setMaxValue:(int) 3 * ((to-from)/interval)];
+					
 					long nCT, nPETCT, nPET;
 					nCT = 15300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
 					nPETCT = 25300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
 					nPET = 35300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
-
+					
+					[exportDCM setSeriesNumber:nCT];
 					for( i = from; i < to; i+=interval)
 					{
 						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
@@ -2284,13 +2290,51 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 						
 						@try 
 						{
-							[exportDCM setSeriesNumber:nCT];
 							[producedFiles addObject: [self exportDICOMFileInt: YES view:viewCT]];
-							[exportDCM setSeriesNumber:nPETCT];
-							[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPETCT]];
-							[exportDCM setSeriesNumber:nPET];
-							[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPET]];
+						}
+						@catch (NSException * e) 
+						{
+							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+						}
 						
+						[pool release];
+						
+						[splash incrementBy: 1];
+					}
+					
+					[exportDCM setSeriesNumber:nPETCT];
+					for( i = from; i < to; i+=interval)
+					{
+						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
+						[modalitySplitView display];
+						
+						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+						
+						@try 
+						{
+							[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPETCT]];
+						}
+						@catch (NSException * e) 
+						{
+							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+						}
+						
+						[pool release];
+						
+						[splash incrementBy: 1];
+					}
+					
+					[exportDCM setSeriesNumber:nPET];
+					for( i = from; i < to; i+=interval)
+					{
+						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
+						[modalitySplitView display];
+						
+						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+						
+						@try 
+						{
+							[producedFiles addObject: [self exportDICOMFileInt: YES view:viewPET]];
 						}
 						@catch (NSException * e) 
 						{

@@ -2844,8 +2844,8 @@ static BOOL initialized = NO;
 	{
 		if( [[NSUserDefaults standardUserDefaults] integerForKey: @"timeZone"] != [[NSTimeZone localTimeZone] secondsFromGMT])
 		{
-			NSLog( @"***** Time zone has changed: this modification can affect study dates, study times and birth dates! -> Stay in the previous time zone !");
-			[NSTimeZone setDefaultTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: [[NSUserDefaults standardUserDefaults] integerForKey: @"timeZone"]]];
+		//	NSLog( @"***** Time zone has changed: this modification can affect study dates, study times and birth dates!");
+		//	[NSTimeZone setDefaultTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: [[NSUserDefaults standardUserDefaults] integerForKey: @"timeZone"]]];
 		}
 	}
 	else [[NSUserDefaults standardUserDefaults] setInteger: [[NSTimeZone localTimeZone] secondsFromGMT] forKey: @"timeZone"];
