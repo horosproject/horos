@@ -12121,25 +12121,18 @@ END_CREATE_ROIS:
 							value = [field objectForKey:@"field"];
 							if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", nil)] || [value isEqualToString: (@"Patient's Actual Age")])
 							{
-								NSDate *date = [imageObj valueForKeyPath: @"series.study.dateOfBirth"];
-								
-								if(date)
+								if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"])
 								{
-									int age = -[date timeIntervalSinceNow]/(60*60*24*365);
-									value = [NSString stringWithFormat:@"%d y", age];
+									value = [imageObj valueForKeyPath: @"series.study.yearOld"];
 								}
 								else value = nil;
 							}
 							
 							if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", nil)] || [value isEqualToString: (@"Patient's Age At Acquisition")])
 							{
-								NSDate *date1 = [imageObj valueForKeyPath: @"series.study.dateOfBirth"];
-								NSDate *date2 = [imageObj valueForKeyPath: @"series.study.date"];
-								
-								if(date1 && date2)
+								if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"] && [imageObj valueForKeyPath: @"series.study.date"])
 								{
-									int age = -[date1 timeIntervalSinceDate: date2]/(60*60*24*365);
-									value = [NSString stringWithFormat:@"%d y", age];
+									value = [imageObj valueForKeyPath: @"series.study.yearOldAcquisition"];
 								}
 								else value = nil;
 							}
