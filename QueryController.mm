@@ -770,62 +770,98 @@ extern "C"
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
 {
-	if( item == nil)
+	@try
 	{
-		if( [resultArray count] > index)
-			return [resultArray objectAtIndex:index];
+		if( item == nil)
+		{
+			if( [resultArray count] > index)
+				return [resultArray objectAtIndex:index];
+			else
+				return nil;
+		}
 		else
-			return nil;
+		{
+			return [[(DCMTKQueryNode *)item children] objectAtIndex:index];
+		}
 	}
-	else
+	@catch (NSException * e)
 	{
-		return [[(DCMTKQueryNode *)item children] objectAtIndex:index];
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
+	
+	return nil;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
-	if( [[tableColumn identifier] isEqualToString:@"comment"])
+	@try
 	{
-		DatabaseIsEdited = YES;
-		return YES;
+		if( [[tableColumn identifier] isEqualToString:@"comment"])
+		{
+			DatabaseIsEdited = YES;
+			return YES;
+		}
+		else
+		{
+			DatabaseIsEdited = NO;
+			return NO;
+		}
 	}
-	else
+	@catch (NSException * e)
 	{
-		DatabaseIsEdited = NO;
-		return NO;
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
+	
+	return NO;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
 {
-	if (item == nil)
-		return [resultArray count];
-	else
+	@try
 	{
-		if ( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES || [item isMemberOfClass:[DCMTKRootQueryNode class]] == YES)
-			return YES;
-		else 
-			return NO;
+		if (item == nil)
+			return [resultArray count];
+		else
+		{
+			if ( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES || [item isMemberOfClass:[DCMTKRootQueryNode class]] == YES)
+				return YES;
+			else 
+				return NO;
+		}
 	}
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	return NO;
 }
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
-	if( item)
+	@try
 	{
-		if (![(DCMTKQueryNode *)item children])
+		if( item)
 		{
-			performingCFind = YES; // to avoid re-entries during WaitRendering window, and separate thread for cFind
-			
-			[progressIndicator startAnimation:nil];
-			[item queryWithValues:nil];
-			[progressIndicator stopAnimation:nil];
-			
-			performingCFind = NO;
+			if (![(DCMTKQueryNode *)item children])
+			{
+				performingCFind = YES; // to avoid re-entries during WaitRendering window, and separate thread for cFind
+				
+				[progressIndicator startAnimation:nil];
+				[item queryWithValues:nil];
+				[progressIndicator stopAnimation:nil];
+				
+				performingCFind = NO;
+			}
 		}
+		return  (item == nil) ? [resultArray count] : [[(DCMTKQueryNode *) item children] count];
 	}
-	return  (item == nil) ? [resultArray count] : [[(DCMTKQueryNode *) item children] count];
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	return [resultArray count];
 }
 
 - (NSArray*) localSeries:(id) item
@@ -847,7 +883,7 @@ extern "C"
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"**** localSeries exception: %@", [e description]);
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
 		
 		[context unlock];
@@ -883,7 +919,7 @@ extern "C"
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"**** computeStudyArrayInstanceUID exception: %@", [e description]);
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
 		
 		[context unlock];
@@ -919,48 +955,55 @@ extern "C"
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation;
 {
-	if( [[tableColumn identifier] isEqualToString: @"name"])
+	@try
 	{
-		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+		if( [[tableColumn identifier] isEqualToString: @"name"])
 		{
-			NSArray *studyArray;
-			
-			studyArray = [self localStudy: item];
-			
-			if( [studyArray count] > 0)
+			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 			{
-				float localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] floatValue];
-				float totalFiles = [[item valueForKey:@"numberImages"] floatValue];
-				float percentage = 0;
+				NSArray *studyArray;
 				
-				if( totalFiles != 0.0)
-					percentage = localFiles / totalFiles;
-				if( percentage > 1.0) percentage = 1.0;
+				studyArray = [self localStudy: item];
 				
-				return [NSString stringWithFormat:@"%@\n%d%% (%d/%d)", [cell title], (int)(percentage*100), (int)localFiles, (int)totalFiles];
-			}
-		}
-		
-		if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
-		{
-			NSArray *seriesArray;
-			
-			seriesArray = [self localSeries: item];
-			
-			if( [seriesArray count] > 0)
-			{
-				float localFiles = [[[seriesArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] floatValue];
-				float totalFiles = [[item valueForKey:@"numberImages"] floatValue];
-				float percentage = 0;
-				
-				if( totalFiles != 0.0)
-					percentage = localFiles / totalFiles;
+				if( [studyArray count] > 0)
+				{
+					float localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] floatValue];
+					float totalFiles = [[item valueForKey:@"numberImages"] floatValue];
+					float percentage = 0;
 					
-				if(percentage > 1.0) percentage = 1.0;
+					if( totalFiles != 0.0)
+						percentage = localFiles / totalFiles;
+					if( percentage > 1.0) percentage = 1.0;
+					
+					return [NSString stringWithFormat:@"%@\n%d%% (%d/%d)", [cell title], (int)(percentage*100), (int)localFiles, (int)totalFiles];
+				}
+			}
+			
+			if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
+			{
+				NSArray *seriesArray;
 				
-				return [NSString stringWithFormat:@"%@\n%d%% (%d/%d)", [cell title], (int)(percentage*100), (int)localFiles, (int)totalFiles];
+				seriesArray = [self localSeries: item];
+				
+				if( [seriesArray count] > 0)
+				{
+					float localFiles = [[[seriesArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] floatValue];
+					float totalFiles = [[item valueForKey:@"numberImages"] floatValue];
+					float percentage = 0;
+					
+					if( totalFiles != 0.0)
+						percentage = localFiles / totalFiles;
+						
+					if(percentage > 1.0) percentage = 1.0;
+					
+					return [NSString stringWithFormat:@"%@\n%d%% (%d/%d)", [cell title], (int)(percentage*100), (int)localFiles, (int)totalFiles];
+				}
 			}
 		}
+	}
+	@catch ( NSException *e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	return @"";
 }
@@ -977,110 +1020,125 @@ extern "C"
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
-	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
+	@try
 	{
-		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+		if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
 		{
-			NSArray	*studyArray;
-			
-			studyArray = [self localStudy: item];
-			
-			if( [studyArray count] > 0)
+			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 			{
-				float percentage = 0;
+				NSArray	*studyArray;
 				
-				if( [[item valueForKey:@"numberImages"] floatValue] != 0.0)
-					percentage = [[[studyArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
+				studyArray = [self localStudy: item];
+				
+				if( [studyArray count] > 0)
+				{
+					float percentage = 0;
 					
-				if(percentage > 1.0) percentage = 1.0;
+					if( [[item valueForKey:@"numberImages"] floatValue] != 0.0)
+						percentage = [[[studyArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
+						
+					if(percentage > 1.0) percentage = 1.0;
 
-				[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
+					[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
+				}
+				else [(ImageAndTextCell *)cell setImage: nil];
 			}
-			else [(ImageAndTextCell *)cell setImage: nil];
-		}
-		else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
-		{
-			NSArray	*seriesArray;
-			
-			seriesArray = [self localSeries: item];
-			
-			if( [seriesArray count] > 0)
+			else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
 			{
-				float percentage = 0;
+				NSArray	*seriesArray;
 				
-				if( [[item valueForKey:@"numberImages"] floatValue] != 0.0)
-					percentage = [[[seriesArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
+				seriesArray = [self localSeries: item];
+				
+				if( [seriesArray count] > 0)
+				{
+					float percentage = 0;
 					
-				if(percentage > 1.0) percentage = 1.0;
-				
-				[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
+					if( [[item valueForKey:@"numberImages"] floatValue] != 0.0)
+						percentage = [[[seriesArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
+						
+					if(percentage > 1.0) percentage = 1.0;
+					
+					[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
+				}
+				else [(ImageAndTextCell *)cell setImage: nil];
 			}
 			else [(ImageAndTextCell *)cell setImage: nil];
+			
+			[cell setFont: [NSFont boldSystemFontOfSize:13]];
+			[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 		}
-		else [(ImageAndTextCell *)cell setImage: nil];
-		
-		[cell setFont: [NSFont boldSystemFontOfSize:13]];
-		[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
+		else if( [[tableColumn identifier] isEqualToString: @"numberImages"])
+		{
+			if( [item valueForKey:@"numberImages"]) [cell setIntegerValue: [[item valueForKey:@"numberImages"] intValue]];
+			else [cell setStringValue:@"n/a"];
+		}
 	}
-	else if( [[tableColumn identifier] isEqualToString: @"numberImages"])
+	@catch (NSException * e)
 	{
-		if( [item valueForKey:@"numberImages"]) [cell setIntegerValue: [[item valueForKey:@"numberImages"] intValue]];
-		else [cell setStringValue:@"n/a"];
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	if( [[tableColumn identifier] isEqualToString: @"stateText"])
+	@try
 	{
-		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+		if( [[tableColumn identifier] isEqualToString: @"stateText"])
 		{
-			NSArray *studyArray = [self localStudy: item];
-			
-			if( [studyArray count] > 0)
+			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 			{
-				if( [[[studyArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
-					return nil;
-				else
-					return [[studyArray objectAtIndex: 0] valueForKey: @"stateText"];
+				NSArray *studyArray = [self localStudy: item];
+				
+				if( [studyArray count] > 0)
+				{
+					if( [[[studyArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
+						return nil;
+					else
+						return [[studyArray objectAtIndex: 0] valueForKey: @"stateText"];
+				}
+			}
+			else
+			{
+				NSArray *seriesArray = [self localSeries: item];
+				if( [seriesArray count])
+				{
+					if( [[[seriesArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
+						return nil;
+					else
+						return [[seriesArray objectAtIndex: 0] valueForKey: @"stateText"];
+				}
 			}
 		}
-		else
+		else if( [[tableColumn identifier] isEqualToString: @"comment"])
 		{
-			NSArray *seriesArray = [self localSeries: item];
-			if( [seriesArray count])
+			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 			{
-				if( [[[seriesArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
-					return nil;
-				else
-					return [[seriesArray objectAtIndex: 0] valueForKey: @"stateText"];
+				NSArray *studyArray = [self localStudy: item];
+				
+				if( [studyArray count] > 0)
+					return [[studyArray objectAtIndex: 0] valueForKey: @"comment"];
+			}
+			else
+			{
+				NSArray *seriesArray = [self localSeries: item];
+				if( [seriesArray count])
+					return [[seriesArray objectAtIndex: 0] valueForKey: @"comment"];
 			}
 		}
+		else if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != nil)
+		{
+			if( [[tableColumn identifier] isEqualToString: @"numberImages"])
+			{
+				return [NSNumber numberWithInt: [[item valueForKey: [tableColumn identifier]] intValue]];
+			}
+			else return [item valueForKey: [tableColumn identifier]];		
+		}	
 	}
-	else if( [[tableColumn identifier] isEqualToString: @"comment"])
+	@catch (NSException * e)
 	{
-		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
-		{
-			NSArray *studyArray = [self localStudy: item];
-			
-			if( [studyArray count] > 0)
-				return [[studyArray objectAtIndex: 0] valueForKey: @"comment"];
-		}
-		else
-		{
-			NSArray *seriesArray = [self localSeries: item];
-			if( [seriesArray count])
-				return [[seriesArray objectAtIndex: 0] valueForKey: @"comment"];
-		}
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
-	else if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != nil)
-	{
-		if( [[tableColumn identifier] isEqualToString: @"numberImages"])
-		{
-			return [NSNumber numberWithInt: [[item valueForKey: [tableColumn identifier]] intValue]];
-		}
-		else return [item valueForKey: [tableColumn identifier]];		
-	}
+	
 	return nil;
 }
 
@@ -1088,18 +1146,25 @@ extern "C"
 {
 	NSArray *array;
 	
-	if( [[tableColumn identifier] isEqualToString: @"comment"] || [[tableColumn identifier] isEqualToString: @"stateText"])
+	@try
 	{
-		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
-			array = [self localStudy: item];
-		else
-			array = [self localSeries: item];
-		
-		if( [array count] > 0)
+		if( [[tableColumn identifier] isEqualToString: @"comment"] || [[tableColumn identifier] isEqualToString: @"stateText"])
 		{
-			[[BrowserController currentBrowser] setDatabaseValue: object item: [array objectAtIndex: 0] forKey: [tableColumn identifier]];
+			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+				array = [self localStudy: item];
+			else
+				array = [self localSeries: item];
+			
+			if( [array count] > 0)
+			{
+				[[BrowserController currentBrowser] setDatabaseValue: object item: [array objectAtIndex: 0] forKey: [tableColumn identifier]];
+			}
+			else NSRunCriticalAlertPanel( NSLocalizedString(@"Study not available", nil), NSLocalizedString(@"The study is not available in the local Database, you cannot modify or set the comments/status fields.", nil), NSLocalizedString(@"OK", nil), nil, nil) ;
 		}
-		else NSRunCriticalAlertPanel( NSLocalizedString(@"Study not available", nil), NSLocalizedString(@"The study is not available in the local Database, you cannot modify or set the comments/status fields.", nil), NSLocalizedString(@"OK", nil), nil, nil) ;
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	DatabaseIsEdited = NO;
