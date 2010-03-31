@@ -176,16 +176,16 @@ typedef char* vtkMyCallbackVR;*/
 @interface VRView ( StereoVision )
 
 - (short) LeftRightDualScreen;
--(void) LeftRightSingleScreen;
--(void) initStereoLeftRight;
+- (void) LeftRightSingleScreen;
+- (void) initStereoLeftRight;
 - (void) disableStereoModeLeftRight;
--(void) adjustWindowContent: (NSSize) proposedFrameSize;
--(IBAction) SwitchStereoMode :(id) sender;
--(void) setNewViewAngle: (double) viewAngle;
--(IBAction) invertedSides :(id) sender;
+- (void) adjustWindowContent: (NSSize) proposedFrameSize;
+- (IBAction) SwitchStereoMode :(id) sender;
+- (void) setNewViewAngle: (double) viewAngle;
+- (IBAction) invertedSides :(id) sender;
 - (short) LeftRightMovieScreen;
 - (void) setDisplayStereo3DPoints: (vtkRenderer*) theRenderer: (BOOL) on;
--(void) setNewGeometry: (double) screenHeight: (double) screenDistance: (double) eyeDistance;
+- (void) setNewGeometry: (double) screenHeight: (double) screenDistance: (double) eyeDistance;
 
 
 @end

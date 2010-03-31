@@ -52,18 +52,18 @@
 - (void) setCurWLWWMenu:(NSString*) str;
 - (void) setFusion;
 
--(short) thickSlabMode;
--(void) setThickSlabMode : (short) newThickSlabMode;
--(short) thickSlab;
--(long) maxThickSlab;
--(float) thickSlabDistance;
--(void) setThickSlab : (short) newThickSlab;
+- (short) thickSlabMode;
+- (void) setThickSlabMode : (short) newThickSlabMode;
+- (short) thickSlab;
+- (long) maxThickSlab;
+- (float) thickSlabDistance;
+- (void) setThickSlab : (short) newThickSlab;
 
 - (void) showViews:(id)sender;
 - (void) setTransferFunction:(NSData*) tf;
 
 - (OrthogonalReslice*) reslicer;
--(void)setReslicer:(OrthogonalReslice*)newReslicer;
+- (void)setReslicer:(OrthogonalReslice*)newReslicer;
 - (OrthogonalMPRView*) originalView;
 - (OrthogonalMPRView*) xReslicedView;
 - (OrthogonalMPRView*) yReslicedView;

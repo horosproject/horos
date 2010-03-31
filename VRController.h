@@ -221,8 +221,6 @@
 // ROIs Volumes
 - (void) computeROIVolumes;
 - (NSMutableArray*) roiVolumes;
-//- (void) displayROIVolumeAtIndex: (int) index;
-//- (void) hideROIVolumeAtIndex: (int) index;
 - (void) displayROIVolume: (ROIVolume*) v;
 - (void) hideROIVolume: (ROIVolume*) v;
 - (void) displayROIVolumes;

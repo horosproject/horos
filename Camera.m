@@ -24,7 +24,7 @@
 			movieIndexIn4D, minCroppingPlanes, maxCroppingPlanes, windowCenterX, windowCenterY, LOD;
 
 
--(id) init
+- (id) init
 {	
 	self = [super init];
 	

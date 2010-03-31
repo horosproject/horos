@@ -50,7 +50,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 @implementation SRController (StereoVision)
 
 
--(void) dealloc
+- (void) dealloc
 {
     NSLog(@"Dealloc SRController");
 	

@@ -36,12 +36,9 @@
 
 - (IBAction) ApplyGeometrieSettings: (id) sender;
 
-
-
 @end
 
 #endif
-
 
 
 	

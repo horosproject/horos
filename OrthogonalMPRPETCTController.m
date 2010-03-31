@@ -59,6 +59,7 @@
 	{
 		[self fullWindowPlan: sender];
 	}
+	
 	// trick to refresh the view
 	NSRect frame = [[viewer window] frame];
 	[[viewer window] setFrame:NSMakeRect(frame.origin.x,frame.origin.y,frame.size.width+1,frame.size.height+1) display:NO];

@@ -147,7 +147,6 @@ static NSArray*		DefaultROINames;
 
 static  BOOL AUTOHIDEMATRIX								= NO;
 static	float deg2rad									= 3.14159265358979/180.0; 
-//static	BOOL dontEnterMagneticFunctions = NO;
 
 static NSMenu *wlwwPresetsMenu = nil;
 static NSMenu *contextualMenu = nil;

@@ -118,6 +118,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 @end
 
 @implementation NSData (OsiriX)
+
 - (BOOL) isEqualToSopInstanceUID:(NSData*) sopInstanceUID
 {
 	const UInt8* bytes = (const UInt8*) [self bytes];

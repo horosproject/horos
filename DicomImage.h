@@ -55,3 +55,4 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 - (NSArray*) SRPaths;
 - (NSString	*)sopInstanceUID;
 @end
+

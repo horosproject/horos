@@ -42,6 +42,5 @@
 - (void) disableFullScreen;
 - (void) enableFullScreen;
 
-
 @end
 #endif

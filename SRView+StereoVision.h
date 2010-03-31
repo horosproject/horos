@@ -119,21 +119,21 @@ class vtkMyCallback;
 
 @interface SRView ( StereoVision )
 
--(id) initWithFrame:(NSRect)frame;
--(void) LeftRightSingleScreen;
--(void) dealloc;
--(void) initStereoLeftRight;
+- (id) initWithFrame:(NSRect)frame;
+- (void) LeftRightSingleScreen;
+- (void) dealloc;
+- (void) initStereoLeftRight;
 - (short) LeftRightDualScreen;
 - (void) setDisplayStereo3DPoints: (vtkRenderer*) theRenderer: (BOOL) on;
 - (void) disableStereoModeLeftRight;
--(void) adjustWindowContent: (NSSize) proposedFrameSize;
+- (void) adjustWindowContent: (NSSize) proposedFrameSize;
 - (short) LeftRightMovieScreen;
--(NSImage*) nsimageQuicktime;
--(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
+- (NSImage*) nsimageQuicktime;
+- (unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
 - (IBAction)changeColor:(id)sender;
--(IBAction) endQuicktimeSettings:(id) sender;
+- (IBAction) endQuicktimeSettings:(id) sender;
 - (void) toggleDisplay3DPoints;
--(IBAction) endQuicktimeVRSettings:(id) sender;
+- (IBAction) endQuicktimeVRSettings:(id) sender;
 - (void) keyDown:(NSEvent *)event;
 - (void) remove3DPointAtIndex: (unsigned int) index;
 - (void) hideAnnotationFor3DPointAtIndex:(unsigned int) index;
@@ -143,9 +143,9 @@ class vtkMyCallback;
 - (void) add3DPointActor: (vtkActor*) actor;
 - (void)mouseDragged:(NSEvent *)theEvent;
 - (void)rightMouseDragged:(NSEvent *)theEvent;
--(IBAction) invertedSides :(id) sender;
--(void) updateStereoLeftRight;
--(void) setNewGeometry: (double) screenHeight: (double) screenDistance: (double) eyeDistance;
+- (IBAction) invertedSides :(id) sender;
+- (void) updateStereoLeftRight;
+- (void) setNewGeometry: (double) screenHeight: (double) screenDistance: (double) eyeDistance;
 
 
 @end

@@ -12,8 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
 #import "MutableArrayCategory.h"
 
 NSInteger sortByAddress(id roi1, id roi2, void *context)

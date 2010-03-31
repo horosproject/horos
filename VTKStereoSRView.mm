@@ -43,16 +43,6 @@
 	//	currentTool = t3DRotate;
 	//	[self setCursorForView: currentTool];
 	
-	/*
-	NSNotificationCenter *nc;
-	nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver: self
-		   selector: @selector(CloseViewerNotification:)
-			   name: OsirixCloseViewerNotification
-			 object: nil];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: nil];
-	 */
 	}
 	return self;
 }

@@ -65,8 +65,6 @@
 	BOOL							FullScreenOn;
 #endif
 	
-
-//    BOOL							FullScreenOn;
 	NSWindow						*FullScreenWindow;
 	NSWindow						*StartingWindow;
 	NSView							*contentView;
@@ -96,7 +94,6 @@
 - (void) UpdateCLUTMenu: (NSNotification*) note;
 - (void) CLUTChanged: (NSNotification*) note;
 - (NSPopUpButton*) clutPopup;
-
 - (void) ApplyOpacity: (id) sender;
 - (IBAction) endOpacity: (id) sender;
 - (void) deleteOpacity: (NSWindow*) sheet returnCode: (int) returnCode contextInfo: (void*) contextInfo;

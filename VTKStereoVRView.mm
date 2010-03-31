@@ -37,7 +37,6 @@ static NSRecursiveLock *drawLock = nil;
 		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: nil] autorelease];
 		
 		[self addTrackingArea: cursorTracking];
-//		aCamera = nil;
 		
 //		aRenderer = [self renderer];
 //		cursor = nil;

@@ -46,7 +46,6 @@ typedef char* vtkCamera;
 }
 
 -(id)initWithFrame:(NSRect)frame: (SRView*) aSRView;
-//- (void) convert3Dto2Dpoint:(double*) pt3D :(double*) pt2D;
 
 @end
 #endif
