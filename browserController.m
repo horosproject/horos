@@ -6588,12 +6588,12 @@ static NSArray*	statesArray = nil;
 				}
 				else return nil;
 			}
-			else if( [[item valueForKey:@"reportSeries"] count])
-			{
-				NSArray *images = [[[[item valueForKey:@"reportSeries"] lastObject] valueForKey:@"images"] allObjects];
-				
-				return [[images lastObject] valueForKey:@"date"];
-			}
+//			else if( [[item valueForKey:@"reportSeries"] count])
+//			{
+//				NSArray *images = [[[[item valueForKey:@"reportSeries"] lastObject] valueForKey:@"images"] allObjects];
+//				
+//				return [[images lastObject] valueForKey:@"date"];
+//			}
 			else return nil;
 		}
 		else return nil;
@@ -6800,7 +6800,7 @@ static NSArray*	statesArray = nil;
 			
 			if( [[tableColumn identifier] isEqualToString:@"reportURL"])
 			{
-				if( (isCurrentDatabaseBonjour && [item valueForKey:@"reportURL"] != nil) || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES || [[item valueForKey:@"reportSeries"] count] > 0)
+				if( (isCurrentDatabaseBonjour && [item valueForKey:@"reportURL"] != nil) || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES) // || [[item valueForKey:@"reportSeries"] count] > 0)
 				{
 					NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
 					[reportIcon setSize: NSMakeSize(16, 16)];
@@ -17901,28 +17901,28 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 					[databaseOutline reloadData];
 				}
-				else if( [[item valueForKey:@"reportSeries"] count])
-				{
-					NSManagedObjectContext	*context = self.managedObjectContext;
-					
-					[context lock];
-					
-					@try 
-					{
-						NSArray *array = [item valueForKey:@"reportSeries"];
-					
-						for( NSManagedObject *o in array)
-							[context deleteObject: o];
-					}
-					@catch (NSException * e) 
-					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-					}
-					
-					[context unlock];
-					
-					[self saveDatabase: currentDatabasePath];
-				}
+//				else if( [[item valueForKey:@"reportSeries"] count])
+//				{
+//					NSManagedObjectContext	*context = self.managedObjectContext;
+//					
+//					[context lock];
+//					
+//					@try 
+//					{
+//						NSArray *array = [item valueForKey:@"reportSeries"];
+//					
+//						for( NSManagedObject *o in array)
+//							[context deleteObject: o];
+//					}
+//					@catch (NSException * e) 
+//					{
+//						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+//					}
+//					
+//					[context unlock];
+//					
+//					[self saveDatabase: currentDatabasePath];
+//				}
 				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDeletedReportNotification object:nil userInfo:nil];
 			}
 		}

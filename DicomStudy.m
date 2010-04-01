@@ -624,51 +624,27 @@ NSString* soundex4( NSString *inString)
 	[[self managedObjectContext] lock];
 	
 	NSMutableArray *newArray = [NSMutableArray array];
-	@try
-	{
-		for (id series in [self primitiveValueForKey: @"series"])
-		{
-			if ([DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]])
-			{
-				if( [[series valueForKey:@"id"] intValue] != 5002 || [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == NO)		// We dont want the OsiriX ROIs SR
-					[newArray addObject:series];
-			}
-		}
-	}
-	@catch (NSException *e)
-	{
-		NSLog( @"imageSeries exception: %@", e);
-	}
-	
-	[[self managedObjectContext] unlock];
+//	@try
+//	{
+//		for (id series in [self primitiveValueForKey: @"series"])
+//		{
+//			if ([DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]])
+//			{
+//				if( [[series valueForKey:@"id"] intValue] != 5002 || [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == NO)		// We dont want the OsiriX ROIs SR
+//					[newArray addObject:series];
+//			}
+//		}
+//	}
+//	@catch (NSException *e)
+//	{
+//		NSLog( @"imageSeries exception: %@", e);
+//	}
+//	
+//	[[self managedObjectContext] unlock];
 	
 	return newArray;
 }
 
-- (NSArray *)structuredReports
-{
-	[[self managedObjectContext] lock];
-	
-	NSMutableSet *set = nil;
-	
-	@try
-	{
-		NSArray *array = [self primitiveValueForKey:@"reportSeries"];
-		set = [NSMutableSet set];
-		
-		for (id series in array)
-			[set unionSet:[series primitiveValueForKey:@"images"]];
-		
-	}
-	@catch (NSException *e)
-	{
-		NSLog( @"imageSeries exception: %@", e);
-	}
-	
-	[[self managedObjectContext] unlock];
-	
-	return [set allObjects];
-}
 
 - (NSArray *)keyObjectSeries
 {
