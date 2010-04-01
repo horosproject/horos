@@ -409,7 +409,7 @@ extern NSManagedObjectContext *staticContext;
 			c = [[NSString stringWithCString: scs] componentsSeparatedByString:@"\\"];
 		
 			if( [c count] > 0)
-				specificCharacterSet = [[NSString stringWithCString: [c objectAtIndex: 0]] retain];
+				specificCharacterSet = [[c objectAtIndex: 0] retain];
 			else
 				specificCharacterSet = [[NSString stringWithCString: scs] retain];
 		}
