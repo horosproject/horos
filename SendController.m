@@ -90,9 +90,9 @@ static volatile int sendControllerObjects = 0;
 		_files = [files copy];
 		int count = [_files  count];
 		if(count == 1)
-			[self setNumberFiles: [NSString stringWithFormat:NSLocalizedString(@"%d image", nil), count]];
+			[self setNumberFiles: [NSString stringWithFormat:NSLocalizedString(@"%d files", nil), count]];
 		else if (count > 1)
-			[self setNumberFiles: [NSString stringWithFormat:NSLocalizedString(@"%d images", nil), count]];
+			[self setNumberFiles: [NSString stringWithFormat:NSLocalizedString(@"%d files", nil), count]];
 		
 		
 		_serverIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendServer"];	
