@@ -398,12 +398,27 @@ extern NSManagedObjectContext *staticContext;
 	NS_DURING 
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	
-	//NSLog(@"get Specific Character set");
 	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL)
 	{
 		[specificCharacterSet release];
-		specificCharacterSet = [[NSString stringWithCString:scs] retain];
-		encoding = [NSString encodingForDICOMCharacterSet:specificCharacterSet];
+		
+		NSArray	*c = nil;
+		
+		@try
+		{
+			c = [[NSString stringWithCString: scs] componentsSeparatedByString:@"\\"];
+		
+			if( [c count] > 0)
+				specificCharacterSet = [[NSString stringWithCString: [c objectAtIndex: 0]] retain];
+			else
+				specificCharacterSet = [[NSString stringWithCString: scs] retain];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
+		encoding = [NSString encodingForDICOMCharacterSet: specificCharacterSet];
 	}
 	else
 	{

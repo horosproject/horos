@@ -140,7 +140,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 		
 		for( int i = 0; i < 10; i++) encodings[ i] = NSISOLatin1StringEncoding;
 		
-		NSArray *e = [characterSet componentsSeparatedByString: @"//"];
+		NSArray *e = [characterSet componentsSeparatedByString: @"\\"];
 		
 		for( int z = 0; z < [e count] ; z++)
 		{
