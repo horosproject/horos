@@ -8959,7 +8959,7 @@ static BOOL withReset = NO;
 				if( thumbnail == notFoundImage)
 				{
 					[dcmPix revert: NO];	// <- Kill the raw data
-					thumbnail = [dcmPix generateThumbnailImageWithWW: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[[files objectAtIndex: i] valueForKey: @"series.windowLevel"] floatValue]];
+					thumbnail = [dcmPix generateThumbnailImageWithWW: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowLevel"] floatValue]];
 					[dcmPix revert: NO];	// <- Kill the raw data
 					
 					if( thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
