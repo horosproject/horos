@@ -5763,6 +5763,16 @@ static ViewerController *draggedController = nil;
 	if( resampleRatio != 1)
 		resampleRatio = 1;
 	
+	@try
+	{
+		[[fileList[0] objectAtIndex:0] setValue: nil forKeyPath:@"series.thumbnail"];
+		[[BrowserController currentBrowser] buildThumbnail: [[fileList[0] objectAtIndex:0] valueForKey: @"series"]];
+	}
+	@catch ( NSException *e)
+	{
+		NSLog( @"***** finalizeSeriesViewing : %@", e);
+	}
+	
 	for( i = 0; i < maxMovieIndex; i++)
 	{
 		@try
@@ -5780,16 +5790,6 @@ static ViewerController *draggedController = nil;
 			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: nil];
 			}
-		}
-		
-		@try
-		{
-			[[fileList[0] objectAtIndex:0] setValue: nil forKeyPath:@"series.thumbnail"];
-			[[BrowserController currentBrowser] buildThumbnail: [[fileList[0] objectAtIndex:0] valueForKey: @"series"]];
-		}
-		@catch ( NSException *e)
-		{
-			NSLog( @"***** finalizeSeriesViewing : %@", e);
 		}
 		
 		[roiList[ i] release];
@@ -5810,7 +5810,6 @@ static ViewerController *draggedController = nil;
 
 - (void) dealloc
 {
-	
 	[self ActivateBlending: nil];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
@@ -14375,14 +14374,24 @@ int i,j,l;
 	
 	[moviePosSlider setIntValue:curMovieIndex];
 	
-	[imageView setPixels:pixList[curMovieIndex] files:fileList[curMovieIndex] rois:roiList[curMovieIndex] firstImage:0 level:'i' reset:NO];
+	[seriesView setPixels:pixList[ curMovieIndex] files:fileList[ curMovieIndex] rois:roiList[ curMovieIndex] firstImage:0 level:'i' reset: NO];	//[pixList[0] count]/2
+	
 	[self setWindowTitle: self];
 	
 	if( wasDataFlipped) [self flipDataSeries: self];
 	
 	[[[NavigatorWindowController navigatorWindowController] navigatorView] addNotificationObserver];
 	
+	if( [imageView columns] > 1 || [imageView rows] > 1)
+	{
+		if( index == 0)
+			[imageView setIndex: [pixList[ curMovieIndex] count] -1];
+		else
+			[imageView setIndex: 0];
+	}
+	
 	[imageView setIndex: index];
+	
 	[imageView sendSyncMessage: 0];
 	
 	[self adjustSlider];
