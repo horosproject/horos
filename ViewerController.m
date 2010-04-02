@@ -5784,11 +5784,11 @@ static ViewerController *draggedController = nil;
 			NSLog( @"***** saveROI exception : %@", e);
 		}
 		
-		for( x = 0; x < [roiList[ i] count] ; x++)
+		for( NSArray *a in roiList[ i])
 		{
-			for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
+			for( ROI *r in a)
 			{
-				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: r userInfo: nil];
 			}
 		}
 		
