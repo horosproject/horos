@@ -1095,48 +1095,100 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		NSPoint offset;
 		
-		offset.x = (imageOrigin.x - iimageOrigin.x)/pixelSpacingX;
-		offset.y = (imageOrigin.y - iimageOrigin.y)/pixelSpacingY;
-		
 		long modeSaved = mode;
 		mode = ROI_selected;
 		
-		[self roiMove:offset :sendNotification];
-		
-		if( pix)
+		if( type == tPlain)
 		{
-			BOOL inImage = NO;
-			NSRect imRect = NSMakeRect( 0, 0, pix.pwidth, pix.pheight);
-			NSArray *pts = [self points];
-			for( MyPoint* pt in pts)
+			vImage_Buffer	srcVimage, dstVimage;
+			
+			srcVimage.data = textureBuffer;
+			srcVimage.height = textureHeight;
+			srcVimage.width = textureWidth;
+			srcVimage.rowBytes = textureWidth;
+			
+			textureWidth *= pixelSpacingX / ipixelSpacingx;
+			textureHeight *= pixelSpacingX / ipixelSpacingx;
+			
+			unsigned char *newBuffer = malloc( textureWidth * textureHeight * sizeof(unsigned char));
+			
+			dstVimage.height = textureHeight;
+			dstVimage.width = textureWidth;
+			dstVimage.rowBytes = textureWidth;
+			dstVimage.data = newBuffer;
+			
+			vImageScale_Planar8( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
+			
+			textureUpLeftCornerX *= pixelSpacingX / ipixelSpacingx;
+			textureUpLeftCornerY *= pixelSpacingY / ipixelSpacingy;
+			textureDownRightCornerX = textureUpLeftCornerX + textureWidth;
+			textureDownRightCornerY = textureUpLeftCornerY + textureHeight;
+			
+			for( int x = 0 ; x < textureWidth; x++)
 			{
-				if( NSPointInRect( NSMakePoint( pt.x, pt.y), imRect))
+				for( int y = 0 ; y < textureHeight; y++)
 				{
-					inImage = YES;
-					break;
+					if( newBuffer[ y*textureWidth + x] < 127)
+						newBuffer[ y*textureWidth + x] = 0;
+					else
+						newBuffer[ y*textureWidth + x] = 0xFF;
 				}
 			}
 			
-			if( inImage == NO)
-				[self roiMove: NSMakePoint( -offset.x, -offset.y) :sendNotification];
+			offset.x = (imageOrigin.x - iimageOrigin.x)/pixelSpacingX;
+			offset.y = (imageOrigin.y - iimageOrigin.y)/pixelSpacingY;
+			
+			offset.x *= (pixelSpacingX/ipixelSpacingx);
+			offset.y *= (pixelSpacingY/ipixelSpacingy);
+			
+			[self roiMove:offset :sendNotification];
+			
+			free( textureBuffer);
+			textureBuffer = newBuffer;
+		}
+		else
+		{
+			offset.x = (imageOrigin.x - iimageOrigin.x)/pixelSpacingX;
+			offset.y = (imageOrigin.y - iimageOrigin.y)/pixelSpacingY;
+			
+			[self roiMove:offset :sendNotification];
+			
+			if( pix)
+			{
+				BOOL inImage = NO;
+				NSRect imRect = NSMakeRect( 0, 0, pix.pwidth, pix.pheight);
+				NSArray *pts = [self points];
+				for( MyPoint* pt in pts)
+				{
+					if( NSPointInRect( NSMakePoint( pt.x, pt.y), imRect))
+					{
+						inImage = YES;
+						break;
+					}
+				}
+				
+				if( inImage == NO)
+					[self roiMove: NSMakePoint( -offset.x, -offset.y) :sendNotification];
+			}
+			
+			
+			rect.origin.x *= (pixelSpacingX/ipixelSpacingx);
+			rect.origin.y *= (pixelSpacingY/ipixelSpacingy);
+			rect.size.width *= (pixelSpacingX/ipixelSpacingx);
+			rect.size.height *= (pixelSpacingY/ipixelSpacingy);
+			
+			for( int i = 0; i < [points count]; i++)
+			{
+				NSPoint aPoint = [[points objectAtIndex:i] point];
+				
+				aPoint.x *= (pixelSpacingX/ipixelSpacingx);
+				aPoint.y *= (pixelSpacingY/ipixelSpacingy);
+				
+				[[points objectAtIndex:i] setPoint: aPoint];
+			}
 		}
 		
 		mode = modeSaved;
-
-		rect.origin.x *= (pixelSpacingX/ipixelSpacingx);
-		rect.origin.y *= (pixelSpacingY/ipixelSpacingy);
-		rect.size.width *= (pixelSpacingX/ipixelSpacingx);
-		rect.size.height *= (pixelSpacingY/ipixelSpacingy);
-		
-		for( int i = 0; i < [points count]; i++)
-		{
-			NSPoint aPoint = [[points objectAtIndex:i] point];
-			
-			aPoint.x *= (pixelSpacingX/ipixelSpacingx);
-			aPoint.y *= (pixelSpacingY/ipixelSpacingy);
-			
-			[[points objectAtIndex:i] setPoint: aPoint];
-		}
 	}
 	
 	pixelSpacingX = ipixelSpacingx;
@@ -2517,6 +2569,13 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			case tPencil:
 			case tLayerROI:
 				for( int i = 0; i < [points count]; i++) [[points objectAtIndex: i] move: offset.x : offset.y];
+			break;
+			
+			case tPlain:
+				textureUpLeftCornerX += (int) offset.x;
+				textureUpLeftCornerY += (int) offset.y;
+				textureDownRightCornerX += (int) offset.x;
+				textureDownRightCornerY += (int) offset.y;
 			break;
 		}
 		
