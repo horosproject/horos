@@ -685,6 +685,7 @@ SecPolicySearchCreate:
 + (void)KeychainAccessExportTrustedCertificatesToDirectory:(NSString*)directory;
 {
 	BOOL isDirectory, directoryExists;
+	
 	directoryExists = [[NSFileManager defaultManager] fileExistsAtPath:directory isDirectory:&isDirectory];
 	if(directoryExists) return;
 	if(!directoryExists)[[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:NO attributes:nil error:nil];
@@ -700,25 +701,28 @@ SecPolicySearchCreate:
 		status = SecTrustSettingsCopyCertificates(domains[i], &certArray);
 		if(status) cssmPerror("SecTrustSettingsCopyCertificates", status);
 		
-		numCerts = CFArrayGetCount(certArray);
-
-		for(dex=0; dex<numCerts; dex++)
+		if( certArray)
 		{
-			SecCertificateRef certRef = (SecCertificateRef)CFArrayGetValueAtIndex(certArray, dex);			
-			CFDataRef certificateDataRef = NULL;
-			status = SecKeychainItemExport(certRef, kSecFormatX509Cert, kSecItemPemArmour, NULL, &certificateDataRef);
-			
-			if(status==0)
+			numCerts = CFArrayGetCount(certArray);
+
+			for(dex=0; dex<numCerts; dex++)
 			{
-				NSString *path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d_%d.pem", i, dex]];
-				if(![[NSFileManager defaultManager] fileExistsAtPath:path])
-					[(NSData*)certificateDataRef writeToFile:path atomically:YES];
+				SecCertificateRef certRef = (SecCertificateRef)CFArrayGetValueAtIndex(certArray, dex);			
+				CFDataRef certificateDataRef = NULL;
+				status = SecKeychainItemExport(certRef, kSecFormatX509Cert, kSecItemPemArmour, NULL, &certificateDataRef);
+				
+				if(status==0)
+				{
+					NSString *path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d_%d.pem", i, dex]];
+					if(![[NSFileManager defaultManager] fileExistsAtPath:path])
+						[(NSData*)certificateDataRef writeToFile:path atomically:YES];
+				}
+				else NSLog(@"SecKeychainItemExport : error : %@", [DDKeychain stringForError:status]);
+				
 			}
-			else NSLog(@"SecKeychainItemExport : error : %@", [DDKeychain stringForError:status]);
 			
+			CFRelease(certArray);
 		}
-		
-		CFRelease(certArray);
 	}
 }
 

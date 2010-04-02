@@ -969,7 +969,7 @@
 		AB7252230ADE790800A212A0 /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7209B6828300545F5E /* jcmaster.c */; };
 		AB7252250ADE790C00A212A0 /* jcinit.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6C09B6828300545F5E /* jcinit.c */; };
 		AB7252260ADE790D00A212A0 /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6A09B6828300545F5E /* jchuff.c */; };
-		AB7252270ADE790D00A212A0 /* jcdiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6909B6828300545F5E /* jcdiffct.c */; };
+		AB7252270ADE790D00A212A0 /* sirsa.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DC609B6828800545F5E /* sirsa.cc */; };
 		AB7252280ADE790D00A212A0 /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6609B6828300545F5E /* jccoefct.c */; };
 		AB7252290ADE790E00A212A0 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
 		AB72522A0ADE790F00A212A0 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
@@ -1258,7 +1258,7 @@
 		ABE46FE50A76411900327466 /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6609B6828300545F5E /* jccoefct.c */; };
 		ABE46FE60A76411900327466 /* jccolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6709B6828300545F5E /* jccolor.c */; };
 		ABE46FE70A76411900327466 /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6809B6828300545F5E /* jcdctmgr.c */; };
-		ABE46FE80A76411900327466 /* jcdiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6909B6828300545F5E /* jcdiffct.c */; };
+		ABE46FE80A76411900327466 /* sirsa.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DC609B6828800545F5E /* sirsa.cc */; };
 		ABE46FE90A76411900327466 /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6A09B6828300545F5E /* jchuff.c */; };
 		ABE46FEA0A76411900327466 /* jchuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C6B09B6828300545F5E /* jchuff16.h */; };
 		ABE46FEB0A76411900327466 /* jcinit.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6C09B6828300545F5E /* jcinit.c */; };
@@ -1828,7 +1828,7 @@
 		BF7DEBA909D1FC6600A332B8 /* jcinit.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6C09B6828300545F5E /* jcinit.c */; };
 		BF7DEBAA09D1FC6700A332B8 /* jchuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C6B09B6828300545F5E /* jchuff16.h */; };
 		BF7DEBAB09D1FC6800A332B8 /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6A09B6828300545F5E /* jchuff.c */; };
-		BF7DEBAC09D1FC6900A332B8 /* jcdiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6909B6828300545F5E /* jcdiffct.c */; };
+		BF7DEBAC09D1FC6900A332B8 /* sirsa.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DC609B6828800545F5E /* sirsa.cc */; };
 		BF7DEBAD09D1FC6900A332B8 /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6809B6828300545F5E /* jcdctmgr.c */; };
 		BF7DEBAE09D1FC6A00A332B8 /* jccolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6709B6828300545F5E /* jccolor.c */; };
 		BF7DEBAF09D1FC6B00A332B8 /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6609B6828300545F5E /* jccoefct.c */; };
@@ -22907,7 +22907,7 @@
 				BF7DEBA809D1FC6500A332B8 /* jclhuff.c in Sources */,
 				BF7DEBA909D1FC6600A332B8 /* jcinit.c in Sources */,
 				BF7DEBAB09D1FC6800A332B8 /* jchuff.c in Sources */,
-				BF7DEBAC09D1FC6900A332B8 /* jcdiffct.c in Sources */,
+				BF7DEBAC09D1FC6900A332B8 /* sirsa.cc in Sources */,
 				BF7DEBAD09D1FC6900A332B8 /* jcdctmgr.c in Sources */,
 				BF7DEBAE09D1FC6A00A332B8 /* jccolor.c in Sources */,
 				BF7DEBAF09D1FC6B00A332B8 /* jccoefct.c in Sources */,
@@ -23438,7 +23438,7 @@
 				ABE46FE50A76411900327466 /* jccoefct.c in Sources */,
 				ABE46FE60A76411900327466 /* jccolor.c in Sources */,
 				ABE46FE70A76411900327466 /* jcdctmgr.c in Sources */,
-				ABE46FE80A76411900327466 /* jcdiffct.c in Sources */,
+				ABE46FE80A76411900327466 /* sirsa.cc in Sources */,
 				ABE46FE90A76411900327466 /* jchuff.c in Sources */,
 				ABE46FEB0A76411900327466 /* jcinit.c in Sources */,
 				ABE46FEC0A76411900327466 /* jclhuff.c in Sources */,
@@ -24058,7 +24058,7 @@
 				AB7252230ADE790800A212A0 /* jcmaster.c in Sources */,
 				AB7252250ADE790C00A212A0 /* jcinit.c in Sources */,
 				AB7252260ADE790D00A212A0 /* jchuff.c in Sources */,
-				AB7252270ADE790D00A212A0 /* jcdiffct.c in Sources */,
+				AB7252270ADE790D00A212A0 /* sirsa.cc in Sources */,
 				AB7252280ADE790D00A212A0 /* jccoefct.c in Sources */,
 				AB7252290ADE790E00A212A0 /* jcapimin.c in Sources */,
 				AB72522A0ADE790F00A212A0 /* jaricom.c in Sources */,
