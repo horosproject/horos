@@ -119,7 +119,11 @@ static int validFilePathDepth = 0;
 				}
 				else if( validFilePathDepth < 8)
 				{
+					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+					
 					[self _testForValidFilePath: dicomdirFileList path: filePath files:files];
+				
+					[pool release];
 				}
 			}
 		}
