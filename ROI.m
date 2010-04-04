@@ -3962,19 +3962,23 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				// TEXT
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
-				if( self.isTextualDataDisplayed && prepareTextualData) {
+				if( self.isTextualDataDisplayed && prepareTextualData)
+				{
 					NSPoint tPt = [self lowerRightPoint];
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 					
-					if ( ROITEXTNAMEONLY == NO ) {
+					if ( ROITEXTNAMEONLY == NO )
+					{
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 						
 						float area = [self plainArea];
 
-						if (!_displayCalciumScoring) {
-							if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
-								if( area*pixelSpacingX*pixelSpacingY < 1. )
+						if (!_displayCalciumScoring)
+						{
+							if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+							{
+								if( area*pixelSpacingX*pixelSpacingY < 1.)
 									sprintf (line2, "Area: %0.1f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
 								else
 									sprintf (line2, "Area: %0.3f cm2", area*pixelSpacingX*pixelSpacingY/100.);
@@ -3985,10 +3989,25 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 							sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						}
-						else {
+						else
+						{
 							sprintf (line2, "Calcium Score: %0.1f", [self calciumScore]);
 							sprintf (line3, "Calcium Volume: %0.1f", [self calciumVolume]);
 							sprintf (line4, "Calcium Mass: %0.1f", [self calciumMass]);
+						}
+						
+						if( [curView blendingView])
+						{
+							DCMPix	*blendedPix = [[curView blendingView] curDCM];
+							
+							ROI *blendedROI = [self copy];
+							blendedROI.pix = blendedPix;
+							[blendedROI setOriginAndSpacing: blendedPix.pixelSpacingX: blendedPix.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: blendedPix]];
+							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+							[blendedROI release];
+							
+							sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
+							sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
 						}
 					}
 					//if (!_displayCalciumScoring)

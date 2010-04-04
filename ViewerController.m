@@ -13191,7 +13191,6 @@ int i,j,l;
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
-
 }
 
 -(IBAction) endDisplaySUV:(id) sender
@@ -17352,9 +17351,13 @@ int i,j,l;
 		
 		for( y = 0; y < maxMovieIndex; y++)
 		{
-			for( x = 0; x < [pixList[y] count]; x++)
+			for( DCMPix *p in pixList[ y])
+				[p changeWLWW:iwl :iww];	//recompute WLWW
+			
+			for( NSArray *r in roiList[ y])
 			{
-				[[pixList[y] objectAtIndex: x] changeWLWW:iwl :iww];	//recompute WLWW
+				for( ROI *roi in r)
+					[roi recompute];
 			}
 		}
 		
