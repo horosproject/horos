@@ -2104,7 +2104,17 @@ extern "C"
 				else
 					NSLog( @"Already here! We don't need to download it...");
 			}
-			else [selectedItems addObject: item];
+			else
+			{
+				NSString *stringID = [self stringIDForStudy: item];
+				
+				@synchronized( previousAutoRetrieve)
+				{
+					[previousAutoRetrieve setValue: [NSNumber numberWithInt: [[item valueForKey:@"numberImages"] intValue]] forKey: stringID];
+				}
+				
+				[selectedItems addObject: item];
+			}
 		}
 		
 		if( [selectedItems count] > 0)

@@ -30,7 +30,8 @@
 
 @class DCMCalendarDate;
 /** \brief Base class for query nodes */
-@interface DCMTKQueryNode : DCMTKServiceClassUser {
+@interface DCMTKQueryNode : DCMTKServiceClassUser
+{
 	NSMutableArray *_children;
 	NSString *_uid;
 	NSString *_theDescription;
@@ -46,6 +47,8 @@
 	NSString *_specificCharacterSet;
 	NSManagedObject *_logEntry;
 	BOOL showErrorMessage;
+	volatile int WADOThreads;
+	NSRecursiveLock *WADODownloadLock;
 }
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset

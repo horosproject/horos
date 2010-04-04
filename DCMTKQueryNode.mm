@@ -409,6 +409,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[_numberImages release];
 	[_specificCharacterSet release];
 	[_logEntry release];
+	[WADODownloadLock release];
 	
 	[super dealloc];
 }
@@ -672,37 +673,46 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	for( NSURL *url in urlToDownload)
+	@try 
 	{
-		NSError *error = nil;
-		NSData *dicom = [NSData dataWithContentsOfURL: url options: 0 error: &error];
-		
-		if( error)
+		for( NSURL *url in urlToDownload)
 		{
-			NSLog( @"****** error WADO download: %@ - url: %@", error, url);
+			NSError *error = nil;
+			NSData *dicom = [NSData dataWithContentsOfURL: url options: 0 error: &error];
 			
-			if( firstWadoErrorDisplayed == NO)
+			if( error)
 			{
-				firstWadoErrorDisplayed = YES;
-				[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@ - %@", [error localizedDescription], url], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+				NSLog( @"****** error WADO download: %@ - url: %@", error, url);
+				
+				if( firstWadoErrorDisplayed == NO)
+				{
+					firstWadoErrorDisplayed = YES;
+					[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@ - %@", [error localizedDescription], url], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+				}
 			}
+			
+			NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
+			
+			@synchronized( self)
+			{
+				wadoUnique++;
+			}
+			[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d-%d.dcm", wadoUnique, wadoUniqueThreadID] atomically: YES];
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
+				break;
 		}
-		
-		NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
-		
-		@synchronized( self)
-		{
-			wadoUnique++;
-		}
-		[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d-%d.dcm", wadoUnique, wadoUniqueThreadID] atomically: YES];
-		
-		if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
-			break;
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[pool release];
 	
 	[urlToDownload release];
+	
+	WADOThreads--;
 }
 
 - (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
@@ -783,15 +793,39 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		#define NumberOfWADOThreads 3
 		NSRange range = NSMakeRange( 0, 1+ ([urlToDownload count] / NumberOfWADOThreads));
-		for( int i = 0 ; i < NumberOfWADOThreads; i++)
-		{
-			if( range.length > 0)
-				[NSThread detachNewThreadSelector: @selector( WADODownload:) toTarget: self withObject: [urlToDownload subarrayWithRange: range]];
+		
+		if( WADODownloadLock == nil)
+			WADODownloadLock = [[NSRecursiveLock alloc] init];
 			
-			range.location += range.length;
-			if( range.location + range.length > [urlToDownload count])
-				range.length = [urlToDownload count] - range.location;
+		[WADODownloadLock lock];
+		
+		@try 
+		{
+			WADOThreads = 0;
+			for( int i = 0 ; i < NumberOfWADOThreads; i++)
+			{
+				if( range.length > 0)
+				{
+					WADOThreads++;
+					[NSThread detachNewThreadSelector: @selector( WADODownload:) toTarget: self withObject: [urlToDownload subarrayWithRange: range]];
+				}
+				
+				range.location += range.length;
+				if( range.location + range.length > [urlToDownload count])
+					range.length = [urlToDownload count] - range.location;
+			}
+			
+			while( WADOThreads > 0)
+				[NSThread sleepForTimeInterval: 0.1];
 		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
+		[WADODownloadLock unlock];
+		
+		NSLog( @"------ WADO downloading : %d files - finished", [urlToDownload count]);
 	}
 }
 
