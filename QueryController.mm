@@ -2072,37 +2072,95 @@ extern "C"
 		{
 			if( onlyIfNotAvailable)
 			{
-				int localNumber = 0;
-				NSArray *array = 0L;
-				
-				if( [item isMemberOfClass: [DCMTKSeriesQueryNode class]])
-					array = [self localSeries: item];
-				else
-					array = [self localStudy: item];
-				
-				if( [array count])
-					localNumber = [[[array objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] intValue];
-				
-				if( localNumber < [[item valueForKey:@"numberImages"] intValue])
+//				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"RetrieveOnlyMissingUID"])
+//				{
+//					DicomStudy *localStudy = nil;
+//					
+//					// Local Study
+//					if( [item isMemberOfClass: [DCMTKSeriesQueryNode class]])
+//					{
+//						array = [self localSeries: item];
+//						
+//						if( [array count])
+//							localStudy = [[array lastObject] valueForKey: @"study"];
+//					}
+//					else
+//					{
+//						array = [self localStudy: item];
+//						
+//						if( [array count])
+//							localStudy = [array lastObject];
+//					}
+//					
+//					if( localStudy)
+//					{
+//						NSArray *localImagesUIDs = [[localStudy valueForKeyPath: @"series.images.sopInstanceUID"] allObjects];
+//						
+//						DcmDataset *dataset = new DcmDataset();
+//						
+//						dataset-> insertEmptyElement(DCM_StudyInstanceUID, OFTrue);
+//						dataset-> insertEmptyElement(DCM_SeriesInstanceUID, OFTrue);
+//						dataset-> insertEmptyElement(DCM_SOPInstanceUID, OFTrue);
+//						
+//						if( [item isMemberOfClass:[DCMTKStudyQueryNode class]]) // Study Level
+//							dataset-> putAndInsertString(DCM_StudyInstanceUID, [[item uid] UTF8String], OFTrue);
+//						else													// Series Level
+//							dataset-> putAndInsertString(DCM_SeriesInstanceUID, [[item uid] UTF8String], OFTrue);
+//							
+//						dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE", OFTrue);
+//						
+//						[self queryWithValues: nil dataset: dataset];
+//						
+//						for( DCMTKImageQueryNode *image in [self children])
+//						{
+//							if( [image uid])
+//							{
+//								if( [localImagesUIDs containsObject: [image uid]])
+//								{
+//									// already here
+//								}
+//								else
+//								{
+//									// not here
+//								}
+//							}
+//						}
+//					}
+//				}
+//				else
 				{
-					NSString *stringID = [self stringIDForStudy: item];
-		
-					@synchronized( previousAutoRetrieve)
+					int localNumber = 0;
+					NSArray *array = 0L;
+					
+					if( [item isMemberOfClass: [DCMTKSeriesQueryNode class]])
+						array = [self localSeries: item];
+					else
+						array = [self localStudy: item];
+					
+					if( [array count])
+						localNumber = [[[array objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] intValue];
+					
+					if( localNumber < [[item valueForKey:@"numberImages"] intValue])
 					{
-						NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
+						NSString *stringID = [self stringIDForStudy: item];
 			
-						// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
-						
-						if( [previousNumberOfFiles intValue] != [[item valueForKey:@"numberImages"] intValue])
+						@synchronized( previousAutoRetrieve)
 						{
-							[selectedItems addObject: item];
-							[previousAutoRetrieve setValue: [NSNumber numberWithInt: [[item valueForKey:@"numberImages"] intValue]] forKey: stringID];
+							NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
+				
+							// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
+							
+							if( [previousNumberOfFiles intValue] != [[item valueForKey:@"numberImages"] intValue])
+							{
+								[selectedItems addObject: item];
+								[previousAutoRetrieve setValue: [NSNumber numberWithInt: [[item valueForKey:@"numberImages"] intValue]] forKey: stringID];
+							}
+							else NSLog( @"Already in transfer.... We don't need to download it...");
 						}
-						else NSLog( @"Already in transfer.... We don't need to download it...");
 					}
+					else
+						NSLog( @"Already here! We don't need to download it...");
 				}
-				else
-					NSLog( @"Already here! We don't need to download it...");
 			}
 			else
 			{
@@ -2139,8 +2197,7 @@ extern "C"
 				
 				if( showGUI)
 				{
-					unsigned long finalTicks;
-					Delay( 30, &finalTicks);
+					[NSThread sleepForTimeInterval: 0.5];
 				
 					[wait close];
 					[wait release];

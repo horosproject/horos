@@ -16983,8 +16983,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			attempts++;
 			if( attempts < 5)
 			{
-				unsigned long finalTicks;
-				Delay( 60, &finalTicks);
+				[NSThread sleepForTimeInterval: 1.0];
 			}
 			else success = YES;
 		}

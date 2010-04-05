@@ -3975,13 +3975,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		for( int i = 0; i < 15 ; i++)
 		{
-			unsigned long finalTick;
 			[[xmlController window] setAlphaValue: (i+1.0) / 15.];
 			if( i == 0)
-			{
 				[[xmlController window] makeKeyAndOrderFront: self];
-			}
-			Delay( 1, &finalTick);
+			
+			[NSThread sleepForTimeInterval: 0.02];
 		}
 	}
 }
