@@ -2168,10 +2168,17 @@ extern "C"
 				
 				@synchronized( previousAutoRetrieve)
 				{
-					[previousAutoRetrieve setValue: [NSNumber numberWithInt: [[item valueForKey:@"numberImages"] intValue]] forKey: stringID];
+					NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
+					
+					// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
+					
+					if( [previousNumberOfFiles intValue] != [[item valueForKey:@"numberImages"] intValue])
+					{
+						[selectedItems addObject: item];
+						[previousAutoRetrieve setValue: [NSNumber numberWithInt: [[item valueForKey:@"numberImages"] intValue]] forKey: stringID];
+					}
+					else NSLog( @"Already in transfer.... We don't need to download it...");
 				}
-				
-				[selectedItems addObject: item];
 			}
 		}
 		
@@ -2197,7 +2204,7 @@ extern "C"
 				
 				if( showGUI)
 				{
-					[NSThread sleepForTimeInterval: 0.5];
+					[NSThread sleepForTimeInterval: 0.7];
 				
 					[wait close];
 					[wait release];
@@ -2233,7 +2240,7 @@ extern "C"
 
 -(void) retrieve:(id)sender
 {
-	return [self retrieve: sender onlyIfNotAvailable: NO];
+	[self retrieve: sender onlyIfNotAvailable: NO];
 }
 
 - (IBAction) retrieveAndView: (id) sender
