@@ -379,27 +379,35 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	PapyShort fileNb;
 	
 	[PapyrusLock lock];
-	fileNb = Papy3FileOpen ( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
-	if (fileNb < 0)
-		readable = NO;
-	else
+	
+	@try
 	{
-		if( gSOPClassUID [fileNb])
-			isImage = [DCMAbstractSyntaxUID isImageStorage: [NSString stringWithCString: gSOPClassUID [fileNb] encoding: NSISOLatin1StringEncoding]];
+		fileNb = Papy3FileOpen ( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
+		if (fileNb < 0)
+			readable = NO;
 		else
-			isImage = NO;
-		
-		if( image)
-			*image = isImage;
-		
-		if( compressed)
 		{
-			if( isImage)
+			if( gSOPClassUID [fileNb])
+				isImage = [DCMAbstractSyntaxUID isImageStorage: [NSString stringWithCString: gSOPClassUID [fileNb] encoding: NSISOLatin1StringEncoding]];
+			else
+				isImage = NO;
+			
+			if( image)
+				*image = isImage;
+			
+			if( compressed)
 			{
-				if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY  || gArrCompression [fileNb] == JPEG2000) *compressed = YES;
+				if( isImage)
+				{
+					if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY  || gArrCompression [fileNb] == JPEG2000) *compressed = YES;
+				}
 			}
+			Papy3FileClose (fileNb, TRUE);
 		}
-		Papy3FileClose (fileNb, TRUE);
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
 	[PapyrusLock unlock];
