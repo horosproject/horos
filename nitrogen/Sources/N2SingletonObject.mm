@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import <N2SingletonObject.h>
+#import "N2SingletonObject.h"
 
 @implementation N2SingletonObject
 

@@ -12,24 +12,16 @@
      PURPOSE.
 =========================================================================*/
 
-#import "N2Pair.h"
+#import "DicomAlbum.h"
 
-@implementation N2Pair
-@synthesize first = _first, second = _second;
+@implementation DicomAlbum
 
--(id)initWith:(id)first and:(id)second {
-	self = [super init];
-	
-	_first = [first retain];
-	_second = [second retain];
-	
-	return self;
-}
+@synthesize isBonjour;
 
--(void)dealloc {
-	[_first release];
-	[_second release];
-	[super dealloc];
-}
+@dynamic index;
+@dynamic name;
+@dynamic predicateString;
+@dynamic smartAlbum;
+@dynamic studies;
 
 @end

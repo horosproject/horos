@@ -22,13 +22,18 @@ extern NSString* asciiString (NSString* name);
 {
 	NSString *patientsListTemplate, *examsListTemplate, *seriesTemplate; // whole template
 	NSDictionary *patientsDictionary;
+	NSMutableDictionary* imagePathsDictionary;
 	NSString *rootPath, *footerString;
 	int uniqueSeriesID;
 	NSDateFormatter	*dateFormat, *timeFormat;
 }
 
+@property(retain) NSMutableDictionary* imagePathsDictionary;
+
 +(NSString*)nonNilString:(NSString*)aString;
 + (void) getMovieWidth: (int*) width height: (int*) height imagesArray: (NSArray*) imagesArray;
+
++(NSString*)kindOfPath:(NSString*)path forSeriesId:(int)seriesId inSeriesPaths:(NSDictionary*)seriesPaths;
 
 #pragma mark-
 #pragma mark HTML template

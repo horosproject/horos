@@ -16,8 +16,11 @@
 #import "AppController.h"
 #import "BrowserController.h"
 #import "DCMAbstractSyntaxUID.h"
+#import "NSDictionary+N2.h"
 
 @implementation QTExportHTMLSummary
+
+@synthesize imagePathsDictionary;
 
 +(NSString*)nonNilString:(NSString*)aString;
 {
@@ -55,6 +58,7 @@
 	
 	[rootPath release];
 	[patientsDictionary release];
+	self.imagePathsDictionary = NULL;
 	
 	[super dealloc];
 }
@@ -117,6 +121,27 @@
 	return filledTemplate;
 }
 
++(NSString*)kindOfPath:(NSString*)path forSeriesId:(int)seriesId inSeriesPaths:(NSDictionary*)seriesPaths {
+	NSNumber* seriesIdK = [NSNumber numberWithInt:seriesId];
+	NSDictionary* pathsForSeries = [seriesPaths objectForKey:seriesIdK];
+	return [pathsForSeries keyForObject:path];
+}
+
+-(NSString*)imagePathForSeriesId:(int)seriesId kind:(NSString*)kind relativeTo:(NSString*)passedRootPath {
+	// TODO: find and remove from dict and return corresponding item
+	if (imagePathsDictionary) {
+		NSNumber* seriesIdK = [NSNumber numberWithInt:seriesId];
+
+		NSMutableDictionary* pathsForSeries = [imagePathsDictionary objectForKey:seriesIdK];
+		if (!pathsForSeries)
+			return NULL;
+		
+		return [passedRootPath stringByAppendingPathComponent:[pathsForSeries objectForKey:kind]];
+	}
+	
+	return NULL;
+}
+
 - (NSString*)fillStudiesListTemplatesForSeries:(NSArray*) series;
 {
 	// working string to process the template
@@ -177,11 +202,14 @@
 			
 			seriesName = asciiString( [BrowserController replaceNotAdmitted: [NSMutableString stringWithString:[[series objectAtIndex:i] valueForKey: @"name"]]]);
 			fileName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithFormat:@"%@ - %@", asciiString( [[series objectAtIndex:i] valueForKeyPath:@"study.studyName"]), [[series objectAtIndex:i] valueForKeyPath:@"study.id"]]];
-			[fileName appendFormat:@"/%@_%@", seriesName, [[series objectAtIndex:i] valueForKey: @"id"]];
+			NSString* iId = [[series objectAtIndex:i] valueForKey: @"id"];
+			[fileName appendFormat:@"/%@_%@", seriesName, iId];
 			
 			[fileName appendFormat: @"_%d", uniqueSeriesID];
 			
-			thumbnailName = [NSMutableString stringWithFormat:@"%@_thumb.jpg", fileName];
+			thumbnailName = [[[self imagePathForSeriesId:[iId intValue] kind:@"thumb" relativeTo:rootPath] mutableCopy] autorelease];
+			if (!thumbnailName) thumbnailName = [NSMutableString stringWithFormat:@"%@_thumb.jpg", fileName];
+			
 			htmlName = [NSMutableString stringWithFormat:@"%@.html", fileName];
 			
 			tempListItemTemplate = [NSMutableString stringWithString:listItemTemplate];
@@ -190,13 +218,19 @@
 			if( [DCMAbstractSyntaxUID isPDF: [[series objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]])
 			{
 				extension = @"pdf";
-				[fileName appendFormat:@".%@",extension];
+				NSString* tempPdfPath = [[[self imagePathForSeriesId:[iId intValue] kind:extension relativeTo:rootPath] mutableCopy] autorelease];
+				if (tempPdfPath)
+					[fileName setString:tempPdfPath];
+				else [fileName appendFormat:@".%@",extension];
 				[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:[QTExportHTMLSummary nonNilString: fileName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			
 			}
 			else
 			{
-				[fileName appendFormat:@".%@",extension];
+				NSString* tempXXXPath = [self imagePathForSeriesId:[iId intValue] kind:extension relativeTo:rootPath];
+				if (tempXXXPath)
+					[fileName setString:tempXXXPath];
+				else [fileName appendFormat:@".%@",extension];
 				[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:[QTExportHTMLSummary nonNilString:htmlName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			}
 
@@ -291,6 +325,8 @@
 
 - (NSString*)fillSeriesTemplatesForSeries:(NSManagedObject*)series numberOfImages:(int)imagesCount;
 {
+	NSString* seriesId = [series valueForKeyPath:@"id"];
+	
 	NSMutableString *tempHTML = [NSMutableString stringWithString:seriesTemplate];
 	
 	[tempHTML replaceOccurrencesOfString:@"%series_name%" withString:[QTExportHTMLSummary nonNilString:[series valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
@@ -308,7 +344,11 @@
 	[fileName appendFormat: @"_%d", uniqueSeriesID];
 	
 	NSString *extension = (imagesCount>1)? @"mov": @"jpg";
-	[fileName appendFormat:@".%@",extension];
+	
+	NSString* tempXXXPath = [self imagePathForSeriesId:[seriesId intValue] kind:extension relativeTo:rootPath];
+	if (tempXXXPath)
+		[fileName setString:tempXXXPath];
+	else [fileName appendFormat:@".%@",extension];
 	
 	[tempHTML replaceOccurrencesOfString:@"%series_file_path%" withString:[QTExportHTMLSummary nonNilString:fileName] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 	[tempHTML replaceOccurrencesOfString:@"%footer_string%" withString:footerString options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];

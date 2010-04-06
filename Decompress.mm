@@ -275,13 +275,16 @@ int main(int argc, const char *argv[])
 								{
 									[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
 									
-									if( destDirec)
-									{
-										[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-										NSLog( @"failed to compress file: %@, the file is deleted", curFile);
-									}
-									else
-										NSLog( @"failed to compress file: %@", curFile);
+									if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue]) {
+										[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
+									} else
+										if( destDirec)
+										{
+											[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+											NSLog( @"failed to compress file: %@, the file is deleted", curFile);
+										}
+										else
+											NSLog( @"failed to compress file: %@", curFile);
 								}
 							}
 							else if( compression == compression_JPEG)
@@ -315,13 +318,16 @@ int main(int argc, const char *argv[])
 									if( status == NO)
 									{
 										[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
-										if( destDirec)
-										{
-											[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-											NSLog( @"failed to compress file: %@, the file is deleted", curFile);
-										}
-										else
-											NSLog( @"failed to compress file: %@", curFile);
+										if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue]) {
+											[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
+										} else
+											if( destDirec)
+											{
+												[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+												NSLog( @"failed to compress file: %@, the file is deleted", curFile);
+											}
+											else
+												NSLog( @"failed to compress file: %@", curFile);
 									}
 									else
 									{
@@ -343,7 +349,10 @@ int main(int argc, const char *argv[])
 						}
 					}
 					else
-						NSLog( @"compress : cannot read file: %@", curFile);
+						if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue]) {
+							[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler: nil];
+							[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
+						} else NSLog( @"compress : cannot read file: %@", curFile);
 				}
 			}
 		}

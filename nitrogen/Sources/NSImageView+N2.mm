@@ -14,7 +14,7 @@
 
 #import "NSImageView+N2.h"
 #import "NSImage+N2.h"
-#import <N2Operators.h>
+#import "N2Operators.h"
 #include <algorithm>
 
 @implementation NSImageView (N2)

@@ -4007,6 +4007,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							}
 						}
 					
+			//		if (roiFound)
+			//			if (curROI == [curRoiList objectAtIndex: selected])
+			//				DoNothing = YES;
+					
 					if( roiFound == NO)
 					{
 						for( int i = 0; i < [curRoiList count]; i++)

@@ -13,9 +13,9 @@
 =========================================================================*/
 
 
-#import <NSTextView+N2.h>
-#import <NS(Attributed)String+Geometrics.h>
-#import <N2Operators.h>
+#import "NSTextView+N2.h"
+#import "NS(Attributed)String+Geometrics.h"
+#import "N2Operators.h"
 
 @implementation NSTextView (N2)
 

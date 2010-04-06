@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import <NSBitmapImageRep+N2.h>
+#import "NSBitmapImageRep+N2.h"
 #import <Accelerate/Accelerate.h>
 #include <algorithm>
 #include <stack>

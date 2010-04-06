@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import <NSData+N2.h>
+#import "NSData+N2.h"
 
 char hexchar2dec(char hex) {
 	if (hex >= '0' && hex <= '9')

@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import <N2DisclosureBox.h>
+#import "N2DisclosureBox.h"
 @class N2Step;
 
 @interface N2StepView : N2DisclosureBox {

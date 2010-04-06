@@ -14,6 +14,7 @@
 
 #import "DicomStudy.h"
 #import "DicomSeries.h"
+#import "DicomAlbum.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import <OsiriX/DCM.h>
 #import "MutableArrayCategory.h"
@@ -149,6 +150,34 @@ NSString* soundex4( NSString *inString)
 }
 
 @implementation DicomStudy
+
+@dynamic accessionNumber;
+@dynamic comment;
+@dynamic date;
+@dynamic dateAdded;
+@dynamic dateOfBirth;
+@dynamic dateOpened;
+@dynamic dictateURL;
+@dynamic expanded;
+@dynamic hasDICOM;
+@dynamic id;
+@dynamic institutionName;
+@dynamic lockedStudy;
+@dynamic modality;
+@dynamic name;
+@dynamic numberOfImages;
+@dynamic patientID;
+@dynamic patientSex;
+@dynamic patientUID;
+@dynamic performingPhysician;
+@dynamic referringPhysician;
+@dynamic reportURL;
+@dynamic stateText;
+@dynamic studyInstanceUID;
+@dynamic studyName;
+@dynamic windowsState;
+@dynamic albums;
+@dynamic series;
 
 + (NSString*) soundex: (NSString*) s
 {
@@ -917,6 +946,16 @@ NSString* soundex4( NSString *inString)
 	[[self managedObjectContext] unlock];
 	
 	return s;
+}
+
+-(BOOL)isBonjour {
+	NSArray* albums = [[self albums] allObjects];
+	if (!albums.count)
+		return NO;
+	for (DicomAlbum* album in albums)
+		if (!album.isBonjour)
+			return NO;
+	return YES;
 }
 
 //- (BOOL) validateForDelete:(NSError **)error

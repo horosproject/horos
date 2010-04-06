@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import <NSString+N2.h>
+#import "NSString+N2.h"
 #include <cmath>
 
 

@@ -153,6 +153,8 @@
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>OsiriX</string>
+	<key>CFBundleName</key>
+	<string>OsiriX</string>
 	<key>CFBundleGetInfoString</key>
 	<string>OsiriX v.3.7.1</string>
 	<key>CFBundleIconFile</key>

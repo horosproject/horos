@@ -66,8 +66,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	BurnerWindowController		*burnerWindowController;
 	LogWindowController			*logWindowController;
 	
-	NSNumberFormatter		*numFmt;
-    
     DCMPix                  *curPreviewPix;
     
     NSTimer                 *timer, *IncomingTimer, *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer, *bonjourTimer, *deleteQueueTimer, *autoroutingQueueTimer;
@@ -271,6 +269,12 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @property BOOL rtstructProgressBar;
 @property float rtstructProgressPercent;
+@property BOOL needDBRefresh, mountedVolume;
+@property NSTimeInterval lastSaved;
+@property(readonly) NSMutableArray* viewersListToReload;
+@property(readonly) NSMutableArray* viewersListToRebuild;
+@property(readonly) NSConditionLock* newFilesConditionLock;
+@property NSTimeInterval databaseLastModification;
 
 @property(readonly) PluginManagerController *pluginManagerController;
 
@@ -287,6 +291,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (void) encryptFiles: (NSArray*) srcFiles inZIPFile: (NSString*) destFile password: (NSString*) password;
 - (IBAction) createDatabaseFolder:(id) sender;
 - (void) openDatabasePath: (NSString*) path;
+- (NSArray*)albums;
 - (BOOL) shouldTerminate: (id) sender;
 - (void) databaseOpenStudy: (NSManagedObject*) item;
 - (IBAction) databaseDoublePressed:(id)sender;
@@ -318,7 +323,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSManagedObjectContext *) managedObjectContextLoadIfNecessary:(BOOL) loadIfNecessary;
 - (void) setNetworkLogs;
 - (BOOL) isNetworkLogsActive;
-- (NSTimeInterval) databaseLastModification;
 - (IBAction) matrixDoublePressed:(id)sender;
 - (void) addURLToDatabaseEnd:(id) sender;
 - (void) addURLToDatabase:(id) sender;
@@ -340,6 +344,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (ViewerController*) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages;
 - (void) export2PACS:(id) sender;
 - (void) queryDICOM:(id) sender;
++(void)setPath:(NSString*)path relativeTo:(NSString*)dirPath forSeriesId:(int)seriesId kind:(NSString*)kind toSeriesPaths:(NSMutableDictionary*)seriesPaths; // used by +exportQuicktime
++(void) exportQuicktime:(NSArray*)dicomFiles2Export :(NSString*)path :(BOOL)html :(BrowserController*)browser :(NSMutableDictionary*)seriesPaths;
 -(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html;
 - (IBAction) delItem:(id) sender;
 - (void) proceedDeleteObjects: (NSArray*) objectsToDelete;
@@ -412,6 +418,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder;
++(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM safeRebuild:(BOOL)safeProcess notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder;
++(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM safeRebuild:(BOOL)safeProcess notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder;
+
 - (void) createDBContextualMenu;
 - (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination;
 - (int) askForZIPPassword: (NSString*) file destination: (NSString*) destination;

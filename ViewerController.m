@@ -1288,13 +1288,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 					[curPix setOriginDouble: origin];
 					
 					if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-						[[newPixList lastObject] setSliceLocation: origin[ 0]];
+						[(DCMPix*)[newPixList lastObject] setSliceLocation: origin[ 0]];
 					
 					if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-						[[newPixList lastObject] setSliceLocation: origin[ 1]];
+						[(DCMPix*)[newPixList lastObject] setSliceLocation: origin[ 1]];
 					
 					if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-						[[newPixList lastObject] setSliceLocation: origin[ 2]];
+						[(DCMPix*)[newPixList lastObject] setSliceLocation: origin[ 2]];
 					
 					[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingY]];
 					[[newPixList lastObject] setSliceInterval: 0];
@@ -1380,13 +1380,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 					[lastPix convertPixDoubleX:i pixY:0 toDICOMCoords: origin pixelCenter: NO];
 					
 					if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-						[[newPixList lastObject] setSliceLocation: origin[ 0]];
+						[(DCMPix*)[newPixList lastObject] setSliceLocation: origin[ 0]];
 					
 					if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-						[[newPixList lastObject] setSliceLocation: origin[ 1]];
+						[(DCMPix*)[newPixList lastObject] setSliceLocation: origin[ 1]];
 					
 					if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-						[[newPixList lastObject] setSliceLocation: origin[ 2]];
+						[(DCMPix*)[newPixList lastObject] setSliceLocation: origin[ 2]];
 					
 					[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingX]];
 					[[newPixList lastObject] setSliceInterval: 0];
@@ -13466,7 +13466,7 @@ int i,j,l;
 		if( SYNCSERIES)
 		{
 			NSNumber *sliceLocation = [[note userInfo] objectForKey:@"sliceLocation"];
-			float offset = [[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation] - [sliceLocation floatValue];
+			float offset = [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation] - [sliceLocation floatValue];
 			[imageView setSyncRelativeDiff:offset];
 			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.tif"]];
 			
@@ -13514,7 +13514,7 @@ int i,j,l;
 				[v checkEverythingLoaded];
 		}
 		
-		float sliceLocation =  [[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
+		float sliceLocation =  [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: userInfo];
 	}

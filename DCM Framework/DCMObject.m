@@ -80,6 +80,8 @@ void exitOsiriX(void)
 		if ([tagArray count] > 1)
 			value = [tagArray objectAtIndex:1];
 		
+	//	NSLog(@"anonymizing %@, was %@", [tag name], [[object attributeForTag:tag] valuesAsString]);
+		
 		if ([tag.name isEqualToString: @"StudyInstanceUID"])
 		{
 			DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values: [NSArray arrayWithObject: value]];

@@ -13,10 +13,44 @@
 =========================================================================*/
 
 #import "DicomSeries.h"
+#import "DicomStudy.h"
+#import "DicomImage.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import <OsiriX/DCM.h>
+#import "NSImage+OsiriX.h"
+#import "DCMPix.h"
 
 @implementation DicomSeries
+
+@synthesize dicomTime;
+
+@dynamic comment;
+@dynamic date;
+@dynamic dateAdded;
+@dynamic dateOpened;
+@dynamic displayStyle;
+@dynamic id;
+@dynamic modality;
+@dynamic mountedVolume;
+@dynamic name;
+@dynamic numberOfImages;
+@dynamic numberOfKeyImages;
+@dynamic rotationAngle;
+@dynamic scale;
+@dynamic seriesDescription;
+@dynamic seriesDICOMUID;
+@dynamic seriesInstanceUID;
+@dynamic seriesSOPClassUID;
+@dynamic stateText;
+@dynamic thumbnail;
+@dynamic windowLevel;
+@dynamic windowWidth;
+@dynamic xFlipped;
+@dynamic xOffset;
+@dynamic yFlipped;
+@dynamic yOffset;
+@dynamic images;
+@dynamic study;
 
 - (void) dealloc
 {
@@ -32,20 +66,64 @@
 - (void) setDate:(NSDate*) date
 {
 	[dicomTime release];
-	dicomTime = nil;
+	dicomTime = NULL;
 	
 	[self willChangeValueForKey: @"date"];
-	[self setPrimitiveValue: date forKey:@"date"];
+	[self setPrimitiveValue:date forKey:@"date"];
 	[self didChangeValueForKey: @"date"];
 }
 
-- (NSNumber*) dicomTime
+- (NSNumber*)dicomTime
 {
-	if( dicomTime) return dicomTime;
-	
-	dicomTime = [[[DCMCalendarDate dicomTimeWithDate:[self valueForKey: @"date"]] timeAsNumber] retain];
-	
+	if (!dicomTime)
+		dicomTime = [[[DCMCalendarDate dicomTimeWithDate:self.date] timeAsNumber] retain];
 	return dicomTime;
+}
+
+-(NSData*)thumbnail {
+	NSData* thumbnailData = [self primitiveValueForKey:@"thumbnail"];
+	
+	if (!thumbnailData) {
+		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+		
+		NSArray* files = [self sortedImages];
+		if (files.count) {
+			DicomImage* image = [files objectAtIndex:[files count]/2];
+			
+			if ([NSData dataWithContentsOfFile:image.completePath])	// This means the file is readable...
+			{
+				int frame = 0;
+				
+				if (files.count == 1 && image.numberOfFrames.intValue > 1)
+					frame = [image.numberOfFrames intValue]/2;
+				if (image.frameID)
+					frame = image.frameID.intValue;
+				
+				DCMPix* dcmPix = [[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour:self.isBonjour imageObj:image];
+				
+				[dcmPix CheckLoad];
+				if (dcmPix)
+				{
+					NSImage *thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
+					
+					if (!dcmPix.notAbleToLoadImage)
+						thumbnailData = [thumbnail JPEGRepresentationWithQuality:0.3];
+					
+					[dcmPix release];
+				}
+			}
+		}
+
+		if (thumbnailData) {
+			[self willChangeValueForKey: @"thumbnail"];
+			[self setPrimitiveValue:thumbnailData forKey:@"thumbnail"];
+			[self didChangeValueForKey: @"thumbnail"];
+		}
+		
+		[pool release];
+	}
+	
+	return thumbnailData;
 }
 
 
@@ -263,6 +341,10 @@
 - (NSString*) albumsNames
 {
 	return [[self valueForKey: @"study"] valueForKey: @"albumsNames"];
+}
+
+-(BOOL)isBonjour {
+	return [self study].isBonjour;
 }
 
 @end

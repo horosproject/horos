@@ -84,6 +84,14 @@
 		32E422150C97301600E193CA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
 		59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E088A80FF0AB9400452F19 /* Notifications.m */; };
 		59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E088A70FF0AB9400452F19 /* Notifications.h */; };
+		59E379CF116B293A00E84FE3 /* NSImage+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */; };
+		59E379D0116B293A00E84FE3 /* NSImage+OsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E379CE116B293A00E84FE3 /* NSImage+OsiriX.m */; };
+		59E379D1116B294200E84FE3 /* NSImage+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */; };
+		59E379D2116B294200E84FE3 /* NSImage+OsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E379CE116B293A00E84FE3 /* NSImage+OsiriX.m */; };
+		59E379D8116B295B00E84FE3 /* DicomAlbum.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E379D6116B295B00E84FE3 /* DicomAlbum.h */; };
+		59E379D9116B295B00E84FE3 /* DicomAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E379D7116B295B00E84FE3 /* DicomAlbum.m */; };
+		59E379DA116B295B00E84FE3 /* DicomAlbum.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E379D6116B295B00E84FE3 /* DicomAlbum.h */; };
+		59E379DB116B295B00E84FE3 /* DicomAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E379D7116B295B00E84FE3 /* DicomAlbum.m */; };
 		59F1A4C8104BA5BE009E3215 /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */; };
 		59F1A515104BA8AE009E3215 /* OsiriX Headers.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
@@ -7741,6 +7749,10 @@
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
 		59E088A70FF0AB9400452F19 /* Notifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		59E088A80FF0AB9400452F19 /* Notifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Notifications.m; sourceTree = "<group>"; };
+		59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+OsiriX.h"; sourceTree = "<group>"; };
+		59E379CE116B293A00E84FE3 /* NSImage+OsiriX.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImage+OsiriX.m"; sourceTree = "<group>"; };
+		59E379D6116B295B00E84FE3 /* DicomAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomAlbum.h; sourceTree = "<group>"; };
+		59E379D7116B295B00E84FE3 /* DicomAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DicomAlbum.m; sourceTree = "<group>"; };
 		59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXHeaders.mm; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
@@ -12582,6 +12594,8 @@
 				BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */,
 				CE087B0B0DE9BD6E000E5593 /* GLString.h */,
 				CE087B0A0DE9BD6E000E5593 /* GLString.m */,
+				59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */,
+				59E379CE116B293A00E84FE3 /* NSImage+OsiriX.m */,
 				AB36742F0BE0CEB0003634E6 /* iLifeControls */,
 				BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */,
 				BF5C0186065320A800BAFCF7 /* ImageAndTextCell.m */,
@@ -16022,8 +16036,10 @@
 				CE9DD281086B35050058DD2A /* DicomStudy.h */,
 				CE9DD283086B35050058DD2A /* DicomSeries.m */,
 				CE9DD282086B35050058DD2A /* DicomSeries.h */,
-				BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */,
+				59E379D7116B295B00E84FE3 /* DicomAlbum.m */,
+				59E379D6116B295B00E84FE3 /* DicomAlbum.h */,
 				BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */,
+				BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -18558,6 +18574,8 @@
 				84ADF480115B622D00FE18B2 /* VTKStereoVRView.h in Headers */,
 				84ADF482115B622D00FE18B2 /* Window3DController+StereoVision.h in Headers */,
 				CE111A791165CE7F00EDD254 /* sirsa.h in Headers */,
+				59E379CF116B293A00E84FE3 /* NSImage+OsiriX.h in Headers */,
+				59E379D8116B295B00E84FE3 /* DicomAlbum.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20662,6 +20680,8 @@
 				CEFA967710A760E800F9512D /* DCMCalendarDate.h in Headers */,
 				CEDDD88110DCC93500FFE72B /* PSGenerator.h in Headers */,
 				CE111A7A1165CE8D00EDD254 /* sirsa.h in Headers */,
+				59E379D1116B294200E84FE3 /* NSImage+OsiriX.h in Headers */,
+				59E379DA116B295B00E84FE3 /* DicomAlbum.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22934,6 +22954,8 @@
 				84ADF481115B622D00FE18B2 /* VTKStereoVRView.mm in Sources */,
 				84ADF483115B622D00FE18B2 /* Window3DController+StereoVision.m in Sources */,
 				CE1119351165CA2000EDD254 /* jcdiffct.c in Sources */,
+				59E379D0116B293A00E84FE3 /* NSImage+OsiriX.m in Sources */,
+				59E379D9116B295B00E84FE3 /* DicomAlbum.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23898,6 +23920,8 @@
 				CE85FF5D10E6764100175CEB /* OpenGLScreenReader.m in Sources */,
 				CEE72C091101F14A00758DCA /* BrowserControllerDCMTKCategory.mm in Sources */,
 				845344C6113FBEAE0020A2B7 /* user.xcdatamodel in Sources */,
+				59E379D2116B294200E84FE3 /* NSImage+OsiriX.m in Sources */,
+				59E379DB116B295B00E84FE3 /* DicomAlbum.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

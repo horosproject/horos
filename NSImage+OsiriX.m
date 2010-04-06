@@ -1,0 +1,47 @@
+/*=========================================================================
+  Program:   OsiriX
+
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - LGPL
+  
+  See http://www.osirix-viewer.com/copyright.html for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+=========================================================================*/
+
+#import "NSImage+OsiriX.h"
+extern unsigned char* compressJPEG(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome, int *destSize);
+extern NSRecursiveLock* PapyrusLock;
+
+@implementation NSImage (OsiriX)
+
+-(NSData*)JPEGRepresentationWithQuality:(CGFloat)quality {
+	NSBitmapImageRep* imageRep = [NSBitmapImageRep imageRepWithData:self.TIFFRepresentation];
+	NSData* result = NULL;
+	
+	[PapyrusLock lock];
+	if ([imageRep bitsPerPixel] == 8) @try {
+		int size;
+		unsigned char* p = compressJPEG(quality*100, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1, &size);
+		if (p)
+			result = [NSData dataWithBytesNoCopy: p length: size freeWhenDone: YES];
+	} @catch (NSException * e) {
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	} @finally {
+		[PapyrusLock unlock];
+	}
+	else
+	{
+		NSDictionary* imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:quality] forKey:NSImageCompressionFactor];
+		result = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
+		//NSJPEGFileType	NSJPEG2000FileType <- MAJOR memory leak with NSJPEG2000FileType when reading !!! Kakadu library...
+	}
+	
+	return result;	
+}
+
+@end
+

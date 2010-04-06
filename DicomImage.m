@@ -141,6 +141,36 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 @implementation DicomImage
 
+@dynamic comment;
+@dynamic compressedSopInstanceUID;
+@dynamic date;
+@dynamic frameID;
+@dynamic instanceNumber;
+@dynamic pathNumber;
+@dynamic pathString;
+@dynamic rotationAngle;
+@dynamic scale;
+@dynamic sliceLocation;
+@dynamic stateText;
+@dynamic storedExtension;
+@dynamic storedFileType;
+@dynamic storedHeight;
+@dynamic storedInDatabaseFolder;
+@dynamic storedIsKeyImage;
+@dynamic storedModality;
+@dynamic storedMountedVolume;
+@dynamic storedNumberOfFrames;
+@dynamic storedNumberOfSeries;
+@dynamic storedWidth;
+@dynamic windowLevel;
+@dynamic windowWidth;
+@dynamic xFlipped;
+@dynamic xOffset;
+@dynamic yFlipped;
+@dynamic yOffset;
+@dynamic zoom;
+@dynamic series;
+
 + (NSData*) sopInstanceUIDEncodeString:(NSString*) s
 {
 	int length = [s length];
