@@ -1246,11 +1246,11 @@ extern "C"
 
 - (NSArray*) queryPatientID:(NSString*) ID
 {
-	NSInteger PatientModeMatrixSelected = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
-	NSInteger dateFilterMatrixSelected = [dateFilterMatrix selectedTag];
-	NSMutableArray *selectedModalities = [NSMutableArray array];
-	for( NSCell *c in [modalityFilterMatrix cells]) if( [c state] == NSOnState) [selectedModalities addObject: c];
-	NSString *copySearchField = [NSString stringWithString: [searchFieldID stringValue]];
+//	NSInteger PatientModeMatrixSelected = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
+//	NSInteger dateFilterMatrixSelected = [dateFilterMatrix selectedTag];
+//	NSMutableArray *selectedModalities = [NSMutableArray array];
+//	for( NSCell *c in [modalityFilterMatrix cells]) if( [c state] == NSOnState) [selectedModalities addObject: c];
+//	NSString *copySearchField = [NSString stringWithString: [searchFieldID stringValue]];
 	
 	[PatientModeMatrix selectTabViewItemAtIndex: 1];	// PatientID search
 	
@@ -1264,10 +1264,10 @@ extern "C"
 	
 	NSArray *result = [NSArray arrayWithArray: resultArray];
 	
-	[PatientModeMatrix selectTabViewItemAtIndex: PatientModeMatrixSelected];
-	[dateFilterMatrix selectCellWithTag: dateFilterMatrixSelected];
-	for( NSCell *c in selectedModalities) [modalityFilterMatrix selectCell: c];
-	[searchFieldID setStringValue: copySearchField];
+//	[PatientModeMatrix selectTabViewItemAtIndex: PatientModeMatrixSelected];
+//	[dateFilterMatrix selectCellWithTag: dateFilterMatrixSelected];
+//	for( NSCell *c in selectedModalities) [modalityFilterMatrix selectCell: c];
+//	[searchFieldID setStringValue: copySearchField];
 	
 	return result;
 }

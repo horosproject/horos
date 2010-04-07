@@ -18,19 +18,27 @@ extern NSRecursiveLock* PapyrusLock;
 
 @implementation NSImage (OsiriX)
 
--(NSData*)JPEGRepresentationWithQuality:(CGFloat)quality {
+-(NSData*)JPEGRepresentationWithQuality:(CGFloat)quality
+{
 	NSBitmapImageRep* imageRep = [NSBitmapImageRep imageRepWithData:self.TIFFRepresentation];
 	NSData* result = NULL;
 	
-	[PapyrusLock lock];
-	if ([imageRep bitsPerPixel] == 8) @try {
-		int size;
-		unsigned char* p = compressJPEG(quality*100, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1, &size);
-		if (p)
-			result = [NSData dataWithBytesNoCopy: p length: size freeWhenDone: YES];
-	} @catch (NSException * e) {
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	} @finally {
+	if ([imageRep bitsPerPixel] == 8)
+	{
+		[PapyrusLock lock];
+		
+		@try
+		{
+			int size;
+			unsigned char* p = compressJPEG(quality*100, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1, &size);
+			if (p)
+				result = [NSData dataWithBytesNoCopy: p length: size freeWhenDone: YES];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
 		[PapyrusLock unlock];
 	}
 	else
