@@ -80,17 +80,20 @@
 	return dicomTime;
 }
 
--(NSData*)thumbnail {
+-(NSData*)thumbnail
+{
 	NSData* thumbnailData = [self primitiveValueForKey:@"thumbnail"];
 	
-	if (!thumbnailData) {
+	if (!thumbnailData)
+	{
 		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 		
 		NSArray* files = [self sortedImages];
-		if (files.count) {
+		if (files.count)
+		{
 			DicomImage* image = [files objectAtIndex:[files count]/2];
 			
-			if ([NSData dataWithContentsOfFile:image.completePath])	// This means the file is readable...
+			if ([NSData dataWithContentsOfFile: image.completePath])	// This means the file is readable...
 			{
 				int frame = 0;
 				
@@ -114,7 +117,8 @@
 			}
 		}
 
-		if (thumbnailData) {
+		if( thumbnailData)
+		{
 			[self willChangeValueForKey: @"thumbnail"];
 			[self setPrimitiveValue:thumbnailData forKey:@"thumbnail"];
 			[self didChangeValueForKey: @"thumbnail"];

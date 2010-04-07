@@ -7785,15 +7785,15 @@ static ViewerController *draggedController = nil;
 				interval = 0;
 		}
 		
-		if( interval == 0 && [pixList[ z] count] > 1)
+		if( interval == 0 && [pixList[ z] count] > 2)
 		{
 			titledGantry = NO;
 			
 			double		vectors[ 9], vectorsB[ 9];
 			BOOL		equalVector = YES;
 			
-			[[pixList[ z] objectAtIndex:0] orientationDouble: vectors];
-			[[pixList[ z] objectAtIndex:1] orientationDouble: vectorsB];
+			[[pixList[ z] objectAtIndex:1] orientationDouble: vectors];
+			[[pixList[ z] objectAtIndex:2] orientationDouble: vectorsB];
 			
 			for( i = 0; i < 9; i++)
 			{
@@ -7817,10 +7817,7 @@ static ViewerController *draggedController = nil;
 			{
 				if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
 				{
-					interval = [[pixList[ z] objectAtIndex:0] originX] - [[pixList[ z] objectAtIndex:1] originX];
-					
-					if( interval == 0 && [pixList[ z] count] > 2)
-						interval = [[pixList[ z] objectAtIndex:1] originX] - [[pixList[ z] objectAtIndex:2] originX];
+					interval = [[pixList[ z] objectAtIndex:1] originX] - [[pixList[ z] objectAtIndex:2] originX];
 					
 					if( vectors[6] > 0) interval = -( interval);
 					else interval = ( interval);
@@ -7835,10 +7832,7 @@ static ViewerController *draggedController = nil;
 				
 				if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
 				{
-					interval = [[pixList[ z] objectAtIndex:0] originY] - [[pixList[ z] objectAtIndex:1] originY];
-					
-					if( interval == 0 && [pixList[ z] count] > 2)
-						interval = [[pixList[ z] objectAtIndex:1] originY] - [[pixList[ z] objectAtIndex:2] originY];
+					interval = [[pixList[ z] objectAtIndex:1] originY] - [[pixList[ z] objectAtIndex:2] originY];
 					
 					if( vectors[7] > 0) interval = -( interval);
 					else interval = ( interval);
@@ -7853,10 +7847,7 @@ static ViewerController *draggedController = nil;
 				
 				if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
 				{
-					interval = [[pixList[ z] objectAtIndex:0] originZ] - [[pixList[ z] objectAtIndex:1] originZ];
-					
-					if( interval == 0 && [pixList[ z] count] > 2)
-						interval = [[pixList[ z] objectAtIndex:1] originZ] - [[pixList[ z] objectAtIndex:2] originZ];
+					interval = [[pixList[ z] objectAtIndex:1] originZ] - [[pixList[ z] objectAtIndex:2] originZ];
 						
 					if( vectors[8] > 0) interval = -( interval);
 					else interval = ( interval);
@@ -7890,21 +7881,11 @@ static ViewerController *draggedController = nil;
 					}
 				}
 				
-				double interval3d;
-				double xd = [[pixList[ z] objectAtIndex: 1] originX] - [[pixList[ z] objectAtIndex: 0] originX];
-				double yd = [[pixList[ z] objectAtIndex: 1] originY] - [[pixList[ z] objectAtIndex: 0] originY];
-				double zd = [[pixList[ z] objectAtIndex: 1] originZ] - [[pixList[ z] objectAtIndex: 0] originZ];
+				double xd = [[pixList[ z] objectAtIndex: 2] originX] - [[pixList[ z] objectAtIndex: 1] originX];
+				double yd = [[pixList[ z] objectAtIndex: 2] originY] - [[pixList[ z] objectAtIndex: 1] originY];
+				double zd = [[pixList[ z] objectAtIndex: 2] originZ] - [[pixList[ z] objectAtIndex: 1] originZ];
 				
-				interval3d = sqrt(xd*xd + yd*yd + zd*zd);
-				
-				if( interval3d == 0 && [pixList[ z] count] > 2)
-				{
-					xd = [[pixList[ z] objectAtIndex: 2] originX] - [[pixList[ z] objectAtIndex: 1] originX];
-					yd = [[pixList[ z] objectAtIndex: 2] originY] - [[pixList[ z] objectAtIndex: 1] originY];
-					zd = [[pixList[ z] objectAtIndex: 2] originZ] - [[pixList[ z] objectAtIndex: 1] originZ];
-				
-					interval3d = sqrt(xd*xd + yd*yd + zd*zd);
-				}
+				double interval3d = sqrt(xd*xd + yd*yd + zd*zd);
 				
 				xd /= interval3d;
 				yd /= interval3d;
@@ -8032,9 +8013,9 @@ static ViewerController *draggedController = nil;
 				
 				if( flipNow == YES)
 				{
-					xd = [[pixList[ z] objectAtIndex: 1] originX] - [[pixList[ z] objectAtIndex: 0] originX];
-					yd = [[pixList[ z] objectAtIndex: 1] originY] - [[pixList[ z] objectAtIndex: 0] originY];
-					zd = [[pixList[ z] objectAtIndex: 1] originZ] - [[pixList[ z] objectAtIndex: 0] originZ];
+					xd = [[pixList[ z] objectAtIndex: 2] originX] - [[pixList[ z] objectAtIndex: 1] originX];
+					yd = [[pixList[ z] objectAtIndex: 2] originY] - [[pixList[ z] objectAtIndex: 1] originY];
+					zd = [[pixList[ z] objectAtIndex: 2] originZ] - [[pixList[ z] objectAtIndex: 1] originZ];
 					
 					interval3d = sqrt(xd*xd + yd*yd + zd*zd);
 					
