@@ -730,6 +730,14 @@
 	
 }
 
+- (void)addStringWithZeroPadding:(NSString *)string{
+	NSData *data = [string dataUsingEncoding:stringEncoding];
+	[dicomData appendData:data];
+	int length = [data length];
+	if (length%2)
+		[self addUnsignedChar: 0x00];
+}
+
 - (void)addString:(NSString *)string withEncoding:(NSStringEncoding)encoding
 {
 	NSData *data = [string dataUsingEncoding:encoding];

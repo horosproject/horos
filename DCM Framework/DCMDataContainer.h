@@ -98,6 +98,7 @@
 - (void)addDouble:(double)d;
 
 - (void)addString:(NSString *)string;
+- (void)addStringWithZeroPadding:(NSString *)string;
 - (void)addString:(NSString *)string withEncoding:(NSStringEncoding)encoding;
 - (void)addStringWithoutPadding:(NSString *)string;
 - (void)addDate:(DCMCalendarDate *)date;

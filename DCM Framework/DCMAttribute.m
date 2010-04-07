@@ -441,14 +441,17 @@
             case PN:	//Person Name string
             case SH:	//short string
             case ST:	//short Text 1024 char max
-            case UI:    //String for UID             
             case UT:	//unlimited text
             case QQ: 
 				string =  [_values componentsJoinedByString:@"\\"];
 				[container addString:string];
-				
                 break;
 			
+            case UI:    //String for UID
+				string =  [_values componentsJoinedByString:@"\\"];
+				[container addStringWithZeroPadding:string];
+				break;
+				
           //  default: 
 			//	values = [NSArray arrayWithObject:[dicomData nextDataWithLength:length]];
           //      break;
