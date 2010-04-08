@@ -443,6 +443,7 @@ enum
 - (BOOL) isDataVolumic;
 - (BOOL) isDataVolumicIn4D:(BOOL) check4D checkEverythingLoaded:(BOOL) c;
 - (BOOL) isDataVolumicIn4D:(BOOL) check4D;
+- (BOOL) isDataVolumicIn4D: (BOOL) check4D checkEverythingLoaded:(BOOL) c tryToCorrect: (BOOL) tryToCorrect;
 - (void) displayAWarningIfNonTrueVolumicData;
 
 /** ReSort the images displayed according to this group/element */
