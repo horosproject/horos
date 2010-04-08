@@ -2330,6 +2330,11 @@ NSString* notNil( NSString *s)
 							if( frameNumber < [images count])
 								images = [NSArray arrayWithObject: [images objectAtIndex: frameNumber]];
 						}
+						
+						if( [images count])
+						{
+							[OsiriXHTTPConnection updateLogEntryForStudy: [studies lastObject] withMessage: @"WADO transfer" forUser: nil ip: [asyncSocket connectedHost]];
+						}
 					}
 					
 					if( [images count] || imageCache != nil)
