@@ -202,23 +202,42 @@ NSString* notNil( NSString *s)
 		if( ip == nil)
 			ip = [[AppController sharedAppController] privateIP];
 	
-	
-		NSManagedObject *logEntry = nil;
+		// Search for same log entry during last 15 min
 		
-		logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
-		[logEntry setValue: [NSDate date] forKey:@"startTime"];
-		[logEntry setValue: @"Web" forKey:@"type"];
+		NSArray *logs = nil;
+		@try 
+		{
+			NSError *error = nil;
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"LogEntry"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientName==%@) AND (studyName==%@) AND (message==%@) AND (originName==%@) AND (startTime >= CAST(%lf, \"NSDate\"))", [study valueForKey: @"name"], [study valueForKey: @"studyName"], message, ip, [[NSDate dateWithTimeIntervalSinceNow: -15 * 60] timeIntervalSinceReferenceDate]]];
 		
-		if( study)
-			[logEntry setValue: [study valueForKey: @"name"] forKey:@"patientName"];
+			logs = [context executeFetchRequest: dbRequest error: &error];
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 		
-		if( study)
-			[logEntry setValue: [study valueForKey: @"studyName"] forKey:@"studyName"];
-		
-		[logEntry setValue: message forKey: @"message"];
-		
-		if( ip)
-			[logEntry setValue: ip forKey: @"originName"];
+		if( [logs count] == 0)
+		{
+			NSManagedObject *logEntry = nil;
+			
+			logEntry = [NSEntityDescription insertNewObjectForEntityForName: @"LogEntry" inManagedObjectContext:context];
+			[logEntry setValue: [NSDate date] forKey: @"startTime"];
+			[logEntry setValue: @"Web" forKey: @"type"];
+			
+			if( study)
+				[logEntry setValue: [study valueForKey: @"name"] forKey: @"patientName"];
+			
+			if( study)
+				[logEntry setValue: [study valueForKey: @"studyName"] forKey: @"studyName"];
+			
+			[logEntry setValue: message forKey: @"message"];
+			
+			if( ip)
+				[logEntry setValue: ip forKey: @"originName"];
+		}
 	}
 	@catch (NSException * e)
 	{
