@@ -2617,7 +2617,11 @@ public:
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+	if( [controller windowWillClose])
+		return;
+
 	[drawLock lock];
+	
 	long	pix[ 3];
 	float	pos[ 3], value;
 	

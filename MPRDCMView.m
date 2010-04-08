@@ -1546,6 +1546,9 @@ static BOOL frameZoomed = NO;
 
 - (void) mouseMoved: (NSEvent *) theEvent
 {
+	if( [windowController windowWillClose])
+		return;
+		
 	NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];
 	
 	if( view == self)

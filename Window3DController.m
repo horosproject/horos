@@ -230,8 +230,15 @@
 	
 }
 
+- (BOOL) windowWillClose
+{
+	return windowWillClose;
+}
+
 - (void) dealloc
 {
+	windowWillClose = YES;
+	
 	NSLog(@"Window3DController dealloc");
 	
 	[curCLUTMenu release];

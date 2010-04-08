@@ -68,9 +68,12 @@
 	NSWindow						*FullScreenWindow;
 	NSWindow						*StartingWindow;
 	NSView							*contentView;
+	
+	BOOL							windowWillClose;
 
 }
 
+- (BOOL) windowWillClose;
 - (void) sendMailImage: (NSImage*) im;
 - (ViewerController*) blendingController;
 - (id) view;

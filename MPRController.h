@@ -97,8 +97,6 @@
 	
 	IBOutlet NSView *tbAxisColors;
 	NSColor *colorAxis1, *colorAxis2, *colorAxis3;
-	
-	BOOL windowWillClose;
 }
 
 @property float clippingRangeThickness, dcmInterval, blendingPercentage;
