@@ -4233,14 +4233,28 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 									[curROI release];
 									curROI = nil;
 								}
+								
+								NSNumber *xx = nil, *yy = nil, *zz = nil;
+								if( [aNewROI type] == t2DPoint)
+								{
+									float location[ 3];
+									
+									[curDCM convertPixX: [[[aNewROI points] objectAtIndex:0] x] pixY: [[[aNewROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
+									
+									xx = [NSNumber numberWithFloat: location[ 0]];
+									yy = [NSNumber numberWithFloat: location[ 1]];
+									zz = [NSNumber numberWithFloat: location[ 2]];
+								}
+								
 								if( [aNewROI ROImode] == ROI_selected)
 									[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: aNewROI userInfo: nil];
 								
 								NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	aNewROI,							@"ROI",
 																										[NSNumber numberWithInt:curImage],	@"sliceNumber", 
+																										xx, @"x", yy, @"y", zz, @"z",
 																										nil];
 								
-								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixAddROINotification object:self userInfo:userInfo];
+								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixAddROINotification object: self userInfo:userInfo];
 							}
 						}
 					}

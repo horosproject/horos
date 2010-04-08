@@ -252,7 +252,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[nc addObserver: self
 		selector: @selector(add3DPoint:)
 		//name: OsirixROIChangeNotification
-		name: OsirixROISelectedNotification
+		name: OsirixAddROINotification //OsirixROISelectedNotification
 		object: nil];
 	[nc	addObserver: self
 					selector: @selector(CloseViewerNotification:)
@@ -997,7 +997,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void) add3DPoint: (NSNotification*) note
 {
-	ROI	*addedROI = [note object];
+	ROI	*addedROI = [[note userInfo] valueForKey: @"ROI"];
 	
 	if ([roi2DPointsArray containsObject:addedROI])
 	{
@@ -1006,18 +1006,28 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
 	if ([addedROI type] == t2DPoint)
 	{
-		float location[3];
+		float location[ 3];
 		double x, y, z;
-			
-		[[[viewer2D pixList] objectAtIndex:[[viewer2D imageView] curImage]] convertPixX: [[[addedROI points] objectAtIndex:0] x] pixY: [[[addedROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
 		
-		x = location[0];
-		y = location[1];
-		z = location[2];
+		if( [[note userInfo] valueForKey: @"x"] == nil)
+		{
+			[[[viewer2D pixList] objectAtIndex:[[viewer2D imageView] curImage]] convertPixX: [[[addedROI points] objectAtIndex:0] x] pixY: [[[addedROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
+			
+			x = location[ 0];
+			y = location[ 1];
+			z = location[ 2];
+		}
+		else
+		{
+			x = [[[note userInfo] valueForKey: @"x"] floatValue];
+			y = [[[note userInfo] valueForKey: @"y"] floatValue];
+			z = [[[note userInfo] valueForKey: @"z"] floatValue];
+		}
 
 		// add the 3D Point to the SR view
 		[[self view] add3DPoint: x : y : z];
 		[[self view] setNeedsDisplay:YES];
+		
 		// add the 2D Point to our list
 		[roi2DPointsArray addObject:addedROI];
 		[sliceNumber2DPointsArray addObject:[NSNumber numberWithLong:[[viewer2D imageView] curImage]]];
