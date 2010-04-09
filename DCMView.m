@@ -1892,14 +1892,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	gClickCountSet = NO;
 }
 
--(void) checkVisible {
+-(void) checkVisible
+{
     float newYY, newXX, xx, yy;
     
     xx = origin.x*cos(rotation*deg2rad) + origin.y*sin(rotation*deg2rad);
     yy = origin.x*sin(rotation*deg2rad) - origin.y*cos(rotation*deg2rad);
 
     NSRect size = [self bounds];
-    if( scaleValue > 1.0) {
+    if( scaleValue > 1.0)
+	{
         size.size.width = curDCM.pwidth*scaleValue;
         size.size.height = curDCM.pheight*scaleValue;
     }
@@ -4234,24 +4236,24 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 									curROI = nil;
 								}
 								
-								NSNumber *xx = nil, *yy = nil, *zz = nil;
-								if( [aNewROI type] == t2DPoint)
-								{
-									float location[ 3];
-									
-									[curDCM convertPixX: [[[aNewROI points] objectAtIndex:0] x] pixY: [[[aNewROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
-									
-									xx = [NSNumber numberWithFloat: location[ 0]];
-									yy = [NSNumber numberWithFloat: location[ 1]];
-									zz = [NSNumber numberWithFloat: location[ 2]];
-								}
+//								NSNumber *xx = nil, *yy = nil, *zz = nil;
+//								if( [aNewROI type] == t2DPoint)
+//								{
+//									float location[ 3];
+//									
+//									[curDCM convertPixX: [[[aNewROI points] objectAtIndex:0] x] pixY: [[[aNewROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
+//									
+//									xx = [NSNumber numberWithFloat: location[ 0]];
+//									yy = [NSNumber numberWithFloat: location[ 1]];
+//									zz = [NSNumber numberWithFloat: location[ 2]];
+//								}
 								
 								if( [aNewROI ROImode] == ROI_selected)
 									[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: aNewROI userInfo: nil];
 								
 								NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	aNewROI,							@"ROI",
 																										[NSNumber numberWithInt:curImage],	@"sliceNumber", 
-																										xx, @"x", yy, @"y", zz, @"z",
+																										//xx, @"x", yy, @"y", zz, @"z",
 																										nil];
 								
 								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixAddROINotification object: self userInfo:userInfo];
@@ -5381,6 +5383,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						if( [[r comments] isEqualToString: @"morphing generated"])
 							[r setComments:@""];
+							
 						[[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIChangeNotification object:r userInfo: nil];
 					}
 				}

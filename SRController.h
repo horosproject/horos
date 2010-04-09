@@ -143,6 +143,7 @@
 - (void) add2DPoint: (float) x : (float) y : (float) z;
 - (void) remove2DPoint: (float) x : (float) y : (float) z;
 - (void) add3DPoint: (NSNotification*) note;
+- (void) remove3DPointROI: (ROI*) removedROI;
 - (void) remove3DPoint: (NSNotification*) note;
 
 - (void) createContextualMenu;

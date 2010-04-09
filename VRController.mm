@@ -644,7 +644,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[nc addObserver: self
 		selector: @selector(add3DPoint:)
 		//name: OsirixROIChangeNotification
-		name: OsirixAddROINotification //OsirixROISelectedNotification
+		name: OsirixROISelectedNotification //OsirixROISelectedNotification
 		object: nil];
 
     [nc addObserver: self
@@ -2273,8 +2273,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			
 			NSLog( @"%f %f %f", sx, sy, sz);
 						
-			if(	(x < sx + [firstDCMPix pixelSpacingX] && x > sx - [firstDCMPix pixelSpacingX])		&&
-				(y < sy + [firstDCMPix pixelSpacingY] && y > sy - [firstDCMPix pixelSpacingY])		&&
+			if(	(x < sx + [firstDCMPix pixelSpacingX] && x > sx - [firstDCMPix pixelSpacingX]) &&
+				(y < sy + [firstDCMPix pixelSpacingY] && y > sy - [firstDCMPix pixelSpacingY]) &&
 				(z < sz + [firstDCMPix sliceInterval] && z > sz - [firstDCMPix sliceInterval]))
 			{
 				found = YES;
@@ -2301,32 +2301,93 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
 }
 
+- (void) refresh3DPoints
+{
+	// First remove all non-available points
+	NSMutableArray *roisToBeRemoved = [NSMutableArray array];
+	for( ROI *r in roi2DPointsArray)
+	{
+		BOOL found = NO;
+		
+		for( NSArray *a in [viewer2D roiList])
+		{
+			if( [a containsObject: r])
+			{
+				found = YES;
+				break;
+			}
+		}
+		
+		if( found == NO)
+			[roisToBeRemoved addObject: r];
+	}
+	for( ROI *r in roisToBeRemoved)
+		[self remove3DPointROI: r];
+
+	// Add all non-displayed points
+	for( NSArray *a in [viewer2D roiList])
+	{
+		for( ROI *r in a)
+		{
+			if( [r type] == t2DPoint)
+			{
+				if( [roi2DPointsArray containsObject: r] == NO)
+				{
+					float location[ 3];
+					double x, y, z;
+					
+					DCMPix *pix = [r pix];
+					
+					if( pix == nil)
+						pix = [[viewer2D pixList] objectAtIndex: [[viewer2D imageView] curImage]];
+					
+					[pix convertPixX: [[[r points] objectAtIndex:0] x] pixY: [[[r points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
+					
+					x = location[ 0];
+					y = location[ 1];
+					z = location[ 2];
+					
+					// add the 3D Point to the view
+					[[self view] add3DPoint: x : y : z];
+					[[self view] setNeedsDisplay:YES];
+					
+					// add the 2D Point to our list
+					[roi2DPointsArray addObject: r];
+					[sliceNumber2DPointsArray addObject: [NSNumber numberWithLong:[[viewer2D imageView] curImage]]];
+					[x2DPointsArray addObject: [NSNumber numberWithFloat:x]];
+					[y2DPointsArray addObject: [NSNumber numberWithFloat:y]];
+					[z2DPointsArray addObject: [NSNumber numberWithFloat:z]];
+				}
+			}
+		}
+	}
+}
+
 - (void) add3DPoint: (NSNotification*) note
 {
-	ROI	*addedROI = [[note userInfo] valueForKey: @"ROI"];
+	[self refresh3DPoints];
+		
+	// Add the new ROI
+	ROI	*addedROI = [note object];
 	
-	if ([roi2DPointsArray containsObject: addedROI])
-		[self remove3DPoint:note];
+	if( [roi2DPointsArray containsObject: addedROI])
+		[self remove3DPoint: note];
 	
 	if ([addedROI type] == t2DPoint)
 	{
 		float location[ 3];
 		double x, y, z;
 		
-		if( [[note userInfo] valueForKey: @"x"] == nil)
-		{
-			[[[viewer2D pixList] objectAtIndex:[[viewer2D imageView] curImage]] convertPixX: [[[addedROI points] objectAtIndex:0] x] pixY: [[[addedROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
-			
-			x = location[ 0];
-			y = location[ 1];
-			z = location[ 2];
-		}
-		else
-		{
-			x = [[[note userInfo] valueForKey: @"x"] floatValue];
-			y = [[[note userInfo] valueForKey: @"y"] floatValue];
-			z = [[[note userInfo] valueForKey: @"z"] floatValue];
-		}
+		DCMPix *pix = [addedROI pix];
+		
+		if( pix == nil)
+			pix = [[viewer2D pixList] objectAtIndex: [[viewer2D imageView] curImage]];
+		
+		[pix convertPixX: [[[addedROI points] objectAtIndex:0] x] pixY: [[[addedROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
+		
+		x = location[ 0];
+		y = location[ 1];
+		z = location[ 2];
 		
 		// add the 3D Point to the view
 		[[self view] add3DPoint: x : y : z];
@@ -2341,49 +2402,44 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
 }
 
+- (void) remove3DPointROI: (ROI*) removedROI
+{
+	long cur2DPointIndex = 0;
+	BOOL found = NO;
+
+	while(!found && cur2DPointIndex<[roi2DPointsArray count])
+	{
+		if(	[roi2DPointsArray objectAtIndex:cur2DPointIndex]==removedROI)
+		{
+			found = YES;
+		}
+		else
+		{
+			cur2DPointIndex++;
+		}
+	}
+	
+	if (found && cur2DPointIndex<[roi2DPointsArray count])
+	{
+		// remove the 3D Point in the SR view
+		[[self view] remove3DPointAtIndex: cur2DPointIndex];
+		[[self view] setNeedsDisplay:YES];
+		// remove 2D point in our list
+		[roi2DPointsArray removeObjectAtIndex:cur2DPointIndex];
+		[sliceNumber2DPointsArray removeObjectAtIndex:cur2DPointIndex];
+		[x2DPointsArray removeObjectAtIndex:cur2DPointIndex];
+		[y2DPointsArray removeObjectAtIndex:cur2DPointIndex];
+		[z2DPointsArray removeObjectAtIndex:cur2DPointIndex];
+	}
+}
+
 - (void) remove3DPoint: (NSNotification*) note
 {
 	ROI	*removedROI = [note object];
 	
 	if ([removedROI type] == t2DPoint) // 2D Points
 	{
-		// find 3D point
-		float location[3];
-		float x, y, z;
-		
-		[[[viewer2D pixList] objectAtIndex: 0] convertPixX: [[[removedROI points] objectAtIndex:0] x] pixY: [[[removedROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
-
-		x = location[0];
-		y = location[1];
-		z = location[2];
-
-		long cur2DPointIndex = 0;
-		BOOL found = NO;
-
-		while(!found && cur2DPointIndex<[roi2DPointsArray count])
-		{
-			if(	[roi2DPointsArray objectAtIndex:cur2DPointIndex]==removedROI)
-			{
-				found = YES;
-			}
-			else
-			{
-				cur2DPointIndex++;
-			}
-		}
-		
-		if (found && cur2DPointIndex<[roi2DPointsArray count])
-		{
-			// remove the 3D Point in the SR view
-			[[self view] remove3DPointAtIndex: cur2DPointIndex];
-			[[self view] setNeedsDisplay:YES];
-			// remove 2D point in our list
-			[roi2DPointsArray removeObjectAtIndex:cur2DPointIndex];
-			[sliceNumber2DPointsArray removeObjectAtIndex:cur2DPointIndex];
-			[x2DPointsArray removeObjectAtIndex:cur2DPointIndex];
-			[y2DPointsArray removeObjectAtIndex:cur2DPointIndex];
-			[z2DPointsArray removeObjectAtIndex:cur2DPointIndex];
-		}
+		[self remove3DPointROI: removedROI];
 	}
 }
 

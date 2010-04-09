@@ -202,7 +202,7 @@ NSString* notNil( NSString *s)
 		if( ip == nil)
 			ip = [[AppController sharedAppController] privateIP];
 	
-		// Search for same log entry during last 15 min
+		// Search for same log entry during last 5 min
 		
 		NSArray *logs = nil;
 		@try 
@@ -210,7 +210,7 @@ NSString* notNil( NSString *s)
 			NSError *error = nil;
 			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"LogEntry"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientName==%@) AND (studyName==%@) AND (message==%@) AND (originName==%@) AND (startTime >= CAST(%lf, \"NSDate\"))", [study valueForKey: @"name"], [study valueForKey: @"studyName"], message, ip, [[NSDate dateWithTimeIntervalSinceNow: -15 * 60] timeIntervalSinceReferenceDate]]];
+			[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientName==%@) AND (studyName==%@) AND (message==%@) AND (originName==%@) AND (endTime >= CAST(%lf, \"NSDate\"))", [study valueForKey: @"name"], [study valueForKey: @"studyName"], message, ip, [[NSDate dateWithTimeIntervalSinceNow: -5 * 60] timeIntervalSinceReferenceDate]]];
 		
 			logs = [context executeFetchRequest: dbRequest error: &error];
 		}
@@ -225,6 +225,7 @@ NSString* notNil( NSString *s)
 			
 			logEntry = [NSEntityDescription insertNewObjectForEntityForName: @"LogEntry" inManagedObjectContext:context];
 			[logEntry setValue: [NSDate date] forKey: @"startTime"];
+			[logEntry setValue: [NSDate date] forKey: @"endTime"];
 			[logEntry setValue: @"Web" forKey: @"type"];
 			
 			if( study)
@@ -238,6 +239,8 @@ NSString* notNil( NSString *s)
 			if( ip)
 				[logEntry setValue: ip forKey: @"originName"];
 		}
+		else
+			[logs setValue: [NSDate date] forKey: @"endTime"];
 	}
 	@catch (NSException * e)
 	{
