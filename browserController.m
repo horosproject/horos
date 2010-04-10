@@ -12836,7 +12836,7 @@ static NSArray*	openSubSeriesArray = nil;
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to iDisk", nil) action: @selector(sendiDisk:) keyEquivalent:@""] autorelease];
 	[menu addItem:item];
 		
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to Email", nil)  action:@selector(sendEmail:) keyEquivalent:@""] autorelease];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to Email", nil)  action:@selector(sendMail:) keyEquivalent:@""] autorelease];
 	[menu addItem:item];
 		
 	[menu addItem: [NSMenuItem separatorItem]];
@@ -13418,9 +13418,40 @@ static NSArray*	openSubSeriesArray = nil;
 	[self refreshDatabase: self];
 }
 
-- (BOOL)validateMenuItem: (NSMenuItem*) menuItem
+- (BOOL) validateMenuItem: (NSMenuItem*) menuItem
 {
-	if ( menuItem.menu == imageTileMenu)
+	if( [[databaseOutline selectedRowIndexes] count] < 1) // No Database Selection
+	{
+		if(	[menuItem action] == @selector( rebuildThumbnails:) ||
+			[menuItem action] == @selector( searchForCurrentPatient:) || 
+			[menuItem action] == @selector( viewerDICOM:) || 
+			[menuItem action] == @selector( MovieViewerDICOM:) || 
+			[menuItem action] == @selector( viewerDICOMMergeSelection:) || 
+			[menuItem action] == @selector( revealInFinder:) || 
+			[menuItem action] == @selector( export2PACS:) || 
+			[menuItem action] == @selector( exportQuicktime:) || 
+			[menuItem action] == @selector( exportJPEG:) || 
+			[menuItem action] == @selector( exportTIFF:) || 
+			[menuItem action] == @selector( exportDICOMFile:) || 
+			[menuItem action] == @selector( sendiDisk:) || 
+			[menuItem action] == @selector( sendMail:) || 
+			[menuItem action] == @selector( addStudiesToUser:) || 
+			[menuItem action] == @selector( sendEmailNotification:) || 
+			[menuItem action] == @selector( compressSelectedFiles:) || 
+			[menuItem action] == @selector( decompressSelectedFiles:) || 
+			[menuItem action] == @selector( generateReport:) || 
+			[menuItem action] == @selector( deleteReport:) || 
+			[menuItem action] == @selector( delItem:) || 
+			[menuItem action] == @selector( querySelectedStudy:) || 
+			[menuItem action] == @selector( burnDICOM:) || 
+			[menuItem action] == @selector( anonymizeDICOM:) || 
+			[menuItem action] == @selector( viewXML:) || 
+			[menuItem action] == @selector( applyRoutingRule:)
+			)
+		return NO;
+	}
+
+	if( menuItem.menu == imageTileMenu)
 	{
 		return [mainWindow.windowController isKindOfClass:[ViewerController class]];
 	}
@@ -19004,6 +19035,37 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (BOOL)validateToolbarItem: (NSToolbarItem *)toolbarItem
 {
+	if( [[databaseOutline selectedRowIndexes] count] < 1) // No Database Selection
+	{
+		if(	[toolbarItem action] == @selector( rebuildThumbnails:) ||
+			[toolbarItem action] == @selector( searchForCurrentPatient:) || 
+			[toolbarItem action] == @selector( viewerDICOM:) || 
+			[toolbarItem action] == @selector( MovieViewerDICOM:) || 
+			[toolbarItem action] == @selector( viewerDICOMMergeSelection:) || 
+			[toolbarItem action] == @selector( revealInFinder:) || 
+			[toolbarItem action] == @selector( export2PACS:) || 
+			[toolbarItem action] == @selector( exportQuicktime:) || 
+			[toolbarItem action] == @selector( exportJPEG:) || 
+			[toolbarItem action] == @selector( exportTIFF:) || 
+			[toolbarItem action] == @selector( exportDICOMFile:) || 
+			[toolbarItem action] == @selector( sendiDisk:) || 
+			[toolbarItem action] == @selector( sendMail:) || 
+			[toolbarItem action] == @selector( addStudiesToUser:) || 
+			[toolbarItem action] == @selector( sendEmailNotification:) || 
+			[toolbarItem action] == @selector( compressSelectedFiles:) || 
+			[toolbarItem action] == @selector( decompressSelectedFiles:) || 
+			[toolbarItem action] == @selector( generateReport:) || 
+			[toolbarItem action] == @selector( deleteReport:) || 
+			[toolbarItem action] == @selector( delItem:) || 
+			[toolbarItem action] == @selector( querySelectedStudy:) || 
+			[toolbarItem action] == @selector( burnDICOM:) || 
+			[toolbarItem action] == @selector( viewXML:) || 
+			[toolbarItem action] == @selector( anonymizeDICOM:) || 
+			[toolbarItem action] == @selector( applyRoutingRule:)
+			)
+		return NO;
+	}
+	
 	if (isCurrentDatabaseBonjour)
 	{
 		if ([[toolbarItem itemIdentifier] isEqualToString: ImportToolbarItemIdentifier]) return NO;
