@@ -11571,8 +11571,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							from = curDCM.maxValueOfSeries * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROM"] / 100.;
 							to = curDCM.maxValueOfSeries * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWTO"] / 100.;
 							
-							curWW = to - from;
-							curWL = from + (curWW/2.);
+							if( to - from != 0)
+							{
+								curWW = to - from;
+								curWL = from + (curWW/2.);
+							}
 						break;
 						
 						case 2:
@@ -11581,8 +11584,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								from = [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROMSUV"];
 								to = [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWTOSUV"];
 								
-								curWW = to - from;
-								curWL = from + (curWW/2.);
+								if( to - from != 0)
+								{
+									curWW = to - from;
+									curWL = from + (curWW/2.);
+								}
 							}
 							else
 							{
@@ -11635,15 +11641,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 						else
 						{
-							if( [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROMSUV"] == 0)
-							{
-								curWL = (curWW/2.);
-							}
-							else
-							{
-								curWW = ww;
-								curWL = wl;
-							}
+							curWW = ww;
+							curWL = wl;
 						}
 					break;
 				}

@@ -6844,6 +6844,15 @@ static ViewerController *draggedController = nil;
 			[imageView setCOPYSETTINGSINSERIESdirectly: identicalChannelRepresentation];
 		}
 		
+		for( int y = 0; y < maxMovieIndex; y++)
+		{
+			for( DCMPix *p in pixList[ y])
+			{
+				[p setMaxValueOfSeries: 0];
+				[p setMinValueOfSeries: 0];
+			}
+		}
+		
 #pragma mark XA
 		enableSubtraction = FALSE;
 		subCtrlMinMaxComputed = NO;
@@ -6868,7 +6877,13 @@ static ViewerController *draggedController = nil;
 		[self performSelectorOnMainThread:@selector( enableSubtraction) withObject:nil waitUntilDone: YES];
 		
 #pragma mark PET	
-
+		
+		if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[fileList[ 0]  objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
+		{
+			if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DEFAULTPETWLWW"] != 0)
+				[imageView updatePresentationStateFromSeries];
+		}
+		
 		if( isPET)
 		{
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
@@ -13294,7 +13309,7 @@ int i,j,l;
 {
 	long	y, x, i;
 	BOOL	updatewlww = NO;
-	float	updatefactor;
+	double	updatefactor;
 	float	maxValueOfSeries = -100000, minValueOfSeries = 100000;
 	
 	if( [[imageView curDCM] radionuclideTotalDoseCorrected] <= 0) return;
@@ -13340,28 +13355,26 @@ int i,j,l;
 	
 	for( y = 0; y < maxMovieIndex; y++)
 	{
-		for( x = 0; x < [pixList[y] count]; x++)
+		for( DCMPix *p in pixList[y])
 		{
-			[[pixList[y] objectAtIndex: x] setMaxValueOfSeries: 0];
-			[[pixList[y] objectAtIndex: x] setMinValueOfSeries: 0];
+			[p setMaxValueOfSeries: 0];
+			[p setMinValueOfSeries: 0];
 			
-			[[pixList[y] objectAtIndex: x] setSavedWL: [[pixList[y] objectAtIndex: x] savedWL] * updatefactor];
-			[[pixList[y] objectAtIndex: x] setSavedWW: [[pixList[y] objectAtIndex: x] savedWW] * updatefactor];
+			[p setSavedWL: [p savedWL] * updatefactor];
+			[p setSavedWW: [p savedWW] * updatefactor];
+			p.displaySUVValue = YES;
 		}
-	}
-	
-		
-	for( y = 0; y < maxMovieIndex; y++)
-	{
-		for( DCMPix *p in pixList[ y]) p.displaySUVValue = YES;
 	}
 	
 	if(  updatewlww)
 	{
 		float cwl, cww;
-			
+		
 		[imageView getWLWW:&cwl :&cww];
-		[imageView setWLWW: cwl * updatefactor : cww * updatefactor];
+		
+		if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DEFAULTPETWLWW"] != 0)
+			[imageView updatePresentationStateFromSeries];
+		else [imageView setWLWW: cwl * updatefactor : cww * updatefactor];
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
