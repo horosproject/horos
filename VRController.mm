@@ -2098,15 +2098,14 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void) exportJPEG:(id) sender
 {
-    NSSavePanel     *panel = [NSSavePanel savePanel];
-
+    NSSavePanel *panel = [NSSavePanel savePanel];
+	NSImage *im = [view nsimage:NO];
+	
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
 	if( [panel runModalForDirectory:nil file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
 	{
-		NSImage *im = [view nsimage:NO];
-		
 		NSArray *representations;
 		NSData *bitmapData;
 		
@@ -2124,11 +2123,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) export2iPhoto:(id) sender
 {
-	iPhoto		*ifoto;
-	NSImage		*im = [view nsimage:NO];
+	iPhoto *ifoto;
+	NSImage *im = [view nsimage:NO];
 	
-	NSArray		*representations;
-	NSData		*bitmapData;
+	NSArray *representations;
+	NSData *bitmapData;
 	
 	representations = [im representations];
 	
@@ -2143,15 +2142,14 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void) exportTIFF:(id) sender
 {
-    NSSavePanel     *panel = [NSSavePanel savePanel];
+    NSSavePanel *panel = [NSSavePanel savePanel];
+	NSImage *im = [view nsimage:NO];
 
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"tif"];
 	
 	if( [panel runModalForDirectory:nil file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
 	{
-		NSImage *im = [view nsimage:NO];
-		
 		[[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
 		
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
