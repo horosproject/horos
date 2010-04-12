@@ -143,7 +143,7 @@ static NSString*	CobbAngleToolbarItemIdentifier		= @"CobbAngle";
 static NSString*	SetPixelValueItemIdentifier			= @"SetPixelValue.png";
 static NSString*	GrowingRegionItemIdentifier			= @"GrowingRegion.png";
 
-static NSArray*		DefaultROINames;
+static NSArray*		DefaultROINames = nil;
 
 static  BOOL AUTOHIDEMATRIX								= NO;
 static	float deg2rad									= 3.14159265358979/180.0; 
@@ -10183,8 +10183,6 @@ short				matrix[25];
 	[imageView setNeedsDisplay:YES];
 }
 
-//———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
 -(ViewerController*) blendingController
 {
 	return blendingController;
@@ -10197,6 +10195,7 @@ short				matrix[25];
 //class setter and getter
 // of ViewerController class field   static NSArray*	DefaultROINames;
 // used in self generateROINameArray hereafter and in PluginManager.m
+
 + (NSArray*) defaultROINames
 {
 	return DefaultROINames;

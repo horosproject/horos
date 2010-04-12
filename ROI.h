@@ -112,7 +112,7 @@ enum
 	
 	float			offsetTextBox_x, offsetTextBox_y;
 	
-	char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256], line6[ 256];
+	char			line1[ 1024], line2[ 1024], line3[ 1024], line4[ 1024], line5[ 1024], line6[ 1024];
 	NSString		*textualBoxLine1, *textualBoxLine2, *textualBoxLine3, *textualBoxLine4, *textualBoxLine5, *textualBoxLine6;
 	
 	BOOL			_displayCalciumScoring;

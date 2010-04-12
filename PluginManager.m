@@ -344,25 +344,6 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		[defaultROINames addObject:@"ROI 3"];
 		[defaultROINames addObject:@"ROI 4"];
 		[defaultROINames addObject:@"ROI 5"];
-		[defaultROINames addObject:@"-"];
-		[defaultROINames addObject:@"DiasLength"];
-		[defaultROINames addObject:@"SystLength"];
-		[defaultROINames addObject:@"-"];
-		[defaultROINames addObject:@"DiasLong"];
-		[defaultROINames addObject:@"SystLong"];
-		[defaultROINames addObject:@"-"];
-		[defaultROINames addObject:@"DiasHorLong"];
-		[defaultROINames addObject:@"SystHorLong"];
-		[defaultROINames addObject:@"DiasVerLong"];
-		[defaultROINames addObject:@"SystVerLong"];
-		[defaultROINames addObject:@"-"];
-		[defaultROINames addObject:@"DiasShort"];
-		[defaultROINames addObject:@"SystShort"];
-		[defaultROINames addObject:@"-"];
-		[defaultROINames addObject:@"DiasMitral"];
-		[defaultROINames addObject:@"SystMitral"];
-		[defaultROINames addObject:@"DiasPapi"];
-		[defaultROINames addObject:@"SystPapi"];
 		
 		[ViewerController setDefaultROINames: defaultROINames];
 		

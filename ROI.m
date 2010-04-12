@@ -3166,6 +3166,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	{
 		[name release];
 		
+		if( [a length] > 256)
+			a = [a substringToIndex: 256];
+		
 		if( type == tText)
 			name = [a copy];
 		else
@@ -3181,10 +3184,13 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		if( [comments length] > 0) finalString = [name stringByAppendingFormat:@"\r%@", comments];
 		else finalString = name;
 		
-		if (stringTex) [stringTex setString:finalString withAttributes:stanStringAttrib];
+		if( [finalString length] > 4096)
+			finalString = [finalString substringToIndex: 4096];
+		
+		if (stringTex) [stringTex setString: finalString withAttributes:stanStringAttrib];
 		else
 		{
-			stringTex = [[StringTexture alloc] initWithString:finalString withAttributes:stanStringAttrib withTextColor:[NSColor colorWithDeviceRed:color.red / 65535. green:color.green / 65535. blue:color.blue / 65535. alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+			stringTex = [[StringTexture alloc] initWithString: finalString withAttributes:stanStringAttrib withTextColor:[NSColor colorWithDeviceRed:color.red / 65535. green:color.green / 65535. blue:color.blue / 65535. alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
 			[stringTex setAntiAliasing: YES];
 		}
 		
