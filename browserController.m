@@ -14286,7 +14286,7 @@ static NSArray*	openSubSeriesArray = nil;
 - (void)listenerAnonymizeFiles: (NSArray*)files
 {
 	#ifndef OSIRIX_LIGHT
-	NSArray				*array = [NSArray arrayWithObjects: [DCMAttributeTag tagWithName:@"PatientsName"], @"******", nil];
+	NSArray				*array = [NSArray arrayWithObjects: [DCMAttributeTag tagWithName:@"PatientsName"], @"**anonymized**", nil];
 	NSMutableArray		*tags = [NSMutableArray array];
 	
 	[tags addObject:array];
