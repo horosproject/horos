@@ -2131,7 +2131,12 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 
 - (NSManagedObjectContext *) defaultManagerObjectContext
 {
-	if( [currentDatabasePath isEqualToString: [self localDatabasePath]])
+	return [self defaultManagerObjectContextForceLoading: NO];
+}
+
+- (NSManagedObjectContext *) defaultManagerObjectContextForceLoading: (BOOL) forceLoading
+{
+	if( forceLoading == NO && [currentDatabasePath isEqualToString: [self localDatabasePath]] == YES)
 	{
 		return [self managedObjectContext];
 	}

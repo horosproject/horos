@@ -1266,7 +1266,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 ASC_dumpParameters(assoc->params, COUT);
         }
 		
-		staticContext = [[BrowserController currentBrowser] localManagedObjectContext];
+		staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
 		[staticContext retain];
 		
 		if (singleProcess)
@@ -1285,6 +1285,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			if( cond != ASC_SHUTDOWNAPPLICATION)
 			{
 				[[[BrowserController currentBrowser] checkIncomingLock] lock];
+				[[[BrowserController currentBrowser] localManagedObjectContext] lock];
 				[staticContext lock]; //Try to avoid deadlock
 				
 				[DCMNetServiceDelegate DICOMServersList];
@@ -1323,7 +1324,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				}
 				
 				[staticContext unlock];
-				
+				[[[BrowserController currentBrowser] localManagedObjectContext] unlock];
 				[[[BrowserController currentBrowser] checkIncomingLock] unlock];
 			}
 		}
