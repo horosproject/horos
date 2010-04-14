@@ -520,7 +520,7 @@ DcmQueryRetrieveConfig config;
 	else
 		scp = localSCP;
 	
-   localSCP->setDatabaseFlags(OFFalse, OFFalse, options.debug_);
+	localSCP->setDatabaseFlags(OFFalse, OFFalse, options.debug_);
 	localSCP->setSecureConnection([[_params objectForKey:@"TLSEnabled"] boolValue]);
 	
 	_abort = NO;
