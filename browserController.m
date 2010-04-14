@@ -115,9 +115,16 @@ NSString* asciiString(NSString* str)
 
 @implementation NSString (BrowserController)
 
--(NSMutableString*)filenameString {
+-(NSMutableString*)filenameString
+{
 	NSMutableString* str = [NSMutableString stringWithString:[self ASCIIString]];
-	return [BrowserController replaceNotAdmitted:str];
+	
+	NSMutableString* outString = [BrowserController replaceNotAdmitted:str];
+	
+	if( [outString length] == 0)
+		outString = [NSMutableString stringWithString: @"AAA"];
+	
+	return outString;
 }
 
 @end
@@ -16203,8 +16210,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSMutableString* mstr;
 	if ([name isKindOfClass:[NSMutableString class]])
-		mstr = name;
-	else mstr = [[name mutableCopy] autorelease];
+		mstr = (NSMutableString*) name;
+	else
+		mstr = [[name mutableCopy] autorelease];
 		
 	[mstr replaceOccurrencesOfString:@" " withString:@"_" options:0 range:NSMakeRange(0, mstr.length)];
 	[mstr replaceOccurrencesOfString:@"." withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
