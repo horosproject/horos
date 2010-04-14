@@ -119,4 +119,8 @@
 	return [self xmlEscapedString:YES];
 }
 
+-(NSString*)ASCIIString {
+	return [[[NSString alloc] initWithData:[self dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES] encoding:NSASCIIStringEncoding] autorelease];
+}
+
 @end

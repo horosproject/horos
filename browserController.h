@@ -29,6 +29,10 @@ enum simpleSearchType {PatientNameSearch, PatientIDSearch};
 enum queueStatus{QueueHasData, QueueEmpty};
 enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
+@interface NSString (BrowserController)
+-(NSMutableString*)filenameString;
+@end
+
 /** \brief Window controller for Browser
 *
 *   This is a large class with a lot of functions.
@@ -280,7 +284,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 + (int) compressionForModality: (NSString*) mod quality:(int*) quality resolution: (int) resolution;
 + (BrowserController*) currentBrowser;
-+ (NSMutableString*) replaceNotAdmitted: (NSMutableString*)name;
++ (NSMutableString*) replaceNotAdmitted: (NSString*)name;
 + (NSArray*) statesArray;
 + (void) updateActivity;
 + (BOOL) isHardDiskFull;

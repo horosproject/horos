@@ -1,8 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import "HTTPConnection.h"
 
-extern NSString* asciiString (NSString* name);
-
 @interface OsiriXHTTPConnection : HTTPConnection
 {
 	NSMutableArray *selectedImages;

@@ -23,8 +23,6 @@
 #import <DiscRecordingUI/DRBurnProgressPanel.h>
 #import  "BrowserController.h"
 
-extern NSString* asciiString (NSString* name);
-
 @implementation BurnerWindowController
 @synthesize password, buttonsDisabled;
 
@@ -360,7 +358,7 @@ extern NSString* asciiString (NSString* name);
 		[cdName release];
 		//if ([title length] > 8)
 		//	title = [title substringToIndex:8];
-		cdName = [asciiString([title uppercaseString]) retain];
+		cdName = [[[title uppercaseString] filenameString] retain];
 		[nameField setStringValue: cdName];
 	}
 }
@@ -620,7 +618,7 @@ extern NSString* asciiString (NSString* name);
 	}
 	else title = @"UNTITLED";
 	
-	return asciiString([title uppercaseString]);
+	return [[title uppercaseString] filenameString];
 }
 
 - (void)setup:(id)sender

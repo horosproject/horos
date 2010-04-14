@@ -126,3 +126,4 @@ NSRect operator+(const NSRect& r, const NSSize& s);
 NSRect operator-(const NSRect& r, const NSSize& s);
 BOOL operator==(const NSRect& r1, const NSRect& r2);
 BOOL operator!=(const NSRect& r1, const NSRect& r2);
+NSPoint RectBR(const NSRect& r);

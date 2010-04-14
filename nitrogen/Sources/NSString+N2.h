@@ -28,4 +28,6 @@
 -(NSString*)xmlEscapedString;
 -(NSString*)xmlUnescapedString;
 
+-(NSString*)ASCIIString;
+
 @end

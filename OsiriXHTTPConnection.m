@@ -1106,7 +1106,7 @@ NSString* notNil( NSString *s)
 			[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 			lineNumber++;
 			
-			// asciiString?
+			// filenameString?
 			[tempHTML replaceOccurrencesOfString:@"%StudyListItemName%" withString: notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 			
 			NSArray *seriesArray = [study valueForKey:@"imageSeries"] ; //imageSeries
@@ -3137,8 +3137,8 @@ NSString* notNil( NSString *s)
 					NSString *srcFolder = @"/tmp";
 					NSString *destFile = @"/tmp";
 					
-					srcFolder = [srcFolder stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])];
-					destFile = [destFile stringByAppendingPathComponent: asciiString( [[imagesArray lastObject] valueForKeyPath: @"series.study.name"])];
+					srcFolder = [srcFolder stringByAppendingPathComponent: [[[imagesArray lastObject] valueForKeyPath: @"series.study.name"] filenameString]];
+					destFile = [destFile stringByAppendingPathComponent: [[[imagesArray lastObject] valueForKeyPath: @"series.study.name"] filenameString]];
 					
 					if( isMacOS)
 						destFile = [destFile  stringByAppendingPathExtension: @"zip"];

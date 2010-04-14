@@ -17,6 +17,8 @@
 #import "BrowserController.h"
 #import "DCMAbstractSyntaxUID.h"
 #import "NSDictionary+N2.h"
+#import "DicomSeries.h"
+#import "BrowserController.h"
 
 @implementation QTExportHTMLSummary
 
@@ -103,8 +105,8 @@
 	while (series = [enumerator nextObject])
 	{
 		tempListItemTemplate = [NSMutableString stringWithString:listItemTemplate];
-		//linkToPatientPage = [asciiString([[series objectAtIndex:0] valueForKeyPath:@"study.name"]) stringByAppendingPathComponent:@"/index.html"];
-		linkToPatientPage = [NSString stringWithFormat:@"./%@/%@", asciiString([[series objectAtIndex:0] valueForKeyPath:@"study.name"]), @"index.html"];
+		//linkToPatientPage = [[[[series objectAtIndex:0] valueForKeyPath:@"study.name"] filenameString] stringByAppendingPathComponent:@"/index.html"];
+		linkToPatientPage = [NSString stringWithFormat:@"./%@/%@", [[[series objectAtIndex:0] valueForKeyPath:@"study.name"] filenameString], @"index.html"];
 		
 		[tempListItemTemplate replaceOccurrencesOfString:@"%patient_i_page%" withString:[QTExportHTMLSummary nonNilString:linkToPatientPage] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 		patientName = [[series objectAtIndex:0] valueForKeyPath:@"study.name"];
@@ -200,8 +202,8 @@
 		{
 			uniqueSeriesID++;
 			
-			seriesName = asciiString( [BrowserController replaceNotAdmitted: [NSMutableString stringWithString:[[series objectAtIndex:i] valueForKey: @"name"]]]);
-			fileName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithFormat:@"%@ - %@", asciiString( [[series objectAtIndex:i] valueForKeyPath:@"study.studyName"]), [[series objectAtIndex:i] valueForKeyPath:@"study.id"]]];
+			seriesName = [[NSMutableString stringWithString:[[series objectAtIndex:i] valueForKey: @"name"]] filenameString];
+			fileName = [[NSMutableString stringWithFormat:@"%@ - %@", [[series objectAtIndex:i] valueForKeyPath:@"study.studyName"], [[series objectAtIndex:i] valueForKeyPath:@"study.id"]] filenameString];
 			NSString* iId = [[series objectAtIndex:i] valueForKey: @"id"];
 			[fileName appendFormat:@"/%@_%@", seriesName, iId];
 			
@@ -326,7 +328,7 @@
 	}
 }
 
-- (NSString*)fillSeriesTemplatesForSeries:(NSManagedObject*)series numberOfImages:(int)imagesCount;
+- (NSString*)fillSeriesTemplatesForSeries:(DicomSeries*)series numberOfImages:(int)imagesCount;
 {
 	NSString* seriesId = [series valueForKeyPath:@"id"];
 	
@@ -339,7 +341,7 @@
 	[tempHTML replaceOccurrencesOfString:@"%series_id%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%@",[series valueForKey: @"id"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 	[tempHTML replaceOccurrencesOfString:@"%series_images_count%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%d", imagesCount]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 	
-	NSMutableString *seriesStr = [NSMutableString stringWithString: asciiString( [series valueForKey: @"name"])];
+	NSMutableString *seriesStr = [NSMutableString stringWithString: [series.name filenameString]];
 	[BrowserController replaceNotAdmitted: seriesStr];
 			
 	NSMutableString *fileName = [NSMutableString stringWithFormat:@"./%@_%@", seriesStr, [series valueForKey: @"id"]];
@@ -416,7 +418,7 @@
 	{
 		if( [study count] > 0)
 		{
-			patientName = asciiString( [NSMutableString stringWithString:[[study objectAtIndex:0] valueForKeyPath: @"study.name"]]);
+			patientName = [[[study objectAtIndex:0] valueForKeyPath: @"study.name"] filenameString];
 			NSString *htmlContent = [self fillStudiesListTemplatesForSeries:study];
 			[fileManager createFileAtPath:[rootPath stringByAppendingFormat:@"/%@/index.html", patientName] contents:[htmlContent dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
 		}
@@ -435,7 +437,7 @@
 {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSString *htmlContent = [self fillSeriesTemplatesForSeries:series numberOfImages:imagesCount];
-	NSString *patientName = asciiString([NSMutableString stringWithString:[series valueForKeyPath: @"study.name"]]);
+	NSString *patientName = [[series valueForKeyPath: @"study.name"] filenameString];
 	[fileManager createFileAtPath:[rootPath stringByAppendingFormat:@"/%@/%@", patientName, fileName] contents:[htmlContent dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
 }
 

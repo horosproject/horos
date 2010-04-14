@@ -396,3 +396,8 @@ BOOL operator==(const NSRect& r1, const NSRect& r2) {
 BOOL operator!=(const NSRect& r1, const NSRect& r2) {
 	return !(r1==r2);
 }
+
+NSPoint RectBR(const NSRect& r) {
+	return r.origin+r.size;
+}
+

@@ -72,6 +72,7 @@
 #import "NSAppleScript+HandlerCalls.h"
 #import "CSMailMailClient.h"
 #import "NSImage+OsiriX.h"
+#import "NSString+N2.h"
 
 #define DEFAULTUSERDATABASEPATH @"~/Library/Application Support/OsiriX/WebUsers.sql"
 #define USERDATABASEVERSION @"1.0"
@@ -106,20 +107,20 @@ extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
 BOOL hasMacOSXSnowLeopard();
 
-NSString *asciiString( NSString* name)
+#pragma deprecated(asciiString)
+NSString* asciiString(NSString* str)
 {
-	NSMutableString	*outString;
-	
-	NSData *asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-	
-	outString = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
-	[BrowserController replaceNotAdmitted:outString];
-	
-	if( [outString length] == 0)
-		outString = [NSMutableString stringWithString: @"AAA"];
-	
-	return outString;
+	return [str ASCIIString];
 }
+
+@implementation NSString (BrowserController)
+
+-(NSMutableString*)filenameString {
+	NSMutableString* str = [NSMutableString stringWithString:[self ASCIIString]];
+	return [BrowserController replaceNotAdmitted:str];
+}
+
+@end
 
 @interface NSImage (ProportionalScaling)
 - (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
@@ -15337,14 +15338,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 		int uniqueSeriesID = 0;
 		BOOL first = YES;
 		
-		for( NSManagedObject *curImage in dicomFiles2Export)
+		for( DicomImage *curImage in dicomFiles2Export)
 		{
-			NSString *patientDirName = asciiString( [curImage valueForKeyPath: @"series.study.name"]);
+			NSString *patientDirName = [curImage.series.study.name filenameString];
 			
 			tempPath = [path stringByAppendingPathComponent: patientDirName];
 			
 			NSMutableArray *htmlExportSeriesArray;
-			if(![htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.name"]])
+			if(![htmlExportDictionary objectForKey:curImage.series.study.name])
 			{
 				htmlExportSeriesArray = [NSMutableArray array];
 				[htmlExportSeriesArray addObject:[curImage valueForKey: @"series"]];
@@ -15372,7 +15373,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			first = NO;
 			
-			tempPath = [tempPath stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithFormat: @"%@ - %@", asciiString( [curImage valueForKeyPath: @"series.study.studyName"]), [curImage valueForKeyPath: @"series.study.id"]]]];
+			tempPath = [tempPath stringByAppendingPathComponent: [[NSMutableString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]] filenameString]];
 			if( [[curImage valueForKeyPath: @"series.study.id"] isEqualToString: previousStudy] == NO || [[curImage valueForKeyPath: @"series.study.patientUID"] isEqualToString: previousPatientUID] == NO)
 			{
 				previousPatientUID = [curImage valueForKeyPath: @"series.study.patientUID"];
@@ -15386,7 +15387,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
 				[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 			
-			NSMutableString *seriesStr = [NSMutableString stringWithString: asciiString( [curImage valueForKeyPath: @"series.name"])];
+			NSMutableString *seriesStr = [NSMutableString stringWithString:[curImage.series.name filenameString]];
 			[BrowserController replaceNotAdmitted: seriesStr];
 			
 			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
@@ -16198,25 +16199,30 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 #endif
 
-+ (NSMutableString*) replaceNotAdmitted: (NSMutableString*)name
++ (NSMutableString*) replaceNotAdmitted: (NSString*)name
 {
-	[name replaceOccurrencesOfString:@" " withString:@"_" options:0 range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"." withString:@"" options:0 range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"," withString:@"" options:0 range:NSMakeRange(0, [name length])]; 
-	[name replaceOccurrencesOfString:@"^" withString:@"" options:0 range:NSMakeRange(0, [name length])]; 
-	[name replaceOccurrencesOfString:@"/" withString:@"" options:0 range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"\\" withString:@"" options:0 range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"|" withString:@"" options:0 range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"-" withString:@"" options:0 range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@":" withString:@"" options:0 range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"*" withString:@"" options:0 range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"<" withString:@"" options:0 range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@">" withString:@"" options:0 range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"?" withString:@"" options:0 range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"#" withString:@"" options:0 range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"%" withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	NSMutableString* mstr;
+	if ([name isKindOfClass:[NSMutableString class]])
+		mstr = name;
+	else mstr = [[name mutableCopy] autorelease];
+		
+	[mstr replaceOccurrencesOfString:@" " withString:@"_" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@"." withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@"," withString:@"" options:0 range:NSMakeRange(0, mstr.length)]; 
+	[mstr replaceOccurrencesOfString:@"^" withString:@"" options:0 range:NSMakeRange(0, mstr.length)]; 
+	[mstr replaceOccurrencesOfString:@"/" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@"\\" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@"|" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@"-" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@":" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@"*" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@"<" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@">" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@"?" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@"#" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@"%" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
 	
-	return name;
+	return mstr;
 }
 
 - (void) importCommentsAndStatusFromDictionary:(NSDictionary*) d
