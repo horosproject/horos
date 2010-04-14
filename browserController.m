@@ -102,7 +102,6 @@ static int DefaultFolderSizeForDB = 0;
 static NSTimeInterval lastHardDiskCheck = 0;
 static long DATABASEINDEX = 0;
 
-extern unsigned char* compressJPEG (int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome, int *destSize);
 extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
 BOOL hasMacOSXSnowLeopard();
