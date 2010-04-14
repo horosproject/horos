@@ -543,7 +543,7 @@ DcmQueryRetrieveConfig config;
 	}
 	
 	if( _abort)
-		NSLog( @"**** store-SCP aborted");
+		NSLog( @"---- store-SCP aborted");
 	
 	if( tLayer)
 		delete localSCP;
@@ -571,7 +571,7 @@ DcmQueryRetrieveConfig config;
 
 -(void)abort
 {
-	NSLog( @"**** store-SCP abort !");
+	NSLog( @"---- store-SCP abort !");
 	_abort = YES;
 }
 
