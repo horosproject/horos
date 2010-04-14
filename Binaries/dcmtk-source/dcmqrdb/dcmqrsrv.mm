@@ -1266,13 +1266,21 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 ASC_dumpParameters(assoc->params, COUT);
         }
 		
-		staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
-		[staticContext retain];
-		
 		if (singleProcess)
         {
-            /* don't spawn a sub-process to handle the association */
-            cond = handleAssociation(assoc, options_.correctUIDPadding_);
+			staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
+			[staticContext retain];
+			@try
+			{
+				/* don't spawn a sub-process to handle the association */
+				cond = handleAssociation(assoc, options_.correctUIDPadding_);
+			}
+			@catch( NSException *e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
+			[staticContext release];
+			staticContext = nil;
 			
 			NSString *str = getErrorMessage();
 			
@@ -1285,51 +1293,66 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			if( cond != ASC_SHUTDOWNAPPLICATION)
 			{
 				[[[BrowserController currentBrowser] checkIncomingLock] lock];
-				[[[BrowserController currentBrowser] localManagedObjectContext] lock];
+				
+				NSManagedObjectContext *dbContext = [[BrowserController currentBrowser] localManagedObjectContext];
+				[dbContext retain];
+				[dbContext lock];
+				
+				staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
+				[staticContext retain];
 				[staticContext lock]; //Try to avoid deadlock
 				
-				[DCMNetServiceDelegate DICOMServersList];
-				
-				lockFile();
-				
-				/* spawn a sub-process to handle the association */
-				pid = (int)(fork());
-				if (pid < 0)
+				@try
 				{
-					printf("pid < 0. Cannot spawn new process\n");
-					DcmQueryRetrieveOptions::errmsg("Cannot create association sub-process: %s", strerror(errno));
-					cond = refuseAssociation(&assoc, CTN_CannotFork);
-					go_cleanup = OFTrue;
+					[DCMNetServiceDelegate DICOMServersList];
+					
+					lockFile();
+					
+					/* spawn a sub-process to handle the association */
+					pid = (int)(fork());
+					if (pid < 0)
+					{
+						printf("pid < 0. Cannot spawn new process\n");
+						DcmQueryRetrieveOptions::errmsg("Cannot create association sub-process: %s", strerror(errno));
+						cond = refuseAssociation(&assoc, CTN_CannotFork);
+						go_cleanup = OFTrue;
+					}
+					else if (pid > 0)
+					{
+						/* parent process, note process in table */
+						processtable_.addProcessToTable(pid, assoc);
+						
+						waitUnlockFileWithPID( pid);
+						
+						NSString *str = getErrorMessage();
+						if( str)
+							[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+					}
+					else
+					{
+						/* child process, handle the association */
+						cond = handleAssociation(assoc, options_.correctUIDPadding_);
+						
+						unlockFile();
+						
+						/* the child process is done so exit */
+						_Exit(3);	//to avoid spin_lock
+					}
 				}
-				else if (pid > 0)
+				@catch( NSException *e)
 				{
-					/* parent process, note process in table */
-					processtable_.addProcessToTable(pid, assoc);
-					
-					waitUnlockFileWithPID( pid);
-					
-					NSString *str = getErrorMessage();
-					if( str)
-						[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
-				}
-				else
-				{
-					/* child process, handle the association */
-					cond = handleAssociation(assoc, options_.correctUIDPadding_);
-					
-					unlockFile();
-					
-					/* the child process is done so exit */
-					_Exit(3);	//to avoid spin_lock
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 				}
 				
 				[staticContext unlock];
-				[[[BrowserController currentBrowser] localManagedObjectContext] unlock];
+				[staticContext release];
+				staticContext = nil;
+				
+				[dbContext unlock];
+				[dbContext release];
 				[[[BrowserController currentBrowser] checkIncomingLock] unlock];
 			}
 		}
-		[staticContext release];
-		staticContext = nil;
 #endif
     }
 

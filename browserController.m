@@ -2143,22 +2143,30 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	else
 	{
 		NSError *error = nil;
+		NSManagedObjectContext *mOC = nil;
 		
-		NSPersistentStoreCoordinator *pSC = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel] autorelease];
-		
-		NSManagedObjectContext *mOC = [[[NSManagedObjectContext alloc] init] autorelease];
-		[mOC setPersistentStoreCoordinator: pSC];
-		
-		NSURL *url = [NSURL fileURLWithPath: [self localDatabasePath]];
-		
-		if (![pSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
+		@try
 		{
-			NSLog(@"********** defaultManagerObjectContext FAILED: %@", error);
+			NSPersistentStoreCoordinator *pSC = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel] autorelease];
+			
+			mOC = [[[NSManagedObjectContext alloc] init] autorelease];
+			[mOC setPersistentStoreCoordinator: pSC];
+			
+			NSURL *url = [NSURL fileURLWithPath: [self localDatabasePath]];
+		
+			if (![pSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
+			{
+				NSLog(@"********** defaultManagerObjectContext FAILED: %@", error);
+			}
+		
+			[[mOC undoManager] setLevelsOfUndo: 1];
+			[[mOC undoManager] disableUndoRegistration];
 		}
-		
-		[[mOC undoManager] setLevelsOfUndo: 1];
-		[[mOC undoManager] disableUndoRegistration];
-		
+		@catch ( NSException *e)
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			mOC = nil;
+		}
 		return mOC;
 	}
 }
@@ -15415,10 +15423,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						NSImage *im = [imagesArray objectAtIndex: index];
 						
-						if( (int) [im size].width != width || height != (int) [im size].height)
+						if( width != 0 && height != 0)
 						{
-							NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
-							[imagesArray replaceObjectAtIndex: index withObject: newImage];
+							if( (int) [im size].width != width || height != (int) [im size].height)
+							{
+								NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
+								[imagesArray replaceObjectAtIndex: index withObject: newImage];
+							}
 						}
 					}
 					
@@ -15591,10 +15602,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				NSImage *im = [imagesArray objectAtIndex: index];
 				
-				if( (int) [im size].width != width || height != (int) [im size].height)
+				if( width != 0 && height != 0)
 				{
-					NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
-					[imagesArray replaceObjectAtIndex: index withObject: newImage];
+					if( (int) [im size].width != width || height != (int) [im size].height)
+					{
+						NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
+						[imagesArray replaceObjectAtIndex: index withObject: newImage];
+					}
 				}
 			}
 			

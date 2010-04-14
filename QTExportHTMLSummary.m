@@ -298,6 +298,9 @@
 	int maxWidth = 800, maxHeight = 800;
 	int minWidth = 400, minHeight = 400;
 	
+	if( *width == 0 || *height == 0)
+		return;
+	
 	if( *width > maxWidth)
 	{
 		*height = *height * maxWidth / *width;
