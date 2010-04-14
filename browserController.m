@@ -15628,9 +15628,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			NSArray *representations = [[imagesArray objectAtIndex: 0] representations];
 			NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-			NSString* fullPath = [previousPath stringByAppendingPathExtension: @"pdf"];
+			NSString* fullPath = [previousPath stringByAppendingPathExtension: @"jpg"];
 			[bitmapData writeToFile:fullPath atomically:YES];
-			[self setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"pdf" toSeriesPaths:seriesPaths];
+			[self setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"jpg" toSeriesPaths:seriesPaths];
 		}
 		
 		if(createHTML)
