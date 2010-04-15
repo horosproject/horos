@@ -784,12 +784,24 @@ NSString* notNil( NSString *s)
 		
 		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString: notNil( LocalizedLabel_StudyList) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 		
-		templateString = [self setBlock: @"Report" visible: ([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
-		
-		if( [[[study valueForKey:@"reportURL"] pathExtension] isEqualToString: @"pages"])
-			[templateString replaceOccurrencesOfString:@"%reportExtension%" withString: notNil( @"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		if( [[study valueForKey:@"reportURL"] hasPrefix: @"http://"] || [[study valueForKey:@"reportURL"] hasPrefix: @"https://"])
+		{
+			templateString = [self setBlock: @"Report" visible: NO forString: templateString];
+			templateString = [self setBlock: @"ReportURL" visible: YES forString: templateString];
+			
+			[templateString replaceOccurrencesOfString:@"%ReportURLString%" withString: notNil( [study valueForKey:@"reportURL"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		}
 		else
-			[templateString replaceOccurrencesOfString:@"%reportExtension%" withString: notNil( [[study valueForKey:@"reportURL"] pathExtension]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		{
+			templateString = [self setBlock: @"ReportURL" visible: NO forString: templateString];
+			templateString = [self setBlock: @"Report" visible: ([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
+			
+			if( [[[study valueForKey:@"reportURL"] pathExtension] isEqualToString: @"pages"])
+				[templateString replaceOccurrencesOfString:@"%reportExtension%" withString: notNil( @"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			else
+				[templateString replaceOccurrencesOfString:@"%reportExtension%" withString: notNil( [[study valueForKey:@"reportURL"] pathExtension]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		}
+
 			
 		NSArray *tempArray = [templateString componentsSeparatedByString:@"%SeriesListItem%"];
 		NSString *templateStringStart = [tempArray objectAtIndex:0];
