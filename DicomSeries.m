@@ -120,7 +120,7 @@
 					
 					[dcmPix release];
 				}
-				 [[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
+				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
 			}
 		}
 
