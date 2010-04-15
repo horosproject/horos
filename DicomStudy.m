@@ -320,13 +320,16 @@ NSString* soundex4( NSString *inString)
 	
 	if( url && [cB isCurrentDatabaseBonjour] == NO)
 	{
-		NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
-		
-		if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
+		if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
 		{
-			url = [url substringFromIndex: [[cB fixedDocumentsDirectory] length]];
+		   NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
+		
+			if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
+			{
+				url = [url substringFromIndex: [[cB fixedDocumentsDirectory] length]];
 			
-			if( [url characterAtIndex: 0] == '/') url = [url substringFromIndex: 1];
+				if( [url characterAtIndex: 0] == '/') url = [url substringFromIndex: 1];
+			}
 		}
 	}
 	#endif
@@ -343,19 +346,22 @@ NSString* soundex4( NSString *inString)
 	#ifdef OSIRIX_VIEWER
 	if( url && [url length])
 	{
-		BrowserController	*cB = [BrowserController currentBrowser];
-		
-		if( [cB isCurrentDatabaseBonjour] == NO)
+		if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
 		{
-			if( [url characterAtIndex: 0] != '/')
-				url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
-			else
-			{	// Should we convert it to a local path?
-				NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
-				if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
-				{
-					[self setReportURL: url];
-					NSLog(@"report url converted to local path");
+			BrowserController	*cB = [BrowserController currentBrowser];
+			
+			if( [cB isCurrentDatabaseBonjour] == NO)
+			{
+				if( [url characterAtIndex: 0] != '/')
+					url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
+				else
+				{	// Should we convert it to a local path?
+					NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
+					if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
+					{
+						[self setReportURL: url];
+						NSLog(@"report url converted to local path");
+					}
 				}
 			}
 		}

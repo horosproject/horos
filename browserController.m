@@ -6613,7 +6613,11 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 		{
 			if( [item valueForKey:@"reportURL"])
 			{
-				if (isCurrentDatabaseBonjour)
+				if( [[item valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[item valueForKey: @"reportURL"] hasPrefix: @"https://"])
+				{
+					return nil;
+				}
+				else if (isCurrentDatabaseBonjour)
 				{
 					return [bonjourBrowser getFileModification:[item valueForKey:@"reportURL"] index:[bonjourServicesList selectedRow]-1];
 				}
@@ -6835,7 +6839,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 				NSManagedObject *studySelected = [[[item entity] name] isEqual:@"Study"] ? item : [item valueForKey:@"study"];
 			}
 			
-			if( [[tableColumn identifier] isEqualToString:@"reportURL"])
+			if( [[tableColumn identifier] isEqualToString: @"reportURL"])
 			{
 				if( (isCurrentDatabaseBonjour && [item valueForKey:@"reportURL"] != nil) || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES) // || [[item valueForKey:@"reportSeries"] count] > 0)
 				{
@@ -6844,9 +6848,22 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 					
 					[(ImageAndTextCell*) cell setImage: reportIcon];
 				}
-				else [item setValue: nil forKey:@"reportURL"];
+				else if( [[item valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[item valueForKey: @"reportURL"] hasPrefix: @"https://"])
+				{
+					NSImage	*reportIcon = [[NSWorkspace sharedWorkspace] iconForFileType: @"download"];
+					
+					if( reportIcon == nil) reportIcon = [NSImage imageNamed:@"Report.icns"];
+					
+					[reportIcon setSize: NSMakeSize(16, 16)];
+					
+					[(ImageAndTextCell*) cell setImage: reportIcon];
+				}
+				else
+				{
+					if( [item valueForKey:@"reportURL"] != nil)
+						[item setValue: nil forKey: @"reportURL"];
+				}
 			}
-			
 		}
 		else
 		{
@@ -18020,141 +18037,148 @@ static volatile int numberOfThreadsForJPEG = 0;
 		else
 			studySelected = [item valueForKey:@"study"];
 		
-		// *********************************************
-		//	PLUGINS
-		// *********************************************
-		
-		if( reportsMode == 3)
+		if( [[item valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[item valueForKey: @"reportURL"] hasPrefix: @"https://"])
 		{
-			NSBundle *plugin = [[PluginManager reportPlugins] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
+			[[NSWorkspace sharedWorkspace] openURL: [NSURL URLWithString: [item valueForKey: @"reportURL"]]];
+		}
+		else
+		{
+			// *********************************************
+			//	PLUGINS
+			// *********************************************
 			
-			if( plugin)
+			if( reportsMode == 3)
+			{
+				NSBundle *plugin = [[PluginManager reportPlugins] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
+				
+				if( plugin)
+				{
+					[checkBonjourUpToDateThreadLock lock];
+					
+					@try 
+					{
+						NSLog(@"generate report with plugin");
+						PluginFilter* filter = [[plugin principalClass] filter];
+						[filter createReportForStudy: studySelected];
+						NSLog(@"end generate report with plugin");
+						//[filter report: studySelected action: @"openReport"];
+					}
+					@catch (NSException * e) 
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					}
+					
+					[checkBonjourUpToDateThreadLock unlock];
+				}
+				else
+				{
+					NSRunAlertPanel( NSLocalizedString(@"Report Error", nil), NSLocalizedString(@"Report Plugin not available.", nil), nil, nil, nil);
+					return;
+				}
+			}
+			else
+			// *********************************************
+			// REPORTS GENERATED AND HANDLED BY OSIRIX
+			// *********************************************
 			{
 				[checkBonjourUpToDateThreadLock lock];
 				
-				@try 
+				// *********************************************
+				//	BONJOUR
+				// *********************************************
+				
+				@try
 				{
-					NSLog(@"generate report with plugin");
-					PluginFilter* filter = [[plugin principalClass] filter];
-					[filter createReportForStudy: studySelected];
-					NSLog(@"end generate report with plugin");
-					//[filter report: studySelected action: @"openReport"];
+					if (isCurrentDatabaseBonjour)
+					{
+						NSString	*localFile = nil;
+						
+						if (isCurrentDatabaseBonjour)
+						{
+							if( [item valueForKey:@"reportURL"])
+								[[NSFileManager defaultManager] removeItemAtPath: [BonjourBrowser bonjour2local: [item valueForKey:@"reportURL"]]	error: nil];
+						}
+						
+						if( [item valueForKey:@"reportURL"])
+							localFile = [bonjourBrowser getFile:[item valueForKey:@"reportURL"] index:[bonjourServicesList selectedRow]-1];
+						
+						if( localFile != nil && [[NSFileManager defaultManager] fileExistsAtPath: localFile] == YES)
+						{
+							if (reportsMode != 3)
+								[[NSWorkspace sharedWorkspace] openFile: localFile];
+							else
+							{
+								//structured report code here
+								//Osirix will open DICOM Structured Reports
+							}
+						}
+						else
+						{
+							Reports	*report = [[Reports alloc] init];
+							
+							[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP.noindex/", [self documentsDirectory]] type:reportsMode];
+							
+							[bonjourBrowser sendFile:[studySelected valueForKey:@"reportURL"] index: [bonjourServicesList selectedRow]-1];
+							
+							// Set only LAST component -> the bonjour server will complete the address
+							[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:[[studySelected valueForKey:@"reportURL"] lastPathComponent] forKey:@"reportURL"];
+							
+							[report release];
+						}
+						
+						NSString	*localReportFile = [BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]];
+						if( [[NSFileManager defaultManager] fileExistsAtPath: localReportFile])
+						{
+							NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:localReportFile traverseLink:YES];
+							[bonjourReportFilesToCheck setObject:[fattrs objectForKey:NSFileModificationDate] forKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
+						}
+						else NSLog(@"Uh?");
+					}
+					else
+					{
+						// *********************************************
+						//	LOCAL FILE
+						// *********************************************
+						
+						// Is there a Report URL ? If yes, open it; If no, create a new one
+						if( [studySelected valueForKey:@"reportURL"] != nil && [[NSFileManager defaultManager] fileExistsAtPath:[studySelected valueForKey:@"reportURL"]] == YES)
+						{
+							if (reportsMode != 3)
+								[[NSWorkspace sharedWorkspace] openFile: [studySelected valueForKey:@"reportURL"]];
+	//						else
+	//						{
+	//							//structured report code here
+	//							//Osirix will open DICOM Structured Reports
+	//							//Release Old Controller
+	//							[self srReports:sender];
+	//						}
+						}
+						else
+						{
+							if (reportsMode != 3)
+							{
+								Reports	*report = [[Reports alloc] init];
+								if([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])[report setTemplateName:[[sender selectedItem] title]];
+								[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", [self documentsDirectory]] type:reportsMode];					
+								[report release];
+							}
+	//						else
+	//						{
+	//							//structured report code here
+	//							//Osirix will open DICOM Structured Reports
+	//							//Release Old Controller
+	//							[self srReports:sender];
+	//						}
+						}
+					}
 				}
-				@catch (NSException * e) 
+				@catch (NSException * e)
 				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					NSLog( @"Generate Report: %@", [e description]);
 				}
 				
 				[checkBonjourUpToDateThreadLock unlock];
 			}
-			else
-			{
-				NSRunAlertPanel( NSLocalizedString(@"Report Error", nil), NSLocalizedString(@"Report Plugin not available.", nil), nil, nil, nil);
-				return;
-			}
-		}
-		else
-			// *********************************************
-			// REPORTS GENERATED AND HANDLED BY OSIRIX
-			// *********************************************
-		{
-			[checkBonjourUpToDateThreadLock lock];
-			
-			// *********************************************
-			//	BONJOUR
-			// *********************************************
-			
-			@try
-			{
-				if (isCurrentDatabaseBonjour)
-				{
-					NSString	*localFile = nil;
-					
-					if (isCurrentDatabaseBonjour)
-					{
-						if( [item valueForKey:@"reportURL"])
-							[[NSFileManager defaultManager] removeItemAtPath: [BonjourBrowser bonjour2local: [item valueForKey:@"reportURL"]]	error: nil];
-					}
-					
-					if( [item valueForKey:@"reportURL"])
-						localFile = [bonjourBrowser getFile:[item valueForKey:@"reportURL"] index:[bonjourServicesList selectedRow]-1];
-					
-					if( localFile != nil && [[NSFileManager defaultManager] fileExistsAtPath: localFile] == YES)
-					{
-						if (reportsMode != 3)
-							[[NSWorkspace sharedWorkspace] openFile: localFile];
-						else
-						{
-							//structured report code here
-							//Osirix will open DICOM Structured Reports
-						}
-					}
-					else
-					{
-						Reports	*report = [[Reports alloc] init];
-						
-						[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP.noindex/", [self documentsDirectory]] type:reportsMode];
-						
-						[bonjourBrowser sendFile:[studySelected valueForKey:@"reportURL"] index: [bonjourServicesList selectedRow]-1];
-						
-						// Set only LAST component -> the bonjour server will complete the address
-						[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:[[studySelected valueForKey:@"reportURL"] lastPathComponent] forKey:@"reportURL"];
-						
-						[report release];
-					}
-					
-					NSString	*localReportFile = [BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]];
-					if( [[NSFileManager defaultManager] fileExistsAtPath: localReportFile])
-					{
-						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:localReportFile traverseLink:YES];
-						[bonjourReportFilesToCheck setObject:[fattrs objectForKey:NSFileModificationDate] forKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
-					}
-					else NSLog(@"Uh?");
-				}
-				else
-				{
-					// *********************************************
-					//	LOCAL FILE
-					// *********************************************
-					
-					// Is there a Report URL ? If yes, open it; If no, create a new one
-					if( [studySelected valueForKey:@"reportURL"] != nil && [[NSFileManager defaultManager] fileExistsAtPath:[studySelected valueForKey:@"reportURL"]] == YES)
-					{
-						if (reportsMode != 3)
-							[[NSWorkspace sharedWorkspace] openFile: [studySelected valueForKey:@"reportURL"]];
-//						else
-//						{
-//							//structured report code here
-//							//Osirix will open DICOM Structured Reports
-//							//Release Old Controller
-//							[self srReports:sender];
-//						}
-					}
-					else
-					{
-						if (reportsMode != 3)
-						{
-							Reports	*report = [[Reports alloc] init];
-							if([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])[report setTemplateName:[[sender selectedItem] title]];
-							[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", [self documentsDirectory]] type:reportsMode];					
-							[report release];
-						}
-//						else
-//						{
-//							//structured report code here
-//							//Osirix will open DICOM Structured Reports
-//							//Release Old Controller
-//							[self srReports:sender];
-//						}
-					}
-				}
-			}
-			@catch (NSException * e)
-			{
-				NSLog( @"Generate Report: %@", [e description]);
-			}
-			
-			[checkBonjourUpToDateThreadLock unlock];
 		}
 	}
 	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
@@ -18252,7 +18276,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( [studySelected valueForKey: @"reportURL"])
 		{
-			if( [[NSFileManager defaultManager] fileExistsAtPath: [studySelected valueForKey: @"reportURL"]])
+			if( [[studySelected valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[studySelected valueForKey: @"reportURL"] hasPrefix: @"https://"])
+			{
+				icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"download"]; // Safari document
+			
+				if( icon)
+					reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate];	// To force the update
+			}
+			else if( [[NSFileManager defaultManager] fileExistsAtPath: [studySelected valueForKey: @"reportURL"]])
 			{
 				icon = [[NSWorkspace sharedWorkspace] iconForFile: [studySelected valueForKey: @"reportURL"]];
 				
