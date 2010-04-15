@@ -19,6 +19,7 @@
 #import <OsiriX/DCM.h>
 #import "NSImage+OsiriX.h"
 #import "DCMPix.h"
+#import "BrowserController.h"
 
 @implementation DicomSeries
 
@@ -99,8 +100,13 @@
 				
 				if (files.count == 1 && image.numberOfFrames.intValue > 1)
 					frame = [image.numberOfFrames intValue]/2;
+				
 				if (image.frameID)
 					frame = image.frameID.intValue;
+				
+				NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
+				[[[[[self valueForKey:@"study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
 				
 				DCMPix* dcmPix = [[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour:self.isBonjour imageObj:image];
 				
@@ -114,6 +120,7 @@
 					
 					[dcmPix release];
 				}
+				 [[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
 			}
 		}
 
