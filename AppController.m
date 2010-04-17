@@ -3930,8 +3930,27 @@ static BOOL initialized = NO;
 		columns *= numberOfMonitors;
 	}
 	
+//	// Smart arrangement if one window was added or removed
+//	if( numberOfMonitors == 1)
+//	{
+//		if( lastColumns != columns)
+//		{
+//			if( lastCount == [viewersList count] -1)	// One window was added
+//			{
+//				if( columns < [viewersList count])
+//					[viewersList exchangeObjectAtIndex: lastColumns withObjectAtIndex: [viewersList count]-1];
+//			}
+//			
+//			if( lastCount == [viewersList count] -1)	// One window was removed
+//			{
+//				//[viewersList exchangeObjectAtIndex: column withObjectAtIndex: [viewersList count]-1];
+//			}
+//		}
+//	}
+	
 	lastColumns = columns;
 	lastRows = rows;
+	lastCount = [viewersList count];
 	
 	accumulateAnimations = YES;
 	

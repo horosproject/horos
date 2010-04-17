@@ -85,7 +85,7 @@
 {
 	NSData* thumbnailData = [self primitiveValueForKey:@"thumbnail"];
 	
-	if (!thumbnailData)
+	if( !thumbnailData)
 	{
 		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 		

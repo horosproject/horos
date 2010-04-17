@@ -120,7 +120,7 @@ extern "C"
 	
 	BOOL							checkAllWindowsAreVisibleIsOff;
 	
-	int								lastColumns, lastRows;
+	int								lastColumns, lastRows, lastCount;
 }
 
 @property BOOL checkAllWindowsAreVisibleIsOff;
