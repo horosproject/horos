@@ -121,6 +121,7 @@ extern "C"
 	BOOL							checkAllWindowsAreVisibleIsOff;
 	
 	int								lastColumns, lastRows, lastCount;
+//	NSMutableArray					*viewersAddresses;
 }
 
 @property BOOL checkAllWindowsAreVisibleIsOff;

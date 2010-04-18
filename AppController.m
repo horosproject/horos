@@ -3930,27 +3930,60 @@ static BOOL initialized = NO;
 		columns *= numberOfMonitors;
 	}
 	
-//	// Smart arrangement if one window was added or removed
-//	if( numberOfMonitors == 1)
-//	{
-//		if( lastColumns != columns)
-//		{
-//			if( lastCount == [viewersList count] -1)	// One window was added
-//			{
-//				if( columns < [viewersList count])
-//					[viewersList exchangeObjectAtIndex: lastColumns withObjectAtIndex: [viewersList count]-1];
-//			}
-//			
-//			if( lastCount == [viewersList count] -1)	// One window was removed
-//			{
-//				//[viewersList exchangeObjectAtIndex: column withObjectAtIndex: [viewersList count]-1];
-//			}
-//		}
-//	}
+	// Smart arrangement if one window was added or removed
+	if( numberOfMonitors == 1)
+	{
+		@try 
+		{
+			if( lastColumns != columns)
+			{
+				if( lastCount == [viewersList count] -1)	// One window was added
+				{
+					if( columns < [viewersList count])
+					{
+						[viewersList insertObject: [viewersList lastObject] atIndex: lastColumns];
+						[viewersList removeObjectAtIndex: [viewersList count]-1];
+					}
+						
+				}
+				
+//				if( lastCount == [viewersList count] +1)	// One window was removed
+//				{
+//					if( viewersAddresses)
+//					{
+//						// Try to find the missing Viewer
+//						
+//						for( int i = 0 ; i < [viewersAddresses count]; i++)
+//						{
+//							if( [viewersList containsObject: [[viewersAddresses objectAtIndex: i] nonretainedObjectValue]] == NO)
+//							{
+//								// We found the missing viewer
+//								[viewersList insertObject: [viewersList lastObject] atIndex: i];
+//								[viewersList removeObjectAtIndex: [viewersList count]-1];
+//								break;
+//							}
+//						}
+//					}
+//				}
+			}
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
+	}
 	
 	lastColumns = columns;
 	lastRows = rows;
 	lastCount = [viewersList count];
+	
+//	if( viewersAddresses == nil)
+//		viewersAddresses = [[NSMutableArray array] retain];
+//	
+//	[viewersAddresses removeAllObjects];
+//	for( id v in viewersList)
+//		[viewersAddresses addObject: [NSValue valueWithNonretainedObject: v]];
 	
 	accumulateAnimations = YES;
 	

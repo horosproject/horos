@@ -490,10 +490,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 @synthesize volumicSeries;
 @synthesize isKeyView, mouseDragging;
 
--(BOOL)eventToPlugins:(NSEvent*)event {
+- (BOOL) eventToPlugins: (NSEvent*) event
+{
 	BOOL used = NO;
 	
-	for (id key in [PluginManager plugins]) {
+	for (id key in [PluginManager plugins])
+	{
 		if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(handleEvent:forViewer:)])
 			if ([[[PluginManager plugins] objectForKey:key] handleEvent:event forViewer:[self windowController]])
 				used = YES;
