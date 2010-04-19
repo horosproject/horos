@@ -82,6 +82,9 @@
 		183C865C08563F3A000E6A68 /* VRFlyThruAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 183C864808563F3A000E6A68 /* VRFlyThruAdapter.h */; };
 		183C865D08563F3A000E6A68 /* VRFlyThruAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C864908563F3A000E6A68 /* VRFlyThruAdapter.m */; };
 		32E422150C97301600E193CA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
+		59BDEC44117C9366007F1F2C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDEC43117C9366007F1F2C /* main.mm */; };
+		59BDED7D117CA4F6007F1F2C /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6495063587B200D9531F /* Osirix.icns */; };
+		59BDEDAD117CA83D007F1F2C /* sirsa.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DC609B6828800545F5E /* sirsa.cc */; };
 		59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E088A80FF0AB9400452F19 /* Notifications.m */; };
 		59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E088A70FF0AB9400452F19 /* Notifications.h */; };
 		59E379CF116B293A00E84FE3 /* NSImage+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */; };
@@ -211,7 +214,6 @@
 		841722B010D90595001A833F /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 841722AE10D90595001A833F /* DDKeychain.h */; };
 		841722B110D90595001A833F /* DDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 841722AF10D90595001A833F /* DDKeychain.m */; };
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
-		8447756C10BD378100F62DAB /* OsiriX Lite.zip in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5F95810A81736003924FD /* OsiriX Lite.zip */; };
 		845344C6113FBEAE0020A2B7 /* user.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 8474A3F710DBE7F300D192D0 /* user.xcdatamodel */; };
 		8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459A7250F5D63EF00146B28 /* VREmpty.xib */; };
 		8474A3F810DBE7F300D192D0 /* user.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 8474A3F710DBE7F300D192D0 /* user.xcdatamodel */; };
@@ -1061,7 +1063,6 @@
 		ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB230BA0C2F95DD00B38596 /* JPEGExif.m */; };
 		ABB36D800AF2548C00DBEEA2 /* away.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7E0AF2548C00DBEEA2 /* away.tif */; };
 		ABB36D810AF2548C00DBEEA2 /* available.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7F0AF2548C00DBEEA2 /* available.tif */; };
-		ABB5F9B210A8189D003924FD /* OsiriX Lite.zip in Resources */ = {isa = PBXBuildFile; fileRef = ABB5F95810A81736003924FD /* OsiriX Lite.zip */; };
 		ABB7A43406343BCA00AD1777 /* dicomDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABB7A43306343BC900AD1777 /* dicomDictionary.plist */; };
 		ABBA8DA0065AB90200A1F89C /* VR Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBA8D9A065AB90200A1F89C /* VR Bones.plist */; };
 		ABBA8DA1065AB90200A1F89C /* VR Red Vessels.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */; };
@@ -7624,6 +7625,20 @@
 			remoteGlobalIDString = 7E0B3A3E067526CD00908593;
 			remoteInfo = "DCM Framework";
 		};
+		59BDEDB7117CA8E5007F1F2C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEC7FC6A10A5C844008935EA;
+			remoteInfo = "OsiriX Lite";
+		};
+		59BDEE6A117CB393007F1F2C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 59BDEC2C117C92B2007F1F2C /* OsiriX Launcher */;
+			remoteInfo = "OsiriX Launcher";
+		};
 		A9FF849F0C5F187800D50C95 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A9FF849B0C5F187800D50C95 /* OSICustomImageAnnotations.xcodeproj */;
@@ -7939,6 +7954,8 @@
 		4A16D0970965E15300F82EC4 /* Unit Testing (Cocoa)-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Unit Testing (Cocoa)-Info.plist"; path = "UnitTesting/Unit Testing (Cocoa)-Info.plist"; sourceTree = "<group>"; };
 		4A16D0A20965E21800F82EC4 /* UnitTestingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnitTestingBase.h; path = UnitTesting/UnitTestingBase.h; sourceTree = "<group>"; };
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
+		59BDEC2D117C92B2007F1F2C /* OsiriX Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OsiriX Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		59BDEC43117C9366007F1F2C /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = "OsiriX Launcher/main.mm"; sourceTree = "<group>"; };
 		59E088A70FF0AB9400452F19 /* Notifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		59E088A80FF0AB9400452F19 /* Notifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Notifications.m; sourceTree = "<group>"; };
 		59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+OsiriX.h"; sourceTree = "<group>"; };
@@ -8542,7 +8559,6 @@
 		ABB36D7F0AF2548C00DBEEA2 /* available.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = available.tif; sourceTree = "<group>"; };
 		ABB3DB0B05868E34006494CB /* VTKView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTKView.h; sourceTree = "<group>"; };
 		ABB3DB0C05868E34006494CB /* VTKView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VTKView.mm; sourceTree = "<group>"; };
-		ABB5F95810A81736003924FD /* OsiriX Lite.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = "OsiriX Lite.zip"; path = "Binaries/OsiriX Lite.zip"; sourceTree = "<group>"; };
 		ABB7A43306343BC900AD1777 /* dicomDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = dicomDictionary.plist; sourceTree = "<group>"; };
 		ABBA8D9A065AB90200A1F89C /* VR Bones.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "VR Bones.plist"; sourceTree = "<group>"; };
 		ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "VR Red Vessels.plist"; sourceTree = "<group>"; };
@@ -11594,6 +11610,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		59BDEC2B117C92B2007F1F2C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7E0B3A3D067526CD00908593 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -11697,7 +11720,6 @@
 				CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */,
 				CE790A1C105D4DE200CE6AAF /* WebKit.framework in Frameworks */,
 				8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
-				8447756C10BD378100F62DAB /* OsiriX Lite.zip in Frameworks */,
 				A997B15710E0C412004C5BB1 /* SecurityInterface.framework in Frameworks */,
 				841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */,
 			);
@@ -11913,6 +11935,7 @@
 				844719AF0FD8EF50003BFDF8 /* OsiriX.framework */,
 				AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */,
 				CEC70A1E10A5C845008935EA /* OsiriX Lite.app */,
+				59BDEC2D117C92B2007F1F2C /* OsiriX Launcher.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -11920,6 +11943,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				59BDEC17117C927D007F1F2C /* OsiriX Launcher */,
 				AB10FA9611293361009EB238 /* Nitrogen */,
 				CE7A0D670AED557500540017 /* 32-bit Shell */,
 				CEDF6E1E0B46FF46008B45B8 /* DICOMPrint */,
@@ -11956,7 +11980,6 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				ABB5F95810A81736003924FD /* OsiriX Lite.zip */,
 				AB78245B0D3BACC700460DCE /* WebServicesHTML */,
 				CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */,
 				ABE0D69A0CDB1B9E00F0494B /* iChatTheatreHelp */,
@@ -12113,6 +12136,14 @@
 				AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */,
 			);
 			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		59BDEC17117C927D007F1F2C /* OsiriX Launcher */ = {
+			isa = PBXGroup;
+			children = (
+				59BDEC43117C9366007F1F2C /* main.mm */,
+			);
+			name = "OsiriX Launcher";
 			sourceTree = "<group>";
 		};
 		7E0339E307415C330025DDB4 /* Burning */ = {
@@ -20880,6 +20911,26 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		59BDEC2C117C92B2007F1F2C /* OsiriX Launcher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 59BDEC33117C92B4007F1F2C /* Build configuration list for PBXNativeTarget "OsiriX Launcher" */;
+			buildPhases = (
+				59BDEC29117C92B2007F1F2C /* Resources */,
+				59BDEDC8117CAB86007F1F2C /* Zip OsiriX Lite into Resources */,
+				59BDEC2A117C92B2007F1F2C /* Sources */,
+				59BDEC2B117C92B2007F1F2C /* Frameworks */,
+				59BDEC81117C9951007F1F2C /* Version */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				59BDEDB8117CA8E5007F1F2C /* PBXTargetDependency */,
+			);
+			name = "OsiriX Launcher";
+			productName = "OsiriX Launcher\n";
+			productReference = 59BDEC2D117C92B2007F1F2C /* OsiriX Launcher.app */;
+			productType = "com.apple.product-type.application";
+		};
 		7E0B3A3E067526CD00908593 /* DCM Framework */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "DCM Framework" */;
@@ -20923,6 +20974,7 @@
 			buildPhases = (
 				AB28B42A05B7921E00A9906C /* Headers */,
 				AB28B42B05B7921E00A9906C /* Resources */,
+				59BDEE70117CB3A6007F1F2C /* Zip OsiriX Launcher into Resources */,
 				AB28B42C05B7921E00A9906C /* Sources */,
 				AB28B42D05B7921E00A9906C /* Frameworks */,
 				CECA66E306CD8C1500D8750E /* CopyFiles */,
@@ -20933,6 +20985,7 @@
 			);
 			dependencies = (
 				4A2ADDFD078D3C6200416F53 /* PBXTargetDependency */,
+				59BDEE6B117CB393007F1F2C /* PBXTargetDependency */,
 			);
 			name = OsiriX;
 			productName = Deployment;
@@ -21125,6 +21178,7 @@
 			targets = (
 				AB28B42E05B7921E00A9906C /* OsiriX */,
 				CEC7FC6A10A5C844008935EA /* OsiriX Lite */,
+				59BDEC2C117C92B2007F1F2C /* OsiriX Launcher */,
 				7E0B3A3E067526CD00908593 /* DCM Framework */,
 				CE9CED800C75BD8C00752D4B /* DCM StaticLibrary */,
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
@@ -21247,6 +21301,14 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
+		59BDEC29117C92B2007F1F2C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				59BDED7D117CA4F6007F1F2C /* Osirix.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7E0B3A3B067526CD00908593 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -21270,7 +21332,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABB5F9B210A8189D003924FD /* OsiriX Lite.zip in Resources */,
 				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,
 				ABB7A43406343BCA00AD1777 /* dicomDictionary.plist in Resources */,
 				ABBB63A70635874E00D9531F /* dcmdump in Resources */,
@@ -22045,6 +22106,48 @@
 			shellPath = /bin/sh;
 			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo ILCrashReporter.framework.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
+		59BDEC81117C9951007F1F2C /* Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Version;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"${PROJECT_DIR}\"\nSVNVERSION=`/usr/bin/svnversion -n | /usr/bin/sed -e 's/^[^:]*://;s/[A-Za-z]/+/'`\nif [ -n \"${DEBUG:+x}\" ]; then\n\tSVNVERSION=\"${SVNVERSION}d\"\nfi\n\nPLISTPATH=\"${PROJECT_DIR}/OsiriX Launcher/Info.plist\"\nINFOVERSION=`/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' \"$OSIRIXPLISTPATH\"`\n\nVERSION=\"$INFOVERSION build $SVNVERSION\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $VERSION\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nINFOVERSIONSTR=`/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' \"$PLISTPATH\"`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString ${INFOVERSIONSTR/__VERSION__/$VERSION}\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nexit 0";
+		};
+		59BDEDC8117CAB86007F1F2C /* Zip OsiriX Lite into Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Zip OsiriX Lite into Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "dest=\"${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OsiriX Lite.zip\"\ncd \"${BUILT_PRODUCTS_DIR}\"\nrm -f \"$dest\"\nzip -qr \"$dest\" \"OsiriX Lite.app\"\n";
+		};
+		59BDEE70117CB3A6007F1F2C /* Zip OsiriX Launcher into Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Zip OsiriX Launcher into Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "dest=\"${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OsiriX Launcher.zip\"\ncd \"${BUILT_PRODUCTS_DIR}\"\nrm -f \"$dest\"\nzip -qr \"$dest\" \"OsiriX Launcher.app\"\n";
+		};
 		59F69A4E1056328D008585F5 /* Clean frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -22112,7 +22215,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/csh;
-			shellScript = "cd \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/\"\n\nrm -Rf Resources.zip\nzip -r Resources.zip Resources\n\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Resources\"\nln -s \"/tmp/OsiriXLightResources/Resources\" \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/\"\n\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/Nitrogen.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/DotMacKit.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/Growl.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/OsiriX.framework/Versions/A/Headers\"\n\n\n\n\n\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Headers/*\"\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX.Headers.framework/Versions/A/Frameworks/Nitrogen.framework\"\n\nif ( $DEBUGGING_SYMBOLS != \"YES\" ) then\n\trm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\"\nendif\n\n";
+			shellScript = "cd \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/\"\n\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/Nitrogen.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/DotMacKit.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/Growl.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/OsiriX.framework/Versions/A/Headers\"\n";
 		};
 		CEED244F0C71EEDC00E3BEC5 /* SVN Revision number */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -22131,6 +22234,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		59BDEC2A117C92B2007F1F2C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				59BDEC44117C9366007F1F2C /* main.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7E0B3A3C067526CD00908593 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -23947,6 +24058,7 @@
 				CEC7080810A5C844008935EA /* sinullpr.cc in Sources */,
 				CEC7080910A5C844008935EA /* siprivat.cc in Sources */,
 				CEC7080A10A5C844008935EA /* siripemd.cc in Sources */,
+				59BDEDAD117CA83D007F1F2C /* sirsa.cc in Sources */,
 				CEC7080C10A5C844008935EA /* sisha1.cc in Sources */,
 				CEC7080D10A5C844008935EA /* sisprof.cc in Sources */,
 				CEC7080E10A5C844008935EA /* sitypes.cc in Sources */,
@@ -24342,6 +24454,16 @@
 			isa = PBXTargetDependency;
 			target = 7E0B3A3E067526CD00908593 /* DCM Framework */;
 			targetProxy = 4A2F590C078D124B00C514A2 /* PBXContainerItemProxy */;
+		};
+		59BDEDB8117CA8E5007F1F2C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEC7FC6A10A5C844008935EA /* OsiriX Lite */;
+			targetProxy = 59BDEDB7117CA8E5007F1F2C /* PBXContainerItemProxy */;
+		};
+		59BDEE6B117CB393007F1F2C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 59BDEC2C117C92B2007F1F2C /* OsiriX Launcher */;
+			targetProxy = 59BDEE6A117CB393007F1F2C /* PBXContainerItemProxy */;
 		};
 		AB0F3A421046BFB9004129DD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -24825,6 +24947,72 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		59BDEC30117C92B3007F1F2C /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "OsiriX Launcher/Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "OsiriX Launcher";
+			};
+			name = Development;
+		};
+		59BDEC31117C92B3007F1F2C /* Deployment Universal 32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "OsiriX Launcher/Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "OsiriX Launcher";
+			};
+			name = "Deployment Universal 32-bit";
+		};
+		59BDEC32117C92B3007F1F2C /* Deployment Universal 64-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "OsiriX Launcher/Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "OsiriX Launcher";
+			};
+			name = "Deployment Universal 64-bit";
+		};
 		7E76BEC1085757B60073649A /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -26215,6 +26403,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		59BDEC33117C92B4007F1F2C /* Build configuration list for PBXNativeTarget "OsiriX Launcher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				59BDEC30117C92B3007F1F2C /* Development */,
+				59BDEC31117C92B3007F1F2C /* Deployment Universal 32-bit */,
+				59BDEC32117C92B3007F1F2C /* Deployment Universal 64-bit */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Development;
+		};
 		7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "DCM Framework" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

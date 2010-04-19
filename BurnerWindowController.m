@@ -834,7 +834,7 @@
 			NSTask *unzipTask = [[NSTask alloc] init];
 			[unzipTask setLaunchPath: @"/usr/bin/unzip"];
 			[unzipTask setCurrentDirectoryPath: burnFolder];
-			[unzipTask setArguments: [NSArray arrayWithObjects: @"-o", [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"OsiriX Lite.zip"], nil]]; // -o to override existing report w/ same name
+			[unzipTask setArguments: [NSArray arrayWithObjects: @"-o", [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"OsiriX Launcher.zip"], nil]]; // -o to override existing report w/ same name
 			[unzipTask launch];
 			[unzipTask waitUntilExit];
 			[unzipTask release];
