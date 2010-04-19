@@ -108,7 +108,9 @@
 				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
 				[[[[[self valueForKey:@"study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
 				
-				DCMPix* dcmPix = [[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour:self.isBonjour imageObj:image];
+				NSLog( @"Build thumbnail for: %@", image.completePath);
+				
+				DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour:self.isBonjour imageObj:image];
 				
 				[dcmPix CheckLoad];
 				if (dcmPix)

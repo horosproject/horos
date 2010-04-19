@@ -1503,6 +1503,8 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
       break;
     
     case ImagePixel :
+		if( gRefPixelOffset[ inFileNb] == nil)
+			return NULL;
       /* go to the begining of the specified image */
       if (Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_SET, (PapyLong) *(gRefPixelOffset [inFileNb] + inImageNb - 1)) != 0)
         return NULL;
