@@ -266,7 +266,7 @@ static id aedesc_to_id(AEDesc *desc)
 				
 				do
 				{
-					range = [rtfString rangeOfString: [NSString stringWithFormat:@"Ç%@È", name] options:0 range:searchRange];
+					range = [rtfString rangeOfString: [NSString stringWithFormat:@"Â«%@Â»", name] options:0 range:searchRange];
 					
 					if( range.length > 0)
 					{
@@ -285,7 +285,7 @@ static id aedesc_to_id(AEDesc *desc)
 			
 			NSRange	searchRange = NSMakeRange(0, [rtf length]);
 			
-			range = [rtfString rangeOfString: [NSString stringWithString:@"ÇtodayÈ"] options:0 range: searchRange];
+			range = [rtfString rangeOfString: [NSString stringWithString:@"Â«todayÂ»"] options:0 range: searchRange];
 			if( range.length > 0)
 			{
 				[rtf replaceCharactersInRange:range withString:[date stringFromDate: [NSDate date]]];
@@ -297,10 +297,10 @@ static id aedesc_to_id(AEDesc *desc)
 			BOOL moreFields = NO;
 			do
 			{
-				NSRange firstChar = [rtfString rangeOfString: @"ÇDICOM_FIELD:"];
+				NSRange firstChar = [rtfString rangeOfString: @"Â«DICOM_FIELD:"];
 				if( firstChar.location != NSNotFound)
 				{
-					NSRange secondChar = [rtfString rangeOfString: @"È"];
+					NSRange secondChar = [rtfString rangeOfString: @"Â»"];
 					
 					if( secondChar.location != NSNotFound)
 					{
@@ -482,15 +482,15 @@ CHECK;
 		if(!propertyValue)
 			propertyValue = @"";
 			
-		//		Ç is encoded as &#xAB;
-		//      È is encoded as &#xBB;
+		//		Â« is encoded as &#xAB;
+		//      Â» is encoded as &#xBB;
 		[aString replaceOccurrencesOfString:[NSString stringWithFormat:@"&#xAB;%@&#xBB;", propertyName] withString:propertyValue options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
-		[aString replaceOccurrencesOfString:[NSString stringWithFormat:@"Ç%@È", propertyName] withString:propertyValue options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
+		[aString replaceOccurrencesOfString:[NSString stringWithFormat:@"Â«%@Â»", propertyName] withString:propertyValue options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
 	}
 	
 	// "today"
 	[aString replaceOccurrencesOfString:@"&#xAB;today&#xBB;" withString:[date stringFromDate: [NSDate date]] options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
-	[aString replaceOccurrencesOfString:@"ÇtodayÈ" withString:[date stringFromDate: [NSDate date]] options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
+	[aString replaceOccurrencesOfString:@"Â«todayÂ»" withString:[date stringFromDate: [NSDate date]] options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
 	
 	NSArray	*seriesArray = [[BrowserController currentBrowser] childrenArray: aStudy];
 	NSArray	*imagePathsArray = [[BrowserController currentBrowser] imagesPathArray: [seriesArray objectAtIndex: 0]];
@@ -502,13 +502,13 @@ CHECK;
 		NSRange firstChar = [aString rangeOfString: @"&#xAB;DICOM_FIELD:"];
 		
 		if( firstChar.location == NSNotFound)
-			firstChar = [aString rangeOfString: @"ÇDICOM_FIELD:"];
+			firstChar = [aString rangeOfString: @"Â«DICOM_FIELD:"];
 		
 		if( firstChar.location != NSNotFound)
 		{
 			NSRange secondChar = [aString rangeOfString: @"&#xBB;"];
 			if( secondChar.location == NSNotFound)
-				secondChar = [aString rangeOfString: @"È"];
+				secondChar = [aString rangeOfString: @"Â»"];
 			
 			if( secondChar.location != NSNotFound)
 			{

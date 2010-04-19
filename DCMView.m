@@ -1564,7 +1564,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [r ROImode] == ROI_selected && r.locked == NO)
 			{
 				groupID = [r groupID];
-				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:r userInfo: nil];
 				[curRoiList removeObjectAtIndex:i];
 				i--;
 				if(groupID!=0.0)
@@ -4269,6 +4269,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							if( [[[dcmRoiList objectAtIndex: x] objectAtIndex: i] valid] == NO)
 							{
+								[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:[[dcmRoiList objectAtIndex:x] objectAtIndex:i] userInfo:NULL];
+								[[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
 								[[dcmRoiList objectAtIndex: x] removeObjectAtIndex: i];
 								i--;
 							}

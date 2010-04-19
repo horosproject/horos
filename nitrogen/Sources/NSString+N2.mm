@@ -123,4 +123,8 @@
 	return [[[NSString alloc] initWithData:[self dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES] encoding:NSASCIIStringEncoding] autorelease];
 }
 
+-(BOOL)contains:(NSString*)str {
+	return [self rangeOfString:str options:NSLiteralSearch].location != NSNotFound;
+}
+
 @end

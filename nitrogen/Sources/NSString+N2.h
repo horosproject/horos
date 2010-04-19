@@ -30,4 +30,6 @@
 
 -(NSString*)ASCIIString;
 
+-(BOOL)contains:(NSString*)str;
+
 @end

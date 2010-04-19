@@ -8662,7 +8662,7 @@
 		ABE0D6A00CDB1B9E00F0494B /* shareFromVideoChatWindow_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareFromVideoChatWindow_small.png; sourceTree = "<group>"; };
 		ABE0D6A10CDB1B9E00F0494B /* style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
 		ABE17661056D2659009C93B5 /* ViewerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ViewerController.h; sourceTree = "<group>"; };
-		ABE17662056D2659009C93B5 /* ViewerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ViewerController.m; sourceTree = "<group>"; };
+		ABE17662056D2659009C93B5 /* ViewerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewerController.m; sourceTree = "<group>"; };
 		ABE1E8AE0649F4150028E2E0 /* iPod.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iPod.icns; sourceTree = "<group>"; };
 		ABE33369063D624400C8E087 /* QueryFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = QueryFilter.h; sourceTree = "<group>"; };
 		ABE3336A063D624400C8E087 /* QueryFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = QueryFilter.m; sourceTree = "<group>"; };
@@ -8670,7 +8670,7 @@
 		ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AdvancedQuerySubview.m; sourceTree = "<group>"; };
 		ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ILCrashReporter.framework; path = Binaries/ILCrashReporter.framework; sourceTree = "<group>"; };
 		ABEF7E7609A21070006CEC3E /* Reports.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Reports.h; sourceTree = "<group>"; };
-		ABEF7E7709A21070006CEC3E /* Reports.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Reports.m; sourceTree = "<group>"; };
+		ABEF7E7709A21070006CEC3E /* Reports.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reports.m; sourceTree = "<group>"; };
 		ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */ = {isa = PBXFileReference; lastKnownFileType = file; name = ReportTemplate.doc; path = Binaries/ReportTemplate.doc; sourceTree = "<group>"; };
 		ABF09BB80642FD220044FE6C /* Stereo.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Stereo.icns; sourceTree = "<group>"; };
 		ABF68A40061DD18600FEED6D /* StringTexture.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = StringTexture.m; sourceTree = "<group>"; };
