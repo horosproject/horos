@@ -7636,7 +7636,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 59BDEC2C117C92B2007F1F2C /* OsiriX Launcher */;
+			remoteGlobalIDString = 59BDEC2C117C92B2007F1F2C;
 			remoteInfo = "OsiriX Launcher";
 		};
 		A9FF849F0C5F187800D50C95 /* PBXContainerItemProxy */ = {
