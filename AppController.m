@@ -1892,32 +1892,6 @@ static NSDate *lastWarningDate = nil;
 		//Start DICOM Bonjour 
 		[NSTimer scheduledTimerWithTimeInterval: 10 target: self selector: @selector( startDICOMBonjour:) userInfo: nil repeats: NO];
 	}
-	
-	#ifndef OSIRIX_LIGHT
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
-	{
-		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCMethods alloc] init];
-	}
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpWebServer"])
-	{
-		[[BrowserController currentBrowser] userManagedObjectContext];
-		[NSThread detachNewThreadSelector: @selector( startHTTPserver:) toTarget: self withObject:nil];
-		NSTimer *t = [[NSTimer scheduledTimerWithTimeInterval: 60 * [[NSUserDefaults standardUserDefaults] integerForKey: @"notificationsEmailsInterval"] target: self selector: @selector( webServerEmailNotifications:) userInfo: nil repeats: YES] retain];
-	}
-	#endif
-	
-	#if __LP64__
-	appStartingDate = [[[NSDate date] description] retain];
-	checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 8486];
-	checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"sn64"]] retain];
-	
-	NSNetServiceBrowser *checkSN64Browser = [[NSNetServiceBrowser alloc] init];
-	[checkSN64Browser setDelegate:self];
-	[checkSN64Browser searchForServicesOfType:@"_snosirix._tcp." inDomain:@""];
-	
-	[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector( checkSN64:) userInfo: nil repeats: NO];
-	#endif
 }
 
 #ifndef OSIRIX_LIGHT
@@ -2874,7 +2848,33 @@ static BOOL initialized = NO;
 	appController = self;
 	[self initDCMTK];
 	[self restartSTORESCP];
-
+	
+	#ifndef OSIRIX_LIGHT
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
+	{
+		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCMethods alloc] init];
+	}
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpWebServer"])
+	{
+		[[BrowserController currentBrowser] userManagedObjectContext];
+		[NSThread detachNewThreadSelector: @selector( startHTTPserver:) toTarget: self withObject:nil];
+		NSTimer *t = [[NSTimer scheduledTimerWithTimeInterval: 60 * [[NSUserDefaults standardUserDefaults] integerForKey: @"notificationsEmailsInterval"] target: self selector: @selector( webServerEmailNotifications:) userInfo: nil repeats: YES] retain];
+	}
+	#endif
+	
+	#if __LP64__
+	appStartingDate = [[[NSDate date] description] retain];
+	checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 8486];
+	checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"sn64"]] retain];
+	
+	NSNetServiceBrowser *checkSN64Browser = [[NSNetServiceBrowser alloc] init];
+	[checkSN64Browser setDelegate:self];
+	[checkSN64Browser searchForServicesOfType:@"_snosirix._tcp." inDomain:@""];
+	
+	[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector( checkSN64:) userInfo: nil repeats: NO];
+	#endif
+	
 	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"doNotUseGrowl"] == NO)
 	{
