@@ -242,10 +242,9 @@ enum
 
 @implementation ViewerController
 
-@synthesize currentOrientationTool, loadingPercentage;
-@synthesize timer, keyImageCheck, injectionDateTime;
+@synthesize currentOrientationTool, loadingPercentage, speedSlider;
+@synthesize timer, keyImageCheck, injectionDateTime, blendedWindow;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
-@synthesize blendedWindow;
 
 #define UNDOQUEUESIZE 40
 
@@ -14536,7 +14535,21 @@ int i,j,l;
 {
 	[speedText setStringValue:[NSString stringWithFormat:@"%0.1f im/s", (float) [self frameRate] * direction]];
 	
-	[[NSUserDefaults standardUserDefaults] setFloat: [self frameRate] forKey: @"defaultFrameRate"];
+	if( [[self window] isKeyWindow])
+	{
+		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+		{
+			if( v != self)
+			{
+				if( [v frameRate] == [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultFrameRate"])
+				{
+					[v.speedSlider setFloatValue: [self frameRate]];
+					[v speedSliderAction: v.speedSlider];
+				}
+			}
+		}
+		[[NSUserDefaults standardUserDefaults] setFloat: [self frameRate] forKey: @"defaultFrameRate"];
+	}
 }
 
 - (void) movieRateSliderAction:(id) sender
