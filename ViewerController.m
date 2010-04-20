@@ -6266,9 +6266,10 @@ static ViewerController *draggedController = nil;
 		else
 		{
 			if( [curDCM cineRate])
-			{
-				[speedSlider setFloatValue:[curDCM cineRate]];
-			}
+				[speedSlider setFloatValue: [curDCM cineRate]];
+			else if( [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultFrameRate"])
+				[speedSlider setFloatValue: [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultFrameRate"]];
+			
 			[speedSlider setEnabled:YES];
 			[slider setEnabled:YES];
 		}
@@ -14533,7 +14534,9 @@ int i,j,l;
 
 - (void) speedSliderAction:(id) sender
 {
-	[speedText setStringValue:[NSString stringWithFormat:@"%0.1f im/s", (float) [self frameRate]*direction]];
+	[speedText setStringValue:[NSString stringWithFormat:@"%0.1f im/s", (float) [self frameRate] * direction]];
+	
+	[[NSUserDefaults standardUserDefaults] setFloat: [self frameRate] forKey: @"defaultFrameRate"];
 }
 
 - (void) movieRateSliderAction:(id) sender
@@ -15407,18 +15410,18 @@ int i,j,l;
 	[printFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	[printTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	
-	if( [pixList[ curMovieIndex] count] < 20)
-	{
+//	if( [pixList[ curMovieIndex] count] < 20)
+//	{
 		[printFrom setIntValue: 1];
 		[printTo setIntValue: [pixList[ curMovieIndex] count]];
 		[printInterval setIntValue: 1];
-	}
-	else
-	{
-		if( [imageView flippedData]) [printFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
-		else [printFrom setIntValue: 1+ [imageView curImage]];
-		[printTo setIntValue: [pixList[ curMovieIndex] count]];
-	}
+//	}
+//	else
+//	{
+//		if( [imageView flippedData]) [printFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
+//		else [printFrom setIntValue: 1+ [imageView curImage]];
+//		[printTo setIntValue: [pixList[ curMovieIndex] count]];
+//	}
 	
 	[printToText setIntValue: [printTo intValue]];
 	[printFromText setIntValue: [printFrom intValue]];
@@ -15697,17 +15700,17 @@ int i,j,l;
 	[quicktimeFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	[quicktimeTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 
-	if( [pixList[ curMovieIndex] count] < 20)
-	{
+//	if( [pixList[ curMovieIndex] count] < 20)
+//	{
 		[quicktimeFrom setIntValue: 1];
 		[quicktimeTo setIntValue: [pixList[ curMovieIndex] count]];
-	}
-	else
-	{
-		if( [imageView flippedData]) [quicktimeFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
-		else [quicktimeFrom setIntValue: 1+ [imageView curImage]];
-		[quicktimeTo setIntValue: [pixList[ curMovieIndex] count]];
-	}
+//	}
+//	else
+//	{
+//		if( [imageView flippedData]) [quicktimeFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
+//		else [quicktimeFrom setIntValue: 1+ [imageView curImage]];
+//		[quicktimeTo setIntValue: [pixList[ curMovieIndex] count]];
+//	}
 	
 	[quicktimeToText setIntValue: [quicktimeTo intValue]];
 	[quicktimeFromText setIntValue: [quicktimeFrom intValue]];
@@ -16345,17 +16348,17 @@ int i,j,l;
 	[dcmFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	[dcmTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	
-	if( [pixList[ curMovieIndex] count] < 20)
-	{
+//	if( [pixList[ curMovieIndex] count] < 20)
+//	{
 		[dcmFrom setIntValue: 1];
 		[dcmTo setIntValue: [pixList[ curMovieIndex] count]];
-	}
-	else
-	{
-		if( [imageView flippedData]) [dcmFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
-		else [dcmFrom setIntValue: 1+ [imageView curImage]];
-		[dcmTo setIntValue: [pixList[ curMovieIndex] count]];
-	}
+//	}
+//	else
+//	{
+//		if( [imageView flippedData]) [dcmFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
+//		else [dcmFrom setIntValue: 1+ [imageView curImage]];
+//		[dcmTo setIntValue: [pixList[ curMovieIndex] count]];
+//	}
 	
 	[dcmToText setIntValue: [dcmTo intValue]];
 	[dcmFromText setIntValue: [dcmFrom intValue]];
