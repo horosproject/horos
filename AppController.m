@@ -793,7 +793,7 @@ static NSDate *lastWarningDate = nil;
 
 @implementation AppController
 
-@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns;
+@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive;
 
 - (void) pause
 {
@@ -2727,21 +2727,29 @@ static BOOL initialized = NO;
 {
     if ([[notification name] isEqualToString:  NSWorkspaceSessionDidResignActiveNotification])
     {
+		[[BrowserController currentBrowser] saveDatabase: [[BrowserController currentBrowser] currentDatabasePath]];
+		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActive"])
 		{
-			NSLog( @"***** OsiriX : session deactivation: STOP DICOM LISTENER FOR THIS SESSION");
+			NSLog( @"----- OsiriX : session deactivation: STOP DICOM LISTENER FOR THIS SESSION");
 			
 			[self killDICOMListenerWait: YES];
+			
+			isSessionInactive = YES;
 		}
     }
     else if ([[notification name] isEqualToString:  NSWorkspaceSessionDidBecomeActiveNotification])
     {
-		[NSThread sleepForTimeInterval: 2];
+		[NSThread sleepForTimeInterval: 4];
+		
+		isSessionInactive = NO;
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActive"])
 		{
-			 NSLog( @"***** OsiriX : session activation: START DICOM LISTENER FOR THIS SESSION");
-			 
+			NSLog( @"----- OsiriX : session activation: START DICOM LISTENER FOR THIS SESSION");
+			
+			[[BrowserController currentBrowser] loadDatabase: [[BrowserController currentBrowser] currentDatabasePath]];
+			
 			[self restartSTORESCP];
 		}
 	}

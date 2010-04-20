@@ -2275,6 +2275,12 @@ extern "C"
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+	if( [[AppController sharedAppController] isStoreSCPRunning] == NO)
+	{
+		NSLog( @"----- isStoreSCPRunning == NO, cannot retrieve");
+		return;
+	}
+	
 	NSMutableArray *moveArray = [NSMutableArray array];
 	
 	[array retain];
