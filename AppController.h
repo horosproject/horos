@@ -152,7 +152,7 @@ extern "C"
 - (void) startSTORESCPTLS:(id) sender; /**< Start TLS listener (Q/R SCP) */
 - (void) startDICOMBonjourSearch; /**< Use Bonjour to search for other DICOM services */
 - (void) installPlugins: (NSArray*) pluginsArray;
-
+- (BOOL) isStoreSCPRunning;
 
 #pragma mark-
 #pragma mark static menu items

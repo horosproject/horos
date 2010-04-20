@@ -2725,8 +2725,7 @@ static BOOL initialized = NO;
 
 - (void) switchHandler:(NSNotification*) notification
 {
-    if ([[notification name] isEqualToString:
-                NSWorkspaceSessionDidResignActiveNotification])
+    if ([[notification name] isEqualToString:  NSWorkspaceSessionDidResignActiveNotification])
     {
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActive"])
 		{
@@ -2735,7 +2734,7 @@ static BOOL initialized = NO;
 			[self killDICOMListenerWait: YES];
 		}
     }
-    else
+    else if ([[notification name] isEqualToString:  NSWorkspaceSessionDidBecomeActiveNotification])
     {
 		[NSThread sleepForTimeInterval: 2];
 		
@@ -2746,6 +2745,17 @@ static BOOL initialized = NO;
 			[self restartSTORESCP];
 		}
 	}
+}
+
+- (BOOL) isStoreSCPRunning
+{
+	if( [dcmtkQRSCP running])
+		return YES;
+		
+	if( [dcmtkQRSCPTLS running])
+		return YES;
+		
+	return NO;
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification*) aNotification
