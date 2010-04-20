@@ -2916,6 +2916,9 @@ extern "C"
 		{
 			currentQueryController = self;
 			[[self window] setTitle: NSLocalizedString( @"DICOM Query/Retrieve", nil)];
+
+			if( [[AppController sharedAppController] isStoreSCPRunning] == NO)
+				NSRunCriticalAlertPanel(NSLocalizedString( @"DICOM Query & Retrieve",nil), NSLocalizedString( @"Retrieve cannot work if the DICOM Listener is not activated. See Preferences - Listener.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 		}
 		else
 		{
