@@ -138,7 +138,7 @@
 	return dataset;
 }
 
-- (void)addChild:(DcmDataset *)datase
+- (void)addChild:(DcmDataset *)dataset
 {
 	if (!_children)
 		_children = [[NSMutableArray alloc] init];
