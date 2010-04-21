@@ -257,6 +257,12 @@ int main(int argc, char** argv)
 	// launch OsiriX Lite
 	[[NSWorkspace sharedWorkspace] launchApplication:[OsirixLiteLocation stringByAppendingPathComponent: @"OsiriX Lite.app"]];
 	
+	// Write the path to DICOMDIR, if available
+	[[NSFileManager defaultManager] removeItemAtPath: [OsirixLiteLocation stringByAppendingPathComponent: @"DICOMDIRPATH"] error: nil];
+	NSString *DICOMDIR = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"DICOMDIR"];
+	if( [[NSFileManager defaultManager] fileExistsAtPath: DICOMDIR])
+		[DICOMDIR writeToFile: [OsirixLiteLocation stringByAppendingPathComponent: @"DICOMDIRPATH"] atomically: YES encoding: NSUTF8StringEncoding error: nil];
+	
 	[NSThread sleepForTimeInterval: 2];
 	
 	// Put it as front process

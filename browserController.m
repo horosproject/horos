@@ -12708,6 +12708,8 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 		
 		NSString *dicomdir = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/DICOMDIR"];
+		NSString *dicomdirPath = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/DICOMDIRPATH"];
+		
 		if ([[NSFileManager defaultManager] fileExistsAtPath:dicomdir])
 		{
 			DICOMDIRCDMODE = YES;
@@ -12715,17 +12717,31 @@ static NSArray*	openSubSeriesArray = nil;
 			[currentDatabasePath release];
 			currentDatabasePath = [[NSString stringWithString: @"/tmp/OsiriXTemporaryDatabase"] retain];
 			[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: nil];
-		}
-		
-		[self loadDatabase: currentDatabasePath];
-		
-		if( DICOMDIRCDMODE)
-		{
+			
+			[self loadDatabase: currentDatabasePath];
+			
 			NSMutableArray *filesArray = [[NSMutableArray alloc] initWithCapacity:0];
-			[self addDICOMDIR:dicomdir :filesArray];
-			[self addFilesAndFolderToDatabase:filesArray];
+			[self addDICOMDIR:dicomdir: filesArray];
+			[self addFilesAndFolderToDatabase: filesArray];
 			[filesArray release];
 		}
+		else  if ([[NSFileManager defaultManager] fileExistsAtPath: dicomdirPath])
+		{
+			DICOMDIRCDMODE = YES;
+			
+			[currentDatabasePath release];
+			currentDatabasePath = [[NSString stringWithString: @"/tmp/OsiriXTemporaryDatabase"] retain];
+			[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: nil];
+			
+			[self loadDatabase: currentDatabasePath];
+			
+			NSMutableArray *filesArray = [[NSMutableArray alloc] initWithCapacity:0];
+			[self addDICOMDIR: [NSString stringWithContentsOfFile: dicomdirPath] :filesArray];
+			[self addFilesAndFolderToDatabase: filesArray];
+			[filesArray release];
+		}
+		else 
+			[self loadDatabase: currentDatabasePath];
 		
 		[self setFixedDocumentsDirectory];
 		[self setNetworkLogs];
