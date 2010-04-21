@@ -177,7 +177,8 @@
 
 	if( dataset == nil)
 		return;
-
+		
+		
 	if (!_children)
 		_children = [[NSMutableArray alloc] init];
 	
@@ -193,6 +194,9 @@
 	const char *queryLevel = nil;
 	
 	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good()){}
+	
+	if( queryLevel == nil)
+		return;
 	
 	if( strcmp( queryLevel, "IMAGE") == 0)
 	{

@@ -138,11 +138,16 @@
 	return dataset;
 }
 
-- (void)addChild:(DcmDataset *)dataset{
+- (void)addChild:(DcmDataset *)datase
+{
 	if (!_children)
 		_children = [[NSMutableArray alloc] init];
+	
+	if( dataset == nil)
+		return;
+	
 	[_children addObject:[DCMTKImageQueryNode queryNodeWithDataset:dataset
-	callingAET:_callingAET  
+			callingAET:_callingAET  
 			calledAET:_calledAET
 			hostname:_hostname 
 			port:_port 

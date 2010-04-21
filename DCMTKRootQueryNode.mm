@@ -64,6 +64,9 @@
 	if (!_children)
 		_children = [[NSMutableArray alloc] init];
 	
+	if( dataset == nil)
+		return;
+	
 	[_children addObject:[DCMTKStudyQueryNode queryNodeWithDataset:dataset
 			callingAET:_callingAET  
 			calledAET:_calledAET
