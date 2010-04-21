@@ -3558,8 +3558,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		while( feof(fp) == 0)
 		{
 			fread( &bnote, BIORAD_NOTE_LENGTH, 1, fp);
+			bnote.noteText[ BIORAD_NOTE_LENGTH-1] = 0;
 			
-			NSString *noteText = [NSString stringWithCString:bnote.noteText length:BIORAD_NOTE_TEXT_LENGTH ];
+			NSString *noteText = [NSString stringWithCString:bnote.noteText encoding: NSISOLatin1StringEncoding];
 			//NSLog(@"noteText %@",noteText);
 			
 			//Remove any illegal characters

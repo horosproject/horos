@@ -452,7 +452,16 @@ extern NSManagedObjectContext *staticContext;
 			{
 				char *pn;
 				if (dcelem->getString(pn).good() && pn != NULL)
-					predicate = [self predicateWithString: [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet] forField: @"name"];
+				{
+					NSString *patientNameString = [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet];
+					
+					patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @", " withString:@" "];
+					patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @"," withString:@" "];
+					patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @"^ " withString:@" "];
+					patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @"^" withString:@" "];
+					
+					predicate = [self predicateWithString: patientNameString forField: @"name"];
+				}
 			}
 			else if (key == DCM_PatientID)
 			{
