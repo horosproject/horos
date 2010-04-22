@@ -7438,7 +7438,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							if( [self is2DViewer] && [[self windowController] isEverythingLoaded] == YES)
 							{
 								if( volumicData == -1)
-									volumicData = [[self windowController] isDataVolumicIn4D: YES];
+									volumicData = [[self windowController] isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: NO];
 								
 								if( volumicSeries == YES && [dcmPixList count] > 1 && volumicData == YES)
 								{
