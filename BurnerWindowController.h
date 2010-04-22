@@ -34,10 +34,7 @@
 	NSString *folderSize;
 	NSTimer *burnAnimationTimer;
 	int burnAnimationIndex;
-	volatile BOOL runBurnAnimation;
-	volatile BOOL isExtracting;
-	volatile BOOL isSettingUpBurn;
-	volatile BOOL isThrobbing;
+	volatile BOOL runBurnAnimation, isExtracting, isSettingUpBurn, isThrobbing, windowWillClose;
 	NSArray *filesToBurn;
 	BOOL _multiplePatients;
 	BOOL writeDMG;

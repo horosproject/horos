@@ -9390,10 +9390,10 @@ END_CREATE_ROIS:
 					PixMapHandle 	pixMapHandle;
 					Ptr				pixBaseAddr;
 					
-					GetMovieBox (mov, &tempRect);
-					OffsetRect (&tempRect, -tempRect.left, -tempRect.top);
+					GetMovieBox( mov, &tempRect);
+					OffsetRect( &tempRect, -tempRect.left, -tempRect.top);
 					
-					NewGWorld (   &ftheGWorld,
+					NewGWorld( &ftheGWorld,
 							   32,			// 32 Bits color !
 							   &tempRect,
 							   0,

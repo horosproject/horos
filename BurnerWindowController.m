@@ -152,7 +152,8 @@
 	return self;
 }
 
-- (void)windowDidLoad{	
+- (void)windowDidLoad
+{
 	NSLog(@"BurnViewer did load");
 	
 	[[self window] setDelegate:self];
@@ -163,6 +164,8 @@
 
 - (void)dealloc
 {
+	windowWillClose = YES;
+	
 	runBurnAnimation = NO;
 
 	[[BrowserController currentBrowser] setBurnerWindowControllerToNIL];
@@ -547,6 +550,8 @@
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	windowWillClose = YES;
+	
 	[[NSUserDefaults standardUserDefaults] setInteger: [compressionMode selectedTag] forKey:@"Compression Mode for Burning"];
 	
 	NSLog(@"Burner windowWillClose");
@@ -1026,6 +1031,9 @@
 
 - (void)burnAnimation:(NSTimer *)timer
 {
+	if( windowWillClose)
+		return;
+	
 	isThrobbing = NO;
 	while (runBurnAnimation)
 	{
@@ -1039,20 +1047,30 @@
 		
 		[NSThread  sleepForTimeInterval:0.05];
 		[pool release];
+		
+		if( windowWillClose)
+			return;
 	}
 }
 
 -(void)irisAnimation:(id)object
 {
+	if( windowWillClose)
+		return;
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	int index = 0;
 	isIrisAnimation = YES;
-	while (index <= 13 && isIrisAnimation) {
+	while (index <= 13 && isIrisAnimation)
+	{
 		NSString *animation = [NSString stringWithFormat:@"burn_iris%02d", index++];
 		NSString *path = [[NSBundle mainBundle] pathForResource:animation ofType:@"tif"];
 		NSImage *image = [ [[NSImage alloc]  initWithContentsOfFile:path] autorelease];
 		[burnButton setImage:image];
-		[NSThread  sleepForTimeInterval:0.075];		
+		[NSThread  sleepForTimeInterval:0.075];
+		
+		if( windowWillClose)
+			return;
 	}
 	
 	if( isIrisAnimation)
@@ -1064,20 +1082,29 @@
 
 - (void)throbAnimation:(id)object
 {
+	if( windowWillClose)
+		return;
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	isThrobbing = YES;
-	while (isThrobbing) {
-		NSAutoreleasePool *subpool = [[NSAutoreleasePool alloc] init];
+	while (isThrobbing)
+	{
 		NSString *path1 = [[NSBundle mainBundle] pathForResource:@"burn_anim00" ofType:@"tif"];
 		NSImage *image = [ [[NSImage alloc]  initWithContentsOfFile:path1] autorelease];
+		
 		[burnButton setImage:image];
 		[NSThread  sleepForTimeInterval:0.6];
+		if( windowWillClose)
+			return;
+		
 		NSString *path2 = [[NSBundle mainBundle] pathForResource:@"burn_throb" ofType:@"tif"];
 		NSImage *image2 = [[[NSImage alloc]  initWithContentsOfFile:path2] autorelease];
 		
 		[burnButton setImage:image2];
 		[NSThread  sleepForTimeInterval:0.4];
-		[subpool release];
+		
+		if( windowWillClose)
+			return;
 	}
 	[pool release];
 }
