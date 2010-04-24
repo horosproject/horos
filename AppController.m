@@ -452,8 +452,9 @@ NSString* convertDICOM( NSString *inputfile)
 	
 	converting = YES;
 	NSLog(@"convertDICOM - FAILED to use current DICOM File Parser : %@", inputfile);
+	#ifndef OSIRIX_LIGHT
 	[[BrowserController currentBrowser] decompressDICOMList: [NSArray arrayWithObject: inputfile] to: [outputfile stringByDeletingLastPathComponent]];
-	
+	#endif
 	return outputfile;
 }
 

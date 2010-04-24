@@ -19,6 +19,7 @@
 #import "AppController.h"
 #import "ViewerController.h"
 #import "BrowserController.h"
+#import <Carbon/Carbon.h>
 
 static	BOOL dontEnterMagneticFunctions = NO;
 static	BOOL dontWindowDidChangeScreen = NO;
@@ -439,10 +440,12 @@ static BOOL protectedReentryWindowDidResize = NO;
 	return nil;
 }
 
+#ifndef OSIRIX_LIGHT
 - (IBAction)querySelectedStudy: (id)sender
 {
 	[[BrowserController currentBrowser] querySelectedStudy: self];
 }
+#endif
 
 - (id)initWithWindowNibName:(NSString *)windowNibName
 {

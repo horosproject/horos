@@ -159,7 +159,9 @@ extern "C"
 //===============OSIRIX========================
 - (IBAction) about:(id)sender; /**< Display the about window */
 - (IBAction) showPreferencePanel:(id)sender; /**< Show Preferences window */
+#ifndef OSIRIX_LIGHT
 - (IBAction) checkForUpdates:(id) sender;  /**< Check for update */
+#endif
 //===============WINDOW========================
 - (IBAction) setFixedTilingRows: (id) sender;
 - (IBAction) setFixedTilingColumns: (id) sender;

@@ -115,7 +115,7 @@
 -(void) ApplyOpacityString:(NSString*) str;
 
 //export
--(IBAction) endExportDICOMFileSettings:(id) sender;
+
 -(IBAction) changeFromAndToBounds:(id) sender;
 -(IBAction) setCurrentPosition:(id) sender;
 -(IBAction) setCurrentdcmExport:(id) sender;
@@ -138,6 +138,8 @@
 
 - (void)bringToFrontROI:(ROI*)roi;
 - (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
+#ifndef OSIRIX_LIGHT
+- (IBAction) endExportDICOMFileSettings:(id) sender;
 - (void) exportDICOMFile:(id) sender;
-
+#endif
 @end

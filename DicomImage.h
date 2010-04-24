@@ -75,7 +75,9 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 - (NSString*) completePath;
 - (NSString*) completePathResolved;
 - (void) clearCompletePathCache;
+#ifndef OSIRIX_LIGHT
 - (DCMSequenceAttribute*) graphicAnnotationSequence;
+#endif
 - (NSImage *)image;
 - (NSImage *)thumbnail;
 - (NSDictionary *)dictionary;

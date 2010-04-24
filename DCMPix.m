@@ -12061,8 +12061,10 @@ END_CREATE_ROIS:
 							}
 							else if(fileNb>=0)
 								value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
+							#ifndef OSIRIX_LIGHT
 							else if(dcmObject)
 								value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
+							#endif
 							else
 								value = nil;
 								

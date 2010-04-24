@@ -581,7 +581,9 @@ Note setter is different to not break existing usage. :-( */
 
 /** Load the DICOM image using the DCMFramework.  
 * There should be no reason to call this. The class will call it when needed. */
+#ifndef OSIRIX_LIGHT
 - (BOOL)loadDICOMDCMFramework;
+#endif
 
 /** Load the DICOM image using Papyrus.
 * There should be no reason to call this. The class will call it when needed.
@@ -656,15 +658,20 @@ Note setter is different to not break existing usage. :-( */
 */
 - (void *) getPapyGroup: (int)group;
 
+#ifndef OSIRIX_LIGHT
 /** create ROIs from RTSTRUCT */
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject;
+#endif
 
 #ifdef OSIRIX_VIEWER
 
 /** Custom Annotations */
 - (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject;
 - (NSString*) getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(short)fileNb;
+
+#ifndef OSIRIX_LIGHT
 - (NSString*) getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject;
+#endif
 
 /** Set flag to anonymize the annotations */
 + (BOOL) setAnonymizedAnnotations: (BOOL) v;

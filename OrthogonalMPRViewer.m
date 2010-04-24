@@ -807,10 +807,12 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
     return valid;
 }
 
+#ifndef OSIRIX_LIGHT
 - (IBAction) Panel3D:(id) sender
 {
 	[viewer Panel3D: sender];
 }
+#endif
 
 - (IBAction) changeTool:(id) sender
 {

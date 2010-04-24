@@ -305,7 +305,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) showEntireDatabase;
 - (void) subSelectFilesAndFoldersToAdd: (NSArray*) filenames;
 - (void)matrixNewIcon:(long) index: (NSManagedObject*)curFile;
-- (IBAction) querySelectedStudy:(id) sender;
 - (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album;
 - (NSPredicate*) smartAlbumPredicateString:(NSString*) string;
 - (void) emptyDeleteQueueThread;
@@ -334,7 +333,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSArray*) addURLToDatabaseFiles:(NSArray*) URLs;
 -(BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand;
 -(BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand extendingSelection: (BOOL) extendingSelection;
-- (IBAction) sendiDisk:(id) sender;
 - (void) selectServer: (NSArray*) files;
 - (void) loadDICOMFromiPod;
 - (long) saveDatabase:(NSString*) path;
@@ -348,7 +346,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 -(void) loadNextSeries:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages;
 - (ViewerController*) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages;
 - (void) export2PACS:(id) sender;
-- (void) queryDICOM:(id) sender;
 +(void)setPath:(NSString*)path relativeTo:(NSString*)dirPath forSeriesId:(int)seriesId kind:(NSString*)kind toSeriesPaths:(NSMutableDictionary*)seriesPaths; // used by +exportQuicktime
 +(void) exportQuicktime:(NSArray*)dicomFiles2Export :(NSString*)path :(BOOL)html :(BrowserController*)browser :(NSMutableDictionary*)seriesPaths;
 -(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html;
@@ -385,8 +382,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void)newViewerDICOM:(id) sender;
 - (void) viewerDICOMKeyImages:(id) sender;
 - (void) viewerDICOMMergeSelection:(id) sender;
-- (void) burnDICOM:(id) sender;
-- (IBAction) anonymizeDICOM:(id) sender;
 - (IBAction)addSmartAlbum: (id)sender;
 - (IBAction)search: (id)sender;
 - (IBAction)setSearchType: (id)sender;
@@ -440,8 +435,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 -(void) previewPerformAnimation:(id) sender;
 -(void) matrixDisplayIcons:(id) sender;
 //- (void)reloadSendLog:(id)sender;
-- (void) pdfPreview:(id)sender;
-- (IBAction)importRawData:(id)sender;
+
+
 - (void) setBurnerWindowControllerToNIL;
 - (BOOL) checkBurner;
 
@@ -512,7 +507,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSPredicate *)createFilterPredicate;
 - (NSString *)createFilterDescription;
 
-- (IBAction) generateReport: (id) sender;
+
 - (IBAction) deleteReport: (id) sender;
 //- (IBAction)srReports: (id)sender;
 
@@ -522,23 +517,34 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (void) importCommentsAndStatusFromDictionary:(NSDictionary*) d;
 - (NSDictionary*) dictionaryWithCommentsAndStatus:(NSManagedObject *)s;
-- (void) importReport:(NSString*) path UID: (NSString*) uid;
+
 
 - (void) newFilesGUIUpdateRun:(int) state;
 - (void) newFilesGUIUpdateRun: (int) state viewersListToReload: (NSMutableArray*) cReload viewersListToRebuild: (NSMutableArray*) cRebuild;
 - (void) newFilesGUIUpdate:(id) sender;
 
-- (IBAction) decompressSelectedFiles:(id) sender;
-- (IBAction) compressSelectedFiles:(id) sender;
-- (void) decompressArrayOfFiles: (NSArray*) array work:(NSNumber*) work;
-- (void) decompressThread: (NSNumber*) typeOfWork;
-
-- (void) compressDICOMJPEG:(NSArray*) array;
-- (void) decompressDICOMJPEG: (NSArray*) array;
-
 - (void) refreshMatrix:(id) sender;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
+
+#ifndef OSIRIX_LIGHT
+- (void) decompressDICOMJPEG: (NSArray*) array;
 - (void) decompressWaitIncrementation: (NSNumber*) n;
+- (void) compressDICOMJPEG:(NSArray*) array;
+- (void) decompressThread: (NSNumber*) typeOfWork;
+- (void) decompressArrayOfFiles: (NSArray*) array work:(NSNumber*) work;
+- (IBAction) compressSelectedFiles:(id) sender;
+- (IBAction) decompressSelectedFiles:(id) sender;
+- (void) importReport:(NSString*) path UID: (NSString*) uid;
+- (IBAction) generateReport: (id) sender;
+- (IBAction)importRawData:(id)sender;
+- (void) pdfPreview:(id)sender;
+- (void) burnDICOM:(id) sender;
+- (IBAction) anonymizeDICOM:(id) sender;
+- (void) queryDICOM:(id) sender;
+- (IBAction) sendiDisk:(id) sender;
+- (IBAction) querySelectedStudy:(id) sender;
+#endif
+
 - (void) initAnimationSlider;
 
 - (long) saveUserDatabase;

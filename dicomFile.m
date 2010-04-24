@@ -2565,7 +2565,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		isCD = filesAreFromCDMedia;
 
 	if( TOOLKITPARSER == 1 || isCD == YES) return [self getDicomFilePapyrus: NO];
+	
+	#ifndef OSIRIX_LIGHT
 	if( TOOLKITPARSER == 0) return [self decodeDICOMFileWithDCMFramework];
+	#else
+	if( TOOLKITPARSER == 0) return [self getDicomFilePapyrus: NO];
+	#endif
+	
 	if( TOOLKITPARSER == 2) return [self getDicomFileDCMTK];
 	
 	return [self getDicomFileDCMTK];

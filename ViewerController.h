@@ -59,7 +59,11 @@ enum
 
 /** \brief Window Controller for 2D Viewer*/
 
+#ifndef OSIRIX_LIGHT
 @interface ViewerController : OSIWindowController  <Schedulable>
+#else
+@interface ViewerController : OSIWindowController
+#endif
 {
 	NSLock	*ThreadLoadImageLock;
 	NSLock	*roiLock;
@@ -447,9 +451,6 @@ enum
 - (BOOL) isDataVolumicIn4D: (BOOL) check4D checkEverythingLoaded:(BOOL) c tryToCorrect: (BOOL) tryToCorrect;
 - (void) displayAWarningIfNonTrueVolumicData;
 
-/** ReSort the images displayed according to this group/element */
-- (BOOL) sortSeriesByDICOMGroup: (int) gr element: (int) el;
-
 /** Delete ALL ROI objects for  current series */
 - (IBAction) roiDeleteAll:(id) sender;
 
@@ -693,23 +694,29 @@ enum
 - (IBAction) endThicknessInterval:(id) sender;
 - (void) SetThicknessInterval:(id) constructionType;
 //- (IBAction) MPRViewer:(id) sender;
-- (IBAction) VRVPROViewer:(id) sender;
-- (IBAction) VRViewer:(id) sender;
 - (IBAction) blendWindows:(id) sender;
 
 /** Action to open the OrthogonalMPRViewer */
 - (IBAction) orthogonalMPRViewer:(id) sender;
-
-/** Action to open the EndoscopyViewer */
-- (IBAction) endoscopyViewer:(id) sender;
 
 /** Action to open the CurvedMPRViewer */
 - (IBAction) CurvedMPR:(id) sender;
 
 - (void) showCurrentThumbnail:(id) sender;
 
+#ifndef OSIRIX_LIGHT
+/** ReSort the images displayed according to this group/element */
+- (BOOL) sortSeriesByDICOMGroup: (int) gr element: (int) el;
+
+/** Action to open the EndoscopyViewer */
+- (IBAction) endoscopyViewer:(id) sender;
+
+/** Action to open VRViewer (Volume Rendering) */
+- (IBAction) VRViewer:(id) sender;
+
 /** Action to open SRViewer (Surface Rendering) */
 - (IBAction) SRViewer:(id) sender;
+#endif
 
 /** Action to export as JPEG */
 - (void) exportJPEG:(id) sender;
@@ -740,7 +747,12 @@ enum
 - (IBAction) resetImage:(id) sender;
 + (NSArray*) defaultROINames;
 + (void) setDefaultROINames: (NSArray*) names;
+#ifndef OSIRIX_LIGHT
 - (IBAction) endExportDICOMFileSettings:(id) sender;
+- (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error;
+- (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs error:(NSString**) error;
+- (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs generatedROIs:(NSMutableArray*) generatedROIs computeData:(NSMutableDictionary*) data error:(NSString**) error;
+#endif
 - (IBAction) keyImageCheckBox:(id) sender;
 - (IBAction) keyImageDisplayButton:(id) sender;
 - (void) adjustKeyImage;
@@ -761,9 +773,6 @@ enum
 - (IBAction) endRoiRename:(id) sender;
 - (IBAction) roiRename:(id) sender;
 - (void) SyncSeries:(id) sender;
-- (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error;
-- (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs error:(NSString**) error;
-- (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs generatedROIs:(NSMutableArray*) generatedROIs computeData:(NSMutableDictionary*) data error:(NSString**) error;
 
 - (NSArray*)roisWithName:(NSString*)name;
 - (NSArray*)roisWithName:(NSString*)name in4D:(BOOL)in4D;
@@ -778,14 +787,17 @@ enum
 - (void)setWindowFrame:(NSRect)rect;
 - (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow;
 - (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow animate: (BOOL) animate;
-- (IBAction) Panel3D:(id) sender;
+
 - (void) revertSeries:(id) sender;
 - (void) executeRevert;
 - (NSImage*) imageForROI: (int) i;
 - (void) ActivateBlending:(ViewerController*) bC;
 - (void) setFusionMode:(long) m;
 - (short) curMovieIndex;
+#ifndef OSIRIX_LIGHT
 - (id) findiChatButton;
+- (IBAction) Panel3D:(id) sender;
+#endif
 - (void) convertPETtoSUV;
 - (IBAction) fullScreenMenu:(id) sender;
 -(int) imageIndexOfROI:(ROI*) c;
@@ -836,6 +848,7 @@ enum
 * @param radius structuringElementRadius for the filter
 * @param sendNotification Will post an OsirixROIChangeNotification notification if YES
 */
+#ifndef OSIRIX_LIGHT
 - (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius sendNotification: (BOOL) sendNotification;
 
 /** Set the structuring radius for the brush ROI morpho filter */
@@ -852,7 +865,7 @@ enum
 *  Filters are: erode, dilate, open, close 
 */
 - (IBAction) morphoSelectedBrushROI: (id) sender;
-
+#endif
 
 /** Create a new ROI between two ROI
 * Converts both ROIs into polygons, after a marching square isocontour
@@ -887,13 +900,17 @@ enum
 *  Each point on the moving viewer needs a twin on the fixed viewer.
 *  Two points are twin brothers if and only if they have the same name.
 */
+#ifndef OSIRIX_LIGHT
 - (void) computeRegistrationWithMovingViewer:(ViewerController*) movingViewer;
+#endif
 
 /** Returns a new viewer with the current series resampled to match the Orientation of series in the other viewer
 *  Both series must be from the same study to insure matching imageOrientationPatient and imagePositionPatient
 *  @param movingViewer  The ViewerController to resample the series to match
 */
+#ifndef OSIRIX_LIGHT
 - (ViewerController*) resampleSeries:(ViewerController*) movingViewer;
+#endif
 
 #pragma mark-
 #pragma mark Key Objects
@@ -961,18 +978,15 @@ enum
 // Opening 3D Viewers
 #pragma mark-
 #pragma mark 3D Viewers
+/** Returns the OrthogonalMPRViewer for this ViewerController; creating one if necessary */
+- (OrthogonalMPRViewer *)openOrthogonalMPRViewer;
+
+#ifndef OSIRIX_LIGHT
+
 /** Returns the VRController for this ViewerController; creating one if necessary
 * See VRController for modes
  */
 - (VRController *)openVRViewerForMode:(NSString *)mode;
-
-/** Returns the VRPROController for this ViewerController; creating one if necessary 
-* See VRController for modes
-*/
-//- (VRPROController*)openVRVPROViewerForMode:(NSString *)mode;
-
-/** Returns the OrthogonalMPRViewer for this ViewerController; creating one if necessary */
-- (OrthogonalMPRViewer *)openOrthogonalMPRViewer;
 
 /** Returns the OrthogonalMPRPETCTViewer for this ViewerController; creating one if necessary */
 - (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer;
@@ -984,7 +998,7 @@ enum
 - (SRController *)openSRViewer;
 
 /** Returns the MPRController for this ViewerController; creating one if necessary */
-#ifndef OSIRIX_LIGHT
+
 - (MPRController *)openMPRViewer;
 - (IBAction)mprViewer:(id)sender;
 #endif
@@ -1013,7 +1027,9 @@ enum
 /** Deprecated
 * Calcium Scoring moved to a plugin
 */
+#ifndef OSIRIX_LIGHT
 - (IBAction)calciumScoring:(id)sender;
+#endif
 
 #pragma mark-
 #pragma mark Centerline
@@ -1038,8 +1054,11 @@ enum
 - (IBAction) makeAllROIsSelectable:(id)sender;
 
 - (void) turnOffSyncSeriesBetweenStudies:(id) sender;
+
+#ifndef OSIRIX_LIGHT
 - (NSDictionary*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name;
 - (NSDictionary*) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers;
+#endif
 
 #pragma mark-
 #pragma mark 12 Bit

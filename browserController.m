@@ -14542,6 +14542,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return [[[array objectAtIndex: 0] valueForKey: @"compression"] intValue];
 }
 
+#ifndef OSIRIX_LIGHT
 - (void)decompressDICOMJPEGinINCOMING: (NSArray*) array
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -14583,7 +14584,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[pool release];
 }
 
-#ifndef OSIRIX_LIGHT
 - (void)compressDICOMJPEGinINCOMING: (NSArray*) array
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
@@ -14993,7 +14993,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 									
 									if (isDicomFile && isImage)
 									{
+										#ifndef OSIRIX_LIGHT
 										if( (isJPEGCompressed == YES && ListenerCompressionSettings == 1) || (isJPEGCompressed == NO && ListenerCompressionSettings == 2 && [self needToCompressFile: srcPath]))
+										#else
+										if( (isJPEGCompressed == YES && ListenerCompressionSettings == 1) || (isJPEGCompressed == NO && ListenerCompressionSettings == 2))
+										#endif
 										{
 											NSString *compressedPath = [DECOMPRESSIONpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
 											
@@ -15133,6 +15137,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[checkIncomingLock unlock];
 		
+		#ifndef OSIRIX_LIGHT
 		if( [compressedPathArray count] > 0)
 		{
 			[decompressThreadRunning lock];
@@ -15146,6 +15151,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[self decompressThread: [NSNumber numberWithChar: 'X']];
 			[decompressThreadRunning unlock];
 		}
+		#endif
 		
 		lastCheckIncoming  = [NSDate timeIntervalSinceReferenceDate];
 		
@@ -16693,7 +16699,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		[waitCompressionWindow showWindow:self];
 		[[waitCompressionWindow progress] setMaxValue: [files2Compress count]];
-	
+		
+		#ifndef OSIRIX_LIGHT
 		switch( [compressionMatrix selectedTag])
 		{
 			case 1:
@@ -16704,6 +16711,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[self decompressArrayOfFiles: files2Compress work: [NSNumber numberWithChar: 'D']];
 				break;
 		}
+		#endif
 		
 		[waitCompressionWindow close];
 	}
@@ -19771,7 +19779,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return selectedItems;
 }
 
-//Comparisons
+// Comparisons
 // Finding Comparisons
 - (NSArray *)relatedStudiesForStudy: (id)study
 {

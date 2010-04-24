@@ -94,8 +94,10 @@
 *  Numbers at the end become the image number. The remainder of the file becomes the Series and Study ID 
 */
 - (void)extractSeriesStudyImageNumbersFromFileName:(NSString *)tempString;  
-- (short) decodeDICOMFileWithDCMFramework; /**< Decodes the file using the DCM Framework  Returns -1 for failure 0 for success*/
 
+#ifndef OSIRIX_LIGHT
+- (short) decodeDICOMFileWithDCMFramework; /**< Decodes the file using the DCM Framework  Returns -1 for failure 0 for success*/
+#endif
 
 -(short) getDicomFile;  /**< Decode DICOM.  Returns -1 for failure 0 for success */
 

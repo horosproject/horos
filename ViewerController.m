@@ -3344,10 +3344,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return numberOf2DViewer;
 }
 
+#ifndef OSIRIX_LIGHT
 - (IBAction)querySelectedStudy: (id)sender
 {
 	[[BrowserController currentBrowser] querySelectedStudy: self];
 }
+#endif
 
 #pragma mark-
 #pragma mark 2. window subdivision
@@ -8344,10 +8346,12 @@ static ViewerController *draggedController = nil;
 		switch( [contextInfo tag])
 		{
 //			case 1: [self MPR2DViewer:contextInfo];		break;  //2DMPR
+			#ifndef OSIRIX_LIGHT
 			case 10: [self mprViewer:contextInfo];		break;  //3DMPR
 			case 3: [self VRViewer:contextInfo];		break;  //MIP
 			case 4: [self VRViewer:contextInfo];		break;  //VR
 			case 5: [self SRViewer:contextInfo];		break;  //SR
+			#endif
 		}
 	}
 }
@@ -10104,11 +10108,11 @@ short				matrix[25];
 			}
 		break;
 		
+		#ifndef OSIRIX_LIGHT
 		case 7:		// 2D Registration
 			[self computeRegistrationWithMovingViewer: bc];
 		break;
 		
-		#ifndef OSIRIX_LIGHT
 		case 11:
 			[self resampleSeries: bc];
 		break;
@@ -11306,6 +11310,7 @@ int i,j,l;
 
 - (IBAction) roiVolumeEraseRestore:(id) sender
 {
+	#ifndef OSIRIX_LIGHT
 	for( int i = 0; i < maxMovieIndex; i++)
 		[self saveROI: i];
 		
@@ -11357,6 +11362,7 @@ int i,j,l;
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
 	}
+	#endif
 }
 
 - (IBAction) roiIntDeleteAllROIsWithSameName :(NSString*) name
@@ -11741,6 +11747,7 @@ int i,j,l;
 
 - (void) roiSetStartScheduler:(NSMutableArray*) roiToProceed
 {
+	#ifndef OSIRIX_LIGHT
 	if( [roiToProceed count])
 	{
 		// Create a scheduler
@@ -11760,6 +11767,7 @@ int i,j,l;
 		
 		[sched release];
 	}
+	#endif
 }
 
 - (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL) propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue :(BOOL) revert
@@ -12558,6 +12566,7 @@ int i,j,l;
 
 - (ROI*) isoContourROI: (ROI*) a numberOfPoints: (int) nof
 {
+	#ifndef OSIRIX_LIGHT
 	if( [a type] == tCPolygon || [a type] == tOPolygon || [a type] == tPencil)
 	{
 		[a setPoints: [ROI resamplePoints: [a splinePoints] number: nof]];
@@ -12570,6 +12579,9 @@ int i,j,l;
 		return a;
 	}
 	else return nil;
+	#else
+	return nil;
+	#endif
 }
 
 - (ROI*) roiMorphingBetween:(ROI*) a and:(ROI*) b ratio:(float) ratio
@@ -13105,11 +13117,12 @@ int i,j,l;
 	return [theNewROI autorelease];
 }
 
-#ifndef OSIRIX_LIGHT
+
 - (ROI*) convertBrushROItoPolygon:(ROI*) selectedROI numPoints: (int) numPoints
 {
 	ROI* newROI = nil;
 	
+	#ifndef OSIRIX_LIGHT
 	if( [selectedROI type] == tPlain)
 	{
 		// Convert it to Brush
@@ -13143,10 +13156,10 @@ int i,j,l;
 		
 		[newROI setPoints: pts];
 	}
+	#endif
 	
 	return newROI;
 }
-#endif
 
 -(int) imageIndexOfROI:(ROI*) c
 {
@@ -17881,17 +17894,6 @@ int i,j,l;
 #endif
 
 #ifndef OSIRIX_LIGHT
--(IBAction) VRVPROViewer:(id) sender
-{
-
-}
-
-- (VRPROController *)openVRVPROViewerForMode:(NSString *)mode
-{
-	return nil;
-}
-
-
 - (VRController *)openVRViewerForMode:(NSString *)mode
 {
 	long i;
@@ -18417,6 +18419,7 @@ int i,j,l;
 		}
 		else
 		{
+			#ifndef OSIRIX_LIGHT
 			if( blendingController)
 			{
 				OrthogonalMPRPETCTViewer *pcviewer = [self openOrthogonalMPRPETCTViewer];
@@ -18425,6 +18428,7 @@ int i,j,l;
 				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[pcviewer window] title], [BrowserController DateTimeFormat: studyDate], [[self window] title]]];
 			}
 			else
+			#endif
 			{
 				viewer = [self openOrthogonalMPRViewer];
 				
@@ -19259,11 +19263,13 @@ sourceRef);
 	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 }
 
+#ifndef OSIRIX_LIGHT
 - (IBAction)generateReport:(id)sender;
 {
 	[[BrowserController currentBrowser] generateReport:sender];
 	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 }
+#endif
 
 - (NSImage*)reportIcon;
 {
