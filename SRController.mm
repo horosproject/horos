@@ -150,6 +150,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		}
     }
     
+	err = 0;
     // CHECK IMAGE SIZE
     for( i =0 ; i < [pixList count]; i++)
     {

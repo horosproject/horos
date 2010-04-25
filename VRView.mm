@@ -3654,7 +3654,10 @@ public:
   												isARepeat:NO
   												keyCode:112
   												];
-  			[super keyDown:artificialPKeyDown];
+  			if( blendingVolume)
+				blendingVolume->SetPickable( NO);
+			
+			[super keyDown: artificialPKeyDown];
 			
 			if (![self isAny3DPointSelected])
 			{
@@ -7475,7 +7478,7 @@ public:
 {
 	BOOL boo = NO;
 	
-	if(((vtkAbstractPropPicker*)aRenderer->GetRenderWindow()->GetInteractor()->GetPicker())->GetViewProp()!=NULL)
+	if(((vtkAbstractPropPicker*)aRenderer->GetRenderWindow()->GetInteractor()->GetPicker())->GetViewProp() != NULL)
 	{
 		// a vtkObject is selected, let's check if it is one of our 3D Points
 		if([self selected3DPointIndex] < [point3DActorArray count])

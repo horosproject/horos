@@ -520,6 +520,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		}
     }
     
+	err = 0;
     // CHECK IMAGE SIZE
     for( i =0 ; i < [pixList[0] count]; i++)
     {
