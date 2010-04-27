@@ -297,7 +297,12 @@ char *GetPrivateIP()
 	NSArray *selectedCipherSuites = [[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPCipherSuites"];
 	
 	if ([selectedCipherSuites count])
-		self.TLSSupportedCipherSuite = selectedCipherSuites;
+	{
+		NSMutableArray *mutableSelectedCipherSuites = [NSMutableArray array];
+		for( id suite in selectedCipherSuites)
+			[mutableSelectedCipherSuites addObject: [[suite mutableCopy] autorelease]];
+		self.TLSSupportedCipherSuite = mutableSelectedCipherSuites;
+	}
 	else
 		self.TLSSupportedCipherSuite = [DICOMTLS defaultCipherSuites];
 
@@ -315,6 +320,15 @@ char *GetPrivateIP()
 	self.TLSUseSameAETITLE = [[[NSUserDefaults standardUserDefaults] valueForKey:@"TLSUseSameAETITLE"] boolValue];
 	self.TLSStoreSCPAETITLE = [[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPAETITLE"];
 	
+	if( [self.TLSStoreSCPAETITLE length] <= 0)
+	{
+		self.TLSUseSameAETITLE = YES;
+		self.TLSStoreSCPAETITLE = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
+	}
+	
+	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TLSStoreSCPAEPORT"] <= 0)
+		[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"AEPORT"] + 1 forKey: @"TLSStoreSCPAEPORT"]; 
+		
 	[NSApp beginSheet: TLSSettingsWindow
 	   modalForWindow: [[self mainView] window]
 		modalDelegate: nil
@@ -329,6 +343,15 @@ char *GetPrivateIP()
 	
 	if( result == NSRunStoppedResponse)
 	{
+		if( [self.TLSStoreSCPAETITLE length] <= 0)
+		{
+			self.TLSUseSameAETITLE = YES;
+			self.TLSStoreSCPAETITLE = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
+		}
+		
+		if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TLSStoreSCPAEPORT"] <= 0)
+			[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"AEPORT"] + 1 forKey: @"TLSStoreSCPAEPORT"]; 
+		
 		[[NSUserDefaults standardUserDefaults] setObject:self.TLSSupportedCipherSuite forKey:@"TLSStoreSCPCipherSuites"];
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:self.TLSUseDHParameterFileURL] forKey:@"TLSStoreSCPUseDHParameterFileURL"];
 		[[NSUserDefaults standardUserDefaults] setObject:[self.TLSDHParameterFileURL path] forKey:@"TLSStoreSCPDHParameterFileURL"];
@@ -346,6 +369,18 @@ char *GetPrivateIP()
 - (IBAction)ok:(id)sender;
 {
 	[NSApp stopModal];
+}
+
+- (IBAction)selectAllSuites:(id)sender;
+{
+	for( NSMutableDictionary *suite in self.TLSSupportedCipherSuite)
+		[suite setObject: [NSNumber numberWithBool: YES] forKey: @"Supported"];
+}
+
+- (IBAction)deselectAllSuites:(id)sender;
+{
+	for( NSMutableDictionary *suite in self.TLSSupportedCipherSuite)
+		[suite setObject: [NSNumber numberWithBool: NO] forKey: @"Supported"];
 }
 
 - (IBAction)chooseTLSCertificate:(id)sender;
@@ -414,12 +449,8 @@ char *GetPrivateIP()
 	if([sender state] == NSOnState)
 	{
 		aet = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
+		self.TLSStoreSCPAETITLE = aet;
 	}
-	else
-	{
-		aet = @"";
-	}
-	self.TLSStoreSCPAETITLE = aet;
 }
 
 #pragma mark NSControl Delegate Methods

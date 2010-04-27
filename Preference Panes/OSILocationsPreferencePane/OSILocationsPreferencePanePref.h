@@ -93,7 +93,8 @@
 - (IBAction)viewTLSCertificate:(id)sender;
 - (void)getTLSCertificate;
 - (NSString*)DICOMTLSUniqueLabelForSelectedServer;
-
+- (IBAction)selectAllSuites:(id)sender;
+- (IBAction)deselectAllSuites:(id)sender;
 @end
 
 

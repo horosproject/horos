@@ -882,6 +882,18 @@
 	return [DICOMTLS uniqueLabelForServerAddress:[aServer valueForKey:@"Address"] port:[NSString stringWithFormat:@"%d",[[aServer valueForKey:@"Port"] intValue]] AETitle:[aServer valueForKey:@"AETitle"]];
 }
 
+- (IBAction)selectAllSuites:(id)sender;
+{
+	for( NSMutableDictionary *suite in self.TLSSupportedCipherSuite)
+		[suite setObject: [NSNumber numberWithBool: YES] forKey: @"Supported"];
+}
+
+- (IBAction)deselectAllSuites:(id)sender;
+{
+	for( NSMutableDictionary *suite in self.TLSSupportedCipherSuite)
+		[suite setObject: [NSNumber numberWithBool: NO] forKey: @"Supported"];
+}
+
 @end
 
 

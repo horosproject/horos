@@ -78,5 +78,6 @@
 - (IBAction)viewTLSCertificate:(id)sender;
 - (void)getTLSCertificate;
 - (IBAction)useSameAETitleForTLSListener:(id)sender;
-
+- (IBAction)selectAllSuites:(id)sender;
+- (IBAction)deselectAllSuites:(id)sender;
 @end

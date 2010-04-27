@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10C540</string>
+		<string key="IBDocument.SystemVersion">10D573</string>
 		<string key="IBDocument.InterfaceBuilderVersion">732</string>
-		<string key="IBDocument.AppKitVersion">1038.25</string>
-		<string key="IBDocument.HIToolboxVersion">458.00</string>
+		<string key="IBDocument.AppKitVersion">1038.29</string>
+		<string key="IBDocument.HIToolboxVersion">460.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">732</string>
@@ -13,7 +13,7 @@
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<integer value="845"/>
-			<integer value="660"/>
+			<integer value="145"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -763,10 +763,10 @@
 										<object class="NSMatrix" id="557816121">
 											<reference key="NSNextResponder" ref="754649522"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{6, 25}, {170, 88}}</string>
+											<string key="NSFrame">{{6, 7}, {170, 106}}</string>
 											<reference key="NSSuperview" ref="754649522"/>
 											<bool key="NSEnabled">YES</bool>
-											<int key="NSNumRows">5</int>
+											<int key="NSNumRows">6</int>
 											<int key="NSNumCols">3</int>
 											<object class="NSMutableArray" key="NSCells">
 												<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1004,6 +1004,48 @@
 													<int key="NSPeriodicDelay">400</int>
 													<int key="NSPeriodicInterval">75</int>
 												</object>
+												<object class="NSButtonCell" id="406975436">
+													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags2">131072</int>
+													<string key="NSContents">ES</string>
+													<reference key="NSSupport" ref="26"/>
+													<reference key="NSControlView" ref="557816121"/>
+													<int key="NSButtonFlags">1211912703</int>
+													<int key="NSButtonFlags2">2</int>
+													<reference key="NSNormalImage" ref="954808096"/>
+													<reference key="NSAlternateImage" ref="820230698"/>
+													<string key="NSAlternateContents"/>
+													<int key="NSPeriodicDelay">400</int>
+													<int key="NSPeriodicInterval">75</int>
+												</object>
+												<object class="NSButtonCell" id="784330481">
+													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags2">131072</int>
+													<string key="NSContents">Radio</string>
+													<reference key="NSSupport" ref="26"/>
+													<reference key="NSControlView" ref="557816121"/>
+													<int key="NSButtonFlags">1211945471</int>
+													<int key="NSButtonFlags2">0</int>
+													<object class="NSButtonImageSource" key="NSAlternateImage" id="895803195">
+														<string key="NSImageName">NSRadioButton</string>
+													</object>
+													<string key="NSAlternateContents"/>
+													<int key="NSPeriodicDelay">400</int>
+													<int key="NSPeriodicInterval">75</int>
+												</object>
+												<object class="NSButtonCell" id="379700158">
+													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags2">131072</int>
+													<string key="NSContents">Radio</string>
+													<reference key="NSSupport" ref="26"/>
+													<reference key="NSControlView" ref="557816121"/>
+													<int key="NSButtonFlags">1211945471</int>
+													<int key="NSButtonFlags2">0</int>
+													<reference key="NSAlternateImage" ref="895803195"/>
+													<string key="NSAlternateContents"/>
+													<int key="NSPeriodicDelay">400</int>
+													<int key="NSPeriodicInterval">75</int>
+												</object>
 											</object>
 											<string key="NSCellSize">{54, 16}</string>
 											<string key="NSIntercellSpacing">{4, 2}</string>
@@ -1062,9 +1104,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 														<bytes key="NSWhite">MCAwAA</bytes>
 													</object>
 												</object>
-												<object class="NSButtonImageSource" key="NSAlternateImage" id="895803195">
-													<string key="NSImageName">NSRadioButton</string>
-												</object>
+												<reference key="NSAlternateImage" ref="895803195"/>
 												<string key="NSAlternateContents"/>
 												<int key="NSPeriodicDelay">400</int>
 												<int key="NSPeriodicInterval">75</int>
@@ -4895,6 +4935,9 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 							<reference ref="900627025"/>
 							<reference ref="250695619"/>
 							<reference ref="717156489"/>
+							<reference ref="784330481"/>
+							<reference ref="406975436"/>
+							<reference ref="379700158"/>
 						</object>
 						<reference key="parent" ref="155163123"/>
 					</object>
@@ -5822,6 +5865,21 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 						<reference key="object" ref="736583969"/>
 						<reference key="parent" ref="962882290"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">975</int>
+						<reference key="object" ref="784330481"/>
+						<reference key="parent" ref="557816121"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">976</int>
+						<reference key="object" ref="406975436"/>
+						<reference key="parent" ref="557816121"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">977</int>
+						<reference key="object" ref="379700158"/>
+						<reference key="parent" ref="557816121"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -6581,7 +6639,7 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">974</int>
+			<int key="maxID">977</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
