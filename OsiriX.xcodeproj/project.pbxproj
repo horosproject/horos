@@ -25007,7 +25007,7 @@
 			};
 			name = Development;
 		};
-		59BDEC31117C92B3007F1F2C /* Deployment Universal 32-bit */ = {
+		59BDEC31117C92B3007F1F2C /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -25026,9 +25026,9 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = "OsiriX Launcher";
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		59BDEC32117C92B3007F1F2C /* Deployment Universal 64-bit */ = {
+		59BDEC32117C92B3007F1F2C /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -25047,7 +25047,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = "OsiriX Launcher";
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
 		7E76BEC1085757B60073649A /* Development */ = {
 			isa = XCBuildConfiguration;
@@ -25240,10 +25240,7 @@
 		7E76BED9085757B70073649A /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = i386;
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -25270,7 +25267,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -25299,7 +25296,7 @@
 			};
 			name = Development;
 		};
-		AB0F3A301046BD2D004129DD /* Deployment Universal 32-bit */ = {
+		AB0F3A301046BD2D004129DD /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -25327,9 +25324,9 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = "OsiriX Headers";
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		AB0F3A311046BD2D004129DD /* Deployment Universal 64-bit */ = {
+		AB0F3A311046BD2D004129DD /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -25357,7 +25354,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = "OsiriX Headers";
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
 		AB724FF40ADE6ECB00A212A0 /* Development */ = {
 			isa = XCBuildConfiguration;
@@ -25404,27 +25401,24 @@
 			};
 			name = Development;
 		};
-		BF7486A80CC6AA5D00198387 /* Deployment Universal 32-bit */ = {
+		BF7486A80CC6AA5D00198387 /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = Documentation;
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		BF7486A90CC6AA5D00198387 /* Deployment Universal 64-bit */ = {
+		BF7486A90CC6AA5D00198387 /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = Documentation;
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
-		CE5314AA0C717C3000A2B75F /* Deployment Universal 32-bit */ = {
+		CE5314AA0C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = i386;
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -25442,12 +25436,12 @@
 				OTHER_CFLAGS = "-fvisibility=default";
 				SDKROOT = macosx10.5;
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		CE5314AB0C717C3000A2B75F /* Deployment Universal 32-bit */ = {
+		CE5314AB0C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -25519,15 +25513,14 @@
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		CE5314AD0C717C3000A2B75F /* Deployment Universal 32-bit */ = {
+		CE5314AD0C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
 					x86_64,
 					i386,
-					ppc,
 				);
 				BUILD_VARIANTS = normal;
 				COPY_PHASE_STRIP = YES;
@@ -25575,9 +25568,9 @@
 				SECTORDER_FLAGS = "";
 				STRIP_STYLE = all;
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		CE5314AE0C717C3000A2B75F /* Deployment Universal 32-bit */ = {
+		CE5314AE0C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -25610,9 +25603,9 @@
 					"-Wno-unknown-pragmas",
 				);
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		CE5314AF0C717C3000A2B75F /* Deployment Universal 32-bit */ = {
+		CE5314AF0C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -25645,15 +25638,12 @@
 					"-Wno-unknown-pragmas",
 				);
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		CE5314B20C717C3000A2B75F /* Deployment Universal 32-bit */ = {
+		CE5314B20C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = i386;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
@@ -25683,15 +25673,12 @@
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		CE5314B40C717C3000A2B75F /* Deployment Universal 32-bit */ = {
+		CE5314B40C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = i386;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
@@ -25720,15 +25707,12 @@
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		CE5314B50C717C3000A2B75F /* Deployment Universal 64-bit */ = {
+		CE5314B50C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = i386;
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -25751,15 +25735,14 @@
 				SDKROOT = macosx10.5;
 				WARNING_CFLAGS = "";
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
-		CE5314B60C717C3000A2B75F /* Deployment Universal 64-bit */ = {
+		CE5314B60C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
 					x86_64,
 					i386,
-					ppc,
 				);
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = NO;
@@ -25834,15 +25817,14 @@
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
-		CE5314B80C717C3000A2B75F /* Deployment Universal 64-bit */ = {
+		CE5314B80C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
 					x86_64,
 					i386,
-					ppc,
 				);
 				BUILD_VARIANTS = normal;
 				COPY_PHASE_STRIP = YES;
@@ -25890,9 +25872,9 @@
 				SECTORDER_FLAGS = "";
 				STRIP_STYLE = all;
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
-		CE5314B90C717C3000A2B75F /* Deployment Universal 64-bit */ = {
+		CE5314B90C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -25925,9 +25907,9 @@
 					"-Wno-unknown-pragmas",
 				);
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
-		CE5314BA0C717C3000A2B75F /* Deployment Universal 64-bit */ = {
+		CE5314BA0C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -25938,15 +25920,12 @@
 				PRODUCT_NAME = "Build All Prerequisites";
 				SECTORDER_FLAGS = "";
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
-		CE5314BD0C717C3000A2B75F /* Deployment Universal 64-bit */ = {
+		CE5314BD0C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = i386;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
@@ -25978,15 +25957,12 @@
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
-		CE5314BF0C717C3000A2B75F /* Deployment Universal 64-bit */ = {
+		CE5314BF0C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = i386;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
@@ -26015,14 +25991,13 @@
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
 		CE9CED840C75BD8D00752D4B /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
 					x86_64,
-					ppc,
 					i386,
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -26037,12 +26012,11 @@
 			};
 			name = Development;
 		};
-		CE9CED860C75BD8D00752D4B /* Deployment Universal 32-bit */ = {
+		CE9CED860C75BD8D00752D4B /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
 					x86_64,
-					ppc,
 					i386,
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -26055,14 +26029,13 @@
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		CE9CED870C75BD8D00752D4B /* Deployment Universal 64-bit */ = {
+		CE9CED870C75BD8D00752D4B /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
 					x86_64,
-					ppc,
 					i386,
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -26075,7 +26048,7 @@
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
 		CEC70A1A10A5C844008935EA /* Development */ = {
 			isa = XCBuildConfiguration;
@@ -26145,10 +26118,10 @@
 			};
 			name = Development;
 		};
-		CEC70A1C10A5C844008935EA /* Deployment Universal 32-bit */ = {
+		CEC70A1C10A5C844008935EA /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -26222,9 +26195,9 @@
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		CEC70A1D10A5C844008935EA /* Deployment Universal 64-bit */ = {
+		CEC70A1D10A5C844008935EA /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
@@ -26302,7 +26275,7 @@
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
 		CEDAAECD0C7B486B00809161 /* Development */ = {
 			isa = XCBuildConfiguration;
@@ -26336,7 +26309,7 @@
 			};
 			name = Development;
 		};
-		CEDAAECF0C7B486B00809161 /* Deployment Universal 32-bit */ = {
+		CEDAAECF0C7B486B00809161 /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
@@ -26363,9 +26336,9 @@
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
-			name = "Deployment Universal 32-bit";
+			name = "Deployment 32-bit";
 		};
-		CEDAAED00C7B486B00809161 /* Deployment Universal 64-bit */ = {
+		CEDAAED00C7B486B00809161 /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
@@ -26392,15 +26365,12 @@
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
-			name = "Deployment Universal 64-bit";
+			name = "Deployment 64-bit";
 		};
 		CEDF6DCE0B46FE99008B45B8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = i386;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
@@ -26438,8 +26408,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				59BDEC30117C92B3007F1F2C /* Development */,
-				59BDEC31117C92B3007F1F2C /* Deployment Universal 32-bit */,
-				59BDEC32117C92B3007F1F2C /* Deployment Universal 64-bit */,
+				59BDEC31117C92B3007F1F2C /* Deployment 32-bit */,
+				59BDEC32117C92B3007F1F2C /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -26448,8 +26418,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BEC1085757B60073649A /* Development */,
-				CE5314AD0C717C3000A2B75F /* Deployment Universal 32-bit */,
-				CE5314B80C717C3000A2B75F /* Deployment Universal 64-bit */,
+				CE5314AD0C717C3000A2B75F /* Deployment 32-bit */,
+				CE5314B80C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -26458,8 +26428,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BEC4085757B60073649A /* Development */,
-				CE5314AF0C717C3000A2B75F /* Deployment Universal 32-bit */,
-				CE5314BA0C717C3000A2B75F /* Deployment Universal 64-bit */,
+				CE5314AF0C717C3000A2B75F /* Deployment 32-bit */,
+				CE5314BA0C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -26468,8 +26438,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BEC7085757B70073649A /* Development */,
-				CE5314AB0C717C3000A2B75F /* Deployment Universal 32-bit */,
-				CE5314B60C717C3000A2B75F /* Deployment Universal 64-bit */,
+				CE5314AB0C717C3000A2B75F /* Deployment 32-bit */,
+				CE5314B60C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -26478,8 +26448,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BED0085757B70073649A /* Development */,
-				CE5314AE0C717C3000A2B75F /* Deployment Universal 32-bit */,
-				CE5314B90C717C3000A2B75F /* Deployment Universal 64-bit */,
+				CE5314AE0C717C3000A2B75F /* Deployment 32-bit */,
+				CE5314B90C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -26488,8 +26458,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BED9085757B70073649A /* Development */,
-				CE5314AA0C717C3000A2B75F /* Deployment Universal 32-bit */,
-				CE5314B50C717C3000A2B75F /* Deployment Universal 64-bit */,
+				CE5314AA0C717C3000A2B75F /* Deployment 32-bit */,
+				CE5314B50C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -26498,8 +26468,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AB0F3A2E1046BD2D004129DD /* Development */,
-				AB0F3A301046BD2D004129DD /* Deployment Universal 32-bit */,
-				AB0F3A311046BD2D004129DD /* Deployment Universal 64-bit */,
+				AB0F3A301046BD2D004129DD /* Deployment 32-bit */,
+				AB0F3A311046BD2D004129DD /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -26508,8 +26478,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AB724FF40ADE6ECB00A212A0 /* Development */,
-				CE5314B20C717C3000A2B75F /* Deployment Universal 32-bit */,
-				CE5314BD0C717C3000A2B75F /* Deployment Universal 64-bit */,
+				CE5314B20C717C3000A2B75F /* Deployment 32-bit */,
+				CE5314BD0C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -26518,8 +26488,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BF7486A60CC6AA5D00198387 /* Development */,
-				BF7486A80CC6AA5D00198387 /* Deployment Universal 32-bit */,
-				BF7486A90CC6AA5D00198387 /* Deployment Universal 64-bit */,
+				BF7486A80CC6AA5D00198387 /* Deployment 32-bit */,
+				BF7486A90CC6AA5D00198387 /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -26528,8 +26498,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CE9CED840C75BD8D00752D4B /* Development */,
-				CE9CED860C75BD8D00752D4B /* Deployment Universal 32-bit */,
-				CE9CED870C75BD8D00752D4B /* Deployment Universal 64-bit */,
+				CE9CED860C75BD8D00752D4B /* Deployment 32-bit */,
+				CE9CED870C75BD8D00752D4B /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -26538,8 +26508,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEC70A1A10A5C844008935EA /* Development */,
-				CEC70A1C10A5C844008935EA /* Deployment Universal 32-bit */,
-				CEC70A1D10A5C844008935EA /* Deployment Universal 64-bit */,
+				CEC70A1C10A5C844008935EA /* Deployment 32-bit */,
+				CEC70A1D10A5C844008935EA /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -26548,8 +26518,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEDAAECD0C7B486B00809161 /* Development */,
-				CEDAAECF0C7B486B00809161 /* Deployment Universal 32-bit */,
-				CEDAAED00C7B486B00809161 /* Deployment Universal 64-bit */,
+				CEDAAECF0C7B486B00809161 /* Deployment 32-bit */,
+				CEDAAED00C7B486B00809161 /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -26558,8 +26528,8 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEDF6DCE0B46FE99008B45B8 /* Development */,
-				CE5314B40C717C3000A2B75F /* Deployment Universal 32-bit */,
-				CE5314BF0C717C3000A2B75F /* Deployment Universal 64-bit */,
+				CE5314B40C717C3000A2B75F /* Deployment 32-bit */,
+				CE5314BF0C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;

@@ -242,7 +242,6 @@
 			buildSettings = {
 				ARCHS = (
 					i386,
-					ppc,
 					x86_64,
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

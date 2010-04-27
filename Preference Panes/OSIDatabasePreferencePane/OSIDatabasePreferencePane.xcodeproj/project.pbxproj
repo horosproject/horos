@@ -293,7 +293,6 @@
 			buildSettings = {
 				ARCHS = (
 					i386,
-					ppc,
 					x86_64,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
