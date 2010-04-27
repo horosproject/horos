@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import "PreferencePaneControllerDCMTK.h"
+#import "PreferencesWindowController+DCMTK.h"
 #import "CIADICOMField.h"
 
 #include "osconfig.h"
@@ -28,7 +28,7 @@
 #include "ofstdinc.h"
 
 
-@implementation PreferencePaneController (PreferencePaneControllerDCMTK)
+@implementation PreferencesWindowController (DCMTK)
 
 - (NSArray*) prepareDICOMFieldsArrays
 {

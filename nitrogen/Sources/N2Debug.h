@@ -20,6 +20,8 @@
 +(BOOL)isActive;
 +(void)setActive:(BOOL)active;
 
+extern NSString* RectString(NSRect r);
+
 @end
 
 

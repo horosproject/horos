@@ -13,11 +13,11 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import "PreferencePaneController.h"
+#import "PreferencesWindowController.h"
 
-/** \brief Category for DCMTK calls for PreferencePaneController*/
+/** \brief Category for DCMTK calls for PreferencesWindowController*/
 
-@interface PreferencePaneController (PreferencePaneControllerDCMTK)
+@interface PreferencesWindowController (DCMTK)
 
 - (NSArray*) prepareDICOMFieldsArrays;
 

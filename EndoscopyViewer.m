@@ -23,6 +23,7 @@
 #import "OrthogonalMPRController.h"
 #import "BrowserController.h"
 #import "Notifications.h"
+#import "NSUserDefaultsController+OsiriX.h"
 
 static NSString* 	EndoscopyToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
 static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
@@ -621,7 +622,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
     NSArray     *sortedKeys;
 
     // Presets VIEWER Menu
-	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] allKeys];
+	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
     i = [[wlww2DPopup menu] numberOfItems];
@@ -658,7 +659,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	else
 	{
 		NSArray		*value;
-		value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:[sender title]];
+		value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] objectForKey:[sender title]];
 		[self set2DWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue]];
 	}
 	

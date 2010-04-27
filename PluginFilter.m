@@ -22,19 +22,19 @@
     return [[[self alloc] init] autorelease];
 }
 
-- (void) dealloc
-{
-	NSLog( @"PluginFilter dealloc");
-
-	[super dealloc];
-}
-
 - (id)init {
 	if (self = [super init])
 	{
 		[self initPlugin];
 	}
 	return self;
+}
+
+- (void) dealloc
+{
+	NSLog( @"PluginFilter dealloc");
+	
+	[super dealloc];
 }
 
 - (void) initPlugin

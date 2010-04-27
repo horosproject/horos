@@ -27,4 +27,8 @@ static BOOL _active = NO;
 	_active = active;
 }
 
+NSString* RectString(NSRect r) {
+	return [NSString stringWithFormat:@"[%f,%f,%f,%f]", r.origin.x, r.origin.y, r.size.width, r.size.height];
+}
+
 @end

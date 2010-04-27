@@ -86,6 +86,24 @@
 
 @implementation NSImage (N2)
 
+-(NSImage*)shadowImage {
+	NSUInteger w = self.size.width, h = self.size.height;
+	NSImage* dark = [[NSImage alloc] initWithSize:[self size]];
+	[dark lockFocus];
+	NSBitmapImageRep* bitmap = [[NSBitmapImageRep alloc] initWithData:[self TIFFRepresentation]];
+	
+	for (NSUInteger y = 0; y < h; ++y)
+		for (NSUInteger x = 0; x < w; ++x) {
+			NSColor* c = [bitmap colorAtX:x y:y];
+			c = [c shadowWithLevel:[c alphaComponent]/4];
+			[bitmap setColor:c atX:x y:y];
+		}
+	
+	[bitmap draw]; [bitmap release];
+	[dark unlockFocus];
+	return [dark autorelease];
+}
+
 - (void)flipImageHorizontally {
 	// dimensions
 	NSSize size = [self size];

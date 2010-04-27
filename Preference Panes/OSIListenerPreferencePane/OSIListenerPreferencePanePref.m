@@ -13,8 +13,8 @@
 =========================================================================*/
 
 #import "OSIListenerPreferencePanePref.h"
-#import "DefaultsOsiriX.h"
-#import "BrowserController.h"
+#import <OsiriX Headers/DefaultsOsiriX.h>
+#import <OsiriX Headers/BrowserController.h>
 #import "DDKeychain.h"
 #import <SecurityInterface/SFChooseIdentityPanel.h>
 

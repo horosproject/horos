@@ -17,7 +17,7 @@
 #include <ApplicationServices/ApplicationServices.h>
 #import "ToolbarPanel.h"
 #import "AppController.h"
-#import "PreferencePaneController.h"
+#import "PreferencesWindowController.h"
 #import "BrowserController.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "ViewerController.h"
@@ -38,6 +38,7 @@
 #import "QueryController.h"
 #import "NSSplitViewSave.h"
 #import "altivecFunctions.h"
+#import "NSUserDefaultsController+OsiriX.h"
 #ifndef OSIRIX_LIGHT
 #import <ILCrashReporter/ILCrashReporter.h>
 #import <N2Debug.h>
@@ -1542,9 +1543,9 @@ static NSDate *lastWarningDate = nil;
 		mainMenuWLWWMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
 	}
 	
-	if( [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] != previousWLWWKeys)
+	if( [[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] != previousWLWWKeys)
 	{
-		previousWLWWKeys = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
+		previousWLWWKeys = [[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey];
 		keys = [previousWLWWKeys allKeys];
 		
 		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
@@ -2543,11 +2544,11 @@ static BOOL initialized = NO;
 				}
 				
 				//ww/wl
-				NSMutableDictionary *wlwwValues = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"WLWW3"] mutableCopy] autorelease];
+				NSMutableDictionary *wlwwValues = [[[[NSUserDefaults standardUserDefaults] objectForKey:OsirixWLWWDefaultsKey] mutableCopy] autorelease];
 				NSDictionary *wwwl = [wlwwValues objectForKey:@"VR - Endoscopy"];
 				if (!wwwl) {
 					[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:-300], [NSNumber numberWithFloat:700], nil] forKey:@"VR - Endoscopy"];
-					[[NSUserDefaults standardUserDefaults] setObject:wlwwValues forKey:@"WLWW3"];
+					[[NSUserDefaults standardUserDefaults] setObject:wlwwValues forKey:OsirixWLWWDefaultsKey];
 				}
 				
 				// CREATE A TEMPORATY FILE DURING STARTUP
@@ -3277,7 +3278,7 @@ static BOOL initialized = NO;
 	
 	if( found == NO)
 	{
-		PreferencePaneController *prefController = [[PreferencePaneController alloc] init];
+		PreferencesWindowController *prefController = [[PreferencesWindowController alloc] init];
 		[prefController showWindow: self];
 	}
 }

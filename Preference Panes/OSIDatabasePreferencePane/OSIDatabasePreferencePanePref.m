@@ -13,10 +13,9 @@
 =========================================================================*/
 
 #import "OSIDatabasePreferencePanePref.h"
-#import "PreferencePaneController.h"
-#import "PreferencePaneControllerDCMTK.h"
-#import "PluginManager.h"
-#import "BrowserController.h"
+#import <OsiriX Headers/PluginManager.h>
+#import <OsiriX Headers/BrowserController.h>
+#import <OsiriX Headers/PreferencesWindowController+DCMTK.h>
 
 @implementation OSIDatabasePreferencePanePref
 

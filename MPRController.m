@@ -21,6 +21,7 @@
 #import "iPhoto.h"
 #import "Notifications.h"
 #import "ROIWindow.h"
+#import "NSUserDefaultsController+OsiriX.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -1049,7 +1050,7 @@ static float deg2rad = 3.14159265358979/180.0;
 - (void)createWLWWMenuItems;
 {
     // Presets VIEWER Menu
-	NSArray *keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] allKeys];
+	NSArray *keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] allKeys];
 	NSArray *sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
 	NSMutableArray *tmp = [NSMutableArray array];
@@ -1141,7 +1142,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		{
 			NSArray    *value;
 			
-			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:menuString];
+			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] objectForKey:menuString];
 			
 			[mprView1 setWLWW:[[value objectAtIndex:0] floatValue] :[[value objectAtIndex:1] floatValue]];
 			[mprView2 setWLWW:[[value objectAtIndex:0] floatValue] :[[value objectAtIndex:1] floatValue]];

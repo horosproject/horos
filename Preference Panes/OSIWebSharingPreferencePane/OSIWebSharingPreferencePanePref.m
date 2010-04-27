@@ -17,9 +17,9 @@
 #import <SecurityInterface/SFCertificateView.h>
 
 #import "OSIWebSharingPreferencePanePref.h"
-#import "DefaultsOsiriX.h"
-#import "BrowserController.h"
-#import "AppController.h"
+#import <OsiriX Headers/DefaultsOsiriX.h>
+#import <OsiriX Headers/BrowserController.h>
+#import <OsiriX Headers/AppController.h>
 #import "DDKeychain.h"
 
 #include <netdb.h>

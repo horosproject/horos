@@ -13,7 +13,7 @@
  =========================================================================*/
 
 #define id Id
-#include "Accelerate.h"
+#include <Accelerate/Accelerate.h>
 #include "itkImage.h"
 #include "itkImportImageFilter.h"
 #include "itkBinaryErodeImageFilter.h"

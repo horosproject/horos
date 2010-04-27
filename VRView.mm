@@ -35,6 +35,7 @@
 #import "IChatTheatreDelegate.h"
 #import "DicomImage.h"
 #import "Notifications.h"
+#import "NSUserDefaultsController+OsiriX.h"
 
 #include "vtkMath.h"
 #include "vtkAbstractPropPicker.h"
@@ -7929,7 +7930,7 @@ public:
 	
 	if ([hotKey length] > 0)
 	{
-		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
+		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey];
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
 		NSString *wwwlMenuString = nil;

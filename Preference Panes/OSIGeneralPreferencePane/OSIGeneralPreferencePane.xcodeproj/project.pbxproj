@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 45;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		59BDF3D711809917007F1F2C /* OsiriX Headers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59BDF3D611809917007F1F2C /* OsiriX Headers.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		8D202CEA0486D31800D8A456 /* OSIGeneralPreferencePane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32DBCFA20370C41700C91783 /* OSIGeneralPreferencePane_Prefix.pch */; };
 		8D202CEB0486D31800D8A456 /* OSIGeneralPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = F506C03C013D9D7901CA16C8 /* OSIGeneralPreferencePanePref.h */; };
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
@@ -15,7 +16,6 @@
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 		AB80A6820A19C90F00FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A6810A19C90F00FED357 /* Security.framework */; };
 		CE5C6D200CAD9B3D00597FEF /* OSIGeneralPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE5C6D1E0CAD9B3D00597FEF /* OSIGeneralPreferencePanePref.xib */; };
-		CE75CA610A23AD4500D22E9E /* PreferencePaneController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE75CA600A23AD4500D22E9E /* PreferencePaneController.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,11 +24,11 @@
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCFA20370C41700C91783 /* OSIGeneralPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIGeneralPreferencePane_Prefix.pch; sourceTree = "<group>"; };
+		59BDF3D611809917007F1F2C /* OsiriX Headers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "OsiriX Headers.framework"; path = "../../build/Development/OsiriX Headers.framework"; sourceTree = SOURCE_ROOT; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIGeneralPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIGeneralPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB80A6810A19C90F00FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CE5C6D1F0CAD9B3D00597FEF /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIGeneralPreferencePanePref.xib; sourceTree = "<group>"; };
-		CE75CA600A23AD4500D22E9E /* PreferencePaneController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PreferencePaneController.h; path = ../../PreferencePaneController.h; sourceTree = SOURCE_ROOT; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSIGeneralPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIGeneralPreferencePanePref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* OSIGeneralPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIGeneralPreferencePanePref.m; sourceTree = "<group>"; };
@@ -42,6 +42,7 @@
 				8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */,
 				8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */,
 				AB80A6820A19C90F00FED357 /* Security.framework in Frameworks */,
+				59BDF3D711809917007F1F2C /* OsiriX Headers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +64,7 @@
 		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				59BDF3D611809917007F1F2C /* OsiriX Headers.framework */,
 				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
 				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,
 			);
@@ -82,7 +84,6 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				CE75CA600A23AD4500D22E9E /* PreferencePaneController.h */,
 				F506C03C013D9D7901CA16C8 /* OSIGeneralPreferencePanePref.h */,
 				F506C03D013D9D7901CA16C8 /* OSIGeneralPreferencePanePref.m */,
 			);
@@ -133,7 +134,6 @@
 			files = (
 				8D202CEA0486D31800D8A456 /* OSIGeneralPreferencePane_Prefix.pch in Headers */,
 				8D202CEB0486D31800D8A456 /* OSIGeneralPreferencePanePref.h in Headers */,
-				CE75CA610A23AD4500D22E9E /* PreferencePaneController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,7 +235,10 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEBUGGING_SYMBOLS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(FRAMEWORK_SEARCH_PATHS)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"\"$(SRCROOT)/../../build/Development\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_TRIGRAPHS = NO;
@@ -280,7 +283,7 @@
 					x86_64,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = macosx10.5;
 			};
 			name = Development;
 		};

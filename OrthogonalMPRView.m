@@ -21,6 +21,7 @@
 #import "DefaultsOsiriX.h"
 #import "ThickSlabController.h"
 #import "Notifications.h"
+#import "NSUserDefaultsController+OsiriX.h"
 
 @implementation OrthogonalMPRView
 
@@ -676,7 +677,7 @@
 	BOOL returnedVal = YES;
 	if ([hotKey length] > 0)
 	{
-		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
+		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey];
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
 		hotKey = [hotKey lowercaseString];

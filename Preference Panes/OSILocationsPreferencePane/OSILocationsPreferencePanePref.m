@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import "OSILocationsPreferencePanePref.h"
-#include "SimplePing.h"
+#include <OsiriX Headers/SimplePing.h>
 
 #import "DDKeychain.h"
 

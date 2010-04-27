@@ -14061,7 +14061,7 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				for( NSString *p in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: aPath error: nil])
 				{
-					if( [[p lastPathComponent] isEqualToString: @"encryptedDICOM.zip"]) // See BurnerWindowController
+					if( [[p lastPathComponent] isEqualToString: @"encryptedDICOM.zip"] || [[p lastPathComponent] isEqualToString:@"DICOM.zip"]) // See BurnerWindowController / Disc Burning
 					{
 						int result = [self askForZIPPassword: [aPath stringByAppendingPathComponent: p] destination: @"/tmp/zippedFile/"];
 						

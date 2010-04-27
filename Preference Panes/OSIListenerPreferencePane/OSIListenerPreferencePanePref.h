@@ -15,7 +15,7 @@
 #import <PreferencePanes/PreferencePanes.h>
 #import <SecurityInterface/SFAuthorizationView.h>
 #if defined(OSIRIX)
-#import "DICOMTLS.h"
+#import <OsiriX Headers/DICOMTLS.h>
 #endif
 
 @interface OSIListenerPreferencePanePref : NSPreferencePane 

@@ -16,12 +16,13 @@
 #import "Window3DController.h"
 #import "Mailer.h"
 #import "Papyrus3/Papyrus3.h"
-#import "Accelerate.h"
+#import <Accelerate/Accelerate.h>
 #import "DCMPix.h"
 #import "VRController.h"
 #import "printView.h"
 #import "VRView.h"
 #import "Notifications.h"
+#import "NSUserDefaultsController+OsiriX.h"
 
 @implementation Window3DController
 
@@ -370,9 +371,9 @@ static float oldsetww, oldsetwl;
     
     if( [sender tag])					//User clicks OK Button
     {
-		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy] autorelease];
+		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] mutableCopy] autorelease];
         [presetsDict setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:[newName stringValue]];
-		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
+		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey:OsirixWLWWDefaultsKey];
 		
 		if( curWLWWMenu != [newName stringValue])
 		{
@@ -392,9 +393,9 @@ static float oldsetww, oldsetwl;
 	
     if( returnCode == 1)
     {
-		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy] autorelease];
+		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] mutableCopy] autorelease];
         [presetsDict removeObjectForKey: name];
-		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
+		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey:OsirixWLWWDefaultsKey];
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
     }
 	

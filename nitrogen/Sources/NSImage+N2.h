@@ -21,6 +21,8 @@
 -(NSRect)boundingBoxSkippingColor:(NSColor*)color inRect:(NSRect)box;
 -(NSRect)boundingBoxSkippingColor:(NSColor*)color;
 
+-(NSImage*)shadowImage;
+
 @end
 
 @interface N2Image : NSImage {

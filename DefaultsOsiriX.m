@@ -14,6 +14,7 @@
 
 #import "DefaultsOsiriX.h"
 #import "PluginManager.h"
+#import "NSUserDefaultsController+OsiriX.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DCMNetServiceDelegate.h"
@@ -236,7 +237,7 @@ static NSHost *currentHost = nil;
 	iww = 700;          iwl = -300;
 	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:@"VR - Endoscopy"];
 	
-	[defaultValues setObject:wlwwValues forKey:@"WLWW3"];
+	[defaultValues setObject:wlwwValues forKey:OsirixWLWWDefaultsKey];
 	
 	// ** CONVOLUTION PRESETS
 	

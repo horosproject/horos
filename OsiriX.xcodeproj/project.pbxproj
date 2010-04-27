@@ -16,6 +16,7 @@
 				4A2F590D078D124B00C514A2 /* PBXTargetDependency */,
 				CEA048B60C76E46F00B4CA0A /* PBXTargetDependency */,
 				AB72503C0ADE6F7000A212A0 /* PBXTargetDependency */,
+				AB0F3A421046BFB9004129DD /* PBXTargetDependency */,
 				CEACC7AD0878781000CF466E /* PBXTargetDependency */,
 				CEACC7AF0878781000CF466E /* PBXTargetDependency */,
 				CEACC7B10878781000CF466E /* PBXTargetDependency */,
@@ -32,7 +33,6 @@
 				CEAB83080B20979D0019A9AE /* PBXTargetDependency */,
 				CEDAAED50C7B489100809161 /* PBXTargetDependency */,
 				CE8DF1260B470DC50035C230 /* PBXTargetDependency */,
-				AB0F3A421046BFB9004129DD /* PBXTargetDependency */,
 			);
 			name = "Build All Prerequisites";
 			productName = "Build All Prerequisites";
@@ -85,6 +85,29 @@
 		59BDEC44117C9366007F1F2C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDEC43117C9366007F1F2C /* main.mm */; };
 		59BDED7D117CA4F6007F1F2C /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6495063587B200D9531F /* Osirix.icns */; };
 		59BDEDAD117CA83D007F1F2C /* sirsa.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DC609B6828800545F5E /* sirsa.cc */; };
+		59BDEF41117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59BDEF3F117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h */; };
+		59BDEF42117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDEF40117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm */; };
+		59BDEF43117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59BDEF3F117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h */; };
+		59BDEF44117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDEF40117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm */; };
+		59BDEF45117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDEF40117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm */; };
+		59BDF106117EE61E007F1F2C /* PreferencesWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 59BDF104117EE61E007F1F2C /* PreferencesWindow.xib */; };
+		59BDF107117EE61E007F1F2C /* PreferencesWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 59BDF104117EE61E007F1F2C /* PreferencesWindow.xib */; };
+		59BDF112117EE6A1007F1F2C /* PreferencesWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59BDF110117EE6A1007F1F2C /* PreferencesWindowController.h */; };
+		59BDF113117EE6A1007F1F2C /* PreferencesWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDF111117EE6A1007F1F2C /* PreferencesWindowController.mm */; };
+		59BDF114117EE6A1007F1F2C /* PreferencesWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59BDF110117EE6A1007F1F2C /* PreferencesWindowController.h */; };
+		59BDF115117EE6A1007F1F2C /* PreferencesWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDF111117EE6A1007F1F2C /* PreferencesWindowController.mm */; };
+		59BDF11E117EE72C007F1F2C /* PreferencesWindowController+DCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = 59BDF11C117EE72C007F1F2C /* PreferencesWindowController+DCMTK.h */; };
+		59BDF11F117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDF11D117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm */; };
+		59BDF120117EE72C007F1F2C /* PreferencesWindowController+DCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = 59BDF11C117EE72C007F1F2C /* PreferencesWindowController+DCMTK.h */; };
+		59BDF121117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDF11D117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm */; };
+		59BDF127117EFA41007F1F2C /* PreferencesView.h in Headers */ = {isa = PBXBuildFile; fileRef = 59BDF125117EFA41007F1F2C /* PreferencesView.h */; };
+		59BDF128117EFA41007F1F2C /* PreferencesView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDF126117EFA41007F1F2C /* PreferencesView.mm */; };
+		59BDF129117EFA41007F1F2C /* PreferencesView.h in Headers */ = {isa = PBXBuildFile; fileRef = 59BDF125117EFA41007F1F2C /* PreferencesView.h */; };
+		59BDF12A117EFA41007F1F2C /* PreferencesView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDF126117EFA41007F1F2C /* PreferencesView.mm */; };
+		59BDF63111818DC7007F1F2C /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
+		59BDF8541181DDAF007F1F2C /* NSImage+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FB031129338A009EB238 /* NSImage+N2.mm */; };
+		59BDF8561181DDC1007F1F2C /* NSColor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FB091129338A009EB238 /* NSColor+N2.mm */; };
+		59BDF8571181DDD6007F1F2C /* N2Operators.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA211293378009EB238 /* N2Operators.mm */; };
 		59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E088A80FF0AB9400452F19 /* Notifications.m */; };
 		59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E088A70FF0AB9400452F19 /* Notifications.h */; };
 		59E379CF116B293A00E84FE3 /* NSImage+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */; };
@@ -117,8 +140,6 @@
 		7E172F670933D5FF0057BCE8 /* DCMObjectPixelDataImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E172F630933D5FF0057BCE8 /* DCMObjectPixelDataImport.m */; };
 		7E226ABE06BEF625003B09E5 /* jpegdatasrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2269C406BEF624003B09E5 /* jpegdatasrc.h */; };
 		7E226ABF06BEF625003B09E5 /* jpegdatasrc.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269C506BEF624003B09E5 /* jpegdatasrc.m */; };
-		7E2BE37D0715D2820017898A /* PreferencePaneController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2BE37B0715D2820017898A /* PreferencePaneController.h */; };
-		7E2BE37E0715D2820017898A /* PreferencePaneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2BE37C0715D2820017898A /* PreferencePaneController.m */; };
 		7E2BE3D10715DB9A0017898A /* route.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3D00715DB9A0017898A /* route.tif */; };
 		7E2BE3DA0715DBC50017898A /* cd.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3D90715DBC50017898A /* cd.icns */; };
 		7E2BE3E30715DBD40017898A /* GeneralPreferences.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3E20715DBD40017898A /* GeneralPreferences.tif */; };
@@ -577,7 +598,6 @@
 		AB28B8F605B79D2D00A9906C /* browserController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABBCCDA505643A4C00A4E47A /* browserController.m */; };
 		AB28B8F705B79D2E00A9906C /* dicomFile.h in Headers */ = {isa = PBXBuildFile; fileRef = AB06EDF005635642006AFFB9 /* dicomFile.h */; };
 		AB28B8F805B79D2F00A9906C /* NSSplitViewSave.h in Headers */ = {isa = PBXBuildFile; fileRef = AB08564B059211F9009962D7 /* NSSplitViewSave.h */; };
-		AB28B8F905B79D3000A9906C /* Accelerate.h in Headers */ = {isa = PBXBuildFile; fileRef = AB5E1AFA05956BB600C48BEB /* Accelerate.h */; };
 		AB28B8FC05B79D3400A9906C /* dicomFile.m in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* dicomFile.m */; };
 		AB28B8FF05B79D3600A9906C /* DicomDirParser.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */; };
 		AB28B90005B79D3800A9906C /* DCMView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB59B18205697FD400B77AFC /* DCMView.m */; };
@@ -4041,7 +4061,6 @@
 		CE3F99470C84724B00CB38F1 /* LogWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */; };
 		CE3F99480C84724B00CB38F1 /* FlyThru.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EC0C84724B00CB38F1 /* FlyThru.xib */; };
 		CE3F994A0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */; };
-		CE3F994D0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */; };
 		CE3F99500C84724B00CB38F1 /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FC0C84724B00CB38F1 /* Splash.xib */; };
 		CE3F99510C84724B00CB38F1 /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FE0C84724B00CB38F1 /* ROI.xib */; };
 		CE3F99520C84724B00CB38F1 /* CalciumScoring.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */; };
@@ -6407,7 +6426,6 @@
 		CEC7069910A5C844008935EA /* ROIVolumeManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E60C84724B00CB38F1 /* ROIVolumeManager.xib */; };
 		CEC7069B10A5C844008935EA /* LogWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */; };
 		CEC7069D10A5C844008935EA /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */; };
-		CEC7069F10A5C844008935EA /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */; };
 		CEC706A010A5C844008935EA /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FC0C84724B00CB38F1 /* Splash.xib */; };
 		CEC706A110A5C844008935EA /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FE0C84724B00CB38F1 /* ROI.xib */; };
 		CEC706A210A5C844008935EA /* CalciumScoring.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */; };
@@ -6526,7 +6544,6 @@
 		CEC7073710A5C844008935EA /* PlotWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6E2CB006CAE45A00BC7907 /* PlotWindow.m */; };
 		CEC7073810A5C844008935EA /* PlotView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6E2CB106CAE45A00BC7907 /* PlotView.m */; };
 		CEC7073C10A5C844008935EA /* DCMCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = BF00C95906F3F43900715191 /* DCMCursor.m */; };
-		CEC7073D10A5C844008935EA /* PreferencePaneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2BE37C0715D2820017898A /* PreferencePaneController.m */; };
 		CEC7073E10A5C844008935EA /* DCMCalendarScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECB4B40072EF9F800C2CFC4 /* DCMCalendarScript.m */; };
 		CEC7073F10A5C844008935EA /* iPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA20534073A810100F0DAB7 /* iPhoto.m */; };
 		CEC7074210A5C844008935EA /* CurvedMPR.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3E695C07AFB6DE00541E20 /* CurvedMPR.m */; };
@@ -6733,7 +6750,6 @@
 		CEC7098610A5C844008935EA /* BrowserMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC47B580C031397001CEA21 /* BrowserMatrix.m */; };
 		CEC7098A10A5C844008935EA /* JPEGExif.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB230BA0C2F95DD00B38596 /* JPEGExif.m */; };
 		CEC7098C10A5C844008935EA /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */; };
-		CEC7099110A5C844008935EA /* PreferencePaneControllerDCMTK.mm in Sources */ = {isa = PBXBuildFile; fileRef = CED2CF8E0C9B28580047F123 /* PreferencePaneControllerDCMTK.mm */; };
 		CEC7099210A5C844008935EA /* CIADICOMField.m in Sources */ = {isa = PBXBuildFile; fileRef = CED2CF950C9B288C0047F123 /* CIADICOMField.m */; };
 		CEC7099310A5C844008935EA /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
 		CEC7099710A5C844008935EA /* NFHUDButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE720CB0D4BE00FB2C3D /* NFHUDButtonCell.m */; };
@@ -6798,7 +6814,6 @@
 		CEC7FC7810A5C844008935EA /* SplashScreen.h in Headers */ = {isa = PBXBuildFile; fileRef = AB4A6C9C056E81FA009E6C6E /* SplashScreen.h */; };
 		CEC7FC7910A5C844008935EA /* dicomFile.h in Headers */ = {isa = PBXBuildFile; fileRef = AB06EDF005635642006AFFB9 /* dicomFile.h */; };
 		CEC7FC7A10A5C844008935EA /* NSSplitViewSave.h in Headers */ = {isa = PBXBuildFile; fileRef = AB08564B059211F9009962D7 /* NSSplitViewSave.h */; };
-		CEC7FC7B10A5C844008935EA /* Accelerate.h in Headers */ = {isa = PBXBuildFile; fileRef = AB5E1AFA05956BB600C48BEB /* Accelerate.h */; };
 		CEC7FC7C10A5C844008935EA /* DicomDirParser.h in Headers */ = {isa = PBXBuildFile; fileRef = AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */; };
 		CEC7FC7D10A5C844008935EA /* DCMView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB59B18405697FD700B77AFC /* DCMView.h */; };
 		CEC7FC7E10A5C844008935EA /* ColorTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0CA45F05BE159500F52729 /* ColorTransferView.h */; };
@@ -6854,7 +6869,6 @@
 		CEC7FCC510A5C844008935EA /* PlotView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6E2CAE06CAE45A00BC7907 /* PlotView.h */; };
 		CEC7FCC610A5C844008935EA /* PlotWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6E2CAF06CAE45A00BC7907 /* PlotWindow.h */; };
 		CEC7FCC910A5C844008935EA /* DCMCursor.h in Headers */ = {isa = PBXBuildFile; fileRef = BF00C95806F3F43900715191 /* DCMCursor.h */; };
-		CEC7FCCA10A5C844008935EA /* PreferencePaneController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2BE37B0715D2820017898A /* PreferencePaneController.h */; };
 		CEC7FCCB10A5C844008935EA /* DCMCalendarScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECB4B3F072EF9F800C2CFC4 /* DCMCalendarScript.h */; };
 		CEC7FCCC10A5C844008935EA /* iPhoto.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA20533073A810100F0DAB7 /* iPhoto.h */; };
 		CEC7FCCD10A5C844008935EA /* jas_cm.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14AB0768392E00375F65 /* jas_cm.h */; };
@@ -7161,7 +7175,6 @@
 		CEC7FF0410A5C844008935EA /* JPEGExif.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB230B90C2F95DD00B38596 /* JPEGExif.h */; };
 		CEC7FF0610A5C844008935EA /* NrrdIO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */; };
 		CEC7FF0A10A5C844008935EA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
-		CEC7FF0C10A5C844008935EA /* PreferencePaneControllerDCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = CED2CF8D0C9B28580047F123 /* PreferencePaneControllerDCMTK.h */; };
 		CEC7FF0D10A5C844008935EA /* CIADICOMField.h in Headers */ = {isa = PBXBuildFile; fileRef = CED2CF960C9B288C0047F123 /* CIADICOMField.h */; };
 		CEC7FF0E10A5C844008935EA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = A98FFBE40CA92B58000291C8 /* altivecFunctions.h */; };
 		CEC7FF1210A5C844008935EA /* NFHUDSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE680CB0D4BE00FB2C3D /* NFHUDSlider.h */; };
@@ -7406,8 +7419,6 @@
 		CECEF72F081BB265002ECC99 /* DICOMExport.m in Sources */ = {isa = PBXBuildFile; fileRef = CECEF72D081BB265002ECC99 /* DICOMExport.m */; };
 		CED1FD1B1035E9BB0076AB33 /* SetPixelValue.png in Resources */ = {isa = PBXBuildFile; fileRef = CED1FD191035E9BB0076AB33 /* SetPixelValue.png */; };
 		CED1FD1C1035E9BB0076AB33 /* GrowingRegion.png in Resources */ = {isa = PBXBuildFile; fileRef = CED1FD1A1035E9BB0076AB33 /* GrowingRegion.png */; };
-		CED2CF8F0C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = CED2CF8D0C9B28580047F123 /* PreferencePaneControllerDCMTK.h */; };
-		CED2CF900C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */ = {isa = PBXBuildFile; fileRef = CED2CF8E0C9B28580047F123 /* PreferencePaneControllerDCMTK.mm */; };
 		CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */ = {isa = PBXBuildFile; fileRef = CED2CF950C9B288C0047F123 /* CIADICOMField.m */; };
 		CED2CF980C9B288C0047F123 /* CIADICOMField.h in Headers */ = {isa = PBXBuildFile; fileRef = CED2CF960C9B288C0047F123 /* CIADICOMField.h */; };
 		CED555F70DF48BBA0054351B /* libitkv3p_netlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CED555D90DF48BBA0054351B /* libitkv3p_netlib.a */; };
@@ -7956,6 +7967,15 @@
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
 		59BDEC2D117C92B2007F1F2C /* OsiriX Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OsiriX Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		59BDEC43117C9366007F1F2C /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = "OsiriX Launcher/main.mm"; sourceTree = "<group>"; };
+		59BDEF3F117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaultsController+OsiriX.h"; sourceTree = "<group>"; };
+		59BDEF40117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSUserDefaultsController+OsiriX.mm"; sourceTree = "<group>"; };
+		59BDF105117EE61E007F1F2C /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PreferencesWindow.xib; sourceTree = "<group>"; };
+		59BDF110117EE6A1007F1F2C /* PreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesWindowController.h; sourceTree = "<group>"; };
+		59BDF111117EE6A1007F1F2C /* PreferencesWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferencesWindowController.mm; sourceTree = "<group>"; };
+		59BDF11C117EE72C007F1F2C /* PreferencesWindowController+DCMTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PreferencesWindowController+DCMTK.h"; sourceTree = "<group>"; };
+		59BDF11D117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "PreferencesWindowController+DCMTK.mm"; sourceTree = "<group>"; };
+		59BDF125117EFA41007F1F2C /* PreferencesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesView.h; sourceTree = "<group>"; };
+		59BDF126117EFA41007F1F2C /* PreferencesView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferencesView.mm; sourceTree = "<group>"; };
 		59E088A70FF0AB9400452F19 /* Notifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		59E088A80FF0AB9400452F19 /* Notifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Notifications.m; sourceTree = "<group>"; };
 		59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+OsiriX.h"; sourceTree = "<group>"; };
@@ -7987,8 +8007,6 @@
 		7E172F630933D5FF0057BCE8 /* DCMObjectPixelDataImport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMObjectPixelDataImport.m; sourceTree = "<group>"; };
 		7E2269C406BEF624003B09E5 /* jpegdatasrc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jpegdatasrc.h; sourceTree = "<group>"; };
 		7E2269C506BEF624003B09E5 /* jpegdatasrc.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = jpegdatasrc.m; sourceTree = "<group>"; };
-		7E2BE37B0715D2820017898A /* PreferencePaneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencePaneController.h; sourceTree = "<group>"; };
-		7E2BE37C0715D2820017898A /* PreferencePaneController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencePaneController.m; sourceTree = "<group>"; };
 		7E2BE3D00715DB9A0017898A /* route.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = route.tif; sourceTree = "<group>"; };
 		7E2BE3D90715DBC50017898A /* cd.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = cd.icns; sourceTree = "<group>"; };
 		7E2BE3E20715DBD40017898A /* GeneralPreferences.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = GeneralPreferences.tif; sourceTree = "<group>"; };
@@ -8468,7 +8486,6 @@
 		AB59B18205697FD400B77AFC /* DCMView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMView.m; sourceTree = "<group>"; };
 		AB59B18405697FD700B77AFC /* DCMView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMView.h; sourceTree = "<group>"; };
 		AB5E1A300595697700C48BEB /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
-		AB5E1AFA05956BB600C48BEB /* Accelerate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Accelerate.h; path = /System/Library/Frameworks/Accelerate.framework/Versions/A/Headers/Accelerate.h; sourceTree = "<absolute>"; };
 		AB64A2D60C4E0F61000E0981 /* HornRegistration.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = HornRegistration.mm; sourceTree = "<group>"; };
 		AB64A2D70C4E0F61000E0981 /* HornRegistration.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = HornRegistration.h; sourceTree = "<group>"; };
 		AB695A1D063D8261002BDF78 /* Analyze.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analyze.h; sourceTree = "<group>"; };
@@ -11319,7 +11336,6 @@
 		CE3F98EB0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LogWindow.xib; sourceTree = "<group>"; };
 		CE3F98ED0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/FlyThru.xib; sourceTree = "<group>"; };
 		CE3F98F10C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ToolbarPanel.xib; sourceTree = "<group>"; };
-		CE3F98F70C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PreferencePanesViewer.xib; sourceTree = "<group>"; };
 		CE3F98FD0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Splash.xib; sourceTree = "<group>"; };
 		CE3F98FF0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROI.xib; sourceTree = "<group>"; };
 		CE3F99010C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CalciumScoring.xib; sourceTree = "<group>"; };
@@ -11497,8 +11513,6 @@
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
 		CED1FD191035E9BB0076AB33 /* SetPixelValue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SetPixelValue.png; sourceTree = "<group>"; };
 		CED1FD1A1035E9BB0076AB33 /* GrowingRegion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GrowingRegion.png; sourceTree = "<group>"; };
-		CED2CF8D0C9B28580047F123 /* PreferencePaneControllerDCMTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencePaneControllerDCMTK.h; sourceTree = "<group>"; };
-		CED2CF8E0C9B28580047F123 /* PreferencePaneControllerDCMTK.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferencePaneControllerDCMTK.mm; sourceTree = "<group>"; };
 		CED2CF950C9B288C0047F123 /* CIADICOMField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CIADICOMField.m; path = "Preference Panes/OSICustomImageAnnotations/CIADICOMField.m"; sourceTree = "<group>"; };
 		CED2CF960C9B288C0047F123 /* CIADICOMField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CIADICOMField.h; path = "Preference Panes/OSICustomImageAnnotations/CIADICOMField.h"; sourceTree = "<group>"; };
 		CED555D90DF48BBA0054351B /* libitkv3p_netlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkv3p_netlib.a; path = ITK180/bin/libitkv3p_netlib.a; sourceTree = "<group>"; };
@@ -11817,6 +11831,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				59BDF10B117EE68F007F1F2C /* Preferences */,
 				ABD9E6D305B49DB70077115D /* 2D Viewer */,
 				ABD9E69C05B49D6C0077115D /* Database */,
 				AB8B8BDC05603E3A00CA4134 /* XML */,
@@ -12025,7 +12040,7 @@
 				CE3F98E80C84724B00CB38F1 /* PETCT.xib */,
 				CE3F991C0C84724B00CB38F1 /* Plot.xib */,
 				CE3F99160C84724B00CB38F1 /* PluginManager.xib */,
-				CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */,
+				59BDF104117EE61E007F1F2C /* PreferencesWindow.xib */,
 				CE3F99120C84724B00CB38F1 /* Query.xib */,
 				CE3F99320C84724B00CB38F1 /* QuicktimeExport.xib */,
 				CE3F98FE0C84724B00CB38F1 /* ROI.xib */,
@@ -12144,6 +12159,19 @@
 				59BDEC43117C9366007F1F2C /* main.mm */,
 			);
 			name = "OsiriX Launcher";
+			sourceTree = "<group>";
+		};
+		59BDF10B117EE68F007F1F2C /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				59BDF110117EE6A1007F1F2C /* PreferencesWindowController.h */,
+				59BDF111117EE6A1007F1F2C /* PreferencesWindowController.mm */,
+				59BDF11C117EE72C007F1F2C /* PreferencesWindowController+DCMTK.h */,
+				59BDF11D117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm */,
+				59BDF125117EFA41007F1F2C /* PreferencesView.h */,
+				59BDF126117EFA41007F1F2C /* PreferencesView.mm */,
+			);
+			name = Preferences;
 			sourceTree = "<group>";
 		};
 		7E0339E307415C330025DDB4 /* Burning */ = {
@@ -12786,7 +12814,8 @@
 		ABAA285A058A675600F0601D /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				AB5E1AFA05956BB600C48BEB /* Accelerate.h */,
+				59BDEF3F117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h */,
+				59BDEF40117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm */,
 				CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */,
 				A98FFBE30CA92B58000291C8 /* altivecFunctions.c */,
 				A98FFBE40CA92B58000291C8 /* altivecFunctions.h */,
@@ -13230,10 +13259,6 @@
 				CE0CB170084A623C00C6385F /* DCMPix.h */,
 				CE0CB16F084A623C00C6385F /* DCMPix.m */,
 				AB695A1D063D8261002BDF78 /* Analyze.h */,
-				7E2BE37B0715D2820017898A /* PreferencePaneController.h */,
-				7E2BE37C0715D2820017898A /* PreferencePaneController.m */,
-				CED2CF8D0C9B28580047F123 /* PreferencePaneControllerDCMTK.h */,
-				CED2CF8E0C9B28580047F123 /* PreferencePaneControllerDCMTK.mm */,
 				CED2CF950C9B288C0047F123 /* CIADICOMField.m */,
 				CED2CF960C9B288C0047F123 /* CIADICOMField.h */,
 				ABCB2D4F0655B19A006C5630 /* SearchWindowController.h */,
@@ -16453,7 +16478,6 @@
 				AB28B8F105B79D2900A9906C /* SplashScreen.h in Headers */,
 				AB28B8F705B79D2E00A9906C /* dicomFile.h in Headers */,
 				AB28B8F805B79D2F00A9906C /* NSSplitViewSave.h in Headers */,
-				AB28B8F905B79D3000A9906C /* Accelerate.h in Headers */,
 				AB28B90305B79D3A00A9906C /* DicomDirParser.h in Headers */,
 				AB28B90405B79D3B00A9906C /* DCMView.h in Headers */,
 				AB0CA46105BE159500F52729 /* ColorTransferView.h in Headers */,
@@ -16531,7 +16555,6 @@
 				CE74456906DBA4CB0034D05E /* ITK.h in Headers */,
 				CE4A922E06DBF255006DAAF7 /* ITKSegmentation3D.h in Headers */,
 				BF00C95C06F3F43900715191 /* DCMCursor.h in Headers */,
-				7E2BE37D0715D2820017898A /* PreferencePaneController.h in Headers */,
 				7ECB4B41072EF9F800C2CFC4 /* DCMCalendarScript.h in Headers */,
 				CEA20537073A810100F0DAB7 /* iPhoto.h in Headers */,
 				CEDB15280768392F00375F65 /* jas_cm.h in Headers */,
@@ -17093,7 +17116,6 @@
 				CE882AC60C889B6500D4F982 /* XMLRPCMethods.h in Headers */,
 				32E422150C97301600E193CA /* altivecFunctions.h in Headers */,
 				A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */,
-				CED2CF8F0C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */,
 				CED2CF980C9B288C0047F123 /* CIADICOMField.h in Headers */,
 				A98FFBE70CA92B58000291C8 /* altivecFunctions.h in Headers */,
 				A975206B0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
@@ -18799,6 +18821,10 @@
 				CE111A791165CE7F00EDD254 /* sirsa.h in Headers */,
 				59E379CF116B293A00E84FE3 /* NSImage+OsiriX.h in Headers */,
 				59E379D8116B295B00E84FE3 /* DicomAlbum.h in Headers */,
+				59BDEF41117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h in Headers */,
+				59BDF112117EE6A1007F1F2C /* PreferencesWindowController.h in Headers */,
+				59BDF11E117EE72C007F1F2C /* PreferencesWindowController+DCMTK.h in Headers */,
+				59BDF127117EFA41007F1F2C /* PreferencesView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18896,7 +18922,6 @@
 				CEC7FC7810A5C844008935EA /* SplashScreen.h in Headers */,
 				CEC7FC7910A5C844008935EA /* dicomFile.h in Headers */,
 				CEC7FC7A10A5C844008935EA /* NSSplitViewSave.h in Headers */,
-				CEC7FC7B10A5C844008935EA /* Accelerate.h in Headers */,
 				CEC7FC7C10A5C844008935EA /* DicomDirParser.h in Headers */,
 				CEC7FC7D10A5C844008935EA /* DCMView.h in Headers */,
 				CEC7FC7E10A5C844008935EA /* ColorTransferView.h in Headers */,
@@ -18952,7 +18977,6 @@
 				CEC7FCC510A5C844008935EA /* PlotView.h in Headers */,
 				CEC7FCC610A5C844008935EA /* PlotWindow.h in Headers */,
 				CEC7FCC910A5C844008935EA /* DCMCursor.h in Headers */,
-				CEC7FCCA10A5C844008935EA /* PreferencePaneController.h in Headers */,
 				CEC7FCCB10A5C844008935EA /* DCMCalendarScript.h in Headers */,
 				CEC7FCCC10A5C844008935EA /* iPhoto.h in Headers */,
 				CEC7FCCD10A5C844008935EA /* jas_cm.h in Headers */,
@@ -19259,7 +19283,6 @@
 				CEC7FF0410A5C844008935EA /* JPEGExif.h in Headers */,
 				CEC7FF0610A5C844008935EA /* NrrdIO.h in Headers */,
 				CEC7FF0A10A5C844008935EA /* altivecFunctions.h in Headers */,
-				CEC7FF0C10A5C844008935EA /* PreferencePaneControllerDCMTK.h in Headers */,
 				CEC7FF0D10A5C844008935EA /* CIADICOMField.h in Headers */,
 				CEC7FF0E10A5C844008935EA /* altivecFunctions.h in Headers */,
 				CEC7FF1210A5C844008935EA /* NFHUDSlider.h in Headers */,
@@ -20905,6 +20928,10 @@
 				CE111A7A1165CE8D00EDD254 /* sirsa.h in Headers */,
 				59E379D1116B294200E84FE3 /* NSImage+OsiriX.h in Headers */,
 				59E379DA116B295B00E84FE3 /* DicomAlbum.h in Headers */,
+				59BDEF43117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h in Headers */,
+				59BDF114117EE6A1007F1F2C /* PreferencesWindowController.h in Headers */,
+				59BDF120117EE72C007F1F2C /* PreferencesWindowController+DCMTK.h in Headers */,
+				59BDF129117EFA41007F1F2C /* PreferencesView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21642,7 +21669,6 @@
 				CE3F99470C84724B00CB38F1 /* LogWindow.xib in Resources */,
 				CE3F99480C84724B00CB38F1 /* FlyThru.xib in Resources */,
 				CE3F994A0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */,
-				CE3F994D0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */,
 				CE3F99500C84724B00CB38F1 /* Splash.xib in Resources */,
 				CE3F99510C84724B00CB38F1 /* ROI.xib in Resources */,
 				CE3F99520C84724B00CB38F1 /* CalciumScoring.xib in Resources */,
@@ -21726,6 +21752,7 @@
 				A917F37D10F4F20C00344C5D /* CertSmallRoot.tif in Resources */,
 				A917F37E10F4F20C00344C5D /* CertSmallStd.tif in Resources */,
 				AB10FA231129302A009EB238 /* PopUpArrows.png in Resources */,
+				59BDF106117EE61E007F1F2C /* PreferencesWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22020,7 +22047,6 @@
 				CEC7069910A5C844008935EA /* ROIVolumeManager.xib in Resources */,
 				CEC7069B10A5C844008935EA /* LogWindow.xib in Resources */,
 				CEC7069D10A5C844008935EA /* ToolbarPanel.xib in Resources */,
-				CEC7069F10A5C844008935EA /* PreferencePanesViewer.xib in Resources */,
 				CEC706A010A5C844008935EA /* Splash.xib in Resources */,
 				CEC706A110A5C844008935EA /* ROI.xib in Resources */,
 				CEC706A210A5C844008935EA /* CalciumScoring.xib in Resources */,
@@ -22077,6 +22103,7 @@
 				CEC706EC10A5C844008935EA /* GrowingRegion.png in Resources */,
 				CE4B5CFD10E5F9DE00C11948 /* Safari.tif in Resources */,
 				AB10FA241129302A009EB238 /* PopUpArrows.png in Resources */,
+				59BDF107117EE61E007F1F2C /* PreferencesWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22552,7 +22579,6 @@
 				CE4A922D06DBF255006DAAF7 /* ITKSegmentation3D.mm in Sources */,
 				CE26442306DCF096007F5B71 /* ITKSegmentation3DController.m in Sources */,
 				BF00C95D06F3F43A00715191 /* DCMCursor.m in Sources */,
-				7E2BE37E0715D2820017898A /* PreferencePaneController.m in Sources */,
 				7ECB4B42072EF9F800C2CFC4 /* DCMCalendarScript.m in Sources */,
 				CEA20538073A810100F0DAB7 /* iPhoto.m in Sources */,
 				7EB4AAE8079494CB007AD271 /* QueryArrayController.mm in Sources */,
@@ -23133,7 +23159,6 @@
 				CE0718FE0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
 				CE882AC70C889B6500D4F982 /* XMLRPCMethods.m in Sources */,
 				A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */,
-				CED2CF900C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */,
 				CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */,
 				A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */,
 				A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
@@ -23259,6 +23284,10 @@
 				CE1119351165CA2000EDD254 /* jcdiffct.c in Sources */,
 				59E379D0116B293A00E84FE3 /* NSImage+OsiriX.m in Sources */,
 				59E379D9116B295B00E84FE3 /* DicomAlbum.m in Sources */,
+				59BDEF42117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */,
+				59BDF113117EE6A1007F1F2C /* PreferencesWindowController.mm in Sources */,
+				59BDF11F117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm in Sources */,
+				59BDF128117EFA41007F1F2C /* PreferencesView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23653,6 +23682,7 @@
 				CE142EE11119DEA5000F4A8C /* DicomDirDataSetWrite.c in Sources */,
 				CE111A631165CDA400EDD254 /* jcdiffct.c in Sources */,
 				CE111A641165CDC000EDD254 /* jcshuff.c in Sources */,
+				59BDEF45117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23945,7 +23975,6 @@
 				CEC7073710A5C844008935EA /* PlotWindow.m in Sources */,
 				CEC7073810A5C844008935EA /* PlotView.m in Sources */,
 				CEC7073C10A5C844008935EA /* DCMCursor.m in Sources */,
-				CEC7073D10A5C844008935EA /* PreferencePaneController.m in Sources */,
 				CEC7073E10A5C844008935EA /* DCMCalendarScript.m in Sources */,
 				CEC7073F10A5C844008935EA /* iPhoto.m in Sources */,
 				CEC7074210A5C844008935EA /* CurvedMPR.m in Sources */,
@@ -24153,7 +24182,6 @@
 				CEC7098610A5C844008935EA /* BrowserMatrix.m in Sources */,
 				CEC7098A10A5C844008935EA /* JPEGExif.m in Sources */,
 				CEC7098C10A5C844008935EA /* OsiriXDB_DataModel.xcdatamodel in Sources */,
-				CEC7099110A5C844008935EA /* PreferencePaneControllerDCMTK.mm in Sources */,
 				CEC7099210A5C844008935EA /* CIADICOMField.m in Sources */,
 				CEC7099310A5C844008935EA /* altivecFunctions.c in Sources */,
 				CEC7099710A5C844008935EA /* NFHUDButtonCell.m in Sources */,
@@ -24418,6 +24446,14 @@
 				CE0E4FE1117059E6007D7657 /* jquant1.c in Sources */,
 				CE0E4FE2117059E6007D7657 /* jquant2.c in Sources */,
 				CE0E4FE3117059E6007D7657 /* jutils.c in Sources */,
+				59BDEF44117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */,
+				59BDF115117EE6A1007F1F2C /* PreferencesWindowController.mm in Sources */,
+				59BDF121117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm in Sources */,
+				59BDF12A117EFA41007F1F2C /* PreferencesView.mm in Sources */,
+				59BDF63111818DC7007F1F2C /* N2Debug.mm in Sources */,
+				59BDF8541181DDAF007F1F2C /* NSImage+N2.mm in Sources */,
+				59BDF8561181DDC1007F1F2C /* NSColor+N2.mm in Sources */,
+				59BDF8571181DDD6007F1F2C /* N2Operators.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24568,6 +24604,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		59BDF104117EE61E007F1F2C /* PreferencesWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				59BDF105117EE61E007F1F2C /* English */,
+			);
+			name = PreferencesWindow.xib;
+			sourceTree = "<group>";
+		};
 		8459A7250F5D63EF00146B28 /* VREmpty.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -24670,14 +24714,6 @@
 				CE3F98F10C84724B00CB38F1 /* English */,
 			);
 			name = ToolbarPanel.xib;
-			sourceTree = "<group>";
-		};
-		CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F98F70C84724B00CB38F1 /* English */,
-			);
-			name = PreferencePanesViewer.xib;
 			sourceTree = "<group>";
 		};
 		CE3F98FC0C84724B00CB38F1 /* Splash.xib */ = {
@@ -26075,7 +26111,7 @@
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
 				GCC_WARN_MISSING_PARENTHESES = NO;
 				GCC_WARN_PROTOTYPE_CONVERSION = NO;
 				GCC_WARN_SHADOW = NO;
@@ -26149,7 +26185,7 @@
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
@@ -26225,7 +26261,7 @@
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_SHADOW = NO;

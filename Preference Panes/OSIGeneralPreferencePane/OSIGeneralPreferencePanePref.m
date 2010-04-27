@@ -14,7 +14,6 @@
 
 
 #import "OSIGeneralPreferencePanePref.h"
-#import "PreferencePaneController.h"
 
 @interface IsQualityEnabled: NSValueTransformer {}
 @end
