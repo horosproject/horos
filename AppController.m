@@ -3262,25 +3262,19 @@ static BOOL initialized = NO;
 	[splashController affiche];
 }
 
-- (IBAction) showPreferencePanel: (id) sender
-{
-	NSArray *winList = [NSApp windows];
-	BOOL	found = NO;
-					
-	for( id loopItem in winList)
-	{
-		if( [[[loopItem windowController] windowNibName] isEqualToString:@"PreferencePanesViewer"])
-		{
-			found = YES;
-			[[loopItem windowController] showWindow:self];
-		}
-	}
+-(IBAction)showPreferencePanel:(id)sender {
+	PreferencesWindowController* prefsController = NULL;
 	
-	if( found == NO)
-	{
-		PreferencesWindowController *prefController = [[PreferencesWindowController alloc] init];
-		[prefController showWindow: self];
-	}
+	for (NSWindow* window in [NSApp windows])
+		if ([window.windowController isKindOfClass:[PreferencesWindowController class]]) {
+			prefsController = window.windowController;
+			break;
+		}
+	
+	if (!prefsController)
+		prefsController = [[PreferencesWindowController alloc] init];
+	
+	[prefsController showWindow:sender];
 }
 
 
