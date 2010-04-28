@@ -7932,45 +7932,48 @@ static ViewerController *draggedController = nil;
 //	}
 //	free( tempData);
 	
-	int mpprocessors = MPProcessors();
-	if( mpprocessors > 4)
-		mpprocessors = 4;
-	
-	flipDataThread = [[NSConditionLock alloc] initWithCondition: mpprocessors];
-	
-	int no2 = no/2;
-	
-	for( int i = 0; i < mpprocessors; i++)
+	if( no > 100)
 	{
-		NSMutableDictionary *d = [NSMutableDictionary dictionary];
+		int mpprocessors = MPProcessors();
+		if( mpprocessors > 4)
+			mpprocessors = 4;
 		
-		[d setObject: [NSNumber numberWithInt: x*y] forKey: @"size"];
-		[d setObject: [NSValue valueWithPointer: ptr] forKey: @"ptr"];
-		[d setObject: [NSNumber numberWithInt: no] forKey: @"no"];
+		flipDataThread = [[NSConditionLock alloc] initWithCondition: mpprocessors];
 		
-		int from = (i * no2) / mpprocessors;
-		int to = ((i+1) * no2) / mpprocessors;
+		int no2 = no/2;
 		
-		[d setObject: [NSNumber numberWithInt: from] forKey: @"start"];
-		[d setObject: [NSNumber numberWithInt: to] forKey: @"end"];
+		for( int i = 0; i < mpprocessors; i++)
+		{
+			NSMutableDictionary *d = [NSMutableDictionary dictionary];
+			
+			[d setObject: [NSNumber numberWithInt: x*y] forKey: @"size"];
+			[d setObject: [NSValue valueWithPointer: ptr] forKey: @"ptr"];
+			[d setObject: [NSNumber numberWithInt: no] forKey: @"no"];
+			
+			int from = (i * no2) / mpprocessors;
+			int to = ((i+1) * no2) / mpprocessors;
+			
+			[d setObject: [NSNumber numberWithInt: from] forKey: @"start"];
+			[d setObject: [NSNumber numberWithInt: to] forKey: @"end"];
+			
+			[NSThread detachNewThreadSelector: @selector( flipDataThread:) toTarget: self withObject: d];
+		}
 		
-		[NSThread detachNewThreadSelector: @selector( flipDataThread:) toTarget: self withObject: d];
+		[flipDataThread lockWhenCondition: 0];
+		[flipDataThread unlock];
+		
+		[flipDataThread release];
 	}
-	
-	[flipDataThread lockWhenCondition: 0];
-	[flipDataThread unlock];
-	
-	[flipDataThread release];
-	
 //	NSLog(@"flip data-B");
-//	
-//	vImage_Buffer src, dest;
-//	src.height = dest.height = no;
-//	src.width = dest.width = x*y;
-//	src.rowBytes = dest.rowBytes = x*y*4;
-//	src.data = dest.data = ptr;
-//	vImageVerticalReflect_PlanarF ( &src, &dest, 0);
-//	
+	else
+	{
+		vImage_Buffer src, dest;
+		src.height = dest.height = no;
+		src.width = dest.width = x*y;
+		src.rowBytes = dest.rowBytes = x*y*4;
+		src.data = dest.data = ptr;
+		vImageVerticalReflect_PlanarF ( &src, &dest, 0);		
+	}
 //	NSLog(@"flip data-C");
 }
 
