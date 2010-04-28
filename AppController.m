@@ -3027,17 +3027,17 @@ static BOOL initialized = NO;
 	
 	[self initTilingWindows];
 
-//	#if __LP64__
-//	#else
-//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideAlertRunIn32bit"] == NO)
-//	{
-//		for( NSNumber *arc in [[NSBundle mainBundle] executableArchitectures])
-//		{
-//			if( [arc integerValue] == NSBundleExecutableArchitectureX86_64)
-//				dumpLSArchitecturesForX86_64();
-//		}
-//	}
-//	#endif
+	#if __LP64__
+	#else
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideAlertRunIn32bit"] == NO)
+	{
+		for( NSNumber *arc in [[NSBundle mainBundle] executableArchitectures])
+		{
+			if( [arc integerValue] == NSBundleExecutableArchitectureX86_64)
+				dumpLSArchitecturesForX86_64();
+		}
+	}
+	#endif
 	
 //	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
 }

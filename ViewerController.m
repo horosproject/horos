@@ -7885,32 +7885,92 @@ static ViewerController *draggedController = nil;
 	}
 }
 
+- (void) flipDataThread: (NSDictionary*) d
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	long size = [[d objectForKey: @"size"] intValue];
+	char *ptr = [[d objectForKey: @"ptr"] pointerValue];
+	int start = [[d objectForKey: @"start"] intValue];
+	int end = [[d objectForKey: @"end"] intValue];
+	int no = [[d objectForKey: @"no"] intValue];
+	
+	size *= 4;
+	char* tempData = (char*) malloc( size);
+	if( tempData)
+	{
+		for( int i = start; i < end; i++)
+		{
+			memmove( tempData, ptr + size*i, size);
+			memmove( ptr + size*i, ptr + size*(no-1-i), size);
+			memmove( ptr + size*(no-1-i), tempData, size);
+		}
+		free( tempData);
+	}
+	
+	[flipDataThread lock];
+	[flipDataThread unlockWithCondition: [flipDataThread condition]-1];
+	
+	[pool release];
+}
+
 - (void) flipData:(char*) ptr :(long) no :(long) x :(long) y
 {
 	
 //	NSLog(@"flip data-A");
+	
+//	long size = x*y;
 //	
 //	size *= 4;
-//	tempData = (char*) malloc( size);
-//	for( i = 0; i < no/2; i++)
+//	char* tempData = (char*) malloc( size);
+//	
+//	for( int i = 0; i < no/2; i++)
 //	{
-//		BlockMoveData( ptr + size*i, tempData, size);
-//		BlockMoveData( ptr + size*(no-1-i), ptr + size*i, size);
-//		BlockMoveData( tempData, ptr + size*(no-1-i), size);
+//		memcpy( tempData, ptr + size*i, size);
+//		memcpy( ptr + size*i, ptr + size*(no-1-i), size);
+//		memcpy( ptr + size*(no-1-i), tempData, size);
 //	}
 //	free( tempData);
-//	
+	
+	int mpprocessors = MPProcessors();
+	if( mpprocessors > 4)
+		mpprocessors = 4;
+	
+	flipDataThread = [[NSConditionLock alloc] initWithCondition: mpprocessors];
+	
+	int no2 = no/2;
+	
+	for( int i = 0; i < mpprocessors; i++)
+	{
+		NSMutableDictionary *d = [NSMutableDictionary dictionary];
+		
+		[d setObject: [NSNumber numberWithInt: x*y] forKey: @"size"];
+		[d setObject: [NSValue valueWithPointer: ptr] forKey: @"ptr"];
+		[d setObject: [NSNumber numberWithInt: no] forKey: @"no"];
+		
+		int from = (i * no2) / mpprocessors;
+		int to = ((i+1) * no2) / mpprocessors;
+		
+		[d setObject: [NSNumber numberWithInt: from] forKey: @"start"];
+		[d setObject: [NSNumber numberWithInt: to] forKey: @"end"];
+		
+		[NSThread detachNewThreadSelector: @selector( flipDataThread:) toTarget: self withObject: d];
+	}
+	
+	[flipDataThread lockWhenCondition: 0];
+	[flipDataThread unlock];
+	
+	[flipDataThread release];
+	
 //	NSLog(@"flip data-B");
-	
-// The vImage version seems about 20% faster on my Core Duo processor.. maybe even faster on dual-octo-Xeon?
-	
-	vImage_Buffer src, dest;
-	src.height = dest.height = no;
-	src.width = dest.width = x*y;
-	src.rowBytes = dest.rowBytes = x*y*4;
-	src.data = dest.data = ptr;
-	vImageVerticalReflect_PlanarF ( &src, &dest, 0);
-	
+//	
+//	vImage_Buffer src, dest;
+//	src.height = dest.height = no;
+//	src.width = dest.width = x*y;
+//	src.rowBytes = dest.rowBytes = x*y*4;
+//	src.data = dest.data = ptr;
+//	vImageVerticalReflect_PlanarF ( &src, &dest, 0);
+//	
 //	NSLog(@"flip data-C");
 }
 
