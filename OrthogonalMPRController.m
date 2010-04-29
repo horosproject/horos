@@ -80,7 +80,6 @@
 
 	if( [vC blendingController] == nil)
 	{
-		NSLog( @"originalROIList");
 		[originalROIList release];
 		originalROIList = [[[vC imageView] dcmRoiList] retain];
 	}
