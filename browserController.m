@@ -11289,8 +11289,8 @@ static BOOL needToRezoom;
 				// Sort images with "instanceNumber"
 				if( sortSeriesBySliceLocation == 0)
 					sort = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: NO] autorelease];
-				else if( sortSeriesBySliceLocation > 0)
-					sort = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: NO] autorelease];
+				else if( sortSeriesBySliceLocation < 0)
+					sort = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: YES] autorelease];
 				
 				if( sort)
 				{
@@ -11300,6 +11300,7 @@ static BOOL needToRezoom;
 					
 					toOpenArray = resortedToOpenArray;
 					preFlippedData = YES;
+					NSLog( @"Pre-Flip Data");
 				}
 			}
 			
@@ -11503,8 +11504,8 @@ static BOOL needToRezoom;
 
 - (void) processOpenViewerDICOMFromArray:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer: (ViewerController*) viewer
 {
-	long				numberImages;
-	BOOL				movieError = NO;
+	long numberImages;
+	BOOL movieError = NO, tryToFlipData = NO;
 	
 	if( [toOpenArray count] > 2)
 	{
@@ -11576,6 +11577,7 @@ static BOOL needToRezoom;
 				}
 			}
 			
+			tryToFlipData = YES;
 			toOpenArray = splittedSeries;
 		}
 		
@@ -12065,10 +12067,11 @@ static BOOL needToRezoom;
 				}
 			}
 		}
+		tryToFlipData = YES;
 	}
 	
 	if( movieError == NO && toOpenArray != nil)
-		[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
+		[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO tryToFlipData: tryToFlipData];
 		
 	[waitOpeningWindow close];
 	[waitOpeningWindow release];
