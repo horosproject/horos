@@ -303,7 +303,9 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	
 	[animation release];
 	[animations removeAllObjects];
-
+	
+	[[self window] setMaxSize: frame.size];
+	
 	[scrollView setHasHorizontalScroller:YES];
 	[scrollView setHasVerticalScroller:YES];
 }
