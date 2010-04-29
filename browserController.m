@@ -5259,7 +5259,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 			
 			// Sort images with "instanceNumber"
 			if( sortSeriesBySliceLocation == 0)
-				sort = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending:YES] autorelease];
+				sort = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease];
 			else
 				sort = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO] autorelease];
 			
@@ -11040,9 +11040,14 @@ static BOOL needToRezoom;
 
 - (ViewerController*) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages
 {
+	return [self openViewerFromImages:toOpenArray movie:movieViewer viewer:viewer keyImagesOnly:keyImages tryToFlipData: NO];
+}
+
+- (ViewerController*) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages tryToFlipData:(BOOL) tryToFlipData
+{
 	unsigned long		*memBlockSize = calloc( [toOpenArray count], sizeof (unsigned long));
 	
-	BOOL				multiFrame = NO;
+	BOOL				multiFrame = NO, preFlippedData = NO;
 	float				*fVolumePtr = nil;
 	NSData				*volumeData = nil;
 	NSMutableArray		*viewerPix[ MAX4D];
@@ -11273,6 +11278,31 @@ static BOOL needToRezoom;
 		
 		if( notEnoughMemory == NO)
 		{
+			// Pre-Flip data ?
+			
+			if( multiFrame == NO && tryToFlipData == YES)
+			{
+				int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
+				
+				NSSortDescriptor *sort = nil;
+				
+				// Sort images with "instanceNumber"
+				if( sortSeriesBySliceLocation == 0)
+					sort = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: NO] autorelease];
+				else if( sortSeriesBySliceLocation > 0)
+					sort = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: NO] autorelease];
+				
+				if( sort)
+				{
+					NSMutableArray *resortedToOpenArray = [NSMutableArray array];
+					for( NSArray *a in toOpenArray)
+						[resortedToOpenArray addObject: [a sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]]];
+					
+					toOpenArray = resortedToOpenArray;
+					preFlippedData = YES;
+				}
+			}
+			
 			for( unsigned long x = 0; x < [toOpenArray count]; x++)
 			{
 				fVolumePtr = malloc( memBlockSize[ x] * sizeof(float));
@@ -11385,13 +11415,19 @@ static BOOL needToRezoom;
 									//reuse of existing viewer 
 									[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :NO ];
 									[viewer startLoadImageThread];
+									
+									if( preFlippedData)
+										[viewer flipDataSeries: self];
 								}
 								else
 								{
 									//creation of new viewer
-									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:[NSMutableArray arrayWithArray:correspondingObjects] withVolume:volumeData];
+									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles: [NSMutableArray arrayWithArray: correspondingObjects] withVolume:volumeData];
 									[createdViewer showWindowTransition];
 									[createdViewer startLoadImageThread];
+									
+									if( preFlippedData)
+										[createdViewer flipDataSeries: self];
 								}
 							}
 						}
@@ -12137,8 +12173,8 @@ static BOOL needToRezoom;
 					
 					NSManagedObject*  curFile = [matrixViewArray objectAtIndex: [cell tag]];
 					
-					if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"]) loadList = [self childrenArray: selectedLine];
-					if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) loadList = [self childrenArray: curFile];
+					if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"]) loadList = [self childrenArray: selectedLine onlyImages: YES];
+					if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) loadList = [self childrenArray: curFile onlyImages: YES];
 					
 					if( loadList) [toOpenArray addObject: loadList];
 				}

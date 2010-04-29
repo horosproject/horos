@@ -7916,7 +7916,7 @@ static ViewerController *draggedController = nil;
 
 - (void) flipData:(char*) ptr :(long) no :(long) x :(long) y
 {
-	
+	NSLog(@"flip data");
 //	NSLog(@"flip data-A");
 	
 //	long size = x*y;
