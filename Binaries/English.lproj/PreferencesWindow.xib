@@ -3,16 +3,16 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">10D573</string>
-		<string key="IBDocument.InterfaceBuilderVersion">732</string>
+		<string key="IBDocument.InterfaceBuilderVersion">762</string>
 		<string key="IBDocument.AppKitVersion">1038.29</string>
 		<string key="IBDocument.HIToolboxVersion">460.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">732</string>
+			<string key="NS.object.0">762</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="718"/>
+			<integer value="19"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -41,7 +41,7 @@
 			<object class="NSWindowTemplate" id="844350660">
 				<int key="NSWindowStyleMask">4367</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{114, 455}, {781, 401}}</string>
+				<string key="NSWindowRect">{{114, 455}, {783, 401}}</string>
 				<int key="NSWTFlags">1618477056</int>
 				<string key="NSWindowTitle">OsiriX Preferences</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -258,7 +258,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 					</object>
 				</object>
-				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
+				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSWindowContentMinSize">{395, 281}</string>
 				<object class="NSView" key="NSWindowView" id="241329438">
 					<reference key="NSNextResponder"/>
@@ -304,7 +304,7 @@
 										<string key="NSColorName">controlColor</string>
 										<object class="NSColor" key="NSColor">
 											<int key="NSColorSpace">3</int>
-											<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
+											<bytes key="NSWhite">MC42NjY2NjY2ODY1AA</bytes>
 										</object>
 									</object>
 									<int key="NScvFlags">4</int>
@@ -316,8 +316,8 @@
 									<reference key="NSSuperview" ref="721364935"/>
 									<reference key="NSTarget" ref="721364935"/>
 									<string key="NSAction">_doScroller:</string>
-									<double key="NSCurValue">0.6384107850265347</double>
-									<double key="NSPercent">0.95277777777777772</double>
+									<double key="NSCurValue">0.63841080665588379</double>
+									<double key="NSPercent">0.95277780294418335</double>
 								</object>
 								<object class="NSScroller" id="8701404">
 									<reference key="NSNextResponder" ref="721364935"/>
@@ -327,7 +327,7 @@
 									<int key="NSsFlags">1</int>
 									<reference key="NSTarget" ref="721364935"/>
 									<string key="NSAction">_doScroller:</string>
-									<double key="NSPercent">0.98084291187739459</double>
+									<double key="NSPercent">0.98084288835525513</double>
 								</object>
 							</object>
 							<string key="NSFrameSize">{783, 401}</string>
@@ -339,12 +339,12 @@
 							<reference key="NSContentView" ref="679497701"/>
 						</object>
 					</object>
-					<string key="NSFrameSize">{781, 401}</string>
+					<string key="NSFrameSize">{783, 401}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMinSize">{395, 335}</string>
-				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
+				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSFrameAutosaveName">PreferencesWindow</string>
 			</object>
 			<object class="NSUserDefaultsController" id="626795967">
@@ -670,9 +670,9 @@
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{10, 12}, {781, 401}}</string>
+					<string>{{10, 420}, {783, 401}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{10, 12}, {781, 401}}</string>
+					<string>{{10, 420}, {783, 401}}</string>
 					<integer value="1"/>
 					<string>{{120, 460}, {781, 401}}</string>
 					<boolean value="NO"/>
@@ -1594,6 +1594,7 @@
 			</object>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
+		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
@@ -1609,5 +1610,24 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">../../OsiriX.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
+		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<bool key="EncodedWithXMLCoder">YES</bool>
+			<object class="NSArray" key="dict.sortedKeys">
+				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>NSGoLeftTemplate</string>
+				<string>NSGoRightTemplate</string>
+				<string>NSLockUnlockedTemplate</string>
+				<string>NSMenuCheckmark</string>
+				<string>NSMenuMixedState</string>
+			</object>
+			<object class="NSMutableArray" key="dict.values">
+				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>{9, 9}</string>
+				<string>{9, 9}</string>
+				<string>{9, 12}</string>
+				<string>{9, 8}</string>
+				<string>{7, 2}</string>
+			</object>
+		</object>
 	</data>
 </archive>
