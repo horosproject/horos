@@ -284,8 +284,12 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	frame.origin.y += frame.size.height-sizeframe.size.height;
 	frame.size = sizeframe.size;
 	
-	[scrollView setHasHorizontalScroller:NO];
-	[scrollView setHasVerticalScroller:NO];
+	frame.size.height += 15;
+	frame.size.width += 15;
+	
+	
+	[scrollView setHasHorizontalScroller: NO];
+	[scrollView setHasVerticalScroller: NO];
 	
 	[animations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 						       [self window], NSViewAnimationTargetKey,
