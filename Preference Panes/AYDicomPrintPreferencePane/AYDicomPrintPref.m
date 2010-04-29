@@ -1,4 +1,5 @@
 #import "AYDicomPrintPref.h"
+#import <SecurityInterface/SFAuthorizationView.h>
 
 
 @implementation AYDicomPrintPref
@@ -7,8 +8,6 @@
 {
     id view;
     NSEnumerator *enumerator;
-	
-	if( aView == _authView) return;
 	
     if( [aView isKindOfClass: [NSControl class]])
 	{
@@ -26,23 +25,6 @@
 - (void) enableControls: (BOOL) val
 {
 	[self checkView: [self mainView] :val];
-}
-
-- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
-{
-    [self enableControls: YES];
-}
-
-- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
-{    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
-}
-
-- (NSNumber*) editable
-{
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) return [NSNumber numberWithBool: YES];
-	
-	return [NSNumber numberWithBool: NO];
 }
 
 - (id) init
@@ -64,23 +46,6 @@
 - (void) willUnselect
 {
 	[[[self mainView] window] makeFirstResponder: nil];
-}
-
-- (void) mainViewDidLoad
-{
-	[_authView setDelegate:self];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-	{
-		[_authView setString:"com.rossetantoine.osirix.aydicomprint"];
-		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-		else [self enableControls: NO];
-	}
-	else
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
-		[_authView setEnabled: NO];
-	}
-	[_authView updateStatus:self];
 }
 
 - (void) awakeFromNib

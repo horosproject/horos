@@ -15,81 +15,14 @@
 #import "QueryController.h"
 #import "PreferencesView.h"
 #import "N2Debug.h"
-
-#include <Security/Security.h>
-
-static OSStatus SetupRight(
-    AuthorizationRef    authRef, 
-    const char *        rightName, 
-    CFStringRef         rightRule, 
-    CFStringRef         rightPrompt
-)
-{
-    OSStatus err;
-	
-    err = AuthorizationRightGet(rightName, NULL);
-    if (err == noErr)
-	{
-	
-    }
-	else if (err == errAuthorizationDenied)
-	{
-        err = AuthorizationRightSet(
-            authRef,                // authRef
-            rightName,              // rightName
-            rightRule,              // rightDefinition
-            rightPrompt,            // descriptionKey
-            NULL,                   // bundle, NULL indicates main
-            NULL                    // localeTableName, 
-        );                          // NULL indicates
-                                    // "Localizable.strings"
-		
-        if (err != noErr) {
-            #if ! defined(NDEBUG)
-                fprintf(
-                    stderr, 
-                    "Could not create default right (%d)\n", 
-                    (int) err
-                );
-            #endif
-            err = noErr;
-        }
-    }
-
-    return err;
-}
-
-extern OSStatus SetupAuthorization(void)
-{
-    OSStatus err;
-	AuthorizationRef gAuthorization;
-	
-    // Connect to Authorization Services.
-
-    err = AuthorizationCreate(NULL, NULL, 0, &gAuthorization);
-
-    // Set up our rights.
-	
-    if (err == noErr)
-	{
-        err = SetupRight(
-            gAuthorization, 
-            "com.rossetantoine.osirix.preferences.allowalways", 
-            CFSTR(kAuthorizationRuleClassAllow), 
-            CFSTR("You are always authorized.")
-        );
-    }
-	
-	AuthorizationFree( gAuthorization, kAuthorizationFlagDefaults);
-	
-    return err;
-}
-
+#import <Security/Security.h>
 #import "PreferencesWindowController.h"
+#import "SFAuthorizationView+OsiriX.h"
 #import "AppController.h"
 #import "BrowserController.h"
 #import "DicomFile.h"
 #import "DCMView.h"
+#import <Foundation/NSObjCRuntime.h>
 
 //static NSMutableDictionary *paneBundles = nil;
 
@@ -149,12 +82,24 @@ extern OSStatus SetupAuthorization(void)
 
 @implementation PreferencesWindowController
 
-@synthesize animations;
+@synthesize animations, authView;
 
 static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(id)init {
-	SetupAuthorization();
+	AuthorizationRef authRef;
+	OSStatus err = AuthorizationCreate(NULL, NULL, 0, &authRef);
+	if (err == noErr) {
+		char* rightName = (char*)"com.rossetantoine.osirix.preferences.allowalways";
+		if (AuthorizationRightGet(rightName, NULL) == errAuthorizationDenied)
+			if ((err = AuthorizationRightSet(authRef, rightName, CFSTR(kAuthorizationRuleClassAllow), CFSTR("You are always authorized."), NULL, NULL)) != noErr) {
+				#ifndef NDEBUG
+				NSLog(@"Could not create default right (error %d)", err);
+				#endif
+			}
+	}
+	AuthorizationFree(authRef, kAuthorizationFlagDefaults);
+	
 	self = [super initWithWindowNibName:@"PreferencesWindow"];
 	animations = [[NSMutableArray alloc] init];
 	return self;
@@ -178,7 +123,40 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[pluginPanes addObject:[NSArray arrayWithObjects:resourceName, parentBundle, title, image, NULL]];
 }
 
+-(void)invokeEnableControls:(BOOL)enable onObject:(id)target {
+	if ([target respondsToSelector:@selector(enableControls:)]) {
+		NSInvocation* inv = [NSInvocation invocationWithMethodSignature:[[self class] instanceMethodSignatureForSelector:@selector(enableControls:)]];
+		[inv setSelector:@selector(enableControls:)];
+		[inv setArgument:&enable atIndex:2];
+		[inv invokeWithTarget:target];
+	}
+}
+
+-(void)enableControls:(BOOL)enable {
+	[authButton setImage:[NSImage imageNamed: enable? @"NSLockUnlockedTemplate" : @"NSLockLockedTemplate" ]];
+	
+	if ([currentContext.pane respondsToSelector:@selector(enableControls:)]) // retro-compatibility with old preference bundles
+		[self invokeEnableControls:enable onObject:currentContext.pane];
+	else {
+		// TODO: newer method
+	}
+}
+
 -(void)awakeFromNib {
+	[authView setDelegate:self];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+	{
+		[authView setString:"com.rossetantoine.osirix.preferences.database"];
+		if( [authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls:YES];
+		else [self enableControls:NO];
+	}
+	else
+	{
+		[authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
+		[authView setEnabled:NO];
+	}
+	[authView updateStatus:self];
+	
 	NSRect mainScreenFrame = [[NSScreen mainScreen] visibleFrame];
 	[[self window] setFrameTopLeftPoint:NSMakePoint(mainScreenFrame.origin.x, mainScreenFrame.origin.y+mainScreenFrame.size.height)];
 	[[self window] setDelegate:self];
@@ -241,6 +219,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[self willChangeValueForKey:@"currentContext"];
 
 		[context.pane loadMainView];
+		[self invokeEnableControls: [authView authorizationState] == SFAuthorizationViewUnlockedState onObject:context.pane];
 		
 		[animations removeAllObjects];
 		
@@ -287,6 +266,15 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[panesListView release];
 	[animations release];
 	[super dealloc];
+}
+
+-(void)authorizationViewDidAuthorize:(SFAuthorizationView*)view {
+	[self enableControls:YES];
+}
+
+-(void)authorizationViewDidDeauthorize:(SFAuthorizationView*)view {    
+	//if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+		[self enableControls:NO];
 }
 
 -(void)synchronizeSizeWithContent {
@@ -341,6 +329,16 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[self setCurrentContext:NULL];
 }
 
+-(IBAction)authAction:(id)sender {
+	[authView buttonPressed:NULL];
+//	[authView mouseDown:event];
+	//[authView mouseUp:event];
+	
+	//[authView performSelector:]
+	
+	//[authView.lockButton perform];
+}
+
 // ------
 
 -(void)reopenDatabase {
@@ -351,7 +349,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 @end
 
-@implementation NSWindowController (OSiriX)
+@implementation NSWindowController (OsiriX)
 
 -(void)synchronizeSizeWithContent {
 }
