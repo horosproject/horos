@@ -7990,7 +7990,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 
 - (ViewerController*) loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
 {
-	return [self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages];
+	return [self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages tryToFlipData: YES];
 }
 
 - (NSString*) exportDBListOnlySelected:(BOOL) onlySelected
@@ -11577,7 +11577,6 @@ static BOOL needToRezoom;
 				}
 			}
 			
-			tryToFlipData = YES;
 			toOpenArray = splittedSeries;
 		}
 		
@@ -11610,464 +11609,468 @@ static BOOL needToRezoom;
 			}
 		}
 	}
-	else if( [toOpenArray count] == 1)	// Just one thumbnail is selected,
+	else
 	{
-		if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+		tryToFlipData = YES;
+		
+		if( [toOpenArray count] == 1)	// Just one thumbnail is selected
 		{
-			NSArray			*singleSeries = [[toOpenArray objectAtIndex: 0] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease]]];
-			NSMutableArray	*splittedSeries = [NSMutableArray array];
-			NSMutableArray  *intervalArray = [NSMutableArray array];
-			
-			float interval, previousinterval = 0;
-			
-			[splittedSeries addObject: [NSMutableArray array]];
-			
-			if( [singleSeries count] > 1)
+			if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
 			{
-				[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
+				NSArray			*singleSeries = [[toOpenArray objectAtIndex: 0] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease]]];
+				NSMutableArray	*splittedSeries = [NSMutableArray array];
+				NSMutableArray  *intervalArray = [NSMutableArray array];
 				
-				if( [[[singleSeries lastObject] valueForKey: @"numberOfFrames"] intValue] > 1)
+				float interval, previousinterval = 0;
+				
+				[splittedSeries addObject: [NSMutableArray array]];
+				
+				if( [singleSeries count] > 1)
 				{
-					for( id o in singleSeries)	//We need to extract the *true* sliceLocation
-					{
-						DCMPix *p = [[DCMPix alloc] initWithPath:[o valueForKey:@"completePath"] :0 :1 :nil :[[o valueForKey:@"frameID"] intValue] :[[o valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: o];
-						
-						[intervalArray addObject: [NSNumber numberWithFloat: [p sliceLocation]]];
-						
-						[p release];
-					}
-				}
-				else
-				{
-					for( id o in singleSeries)
-						[intervalArray addObject: [NSNumber numberWithFloat: [[o valueForKey:@"sliceLocation"] floatValue]]];
-				}
-				
-				interval = [[intervalArray objectAtIndex: 0] floatValue] - [[intervalArray objectAtIndex: 1] floatValue];
-				
-				if( interval == 0)
-				{ // 4D - 3D
-					int pos3Dindex = 1;
-					for( int x = 1; x < [singleSeries count]; x++)
-					{
-						interval = [[intervalArray objectAtIndex: x -1] floatValue] - [[intervalArray objectAtIndex: x] floatValue];
-						
-						if( interval != 0) pos3Dindex = 0;
-						
-						if( [splittedSeries count] <= pos3Dindex) [splittedSeries addObject: [NSMutableArray array]];
-						
-						[[splittedSeries objectAtIndex: pos3Dindex] addObject: [singleSeries objectAtIndex: x]];
-						
-						pos3Dindex++;
-					}
-				}
-				else
-				{	// 3D - 4D
-					BOOL	fixedRepetition = YES;
-					int		repetition = 0, previousPos = 0;
-					float	previousLocation;
+					[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
 					
-					previousLocation = [[intervalArray objectAtIndex: 0] floatValue];
-					
-					for( int x = 1; x < [singleSeries count]; x++)
+					if( [[[singleSeries lastObject] valueForKey: @"numberOfFrames"] intValue] > 1)
 					{
-						if( [[intervalArray objectAtIndex: x] floatValue] - previousLocation == 0)
+						for( id o in singleSeries)	//We need to extract the *true* sliceLocation
 						{
-							if( repetition)
-								if( repetition != x - previousPos)
-									fixedRepetition = NO;
+							DCMPix *p = [[DCMPix alloc] initWithPath:[o valueForKey:@"completePath"] :0 :1 :nil :[[o valueForKey:@"frameID"] intValue] :[[o valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: o];
 							
-							repetition = x - previousPos;
-							previousPos = x;
-						}
-					}
-					
-					if( fixedRepetition && repetition != 0)
-					{
-						NSLog( @"repetition = %d", repetition);
-						
-						for( int x = 1; x < [singleSeries count]; x++)
-						{
-							if( x % repetition == 0)
-							{
-								[splittedSeries addObject: [NSMutableArray array]];
-								NSLog(@"split at: %d", x);
-							}
+							[intervalArray addObject: [NSNumber numberWithFloat: [p sliceLocation]]];
 							
-							[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
+							[p release];
 						}
 					}
 					else
 					{
+						for( id o in singleSeries)
+							[intervalArray addObject: [NSNumber numberWithFloat: [[o valueForKey:@"sliceLocation"] floatValue]]];
+					}
+					
+					interval = [[intervalArray objectAtIndex: 0] floatValue] - [[intervalArray objectAtIndex: 1] floatValue];
+					
+					if( interval == 0)
+					{ // 4D - 3D
+						int pos3Dindex = 1;
 						for( int x = 1; x < [singleSeries count]; x++)
 						{
 							interval = [[intervalArray objectAtIndex: x -1] floatValue] - [[intervalArray objectAtIndex: x] floatValue];
 							
-							if( [[splittedSeries lastObject] count] > 2)
+							if( interval != 0) pos3Dindex = 0;
+							
+							if( [splittedSeries count] <= pos3Dindex) [splittedSeries addObject: [NSMutableArray array]];
+							
+							[[splittedSeries objectAtIndex: pos3Dindex] addObject: [singleSeries objectAtIndex: x]];
+							
+							pos3Dindex++;
+						}
+					}
+					else
+					{	// 3D - 4D
+						BOOL	fixedRepetition = YES;
+						int		repetition = 0, previousPos = 0;
+						float	previousLocation;
+						
+						previousLocation = [[intervalArray objectAtIndex: 0] floatValue];
+						
+						for( int x = 1; x < [singleSeries count]; x++)
+						{
+							if( [[intervalArray objectAtIndex: x] floatValue] - previousLocation == 0)
 							{
-								if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
+								if( repetition)
+									if( repetition != x - previousPos)
+										fixedRepetition = NO;
+								
+								repetition = x - previousPos;
+								previousPos = x;
+							}
+						}
+						
+						if( fixedRepetition && repetition != 0)
+						{
+							NSLog( @"repetition = %d", repetition);
+							
+							for( int x = 1; x < [singleSeries count]; x++)
+							{
+								if( x % repetition == 0)
 								{
 									[splittedSeries addObject: [NSMutableArray array]];
 									NSLog(@"split at: %d", x);
-									previousinterval = 0;
 								}
-								else if( previousinterval)
+								
+								[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
+							}
+						}
+						else
+						{
+							for( int x = 1; x < [singleSeries count]; x++)
+							{
+								interval = [[intervalArray objectAtIndex: x -1] floatValue] - [[intervalArray objectAtIndex: x] floatValue];
+								
+								if( [[splittedSeries lastObject] count] > 2)
 								{
-									if( fabs(interval/previousinterval) > 1.2f || fabs(interval/previousinterval) < 0.8f)
+									if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
 									{
 										[splittedSeries addObject: [NSMutableArray array]];
 										NSLog(@"split at: %d", x);
 										previousinterval = 0;
 									}
+									else if( previousinterval)
+									{
+										if( fabs(interval/previousinterval) > 1.2f || fabs(interval/previousinterval) < 0.8f)
+										{
+											[splittedSeries addObject: [NSMutableArray array]];
+											NSLog(@"split at: %d", x);
+											previousinterval = 0;
+										}
+										else previousinterval = interval;
+									}
 									else previousinterval = interval;
 								}
 								else previousinterval = interval;
+								
+								[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
 							}
-							else previousinterval = interval;
-							
-							[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
 						}
 					}
 				}
-			}
-			
-			if( [splittedSeries count] > 1)
-			{
-				[waitOpeningWindow close];
-				[waitOpeningWindow release];
-				waitOpeningWindow = nil;
 				
-				[subOpenMatrix3D renewRows: 1 columns: [splittedSeries count]];
-				[subOpenMatrix3D sizeToCells];
-				[subOpenMatrix3D setTarget:self];
-				[subOpenMatrix3D setAction: @selector( selectSubSeriesAndOpen:)];
-				
-				[subOpenMatrix4D renewRows: 1 columns: [[splittedSeries objectAtIndex: 0] count]];
-				[subOpenMatrix4D sizeToCells];
-				[subOpenMatrix4D setTarget:self];
-				[subOpenMatrix4D setAction: @selector( selectSubSeriesAndOpen:)];
-				
-				[[supOpenButtons cellWithTag: 3] setEnabled: YES];
-				
-				BOOL areData4D = YES;
-				
-				NSArray *array0 = [splittedSeries objectAtIndex: 0];
-				
-				for( NSArray *array in splittedSeries)
+				if( [splittedSeries count] > 1)
 				{
-					if( [array0 count] != [array count])
-					{
-						[[supOpenButtons cellWithTag: 3] setEnabled: NO];
-						areData4D = NO;
-					}
-				}
-				
-				for( int i = 0 ; i < [splittedSeries count]; i++)
-				{
-					NSManagedObject	*oob = [[splittedSeries objectAtIndex:i] objectAtIndex: [[splittedSeries objectAtIndex:i] count] / 2];
+					[waitOpeningWindow close];
+					[waitOpeningWindow release];
+					waitOpeningWindow = nil;
 					
-					DCMPix *dcmPix  = [[DCMPix alloc] initWithPath:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
+					[subOpenMatrix3D renewRows: 1 columns: [splittedSeries count]];
+					[subOpenMatrix3D sizeToCells];
+					[subOpenMatrix3D setTarget:self];
+					[subOpenMatrix3D setAction: @selector( selectSubSeriesAndOpen:)];
 					
-					if( dcmPix)
+					[subOpenMatrix4D renewRows: 1 columns: [[splittedSeries objectAtIndex: 0] count]];
+					[subOpenMatrix4D sizeToCells];
+					[subOpenMatrix4D setTarget:self];
+					[subOpenMatrix4D setAction: @selector( selectSubSeriesAndOpen:)];
+					
+					[[supOpenButtons cellWithTag: 3] setEnabled: YES];
+					
+					BOOL areData4D = YES;
+					
+					NSArray *array0 = [splittedSeries objectAtIndex: 0];
+					
+					for( NSArray *array in splittedSeries)
 					{
-						NSImage	 *img = [dcmPix generateThumbnailImageWithWW:[[oob valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[oob valueForKeyPath: @"series.windowLevel"] floatValue]];
-						
-						NSButtonCell *cell = [subOpenMatrix3D cellAtRow:0 column: i];
-						[cell setTransparent:NO];
-						[cell setEnabled:YES];
-						[cell setFont:[NSFont systemFontOfSize:10]];
-						[cell setImagePosition: NSImageBelow];
-						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [[splittedSeries objectAtIndex:i] count]]];
-						[cell setImage: img];
-						[dcmPix release];
+						if( [array0 count] != [array count])
+						{
+							[[supOpenButtons cellWithTag: 3] setEnabled: NO];
+							areData4D = NO;
+						}
 					}
-				}
-				
-				if( areData4D)
-				{
-					for( int i = 0 ; i < [[splittedSeries objectAtIndex: 0] count]; i++)
+					
+					for( int i = 0 ; i < [splittedSeries count]; i++)
 					{
-						NSManagedObject	*oob = [[splittedSeries objectAtIndex: 0] objectAtIndex: i];
+						NSManagedObject	*oob = [[splittedSeries objectAtIndex:i] objectAtIndex: [[splittedSeries objectAtIndex:i] count] / 2];
 						
 						DCMPix *dcmPix  = [[DCMPix alloc] initWithPath:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
 						
 						if( dcmPix)
 						{
-							NSImage	 *img = [dcmPix generateThumbnailImageWithWW:[[oob valueForKeyPath: @"series.windowWidth"] floatValue] WL:[[oob valueForKeyPath: @"series.windowLevel"] floatValue]];
+							NSImage	 *img = [dcmPix generateThumbnailImageWithWW:[[oob valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[oob valueForKeyPath: @"series.windowLevel"] floatValue]];
 							
-							NSButtonCell *cell = [subOpenMatrix4D cellAtRow:0 column: i];
+							NSButtonCell *cell = [subOpenMatrix3D cellAtRow:0 column: i];
 							[cell setTransparent:NO];
 							[cell setEnabled:YES];
 							[cell setFont:[NSFont systemFontOfSize:10]];
 							[cell setImagePosition: NSImageBelow];
-							[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [splittedSeries count]]];
+							[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [[splittedSeries objectAtIndex:i] count]]];
 							[cell setImage: img];
 							[dcmPix release];
 						}
 					}
-				}
-				else
-				{
-					[subOpenMatrix4D renewRows: 0 columns: 0];
-					[subOpenMatrix4D sizeToCells];
-					[subOpenMatrix4D setEnabled: NO];
-				}
-				
-				[NSApp beginSheet: subOpenWindow
-				   modalForWindow:	[NSApp mainWindow]
-					modalDelegate: nil
-				   didEndSelector: nil
-					  contextInfo: nil];
-				
-				int result = [NSApp runModalForWindow: subOpenWindow];
-				if( result == 2)
-				{
-					[supOpenButtons selectCellWithTag: 2];
 					
-					if( [subOpenMatrix3D selectedColumn] < 0)
+					if( areData4D)
 					{
-						if( [subOpenMatrix4D selectedColumn] < 0) result = 0;
-						else result = 5;
-					}
-				}
-				else if( result == 6)
-				{
-					NSLog( @"Open all 3D");
-				}
-				else if( result == 7)
-				{
-					NSLog( @"Open all 4D");
-				}
-				else if( result == 10)
-				{
-					NSLog( @"Reparse in 3D");
-					
-					// Create the new series
-					
-					NSManagedObjectContext *context = [self managedObjectContext];
-					
-					[context lock];
-					
-					@try
-					{					
-						int reparseIndex = 1;
-						
-						DicomSeries *originalSeries = [[[splittedSeries lastObject] lastObject] valueForKey: @"Series"];
-						
-						for( NSArray *array in splittedSeries)
+						for( int i = 0 ; i < [[splittedSeries objectAtIndex: 0] count]; i++)
 						{
-							DicomSeries *newSeries = [NSEntityDescription insertNewObjectForEntityForName: @"Series" inManagedObjectContext: context];
+							NSManagedObject	*oob = [[splittedSeries objectAtIndex: 0] objectAtIndex: i];
 							
-							for ( NSString *name in [[[NSEntityDescription entityForName: @"Series" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+							DCMPix *dcmPix  = [[DCMPix alloc] initWithPath:[oob valueForKey:@"completePath"] :0 :1 :nil :[[oob valueForKey:@"frameID"] intValue] :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
+							
+							if( dcmPix)
 							{
-								id value = nil;
+								NSImage	 *img = [dcmPix generateThumbnailImageWithWW:[[oob valueForKeyPath: @"series.windowWidth"] floatValue] WL:[[oob valueForKeyPath: @"series.windowLevel"] floatValue]];
 								
-								if( [name isEqualToString: @"seriesInstanceUID"])
-									value = [[originalSeries valueForKey: name] stringByAppendingFormat: @"RP-%d", reparseIndex++];
-								else
-									value = [originalSeries valueForKey: name];
-									
-								if( value)
-									[newSeries setValue: value forKey: name];
+								NSButtonCell *cell = [subOpenMatrix4D cellAtRow:0 column: i];
+								[cell setTransparent:NO];
+								[cell setEnabled:YES];
+								[cell setFont:[NSFont systemFontOfSize:10]];
+								[cell setImagePosition: NSImageBelow];
+								[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [splittedSeries count]]];
+								[cell setImage: img];
+								[dcmPix release];
 							}
+						}
+					}
+					else
+					{
+						[subOpenMatrix4D renewRows: 0 columns: 0];
+						[subOpenMatrix4D sizeToCells];
+						[subOpenMatrix4D setEnabled: NO];
+					}
+					
+					[NSApp beginSheet: subOpenWindow
+					   modalForWindow:	[NSApp mainWindow]
+						modalDelegate: nil
+					   didEndSelector: nil
+						  contextInfo: nil];
+					
+					int result = [NSApp runModalForWindow: subOpenWindow];
+					if( result == 2)
+					{
+						[supOpenButtons selectCellWithTag: 2];
+						
+						if( [subOpenMatrix3D selectedColumn] < 0)
+						{
+							if( [subOpenMatrix4D selectedColumn] < 0) result = 0;
+							else result = 5;
+						}
+					}
+					else if( result == 6)
+					{
+						NSLog( @"Open all 3D");
+					}
+					else if( result == 7)
+					{
+						NSLog( @"Open all 4D");
+					}
+					else if( result == 10)
+					{
+						NSLog( @"Reparse in 3D");
+						
+						// Create the new series
+						
+						NSManagedObjectContext *context = [self managedObjectContext];
+						
+						[context lock];
+						
+						@try
+						{					
+							int reparseIndex = 1;
 							
-							[newSeries setValue: [originalSeries valueForKey: @"study"] forKey: @"study"];
+							DicomSeries *originalSeries = [[[splittedSeries lastObject] lastObject] valueForKey: @"Series"];
 							
-							// Add the images
-							for( DicomImage *image in array)
+							for( NSArray *array in splittedSeries)
 							{
-								DicomImage *newImage = [NSEntityDescription insertNewObjectForEntityForName: @"Image" inManagedObjectContext: context];
-							
-								for ( NSString *name in [[[NSEntityDescription entityForName: @"Image" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+								DicomSeries *newSeries = [NSEntityDescription insertNewObjectForEntityForName: @"Series" inManagedObjectContext: context];
+								
+								for ( NSString *name in [[[NSEntityDescription entityForName: @"Series" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
 								{
-									[newImage setValue: [image valueForKey: name] forKey: name];
+									id value = nil;
+									
+									if( [name isEqualToString: @"seriesInstanceUID"])
+										value = [[originalSeries valueForKey: name] stringByAppendingFormat: @"RP-%d", reparseIndex++];
+									else
+										value = [originalSeries valueForKey: name];
+										
+									if( value)
+										[newSeries setValue: value forKey: name];
 								}
 								
-								[image setValue: newSeries forKey: @"series"];
+								[newSeries setValue: [originalSeries valueForKey: @"study"] forKey: @"study"];
+								
+								// Add the images
+								for( DicomImage *image in array)
+								{
+									DicomImage *newImage = [NSEntityDescription insertNewObjectForEntityForName: @"Image" inManagedObjectContext: context];
+								
+									for ( NSString *name in [[[NSEntityDescription entityForName: @"Image" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+									{
+										[newImage setValue: [image valueForKey: name] forKey: name];
+									}
+									
+									[image setValue: newSeries forKey: @"series"];
+								}
+								
+								[newSeries setValue: [NSNumber numberWithInt: 0] forKey: @"numberOfImages"];
+								[newSeries setValue: nil forKey:@"thumbnail"];
+							}
+								
+							[context deleteObject: originalSeries];
+							[context save: nil];
+						}
+						@catch (NSException * e)
+						{
+							NSLog( @"***** exception during reparsing : %@", e);
+						}
+						
+						[context unlock];
+						
+						[self refreshDatabase: self];
+						[self refreshMatrix: self];
+						
+						result = 0;
+					}
+					else if( result == 11)
+					{
+						NSLog( @"Reparse in 4D");
+						
+						// Create the new series
+						
+						NSManagedObjectContext *context = [self managedObjectContext];
+						
+						[context lock];
+						
+						@try
+						{					
+							int reparseIndex = 1;
+							
+							DicomSeries *originalSeries = [[[splittedSeries lastObject] lastObject] valueForKey: @"Series"];
+							
+							for( int i = 0; i < [[splittedSeries objectAtIndex: 0] count]; i++)
+							{
+								NSMutableArray	*array4D = [NSMutableArray array];
+								
+								for ( NSArray *array in splittedSeries)
+									[array4D addObject: [array objectAtIndex: i]];
+								
+								DicomSeries *newSeries = [NSEntityDescription insertNewObjectForEntityForName: @"Series" inManagedObjectContext: context];
+								
+								for ( NSString *name in [[[NSEntityDescription entityForName: @"Series" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+								{
+									id value = nil;
+									
+									if( [name isEqualToString: @"seriesInstanceUID"])
+										value = [[originalSeries valueForKey: name] stringByAppendingFormat: @"RP-%d", reparseIndex++];
+									else
+										value = [originalSeries valueForKey: name];
+										
+									if( value)
+										[newSeries setValue: value forKey: name];
+								}
+								
+								[newSeries setValue: [originalSeries valueForKey: @"study"] forKey: @"study"];
+								
+								// Add the images
+								for( DicomImage *image in array4D)
+								{
+									DicomImage *newImage = [NSEntityDescription insertNewObjectForEntityForName: @"Image" inManagedObjectContext: context];
+								
+									for ( NSString *name in [[[NSEntityDescription entityForName: @"Image" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+									{
+										[newImage setValue: [image valueForKey: name] forKey: name];
+									}
+									
+									[image setValue: newSeries forKey: @"series"];
+								}
+								
+								[newSeries setValue: [NSNumber numberWithInt: 0] forKey: @"numberOfImages"];
+								[newSeries setValue: nil forKey:@"thumbnail"];
 							}
 							
-							[newSeries setValue: [NSNumber numberWithInt: 0] forKey: @"numberOfImages"];
-							[newSeries setValue: nil forKey:@"thumbnail"];
+							[context deleteObject: originalSeries];
+							[context save: nil];
 						}
-							
-						[context deleteObject: originalSeries];
-						[context save: nil];
+						@catch (NSException * e)
+						{
+							NSLog( @"***** exception during reparsing : %@", e);
+						}
+						
+						[context unlock];
+						
+						[self refreshDatabase: self];
+						[self refreshMatrix: self];
+						
+						result = 0;
 					}
-					@catch (NSException * e)
+					else
 					{
-						NSLog( @"***** exception during reparsing : %@", e);
+						result = [supOpenButtons selectedTag];
 					}
 					
-					[context unlock];
+					[NSApp endSheet: subOpenWindow];
+					[subOpenWindow orderOut: self];
 					
-					[self refreshDatabase: self];
-					[self refreshMatrix: self];
-					
-					result = 0;
-				}
-				else if( result == 11)
-				{
-					NSLog( @"Reparse in 4D");
-					
-					// Create the new series
-					
-					NSManagedObjectContext *context = [self managedObjectContext];
-					
-					[context lock];
-					
-					@try
-					{					
-						int reparseIndex = 1;
-						
-						DicomSeries *originalSeries = [[[splittedSeries lastObject] lastObject] valueForKey: @"Series"];
-						
-						for( int i = 0; i < [[splittedSeries objectAtIndex: 0] count]; i++)
+					switch( result)
+					{
+						case 0:	// Cancel
+							movieError = YES;
+							break;
+							
+						case 1: // Entire
+							
+							break;
+							
+						case 2: // selected 3D
+							toOpenArray = [NSMutableArray arrayWithObject: [splittedSeries objectAtIndex: [subOpenMatrix3D selectedColumn]]];
+							break;
+							
+						case 3:	// 4D Viewer
+							toOpenArray = splittedSeries;
+							movieViewer = YES;
+							break;
+							
+						case 5: // selected 4D
 						{
 							NSMutableArray	*array4D = [NSMutableArray array];
 							
-							for ( NSArray *array in splittedSeries)
-								[array4D addObject: [array objectAtIndex: i]];
-							
-							DicomSeries *newSeries = [NSEntityDescription insertNewObjectForEntityForName: @"Series" inManagedObjectContext: context];
-							
-							for ( NSString *name in [[[NSEntityDescription entityForName: @"Series" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+							for( NSArray *array in splittedSeries)
 							{
-								id value = nil;
-								
-								if( [name isEqualToString: @"seriesInstanceUID"])
-									value = [[originalSeries valueForKey: name] stringByAppendingFormat: @"RP-%d", reparseIndex++];
-								else
-									value = [originalSeries valueForKey: name];
-									
-								if( value)
-									[newSeries setValue: value forKey: name];
+								[array4D addObject: [array objectAtIndex: [subOpenMatrix4D selectedColumn]]];
 							}
 							
-							[newSeries setValue: [originalSeries valueForKey: @"study"] forKey: @"study"];
+							toOpenArray = [NSMutableArray arrayWithObject: array4D];
+						}
+						break;
 							
-							// Add the images
-							for( DicomImage *image in array4D)
+						case 6:
+							
+							if( waitOpeningWindow == nil) waitOpeningWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+							[waitOpeningWindow showWindow:self];
+							
+							for( NSArray *array in splittedSeries)
 							{
-								DicomImage *newImage = [NSEntityDescription insertNewObjectForEntityForName: @"Image" inManagedObjectContext: context];
+								toOpenArray = [NSMutableArray arrayWithObject: array];
+								[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
+							}
+							toOpenArray = 0;
+						break;
 							
-								for ( NSString *name in [[[NSEntityDescription entityForName: @"Image" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+						case 7:
+						{
+								BOOL openAllWindows = YES;
+								
+								if( [[splittedSeries objectAtIndex: 0] count] > 25)
 								{
-									[newImage setValue: [image valueForKey: name] forKey: name];
+									openAllWindows = NO;
+									
+									if( NSRunInformationalAlertPanel( NSLocalizedString(@"Series Opening", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to open %d windows? It's a lot of windows for this screen...", nil), [[splittedSeries objectAtIndex: 0] count]], NSLocalizedString(@"Yes", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+										openAllWindows = YES;
 								}
 								
-								[image setValue: newSeries forKey: @"series"];
-							}
-							
-							[newSeries setValue: [NSNumber numberWithInt: 0] forKey: @"numberOfImages"];
-							[newSeries setValue: nil forKey:@"thumbnail"];
-						}
-						
-						[context deleteObject: originalSeries];
-						[context save: nil];
-					}
-					@catch (NSException * e)
-					{
-						NSLog( @"***** exception during reparsing : %@", e);
-					}
-					
-					[context unlock];
-					
-					[self refreshDatabase: self];
-					[self refreshMatrix: self];
-					
-					result = 0;
-				}
-				else
-				{
-					result = [supOpenButtons selectedTag];
-				}
-				
-				[NSApp endSheet: subOpenWindow];
-				[subOpenWindow orderOut: self];
-				
-				switch( result)
-				{
-					case 0:	// Cancel
-						movieError = YES;
-						break;
-						
-					case 1: // Entire
-						
-						break;
-						
-					case 2: // selected 3D
-						toOpenArray = [NSMutableArray arrayWithObject: [splittedSeries objectAtIndex: [subOpenMatrix3D selectedColumn]]];
-						break;
-						
-					case 3:	// 4D Viewer
-						toOpenArray = splittedSeries;
-						movieViewer = YES;
-						break;
-						
-					case 5: // selected 4D
-					{
-						NSMutableArray	*array4D = [NSMutableArray array];
-						
-						for( NSArray *array in splittedSeries)
-						{
-							[array4D addObject: [array objectAtIndex: [subOpenMatrix4D selectedColumn]]];
-						}
-						
-						toOpenArray = [NSMutableArray arrayWithObject: array4D];
-					}
-					break;
-						
-					case 6:
-						
-						if( waitOpeningWindow == nil) waitOpeningWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-						[waitOpeningWindow showWindow:self];
-						
-						for( NSArray *array in splittedSeries)
-						{
-							toOpenArray = [NSMutableArray arrayWithObject: array];
-							[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
-						}
-						toOpenArray = 0;
-					break;
-						
-					case 7:
-					{
-							BOOL openAllWindows = YES;
-							
-							if( [[splittedSeries objectAtIndex: 0] count] > 25)
-							{
-								openAllWindows = NO;
-								
-								if( NSRunInformationalAlertPanel( NSLocalizedString(@"Series Opening", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to open %d windows? It's a lot of windows for this screen...", nil), [[splittedSeries objectAtIndex: 0] count]], NSLocalizedString(@"Yes", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-									openAllWindows = YES;
-							}
-							
-							if( openAllWindows)
-							{
-								if( waitOpeningWindow == nil) waitOpeningWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-								[waitOpeningWindow showWindow:self];
-								
-								for( int i = 0; i < [[splittedSeries objectAtIndex: 0] count]; i++)
+								if( openAllWindows)
 								{
-									NSMutableArray	*array4D = [NSMutableArray array];
+									if( waitOpeningWindow == nil) waitOpeningWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+									[waitOpeningWindow showWindow:self];
 									
-									for ( NSArray *array in splittedSeries)
+									for( int i = 0; i < [[splittedSeries objectAtIndex: 0] count]; i++)
 									{
-										[array4D addObject: [array objectAtIndex: i]];
+										NSMutableArray	*array4D = [NSMutableArray array];
+										
+										for ( NSArray *array in splittedSeries)
+										{
+											[array4D addObject: [array objectAtIndex: i]];
+										}
+										
+										toOpenArray = [NSMutableArray arrayWithObject: array4D];
+										
+										[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
 									}
-									
-									toOpenArray = [NSMutableArray arrayWithObject: array4D];
-									
-									[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
 								}
-							}
-							toOpenArray = nil;
+								toOpenArray = nil;
+						}
+						break;
 					}
-					break;
 				}
 			}
 		}
-		tryToFlipData = YES;
 	}
 	
 	if( movieError == NO && toOpenArray != nil)

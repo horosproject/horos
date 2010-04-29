@@ -875,7 +875,6 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 
 - (IBAction) blendingMode:(id) sender
 {
-	NSLog(@"[sender tag] : %d", [sender tag]);
 	[PETCTController setBlendingMode: [sender tag]];
 }
 
