@@ -3,24 +3,16 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">10D573</string>
-<<<<<<< .mine
 		<string key="IBDocument.InterfaceBuilderVersion">732</string>
-=======
-		<string key="IBDocument.InterfaceBuilderVersion">762</string>
->>>>>>> .r7067
 		<string key="IBDocument.AppKitVersion">1038.29</string>
 		<string key="IBDocument.HIToolboxVersion">460.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-<<<<<<< .mine
 			<string key="NS.object.0">732</string>
-=======
-			<string key="NS.object.0">762</string>
->>>>>>> .r7067
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="21"/>
+			<integer value="718"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -180,11 +172,9 @@
 								<string key="NSToolbarItemPaletteLabel">Authentication</string>
 								<nil key="NSToolbarItemToolTip"/>
 								<object class="NSButton" key="NSToolbarItemView" id="331301561">
-									<reference key="NSNextResponder"/>
+									<nil key="NSNextResponder"/>
 									<int key="NSvFlags">268</int>
 									<string key="NSFrame">{{23, 14}, {40, 25}}</string>
-									<reference key="NSSuperview"/>
-									<reference key="NSWindow"/>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="670040683">
 										<int key="NSCellFlags">67239424</int>
@@ -306,6 +296,7 @@
 									</object>
 									<string key="NSFrameSize">{783, 401}</string>
 									<reference key="NSSuperview" ref="721364935"/>
+									<reference key="NSNextKeyView" ref="337591436"/>
 									<reference key="NSDocView" ref="337591436"/>
 									<object class="NSColor" key="NSBGColor">
 										<int key="NSColorSpace">6</int>
@@ -341,6 +332,7 @@
 							</object>
 							<string key="NSFrameSize">{783, 401}</string>
 							<reference key="NSSuperview" ref="241329438"/>
+							<reference key="NSNextKeyView" ref="679497701"/>
 							<int key="NSsFlags">560</int>
 							<reference key="NSVScroller" ref="823181780"/>
 							<reference key="NSHScroller" ref="8701404"/>
@@ -668,16 +660,12 @@
 					<string>716.IBPluginDependency</string>
 					<string>717.IBPluginDependency</string>
 					<string>718.IBPluginDependency</string>
-<<<<<<< .mine
-					<string>728.IBPluginDependency</string>
-=======
 					<string>728.IBPluginDependency</string>
 					<string>743.IBPluginDependency</string>
 					<string>744.IBPluginDependency</string>
 					<string>745.IBPluginDependency</string>
 					<string>754.IBPluginDependency</string>
 					<string>754.ImportedFromIB2</string>
->>>>>>> .r7067
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -708,15 +696,11 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-<<<<<<< .mine
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-=======
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
->>>>>>> .r7067
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
@@ -830,15 +814,6 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-<<<<<<< .mine
-					<string key="className">NSWindowController</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="695115352">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">PreferencesWindowController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-=======
 					<string key="className">NSWindowController</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="752270517">
 						<string key="majorKey">IBProjectSource</string>
@@ -846,7 +821,6 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
->>>>>>> .r7067
 					<string key="className">PreferencesView</string>
 					<string key="superclassName">NSControl</string>
 					<object class="NSMutableDictionary" key="outlets">
@@ -900,9 +874,6 @@
 							<string>NSScrollView</string>
 						</object>
 					</object>
-<<<<<<< .mine
-					<reference key="sourceIdentifier" ref="695115352"/>
-=======
 					<reference key="sourceIdentifier" ref="752270517"/>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -915,7 +886,6 @@
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">SFAuthorizationView+OsiriX.h</string>
 					</object>
->>>>>>> .r7067
 				</object>
 			</object>
 			<object class="NSMutableArray" key="referencedPartialClassDescriptionsV3.2+">
@@ -1624,7 +1594,6 @@
 			</object>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
-		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
@@ -1640,24 +1609,5 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">../../OsiriX.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<bool key="EncodedWithXMLCoder">YES</bool>
-			<object class="NSArray" key="dict.sortedKeys">
-				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>NSGoLeftTemplate</string>
-				<string>NSGoRightTemplate</string>
-				<string>NSLockUnlockedTemplate</string>
-				<string>NSMenuCheckmark</string>
-				<string>NSMenuMixedState</string>
-			</object>
-			<object class="NSMutableArray" key="dict.values">
-				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>{9, 9}</string>
-				<string>{9, 9}</string>
-				<string>{9, 12}</string>
-				<string>{9, 8}</string>
-				<string>{7, 2}</string>
-			</object>
-		</object>
 	</data>
 </archive>

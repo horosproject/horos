@@ -304,7 +304,17 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[animation release];
 	[animations removeAllObjects];
 	
-	[[self window] setMaxSize: frame.size];
+	NSToolbar *toolbar = [[self window] toolbar];
+	float toolbarHeight = 0.0;
+	NSRect windowFrame;
+
+	if( toolbar && [toolbar isVisible])
+	{
+		windowFrame = [NSWindow contentRectForFrameRect: [[self window] frame] styleMask: [[self window] styleMask]];
+		toolbarHeight = NSHeight( windowFrame) - NSHeight([[[self window] contentView] frame]);
+	}
+	
+	[[self window] setMaxSize: NSMakeSize( frame.size.width, frame.size.height - toolbarHeight)];
 	
 	[scrollView setHasHorizontalScroller:YES];
 	[scrollView setHasVerticalScroller:YES];
