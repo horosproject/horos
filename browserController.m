@@ -11300,7 +11300,7 @@ static BOOL needToRezoom;
 					
 					toOpenArray = resortedToOpenArray;
 					preFlippedData = YES;
-					NSLog( @"Pre-Flip Data");
+					//NSLog( @"Pre-Flip Data");
 				}
 			}
 			
