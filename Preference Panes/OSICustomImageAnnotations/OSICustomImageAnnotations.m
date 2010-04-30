@@ -146,9 +146,12 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 		[modalitiesPopUpButton addItemWithTitle:[modalities objectAtIndex:i]];
 	}
 	
-	layoutController = [[CIALayoutController alloc] initWithWindow:window];
-	[sameAsDefaultButton setHidden:YES];
-	[resetDefaultButton setHidden:NO];
+	if( layoutController == nil)
+	{
+		layoutController = [[CIALayoutController alloc] initWithWindow:window];
+		[sameAsDefaultButton setHidden:YES];
+		[resetDefaultButton setHidden:NO];
+	}
 }
 
 - (void)didSelect
@@ -156,9 +159,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[layoutController setLayoutView:layoutView];
 	[layoutController setPrefPane:self];
 	[layoutController awakeFromNib];
-	
-		[self enableControls:[self isUnlocked]];
-	
+	[self enableControls:[self isUnlocked]];
 }
 
 - (NSPreferencePaneUnselectReply)shouldUnselect;
@@ -179,9 +180,9 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	if(layoutController)
 	{
 		[layoutController saveAnnotationLayout];
-		[layoutController release];
+//		[layoutController release];
 	}
-	layoutController = nil;
+//	layoutController = nil;
 
 	[DICOMFieldsPopUpButton removeAllItems];
 
