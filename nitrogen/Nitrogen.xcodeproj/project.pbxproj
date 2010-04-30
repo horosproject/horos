@@ -19,6 +19,8 @@
 		5915D5F11099D8CC0024F610 /* N2Shell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5915D5EF1099D8CC0024F610 /* N2Shell.mm */; };
 		595B87EC1116DC870026B899 /* N2UserDefaultsTest.h in Headers */ = {isa = PBXBuildFile; fileRef = 595B87EA1116DC870026B899 /* N2UserDefaultsTest.h */; };
 		595B88261116E1550026B899 /* N2UserDefaultsTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 595B87EB1116DC870026B899 /* N2UserDefaultsTest.mm */; };
+		596EB3CC118ABA6E00880192 /* NSWindow+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3CA118ABA6E00880192 /* NSWindow+N2.h */; };
+		596EB3CD118ABA6E00880192 /* NSWindow+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3CB118ABA6E00880192 /* NSWindow+N2.mm */; };
 		596F881410C6CCDC007D6C82 /* NSImageView+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596F881210C6CCDC007D6C82 /* NSImageView+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		596F881510C6CCDC007D6C82 /* NSImageView+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596F881310C6CCDC007D6C82 /* NSImageView+N2.mm */; };
 		597C87C61108A0E100794DF3 /* DebugTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 597C87C51108A0E100794DF3 /* DebugTest.mm */; };
@@ -138,6 +140,8 @@
 		5915D5EF1099D8CC0024F610 /* N2Shell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2Shell.mm; sourceTree = "<group>"; };
 		595B87EA1116DC870026B899 /* N2UserDefaultsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2UserDefaultsTest.h; path = "Unit Tests/N2UserDefaultsTest.h"; sourceTree = SOURCE_ROOT; };
 		595B87EB1116DC870026B899 /* N2UserDefaultsTest.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2UserDefaultsTest.mm; path = "Unit Tests/N2UserDefaultsTest.mm"; sourceTree = SOURCE_ROOT; };
+		596EB3CA118ABA6E00880192 /* NSWindow+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWindow+N2.h"; sourceTree = "<group>"; };
+		596EB3CB118ABA6E00880192 /* NSWindow+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSWindow+N2.mm"; sourceTree = "<group>"; };
 		596F881210C6CCDC007D6C82 /* NSImageView+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImageView+N2.h"; sourceTree = "<group>"; };
 		596F881310C6CCDC007D6C82 /* NSImageView+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSImageView+N2.mm"; sourceTree = "<group>"; };
 		597C87C41108A0E100794DF3 /* DebugTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebugTest.h; path = "Unit Tests/DebugTest.h"; sourceTree = SOURCE_ROOT; };
@@ -434,6 +438,8 @@
 				59A6332C10428715003F4069 /* NSData+N2.mm */,
 				59E6DD0F105E3DBD002C8245 /* NSColor+N2.h */,
 				59E6DD10105E3DBD002C8245 /* NSColor+N2.mm */,
+				596EB3CA118ABA6E00880192 /* NSWindow+N2.h */,
+				596EB3CB118ABA6E00880192 /* NSWindow+N2.mm */,
 				59A6332F10428715003F4069 /* NSButton+N2.h */,
 				59A6332E10428715003F4069 /* NSButton+N2.mm */,
 				59A6333310428715003F4069 /* NS(Attributed)String+Geometrics.h */,
@@ -563,6 +569,7 @@
 				59E924D2110F277B0006FFFB /* N2UserDefaults.h in Headers */,
 				5903BBA21111E15D00F4358B /* N2PopUpButton.h in Headers */,
 				595B87EC1116DC870026B899 /* N2UserDefaultsTest.h in Headers */,
+				596EB3CC118ABA6E00880192 /* NSWindow+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -751,6 +758,7 @@
 				59E924CF110F25CD0006FFFB /* N2ColorWell.mm in Sources */,
 				59E924D3110F277B0006FFFB /* N2UserDefaults.mm in Sources */,
 				5903BBA31111E15D00F4358B /* N2PopUpButton.mm in Sources */,
+				596EB3CD118ABA6E00880192 /* NSWindow+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -86,6 +86,10 @@
 		596EB3071189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */; };
 		596EB3081189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */; };
 		596EB3091189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */; };
+		596EB3F6118ABBB000880192 /* NSWindow+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3F4118ABBB000880192 /* NSWindow+N2.h */; };
+		596EB3F7118ABBB000880192 /* NSWindow+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3F5118ABBB000880192 /* NSWindow+N2.mm */; };
+		596EB3F8118ABBB000880192 /* NSWindow+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3F4118ABBB000880192 /* NSWindow+N2.h */; };
+		596EB3F9118ABBB000880192 /* NSWindow+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3F5118ABBB000880192 /* NSWindow+N2.mm */; };
 		597DA7B41188340500D3BBCF /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A997B15610E0C412004C5BB1 /* SecurityInterface.framework */; };
 		59BDEC44117C9366007F1F2C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDEC43117C9366007F1F2C /* main.mm */; };
 		59BDED7D117CA4F6007F1F2C /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6495063587B200D9531F /* Osirix.icns */; };
@@ -7976,6 +7980,8 @@
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
 		596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPreferencePane+OsiriX.h"; sourceTree = "<group>"; };
 		596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSPreferencePane+OsiriX.mm"; sourceTree = "<group>"; };
+		596EB3F4118ABBB000880192 /* NSWindow+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSWindow+N2.h"; path = "nitrogen/Sources/NSWindow+N2.h"; sourceTree = "<group>"; };
+		596EB3F5118ABBB000880192 /* NSWindow+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSWindow+N2.mm"; path = "nitrogen/Sources/NSWindow+N2.mm"; sourceTree = "<group>"; };
 		59BDEC2D117C92B2007F1F2C /* OsiriX Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OsiriX Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		59BDEC43117C9366007F1F2C /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = "OsiriX Launcher/main.mm"; sourceTree = "<group>"; };
 		59BDEF3F117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaultsController+OsiriX.h"; sourceTree = "<group>"; };
@@ -12625,6 +12631,8 @@
 				AB10FB0D1129338A009EB238 /* NS(Attributed)String+Geometrics.m */,
 				AB10FB0E1129338A009EB238 /* NSDictionary+N2.h */,
 				AB10FB0F1129338A009EB238 /* NSDictionary+N2.mm */,
+				596EB3F4118ABBB000880192 /* NSWindow+N2.h */,
+				596EB3F5118ABBB000880192 /* NSWindow+N2.mm */,
 				AB10FB101129338A009EB238 /* NSMutableDictionary+N2.h */,
 				AB10FB111129338A009EB238 /* NSMutableDictionary+N2.mm */,
 				AB10FB121129338A009EB238 /* NSInvocation+N2.h */,
@@ -18845,6 +18853,7 @@
 				59BDF127117EFA41007F1F2C /* PreferencesView.h in Headers */,
 				59C512C01189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */,
 				596EB3061189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */,
+				596EB3F6118ABBB000880192 /* NSWindow+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20954,6 +20963,7 @@
 				59BDF129117EFA41007F1F2C /* PreferencesView.h in Headers */,
 				59C512C21189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */,
 				596EB3081189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */,
+				596EB3F8118ABBB000880192 /* NSWindow+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23312,6 +23322,7 @@
 				59BDF128117EFA41007F1F2C /* PreferencesView.mm in Sources */,
 				59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */,
 				596EB3071189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */,
+				596EB3F7118ABBB000880192 /* NSWindow+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24480,6 +24491,7 @@
 				59BDF8571181DDD6007F1F2C /* N2Operators.mm in Sources */,
 				59C512C31189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */,
 				596EB3091189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */,
+				596EB3F9118ABBB000880192 /* NSWindow+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

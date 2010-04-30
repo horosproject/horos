@@ -15,6 +15,7 @@
 #import "QueryController.h"
 #import "PreferencesView.h"
 #import "N2Debug.h"
+#import "NSWindow+N2.h"
 #import <Security/Security.h>
 #import "PreferencesWindowController.h"
 #import "SFAuthorizationView+OsiriX.h"
@@ -279,20 +280,19 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(void)synchronizeSizeWithContent {
 	NSRect paneFrame = [[scrollView documentView] frame];
-	NSRect frame = [[self window] frame];
-	NSRect sizeframe = [[self window] frameRectForContentRect:paneFrame];
+	NSRect frame = [self.window frame];
+	NSRect sizeframe = [self.window frameRectForContentRect:paneFrame];
 	frame.origin.y += frame.size.height-sizeframe.size.height;
 	frame.size = sizeframe.size;
 	
-	frame.size.height += 15;
-	frame.size.width += 15;
-	
+//	frame.size.height += 15;
+//	frame.size.width += 15;
 	
 	[scrollView setHasHorizontalScroller: NO];
 	[scrollView setHasVerticalScroller: NO];
 	
 	[animations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-						       [self window], NSViewAnimationTargetKey,
+						       self.window, NSViewAnimationTargetKey,
 						       [NSValue valueWithRect:frame], NSViewAnimationEndFrameKey,
 						   NULL]];
 	
@@ -308,17 +308,9 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[animation release];
 	[animations removeAllObjects];
 	
-	NSToolbar *toolbar = [[self window] toolbar];
-	float toolbarHeight = 0.0;
-	NSRect windowFrame;
-
-	if( toolbar && [toolbar isVisible])
-	{
-		windowFrame = [NSWindow contentRectForFrameRect: [[self window] frame] styleMask: [[self window] styleMask]];
-		toolbarHeight = NSHeight( windowFrame) - NSHeight([[[self window] contentView] frame]);
-	}
-	
-	[[self window] setMaxSize: NSMakeSize( frame.size.width, frame.size.height - toolbarHeight)];
+	NSSize windowMaxSize = frame.size;
+	windowMaxSize.height -= self.window.toolbarHeight;
+	[self.window setMaxSize:windowMaxSize];
 	
 	[scrollView setHasHorizontalScroller:YES];
 	[scrollView setHasVerticalScroller:YES];
