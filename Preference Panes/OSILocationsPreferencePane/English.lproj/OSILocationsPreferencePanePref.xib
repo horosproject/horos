@@ -902,7 +902,7 @@
 													<int key="NSsFlags">1</int>
 													<reference key="NSTarget" ref="23618400"/>
 													<string key="NSAction">_doScroller:</string>
-													<double key="NSCurValue">1</double>
+													<double key="NSCurValue">0.9599406528189911</double>
 													<double key="NSPercent">0.98021310567855835</double>
 												</object>
 												<object class="NSClipView" id="839745731">
@@ -3608,7 +3608,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="label">enabled: values.syncDICOMNodes</string>
 						<reference key="source" ref="634996175"/>
 						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector" id="311072396">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="634996175"/>
 							<reference key="NSDestination" ref="396218433"/>
 							<string key="NSLabel">enabled: values.syncDICOMNodes</string>
@@ -3628,7 +3628,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="label">enabled: values.syncDICOMNodes</string>
 						<reference key="source" ref="821429147"/>
 						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector" id="150219777">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="821429147"/>
 							<reference key="NSDestination" ref="396218433"/>
 							<string key="NSLabel">enabled: values.syncDICOMNodes</string>
@@ -3648,7 +3648,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="label">enabled: values.syncDICOMNodes</string>
 						<reference key="source" ref="42370160"/>
 						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector" id="226714432">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="42370160"/>
 							<reference key="NSDestination" ref="396218433"/>
 							<string key="NSLabel">enabled: values.syncDICOMNodes</string>
@@ -3700,7 +3700,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="label">enabled: values.syncDICOMNodes</string>
 						<reference key="source" ref="123435417"/>
 						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector" id="647561796">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="123435417"/>
 							<reference key="NSDestination" ref="396218433"/>
 							<string key="NSLabel">enabled: values.syncDICOMNodes</string>
@@ -3772,7 +3772,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="label">enabled: values.syncOsiriXDB</string>
 						<reference key="source" ref="733862993"/>
 						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector" id="80584982">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="733862993"/>
 							<reference key="NSDestination" ref="396218433"/>
 							<string key="NSLabel">enabled: values.syncOsiriXDB</string>
@@ -3788,7 +3788,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="label">enabled: values.syncOsiriXDB</string>
 						<reference key="source" ref="786336197"/>
 						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector" id="127506284">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="786336197"/>
 							<reference key="NSDestination" ref="396218433"/>
 							<string key="NSLabel">enabled: values.syncOsiriXDB</string>
@@ -3808,7 +3808,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="label">enabled: values.syncOsiriXDB</string>
 						<reference key="source" ref="644667931"/>
 						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector" id="611727975">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="644667931"/>
 							<reference key="NSDestination" ref="396218433"/>
 							<string key="NSLabel">enabled: values.syncOsiriXDB</string>
@@ -3828,7 +3828,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="label">enabled: values.syncOsiriXDB</string>
 						<reference key="source" ref="735346347"/>
 						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector" id="140003331">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="735346347"/>
 							<reference key="NSDestination" ref="396218433"/>
 							<string key="NSLabel">enabled: values.syncOsiriXDB</string>
@@ -3882,254 +3882,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="279148959"/>
 					</object>
 					<int key="connectionID">417</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="634996175"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="634996175"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled2: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="311072396"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">419</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="786336197"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="786336197"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled2: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="127506284"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">420</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="279148959"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="279148959"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">421</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="955015206"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="955015206"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">422</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="821429147"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="821429147"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled2: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="150219777"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">423</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="644667931"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="644667931"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled2: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="611727975"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">424</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="876822861"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="876822861"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">426</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="306962159"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="306962159"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">433</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="735346347"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="735346347"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled2: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="140003331"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">434</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="42370160"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="42370160"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled2: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="226714432"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">435</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="123435417"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="123435417"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled2: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="647561796"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">436</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="733862993"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="733862993"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled2: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="80584982"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">437</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -4194,54 +3946,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">465</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="285136721"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="285136721"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">467</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="580556850"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="580556850"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">469</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.preferencesModificationsEnabled</string>
-						<reference key="source" ref="348247556"/>
-						<reference key="destination" ref="396218433"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="348247556"/>
-							<reference key="NSDestination" ref="396218433"/>
-							<string key="NSLabel">enabled: values.preferencesModificationsEnabled</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.preferencesModificationsEnabled</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">470</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -6637,9 +6341,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="584.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="585.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="586.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="589.IBEditorWindowLastContentRect">{{546, 399}, {413, 508}}</string>
+				<string key="589.IBEditorWindowLastContentRect">{{542, 304}, {413, 508}}</string>
 				<string key="589.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="589.IBWindowTemplateEditedContentRect">{{546, 399}, {413, 508}}</string>
+				<string key="589.IBWindowTemplateEditedContentRect">{{542, 304}, {413, 508}}</string>
 				<boolean value="NO" key="589.NSWindowTemplate.visibleAtLaunch"/>
 				<boolean value="NO" key="589.windowTemplate.hasMaxSize"/>
 				<boolean value="NO" key="589.windowTemplate.hasMinSize"/>

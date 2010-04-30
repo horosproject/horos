@@ -125,17 +125,50 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[pluginPanes addObject:[NSArray arrayWithObjects:resourceName, parentBundle, title, image, NULL]];
 }
 
--(void)view:(NSView*)view recursiveEnable:(BOOL)enable {
-	if ([view isKindOfClass:[NSControl class]])
-		[(NSControl*)view setEnabled:enable];
-	else for (NSView* subview in view.subviews)
-		[self view:subview recursiveEnable:enable];
+-(void)view:(NSView*)view recursiveBindEnableToObject:(id)obj withKeyPath:(NSString*)keyPath {
+	if ([view isKindOfClass:[NSControl class]]) {
+		NSArray* vba = [view exposedBindings];
+		
+		NSUInteger bki = 0;
+		NSString* bk = NULL;
+		BOOL doBind = YES;
+		
+		while (doBind) {
+			++bki;
+			bk = [NSString stringWithFormat:@"enabled%@", bki==1? @"" : [NSString stringWithFormat:@"%d", bki]];
+	
+			NSDictionary* b = [view infoForBinding:bk];
+			if (!b) break;
+			
+			if ([b objectForKey:NSObservedObjectKey] == obj && [[b objectForKey:NSObservedKeyPathKey] isEqualToString:keyPath])
+				doBind = NO; // already bound
+		}
+		
+		if (doBind)
+			@try {
+				[[view class] exposeBinding:bk];
+				[view bind:bk toObject:obj withKeyPath:keyPath options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:NSConditionallySetsEnabledBindingOption]];
+				return;
+			} @catch (NSException* e) {
+				NSLog(@"Warning: %@", e);
+				NSButton* b = [e.userInfo objectForKey:@"NSTargetObjectUserInfoKey"];
+				NSLog(@"tttt:%@", [b title]);
+				NSLog(@"ssss:%@", [b stringValue]);
+			}
+	}
+	
+	for (NSView* subview in view.subviews)
+		[self view:subview recursiveBindEnableToObject:obj withKeyPath:keyPath];
 }
 
 -(void)pane:(NSPreferencePane*)pane enable:(BOOL)enable {
+	[self willChangeValueForKey:@"isUnlocked"];
+	
 	[authButton setImage:[NSImage imageNamed: enable? @"NSLockUnlockedTemplate" : @"NSLockLockedTemplate" ]];
 	
-	[self view:pane.mainView recursiveEnable:enable];
+	[self didChangeValueForKey:@"isUnlocked"];
+
+//	[self view:pane.mainView recursiveEnable:enable];
 	
 	if ([pane respondsToSelector:@selector(enableControls:)]) { // retro-compatibility with old preference bundles
 		NSInvocation* inv = [NSInvocation invocationWithMethodSignature:[[pane class] instanceMethodSignatureForSelector:@selector(enableControls:)]];
@@ -143,6 +176,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[inv setArgument:&enable atIndex:2];
 		[inv invokeWithTarget:pane];
 	}
+
 }
 
 -(void)awakeFromNib {
@@ -212,15 +246,31 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[self release];
 }
 
+-(BOOL)isUnlocked {
+	return [authView authorizationState] == SFAuthorizationViewUnlockedState;
+}
+
 -(void)setCurrentContext:(PreferencesWindowContext*)context {
 	if (context == currentContext)
 		return;
 	
 	if (!currentContext || [currentContext.pane shouldUnselect]) { // TODO: NSUnselectNow or NSUnselectLater?
 		[self willChangeValueForKey:@"currentContext"];
-
-		[context.pane loadMainView];
-		[self pane:context.pane enable: [authView authorizationState] == SFAuthorizationViewUnlockedState];
+		
+		if (!context.pane.mainView) {
+			@try {
+			[context.pane loadMainView];
+			} @catch (NSException* e) {
+				NSLog(@"EXCEPTION with userinfo %@", e.userInfo.description);
+				NSButton* b = [e.userInfo objectForKey:@"NSTargetObjectUserInfoKey"];
+				NSLog(@"ttttttt:%@", [b title]);
+				NSLog(@"sssssss:%@", [b stringValue]);
+				return;
+			}
+			[self view:context.pane.mainView recursiveBindEnableToObject:self withKeyPath:@"isUnlocked"];
+		}
+		
+		//[self pane:context.pane enable: [authView authorizationState] == SFAuthorizationViewUnlockedState];
 		
 		[animations removeAllObjects];
 		

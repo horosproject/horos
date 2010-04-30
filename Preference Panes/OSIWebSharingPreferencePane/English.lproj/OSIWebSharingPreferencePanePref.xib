@@ -1150,7 +1150,6 @@ ZW1wdHkgbGlzdC4</string>
 													<int key="NSsFlags">1</int>
 													<reference key="NSTarget" ref="237439465"/>
 													<string key="NSAction">_doScroller:</string>
-													<double key="NSCurValue">0.0016420361353084445</double>
 													<double key="NSPercent">0.99831932783126831</double>
 												</object>
 												<object class="NSClipView" id="548879023">
@@ -2920,7 +2919,7 @@ ZW1wdHkgbGlzdC4</string>
 						<string key="label">enabled: values.passwordWebServer</string>
 						<reference key="source" ref="426784300"/>
 						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector" id="252825047">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="426784300"/>
 							<reference key="NSDestination" ref="896066363"/>
 							<string key="NSLabel">enabled: values.passwordWebServer</string>
@@ -2975,7 +2974,7 @@ ZW1wdHkgbGlzdC4</string>
 						<string key="label">enabled2: values.passwordWebServer</string>
 						<reference key="source" ref="145483343"/>
 						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector" id="588779248">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="145483343"/>
 							<reference key="NSDestination" ref="896066363"/>
 							<string key="NSLabel">enabled2: values.passwordWebServer</string>
@@ -3094,7 +3093,7 @@ ZW1wdHkgbGlzdC4</string>
 						<string key="label">enabled2: values.passwordWebServer</string>
 						<reference key="source" ref="723557412"/>
 						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector" id="934293603">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="723557412"/>
 							<reference key="NSDestination" ref="896066363"/>
 							<string key="NSLabel">enabled2: values.passwordWebServer</string>
@@ -3111,42 +3110,6 @@ ZW1wdHkgbGlzdC4</string>
 						</object>
 					</object>
 					<int key="connectionID">719</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">editable: values.authorizedToEdit</string>
-						<reference key="source" ref="596395762"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="596395762"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">editable: values.authorizedToEdit</string>
-							<string key="NSBinding">editable</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">721</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">hidden: values.authorizedToEdit</string>
-						<reference key="source" ref="236395217"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="236395217"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">hidden: values.authorizedToEdit</string>
-							<string key="NSBinding">hidden</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSNegateBoolean</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">724</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -3446,203 +3409,6 @@ ZW1wdHkgbGlzdC4</string>
 					<int key="connectionID">848</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.authorizedToEdit</string>
-						<reference key="source" ref="457546692"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="457546692"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">849</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.authorizedToEdit</string>
-						<reference key="source" ref="350201213"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="350201213"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">850</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.authorizedToEdit</string>
-						<reference key="source" ref="76298355"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="76298355"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">851</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.authorizedToEdit</string>
-						<reference key="source" ref="857864336"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="857864336"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">852</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.authorizedToEdit</string>
-						<reference key="source" ref="605011559"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="605011559"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">854</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.authorizedToEdit</string>
-						<reference key="source" ref="969383826"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="969383826"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">855</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.authorizedToEdit</string>
-						<reference key="source" ref="160089595"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="160089595"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">856</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.authorizedToEdit</string>
-						<reference key="source" ref="426784300"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="426784300"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled2: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="252825047"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">857</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.authorizedToEdit</string>
-						<reference key="source" ref="379674509"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="379674509"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">858</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled3: values.authorizedToEdit</string>
-						<reference key="source" ref="145483343"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="145483343"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled3: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled3</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="588779248"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">859</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled3: values.authorizedToEdit</string>
-						<reference key="source" ref="723557412"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="723557412"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled3: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled3</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="934293603"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">860</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">nextKeyView</string>
 						<reference key="source" ref="887562285"/>
@@ -3719,7 +3485,7 @@ ZW1wdHkgbGlzdC4</string>
 						<string key="label">enabled: values.encryptedWebServer</string>
 						<reference key="source" ref="927135998"/>
 						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector" id="452352210">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="927135998"/>
 							<reference key="NSDestination" ref="896066363"/>
 							<string key="NSLabel">enabled: values.encryptedWebServer</string>
@@ -3735,7 +3501,7 @@ ZW1wdHkgbGlzdC4</string>
 						<string key="label">enabled: values.encryptedWebServer</string>
 						<reference key="source" ref="372921936"/>
 						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector" id="35765964">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="372921936"/>
 							<reference key="NSDestination" ref="896066363"/>
 							<string key="NSLabel">enabled: values.encryptedWebServer</string>
@@ -3745,52 +3511,6 @@ ZW1wdHkgbGlzdC4</string>
 						</object>
 					</object>
 					<int key="connectionID">877</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.authorizedToEdit</string>
-						<reference key="source" ref="927135998"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="927135998"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled2: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="452352210"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">878</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.authorizedToEdit</string>
-						<reference key="source" ref="372921936"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="372921936"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled2: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="35765964"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">879</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -3839,22 +3559,6 @@ ZW1wdHkgbGlzdC4</string>
 						<reference key="destination" ref="927135998"/>
 					</object>
 					<int key="connectionID">884</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.authorizedToEdit</string>
-						<reference key="source" ref="538953529"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="538953529"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">894</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -3909,7 +3613,7 @@ ZW1wdHkgbGlzdC4</string>
 						<string key="label">enabled2: values.passwordWebServer</string>
 						<reference key="source" ref="899214639"/>
 						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector" id="28136015">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="899214639"/>
 							<reference key="NSDestination" ref="896066363"/>
 							<string key="NSLabel">enabled2: values.passwordWebServer</string>
@@ -3926,29 +3630,6 @@ ZW1wdHkgbGlzdC4</string>
 						</object>
 					</object>
 					<int key="connectionID">902</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled3: values.authorizedToEdit</string>
-						<reference key="source" ref="899214639"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="899214639"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled3: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled3</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="28136015"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">903</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -3979,7 +3660,7 @@ ZW1wdHkgbGlzdC4</string>
 						<string key="label">enabled2: values.passwordWebServer</string>
 						<reference key="source" ref="144829372"/>
 						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector" id="260999649">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="144829372"/>
 							<reference key="NSDestination" ref="896066363"/>
 							<string key="NSLabel">enabled2: values.passwordWebServer</string>
@@ -3996,29 +3677,6 @@ ZW1wdHkgbGlzdC4</string>
 						</object>
 					</object>
 					<int key="connectionID">917</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled3: values.authorizedToEdit</string>
-						<reference key="source" ref="144829372"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="144829372"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">enabled3: values.authorizedToEdit</string>
-							<string key="NSBinding">enabled3</string>
-							<string key="NSKeyPath">values.authorizedToEdit</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="260999649"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">918</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">

@@ -104,10 +104,10 @@ extern BOOL hasMacOSXSnowLeopard();
 	return [[BrowserController currentBrowser] userManagedObjectContext];
 }
 
-- (void) enableControls: (BOOL) val
-{
-	[[NSUserDefaults standardUserDefaults] setBool: val forKey: @"authorizedToEdit"];
-}
+//- (void) enableControls: (BOOL) val
+//{
+///	[[NSUserDefaults standardUserDefaults] setBool: val forKey: @"authorizedToEdit"];
+//}
 
 - (void) dealloc
 {

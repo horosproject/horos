@@ -49,12 +49,8 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (void) enableControls:(BOOL)enable
 {
-	[gray setHidden: enable];
-	[lock setHidden: enable];
-	
 	if(!enable) [layoutView setDisabledText:@""];
 	else [layoutView setDefaultDisabledText];
-	
 	[[self mainView] sortSubviewsUsingFunction:(NSComparisonResult (*)(id, id, void *))compareViewTags context: [NSNumber numberWithBool:enable]];
 }
 

@@ -71,7 +71,6 @@
 -(BOOL)isEnabled {
 	NSView* view = self.superview;
 	for (; view && ![view isKindOfClass:[NSControl class]]; view = view.superview) ;
-	NSLog(@"control enabled:%d", ((NSControl*)view).isEnabled);
 	return ((NSControl*)view).isEnabled;
 }
 

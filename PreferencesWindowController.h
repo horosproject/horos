@@ -37,11 +37,14 @@
 
 +(void)addPluginPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image;
 
+-(BOOL)isUnlocked;
+
 -(IBAction)showAllAction:(id)sender;
 -(IBAction)navigationAction:(id)sender;
 -(IBAction)authAction:(id)sender;
 
 -(void)reopenDatabase;
+
 
 @end
 

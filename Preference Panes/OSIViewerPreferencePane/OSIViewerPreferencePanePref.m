@@ -18,11 +18,11 @@
 
 - (void) enableControls: (BOOL) val
 {
-	if( val == YES)
-	{
-		[[NSUserDefaults standardUserDefaults] setBool:[[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] forKey: @"AUTOTILING"];
-		[totoku12Bit setEnabled: [[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"]];
-	}
+//	if( val == YES)
+//	{
+//		[[NSUserDefaults standardUserDefaults] setBool:[[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] forKey: @"AUTOTILING"];
+//		[totoku12Bit setEnabled: [[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"]]; // DONE THRU BINDINGS
+//	}
 //	NSLog(@"%@", totoku12Bit);
 //	[characterSetPopup setEnabled: val];
 //	[addServerDICOM setEnabled: val];

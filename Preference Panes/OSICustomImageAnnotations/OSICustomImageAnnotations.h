@@ -20,15 +20,12 @@
 #import "CIAPlaceHolder.h"
 #import "CIAAnnotation.h"
 #import "RWTokenField.h"
-#import <OsiriX Headers/N2ImageView.h>
 
 
 @interface OSICustomImageAnnotations : NSPreferencePane {
 	
 	CIALayoutController *layoutController;
 	IBOutlet NSWindow *window;
-	IBOutlet N2ImageView	*gray;
-	IBOutlet NSImageView	*lock;
 	IBOutlet NSPopUpButton *modalitiesPopUpButton;
 	IBOutlet NSButton *sameAsDefaultButton, *resetDefaultButton;
 	
