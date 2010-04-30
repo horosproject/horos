@@ -17925,12 +17925,10 @@ int i,j,l;
 	BOOL volumicData = [self isDataVolumicIn4D: NO];
 	
 	if( volumicData == NO)
-	{
-		NSRunAlertPanel(NSLocalizedString(@"Growing Region", nil), NSLocalizedString(@"Growing Region algorithms are currently supported only for volumic data and BW images.", nil), nil, nil, nil);
-		return;
-	}
-	
-	[self displayAWarningIfNonTrueVolumicData];
+		// Force 2D mode
+		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"growingRegionType"];
+	else
+		[self displayAWarningIfNonTrueVolumicData];
 	
 	[self clear8bitRepresentations];
 	

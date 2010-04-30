@@ -3575,7 +3575,10 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
 {
     unsigned char *b;
     int bytesRead;
-
+	
+	if( p == NULL)
+		return DUL_NULLKEY;
+	
     /* assign buffer to local variable */
     b = (unsigned char *) p;
 

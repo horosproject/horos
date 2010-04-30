@@ -27,6 +27,11 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 
 @implementation ITKSegmentation3DController
 
+- (BOOL) dataVolumic
+{
+	return [viewer isDataVolumicIn4D: NO];
+}
+
 +(id) segmentationControllerForViewer:(ViewerController*) v
 {
 	NSArray *winList = [NSApp windows];

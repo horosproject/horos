@@ -238,9 +238,13 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 OFstatic_cast(DcmOtherByteOtherWord *, elem)->putUint8Array(version, 2);
 
             // check version of meta header
-            Uint8 *currVers;
+            Uint8 *currVers = NULL;
             l_error = OFstatic_cast(DcmOtherByteOtherWord *, elem)->getUint8Array(currVers);
-            if (((currVers[0] & version[0] & 0xff) == version[0]) &&
+			
+			if( currVers == NULL)
+				return l_error = EC_IllegalCall;
+			
+            if( ((currVers[0] & version[0] & 0xff) == version[0]) &&
                 ((currVers[1] & version[1] & 0xff) == version[1]))
             {
                 DCM_dcmdataDebug(2, ("DcmFileFormat::checkValue() Version of MetaHeader is ok: 0x%2.2x%2.2x",
