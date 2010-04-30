@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		59482FA3118ADC5200D7E606 /* OsiriX Headers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59482FA2118ADC5200D7E606 /* OsiriX Headers.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7EC5841C07298C5300429FC7 /* HangingTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EC5841A07298C5300429FC7 /* HangingTableView.h */; };
 		7EC5841D07298C5300429FC7 /* HangingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EC5841B07298C5300429FC7 /* HangingTableView.m */; };
 		8D202CEA0486D31800D8A456 /* OSIHangingPreferencePane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32DBCFA20370C41700C91783 /* OSIHangingPreferencePane_Prefix.pch */; };
@@ -33,6 +34,7 @@
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCFA20370C41700C91783 /* OSIHangingPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIHangingPreferencePane_Prefix.pch; sourceTree = "<group>"; };
+		59482FA2118ADC5200D7E606 /* OsiriX Headers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "OsiriX Headers.framework"; path = "../../build/Development/OsiriX Headers.framework"; sourceTree = SOURCE_ROOT; };
 		7EC5841A07298C5300429FC7 /* HangingTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HangingTableView.h; sourceTree = "<group>"; };
 		7EC5841B07298C5300429FC7 /* HangingTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HangingTableView.m; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 				8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */,
 				8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */,
 				AB80A6770A19C90000FED357 /* Security.framework in Frameworks */,
+				59482FA3118ADC5200D7E606 /* OsiriX Headers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +84,7 @@
 		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				59482FA2118ADC5200D7E606 /* OsiriX Headers.framework */,
 				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
 				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,
 			);
@@ -100,12 +104,12 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				F506C03C013D9D7901CA16C8 /* OSIHangingPreferencePanePref.h */,
+				F506C03D013D9D7901CA16C8 /* OSIHangingPreferencePanePref.m */,
 				BF2FAB1D0B4C73C1000791F0 /* UpperCaseTableColumn.h */,
 				BF2FAB1E0B4C73C2000791F0 /* UpperCaseTableColumn.m */,
 				7EC5841A07298C5300429FC7 /* HangingTableView.h */,
 				7EC5841B07298C5300429FC7 /* HangingTableView.m */,
-				F506C03C013D9D7901CA16C8 /* OSIHangingPreferencePanePref.h */,
-				F506C03D013D9D7901CA16C8 /* OSIHangingPreferencePanePref.m */,
 				BF2FA40E0B4B0F72000791F0 /* BodyRegionArrayController.h */,
 				BF2FA40F0B4B0F72000791F0 /* BodyRegionArrayController.m */,
 				BF2FA4140B4B0FA1000791F0 /* KeywordsArrayController.h */,
@@ -271,7 +275,10 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEBUGGING_SYMBOLS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(FRAMEWORK_SEARCH_PATHS)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"\"$(SRCROOT)/../../build/Development\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_TRIGRAPHS = NO;

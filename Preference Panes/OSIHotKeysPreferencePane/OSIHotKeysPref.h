@@ -13,15 +13,12 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-#import <SecurityInterface/SFAuthorizationView.h>
 #import "HotKeyArrayController.h"
 
 @interface OSIHotKeysPref : NSPreferencePane 
 {
 	NSArray *_actions;
-	IBOutlet SFAuthorizationView *_authView;
 	IBOutlet NSTextFieldCell *keyTextFieldCell;
-	BOOL _enableControls;
 	IBOutlet HotKeyArrayController *arrayController;
 }
 
@@ -30,8 +27,5 @@
 - (void) mainViewDidLoad;
 - (NSArray *)actions;
 - (void)setActions:(NSArray *)actions;
-
-- (void) setEnableControls: (BOOL) val;
-- (BOOL)enableControls;
 
 @end

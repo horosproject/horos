@@ -14,68 +14,15 @@
 
 
 #import "OSIHangingPreferencePanePref.h"
+#import <OsiriX Headers/NSPreferencePane+OsiriX.h>
 
 
 @implementation OSIHangingPreferencePanePref
 
-- (void)checkView:(NSView *)aView :(BOOL) OnOff
-{
-    id view;
-    NSEnumerator *enumerator;
-	
-	if( aView == _authView) return;
-	
-    if ([aView isKindOfClass: [NSControl class] ])
-	{
-       [(NSControl*) aView setEnabled: OnOff];
-	   return;
-    }
-
-	// Recursively check all the subviews in the view
-    enumerator = [ [aView subviews] objectEnumerator];
-    while (view = [enumerator nextObject]) {
-        [self checkView:view :OnOff];
-    }
-}
-
-- (void) enableControls: (BOOL) val
-{
-//	[self checkView: [self mainView] :val];
-	[self setControlsAuthorized:val];
-//	[characterSetPopup setEnabled: val];
-//	[addServerDICOM setEnabled: val];
-//	[addServerSharing setEnabled: val];
-}
-
-- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
-{
-    [self enableControls: YES];
-}
-
-- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
-{    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
-}
-
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
-	[_authView setDelegate:self];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.hanging"];
-		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-		else [self enableControls: NO];
-	}
-	else
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
-		[_authView setEnabled: NO];
-	}
-	[_authView updateStatus:self];
-
-
+	
 	hangingProtocols = [[defaults objectForKey:@"HANGINGPROTOCOLS"] mutableCopy];
 	
 	
@@ -156,7 +103,8 @@
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-	if( [_authView authorizationState] != SFAuthorizationViewUnlockedState) return NO;
+	if (![self isUnlocked])
+		return NO;
 	
 	if ([aTableView isEqual:hangingProtocolTableView] && [[aTableColumn identifier] isEqualToString:@"Study Description"] && rowIndex == 0) 
 		return NO;
@@ -200,7 +148,7 @@
 
 - (void) deleteSelectedRow:(id)sender{
 
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	if([self isUnlocked])
 	{
 		NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
 		[hangingProtocolArray removeObjectAtIndex:[hangingProtocolTableView selectedRow]];
@@ -210,12 +158,6 @@
 	}
 }
 
-- (BOOL)controlsAuthorized{
-	return _controlsAuthorized;
-}
-- (void)setControlsAuthorized:(BOOL)authorized{
-	_controlsAuthorized = authorized;
-}
 
 -(void) willUnselect
 {

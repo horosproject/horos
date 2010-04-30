@@ -13,7 +13,6 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-#import <SecurityInterface/SFAuthorizationView.h>
 #if defined(OSIRIX)
 #import <OsiriX Headers/DICOMTLS.h>
 #endif
@@ -31,7 +30,6 @@
 	IBOutlet NSTextField *checkIntervalField, *timeout;
 	IBOutlet NSButton *singleProcessButton;
 	IBOutlet NSPopUpButton *logDurationPopup;
-	IBOutlet SFAuthorizationView *_authView;
 	IBOutlet NSWindow *webServerSettingsWindow;
 	
 	IBOutlet NSWindow *TLSSettingsWindow;

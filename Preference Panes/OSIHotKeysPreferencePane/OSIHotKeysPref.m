@@ -127,40 +127,9 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 		}
 	}
 	[self setActions:actions];
-	[_authView setDelegate:self];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.listener"];
-		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self setEnableControls: YES];
-		else [self setEnableControls: NO];
-	}
-	else
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
-		[_authView setEnabled: NO];
-	}
-	[_authView updateStatus:self];
+
 	//NSLog(@"MainViewDidLoad arrayController: %@", [arrayController description]);
 											
-}
-
-- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
-{
-    [self setEnableControls: YES];
-}
-
-- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
-{    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self setEnableControls: NO];
-}
-
-- (void) setEnableControls: (BOOL) val
-{
-	_enableControls = val;
-}
-
-- (BOOL)enableControls{
-	return _enableControls;
 }
 
 - (NSArray *)actions{

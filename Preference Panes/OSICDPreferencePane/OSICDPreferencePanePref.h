@@ -13,13 +13,11 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSICDPreferencePanePref : NSPreferencePane 
 {
-	IBOutlet SFAuthorizationView	*_authView;
 }
 
-- (void) mainViewDidLoad;
 - (IBAction)chooseSupplementaryBurnPath:(id)sender;
+
 @end

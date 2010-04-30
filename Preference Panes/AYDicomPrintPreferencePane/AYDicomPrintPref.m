@@ -4,29 +4,6 @@
 
 @implementation AYDicomPrintPref
 
-- (void)checkView:(NSView *)aView :(BOOL) OnOff
-{
-    id view;
-    NSEnumerator *enumerator;
-	
-    if( [aView isKindOfClass: [NSControl class]])
-	{
-       [(NSControl*) aView setEnabled: OnOff];
-	   return;
-    }
-
-	// Recursively check all the subviews in the view
-    enumerator = [ [aView subviews] objectEnumerator];
-    while (view = [enumerator nextObject]) {
-        [self checkView:view :OnOff];
-    }
-}
-
-- (void) enableControls: (BOOL) val
-{
-	[self checkView: [self mainView] :val];
-}
-
 - (id) init
 {
 	if (self = [super init])

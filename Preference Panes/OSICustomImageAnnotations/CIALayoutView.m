@@ -74,7 +74,6 @@
 			[aPlaceHolder release];
 		}
 		placeHolderArray = [[NSArray arrayWithArray:placeHolderMutableArray] retain];
-		isEnabled = YES;
     }
     return self;
 }
@@ -159,7 +158,7 @@
 	
 	NSAttributedString *contentText;
 	float textWidth, textHeight;
-	if(isEnabled)
+	if([self isEnabled])
 	{
 		contentText = [[[NSAttributedString alloc] initWithString:enabledText attributes:attrsDictionary] autorelease];
 		textWidth = [contentText size].width/2.0;//rect.size.width / 2.0;
@@ -182,17 +181,12 @@
 	return placeHolderArray;
 }
 
-- (BOOL)isEnabled;
-{
-	return isEnabled;
-}
-
 - (void)setEnabled:(BOOL)enabled;
 {
-	isEnabled = enabled;
-	int i;
-	for (i=0; i<8; i++)
-		[[placeHolderArray objectAtIndex:i] setEnabled:enabled];
+	[super setEnabled:enabled];
+//	int i;
+//	for (i=0; i<8; i++)
+//		[[placeHolderArray objectAtIndex:i] setEnabled:enabled];
 }
 
 - (void)setDisabledText:(NSString*)text;

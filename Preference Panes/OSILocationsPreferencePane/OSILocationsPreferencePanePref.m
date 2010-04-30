@@ -206,47 +206,14 @@
 
 - (void) enableControls: (BOOL) val
 {
-	[characterSetPopup setEnabled: val];
-	[addServerDICOM setEnabled: val];
-	[addServerSharing setEnabled: val];
-	[verifyPing setEnabled: val];
-	[searchDICOMBonjourNodes setEnabled: val];
-	[addLocalPath setEnabled: val];
-	[loadNodes setEnabled: val];
-	
 	[[NSUserDefaults standardUserDefaults] setBool: val forKey: @"preferencesModificationsEnabled"];
-	
 	[[NSUserDefaults standardUserDefaults] setBool: [[NSUserDefaults standardUserDefaults] boolForKey:@"syncDICOMNodes"] forKey: @"syncDICOMNodes"];
-}
-
-- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
-{
-    [self enableControls: YES];
-}
-
-- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
-{    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
 }
 
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
-	[_authView setDelegate:self];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.locations"];
-		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-		else [self enableControls: NO];
-	}
-	else
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
-		[_authView setEnabled: NO];
-	}
-	[_authView updateStatus:self];
-
 	stringEncoding = [[defaults stringForKey:@"STRINGENCODING"] retain];
 	int tag = 0;
 	 if( [stringEncoding isEqualToString: @"ISO_IR 192"])	//UTF8

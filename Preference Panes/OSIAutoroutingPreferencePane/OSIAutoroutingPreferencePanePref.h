@@ -13,14 +13,12 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSIAutoroutingPreferencePanePref : NSPreferencePane 
 {
 	IBOutlet NSButton					*autoroutingActivated;
 	IBOutlet NSWindow					*newRoute;
 	IBOutlet NSTableView				*routesTable;
-	IBOutlet SFAuthorizationView		*_authView;
 	
 	IBOutlet NSTextField				*newName, *addressAndPort, *newFilter, *newDescription;
 	IBOutlet NSPopUpButton				*serverPopup;

@@ -82,6 +82,10 @@
 		183C865C08563F3A000E6A68 /* VRFlyThruAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 183C864808563F3A000E6A68 /* VRFlyThruAdapter.h */; };
 		183C865D08563F3A000E6A68 /* VRFlyThruAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C864908563F3A000E6A68 /* VRFlyThruAdapter.m */; };
 		32E422150C97301600E193CA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
+		594830CD118B0AC100D7E606 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 594830CB118B0AC100D7E606 /* N2ImageView.h */; };
+		594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 594830CC118B0AC100D7E606 /* N2ImageView.mm */; };
+		594830CF118B0AC100D7E606 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 594830CB118B0AC100D7E606 /* N2ImageView.h */; };
+		594830D0118B0AC100D7E606 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 594830CC118B0AC100D7E606 /* N2ImageView.mm */; };
 		596EB3061189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */; };
 		596EB3071189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */; };
 		596EB3081189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */; };
@@ -7978,6 +7982,8 @@
 		4A16D0970965E15300F82EC4 /* Unit Testing (Cocoa)-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Unit Testing (Cocoa)-Info.plist"; path = "UnitTesting/Unit Testing (Cocoa)-Info.plist"; sourceTree = "<group>"; };
 		4A16D0A20965E21800F82EC4 /* UnitTestingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnitTestingBase.h; path = UnitTesting/UnitTestingBase.h; sourceTree = "<group>"; };
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
+		594830CB118B0AC100D7E606 /* N2ImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ImageView.h; path = nitrogen/Sources/N2ImageView.h; sourceTree = "<group>"; };
+		594830CC118B0AC100D7E606 /* N2ImageView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageView.mm; path = nitrogen/Sources/N2ImageView.mm; sourceTree = "<group>"; };
 		596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPreferencePane+OsiriX.h"; sourceTree = "<group>"; };
 		596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSPreferencePane+OsiriX.mm"; sourceTree = "<group>"; };
 		596EB3F4118ABBB000880192 /* NSWindow+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSWindow+N2.h"; path = "nitrogen/Sources/NSWindow+N2.h"; sourceTree = "<group>"; };
@@ -12537,6 +12543,8 @@
 				AB10FAD31129338A009EB238 /* N2ColorWell.mm */,
 				AB10FAD41129338A009EB238 /* N2PopUpButton.h */,
 				AB10FAD51129338A009EB238 /* N2PopUpButton.mm */,
+				594830CB118B0AC100D7E606 /* N2ImageView.h */,
+				594830CC118B0AC100D7E606 /* N2ImageView.mm */,
 			);
 			name = Controls;
 			sourceTree = "<group>";
@@ -18854,6 +18862,7 @@
 				59C512C01189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */,
 				596EB3061189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */,
 				596EB3F6118ABBB000880192 /* NSWindow+N2.h in Headers */,
+				594830CD118B0AC100D7E606 /* N2ImageView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20964,6 +20973,7 @@
 				59C512C21189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */,
 				596EB3081189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */,
 				596EB3F8118ABBB000880192 /* NSWindow+N2.h in Headers */,
+				594830CF118B0AC100D7E606 /* N2ImageView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23323,6 +23333,7 @@
 				59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */,
 				596EB3071189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */,
 				596EB3F7118ABBB000880192 /* NSWindow+N2.mm in Sources */,
+				594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24492,6 +24503,7 @@
 				59C512C31189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */,
 				596EB3091189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */,
 				596EB3F9118ABBB000880192 /* NSWindow+N2.mm in Sources */,
+				594830D0118B0AC100D7E606 /* N2ImageView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

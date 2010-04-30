@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10C540</string>
-		<string key="IBDocument.InterfaceBuilderVersion">732</string>
-		<string key="IBDocument.AppKitVersion">1038.25</string>
-		<string key="IBDocument.HIToolboxVersion">458.00</string>
+		<string key="IBDocument.SystemVersion">10D573</string>
+		<string key="IBDocument.InterfaceBuilderVersion">762</string>
+		<string key="IBDocument.AppKitVersion">1038.29</string>
+		<string key="IBDocument.HIToolboxVersion">460.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">732</string>
+			<string key="NS.object.0">762</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -41,7 +41,7 @@
 			<object class="NSWindowTemplate" id="690424935">
 				<int key="NSWindowStyleMask">7</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{748, 581}, {715, 744}}</string>
+				<string key="NSWindowRect">{{748, 616}, {715, 709}}</string>
 				<int key="NSWTFlags">1081606144</int>
 				<string key="NSWindowTitle">&lt;&lt; do not localize &gt;&gt;</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -558,7 +558,7 @@
 									<reference key="NSSuperview" ref="622798221"/>
 								</object>
 							</object>
-							<string key="NSFrame">{{8, 51}, {700, 240}}</string>
+							<string key="NSFrame">{{8, 16}, {700, 240}}</string>
 							<reference key="NSSuperview" ref="816094462"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
@@ -659,7 +659,7 @@
 									<reference key="NSSuperview" ref="199628005"/>
 								</object>
 							</object>
-							<string key="NSFrame">{{8, 644}, {700, 92}}</string>
+							<string key="NSFrame">{{8, 609}, {700, 92}}</string>
 							<reference key="NSSuperview" ref="816094462"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
@@ -1545,7 +1545,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<reference key="NSSuperview" ref="595890213"/>
 								</object>
 							</object>
-							<string key="NSFrame">{{8, 298}, {700, 346}}</string>
+							<string key="NSFrame">{{8, 263}, {700, 346}}</string>
 							<reference key="NSSuperview" ref="816094462"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
@@ -1565,16 +1565,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSTitlePosition">2</int>
 							<bool key="NSTransparent">NO</bool>
 						</object>
-						<object class="NSCustomView" id="602125491">
-							<reference key="NSNextResponder" ref="816094462"/>
-							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{11, 12}, {694, 35}}</string>
-							<reference key="NSSuperview" ref="816094462"/>
-							<string key="NSClassName">SFAuthorizationView</string>
-							<string key="NSExtension">NSView</string>
-						</object>
 					</object>
-					<string key="NSFrameSize">{715, 744}</string>
+					<string key="NSFrameSize">{715, 709}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
@@ -1707,14 +1699,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="44240982"/>
 					</object>
 					<int key="connectionID">278</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">_authView</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="602125491"/>
-					</object>
-					<int key="connectionID">296</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -2252,7 +2236,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="622798221"/>
 							<reference ref="199628005"/>
 							<reference ref="595890213"/>
-							<reference ref="602125491"/>
 						</object>
 						<reference key="parent" ref="690424935"/>
 					</object>
@@ -2320,11 +2303,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="183172234"/>
 							<reference ref="640506955"/>
 						</object>
-						<reference key="parent" ref="816094462"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">295</int>
-						<reference key="object" ref="602125491"/>
 						<reference key="parent" ref="816094462"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -3048,8 +3026,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>275.ImportedFromIB2</string>
 					<string>276.IBPluginDependency</string>
 					<string>276.ImportedFromIB2</string>
-					<string>295.IBPluginDependency</string>
-					<string>295.ImportedFromIB2</string>
 					<string>297.IBPluginDependency</string>
 					<string>297.ImportedFromIB2</string>
 					<string>298.IBPluginDependency</string>
@@ -3169,17 +3145,15 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{23, 112}, {715, 744}}</string>
+					<string>{{23, 147}, {715, 709}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{23, 112}, {715, 744}}</string>
+					<string>{{23, 147}, {715, 709}}</string>
 					<integer value="1"/>
 					<string>{{1702, 544}, {715, 659}}</string>
 					<integer value="0"/>
 					<integer value="1"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{224.663, 10}</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3940,6 +3914,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			</object>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
+		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
@@ -3955,5 +3930,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">../OSIViewerPreferencePane.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
+		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="NS.key.0">NSSwitch</string>
+			<string key="NS.object.0">{15, 15}</string>
+		</object>
 	</data>
 </archive>

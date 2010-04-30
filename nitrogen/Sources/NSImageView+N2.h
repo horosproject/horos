@@ -17,10 +17,6 @@
 
 @interface NSImageView (N2)
 
-+(NSImageView*)createWithImage:(NSImage*)image;
 
 @end
 
-@interface N2ImageView : NSImageView
-
-@end

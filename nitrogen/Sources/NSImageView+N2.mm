@@ -36,7 +36,3 @@
 }
 
 @end
-
-@implementation N2ImageView 
-
-@end

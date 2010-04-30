@@ -42,7 +42,6 @@ typedef enum {CIAPlaceHolderOrientationWidgetTop, CIAPlaceHolderOrientationWidge
 - (void)alignAnnotationsWithAnimation:(BOOL)animate;
 - (void)updateFrameAroundAnnotations;
 - (void)updateFrameAroundAnnotationsWithAnimation:(BOOL)animate;
-- (void)setEnabled:(BOOL)enabled;
 - (void)setAnimatedFrameSize:(NSSize)size;
 - (void)setAlignment:(CIAPlaceHolderAlignement)alignement;
 - (void)setOrientationWidgetPosition:(CIAPlaceHolderOrientationWidgetPosition)pos;

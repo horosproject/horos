@@ -48,7 +48,6 @@
     if(self)
 	{
 		isSelected = NO;
-		isEnabled = YES;
 		placeHolder = nil;
 		color = [[NSColor orangeColor] retain];
 		backgroundColor = [[NSColor redColor] retain];
@@ -67,6 +66,13 @@
 	[title release];
 	[content release];
 	[super dealloc];
+}
+
+-(BOOL)isEnabled {
+	NSView* view = self.superview;
+	for (; view && ![view isKindOfClass:[NSControl class]]; view = view.superview) ;
+	NSLog(@"control enabled:%d", ((NSControl*)view).isEnabled);
+	return ((NSControl*)view).isEnabled;
 }
 
 - (void)drawRect:(NSRect)rect
@@ -93,7 +99,7 @@
 	[color set];
 	if(isSelected)
 		[backgroundColor set];
-	if(!isEnabled || isOrientationWidget)
+	if(!self.isEnabled || isOrientationWidget)
 		[[NSColor grayColor] set];
 	[borderFrame fill];
 
@@ -106,7 +112,7 @@
 		[borderFrame setLineWidth:2.0];
 		
 	[[NSColor redColor] set];
-	if(!isEnabled || isOrientationWidget)
+	if(!self.isEnabled || isOrientationWidget)
 		[[NSColor darkGrayColor] set];
 	[borderFrame stroke];
 	
@@ -131,7 +137,7 @@
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
-	if(!isEnabled || isOrientationWidget) return;
+	if(!self.isEnabled || isOrientationWidget) return;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseDraggedNotification" object:self];
 	
 	NSPoint eventLocation = [theEvent locationInWindow];
@@ -167,7 +173,7 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-	if(!isEnabled || isOrientationWidget) return;
+	if(!self.isEnabled || isOrientationWidget) return;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseDownNotification" object:self];
 	NSPoint eventLocation = [theEvent locationInWindow];
 	mouseDownLocation = [self convertPoint:eventLocation fromView:nil];
@@ -191,7 +197,7 @@
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-	if(!isEnabled || isOrientationWidget) return;
+	if(!self.isEnabled || isOrientationWidget) return;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseUpNotification" object:self];
 }
 
@@ -265,11 +271,6 @@
 - (void)removeObjectFromContentAtIndex:(unsigned int)index;
 {
 	[content removeObjectAtIndex:index];
-}
-
-- (void)setEnabled:(BOOL)enabled;
-{
-	isEnabled = enabled;
 }
 
 - (BOOL)isOrientationWidget;

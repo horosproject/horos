@@ -13,10 +13,12 @@
 
 @implementation NSPreferencePane (OsiriX)
 
+-(BOOL)isUnlocked {
+	return [[(PreferencesWindowController*)[[[self mainView] window] windowController] authView] authorizationState] == SFAuthorizationViewUnlockedState;
+}
+
 -(NSNumber*)editable {
-	if ([[(PreferencesWindowController*)[[[self mainView] window] windowController] authView] authorizationState] == SFAuthorizationViewUnlockedState)
-		return [NSNumber numberWithBool:YES];
-	return [NSNumber numberWithBool:NO];
+	return [NSNumber numberWithBool:[self isUnlocked]];
 }
 
 @end

@@ -71,45 +71,6 @@ char *GetPrivateIP()
    return r;
 }
 
-- (void)checkView:(NSView *)aView :(BOOL) OnOff
-{
-    id view;
-    NSEnumerator *enumerator;
-	
-	if( aView == _authView) return;
-	
-    if ([aView isKindOfClass: [NSControl class] ])
-	{
-       [(NSControl*) aView setEnabled: OnOff];
-	   return;
-    }
-
-	// Recursively check all the subviews in the view
-    enumerator = [ [aView subviews] objectEnumerator];
-    while (view = [enumerator nextObject]) {
-        [self checkView:view :OnOff];
-    }
-}
-
-- (void) enableControls: (BOOL) val
-{
-	[self checkView: [self mainView] :val];
-
-//	[characterSetPopup setEnabled: val];
-//	[addServerDICOM setEnabled: val];
-//	[addServerSharing setEnabled: val];
-}
-
-- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
-{
-    [self enableControls: YES];
-}
-
-- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
-{    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
-}
-
 - (void) dealloc
 {
 	NSLog(@"dealloc OSIListenerPreferencePanePref");
@@ -147,20 +108,6 @@ char *GetPrivateIP()
 	if( [defaults integerForKey:@"DICOMTimeout"] > 480)
 		[defaults setObject:@"480" forKey:@"DICOMTimeout"];
 	
-	[_authView setDelegate:self];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.listener"];
-		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-		else [self enableControls: NO];
-	}
-	else
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
-		[_authView setEnabled: NO];
-	}
-	[_authView updateStatus:self];
-
 
 	//setup GUI
 	

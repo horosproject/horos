@@ -11,6 +11,7 @@
 
 @interface NSPreferencePane (OsiriX)
 
+-(BOOL)isUnlocked;
 -(NSNumber*)editable;
 
 @end

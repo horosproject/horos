@@ -16,30 +16,8 @@
 
 @implementation OSIViewerPreferencePanePref
 
-- (void)checkView:(NSView *)aView :(BOOL) OnOff
-{
-    id view;
-    NSEnumerator *enumerator;
-	
-	if( aView == _authView) return;
-	
-    if ([aView isKindOfClass: [NSControl class] ])
-	{
-       [(NSControl*) aView setEnabled: OnOff];
-	   return;
-    }
-
-	// Recursively check all the subviews in the view
-    enumerator = [ [aView subviews] objectEnumerator];
-    while (view = [enumerator nextObject]) {
-        [self checkView:view :OnOff];
-    }
-}
-
 - (void) enableControls: (BOOL) val
 {
-	[self checkView: [self mainView] :val];
-
 	if( val == YES)
 	{
 		[[NSUserDefaults standardUserDefaults] setBool:[[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] forKey: @"AUTOTILING"];
@@ -49,16 +27,6 @@
 //	[characterSetPopup setEnabled: val];
 //	[addServerDICOM setEnabled: val];
 //	[addServerSharing setEnabled: val];
-}
-
-- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
-{
-    [self enableControls: YES];
-}
-
-- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
-{    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
 }
 
 - (void) willUnselect
@@ -85,20 +53,6 @@
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"automatic12BitTotoku"];
 	}
 
-	[_authView setDelegate:self];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.viewer"];
-		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-		else [self enableControls: NO];
-	}
-	else
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
-		[_authView setEnabled: NO];
-	}
-	[_authView updateStatus:self];
-	
 	[sizeMatrix selectCellWithTag: [defaults boolForKey: @"ORIGINALSIZE"]];
 	
 	[openViewerCheck setState: [defaults boolForKey: @"OPENVIEWER"]];

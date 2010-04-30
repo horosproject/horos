@@ -24,6 +24,7 @@
 #import "DicomFile.h"
 #import "DCMView.h"
 #import <Foundation/NSObjCRuntime.h>
+#include <algorithm>
 
 //static NSMutableDictionary *paneBundles = nil;
 
@@ -60,7 +61,7 @@
 }
 
 -(void)dealloc {
-	NSLog(@"[PreferencesWindowContext dealloc], title %@", self.title);
+	//NSLog(@"[PreferencesWindowContext dealloc], title %@", self.title);
 	self.title = NULL;
 	self.parentBundle = NULL;
 	self.resourceName = NULL;
@@ -124,22 +125,23 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[pluginPanes addObject:[NSArray arrayWithObjects:resourceName, parentBundle, title, image, NULL]];
 }
 
--(void)invokeEnableControls:(BOOL)enable onObject:(id)target {
-	if ([target respondsToSelector:@selector(enableControls:)]) {
-		NSInvocation* inv = [NSInvocation invocationWithMethodSignature:[[self class] instanceMethodSignatureForSelector:@selector(enableControls:)]];
-		[inv setSelector:@selector(enableControls:)];
-		[inv setArgument:&enable atIndex:2];
-		[inv invokeWithTarget:target];
-	}
+-(void)view:(NSView*)view recursiveEnable:(BOOL)enable {
+	if ([view isKindOfClass:[NSControl class]])
+		[(NSControl*)view setEnabled:enable];
+	else for (NSView* subview in view.subviews)
+		[self view:subview recursiveEnable:enable];
 }
 
--(void)enableControls:(BOOL)enable {
+-(void)pane:(NSPreferencePane*)pane enable:(BOOL)enable {
 	[authButton setImage:[NSImage imageNamed: enable? @"NSLockUnlockedTemplate" : @"NSLockLockedTemplate" ]];
 	
-	if ([currentContext.pane respondsToSelector:@selector(enableControls:)]) // retro-compatibility with old preference bundles
-		[self invokeEnableControls:enable onObject:currentContext.pane];
-	else {
-		// TODO: newer method
+	[self view:pane.mainView recursiveEnable:enable];
+	
+	if ([pane respondsToSelector:@selector(enableControls:)]) { // retro-compatibility with old preference bundles
+		NSInvocation* inv = [NSInvocation invocationWithMethodSignature:[[pane class] instanceMethodSignatureForSelector:@selector(enableControls:)]];
+		[inv setSelector:@selector(enableControls:)];
+		[inv setArgument:&enable atIndex:2];
+		[inv invokeWithTarget:pane];
 	}
 }
 
@@ -148,8 +150,6 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
 		[authView setString:"com.rossetantoine.osirix.preferences.database"];
-		if( [authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls:YES];
-		else [self enableControls:NO];
 	}
 	else
 	{
@@ -220,20 +220,17 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[self willChangeValueForKey:@"currentContext"];
 
 		[context.pane loadMainView];
-		[self invokeEnableControls: [authView authorizationState] == SFAuthorizationViewUnlockedState onObject:context.pane];
+		[self pane:context.pane enable: [authView authorizationState] == SFAuthorizationViewUnlockedState];
 		
 		[animations removeAllObjects];
 		
 		// remove old view
+		
 		[currentContext.pane willUnselect];
 		NSView* oldview = currentContext? currentContext.pane.mainView : panesListView;
 		[oldview retain];
 		[oldview removeFromSuperview];
-//        [animations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-//								   oldview, NSViewAnimationTargetKey,
-//							       NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey,
-//							   NULL]];
-		
+
 		// add new view
 		
 		NSView* view = context? context.pane.mainView : panesListView;
@@ -250,8 +247,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[context.pane didSelect];
 
 		[currentContext.pane didUnselect];
-		//[currentContext release];
-		currentContext = context;//[context retain];
+		currentContext = context;
 		
 		[self didChangeValueForKey:@"currentContext"];
 		
@@ -262,7 +258,6 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 }
 
 -(void)dealloc {
-//	NSLog(@"[PreferencesWindowController dealloc]");
 	[self setCurrentContext:NULL];
 	[panesListView release];
 	[animations release];
@@ -270,12 +265,11 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 }
 
 -(void)authorizationViewDidAuthorize:(SFAuthorizationView*)view {
-	[self enableControls:YES];
+	[self pane:currentContext.pane enable:YES];
 }
 
 -(void)authorizationViewDidDeauthorize:(SFAuthorizationView*)view {    
-	//if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-		[self enableControls:NO];
+	[self pane:currentContext.pane enable:NO];
 }
 
 -(void)synchronizeSizeWithContent {
@@ -284,6 +278,15 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	NSRect sizeframe = [self.window frameRectForContentRect:paneFrame];
 	frame.origin.y += frame.size.height-sizeframe.size.height;
 	frame.size = sizeframe.size;
+	
+	NSRect idealFrame = frame;
+	// if window doesn't fit in screen, then resize it
+	NSRect screenFrame = self.window.screen.visibleFrame;
+	frame.size.width = std::min(frame.size.width, screenFrame.size.width);
+	if (frame.size.height > screenFrame.size.height) {
+		frame.origin.y += frame.size.height-screenFrame.size.height;
+		frame.size.height = screenFrame.size.height;
+	}
 	
 //	frame.size.height += 15;
 //	frame.size.width += 15;
@@ -308,9 +311,9 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[animation release];
 	[animations removeAllObjects];
 	
-	NSSize windowMaxSize = frame.size;
+	NSSize windowMaxSize = idealFrame.size;
 	windowMaxSize.height -= self.window.toolbarHeight;
-	[self.window setMaxSize:windowMaxSize];
+	self.window.maxSize = windowMaxSize;
 	
 	[scrollView setHasHorizontalScroller:YES];
 	[scrollView setHasVerticalScroller:YES];
@@ -339,12 +342,6 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(IBAction)authAction:(id)sender {
 	[authView buttonPressed:NULL];
-//	[authView mouseDown:event];
-	//[authView mouseUp:event];
-	
-	//[authView performSelector:]
-	
-	//[authView.lockButton perform];
 }
 
 // ------

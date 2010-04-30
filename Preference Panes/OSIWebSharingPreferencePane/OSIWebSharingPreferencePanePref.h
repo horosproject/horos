@@ -13,11 +13,9 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSIWebSharingPreferencePanePref : NSPreferencePane 
 {
-	IBOutlet SFAuthorizationView *_authView;
 	IBOutlet NSArrayController *studiesArrayController, *userArrayController;
 	
 	NSString *TLSAuthenticationCertificate;

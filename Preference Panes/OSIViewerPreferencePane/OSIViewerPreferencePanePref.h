@@ -13,7 +13,6 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSIViewerPreferencePanePref : NSPreferencePane 
 {
@@ -29,8 +28,6 @@
 											*toolbarPanelMatrix;
 											
 	IBOutlet NSTextField					*iPhotoAlbumName;
-	
-	IBOutlet SFAuthorizationView			*_authView;
 }
 
 - (void) mainViewDidLoad;

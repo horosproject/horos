@@ -13,13 +13,10 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-#import <Cocoa/Cocoa.h>
-#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSIGeneralPreferencePanePref : NSPreferencePane 
 {
 	IBOutlet NSButton *securityOnOff;
-	IBOutlet SFAuthorizationView *_authView;
 	IBOutlet NSWindow *compressionSettingsWindow;
 	
 	NSArray *compressionSettingsCopy, *compressionSettingsLowResCopy;

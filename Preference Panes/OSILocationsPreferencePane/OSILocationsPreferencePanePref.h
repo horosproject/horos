@@ -13,7 +13,6 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-#import <SecurityInterface/SFAuthorizationView.h>
 #import <SecurityInterface/SFChooseIdentityPanel.h>
 #import <SecurityInterface/SFCertificateView.h>
 #import <OsiriX Headers/DNDArrayController.h>
@@ -50,8 +49,6 @@
 	#if defined(OSIRIX)
 	TLSCertificateVerificationType	TLSCertificateVerification;
 	#endif
-	
-	IBOutlet SFAuthorizationView	*_authView;
 }
 
 @property int WADOhttps, WADOPort, WADOTransferSyntax;

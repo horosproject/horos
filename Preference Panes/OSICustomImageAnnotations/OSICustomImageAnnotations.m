@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "OSICustomImageAnnotations.h"
+#import <OsiriX Headers/NSPreferencePane+OsiriX.h>
 
 NSComparisonResult  compareViewTags(id firstView, id secondView, void * context);
 NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
@@ -42,39 +43,19 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 @implementation OSICustomImageAnnotations
 
-- (void) lockView:(BOOL)locked
+- (void)mainViewDidLoad {
+	//[gray setInterceptsMouse:YES];
+}
+
+- (void) enableControls:(BOOL)enable
 {
-	[gray setHidden: !locked];
-	[lock setHidden: !locked];
+	[gray setHidden: enable];
+	[lock setHidden: enable];
 	
-	[modalitiesPopUpButton setEnabled:!locked];
-	[addAnnotationButton setEnabled:!locked];
-	[removeAnnotationButton setEnabled:!locked];
-	[sameAsDefaultButton setEnabled:!locked];
-	[resetDefaultButton setEnabled:!locked];
-	[orientationWidgetButton setEnabled:!locked];
-	[loadsaveButton setEnabled:!locked];
-	
-	[layoutView setEnabled:!locked];
-	if(locked) [layoutView setDisabledText:@""];
+	if(!enable) [layoutView setDisabledText:@""];
 	else [layoutView setDefaultDisabledText];
 	
-	[[self mainView] sortSubviewsUsingFunction:(NSComparisonResult (*)(id, id, void *))compareViewTags context: [NSNumber numberWithBool: !locked]];
-}
-
-- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
-{
-    editable = YES;
-	[self lockView: NO];
-}
-
-- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
-{    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-	{
-		editable = NO;
-		[self lockView: YES];
-	}
+	[[self mainView] sortSubviewsUsingFunction:(NSComparisonResult (*)(id, id, void *))compareViewTags context: [NSNumber numberWithBool:enable]];
 }
 
 #pragma mark -
@@ -82,40 +63,6 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 - (NSArray*) prepareDICOMFieldsArrays
 {
 	return [[[[self mainView] window] windowController] prepareDICOMFieldsArrays];
-}
-
-- (void) mainViewDidLoad
-{
-	NSLog(@"mainViewDidLoad");
-	[_authView setDelegate:self];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.customImageAnnotations"];
-		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) editable = YES;
-		else editable = NO;
-	}
-	else
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
-		[_authView setEnabled: NO];
-		
-		editable = YES;
-	}
-	[_authView updateStatus:self];
-	
-	if( editable)
-	{
-		[self lockView: NO];
-	}
-	else
-	{
-		[self lockView: YES];
-	}
-}
-
-- (BOOL) editable
-{
-	return editable;
 }
 
 - (IBAction) loadsave:(id) sender
@@ -214,14 +161,8 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[layoutController setPrefPane:self];
 	[layoutController awakeFromNib];
 	
-	if( editable)
-	{
-		[self lockView: NO];
-	}
-	else
-	{
-		[self lockView: YES];
-	}
+		[self enableControls:[self isUnlocked]];
+	
 }
 
 - (NSPreferencePaneUnselectReply)shouldUnselect;

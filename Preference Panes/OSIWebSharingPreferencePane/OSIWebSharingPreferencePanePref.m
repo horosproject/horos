@@ -12,7 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-#import <SecurityInterface/SFAuthorizationView.h>
 #import <SecurityInterface/SFChooseIdentityPanel.h>
 #import <SecurityInterface/SFCertificateView.h>
 
@@ -110,19 +109,6 @@ extern BOOL hasMacOSXSnowLeopard();
 	[[NSUserDefaults standardUserDefaults] setBool: val forKey: @"authorizedToEdit"];
 }
 
-- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
-{
-    [self enableControls: YES];
-}
-
-- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
-{    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTHENTICATION"])
-		[self enableControls: NO];
-	else
-		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"authorizedToEdit"];
-}
-
 - (void) dealloc
 {
 	NSLog(@"dealloc OSIWebSharingPreferencePanePref");
@@ -134,24 +120,6 @@ extern BOOL hasMacOSXSnowLeopard();
 {
 	[studiesArrayController addObserver: self forKeyPath: @"selection" options:(NSKeyValueObservingOptionNew) context:NULL];
 	
-	[_authView setDelegate:self];
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-	{
-		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"authorizedToEdit"];
-		
-		[_authView setString:"com.rossetantoine.osirix.preferences.listener"];
-		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-		else [self enableControls: NO];
-	}
-	else
-	{
-		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"authorizedToEdit"];
-		
-		[_authView setString: "com.rossetantoine.osirix.preferences.allowalways"];
-		[_authView setEnabled: NO];
-	}
-	[_authView updateStatus: self];
 	
 	[self getTLSCertificate];
 	

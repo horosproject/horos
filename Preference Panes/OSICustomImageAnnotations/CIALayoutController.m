@@ -1347,8 +1347,8 @@
 	}
 	
 	[[prefPane sameAsDefaultButton] setState:NSOffState];
-	[layoutView setEnabled:YES];
-	[[prefPane orientationWidgetButton] setEnabled:YES];
+//	[layoutView setEnabled:YES];
+//	[[prefPane orientationWidgetButton] setEnabled:YES];
 	
 	if(n==0 && ![modality isEqualTo:@"Default"])
 	{

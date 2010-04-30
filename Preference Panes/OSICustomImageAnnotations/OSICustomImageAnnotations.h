@@ -14,20 +14,21 @@
 
 //#import <Cocoa/Cocoa.h>
 #import <PreferencePanes/PreferencePanes.h>
-#import <SecurityInterface/SFAuthorizationView.h>
 
 #import "CIALayoutController.h"
 #import "CIALayoutView.h"
 #import "CIAPlaceHolder.h"
 #import "CIAAnnotation.h"
 #import "RWTokenField.h"
+#import <OsiriX Headers/N2ImageView.h>
 
 
 @interface OSICustomImageAnnotations : NSPreferencePane {
 	
 	CIALayoutController *layoutController;
 	IBOutlet NSWindow *window;
-	IBOutlet NSImageView	*gray, *lock;
+	IBOutlet N2ImageView	*gray;
+	IBOutlet NSImageView	*lock;
 	IBOutlet NSPopUpButton *modalitiesPopUpButton;
 	IBOutlet NSButton *sameAsDefaultButton, *resetDefaultButton;
 	
@@ -46,12 +47,7 @@
 	IBOutlet NSButton *addCustomDICOMFieldButton, *addDICOMFieldButton, *addDatabaseFieldButton, *addSpecialFieldButton;
 	IBOutlet NSPopUpButton *DICOMFieldsPopUpButton, *databaseFieldsPopUpButton, *specialFieldsPopUpButton;
 	IBOutlet NSBox *contentBox;
-	
-	IBOutlet SFAuthorizationView			*_authView;
-	
-	BOOL editable;
 }
-- (BOOL) editable;
 
 - (IBAction)addAnnotation:(id)sender;
 - (IBAction)removeAnnotation:(id)sender;

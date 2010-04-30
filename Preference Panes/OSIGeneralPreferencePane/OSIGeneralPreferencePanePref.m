@@ -14,6 +14,7 @@
 
 
 #import "OSIGeneralPreferencePanePref.h"
+#import <OsiriX Headers/NSPreferencePane+OsiriX.h>
 
 @interface IsQualityEnabled: NSValueTransformer {}
 @end
@@ -33,41 +34,6 @@
 + (void)initialize
 {
 	IsQualityEnabled *a = [[[IsQualityEnabled alloc] init] autorelease];	[NSValueTransformer setValueTransformer:a forName:@"IsQualityEnabled"];
-}
-
-- (void)checkView:(NSView *)aView :(BOOL) OnOff
-{
-    id view;
-    NSEnumerator *enumerator;
-	
-	if( aView == _authView) return;
-	
-    if ([aView isKindOfClass: [NSControl class]])
-	{
-       [(NSControl*) aView setEnabled: OnOff];
-	   return;
-    }
-
-	// Recursively check all the subviews in the view
-    enumerator = [ [aView subviews] objectEnumerator];
-    while (view = [enumerator nextObject]) {
-        [self checkView:view :OnOff];
-    }
-}
-
-- (void) enableControls: (BOOL) val
-{
-	[self checkView: [self mainView] :val];
-}
-
-- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
-{
-    [self enableControls: YES];
-}
-
-- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
-{
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
 }
 
 - (void) dealloc
@@ -94,16 +60,6 @@
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
-	[_authView setDelegate:self];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-		[_authView setString:"com.rossetantoine.osirix.preferences.general"];
-	else
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
-		[_authView setEnabled: NO];
-	}
-	
-	[_authView updateStatus: self];
 	
 	//setup GUI
 	[securityOnOff setState:[defaults boolForKey:@"AUTHENTICATION"]];
@@ -129,7 +85,7 @@
 
 - (IBAction) editCompressionSettings:(id) sender
 {
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	if ([self isUnlocked])
 	{
 		compressionSettingsCopy = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] copy];
 		compressionSettingsLowResCopy = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"] copy];

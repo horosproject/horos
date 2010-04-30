@@ -99,10 +99,10 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				7EC5847507298EDC00429FC7 /* ServerTableView.h */,
-				7EC5847607298EDC00429FC7 /* ServerTableView.m */,
 				F506C03C013D9D7901CA16C8 /* OSILocationsPreferencePanePref.h */,
 				F506C03D013D9D7901CA16C8 /* OSILocationsPreferencePanePref.m */,
+				7EC5847507298EDC00429FC7 /* ServerTableView.h */,
+				7EC5847607298EDC00429FC7 /* ServerTableView.m */,
 				A951F06210DFCCEE00165D8C /* DDKeychain.h */,
 			);
 			name = Classes;

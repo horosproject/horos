@@ -86,8 +86,8 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				ABC392FF09F51C01000A6508 /* OSIPETPreferencePane.m */,
 				ABC3930009F51C01000A6508 /* OSIPETPreferencePane.h */,
+				ABC392FF09F51C01000A6508 /* OSIPETPreferencePane.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";

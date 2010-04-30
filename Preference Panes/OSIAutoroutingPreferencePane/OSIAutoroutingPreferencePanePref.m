@@ -14,61 +14,14 @@
 
 
 #import "OSIAutoroutingPreferencePanePref.h"
+#import <OsiriX Headers/NSPreferencePane+OsiriX.h>
 
 @implementation OSIAutoroutingPreferencePanePref
 
-- (void)checkView:(NSView *)aView :(BOOL) OnOff
-{
-    id view;
-    NSEnumerator *enumerator;
-	
-	if( aView == _authView) return;
-	
-    if ([aView isKindOfClass: [NSControl class] ])
-	{
-       [(NSControl*) aView setEnabled: OnOff];
-	   return;
-    }
-
-	// Recursively check all the subviews in the view
-    enumerator = [ [aView subviews] objectEnumerator];
-    while (view = [enumerator nextObject]) {
-        [self checkView:view :OnOff];
-    }
-}
-
-- (void) enableControls: (BOOL) val
-{
-	[self checkView: [self mainView] :val];
-}
-
-- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
-{
-    [self enableControls: YES];
-}
-
-- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
-{    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
-}
 
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	
-	[_authView setDelegate:self];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.autorouting"];
-		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-		else [self enableControls: NO];
-	}
-	else
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
-		[_authView setEnabled: NO];
-	}
-	[_authView updateStatus:self];
 	
 	routesArray = [[defaults arrayForKey:@"AUTOROUTINGDICTIONARY"] mutableCopy];
 	if (routesArray == 0L) routesArray = [[NSMutableArray alloc] initWithCapacity: 0];
@@ -198,7 +151,7 @@ static BOOL newRouteMode = NO;
 
 - (IBAction) editRoute:(id) sender
 {
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	if([self isUnlocked])
 	{
 		newRouteMode = NO;
 		
@@ -250,7 +203,7 @@ static BOOL newRouteMode = NO;
 
 - (IBAction) newRoute:(id) sender
 {
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	if ([self isUnlocked])
 	{
 		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
 		
@@ -268,7 +221,7 @@ static BOOL newRouteMode = NO;
 
 - (void) deleteSelectedRow:(id)sender
 {
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	if ([self isUnlocked])
 	{
 		if( [sender tag] == 0)
 		{
@@ -315,7 +268,7 @@ static BOOL newRouteMode = NO;
 
 - (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	if ([self isUnlocked])
 	{
 		if( [[aTableColumn identifier] isEqualToString:@"activated"])
 			[[routesArray objectAtIndex:rowIndex] setValue:anObject forKey: [aTableColumn identifier]];
@@ -324,7 +277,6 @@ static BOOL newRouteMode = NO;
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) return YES;
-	else return NO;
+	return [self isUnlocked];
 }
 @end

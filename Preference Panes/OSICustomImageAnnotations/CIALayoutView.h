@@ -14,9 +14,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface CIALayoutView : NSView {
+@interface CIALayoutView : NSControl {
 	NSArray *placeHolderArray;
-	BOOL isEnabled;
 	NSString *disabledText;
 	NSString *enabledText;
 }
@@ -24,8 +23,6 @@
 - (void)updatePlaceHolderOrigins;
 - (void)updatePlaceHolderOriginsInRect:(NSRect)rect;
 - (NSArray*)placeHolderArray;
-- (BOOL)isEnabled;
-- (void)setEnabled:(BOOL)enabled;
 - (void)setDisabledText:(NSString*)text;
 - (void)setDefaultDisabledText;
 - (void)setDefaultEnabledText;

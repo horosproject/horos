@@ -13,7 +13,6 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSIHangingPreferencePanePref : NSPreferencePane 
 {
@@ -22,16 +21,12 @@
 	IBOutlet NSButton *newHangingProtocolButton;
 	NSString *modalityForHangingProtocols;
 	IBOutlet NSArrayController		*bodyRegionController;
-	BOOL _controlsAuthorized;
-	IBOutlet SFAuthorizationView			*_authView;
 }
 
 - (void) mainViewDidLoad;
 - (void) deleteSelectedRow:(id)sender;
 - (IBAction)setModalityForHangingProtocols:(id)sender;
 - (IBAction)newHangingProtocol:(id)sender;
-- (BOOL)controlsAuthorized;
-- (void)setControlsAuthorized:(BOOL)authorized;
 
 
 @end
