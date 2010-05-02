@@ -9924,8 +9924,9 @@ static BOOL needToRezoom;
 			[NSApp endSheet: newAlbum];
 			[newAlbum orderOut: self];
 			
-			if( result == NSRunStoppedResponse)	{
-				long				i = 2;
+			if( result == NSRunStoppedResponse)
+			{
+				int i = 2;
 				
 				if( [[newAlbumName stringValue] isEqualToString: [album valueForKey:@"name"]] == NO)
 				{
