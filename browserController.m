@@ -9878,11 +9878,12 @@ static BOOL needToRezoom;
 				{
 					NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
 				
-					if( [[editSmartAlbumName stringValue] isEqualToString: [album valueForKey:@"name"]] == NO)	{
+					if( [[editSmartAlbumName stringValue] isEqualToString: [album valueForKey:@"name"]] == NO)
+					{
 						name = [editSmartAlbumName stringValue];
 						while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
 						{
-							name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
+							name = [NSString stringWithFormat:@"%@ #%d", [editSmartAlbumName stringValue], i++];
 						}
 						
 						[album setValue:name forKey:@"name"];
