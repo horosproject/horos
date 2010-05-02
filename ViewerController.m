@@ -2687,6 +2687,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		[NSApp sendAction: @selector(tileWindows:) to:nil from: self];
 	}
+	
+	if( [AppController USETOOLBARPANEL])
+	{
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
+		{
+			if( [toolbarPanel[ i] toolbar] == toolbar)
+				[[toolbarPanel[ i] window] orderOut: self];
+		}
+	}
 }
 
 - (void)windowDidDeminiaturize:(NSNotification *)notification
@@ -2694,6 +2703,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 	{
 		[NSApp sendAction: @selector(tileWindows:) to:nil from: self];
+	}
+	
+	if( [AppController USETOOLBARPANEL])
+	{
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
+		{
+			if( [toolbarPanel[ i] toolbar] == toolbar)
+				[[toolbarPanel[ i] window] orderFront: self];
+		}
 	}
 }
 
