@@ -376,8 +376,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 						   NULL]];
 	
 	// scroll to topleft
-	[[scrollView contentView] scrollToPoint:NSMakePoint(0, [[scrollView documentView] frame].size.height-[[scrollView contentView] frame].size.height)];
-	[scrollView reflectScrolledClipView:scrollView.contentView];
+//	[[scrollView contentView] scrollToPoint:NSMakePoint(0, [[scrollView documentView] frame].size.height-[[scrollView contentView] frame].size.height)];
+//	[scrollView reflectScrolledClipView:scrollView.contentView];
 	
 	NSViewAnimation* animation = [[NSViewAnimation alloc] initWithViewAnimations:animations];
 	@try {
@@ -392,6 +392,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[animations removeAllObjects];
 	
 	NSSize windowMaxSize = idealFrame.size;
+	if (tempFrame.size.height < idealFrame.size.height)
+		windowMaxSize.width += scrollView.verticalScroller.frame.size.width;
 	windowMaxSize.height -= self.window.toolbarHeight;
 	self.window.maxSize = windowMaxSize;
 	

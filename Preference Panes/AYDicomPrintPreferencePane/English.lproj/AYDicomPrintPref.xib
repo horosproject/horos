@@ -3773,6 +3773,7 @@
 					<string>414.ImportedFromIB2</string>
 					<string>415.IBPluginDependency</string>
 					<string>416.IBPluginDependency</string>
+					<string>6.CustomClassName</string>
 					<string>6.IBPluginDependency</string>
 					<string>6.ImportedFromIB2</string>
 					<string>98.IBPluginDependency</string>
@@ -3817,9 +3818,9 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{340, 213}, {664, 450}}</string>
+					<string>{{295, 213}, {664, 450}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{340, 213}, {664, 450}}</string>
+					<string>{{295, 213}, {664, 450}}</string>
 					<integer value="1"/>
 					<string>{{572, 565}, {664, 465}}</string>
 					<integer value="0"/>
@@ -4032,6 +4033,7 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>N2FlippedView</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

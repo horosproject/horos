@@ -205,6 +205,7 @@
 									</object>
 									<string key="NSFrame">{{1, 17}, {466, 371}}</string>
 									<reference key="NSSuperview" ref="683945095"/>
+									<reference key="NSNextKeyView" ref="672752265"/>
 									<reference key="NSDocView" ref="672752265"/>
 									<reference key="NSBGColor" ref="407767476"/>
 									<int key="NScvFlags">4</int>
@@ -238,6 +239,7 @@
 									</object>
 									<string key="NSFrame">{{1, 0}, {466, 17}}</string>
 									<reference key="NSSuperview" ref="683945095"/>
+									<reference key="NSNextKeyView" ref="437277572"/>
 									<reference key="NSDocView" ref="437277572"/>
 									<reference key="NSBGColor" ref="407767476"/>
 									<int key="NScvFlags">4</int>
@@ -246,12 +248,12 @@
 							</object>
 							<string key="NSFrame">{{20, 20}, {483, 404}}</string>
 							<reference key="NSSuperview" ref="638924059"/>
+							<reference key="NSNextKeyView" ref="848559866"/>
 							<int key="NSsFlags">50</int>
 							<reference key="NSVScroller" ref="742895718"/>
 							<reference key="NSHScroller" ref="796120777"/>
 							<reference key="NSContentView" ref="848559866"/>
 							<reference key="NSHeaderClipView" ref="615780756"/>
-							<reference key="NSCornerView" ref="764964051"/>
 							<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 						</object>
 					</object>
@@ -526,6 +528,7 @@
 					<string>120.IBShouldRemoveOnLegacySave</string>
 					<string>121.IBPluginDependency</string>
 					<string>121.IBShouldRemoveOnLegacySave</string>
+					<string>6.CustomClassName</string>
 					<string>6.IBPluginDependency</string>
 					<string>6.ImportedFromIB2</string>
 					<string>98.IBPluginDependency</string>
@@ -564,6 +567,7 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
+					<string>N2FlippedView</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

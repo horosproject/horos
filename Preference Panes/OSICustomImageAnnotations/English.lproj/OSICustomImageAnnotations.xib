@@ -1998,6 +1998,7 @@
 					<string>227.windowTemplate.hasMinSize</string>
 					<string>227.windowTemplate.maxSize</string>
 					<string>227.windowTemplate.minSize</string>
+					<string>228.CustomClassName</string>
 					<string>228.IBPluginDependency</string>
 					<string>228.ImportedFromIB2</string>
 					<string>229.IBPluginDependency</string>
@@ -2130,6 +2131,7 @@
 					<integer value="1"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{213, 107}</string>
+					<string>N2FlippedView</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
