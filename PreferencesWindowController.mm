@@ -295,8 +295,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[currentContext.pane willUnselect];
 		NSView* oldview = currentContext? currentContext.pane.mainView : panesListView;
 		[oldview retain];
-		[oldview removeFromSuperview];
-
+		[scrollView setDocumentView:[[[NSView alloc] initWithSize:[self.window.contentView frame].size] autorelease]];
 
 		[self view:oldview recursiveUnBindEnableFromObject:self withKeyPath:@"isUnlocked"];
 		// add new view
@@ -344,8 +343,9 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(void)synchronizeSizeWithContent {
 	NSRect paneFrame = [[scrollView documentView] frame];
-	NSRect frame = [self.window frame];
+	NSRect initframe = [self.window frame];
 	NSRect sizeframe = [self.window frameRectForContentRect:paneFrame];
+	NSRect frame = initframe;
 	frame.origin.y += frame.size.height-sizeframe.size.height;
 	frame.size = sizeframe.size;
 	
@@ -376,8 +376,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 						   NULL]];
 	
 	// scroll to topleft
-//	[[scrollView contentView] scrollToPoint:NSMakePoint(0, [[scrollView documentView] frame].size.height-[[scrollView contentView] frame].size.height)];
-//	[scrollView reflectScrolledClipView:scrollView.contentView];
+	[scrollView.contentView scrollToPoint:NSMakePoint(0, [scrollView.documentView frame].size.height-initframe.size.height)];
+	[scrollView reflectScrolledClipView:scrollView.contentView];
 	
 	NSViewAnimation* animation = [[NSViewAnimation alloc] initWithViewAnimations:animations];
 	@try {
