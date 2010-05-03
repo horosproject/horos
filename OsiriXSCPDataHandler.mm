@@ -1083,7 +1083,7 @@ extern NSManagedObjectContext *staticContext;
 				}
 				else if( key == DCM_NumberOfStudyRelatedInstances && [fetchedObject valueForKey:@"noFiles"])
 				{
-					int numberInstances = [[fetchedObject valueForKey:@"noFilesExcludingMultiFrames"] intValue];
+					int numberInstances = [[fetchedObject valueForKey:@"rawNoFiles"] intValue];
 					char value[10];
 					sprintf(value, "%d", numberInstances);
 					dataset->putAndInsertString(DCM_NumberOfStudyRelatedInstances, value);
@@ -1163,7 +1163,7 @@ extern NSManagedObjectContext *staticContext;
 				
 				else if( key == DCM_NumberOfSeriesRelatedInstances && [fetchedObject valueForKey:@"noFiles"])
 				{
-					int numberInstances = [[fetchedObject valueForKey:@"noFilesExcludingMultiFrames"] intValue];
+					int numberInstances = [[fetchedObject valueForKey:@"rawNoFiles"] intValue];
 					char value[ 20];
 					sprintf( value, "%d", numberInstances);
 					dataset->putAndInsertString(DCM_NumberOfSeriesRelatedInstances, value);
@@ -1255,7 +1255,7 @@ extern NSManagedObjectContext *staticContext;
 				}
 				else if( key == DCM_NumberOfStudyRelatedInstances && [fetchedObject valueForKeyPath:@"study.noFiles"])
 				{
-					int numberInstances = [[fetchedObject valueForKeyPath:@"study.noFilesExcludingMultiFrames"] intValue];
+					int numberInstances = [[fetchedObject valueForKeyPath:@"study.rawNoFiles"] intValue];
 					char value[10];
 					sprintf(value, "%d", numberInstances);
 					dataset->putAndInsertString(DCM_NumberOfStudyRelatedInstances, value);
@@ -1370,7 +1370,7 @@ extern NSManagedObjectContext *staticContext;
 				
 				else if( key == DCM_NumberOfSeriesRelatedInstances && [fetchedObject valueForKeyPath:@"series.noFiles"])
 				{
-					int numberInstances = [[fetchedObject valueForKeyPath:@"series.noFilesExcludingMultiFrames"] intValue];
+					int numberInstances = [[fetchedObject valueForKeyPath:@"series.rawNoFiles"] intValue];
 					char value[ 20];
 					sprintf( value, "%d", numberInstances);
 					dataset->putAndInsertString(DCM_NumberOfSeriesRelatedInstances, value);
@@ -1462,7 +1462,7 @@ extern NSManagedObjectContext *staticContext;
 				}
 				else if( key == DCM_NumberOfStudyRelatedInstances && [fetchedObject valueForKeyPath:@"series.study.noFiles"])
 				{
-					int numberInstances = [[fetchedObject valueForKeyPath:@"series.study.noFilesExcludingMultiFrames"] intValue];
+					int numberInstances = [[fetchedObject valueForKeyPath:@"series.study.rawNoFiles"] intValue];
 					char value[10];
 					sprintf(value, "%d", numberInstances);
 					dataset->putAndInsertString(DCM_NumberOfStudyRelatedInstances, value);

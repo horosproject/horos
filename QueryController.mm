@@ -967,7 +967,7 @@ extern "C"
 				
 				if( [studyArray count] > 0)
 				{
-					float localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] floatValue];
+					float localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"rawNoFiles"] floatValue];
 					float totalFiles = [[item valueForKey:@"numberImages"] floatValue];
 					float percentage = 0;
 					
@@ -987,7 +987,7 @@ extern "C"
 				
 				if( [seriesArray count] > 0)
 				{
-					float localFiles = [[[seriesArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] floatValue];
+					float localFiles = [[[seriesArray objectAtIndex: 0] valueForKey: @"rawNoFiles"] floatValue];
 					float totalFiles = [[item valueForKey:@"numberImages"] floatValue];
 					float percentage = 0;
 					
@@ -1035,7 +1035,7 @@ extern "C"
 					float percentage = 0;
 					
 					if( [[item valueForKey:@"numberImages"] floatValue] != 0.0)
-						percentage = [[[studyArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
+						percentage = [[[studyArray objectAtIndex: 0] valueForKey: @"rawNoFiles"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
 						
 					if(percentage > 1.0) percentage = 1.0;
 
@@ -1054,7 +1054,7 @@ extern "C"
 					float percentage = 0;
 					
 					if( [[item valueForKey:@"numberImages"] floatValue] != 0.0)
-						percentage = [[[seriesArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
+						percentage = [[[seriesArray objectAtIndex: 0] valueForKey: @"rawNoFiles"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
 						
 					if(percentage > 1.0) percentage = 1.0;
 					
@@ -1812,7 +1812,7 @@ extern "C"
 	int totalFiles = [[item valueForKey:@"numberImages"] intValue];
 	
 	if( [studyArray count])
-		localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] intValue];
+		localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"rawNoFiles"] intValue];
 	
 	if( [item valueForKey:@"numberImages"] == nil)
 	{
@@ -2138,7 +2138,7 @@ extern "C"
 						array = [self localStudy: item];
 					
 					if( [array count])
-						localNumber = [[[array objectAtIndex: 0] valueForKey: @"noFilesExcludingMultiFrames"] intValue];
+						localNumber = [[[array objectAtIndex: 0] valueForKey: @"rawNoFiles"] intValue];
 					
 					if( localNumber < [[item valueForKey:@"numberImages"] intValue])
 					{
