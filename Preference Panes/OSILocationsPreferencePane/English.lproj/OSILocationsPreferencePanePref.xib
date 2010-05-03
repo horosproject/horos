@@ -11,9 +11,9 @@
 			<string key="NS.object.0">762</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="6"/>
-			<integer value="787"/>
 			<integer value="538"/>
+			<integer value="175"/>
+			<integer value="787"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1376,6 +1376,7 @@
 													<reference key="NSSuperview" ref="296148898"/>
 													<reference key="NSTarget" ref="296148898"/>
 													<string key="NSAction">_doScroller:</string>
+													<double key="NSCurValue">1</double>
 													<double key="NSPercent">0.71249997615814209</double>
 												</object>
 												<object class="NSScroller" id="641724822">
@@ -6475,7 +6476,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="TLSCipherSuitesArrayController">DNDArrayController</string>
 						<string key="TLSSettings">NSWindow</string>
 						<string key="WADOSettings">NSWindow</string>
-						<string key="_authView">SFAuthorizationView</string>
 						<string key="addLocalPath">NSButton</string>
 						<string key="addServerDICOM">NSButton</string>
 						<string key="addServerSharing">NSButton</string>

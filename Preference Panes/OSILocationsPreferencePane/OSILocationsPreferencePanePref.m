@@ -46,6 +46,30 @@
 @synthesize TLSCertificateVerification;
 @synthesize TLSAuthenticationCertificate;
 
+/*+(void)initialize { // TODO: this should more likely be initialized in OsiriX
+	NSLog(@"+[OSILocationsPreferencePanePref initialize]");
+	
+	NSUserDefaultsController* defaults = [NSUserDefaultsController sharedUserDefaultsController];
+	
+	// merge our initial values with the existing ones
+	NSMutableDictionary* initialValues = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+										  [NSNumber numberWithBool:NO], @"DoNotSearchForBonjourServices",
+										  [NSNumber numberWithBool:NO], @"dontAuthorizeAutoRetrieve",
+										  [NSMutableArray array], @"localDatabasePaths",
+										  [NSMutableArray array], @"OSIRIXSERVERS", // TODO: is this the right place?
+										  [NSNumber numberWithBool:NO], @"Ping",
+										  [NSNumber numberWithBool:NO], @"restartAutoQueryAndRetrieve",
+										  [NSNumber numberWithBool:NO], @"searchDICOMBonjour",
+										  [NSMutableArray array], @"SERVERS",
+										  [NSNumber numberWithBool:NO], @"syncDICOMNodes",
+										  @"http://www.example.net/DicomNodes.plist", @"syncDICOMNodesURL",
+										  [NSNumber numberWithBool:NO], @"syncOsiriXDB",
+										  @"http://www.example.net/OsiriXNodes.plist", @"syncOsiriXDBURL",
+										  NULL];
+	[initialValues addEntriesFromDictionary:[defaults initialValues]];
+	[defaults setInitialValues:[NSDictionary dictionaryWithDictionary:initialValues]];
+}*/
+
 - (void) checkUniqueAETitle
 {
 	int i, x;

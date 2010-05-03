@@ -127,8 +127,6 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(void)view:(NSView*)view recursiveBindEnableToObject:(id)obj withKeyPath:(NSString*)keyPath {
 	if ([view isKindOfClass:[NSControl class]]) {
-		NSArray* vba = [view exposedBindings];
-		
 		NSUInteger bki = 0;
 		NSString* bk = NULL;
 		BOOL doBind = YES;
@@ -146,19 +144,42 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		
 		if (doBind)
 			@try {
-				[[view class] exposeBinding:bk];
+//				[[view class] exposeBinding:bk];
 				[view bind:bk toObject:obj withKeyPath:keyPath options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:NSConditionallySetsEnabledBindingOption]];
 				return;
 			} @catch (NSException* e) {
-				NSLog(@"Warning: %@", e);
-				NSButton* b = [e.userInfo objectForKey:@"NSTargetObjectUserInfoKey"];
-				NSLog(@"tttt:%@", [b title]);
-				NSLog(@"ssss:%@", [b stringValue]);
+				NSLog(@"Warning: %@", e.description);
 			}
 	}
 	
 	for (NSView* subview in view.subviews)
 		[self view:subview recursiveBindEnableToObject:obj withKeyPath:keyPath];
+}
+
+-(void)view:(NSView*)view recursiveUnBindEnableFromObject:(id)obj withKeyPath:(NSString*)keyPath {
+	if ([view isKindOfClass:[NSControl class]]) {
+		NSUInteger bki = 0;
+		NSString* bk = NULL;
+		BOOL unbind = NO;
+		
+		while (!unbind) {
+			++bki;
+			bk = [NSString stringWithFormat:@"enabled%@", bki==1? @"" : [NSString stringWithFormat:@"%d", bki]];
+			
+			NSDictionary* b = [view infoForBinding:bk];
+			if (!b) break;
+			
+			if ([b objectForKey:NSObservedObjectKey] == obj && [[b objectForKey:NSObservedKeyPathKey] isEqual:keyPath])
+				unbind = YES;
+		}
+		
+		if (unbind)
+			[view unbind:bk];
+		return;
+	}
+	
+	for (NSView* subview in view.subviews)
+		[self view:subview recursiveUnBindEnableFromObject:obj withKeyPath:keyPath];
 }
 
 -(void)pane:(NSPreferencePane*)pane enable:(BOOL)enable {
@@ -257,17 +278,13 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	if (!currentContext || [currentContext.pane shouldUnselect]) { // TODO: NSUnselectNow or NSUnselectLater?
 		[self willChangeValueForKey:@"currentContext"];
 		
-		if (!context.pane.mainView) {
+		if (context && !context.pane.mainView) {
 			@try {
-			[context.pane loadMainView];
+				[context.pane loadMainView];
 			} @catch (NSException* e) {
-				NSLog(@"EXCEPTION with userinfo %@", e.userInfo.description);
-				NSButton* b = [e.userInfo objectForKey:@"NSTargetObjectUserInfoKey"];
-				NSLog(@"ttttttt:%@", [b title]);
-				NSLog(@"sssssss:%@", [b stringValue]);
+				NSLog(@"Warning: %@", e.description);
 				return;
 			}
-			[self view:context.pane.mainView recursiveBindEnableToObject:self withKeyPath:@"isUnlocked"];
 		}
 		
 		//[self pane:context.pane enable: [authView authorizationState] == SFAuthorizationViewUnlockedState];
@@ -281,7 +298,10 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[oldview retain];
 		[oldview removeFromSuperview];
 
+
+		[self view:oldview recursiveUnBindEnableFromObject:self withKeyPath:@"isUnlocked"];
 		// add new view
+		[self view:context.pane.mainView recursiveBindEnableToObject:self withKeyPath:@"isUnlocked"];
 		
 		NSView* view = context? context.pane.mainView : panesListView;
 		NSString* title = context? context.title : NSLocalizedString(@"OsiriX Preferences", NULL);
@@ -302,6 +322,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[self didChangeValueForKey:@"currentContext"];
 		
 		[self synchronizeSizeWithContent];
+		
 		[oldview release];
 	}
 
