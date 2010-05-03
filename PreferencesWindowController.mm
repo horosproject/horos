@@ -144,7 +144,6 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		
 		if (doBind)
 			@try {
-//				[[view class] exposeBinding:bk];
 				[view bind:bk toObject:obj withKeyPath:keyPath options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:NSConditionallySetsEnabledBindingOption]];
 				return;
 			} @catch (NSException* e) {
@@ -359,16 +358,26 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		frame.size.height = screenFrame.size.height;
 	}
 	
-//	frame.size.height += 15;
-//	frame.size.width += 15;
+	NSRect tempFrame = frame;
+	// the resizing makes scrollers appear, give them space
+	if (tempFrame.size.height < idealFrame.size.height)
+		if (tempFrame.size.width < screenFrame.size.width)
+			frame.size.width = std::min(frame.size.width+scrollView.horizontalScroller.frame.size.height, screenFrame.size.width);
+	if (tempFrame.size.width < idealFrame.size.width)
+		if (tempFrame.size.height < screenFrame.size.height)
+			frame.size.height = std::min(frame.size.height+scrollView.verticalScroller.frame.size.width, screenFrame.size.height);
 	
-	[scrollView setHasHorizontalScroller: NO];
-	[scrollView setHasVerticalScroller: NO];
+	[scrollView setHasHorizontalScroller:NO];
+	[scrollView setHasVerticalScroller:NO];
 	
 	[animations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 						       self.window, NSViewAnimationTargetKey,
 						       [NSValue valueWithRect:frame], NSViewAnimationEndFrameKey,
 						   NULL]];
+	
+	// scroll to topleft
+	[[scrollView contentView] scrollToPoint:NSMakePoint(0, [[scrollView documentView] frame].size.height-[[scrollView contentView] frame].size.height)];
+	[scrollView reflectScrolledClipView:scrollView.contentView];
 	
 	NSViewAnimation* animation = [[NSViewAnimation alloc] initWithViewAnimations:animations];
 	@try {
