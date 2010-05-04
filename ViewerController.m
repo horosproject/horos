@@ -2144,7 +2144,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[item release];
 		[menu release];
 
-		//Export Added 12/5/05
 		/*************Export submenu**************/
 		NSMenu *exportMenu = [[fileMenu itemWithTitle:NSLocalizedString(@"Export", nil)] submenu];
 		menu = [exportMenu copy];
@@ -2159,10 +2158,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[item setTarget:self];
 		[contextualMenu addItem:item];
 		[item release];
-
+		
 		[submenu release];
 	}
-	else //use the menuDictionary of the path JF20070102
+	else //use the menuDictionary of the path
 	{
 		   NSArray *pathComponents = [[self contextualDictionaryPath] pathComponents];
 		   NSString *plistTitle = [[pathComponents objectAtIndex:([pathComponents count]-1)] stringByDeletingPathExtension];
@@ -14953,6 +14952,102 @@ int i,j,l;
 #define DATABASEPATH @"/DATABASE.noindex/"
 
 #ifndef OSIRIX_LIGHT
+- (IBAction) sortSeriesByValue: (id) sender
+{
+	switch( [sender tag])
+	{
+		case 0:
+			[self sortSeriesByValue: @"instanceNumber" ascending: YES];
+		break;
+		case 1:
+			[self sortSeriesByValue: @"instanceNumber" ascending: NO];
+		break;
+		case 2:
+			[self sortSeriesByValue: @"sliceLocation" ascending: YES];
+		break;
+		case 3:
+			[self sortSeriesByValue: @"sliceLocation" ascending: NO];
+		break;
+	}
+}
+
+- (BOOL) sortSeriesByValue: (NSString*) key ascending: (BOOL) ascending
+{
+	[self checkEverythingLoaded];
+	
+	NSMutableArray *xPix = [NSMutableArray array];
+	NSMutableArray *xFiles = [NSMutableArray array];
+	NSMutableArray *xData = [NSMutableArray array];
+	
+	for( int i = 0; i < maxMovieIndex; i++)
+	{
+		NSArray *sortedArray = nil;
+		
+		@try 
+		{
+			sortedArray = [fileList[ i] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: key ascending: ascending] autorelease]]];
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			return NO;
+		}
+		// Create the new series
+		
+		NSMutableArray *newPixList = [NSMutableArray array];
+		NSMutableArray *newDcmList = [NSMutableArray array];
+		
+		float *seriesData = (float*) malloc( [volumeData[ i] length]);
+		if( seriesData == nil) return NO;
+		
+		NSData *newData = [NSData dataWithBytesNoCopy: seriesData length:[volumeData[ i] length] freeWhenDone: YES];
+		
+		for( int x = 0, size = 0; x < [pixList[ i] count]; x++)
+		{
+			int oldIndex = [fileList[ i] indexOfObjectIdenticalTo: [sortedArray objectAtIndex: x]];
+			DCMPix *p = [pixList[ i] objectAtIndex: oldIndex];
+			
+			DCMPix *newPix = [[p copy] autorelease];
+			
+			[newPix setfImage: seriesData + size];
+			memcpy( seriesData + size, [p fImage],  [p pwidth] * [p pheight] * sizeof( float));
+			size += [p pwidth] * [p pheight];
+			
+			[newPixList addObject: newPix];
+			[newDcmList addObject: [fileList[ i] objectAtIndex: oldIndex]];
+		}
+		
+		[xPix addObject: newPixList];
+		[xFiles addObject: newDcmList];
+		[xData addObject: newData];
+	}
+	
+	// Replace the current series with the new series
+	
+	int mx = maxMovieIndex;
+	
+	for( int j = 0 ; j < mx ; j ++)
+	{
+		if( j == 0)
+			[self changeImageData: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j] :NO];
+		else
+			[self addMovieSerie: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
+	}
+	
+	loadingPercentage = 1;
+	[self computeInterval];
+	[self setWindowTitle:self];
+	
+	[imageView setIndex: 0];
+	[imageView sendSyncMessage: 0];
+	
+	[self adjustSlider];
+	
+	postprocessed = YES;
+	
+	return YES;
+}
+
 - (BOOL) sortSeriesByDICOMGroup: (int) gr element: (int) el
 {
 	[self checkEverythingLoaded];

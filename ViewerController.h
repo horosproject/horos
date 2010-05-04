@@ -693,7 +693,7 @@ enum
 - (void) computeIntervalAsync;
 - (IBAction) endThicknessInterval:(id) sender;
 - (void) SetThicknessInterval:(id) constructionType;
-//- (IBAction) MPRViewer:(id) sender;
+- (BOOL) sortSeriesByValue: (NSString*) key ascending: (BOOL) ascending;
 - (IBAction) blendWindows:(id) sender;
 
 /** Action to open the OrthogonalMPRViewer */
