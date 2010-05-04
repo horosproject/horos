@@ -10018,7 +10018,7 @@ END_CREATE_ROIS:
 		NSRect smartRect = NSIntersectionRect( frameRect, usefulRect);
 		
 		rectSize.height = smartRect.size.height;
-		rectSize.width = smartRect.size.width;
+		rectSize.width = round( smartRect.size.width);
 		
 		cov.x -= smartRect.origin.x;
 		cov.y -= smartRect.origin.y;
@@ -10027,8 +10027,8 @@ END_CREATE_ROIS:
 	cov.x = (int) cov.x;
 	cov.y = (int) cov.y;
 
-	dst.height = rectSize.height;
-	dst.width = rectSize.width;
+	dst.height = round( rectSize.height);
+	dst.width = round( rectSize.width);
 	dst.rowBytes = dst.width*4;
 	dst.data = malloc( dst.height * dst.rowBytes);
 	

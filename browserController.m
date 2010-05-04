@@ -12802,7 +12802,7 @@ static NSArray*	openSubSeriesArray = nil;
 		IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
 		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 63.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];	//63.33
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
-		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 20*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
+		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 3*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain]; // 10
 		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 35 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain]; // 35
 		
