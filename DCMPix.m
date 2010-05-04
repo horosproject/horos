@@ -10018,7 +10018,7 @@ END_CREATE_ROIS:
 		NSRect smartRect = NSIntersectionRect( frameRect, usefulRect);
 		
 		rectSize.height = smartRect.size.height;
-		rectSize.width = round( smartRect.size.width);
+		rectSize.width = smartRect.size.width;
 		
 		cov.x -= smartRect.origin.x;
 		cov.y -= smartRect.origin.y;
