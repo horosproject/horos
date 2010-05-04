@@ -376,8 +376,11 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 						   NULL]];
 	
 	// scroll to topleft
-	[scrollView.contentView scrollToPoint:NSMakePoint(0, [scrollView.documentView frame].size.height-initframe.size.height)];
-	[scrollView reflectScrolledClipView:scrollView.contentView];
+	CGFloat vp = [scrollView.documentView frame].size.height-initframe.size.height;
+	if (vp > 0) {
+		[scrollView.contentView scrollToPoint:NSMakePoint(0, vp)];
+		[scrollView reflectScrolledClipView:scrollView.contentView];
+	}
 	
 	NSViewAnimation* animation = [[NSViewAnimation alloc] initWithViewAnimations:animations];
 	@try {
