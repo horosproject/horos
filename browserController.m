@@ -9595,6 +9595,7 @@ static BOOL withReset = NO;
 		  contextInfo: nil];
 	
     [NSApp runModalForWindow:sheet];
+	[sheet makeFirstResponder: nil];
 	
     // Sheet is up here.
     [NSApp endSheet: sheet];
@@ -9675,7 +9676,8 @@ static BOOL withReset = NO;
 			   didEndSelector: nil
 				  contextInfo: nil];
 			
-			int result = [NSApp runModalForWindow:newAlbum];
+			int result = [NSApp runModalForWindow: newAlbum];
+			[newAlbum makeFirstResponder: nil];
 			
 			[NSApp endSheet: newAlbum];
 			[newAlbum orderOut: self];
@@ -9850,7 +9852,8 @@ static BOOL needToRezoom;
 			   didEndSelector: nil
 				  contextInfo: nil];
 			
-			int result = [NSApp runModalForWindow:editSmartAlbum];
+			int result = [NSApp runModalForWindow: editSmartAlbum];
+			[editSmartAlbum makeFirstResponder: nil];
 			
 			[NSApp endSheet: editSmartAlbum];
 			[editSmartAlbum orderOut: self];
@@ -9919,7 +9922,8 @@ static BOOL needToRezoom;
 			   didEndSelector: nil
 				  contextInfo: nil];
 			
-			int result = [NSApp runModalForWindow:newAlbum];
+			int result = [NSApp runModalForWindow: newAlbum];
+			[newAlbum makeFirstResponder: nil];
 			
 			[NSApp endSheet: newAlbum];
 			[newAlbum orderOut: self];
@@ -11825,6 +11829,8 @@ static BOOL needToRezoom;
 						  contextInfo: nil];
 					
 					int result = [NSApp runModalForWindow: subOpenWindow];
+					[subOpenWindow makeFirstResponder: nil];
+					
 					if( result == 2)
 					{
 						[supOpenButtons selectCellWithTag: 2];
@@ -12487,6 +12493,7 @@ static NSArray*	openSubSeriesArray = nil;
 	[self checkMemory: self];
 	
 	int result = [NSApp runModalForWindow: subSeriesWindow];
+	[subSeriesWindow makeFirstResponder: nil];
 	
 	[NSApp endSheet: subSeriesWindow];
 	[subSeriesWindow orderOut: self];
@@ -15959,7 +15966,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			  contextInfo: nil];
 		
 	int result = [NSApp runModalForWindow: addStudiesToUserWindow];
-	
 	[addStudiesToUserWindow makeFirstResponder: nil];
 	
 	if( result == NSRunStoppedResponse)
@@ -16231,6 +16237,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			  contextInfo: nil];
 		
 		int result = [NSApp runModalForWindow: ZIPpasswordWindow];
+		[ZIPpasswordWindow makeFirstResponder: nil];
 		
 		[NSApp endSheet: ZIPpasswordWindow];
 		[ZIPpasswordWindow orderOut: self];
@@ -19294,6 +19301,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		  contextInfo: nil];
 	
 	int result = [NSApp runModalForWindow:bonjourPasswordWindow];
+	[bonjourPasswordWindow makeFirstResponder: nil];
 	
 	[NSApp endSheet: bonjourPasswordWindow];
 	[bonjourPasswordWindow orderOut: self];
