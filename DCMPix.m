@@ -221,7 +221,7 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 
 // POLY CLIP
 
-#define MAXVERTICAL     10000
+#define MAXVERTICAL     100000
 
 #define INIT_DELTAS dx=V2.x-V1.x;  dy=V2.y-V1.y;
 #define INIT_CLIP INIT_DELTAS if(dx)m=dy/dx;
@@ -818,18 +818,18 @@ void ras_FillPolygon(	NSPointInt *p,
 					 BOOL restore)
 {
 	struct edge **edgeTable = (struct edge **) malloc( MAXVERTICAL * sizeof( struct edge *));
-    struct	edge *active;
+    struct edge *active = nil;
 	long curY;
 	
-	float test;
-	
-	test = -FLT_MAX;
-	if( test != -FLT_MAX)
-		NSLog( @"******* test != -FLT_MAX");
-	
-	test = FLT_MAX;
-	if( test != FLT_MAX)
-		NSLog( @"******* test != FLT_MAX");
+//	float test;
+//	
+//	test = -FLT_MAX;
+//	if( test != -FLT_MAX)
+//		NSLog( @"******* test != -FLT_MAX");
+//	
+//	test = FLT_MAX;
+//	if( test != FLT_MAX)
+//		NSLog( @"******* test != FLT_MAX");
 	
     FillEdges(p, no, edgeTable);
 	
@@ -844,7 +844,8 @@ void ras_FillPolygon(	NSPointInt *p,
 	
     for (active = NULL; (active = UpdateActive(active, edgeTable, curY)) != NULL; curY++)
 	{
-		DrawRuns(active, curY, pix, w, h, min, max, outside, newVal, addition, RGB, compute, imax, imin, count, itotal, idev, imean, orientation, stackNo, restore);
+		if( active)
+			DrawRuns(active, curY, pix, w, h, min, max, outside, newVal, addition, RGB, compute, imax, imin, count, itotal, idev, imean, orientation, stackNo, restore);
 	}
 	
 	free( edgeTable);

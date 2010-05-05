@@ -143,83 +143,91 @@ static LogManager *currentLogManager = nil;
 					NSString *file = [logFolder stringByAppendingPathComponent:path];
 					NSString *newfile = [file stringByAppendingString:@"reading"];
 					
-					rename( [file UTF8String], [newfile UTF8String]);
-					remove( [file UTF8String]);
-					
 					FILE * pFile;
-					pFile = fopen ( [newfile UTF8String], "r");
+					pFile = fopen ( [file UTF8String], "r");
 					if( pFile)
 					{
-						char data[ 4096];
-						
-						fread( data, 4096, 1 ,pFile);
-						
-						char *curData = data;
-						
-						if(curData) strcpy( logPatientName, strsep( &curData, "\r"));
-						if(curData) strcpy( logStudyDescription, strsep( &curData, "\r"));
-						if(curData) strcpy( logCallingAET, strsep( &curData, "\r"));
-						if(curData) strcpy( logStartTime, strsep( &curData, "\r"));
-						if(curData) strcpy( logMessage, strsep( &curData, "\r"));
-						if(curData) strcpy( logUID, strsep( &curData, "\r"));
-						if(curData) strcpy( logNumberReceived, strsep( &curData, "\r"));
-						if(curData) strcpy( logEndTime, strsep( &curData, "\r"));
-						if(curData) strcpy( logType, strsep( &curData, "\r"));
-						if(curData) strcpy( logEncoding, strsep( &curData, "\r"));
-						if(curData) strcpy( logNumberTotal, strsep( &curData, "\r"));
-						
 						fclose (pFile);
-						remove( [newfile UTF8String]);
+						pFile = nil;
 						
-						// Encoding
-						NSStringEncoding encoding[ 10];
-						for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
-						NSArray	*c = [[NSString stringWithCString: logEncoding] componentsSeparatedByString:@"\\"];
+						rename( [file UTF8String], [newfile UTF8String]);
+						remove( [file UTF8String]);
 						
-						if( [c count] < 10)
+						pFile = fopen ( [newfile UTF8String], "r");
+						if( pFile)
 						{
-							for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-							for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
-						}
-						
-						if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"In Progress"] || [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
-						{				
-							NSString *uid = [NSString stringWithUTF8String: logUID];
-							id logEntry = [_currentLogs objectForKey:uid];
-							if (logEntry == nil)
+							char data[ 4096];
+							
+							fread( data, 4096, 1 ,pFile);
+							
+							char *curData = data;
+							
+							if(curData) strcpy( logPatientName, strsep( &curData, "\r"));
+							if(curData) strcpy( logStudyDescription, strsep( &curData, "\r"));
+							if(curData) strcpy( logCallingAET, strsep( &curData, "\r"));
+							if(curData) strcpy( logStartTime, strsep( &curData, "\r"));
+							if(curData) strcpy( logMessage, strsep( &curData, "\r"));
+							if(curData) strcpy( logUID, strsep( &curData, "\r"));
+							if(curData) strcpy( logNumberReceived, strsep( &curData, "\r"));
+							if(curData) strcpy( logEndTime, strsep( &curData, "\r"));
+							if(curData) strcpy( logType, strsep( &curData, "\r"));
+							if(curData) strcpy( logEncoding, strsep( &curData, "\r"));
+							if(curData) strcpy( logNumberTotal, strsep( &curData, "\r"));
+							
+							fclose (pFile);
+							remove( [newfile UTF8String]);
+							
+							// Encoding
+							NSStringEncoding encoding[ 10];
+							for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
+							NSArray	*c = [[NSString stringWithCString: logEncoding] componentsSeparatedByString:@"\\"];
+							
+							if( [c count] < 10)
 							{
-								logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
-								
-								[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logStartTime] intValue]]  forKey:@"startTime"];
-								[logEntry setValue:[NSString stringWithUTF8String: logType] forKey:@"type"];
-								[logEntry setValue:[NSString stringWithUTF8String: logCallingAET] forKey:@"originName"];
-								[logEntry setValue:[DicomFile stringWithBytes: (char*) logPatientName encodings: encoding] forKey:@"patientName"];
-								[logEntry setValue:[DicomFile stringWithBytes: (char*) logStudyDescription encodings: encoding] forKey:@"studyName"];
-								
-								[_currentLogs setObject:logEntry forKey:uid];
+								for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+								for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
 							}
 							
-							if( logEntry != nil && [logEntry isDeleted] == NO)
-							{
-								[logEntry setValue:[NSString stringWithUTF8String: logMessage] forKey:@"message"];
-								[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberTotal] intValue]] forKey:@"numberImages"];
-								[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberSent"];
-								
-								if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
+							if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"In Progress"] || [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
+							{				
+								NSString *uid = [NSString stringWithUTF8String: logUID];
+								id logEntry = [_currentLogs objectForKey:uid];
+								if (logEntry == nil)
 								{
-									if( [[NSString stringWithUTF8String: logEndTime] intValue] == 0)
-										strcpy( logEndTime, [[NSString stringWithFormat:@"%d", time (NULL)] UTF8String]);
-										
-									[_currentLogs removeObjectForKey: uid];
+									logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+									
+									[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logStartTime] intValue]]  forKey:@"startTime"];
+									[logEntry setValue:[NSString stringWithUTF8String: logType] forKey:@"type"];
+									[logEntry setValue:[NSString stringWithUTF8String: logCallingAET] forKey:@"originName"];
+									[logEntry setValue:[DicomFile stringWithBytes: (char*) logPatientName encodings: encoding] forKey:@"patientName"];
+									[logEntry setValue:[DicomFile stringWithBytes: (char*) logStudyDescription encodings: encoding] forKey:@"studyName"];
+									
+									[_currentLogs setObject:logEntry forKey:uid];
 								}
 								
-								if( [[NSString stringWithUTF8String: logEndTime] intValue] != 0)
-									[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
+								if( logEntry != nil && [logEntry isDeleted] == NO)
+								{
+									[logEntry setValue:[NSString stringWithUTF8String: logMessage] forKey:@"message"];
+									[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberTotal] intValue]] forKey:@"numberImages"];
+									[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberSent"];
+									
+									if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
+									{
+										if( [[NSString stringWithUTF8String: logEndTime] intValue] == 0)
+											strcpy( logEndTime, [[NSString stringWithFormat:@"%d", time (NULL)] UTF8String]);
+											
+										[_currentLogs removeObjectForKey: uid];
+									}
+									
+									if( [[NSString stringWithUTF8String: logEndTime] intValue] != 0)
+										[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
+								}
 							}
+							else NSLog(@"***** Unknown log message type");
 						}
-						else NSLog(@"***** Unknown log message type");
+						else NSLog(@"***** Unable to load a log message");
 					}
-					else NSLog(@"***** Unable to load a log message");
+					else NSLog(@"----- log file not readable, will try later");
 				}
 			}
 

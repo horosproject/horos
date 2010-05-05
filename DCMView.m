@@ -8816,7 +8816,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	// Swap buffer to screen
-	[ctx  flushBuffer];
+	[ctx flushBuffer];
 //	[NSOpenGLContext clearCurrentContext];
 	
 	drawingFrameRect = [self frame];
