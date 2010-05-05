@@ -693,7 +693,6 @@ enum
 - (void) computeIntervalAsync;
 - (IBAction) endThicknessInterval:(id) sender;
 - (void) SetThicknessInterval:(id) constructionType;
-- (BOOL) sortSeriesByValue: (NSString*) key ascending: (BOOL) ascending;
 - (IBAction) blendWindows:(id) sender;
 
 /** Action to open the OrthogonalMPRViewer */
@@ -705,6 +704,9 @@ enum
 - (void) showCurrentThumbnail:(id) sender;
 
 #ifndef OSIRIX_LIGHT
+/** ReSort the images displayed according to IMAGE Table field */
+- (BOOL) sortSeriesByValue: (NSString*) key ascending: (BOOL) ascending;
+
 /** ReSort the images displayed according to this group/element */
 - (BOOL) sortSeriesByDICOMGroup: (int) gr element: (int) el;
 
