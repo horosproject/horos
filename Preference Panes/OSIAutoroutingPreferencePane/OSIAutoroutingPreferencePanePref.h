@@ -31,7 +31,11 @@
 	IBOutlet NSPopUpButton				*failurePopup;
 	
 	NSMutableArray						*routesArray;
+	
+	int filterType;
 }
+
+@property int filterType;
 
 - (void) mainViewDidLoad;
 - (IBAction) setActivated:(id)sender;
