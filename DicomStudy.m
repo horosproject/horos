@@ -203,21 +203,37 @@ NSString* soundex4( NSString *inString)
 			// Find the archived
 			[[self managedObjectContext] deleteObject: [self reportSRSeries]];
 			[[self managedObjectContext] deleteObject: [self commentAndStatusSRSeries]];
+			[[self managedObjectContext] deleteObject: [self keyImages]];
 			
-			NSString *zippedFile = @"/tmp/zippedReport";
-			[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: @"/tmp/zippedReport" password: nil];
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
+			// Report
+			if( [self valueForKey: @"reportURL"])
 			{
-				NSString *dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"zip"];
-				
-				// Create the new one
-				SRAnnotation *r = [[SRAnnotation alloc] initWithFile: zippedFile path: nil  forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]];
-				[r writeToFileAtPath: dstPath];
-				[r release];
-				
-				[[BrowserController currentBrowser] addFilesAndFolderToDatabase: [NSArray arrayWithObject: dstPath]];
+				if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
+				{
+					
+				}
+				else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
+				{
+					NSString *zippedFile = @"/tmp/zippedReport";
+					[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: @"/tmp/zippedReport" password: nil];
+					
+					if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
+					{
+						NSString *dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"zip"];
+						
+						// Create the new one
+						SRAnnotation *r = [[SRAnnotation alloc] initWithFile: zippedFile path: nil  forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]];
+						[r writeToFileAtPath: dstPath];
+						[r release];
+						
+						[[BrowserController currentBrowser] addFilesAndFolderToDatabase: [NSArray arrayWithObject: dstPath]];
+					}
+				}
 			}
+			
+			// Comments and Status
+			
+			// Key Images
 		}
 		@catch (NSException * e) 
 		{
@@ -780,6 +796,44 @@ NSString* soundex4( NSString *inString)
 	[[self managedObjectContext] unlock];
 	
 	return newArray;
+}
+
+- (NSManagedObject *) keyImagesSRSeries
+{
+	NSArray *array = [self primitiveValueForKey: @"series"] ;
+	if ([array count] < 1)  return nil;
+	
+	[[self managedObjectContext] lock];
+	
+	NSMutableArray *newArray = [NSMutableArray array];
+	
+	@try 
+	{
+		for( DicomSeries *series in array)
+		{
+			if( [[series valueForKey:@"id"] intValue] == 5005 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX KeyImage SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
+				[newArray addObject:series];
+			
+			if( [newArray count] > 1)
+			{
+				NSLog( @"****** multiple (%d) keyImagesSRSeries?? Delete the extra series...", [newArray count]);
+				
+				for( int i = 1 ; i < [newArray count] ; i++)
+					[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
+			}
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
+	if( [newArray count])
+		return [newArray objectAtIndex: 0];
+	
+	return nil;
 }
 
 - (NSManagedObject *) commentAndStatusSRSeries

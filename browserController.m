@@ -375,24 +375,24 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
 {
-	return [self addFilesToDatabase: newFilesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles :YES];
+	return [self addFilesToDatabase: newFilesArray onlyDICOM:NO produceAddedFiles :YES];
 }
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
 {
-	return [self addFilesToDatabase: newFilesArray onlyDICOM:onlyDICOM safeRebuild:NO produceAddedFiles :YES];
+	return [self addFilesToDatabase: newFilesArray onlyDICOM:onlyDICOM produceAddedFiles :YES];
 }
 
--(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles
+-(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles
 {
-	return [self addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject: NO];
+	return [self addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject: NO];
 }
 
--(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject
+-(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject
 {
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
-	return [self addFilesToDatabase: newFilesArray onlyDICOM: onlyDICOM safeRebuild: safeProcess produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context: context dbFolder: [self documentsDirectory]];
+	return [self addFilesToDatabase: newFilesArray onlyDICOM: onlyDICOM  produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context: context dbFolder: [self documentsDirectory]];
 }
 
 - (void) checkForExistingReport: (NSManagedObject*) study dbFolder: (NSString*) dbFolder
@@ -460,7 +460,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	#endif
 }
 
-+(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM safeRebuild:(BOOL)safeProcess notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder
++(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder
 {
 	NSString				*newFile;
 	NSDate					*today = [NSDate date];
@@ -508,8 +508,6 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	}
 	newFilesArray = randomArray;
 #endif
-	
-	if( safeProcess) NSLog( @"safe Process DB process");
 	
 	if( [AppController mainThread] == [NSThread currentThread])
 	{
@@ -649,9 +647,9 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	}
 	else
 	{
-			addedImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
-			completeImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
-			modifiedStudiesArray = [NSMutableArray arrayWithCapacity: 0];
+		addedImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
+		completeImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
+		modifiedStudiesArray = [NSMutableArray arrayWithCapacity: 0];
 		
 		NSMutableArray *studiesArrayStudyInstanceUID = [[studiesArray valueForKey:@"studyInstanceUID"] mutableCopy];
 		
@@ -704,6 +702,12 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 					
 					// Check if it is an OsiriX Comments/Status SR
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Comments SR"])
+					{
+						
+					}
+					
+					// Check if it is an OsiriX KeyImage SR
+					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX KeyImage SR"])
 					{
 						
 					}
@@ -1248,21 +1252,21 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	return addedImagesArray;
 }
 
-+(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM safeRebuild:(BOOL)safeProcess notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder {
-	return [self addFiles:newFilesArray toContext:context toDatabase:NULL onlyDICOM:onlyDICOM safeRebuild:safeProcess notifyAddedFiles:notifyAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
++(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder {
+	return [self addFiles:newFilesArray toContext:context toDatabase:NULL onlyDICOM:onlyDICOM  notifyAddedFiles:notifyAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
 }
 
-- (NSArray*) subAddFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder {
-	return [BrowserController addFiles:newFilesArray toContext:context toDatabase:self onlyDICOM:onlyDICOM safeRebuild:safeProcess notifyAddedFiles:produceAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
+- (NSArray*) subAddFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder {
+	return [BrowserController addFiles:newFilesArray toContext:context toDatabase:self onlyDICOM:onlyDICOM  notifyAddedFiles:produceAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
 }
 
-- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
+- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
 {
 	#define CHUNK 50000
 
 	if( [newFilesArray count] < CHUNK)
 	{
-		return [self subAddFilesToDatabase: newFilesArray onlyDICOM: onlyDICOM safeRebuild: safeProcess produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context:  context dbFolder: dbFolder];
+		return [self subAddFilesToDatabase: newFilesArray onlyDICOM: onlyDICOM  produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context:  context dbFolder: dbFolder];
 	}
 	else
 	{
@@ -1285,7 +1289,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 				
 				NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
 				
-				[result addObjectsFromArray: [self subAddFilesToDatabase: subArray onlyDICOM: onlyDICOM safeRebuild: safeProcess produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context:  context dbFolder: dbFolder]];
+				[result addObjectsFromArray: [self subAddFilesToDatabase: subArray onlyDICOM: onlyDICOM  produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context:  context dbFolder: dbFolder]];
 				
 				free( objs);
 			}
@@ -3815,7 +3819,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	// ** Finish the rebuild
 	if( REBUILDEXTERNALPROCESS == NO)
 	{
-		[[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO] valueForKey:@"completePath"];
+		[[self addFilesToDatabase: filesArray onlyDICOM:NO produceAddedFiles:NO] valueForKey:@"completePath"];
 	}
 	else
 	{
@@ -10617,7 +10621,7 @@ static BOOL needToRezoom;
 						{
 							NSLog( @"Destination DB Folder is identical to Current DB Folder");
 							
-							copiedObjects = [self addFilesToDatabase: packArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+							copiedObjects = [self addFilesToDatabase: packArray onlyDICOM:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
 						}
 						else
 						{
@@ -10651,7 +10655,7 @@ static BOOL needToRezoom;
 							[splash release];
 							
 							// Then we add the files to the sql file
-							copiedObjects = [self addFilesToDatabase: dstFiles onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+							copiedObjects = [self addFilesToDatabase: dstFiles onlyDICOM:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
 						}
 						
 						// We will now copy the comments / status
@@ -15148,7 +15152,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 					
 					NSManagedObjectContext *sqlContext = [self localManagedObjectContext];
-					NSArray* addedFiles = [[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES parseExistingObject: NO context: sqlContext dbFolder: dbFolder] valueForKey:@"completePath"];
+					NSArray* addedFiles = [[self addFilesToDatabase: filesArray onlyDICOM:NO produceAddedFiles:YES parseExistingObject: NO context: sqlContext dbFolder: dbFolder] valueForKey:@"completePath"];
 					
 					if( addedFiles)
 					{
