@@ -225,7 +225,7 @@ static LogManager *currentLogManager = nil;
 							}
 							else NSLog(@"***** Unknown log message type");
 						}
-						else NSLog(@"***** Unable to load a log message");
+						else NSLog(@"***** Unable to load a log message: %@", newfile);
 					}
 					else NSLog(@"----- log file not readable, will try later");
 				}

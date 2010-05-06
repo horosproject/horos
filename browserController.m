@@ -14052,7 +14052,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if( [self unzipFile: file withPassword: nil destination: destination] == NO)
 	{
-		self.pathToEncryptedFile = [NSString stringWithFormat: @"File: %@", file];
+		self.pathToEncryptedFile = [NSString stringWithFormat: NSLocalizedString( @"File: %@", nil), file];
 		self.CDpassword = @"";
 		do
 		{
