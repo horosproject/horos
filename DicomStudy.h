@@ -65,6 +65,7 @@
 - (NSManagedObject *) roiSRSeries;
 - (NSManagedObject *) reportSRSeries;
 - (NSManagedObject *) commentAndStatusSRSeries;
+- (NSManagedObject *) keyImagesSRSeries;
 - (void) syncReportAndComments;
 - (NSDictionary *)dictionary;
 - (BOOL) isHidden;

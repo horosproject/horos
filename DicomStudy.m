@@ -201,9 +201,26 @@ NSString* soundex4( NSString *inString)
 		@try
 		{
 			// Find the archived
-			[[self managedObjectContext] deleteObject: [self reportSRSeries]];
-			[[self managedObjectContext] deleteObject: [self commentAndStatusSRSeries]];
-			[[self managedObjectContext] deleteObject: [self keyImages]];
+			@try
+			{
+				id obj;
+				
+				obj = [self reportSRSeries];
+				if( obj)
+					[[self managedObjectContext] deleteObject: obj];
+				
+				obj = [self commentAndStatusSRSeries];
+				if( obj)
+					[[self managedObjectContext] deleteObject: obj];
+				
+				obj = [self keyImagesSRSeries];
+				if( obj)
+					[[self managedObjectContext] deleteObject: obj];
+			}
+			@catch( NSException *e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 			
 			// Report
 			if( [self valueForKey: @"reportURL"])
