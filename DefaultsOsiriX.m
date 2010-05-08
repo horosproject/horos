@@ -20,6 +20,8 @@
 #import "DCMNetServiceDelegate.h"
 #endif
 
+#include <IOKit/graphics/IOGraphicsLib.h>
+
 
 static BOOL isHcugeCh = NO, isUnigeCh = NO, testIsHugDone = NO, testIsUniDone = NO;
 static NSString *hostName = @"";
@@ -1362,7 +1364,7 @@ static NSHost *currentHost = nil;
 				NSLocalizedString(@"HAND", nil), @"region",
 				handRegions, @"keywords",
 				nil];
-									
+	
 	NSArray *bodyRegions = [NSArray arrayWithObjects:
 				headRegion,
 				neckRegion,
