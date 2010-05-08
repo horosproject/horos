@@ -7949,7 +7949,7 @@ static ViewerController *draggedController = nil;
 //	}
 //	free( tempData);
 	
-	if( no > 100)
+	if( no > 50)
 	{
 		int mpprocessors = MPProcessors();
 		if( mpprocessors > 4)
@@ -7959,13 +7959,15 @@ static ViewerController *draggedController = nil;
 		
 		int no2 = no/2;
 		
+		NSMutableDictionary *baseDict = [NSMutableDictionary dictionary];
+		
+		[baseDict setObject: [NSNumber numberWithInt: x*y] forKey: @"size"];
+		[baseDict setObject: [NSValue valueWithPointer: ptr] forKey: @"ptr"];
+		[baseDict setObject: [NSNumber numberWithInt: no] forKey: @"no"];
+		
 		for( int i = 0; i < mpprocessors; i++)
 		{
-			NSMutableDictionary *d = [NSMutableDictionary dictionary];
-			
-			[d setObject: [NSNumber numberWithInt: x*y] forKey: @"size"];
-			[d setObject: [NSValue valueWithPointer: ptr] forKey: @"ptr"];
-			[d setObject: [NSNumber numberWithInt: no] forKey: @"no"];
+			NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary: baseDict];
 			
 			int from = (i * no2) / mpprocessors;
 			int to = ((i+1) * no2) / mpprocessors;

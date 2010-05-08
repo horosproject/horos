@@ -298,7 +298,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	{
 		if( [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
 		{
-			[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer : vc keyImagesOnly: NO];
+			[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer : vc keyImagesOnly: NO tryToFlipData: YES];
 		}
 	}
 	
