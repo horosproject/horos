@@ -135,7 +135,9 @@
 	buffer.rowBytes = voxelCount * sizeof(float);
 	
 	histogramSize = (int)((HUmax-HUmin)/2);
-	histogramSize += 100;
+	histogramSize++;
+	if( histogramSize < 100)
+		histogramSize = 100;
 	
 	if(histogram) free(histogram);
 	
@@ -176,6 +178,7 @@
 	{
 		sum += histogram[i];
 	}
+	
 	if(sum<=100) return;
 	
 	int maxBin = histogramSize-1;
