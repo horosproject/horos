@@ -74,6 +74,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 @implementation VRController
 
+@synthesize deleteValue;
+
 - (void) endShadingEditing:(id) sender
 {
 
@@ -416,7 +418,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void) computeMinMax
 {
-	maximumValue = minimumValue = [[pixList[ 0] objectAtIndex: 0] maxValueOfSeries];
+	maximumValue = minimumValue = self.deleteValue = [[pixList[ 0] objectAtIndex: 0] maxValueOfSeries];
 	
 	blendingMinimumValue = [[blendingPixList objectAtIndex: 0] minValueOfSeries];
 	blendingMaximumValue = [[blendingPixList objectAtIndex: 0] maxValueOfSeries];
@@ -559,7 +561,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
 	// Find Minimum Value
 	if( [firstObject isRGB] == NO) [self computeMinMax];
-	else minimumValue = 0;
+	else minimumValue = self.deleteValue = 0;
 
 	if( [style isEqualToString:@"standard"])
 		self = [super initWithWindowNibName:@"VR"];
@@ -953,7 +955,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) outside = YES;
 	else if( c == NSTabCharacter) restore = YES;
 	
-	if( addition == NO) newVal = minimumValue;
+	if( addition == NO) newVal = self.deleteValue;
 	
 	if( blendedSeries)
 	{

@@ -92,6 +92,7 @@
 	float					*undodata[ 100];
 	float					minimumValue, maximumValue;
 	float					blendingMinimumValue, blendingMaximumValue;
+	float					deleteValue;
 	
 	// Fly Thru
 	VRFlyThruAdapter		*FTAdapter;
@@ -154,6 +155,8 @@
 	IBOutlet NSView        *stereoIconView;
 #endif
 }
+
+@property float deleteValue;
 
 - (IBAction) applyConvolution:(id) sender;
 - (IBAction) setOrientation:(id) sender;
