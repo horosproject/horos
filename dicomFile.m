@@ -2363,7 +2363,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					
 				[dicomElements setObject:studyID forKey:@"studyID"];
 				
-				if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"PROJECTION IMAGE" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [serie rangeOfString:@"scout" options:NSCaseInsensitiveSearch].location != NSNotFound || [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch].location != NSNotFound))
+				if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [serie rangeOfString:@"scout" options:NSCaseInsensitiveSearch].location != NSNotFound || [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch].location != NSNotFound))
 				{
 					NSString	*n;
 
@@ -2921,7 +2921,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			serieID = n;
 		}
 		
-		if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"PROJECTION IMAGE" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [serie rangeOfString:@"scout" options:NSCaseInsensitiveSearch].location != NSNotFound || [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch].location != NSNotFound))
+		if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [serie rangeOfString:@"scout" options:NSCaseInsensitiveSearch].location != NSNotFound || [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch].location != NSNotFound))
 		{
 			NSString	*n;
 			

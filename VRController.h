@@ -145,6 +145,8 @@
 	
 	NSTimeInterval			flyThruRecordingTimeFrame;
 	
+	IBOutlet NSWindow       *editDeleteValue;
+	
 #ifdef _STEREO_VISION_
 	//Added SilvanWidmer 26-08-09
 	

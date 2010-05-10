@@ -418,7 +418,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void) computeMinMax
 {
-	maximumValue = minimumValue = self.deleteValue = [[pixList[ 0] objectAtIndex: 0] maxValueOfSeries];
+	maximumValue = minimumValue = [[pixList[ 0] objectAtIndex: 0] maxValueOfSeries];
 	
 	blendingMinimumValue = [[blendingPixList objectAtIndex: 0] minValueOfSeries];
 	blendingMaximumValue = [[blendingPixList objectAtIndex: 0] maxValueOfSeries];
@@ -434,6 +434,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		maximumValue = minimumValue + 1;
 	
 	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
+	
+	self.deleteValue = minimumValue;
 }
 
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:(NSString*) m mode:(NSString*) renderingMode
@@ -1190,6 +1192,30 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		{
 			[self editGrowingRegion: self];
 			growingSet = YES;
+		}
+	}
+	
+	if( newTool == t3DCut)
+	{
+		if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+		{
+			float copyValue = self.deleteValue;
+			
+			[NSApp beginSheet: editDeleteValue
+			   modalForWindow: self.window
+				modalDelegate: nil
+			   didEndSelector: nil
+				  contextInfo: nil];
+			
+			int result = [NSApp runModalForWindow: editDeleteValue];
+			[editDeleteValue makeFirstResponder: nil];
+			
+			[NSApp endSheet: editDeleteValue];
+			[editDeleteValue orderOut: self];
+			
+			if( result == NSRunStoppedResponse)
+				NSLog( @"deleteValue for 3DCut changed : %f", self.deleteValue);
+			else self.deleteValue = copyValue;
 		}
 	}
 	
