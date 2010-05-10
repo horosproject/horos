@@ -286,7 +286,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void) movieRateSliderAction:(id) sender
 {
-	[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
+	[movieTextSlide setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.0f im/s", @"im/s = images per second"), (float) [movieRateSlider floatValue]]];
 }
 
 - (void) moviePosSliderAction:(id) sender
@@ -323,7 +323,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         
         [moviePlayStop setTitle: @"Play"];
         
-		[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
+		[movieTextSlide setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.0f im/s", @"im/s = images per second"), (float) [movieRateSlider floatValue]]];
     }
     else
     {
@@ -917,7 +917,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	float ambient, diffuse, specular, specularpower;
 	
 	[view getShadingValues: &ambient :&diffuse :&specular :&specularpower];
-	[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", ambient, diffuse, specular, specularpower]];
+	[shadingValues setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", nil), ambient, diffuse, specular, specularpower]];
 	
 	if(!dict && [_renderingMode isEqualToString:@"VR"])
 	{
@@ -1274,7 +1274,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	{
 		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 		{
-			NSBeginAlertSheet( NSLocalizedString(@"Delete a WL/WW preset",nil), NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel",nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [menuString retain], [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", menuString]);
+			NSBeginAlertSheet( NSLocalizedString(@"Delete a WL/WW preset",nil), NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel",nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [menuString retain], [NSString stringWithFormat: NSLocalizedString (@"Are you sure you want to delete preset : '%@'?", nil), menuString]);
 		}
 		else
 		{
@@ -1313,7 +1313,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	if( sambient != ambient || sdiffuse != diffuse || sspecular != specular || sspecularpower != specularpower)
 	{
 		[view setShadingValues: ambient :diffuse :specular :specularpower];
-		[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.2f\nDiffuse: %2.2f\nSpecular :%2.2f, %2.2f", ambient, diffuse, specular, specularpower]];
+		[shadingValues setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Ambient: %2.2f\nDiffuse: %2.2f\nSpecular :%2.2f, %2.2f", nil), ambient, diffuse, specular, specularpower]];
 	
 		[view setNeedsDisplay: YES];
 	}

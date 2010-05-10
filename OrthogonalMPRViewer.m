@@ -1744,7 +1744,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 			
         [moviePlayStop setTitle: NSLocalizedString(@"Play", nil)];
         
-		[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
+		[movieTextSlide setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.0f im/s", @"im/s = images per second"), (float) [movieRateSlider floatValue]]];
     }
     else
     {
@@ -1817,7 +1817,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 
 - (void) movieRateSliderAction:(id) sender
 {
-	[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
+	[movieTextSlide setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.0f im/s", @"im/s = images per second"), (float) [movieRateSlider floatValue]]];
 }
 
 - (void) moviePosSliderAction:(id) sender

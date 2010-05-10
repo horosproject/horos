@@ -1341,7 +1341,7 @@ extern const char *GetPrivateIP();
 				if( currentPercentage != previousPercentage)
 				{
 					previousPercentage = currentPercentage;
-					[w setString: [NSString stringWithFormat:@"Downloading DB Index File (%d %%)", (int) currentPercentage]];
+					[w setString: [NSString stringWithFormat: NSLocalizedString( @"Downloading DB Index File (%d %%)", nil), (int) currentPercentage]];
 				}
 			}
 		}

@@ -3971,8 +3971,8 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	
 	if( minutes < 1) minutes = 1;
 	
-	if( hours) [estimatedTime setStringValue:[NSString stringWithFormat:@"%i hour(s), %i minutes", hours, minutes]];
-	else [estimatedTime setStringValue:[NSString stringWithFormat:@"%i minutes", minutes]];
+	if( hours) [estimatedTime setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%i hour(s), %i minutes", nil), hours, minutes]];
+	else [estimatedTime setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%i minutes", nil), minutes]];
 	
 	[[AppController sharedAppController] closeAllViewers: self];
 	
@@ -17917,7 +17917,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction) viewXML:(id) sender
 {
-    XMLController * xmlController = [[XMLController alloc] initWithImage: [self firstObjectForDatabaseMatrixSelection] windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self firstObjectForDatabaseMatrixSelection] valueForKey:@"completePath"]] viewer: nil];
+    XMLController * xmlController = [[XMLController alloc] initWithImage: [self firstObjectForDatabaseMatrixSelection] windowName:[NSString stringWithFormat: NSLocalizedString( @"Meta-Data: %@", nil), [[self firstObjectForDatabaseMatrixSelection] valueForKey:@"completePath"]] viewer: nil];
     
     [xmlController showWindow:self];
 }

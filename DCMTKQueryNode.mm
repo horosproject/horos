@@ -835,7 +835,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 		if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
 		{
-			NSException *queryException = [NSException exceptionWithName: @"DICOM Network Failure" reason: [NSString stringWithFormat: @"DICOM Listener is not activated"] userInfo:nil];
+			NSException *queryException = [NSException exceptionWithName: @"DICOM Network Failure" reason: [NSString stringWithFormat: NSLocalizedString( @"DICOM Listener is not activated", nil)] userInfo:nil];
 			[queryException raise];
 		}
 		else
@@ -858,7 +858,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 		if( [DCMTKQueryRetrieveSCP storeSCP] == NO && [dict objectForKey: @"moveDestination"] == nil)
 		{
-			NSException *queryException = [NSException exceptionWithName: @"DICOM Network Failure" reason: [NSString stringWithFormat: @"DICOM Listener is not activated"] userInfo:nil];
+			NSException *queryException = [NSException exceptionWithName: @"DICOM Network Failure" reason: [NSString stringWithFormat: NSLocalizedString( @"DICOM Listener is not activated", nil)] userInfo:nil];
 			[queryException raise];
 		}
 		else

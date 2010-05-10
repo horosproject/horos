@@ -464,12 +464,12 @@ NSString* soundex4( NSString *inString)
 		{
 			if( years < 1)
 			{
-				if( months < 1) return [NSString stringWithFormat:@"%d d", days];
-				else return [NSString stringWithFormat:@"%d m", months];
+				if( months < 1) return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
+				else return [NSString stringWithFormat: NSLocalizedString( @"%d m", @"m = month"), months];
 			}
-			else return [NSString stringWithFormat:@"%d y %d m",years, months];
+			else return [NSString stringWithFormat: NSLocalizedString( @"%d y %d m", @"y = year, m = month") ,years, months];
 		}
-		else return [NSString stringWithFormat:@"%d y", years];
+		else return [NSString stringWithFormat: NSLocalizedString( @"%d y", @"y = year"), years];
 	}
 	else return @"";
 }
@@ -489,12 +489,12 @@ NSString* soundex4( NSString *inString)
 		{
 			if( years < 1)
 			{
-				if( months < 1) return [NSString stringWithFormat:@"%d d", days];
-				else return [NSString stringWithFormat:@"%d m", months];
+				if( months < 1) return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
+				else return [NSString stringWithFormat: NSLocalizedString( @"%d m", @"m = month"), months];
 			}
-			else return [NSString stringWithFormat:@"%d y %d m",years, months];
+			else return [NSString stringWithFormat: NSLocalizedString( @"%d y %d m", @"y = year, m = month"),years, months];
 		}
-		else return [NSString stringWithFormat:@"%d y", years];
+		else return [NSString stringWithFormat: NSLocalizedString( @"%d y", @"y = year"), years];
 	}
 	else return @"";
 }

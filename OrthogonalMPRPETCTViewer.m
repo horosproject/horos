@@ -2446,7 +2446,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	int count = fabs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
 	count++;
 	count /= [dcmIntervalTextField intValue];
-	[dcmCountTextField setStringValue: [NSString stringWithFormat:@"%d images", count]];
+	[dcmCountTextField setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d images", nil), count]];
 	
 	[self checkView: dcmBox :([[dcmSelection selectedCell] tag] == 1)];
 	
@@ -2465,7 +2465,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	int count = fabs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
 	count++;
 	count /= [dcmIntervalTextField intValue];
-	[dcmCountTextField setStringValue: [NSString stringWithFormat:@"%d images", count]];
+	[dcmCountTextField setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d images", nil), count]];
 	
 	if( sender == dcmIntervalTextField || sender == dcmInterval)
 	{
@@ -2602,7 +2602,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 			
         [moviePlayStop setTitle: NSLocalizedString(@"Play", nil)];
         
-		[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
+		[movieTextSlide setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.0f im/s", @"im/s = images per second"), (float) [movieRateSlider floatValue]]];
     }
     else
     {
@@ -2698,7 +2698,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 
 - (void) movieRateSliderAction:(id) sender
 {
-	[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
+	[movieTextSlide setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.0f im/s", @"im/s = images per second"), (float) [movieRateSlider floatValue]]];
 }
 
 - (void) moviePosSliderAction:(id) sender

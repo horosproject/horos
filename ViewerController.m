@@ -6322,7 +6322,7 @@ static ViewerController *draggedController = nil;
 		[movieRateSlider setEnabled: NO];
 		[moviePosSlider setEnabled: NO];
 		[moviePlayStop setEnabled:NO];
-		[speedText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%0.1f im/s", nil), (float) [self frameRate]*direction]];
+		[speedText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%0.1f im/s",  @"im/s = images per second"), (float) [self frameRate]*direction]];
 
 		[seriesView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage:imageIndex level:'i' reset:!sameSeries];
 		
@@ -14650,7 +14650,7 @@ int i,j,l;
 
 - (void) speedSliderAction:(id) sender
 {
-	[speedText setStringValue:[NSString stringWithFormat:@"%0.1f im/s", (float) [self frameRate] * direction]];
+	[speedText setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.1f im/s", @"im/s = images per second"), (float) [self frameRate] * direction]];
 	
 	if( [[self window] isKeyWindow])
 	{
@@ -14671,7 +14671,7 @@ int i,j,l;
 
 - (void) movieRateSliderAction:(id) sender
 {
-	[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
+	[movieTextSlide setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.0f im/s", @"im/s = images per second"), (float) [movieRateSlider floatValue]]];
 }
 
 -(NSSlider*) moviePosSlider
@@ -14787,7 +14787,7 @@ int i,j,l;
 
 	if( thisTime - lastTimeFrame > 1.0)
 	{
-		[speedText setStringValue:[NSString stringWithFormat:@"%0.1f im/s", (float) speedometer * direction / (thisTime - lastTimeFrame) ]];
+		[speedText setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.1f im/s", @"im/s = images per second"), (float) speedometer * direction / (thisTime - lastTimeFrame) ]];
 		
 		speedometer = 0;
 		
@@ -14867,7 +14867,7 @@ int i,j,l;
         
         [moviePlayStop setTitle: NSLocalizedString(@"Play", nil)];
         
-		[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
+		[movieTextSlide setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.0f im/s", @"im/s = images per second"), (float) [movieRateSlider floatValue]]];
     }
     else
     {
@@ -14917,7 +14917,7 @@ int i,j,l;
 		[sender setPaletteLabel: NSLocalizedString(@"Browse", nil)];
         [sender setToolTip: NSLocalizedString(@"Browse this series", nil)];
         
-		[speedText setStringValue:[NSString stringWithFormat:@"%0.1f im/s", (float) [self frameRate]*direction]];
+		[speedText setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.1f im/s", @"im/s = images per second"), (float) [self frameRate]*direction]];
     }
     else
     {
@@ -15270,8 +15270,8 @@ int i,j,l;
 //		}
 	}
 	
-	if( count % ipp == 0) [printPagesToPrint setStringValue: [NSString stringWithFormat:@"%d pages", count / ipp]];
-	else [printPagesToPrint setStringValue: [NSString stringWithFormat:@"%d pages", 1 + (count / ipp)]];
+	if( count % ipp == 0) [printPagesToPrint setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d pages", nil), count / ipp]];
+	else [printPagesToPrint setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d pages", nil), 1 + (count / ipp)]];
 }
 
 - (void)printOperationDidRun:(NSPrintOperation *)printOperation
@@ -15876,7 +15876,7 @@ int i,j,l;
 	no ++;
 	no /= [quicktimeInterval intValue];
 
-	[quicktimeNumber setStringValue: [NSString stringWithFormat:@"%d images", no]];
+	[quicktimeNumber setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d images", nil), no]];
 }
 
 - (IBAction) exportQuicktimeSlider:(id) sender
@@ -16485,7 +16485,7 @@ int i,j,l;
 	no ++;
 	no /= [dcmInterval intValue];
 
-	[dcmNumber setStringValue: [NSString stringWithFormat:@"%d images", no]];
+	[dcmNumber setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d images", nil), no]];
 }
 
 - (IBAction) exportDICOMSlider:(id) sender
