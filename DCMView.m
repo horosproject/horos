@@ -4139,45 +4139,45 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 										switch( tool)
 										{
 											case  tOval:
-												roiName = [NSString stringWithString:@"Oval "];
+												roiName = [NSString stringWithString: NSLocalizedString( @"Oval ", @"keep the space at the end of the string")];
 											break;
 												
 											case tDynAngle:
-												roiName = [NSString stringWithString:@"Dynamic Angle "];
+												roiName = [NSString stringWithString: NSLocalizedString( @"Dynamic Angle ", @"keep the space at the end of the string")];
 											break;
 											
 											case tAxis:
-												roiName = [NSString stringWithString:@"Bone Axis "];
+												roiName = [NSString stringWithString: NSLocalizedString( @"Bone Axis ", @"keep the space at the end of the string")];
 											break;
 											
 											case tOPolygon:
 											case tCPolygon:
-												roiName = [NSString stringWithString:@"Polygon "];
+												roiName = [NSString stringWithString: NSLocalizedString( @"Polygon ", @"keep the space at the end of the string")];
 											break;
 												
 											case tAngle:
-												roiName = [NSString stringWithString:@"Angle "];
+												roiName = [NSString stringWithString: NSLocalizedString( @"Angle ", @"keep the space at the end of the string")];
 											break;
 												
 											case tArrow:
-												roiName = [NSString stringWithString:@"Arrow "];
+												roiName = [NSString stringWithString: NSLocalizedString( @"Arrow ", @"keep the space at the end of the string")];
 											break;
 											
 											case tPlain:
 											case tPencil:
-												roiName = [NSString stringWithString:@"ROI "];
+												roiName = [NSString stringWithString: NSLocalizedString( @"ROI ", @"ROI = Region of Interest, keep the space at the end of the string")];
 											break;
 												
 											case tMesure:
-												roiName = [NSString stringWithString:@"Measurement "];
+												roiName = [NSString stringWithString: NSLocalizedString( @"Measurement ", @"keep the space at the end of the string")];
 											break;
 												
 											case tROI:
-												roiName = [NSString stringWithString:@"Rectangle "];
+												roiName = [NSString stringWithString: NSLocalizedString( @"Rectangle ", @"keep the space at the end of the string")];
 											break;
 												
 											case t2DPoint:
-												roiName = [NSString stringWithString:@"Point "];
+												roiName = [NSString stringWithString: NSLocalizedString( @"Point ", @"keep the space at the end of the string")];
 											break;
 										}
 										
