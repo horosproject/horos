@@ -1533,7 +1533,8 @@ extern "C"
 						}
 						
 						if (queryItem)
-						{						
+						{
+							[[NSUserDefaults standardUserDefaults] setBool: showError forKey: @"showErrorsIfQueryFailed"];
 							[self performQuery: nil];
 						}
 						// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
