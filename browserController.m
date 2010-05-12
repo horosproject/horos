@@ -1742,9 +1742,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 								
 								if( server)
 								{
-									[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"showErrorsIfQueryFailed"];
-									NSArray *s = [QueryController queryStudyInstanceUID: studyUID server: server];
-									[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"showErrorsIfQueryFailed"];
+									NSArray *s = [QueryController queryStudyInstanceUID: studyUID server: server showErrors: NO];
 									
 									if( [s count])
 									{

@@ -83,8 +83,9 @@
 + (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet;
 + (BOOL) echoServer:(NSDictionary*)serverParameters;
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer;
++ (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer showErrors: (BOOL) showErrors;
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer;
-
++ (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer showErrors: (BOOL) showErrors;
 - (void) autoRetrieveSettings: (id) sender;
 - (void) saveSettings;
 - (id) initAutoQuery: (BOOL) autoQuery;
@@ -102,7 +103,7 @@
 - (void) query:(id)sender;
 - (void) retrieve:(id)sender;
 - (void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable;
-- (void) performQuery:(id)object;
+- (void) performQuery:(NSNumber*) showErrors;
 - (void) performRetrieve:(NSArray*) array;
 - (void) setDateQuery:(id)sender;
 - (void) setModalityQuery:(id)sender;

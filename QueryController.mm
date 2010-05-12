@@ -56,6 +56,11 @@ extern "C"
 
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer
 {
+	return [QueryController queryStudyInstanceUID: an server: aServer showErrors: YES];
+}
+
++ (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer showErrors: (BOOL) showErrors
+{
 	QueryArrayController *qm = nil;
 	NSArray *array = nil;
 	
@@ -69,7 +74,7 @@ extern "C"
 		if ([filterValue length] > 0)
 		{
 			[qm addFilter:filterValue forDescription:@"StudyInstanceUID"];
-			[qm performQuery];
+			[qm performQuery: showErrors];
 			array = [qm queries];
 		}
 		
@@ -89,6 +94,11 @@ extern "C"
 
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer
 {
+	return [QueryController queryAndRetrieveAccessionNumber: an server: aServer showErrors: YES];
+}
+
++ (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer showErrors: (BOOL) showErrors
+{
 	QueryArrayController *qm = nil;
 	int error = 0;
 	
@@ -103,7 +113,7 @@ extern "C"
 		{
 			[qm addFilter:filterValue forDescription:@"AccessionNumber"];
 			
-			[qm performQuery];
+			[qm performQuery: showErrors];
 			
 			NSArray *array = [qm queries];
 			
@@ -113,6 +123,8 @@ extern "C"
 			
 			for( DCMTKQueryNode	*object in array)
 			{
+				[object setShowErrorMessage: showErrors];
+				 
 				[dictionary setObject: [object valueForKey:@"calledAET"] forKey:@"calledAET"];
 				[dictionary setObject: [object valueForKey:@"hostname"] forKey:@"hostname"];
 				[dictionary setObject: [object valueForKey:@"port"] forKey:@"port"];
@@ -1340,7 +1352,7 @@ extern "C"
 					
 					[qm addFilter:filterValue forDescription: PatientID];
 					
-					[qm performQuery];
+					[qm performQuery: NO];
 					
 					[result addObjectsFromArray: [qm queries]];
 					
@@ -1367,10 +1379,7 @@ extern "C"
 	[autoQueryLock lock];
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: queryArrayPrefs];
-		
-	BOOL showErrorCopy = [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"];
-	[[NSUserDefaults standardUserDefaults] setBool: showError forKey: @"showErrorsIfQueryFailed"];
-		
+	
 	@try 
 	{
 		noChecked = YES;
@@ -1534,8 +1543,7 @@ extern "C"
 						
 						if (queryItem)
 						{
-							[[NSUserDefaults standardUserDefaults] setBool: showError forKey: @"showErrorsIfQueryFailed"];
-							[self performQuery: nil];
+							[self performQuery: [NSNumber numberWithBool: showError]];
 						}
 						// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
 						else
@@ -1575,7 +1583,7 @@ extern "C"
 							
 							if( doit)
 							{
-								[self performQuery: nil];
+								[self performQuery: [NSNumber numberWithBool: showError]];
 							}
 							else i = [sourcesArray count];
 						}
@@ -1654,8 +1662,6 @@ extern "C"
 		if( showError)
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a DICOM node (check box).", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 	}
-	
-	[[NSUserDefaults standardUserDefaults] setBool: showErrorCopy forKey: @"showErrorsIfQueryFailed"];
 	
 	return error;
 }
@@ -1785,14 +1791,14 @@ extern "C"
 }
 
 // This function calls many GUI function, it has to be called from the main thread
-- (void) performQuery:(id)object
+- (void) performQuery:(NSNumber*) showErrors
 {
 	checkAndViewTry = -1;
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[progressIndicator startAnimation:nil];
 	performingCFind = YES;
-	[queryManager performQuery];
+	[queryManager performQuery: [showErrors boolValue]];
 	performingCFind = NO;
 	[progressIndicator stopAnimation:nil];
 	[resultArray sortUsingDescriptors: [self sortArray]];
@@ -2064,13 +2070,12 @@ extern "C"
 {
 	NSMutableArray	*selectedItems = [NSMutableArray array];
 	
-	BOOL showErrorCopy = [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"];
-	[[NSUserDefaults standardUserDefaults] setBool: showGUI forKey: @"showErrorsIfQueryFailed"];
-	
 	if([items count])
 	{
 		for( id item in items)
 		{
+			[item setShowErrorMessage: showGUI];
+			
 			if( onlyIfNotAvailable)
 			{
 //				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"RetrieveOnlyMissingUID"])
@@ -2213,8 +2218,6 @@ extern "C"
 			}
 		}
 	}
-	
-	[[NSUserDefaults standardUserDefaults] setBool: showErrorCopy forKey: @"showErrorsIfQueryFailed"];
 }
 
 -(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable forViewing: (BOOL) forViewing

@@ -484,7 +484,7 @@
 		NSFileManager *fileManager = [NSFileManager defaultManager];
 		if (![fileManager fileExistsAtPath: logPath])
 			[fileManager createDirectoryAtPath: logPath attributes: nil];
-
+		
 		NSTask *theTask = [[NSTask alloc] init];
 		
 		[theTask setArguments: [NSArray arrayWithObjects: logPath, baseName, xmlPath, nil]];

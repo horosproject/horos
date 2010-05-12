@@ -97,9 +97,6 @@
 
 	[queryLock lock];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"] != showError)
-		[[NSUserDefaults standardUserDefaults] setBool: showError forKey: @"showErrorsIfQueryFailed"];
-	
 	NS_DURING
 	
 	BOOL sameAddress = NO;
@@ -150,7 +147,7 @@
 				[filterArray addObject:filter];
 			}
 		}
-		
+		[rootNode setShowErrorMessage: showError];
 		[rootNode queryWithValues:filterArray];
 		
 		[queries release];
@@ -166,14 +163,12 @@
 	}
 	NS_ENDHANDLER
 	
-	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"showErrorsIfQueryFailed"];
-	
 	[queryLock unlock];
 }
 
-- (void)performQuery
+- (void) performQuery
 {
-	return [self performQuery: [[NSUserDefaults standardUserDefaults] boolForKey:@"showErrorsIfQueryFailed"]];
+	return [self performQuery: YES];
 }
 
 - (NSDictionary *)parameters

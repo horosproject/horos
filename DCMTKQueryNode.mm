@@ -788,7 +788,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		firstWadoErrorDisplayed = NO;
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"] == NO)
+		if( showErrorMessage == NO)
 			firstWadoErrorDisplayed = YES; // dont show errors
 		
 		#define NumberOfWADOThreads 3
@@ -1657,7 +1657,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 		NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [e name], [e description]];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"] && _abortAssociation == NO)
+		if( showErrorMessage == YES && _abortAssociation == NO)
 			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 		else
 			[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"autoquery"];
@@ -1802,7 +1802,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				OFSTRINGSTREAM_FREESTR(tmpString)
 			  }
 			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"] && _abortAssociation == NO)
+			if( showErrorMessage == YES && _abortAssociation == NO)
 				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 			else
 				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (2)", nil) description: response name: @"autoquery"];
