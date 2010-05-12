@@ -132,7 +132,7 @@ DIMSE_getUser(
 
     /* receive responses */
 	DcmQueryRetrieveOsiriXDatabaseHandleFactory factory;
-	DcmQueryRetrieveDatabaseHandle *dbHandle = factory.createDBHandle( assoc->params->DULparams.callingAPTitle, assoc->params->DULparams.calledAPTitle, cond);
+	DcmQueryRetrieveDatabaseHandle *dbHandle = factory.createDBHandle( assoc->params->DULparams.calledAPTitle, assoc->params->DULparams.calledAPTitle, cond);
 	
     while (cond == EC_Normal && status == STATUS_Pending) {
 
