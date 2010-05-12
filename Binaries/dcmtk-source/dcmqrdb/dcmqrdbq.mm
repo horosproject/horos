@@ -454,7 +454,8 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
 //    else if (strcmp( SOPClassUID, UID_FINDPatientStudyOnlyQueryRetrieveInformationModel) == 0)
 //        handle->rootLevel = PATIENT_STUDY ;
 //#endif
-    else {
+    else
+	{
         status->setStatus(STATUS_FIND_Refused_SOPClassNotSupported);
         return (DcmQROsiriXDatabaseError) ;
     }
@@ -467,16 +468,20 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
 //	findRequestIdentifiers->print(COUT);
 	
     int elemCount = (int)(findRequestIdentifiers->card());
-    for (int elemIndex=0; elemIndex<elemCount; elemIndex++) {
-
+    for (int elemIndex=0; elemIndex<elemCount; elemIndex++)
+	{
         DcmElement* dcelem = findRequestIdentifiers->getElement(elemIndex);
 
         elem.XTag = dcelem->getTag().getXTag();
-        if (elem.XTag == DCM_QueryRetrieveLevel || DB_TagSupported(elem.XTag)) {
+        if (elem.XTag == DCM_QueryRetrieveLevel || DB_TagSupported(elem.XTag))
+		{
             elem.ValueLength = dcelem->getLength();
-            if (elem.ValueLength == 0) {
+            if (elem.ValueLength == 0)
+			{
                 elem.PValueField = NULL ;
-            } else if ((elem.PValueField = (char*)malloc((size_t)(elem.ValueLength+1))) == NULL) {
+            }
+			else if ((elem.PValueField = (char*)malloc((size_t)(elem.ValueLength+1))) == NULL)
+			{
                 status->setStatus(STATUS_FIND_Refused_OutOfResources);
                 return (DcmQROsiriXDatabaseError) ;
             } else {
@@ -488,7 +493,8 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
             /** If element is the Query Level, store it in handle
              */
 
-            if (elem. XTag == DCM_QueryRetrieveLevel) {
+            if (elem. XTag == DCM_QueryRetrieveLevel)
+			{
                 char *pc ;
                 char level [50] ;
 
