@@ -2367,7 +2367,7 @@ NSString* notNil( NSString *s)
 						
 						if( [images count])
 						{
-							[OsiriXHTTPConnection updateLogEntryForStudy: [studies lastObject] withMessage: @"WADO transfer" forUser: nil ip: [asyncSocket connectedHost]];
+							[OsiriXHTTPConnection updateLogEntryForStudy: [studies lastObject] withMessage: @"WADO Send" forUser: nil ip: [asyncSocket connectedHost]];
 						}
 					}
 					
