@@ -22,6 +22,7 @@
 @class ColorTransferView;
 @class MyPoint;
 @class ROI;
+@class DCMPix;
 @class ThickSlabController;
 @class StudyView;
 @class SeriesView;
@@ -689,6 +690,7 @@ enum
 - (IBAction) roiPropagate:(id) sender;
 - (void) showWindowTransition;
 - (float) computeInterval;
++ (float) computeIntervalForDCMPix: (DCMPix*) p1 And: (DCMPix*) p2;
 - (float) computeIntervalFlipNow: (NSNumber*) flipNowNumber;
 - (void) computeIntervalAsync;
 - (IBAction) endThicknessInterval:(id) sender;

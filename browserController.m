@@ -11288,29 +11288,51 @@ static BOOL needToRezoom;
 		{
 			// Pre-Flip data ?
 			
-			if( multiFrame == NO && tryToFlipData == YES)
+			NSMutableArray *resortedToOpenArray = [NSMutableArray array];
+			for( NSArray *a in toOpenArray)
 			{
-				int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
-				
-				NSSortDescriptor *sort = nil;
-				
-				// Sort images with "instanceNumber"
-				if( sortSeriesBySliceLocation == 0)
-					sort = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: NO] autorelease];
-				else if( sortSeriesBySliceLocation < 0)
-					sort = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: YES] autorelease];
-				
-				if( sort)
+				if( multiFrame == NO && tryToFlipData == YES && [a count] > 2)
 				{
-					NSMutableArray *resortedToOpenArray = [NSMutableArray array];
-					for( NSArray *a in toOpenArray)
-						[resortedToOpenArray addObject: [a sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]]];
+					@try 
+					{
+						DicomImage *o = nil;
+						o = [a objectAtIndex: 1];
+						DCMPix *p1 = [[DCMPix alloc] initWithPath: [o valueForKey:@"completePath"] :0 :1 :nil :[[o valueForKey:@"frameID"] intValue] :[[o valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: o];
+						o = [a objectAtIndex: 2];
+						DCMPix *p2 = [[DCMPix alloc] initWithPath: [o valueForKey:@"completePath"] :0 :1 :nil :[[o valueForKey:@"frameID"] intValue] :[[o valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: o];
 					
-					toOpenArray = resortedToOpenArray;
-					preFlippedData = YES;
-					//NSLog( @"Pre-Flip Data");
+						if( p1 && p2 && [ViewerController computeIntervalForDCMPix: p1 And: p2] < 0)
+						{
+							int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
+							
+							NSSortDescriptor *sort = nil;
+							
+							if( sortSeriesBySliceLocation == 0)
+								sort = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: NO] autorelease];
+							else 
+								sort = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? NO : YES] autorelease];
+							
+							if( sort)
+							{
+								a = [a sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
+								preFlippedData = YES;
+							}
+						}
+						
+						[p1 release];
+						[p2 release];
+					}
+					@catch (NSException * e) 
+					{
+						NSLog( @"***** exception in %s: %@ / Pre-Flip Data", __PRETTY_FUNCTION__, e);
+					}
 				}
+				
+				[resortedToOpenArray addObject: a];
 			}
+			
+			if( preFlippedData)
+				toOpenArray = resortedToOpenArray;
 			
 			for( unsigned long x = 0; x < [toOpenArray count]; x++)
 			{

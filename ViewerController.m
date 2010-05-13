@@ -8080,7 +8080,64 @@ static ViewerController *draggedController = nil;
 	[imageView setNeedsDisplay: YES];
 }
 
--(float) computeIntervalFlipNow: (NSNumber*) flipNowNumber
++ (float) computeIntervalForDCMPix: (DCMPix*) p1 And: (DCMPix*) p2
+{
+	double vectors[ 9], vectorsB[ 9];
+	BOOL equalVector = YES;
+	float interval = 0;
+	
+	[p1 orientationDouble: vectors];
+	[p2 orientationDouble: vectorsB];
+	
+	for( int i = 0; i < 9; i++)
+	{
+		const double epsilon = fabs(vectors[ i] - vectorsB[ i]);
+		if (epsilon > 1e-6)
+		{
+			equalVector = NO;
+			break;
+		}
+	}
+	
+	BOOL equalZero = YES;
+	
+	for( int i = 0; i < 9; i++)
+	{
+		if( vectors[ i] != 0) { equalZero = NO; break;}
+		if( vectorsB[ i] != 0) { equalZero = NO; break;}
+	}
+	
+	if( equalVector == YES && equalZero == NO)
+	{
+		if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
+		{
+			interval = [p1 originX] - [p2 originX];
+			
+			if( vectors[6] > 0) interval = -( interval);
+			else interval = ( interval);
+		}
+		
+		if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
+		{
+			interval = [p1 originY] - [p2 originY];
+			
+			if( vectors[7] > 0) interval = -( interval);
+			else interval = ( interval);
+		}
+		
+		if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
+		{
+			interval = [p1 originZ] - [p2 originZ];
+				
+			if( vectors[8] > 0) interval = -( interval);
+			else interval = ( interval);
+		}
+	}
+	
+	return interval;
+}
+
+- (float) computeIntervalFlipNow: (NSNumber*) flipNowNumber
 {
 	[self selectFirstTilingView];
 	
@@ -8103,8 +8160,8 @@ static ViewerController *draggedController = nil;
 		{
 			titledGantry = NO;
 			
-			double		vectors[ 9], vectorsB[ 9];
-			BOOL		equalVector = YES;
+			double vectors[ 9], vectorsB[ 9];
+			BOOL equalVector = YES;
 			
 			[[pixList[ z] objectAtIndex:1] orientationDouble: vectors];
 			[[pixList[ z] objectAtIndex:2] orientationDouble: vectorsB];
