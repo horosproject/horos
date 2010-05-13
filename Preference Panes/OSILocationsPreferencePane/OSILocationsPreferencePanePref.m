@@ -92,10 +92,22 @@
 			{
 				if( [currentAETitle isEqualToString: [[serverList objectAtIndex: i] valueForKey: @"AETitle"]])
 				{
-					NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"Same AETitle", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), [NSString stringWithFormat: NSLocalizedStringFromTableInBundle(@"This AETitle is not unique: %@. AETitles should be unique, otherwise Q&R (C-Move SCP/SCU) can fail.", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), currentAETitle], NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil), nil, nil);
-					
-					i = [serverList count];
-					x = [serverList count];
+					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"HideSameAETitleAlert"] == NO)
+					{
+						NSAlert* alert = [[NSAlert new] autorelease];
+						[alert setMessageText: NSLocalizedStringFromTableInBundle(@"Same AETitle", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L)];
+						[alert setInformativeText:  [NSString stringWithFormat: NSLocalizedStringFromTableInBundle(@"This AETitle is not unique: %@. AETitles should be unique, otherwise Q&R (C-Move SCP/SCU) can fail.", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], 0L), currentAETitle]];
+						[alert setShowsSuppressionButton:YES ];
+						[alert addButtonWithTitle: NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSILocationsPreferencePanePref class]], nil)];
+						
+						[alert runModal];
+						
+						if ([[alert suppressionButton] state] == NSOnState)
+							[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"HideSameAETitleAlert"];
+						
+						i = [serverList count];
+						x = [serverList count];
+					}
 				}
 			}
 		}
