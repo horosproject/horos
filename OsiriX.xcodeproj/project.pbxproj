@@ -1170,8 +1170,6 @@
 		ABC47B5A0C031397001CEA21 /* BrowserMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC47B580C031397001CEA21 /* BrowserMatrix.m */; };
 		ABCA5BA40625FC1100637E73 /* OpacityTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */; };
 		ABCA5BA50625FC1100637E73 /* OpacityTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */; };
-		ABCB2D520655B19A006C5630 /* SearchWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCB2D4E0655B19A006C5630 /* SearchWindowController.m */; };
-		ABCB2D530655B19A006C5630 /* SearchWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCB2D4F0655B19A006C5630 /* SearchWindowController.h */; };
 		ABD00CB90D37B468006B914E /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		ABD1A8700619E68B00C5B670 /* ROIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD1A86E0619E68B00C5B670 /* ROIWindow.h */; };
 		ABD1A8710619E68B00C5B670 /* ROIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD1A86F0619E68B00C5B670 /* ROIWindow.m */; };
@@ -6549,7 +6547,6 @@
 		CEC7072310A5C844008935EA /* PreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB73E13706497EDA00545980 /* PreviewView.m */; };
 		CEC7072410A5C844008935EA /* SmartWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E569398065007D6001A9762 /* SmartWindowController.m */; };
 		CEC7072510A5C844008935EA /* ImageAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0186065320A800BAFCF7 /* ImageAndTextCell.m */; };
-		CEC7072610A5C844008935EA /* SearchWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCB2D4E0655B19A006C5630 /* SearchWindowController.m */; };
 		CEC7072710A5C844008935EA /* ToolbarPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AB866037066E40970015E1C4 /* ToolbarPanel.m */; };
 		CEC7072810A5C844008935EA /* ToolBarNSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDC3C720670FF440042069D /* ToolBarNSWindow.m */; };
 		CEC7072910A5C844008935EA /* Window3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3F4A1E0672674000E61A6C /* Window3DController.m */; };
@@ -6855,7 +6852,6 @@
 		CEC7FC9E10A5C844008935EA /* PreviewView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB73E13606497EDA00545980 /* PreviewView.h */; };
 		CEC7FC9F10A5C844008935EA /* SmartWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E569397065007D6001A9762 /* SmartWindowController.h */; };
 		CEC7FCA010A5C844008935EA /* ImageAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */; };
-		CEC7FCA110A5C844008935EA /* SearchWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCB2D4F0655B19A006C5630 /* SearchWindowController.h */; };
 		CEC7FCA210A5C844008935EA /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7D5E5A0669A698000C16AE /* jasper.h */; };
 		CEC7FCA310A5C844008935EA /* ToolbarPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = AB866038066E40970015E1C4 /* ToolbarPanel.h */; };
 		CEC7FCA410A5C844008935EA /* ToolBarNSWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDC3C730670FF440042069D /* ToolBarNSWindow.h */; };
@@ -8678,8 +8674,6 @@
 		ABC47B580C031397001CEA21 /* BrowserMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserMatrix.m; sourceTree = "<group>"; };
 		ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OpacityTransferView.h; sourceTree = "<group>"; };
 		ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OpacityTransferView.m; sourceTree = "<group>"; };
-		ABCB2D4E0655B19A006C5630 /* SearchWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SearchWindowController.m; sourceTree = "<group>"; };
-		ABCB2D4F0655B19A006C5630 /* SearchWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SearchWindowController.h; sourceTree = "<group>"; };
 		ABD1A86E0619E68B00C5B670 /* ROIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROIWindow.h; sourceTree = "<group>"; };
 		ABD1A86F0619E68B00C5B670 /* ROIWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ROIWindow.m; sourceTree = "<group>"; };
 		ABD559F50AEE146900108895 /* SagSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagSmall.tif; sourceTree = "<group>"; };
@@ -13303,8 +13297,6 @@
 				CED2CF960C9B288C0047F123 /* CIADICOMField.h */,
 				7E569397065007D6001A9762 /* SmartWindowController.h */,
 				7E569398065007D6001A9762 /* SmartWindowController.m */,
-				ABCB2D4F0655B19A006C5630 /* SearchWindowController.h */,
-				ABCB2D4E0655B19A006C5630 /* SearchWindowController.m */,
 				ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */,
 				ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */,
 				7E879E9D067F9BE100CB2F8A /* SearchSubview.h */,
@@ -16557,7 +16549,6 @@
 				AB73E13A06497EDA00545980 /* PreviewView.h in Headers */,
 				7E569399065007D6001A9762 /* SmartWindowController.h in Headers */,
 				BF5C0187065320A800BAFCF7 /* ImageAndTextCell.h in Headers */,
-				ABCB2D530655B19A006C5630 /* SearchWindowController.h in Headers */,
 				AB7D5E5C0669A698000C16AE /* jasper.h in Headers */,
 				AB86603C066E40970015E1C4 /* ToolbarPanel.h in Headers */,
 				ABDC3C770670FF440042069D /* ToolBarNSWindow.h in Headers */,
@@ -18989,7 +18980,6 @@
 				CEC7FC9E10A5C844008935EA /* PreviewView.h in Headers */,
 				CEC7FC9F10A5C844008935EA /* SmartWindowController.h in Headers */,
 				CEC7FCA010A5C844008935EA /* ImageAndTextCell.h in Headers */,
-				CEC7FCA110A5C844008935EA /* SearchWindowController.h in Headers */,
 				CEC7FCA210A5C844008935EA /* jasper.h in Headers */,
 				CEC7FCA310A5C844008935EA /* ToolbarPanel.h in Headers */,
 				CEC7FCA410A5C844008935EA /* ToolBarNSWindow.h in Headers */,
@@ -22609,7 +22599,6 @@
 				AB73E13B06497EDA00545980 /* PreviewView.m in Sources */,
 				7E56939A065007D6001A9762 /* SmartWindowController.m in Sources */,
 				BF5C0188065320A800BAFCF7 /* ImageAndTextCell.m in Sources */,
-				ABCB2D520655B19A006C5630 /* SearchWindowController.m in Sources */,
 				AB86603B066E40970015E1C4 /* ToolbarPanel.m in Sources */,
 				ABDC3C760670FF440042069D /* ToolBarNSWindow.m in Sources */,
 				AB3F4A200672674000E61A6C /* Window3DController.m in Sources */,
@@ -24016,7 +24005,6 @@
 				CEC7072310A5C844008935EA /* PreviewView.m in Sources */,
 				CEC7072410A5C844008935EA /* SmartWindowController.m in Sources */,
 				CEC7072510A5C844008935EA /* ImageAndTextCell.m in Sources */,
-				CEC7072610A5C844008935EA /* SearchWindowController.m in Sources */,
 				CEC7072710A5C844008935EA /* ToolbarPanel.m in Sources */,
 				CEC7072810A5C844008935EA /* ToolBarNSWindow.m in Sources */,
 				CEC7072910A5C844008935EA /* Window3DController.m in Sources */,

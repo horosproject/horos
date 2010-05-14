@@ -26,13 +26,13 @@
 	IBOutlet	NSBox			*filterBox;
 	NSMutableArray				*subviews;
 	NSMutableArray				*criteria;
-	BOOL						madeCriteria;
+	BOOL						editSqlQuery;
 	BOOL						firstTime;
 	NSTimer						*sqlQueryTimer;
 	NSString					*previousSqlString;
 }
 
-- (IBAction)newAlbum:(id)sender; /**< Create a new smart album. */
+- (IBAction)editSqlString:(id) sender;
 - (void)removeSubview:(id)sender; /**< Removes a subView representing a smart filter predicate. */
 - (void)addSubview:(id)sender; /**< Add a subview for creating a new subpredicate. */
 - (void)drawSubviews;  /**< Redraws the subviews */
@@ -47,7 +47,8 @@
 *   searchWithinLastMonth, searchWithinLast2Months, searchWithinLast3Months, searchWithinLastYear
 */
 - (NSCalendarDate *)dateBeforeNow:(int)value; 
-- (BOOL)madeCriteria;  /**< Checks to see if the criteria has been made. */
+//- (BOOL)madeCriteria;  /**< Checks to see if the criteria has been made. */
+- (BOOL) editSqlQuery;
 - (NSString*) sqlQueryString;
 
 @end

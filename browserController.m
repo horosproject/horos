@@ -37,7 +37,6 @@
 #import "SmartWindowController.h"
 #import "QueryFilter.h"
 #import "ImageAndTextCell.h"
-#import "SearchWindowController.h"
 #import "Wait.h"
 #import "WaitRendering.h"
 #import "BurnerWindowController.h"
@@ -9585,7 +9584,7 @@ static BOOL withReset = NO;
 #pragma mark-
 #pragma mark Albums functions
 
-- (IBAction)addSmartAlbum: (id)sender
+- (IBAction) addSmartAlbum: (id)sender
 {
 	SmartWindowController *smartWindowController = [[SmartWindowController alloc] init];
 	NSWindow *sheet = [smartWindowController window];
@@ -9607,9 +9606,8 @@ static BOOL withReset = NO;
 	NSMutableArray *criteria = [smartWindowController criteria];
 	if( [criteria count] > 0 && result == NSRunStoppedResponse)
 	{
-		NSError				*error = nil;
-		NSString			*name;
-		long				i = 2;
+		NSError *error = nil;
+		NSString *name;
 		
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
@@ -9623,6 +9621,7 @@ static BOOL withReset = NO;
 			error = nil;
 			NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
 			
+			int i = 2;
 			name = [smartWindowController albumTitle];
 			while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
 			{
@@ -9652,6 +9651,9 @@ static BOOL withReset = NO;
 		[context unlock];
 		
 		[self outlineViewRefresh];
+		
+		if( [smartWindowController editSqlQuery])
+			[self albumTableDoublePressed: self];
 	}
 	
 	[smartWindowController release];
@@ -9830,15 +9832,6 @@ static BOOL needToRezoom;
 		{
 			[editSmartAlbumName setStringValue: [album valueForKey:@"name"]];
 			[editSmartAlbumQuery setStringValue: [album valueForKey:@"predicateString"]];
-			
-//			NSArray *templates = [NSPredicateEditorRowTemplate templatesWithAttributeKeyPaths: [NSArray arrayWithObjects: @"comment", @"date", @"name",  nil] inEntityDescription: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-//			
-//			[editSmartAlbumPredicate setRowTemplates: templates];	//[self smartAlbumPredicateString: [album valueForKey:@"predicateString"]]];
-//			
-//			if ([editSmartAlbumPredicate numberOfRows] == 0)
-//				[editSmartAlbumPredicate addRow:self];
-//			
-//			[editSmartAlbumPredicate setObjectValue: [self smartAlbumPredicateString: [album valueForKey:@"predicateString"]]];
 			
 			[NSApp beginSheet: editSmartAlbum
 			   modalForWindow: self.window

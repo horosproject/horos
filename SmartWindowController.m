@@ -334,6 +334,17 @@
 	}
 }
 
+- (BOOL) editSqlQuery
+{
+	return editSqlQuery;
+}
+
+- (IBAction) editSqlString:(id) sender
+{
+	editSqlQuery = YES;
+	[NSApp stopModal];
+}
+
 -(NSMutableArray *)criteria
 {
 	return criteria;
@@ -380,22 +391,22 @@
 	}
 	return date;
 }
-
-- (IBAction)newAlbum:(id)sender
-{
-	if ([sender tag] == 0)
-		madeCriteria = NO;
-	else
-	{
-		madeCriteria = YES;
-		[self createCriteria];
-	}
-	[NSApp stopModal];
-}
-
-- (BOOL)madeCriteria {
-	return madeCriteria;
-}
+//
+//- (IBAction)newAlbum:(id)sender
+//{
+//	if ([sender tag] == 0)
+//		madeCriteria = NO;
+//	else
+//	{
+//		madeCriteria = YES;
+//		[self createCriteria];
+//	}
+//	[NSApp stopModal];
+//}
+//
+//- (BOOL)madeCriteria {
+//	return madeCriteria;
+//}
 		
 
 @end

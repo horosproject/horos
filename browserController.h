@@ -411,6 +411,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void)setToolbarReportIconForItem: (NSToolbarItem *)item;
 - (void) executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually;
 - (void) resetListenerTimer;
+- (IBAction) albumTableDoublePressed: (id)sender;
 - (IBAction) smartAlbumHelpButton:(id) sender;
 - (IBAction) regenerateAutoComments:(id) sender;
 - (DCMPix *)previewPix:(int)i;

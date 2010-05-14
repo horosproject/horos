@@ -22,6 +22,6 @@
 @interface SearchWindowController : SmartWindowController {
 
 }
-- (IBAction)search:(id)sender;
+//- (IBAction)search:(id)sender;
 
 @end

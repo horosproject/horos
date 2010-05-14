@@ -26,14 +26,14 @@
 	return self;
 }
 
-- (IBAction)search:(id)sender{
-	if ([sender tag] == 0)
-		madeCriteria = NO;
-	else {
-		madeCriteria = YES;
-		[self createCriteria];
-	}
-	[NSApp stopModal];
-}
+//- (IBAction)search:(id)sender{
+//	if ([sender tag] == 0)
+//		madeCriteria = NO;
+//	else {
+//		madeCriteria = YES;
+//		[self createCriteria];
+//	}
+//	[NSApp stopModal];
+//}
 
 @end
