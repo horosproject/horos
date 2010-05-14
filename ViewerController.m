@@ -155,7 +155,7 @@ static NSMenu *clutPresetsMenu = nil;
 static NSMenu *convolutionPresetsMenu = nil;
 static NSMenu *opacityPresetsMenu = nil;
 static NSNotification *lastMenuNotification = nil;
-volatile static int totalNumberOfLoadingThreads = 0;
+volatile static int totalNumberOfLoadingWindow = 0;
 
 static int numberOf2DViewer = 0;
 
@@ -243,7 +243,7 @@ enum
 
 @implementation ViewerController
 
-@synthesize currentOrientationTool, loadingPercentage, speedSlider;
+@synthesize currentOrientationTool, loadingPercentage, speedSlider, loadingPauseDelay;
 @synthesize timer, keyImageCheck, injectionDateTime, blendedWindow;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
 
@@ -6790,7 +6790,6 @@ static ViewerController *draggedController = nil;
 			if( pixList[ x] && fileList[ x])
 			{
 				int mpprocessors = MPProcessors();
-	//			mpprocessors--;
 				if( mpprocessors < 1)
 					mpprocessors = 1;
 				
@@ -6799,10 +6798,7 @@ static ViewerController *draggedController = nil;
 				if( compressed == NO)
 					numberOfThreadsForCompute = 1;
 				
-				if( totalNumberOfLoadingThreads + numberOfThreadsForCompute > mpprocessors)
-					numberOfThreadsForCompute = 1;
-				
-				totalNumberOfLoadingThreads += numberOfThreadsForCompute;
+				totalNumberOfLoadingWindow ++;
 				
 				if( numberOfThreadsForCompute > 1)
 				{
@@ -6845,7 +6841,7 @@ static ViewerController *draggedController = nil;
 					[self subLoadingThread: d];
 				}
 				
-				totalNumberOfLoadingThreads -= numberOfThreadsForCompute;
+				totalNumberOfLoadingWindow --;
 			}
 		}
 		NSLog( @"end loading");
@@ -6955,11 +6951,12 @@ static ViewerController *draggedController = nil;
 
 -(void) setLoadingPause:(BOOL) lp
 {
-	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO) return;
-	
-	if( lp)
-		loadingPauseDelay = [NSDate timeIntervalSinceReferenceDate] + 4;
-	else loadingPauseDelay = 0;
+	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+	{
+		if( lp)
+			v.loadingPauseDelay = [NSDate timeIntervalSinceReferenceDate] + 4;
+		else v.loadingPauseDelay = 0;
+	}
 }
 
 - (short) getNumberOfImages

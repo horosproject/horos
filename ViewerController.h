@@ -341,7 +341,7 @@ enum
 @property(retain) NSCalendarDate *injectionDateTime;
 @property(readonly) short currentOrientationTool;
 @property(readonly) volatile float loadingPercentage;
-
+@property NSTimeInterval loadingPauseDelay;
 @property(readonly) NSTimer	*timer;
 @property(readonly) NSButton *keyImageCheck;
 @property(readonly) NSSlider *speedSlider;
