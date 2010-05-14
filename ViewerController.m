@@ -95,7 +95,7 @@ int delayedTileWindows = NO;
 
 extern  ToolbarPanelController  *toolbarPanel[ 10];
 
-static	BOOL					SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO, recursiveCloseWindowsProtected = NO;
+static	BOOL SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO, recursiveCloseWindowsProtected = NO;
 
 static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.icns";
@@ -6951,6 +6951,9 @@ static ViewerController *draggedController = nil;
 
 -(void) setLoadingPause:(BOOL) lp
 {
+	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO && totalNumberOfLoadingWindow < 2)
+		return;
+	
 	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 	{
 		if( lp)

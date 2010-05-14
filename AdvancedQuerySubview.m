@@ -134,8 +134,8 @@
 	[self showValueField: searchTypePopup];
 }
 
-- (IBAction) showValueField: (id) sender{
-
+- (IBAction) showValueField: (id) sender
+{
 	[datePicker setHidden:YES];
 
 	// need date range Popup
@@ -179,7 +179,8 @@
 	}
 }
 
-- (IBAction)showModalityPopup:(id)sender{
+- (IBAction)showModalityPopup:(id)sender
+{
 	[modalityPopup setHidden:NO];
 }
 

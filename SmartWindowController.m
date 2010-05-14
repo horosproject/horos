@@ -18,25 +18,35 @@
 
 @implementation SmartWindowController
 
-- (id)init{
+- (id)init
+{
 	if (self = [super initWithWindowNibName:@"SmartAlbum"])
 		subviews = [[NSMutableArray array] retain];
+		
 	return self;
 }
 
-- (void) dealloc {
+- (void) dealloc
+{
+	[previousSqlString release];
+	[sqlQueryTimer release];
 	[subviews release];
 	[criteria release];
 	[super dealloc];
 }
 
 
-- (void)windowDidLoad{
+- (void)windowDidLoad
+{
 	firstTime = YES;
 	[self addSubview:nil];
 	[albumNameField setStringValue:NSLocalizedString(@"Smart Album", nil)];
 	[super windowDidLoad];
 	
+	sqlQueryTimer = [[NSTimer timerWithTimeInterval: 0.5 target: self selector: @selector( updateSqlString:) userInfo: nil repeats: YES] retain];
+	
+	[[NSRunLoop currentRunLoop] addTimer: sqlQueryTimer forMode:NSDefaultRunLoopMode];
+	[[NSRunLoop currentRunLoop] addTimer: sqlQueryTimer forMode:NSModalPanelRunLoopMode];
 }
 
 - (void)addSubview:(id)sender
@@ -60,16 +70,16 @@
 	[subview showSearchTypePopup: [subview filterKeyPopup]];
 }	
 
-- (void)removeSubview:(id)sender{
+- (void)removeSubview:(id)sender
+{
 	NSView *view = [sender superview];
 	[subviews removeObject:view];
 	[view removeFromSuperview];
 	[self drawSubviews];
 }
 
-- (void)drawSubviews{
-
-
+- (void)drawSubviews
+{
 	float subViewHeight = 50.0;
 	float windowHeight = 156.0;
 	//displays wrong when sheet first displayed
@@ -85,7 +95,8 @@
 	NSEnumerator *enumerator = [subviews reverseObjectEnumerator];
 	id view;
 	int i = 0;
-	while (view = [enumerator nextObject]) {
+	while (view = [enumerator nextObject])
+	{
 		NSRect viewFrame = [view frame];
 		[view setFrame:NSMakeRect(viewFrame.origin.x, subViewHeight * i++, viewFrame.size.width, viewFrame.size.height)];
 		
@@ -98,12 +109,15 @@
 	
 }
 
-- (void)updateRemoveButtons{
-	if ([subviews count] == 1) {
+- (void)updateRemoveButtons
+{
+	if ([subviews count] == 1)
+	{
 		AdvancedQuerySubview *view = [subviews objectAtIndex:0];
 		[[view removeButton] setEnabled:NO];
 	}
-	else {
+	else
+	{
 		AdvancedQuerySubview *view;
 		for (view in subviews)
 				[[view removeButton] setEnabled:YES];
@@ -112,11 +126,46 @@
 
 - (void) windowWillClose: (NSNotification*) notification
 {
+	[sqlQueryTimer invalidate];
+	
     [[self window] setDelegate:nil];
 }
 
--(void) createCriteria {
+- (void) updateSqlString: (NSTimer*)theTimer
+{
+	if( [previousSqlString isEqualToString: [self sqlQueryString]] == NO)
+	{
+		[self willChangeValueForKey: @"sqlQueryString"];
+		
+		[previousSqlString release];
+		previousSqlString = [[self sqlQueryString] retain];
+		
+		[self didChangeValueForKey: @"sqlQueryString"];
+	}
+}
+
+- (NSString*) sqlQueryString
+{
+	[self createCriteria];
+	
+	NSString *format = [NSString string];
+			
+	BOOL first = YES;
+	for( NSString *search in criteria)
+	{
+		if ( first) first = NO;
+		else format = [format stringByAppendingFormat: @" AND "];
+		
+		format = [format stringByAppendingFormat: @"(%@)", search];
+	}
+	
+	return format;
+}
+
+-(void) createCriteria
+{
 	AdvancedQuerySubview *view;
+	[criteria release];
 	criteria = [[NSMutableArray array] retain];
 	for (view in subviews)
 	{
@@ -128,7 +177,8 @@
 		// Modality	
 		if ([key isEqualToString:NSLocalizedString(@"Modality", nil)])
 		{
-			switch ([[view searchTypePopup] indexOfSelectedItem]) {
+			switch ([[view searchTypePopup] indexOfSelectedItem])
+			{
 				case osiCR: value = @"CR";
 						break;
 				case osiCT: value = @"CT";
@@ -166,7 +216,8 @@
 		// Study status	
 		else if ([key isEqualToString:NSLocalizedString(@"Study Status", nil)])
 		{
-			switch ([[view searchTypePopup] indexOfSelectedItem]) {
+			switch ([[view searchTypePopup] indexOfSelectedItem])
+			{
 				case empty: value = @"0";
 						break;
 				case unread: value = @"1";
@@ -283,17 +334,22 @@
 	}
 }
 
--(NSMutableArray *)criteria{
+-(NSMutableArray *)criteria
+{
 	return criteria;
 }
--(NSString *)albumTitle{
+
+-(NSString *)albumTitle
+{
 	return [albumNameField stringValue];
 }
 
-- (NSCalendarDate *)dateBeforeNow:(int)value{
+- (NSCalendarDate *)dateBeforeNow:(int)value
+{
 	NSCalendarDate *today = [NSCalendarDate date];
 	NSCalendarDate *date;
-	switch (value) {
+	switch (value)
+	{
 		case searchWithinToday: 
 			date = today;
 			break;
@@ -321,15 +377,16 @@
 		default:
 			date = today;
 			break;
-	
 	}
 	return date;
 }
 
-- (IBAction)newAlbum:(id)sender{
+- (IBAction)newAlbum:(id)sender
+{
 	if ([sender tag] == 0)
 		madeCriteria = NO;
-	else {
+	else
+	{
 		madeCriteria = YES;
 		[self createCriteria];
 	}

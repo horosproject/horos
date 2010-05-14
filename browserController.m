@@ -9596,15 +9596,16 @@ static BOOL withReset = NO;
 	   didEndSelector: nil
 		  contextInfo: nil];
 	
-    [NSApp runModalForWindow:sheet];
+    int result = [NSApp runModalForWindow:sheet];
 	[sheet makeFirstResponder: nil];
 	
     // Sheet is up here.
     [NSApp endSheet: sheet];
     [sheet orderOut: self];
+	[smartWindowController close];
 	
 	NSMutableArray *criteria = [smartWindowController criteria];
-	if ([criteria count] > 0)
+	if( [criteria count] > 0 && result == NSRunStoppedResponse)
 	{
 		NSError				*error = nil;
 		NSString			*name;
@@ -9632,17 +9633,8 @@ static BOOL withReset = NO;
 			[album setValue:name forKey:@"name"];
 			[album setValue:[NSNumber numberWithBool:YES] forKey:@"smartAlbum"];
 			
-			NSString *format = [NSString string];
-			
-			BOOL first = YES;
-			for( NSString *search in criteria)
-			{
-				if ( first) first = NO;
-				else format = [format stringByAppendingFormat: @" AND "];
-				
-				format = [format stringByAppendingFormat: @"(%@)", search];
-			}
-			
+			NSString *format = [smartWindowController sqlQueryString];
+						
 			[album setValue:format forKey:@"predicateString"];
 			
 			[self saveDatabase: currentDatabasePath];

@@ -28,7 +28,8 @@
 	NSMutableArray				*criteria;
 	BOOL						madeCriteria;
 	BOOL						firstTime;
-
+	NSTimer						*sqlQueryTimer;
+	NSString					*previousSqlString;
 }
 
 - (IBAction)newAlbum:(id)sender; /**< Create a new smart album. */
@@ -47,5 +48,6 @@
 */
 - (NSCalendarDate *)dateBeforeNow:(int)value; 
 - (BOOL)madeCriteria;  /**< Checks to see if the criteria has been made. */
+- (NSString*) sqlQueryString;
 
 @end
