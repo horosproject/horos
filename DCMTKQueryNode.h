@@ -38,6 +38,7 @@
 	NSString *_name;
 	NSString *_patientID;
 	NSString *_referringPhysician;
+	NSString *_comments;
 	NSString *_accessionNumber;
 	DCMCalendarDate *_date;
 	DCMCalendarDate *_birthdate;

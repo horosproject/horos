@@ -381,6 +381,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		_patientID = nil;
 		_accessionNumber = nil;
 		_referringPhysician = nil;
+		_comments = nil;
 		_date = nil;
 		_birthdate = nil;
 		_time  = nil;
@@ -402,6 +403,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[_patientID release];
 	[_accessionNumber release];
 	[_referringPhysician release];
+	[_comments release];
 	[_date release];
 	[_birthdate release];
 	[_time release];
@@ -434,6 +436,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 }
 - (NSString *)referringPhysician{
 	return _referringPhysician;
+}
+- (NSString *)comments{
+	return _comments;
 }
 - (NSString *)patientID{
 	return _patientID;
@@ -544,6 +549,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			{
 				string = [(NSString*)value cStringUsingEncoding:encoding];
 				dataset->putAndInsertString(DCM_ReferringPhysiciansName, string);
+			}
+			else if ([key isEqualToString:@"Comments"])
+			{
+				string = [(NSString*)value cStringUsingEncoding:encoding];
+				dataset->putAndInsertString(DCM_ImageComments, string);
 			}
 			else if ([key isEqualToString:@"AccessionNumber"])
 			{

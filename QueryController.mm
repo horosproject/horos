@@ -1134,14 +1134,18 @@ extern "C"
 			{
 				NSArray *studyArray = [self localStudy: item];
 				
-				if( [studyArray count] > 0)
+				if( [studyArray count] > 0 && [[item valueForKey: @"comment"] length] == 0)
 					return [[studyArray objectAtIndex: 0] valueForKey: @"comment"];
+				else
+					[item valueForKey: @"comment"];
 			}
 			else
 			{
 				NSArray *seriesArray = [self localSeries: item];
-				if( [seriesArray count])
+				if( [seriesArray count] > 0 && [[item valueForKey: @"comment"] length] == 0)
 					return [[seriesArray objectAtIndex: 0] valueForKey: @"comment"];
+				else
+					[item valueForKey: @"comment"];
 			}
 		}
 		else if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != nil)

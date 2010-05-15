@@ -119,12 +119,12 @@
 		}
 	}
 	
-//	if( sameAddress)
-//	{
-//		NSAlert *alert = [NSAlert alertWithMessageText: NSLocalizedString( @"Query Error", nil) defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", NSLocalizedString( @"OsiriX cannot generate a DICOM query on itself.", nil)];
-//		[alert runModal];
-//	}
-//	else
+	if( sameAddress)
+	{
+		NSAlert *alert = [NSAlert alertWithMessageText: NSLocalizedString( @"Query Error", nil) defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", NSLocalizedString( @"OsiriX cannot generate a DICOM query on itself.", nil)];
+		[alert runModal];
+	}
+	else
 	{
 		[rootNode release];
 		rootNode = [[DCMTKRootQueryNode queryNodeWithDataset: nil

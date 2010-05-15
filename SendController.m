@@ -471,26 +471,29 @@ static volatile int sendControllerObjects = 0;
 
 - (void) updateDestinationPopup: (NSNotification *)note
 {
-	NSString *currentTitle = [[[newServerList selectedItem] title] retain];
-	
-	[newServerList removeAllItems];
-	for( NSDictionary *d in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
+	if( newServerList)
 	{
-		NSString *title = [NSString stringWithFormat:@"%@ - %@",[d objectForKey:@"AETitle"],[d objectForKey:@"Description"]];
+		NSString *currentTitle = [[[newServerList selectedItem] title] retain];
 		
-		while( [newServerList indexOfItemWithTitle: title] != -1)
-			title = [title stringByAppendingString: @" "];
+		[newServerList removeAllItems];
+		for( NSDictionary *d in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
+		{
+			NSString *title = [NSString stringWithFormat:@"%@ - %@",[d objectForKey:@"AETitle"],[d objectForKey:@"Description"]];
 			
-		[newServerList addItemWithTitle: title];
+			while( [newServerList indexOfItemWithTitle: title] != -1)
+				title = [title stringByAppendingString: @" "];
+				
+			[newServerList addItemWithTitle: title];
+		}
+		
+		for( NSMenuItem *d in [newServerList itemArray])
+		{
+			if( [[d title] isEqualToString: currentTitle])
+				[newServerList selectItem: d];
+		}
+		
+		[currentTitle release];
 	}
-	
-	for( NSMenuItem *d in [newServerList itemArray])
-	{
-		if( [[d title] isEqualToString: currentTitle])
-			[newServerList selectItem: d];
-	}
-	
-	[currentTitle release];
 }
 
 - (void)listenForAbort:(id)handler

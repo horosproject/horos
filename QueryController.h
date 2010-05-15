@@ -21,8 +21,8 @@
 @class QueryFilter;
 
 /** \brief Window Controller for Q/R */
-@interface QueryController : NSWindowController {
-
+@interface QueryController : NSWindowController
+{
     IBOutlet    QueryOutlineView			*outlineView;
 	IBOutlet	NSProgressIndicator			*progressIndicator;
 	IBOutlet	NSSearchField				*searchFieldName, *searchFieldRefPhysician, *searchFieldID, *searchFieldAN, *searchFieldStudyDescription, *searchFieldComments;
