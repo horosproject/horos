@@ -1234,9 +1234,9 @@ extern NSManagedObjectContext *staticContext;
 					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKeyPath:@"study.studyName"] image: image]);
 				}
 				
-				else if( key == DCM_ImageComments && [fetchedObject valueForKeyPath:@"study.comment"])
+				else if( key == DCM_ImageComments && [fetchedObject valueForKeyPath:@"comment"])
 				{
-					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKeyPath:@"study.comment"] image: image]);
+					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKeyPath:@"comment"] image: image]);
 				}
 				
 				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKeyPath:@"study.dateOfBirth"])
@@ -1447,9 +1447,9 @@ extern NSManagedObjectContext *staticContext;
 					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKeyPath:@"series.study.studyName"] image: image]);
 				}
 				
-				else if( key == DCM_ImageComments && [fetchedObject valueForKeyPath:@"series.study.comment"])
+				else if( key == DCM_ImageComments && [fetchedObject valueForKeyPath:@"series.comment"])
 				{
-					dataset->putAndInsertString( DCM_ImageComments, [self encodeString: [fetchedObject valueForKeyPath:@"series.study.comment"] image: image]);
+					dataset->putAndInsertString( DCM_ImageComments, [self encodeString: [fetchedObject valueForKeyPath:@"series.comment"] image: image]);
 				}
 				
 				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKeyPath:@"series.study.dateOfBirth"])
