@@ -371,20 +371,41 @@ extern NSManagedObjectContext *staticContext;
 
 - (NSPredicate*) predicateWithString: (NSString*) s forField: (NSString*) f
 {
+	return [self predicateWithString: s forField: f any: NO];
+}
+
+- (NSPredicate*) predicateWithString: (NSString*) s forField: (NSString*) f any: (BOOL) any
+{
 	NSString *v = [s stringByReplacingOccurrencesOfString: @"*" withString:@""];
 	NSPredicate *predicate = nil;
 	
-	if( [v length] == 0)
-		predicate = [NSPredicate predicateWithValue: YES];
-	else if( [s characterAtIndex: 0] == '*' && [s characterAtIndex: [s length]-1] == '*')
-		predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS[cd] %@", f, v];
-	else if( [s characterAtIndex: 0] == '*')
-		predicate = [NSPredicate predicateWithFormat:@"%K ENDSWITH[cd] %@", f, v];
-	else if( [s characterAtIndex: [s length]-1] == '*')
-		predicate = [NSPredicate predicateWithFormat:@"%K BEGINSWITH[cd] %@", f, v];
+	if( any)
+	{
+		if( [v length] == 0)
+			predicate = [NSPredicate predicateWithValue: YES];
+		else if( [s characterAtIndex: 0] == '*' && [s characterAtIndex: [s length]-1] == '*')
+			predicate = [NSPredicate predicateWithFormat:@"ANY %K CONTAINS[cd] %@", f, v];
+		else if( [s characterAtIndex: 0] == '*')
+			predicate = [NSPredicate predicateWithFormat:@"ANY %K ENDSWITH[cd] %@", f, v];
+		else if( [s characterAtIndex: [s length]-1] == '*')
+			predicate = [NSPredicate predicateWithFormat:@"ANY %K BEGINSWITH[cd] %@", f, v];
+		else
+			predicate = [NSPredicate predicateWithFormat:@"(ANY %K BEGINSWITH[cd] %@) AND (ANY %K ENDSWITH[cd] %@)", f, v, f, v];
+	}
 	else
-		predicate = [NSPredicate predicateWithFormat:@"(%K BEGINSWITH[cd] %@) AND (%K ENDSWITH[cd] %@)", f, v, f, v];
-
+	{
+		if( [v length] == 0)
+			predicate = [NSPredicate predicateWithValue: YES];
+		else if( [s characterAtIndex: 0] == '*' && [s characterAtIndex: [s length]-1] == '*')
+			predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS[cd] %@", f, v];
+		else if( [s characterAtIndex: 0] == '*')
+			predicate = [NSPredicate predicateWithFormat:@"%K ENDSWITH[cd] %@", f, v];
+		else if( [s characterAtIndex: [s length]-1] == '*')
+			predicate = [NSPredicate predicateWithFormat:@"%K BEGINSWITH[cd] %@", f, v];
+		else
+			predicate = [NSPredicate predicateWithFormat:@"(%K BEGINSWITH[cd] %@) AND (%K ENDSWITH[cd] %@)", f, v, f, v];
+	}
+	
 	return predicate;
 }
 
@@ -497,7 +518,12 @@ extern NSManagedObjectContext *staticContext;
 			{
 				char *sd;
 				if (dcelem->getString(sd).good() && sd != NULL)
-					predicate = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"comment"];
+				{
+					NSPredicate *p1 = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"comment"];
+					NSPredicate *p2 = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"series.comment" any: YES];
+					
+					predicate = [NSCompoundPredicate orPredicateWithSubpredicates: [NSArray arrayWithObjects: p1, p2, nil]];
+				}
 			}
 			else if (key == DCM_InstitutionName)
 			{
