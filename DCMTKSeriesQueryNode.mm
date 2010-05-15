@@ -122,6 +122,7 @@
 	dataset-> insertEmptyElement(DCM_SeriesInstanceUID, OFTrue);
 	dataset-> insertEmptyElement(DCM_SOPInstanceUID, OFTrue);
 	dataset-> insertEmptyElement(DCM_InstanceNumber, OFTrue);
+	dataset-> insertEmptyElement(DCM_ImageComments, OFTrue);
 	dataset-> putAndInsertString(DCM_SeriesInstanceUID, [_uid UTF8String], OFTrue);
 	dataset-> putAndInsertString(DCM_StudyInstanceUID, [_studyInstanceUID UTF8String], OFTrue);
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE", OFTrue);

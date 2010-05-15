@@ -160,6 +160,8 @@
 	dataset-> insertEmptyElement(DCM_SeriesNumber, OFTrue);
 	dataset-> insertEmptyElement(DCM_NumberOfSeriesRelatedInstances, OFTrue);
 	dataset-> insertEmptyElement(DCM_Modality, OFTrue);
+	dataset-> insertEmptyElement(DCM_ImageComments, OFTrue);
+	dataset-> insertEmptyElement(DCM_ReferringPhysiciansName, OFTrue);
 	dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "SERIES", OFTrue);
 	
