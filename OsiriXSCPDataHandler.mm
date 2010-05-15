@@ -1236,7 +1236,7 @@ extern NSManagedObjectContext *staticContext;
 				
 				else if( key == DCM_ImageComments && [fetchedObject valueForKeyPath:@"comment"])
 				{
-					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKeyPath:@"comment"] image: image]);
+					dataset->putAndInsertString( DCM_ImageComments, [self encodeString: [fetchedObject valueForKeyPath:@"comment"] image: image]);
 				}
 				
 				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKeyPath:@"study.dateOfBirth"])

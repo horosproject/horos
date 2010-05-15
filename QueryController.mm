@@ -1137,7 +1137,7 @@ extern "C"
 				if( [studyArray count] > 0 && [[item valueForKey: @"comments"] length] == 0)
 					return [[studyArray objectAtIndex: 0] valueForKey: @"comment"];
 				else
-					[item valueForKey: @"comments"];
+					return [item valueForKey: @"comments"];
 			}
 			else
 			{
@@ -1145,7 +1145,7 @@ extern "C"
 				if( [seriesArray count] > 0 && [[item valueForKey: @"comments"] length] == 0)
 					return [[seriesArray objectAtIndex: 0] valueForKey: @"comment"];
 				else
-					[item valueForKey: @"comments"];
+					return [item valueForKey: @"comments"];
 			}
 		}
 		else if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != nil)

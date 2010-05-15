@@ -79,6 +79,8 @@
 		if (dataset ->findAndGetString(DCM_SeriesNumber, string).good() && string != nil) 
 			_name = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
 			
+		if (dataset ->findAndGetString(DCM_ImageComments, string).good() && string != nil) 
+			_comments = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
 			
 		if (dataset ->findAndGetString(DCM_SeriesDate, string).good() && string != nil)
 		{
