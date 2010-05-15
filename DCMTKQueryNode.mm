@@ -560,6 +560,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				string = [(NSString*)value cStringUsingEncoding:encoding];
 				dataset->putAndInsertString(DCM_StudyDescription, string);
 			}
+			else if ([key isEqualToString:@"Comments"])
+			{
+				string = [(NSString*)value cStringUsingEncoding:encoding];
+				dataset->putAndInsertString(DCM_ImageComments, string);
+			}
 			else if ([key isEqualToString:@"StudyDate"])
 			{
 				NSString *date = [(DCMCalendarDate *)value queryString];

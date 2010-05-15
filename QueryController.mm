@@ -1443,6 +1443,7 @@ extern "C"
 							case 3:		currentQueryKey = PatientBirthDate;	break;
 							case 4:		currentQueryKey = StudyDescription;	break;
 							case 5:		currentQueryKey = ReferringPhysician;	break;
+							case 6:		currentQueryKey = Comments;	break;
 						}
 						
 						BOOL queryItem = NO;

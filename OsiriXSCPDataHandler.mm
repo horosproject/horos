@@ -493,6 +493,12 @@ extern NSManagedObjectContext *staticContext;
 				if (dcelem->getString(sd).good() && sd != NULL)
 					predicate = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"studyName"];
 			}
+			else if (key ==  DCM_ImageComments)
+			{
+				char *sd;
+				if (dcelem->getString(sd).good() && sd != NULL)
+					predicate = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"comment"];
+			}
 			else if (key == DCM_InstitutionName)
 			{
 				char *inn;
@@ -1025,6 +1031,12 @@ extern NSManagedObjectContext *staticContext;
 				{
 					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKey:@"studyName"] image: image]);
 				}
+				
+				else if( key == DCM_ImageComments && [fetchedObject valueForKey:@"comment"])
+				{
+					dataset->putAndInsertString( DCM_ImageComments, [self encodeString: [fetchedObject valueForKey:@"comment"] image: image]);
+				}
+				
 				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKey:@"dateOfBirth"])
 				{
 					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"dateOfBirth"]];
@@ -1195,6 +1207,12 @@ extern NSManagedObjectContext *staticContext;
 				{
 					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKeyPath:@"study.studyName"] image: image]);
 				}
+				
+				else if( key == DCM_ImageComments && [fetchedObject valueForKeyPath:@"study.comment"])
+				{
+					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKeyPath:@"study.comment"] image: image]);
+				}
+				
 				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKeyPath:@"study.dateOfBirth"])
 				{
 					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKeyPath:@"study.dateOfBirth"]];
@@ -1402,6 +1420,12 @@ extern NSManagedObjectContext *staticContext;
 				{
 					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKeyPath:@"series.study.studyName"] image: image]);
 				}
+				
+				else if( key == DCM_ImageComments && [fetchedObject valueForKeyPath:@"series.study.comment"])
+				{
+					dataset->putAndInsertString( DCM_ImageComments, [self encodeString: [fetchedObject valueForKeyPath:@"series.study.comment"] image: image]);
+				}
+				
 				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKeyPath:@"series.study.dateOfBirth"])
 				{
 					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKeyPath:@"series.study.dateOfBirth"]];
