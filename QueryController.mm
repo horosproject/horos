@@ -37,6 +37,7 @@ static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
 static NSString *AccessionNumber = @"AccessionNumber";
 static NSString *StudyDescription = @"StudyDescription";
+static NSString *Comments = @"Comments";
 static NSString *PatientBirthDate = @"PatientBirthDate";
 static NSString *ReferringPhysician = @"ReferringPhysiciansName";
 
@@ -379,6 +380,7 @@ extern "C"
 	[presets setValue: [searchFieldID stringValue] forKey: @"searchFieldID"];
 	[presets setValue: [searchFieldAN stringValue] forKey: @"searchFieldAN"];
 	[presets setValue: [searchFieldStudyDescription stringValue] forKey: @"searchFieldStudyDescription"];
+	[presets setValue: [searchFieldComments stringValue] forKey: @"searchFieldComments"];
 	
 	[presets setValue: [NSNumber numberWithInt: [dateFilterMatrix selectedTag]] forKey: @"dateFilterMatrix"];
 	
@@ -456,6 +458,7 @@ extern "C"
 	[searchFieldID setStringValue: @""];
 	[searchFieldAN setStringValue: @""];
 	[searchFieldStudyDescription setStringValue: @""];
+	[searchFieldComments setStringValue: @""];
 	[dateFilterMatrix selectCellWithTag: 0];
 	[modalityFilterMatrix deselectAllCells];
 	[PatientModeMatrix selectTabViewItemAtIndex: 0];
@@ -538,6 +541,9 @@ extern "C"
 	if( [presets valueForKey: @"searchFieldStudyDescription"])
 		[searchFieldStudyDescription setStringValue: [presets valueForKey: @"searchFieldStudyDescription"]];
 	
+	if( [presets valueForKey: @"searchFieldComments"])
+		[searchFieldComments setStringValue: [presets valueForKey: @"searchFieldComments"]];
+	
 	[dateFilterMatrix selectCellWithTag: [[presets valueForKey: @"dateFilterMatrix"] intValue]];
 	
 	[modalityFilterMatrix deselectAllCells];
@@ -579,6 +585,7 @@ extern "C"
 		case 3:		[searchFieldName selectText: self];				break;
 		case 4:		[searchFieldStudyDescription selectText: self];	break;
 		case 5:		[searchFieldRefPhysician selectText: self];		break;
+		case 6:		[searchFieldComments selectText: self];			break;
 	}
 }
 
@@ -1522,6 +1529,25 @@ extern "C"
 								queryItem = YES;
 							}
 						}
+						else if( currentQueryKey == Comments)
+						{
+							if( showError && [[searchFieldComments stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+							{
+								if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+								{
+									[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+									[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+								}
+							}
+							
+							NSString *filterValue = [searchFieldComments stringValue];
+							
+							if ([filterValue length] > 0)
+							{
+								[queryManager addFilter:filterValue forDescription:currentQueryKey];
+								queryItem = YES;
+							}
+						}
 						
 						if ([dateQueryFilter object])
 						{
@@ -2047,6 +2073,7 @@ extern "C"
 	[searchFieldID setStringValue:@""];
 	[searchFieldAN setStringValue:@""];
 	[searchFieldStudyDescription setStringValue:@""];
+	[searchFieldComments setStringValue: @""];
 	[self refresh: self now: YES];
 }
 
@@ -2666,6 +2693,31 @@ extern "C"
 	{
 		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
 		NSMenuItem *item1, *item2, *item3;
+		id searchCell = [searchFieldComments cell];
+		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+								action:NULL
+								keyEquivalent:@""];
+		[item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
+		[cellMenu insertItem:item1 atIndex:0];
+		[item1 release];
+		item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+								action:NULL
+								keyEquivalent:@""];
+		[item2 setTag:NSSearchFieldRecentsMenuItemTag];
+		[cellMenu insertItem:item2 atIndex:1];
+		[item2 release];
+		item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+								action:NULL
+								keyEquivalent:@""];
+		[item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
+		[cellMenu insertItem:item3 atIndex:2];
+		[item3 release];
+		[searchCell setSearchMenuTemplate:cellMenu];
+	}
+	
+	{
+		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
+		NSMenuItem *item1, *item2, *item3;
 		id searchCell = [searchFieldRefPhysician cell];
 		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
 										   action:NULL
@@ -3003,6 +3055,11 @@ extern "C"
 	[[searchCell cancelButtonCell] setTarget:self];
 	[[searchCell cancelButtonCell] setAction:@selector(clearQuery:)];
 
+	searchCell = [searchFieldComments cell];
+
+	[[searchCell cancelButtonCell] setTarget:self];
+	[[searchCell cancelButtonCell] setAction:@selector(clearQuery:)];
+	
 	searchCell = [searchFieldID cell];
 
 	[[searchCell cancelButtonCell] setTarget:self];
