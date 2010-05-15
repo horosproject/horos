@@ -1526,7 +1526,7 @@ extern "C"
 							
 							if ([filterValue length] > 0)
 							{
-								[queryManager addFilter:filterValue forDescription:currentQueryKey];
+								[queryManager addFilter: [filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
 								queryItem = YES;
 							}
 						}
@@ -1545,7 +1545,7 @@ extern "C"
 							
 							if ([filterValue length] > 0)
 							{
-								[queryManager addFilter:filterValue forDescription:currentQueryKey];
+								[queryManager addFilter: [filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
 								queryItem = YES;
 							}
 						}
