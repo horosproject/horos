@@ -5999,14 +5999,9 @@ END_CREATE_ROIS:
 					if( dstf.data)
 					{
 						if( fIsSigned > 0)
-						{
 							vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
-						}
 						else
-						{
-							
 							vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
-						}
 						
 						if( inverseVal)
 						{
@@ -8287,13 +8282,9 @@ END_CREATE_ROIS:
 									}
 									
 									if( fExternalOwnedImage)
-									{
 										fImage = fExternalOwnedImage;
-									}
 									else
-									{
 										fImage = malloc(width*height*sizeof(float) + 100);
-									}
 									
 									dstf.data = fImage;
 									
