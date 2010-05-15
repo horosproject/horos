@@ -13268,43 +13268,23 @@
 				CE9DD29A086B35740058DD2A /* CoreData */,
 				A99B7E4F08858D0D004328C0 /* Bonjour */,
 				CE9101AA0C86A6B800D8D273 /* Web Server */,
-				AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */,
-				AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */,
-				ABBCCDA605643A4C00A4E47A /* browserController.h */,
-				ABBCCDA505643A4C00A4E47A /* browserController.m */,
-				ABC47B570C031397001CEA21 /* BrowserMatrix.h */,
-				ABC47B580C031397001CEA21 /* BrowserMatrix.m */,
-				BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */,
-				BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */,
-				CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */,
-				AB06EDF005635642006AFFB9 /* dicomFile.h */,
-				AB06EDEF05635642006AFFB9 /* dicomFile.m */,
-				BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */,
-				BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */,
-				AB87FA740C06BEB200CD2976 /* NIfTI_Library */,
-				CEE73FC708F44724002A395F /* FVTiff.h */,
-				CEE73FC808F44724002A395F /* FVTiff.m */,
+				CE234015119E7B4800D83C19 /* iChat */,
+				CE234014119E7B1500D83C19 /* File Reading */,
+				CE234016119E7B5500D83C19 /* SmartAlbums */,
 				AB142DFC05600D76008461A0 /* AppController.h */,
 				AB142DFD05600D76008461A0 /* AppController.m */,
 				BF18A85709E0BF00005DEFB6 /* AppControllerDCMTKCategory.h */,
 				BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */,
+				ABBCCDA605643A4C00A4E47A /* browserController.h */,
+				ABBCCDA505643A4C00A4E47A /* browserController.m */,
+				BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */,
+				BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */,
+				ABC47B570C031397001CEA21 /* BrowserMatrix.h */,
+				ABC47B580C031397001CEA21 /* BrowserMatrix.m */,
+				CED2CF960C9B288C0047F123 /* CIADICOMField.h */,
+				CED2CF950C9B288C0047F123 /* CIADICOMField.m */,
 				CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */,
 				CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */,
-				CE0CB170084A623C00C6385F /* DCMPix.h */,
-				CE0CB16F084A623C00C6385F /* DCMPix.m */,
-				AB695A1D063D8261002BDF78 /* Analyze.h */,
-				CED2CF950C9B288C0047F123 /* CIADICOMField.m */,
-				CED2CF960C9B288C0047F123 /* CIADICOMField.h */,
-				7E569397065007D6001A9762 /* SmartWindowController.h */,
-				7E569398065007D6001A9762 /* SmartWindowController.m */,
-				ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */,
-				ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */,
-				7E879E9D067F9BE100CB2F8A /* SearchSubview.h */,
-				7E879E9E067F9BE100CB2F8A /* SearchSubview.m */,
-				A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */,
-				A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */,
-				A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */,
-				A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -14547,6 +14527,50 @@
 				AB0E6B160FAF4C2000A5C046 /* libitkzlib.a */,
 			);
 			name = ITKLibs;
+			sourceTree = "<group>";
+		};
+		CE234014119E7B1500D83C19 /* File Reading */ = {
+			isa = PBXGroup;
+			children = (
+				AB695A1D063D8261002BDF78 /* Analyze.h */,
+				CE0CB170084A623C00C6385F /* DCMPix.h */,
+				CE0CB16F084A623C00C6385F /* DCMPix.m */,
+				AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */,
+				AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */,
+				AB06EDF005635642006AFFB9 /* dicomFile.h */,
+				AB06EDEF05635642006AFFB9 /* dicomFile.m */,
+				BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */,
+				BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */,
+				CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */,
+				CEE73FC708F44724002A395F /* FVTiff.h */,
+				CEE73FC808F44724002A395F /* FVTiff.m */,
+				AB87FA740C06BEB200CD2976 /* NIfTI_Library */,
+			);
+			name = "File Reading";
+			sourceTree = "<group>";
+		};
+		CE234015119E7B4800D83C19 /* iChat */ = {
+			isa = PBXGroup;
+			children = (
+				A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */,
+				A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */,
+				A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */,
+				A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */,
+			);
+			name = iChat;
+			sourceTree = "<group>";
+		};
+		CE234016119E7B5500D83C19 /* SmartAlbums */ = {
+			isa = PBXGroup;
+			children = (
+				7E569397065007D6001A9762 /* SmartWindowController.h */,
+				7E569398065007D6001A9762 /* SmartWindowController.m */,
+				7E879E9D067F9BE100CB2F8A /* SearchSubview.h */,
+				7E879E9E067F9BE100CB2F8A /* SearchSubview.m */,
+				ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */,
+				ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */,
+			);
+			name = SmartAlbums;
 			sourceTree = "<group>";
 		};
 		CE355D740EED998A005A823F /* VTKHeaders */ = {

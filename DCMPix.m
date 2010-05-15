@@ -5941,25 +5941,41 @@ END_CREATE_ROIS:
 			}
 			else
 			{
-				if( bitsAllocated == 32) // 32-bit float
+				if( bitsAllocated == 32) // 32-bit float or 32-bit integers
 				{
-					float *sfloat = (float*) oImage;
-					
 					if( fExternalOwnedImage)
 						fImage = fExternalOwnedImage;
 					else
 						fImage = malloc(width*height*sizeof(float) + 100);
 					
 					if( fImage)
-						memcpy( fImage, sfloat, height * width * sizeof( float));
+					{
+						memcpy( fImage, oImage, height * width * sizeof( float));
+						
+						if( slope != 1.0 || offset != 0)
+						{
+							unsigned int *usint = (unsigned int*) oImage;
+							int *sint = (int*) oImage;
+							float *tDestF = fImage;
+							double dOffset = offset, dSlope = slope;
+							
+							if( fIsSigned > 0)
+							{
+								unsigned long x = height * width;
+								while( x-- > 0)
+									*tDestF++ = ((double) (*sint++)) * dSlope + dOffset;
+							}
+							else
+							{
+								unsigned long x = height * width;
+								while( x-- > 0)
+									*tDestF++ = ((double) (*usint++)) * dSlope + dOffset;
+							}
+						}
+					}
 					else
 						NSLog( @"*** Not enough memory - malloc failed");
-					
-					if( slope != 1.0)
-					{
-						vDSP_vsmul( fImage, 1, &slope, fImage, 1, height * width);
-					}
-					
+						
 					free(oImage);
 					oImage = nil;
 				}
@@ -8211,23 +8227,41 @@ END_CREATE_ROIS:
 						}
 						else
 						{
-							if( bitsAllocated == 32) // 32-bit float
+							if( bitsAllocated == 32)  // 32-bit float or 32-bit integers
 							{
-								float *sfloat = (float*) oImage;
-								
 								if( fExternalOwnedImage)
 									fImage = fExternalOwnedImage;
 								else
 									fImage = malloc(width*height*sizeof(float) + 100);
 								
 								if( fImage)
-									memcpy( fImage, sfloat, height * width * sizeof( float));
+								{
+									memcpy( fImage, oImage, height * width * sizeof( float));
+									
+									if( slope != 1.0 || offset != 0)
+									{
+										unsigned int *usint = (unsigned int*) oImage;
+										int *sint = (int*) oImage;
+										float *tDestF = fImage;
+										double dOffset = offset, dSlope = slope;
+										
+										if( fIsSigned > 0)
+										{
+											unsigned long x = height * width;
+											while( x-- > 0)
+												*tDestF++ = ((double) (*sint++)) * dSlope + dOffset;
+										}
+										else
+										{
+											unsigned long x = height * width;
+											while( x-- > 0)
+												*tDestF++ = ((double) (*usint++)) * dSlope + dOffset;
+										}
+									}
+								}
 								else
 									NSLog( @"*** Not enough memory - malloc failed");
-								
-								if( slope != 1.0)
-									vDSP_vsmul( fImage, 1, &slope, fImage, 1, height * width);
-								
+									
 								free(oImage);
 								oImage = nil;
 							}

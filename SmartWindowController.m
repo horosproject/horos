@@ -54,7 +54,6 @@
 	//setup subview
 	float subViewHeight = 50.0;
 	SearchSubview *subview = [[[SearchSubview alloc] initWithFrame:NSMakeRect(0.0,0.0,507.0,subViewHeight)] autorelease];
-	//AdvancedQuerySubview *subview = [[[AdvancedQuerySubview alloc] initWithFrame:NSMakeRect(0.0,0.0,507.0,subViewHeight)] autorelease];
 	[filterBox addSubview:subview];	
 	[subviews  addObject:subview];
 	[[subview addButton] setTarget:self];
