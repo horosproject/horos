@@ -5952,7 +5952,7 @@ END_CREATE_ROIS:
 					{
 						memcpy( fImage, oImage, height * width * sizeof( float));
 						
-						if( slope != 1.0 || offset != 0)
+						if( slope != 1.0 || offset != 0 || [[NSUserDefaults standardUserDefaults] boolForKey: @"32bitDICOMAreAlwaysIntegers"]) 
 						{
 							unsigned int *usint = (unsigned int*) oImage;
 							int *sint = (int*) oImage;
@@ -8233,7 +8233,7 @@ END_CREATE_ROIS:
 								{
 									memcpy( fImage, oImage, height * width * sizeof( float));
 									
-									if( slope != 1.0 || offset != 0)
+									if( slope != 1.0 || offset != 0 || [[NSUserDefaults standardUserDefaults] boolForKey: @"32bitDICOMAreAlwaysIntegers"])
 									{
 										unsigned int *usint = (unsigned int*) oImage;
 										int *sint = (int*) oImage;
