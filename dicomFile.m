@@ -506,7 +506,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				NSXMLNode* theNode = [rootElement childAtIndex:i];
 				if ([[theNode name] isEqualToString:@"Description"])
-					[dicomElements setObject:[theNode stringValue] forKey:@"studyComment"];
+					[dicomElements setObject:[theNode stringValue] forKey:@"studyComments"];
 				if ([[theNode name] isEqualToString:@"Acquisition Parameters"])
 					for (j = 0; j < [theNode childCount]; j++)
 					{
@@ -2384,15 +2384,17 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				if( studyIDs) [dicomElements setObject:studyIDs forKey:@"studyNumber"];
 				
+				val = Papy3GetElement (theGroupP, papStudyCommentsGr, &nbVal, &itemType);
+				if (val != NULL && strlen( val->a) > 0 && [dicomElements objectForKey: @"commentsAutoFill"] == nil)
+					[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"studyComments"];
+					
 				// free the module and the associated sequences 
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
 		   }
 		   
-		  // if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
-		   
 			theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0028);
-		   if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
-		   {
+			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+			{
 				long realwidth;
 				
 				// ROWS
@@ -2411,9 +2413,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
 			}
 			
+			theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0032);
+			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+			{
+				val = Papy3GetElement (theGroupP, papImageCommentsGr, &nbVal, &itemType);
+				if (val != NULL && strlen( val->a) > 0)
+					[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"seriesComments"];
+					
+				theErr = Papy3GroupFree (&theGroupP, TRUE);
+			}
+			
 			NoOfFrames = gArrNbImages [fileNb];
 			NoOfSeries = 1;
-			
+
 			if( patientID == nil) patientID = [[NSString alloc] initWithString:@""];
 			
 //			if( SeparateCardiacMR)
@@ -2876,6 +2888,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		else 
 			studyIDs = [@"0" retain];
 		[dicomElements setObject:studyIDs forKey:@"studyNumber"];
+		
+		if( [dcmObject attributeValueWithName: @"StudyComments"])
+			[dicomElements setObject: [dcmObject attributeValueWithName: @"StudyComments"] forKey: @"studyComments"];
+		
+		if( [dcmObject attributeValueWithName: @"ImageComments"])
+			[dicomElements setObject: [dcmObject attributeValueWithName: @"ImageComments"] forKey: @"seriesComments"];
 		
 		if ([dcmObject attributeValueWithName:@"NumberofFrames"])
 			NoOfFrames = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];

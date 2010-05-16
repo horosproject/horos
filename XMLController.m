@@ -289,7 +289,7 @@ extern int delayedTileWindows;
 					[wait showWindow:self];
 				}
 				
-				[self modifyDicom: params encoding: encoding];
+				[XMLController modifyDicom: params encoding: encoding];
 				
 				for( int i = 0; i < [files count]; i++)
 					[[NSFileManager defaultManager] removeFileAtPath:[[files objectAtIndex: i] stringByAppendingString:@".bak"] handler:nil];
@@ -892,7 +892,7 @@ extern int delayedTileWindows;
 			
 			@try
 			{
-				[self modifyDicom: params encoding: encoding];
+				[XMLController modifyDicom: params encoding: encoding];
 				
 				for( id loopItem in files)
 					[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
@@ -1108,9 +1108,9 @@ extern int delayedTileWindows;
 					
 					@try
 					{
-						[self modifyDicom: params encoding: NSUTF8StringEncoding];
+						[XMLController modifyDicom: params encoding: NSUTF8StringEncoding];
 						for( id loopItem in files)
-							[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
+							[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
 					
 						[self updateDB: files objects: objects];
 					}

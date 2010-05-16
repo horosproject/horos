@@ -25,6 +25,9 @@
 #import "VRController.h"
 #import "browserController.h"
 #import "BonjourBrowser.h"
+#import "DicomFileDCMTKCategory.h"
+#import "DICOMToNSString.h"
+#import "XMLControllerDCMTKCategory.h"
 #endif
 
 #define WBUFSIZE 512
@@ -344,6 +347,54 @@ NSString* soundex4( NSString *inString)
 - (NSString*) type
 {
 	return @"Study";
+}
+
+- (void) setComment: (NSString*) c
+{
+	#ifdef OSIRIX_VIEWER
+	#ifndef OSIRIX_LIGHT
+	@try 
+	{
+		if( c == nil)
+			c = @"";
+			
+		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
+			
+		[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0032,4000)", c], nil]];
+		
+		NSMutableArray *files = [NSMutableArray arrayWithArray: [[self paths] allObjects]];
+		
+		if( files)
+		{
+			[files removeDuplicatedStrings];
+			
+			[params addObjectsFromArray: files];
+			
+			@try
+			{
+				NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
+				
+				[XMLController modifyDicom: params encoding: encoding];
+				
+				for( id loopItem in files)
+					[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+			}
+			@catch (NSException * e)
+			{
+				NSLog(@"**** DicomStudy setComment: %@", e);
+			}
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	#endif
+	#endif
+	
+	[self willChangeValueForKey: @"comment"];
+	[self setPrimitiveValue: c forKey: @"comment"];
+	[self didChangeValueForKey: @"comment"];
 }
 
 - (void) setReportURL: (NSString*) url

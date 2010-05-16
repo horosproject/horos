@@ -369,11 +369,6 @@ extern NSManagedObjectContext *staticContext;
 	return [start timeIntervalSinceReferenceDate];
 }
 
-- (NSPredicate*) predicateWithString: (NSString*) s forField: (NSString*) f
-{
-	return [self predicateWithString: s forField: f any: NO];
-}
-
 - (NSPredicate*) predicateWithString: (NSString*) s forField: (NSString*) f any: (BOOL) any
 {
 	NSString *v = [s stringByReplacingOccurrencesOfString: @"*" withString:@""];
@@ -407,6 +402,11 @@ extern NSManagedObjectContext *staticContext;
 	}
 	
 	return predicate;
+}
+
+- (NSPredicate*) predicateWithString: (NSString*) s forField: (NSString*) f
+{
+	return [self predicateWithString: s forField: f any: NO];
 }
 
 - (NSPredicate *)predicateForDataset:( DcmDataset *)dataset compressedSOPInstancePredicate: (NSPredicate**) csopPredicate seriesLevelPredicate: (NSPredicate**) SLPredicate

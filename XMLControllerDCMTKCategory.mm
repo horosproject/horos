@@ -30,26 +30,31 @@
 
 @implementation XMLController (XMLControllerDCMTKCategory)
 
--(int) modifyDicom:(NSArray*) params encoding: (NSStringEncoding) encoding
++ (int) modifyDicom:(NSArray*) params encoding: (NSStringEncoding) encoding
 {
-	int i, argc = [params count];
-	char *argv[ argc];
+	int error_count = 0;
 	
-	NSLog( @"%@", [params description]);
-	
-	for( i = 0; i < argc; i++)
+	@try 
 	{
-		argv[ i] = (char*) [[params objectAtIndex: i] cStringUsingEncoding: encoding];
+		int i, argc = [params count];
+		char *argv[ argc];
+		
+	//	NSLog( @"%@", [params description]);
+		
+		for( i = 0; i < argc; i++)
+			argv[ i] = (char*) [[params objectAtIndex: i] cStringUsingEncoding: encoding];
+		
+		MdfConsoleEngine engine( argc, argv,"dcmodify");
+		
+		error_count=engine.startProvidingService();
+		
+		if (error_count > 0)
+			CERR << "There were " << error_count << " error(s)" << endl;
 	}
-	
-    int error_count = 0;
-    
-	MdfConsoleEngine engine( argc, argv,"dcmodify");
-    
-	error_count=engine.startProvidingService();
-    
-	if (error_count > 0)
-	    CERR << "There were " << error_count << " error(s)" << endl;
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 	
     return error_count;
 }

@@ -461,36 +461,22 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder
 {
-	NSString				*newFile;
-	NSDate					*today = [NSDate date];
-	NSError					*error = nil;
-	NSString				*curPatientUID = nil, *curStudyID = nil, *curSerieID = nil;
-	NSManagedObject			*seriesTable, *study;
-	DicomImage				*image;
-	NSInteger				index;
-	NSString				*INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH];
-	NSString				*roiFolder = [dbFolder stringByAppendingPathComponent:@"/ROIs"];
-	Wait					*splash = nil;
-	NSManagedObjectModel	*model = context.persistentStoreCoordinator.managedObjectModel;
-	NSMutableArray			*addedImagesArray = nil, *completeImagesArray = nil;
-	NSMutableArray			*addedSeries = [NSMutableArray arrayWithCapacity: 0];
-	NSMutableArray			*modifiedStudiesArray = nil;
-	long					addFailed = NO;
-	BOOL					DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
-	BOOL					COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
-	NSString				*ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH];
-	BOOL					newStudy = NO, newObject = NO;
-	NSMutableArray			*vlToRebuild = [NSMutableArray arrayWithCapacity: 0];
-	NSMutableArray			*vlToReload = [NSMutableArray arrayWithCapacity: 0];
-	BOOL					isCDMedia = NO, onlyDICOMROI = YES;
-	NSMutableArray			*dicomFilesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
-	int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeries"];
-	int combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
+	NSDate *today = [NSDate date];
+	NSError *error = nil;
+	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH], *newFile, *INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH], *roiFolder = [dbFolder stringByAppendingPathComponent:@"/ROIs"], *reportsDirectory = [INpath stringByAppendingPathComponent:@"/REPORTS/"];
+	NSManagedObject *seriesTable, *study;
+	DicomImage *image;
+	NSInteger index;
+	Wait *splash = nil;
+	NSManagedObjectModel *model = context.persistentStoreCoordinator.managedObjectModel;
+	NSMutableArray *addedImagesArray = nil, *completeImagesArray = nil, *addedSeries = [NSMutableArray arrayWithCapacity: 0], *modifiedStudiesArray = nil;
+	BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"], COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"], newStudy = NO, newObject = NO, isCDMedia = NO, onlyDICOMROI = YES, addFailed = NO;
+	NSMutableArray *vlToRebuild = [NSMutableArray arrayWithCapacity: 0], *vlToReload = [NSMutableArray arrayWithCapacity: 0], *dicomFilesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
+	int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeries"], combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
 	
 	if ([[NSFileManager defaultManager] fileExistsAtPath: INpath] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: INpath attributes:nil];
-
-	NSString *reportsDirectory = [INpath stringByAppendingPathComponent:@"/REPORTS/"];
+	
 	if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirectory] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: reportsDirectory attributes:nil];
 	
@@ -819,7 +805,6 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 							[study setValue:[curDict objectForKey: @"patientName"] forKey:@"name"];
 							[study setValue:[curDict objectForKey: @"patientUID"] forKey:@"patientUID"];
 							[study setValue:[curDict objectForKey: @"studyNumber"] forKey:@"id"];
-							[study setValue:[curDict objectForKey: @"studyComment"] forKey:@"comment"];
 							
 							//need to know if is DICOM so only DICOM is queried for Q/R
 							if ([curDict objectForKey: @"hasDICOM"])
@@ -1018,14 +1003,19 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 								{
 									if([curDict objectForKey: @"commentsAutoFill"])
 									{
-										[seriesTable setValue:[curDict objectForKey: @"commentsAutoFill"] forKey:@"comment"];
+										if( [[seriesTable valueForKey:@"comment"] length] == 0)
+											[seriesTable setValue: [curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
 										
-										if( [study valueForKey:@"comment"] == nil || [[study valueForKey:@"comment"] isEqualToString:@""])
-										{
-											[study setValue:[curDict objectForKey: @"commentsAutoFill"] forKey:@"comment"];
-										}
+										if( [[study valueForKey:@"comment"] length] == 0)
+											[study setValue:[curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
 									}
 								}
+								
+								if( [[seriesTable valueForKey:@"comment"] length] == 0 && [[curDict objectForKey: @"seriesComments"] length] > 0)
+									[seriesTable setValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
+								
+								if( [[study valueForKey:@"comment"] length] == 0 && [[curDict objectForKey: @"studyComments"] length] > 0)
+									[study setValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
 								
 								[addedImagesArray addObject: image];
 								
@@ -1262,7 +1252,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
 {
 	#define CHUNK 50000
-
+	
 	if( [newFilesArray count] < CHUNK)
 	{
 		return [self subAddFilesToDatabase: newFilesArray onlyDICOM: onlyDICOM  produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context:  context dbFolder: dbFolder];

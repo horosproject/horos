@@ -702,7 +702,7 @@ PixelRepresentation
 				else if (strcmp(tagUTF8, "0008,0005") == 0)
 				{
 					[specificCharacterSet release];
-					specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"//"]];
+					specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"\\"]];
 				}
 				
 				/*
@@ -1588,7 +1588,7 @@ PixelRepresentation
 				if( attr.attrTag.group == 0x0008 && attr.attrTag.element == 0x0005)
 				{
 					[specificCharacterSet release];
-					specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"//"]];
+					specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"\\"]];
 				}
 				
 				[attr setCharacterSet: specificCharacterSet];

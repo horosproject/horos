@@ -20,6 +20,13 @@
 #import "NSImage+OsiriX.h"
 #import "DCMPix.h"
 #import "BrowserController.h"
+#import "MutableArrayCategory.h"
+
+#ifdef OSIRIX_VIEWER
+#import "DicomFileDCMTKCategory.h"
+#import "DICOMToNSString.h"
+#import "XMLControllerDCMTKCategory.h"
+#endif
 
 @implementation DicomSeries
 
@@ -62,6 +69,54 @@
 
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key
 {
+}
+
+- (void) setComment: (NSString*) c
+{
+	#ifdef OSIRIX_VIEWER
+	#ifndef OSIRIX_LIGHT
+	@try 
+	{
+		if( c == nil)
+			c = @"";
+			
+		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
+			
+		[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0032,4000)", c], nil]];
+		
+		NSMutableArray *files = [NSMutableArray arrayWithArray: [[self paths] allObjects]];
+		
+		if( files)
+		{
+			[files removeDuplicatedStrings];
+			
+			[params addObjectsFromArray: files];
+			
+			@try
+			{
+				NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
+				
+				[XMLController modifyDicom: params encoding: encoding];
+				
+				for( id loopItem in files)
+					[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+			}
+			@catch (NSException * e)
+			{
+				NSLog(@"**** DicomSeries setComment: %@", e);
+			}
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	#endif
+	#endif
+	
+	[self willChangeValueForKey: @"comment"];
+	[self setPrimitiveValue: c forKey: @"comment"];
+	[self didChangeValueForKey: @"comment"];
 }
 
 - (void) setDate:(NSDate*) date

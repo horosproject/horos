@@ -737,12 +737,18 @@ extern NSRecursiveLock *PapyrusLock;
 			
 		//StudyID
 		if (dataset->findAndGetString(DCM_StudyID, string, OFFalse).good() && string != NULL)
-		{
 			studyIDs = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
-		}
 		else
 			studyIDs = [[NSString alloc] initWithString:@"0"];
-		if( studyIDs) [dicomElements setObject:studyIDs forKey:@"studyNumber"];
+			
+		if( studyIDs)
+			[dicomElements setObject:studyIDs forKey:@"studyNumber"];
+		
+		if (dataset->findAndGetString( DCM_StudyComments, string, OFFalse).good() && string != NULL)
+			[dicomElements setObject: [NSString stringWithCString:string encoding: NSASCIIStringEncoding] forKey:@"studyComments"];
+		
+		if (dataset->findAndGetString( DCM_ImageComments, string, OFFalse).good() && string != NULL)
+			[dicomElements setObject: [NSString stringWithCString:string encoding: NSASCIIStringEncoding] forKey:@"seriesComments"];
 		
 		//Rows
 		unsigned short rows = 0;
