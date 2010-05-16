@@ -514,7 +514,7 @@ extern NSManagedObjectContext *staticContext;
 				if (dcelem->getString(sd).good() && sd != NULL)
 					predicate = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"studyName"];
 			}
-			else if (key ==  DCM_ImageComments)
+			else if (key ==  DCM_ImageComments || key ==  DCM_StudyComments)
 			{
 				char *sd;
 				if (dcelem->getString(sd).good() && sd != NULL)
@@ -1063,6 +1063,11 @@ extern NSManagedObjectContext *staticContext;
 					dataset->putAndInsertString( DCM_ImageComments, [self encodeString: [fetchedObject valueForKey:@"comment"] image: image]);
 				}
 				
+				else if( key == DCM_StudyComments && [fetchedObject valueForKey:@"comment"])
+				{
+					dataset->putAndInsertString( DCM_StudyComments, [self encodeString: [fetchedObject valueForKey:@"comment"] image: image]);
+				}
+				
 				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKey:@"dateOfBirth"])
 				{
 					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"dateOfBirth"]];
@@ -1239,6 +1244,11 @@ extern NSManagedObjectContext *staticContext;
 					dataset->putAndInsertString( DCM_ImageComments, [self encodeString: [fetchedObject valueForKeyPath:@"comment"] image: image]);
 				}
 				
+				else if( key == DCM_StudyComments && [fetchedObject valueForKeyPath:@"study.comment"])
+				{
+					dataset->putAndInsertString( DCM_StudyComments, [self encodeString: [fetchedObject valueForKeyPath:@"study.comment"] image: image]);
+				}
+				
 				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKeyPath:@"study.dateOfBirth"])
 				{
 					DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKeyPath:@"study.dateOfBirth"]];
@@ -1347,20 +1357,7 @@ extern NSManagedObjectContext *staticContext;
 			{
 				DcmTagKey key( [[elementAndGroup objectAtIndex: 1] intValue], [[elementAndGroup objectAtIndex: 0] intValue]);
 				
-				if( key == DCM_ImageComments)
-				{
-					if( [(NSString*) [fetchedObject valueForKeyPath: @"series.comment"] length] > 0)
-					{
-						dataset->putAndInsertString( key, [self encodeString: [fetchedObject valueForKeyPath:@"series.comment"] image: image]);
-					}
-					else if( [(NSString*) [fetchedObject valueForKeyPath: @"series.study.comment"] length] > 0)
-					{
-						dataset->putAndInsertString( key, [self encodeString: [fetchedObject valueForKeyPath:@"series.study.comment"] image: image]);
-					}
-					else dataset ->insertEmptyElement( key, OFTrue);
-				}
-				
-				else if( key == DCM_SliceLocation && [fetchedObject valueForKey: @"sliceLocation"])
+				if( key == DCM_SliceLocation && [fetchedObject valueForKey: @"sliceLocation"])
 				{
 					dataset->putAndInsertString( key, [[[fetchedObject valueForKey:@"sliceLocation"] stringValue] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
@@ -1379,6 +1376,19 @@ extern NSManagedObjectContext *staticContext;
 				}
 				
 				// ******************** SERIES
+				
+				else if( key == DCM_ImageComments)
+				{
+					if( [(NSString*) [fetchedObject valueForKeyPath: @"series.comment"] length] > 0)
+					{
+						dataset->putAndInsertString( key, [self encodeString: [fetchedObject valueForKeyPath:@"series.comment"] image: image]);
+					}
+					else if( [(NSString*) [fetchedObject valueForKeyPath: @"series.study.comment"] length] > 0)
+					{
+						dataset->putAndInsertString( key, [self encodeString: [fetchedObject valueForKeyPath:@"series.study.comment"] image: image]);
+					}
+					else dataset ->insertEmptyElement( key, OFTrue);
+				}
 				
 				else if( key == DCM_SeriesDescription && [fetchedObject valueForKeyPath: @"series.name"])
 				{
@@ -1447,9 +1457,9 @@ extern NSManagedObjectContext *staticContext;
 					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKeyPath:@"series.study.studyName"] image: image]);
 				}
 				
-				else if( key == DCM_ImageComments && [fetchedObject valueForKeyPath:@"series.comment"])
+				else if( key == DCM_StudyComments && [fetchedObject valueForKeyPath:@"series.study.comment"])
 				{
-					dataset->putAndInsertString( DCM_ImageComments, [self encodeString: [fetchedObject valueForKeyPath:@"series.comment"] image: image]);
+					dataset->putAndInsertString( DCM_ImageComments, [self encodeString: [fetchedObject valueForKeyPath:@"series.study.comment"] image: image]);
 				}
 				
 				else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKeyPath:@"series.study.dateOfBirth"])

@@ -82,7 +82,7 @@
 		if (dataset ->findAndGetString(DCM_AccessionNumber, string).good() && string != nil)		
 			_accessionNumber = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
 		
-		if (dataset ->findAndGetString(DCM_ImageComments, string).good() && string != nil)		
+		if (dataset ->findAndGetString(DCM_StudyComments, string).good() && string != nil)		
 			_comments = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
 		
 		if (dataset ->findAndGetString(DCM_ReferringPhysiciansName, string).good() && string != nil)		
@@ -160,7 +160,7 @@
 	dataset-> insertEmptyElement(DCM_SeriesNumber, OFTrue);
 	dataset-> insertEmptyElement(DCM_NumberOfSeriesRelatedInstances, OFTrue);
 	dataset-> insertEmptyElement(DCM_Modality, OFTrue);
-	dataset-> insertEmptyElement(DCM_ImageComments, OFTrue);
+	dataset-> insertEmptyElement(DCM_StudyComments, OFTrue);
 	dataset-> insertEmptyElement(DCM_ReferringPhysiciansName, OFTrue);
 	dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "SERIES", OFTrue);
