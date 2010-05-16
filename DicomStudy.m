@@ -355,33 +355,36 @@ NSString* soundex4( NSString *inString)
 	#ifndef OSIRIX_LIGHT
 	@try 
 	{
-		if( c == nil)
-			c = @"";
-			
-		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
-			
-		[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0032,4000)", c], nil]];
-		
-		NSMutableArray *files = [NSMutableArray arrayWithArray: [[self paths] allObjects]];
-		
-		if( files)
+		if( [self.hasDICOM boolValue] == YES)
 		{
-			[files removeDuplicatedStrings];
-			
-			[params addObjectsFromArray: files];
-			
-			@try
-			{
-				NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
+			if( c == nil)
+				c = @"";
 				
-				[XMLController modifyDicom: params encoding: encoding];
+			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
 				
-				for( id loopItem in files)
-					[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
-			}
-			@catch (NSException * e)
+			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0032,4000)", c], nil]];
+			
+			NSMutableArray *files = [NSMutableArray arrayWithArray: [[self paths] allObjects]];
+			
+			if( files)
 			{
-				NSLog(@"**** DicomStudy setComment: %@", e);
+				[files removeDuplicatedStrings];
+				
+				[params addObjectsFromArray: files];
+				
+				@try
+				{
+					NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
+					
+					[XMLController modifyDicom: params encoding: encoding];
+					
+					for( id loopItem in files)
+						[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+				}
+				@catch (NSException * e)
+				{
+					NSLog(@"**** DicomStudy setComment: %@", e);
+				}
 			}
 		}
 	}
