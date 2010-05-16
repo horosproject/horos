@@ -77,12 +77,12 @@
 	#ifndef OSIRIX_LIGHT
 	@try 
 	{
-		if( [self.study.hasDICOM boolValue] == YES)
+		if( [self.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
 		{
 			if( c == nil)
 				c = @"";
 				
-			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
+			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 				
 			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0020,4000)", c], nil]];
 			

@@ -2491,6 +2491,16 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			}
 		}
 		
+		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x4008);
+		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		{
+			val = Papy3GetElement (theGroupP, papInterpretationStatusIDGr, &nbVal, &itemType);
+			if (val != NULL && strlen( val->a) > 0)
+				[dicomElements setObject: [NSNumber numberWithInt: [[NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] intValue]] forKey: @"stateText"];
+					
+			theErr = Papy3GroupFree (&theGroupP, TRUE);
+		}
+		
 		// close and free the file and the associated allocated memory 
 		Papy3FileClose (fileNb, TRUE);
 		
@@ -2894,6 +2904,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if( [dcmObject attributeValueWithName: @"ImageComments"])
 			[dicomElements setObject: [dcmObject attributeValueWithName: @"ImageComments"] forKey: @"seriesComments"];
+		
+		if( [dcmObject attributeValueWithName: @"InterpretationStatusID"])
+			[dicomElements setObject: [NSNumber numberWithInt: [[dcmObject attributeValueWithName: @"InterpretationStatusID"] intValue]] forKey: @"stateText"];
 		
 		if ([dcmObject attributeValueWithName:@"NumberofFrames"])
 			NoOfFrames = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];

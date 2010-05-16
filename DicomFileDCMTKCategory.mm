@@ -750,6 +750,9 @@ extern NSRecursiveLock *PapyrusLock;
 		if (dataset->findAndGetString( DCM_ImageComments, string, OFFalse).good() && string != NULL)
 			[dicomElements setObject: [NSString stringWithCString:string encoding: NSASCIIStringEncoding] forKey:@"seriesComments"];
 		
+		if (dataset->findAndGetString( DCM_InterpretationStatusID, string, OFFalse).good() && string != NULL)
+			[dicomElements setObject: [NSNumber numberWithInt: [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] intValue]] forKey:@"stateText"];
+		
 		//Rows
 		unsigned short rows = 0;
 		if (dataset->findAndGetUint16(DCM_Rows, rows, OFFalse).good())

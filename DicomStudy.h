@@ -52,6 +52,7 @@
 @property(nonatomic, retain) NSSet* albums;
 @property(nonatomic, retain) NSSet* series;
 
++ (NSRecursiveLock*) dbModifyLock;
 + (NSString*) soundex: (NSString*) s;
 - (NSNumber *) noFiles;
 - (NSSet *) paths;

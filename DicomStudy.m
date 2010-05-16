@@ -182,6 +182,16 @@ NSString* soundex4( NSString *inString)
 @dynamic albums;
 @dynamic series;
 
+static NSRecursiveLock *dbModifyLock = nil;
+
++ (NSRecursiveLock*) dbModifyLock
+{
+	if( dbModifyLock == nil)
+		dbModifyLock = [[NSRecursiveLock alloc] init];
+		
+	return dbModifyLock;
+}
+
 + (NSString*) soundex: (NSString*) s
 {
 	NSArray *a = [s componentsSeparatedByString:@" "];
@@ -349,20 +359,86 @@ NSString* soundex4( NSString *inString)
 	return @"Study";
 }
 
+- (void) setCommentThread: (NSDictionary*) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	[[DicomStudy dbModifyLock] lock];
+	
+	#ifdef OSIRIX_VIEWER
+	#ifndef OSIRIX_LIGHT
+	@try 
+	{
+		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
+			
+		[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0032,4000)", [dict objectForKey: @"value"]], nil]];
+		
+		NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];
+		
+		if( files)
+		{
+			[files removeDuplicatedStrings];
+			
+			[params addObjectsFromArray: files];
+			
+			@try
+			{
+				NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
+				
+				[XMLController modifyDicom: params encoding: encoding];
+				
+				for( id loopItem in files)
+					[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+			}
+			@catch (NSException * e)
+			{
+				NSLog(@"**** DicomStudy setComment: %@", e);
+			}
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	#endif
+	#endif
+	
+	[[DicomStudy dbModifyLock] unlock];
+	
+	[pool release];
+}
+
 - (void) setComment: (NSString*) c
+{
+	if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
+	{
+		if( c == nil)
+			c = @"";
+		
+		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [[self paths] allObjects], @"files", nil];
+		
+		[NSThread detachNewThreadSelector: @selector( setCommentThread:) toTarget: self withObject: dict];
+	}
+	
+	[self willChangeValueForKey: @"comment"];
+	[self setPrimitiveValue: c forKey: @"comment"];
+	[self didChangeValueForKey: @"comment"];
+}
+
+- (void) setStateText: (NSNumber*) c
 {
 	#ifdef OSIRIX_VIEWER
 	#ifndef OSIRIX_LIGHT
 	@try 
 	{
-		if( [self.hasDICOM boolValue] == YES)
+		if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
 		{
 			if( c == nil)
-				c = @"";
+				c = [NSNumber numberWithInt: 0];
+			
+			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 				
-			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
-				
-			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0032,4000)", c], nil]];
+			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(4008,0212)", [c stringValue]], nil]];
 			
 			NSMutableArray *files = [NSMutableArray arrayWithArray: [[self paths] allObjects]];
 			
@@ -383,7 +459,7 @@ NSString* soundex4( NSString *inString)
 				}
 				@catch (NSException * e)
 				{
-					NSLog(@"**** DicomStudy setComment: %@", e);
+					NSLog(@"**** DicomStudy setStateText: %@", e);
 				}
 			}
 		}
@@ -395,9 +471,9 @@ NSString* soundex4( NSString *inString)
 	#endif
 	#endif
 	
-	[self willChangeValueForKey: @"comment"];
-	[self setPrimitiveValue: c forKey: @"comment"];
-	[self didChangeValueForKey: @"comment"];
+	[self willChangeValueForKey: @"stateText"];
+	[self setPrimitiveValue: c forKey: @"stateText"];
+	[self didChangeValueForKey: @"stateText"];
 }
 
 - (void) setReportURL: (NSString*) url

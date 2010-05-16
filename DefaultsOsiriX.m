@@ -765,6 +765,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1.2" forKey:@"BESTRENDERING"];
 	#endif
 
+	[defaultValues setObject:@"1" forKey:@"savedCommentsAndStatusInDICOMFiles"];
 	[defaultValues setObject:@"1" forKey:@"OPENVIEWER"];
 	[defaultValues setObject:@"0" forKey:@"ANONYMIZELISTENER"];
 	[defaultValues setObject: @"1" forKey: @"ConvertPETtoSUVautomatically"];

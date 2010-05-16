@@ -1017,6 +1017,9 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 								if( [[study valueForKey:@"comment"] length] == 0 && [[curDict objectForKey: @"studyComments"] length] > 0)
 									[study setValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
 								
+								if( [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
+									[study setValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
+								
 								[addedImagesArray addObject: image];
 								
 								if( [addedSeries containsObject: seriesTable] == NO) [addedSeries addObject: seriesTable];
@@ -13389,6 +13392,8 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	copyThread = NO;
 	
+	[[DicomStudy dbModifyLock] lock];
+	[[DicomStudy dbModifyLock] unlock];
 	
 	[self saveUserDatabase];
 	[self saveDatabase: currentDatabasePath];
