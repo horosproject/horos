@@ -84,7 +84,7 @@
 				
 			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
 				
-			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0032,4000)", c], nil]];
+			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0020,4000)", c], nil]];
 			
 			NSMutableArray *files = [NSMutableArray arrayWithArray: [[self paths] allObjects]];
 			
