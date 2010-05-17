@@ -71,6 +71,56 @@
 {
 }
 
+- (void) dcmodifyThread: (NSDictionary*) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	[[DicomStudy dbModifyLock] lock];
+	
+	#ifdef OSIRIX_VIEWER
+	#ifndef OSIRIX_LIGHT
+	@try 
+	{
+		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
+			
+		[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
+		
+		NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];
+		
+		if( files)
+		{
+			[files removeDuplicatedStrings];
+			
+			[params addObjectsFromArray: files];
+			
+			@try
+			{
+				NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
+				
+				[XMLController modifyDicom: params encoding: encoding];
+				
+				for( id loopItem in files)
+					[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+			}
+			@catch (NSException * e)
+			{
+				NSLog(@"**** DicomStudy setComment: %@", e);
+			}
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	#endif
+	#endif
+	
+	[[DicomStudy dbModifyLock] unlock];
+	
+	[pool release];
+}
+
+
 - (void) setComment: (NSString*) c
 {
 	#ifdef OSIRIX_VIEWER
@@ -80,34 +130,11 @@
 		if( [self.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
 		{
 			if( c == nil)
-				c = @"";
-				
-			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
-				
-			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0020,4000)", c], nil]];
-			
-			NSMutableArray *files = [NSMutableArray arrayWithArray: [[self paths] allObjects]];
-			
-			if( files)
-			{
-				[files removeDuplicatedStrings];
-				
-				[params addObjectsFromArray: files];
-				
-				@try
-				{
-					NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
-					
-					[XMLController modifyDicom: params encoding: encoding];
-					
-					for( id loopItem in files)
-						[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
-				}
-				@catch (NSException * e)
-				{
-					NSLog(@"**** DicomSeries setComment: %@", e);
-				}
-			}
+			c = @"";
+		
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [[self paths] allObjects], @"files", @"(0020,4000)", @"field", nil];
+		
+			[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
 		}
 	}
 	@catch (NSException * e) 

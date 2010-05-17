@@ -359,7 +359,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return @"Study";
 }
 
-- (void) setCommentThread: (NSDictionary*) dict
+- (void) dcmodifyThread: (NSDictionary*) dict
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
@@ -371,7 +371,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 			
-		[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0032,4000)", [dict objectForKey: @"value"]], nil]];
+		[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
 		
 		NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];
 		
@@ -415,9 +415,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 		if( c == nil)
 			c = @"";
 		
-		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [[self paths] allObjects], @"files", nil];
+		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [[self paths] allObjects], @"files", @"(0032,4000)", @"field", nil];
 		
-		[NSThread detachNewThreadSelector: @selector( setCommentThread:) toTarget: self withObject: dict];
+		[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
 	}
 	
 	[self willChangeValueForKey: @"comment"];
@@ -436,32 +436,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 			if( c == nil)
 				c = [NSNumber numberWithInt: 0];
 			
-			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
-				
-			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(4008,0212)", [c stringValue]], nil]];
-			
-			NSMutableArray *files = [NSMutableArray arrayWithArray: [[self paths] allObjects]];
-			
-			if( files)
-			{
-				[files removeDuplicatedStrings];
-				
-				[params addObjectsFromArray: files];
-				
-				@try
-				{
-					NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
-					
-					[XMLController modifyDicom: params encoding: encoding];
-					
-					for( id loopItem in files)
-						[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
-				}
-				@catch (NSException * e)
-				{
-					NSLog(@"**** DicomStudy setStateText: %@", e);
-				}
-			}
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [[self paths] allObjects], @"files", @"(4008,0212)", @"field", nil];
+		
+			[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
 		}
 	}
 	@catch (NSException * e) 
