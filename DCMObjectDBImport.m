@@ -67,6 +67,9 @@
 		strcmp(tagString, "0042,0011") == 0	||	//EncapsulatedDocument
 		strcmp(tagString, "2001,100A") == 0	||	//CardiacMR
 		strcmp(tagString, "2001,1008") == 0	||	//CardiacMR
+		strcmp(tagString, "0032,4000") == 0	||	//StudyComments
+		strcmp(tagString, "0020,4000") == 0	||	//ImageComments
+		strcmp(tagString, "4008,0212") == 0	||	//InterpretationStatusID
 	
 		strcmp(tagString, "0002,0000") == 0
 	)

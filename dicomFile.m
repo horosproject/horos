@@ -2384,9 +2384,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				if( studyIDs) [dicomElements setObject:studyIDs forKey:@"studyNumber"];
 				
-				val = Papy3GetElement (theGroupP, papStudyCommentsGr, &nbVal, &itemType);
-				if (val != NULL && strlen( val->a) > 0 && [dicomElements objectForKey: @"commentsAutoFill"] == nil)
-					[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"studyComments"];
+				val = Papy3GetElement (theGroupP, papImageCommentsGr, &nbVal, &itemType);
+				if (val != NULL && strlen( val->a) > 0)
+					[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"seriesComments"];
 					
 				// free the module and the associated sequences 
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
@@ -2416,9 +2416,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0032);
 			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 			{
-				val = Papy3GetElement (theGroupP, papImageCommentsGr, &nbVal, &itemType);
-				if (val != NULL && strlen( val->a) > 0)
-					[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"seriesComments"];
+				val = Papy3GetElement (theGroupP, papStudyCommentsGr, &nbVal, &itemType);
+				if (val != NULL && strlen( val->a) > 0 && [dicomElements objectForKey: @"commentsAutoFill"] == nil)
+					[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"studyComments"];
 					
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
 			}

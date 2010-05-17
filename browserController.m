@@ -1004,21 +1004,21 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 									if([curDict objectForKey: @"commentsAutoFill"])
 									{
 										if( [[seriesTable valueForKey:@"comment"] length] == 0)
-											[seriesTable setValue: [curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
+											[seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
 										
 										if( [[study valueForKey:@"comment"] length] == 0)
-											[study setValue:[curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
+											[study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
 									}
 								}
 								
 								if( [[seriesTable valueForKey:@"comment"] length] == 0 && [[curDict objectForKey: @"seriesComments"] length] > 0)
-									[seriesTable setValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
+									[seriesTable setPrimitiveValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
 								
 								if( [[study valueForKey:@"comment"] length] == 0 && [[curDict objectForKey: @"studyComments"] length] > 0)
-									[study setValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
+									[study setPrimitiveValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
 								
 								if( [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
-									[study setValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
+									[study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
 								
 								[addedImagesArray addObject: image];
 								
@@ -2017,7 +2017,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 		NSError *error = nil;
 		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 		
-		[studiesArray setValue: 0L forKey: @"comment"];
+		[studiesArray setPrimitiveValue: 0L forKey: @"comment"];
 		
 		// Find all series
 		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -2043,19 +2043,19 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 					{
 						if( [dcm elementForKey:@"commentsAutoFill"])
 						{
-							[series setValue: [dcm elementForKey: @"commentsAutoFill"] forKey:@"comment"];
+							[series setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey:@"comment"];
 							
 							NSManagedObject *study = [series valueForKey: @"study"];
 							
 							if( [study valueForKey:@"comment"] == nil || [[study valueForKey:@"comment"] isEqualToString:@""])
-								[study setValue: [dcm elementForKey: @"commentsAutoFill"] forKey:@"comment"];
+								[study setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey:@"comment"];
 						}
-						else [series setValue: 0L forKey:@"comment"];
+						else [series setPrimitiveValue: 0L forKey:@"comment"];
 					}
 					
 					[dcm release];
 				}
-				else [series setValue: 0L forKey:@"comment"];
+				else [series setPrimitiveValue: 0L forKey:@"comment"];
 			}
 			@catch ( NSException *e)
 			{
@@ -10634,87 +10634,87 @@ static BOOL needToRezoom;
 							copiedObjects = [self addFilesToDatabase: dstFiles onlyDICOM:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
 						}
 						
-						// We will now copy the comments / status
-						
-						NSMutableArray *seriesArray = [NSMutableArray array];
-						NSMutableArray *studiesArray = [NSMutableArray array];
-						NSManagedObject	*study = nil, *series = nil;
-						
-						for (NSManagedObject *obj in copiedObjects)
-						{
-							if( [obj valueForKey:@"series"] != series)
-							{
-								// ********* SERIES
-								series = [obj valueForKey:@"series"];
-										
-								if([seriesArray containsObject: series] == NO)
-								{
-									if( series) [seriesArray addObject: series];
-									
-									if( [series valueForKey:@"study"] != study)
-									{
-										study = [series valueForKey:@"study"];
-											
-										if([studiesArray containsObject: study] == NO)
-										{
-											if( study) [studiesArray addObject: study];
-										}
-									}
-								}
-							}
-						}
-						
-						// Copy the comments/status/report at study level
-						for (NSManagedObject *obj in studiesArray)
-						{
-							NSManagedObject *s = [self findStudyUID: [obj valueForKey: @"studyInstanceUID"]];
-							
-							if( [s valueForKey: @"comment"])
-							{
-								[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
-							}
-							
-							if( [s valueForKey: @"stateText"])
-							{
-								[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
-							}
-							
-							if( [s valueForKey: @"reportURL"])
-							{
-								if( [dbFolder isEqualToString: [self.documentsDirectory stringByDeletingLastPathComponent]] && !isCurrentDatabaseBonjour)	// same database folder - we don't need to copy the files
-								{
-									[obj setValue: [s valueForKey: @"reportURL"] forKey: @"reportURL"];
-								}
-								else
-								{
-									if( [[NSFileManager defaultManager] fileExistsAtPath: [s valueForKey: @"reportURL"]])
-									{
-										NSString *path = [s valueForKey: @"reportURL"];
-										NSString *newPath = [NSString stringWithFormat: @"%@/REPORTS/%@", [dbFolder stringByAppendingPathComponent:@"OsiriX Data"], [path lastPathComponent]];
-										
-										[[NSFileManager defaultManager] copyPath: path toPath:newPath handler: nil];
-										
-										[obj setValue: newPath forKey: @"reportURL"];
-									}
-								}
-							}
-						}
-						
-						// Copy the comments/status at series level
-						for (NSManagedObject *obj in seriesArray)
-						{
-							NSManagedObject *s = [self findSeriesUID: [obj valueForKey: @"seriesDICOMUID"]];
-							
-							if( [s valueForKey: @"comment"])
-							{
-								[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
-							}
-							
-							if( [s valueForKey: @"stateText"])
-							{
-								[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
-							}
-						}
+//						// We will now copy the comments / status
+//						
+//						NSMutableArray *seriesArray = [NSMutableArray array];
+//						NSMutableArray *studiesArray = [NSMutableArray array];
+//						NSManagedObject	*study = nil, *series = nil;
+//						
+//						for (NSManagedObject *obj in copiedObjects)
+//						{
+//							if( [obj valueForKey:@"series"] != series)
+//							{
+//								// ********* SERIES
+//								series = [obj valueForKey:@"series"];
+//										
+//								if([seriesArray containsObject: series] == NO)
+//								{
+//									if( series) [seriesArray addObject: series];
+//									
+//									if( [series valueForKey:@"study"] != study)
+//									{
+//										study = [series valueForKey:@"study"];
+//											
+//										if([studiesArray containsObject: study] == NO)
+//										{
+//											if( study) [studiesArray addObject: study];
+//										}
+//									}
+//								}
+//							}
+//						}
+//						
+//						// Copy the comments/status/report at study level
+//						for (NSManagedObject *obj in studiesArray)
+//						{
+//							NSManagedObject *s = [self findStudyUID: [obj valueForKey: @"studyInstanceUID"]];
+//							
+//							if( [s valueForKey: @"comment"])
+//							{
+//								[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
+//							}
+//							
+//							if( [s valueForKey: @"stateText"])
+//							{
+//								[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
+//							}
+//							
+//							if( [s valueForKey: @"reportURL"])
+//							{
+//								if( [dbFolder isEqualToString: [self.documentsDirectory stringByDeletingLastPathComponent]] && !isCurrentDatabaseBonjour)	// same database folder - we don't need to copy the files
+//								{
+//									[obj setValue: [s valueForKey: @"reportURL"] forKey: @"reportURL"];
+//								}
+//								else
+//								{
+//									if( [[NSFileManager defaultManager] fileExistsAtPath: [s valueForKey: @"reportURL"]])
+//									{
+//										NSString *path = [s valueForKey: @"reportURL"];
+//										NSString *newPath = [NSString stringWithFormat: @"%@/REPORTS/%@", [dbFolder stringByAppendingPathComponent:@"OsiriX Data"], [path lastPathComponent]];
+//										
+//										[[NSFileManager defaultManager] copyPath: path toPath:newPath handler: nil];
+//										
+//										[obj setValue: newPath forKey: @"reportURL"];
+//									}
+//								}
+//							}
+//						}
+//						
+//						// Copy the comments/status at series level
+//						for (NSManagedObject *obj in seriesArray)
+//						{
+//							NSManagedObject *s = [self findSeriesUID: [obj valueForKey: @"seriesDICOMUID"]];
+//							
+//							if( [s valueForKey: @"comment"])
+//							{
+//								[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
+//							}
+//							
+//							if( [s valueForKey: @"stateText"])
+//							{
+//								[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
+//							}
+//						}
 						
 						error = nil;
 						[sqlContext save: &error];

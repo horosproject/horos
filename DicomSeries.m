@@ -130,11 +130,17 @@
 		if( [self.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
 		{
 			if( c == nil)
-			c = @"";
-		
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [[self paths] allObjects], @"files", @"(0020,4000)", @"field", nil];
-		
-			[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+				c = @"";
+			
+			if( [[self primitiveValueForKey: @"comment"] length] == 0 && [c length] == 0)
+			{
+				
+			}
+			else if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
+			{
+				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [[self paths] allObjects], @"files", @"(0020,4000)", @"field", nil];
+				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+			}
 		}
 	}
 	@catch (NSException * e) 
