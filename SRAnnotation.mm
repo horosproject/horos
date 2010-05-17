@@ -297,7 +297,7 @@
 			const Uint8 *buffer;
 			unsigned int length;
 			NSData *archiveData;
-			if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())	//DCM_OsirixROI
+			if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())
 			{
 				NSLog(@"Unarchive from SR - SRAnnotation");
 				@try

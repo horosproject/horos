@@ -1590,7 +1590,6 @@
 #define DCM_ReferencedSpatialRegistrationSequence DcmTagKey(0x0070, 0x0404)
 #define DCM_BlendingPosition                     DcmTagKey(0x0070, 0x0405)
 #define DCM_OsirixROI							 DcmTagKey(0x0071, 0x0011)
-#define DCM_Osirix3DReconstructionData			 DcmTagKey(0x0071, 0x0013)
 #define DCM_HangingProtocolGroupLength           DcmTagKey(0x0072, 0x0000)
 #define DCM_HangingProtocolName                  DcmTagKey(0x0072, 0x0002)
 #define DCM_HangingProtocolDescription           DcmTagKey(0x0072, 0x0004)
