@@ -23,6 +23,7 @@
 #import "MutableArrayCategory.h"
 #import "Notifications.h"
 #import "QueryController.h"
+#import "DicomStudy.h"
 
 static volatile int sendControllerObjects = 0;
 
@@ -376,6 +377,8 @@ static volatile int sendControllerObjects = 0;
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
+	[[DicomStudy dbModifyLock] lock];
+	
 	@try
 	{
 		NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
@@ -438,6 +441,8 @@ static volatile int sendControllerObjects = 0;
 	{
 		NSLog( @"***** sendDICOMFilesOffis exception: %@", e);
 	}
+	
+	[[DicomStudy dbModifyLock] unlock];
 	
 	[pool release];
 	
