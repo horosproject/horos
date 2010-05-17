@@ -67,6 +67,9 @@
 	[self drawSubviews];
 	
 	[subview showSearchTypePopup: [subview filterKeyPopup]];
+	
+	[self willChangeValueForKey: @"logicalOperatorEnabled"];
+	[self didChangeValueForKey: @"logicalOperatorEnabled"];
 }	
 
 - (void)removeSubview:(id)sender
@@ -75,6 +78,9 @@
 	[subviews removeObject:view];
 	[view removeFromSuperview];
 	[self drawSubviews];
+	
+	[self willChangeValueForKey: @"logicalOperatorEnabled"];
+	[self didChangeValueForKey: @"logicalOperatorEnabled"];
 }
 
 - (void)drawSubviews
@@ -153,12 +159,28 @@
 	for( NSString *search in criteria)
 	{
 		if ( first) first = NO;
-		else format = [format stringByAppendingFormat: @" AND "];
+		else
+		{
+			if( [[NSUserDefaults standardUserDefaults] integerForKey: @"smartAlbumLogicalOperator"] == 1)
+				format = [format stringByAppendingFormat: @" OR "];
+			else
+				format = [format stringByAppendingFormat: @" AND "];
+		}
 		
 		format = [format stringByAppendingFormat: @"(%@)", search];
 	}
 	
 	return format;
+}
+
+- (BOOL) logicalOperatorEnabled
+{
+	[self createCriteria];
+	
+	if( [criteria count] > 1)
+		return YES;
+	else
+		return NO;
 }
 
 -(void) createCriteria
