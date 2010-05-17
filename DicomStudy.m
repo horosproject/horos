@@ -788,7 +788,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		for (id series in [self primitiveValueForKey: @"series"])
 		{
 			NSString *uid = [series valueForKey:@"seriesSOPClassUID"];
-			if( uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid] || [DCMAbstractSyntaxUID isRadiotherapy:uid])
+			if( uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid] || [DCMAbstractSyntaxUID isRadiotherapy:uid] || [DCMAbstractSyntaxUID isStructuredReport:uid])
 				[newArray addObject:series];
 		}
 	}

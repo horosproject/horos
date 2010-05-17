@@ -647,7 +647,9 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 				
 				BOOL DICOMROI = NO;
 				
-				if( [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]])
+				NSString *SOPClassUID = [curDict objectForKey:@"SOPClassUID"];
+				
+				if( [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID])
 				{
 					// Check if it is an OsiriX ROI SR
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX ROI SR"])
@@ -700,8 +702,6 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 				
 				if( DICOMROI == NO)
 					onlyDICOMROI = NO;
-				
-				NSString *SOPClassUID = [curDict objectForKey:@"SOPClassUID"];
 				
 				if( SOPClassUID != nil 
 				   && [DCMAbstractSyntaxUID isImageStorage: SOPClassUID] == NO 

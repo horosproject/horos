@@ -182,7 +182,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *StudyRootQueryRetrieveInformationModelMove = @"1.2.840.10008.5.1.4.1.2.2.2";
 	
 	// PDF storage
-	static NSString *PDFStorageClassUID = @"1.2.840.10008.5.1.4.1.1.104.1";
+	static NSString *PDFStorageClassUID = @"1.2.840.10008.5.1.4.1.1.104.1"; // EncapsulatedPDFStorage
 	
 	
 	//Printing
