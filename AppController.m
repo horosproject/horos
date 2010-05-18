@@ -2820,6 +2820,30 @@ static BOOL initialized = NO;
 #endif
 }
 
+- (void) checkForOsirixMimeType
+{
+	NSString *path = @"~/Library/Preferences/com.apple.LaunchServices.plist";
+	
+	NSDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile: [path stringByExpandingTildeInPath]];
+
+	for( NSDictionary* handler in [dict objectForKey: @"LSHandlers"])
+	{
+		if( [[handler objectForKey: @"LSHandlerURLScheme"] isEqualToString: @"dicom"])
+		{
+			return;
+		}
+	}
+	
+	NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary: dict];
+	
+	NSDictionary *handlerForOsiriX = [NSDictionary dictionaryWithObjectsAndKeys: @"com.rossetantoine.osirix", @"LSHandlerRoleAll", @"dicom", @"LSHandlerURLScheme", nil];
+	
+	[mutableDict setObject: [[dict objectForKey: @"LSHandlers"] arrayByAddingObject: handlerForOsiriX] forKey: @"LSHandlers"];
+	
+	[[NSFileManager defaultManager] removeItemAtPath: [path stringByExpandingTildeInPath]  error: nil];
+	[mutableDict writeToFile: [path stringByExpandingTildeInPath]  atomically: YES];
+}
+
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
 	BOOL dialog = NO;
@@ -3030,6 +3054,8 @@ static BOOL initialized = NO;
 		}
 	}
 	#endif
+	
+//	[self checkForOsirixMimeType];
 	
 //	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
 	
