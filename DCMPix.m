@@ -7079,52 +7079,6 @@ END_CREATE_ROIS:
 	}
 }
 
-//+ (NSData*) pdfFromFile
-//{
-//	webView = WebView.alloc.initWithFrame_frameName_groupName(NSMakeRect(0,0,1,1), "myFrame", "myGroup");
-//	webPrefs = WebPreferences.standardPreferences
-//	webPrefs.setLoadsImagesAutomatically(true)
-//	webPrefs.setAllowsAnimatedImages(true)
-//	webPrefs.setAllowsAnimatedImageLooping(false)
-//	webPrefs.setJavaEnabled(false)
-//	webPrefs.setPlugInsEnabled(parser.enablePlugins)
-//	webPrefs.setJavaScriptEnabled(true)
-//	webPrefs.setJavaScriptCanOpenWindowsAutomatically(false)
-//	webPrefs.setShouldPrintBackgrounds(parser.printBackground)
-//
-//	controller = Controller.alloc.initWithWebView(webView)
-//	webView.setFrameLoadDelegate(controller)
-//	webView.setResourceLoadDelegate(controller)
-//	webView.setApplicationNameForUserAgent("wkpdf/" + wkpdf_version)
-//	webView.setPreferences(webPrefs)
-//	webView.setMaintainsBackForwardList(false)
-
-	// **************************
-	
-//	NSPrintInfo *printInfo;
-//	NSPrintInfo *sharedInfo;
-//	NSPrintOperation *printOp;
-//	NSMutableDictionary *printInfoDict;
-//	NSMutableDictionary *sharedDict;
-//
-//	sharedInfo = [NSPrintInfo sharedPrintInfo];
-//	sharedDict = [sharedInfo dictionary];
-//	printInfoDict = [NSMutableDictionary dictionaryWithDictionary: sharedDict];
-//	
-//	[printInfoDict setObject:NSPrintSaveJob forKey:NSPrintJobDisposition];
-//	[printInfoDict setObject:[sheet filename] forKey:NSPrintSavePath];
-//
-//     printInfo = [[NSPrintInfo alloc] initWithDictionary: printInfoDict];
-//
-//	[printInfo setHorizontalPagination: NSAutoPagination];
-//	[printInfo setVerticalPagination: NSAutoPagination];
-//	[printInfo setVerticallyCentered:NO];
-//			
-//	printOp = [NSPrintOperation printOperationWithView:textView  printInfo:printInfo];
-//	[printOp setShowPanels:NO];
-//	[printOp runOperation];
-//}
-
 - (BOOL) loadDICOMPapyrus
 {
 	int				elemType;
