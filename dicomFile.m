@@ -31,6 +31,7 @@
 #import <QTKit/QTKit.h>
 #ifndef OSIRIX_LIGHT
 #include "tiffio.h"
+#import "html2pdf.h"
 #endif
 #import "DicomFileDCMTKCategory.h"
 #import "PluginManager.h"
@@ -2489,6 +2490,38 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
 			}
+		}
+		
+		if ([sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
+		{
+#ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
+			
+			@try
+			{
+				NSString *htmlpath = [[@"/tmp/" stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"html"];
+				
+				NSTask *aTask = [[[NSTask alloc] init] autorelease];		
+				[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+				[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
+				[aTask setArguments: [NSArray arrayWithObjects: filePath, htmlpath, nil]];		
+				[aTask launch];
+				[aTask waitUntilExit];		
+				[aTask interrupt];
+				
+				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [html2pdf pdfFromURL: htmlpath]]];
+				NoOfFrames = [rep pageCount];
+				height = ceil( [rep bounds].size.height * 1.5);
+				width = ceil( [rep bounds].size.width * 1.5);
+				
+				[[NSFileManager defaultManager] removeItemAtPath: htmlpath error: nil];
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
+#endif
+#endif
 		}
 		
 		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x4008);

@@ -37,32 +37,37 @@
 		[webView setMaintainsBackForwardList: NO];
 		
 		NSURL *theURL = [NSURL fileURLWithPath: url];
-		NSURLRequest *request = [NSURLRequest requestWithURL: theURL];
-		
-		[[webView mainFrame] loadRequest: request];
-		
-		while( [[webView mainFrame] dataSource] == nil || [[[webView mainFrame] dataSource] isLoading] == YES || [[[webView mainFrame] provisionalDataSource] isLoading] == YES)
+		if( theURL)
 		{
-			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+			NSURLRequest *request = [NSURLRequest requestWithURL: theURL];
+			
+			[[webView mainFrame] loadRequest: request];
+			
+			while( [[webView mainFrame] dataSource] == nil || [[[webView mainFrame] dataSource] isLoading] == YES || [[[webView mainFrame] provisionalDataSource] isLoading] == YES)
+			{
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+			}
+			
+			NSPrintInfo *sharedInfo = [NSPrintInfo sharedPrintInfo];
+			NSMutableDictionary *sharedDict = [sharedInfo dictionary];
+			NSMutableDictionary *printInfoDict = [NSMutableDictionary dictionaryWithDictionary: sharedDict];
+			
+			[printInfoDict setObject: NSPrintSaveJob forKey: NSPrintJobDisposition];
+			
+			[[NSFileManager defaultManager] removeItemAtPath: [url stringByAppendingPathExtension: @"pdf"] error: nil];
+			[printInfoDict setObject: [url stringByAppendingPathExtension: @"pdf"] forKey: NSPrintSavePath];
+			
+			NSPrintInfo *printInfo = [[NSPrintInfo alloc] initWithDictionary: printInfoDict];
+			
+			[printInfo setHorizontalPagination: NSAutoPagination];
+			[printInfo setVerticalPagination: NSAutoPagination];
+			[printInfo setVerticallyCentered:NO];
+			
+			NSView *viewToPrint = [[[webView mainFrame] frameView] documentView];
+			NSPrintOperation *printOp = [NSPrintOperation printOperationWithView: viewToPrint printInfo: printInfo];
+			[printOp setShowPanels: NO];
+			[printOp runOperation];
 		}
-		
-		NSPrintInfo *sharedInfo = [NSPrintInfo sharedPrintInfo];
-		NSMutableDictionary *sharedDict = [sharedInfo dictionary];
-		NSMutableDictionary *printInfoDict = [NSMutableDictionary dictionaryWithDictionary: sharedDict];
-		
-		[printInfoDict setObject: NSPrintSaveJob forKey: NSPrintJobDisposition];
-		[printInfoDict setObject: [url stringByAppendingPathExtension: @"pdf"] forKey: NSPrintSavePath];
-		
-		NSPrintInfo *printInfo = [[NSPrintInfo alloc] initWithDictionary: printInfoDict];
-		
-		[printInfo setHorizontalPagination: NSAutoPagination];
-		[printInfo setVerticalPagination: NSAutoPagination];
-		[printInfo setVerticallyCentered:NO];
-		
-		NSView *viewToPrint = [[[webView mainFrame] frameView] documentView];
-		NSPrintOperation *printOp = [NSPrintOperation printOperationWithView: viewToPrint printInfo: printInfo];
-		[printOp setShowPanels: NO];
-		[printOp runOperation];
 	}
 	@catch (NSException * e)
 	{

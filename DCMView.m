@@ -2074,11 +2074,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [files count] > 0)
 			{
 				id sopclassuid = [[files objectAtIndex: 0] valueForKeyPath:@"series.seriesSOPClassUID"];
-				if ([DCMAbstractSyntaxUID isImageStorage: sopclassuid] || [DCMAbstractSyntaxUID isRadiotherapy: sopclassuid] || sopclassuid == nil)
+				if ([DCMAbstractSyntaxUID isImageStorage: sopclassuid] || [DCMAbstractSyntaxUID isRadiotherapy: sopclassuid] || [DCMAbstractSyntaxUID isStructuredReport: sopclassuid] || sopclassuid == nil)
 				{
 					
 				}
-				else NSLog( @"***Ehh ! ****** It's not a DICOM image....");
+				else NSLog( @"*** DCMView ! ****** It's not a DICOM image ?");
 			}
 			
 			if( [stringID isEqualToString:@"previewDatabase"] == NO)
