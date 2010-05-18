@@ -50,6 +50,7 @@
 
 #import "math.h"
 #import "altivecFunctions.h"
+#import "html2pdf.h"
 
 #ifdef STATIC_DICOM_LIB
 #define PREVIEWSIZE 512
@@ -7221,22 +7222,46 @@ END_CREATE_ROIS:
 			
 			if( SOPClassUID != nil && [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
 			{
-//				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithBytes: element->value->a length: element->length]];
-//				
-//				[rep setCurrentPage: frameNo];	
-//				
-//				NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
-//				[pdfImage addRepresentation: rep];
-//				
-//				NSSize newSize;
-//				
-//				newSize.width = ceil( [rep bounds].size.width * 1.5);		// Increase PDF resolution to 72 * X DPI !
-//				newSize.height = ceil( [rep bounds].size.height * 1.5);		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
-//
-//				[pdfImage setScalesWhenResized:YES];
-//				[pdfImage setSize: newSize];
+				#ifdef OSIRIX_VIEWER
+				#ifndef OSIRIX_LIGHT
 				
+				@try
+				{
+					NSString *htmlpath = [[@"/tmp/" stringByAppendingPathComponent: [srcFile lastPathComponent]] stringByAppendingPathExtension: @"html"];
+					
+					NSTask *aTask = [[[NSTask alloc] init] autorelease];		
+					[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
+					[aTask setArguments: [NSArray arrayWithObjects: srcFile, htmlpath, nil]];		
+					[aTask launch];
+					[aTask waitUntilExit];		
+					[aTask interrupt];
+					
+					NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [html2pdf pdfFromURL: htmlpath]]];
+					
+					[rep setCurrentPage: frameNo];	
+					
+					NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+					[pdfImage addRepresentation: rep];
+					
+					NSSize newSize;
+					
+					newSize.width = ceil( [rep bounds].size.width * 1.5);		// Increase PDF resolution to 72 * X DPI !
+					newSize.height = ceil( [rep bounds].size.height * 1.5);		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
+
+					[pdfImage setScalesWhenResized:YES];
+					[pdfImage setSize: newSize];
+					
+					[self getDataFromNSImage: pdfImage];
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				}
+				#else
 				[self getDataFromNSImage: [NSImage imageNamed: @"pdf.tif"]];
+				#endif
+				#endif
 			}
 			else
 			{

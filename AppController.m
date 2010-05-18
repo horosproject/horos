@@ -1825,8 +1825,8 @@ static NSDate *lastWarningDate = nil;
 		{
 			NSLog(@"********* WARNING - WE SHOULD NOT BE HERE - STORE-SCP");
 			
-			NSMutableArray  *theArguments = [NSMutableArray array];
-			NSTask			*aTask = [[NSTask alloc] init];		
+			NSMutableArray *theArguments = [NSMutableArray array];
+			NSTask *aTask = [[NSTask alloc] init];		
 			[aTask setLaunchPath:@"/usr/bin/killall"];		
 			[theArguments addObject:@"storescp"];
 			[aTask setArguments:theArguments];		

@@ -19,6 +19,6 @@
 {
 }
 
-+ (NSData*) pdfFromURL: (NSString*) url;
++ (NSString*) pdfFromURL: (NSString*) url;
 
 @end

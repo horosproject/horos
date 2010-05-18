@@ -8722,9 +8722,9 @@ static BOOL withReset = NO;
 	if( [DCMPix isRunOsiriXInProtectedModeActivated]) return;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"] == NO) return;
 	
-	NSManagedObjectContext	*context = self.managedObjectContext;
-	NSManagedObjectModel	*model = self.managedObjectModel;
-
+	NSManagedObjectContext *context = self.managedObjectContext;
+	NSManagedObjectModel *model = self.managedObjectModel;
+	
 	NSString *recoveryPath = [[self documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
 	if( [[NSFileManager defaultManager] fileExistsAtPath: recoveryPath])
 	{
@@ -8765,7 +8765,7 @@ static BOOL withReset = NO;
 					NSLog(@"buildAllThumbnails exception: %@", [ne description]);
 				}
 				
-				[context release];
+				[context unlock];
 				
 				[self outlineViewRefresh];
 				[self refreshMatrix: self];
