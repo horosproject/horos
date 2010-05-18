@@ -16,12 +16,12 @@
 
 @implementation html2pdf
 
-+ (NSData*) pdfFromFile
++ (NSData*) pdfFromURL: (NSString*) url
 {
 	WebView *webView = [[[WebView alloc] initWithFrame: NSMakeRect(0,0,1,1) frameName: @"myFrame" groupName: @"myGroup"] autorelease];
 	WebPreferences *webPrefs = [WebPreferences standardPreferences];
 	
-	[webPrefs setLoadsImagesAutomatically: NO];
+	[webPrefs setLoadsImagesAutomatically: YES];
 	[webPrefs setAllowsAnimatedImages: YES];
 	[webPrefs setAllowsAnimatedImageLooping: NO];
 	[webPrefs setJavaEnabled: NO];
@@ -29,80 +29,30 @@
 	[webPrefs setJavaScriptEnabled: YES];
 	[webPrefs setJavaScriptCanOpenWindowsAutomatically: NO];
 	[webPrefs setShouldPrintBackgrounds: YES];
-
-	html2pdf *controller = [[[html2pdf alloc] initWithWebView: webView] autorelease];
-	[webView setFrameLoadDelegate: controller];
-	[webView setResourceLoadDelegate: controller];
+	
 	[webView setApplicationNameForUserAgent: @"OsiriX"];
 	[webView setPreferences: webPrefs];
 	[webView setMaintainsBackForwardList: NO];
-
-	// **************************
 	
-//	NSPrintInfo *printInfo;
-//	NSPrintInfo *sharedInfo;
-//	NSPrintOperation *printOp;
-//	NSMutableDictionary *printInfoDict;
-//	NSMutableDictionary *sharedDict;
-//
-//	sharedInfo = [NSPrintInfo sharedPrintInfo];
-//	sharedDict = [sharedInfo dictionary];
-//	printInfoDict = [NSMutableDictionary dictionaryWithDictionary: sharedDict];
-//	
-//	[printInfoDict setObject:NSPrintSaveJob forKey:NSPrintJobDisposition];
-//	[printInfoDict setObject:@"/tmp/test.pdf" forKey:NSPrintSavePath];
-//
-//     printInfo = [[NSPrintInfo alloc] initWithDictionary: printInfoDict];
-//
-//	[printInfo setHorizontalPagination: NSAutoPagination];
-//	[printInfo setVerticalPagination: NSAutoPagination];
-//	[printInfo setVerticallyCentered:NO];
-//			
-//	printOp = [NSPrintOperation printOperationWithView:textView  printInfo:printInfo];
-//	[printOp setShowPanels:NO];
-//	[printOp runOperation];
-
-	return nil;
-}
-
-- (id) initWithWebView: (WebView *) v
-{
-    self = [super init];
+	NSURL *theURL = [NSURL URLWithString: url];
+	NSURLRequest *request = [NSURLRequest requestWithURL: theURL];
 	
-    webView = v;
-    
-	return self;
-}
-
-- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *) frame
-{
-    if( frame.parentFrame)
-		return ; // sub-frame on page, page not fully loaded yet
+	[[webView mainFrame] loadRequest: request];
 	
-//    if p.saveDelay <= 0 then
-//      makePDF(nil)
-//      return
-//    end
-
-//    @saveTimer.invalidate unless @saveTimer.nil?
-//    @saveTimer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
-//      p.saveDelay, self, :makePDF_, @saveTimer, false)
-//    makePDF(nil)
-
-	[self makePaginatedPDF];
-}
-
-- (void) makePaginatedPDF
-{
+	while( [[webView mainFrame] dataSource] == nil || [[[webView mainFrame] dataSource] isLoading] == YES || [[[webView mainFrame] provisionalDataSource] isLoading] == YES)
+	{
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+	}
+	
 	NSPrintInfo *sharedInfo = [NSPrintInfo sharedPrintInfo];
 	NSMutableDictionary *sharedDict = [sharedInfo dictionary];
 	NSMutableDictionary *printInfoDict = [NSMutableDictionary dictionaryWithDictionary: sharedDict];
 	
 	[printInfoDict setObject:NSPrintSaveJob forKey:NSPrintJobDisposition];
 	[printInfoDict setObject:@"/tmp/test.pdf" forKey:NSPrintSavePath];
-
+	
     NSPrintInfo *printInfo = [[NSPrintInfo alloc] initWithDictionary: printInfoDict];
-
+	
 	[printInfo setHorizontalPagination: NSAutoPagination];
 	[printInfo setVerticalPagination: NSAutoPagination];
 	[printInfo setVerticallyCentered:NO];
@@ -111,6 +61,7 @@
     NSPrintOperation *printOp = [NSPrintOperation printOperationWithView: viewToPrint printInfo: printInfo];
     [printOp setShowPanels: NO];
     [printOp runOperation];
+	
+	return nil;
 }
-
 @end

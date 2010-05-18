@@ -17,10 +17,8 @@
 
 @interface html2pdf : NSObject
 {
-	WebView *webView;
 }
 
-- (id) initWithWebView: (WebView *) v;
-- (void) makePaginatedPDF;
++ (NSData*) pdfFromURL: (NSString*) url;
 
 @end

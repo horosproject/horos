@@ -49,7 +49,7 @@
 #import "WaitRendering.h"
 #import "OsiriXHTTPConnection.h"
 #import "ThreadPoolServer.h"
-//#import "Survey.h"
+#import "html2pdf.h"
 
 #define BUILTIN_DCMTK YES
 
@@ -3032,6 +3032,8 @@ static BOOL initialized = NO;
 	#endif
 	
 //	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
+	
+	[html2pdf pdfFromURL: @"http://zimbra.latour.ch"];
 }
 
 - (IBAction) updateViews:(id) sender
