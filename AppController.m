@@ -3033,7 +3033,7 @@ static BOOL initialized = NO;
 	
 //	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
 	
-	[html2pdf pdfFromURL: @"http://zimbra.latour.ch"];
+//	[html2pdf pdfFromURL: @"http://zimbra.latour.ch"];
 }
 
 - (IBAction) updateViews:(id) sender
