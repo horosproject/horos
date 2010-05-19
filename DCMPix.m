@@ -7856,6 +7856,7 @@ END_CREATE_ROIS:
 						@try
 						{
 							NSString *htmlpath = [[@"/tmp/" stringByAppendingPathComponent: [srcFile lastPathComponent]] stringByAppendingPathExtension: @"html"];
+							[[NSFileManager defaultManager] removeItemAtPath: htmlpath error: nil];
 							
 							NSTask *aTask = [[[NSTask alloc] init] autorelease];		
 							[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
@@ -7881,8 +7882,6 @@ END_CREATE_ROIS:
 							[pdfImage setSize: newSize];
 							
 							[self getDataFromNSImage: pdfImage];
-							
-							[[NSFileManager defaultManager] removeItemAtPath: htmlpath error: nil];
 							
 							returnValue = YES;
 						}
@@ -8502,7 +8501,6 @@ END_CREATE_ROIS:
 		argbImage =	(unsigned char*) fExternalOwnedImage;
 	else
 		argbImage = malloc( totSize);
-	
 	
 	if( srcImage != nil && argbImage != nil)
 	{

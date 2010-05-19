@@ -2098,10 +2098,10 @@ static NSDate *lastWarningDate = nil;
 {
 	NSString *url = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
 		NSLog(@"getURL: %@", url);
+		
 	// now you can create an NSURL and grab the necessary parts
+	
 }
-
-
 
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
 {
