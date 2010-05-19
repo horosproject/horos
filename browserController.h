@@ -15,7 +15,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class MPR2DController,NSCFDate;
+@class MPR2DController,NSCFDate, DicomStudy;
 @class BurnerWindowController,ViewerController;
 @class BonjourPublisher,BonjourBrowser;
 @class AnonymizerWindowController,QueryController;
@@ -355,8 +355,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) delObjects:(NSMutableArray*) objectsToDelete;
 - (IBAction) selectFilesAndFoldersToAdd:(id) sender;
 - (void) showDatabase:(id)sender;
--(IBAction) matrixPressed:(id)sender;
--(void) loadDatabase:(NSString*) path;
+- (NSInteger) displayStudy: (DicomStudy*) study object:(NSManagedObject*) element command:(NSString*) execute;
+- (IBAction) matrixPressed:(id)sender;
+- (void) loadDatabase:(NSString*) path;
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer;
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer tileWindows: (BOOL) tileWindows;
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted;

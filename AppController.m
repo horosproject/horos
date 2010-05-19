@@ -50,6 +50,7 @@
 #import "OsiriXHTTPConnection.h"
 #import "ThreadPoolServer.h"
 #import "html2pdf.h"
+#import "DicomImage.h"
 
 #define BUILTIN_DCMTK YES
 
@@ -2096,11 +2097,77 @@ static NSDate *lastWarningDate = nil;
 
 - (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
-	NSString *url = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
-		NSLog(@"getURL: %@", url);
+	NSString *str = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
+	NSURL *url = [NSURL URLWithString: str];
 		
-	// now you can create an NSURL and grab the necessary parts
-	
+	if( [[url scheme] isEqualToString: @"osirix"])
+	{
+		NSString *content = [url resourceSpecifier];
+		
+		// parse the URL to find the parameters (if any)
+		NSArray *urlComponents = [content componentsSeparatedByString: @"?"];
+		NSString *parameterString = @"";
+		if([urlComponents count] == 2) parameterString = [urlComponents lastObject];
+		
+		NSMutableDictionary *urlParameters = [NSMutableDictionary dictionary];
+		if(![parameterString isEqualToString: @""])
+		{
+			NSArray *paramArray = [parameterString componentsSeparatedByString: @"&"];
+			NSMutableArray *selected = [NSMutableArray array];
+			for(NSString *param in paramArray)
+			{
+				NSArray *p = [param componentsSeparatedByString: @"="];
+				if([[p objectAtIndex:0] isEqualToString: @"selected"])
+				{
+					[selected addObject:[p lastObject]];
+				}
+				else if([p count]==2)
+					[urlParameters setObject:[p lastObject] forKey:[p objectAtIndex:0]];
+			}
+			
+			if([selected count])
+				[urlParameters setObject:selected forKey: @"selected"];
+		}
+		
+		if( [urlParameters objectForKey: @"image"])
+		{
+			NSArray *components = [[urlParameters objectForKey: @"image"] componentsSeparatedByString:@"+"];
+			
+			if( [components count] == 2)
+			{
+				NSString *sopclassuid = [components objectAtIndex: 0];
+				NSString *sopinstanceuid = [components objectAtIndex: 1];
+				int frame = [[urlParameters objectForKey: @"frames"] intValue];
+				
+				NSPredicate	*request = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopinstanceuid]] customSelector: @selector( isEqualToSopInstanceUID:)];
+				
+				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+				[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Image"]];
+				[dbRequest setPredicate: request];
+				
+				NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+				
+				[context lock];
+				
+				@try
+				{
+					NSError	*error = nil;
+					NSArray *imagesArray = [context executeFetchRequest: dbRequest error: &error];
+					
+					if( [imagesArray count])
+					{
+						[[BrowserController currentBrowser] displayStudy: [[imagesArray lastObject] valueForKeyPath: @"series.study"] object: [imagesArray lastObject] command: @"Open"];
+					}
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				}
+				
+				[context unlock];
+			}
+		}
+	}
 }
 
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames

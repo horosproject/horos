@@ -43,9 +43,14 @@
 			
 			[[webView mainFrame] loadRequest: request];
 			
+			NSTimeInterval oneMinute = [NSDate timeIntervalSinceReferenceDate] + 60;
+			
 			while( [[webView mainFrame] dataSource] == nil || [[[webView mainFrame] dataSource] isLoading] == YES || [[[webView mainFrame] provisionalDataSource] isLoading] == YES)
 			{
 				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+				
+				if( [NSDate timeIntervalSinceReferenceDate] > oneMinute)
+					break;
 			}
 			
 			NSPrintInfo *sharedInfo = [NSPrintInfo sharedPrintInfo];

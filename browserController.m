@@ -7568,6 +7568,89 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	return NO;
 }
 
+- (NSInteger) displayStudy: (DicomStudy*) study object:(NSManagedObject*) element command:(NSString*) execute
+{
+	NSInteger index = [outlineViewArray indexOfObject: study];
+	
+	if( index == NSNotFound)	// Try again with all studies displayed. This study has to be here ! We found it in the DB
+	{
+		[self showEntireDatabase];
+		index = [outlineViewArray indexOfObject: study];
+	}
+	
+	if( index != NSNotFound)
+	{
+		if( [databaseOutline rowForItem: study] != [databaseOutline selectedRow])
+		{
+			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: study]] byExtendingSelection: NO];
+			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+		}
+		
+		if( [execute isEqualToString: @"Open"])
+		{
+			NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
+			BOOL found = NO;
+			
+			if( [[element valueForKey: @"type"] isEqualToString: @"Study"])
+			{
+				// Is a viewer containing this study opened? -> select it
+				for( ViewerController *vc in viewersList)
+				{
+					if(element == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+					{
+						[[vc window] makeKeyAndOrderFront: self];
+						found = YES;
+					}
+				}
+			}
+			else if( [[element valueForKey: @"type"] isEqualToString: @"Series"])
+			{
+				// Is a viewer containing this series opened? -> select it
+				for( ViewerController *vc in viewersList)
+				{
+					if(element == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series"])
+					{
+						[[vc window] makeKeyAndOrderFront: self];
+						found = YES;
+					}
+				}
+			}
+			else if( [[element valueForKey: @"type"] isEqualToString: @"Image"])
+			{
+				// Is a viewer containing this image opened? -> select it
+				for( ViewerController *vc in viewersList)
+				{
+					for( NSManagedObject *im in [vc fileList])
+					{
+						if( element == im)
+						{
+							[[vc window] makeKeyAndOrderFront: self];
+							found = YES;
+						}
+					}
+				}
+			}
+			
+			if( found == NO)
+			{
+				if( [[element valueForKey: @"type"] isEqualToString: @"Series"])
+				{
+					[self findAndSelectFile:nil image: [[element valueForKey: @"images"] anyObject] shouldExpand:NO];
+					[self databaseOpenStudy: element];
+				}
+				else if( [[element valueForKey: @"type"] isEqualToString: @"Image"])
+				{
+					[self findAndSelectFile:nil image: element shouldExpand:NO];
+					[self databaseOpenStudy: [element valueForKey: @"series"]];
+				}
+				else [browserWindow viewerDICOM: self]; // Study
+			}
+		}
+	}
+	
+	return index;
+}
+
 - (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements
 {
 	if( elements)
@@ -7646,64 +7729,10 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 			else if( [[element valueForKey: @"type"] isEqualToString: @"Study"]) study = element;
 			else NSLog( @"DB selectObject : Unknown table");
 			
-			NSInteger index = [outlineViewArray indexOfObject: study];
+			NSInteger index = [self displayStudy: study object: element command: execute];
 			
-			if( index == NSNotFound)	// Try again with all studies displayed. This study has to be here ! We found it in the DB
-			{
-				[self showEntireDatabase];
-				index = [outlineViewArray indexOfObject: study];
-			}
-			
-			if( index != NSNotFound)
-			{
-				if( [databaseOutline rowForItem: study] != [databaseOutline selectedRow])
-				{
-					[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: study]] byExtendingSelection: NO];
-					[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-				}
-				
-				if( [execute isEqualToString: @"Open"])
-				{
-					NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
-					BOOL found = NO;
-					
-					if( [[element valueForKey: @"type"] isEqualToString: @"Study"])
-					{
-						// Is a viewer containing this study opened? -> select it
-						for( ViewerController *vc in viewersList)
-						{
-							if(element == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
-							{
-								[[vc window] makeKeyAndOrderFront: self];
-								found = YES;
-							}
-						}
-					}
-					else if( [[element valueForKey: @"type"] isEqualToString: @"Series"])
-					{
-						// Is a viewer containing this series opened? -> select it
-						for( ViewerController *vc in viewersList)
-						{
-							if(element == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series"])
-							{
-								[[vc window] makeKeyAndOrderFront: self];
-								found = YES;
-							}
-						}
-					}
-					
-					if( found == NO)
-					{
-						if( [[element valueForKey: @"type"] isEqualToString: @"Series"])
-						{
-							[self findAndSelectFile:nil image: [[element valueForKey: @"images"] anyObject] shouldExpand:NO];
-							[self databaseOpenStudy: element];
-						}
-						else [browserWindow viewerDICOM: self];
-					}
-				}
-			}
-			else return -1;
+			if( index == NSNotFound)
+				return -1;
 		}
 		
 		// Generate an answer containing the elements
