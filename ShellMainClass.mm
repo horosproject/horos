@@ -109,6 +109,7 @@ int main(int argc, const char *argv[])
 	return NSApplicationMain(argc, argv);
 }
 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"					
 int executeProcess(int argc, char *argv[])
 {
 	NSAutoreleasePool	*pool	= [[NSAutoreleasePool alloc] init];
