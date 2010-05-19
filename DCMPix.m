@@ -8646,6 +8646,7 @@ END_CREATE_ROIS:
 	}
 }
 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"					
 - (void) CheckLoadIn
 {
 	BOOL USECUSTOMTIFF = NO;
@@ -9469,7 +9470,7 @@ END_CREATE_ROIS:
 					
 					GetMovieBox( mov, &tempRect);
 					OffsetRect( &tempRect, -tempRect.left, -tempRect.top);
-					
+
 					NewGWorld( &ftheGWorld,
 							   32,			// 32 Bits color !
 							   &tempRect,
