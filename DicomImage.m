@@ -549,9 +549,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 					BOOL found = NO;
 					for( NSString *k in keyFrames)
 					{
-						if( [k intValue] == frame && [f boolValue] == NO) // corresponding frame
+						if( [k intValue] == frame) // corresponding frame
 						{
-							[keyFrames removeObject: k];
+							if( [f boolValue] == NO)
+								[keyFrames removeObject: k];
+								
 							found = YES;
 							break;
 						}
