@@ -17,6 +17,7 @@
 #import "DicomStudy.h"
 #import "DicomFileDCMTKCategory.h"
 #import <OsiriX/DCM.h>
+#import "DCMObjectPixelDataImport.h"
 #import "DCMView.h"
 #import "MutableArrayCategory.h"
 #import "DicomFile.h"
@@ -521,6 +522,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (void) setIsKeyImage:(NSNumber*) f
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	[isKeyImage release];
 	isKeyImage = nil;
 	
@@ -535,7 +538,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 			NSString *c = nil;
 			if( [[self numberOfFrames] intValue] > 1)
 			{
-				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [self valueForKey:@"completePath"] decodingPixelData:NO];
+				DCMObject *dcmObject = [[DCMObjectPixelDataImport alloc] initWithContentsOfFile: [self valueForKey:@"completePath"] decodingPixelData: NO];
 				
 				if( [dcmObject.attributes objectForKey: @"0028,6022"])
 				{
@@ -566,6 +569,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 					else
 						c = @"";
 				}
+				
+				[dcmObject release];
 			}
 			else
 			{
@@ -591,6 +596,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		
 		[self didChangeValueForKey:@"storedIsKeyImage"];
 	}
+	
+	[pool release];
 }
 
 #pragma mark-

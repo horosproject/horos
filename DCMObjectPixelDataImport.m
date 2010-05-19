@@ -18,7 +18,8 @@
 
 @implementation DCMObjectPixelDataImport
 
-+ (id)objectWithContentsOfFile:(NSString *)file decodingPixelData:(BOOL)decodePixelData	{
++ (id)objectWithContentsOfFile:(NSString *)file decodingPixelData:(BOOL)decodePixelData
+{
 	return [[[DCMObjectPixelDataImport alloc] initWithContentsOfFile:file decodingPixelData:decodePixelData] autorelease];
 }
 
