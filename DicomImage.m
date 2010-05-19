@@ -530,35 +530,32 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		#ifndef OSIRIX_LIGHT
 		if( [self.series.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
 		{
+			[[DicomStudy dbModifyLock] lock];
+			
 			NSString *c = nil;
 			if( [[self numberOfFrames] intValue] > 1)
 			{
 				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [self valueForKey:@"completePath"] decodingPixelData:NO];
 				
-				NSString *str = [[dcmObject.attributes objectForKey: @"0028,6022"] values]; //DCM_FramesOfInterestDescription
-				
-				if( str)
+				if( [dcmObject.attributes objectForKey: @"0028,6022"])
 				{
-					NSArray *keyFrames = [[dcmObject.attributes objectForKey: @"0028,6022"] values];
-					
 					int frame = [[self frameID] intValue];
+					
+					NSMutableArray *keyFrames = [NSMutableArray arrayWithArray: [[dcmObject.attributes objectForKey: @"0028,6022"] values]];
 					
 					BOOL found = NO;
 					for( NSString *k in keyFrames)
 					{
 						if( [k intValue] == frame && [f boolValue] == NO) // corresponding frame
 						{
-							keyFrames = [NSMutableArray arrayWithArray: keyFrames];
 							[keyFrames removeObject: k];
 							found = YES;
+							break;
 						}
 					}
 					
 					if( [f boolValue] == YES && found == NO)
-					{
-						keyFrames = [NSMutableArray arrayWithArray: keyFrames];
 						[keyFrames addObject: [[self frameID] stringValue]];
-					}
 					
 					c = [keyFrames componentsJoinedByString: @"\\"];
 				}
@@ -580,6 +577,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 			
 			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", nil];
 			[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+			[[DicomStudy dbModifyLock] unlock];
 		}
 		#endif
 		#endif

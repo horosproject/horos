@@ -1024,13 +1024,11 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 								{
 									@try
 									{
-										NSArray *keyFrames = [[curDict objectForKey: @"keyFrames"] componentsSeparatedByString: @"\\"];
-										
-										for( NSString *k in keyFrames)
+										for( NSString *k in [curDict objectForKey: @"keyFrames"])
 										{
 											if( [k intValue] == f) // corresponding frame
 											{
-												[image setPrimitiveValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
+												[image setPrimitiveValue: [NSNumber numberWithBool: YES] forKey: @"storedIsKeyImage"];
 												break;
 											}
 										}
