@@ -370,7 +370,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	@try 
 	{
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
-			
+		
 		[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
 		
 		NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];

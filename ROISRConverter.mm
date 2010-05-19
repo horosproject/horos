@@ -35,11 +35,11 @@
 	const Uint8 *buffer = nil;
 	unsigned int length;
 	
-	if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())	//DCM_EncapsulatedDocument   //DCM_OsirixROI
+	if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())	//DCM_EncapsulatedDocument
 	{
 		archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
 	}
-	else if (fileformat.getDataset()->findAndGetUint8Array(DCM_OsirixROI, buffer, &length, OFFalse).good())	//DCM_EncapsulatedDocument   //DCM_OsirixROI
+	else if (fileformat.getDataset()->findAndGetUint8Array(DCM_OsirixROI, buffer, &length, OFFalse).good())	//DCM_EncapsulatedDocument
 	{
 		archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
 	}

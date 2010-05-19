@@ -1020,6 +1020,24 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 								if( [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
 									[study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
 								
+								if( [curDict objectForKey: @"keyFrames"])
+								{
+									@try
+									{
+										NSArray *keyFrames = [[curDict objectForKey: @"keyFrames"] componentsSeparatedByString: @"\\"];
+										
+										for( NSString *k in keyFrames)
+										{
+											if( [k intValue] == f) // corresponding frame
+											{
+												[image setPrimitiveValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
+												break;
+											}
+										}
+									}
+									@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);}
+								}
+								
 								[addedImagesArray addObject: image];
 								
 								if( [addedSeries containsObject: seriesTable] == NO) [addedSeries addObject: seriesTable];

@@ -43,6 +43,7 @@
 	delete doc;
 	return type;
 }
+
 - (NSArray*) referencedObjects
 {
 	NSMutableArray *references = [NSMutableArray array];

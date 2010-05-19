@@ -22,7 +22,8 @@
 	return [[[DCMObjectPixelDataImport alloc] initWithContentsOfFile:file decodingPixelData:decodePixelData] autorelease];
 }
 
-- (BOOL)isNeededAttribute:(char *)tagString{
+- (BOOL)isNeededAttribute:(char *)tagString
+{
 	if (strcmp(tagString, "0008,0008") == 0 ||	//ImageType
 		strcmp(tagString, "0008,0018") == 0 ||	// SOPInstanceUID
 		strcmp(tagString, "0008,1030") == 0 ||	//StudyDescription
@@ -56,6 +57,9 @@
 		strcmp(tagString, "0008,0016") == 0 ||	//SOPClassUID
 		strcmp(tagString, "0008,0005") == 0	||	//SpecificCharacterSet
 		strcmp(tagString, "0002,0010") == 0 ||	//Transfer Syntax UID
+		strcmp(tagString, "0028,6022") == 0 ||	//FramesOfInterestDescription -> Key Images
+		strcmp(tagString, "0020,4000") == 0 ||	//ImageComments -> Comments series level
+		strcmp(tagString, "0032,4000") == 0 ||	//StudyComments -> Comments study level
 		strcmp(tagString, "0002,0000") == 0
 	)
 	return YES;

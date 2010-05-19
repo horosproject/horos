@@ -13,8 +13,16 @@
 =========================================================================*/
 
 #import "DicomImage.h"
+#import "DicomSeries.h"
+#import "DicomStudy.h"
+#import "DicomFileDCMTKCategory.h"
 #import <OsiriX/DCM.h>
 #import "DCMView.h"
+#import "MutableArrayCategory.h"
+#import "DicomFile.h"
+#import "DICOMToNSString.h"
+#import "XMLController.h"
+#import "XMLControllerDCMTKCategory.h"
 #include <zlib.h>
 
 #ifdef OSIRIX_VIEWER
@@ -448,6 +456,55 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 #pragma mark-
 
+- (void) dcmodifyThread: (NSDictionary*) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	[[DicomStudy dbModifyLock] lock];
+	
+#ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
+	@try 
+	{
+		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
+		
+		[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
+		
+		NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];
+		
+		if( files)
+		{
+			[files removeDuplicatedStrings];
+			
+			[params addObjectsFromArray: files];
+			
+			@try
+			{
+				NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
+				
+				[XMLController modifyDicom: params encoding: encoding];
+				
+				for( id loopItem in files)
+					[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+			}
+			@catch (NSException * e)
+			{
+				NSLog(@"**** DicomStudy setComment: %@", e);
+			}
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+#endif
+#endif
+	
+	[[DicomStudy dbModifyLock] unlock];
+	
+	[pool release];
+}
+
 - (NSNumber*) isKeyImage
 {
 	if( isKeyImage) return isKeyImage;
@@ -467,12 +524,73 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	[isKeyImage release];
 	isKeyImage = nil;
 	
-	[self willChangeValueForKey:@"storedIsKeyImage"];
-	if( [f boolValue] == NO)
-		[self setPrimitiveValue: nil forKey:@"storedIsKeyImage"];
-	else
-		[self setPrimitiveValue: f forKey:@"storedIsKeyImage"];
-	[self didChangeValueForKey:@"storedIsKeyImage"];
+	if( [f boolValue] != [[self primitiveValueForKey: @"storedIsKeyImage"] boolValue])
+	{
+		#ifdef OSIRIX_VIEWER
+		#ifndef OSIRIX_LIGHT
+		if( [self.series.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
+		{
+			NSString *c = nil;
+			if( [[self numberOfFrames] intValue] > 1)
+			{
+				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:[self primitiveValueForKey:@"completePath"] decodingPixelData:NO];
+				
+				NSString *str = [dcmObject attributeValueForKey: @"0028,6022"]; //DCM_FramesOfInterestDescription
+				
+				if( str)
+				{
+					NSMutableArray *keyFrames = [NSMutableArray arrayWithArray: [str componentsSeparatedByString: @"\\"]];
+					
+					int frame = [[self frameID] intValue];
+					
+					BOOL found = NO;
+					for( NSString *k in keyFrames)
+					{
+						if( [k intValue] == frame && [f boolValue] == NO) // corresponding frame
+						{
+							keyFrames = [NSMutableArray arrayWithArray: keyFrames];
+							[keyFrames removeObject: k];
+							found = YES;
+						}
+					}
+					
+					if( [f boolValue] == YES && found == NO)
+					{
+						keyFrames = [NSMutableArray arrayWithArray: keyFrames];
+						[keyFrames addObject: [[self frameID] stringValue]];
+					}
+				}
+				else
+				{
+					if( [f boolValue])
+						c = @"0"; // frame 0 is key image 
+					else
+						c = @"";
+				}
+			}
+			else
+			{
+				if( [f boolValue])
+					c = @"0"; // frame 0 is key image 
+				else
+					c = @"";
+			}
+			
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [NSArray arrayWithObject: [self completePath]], @"files", @"(0070,0080)", @"field", nil];
+			[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+		}
+		#endif
+		#endif
+		
+		[self willChangeValueForKey: @"storedIsKeyImage"];
+		
+		if( [f boolValue] == NO)
+			[self setPrimitiveValue: nil forKey:@"storedIsKeyImage"];
+		else
+			[self setPrimitiveValue: f forKey:@"storedIsKeyImage"];
+		
+		[self didChangeValueForKey:@"storedIsKeyImage"];
+	}
 }
 
 #pragma mark-

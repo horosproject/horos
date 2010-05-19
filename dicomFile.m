@@ -2411,6 +2411,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					realwidth = (int) (*val).us;
 					width = realwidth;
 				}
+				val = Papy3GetElement (theGroupP, papFramesofInterestDescriptionGr, &nbVal, &itemType); // papPresentationLabelGr == DCM_FramesOfInterestDescription == 0x0028, 0x6022
+				if (val != NULL && strlen( val->a) > 0)
+				{
+					NSString *str = [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding];
+					[dicomElements setObject: str forKey: @"keyFrames"];
+				}	
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
 			}
 			

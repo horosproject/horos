@@ -17,7 +17,7 @@
 #define AE 0x4145 //Application Entity  String 16bytes max
 #define AS 0x4153 //Age String Format mmmM,dddD,nnnY ie 018Y
 #define AT 0x4154 //Attribute Tag 16bit unsigned integer
-#define CS 0x4353 //Code String   !6 byte max
+#define CS 0x4353 //Code String   16 byte max
 #define DA 0x4441 //Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
 #define DS 0x4453 //Decimal String  representing floating point number 16 byte max
 #define DT 0x4454 //Date Time YYYYMMDDHHMMSS.FFFFFF&ZZZZ FFFFFF= fractional Sec. ZZZZ=offset from Hr and min offset from universal time
