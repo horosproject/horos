@@ -2468,26 +2468,6 @@ static BOOL initialized = NO;
 //				exit( 0);
 //			}
 //			#endif
-//			else
-//			{
-//				NSString *exampleAlertSuppress = @"OsiriX 64-bit Warning";
-//				NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//				if ([defaults boolForKey:exampleAlertSuppress])
-//				{
-//				}
-//				else {
-//					NSAlert* alert = [NSAlert new];
-//					[alert setMessageText: NSLocalizedString(@"OsiriX 64-bit Warning", nil)];
-//					[alert setInformativeText:     NSLocalizedString(@"This is a preview version of OsiriX 64-bit. You SHOULD NOT use it for any scientific or clinical activities.", nil)];
-//					[alert setShowsSuppressionButton:YES];
-//					[alert runModal];
-//					if ([[alert suppressionButton] state] == NSOnState)
-//					{
-//						[defaults setBool:YES forKey:exampleAlertSuppress];
-//					}
-//				}
-//			}
-//			#endif
 						
 			if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])
 			{
@@ -2517,6 +2497,11 @@ static BOOL initialized = NO;
 				}
 				
 				NSLog(@"Number of processors: %d", MPProcessors ());
+				
+				#ifdef NDEBUG
+				#else
+				NSLog( @"**** DEBUG MODE ****");
+				#endif
 				
 			//	if( hasMacOSXVersion() == NO)
 			//	{
