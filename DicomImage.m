@@ -533,13 +533,13 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 			NSString *c = nil;
 			if( [[self numberOfFrames] intValue] > 1)
 			{
-				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:[self primitiveValueForKey:@"completePath"] decodingPixelData:NO];
+				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [self valueForKey:@"completePath"] decodingPixelData:NO];
 				
-				NSString *str = [dcmObject attributeValueForKey: @"0028,6022"]; //DCM_FramesOfInterestDescription
+				NSString *str = [[dcmObject.attributes objectForKey: @"0028,6022"] values]; //DCM_FramesOfInterestDescription
 				
 				if( str)
 				{
-					NSMutableArray *keyFrames = [NSMutableArray arrayWithArray: [str componentsSeparatedByString: @"\\"]];
+					NSArray *keyFrames = [[dcmObject.attributes objectForKey: @"0028,6022"] values];
 					
 					int frame = [[self frameID] intValue];
 					
@@ -559,6 +559,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 						keyFrames = [NSMutableArray arrayWithArray: keyFrames];
 						[keyFrames addObject: [[self frameID] stringValue]];
 					}
+					
+					c = [keyFrames componentsJoinedByString: @"\\"];
 				}
 				else
 				{
@@ -576,7 +578,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 					c = @"";
 			}
 			
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [NSArray arrayWithObject: [self completePath]], @"files", @"(0028,6022)", @"field", nil];
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", nil];
 			[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
 		}
 		#endif
