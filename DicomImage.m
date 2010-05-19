@@ -576,7 +576,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 					c = @"";
 			}
 			
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [NSArray arrayWithObject: [self completePath]], @"files", @"(0070,0080)", @"field", nil];
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [NSArray arrayWithObject: [self completePath]], @"files", @"(0028,6022)", @"field", nil];
 			[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
 		}
 		#endif
