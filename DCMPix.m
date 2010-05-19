@@ -7855,19 +7855,27 @@ END_CREATE_ROIS:
 
 						@try
 						{
-							NSString *htmlpath = [[@"/tmp/" stringByAppendingPathComponent: [srcFile lastPathComponent]] stringByAppendingPathExtension: @"html"];
-							[[NSFileManager defaultManager] removeItemAtPath: htmlpath error: nil];
+							if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
+								[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
 							
-							NSTask *aTask = [[[NSTask alloc] init] autorelease];		
-							[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-							[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-							[aTask setArguments: [NSArray arrayWithObjects: srcFile, htmlpath, nil]];		
-							[aTask launch];
-							[aTask waitUntilExit];		
-							[aTask interrupt];
+							NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [srcFile lastPathComponent]] stringByAppendingPathExtension: @"html"];
 							
-							NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [html2pdf pdfFromURL: htmlpath]]];
+							if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
+							{
+								NSTask *aTask = [[[NSTask alloc] init] autorelease];		
+								[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+								[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
+								[aTask setArguments: [NSArray arrayWithObjects: srcFile, htmlpath, nil]];		
+								[aTask launch];
+								[aTask waitUntilExit];		
+								[aTask interrupt];
+							}
 							
+							if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
+								[html2pdf pdfFromURL: htmlpath];
+							
+							NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]]];
+																	
 							[rep setCurrentPage: frameNo];	
 							
 							NSImage *pdfImage = [[[NSImage alloc] init] autorelease];

@@ -2139,32 +2139,83 @@ static NSDate *lastWarningDate = nil;
 				NSString *sopinstanceuid = [components objectAtIndex: 1];
 				int frame = [[urlParameters objectForKey: @"frames"] intValue];
 				
-				NSPredicate	*request = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopinstanceuid]] customSelector: @selector( isEqualToSopInstanceUID:)];
+				BOOL succeeded = NO;
 				
-				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Image"]];
-				[dbRequest setPredicate: request];
-				
-				NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-				
-				[context lock];
-				
-				@try
+				//First try to find it in the selected study
+				if( succeeded == NO)
 				{
-					NSError	*error = nil;
-					NSArray *imagesArray = [context executeFetchRequest: dbRequest error: &error];
+					NSMutableArray *allImages = [NSMutableArray array];
+					[[BrowserController currentBrowser] filesForDatabaseOutlineSelection: allImages];
 					
-					if( [imagesArray count])
+					NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+					
+					[context lock];
+					
+					@try
 					{
-						[[BrowserController currentBrowser] displayStudy: [[imagesArray lastObject] valueForKeyPath: @"series.study"] object: [imagesArray lastObject] command: @"Open"];
+						NSPredicate	*request = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopinstanceuid]] customSelector: @selector( isEqualToSopInstanceUID:)];
+						
+						NSArray *imagesArray = [allImages filteredArrayUsingPredicate: request];
+						
+						if( [imagesArray count])
+						{
+							[[BrowserController currentBrowser] displayStudy: [[imagesArray lastObject] valueForKeyPath: @"series.study"] object: [imagesArray lastObject] command: @"Open"];
+							succeeded = YES;
+						}
 					}
+					@catch (NSException * e)
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					}
+					
+					[context unlock];
 				}
-				@catch (NSException * e)
-				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-				}
+				//Second option, try to find the uid in the ENTIRE db....
 				
-				[context unlock];
+				if( succeeded == NO)
+				{
+					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+					[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Series"]];
+					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"seriesSOPClassUID == %@", sopclassuid]];
+					
+					NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+					
+					[context lock];
+					
+					WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString( @"Locating the image in the database...", nil)];
+					[wait showWindow: self];
+					@try
+					{
+						
+						NSError	*error = nil;
+						NSArray *allSeries = [[context executeFetchRequest: dbRequest error: &error] valueForKey: @"images"];
+						
+						NSMutableArray *allImages = [NSMutableArray array];
+						for( NSSet *s in allSeries)
+							[allImages addObjectsFromArray: [s allObjects]];
+						
+						NSPredicate	*request = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopinstanceuid]] customSelector: @selector( isEqualToSopInstanceUID:)];
+						NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+						
+						request = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: notNilPredicate, request, nil]];
+						
+						NSArray *imagesArray = [allImages filteredArrayUsingPredicate: request];
+						
+						if( [imagesArray count])
+						{
+							[[BrowserController currentBrowser] displayStudy: [[imagesArray lastObject] valueForKeyPath: @"series.study"] object: [imagesArray lastObject] command: @"Open"];
+						}
+					}
+					@catch (NSException * e)
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					}
+					
+					[wait close];
+					[wait release];
+					
+					[context unlock];
+				}
 			}
 		}
 	}

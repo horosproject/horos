@@ -2499,17 +2499,27 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			@try
 			{
-				NSString *htmlpath = [[@"/tmp/" stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"html"];
+				if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
+					[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
 				
-				NSTask *aTask = [[[NSTask alloc] init] autorelease];		
-				[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-				[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-				[aTask setArguments: [NSArray arrayWithObjects: filePath, htmlpath, nil]];		
-				[aTask launch];
-				[aTask waitUntilExit];		
-				[aTask interrupt];
+				NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"html"];
 				
-				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [html2pdf pdfFromURL: htmlpath]]];
+				if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
+				{
+					NSTask *aTask = [[[NSTask alloc] init] autorelease];		
+					[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
+					[aTask setArguments: [NSArray arrayWithObjects: filePath, htmlpath, nil]];		
+					[aTask launch];
+					[aTask waitUntilExit];		
+					[aTask interrupt];
+				}
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
+					[html2pdf pdfFromURL: htmlpath];
+				
+				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]]];
+				
 				NoOfFrames = [rep pageCount];
 				height = ceil( [rep bounds].size.height * 1.5);
 				width = ceil( [rep bounds].size.width * 1.5);

@@ -547,6 +547,7 @@ enum
 - (IBAction) shutterOnOff:(id) sender;
 - (void) setLoadingPause:(BOOL) lp;
 - (void) setImageIndex:(long) i;
+- (void) setImage:(NSManagedObject*) image;
 - (long) imageIndex;
 - (IBAction) editSUVinjectionTime:(id)sender;
 - (IBAction) ok:(id)sender;

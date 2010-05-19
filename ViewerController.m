@@ -14833,6 +14833,26 @@ int i,j,l;
 	[imageView displayIfNeeded];
 }
 
+- (void) setImage:(NSManagedObject*) image
+{
+	for( int x = 0 ; x < maxMovieIndex ; x++)
+	{
+		for( NSManagedObject* i in fileList[ x])
+		{
+			if( image == i)
+			{
+				[self setMovieIndex: x];
+				[imageView setIndex: [fileList[ x] indexOfObject: i]];
+				[imageView sendSyncMessage: 0];
+				[self adjustSlider];
+				[imageView displayIfNeeded];
+				
+				return;
+			}
+		}
+	}
+}
+
 - (void) performAnimation:(id) sender
 {
 	NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];

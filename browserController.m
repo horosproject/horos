@@ -7626,6 +7626,8 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 						{
 							[[vc window] makeKeyAndOrderFront: self];
 							found = YES;
+							
+							[vc setImage: im];
 						}
 					}
 				}
@@ -7642,6 +7644,21 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 				{
 					[self findAndSelectFile:nil image: element shouldExpand:NO];
 					[self databaseOpenStudy: [element valueForKey: @"series"]];
+					
+					// Is a viewer containing this image opened? -> select it
+					for( ViewerController *vc in [ViewerController getDisplayed2DViewers])
+					{
+						for( NSManagedObject *im in [vc fileList])
+						{
+							if( element == im)
+							{
+								[[vc window] makeKeyAndOrderFront: self];
+								found = YES;
+								
+								[vc setImage: im];
+							}
+						}
+					}
 				}
 				else [browserWindow viewerDICOM: self]; // Study
 			}
@@ -7722,11 +7739,11 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	{		
 		if( [execute isEqualToString: @"Select"] || [execute isEqualToString: @"Open"])		// These 2 functions apply only to the first found element
 		{
-			NSManagedObject	*study = nil;
+			DicomStudy *study = nil;
 			
 			if( [[element valueForKey: @"type"] isEqualToString: @"Image"]) study = [element valueForKeyPath: @"series.study"];
 			else if( [[element valueForKey: @"type"] isEqualToString: @"Series"]) study = [element valueForKey: @"study"];
-			else if( [[element valueForKey: @"type"] isEqualToString: @"Study"]) study = element;
+			else if( [[element valueForKey: @"type"] isEqualToString: @"Study"]) study = (DicomStudy*) element;
 			else NSLog( @"DB selectObject : Unknown table");
 			
 			NSInteger index = [self displayStudy: study object: element command: execute];
@@ -13467,6 +13484,7 @@ static NSArray*	openSubSeriesArray = nil;
 	[bonjourPublisher toggleSharing:NO];
 	
 	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/OsiriXTemporaryDatabase" handler: nil];
+	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dicomsr_osirix" handler: nil];
 }
 
 - (BOOL)shouldTerminate: (id)sender

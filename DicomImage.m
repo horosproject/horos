@@ -121,21 +121,26 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (BOOL) isEqualToSopInstanceUID:(NSData*) sopInstanceUID
 {
-	const UInt8* bytes = (const UInt8*) [self bytes];
 	NSUInteger length = [self length];
-	if( length == 0) return FALSE;
+	if( length == 0)
+		return NO;
+	
+	NSUInteger sopInstanceUIDLength = [sopInstanceUID length];
+	if( sopInstanceUIDLength == 0)
+		return NO;
+	
+	const UInt8* bytes = (const UInt8*) [self bytes];
 	if( bytes[length-1] == 0)
 		length --;
 	
 	const UInt8* sopInstanceUIDBytes = (const UInt8*) [sopInstanceUID bytes];
-	NSUInteger sopInstanceUIDLength = [sopInstanceUID length];
-	if( sopInstanceUIDLength == 0) return FALSE;
 	if (sopInstanceUIDBytes[sopInstanceUIDLength-1] == 0)
 		sopInstanceUIDLength --;
 	
 	if (length == sopInstanceUIDLength)
 		return (memcmp(bytes, sopInstanceUIDBytes, length) == 0);
-	return FALSE;
+	
+	return NO;
 }
 @end
 
