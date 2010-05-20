@@ -533,11 +533,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		#ifndef OSIRIX_LIGHT
 		if( [self.series.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
 		{
-			[[DicomStudy dbModifyLock] lock];
-			
 			NSString *c = nil;
 			if( [[self numberOfFrames] intValue] > 1)
 			{
+				[[DicomStudy dbModifyLock] lock];
+				
 				DCMObject *dcmObject = [[DCMObjectPixelDataImport alloc] initWithContentsOfFile: [self valueForKey:@"completePath"] decodingPixelData: NO];
 				
 				if( [dcmObject.attributes objectForKey: @"0028,6022"])
@@ -567,12 +567,17 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 				else
 				{
 					if( [f boolValue])
-						c = @"0"; // frame 0 is key image 
+						c = [[self frameID] stringValue];
 					else
 						c = @"";
 				}
 				
 				[dcmObject release];
+				
+				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", nil];
+				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+				
+				[[DicomStudy dbModifyLock] unlock];
 			}
 			else
 			{
@@ -580,11 +585,10 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 					c = @"0"; // frame 0 is key image 
 				else
 					c = @"";
+					
+				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", nil];
+				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
 			}
-			
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", nil];
-			[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
-			[[DicomStudy dbModifyLock] unlock];
 		}
 		#endif
 		#endif
