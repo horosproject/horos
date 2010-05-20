@@ -704,10 +704,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					else
 					{
 						rep = [NSBitmapImageRep imageRepWithData:[otherImage TIFFRepresentation]];
+						
 						if( rep)
 						{
-							height = [rep pixelsHigh];
-							width = [rep pixelsWide];
+							if( [rep pixelsWide] > [otherImage size].width)
+							{
+								height = [rep pixelsHigh];
+								width = [rep pixelsWide];
+							}
+							else
+							{
+								height = [otherImage size].height;
+								width = [otherImage size].width;
+							}
 						}
 					}
 				}
