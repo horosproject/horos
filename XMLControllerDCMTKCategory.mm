@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import "XMLControllerDCMTKCategory.h"
-
+#import "BrowserController.h"
 #undef verify
 
 #include "osconfig.h"
@@ -28,6 +28,8 @@
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
 
+extern NSRecursiveLock *PapyrusLock;
+
 @implementation XMLController (XMLControllerDCMTKCategory)
 
 + (int) modifyDicom:(NSArray*) params encoding: (NSStringEncoding) encoding
@@ -38,8 +40,6 @@
 	{
 		int i, argc = [params count];
 		char *argv[ argc];
-		
-	//	NSLog( @"%@", [params description]);
 		
 		for( i = 0; i < argc; i++)
 			argv[ i] = (char*) [[params objectAtIndex: i] cStringUsingEncoding: encoding];

@@ -317,19 +317,28 @@ extern NSRecursiveLock *PapyrusLock;
 			sopClassUID = [NSString stringWithCString: string encoding: NSASCIIStringEncoding] ;
 		}
 		
-		if ([sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
+		if( [sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
 		{
 			const Uint8 *buffer = nil;
 			unsigned int length;
 			if (dataset->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good() && string != NULL)
 			{
 				NSData *pdfData = [NSData dataWithBytes:buffer length:(unsigned)length];;
-				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];						
-				NoOfFrames = [rep pageCount];
+				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];
 				
+				NoOfFrames = [rep pageCount];
 				height = ceil( [rep bounds].size.height * 1.5);
 				width = ceil( [rep bounds].size.width * 1.5);
 			}							
+		}
+		
+		if( [sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"])
+		{
+			NSPDFImageRep *rep = [self PDFImageRep];
+			
+			NoOfFrames = [rep pageCount];
+			height = ceil( [rep bounds].size.height * 1.5);
+			width = ceil( [rep bounds].size.width * 1.5);						
 		}
 		
 		//Character Set

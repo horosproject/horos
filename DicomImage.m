@@ -469,7 +469,10 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	{
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		
-		[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
+		if( [dict objectForKey: @"value"] == nil || [[dict objectForKey: @"value"] length] == 0)
+			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-e", [dict objectForKey: @"field"], nil]];
+		else
+			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
 		
 		NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];
 		
@@ -534,17 +537,18 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		if( [self.series.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
 		{
 			NSString *c = nil;
+			
 			if( [[self numberOfFrames] intValue] > 1)
 			{
 				[[DicomStudy dbModifyLock] lock];
 				
 				DCMObject *dcmObject = [[DCMObjectPixelDataImport alloc] initWithContentsOfFile: [self valueForKey:@"completePath"] decodingPixelData: NO];
 				
-				if( [dcmObject.attributes objectForKey: @"0028,6022"])
+				if( [dcmObject.attributes objectForKey: @"0028,6022"]) // DCM_FramesOfInterestDescription
 				{
 					int frame = [[self frameID] intValue];
 					
-					NSMutableArray *keyFrames = [NSMutableArray arrayWithArray: [[dcmObject.attributes objectForKey: @"0028,6022"] values]];
+					NSMutableArray *keyFrames = [NSMutableArray arrayWithArray: [[dcmObject.attributes objectForKey: @"0028,6022"] values]]; // DCM_FramesOfInterestDescription
 					
 					BOOL found = NO;
 					for( NSString *k in keyFrames)
@@ -568,13 +572,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 				{
 					if( [f boolValue])
 						c = [[self frameID] stringValue];
-					else
-						c = @"";
 				}
 				
 				[dcmObject release];
 				
-				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", nil];
+				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
 				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
 				
 				[[DicomStudy dbModifyLock] unlock];
@@ -583,10 +585,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 			{
 				if( [f boolValue])
 					c = @"0"; // frame 0 is key image 
-				else
-					c = @"";
 					
-				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", nil];
+				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
+
 				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
 			}
 		}

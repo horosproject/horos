@@ -371,7 +371,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		
-		[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
+		if( [dict objectForKey: @"value"] == nil || [[dict objectForKey: @"value"] length] == 0)
+			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-e", [dict objectForKey: @"field"], nil]];
+		else
+			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
 		
 		NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];
 		
@@ -421,7 +424,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		}
 		else if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
 		{
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [[self paths] allObjects], @"files", @"(0032,4000)", @"field", nil];
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(0032,4000)", @"field", c, @"value", nil];
 			[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
 		}
 	}
@@ -444,7 +447,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			if( [c intValue] != [[self primitiveValueForKey: @"stateText"] intValue])
 			{
-				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: c, @"value", [[self paths] allObjects], @"files", @"(4008,0212)", @"field", nil];
+				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(4008,0212)", @"field", c, @"value", nil];
 				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
 			}
 		}

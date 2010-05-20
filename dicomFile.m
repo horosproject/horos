@@ -789,7 +789,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				if( [extension isEqualToString:@"pdf"])
 				{
-					NSPDFImageRep		*pdfRepresentation = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: filePath]];
+					NSPDFImageRep *pdfRepresentation = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: filePath]];
 					
 					NoOfFrames = [pdfRepresentation pageCount];
 					
@@ -1680,6 +1680,37 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 } 
 #endif
 
+- (NSPDFImageRep*) PDFImageRep
+{
+#ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
+
+	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
+		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
+	
+	NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"html"];
+	
+	if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
+	{
+		NSTask *aTask = [[[NSTask alloc] init] autorelease];		
+		[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+		[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
+		[aTask setArguments: [NSArray arrayWithObjects: filePath, htmlpath, nil]];		
+		[aTask launch];
+		[aTask waitUntilExit];		
+		[aTask interrupt];
+	}
+	
+	if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
+		[html2pdf pdfFromURL: htmlpath];
+	
+	return [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]]];
+#endif
+#endif
+	
+	return nil;
+}
+
 -(short) getDicomFilePapyrus :(BOOL) forceConverted
 {
 	int					itemType, returnValue = -1;
@@ -2501,46 +2532,20 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			}
 		}
 		
-		if ([sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
-		{
-#ifdef OSIRIX_VIEWER
-#ifndef OSIRIX_LIGHT
-			
+		if( [sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
+		{			
 			@try
 			{
-				if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
-					[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
-				
-				NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"html"];
-				
-				if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
-				{
-					NSTask *aTask = [[[NSTask alloc] init] autorelease];		
-					[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-					[aTask setArguments: [NSArray arrayWithObjects: filePath, htmlpath, nil]];		
-					[aTask launch];
-					[aTask waitUntilExit];		
-					[aTask interrupt];
-				}
-				
-				if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
-					[html2pdf pdfFromURL: htmlpath];
-				
-				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]]];
+				NSPDFImageRep *rep = [self PDFImageRep];
 				
 				NoOfFrames = [rep pageCount];
 				height = ceil( [rep bounds].size.height * 1.5);
 				width = ceil( [rep bounds].size.width * 1.5);
-				
-				[[NSFileManager defaultManager] removeItemAtPath: htmlpath error: nil];
 			}
 			@catch (NSException * e)
 			{
 				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 			}
-#endif
-#endif
 		}
 		
 		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x4008);
@@ -2724,6 +2729,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( album) [dicomElements setObject:album forKey:@"album"];
 			}
 		}
+		
 		NSString *transferSyntaxUID = [dcmObject attributeValueWithName:@"TransferSyntaxUID"];
 		if( [transferSyntaxUID isEqualToString:@"1.2.840.10008.1.2.4.100"])
 		{
@@ -3098,14 +3104,30 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		width = [[dcmObject attributeValueWithName:@"Columns"] intValue];
 		height = [[dcmObject attributeValueWithName:@"Rows"] intValue];
 		
-		if ([[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
+		if( [[dcmObject attributeValueWithName: @"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
 		{
-			NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
+			NSData *pdfData = [dcmObject attributeValueWithName: @"EncapsulatedDocument"];
 			NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];						
 			NoOfFrames = [rep pageCount];
 			
 			height = ceil( [rep bounds].size.height * 1.5);
 			width = ceil( [rep bounds].size.width * 1.5);
+		}
+		
+		if( [[dcmObject attributeValueWithName: @"SOPClassUID"] hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"])
+		{
+			@try
+			{
+				NSPDFImageRep *rep = [self PDFImageRep];
+				
+				NoOfFrames = [rep pageCount];
+				height = ceil( [rep bounds].size.height * 1.5);
+				width = ceil( [rep bounds].size.width * 1.5);
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 		}
 		
 		if (width < 4)
