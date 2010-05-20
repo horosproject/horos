@@ -58,7 +58,7 @@
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
 #import "WindowLayoutManager.h"
-//#import "StructuredReportController.h"
+#import "html2pdf.h"
 #import "QTExportHTMLSummary.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "BrowserMatrix.h"
@@ -7103,7 +7103,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 		
 		#ifndef OSIRIX_LIGHT
 		
-		if( ([[[im valueForKey:@"modality"] lowercaseString] isEqualToString:@"pdf"] || [DCMAbstractSyntaxUID isPDF: [im valueForKeyPath: @"series.seriesSOPClassUID"]]) && [[NSUserDefaults standardUserDefaults] boolForKey: @"openPDFwithPreview"])
+		if( ([[[im valueForKey:@"modality"] lowercaseString] isEqualToString:@"pdf"] || [DCMAbstractSyntaxUID isPDF: [im valueForKeyPath: @"series.seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isStructuredReport: [im valueForKeyPath: @"series.seriesSOPClassUID"]]) && [[NSUserDefaults standardUserDefaults] boolForKey: @"openPDFwithPreview"])
 		{
 			NSString *path = nil;
 			
@@ -7126,6 +7126,29 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 					[[NSFileManager defaultManager] removeItemAtPath: path error: nil];
 					[pdfData writeToFile: path atomically: YES];
 				}
+			}
+			else if( [DCMAbstractSyntaxUID isStructuredReport: [im valueForKeyPath: @"series.seriesSOPClassUID"]])
+			{
+				if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
+					[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
+				
+				NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [[im valueForKey: @"completePath"] lastPathComponent]] stringByAppendingPathExtension: @"html"];
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
+				{
+					NSTask *aTask = [[[NSTask alloc] init] autorelease];		
+					[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
+					[aTask setArguments: [NSArray arrayWithObjects: [im valueForKey: @"completePath"], htmlpath, nil]];		
+					[aTask launch];
+					[aTask waitUntilExit];		
+					[aTask interrupt];
+				}
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
+					[html2pdf pdfFromURL: htmlpath];
+				
+				path = [htmlpath stringByAppendingPathExtension: @"pdf"];
 			}
 			else path = [im valueForKey: @"completePath"];
 			

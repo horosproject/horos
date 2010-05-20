@@ -5419,8 +5419,70 @@ END_CREATE_ROIS:
 		[purgeCacheLock lock];
 		[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];
 		[pool release];
-		return YES;												 
+		return YES;
 	} // end encapsulatedPDF
+	
+	else if( [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
+	{
+#ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
+		
+		@try
+		{
+			if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
+				[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
+			
+			NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [srcFile lastPathComponent]] stringByAppendingPathExtension: @"html"];
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
+			{
+				NSTask *aTask = [[[NSTask alloc] init] autorelease];		
+				[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+				[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
+				[aTask setArguments: [NSArray arrayWithObjects: srcFile, htmlpath, nil]];		
+				[aTask launch];
+				[aTask waitUntilExit];		
+				[aTask interrupt];
+			}
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
+				[html2pdf pdfFromURL: htmlpath];
+			
+			NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]]];
+			
+			[rep setCurrentPage: frameNo];	
+			
+			NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+			[pdfImage addRepresentation: rep];
+			
+			NSSize newSize;
+			
+			newSize.width = ceil( [rep bounds].size.width * 1.5);		// Increase PDF resolution to 72 * X DPI !
+			newSize.height = ceil( [rep bounds].size.height * 1.5);		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
+			
+			[pdfImage setScalesWhenResized:YES];
+			[pdfImage setSize: newSize];
+			
+			[self getDataFromNSImage: pdfImage];
+			
+#ifdef OSIRIX_VIEWER
+			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
+#endif
+			
+			[purgeCacheLock lock];
+			[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];
+			[pool release];
+			return YES;
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+#else
+		[self getDataFromNSImage: [NSImage imageNamed: @"pdf.tif"]];
+#endif
+#endif
+	}
 	
 	@try
 	{
