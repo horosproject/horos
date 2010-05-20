@@ -122,10 +122,6 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return [NSString stringWithCString:str encoding: NSASCIIStringEncoding];
 }
 
-@interface NSData (OsiriX)
-- (BOOL) isEqualToSopInstanceUID:(NSData*) sopInstanceUID;
-@end
-
 @implementation NSData (OsiriX)
 
 - (BOOL) isEqualToSopInstanceUID:(NSData*) sopInstanceUID

@@ -7952,8 +7952,6 @@ static ViewerController *draggedController = nil;
 	if( no > 50)
 	{
 		int mpprocessors = MPProcessors();
-		if( mpprocessors > 4)
-			mpprocessors = 4;
 		
 		flipDataThread = [[NSConditionLock alloc] initWithCondition: mpprocessors];
 		

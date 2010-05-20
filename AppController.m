@@ -2094,7 +2094,6 @@ static NSDate *lastWarningDate = nil;
 	return;
 }
 
-
 - (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
 	NSString *str = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
@@ -2184,9 +2183,11 @@ static NSDate *lastWarningDate = nil;
 					
 					WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString( @"Locating the image in the database...", nil)];
 					[wait showWindow: self];
+					[wait setCancel: YES];
+					[wait start];
+					
 					@try
 					{
-						
 						NSError	*error = nil;
 						NSArray *allSeries = [[context executeFetchRequest: dbRequest error: &error] valueForKey: @"images"];
 						
@@ -2194,23 +2195,29 @@ static NSDate *lastWarningDate = nil;
 						for( NSSet *s in allSeries)
 							[allImages addObjectsFromArray: [s allObjects]];
 						
-						NSPredicate	*request = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopinstanceuid]] customSelector: @selector( isEqualToSopInstanceUID:)];
-						NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+						NSData *searchedUID = [DicomImage sopInstanceUIDEncodeString: sopinstanceuid];
+						DicomImage *searchUIDImage = nil;
 						
-						request = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: notNilPredicate, request, nil]];
-						
-						NSArray *imagesArray = [allImages filteredArrayUsingPredicate: request];
-						
-						if( [imagesArray count])
+						for( DicomImage *i in allImages)
 						{
-							[[BrowserController currentBrowser] displayStudy: [[imagesArray lastObject] valueForKeyPath: @"series.study"] object: [imagesArray lastObject] command: @"Open"];
+							if( [[i valueForKey: @"compressedSopInstanceUID"] isEqualToSopInstanceUID: searchedUID])
+								searchUIDImage = i;
+							
+							if( searchUIDImage)
+								break;
+							
+							if( [wait run] == NO)
+								break;
 						}
+						
+						if( searchUIDImage)
+							[[BrowserController currentBrowser] displayStudy: [searchUIDImage valueForKeyPath: @"series.study"] object: searchUIDImage command: @"Open"];
 					}
 					@catch (NSException * e)
 					{
 						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 					}
-					
+					[wait end];
 					[wait close];
 					[wait release];
 					

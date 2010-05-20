@@ -19,6 +19,10 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 
 @class DCMSequenceAttribute, DicomSeries;
 
+@interface NSData (OsiriX)
+- (BOOL) isEqualToSopInstanceUID:(NSData*) sopInstanceUID;
+@end
+
 /** \brief  Core Data Entity for an image (frame) */
 
 @interface DicomImage : NSManagedObject
