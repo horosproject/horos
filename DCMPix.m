@@ -5465,9 +5465,7 @@ END_CREATE_ROIS:
 			
 			[self getDataFromNSImage: pdfImage];
 			
-#ifdef OSIRIX_VIEWER
 			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
-#endif
 			
 			[purgeCacheLock lock];
 			[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];
@@ -5479,8 +5477,10 @@ END_CREATE_ROIS:
 			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
 #else
-		[self getDataFromNSImage: [NSImage imageNamed: @"pdf.tif"]];
+		[self getDataFromNSImage: [NSImage imageNamed: @"NSIconViewTemplate"]];
 #endif
+#else
+		[self getDataFromNSImage: [NSImage imageNamed: @"NSIconViewTemplate"]];
 #endif
 	}
 	
@@ -7960,9 +7960,14 @@ END_CREATE_ROIS:
 							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 						}
 	#else
-						[self getDataFromNSImage: [NSImage imageNamed: @"pdf.tif"]];
+		[self getDataFromNSImage: [NSImage imageNamed: @"NSIconViewTemplate"]];
+		returnValue = YES;
 	#endif
+	#else
+		[self getDataFromNSImage: [NSImage imageNamed: @"NSIconViewTemplate"]];
+		returnValue = YES;
 	#endif
+
 					}
 					else
 					{
