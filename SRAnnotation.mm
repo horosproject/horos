@@ -107,6 +107,12 @@
 	if (self = [super init])
 	{
 		_seriesInstanceUID = nil;
+		_DICOMSRDescription =  @"OsiriX Dictionary SR";
+		_DICOMSeriesNumber = @"5004";
+		
+		[_DICOMSRDescription retain];
+		[_DICOMSeriesNumber retain];
+		
 		document = new DSRDocument();
 		_newSR = NO;
 		OFCondition status = EC_Normal;
@@ -143,11 +149,17 @@
 }
 
 
-- (id)initWithFile:(NSString *) file path:(NSString *) path forImage: (NSManagedObject*) im
+- (id)initWithFileReport:(NSString *) file path:(NSString *) path forImage: (NSManagedObject*) im
 {
 	if (self = [super init])
 	{
 		_seriesInstanceUID = nil;
+		_DICOMSRDescription =  @"OsiriX Report SR";
+		_DICOMSeriesNumber = @"5003";
+		
+		[_DICOMSRDescription retain];
+		[_DICOMSeriesNumber retain];
+		
 		document = new DSRDocument();
 		_newSR = NO;
 		OFCondition status = EC_Normal;
@@ -176,22 +188,6 @@
 		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
 		
 		image = [im retain];
-		
-//		// image reference
-//		OFString refsopClassUID = OFString([[image valueForKeyPath:@"series.seriesSOPClassUID"] UTF8String]);
-//		OFString refsopInstanceUID = OFString([[image valueForKey:@"sopInstanceUID"] UTF8String]);
-//		
-//		document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image, DSRTypes::AM_belowCurrent);
-//		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference"));
-//		
-//		DSRImageReferenceValue imageRef( refsopClassUID, refsopInstanceUID);
-//		
-//		// add frame reference
-//		NSNumber *frameIndex = [NSNumber numberWithInt: [[aROI pix] frameNo]];
-//		imageRef.getFrameList().putString([[frameIndex stringValue] UTF8String]);
-//		
-//		document->getTree().getCurrentContentItem().setImageReference( imageRef);
-//		document->getTree().goUp(); // go up to the root element		
 	}
 	
 	return self;

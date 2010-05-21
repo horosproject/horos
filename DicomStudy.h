@@ -65,8 +65,7 @@
 - (NSArray *)waveFormSeries;
 - (NSManagedObject *) roiSRSeries;
 - (NSManagedObject *) reportSRSeries;
-- (NSManagedObject *) commentAndStatusSRSeries;
-- (NSManagedObject *) keyImagesSRSeries;
+- (NSManagedObject *) annotationsSRSeries;
 - (void) syncReportAndComments;
 - (NSDictionary *)dictionary;
 - (BOOL) isHidden;

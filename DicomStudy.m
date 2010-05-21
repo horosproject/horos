@@ -222,11 +222,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 //				if( obj)
 //					[[self managedObjectContext] deleteObject: obj];
 //				
-//				obj = [self commentAndStatusSRSeries];
-//				if( obj)
-//					[[self managedObjectContext] deleteObject: obj];
-//				
-//				obj = [self keyImagesSRSeries];
+//				obj = [self annotationsSRSeries];
 //				if( obj)
 //					[[self managedObjectContext] deleteObject: obj];
 //			}
@@ -933,45 +929,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return newArray;
 }
 
-- (NSManagedObject *) keyImagesSRSeries
-{
-	NSArray *array = [self primitiveValueForKey: @"series"] ;
-	if ([array count] < 1)  return nil;
-	
-	[[self managedObjectContext] lock];
-	
-	NSMutableArray *newArray = [NSMutableArray array];
-	
-	@try 
-	{
-		for( DicomSeries *series in array)
-		{
-			if( [[series valueForKey:@"id"] intValue] == 5005 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX KeyImage SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
-				[newArray addObject:series];
-			
-			if( [newArray count] > 1)
-			{
-				NSLog( @"****** multiple (%d) keyImagesSRSeries?? Delete the extra series...", [newArray count]);
-				
-				for( int i = 1 ; i < [newArray count] ; i++)
-					[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
-			}
-		}
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
-	
-	[[self managedObjectContext] unlock];
-	
-	if( [newArray count])
-		return [newArray objectAtIndex: 0];
-	
-	return nil;
-}
-
-- (NSManagedObject *) commentAndStatusSRSeries
+- (NSManagedObject *) annotationsSRSeries // Comments, Status, Key Images, ...
 {
 	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	if ([array count] < 1)  return nil;
@@ -989,7 +947,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			if( [newArray count] > 1)
 			{
-				NSLog( @"****** multiple (%d) commentAndStatusSRSeries?? Delete the extra series...", [newArray count]);
+				NSLog( @"****** multiple (%d) annotationsSRSeries?? Delete the extra series...", [newArray count]);
 				
 				for( int i = 1 ; i < [newArray count] ; i++)
 					[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
