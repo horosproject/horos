@@ -27,28 +27,29 @@ typedef char DSRDocument;
 {
 	DSRDocument			*document;
 	id					image;
-	NSArray				*_rois;
 	BOOL				_newSR;
-	NSString			*_seriesInstanceUID;
+	NSString			*_seriesInstanceUID, *_DICOMSRDescription, *_DICOMSeriesNumber;
+	NSData				*_dataToBeEncapsulated;
 }
 
 + (NSString*) getImageRefSOPInstanceUID:(NSString*) path;
 + (NSString*) getFilenameFromSR:(NSString*) path;
-- (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path forImage:(NSManagedObject*) im;
-- (id)initWithContentsOfFile:(NSString *)path;
-- (id)initWithDictionary:(NSDictionary *) dict path:(NSString *) path forImage: (NSManagedObject*) im;
-- (id)initWithFile:(NSString *) file path:(NSString *) path forImage: (NSManagedObject*) im;
-- (void)addROIs:(NSArray *)someROIs;
-- (void)addROI:(ROI *)aROI;
-- (NSArray *)ROIs;
-- (BOOL)writeToFileAtPath:(NSString *)path;
-- (void)saveAsHTML;
-- (NSString *)seriesInstanceUID;
-- (void)setSeriesInstanceUID: (NSString *)seriesInstanceUID;
-- (NSString *)sopInstanceUID;
-- (NSString *)sopClassUID;
-- (NSString *)seriesDescription;
-- (NSString *)seriesNumber;
-- (int)frameIndex;
+
+- (id) initWithROIs:(NSArray *)ROIs  path:(NSString *)path forImage:(NSManagedObject*) im;
+- (id) initWithContentsOfFile:(NSString *)path;
+- (id) initWithDictionary:(NSDictionary *) dict path:(NSString *) path forImage: (NSManagedObject*) im;
+- (id) initWithFile:(NSString *) file path:(NSString *) path forImage: (NSManagedObject*) im;
+- (void) addROIs:(NSArray *)someROIs;
+- (void) addROI:(ROI *)aROI;
+- (NSArray *) ROIs;
+- (BOOL) writeToFileAtPath:(NSString *)path;
+- (void) saveAsHTML;
+- (NSString *) seriesInstanceUID;
+- (void) setSeriesInstanceUID: (NSString *)seriesInstanceUID;
+- (NSString *) sopInstanceUID;
+- (NSString *) sopClassUID;
+- (NSString *) seriesDescription;
+- (NSString *) seriesNumber;
+- (int) frameIndex;
 
 @end

@@ -213,27 +213,27 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		@try
 		{
-			// Find the archived
-			@try
-			{
-				id obj;
-				
-				obj = [self reportSRSeries];
-				if( obj)
-					[[self managedObjectContext] deleteObject: obj];
-				
-				obj = [self commentAndStatusSRSeries];
-				if( obj)
-					[[self managedObjectContext] deleteObject: obj];
-				
-				obj = [self keyImagesSRSeries];
-				if( obj)
-					[[self managedObjectContext] deleteObject: obj];
-			}
-			@catch( NSException *e)
-			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			}
+//			// Find the archived
+//			@try
+//			{
+//				id obj;
+//				
+//				obj = [self reportSRSeries];
+//				if( obj)
+//					[[self managedObjectContext] deleteObject: obj];
+//				
+//				obj = [self commentAndStatusSRSeries];
+//				if( obj)
+//					[[self managedObjectContext] deleteObject: obj];
+//				
+//				obj = [self keyImagesSRSeries];
+//				if( obj)
+//					[[self managedObjectContext] deleteObject: obj];
+//			}
+//			@catch( NSException *e)
+//			{
+//				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+//			}
 			
 			// Report
 			if( [self valueForKey: @"reportURL"])

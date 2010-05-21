@@ -177,7 +177,21 @@
 		
 		image = [im retain];
 		
-		// ****** to be completed
+//		// image reference
+//		OFString refsopClassUID = OFString([[image valueForKeyPath:@"series.seriesSOPClassUID"] UTF8String]);
+//		OFString refsopInstanceUID = OFString([[image valueForKey:@"sopInstanceUID"] UTF8String]);
+//		
+//		document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image, DSRTypes::AM_belowCurrent);
+//		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference"));
+//		
+//		DSRImageReferenceValue imageRef( refsopClassUID, refsopInstanceUID);
+//		
+//		// add frame reference
+//		NSNumber *frameIndex = [NSNumber numberWithInt: [[aROI pix] frameNo]];
+//		imageRef.getFrameList().putString([[frameIndex stringValue] UTF8String]);
+//		
+//		document->getTree().getCurrentContentItem().setImageReference( imageRef);
+//		document->getTree().goUp(); // go up to the root element		
 	}
 	
 	return self;
@@ -188,6 +202,12 @@
 	if (self = [super init])
 	{
 		_seriesInstanceUID = nil;
+		_DICOMSRDescription =  @"OsiriX ROI SR";
+		_DICOMSeriesNumber = @"5002";
+		
+		[_DICOMSRDescription retain];
+		[_DICOMSeriesNumber retain];
+		
 		document = new DSRDocument();
 		_newSR = NO;
 		OFCondition status = EC_Normal;
@@ -218,64 +238,6 @@
 		image = [im retain];
 		
 		[self addROIs: ROIs];
-		
-		//////
-		
-//		DSRDocument *doc = new DSRDocument();
-//		
-//		OFString studyUID_ki;
-//		
-//		doc->createNewDocument(DSRTypes::DT_BasicTextSR);
-////		doc->getStudyInstanceUID(studyUID_ki);
-////		doc->setStudyDescription("OFFIS Structured Reporting Templates");
-////		doc->setSeriesDescription("IHE Year 2 - Key Image Note");
-////		doc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
-////
-////		doc->setPatientsName("Last Name^First Name");
-////		doc->setPatientsSex("O");
-////		doc->setManufacturer("Kuratorium OFFIS e.V.");
-////		doc->setReferringPhysiciansName("Last Name^First Name");
-//
-//		doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Document Title"));
-//
-//		doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_UIDRef, DSRTypes::AM_belowCurrent);
-////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Observation Context Mode"));
-////		doc->getTree().getCurrentContentItem().setCodeValue(DSRCodedEntryValue("IHE.03", OFFIS_CODING_SCHEME_DESIGNATOR, "DIRECT"));
-//		
-////		doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_PName);
-////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.04", OFFIS_CODING_SCHEME_DESIGNATOR, "Recording Observer's Name"));
-////		doc->getTree().getCurrentContentItem().setStringValue("Enter text");
-////		doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Text);
-////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Recording Observer's Organization Name"));
-////		doc->getTree().getCurrentContentItem().setStringValue("Enter text");
-////		doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Code);
-////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.06", OFFIS_CODING_SCHEME_DESIGNATOR, "Observation Context Mode"));
-////		doc->getTree().getCurrentContentItem().setCodeValue(DSRCodedEntryValue("IHE.07", OFFIS_CODING_SCHEME_DESIGNATOR, "PATIENT"));
-////
-////		doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
-////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.11", OFFIS_CODING_SCHEME_DESIGNATOR, "Key Image Description"));
-////		doc->getTree().getCurrentContentItem().setStringValue("Enter text");
-//
-//		doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
-////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10", OFFIS_CODING_SCHEME_DESIGNATOR, "Image Reference"));
-//		doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue("989898", "989898"));
-//
-//		DcmFileFormat *fileformat = new DcmFileFormat();
-//		DcmDataset *dataset = NULL;
-//		if (fileformat != NULL)
-//			dataset = fileformat->getDataset();
-//		if (dataset != NULL)
-//		{
-//			doc->getCodingSchemeIdentification().addPrivateDcmtkCodingScheme();
-//			if (doc->write(*dataset).good())
-//			{
-//				OFString filename = "report_test";
-//				filename += ".dcm";
-//				fileformat->saveFile(filename.c_str(), EXS_LittleEndianExplicit);
-//			}
-//		}
-//		delete fileformat
 	}
 	return self;
 }
@@ -286,7 +248,8 @@
 	{
 		document = new DSRDocument();
 		OFCondition status = EC_Normal;
-		// load old ROI SR and replace as needed
+		
+		// load data
 		if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 		{
 			DcmFileFormat fileformat;
@@ -299,11 +262,9 @@
 			NSData *archiveData;
 			if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())
 			{
-				NSLog(@"Unarchive from SR - SRAnnotation");
 				@try
 				{
-					archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
-					_rois = [[NSUnarchiver unarchiveObjectWithData:archiveData] retain];
+					_dataToBeEncapsulated = [[NSData dataWithBytes: buffer length: length] retain];
 				}
 				
 				@catch( NSException *ne)
@@ -320,8 +281,10 @@
 - (void)dealloc
 {
 	delete document;
+	[_DICOMSRDescription release];
+	[_DICOMSeriesNumber release];
 	[image release];
-	[_rois release];
+	[_dataToBeEncapsulated release];
 	[_seriesInstanceUID release];
 	[super dealloc];
 }
@@ -329,94 +292,39 @@
 #pragma mark -
 #pragma mark ROIs
 
-- (void)addROIs:(NSArray *)someROIs;
+- (void) addROIs: (NSArray *) someROIs;
 {
-	NSEnumerator *roisEnumerator = [someROIs objectEnumerator];
-	ROI *aROI;
+	if( !_dataToBeEncapsulated)
+		_dataToBeEncapsulated = [[NSArchiver archivedDataWithRootObject: [NSArray array]] retain];
+		
+	NSArray *preExistingROIs = [NSUnarchiver unarchiveObjectWithData: _dataToBeEncapsulated];
 	
-	if (!_rois)
-		_rois = [[NSArray alloc] init];
-	
-	while (aROI = [roisEnumerator nextObject])
+	for( ROI *aROI in someROIs)
 	{
-		NSEnumerator *enumerator = [_rois objectEnumerator];
-		BOOL newROI = YES;
-		ROI *roi;
 		NSData *newROIData = [aROI data];
 		
-		while ((roi = [enumerator nextObject]) && newROI)
+		BOOL newROI = YES;
+		for( ROI *roi in preExistingROIs)
 		{
-			if ([newROIData isEqualToData:[roi data]])
+			if ([newROIData isEqualToData: [roi data]])
+			{
 				newROI = NO;
+				break;
+			}
 		}
 		
-		if (newROI)
-			[self addROI:aROI];
+		if( newROI)
+			[self addROI: aROI];
 	}
 	
-	NSArray *newROIs = [_rois arrayByAddingObjectsFromArray:someROIs];
-	[_rois release];
-	_rois = [newROIs retain];
+	NSArray *newROIs = [preExistingROIs arrayByAddingObjectsFromArray: someROIs];
+	
+	[_dataToBeEncapsulated release];
+	_dataToBeEncapsulated = [[NSArchiver archivedDataWithRootObject: newROIs] retain];
 }
 
-- (void)addROI:(ROI *)aROI;
+- (void)addROI: (ROI *)aROI;
 {
-//	NSLog(@"+++ add a ROI : %@", [aROI name]);
-//	// add the region to the SR
-//	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_SCoord, DSRTypes::AM_belowCurrent);
-//	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("111030", "DCM", "Image Region"));
-//	
-//	// set the type of the region
-//	DSRTypes::E_GraphicType graphicType;
-//	
-//	switch([aROI type])
-//	{
-//		case tMesure:
-//		case tArrow:
-//		case tAngle:
-//		case tCPolygon:
-//		case tOPolygon:
-//		case tPlain:
-//		case tPencil:
-//			graphicType = DSRTypes::GT_Multipoint;
-//		break;
-//		
-//		case t2DPoint:
-//		case tText:
-//			graphicType = DSRTypes::GT_Point;
-//		break;
-//		
-//		case tOval:
-//			graphicType = DSRTypes::GT_Ellipse;
-//		break;
-//		
-//		case tROI: // (rectangle)
-//			graphicType = DSRTypes::GT_Polyline;
-//		break;
-//	}
-//	
-//	// set coordinates of the points
-//	DSRSpatialCoordinatesValue *coordinates = new DSRSpatialCoordinatesValue(graphicType);
-//
-//	DSRGraphicDataList *dsrPointsList = &coordinates->getGraphicDataList();
-//
-//	NSMutableArray *roiPointsList = [aROI points];
-//	NSEnumerator *roiPointsListEnumerator = [roiPointsList objectEnumerator];
-//	id aPoint;
-//
-//	while (aPoint = [roiPointsListEnumerator nextObject])
-//	{
-//		NSPoint aNSPoint = [aPoint point];
-//		dsrPointsList->addItem(aNSPoint.x,aNSPoint.y);
-//	}
-//	
-////	dsrPointsList.print(cout, 0, '/', '\n');
-////	coordinates->print(cout, 0);
-//	
-//	document->getTree().getCurrentContentItem().setSpatialCoordinates(*coordinates);
-//
-//	document->getTree().goUp(); // go up to the root element
-	
 	// image reference
 	OFString refsopClassUID = OFString([[image valueForKeyPath:@"series.seriesSOPClassUID"] UTF8String]);
 	OFString refsopInstanceUID = OFString([[image valueForKey:@"sopInstanceUID"] UTF8String]);
@@ -434,8 +342,9 @@
 	document->getTree().goUp(); // go up to the root element
 }
 
-- (NSArray *)ROIs{
-	return _rois;
+- (NSArray *) ROIs
+{
+	return [NSUnarchiver unarchiveObjectWithData: _dataToBeEncapsulated];
 }
 
 #pragma mark -
@@ -447,18 +356,17 @@
 	if (_newSR)
 	{
 		id study = [image valueForKeyPath:@"series.study"];
+		
 		//add to Study
 		document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
 		
 		document->setInstanceNumber([[[image valueForKey:@"instanceNumber"] stringValue] UTF8String]);
 		
 		// Add metadata for DICOM
-			//Study Description
+		//Study Description
 		if ([study valueForKey:@"studyName"])
 			document->setStudyDescription([[study valueForKey:@"studyName"] UTF8String]);
-			
-		//Series Description
-		document->setSeriesDescription("OsiriX ROI SR");
+		
 		document->setSpecificCharacterSet( "ISO_IR 192"); // UTF-8
 		
 		if ([study valueForKey:@"name"] )
@@ -471,39 +379,43 @@
 			document->setPatientsSex([[study valueForKey:@"patientSex"] UTF8String]);
 			
 		NSString *patientID = [study valueForKey:@"patientID"];
+		
 		if (patientID)
 			document->setPatientID([patientID UTF8String]);
 		
 		if ([study valueForKey:@"referringPhysician"])
 			document->setReferringPhysiciansName([[study valueForKey:@"referringPhysician"] UTF8String]);
 		
-		if ([study valueForKey:@"id"]) {
+		if ([study valueForKey:@"id"])
+		{
 			NSString *studyID = [study valueForKey:@"id"];
 			document->setStudyID([studyID UTF8String]);
 		}
 		
 		if ([study valueForKey:@"accessionNumber"])
-			document->setAccessionNumber([[study valueForKey:@"accessionNumber"] UTF8String]);
+			document->setAccessionNumber( [[study valueForKey:@"accessionNumber"] UTF8String]);
 		
-		//Series Number
-		document->setSeriesNumber("5002");
-		document->setManufacturer("OsiriX");
+		if( _DICOMSRDescription)
+			document->setSeriesDescription( [_DICOMSRDescription UTF8String]);
+		
+		if( _DICOMSeriesNumber)
+			document->setSeriesNumber( [_DICOMSeriesNumber UTF8String]);
+		
+		document->setManufacturer( "OsiriX");
 	}
 	
 	OFCondition status = EC_Normal;
 	DcmFileFormat *fileformat = new DcmFileFormat();
 	DcmDataset *dataset = NULL;
+	
 	if (fileformat != NULL)
 		dataset = fileformat->getDataset();
 	
 	if (dataset != NULL)
 	{
-		//This adds the archived ROI Array  to the SR
-		NSData *data = nil;
-		data = [ NSArchiver archivedDataWithRootObject:_rois];
-		const Uint8 *buffer =  (const Uint8 *)[data bytes];
-//		DcmTag tag(0x0071, 0x0011, DcmVR("OB"));			//By using DCM_EncapsulatedDocument, instead of our 0x0071, 0x0011 field, we can support implicit transfers...
-		status = dataset->putAndInsertUint8Array(DCM_EncapsulatedDocument , buffer, [data length] , OFTrue);
+		//This adds the data to the SR
+		const Uint8 *buffer =  (const Uint8 *) [_dataToBeEncapsulated bytes];
+		status = dataset->putAndInsertUint8Array(DCM_EncapsulatedDocument , buffer, [_dataToBeEncapsulated length] , OFTrue);
 		
 		document->getCodingSchemeIdentification().addPrivateDcmtkCodingScheme();
 		if (document->write(*dataset).good())
