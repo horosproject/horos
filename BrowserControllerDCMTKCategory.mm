@@ -345,8 +345,10 @@ extern NSRecursiveLock *PapyrusLock;
 	int total = [files count];
 	
 	CHUNK_SIZE = total / MPProcessors();
-	
-	CHUNK_SIZE += 20;
+	if( CHUNK_SIZE > 500)
+		CHUNK_SIZE = 500;
+	else
+		CHUNK_SIZE += 20;
 	
 	@try
 	{
