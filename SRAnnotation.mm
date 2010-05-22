@@ -227,7 +227,7 @@
 			_newSR = YES;
 			document->createNewDocument(DSRTypes::DT_BasicTextSR);	
 		}
-			
+		
 		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
 		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
 		
@@ -260,7 +260,7 @@
 			{
 				@try
 				{
-					_dataToBeEncapsulated = [[NSData dataWithBytes: buffer length: length] retain];
+					_dataEncapsulated = [[NSData dataWithBytes: buffer length: length] retain];
 				}
 				
 				@catch( NSException *ne)
@@ -280,9 +280,14 @@
 	[_DICOMSRDescription release];
 	[_DICOMSeriesNumber release];
 	[image release];
-	[_dataToBeEncapsulated release];
+	[_dataEncapsulated release];
 	[_seriesInstanceUID release];
 	[super dealloc];
+}
+
+- (NSData*) dataEncapsulated
+{
+	return _dataEncapsulated;
 }
 
 #pragma mark -
@@ -290,10 +295,10 @@
 
 - (void) addROIs: (NSArray *) someROIs;
 {
-	if( !_dataToBeEncapsulated)
-		_dataToBeEncapsulated = [[NSArchiver archivedDataWithRootObject: [NSArray array]] retain];
+	if( !_dataEncapsulated)
+		_dataEncapsulated = [[NSArchiver archivedDataWithRootObject: [NSArray array]] retain];
 		
-	NSArray *preExistingROIs = [NSUnarchiver unarchiveObjectWithData: _dataToBeEncapsulated];
+	NSArray *preExistingROIs = [NSUnarchiver unarchiveObjectWithData: _dataEncapsulated];
 	
 	for( ROI *aROI in someROIs)
 	{
@@ -315,8 +320,8 @@
 	
 	NSArray *newROIs = [preExistingROIs arrayByAddingObjectsFromArray: someROIs];
 	
-	[_dataToBeEncapsulated release];
-	_dataToBeEncapsulated = [[NSArchiver archivedDataWithRootObject: newROIs] retain];
+	[_dataEncapsulated release];
+	_dataEncapsulated = [[NSArchiver archivedDataWithRootObject: newROIs] retain];
 }
 
 - (void)addROI: (ROI *)aROI;
@@ -340,7 +345,7 @@
 
 - (NSArray *) ROIs
 {
-	return [NSUnarchiver unarchiveObjectWithData: _dataToBeEncapsulated];
+	return [NSUnarchiver unarchiveObjectWithData: _dataEncapsulated];
 }
 
 #pragma mark -
@@ -410,8 +415,8 @@
 	if (dataset != NULL)
 	{
 		//This adds the data to the SR
-		const Uint8 *buffer =  (const Uint8 *) [_dataToBeEncapsulated bytes];
-		status = dataset->putAndInsertUint8Array(DCM_EncapsulatedDocument , buffer, [_dataToBeEncapsulated length] , OFTrue);
+		const Uint8 *buffer =  (const Uint8 *) [_dataEncapsulated bytes];
+		status = dataset->putAndInsertUint8Array(DCM_EncapsulatedDocument , buffer, [_dataEncapsulated length] , OFTrue);
 		
 		document->getCodingSchemeIdentification().addPrivateDcmtkCodingScheme();
 		if (document->write(*dataset).good())

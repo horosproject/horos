@@ -203,7 +203,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return r;
 }
 
-- (void) syncReportAndComments
+- (void) archiveReportAsDICOMSR
 {
 	#ifndef OSIRIX_LIGHT
 	// Is there a report attached to this study -> archive it
@@ -213,24 +213,6 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		@try
 		{
-//			// Find the archived
-//			@try
-//			{
-//				id obj;
-//				
-//				obj = [self reportSRSeries];
-//				if( obj)
-//					[[self managedObjectContext] deleteObject: obj];
-//				
-//				obj = [self annotationsSRSeries];
-//				if( obj)
-//					[[self managedObjectContext] deleteObject: obj];
-//			}
-//			@catch( NSException *e)
-//			{
-//				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-//			}
-			
 			// Report
 			if( [self valueForKey: @"reportURL"])
 			{
@@ -245,21 +227,37 @@ static NSRecursiveLock *dbModifyLock = nil;
 					
 					if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
 					{
-						NSString *dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"zip"];
+						NSManagedObject *archivedReport = [self reportSRSeries];
+						BOOL needToArchive = YES, needToReIndex = NO;
+						NSString *dstPath = nil;
 						
-						// Create the new one
-						SRAnnotation *r = [[SRAnnotation alloc] initWithFile: zippedFile path: nil  forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]];
-						[r writeToFileAtPath: dstPath];
-						[r release];
+						dstPath = [archivedReport valueForKey: @"completePath"];
 						
-						[[BrowserController currentBrowser] addFilesAndFolderToDatabase: [NSArray arrayWithObject: dstPath]];
+						if( dstPath == nil)
+						{
+							dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"zip"];
+							needToReIndex = YES;
+						}
+						else
+						{
+							SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+							
+							if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]])
+								needToArchive = NO;
+						}
+
+						if( needToArchive)
+						{
+							// Save or Re-Save it as DICOM SR
+							SRAnnotation *r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
+							[r writeToFileAtPath: dstPath];
+							
+							if( needToReIndex)
+								[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject: YES];
+						}
 					}
 				}
 			}
-			
-			// Comments and Status
-			
-			// Key Images
 		}
 		@catch (NSException * e) 
 		{

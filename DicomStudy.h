@@ -66,7 +66,7 @@
 - (NSManagedObject *) roiSRSeries;
 - (NSManagedObject *) reportSRSeries;
 - (NSManagedObject *) annotationsSRSeries;
-- (void) syncReportAndComments;
+- (void) archiveReportAsDICOMSR;
 - (NSDictionary *)dictionary;
 - (BOOL) isHidden;
 - (void) setHidden: (BOOL) h;

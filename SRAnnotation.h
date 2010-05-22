@@ -29,7 +29,7 @@ typedef char DSRDocument;
 	id					image;
 	BOOL				_newSR;
 	NSString			*_seriesInstanceUID, *_DICOMSRDescription, *_DICOMSeriesNumber;
-	NSData				*_dataToBeEncapsulated;
+	NSData				*_dataEncapsulated;
 }
 
 + (NSString*) getImageRefSOPInstanceUID:(NSString*) path;
@@ -51,5 +51,6 @@ typedef char DSRDocument;
 - (NSString *) seriesDescription;
 - (NSString *) seriesNumber;
 - (int) frameIndex;
+- (NSData*) dataEncapsulated;
 
 @end
