@@ -292,6 +292,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (int) DefaultFolderSizeForDB;
 + (void) computeDATABASEINDEXforDatabase:(NSString*) path;
 + (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password;
++ (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password deleteSource: (BOOL) deleteSource;
 + (void) encryptFiles: (NSArray*) srcFiles inZIPFile: (NSString*) destFile password: (NSString*) password;
 - (IBAction) createDatabaseFolder:(id) sender;
 - (void) openDatabasePath: (NSString*) path;

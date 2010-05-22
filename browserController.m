@@ -406,49 +406,56 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 		if( reportPath == nil)
 		{
 			reportPath = [basePath stringByAppendingFormat:@"%@.pages",[Reports getUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
+				[study setValue:reportPath forKey:@"reportURL"];
 			else reportPath = nil;
 		}
 		
 		if( reportPath == nil)
 		{
 			reportPath = [basePath stringByAppendingFormat:@"%@.odt",[Reports getUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
+				[study setValue:reportPath forKey:@"reportURL"];
 			else reportPath = nil;
 		}
 		
 		if( reportPath == nil)
 		{
 			reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
+				[study setValue:reportPath forKey:@"reportURL"];
 			else reportPath = nil;
 		}
 		
 		if( reportPath == nil)
 		{
 			reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
+				[study setValue:reportPath forKey:@"reportURL"];
 			else reportPath = nil;
 		}
 		
 		if( reportPath == nil)
 		{
 			reportPath = [basePath stringByAppendingFormat:@"%@.pages",[Reports getOldUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
+				[study setValue:reportPath forKey:@"reportURL"];
 			else reportPath = nil;
 		}
 		
 		if( reportPath == nil)
 		{
 			reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getOldUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
+				[study setValue:reportPath forKey:@"reportURL"];
 			else reportPath = nil;
 		}
 		
 		if( reportPath == nil)
 		{
 			reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getOldUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
+				[study setValue:reportPath forKey:@"reportURL"];
 			else reportPath = nil;
 		}
 	}
@@ -460,7 +467,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 }
 
 #pragma mark-
-+(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder
++(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder
 {
 	NSDate *today = [NSDate date];
 	NSError *error = nil;
@@ -836,7 +843,8 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 							if ([curDict objectForKey: @"hasDICOM"])
 								[study setValue:[curDict objectForKey: @"hasDICOM"] forKey:@"hasDICOM"];
 							
-							[browserController checkForExistingReport:study dbFolder:dbFolder];
+							if( newObject)
+								[browserController checkForExistingReport:study dbFolder:dbFolder];
 						}
 						else
 						{
@@ -17053,7 +17061,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[wait release];
 }
 
-+ (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password
++ (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password 
+{
+	return [BrowserController encryptFileOrFolder: srcFolder inZIPFile: destFile password: password deleteSource: YES];
+}
+
++ (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password deleteSource: (BOOL) deleteSource
 {
 	NSTask *t;
 	NSArray *args;
@@ -17094,7 +17107,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[t launch];
 			[t waitUntilExit];
 			
-			if( [t terminationStatus] == 0)
+			if( [t terminationStatus] == 0 && deleteSource == YES)
 				[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
 		}
 	}

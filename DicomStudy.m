@@ -207,7 +207,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
 	#ifndef OSIRIX_LIGHT
 	// Is there a report attached to this study -> archive it
-	if( [self valueForKey: @"report"])
+	if( [self valueForKey: @"reportURL"])
 	{
 		[[self managedObjectContext] lock];
 		
@@ -216,13 +216,13 @@ static NSRecursiveLock *dbModifyLock = nil;
 			// Report
 			if( [self valueForKey: @"reportURL"])
 			{
-				NSString *zippedFile = @"/tmp/zippedReport";
+				NSString *zippedFile = @"/tmp/zippedReport.zip";
 				
 				if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
 					[[self valueForKey: @"reportURL"] writeToFileAtPath: zippedFile];
 					
 				else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
-					[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: @"/tmp/zippedReport" password: nil];
+					[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO];
 				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
 				{
@@ -263,6 +263,17 @@ static NSRecursiveLock *dbModifyLock = nil;
 		}
 		
 		[[self managedObjectContext] unlock];
+	}
+	else
+	{
+		@try
+		{
+			// Delete the existing Report
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 	}
 	#endif
 }
