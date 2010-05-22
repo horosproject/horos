@@ -54,9 +54,10 @@ static id aedesc_to_id(AEDesc *desc)
 
 @implementation Reports
 
-+ (NSString*) getUniqueFilename:(NSManagedObject*) study
++ (NSString*) getUniqueFilename:(id) study
 {
 	NSString *s = [study valueForKey:@"accessionNumber"];
+	
 	if( [s length] > 0)
 		return [DicomFile NSreplaceBadCharacter: [[study valueForKey:@"patientUID"] stringByAppendingFormat:@"-%@", [study valueForKey:@"accessionNumber"]]];
 	else

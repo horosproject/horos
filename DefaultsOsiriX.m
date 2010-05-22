@@ -887,6 +887,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"validateFilesBeforeImporting"];
 	[defaultValues setObject:@"10" forKey:@"quicktimeExportRateValue"];
 	[defaultValues setObject:@"1" forKey:@"32bitDICOMAreAlwaysIntegers"];
+	[defaultValues setObject:@"1" forKey:@"archiveReportsAndAnnotationsAsDICOMSR"];
 	
 	// ** ROI Default
 	[defaultValues setObject:[NSNumber numberWithFloat: 2] forKey:@"ROIThickness"];

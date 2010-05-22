@@ -22,7 +22,7 @@
 	NSMutableString *templateName;
 }
 
-+ (NSString*) getUniqueFilename:(NSManagedObject*) study;
++ (NSString*) getUniqueFilename:(id) study;
 + (NSString*) getOldUniqueFilename:(NSManagedObject*) study;
 
 - (NSString*) generateReportSourceData:(NSManagedObject*) study;

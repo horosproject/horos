@@ -16,6 +16,7 @@
 #import "DCMView.h"
 #import "DCMPix.h"
 #import "browserController.h"
+#import "DicomFile.h"
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dsrtypes.h"
@@ -52,7 +53,7 @@
 	return result;
 }
 
-+ (NSString*) getFilenameFromSR:(NSString*) path;
++ (NSString*) getROIFilenameFromSR:(NSString*) path;
 {
 	NSString	*result = nil;
 	DSRDocument	*document = new DSRDocument();
@@ -75,6 +76,46 @@
 				DSRImageReferenceValue imageRef = document->getTree().getCurrentContentItem().getImageReference();
 				result = [NSString stringWithFormat:@"%s %d-%d.dcm", imageRef.getSOPInstanceUID().c_str(), instanceNumber, 0];
 			}
+		}
+	}
+	
+	delete document;
+	
+	return result;
+}
+
++ (NSString*) getReportFilenameFromSR:(NSString*) path;
+{
+	NSString	*result = nil;
+	DSRDocument	*document = new DSRDocument();
+	
+	OFCondition status = EC_Normal;
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+	{			
+		DcmFileFormat fileformat;
+		status  = fileformat.loadFile([path UTF8String]);
+		if (status.good())
+		{
+			status = document->read(*fileformat.getDataset());
+			
+			int instanceNumber = [[NSString stringWithFormat:@"%s", document->getInstanceNumber()] intValue];
+			NSString *accessionNumber = [NSString stringWithFormat:@"%s", document->getAccessionNumber()];
+			NSString *studyInstanceUID = [NSString stringWithFormat:@"%s", document->getStudyInstanceUID()];
+			NSString *patientName = [NSString stringWithFormat:@"%s", document->getPatientsName()];
+			NSString *patientID = [NSString stringWithFormat:@"%s", document->getPatientID()];
+			NSString *patientDOB =  [NSString stringWithFormat:@"%s", document->getPatientsBirthDate()];
+			NSCalendarDate *DOB = [NSCalendarDate dateWithString: patientDOB calendarFormat:@"%Y%m%d"];
+			
+			// See DicomFile for SAME definition
+			NSString *patientUID = [NSString stringWithFormat:@"%@-%@-%@", patientName, patientID, [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [DOB timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"]];
+			
+			patientUID = [[DicomFile NSreplaceBadCharacter: patientUID] uppercaseString];
+			
+			if( accessionNumber == nil)
+				accessionNumber = @"";
+				
+			[NSDictionary dictionaryWithObjectsAndKeys: accessionNumber, @"accessionNumber", patientUID, @"patientUID", studyInstanceUID, @"studyInstanceUID", nil];
 		}
 	}
 	

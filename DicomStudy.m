@@ -216,45 +216,43 @@ static NSRecursiveLock *dbModifyLock = nil;
 			// Report
 			if( [self valueForKey: @"reportURL"])
 			{
+				NSString *zippedFile = @"/tmp/zippedReport";
+				
 				if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
-				{
+					[[self valueForKey: @"reportURL"] writeToFileAtPath: zippedFile];
 					
-				}
 				else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
-				{
-					NSString *zippedFile = @"/tmp/zippedReport";
 					[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: @"/tmp/zippedReport" password: nil];
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
+				{
+					NSManagedObject *archivedReport = [self reportSRSeries];
+					BOOL needToArchive = YES, needToReIndex = NO;
+					NSString *dstPath = nil;
 					
-					if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
+					dstPath = [archivedReport valueForKey: @"completePath"];
+					
+					if( dstPath == nil)
 					{
-						NSManagedObject *archivedReport = [self reportSRSeries];
-						BOOL needToArchive = YES, needToReIndex = NO;
-						NSString *dstPath = nil;
+						dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"zip"];
+						needToReIndex = YES;
+					}
+					else
+					{
+						SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
 						
-						dstPath = [archivedReport valueForKey: @"completePath"];
-						
-						if( dstPath == nil)
-						{
-							dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"zip"];
-							needToReIndex = YES;
-						}
-						else
-						{
-							SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-							
-							if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]])
-								needToArchive = NO;
-						}
+						if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]])
+							needToArchive = NO;
+					}
 
-						if( needToArchive)
-						{
-							// Save or Re-Save it as DICOM SR
-							SRAnnotation *r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
-							[r writeToFileAtPath: dstPath];
-							
-							if( needToReIndex)
-								[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject: YES];
-						}
+					if( needToArchive)
+					{
+						// Save or Re-Save it as DICOM SR
+						SRAnnotation *r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
+						[r writeToFileAtPath: dstPath];
+						
+						if( needToReIndex)
+							[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject: YES];
 					}
 				}
 			}
@@ -482,6 +480,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self willChangeValueForKey: @"reportURL"];
 	[self setPrimitiveValue: url forKey: @"reportURL"];
 	[self didChangeValueForKey: @"reportURL"];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"archiveReportsAndAnnotationsAsDICOMSR"])
+		[self archiveReportAsDICOMSR];
 }
 
 - (NSString*) reportURL

@@ -459,6 +459,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	#endif
 }
 
+#pragma mark-
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder
 {
 	NSDate *today = [NSDate date];
@@ -646,6 +647,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 				newFile = [curDict objectForKey:@"filePath"];
 				
 				BOOL DICOMROI = NO;
+				NSString *reportURL = nil;
 				
 				NSString *SOPClassUID = [curDict objectForKey:@"SOPClassUID"];
 				
@@ -655,8 +657,8 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX ROI SR"])
 					{
 						// Move it to the ROIs folder
-						NSString	*uidName = [SRAnnotation getFilenameFromSR: newFile];
-						NSString	*destPath = [roiFolder stringByAppendingPathComponent: uidName];
+						NSString *uidName = [SRAnnotation getROIFilenameFromSR: newFile];
+						NSString *destPath = [roiFolder stringByAppendingPathComponent: uidName];
 						
 						if( context == browserController.managedObjectContext && browserController.isCurrentDatabaseBonjour) // It's a Bonjour shared DB -> We don't need to add this ROI to the ROIs folder. We keep it in the TEMP.noindex folder
 						{
@@ -684,7 +686,31 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 					// Check if it is an OsiriX Report SR
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
 					{
+						// Move it to the REPORTS folder
+						NSString *uidName = [SRAnnotation getReportFilenameFromSR: newFile];
+						NSString *destPath = [reportsDirectory stringByAppendingPathComponent: uidName];
+						NSString *zipFile = [@"/tmp/" stringByAppendingPathComponent: [destPath lastPathComponent]];
 						
+						// Extract the CONTENT to the REPORTS folder
+						SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: newFile] autorelease];
+						[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
+						
+						// Check for http/https !
+						if( [[r dataEncapsulated] length] > 8 && ([[NSString stringWithCString: [[r dataEncapsulated] bytes] length: [@"http://" length]] isEqualToString: @"http://"] || [[NSString stringWithCString: [[r dataEncapsulated] bytes] length: [@"https://" length]] isEqualToString: @"https://"]))
+						{
+							reportURL = [[[NSString alloc] initWithData: [r dataEncapsulated] encoding: NSUTF8StringEncoding] autorelease];
+						}
+						else
+						{
+							[[r dataEncapsulated] writeToFile: zipFile atomically: YES];
+							
+							[BrowserController unzipFile: zipFile withPassword: nil destination: destPath];
+							[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
+							
+							reportURL = destPath;
+						}
+						
+						DICOMROI = YES;
 					}
 					
 					// Check if it is an OsiriX Comments/Status SR
@@ -1020,6 +1046,9 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 								if( [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
 									[study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
 								
+								if( [[curDict objectForKey: @"reportURL"] boolValue])
+									[study setPrimitiveValue: reportURL forKey: @"reportURL"];
+								
 								if( [curDict objectForKey: @"keyFrames"])
 								{
 									@try
@@ -1174,11 +1203,11 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 		
 			if( addFailed == NO)
 			{
-				NSMutableArray		*viewersList = [ViewerController getDisplayed2DViewers];
+				NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
 				
 				for( NSManagedObject *seriesTable in addedSeries)
 				{
-					NSString			*curPatientID = [seriesTable valueForKeyPath:@"study.patientID"];
+					NSString *curPatientID = [seriesTable valueForKeyPath:@"study.patientID"];
 					
 					for( ViewerController *vc in viewersList)
 					{
@@ -1259,6 +1288,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	
 	return addedImagesArray;
 }
+#pragma mark-
 
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder {
 	return [self addFiles:newFilesArray toContext:context toDatabase:NULL onlyDICOM:onlyDICOM  notifyAddedFiles:notifyAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
@@ -14066,7 +14096,7 @@ static NSArray*	openSubSeriesArray = nil;
 	return nil;
 }
 
-- (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination
++ (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination
 {
 	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
 	
@@ -14141,7 +14171,7 @@ static NSArray*	openSubSeriesArray = nil;
 	// first, try without password
 	int result = 0;
 	
-	if( [self unzipFile: file withPassword: nil destination: destination] == NO)
+	if( [BrowserController unzipFile: file withPassword: nil destination: destination] == NO)
 	{
 		self.pathToEncryptedFile = [NSString stringWithFormat: NSLocalizedString( @"File: %@", nil), file];
 		self.CDpassword = @"";
@@ -14159,7 +14189,7 @@ static NSArray*	openSubSeriesArray = nil;
 			[NSApp endSheet: CDpasswordWindow];
 			[CDpasswordWindow orderOut: self];
 		}
-		while( [self unzipFile: file withPassword: self.CDpassword destination: destination] == NO && result == NSRunStoppedResponse);
+		while( [BrowserController unzipFile: file withPassword: self.CDpassword destination: destination] == NO && result == NSRunStoppedResponse);
 	}
 	else
 		result = NSRunStoppedResponse;
@@ -18221,9 +18251,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 #ifndef OSIRIX_LIGHT
 - (IBAction) generateReport: (id)sender
 {
-	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
-	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
+	NSIndexSet *index = [databaseOutline selectedRowIndexes];
+	NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
 	int reportsMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue];
+	
 	if( item)
 	{
 		if( reportsMode == 0 && [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Microsoft Word"] == nil) // Would absolutePathForAppBundleWithIdentifier be better here? (DDP)
