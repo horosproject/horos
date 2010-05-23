@@ -711,10 +711,21 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 						{
 							[[r dataEncapsulated] writeToFile: zipFile atomically: YES];
 							
-							[BrowserController unzipFile: zipFile withPassword: nil destination: destPath showGUI: NO];
+							[BrowserController unzipFile: zipFile withPassword: nil destination: @"/tmp/zippedFile/" showGUI: NO];
 							[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
 							
-							reportURL = destPath;
+							NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp/zippedFile/" error: nil];
+							
+							for( NSString *file in files)
+							{
+								if( [file hasPrefix: @"."] == NO)
+								{
+									if( reportURL)
+										NSLog( @"*** multiple files in Report decompression ?");
+									
+									reportURL = file;
+								}
+							}
 						}
 						
 						DICOMROI = YES;
@@ -14116,7 +14127,7 @@ static NSArray*	openSubSeriesArray = nil;
 
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination showGUI: (BOOL) showGUI
 {
-	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
+	[[NSFileManager defaultManager] removeFileAtPath: destination handler: nil];
 	
 	NSTask *t;
 	NSArray *args;
