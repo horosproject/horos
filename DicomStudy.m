@@ -521,10 +521,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 				{	// Should we convert it to a local path?
 					NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
 					if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
-					{
-						[self setReportURL: url];
-						NSLog(@"report url converted to local path");
-					}
+						[self setPrimitiveValue: url forKey: @"reportURL"];
 				}
 			}
 		}

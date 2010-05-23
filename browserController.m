@@ -471,7 +471,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 {
 	NSDate *today = [NSDate date];
 	NSError *error = nil;
-	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH], *newFile, *INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH], *roiFolder = [dbFolder stringByAppendingPathComponent:@"/ROIs"], *reportsDirectory = [INpath stringByAppendingPathComponent:@"/REPORTS/"];
+	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH], *newFile, *INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH], *roiFolder = [dbFolder stringByAppendingPathComponent:@"/ROIs"], *reportsDirectory = [dbFolder stringByAppendingPathComponent:@"/REPORTS/"];
 	NSManagedObject *seriesTable, *study;
 	DicomImage *image;
 	NSInteger index;
@@ -720,10 +720,20 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 								{
 									if( reportURL)
 										NSLog( @"*** multiple files in Report decompression ?");
-									
-									reportURL = f;
+									reportURL = [@"/tmp/zippedFile/" stringByAppendingPathComponent: f];
 								}
 							}
+							
+							if( reportURL)
+							{
+								destPath = [[destPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [reportURL lastPathComponent]];
+								
+								// Move it to the REPORTS folder
+								[[NSFileManager defaultManager] movePath: reportURL toPath: destPath handler: nil];
+								reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportURL lastPathComponent]];
+							}
+							
+							[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
 						}
 						
 						DICOMROI = YES;
