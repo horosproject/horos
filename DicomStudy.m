@@ -222,7 +222,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 					[[self valueForKey: @"reportURL"] writeToFileAtPath: zippedFile];
 					
 				else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
-					[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO];
+					[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
 				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
 				{
@@ -230,11 +230,13 @@ static NSRecursiveLock *dbModifyLock = nil;
 					BOOL needToArchive = YES, needToReIndex = NO;
 					NSString *dstPath = nil;
 					
-					dstPath = [archivedReport valueForKey: @"completePath"];
+					dstPath = [[archivedReport valueForKeyPath: @"images.completePath"] anyObject];
+					if( [[[archivedReport valueForKeyPath: @"images.completePath"] allObjects] count] > 1)
+						NSLog( @"********* warning multiple report for this study");
 					
 					if( dstPath == nil)
 					{
-						dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"zip"];
+						dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
 						needToReIndex = YES;
 					}
 					else
@@ -266,14 +268,18 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	else
 	{
+		[[self managedObjectContext] unlock];
 		@try
 		{
 			// Delete the existing Report
+			[[self managedObjectContext] deleteObject: [self reportSRSeries]];
+			[[BrowserController currentBrowser] saveDatabase];
 		}
 		@catch (NSException * e) 
 		{
 			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
+		[[self managedObjectContext] unlock];
 	}
 	#endif
 }

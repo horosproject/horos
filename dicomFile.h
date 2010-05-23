@@ -75,6 +75,7 @@
 - (id) initRandom; /**< Inits and returns an empty dicomFile */
 - (id) initWithXMLDescriptor: (NSString*)pathToXMLDescriptor path:(NSString*) f; /**< Init with XMLDescriptor for information and f for image data */
 - (NSString*) patientUID; /**< Returns the patientUID */
++ (NSString*) patientUID: (id) src; /**< Returns the patientUID */
 
 /** Returns a dictionary of the elements used to import into the database
 * Keys:

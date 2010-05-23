@@ -513,7 +513,7 @@ extern NSRecursiveLock *PapyrusLock;
 			if(name == nil) name = [[NSString alloc] initWithCString: string encoding: encoding[ 0]];
 		}
 		else
-			name = [[NSString alloc] initWithString:@"No name"];
+			name = [[NSString alloc] initWithString: @"No name"];
 		
 		[dicomElements setObject:name forKey:@"patientName"];
 		
@@ -737,11 +737,10 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		//Study Instance UID
 		if (dataset->findAndGetString(DCM_StudyInstanceUID, string, OFFalse).good() && string != NULL)
-		{
 			studyID = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
-		}
 		else
 			studyID = [[NSString alloc] initWithString:name];
+			
 		[dicomElements setObject:studyID forKey:@"studyID"];
 			
 		//StudyID

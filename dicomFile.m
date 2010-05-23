@@ -3342,11 +3342,16 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     [super dealloc];
 }
 
-- (NSString*) patientUID
++ (NSString*) patientUID: (id) src
 {
-	NSString *string = [NSString stringWithFormat:@"%@-%@-%@", [dicomElements valueForKey:@"patientName"], [dicomElements valueForKey:@"patientID"], [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[dicomElements valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"]];
+	NSString *string = [NSString stringWithFormat:@"%@-%@-%@", [src valueForKey:@"patientName"], [src valueForKey:@"patientID"], [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[src valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"]];
 	
 	return [[DicomFile NSreplaceBadCharacter: string] uppercaseString];
+}
+
+- (NSString*) patientUID
+{
+	return [DicomFile patientUID: dicomElements];
 }
 
 - (long) NoOfFrames{ return NoOfFrames;}

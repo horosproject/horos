@@ -711,7 +711,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 						{
 							[[r dataEncapsulated] writeToFile: zipFile atomically: YES];
 							
-							[BrowserController unzipFile: zipFile withPassword: nil destination: destPath];
+							[BrowserController unzipFile: zipFile withPassword: nil destination: destPath showGUI: NO];
 							[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
 							
 							reportURL = destPath;
@@ -3311,6 +3311,11 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	}
 	
 	return retError;
+}
+
+-(long) saveDatabase
+{
+	return [self saveDatabase: nil context: self.managedObjectContext];
 }
 
 -(long) saveDatabase: (NSString*)path
@@ -14106,13 +14111,18 @@ static NSArray*	openSubSeriesArray = nil;
 
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination
 {
+	return [BrowserController unzipFile:  file withPassword:  pass destination:  destination showGUI: YES];
+}
+
++ (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination showGUI: (BOOL) showGUI
+{
 	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
 	
 	NSTask *t;
 	NSArray *args;
 	WaitRendering *wait = nil;
 	
-	if( [NSThread currentThread] == [AppController mainThread])
+	if( [NSThread currentThread] == [AppController mainThread] && showGUI == YES)
 	{
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Decompressing the files...", nil)];
 		[wait showWindow:self];
@@ -17063,10 +17073,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 + (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password 
 {
-	return [BrowserController encryptFileOrFolder: srcFolder inZIPFile: destFile password: password deleteSource: YES];
+	return [BrowserController encryptFileOrFolder: srcFolder inZIPFile: destFile password: password deleteSource: YES showGUI: YES];
 }
 
 + (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password deleteSource: (BOOL) deleteSource
+{
+	return [BrowserController encryptFileOrFolder: srcFolder inZIPFile: destFile password: password deleteSource: deleteSource showGUI: YES];
+}
+
++ (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password deleteSource: (BOOL) deleteSource showGUI: (BOOL) showGUI
 {
 	NSTask *t;
 	NSArray *args;

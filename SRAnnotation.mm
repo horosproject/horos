@@ -98,7 +98,7 @@
 		if (status.good())
 		{
 			status = document->read(*fileformat.getDataset());
-			
+			// See DicomFile.m
 			int instanceNumber = [[NSString stringWithFormat:@"%s", document->getInstanceNumber()] intValue];
 			NSString *accessionNumber = [NSString stringWithFormat:@"%s", document->getAccessionNumber()];
 			NSString *studyInstanceUID = [NSString stringWithFormat:@"%s", document->getStudyInstanceUID()];
@@ -107,15 +107,22 @@
 			NSString *patientDOB =  [NSString stringWithFormat:@"%s", document->getPatientsBirthDate()];
 			NSCalendarDate *DOB = [NSCalendarDate dateWithString: patientDOB calendarFormat:@"%Y%m%d"];
 			
-			// See DicomFile for SAME definition
-			NSString *patientUID = [NSString stringWithFormat:@"%@-%@-%@", patientName, patientID, [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [DOB timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"]];
-			
-			patientUID = [[DicomFile NSreplaceBadCharacter: patientUID] uppercaseString];
-			
 			if( accessionNumber == nil)
 				accessionNumber = @"";
-				
-			[NSDictionary dictionaryWithObjectsAndKeys: accessionNumber, @"accessionNumber", patientUID, @"patientUID", studyInstanceUID, @"studyInstanceUID", nil];
+			
+			if( patientID == nil)
+				patientID = @"";
+			
+			if( patientID == nil)
+				patientID = @"";
+			
+			if( patientName == nil)
+				patientName = @"No name";
+			
+			if( studyInstanceUID == nil)
+				studyInstanceUID = patientName;
+			
+			result = [DicomFile patientUID: [NSDictionary dictionaryWithObjectsAndKeys: patientName, @"patientName", accessionNumber, @"accessionNumber", patientID, @"patientID", studyInstanceUID, @"studyInstanceUID", DOB, @"patientBirthDate", nil]];
 		}
 	}
 	
@@ -197,6 +204,7 @@
 		_seriesInstanceUID = nil;
 		_DICOMSRDescription =  @"OsiriX Report SR";
 		_DICOMSeriesNumber = @"5003";
+		_dataEncapsulated = [[NSData dataWithContentsOfFile: file] retain];
 		
 		[_DICOMSRDescription retain];
 		[_DICOMSeriesNumber retain];
@@ -296,7 +304,6 @@
 				
 			const Uint8 *buffer;
 			unsigned int length;
-			NSData *archiveData;
 			if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())
 			{
 				@try
