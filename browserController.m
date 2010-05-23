@@ -714,16 +714,14 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 							[BrowserController unzipFile: zipFile withPassword: nil destination: @"/tmp/zippedFile/" showGUI: NO];
 							[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
 							
-							NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp/zippedFile/" error: nil];
-							
-							for( NSString *file in files)
+							for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp/zippedFile/" error: nil])
 							{
-								if( [file hasPrefix: @"."] == NO)
+								if( [f hasPrefix: @"."] == NO)
 								{
 									if( reportURL)
 										NSLog( @"*** multiple files in Report decompression ?");
 									
-									reportURL = file;
+									reportURL = f;
 								}
 							}
 						}
