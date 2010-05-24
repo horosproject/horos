@@ -98,6 +98,12 @@ typedef enum AsyncSocketError AsyncSocketError;
 - (void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag;
 
 /**
+ * Called when a socket has written some data, but has not yet completed the entire write.
+ * It may be used to for things such as updating progress bars.
+**/
+- (void)onSocket:(AsyncSocket *)sock didWritePartialDataOfLength:(CFIndex)partialLength tag:(long)tag;
+
+/**
  * Called if a read operation has reached its timeout without completing.
  * This method allows you to optionally extend the timeout.
  * If you return a positive time interval (> 0) the read's timeout will be extended by the given amount.
@@ -146,8 +152,12 @@ typedef enum AsyncSocketError AsyncSocketError;
 
 @interface AsyncSocket : NSObject
 {
+	CFSocketNativeHandle theNativeSocket4;
+	CFSocketNativeHandle theNativeSocket6;
+	
 	CFSocketRef theSocket4;            // IPv4 accept or connect socket
 	CFSocketRef theSocket6;            // IPv6 accept or connect socket
+	
 	CFReadStreamRef theReadStream;
 	CFWriteStreamRef theWriteStream;
 
@@ -172,8 +182,6 @@ typedef enum AsyncSocketError AsyncSocketError;
 	UInt16 theFlags;
 	
 	long theUserData;
-	
-	NSRecursiveLock *lock;
 }
 
 - (id)init;
@@ -195,7 +203,7 @@ typedef enum AsyncSocketError AsyncSocketError;
 - (long)userData;
 - (void)setUserData:(long)userData;
 
-/* Don't use these to read or write. And don't close them, either! */
+/* Don't use these to read or write. And don't close them either! */
 - (CFSocketRef)getCFSocket;
 - (CFReadStreamRef)getCFReadStream;
 - (CFWriteStreamRef)getCFWriteStream;
@@ -239,7 +247,7 @@ typedef enum AsyncSocketError AsyncSocketError;
  * 
  * To accept connections on any interface pass nil, or simply use the acceptOnPort:error: method.
 **/
-- (BOOL)acceptOnAddress:(NSString *)hostaddr port:(UInt16)port error:(NSError **)errPtr;
+- (BOOL)acceptOnInterface:(NSString *)interface port:(UInt16)port error:(NSError **)errPtr;
 
 /**
  * Connects to the given host and port.
@@ -317,6 +325,19 @@ typedef enum AsyncSocketError AsyncSocketError;
 - (NSString *)localHost;
 - (UInt16)localPort;
 
+/**
+ * Returns the local or remote address to which this socket is connected,
+ * specified as a sockaddr structure wrapped in a NSData object.
+ * 
+ * See also the connectedHost, connectedPort, localHost and localPort methods.
+**/
+- (NSData *)connectedAddress;
+- (NSData *)localAddress;
+
+/**
+ * Returns whether the socket is IPv4 or IPv6.
+ * An accepting socket may be both.
+**/
 - (BOOL)isIPv4;
 - (BOOL)isIPv6;
 

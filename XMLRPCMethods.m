@@ -264,7 +264,6 @@ static NSTimeInterval lastConnection = 0;
 							
 						NSError *error = nil;
 						NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-						[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
 						[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
 						[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
 					}
@@ -320,7 +319,6 @@ static NSTimeInterval lastConnection = 0;
 							
 						NSError *error = nil;
 						NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-						[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
 						[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
 						[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
 					}
@@ -393,7 +391,6 @@ static NSTimeInterval lastConnection = 0;
 						
 						NSError *error = nil;
 						NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-						[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
 						[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
 						[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
 					}
@@ -443,7 +440,6 @@ static NSTimeInterval lastConnection = 0;
 						
 						NSError *error = nil;
 						NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-						[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
 						[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
 						[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
 					}
@@ -495,7 +491,7 @@ static NSTimeInterval lastConnection = 0;
 						NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
 						
 						// Generate an answer containing the elements
-						NSMutableString *a = [NSMutableString stringWithString: @"<array><data>"];
+						NSMutableString *a = [NSMutableString stringWithString: @"<value><array><data>"];
 						
 						for( id loopItem5 in viewersList)
 						{
@@ -528,10 +524,11 @@ static NSTimeInterval lastConnection = 0;
 							
 							[a appendString: c];
 						}
-						[a appendString: @"</data></array>"];
+						[a appendString: @"</data></array></value>"];
 						
 						// Done, we can send the response to the sender
 						NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", @"0", a];
+						
 						NSError *error = nil;
 						NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
 						[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
@@ -555,7 +552,7 @@ static NSTimeInterval lastConnection = 0;
 						NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
 						
 						// Generate an answer containing the elements
-						NSMutableString *a = [NSMutableString stringWithString: @"<array><data>"];
+						NSMutableString *a = [NSMutableString stringWithString: @"<value><array><data>"];
 						
 						for( id loopItem4 in viewersList)
 						{
@@ -588,7 +585,7 @@ static NSTimeInterval lastConnection = 0;
 							
 							[a appendString: c];
 						}
-						[a appendString: @"</data></array>"];
+						[a appendString: @"</data></array></value>"];
 						
 						// Done, we can send the response to the sender
 						NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", @"0", a];
