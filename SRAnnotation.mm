@@ -234,7 +234,7 @@
 		}
 			
 		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", [[NSString stringWithFormat: @"Study Report - %@ File Format", [file extension]] UTF8String]));
+		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", [[NSString stringWithFormat: @"Study Report - %@ File Format", [file pathExtension]] UTF8String]));
 		
 		image = [im retain];
 	}
