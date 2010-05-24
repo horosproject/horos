@@ -2555,12 +2555,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 			}
-			
-			// Check if it is an OsiriX Report DICOM SR
-			if( [[dicomElements valueForKey: @"seriesDescription"] isEqualToString: @"OsiriX Report SR"] && [[dicomElements valueForKey: @"seriesNumber"] intValue] == 5003)
-			{
-				[dicomElements setObject: [NSNumber numberWithBool: YES] forKey: @"reportURL"];
-			}
 		}
 		
 		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x4008);

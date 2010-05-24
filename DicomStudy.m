@@ -254,7 +254,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 						[r writeToFileAtPath: dstPath];
 						
 						if( needToReIndex)
-							[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject: YES];
+							[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject:YES];
 					}
 				}
 			}

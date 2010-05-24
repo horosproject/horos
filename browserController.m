@@ -842,7 +842,6 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 						{
 							[study setValue:[curDict objectForKey: @"studyID"] forKey:@"studyInstanceUID"];
 							[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
-							[study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
 							
 							[study setValue:[curDict objectForKey: @"accessionNumber"] forKey:@"accessionNumber"];
 							
@@ -872,17 +871,15 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 								
 							if( [study valueForKey: @"studyName"] == nil || [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] || [[study valueForKey: @"studyName"] isEqualToString: @""])
 								[study setValue: [curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
-								
-							
-							NSCalendarDate *newDate = [curDict objectForKey: @"studyDate"];
-							NSCalendarDate *previousDate = [study valueForKey: @"date"];
-							
-							if( newDate)
-							{
-								if( previousDate == nil || [previousDate compare: newDate] == NSOrderedDescending)
-									[study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
-							}
 						}
+						
+						
+						if( [curDict objectForKey: @"studyDate"])
+						{
+							if( [study valueForKey: @"date"] == 0L || [[study valueForKey: @"date"] timeIntervalSinceDate: [curDict objectForKey: @"studyDate"]] >= 0)
+								[study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
+						}
+							
 						curStudyID = [curDict objectForKey: @"studyID"];
 						curPatientUID = [curDict objectForKey: @"patientUID"];
 						
