@@ -2155,7 +2155,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				val = Papy3GetElement (theGroupP, papPatientIDGr, &nbVal, &itemType);
 				if (val != NULL)
 				{
-					patientID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
+					patientID = [[NSString alloc] initWithCString:val->a encoding: encoding[ 0]];
 					[dicomElements setObject:patientID forKey:@"patientID"];
 				}
 				

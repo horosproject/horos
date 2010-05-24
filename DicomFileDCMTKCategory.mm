@@ -520,8 +520,8 @@ extern NSRecursiveLock *PapyrusLock;
 		//Patient ID
 		if (dataset->findAndGetString(DCM_PatientID, string, OFFalse).good() && string != NULL)
 		{
-			patientID  = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
-			[dicomElements setObject:patientID forKey:@"patientID"];
+			patientID  = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+			[dicomElements setObject:patientID forKey: @"patientID"];
 		}
 		
 		//Patients Age
