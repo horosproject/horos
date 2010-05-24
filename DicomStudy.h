@@ -58,7 +58,6 @@
 - (NSSet *) paths;
 - (NSSet *) keyImages;
 - (NSArray *)imageSeries;
-- (NSArray *)reportSeries;
 - (NSArray *)keyObjectSeries;
 - (NSArray *)keyObjects;
 - (NSArray *)presentationStateSeries;

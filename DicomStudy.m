@@ -206,11 +206,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (void) archiveReportAsDICOMSR
 {
 	#ifndef OSIRIX_LIGHT
+	
+	[[self managedObjectContext] lock];
+	
 	// Is there a report attached to this study -> archive it
 	if( [self valueForKey: @"reportURL"])
 	{
-		[[self managedObjectContext] lock];
-		
 		@try
 		{
 			// Report
@@ -263,26 +264,22 @@ static NSRecursiveLock *dbModifyLock = nil;
 		{
 			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
-		
-		[[self managedObjectContext] unlock];
 	}
 	else
 	{
-		[[self managedObjectContext] unlock];
 		@try
 		{
 			// Delete the existing Report
-			id report = [self reportSRSeries];
-			if( report)
-				[[self managedObjectContext] deleteObject: report];
-			[[BrowserController currentBrowser] saveDatabase];
+			if( [self reportSRSeries])
+				[[BrowserController currentBrowser] proceedDeleteObjects: [[[self reportSRSeries] valueForKey: @"images"] allObjects]];
 		}
 		@catch (NSException * e) 
 		{
 			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
-		[[self managedObjectContext] unlock];
 	}
+	
+	[[self managedObjectContext] unlock];
 	#endif
 }
 
@@ -815,33 +812,6 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	return newArray;
 }
-
-- (NSArray *)reportSeries
-{
-	[[self managedObjectContext] lock];
-	
-	NSMutableArray *newArray = [NSMutableArray array];
-//	@try
-//	{
-//		for (id series in [self primitiveValueForKey: @"series"])
-//		{
-//			if ([DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]])
-//			{
-//				if( [[series valueForKey:@"id"] intValue] != 5002 || [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == NO)		// We dont want the OsiriX ROIs SR
-//					[newArray addObject:series];
-//			}
-//		}
-//	}
-//	@catch (NSException *e)
-//	{
-//		NSLog( @"imageSeries exception: %@", e);
-//	}
-//	
-//	[[self managedObjectContext] unlock];
-	
-	return newArray;
-}
-
 
 - (NSArray *)keyObjectSeries
 {

@@ -6151,7 +6151,10 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 		NSLog( @"******** proceedDeleteObjects exception : %", e);
 	}
 	
-	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
+	WaitRendering *wait = nil;
+	
+	if( [NSThread isMainThread])
+		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
 	[wait showWindow:self];
 	
 	@try
@@ -6208,7 +6211,8 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 			@catch( NSException *e)
 			{	NSLog( @"context deleteObject: study: %@", e);}
 		}
-		[self saveDatabase: currentDatabasePath];
+		
+		[self saveDatabase];
 		
 	}
 	
