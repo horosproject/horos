@@ -272,7 +272,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 		@try
 		{
 			// Delete the existing Report
-			[[self managedObjectContext] deleteObject: [self reportSRSeries]];
+			id report = [self reportSRSeries];
+			if( report)
+				[[self managedObjectContext] deleteObject: report];
 			[[BrowserController currentBrowser] saveDatabase];
 		}
 		@catch (NSException * e) 

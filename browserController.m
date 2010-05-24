@@ -5340,7 +5340,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 		
 		@catch (NSException * e)
 		{
-			NSLog( @"%@", [e description]);
+			NSLog( @"***** children Array%@", [e description]);
 		}
 
 		[managedObjectContext unlock];

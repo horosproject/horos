@@ -234,7 +234,7 @@
 		}
 			
 		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
+		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", [[NSString stringWithFormat: @"Study Report - %@ File Format", [file extension]] UTF8String]));
 		
 		image = [im retain];
 	}
@@ -278,7 +278,7 @@
 		}
 		
 		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
+		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "ROI Annotations"));
 		
 		image = [im retain];
 		
