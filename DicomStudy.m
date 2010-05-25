@@ -220,7 +220,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 				NSString *zippedFile = @"/tmp/zippedReport.zip";
 				
 				if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
-					[[self valueForKey: @"reportURL"] writeToFileAtPath: zippedFile];
+					[[self valueForKey: @"reportURL"] writeToFile: zippedFile atomically: YES encoding: UTF8String error: nil];
 					
 				else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
 					[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
