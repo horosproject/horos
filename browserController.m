@@ -58,7 +58,6 @@
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
 #import "WindowLayoutManager.h"
-#import "html2pdf.h"
 #import "QTExportHTMLSummary.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "BrowserMatrix.h"
@@ -7209,7 +7208,14 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 				}
 				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
-					[html2pdf pdfFromURL: htmlpath];
+				{
+					NSTask *aTask = [[[NSTask alloc] init] autorelease];
+					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+					[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
+					[aTask launch];
+					[aTask waitUntilExit];		
+					[aTask interrupt];
+				}
 				
 				path = [htmlpath stringByAppendingPathExtension: @"pdf"];
 			}

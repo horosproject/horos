@@ -609,7 +609,7 @@ int main(int argc, const char *argv[])
 			[[NSFileManager defaultManager] removeItemAtPath: inFile error: nil];
 		}
 		
-		if( [what isEqualToString: @"pdfFromURL"])	//+ (NSString*) pdfFromURL: (NSString*) url
+		if( [what isEqualToString: @"pdfFromURL"])
 		{
 			@try
 			{

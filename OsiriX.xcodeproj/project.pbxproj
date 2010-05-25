@@ -4747,10 +4747,6 @@
 		CEAF4ECF089D6E9400DE46AF /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
 		CEB1DA6908A3B1040058C303 /* smalltrash.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEB1DA6608A3B1040058C303 /* smalltrash.tif */; };
 		CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
-		CEB7EC5311A24CB00016F89C /* html2pdf.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB7EC5111A24CB00016F89C /* html2pdf.h */; };
-		CEB7EC5411A24CB00016F89C /* html2pdf.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB7EC5211A24CB00016F89C /* html2pdf.m */; };
-		CEB7EC5511A24CB00016F89C /* html2pdf.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB7EC5111A24CB00016F89C /* html2pdf.h */; };
-		CEB7EC5611A24CB00016F89C /* html2pdf.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB7EC5211A24CB00016F89C /* html2pdf.m */; };
 		CEBA30130EEDB3FF00D920B4 /* libvtkexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE24490D0DA42A7600B8D506 /* libvtkexpat.a */; };
 		CEBA30160EEDB4EB00D920B4 /* libvtkFiltering.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449000DA42A7600B8D506 /* libvtkFiltering.a */; };
 		CEBA30180EEDB52100D920B4 /* libvtkfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449050DA42A7600B8D506 /* libvtkfreetype.a */; };
@@ -11515,8 +11511,6 @@
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
 		CEB7179706CE7CBD00084CA5 /* libjasper2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjasper2.a; path = Binaries/Jasper/libjasper2.a; sourceTree = SOURCE_ROOT; };
-		CEB7EC5111A24CB00016F89C /* html2pdf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = html2pdf.h; sourceTree = "<group>"; };
-		CEB7EC5211A24CB00016F89C /* html2pdf.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = html2pdf.m; sourceTree = "<group>"; };
 		CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetPrimaryMACAddress.m; sourceTree = "<group>"; };
 		CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSICDPreferencePane.prefPane; path = "Preference Panes/OSICDPreferencePane/build/Development/OSICDPreferencePane.prefPane"; sourceTree = "<group>"; };
 		CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIGeneralPreferencePane.prefPane; path = "Preference Panes/OSIGeneralPreferencePane/build/Development/OSIGeneralPreferencePane.prefPane"; sourceTree = "<group>"; };
@@ -14555,8 +14549,6 @@
 				CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */,
 				CEE73FC708F44724002A395F /* FVTiff.h */,
 				CEE73FC808F44724002A395F /* FVTiff.m */,
-				CEB7EC5111A24CB00016F89C /* html2pdf.h */,
-				CEB7EC5211A24CB00016F89C /* html2pdf.m */,
 				AB87FA740C06BEB200CD2976 /* NIfTI_Library */,
 			);
 			name = "File Reading";
@@ -18900,7 +18892,6 @@
 				596EB3F6118ABBB000880192 /* NSWindow+N2.h in Headers */,
 				594830CD118B0AC100D7E606 /* N2ImageView.h in Headers */,
 				5912DCD8118EF447007F7D40 /* N2FlippedView.h in Headers */,
-				CEB7EC5311A24CB00016F89C /* html2pdf.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21012,7 +21003,6 @@
 				596EB3F8118ABBB000880192 /* NSWindow+N2.h in Headers */,
 				594830CF118B0AC100D7E606 /* N2ImageView.h in Headers */,
 				5912DCDA118EF447007F7D40 /* N2FlippedView.h in Headers */,
-				CEB7EC5511A24CB00016F89C /* html2pdf.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23374,7 +23364,6 @@
 				596EB3F7118ABBB000880192 /* NSWindow+N2.mm in Sources */,
 				594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */,
 				5912DCD9118EF447007F7D40 /* N2FlippedView.mm in Sources */,
-				CEB7EC5411A24CB00016F89C /* html2pdf.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24545,7 +24534,6 @@
 				596EB3F9118ABBB000880192 /* NSWindow+N2.mm in Sources */,
 				594830D0118B0AC100D7E606 /* N2ImageView.mm in Sources */,
 				5912DCDB118EF447007F7D40 /* N2FlippedView.mm in Sources */,
-				CEB7EC5611A24CB00016F89C /* html2pdf.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

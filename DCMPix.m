@@ -50,7 +50,6 @@
 
 #import "math.h"
 #import "altivecFunctions.h"
-#import "html2pdf.h"
 
 #ifdef STATIC_DICOM_LIB
 #define PREVIEWSIZE 512
@@ -5446,7 +5445,14 @@ END_CREATE_ROIS:
 			}
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
-				[html2pdf pdfFromURL: htmlpath];
+			{
+				NSTask *aTask = [[[NSTask alloc] init] autorelease];
+				[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+				[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
+				[aTask launch];
+				[aTask waitUntilExit];		
+				[aTask interrupt];
+			}
 			
 			NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]]];
 			
@@ -7934,7 +7940,14 @@ END_CREATE_ROIS:
 							}
 							
 							if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
-								[html2pdf pdfFromURL: htmlpath];
+							{
+								NSTask *aTask = [[[NSTask alloc] init] autorelease];
+								[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+								[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
+								[aTask launch];
+								[aTask waitUntilExit];		
+								[aTask interrupt];
+							}
 							
 							NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]]];
 																	

@@ -31,7 +31,6 @@
 #import <QTKit/QTKit.h>
 #ifndef OSIRIX_LIGHT
 #include "tiffio.h"
-#import "html2pdf.h"
 #endif
 #import "DicomFileDCMTKCategory.h"
 #import "PluginManager.h"
@@ -1711,7 +1710,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	}
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
-		[html2pdf pdfFromURL: htmlpath];
+	{
+		NSTask *aTask = [[[NSTask alloc] init] autorelease];
+		[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+		[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
+		[aTask launch];
+		[aTask waitUntilExit];		
+		[aTask interrupt];
+	}
 	
 	return [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]]];
 #endif
