@@ -1053,18 +1053,18 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 								{
 									if([curDict objectForKey: @"commentsAutoFill"])
 									{
-										if( [[seriesTable valueForKey:@"comment"] length] == 0)
+										if( [(NSString*)[seriesTable valueForKey:@"comment"] length] == 0)
 											[seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
 										
-										if( [[study valueForKey:@"comment"] length] == 0)
+										if( [(NSString*)[study valueForKey:@"comment"] length] == 0)
 											[study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
 									}
 								}
 								
-								if( [[seriesTable valueForKey:@"comment"] length] == 0 && [[curDict objectForKey: @"seriesComments"] length] > 0)
+								if( [(NSString*)[seriesTable valueForKey:@"comment"] length] == 0 && [(NSString*)[curDict objectForKey: @"seriesComments"] length] > 0)
 									[seriesTable setPrimitiveValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
 								
-								if( [[study valueForKey:@"comment"] length] == 0 && [[curDict objectForKey: @"studyComments"] length] > 0)
+								if( [(NSString*)[study valueForKey:@"comment"] length] == 0 && [(NSString*)[curDict objectForKey: @"studyComments"] length] > 0)
 									[study setPrimitiveValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
 								
 								if( [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)

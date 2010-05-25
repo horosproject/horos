@@ -465,7 +465,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	{
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		
-		if( [dict objectForKey: @"value"] == nil || [[dict objectForKey: @"value"] length] == 0)
+		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
 			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-e", [dict objectForKey: @"field"], nil]];
 		else
 			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];

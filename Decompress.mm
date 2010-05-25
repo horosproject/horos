@@ -8,6 +8,7 @@
 #import "AppController.h"
 #import "QTKit/QTMovie.h"
 #import "DCMPix.h"
+#import <WebKit/WebKit.h>
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -576,7 +577,7 @@ int main(int argc, const char *argv[])
 		{
 			NSError *error = nil;
 			
-			NSString *inFile = [NSString stringWithUTF8String: argv[fileListFirstItemIndex]];
+			NSString *inFile = [NSString stringWithUTF8String: argv[ fileListFirstItemIndex]];
 			NSString *outFile = path;
 			
 			QTMovie *aMovie = [QTMovie movieWithFile: inFile error:nil];
@@ -606,6 +607,71 @@ int main(int argc, const char *argv[])
 				NSLog(@"writeMovieiPhone Error : %@", error);
 				
 			[[NSFileManager defaultManager] removeItemAtPath: inFile error: nil];
+		}
+		
+		if( [what isEqualToString: @"pdfFromURL"])	//+ (NSString*) pdfFromURL: (NSString*) url
+		{
+			@try
+			{
+				WebView *webView = [[[WebView alloc] initWithFrame: NSMakeRect(0,0,1,1) frameName: @"myFrame" groupName: @"myGroup"] autorelease];
+				WebPreferences *webPrefs = [WebPreferences standardPreferences];
+				
+				[webPrefs setLoadsImagesAutomatically: YES];
+				[webPrefs setAllowsAnimatedImages: YES];
+				[webPrefs setAllowsAnimatedImageLooping: NO];
+				[webPrefs setJavaEnabled: NO];
+				[webPrefs setPlugInsEnabled: NO];
+				[webPrefs setJavaScriptEnabled: YES];
+				[webPrefs setJavaScriptCanOpenWindowsAutomatically: NO];
+				[webPrefs setShouldPrintBackgrounds: YES];
+				
+				[webView setApplicationNameForUserAgent: @"OsiriX"];
+				[webView setPreferences: webPrefs];
+				[webView setMaintainsBackForwardList: NO];
+				
+				NSURL *theURL = [NSURL fileURLWithPath: path];
+				if( theURL)
+				{
+					NSURLRequest *request = [NSURLRequest requestWithURL: theURL];
+					
+					[[webView mainFrame] loadRequest: request];
+					
+					NSTimeInterval oneMinute = [NSDate timeIntervalSinceReferenceDate] + 60;
+					
+					while( [[webView mainFrame] dataSource] == nil || [[[webView mainFrame] dataSource] isLoading] == YES || [[[webView mainFrame] provisionalDataSource] isLoading] == YES)
+					{
+						[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+						
+						if( [NSDate timeIntervalSinceReferenceDate] > oneMinute)
+							break;
+					}
+					
+					NSPrintInfo *sharedInfo = [NSPrintInfo sharedPrintInfo];
+					NSMutableDictionary *sharedDict = [sharedInfo dictionary];
+					NSMutableDictionary *printInfoDict = [NSMutableDictionary dictionaryWithDictionary: sharedDict];
+					
+					[printInfoDict setObject: NSPrintSaveJob forKey: NSPrintJobDisposition];
+					
+					[[NSFileManager defaultManager] removeItemAtPath: [path stringByAppendingPathExtension: @"pdf"] error: nil];
+					[printInfoDict setObject: [path stringByAppendingPathExtension: @"pdf"] forKey: NSPrintSavePath];
+					
+					NSPrintInfo *printInfo = [[NSPrintInfo alloc] initWithDictionary: printInfoDict];
+					
+					[printInfo setHorizontalPagination: NSAutoPagination];
+					[printInfo setVerticalPagination: NSAutoPagination];
+					[printInfo setVerticallyCentered:NO];
+					
+					NSView *viewToPrint = [[[webView mainFrame] frameView] documentView];
+					NSPrintOperation *printOp = [NSPrintOperation printOperationWithView: viewToPrint printInfo: printInfo];
+					[printOp setShowPanels: NO];
+					[printOp runOperation];
+				}
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
+			return 0;
 		}
 		
 	    // deregister JPEG codecs

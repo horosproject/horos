@@ -379,7 +379,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		
-		if( [dict objectForKey: @"value"] == nil || [[dict objectForKey: @"value"] length] == 0)
+		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
 			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-e", [dict objectForKey: @"field"], nil]];
 		else
 			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
@@ -426,7 +426,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		if( c == nil)
 			c = @"";
 			
-		if( [[self primitiveValueForKey: @"comment"] length] == 0 && [c length] == 0)
+		if( [(NSString*)[self primitiveValueForKey: @"comment"] length] == 0 && [c length] == 0)
 		{
 			
 		}
