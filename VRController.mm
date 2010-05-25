@@ -980,9 +980,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		long	memSize = [firstObject pwidth] * [firstObject pheight] * [pixList[ i] count] * sizeof( short);
 		
 		if( undodata[ i] == nil)
-		{
 			undodata[ i] = (float*) malloc( memSize);
-		}
 		
 		if( undodata[ i])
 		{
@@ -999,7 +997,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			dst16.data = undodata[ i];
 			srcf.data = data;
 			
-			vImageConvert_FTo16U( &srcf, &dst16, -[view offset], 1./[view valueFactor], 0);
+			[view multiThreadedImageConvert: @"FTo16U" :&srcf :&dst16 :-[view offset] :1./[view valueFactor]];
+			
+//			vImageConvert_FTo16U( &srcf, &dst16, -[view offset], 1./[view valueFactor], 0);
 			
 //			memcpy( undodata[ i], data, memSize);
 		}
@@ -1035,7 +1035,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			dstf.data = data;
 			src16.data = undodata[ i];
 			
-			vImageConvert_16UToF( &src16, &dstf, -[view offset], 1./[view valueFactor], 0);
+			[view multiThreadedImageConvert: @"16UToF" :&src16 :&dstf :-[view offset] :1./[view valueFactor]];
+			
+//			vImageConvert_16UToF( &src16, &dstf, -[view offset], 1./[view valueFactor], 0);
 			
 			//BlockMoveData( undodata[ i], data, memSize);
 		}

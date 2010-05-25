@@ -208,6 +208,86 @@ public:
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
 @synthesize lowResLODFactor, dontUseAutoCropping;
 
+- (void) vImageThread: (NSDictionary*) d
+{
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	
+	if( [[d objectForKey: @"what"] isEqualToString: @"FTo16U"])
+	{
+		vImage_Buffer src = *(vImage_Buffer*) [[d objectForKey: @"src"] pointerValue];
+		vImage_Buffer dst = *(vImage_Buffer*) [[d objectForKey: @"dst"] pointerValue];
+		
+		src.height = dst.height = [[d objectForKey: @"to"] intValue] - [[d objectForKey: @"from"] intValue];
+		src.data = (char*) src.data + [[d objectForKey: @"from"] intValue] * src.rowBytes;
+		dst.data = (char*) dst.data + [[d objectForKey: @"from"] intValue] * dst.rowBytes;
+		
+		vImageConvert_FTo16U(	&src,
+								&dst,
+								[[d objectForKey: @"offset"] floatValue],
+								[[d objectForKey: @"scale"] floatValue],
+								kvImageDoNotTile);
+	}
+	
+	if( [[d objectForKey: @"what"] isEqualToString: @"16UtoF"])
+	{
+		vImage_Buffer src = *(vImage_Buffer*) [[d objectForKey: @"src"] pointerValue];
+		vImage_Buffer dst = *(vImage_Buffer*) [[d objectForKey: @"dst"] pointerValue];
+		
+		src.height = dst.height = [[d objectForKey: @"to"] intValue] - [[d objectForKey: @"from"] intValue];
+		src.data = (char*) src.data + [[d objectForKey: @"from"] intValue] * src.rowBytes;
+		dst.data = (char*) dst.data + [[d objectForKey: @"from"] intValue] * dst.rowBytes;
+		
+		vImageConvert_16UToF(&src,
+							 &dst,
+							 [[d objectForKey: @"offset"] floatValue],
+							 [[d objectForKey: @"scale"] floatValue],
+							 kvImageDoNotTile);
+	}
+	
+	[threadLock lock];
+	[threadLock unlockWithCondition: [threadLock condition]-1];
+	
+	[p release];
+}
+
+- (void) multiThreadedImageConvert: (NSString*) what :(vImage_Buffer*) src :(vImage_Buffer *) dst :(float) offset :(float) scale
+{
+	int mpprocessors = MPProcessors();
+	
+	threadLock = [[NSConditionLock alloc] initWithCondition: mpprocessors];
+	
+	NSMutableDictionary *baseDict = [NSMutableDictionary dictionary];
+	
+	[baseDict setObject: [NSValue valueWithPointer: src] forKey: @"src"];
+	[baseDict setObject: [NSValue valueWithPointer: dst] forKey: @"dst"];
+	
+	[baseDict setObject: [NSNumber numberWithFloat: scale] forKey: @"scale"];
+	[baseDict setObject: [NSNumber numberWithFloat: offset] forKey: @"offset"];
+	
+	[baseDict setObject: what forKey: @"what"];
+	
+	int no2 = src->height;
+	
+	for( int i = 0; i < mpprocessors; i++)
+	{
+		NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary: baseDict];
+		
+		int from = (i * no2) / mpprocessors;
+		int to = ((i+1) * no2) / mpprocessors;
+		
+		[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+		[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+		
+		[NSThread detachNewThreadSelector: @selector( vImageThread:) toTarget: self withObject: d];
+	}
+	
+	[threadLock lockWhenCondition: 0];
+	[threadLock unlock];
+	
+	[threadLock release];
+	threadLock = nil;
+}
+
 - (BOOL) checkPointInVolume: (double*) position
 {
 	double bounds[ 6];
