@@ -14,6 +14,7 @@
 
 
 #import <Cocoa/Cocoa.h>
+#include <Accelerate/Accelerate.h>
 
 @class MPR2DController,NSCFDate, DicomStudy;
 @class BurnerWindowController,ViewerController;
@@ -353,6 +354,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 +(void)setPath:(NSString*)path relativeTo:(NSString*)dirPath forSeriesId:(int)seriesId kind:(NSString*)kind toSeriesPaths:(NSMutableDictionary*)seriesPaths; // used by +exportQuicktime
 +(void) exportQuicktime:(NSArray*)dicomFiles2Export :(NSString*)path :(BOOL)html :(BrowserController*)browser :(NSMutableDictionary*)seriesPaths;
 -(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html;
++ (void) multiThreadedImageConvert: (NSString*) what :(vImage_Buffer*) src :(vImage_Buffer *) dst :(float) offset :(float) scale;
 - (IBAction) delItem:(id) sender;
 - (void) proceedDeleteObjects: (NSArray*) objectsToDelete;
 - (void) delObjects:(NSMutableArray*) objectsToDelete;

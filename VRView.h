@@ -353,7 +353,6 @@ typedef char* VTKStereoVRView;
 	float						rotateDirectionForVR;
 	
 	BOOL						_contextualMenuActive;
-	NSConditionLock				*threadLock;
 	
 	//Context for rendering to iChat
 	BOOL						_hasChanged;
@@ -404,7 +403,6 @@ typedef char* VTKStereoVRView;
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 + (void) setCroppingBox:(double*) a :(vtkVolume *) volume;
-- (void) multiThreadedImageConvert: (NSString*) what :(vImage_Buffer*) src :(vImage_Buffer *) dst :(float) offset :(float) scale;
 - (void) setBlendingCroppingBox:(double*) a;
 - (void) setCroppingBox:(double*) a;
 - (BOOL) croppingBox:(double*) a;

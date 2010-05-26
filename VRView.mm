@@ -208,85 +208,6 @@ public:
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
 @synthesize lowResLODFactor, dontUseAutoCropping;
 
-- (void) vImageThread: (NSDictionary*) d
-{
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	
-	if( [[d objectForKey: @"what"] isEqualToString: @"FTo16U"])
-	{
-		vImage_Buffer src = *(vImage_Buffer*) [[d objectForKey: @"src"] pointerValue];
-		vImage_Buffer dst = *(vImage_Buffer*) [[d objectForKey: @"dst"] pointerValue];
-		
-		src.height = dst.height = [[d objectForKey: @"to"] intValue] - [[d objectForKey: @"from"] intValue];
-		src.data = (char*) src.data + [[d objectForKey: @"from"] intValue] * src.rowBytes;
-		dst.data = (char*) dst.data + [[d objectForKey: @"from"] intValue] * dst.rowBytes;
-		
-		vImageConvert_FTo16U(	&src,
-								&dst,
-								[[d objectForKey: @"offset"] floatValue],
-								[[d objectForKey: @"scale"] floatValue],
-								kvImageDoNotTile);
-	}
-	
-	if( [[d objectForKey: @"what"] isEqualToString: @"16UtoF"])
-	{
-		vImage_Buffer src = *(vImage_Buffer*) [[d objectForKey: @"src"] pointerValue];
-		vImage_Buffer dst = *(vImage_Buffer*) [[d objectForKey: @"dst"] pointerValue];
-		
-		src.height = dst.height = [[d objectForKey: @"to"] intValue] - [[d objectForKey: @"from"] intValue];
-		src.data = (char*) src.data + [[d objectForKey: @"from"] intValue] * src.rowBytes;
-		dst.data = (char*) dst.data + [[d objectForKey: @"from"] intValue] * dst.rowBytes;
-		
-		vImageConvert_16UToF(&src,
-							 &dst,
-							 [[d objectForKey: @"offset"] floatValue],
-							 [[d objectForKey: @"scale"] floatValue],
-							 kvImageDoNotTile);
-	}
-	
-	[threadLock lock];
-	[threadLock unlockWithCondition: [threadLock condition]-1];
-	
-	[p release];
-}
-
-- (void) multiThreadedImageConvert: (NSString*) what :(vImage_Buffer*) src :(vImage_Buffer *) dst :(float) offset :(float) scale
-{
-	int mpprocessors = MPProcessors();
-	
-	threadLock = [[NSConditionLock alloc] initWithCondition: mpprocessors];
-	
-	NSMutableDictionary *baseDict = [NSMutableDictionary dictionary];
-	
-	[baseDict setObject: [NSValue valueWithPointer: src] forKey: @"src"];
-	[baseDict setObject: [NSValue valueWithPointer: dst] forKey: @"dst"];
-	
-	[baseDict setObject: [NSNumber numberWithFloat: scale] forKey: @"scale"];
-	[baseDict setObject: [NSNumber numberWithFloat: offset] forKey: @"offset"];
-	
-	[baseDict setObject: what forKey: @"what"];
-	
-	int no2 = src->height;
-	
-	for( int i = 0; i < mpprocessors; i++)
-	{
-		NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary: baseDict];
-		
-		int from = (i * no2) / mpprocessors;
-		int to = ((i+1) * no2) / mpprocessors;
-		
-		[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
-		[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
-		
-		[NSThread detachNewThreadSelector: @selector( vImageThread:) toTarget: self withObject: d];
-	}
-	
-	[threadLock lockWhenCondition: 0];
-	[threadLock unlock];
-	
-	[threadLock release];
-	threadLock = nil;
-}
 
 - (BOOL) checkPointInVolume: (double*) position
 {
@@ -2126,7 +2047,8 @@ public:
 					*(data+0+[firstObject pwidth]) = firstPixel;
 					*(data+1+[firstObject pwidth]) = secondPixel;
 					
-					vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+//					vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+					[BrowserController multiThreadedImageConvert: @"FTo16U" :&srcf :&dst8 :-OFFSET16 :1./valueFactor];
 				}
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
@@ -3879,7 +3801,8 @@ public:
 					else
 					{
 						if( isRGB == NO)
-							vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+//							vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+							[BrowserController multiThreadedImageConvert: @"FTo16U" :&srcf :&dst8 :-OFFSET16 :1./valueFactor];
 					}
 				}
 				
@@ -4725,7 +4648,8 @@ public:
 	else
 	{
 		if( isRGB == NO)
-			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+//			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+			[BrowserController multiThreadedImageConvert: @"FTo16U" :&srcf :&dst8 :-OFFSET16 :1./valueFactor];
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
@@ -5487,7 +5411,8 @@ public:
 				blendingValueFactor = 4095. / [controller blendingMaximumValue];
 				blendingOFFSET16 = 0;
 				
-				vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
+				[BrowserController multiThreadedImageConvert: @"FTo16U" :&blendingSrcf :&blendingDst8 :-blendingOFFSET16 :1./blendingValueFactor];
+//				vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 			}
 			else
 			{
@@ -5495,14 +5420,16 @@ public:
 				{
 					blendingValueFactor = 4095. / ( [controller blendingMaximumValue] - [controller blendingMinimumValue]);
 					blendingOFFSET16 = -[controller blendingMinimumValue];
-				
-					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
+					
+					[BrowserController multiThreadedImageConvert: @"FTo16U" :&blendingSrcf :&blendingDst8 :-blendingOFFSET16 :1./blendingValueFactor];
+//					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 				}
 				else
 				{
 					blendingValueFactor = 1;
 					blendingOFFSET16 = -[controller blendingMinimumValue];
-					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
+					[BrowserController multiThreadedImageConvert: @"FTo16U" :&blendingSrcf :&blendingDst8 :-blendingOFFSET16 :1./blendingValueFactor];
+//					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 				}
 			}
 		}
@@ -5667,7 +5594,8 @@ public:
 		else
 		{
 			srcf.data = data;
-			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+//			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+			[BrowserController multiThreadedImageConvert: @"FTo16U" :&srcf :&dst8 :-OFFSET16 :1./valueFactor];
 			
 			reader->SetImportVoidPointer( data8);
 			reader->GetOutput()->Modified();
@@ -5694,7 +5622,8 @@ public:
 				else
 				{
 					blendingSrcf.data = blendingData;
-					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
+					//vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
+					[BrowserController multiThreadedImageConvert: @"FTo16U" :&blendingSrcf :&blendingDst8 :-blendingOFFSET16 :1./blendingValueFactor];
 					
 					blendingReader->SetImportVoidPointer( blendingData8);
 					blendingReader->GetOutput()->Modified();
@@ -5867,7 +5796,8 @@ public:
 		}
 		
 		[self computeValueFactor];
-		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+//		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+		[BrowserController multiThreadedImageConvert: @"FTo16U" :&srcf :&dst8 :-OFFSET16 :1./valueFactor];
 	}
 	
 	try

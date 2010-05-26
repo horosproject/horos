@@ -49,7 +49,6 @@
 #import "WaitRendering.h"
 #import "OsiriXHTTPConnection.h"
 #import "ThreadPoolServer.h"
-#import "html2pdf.h"
 #import "DicomImage.h"
 
 #define BUILTIN_DCMTK YES

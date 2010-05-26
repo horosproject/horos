@@ -218,6 +218,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 {
 	gLastActivity = [NSDate timeIntervalSinceReferenceDate];
 }
+
 + (int) DefaultFolderSizeForDB
 {
 	if( DefaultFolderSizeForDB == 0)
@@ -233,15 +234,101 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	return DefaultFolderSizeForDB;
 }
 
-+(NSArray*)albumsInContext:(NSManagedObjectContext*)context {
++(NSArray*)albumsInContext:(NSManagedObjectContext*)context
+{
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Album"]];
 	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 	return [context executeFetchRequest:dbRequest error:NULL];
 }
 
--(NSArray*)albums {
+-(NSArray*)albums
+{
 	return [BrowserController albumsInContext:managedObjectContext];
+}
+
+static NSConditionLock *threadLock = nil;
+
+- (void) vImageThread: (NSDictionary*) d
+{
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	
+	if( [[d objectForKey: @"what"] isEqualToString: @"FTo16U"])
+	{
+		vImage_Buffer src = *(vImage_Buffer*) [[d objectForKey: @"src"] pointerValue];
+		vImage_Buffer dst = *(vImage_Buffer*) [[d objectForKey: @"dst"] pointerValue];
+		
+		src.height = dst.height = [[d objectForKey: @"to"] intValue] - [[d objectForKey: @"from"] intValue];
+		src.data = (char*) src.data + [[d objectForKey: @"from"] intValue] * src.rowBytes;
+		dst.data = (char*) dst.data + [[d objectForKey: @"from"] intValue] * dst.rowBytes;
+		
+		vImageConvert_FTo16U(	&src,
+							 &dst,
+							 [[d objectForKey: @"offset"] floatValue],
+							 [[d objectForKey: @"scale"] floatValue],
+							 kvImageDoNotTile);
+	}
+	
+	if( [[d objectForKey: @"what"] isEqualToString: @"16UtoF"])
+	{
+		vImage_Buffer src = *(vImage_Buffer*) [[d objectForKey: @"src"] pointerValue];
+		vImage_Buffer dst = *(vImage_Buffer*) [[d objectForKey: @"dst"] pointerValue];
+		
+		src.height = dst.height = [[d objectForKey: @"to"] intValue] - [[d objectForKey: @"from"] intValue];
+		src.data = (char*) src.data + [[d objectForKey: @"from"] intValue] * src.rowBytes;
+		dst.data = (char*) dst.data + [[d objectForKey: @"from"] intValue] * dst.rowBytes;
+		
+		vImageConvert_16UToF(&src,
+							 &dst,
+							 [[d objectForKey: @"offset"] floatValue],
+							 [[d objectForKey: @"scale"] floatValue],
+							 kvImageDoNotTile);
+	}
+	
+	[threadLock lock];
+	[threadLock unlockWithCondition: [threadLock condition]-1];
+	
+	[p release];
+}
+
+
++ (void) multiThreadedImageConvert: (NSString*) what :(vImage_Buffer*) src :(vImage_Buffer *) dst :(float) offset :(float) scale
+{
+	int mpprocessors = MPProcessors();
+	
+	if( threadLock == nil)
+		threadLock = [[NSConditionLock alloc] initWithCondition: 0];
+	
+	[threadLock lockWhenCondition: 0];
+	[threadLock unlockWithCondition: mpprocessors];
+	
+	NSMutableDictionary *baseDict = [NSMutableDictionary dictionary];
+	
+	[baseDict setObject: [NSValue valueWithPointer: src] forKey: @"src"];
+	[baseDict setObject: [NSValue valueWithPointer: dst] forKey: @"dst"];
+	
+	[baseDict setObject: [NSNumber numberWithFloat: scale] forKey: @"scale"];
+	[baseDict setObject: [NSNumber numberWithFloat: offset] forKey: @"offset"];
+	
+	[baseDict setObject: what forKey: @"what"];
+	
+	int no2 = src->height;
+	
+	for( int i = 0; i < mpprocessors; i++)
+	{
+		NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary: baseDict];
+		
+		int from = (i * no2) / mpprocessors;
+		int to = ((i+1) * no2) / mpprocessors;
+		
+		[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+		[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+		
+		[NSThread detachNewThreadSelector: @selector( vImageThread:) toTarget: browserWindow withObject: d];
+	}
+	
+	[threadLock lockWhenCondition: 0];
+	[threadLock unlock];
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -1214,7 +1301,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 			if( [NSDate timeIntervalSinceReferenceDate] - browserController.lastSaved > 120 || context != browserController.managedObjectContext)
 			{
 				[browserController autoCleanDatabaseFreeSpace: self];
-			
+				
 				if( [browserController saveDatabase: [[DicomImage dbPathForManagedContext: context] stringByAppendingString: DATAFILEPATH] context: context] != 0)
 				{
 					//All these files were NOT saved..... due to an error. Move them back to the INCOMING folder.
@@ -4407,11 +4494,17 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 		return NO;
 }
 
-- (void) autoCleanDatabaseFreeSpace: (id)sender
+- (void) autoCleanDatabaseFreeSpaceThread: (id)sender
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	
-	if (isCurrentDatabaseBonjour) return;
+	if (isCurrentDatabaseBonjour)
+	{
+		[pool release];
+		return;
+	}
 	
 	if( [defaults boolForKey:@"AUTOCLEANINGSPACE"])
 	{
@@ -4430,6 +4523,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 			{
 				NSLog( @"*** autoCleanDatabaseFreeSpace free <= 0 ??");
 				NSLog( @"%@", currentDatabasePath);
+				[pool release];
 				
 				return;
 			}
@@ -4448,17 +4542,11 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 			{
 				NSLog(@"------------------- Limit Reached - Starting autoCleanDatabaseFreeSpace");
 				
-				[checkIncomingLock lock];
-				
 				NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
 				NSArray					*studiesArray = nil;
 				NSMutableArray			*unlockedStudies = nil;
-				NSManagedObjectContext	*context = self.managedObjectContext;
 				BOOL					dontDeleteStudiesWithComments = [[NSUserDefaults standardUserDefaults] boolForKey: @"dontDeleteStudiesWithComments"];
 				
-				[context retain];
-				[context lock];
-
 				@try
 				{
 					[request setEntity: [self.managedObjectModel.entitiesByName objectForKey:@"Study"]];
@@ -4466,65 +4554,49 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 					
 					do
 					{
-						NSTimeInterval		producedInterval = 0;
-						NSTimeInterval		openedInterval = 0;
-						NSManagedObject		*oldestStudy = nil, *oldestOpenedStudy = nil;
+						NSTimeInterval producedInterval = 0;
+						NSTimeInterval openedInterval = 0;
+						NSManagedObject *oldestStudy = nil, *oldestOpenedStudy = nil;
 						
-						NSError *error = nil;
-						studiesArray = [context executeFetchRequest:request error:&error];
+						[checkIncomingLock lock];
+						[self.managedObjectContext lock];
 						
-						NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
-						studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
-						
-						unlockedStudies = [NSMutableArray arrayWithArray: studiesArray];
-						
-						for( int i = 0; i < [unlockedStudies count]; i++)
+						@try
 						{
-							if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"lockedStudy"] boolValue] == YES)
+							NSError *error = nil;
+							studiesArray = [self.managedObjectContext executeFetchRequest:request error:&error];
+							
+							NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
+							studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
+							
+							unlockedStudies = [NSMutableArray arrayWithArray: studiesArray];
+							
+							for( int i = 0; i < [unlockedStudies count]; i++)
 							{
-								[unlockedStudies removeObjectAtIndex: i];
-								i--;
-							}
-							else if( dontDeleteStudiesWithComments)
-							{
-								NSString *str = [[unlockedStudies objectAtIndex: i] valueForKey:@"comment"];
-								
-								if( str != nil && [str isEqualToString:@""] == NO)
+								if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"lockedStudy"] boolValue] == YES)
 								{
 									[unlockedStudies removeObjectAtIndex: i];
 									i--;
 								}
-							}
-						}
-						
-						if( [unlockedStudies count] > 2)
-						{
-							for( long i = 0; i < [unlockedStudies count]; i++)
-							{
-								NSString	*patientID = [[unlockedStudies objectAtIndex: i] valueForKey:@"patientID"];
-								long		to;
-								
-								if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
+								else if( dontDeleteStudiesWithComments)
 								{
-									if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
+									NSString *str = [[unlockedStudies objectAtIndex: i] valueForKey:@"comment"];
+									
+									if( str != nil && [str isEqualToString:@""] == NO)
 									{
-										oldestStudy = [unlockedStudies objectAtIndex: i];
-										producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
+										[unlockedStudies removeObjectAtIndex: i];
+										i--;
 									}
 								}
-								
-								NSDate *openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
-								if( openedDate == nil) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
-								
-								if( [openedDate timeIntervalSinceNow] < openedInterval)
+							}
+							
+							if( [unlockedStudies count] > 2)
+							{
+								for( long i = 0; i < [unlockedStudies count]; i++)
 								{
-									oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
-									openedInterval = [openedDate timeIntervalSinceNow];
-								}
-								
-								while( i < [unlockedStudies count]-1 && [patientID isEqualToString:[[unlockedStudies objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
-								{
-									i++;
+									NSString	*patientID = [[unlockedStudies objectAtIndex: i] valueForKey:@"patientID"];
+									long		to;
+									
 									if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
 									{
 										if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
@@ -4534,7 +4606,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 										}
 									}
 									
-									openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
+									NSDate *openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
 									if( openedDate == nil) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
 									
 									if( [openedDate timeIntervalSinceNow] < openedInterval)
@@ -4542,28 +4614,61 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 										oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
 										openedInterval = [openedDate timeIntervalSinceNow];
 									}
+									
+									while( i < [unlockedStudies count]-1 && [patientID isEqualToString:[[unlockedStudies objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
+									{
+										i++;
+										if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
+										{
+											if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
+											{
+												oldestStudy = [unlockedStudies objectAtIndex: i];
+												producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
+											}
+										}
+										
+										openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
+										if( openedDate == nil) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
+										
+										if( [openedDate timeIntervalSinceNow] < openedInterval)
+										{
+											oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
+											openedInterval = [openedDate timeIntervalSinceNow];
+										}
+									}
+									to = i;
 								}
-								to = i;
 							}
-						}
-						
-						if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"])
-						{
-							if( oldestStudy)
+							
+							if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"])
 							{
-								NSLog( @"delete oldestStudy: %@", [oldestStudy valueForKey:@"patientUID"]);
-								[context deleteObject: oldestStudy];
+								if( oldestStudy)
+								{
+									NSLog( @"delete oldestStudy: %@", [oldestStudy valueForKey:@"patientUID"]);
+									[self.managedObjectContext deleteObject: oldestStudy];
+								}
 							}
-						}
-						
-						if ( [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"])
-						{
-							if( oldestOpenedStudy)
+							
+							if ( [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"])
 							{
-								NSLog( @"delete oldestOpenedStudy: %@", [oldestOpenedStudy valueForKey:@"patientUID"]);
-								[context deleteObject: oldestOpenedStudy];
+								if( oldestOpenedStudy)
+								{
+									NSLog( @"delete oldestOpenedStudy: %@", [oldestOpenedStudy valueForKey:@"patientUID"]);
+									[self.managedObjectContext deleteObject: oldestOpenedStudy];
+								}
 							}
+							
+							[self saveDatabase: currentDatabasePath];
+							
 						}
+						@catch ( NSException *e)
+						{
+							NSLog( @"autoCleanDatabaseFreeSpace exception 2");
+							NSLog( @"%@", [e description]);
+						}
+					
+						[self.managedObjectContext unlock];
+						[checkIncomingLock unlock];
 						
 						[self emptyDeleteQueueNow: self];
 						
@@ -4575,20 +4680,12 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 						NSLog(@"HD Free Space: %d MB", (long) free);
 					}
 					while( (long) free < freeMemoryRequested && [unlockedStudies count] > 2);
-					
-					[self saveDatabase: currentDatabasePath];
 				}
-				
 				@catch ( NSException *e)
 				{
 					NSLog( @"autoCleanDatabaseFreeSpace exception");
 					NSLog( @"%@", [e description]);
 				}
-				
-				[context unlock];
-				[context release];
-				
-				[checkIncomingLock unlock];
 				
 				NSLog(@"------------------- Limit Reached - Finishing autoCleanDatabaseFreeSpace");
 				
@@ -4612,11 +4709,22 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 		
 		if( free < 300 && free > 0)
 		{
-			NSRunCriticalAlertPanel( NSLocalizedString(@"Warning", nil),  NSLocalizedString(@"Hard disk is FULL !!!! Major risks of failure !!\r\rClean your database! ", nil), NSLocalizedString(@"OK",nil), nil, nil);
+			[self performSelectorOnMainThread: @selector( autoCleanDatabaseFreeSpaceWarning:) withObject: nil waitUntilDone: NO];
 		}
 	}
+	
+	[pool release];
 }
 
+- (void) autoCleanDatabaseFreeSpaceWarning: (id)sender
+{
+	NSRunCriticalAlertPanel( NSLocalizedString(@"Warning", nil),  NSLocalizedString(@"Hard disk is FULL !!!! Major risks of failure !!\r\rClean your database! ", nil), NSLocalizedString(@"OK",nil), nil, nil);
+}
+
+- (void) autoCleanDatabaseFreeSpace: (id)sender
+{
+	[NSThread detachNewThreadSelector: @selector( autoCleanDatabaseFreeSpaceThread:) toTarget: self withObject: nil];
+}
 
 #pragma mark-
 #pragma mark User Database functions
@@ -15466,8 +15574,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[self setDockIcon];
 }
-
-
 
 + (void) createEmptyMovie:(NSMutableDictionary*)dict
 {

@@ -997,7 +997,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			dst16.data = undodata[ i];
 			srcf.data = data;
 			
-			[view multiThreadedImageConvert: @"FTo16U" :&srcf :&dst16 :-[view offset] :1./[view valueFactor]];
+			[BrowserController multiThreadedImageConvert: @"FTo16U" :&srcf :&dst16 :-[view offset] :1./[view valueFactor]];
 			
 //			vImageConvert_FTo16U( &srcf, &dst16, -[view offset], 1./[view valueFactor], 0);
 			
@@ -1035,7 +1035,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			dstf.data = data;
 			src16.data = undodata[ i];
 			
-			[view multiThreadedImageConvert: @"16UToF" :&src16 :&dstf :-[view offset] :1./[view valueFactor]];
+			[BrowserController multiThreadedImageConvert: @"16UToF" :&src16 :&dstf :-[view offset] :1./[view valueFactor]];
 			
 //			vImageConvert_16UToF( &src16, &dstf, -[view offset], 1./[view valueFactor], 0);
 			
