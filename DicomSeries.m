@@ -209,7 +209,12 @@
 				[dcmPix CheckLoad];
 				if (dcmPix)
 				{
-					NSImage *thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
+					NSImage *thumbnail = nil;
+					
+					if( [DCMAbstractSyntaxUID isStructuredReport: [self valueForKey: @"seriesSOPClassUID"]])
+						thumbnail = [NSImage imageNamed: @"pdf.tif"];
+					else
+						thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
 					
 					if (!dcmPix.notAbleToLoadImage)
 						thumbnailData = [thumbnail JPEGRepresentationWithQuality:0.3];

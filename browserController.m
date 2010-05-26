@@ -9225,13 +9225,20 @@ static BOOL withReset = NO;
 			{
 				if( thumbnail == notFoundImage)
 				{
-					[dcmPix revert: NO];	// <- Kill the raw data
-					thumbnail = [dcmPix generateThumbnailImageWithWW: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowLevel"] floatValue]];
-					[dcmPix revert: NO];	// <- Kill the raw data
-					
-					if( thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
-					
-					[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
+					if( [DCMAbstractSyntaxUID isStructuredReport: [[files objectAtIndex: i] valueForKeyPath: @"series.seriesSOPClassUID"]])
+					{
+						[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: [NSImage imageNamed: @"pdf.tif"]];
+					}
+					else
+					{
+						[dcmPix revert: NO];	// <- Kill the raw data
+						thumbnail = [dcmPix generateThumbnailImageWithWW: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowLevel"] floatValue]];
+						[dcmPix revert: NO];	// <- Kill the raw data
+						
+						if( thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
+						
+						[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
+					}
 				}
 				
 				[ipreviewPix addObject: dcmPix];
