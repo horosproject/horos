@@ -1262,6 +1262,8 @@ static NSConditionLock *threadLock = nil;
 			
 			if( notifyAddedFiles)
 			{
+				NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+				
 				@try
 				{
 					NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
@@ -1281,7 +1283,12 @@ static NSConditionLock *threadLock = nil;
 					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];
 				}
 				
+				[dockLabel retain];
+				[growlString retain];
+				
 				[browserController executeAutorouting: addedImagesArray rules: nil manually: NO];
+				
+				[p release];
 			}
 		}
 		@catch( NSException *ne)
@@ -1385,6 +1392,9 @@ static NSConditionLock *threadLock = nil;
 			
 			browserController.databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 		}
+		
+		[dockLabel release]; dockLabel = nil;
+		[growlString release]; growlString = nil;
 	}
 	
 	[DicomFile setFilesAreFromCDMedia: NO];
