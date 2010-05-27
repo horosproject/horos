@@ -7953,7 +7953,11 @@ static ViewerController *draggedController = nil;
 	{
 		int mpprocessors = MPProcessors();
 		
-		flipDataThread = [[NSConditionLock alloc] initWithCondition: mpprocessors];
+		if( flipDataThread == nil)
+			flipDataThread = [[NSConditionLock alloc] initWithCondition: 0];
+		
+		[flipDataThread lockWhenCondition: 0];
+		[flipDataThread unlockWithCondition: mpprocessors];
 		
 		int no2 = no/2;
 		
@@ -7978,8 +7982,6 @@ static ViewerController *draggedController = nil;
 		
 		[flipDataThread lockWhenCondition: 0];
 		[flipDataThread unlock];
-		
-		[flipDataThread release];
 	}
 //	NSLog(@"flip data-B");
 	else
@@ -8805,63 +8807,147 @@ static float oldsetww, oldsetwl;
 
 #pragma mark convolution
 
+- (void) applyConvolutionXYThread:(id) dict
+{
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	
+	for ( int x = 0; x < maxMovieIndex; x++)
+	{
+		for ( DCMPix *p in [pixList[ x] subarrayWithRange: NSMakeRange( [[dict objectForKey: @"from"] intValue], [[dict objectForKey: @"to"] intValue] - [[dict objectForKey: @"from"] intValue])])
+		{
+			[p applyConvolutionOnSourceImage];
+		}
+	}
+	
+	[flipDataThread lock];
+	[flipDataThread unlockWithCondition: [flipDataThread condition]-1];
+	
+	[p release];
+}
+
+- (void) applyConvolutionZThread: (id) dict
+{
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	
+	for ( int x = 0; x < maxMovieIndex; x++)
+	{
+		DCMPix	*pix = [pixList[ x] objectAtIndex: 0];
+		
+		vImage_Buffer dstf, srcf;
+		
+		float m = *[pix fImage];
+		
+		dstf.height = [pixList[ x] count];
+		dstf.width = [pix pwidth];
+		dstf.rowBytes = [pix pwidth]*[pix pheight]*sizeof(float);
+		srcf = dstf;
+		
+		int from = [[dict objectForKey: @"from"] intValue];
+		int to = [[dict objectForKey: @"to"] intValue];
+		float *fkernel = [[dict objectForKey: @"kernel"] pointerValue];
+		
+		for( int y = from; y < to; y++)
+		{
+			srcf.data = dstf.data = (void*) [volumeData[ x] bytes] + y*[pix pwidth]*sizeof(float);
+		
+			if( srcf.data)
+			{
+				if( vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, [pix kernelsize], [pix kernelsize], 0, kvImageDoNotTile + kvImageEdgeExtend))
+					NSLog( @"Error applyConvolutionOnImage");
+			}
+		}
+	}
+	
+	[flipDataThread lock];
+	[flipDataThread unlockWithCondition: [flipDataThread condition]-1];
+	
+	[p release];
+}
+
 - (IBAction) applyConvolutionOnSource:(id) sender
 {
 	int x, i;
 	
 	if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO)
 	{
+		int mpprocessors = MPProcessors();
 		
-		for ( x = 0; x < maxMovieIndex; x++)
+		if( flipDataThread == nil)
+			flipDataThread = [[NSConditionLock alloc] initWithCondition: 0];
+		
+		[flipDataThread lockWhenCondition: 0];
+		[flipDataThread unlockWithCondition: mpprocessors];
+		
+		NSMutableDictionary *baseDict = [NSMutableDictionary dictionary];
+		int no = [pixList[ 0] count];
+		
+		for( int i = 0; i < mpprocessors; i++)
 		{
-			for ( i = 0; i < [pixList[ x] count]; i ++)
-			{
-				[[pixList[ x] objectAtIndex:i] applyConvolutionOnSourceImage];
-			}
+			NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary: baseDict];
+			
+			int from = (i * no) / mpprocessors;
+			int to = ((i+1) * no) / mpprocessors;
+			
+			[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+			[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+			
+			[NSThread detachNewThreadSelector: @selector( applyConvolutionXYThread:) toTarget: self withObject: d];
 		}
+		
+		[flipDataThread lockWhenCondition: 0];
+		[flipDataThread unlock];
 		
 		if( [self isDataVolumicIn4D: YES])
 		{
-			// Apply the convolution in the Z direction
+			[flipDataThread lockWhenCondition: 0];
+			[flipDataThread unlockWithCondition: mpprocessors];
 			
+			// Apply the convolution in the Z direction
 			for ( x = 0; x < maxMovieIndex; x++)
 			{
-				DCMPix	*pix = [pixList[ x] objectAtIndex: 0];
+				DCMPix *pix = [pixList[ x] objectAtIndex: 0];
+				float m = *[pix fImage];
 				
 				if( [pix isRGB] == NO)
 				{
-					float m = *[pix fImage];
+					float fkernel[25];
+				
+					if( [pix normalization] != 0)
+						for( int i = 0; i < 25; i++) fkernel[ i] = (float) [pix kernel][ i] / (float) [pix normalization]; 
+					else
+						for( int i = 0; i < 25; i++) fkernel[ i] = (float) [pix kernel][ i]; 
 					
-					for ( i = 0; i < [pix pheight]; i ++)
+					baseDict = [NSMutableDictionary dictionary];
+					int no = [pix pheight];
+					
+					[baseDict setObject: [NSValue valueWithPointer: fkernel] forKey: @"kernel"];
+					
+					for( int i = 0; i < mpprocessors; i++)
 					{
-						vImage_Buffer dstf, srcf;
+						NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary: baseDict];
 						
-						dstf.height = [pixList[ x] count];
-						dstf.width = [pix pwidth];
-						dstf.rowBytes = [pix pwidth]*[pix pheight]*sizeof(float);
-						dstf.data = (void*) [volumeData[ x] bytes];
+						int from = (i * no) / mpprocessors;
+						int to = ((i+1) * no) / mpprocessors;
 						
-						srcf = dstf;
-						if( srcf.data)
-						{
-							short err;
-							float  fkernel[25];
-							int i;
-							
-							if( [pix normalization] != 0)
-								for( i = 0; i < 25; i++) fkernel[ i] = (float) [pix kernel][ i] / (float) [pix normalization]; 
-							else
-								for( i = 0; i < 25; i++) fkernel[ i] = (float) [pix kernel][ i]; 
-							
-							
-							
-							err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, [pix kernelsize], [pix kernelsize], 0, kvImageEdgeExtend);
-							if( err) NSLog(@"Error applyConvolutionOnImage = %d", err);
-						}
+						[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+						[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+						
+						[NSThread detachNewThreadSelector: @selector( applyConvolutionZThread:) toTarget: self withObject: d];
 					}
-					
-					// check the first line to avoid nan value....
-					for( DCMPix *p in pixList[ x])
+				}
+				else
+				{
+					[flipDataThread lock];
+					[flipDataThread unlockWithCondition: [flipDataThread condition]-1];
+				}
+				
+				[flipDataThread lockWhenCondition: 0];
+				[flipDataThread unlock];
+				
+				// check the first line to avoid nan value....
+				for( DCMPix *p in pixList[ x])
+				{
+					if( [p isRGB] == NO)
 					{
 						float *ptr = (float*) [p fImage];
 						int x = [p pwidth];

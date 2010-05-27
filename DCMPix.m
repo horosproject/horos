@@ -11046,7 +11046,7 @@ END_CREATE_ROIS:
 		
 		if( color)
 		{
-			err = vImageConvolve_ARGB8888( &dstf, &srcf, 0, 0, 0,  kernel, kernelsize, kernelsize, normalization, 0, kvImageLeaveAlphaUnchanged + kvImageEdgeExtend);
+			err = vImageConvolve_ARGB8888( &dstf, &srcf, 0, 0, 0,  kernel, kernelsize, kernelsize, normalization, 0, kvImageDoNotTile + kvImageLeaveAlphaUnchanged + kvImageEdgeExtend);
 		}
 		else
 		{
@@ -11059,7 +11059,7 @@ END_CREATE_ROIS:
 				for( i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i]; 
 			
 			m = *src;
-			err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, kernelsize, kernelsize, 0, kvImageEdgeExtend);
+			err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, kernelsize, kernelsize, 0, kvImageDoNotTile + kvImageEdgeExtend);
 			
 			// check the first line to avoid nan value....
 			
