@@ -25222,10 +25222,7 @@
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 					"\"$(SRCROOT)/build/Development\"",
-					"\"$(SRCROOT)/../nitrogen/build/Release\"",
-					"\"$(SRCROOT)/../nitrogen/build/Development\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = NO;
@@ -25354,10 +25351,7 @@
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../nitrogen/build/Development\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -26151,10 +26145,7 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
-					"\\\"$(SRCROOT)/Binaries\\\"",
-					"\\\"$(SRCROOT)/build/Development\\\"",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/../nitrogen/build/Development\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = NO;
@@ -26186,9 +26177,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					Binaries/Jasper,
 					AYDicomPrint,
-					"\\\"$(SRCROOT)/Binaries/openjpeg\\\"",
-					"\\\"$(SRCROOT)/Binaries/VTKLibs\\\"",
-					"\\\"$(SRCROOT)/ITK180/bin\\\"",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
