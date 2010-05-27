@@ -8814,9 +8814,7 @@ static float oldsetww, oldsetwl;
 	for ( int x = 0; x < maxMovieIndex; x++)
 	{
 		for ( DCMPix *p in [pixList[ x] subarrayWithRange: NSMakeRange( [[dict objectForKey: @"from"] intValue], [[dict objectForKey: @"to"] intValue] - [[dict objectForKey: @"from"] intValue])])
-		{
 			[p applyConvolutionOnSourceImage];
-		}
 	}
 	
 	[flipDataThread lock];
@@ -8834,8 +8832,6 @@ static float oldsetww, oldsetwl;
 		DCMPix	*pix = [pixList[ x] objectAtIndex: 0];
 		
 		vImage_Buffer dstf, srcf;
-		
-		float m = *[pix fImage];
 		
 		dstf.height = [pixList[ x] count];
 		dstf.width = [pix pwidth];
