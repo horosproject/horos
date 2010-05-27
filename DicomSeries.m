@@ -212,7 +212,15 @@
 					NSImage *thumbnail = nil;
 					
 					if( [DCMAbstractSyntaxUID isStructuredReport: [self valueForKey: @"seriesSOPClassUID"]])
-						thumbnail = [NSImage imageNamed: @"pdf.tif"];
+					{
+						NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"pdf"];
+						
+						thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( 70, 70)] autorelease];
+						
+						[thumbnail lockFocus];
+						[icon drawInRect: NSMakeRect( 0, 0, 70, 70) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
+						[thumbnail unlockFocus];
+					}
 					else
 						thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
 					
