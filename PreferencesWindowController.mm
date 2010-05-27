@@ -247,6 +247,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	for (NSArray* pluginPane in pluginPanes)
 		[self addPaneWithResourceNamed:[pluginPane objectAtIndex:0] inBundle:[pluginPane objectAtIndex:1] withTitle:[pluginPane objectAtIndex:2] image:[pluginPane objectAtIndex:3] toGroupWithName:NSLocalizedString(@"Plugins", @"Title of Plugins section in preferences window")];
 	
+	[flippedDocumentView setFrameSize:panesListView.frame.size];
+	[panesListView setFrameSize:flippedDocumentView.frame.size];
 	[self synchronizeSizeWithContent];
 }
 
@@ -295,7 +297,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[currentContext.pane willUnselect];
 		NSView* oldview = currentContext? currentContext.pane.mainView : panesListView;
 		[oldview retain];
-		[scrollView setDocumentView:[[[NSView alloc] initWithSize:[self.window.contentView frame].size] autorelease]];
+		[oldview removeFromSuperview];
 
 		[self view:oldview recursiveUnBindEnableFromObject:self withKeyPath:@"isUnlocked"];
 		// add new view
@@ -307,7 +309,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[self.window setTitle:title];
 
 		[context.pane willSelect];
-		[scrollView setDocumentView:view];
+		[flippedDocumentView setFrameSize:view.frame.size];
+		[flippedDocumentView addSubview:view];
         [animations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 							       view, NSViewAnimationTargetKey,
 							       NSViewAnimationFadeInEffect, NSViewAnimationEffectKey,
@@ -376,11 +379,11 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 						   NULL]];
 	
 	// scroll to topleft
-	CGFloat vp = [scrollView.documentView frame].size.height-initframe.size.height;
+/*	CGFloat vp = [scrollView.documentView frame].size.height-initframe.size.height;
 	if (vp > 0) {
 		[scrollView.contentView scrollToPoint:NSMakePoint(0, vp)];
 		[scrollView reflectScrolledClipView:scrollView.contentView];
-	}
+	}*/
 	
 	NSViewAnimation* animation = [[NSViewAnimation alloc] initWithViewAnimations:animations];
 	@try {
