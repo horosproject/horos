@@ -2361,7 +2361,7 @@ extern "C"
 			else
 			{
 				int numberPacketsReceived = 0;
-				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 				{
 					NSMutableDictionary *d = [NSMutableDictionary dictionary];
 					[d setObject: object forKey: @"query"];
@@ -2378,6 +2378,8 @@ extern "C"
 					
 					[moveArray addObject: d];
 				}
+				else
+					NSLog( @"********* Ping test failed - will NOT retrieve");
 			}
 			
 			[object release];

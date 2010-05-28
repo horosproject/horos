@@ -883,6 +883,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			{
 			
 			}
+			else
+				NSLog( @"retrieveMode failed : %s", __PRETTY_FUNCTION__);
 			
 			if (dataset != NULL) delete dataset;
 		}
