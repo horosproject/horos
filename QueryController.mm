@@ -27,7 +27,6 @@
 #import "DCMTKSeriesQueryNode.h"
 #import "BrowserController.h"
 #import "DCMTKQueryRetrieveSCP.h"
-#include "SimplePing.h"
 #import "DICOMToNSString.h"
 
 #import "PieChartImage.h"
@@ -1356,19 +1355,15 @@ extern "C"
 				
 				hostname = [aServer objectForKey:@"Address"];
 				
-				int numberPacketsReceived = 0;
-				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
-				{
-					QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"] distantServer: aServer];
-					
-					[qm addFilter:filterValue forDescription: PatientID];
-					
-					[qm performQuery: NO];
-					
-					[result addObjectsFromArray: [qm queries]];
-					
-					[qm release];
-				}
+				QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"] distantServer: aServer];
+				
+				[qm addFilter:filterValue forDescription: PatientID];
+				
+				[qm performQuery: NO];
+				
+				[result addObjectsFromArray: [qm queries]];
+				
+				[qm release];
 			}
 		}
 	}
@@ -1420,257 +1415,241 @@ extern "C"
 				hostname = [aServer objectForKey:@"Address"];
 				port = [aServer objectForKey:@"Port"];
 				
-				int numberPacketsReceived = 0;
-				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 				{
-					{
-						[self setDateQuery: dateFilterMatrix];
-						[self setModalityQuery: modalityFilterMatrix];
+					[self setDateQuery: dateFilterMatrix];
+					[self setModalityQuery: modalityFilterMatrix];
+					
+					//get rid of white space at end and append "*"
 						
-						//get rid of white space at end and append "*"
-							
-						[queryManager release];
-						queryManager = nil;
+					[queryManager release];
+					queryManager = nil;
 
-						queryManager = [[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey: @"AETITLE"] distantServer: aServer];
-						// add filters as needed
-						
-						if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
-							//Specific Character Set
-							[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-						
-						switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
+					queryManager = [[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey: @"AETITLE"] distantServer: aServer];
+					// add filters as needed
+					
+					if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
+						//Specific Character Set
+						[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+					
+					switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
+					{
+						case 0:		currentQueryKey = PatientName;		break;
+						case 1:		currentQueryKey = PatientID;		break;
+						case 2:		currentQueryKey = AccessionNumber;	break;
+						case 3:		currentQueryKey = PatientBirthDate;	break;
+						case 4:		currentQueryKey = StudyDescription;	break;
+						case 5:		currentQueryKey = ReferringPhysician;	break;
+						case 6:		currentQueryKey = Comments;	break;
+					}
+					
+					BOOL queryItem = NO;
+					
+					if( currentQueryKey == PatientName)
+					{
+						if( showError && [[searchFieldName stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
 						{
-							case 0:		currentQueryKey = PatientName;		break;
-							case 1:		currentQueryKey = PatientID;		break;
-							case 2:		currentQueryKey = AccessionNumber;	break;
-							case 3:		currentQueryKey = PatientBirthDate;	break;
-							case 4:		currentQueryKey = StudyDescription;	break;
-							case 5:		currentQueryKey = ReferringPhysician;	break;
-							case 6:		currentQueryKey = Comments;	break;
-						}
-						
-						BOOL queryItem = NO;
-						
-						if( currentQueryKey == PatientName)
-						{
-							if( showError && [[searchFieldName stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
 							{
-								if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-								{
-									[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
-									[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-								}
-							}
-							
-							NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-							
-							if ([filterValue length] > 0)
-							{
-								[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
-								queryItem = YES;
+								[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+								[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
 							}
 						}
-						else if( currentQueryKey == ReferringPhysician)
+						
+						NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						
+						if ([filterValue length] > 0)
 						{
-							if( showError && [[searchFieldRefPhysician stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
-							{
-								if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-								{
-									[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
-									[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-								}
-							}
-							
-							NSString *filterValue = [[searchFieldRefPhysician stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-							
-							if ([filterValue length] > 0)
-							{
-								[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
-								queryItem = YES;
-							}
-						}					
-						else if( currentQueryKey == PatientBirthDate)
-						{
-							[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+							[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
 							queryItem = YES;
 						}
-						else if( currentQueryKey == PatientID)
+					}
+					else if( currentQueryKey == ReferringPhysician)
+					{
+						if( showError && [[searchFieldRefPhysician stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
 						{
-							NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-							
-							if ([filterValue length] > 0)
+							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
 							{
-								[queryManager addFilter:filterValue forDescription:currentQueryKey];
-								queryItem = YES;
+								[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+								[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
 							}
 						}
-						else if( currentQueryKey == AccessionNumber)
+						
+						NSString *filterValue = [[searchFieldRefPhysician stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						
+						if ([filterValue length] > 0)
 						{
-							NSString *filterValue = [[searchFieldAN stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-							
-							if ([filterValue length] > 0)
+							[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+							queryItem = YES;
+						}
+					}					
+					else if( currentQueryKey == PatientBirthDate)
+					{
+						[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+						queryItem = YES;
+					}
+					else if( currentQueryKey == PatientID)
+					{
+						NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						
+						if ([filterValue length] > 0)
+						{
+							[queryManager addFilter:filterValue forDescription:currentQueryKey];
+							queryItem = YES;
+						}
+					}
+					else if( currentQueryKey == AccessionNumber)
+					{
+						NSString *filterValue = [[searchFieldAN stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						
+						if ([filterValue length] > 0)
+						{
+							[queryManager addFilter:filterValue forDescription:currentQueryKey];
+							queryItem = YES;
+						}
+					}
+					else if( currentQueryKey == StudyDescription)
+					{
+						if( showError && [[searchFieldStudyDescription stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+						{
+							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
 							{
-								[queryManager addFilter:filterValue forDescription:currentQueryKey];
-								queryItem = YES;
+								[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+								[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
 							}
 						}
-						else if( currentQueryKey == StudyDescription)
+						
+						NSString *filterValue = [searchFieldStudyDescription stringValue];
+						
+						if ([filterValue length] > 0)
 						{
-							if( showError && [[searchFieldStudyDescription stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+							[queryManager addFilter: [filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+							queryItem = YES;
+						}
+					}
+					else if( currentQueryKey == Comments)
+					{
+						if( showError && [[searchFieldComments stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+						{
+							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
 							{
-								if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+								[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+								[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+							}
+						}
+						
+						NSString *filterValue = [searchFieldComments stringValue];
+						
+						if ([filterValue length] > 0)
+						{
+							[queryManager addFilter: [filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+							queryItem = YES;
+						}
+					}
+					
+					if ([dateQueryFilter object])
+					{
+						[queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
+						queryItem = YES;
+					}
+					
+					if ([timeQueryFilter object])
+					{
+						[queryManager addFilter:[timeQueryFilter filteredValue] forDescription:@"StudyTime"];
+						queryItem = YES;
+					}
+					
+					if ([modalityQueryFilter object])
+					{
+						[queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
+						queryItem = YES;
+					}
+					
+					if (queryItem)
+					{
+						[self performQuery: [NSNumber numberWithBool: showError]];
+					}
+					// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
+					else
+					{
+						BOOL doit = NO;
+						
+						if( showError)
+						{
+							if( atLeastOneSource == NO)
+							{
+								NSString *alertSuppress = @"No parameters query";
+								NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+								if ([defaults boolForKey:alertSuppress])
 								{
-									[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
-									[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+									doit = YES;
+								}
+								else
+								{
+									NSAlert* alert = [[NSAlert new] autorelease];
+									[alert setMessageText: NSLocalizedString(@"Query", nil)];
+									[alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
+									[alert setShowsSuppressionButton:YES ];
+									[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
+									[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
+									
+									if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
+									
+									if ([[alert suppressionButton] state] == NSOnState)
+									{
+										[defaults setBool:YES forKey:alertSuppress];
+									}
 								}
 							}
-							
-							NSString *filterValue = [searchFieldStudyDescription stringValue];
-							
-							if ([filterValue length] > 0)
-							{
-								[queryManager addFilter: [filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
-								queryItem = YES;
-							}
+							else doit = YES;
 						}
-						else if( currentQueryKey == Comments)
-						{
-							if( showError && [[searchFieldComments stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
-							{
-								if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-								{
-									[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
-									[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-								}
-							}
-							
-							NSString *filterValue = [searchFieldComments stringValue];
-							
-							if ([filterValue length] > 0)
-							{
-								[queryManager addFilter: [filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
-								queryItem = YES;
-							}
-						}
+						else doit = YES;
 						
-						if ([dateQueryFilter object])
-						{
-							[queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
-							queryItem = YES;
-						}
-						
-						if ([timeQueryFilter object])
-						{
-							[queryManager addFilter:[timeQueryFilter filteredValue] forDescription:@"StudyTime"];
-							queryItem = YES;
-						}
-						
-						if ([modalityQueryFilter object])
-						{
-							[queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
-							queryItem = YES;
-						}
-						
-						if (queryItem)
+						if( doit)
 						{
 							[self performQuery: [NSNumber numberWithBool: showError]];
 						}
-						// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
-						else
-						{
-							BOOL doit = NO;
-							
-							if( showError)
-							{
-								if( atLeastOneSource == NO)
-								{
-									NSString *alertSuppress = @"No parameters query";
-									NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-									if ([defaults boolForKey:alertSuppress])
-									{
-										doit = YES;
-									}
-									else
-									{
-										NSAlert* alert = [[NSAlert new] autorelease];
-										[alert setMessageText: NSLocalizedString(@"Query", nil)];
-										[alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
-										[alert setShowsSuppressionButton:YES ];
-										[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
-										[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
-										
-										if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
-										
-										if ([[alert suppressionButton] state] == NSOnState)
-										{
-											[defaults setBool:YES forKey:alertSuppress];
-										}
-									}
-								}
-								else doit = YES;
-							}
-							else doit = YES;
-							
-							if( doit)
-							{
-								[self performQuery: [NSNumber numberWithBool: showError]];
-							}
-							else i = [sourcesArray count];
-						}
-						
-						if( firstResults)
-						{
-							firstResults = NO;
-							[tempResultArray removeAllObjects];
-							[tempResultArray addObjectsFromArray: [queryManager queries]];
-						}
-						else
-						{
-							NSArray	*curResult = [queryManager queries];
-							NSArray *uidArray = [tempResultArray valueForKey: @"uid"];
-							
-							for( NSUInteger x = 0 ; x < [curResult count] ; x++)
-							{
-								int index = [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
-								
-								if( index == -1) // not found
-									[tempResultArray addObject: [curResult objectAtIndex: x]];
-								else 
-								{
-									if( [[tempResultArray objectAtIndex: index] valueForKey: @"numberImages"] && [[curResult objectAtIndex: x] valueForKey: @"numberImages"])
-									{
-										if( [[[tempResultArray objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[curResult objectAtIndex: x] valueForKey: @"numberImages"] intValue])
-										{
-											[tempResultArray replaceObjectAtIndex: index withObject: [curResult objectAtIndex: x]];
-										}
-									}
-								}
-							}
-						}
+						else i = [sourcesArray count];
 					}
-	//				else
-	//				{
-	//					NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
-	//				
-	//					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (c-echo failed)", nil)];
-	//					
-	//					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
-	//				}
-				}
-				else
-				{
-					if( showError)
+					
+					if( firstResults)
 					{
-						NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
-					
-						response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (ping failed)", nil)];
-					
-						NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
+						firstResults = NO;
+						[tempResultArray removeAllObjects];
+						[tempResultArray addObjectsFromArray: [queryManager queries]];
+					}
+					else
+					{
+						NSArray	*curResult = [queryManager queries];
+						NSArray *uidArray = [tempResultArray valueForKey: @"uid"];
 						
-						error = YES;
+						for( NSUInteger x = 0 ; x < [curResult count] ; x++)
+						{
+							int index = [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
+							
+							if( index == -1) // not found
+								[tempResultArray addObject: [curResult objectAtIndex: x]];
+							else 
+							{
+								if( [[tempResultArray objectAtIndex: index] valueForKey: @"numberImages"] && [[curResult objectAtIndex: x] valueForKey: @"numberImages"])
+								{
+									if( [[[tempResultArray objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[curResult objectAtIndex: x] valueForKey: @"numberImages"] intValue])
+									{
+										[tempResultArray replaceObjectAtIndex: index withObject: [curResult objectAtIndex: x]];
+									}
+								}
+							}
+						}
 					}
 				}
+//				else
+//				{
+//					NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
+//				
+//					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (c-echo failed)", nil)];
+//					
+//					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
+//				}
+			
 				atLeastOneSource = YES;
 			}
 		}
@@ -2360,26 +2339,20 @@ extern "C"
 				}
 			else
 			{
-				int numberPacketsReceived = 0;
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
+				NSMutableDictionary *d = [NSMutableDictionary dictionary];
+				[d setObject: object forKey: @"query"];
+				[d setObject: [dictionary objectForKey: @"retrieveMode"] forKey: @"retrieveMode"];
+				
+				if( [object isMemberOfClass: [DCMTKSeriesQueryNode class]])
 				{
-					NSMutableDictionary *d = [NSMutableDictionary dictionary];
-					[d setObject: object forKey: @"query"];
-					[d setObject: [dictionary objectForKey: @"retrieveMode"] forKey: @"retrieveMode"];
-					
-					if( [object isMemberOfClass: [DCMTKSeriesQueryNode class]])
-					{
-						if( [outlineView parentForItem: object])
-							[d setObject: [outlineView parentForItem: object] forKey:@"study"];	// for WADO retrieve at Series level
-					}
-					
-					if( [dictionary objectForKey: @"moveDestination"])
-						[d setObject: [dictionary objectForKey: @"moveDestination"] forKey: @"moveDestination"];
-					
-					[moveArray addObject: d];
+					if( [outlineView parentForItem: object])
+						[d setObject: [outlineView parentForItem: object] forKey:@"study"];	// for WADO retrieve at Series level
 				}
-				else
-					NSLog( @"********* Ping test failed - will NOT retrieve");
+				
+				if( [dictionary objectForKey: @"moveDestination"])
+					[d setObject: [dictionary objectForKey: @"moveDestination"] forKey: @"moveDestination"];
+				
+				[moveArray addObject: d];
 			}
 			
 			[object release];
@@ -3149,13 +3122,7 @@ extern "C"
 	hostname = [aServer objectForKey:@"Address"];
 	port = [aServer objectForKey:@"Port"];
 	
-	int numberPacketsReceived = 0;
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
-	{
-		//status = [QueryController echo: hostname port: [port intValue] AET: theirAET];
-		status = [QueryController echoServer:aServer];
-	}
-	else status = -1;
+	status = [QueryController echoServer:aServer];
 	
 	return status;
 }

@@ -7544,8 +7544,6 @@
 		CEE73FD408F44749002A395F /* stringNumericCompare.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE73FD208F44749002A395F /* stringNumericCompare.h */; };
 		CEE8CED00D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE8CECE0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m */; };
 		CEE8CED10D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE8CECF0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h */; };
-		CEEA84AC0B345F9800BBE4B1 /* SimplePing.h in Headers */ = {isa = PBXBuildFile; fileRef = CEEA84AA0B345F9800BBE4B1 /* SimplePing.h */; };
-		CEEA84AD0B345F9800BBE4B1 /* SimplePing.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEA84AB0B345F9800BBE4B1 /* SimplePing.c */; };
 		CEEB5CCC0CCDD161008803E2 /* Centerline.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEEB5CCA0CCDD161008803E2 /* Centerline.tif */; };
 		CEEDA35706A061EB00DEAB22 /* ThickSlabVR.h in Headers */ = {isa = PBXBuildFile; fileRef = CEEDA35306A061EB00DEAB22 /* ThickSlabVR.h */; };
 		CEEDA35806A061EB00DEAB22 /* ThickSlabVR.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEEDA35406A061EB00DEAB22 /* ThickSlabVR.mm */; };
@@ -11620,8 +11618,6 @@
 		CEE73FD208F44749002A395F /* stringNumericCompare.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = stringNumericCompare.h; sourceTree = "<group>"; };
 		CEE8CECE0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAppleScript+HandlerCalls.m"; sourceTree = "<group>"; };
 		CEE8CECF0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAppleScript+HandlerCalls.h"; sourceTree = "<group>"; };
-		CEEA84AA0B345F9800BBE4B1 /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SimplePing.h; sourceTree = "<group>"; };
-		CEEA84AB0B345F9800BBE4B1 /* SimplePing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = SimplePing.c; sourceTree = "<group>"; };
 		CEEB5CCA0CCDD161008803E2 /* Centerline.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Centerline.tif; sourceTree = "<group>"; };
 		CEEDA35306A061EB00DEAB22 /* ThickSlabVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThickSlabVR.h; sourceTree = "<group>"; };
 		CEEDA35406A061EB00DEAB22 /* ThickSlabVR.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThickSlabVR.mm; sourceTree = "<group>"; };
@@ -12996,8 +12992,6 @@
 				BF432BEC09E31C0F00AC322E /* DCMTKImageQueryNode.mm */,
 				BF90551C09EB4985009C30D1 /* MoveManager.h */,
 				BF90551D09EB4985009C30D1 /* MoveManager.m */,
-				CEEA84AA0B345F9800BBE4B1 /* SimplePing.h */,
-				CEEA84AB0B345F9800BBE4B1 /* SimplePing.c */,
 			);
 			name = Query;
 			sourceTree = "<group>";
@@ -17153,7 +17147,6 @@
 				BF09B13F0B2E681D00AA97E2 /* OSIWindowController.h in Headers */,
 				ABC3E5530B330A58006704E3 /* DNDArrayController.h in Headers */,
 				ABC3E55B0B330A69006704E3 /* sourcesTableView.h in Headers */,
-				CEEA84AC0B345F9800BBE4B1 /* SimplePing.h in Headers */,
 				B78490FB0B4BE86400BA93EF /* MenuDictionary.h in Headers */,
 				A9F8A4180B5F6460002CC763 /* CLUTOpacityView.h in Headers */,
 				CE28086B0B6B76730093E9D3 /* CalciumScoringWindowController.h in Headers */,
@@ -23207,7 +23200,6 @@
 				BF09B1400B2E681D00AA97E2 /* OSIWindowController.m in Sources */,
 				ABC3E5520B330A58006704E3 /* DNDArrayController.m in Sources */,
 				ABC3E55A0B330A69006704E3 /* sourcesTableView.m in Sources */,
-				CEEA84AD0B345F9800BBE4B1 /* SimplePing.c in Sources */,
 				B78490FC0B4BE86400BA93EF /* MenuDictionary.m in Sources */,
 				A9F8A4190B5F6460002CC763 /* CLUTOpacityView.mm in Sources */,
 				CE28086C0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,

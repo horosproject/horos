@@ -866,7 +866,6 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"0" forKey: @"AlwaysScaleToFit"];
 	[defaultValues setObject:@"0" forKey: @"VRDefaultViewSize"];
 	[defaultValues setObject:@"0" forKey: @"RunListenerOnlyIfActive"];
-	[defaultValues setObject:@"0" forKey: @"Ping"];
 	[defaultValues setObject:@"0" forKey: @"UseShutter"];
 	[defaultValues setObject:@"1" forKey: @"UseVOILUT"];
 	[defaultValues setObject:@"0" forKey: @"replaceAnonymize"];

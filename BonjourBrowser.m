@@ -19,7 +19,6 @@
 #import "AppController.h"
 #import "DicomFile.h"
 #import "DicomImage.h"
-#include "SimplePing.h"
 #import "DCMNetServiceDelegate.h"
 #import "Notifications.h"
 #import "SendController.h"
