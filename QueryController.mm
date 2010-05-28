@@ -1831,7 +1831,7 @@ extern "C"
 	if( [studyArray count])
 		localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"rawNoFiles"] intValue];
 	
-	if( [item valueForKey:@"numberImages"] == nil)
+	if( [item valueForKey:@"numberImages"] == nil || [[item valueForKey:@"numberImages"] intValue] == 0)
 	{
 		// We dont know how many images are stored on the distant PACS... add it, if we have no images on our side...
 		if( localFiles == 0)
@@ -2157,7 +2157,7 @@ extern "C"
 					if( [array count])
 						localNumber = [[[array objectAtIndex: 0] valueForKey: @"rawNoFiles"] intValue];
 					
-					if( localNumber < [[item valueForKey:@"numberImages"] intValue])
+					if( localNumber < [[item valueForKey:@"numberImages"] intValue] || [[item valueForKey:@"numberImages"] intValue] == 0)
 					{
 						NSString *stringID = [self stringIDForStudy: item];
 			
@@ -2167,7 +2167,7 @@ extern "C"
 				
 							// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
 							
-							if( [previousNumberOfFiles intValue] != [[item valueForKey:@"numberImages"] intValue])
+							if( [previousNumberOfFiles intValue] != [[item valueForKey:@"numberImages"] intValue] || [[item valueForKey:@"numberImages"] intValue] == 0)
 							{
 								[selectedItems addObject: item];
 								[previousAutoRetrieve setValue: [NSNumber numberWithInt: [[item valueForKey:@"numberImages"] intValue]] forKey: stringID];
@@ -2189,7 +2189,7 @@ extern "C"
 					
 					// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
 					
-					if( [previousNumberOfFiles intValue] != [[item valueForKey:@"numberImages"] intValue])
+					if( [previousNumberOfFiles intValue] != [[item valueForKey:@"numberImages"] intValue] || [[item valueForKey:@"numberImages"] intValue] == 0)
 					{
 						[selectedItems addObject: item];
 						[previousAutoRetrieve setValue: [NSNumber numberWithInt: [[item valueForKey:@"numberImages"] intValue]] forKey: stringID];
