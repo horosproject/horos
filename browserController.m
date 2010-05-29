@@ -5624,36 +5624,36 @@ static NSConditionLock *threadLock = nil;
 	return [[self imagesArray: item] valueForKey: @"completePath"];
 }
 
-- (void) deleteEmptyFoldersForDatabaseOutlineSelection
-{
-	NSIndexSet *rowEnumerator = [databaseOutline selectedRowIndexes];
-	NSManagedObject *curObj;
-	NSManagedObjectContext *context = self.managedObjectContext;
-	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	NSUInteger row = [rowEnumerator firstIndex];
-    while (row != NSNotFound)
-    {
-		curObj = [databaseOutline itemAtRow: row];
-		
-		if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
-		{
-			if( [[curObj valueForKey:@"images"] count] == 0)
-				[context deleteObject: curObj];
-		}
-		
-		if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
-		{
-			if( [[curObj valueForKey:@"imageSeries"] count] == 0)
-				[context deleteObject: curObj];
-		}
-		
-		row = [rowEnumerator indexGreaterThanIndex: row];
-    }
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
-}
+//- (void) deleteEmptyFoldersForDatabaseOutlineSelection
+//{
+//	NSIndexSet *rowEnumerator = [databaseOutline selectedRowIndexes];
+//	NSManagedObject *curObj;
+//	NSManagedObjectContext *context = self.managedObjectContext;
+//	
+//	[[[BrowserController currentBrowser] managedObjectContext] lock];
+//	
+//	NSUInteger row = [rowEnumerator firstIndex];
+//    while (row != NSNotFound)
+//    {
+//		curObj = [databaseOutline itemAtRow: row];
+//		
+//		if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
+//		{
+//			if( [[curObj valueForKey:@"images"] count] == 0)
+//				[context deleteObject: curObj];
+//		}
+//		
+//		if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
+//		{
+//			if( [[curObj valueForKey:@"imageSeries"] count] == 0)
+//				[context deleteObject: curObj];
+//		}
+//		
+//		row = [rowEnumerator indexGreaterThanIndex: row];
+//    }
+//	
+//	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+//}
 
 - (NSManagedObject *)firstObjectForDatabaseOutlineSelection
 {
@@ -6288,11 +6288,11 @@ static NSConditionLock *threadLock = nil;
 		{
 			@try
 			{
-				if( [[series valueForKey:@"images"] count] == 0)
+				if( [series isDeleted] == NO && [[series valueForKey:@"images"] count] == 0)
 				{
 					[context deleteObject: series];
 				}
-				else
+				else if( [series isDeleted] == NO)
 				{
 					[series setValue: [NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 					[series setValue: nil forKey:@"thumbnail"];	
@@ -6316,11 +6316,11 @@ static NSConditionLock *threadLock = nil;
 			{
 				NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
 				
-				if( [[study valueForKey:@"imageSeries"] count] == 0)
+				if( [study isDeleted] == NO && [[study valueForKey:@"imageSeries"] count] == 0)
 				{
 					[context deleteObject: study];
 				}
-				else
+				else if( [study isDeleted] == NO)
 				{
 					[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 				}
@@ -6330,7 +6330,6 @@ static NSConditionLock *threadLock = nil;
 		}
 		
 		[self saveDatabase];
-		
 	}
 	
 	@catch( NSException *ne)
@@ -6602,7 +6601,6 @@ static NSConditionLock *threadLock = nil;
 		}
 		else
 		{
-			[self deleteEmptyFoldersForDatabaseOutlineSelection];
 			[self filesForDatabaseOutlineSelection: objectsToDelete onlyImages: NO];
 		}
 		
