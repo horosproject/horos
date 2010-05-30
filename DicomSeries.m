@@ -211,7 +211,13 @@
 				{
 					NSImage *thumbnail = nil;
 					
-					if( [DCMAbstractSyntaxUID isStructuredReport: [self valueForKey: @"seriesSOPClassUID"]])
+					if( [DCMAbstractSyntaxUID isSpectroscopy: [self valueForKey: @"seriesSOPClassUID"]])
+					{
+						thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"]; 
+						
+						thumbnailData = [thumbnail TIFFRepresentation];
+					}
+					else if( [DCMAbstractSyntaxUID isStructuredReport: [self valueForKey: @"seriesSOPClassUID"]])
 					{
 						NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"pdf"];
 						
@@ -220,12 +226,16 @@
 						[thumbnail lockFocus];
 						[icon drawInRect: NSMakeRect( 0, 0, 70, 70) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
 						[thumbnail unlockFocus];
+						
+						thumbnailData = [thumbnail TIFFRepresentation];
 					}
 					else
+					{
 						thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
 					
-					if (!dcmPix.notAbleToLoadImage)
-						thumbnailData = [thumbnail JPEGRepresentationWithQuality:0.3];
+						if (!dcmPix.notAbleToLoadImage)
+							thumbnailData = [thumbnail JPEGRepresentationWithQuality:0.3];
+					}
 					
 					[dcmPix release];
 				}

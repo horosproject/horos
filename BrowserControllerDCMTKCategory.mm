@@ -54,7 +54,10 @@ extern NSRecursiveLock *PapyrusLock;
 	if( [string isEqualToString: @"1.2.840.10008.1.2.2"])
 		return NSLocalizedString( @"Uncompressed BigEndian", nil);
 	
-	return [NSString stringWithFormat:@"%s", dcmFindNameOfUID( [string UTF8String])];
+	if( dcmFindNameOfUID( [string UTF8String]))
+		return [NSString stringWithFormat:@"%s", dcmFindNameOfUID( [string UTF8String])];
+	else
+		return NSLocalizedString( @"Unknown UID", nil);
 }
 
 #ifndef OSIRIX_LIGHT

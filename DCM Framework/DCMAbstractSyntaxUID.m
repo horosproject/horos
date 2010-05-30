@@ -391,7 +391,8 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 + (NSArray *)imageSyntaxes
 {
 	if( imagesSyntaxes == nil)
-		imagesSyntaxes = [[NSArray arrayWithObjects:ComputedRadiographyImageStorage ,
+	{
+		imagesSyntaxes = [NSArray arrayWithObjects:ComputedRadiographyImageStorage ,
 		    DigitalXRayImageStorageForPresentation ,
 		    DigitalXRayImageStorageForProcessing ,
 		    DigitalMammographyXRayImageStorageForPresentation ,
@@ -430,9 +431,21 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			OphthalmicPhotography8BitImageStorage,
 			OphthalmicPhotography16BitImageStorage,
 			FujiPrivateCR,
-			nil] retain];
+			nil];
+		
+		@try 
+		{
+			if( [[NSUserDefaults standardUserDefaults] arrayForKey: @"additionalDisplayedStorageSOPClassUIDArray"])
+				imagesSyntaxes = [imagesSyntaxes arrayByAddingObjectsFromArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"additionalDisplayedStorageSOPClassUIDArray"]];
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
+		[imagesSyntaxes retain];
+	}
 	
-
 	return imagesSyntaxes;
 }
 	/**

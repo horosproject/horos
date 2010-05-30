@@ -4755,6 +4755,8 @@
 		CEBA30200EEDB5F200D920B4 /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2448FE0DA42A7600B8D506 /* libvtksys.a */; };
 		CEBA30220EEDB62300D920B4 /* libvtktiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE24490E0DA42A7600B8D506 /* libvtktiff.a */; };
 		CEBA30240EEDB71D00D920B4 /* libvtkWidgets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2448FF0DA42A7600B8D506 /* libvtkWidgets.a */; };
+		CEBA5FE011B244EA005F3A0E /* SpectroIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */; };
+		CEBA5FE111B244EA005F3A0E /* SpectroIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */; };
 		CEBA709D10C70039003A6186 /* GetPrimaryMACAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */; };
 		CEBBE1820C82F33900247888 /* libtiff.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
 		CEBD8AC70875B233000E42D6 /* OSICDPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */; };
@@ -11509,6 +11511,7 @@
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
 		CEB7179706CE7CBD00084CA5 /* libjasper2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjasper2.a; path = Binaries/Jasper/libjasper2.a; sourceTree = SOURCE_ROOT; };
+		CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SpectroIcon.jpg; sourceTree = "<group>"; };
 		CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetPrimaryMACAddress.m; sourceTree = "<group>"; };
 		CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSICDPreferencePane.prefPane; path = "Preference Panes/OSICDPreferencePane/build/Development/OSICDPreferencePane.prefPane"; sourceTree = "<group>"; };
 		CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIGeneralPreferencePane.prefPane; path = "Preference Panes/OSIGeneralPreferencePane/build/Development/OSIGeneralPreferencePane.prefPane"; sourceTree = "<group>"; };
@@ -13202,6 +13205,7 @@
 				BF8DE5E006507355005DB40E /* SmartAlbum.tif */,
 				BF8DE5E106507355005DB40E /* SmartIcon.tif */,
 				AB7CB7B30A6E3922008DFCC9 /* smile.png */,
+				CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */,
 				ABBB64A3063587B200D9531F /* SRSettings.tif */,
 				ABBB64A4063587B200D9531F /* Stack.tif */,
 				7E2BE3FD0715DC0D0017898A /* StartupDisk.tif */,
@@ -21818,6 +21822,7 @@
 				AB10FA231129302A009EB238 /* PopUpArrows.png in Resources */,
 				59BDF106117EE61E007F1F2C /* PreferencesWindow.xib in Resources */,
 				84B5EA4311A2BC0900193FDB /* dsr2html in Resources */,
+				CEBA5FE011B244EA005F3A0E /* SpectroIcon.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22169,6 +22174,7 @@
 				CE4B5CFD10E5F9DE00C11948 /* Safari.tif in Resources */,
 				AB10FA241129302A009EB238 /* PopUpArrows.png in Resources */,
 				59BDF107117EE61E007F1F2C /* PreferencesWindow.xib in Resources */,
+				CEBA5FE111B244EA005F3A0E /* SpectroIcon.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -15,6 +15,7 @@
 #import "DefaultsOsiriX.h"
 #import "PluginManager.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import "OsiriX/DCMAbstractSyntaxUID.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DCMNetServiceDelegate.h"
@@ -887,6 +888,9 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"10" forKey:@"quicktimeExportRateValue"];
 	[defaultValues setObject:@"1" forKey:@"32bitDICOMAreAlwaysIntegers"];
 	[defaultValues setObject:@"1" forKey:@"archiveReportsAndAnnotationsAsDICOMSR"];
+	
+	[defaultValues setObject: [NSArray arrayWithObjects: [DCMAbstractSyntaxUID MRSpectroscopyStorage], nil] forKey:@"additionalDisplayedStorageSOPClassUIDArray"];
+	
 	
 	// ** ROI Default
 	[defaultValues setObject:[NSNumber numberWithFloat: 2] forKey:@"ROIThickness"];

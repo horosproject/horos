@@ -5420,7 +5420,29 @@ END_CREATE_ROIS:
 		[pool release];
 		return YES;
 	} // end encapsulatedPDF
-	
+	else if ([ SOPClassUID isEqualToString:[DCMAbstractSyntaxUID MRSpectroscopyStorage]])
+	{
+		if( fExternalOwnedImage)
+			fImage = fExternalOwnedImage;
+		else
+			fImage = malloc( 128 * 128 * 4);
+		
+		height = 128;
+		width = 128;
+		isRGB = NO;
+		
+		for( int i = 0; i < 128*128; i++)
+			fImage[ i ] = i%2;
+		
+		#ifdef OSIRIX_VIEWER
+			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
+		#endif
+		
+		[purgeCacheLock lock];
+		[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];
+		[pool release];
+		return YES;
+	}
 	else if( [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
 	{
 #ifdef OSIRIX_VIEWER
@@ -7151,7 +7173,7 @@ END_CREATE_ROIS:
 - (BOOL) loadDICOMPapyrus
 {
 	int				elemType;
-	PapyShort		imageNb,  err;
+	PapyShort		imageNb,  err = 0;
 	PapyULong		nbVal, i, pos;
 	SElement		*theGroupP;
 	UValue_T		*val, *tmp;
@@ -7289,7 +7311,7 @@ END_CREATE_ROIS:
 				[self papyLoadGroup0x0020: theGroupP];
 			
 			theGroupP = (SElement*) [self getPapyGroup: 0x0028];
-			if( theGroupP || [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.104.1"] || [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // This group is MANDATORY... or DICOM SR / PDF
+			if( theGroupP || [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.104.1"] || [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // This group is MANDATORY... or DICOM SR / PDF / Spectro
 			{
 				if( theGroupP)
 				   [self papyLoadGroup0x0028: theGroupP];
@@ -7915,6 +7937,21 @@ END_CREATE_ROIS:
 								err = Papy3GroupFree (&theGroupP, TRUE);
 							}
 						}
+					}
+					else if( SOPClassUID != nil && [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.4.2"]) // Spectroscopy
+					{
+						if( fExternalOwnedImage)
+							fImage = fExternalOwnedImage;
+						else
+							fImage = malloc( 128 * 128 * 4);
+						
+						height = 128;
+						width = 128;
+						oImage = nil;
+						isRGB = NO;
+						
+						for( int i = 0; i < 128*128; i++)
+							fImage[ i ] = i%2;
 					} 
 					else if( SOPClassUID != nil && [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
 					{
@@ -8527,7 +8564,7 @@ END_CREATE_ROIS:
 
 - (BOOL) isDICOMFile:(NSString *) file
 {
-	BOOL            readable = YES;
+	BOOL readable = YES;
 	
 	if( imageObj)
 	{
