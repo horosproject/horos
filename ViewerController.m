@@ -3858,7 +3858,22 @@ static volatile int numberOfThreadsForRelisce = 0;
 							
 							[[[BrowserController currentBrowser] managedObjectContext] unlock];
 						}
+						else if (count == 0)
+						{
+							count = [[curSeries valueForKey: @"rawNoFiles"] intValue];
+							
+							int frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+							
+							if( count == 1 && frames > 1)
+								count = frames;
+							
+							if( count == 1)
+								type = NSLocalizedString( @"Object", nil);
+							else
+								type = NSLocalizedString( @"Objects", nil);
+						}
 						else type = NSLocalizedString( @"Images", nil);
+						
 						
 						if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
 						else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];
