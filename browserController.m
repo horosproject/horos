@@ -8823,7 +8823,19 @@ static BOOL withReset = NO;
 						if( frames > 1) [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Frames", nil), name, frames]];
 						else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Image", nil), name, count]];
 					}
-					else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Images", nil), name, count]];
+					else
+					{
+						if( count == 0)
+						{
+							count = [[curFile valueForKey: @"rawNoFiles"] intValue];
+							if( count == 1 && [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue] > 1)
+								count = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+								
+							[cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Objects", nil), name, count]];
+						}
+						else
+							[cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Images", nil), name, count]];
+					}
 				}
 				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"])
 				{
