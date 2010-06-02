@@ -1292,7 +1292,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         {
 			if( cond != ASC_SHUTDOWNAPPLICATION)
 			{
-				[[[BrowserController currentBrowser] checkIncomingLock] lock];
+//				[[[BrowserController currentBrowser] checkIncomingLock] lock];
 				
 				NSManagedObjectContext *dbContext = [[BrowserController currentBrowser] localManagedObjectContext];
 				[dbContext retain];
@@ -1350,7 +1350,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				
 				[dbContext unlock];
 				[dbContext release];
-				[[[BrowserController currentBrowser] checkIncomingLock] unlock];
+//				[[[BrowserController currentBrowser] checkIncomingLock] unlock];
 			}
 		}
 #endif
