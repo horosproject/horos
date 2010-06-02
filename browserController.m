@@ -14853,7 +14853,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return result;
 }
 
-// Always modify this function in sync with compressionForModality in Decompress.mm
+// Always modify this function in sync with compressionForModality in Decompress.mm / BrowserController.m
 + (int) compressionForModality: (NSString*) mod quality:(int*) quality resolution: (int) resolution
 {
 	NSArray *array;
@@ -14861,6 +14861,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		array = [[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"];
 	else
 		array = [[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"];
+	
+	if( [mod isEqualToString: @"SR"]) // No compression for DICOM SR
+		return compression_none;
 	
 	for( NSDictionary *dict in array)
 	{

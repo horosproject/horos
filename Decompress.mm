@@ -47,7 +47,7 @@ extern void dcmtkSetJPEGColorSpace( int);
 
 // Because if a file is corrupted, it will not crash the OsiriX application, but only this small task.
 
-// Always modify this function in sync with compressionForModality in Decompress.mm
+// Always modify this function in sync with compressionForModality in Decompress.mm / BrowserController.m
 int compressionForModality( NSArray *array, NSArray *arrayLow, int limit, NSString* mod, int* quality, int resolution)
 {
 	NSArray *s;
@@ -55,6 +55,9 @@ int compressionForModality( NSArray *array, NSArray *arrayLow, int limit, NSStri
 		s = arrayLow;
 	else
 		s = array;
+	
+	if( [mod isEqualToString: @"SR"]) // No compression for DICOM SR
+		return compression_none;
 	
 	for( NSDictionary *dict in s)
 	{
@@ -212,6 +215,13 @@ int main(int argc, const char *argv[])
 						DcmDataset *dataset = fileformat.getDataset();
 						DcmItem *metaInfo = fileformat.getMetaInfo();
 						DcmXfer original_xfer(dataset->getOriginalXfer());
+						
+						const char *string = NULL;
+						
+//						NSString *sopClassUID = nil;
+//						if (dataset->findAndGetString(DCM_SOPClassUID, string, OFFalse).good() && string != NULL)
+//							sopClassUID = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
+						
 						if (original_xfer.isEncapsulated())
 						{
 							if( destDirec)
@@ -223,7 +233,6 @@ int main(int argc, const char *argv[])
 						}
 						else
 						{
-							const char *string = NULL;
 							NSString *modality;
 							if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
 								modality = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
