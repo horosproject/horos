@@ -9,6 +9,3 @@
 #import "SFAuthorizationView+OsiriX.h"
 
 
-@implementation SFAuthorizationView (OsiriX)
-
-@end

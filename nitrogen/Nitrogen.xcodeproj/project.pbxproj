@@ -30,6 +30,22 @@
 		598D1D121070D63400EE85EA /* N2XMLRPC.mm in Sources */ = {isa = PBXBuildFile; fileRef = 598D1D101070D63400EE85EA /* N2XMLRPC.mm */; };
 		598E50321043CB90005BCDC7 /* N2ButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 598E50301043CB90005BCDC7 /* N2ButtonCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		598E50331043CB90005BCDC7 /* N2ButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 598E50311043CB90005BCDC7 /* N2ButtonCell.mm */; };
+		5997856311B6767B002DB107 /* N2AdaptiveBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997856111B6767B002DB107 /* N2AdaptiveBox.h */; };
+		5997856411B6767B002DB107 /* N2AdaptiveBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997856211B6767B002DB107 /* N2AdaptiveBox.mm */; };
+		5997856811B676DA002DB107 /* N2CustomTitledPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997856611B676DA002DB107 /* N2CustomTitledPopUpButtonCell.h */; };
+		5997856911B676DA002DB107 /* N2CustomTitledPopUpButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997856711B676DA002DB107 /* N2CustomTitledPopUpButtonCell.mm */; };
+		5997856E11B676F8002DB107 /* N2FlippedView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997856C11B676F8002DB107 /* N2FlippedView.h */; };
+		5997856F11B676F8002DB107 /* N2FlippedView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997856D11B676F8002DB107 /* N2FlippedView.mm */; };
+		5997857211B67701002DB107 /* N2HexadecimalNumberFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997857011B67701002DB107 /* N2HexadecimalNumberFormatter.h */; };
+		5997857311B67701002DB107 /* N2HexadecimalNumberFormatter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997857111B67701002DB107 /* N2HexadecimalNumberFormatter.mm */; };
+		5997857611B6770C002DB107 /* N2HighlightImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997857411B6770C002DB107 /* N2HighlightImageButtonCell.h */; };
+		5997857711B6770C002DB107 /* N2HighlightImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997857511B6770C002DB107 /* N2HighlightImageButtonCell.mm */; };
+		5997857A11B6771B002DB107 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997857811B6771B002DB107 /* N2ImageView.h */; };
+		5997857B11B6771B002DB107 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997857911B6771B002DB107 /* N2ImageView.mm */; };
+		5997857E11B67788002DB107 /* NSFileManager+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997857C11B67788002DB107 /* NSFileManager+N2.h */; };
+		5997857F11B67788002DB107 /* NSFileManager+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997857D11B67788002DB107 /* NSFileManager+N2.mm */; };
+		5997858E11B67851002DB107 /* NSUserDefaultsController+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997858C11B67851002DB107 /* NSUserDefaultsController+N2.h */; };
+		5997858F11B67851002DB107 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997858D11B67851002DB107 /* NSUserDefaultsController+N2.mm */; };
 		59A6333610428715003F4069 /* N2StepView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6330C10428715003F4069 /* N2StepView.mm */; };
 		59A6333710428715003F4069 /* N2StepView.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6330D10428715003F4069 /* N2StepView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		59A6333810428715003F4069 /* N2Window.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6330E10428715003F4069 /* N2Window.mm */; };
@@ -153,6 +169,22 @@
 		598D1D101070D63400EE85EA /* N2XMLRPC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2XMLRPC.mm; sourceTree = "<group>"; };
 		598E50301043CB90005BCDC7 /* N2ButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2ButtonCell.h; sourceTree = "<group>"; };
 		598E50311043CB90005BCDC7 /* N2ButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2ButtonCell.mm; sourceTree = "<group>"; };
+		5997856111B6767B002DB107 /* N2AdaptiveBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2AdaptiveBox.h; sourceTree = "<group>"; };
+		5997856211B6767B002DB107 /* N2AdaptiveBox.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2AdaptiveBox.mm; sourceTree = "<group>"; };
+		5997856611B676DA002DB107 /* N2CustomTitledPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2CustomTitledPopUpButtonCell.h; sourceTree = "<group>"; };
+		5997856711B676DA002DB107 /* N2CustomTitledPopUpButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2CustomTitledPopUpButtonCell.mm; sourceTree = "<group>"; };
+		5997856C11B676F8002DB107 /* N2FlippedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2FlippedView.h; sourceTree = "<group>"; };
+		5997856D11B676F8002DB107 /* N2FlippedView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2FlippedView.mm; sourceTree = "<group>"; };
+		5997857011B67701002DB107 /* N2HexadecimalNumberFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2HexadecimalNumberFormatter.h; sourceTree = "<group>"; };
+		5997857111B67701002DB107 /* N2HexadecimalNumberFormatter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2HexadecimalNumberFormatter.mm; sourceTree = "<group>"; };
+		5997857411B6770C002DB107 /* N2HighlightImageButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2HighlightImageButtonCell.h; sourceTree = "<group>"; };
+		5997857511B6770C002DB107 /* N2HighlightImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2HighlightImageButtonCell.mm; sourceTree = "<group>"; };
+		5997857811B6771B002DB107 /* N2ImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2ImageView.h; sourceTree = "<group>"; };
+		5997857911B6771B002DB107 /* N2ImageView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2ImageView.mm; sourceTree = "<group>"; };
+		5997857C11B67788002DB107 /* NSFileManager+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+N2.h"; sourceTree = "<group>"; };
+		5997857D11B67788002DB107 /* NSFileManager+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSFileManager+N2.mm"; sourceTree = "<group>"; };
+		5997858C11B67851002DB107 /* NSUserDefaultsController+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaultsController+N2.h"; sourceTree = "<group>"; };
+		5997858D11B67851002DB107 /* NSUserDefaultsController+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSUserDefaultsController+N2.mm"; sourceTree = "<group>"; };
 		59A6330C10428715003F4069 /* N2StepView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2StepView.mm; sourceTree = "<group>"; };
 		59A6330D10428715003F4069 /* N2StepView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2StepView.h; sourceTree = "<group>"; };
 		59A6330E10428715003F4069 /* N2Window.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2Window.mm; sourceTree = "<group>"; };
@@ -366,6 +398,8 @@
 				5915D5EF1099D8CC0024F610 /* N2Shell.mm */,
 				59E924D0110F277B0006FFFB /* N2UserDefaults.h */,
 				59E924D1110F277B0006FFFB /* N2UserDefaults.mm */,
+				5997857011B67701002DB107 /* N2HexadecimalNumberFormatter.h */,
+				5997857111B67701002DB107 /* N2HexadecimalNumberFormatter.mm */,
 				59E924C0110F257A0006FFFB /* Controls */,
 				59D8757810AAC93900AAA0FE /* Exceptions */,
 				59CF837210692FFC00A4444F /* Connections */,
@@ -426,6 +460,8 @@
 		59A63364104287DE003F4069 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
+				5997857C11B67788002DB107 /* NSFileManager+N2.h */,
+				5997857D11B67788002DB107 /* NSFileManager+N2.mm */,
 				59A6332910428715003F4069 /* NSTextView+N2.h */,
 				59A6332810428715003F4069 /* NSTextView+N2.mm */,
 				59A6332B10428715003F4069 /* NSString+N2.h */,
@@ -458,6 +494,8 @@
 				59D8756510AAC39C00AAA0FE /* NSView+N2.mm */,
 				596F881210C6CCDC007D6C82 /* NSImageView+N2.h */,
 				596F881310C6CCDC007D6C82 /* NSImageView+N2.mm */,
+				5997858C11B67851002DB107 /* NSUserDefaultsController+N2.h */,
+				5997858D11B67851002DB107 /* NSUserDefaultsController+N2.mm */,
 			);
 			name = Extras;
 			sourceTree = "<group>";
@@ -498,6 +536,8 @@
 		59E924C0110F257A0006FFFB /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				5997856111B6767B002DB107 /* N2AdaptiveBox.h */,
+				5997856211B6767B002DB107 /* N2AdaptiveBox.mm */,
 				598E50301043CB90005BCDC7 /* N2ButtonCell.h */,
 				598E50311043CB90005BCDC7 /* N2ButtonCell.mm */,
 				59D89B8710B3FFAE00AAA0FE /* N2Button.h */,
@@ -510,6 +550,14 @@
 				59E924CD110F25CD0006FFFB /* N2ColorWell.mm */,
 				5903BBA01111E15D00F4358B /* N2PopUpButton.h */,
 				5903BBA11111E15D00F4358B /* N2PopUpButton.mm */,
+				5997856611B676DA002DB107 /* N2CustomTitledPopUpButtonCell.h */,
+				5997856711B676DA002DB107 /* N2CustomTitledPopUpButtonCell.mm */,
+				5997857411B6770C002DB107 /* N2HighlightImageButtonCell.h */,
+				5997857511B6770C002DB107 /* N2HighlightImageButtonCell.mm */,
+				5997857811B6771B002DB107 /* N2ImageView.h */,
+				5997857911B6771B002DB107 /* N2ImageView.mm */,
+				5997856C11B676F8002DB107 /* N2FlippedView.h */,
+				5997856D11B676F8002DB107 /* N2FlippedView.mm */,
 			);
 			name = Controls;
 			sourceTree = "<group>";
@@ -570,6 +618,14 @@
 				5903BBA21111E15D00F4358B /* N2PopUpButton.h in Headers */,
 				595B87EC1116DC870026B899 /* N2UserDefaultsTest.h in Headers */,
 				596EB3CC118ABA6E00880192 /* NSWindow+N2.h in Headers */,
+				5997856311B6767B002DB107 /* N2AdaptiveBox.h in Headers */,
+				5997856811B676DA002DB107 /* N2CustomTitledPopUpButtonCell.h in Headers */,
+				5997856E11B676F8002DB107 /* N2FlippedView.h in Headers */,
+				5997857211B67701002DB107 /* N2HexadecimalNumberFormatter.h in Headers */,
+				5997857611B6770C002DB107 /* N2HighlightImageButtonCell.h in Headers */,
+				5997857A11B6771B002DB107 /* N2ImageView.h in Headers */,
+				5997857E11B67788002DB107 /* NSFileManager+N2.h in Headers */,
+				5997858E11B67851002DB107 /* NSUserDefaultsController+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -759,6 +815,14 @@
 				59E924D3110F277B0006FFFB /* N2UserDefaults.mm in Sources */,
 				5903BBA31111E15D00F4358B /* N2PopUpButton.mm in Sources */,
 				596EB3CD118ABA6E00880192 /* NSWindow+N2.mm in Sources */,
+				5997856411B6767B002DB107 /* N2AdaptiveBox.mm in Sources */,
+				5997856911B676DA002DB107 /* N2CustomTitledPopUpButtonCell.mm in Sources */,
+				5997856F11B676F8002DB107 /* N2FlippedView.mm in Sources */,
+				5997857311B67701002DB107 /* N2HexadecimalNumberFormatter.mm in Sources */,
+				5997857711B6770C002DB107 /* N2HighlightImageButtonCell.mm in Sources */,
+				5997857B11B6771B002DB107 /* N2ImageView.mm in Sources */,
+				5997857F11B67788002DB107 /* NSFileManager+N2.mm in Sources */,
+				5997858F11B67851002DB107 /* NSUserDefaultsController+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

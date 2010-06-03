@@ -17,11 +17,13 @@
 #import "BurnerWindowController.h"
 #import <OsiriX/DCM.h>
 #import "MutableArrayCategory.h"
-#import "AnonymizerWindowController.h"
 #import <DiscRecordingUI/DRSetupPanel.h>
 #import <DiscRecordingUI/DRBurnSetupPanel.h>
 #import <DiscRecordingUI/DRBurnProgressPanel.h>
 #import  "BrowserController.h"
+#import "Anonymization.h"
+#import "AnonymizationPanelController.h"
+#import "AnonymizationViewController.h"
 
 @implementation BurnerWindowController
 @synthesize password, buttonsDisabled;
@@ -274,21 +276,16 @@
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
 		{
-			AnonymizerWindowController *anonymizer = [[AnonymizerWindowController alloc] init];
 			
-			[anonymizer setFilesToAnonymize:files :dbObjects];
-			[anonymizer showWindow:self];
+			AnonymizationPanelController* panelController = [Anonymization showPanelForDefaultsKey:@"AnonymizationFields" modalForWindow:self.window modalDelegate:NULL didEndSelector:NULL representedObject:NULL];
 			
-			[[NSFileManager defaultManager] createDirectoryAtPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"] attributes:nil];
-			[anonymizer anonymizeToThisPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"]];
+			if (panelController.end == AnonymizationPanelCancel)
+				return;
+			
+			NSDictionary* anonOut = [Anonymization anonymizeFiles:files toPath:@"/tmp/burnAnonymized" withTags:panelController.anonymizationViewController.tagsValues];
 			
 			[anonymizedFiles release];
-			anonymizedFiles = [[anonymizer producedFiles] retain];
-			
-			if( [anonymizedFiles count] == 0) // Cancel
-			{
-				return;
-			}
+			anonymizedFiles = [[anonOut allValues] retain];
 		}
 		else
 		{
@@ -543,6 +540,8 @@
 	
 	burning = NO;
 	
+	if ([self.window isSheet])
+		[NSApp endSheet:self.window];
 	[[self window] performClose:nil];
 	
 	return YES;
@@ -592,6 +591,8 @@
 		
 		//[filesTableView reloadData];
 		
+		if ([self.window isSheet])
+			[NSApp endSheet:self.window];
 		NSLog(@"Burner windowShouldClose YES");
 		
 		return YES;

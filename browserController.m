@@ -17,7 +17,6 @@
 #import "MyOutlineView.h"
 #import "PreviewView.h"
 #import "QueryController.h"
-#import "AnonymizerWindowController.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
 #import "DCMPix.h"
@@ -71,6 +70,13 @@
 #import "CSMailMailClient.h"
 #import "NSImage+OsiriX.h"
 #import "NSString+N2.h"
+
+#ifndef OSIRIX_LIGHT
+#import "Anonymization.h"
+#import "AnonymizationSavePanelController.h"
+#import "AnonymizationViewController.h"
+#import "NSFileManager+N2.h"
+#endif
 
 #define DEFAULTUSERDATABASEPATH @"~/Library/Application Support/OsiriX/WebUsers.sql"
 #define USERDATABASEVERSION @"1.0"
@@ -7967,7 +7973,7 @@ static NSConditionLock *threadLock = nil;
 			
 			if( [[element valueForKey: @"type"] isEqualToString: @"Image"]) study = [element valueForKeyPath: @"series.study"];
 			else if( [[element valueForKey: @"type"] isEqualToString: @"Series"]) study = [element valueForKey: @"study"];
-			else if( [[element valueForKey: @"type"] isEqualToString: @"Study"]) study = (DicomStudy*) element;
+			else if( [[element valueForKey: @"type"] isEqualToString: @"Study"]) study = (DicomStudy*)element;
 			else NSLog( @"DB selectObject : Unknown table");
 			
 			NSInteger index = [self displayStudy: study object: element command: execute];
@@ -17375,6 +17381,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		else filesToBurn = [self filesForDatabaseOutlineSelection: managedObjects onlyImages:NO];
 		
 		burnerWindowController = [[BurnerWindowController alloc] initWithFiles:filesToBurn managedObjects:managedObjects];
+	//	[NSApp beginSheet:burnerWindowController.window modalForWindow:self.window modalDelegate:NULL didEndSelector:NULL contextInfo:NULL];
 		
 		[burnerWindowController showWindow:self];
 	}
@@ -17388,9 +17395,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 #endif
 
 #ifndef OSIRIX_LIGHT
-- (IBAction)anonymizeDICOM: (id)sender
+- (IBAction)anonymizeDICOM:(id)sender
 {
-	NSMutableArray *paths = [NSMutableArray array];
 	NSMutableArray *dicomFiles2Anonymize = [NSMutableArray array];
 	NSMutableArray *filesToAnonymize;
 	
@@ -17404,23 +17410,30 @@ static volatile int numberOfThreadsForJPEG = 0;
 	for (file in filesToAnonymize)
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		NSString	*extension = [file pathExtension];
-		if([extension isEqualToString:@"" ]) extension = [NSString stringWithString:@"dcm"];
-		else
-		{   // Added by rbrakes - check to see if "extension" includes only numbers (UID perhaps?).
+		
+		NSString* extension = [file pathExtension];
+		if (!extension.length)
+			extension = @"dcm";
+		else { // Added by rbrakes - check to see if "extension" includes only numbers (UID perhaps?).
 			int num;
 			NSScanner *scanner = [NSScanner scannerWithString: extension];
-			if ( [scanner scanInt: &num] && [scanner isAtEnd]) extension = [NSString stringWithString:@"dcm"];
+			if ([scanner scanInt: &num] && [scanner isAtEnd]) extension = [NSString stringWithString:@"dcm"];
 		}
 		
-		if ([extension  caseInsensitiveCompare:@"dcm"] == NSOrderedSame)
-			[paths addObject:file]; 
+		if (![extension caseInsensitiveCompare:@"dcm"] == NSOrderedSame) {
+			[dicomFiles2Anonymize removeObjectAtIndex:[filesToAnonymize indexOfObject:file]];
+			[filesToAnonymize removeObject:file];
+		}
 		
 		[pool release];
-		
 	}
 	
+	NSArray* ref = [NSArray arrayWithObjects: filesToAnonymize, dicomFiles2Anonymize, NULL];
+	[Anonymization showSavePanelForDefaultsKey:@"AnonymizationFields" modalForWindow:self.window modalDelegate:self didEndSelector:@selector(anonymizationSavePanelDidEnd:) representedObject:ref];
 	
+	
+	
+	/*
 	AnonymizerWindowController	*anonymizerController = [[AnonymizerWindowController alloc] init];
 	
 	[anonymizerController setFilesToAnonymize:paths :dicomFiles2Anonymize];
@@ -17463,10 +17476,51 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 	}
 	
-	[anonymizerController release];
+	[anonymizerController release];*/
 	
 	[filesToAnonymize release];
-}	
+}
+
+-(void)anonymizationSavePanelDidEnd:(AnonymizationSavePanelController*)aspc {
+	NSArray* imagePaths = [aspc.representedObject objectAtIndex:0];
+	NSArray* imageObjs = [aspc.representedObject objectAtIndex:1];
+	
+	switch (aspc.end) {
+		case AnonymizationSavePanelSaveAs: {
+			[Anonymization anonymizeFiles:imagePaths toPath:aspc.outputDir withTags:aspc.anonymizationViewController.tagsValues];
+		} break;
+		case AnonymizationSavePanelAdd:
+		case AnonymizationSavePanelReplace: {
+			NSString* tempDir = [[NSFileManager defaultManager] tmpFilePathInTmp];
+			NSDictionary* anonymizedFiles = [Anonymization anonymizeFiles:imagePaths toPath:tempDir withTags:aspc.anonymizationViewController.tagsValues];
+			
+			// remove old files?
+			if (aspc.end == AnonymizationSavePanelReplace)
+				[self delItem:self]; // this assumes the selection hasn't changed since the user clicked the Anonymize button
+			
+			// add new files
+			NSArray* newImageObjs = [self addFilesAndFolderToDatabase:anonymizedFiles.allValues];
+			
+			// if this happened in an album then add new images to that album
+			if (self.albumTable.selectedRow > 0) {
+				NSManagedObject* album = [self.albumArray objectAtIndex:[[self albumTable] selectedRow]];
+				if ([[album valueForKey:@"smartAlbum"] boolValue] == NO) {
+					NSMutableSet* studies = [album mutableSetValueForKey: @"studies"];
+					for (DicomImage* image in newImageObjs)
+						[studies addObject:[image valueForKeyPath:@"series.study"]];
+					[self outlineViewRefresh];
+				}
+			}
+			
+			if (newImageObjs.count > 0) {
+				DicomStudy* study = [[newImageObjs objectAtIndex:0] valueForKeyPath:@"series.study"];
+				[databaseOutline selectRowIndexes:[NSIndexSet indexSetWithIndex:[databaseOutline rowForItem:study]] byExtendingSelection:NO];
+				[databaseOutline scrollRowToVisible:[databaseOutline selectedRow]];
+			}
+		} break;
+	}
+}
+
 #endif
 
 - (void) unmountPath:(NSString*) path

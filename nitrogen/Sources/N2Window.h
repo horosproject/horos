@@ -15,11 +15,6 @@
 #import <Cocoa/Cocoa.h>
 @class N2View;
 
-@interface NSWindow (N2)
-
-
-@end
-
 @interface N2Window : NSWindow
 
 @end

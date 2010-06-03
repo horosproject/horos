@@ -17,9 +17,6 @@
 
 @implementation NSUserDefaultsController (OsiriX)
 
-+(void)initialize {
-	// NSLog(@"NSUserDefaultsController(OsiriX) initializing.........");
-}
 
 NSString* const OsirixWLWWDefaultsKey = @"WLWW3";
 

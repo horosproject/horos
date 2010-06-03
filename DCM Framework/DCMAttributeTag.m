@@ -146,4 +146,8 @@
 
 }
 
+-(BOOL)isEqual:(id)object {
+	return [object isKindOfClass:[DCMAttributeTag class]] && [self isEquaToTag:object];
+}
+
 @end

@@ -19,7 +19,6 @@
 #import "N2Operators.h"
 #include <algorithm>
 #include <cmath>
-#include <iostream> // TODO: remove
 
 #include "N2ColorWell.h"
 

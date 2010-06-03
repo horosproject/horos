@@ -99,6 +99,41 @@
 		596EB3F8118ABBB000880192 /* NSWindow+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3F4118ABBB000880192 /* NSWindow+N2.h */; };
 		596EB3F9118ABBB000880192 /* NSWindow+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3F5118ABBB000880192 /* NSWindow+N2.mm */; };
 		597DA7B41188340500D3BBCF /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A997B15610E0C412004C5BB1 /* SecurityInterface.framework */; };
+		5997895D11B7B3E9002DB107 /* Anonymization.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997894D11B7B3E9002DB107 /* Anonymization.h */; };
+		5997895E11B7B3E9002DB107 /* Anonymization.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997894E11B7B3E9002DB107 /* Anonymization.mm */; };
+		5997895F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997894F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h */; };
+		5997896011B7B3E9002DB107 /* AnonymizationCustomTagPanelController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997895011B7B3E9002DB107 /* AnonymizationCustomTagPanelController.mm */; };
+		5997896111B7B3E9002DB107 /* AnonymizationPanelController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997895111B7B3E9002DB107 /* AnonymizationPanelController.h */; };
+		5997896211B7B3E9002DB107 /* AnonymizationPanelController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997895211B7B3E9002DB107 /* AnonymizationPanelController.mm */; };
+		5997896311B7B3E9002DB107 /* AnonymizationSavePanelController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997895311B7B3E9002DB107 /* AnonymizationSavePanelController.h */; };
+		5997896411B7B3E9002DB107 /* AnonymizationSavePanelController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997895411B7B3E9002DB107 /* AnonymizationSavePanelController.mm */; };
+		5997896511B7B3E9002DB107 /* AnonymizationTagsPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997895511B7B3E9002DB107 /* AnonymizationTagsPopUpButton.h */; };
+		5997896611B7B3E9002DB107 /* AnonymizationTagsPopUpButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997895611B7B3E9002DB107 /* AnonymizationTagsPopUpButton.mm */; };
+		5997896711B7B3E9002DB107 /* AnonymizationTagsView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997895711B7B3E9002DB107 /* AnonymizationTagsView.h */; };
+		5997896811B7B3E9002DB107 /* AnonymizationTagsView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997895811B7B3E9002DB107 /* AnonymizationTagsView.mm */; };
+		5997896911B7B3E9002DB107 /* AnonymizationTemplateNamePanelController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997895911B7B3E9002DB107 /* AnonymizationTemplateNamePanelController.h */; };
+		5997896A11B7B3E9002DB107 /* AnonymizationTemplateNamePanelController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997895A11B7B3E9002DB107 /* AnonymizationTemplateNamePanelController.mm */; };
+		5997896B11B7B3E9002DB107 /* AnonymizationViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997895B11B7B3E9002DB107 /* AnonymizationViewController.h */; };
+		5997896C11B7B3E9002DB107 /* AnonymizationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997895C11B7B3E9002DB107 /* AnonymizationViewController.mm */; };
+		5997896E11B7B402002DB107 /* PlusButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 5997896D11B7B402002DB107 /* PlusButton.png */; };
+		5997897011B7B40B002DB107 /* MinusButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 5997896F11B7B40B002DB107 /* MinusButton.png */; };
+		5997897B11B7B423002DB107 /* AnonymizationCustomTagPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5997897111B7B422002DB107 /* AnonymizationCustomTagPanel.xib */; };
+		5997897C11B7B423002DB107 /* AnonymizationPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5997897311B7B423002DB107 /* AnonymizationPanel.xib */; };
+		5997897D11B7B423002DB107 /* AnonymizationSavePanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5997897511B7B423002DB107 /* AnonymizationSavePanel.xib */; };
+		5997897E11B7B423002DB107 /* AnonymizationTemplateNamePanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5997897711B7B423002DB107 /* AnonymizationTemplateNamePanel.xib */; };
+		5997897F11B7B423002DB107 /* AnonymizationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5997897911B7B423002DB107 /* AnonymizationView.xib */; };
+		5997898211B7B461002DB107 /* N2HexadecimalNumberFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997898011B7B461002DB107 /* N2HexadecimalNumberFormatter.h */; };
+		5997898311B7B461002DB107 /* N2HexadecimalNumberFormatter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997898111B7B461002DB107 /* N2HexadecimalNumberFormatter.mm */; };
+		5997898611B7B46A002DB107 /* N2HighlightImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997898411B7B46A002DB107 /* N2HighlightImageButtonCell.h */; };
+		5997898711B7B46A002DB107 /* N2HighlightImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997898511B7B46A002DB107 /* N2HighlightImageButtonCell.mm */; };
+		5997898A11B7B476002DB107 /* N2CustomTitledPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997898811B7B476002DB107 /* N2CustomTitledPopUpButtonCell.h */; };
+		5997898B11B7B476002DB107 /* N2CustomTitledPopUpButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997898911B7B476002DB107 /* N2CustomTitledPopUpButtonCell.mm */; };
+		5997899211B7B48F002DB107 /* NSUserDefaultsController+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997899011B7B48E002DB107 /* NSUserDefaultsController+N2.h */; };
+		5997899311B7B48F002DB107 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
+		5997899611B7B4A0002DB107 /* N2AdaptiveBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997899411B7B4A0002DB107 /* N2AdaptiveBox.h */; };
+		5997899711B7B4A0002DB107 /* N2AdaptiveBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899511B7B4A0002DB107 /* N2AdaptiveBox.mm */; };
+		5997899A11B7B4BD002DB107 /* NSFileManager+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997899811B7B4BD002DB107 /* NSFileManager+N2.h */; };
+		5997899B11B7B4BD002DB107 /* NSFileManager+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899911B7B4BD002DB107 /* NSFileManager+N2.mm */; };
 		59BDEC44117C9366007F1F2C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDEC43117C9366007F1F2C /* main.mm */; };
 		59BDED7D117CA4F6007F1F2C /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6495063587B200D9531F /* Osirix.icns */; };
 		59BDEDAD117CA83D007F1F2C /* sirsa.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DC609B6828800545F5E /* sirsa.cc */; };
@@ -213,8 +248,6 @@
 		7ECB4B42072EF9F800C2CFC4 /* DCMCalendarScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECB4B40072EF9F800C2CFC4 /* DCMCalendarScript.m */; };
 		7ECBB8230683A68D00FF3FF4 /* DCMPixelDataAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7ECBB8240683A68D00FF3FF4 /* DCMPixelDataAttribute.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.mm */; };
-		7ED5C26A0699E08E00875C39 /* AnonymizerWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ED5C2660699E08E00875C39 /* AnonymizerWindowController.h */; };
-		7ED5C26B0699E08E00875C39 /* AnonymizerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ED5C2670699E08E00875C39 /* AnonymizerWindowController.m */; };
 		7EE0DC02067A48A3003E745F /* DCMCharacterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC00067A48A3003E745F /* DCMCharacterSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7EE0DC03067A48A3003E745F /* DCMCharacterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE0DC01067A48A3003E745F /* DCMCharacterSet.m */; };
 		7EE0DC3E067A5138003E745F /* DCMSequenceAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC3C067A5138003E745F /* DCMSequenceAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -4100,7 +4133,6 @@
 		CE3F99610C84724B00CB38F1 /* ROIVolume.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991E0C84724B00CB38F1 /* ROIVolume.xib */; };
 		CE3F99620C84724B00CB38F1 /* VRPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99200C84724B00CB38F1 /* VRPanel.xib */; };
 		CE3F99650C84724B00CB38F1 /* PaletteBrush.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */; };
-		CE3F99660C84724B00CB38F1 /* Anonymize.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99280C84724B00CB38F1 /* Anonymize.xib */; };
 		CE3F99670C84724B00CB38F1 /* LLScoutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */; };
 		CE3F99680C84724B00CB38F1 /* BurnViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992C0C84724B00CB38F1 /* BurnViewer.xib */; };
 		CE3F99690C84724B00CB38F1 /* ROIDefaults.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992E0C84724B00CB38F1 /* ROIDefaults.xib */; };
@@ -7992,6 +8024,41 @@
 		596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSPreferencePane+OsiriX.mm"; sourceTree = "<group>"; };
 		596EB3F4118ABBB000880192 /* NSWindow+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSWindow+N2.h"; path = "nitrogen/Sources/NSWindow+N2.h"; sourceTree = "<group>"; };
 		596EB3F5118ABBB000880192 /* NSWindow+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSWindow+N2.mm"; path = "nitrogen/Sources/NSWindow+N2.mm"; sourceTree = "<group>"; };
+		5997894D11B7B3E9002DB107 /* Anonymization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Anonymization.h; sourceTree = "<group>"; };
+		5997894E11B7B3E9002DB107 /* Anonymization.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Anonymization.mm; sourceTree = "<group>"; };
+		5997894F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizationCustomTagPanelController.h; sourceTree = "<group>"; };
+		5997895011B7B3E9002DB107 /* AnonymizationCustomTagPanelController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AnonymizationCustomTagPanelController.mm; sourceTree = "<group>"; };
+		5997895111B7B3E9002DB107 /* AnonymizationPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizationPanelController.h; sourceTree = "<group>"; };
+		5997895211B7B3E9002DB107 /* AnonymizationPanelController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AnonymizationPanelController.mm; sourceTree = "<group>"; };
+		5997895311B7B3E9002DB107 /* AnonymizationSavePanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizationSavePanelController.h; sourceTree = "<group>"; };
+		5997895411B7B3E9002DB107 /* AnonymizationSavePanelController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AnonymizationSavePanelController.mm; sourceTree = "<group>"; };
+		5997895511B7B3E9002DB107 /* AnonymizationTagsPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizationTagsPopUpButton.h; sourceTree = "<group>"; };
+		5997895611B7B3E9002DB107 /* AnonymizationTagsPopUpButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AnonymizationTagsPopUpButton.mm; sourceTree = "<group>"; };
+		5997895711B7B3E9002DB107 /* AnonymizationTagsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizationTagsView.h; sourceTree = "<group>"; };
+		5997895811B7B3E9002DB107 /* AnonymizationTagsView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AnonymizationTagsView.mm; sourceTree = "<group>"; };
+		5997895911B7B3E9002DB107 /* AnonymizationTemplateNamePanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizationTemplateNamePanelController.h; sourceTree = "<group>"; };
+		5997895A11B7B3E9002DB107 /* AnonymizationTemplateNamePanelController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AnonymizationTemplateNamePanelController.mm; sourceTree = "<group>"; };
+		5997895B11B7B3E9002DB107 /* AnonymizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizationViewController.h; sourceTree = "<group>"; };
+		5997895C11B7B3E9002DB107 /* AnonymizationViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AnonymizationViewController.mm; sourceTree = "<group>"; };
+		5997896D11B7B402002DB107 /* PlusButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PlusButton.png; sourceTree = "<group>"; };
+		5997896F11B7B40B002DB107 /* MinusButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MinusButton.png; sourceTree = "<group>"; };
+		5997897211B7B423002DB107 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/AnonymizationCustomTagPanel.xib; sourceTree = "<group>"; };
+		5997897411B7B423002DB107 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/AnonymizationPanel.xib; sourceTree = "<group>"; };
+		5997897611B7B423002DB107 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/AnonymizationSavePanel.xib; sourceTree = "<group>"; };
+		5997897811B7B423002DB107 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/AnonymizationTemplateNamePanel.xib; sourceTree = "<group>"; };
+		5997897A11B7B423002DB107 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/AnonymizationView.xib; sourceTree = "<group>"; };
+		5997898011B7B461002DB107 /* N2HexadecimalNumberFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2HexadecimalNumberFormatter.h; path = nitrogen/Sources/N2HexadecimalNumberFormatter.h; sourceTree = "<group>"; };
+		5997898111B7B461002DB107 /* N2HexadecimalNumberFormatter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2HexadecimalNumberFormatter.mm; path = nitrogen/Sources/N2HexadecimalNumberFormatter.mm; sourceTree = "<group>"; };
+		5997898411B7B46A002DB107 /* N2HighlightImageButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2HighlightImageButtonCell.h; path = nitrogen/Sources/N2HighlightImageButtonCell.h; sourceTree = "<group>"; };
+		5997898511B7B46A002DB107 /* N2HighlightImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2HighlightImageButtonCell.mm; path = nitrogen/Sources/N2HighlightImageButtonCell.mm; sourceTree = "<group>"; };
+		5997898811B7B476002DB107 /* N2CustomTitledPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2CustomTitledPopUpButtonCell.h; path = nitrogen/Sources/N2CustomTitledPopUpButtonCell.h; sourceTree = "<group>"; };
+		5997898911B7B476002DB107 /* N2CustomTitledPopUpButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2CustomTitledPopUpButtonCell.mm; path = nitrogen/Sources/N2CustomTitledPopUpButtonCell.mm; sourceTree = "<group>"; };
+		5997899011B7B48E002DB107 /* NSUserDefaultsController+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSUserDefaultsController+N2.h"; path = "nitrogen/Sources/NSUserDefaultsController+N2.h"; sourceTree = "<group>"; };
+		5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSUserDefaultsController+N2.mm"; path = "nitrogen/Sources/NSUserDefaultsController+N2.mm"; sourceTree = "<group>"; };
+		5997899411B7B4A0002DB107 /* N2AdaptiveBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2AdaptiveBox.h; path = nitrogen/Sources/N2AdaptiveBox.h; sourceTree = "<group>"; };
+		5997899511B7B4A0002DB107 /* N2AdaptiveBox.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2AdaptiveBox.mm; path = nitrogen/Sources/N2AdaptiveBox.mm; sourceTree = "<group>"; };
+		5997899811B7B4BD002DB107 /* NSFileManager+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSFileManager+N2.h"; path = "nitrogen/Sources/NSFileManager+N2.h"; sourceTree = "<group>"; };
+		5997899911B7B4BD002DB107 /* NSFileManager+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSFileManager+N2.mm"; path = "nitrogen/Sources/NSFileManager+N2.mm"; sourceTree = "<group>"; };
 		59BDEC2D117C92B2007F1F2C /* OsiriX Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OsiriX Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		59BDEC43117C9366007F1F2C /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = "OsiriX Launcher/main.mm"; sourceTree = "<group>"; };
 		59BDEF3F117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaultsController+OsiriX.h"; sourceTree = "<group>"; };
@@ -8083,8 +8150,6 @@
 		7ECB4B40072EF9F800C2CFC4 /* DCMCalendarScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCalendarScript.m; sourceTree = "<group>"; };
 		7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMPixelDataAttribute.h; sourceTree = "<group>"; };
 		7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMPixelDataAttribute.mm; sourceTree = "<group>"; };
-		7ED5C2660699E08E00875C39 /* AnonymizerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizerWindowController.h; sourceTree = "<group>"; };
-		7ED5C2670699E08E00875C39 /* AnonymizerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnonymizerWindowController.m; sourceTree = "<group>"; };
 		7EE0DC00067A48A3003E745F /* DCMCharacterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCharacterSet.h; sourceTree = "<group>"; };
 		7EE0DC01067A48A3003E745F /* DCMCharacterSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCharacterSet.m; sourceTree = "<group>"; };
 		7EE0DC3C067A5138003E745F /* DCMSequenceAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMSequenceAttribute.h; sourceTree = "<group>"; };
@@ -11382,7 +11447,6 @@
 		CE3F991F0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIVolume.xib; sourceTree = "<group>"; };
 		CE3F99210C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VRPanel.xib; sourceTree = "<group>"; };
 		CE3F99270C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PaletteBrush.xib; sourceTree = "<group>"; };
-		CE3F99290C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Anonymize.xib; sourceTree = "<group>"; };
 		CE3F992B0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LLScoutView.xib; sourceTree = "<group>"; };
 		CE3F992D0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/BurnViewer.xib; sourceTree = "<group>"; };
 		CE3F992F0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIDefaults.xib; sourceTree = "<group>"; };
@@ -11860,6 +11924,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				5997894211B7B3C6002DB107 /* Anonymization */,
 				59BDF10B117EE68F007F1F2C /* Preferences */,
 				ABD9E6D305B49DB70077115D /* 2D Viewer */,
 				ABD9E69C05B49D6C0077115D /* Database */,
@@ -12049,7 +12114,11 @@
 				ABBB639A0635874D00D9531F /* DCMTK */,
 				ABBB647A063587B200D9531F /* Icons */,
 				CE40ED570D86D634007C6D49 /* 3DPosition.xib */,
-				CE3F99280C84724B00CB38F1 /* Anonymize.xib */,
+				5997897111B7B422002DB107 /* AnonymizationCustomTagPanel.xib */,
+				5997897311B7B423002DB107 /* AnonymizationPanel.xib */,
+				5997897511B7B423002DB107 /* AnonymizationSavePanel.xib */,
+				5997897711B7B423002DB107 /* AnonymizationTemplateNamePanel.xib */,
+				5997897911B7B423002DB107 /* AnonymizationView.xib */,
 				CE3F99400C84724B00CB38F1 /* AYDicomPrint.xib */,
 				CE3F992C0C84724B00CB38F1 /* BurnViewer.xib */,
 				CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */,
@@ -12180,6 +12249,29 @@
 				AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */,
 			);
 			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		5997894211B7B3C6002DB107 /* Anonymization */ = {
+			isa = PBXGroup;
+			children = (
+				5997894D11B7B3E9002DB107 /* Anonymization.h */,
+				5997894E11B7B3E9002DB107 /* Anonymization.mm */,
+				5997894F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h */,
+				5997895011B7B3E9002DB107 /* AnonymizationCustomTagPanelController.mm */,
+				5997895111B7B3E9002DB107 /* AnonymizationPanelController.h */,
+				5997895211B7B3E9002DB107 /* AnonymizationPanelController.mm */,
+				5997895311B7B3E9002DB107 /* AnonymizationSavePanelController.h */,
+				5997895411B7B3E9002DB107 /* AnonymizationSavePanelController.mm */,
+				5997895511B7B3E9002DB107 /* AnonymizationTagsPopUpButton.h */,
+				5997895611B7B3E9002DB107 /* AnonymizationTagsPopUpButton.mm */,
+				5997895711B7B3E9002DB107 /* AnonymizationTagsView.h */,
+				5997895811B7B3E9002DB107 /* AnonymizationTagsView.mm */,
+				5997895911B7B3E9002DB107 /* AnonymizationTemplateNamePanelController.h */,
+				5997895A11B7B3E9002DB107 /* AnonymizationTemplateNamePanelController.mm */,
+				5997895B11B7B3E9002DB107 /* AnonymizationViewController.h */,
+				5997895C11B7B3E9002DB107 /* AnonymizationViewController.mm */,
+			);
+			name = Anonymization;
 			sourceTree = "<group>";
 		};
 		59BDEC17117C927D007F1F2C /* OsiriX Launcher */ = {
@@ -12519,6 +12611,8 @@
 				AB10FAAA11293378009EB238 /* N2Shell.mm */,
 				AB10FAAB11293378009EB238 /* N2UserDefaults.h */,
 				AB10FAAC11293378009EB238 /* N2UserDefaults.mm */,
+				5997898011B7B461002DB107 /* N2HexadecimalNumberFormatter.h */,
+				5997898111B7B461002DB107 /* N2HexadecimalNumberFormatter.mm */,
 				AB10FB1C1129338A009EB238 /* 3rd Party */,
 				AB10FAFD1129338A009EB238 /* Extras */,
 				AB10FAF81129338A009EB238 /* Stuff */,
@@ -12534,6 +12628,12 @@
 		AB10FAC91129338A009EB238 /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				5997899411B7B4A0002DB107 /* N2AdaptiveBox.h */,
+				5997899511B7B4A0002DB107 /* N2AdaptiveBox.mm */,
+				5997898411B7B46A002DB107 /* N2HighlightImageButtonCell.h */,
+				5997898511B7B46A002DB107 /* N2HighlightImageButtonCell.mm */,
+				5997898811B7B476002DB107 /* N2CustomTitledPopUpButtonCell.h */,
+				5997898911B7B476002DB107 /* N2CustomTitledPopUpButtonCell.mm */,
 				AB10FACA1129338A009EB238 /* N2ButtonCell.h */,
 				AB10FACB1129338A009EB238 /* N2ButtonCell.mm */,
 				AB10FACC1129338A009EB238 /* N2Button.h */,
@@ -12624,6 +12724,10 @@
 		AB10FAFD1129338A009EB238 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
+				5997899811B7B4BD002DB107 /* NSFileManager+N2.h */,
+				5997899911B7B4BD002DB107 /* NSFileManager+N2.mm */,
+				5997899011B7B48E002DB107 /* NSUserDefaultsController+N2.h */,
+				5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */,
 				AB10FAFE1129338A009EB238 /* NSTextView+N2.h */,
 				AB10FAFF1129338A009EB238 /* NSTextView+N2.mm */,
 				AB10FB001129338A009EB238 /* NSString+N2.h */,
@@ -12858,8 +12962,6 @@
 				CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */,
 				A98FFBE30CA92B58000291C8 /* altivecFunctions.c */,
 				A98FFBE40CA92B58000291C8 /* altivecFunctions.h */,
-				7ED5C2660699E08E00875C39 /* AnonymizerWindowController.h */,
-				7ED5C2670699E08E00875C39 /* AnonymizerWindowController.m */,
 				A94469DF0BA7FFE7008643E5 /* BLAuthentication.h */,
 				A94469E00BA7FFE7008643E5 /* BLAuthentication.m */,
 				7E0339E307415C330025DDB4 /* Burning */,
@@ -13015,6 +13117,8 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				5997896F11B7B40B002DB107 /* MinusButton.png */,
+				5997896D11B7B402002DB107 /* PlusButton.png */,
 				ABBB647B063587B200D9531F /* 2DBlending.tif */,
 				ABBB647C063587B200D9531F /* 3D.tif */,
 				CEF6A441080324E0001A8BF7 /* 3DCut.tif */,
@@ -16601,7 +16705,6 @@
 				AB8CC236067E4147008D5ED7 /* Papyrus3.h in Headers */,
 				AB8CC237067E4147008D5ED7 /* PapyPubFunctionDef3.h in Headers */,
 				7E879E9F067F9BE100CB2F8A /* SearchSubview.h in Headers */,
-				7ED5C26A0699E08E00875C39 /* AnonymizerWindowController.h in Headers */,
 				CEEDA35706A061EB00DEAB22 /* ThickSlabVR.h in Headers */,
 				CE0E08E806A106D700F2C01C /* ThickSlabController.h in Headers */,
 				BF76A59906ACC6FD00FABE42 /* ButtonAndTextField.h in Headers */,
@@ -18889,6 +18992,20 @@
 				596EB3F6118ABBB000880192 /* NSWindow+N2.h in Headers */,
 				594830CD118B0AC100D7E606 /* N2ImageView.h in Headers */,
 				5912DCD8118EF447007F7D40 /* N2FlippedView.h in Headers */,
+				5997895D11B7B3E9002DB107 /* Anonymization.h in Headers */,
+				5997895F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h in Headers */,
+				5997896111B7B3E9002DB107 /* AnonymizationPanelController.h in Headers */,
+				5997896311B7B3E9002DB107 /* AnonymizationSavePanelController.h in Headers */,
+				5997896511B7B3E9002DB107 /* AnonymizationTagsPopUpButton.h in Headers */,
+				5997896711B7B3E9002DB107 /* AnonymizationTagsView.h in Headers */,
+				5997896911B7B3E9002DB107 /* AnonymizationTemplateNamePanelController.h in Headers */,
+				5997896B11B7B3E9002DB107 /* AnonymizationViewController.h in Headers */,
+				5997898211B7B461002DB107 /* N2HexadecimalNumberFormatter.h in Headers */,
+				5997898611B7B46A002DB107 /* N2HighlightImageButtonCell.h in Headers */,
+				5997898A11B7B476002DB107 /* N2CustomTitledPopUpButtonCell.h in Headers */,
+				5997899211B7B48F002DB107 /* NSUserDefaultsController+N2.h in Headers */,
+				5997899611B7B4A0002DB107 /* N2AdaptiveBox.h in Headers */,
+				5997899A11B7B4BD002DB107 /* NSFileManager+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21755,7 +21872,6 @@
 				CE3F99610C84724B00CB38F1 /* ROIVolume.xib in Resources */,
 				CE3F99620C84724B00CB38F1 /* VRPanel.xib in Resources */,
 				CE3F99650C84724B00CB38F1 /* PaletteBrush.xib in Resources */,
-				CE3F99660C84724B00CB38F1 /* Anonymize.xib in Resources */,
 				CE3F99670C84724B00CB38F1 /* LLScoutView.xib in Resources */,
 				CE3F99680C84724B00CB38F1 /* BurnViewer.xib in Resources */,
 				CE3F99690C84724B00CB38F1 /* ROIDefaults.xib in Resources */,
@@ -21823,6 +21939,13 @@
 				59BDF106117EE61E007F1F2C /* PreferencesWindow.xib in Resources */,
 				84B5EA4311A2BC0900193FDB /* dsr2html in Resources */,
 				CEBA5FE011B244EA005F3A0E /* SpectroIcon.jpg in Resources */,
+				5997896E11B7B402002DB107 /* PlusButton.png in Resources */,
+				5997897011B7B40B002DB107 /* MinusButton.png in Resources */,
+				5997897B11B7B423002DB107 /* AnonymizationCustomTagPanel.xib in Resources */,
+				5997897C11B7B423002DB107 /* AnonymizationPanel.xib in Resources */,
+				5997897D11B7B423002DB107 /* AnonymizationSavePanel.xib in Resources */,
+				5997897E11B7B423002DB107 /* AnonymizationTemplateNamePanel.xib in Resources */,
+				5997897F11B7B423002DB107 /* AnonymizationView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22634,7 +22757,6 @@
 				AB2C24E20677861300A08910 /* PluginFilter.m in Sources */,
 				AB2C25220677873200A08910 /* PluginManager.m in Sources */,
 				7E879EA0067F9BE100CB2F8A /* SearchSubview.m in Sources */,
-				7ED5C26B0699E08E00875C39 /* AnonymizerWindowController.m in Sources */,
 				CEEDA35806A061EB00DEAB22 /* ThickSlabVR.mm in Sources */,
 				CE0E08E906A106D700F2C01C /* ThickSlabController.mm in Sources */,
 				BF76A59A06ACC6FD00FABE42 /* ButtonAndTextField.m in Sources */,
@@ -23362,6 +23484,20 @@
 				596EB3F7118ABBB000880192 /* NSWindow+N2.mm in Sources */,
 				594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */,
 				5912DCD9118EF447007F7D40 /* N2FlippedView.mm in Sources */,
+				5997895E11B7B3E9002DB107 /* Anonymization.mm in Sources */,
+				5997896011B7B3E9002DB107 /* AnonymizationCustomTagPanelController.mm in Sources */,
+				5997896211B7B3E9002DB107 /* AnonymizationPanelController.mm in Sources */,
+				5997896411B7B3E9002DB107 /* AnonymizationSavePanelController.mm in Sources */,
+				5997896611B7B3E9002DB107 /* AnonymizationTagsPopUpButton.mm in Sources */,
+				5997896811B7B3E9002DB107 /* AnonymizationTagsView.mm in Sources */,
+				5997896A11B7B3E9002DB107 /* AnonymizationTemplateNamePanelController.mm in Sources */,
+				5997896C11B7B3E9002DB107 /* AnonymizationViewController.mm in Sources */,
+				5997898311B7B461002DB107 /* N2HexadecimalNumberFormatter.mm in Sources */,
+				5997898711B7B46A002DB107 /* N2HighlightImageButtonCell.mm in Sources */,
+				5997898B11B7B476002DB107 /* N2CustomTitledPopUpButtonCell.mm in Sources */,
+				5997899311B7B48F002DB107 /* NSUserDefaultsController+N2.mm in Sources */,
+				5997899711B7B4A0002DB107 /* N2AdaptiveBox.mm in Sources */,
+				5997899B11B7B4BD002DB107 /* NSFileManager+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24682,6 +24818,46 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		5997897111B7B422002DB107 /* AnonymizationCustomTagPanel.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5997897211B7B423002DB107 /* English */,
+			);
+			name = AnonymizationCustomTagPanel.xib;
+			sourceTree = "<group>";
+		};
+		5997897311B7B423002DB107 /* AnonymizationPanel.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5997897411B7B423002DB107 /* English */,
+			);
+			name = AnonymizationPanel.xib;
+			sourceTree = "<group>";
+		};
+		5997897511B7B423002DB107 /* AnonymizationSavePanel.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5997897611B7B423002DB107 /* English */,
+			);
+			name = AnonymizationSavePanel.xib;
+			sourceTree = "<group>";
+		};
+		5997897711B7B423002DB107 /* AnonymizationTemplateNamePanel.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5997897811B7B423002DB107 /* English */,
+			);
+			name = AnonymizationTemplateNamePanel.xib;
+			sourceTree = "<group>";
+		};
+		5997897911B7B423002DB107 /* AnonymizationView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5997897A11B7B423002DB107 /* English */,
+			);
+			name = AnonymizationView.xib;
+			sourceTree = "<group>";
+		};
 		59BDF104117EE61E007F1F2C /* PreferencesWindow.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -24936,14 +25112,6 @@
 				CE3F99270C84724B00CB38F1 /* English */,
 			);
 			name = PaletteBrush.xib;
-			sourceTree = "<group>";
-		};
-		CE3F99280C84724B00CB38F1 /* Anonymize.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F99290C84724B00CB38F1 /* English */,
-			);
-			name = Anonymize.xib;
 			sourceTree = "<group>";
 		};
 		CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */ = {

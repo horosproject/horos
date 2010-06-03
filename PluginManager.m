@@ -450,61 +450,66 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 								NSLog( @"**** Bundle opening failed for plugin: %@", [path stringByAppendingPathComponent:name]);
 							else
 							{
-								Class filterClass = [plugin principalClass];
+								if (![plugin load]) {
+									NSLog( @"******* Bundle code loading failed for plugin %@", [path stringByAppendingPathComponent:name]);
+								} else {
 								
-								if( filterClass)
-								{
-									NSLog( @"Plugin loaded and initialized: %@", [path stringByAppendingPathComponent: name]);
+									Class filterClass = [plugin principalClass];
 									
-									if ( filterClass == NSClassFromString( @"ARGS" ) ) continue;
-									
-									if ([[[plugin infoDictionary] objectForKey:@"pluginType"] rangeOfString:@"Pre-Process"].location != NSNotFound) 
+									if( filterClass)
 									{
-										PluginFilter *filter = [filterClass filter];
-										[preProcessPlugins addObject: filter];
-									}
-									else if ([[plugin infoDictionary] objectForKey:@"FileFormats"]) 
-									{
-										NSEnumerator *enumerator = [[[plugin infoDictionary] objectForKey:@"FileFormats"] objectEnumerator];
-										NSString *fileFormat;
-										while (fileFormat = [enumerator nextObject])
-										{
-											//we will save the bundle rather than a filter.  Each file decode will require a separate decoder
-											[fileFormatPlugins setObject:plugin forKey:fileFormat];
-										}
-									}
-									else if ( [filterClass instancesRespondToSelector:@selector(filterImage:)] )
-									{
-										NSArray *menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
-										PluginFilter *filter = [filterClass filter];
+										NSLog( @"Plugin loaded and initialized: %@", [path stringByAppendingPathComponent: name]);
 										
-										if( menuTitles)
+										if ( filterClass == NSClassFromString( @"ARGS" ) ) continue;
+										
+										if ([[[plugin infoDictionary] objectForKey:@"pluginType"] rangeOfString:@"Pre-Process"].location != NSNotFound) 
 										{
-											for( NSString *menuTitle in menuTitles)
+											PluginFilter *filter = [filterClass filter];
+											[preProcessPlugins addObject: filter];
+										}
+										else if ([[plugin infoDictionary] objectForKey:@"FileFormats"]) 
+										{
+											NSEnumerator *enumerator = [[[plugin infoDictionary] objectForKey:@"FileFormats"] objectEnumerator];
+											NSString *fileFormat;
+											while (fileFormat = [enumerator nextObject])
 											{
-												[plugins setObject:filter forKey:menuTitle];
-												[pluginsDict setObject:plugin forKey:menuTitle];
+												//we will save the bundle rather than a filter.  Each file decode will require a separate decoder
+												[fileFormatPlugins setObject:plugin forKey:fileFormat];
+											}
+										}
+										else if ( [filterClass instancesRespondToSelector:@selector(filterImage:)] )
+										{
+											NSArray *menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
+											PluginFilter *filter = [filterClass filter];
+											
+											if( menuTitles)
+											{
+												for( NSString *menuTitle in menuTitles)
+												{
+													[plugins setObject:filter forKey:menuTitle];
+													[pluginsDict setObject:plugin forKey:menuTitle];
+												}
+											}
+											
+											NSArray *toolbarNames = [[plugin infoDictionary] objectForKey:@"ToolbarNames"];
+											
+											if( toolbarNames)
+											{
+												for( NSString *toolbarName in toolbarNames)
+												{
+													[plugins setObject:filter forKey:toolbarName];
+													[pluginsDict setObject:plugin forKey:toolbarName];
+												}
 											}
 										}
 										
-										NSArray *toolbarNames = [[plugin infoDictionary] objectForKey:@"ToolbarNames"];
-										
-										if( toolbarNames)
+										if ([[[plugin infoDictionary] objectForKey:@"pluginType"] rangeOfString: @"Report"].location != NSNotFound) 
 										{
-											for( NSString *toolbarName in toolbarNames)
-											{
-												[plugins setObject:filter forKey:toolbarName];
-												[pluginsDict setObject:plugin forKey:toolbarName];
-											}
+											[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
 										}
 									}
-									
-									if ([[[plugin infoDictionary] objectForKey:@"pluginType"] rangeOfString: @"Report"].location != NSNotFound) 
-									{
-										[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
-									}
+									else NSLog( @"********* principal class not found for: %@ - %@", name, [plugin principalClass]);
 								}
-								else NSLog( @"********* principal class not found for: %@ - %@", name, [plugin principalClass]);
 							}
 						}
 						@catch( NSException *e)

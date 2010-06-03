@@ -70,11 +70,16 @@ void exitOsiriX(void)
 	
 	[object removePrivateTags];
 	
-	for( int x = 0 ; x < [tags count]; x++)
-	{
-		NSArray *tagArray = [tags objectAtIndex: x];
-		
-		DCMAttributeTag *tag = [tagArray objectAtIndex:0];
+	//get rid of some other tags containing addresses and phone numbers
+	if ([object attributeValueWithName:@"InstitutionAddress"])
+		[object setAttributeValues:[NSMutableArray array] forName:@"InstitutionAddress"];
+	if ([object attributeValueWithName:@"PatientsAddress"])
+		[object setAttributeValues:[NSMutableArray array] forName:@"PatientsAddress"];
+	if ([object attributeValueWithName:@"PatientsTelephoneNumbers"])
+		[object setAttributeValues:[NSMutableArray array] forName:@"PatientsTelephoneNumbers"];
+	
+	for (NSArray* tagArray in tags) {
+		DCMAttributeTag* tag = [tagArray objectAtIndex:0];
 		
 		id value = nil;
 		if ([tagArray count] > 1)
@@ -82,12 +87,10 @@ void exitOsiriX(void)
 		
 	//	NSLog(@"anonymizing %@, was %@", [tag name], [[object attributeForTag:tag] valuesAsString]);
 		
-		if ([tag.name isEqualToString: @"StudyInstanceUID"])
-		{
+		if ([tag.name isEqualToString: @"StudyInstanceUID"]) {
 			DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values: [NSArray arrayWithObject: value]];
 			[[object attributes] setObject:attr forKey: tag.stringValue];
-		}
-		else
+		} else
 			[object anonymizeAttributeForTag:tag replacingWith:value];
 		
 		//NSLog( [value description] );
@@ -110,16 +113,6 @@ void exitOsiriX(void)
 			[object anonymizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionTime"] replacingWith:value];
 		}
 	}
-	
-	//get rid of some other tags containing addresses and phone numbers
-	if ([object attributeValueWithName:@"InstitutionAddress"])
-		[object setAttributeValues:[NSMutableArray array] forName:@"InstitutionAddress"];
-		
-	if ([object attributeValueWithName:@"PatientsAddress"])
-		[object setAttributeValues:[NSMutableArray array] forName:@"PatientsAddress"];
-		
-	if ([object attributeValueWithName:@"PatientsTelephoneNumbers"])
-		[object setAttributeValues:[NSMutableArray array] forName:@"PatientsTelephoneNumbers"];
 	
 	if (DCMDEBUG)
 		NSLog(@"TransferSyntax: %@", object.transferSyntax );
