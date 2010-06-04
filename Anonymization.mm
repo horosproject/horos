@@ -17,7 +17,7 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "BrowserController.h"
-
+#import "AppController.h"
 
 @interface AnonymizationPanelRepresentation : NSObject {
 	NSString* defaultsKey;
@@ -258,9 +258,7 @@
 	[managedObjectContext.undoManager disableUndoRegistration];
 	
 	NSArray* dicomImages = [BrowserController addFiles:[filenameTranslation allValues] toContext:managedObjectContext onlyDICOM:YES notifyAddedFiles:NO parseExistingObject:NO dbFolder:NULL];
-	
-	
-	
+		
 	NSMutableArray* dicomSeries = [NSMutableArray array];
 	for (DicomImage* image in dicomImages)
 	{

@@ -17498,8 +17498,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if (aspc.end == AnonymizationSavePanelReplace)
 				[self delItem:self]; // this assumes the selection hasn't changed since the user clicked the Anonymize button
 			
+			BOOL COPYDATABASE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASE"];
+			int COPYDATABASEMODE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASEMODE"];
+	
+			[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"COPYDATABASE"];
+			[[NSUserDefaults standardUserDefaults] setInteger: always forKey: @"COPYDATABASE"];
+
 			// add new files
 			NSArray* newImageObjs = [self addFilesAndFolderToDatabase:anonymizedFiles.allValues];
+			
+			[[NSUserDefaults standardUserDefaults] setBool: COPYDATABASE forKey: @"COPYDATABASE"];
+			[[NSUserDefaults standardUserDefaults] setInteger: COPYDATABASEMODE forKey: @"COPYDATABASE"];
 			
 			// if this happened in an album then add new images to that album
 			if (self.albumTable.selectedRow > 0) {
