@@ -212,8 +212,9 @@
 -(void)setTagsValues:(NSArray*)tagsValues {
 	NSMutableArray* zeroTags = [self.tags mutableCopy];
 	
-	while (self.tags.count)
-		[self removeTag:[self.tags objectAtIndex:0]];
+	if (tagsValues.count)
+		while (self.tags.count)
+			[self removeTag:[self.tags objectAtIndex:0]];
 	
 	for (NSArray* tagValue in tagsValues) {
 		DCMAttributeTag* tag = [tagValue objectAtIndex:0];

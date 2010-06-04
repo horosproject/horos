@@ -146,24 +146,27 @@
 	[textField setDrawsBackground:YES];
 	[[textField cell] setPlaceholderString:NSLocalizedString(@"Reset", @"Placeholder string for Anonymization Tag cells")];
 	[textField setStringValue:@""];
-	// TODO: formatter
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeTextFieldDidEndEditing:) name:NSControlTextDidEndEditingNotification object:textField];
 	[self addSubview:textField];
 	
 	if ([tag.vr isEqual:@"DA"]) {
 		NSDateFormatter* f = [[[NSDateFormatter alloc] init] autorelease];
+		[f setFormatterBehavior:NSDateFormatterBehavior10_4];
 		[f setTimeStyle:NSDateFormatterNoStyle];
 		[f setDateStyle:NSDateFormatterShortStyle];
-		[textField setFormatter:f];
+		[textField.cell setFormatter:f];
 	} else if ([tag.vr isEqual:@"TM"]) {
 		NSDateFormatter* f = [[[NSDateFormatter alloc] init] autorelease];
+		[f setFormatterBehavior:NSDateFormatterBehavior10_4];
 		[f setTimeStyle:NSDateFormatterShortStyle];
 		[f setDateStyle:NSDateFormatterNoStyle];
-		[textField setFormatter:f];
+		[textField.cell setFormatter:f];
 	} else if ([tag.vr isEqual:@"DT"]) {
 		NSDateFormatter* f = [[[NSDateFormatter alloc] init] autorelease];
+		[f setFormatterBehavior:NSDateFormatterBehavior10_4];
 		[f setTimeStyle:NSDateFormatterShortStyle];
 		[f setDateStyle:NSDateFormatterShortStyle];
-		[textField setFormatter:f];
+		[textField.cell setFormatter:f];
 	}
 	
 	NSButtonCell* rmButtonCell = [[N2HighlightImageButtonCell alloc] initWithImage:[NSImage imageNamed:@"MinusButton"]];
@@ -189,6 +192,7 @@
 	NSArray* group = [self groupForView:tag];
 	if (!group) return;
 	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSControlTextDidEndEditingNotification object:[group objectAtIndex:1]];
 	[[group objectAtIndex:0] removeFromSuperview];
 	[[group objectAtIndex:1] removeFromSuperview];
 	[[group objectAtIndex:2] removeFromSuperview];
@@ -196,6 +200,20 @@
 	[viewGroups removeObject:group];
 
 	[self resizeSubviewsWithOldSize:self.frame.size];
+}
+
+-(void)observeTextFieldDidEndEditing:(NSNotification*)notification {
+	NSTextField* textField = notification.object;
+	if (textField.formatter) {
+		id obj = NULL;
+		NSString* err = NULL;
+		[textField.formatter getObjectValue:&obj forString:textField.stringValue errorDescription:&err];
+	//	if (obj)
+	//		[textField setObjectValue:obj];
+	//	else NSLog(@"%@ error: %@", textField.formatter, err);
+		if (err) 
+			NSLog(@"%@ error: %@", textField.formatter, err);
+	}
 }
 
 -(NSButton*)checkBoxForTag:(DCMAttributeTag*)tag {
