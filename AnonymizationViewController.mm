@@ -209,21 +209,28 @@
 	return [[out copy] autorelease];
 }
 
--(void)setTagsValues:(NSArray*)tagsValues {
+-(void)setTagsValues:(NSArray*)tagsValues
+{
 	NSMutableArray* zeroTags = [self.tags mutableCopy];
 	
 	if (tagsValues.count)
 		while (self.tags.count)
 			[self removeTag:[self.tags objectAtIndex:0]];
 	
-	for (NSArray* tagValue in tagsValues) {
+	for (NSArray* tagValue in tagsValues)
+	{
 		DCMAttributeTag* tag = [tagValue objectAtIndex:0];
 		[self addTag:tag];
 		id value = tagValue.count>1? [tagValue objectAtIndex:1] : NULL;
 		NSButton* checkBox = [self.tagsView checkBoxForTag:tag];
 		[checkBox setState: value? NSOnState : NSOffState];
 		NSTextField* textField = [self.tagsView textFieldForTag:tag];
-		[textField setStringValue: value? value : @""];
+		@try
+		{
+			[textField setStringValue: value? value : @""];
+		}
+		@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);}
+		
 		[zeroTags removeObject:tag];
 	}
 	

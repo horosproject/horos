@@ -258,8 +258,12 @@
 	[managedObjectContext.undoManager disableUndoRegistration];
 	
 	NSArray* dicomImages = [BrowserController addFiles:[filenameTranslation allValues] toContext:managedObjectContext onlyDICOM:YES notifyAddedFiles:NO parseExistingObject:NO dbFolder:NULL];
+	
+	
+	
 	NSMutableArray* dicomSeries = [NSMutableArray array];
-	for (DicomImage* image in dicomImages) {
+	for (DicomImage* image in dicomImages)
+	{
 		if (![dicomSeries containsObject:image.series])
 			[dicomSeries addObject:image.series];
 		
