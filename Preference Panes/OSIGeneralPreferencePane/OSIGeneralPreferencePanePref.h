@@ -16,9 +16,7 @@
 
 @interface OSIGeneralPreferencePanePref : NSPreferencePane 
 {
-	IBOutlet NSButton *securityOnOff;
 	IBOutlet NSWindow *compressionSettingsWindow;
-	
 	NSArray *compressionSettingsCopy, *compressionSettingsLowResCopy;
 }
 
@@ -26,4 +24,5 @@
 - (IBAction) setAuthentication: (id) sender;
 - (IBAction) editCompressionSettings:(id) sender;
 - (IBAction) endEditCompressionSettings:(id) sender;
+- (IBAction) resetPreferences: (id) sender;
 @end

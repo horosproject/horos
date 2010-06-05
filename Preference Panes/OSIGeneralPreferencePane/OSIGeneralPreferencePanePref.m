@@ -31,9 +31,25 @@
 
 @implementation OSIGeneralPreferencePanePref
 
+
+- (IBAction) resetPreferences: (id) sender
+{
+	NSInteger result = NSRunInformationalAlertPanel( NSLocalizedString(@"Reset Preferences", nil), NSLocalizedString(@"Are you sure you want to reset ALL preferences of OsiriX? All the preferences will be resetted to their default values.", nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"OK",nil),  nil);
+	
+	if( result == NSAlertAlternateReturn)
+	{
+		for( NSString *k in [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys])
+			[[NSUserDefaults standardUserDefaults] removeObjectForKey: k];
+		
+		[[NSUserDefaults standardUserDefaults] synchronize];
+	}
+}
+
 + (void)initialize
 {
-	IsQualityEnabled *a = [[[IsQualityEnabled alloc] init] autorelease];	[NSValueTransformer setValueTransformer:a forName:@"IsQualityEnabled"];
+	IsQualityEnabled *a = [[[IsQualityEnabled alloc] init] autorelease];
+	
+	[NSValueTransformer setValueTransformer:a forName:@"IsQualityEnabled"];
 }
 
 - (void) dealloc
@@ -43,26 +59,9 @@
 	[super dealloc];
 }
 
-- (IBAction) setAuthentication: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"AUTHENTICATION"];
-	
-	// Reload our view !
-	//[[[[self mainView] window] windowController] selectPaneIndex: 0];
-}
-
 -(void) willUnselect
 {
 	[[[self mainView] window] makeFirstResponder: nil];
-}
-
-- (void) mainViewDidLoad
-{
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	
-	
-	//setup GUI
-	[securityOnOff setState:[defaults boolForKey:@"AUTHENTICATION"]];
 }
 
 - (IBAction) endEditCompressionSettings:(id) sender
