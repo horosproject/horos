@@ -20,8 +20,6 @@
 	NSArray *compressionSettingsCopy, *compressionSettingsLowResCopy;
 }
 
--(void) mainViewDidLoad;
-- (IBAction) setAuthentication: (id) sender;
 - (IBAction) editCompressionSettings:(id) sender;
 - (IBAction) endEditCompressionSettings:(id) sender;
 - (IBAction) resetPreferences: (id) sender;

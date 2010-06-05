@@ -51,6 +51,10 @@
 #import "ThreadPoolServer.h"
 #import "DicomImage.h"
 
+#include <execinfo.h>
+#include <stdio.h>
+#include <stdlib.h>
+	 
 #define BUILTIN_DCMTK YES
 
 ToolbarPanelController *toolbarPanel[10] = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil};
@@ -2447,6 +2451,45 @@ static NSDate *lastWarningDate = nil;
 	[p release];
 }
 
++ (NSString*) printStackTrace: (NSException*) e
+{
+	NSMutableString *r = [NSMutableString string];
+	
+	@try 
+	{
+		NSArray * addresses = [e callStackReturnAddresses];
+		if( [addresses count])
+		{
+			void * backtrace_frames[[addresses count]];
+			int i = 0;
+			for (NSNumber * address in addresses)
+			{
+				backtrace_frames[i] = (void *)[address unsignedLongValue];
+				i++;
+			}
+			
+			char **frameStrings = backtrace_symbols(&backtrace_frames[0], [addresses count]);
+			
+			if(frameStrings != NULL)
+			{
+				int x;
+				for(x = 0; x < [addresses count]; x++)
+				{
+					NSString *frame_description = [NSString stringWithUTF8String:frameStrings[ x]];
+					NSLog( @"------- %@", frame_description);
+					[r appendFormat: @"%@\r", frame_description];
+				}
+			}
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	return r;
+}
+
 static BOOL initialized = NO;
 + (void) initialize
 {
@@ -2461,6 +2504,19 @@ static BOOL initialized = NO;
 //	EXTRACT_LONG_BIG( ptr, result);
 //	NSLog(@"%d", result);
 
+//	@try 
+//	{
+//		NSException *e = [NSException exceptionWithName: @"hallo" reason: @"prout" userInfo: nil];
+//		[e raise];
+//	}
+//	@catch (NSException * e) 
+//	{
+//		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+//		#ifdef OSIRIX_VIEWER
+//		[AppController printStackTrace: e];
+//		#endif
+//	}
+	
 	@try
 	{
 		if ( self == [AppController class] && initialized == NO)

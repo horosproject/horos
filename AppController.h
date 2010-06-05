@@ -138,6 +138,7 @@ extern "C"
 + (NSThread*) mainThread;
 + (void) pause;
 + (void) resetToolbars;
++ (NSString*) printStackTrace: (NSException*) e;
 
 #pragma mark-
 #pragma mark HTML Templates
