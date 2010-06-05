@@ -2549,7 +2549,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSTextFieldCell" key="NSCell" id="383337641">
 												<int key="NSCellFlags">68288064</int>
 												<int key="NSCellFlags2">4326400</int>
-												<string key="NSContents">List of SOP Class UID(s) displayed: </string>
+												<string key="NSContents">List of SOP Class UIDs displayed: </string>
 												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="621336170"/>
 												<reference key="NSBackgroundColor" ref="587105833"/>
