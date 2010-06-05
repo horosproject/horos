@@ -149,24 +149,34 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeTextFieldDidEndEditing:) name:NSControlTextDidEndEditingNotification object:textField];
 	[self addSubview:textField];
 	
-	if ([tag.vr isEqual:@"DA"]) {
+	NSLog( @"VR: %@", tag.vr);
+	
+	if ([tag.vr isEqual:@"DA"]) { //Date String
 		NSDateFormatter* f = [[[NSDateFormatter alloc] init] autorelease];
 		[f setFormatterBehavior:NSDateFormatterBehavior10_4];
 		[f setTimeStyle:NSDateFormatterNoStyle];
 		[f setDateStyle:NSDateFormatterShortStyle];
 		[textField.cell setFormatter:f];
-	} else if ([tag.vr isEqual:@"TM"]) {
+	} else if ([tag.vr isEqual:@"TM"]) { //Time String
 		NSDateFormatter* f = [[[NSDateFormatter alloc] init] autorelease];
 		[f setFormatterBehavior:NSDateFormatterBehavior10_4];
 		[f setTimeStyle:NSDateFormatterShortStyle];
 		[f setDateStyle:NSDateFormatterNoStyle];
 		[textField.cell setFormatter:f];
-	} else if ([tag.vr isEqual:@"DT"]) {
+	} else if ([tag.vr isEqual:@"DT"]) { //Date Time
 		NSDateFormatter* f = [[[NSDateFormatter alloc] init] autorelease];
 		[f setFormatterBehavior:NSDateFormatterBehavior10_4];
 		[f setTimeStyle:NSDateFormatterShortStyle];
 		[f setDateStyle:NSDateFormatterShortStyle];
 		[textField.cell setFormatter:f];
+	} else if ([tag.vr isEqual:@"DS"]) { //Decimal String representing floating point
+	} else if ([tag.vr isEqual:@"IS"]) { //Integer String
+	} else if ([tag.vr isEqual:@"SL"]) { //signed long
+	} else if ([tag.vr isEqual:@"SS"]) { //signed short
+	} else if ([tag.vr isEqual:@"UL"]) { //unsigned long
+	} else if ([tag.vr isEqual:@"US"]) { //unsigned short
+	} else if ([tag.vr isEqual:@"FL"]) { //float
+	} else if ([tag.vr isEqual:@"FD"]) { //double
 	}
 	
 	NSButtonCell* rmButtonCell = [[N2HighlightImageButtonCell alloc] initWithImage:[NSImage imageNamed:@"MinusButton"]];

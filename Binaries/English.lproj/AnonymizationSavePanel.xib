@@ -2,17 +2,17 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10D578</string>
-		<string key="IBDocument.InterfaceBuilderVersion">762</string>
+		<string key="IBDocument.SystemVersion">10D573</string>
+		<string key="IBDocument.InterfaceBuilderVersion">732</string>
 		<string key="IBDocument.AppKitVersion">1038.29</string>
 		<string key="IBDocument.HIToolboxVersion">460.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">762</string>
+			<string key="NS.object.0">732</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="4"/>
+			<integer value="3"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -41,7 +41,7 @@
 			<object class="NSWindowTemplate" id="1007017879">
 				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{196, 160}, {500, 300}}</string>
+				<string key="NSWindowRect">{{196, 160}, {600, 300}}</string>
 				<int key="NSWTFlags">611844096</int>
 				<string key="NSWindowTitle">Anonymization</string>
 				<string key="NSWindowClass">NSPanel</string>
@@ -55,7 +55,7 @@
 						<object class="NSButton" id="938998303">
 							<reference key="NSNextResponder" ref="587855618"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{386, 12}, {100, 32}}</string>
+							<string key="NSFrame">{{486, 12}, {100, 32}}</string>
 							<reference key="NSSuperview" ref="587855618"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="56125626">
@@ -79,7 +79,7 @@
 						<object class="NSButton" id="500721779">
 							<reference key="NSNextResponder" ref="587855618"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{186, 12}, {100, 32}}</string>
+							<string key="NSFrame">{{286, 12}, {100, 32}}</string>
 							<reference key="NSSuperview" ref="587855618"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="791605891">
@@ -99,7 +99,7 @@
 						<object class="NSButton" id="574663531">
 							<reference key="NSNextResponder" ref="587855618"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{286, 12}, {100, 32}}</string>
+							<string key="NSFrame">{{386, 12}, {100, 32}}</string>
 							<reference key="NSSuperview" ref="587855618"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="132953788">
@@ -119,7 +119,7 @@
 						<object class="NSButton" id="773870262">
 							<reference key="NSNextResponder" ref="587855618"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{86, 12}, {100, 32}}</string>
+							<string key="NSFrame">{{186, 12}, {100, 32}}</string>
 							<reference key="NSSuperview" ref="587855618"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="299957405">
@@ -139,12 +139,12 @@
 						<object class="NSCustomView" id="230275890">
 							<reference key="NSNextResponder" ref="587855618"/>
 							<int key="NSvFlags">274</int>
-							<string key="NSFrame">{{0, 40}, {500, 260}}</string>
+							<string key="NSFrame">{{0, 40}, {600, 260}}</string>
 							<reference key="NSSuperview" ref="587855618"/>
 							<string key="NSClassName">NSView</string>
 						</object>
 					</object>
-					<string key="NSFrameSize">{500, 300}</string>
+					<string key="NSFrameSize">{600, 300}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
@@ -335,6 +335,8 @@
 					<string>3.IBPluginDependency</string>
 					<string>3.IBWindowTemplateEditedContentRect</string>
 					<string>3.NSWindowTemplate.visibleAtLaunch</string>
+					<string>3.windowTemplate.hasMinSize</string>
+					<string>3.windowTemplate.minSize</string>
 					<string>4.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
 					<string>6.IBPluginDependency</string>
@@ -348,10 +350,12 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{-1065, 511}, {500, 300}}</string>
+					<string>{{615, 543}, {600, 300}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{-1065, 511}, {500, 300}}</string>
+					<string>{{615, 543}, {600, 300}}</string>
 					<boolean value="NO"/>
+					<boolean value="NO"/>
+					<string>{500, 100}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1178,7 +1182,6 @@
 			</object>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
-		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>

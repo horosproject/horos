@@ -32,8 +32,7 @@
 	self = [super initWithWindowNibName:nibName];
 	self.window; // load
 	
-	self.anonymizationViewController = [[AnonymizationViewController alloc] initWithTags:shownDcmTags values:values];
-	[self.anonymizationViewController release]; // because retained as @property
+	self.anonymizationViewController = [[[AnonymizationViewController alloc] initWithTags:shownDcmTags values:values] autorelease];
 	self.anonymizationViewController.view.frame = containerView.bounds;
 	[containerView addSubview:self.anonymizationViewController.view];
 	[self.anonymizationViewController adaptBoxToAnnotations];
