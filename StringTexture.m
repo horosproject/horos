@@ -187,11 +187,13 @@
 		
 		[[NSGraphicsContext currentContext] setShouldAntialias: antialiasing];
 		
-		if ([boxColor alphaComponent]) { // this should be == 0.0f but need to make sure
+		if ([boxColor alphaComponent])
+		{ // this should be == 0.0f but need to make sure
 			[boxColor set]; 
 			NSRectFill (NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height));
 		}
-		if ([borderColor alphaComponent]) {
+		if ([borderColor alphaComponent])
+		{
 			[borderColor set]; 
 			NSFrameRect (NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height));
 		}
@@ -208,7 +210,10 @@
 		glGenTextures (1, &texName);
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-		glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
+		
+		glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+		glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+		
 		glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, texSize.width, texSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
 		
 		[ctxArray addObject: currentContext];

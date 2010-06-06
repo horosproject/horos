@@ -220,7 +220,9 @@
 			glGenTextures (1, &texName);
 			
 			glTexParameterf (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_PRIORITY, 1.0f);
-			glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
+			glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+			glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+			
 			glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, texSize.width * texSize.height * 4, [bitmap bitmapData]);
 			glPixelStorei (GL_UNPACK_ROW_LENGTH, texSize.width);
 			

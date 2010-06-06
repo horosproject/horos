@@ -3912,6 +3912,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
 				glPixelStorei (GL_UNPACK_ROW_LENGTH, textureWidth);
 				glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+				glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 				
 				[ctxArray addObject: currentContext];
 				[textArray addObject: [NSNumber numberWithInt: textureName]];
@@ -5871,6 +5872,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, bytesPerRow/4);
 	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+	glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 
 	glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
 	glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR

@@ -203,6 +203,65 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return r;
 }
 
+- (NSDictionary*) annotationsAsDictionary
+{
+	// Comments - Study / Series
+	
+	// State - Study / Series
+	
+	// Albums - Study
+	
+	// Key Images - Image
+	
+	NSMutableDictionary *rootDict = [NSMutableDictionary dictionary];
+	
+	[rootDict setObject: [self valueForKey:@"studyInstanceUID"] forKey: @"studyInstanceUID"];
+	[rootDict setObject: [self valueForKey:@"name"] forKey: @"patientsName"];
+	[rootDict setObject: [self valueForKey:@"patientID"] forKey: @"patientID"];
+	
+	// ***************************************************************************************************
+	
+	// Study Level
+	
+	NSMutableDictionary *studyDict = [NSMutableDictionary dictionary];
+	
+	[studyDict setObject: [self valueForKey:@"comment"] forKey: @"comment"];
+	[studyDict setObject: [self valueForKey:@"stateText"] forKey: @"stateText"];
+	
+//	[studyDict setObject: albumsArray forKey: @"albums"];
+
+	[rootDict setObject: studyDict forKey: @"studyLevel"];
+	
+	// ***************************************************************************************************
+	
+	// Series Level
+	
+	NSMutableArray *seriesArray = [NSMutableArray array];
+	
+	for( DicomSeries *series in [self valueForKey: @"series"])
+	{
+		NSMutableDictionary *seriesDict = [NSMutableDictionary dictionary];
+		
+		[studyDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
+		[studyDict setObject: [series valueForKey:@"stateText"] forKey: @"stateText"];
+		
+	//	[studyDict setObject: [self valueForKey:@"albums"] forKey: @"albums"];
+
+		[rootDict setObject: studyDict forKey: @"studyLevel"];
+		
+		// ***************************************************************************************************
+		
+		// Images Level
+		
+		for( DicomSeries *image in [series valueForKey: @"images"])
+		{
+			
+		}
+	}
+	
+	return rootDict;
+}
+
 - (void) archiveReportAsDICOMSR
 {
 	#ifndef OSIRIX_LIGHT

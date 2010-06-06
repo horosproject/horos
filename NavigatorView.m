@@ -253,6 +253,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, [pix pwidth]);
 		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+		glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 
 		GLfloat borderColor[4] = {0., 0., 0., 1.0};
 		glTexParameterfv(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_BORDER_COLOR, borderColor);

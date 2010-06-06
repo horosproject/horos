@@ -551,13 +551,15 @@
 	#endif
 }
 
-- (NSString *)seriesInstanceUID{
+- (NSString *)seriesInstanceUID
+{
 	if (!_seriesInstanceUID)
 		_seriesInstanceUID =  [[NSString stringWithUTF8String:document->getSeriesInstanceUID()] retain];
 	return _seriesInstanceUID;
 }
 
-- (void)setSeriesInstanceUID: (NSString *)seriesInstanceUID{
+- (void)setSeriesInstanceUID: (NSString *)seriesInstanceUID
+{
 	[_seriesInstanceUID release];
 	_seriesInstanceUID = [seriesInstanceUID retain];
 }

@@ -70,6 +70,7 @@
 - (BOOL) isHidden;
 - (void) setHidden: (BOOL) h;
 - (NSNumber *) noFilesExcludingMultiFrames;
+- (NSDictionary*) annotationsAsDictionary;
 
 - (NSComparisonResult)compareName:(DicomStudy*)study;
 

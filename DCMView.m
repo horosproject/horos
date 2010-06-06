@@ -3410,6 +3410,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, *texName);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/[bitmap samplesPerPixel]);
 	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+	glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+	
 	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, ([bitmap samplesPerPixel]==4)?GL_RGBA:GL_RGB, imageSize.width, imageSize.height, 0, ([bitmap samplesPerPixel]==4)?GL_RGBA:GL_RGB, GL_UNSIGNED_BYTE, buffer);
 	
 	[bitmap release];
@@ -8541,6 +8543,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
 						glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
 						glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+						glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+						
 						glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, iChatCursorImageSize.width, iChatCursorImageSize.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, iChatCursorTextureBuffer);
 					}
 				}
@@ -8671,6 +8675,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			glEnable(TEXTRECTMODE);
 			glPixelStorei(GL_UNPACK_ROW_LENGTH, LENSSIZE); 
 			glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+			glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+			
 			glGenTextures(1, &textID);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(TEXTRECTMODE, textID);
@@ -10815,7 +10821,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);
 				
 				if (f_ext_client_storage)
-					glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);	// Incompatible with GL_TEXTURE_STORAGE_HINT_APPLE
+					glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 				else 
 					glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
 				

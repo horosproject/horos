@@ -295,7 +295,8 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
    glPixelStorei( GL_UNPACK_ROW_LENGTH, 0 );
    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 	
-//   glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+   glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+   glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
    
    retval = TRUE;
    for( dListNum = base, currentUnichar = first; currentUnichar < first + count;
