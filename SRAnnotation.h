@@ -28,7 +28,7 @@ typedef char DSRDocument;
 	DSRDocument			*document;
 	id					image;
 	BOOL				_newSR;
-	NSString			*_seriesInstanceUID, *_DICOMSRDescription, *_DICOMSeriesNumber;
+	NSString			*_seriesInstanceUID, *_DICOMSRDescription, *_DICOMSeriesNumber, *_reportURL;
 	NSData				*_dataEncapsulated;
 }
 
@@ -40,6 +40,7 @@ typedef char DSRDocument;
 - (id) initWithContentsOfFile:(NSString *)path;
 - (id) initWithDictionary:(NSDictionary *) dict path:(NSString *) path forImage: (NSManagedObject*) im;
 - (id) initWithFileReport:(NSString *) file path:(NSString *) path forImage: (NSManagedObject*) im;
+- (id) initWithURLReport:(NSString *) s path:(NSString *) path forImage: (NSManagedObject*) im;
 - (void) addROIs:(NSArray *)someROIs;
 - (void) addROI:(ROI *)aROI;
 - (NSArray *) ROIs;
@@ -53,5 +54,6 @@ typedef char DSRDocument;
 - (NSString *) seriesNumber;
 - (int) frameIndex;
 - (NSData*) dataEncapsulated;
+- (NSString*) reportURL;
 
 @end

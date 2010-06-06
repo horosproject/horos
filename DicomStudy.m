@@ -218,44 +218,57 @@ static NSRecursiveLock *dbModifyLock = nil;
 			if( [self valueForKey: @"reportURL"])
 			{
 				NSString *zippedFile = @"/tmp/zippedReport.zip";
+				NSManagedObject *archivedReport = [self reportSRSeries];
+				BOOL needToArchive = YES, needToReIndex = NO;
+				NSString *dstPath = nil;
 				
+				dstPath = [[archivedReport valueForKeyPath: @"images.completePath"] anyObject];
+				if( [[[archivedReport valueForKeyPath: @"images.completePath"] allObjects] count] > 1)
+					NSLog( @"********* warning multiple report for this study");
+					
 				if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
-					[[self valueForKey: @"reportURL"] writeToFile: zippedFile atomically: YES encoding: NSUTF8StringEncoding error: nil];
-					
-				else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
-					[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
-				
-				if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
 				{
-					NSManagedObject *archivedReport = [self reportSRSeries];
-					BOOL needToArchive = YES, needToReIndex = NO;
-					NSString *dstPath = nil;
-					
-					dstPath = [[archivedReport valueForKeyPath: @"images.completePath"] anyObject];
-					if( [[[archivedReport valueForKeyPath: @"images.completePath"] allObjects] count] > 1)
-						NSLog( @"********* warning multiple report for this study");
-					
 					if( dstPath == nil)
 					{
 						dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
 						needToReIndex = YES;
 					}
-					else
+					
+					// Save or Re-Save it as DICOM SR
+					SRAnnotation *r = [[[SRAnnotation alloc] initWithURLReport: [self valueForKey: @"reportURL"] path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
+					[r writeToFileAtPath: dstPath];
+					
+					if( needToReIndex)
+						[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject:YES];
+				}
+				else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
+				{
+					[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
+					
+					if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
 					{
-						SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-						
-						if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]])
-							needToArchive = NO;
-					}
+						if( dstPath == nil)
+						{
+							dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+							needToReIndex = YES;
+						}
+						else
+						{
+							SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+							
+							if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]])
+								needToArchive = NO;
+						}
 
-					if( needToArchive)
-					{
-						// Save or Re-Save it as DICOM SR
-						SRAnnotation *r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
-						[r writeToFileAtPath: dstPath];
-						
-						if( needToReIndex)
-							[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject:YES];
+						if( needToArchive)
+						{
+							// Save or Re-Save it as DICOM SR
+							SRAnnotation *r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
+							[r writeToFileAtPath: dstPath];
+							
+							if( needToReIndex)
+								[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject:YES];
+						}
 					}
 				}
 			}
