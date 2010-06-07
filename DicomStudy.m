@@ -204,6 +204,37 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return r;
 }
 
+- (void) reapplyAnnotationsFromDICOMSR
+{
+	#ifndef OSIRIX_LIGHT
+	if( [self.hasDICOM boolValue] == YES)
+	{
+		[[self managedObjectContext] lock];
+		
+		@try
+		{
+			NSManagedObject *archivedAnnotations = [self annotationsSRSeries];
+			NSString *dstPath = [[archivedAnnotations valueForKeyPath: @"images.completePath"] anyObject];
+					
+			if( dstPath)
+			{
+				SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+				
+				NSDictionary *annotations = [r annotations];
+				if( annotations)
+					[self applyAnnotationsFromDictionary: annotations];
+			}
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
+		[[self managedObjectContext] unlock];
+	}
+	#endif
+}
+
 - (void) applyAnnotationsFromDictionary: (NSDictionary*) rootDict
 {
 	if( [self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO || [self.patientUID isEqualToString: [rootDict valueForKey: @"patientUID"]] == NO)

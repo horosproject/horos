@@ -72,7 +72,7 @@
 - (NSNumber *) noFilesExcludingMultiFrames;
 - (NSDictionary*) annotationsAsDictionary;
 - (void) applyAnnotationsFromDictionary: (NSDictionary*) rootDict;
-
+- (void) reapplyAnnotationsFromDICOMSR;
 - (NSComparisonResult)compareName:(DicomStudy*)study;
 
 -(BOOL)isBonjour;
