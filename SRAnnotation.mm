@@ -155,7 +155,7 @@
 	if (self = [super init])
 	{
 		_seriesInstanceUID = nil;
-		_DICOMSRDescription =  @"OsiriX Dictionary SR";
+		_DICOMSRDescription =  @"OsiriX Annotations SR";
 		_DICOMSeriesNumber = @"5004";
 		
 		[_DICOMSRDescription retain];

@@ -836,7 +836,7 @@ static NSConditionLock *threadLock = nil;
 					}
 					
 					// Check if it is an OsiriX Comments/Status/KeyImages SR
-					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Dictionary SR"])
+					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Annotations SR"])
 					{
 						SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: newFile] autorelease];
 						
@@ -856,15 +856,14 @@ static NSConditionLock *threadLock = nil;
 							}
 							
 							if( correspondingStudy == nil)
-								NSLog( @"------- OsiriX Dictionary SR : study not found -> dont apply the annotations");
+								NSLog( @"------- OsiriX Annotations SR : study not found -> dont apply the annotations");
 							else
 							{
 								[correspondingStudy applyAnnotationsFromDictionary: annotations];
 							}
 						}
 						
-						// We dont want to archive this DICOM SR file, it was only usefull for the transfer in DICOM format
-						curDict = nil;
+						DICOMROI = YES;
 					}
 				}
 				
@@ -1751,19 +1750,8 @@ static int DICOMSRAnnotationsIndex = 1;
 			@try
 			{
 				// Is there a autorouting rule that want to receive these modifications?
-				
 				if( [[routingRule objectForKey:@"filterType"] intValue] == 1)
-				{
-					if( DICOMSRPath == nil)
-					{
-						DICOMSRPath = [NSString stringWithFormat: @"/tmp/DICOMSRAnnotations-%d.dcm", DICOMSRAnnotationsIndex++];
-						DicomStudy *study = [note object];
-						NSDictionary *annotationsDict = [study annotationsAsDictionary];
-						
-						SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: nil forImage: [[[[study valueForKey: @"series"] anyObject] valueForKey: @"images"] anyObject]] autorelease];
-						[r writeToFileAtPath: DICOMSRPath];
-					}
-				}
+					[self addFiles: [note object] withRule: routingRule];
 			}
 			
 			@catch( NSException *e)
@@ -1771,9 +1759,6 @@ static int DICOMSRAnnotationsIndex = 1;
 				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 			}
 		}
-		
-		if( DICOMSRPath)
-			[[NSFileManager defaultManager] removeItemAtPath: DICOMSRPath error: nil];
 	}
 	#endif
 }
@@ -1831,6 +1816,36 @@ static int DICOMSRAnnotationsIndex = 1;
 	{
 		[self executeAutorouting: objects rules: nil manually: YES];
 	}
+}
+
+- (void) addFiles: (NSArray*) files withRule:(NSDictionary*) routingRule
+{
+	if( autoroutingQueueArray == nil) autoroutingQueueArray = [[NSMutableArray array] retain];
+	if( autoroutingQueue == nil) autoroutingQueue = [[NSLock alloc] init];
+	if( autoroutingInProgress == nil) autoroutingInProgress = [[NSLock alloc] init];
+	
+	[autoroutingQueue lock];
+	
+	//Are these files already in the queue, with same routingRule
+	BOOL alreadyInQueue = NO;
+	for( NSDictionary *order in autoroutingQueueArray)
+	{
+		if( [routingRule isEqualToDictionary: [order valueForKey: @"routingRule"]])
+		{
+			// Are the files identical?
+			if( [files isEqualToArray: [order valueForKey: @"files"]])
+			{
+				alreadyInQueue = YES;
+			}
+		}
+	}
+	
+	if( alreadyInQueue)
+		NSLog( @"already in queue -> we dont add them");
+	else
+		[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: files, @"objects", [routingRule objectForKey:@"server"], @"server", routingRule, @"routingRule", [routingRule valueForKey:@"failureRetry"], @"failureRetry", nil]];
+	
+	[autoroutingQueue unlock];
 }
 
 - (void) executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually
@@ -2027,17 +2042,8 @@ static int DICOMSRAnnotationsIndex = 1;
 					}
 					
 					if( [result count])
-					{
-						if( autoroutingQueueArray == nil) autoroutingQueueArray = [[NSMutableArray array] retain];
-						if( autoroutingQueue == nil) autoroutingQueue = [[NSLock alloc] init];
-						if( autoroutingInProgress == nil) autoroutingInProgress = [[NSLock alloc] init];
+						[self addFiles: result withRule: routingRule];
 						
-						[autoroutingQueue lock];
-						
-						[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: result, @"objects", [routingRule objectForKey:@"server"], @"server", routingRule, @"routingRule", [routingRule valueForKey:@"failureRetry"], @"failureRetry", nil]];
-						
-						[autoroutingQueue unlock];
-					}
 					[context unlock];
 					[context release];
 				}

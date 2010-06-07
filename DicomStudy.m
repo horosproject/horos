@@ -206,18 +206,14 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) applyAnnotationsFromDictionary: (NSDictionary*) rootDict
 {
-	if( [self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO || [self.patientUID isEqualToString: [rootDict valueForKey: @"patientUID"]] == NO ||[self.name isEqualToString: [rootDict valueForKey: @"name"]] == NO || [self.patientID isEqualToString: [rootDict valueForKey: @"patientID"]] == NO)
+	if( [self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO || [self.patientUID isEqualToString: [rootDict valueForKey: @"patientUID"]] == NO)
 	{
 		NSLog( @"******** WARNING applyAnnotationsFromDictionary will not be applied - studyInstanceUID / name / patientID are NOT corresponding: %@ %@", [rootDict valueForKey: @"name"], self.name);
 	}
 	else
 	{
-		dontPostStudyAnnotationsChangedNotification = YES;
-		
-		self.comment = [rootDict valueForKey: @"comment"];
-		self.stateText = [rootDict valueForKey: @"stateText"];
-		
-		dontPostStudyAnnotationsChangedNotification = NO;
+		[self setPrimitiveValue: [rootDict valueForKey: @"comment"] forKey: @"comment"];
+		[self setPrimitiveValue: [rootDict valueForKey: @"stateText"] forKey: @"stateText"];
 	}
 }
 
@@ -296,96 +292,142 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return rootDict;
 }
 
+- (void) archiveAnnotationsAsDICOMSR
+{
+	#ifndef OSIRIX_LIGHT
+	if( [self.hasDICOM boolValue] == YES)
+	{
+		[[self managedObjectContext] lock];
+		
+		@try
+		{
+			NSManagedObject *archivedAnnotations = [self annotationsSRSeries];
+			BOOL needToArchive = YES, needToReIndex = NO;
+			NSString *dstPath = nil;
+				
+			dstPath = [[archivedAnnotations valueForKeyPath: @"images.completePath"] anyObject];
+			if( [[[archivedAnnotations valueForKeyPath: @"images.completePath"] allObjects] count] > 1)
+				NSLog( @"********* warning multiple annotations SR for this study");
+					
+			if( dstPath == nil)
+			{
+				dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+				needToReIndex = YES;
+			}
+			
+			NSDictionary *annotationsDict = [self annotationsAsDictionary];
+			
+			// Save or Re-Save it as DICOM SR
+			SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
+			[r writeToFileAtPath: dstPath];
+			
+			if( needToReIndex)
+				[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES produceAddedFiles:NO parseExistingObject:YES];
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixStudyAnnotationsChangedNotification object: self];
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
+		[[self managedObjectContext] unlock];
+	}
+	#endif
+}
+
 - (void) archiveReportAsDICOMSR
 {
 	#ifndef OSIRIX_LIGHT
-	
-	[[self managedObjectContext] lock];
-	
-	// Is there a report attached to this study -> archive it
-	if( [self valueForKey: @"reportURL"])
+	if( [self.hasDICOM boolValue] == YES)
 	{
-		@try
+		[[self managedObjectContext] lock];
+		
+		// Is there a report attached to this study -> archive it
+		if( [self valueForKey: @"reportURL"])
 		{
-			// Report
-			if( [self valueForKey: @"reportURL"])
+			@try
 			{
-				NSString *zippedFile = @"/tmp/zippedReport.zip";
-				NSManagedObject *archivedReport = [self reportSRSeries];
-				BOOL needToArchive = YES, needToReIndex = NO;
-				NSString *dstPath = nil;
-				
-				dstPath = [[archivedReport valueForKeyPath: @"images.completePath"] anyObject];
-				if( [[[archivedReport valueForKeyPath: @"images.completePath"] allObjects] count] > 1)
-					NSLog( @"********* warning multiple report for this study");
-					
-				if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
+				// Report
+				if( [self valueForKey: @"reportURL"])
 				{
-					if( dstPath == nil)
-					{
-						dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
-						needToReIndex = YES;
-					}
+					NSString *zippedFile = @"/tmp/zippedReport.zip";
+					NSManagedObject *archivedReport = [self reportSRSeries];
+					BOOL needToArchive = YES, needToReIndex = NO;
+					NSString *dstPath = nil;
 					
-					// Save or Re-Save it as DICOM SR
-					SRAnnotation *r = [[[SRAnnotation alloc] initWithURLReport: [self valueForKey: @"reportURL"] path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
-					[r writeToFileAtPath: dstPath];
-					
-					if( needToReIndex)
-						[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject:YES];
-				}
-				else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
-				{
-					[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
-					
-					if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
+					dstPath = [[archivedReport valueForKeyPath: @"images.completePath"] anyObject];
+					if( [[[archivedReport valueForKeyPath: @"images.completePath"] allObjects] count] > 1)
+						NSLog( @"********* warning multiple report for this study");
+						
+					if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
 					{
 						if( dstPath == nil)
 						{
 							dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
 							needToReIndex = YES;
 						}
-						else
+						
+						// Save or Re-Save it as DICOM SR
+						SRAnnotation *r = [[[SRAnnotation alloc] initWithURLReport: [self valueForKey: @"reportURL"] path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
+						[r writeToFileAtPath: dstPath];
+						
+						if( needToReIndex)
+							[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject:YES];
+					}
+					else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
+					{
+						[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
+						
+						if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
 						{
-							SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-							
-							if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]])
-								needToArchive = NO;
-						}
+							if( dstPath == nil)
+							{
+								dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+								needToReIndex = YES;
+							}
+							else
+							{
+								SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+								
+								if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]])
+									needToArchive = NO;
+							}
 
-						if( needToArchive)
-						{
-							// Save or Re-Save it as DICOM SR
-							SRAnnotation *r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
-							[r writeToFileAtPath: dstPath];
-							
-							if( needToReIndex)
-								[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject:YES];
+							if( needToArchive)
+							{
+								// Save or Re-Save it as DICOM SR
+								SRAnnotation *r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
+								[r writeToFileAtPath: dstPath];
+								
+								if( needToReIndex)
+									[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject:YES];
+							}
 						}
 					}
 				}
 			}
+			@catch (NSException * e) 
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 		}
-		@catch (NSException * e) 
+		else
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			@try
+			{
+				// Delete the existing Report
+				if( [self reportSRSeries])
+					[[BrowserController currentBrowser] proceedDeleteObjects: [[[self reportSRSeries] valueForKey: @"images"] allObjects]];
+			}
+			@catch (NSException * e) 
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 		}
+		
+		[[self managedObjectContext] unlock];
 	}
-	else
-	{
-		@try
-		{
-			// Delete the existing Report
-			if( [self reportSRSeries])
-				[[BrowserController currentBrowser] proceedDeleteObjects: [[[self reportSRSeries] valueForKey: @"images"] allObjects]];
-		}
-		@catch (NSException * e) 
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
-	}
-	
-	[[self managedObjectContext] unlock];
 	#endif
 }
 
@@ -547,10 +589,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self setPrimitiveValue: c forKey: @"comment"];
 	[self didChangeValueForKey: @"comment"];
 	
-	#ifdef OSIRIX_VIEWER
-	if( dontPostStudyAnnotationsChangedNotification == NO)
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixStudyAnnotationsChangedNotification object: self];
-	#endif
+	[self archiveAnnotationsAsDICOMSR];
 }
 
 - (void) setStateText: (NSNumber*) c
@@ -566,7 +605,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			if( [c intValue] != [[self primitiveValueForKey: @"stateText"] intValue])
 			{
-				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(4008,0212)", @"field", c, @"value", nil];
+				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(4008,0212)", @"field", [c stringValue], @"value", nil];
 				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
 			}
 		}
@@ -582,10 +621,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self setPrimitiveValue: c forKey: @"stateText"];
 	[self didChangeValueForKey: @"stateText"];
 	
-	#ifdef OSIRIX_VIEWER
-	if( dontPostStudyAnnotationsChangedNotification == NO)
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixStudyAnnotationsChangedNotification object: self];
-	#endif
+	[self archiveAnnotationsAsDICOMSR];
 }
 
 - (void) setReportURL: (NSString*) url
@@ -1043,12 +1079,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		for( DicomSeries *series in array)
 		{
-			if( [[series valueForKey:@"id"] intValue] == 5004 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX Comments SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
+			if( [[series valueForKey:@"id"] intValue] == 5004 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX Annotations SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
 				[newArray addObject:series];
 			
 			if( [newArray count] > 1)
 			{
-				NSLog( @"****** multiple (%d) annotationsSRSeries?? Delete the extra series...", [newArray count]);
+				NSLog( @"****** multiple (%d) annotations SR Series?? Delete the extra series...", [newArray count]);
 				
 				for( int i = 1 ; i < [newArray count] ; i++)
 					[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 

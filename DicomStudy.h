@@ -20,7 +20,7 @@
 /** \brief  Core Data Entity for a Study */
 @interface DicomStudy : NSManagedObject
 {
-	BOOL isHidden, dontPostStudyAnnotationsChangedNotification;
+	BOOL isHidden;
 	NSNumber *dicomTime;
 }
 
