@@ -452,6 +452,11 @@ static NSString* getMacAddress( void)
 	DCMAttribute *scDeviceIDAttr = [DCMAttribute attributeWithAttributeTag:scDeviceIDTag  vr: scDeviceIDTag.vr  values:scDeviceIDValue];
 	[attrs setObject:scDeviceIDAttr forKey:@"SecondaryCaptureDeviceID"];
 	
+	DCMAttributeTag *scManufacturerTag = [DCMAttributeTag tagWithName:@"Manufacturer"];
+	NSMutableArray *scManufacturerValue = [NSMutableArray arrayWithObject:  [DCMObject MACAddress]];
+	DCMAttribute *scManufacturerAttr = [DCMAttribute attributeWithAttributeTag:scManufacturerTag  vr: scManufacturerTag.vr  values:scManufacturerValue];
+	[attrs setObject:scManufacturerAttr forKey:@"Manufacturer"];
+	
 	DCMAttributeTag *scDeviceManufacturerTag = [DCMAttributeTag tagWithName:@"SecondaryCaptureDeviceManufacturer"];
 	NSMutableArray *scDeviceManufacturerValue = [NSMutableArray arrayWithObject:@"OsiriX"];
 	DCMAttribute *scDeviceManufacturerAttr = [DCMAttribute attributeWithAttributeTag:scDeviceManufacturerTag  vr: scDeviceManufacturerTag.vr values:scDeviceManufacturerValue];
@@ -463,7 +468,7 @@ static NSString* getMacAddress( void)
 	[attrs setObject:scDeviceModelAttr forKey:@"SecondaryCaptureDeviceManufacturersModelName"];
 	
 	DCMAttributeTag *scDeviceSoftwareTag = [DCMAttributeTag tagWithName:@"SecondaryCaptureDeviceSoftwareVersions"];
-	NSMutableArray *scDeviceSoftwareValue = [NSMutableArray arrayWithObject:@"1.4"];
+	NSMutableArray *scDeviceSoftwareValue = [NSMutableArray arrayWithObject: @"3.8"];
 	DCMAttribute *scDeviceSoftwareAttr = [DCMAttribute attributeWithAttributeTag:scDeviceSoftwareTag  vr: scDeviceSoftwareTag.vr values:scDeviceSoftwareValue];
 	[attrs setObject:scDeviceSoftwareAttr forKey:@"SecondaryCaptureDeviceSoftwareVersions"];
 	
@@ -507,13 +512,14 @@ static NSString* getMacAddress( void)
 	//secondary capture tags	
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject:abstractSyntax] forName:@"SOPClassUID"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject:abstractSyntax] forName:@"MediaStorageSOPClassUID"];	
-	[scObject setAttributeValues:[NSMutableArray arrayWithObject:@"OsiriX"]  forName:@"SecondaryCaptureDeviceID"];
-	[scObject setAttributeValues:[NSMutableArray arrayWithObject:@"OsiriX"]  forName:@"SecondaryCaptureDeviceManufacturer"];
-	[scObject setAttributeValues:[NSMutableArray arrayWithObject:@"OsiriX"]  forName:@"SecondaryCaptureDeviceManufacturersModelName"];
-	[scObject setAttributeValues:[NSMutableArray arrayWithObject:@"3.6.0"]  forName:@"SecondaryCaptureDeviceSoftwareVersions"];
-	[scObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate date]]  forName:@"DateofSecondaryCapture"];
-	[scObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate date]]  forName:@"TimeofSecondaryCapture"];
-	[scObject setAttributeValues:[NSMutableArray arrayWithObject:@"SC"]  forName:@"Modality"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject: [DCMObject MACAddress]]  forName:@"Manufacturer"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject: [DCMObject MACAddress]]  forName:@"SecondaryCaptureDeviceID"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"OsiriX"]  forName:@"SecondaryCaptureDeviceManufacturer"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"OsiriX"]  forName:@"SecondaryCaptureDeviceManufacturersModelName"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"3.8"]  forName:@"SecondaryCaptureDeviceSoftwareVersions"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject: [DCMCalendarDate date]]  forName:@"DateofSecondaryCapture"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject: [DCMCalendarDate date]]  forName:@"TimeofSecondaryCapture"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"SC"]  forName:@"Modality"];
 	//[scObject setAttributeValues:[NSMutableArray arrayWithObject:@"SC"]  forName:@"Modality"];
 	//new UIDs
 	[scObject newStudyInstanceUID];
@@ -587,7 +593,7 @@ PixelRepresentation
 
 + (NSString*) MACAddress
 {
-	return getMacAddress();
+	return [NSString stringWithFormat: @"MAC:%@", getMacAddress()];
 }
 		
 - (id)initWithData:(NSData *)data decodingPixelData:(BOOL)decodePixelData{

@@ -139,6 +139,7 @@ extern "C"
 + (void) pause;
 + (void) resetToolbars;
 + (NSString*) printStackTrace: (NSException*) e;
++ (NSString*) MACAddress;
 
 #pragma mark-
 #pragma mark HTML Templates

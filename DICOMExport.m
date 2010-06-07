@@ -557,7 +557,6 @@
 				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @""] forName:@"ReferringPhysiciansName"];
 			}
 			
-			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@"OsiriX"] forName:@"Manufacturer"];
 			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@"OsiriX"] forName:@"ManufacturersModelName"];
 			
 			if( studyDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyDate] forName:@"StudyDate"];

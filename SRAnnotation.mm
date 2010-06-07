@@ -12,6 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
+#import "AppController.h"
 #import "SRAnnotation.h"
 #import "DCMView.h"
 #import "DCMPix.h"
@@ -520,10 +521,12 @@
 		if( _DICOMSRDescription)
 			document->setSeriesDescription( [_DICOMSRDescription UTF8String]);
 		
+		#ifndef OSIRIX_LIGHT
+		document->setManufacturer( [[AppController MACAddress] UTF8String]);
+		#endif
+		
 		if( _DICOMSeriesNumber)
 			document->setSeriesNumber( [_DICOMSeriesNumber UTF8String]);
-		
-		document->setManufacturer( "OsiriX");
 	}
 	
 	OFCondition status = EC_Normal;
