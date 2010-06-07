@@ -562,6 +562,11 @@ static NSConditionLock *threadLock = nil;
 #pragma mark-
 +(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder
 {
+	return [BrowserController addFiles: newFilesArray toContext:  context toDatabase:  browserController onlyDICOM:  onlyDICOM  notifyAddedFiles:  notifyAddedFiles parseExistingObject:  parseExistingObject dbFolder:  dbFolder generatedByOsiriX:  NO];
+}
+
++(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX
+{
 	NSDate *today = [NSDate date];
 	NSError *error = nil;
 	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH], *newFile, *INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH], *roiFolder = [dbFolder stringByAppendingPathComponent:@"/ROIs"], *reportsDirectory = [dbFolder stringByAppendingPathComponent:@"/REPORTS/"];
