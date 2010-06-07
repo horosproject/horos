@@ -204,6 +204,23 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return r;
 }
 
+- (void) applyAnnotationsFromDictionary: (NSDictionary*) rootDict
+{
+	if( [self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO || [self.patientUID isEqualToString: [rootDict valueForKey: @"patientUID"]] == NO ||[self.name isEqualToString: [rootDict valueForKey: @"name"]] == NO || [self.patientID isEqualToString: [rootDict valueForKey: @"patientID"]] == NO)
+	{
+		NSLog( @"******** WARNING applyAnnotationsFromDictionary will not be applied - studyInstanceUID / name / patientID are NOT corresponding: %@ %@", [rootDict valueForKey: @"name"], self.name);
+	}
+	else
+	{
+		dontPostStudyAnnotationsChangedNotification = YES;
+		
+		self.comment = [rootDict valueForKey: @"comment"];
+		self.stateText = [rootDict valueForKey: @"stateText"];
+		
+		dontPostStudyAnnotationsChangedNotification = NO;
+	}
+}
+
 - (NSDictionary*) annotationsAsDictionary
 {
 	// Comments - Study / Series
@@ -220,11 +237,23 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	NSMutableDictionary *rootDict = [NSMutableDictionary dictionary];
 	
-	[rootDict setObject: [self valueForKey:@"studyInstanceUID"] forKey: @"studyInstanceUID"];
-	[rootDict setObject: [self valueForKey:@"name"] forKey: @"patientsName"];
-	[rootDict setObject: [self valueForKey:@"patientID"] forKey: @"patientID"];
-	[rootDict setObject: [self valueForKey:@"comment"] forKey: @"comment"];
-	[rootDict setObject: [self valueForKey:@"stateText"] forKey: @"stateText"];
+	if( [self valueForKey:@"studyInstanceUID"])
+		[rootDict setObject: [self valueForKey:@"studyInstanceUID"] forKey: @"studyInstanceUID"];
+	
+	if( [self valueForKey:@"name"])
+		[rootDict setObject: [self valueForKey:@"name"] forKey: @"patientsName"];
+	
+	if( [self valueForKey:@"patientID"])
+		[rootDict setObject: [self valueForKey:@"patientID"] forKey: @"patientID"];
+	
+	if( [self valueForKey:@"patientUID"])
+		[rootDict setObject: [self valueForKey:@"patientUID"] forKey: @"patientUID"];
+	
+	if( [self valueForKey:@"comment"])
+		[rootDict setObject: [self valueForKey:@"comment"] forKey: @"comment"];
+	
+	if( [self valueForKey:@"stateText"])
+		[rootDict setObject: [self valueForKey:@"stateText"] forKey: @"stateText"];
 	
 	NSMutableArray *albumsArray = [NSMutableArray array];
 	
@@ -243,8 +272,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		NSMutableDictionary *seriesDict = [NSMutableDictionary dictionary];
 		
-		[seriesDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
-		[seriesDict setObject: [series valueForKey:@"stateText"] forKey: @"stateText"];
+		if( [series valueForKey:@"comment"])
+			[seriesDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
+		
+		if( [series valueForKey:@"stateText"])
+			[seriesDict setObject: [series valueForKey:@"stateText"] forKey: @"stateText"];
 		
 		// ***************************************************************************************************
 		
@@ -252,7 +284,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		for( DicomSeries *image in [series valueForKey: @"images"])
 		{
-			[seriesDict setObject: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
+			if( [image valueForKey:@"isKeyImage"])
+				[seriesDict setObject: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
 		}
 		
 		[seriesArray addObject: seriesDict];
@@ -515,7 +548,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self didChangeValueForKey: @"comment"];
 	
 	#ifdef OSIRIX_VIEWER
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixStudyAnnotationsChangedNotification object: self];
+	if( dontPostStudyAnnotationsChangedNotification == NO)
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixStudyAnnotationsChangedNotification object: self];
 	#endif
 }
 
@@ -548,7 +582,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self setPrimitiveValue: c forKey: @"stateText"];
 	[self didChangeValueForKey: @"stateText"];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixStudyAnnotationsChangedNotification object: self];
+	#ifdef OSIRIX_VIEWER
+	if( dontPostStudyAnnotationsChangedNotification == NO)
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixStudyAnnotationsChangedNotification object: self];
+	#endif
 }
 
 - (void) setReportURL: (NSString*) url

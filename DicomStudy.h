@@ -20,7 +20,7 @@
 /** \brief  Core Data Entity for a Study */
 @interface DicomStudy : NSManagedObject
 {
-	BOOL isHidden;
+	BOOL isHidden, dontPostStudyAnnotationsChangedNotification;
 	NSNumber *dicomTime;
 }
 
@@ -71,6 +71,7 @@
 - (void) setHidden: (BOOL) h;
 - (NSNumber *) noFilesExcludingMultiFrames;
 - (NSDictionary*) annotationsAsDictionary;
+- (void) applyAnnotationsFromDictionary: (NSDictionary*) rootDict;
 
 - (NSComparisonResult)compareName:(DicomStudy*)study;
 

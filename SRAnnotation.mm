@@ -190,7 +190,7 @@
 		
 		image = [im retain];
 		
-		// ****** to be completed
+		_dataEncapsulated = [[NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListXMLFormat_v1_0 errorDescription: nil] retain];
 	}
 	
 	return self;
@@ -328,6 +328,22 @@
 		}
 	}
 	return self;
+}
+
+- (NSDictionary*) annotations
+{
+	NSDictionary *dict = nil;
+	
+	@try
+	{
+        dict = [NSPropertyListSerialization propertyListFromData: _dataEncapsulated  mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
+	}
+	@catch( NSException *e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	return dict;
 }
 
 - (NSString*) reportURL

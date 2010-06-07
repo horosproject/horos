@@ -835,16 +835,36 @@ static NSConditionLock *threadLock = nil;
 						DICOMROI = YES;
 					}
 					
-					// Check if it is an OsiriX Comments/Status SR
-					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Comments SR"])
+					// Check if it is an OsiriX Comments/Status/KeyImages SR
+					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Dictionary SR"])
 					{
+						SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: newFile] autorelease];
 						
-					}
-					
-					// Check if it is an OsiriX KeyImage SR
-					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX KeyImage SR"])
-					{
+						NSDictionary *annotations = [r annotations];
 						
+						if( annotations)
+						{
+							// Find the corresponding study, if availble
+							
+							index = [studiesArrayStudyInstanceUID indexOfObject: [annotations objectForKey: @"studyInstanceUID"]];
+							
+							DicomStudy *correspondingStudy = nil;
+							if( index != NSNotFound)
+							{
+								if( [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]] == NSOrderedSame)
+									correspondingStudy = [studiesArray objectAtIndex: index];
+							}
+							
+							if( correspondingStudy == nil)
+								NSLog( @"------- OsiriX Dictionary SR : study not found -> dont apply the annotations");
+							else
+							{
+								[correspondingStudy applyAnnotationsFromDictionary: annotations];
+							}
+						}
+						
+						// We dont want to archive this DICOM SR file, it was only usefull for the transfer in DICOM format
+						curDict = nil;
 					}
 				}
 				
@@ -1738,9 +1758,9 @@ static int DICOMSRAnnotationsIndex = 1;
 					{
 						DICOMSRPath = [NSString stringWithFormat: @"/tmp/DICOMSRAnnotations-%d.dcm", DICOMSRAnnotationsIndex++];
 						DicomStudy *study = [note object];
-						NSDictionary *annotationsDict = [study valueForKey: @"annotationsAsDictionary"];
+						NSDictionary *annotationsDict = [study annotationsAsDictionary];
 						
-						SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: nil forImage: [[[[study valueForKey: @"series"] anyObject] valueForKey: @"image"] anyObject]] autorelease];
+						SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: nil forImage: [[[[study valueForKey: @"series"] anyObject] valueForKey: @"images"] anyObject]] autorelease];
 						[r writeToFileAtPath: DICOMSRPath];
 					}
 				}

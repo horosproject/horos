@@ -55,5 +55,5 @@ typedef char DSRDocument;
 - (int) frameIndex;
 - (NSData*) dataEncapsulated;
 - (NSString*) reportURL;
-
+- (NSDictionary*) annotations;
 @end
