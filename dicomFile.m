@@ -182,25 +182,26 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if( c == 0x1b || i == len-1)
 		{
-			if( i == len-1) i = len;
+			if( i == len-1)
+				i = len;
 			
-			NSString *s = [[NSString alloc] initWithBytes: str+from length:i-from encoding:encoding[ index]];
+			NSString *s = [[NSString alloc] initWithBytes: str+from length:i-from encoding: encoding[ index]];
 			
 			if( s)
 			{
 				[result appendString: s];
 				
 				if( encoding[ index] == -2147481280)	// Korean support
-				{
 					[result replaceOccurrencesOfString:@"$)C" withString:@"" options:0 range:NSMakeRange(0, [result length])];
-				}
 				
 				[s release];
 			}
 			
 			from = i;
-			index = 1;
-//			if( index < 9) index++;
+			if( index < 9)
+				index++;
+			if( encoding[ index] == 0)
+				index = 1;
 		}
 	}
 	
@@ -1783,7 +1784,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 			
 			NSString *characterSet = nil;
-			for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
+			for( int i = 0; i < 10; i++) encoding[ i] = 0;
+			encoding[ 0] = NSISOLatin1StringEncoding;
 			
 			if (COMMENTSAUTOFILL == YES || CHECKFORLAVIM == YES)
 			{
