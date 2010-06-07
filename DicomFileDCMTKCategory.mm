@@ -225,7 +225,8 @@ extern NSRecursiveLock *PapyrusLock;
 
 	if (status.good())
 	{
-		for( i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
+		for( i = 0; i < 10; i++) encoding[ i] = 0;
+		encoding[ 0] = NSISOLatin1StringEncoding;
 		
 		DcmDataset *dataset = fileformat.getDataset();
 		

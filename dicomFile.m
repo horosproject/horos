@@ -199,9 +199,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			from = i;
 			if( index < 9)
+			{
 				index++;
-			if( encoding[ index] == 0)
-				index = 1;
+				if( encoding[ index] == 0)
+					index--;
+			}
 		}
 	}
 	

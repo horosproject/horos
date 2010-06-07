@@ -969,9 +969,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			if (status.good())
 			{
 				const char *string = NULL;
-				NSStringEncoding	encoding[ 10];
-				for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
-
+				NSStringEncoding encoding[ 10];
+				for( int i = 0; i < 10; i++) encoding[ i] = 0;
+				encoding[ 0] = NSISOLatin1StringEncoding;
+				
 				if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != nil)
 				{
 					NSArray	*c = [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"];
@@ -981,7 +982,6 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 					if( [c count] < 10)
 					{
 						for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-						for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
 					}
 				}
 

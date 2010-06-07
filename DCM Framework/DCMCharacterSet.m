@@ -89,7 +89,12 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 			}
 			
 			from = i;
-			index = 1;
+			if( index < 9)
+			{
+				index++;
+				if( encodings[ index] == 0)
+					index--;
+			}
 		}
 	}
 	
@@ -138,7 +143,8 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 		if( encodings == nil)
 			encodings = (NSStringEncoding*) malloc( 10 * sizeof( NSStringEncoding));
 		
-		for( int i = 0; i < 10; i++) encodings[ i] = NSISOLatin1StringEncoding;
+		for( int i = 0; i < 10; i++) encodings[ i] = 0;
+		encodings[ 0] = NSISOLatin1StringEncoding;
 		
 		NSArray *e = [characterSet componentsSeparatedByString: @"\\"];
 		

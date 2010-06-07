@@ -179,13 +179,14 @@ static LogManager *currentLogManager = nil;
 							
 							// Encoding
 							NSStringEncoding encoding[ 10];
-							for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
+							for( int i = 0; i < 10; i++) encoding[ i] = 0;
+							encoding[ 0] = NSISOLatin1StringEncoding;
+							
 							NSArray	*c = [[NSString stringWithCString: logEncoding] componentsSeparatedByString:@"\\"];
 							
 							if( [c count] < 10)
 							{
 								for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-								for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
 							}
 							
 							if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"In Progress"] || [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
