@@ -1737,31 +1737,31 @@ static NSConditionLock *threadLock = nil;
 
 static int DICOMSRAnnotationsIndex = 1;
 
-- (void) studyAnnotationsChangedNotification: (NSNotification*) note
-{
-	#ifndef OSIRIX_LIGHT
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
-	{
-		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
-		
-		NSString *DICOMSRPath = nil;
-		for( NSDictionary *routingRule in autoroutingRules)
-		{
-			@try
-			{
-				// Is there a autorouting rule that want to receive these modifications?
-				if( [[routingRule objectForKey:@"filterType"] intValue] == 1)
-					[self addFiles: [note object] withRule: routingRule];
-			}
-			
-			@catch( NSException *e)
-			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			}
-		}
-	}
-	#endif
-}
+//- (void) studyAnnotationsChangedNotification: (NSNotification*) note
+//{
+//	#ifndef OSIRIX_LIGHT
+//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
+//	{
+//		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
+//		
+//		NSString *DICOMSRPath = nil;
+//		for( NSDictionary *routingRule in autoroutingRules)
+//		{
+//			@try
+//			{
+//				// Is there a autorouting rule that want to receive these modifications?
+//				if( [[routingRule objectForKey:@"filterType"] intValue] == 1)
+//					[self addFiles: [note object] withRule: routingRule];
+//			}
+//			
+//			@catch( NSException *e)
+//			{
+//				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+//			}
+//		}
+//	}
+//	#endif
+//}
 
 - (void) testAutorouting
 {
@@ -13301,7 +13301,8 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:OsirixRTStructNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AlternateButtonPressed:) name:OsirixAlternateButtonPressedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(studyAnnotationsChangedNotification:) name:OsirixStudyAnnotationsChangedNotification object:nil];
+		
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(studyAnnotationsChangedNotification:) name:OsirixStudyAnnotationsChangedNotification object:nil];
 		
 //		[[NSNotificationCenter defaultCenter] addObserver: self
 //												selector: @selector(listChangedTest:)

@@ -246,6 +246,6 @@ NSString* getMacAddress( void)
     }
     
     (void) IOObjectRelease(intfIterator);	// Release the iterator.
-        
+    
     return result;
 }

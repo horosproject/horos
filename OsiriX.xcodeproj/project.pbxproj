@@ -702,6 +702,7 @@
 		AB46648D09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
 		AB49C4831070AA8000706298 /* ViewerController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE17661056D2659009C93B5 /* ViewerController.h */; };
 		AB4CD7690F72619900699111 /* FlyThruController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 183C863D08563F3A000E6A68 /* FlyThruController.mm */; };
+		AB61D9BE11BD32E5003BC1A4 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
 		AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB64A2D60C4E0F61000E0981 /* HornRegistration.mm */; };
 		AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = AB64A2D70C4E0F61000E0981 /* HornRegistration.h */; };
 		AB695A1F063D8261002BDF78 /* Analyze.h in Headers */ = {isa = PBXBuildFile; fileRef = AB695A1D063D8261002BDF78 /* Analyze.h */; };
@@ -11730,6 +11731,7 @@
 				7E47658007428C80000C9A74 /* Accelerate.framework in Frameworks */,
 				BFB8F7F7087B805F007ABE20 /* libjasper2.a in Frameworks */,
 				CECBF93C0FE6B1C300425ED4 /* libopenjpeg.a in Frameworks */,
+				AB61D9BE11BD32E5003BC1A4 /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

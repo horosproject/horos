@@ -304,7 +304,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			NSManagedObject *archivedAnnotations = [self annotationsSRSeries];
 			BOOL needToArchive = YES, needToReIndex = NO;
 			NSString *dstPath = nil;
-				
+			
 			dstPath = [[archivedAnnotations valueForKeyPath: @"images.completePath"] anyObject];
 			if( [[[archivedAnnotations valueForKeyPath: @"images.completePath"] allObjects] count] > 1)
 				NSLog( @"********* warning multiple annotations SR for this study");
@@ -321,10 +321,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 			SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
 			[r writeToFileAtPath: dstPath];
 			
-			if( needToReIndex)
-				[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES produceAddedFiles:NO parseExistingObject:YES];
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixStudyAnnotationsChangedNotification object: self];
+//			if( needToReIndex)
+				[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES produceAddedFiles:YES parseExistingObject:YES];
+//			
+//			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixStudyAnnotationsChangedNotification object: self];
 		}
 		@catch (NSException * e) 
 		{
@@ -372,8 +372,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 						SRAnnotation *r = [[[SRAnnotation alloc] initWithURLReport: [self valueForKey: @"reportURL"] path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
 						[r writeToFileAtPath: dstPath];
 						
-						if( needToReIndex)
-							[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject:YES];
+//						if( needToReIndex)
+							[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:YES parseExistingObject:YES];
 					}
 					else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
 					{
@@ -400,8 +400,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 								SRAnnotation *r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
 								[r writeToFileAtPath: dstPath];
 								
-								if( needToReIndex)
-									[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:NO parseExistingObject:YES];
+//								if( needToReIndex)
+									[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES  produceAddedFiles:YES parseExistingObject:YES];
 							}
 						}
 					}

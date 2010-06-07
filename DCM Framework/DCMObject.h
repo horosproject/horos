@@ -58,6 +58,9 @@
 /** Returns to rootUID for files created used by OsiriX */
 + (NSString *)rootUID;
 
+/** Returns the MACAddress of the computer which generated the image */
++ (NSString*) MACAddress;
+
 /** Returns to implementationClassUID for files created used by OsiriX */
 + (NSString *)implementationClassUID;
 
