@@ -28,6 +28,7 @@
 #import "DicomFileDCMTKCategory.h"
 #import "DICOMToNSString.h"
 #import "XMLControllerDCMTKCategory.h"
+#import "Notifications.h"
 #endif
 
 #define WBUFSIZE 512
@@ -213,24 +214,24 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	// Key Images - Image
 	
+	// ***************************************************************************************************
+	
+	// Study Level
+	
 	NSMutableDictionary *rootDict = [NSMutableDictionary dictionary];
 	
 	[rootDict setObject: [self valueForKey:@"studyInstanceUID"] forKey: @"studyInstanceUID"];
 	[rootDict setObject: [self valueForKey:@"name"] forKey: @"patientsName"];
 	[rootDict setObject: [self valueForKey:@"patientID"] forKey: @"patientID"];
+	[rootDict setObject: [self valueForKey:@"comment"] forKey: @"comment"];
+	[rootDict setObject: [self valueForKey:@"stateText"] forKey: @"stateText"];
 	
-	// ***************************************************************************************************
+	NSMutableArray *albumsArray = [NSMutableArray array];
 	
-	// Study Level
+	for( NSString *name in [[self valueForKey: @"albums"] valueForKey: @"name"])
+		[albumsArray addObject: name];
 	
-	NSMutableDictionary *studyDict = [NSMutableDictionary dictionary];
-	
-	[studyDict setObject: [self valueForKey:@"comment"] forKey: @"comment"];
-	[studyDict setObject: [self valueForKey:@"stateText"] forKey: @"stateText"];
-	
-//	[studyDict setObject: albumsArray forKey: @"albums"];
-
-	[rootDict setObject: studyDict forKey: @"studyLevel"];
+	[rootDict setObject: albumsArray forKey: @"albums"];
 	
 	// ***************************************************************************************************
 	
@@ -242,12 +243,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		NSMutableDictionary *seriesDict = [NSMutableDictionary dictionary];
 		
-		[studyDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
-		[studyDict setObject: [series valueForKey:@"stateText"] forKey: @"stateText"];
-		
-	//	[studyDict setObject: [self valueForKey:@"albums"] forKey: @"albums"];
-
-		[rootDict setObject: studyDict forKey: @"studyLevel"];
+		[seriesDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
+		[seriesDict setObject: [series valueForKey:@"stateText"] forKey: @"stateText"];
 		
 		// ***************************************************************************************************
 		
@@ -255,9 +252,13 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		for( DicomSeries *image in [series valueForKey: @"images"])
 		{
-			
+			[seriesDict setObject: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
 		}
+		
+		[seriesArray addObject: seriesDict];
 	}
+	
+	[rootDict setObject: seriesArray forKey: @"series"];
 	
 	return rootDict;
 }
@@ -512,6 +513,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self willChangeValueForKey: @"comment"];
 	[self setPrimitiveValue: c forKey: @"comment"];
 	[self didChangeValueForKey: @"comment"];
+	
+	#ifdef OSIRIX_VIEWER
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixStudyAnnotationsChangedNotification object: self];
+	#endif
 }
 
 - (void) setStateText: (NSNumber*) c
@@ -542,6 +547,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self willChangeValueForKey: @"stateText"];
 	[self setPrimitiveValue: c forKey: @"stateText"];
 	[self didChangeValueForKey: @"stateText"];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixStudyAnnotationsChangedNotification object: self];
 }
 
 - (void) setReportURL: (NSString*) url

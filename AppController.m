@@ -793,6 +793,13 @@ static void dumpLSArchitecturesForX86_64()
 		}
 }  
 
+void exceptionHandler(NSException *exception)
+{
+    NSLog(@"%@", [exception reason]);
+    NSLog(@"%@", [exception userInfo]);
+	[AppController printStackTrace: exception];
+}
+
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 static NSDate *lastWarningDate = nil;
@@ -2516,6 +2523,11 @@ static BOOL initialized = NO;
 //		[AppController printStackTrace: e];
 //		#endif
 //	}
+	
+//	NSSetUncaughtExceptionHandler( exceptionHandler);
+//	
+//	NSException *e = [NSException exceptionWithName: @"hallo" reason: @"prout" userInfo: nil];
+//	[e raise];
 	
 	@try
 	{

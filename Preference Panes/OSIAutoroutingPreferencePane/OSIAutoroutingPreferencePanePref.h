@@ -31,7 +31,7 @@
 	IBOutlet NSPopUpButton				*failurePopup;
 	
 	NSMutableArray						*routesArray;
-	
+	NSArray								*serversArray;
 	int filterType;
 }
 

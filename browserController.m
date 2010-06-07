@@ -1716,6 +1716,48 @@ static NSConditionLock *threadLock = nil;
 #pragma mark-
 #pragma mark Autorouting functions
 
+static int DICOMSRAnnotationsIndex = 1;
+
+- (void) studyAnnotationsChangedNotification: (NSNotification*) note
+{
+	#ifndef OSIRIX_LIGHT
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
+	{
+		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
+		
+		NSString *DICOMSRPath = nil;
+		for( NSDictionary *routingRule in autoroutingRules)
+		{
+			@try
+			{
+				// Is there a autorouting rule that want to receive these modifications?
+				
+				if( [[routingRule objectForKey:@"filterType"] intValue] == 1)
+				{
+					if( DICOMSRPath == nil)
+					{
+						DICOMSRPath = [NSString stringWithFormat: @"/tmp/DICOMSRAnnotations-%d.dcm", DICOMSRAnnotationsIndex++];
+						DicomStudy *study = [note object];
+						NSDictionary *annotationsDict = [study valueForKey: @"annotationsAsDictionary"];
+						
+						SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: nil forImage: [[[[study valueForKey: @"series"] anyObject] valueForKey: @"image"] anyObject]] autorelease];
+						[r writeToFileAtPath: DICOMSRPath];
+					}
+				}
+			}
+			
+			@catch( NSException *e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
+		}
+		
+		if( DICOMSRPath)
+			[[NSFileManager defaultManager] removeItemAtPath: DICOMSRPath error: nil];
+	}
+	#endif
+}
+
 - (void) testAutorouting
 {
 	// Test the routing filters
@@ -1728,7 +1770,8 @@ static NSConditionLock *threadLock = nil;
 		{			
 			@try
 			{
-				[self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
+				if( [[routingRule objectForKey:@"filterType"] intValue] == 1)
+					[self smartAlbumPredicateString: [routingRule objectForKey: @"filter"]];
 			}
 			
 			@catch( NSException *ne)
@@ -1787,194 +1830,197 @@ static NSConditionLock *threadLock = nil;
 	{
 		for( NSDictionary *routingRule in autoroutingRules)
 		{
-			if( [routingRule valueForKey:@"activated"] == nil || [[routingRule valueForKey:@"activated"] boolValue] == YES)
+			if( [[routingRule objectForKey: @"filterType"] intValue] == 1)
 			{
-				NSManagedObjectContext *context = self.managedObjectContext;
-				
-				[context retain];
-				[context lock];
-				
-				NSPredicate	*predicate = nil;
-				NSArray	*result = nil;
-				
-				@try
+				if( [routingRule valueForKey:@"activated"] == nil || [[routingRule valueForKey:@"activated"] boolValue] == YES)
 				{
-					predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
-					if( predicate) result = [newImages filteredArrayUsingPredicate: predicate];
+					NSManagedObjectContext *context = self.managedObjectContext;
 					
-					if( [result count])
+					[context retain];
+					[context lock];
+					
+					NSPredicate	*predicate = nil;
+					NSArray	*result = nil;
+					
+					@try
 					{
-						if( [[routingRule valueForKey:@"previousStudies"] intValue] > 0)
-						{
-							NSMutableDictionary *patients = [NSMutableDictionary dictionary];
-							
-							// for each study
-							for( id im in result)
-							{
-								if( [patients objectForKey: [im valueForKeyPath:@"series.study.patientUID"]] == nil)
-									[patients setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.patientUID"]];
-							}
-							
-							for( NSString *patientUID in [patients allKeys])
-							{
-								NSLog( @"%@", patientUID);
-								
-								id study = [patients objectForKey: patientUID];
-								
-								NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientUID == %@)", patientUID];
-								NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-								dbRequest.entity = [self.managedObjectModel.entitiesByName objectForKey:@"Study"];
-								dbRequest.predicate = predicate;
-								
-								NSError	*error = nil;
-								NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-								
-								if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
-								{
-									NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
-									NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-									[sort release];
-									NSMutableArray* s = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
-									// remove original study from array
-									[s removeObject: study];
-									
-									studiesArray = [NSArray arrayWithArray: s];
-									
-									// did we already send these studies ? If no, send them !
-									
-									if( autoroutingPreviousStudies == nil) autoroutingPreviousStudies = [[NSMutableDictionary dictionary] retain];
-									
-									int previousNumber = [[routingRule valueForKey:@"previousStudies"] intValue];
-									
-									for( id s in studiesArray)
-									{
-										NSString *key = [NSString stringWithFormat:@"%@ -> %@", [s valueForKey: @"studyInstanceUID"], [routingRule objectForKey:@"server"]];
-										NSDate *when = [autoroutingPreviousStudies objectForKey: key];
-										
-										BOOL found = YES;
-										
-										if( [[routingRule valueForKey: @"previousModality"] boolValue])
-										{
-											if( [s valueForKey:@"modality"] && [study valueForKey:@"modality"])
-											{
-												if( [[study valueForKey:@"modality"] rangeOfString: [s valueForKey:@"modality"]].location == NSNotFound) found = NO;
-											}
-											else found = NO;
-										}
-										
-										if( [[routingRule valueForKey: @"previousDescription"] boolValue])
-										{
-											if( [s valueForKey:@"studyName"] && [study valueForKey:@"studyName"])
-											{
-												if( [[study valueForKey:@"studyName"] rangeOfString: [s valueForKey:@"studyName"]].location == NSNotFound) found = NO;
-											}
-											else found = NO;
-										}
-										
-										if( found && previousNumber > 0)
-										{
-											previousNumber--;
-											
-											// If we sent it more than 3 hours ago, re-send it
-											if( when == nil || [when timeIntervalSinceNow] < -60*60*3)
-											{
-												[autoroutingPreviousStudies setObject: [NSDate date] forKey: key];
-												
-												for( NSManagedObject *series in [[s valueForKey:@"series"] allObjects])
-													result = [result arrayByAddingObjectsFromArray: [[series valueForKey:@"images"] allObjects]];
-											}
-										}
-									}
-								}
-							}
-						}
+						predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
+						if( predicate) result = [newImages filteredArrayUsingPredicate: predicate];
 						
-						if( [[routingRule valueForKey:@"cfindTest"] boolValue])
+						if( [result count])
 						{
-							NSMutableDictionary *studies = [NSMutableDictionary dictionary];
-							
-							for( id im in result)
+							if( [[routingRule valueForKey:@"previousStudies"] intValue] > 0)
 							{
-								if( [studies objectForKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]] == nil)
-									[studies setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]];
-							}
-							
-							for( NSString *studyUID in [studies allKeys])
-							{
-								NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+								NSMutableDictionary *patients = [NSMutableDictionary dictionary];
 								
-								NSString		*serverName = [routingRule objectForKey:@"server"];
-								NSDictionary	*server = nil;
-								
-								for ( NSDictionary *aServer in serversArray)
+								// for each study
+								for( id im in result)
 								{
-									if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
-									{
-										server = aServer;
-										break;
-									}
+									if( [patients objectForKey: [im valueForKeyPath:@"series.study.patientUID"]] == nil)
+										[patients setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.patientUID"]];
 								}
 								
-								if( server)
+								for( NSString *patientUID in [patients allKeys])
 								{
-									NSArray *s = [QueryController queryStudyInstanceUID: studyUID server: server showErrors: NO];
+									NSLog( @"%@", patientUID);
 									
-									if( [s count])
+									id study = [patients objectForKey: patientUID];
+									
+									NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientUID == %@)", patientUID];
+									NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+									dbRequest.entity = [self.managedObjectModel.entitiesByName objectForKey:@"Study"];
+									dbRequest.predicate = predicate;
+									
+									NSError	*error = nil;
+									NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+									
+									if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
 									{
-										if( [s count] > 1)
-											NSLog( @"Uh? multiple studies with same StudyInstanceUID on the distal node....");
+										NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
+										NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
+										[sort release];
+										NSMutableArray* s = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
+										// remove original study from array
+										[s removeObject: study];
 										
-										DCMTKStudyQueryNode* studyNode = [s lastObject];
+										studiesArray = [NSArray arrayWithArray: s];
 										
-										if( [[studyNode valueForKey:@"numberImages"] intValue] >= [[[studies objectForKey: studyUID] valueForKey: @"noFiles"] intValue])
+										// did we already send these studies ? If no, send them !
+										
+										if( autoroutingPreviousStudies == nil) autoroutingPreviousStudies = [[NSMutableDictionary dictionary] retain];
+										
+										int previousNumber = [[routingRule valueForKey:@"previousStudies"] intValue];
+										
+										for( id s in studiesArray)
 										{
-											// remove them, there are already there ! *probably*
+											NSString *key = [NSString stringWithFormat:@"%@ -> %@", [s valueForKey: @"studyInstanceUID"], [routingRule objectForKey:@"server"]];
+											NSDate *when = [autoroutingPreviousStudies objectForKey: key];
 											
-											NSLog( @"Already available on the distant node : we will not send it.");
+											BOOL found = YES;
 											
-											NSMutableArray *r = [NSMutableArray arrayWithArray: result];
-											
-											for( int i = 0 ; i < [r count] ; i++)
+											if( [[routingRule valueForKey: @"previousModality"] boolValue])
 											{
-												if( [[[r objectAtIndex: i] valueForKeyPath: @"series.study.studyInstanceUID"] isEqualToString: studyUID])
+												if( [s valueForKey:@"modality"] && [study valueForKey:@"modality"])
 												{
-													[r removeObjectAtIndex: i];
-													i--;
+													if( [[study valueForKey:@"modality"] rangeOfString: [s valueForKey:@"modality"]].location == NSNotFound) found = NO;
+												}
+												else found = NO;
+											}
+											
+											if( [[routingRule valueForKey: @"previousDescription"] boolValue])
+											{
+												if( [s valueForKey:@"studyName"] && [study valueForKey:@"studyName"])
+												{
+													if( [[study valueForKey:@"studyName"] rangeOfString: [s valueForKey:@"studyName"]].location == NSNotFound) found = NO;
+												}
+												else found = NO;
+											}
+											
+											if( found && previousNumber > 0)
+											{
+												previousNumber--;
+												
+												// If we sent it more than 3 hours ago, re-send it
+												if( when == nil || [when timeIntervalSinceNow] < -60*60*3)
+												{
+													[autoroutingPreviousStudies setObject: [NSDate date] forKey: key];
+													
+													for( NSManagedObject *series in [[s valueForKey:@"series"] allObjects])
+														result = [result arrayByAddingObjectsFromArray: [[series valueForKey:@"images"] allObjects]];
 												}
 											}
+										}
+									}
+								}
+							}
+							
+							if( [[routingRule valueForKey:@"cfindTest"] boolValue])
+							{
+								NSMutableDictionary *studies = [NSMutableDictionary dictionary];
+								
+								for( id im in result)
+								{
+									if( [studies objectForKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]] == nil)
+										[studies setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]];
+								}
+								
+								for( NSString *studyUID in [studies allKeys])
+								{
+									NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+									
+									NSString		*serverName = [routingRule objectForKey:@"server"];
+									NSDictionary	*server = nil;
+									
+									for ( NSDictionary *aServer in serversArray)
+									{
+										if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
+										{
+											server = aServer;
+											break;
+										}
+									}
+									
+									if( server)
+									{
+										NSArray *s = [QueryController queryStudyInstanceUID: studyUID server: server showErrors: NO];
+										
+										if( [s count])
+										{
+											if( [s count] > 1)
+												NSLog( @"Uh? multiple studies with same StudyInstanceUID on the distal node....");
 											
-											result = r;
+											DCMTKStudyQueryNode* studyNode = [s lastObject];
+											
+											if( [[studyNode valueForKey:@"numberImages"] intValue] >= [[[studies objectForKey: studyUID] valueForKey: @"noFiles"] intValue])
+											{
+												// remove them, there are already there ! *probably*
+												
+												NSLog( @"Already available on the distant node : we will not send it.");
+												
+												NSMutableArray *r = [NSMutableArray arrayWithArray: result];
+												
+												for( int i = 0 ; i < [r count] ; i++)
+												{
+													if( [[[r objectAtIndex: i] valueForKeyPath: @"series.study.studyInstanceUID"] isEqualToString: studyUID])
+													{
+														[r removeObjectAtIndex: i];
+														i--;
+													}
+												}
+												
+												result = r;
+											}
 										}
 									}
 								}
 							}
 						}
 					}
-				}
-				
-				@catch( NSException *ne)
-				{
-					result = nil;
-					NSLog( @"Error in autorouting filter :");
-					NSLog( @"%@", [ne name]);
-					NSLog( @"%@", [ne reason]);
-					[AppController printStackTrace: ne];
-				}
-				
-				if( [result count])
-				{
-					if( autoroutingQueueArray == nil) autoroutingQueueArray = [[NSMutableArray array] retain];
-					if( autoroutingQueue == nil) autoroutingQueue = [[NSLock alloc] init];
-					if( autoroutingInProgress == nil) autoroutingInProgress = [[NSLock alloc] init];
 					
-					[autoroutingQueue lock];
+					@catch( NSException *ne)
+					{
+						result = nil;
+						NSLog( @"Error in autorouting filter :");
+						NSLog( @"%@", [ne name]);
+						NSLog( @"%@", [ne reason]);
+						[AppController printStackTrace: ne];
+					}
 					
-					[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: result, @"objects", [routingRule objectForKey:@"server"], @"server", routingRule, @"routingRule", [routingRule valueForKey:@"failureRetry"], @"failureRetry", nil]];
-					
-					[autoroutingQueue unlock];
+					if( [result count])
+					{
+						if( autoroutingQueueArray == nil) autoroutingQueueArray = [[NSMutableArray array] retain];
+						if( autoroutingQueue == nil) autoroutingQueue = [[NSLock alloc] init];
+						if( autoroutingInProgress == nil) autoroutingInProgress = [[NSLock alloc] init];
+						
+						[autoroutingQueue lock];
+						
+						[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: result, @"objects", [routingRule objectForKey:@"server"], @"server", routingRule, @"routingRule", [routingRule valueForKey:@"failureRetry"], @"failureRetry", nil]];
+						
+						[autoroutingQueue unlock];
+					}
+					[context unlock];
+					[context release];
 				}
-				[context unlock];
-				[context release];
 			}
 		}
 		
@@ -13229,6 +13275,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:OsirixRTStructNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AlternateButtonPressed:) name:OsirixAlternateButtonPressedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(studyAnnotationsChangedNotification:) name:OsirixStudyAnnotationsChangedNotification object:nil];
 		
 //		[[NSNotificationCenter defaultCenter] addObserver: self
 //												selector: @selector(listChangedTest:)
@@ -13431,20 +13478,24 @@ static NSArray*	openSubSeriesArray = nil;
 		for( NSDictionary *routingRule in autoroutingRules)
 		{
 			NSString *s = [routingRule valueForKey: @"description"];
-			if( [s length] > 0)
-				item = [[[NSMenuItem alloc] initWithTitle: [NSString stringWithFormat: @"%@ - %@", [routingRule valueForKey: @"name"], s] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
-			else
-				item = [[[NSMenuItem alloc] initWithTitle: [routingRule valueForKey: @"name"] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
-			[item setRepresentedObject: routingRule];
 			
-			if( [routingRule valueForKey:@"activated"] == nil || [[routingRule valueForKey:@"activated"] boolValue])
-				[item setEnabled: NO];
-			else
-				[item setEnabled: NO];
-			
-			[submenu addItem: item];
+			if( [[routingRule objectForKey: @"filterType"] intValue] == 1)
+			{
+				if( [s length] > 0)
+					item = [[[NSMenuItem alloc] initWithTitle: [NSString stringWithFormat: @"%@ - %@", [routingRule valueForKey: @"name"], s] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
+				else
+					item = [[[NSMenuItem alloc] initWithTitle: [routingRule valueForKey: @"name"] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
+				
+				[item setRepresentedObject: routingRule];
+				
+				if( [routingRule valueForKey:@"activated"] == nil || [[routingRule valueForKey:@"activated"] boolValue])
+					[item setEnabled: NO];
+				else
+					[item setEnabled: NO];
+				
+				[submenu addItem: item];
+			}
 		}
-	
 	
 		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Apply this Routing Rule to Selection", nil)  action: nil keyEquivalent:@""] autorelease];
 		[item setSubmenu: submenu];

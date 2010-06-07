@@ -47,7 +47,8 @@
 	
 	[autoroutingActivated setState: [defaults boolForKey:@"AUTOROUTINGACTIVATED"]];
 	
-	NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+	[serversArray release];
+	serversArray = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] retain];
 	
 	for( i = 0; i < [routesArray count]; i++)
 	{
@@ -82,6 +83,7 @@
 	NSLog(@"dealloc OSIAutoroutingPreferencePanePref");
 	
 	[routesArray release];
+	[serversArray release];
 	
 	[super dealloc];
 }
@@ -110,8 +112,6 @@ static BOOL newRouteMode = NO;
 {
 	if( [sender tag] == 1)
 	{
-		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-		
 		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", [NSNumber numberWithBool:YES], @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", [NSNumber numberWithInt: [previousPopup selectedTag]], @"previousStudies", [NSNumber numberWithBool: [previousModality state]], @"previousModality", [NSNumber numberWithBool: [previousDescription state]], @"previousDescription", [NSNumber numberWithInt: [failurePopup selectedTag]], @"failureRetry",  [NSNumber numberWithBool: [cfindTest state]], @"cfindTest", [NSNumber numberWithBool: filterType], @"filterType", nil]];
 	}
 	else
@@ -143,8 +143,6 @@ static BOOL newRouteMode = NO;
 
 - (IBAction) selectServer:(id) sender
 {
-	NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-	
 	int i = [sender indexOfSelectedItem];
 	
 	[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[serversArray objectAtIndex: i] objectForKey:@"Address"], [[serversArray objectAtIndex: i] objectForKey:@"Port"]]];
@@ -155,8 +153,6 @@ static BOOL newRouteMode = NO;
 	if([self isUnlocked])
 	{
 		newRouteMode = NO;
-		
-		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
 		
 		if( [serversArray count] == 0)
 		{
@@ -169,11 +165,14 @@ static BOOL newRouteMode = NO;
 			if( selectedRoute)
 			{
 				int i;
-				[serverPopup removeItemAtIndex: 0];
+				[serverPopup removeAllItems];
 				for( i = 0; i < [serversArray count]; i++)
 				{
-					NSString	*name = [NSString stringWithFormat:@"%@ - %@", [[serversArray objectAtIndex: i] objectForKey:@"AETitle"], [[serversArray objectAtIndex: i] objectForKey:@"Description"]];
-				
+					NSString *name = [NSString stringWithFormat:@"%@ - %@", [[serversArray objectAtIndex: i] objectForKey:@"AETitle"], [[serversArray objectAtIndex: i] objectForKey:@"Description"]];
+					
+					while( [serverPopup itemWithTitle: name] != nil)
+						name = [name stringByAppendingString: @" "];
+						
 					[serverPopup addItemWithTitle: name];
 				}
 				
@@ -191,9 +190,7 @@ static BOOL newRouteMode = NO;
 				for( i = 0; i < [serversArray count]; i++)
 				{
 					if ([[[serversArray objectAtIndex: i] objectForKey:@"Description"] isEqualToString: [selectedRoute valueForKey: @"server"]]) 
-					{
 						[serverPopup selectItemAtIndex: i];
-					}
 				}
 				
 				[self selectServer: serverPopup];
@@ -208,8 +205,6 @@ static BOOL newRouteMode = NO;
 {
 	if ([self isUnlocked])
 	{
-		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-		
 		[routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(series.study.modality like[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", @"20", @"failureRetry", @"0", @"filterType", nil]];
 		
 		[routesTable reloadData];
