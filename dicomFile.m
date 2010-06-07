@@ -184,7 +184,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		{
 			if( i == len-1) i = len;
 			
-			NSString	*s = [[NSString alloc] initWithBytes: str+from length:i-from encoding:encoding[ index]];
+			NSString *s = [[NSString alloc] initWithBytes: str+from length:i-from encoding:encoding[ index]];
 			
 			if( s)
 			{
