@@ -831,39 +831,6 @@ static NSConditionLock *threadLock = nil;
 							
 							[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
 						}
-						
-						DICOMROI = YES;
-					}
-					
-					// Check if it is an OsiriX Comments/Status/KeyImages SR
-					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Annotations SR"])
-					{
-//						SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: newFile] autorelease];
-//						
-//						NSDictionary *annotations = [r annotations];
-//						
-//						if( annotations)
-//						{
-//							// Find the corresponding study, if availble
-//							
-//							index = [studiesArrayStudyInstanceUID indexOfObject: [annotations objectForKey: @"studyInstanceUID"]];
-//							
-//							DicomStudy *correspondingStudy = nil;
-//							if( index != NSNotFound)
-//							{
-//								if( [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]] == NSOrderedSame)
-//									correspondingStudy = [studiesArray objectAtIndex: index];
-//							}
-//							
-//							if( correspondingStudy == nil)
-//								NSLog( @"------- OsiriX Annotations SR : study not found -> dont apply the annotations");
-//							else
-//							{
-//								[correspondingStudy applyAnnotationsFromDictionary: annotations];
-//							}
-//						}
-						
-						DICOMROI = YES;
 					}
 				}
 				
@@ -1112,6 +1079,17 @@ static NSConditionLock *threadLock = nil;
 							
 							if( newObject || parseExistingObject)
 							{
+								// Check if it is an OsiriX Comments/Status/KeyImages SR
+								if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Annotations SR"])
+								{
+									// There is only ONE annotations DICOM SR per study
+									for( DicomImage *wu in [[seriesTable valueForKey: @"images"] allObjects])
+									{
+										if( wu != image)
+											[context deleteObject: wu];
+									}
+								}
+								
 								browserController.needDBRefresh = YES;
 								
 								if( DICOMROI == NO)
