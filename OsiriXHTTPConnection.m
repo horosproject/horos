@@ -873,6 +873,8 @@ NSString* notNil( NSString *s)
 			
 			if( [DCMAbstractSyntaxUID isPDF: [series valueForKey: @"seriesSOPClassUID"]])
 				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"  options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			else if( [DCMAbstractSyntaxUID isStructuredReport: [series valueForKey: @"seriesSOPClassUID"]])
+				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"  options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 			else
 				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @""  options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 
@@ -2948,6 +2950,40 @@ NSString* notNil( NSString *s)
 						if( data)
 							err = NO;
 					}
+				}
+				
+				if( [DCMAbstractSyntaxUID isStructuredReport: [[series lastObject] valueForKey: @"seriesSOPClassUID"]])
+				{
+					if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
+						[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
+				
+					NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [[[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"] lastPathComponent]] stringByAppendingPathExtension: @"html"];
+					
+					if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
+					{
+						NSTask *aTask = [[[NSTask alloc] init] autorelease];		
+						[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+						[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
+						[aTask setArguments: [NSArray arrayWithObjects: [[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"], htmlpath, nil]];		
+						[aTask launch];
+						[aTask waitUntilExit];		
+						[aTask interrupt];
+					}
+					
+					if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
+					{
+						NSTask *aTask = [[[NSTask alloc] init] autorelease];
+						[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+						[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
+						[aTask launch];
+						[aTask waitUntilExit];		
+						[aTask interrupt];
+					}
+					
+					data = [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]];
+						
+					if( data)
+						err = NO;
 				}
 			}
 			

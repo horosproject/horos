@@ -16035,7 +16035,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						if( thumbnail == nil)
 						{
-							if (browser) {
+							if (browser)
+							{
 								[browser buildThumbnail: [curImage valueForKey: @"series"]];
 								thumbnail = [[[NSImage alloc] initWithData: [curImage valueForKeyPath: @"series.thumbnail"]] autorelease];
 							} else {
@@ -16045,7 +16046,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 					@catch ( NSException *e)
 					{
-						NSLog( @"Failed to generate the thumbnail : %@", e);
+						NSLog( @"********* Failed to generate the thumbnail : %@", e);
 						[AppController printStackTrace: e];
 					}
 					
@@ -16098,6 +16099,42 @@ static volatile int numberOfThreadsForJPEG = 0;
 				{
 					NSLog( @"******* pdfData exportQuicktime exception: %@", e);
 					[AppController printStackTrace: e];
+				}
+			}
+			else if( [DCMAbstractSyntaxUID isStructuredReport: [curImage valueForKeyPath: @"series.seriesSOPClassUID"]])
+			{
+				if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
+					[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
+			
+				NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [[curImage valueForKey: @"completePath"] lastPathComponent]] stringByAppendingPathExtension: @"html"];
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
+				{
+					NSTask *aTask = [[[NSTask alloc] init] autorelease];		
+					[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
+					[aTask setArguments: [NSArray arrayWithObjects: [curImage valueForKey: @"completePath"], htmlpath, nil]];		
+					[aTask launch];
+					[aTask waitUntilExit];		
+					[aTask interrupt];
+				}
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
+				{
+					NSTask *aTask = [[[NSTask alloc] init] autorelease];
+					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+					[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
+					[aTask launch];
+					[aTask waitUntilExit];		
+					[aTask interrupt];
+				}
+				
+				NSImage *im = [[[NSImage alloc] initWithData: [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]]] autorelease];
+				
+				if( im)
+				{
+					[imagesArray addObject: im];
+					[imagesArrayObjects addObject: curImage];
 				}
 			}
 			else
@@ -16232,7 +16269,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 	
--(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html {
+-(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html
+{
 	[BrowserController exportQuicktime:dicomFiles2Export :path :html :self :NULL];
 }
 
@@ -16245,11 +16283,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
-	{
-		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
-		NSLog(@"Files from contextual menu: %d", [filesToExport count]);
-	}
-	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: YES];
+	else
+		filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: YES];
 	
 	[sPanel setCanChooseDirectories:YES];
 	[sPanel setCanChooseFiles:NO];

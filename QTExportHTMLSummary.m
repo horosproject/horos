@@ -227,6 +227,16 @@
 				[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:[QTExportHTMLSummary nonNilString: fileName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			
 			}
+			else if( [DCMAbstractSyntaxUID isStructuredReport: [[series objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]])
+			{
+				extension = @"pdf";
+				NSString* tempPdfPath = [[[self imagePathForSeriesId:[iId intValue] kind:extension relativeTo:rootPath] mutableCopy] autorelease];
+				if (tempPdfPath)
+					[fileName setString:tempPdfPath];
+				else [fileName appendFormat:@".%@",extension];
+				[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:[QTExportHTMLSummary nonNilString: fileName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
+			
+			}
 			else
 			{
 				NSString* tempXXXPath = [self imagePathForSeriesId:[iId intValue] kind:extension relativeTo:rootPath];
