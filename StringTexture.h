@@ -28,6 +28,7 @@
 {
 	NSMutableArray *ctxArray;	//All contexts where this texture is used
 	NSMutableArray *textArray;	//All texture id
+	NSBitmapImageRep *bitmap;
 	
 	NSSize texSize;
 	

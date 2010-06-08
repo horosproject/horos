@@ -106,6 +106,8 @@
 	[boxColor release];
 	[borderColor release];
 	[string release];
+	[bitmap release];
+	bitmap = nil;
 	
 	[super dealloc];
 }
@@ -159,7 +161,6 @@
 - (GLuint) genTexture; // generates the texture without drawing texture to current context
 {
 	NSImage * image;
-	NSBitmapImageRep * bitmap;
 	
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
 	CGLContextObj cgl_ctx = [currentContext CGLContextObj];
@@ -179,6 +180,7 @@
 	
 	GLuint texName = 0;
 	
+	[bitmap release];
 	bitmap = nil;
 	image = [[NSImage alloc] initWithSize:frameSize];
 	if( [image size].width > 0 && [image size].height > 0)
@@ -218,8 +220,6 @@
 		
 		[ctxArray addObject: currentContext];
 		[textArray addObject: [NSNumber numberWithInt: texName]];
-			
-		[bitmap release];
 	}
 	
 	[image release];
