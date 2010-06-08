@@ -36,6 +36,7 @@
 	
 	[[self window] display];
 	[[self window] flushWindow];
+	[[self window] makeKeyAndOrderFront: sender];
 	
 	displayedTime = [NSDate timeIntervalSinceReferenceDate];
 	aborted = NO;

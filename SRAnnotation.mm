@@ -357,7 +357,7 @@
 	if (self = [super init])
 	{
 		_seriesInstanceUID = nil;
-		_DICOMSRDescription =  @"OsiriX URL Report SR";
+		_DICOMSRDescription =  @"OsiriX Report SR";
 		_DICOMSeriesNumber = @"5003";
 		
 		[_DICOMSRDescription retain];
