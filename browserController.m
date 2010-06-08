@@ -5512,6 +5512,12 @@ static NSConditionLock *threadLock = nil;
 
 - (NSArray*)childrenArray: (NSManagedObject*)item onlyImages: (BOOL)onlyImages
 {
+	if( [item isFault] || [item isDeleted])
+	{
+		NSLog( @"******** isFault");
+		return nil;
+	}
+	
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
 	{
 		[managedObjectContext lock];
@@ -5935,21 +5941,22 @@ static NSConditionLock *threadLock = nil;
 		/**********
 		 post notification of new selected item. Can be used by plugins to update RIS connection
 		 **********/
-		NSManagedObject *studySelected = [[[item entity] name] isEqual:@"Study"] ? item : [item valueForKey:@"study"];
+		NSManagedObject *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
 		
 		NSDictionary *userInfo = nil;
 		if( studySelected)
 		{
-			userInfo = [NSDictionary dictionaryWithObject:studySelected forKey:@"Selected Study"];
+			userInfo = [NSDictionary dictionaryWithObject:studySelected forKey: @"Selected Study"];
 			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixNewStudySelectedNotification object:self userInfo:(NSDictionary *)userInfo];
 		}
 		
-		BOOL	refreshMatrix = YES;
-		long	nowFiles = [[item valueForKey:@"noFiles"] intValue];
+		BOOL refreshMatrix = YES;
+		long nowFiles = [[item valueForKey:@"noFiles"] intValue];
 		
 		if( previousItem == item)
 		{
-			if( nowFiles == previousNoOfFiles) refreshMatrix = NO;
+			if( nowFiles == previousNoOfFiles)
+				refreshMatrix = NO;
 		}
 		else 
 			DatabaseIsEdited = NO;
@@ -6376,13 +6383,13 @@ static NSConditionLock *threadLock = nil;
 		{
 			@try
 			{
-				if( [series isDeleted] == NO && [[series valueForKey:@"images"] count] == 0)
+				if( [series isDeleted] == NO && [series isFault] == NO && [[series valueForKey:@"images"] count] == 0)
 				{
 					[context deleteObject: series];
 				}
-				else if( [series isDeleted] == NO)
+				else if( [series isDeleted] == NO && [series isFault] == NO)
 				{
-					[series setValue: [NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+					[series setValue: [NSNumber numberWithInt:0] forKey:@"numberOfImages"];
 					[series setValue: nil forKey:@"thumbnail"];	
 				}
 			}
@@ -6405,13 +6412,13 @@ static NSConditionLock *threadLock = nil;
 		{
 			@try
 			{
-				NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
-				
-				if( [study isDeleted] == NO && [[study valueForKey:@"imageSeries"] count] == 0)
+				if( [study isDeleted] == NO && [study isFault] == NO && [[study valueForKey:@"imageSeries"] count] == 0)
 				{
+					NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
+					
 					[context deleteObject: study];
 				}
-				else if( [study isDeleted] == NO)
+				else if( [study isDeleted] == NO && [study isFault] == NO)
 				{
 					[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 				}
@@ -6419,6 +6426,9 @@ static NSConditionLock *threadLock = nil;
 			@catch( NSException *e)
 			{	NSLog( @"context deleteObject: study: %@", e); [AppController printStackTrace: e];}
 		}
+		
+		[previousItem release];
+		previousItem = nil;
 		
 		[self saveDatabase];
 	}
