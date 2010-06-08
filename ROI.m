@@ -3166,7 +3166,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	{
 		[name release];
 		
-		if( [a length] > 256)
+		if (type != tText && [a length] > 256)
 			a = [a substringToIndex: 256];
 		
 		if( type == tText)
