@@ -97,13 +97,17 @@
 #define kButtonSpace 15.f
 
 -(NSRect)checkBoxFrameForCellFrame:(NSRect)frame {
-	CGFloat textFieldWidth = std::min((frame.size.width-kButtonSpace)/2, kMaxTextFieldWidth);
+	CGFloat textFieldWidth;
+	if((frame.size.width-kButtonSpace)/2 < kMaxTextFieldWidth) textFieldWidth = (frame.size.width-kButtonSpace)/2;
+	else textFieldWidth = kMaxTextFieldWidth;
 	frame.size.width -= frame.size.height+textFieldWidth;
 	return frame;
 }
 
 -(NSRect)textFieldFrameForCellFrame:(NSRect)frame {
-	CGFloat textFieldWidth = std::min((frame.size.width-kButtonSpace)/2, kMaxTextFieldWidth);
+	CGFloat textFieldWidth;
+	if((frame.size.width-kButtonSpace)/2 < kMaxTextFieldWidth) textFieldWidth = (frame.size.width-kButtonSpace)/2;
+	else textFieldWidth = kMaxTextFieldWidth;
 	frame.origin.x += frame.size.width - textFieldWidth - frame.size.height;
 	frame.size.width = textFieldWidth;
 	return frame;
@@ -243,7 +247,12 @@
 
 -(NSSize)idealSize {
 	NSInteger columnCount = self.columnCount, rowCount = self.rowCount;
-	return NSMakeSize(cellSize.width*columnCount+intercellSpacing.width*std::max(0,columnCount-1), cellSize.height*rowCount+intercellSpacing.height*std::max(0,rowCount-1));
+	float rC = rowCount-1;
+	if( rC < 0) rC = 0;
+	float cC = columnCount-1;
+	if( cC < 0) cC = 0;
+	
+	return NSMakeSize(cellSize.width*columnCount+intercellSpacing.width*cC, cellSize.height*rowCount+intercellSpacing.height*rC);
 }
 
 -(void)resizeSubviewsWithOldSize:(NSSize)oldSize {
