@@ -521,9 +521,7 @@
 		if( _DICOMSRDescription)
 			document->setSeriesDescription( [_DICOMSRDescription UTF8String]);
 		
-		#ifndef OSIRIX_LIGHT
-		document->setManufacturer( [[AppController MACAddress] UTF8String]);
-		#endif
+		document->setManufacturer( [@"OsiriX" UTF8String]);
 		
 		if( _DICOMSeriesNumber)
 			document->setSeriesNumber( [_DICOMSeriesNumber UTF8String]);

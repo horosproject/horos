@@ -1094,15 +1094,6 @@ static NSDate *lastWarningDate = nil;
 	}
 }
 
-+ (NSString*) MACAddress
-{
-	#ifndef OSIRIX_LIGHT
-	return [NSString stringWithFormat: @"MAC:%@", getMacAddress()];
-	#else
-	return @"";
-	#endif
-}
-
 + (void) displayImportantNotice:(id) sender
 {
 	int saved = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastWarningDay"];

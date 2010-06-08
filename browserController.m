@@ -1839,8 +1839,6 @@ static NSConditionLock *threadLock = nil;
 				{
 					if( [[routingRule objectForKey: @"filterType"] intValue] == 0)
 						predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
-					else
-						predicate = [self smartAlbumPredicateString: [NSString stringWithFormat: @"comment == %@", [AppController MACAddress]]];
 					
 					if( predicate) result = [newImages filteredArrayUsingPredicate: predicate];
 					

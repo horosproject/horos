@@ -453,7 +453,7 @@ static NSString* getMacAddress( void)
 	[attrs setObject:scDeviceIDAttr forKey:@"SecondaryCaptureDeviceID"];
 	
 	DCMAttributeTag *scManufacturerTag = [DCMAttributeTag tagWithName:@"Manufacturer"];
-	NSMutableArray *scManufacturerValue = [NSMutableArray arrayWithObject:  [DCMObject MACAddress]];
+	NSMutableArray *scManufacturerValue = [NSMutableArray arrayWithObject:  @"OsiriX"];
 	DCMAttribute *scManufacturerAttr = [DCMAttribute attributeWithAttributeTag:scManufacturerTag  vr: scManufacturerTag.vr  values:scManufacturerValue];
 	[attrs setObject:scManufacturerAttr forKey:@"Manufacturer"];
 	
@@ -512,7 +512,7 @@ static NSString* getMacAddress( void)
 	//secondary capture tags	
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject:abstractSyntax] forName:@"SOPClassUID"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject:abstractSyntax] forName:@"MediaStorageSOPClassUID"];	
-	[scObject setAttributeValues:[NSMutableArray arrayWithObject: [DCMObject MACAddress]]  forName:@"Manufacturer"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"OsiriX"]  forName:@"Manufacturer"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject: [DCMObject MACAddress]]  forName:@"SecondaryCaptureDeviceID"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"OsiriX"]  forName:@"SecondaryCaptureDeviceManufacturer"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"OsiriX"]  forName:@"SecondaryCaptureDeviceManufacturersModelName"];
