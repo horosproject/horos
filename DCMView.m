@@ -9658,7 +9658,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM size:(int) size
 {
-	NSManagedObject *dcmDBImage = nil;
 	NSString *f = nil;
 	float o[ 9], imOrigin[ 3], imSpacing[ 2];
 	long width, height, spp, bpp;
@@ -9770,14 +9769,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		f = [exportDCM writeDCMFile: nil withExportDCM: dcmExportPlugin];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		else dcmDBImage = [exportDCM dcmDBImage];
 		
 		free( data);
 	}
 	
 	[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotCopy];
 	
-	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", dcmDBImage, @"dcmDBImage", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil];
 }
 
 -(NSImage*) nsimage

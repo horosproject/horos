@@ -510,7 +510,7 @@
 			if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 			
 			if( f)
-				[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [exportDCM dcmDBImage], @"dcmDBImage", nil]];
+				[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
 			
 			[exportDCM release];
 			free( data);
@@ -522,12 +522,21 @@
 		
 		if( [producedFiles count])
 		{
+			NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
+												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												toDatabase: [BrowserController currentBrowser]
+												 onlyDICOM: YES 
+										  notifyAddedFiles: YES
+									   parseExistingObject: YES
+												  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
+										 generatedByOsiriX: YES];
+			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
-				[[BrowserController currentBrowser] selectServer: [producedFiles valueForKey: @"dcmDBImage"]];
+				[[BrowserController currentBrowser] selectServer: objects];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
 			{
-				for( NSManagedObject *im in [producedFiles valueForKey: @"dcmDBImage"])
+				for( NSManagedObject *im in objects)
 					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
 			}
 		}

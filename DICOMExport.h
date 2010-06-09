@@ -24,7 +24,6 @@
 {
 		NSString			*dcmSourcePath;
 		DCMObject			*dcmDst;
-		NSManagedObject		*dcmDBImage;
 		
 		// Raw data support
 		unsigned char		*data, *localData;
@@ -87,6 +86,4 @@
 - (void) setOrientation: (float*) o;
 - (void) setPosition: (float*) p;
 - (void) setSlicePosition: (float) p;
-- (NSString*) SOPInstanceUID;
-- (NSManagedObject*) dcmDBImage;
 @end

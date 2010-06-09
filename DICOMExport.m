@@ -110,7 +110,6 @@
 	
 	[dcmSourcePath release];
 	[dcmDst release];
-	[dcmDBImage release];
 	
 	[super dealloc];
 }
@@ -647,26 +646,7 @@
 			if( dstPath == nil)
 			{
 				dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
-				
 				[dcmDst writeToFile:dstPath withTransferSyntax:ts quality:DCMLosslessQuality atomically:YES];
-				
-				NSArray *objects = [BrowserController addFiles: [NSArray arrayWithObject: dstPath]
-													toContext: [[BrowserController currentBrowser] managedObjectContext]
-												   toDatabase: [BrowserController currentBrowser]
-													onlyDICOM: YES 
-											 notifyAddedFiles: YES
-										  parseExistingObject: YES
-													 dbFolder: [[BrowserController currentBrowser] documentsDirectory]
-											generatedByOsiriX: YES];
-				
-				if( [objects count] > 0)
-				{
-					if( [objects count] != 1)
-						NSLog( @"********* [objects count] != 1 writeDCMFile");
-					
-					[dcmDBImage release];
-					dcmDBImage = [[objects lastObject] retain];
-				}
 			}
 			else
 				[dcmDst writeToFile:dstPath withTransferSyntax:ts quality:DCMLosslessQuality atomically:YES];
@@ -687,15 +667,4 @@
 	
 	return nil;
 }
-
-- (NSManagedObject*) dcmDBImage
-{
-	return dcmDBImage;
-}
-
-- (NSString*) SOPInstanceUID
-{
-	return [dcmDst attributeValueWithName: @"SOPInstanceUID"];
-}
-
 @end

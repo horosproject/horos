@@ -1070,7 +1070,6 @@ public:
 	
 	long width, height, spp, bpp;
 	float o[ 9];
-	NSManagedObject *dcmDBImage = nil;
 	NSString *f = nil;
 	int offset = 0;
 	BOOL isSigned = NO;
@@ -1142,12 +1141,11 @@ public:
 		
 		f = [exportDCM writeDCMFile: nil];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		else dcmDBImage = [exportDCM dcmDBImage];
 		
 		free( dataPtr);
 	}
 		
-	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", dcmDBImage, @"dcmDBImage", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil];
 }
 
 #define DATABASEPATH @"/DATABASE.noindex/"
@@ -1301,12 +1299,21 @@ public:
 		
 		if( [producedFiles count])
 		{
+			NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
+												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												toDatabase: [BrowserController currentBrowser]
+												 onlyDICOM: YES 
+										  notifyAddedFiles: YES
+									   parseExistingObject: YES
+												  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
+										 generatedByOsiriX: YES];
+			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
-				[[BrowserController currentBrowser] selectServer: [producedFiles valueForKey: @"dcmDBImage"]];
+				[[BrowserController currentBrowser] selectServer: objects];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
 			{
-				for( DicomImage *im in [producedFiles valueForKey: @"dcmDBImage"])
+				for( DicomImage *im in objects)
 					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
 			}
 		}

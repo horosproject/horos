@@ -2115,7 +2115,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[DCMView setDefaults];
 	
 	if( f)
-		return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [exportDCM dcmDBImage], @"dcmDBImage", nil];
+		return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil];
 	else
 		return nil;
 }
@@ -2360,12 +2360,21 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		
 		if( [producedFiles count])
 		{
+			NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
+												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												toDatabase: [BrowserController currentBrowser]
+												 onlyDICOM: YES 
+										  notifyAddedFiles: YES
+									   parseExistingObject: YES
+												  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
+										 generatedByOsiriX: YES];
+			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
-				[[BrowserController currentBrowser] selectServer: [producedFiles valueForKey: @"dcmDBImage"]];
+				[[BrowserController currentBrowser] selectServer: objects];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
 			{
-				for( NSManagedObject *im in [producedFiles valueForKey: @"dcmDBImage"])
+				for( NSManagedObject *im in objects)
 					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
 			}
 		}

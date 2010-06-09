@@ -16150,7 +16150,6 @@ int i,j,l;
 {
 	NSArray *viewers = [ViewerController getDisplayed2DViewers];
 	long annotCopy,clutBarsCopy;
-	NSManagedObject *dcmDBImage = nil;
 	BOOL modalityAsSource = NO;
 	long width, height, spp, bpp, i, x;
 	float cwl, cww;
@@ -16393,7 +16392,6 @@ int i,j,l;
 		
 		f = [exportDCM writeDCMFile: nil withExportDCM: [imageView dcmExportPlugin]];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		else dcmDBImage = [exportDCM dcmDBImage];
 		
 		free( data);
 	}
@@ -16404,7 +16402,7 @@ int i,j,l;
 		[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotCopy];
 	}
 	
-	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", dcmDBImage, @"dcmDBImage", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil];
 }
 #endif
 
@@ -16541,12 +16539,21 @@ int i,j,l;
 		
 		if( [producedFiles count])
 		{
+			NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
+												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												toDatabase: [BrowserController currentBrowser]
+												 onlyDICOM: YES 
+										  notifyAddedFiles: YES
+									   parseExistingObject: YES
+												  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
+										 generatedByOsiriX: YES];
+			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
-				[[BrowserController currentBrowser] selectServer: [producedFiles valueForKey: @"dcmDBImage"]];
+				[[BrowserController currentBrowser] selectServer: objects];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
 			{
-				for( DicomImage *im in [producedFiles valueForKey: @"dcmDBImage"])
+				for( DicomImage *im in objects)
 					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
 			}
 		}
