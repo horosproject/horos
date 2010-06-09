@@ -208,34 +208,47 @@
 	for (DCMAttributeTag* tag in tags)
 		if ([[self.tagsView checkBoxForTag:tag] state]) {
 			NSTextField* tf = [self.tagsView textFieldForTag:tag];
+			
 			id value = tf.stringValue.length? tf.objectValue : NULL;
+			//if (value)
+			//	if () // TODO: objs
+			
 			[out addObject:[NSArray arrayWithObjects: tag, value, NULL]];
 		}
 	
 	return [[out copy] autorelease];
 }
 
+NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(NSArray* arg1, NSArray* arg2, void* context) {
+	return [[[arg1 objectAtIndex:0] name] caseInsensitiveCompare:[[arg2 objectAtIndex:0] name]];
+}
+
 -(void)setTagsValues:(NSArray*)tagsValues
 {
+	tagsValues = [tagsValues sortedArrayUsingFunction:CompareArraysByNameOfDCMAttributeTagAtIndexZero context:NULL];
+	
 	NSMutableArray* zeroTags = [self.tags mutableCopy];
 	
+	// this removes all previous tags
 	if (tagsValues.count)
 		while (self.tags.count)
 			[self removeTag:[self.tags objectAtIndex:0]];
 	
-	for (NSArray* tagValue in tagsValues)
-	{
+	for (NSArray* tagValue in tagsValues) {
 		DCMAttributeTag* tag = [tagValue objectAtIndex:0];
 		[self addTag:tag];
 		id value = tagValue.count>1? [tagValue objectAtIndex:1] : NULL;
 		NSButton* checkBox = [self.tagsView checkBoxForTag:tag];
 		[checkBox setState: value? NSOnState : NSOffState];
 		NSTextField* textField = [self.tagsView textFieldForTag:tag];
-		@try
-		{
+		
+		if (!value || [value isKindOfClass:[NSString class]])
 			[textField setStringValue: value? value : @""];
+		else @try {
+			[textField setObjectValue: value];
+		} @catch (NSException* e) {
+			NSLog(@"Warning: invalid value type %@ for DICOM tag %@", [value class], tag.name);
 		}
-		@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);}
 		
 		[zeroTags removeObject:tag];
 	}
@@ -250,16 +263,31 @@
 	[zeroTags release];
 }
 
+-(void)saveTemplate:(NSArray*)templ withName:(NSString*)name {
+	NSMutableDictionary* dic = [[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:@"anonymizeTemplate"] mutableCopy];
+	if (!dic) dic = [[NSMutableDictionary alloc] init];
+	
+	[dic setObject:[Anonymization tagsValuesDictionaryFromArray:templ] forKey:name];
+	[[NSUserDefaults standardUserDefaults] setObject:dic forKey:@"anonymizeTemplate"];
+	[dic release];
+	
+	[self refreshTemplatesList];
+	[self observeValueForKeyPath:NULL ofObject:NULL change:NULL context:self.tagsView];
+	
+}
+
 -(void)templatesPopupAction:(NSPopUpButton*)sender {
 	NSString* name = sender.selectedItem.title;
 	NSDictionary* dic = [[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:@"anonymizeTemplate"] objectForKey:name];
 	NSArray* arr = [Anonymization tagsValuesArrayFromDictionary:dic];
 	[self setTagsValues:arr];
+	// backwards compatibility: prefs might contain NSStrings, which might not match with the corresponding objects, so if no match is found we autosave
+	if (![name isEqual:[self nameOfCurrentMatchingTemplate]])
+		[self saveTemplate:[self tagsValues] withName:name];
 }
 
 -(IBAction)saveTemplateAction:(id)sender {
-	NSString* name = [self nameOfCurrentMatchingTemplate];
-	AnonymizationTemplateNamePanelController* panelController = [[AnonymizationTemplateNamePanelController alloc] initWithReplaceValue:name];
+	AnonymizationTemplateNamePanelController* panelController = [[AnonymizationTemplateNamePanelController alloc] initWithReplaceValues:[[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:@"anonymizeTemplate"] allKeys]];
 	[NSApp beginSheet:panelController.window modalForWindow:self.view.window modalDelegate:self didEndSelector:@selector(saveTemplateNamePanelDidEnd:returnCode:contextInfo:) contextInfo:panelController];
 	[panelController.window orderFront:self];
 }
@@ -268,15 +296,7 @@
 	AnonymizationTemplateNamePanelController* panelController = (id)contextInfo;
 	
 	if (returnCode == NSRunStoppedResponse) {
-		NSString* name = panelController.value;
-		NSMutableDictionary* dic = [[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:@"anonymizeTemplate"] mutableCopy];
-		
-		[dic setObject:[Anonymization tagsValuesDictionaryFromArray:[self tagsValues]] forKey:name];
-		[[NSUserDefaults standardUserDefaults] setObject:dic forKey:@"anonymizeTemplate"];
-		[dic release];
-		
-		[self refreshTemplatesList];
-		[self observeValueForKeyPath:NULL ofObject:NULL change:NULL context:self.tagsView];
+		[self saveTemplate:[self tagsValues] withName:panelController.value];
 	}
 	
 	[panel close];

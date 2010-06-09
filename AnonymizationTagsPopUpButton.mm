@@ -122,6 +122,7 @@ NSInteger CompareDCMAttributeTagStringValues(DCMAttributeTag* lsp, DCMAttributeT
 	}
 	
 	[self.cell setDisplayedTitle: selectedTag? (selectedTag.name? [NSString stringWithFormat:@"%@ - %@", selectedTag.name, selectedTag.stringValue] : selectedTag.stringValue) : NSLocalizedString(@"Select a DICOM tag...", NULL) ];
+	[self setNeedsDisplay:YES];
 	
 	[self didChangeValueForKey:@"selectedTag"];
 }

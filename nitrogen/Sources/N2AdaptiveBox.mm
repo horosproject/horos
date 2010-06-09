@@ -48,7 +48,10 @@
 				break;
 			NSRect pf = parentView.frame;
 			pf.size += sizeDelta;
-			pf.origin.y -= sizeDelta.height;
+			
+			if (!parentView.superview.isFlipped)
+				pf.origin.y -= sizeDelta.height;
+			
 	/*		if (animations)
 				[animations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 										   parentView, NSViewAnimationTargetKey,

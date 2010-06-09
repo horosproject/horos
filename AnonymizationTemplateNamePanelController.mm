@@ -20,20 +20,20 @@
 @synthesize nameField;
 @synthesize okButton;
 @synthesize cancelButton;
-@synthesize replaceValue;
+@synthesize replaceValues;
 
 -(void)observeTextDidChangeNotification:(NSNotification*)notif {
-	if ([self.nameField.stringValue isEqual:self.replaceValue])
+	if ([self.replaceValues containsObject:self.nameField.stringValue])
 		self.okButton.title = NSLocalizedString(@"Replace", NULL);
 	else self.okButton.title = NSLocalizedString(@"Save", NULL);
+	[self.okButton setEnabled:self.nameField.stringValue.length > 0 ];
 }
 
--(id)initWithReplaceValue:(NSString*)value {
+-(id)initWithReplaceValues:(NSArray*)values {
 	self = [super initWithWindowNibName:@"AnonymizationTemplateNamePanel"];
 	self.window; // load
 	
-	self.replaceValue = value;
-	if (value) [self.nameField setStringValue:value];
+	self.replaceValues = values;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeTextDidChangeNotification:) name:NSControlTextDidChangeNotification object:self.nameField];
 	[self observeTextDidChangeNotification:NULL];
 	
@@ -42,7 +42,7 @@
 
 -(void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSControlTextDidChangeNotification object:self.nameField];
-	self.replaceValue = NULL;
+	self.replaceValues = NULL;
 	[super dealloc];
 }
 

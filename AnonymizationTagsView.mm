@@ -17,6 +17,7 @@
 #import "DCMAttributeTag.h"
 #import "N2HighlightImageButtonCell.h"
 #import "AnonymizationViewController.h"
+#import "N2TextField.h"
 #import "AnonymizationTagsPopUpButton.h"
 #include <algorithm>
 #include <cmath>
@@ -149,7 +150,7 @@
 	[checkBox setTitle:tag.name];
 	[self addSubview:checkBox];
 	
-	NSTextField* textField = [[NSTextField alloc] initWithSize:NSZeroSize];
+	N2TextField* textField = [[N2TextField alloc] initWithSize:NSZeroSize];
 	[[textField cell] setControlSize:NSMiniControlSize];
 	[textField setFont:font];
 	[textField setBezeled:YES];
@@ -157,37 +158,54 @@
 	[textField setDrawsBackground:YES];
 	[[textField cell] setPlaceholderString:NSLocalizedString(@"Reset", @"Placeholder string for Anonymization Tag cells")];
 	[textField setStringValue:@""];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeTextFieldDidEndEditing:) name:NSControlTextDidEndEditingNotification object:textField];
 	[self addSubview:textField];
 	
-	NSLog( @"VR: %@", tag.vr);
+//	NSLog( @"VR: %@", tag.vr);
 	
-	if ([tag.vr isEqual:@"DA"]) { //Date String
-		NSDateFormatter* f = [[[NSDateFormatter alloc] init] autorelease];
-		[f setFormatterBehavior:NSDateFormatterBehavior10_4];
-		[f setTimeStyle:NSDateFormatterNoStyle];
-		[f setDateStyle:NSDateFormatterShortStyle];
-		[textField.cell setFormatter:f];
-	} else if ([tag.vr isEqual:@"TM"]) { //Time String
-		NSDateFormatter* f = [[[NSDateFormatter alloc] init] autorelease];
-		[f setFormatterBehavior:NSDateFormatterBehavior10_4];
-		[f setTimeStyle:NSDateFormatterShortStyle];
-		[f setDateStyle:NSDateFormatterNoStyle];
-		[textField.cell setFormatter:f];
-	} else if ([tag.vr isEqual:@"DT"]) { //Date Time
-		NSDateFormatter* f = [[[NSDateFormatter alloc] init] autorelease];
-		[f setFormatterBehavior:NSDateFormatterBehavior10_4];
-		[f setTimeStyle:NSDateFormatterShortStyle];
-		[f setDateStyle:NSDateFormatterShortStyle];
-		[textField.cell setFormatter:f];
-	} else if ([tag.vr isEqual:@"DS"]) { //Decimal String representing floating point
-	} else if ([tag.vr isEqual:@"IS"]) { //Integer String
-	} else if ([tag.vr isEqual:@"SL"]) { //signed long
-	} else if ([tag.vr isEqual:@"SS"]) { //signed short
-	} else if ([tag.vr isEqual:@"UL"]) { //unsigned long
-	} else if ([tag.vr isEqual:@"US"]) { //unsigned short
-	} else if ([tag.vr isEqual:@"FL"]) { //float
-	} else if ([tag.vr isEqual:@"FD"]) { //double
+	NSDateFormatter* df = NULL;
+	NSNumberFormatter* nf = NULL;
+	if ([tag.vr isEqual:@"DA"] || [tag.vr isEqual:@"TM"] || [tag.vr isEqual:@"DT"]) {
+		[textField.cell setFormatter: df = [[[NSDateFormatter alloc] init] autorelease]];
+		[df setFormatterBehavior:NSDateFormatterBehavior10_4];
+		if ([tag.vr isEqual:@"DA"]) { //Date String
+			[df setTimeStyle:NSDateFormatterNoStyle];
+			[df setDateStyle:NSDateFormatterShortStyle];
+		} else if ([tag.vr isEqual:@"TM"]) { //Time String
+			[df setTimeStyle:NSDateFormatterShortStyle];
+			[df setDateStyle:NSDateFormatterNoStyle];
+		} else if ([tag.vr isEqual:@"DT"]) { //Date Time
+			[df setTimeStyle:NSDateFormatterShortStyle];
+			[df setDateStyle:NSDateFormatterShortStyle];
+		}
+	} else if ([tag.vr isEqual:@"DS"] || [tag.vr isEqual:@"IS"] || [tag.vr isEqual:@"SL"] || [tag.vr isEqual:@"SS"] || [tag.vr isEqual:@"UL"] || [tag.vr isEqual:@"US"] || [tag.vr isEqual:@"FL"] || [tag.vr isEqual:@"FD"]) {
+		[textField.cell setFormatter: nf = [[[NSNumberFormatter alloc] init] autorelease]];
+		[nf setFormatterBehavior:NSNumberFormatterBehavior10_4];
+		[nf setNumberStyle:NSNumberFormatterDecimalStyle];
+		if ([tag.vr isEqual:@"DS"]) { //Decimal String representing floating point
+			[nf setMaximumSignificantDigits:16];
+		} else if ([tag.vr isEqual:@"IS"]) { //Integer String
+			[nf setMaximumSignificantDigits:12];
+			[nf setAllowsFloats:NO];
+		} else if ([tag.vr isEqual:@"SL"]) { //signed long
+			[nf setAllowsFloats:NO];
+			[nf setMinimum:[NSNumber numberWithInteger:-0x80000000]];
+			[nf setMaximum:[NSNumber numberWithInteger:0x7FFFFFFF]];
+		} else if ([tag.vr isEqual:@"SS"]) { //signed short
+			[nf setAllowsFloats:NO];
+			[nf setMinimum:[NSNumber numberWithInteger:-0x8000]];
+			[nf setMaximum:[NSNumber numberWithInteger:0x7FFF]];
+		} else if ([tag.vr isEqual:@"UL"]) { //unsigned long
+			[textField.cell setFormatter: nf = [[[NSNumberFormatter alloc] init] autorelease]];
+			[nf setAllowsFloats:NO];
+			[nf setMinimum:[NSNumber numberWithInteger:0]];
+			[nf setMaximum:[NSNumber numberWithInteger:0xFFFFFFFF]];
+		} else if ([tag.vr isEqual:@"US"]) { //unsigned short
+			[nf setAllowsFloats:NO];
+			[nf setMinimum:[NSNumber numberWithInteger:0]];
+			[nf setMaximum:[NSNumber numberWithInteger:0xFFFF]];
+		} else if ([tag.vr isEqual:@"FL"]) { //float
+		} else if ([tag.vr isEqual:@"FD"]) { //double
+		}
 	}
 	
 	NSButtonCell* rmButtonCell = [[N2HighlightImageButtonCell alloc] initWithImage:[NSImage imageNamed:@"MinusButton"]];
@@ -199,6 +217,7 @@
 	[self addSubview:rmButton];
 	
 	[textField bind:@"enabled" toObject:checkBox.cell withKeyPath:@"state" options:NULL];
+	[checkBox.cell addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionInitial context:textField];
 	
 	NSArray* group = [NSArray arrayWithObjects: checkBox, textField, rmButton, tag, NULL];
 	[viewGroups addObject:group];
@@ -213,7 +232,10 @@
 	NSArray* group = [self groupForView:tag];
 	if (!group) return;
 	
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSControlTextDidEndEditingNotification object:[group objectAtIndex:1]];
+//	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSControlTextDidEndEditingNotification object:[group objectAtIndex:1]];
+//	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSControlTextDidChangeNotification object:[group objectAtIndex:1]];
+	[[[group objectAtIndex:0] cell] removeObserver:self forKeyPath:@"state"];
+//	[[group objectAtIndex:1] removeObserver:self forKeyPath:@"value"];
 	[[group objectAtIndex:0] removeFromSuperview];
 	[[group objectAtIndex:1] removeFromSuperview];
 	[[group objectAtIndex:2] removeFromSuperview];
@@ -223,18 +245,20 @@
 	[self resizeSubviewsWithOldSize:self.frame.size];
 }
 
--(void)observeTextFieldDidEndEditing:(NSNotification*)notification {
-	NSTextField* textField = notification.object;
-	if (textField.formatter) {
-		id obj = NULL;
-		NSString* err = NULL;
-		[textField.formatter getObjectValue:&obj forString:textField.stringValue errorDescription:&err];
-	//	if (obj)
-	//		[textField setObjectValue:obj];
-	//	else NSLog(@"%@ error: %@", textField.formatter, err);
-		if (err) 
-			NSLog(@"%@ error: %@", textField.formatter, err);
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
+	id c = (id)context;
+
+	if ([keyPath isEqual:@"state"]) {
+		N2TextField* textField = c;
+		NSButtonCell* checkBoxCell = obj;
+		
+		textField.invalidContentBackgroundColor = checkBoxCell.state? [NSColor colorWithCalibratedHue:[[NSColor orangeColor] hueComponent] saturation:0.25 brightness:1 alpha:1] : [NSColor whiteColor];
 	}
+}
+
+-(void)observeTextDidChange:(NSNotification*)notification {
+	NSTextField* textField = notification.object;
+	[self observeValueForKeyPath:NULL ofObject:NULL change:NULL context:textField];
 }
 
 -(NSButton*)checkBoxForTag:(DCMAttributeTag*)tag {

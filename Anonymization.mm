@@ -20,6 +20,7 @@
 #import "NSDictionary+N2.h"
 #import "DCMObject.h"
 #import "DicomImage.h"
+#import "DCMCalendarDate.h"
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "BrowserController.h"
@@ -164,17 +165,20 @@
 		return NO;
 	for (NSArray* a in a1) {
 		DCMAttributeTag* atag = [a objectAtIndex:0];
-		id aval = a.count>1? [a objectAtIndex:1] : @"";
 		BOOL found = NO;
 		for (NSArray* b in a2) {
 			DCMAttributeTag* btag = [b objectAtIndex:0];
-			id bval = b.count>1? [b objectAtIndex:1] : @"";
 			if ([atag isEqual:btag]) {
+				id aval = a.count>1? [a objectAtIndex:1] : @"";
+				id bval = b.count>1? [b objectAtIndex:1] : @"";
+				
 				found = YES;
+				
 				if (!(aval == bval || [aval isEqual:bval]))
 					return NO;
 			}
 		}
+		
 		if (!found)
 			return NO;
 	}
@@ -238,7 +242,29 @@
 
 #pragma mark Anonymization
 
-+(NSDictionary*)anonymizeFiles:(NSArray*)files toPath:(NSString*)dirPath withTags:(NSArray*)tags {
++(NSDictionary*)anonymizeFiles:(NSArray*)files toPath:(NSString*)dirPath withTags:(NSArray*)intags {
+	NSMutableArray* tags = [NSMutableArray arrayWithCapacity:intags.count];
+	for (NSArray* intag in intags) {
+		DCMAttributeTag* tag = [intag objectAtIndex:0];
+		id val = intag.count>1? [intag objectAtIndex:1] : NULL;
+		
+		if ([val isKindOfClass:[NSDate class]]) {
+			if ([tag.vr isEqual:@"DA"]) //Date String
+				val = [DCMCalendarDate dicomDateWithDate:val];
+			else if ([tag.vr isEqual:@"TM"]) //Time String
+				val = [DCMCalendarDate dicomTimeWithDate:val];
+			else if ([tag.vr isEqual:@"DT"]) //Date Time
+				val = [DCMCalendarDate dicomDateTimeWithDicomDate:[DCMCalendarDate dicomDateWithDate:val] dicomTime:[DCMCalendarDate dicomTimeWithDate:val]];
+		} else if ([val isKindOfClass:[NSNumber class]]) {
+			if ([tag.vr isEqual:@"DS"]) //Decimal String representing floating point
+				val = [val stringValue];
+			else if ([tag.vr isEqual:@"IS"]) //Integer String
+				val = [val stringValue];
+		}
+		
+		[tags addObject:[NSArray arrayWithObjects: tag, val, NULL]];
+	}
+	
 	NSMutableDictionary* filenameTranslation = [NSMutableDictionary dictionaryWithCapacity:files.count];
 	
 	NSString* tempDirPath = [dirPath stringByAppendingPathComponent:@".temp"];

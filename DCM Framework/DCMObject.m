@@ -1318,13 +1318,10 @@ PixelRepresentation
 				case DT:	if (!format)
 								format = @"%Y%m%d%H%M%S";
 					newValue = [DCMCalendarDate dateWithYear:[value yearOfCommonEra] month:[value monthOfYear] day:1 hour:12 minute:00 second:00 timeZone:[value timeZone]];
-					if (aValue && [aValue isMemberOfClass:[NSCalendarDate class]])
-					{
-						DCMCalendarDate *date = [DCMCalendarDate dateWithString:[aValue descriptionWithCalendarFormat:format] calendarFormat:format];
-						aValue = date;
-					}
-					else
-						aValue = nil;
+					if (![aValue isKindOfClass:[DCMCalendarDate class]])
+						if (aValue && [aValue isMemberOfClass:[NSCalendarDate class]])
+							aValue = [DCMCalendarDate dateWithString:[aValue descriptionWithCalendarFormat:format] calendarFormat:format];
+						else aValue = nil;
 					break;
 				/*		
 				case SQ:	//Sequence of items

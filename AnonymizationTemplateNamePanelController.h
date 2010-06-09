@@ -20,15 +20,15 @@
 	IBOutlet NSTextField* nameField;
 	IBOutlet NSButton* okButton;
 	IBOutlet NSButton* cancelButton;
-	NSString* replaceValue;
+	NSArray* replaceValues;
 }
 
 @property(readonly) NSTextField* nameField;
 @property(readonly) NSButton* okButton;
 @property(readonly) NSButton* cancelButton;
-@property(retain) NSString* replaceValue;
+@property(retain) NSArray* replaceValues;
 
--(id)initWithReplaceValue:(NSString*)value;
+-(id)initWithReplaceValues:(NSArray*)values;
 
 -(NSString*)value;
 
