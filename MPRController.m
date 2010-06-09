@@ -1851,7 +1851,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				if( quicktimeExportMode)
 				{
 					[curExportView updateViewMPR: NO];
-					[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage removeGraphical: NO]];
+					[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage]];
 				}
 				else
 				{
@@ -1980,7 +1980,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					if( quicktimeExportMode)
 					{
 						[curExportView updateViewMPR];
-						[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage removeGraphical: NO]];
+						[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage]];
 					}
 					else
 					{
@@ -2031,7 +2031,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					if( quicktimeExportMode)
 					{
 						[curExportView updateViewMPR: NO];
-						[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage removeGraphical: NO]];
+						[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage]];
 					}
 					else
 					{

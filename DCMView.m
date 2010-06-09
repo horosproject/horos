@@ -9550,11 +9550,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (NSImage*) exportNSImageCurrentImageWithSize:(int) size
 {
-	return [self exportNSImageCurrentImageWithSize: size removeGraphical: YES];
-}
-
-- (NSImage*) exportNSImageCurrentImageWithSize:(int) size removeGraphical: (BOOL) removeGraphical
-{
 	NSString *sopuid = nil;
 	NSString *f = nil;
 	float o[ 9], imOrigin[ 3], imSpacing[ 2];
