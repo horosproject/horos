@@ -63,10 +63,16 @@
 	if( [savePanel runModalForDirectory:nil file: [[self folderToBurn] lastPathComponent]] == NSFileHandlingPanelOKButton)
 	{
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Writing DMG file...", nil)];
-		
 		[wait showWindow:self];
 		
-		[self createDMG:[[savePanel URL] path] withSource:[self folderToBurn]];
+		@try
+		{
+			[self createDMG:[[savePanel URL] path] withSource:[self folderToBurn]];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"******** exception during writeDMG: %@", e);
+		}
 		
 		[wait close];
 		[wait release];
