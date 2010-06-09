@@ -20,7 +20,8 @@
 #import <DiscRecordingUI/DRSetupPanel.h>
 #import <DiscRecordingUI/DRBurnSetupPanel.h>
 #import <DiscRecordingUI/DRBurnProgressPanel.h>
-#import  "BrowserController.h"
+#import "BrowserController.h"
+#import "DicomStudy.h"
 #import "Anonymization.h"
 #import "AnonymizationPanelController.h"
 #import "AnonymizationViewController.h"
@@ -679,7 +680,16 @@
 
 - (void) produceHtml:(NSString*) burnFolder
 {
-	[[BrowserController currentBrowser] exportQuicktimeInt: originalDbObjects :burnFolder :YES];
+	//We want to create html only for the images, not for PR, and hidden DICOM SR
+	NSMutableArray *images = [NSMutableArray arrayWithCapacity: [originalDbObjects count]];
+	
+	for( id obj in originalDbObjects)
+	{
+		if( [DicomStudy displaySeriesWithSOPClassUID: [obj valueForKeyPath:@"series.seriesSOPClassUID"]])
+			[images addObject: obj];
+	}
+	
+	[[BrowserController currentBrowser] exportQuicktimeInt: images :burnFolder :YES];
 }
 
 - (NSNumber*) getSizeOfDirectory: (NSString*) path

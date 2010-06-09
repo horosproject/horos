@@ -1600,14 +1600,14 @@ static NSConditionLock *threadLock = nil;
 											if( [[itemPath pathExtension] isEqualToString: @"zip"] || [[itemPath pathExtension] isEqualToString: @"osirixzip"])
 												[self askForZIPPassword: itemPath destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
 												
-											else if( [[itemPath lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
-												[commentsAndStatus addObject: itemPath];
+//											else if( [[itemPath lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
+//												[commentsAndStatus addObject: itemPath];
 											
 											else if( [[[itemPath lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
 												[reports addObject: itemPath];
 												
-											else if( [[itemPath lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
-											{ }
+//											else if( [[itemPath lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
+//											{ }
 											
 											else if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
 												[self addDICOMDIR: itemPath : filesArray];
@@ -1640,14 +1640,14 @@ static NSConditionLock *threadLock = nil;
 						if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
 							[self askForZIPPassword: filename destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
 						
-						else if( [[filename lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
-							[commentsAndStatus addObject: filename];
+//						else if( [[filename lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
+//							[commentsAndStatus addObject: filename];
 						
 						else if( [[[filename lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
 							[reports addObject: filename];
 						
-						else if( [[filename lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
-						{ }
+//						else if( [[filename lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
+//						{ }
 						
 						else if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
 							[self addDICOMDIR: filename :filesArray];
@@ -17158,30 +17158,30 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				previousStudy = [curImage valueForKeyPath: @"series.study"];
 				
-				NSDictionary *commentsAndStatus = [self dictionaryWithCommentsAndStatus: previousStudy];
+//				NSDictionary *commentsAndStatus = [self dictionaryWithCommentsAndStatus: previousStudy];
+//				
+//				if( commentsAndStatus)
+//				{
+//					[[NSFileManager defaultManager] removeFileAtPath: [NSString stringWithFormat:@"%@/CommentAndStatus.xml", studyPath]  handler: nil];
+//					[commentsAndStatus writeToFile: [NSString stringWithFormat:@"%@/CommentAndStatus.xml", studyPath] atomically: YES];
+//				}
 				
-				if( commentsAndStatus)
-				{
-					[[NSFileManager defaultManager] removeFileAtPath: [NSString stringWithFormat:@"%@/CommentAndStatus.xml", studyPath]  handler: nil];
-					[commentsAndStatus writeToFile: [NSString stringWithFormat:@"%@/CommentAndStatus.xml", studyPath] atomically: YES];
-				}
-				
-				if( [previousStudy valueForKey:@"reportURL"])
-				{
-					NSString *extension = [[previousStudy valueForKey:@"reportURL"] pathExtension];
-					
-					NSString *filename;
-					
-					if( [extension length]) filename = [NSString stringWithFormat: @"report.%@", extension];
-					else filename = @"report";
-					
-					if( [[NSFileManager defaultManager] fileExistsAtPath: [previousStudy valueForKey:@"reportURL"]])
-					{
-						[[NSFileManager defaultManager] removeFileAtPath: [NSString stringWithFormat:@"%@/%@", studyPath, filename]  handler: nil];
-						[[NSFileManager defaultManager] copyPath: [previousStudy valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/%@", studyPath, filename] handler: nil];
-						[[previousStudy valueForKey:@"studyInstanceUID"] writeToFile: [NSString stringWithFormat:@"%@/reportStudyUID.xml", studyPath] atomically: YES];
-					}
-				}
+//				if( [previousStudy valueForKey:@"reportURL"])
+//				{
+//					NSString *extension = [[previousStudy valueForKey:@"reportURL"] pathExtension];
+//					
+//					NSString *filename;
+//					
+//					if( [extension length]) filename = [NSString stringWithFormat: @"report.%@", extension];
+//					else filename = @"report";
+//					
+//					if( [[NSFileManager defaultManager] fileExistsAtPath: [previousStudy valueForKey:@"reportURL"]])
+//					{
+//						[[NSFileManager defaultManager] removeFileAtPath: [NSString stringWithFormat:@"%@/%@", studyPath, filename]  handler: nil];
+//						[[NSFileManager defaultManager] copyPath: [previousStudy valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/%@", studyPath, filename] handler: nil];
+//						[[previousStudy valueForKey:@"studyInstanceUID"] writeToFile: [NSString stringWithFormat:@"%@/reportStudyUID.xml", studyPath] atomically: YES];
+//					}
+//				}
 			}
 			
 			long imageNo = [[curImage valueForKey:@"instanceNumber"] intValue];

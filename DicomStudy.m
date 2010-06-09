@@ -970,6 +970,13 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ------------------------ Series subselections-----------------------------------ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
++ (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid
+{
+	if( uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid] || [DCMAbstractSyntaxUID isRadiotherapy:uid] || [DCMAbstractSyntaxUID isStructuredReport:uid])
+		return YES;
+	else
+		return NO;
+}
 
 - (NSArray *)imageSeries
 {
@@ -981,8 +988,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		for (id series in [self primitiveValueForKey: @"series"])
 		{
-			NSString *uid = [series valueForKey:@"seriesSOPClassUID"];
-			if( uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid] || [DCMAbstractSyntaxUID isRadiotherapy:uid] || [DCMAbstractSyntaxUID isStructuredReport:uid])
+			if( [DicomStudy displaySeriesWithSOPClassUID: [series valueForKey:@"seriesSOPClassUID"]])
 				[newArray addObject:series];
 		}
 	}
