@@ -110,6 +110,7 @@
 	
 	[dcmSourcePath release];
 	[dcmDst release];
+	[dcmDBImage release];
 	
 	[super dealloc];
 }
@@ -306,23 +307,6 @@
 		NSLog( @"**** DICOM Export: unknown bits per sample: %d", bps);
 		return nil;
 	}
-	
-	if( dstPath == nil)
-	{
-		BOOL			isDir = YES;
-		long			index = 0;
-		NSString		*OUTpath = [[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"/INCOMING.noindex"];
-		
-		if (![[NSFileManager defaultManager] fileExistsAtPath:OUTpath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:OUTpath attributes:nil];
-		
-		do
-		{
-			dstPath = [NSString stringWithFormat:@"%@/%d", OUTpath, index];
-			index++;
-		}
-		while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
-	}
-	
 	
 	if( width != 0 && height != 0 && data != nil)
 	{
@@ -659,7 +643,26 @@
 			if (dcmExport)
 				[dcmExport finalize: dcmDst withSourceObject: dcmObject];
 			
-			[dcmDst writeToFile:dstPath withTransferSyntax:ts quality:DCMLosslessQuality atomically:YES];
+			// Add to the current DB
+			if( dstPath == nil)
+			{
+				dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+				
+				[dcmDst writeToFile:dstPath withTransferSyntax:ts quality:DCMLosslessQuality atomically:YES];
+				
+				NSArray *objects = [[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES produceAddedFiles:YES parseExistingObject:NO];
+				
+				if( [objects count] > 0)
+				{
+					if( [objects count] != 1)
+						NSLog( @"********* [objects count] != 1 writeDCMFile");
+					
+					[dcmDBImage release];
+					dcmDBImage = [[objects lastObject] retain];
+				}
+			}
+			else
+				[dcmDst writeToFile:dstPath withTransferSyntax:ts quality:DCMLosslessQuality atomically:YES];
 			
 			if( squaredata)
 				free( squaredata);
@@ -669,13 +672,18 @@
 		}
 		@catch (NSException *e)
 		{
-			NSLog( @"WriteDCMFile failed : %@", e);
+			NSLog( @"*********** WriteDCMFile failed : %@", e);
 			return nil;
 		}
 	}
 	else return nil;
 	
 	return nil;
+}
+
+- (NSManagedObject*) dcmDBImage
+{
+	return dcmDBImage;
 }
 
 - (NSString*) SOPInstanceUID

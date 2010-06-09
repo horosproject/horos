@@ -2068,49 +2068,14 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		if( quicktimeExportMode == NO)
 		{
-			if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
+			if( [producedFiles count])
 			{
-				[NSThread sleepForTimeInterval: 0.5];
-				[[BrowserController currentBrowser] checkIncomingNow: self];
-				
-				NSMutableArray *imagesForThisStudy = [NSMutableArray array];
-				
-				[[[BrowserController currentBrowser] managedObjectContext] lock];
-				
-				@try 
-				{
-					for( NSManagedObject *s in [[[viewer2D currentStudy] valueForKey: @"series"] allObjects])
-						[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
-				
-				}
-				@catch (NSException * e) 
-				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-				}
-				
-				[[[BrowserController currentBrowser] managedObjectContext] unlock];
-				
-				NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
-				
-				NSMutableArray *objects = [NSMutableArray array];
-				for( NSString *sop in sopArray)
-				{
-					for( DicomImage *im in imagesForThisStudy)
-					{
-						if( [[im sopInstanceUID] isEqualToString: sop])
-							[objects addObject: im];
-					}
-				}
-				
-				if( [objects count] != [producedFiles count])
-					NSLog( @"WARNING !! [objects count] != [producedFiles count]");
-				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
-					[[BrowserController currentBrowser] selectServer: objects];
+					[[BrowserController currentBrowser] selectServer: [producedFiles valueForKey: @"dcmDBImage"]];
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
 				{
-					for( DicomImage *im in objects)
+					for( DicomImage *im in [producedFiles valueForKey: @"dcmDBImage"])
 						[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
 				}
 			}

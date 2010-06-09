@@ -16150,7 +16150,7 @@ int i,j,l;
 {
 	NSArray *viewers = [ViewerController getDisplayed2DViewers];
 	long annotCopy,clutBarsCopy;
-	NSString *sopuid = nil;
+	NSManagedObject *dcmDBImage = nil;
 	BOOL modalityAsSource = NO;
 	long width, height, spp, bpp, i, x;
 	float cwl, cww;
@@ -16393,7 +16393,7 @@ int i,j,l;
 		
 		f = [exportDCM writeDCMFile: nil withExportDCM: [imageView dcmExportPlugin]];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		else sopuid = [exportDCM SOPInstanceUID];
+		else dcmDBImage = [exportDCM dcmDBImage];
 		
 		free( data);
 	}
@@ -16404,7 +16404,7 @@ int i,j,l;
 		[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotCopy];
 	}
 	
-	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", sopuid, @"SOPInstanceUID", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", dcmDBImage, @"dcmDBImage", nil];
 }
 #endif
 
@@ -16539,47 +16539,14 @@ int i,j,l;
 		for( i = 0; i < [viewers count]; i++)
 			[[[viewers objectAtIndex: i] imageView] setNeedsDisplay: YES];
 		
-		[NSThread sleepForTimeInterval: 0.5];
-		[[BrowserController currentBrowser] checkIncomingNow: self];
-		
-		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
+		if( [producedFiles count])
 		{
-			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
-			
-			[[[BrowserController currentBrowser] managedObjectContext] lock];
-			
-			@try
-			{
-				for( NSManagedObject *s in [[[self currentStudy] valueForKey: @"series"] allObjects])
-					[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
-			}
-			@catch ( NSException *e)
-			{
-				NSLog( @"***** exception endExportDICOMFile: %@", e);
-			}
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
-			
-			NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
-			
-			NSMutableArray *objects = [NSMutableArray array];
-			for( NSString *sop in sopArray)
-			{
-				for( DicomImage *im in imagesForThisStudy)
-				{
-					if( [[im sopInstanceUID] isEqualToString: sop])
-						[objects addObject: im];
-				}
-			}
-			
-			if( [objects count] != [producedFiles count])
-				NSLog( @"WARNING !! [objects count] != [producedFiles count]");
-			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
-				[[BrowserController currentBrowser] selectServer: objects];
+				[[BrowserController currentBrowser] selectServer: [producedFiles valueForKey: @"dcmDBImage"]];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
 			{
-				for( DicomImage *im in objects)
+				for( DicomImage *im in [producedFiles valueForKey: @"dcmDBImage"])
 					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
 			}
 		}

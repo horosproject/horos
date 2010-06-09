@@ -2115,7 +2115,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[DCMView setDefaults];
 	
 	if( f)
-		return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [exportDCM SOPInstanceUID], @"SOPInstanceUID", nil];
+		return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", [exportDCM dcmDBImage], @"dcmDBImage", nil];
 	else
 		return nil;
 }
@@ -2358,49 +2358,14 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 			[splash release];
 		}
 		
-		[NSThread sleepForTimeInterval: 0.5];
-		[[BrowserController currentBrowser] checkIncomingNow: self];
-		
-		if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"] || [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) && [producedFiles count])
+		if( [producedFiles count])
 		{
-			NSMutableArray *imagesForThisStudy = [NSMutableArray array];
-			
-			[[[BrowserController currentBrowser] managedObjectContext] lock];
-			
-			@try 
-			{
-				for( NSManagedObject *s in [[[viewer currentStudy] valueForKey: @"series"] allObjects])
-				[imagesForThisStudy addObjectsFromArray: [[s valueForKey: @"images"] allObjects]];
-			
-			}
-			@catch (NSException * e) 
-			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			}
-			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
-			
-			NSArray *sopArray = [producedFiles valueForKey: @"SOPInstanceUID"];
-			
-			NSMutableArray *objects = [NSMutableArray array];
-			for( NSString *sop in sopArray)
-			{
-				for( NSManagedObject *im in imagesForThisStudy)
-				{
-					if( [[im valueForKey: @"sopInstanceUID"] isEqualToString: sop])
-						[objects addObject: im];
-				}
-			}
-			
-			if( [objects count] != [producedFiles count])
-				NSLog( @"WARNING !! [objects count] != [producedFiles count]");
-			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
-				[[BrowserController currentBrowser] selectServer: objects];
+				[[BrowserController currentBrowser] selectServer: [producedFiles valueForKey: @"dcmDBImage"]];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
 			{
-				for( NSManagedObject *im in objects)
+				for( NSManagedObject *im in [producedFiles valueForKey: @"dcmDBImage"])
 					[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
 			}
 		}
