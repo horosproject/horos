@@ -1851,7 +1851,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				if( quicktimeExportMode)
 				{
 					[curExportView updateViewMPR: NO];
-					[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage]];
+					[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage removeGraphical: NO]];
 				}
 				else
 				{
@@ -1960,20 +1960,27 @@ static float deg2rad = 3.14159265358979/180.0;
 						}
 					}
 					
+					[[self window] makeFirstResponder: curExportView];
+					
 					if( curExportView != mprView1) mprView1.LOD = 40;
 					if( curExportView != mprView2) mprView2.LOD = 40;
 					if( curExportView != mprView3) mprView3.LOD = 40;
 					
 					if( self.dcmQuality == 1)
 						curExportView.LOD = 1;
-						
-					if( self.dcmFormat) 
+					
+					if( self.dcmFormat)
+					{
+						[hiddenVRView setLOD: curExportView.LOD];
 						[curExportView.vrView setViewSizeToMatrix3DExport];
+					}
+					
+					[curExportView restoreCameraAndCheckForFrame: NO];
 					
 					if( quicktimeExportMode)
 					{
-						[curExportView updateViewMPR: NO];
-						[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage]];
+						[curExportView updateViewMPR];
+						[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage removeGraphical: NO]];
 					}
 					else
 					{
@@ -2024,7 +2031,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					if( quicktimeExportMode)
 					{
 						[curExportView updateViewMPR: NO];
-						[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage]];
+						[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage removeGraphical: NO]];
 					}
 					else
 					{

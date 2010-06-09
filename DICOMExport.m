@@ -650,7 +650,14 @@
 				
 				[dcmDst writeToFile:dstPath withTransferSyntax:ts quality:DCMLosslessQuality atomically:YES];
 				
-				NSArray *objects = [[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: dstPath] onlyDICOM:YES produceAddedFiles:YES parseExistingObject:NO];
+				NSArray *objects = [BrowserController addFiles: [NSArray arrayWithObject: dstPath]
+													toContext: [[BrowserController currentBrowser] managedObjectContext]
+												   toDatabase: [BrowserController currentBrowser]
+													onlyDICOM: YES 
+											 notifyAddedFiles: YES
+										  parseExistingObject: YES
+													 dbFolder: [[BrowserController currentBrowser] documentsDirectory]
+											generatedByOsiriX: YES];
 				
 				if( [objects count] > 0)
 				{

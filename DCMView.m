@@ -9550,13 +9550,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (NSImage*) exportNSImageCurrentImageWithSize:(int) size
 {
+	return [self exportNSImageCurrentImageWithSize: size removeGraphical: YES];
+}
+
+- (NSImage*) exportNSImageCurrentImageWithSize:(int) size removeGraphical: (BOOL) removeGraphical
+{
 	NSString *sopuid = nil;
 	NSString *f = nil;
 	float o[ 9], imOrigin[ 3], imSpacing[ 2];
 	long width, height, spp, bpp;
 	NSRect savedFrame = [self frame];
 	
-	unsigned char *data = [self getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
+	unsigned char *data = [self getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: removeGraphical squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
 	
 	if( data)
 	{

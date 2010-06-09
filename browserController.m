@@ -562,7 +562,7 @@ static NSConditionLock *threadLock = nil;
 #pragma mark-
 +(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder
 {
-	return [BrowserController addFiles: newFilesArray toContext:  context toDatabase:  browserController onlyDICOM:  onlyDICOM  notifyAddedFiles:  notifyAddedFiles parseExistingObject:  parseExistingObject dbFolder:  dbFolder generatedByOsiriX:  NO];
+	return [BrowserController addFiles: newFilesArray toContext: context toDatabase: browserController onlyDICOM: onlyDICOM  notifyAddedFiles: notifyAddedFiles parseExistingObject: parseExistingObject dbFolder:  dbFolder generatedByOsiriX:  NO];
 }
 
 +(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX
@@ -1431,11 +1431,13 @@ static NSConditionLock *threadLock = nil;
 }
 #pragma mark-
 
-+(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder {
++(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder
+{
 	return [self addFiles:newFilesArray toContext:context toDatabase:NULL onlyDICOM:onlyDICOM  notifyAddedFiles:notifyAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
 }
 
-- (NSArray*) subAddFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder {
+- (NSArray*) subAddFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
+{
 	return [BrowserController addFiles:newFilesArray toContext:context toDatabase:self onlyDICOM:onlyDICOM  notifyAddedFiles:produceAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
 }
 
