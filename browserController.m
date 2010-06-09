@@ -1305,6 +1305,9 @@ static NSConditionLock *threadLock = nil;
 				[dockLabel retain];
 				[growlString retain];
 				
+				if( generatedByOsiriX)
+					
+				
 				[browserController executeAutorouting: addedImagesArray rules: nil manually: NO];
 				
 				[p release];
@@ -1812,10 +1815,16 @@ static NSConditionLock *threadLock = nil;
 
 - (void) executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually
 {
+	[self executeAutorouting: newImages rules: autoroutingRules manually: manually generatedByOsiriX: NO];
+}
+
+- (void) executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually generatedByOsiriX: (BOOL) generatedByOsiriX
+{
 	#ifndef OSIRIX_LIGHT
 	WaitRendering *splash = nil;
 	
-	if( autoroutingRules == nil) autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
+	if( autoroutingRules == nil)
+		autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
 	
 	if( manually)
 	{	
@@ -1839,8 +1848,19 @@ static NSConditionLock *threadLock = nil;
 				
 				@try
 				{
-					if( [[routingRule objectForKey: @"filterType"] intValue] == 0)
-						predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
+					if( generatedByOsiriX)
+					{
+						if( [[routingRule objectForKey: @"filterType"] intValue] == 1)
+							predicate = [NSPredicate predicateWithValue: YES];
+					}
+					else
+					{
+						if( [[routingRule objectForKey: @"filterType"] intValue] == 0)
+							predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
+						else 
+							predicate = [NSPredicate predicateWithValue: NO];
+
+					}
 					
 					if( predicate) result = [newImages filteredArrayUsingPredicate: predicate];
 					
