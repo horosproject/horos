@@ -1305,10 +1305,7 @@ static NSConditionLock *threadLock = nil;
 				[dockLabel retain];
 				[growlString retain];
 				
-				if( generatedByOsiriX)
-					
-				
-				[browserController executeAutorouting: addedImagesArray rules: nil manually: NO];
+				[browserController executeAutorouting: addedImagesArray rules: nil manually: NO generatedByOsiriX: generatedByOsiriX];
 				
 				[p release];
 			}
