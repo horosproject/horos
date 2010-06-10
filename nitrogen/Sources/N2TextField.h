@@ -16,9 +16,11 @@
 
 
 @interface N2TextField : NSTextField {
-	NSColor* invalidContentBackgroundColor;
+//	NSColor* invalidContentBackgroundColor;
+	BOOL formatIsOk;
 }
 
-@property(retain) NSColor* invalidContentBackgroundColor;
+//@property(retain) NSColor* invalidContentBackgroundColor;
+@property(readonly) BOOL formatIsOk;
 
 @end

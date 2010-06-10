@@ -15,7 +15,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class DCMAttributeTag, AnonymizationViewController, AnonymizationTagsPopUpButton;
+@class DCMAttributeTag, AnonymizationViewController, AnonymizationTagsPopUpButton, N2TextField;
 
 @interface AnonymizationTagsView : NSView {
 	NSMutableArray* viewGroups;
@@ -29,7 +29,7 @@
 -(void)removeTag:(DCMAttributeTag*)tag;
 -(NSSize)idealSize;
 
--(NSButton*)checkBoxForTag:(DCMAttributeTag*)tag;
--(NSTextField*)textFieldForTag:(DCMAttributeTag*)tag;
+-(NSButton*)checkBoxForObject:(id)object;
+-(N2TextField*)textFieldForObject:(id)object;
 
 @end

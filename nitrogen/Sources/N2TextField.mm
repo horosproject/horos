@@ -15,54 +15,78 @@
 #import "N2TextField.h"
 
 
+@interface N2TextField ()
+
+@property(readwrite) BOOL formatIsOk;
+
+@end
+
+
 @implementation N2TextField
 
-@synthesize invalidContentBackgroundColor;
+//@synthesize invalidContentBackgroundColor;
+@synthesize formatIsOk;
 
 -(id)initWithFrame:(NSRect)frame {
 	self = [super initWithFrame:frame];
-	
+	formatIsOk = YES;
 	return self;
 }
 
--(void)dealloc {
+/*-(void)dealloc {
 	self.invalidContentBackgroundColor = NULL;
 	[super dealloc];
-}
+}*/
 
--(void)refreshBackground {
-	if (invalidContentBackgroundColor && self.formatter) {
+-(void)updateFormatIsOk {
+	if (self.formatter) {
 		id obj = NULL;
-		BOOL ok = [self.formatter getObjectValue:&obj forString:self.stringValue errorDescription:NULL];
-		[self setBackgroundColor: ok? [NSColor whiteColor] : invalidContentBackgroundColor ];
-		[self setNeedsDisplay:YES];
+		
+		self.formatIsOk = [self.formatter getObjectValue:&obj forString:self.stringValue errorDescription:NULL];
+		
+	/*	if (invalidContentBackgroundColor) {
+			[self setBackgroundColor: self.formatIsOk? [NSColor whiteColor] : invalidContentBackgroundColor ];
+			[self setNeedsDisplay:YES];
+		}*/
 	}
 }
 
--(void)setInvalidContentBackgroundColor:(NSColor*)color {
+-(void)setFormatter:(NSFormatter*)newFormatter {
+	[super setFormatter:newFormatter];
+	[self updateFormatIsOk];
+}
+
+-(void)setFormatIsOk:(BOOL)flag {
+	if (formatIsOk == flag)
+		return;
+	formatIsOk = flag;
+	[self didChangeValueForKey:@"formatIsOk"];
+}
+
+/*-(void)setInvalidContentBackgroundColor:(NSColor*)color {
 	[invalidContentBackgroundColor release];
 	invalidContentBackgroundColor = [color retain];
-	[self refreshBackground];
-}
+	[self checkFormat];
+}*/
 
 -(void)keyDown:(NSEvent*)event {
 	[super keyDown:event];
-	[self refreshBackground];
+	[self updateFormatIsOk];
 }
 
 -(void)textDidChange:(NSNotification*)notif {
 	[super textDidChange:notif];
-	[self refreshBackground];
+	[self updateFormatIsOk];
 }
 
 -(void)setObjectValue:(id)value {
 	[super setObjectValue:value];
-	[self refreshBackground];
+	[self updateFormatIsOk];
 }
 
 -(void)setStringValue:(id)value {
 	[super setStringValue:value];
-	[self refreshBackground];
+	[self updateFormatIsOk];
 }
 
 @end

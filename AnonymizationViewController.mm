@@ -19,6 +19,7 @@
 #import "N2Operators.h"
 #import "Anonymization.h"
 #import "N2AdaptiveBox.h"
+#import "N2TextField.h"
 #import "N2CustomTitledPopUpButtonCell.h"
 #include <cmath>
 #include <algorithm>
@@ -26,6 +27,7 @@
 @interface AnonymizationViewController ()
 
 @property(retain,readwrite) NSMutableArray* tags;
+@property(readwrite) BOOL formatsAreOk;
 
 @end
 
@@ -36,6 +38,7 @@
 @synthesize templatesPopup;
 @synthesize tagsView;
 @synthesize tags;
+@synthesize formatsAreOk;
 
 +(NSArray*)basicTags {
 	return [NSArray arrayWithObjects:
@@ -132,9 +135,10 @@
 	[self.tags addObject:tag];
 	[self.tagsView addTag:tag];
 	
-	[[[self.tagsView checkBoxForTag:tag] cell] addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionInitial context:self.tagsView];
-	[[self.tagsView textFieldForTag:tag] addObserver:self forKeyPath:@"value" options:NSKeyValueObservingOptionInitial context:self.tagsView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeTextDidChangeNotification:) name:NSControlTextDidChangeNotification object:[self.tagsView textFieldForTag:tag]];
+	[[[self.tagsView checkBoxForObject:tag] cell] addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionInitial context:self.tagsView];
+	[[self.tagsView textFieldForObject:tag] addObserver:self forKeyPath:@"value" options:NSKeyValueObservingOptionInitial context:self.tagsView];
+	[[self.tagsView textFieldForObject:tag] addObserver:self forKeyPath:@"formatIsOk" options:NSKeyValueObservingOptionInitial context:NULL];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeTextDidChangeNotification:) name:NSControlTextDidChangeNotification object:[self.tagsView textFieldForObject:tag]];
 	
 	[self adaptBoxToAnnotations];
 }
@@ -143,9 +147,10 @@
 	if (![self.tags containsObject:tag])
 		return;
 
-	[[[self.tagsView checkBoxForTag:tag] cell] removeObserver:self forKeyPath:@"state"];
-	[[self.tagsView textFieldForTag:tag] removeObserver:self forKeyPath:@"value"];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSControlTextDidChangeNotification object:[self.tagsView textFieldForTag:tag]];
+	[[[self.tagsView checkBoxForObject:tag] cell] removeObserver:self forKeyPath:@"state"];
+	[[self.tagsView textFieldForObject:tag] removeObserver:self forKeyPath:@"value"];
+	[[self.tagsView textFieldForObject:tag] removeObserver:self forKeyPath:@"formatIsOk"];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSControlTextDidChangeNotification object:[self.tagsView textFieldForObject:tag]];
 
 	[self.tags removeObject:tag];
 	[self.tagsView removeTag:tag];
@@ -167,6 +172,23 @@
 	return matchName;
 }
 
+-(void)updateFormatsAreOk {
+	BOOL ok = YES;
+	for (DCMAttributeTag* tag in tags) {
+		N2TextField* textField = [tagsView textFieldForObject:tag];
+		if (!textField.formatIsOk)
+			ok = NO;
+	}
+	[self setFormatsAreOk:ok];
+}
+
+-(void)setFormatsAreOk:(BOOL)flag {
+	if (flag == formatsAreOk)
+		return;
+	formatsAreOk = flag;
+	[self didChangeValueForKey:@"formatsAreOk"];
+}
+
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
 //	NSLog(@"observeValueForKeyPath:%@ ofObject....", keyPath);
 	if (context == self.tagsView) {
@@ -180,6 +202,9 @@
 		[templatesPopup setNeedsDisplay:YES];
 		
 		[deleteTemplateButton setEnabled: matchName != NULL];
+	}
+	else if ([keyPath isEqual:@"formatIsOk"]) {
+		[self updateFormatsAreOk];
 	}
 }
 
@@ -206,8 +231,8 @@
 	NSMutableArray* out = [NSMutableArray array];
 	
 	for (DCMAttributeTag* tag in tags)
-		if ([[self.tagsView checkBoxForTag:tag] state]) {
-			NSTextField* tf = [self.tagsView textFieldForTag:tag];
+		if ([[self.tagsView checkBoxForObject:tag] state]) {
+			NSTextField* tf = [self.tagsView textFieldForObject:tag];
 			
 			id value = tf.stringValue.length? tf.objectValue : NULL;
 			//if (value)
@@ -238,9 +263,9 @@ NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(NSArray* arg1, NSArray
 		DCMAttributeTag* tag = [tagValue objectAtIndex:0];
 		[self addTag:tag];
 		id value = tagValue.count>1? [tagValue objectAtIndex:1] : NULL;
-		NSButton* checkBox = [self.tagsView checkBoxForTag:tag];
+		NSButton* checkBox = [self.tagsView checkBoxForObject:tag];
 		[checkBox setState: value? NSOnState : NSOffState];
-		NSTextField* textField = [self.tagsView textFieldForTag:tag];
+		NSTextField* textField = [self.tagsView textFieldForObject:tag];
 		
 		if (!value || [value isKindOfClass:[NSString class]])
 			[textField setStringValue: value? value : @""];
@@ -254,8 +279,8 @@ NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(NSArray* arg1, NSArray
 	}
 	
 	for (DCMAttributeTag* tag in zeroTags) {
-		[[self.tagsView checkBoxForTag:tag] setState:NSOffState];
-		[[self.tagsView textFieldForTag:tag] setStringValue:@""];
+		[[self.tagsView checkBoxForObject:tag] setState:NSOffState];
+		[[self.tagsView textFieldForObject:tag] setStringValue:@""];
 	}
 	
 	[self observeValueForKeyPath:NULL ofObject:NULL change:NULL context:self.tagsView];

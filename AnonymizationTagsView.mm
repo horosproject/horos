@@ -46,23 +46,23 @@
 	return self;
 }
 
--(NSArray*)groupForView:(id)view {
+-(NSArray*)groupForObject:(id)object {
 	for (NSArray* group in viewGroups)
 		for (id obj in group)
-			if (view == obj || [obj isEqual:view])
+			if (object == obj || [obj isEqual:object])
 				return group;
 	return NULL;
 }
 
 -(void)addButtonAction:(NSButton*)sender {
 	[anonymizationViewController addTag:dcmTagsPopUpButton.selectedTag];
-	[[anonymizationViewController.tagsView checkBoxForTag:dcmTagsPopUpButton.selectedTag] setState:NSOnState];
-	[self.window makeFirstResponder:[anonymizationViewController.tagsView textFieldForTag:dcmTagsPopUpButton.selectedTag]];
+	[[anonymizationViewController.tagsView checkBoxForObject:dcmTagsPopUpButton.selectedTag] setState:NSOnState];
+	[self.window makeFirstResponder:[anonymizationViewController.tagsView textFieldForObject:dcmTagsPopUpButton.selectedTag]];
 	[dcmTagsPopUpButton setSelectedTag:NULL];
 }
 
 -(void)rmButtonAction:(NSButton*)sender {
-	[anonymizationViewController removeTag:[[self groupForView:sender] objectAtIndex:3]];
+	[anonymizationViewController removeTag:[[self groupForObject:sender] objectAtIndex:3]];
 }
 
 -(void)awakeFromNib {
@@ -218,6 +218,7 @@
 	
 	[textField bind:@"enabled" toObject:checkBox.cell withKeyPath:@"state" options:NULL];
 	[checkBox.cell addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionInitial context:textField];
+	[textField addObserver:self forKeyPath:@"formatIsOk" options:NSKeyValueObservingOptionInitial context:textField];
 	
 	NSArray* group = [NSArray arrayWithObjects: checkBox, textField, rmButton, tag, NULL];
 	[viewGroups addObject:group];
@@ -229,12 +230,13 @@
 }
 
 -(void)removeTag:(DCMAttributeTag*)tag {
-	NSArray* group = [self groupForView:tag];
+	NSArray* group = [self groupForObject:tag];
 	if (!group) return;
 	
 //	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSControlTextDidEndEditingNotification object:[group objectAtIndex:1]];
 //	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSControlTextDidChangeNotification object:[group objectAtIndex:1]];
 	[[[group objectAtIndex:0] cell] removeObserver:self forKeyPath:@"state"];
+	[[group objectAtIndex:1] removeObserver:self forKeyPath:@"formatIsOk"];
 //	[[group objectAtIndex:1] removeObserver:self forKeyPath:@"value"];
 	[[group objectAtIndex:0] removeFromSuperview];
 	[[group objectAtIndex:1] removeFromSuperview];
@@ -246,13 +248,11 @@
 }
 
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
-	id c = (id)context;
-
-	if ([keyPath isEqual:@"state"]) {
-		N2TextField* textField = c;
-		NSButtonCell* checkBoxCell = obj;
-		
-		textField.invalidContentBackgroundColor = checkBoxCell.state? [NSColor colorWithCalibratedHue:[[NSColor orangeColor] hueComponent] saturation:0.25 brightness:1 alpha:1] : [NSColor whiteColor];
+	N2TextField* textField = (id)context;
+	
+	if ([textField isKindOfClass:[NSTextField class]]) {
+		NSButton* checkBox = [self checkBoxForObject:textField];
+		[textField setBackgroundColor: (checkBox.state&&textField.stringValue.length&&!textField.formatIsOk)? [NSColor colorWithCalibratedHue:[[NSColor orangeColor] hueComponent] saturation:0.25 brightness:1 alpha:1] : [NSColor whiteColor] ];
 	}
 }
 
@@ -261,12 +261,12 @@
 	[self observeValueForKeyPath:NULL ofObject:NULL change:NULL context:textField];
 }
 
--(NSButton*)checkBoxForTag:(DCMAttributeTag*)tag {
-	return [[self groupForView:tag] objectAtIndex:0];
+-(NSButton*)checkBoxForObject:(id)object {
+	return [[self groupForObject:object] objectAtIndex:0];
 }
 
--(NSTextField*)textFieldForTag:(DCMAttributeTag*)tag {
-	return [[self groupForView:tag] objectAtIndex:1];
+-(N2TextField*)textFieldForObject:(id)object {
+	return [[self groupForObject:object] objectAtIndex:1];
 }
 
 -(NSSize)idealSize {
