@@ -240,11 +240,12 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 	return DefaultFolderSizeForDB;
 }
 
-+(NSArray*)albumsInContext:(NSManagedObjectContext*)context
++ (NSArray*) albumsInContext:(NSManagedObjectContext*)context
 {
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Album"]];
 	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	
 	return [context executeFetchRequest:dbRequest error:NULL];
 }
 
@@ -2357,12 +2358,49 @@ static NSConditionLock *threadLock = nil;
 	
     NSURL *url = [NSURL fileURLWithPath: currentDatabasePath];
 	
+	BOOL newDB = NO;
+	if( [[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath] == NO)
+		newDB = YES;
+	
 	if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
 	{
 		NSLog(@"********** managedObjectContextLoadIfNecessary FAILED: %@", error);
 		localizedDescription = [error localizedDescription];
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
     }
+	else
+	{
+		if( newDB)
+		{
+			NSLog( @"New SQL DB file created: %@", currentDatabasePath);
+			
+			// Add default albums
+			DicomAlbum *album = nil;
+			
+			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+			album.name = NSLocalizedString( @"Today MR", nil);
+			album.predicateString = @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($TODAY, 'NSDate'))";
+			album.smartAlbum = [NSNumber numberWithBool: YES];
+			
+			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+			album.name = NSLocalizedString( @"Today CT", nil);
+			album.predicateString = @"(ANY series.modality CONTAINS[cd] 'CT') AND (date >= CAST($TODAY, 'NSDate'))";
+			album.smartAlbum = [NSNumber numberWithBool: YES];
+			
+			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+			album.name = NSLocalizedString( @"Yesterday MR", nil);
+			album.predicateString = @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
+			album.smartAlbum = [NSNumber numberWithBool: YES];
+			
+			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+			album.name = NSLocalizedString( @"Yesterday CT", nil);
+			album.predicateString = @"(ANY series.modality CONTAINS[cd] 'CT') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
+			album.smartAlbum = [NSNumber numberWithBool: YES];
+			
+			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+			album.name = NSLocalizedString( @"Interesting Cases", nil);
+		}
+	}
 	
 	[[managedObjectContext undoManager] setLevelsOfUndo: 1];
 	[[managedObjectContext undoManager] disableUndoRegistration];
@@ -3318,7 +3356,7 @@ static NSConditionLock *threadLock = nil;
 		{
 			NSLog( @"DB Not found -> we add it");
 			
-			NSArray			*dbArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
+			NSArray	*dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
 			
 			if( dbArray == nil) dbArray = [NSArray array];
 			
@@ -3371,6 +3409,7 @@ static NSConditionLock *threadLock = nil;
 	[managedObjectContext reset];
 	[managedObjectContext release];
 	managedObjectContext = nil;
+	
 	[self setFixedDocumentsDirectory];
 	[self managedObjectContext];
 	
@@ -3403,9 +3442,7 @@ static NSConditionLock *threadLock = nil;
 	NSString *pathTemp = [[self documentsDirectory] stringByAppendingString:@"/Loading"];
 	
 	if ([[NSFileManager defaultManager] fileExistsAtPath:pathTemp])
-	{
 		[[NSFileManager defaultManager] removeFileAtPath:pathTemp handler: nil];
-	}
 	
 	[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingPathComponent: DATABASEPATH]];
 	[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
