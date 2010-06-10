@@ -34,10 +34,4 @@
 	return windowFrame.size.height-NSHeight([[self contentView] frame]);
 }
 
--(CGFloat)titlebarHeight {
-	NSRect frame = NSMakeRect(0, 0, 100, 100);
-    NSRect contentRect = [NSWindow contentRectForFrameRect:frame styleMask:NSTitledWindowMask];
-    return frame.size.height - contentRect.size.height;
-}
-
 @end
