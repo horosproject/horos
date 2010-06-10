@@ -3698,7 +3698,7 @@ static BOOL initialized = NO;
 		NSScreen *screen = [screens objectAtIndex: monitorIndex];
 		NSRect frame = [screen visibleFrame];
 
-		if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+		if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
 		frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 
 		int temp;
@@ -3755,7 +3755,7 @@ static BOOL initialized = NO;
 //		
 //		NSRect frame = [screen visibleFrame];
 //
-//		if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+//		if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
 //		frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 //		
 //		int temp;
@@ -4238,7 +4238,7 @@ static BOOL initialized = NO;
 		{
 			NSScreen *screen = [screens objectAtIndex:i];
 			NSRect frame = [screen visibleFrame];
-			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			[[viewersList objectAtIndex:i] setWindowFrame: frame showWindow:YES animate: YES];			
@@ -4261,7 +4261,7 @@ static BOOL initialized = NO;
 			NSScreen *screen = [screens objectAtIndex:index];
 			NSRect frame = [screen visibleFrame];
 			
-			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			frame.size.width /= viewersPerScreen;
@@ -4286,7 +4286,7 @@ static BOOL initialized = NO;
 			NSScreen *screen = [screens objectAtIndex: monitorIndex];
 			NSRect frame = [screen visibleFrame];
 			
-			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			if (monitorIndex < extraViewers) 

@@ -2329,7 +2329,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( NSIsEmptyRect( standardRect)) standardRect = currentFrame;
 	
 	if( [AppController USETOOLBARPANEL])
-		screenRect.size.height -= [ToolbarPanelController fixedHeight];	
+		screenRect.size.height -= [ToolbarPanelController exposedHeight];	
 
 	if (currentFrame.size.height >= screenRect.size.height - 20 && currentFrame.size.width >= screenRect.size.width - 20)
 		return standardRect;
@@ -2576,7 +2576,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 ////			while (screen = [e nextObject])
 //			{
 //				NSRect frame = [[[self window] screen] visibleFrame];
-//				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+//				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
 //				frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 //				[rects addObject: [NSValue valueWithRect: frame]];
 //			}
@@ -2664,9 +2664,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 //		
 //		if( USETOOLBARPANEL)
 //		{
-//			if( dstFrame.size.height >= [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight])
+//			if( dstFrame.size.height >= [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController exposedHeight])
 //			{
-//				dstFrame.size.height = [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight];
+//				dstFrame.size.height = [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController exposedHeight];
 //				
 //			}
 //		}
@@ -2905,7 +2905,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 ////		while (screen = [e nextObject])
 //		{
 //			NSRect frame = [[[self window] screen] visibleFrame];
-//			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+//			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
 //			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 //			
 //			[rects addObject: [NSValue valueWithRect: frame]];
@@ -3011,7 +3011,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 //		
 //	else if( USETOOLBARPANEL) {
 //		NSLog(@"toolbar height: %d", [ToolbarPanelController fixedHeight]);
-//		screenRect.size.height -= [ToolbarPanelController fixedHeight];	
+//		screenRect.size.height -= [ToolbarPanelController exposedHeight];	
 //	}
 //	
 //	[[self window] setFrame:screenRect display:YES];
@@ -3023,7 +3023,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 //		long	i;
 //		NSRect	screenRect    = [[sender screen] visibleFrame];
 //		
-//		screenRect.size.height -= [ToolbarPanelController fixedHeight];
+//		screenRect.size.height -= [ToolbarPanelController exposedHeight];
 //		
 //		for( i = 0; i < [[NSScreen screens] count]; i++)
 //		{
@@ -6618,7 +6618,7 @@ static ViewerController *draggedController = nil;
 	
 	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
-		screenRect.size.height -= [ToolbarPanelController fixedHeight];
+		screenRect.size.height -= [ToolbarPanelController exposedHeight];
 	}
 	
 	[[self window] setFrame:screenRect display:YES];

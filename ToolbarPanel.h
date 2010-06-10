@@ -31,6 +31,8 @@
 @property (readonly) ViewerController *viewer;
 
 + (long) fixedHeight;
++ (long) hiddenHeight;
++ (long) exposedHeight;
 - (void) setToolbar :(NSToolbar*) tb viewer:(ViewerController*) v;
 - (void) fixSize;
 - (void) toolbarWillClose :(NSToolbar*) tb;

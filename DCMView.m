@@ -11693,7 +11693,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 			{
-				screenFrame.size.height -= [ToolbarPanelController fixedHeight];
+				screenFrame.size.height -= [ToolbarPanelController exposedHeight];
 			}
 			
 			if( newHeight > screenFrame.size.height) newHeight = screenFrame.size.height;

@@ -61,5 +61,9 @@
 	return [self setFrame: windowFrame display:displayViews];
 }
 
+-(NSRect)constrainFrameRect:(NSRect)frameRect toScreen:(NSScreen*)screen {
+	return frameRect;
+}
+
 @synthesize willClose;
 @end

@@ -21,5 +21,6 @@
 -(NSSize)frameSizeForContentSize:(NSSize)contentSize;
 
 -(CGFloat)toolbarHeight;
+-(CGFloat)titlebarHeight;
 
 @end

@@ -105,7 +105,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 	//			while (screen = [e nextObject])
 				{
 					NSRect frame = [[[self window] screen] visibleFrame];
-					if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+					if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
 					frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 					[rects addObject: [NSValue valueWithRect: frame]];
 				}
@@ -196,9 +196,9 @@ static BOOL protectedReentryWindowDidResize = NO;
 			
 			if( USETOOLBARPANEL)
 			{
-				if( dstFrame.size.height >= [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight])
+				if( dstFrame.size.height >= [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController exposedHeight])
 				{
-					dstFrame.size.height = [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight];
+					dstFrame.size.height = [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController exposedHeight];
 				}
 			}
 			
@@ -311,7 +311,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 	//		while (screen = [e nextObject])
 			{
 				NSRect frame = [[[self window] screen] visibleFrame];
-				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
 				frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 				
 				[rects addObject: [NSValue valueWithRect: frame]];

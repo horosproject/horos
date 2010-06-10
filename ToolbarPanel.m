@@ -30,13 +30,23 @@ static int increment = 0;
 	return 90;
 }
 
++ (long) hiddenHeight
+{
+	return 16;
+}
+
++ (long) exposedHeight
+{
+	return [self fixedHeight] - [self hiddenHeight];
+}
+
 - (void) checkPosition
 {
 	if( [[NSScreen screens] count] > screen)
 	{
 		NSPoint o = NSMakePoint([[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.x, [[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.y+[[[NSScreen screens] objectAtIndex: screen] visibleFrame].size.height);
 	
-		[[self window] setFrameTopLeftPoint: o];		// fixSize will be called by this function
+//		[[self window] setFrameTopLeftPoint: o];		// fixSize will be called by this function
 		[self fixSize];
 	}
 }
@@ -53,7 +63,7 @@ static int increment = 0;
 		dstframe.size.height = [ToolbarPanelController fixedHeight];
 		dstframe.size.width = screenRect.size.width;
 		dstframe.origin.x = screenRect.origin.x;
-		dstframe.origin.y = screenRect.origin.y + screenRect.size.height -dstframe.size.height;
+		dstframe.origin.y = screenRect.origin.y + screenRect.size.height - dstframe.size.height + [ToolbarPanelController hiddenHeight];
 		
 		[[self window] setFrame: dstframe display: NO];
 	}
