@@ -250,7 +250,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 
 -(NSArray*)albums
 {
-	return [BrowserController albumsInContext:managedObjectContext];
+	return [BrowserController albumsInContext: [self managedObjectContext]];
 }
 
 static NSConditionLock *threadLock = nil;
@@ -4231,6 +4231,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) dumpSQLFile
 {
+	WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Dumping SQL Index file...", nil)];
+	[splash showWindow:self];
+	
 	@try
 	{
 		NSTask *theTask;
@@ -4286,6 +4289,9 @@ static NSConditionLock *threadLock = nil;
 		NSLog( @"***** dumpSQLFile exception: %@", e);
 		[AppController printStackTrace: e];
 	}
+	
+	[splash close];
+	[splash release];
 }
 
 - (IBAction) rebuildSQLFile:(id) sender
@@ -4302,13 +4308,22 @@ static NSConditionLock *threadLock = nil;
 		
 		[checkIncomingLock lock];
 		
+		displayEmptyDatabase = YES;
+		[self outlineViewRefresh];
+		[self refreshMatrix: self];
+		
+		[managedObjectContext lock];
+		[managedObjectContext unlock];
+		[managedObjectContext release];
+		managedObjectContext = nil;
+		
 		[self saveDatabase: currentDatabasePath];
 		
 		[[self window] display];
 		
 		[self dumpSQLFile];
 		
-		[self updateDatabaseModel: currentDatabasePath :DATABASEVERSION];
+ 		[self updateDatabaseModel: currentDatabasePath :DATABASEVERSION];
 		
 		[self loadDatabase: currentDatabasePath];
 		
