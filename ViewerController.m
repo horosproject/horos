@@ -16692,7 +16692,7 @@ int i,j,l;
 		
 		if( [[imageView curRoiList] count] > 0)
 			[dcmFormat selectCellWithTag: 1];
-		else
+		else if( [dcmFormat selectedTag] == 1)
 			[dcmFormat selectCellWithTag: 2];
 	}
 	
@@ -16702,7 +16702,7 @@ int i,j,l;
 	if( [[[imageView seriesObj] valueForKey: @"keyImages"] count]) [[dcmSelection cellWithTag: 2] setEnabled: YES];
 	else [[dcmSelection cellWithTag: 2] setEnabled: NO];
 	
-	if( [[dcmSelection cellWithTag: 3] isEnabled] == NO)
+	if( [[dcmSelection cellWithTag: 3] isEnabled] == NO && [dcmSelection selectedTag] == 3)
 		[dcmSelection selectCellWithTag: 0];
 	
 	if( blendingController)
