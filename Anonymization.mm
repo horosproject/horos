@@ -189,8 +189,8 @@
 #pragma mark Panel
 
 +(id)showPanelClass:(Class)c forDefaultsKey:(NSString*)defaultsKey modalForWindow:(NSWindow*)window modalDelegate:(id)delegate didEndSelector:(SEL)sel representedObject:(id)representedObject  {
-	NSArray* values = [Anonymization tagsValuesArrayFromDictionary:[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:[NSString stringWithFormat:@"%@Values", defaultsKey]]];
-	NSArray* tags = [self tagsArrayFromStringsArray:[[NSUserDefaultsController sharedUserDefaultsController] arrayForKey:defaultsKey]];
+	NSArray* values = [Anonymization tagsValuesArrayFromDictionary:[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:defaultsKey]];
+	NSArray* tags = [self tagsArrayFromStringsArray:[[NSUserDefaultsController sharedUserDefaultsController] arrayForKey:[NSString stringWithFormat:@"%@All", defaultsKey]]];
 	
 	AnonymizationPanelController* panelController = [[c alloc] initWithTags:tags values:values];
 	AnonymizationPanelRepresentation* ro = [[[AnonymizationPanelRepresentation alloc] init] autorelease];
@@ -222,8 +222,8 @@
 	AnonymizationPanelRepresentation* ro = panelController.representedObject;
 	
 	if (panelController.end) { // save config
-		[[NSUserDefaults standardUserDefaults] setObject:[self stringArrayFromTagsArray:panelController.anonymizationViewController.tags] forKey:ro.defaultsKey];
-		[[NSUserDefaults standardUserDefaults] setObject:[self tagsValuesDictionaryFromArray:panelController.anonymizationViewController.tagsValues] forKey:[NSString stringWithFormat:@"%@Values", ro.defaultsKey]];
+		[[NSUserDefaults standardUserDefaults] setObject:[self stringArrayFromTagsArray:panelController.anonymizationViewController.tags] forKey:[NSString stringWithFormat:@"%@All", ro.defaultsKey]];
+		[[NSUserDefaults standardUserDefaults] setObject:[self tagsValuesDictionaryFromArray:panelController.anonymizationViewController.tagsValues] forKey:ro.defaultsKey];
 	}
 	
 	[panel close];

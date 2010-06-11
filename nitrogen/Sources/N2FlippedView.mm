@@ -21,4 +21,10 @@
 	return YES;
 }
 
+-(void)drawRect:(NSRect)rect {
+	[super drawRect:rect];
+	[[NSColor redColor] setStroke];
+	[[NSBezierPath bezierPathWithRect:[self bounds]] stroke];
+}
+
 @end

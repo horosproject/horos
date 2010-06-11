@@ -33,33 +33,28 @@
 	NSSize sizeDelta = idealContentSize - contentSize;
 	idealContentSize = NSZeroSize;
 	
-/*	NSMutableArray* animations = NULL;
+	/*NSMutableArray* animations = NULL;
 	if ([self.window.windowController respondsToSelector:@selector(animations)])
 		animations = [self.window.windowController valueForKey:@"animations"];*/
 
-	BOOL hasParentScrollView = NO;
-	for (NSView* parentView = [self superview]; !hasParentScrollView && parentView; parentView = [parentView superview])
+	NSScrollView* parentScrollView = NULL;
+	for (NSView* parentView = [self superview]; !parentScrollView && parentView; parentView = [parentView superview])
 		if ([parentView isKindOfClass:[NSScrollView class]])
-			hasParentScrollView = YES;
+			parentScrollView = (NSScrollView*)parentView;
 	
-	if (hasParentScrollView)
-		for (NSView* parentView = [self superview]; parentView; parentView = [parentView superview]) {
-			if ([parentView isKindOfClass:[NSScrollView class]])
-				break;
-			NSRect pf = parentView.frame;
-			pf.size += sizeDelta;
-			
-			if (!parentView.superview.isFlipped)
-				pf.origin.y -= sizeDelta.height;
-			
-	/*		if (animations)
-				[animations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-										   parentView, NSViewAnimationTargetKey,
-										   [NSValue valueWithRect:pf], NSViewAnimationEndFrameKey,
-									   NULL]];
-			else*/ [parentView setFrame:pf];
-		}
-	else {
+	if (parentScrollView) {
+		NSRect df = [parentScrollView.documentView frame];
+		df.size += sizeDelta;
+		//if (...)
+			df.origin.y -= sizeDelta.height;
+		
+		/*if (animations)
+			[animations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+								   parentScrollView.documentView, NSViewAnimationTargetKey,
+								   [NSValue valueWithRect:df], NSViewAnimationEndFrameKey,
+								   NULL]];
+		else*/ [parentScrollView.documentView setFrame:df];
+	} else {
 		NSRect wf = self.window.frame;
 		wf.size += sizeDelta;
 		//if (!self.window.isSheet)
