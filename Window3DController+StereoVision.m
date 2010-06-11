@@ -20,7 +20,9 @@
 #import "Window3DController.h"
 #import "Mailer.h"
 #import "Papyrus3/Papyrus3.h"
-#import "Accelerate.h"
+// { Removed by P. Thevenaz on June 11, 2010
+// #import "Accelerate.h"
+// }
 #import "DCMPix.h"
 #import "VRController.h"
 #import "printView.h"

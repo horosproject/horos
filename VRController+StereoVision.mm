@@ -488,6 +488,120 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	return [toolbarItem autorelease];
 }
 
+// { Begin addition by P. Thevenaz on June 11, 2010
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
+    // Required delegate method:  Returns the ordered list of items to be shown in the toolbar by default    
+    // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
+    // user chooses to revert to the default items this set will be used 
+    
+	if( [style isEqualToString:@"standard"])
+		return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
+												WLWWToolbarItemIdentifier,
+												CLUTEditorsViewToolbarItemIdentifier,
+												PresetsPanelToolbarItemIdentifier,
+												LODToolbarItemIdentifier,
+												CaptureToolbarItemIdentifier,
+												CroppingToolbarItemIdentifier,
+												OrientationToolbarItemIdentifier,
+												ShadingToolbarItemIdentifier,
+												StereoIdentifier,						// <- added with respect to "VRController.mm" (P. Thevenaz)
+												PerspectiveToolbarItemIdentifier,
+												ConvolutionViewToolbarItemIdentifier,
+												ClippingRangeViewToolbarItemIdentifier,
+												NSToolbarFlexibleSpaceItemIdentifier,
+												QTExportToolbarItemIdentifier,
+												QTExportVRToolbarItemIdentifier,
+												OrientationsViewToolbarItemIdentifier,
+												ResetToolbarItemIdentifier,
+												RevertToolbarItemIdentifier,
+												ExportToolbarItemIdentifier,
+												FlyThruToolbarItemIdentifier,
+												nil];
+	else
+		return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
+												ModeToolbarItemIdentifier,
+												WLWWToolbarItemIdentifier,
+												LODToolbarItemIdentifier,
+												CaptureToolbarItemIdentifier,
+												BlendingToolbarItemIdentifier,
+												CroppingToolbarItemIdentifier,
+												OrientationToolbarItemIdentifier,
+												NSToolbarFlexibleSpaceItemIdentifier,
+												QTExportToolbarItemIdentifier,
+												OrientationsViewToolbarItemIdentifier,
+												ResetToolbarItemIdentifier,
+												ExportToolbarItemIdentifier,
+												nil];
+}
+
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
+    // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
+    // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
+    // The set of allowed items is used to construct the customization palette
+	
+	if( [style isEqualToString:@"standard"])
+	{
+		NSMutableArray * a = [NSMutableArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
+											NSToolbarFlexibleSpaceItemIdentifier,
+											NSToolbarSpaceItemIdentifier,
+											NSToolbarSeparatorItemIdentifier,
+											WLWWToolbarItemIdentifier,
+											CLUTEditorsViewToolbarItemIdentifier,
+											PresetsPanelToolbarItemIdentifier,
+											LODToolbarItemIdentifier,
+											CaptureToolbarItemIdentifier,
+											CroppingToolbarItemIdentifier,
+											OrientationToolbarItemIdentifier,
+											ShadingToolbarItemIdentifier,
+											PerspectiveToolbarItemIdentifier,
+											OrientationsViewToolbarItemIdentifier,
+											ToolsToolbarItemIdentifier,
+											ModeToolbarItemIdentifier,
+											BlendingToolbarItemIdentifier,
+											MovieToolbarItemIdentifier,
+											StereoIdentifier,						// <- added with respect to "VRController.mm" (P. Thevenaz)
+											QTExportToolbarItemIdentifier,
+											iPhotoToolbarItemIdentifier,
+											QTExportVRToolbarItemIdentifier,
+											MailToolbarItemIdentifier,
+											ResetToolbarItemIdentifier,
+											RevertToolbarItemIdentifier,
+											ExportToolbarItemIdentifier,
+											FlyThruToolbarItemIdentifier,
+											ScissorStateToolbarItemIdentifier,
+											ROIManagerToolbarItemIdentifier,
+											ConvolutionViewToolbarItemIdentifier,
+											BackgroundColorViewToolbarItemIdentifier,
+											ClippingRangeViewToolbarItemIdentifier,
+											nil];
+		
+//		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showGPUEngineRendering"])
+//			[a addObject: EngineToolbarItemIdentifier];
+			
+		return a;
+	}
+	else
+		return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
+											NSToolbarFlexibleSpaceItemIdentifier,
+											NSToolbarSpaceItemIdentifier,
+											NSToolbarSeparatorItemIdentifier,
+											WLWWToolbarItemIdentifier,
+											CLUTEditorsViewToolbarItemIdentifier,
+											LODToolbarItemIdentifier,
+											CaptureToolbarItemIdentifier,
+											CroppingToolbarItemIdentifier,
+											OrientationToolbarItemIdentifier,
+											OrientationsViewToolbarItemIdentifier,
+											QTExportToolbarItemIdentifier,
+											iPhotoToolbarItemIdentifier,
+											MailToolbarItemIdentifier,
+											ResetToolbarItemIdentifier,
+											RevertToolbarItemIdentifier,
+											ExportToolbarItemIdentifier,
+											BlendingToolbarItemIdentifier,
+											nil];
+}
+// end addition by P. Thevenaz on June 11, 2010}
 
 @end
 #endif
