@@ -116,6 +116,25 @@ NSString* asciiString(NSString* str)
 	return [str ASCIIString];
 }
 
+void restartSTORESCP()
+{
+//	// Only on server mode
+//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
+//	{
+//		@try
+//		{
+//			[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/RESTARTOSIRIXSTORESCP" error: nil];
+//			[[NSString stringWithString:@"RESTART"] writeToFile: @"/tmp/RESTARTOSIRIXSTORESCP" atomically: YES];
+//			
+//			NSLog( @"*********** restartSTORESCP ************");
+//		}
+//		@catch (NSException * e)
+//		{
+//			NSLog( @"******* exception in restartSTORESCP() : %@", e);
+//		}
+//	}
+}
+
 @implementation NSString (BrowserController)
 
 -(NSMutableString*)filenameString
@@ -13312,7 +13331,8 @@ static NSArray*	openSubSeriesArray = nil;
 		previewPix = [[NSMutableArray alloc] initWithCapacity:0];
 		
 		timer = [[NSTimer scheduledTimerWithTimeInterval: 0.15 target:self selector:@selector(previewPerformAnimation:) userInfo:self repeats:YES] retain];
-		if([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] < 1) [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"LISTENERCHECKINTERVAL"];
+		if( [[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] < 1)
+			[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"LISTENERCHECKINTERVAL"];
 		IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
 		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 63.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];	//63.33
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
@@ -15804,6 +15824,32 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)checkIncoming: (id)sender
 {
+//	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/RESTARTOSIRIXSTORESCP"])
+//	{
+//		@try
+//		{
+//			[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/RESTARTOSIRIXSTORESCP" error: nil];
+//			
+//			NSLog( @"********** RESTARTING STORE SCP ------- START");
+//			
+//			[[AppController sharedAppController] killDICOMListenerWait: YES];
+//			
+//			[NSThread sleepForTimeInterval: 5];
+//			
+//			[[AppController sharedAppController] restartSTORESCP];
+//			
+//			NSLog( @"********** RESTARTING STORE SCP -------- END");
+//			
+//			[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/RESTARTOSIRIXSTORESCP" error: nil];
+//		}
+//		@catch (NSException * e)
+//		{
+//			NSLog( @"****** exception during RESTARTING STORE SCP: %@", e);
+//			[AppController printStackTrace: e];
+//		}
+//	}
+	
+	
 	if( [[AppController sharedAppController] isSessionInactive]) return;
 	if( DICOMDIRCDMODE) return;
 	if( DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;

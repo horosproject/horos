@@ -52,6 +52,10 @@
 ** Status:		$State: Exp $
 */
 
+extern "C"
+{
+	extern void restartSTORESCP( void);
+}
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -751,6 +755,9 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
     {
       char buf1[256];
       sprintf(buf1, "DUL Finite State Machine Error: No action defined, state %d event %d", state, event);
+		
+	  restartSTORESCP();
+		
       return makeDcmnetCondition(DULC_FSMERROR, OF_error, buf1);
     }
 }

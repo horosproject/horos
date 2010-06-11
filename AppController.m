@@ -2424,7 +2424,8 @@ static NSDate *lastWarningDate = nil;
 	return USETOOLBARPANEL;
 }
 
-+ (AppController*) sharedAppController {
++ (AppController*) sharedAppController
+{
 	return appController;
 }
 //
@@ -2868,8 +2869,13 @@ static BOOL initialized = NO;
 	[dcmtkQRSCP abort];
 	[dcmtkQRSCPTLS abort];
 	
+	[self killAllStoreSCU: self];
+	
 	#ifndef OSIRIX_LIGHT
-	[QueryController echo: [self privateIP] port:[dcmtkQRSCP port] AET: [dcmtkQRSCP aeTitle]];
+	if( dcmtkQRSCP)
+		[QueryController echo: [self privateIP] port:[dcmtkQRSCP port] AET: [dcmtkQRSCP aeTitle]];
+	if( dcmtkQRSCPTLS)
+		[QueryController echo: [self privateIP] port:[dcmtkQRSCPTLS port] AET: [dcmtkQRSCPTLS aeTitle]];
 	#endif
 	
 	[NSThread sleepForTimeInterval: 1.0];
@@ -2883,7 +2889,7 @@ static BOOL initialized = NO;
 		}
 		while( [dcmtkQRSCPTLS running])
 		{
-			NSLog( @"waiting for listener to stop...");
+			NSLog( @"waiting for TLS listener to stop...");
 			[NSThread sleepForTimeInterval: 0.1];
 		}
 	}

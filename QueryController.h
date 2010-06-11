@@ -75,6 +75,7 @@
 	NSRecursiveLock							*autoQueryLock;
 }
 
+@property (readonly) NSRecursiveLock *autoQueryLock;
 @property BOOL autoQuery;
 @property NSInteger autoRefreshQueryResults;
 

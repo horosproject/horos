@@ -52,7 +52,7 @@ extern "C"
 
 @implementation QueryController
 
-@synthesize autoQuery;
+@synthesize autoQuery, autoQueryLock;
 
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer
 {
@@ -184,18 +184,18 @@ extern "C"
 	//NSArray *args = [NSArray arrayWithObjects: address, [NSString stringWithFormat:@"%d", port], @"-aet", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"-aec", aet, @"-to", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"], @"-ta", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"], @"-td", [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"], nil];
 	
 	NSMutableArray *args = [NSMutableArray array];
-	[args addObject:address];
-	[args addObject:[NSString stringWithFormat:@"%d", [port intValue]]];
-	[args addObject:@"-aet"]; // set my calling AE title
-	[args addObject:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]];
-	[args addObject:@"-aec"]; // set called AE title of peer
-	[args addObject:aet];
-	[args addObject:@"-to"]; // timeout for connection requests
-	[args addObject:[[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
-	[args addObject:@"-ta"]; // timeout for ACSE messages
-	[args addObject:[[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
-	[args addObject:@"-td"]; // timeout for DIMSE messages
-	[args addObject:[[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
+	[args addObject: address];
+	[args addObject: [NSString stringWithFormat:@"%d", [port intValue]]];
+	[args addObject: @"-aet"]; // set my calling AE title
+	[args addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]];
+	[args addObject: @"-aec"]; // set called AE title of peer
+	[args addObject: aet];
+	[args addObject: @"-to"]; // timeout for connection requests
+	[args addObject: [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
+	[args addObject: @"-ta"]; // timeout for ACSE messages
+	[args addObject: [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
+	[args addObject: @"-td"]; // timeout for DIMSE messages
+	[args addObject: [[NSUserDefaults standardUserDefaults] stringForKey:@"DICOMTimeout"]];
 	
 	if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
 	{
