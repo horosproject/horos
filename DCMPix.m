@@ -8580,6 +8580,8 @@ END_CREATE_ROIS:
 
 - (void) getDataFromNSImage:(NSImage*) otherImage
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	int x, y;
 	
 	NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData: [otherImage TIFFRepresentation]];
@@ -8714,6 +8716,8 @@ END_CREATE_ROIS:
 	}
 	
 	[TIFFRep release];
+	
+	[pool release];
 }
 
 - (void) getFrameFromMovie:(NSString*) extension
