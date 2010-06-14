@@ -17818,13 +17818,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 			int COPYDATABASEMODE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASEMODE"];
 	
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"COPYDATABASE"];
-			[[NSUserDefaults standardUserDefaults] setInteger: always forKey: @"COPYDATABASE"];
+			[[NSUserDefaults standardUserDefaults] setInteger: always forKey: @"COPYDATABASEMODE"];
 
 			// add new files
 			NSArray* newImageObjs = [self addFilesAndFolderToDatabase:anonymizedFiles.allValues];
 			
 			[[NSUserDefaults standardUserDefaults] setBool: COPYDATABASE forKey: @"COPYDATABASE"];
-			[[NSUserDefaults standardUserDefaults] setInteger: COPYDATABASEMODE forKey: @"COPYDATABASE"];
+			[[NSUserDefaults standardUserDefaults] setInteger: COPYDATABASEMODE forKey: @"COPYDATABASEMODE"];
 			
 			// if this happened in an album then add new images to that album
 			if (self.albumTable.selectedRow > 0) {
