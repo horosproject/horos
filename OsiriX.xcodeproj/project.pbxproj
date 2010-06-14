@@ -168,6 +168,7 @@
 		59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */; };
 		59C512C21189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */; };
 		59C512C31189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */; };
+		59DC285C11C60E3C00DAD5B4 /* NSView+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FB191129338A009EB238 /* NSView+N2.mm */; };
 		59E379CF116B293A00E84FE3 /* NSImage+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */; };
 		59E379D0116B293A00E84FE3 /* NSImage+OsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E379CE116B293A00E84FE3 /* NSImage+OsiriX.m */; };
 		59E379D1116B294200E84FE3 /* NSImage+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */; };
@@ -24678,6 +24679,7 @@
 				596EB3F9118ABBB000880192 /* NSWindow+N2.mm in Sources */,
 				594830D0118B0AC100D7E606 /* N2ImageView.mm in Sources */,
 				5912DCDB118EF447007F7D40 /* N2FlippedView.mm in Sources */,
+				59DC285C11C60E3C00DAD5B4 /* NSView+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
