@@ -215,7 +215,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		{
 			NSManagedObject *archivedAnnotations = [self annotationsSRSeries];
 			NSString *dstPath = [[archivedAnnotations valueForKeyPath: @"images.completePath"] anyObject];
-					
+			
 			if( dstPath)
 			{
 				SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];

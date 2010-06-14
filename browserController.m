@@ -1809,23 +1809,22 @@ static NSConditionLock *threadLock = nil;
 	[autoroutingQueue lock];
 	
 	//Are these files already in the queue, with same routingRule
-	BOOL alreadyInQueue = NO;
+	NSMutableArray *mutableFiles = [NSMutableArray arrayWithArray: files];
 	for( NSDictionary *order in autoroutingQueueArray)
 	{
 		if( [routingRule isEqualToDictionary: [order valueForKey: @"routingRule"]])
 		{
-			// Are the files identical?
-			if( [files isEqualToArray: [order valueForKey: @"files"]])
+			// Are the files already in queue for same filter?
+			for( NSString *file in files)
 			{
-				alreadyInQueue = YES;
+				if( [[order valueForKey: @"files"] containsObject: file])
+					[mutableFiles removeObject: file];
 			}
 		}
 	}
 	
-	if( alreadyInQueue)
-		NSLog( @"already in queue -> we dont add them");
-	else
-		[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: files, @"objects", [routingRule objectForKey:@"server"], @"server", routingRule, @"routingRule", [routingRule valueForKey:@"failureRetry"], @"failureRetry", nil]];
+	if( [mutableFiles count])
+		[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: mutableFiles, @"objects", [routingRule objectForKey:@"server"], @"server", routingRule, @"routingRule", [routingRule valueForKey:@"failureRetry"], @"failureRetry", nil]];
 	
 	[autoroutingQueue unlock];
 }
@@ -1865,21 +1864,18 @@ static NSConditionLock *threadLock = nil;
 				
 				@try
 				{
-					if( generatedByOsiriX)
+					if( [[routingRule objectForKey: @"filterType"] intValue] == 0)
+						predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
+					else // GeneratedByOsiriX filterType
 					{
-						if( [[routingRule objectForKey: @"filterType"] intValue] == 1)
+						if( generatedByOsiriX)
 							predicate = [NSPredicate predicateWithValue: YES];
-					}
-					else
-					{
-						if( [[routingRule objectForKey: @"filterType"] intValue] == 0)
-							predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
-						else 
+						else
 							predicate = [NSPredicate predicateWithValue: NO];
-
 					}
 					
-					if( predicate) result = [newImages filteredArrayUsingPredicate: predicate];
+					if( predicate)
+						result = [newImages filteredArrayUsingPredicate: predicate];
 					
 					if( [result count])
 					{
