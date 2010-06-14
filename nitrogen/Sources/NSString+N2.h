@@ -32,4 +32,8 @@
 
 -(BOOL)contains:(NSString*)str;
 
+-(NSString*)stringByPrefixingLinesWithString:(NSString*)prefix;
++(NSString*)stringByRepeatingString:(NSString*)string times:(NSUInteger)times;
+-(NSString*)suspendedString;
+
 @end

@@ -120,6 +120,14 @@
 		59D892CD10B2E8D100AAA0FE /* NSMutableDictionary+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D892CB10B2E8D100AAA0FE /* NSMutableDictionary+N2.mm */; };
 		59D89B8910B3FFAE00AAA0FE /* N2Button.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D89B8710B3FFAE00AAA0FE /* N2Button.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		59D89B8A10B3FFAE00AAA0FE /* N2Button.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D89B8810B3FFAE00AAA0FE /* N2Button.mm */; };
+		59DC28DD11C6164000DAD5B4 /* NSXMLNode+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28DB11C6164000DAD5B4 /* NSXMLNode+N2.h */; };
+		59DC28DE11C6164000DAD5B4 /* NSXMLNode+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28DC11C6164000DAD5B4 /* NSXMLNode+N2.mm */; };
+		59DC28E111C6164F00DAD5B4 /* N2CSV.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28DF11C6164F00DAD5B4 /* N2CSV.h */; };
+		59DC28E211C6164F00DAD5B4 /* N2CSV.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E011C6164F00DAD5B4 /* N2CSV.mm */; };
+		59DC28E511C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28E311C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h */; };
+		59DC28E611C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E411C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm */; };
+		59DC28E911C6168100DAD5B4 /* NSThread+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28E711C6168100DAD5B4 /* NSThread+N2.h */; };
+		59DC28EA11C6168100DAD5B4 /* NSThread+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E811C6168100DAD5B4 /* NSThread+N2.mm */; };
 		59E6DD11105E3DBD002C8245 /* NSColor+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E6DD0F105E3DBD002C8245 /* NSColor+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		59E6DD12105E3DBD002C8245 /* NSColor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E6DD10105E3DBD002C8245 /* NSColor+N2.mm */; };
 		59E7A17B108C9ACF007F82BA /* NSURL+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E7A179108C9ACF007F82BA /* NSURL+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -259,6 +267,14 @@
 		59D892CB10B2E8D100AAA0FE /* NSMutableDictionary+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSMutableDictionary+N2.mm"; sourceTree = "<group>"; };
 		59D89B8710B3FFAE00AAA0FE /* N2Button.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2Button.h; sourceTree = "<group>"; };
 		59D89B8810B3FFAE00AAA0FE /* N2Button.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2Button.mm; sourceTree = "<group>"; };
+		59DC28DB11C6164000DAD5B4 /* NSXMLNode+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSXMLNode+N2.h"; sourceTree = "<group>"; };
+		59DC28DC11C6164000DAD5B4 /* NSXMLNode+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSXMLNode+N2.mm"; sourceTree = "<group>"; };
+		59DC28DF11C6164F00DAD5B4 /* N2CSV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2CSV.h; sourceTree = "<group>"; };
+		59DC28E011C6164F00DAD5B4 /* N2CSV.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2CSV.mm; sourceTree = "<group>"; };
+		59DC28E311C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAppleEventDescriptor+N2.h"; sourceTree = "<group>"; };
+		59DC28E411C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSAppleEventDescriptor+N2.mm"; sourceTree = "<group>"; };
+		59DC28E711C6168100DAD5B4 /* NSThread+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSThread+N2.h"; sourceTree = "<group>"; };
+		59DC28E811C6168100DAD5B4 /* NSThread+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSThread+N2.mm"; sourceTree = "<group>"; };
 		59E6DD0F105E3DBD002C8245 /* NSColor+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+N2.h"; sourceTree = "<group>"; };
 		59E6DD10105E3DBD002C8245 /* NSColor+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSColor+N2.mm"; sourceTree = "<group>"; };
 		59E7A179108C9ACF007F82BA /* NSURL+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+N2.h"; sourceTree = "<group>"; };
@@ -449,6 +465,8 @@
 		59A63363104287B4003F4069 /* Stuff */ = {
 			isa = PBXGroup;
 			children = (
+				59DC28DF11C6164F00DAD5B4 /* N2CSV.h */,
+				59DC28E011C6164F00DAD5B4 /* N2CSV.mm */,
 				59A6331C10428715003F4069 /* N2Pair.h */,
 				59A6331B10428715003F4069 /* N2Pair.mm */,
 				59A6332310428715003F4069 /* N2SingletonObject.h */,
@@ -460,6 +478,12 @@
 		59A63364104287DE003F4069 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
+				59DC28E711C6168100DAD5B4 /* NSThread+N2.h */,
+				59DC28E811C6168100DAD5B4 /* NSThread+N2.mm */,
+				59DC28E311C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h */,
+				59DC28E411C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm */,
+				59DC28DB11C6164000DAD5B4 /* NSXMLNode+N2.h */,
+				59DC28DC11C6164000DAD5B4 /* NSXMLNode+N2.mm */,
 				5997857C11B67788002DB107 /* NSFileManager+N2.h */,
 				5997857D11B67788002DB107 /* NSFileManager+N2.mm */,
 				59A6332910428715003F4069 /* NSTextView+N2.h */,
@@ -626,6 +650,10 @@
 				5997857A11B6771B002DB107 /* N2ImageView.h in Headers */,
 				5997857E11B67788002DB107 /* NSFileManager+N2.h in Headers */,
 				5997858E11B67851002DB107 /* NSUserDefaultsController+N2.h in Headers */,
+				59DC28DD11C6164000DAD5B4 /* NSXMLNode+N2.h in Headers */,
+				59DC28E111C6164F00DAD5B4 /* N2CSV.h in Headers */,
+				59DC28E511C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h in Headers */,
+				59DC28E911C6168100DAD5B4 /* NSThread+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -823,6 +851,10 @@
 				5997857B11B6771B002DB107 /* N2ImageView.mm in Sources */,
 				5997857F11B67788002DB107 /* NSFileManager+N2.mm in Sources */,
 				5997858F11B67851002DB107 /* NSUserDefaultsController+N2.mm in Sources */,
+				59DC28DE11C6164000DAD5B4 /* NSXMLNode+N2.mm in Sources */,
+				59DC28E211C6164F00DAD5B4 /* N2CSV.mm in Sources */,
+				59DC28E611C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm in Sources */,
+				59DC28EA11C6168100DAD5B4 /* NSThread+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
