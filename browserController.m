@@ -824,10 +824,8 @@ static NSConditionLock *threadLock = nil;
 						[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
 						
 						// Check for http/https !
-						if( [[r dataEncapsulated] length] > 8 && ([[NSString stringWithCString: [[r dataEncapsulated] bytes] length: [@"http://" length]] isEqualToString: @"http://"] || [[NSString stringWithCString: [[r dataEncapsulated] bytes] length: [@"https://" length]] isEqualToString: @"https://"]))
-						{
-							reportURL = [[[NSString alloc] initWithData: [r dataEncapsulated] encoding: NSUTF8StringEncoding] autorelease];
-						}
+						if( [[r reportURL] length] > 8 && ([[r reportURL] hasPrefix: @"http://"] || [[r reportURL] hasPrefix: @"https://"]))
+							reportURL = [[[r reportURL] copy] autorelease];
 						else
 						{
 							[[r dataEncapsulated] writeToFile: zipFile atomically: YES];

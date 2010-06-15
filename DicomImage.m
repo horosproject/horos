@@ -143,7 +143,10 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		sopInstanceUIDLength --;
 	
 	if (length == sopInstanceUIDLength)
-		return (memcmp(bytes, sopInstanceUIDBytes, length) == 0);
+	{
+		if( memcmp (bytes, sopInstanceUIDBytes, length) == 0)
+			return YES;
+	}
 	
 	return NO;
 }

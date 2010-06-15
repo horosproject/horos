@@ -50,7 +50,7 @@
 //All the ROIs for an image are archived as an NSArray.  We will need to extract all the necessary ROI info to create the basic SR before adding archived data. 
 + (NSString*) archiveROIsAsDICOM: (NSArray *) rois toPath: (NSString *) path forImage: (id) image
 {
-	SRAnnotation *sr = [[SRAnnotation alloc] initWithROIs:rois path:path forImage:image];
+	SRAnnotation *sr = [[[SRAnnotation alloc] initWithROIs:rois path:path forImage:image] autorelease];
 	id study = [image valueForKeyPath:@"series.study"];
 	
 	NSManagedObject *roiSRSeries = [study roiSRSeries];
@@ -63,6 +63,11 @@
 		roiSRSeries = [study roiSRSeries];
 		if( roiSRSeries == nil)
 			NSLog( @"********** roiSRSeries == nil -- archiveROIsAsDICOM");
+		
+		[sr setSeriesInstanceUID: [roiSRSeries valueForKey:@"seriesDICOMUID"]];
+		[sr writeToFileAtPath: path];
+		
+		return nil;
 	}
 	
 	NSString *seriesInstanceUID = [roiSRSeries valueForKey:@"seriesDICOMUID"];
@@ -96,8 +101,6 @@
 	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
-	
-	[sr release];
 	
 	if( AddIt)
 		return path;

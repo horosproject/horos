@@ -309,7 +309,8 @@
 			{
 				@try
 				{
-					_dataEncapsulated = [[NSData dataWithBytes: buffer length: length] retain];
+					if( buffer)
+						_dataEncapsulated = [[NSData dataWithBytes: buffer length: length] retain];
 				}
 				
 				@catch( NSException *ne)
