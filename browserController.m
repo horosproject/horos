@@ -7407,7 +7407,7 @@ static NSConditionLock *threadLock = nil;
 	[managedObjectContext unlock];
 }
 
-- (BOOL)isUsingExternalViewer: (NSManagedObject*)item
+- (BOOL)isUsingExternalViewer: (NSManagedObject*) item
 {
 	BOOL r = NO;
 	
@@ -7415,7 +7415,14 @@ static NSConditionLock *threadLock = nil;
 	{
 		[managedObjectContext lock];
 		
-		DicomImage *im = [[item valueForKey: @"images"] anyObject];
+		NSArray *images = [self childrenArray: item onlyImages: NO];
+		
+		DicomImage *im = nil;
+		
+		if( [images count] > [animationSlider intValue])
+			im = [images objectAtIndex: [animationSlider intValue]];
+		else
+			im = [[item valueForKey: @"images"] anyObject];
 		
 //		// ZIP files with XML descriptor
 //		if([[item valueForKey:@"noFiles"] intValue] == 1)

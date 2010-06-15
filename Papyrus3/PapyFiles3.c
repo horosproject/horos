@@ -1382,8 +1382,8 @@ Papy3SkipNextGroup (PapyShort inFileNb)
 
 	if( theGrLength <= 0)
 	{
-		printf("error theGrLength <= 0 : %d, %s\r", theGrLength, gPapyFilePath[ inFileNb]);
-		RETURN ( -1);
+//		printf("error theGrLength <= 0 : %d, %s\r", theGrLength, gPapyFilePath[ inFileNb]); EOF? : the group doesnt exist AND we reached the end of file (cd DICOM SR, for example).
+		RETURN ( papPositioning);
 	}
 	
 	cachedGroup[ z].group = theGrNb;
