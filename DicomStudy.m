@@ -622,13 +622,15 @@ static NSRecursiveLock *dbModifyLock = nil;
 		}
 	}
 	
+	NSString *previousValue = [self primitiveValueForKey: @"comment"];
+	
 	[self willChangeValueForKey: @"comment"];
 	[self setPrimitiveValue: c forKey: @"comment"];
 	[self didChangeValueForKey: @"comment"];
 	
-	if( ([(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0))
+	if( [previousValue length] != 0 || [c length] != 0)
 	{
-		if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
+		if( [c isEqualToString: previousValue] == NO)
 			[self archiveAnnotationsAsDICOMSR];
 	}
 }
@@ -658,11 +660,14 @@ static NSRecursiveLock *dbModifyLock = nil;
 	#endif
 	#endif
 	
+	NSNumber *previousState = [self primitiveValueForKey: @"stateText"];
+	
 	[self willChangeValueForKey: @"stateText"];
 	[self setPrimitiveValue: c forKey: @"stateText"];
 	[self didChangeValueForKey: @"stateText"];
 	
-	[self archiveAnnotationsAsDICOMSR];
+	if( [c intValue] != [previousState intValue])
+		[self archiveAnnotationsAsDICOMSR];
 }
 
 - (void) setReportURL: (NSString*) url
