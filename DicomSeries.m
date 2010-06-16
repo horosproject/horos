@@ -135,14 +135,13 @@
 			if( c == nil)
 				c = @"";
 			
-			if( [(NSString*)[self primitiveValueForKey: @"comment"] length] == 0 && [c length] == 0)
+			if( [(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0)
 			{
-				
-			}
-			else if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
-			{
-				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(0020,4000)", @"field", c, @"value", nil];
-				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+				if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
+				{
+					NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(0020,4000)", @"field", c, @"value", nil];
+					[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+				}
 			}
 		}
 	}

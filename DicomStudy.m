@@ -612,14 +612,13 @@ static NSRecursiveLock *dbModifyLock = nil;
 		if( c == nil)
 			c = @"";
 			
-		if( [(NSString*)[self primitiveValueForKey: @"comment"] length] == 0 && [c length] == 0)
+		if( ([(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0)
 		{
-			
-		}
-		else if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
-		{
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(0032,4000)", @"field", c, @"value", nil];
-			[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+			if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
+			{
+				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(0032,4000)", @"field", c, @"value", nil];
+				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+			}
 		}
 	}
 	
@@ -627,7 +626,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self setPrimitiveValue: c forKey: @"comment"];
 	[self didChangeValueForKey: @"comment"];
 	
-	[self archiveAnnotationsAsDICOMSR];
+	if( ([(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0)
+	{
+		if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
+			[self archiveAnnotationsAsDICOMSR];
+	}
 }
 
 - (void) setStateText: (NSNumber*) c

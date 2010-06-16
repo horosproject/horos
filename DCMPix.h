@@ -160,7 +160,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	
 	BOOL				generated;
 	NSString			*generatedName;
-	NSLock				*checking;
+	NSRecursiveLock		*checking;
 	
 	BOOL				useVOILUT, notAbleToLoadImage;
 	int					VOILUT_first;

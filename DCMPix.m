@@ -3121,7 +3121,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if( cachedDCMFrameworkFiles == nil)
 		cachedDCMFrameworkFiles = [[NSMutableDictionary dictionary] retain];
 	
-	checking = [[NSLock alloc] init];
+	checking = [[NSRecursiveLock alloc] init];
 	decayFactor = 1.0;
 	
 	orientation[ 0] = 1;
