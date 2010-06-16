@@ -612,7 +612,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		if( c == nil)
 			c = @"";
 			
-		if( ([(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0)
+		if( ([(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0))
 		{
 			if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
 			{
@@ -626,7 +626,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self setPrimitiveValue: c forKey: @"comment"];
 	[self didChangeValueForKey: @"comment"];
 	
-	if( ([(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0)
+	if( ([(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0))
 	{
 		if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
 			[self archiveAnnotationsAsDICOMSR];

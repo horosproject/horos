@@ -1171,19 +1171,14 @@ static NSConditionLock *threadLock = nil;
 								{
 									if([curDict objectForKey: @"commentsAutoFill"])
 									{
-										if( [(NSString*)[seriesTable valueForKey:@"comment"] length] == 0)
-											[seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
+										[seriesTable setValue: [curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
 										
-										if( [(NSString*)[study valueForKey:@"comment"] length] == 0)
-											[study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
+										[study setValue:[curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
 									}
 								}
 								
-								if( [(NSString*)[seriesTable valueForKey:@"comment"] length] == 0 && [(NSString*)[curDict objectForKey: @"seriesComments"] length] > 0)
-									[seriesTable setPrimitiveValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
-								
-								if( [(NSString*)[study valueForKey:@"comment"] length] == 0 && [(NSString*)[curDict objectForKey: @"studyComments"] length] > 0)
-									[study setPrimitiveValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
+								[seriesTable setValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
+								[study setValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
 								
 								if( [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
 									[study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
