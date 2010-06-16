@@ -204,7 +204,7 @@
 				
 //				NSLog( @"Build thumbnail for: %@", image.completePath);
 				
-				DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour:self.isBonjour imageObj:image];
+				DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:image];
 				
 				[dcmPix CheckLoad];
 				if (dcmPix)
@@ -471,10 +471,6 @@
 - (NSString*) albumsNames
 {
 	return [[self valueForKey: @"study"] valueForKey: @"albumsNames"];
-}
-
--(BOOL)isBonjour {
-	return [self study].isBonjour;
 }
 
 @end

@@ -61,8 +61,6 @@
 - (NSComparisonResult)compareName:(DicomSeries*)series;
 - (NSNumber *) noFilesExcludingMultiFrames;
 
-- (BOOL)isBonjour;
-
 @end
 
 @interface DicomSeries (CoreDataGeneratedAccessors)

@@ -76,8 +76,6 @@
 - (void) reapplyAnnotationsFromDICOMSR;
 - (NSComparisonResult)compareName:(DicomStudy*)study;
 
--(BOOL)isBonjour;
-
 @end
 
 @interface DicomStudy (CoreDataGeneratedAccessors)

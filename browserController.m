@@ -2644,44 +2644,49 @@ static NSConditionLock *threadLock = nil;
 	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening OsiriX database...", nil)];
 	[wait showWindow:self];
 	
-	if (!isCurrentDatabaseBonjour)
-		[self saveDatabase:currentDatabasePath];
-	
-	[currentDatabasePath release];
-	currentDatabasePath = [a retain];
-	isCurrentDatabaseBonjour = isBonjour;
-	
-	[self loadDatabase: currentDatabasePath];
-	for (DicomAlbum* album in [self albums])
-		[album setIsBonjour:isBonjour];
-	
-	if (refresh)
+	@try
 	{
-		if( albumName)
+		if (!isCurrentDatabaseBonjour)
+			[self saveDatabase:currentDatabasePath];
+		
+		[currentDatabasePath release];
+		currentDatabasePath = [a retain];
+		isCurrentDatabaseBonjour = isBonjour;
+		
+		[self loadDatabase: currentDatabasePath];
+		
+		if (refresh)
 		{
-			for( NSManagedObject *a in self.albumArray)
+			if( albumName)
 			{
-				if( [[a valueForKey: @"name"] isEqualToString: albumName])
-					[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject: a]] byExtendingSelection: NO];
+				for( NSManagedObject *a in self.albumArray)
+				{
+					if( [[a valueForKey: @"name"] isEqualToString: albumName])
+						[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject: a]] byExtendingSelection: NO];
+				}
 			}
+			
+			timeIntervalType = timeInt;
+			[timeIntervalPopup selectItemWithTag: 0];
+			
+			[self setSearchString: searchString];
+			
+			for( NSManagedObject *obj in outlineViewArray)
+			{
+				if( [[obj valueForKey: @"studyInstanceUID"] isEqualToString: selectedItem])
+					[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: obj]] byExtendingSelection: NO];
+			}
+			
+			[self refreshMatrix: self];
+			
+			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 		}
-		
-		timeIntervalType = timeInt;
-		[timeIntervalPopup selectItemWithTag: 0];
-		
-		[self setSearchString: searchString];
-		
-		for( NSManagedObject *obj in outlineViewArray)
-		{
-			if( [[obj valueForKey: @"studyInstanceUID"] isEqualToString: selectedItem])
-				[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: obj]] byExtendingSelection: NO];
-		}
-		
-		[self refreshMatrix: self];
-		
-		[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 	}
-	
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		[AppController printStackTrace: e];
+	}
 	[wait close];
 	[wait release];
 }

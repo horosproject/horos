@@ -20,10 +20,7 @@
 /** \brief  Core Data Entity for an Album */
 
 @interface DicomAlbum : NSManagedObject {
-	BOOL isBonjour;
 }
-
-@property BOOL isBonjour;
 
 @property(nonatomic, retain) NSNumber* index;
 @property(nonatomic, retain) NSString* name;

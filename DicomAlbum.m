@@ -16,8 +16,6 @@
 
 @implementation DicomAlbum
 
-@synthesize isBonjour;
-
 @dynamic index;
 @dynamic name;
 @dynamic predicateString;

@@ -1282,15 +1282,6 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return s;
 }
 
--(BOOL)isBonjour {
-	NSArray* albums = [[self albums] allObjects];
-	if (!albums.count)
-		return NO;
-	for (DicomAlbum* album in albums)
-		if (!album.isBonjour)
-			return NO;
-	return YES;
-}
 
 //- (BOOL) validateForDelete:(NSError **)error
 //{
