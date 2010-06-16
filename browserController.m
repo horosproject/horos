@@ -1177,14 +1177,10 @@ static NSConditionLock *threadLock = nil;
 									}
 								}
 								
-								if( generatedByOsiriX)
-									[seriesTable setPrimitiveValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
-								else
+								if( generatedByOsiriX == NO)
 									[seriesTable setValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
 								
-								if( generatedByOsiriX)
-									[study setPrimitiveValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
-								else
+								if( generatedByOsiriX == NO)
 									[study setValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
 								
 								if( [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
