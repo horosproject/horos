@@ -1438,6 +1438,8 @@ static NSConditionLock *threadLock = nil;
 	
 	[DicomFile setFilesAreFromCDMedia: NO];
 	
+	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dicomsr_osirix" handler: nil];
+	
 	if( addFailed)
 	{
 		NSLog(@"adding failed....");
@@ -14564,7 +14566,7 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		// Is it on writable media? Ask if the user want to delete the original file?
 		
-		if( [NSThread currentThread] == [AppController mainThread] && [[NSFileManager defaultManager] isWritableFileAtPath: file])
+		if( [NSThread currentThread] == [AppController mainThread] && [[NSFileManager defaultManager] isWritableFileAtPath: file] && showGUI == YES)
 		{
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"HideZIPSuppressionMessage"] == NO)
 			{
