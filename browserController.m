@@ -1116,17 +1116,6 @@ static NSConditionLock *threadLock = nil;
 							
 							if( newObject || inParseExistingObject)
 							{
-								// Check if it is an OsiriX Comments/Status/KeyImages SR
-								if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Annotations SR"])
-								{
-									// There is only ONE annotations DICOM SR per study
-									for( DicomImage *wu in [[seriesTable valueForKey: @"images"] allObjects])
-									{
-										if( wu != image)
-											[context deleteObject: wu];
-									}
-								}
-								
 								browserController.needDBRefresh = YES;
 								
 								if( DICOMROI == NO)

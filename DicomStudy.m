@@ -213,8 +213,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		@try
 		{
-			NSManagedObject *archivedAnnotations = [self annotationsSRSeries];
-			NSString *dstPath = [[archivedAnnotations valueForKeyPath: @"images.completePath"] anyObject];
+			NSManagedObject *archivedAnnotations = [self annotationsSRImage];
+			NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
 			
 			if( dstPath)
 			{
@@ -332,10 +332,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		@try
 		{
-			NSManagedObject *archivedAnnotations = [self annotationsSRSeries];
-			NSString *dstPath = nil;
-			
-			dstPath = [[archivedAnnotations valueForKeyPath: @"images.completePath"] anyObject];
+			NSManagedObject *archivedAnnotations = [self annotationsSRImage];
+			NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
 			
 			if( dstPath == nil)
 				dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
@@ -1115,7 +1113,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return newArray;
 }
 
-- (NSManagedObject *) annotationsSRSeries // Comments, Status, Key Images, ...
+- (NSManagedObject *) annotationsSRImage // Comments, Status, Key Images, ...
 {
 	NSArray *array = [self primitiveValueForKey: @"series"];
 	if ([array count] < 1)  return nil;
@@ -1123,7 +1121,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[[self managedObjectContext] lock];
 	
 	NSMutableArray *newArray = [NSMutableArray array];
-	DicomSeries *series = nil;
+	NSManagedObject *image = nil;
 	
 	@try 
 	{
@@ -1133,18 +1131,24 @@ static NSRecursiveLock *dbModifyLock = nil;
 				[newArray addObject: series];
 		}
 		
+		// Take the most recent series
 		if( [newArray count] > 1)
-			NSLog( @"****** multiple (%d) annotations SR Series?", [newArray count]);
-		
-		series = [newArray lastObject];
-		if( [[series valueForKey: @"images"] count] > 1)
 		{
-			NSLog( @"****** multiple (%d) annotations SR objects: Take the most recent object...", [[series valueForKey: @"images"] count]);
-			
-			NSArray *images = [[series valueForKey: @"images"] allObjects];
-			
-			// XXXXXXXXXXXX
+			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
+			newArray = [[[newArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]] mutableCopy] autorelease];
 		}
+		
+		if( [[[newArray lastObject] valueForKey: @"images"] count] > 1)
+		{
+			NSArray *images = [[[newArray lastObject] valueForKey: @"images"] allObjects];
+			
+			// Take the most recent image
+			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
+			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
+			
+			image = [images lastObject];
+		}
+		else image = [[[newArray lastObject] valueForKey: @"images"] anyObject];
 	}
 	@catch (NSException * e) 
 	{
@@ -1153,7 +1157,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	[[self managedObjectContext] unlock];
 	
-	return series;
+	return image;
 }
 
 - (NSManagedObject *) reportSRSeries
