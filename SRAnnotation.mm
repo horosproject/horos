@@ -18,6 +18,7 @@
 #import "DCMPix.h"
 #import "browserController.h"
 #import "DicomFile.h"
+#import <OsiriX/DCMCalendarDate.h>
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dsrtypes.h"
@@ -531,6 +532,9 @@
 		if( _DICOMSeriesNumber)
 			document->setSeriesNumber( [_DICOMSeriesNumber UTF8String]);
 	}
+	
+	document->setContentDate( [[[DCMCalendarDate date] dateString] UTF8String]);
+	document->setContentTime( [[[DCMCalendarDate date] timeString] UTF8String]);
 	
 	OFCondition status = EC_Normal;
 	DcmFileFormat *fileformat = new DcmFileFormat();
