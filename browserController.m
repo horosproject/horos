@@ -775,12 +775,19 @@ static NSConditionLock *threadLock = nil;
 				newFile = [curDict objectForKey:@"filePath"];
 				
 				BOOL DICOMROI = NO;
+				BOOL inParseExistingObject = parseExistingObject;
 				NSString *reportURL = nil;
 				
 				NSString *SOPClassUID = [curDict objectForKey:@"SOPClassUID"];
 				
 				if( [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID])
 				{
+					// Check if it is an OsiriX ROI SR
+					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Annotations SR"])
+					{
+						inParseExistingObject = YES;
+					}
+					
 					// Check if it is an OsiriX ROI SR
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX ROI SR"])
 					{
@@ -807,6 +814,7 @@ static NSConditionLock *threadLock = nil;
 							}
 						}
 						
+						inParseExistingObject = YES;
 						newFile = destPath;
 						DICOMROI = YES;
 					}
@@ -854,6 +862,7 @@ static NSConditionLock *threadLock = nil;
 							
 							[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
 						}
+						inParseExistingObject = YES;
 					}
 				}
 				
@@ -943,7 +952,7 @@ static NSConditionLock *threadLock = nil;
 							newObject = NO;
 						}
 						
-						if( newObject || parseExistingObject)
+						if( newObject || inParseExistingObject)
 						{
 							[study setValue:[curDict objectForKey: @"studyID"] forKey:@"studyInstanceUID"];
 							[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
@@ -1023,7 +1032,7 @@ static NSConditionLock *threadLock = nil;
 								newObject = NO;
 							}
 							
-							if( newObject || parseExistingObject)
+							if( newObject || inParseExistingObject)
 							{
 								if( [curDict objectForKey: @"seriesDICOMUID"]) [seriesTable setValue:[curDict objectForKey: @"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
 								if( [curDict objectForKey: @"SOPClassUID"]) [seriesTable setValue:[curDict objectForKey: @"SOPClassUID"] forKey:@"seriesSOPClassUID"];
@@ -1067,7 +1076,7 @@ static NSConditionLock *threadLock = nil;
 								image = [imagesArray objectAtIndex: index];
 								
 								// Does this image contain a valid image path? If not replace it, with the new one
-								if( [[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder]] == YES && parseExistingObject == NO)
+								if( [[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder]] == YES && inParseExistingObject == NO)
 								{
 									[addedImagesArray addObject: image];
 									
@@ -1100,7 +1109,7 @@ static NSConditionLock *threadLock = nil;
 							
 							[completeImagesArray addObject: image];
 							
-							if( newObject || parseExistingObject)
+							if( newObject || inParseExistingObject)
 							{
 								// Check if it is an OsiriX Comments/Status/KeyImages SR
 								if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Annotations SR"])
