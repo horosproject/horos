@@ -645,8 +645,8 @@ static NSConditionLock *threadLock = nil;
 		
 		@try
 		{
-			DicomFile		*curFile = nil;
-			NSDictionary	*curDict = nil;
+			DicomFile *curFile = nil;
+			NSMutableDictionary	*curDict = nil;
 			
 			@try
 			{
@@ -768,7 +768,7 @@ static NSConditionLock *threadLock = nil;
 		NSMutableArray *studiesArrayStudyInstanceUID = [[studiesArray valueForKey:@"studyInstanceUID"] mutableCopy];
 		
 		// Add the new files
-		for (NSDictionary *curDict in dicomFilesArray)
+		for (NSMutableDictionary *curDict in dicomFilesArray)
 		{
 			@try
 			{
@@ -785,12 +785,15 @@ static NSConditionLock *threadLock = nil;
 					// Check if it is an OsiriX ROI SR
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Annotations SR"])
 					{
+						[curDict setValue: @"OsiriX Annotations SR" forKey: @"seriesID"];
 						inParseExistingObject = YES;
 					}
 					
 					// Check if it is an OsiriX ROI SR
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX ROI SR"])
 					{
+						[curDict setValue: @"OsiriX ROI SR" forKey: @"seriesID"];
+						
 						// Move it to the ROIs folder
 						NSString *uidName = [SRAnnotation getROIFilenameFromSR: newFile];
 						NSString *destPath = [roiFolder stringByAppendingPathComponent: uidName];
@@ -822,6 +825,8 @@ static NSConditionLock *threadLock = nil;
 					// Check if it is an OsiriX Report SR
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
 					{
+						[curDict setValue: @"OsiriX Report SR" forKey: @"seriesID"];
+						
 						// Move it to the REPORTS folder
 						NSString *uidName = [SRAnnotation getReportFilenameFromSR: newFile];
 						NSString *destPath = [reportsDirectory stringByAppendingPathComponent: uidName];

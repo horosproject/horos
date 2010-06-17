@@ -11859,6 +11859,8 @@ END_CREATE_ROIS:
 
 - (void) dealloc
 {
+	[checking lock];
+	
 	if( shutterPolygonal) free( shutterPolygonal);
 	
 	[frameOfReferenceUID release];
@@ -11895,9 +11897,6 @@ END_CREATE_ROIS:
 	}
 	[imageObj release];
 	
-	[checking release];
-	checking = nil;
-	
 	if( oData) free( oData);
 	if( VOILUT_table) free( VOILUT_table);
 	
@@ -11911,6 +11910,9 @@ END_CREATE_ROIS:
 	[self clearCachedDCMFrameworkFiles];
 	
 	[srcFile release];
+	[checking unlock];
+	[checking release];
+	checking = nil;
 	
     [super dealloc];
 }

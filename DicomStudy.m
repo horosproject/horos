@@ -1132,14 +1132,14 @@ static NSRecursiveLock *dbModifyLock = nil;
 		for( DicomSeries *series in array)
 		{
 			if( [[series valueForKey:@"id"] intValue] == 5004 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX Annotations SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
-				[newArray addObject:series];
+				[newArray addObject: series];
 			
 			if( [newArray count] > 1)
 			{
 				NSLog( @"****** multiple (%d) annotations SR Series?? Delete the extra series...", [newArray count]);
 				
-				for( int i = 1 ; i < [newArray count] ; i++)
-					[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
+				for( int i = 0 ; i < [newArray count]-1; i++)
+					[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]];
 			}
 		}
 	}
@@ -1151,7 +1151,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[[self managedObjectContext] unlock];
 	
 	if( [newArray count])
-		return [newArray objectAtIndex: 0];
+		return [newArray lastObject];
 	
 	return nil;
 }
@@ -1177,7 +1177,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		{
 			NSLog( @"****** multiple (%d) reportSRSeries?? Delete the extra series...", [newArray count]);
 			
-			for( int i = 1 ; i < [newArray count] ; i++)
+			for( int i = 0 ; i < [newArray count]-1 ; i++)
 				[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
 		}
 	}
@@ -1215,7 +1215,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		{
 			NSLog( @"****** multiple (%d) roiSRSeries?? Delete the extra series...", [newArray count]);
 			
-			for( int i = 1 ; i < [newArray count] ; i++)
+			for( int i = 0 ; i < [newArray count]-1 ; i++)
 				[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
 		}
 	}
