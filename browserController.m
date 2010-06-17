@@ -1656,8 +1656,14 @@ static NSConditionLock *threadLock = nil;
 					else    // A file
 					{
 						if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
-							[self askForZIPPassword: filename destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
-						
+						{
+							NSString *unzipPath = [[[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH] stringByAppendingPathComponent: @"unzip_folder"];
+							
+							[[NSFileManager defaultManager] removeItemAtPath: unzipPath error: nil];
+							[[NSFileManager defaultManager] createDirectoryAtPath: unzipPath attributes: nil];
+							
+							[self askForZIPPassword: filename destination: unzipPath];
+						}
 //						else if( [[filename lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
 //							[commentsAndStatus addObject: filename];
 						
@@ -14560,7 +14566,24 @@ static NSArray*	openSubSeriesArray = nil;
 	[wait close];
 	[wait release];
 	
-	if( [t terminationStatus] == 0)
+	BOOL fileExist = NO;
+	
+	NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath: destination];
+	NSString *item = nil;
+	while( item = [dirEnum nextObject])
+	{
+		BOOL isDirectory;
+		if( [[NSFileManager defaultManager] fileExistsAtPath: [destination stringByAppendingPathComponent: item] isDirectory: &isDirectory])
+		{
+			if( isDirectory == NO && [[[[NSFileManager defaultManager] attributesOfItemAtPath: [destination stringByAppendingPathComponent: item] error: nil] valueForKey: NSFileSize] longLongValue] > 0)
+			{
+				fileExist = YES;
+				break;
+			}
+		}
+	}
+	
+	if( fileExist)
 	{
 		// Is it on writable media? Ask if the user want to delete the original file?
 		
@@ -14617,7 +14640,7 @@ static NSArray*	openSubSeriesArray = nil;
 			[NSApp endSheet: CDpasswordWindow];
 			[CDpasswordWindow orderOut: self];
 		}
-		while( [BrowserController unzipFile: file withPassword: self.CDpassword destination: destination] == NO && result == NSRunStoppedResponse);
+		while( result == NSRunStoppedResponse && [BrowserController unzipFile: file withPassword: self.CDpassword destination: destination] == NO);
 	}
 	else
 		result = NSRunStoppedResponse;
