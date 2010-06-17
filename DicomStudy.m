@@ -337,9 +337,6 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			dstPath = [[archivedAnnotations valueForKeyPath: @"images.completePath"] anyObject];
 			
-			if( [[[archivedAnnotations valueForKeyPath: @"images.completePath"] allObjects] count] > 1)
-				NSLog( @"********* warning multiple annotations SR for this study");
-					
 			if( dstPath == nil)
 				dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
 			
@@ -1120,12 +1117,13 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSManagedObject *) annotationsSRSeries // Comments, Status, Key Images, ...
 {
-	NSArray *array = [self primitiveValueForKey: @"series"] ;
+	NSArray *array = [self primitiveValueForKey: @"series"];
 	if ([array count] < 1)  return nil;
 	
 	[[self managedObjectContext] lock];
 	
 	NSMutableArray *newArray = [NSMutableArray array];
+	DicomSeries *series = nil;
 	
 	@try 
 	{
@@ -1133,14 +1131,19 @@ static NSRecursiveLock *dbModifyLock = nil;
 		{
 			if( [[series valueForKey:@"id"] intValue] == 5004 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX Annotations SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
 				[newArray addObject: series];
+		}
+		
+		if( [newArray count] > 1)
+			NSLog( @"****** multiple (%d) annotations SR Series?", [newArray count]);
+		
+		series = [newArray lastObject];
+		if( [[series valueForKey: @"images"] count] > 1)
+		{
+			NSLog( @"****** multiple (%d) annotations SR objects: Take the most recent object...", [[series valueForKey: @"images"] count]);
 			
-			if( [newArray count] > 1)
-			{
-				NSLog( @"****** multiple (%d) annotations SR Series?? Delete the extra series...", [newArray count]);
-				
-				for( int i = 0 ; i < [newArray count]-1; i++)
-					[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]];
-			}
+			NSArray *images = [[series valueForKey: @"images"] allObjects];
+			
+			// XXXXXXXXXXXX
 		}
 	}
 	@catch (NSException * e) 
@@ -1150,10 +1153,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	[[self managedObjectContext] unlock];
 	
-	if( [newArray count])
-		return [newArray lastObject];
-	
-	return nil;
+	return series;
 }
 
 - (NSManagedObject *) reportSRSeries
