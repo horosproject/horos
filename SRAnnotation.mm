@@ -189,6 +189,10 @@
 		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
 		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
 		
+		document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+		document->getTree().getCurrentContentItem().setConceptName( DSRCodedEntryValue("CODE_01", OFFIS_CODING_SCHEME_DESIGNATOR, "Description"));
+		document->getTree().getCurrentContentItem().setStringValue( [[NSString stringWithFormat: @"%@", dict] UTF8String]);
+		
 		image = [im retain];
 		
 		_dataEncapsulated = [[NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListXMLFormat_v1_0 errorDescription: nil] retain];

@@ -3166,7 +3166,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	//---------------------------------various
 	pixelRatio = 1.0;
-	checking = [[NSLock alloc] init];
+	checking = [[NSRecursiveLock alloc] init];
 	stack = 2;
 	decayFactor = 1.0;
 	slope = 1.0;
