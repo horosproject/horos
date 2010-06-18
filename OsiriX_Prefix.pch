@@ -3,4 +3,4 @@
 #endif
 
 #define OSIRIX_VIEWER
-#define _STEREO_VISION_
+//#define _STEREO_VISION_
