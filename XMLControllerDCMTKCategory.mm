@@ -49,7 +49,7 @@ extern NSRecursiveLock *PapyrusLock;
 		error_count=engine.startProvidingService();
 		
 		if (error_count > 0)
-			CERR << "There were " << error_count << " error(s)" << endl;
+			NSLog( @"------- XMLController modifyDicom : there were %d errors", error_count);
 	}
 	@catch (NSException * e) 
 	{

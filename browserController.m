@@ -596,7 +596,7 @@ static NSConditionLock *threadLock = nil;
 	Wait *splash = nil;
 	NSManagedObjectModel *model = context.persistentStoreCoordinator.managedObjectModel;
 	NSMutableArray *addedImagesArray = nil, *completeImagesArray = nil, *addedSeries = [NSMutableArray arrayWithCapacity: 0], *modifiedStudiesArray = nil;
-	BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"], COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"], newStudy = NO, newObject = NO, isCDMedia = NO, onlyDICOMROI = YES, addFailed = NO;
+	BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"], COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"], newStudy = NO, newObject = NO, isCDMedia = NO, addFailed = NO;
 	NSMutableArray *vlToRebuild = [NSMutableArray arrayWithCapacity: 0], *vlToReload = [NSMutableArray arrayWithCapacity: 0], *dicomFilesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
 	int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeries"], combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
 	
@@ -774,7 +774,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				newFile = [curDict objectForKey:@"filePath"];
 				
-				BOOL DICOMROI = NO;
+				BOOL DICOMSR = NO;
 				BOOL inParseExistingObject = parseExistingObject;
 				NSString *reportURL = nil;
 				
@@ -787,6 +787,7 @@ static NSConditionLock *threadLock = nil;
 					{
 						[curDict setValue: @"OsiriX Annotations SR" forKey: @"seriesID"];
 						inParseExistingObject = YES;
+						DICOMSR = YES;
 					}
 					
 					// Check if it is an OsiriX ROI SR
@@ -819,7 +820,7 @@ static NSConditionLock *threadLock = nil;
 						
 						inParseExistingObject = YES;
 						newFile = destPath;
-						DICOMROI = YES;
+						DICOMSR = YES;
 					}
 					
 					// Check if it is an OsiriX Report SR
@@ -868,11 +869,9 @@ static NSConditionLock *threadLock = nil;
 							[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
 						}
 						inParseExistingObject = YES;
+						DICOMSR = YES;
 					}
 				}
-				
-				if( DICOMROI == NO)
-					onlyDICOMROI = NO;
 				
 				if( SOPClassUID != nil 
 				   && [DCMAbstractSyntaxUID isImageStorage: SOPClassUID] == NO 
@@ -1118,7 +1117,7 @@ static NSConditionLock *threadLock = nil;
 							{
 								browserController.needDBRefresh = YES;
 								
-								if( DICOMROI == NO)
+								if( DICOMSR == NO)
 									[seriesTable setValue:today forKey:@"dateAdded"];
 								
 								[image setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
@@ -1144,7 +1143,7 @@ static NSConditionLock *threadLock = nil;
 								if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
 								else [image setValue:newFile forKey:@"path"];
 								
-								if( DICOMROI) [image setValue: [NSNumber numberWithBool:YES] forKey:@"inDatabaseFolder"];
+								if( DICOMSR) [image setValue: [NSNumber numberWithBool:YES] forKey:@"inDatabaseFolder"];
 								else [image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
 								
 								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
@@ -1154,7 +1153,8 @@ static NSConditionLock *threadLock = nil;
 								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
 								[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
 								
-								[image setValue:[curDict objectForKey: @"manufacturer"] forKey: @"comment"];
+								if( [[curDict objectForKey: @"manufacturer"] length] > 0)
+									[image setValue:[curDict objectForKey: @"manufacturer"] forKey: @"comment"];
 								
 								[image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
 								[image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
@@ -1170,27 +1170,30 @@ static NSConditionLock *threadLock = nil;
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
 								
-								if( COMMENTSAUTOFILL)
+								if( DICOMSR == NO)
 								{
-									if([curDict objectForKey: @"commentsAutoFill"])
+									if( COMMENTSAUTOFILL)
 									{
-										[seriesTable setValue: [curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
-										
-										[study setValue:[curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
+										if([curDict objectForKey: @"commentsAutoFill"])
+										{
+											[seriesTable setValue: [curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
+											
+											[study setValue:[curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
+										}
 									}
+									
+									if( generatedByOsiriX == NO && [[curDict objectForKey: @"seriesComments"] length] > 0)
+										[seriesTable setValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
+									
+									if( generatedByOsiriX == NO && [[curDict objectForKey: @"studyComments"] length] > 0)
+										[study setValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
+									
+									if( [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
+										[study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
+									
+									if( [[curDict objectForKey: @"reportURL"] length] > 0)
+										[study setPrimitiveValue: reportURL forKey: @"reportURL"];
 								}
-								
-								if( generatedByOsiriX == NO)
-									[seriesTable setValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
-								
-								if( generatedByOsiriX == NO)
-									[study setValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
-								
-								if( [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
-									[study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
-								
-								if( [[curDict objectForKey: @"reportURL"] boolValue])
-									[study setPrimitiveValue: reportURL forKey: @"reportURL"];
 								
 								if( [curDict objectForKey: @"keyFrames"])
 								{
@@ -1315,7 +1318,7 @@ static NSConditionLock *threadLock = nil;
 					[AppController printStackTrace: ne];
 				}
 				
-				if( [addedImagesArray count] && onlyDICOMROI == NO)
+				if( [addedImagesArray count])
 				{
 					dockLabel = [NSString stringWithFormat:@"%d", [addedImagesArray count]];
 					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];
@@ -1807,7 +1810,7 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (void) addFiles: (NSArray*) files withRule:(NSDictionary*) routingRule
+- (void) addFiles: (NSArray*) images withRule:(NSDictionary*) routingRule
 {
 	if( autoroutingQueueArray == nil) autoroutingQueueArray = [[NSMutableArray array] retain];
 	if( autoroutingQueue == nil) autoroutingQueue = [[NSLock alloc] init];
@@ -1815,23 +1818,25 @@ static NSConditionLock *threadLock = nil;
 	
 	[autoroutingQueue lock];
 	
-	//Are these files already in the queue, with same routingRule
-	NSMutableArray *mutableFiles = [NSMutableArray arrayWithArray: files];
+	//Are these images already in the queue, with same routingRule
+	NSMutableArray *mutableImages = [NSMutableArray arrayWithArray: images];
 	for( NSDictionary *order in autoroutingQueueArray)
 	{
 		if( [routingRule isEqualToDictionary: [order valueForKey: @"routingRule"]])
 		{
+			NSArray *filesFromOrder = [[order valueForKey: @"objects"] valueForKey: @"completePath"];
+			
 			// Are the files already in queue for same filter?
-			for( NSString *file in files)
+			for( DicomImage *image in images)
 			{
-				if( [[order valueForKey: @"files"] containsObject: file])
-					[mutableFiles removeObject: file];
+				if( [filesFromOrder containsObject: [image valueForKey: @"completePath"]])
+					[mutableImages removeObject: image];
 			}
 		}
 	}
 	
-	if( [mutableFiles count])
-		[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: mutableFiles, @"objects", [routingRule objectForKey:@"server"], @"server", routingRule, @"routingRule", [routingRule valueForKey:@"failureRetry"], @"failureRetry", nil]];
+	if( [mutableImages count])
+		[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: mutableImages, @"objects", [routingRule objectForKey:@"server"], @"server", routingRule, @"routingRule", [routingRule valueForKey:@"failureRetry"], @"failureRetry", nil]];
 	
 	[autoroutingQueue unlock];
 }
@@ -1886,7 +1891,7 @@ static NSConditionLock *threadLock = nil;
 					
 					if( [result count])
 					{
-						if( [[routingRule valueForKey:@"previousStudies"] intValue] > 0)
+						if( [[routingRule valueForKey:@"previousStudies"] intValue] > 0 && [[routingRule objectForKey: @"filterType"] intValue] == 0)
 						{
 							NSMutableDictionary *patients = [NSMutableDictionary dictionary];
 							
@@ -1971,7 +1976,7 @@ static NSConditionLock *threadLock = nil;
 							}
 						}
 						
-						if( [[routingRule valueForKey:@"cfindTest"] boolValue])
+						if( [[routingRule valueForKey:@"cfindTest"] boolValue] && [[routingRule objectForKey: @"filterType"] intValue] == 0)
 						{
 							NSMutableDictionary *studies = [NSMutableDictionary dictionary];
 							
@@ -2072,7 +2077,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void)showErrorMessage: (NSDictionary*)dict
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ShowErrorMessagesForAutorouting"] == NO) return;
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ShowErrorMessagesForAutorouting"] == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) return;
 	
 	NSException	*ne = [dict objectForKey: @"exception"];
 	NSDictionary *server = [dict objectForKey:@"server"];
