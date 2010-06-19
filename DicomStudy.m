@@ -250,6 +250,23 @@ static NSRecursiveLock *dbModifyLock = nil;
 			[self setPrimitiveValue: [rootDict valueForKey: @"comment"] forKey: @"comment"];
 			[self setPrimitiveValue: [rootDict valueForKey: @"stateText"] forKey: @"stateText"];
 			
+			NSArray *albums = [BrowserController albumsInContext: [self managedObjectContext]];
+			
+			for( NSString *name in [rootDict valueForKey: @"name"])
+			{
+				NSUInteger index = [[albums valueForKey: @"name"] indexOfObject: name];
+				
+				if( index != NSNotFound)
+				{
+					if( [[[albums objectAtIndex: index] valueForKey: @"smartAlbum"] boolValue] == NO)
+					{
+						NSMutableSet *studies = [[albums objectAtIndex: index] mutableSetValueForKey: @"studies"];	
+						
+						[studies addObject: self];
+					}
+				}
+			}
+			
 			NSArray *seriesArray = [[self valueForKey: @"series"] allObjects];
 			
 			NSArray *allImages = nil, *compressedSopInstanceUIDArray = nil;
@@ -345,8 +362,14 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	NSMutableArray *albumsArray = [NSMutableArray array];
 	
-	for( NSString *name in [[self valueForKey: @"albums"] valueForKey: @"name"])
-		[albumsArray addObject: name];
+	for( DicomAlbum * a in [self valueForKey: @"albums"])
+	{
+		if( [[a valueForKey: @"smartAlbum"] boolValue] == NO)
+		{
+			NSString *name = [a valueForKey: @"name"];
+			[albumsArray addObject: name];
+		}
+	}
 	
 	[rootDict setObject: albumsArray forKey: @"albums"];
 	

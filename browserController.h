@@ -299,6 +299,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) createDatabaseFolder:(id) sender;
 - (void) openDatabasePath: (NSString*) path;
 - (NSArray*)albums;
++ (NSArray*) albumsInContext:(NSManagedObjectContext*)context;
 - (BOOL) shouldTerminate: (id) sender;
 - (void) databaseOpenStudy: (NSManagedObject*) item;
 - (IBAction) databaseDoublePressed:(id)sender;
