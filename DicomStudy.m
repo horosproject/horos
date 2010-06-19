@@ -243,10 +243,47 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	else
 	{
+		// Easy - We are at root level
 		[self setPrimitiveValue: [rootDict valueForKey: @"comment"] forKey: @"comment"];
 		[self setPrimitiveValue: [rootDict valueForKey: @"stateText"] forKey: @"stateText"];
 		
+		NSArray *seriesArray = [[self valueForKey: @"series"] allObjects];
+		NSArray *imagesArray = [[self valueForKeyPath: @"series.images"] allObjects];
 		
+		for( NSDictionary *series in [rootDict valueForKey: @"series"])
+		{
+			// Find corresponding series
+			NSUInteger index = [[seriesArray valueForKey: @"seriesInstanceUID"] indexOfObject: [series valueForKey: @"seriesInstanceUID"]];
+			
+			if( index == NSNotFound)
+				index = [[seriesArray valueForKey: @"seriesDICOMUID"] indexOfObject: [series valueForKey: @"seriesDICOMUID"]];
+			
+			if( index != NSNotFound)
+			{
+				DicomSeries *s = [seriesArray objectAtIndex: index];
+				
+				if( [series valueForKey:@"comment"])
+					[s setValue: [series valueForKey:@"comment"] forKey: @"comment"];
+			
+				if( [series valueForKey:@"stateText"])
+					[s setValue: [series valueForKey:@"stateText"] forKey: @"stateText"];
+				
+				for( NSDictionary *image in [series valueForKey: @"images"])
+				{
+					// Find corresponding image
+					index = [[imagesArray valueForKey: @"sopInstanceUID"] indexOfObject: [series valueForKey: @"sopInstanceUID"]];
+					if( index != NSNotFound)
+					{
+						DicomImage *i = [imagesArray objectAtIndex: index];
+						
+						if( [image valueForKey:@"isKeyImage"])
+							[i setObject: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
+					}
+					else NSLog( @"----- applyAnnotationsFromDictionary : image not found");
+				}
+			}
+			else NSLog( @"----- applyAnnotationsFromDictionary : series not found");
+		}
 	}
 }
 
@@ -303,9 +340,6 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		if( [series valueForKey:@"seriesInstanceUID"] && [series valueForKey:@"seriesDICOMUID"])
 		{
-			[seriesDict setObject: [series valueForKey:@"seriesInstanceUID"] forKey: @"seriesInstanceUID"];
-			[seriesDict setObject: [series valueForKey:@"seriesDICOMUID"] forKey: @"seriesDICOMUID"];
-		
 			if( [series valueForKey:@"comment"])
 				[seriesDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
 			
@@ -317,29 +351,36 @@ static NSRecursiveLock *dbModifyLock = nil;
 			// Images Level
 			
 			NSMutableArray *imagesArray = [NSMutableArray array];
-			
 			for( DicomSeries *image in [series valueForKey: @"images"])
 			{
 				NSMutableDictionary *imageDict = [NSMutableDictionary dictionary];
 				
 				if( [image valueForKey:@"sopInstanceUID"])
 				{
-					[imageDict setObject: [image valueForKey:@"sopInstanceUID"] forKey: @"sopInstanceUID"];
-					
-					if( [image valueForKey:@"isKeyImage"])
+					if( [image valueForKey:@"storedIsKeyImage"])
+					{
 						[imageDict setObject: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
+						[imageDict setObject: [image valueForKey:@"sopInstanceUID"] forKey: @"sopInstanceUID"];
+						[imagesArray addObject: imageDict];
+					}
 				}
-				
-				[imagesArray addObject: imageDict];
 			}
 			
-			[seriesDict setObject: imagesArray forKey: @"images"];
+			if( [imagesArray count] > 0)
+				[seriesDict setObject: imagesArray forKey: @"images"];
 			
-			[seriesArray addObject: seriesDict];
+			if( [seriesDict count] > 0)
+			{
+				[seriesDict setObject: [series valueForKey:@"seriesInstanceUID"] forKey: @"seriesInstanceUID"];
+				[seriesDict setObject: [series valueForKey:@"seriesDICOMUID"] forKey: @"seriesDICOMUID"];
+				
+				[seriesArray addObject: seriesDict];
+			}
 		}
 	}
 	
-	[rootDict setObject: seriesArray forKey: @"series"];
+	if( [seriesArray count] > 0)
+		[rootDict setObject: seriesArray forKey: @"series"];
 	
 	return rootDict;
 }
