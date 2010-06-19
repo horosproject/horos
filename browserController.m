@@ -1188,28 +1188,28 @@ static NSConditionLock *threadLock = nil;
 									if( generatedByOsiriX == NO && [[curDict objectForKey: @"studyComments"] length] > 0)
 										[study setValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
 									
-									if( [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
-										[study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
+									if( generatedByOsiriX == NO && [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
+										[study setValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
 									
-									if( [[curDict objectForKey: @"reportURL"] length] > 0)
-										[study setPrimitiveValue: reportURL forKey: @"reportURL"];
-								}
-								
-								if( [curDict objectForKey: @"keyFrames"])
-								{
-									@try
+									if( generatedByOsiriX == NO && [curDict objectForKey: @"keyFrames"])
 									{
-										for( NSString *k in [curDict objectForKey: @"keyFrames"])
+										@try
 										{
-											if( [k intValue] == f) // corresponding frame
+											for( NSString *k in [curDict objectForKey: @"keyFrames"])
 											{
-												[image setPrimitiveValue: [NSNumber numberWithBool: YES] forKey: @"storedIsKeyImage"];
-												break;
+												if( [k intValue] == f) // corresponding frame
+												{
+													[image setValue: [NSNumber numberWithBool: YES] forKey: @"storedIsKeyImage"];
+													break;
+												}
 											}
 										}
+										@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
 									}
-									@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
 								}
+								
+								if( [reportURL length] > 0)
+									[study setPrimitiveValue: reportURL forKey: @"reportURL"];
 								
 								[addedImagesArray addObject: image];
 								

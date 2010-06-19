@@ -67,6 +67,7 @@
 - (NSManagedObject *) reportSRSeries;
 - (NSManagedObject *) annotationsSRImage;
 - (void) archiveReportAsDICOMSR;
+- (void) archiveAnnotationsAsDICOMSR;
 - (NSDictionary *)dictionary;
 - (BOOL) isHidden;
 - (void) setHidden: (BOOL) h;

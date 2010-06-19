@@ -593,6 +593,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		#endif
 		#endif
 		
+		NSNumber *previousValue = [self primitiveValueForKey: @"storedIsKeyImage"];
+		
 		[self willChangeValueForKey: @"storedIsKeyImage"];
 		
 		if( [f boolValue] == NO)
@@ -601,6 +603,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 			[self setPrimitiveValue: f forKey:@"storedIsKeyImage"];
 		
 		[self didChangeValueForKey:@"storedIsKeyImage"];
+		
+		if( [f intValue] != [previousValue intValue])
+			[[self valueForKeyPath: @"series.study"] archiveAnnotationsAsDICOMSR];
 	}
 	
 	[pool release];

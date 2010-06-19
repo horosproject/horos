@@ -245,6 +245,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		[self setPrimitiveValue: [rootDict valueForKey: @"comment"] forKey: @"comment"];
 		[self setPrimitiveValue: [rootDict valueForKey: @"stateText"] forKey: @"stateText"];
+		
+		
 	}
 }
 
@@ -299,23 +301,42 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		NSMutableDictionary *seriesDict = [NSMutableDictionary dictionary];
 		
-		if( [series valueForKey:@"comment"])
-			[seriesDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
-		
-		if( [series valueForKey:@"stateText"])
-			[seriesDict setObject: [series valueForKey:@"stateText"] forKey: @"stateText"];
-		
-		// ***************************************************************************************************
-		
-		// Images Level
-		
-		for( DicomSeries *image in [series valueForKey: @"images"])
+		if( [series valueForKey:@"seriesInstanceUID"] && [series valueForKey:@"seriesDICOMUID"])
 		{
-			if( [image valueForKey:@"isKeyImage"])
-				[seriesDict setObject: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
-		}
+			[seriesDict setObject: [series valueForKey:@"seriesInstanceUID"] forKey: @"seriesInstanceUID"];
+			[seriesDict setObject: [series valueForKey:@"seriesDICOMUID"] forKey: @"seriesDICOMUID"];
 		
-		[seriesArray addObject: seriesDict];
+			if( [series valueForKey:@"comment"])
+				[seriesDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
+			
+			if( [series valueForKey:@"stateText"])
+				[seriesDict setObject: [series valueForKey:@"stateText"] forKey: @"stateText"];
+			
+			// ***************************************************************************************************
+			
+			// Images Level
+			
+			NSMutableArray *imagesArray = [NSMutableArray array];
+			
+			for( DicomSeries *image in [series valueForKey: @"images"])
+			{
+				NSMutableDictionary *imageDict = [NSMutableDictionary dictionary];
+				
+				if( [image valueForKey:@"sopInstanceUID"])
+				{
+					[imageDict setObject: [image valueForKey:@"sopInstanceUID"] forKey: @"sopInstanceUID"];
+					
+					if( [image valueForKey:@"isKeyImage"])
+						[imageDict setObject: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
+				}
+				
+				[imagesArray addObject: imageDict];
+			}
+			
+			[seriesDict setObject: imagesArray forKey: @"images"];
+			
+			[seriesArray addObject: seriesDict];
+		}
 	}
 	
 	[rootDict setObject: seriesArray forKey: @"series"];

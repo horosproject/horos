@@ -152,9 +152,29 @@
 	#endif
 	#endif
 	
+	NSString *previousValue = [self primitiveValueForKey: @"comment"];
+	
 	[self willChangeValueForKey: @"comment"];
 	[self setPrimitiveValue: c forKey: @"comment"];
 	[self didChangeValueForKey: @"comment"];
+	
+	if( [previousValue length] != 0 || [c length] != 0)
+	{
+		if( [c isEqualToString: previousValue] == NO)
+			[[self valueForKey: @"study"] archiveAnnotationsAsDICOMSR];
+	}
+}
+
+- (void) setStateText: (NSNumber*) c
+{
+	NSNumber *previousState = [self primitiveValueForKey: @"stateText"];
+	
+	[self willChangeValueForKey: @"stateText"];
+	[self setPrimitiveValue: c forKey: @"stateText"];
+	[self didChangeValueForKey: @"stateText"];
+	
+	if( [c intValue] != [previousState intValue])
+		[[self valueForKey: @"study"] archiveAnnotationsAsDICOMSR];
 }
 
 - (void) setDate:(NSDate*) date
