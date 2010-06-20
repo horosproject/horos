@@ -252,7 +252,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			NSArray *albums = [BrowserController albumsInContext: [self managedObjectContext]];
 			
-			for( NSString *name in [rootDict valueForKey: @"name"])
+			for( NSString *name in [rootDict valueForKey: @"albums"])
 			{
 				NSUInteger index = [[albums valueForKey: @"name"] indexOfObject: name];
 				
