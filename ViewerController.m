@@ -3906,27 +3906,37 @@ static volatile int numberOfThreadsForRelisce = 0;
 							
 							if( img == nil)
 							{
-								DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :nil :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
-								
-								[dcmPix CheckLoad];
-								
-								if( dcmPix && dcmPix.notAbleToLoadImage == NO)
+								@try 
 								{
-									NSImage *img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
+									DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :nil :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
+								
+									[dcmPix CheckLoad];
 									
-									if( img)
+									if( dcmPix && dcmPix.notAbleToLoadImage == NO)
 									{
-										[cell setImage: img];
+										NSImage *img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 										
-										if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
-											[curSeries setValue: [BrowserController produceJPEGThumbnail: img] forKey:@"thumbnail"];
+										if( img)
+										{
+											[cell setImage: img];
+											
+											if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
+												[curSeries setValue: [BrowserController produceJPEGThumbnail: img] forKey:@"thumbnail"];
+										}
+										else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
+										
+										[dcmPix release];
 									}
 									else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
-									
-									[dcmPix release];
 								}
-								else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
-								
+								@catch (NSException * e) 
+								{
+									NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+									#ifdef OSIRIX_VIEWER
+									[AppController printStackTrace: e];
+									#endif
+									[cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
+								}
 							}
 							else [cell setImage: img];
 						}
@@ -10596,7 +10606,7 @@ short				matrix[25];
 		
 		@try
 		{
-			NSMutableArray *newDICOMSR = [NSMutableArray array];
+//			NSMutableArray *newDICOMSR = [NSMutableArray array];
 			NSMutableArray *allDICOMSR = [NSMutableArray array];
 			NSMutableArray *toDeleteDICOMSR = [NSMutableArray array];
 			
@@ -10635,8 +10645,10 @@ short				matrix[25];
 							
 							if( [roisArray count])
 							{
-								if( [ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image] != nil)
-									[newDICOMSR addObject: str];
+								[ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image];
+								
+//								if( [ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image] != nil)
+//									[newDICOMSR addObject: str];
 								
 								[allDICOMSR addObject: str];
 							}
@@ -10712,11 +10724,14 @@ short				matrix[25];
 					[[BonjourBrowser currentBrowser] deleteRoisObject: roiSRSeries paths: toDeleteDICOMSR];
 			}
 			
-			if( [newDICOMSR count])
-			{
-				[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR]; // Here is the problem : the UID will NOT correspond, if we delete the file.......
-				[[BrowserController currentBrowser] saveDatabase: nil];
-			}
+			[BrowserController addFiles: allDICOMSR
+							  toContext: [[BrowserController currentBrowser] managedObjectContext]
+							 toDatabase: [BrowserController currentBrowser]
+							  onlyDICOM: YES 
+					   notifyAddedFiles: YES
+					parseExistingObject: YES
+							   dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
+					  generatedByOsiriX: YES];
 		}
 		@catch ( NSException *e)
 		{
