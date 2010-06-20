@@ -1215,7 +1215,7 @@ static NSConditionLock *threadLock = nil;
 								
 								if( [addedSeries containsObject: seriesTable] == NO) [addedSeries addObject: seriesTable];
 								
-								if([curDict valueForKey:@"album"] !=nil)
+								if( DICOMSR == NO && [curDict valueForKey:@"album"] !=nil)
 								{
 									NSArray* albumArray = [self albumsInContext:context];
 									
@@ -1250,6 +1250,7 @@ static NSConditionLock *threadLock = nil;
 									{
 										NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];	
 										[studies addObject: [image valueForKeyPath:@"series.study"]];
+										[[image valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
 									}
 								}
 							}
@@ -2583,6 +2584,7 @@ static NSConditionLock *threadLock = nil;
 				for( NSManagedObject *object in newImages)
 				{
 					[studies addObject: [object valueForKeyPath:@"series.study"]];
+					[[object valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
 				}
 				
 				needDBRefresh = YES;
@@ -3006,9 +3008,8 @@ static NSConditionLock *threadLock = nil;
 						{
 							for( NSManagedObject *sa in storedInAlbums)
 							{
-								NSString		*name = [sa valueForKey:@"name"];
-								
-								NSMutableSet	*studiesStoredInAlbum = [[currentAlbums objectAtIndex: [currentAlbumsNames indexOfObject: name]] mutableSetValueForKey:@"studies"];
+								NSString *name = [sa valueForKey:@"name"];
+								NSMutableSet *studiesStoredInAlbum = [[currentAlbums objectAtIndex: [currentAlbumsNames indexOfObject: name]] mutableSetValueForKey:@"studies"];
 								
 								[studiesStoredInAlbum addObject: currentStudyTable];
 							}
@@ -6753,6 +6754,7 @@ static NSConditionLock *threadLock = nil;
 					
 					NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
 					[studies removeObject: study];
+					[study archiveAnnotationsAsDICOMSR];
 				}
 			}
 			
@@ -10967,18 +10969,27 @@ static BOOL needToRezoom;
 		
 		if( draggedItems)
 		{
-			NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
+			NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
 			
 			for( NSManagedObject *object in draggedItems)
 			{
 				if( [[object valueForKey:@"type"] isEqualToString:@"Study"])
+				{
 					[studies addObject: object];
+					[object archiveAnnotationsAsDICOMSR];
+				}
 				
 				if( [[object valueForKey:@"type"] isEqualToString:@"Series"])
+				{
 					[studies addObject: [object valueForKey:@"study"]];
+					[[object valueForKey:@"study"] archiveAnnotationsAsDICOMSR];
+				}
 				
 				if( [[object valueForKey:@"type"] isEqualToString:@"Image"])
+				{
 					[studies addObject: [object valueForKeyPath:@"series.study"]];
+					[[object valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
+				}
 			}
 			
 			[self saveDatabase: currentDatabasePath];
@@ -13358,7 +13369,7 @@ static NSArray*	openSubSeriesArray = nil;
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 3*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain]; // 10
-		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 35 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain]; // 35
+		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 25 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain]; // 35
 		
 		
 		loadPreviewIndex = 0;
@@ -17843,11 +17854,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSArray* imageObjs = [aspc.representedObject objectAtIndex:1];
 	
 	switch (aspc.end) {
-		case AnonymizationSavePanelSaveAs: {
+		case AnonymizationSavePanelSaveAs:
+		{
 			[Anonymization anonymizeFiles:imagePaths toPath:aspc.outputDir withTags:aspc.anonymizationViewController.tagsValues];
-		} break;
+		}
+		break;
+		
 		case AnonymizationSavePanelAdd:
-		case AnonymizationSavePanelReplace: {
+		case AnonymizationSavePanelReplace:
+		{
 			NSString* tempDir = [[NSFileManager defaultManager] tmpFilePathInTmp];
 			NSDictionary* anonymizedFiles = [Anonymization anonymizeFiles:imagePaths toPath:tempDir withTags:aspc.anonymizationViewController.tagsValues];
 			
@@ -17868,22 +17883,29 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[[NSUserDefaults standardUserDefaults] setInteger: COPYDATABASEMODE forKey: @"COPYDATABASEMODE"];
 			
 			// if this happened in an album then add new images to that album
-			if (self.albumTable.selectedRow > 0) {
+			if (self.albumTable.selectedRow > 0)
+			{
 				NSManagedObject* album = [self.albumArray objectAtIndex:[[self albumTable] selectedRow]];
-				if ([[album valueForKey:@"smartAlbum"] boolValue] == NO) {
+				if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
+				{
 					NSMutableSet* studies = [album mutableSetValueForKey: @"studies"];
 					for (DicomImage* image in newImageObjs)
-						[studies addObject:[image valueForKeyPath:@"series.study"]];
+					{
+						[studies addObject: [image valueForKeyPath:@"series.study"]];
+						[[image valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
+					}
 					[self outlineViewRefresh];
 				}
 			}
 			
-			if (newImageObjs.count > 0) {
+			if (newImageObjs.count > 0)
+			{
 				DicomStudy* study = [[newImageObjs objectAtIndex:0] valueForKeyPath:@"series.study"];
 				[databaseOutline selectRowIndexes:[NSIndexSet indexSetWithIndex:[databaseOutline rowForItem:study]] byExtendingSelection:NO];
 				[databaseOutline scrollRowToVisible:[databaseOutline selectedRow]];
 			}
-		} break;
+		}
+		break;
 	}
 }
 

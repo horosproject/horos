@@ -362,7 +362,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	NSMutableArray *albumsArray = [NSMutableArray array];
 	
-	for( DicomAlbum * a in [self valueForKey: @"albums"])
+	for( DicomAlbum * a in [[self valueForKey: @"albums"] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]])
 	{
 		if( [[a valueForKey: @"smartAlbum"] boolValue] == NO)
 		{
@@ -379,7 +379,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	NSMutableArray *seriesArray = [NSMutableArray array];
 	
-	for( DicomSeries *series in [self valueForKey: @"series"])
+	for( DicomSeries *series in [[self valueForKey: @"series"] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]])
 	{
 		NSMutableDictionary *seriesDict = [NSMutableDictionary dictionary];
 		
@@ -396,7 +396,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			// Images Level
 			
 			NSMutableArray *imagesArray = [NSMutableArray array];
-			for( DicomSeries *image in [series valueForKey: @"images"])
+			for( DicomSeries *image in [[series valueForKey: @"images"] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]])
 			{
 				NSMutableDictionary *imageDict = [NSMutableDictionary dictionary];
 				

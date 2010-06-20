@@ -299,6 +299,7 @@
 					for( NSManagedObject *object in newImages)
 					{
 						[studies addObject: [object valueForKeyPath:@"series.study"]];
+						[[object valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
 					}
 					
 					[[BrowserController currentBrowser] outlineViewRefresh];

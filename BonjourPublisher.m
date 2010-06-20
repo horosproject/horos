@@ -570,7 +570,9 @@ extern const char *GetPrivateIP();
 								
 								for( NSString *uri in studies)
 								{
-									[studiesOfTheAlbum addObject: [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]]];
+									id alb = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+									[studiesOfTheAlbum addObject: alb];
+									[alb archiveAnnotationsAsDICOMSR];
 								}
 								
 								refreshDB = YES;
@@ -620,7 +622,9 @@ extern const char *GetPrivateIP();
 								
 								for( NSString *uri in studies)
 								{
-									[studiesOfTheAlbum removeObject: [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]]];
+									id alb = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+									[studiesOfTheAlbum removeObject: alb];
+									[alb archiveAnnotationsAsDICOMSR];
 								}
 								
 								refreshDB = YES;
