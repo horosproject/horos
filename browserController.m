@@ -801,6 +801,9 @@ static NSConditionLock *threadLock = nil;
 						NSString *uidName = [SRAnnotation getROIFilenameFromSR: newFile];
 						NSString *destPath = [roiFolder stringByAppendingPathComponent: uidName];
 						
+						if( [uidName length] == 0)
+							NSLog( @"****** warning uid == nil");
+						
 						if( context == browserController.managedObjectContext && browserController.isCurrentDatabaseBonjour) // It's a Bonjour shared DB -> We don't need to add this ROI to the ROIs folder. We keep it in the TEMP.noindex folder
 						{
 							
@@ -1103,10 +1106,12 @@ static NSConditionLock *threadLock = nil;
 									newObject = YES;
 									[image clearCompletePathCache];
 									
-									if( [[image valueForKey:@"inDatabaseFolder"] boolValue] && [[DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder] isEqualToString: newFile] == NO)
+									NSString *imPath = [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder];
+									
+									if( [[image valueForKey:@"inDatabaseFolder"] boolValue] && [imPath isEqualToString: newFile] == NO)
 									{
-										if( [[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder]])
-											[[NSFileManager defaultManager] removeFileAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder] handler:nil];
+										if( [[NSFileManager defaultManager] fileExistsAtPath: imPath])
+											[[NSFileManager defaultManager] removeFileAtPath: imPath handler:nil];
 									}
 								}
 							}

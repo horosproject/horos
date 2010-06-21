@@ -1093,10 +1093,12 @@ extern int delayedTileWindows;
 				[params addObjectsFromArray:  groupsAndElements];
 				
 				NSArray *objects = [self arrayOfFiles];
-				NSArray	*files = [objects valueForKey:@"completePath"];
+				NSMutableArray *files = [NSMutableArray arrayWithArray: [objects valueForKey:@"completePath"]];
 				
 				if( files)
 				{
+					[files removeDuplicatedStrings];
+					
 					[params addObjectsFromArray: files];
 					
 					WaitRendering		*wait = nil;

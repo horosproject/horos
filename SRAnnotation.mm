@@ -441,34 +441,12 @@
 				break;
 			}
 		}
-		
-		if( newROI)
-			[self addROI: aROI];
 	}
 	
 	NSArray *newROIs = [preExistingROIs arrayByAddingObjectsFromArray: someROIs];
 	
 	[_dataEncapsulated release];
 	_dataEncapsulated = [[NSArchiver archivedDataWithRootObject: newROIs] retain];
-}
-
-- (void)addROI: (ROI *)aROI;
-{
-	// image reference
-	OFString refsopClassUID = OFString([[image valueForKeyPath:@"series.seriesSOPClassUID"] UTF8String]);
-	OFString refsopInstanceUID = OFString([[image valueForKey:@"sopInstanceUID"] UTF8String]);
-	
-	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image, DSRTypes::AM_belowCurrent);
-	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference"));
-
-	DSRImageReferenceValue imageRef( refsopClassUID, refsopInstanceUID);
-	
-	// add frame reference
-	NSNumber *frameIndex = [NSNumber numberWithInt: [[aROI pix] frameNo]];
-	imageRef.getFrameList().putString([[frameIndex stringValue] UTF8String]);
-	
-	document->getTree().getCurrentContentItem().setImageReference( imageRef);
-	document->getTree().goUp(); // go up to the root element
 }
 
 - (NSArray *) ROIs
@@ -535,6 +513,20 @@
 	
 	document->setContentDate( [[[DCMCalendarDate date] dateString] UTF8String]);
 	document->setContentTime( [[[DCMCalendarDate date] timeString] UTF8String]);
+	
+	// Image Reference
+	OFString refsopClassUID = OFString([[image valueForKeyPath:@"series.seriesSOPClassUID"] UTF8String]);
+	OFString refsopInstanceUID = OFString([[image valueForKey:@"sopInstanceUID"] UTF8String]);
+	
+	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image, DSRTypes::AM_belowCurrent);
+	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference"));
+
+	DSRImageReferenceValue imageRef( refsopClassUID, refsopInstanceUID);
+	
+	// add frame reference
+	imageRef.getFrameList().putString([[[image valueForKey: @"frameID"] stringValue] UTF8String]);
+	document->getTree().getCurrentContentItem().setImageReference( imageRef);
+	document->getTree().goUp(); // go up to the root element
 	
 	OFCondition status = EC_Normal;
 	DcmFileFormat *fileformat = new DcmFileFormat();
@@ -610,29 +602,4 @@
 	if( seriesNumber) return [NSString stringWithUTF8String:seriesNumber];
 	else return @"";
 }
-
-- (int)frameIndex
-{
-	DSRDocumentTreeNode *node = NULL; 
-	//_doc->getTree().print(cout, 0);
-	document->getTree().gotoRoot ();
-		/* iterate over all nodes */ 
-	do { 
-		node = OFstatic_cast(DSRDocumentTreeNode *, document->getTree().getNode());			
-		if (node != NULL && node->getValueType() == DSRTypes::VT_Image) {
-			//image node get SOPCInstance
-			DSRImageReferenceValue *imagePtr = document->getTree().getCurrentContentItem().getImageReferencePtr();
-			DSRImageFrameList frameList = imagePtr->getFrameList ();
-			NSLog(@"got image node");
-			int i;
-			for (i = 0; i < 1000; i++) {
-				if (imagePtr->appliesToFrame(i) == OFTrue)
-					return i;
-			}			
-		}
-	} while (document->getTree().iterate()); 
-	return 0;
-}
-
-
 @end
