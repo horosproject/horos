@@ -10305,29 +10305,45 @@ static BOOL withReset = NO;
 
 static BOOL needToRezoom;
 
-- (void)drawerDidClose: (NSNotification *)notification
-{
-	if( needToRezoom)
-		[self.window zoom:self];
-}
-
-- (void)drawerWillClose: (NSNotification *)notification
-{
-	if( self.window.isZoomed)
-		needToRezoom = YES;
-	else
-		needToRezoom = NO;
-}
-
-- (void)drawerDidOpen: (NSNotification *)notification
-{
-	if( needToRezoom)
-		[self.window zoom:self];
-}
-
-- (void)drawerWillOpen: (NSNotification *)notification
-{
+-(void)drawerWillClose:(NSNotification*)notification {
 	needToRezoom = self.window.isZoomed;
+}
+
+-(void)drawerDidClose:(NSNotification*)notification {
+	if (needToRezoom)
+		[self.window zoom:self];
+	else if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey:OsirixBrowserDidResizeForDrawerSpace]) {
+		NSRect windowFrame = self.window.frame;
+		windowFrame.origin.x -= albumDrawer.contentSize.width;
+		windowFrame.size.width += albumDrawer.contentSize.width;
+		[self.window setFrame:windowFrame display:YES animate:YES];
+	}
+}
+
+-(void)drawerWillOpen:(NSNotification*)notification {
+	needToRezoom = self.window.isZoomed;
+}
+
+-(void)drawerDidOpen:(NSNotification*)notification {
+	if (needToRezoom)
+		[self.window zoom:self];
+	else {
+		NSRect screenBounds = NSZeroRect;
+		for (NSScreen* screen in [NSScreen screens])
+			screenBounds = NSUnionRect(screenBounds, [screen frame]);
+		NSRect drawerFrame = albumDrawer.contentView.window.frame;
+		NSRect intersectedFrame = NSIntersectionRect(drawerFrame, screenBounds);
+		
+		#define DrawerMinVisibleRatio .5
+		BOOL adapt = (intersectedFrame.size.width*intersectedFrame.size.height)/(drawerFrame.size.width*drawerFrame.size.height) < DrawerMinVisibleRatio;
+		[[NSUserDefaultsController sharedUserDefaultsController] setBool:adapt forKey:OsirixBrowserDidResizeForDrawerSpace];
+		if (adapt) {
+			NSRect windowFrame = self.window.frame;
+			windowFrame.origin.x += albumDrawer.contentSize.width;
+			windowFrame.size.width -= albumDrawer.contentSize.width;
+			[self.window setFrame:windowFrame display:YES animate:YES];
+		}
+	}
 }
 
 - (IBAction)smartAlbumHelpButton: (id)sender
@@ -13682,6 +13698,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[bonjourServicesList setDelegate: self];
 		[albumDrawer setDelegate:self];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(drawerFrameDidChange:) name:NSViewFrameDidChangeNotification object:albumDrawer.contentView];
 		[oMatrix setDelegate:self];
 		[oMatrix setSelectionByRect: NO];
 		[oMatrix setDoubleAction:@selector(matrixDoublePressed:)];
@@ -19277,6 +19294,13 @@ static volatile int numberOfThreadsForJPEG = 0;
         [albumDrawer close];
 	else
         [albumDrawer openOnEdge:NSMinXEdge];
+}
+
+-(void)drawerFrameDidChange:(NSNotification*)n { // drawer view frame changed, and NSSegmentedView segments don't adapt to the view's new width
+	CGFloat w = (segmentedAlbumButton.frame.size.width-4)/segmentedAlbumButton.segmentCount;
+	for (NSInteger i = 0; i < segmentedAlbumButton.segmentCount; ++i)
+		[segmentedAlbumButton setWidth:w forSegment:i];
+	[segmentedAlbumButton setNeedsDisplay:YES];
 }
 
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted

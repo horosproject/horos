@@ -36,5 +36,6 @@ extern NSString* const OsirixBonjourSharingPasswordDefaultsKey;
 
 extern NSString* const OsirixWLWWDefaultsKey;
 extern NSString* OsirixActivityWindowVisibleDefaultsKey;
+extern NSString* OsirixBrowserDidResizeForDrawerSpace;
 
 @end

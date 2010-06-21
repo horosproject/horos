@@ -32,6 +32,8 @@
 	IBOutlet NSPopUpButton *logDurationPopup;
 	IBOutlet NSWindow *webServerSettingsWindow;
 	
+	IBOutlet NSTextField* sharingNameField;	
+	
 	IBOutlet NSWindow *TLSSettingsWindow;
 	NSString *TLSAuthenticationCertificate;
 	IBOutlet NSButton *TLSChooseCertificateButton, *TLSCertificateButton;
@@ -68,6 +70,9 @@
 - (IBAction)smartAlbumHelpButton:(id)sender;
 - (IBAction)openKeyChainAccess:(id)sender;
 
+-(IBAction)editAddresses:(id)sender;
+-(IBAction)editHostname:(id)sender;
+
 #pragma mark TLS
 - (IBAction)editTLS:(id)sender;
 - (IBAction)cancel:(id)sender;
@@ -78,4 +83,5 @@
 - (IBAction)useSameAETitleForTLSListener:(id)sender;
 - (IBAction)selectAllSuites:(id)sender;
 - (IBAction)deselectAllSuites:(id)sender;
+
 @end

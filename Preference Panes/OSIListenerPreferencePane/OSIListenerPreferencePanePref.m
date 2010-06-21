@@ -15,6 +15,7 @@
 #import "OSIListenerPreferencePanePref.h"
 #import <OsiriX Headers/DefaultsOsiriX.h>
 #import <OsiriX Headers/BrowserController.h>
+#import <OsiriX Headers/NSUserDefaultsController+OsiriX.h>
 #import "DDKeychain.h"
 #import <SecurityInterface/SFChooseIdentityPanel.h>
 
@@ -69,6 +70,11 @@ char *GetPrivateIP()
 	if( [r count] == 0) [r addObject: [NSString stringWithFormat:@"127.0.0.1"]];
    
    return r;
+}
+
+-(void)awakeFromNib {
+	NSLog(@"def: %@", [NSUserDefaultsController defaultBonjourSharingName]);
+	[sharingNameField.cell setPlaceholderString:[NSUserDefaultsController defaultBonjourSharingName]];
 }
 
 - (void) dealloc
@@ -235,6 +241,14 @@ char *GetPrivateIP()
     [webServerSettingsWindow orderOut: self];
 	
 	[[BrowserController currentBrowser] saveUserDatabase];
+}
+
+-(IBAction)editAddresses:(id)sender {
+	[NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:[NSArray arrayWithObject:[[NSBundle bundleForClass:[self class]] pathForResource:@"OpenNetworkSysPrefs" ofType:@"scpt"]]];
+}
+
+-(IBAction)editHostname:(id)sender {
+	[NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:[NSArray arrayWithObject:[[NSBundle bundleForClass:[self class]] pathForResource:@"OpenSharingSysPrefs" ofType:@"scpt"]]];
 }
 
 #pragma mark TLS

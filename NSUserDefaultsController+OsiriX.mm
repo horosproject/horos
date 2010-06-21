@@ -63,5 +63,6 @@ NSString* const OsirixBonjourSharingPasswordDefaultsKey = @"bonjourPassword";
 
 NSString* const OsirixWLWWDefaultsKey = @"WLWW3";
 NSString* OsirixActivityWindowVisibleDefaultsKey = @"ActivityWindowVisibleFlag";
+NSString* OsirixBrowserDidResizeForDrawerSpace = @"BrowserDidResizeForDrawer";
 
 @end

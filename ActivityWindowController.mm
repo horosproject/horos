@@ -35,6 +35,12 @@
 	updateStatsThread = [[NSThread alloc] initWithTarget:self selector:@selector(updateStatsThread:) object:NULL];
 	[updateStatsThread start];
 	
+	self.window; // load
+	if (![[NSUserDefaults standardUserDefaults] objectForKey:[self windowFrameAutosaveName]]) {
+		NSRect screenFrame = [[NSScreen mainScreen] visibleFrame];
+		[self.window setFrameOrigin:NSMakePoint(screenFrame.size.width-self.window.frame.size.width, screenFrame.origin.y)];
+	}
+	
     return self;
 }
 
@@ -55,7 +61,7 @@
 }
 
 -(NSString*)windowFrameAutosaveName {
-	return [NSString stringWithFormat:@"Threads Window Frame: %@", [[self window] title]];
+	return [NSString stringWithFormat:@"ActivityWindow frame: %@", [[self window] title]];
 }
 
 -(NSCell*)cellForThread:(NSThread*)thread {
