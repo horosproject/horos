@@ -54,7 +54,7 @@
 
 + (NSRecursiveLock*) dbModifyLock;
 + (NSString*) soundex: (NSString*) s;
-+ (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid;
++ (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid andSeriesDescription: (NSString*) description;
 - (NSNumber *) noFiles;
 - (NSSet *) paths;
 - (NSSet *) keyImages;

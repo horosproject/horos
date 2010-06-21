@@ -1087,9 +1087,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ------------------------ Series subselections-----------------------------------ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
-+ (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid
++ (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid andSeriesDescription: (NSString*) description
 {
-	if( uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid] || [DCMAbstractSyntaxUID isRadiotherapy:uid] || [DCMAbstractSyntaxUID isStructuredReport:uid])
+	if( uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid] || [DCMAbstractSyntaxUID isRadiotherapy:uid])
+		return YES;
+	else if( [DCMAbstractSyntaxUID isStructuredReport:uid])		//&& [description isEqualToString: @"OsiriX ROI SR"] == NO && [description isEqualToString: @"OsiriX Annotations SR"] == NO && [description isEqualToString: @"OsiriX Report SR"] == NO)
 		return YES;
 	else
 		return NO;
@@ -1105,7 +1107,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		for (id series in [self primitiveValueForKey: @"series"])
 		{
-			if( [DicomStudy displaySeriesWithSOPClassUID: [series valueForKey:@"seriesSOPClassUID"]])
+			if( [DicomStudy displaySeriesWithSOPClassUID: [series valueForKey:@"seriesSOPClassUID"] andSeriesDescription: [series valueForKey: @"name"]])
 				[newArray addObject:series];
 		}
 	}

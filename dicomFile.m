@@ -40,6 +40,12 @@
 #include "nifti1_io.h"
 #endif
 
+#ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
+#import "DicomStudy.h"
+#endif
+#endif
+
 extern NSString * convertDICOM( NSString *inputfile);
 extern NSRecursiveLock *PapyrusLock;
 
@@ -2559,7 +2565,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			}
 		}
 		
-		if( [sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
+		#ifdef OSIRIX_VIEWER
+		#ifndef OSIRIX_LIGHT
+		if( [sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"] && [DicomStudy displaySeriesWithSOPClassUID: sopClassUID andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]]) // DICOM SR
 		{
 			@try
 			{
@@ -2574,6 +2582,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 			}
 		}
+		#endif
+		#endif
 		
 		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x4008);
 		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
@@ -3148,7 +3158,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			width = ceil( [rep bounds].size.width * 1.5);
 		}
 		
-		if( [[dcmObject attributeValueWithName: @"SOPClassUID"] hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"])
+		#ifdef OSIRIX_VIEWER
+		#ifndef OSIRIX_LIGHT
+		if( [[dcmObject attributeValueWithName: @"SOPClassUID"] hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"] && [DicomStudy displaySeriesWithSOPClassUID: [dcmObject attributeValueWithName: @"SOPClassUID"] andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]])
 		{
 			@try
 			{
@@ -3163,6 +3175,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 			}
 		}
+		#endif
+		#endif
 		
 		if (width < 4)
 			width = 4;

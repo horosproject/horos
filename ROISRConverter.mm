@@ -55,56 +55,13 @@
 	
 	NSManagedObject *roiSRSeries = [study roiSRSeries];
 	
-	if( roiSRSeries == nil)
-	{
-		[sr writeToFileAtPath: path];
-		
-		[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: path]];
-		roiSRSeries = [study roiSRSeries];
-		if( roiSRSeries == nil)
-			NSLog( @"********** roiSRSeries == nil -- archiveROIsAsDICOM");
-		
-		[sr setSeriesInstanceUID: [roiSRSeries valueForKey:@"seriesDICOMUID"]];
-		[sr writeToFileAtPath: path];
-		
-		return nil;
-	}
-	
 	NSString *seriesInstanceUID = [roiSRSeries valueForKey:@"seriesDICOMUID"];
 	
-	[sr setSeriesInstanceUID: seriesInstanceUID];
+	if( seriesInstanceUID)
+		[sr setSeriesInstanceUID: seriesInstanceUID];
+		
 	[sr writeToFileAtPath: path];
 	
-	BOOL AddIt = NO;
-	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	@try 
-	{
-		if( roiSRSeries)
-		{
-			//Check to see if there is already this ROI-image
-			NSString		*sopInstanceUID = [sr sopInstanceUID];
-			NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
-			NSPredicate		*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
-			NSPredicate		*notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
-			NSArray			*found = [[srs filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
-			
-			if ([found count] < 1)
-				AddIt = YES;
-		}
-		else NSLog( @"********** roiSRSeries == nil -- archiveROIsAsDICOM");
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
-	
-	if( AddIt)
-		return path;
-		
 	return nil;
 }
 @end

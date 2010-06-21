@@ -223,38 +223,35 @@
 				
 //				NSLog( @"Build thumbnail for: %@", image.completePath);
 				
-				DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:image];
+				NSImage *thumbnail = nil;
 				
-				[dcmPix CheckLoad];
-				if (dcmPix)
+				if( [DCMAbstractSyntaxUID isSpectroscopy: [self valueForKey: @"seriesSOPClassUID"]])
 				{
-					NSImage *thumbnail = nil;
+					thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"]; 
 					
-					if( [DCMAbstractSyntaxUID isSpectroscopy: [self valueForKey: @"seriesSOPClassUID"]])
-					{
-						thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"]; 
-						
-						thumbnailData = [thumbnail TIFFRepresentation];
-					}
-					else if( [DCMAbstractSyntaxUID isStructuredReport: [self valueForKey: @"seriesSOPClassUID"]])
-					{
-						NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"pdf"];
-						
-						thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( 70, 70)] autorelease];
-						
-						[thumbnail lockFocus];
-						[icon drawInRect: NSMakeRect( 0, 0, 70, 70) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
-						[thumbnail unlockFocus];
-						
-						thumbnailData = [thumbnail TIFFRepresentation];
-					}
-					else
-					{
-						thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
+					thumbnailData = [thumbnail TIFFRepresentation];
+				}
+				else if( [DCMAbstractSyntaxUID isStructuredReport: [self valueForKey: @"seriesSOPClassUID"]])
+				{
+					NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"pdf"];
 					
-						if (!dcmPix.notAbleToLoadImage)
-							thumbnailData = [thumbnail JPEGRepresentationWithQuality:0.3];
-					}
+					thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( 70, 70)] autorelease];
+					
+					[thumbnail lockFocus];
+					[icon drawInRect: NSMakeRect( 0, 0, 70, 70) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
+					[thumbnail unlockFocus];
+					
+					thumbnailData = [thumbnail TIFFRepresentation];
+				}
+				else
+				{
+					DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:image];
+					[dcmPix CheckLoad];
+					
+					thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
+					
+					if (!dcmPix.notAbleToLoadImage)
+						thumbnailData = [thumbnail JPEGRepresentationWithQuality:0.3];
 					
 					[dcmPix release];
 				}

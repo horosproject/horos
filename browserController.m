@@ -5753,7 +5753,8 @@ static NSConditionLock *threadLock = nil;
 				
 				if( preferredObject != oMiddle)
 				{
-					if( [i valueForKey:@"thumbnail"] == nil) whichObject = oMiddle;
+					if( [i primitiveValueForKey:@"thumbnail"] == nil)
+						whichObject = oMiddle;
 				}
 				
 				switch( whichObject)

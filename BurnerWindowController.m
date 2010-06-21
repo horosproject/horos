@@ -691,7 +691,7 @@
 	
 	for( id obj in originalDbObjects)
 	{
-		if( [DicomStudy displaySeriesWithSOPClassUID: [obj valueForKeyPath:@"series.seriesSOPClassUID"]])
+		if( [DicomStudy displaySeriesWithSOPClassUID: [obj valueForKeyPath:@"series.seriesSOPClassUID"] andSeriesDescription: [obj valueForKeyPath:@"series.name"]])
 			[images addObject: obj];
 	}
 	

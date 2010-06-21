@@ -3902,7 +3902,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 						{
 							NSImage	*img = nil;
 							
-							img = [[[NSImage alloc] initWithData: [curSeries valueForKey:@"thumbnail"]] autorelease];
+							img = [[[NSImage alloc] initWithData: [curSeries primitiveValueForKey:@"thumbnail"]] autorelease];
 							
 							if( img == nil)
 							{
