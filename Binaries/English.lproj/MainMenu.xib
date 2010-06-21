@@ -2,20 +2,20 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10F569</string>
-		<string key="IBDocument.InterfaceBuilderVersion">762</string>
-		<string key="IBDocument.AppKitVersion">1038.29</string>
-		<string key="IBDocument.HIToolboxVersion">461.00</string>
+		<string key="IBDocument.SystemVersion">10C540</string>
+		<string key="IBDocument.InterfaceBuilderVersion">732</string>
+		<string key="IBDocument.AppKitVersion">1038.25</string>
+		<string key="IBDocument.HIToolboxVersion">458.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">762</string>
+			<string key="NS.object.0">732</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<integer value="12800"/>
 			<integer value="24"/>
+			<integer value="11693"/>
 			<integer value="13870"/>
 			<integer value="12309"/>
-			<integer value="1580"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -4459,6 +4459,7 @@
 									<reference key="NSHScroller" ref="435897027"/>
 									<reference key="NSContentView" ref="613998968"/>
 									<reference key="NSHeaderClipView" ref="903567248"/>
+									<reference key="NSCornerView" ref="1005257844"/>
 									<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 								</object>
 								<object class="NSSplitView" id="766578884">
@@ -5119,7 +5120,7 @@
 										<array class="NSMutableArray" key="NSSubviews">
 											<object class="NSScrollView" id="1049765271">
 												<reference key="NSNextResponder" ref="672832134"/>
-												<int key="NSvFlags">274</int>
+												<int key="NSvFlags">4370</int>
 												<array class="NSMutableArray" key="NSSubviews">
 													<object class="NSClipView" id="784281801">
 														<reference key="NSNextResponder" ref="1049765271"/>
@@ -5127,7 +5128,7 @@
 														<array class="NSMutableArray" key="NSSubviews">
 															<object class="NSTableView" id="60087972">
 																<reference key="NSNextResponder" ref="784281801"/>
-																<int key="NSvFlags">256</int>
+																<int key="NSvFlags">4352</int>
 																<string key="NSFrameSize">{194, 254}</string>
 																<reference key="NSSuperview" ref="784281801"/>
 																<bool key="NSEnabled">YES</bool>
@@ -5368,7 +5369,7 @@
 										<array class="NSMutableArray" key="NSSubviews">
 											<object class="NSScrollView" id="470928104">
 												<reference key="NSNextResponder" ref="997330803"/>
-												<int key="NSvFlags">274</int>
+												<int key="NSvFlags">4370</int>
 												<array class="NSMutableArray" key="NSSubviews">
 													<object class="NSClipView" id="1002041640">
 														<reference key="NSNextResponder" ref="470928104"/>
@@ -5376,7 +5377,7 @@
 														<array class="NSMutableArray" key="NSSubviews">
 															<object class="NSTableView" id="692127092">
 																<reference key="NSNextResponder" ref="1002041640"/>
-																<int key="NSvFlags">256</int>
+																<int key="NSvFlags">4352</int>
 																<string key="NSFrameSize">{194, 451}</string>
 																<reference key="NSSuperview" ref="1002041640"/>
 																<bool key="NSEnabled">YES</bool>
@@ -8394,7 +8395,7 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 										</object>
 										<string key="decimalSeparator">.</string>
 										<integer value="1000" key="formatterBehavior"/>
-										<string key="groupingSeparator">,</string>
+										<string key="groupingSeparator">'</string>
 										<object class="NSLocale" key="locale">
 											<string key="NS.identifier">fr_CH</string>
 										</object>
@@ -8418,7 +8419,7 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 									<reference key="NS.max" ref="194147893"/>
 									<nil key="NS.rounding"/>
 									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">,</string>
+									<string key="NS.thousand">'</string>
 									<bool key="NS.hasthousands">YES</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -24944,7 +24945,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 			</array>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
-		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
@@ -24956,28 +24956,5 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">../../OsiriX.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="Endoscopy">{32, 32}</string>
-			<string key="MIP">{32, 32}</string>
-			<string key="MPR">{32, 32}</string>
-			<string key="NSAddTemplate">{8, 8}</string>
-			<string key="NSLockLockedTemplate">{9, 12}</string>
-			<string key="NSMenuCheckmark">{9, 8}</string>
-			<string key="NSMenuMixedState">{7, 2}</string>
-			<string key="NSRemoveTemplate">{8, 8}</string>
-			<string key="NSSmartBadgeTemplate">{15, 15}</string>
-			<string key="NSSwitch">{15, 15}</string>
-			<string key="Realised1">{12, 12}</string>
-			<string key="Realised2">{12, 12}</string>
-			<string key="Realised3">{12, 12}</string>
-			<string key="Receiving">{12, 12}</string>
-			<string key="ReportPages">{32, 32}</string>
-			<string key="StartupDisk">{32, 32}</string>
-			<string key="Surface">{32, 32}</string>
-			<string key="VolumeRendering">{32, 32}</string>
-			<string key="error">{32, 32}</string>
-			<string key="orthogonalReslice">{32, 32}</string>
-			<string key="smile">{32, 32}</string>
-		</dictionary>
 	</data>
 </archive>
