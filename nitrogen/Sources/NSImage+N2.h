@@ -22,6 +22,7 @@
 -(NSRect)boundingBoxSkippingColor:(NSColor*)color;
 
 -(NSImage*)shadowImage;
+-(NSImage*)imageWithHue:(CGFloat)hue;
 
 @end
 

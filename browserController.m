@@ -70,6 +70,9 @@
 #import "CSMailMailClient.h"
 #import "NSImage+OsiriX.h"
 #import "NSString+N2.h"
+#import "NSUserDefaultsController+OsiriX.h"
+#import "NSUserDefaultsController+N2.h"
+
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -207,8 +210,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
 @synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
 @synthesize isCurrentDatabaseBonjour, bonjourDownloading, bonjourSourcesBox;
-@synthesize bonjourServiceName, bonjourPasswordTextField = bonjourPassword, bonjourSharingCheck;
-@synthesize bonjourPasswordCheck, bonjourBrowser, pathToEncryptedFile;
+@synthesize bonjourBrowser, pathToEncryptedFile;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController, userManagedObjectContext, userManagedObjectModel;
@@ -13781,25 +13783,7 @@ static NSArray*	openSubSeriesArray = nil;
 		bonjourBrowser = [[BonjourBrowser alloc] initWithBrowserController:self bonjourPublisher:bonjourPublisher];
 		[self displayBonjourServices];
 		
-		[self setServiceName:[[NSUserDefaults standardUserDefaults] objectForKey:@"bonjourServiceName"]];
-		
-		[bonjourServiceName setStringValue:[bonjourPublisher serviceName]];
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"bonjourSharing"])
-		{
-			[bonjourPublisher toggleSharing:YES];
-			[bonjourSharingCheck setState:NSOnState];
-		}
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"bonjourPasswordProtected"])
-		{
-			[bonjourPasswordCheck setState:NSOnState];
-		}
-		
-		if ([[NSUserDefaults standardUserDefaults] objectForKey:@"bonjourPassword"])
-		{
-			[bonjourPassword setStringValue: [[NSUserDefaults standardUserDefaults] objectForKey:@"bonjourPassword"]];
-		}
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:bonjourPublisher];
 		
 		[cell setEditable:NO];
 		[[bonjourServicesList tableColumnWithIdentifier:@"Source"] setDataCell:cell];
@@ -13914,6 +13898,23 @@ static NSArray*	openSubSeriesArray = nil;
 //	for( id log in logArray) [self.managedObjectContext deleteObject: log];
 }
 
+-(void)dealloc {
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey];
+	[super dealloc];
+}
+
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
+	if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
+		keyPath = [keyPath substringFromIndex:7];
+		if ([keyPath isEqual:OsirixBonjourSharingActiveFlagDefaultsKey]) {
+			[self switchToDefaultDBIfNeeded];
+			return;
+		}
+	}
+	
+	[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
 - (IBAction)customize:(id)sender
 {
     [toolbar runCustomizationPalette:sender];
@@ -13990,17 +13991,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[[NSUserDefaults standardUserDefaults] setBool: [animationCheck state] forKey: @"AutoPlayAnimation"];
 	
-	// bonjour defaults
-	[[NSUserDefaults standardUserDefaults] setBool: [bonjourSharingCheck state] forKey: @"bonjourSharing"];
-	[[NSUserDefaults standardUserDefaults] setObject:[bonjourServiceName stringValue] forKey: @"bonjourServiceName"];
-	
-	[[NSUserDefaults standardUserDefaults] setBool: [bonjourPasswordCheck state] forKey: @"bonjourPasswordProtected"];
-	[[NSUserDefaults standardUserDefaults] setObject:[bonjourPassword stringValue] forKey: @"bonjourPassword"];
-	
 	[[NSUserDefaults standardUserDefaults] synchronize];
-	
-	[bonjourSharingCheck setState: NSOffState];
-	[bonjourPublisher toggleSharing:NO];
 	
 	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/OsiriXTemporaryDatabase" handler: nil];
 	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dicomsr_osirix" handler: nil];
@@ -20057,12 +20048,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:obj value:value forKey:key];
 }
 
-- (NSString*) bonjourPassword
-{
-	if( [bonjourPasswordCheck state] == NSOnState) return [bonjourPassword stringValue];
-	else return nil;
-}
-
 - (NSString*) askPassword
 {
 	[password setStringValue:@""];
@@ -20103,62 +20088,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	if (isCurrentDatabaseBonjour) return [bonjourBrowser getDICOMFile: [bonjourServicesList selectedRow]-1 forObject: obj noOfImages: no];
 	else return [obj valueForKey:@"completePath"];
-}
-
-- (NSString*)defaultSharingName
-{
-	char s[_POSIX_HOST_NAME_MAX+1];
-	gethostname(s,_POSIX_HOST_NAME_MAX);
-	NSString *c = [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
-	NSRange range = [c rangeOfString: @"."];
-	if( range.location != NSNotFound) c = [c substringToIndex: range.location];
-	
-	return c;
-}
-
-- (NSString*) serviceName
-{
-	return [bonjourPublisher serviceName];
-}
-
-- (void)setServiceName: (NSString*)title
-{
-	if( title && [title length] > 0)
-		[bonjourPublisher setServiceName: title];
-	else
-	{
-		[bonjourPublisher setServiceName: [self defaultSharingName]];
-		[bonjourServiceName setStringValue: [self defaultSharingName]];
-	}
-}
-
-- (IBAction)toggleBonjourSharing: (id)sender
-{
-	[self setBonjourSharingEnabled:([sender state] == NSOnState)];
-	
-	[self switchToDefaultDBIfNeeded];
-}
-
-- (void)setBonjourSharingEnabled:(BOOL)boo
-{
-	[self setServiceName: [bonjourServiceName stringValue]];
-	[bonjourPublisher toggleSharing:boo];
-}
-
-- (void)bonjourWillPublish
-{
-	[bonjourServiceName setEnabled:NO];
-}
-
-- (void)bonjourDidStop
-{
-	[bonjourServiceName setEnabled:YES];
-	
-	if( [bonjourSharingCheck state] == NSOnState)
-	{
-		NSLog(@"**** Bonjour did stop ! Restarting it!");
-		[self setBonjourSharingEnabled: YES];
-	}
 }
 
 - (void)displayBonjourServices

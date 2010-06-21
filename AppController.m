@@ -39,6 +39,7 @@
 #import "NSSplitViewSave.h"
 #import "altivecFunctions.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import "ActivityWindowController.h"
 #ifndef OSIRIX_LIGHT
 #import <ILCrashReporter/ILCrashReporter.h>
 #import <N2Debug.h>
@@ -1700,7 +1701,7 @@ static NSDate *lastWarningDate = nil;
 
 	BonjourDICOMService = [[NSNetService alloc] initWithDomain:@"" type:@"_dicom._tcp." name: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
 	
-	NSString *description = [[BrowserController currentBrowser] serviceName];
+	NSString* description = [NSUserDefaultsController defaultBonjourSharingName];
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	
 	if( description && [description length] > 0)
@@ -2411,6 +2412,9 @@ static NSDate *lastWarningDate = nil;
 	[IChatTheatreDelegate sharedDelegate];
 	#endif
 	
+	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey:OsirixActivityWindowVisibleDefaultsKey])
+		[[[ActivityWindowController defaultController] window] makeKeyAndOrderFront:self];	
+
 	return self;
 }
 
@@ -3735,6 +3739,17 @@ static BOOL initialized = NO;
 	}
 }
 
+-(IBAction)toggleActivityWindow:(id)sender {
+	ActivityWindowController* controller = [ActivityWindowController defaultController];
+	if (![controller.window isVisible] || ![controller.window isKeyWindow]) {
+		[controller.window makeKeyAndOrderFront:sender];
+		[[NSUserDefaultsController sharedUserDefaultsController] setBool:YES forKey:OsirixActivityWindowVisibleDefaultsKey];
+	} else {
+		[controller.window orderOut:sender];
+		[[NSUserDefaultsController sharedUserDefaultsController] setBool:NO forKey:OsirixActivityWindowVisibleDefaultsKey];
+	}
+}
+
 //{
 //	NSRect screenRect = [screen visibleFrame];
 //	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
@@ -4444,24 +4459,6 @@ static BOOL initialized = NO;
 }
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
-#pragma mark-
-#pragma mark Geneva University Hospital (HUG) specific function
-
-// Test ComPACS
-- (void) HUGVerifyComPACSPlugin
-{	
-	if( [[PluginManager plugins] valueForKey:@"ComPACS"] == 0)
-	{
-		int button = NSRunAlertPanel(@"OsiriX HUG PACS",
-									 @"Si vous voulez telecharger des images du PACS, vous devez installer le plugin ComPACS.",
-									 @"OK", @"Cancel", nil);
-		if (NSOKButton == button)
-		{
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://intrad.hcuge.ch/intra/dim/uin/ressources/telechargement/"]];
-		}
-	}
-}
 
 #pragma mark-
 #pragma mark HTML Templates

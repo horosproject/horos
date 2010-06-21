@@ -26,6 +26,7 @@
 #import <netinet/in.h>
 #import <arpa/inet.h>
 #import <unistd.h>
+#import "NSUserDefaultsController+OsiriX.h"
 
 #define FILESSIZE 512*512*2
 
@@ -1139,7 +1140,7 @@ extern const char *GetPrivateIP();
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
 	// remove my own sharing service
-	if( aNetService == [publisher netService] || [[aNetService name] isEqualToString: [publisher serviceName]] == YES)
+	if( aNetService == [publisher netService] || [[aNetService name] isEqualToString: [NSUserDefaultsController bonjourSharingName]] == YES)
 	{
 		
 	}

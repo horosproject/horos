@@ -172,6 +172,7 @@ extern "C"
 - (IBAction) closeAllViewers: (id) sender;  /**< Close All Viewers */
 - (void) checkAllWindowsAreVisible:(id) sender;
 - (void) checkAllWindowsAreVisible:(id) sender makeKey: (BOOL) makeKey;
+- (IBAction)toggleActivityWindow:(id)sender;
 //===============HELP==========================
 - (IBAction) sendEmail: (id) sender;   /**< Send email to lead developer */
 - (IBAction) openOsirixWebPage: (id) sender;  /**<  Open OsiriX web page */
@@ -215,10 +216,6 @@ extern "C"
 //#pragma mark-
 //#pragma mark display setters and getters
 //- (IBAction) saveLayout: (id)sender;
-
-#pragma mark-
-#pragma mark Geneva University Hospital (HUG) specific function
-- (void) HUGVerifyComPACSPlugin;
 
 #pragma mark-
 #pragma mark 12 Bit Display support.

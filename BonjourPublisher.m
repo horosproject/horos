@@ -18,6 +18,8 @@
 #import "DCMTKStoreSCU.h"
 #import "SendController.h"
 #import "DicomStudy.h"
+#import "NSUserDefaultsController+OsiriX.h"
+#import "NSUserDefaultsController+N2.h"
 
 // imports required for socket initialization
 #import <sys/socket.h>
@@ -35,7 +37,18 @@ static BonjourPublisher *currentPublisher = nil;
 
 extern const char *GetPrivateIP();
 
+
+@interface BonjourPublisher ()
+
+@property(retain, readwrite) NSNetService* netService;
+
+@end
+
+
 @implementation BonjourPublisher
+
+//@synthesize serviceName;
+@synthesize netService;
 
 + (BonjourPublisher*) currentPublisher
 {
@@ -48,25 +61,57 @@ extern const char *GetPrivateIP();
 	if (self != nil)
 	{
 		currentPublisher = self;
-		serviceName = [[NSString stringWithString:@"OsiriX DataBase"] retain];
+//		self.serviceName = [NSUserDefaultsController defaultServiceName];
 		interfaceOsiriX = bC;
 		
 		fdForListening = 0;
 		listeningSocket = nil;
-		netService = nil;
+		self.netService = nil;
 		
 		connectionLock = [[NSLock alloc] init];
+		
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingNameDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingPasswordFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingPasswordDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];		
 	}
 	return self;
 }
 
 - (void) dealloc
 {
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingNameDefaultsKey];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingPasswordFlagDefaultsKey];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingPasswordDefaultsKey];
+
 	[dicomSendLock release];
-	[serviceName release];
+//	self.serviceName = NULL;
 	[connectionLock release];
 	
 	[super dealloc];
+}
+
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
+	if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
+		keyPath = [keyPath substringFromIndex:7];
+		if ([keyPath isEqual:OsirixBonjourSharingActiveFlagDefaultsKey]) {
+			[self toggleSharing:[NSUserDefaultsController isBonjourSharingActive]];
+			return;
+		} else
+		if ([keyPath isEqual:OsirixBonjourSharingNameDefaultsKey]) {
+		//	[self ];
+			return;
+		} else
+		if ([keyPath isEqual:OsirixBonjourSharingPasswordFlagDefaultsKey]) {
+			return;
+		} else
+		if ([keyPath isEqual:OsirixBonjourSharingPasswordDefaultsKey]) {
+			return;
+		}
+	}
+	
+	[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 - (int) OsiriXDBCurrentPort
@@ -164,11 +209,11 @@ extern const char *GetPrivateIP();
 		}
     }
 
-    if( !netService)
+    if (!netService)
 	{
         // lazily instantiate the NSNetService object that will advertise on our behalf.  Passing in "" for the domain causes the service
         // to be registered in the default registration domain, which will currently always be "local"
-        netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdb._tcp." name: serviceName port:chosenPort];
+        netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdb._tcp." name:[NSUserDefaultsController bonjourSharingName] port:chosenPort];
         [netService setDelegate:self];
 		
 		NSMutableDictionary *params = [NSMutableDictionary dictionary];
@@ -181,7 +226,7 @@ extern const char *GetPrivateIP();
 		}
     }
 
-    if( netService && listeningSocket)
+    if (netService && listeningSocket)
 	{
         if( activated)
             [netService publish];
@@ -392,11 +437,11 @@ extern const char *GetPrivateIP();
 					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"ISPWD" length: 6]])
 					{
 						// is this database protected by a password
-						NSString *pswd = [interfaceOsiriX bonjourPassword];
+						NSString* pswd = [NSUserDefaultsController bonjourSharingPassword];
 						
 						int val = 0;
 						
-						if( pswd) val = NSSwapHostIntToBig(1);
+						if (pswd) val = NSSwapHostIntToBig(1);
 						else val = 0;
 						
 						representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
@@ -417,7 +462,7 @@ extern const char *GetPrivateIP();
 						
 						int val = 0;
 						
-						if( [incomingPswd isEqualToString: [interfaceOsiriX bonjourPassword]] || [interfaceOsiriX bonjourPassword] == nil)
+						if (![NSUserDefaultsController bonjourSharingPassword] || [incomingPswd isEqualToString: [NSUserDefaultsController bonjourSharingPassword]])
 						{
 							val = NSSwapHostIntToBig(1);
 						}
@@ -1144,12 +1189,12 @@ extern const char *GetPrivateIP();
 }
 
 // work as a delegate of the NSNetService
-- (void)netServiceWillPublish:(NSNetService *) sender
+- (void)netServiceWillPublish:(NSNetService*)sender
 {
-	[interfaceOsiriX bonjourWillPublish];
+//	[interfaceOsiriX bonjourWillPublish];
 }
 
-- (void)netService:(NSNetService *) sender didNotPublish:(NSDictionary *)errorDict
+- (void)netService:(NSNetService*)sender didNotPublish:(NSDictionary*)errorDict
 {
 	// we should send an error message
 	// here ...
@@ -1161,22 +1206,13 @@ extern const char *GetPrivateIP();
 
 - (void) netServiceDidStop:(NSNetService *)sender
 {
-	[interfaceOsiriX bonjourDidStop];
+//	[bonjourServiceName setEnabled:YES];
+	
+	if ([NSUserDefaultsController isBonjourSharingActive])
+	{
+		NSLog(@"**** Bonjour did stop ! Restarting it!");
+		[self toggleSharing:YES];
+	}
 }
 
-- (NSNetService*) netService
-{
-	return netService;
-}
-
-- (void)setServiceName:(NSString *) newName
-{
-	[serviceName release];
-	serviceName = [newName retain];
-}
-
-- (NSString *) serviceName
-{
-	return serviceName;
-}
 @end

@@ -103,9 +103,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSSplitView			*sourcesSplitView;
 	IBOutlet NSBox					*bonjourSourcesBox;
 	
-	IBOutlet NSTextField			*bonjourServiceName, *bonjourPassword;
 	IBOutlet NSTableView			*bonjourServicesList;
-	IBOutlet NSButton				*bonjourSharingCheck, *bonjourPasswordCheck;
 	BonjourPublisher				*bonjourPublisher;
 	BonjourBrowser					*bonjourBrowser;
 	
@@ -252,15 +250,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) BOOL isCurrentDatabaseBonjour;
 @property(readonly) NSString *currentDatabasePath;
 @property(readonly) NSString *localDatabasePath;
-@property(readonly) NSString *bonjourPassword;
 @property(readonly) long currentBonjourService;
 
 @property volatile BOOL bonjourDownloading;
 @property(readonly) NSBox *bonjourSourcesBox;
-@property(readonly) NSTextField *bonjourServiceName;
-@property(readonly) NSTextField *bonjourPasswordTextField;
-@property(readonly) NSButton *bonjourSharingCheck;
-@property(readonly) NSButton *bonjourPasswordCheck;
 @property(readonly) BonjourBrowser *bonjourBrowser;
 
 @property(readonly) NSString *documentsDirectory;
@@ -481,12 +474,12 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 //bonjour
 - (void) getDICOMROIFiles:(NSArray*) files;
 - (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key;
-- (void) setServiceName:(NSString*) title;
-- (NSString*) serviceName;
-- (IBAction)toggleBonjourSharing:(id) sender;
-- (void) setBonjourSharingEnabled:(BOOL) boo;
-- (void) bonjourWillPublish;
-- (void) bonjourDidStop;
+//- (void) setServiceName:(NSString*) title;
+//- (NSString*) serviceName;
+//- (IBAction)toggleBonjourSharing:(id) sender;
+//- (void) setBonjourSharingEnabled:(BOOL) boo;
+//- (void) bonjourWillPublish;
+//- (void) bonjourDidStop;
 - (IBAction) bonjourServiceClicked:(id)sender;
 - (NSString*) getLocalDCMPath: (NSManagedObject*) obj :(long) no;
 - (void) displayBonjourServices;

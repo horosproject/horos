@@ -66,15 +66,55 @@
 	return [obj boolValue];
 }
 
+-(void)setString:(NSString*)value forKey:(NSString*)defaultName {
+	if (![value isKindOfClass:[NSString class]])
+		[NSException raise:NSInvalidArgumentException format:@"Value must be of class NSString"];
+	[self setValue:value forValuesKey:defaultName];
+}
+
+-(void)setArray:(NSArray*)value forKey:(NSString*)defaultName {
+	if (![value isKindOfClass:[NSArray class]])
+		[NSException raise:NSInvalidArgumentException format:@"Value must be of class NSArray"];
+	[self setValue:value forValuesKey:defaultName];
+}
+
+-(void)setDictionary:(NSDictionary*)value forKey:(NSString*)defaultName {
+	if (![value isKindOfClass:[NSDictionary class]])
+		[NSException raise:NSInvalidArgumentException format:@"Value must be of class NSDictionary"];
+	[self setValue:value forValuesKey:defaultName];
+}
+
+-(void)setData:(NSData*)value forKey:(NSString*)defaultName {
+	if (![value isKindOfClass:[NSData class]])
+		[NSException raise:NSInvalidArgumentException format:@"Value must be of class NSData"];
+	[self setValue:value forValuesKey:defaultName];
+}
+
+//-(void)setStringArray:(NSArray*)value forKey(NSString*)defaultName 
+
+-(void)setInteger:(NSInteger)value forKey:(NSString*)defaultName {
+	[self setValue:[NSNumber numberWithInteger:value] forValuesKey:defaultName];
+}
+
+-(void)setFloat:(float)value forKey:(NSString*)defaultName {
+	[self setValue:[NSNumber numberWithFloat:value] forValuesKey:defaultName];
+}
+
+-(void)setDouble:(double)value forKey:(NSString*)defaultName {
+	[self setValue:[NSNumber numberWithDouble:value] forValuesKey:defaultName];
+}
+
+-(void)setBool:(BOOL)value forKey:(NSString*)defaultName {
+	[self setValue:[NSNumber numberWithBool:value] forValuesKey:defaultName];
+}
 
 @end
-
-
-@implementation NSObject (DiscPublishing)
 
 NSString* valuesKeyPath(NSString* key) {
 	return [NSString stringWithFormat:@"values.%@", key];
 }
+
+@implementation NSObject (N2ValuesBinding)
 
 -(id)valueForValuesKey:(NSString*)keyPath {
 	return [self valueForKeyPath:valuesKeyPath(keyPath)];

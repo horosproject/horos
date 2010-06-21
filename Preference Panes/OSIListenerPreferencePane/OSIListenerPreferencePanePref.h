@@ -22,8 +22,8 @@
 	IBOutlet NSForm *aeForm;
 	IBOutlet NSMatrix *deleteFileModeMatrix;
 	IBOutlet NSButton *listenerOnOffButton;
-	IBOutlet NSFormCell *ipField;
-	IBOutlet NSFormCell *nameField;
+	IBOutlet NSTextField *ipField;
+	IBOutlet NSTextField *nameField;
 	IBOutlet NSButton *listenerOnOffAnonymize;
 	IBOutlet NSButton *generateLogsButton;
 	IBOutlet NSButton *decompressButton, *compressButton;

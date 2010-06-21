@@ -86,6 +86,48 @@
 		5912DCD9118EF447007F7D40 /* N2FlippedView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5912DCD7118EF447007F7D40 /* N2FlippedView.mm */; };
 		5912DCDA118EF447007F7D40 /* N2FlippedView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5912DCD6118EF447007F7D40 /* N2FlippedView.h */; };
 		5912DCDB118EF447007F7D40 /* N2FlippedView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5912DCD7118EF447007F7D40 /* N2FlippedView.mm */; };
+		592681AB11CF4A5E00CFA81F /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
+		592681BF11CF4FB700CFA81F /* NSUserDefaultsController+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997899011B7B48E002DB107 /* NSUserDefaultsController+N2.h */; };
+		5926822311CF60BD00CFA81F /* ActivityWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5926821F11CF60BD00CFA81F /* ActivityWindow.xib */; };
+		5926822411CF60BD00CFA81F /* ThreadModalForWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5926822111CF60BD00CFA81F /* ThreadModalForWindow.xib */; };
+		5926822511CF60BD00CFA81F /* ActivityWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5926821F11CF60BD00CFA81F /* ActivityWindow.xib */; };
+		5926822611CF60BD00CFA81F /* ThreadModalForWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5926822111CF60BD00CFA81F /* ThreadModalForWindow.xib */; };
+		5926822D11CF610200CFA81F /* activity_cpu.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822911CF610200CFA81F /* activity_cpu.png */; };
+		5926822E11CF610200CFA81F /* activity_hdd.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822A11CF610200CFA81F /* activity_hdd.png */; };
+		5926822F11CF610200CFA81F /* activity_net.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822B11CF610200CFA81F /* activity_net.png */; };
+		5926823111CF610200CFA81F /* activity_cpu.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822911CF610200CFA81F /* activity_cpu.png */; };
+		5926823211CF610200CFA81F /* activity_hdd.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822A11CF610200CFA81F /* activity_hdd.png */; };
+		5926823311CF610200CFA81F /* activity_net.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822B11CF610200CFA81F /* activity_net.png */; };
+		5926824411CF62DA00CFA81F /* ActivityWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823511CF62DA00CFA81F /* ActivityWindowController.h */; };
+		5926824511CF62DA00CFA81F /* ActivityWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926823611CF62DA00CFA81F /* ActivityWindowController.mm */; };
+		5926824611CF62DA00CFA81F /* MenuMeterCPUStats.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823811CF62DA00CFA81F /* MenuMeterCPUStats.h */; };
+		5926824711CF62DA00CFA81F /* MenuMeterCPUStats.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926823911CF62DA00CFA81F /* MenuMeterCPUStats.mm */; };
+		5926824811CF62DA00CFA81F /* MenuMeterNetPPP.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823A11CF62DA00CFA81F /* MenuMeterNetPPP.h */; };
+		5926824911CF62DA00CFA81F /* MenuMeterNetPPP.m in Sources */ = {isa = PBXBuildFile; fileRef = 5926823B11CF62DA00CFA81F /* MenuMeterNetPPP.m */; };
+		5926824A11CF62DA00CFA81F /* MenuMeterNetStats.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823C11CF62DA00CFA81F /* MenuMeterNetStats.h */; };
+		5926824B11CF62DA00CFA81F /* MenuMeterNetStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 5926823D11CF62DA00CFA81F /* MenuMeterNetStats.m */; };
+		5926824C11CF62DA00CFA81F /* ThreadCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823E11CF62DA00CFA81F /* ThreadCell.h */; };
+		5926824D11CF62DA00CFA81F /* ThreadCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926823F11CF62DA00CFA81F /* ThreadCell.mm */; };
+		5926824E11CF62DA00CFA81F /* ThreadModalForWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926824011CF62DA00CFA81F /* ThreadModalForWindowController.h */; };
+		5926824F11CF62DA00CFA81F /* ThreadModalForWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926824111CF62DA00CFA81F /* ThreadModalForWindowController.mm */; };
+		5926825011CF62DA00CFA81F /* ThreadsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926824211CF62DA00CFA81F /* ThreadsManager.h */; };
+		5926825111CF62DA00CFA81F /* ThreadsManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926824311CF62DA00CFA81F /* ThreadsManager.mm */; };
+		5926825211CF62DA00CFA81F /* ActivityWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823511CF62DA00CFA81F /* ActivityWindowController.h */; };
+		5926825311CF62DA00CFA81F /* ActivityWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926823611CF62DA00CFA81F /* ActivityWindowController.mm */; };
+		5926825411CF62DA00CFA81F /* MenuMeterCPUStats.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823811CF62DA00CFA81F /* MenuMeterCPUStats.h */; };
+		5926825511CF62DA00CFA81F /* MenuMeterCPUStats.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926823911CF62DA00CFA81F /* MenuMeterCPUStats.mm */; };
+		5926825611CF62DA00CFA81F /* MenuMeterNetPPP.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823A11CF62DA00CFA81F /* MenuMeterNetPPP.h */; };
+		5926825711CF62DA00CFA81F /* MenuMeterNetPPP.m in Sources */ = {isa = PBXBuildFile; fileRef = 5926823B11CF62DA00CFA81F /* MenuMeterNetPPP.m */; };
+		5926825811CF62DA00CFA81F /* MenuMeterNetStats.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823C11CF62DA00CFA81F /* MenuMeterNetStats.h */; };
+		5926825911CF62DA00CFA81F /* MenuMeterNetStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 5926823D11CF62DA00CFA81F /* MenuMeterNetStats.m */; };
+		5926825A11CF62DA00CFA81F /* ThreadCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823E11CF62DA00CFA81F /* ThreadCell.h */; };
+		5926825B11CF62DA00CFA81F /* ThreadCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926823F11CF62DA00CFA81F /* ThreadCell.mm */; };
+		5926825C11CF62DA00CFA81F /* ThreadModalForWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926824011CF62DA00CFA81F /* ThreadModalForWindowController.h */; };
+		5926825D11CF62DA00CFA81F /* ThreadModalForWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926824111CF62DA00CFA81F /* ThreadModalForWindowController.mm */; };
+		5926825E11CF62DA00CFA81F /* ThreadsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926824211CF62DA00CFA81F /* ThreadsManager.h */; };
+		5926825F11CF62DA00CFA81F /* ThreadsManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926824311CF62DA00CFA81F /* ThreadsManager.mm */; };
+		5926828411CF69B300CFA81F /* NSThread+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28B111C611F100DAD5B4 /* NSThread+N2.mm */; };
+		5926828711CF69CB00CFA81F /* N2HighlightImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997898511B7B46A002DB107 /* N2HighlightImageButtonCell.mm */; };
 		594830CD118B0AC100D7E606 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 594830CB118B0AC100D7E606 /* N2ImageView.h */; };
 		594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 594830CC118B0AC100D7E606 /* N2ImageView.mm */; };
 		594830CF118B0AC100D7E606 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 594830CB118B0AC100D7E606 /* N2ImageView.h */; };
@@ -8034,6 +8076,25 @@
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
 		5912DCD6118EF447007F7D40 /* N2FlippedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2FlippedView.h; path = nitrogen/Sources/N2FlippedView.h; sourceTree = "<group>"; };
 		5912DCD7118EF447007F7D40 /* N2FlippedView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2FlippedView.mm; path = nitrogen/Sources/N2FlippedView.mm; sourceTree = "<group>"; };
+		5926822011CF60BD00CFA81F /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ActivityWindow.xib; sourceTree = "<group>"; };
+		5926822211CF60BD00CFA81F /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ThreadModalForWindow.xib; sourceTree = "<group>"; };
+		5926822911CF610200CFA81F /* activity_cpu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = activity_cpu.png; sourceTree = "<group>"; };
+		5926822A11CF610200CFA81F /* activity_hdd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = activity_hdd.png; sourceTree = "<group>"; };
+		5926822B11CF610200CFA81F /* activity_net.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = activity_net.png; sourceTree = "<group>"; };
+		5926823511CF62DA00CFA81F /* ActivityWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityWindowController.h; sourceTree = "<group>"; };
+		5926823611CF62DA00CFA81F /* ActivityWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ActivityWindowController.mm; sourceTree = "<group>"; };
+		5926823811CF62DA00CFA81F /* MenuMeterCPUStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuMeterCPUStats.h; sourceTree = "<group>"; };
+		5926823911CF62DA00CFA81F /* MenuMeterCPUStats.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuMeterCPUStats.mm; sourceTree = "<group>"; };
+		5926823A11CF62DA00CFA81F /* MenuMeterNetPPP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuMeterNetPPP.h; sourceTree = "<group>"; };
+		5926823B11CF62DA00CFA81F /* MenuMeterNetPPP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuMeterNetPPP.m; sourceTree = "<group>"; };
+		5926823C11CF62DA00CFA81F /* MenuMeterNetStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuMeterNetStats.h; sourceTree = "<group>"; };
+		5926823D11CF62DA00CFA81F /* MenuMeterNetStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuMeterNetStats.m; sourceTree = "<group>"; };
+		5926823E11CF62DA00CFA81F /* ThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadCell.h; sourceTree = "<group>"; };
+		5926823F11CF62DA00CFA81F /* ThreadCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThreadCell.mm; sourceTree = "<group>"; };
+		5926824011CF62DA00CFA81F /* ThreadModalForWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadModalForWindowController.h; sourceTree = "<group>"; };
+		5926824111CF62DA00CFA81F /* ThreadModalForWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThreadModalForWindowController.mm; sourceTree = "<group>"; };
+		5926824211CF62DA00CFA81F /* ThreadsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadsManager.h; sourceTree = "<group>"; };
+		5926824311CF62DA00CFA81F /* ThreadsManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThreadsManager.mm; sourceTree = "<group>"; };
 		594830CB118B0AC100D7E606 /* N2ImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ImageView.h; path = nitrogen/Sources/N2ImageView.h; sourceTree = "<group>"; };
 		594830CC118B0AC100D7E606 /* N2ImageView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageView.mm; path = nitrogen/Sources/N2ImageView.mm; sourceTree = "<group>"; };
 		596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPreferencePane+OsiriX.h"; sourceTree = "<group>"; };
@@ -11957,6 +12018,7 @@
 			children = (
 				5997894211B7B3C6002DB107 /* Anonymization */,
 				59BDF10B117EE68F007F1F2C /* Preferences */,
+				592681FB11CF5F5000CFA81F /* Activity */,
 				ABD9E6D305B49DB70077115D /* 2D Viewer */,
 				ABD9E69C05B49D6C0077115D /* Database */,
 				AB8B8BDC05603E3A00CA4134 /* XML */,
@@ -12150,6 +12212,8 @@
 				5997897511B7B423002DB107 /* AnonymizationSavePanel.xib */,
 				5997897711B7B423002DB107 /* AnonymizationTemplateNamePanel.xib */,
 				5997897911B7B423002DB107 /* AnonymizationView.xib */,
+				5926821F11CF60BD00CFA81F /* ActivityWindow.xib */,
+				5926822111CF60BD00CFA81F /* ThreadModalForWindow.xib */,
 				CE3F99400C84724B00CB38F1 /* AYDicomPrint.xib */,
 				CE3F992C0C84724B00CB38F1 /* BurnViewer.xib */,
 				CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */,
@@ -12280,6 +12344,35 @@
 				AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */,
 			);
 			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		592681FB11CF5F5000CFA81F /* Activity */ = {
+			isa = PBXGroup;
+			children = (
+				5926823511CF62DA00CFA81F /* ActivityWindowController.h */,
+				5926823611CF62DA00CFA81F /* ActivityWindowController.mm */,
+				5926823E11CF62DA00CFA81F /* ThreadCell.h */,
+				5926823F11CF62DA00CFA81F /* ThreadCell.mm */,
+				5926824011CF62DA00CFA81F /* ThreadModalForWindowController.h */,
+				5926824111CF62DA00CFA81F /* ThreadModalForWindowController.mm */,
+				5926824211CF62DA00CFA81F /* ThreadsManager.h */,
+				5926824311CF62DA00CFA81F /* ThreadsManager.mm */,
+				5926823711CF62DA00CFA81F /* MenuMeters */,
+			);
+			name = Activity;
+			sourceTree = "<group>";
+		};
+		5926823711CF62DA00CFA81F /* MenuMeters */ = {
+			isa = PBXGroup;
+			children = (
+				5926823811CF62DA00CFA81F /* MenuMeterCPUStats.h */,
+				5926823911CF62DA00CFA81F /* MenuMeterCPUStats.mm */,
+				5926823A11CF62DA00CFA81F /* MenuMeterNetPPP.h */,
+				5926823B11CF62DA00CFA81F /* MenuMeterNetPPP.m */,
+				5926823C11CF62DA00CFA81F /* MenuMeterNetStats.h */,
+				5926823D11CF62DA00CFA81F /* MenuMeterNetStats.m */,
+			);
+			path = MenuMeters;
 			sourceTree = "<group>";
 		};
 		5997894211B7B3C6002DB107 /* Anonymization */ = {
@@ -13162,6 +13255,9 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				5926822911CF610200CFA81F /* activity_cpu.png */,
+				5926822A11CF610200CFA81F /* activity_hdd.png */,
+				5926822B11CF610200CFA81F /* activity_net.png */,
 				5997896F11B7B40B002DB107 /* MinusButton.png */,
 				5997896D11B7B402002DB107 /* PlusButton.png */,
 				ABBB647B063587B200D9531F /* 2DBlending.tif */,
@@ -19058,6 +19154,13 @@
 				59DC28C611C6152400DAD5B4 /* N2CSV.h in Headers */,
 				59DC290A11C6178500DAD5B4 /* DiscBurningOptions.h in Headers */,
 				59DC290E11C617A300DAD5B4 /* DicomCompressor.h in Headers */,
+				5926824411CF62DA00CFA81F /* ActivityWindowController.h in Headers */,
+				5926824611CF62DA00CFA81F /* MenuMeterCPUStats.h in Headers */,
+				5926824811CF62DA00CFA81F /* MenuMeterNetPPP.h in Headers */,
+				5926824A11CF62DA00CFA81F /* MenuMeterNetStats.h in Headers */,
+				5926824C11CF62DA00CFA81F /* ThreadCell.h in Headers */,
+				5926824E11CF62DA00CFA81F /* ThreadModalForWindowController.h in Headers */,
+				5926825011CF62DA00CFA81F /* ThreadsManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21169,6 +21272,14 @@
 				596EB3F8118ABBB000880192 /* NSWindow+N2.h in Headers */,
 				594830CF118B0AC100D7E606 /* N2ImageView.h in Headers */,
 				5912DCDA118EF447007F7D40 /* N2FlippedView.h in Headers */,
+				592681BF11CF4FB700CFA81F /* NSUserDefaultsController+N2.h in Headers */,
+				5926825211CF62DA00CFA81F /* ActivityWindowController.h in Headers */,
+				5926825411CF62DA00CFA81F /* MenuMeterCPUStats.h in Headers */,
+				5926825611CF62DA00CFA81F /* MenuMeterNetPPP.h in Headers */,
+				5926825811CF62DA00CFA81F /* MenuMeterNetStats.h in Headers */,
+				5926825A11CF62DA00CFA81F /* ThreadCell.h in Headers */,
+				5926825C11CF62DA00CFA81F /* ThreadModalForWindowController.h in Headers */,
+				5926825E11CF62DA00CFA81F /* ThreadsManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21998,6 +22109,11 @@
 				5997897D11B7B423002DB107 /* AnonymizationSavePanel.xib in Resources */,
 				5997897E11B7B423002DB107 /* AnonymizationTemplateNamePanel.xib in Resources */,
 				5997897F11B7B423002DB107 /* AnonymizationView.xib in Resources */,
+				5926822311CF60BD00CFA81F /* ActivityWindow.xib in Resources */,
+				5926822411CF60BD00CFA81F /* ThreadModalForWindow.xib in Resources */,
+				5926822D11CF610200CFA81F /* activity_cpu.png in Resources */,
+				5926822E11CF610200CFA81F /* activity_hdd.png in Resources */,
+				5926822F11CF610200CFA81F /* activity_net.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22350,6 +22466,11 @@
 				AB10FA241129302A009EB238 /* PopUpArrows.png in Resources */,
 				59BDF107117EE61E007F1F2C /* PreferencesWindow.xib in Resources */,
 				CEBA5FE111B244EA005F3A0E /* SpectroIcon.jpg in Resources */,
+				5926822511CF60BD00CFA81F /* ActivityWindow.xib in Resources */,
+				5926822611CF60BD00CFA81F /* ThreadModalForWindow.xib in Resources */,
+				5926823111CF610200CFA81F /* activity_cpu.png in Resources */,
+				5926823211CF610200CFA81F /* activity_hdd.png in Resources */,
+				5926823311CF610200CFA81F /* activity_net.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23557,6 +23678,13 @@
 				59DC28C711C6152400DAD5B4 /* N2CSV.mm in Sources */,
 				59DC290B11C6178500DAD5B4 /* DiscBurningOptions.mm in Sources */,
 				59DC290F11C617A300DAD5B4 /* DicomCompressor.mm in Sources */,
+				5926824511CF62DA00CFA81F /* ActivityWindowController.mm in Sources */,
+				5926824711CF62DA00CFA81F /* MenuMeterCPUStats.mm in Sources */,
+				5926824911CF62DA00CFA81F /* MenuMeterNetPPP.m in Sources */,
+				5926824B11CF62DA00CFA81F /* MenuMeterNetStats.m in Sources */,
+				5926824D11CF62DA00CFA81F /* ThreadCell.mm in Sources */,
+				5926824F11CF62DA00CFA81F /* ThreadModalForWindowController.mm in Sources */,
+				5926825111CF62DA00CFA81F /* ThreadsManager.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24728,6 +24856,16 @@
 				594830D0118B0AC100D7E606 /* N2ImageView.mm in Sources */,
 				5912DCDB118EF447007F7D40 /* N2FlippedView.mm in Sources */,
 				59DC285C11C60E3C00DAD5B4 /* NSView+N2.mm in Sources */,
+				592681AB11CF4A5E00CFA81F /* NSUserDefaultsController+N2.mm in Sources */,
+				5926825311CF62DA00CFA81F /* ActivityWindowController.mm in Sources */,
+				5926825511CF62DA00CFA81F /* MenuMeterCPUStats.mm in Sources */,
+				5926825711CF62DA00CFA81F /* MenuMeterNetPPP.m in Sources */,
+				5926825911CF62DA00CFA81F /* MenuMeterNetStats.m in Sources */,
+				5926825B11CF62DA00CFA81F /* ThreadCell.mm in Sources */,
+				5926825D11CF62DA00CFA81F /* ThreadModalForWindowController.mm in Sources */,
+				5926825F11CF62DA00CFA81F /* ThreadsManager.mm in Sources */,
+				5926828411CF69B300CFA81F /* NSThread+N2.mm in Sources */,
+				5926828711CF69CB00CFA81F /* N2HighlightImageButtonCell.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24878,6 +25016,22 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		5926821F11CF60BD00CFA81F /* ActivityWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5926822011CF60BD00CFA81F /* English */,
+			);
+			name = ActivityWindow.xib;
+			sourceTree = "<group>";
+		};
+		5926822111CF60BD00CFA81F /* ThreadModalForWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5926822211CF60BD00CFA81F /* English */,
+			);
+			name = ThreadModalForWindow.xib;
+			sourceTree = "<group>";
+		};
 		5997897111B7B422002DB107 /* AnonymizationCustomTagPanel.xib */ = {
 			isa = PBXVariantGroup;
 			children = (

@@ -17,6 +17,24 @@
 
 @interface NSUserDefaultsController (OsiriX)
 
+#pragma mark Bonjour Sharing
+
+extern NSString* const OsirixBonjourSharingActiveFlagDefaultsKey;
++(BOOL)isBonjourSharingActive;
+
+extern NSString* const OsirixBonjourSharingNameDefaultsKey;
++(NSString*)bonjourSharingName;
++(NSString*)defaultBonjourSharingName;
+
+extern NSString* const OsirixBonjourSharingPasswordFlagDefaultsKey;
++(BOOL)isBonjourSharingPasswordProtected;
+
+extern NSString* const OsirixBonjourSharingPasswordDefaultsKey;
++(NSString*)bonjourSharingPassword;
+
+#pragma mark Other
+
 extern NSString* const OsirixWLWWDefaultsKey;
+extern NSString* OsirixActivityWindowVisibleDefaultsKey;
 
 @end

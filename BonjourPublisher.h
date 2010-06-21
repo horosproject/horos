@@ -21,7 +21,7 @@
 {
 	BOOL				dbPublished;
 	
-	NSString			*serviceName;
+//	NSString			*serviceName;
 	NSNetService		*netService;
 	NSFileHandle		*listeningSocket;
 
@@ -32,6 +32,9 @@
 	
 	NSLock				*connectionLock, *dicomSendLock;
 }
+
+//@property(retain) NSString* serviceName;
+@property(retain, readonly) NSNetService* netService;
 
 - (id)initWithBrowserController: (BrowserController*) bC;
 
@@ -47,8 +50,8 @@
 
 - (NSNetService*) netService;
 
-- (void)setServiceName:(NSString *) newName;
-- (NSString *) serviceName;
+//- (void)setServiceName:(NSString *) newName;
+//- (NSString *) serviceName;
 - (int) OsiriXDBCurrentPort;
 + (BonjourPublisher*) currentPublisher;
 
