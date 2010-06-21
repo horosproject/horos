@@ -20,15 +20,8 @@
 
 @interface OSIListenerPreferencePanePref : NSPreferencePane 
 {
-	IBOutlet NSMatrix *deleteFileModeMatrix;
-	IBOutlet NSButton *listenerOnOffButton;
 	IBOutlet NSTextField *ipField;
 	IBOutlet NSTextField *nameField;
-	IBOutlet NSButton *listenerOnOffAnonymize;
-	IBOutlet NSButton *generateLogsButton;
-	IBOutlet NSTextField *checkIntervalField, *timeout;
-	IBOutlet NSButton *singleProcessButton;
-	IBOutlet NSPopUpButton *logDurationPopup;
 	
 	IBOutlet NSTextField* sharingNameField;	
 	
@@ -56,13 +49,6 @@
 #endif
 
 - (void) mainViewDidLoad;
-- (IBAction)setDeleteFileMode:(id)sender;
-- (IBAction)setListenerOnOff:(id)sender;
-- (IBAction)setAnonymizeListenerOnOff:(id)sender;
-- (IBAction)setGenerateLogs:(id)sender;
-- (IBAction)setSingleProcess:(id)sender;
-- (IBAction)setLogDuration:(id)sender;
-- (IBAction)setCheckInterval:(id) sender;
 
 -(IBAction)editAddresses:(id)sender;
 -(IBAction)editHostname:(id)sender;

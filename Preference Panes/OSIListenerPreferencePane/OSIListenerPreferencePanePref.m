@@ -89,16 +89,6 @@ char *GetPrivateIP()
 	[super dealloc];
 }
 
-//-(IBAction) setExtraStoreSCP:(id) sender
-//{
-//	[[NSUserDefaults standardUserDefaults] setObject:[extrastorescp stringValue] forKey:@"STORESCPEXTRA"];
-//}
-
--(IBAction) setCheckInterval:(id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setInteger:[checkIntervalField intValue] forKey:@"LISTENERCHECKINTERVAL"];
-}
-
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -121,70 +111,7 @@ char *GetPrivateIP()
 	[ipField setStringValue: ip];
 	[nameField setStringValue: name];
 	
-	[generateLogsButton setState:[defaults boolForKey:@"NETWORKLOGS"]];
-	[listenerOnOffButton setState:[defaults boolForKey:@"STORESCP"]];
-	
-	[singleProcessButton setState:[defaults boolForKey:@"SINGLEPROCESS"]];
-	
-//	[useStoreSCPModeMatrix selectCellWithTag:[defaults boolForKey:@"USESTORESCP"]];
-//	
-//	[defaults boolForKey:@"USESTORESCP"] ? 
-//	[transferSyntaxBox setHidden:NO] : [transferSyntaxBox setHidden:YES];
-//	int index = 7;
-//	if ([[defaults stringForKey:@"AETransferSyntax"] isEqualToString:@"+x="]) //local byte order
-//		index = 0;
-//	else if ([[defaults stringForKey:@"AETransferSyntax"] isEqualToString:@"+xe"]) // explicit litle
-//		index = 1;
-//	else if ([[defaults stringForKey:@"AETransferSyntax"] isEqualToString:@"+xb"]) // explicit Big
-//		index = 2;
-//	else if ([[defaults stringForKey:@"AETransferSyntax"] isEqualToString:@"+xs"]) // jpeg lossless
-//		index = 3;
-//	else if ([[defaults stringForKey:@"AETransferSyntax"] isEqualToString:@"+xy"]) // jpeg lossy 8
-//		index = 4;
-//	else if ([[defaults stringForKey:@"AETransferSyntax"] isEqualToString:@"+xx"]) //jpeg lossy 12
-//		index = 5;
-//	else if ([[defaults stringForKey:@"AETransferSyntax"] isEqualToString:@"+xr"]) // rle
-//		index = 6;
-//	else if ([[defaults stringForKey:@"AETransferSyntax"] isEqualToString:@"+xi"]) // implicit
-//		index = 7;
-//	
-//	else if ([[defaults stringForKey:@"AETransferSyntax"] isEqualToString:@"+xv"]) // jpeg 2000 lossless
-//		index = 8;
-//	else if ([[defaults stringForKey:@"AETransferSyntax"] isEqualToString:@"+xw"]) // jpeg 2000 lossy
-//		index = 9;
-//	
-//	[transferSyntaxModeMatrix selectCellWithTag:index];
-
-	[deleteFileModeMatrix selectCellWithTag:[defaults boolForKey:@"DELETEFILELISTENER"]];
-	
-	[listenerOnOffAnonymize setState:[defaults boolForKey:@"ANONYMIZELISTENER"]];
-	
-	[logDurationPopup selectItemWithTag: [defaults integerForKey:@"LOGCLEANINGDAYS"]];
-	
-	[checkIntervalField setIntValue: [defaults integerForKey:@"LISTENERCHECKINTERVAL"]];
-	
 	[self getTLSCertificate];
-}
-
-- (IBAction)setLogDuration:(id)sender
-{
-	[[NSUserDefaults standardUserDefaults] setInteger:[[logDurationPopup selectedItem] tag]  forKey:@"LOGCLEANINGDAYS"];
-}
-
-- (IBAction)setSingleProcess:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"SINGLEPROCESS"];
-}
-- (IBAction)setDeleteFileMode:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey:@"DELETEFILELISTENER"];
-}
-- (IBAction)setListenerOnOff:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"STORESCP"];
-}
-- (IBAction)setGenerateLogs:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"NETWORKLOGS"];
-}
-- (IBAction)setAnonymizeListenerOnOff:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"ANONYMIZELISTENER"];
 }
 
 - (void) willUnselect

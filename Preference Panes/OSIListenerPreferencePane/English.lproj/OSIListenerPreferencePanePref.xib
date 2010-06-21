@@ -11,7 +11,7 @@
 			<string key="NS.object.0">762</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="956"/>
+			<integer value="908"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1751,6 +1751,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="896066363">
+				<array class="NSMutableArray" key="NSDeclaredKeys">
+					<string>DELETEFILELISTENER</string>
+					<string>SINGLEPROCESS</string>
+					<string>STORESCP</string>
+					<string>NETWORKLOGS</string>
+					<string>LOGCLEANINGDAYS</string>
+					<string>LISTENERCHECKINTERVAL</string>
+				</array>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSWindowTemplate" id="590408922">
@@ -2517,38 +2525,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
 			<array class="NSMutableArray" key="connectionRecords">
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setListenerOnOff:</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="88608045"/>
-					</object>
-					<int key="connectionID">153</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setDeleteFileMode:</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="375990978"/>
-					</object>
-					<int key="connectionID">157</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">listenerOnOffButton</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="88608045"/>
-					</object>
-					<int key="connectionID">161</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">deleteFileModeMatrix</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="375990978"/>
-					</object>
-					<int key="connectionID">163</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">listenerOnOffAnonymize</string>
 						<reference key="source" ref="649897355"/>
@@ -2563,70 +2539,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="1011570821"/>
 					</object>
 					<int key="connectionID">170</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setGenerateLogs:</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="142497790"/>
-					</object>
-					<int key="connectionID">262</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">generateLogsButton</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="142497790"/>
-					</object>
-					<int key="connectionID">263</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">singleProcessButton</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="126926899"/>
-					</object>
-					<int key="connectionID">267</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setSingleProcess:</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="126926899"/>
-					</object>
-					<int key="connectionID">268</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">logDurationPopup</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="722324130"/>
-					</object>
-					<int key="connectionID">276</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setLogDuration:</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="722324130"/>
-					</object>
-					<int key="connectionID">277</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setCheckInterval:</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="1045303967"/>
-					</object>
-					<int key="connectionID">285</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">checkIntervalField</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="1045303967"/>
-					</object>
-					<int key="connectionID">288</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -3582,6 +3494,102 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="107666267"/>
 					</object>
 					<int key="connectionID">1004</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: values.DELETEFILELISTENER</string>
+						<reference key="source" ref="375990978"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="375990978"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">selectedTag: values.DELETEFILELISTENER</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">values.DELETEFILELISTENER</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1005</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.SINGLEPROCESS</string>
+						<reference key="source" ref="126926899"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="126926899"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">value: values.SINGLEPROCESS</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.SINGLEPROCESS</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1006</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.STORESCP</string>
+						<reference key="source" ref="88608045"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="88608045"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">value: values.STORESCP</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.STORESCP</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1007</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.NETWORKLOGS</string>
+						<reference key="source" ref="142497790"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="142497790"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">value: values.NETWORKLOGS</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.NETWORKLOGS</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1008</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: values.LOGCLEANINGDAYS</string>
+						<reference key="source" ref="722324130"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="722324130"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">selectedTag: values.LOGCLEANINGDAYS</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">values.LOGCLEANINGDAYS</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1009</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.LISTENERCHECKINTERVAL</string>
+						<reference key="source" ref="1045303967"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1045303967"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">value: values.LISTENERCHECKINTERVAL</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.LISTENERCHECKINTERVAL</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1010</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -5211,7 +5219,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1004</int>
+			<int key="maxID">1010</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
