@@ -782,7 +782,7 @@ static NSConditionLock *threadLock = nil;
 				
 				if( [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID])
 				{
-					// Check if it is an OsiriX ROI SR
+					// Check if it is an OsiriX Annotations SR
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Annotations SR"])
 					{
 						[curDict setValue: @"OsiriX Annotations SR" forKey: @"seriesID"];
@@ -805,16 +805,20 @@ static NSConditionLock *threadLock = nil;
 						}
 						else if( [newFile isEqualToString: destPath] == NO)
 						{
-							[[NSFileManager defaultManager] removeFileAtPath:destPath handler:nil];
-							if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
+							if( [newFile hasPrefix: destPath] == NO)
 							{
-								NSLog( @"ROI SR MOVE :%@ to :%@", newFile, destPath);
-								[[NSFileManager defaultManager] movePath:newFile toPath:destPath handler: nil];
-							}
-							else
-							{
-								NSLog( @"ROI SR COPY :%@ to :%@", newFile, destPath);
-								[[NSFileManager defaultManager] copyPath:newFile toPath:destPath handler: nil];
+								[[NSFileManager defaultManager] removeFileAtPath: destPath handler:nil];
+							
+								if( [newFile hasPrefix: INpath])  // It's in the DATABASE.index folder
+								{
+									NSLog( @"ROI SR MOVE :%@ to :%@", newFile, destPath);
+									[[NSFileManager defaultManager] movePath:newFile toPath:destPath handler: nil];
+								}
+								else
+								{
+									NSLog( @"ROI SR COPY :%@ to :%@", newFile, destPath);
+									[[NSFileManager defaultManager] copyPath:newFile toPath:destPath handler: nil];
+								}
 							}
 						}
 						
@@ -6746,7 +6750,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				NSInteger row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
 				
-				NSManagedObject *study = [databaseOutline itemAtRow: row];
+				DicomStudy *study = [databaseOutline itemAtRow: row];
 				
 				if( [[study valueForKey:@"type"] isEqualToString: @"Study"])
 				{
@@ -10976,7 +10980,7 @@ static BOOL needToRezoom;
 				if( [[object valueForKey:@"type"] isEqualToString:@"Study"])
 				{
 					[studies addObject: object];
-					[object archiveAnnotationsAsDICOMSR];
+					[(DicomStudy*) object archiveAnnotationsAsDICOMSR];
 				}
 				
 				if( [[object valueForKey:@"type"] isEqualToString:@"Series"])

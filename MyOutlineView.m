@@ -15,6 +15,7 @@
 
 #import "MyOutlineView.h"
 #import "browserController.h"
+#import "DicomStudy.h"
 
 @implementation MyOutlineView
 
@@ -299,7 +300,9 @@
 					for( NSManagedObject *object in newImages)
 					{
 						[studies addObject: [object valueForKeyPath:@"series.study"]];
-						[[object valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
+						
+						DicomStudy *std = [object valueForKeyPath:@"series.study"];
+						[std archiveAnnotationsAsDICOMSR];
 					}
 					
 					[[BrowserController currentBrowser] outlineViewRefresh];

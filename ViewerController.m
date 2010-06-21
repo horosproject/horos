@@ -10646,58 +10646,55 @@ short				matrix[25];
 							if( [roisArray count])
 							{
 								[ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image];
-								
-//								if( [ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image] != nil)
-//									[newDICOMSR addObject: str];
-								
 								[allDICOMSR addObject: str];
 							}
 							else
 							{
 								if( [[NSFileManager defaultManager] fileExistsAtPath: str])
 								{
-									[[NSFileManager defaultManager] removeFileAtPath: str handler: nil];
+									[ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image];
+									[allDICOMSR addObject: str];
 									
-									//Check to see if there is already a roi Series.
-									if( roiSRSeries)
-									{
-										//Check to see if there is already this ROI-image
-										NSArray *srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
-										
-										BOOL	found = NO;
-										
-										for( NSManagedObject *item in srs)
-										{
-											if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-												[toDeleteDICOMSR addObject: [str lastPathComponent]];
-											
-											else if( [[item valueForKey:@"completePath"] isEqualToString: str])
-											{
-												NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
-												
-												[context lock];
-												
-												@try
-												{
-													[context deleteObject: item];
-												}
-												@catch (NSException * e)
-												{
-												}
-												
-												[context unlock];
-												
-												found = YES;
-												break;
-											}
-										}
-										
-										if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO)
-										{
-											if( found == NO)
-												NSLog( @"**** strange... corresponding ROI object not found in the ROI Series");
-										}
-									}
+//									//Check to see if there is already a roi Series.
+//									if( roiSRSeries)
+//									{
+//										//Check to see if there is already this ROI-image
+//										NSArray *srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
+//										
+//										BOOL	found = NO;
+//										
+//										for( NSManagedObject *item in srs)
+//										{
+//											if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+//												[toDeleteDICOMSR addObject: [str lastPathComponent]];
+//											
+//											else if( [[item valueForKey:@"completePath"] isEqualToString: str])
+//											{
+//												NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
+//												
+//												[context lock];
+//												
+//												@try
+//												{
+//													[context deleteObject: item];
+//												}
+//												@catch (NSException * e)
+//												{
+//												}
+//												
+//												[context unlock];
+//												
+//												found = YES;
+//												break;
+//											}
+//										}
+//										
+//										if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO)
+//										{
+//											if( found == NO)
+//												NSLog( @"**** strange... corresponding ROI object not found in the ROI Series");
+//										}
+//									}
 								}
 							}
 						}

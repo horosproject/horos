@@ -17,6 +17,8 @@
 #import "DCMPix.h"
 #import "DCMTKStoreSCU.h"
 #import "SendController.h"
+#import "DicomStudy.h"
+
 // imports required for socket initialization
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -570,7 +572,7 @@ extern const char *GetPrivateIP();
 								
 								for( NSString *uri in studies)
 								{
-									id alb = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+									DicomStudy *alb = (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
 									[studiesOfTheAlbum addObject: alb];
 									[alb archiveAnnotationsAsDICOMSR];
 								}
@@ -622,7 +624,7 @@ extern const char *GetPrivateIP();
 								
 								for( NSString *uri in studies)
 								{
-									id alb = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+									DicomStudy *alb = (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
 									[studiesOfTheAlbum removeObject: alb];
 									[alb archiveAnnotationsAsDICOMSR];
 								}
