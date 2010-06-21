@@ -99,11 +99,6 @@ char *GetPrivateIP()
 	[[NSUserDefaults standardUserDefaults] setInteger:[checkIntervalField intValue] forKey:@"LISTENERCHECKINTERVAL"];
 }
 
--(IBAction) helpstorescp:(id) sender
-{
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: @"http://support.dcmtk.org/docs/storescp.html"]];
-}
-
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -130,9 +125,6 @@ char *GetPrivateIP()
 	[listenerOnOffButton setState:[defaults boolForKey:@"STORESCP"]];
 	
 	[singleProcessButton setState:[defaults boolForKey:@"SINGLEPROCESS"]];
-	
-	[decompressButton setState:[defaults boolForKey:@"DECOMPRESSDICOMLISTENER"]];
-	[compressButton setState:[defaults boolForKey:@"COMPRESSDICOMLISTENER"]];
 	
 //	[useStoreSCPModeMatrix selectCellWithTag:[defaults boolForKey:@"USESTORESCP"]];
 //	
@@ -179,12 +171,6 @@ char *GetPrivateIP()
 	[[NSUserDefaults standardUserDefaults] setInteger:[[logDurationPopup selectedItem] tag]  forKey:@"LOGCLEANINGDAYS"];
 }
 
-- (IBAction)setCompress:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"COMPRESSDICOMLISTENER"];
-}
-- (IBAction)setDecompress:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"DECOMPRESSDICOMLISTENER"];
-}
 - (IBAction)setSingleProcess:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"SINGLEPROCESS"];
 }
@@ -226,21 +212,6 @@ char *GetPrivateIP()
 	NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.keychainaccess"];
 	
 	[[NSWorkspace sharedWorkspace] launchApplication: path];
-}
-
-- (IBAction) webServerSettings: (id) sender
-{
-	[NSApp beginSheet: webServerSettingsWindow modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-
-	[NSApp runModalForWindow: webServerSettingsWindow];
-	
-	[webServerSettingsWindow makeFirstResponder: nil];
-	
-    [NSApp endSheet: webServerSettingsWindow];
-	
-    [webServerSettingsWindow orderOut: self];
-	
-	[[BrowserController currentBrowser] saveUserDatabase];
 }
 
 -(IBAction)editAddresses:(id)sender {

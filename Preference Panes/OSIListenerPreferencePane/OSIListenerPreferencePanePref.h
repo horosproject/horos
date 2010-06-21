@@ -13,24 +13,22 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
+
 #if defined(OSIRIX)
 #import <OsiriX Headers/DICOMTLS.h>
 #endif
 
 @interface OSIListenerPreferencePanePref : NSPreferencePane 
 {
-	IBOutlet NSForm *aeForm;
 	IBOutlet NSMatrix *deleteFileModeMatrix;
 	IBOutlet NSButton *listenerOnOffButton;
 	IBOutlet NSTextField *ipField;
 	IBOutlet NSTextField *nameField;
 	IBOutlet NSButton *listenerOnOffAnonymize;
 	IBOutlet NSButton *generateLogsButton;
-	IBOutlet NSButton *decompressButton, *compressButton;
 	IBOutlet NSTextField *checkIntervalField, *timeout;
 	IBOutlet NSButton *singleProcessButton;
 	IBOutlet NSPopUpButton *logDurationPopup;
-	IBOutlet NSWindow *webServerSettingsWindow;
 	
 	IBOutlet NSTextField* sharingNameField;	
 	
@@ -40,9 +38,11 @@
 	NSArray *TLSSupportedCipherSuite;
 	BOOL TLSUseDHParameterFileURL;
 	NSURL *TLSDHParameterFileURL;
+	
 	#if defined(OSIRIX)
 	TLSCertificateVerificationType	TLSCertificateVerification;
 	#endif
+	
 	BOOL TLSUseSameAETITLE;
 	NSString *TLSStoreSCPAETITLE;
 }
@@ -60,15 +60,9 @@
 - (IBAction)setListenerOnOff:(id)sender;
 - (IBAction)setAnonymizeListenerOnOff:(id)sender;
 - (IBAction)setGenerateLogs:(id)sender;
-- (IBAction)helpstorescp:(id) sender;
 - (IBAction)setSingleProcess:(id)sender;
 - (IBAction)setLogDuration:(id)sender;
 - (IBAction)setCheckInterval:(id) sender;
-- (IBAction)setDecompress:(id)sender;
-- (IBAction)setCompress:(id)sender;
-- (IBAction)webServerSettings:(id)sender;
-- (IBAction)smartAlbumHelpButton:(id)sender;
-- (IBAction)openKeyChainAccess:(id)sender;
 
 -(IBAction)editAddresses:(id)sender;
 -(IBAction)editHostname:(id)sender;

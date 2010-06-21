@@ -4899,14 +4899,19 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		// Write out the concatenated roiArray
 		
-		NSString *path = [ROISRConverter archiveROIsAsDICOM: roiArray[ i ] toPath: str forImage: img];
-		
-		if ( path)
-			[newDICOMSR addObject: path];
+		[ROISRConverter archiveROIsAsDICOM: roiArray[ i ] toPath: str forImage: img];
+		[newDICOMSR addObject: str];
 	}
 	
 	if( newDICOMSR.count)
-		[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
+		[BrowserController addFiles: newDICOMSR
+							  toContext: [[BrowserController currentBrowser] managedObjectContext]
+							 toDatabase: [BrowserController currentBrowser]
+							  onlyDICOM: YES 
+					   notifyAddedFiles: YES
+					parseExistingObject: YES
+							   dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
+					  generatedByOsiriX: YES];
 	
 	[[BrowserController currentBrowser] saveDatabase: nil];
 	
