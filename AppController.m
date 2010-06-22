@@ -3739,15 +3739,15 @@ static BOOL initialized = NO;
 	}
 }
 
--(IBAction)toggleActivityWindow:(id)sender {
+-(IBAction)toggleActivityWindow:(id)sender
+{
 	ActivityWindowController* controller = [ActivityWindowController defaultController];
-	if (![controller.window isVisible] || ![controller.window isKeyWindow]) {
+	if (![controller.window isVisible] || ![controller.window isKeyWindow])
 		[controller.window makeKeyAndOrderFront:sender];
-		[[NSUserDefaultsController sharedUserDefaultsController] setBool:YES forKey:OsirixActivityWindowVisibleDefaultsKey];
-	} else {
+	else
 		[controller.window orderOut:sender];
-		[[NSUserDefaultsController sharedUserDefaultsController] setBool:NO forKey:OsirixActivityWindowVisibleDefaultsKey];
-	}
+	
+	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [controller.window isVisible] forKey:OsirixActivityWindowVisibleDefaultsKey];
 }
 
 //{
