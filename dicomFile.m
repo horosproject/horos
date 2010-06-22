@@ -2501,47 +2501,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NoOfSeries = 1;
 
 			if( patientID == nil) patientID = [[NSString alloc] initWithString:@""];
-			
-//			if( SeparateCardiacMR)
-//			{
-//				theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x2001);
-//				if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
-//				{
-//					if( SeparateCardiacMRMode == 0)
-//					{
-//						val = Papy3GetElement (theGroupP, pap2001CineIndexGr, &nbVal, &itemType);
-//						if( val && val->a)
-//							[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
-//					}
-//					
-//					if( SeparateCardiacMRMode == 1)
-//					{
-//						val = Papy3GetElement (theGroupP, pap2001PositionIndexGr, &nbVal, &itemType);
-//						if( val && val->a)
-//							[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSISOLatin1StringEncoding] forKey: @"SeparateCardiacMR"];
-//					}
-//					
-//					theErr = Papy3GroupFree (&theGroupP, TRUE);
-//				}
-//				
-//				if( SeparateCardiacMR && [dicomElements objectForKey: @"SeparateCardiacMR"])
-//				{
-//					NSString	*n;
-//					
-//					if( SeparateCardiacMRMode == 0) // 3D
-//						n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
-//					else // Cine
-//						n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
-//					
-//					[serieID release];
-//					serieID = n;
-//				}
-//				
-//				if (gIsPapyFile [fileNb] == DICOM10)
-//					theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
-//				else
-//					theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 0L);
-//			}
 		}
 		
 		// Go to groups 0x0042 for Encapsulated Document Possible PDF
@@ -3069,75 +3028,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject: [serieID stringByAppendingString: studyID] forKey: @"seriesDICOMUID"];
 		}
 		
-		NSString *echoTime = nil;
-		
-		if ((echoTime = [dcmObject attributeValueWithName:@"EchoTime"])  && splitMultiEchoMR) 
-		{
-			NSString	*n;					
-			n = [[NSString alloc] initWithFormat:@"%@ TE-%@", serieID, echoTime];
-			[serieID release];
-			serieID = n;
-		}
-		
-//		if( SeparateCardiacMR)
-//		{
-//			if( SeparateCardiacMRMode == 0)
-//			{
-//				if( [dcmObject attributeValueForKey: @"2001,1008"])
-//					[dicomElements setObject: [dcmObject attributeValueForKey: @"2001,1008"] forKey: @"SeparateCardiacMR"];
-//			}
-//			
-//			if( SeparateCardiacMRMode == 1)
-//			{
-//				if( [dcmObject attributeValueForKey: @"2001,100A"])
-//					[dicomElements setObject: [dcmObject attributeValueForKey: @"2001,100A"] forKey: @"SeparateCardiacMR"];
-//			}
-//		}
-		
-//		if( SeparateCardiacMR && [dicomElements objectForKey: @"SeparateCardiacMR"])
-//		{
-//			NSString	*n;
-//			
-//			if( SeparateCardiacMRMode == 0) // 3D
-//				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
-//			else // Cine
-//				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
-//			
-//			[serieID release];
-//			serieID = n;
-//		}
-		
-		if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
-		{
-			NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
-			[serieID release];
-			serieID = newSerieID;
-		}
-		
-		if( serieID == nil)  
-			serieID = [[NSString alloc] initWithString:name];
-		
-		if( [Modality isEqualToString:@"US"] && oneFileOnSeriesForUS)
-		{
-			[dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
-		}
-		else if( combineProjectionSeries && ([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
-		{
-			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
-			{
-				[dicomElements setObject:studyID forKey:@"seriesID"];
-				[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
-			}
-			else if( combineProjectionSeriesMode == 1)	// *******Split all CR and DR Modality series in a study into one series
-			{
-				[dicomElements setObject: [serieID stringByAppendingString: imageID] forKey:@"seriesID"];
-			}
-			else NSLog( @"ARG! ERROR !? Unknown combineProjectionSeriesMode");
-		}
-		else
-			[dicomElements setObject:serieID forKey:@"seriesID"];
-		
-		
 		NoOfSeries = 1;
 		
 		[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
@@ -3177,6 +3067,46 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		}
 		#endif
 		#endif
+		
+		NSString *echoTime = nil;
+		
+		if ((echoTime = [dcmObject attributeValueWithName:@"EchoTime"])  && splitMultiEchoMR) 
+		{
+			NSString	*n;					
+			n = [[NSString alloc] initWithFormat:@"%@ TE-%@", serieID, echoTime];
+			[serieID release];
+			serieID = n;
+		}
+		
+		if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
+		{
+			NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
+			[serieID release];
+			serieID = newSerieID;
+		}
+		
+		if( serieID == nil)  
+			serieID = [[NSString alloc] initWithString:name];
+		
+		if( [Modality isEqualToString:@"US"] && oneFileOnSeriesForUS)
+		{
+			[dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
+		}
+		else if( combineProjectionSeries && ([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
+		{
+			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
+			{
+				[dicomElements setObject:studyID forKey:@"seriesID"];
+				[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
+			}
+			else if( combineProjectionSeriesMode == 1)	// *******Split all CR and DR Modality series in a study into one series
+			{
+				[dicomElements setObject: [serieID stringByAppendingString: imageID] forKey:@"seriesID"];
+			}
+			else NSLog( @"ARG! ERROR !? Unknown combineProjectionSeriesMode");
+		}
+		else
+			[dicomElements setObject:serieID forKey:@"seriesID"];
 		
 		if (width < 4)
 			width = 4;

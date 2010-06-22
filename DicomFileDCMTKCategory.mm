@@ -17,6 +17,7 @@
 #import "Papyrus3/Papyrus3.h"
 #import "DICOMToNSString.h"
 #import "MutableArrayCategory.h"
+#import "DicomStudy.h"
 
 #include "osconfig.h"
 #include "dcfilefo.h"
@@ -316,30 +317,6 @@ extern NSRecursiveLock *PapyrusLock;
 		{
 			[dicomElements setObject:[NSString stringWithCString:string encoding: NSASCIIStringEncoding] forKey:@"SOPClassUID"];
 			sopClassUID = [NSString stringWithCString: string encoding: NSASCIIStringEncoding] ;
-		}
-		
-		if( [sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
-		{
-			const Uint8 *buffer = nil;
-			unsigned int length;
-			if (dataset->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good() && string != NULL)
-			{
-				NSData *pdfData = [NSData dataWithBytes:buffer length:(unsigned)length];;
-				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];
-				
-				NoOfFrames = [rep pageCount];
-				height = ceil( [rep bounds].size.height * 1.5);
-				width = ceil( [rep bounds].size.width * 1.5);
-			}							
-		}
-		
-		if( [sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"])
-		{
-			NSPDFImageRep *rep = [self PDFImageRep];
-			
-			NoOfFrames = [rep pageCount];
-			height = ceil( [rep bounds].size.height * 1.5);
-			width = ceil( [rep bounds].size.width * 1.5);						
 		}
 		
 		//Character Set
@@ -709,42 +686,7 @@ extern NSRecursiveLock *PapyrusLock;
 			[serieID release];
 			serieID = n;
 		}
-		
-//		if( [self SeparateCardiacMR])
-//		{
-//			// Philips
-//			if( [self SeparateCardiacMRMode] == 0)
-//			{
-//				DcmTagKey tag = DcmTagKey( 0x2001, 0x1008); 
-//				if (dataset->findAndGetString( tag, string, OFFalse).good() && string != NULL)
-//				{
-//					[dicomElements setObject: [[[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding] autorelease] forKey: @"SeparateCardiacMR"];
-//				}
-//			}
-//			
-//			if( [self SeparateCardiacMRMode] == 1)
-//			{
-//				DcmTagKey tag = DcmTagKey( 0x2001, 0x100A); 
-//				if (dataset->findAndGetString( tag, string, OFFalse).good() && string != NULL)
-//				{
-//					[dicomElements setObject: [[[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding] autorelease] forKey: @"SeparateCardiacMR"];
-//				}
-//			}
-//		}
-		
-//		if( [self SeparateCardiacMR] && [dicomElements objectForKey: @"SeparateCardiacMR"])
-//		{
-//			NSString	*n;
-//			
-//			if( [self SeparateCardiacMRMode] == 0) // 3D
-//				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
-//			else // Cine
-//				n = [[NSString alloc] initWithFormat:@"%@ %5.5d", serieID , [[dicomElements objectForKey: @"SeparateCardiacMR"] intValue]];
-//			
-//			[serieID release];
-//			serieID = n;
-//		}
-		
+				
 		//Study Instance UID
 		if (dataset->findAndGetString(DCM_StudyInstanceUID, string, OFFalse).good() && string != NULL)
 			studyID = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
@@ -774,23 +716,44 @@ extern NSRecursiveLock *PapyrusLock;
 		//Rows
 		unsigned short rows = 0;
 		if (dataset->findAndGetUint16(DCM_Rows, rows, OFFalse).good())
-		{
 			height = rows;
-		}
 		
 		//Columns
-		
 		unsigned short columns = 0;
 		if (dataset->findAndGetUint16(DCM_Columns, columns, OFFalse).good())
-		{
 			width = columns;
-		}
 		
 		//Number of Frames
 		if (dataset->findAndGetString(DCM_NumberOfFrames, string, OFFalse).good() && string != NULL)
-		{
 			NoOfFrames = atoi(string);
+		
+		if( [sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
+		{
+			const Uint8 *buffer = nil;
+			unsigned int length;
+			if (dataset->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good() && string != NULL)
+			{
+				NSData *pdfData = [NSData dataWithBytes:buffer length:(unsigned)length];;
+				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];
+				
+				NoOfFrames = [rep pageCount];
+				height = ceil( [rep bounds].size.height * 1.5);
+				width = ceil( [rep bounds].size.width * 1.5);
+			}							
 		}
+		
+		#ifdef OSIRIX_VIEWER
+		#ifndef OSIRIX_LIGHT
+		if( [sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]  && [DicomStudy displaySeriesWithSOPClassUID: sopClassUID andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]])
+		{
+			NSPDFImageRep *rep = [self PDFImageRep];
+			
+			NoOfFrames = [rep pageCount];
+			height = ceil( [rep bounds].size.height * 1.5);
+			width = ceil( [rep bounds].size.width * 1.5);						
+		}
+		#endif
+		#endif
 		
 		NoOfSeries = 1;
 			

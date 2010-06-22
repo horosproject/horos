@@ -1330,7 +1330,7 @@ static NSConditionLock *threadLock = nil;
 					[AppController printStackTrace: ne];
 				}
 				
-				if( [addedImagesArray count])
+				if( [addedImagesArray count] > 0 && generatedByOsiriX == NO)
 				{
 					dockLabel = [NSString stringWithFormat:@"%d", [addedImagesArray count]];
 					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];

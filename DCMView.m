@@ -5206,7 +5206,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	// Not blending
 	//if( !([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != nil)))
 	{
-		float WWAdapter = startWW / 100.0;
+		float WWAdapter = startWW / 80.00;
 
 		if( WWAdapter < 0.001) WWAdapter = 0.001;
 		

@@ -313,10 +313,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 							if( [image valueForKey:@"isKeyImage"])
 								[i setValue: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
 						}
-						else NSLog( @"----- applyAnnotationsFromDictionary : image not found");
+						else NSLog( @"----- applyAnnotationsFromDictionary : image not found : %@", [image valueForKey: @"sopInstanceUID"]);
 					}
 				}
-				else NSLog( @"----- applyAnnotationsFromDictionary : series not found");
+				else NSLog( @"----- applyAnnotationsFromDictionary : series not found : %@", [seriesArray valueForKey: @"seriesDICOMUID"]);
 			}
 		}
 		@catch (NSException * e)
@@ -487,20 +487,43 @@ static NSRecursiveLock *dbModifyLock = nil;
 				{
 					NSString *zippedFile = @"/tmp/zippedReport.zip";
 					NSManagedObject *archivedReport = [self reportSRSeries];
-					BOOL needToArchive = YES;
+					BOOL needToArchive = NO;
 					NSString *dstPath = nil;
 					
 					dstPath = [[archivedReport valueForKeyPath: @"images.completePath"] anyObject];
 					if( [[[archivedReport valueForKeyPath: @"images.completePath"] allObjects] count] > 1)
 						NSLog( @"********* warning multiple report for this study");
-						
+					
+					if( dstPath == nil)
+						dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+					
 					if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
 					{
-						if( dstPath == nil)
-							dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+						SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+						if( [[self valueForKey: @"reportURL"] isEqualToString: [r reportURL]] == NO)
+							needToArchive = YES;
+					}
+					else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
+					{
+						[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
 						
-						// Save or Re-Save it as DICOM SR
-						SRAnnotation *r = [[[SRAnnotation alloc] initWithURLReport: [self valueForKey: @"reportURL"] path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
+						if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
+						{
+							SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+							if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]] == NO)
+								needToArchive = YES;
+						}
+					}
+					
+					if( needToArchive)
+					{
+						SRAnnotation *r = nil;
+						
+						if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
+							r = [[[SRAnnotation alloc] initWithURLReport: [self valueForKey: @"reportURL"] path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
+						else
+							r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
+						
 						[r writeToFileAtPath: dstPath];
 						
 						[BrowserController addFiles: [NSArray arrayWithObject: dstPath]
@@ -511,39 +534,6 @@ static NSRecursiveLock *dbModifyLock = nil;
 								parseExistingObject: YES
 										   dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
 								  generatedByOsiriX: YES];
-					}
-					else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
-					{
-						[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
-						
-						if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
-						{
-							if( dstPath == nil)
-								dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
-							else
-							{
-								SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-								
-								if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]])
-									needToArchive = NO;
-							}
-
-							if( needToArchive)
-							{
-								// Save or Re-Save it as DICOM SR
-								SRAnnotation *r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
-								[r writeToFileAtPath: dstPath];
-								
-								[BrowserController addFiles: [NSArray arrayWithObject: dstPath]
-												  toContext: [self managedObjectContext]
-												 toDatabase: [BrowserController currentBrowser]
-												  onlyDICOM: YES 
-										   notifyAddedFiles: YES
-										parseExistingObject: YES
-												   dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
-										  generatedByOsiriX: YES];
-							}
-						}
 					}
 				}
 			}
@@ -1091,7 +1081,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
 	if( uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid] || [DCMAbstractSyntaxUID isRadiotherapy:uid])
 		return YES;
-	else if( [DCMAbstractSyntaxUID isStructuredReport:uid])		//&& [description isEqualToString: @"OsiriX ROI SR"] == NO && [description isEqualToString: @"OsiriX Annotations SR"] == NO && [description isEqualToString: @"OsiriX Report SR"] == NO)
+	else if( [DCMAbstractSyntaxUID isStructuredReport:uid] && [description hasPrefix: @"OsiriX ROI SR"] == NO && [description hasPrefix: @"OsiriX Annotations SR"] == NO && [description hasPrefix: @"OsiriX Report SR"] == NO)
 		return YES;
 	else
 		return NO;
