@@ -13869,6 +13869,10 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[self setDBWindowTitle];
 	
+	NSSize size = NSSizeFromString( [[NSUserDefaults standardUserDefaults] objectForKey: @"drawerSize"]);
+	if( size.width > 0)
+		[albumDrawer setContentSize: size];
+	
 	if( [[[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] intValue] == NSDrawerOpenState && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
 		[albumDrawer openOnEdge:NSMinXEdge];
 	else
@@ -14009,6 +14013,7 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	[[NSUserDefaults standardUserDefaults] setObject:[databaseOutline columnState] forKey: @"databaseColumns2"];
 	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt: [albumDrawer state]] forKey: @"drawerState"];
+	[[NSUserDefaults standardUserDefaults] setObject: NSStringFromSize( [albumDrawer contentSize]) forKey: @"drawerSize"];
 	
     [self.window setDelegate:nil];
 	
