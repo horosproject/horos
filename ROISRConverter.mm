@@ -35,7 +35,7 @@
 	const Uint8 *buffer = nil;
 	unsigned int length;
 	
-	if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())	//DCM_EncapsulatedDocument
+	if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good()) //DCM_EncapsulatedDocument
 	{
 		archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
 	}
@@ -59,7 +59,7 @@
 	
 	if( seriesInstanceUID)
 		[sr setSeriesInstanceUID: seriesInstanceUID];
-		
+	
 	[sr writeToFileAtPath: path];
 	
 	return nil;
