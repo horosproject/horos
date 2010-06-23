@@ -2004,20 +2004,6 @@ extern const char *GetPrivateIP();
 						[dicomFileNames addObject: [[dicomFileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"]];
 					}
 				}
-				
-	//			NSManagedObject	*roiSRSeries = [[curImage valueForKeyPath:@"series.study"] valueForKey:@"roiSRSeries"];
-	//			
-	//			NSArray	*rois = [curImage SRPaths];
-	//			
-	//			int x;
-	//			for( x = 0; x < [rois count] ; x++)
-	//			{
-	//				if( [[NSFileManager defaultManager] fileExistsAtPath: [rois objectAtIndex: x]])
-	//				{
-	//					[paths addObject: [rois objectAtIndex: x]];
-	//					[dicomFileNames addObject: [[dicomFileName stringByDeletingLastPathComponent] stringByAppendingPathComponent: [[rois objectAtIndex: x] lastPathComponent]]];
-	//				}
-	//			}
 			}
 			i++;
 			

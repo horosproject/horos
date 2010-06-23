@@ -16,6 +16,7 @@
 #include "FVTiff.h"
 #endif
 
+#import "SRAnnotation.h"
 #import <dicomFile.h>
 #import "Papyrus3/Papyrus3.h"
 #import "ViewerController.h"
@@ -2526,20 +2527,28 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		#ifdef OSIRIX_VIEWER
 		#ifndef OSIRIX_LIGHT
-		if( [sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"] && [DicomStudy displaySeriesWithSOPClassUID: sopClassUID andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]]) // DICOM SR
+		if( [sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
 		{
-			@try
+			if( [DicomStudy displaySeriesWithSOPClassUID: sopClassUID andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]])
 			{
-				NSPDFImageRep *rep = [self PDFImageRep];
-				
-				NoOfFrames = [rep pageCount];
-				height = ceil( [rep bounds].size.height * 1.5);
-				width = ceil( [rep bounds].size.width * 1.5);
+				@try
+				{
+					NSPDFImageRep *rep = [self PDFImageRep];
+					
+					NoOfFrames = [rep pageCount];
+					height = ceil( [rep bounds].size.height * 1.5);
+					width = ceil( [rep bounds].size.width * 1.5);
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				}
 			}
-			@catch (NSException * e)
-			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			}
+			
+			NSString *referencedSOPInstanceUID = [SRAnnotation getImageRefSOPInstanceUID: filePath];
+			
+			if( referencedSOPInstanceUID)
+				[dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
 		}
 		#endif
 		#endif
@@ -3050,19 +3059,27 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		#ifdef OSIRIX_VIEWER
 		#ifndef OSIRIX_LIGHT
-		if( [[dcmObject attributeValueWithName: @"SOPClassUID"] hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"] && [DicomStudy displaySeriesWithSOPClassUID: [dcmObject attributeValueWithName: @"SOPClassUID"] andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]])
+		if( [[dcmObject attributeValueWithName: @"SOPClassUID"] hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"])
 		{
-			@try
+			if( [DicomStudy displaySeriesWithSOPClassUID: [dcmObject attributeValueWithName: @"SOPClassUID"] andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]])
 			{
-				NSPDFImageRep *rep = [self PDFImageRep];
+				@try
+				{
+					NSPDFImageRep *rep = [self PDFImageRep];
+					
+					NoOfFrames = [rep pageCount];
+					height = ceil( [rep bounds].size.height * 1.5);
+					width = ceil( [rep bounds].size.width * 1.5);
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				}
 				
-				NoOfFrames = [rep pageCount];
-				height = ceil( [rep bounds].size.height * 1.5);
-				width = ceil( [rep bounds].size.width * 1.5);
-			}
-			@catch (NSException * e)
-			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				NSString *referencedSOPInstanceUID = [SRAnnotation getImageRefSOPInstanceUID: filePath];
+				
+				if( referencedSOPInstanceUID)
+					[dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
 			}
 		}
 		#endif

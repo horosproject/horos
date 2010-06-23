@@ -193,17 +193,14 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return [NSData dataWithBytesNoCopy: sopInstanceUIDEncode( s) length: length freeWhenDone: YES];
 }
 
-- (NSArray*) SRPaths
+- (NSString*) SRPath
 {
-	NSMutableArray	*roiFiles = [NSMutableArray array];
-	int	x;
-	
 	NSString *roiPath = [self SRPathForFrame: [[self valueForKey: @"frameID"] intValue]];
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: roiPath])
-		[roiFiles addObject: roiPath];
+		return roiPath;
 	
-	return roiFiles;
+	return nil;
 }
 
 

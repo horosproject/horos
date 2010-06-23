@@ -18,6 +18,7 @@
 #import "DICOMToNSString.h"
 #import "MutableArrayCategory.h"
 #import "DicomStudy.h"
+#import "SRAnnotation.h"
 
 #include "osconfig.h"
 #include "dcfilefo.h"
@@ -744,13 +745,21 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		#ifdef OSIRIX_VIEWER
 		#ifndef OSIRIX_LIGHT
-		if( [sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]  && [DicomStudy displaySeriesWithSOPClassUID: sopClassUID andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]])
+		if( [sopClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"])
 		{
-			NSPDFImageRep *rep = [self PDFImageRep];
+			if( [DicomStudy displaySeriesWithSOPClassUID: sopClassUID andSeriesDescription: [dicomElements objectForKey: @"seriesDescription"]])
+			{
+				NSPDFImageRep *rep = [self PDFImageRep];
 			
-			NoOfFrames = [rep pageCount];
-			height = ceil( [rep bounds].size.height * 1.5);
-			width = ceil( [rep bounds].size.width * 1.5);						
+				NoOfFrames = [rep pageCount];
+				height = ceil( [rep bounds].size.height * 1.5);
+				width = ceil( [rep bounds].size.width * 1.5);						
+			}
+			
+			NSString *referencedSOPInstanceUID = [SRAnnotation getImageRefSOPInstanceUID: filePath];
+			
+			if( referencedSOPInstanceUID)
+				[dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
 		}
 		#endif
 		#endif

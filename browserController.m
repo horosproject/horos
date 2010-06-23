@@ -591,7 +591,7 @@ static NSConditionLock *threadLock = nil;
 {
 	NSDate *today = [NSDate date];
 	NSError *error = nil;
-	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH], *newFile, *INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH], *roiFolder = [dbFolder stringByAppendingPathComponent:@"/ROIs"], *reportsDirectory = [dbFolder stringByAppendingPathComponent:@"/REPORTS/"];
+	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH], *newFile, *INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH], *reportsDirectory = [dbFolder stringByAppendingPathComponent:@"/REPORTS/"]; //roiFolder = [dbFolder stringByAppendingPathComponent:@"/ROIs"]
 	NSManagedObject *seriesTable, *study;
 	DicomImage *image;
 	NSInteger index;
@@ -798,37 +798,37 @@ static NSConditionLock *threadLock = nil;
 						[curDict setValue: @"OsiriX ROI SR" forKey: @"seriesID"];
 						
 						// Move it to the ROIs folder
-						NSString *uidName = [SRAnnotation getROIFilenameFromSR: newFile];
-						NSString *destPath = [roiFolder stringByAppendingPathComponent: uidName];
-						
-						if( [uidName length] == 0)
-							NSLog( @"****** warning uid == nil");
-						
-						if( context == browserController.managedObjectContext && browserController.isCurrentDatabaseBonjour) // It's a Bonjour shared DB -> We don't need to add this ROI to the ROIs folder. We keep it in the TEMP.noindex folder
-						{
-							
-						}
-						else if( [newFile isEqualToString: destPath] == NO)
-						{
-							if( [newFile hasPrefix: destPath] == NO)
-							{
-								[[NSFileManager defaultManager] removeFileAtPath: destPath handler:nil];
-							
-								if( [newFile hasPrefix: INpath])  // It's in the DATABASE.index folder
-								{
-									NSLog( @"ROI SR MOVE :%@ to :%@", newFile, destPath);
-									[[NSFileManager defaultManager] movePath:newFile toPath:destPath handler: nil];
-								}
-								else
-								{
-									NSLog( @"ROI SR COPY :%@ to :%@", newFile, destPath);
-									[[NSFileManager defaultManager] copyPath:newFile toPath:destPath handler: nil];
-								}
-							}
-						}
+//						NSString *uidName = [SRAnnotation getROIFilenameFromSR: newFile];
+//						NSString *destPath = [roiFolder stringByAppendingPathComponent: uidName];
+//						
+//						if( [uidName length] == 0)
+//							NSLog( @"****** warning uid == nil");
+//						
+//						if( context == browserController.managedObjectContext && browserController.isCurrentDatabaseBonjour) // It's a Bonjour shared DB -> We don't need to add this ROI to the ROIs folder. We keep it in the TEMP.noindex folder
+//						{
+//							
+//						}
+//						else if( [newFile isEqualToString: destPath] == NO)
+//						{
+//							if( [newFile hasPrefix: destPath] == NO)
+//							{
+//								[[NSFileManager defaultManager] removeFileAtPath: destPath handler:nil];
+//							
+//								if( [newFile hasPrefix: INpath])  // It's in the DATABASE.index folder
+//								{
+//									NSLog( @"ROI SR MOVE :%@ to :%@", newFile, destPath);
+//									[[NSFileManager defaultManager] movePath:newFile toPath:destPath handler: nil];
+//								}
+//								else
+//								{
+//									NSLog( @"ROI SR COPY :%@ to :%@", newFile, destPath);
+//									[[NSFileManager defaultManager] copyPath:newFile toPath:destPath handler: nil];
+//								}
+//							}
+//						}
+//						newFile = destPath;
 						
 						inParseExistingObject = YES;
-						newFile = destPath;
 						DICOMSR = YES;
 					}
 					
@@ -1154,8 +1154,7 @@ static NSConditionLock *threadLock = nil;
 								if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
 								else [image setValue:newFile forKey:@"path"];
 								
-								if( DICOMSR) [image setValue: [NSNumber numberWithBool:YES] forKey:@"inDatabaseFolder"];
-								else [image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
+								[image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
 								
 								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
 								
@@ -1177,6 +1176,11 @@ static NSConditionLock *threadLock = nil;
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[seriesTable setValue: nil forKey:@"thumbnail"];
+								
+								NSString *s = [curDict objectForKey: @"referencedSOPInstanceUID"];
+								s = [s stringByAppendingFormat: @"-%d", f];
+								
+								[image setValue: s forKey:@"comment"];
 								
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];

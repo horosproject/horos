@@ -40,7 +40,6 @@
 		{
 			status = document->read(*fileformat.getDataset());
 			
-			
 			DSRCodedEntryValue codedEntryValue = DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference");
 			if (document->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0 )
 			{

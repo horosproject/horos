@@ -63,6 +63,7 @@
 - (NSArray *)keyObjects;
 - (NSArray *)presentationStateSeries;
 - (NSArray *)waveFormSeries;
+- (NSString*) roiForImage: (NSManagedObject*) image;
 - (NSManagedObject *) roiSRSeries;
 - (NSManagedObject *) reportSRSeries;
 - (NSManagedObject *) annotationsSRImage;

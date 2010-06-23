@@ -396,10 +396,10 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 	dir = [path stringByAppendingPathComponent:@"/REPORTS/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
-		
-	dir = [path stringByAppendingPathComponent:@"/ROIs/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
-		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
+	
+//	dir = [path stringByAppendingPathComponent:@"/ROIs/"];
+//	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
+//		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
 	
 	if( path == 0L)
 		NSLog( @"**** documentsDirectoryFor is NIL");
@@ -2370,6 +2370,7 @@ static NSDate *lastWarningDate = nil;
 
 	[NSSplitView saveSplitView];
 	
+	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [[ActivityWindowController defaultController].window isVisible] forKey: OsirixActivityWindowVisibleDefaultsKey];
 	
 	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedCD/" handler: nil];
 }
@@ -2412,7 +2413,7 @@ static NSDate *lastWarningDate = nil;
 	[IChatTheatreDelegate sharedDelegate];
 	#endif
 	
-	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey:OsirixActivityWindowVisibleDefaultsKey])
+	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey: OsirixActivityWindowVisibleDefaultsKey])
 		[[[ActivityWindowController defaultController] window] makeKeyAndOrderFront:self];	
 
 	return self;
@@ -2750,10 +2751,10 @@ static BOOL initialized = NO;
 				NSString *reportsDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/REPORTS/"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportsDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:reportsDirectory attributes:nil];
 				
-				NSString *roisDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ROIs"];
-				BOOL isDir = YES;
-				if ([[NSFileManager defaultManager] fileExistsAtPath:roisDirectory isDirectory: &isDir] == YES && isDir == NO) [[NSFileManager defaultManager] removeFileAtPath: roisDirectory handler: nil];
-				if ([[NSFileManager defaultManager] fileExistsAtPath:roisDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:roisDirectory attributes:nil];
+//				NSString *roisDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ROIs"];
+//				BOOL isDir = YES;
+//				if ([[NSFileManager defaultManager] fileExistsAtPath:roisDirectory isDirectory: &isDir] == YES && isDir == NO) [[NSFileManager defaultManager] removeFileAtPath: roisDirectory handler: nil];
+//				if ([[NSFileManager defaultManager] fileExistsAtPath:roisDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:roisDirectory attributes:nil];
 				
 				// DELETE & CREATE THE TEMP.noindex DIRECTORY...
 				NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP.noindex/"];

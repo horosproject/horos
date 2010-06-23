@@ -275,48 +275,51 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				// -------------------------
 				// Find corresponding series
-				NSUInteger index = [[seriesArray valueForKey: @"seriesInstanceUID"] indexOfObject: [series valueForKey: @"seriesInstanceUID"]];
-				
-				if( index == NSNotFound)
-					index = [[seriesArray valueForKey: @"seriesDICOMUID"] indexOfObject: [series valueForKey: @"seriesDICOMUID"]];
-				
-				if( index != NSNotFound)
+				if( [series valueForKey: @"seriesInstanceUID"] && [series valueForKey: @"seriesDICOMUID"])
 				{
-					DicomSeries *s = [seriesArray objectAtIndex: index];
+					NSUInteger index = [[seriesArray valueForKey: @"seriesInstanceUID"] indexOfObject: [series valueForKey: @"seriesInstanceUID"]];
 					
-					if( [series valueForKey:@"comment"])
-						[s setValue: [series valueForKey:@"comment"] forKey: @"comment"];
-				
-					if( [series valueForKey:@"stateText"])
-						[s setValue: [series valueForKey:@"stateText"] forKey: @"stateText"];
+					if( index == NSNotFound)
+						index = [[seriesArray valueForKey: @"seriesDICOMUID"] indexOfObject: [series valueForKey: @"seriesDICOMUID"]];
 					
-					for( NSDictionary *image in [series valueForKey: @"images"])
+					if( index != NSNotFound)
 					{
-						if( allImages == nil)
-						{
-							allImages = [NSArray array];
-							for( id w in seriesArray)
-								allImages = [allImages arrayByAddingObjectsFromArray: [[w valueForKey: @"images"] allObjects]];
-								
-							compressedSopInstanceUIDArray = [allImages filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"]];
-						}
+						DicomSeries *s = [seriesArray objectAtIndex: index];
 						
-						NSPredicate	*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: [image valueForKey: @"sopInstanceUID"]]] customSelector: @selector( isEqualToSopInstanceUID:)];
-						NSArray	*found = [compressedSopInstanceUIDArray filteredArrayUsingPredicate: predicate];
-				
-						// -------------------------
-						// Find corresponding image
-						if( [found count] > 0)
+						if( [series valueForKey:@"comment"])
+							[s setValue: [series valueForKey:@"comment"] forKey: @"comment"];
+					
+						if( [series valueForKey:@"stateText"])
+							[s setValue: [series valueForKey:@"stateText"] forKey: @"stateText"];
+						
+						for( NSDictionary *image in [series valueForKey: @"images"])
 						{
-							DicomImage *i = [found lastObject];
+							if( allImages == nil)
+							{
+								allImages = [NSArray array];
+								for( id w in seriesArray)
+									allImages = [allImages arrayByAddingObjectsFromArray: [[w valueForKey: @"images"] allObjects]];
+									
+								compressedSopInstanceUIDArray = [allImages filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"]];
+							}
 							
-							if( [image valueForKey:@"isKeyImage"])
-								[i setValue: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
+							NSPredicate	*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: [image valueForKey: @"sopInstanceUID"]]] customSelector: @selector( isEqualToSopInstanceUID:)];
+							NSArray	*found = [compressedSopInstanceUIDArray filteredArrayUsingPredicate: predicate];
+					
+							// -------------------------
+							// Find corresponding image
+							if( [found count] > 0)
+							{
+								DicomImage *i = [found lastObject];
+								
+								if( [image valueForKey:@"isKeyImage"])
+									[i setValue: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
+							}
+							else NSLog( @"----- applyAnnotationsFromDictionary : image not found : %@", [image valueForKey: @"sopInstanceUID"]);
 						}
-						else NSLog( @"----- applyAnnotationsFromDictionary : image not found : %@", [image valueForKey: @"sopInstanceUID"]);
 					}
+					else NSLog( @"----- applyAnnotationsFromDictionary : series not found : %@", [series valueForKey: @"seriesInstanceUID"]);
 				}
-				else NSLog( @"----- applyAnnotationsFromDictionary : series not found : %@", [seriesArray valueForKey: @"seriesDICOMUID"]);
 			}
 		}
 		@catch (NSException * e)
@@ -1212,6 +1215,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return newArray;
 }
 
+
 - (NSManagedObject *) annotationsSRImage // Comments, Status, Key Images, ...
 {
 	NSArray *array = [self primitiveValueForKey: @"series"];
@@ -1332,6 +1336,43 @@ static NSRecursiveLock *dbModifyLock = nil;
 	if( [newArray count]) return [newArray objectAtIndex: 0];
 	
 	return nil;
+}
+
+- (NSString*) roiForImage: (DicomImage*) image // ROIs
+{
+	NSString *path = nil;
+	
+	[[self managedObjectContext] lock];
+	
+	@try 
+	{
+		NSString *searchedUID = [image valueForKey: @"sopInstanceUID"];
+		
+		searchedUID = [searchedUID stringByAppendingFormat: @"-%d", [[image valueForKey: @"frameID"] intValue]];
+		
+		NSArray *rois = [[[self roiSRSeries] valueForKey: @"images"] allObjects];
+		NSArray	*found = [rois filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"comment == %@", searchedUID]];
+		
+		// Take the most recent roi
+		if( [found count] > 1)
+		{
+			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
+			found = [[[found sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]] mutableCopy] autorelease];
+		}
+		
+		path = [[found lastObject] valueForKey: @"completePath"];
+		
+		if( path == nil) // Try the 'old' ROIs folder
+			path = [image SRPath];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
+	return path;
 }
 
 - (NSDictionary *)dictionary

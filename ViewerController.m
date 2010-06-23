@@ -10476,16 +10476,17 @@ short				matrix[25];
 	DefaultROINames = rn;
 }
 
-#define ROIDATABASE @"/ROIs/"
+//#define ROIDATABASE @"/ROIs/"
 - (void) loadROI:(long) mIndex
 {
-	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:ROIDATABASE];
+//	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:ROIDATABASE];
 	BOOL			isDir = YES;
 	long			i, x;
 	NSMutableArray  *array;
+	DicomStudy		*study = [[fileList[0] objectAtIndex:0] valueForKeyPath: @"series.study"];
 	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+//	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+//		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
@@ -10495,37 +10496,37 @@ short				matrix[25];
 		{
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"])
 			{
-				if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-				{
-					NSMutableArray	*filesArray = [NSMutableArray array];
-					
-					for( i = 0; i < [fileList[ mIndex] count]; i++)
-					{
-						if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
-						{
-							NSString	*str = [[fileList[ mIndex] objectAtIndex:i] SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
-							
-							[filesArray addObject: [str lastPathComponent]];
-						}
-					}
-					
-					[[BrowserController currentBrowser] getDICOMROIFiles: filesArray];
-				}
+//				if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+//				{
+//					NSMutableArray	*filesArray = [NSMutableArray array];
+//					
+//					for( i = 0; i < [fileList[ mIndex] count]; i++)
+//					{
+//						if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
+//						{
+//							NSString	*str = [[fileList[ mIndex] objectAtIndex:i] SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
+//							
+//							[filesArray addObject: [str lastPathComponent]];
+//						}
+//					}
+//					
+//					[[BrowserController currentBrowser] getDICOMROIFiles: filesArray];
+//				}
 				
 				for( i = 0; i < [fileList[ mIndex] count]; i++)
 				{
 					if( [[pixList[ mIndex] objectAtIndex:i] generated] == NO)
 					{
-						NSString	*str;
+						NSString *str = [study roiForImage: [fileList[ mIndex] objectAtIndex:i]];
 						
-						str = [[fileList[ mIndex] objectAtIndex:i] SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
-						
-						if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-						{
-							NSString	*imagePath = [BonjourBrowser uniqueLocalPath: [fileList[ mIndex] objectAtIndex:i]];
-							
-							str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
-						}
+//						str = [[fileList[ mIndex] objectAtIndex:i] SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
+//						
+//						if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+//						{
+//							NSString	*imagePath = [BonjourBrowser uniqueLocalPath: [fileList[ mIndex] objectAtIndex:i]];
+//							
+//							str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
+//						}
 						
 						NSData *data = [ROISRConverter roiFromDICOM: str];
 						
@@ -10536,7 +10537,7 @@ short				matrix[25];
 						@try
 						{
 							if (data)
-								array = [NSUnarchiver unarchiveObjectWithData:data];
+								array = [NSUnarchiver unarchiveObjectWithData: data];
 							else
 								array = [NSUnarchiver unarchiveObjectWithFile: str];
 						}
@@ -10585,20 +10586,21 @@ short				matrix[25];
 
 - (void) saveROI:(long) mIndex
 {
-	NSString *path;
+//	NSString *path;
 	BOOL isDir = YES, toBeSaved = NO;
 	int i;
+	DicomStudy *study = [[fileList[0] objectAtIndex:0] valueForKeyPath: @"series.study"];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"] == NO)
 		return;
 	
-	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-		path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"TEMP.noindex"];
-	else
-		path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: ROIDATABASE];
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+//	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+//		path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"TEMP.noindex"];
+//	else
+//		path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: ROIDATABASE];
+//	
+//	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+//		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	
 	if( [[fileList[ mIndex] lastObject] isKindOfClass:[NSManagedObject class]])
 	{
@@ -10616,14 +10618,20 @@ short				matrix[25];
 			{
 				if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
 				{
-					DicomImage	*image = [fileList[mIndex] objectAtIndex:i];
+					DicomImage *image = [fileList[mIndex] objectAtIndex:i];
 					
 					{
-						NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 						
 						@try
 						{
-							NSString *str = [image SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
+//							NSString *str = [image SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
+							
+							NSString *str = [study roiForImage: [fileList[ mIndex] objectAtIndex:i]];
+							
+							if( str == nil)
+								str = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+								
 							NSMutableArray *roisArray = nil;
 							
 							if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)

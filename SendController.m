@@ -327,20 +327,6 @@ static volatile int sendControllerObjects = 0;
 	
 	NSArray	*files = [samePatientArray valueForKey: @"completePathResolved"];
 	
-//	if( sendROIs)
-//	{
-//		NSLog( @"add ROIs for DICOM sending");
-//		NSMutableArray	*roiFiles = [NSMutableArray array];
-//		
-//		for( id loopItem in samePatientArray)
-//		{
-//			[roiFiles addObjectsFromArray: [loopItem valueForKey: @"SRPaths"]];
-//		}
-//		
-//		files = [files arrayByAddingObjectsFromArray: roiFiles];
-//	}
-
-	
 	// Send the collected files from the same patient
 	
 	NSString *calledAET = [[self server] objectForKey:@"AETitle"];
