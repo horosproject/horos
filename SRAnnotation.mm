@@ -40,42 +40,15 @@
 		{
 			status = document->read(*fileformat.getDataset());
 			
-			DSRCodedEntryValue codedEntryValue = DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference");
-			if (document->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0 )
-			{
-				DSRImageReferenceValue imageRef = document->getTree().getCurrentContentItem().getImageReference();
-				result = [NSString stringWithFormat:@"%s", imageRef.getSOPInstanceUID().c_str()];
-			}
-		}
-	}
-	
-	delete document;
-	
-	return result;
-}
-
-+ (NSString*) getROIFilenameFromSR:(NSString*) path;
-{
-	NSString	*result = nil;
-	DSRDocument	*document = new DSRDocument();
-	
-	OFCondition status = EC_Normal;
-	
-	if ([[NSFileManager defaultManager] fileExistsAtPath:path])
-	{			
-		DcmFileFormat fileformat;
-		status  = fileformat.loadFile([path UTF8String]);
-		if (status.good())
-		{
-			status = document->read(*fileformat.getDataset());
-			
 			int instanceNumber = [[NSString stringWithFormat:@"%s", document->getInstanceNumber()] intValue];
 			
 			DSRCodedEntryValue codedEntryValue = DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference");
 			if (document->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0 )
 			{
 				DSRImageReferenceValue imageRef = document->getTree().getCurrentContentItem().getImageReference();
-				result = [NSString stringWithFormat:@"%s %d-%d.dcm", imageRef.getSOPInstanceUID().c_str(), instanceNumber, 0];
+				result = [NSString stringWithFormat:@"%s", imageRef.getSOPInstanceUID().c_str()];
+				
+				result = [result stringByAppendingFormat: @"-%d", instanceNumber];
 			}
 		}
 	}
@@ -100,7 +73,7 @@
 		{
 			status = document->read(*fileformat.getDataset());
 			// See DicomFile.m
-			int instanceNumber = [[NSString stringWithFormat:@"%s", document->getInstanceNumber()] intValue];
+			int frameNumber = [[NSString stringWithFormat:@"%s", document->getInstanceNumber()] intValue];
 			NSString *accessionNumber = [NSString stringWithFormat:@"%s", document->getAccessionNumber()];
 			NSString *studyInstanceUID = [NSString stringWithFormat:@"%s", document->getStudyInstanceUID()];
 			NSString *patientName = [NSString stringWithFormat:@"%s", document->getPatientsName()];
@@ -466,7 +439,7 @@
 		//add to Study
 		document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
 		
-		document->setInstanceNumber([[[image valueForKey:@"instanceNumber"] stringValue] UTF8String]);
+		document->setInstanceNumber([[[image valueForKey:@"frameID"] stringValue] UTF8String]);
 		
 		// Add metadata for DICOM
 		//Study Description

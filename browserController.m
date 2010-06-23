@@ -799,37 +799,6 @@ static NSConditionLock *threadLock = nil;
 					{
 						[curDict setValue: @"OsiriX ROI SR" forKey: @"seriesID"];
 						
-						// Move it to the ROIs folder
-//						NSString *uidName = [SRAnnotation getROIFilenameFromSR: newFile];
-//						NSString *destPath = [roiFolder stringByAppendingPathComponent: uidName];
-//						
-//						if( [uidName length] == 0)
-//							NSLog( @"****** warning uid == nil");
-//						
-//						if( context == browserController.managedObjectContext && browserController.isCurrentDatabaseBonjour) // It's a Bonjour shared DB -> We don't need to add this ROI to the ROIs folder. We keep it in the TEMP.noindex folder
-//						{
-//							
-//						}
-//						else if( [newFile isEqualToString: destPath] == NO)
-//						{
-//							if( [newFile hasPrefix: destPath] == NO)
-//							{
-//								[[NSFileManager defaultManager] removeFileAtPath: destPath handler:nil];
-//							
-//								if( [newFile hasPrefix: INpath])  // It's in the DATABASE.index folder
-//								{
-//									NSLog( @"ROI SR MOVE :%@ to :%@", newFile, destPath);
-//									[[NSFileManager defaultManager] movePath:newFile toPath:destPath handler: nil];
-//								}
-//								else
-//								{
-//									NSLog( @"ROI SR COPY :%@ to :%@", newFile, destPath);
-//									[[NSFileManager defaultManager] copyPath:newFile toPath:destPath handler: nil];
-//								}
-//							}
-//						}
-//						newFile = destPath;
-						
 						inParseExistingObject = YES;
 						DICOMSR = YES;
 					}
@@ -1182,7 +1151,6 @@ static NSConditionLock *threadLock = nil;
 								if( DICOMSR && [curDict objectForKey: @"numberOfROIs"] && [curDict objectForKey: @"referencedSOPInstanceUID"]) // OsiriX ROI SR
 								{
 									NSString *s = [curDict objectForKey: @"referencedSOPInstanceUID"];
-									s = [s stringByAppendingFormat: @"-%d", f];
 									[image setValue: s forKey:@"comment"];
 									[image setValue: [curDict objectForKey: @"numberOfROIs"] forKey:@"scale"];
 								}
