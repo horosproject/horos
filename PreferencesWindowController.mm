@@ -18,6 +18,7 @@
 #import "NSWindow+N2.h"
 #import <Security/Security.h>
 #import "PreferencesWindowController.h"
+#import "N2AdaptiveBox.h"
 #import "SFAuthorizationView+OsiriX.h"
 #import "AppController.h"
 #import "BrowserController.h"
@@ -226,29 +227,30 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	NSBundle* bundle = [NSBundle mainBundle];
 	NSString* name;
 	
-	name = NSLocalizedString(@"Basics", @"Title of Basic section in preferences window");
-	[self addPaneWithResourceNamed:@"OSIGeneralPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"General", NULL) image:[NSImage imageNamed:@"GeneralPreferences"] toGroupWithName:name];
-	[self addPaneWithResourceNamed:@"OSIDatabasePreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Database", NULL) image:[NSImage imageNamed:@"StartupDisk"] toGroupWithName:name];
-	[self addPaneWithResourceNamed:@"OSICDPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"CD/DVD", NULL) image:[NSImage imageNamed:@"CD"] toGroupWithName:name];
-	[self addPaneWithResourceNamed:@"OSIHangingPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Protocols", NULL) image:[NSImage imageNamed:@"ZoomToFit"] toGroupWithName:name];
-	name = NSLocalizedString(@"Display", @"Title of Display section in preferences window");
-	[self addPaneWithResourceNamed:@"OSIViewerPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Viewers", NULL) image:[NSImage imageNamed:@"MPR3D"] toGroupWithName:name];
-	[self addPaneWithResourceNamed:@"OSI3DPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"3D", NULL) image:[NSImage imageNamed:@"VolumeRendering"] toGroupWithName:name];
-	[self addPaneWithResourceNamed:@"OSIPETPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"PET", NULL) image:[NSImage imageNamed:@"SUV"] toGroupWithName:name];
-	[self addPaneWithResourceNamed:@"OSIHotKeys" inBundle:bundle withTitle:NSLocalizedString(@"Hot Keys", NULL) image:[NSImage imageNamed:@"key"] toGroupWithName:name];
-	[self addPaneWithResourceNamed:@"OSICustomImageAnnotations" inBundle:bundle withTitle:NSLocalizedString(@"Annotations", NULL) image:[NSImage imageNamed:@"CustomImageAnnotations"] toGroupWithName:name];
-	name = NSLocalizedString(@"Sharing", @"Title of Sharing section in preferences window");
-	[self addPaneWithResourceNamed:@"OSIListenerPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Listener", NULL) image:[NSImage imageNamed:@"Network"] toGroupWithName:name];
-	[self addPaneWithResourceNamed:@"OSILocationsPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Locations", NULL) image:[NSImage imageNamed:@"AccountPreferences"] toGroupWithName:name];
-	[self addPaneWithResourceNamed:@"OSIAutoroutingPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Routing", NULL) image:[NSImage imageNamed:@"route"] toGroupWithName:name];
-	[self addPaneWithResourceNamed:@"AYDicomPrint" inBundle:bundle withTitle:NSLocalizedString(@"DICOM Print", NULL) image:[NSImage imageNamed:@"SmallPrinter"] toGroupWithName:name];
-	[self addPaneWithResourceNamed:@"OSIWebSharingPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Web Server", NULL) image:[NSImage imageNamed:@"Safari"] toGroupWithName:name];
+	name = NSLocalizedString(@"Basics", @"Section in preferences window");
+	[self addPaneWithResourceNamed:@"OSIGeneralPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"General", @"Panel in preferences window") image:[NSImage imageNamed:@"GeneralPreferences"] toGroupWithName:name];
+	[self addPaneWithResourceNamed:@"OSIDatabasePreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Database", @"Panel in preferences window") image:[NSImage imageNamed:@"StartupDisk"] toGroupWithName:name];
+	[self addPaneWithResourceNamed:@"OSICDPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"CD/DVD", @"Panel in preferences window") image:[NSImage imageNamed:@"CD"] toGroupWithName:name];
+	[self addPaneWithResourceNamed:@"OSIHangingPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Protocols", @"Panel in preferences window") image:[NSImage imageNamed:@"ZoomToFit"] toGroupWithName:name];
+	name = NSLocalizedString(@"Display", @"Section in preferences window");
+	[self addPaneWithResourceNamed:@"OSIViewerPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Viewers", @"Panel in preferences window") image:[NSImage imageNamed:@"MPR3D"] toGroupWithName:name];
+	[self addPaneWithResourceNamed:@"OSI3DPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"3D", @"Panel in preferences window") image:[NSImage imageNamed:@"VolumeRendering"] toGroupWithName:name];
+	[self addPaneWithResourceNamed:@"OSIPETPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"PET", @"Panel in preferences window") image:[NSImage imageNamed:@"SUV"] toGroupWithName:name];
+	[self addPaneWithResourceNamed:@"OSIHotKeys" inBundle:bundle withTitle:NSLocalizedString(@"Hot Keys", @"Panel in preferences window") image:[NSImage imageNamed:@"key"] toGroupWithName:name];
+	[self addPaneWithResourceNamed:@"OSICustomImageAnnotations" inBundle:bundle withTitle:NSLocalizedString(@"Annotations", @"Panel in preferences window") image:[NSImage imageNamed:@"CustomImageAnnotations"] toGroupWithName:name];
+	name = NSLocalizedString(@"Sharing", @"Section in preferences window");
+	[self addPaneWithResourceNamed:@"OSIListenerPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Listener", @"Panel in preferences window") image:[NSImage imageNamed:@"Network"] toGroupWithName:name];
+	[self addPaneWithResourceNamed:@"OSILocationsPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Locations", @"Panel in preferences window") image:[NSImage imageNamed:@"AccountPreferences"] toGroupWithName:name];
+	[self addPaneWithResourceNamed:@"OSIAutoroutingPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Routing", @"Panel in preferences window") image:[NSImage imageNamed:@"route"] toGroupWithName:name];
+	[self addPaneWithResourceNamed:@"AYDicomPrint" inBundle:bundle withTitle:NSLocalizedString(@"DICOM Print", @"Panel in preferences window") image:[NSImage imageNamed:@"SmallPrinter"] toGroupWithName:name];
+	[self addPaneWithResourceNamed:@"OSIWebSharingPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Web Server", @"Panel in preferences window") image:[NSImage imageNamed:@"Safari"] toGroupWithName:name];
 	
 	for (NSArray* pluginPane in pluginPanes)
 		[self addPaneWithResourceNamed:[pluginPane objectAtIndex:0] inBundle:[pluginPane objectAtIndex:1] withTitle:[pluginPane objectAtIndex:2] image:[pluginPane objectAtIndex:3] toGroupWithName:NSLocalizedString(@"Plugins", @"Title of Plugins section in preferences window")];
 	
 	[flippedDocumentView setFrameSize:panesListView.frame.size];
 	[panesListView setFrameSize:flippedDocumentView.frame.size];
+	
 	[self synchronizeSizeWithContent];
 }
 
@@ -346,6 +348,10 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(void)synchronizeSizeWithContent {
 	NSRect paneFrame = [[scrollView documentView] frame];
+	for (NSDictionary* animation in animations)
+		if ([animation objectForKey:NSViewAnimationTargetKey] == [scrollView documentView] && [animation objectForKey:NSViewAnimationEndFrameKey])
+			paneFrame = [[animation objectForKey:NSViewAnimationEndFrameKey] rectValue];
+	
 	NSRect initframe = [self.window frame];
 	NSRect sizeframe = [self.window frameRectForContentRect:paneFrame];
 	NSRect frame = initframe;
@@ -400,6 +406,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	NSSize windowMaxSize = idealFrame.size;
 	if (tempFrame.size.height < idealFrame.size.height)
 		windowMaxSize.width += scrollView.verticalScroller.frame.size.width;
+	if (tempFrame.size.width < idealFrame.size.width)
+		windowMaxSize.height += scrollView.horizontalScroller.frame.size.height;
 	windowMaxSize.height -= self.window.toolbarHeight;
 	self.window.maxSize = windowMaxSize;
 	
@@ -441,11 +449,3 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 }
 
 @end
-
-@implementation NSWindowController (OsiriX)
-
--(void)synchronizeSizeWithContent {
-}
-
-@end
-

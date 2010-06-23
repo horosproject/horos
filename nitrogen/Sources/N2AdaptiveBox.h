@@ -24,3 +24,10 @@
 -(void)adaptContainersToIdealSize;
 
 @end
+
+
+@interface NSWindowController (N2AdaptiveBox)
+
+-(void)synchronizeSizeWithContent;
+
+@end

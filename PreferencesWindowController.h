@@ -48,9 +48,3 @@
 
 
 @end
-
-@interface NSWindowController (OsiriX)
-
--(void)synchronizeSizeWithContent;
-
-@end
