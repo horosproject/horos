@@ -6048,6 +6048,7 @@ static ViewerController *draggedController = nil;
 			}
 		}
 		
+		[copyRoiList[ i] release];
 		[roiList[ i] release];
 		[pixList[ i] release];
 		[fileList[ i] release];
@@ -6289,9 +6290,11 @@ static ViewerController *draggedController = nil;
 		{
 			// Prepare roiList
 			roiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
+			copyRoiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
 			for( i = 0; i < [pixList[0] count]; i++)
 			{
 				[roiList[0] addObject:[NSMutableArray arrayWithCapacity:0]];
+				[copyRoiList[0] addObject:[NSData data]];
 			}
 			[self loadROI:0];
 			
@@ -10476,17 +10479,12 @@ short				matrix[25];
 	DefaultROINames = rn;
 }
 
-//#define ROIDATABASE @"/ROIs/"
 - (void) loadROI:(long) mIndex
 {
-//	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:ROIDATABASE];
-	BOOL			isDir = YES;
-	long			i, x;
-	NSMutableArray  *array;
-	DicomStudy		*study = [[fileList[0] objectAtIndex:0] valueForKeyPath: @"series.study"];
-	
-//	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-//		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+	BOOL isDir = YES;
+	int i, x;
+	DicomStudy *study = [[fileList[0] objectAtIndex:0] valueForKeyPath: @"series.study"];
+	NSArray *roisArray = [[[study roiSRSeries] valueForKey: @"images"] allObjects];
 	
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
 	
@@ -10496,43 +10494,21 @@ short				matrix[25];
 		{
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"])
 			{
-//				if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-//				{
-//					NSMutableArray	*filesArray = [NSMutableArray array];
-//					
-//					for( i = 0; i < [fileList[ mIndex] count]; i++)
-//					{
-//						if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
-//						{
-//							NSString	*str = [[fileList[ mIndex] objectAtIndex:i] SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
-//							
-//							[filesArray addObject: [str lastPathComponent]];
-//						}
-//					}
-//					
-//					[[BrowserController currentBrowser] getDICOMROIFiles: filesArray];
-//				}
-				
 				for( i = 0; i < [fileList[ mIndex] count]; i++)
 				{
 					if( [[pixList[ mIndex] objectAtIndex:i] generated] == NO)
 					{
-						NSString *str = [study roiForImage: [fileList[ mIndex] objectAtIndex:i]];
-						
-//						str = [[fileList[ mIndex] objectAtIndex:i] SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
-//						
-//						if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-//						{
-//							NSString	*imagePath = [BonjourBrowser uniqueLocalPath: [fileList[ mIndex] objectAtIndex:i]];
-//							
-//							str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
-//						}
+						NSString *str = [study roiPathForImage: [fileList[ mIndex] objectAtIndex:i] inArray: roisArray];
 						
 						NSData *data = [ROISRConverter roiFromDICOM: str];
 						
-						//If data, we successfully unarchived from SR style ROI
+						if( data)
+							[copyRoiList[ mIndex] replaceObjectAtIndex: i withObject: data];
+						else
+							[copyRoiList[ mIndex] replaceObjectAtIndex: i withObject: [NSData data]];
 						
-						array = 0L;
+						//If data, we successfully unarchived from SR style ROI
+						NSArray *array = 0L;
 						
 						@try
 						{
@@ -10584,23 +10560,42 @@ short				matrix[25];
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
++ (BOOL) areROIsArraysIdentical: (NSArray*) copy with: (NSArray*) roisArray
+{
+	BOOL identical = YES;
+	
+	if( [roisArray count] != [copy count])
+		identical = NO;
+	else
+	{
+		for( int v = 0 ; v < [roisArray count]; v++)
+		{
+			ROI *r1 = [roisArray objectAtIndex: v];
+			ROI *r2 = [copy objectAtIndex: v];
+			
+			NSData *d1 = [NSArchiver archivedDataWithRootObject: r1];
+			NSData *d2 = [NSArchiver archivedDataWithRootObject: r2];
+			
+			if( [d1 isEqualToData: d2] == NO)
+			{
+				identical = NO;
+				break;
+			}
+		}
+	}
+	
+	return identical;	
+}
+
 - (void) saveROI:(long) mIndex
 {
-//	NSString *path;
 	BOOL isDir = YES, toBeSaved = NO;
 	int i;
 	DicomStudy *study = [[fileList[0] objectAtIndex:0] valueForKeyPath: @"series.study"];
+	NSArray *roisArray = [[[study roiSRSeries] valueForKey: @"images"] allObjects];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"] == NO)
 		return;
-	
-//	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-//		path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: @"TEMP.noindex"];
-//	else
-//		path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent: ROIDATABASE];
-//	
-//	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-//		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	
 	if( [[fileList[ mIndex] lastObject] isKindOfClass:[NSManagedObject class]])
 	{
@@ -10608,11 +10603,7 @@ short				matrix[25];
 		
 		@try
 		{
-//			NSMutableArray *newDICOMSR = [NSMutableArray array];
 			NSMutableArray *allDICOMSR = [NSMutableArray array];
-			NSMutableArray *toDeleteDICOMSR = [NSMutableArray array];
-			
-			NSManagedObject *roiSRSeries = [[[fileList[ mIndex] lastObject] valueForKeyPath:@"series.study"] roiSRSeries];
 			
 			for( i = 0; i < [fileList[ mIndex] count]; i++)
 			{
@@ -10625,20 +10616,16 @@ short				matrix[25];
 						
 						@try
 						{
-//							NSString *str = [image SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
-							
-							NSString *str = [study roiForImage: [fileList[ mIndex] objectAtIndex:i]];
+							NSString *str = [study roiPathForImage: [fileList[ mIndex] objectAtIndex:i] inArray: roisArray];
 							
 							if( str == nil)
 								str = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
 								
-							NSMutableArray *roisArray = nil;
+							NSMutableArray *roisArray = [NSMutableArray arrayWithArray: [roiList[ mIndex] objectAtIndex: i]];
 							
 							if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
 							{
 								NSMutableArray *aliasROIs = [NSMutableArray array];
-								
-								roisArray = [NSMutableArray arrayWithArray: [roiList[ mIndex] objectAtIndex: i]];
 								
 								for( ROI *r in roisArray)
 								{
@@ -10653,15 +10640,21 @@ short				matrix[25];
 							
 							if( [roisArray count])
 							{
-								[ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image];
-								[allDICOMSR addObject: str];
+								if( [ViewerController areROIsArraysIdentical: [NSUnarchiver unarchiveObjectWithData: [copyRoiList[ mIndex] objectAtIndex: i]] with: roisArray] == NO)
+								{
+									[ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image];
+									[allDICOMSR addObject: str];
+								}
 							}
 							else
 							{
 								if( [[NSFileManager defaultManager] fileExistsAtPath: str])
 								{
-									[ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image];
-									[allDICOMSR addObject: str];
+									if( [ViewerController areROIsArraysIdentical: [NSUnarchiver unarchiveObjectWithData: [copyRoiList[ mIndex] objectAtIndex: i]] with: roisArray] == NO)
+									{
+										[ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image];
+										[allDICOMSR addObject: str];
+									}
 								}
 							}
 						}
@@ -10683,9 +10676,6 @@ short				matrix[25];
 					if( [[BrowserController currentBrowser] sendFilesToCurrentBonjourDB: allDICOMSR] == NO)
 						NSLog( @"****** FAILED to send ROI SR to original DB");
 				}
-				
-				if( [toDeleteDICOMSR count])
-					[[BonjourBrowser currentBrowser] deleteRoisObject: roiSRSeries paths: toDeleteDICOMSR];
 			}
 			
 			[BrowserController addFiles: allDICOMSR
@@ -14708,10 +14698,13 @@ int i,j,l;
 	}
 	
 	// create empty ROI List for this new serie
+	copyRoiList[maxMovieIndex] = [[NSMutableArray alloc] initWithCapacity: 0];
 	roiList[maxMovieIndex] = [[NSMutableArray alloc] initWithCapacity: 0];
+	
 	for( i = 0; i < [pixList[maxMovieIndex] count]; i++)
 	{
 		[roiList[maxMovieIndex] addObject:[NSMutableArray arrayWithCapacity:0]];
+		[copyRoiList[maxMovieIndex] addObject: [NSData data]];
 	}
 	[self loadROI: maxMovieIndex];
 	

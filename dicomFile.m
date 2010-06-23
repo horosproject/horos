@@ -16,6 +16,7 @@
 #include "FVTiff.h"
 #endif
 
+#import "ROISRConverter.h"
 #import "SRAnnotation.h"
 #import <dicomFile.h>
 #import "Papyrus3/Papyrus3.h"
@@ -2545,10 +2546,22 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 			}
 			
-			NSString *referencedSOPInstanceUID = [SRAnnotation getImageRefSOPInstanceUID: filePath];
-			
-			if( referencedSOPInstanceUID)
-				[dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
+			@try
+			{
+				if( [[dicomElements objectForKey: @"seriesDescription"] hasPrefix: @"OsiriX ROI SR"])
+				{
+					NSString *referencedSOPInstanceUID = [SRAnnotation getImageRefSOPInstanceUID: filePath];
+					if( referencedSOPInstanceUID)
+						[dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
+					
+					int numberOfROIs = [[NSUnarchiver unarchiveObjectWithData: [ROISRConverter roiFromDICOM: filePath]] count];
+					[dicomElements setObject: [NSNumber numberWithInt: numberOfROIs] forKey: @"numberOfROIs"];
+				}
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 		}
 		#endif
 		#endif
@@ -3076,10 +3089,22 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 				}
 				
-				NSString *referencedSOPInstanceUID = [SRAnnotation getImageRefSOPInstanceUID: filePath];
-				
-				if( referencedSOPInstanceUID)
-					[dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
+				@try
+				{
+					if( [[dicomElements objectForKey: @"seriesDescription"] hasPrefix: @"OsiriX ROI SR"])
+					{
+						NSString *referencedSOPInstanceUID = [SRAnnotation getImageRefSOPInstanceUID: filePath];
+						if( referencedSOPInstanceUID)
+							[dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
+						
+						int numberOfROIs = [[NSUnarchiver unarchiveObjectWithData: [ROISRConverter roiFromDICOM: filePath]] count];
+						[dicomElements setObject: [NSNumber numberWithInt: numberOfROIs] forKey: @"numberOfROIs"];
+					}
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				}
 			}
 		}
 		#endif

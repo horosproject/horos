@@ -91,7 +91,6 @@
 - (void) removeStudies: (NSArray*) studies fromAlbum: (NSManagedObject*) album bonjourIndex:(int) index;
 - (void) addStudies: (NSArray*) studies toAlbum: (NSManagedObject*) album bonjourIndex:(int) index;
 
-- (void) getDICOMROIFiles:(int) index roisPaths:(NSArray*) roisPaths;
 - (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (int) noOfImages;
 - (NSString*) getDatabaseFile:(int) index ;
 - (NSString*) getDatabaseFile:(int) index showWaitingWindow: (BOOL) showWaitingWindow;
@@ -104,8 +103,6 @@
 - (BOOL) sendFile:(NSString*) pathFile index:(int) index;
 - (BOOL) retrieveDICOMFilesWithSTORESCU:(int) indexFrom to:(int) indexTo paths:(NSArray*) ip;
 - (NSDate*) getFileModification:(NSString*) pathFile index:(int) index;
-
-- (void) deleteRoisObject: (NSManagedObject*) o paths: (NSArray*) p;
 
 - (void) buildFixedIPList;
 - (void) buildLocalPathsList;

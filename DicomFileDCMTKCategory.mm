@@ -19,6 +19,7 @@
 #import "MutableArrayCategory.h"
 #import "DicomStudy.h"
 #import "SRAnnotation.h"
+#import "ROISRConverter.h"
 
 #include "osconfig.h"
 #include "dcfilefo.h"
@@ -760,6 +761,23 @@ extern NSRecursiveLock *PapyrusLock;
 			
 			if( referencedSOPInstanceUID)
 				[dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
+			
+			@try
+			{
+				if( [[dicomElements objectForKey: @"seriesDescription"] hasPrefix: @"OsiriX ROI SR"])
+				{
+					NSString *referencedSOPInstanceUID = [SRAnnotation getImageRefSOPInstanceUID: filePath];
+					if( referencedSOPInstanceUID)
+						[dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
+					
+					int numberOfROIs = [[NSUnarchiver unarchiveObjectWithData: [ROISRConverter roiFromDICOM: filePath]] count];
+					[dicomElements setObject: [NSNumber numberWithInt: numberOfROIs] forKey: @"numberOfROIs"];
+				}
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 		}
 		#endif
 		#endif

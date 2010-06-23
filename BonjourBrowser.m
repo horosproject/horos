@@ -1462,32 +1462,6 @@ extern const char *GetPrivateIP();
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
-- (void) deleteRoisObject: (NSManagedObject*) dbObjectUID paths: (NSArray*) roiPaths
-{
-	if( [[BrowserController currentBrowser] currentBonjourService] < 0)
-	{
-		NSLog( @"***** deleteObject < 1 -- BonjourBrowser");
-		return;
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	@try 
-	{
-		messageToSend = [NSDictionary dictionaryWithObjectsAndKeys: @"deleteRois", @"message", [[[dbObjectUID objectID] URIRepresentation] absoluteString], @"objectUID", roiPaths, @"roiPaths", nil];
-	
-		[self connectToServer: [[BrowserController currentBrowser] currentBonjourService] message: @"NEWMS"];
-		
-		[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
-}
-
 - (void) addStudies: (NSArray*) studies toAlbum: (NSManagedObject*) album bonjourIndex:(int) index
 {
 	[[[BrowserController currentBrowser] managedObjectContext] lock];
@@ -1910,44 +1884,6 @@ extern const char *GetPrivateIP();
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	return success;
-}
-
-- (void) getDICOMROIFiles:(int) index roisPaths:(NSArray*) roisPaths
-{
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	@try 
-	{
-		[dicomFileNames release];
-		dicomFileNames = [[NSMutableArray alloc] initWithCapacity: 0];
-		
-		[paths release];
-		paths = [[NSMutableArray alloc] initWithCapacity: 0];
-		
-		// TRY TO LOAD MULTIPLE DICOM FILES AT SAME TIME -> better network performances
-		
-		NSString	*roistring = [NSString stringWithString:@"ROIs/"];
-		
-		for( id loopItem in roisPaths)
-		{
-			NSString	*local = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/TEMP.noindex/"] stringByAppendingPathComponent: loopItem];
-			 
-			if( [[NSFileManager defaultManager] fileExistsAtPath: local] == NO)
-			{
-				[paths addObject: [roistring stringByAppendingPathComponent: loopItem]];
-				[dicomFileNames addObject: [BonjourBrowser bonjour2local: loopItem]];
-			}
-		}
-		
-		if( [dicomFileNames count] > 0)
-			[self connectToServer: index message:@"DICOM"];
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 }
 
 - (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (int) noOfImages

@@ -1338,9 +1338,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return nil;
 }
 
-- (NSString*) roiForImage: (DicomImage*) image // ROIs
+- (DicomImage*) roiForImage: (DicomImage*) image inArray: (NSArray*) roisArray
 {
-	NSString *path = nil;
+	DicomImage *roiImage = nil;
 	
 	[[self managedObjectContext] lock];
 	
@@ -1350,8 +1350,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		searchedUID = [searchedUID stringByAppendingFormat: @"-%d", [[image valueForKey: @"frameID"] intValue]];
 		
-		NSArray *rois = [[[self roiSRSeries] valueForKey: @"images"] allObjects];
-		NSArray	*found = [rois filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"comment == %@", searchedUID]];
+		if( roisArray == nil)
+			roisArray = [[[self roiSRSeries] valueForKey: @"images"] allObjects];
+		
+		NSArray	*found = [roisArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"comment == %@", searchedUID]];
 		
 		// Take the most recent roi
 		if( [found count] > 1)
@@ -1360,7 +1362,32 @@ static NSRecursiveLock *dbModifyLock = nil;
 			found = [[[found sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]] mutableCopy] autorelease];
 		}
 		
-		path = [[found lastObject] valueForKey: @"completePath"];
+		roiImage = [found lastObject];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
+	return roiImage;
+}
+
+- (NSString*) roiPathForImage: (DicomImage*) image
+{
+	return [self roiPathForImage: image inArray: nil];
+}
+
+- (NSString*) roiPathForImage: (DicomImage*) image inArray: (NSArray*) roisArray
+{
+	NSString *path = nil;
+	
+	@try 
+	{
+		DicomImage *roi = [self roiForImage: image inArray: roisArray];
+		
+		path = [roi valueForKey: @"completePath"];
 		
 		if( path == nil) // Try the 'old' ROIs folder
 			path = [image SRPath];
@@ -1369,8 +1396,6 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
-	
-	[[self managedObjectContext] unlock];
 	
 	return path;
 }

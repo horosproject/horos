@@ -12,6 +12,7 @@
  PURPOSE.
  =========================================================================*/
 
+#import "ROISRConverter.h"
 #import <DiscRecording/DRDevice.h>
 #import "DCMView.h"
 #import "MyOutlineView.h"
@@ -19,6 +20,7 @@
 #import "QueryController.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
+#import "DicomStudy.h"
 #import "DCMPix.h"
 #import "SRAnnotation.h"
 #import "AppController.h"
@@ -628,7 +630,7 @@ static NSConditionLock *threadLock = nil;
 		
 		[DicomFile setFilesAreFromCDMedia: isCDMedia];
 		
-		if([NSThread isMainThread] && ([newFilesArray count] > 50 || isCDMedia == YES))
+		if([NSThread isMainThread] && ([newFilesArray count] > 50 || isCDMedia == YES) && generatedByOsiriX == NO)
 		{
 			splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString(@"Adding %@ files...", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[newFilesArray count]]]]];
 			[splash showWindow:self];
@@ -1177,10 +1179,13 @@ static NSConditionLock *threadLock = nil;
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[seriesTable setValue: nil forKey:@"thumbnail"];
 								
-								NSString *s = [curDict objectForKey: @"referencedSOPInstanceUID"];
-								s = [s stringByAppendingFormat: @"-%d", f];
-								
-								[image setValue: s forKey:@"comment"];
+								if( DICOMSR && [curDict objectForKey: @"numberOfROIs"] && [curDict objectForKey: @"referencedSOPInstanceUID"]) // OsiriX ROI SR
+								{
+									NSString *s = [curDict objectForKey: @"referencedSOPInstanceUID"];
+									s = [s stringByAppendingFormat: @"-%d", f];
+									[image setValue: s forKey:@"comment"];
+									[image setValue: [curDict objectForKey: @"numberOfROIs"] forKey:@"scale"];
+								}
 								
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
@@ -6009,32 +6014,32 @@ static NSConditionLock *threadLock = nil;
 {
 	ROIsAndKeyImagesButtonAvailable = YES;
 		
-	NSMutableArray *i = [NSMutableArray arrayWithArray: [[toolbar items] valueForKey: @"itemIdentifier"]];
-	if( [i containsString: OpenKeyImagesAndROIsToolbarItemIdentifier] && !isCurrentDatabaseBonjour)
-	{
-		if( [[databaseOutline selectedRowIndexes] count] >= 5)	//[[self window] firstResponder] == databaseOutline && 
-			ROIsAndKeyImagesButtonAvailable = YES;
-		else
-		{
-			NSEvent *event = [[NSApplication sharedApplication] currentEvent];
-			
-			if([event modifierFlags] & NSAlternateKeyMask)
-			{
-				if( [[self KeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-				else ROIsAndKeyImagesButtonAvailable = YES;
-			}
-			else if([event modifierFlags] & NSShiftKeyMask)
-			{
-				if( [[self ROIImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-				else ROIsAndKeyImagesButtonAvailable = YES;
-			}
-			else
-			{
-				if( [[self ROIsAndKeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-				else ROIsAndKeyImagesButtonAvailable = YES;
-			}
-		}
-	}
+//	NSMutableArray *i = [NSMutableArray arrayWithArray: [[toolbar items] valueForKey: @"itemIdentifier"]];
+//	if( [i containsString: OpenKeyImagesAndROIsToolbarItemIdentifier] && !isCurrentDatabaseBonjour)
+//	{
+//		if( [[databaseOutline selectedRowIndexes] count] >= 5)	//[[self window] firstResponder] == databaseOutline && 
+//			ROIsAndKeyImagesButtonAvailable = YES;
+//		else
+//		{
+//			NSEvent *event = [[NSApplication sharedApplication] currentEvent];
+//			
+//			if([event modifierFlags] & NSAlternateKeyMask)
+//			{
+//				if( [[self KeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+//				else ROIsAndKeyImagesButtonAvailable = YES;
+//			}
+//			else if([event modifierFlags] & NSShiftKeyMask)
+//			{
+//				if( [[self ROIImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+//				else ROIsAndKeyImagesButtonAvailable = YES;
+//			}
+//			else
+//			{
+//				if( [[self ROIsAndKeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+//				else ROIsAndKeyImagesButtonAvailable = YES;
+//			}
+//		}
+//	}
 }
 
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
@@ -19714,53 +19719,34 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
-
-	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-	{
-		NSMutableArray	*filesArray = [NSMutableArray array];
-		
-		for( DicomImage *o in selectedItems)
-		{
-			NSString	*str = [o SRPathForFrame: 0];
-			[filesArray addObject: [str lastPathComponent]];
-		}
-		[[BrowserController currentBrowser] getDICOMROIFiles: filesArray];
-	}
-
+	
 	NSMutableArray *roisImagesArray = [NSMutableArray array];
 	
 	if( [selectedItems count] > 0)
 	{
-		NSArray *rois;
-		
-//		if( [selectedItems count] > [[[[NSFileManager defaultManager] fileAttributesAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"] traverseLink: YES] objectForKey: NSFileReferenceCount] intValue])
-//			rois = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"] error: nil];
-//		else
-			rois = nil;
+		DicomStudy *study = nil;
+		NSArray *roisArray = nil;
 		
 		for( DicomImage *image in selectedItems)
 		{
-			NSString *str = [image SRPathForFrame: 0];
-			
-			if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+			if( study != image.series.study)
 			{
-				NSString *imagePath = [BonjourBrowser uniqueLocalPath: image];
-				str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
+				study = image.series.study;
+				roisArray = [[[study roiSRSeries] valueForKey: @"images"] allObjects];
 			}
 			
-			if( rois)
+			@try
 			{
-				if( [rois containsObject: str])
+				DicomImage *roiImage = [study roiForImage: image inArray: roisArray];
+				
+				if( roiImage && ( [roiImage valueForKey: @"scale"] == nil || [[roiImage valueForKey: @"scale"] intValue] > 0)) // @"scale" contains the number of ROI objects
 					[roisImagesArray addObject: image];
 				else if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
 					[roisImagesArray addObject: image];
 			}
-			else
+			@catch (NSException * e) 
 			{
-				if( [[NSFileManager defaultManager] fileExistsAtPath: str])
-					[roisImagesArray addObject: image];
-				else if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
-					[roisImagesArray addObject: image];
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 			}
 		}
 		
@@ -19899,50 +19885,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
-
-	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-	{
-		NSMutableArray	*filesArray = [NSMutableArray array];
-		
-		for( DicomImage *o in selectedItems)
-		{
-			NSString	*str = [o SRPathForFrame: 0];
-			[filesArray addObject: [str lastPathComponent]];
-		}
-		[[BrowserController currentBrowser] getDICOMROIFiles: filesArray];
-	}
-
+	
 	NSMutableArray *roisImagesArray = [NSMutableArray array];
 
 	if( [selectedItems count] > 0)
 	{
-		NSArray *rois;
-		
-//		if( [selectedItems count] > [[[[NSFileManager defaultManager] fileAttributesAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"] traverseLink: YES] objectForKey: NSFileReferenceCount] intValue])
-//			rois = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"] error: nil];
-//		else
-			rois = nil;
-		
 		for( DicomImage *image in selectedItems)
 		{
-			NSString	*str = [image SRPathForFrame: 0];
+			NSString *str = [image.series.study roiPathForImage: image];
 			
-			if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-			{
-				NSString *imagePath = [BonjourBrowser uniqueLocalPath: image];
-				str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
-			}
-			
-			if( rois)
-			{
-				if( [rois containsObject: str])
-					[roisImagesArray addObject: image];
-			}
-			else
-			{
-				if( [[NSFileManager defaultManager] fileExistsAtPath: str])
-					[roisImagesArray addObject: image];
-			}
+			if( str && [[NSUnarchiver unarchiveObjectWithData: [ROISRConverter roiFromDICOM: str]] count] > 0)
+				[roisImagesArray addObject: image];
 		}
 		
 		if( sameSeries)
@@ -20044,7 +19997,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if ([[toolbarItem itemIdentifier] isEqualToString: OpenKeyImagesAndROIsToolbarItemIdentifier])
 	{
-		return ROIsAndKeyImagesButtonAvailable;
+		return YES;	//ROIsAndKeyImagesButtonAvailable;
 	}
 	
 	if ([[toolbarItem itemIdentifier] isEqualToString: ViewersToolbarItemIdentifier])
@@ -20076,11 +20029,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 #pragma mark-
 #pragma mark Bonjour
-
-- (void) getDICOMROIFiles:(NSArray*) files
-{
-	[bonjourBrowser getDICOMROIFiles:[bonjourServicesList selectedRow]-1 roisPaths:files];
-}
 
 - (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key
 {

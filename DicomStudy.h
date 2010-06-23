@@ -15,7 +15,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class DicomSeries;
+@class DicomSeries, DicomImage;
 
 /** \brief  Core Data Entity for a Study */
 @interface DicomStudy : NSManagedObject
@@ -63,7 +63,9 @@
 - (NSArray *)keyObjects;
 - (NSArray *)presentationStateSeries;
 - (NSArray *)waveFormSeries;
-- (NSString*) roiForImage: (NSManagedObject*) image;
+- (NSString*) roiPathForImage: (DicomImage*) image inArray: (NSArray*) roisArray;
+- (NSString*) roiPathForImage: (DicomImage*) image;
+- (DicomImage*) roiForImage: (DicomImage*) image inArray: (NSArray*) roisArray;
 - (NSManagedObject *) roiSRSeries;
 - (NSManagedObject *) reportSRSeries;
 - (NSManagedObject *) annotationsSRImage;

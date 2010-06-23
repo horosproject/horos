@@ -472,7 +472,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) removeMountedImages: (NSString*) sNewDrive;
 
 //bonjour
-- (void) getDICOMROIFiles:(NSArray*) files;
 - (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key;
 //- (void) setServiceName:(NSString*) title;
 //- (NSString*) serviceName;
