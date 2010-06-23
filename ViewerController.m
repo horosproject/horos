@@ -10570,13 +10570,7 @@ short				matrix[25];
 	{
 		for( int v = 0 ; v < [roisArray count]; v++)
 		{
-			ROI *r1 = [roisArray objectAtIndex: v];
-			ROI *r2 = [copy objectAtIndex: v];
-			
-			NSData *d1 = [NSArchiver archivedDataWithRootObject: r1];
-			NSData *d2 = [NSArchiver archivedDataWithRootObject: r2];
-			
-			if( [d1 isEqualToData: d2] == NO)
+			if( [[[roisArray objectAtIndex: v] data] isEqualToData: [[copy objectAtIndex: v] data]] == NO)
 			{
 				identical = NO;
 				break;
