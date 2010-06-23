@@ -1360,6 +1360,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		{
 			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
 			found = [[[found sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]] mutableCopy] autorelease];
+			NSLog( @"--- multiple rois array for same sopInstanceUID (roiForImage) : %d", [found count]);
 		}
 		
 		roiImage = [found lastObject];
@@ -1387,7 +1388,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		DicomImage *roi = [self roiForImage: image inArray: roisArray];
 		
-		path = [roi valueForKey: @"completePath"];
+		path = [roi valueForKey: @"completePathResolved"];
 		
 		if( path == nil) // Try the 'old' ROIs folder
 			path = [image SRPath];
