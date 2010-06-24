@@ -11159,9 +11159,11 @@ END_CREATE_ROIS:
 	{
 		case 4:		// Volume Rendering
 		case 5:
+			memcpy( fResult, fImage, height * width * sizeof(float));
 			break;
 			
 		case 1:		// Mean
+			memcpy( fResult, fImage, height * width * sizeof(float));
 			break;
 			
 		case 2:		// Maximum IP
@@ -11174,19 +11176,8 @@ END_CREATE_ROIS:
 				fNext = [[pixArray objectAtIndex: next] fImage];
 				if( fNext)
 				{
-#if __ppc__ || __ppc64__
-					if( Altivec)
-					{
-						if( stackMode == 2) vmax8( (vector unsigned char*)fNext, (vector unsigned char*)fImage, (vector unsigned char*)fResult, height * width);
-						else vmin8( (vector unsigned char*)fNext, (vector unsigned char*)fImage, (vector unsigned char*)fResult, height * width);
-					}
-					else NSLog( @"Altivec is REQUIRED");
-#else
-				{
 					if( stackMode == 2) vmax8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
 					else vmin8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
-				}
-#endif
 				}
 				
 				for( long i = 2; i < stack; i++)
@@ -11204,20 +11195,10 @@ END_CREATE_ROIS:
 						if( res < pixArray.count && res >= 0)
 						{
 							fNext = [[pixArray objectAtIndex: res] fImage];
-							if( fNext)	{
-#if __ppc__ || __ppc64__
-								if( Altivec)
-								{
-									if( stackMode == 2) vmax8( (vector unsigned char*)fResult, (vector unsigned char*)fNext, (vector unsigned char*)fResult, height * width);
-									else vmin8( (vector unsigned char*)fResult, (vector unsigned char*)fNext, (vector unsigned char*)fResult, height * width);
-								}
-								else NSLog( @"Altivec is REQUIRED");
-#else
+							if( fNext)
 							{
 								if( stackMode == 2) vmax8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width);
 								else vmin8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width);
-							}
-#endif
 							}
 						}
 					}
