@@ -1134,7 +1134,7 @@ static NSConditionLock *threadLock = nil;
 								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
 								[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
 								
-								if( [[curDict objectForKey: @"manufacturer"] length] > 0)
+								if( [(NSString*)[curDict objectForKey: @"manufacturer"] length] > 0)
 									[image setValue:[curDict objectForKey: @"manufacturer"] forKey: @"comment"];
 								
 								[image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
@@ -1170,10 +1170,10 @@ static NSConditionLock *threadLock = nil;
 										}
 									}
 									
-									if( generatedByOsiriX == NO && [[curDict objectForKey: @"seriesComments"] length] > 0)
+									if( generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"seriesComments"] length] > 0)
 										[seriesTable setValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
 									
-									if( generatedByOsiriX == NO && [[curDict objectForKey: @"studyComments"] length] > 0)
+									if( generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"studyComments"] length] > 0)
 										[study setValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
 									
 									if( generatedByOsiriX == NO && [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
