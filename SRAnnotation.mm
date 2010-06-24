@@ -439,7 +439,9 @@
 		//add to Study
 		document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
 		
-		document->setInstanceNumber([[[image valueForKey:@"frameID"] stringValue] UTF8String]);
+		NSNumber *v = [NSNumber numberWithInt: [[image valueForKey:@"frameID"] intValue]];
+		
+		document->setInstanceNumber( [[v stringValue] UTF8String]);
 		
 		// Add metadata for DICOM
 		//Study Description

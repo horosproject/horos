@@ -992,7 +992,10 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	[coder encodeObject:[NSNumber numberWithBool: _hasIsSpline]];
 }
 
-- (NSData*) data { return [NSArchiver archivedDataWithRootObject: self]; }
+- (NSData*) data
+{
+	return [NSArchiver archivedDataWithRootObject: self];
+}
 
 - (void) deleteTexture:(NSOpenGLContext*) c
 {
