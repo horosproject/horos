@@ -1238,8 +1238,28 @@ static NSRecursiveLock *dbModifyLock = nil;
 		// Take the most recent series
 		if( [newArray count] > 1)
 		{
-			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
-			newArray = [[[newArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]] mutableCopy] autorelease];
+			NSLog( @"****** multiple (%d) annotationsSRImage?? Delete the extra series...", [newArray count]);
+			
+			@try
+			{
+				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
+			
+				for( DicomImage *i in newArray)
+				{
+					if( i != [newArray lastObject])
+					{
+						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
+						[[i mutableSetValueForKey: @"images"] removeAllObjects];
+						[[self managedObjectContext] deleteObject: i];
+					}
+				}
+				
+				[[self managedObjectContext] save: nil];
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 		}
 		
 		if( [[[newArray lastObject] valueForKey: @"images"] count] > 1)
@@ -1285,8 +1305,26 @@ static NSRecursiveLock *dbModifyLock = nil;
 		{
 			NSLog( @"****** multiple (%d) reportSRSeries?? Delete the extra series...", [newArray count]);
 			
-			for( int i = 0 ; i < [newArray count]-1 ; i++)
-				[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
+			@try
+			{
+				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
+			
+				for( DicomImage *i in newArray)
+				{
+					if( i != [newArray lastObject])
+					{
+						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
+						[[i mutableSetValueForKey: @"images"] removeAllObjects];
+						[[self managedObjectContext] deleteObject: i];
+					}
+				}
+				
+				[[self managedObjectContext] save: nil];
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 		}
 	}
 	@catch (NSException * e) 
@@ -1296,10 +1334,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	[[self managedObjectContext] unlock];
 	
-	if( [newArray count])
-		return [newArray objectAtIndex: 0];
-	
-	return nil;
+	return [newArray lastObject];
 }
 
 - (NSManagedObject *)roiSRSeries
@@ -1343,7 +1378,6 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 			}
-			
 		}
 	}
 	@catch (NSException * e) 
@@ -1353,10 +1387,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	[[self managedObjectContext] unlock];
 	
-	if( [newArray count])
-		return [newArray lastObject];
-	
-	return nil;
+	return [newArray lastObject];
 }
 
 - (DicomImage*) roiForImage: (DicomImage*) image inArray: (NSArray*) roisArray
