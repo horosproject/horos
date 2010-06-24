@@ -30,6 +30,7 @@
 #import "DICOMToNSString.h"
 #import "XMLControllerDCMTKCategory.h"
 #import "Notifications.h"
+#import "ROISRConverter.h"
 #endif
 
 #define WBUFSIZE 512
@@ -1361,6 +1362,36 @@ static NSRecursiveLock *dbModifyLock = nil;
 			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
 			found = [[[found sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]] mutableCopy] autorelease];
 			NSLog( @"--- multiple rois array for same sopInstanceUID (roiForImage) : %d", [found count]);
+			
+			// Merge the other ROIs with this ROI, and empty the old ones
+			NSMutableArray *r = [NSMutableArray array];
+			for( DicomImage *i in found)
+			{
+				if( i != [found lastObject])
+				{
+					@try
+					{
+						NSArray *o = [NSUnarchiver unarchiveObjectWithData: [ROISRConverter roiFromDICOM: [i valueForKey: @"completePathResolved"]]];
+						
+						if( [o count])
+						{
+							[r addObjectsFromArray: o];
+							[ROISRConverter archiveROIsAsDICOM: [NSArray array] toPath: [i valueForKey: @"completePathResolved"] forImage: image];
+						}
+					}
+					@catch (NSException * e)
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					}
+				}
+			}
+			
+			if( [r count])
+			{
+				NSArray *o = [NSUnarchiver unarchiveObjectWithData: [ROISRConverter roiFromDICOM: [[found lastObject] valueForKey: @"completePathResolved"]]];
+				[r addObjectsFromArray: o];
+				[ROISRConverter archiveROIsAsDICOM: r toPath: [[found lastObject] valueForKey: @"completePathResolved"] forImage: image];
+			}
 		}
 		
 		roiImage = [found lastObject];
