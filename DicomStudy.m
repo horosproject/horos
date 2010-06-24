@@ -1321,10 +1321,21 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		if( [newArray count] > 1)
 		{
-			NSLog( @"****** multiple (%d) roiSRSeries?? Delete the extra series...", [newArray count]);
+			NSLog( @"****** multiple (%d) roiSRSeries?? Delete the extra series and merge the images...", [newArray count]);
 			
-			for( int i = 0 ; i < [newArray count]-1 ; i++)
-				[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
+			NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
+			
+			for( DicomImage *i in newArray)
+			{
+				if( i != [newArray lastObject])
+				{
+					[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
+					[[i mutableSetValueForKey: @"images"] removeAllObjects];
+					[[self managedObjectContext] deleteObject: i];
+				}
+			}
+			
+			[[self managedObjectContext] save: nil];
 		}
 	}
 	@catch (NSException * e) 
@@ -1334,7 +1345,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	[[self managedObjectContext] unlock];
 	
-	if( [newArray count]) return [newArray objectAtIndex: 0];
+	if( [newArray count])
+		return [newArray lastObject];
 	
 	return nil;
 }
