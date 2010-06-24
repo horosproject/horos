@@ -1323,19 +1323,27 @@ static NSRecursiveLock *dbModifyLock = nil;
 		{
 			NSLog( @"****** multiple (%d) roiSRSeries?? Delete the extra series and merge the images...", [newArray count]);
 			
-			NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
-			
-			for( DicomImage *i in newArray)
+			@try
 			{
-				if( i != [newArray lastObject])
+				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
+			
+				for( DicomImage *i in newArray)
 				{
-					[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
-					[[i mutableSetValueForKey: @"images"] removeAllObjects];
-					[[self managedObjectContext] deleteObject: i];
+					if( i != [newArray lastObject])
+					{
+						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
+						[[i mutableSetValueForKey: @"images"] removeAllObjects];
+						[[self managedObjectContext] deleteObject: i];
+					}
 				}
+				
+				[[self managedObjectContext] save: nil];
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 			}
 			
-			[[self managedObjectContext] save: nil];
 		}
 	}
 	@catch (NSException * e) 
