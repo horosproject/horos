@@ -72,7 +72,7 @@
 #import "JPEGExif.h"
 #import "NSFont_OpenGL.h"
 #import "Reports.h"
-#import "ROISRConverter.h"
+#import "SRAnnotation.h"
 #import "MenuDictionary.h"
 #import "CalciumScoringWindowController.h"
 #import "EndoscopySegmentationController.h"
@@ -10500,7 +10500,7 @@ short				matrix[25];
 					{
 						NSString *str = [study roiPathForImage: [fileList[ mIndex] objectAtIndex:i] inArray: roisArray];
 						
-						NSData *data = [ROISRConverter roiFromDICOM: str];
+						NSData *data = [SRAnnotation roiFromDICOM: str];
 						
 						if( data)
 							[copyRoiList[ mIndex] replaceObjectAtIndex: i withObject: data];
@@ -10636,7 +10636,7 @@ short				matrix[25];
 							{
 								if( [ViewerController areROIsArraysIdentical: [NSUnarchiver unarchiveObjectWithData: [copyRoiList[ mIndex] objectAtIndex: i]] with: roisArray] == NO)
 								{
-									[ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image];
+									[SRAnnotation archiveROIsAsDICOM: roisArray toPath: str forImage: image];
 									[allDICOMSR addObject: str];
 								}
 							}
@@ -10646,7 +10646,7 @@ short				matrix[25];
 								{
 									if( [ViewerController areROIsArraysIdentical: [NSUnarchiver unarchiveObjectWithData: [copyRoiList[ mIndex] objectAtIndex: i]] with: roisArray] == NO)
 									{
-										[ROISRConverter archiveROIsAsDICOM: roisArray toPath: str forImage: image];
+										[SRAnnotation archiveROIsAsDICOM: roisArray toPath: str forImage: image];
 										[allDICOMSR addObject: str];
 									}
 								}

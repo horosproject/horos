@@ -16,7 +16,7 @@
 #include "FVTiff.h"
 #endif
 
-#import "ROISRConverter.h"
+#import "SRAnnotation.h"
 #import "SRAnnotation.h"
 #import <dicomFile.h>
 #import "Papyrus3/Papyrus3.h"
@@ -2554,7 +2554,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					if( referencedSOPInstanceUID)
 						[dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
 					
-					int numberOfROIs = [[NSUnarchiver unarchiveObjectWithData: [ROISRConverter roiFromDICOM: filePath]] count];
+					int numberOfROIs = [[NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: filePath]] count];
 					[dicomElements setObject: [NSNumber numberWithInt: numberOfROIs] forKey: @"numberOfROIs"];
 				}
 			}
@@ -3097,7 +3097,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						if( referencedSOPInstanceUID)
 							[dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
 						
-						int numberOfROIs = [[NSUnarchiver unarchiveObjectWithData: [ROISRConverter roiFromDICOM: filePath]] count];
+						int numberOfROIs = [[NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: filePath]] count];
 						[dicomElements setObject: [NSNumber numberWithInt: numberOfROIs] forKey: @"numberOfROIs"];
 					}
 				}

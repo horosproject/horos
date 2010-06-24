@@ -12,7 +12,7 @@
  PURPOSE.
  =========================================================================*/
 
-#import "ROISRConverter.h"
+#import "SRAnnotation.h"
 #import <DiscRecording/DRDevice.h>
 #import "DCMView.h"
 #import "MyOutlineView.h"
@@ -19862,7 +19862,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			NSString *str = [image.series.study roiPathForImage: image];
 			
-			if( str && [[NSUnarchiver unarchiveObjectWithData: [ROISRConverter roiFromDICOM: str]] count] > 0)
+			if( str && [[NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: str]] count] > 0)
 				[roisImagesArray addObject: image];
 		}
 		

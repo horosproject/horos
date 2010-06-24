@@ -2284,8 +2284,6 @@
 		BFD4BFFD06F2A96900EC9A90 /* RotateCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */; };
 		BFD4BFFE06F2A96900EC9A90 /* StackCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */; };
 		BFD4BFFF06F2A96900EC9A90 /* ZoomCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF306F2A96900EC9A90 /* ZoomCursor.tif */; };
-		BFDDDD520AE6E3FE00888882 /* ROISRConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDDD4E0AE6E3FE00888882 /* ROISRConverter.h */; };
-		BFDDDD530AE6E3FE00888882 /* ROISRConverter.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDDDD4F0AE6E3FE00888882 /* ROISRConverter.mm */; };
 		BFDDE5C1091717F80033317B /* DCMEncapsulatedPDF.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFDDE5C2091717F80033317B /* DCMEncapsulatedPDF.m in Sources */ = {isa = PBXBuildFile; fileRef = BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */; };
 		BFDF1D5709E06985008A4EC4 /* dcmqrcbm.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */; };
@@ -6850,7 +6848,6 @@
 		CEC708A810A5C844008935EA /* PapyJpeg16.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F90A7552E0001C27C4 /* PapyJpeg16.c */; };
 		CEC708A910A5C844008935EA /* PapyJpeg12.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */; };
 		CEC7096F10A5C844008935EA /* SRAnnotation.mm in Sources */ = {isa = PBXBuildFile; fileRef = A958370D0AAEBC2A0001D415 /* SRAnnotation.mm */; };
-		CEC7097010A5C844008935EA /* ROISRConverter.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDDDD4F0AE6E3FE00888882 /* ROISRConverter.mm */; };
 		CEC7097310A5C844008935EA /* printView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6692D90AF545F90073D923 /* printView.m */; };
 		CEC7097410A5C844008935EA /* DarkBox.m in Sources */ = {isa = PBXBuildFile; fileRef = BF4108E70B126C7800AAC648 /* DarkBox.m */; };
 		CEC7097510A5C844008935EA /* OSIWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF09B13E0B2E681D00AA97E2 /* OSIWindowController.m */; };
@@ -7273,7 +7270,6 @@
 		CEC7FEB910A5C844008935EA /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
 		CEC7FEBB10A5C844008935EA /* QTExportHTMLSummary.h in Headers */ = {isa = PBXBuildFile; fileRef = A95B98A20A6E65B100E476D4 /* QTExportHTMLSummary.h */; };
 		CEC7FEE810A5C844008935EA /* SRAnnotation.h in Headers */ = {isa = PBXBuildFile; fileRef = A958370C0AAEBC2A0001D415 /* SRAnnotation.h */; };
-		CEC7FEE910A5C844008935EA /* ROISRConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDDD4E0AE6E3FE00888882 /* ROISRConverter.h */; };
 		CEC7FEEC10A5C844008935EA /* printView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6692D80AF545F90073D923 /* printView.h */; };
 		CEC7FEED10A5C844008935EA /* DarkBox.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4108E60B126C7800AAC648 /* DarkBox.h */; };
 		CEC7FEEE10A5C844008935EA /* OSIWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF09B13D0B2E681D00AA97E2 /* OSIWindowController.h */; };
@@ -9832,8 +9828,6 @@
 		BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = RotateCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = StackCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF306F2A96900EC9A90 /* ZoomCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomCursor.tif; sourceTree = "<group>"; };
-		BFDDDD4E0AE6E3FE00888882 /* ROISRConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROISRConverter.h; sourceTree = "<group>"; };
-		BFDDDD4F0AE6E3FE00888882 /* ROISRConverter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ROISRConverter.mm; sourceTree = "<group>"; };
 		BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMEncapsulatedPDF.h; sourceTree = "<group>"; };
 		BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMEncapsulatedPDF.m; sourceTree = "<group>"; };
 		BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcbm.mm; sourceTree = "<group>"; };
@@ -13710,8 +13704,6 @@
 				AB73E13706497EDA00545980 /* PreviewView.m */,
 				CE6692D80AF545F90073D923 /* printView.h */,
 				CE6692D90AF545F90073D923 /* printView.m */,
-				BFDDDD4E0AE6E3FE00888882 /* ROISRConverter.h */,
-				BFDDDD4F0AE6E3FE00888882 /* ROISRConverter.mm */,
 				7E55ADDB06C7FFCD0059D6EB /* SeriesView.h */,
 				7E55ADDC06C7FFCD0059D6EB /* SeriesView.m */,
 				7E55AE1306C80E460059D6EB /* StudyView.h */,
@@ -17387,7 +17379,6 @@
 				ABE471130A76412700327466 /* jpeglib8.h in Headers */,
 				ABE471170A76412700327466 /* jversion8.h in Headers */,
 				A95837B50AAF0DCB0001D415 /* SRAnnotation.h in Headers */,
-				BFDDDD520AE6E3FE00888882 /* ROISRConverter.h in Headers */,
 				AB80EBAB0AF1F5B600E7E934 /* AYDicomPrintWindowController.h in Headers */,
 				AB80EBAD0AF1F5B600E7E934 /* AYNSImageToDicom.h in Headers */,
 				CE6692DA0AF545F90073D923 /* printView.h in Headers */,
@@ -19605,7 +19596,6 @@
 				CEC7FEB910A5C844008935EA /* DicomImageDCMTKCategory.h in Headers */,
 				CEC7FEBB10A5C844008935EA /* QTExportHTMLSummary.h in Headers */,
 				CEC7FEE810A5C844008935EA /* SRAnnotation.h in Headers */,
-				CEC7FEE910A5C844008935EA /* ROISRConverter.h in Headers */,
 				CEC7FEEC10A5C844008935EA /* printView.h in Headers */,
 				CEC7FEED10A5C844008935EA /* DarkBox.h in Headers */,
 				CEC7FEEE10A5C844008935EA /* OSIWindowController.h in Headers */,
@@ -23493,7 +23483,6 @@
 				ABE471150A76412700327466 /* jquant2.c in Sources */,
 				ABE471160A76412700327466 /* jutils.c in Sources */,
 				A95837B40AAF0DC80001D415 /* SRAnnotation.mm in Sources */,
-				BFDDDD530AE6E3FE00888882 /* ROISRConverter.mm in Sources */,
 				AB80EBAC0AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */,
 				AB80EBAE0AF1F5B600E7E934 /* AYNSImageToDicom.m in Sources */,
 				CE6692DB0AF545F90073D923 /* printView.m in Sources */,
@@ -24566,7 +24555,6 @@
 				CEC708A810A5C844008935EA /* PapyJpeg16.c in Sources */,
 				CEC708A910A5C844008935EA /* PapyJpeg12.c in Sources */,
 				CEC7096F10A5C844008935EA /* SRAnnotation.mm in Sources */,
-				CEC7097010A5C844008935EA /* ROISRConverter.mm in Sources */,
 				CEC7097310A5C844008935EA /* printView.m in Sources */,
 				CEC7097410A5C844008935EA /* DarkBox.m in Sources */,
 				CEC7097510A5C844008935EA /* OSIWindowController.m in Sources */,

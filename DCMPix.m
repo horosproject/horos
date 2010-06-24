@@ -23,7 +23,7 @@
 #import "BrowserControllerDCMTKCategory.h"
 #import "PluginManager.h"
 #import "ROI.h"
-#import "ROISRConverter.h"
+#import "SRAnnotation.h"
 #import "Notifications.h"
 
 #import <DCMView.h>
@@ -4888,7 +4888,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		// Get any pre-existing ROIs and add them to the roiArray
 		
-		NSData *data = [ROISRConverter roiFromDICOM: str];
+		NSData *data = [SRAnnotation roiFromDICOM: str];
 		
 		if ( data)
 		{
@@ -4899,7 +4899,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		// Write out the concatenated roiArray
 		
-		[ROISRConverter archiveROIsAsDICOM: roiArray[ i ] toPath: str forImage: img];
+		[SRAnnotation archiveROIsAsDICOM: roiArray[ i ] toPath: str forImage: img];
 		[newDICOMSR addObject: str];
 	}
 	

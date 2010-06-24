@@ -19,7 +19,7 @@
 #import "MutableArrayCategory.h"
 #import "DicomStudy.h"
 #import "SRAnnotation.h"
-#import "ROISRConverter.h"
+#import "SRAnnotation.h"
 
 #include "osconfig.h"
 #include "dcfilefo.h"
@@ -770,7 +770,7 @@ extern NSRecursiveLock *PapyrusLock;
 					if( referencedSOPInstanceUID)
 						[dicomElements setObject: referencedSOPInstanceUID forKey: @"referencedSOPInstanceUID"];
 					
-					int numberOfROIs = [[NSUnarchiver unarchiveObjectWithData: [ROISRConverter roiFromDICOM: filePath]] count];
+					int numberOfROIs = [[NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: filePath]] count];
 					[dicomElements setObject: [NSNumber numberWithInt: numberOfROIs] forKey: @"numberOfROIs"];
 				}
 			}

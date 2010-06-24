@@ -30,7 +30,7 @@
 #import "DICOMToNSString.h"
 #import "XMLControllerDCMTKCategory.h"
 #import "Notifications.h"
-#import "ROISRConverter.h"
+#import "SRAnnotation.h"
 #endif
 
 #define WBUFSIZE 512
@@ -1371,12 +1371,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 				{
 					@try
 					{
-						NSArray *o = [NSUnarchiver unarchiveObjectWithData: [ROISRConverter roiFromDICOM: [i valueForKey: @"completePathResolved"]]];
+						NSArray *o = [NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: [i valueForKey: @"completePathResolved"]]];
 						
 						if( [o count])
 						{
 							[r addObjectsFromArray: o];
-							[ROISRConverter archiveROIsAsDICOM: [NSArray array] toPath: [i valueForKey: @"completePathResolved"] forImage: image];
+							[SRAnnotation archiveROIsAsDICOM: [NSArray array] toPath: [i valueForKey: @"completePathResolved"] forImage: image];
 						}
 					}
 					@catch (NSException * e)
@@ -1388,9 +1388,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			if( [r count])
 			{
-				NSArray *o = [NSUnarchiver unarchiveObjectWithData: [ROISRConverter roiFromDICOM: [[found lastObject] valueForKey: @"completePathResolved"]]];
+				NSArray *o = [NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: [[found lastObject] valueForKey: @"completePathResolved"]]];
 				[r addObjectsFromArray: o];
-				[ROISRConverter archiveROIsAsDICOM: r toPath: [[found lastObject] valueForKey: @"completePathResolved"] forImage: image];
+				[SRAnnotation archiveROIsAsDICOM: r toPath: [[found lastObject] valueForKey: @"completePathResolved"] forImage: image];
 			}
 		}
 		
