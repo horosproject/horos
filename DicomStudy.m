@@ -239,9 +239,15 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) applyAnnotationsFromDictionary: (NSDictionary*) rootDict
 {
+	if( rootDict == nil)
+	{
+		NSLog( @"******** applyAnnotationsFromDictionary : rootDict == nil");
+		return;
+	}
+	
 	if( [self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO || [self.patientUID isEqualToString: [rootDict valueForKey: @"patientUID"]] == NO)
 	{
-		NSLog( @"******** WARNING applyAnnotationsFromDictionary will not be applied - studyInstanceUID / name / patientID are NOT corresponding: %@ %@", [rootDict valueForKey: @"name"], self.name);
+		NSLog( @"******** WARNING applyAnnotationsFromDictionary will not be applied - studyInstanceUID / name / patientID are NOT corresponding: %@ %@", [rootDict valueForKey: @"patientsName"], self.name);
 	}
 	else
 	{
@@ -366,7 +372,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	NSMutableArray *albumsArray = [NSMutableArray array];
 	
-	for( DicomAlbum * a in [[self valueForKey: @"albums"] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]])
+	for( DicomAlbum * a in [[[self valueForKey: @"albums"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]])
 	{
 		if( [[a valueForKey: @"smartAlbum"] boolValue] == NO)
 		{
@@ -383,7 +389,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	NSMutableArray *seriesArray = [NSMutableArray array];
 	
-	for( DicomSeries *series in [[self valueForKey: @"series"] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]])
+	for( DicomSeries *series in [[[self valueForKey: @"series"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]])
 	{
 		NSMutableDictionary *seriesDict = [NSMutableDictionary dictionary];
 		
@@ -400,7 +406,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			// Images Level
 			
 			NSMutableArray *imagesArray = [NSMutableArray array];
-			for( DicomSeries *image in [[series valueForKey: @"images"] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]])
+			for( DicomSeries *image in [[[series valueForKey: @"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]])
 			{
 				NSMutableDictionary *imageDict = [NSMutableDictionary dictionary];
 				

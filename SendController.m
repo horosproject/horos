@@ -321,8 +321,24 @@ static volatile int sendControllerObjects = 0;
 	
 	if( sendROIs == NO)
 	{
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX ROI SR", @"5002"];
-		samePatientArray = [samePatientArray filteredArrayUsingPredicate:predicate];
+		@try
+		{
+			NSPredicate *predicate = nil;
+			
+			predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX ROI SR", @"5002"];
+			samePatientArray = [samePatientArray filteredArrayUsingPredicate:predicate];
+			
+			predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX Report SR", @"5003"];
+			samePatientArray = [samePatientArray filteredArrayUsingPredicate:predicate];
+			
+			predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX Annotations SR", @"5004"];
+			samePatientArray = [samePatientArray filteredArrayUsingPredicate:predicate];
+		}
+		
+		@catch( NSException *e)
+		{
+			NSLog( @"***** executeSend exception: %@", e);
+		}
 	}
 	
 	NSArray	*files = [samePatientArray valueForKey: @"completePathResolved"];
