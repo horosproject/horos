@@ -1091,7 +1091,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
 	if( uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid] || [DCMAbstractSyntaxUID isRadiotherapy:uid])
 		return YES;
-	else if( [DCMAbstractSyntaxUID isStructuredReport:uid]) // && [description hasPrefix: @"OsiriX ROI SR"] == NO && [description hasPrefix: @"OsiriX Annotations SR"] == NO && [description hasPrefix: @"OsiriX Report SR"] == NO)
+	else if( [DCMAbstractSyntaxUID isStructuredReport:uid] && [description hasPrefix: @"OsiriX ROI SR"] == NO && [description hasPrefix: @"OsiriX Annotations SR"] == NO && [description hasPrefix: @"OsiriX Report SR"] == NO)
 		return YES;
 	else
 		return NO;
