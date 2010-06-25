@@ -884,6 +884,7 @@ static NSConditionLock *threadLock = nil;
 						/*********** Find study object *************/
 						// match: StudyInstanceUID and patientUID (see patientUID function in dicomFile.m, based on patientName, patientID and patientBirthDate)
 						study = nil;
+						curSerieID = nil;
 						
 						index = [studiesArrayStudyInstanceUID indexOfObject:[curDict objectForKey: @"studyID"]];
 						
@@ -970,7 +971,6 @@ static NSConditionLock *threadLock = nil;
 							if( [study valueForKey: @"studyName"] == nil || [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] || [[study valueForKey: @"studyName"] isEqualToString: @""])
 								[study setValue: [curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
 						}
-						
 						
 						if( [curDict objectForKey: @"studyDate"])
 						{

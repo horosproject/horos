@@ -90,7 +90,9 @@
 				DSRImageReferenceValue imageRef = document->getTree().getCurrentContentItem().getImageReference();
 				result = [NSString stringWithFormat:@"%s", imageRef.getSOPInstanceUID().c_str()];
 				
-				result = [result stringByAppendingFormat: @"-%d", instanceNumber];
+				if( [result length] > 0)
+					result = [result stringByAppendingFormat: @"-%d", instanceNumber];
+				else result = nil;
 			}
 		}
 	}
