@@ -2143,7 +2143,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [copyArray count])
 	{
-		NSLog(@"autorouting Queue start: %d objects", [copyArray count]);
+		NSLog( @"-- Autorouting Queue START: %d objects", [copyArray count]);
 		for ( NSDictionary *copy in copyArray)
 		{
 			NSArray			*objectsToSend = [copy objectForKey:@"objects"];
@@ -2154,7 +2154,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
 				{
-					NSLog( @"%@", [aServer description]);
+					NSLog( @" Autorouting destination: %@ - %@", [aServer objectForKey: @"Description"], [aServer objectForKey: @"Address"]);
 					server = aServer;
 					break;
 				}
@@ -2201,21 +2201,20 @@ static NSConditionLock *threadLock = nil;
 					
 				@catch( NSException *ne)
 				{
-					NSLog( @"%@", [ne name]);
-					NSLog( @"%@", [ne reason]);
-					[AppController printStackTrace: ne];
+					NSLog( @"----- %@", [ne name]);
+					NSLog( @"----- %@", [ne reason]);
 				}
 			}
 			else
 			{
-				NSLog(@"server not found for autorouting: %@", serverName);
+				NSLog(@" Server not found for autorouting: %@", serverName);
 				NSException *ne = [NSException exceptionWithName: NSLocalizedString(@"Unknown destination server. Add it to the Locations list - see Preferences.", nil) reason: [NSString stringWithFormat:@"Destination: %@", serverName] userInfo:nil];
 				
 				[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", [NSDictionary dictionary], @"server", nil] waitUntilDone: NO];
 			}
 		}
 		
-		NSLog(@"autorouting Queue end");
+		NSLog(@"-- Autorouting Queue END");
 	}
 		
 	[autoroutingInProgress unlock];

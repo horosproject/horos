@@ -1210,7 +1210,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			}
 			@catch ( NSException *e)
 			{
-				NSLog(@"cipherSuites Exception: %@", e);
+				NSLog(@"******** cipherSuites Exception: %@", e);
 			}
 		}
 		
@@ -1623,7 +1623,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	}
 	@catch ( NSException *e)
 	{
-		NSLog(@"Store Exception: %@", e);
+		NSLog(@"********* Store Exception: %@", e);
 	}
 	
 	// CLEANUP
@@ -1794,8 +1794,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"updateLogEntry exception");
-		NSLog( @"%@", [e description]);
+		NSLog( @"********* updateLogEntry exception: %@", e);
 	}
 
 	[context unlock];

@@ -6394,7 +6394,7 @@ static ViewerController *draggedController = nil;
 		if( status == nil) [StatusPopup selectItemWithTitle: NSLocalizedString(@"empty", nil)];
 		else [StatusPopup selectItemWithTag: [status intValue]];
 		
-		NSString	*com = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.comment"];
+		NSString *com = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.comment"];
 		
 		if( com == nil || [com isEqualToString:@""])
 			com = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.study.comment"];
@@ -19406,32 +19406,33 @@ int i,j,l;
 
 - (OSErr)getFSRefAtPath:(NSString*)sourceItem ref:(FSRef*)sourceRef
 {
-    OSErr    err;
-    BOOL    isSymLink;
-    id manager=[NSFileManager defaultManager];
-    NSDictionary *sourceAttribute = [manager fileAttributesAtPath:sourceItem
-traverseLink:NO];
-    isSymLink = ([sourceAttribute objectForKey:@"NSFileType"] ==
-NSFileTypeSymbolicLink);
-    if(isSymLink){
-        const char    *sourceParentPath;
-        FSRef        sourceParentRef;
-        HFSUniStr255    sourceFileName;
+    OSErr err;
+    BOOL isSymLink;
+	
+    NSDictionary *sourceAttribute = [[NSFileManager defaultManager] fileAttributesAtPath:sourceItem traverseLink:NO];
+	
+    isSymLink = ([sourceAttribute objectForKey:@"NSFileType"] == NSFileTypeSymbolicLink);
+    if( isSymLink)
+	{
+        const char *sourceParentPath;
+        FSRef sourceParentRef;
+        HFSUniStr255 sourceFileName;
 
         sourceParentPath = (char*)[[sourceItem stringByDeletingLastPathComponent] fileSystemRepresentation];
         err = FSPathMakeRef((UInt8 *) sourceParentPath, &sourceParentRef, NULL);
-        if(err == noErr){
+        if(err == noErr)
+		{
             [[sourceItem lastPathComponent] getCharacters:sourceFileName.unicode];
             sourceFileName.length = [[sourceItem lastPathComponent] length];
-            if (sourceFileName.length == 0){
+            if (sourceFileName.length == 0)
+			{
                 err = fnfErr;
             }
-            else err = FSMakeFSRefUnicode(&sourceParentRef,
-sourceFileName.length, sourceFileName.unicode, kTextEncodingFullName,
-sourceRef);
+            else err = FSMakeFSRefUnicode(&sourceParentRef,sourceFileName.length, sourceFileName.unicode, kTextEncodingFullName,sourceRef);
         }
     }
-    else{
+    else
+	{
         err = FSPathMakeRef((UInt8 *)[sourceItem fileSystemRepresentation], sourceRef, NULL);
     }
 
@@ -19449,14 +19450,9 @@ sourceRef);
 		[[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] setValue:[CommentsEditField stringValue] forKeyPath:@"series.comment"];
 		
 		if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-		{
 			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] value:[CommentsEditField stringValue] forKey:@"series.comment"];
-		}
 		
 		[[[BrowserController currentBrowser] databaseOutline] reloadData];
-		
-		if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
-		else [CommentsField setTitle: [CommentsEditField stringValue]];
 		
 		[self buildMatrixPreview: NO];
 	}
@@ -19465,17 +19461,20 @@ sourceRef);
 		[[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] setValue:[CommentsEditField stringValue] forKeyPath:@"series.study.comment"];
 		
 		if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-		{
 			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] value:[CommentsEditField stringValue] forKey:@"series.study.comment"];
-		}
 		
 		[[[BrowserController currentBrowser] databaseOutline] reloadData];
 		
-		//if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
-		//else [CommentsField setTitle: [CommentsEditField stringValue]];
-		
 		[self buildMatrixPreview: NO];
 	}
+	
+	NSString *com = [[fileList[ curMovieIndex] objectAtIndex: [imageView curImage]] valueForKeyPath:@"series.comment"];
+	
+	if( com == nil || [com isEqualToString:@""])
+		com = [[fileList[ curMovieIndex] objectAtIndex: [imageView curImage]] valueForKeyPath:@"series.study.comment"];
+	
+	if( com == nil || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
+		else [CommentsField setTitle: com];
 }
 
 - (IBAction) setComments:(id) sender
