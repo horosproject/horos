@@ -499,10 +499,13 @@ static NSRecursiveLock *dbModifyLock = nil;
 					NSManagedObject *archivedReport = [self reportSRSeries];
 					BOOL needToArchive = NO;
 					NSString *dstPath = nil;
+					DicomImage *reportImage = nil;
 					
-					dstPath = [[archivedReport valueForKeyPath: @"images.completePath"] anyObject];
-					if( [[[archivedReport valueForKeyPath: @"images.completePath"] allObjects] count] > 1)
+					reportImage = [[archivedReport valueForKey: @"images"] anyObject];
+					if( [[[archivedReport valueForKey: @"images"] allObjects] count] > 1)
 						NSLog( @"********* warning multiple report for this study");
+					
+					dstPath = [reportImage valueForKey: @"completePath"];
 					
 					if( dstPath == nil)
 						dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
@@ -515,13 +518,16 @@ static NSRecursiveLock *dbModifyLock = nil;
 					}
 					else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
 					{
-						[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
-						
-						if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
+						if( [[[[NSFileManager defaultManager] attributesOfItemAtPath: dstPath error: nil] valueForKey: NSFileModificationDate] isEqualToDate: [reportImage valueForKey: @"date"]] == NO)
 						{
-							SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-							if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]] == NO)
-								needToArchive = YES;
+							[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
+						
+							if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
+							{
+								SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+								if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]] == NO)
+									needToArchive = YES;
+							}
 						}
 					}
 					

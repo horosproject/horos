@@ -30,6 +30,7 @@ typedef char DSRDocument;
 	BOOL				_newSR;
 	NSString			*_seriesInstanceUID, *_DICOMSRDescription, *_DICOMSeriesNumber, *_reportURL;
 	NSData				*_dataEncapsulated;
+	NSDate				*_contentDate;
 }
 
 /** Extracts ROI as NSData from a DICOM SR

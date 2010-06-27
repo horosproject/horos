@@ -18764,14 +18764,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) syncReportsIfNecessary: (int)index
 {
-	if (isCurrentDatabaseBonjour)
+	if( isCurrentDatabaseBonjour)
 	{
 		NSEnumerator *enumerator = [bonjourReportFilesToCheck keyEnumerator];
 		NSString *key;
 		
-		while ( (key = [enumerator nextObject]))
+		while( (key = [enumerator nextObject]))
 		{
-			NSString	*file = [BonjourBrowser bonjour2local: key];
+			NSString *file = [BonjourBrowser bonjour2local: key];
 			
 			BOOL isDirectory;
 			
@@ -18781,12 +18781,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				NSDate *previousDate = [bonjourReportFilesToCheck objectForKey: key];
 				
-				NSLog(@"file : %@", file);
-				NSLog(@"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
+				NSLog( @"file : %@", file);
+				NSLog( @"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
 				
 				if( [previousDate isEqualToDate: [fattrs objectForKey:NSFileModificationDate]] == NO)
 				{
-					NSLog(@"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
+					NSLog( @"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
 					
 					// The file has changed... send back a copy to the bonjour server
 					
@@ -18799,7 +18799,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 				}
 			}
-			else NSLog( @"file?");
+			else NSLog( @"syncReportsIfNecessary - file?");
 		}
 	}
 }
@@ -18972,6 +18972,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				@try
 				{
+					NSString *localReportFile = nil;
+					
 					if (isCurrentDatabaseBonjour)
 					{
 						NSString	*localFile = nil;
@@ -19009,13 +19011,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							[report release];
 						}
 						
-						NSString	*localReportFile = [BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]];
-						if( [[NSFileManager defaultManager] fileExistsAtPath: localReportFile])
-						{
-							NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:localReportFile traverseLink:YES];
-							[bonjourReportFilesToCheck setObject:[fattrs objectForKey:NSFileModificationDate] forKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
-						}
-						else NSLog(@"Uh?");
+						localReportFile = [BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]];
 					}
 					else
 					{
@@ -19028,13 +19024,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 						{
 							if (reportsMode != 3)
 								[[NSWorkspace sharedWorkspace] openFile: [studySelected valueForKey:@"reportURL"]];
-	//						else
-	//						{
-	//							//structured report code here
-	//							//Osirix will open DICOM Structured Reports
-	//							//Release Old Controller
-	//							[self srReports:sender];
-	//						}
 						}
 						else
 						{
@@ -19045,14 +19034,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 								[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", [self documentsDirectory]] type:reportsMode];					
 								[report release];
 							}
-	//						else
-	//						{
-	//							//structured report code here
-	//							//Osirix will open DICOM Structured Reports
-	//							//Release Old Controller
-	//							[self srReports:sender];
-	//						}
 						}
+						
+						localReportFile = [studySelected valueForKey:@"reportURL"];
+					}
+					
+					if( [[NSFileManager defaultManager] fileExistsAtPath: localReportFile])
+					{
+						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:localReportFile traverseLink:YES];
+						[bonjourReportFilesToCheck setObject:[fattrs objectForKey:NSFileModificationDate] forKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
 					}
 				}
 				@catch (NSException * e)

@@ -229,6 +229,7 @@
 		_DICOMSRDescription =  @"OsiriX Report SR";
 		_DICOMSeriesNumber = @"5003";
 		_dataEncapsulated = [[NSData dataWithContentsOfFile: file] retain];
+		_contentDate = [[[[NSFileManager defaultManager] attributesOfItemAtPath: file error: nil] valueForKey: NSFileModificationDate] retain];
 		
 		[_DICOMSRDescription retain];
 		[_DICOMSeriesNumber retain];
@@ -424,6 +425,7 @@
 {
 	delete document;
 	[_DICOMSRDescription release];
+	[_contentDate release];
 	[_DICOMSeriesNumber release];
 	[image release];
 	[_dataEncapsulated release];
@@ -531,8 +533,17 @@
 			document->setSeriesNumber( [_DICOMSeriesNumber UTF8String]);
 	}
 	
-	document->setContentDate( [[[DCMCalendarDate date] dateString] UTF8String]);
-	document->setContentTime( [[[DCMCalendarDate date] timeString] UTF8String]);
+	if( _contentDate)
+	{
+		document->setContentDate( [[[DCMCalendarDate dicomDateWithDate: _contentDate] dateString] UTF8String]);
+		document->setContentTime( [[[DCMCalendarDate dicomDateWithDate: _contentDate] timeString] UTF8String]);
+	}
+	else
+	{
+		document->setContentDate( [[[DCMCalendarDate date] dateString] UTF8String]);
+		document->setContentTime( [[[DCMCalendarDate date] timeString] UTF8String]);
+	}
+
 	
 	// Image Reference
 	OFString refsopClassUID = OFString([[image valueForKeyPath:@"series.seriesSOPClassUID"] UTF8String]);
