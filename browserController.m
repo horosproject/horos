@@ -2619,6 +2619,7 @@ static NSConditionLock *threadLock = nil;
 -(void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour refresh: (BOOL) refresh
 {
 	[self waitForRunningProcesses];
+	[bonjourReportFilesToCheck removeAllObjects];
 	
 	NSString *searchString = nil, *albumName = nil, *selectedItem = nil;
 	int timeInt;
@@ -18764,32 +18765,36 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) syncReportsIfNecessary: (int)index
 {
-	if( isCurrentDatabaseBonjour)
+	NSEnumerator *enumerator = [bonjourReportFilesToCheck keyEnumerator];
+	NSString *key;
+	
+	while( (key = [enumerator nextObject]))
 	{
-		NSEnumerator *enumerator = [bonjourReportFilesToCheck keyEnumerator];
-		NSString *key;
+		NSString *file = nil;
 		
-		while( (key = [enumerator nextObject]))
+		if( isCurrentDatabaseBonjour)
+			file = [BonjourBrowser bonjour2local: key];
+		else
+			file = key;
+		
+		BOOL isDirectory;
+		
+		if( [[NSFileManager defaultManager] fileExistsAtPath: file isDirectory: &isDirectory])
 		{
-			NSString *file = [BonjourBrowser bonjour2local: key];
+			NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: file traverseLink:YES];
 			
-			BOOL isDirectory;
+			NSDate *previousDate = [bonjourReportFilesToCheck objectForKey: key];
 			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: file isDirectory: &isDirectory])
+			NSLog( @"file : %@", file);
+			NSLog( @"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
+			
+			if( [previousDate isEqualToDate: [fattrs objectForKey:NSFileModificationDate]] == NO)
 			{
-				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: file traverseLink:YES];
-				
-				NSDate *previousDate = [bonjourReportFilesToCheck objectForKey: key];
-				
-				NSLog( @"file : %@", file);
 				NSLog( @"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
 				
-				if( [previousDate isEqualToDate: [fattrs objectForKey:NSFileModificationDate]] == NO)
+				// The file has changed... send back a copy to the bonjour server
+				if( isCurrentDatabaseBonjour)
 				{
-					NSLog( @"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
-					
-					// The file has changed... send back a copy to the bonjour server
-					
 					if( [bonjourBrowser sendFile:file index: index])
 					{
 						[bonjourReportFilesToCheck setObject: [fattrs objectForKey:NSFileModificationDate] forKey: key];
@@ -18799,8 +18804,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 				}
 			}
-			else NSLog( @"syncReportsIfNecessary - file?");
 		}
+		else NSLog( @"syncReportsIfNecessary - file?");
 	}
 }
 
@@ -18847,7 +18852,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if (isCurrentDatabaseBonjour)
 					{
 						[[NSFileManager defaultManager] removeFileAtPath:[BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]] handler:nil];
-						[bonjourReportFilesToCheck removeObjectForKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
 						
 						// Set only LAST component -> the bonjour server will complete the address
 						[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:nil forKey:@"reportURL"];
@@ -18859,6 +18863,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[[NSFileManager defaultManager] removeFileAtPath:[studySelected valueForKey:@"reportURL"] handler:nil];
 						[studySelected setValue: nil forKey:@"reportURL"];
 					}
+					[bonjourReportFilesToCheck removeObjectForKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
+					
 					[databaseOutline reloadData];
 				}
 //				else if( [[item valueForKey:@"reportSeries"] count])
@@ -20120,8 +20126,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self saveDatabase: currentDatabasePath];
 	
     int index = [bonjourServicesList selectedRow]-1;
-	
-	[bonjourReportFilesToCheck removeAllObjects];
 	
 	if( index >= 0)
 	{
