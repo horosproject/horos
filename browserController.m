@@ -2086,7 +2086,7 @@ static NSConditionLock *threadLock = nil;
 {
 	if( [samePatientArray count] == 0) return;
 	
-	NSLog( @"Autorouting: %@ - %d images", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], [samePatientArray count]);
+	NSLog( @" Autorouting: %@ - %d objects", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], [samePatientArray count]);
 		
 	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
 																  calledAET: [server objectForKey:@"AETitle"] 
@@ -2143,7 +2143,8 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [copyArray count])
 	{
-		NSLog( @"-- Autorouting Queue START: %d objects", [copyArray count]);
+		NSLog( @"______________________________________________");
+		NSLog( @" Autorouting Queue START: %d objects", [copyArray count]);
 		for ( NSDictionary *copy in copyArray)
 		{
 			NSArray			*objectsToSend = [copy objectForKey:@"objects"];
@@ -2213,8 +2214,7 @@ static NSConditionLock *threadLock = nil;
 				[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", [NSDictionary dictionary], @"server", nil] waitUntilDone: NO];
 			}
 		}
-		
-		NSLog(@"-- Autorouting Queue END");
+		NSLog( @"______________________________________________");
 	}
 		
 	[autoroutingInProgress unlock];

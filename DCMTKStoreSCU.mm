@@ -1417,7 +1417,6 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		
 	 /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
 		cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
-		DimseCondition::dump(cond);
 		if (cond.bad())
 		{
 			DimseCondition::dump(cond);
@@ -1434,7 +1433,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		/* strucutre. The default is an insecure connection; where OpenSSL is  */
 		/* available the user is able to request an encrypted,secure connection. */
 		cond = ASC_setTransportLayerType(params, _secureConnection);
-		if (cond.bad()) {
+		if (cond.bad())
+		{
 			DimseCondition::dump(cond);
 			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 			[localException raise];
@@ -1452,7 +1452,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		/* Set the presentation contexts which will be negotiated */
 		/* when the network connection will be established */
 		cond = addStoragePresentationContexts(params, sopClassUIDList);
-		if (cond.bad()) {
+		if (cond.bad())
+		{
 			DimseCondition::dump(cond);
 			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"addStoragePresentationContexts %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 			[localException raise];
@@ -1461,7 +1462,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 
 		
 		/* dump presentation contexts if required */
-		if (opt_showPresentationContexts || opt_debug) {
+		if (opt_showPresentationContexts || opt_debug)
+		{
 			printf("Request Parameters:\n");
 			ASC_dumpParameters(params, COUT);
 		}
@@ -1472,8 +1474,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		if (opt_verbose)
 			printf("Requesting Association\n");
 		cond = ASC_requestAssociation(net, params, &assoc);
-		if (cond.bad()) {
-			if (cond == DUL_ASSOCIATIONREJECTED) {
+		if (cond.bad())
+		{
+			if (cond == DUL_ASSOCIATIONREJECTED)
+			{
 				T_ASC_RejectParameters rej;
 				ASC_getRejectParameters(params, &rej);
 				errmsg("Association Rejected:");
@@ -1499,31 +1503,28 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		}
 
 		/* dump the presentation contexts which have been accepted/refused */
-		if (opt_showPresentationContexts || opt_debug) {
+		if (opt_showPresentationContexts || opt_debug)
+		{
 			printf("Association Parameters Negotiated:\n");
 			ASC_dumpParameters(params, COUT);
 		}
 
-		
-		
-			/* count the presentation contexts which have been accepted by the SCP */
-			/* If there are none, finish the execution */
-			if (ASC_countAcceptedPresentationContexts(params) == 0) {
-				errmsg("No Acceptable Presentation Contexts");
-				localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"No acceptable presentation contexts" userInfo:nil] retain];
-				[localException raise];
-				//return;
-			}
+		/* count the presentation contexts which have been accepted by the SCP */
+		/* If there are none, finish the execution */
+		if (ASC_countAcceptedPresentationContexts(params) == 0)
+		{
+			errmsg("No Acceptable Presentation Contexts");
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"No acceptable presentation contexts" userInfo:nil] retain];
+			[localException raise];
+			//return;
+		}
 
+		/* dump general information concerning the establishment of the network connection if required */
+		if (opt_verbose) {
+			printf("Association Accepted (Max Send PDV: %u)\n",
+					assoc->sendPDVLength);
+		}
 
-
-			/* dump general information concerning the establishment of the network connection if required */
-			if (opt_verbose) {
-				printf("Association Accepted (Max Send PDV: %u)\n",
-						assoc->sendPDVLength);
-			}
-
-		
 		 /* do the real work, i.e. for all files which were specified in the */
 		/* command line, transmit the encapsulated DICOM objects to the SCP. */
 		cond = EC_Normal;
@@ -1541,11 +1542,13 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			[userInfo setObject:[NSNumber numberWithInt:_numberOfFiles] forKey:@"SendTotal"];
 			[userInfo setObject:[NSNumber numberWithInt:_numberSent] forKey:@"NumberSent"];
 			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
-			if (_numberSent + _numberErrors < _numberOfFiles) {
+			if (_numberSent + _numberErrors < _numberOfFiles)
+			{
 				[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
 				[userInfo setObject:@"In Progress" forKey:@"Message"];
 			}
-			else{
+			else
+			{
 				[userInfo setObject:[NSNumber numberWithInt:YES] forKey:@"Sent"];
 				[userInfo setObject:@"Complete" forKey:@"Message"];
 			}

@@ -779,12 +779,10 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (NSString*) path
 {
-	NSNumber	*pathNumber = [self primitiveValueForKey: @"pathNumber"];
+	NSNumber *pathNumber = [self primitiveValueForKey: @"pathNumber"];
 	
 	if( pathNumber)
-	{
 		return [NSString stringWithFormat:@"%d.dcm", [pathNumber intValue]];
-	}
 	else return [self primitiveValueForKey: @"pathString"];
 }
 

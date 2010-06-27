@@ -1250,12 +1250,15 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
 			
-				for( DicomImage *i in newArray)
+				for( DicomSeries *i in newArray)
 				{
 					if( i != [newArray lastObject])
 					{
 						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
-						[[i mutableSetValueForKey: @"images"] removeAllObjects];
+						
+						NSMutableSet *o = [i mutableSetValueForKey: @"images"];
+						[o setValue: [NSNumber numberWithBool: NO] forKeyPath: @"inDatabaseFolder"];
+						[o removeAllObjects];
 						[[self managedObjectContext] deleteObject: i];
 					}
 				}
@@ -1315,12 +1318,15 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
 			
-				for( DicomImage *i in newArray)
+				for( DicomSeries *i in newArray)
 				{
 					if( i != [newArray lastObject])
 					{
 						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
-						[[i mutableSetValueForKey: @"images"] removeAllObjects];
+						
+						NSMutableSet *o = [i mutableSetValueForKey: @"images"];
+						[o setValue: [NSNumber numberWithBool: NO] forKeyPath: @"inDatabaseFolder"];
+						[o removeAllObjects];
 						[[self managedObjectContext] deleteObject: i];
 					}
 				}
@@ -1368,12 +1374,15 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
 			
-				for( DicomImage *i in newArray)
+				for( DicomSeries *i in newArray)
 				{
 					if( i != [newArray lastObject])
 					{
 						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
-						[[i mutableSetValueForKey: @"images"] removeAllObjects];
+						
+						NSMutableSet *o = [i mutableSetValueForKey: @"images"];
+						[o setValue: [NSNumber numberWithBool: NO] forKeyPath: @"inDatabaseFolder"];
+						[o removeAllObjects];
 						[[self managedObjectContext] deleteObject: i];
 					}
 				}
