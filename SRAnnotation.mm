@@ -28,6 +28,8 @@
 
 + (NSData *)roiFromDICOM:(NSString *)path
 {
+	if( path == nil)
+		return nil;
 	NSData *archiveData = nil;
 	DcmFileFormat fileformat;
 	OFCondition status = fileformat.loadFile([path UTF8String]);

@@ -1244,7 +1244,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		// Take the most recent series
 		if( [newArray count] > 1)
 		{
-			NSLog( @"****** multiple (%d) annotationsSRImage?? Delete the extra series...", [newArray count]);
+			NSLog( @"****** multiple (%d) annotationsSRImage: Delete the extra series...", [newArray count]);
 			
 			@try
 			{
@@ -1312,7 +1312,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		if( [newArray count] > 1)
 		{
-			NSLog( @"****** multiple (%d) reportSRSeries?? Delete the extra series...", [newArray count]);
+			NSLog( @"****** multiple (%d) reportSRSeries: Delete the extra series...", [newArray count]);
 			
 			@try
 			{
@@ -1368,7 +1368,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		if( [newArray count] > 1)
 		{
-			NSLog( @"****** multiple (%d) roiSRSeries?? Delete the extra series and merge the images...", [newArray count]);
+			NSLog( @"****** multiple (%d) roiSRSeries: Delete the extra series and merge the images...", [newArray count]);
 			
 			@try
 			{
