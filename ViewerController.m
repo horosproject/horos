@@ -10610,11 +10610,19 @@ short				matrix[25];
 						
 						@try
 						{
-							NSString *str = [study roiPathForImage: [fileList[ mIndex] objectAtIndex:i] inArray: roisArray];
+							BOOL forceArchive = NO;
+							NSString *str = [study roiPathForImage: image inArray: roisArray];
 							
 							if( str == nil)
 								str = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
-								
+							
+							else if( [[NSFileManager defaultManager] fileExistsAtPath: str] && [str isEqualToString: [image SRPath]]) // Old ROIs folder -> move it to DATABASE.index file
+							{
+								[[NSFileManager defaultManager] removeItemAtPath: [image SRPath] error: nil];
+								str = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+								forceArchive = YES;
+							}
+							
 							NSMutableArray *roisArray = [NSMutableArray arrayWithArray: [roiList[ mIndex] objectAtIndex: i]];
 							
 							if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
@@ -10634,7 +10642,7 @@ short				matrix[25];
 							
 							if( [roisArray count])
 							{
-								if( [ViewerController areROIsArraysIdentical: [NSUnarchiver unarchiveObjectWithData: [copyRoiList[ mIndex] objectAtIndex: i]] with: roisArray] == NO)
+								if( [ViewerController areROIsArraysIdentical: [NSUnarchiver unarchiveObjectWithData: [copyRoiList[ mIndex] objectAtIndex: i]] with: roisArray] == NO || forceArchive == YES)
 								{
 									[SRAnnotation archiveROIsAsDICOM: roisArray toPath: str forImage: image];
 									[allDICOMSR addObject: str];
@@ -10644,7 +10652,7 @@ short				matrix[25];
 							{
 								if( [[NSFileManager defaultManager] fileExistsAtPath: str])
 								{
-									if( [ViewerController areROIsArraysIdentical: [NSUnarchiver unarchiveObjectWithData: [copyRoiList[ mIndex] objectAtIndex: i]] with: roisArray] == NO)
+									if( [ViewerController areROIsArraysIdentical: [NSUnarchiver unarchiveObjectWithData: [copyRoiList[ mIndex] objectAtIndex: i]] with: roisArray] == NO || forceArchive == YES)
 									{
 										[SRAnnotation archiveROIsAsDICOM: roisArray toPath: str forImage: image];
 										[allDICOMSR addObject: str];
