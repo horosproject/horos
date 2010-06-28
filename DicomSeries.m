@@ -130,7 +130,7 @@
 	#ifndef OSIRIX_LIGHT
 	@try 
 	{
-		if( [self.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
+		if( [self.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"]  && [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO)
 		{
 			if( c == nil)
 				c = @"";

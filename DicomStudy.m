@@ -498,7 +498,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			NSString *dstPath = nil;
 			DicomImage *reportImage = [self reportImage];
 			
-			dstPath = [reportImage valueForKey: @"completePath"];
+			dstPath = [reportImage valueForKey: @"completePathResolved"];
 			
 			if( dstPath == nil)
 				dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
@@ -712,7 +712,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) setComment: (NSString*) c
 {
-	if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
+	if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO)
 	{
 		if( c == nil)
 			c = @"";
@@ -746,7 +746,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	#ifndef OSIRIX_LIGHT
 	@try 
 	{
-		if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
+		if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO)
 		{
 			if( c == nil)
 				c = [NSNumber numberWithInt: 0];
@@ -1584,17 +1584,4 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	return s;
 }
-
-
-//- (BOOL) validateForDelete:(NSError **)error
-//{
-//	BOOL delete = [super validateForDelete:(NSError **)error];
-//	if( delete)
-//	{
-//		if( [self valueForKey:@"reportURL"])
-//			[[NSFileManager defaultManager] removeFileAtPath: [self valueForKey:@"reportURL"] handler:nil];
-//	}
-//	return delete;
-//}
-
 @end

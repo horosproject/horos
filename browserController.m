@@ -594,8 +594,6 @@ static NSConditionLock *threadLock = nil;
 	NSDate *today = [NSDate date];
 	NSError *error = nil;
 	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH], *newFile, *INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH], *reportsDirectory = [dbFolder stringByAppendingPathComponent:@"/REPORTS/"]; //roiFolder = [dbFolder stringByAppendingPathComponent:@"/ROIs"]
-	NSManagedObject *seriesTable, *study;
-	DicomImage *image;
 	NSInteger index;
 	Wait *splash = nil;
 	NSManagedObjectModel *model = context.persistentStoreCoordinator.managedObjectModel;
@@ -876,6 +874,8 @@ static NSConditionLock *threadLock = nil;
 				
 				if( curDict != nil)
 				{
+					DicomStudy *study = nil;
+					
 					if( [[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: curPatientUID] == NSOrderedSame)
 					{
 						if( [[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
@@ -991,6 +991,7 @@ static NSConditionLock *threadLock = nil;
 					for( int i = 0; i < NoOfSeries; i++)
 					{
 						NSString* SeriesNum = i ? [NSString stringWithFormat:@"%d",i] : @"";
+						DicomSeries *seriesTable = nil;
 						
 						if( [[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] isEqualToString: curSerieID])
 						{
@@ -1000,9 +1001,7 @@ static NSConditionLock *threadLock = nil;
 							/********************************************/
 							/*********** Find series object *************/
 							
-							NSArray		*seriesArray = [[study valueForKey:@"series"] allObjects];
-							
-							//NSLog([curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]);
+							NSArray *seriesArray = [[study valueForKey:@"series"] allObjects];
 							
 							index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]];
 							if( index == NSNotFound)
@@ -1057,6 +1056,8 @@ static NSConditionLock *threadLock = nil;
 						for( int f = 0 ; f < numberOfFrames; f++)
 						{
 							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]]];
+							
+							DicomImage *image = nil;
 							
 							if( index != NSNotFound)
 							{
@@ -2622,6 +2623,7 @@ static NSConditionLock *threadLock = nil;
 -(void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour refresh: (BOOL) refresh
 {
 	[self waitForRunningProcesses];
+	[self checkReportsDICOMSRConsistency];
 	[reportFilesToCheck removeAllObjects];
 	
 	NSString *searchString = nil, *albumName = nil, *selectedItem = nil;
@@ -4671,15 +4673,12 @@ static NSConditionLock *threadLock = nil;
 
 - (void) autoCleanDatabaseFreeSpaceThread: (id)sender
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	
 	if (isCurrentDatabaseBonjour)
-	{
-		[pool release];
 		return;
-	}
+	
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	if( [defaults boolForKey:@"AUTOCLEANINGSPACE"])
 	{
@@ -6754,7 +6753,6 @@ static NSConditionLock *threadLock = nil;
 			if (isCurrentDatabaseBonjour)
 			{
 				// Do it remotely
-				
 				[bonjourBrowser removeStudies: studiesToRemove fromAlbum: album bonjourIndex:[bonjourServicesList selectedRow]-1];
 			}
 			
@@ -7127,9 +7125,7 @@ static NSConditionLock *threadLock = nil;
 	[managedObjectContext lock];
 	
 	if (isCurrentDatabaseBonjour)
-	{
 		[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:item value:object forKey:key];
-	}
 	
 	if( [key isEqualToString:@"stateText"])
 	{
@@ -11191,88 +11187,6 @@ static BOOL needToRezoom;
 							copiedObjects = [self addFilesToDatabase: dstFiles onlyDICOM:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
 						}
 						
-//						// We will now copy the comments / status
-//						
-//						NSMutableArray *seriesArray = [NSMutableArray array];
-//						NSMutableArray *studiesArray = [NSMutableArray array];
-//						NSManagedObject	*study = nil, *series = nil;
-//						
-//						for (NSManagedObject *obj in copiedObjects)
-//						{
-//							if( [obj valueForKey:@"series"] != series)
-//							{
-//								// ********* SERIES
-//								series = [obj valueForKey:@"series"];
-//										
-//								if([seriesArray containsObject: series] == NO)
-//								{
-//									if( series) [seriesArray addObject: series];
-//									
-//									if( [series valueForKey:@"study"] != study)
-//									{
-//										study = [series valueForKey:@"study"];
-//											
-//										if([studiesArray containsObject: study] == NO)
-//										{
-//											if( study) [studiesArray addObject: study];
-//										}
-//									}
-//								}
-//							}
-//						}
-//						
-//						// Copy the comments/status/report at study level
-//						for (NSManagedObject *obj in studiesArray)
-//						{
-//							NSManagedObject *s = [self findStudyUID: [obj valueForKey: @"studyInstanceUID"]];
-//							
-//							if( [s valueForKey: @"comment"])
-//							{
-//								[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
-//							}
-//							
-//							if( [s valueForKey: @"stateText"])
-//							{
-//								[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
-//							}
-//							
-//							if( [s valueForKey: @"reportURL"])
-//							{
-//								if( [dbFolder isEqualToString: [self.documentsDirectory stringByDeletingLastPathComponent]] && !isCurrentDatabaseBonjour)	// same database folder - we don't need to copy the files
-//								{
-//									[obj setValue: [s valueForKey: @"reportURL"] forKey: @"reportURL"];
-//								}
-//								else
-//								{
-//									if( [[NSFileManager defaultManager] fileExistsAtPath: [s valueForKey: @"reportURL"]])
-//									{
-//										NSString *path = [s valueForKey: @"reportURL"];
-//										NSString *newPath = [NSString stringWithFormat: @"%@/REPORTS/%@", [dbFolder stringByAppendingPathComponent:@"OsiriX Data"], [path lastPathComponent]];
-//										
-//										[[NSFileManager defaultManager] copyPath: path toPath:newPath handler: nil];
-//										
-//										[obj setValue: newPath forKey: @"reportURL"];
-//									}
-//								}
-//							}
-//						}
-//						
-//						// Copy the comments/status at series level
-//						for (NSManagedObject *obj in seriesArray)
-//						{
-//							NSManagedObject *s = [self findSeriesUID: [obj valueForKey: @"seriesDICOMUID"]];
-//							
-//							if( [s valueForKey: @"comment"])
-//							{
-//								[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
-//							}
-//							
-//							if( [s valueForKey: @"stateText"])
-//							{
-//								[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
-//							}
-//						}
-						
 						error = nil;
 						[sqlContext save: &error];
 						
@@ -13594,18 +13508,20 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		[menu addItem: [NSMenuItem separatorItem]];
 		
-		NSMenu *submenu = [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Apply this Routing Rule to Selection", nil)] autorelease];
+		NSMenu *submenu = nil;
 		
-		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"All routing rules", nil)  action:@selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
-		[submenu addItem: item];
-		[submenu addItem: [NSMenuItem separatorItem]];
-		
-		for( NSDictionary *routingRule in autoroutingRules)
+		if( [autoroutingRules count] > 0)
 		{
-			NSString *s = [routingRule valueForKey: @"description"];
+			submenu = [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Apply this Routing Rule to Selection", nil)] autorelease];
 			
-			if( [[routingRule objectForKey: @"filterType"] intValue] == 0)
+			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"All routing rules", nil)  action:@selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
+			[submenu addItem: item];
+			[submenu addItem: [NSMenuItem separatorItem]];
+			
+			for( NSDictionary *routingRule in autoroutingRules)
 			{
+				NSString *s = [routingRule valueForKey: @"description"];
+				
 				if( [s length] > 0)
 					item = [[[NSMenuItem alloc] initWithTitle: [NSString stringWithFormat: @"%@ - %@", [routingRule valueForKey: @"name"], s] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
 				else
@@ -13620,11 +13536,11 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				[submenu addItem: item];
 			}
+		
+			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Apply this Routing Rule to Selection", nil)  action: nil keyEquivalent:@""] autorelease];
+			[item setSubmenu: submenu];
+			[menu addItem: item];
 		}
-	
-		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Apply this Routing Rule to Selection", nil)  action: nil keyEquivalent:@""] autorelease];
-		[item setSubmenu: submenu];
-		[menu addItem: item];
 	}
 	
 	[databaseOutline setMenu: menu];
@@ -14148,14 +14064,6 @@ static NSArray*	openSubSeriesArray = nil;
 	if( menuItem.menu == imageTileMenu)
 	{
 		return [mainWindow.windowController isKindOfClass:[ViewerController class]];
-	}
-	else if( [menuItem action] == @selector( unifyStudies:))
-	{
-		if (isCurrentDatabaseBonjour) return NO;
-		
-		if( [[databaseOutline selectedRowIndexes] count] <= 1) return NO;
-		
-		return YES;
 	}
 	else if( [menuItem action] == @selector( unifyStudies:))
 	{
@@ -19005,11 +18913,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						NSString	*localFile = nil;
 						
-						if (isCurrentDatabaseBonjour)
-						{
-							if( [item valueForKey:@"reportURL"])
-								[[NSFileManager defaultManager] removeItemAtPath: [BonjourBrowser bonjour2local: [item valueForKey:@"reportURL"]]	error: nil];
-						}
+						if( [item valueForKey:@"reportURL"])
+							[[NSFileManager defaultManager] removeItemAtPath: [BonjourBrowser bonjour2local: [item valueForKey:@"reportURL"]] error: nil];
 						
 						if( [item valueForKey:@"reportURL"])
 							localFile = [bonjourBrowser getFile:[item valueForKey:@"reportURL"] index:[bonjourServicesList selectedRow]-1];
@@ -19018,11 +18923,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 						{
 							if (reportsMode != 3)
 								[[NSWorkspace sharedWorkspace] openFile: localFile];
-							else
-							{
-								//structured report code here
-								//Osirix will open DICOM Structured Reports
-							}
 						}
 						else
 						{
@@ -20172,7 +20072,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[self outlineViewRefresh];
 			[self refreshMatrix: self];
 			
-			NSString	*path = [bonjourBrowser getDatabaseFile: index showWaitingWindow: YES];
+			NSString *path = [bonjourBrowser getDatabaseFile: index showWaitingWindow: YES];
 						
 			if( path == nil || [path isEqualToString: @"aborted"])
 			{
