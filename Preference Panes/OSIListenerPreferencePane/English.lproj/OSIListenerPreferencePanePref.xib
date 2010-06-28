@@ -1474,13 +1474,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="803741342">
 											<reference key="NSNextResponder" ref="935346507"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{15, 12}, {238, 18}}</string>
+											<string key="NSFrame">{{15, 12}, {556, 18}}</string>
 											<reference key="NSSuperview" ref="935346507"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="410478158">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">131072</int>
-												<string key="NSContents">Activate the HTTP XML-RPC SOAP Server</string>
+												<string key="NSContents">Activate the HTTP XML-RPC Server on port:</string>
 												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="803741342"/>
 												<int key="NSButtonFlags">1211912703</int>
@@ -1496,7 +1496,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSTextField" id="183894054">
 											<reference key="NSNextResponder" ref="935346507"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{259, 12}, {96, 19}}</string>
+											<string key="NSFrame">{{294, 12}, {96, 19}}</string>
 											<reference key="NSSuperview" ref="935346507"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="731871404">
