@@ -212,7 +212,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
 @synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
 @synthesize isCurrentDatabaseBonjour, bonjourDownloading, bonjourSourcesBox;
-@synthesize bonjourBrowser, pathToEncryptedFile;
+@synthesize bonjourBrowser, pathToEncryptedFile, bonjourManagedObjectContext;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController, userManagedObjectContext, userManagedObjectModel;
@@ -638,6 +638,11 @@ static NSConditionLock *threadLock = nil;
 			
 			[splash setCancel: YES];
 		}
+	}
+	
+	if( [BrowserController isBonjour: context])
+	{
+		NSLog( @"******** we CANNOT add new images to a shared DB bonjour !!!");
 	}
 	
 	int ii = 0;
@@ -3323,6 +3328,14 @@ static NSConditionLock *threadLock = nil;
 	else return -1;
 }
 
++ (BOOL) isBonjour:(NSManagedObjectContext *)c
+{
+	if( c == [[BrowserController currentBrowser] bonjourManagedObjectContext])
+		return YES;
+	else
+		return NO;
+}
+
 - (void) loadDatabase:(NSString*) path
 {
 	[self waitForRunningProcesses];
@@ -3438,6 +3451,13 @@ static NSConditionLock *threadLock = nil;
 	
 	[self setFixedDocumentsDirectory];
 	[self managedObjectContext];
+	
+	[managedObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
+	
+	if( isCurrentDatabaseBonjour)
+		bonjourManagedObjectContext = nil;
+	else
+		bonjourManagedObjectContext = managedObjectContext;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"recomputePatientUID"])
 	{
