@@ -52,7 +52,7 @@ typedef char DSRDocument;
 - (id) initWithROIs:(NSArray *)ROIs  path:(NSString *)path forImage:(NSManagedObject*) im;
 - (id) initWithContentsOfFile:(NSString *)path;
 - (id) initWithDictionary:(NSDictionary *) dict path:(NSString *) path forImage: (NSManagedObject*) im;
-- (id) initWithFileReport:(NSString *) file path:(NSString *) path forImage: (NSManagedObject*) im;
+- (id) initWithFileReport:(NSString *) file path:(NSString *) path forImage: (NSManagedObject*) im contentDate: (NSDate*) d;
 - (id) initWithURLReport:(NSString *) s path:(NSString *) path forImage: (NSManagedObject*) im;
 - (void) addROIs:(NSArray *)someROIs;
 - (NSArray *) ROIs;

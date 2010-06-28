@@ -68,6 +68,7 @@
 - (DicomImage*) roiForImage: (DicomImage*) image inArray: (NSArray*) roisArray;
 - (NSManagedObject *) roiSRSeries;
 - (NSManagedObject *) reportSRSeries;
+- (DicomImage*) reportImage;
 - (NSManagedObject *) annotationsSRImage;
 - (void) archiveReportAsDICOMSR;
 - (void) archiveAnnotationsAsDICOMSR;

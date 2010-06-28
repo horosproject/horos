@@ -57,7 +57,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
     NSToolbar               *toolbar;
 	
 	NSMutableArray			*sendQueue;
-	NSMutableDictionary		*bonjourReportFilesToCheck;
+	NSMutableDictionary		*reportFilesToCheck;
 	
     NSMutableArray          *previewPix, *previewPixThumbnails;
 	
@@ -164,8 +164,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSView					*exportAccessoryView;
 	IBOutlet NSMatrix				*compressionMatrix, *folderTree;
 	
-	NSRecursiveLock					*checkIncomingLock;
-	NSLock							*checkBonjourUpToDateThreadLock;
+	NSRecursiveLock					*checkIncomingLock, *checkBonjourUpToDateThreadLock;
 	NSTimeInterval					lastSaved;
 	NSPredicate						*testPredicate;
 	
@@ -393,6 +392,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) saveDBListAs:(id) sender;
 - (IBAction) openDatabase:(id) sender;
 - (IBAction) createDatabase:(id) sender;
+- (void) checkReportsDICOMSRConsistency;
 - (void) openDatabaseIn:(NSString*) a Bonjour:(BOOL) isBonjour;
 - (void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour refresh: (BOOL) refresh;
 - (void) browserPrepareForClose;
@@ -467,7 +467,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (void) refreshDatabase:(id) sender;
 - (void) syncReportsIfNecessary;
-- (void) syncReportsIfNecessary: (int) index;
 - (void) removeAllMounted;
 - (void) removeMountedImages: (NSString*) sNewDrive;
 

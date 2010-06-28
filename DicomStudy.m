@@ -482,94 +482,91 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) archiveReportAsDICOMSR
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"archiveReportsAndAnnotationsAsDICOMSR"] == NO)
+		return;
+		
 	#ifndef OSIRIX_LIGHT
 	if( [self.hasDICOM boolValue] == YES)
 	{
 		[[self managedObjectContext] lock];
 		
-		// Is there a report attached to this study -> archive it
-		if( [self valueForKey: @"reportURL"])
+		@try
 		{
-			@try
+			// Report
+			NSString *zippedFile = @"/tmp/zippedReport.zip";
+			BOOL needToArchive = NO;
+			NSString *dstPath = nil;
+			DicomImage *reportImage = [self reportImage];
+			
+			dstPath = [reportImage valueForKey: @"completePath"];
+			
+			if( dstPath == nil)
+				dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+			
+			if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
 			{
-				// Report
-				if( [self valueForKey: @"reportURL"])
+				SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+				if( [[self valueForKey: @"reportURL"] isEqualToString: [r reportURL]] == NO)
+					needToArchive = YES;
+			}
+			else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
+			{
+				NSDate *storedModifDate = [reportImage valueForKey: @"date"];
+				NSDate *fileModifDate = [[[NSFileManager defaultManager] attributesOfItemAtPath: [self valueForKey: @"reportURL"] error: nil] valueForKey: NSFileModificationDate];
+				
+				if( reportImage == nil || [[storedModifDate description] isEqualToString: [fileModifDate description]] == NO) // We want to compare only date and time, without milliseconds
 				{
-					NSString *zippedFile = @"/tmp/zippedReport.zip";
-					NSManagedObject *archivedReport = [self reportSRSeries];
-					BOOL needToArchive = NO;
-					NSString *dstPath = nil;
-					DicomImage *reportImage = nil;
-					
-					reportImage = [[archivedReport valueForKey: @"images"] anyObject];
-					if( [[[archivedReport valueForKey: @"images"] allObjects] count] > 1)
-						NSLog( @"********* warning multiple report for this study");
-					
-					dstPath = [reportImage valueForKey: @"completePath"];
-					
-					if( dstPath == nil)
-						dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
-					
-					if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
+					[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
+				
+					if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
 					{
 						SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-						if( [[self valueForKey: @"reportURL"] isEqualToString: [r reportURL]] == NO)
+						if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]] == NO)
 							needToArchive = YES;
-					}
-					else if( [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
-					{
-						if( [[[[NSFileManager defaultManager] attributesOfItemAtPath: dstPath error: nil] valueForKey: NSFileModificationDate] isEqualToDate: [reportImage valueForKey: @"date"]] == NO)
-						{
-							[BrowserController encryptFileOrFolder: [self valueForKey: @"reportURL"] inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
-						
-							if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
-							{
-								SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-								if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]] == NO)
-									needToArchive = YES;
-							}
-						}
-					}
-					
-					if( needToArchive)
-					{
-						SRAnnotation *r = nil;
-						
-						if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
-							r = [[[SRAnnotation alloc] initWithURLReport: [self valueForKey: @"reportURL"] path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
-						else
-							r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
-						
-						[r writeToFileAtPath: dstPath];
-						
-						[BrowserController addFiles: [NSArray arrayWithObject: dstPath]
-										  toContext: [self managedObjectContext]
-										 toDatabase: [BrowserController currentBrowser]
-										  onlyDICOM: YES 
-								   notifyAddedFiles: YES
-								parseExistingObject: YES
-										   dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
-								  generatedByOsiriX: YES];
 					}
 				}
 			}
-			@catch (NSException * e) 
+			else //empty or deleted report?
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				if( [reportImage valueForKey: @"completePath"] && [[NSFileManager defaultManager] fileExistsAtPath: [reportImage valueForKey: @"completePath"]])
+				{
+					needToArchive = YES;
+					zippedFile = nil;	//We will archive an empty NSData
+				}
+				
+				if( [self valueForKey: @"reportURL"])
+					[[NSFileManager defaultManager] removeItemAtPath: [self valueForKey: @"reportURL"] error: nil];
+				
+				[self setPrimitiveValue: nil forKey: @"reportURL"];
+			}
+			
+			if( needToArchive)
+			{
+				SRAnnotation *r = nil;
+				
+				if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
+					r = [[[SRAnnotation alloc] initWithURLReport: [self valueForKey: @"reportURL"] path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
+				else
+				{
+					NSDate *modifDate = [[[NSFileManager defaultManager] attributesOfItemAtPath: [self valueForKey: @"reportURL"] error: nil] valueForKey: NSFileModificationDate];
+					r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject] contentDate: modifDate] autorelease];
+				}
+				
+				[r writeToFileAtPath: dstPath];
+				
+				[BrowserController addFiles: [NSArray arrayWithObject: dstPath]
+								  toContext: [self managedObjectContext]
+								 toDatabase: [BrowserController currentBrowser]
+								  onlyDICOM: YES 
+						   notifyAddedFiles: YES
+						parseExistingObject: YES
+								   dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
+						  generatedByOsiriX: YES];
 			}
 		}
-		else
+		@catch (NSException * e) 
 		{
-			@try
-			{
-				// Delete the existing Report
-				if( [self reportSRSeries])
-					[[BrowserController currentBrowser] proceedDeleteObjects: [[[self reportSRSeries] valueForKey: @"images"] allObjects]];
-			}
-			@catch (NSException * e) 
-			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			}
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
 		
 		[[self managedObjectContext] unlock];
@@ -803,8 +800,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self setPrimitiveValue: url forKey: @"reportURL"];
 	[self didChangeValueForKey: @"reportURL"];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"archiveReportsAndAnnotationsAsDICOMSR"])
-		[self archiveReportAsDICOMSR];
+	[self archiveReportAsDICOMSR];
 }
 
 - (NSString*) reportURL
@@ -1298,6 +1294,29 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[[self managedObjectContext] unlock];
 	
 	return image;
+}
+
+- (DicomImage*) reportImage
+{
+	NSArray *images = nil;
+	
+	@try 
+	{
+		images = [[[self reportSRSeries] valueForKey: @"images"] allObjects];
+		
+		if( [images count] > 1)
+		{
+			// Take the most recent image
+			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
+			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	return [images lastObject];
 }
 
 - (NSManagedObject *) reportSRSeries

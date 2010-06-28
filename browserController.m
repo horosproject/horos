@@ -822,22 +822,25 @@ static NSConditionLock *threadLock = nil;
 							reportURL = [[[r reportURL] copy] autorelease];
 						else
 						{
-							[[r dataEncapsulated] writeToFile: zipFile atomically: YES];
-							
-							[BrowserController unzipFile: zipFile withPassword: nil destination: @"/tmp/zippedFile/" showGUI: NO];
-							[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
-							
-							for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp/zippedFile/" error: nil])
+							if( [[r dataEncapsulated] length] > 0)
 							{
-								if( [f hasPrefix: @"."] == NO)
+								[[r dataEncapsulated] writeToFile: zipFile atomically: YES];
+								
+								[BrowserController unzipFile: zipFile withPassword: nil destination: @"/tmp/zippedFile/" showGUI: NO];
+								[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
+								
+								for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp/zippedFile/" error: nil])
 								{
-									if( reportURL)
-										NSLog( @"*** multiple files in Report decompression ?");
-									reportURL = [@"/tmp/zippedFile/" stringByAppendingPathComponent: f];
+									if( [f hasPrefix: @"."] == NO)
+									{
+										if( reportURL)
+											NSLog( @"*** multiple files in Report decompression ?");
+										reportURL = [@"/tmp/zippedFile/" stringByAppendingPathComponent: f];
+									}
 								}
 							}
 							
-							if( reportURL)
+							if( [reportURL length] > 0)
 							{
 								destPath = [[destPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [reportURL lastPathComponent]];
 								
@@ -2619,7 +2622,7 @@ static NSConditionLock *threadLock = nil;
 -(void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour refresh: (BOOL) refresh
 {
 	[self waitForRunningProcesses];
-	[bonjourReportFilesToCheck removeAllObjects];
+	[reportFilesToCheck removeAllObjects];
 	
 	NSString *searchString = nil, *albumName = nil, *selectedItem = nil;
 	int timeInt;
@@ -3478,6 +3481,7 @@ static NSConditionLock *threadLock = nil;
 	displayEmptyDatabase = NO;
 	[self outlineViewRefresh];
 	[self refreshMatrix: self];
+	[self checkReportsDICOMSRConsistency];
 	
 	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] refresh: self];
@@ -5512,7 +5516,7 @@ static NSConditionLock *threadLock = nil;
 		{
 			if( [bonjourBrowser isBonjourDatabaseUpToDate: [bonjourServicesList selectedRow]-1] == NO)
 			{
-				[self syncReportsIfNecessary: [bonjourServicesList selectedRow]-1];
+				[self syncReportsIfNecessary];
 				
 				if( [checkIncomingLock tryLock])
 				{
@@ -5523,7 +5527,7 @@ static NSConditionLock *threadLock = nil;
 			}
 		}
 		
-		[self syncReportsIfNecessary: [bonjourServicesList selectedRow]-1];
+		[self syncReportsIfNecessary];
 	}
 	else
 	{
@@ -13258,11 +13262,11 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		notFoundImage = [[NSImage imageNamed:@"FileNotFound.tif"] retain];
 		
-		bonjourReportFilesToCheck = [[NSMutableDictionary dictionary] retain];
+		reportFilesToCheck = [[NSMutableDictionary dictionary] retain];
 		
 		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		
-		checkBonjourUpToDateThreadLock = [[NSLock alloc] init];
+		checkBonjourUpToDateThreadLock = [[NSRecursiveLock alloc] init];
 		checkIncomingLock = [[NSRecursiveLock alloc] init];
 		decompressArrayLock = [[NSRecursiveLock alloc] init];
 		decompressThreadRunning = [[NSRecursiveLock alloc] init];
@@ -13950,7 +13954,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[BrowserController tryLock: autoroutingInProgress during: 120];
 	
-	[self syncReportsIfNecessary: previousBonjourIndex];
+	[self syncReportsIfNecessary];
 	
 	[BrowserController tryLock: checkIncomingLock during: 120];
 }
@@ -17631,7 +17635,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
 	
 	WaitRendering *wait = nil;
-	if( [NSThread currentThread] == [AppController mainThread])
+	if( [NSThread currentThread] == [AppController mainThread] && showGUI == YES)
 	{
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Compressing the files...", nil)];
 		[wait showWindow:self];
@@ -18758,54 +18762,73 @@ static volatile int numberOfThreadsForJPEG = 0;
 //	}
 //}
 
-- (void) syncReportsIfNecessary
+- (void) checkReportsDICOMSRConsistency
 {
-	[self syncReportsIfNecessary: [bonjourServicesList selectedRow]-1];
+	if( isCurrentDatabaseBonjour == NO)
+	{
+		// Find all studies with reportURL
+		[self.managedObjectContext lock];
+		
+		@try 
+		{
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"reportURL != NIL"];
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			dbRequest.entity = [self.managedObjectModel.entitiesByName objectForKey:@"Study"];
+			dbRequest.predicate = predicate;
+			
+			NSError	*error = nil;
+			NSArray *studiesArray = [self.managedObjectContext executeFetchRequest:dbRequest error:&error];
+			
+			for( DicomStudy *s in studiesArray)
+				[s archiveReportAsDICOMSR];
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			[AppController printStackTrace: e];
+		}
+		
+		[self.managedObjectContext unlock];
+	}
 }
 
-- (void) syncReportsIfNecessary: (int)index
+- (void) syncReportsIfNecessary
 {
-	NSEnumerator *enumerator = [bonjourReportFilesToCheck keyEnumerator];
+	NSEnumerator *enumerator = [reportFilesToCheck keyEnumerator];
 	NSString *key;
 	
 	while( (key = [enumerator nextObject]))
 	{
+		NSDictionary *d = [reportFilesToCheck objectForKey: key];
+		NSDate *previousDate = [d objectForKey: @"date"];
+		DicomStudy *study = [d objectForKey: @"study"];
+			
 		NSString *file = nil;
 		
 		if( isCurrentDatabaseBonjour)
 			file = [BonjourBrowser bonjour2local: key];
 		else
-			file = key;
+			file = [study valueForKey: @"reportURL"];
 		
 		BOOL isDirectory;
 		
 		if( [[NSFileManager defaultManager] fileExistsAtPath: file isDirectory: &isDirectory])
 		{
-			NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: file traverseLink:YES];
+			NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath: file error: nil];
 			
-			NSDate *previousDate = [bonjourReportFilesToCheck objectForKey: key];
-			
-			NSLog( @"file : %@", file);
-			NSLog( @"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
-			
-			if( [previousDate isEqualToDate: [fattrs objectForKey:NSFileModificationDate]] == NO)
+			if( [previousDate isEqualToDate: [fattrs objectForKey: NSFileModificationDate]] == NO)
 			{
-				NSLog( @"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
+				NSLog( @"Report -> File Modified -> Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
 				
-				// The file has changed... send back a copy to the bonjour server
-				if( isCurrentDatabaseBonjour)
-				{
-					if( [bonjourBrowser sendFile:file index: index])
-					{
-						[bonjourReportFilesToCheck setObject: [fattrs objectForKey:NSFileModificationDate] forKey: key];
-						
-						if( [[file pathExtension] isEqualToString: @"zip"])
-							[[NSFileManager defaultManager] removeItemAtPath: file error: nil];
-					}
-				}
+				d = [NSDictionary dictionaryWithObjectsAndKeys: [fattrs objectForKey: NSFileModificationDate], @"date", study, @"study", nil];
+				[reportFilesToCheck setObject: d forKey: key];
+				
+				[study archiveReportAsDICOMSR];
+				
+				NSLog( @"Report -> New Content Date: %@", [[study reportImage] valueForKey: @"date"]);
 			}
 		}
-		else NSLog( @"syncReportsIfNecessary - file?");
+		else NSLog( @"******* syncReportsIfNecessary - file? %@", file);
 	}
 }
 
@@ -18849,6 +18872,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				else if( [studySelected valueForKey:@"reportURL"] != nil)
 				{
+					if( [[studySelected valueForKey:@"reportURL"] lastPathComponent])
+						[reportFilesToCheck removeObjectForKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
+					
 					if (isCurrentDatabaseBonjour)
 					{
 						[[NSFileManager defaultManager] removeFileAtPath:[BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]] handler:nil];
@@ -18863,7 +18889,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[[NSFileManager defaultManager] removeFileAtPath:[studySelected valueForKey:@"reportURL"] handler:nil];
 						[studySelected setValue: nil forKey:@"reportURL"];
 					}
-					[bonjourReportFilesToCheck removeObjectForKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
 					
 					[databaseOutline reloadData];
 				}
@@ -18972,10 +18997,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				[checkBonjourUpToDateThreadLock lock];
 				
-				// *********************************************
-				//	BONJOUR
-				// *********************************************
-				
 				@try
 				{
 					NSString *localReportFile = nil;
@@ -19048,7 +19069,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if( [[NSFileManager defaultManager] fileExistsAtPath: localReportFile])
 					{
 						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:localReportFile traverseLink:YES];
-						[bonjourReportFilesToCheck setObject:[fattrs objectForKey:NSFileModificationDate] forKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
+						NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: studySelected, @"study", [fattrs objectForKey:NSFileModificationDate], @"date", nil];
+						
+						[reportFilesToCheck setObject: d forKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
 					}
 				}
 				@catch (NSException * e)
@@ -20191,7 +20214,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction)bonjourServiceClicked: (id)sender
 {
-	[self syncReportsIfNecessary: previousBonjourIndex];
+	[self syncReportsIfNecessary];
 	[albumNoOfStudiesCache removeAllObjects];
 	
 	[[AppController sharedAppController] closeAllViewers: self];	

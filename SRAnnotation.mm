@@ -221,15 +221,19 @@
 }
 
 
-- (id)initWithFileReport:(NSString *) file path:(NSString *) path forImage: (NSManagedObject*) im
+- (id)initWithFileReport:(NSString *) file path:(NSString *) path forImage: (NSManagedObject*) im contentDate: (NSDate*) d
 {
 	if (self = [super init])
 	{
 		_seriesInstanceUID = nil;
 		_DICOMSRDescription =  @"OsiriX Report SR";
 		_DICOMSeriesNumber = @"5003";
-		_dataEncapsulated = [[NSData dataWithContentsOfFile: file] retain];
-		_contentDate = [[[[NSFileManager defaultManager] attributesOfItemAtPath: file error: nil] valueForKey: NSFileModificationDate] retain];
+		if( file)
+			_dataEncapsulated = [[NSData dataWithContentsOfFile: file] retain];
+		else
+			_dataEncapsulated = [[NSData data] retain];
+		
+		_contentDate = [d retain];
 		
 		[_DICOMSRDescription retain];
 		[_DICOMSeriesNumber retain];
@@ -536,7 +540,7 @@
 	if( _contentDate)
 	{
 		document->setContentDate( [[[DCMCalendarDate dicomDateWithDate: _contentDate] dateString] UTF8String]);
-		document->setContentTime( [[[DCMCalendarDate dicomDateWithDate: _contentDate] timeString] UTF8String]);
+		document->setContentTime( [[[DCMCalendarDate dicomTimeWithDate: _contentDate] timeString] UTF8String]);
 	}
 	else
 	{
@@ -569,8 +573,11 @@
 	if (dataset != NULL)
 	{
 		//This adds the data to the SR
-		const Uint8 *buffer =  (const Uint8 *) [_dataEncapsulated bytes];
-		status = dataset->putAndInsertUint8Array(DCM_EncapsulatedDocument , buffer, [_dataEncapsulated length] , OFTrue);
+		if( _dataEncapsulated)
+		{
+			const Uint8 *buffer =  (const Uint8 *) [_dataEncapsulated bytes];
+			status = dataset->putAndInsertUint8Array(DCM_EncapsulatedDocument , buffer, [_dataEncapsulated length] , OFTrue);
+		}
 		
 		document->getCodingSchemeIdentification().addPrivateDcmtkCodingScheme();
 		if (document->write(*dataset).good())
