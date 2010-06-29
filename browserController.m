@@ -3467,9 +3467,9 @@ static NSConditionLock *threadLock = nil;
 	[managedObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
 	
 	if( isCurrentDatabaseBonjour)
-		bonjourManagedObjectContext = nil;
-	else
 		bonjourManagedObjectContext = managedObjectContext;
+	else
+		bonjourManagedObjectContext = nil;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"recomputePatientUID"])
 	{
