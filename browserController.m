@@ -1834,7 +1834,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		if( [routingRule isEqualToDictionary: [order valueForKey: @"routingRule"]])
 		{
-			NSArray *filesFromOrder = [[order valueForKey: @"objects"] valueForKey: @"completePath"];
+			NSMutableArray *filesFromOrder = [[order valueForKey: @"objects"] valueForKey: @"completePath"];
 			
 			// Are the files already in queue for same filter?
 			for( DicomImage *image in images)
@@ -1842,6 +1842,9 @@ static NSConditionLock *threadLock = nil;
 				if( [filesFromOrder containsObject: [image valueForKey: @"completePath"]])
 					[mutableImages removeObject: image];
 			}
+			
+			[[order valueForKey: @"objects"] addObjectsFromArray: mutableImages];
+			[mutableImages removeAllObjects];
 		}
 	}
 	
@@ -2252,8 +2255,6 @@ static NSConditionLock *threadLock = nil;
 		{
 			if( [autoroutingInProgress tryLock])
 			{
-				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Autorouting", nil) description: NSLocalizedString(@"Autorouting starting...", nil) name: @"autorouting"];
-				
 				[autoroutingInProgress unlock];
 				[NSThread detachNewThreadSelector:@selector(processAutorouting) toTarget:self withObject:nil];
 			}
