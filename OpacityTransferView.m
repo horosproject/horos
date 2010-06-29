@@ -28,7 +28,7 @@
 		long i;
 		
         curIndex = -1;
-		points =  [[NSMutableArray arrayWithCapacity:0] retain];
+		points =  [[NSMutableArray array] retain];
 		
 		for( i = 0; i < 256; i++)
 		{

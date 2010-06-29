@@ -362,7 +362,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 {
 	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
 	
-	NSMutableArray	*tempArray = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray	*tempArray = [NSMutableArray array];
 	int				dataExtent[ 6];
 	
 	vtkImageImport*	image2D = vtkImageImport::New();

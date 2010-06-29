@@ -276,9 +276,6 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 #pragma mark-
 
-
-#pragma mark-
-
 - (NSNumber*) inDatabaseFolder
 {
 	if( inDatabaseFolder) return inDatabaseFolder;

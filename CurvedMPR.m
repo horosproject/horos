@@ -303,10 +303,10 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	NSMutableArray			*newDcmList, *newPixList;
 	NSMutableArray			*newDcmListPer, *newPixListPer;
 
-	newPixList = [NSMutableArray arrayWithCapacity: 0];
-	newDcmList = [NSMutableArray arrayWithCapacity: 0];
-	newPixListPer = [NSMutableArray arrayWithCapacity: 0];
-	newDcmListPer = [NSMutableArray arrayWithCapacity: 0];
+	newPixList = [NSMutableArray array];
+	newDcmList = [NSMutableArray array];
+	newPixListPer = [NSMutableArray array];
+	newDcmListPer = [NSMutableArray array];
 
 	DCMPix		*firstObject = [pixList objectAtIndex:0];
 	float		*emptyData, *curData;
@@ -607,10 +607,10 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 		2 - saggital
 	*/
 
-	newPixList = [NSMutableArray arrayWithCapacity: 0];
-	newDcmList = [NSMutableArray arrayWithCapacity: 0];
-	newPixListPer = [NSMutableArray arrayWithCapacity: 0];
-	newDcmListPer = [NSMutableArray arrayWithCapacity: 0];
+	newPixList = [NSMutableArray array];
+	newDcmList = [NSMutableArray array];
+	newPixListPer = [NSMutableArray array];
+	newDcmListPer = [NSMutableArray array];
 
 	DCMPix		*firstObject = [pixList objectAtIndex:0];
 	float		*emptyData, *curData;

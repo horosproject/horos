@@ -197,8 +197,8 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		NSData	*volumeData = [NSData dataWithBytesNoCopy: fVolumePtr length: length freeWhenDone:YES]; 
 		
 		// Now copy the DCMPix with the new buffer
-		NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
-		NSMutableArray *newFileList = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray *newPixList = [NSMutableArray array];
+		NSMutableArray *newFileList = [NSMutableArray array];
 		
 		DCMPix	*originalPix = [[originalViewer pixList] objectAtIndex: 0];
 		wl = [originalPix wl];

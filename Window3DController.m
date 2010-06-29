@@ -451,9 +451,9 @@ static float oldsetww, oldsetwl;
 		
 		[clutView ConvertCLUT: red: green: blue];
 		
-		NSMutableArray		*rArray = [NSMutableArray arrayWithCapacity:0];
-		NSMutableArray		*gArray = [NSMutableArray arrayWithCapacity:0];
-		NSMutableArray		*bArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*rArray = [NSMutableArray array];
+		NSMutableArray		*gArray = [NSMutableArray array];
+		NSMutableArray		*bArray = [NSMutableArray array];
 		for( i = 0; i < 256; i++) [rArray addObject: [NSNumber numberWithLong: red[ i]]];
 		for( i = 0; i < 256; i++) [gArray addObject: [NSNumber numberWithLong: green[ i]]];
 		for( i = 0; i < 256; i++) [bArray addObject: [NSNumber numberWithLong: blue[ i]]];

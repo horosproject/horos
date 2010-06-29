@@ -1314,7 +1314,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSSavePanel     *panel = [NSSavePanel savePanel];
     short           i;
 	
-	NSMutableArray  *selectedROIs = [NSMutableArray  arrayWithCapacity:0];
+	NSMutableArray  *selectedROIs = [NSMutableArray  array];
 	
 	for( i = 0; i < [curRoiList count]; i++)
 	{
@@ -1379,7 +1379,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				roi.name = [roiDict objectForKey: @"Name"];
 				roi.comments = [roiDict objectForKey: @"Comments"];
 				
-				NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: 0];
+				NSMutableArray *pointsArray = [NSMutableArray array];
 				
 				for ( int k = 0; k < [pointsStringArray count]; k++ ) {
 					MyPoint *pt = [MyPoint point: NSPointFromString( [pointsStringArray objectAtIndex: k] )];
@@ -1414,7 +1414,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			roi.name = [xml objectForKey: @"Name"];
 			roi.comments = [xml objectForKey: @"Comments"];
 			
-			NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: 0];
+			NSMutableArray *pointsArray = [NSMutableArray array];
 			
 			if( type == t2DPoint)
 			{
@@ -1505,7 +1505,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
     NSPasteboard	*pb = [NSPasteboard generalPasteboard];
 	BOOL			roiSelected = NO;
-	NSMutableArray  *roiSelectedArray = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray  *roiSelectedArray = [NSMutableArray array];
 	
 	for( long i = 0; i < [curRoiList count]; i++)
 	{
@@ -3930,7 +3930,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if(tool == tROISelector)
 			{
-				ROISelectorSelectedROIList = [[NSMutableArray arrayWithCapacity:0] retain];
+				ROISelectorSelectedROIList = [[NSMutableArray array] retain];
 				
 				// if shift key is pressed, we need to keep track of the ROIs that were selected before the click 
 				if([event modifierFlags] & NSShiftKeyMask)

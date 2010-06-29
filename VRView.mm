@@ -4031,7 +4031,7 @@ public:
 {
 	long			tt, stackMax, stackOrientation, i;
 	vtkPoints		*roiPts = ROI3DData->GetPoints();
-	NSMutableArray	*ROIList = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray	*ROIList = [NSMutableArray array];
 	double			xyz[ 3], cameraProj[ 3], cameraProjObj[ 3];
 	float			vector[ 9];
 	DCMPix			*fObject = [pxList objectAtIndex: 0];

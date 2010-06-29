@@ -294,7 +294,7 @@
 	NSMutableDictionary *xml;
 	NSMutableArray *temp;
 	xml = [[NSMutableDictionary alloc] init];
-	temp = [NSMutableArray arrayWithCapacity:0];
+	temp = [NSMutableArray array];
 
 	Camera *cam;
 	for (cam in stepCameras)

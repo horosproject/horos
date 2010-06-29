@@ -183,7 +183,7 @@
 //********************************************************************************************
 - (NSArray *) dicomFileListForViewer: (ViewerController *) currentViewer destinationPath: (NSString *) destPath options: (NSDictionary*) options fileList: (NSArray *) fileList asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations 
 {
-	NSMutableArray	*dicomFilePathList = [NSMutableArray arrayWithCapacity: 0];
+	NSMutableArray	*dicomFilePathList = [NSMutableArray array];
 	int currentImageIndex = [[currentViewer imageView] curImage];
 	
 	/////// ****************

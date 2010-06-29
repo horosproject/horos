@@ -26,8 +26,8 @@
     if (self)
 	{
         curIndex = -1;
-		points =  [[NSMutableArray arrayWithCapacity:0] retain];
-		colors =  [[NSMutableArray arrayWithCapacity:0] retain];
+		points =  [[NSMutableArray array] retain];
+		colors =  [[NSMutableArray array] retain];
     }
     return self;
 }

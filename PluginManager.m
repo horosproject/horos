@@ -597,7 +597,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 //- (BOOL)pluginIsActiveForName:(NSString*)pluginName;
 //{
-//	NSMutableArray *paths = [NSMutableArray arrayWithCapacity:0];
+//	NSMutableArray *paths = [NSMutableArray array];
 //	[paths addObjectsFromArray:[self activeDirectories]];
 //	
 //	NSEnumerator *pathEnum = [paths objectEnumerator];
@@ -691,7 +691,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 + (void)changeAvailabilityOfPluginWithName:(NSString*)pluginName to:(NSString*)availability;
 {
-	NSMutableArray *paths = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *paths = [NSMutableArray array];
 	[paths addObjectsFromArray:[PluginManager activeDirectories]];
 	[paths addObjectsFromArray:[PluginManager inactiveDirectories]];
 
@@ -852,7 +852,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 //	NSArray *paths = [NSArray arrayWithObjects:userActivePath, userInactivePath, sysActivePath, sysInactivePath, nil];
 	
-	NSMutableArray *paths = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *paths = [NSMutableArray array];
 	[paths addObjectsFromArray:[PluginManager activeDirectories]];
 	[paths addObjectsFromArray:[PluginManager inactiveDirectories]];
 	

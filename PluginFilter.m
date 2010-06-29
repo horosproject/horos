@@ -83,7 +83,7 @@
 		NSData		*volumeData = [[[NSData alloc] initWithBytesNoCopy:fVolumePtr length:mem freeWhenDone:YES] autorelease];
 		
 		// Now copy the DCMPix with the new fVolumePtr
-		NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray *newPixList = [NSMutableArray array];
 		for( i = 0; i < [pixList count]; i++)
 		{
 			curPix = [[[pixList objectAtIndex: i] copy] autorelease];

@@ -930,7 +930,7 @@ extern const char *GetPrivateIP();
 					}
 					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DCMSE" length: 6]])
 					{
-						NSMutableArray	*localPaths = [NSMutableArray arrayWithCapacity:0];
+						NSMutableArray	*localPaths = [NSMutableArray array];
 						
 						int pos = 6, noOfFiles = 0, stringSize, i;
 						
@@ -1025,8 +1025,8 @@ extern const char *GetPrivateIP();
 					}
 					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DICOM" length: 6]])
 					{
-						NSMutableArray	*localPaths = [NSMutableArray arrayWithCapacity:0];
-						NSMutableArray	*dstPaths = [NSMutableArray arrayWithCapacity:0];
+						NSMutableArray	*localPaths = [NSMutableArray array];
+						NSMutableArray	*dstPaths = [NSMutableArray array];
 						
 						// We read now the path for the DICOM file(s)
 						int pos = 6, size, noOfFiles = 0, stringSize, i;

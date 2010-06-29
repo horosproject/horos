@@ -26,7 +26,7 @@ PURPOSE.
 //	long			i, x;
 //	BOOL			done = NO;
 //	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
-//	NSMutableArray	*selectedRois = [NSMutableArray arrayWithCapacity: 0 ];
+//	NSMutableArray	*selectedRois = [NSMutableArray array ];
 //	
 //	for( i = 0; i < [curRoiList count]; i++)
 //	{
@@ -68,7 +68,7 @@ PURPOSE.
 //	long			i, x;
 //	BOOL			done = NO;
 //	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
-//	NSMutableArray	*selectedRois = [NSMutableArray arrayWithCapacity: 0 ];
+//	NSMutableArray	*selectedRois = [NSMutableArray array ];
 //	
 //	for( i = 0; i < [curRoiList count]; i++)
 //	{

@@ -4591,7 +4591,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		goto END_CREATE_ROIS;
 	}
 	
-	NSMutableArray *refSeriesUIDPredicates = [NSMutableArray arrayWithCapacity: 0];
+	NSMutableArray *refSeriesUIDPredicates = [NSMutableArray array];
 	
 	NSDictionary *noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
 							  [NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
@@ -4710,7 +4710,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	NSMutableArray *roiArray[ imgObjects.count ];  // Array of ROIs for each defined 'image' referenced by the RTSTRUCT
 	
-	for ( unsigned int i = 0; i < imgObjects.count; i++) roiArray[ i ] = [NSMutableArray arrayWithCapacity: 0];
+	for ( unsigned int i = 0; i < imgObjects.count; i++) roiArray[ i ] = [NSMutableArray array];
 	
 	for ( DCMObject *sequenceItem in [roiContourSequence sequence])
 	{

@@ -366,7 +366,7 @@
 		if ( [self allWithSameName] )
 		{
 			NSArray *roiSeriesList = [curController roiList];
-			NSMutableArray *roiArray = [NSMutableArray arrayWithCapacity: 0];
+			NSMutableArray *roiArray = [NSMutableArray array];
 			
 			int i;			
 			for ( i = 0; i < [roiSeriesList count]; i++ )
@@ -385,7 +385,7 @@
 						
 						// Points composing the ROI
 						points = [roi points];
-						temp = [NSMutableArray arrayWithCapacity:0];
+						temp = [NSMutableArray array];
 						
 						for( id loopItem3 in points)
 							[temp addObject: NSStringFromPoint( [loopItem3 point]) ];
@@ -406,7 +406,7 @@
 			
 			// Points composing the ROI
 			points = [curROI points];
-			temp = [NSMutableArray arrayWithCapacity:0];
+			temp = [NSMutableArray array];
 			
 			for( id loopItem in points)
 			{

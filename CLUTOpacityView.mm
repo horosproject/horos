@@ -33,8 +33,8 @@
 		
 		HUmin = -100000.0;
 		HUmax = 100000.0;
-		curves = [[NSMutableArray arrayWithCapacity:0] retain];
-		pointColors = [[NSMutableArray arrayWithCapacity:0] retain];
+		curves = [[NSMutableArray array] retain];
+		pointColors = [[NSMutableArray array] retain];
 		selectedPoint.y = -1.0;
 		pointDiameter = 8;
 		lineWidth = 3;
@@ -59,9 +59,9 @@
 - (void)cleanup;
 {
 	if(curves) [curves release];
-	curves = [[NSMutableArray arrayWithCapacity:0] retain];
+	curves = [[NSMutableArray array] retain];
 	if(pointColors) [pointColors release];
-	pointColors = [[NSMutableArray arrayWithCapacity:0] retain];
+	pointColors = [[NSMutableArray array] retain];
 	if( histogram)
 	{
 		free( histogram);
@@ -2291,7 +2291,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 - (NSArray*)resolveOverlappingCurves;
 {
-	NSMutableArray *resolvedCurves = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *resolvedCurves = [NSMutableArray array];
 	
 	int i, j, k, l;
 	for (i=0; i<[curves count]; i++)

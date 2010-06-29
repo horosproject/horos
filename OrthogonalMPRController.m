@@ -891,7 +891,7 @@
 - (NSMutableArray*) pointsROIAtX: (long) x
 {
 	NSMutableArray *rois = [originalView dcmRoiList];
-	NSMutableArray *roisAtX = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *roisAtX = [NSMutableArray array];
 
 	int i, j;
 	for(i=0; i<[rois count]; i++)
@@ -926,7 +926,7 @@
 - (NSMutableArray*) pointsROIAtY: (long) y
 {
 	NSMutableArray *rois = [originalView dcmRoiList];
-	NSMutableArray *roisAtY = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *roisAtY = [NSMutableArray array];
 
 	int i, j;
 	for(i=0; i<[rois count]; i++)

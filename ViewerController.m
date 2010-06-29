@@ -1170,8 +1170,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		emptyData = malloc( size);
 		if( emptyData)
 		{
-			NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
-			NSMutableArray	*newDcmList = [NSMutableArray arrayWithCapacity: 0];
+			NSMutableArray	*newPixList = [NSMutableArray array];
+			NSMutableArray	*newDcmList = [NSMutableArray array];
 			
 			NSData	*newData = [NSData dataWithBytesNoCopy:emptyData length: size freeWhenDone:YES];
 			
@@ -6293,7 +6293,7 @@ static ViewerController *draggedController = nil;
 			copyRoiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
 			for( i = 0; i < [pixList[0] count]; i++)
 			{
-				[roiList[0] addObject:[NSMutableArray arrayWithCapacity:0]];
+				[roiList[0] addObject:[NSMutableArray array]];
 				[copyRoiList[0] addObject:[NSData data]];
 			}
 			[self loadROI:0];
@@ -7147,8 +7147,8 @@ static ViewerController *draggedController = nil;
 	
 	for( int j = 0 ; j < maxMovieIndex && isResampled == YES ; j ++)
 	{	
-		NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
-		NSMutableArray *newDcmList = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray *newPixList = [NSMutableArray array];
+		NSMutableArray *newDcmList = [NSMutableArray array];
 		NSData *newData = nil;
 		
 		savedROIs[ j] = [NSMutableArray array];
@@ -7327,7 +7327,7 @@ static ViewerController *draggedController = nil;
 		
 		interval *= (float) zFactor;
 		
-		NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
+		NSMutableArray	*newPixList = [NSMutableArray array];
 		NSData *newData = [NSData dataWithBytesNoCopy:emptyData length:size freeWhenDone:YES];
 		
 		for( z = 0 ; z < newZ; z ++)
@@ -9224,7 +9224,7 @@ static float oldsetww, oldsetwl;
 
 -(NSMutableArray*) getMatrix:(short) size
 {
-NSMutableArray		*valArray = [NSMutableArray arrayWithCapacity:0];
+NSMutableArray		*valArray = [NSMutableArray array];
 long				x, y;
 
 	switch( size)
@@ -9569,9 +9569,9 @@ short				matrix[25];
 		[clutView ConvertCLUT: red: green: blue];
 		
 		
-		NSMutableArray		*rArray = [NSMutableArray arrayWithCapacity:0];
-		NSMutableArray		*gArray = [NSMutableArray arrayWithCapacity:0];
-		NSMutableArray		*bArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*rArray = [NSMutableArray array];
+		NSMutableArray		*gArray = [NSMutableArray array];
+		NSMutableArray		*bArray = [NSMutableArray array];
 		for( i = 0; i < 256; i++) [rArray addObject: [NSNumber numberWithLong: red[ i]]];
 		for( i = 0; i < 256; i++) [gArray addObject: [NSNumber numberWithLong: green[ i]]];
 		for( i = 0; i < 256; i++) [bArray addObject: [NSNumber numberWithLong: blue[ i]]];
@@ -10671,15 +10671,6 @@ short				matrix[25];
 				}
 			}
 			
-			if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-			{
-				if( [allDICOMSR count])
-				{
-					if( [[BrowserController currentBrowser] sendFilesToCurrentBonjourDB: allDICOMSR] == NO)
-						NSLog( @"****** FAILED to send ROI SR to original DB");
-				}
-			}
-			
 			[BrowserController addFiles: allDICOMSR
 							  toContext: [[BrowserController currentBrowser] managedObjectContext]
 							 toDatabase: [BrowserController currentBrowser]
@@ -10867,7 +10858,7 @@ int i,j,l;
 	aColor.blue = (220./255.)*65535.;
 	rgbList[5]=aColor;
 	
-	NSMutableArray* nbRegion=[NSMutableArray arrayWithCapacity:0];
+	NSMutableArray* nbRegion=[NSMutableArray array];
 	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	long height=[curPix pheight];
 	long width=[curPix pwidth];
@@ -11052,7 +11043,7 @@ int i,j,l;
 	 cpt++;
 	 NSLog(@"color r=%d, g=%d, b=%d", aColor.red, aColor.green, aColor.blue);
 	 */
-	NSMutableArray* nbRegion=[NSMutableArray arrayWithCapacity:0];
+	NSMutableArray* nbRegion=[NSMutableArray array];
 	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	long height=[curPix pheight];
 	long width=[curPix pwidth];
@@ -11445,16 +11436,16 @@ int i,j,l;
 - (IBAction) roiSaveSeries: (id) sender
 {
 	NSSavePanel *panel = [NSSavePanel savePanel];
-	NSMutableArray *roisPerMovies = [NSMutableArray  arrayWithCapacity:0];
+	NSMutableArray *roisPerMovies = [NSMutableArray  array];
 	BOOL rois = NO;
 	
 	for( int y = 0; y < maxMovieIndex; y++)
 	{
-		NSMutableArray  *roisPerSeries = [NSMutableArray  arrayWithCapacity:0];
+		NSMutableArray  *roisPerSeries = [NSMutableArray  array];
 		
 		for( int x = 0; x < [pixList[ y] count]; x++)
 		{
-			NSMutableArray  *roisPerImages = [NSMutableArray  arrayWithCapacity:0];
+			NSMutableArray  *roisPerImages = [NSMutableArray  array];
 			
 			for( int i = 0; i < [[roiList[ y] objectAtIndex: x] count]; i++)
 			{
@@ -12413,7 +12404,7 @@ int i,j,l;
 
 - (IBAction) roiPropagateSlab:(id) sender
 {
-	NSMutableArray  *selectedROIs = [NSMutableArray  arrayWithCapacity:0];
+	NSMutableArray  *selectedROIs = [NSMutableArray  array];
 	
 	if( [[pixList[curMovieIndex] objectAtIndex:[imageView curImage]] stack] < 2)
 	{
@@ -12515,7 +12506,7 @@ int i,j,l;
     
 	if( [sender tag] != 1) return;
 
-	NSMutableArray  *selectedROIs = [NSMutableArray  arrayWithCapacity:0];
+	NSMutableArray  *selectedROIs = [NSMutableArray  array];
 	
 	switch( [[roiPropaDim selectedCell] tag])
 	{
@@ -13061,7 +13052,7 @@ int i,j,l;
 	}
 	else // bring the whole group to front, without changing order inside the group
 	{
-		NSMutableArray *group = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray *group = [NSMutableArray array];
 		NSMutableArray *ROIs = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
 		int i;
 		for(i=0; i<[ROIs count]; i++)
@@ -13091,7 +13082,7 @@ int i,j,l;
 	}
 	else // bring the whole group to front, without changing order inside the group
 	{
-		NSMutableArray *group = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray *group = [NSMutableArray array];
 		NSMutableArray *ROIs = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
 		int i;
 		for(i=0; i<[ROIs count]; i++)
@@ -14705,7 +14696,7 @@ int i,j,l;
 	
 	for( i = 0; i < [pixList[maxMovieIndex] count]; i++)
 	{
-		[roiList[maxMovieIndex] addObject:[NSMutableArray arrayWithCapacity:0]];
+		[roiList[maxMovieIndex] addObject:[NSMutableArray array]];
 		[copyRoiList[maxMovieIndex] addObject: [NSData data]];
 	}
 	[self loadROI: maxMovieIndex];
@@ -16742,7 +16733,7 @@ int i,j,l;
 	
 	if( all)
 	{
-		files2Send = [NSMutableArray arrayWithCapacity:0];
+		files2Send = [NSMutableArray array];
 		
 		for( x = 0; x < maxMovieIndex; x++)
 		{
@@ -16755,7 +16746,7 @@ int i,j,l;
 	}
 	else
 	{		
-		files2Send = [NSMutableArray arrayWithCapacity:0];
+		files2Send = [NSMutableArray array];
 		
 		[files2Send addObject: [fileList[ curMovieIndex] objectAtIndex:[imageView curImage]]];
 	}
@@ -17492,7 +17483,7 @@ int i,j,l;
 	BOOL				missingSlice = NO;
 	NSMutableArray		*theSlices = [NSMutableArray array];
 		
-	if( pts) *pts = [NSMutableArray arrayWithCapacity:0];
+	if( pts) *pts = [NSMutableArray array];
 	
 	lastROI = nil;
 	lastImageIndex = -1;

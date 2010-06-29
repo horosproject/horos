@@ -597,10 +597,15 @@ static NSConditionLock *threadLock = nil;
 	NSInteger index;
 	Wait *splash = nil;
 	NSManagedObjectModel *model = context.persistentStoreCoordinator.managedObjectModel;
-	NSMutableArray *addedImagesArray = nil, *completeImagesArray = nil, *addedSeries = [NSMutableArray arrayWithCapacity: 0], *modifiedStudiesArray = nil;
+	NSMutableArray *addedImagesArray = nil, *completeImagesArray = nil, *addedSeries = [NSMutableArray array], *modifiedStudiesArray = nil;
 	BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"], COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"], newStudy = NO, newObject = NO, isCDMedia = NO, addFailed = NO;
-	NSMutableArray *vlToRebuild = [NSMutableArray arrayWithCapacity: 0], *vlToReload = [NSMutableArray arrayWithCapacity: 0], *dicomFilesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
+	NSMutableArray *vlToRebuild = [NSMutableArray array], *vlToReload = [NSMutableArray array], *dicomFilesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
 	int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeries"], combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
+	BOOL isBonjour = [browserController isBonjour: context];
+	NSMutableArray *bonjourFilesToSend = nil;
+	
+	if( isBonjour)
+		bonjourFilesToSend = [NSMutableArray array];
 	
 	if ([[NSFileManager defaultManager] fileExistsAtPath: INpath] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: INpath attributes:nil];
@@ -608,7 +613,7 @@ static NSConditionLock *threadLock = nil;
 	if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirectory] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: reportsDirectory attributes:nil];
 	
-	if( [newFilesArray count] == 0) return [NSMutableArray arrayWithCapacity: 0];
+	if( [newFilesArray count] == 0) return [NSMutableArray array];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
 	
@@ -638,11 +643,6 @@ static NSConditionLock *threadLock = nil;
 			
 			[splash setCancel: YES];
 		}
-	}
-	
-	if( [BrowserController isBonjour: context])
-	{
-		NSLog( @"******** we CANNOT add new images to a shared DB bonjour !!!");
 	}
 	
 	int ii = 0;
@@ -770,8 +770,11 @@ static NSConditionLock *threadLock = nil;
 	{
 		addedImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
 		completeImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
-		modifiedStudiesArray = [NSMutableArray arrayWithCapacity: 0];
+		modifiedStudiesArray = [NSMutableArray array];
 		
+		DicomStudy *study = nil;
+		DicomSeries *seriesTable = nil;
+		DicomImage *image = nil;
 		NSMutableArray *studiesArrayStudyInstanceUID = [[studiesArray valueForKey:@"studyInstanceUID"] mutableCopy];
 		
 		// Add the new files
@@ -879,8 +882,6 @@ static NSConditionLock *threadLock = nil;
 				
 				if( curDict != nil)
 				{
-					DicomStudy *study = nil;
-					
 					if( [[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: curPatientUID] == NSOrderedSame)
 					{
 						if( [[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
@@ -996,7 +997,6 @@ static NSConditionLock *threadLock = nil;
 					for( int i = 0; i < NoOfSeries; i++)
 					{
 						NSString* SeriesNum = i ? [NSString stringWithFormat:@"%d",i] : @"";
-						DicomSeries *seriesTable = nil;
 						
 						if( [[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] isEqualToString: curSerieID])
 						{
@@ -1050,19 +1050,15 @@ static NSConditionLock *threadLock = nil;
 						
 						BOOL local = NO;
 						if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
-						{
 							local = YES;
-						}
 						
-						NSArray	*imagesArray = [[seriesTable valueForKey:@"images"] allObjects] ;
+						NSArray	*imagesArray = [[seriesTable valueForKey:@"images"] allObjects];
 						int numberOfFrames = [[curDict objectForKey: @"numberOfFrames"] intValue];
 						if( numberOfFrames == 0) numberOfFrames = 1;
 							
 						for( int f = 0 ; f < numberOfFrames; f++)
 						{
 							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]]];
-							
-							DicomImage *image = nil;
 							
 							if( index != NSNotFound)
 							{
@@ -1162,6 +1158,16 @@ static NSConditionLock *threadLock = nil;
 									NSString *s = [curDict objectForKey: @"referencedSOPInstanceUID"];
 									[image setValue: s forKey:@"comment"];
 									[image setValue: [curDict objectForKey: @"numberOfROIs"] forKey:@"scale"];
+								}
+								
+								if( isBonjour)
+								{
+									NSLog( @"******** new images to a shared DB bonjour !!!");
+									
+									NSString *bonjourPath = [BonjourBrowser uniqueLocalPath: image];
+									
+									[[NSFileManager defaultManager] moveItemAtPath: newFile toPath: bonjourPath error: nil];
+									[bonjourFilesToSend addObject: bonjourPath];
 								}
 								
 								// Relations
@@ -1297,6 +1303,12 @@ static NSConditionLock *threadLock = nil;
 			
 			// Reapply annotations from DICOMSR file
 			for( DicomStudy *study in modifiedStudiesArray) [study reapplyAnnotationsFromDICOMSR];
+			
+			if( isBonjour && [bonjourFilesToSend count] > 0)
+			{
+				if( [[BrowserController currentBrowser] sendFilesToCurrentBonjourDB: bonjourFilesToSend] == NO)
+					NSLog( @"****** FAILED to send new DICOM files to original shared DB");
+			}
 			
 			if( notifyAddedFiles)
 			{
@@ -1790,7 +1802,7 @@ static NSConditionLock *threadLock = nil;
 		NSLog( @"copyToDBFolder from matrix");
 	}
 	
-	NSMutableArray *objects = [NSMutableArray arrayWithCapacity: 0];
+	NSMutableArray *objects = [NSMutableArray array];
 	NSMutableArray *files;
 	
 	if( matrixThumbnails)
@@ -2494,7 +2506,7 @@ static NSConditionLock *threadLock = nil;
 
 -(NSArray*) addURLToDatabaseFiles:(NSArray*) URLs
 {
-	NSMutableArray	*localFiles = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray	*localFiles = [NSMutableArray array];
 	
 	// FIRST DOWNLOAD FILES TO LOCAL DATABASE
 	
@@ -3328,9 +3340,9 @@ static NSConditionLock *threadLock = nil;
 	else return -1;
 }
 
-+ (BOOL) isBonjour:(NSManagedObjectContext *)c
+- (BOOL) isBonjour:(NSManagedObjectContext *)c
 {
-	if( c == [[BrowserController currentBrowser] bonjourManagedObjectContext])
+	if( c == bonjourManagedObjectContext)
 		return YES;
 	else
 		return NO;
@@ -3774,7 +3786,7 @@ static NSConditionLock *threadLock = nil;
 		NSLog( @"copyToDBFolder from matrix");
 	}
 	
-	NSMutableArray *objects = [NSMutableArray arrayWithCapacity: 0];
+	NSMutableArray *objects = [NSMutableArray array];
 	NSMutableArray *files;
 	
 	if( matrixThumbnails)
@@ -4479,7 +4491,7 @@ static NSConditionLock *threadLock = nil;
 				NSDate				*now = [NSDate date];
 				NSDate				*producedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"] intValue]*60*60*24];
 				NSDate				*openedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEOPENEDDAYS"] intValue]*60*60*24];
-				NSMutableArray		*toBeRemoved = [NSMutableArray arrayWithCapacity: 0];
+				NSMutableArray		*toBeRemoved = [NSMutableArray array];
 				NSManagedObjectContext *context = self.managedObjectContext;
 				BOOL				dontDeleteStudiesWithComments = [[NSUserDefaults standardUserDefaults] boolForKey: @"dontDeleteStudiesWithComments"];
 				
@@ -5263,7 +5275,7 @@ static NSConditionLock *threadLock = nil;
 	NSPredicate			*predicate = nil, *subPredicate = nil;
 	NSString			*description = [NSString string];
 	NSIndexSet			*selectedRowIndexes =  [databaseOutline selectedRowIndexes];
-	NSMutableArray		*previousObjects = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray		*previousObjects = [NSMutableArray array];
 	NSArray				*albumArrayContent = nil;
 	BOOL				filtered = NO;
 	
@@ -6564,7 +6576,7 @@ static NSConditionLock *threadLock = nil;
 {
 	NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 	int result;
-	NSMutableArray *studiesArray = [NSMutableArray arrayWithCapacity:0] , *seriesArray = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *studiesArray = [NSMutableArray array] , *seriesArray = [NSMutableArray array];
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
 	if( [databaseOutline selectedRow] >= 0)
@@ -6622,7 +6634,7 @@ static NSConditionLock *threadLock = nil;
 				
 				// Try to find images that aren't stored in the local database
 				
-				NSMutableArray	*nonLocalImagesPath = [NSMutableArray arrayWithCapacity: 0];
+				NSMutableArray	*nonLocalImagesPath = [NSMutableArray array];
 				
 				WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing Delete...", nil)];
 				[wait showWindow:self];
@@ -6811,7 +6823,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( result == NSAlertDefaultReturn)	// REMOVE AND DELETE IT FROM THE DATABASE
 	{
-		NSMutableArray *objectsToDelete = [NSMutableArray arrayWithCapacity: 0];
+		NSMutableArray *objectsToDelete = [NSMutableArray array];
 		
 		if( matrixThumbnails)
 		{
@@ -12642,7 +12654,7 @@ static BOOL needToRezoom;
 			// Prepare an array that contains arrays of series
 			//////////////////////////////////////
 			
-			NSMutableArray	*toOpenArray = [NSMutableArray arrayWithCapacity: 0];
+			NSMutableArray	*toOpenArray = [NSMutableArray array];
 			
 			int x = 0;
 			if( [cells count] == 1 && [selectedLines count] > 1)	// Just one thumbnail is selected, but multiples lines are selected
@@ -12796,7 +12808,7 @@ static BOOL needToRezoom;
 
 - (void)viewerDICOMMergeSelection: (id)sender
 {
-	NSMutableArray	*images = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray	*images = [NSMutableArray array];
 	
 	
 	[self checkResponder];
@@ -12834,7 +12846,7 @@ static BOOL needToRezoom;
 
 - (void) viewerDICOMKeyImages:(id) sender
 {
-	NSMutableArray	*selectedItems = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray	*selectedItems = [NSMutableArray array];
 	
 	
 	[self checkResponder];
@@ -12854,7 +12866,7 @@ static BOOL needToRezoom;
 - (void) MovieViewerDICOM:(id) sender
 {
 	NSInteger				index;
-	NSMutableArray			*selectedItems = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray			*selectedItems = [NSMutableArray array];
 	
 	NSIndexSet				*selectedRowIndexes = [databaseOutline selectedRowIndexes];
 	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
@@ -19636,7 +19648,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSArray*) ROIsAndKeyImages: (id) sender sameSeries: (BOOL*) sameSeries
 {
-	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *selectedItems = [NSMutableArray array];
 	
 	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
@@ -19802,7 +19814,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSArray*) ROIImages: (id) sender sameSeries:(BOOL*) sameSeries
 {
-	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *selectedItems = [NSMutableArray array];
 	
 	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
@@ -19846,7 +19858,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSArray*) KeyImages: (id) sender
 {
-	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *selectedItems = [NSMutableArray array];
 	
 	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
@@ -20427,7 +20439,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSArray *) databaseSelection
 {
-	NSMutableArray		*selectedItems			= [NSMutableArray arrayWithCapacity: 0];
+	NSMutableArray		*selectedItems			= [NSMutableArray array];
 	NSIndexSet			*selectedRowIndexes		= [databaseOutline selectedRowIndexes];
 	
 	for ( NSInteger index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)

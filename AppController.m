@@ -2690,9 +2690,9 @@ static BOOL initialized = NO;
 				if (!clut || [[[clut objectForKey:@"Red"] objectAtIndex:0] intValue] != 240)
 				{
 						NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
-						NSMutableArray		*rArray = [NSMutableArray arrayWithCapacity:0];
-						NSMutableArray		*gArray = [NSMutableArray arrayWithCapacity:0];
-						NSMutableArray		*bArray = [NSMutableArray arrayWithCapacity:0];
+						NSMutableArray		*rArray = [NSMutableArray array];
+						NSMutableArray		*gArray = [NSMutableArray array];
+						NSMutableArray		*bArray = [NSMutableArray array];
 						for( i = 0; i < 256; i++)  {
 							[bArray addObject: [NSNumber numberWithLong:(195 - (i * 0.26))]];
 							[gArray addObject: [NSNumber numberWithLong:(187 - (i *0.26))]];
@@ -2703,7 +2703,7 @@ static BOOL initialized = NO;
 					[aCLUTFilter setObject:bArray forKey:@"Blue"];
 			
 					// Points & Colors
-					NSMutableArray *colors = [NSMutableArray arrayWithCapacity:0], *points = [NSMutableArray arrayWithCapacity:0];
+					NSMutableArray *colors = [NSMutableArray array], *points = [NSMutableArray array];
 					[points addObject:[NSNumber numberWithLong: 0]];
 					[points addObject:[NSNumber numberWithLong: 255]];
 			
@@ -3322,21 +3322,21 @@ static BOOL initialized = NO;
 	//		  } // while ...not eof
 	//		  
 	//			NSMutableDictionary *xaCLUTFilter = [NSMutableDictionary dictionary];
-	//			NSMutableArray		*xrArray = [NSMutableArray arrayWithCapacity:0];
+	//			NSMutableArray		*xrArray = [NSMutableArray array];
 	//			for( i = 0; i < 256; i++)
 	//			{
 	//				[xrArray addObject: [NSNumber numberWithLong: red[ i]]];
 	//			}
 	//			[xaCLUTFilter setObject:xrArray forKey:@"Red"];
 	//			
-	//			NSMutableArray		*xgArray = [NSMutableArray arrayWithCapacity:0];
+	//			NSMutableArray		*xgArray = [NSMutableArray array];
 	//			for( i = 0; i < 256; i++)
 	//			{
 	//				[xgArray addObject: [NSNumber numberWithLong: green[ i]]];
 	//			}
 	//			[xaCLUTFilter setObject:xgArray forKey:@"Green"];
 	//			
-	//			NSMutableArray		*xbArray = [NSMutableArray arrayWithCapacity:0];
+	//			NSMutableArray		*xbArray = [NSMutableArray array];
 	//			for( i = 0; i < 256; i++)
 	//			{
 	//				[xbArray addObject: [NSNumber numberWithLong: blue[ i]]];

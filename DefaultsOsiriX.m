@@ -163,7 +163,7 @@ static NSHost *currentHost = nil;
 {
 	long				i;
 	NSMutableDictionary *aConvFilter = [NSMutableDictionary dictionary];
-	NSMutableArray		*valArray = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray		*valArray = [NSMutableArray array];
 
 	[aConvFilter setObject:[NSNumber numberWithLong:size] forKey:@"Size"];
 	
@@ -249,7 +249,7 @@ static NSHost *currentHost = nil;
 	// --
 	{
 		NSMutableDictionary *aConvFilter = [NSMutableDictionary dictionary];
-		NSMutableArray		*valArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*valArray = [NSMutableArray array];
 		short				vals[9] = {-1, -1, -1, -1, 9, -1, -1, -1, -1};
 		
 		[aConvFilter setObject:[NSNumber numberWithLong:3] forKey:@"Size"];
@@ -262,7 +262,7 @@ static NSHost *currentHost = nil;
 	// --
 	{
 		NSMutableDictionary *aConvFilter = [NSMutableDictionary dictionary];
-		NSMutableArray		*valArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*valArray = [NSMutableArray array];
 		short				vals[25] = {	1, 1, 1, 1, 1,
 			1, 4, 4, 4, 1,
 			1, 4, 12, 4, 1,
@@ -364,7 +364,7 @@ static NSHost *currentHost = nil;
 	NSMutableDictionary *opacityValues = [NSMutableDictionary dictionary];
 	
 	NSMutableDictionary *aOpacityFilter = [NSMutableDictionary dictionary];
-	NSMutableArray *points = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *points = [NSMutableArray array];
 	
 	for( i = 0; i < 256; i++)
 	{
@@ -382,7 +382,7 @@ static NSHost *currentHost = nil;
 	// Log Inverse
 	
 	aOpacityFilter = [NSMutableDictionary dictionary];
-	points = [NSMutableArray arrayWithCapacity:0];
+	points = [NSMutableArray array];
 	
 	for( i = 0; i < 256; i++)
 	{
@@ -400,7 +400,7 @@ static NSHost *currentHost = nil;
 	// Smooth CT
 	
 	aOpacityFilter = [NSMutableDictionary dictionary];
-	points = [NSMutableArray arrayWithCapacity:0];
+	points = [NSMutableArray array];
 	
 	{
 		NSPoint pt;
@@ -421,21 +421,21 @@ static NSHost *currentHost = nil;
 	// --
 	{
 	//    NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
-	//	NSMutableArray		*rArray = [NSMutableArray arrayWithCapacity:0];
+	//	NSMutableArray		*rArray = [NSMutableArray array];
 	//	for( i = 0; i < 256; i++)
 	//	{
 	//		[rArray addObject: [NSNumber numberWithLong:i]];
 	//	}
 	//	[aCLUTFilter setObject:rArray forKey:@"Red"];
 	//	
-	//	NSMutableArray		*gArray = [NSMutableArray arrayWithCapacity:0];
+	//	NSMutableArray		*gArray = [NSMutableArray array];
 	//	for( i = 0; i < 256; i++)
 	//	{
 	//		[gArray addObject: [NSNumber numberWithLong:0]];
 	//	}
 	//	[aCLUTFilter setObject:gArray forKey:@"Green"];
 	//	
-	//	NSMutableArray		*bArray = [NSMutableArray arrayWithCapacity:0];
+	//	NSMutableArray		*bArray = [NSMutableArray array];
 	//	for( i = 0; i < 256; i++)
 	//	{
 	//		[bArray addObject: [NSNumber numberWithLong:0]];
@@ -448,24 +448,24 @@ static NSHost *currentHost = nil;
 	// --
 	{
 		NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
-		NSMutableArray		*rArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*rArray = [NSMutableArray array];
 		for( i = 0; i < 128; i++) [rArray addObject: [NSNumber numberWithLong:i*2]];
 		for( i = 128; i < 256; i++) [rArray addObject: [NSNumber numberWithLong:255]];
 		[aCLUTFilter setObject:rArray forKey:@"Red"];
 		
-		NSMutableArray		*gArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*gArray = [NSMutableArray array];
 		for( i = 0; i < 128; i++) [gArray addObject: [NSNumber numberWithLong:0]];
 		for( i = 128; i < 192; i++) [gArray addObject: [NSNumber numberWithLong: (i-128)*4]];
 		for( i = 192; i < 256; i++) [gArray addObject: [NSNumber numberWithLong: 255]];
 		[aCLUTFilter setObject:gArray forKey:@"Green"];
 		
-		NSMutableArray		*bArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*bArray = [NSMutableArray array];
 		for( i = 0; i < 192; i++) [bArray addObject: [NSNumber numberWithLong:0]];
 		for( i = 192; i < 256; i++) [bArray addObject: [NSNumber numberWithLong:(i-192)*4]];
 		[aCLUTFilter setObject:bArray forKey:@"Blue"];
 		
 		// Points & Colors
-		NSMutableArray *colors = [NSMutableArray arrayWithCapacity:0], *points = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray *colors = [NSMutableArray array], *points = [NSMutableArray array];
 		
 		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], nil]];
 		[points addObject:[NSNumber numberWithLong: 0]];
@@ -488,20 +488,20 @@ static NSHost *currentHost = nil;
 	// --
 	{
 		NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
-		NSMutableArray		*rArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*rArray = [NSMutableArray array];
 		for( i = 0; i < 256; i++) [rArray addObject: [NSNumber numberWithLong:255-i]];
 		[aCLUTFilter setObject:rArray forKey:@"Red"];
 		
-		NSMutableArray		*gArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*gArray = [NSMutableArray array];
 		for( i = 0; i < 256; i++) [gArray addObject: [NSNumber numberWithLong:255-i]];
 		[aCLUTFilter setObject:gArray forKey:@"Green"];
 		
-		NSMutableArray		*bArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*bArray = [NSMutableArray array];
 		for( i = 0; i < 256; i++) [bArray addObject: [NSNumber numberWithLong:255-i]];
 		[aCLUTFilter setObject:bArray forKey:@"Blue"];
 		
 		// Points & Colors
-		NSMutableArray *colors = [NSMutableArray arrayWithCapacity:0], *points = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray *colors = [NSMutableArray array], *points = [NSMutableArray array];
 		
 		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], nil]];
 		[points addObject:[NSNumber numberWithLong: 0]];
@@ -517,9 +517,9 @@ static NSHost *currentHost = nil;
 	
 		{
 		NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
-		NSMutableArray		*rArray = [NSMutableArray arrayWithCapacity:0];
-		NSMutableArray		*gArray = [NSMutableArray arrayWithCapacity:0];
-		NSMutableArray		*bArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*rArray = [NSMutableArray array];
+		NSMutableArray		*gArray = [NSMutableArray array];
+		NSMutableArray		*bArray = [NSMutableArray array];
 		for( i = 0; i < 256; i++)  {
 			[bArray addObject: [NSNumber numberWithLong:(195 - (i * 0.26))]];
 			[gArray addObject: [NSNumber numberWithLong:(187 - (i *0.26))]];
@@ -530,7 +530,7 @@ static NSHost *currentHost = nil;
 		[aCLUTFilter setObject:bArray forKey:@"Blue"];
 		
 		// Points & Colors
-		NSMutableArray *colors = [NSMutableArray arrayWithCapacity:0], *points = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray *colors = [NSMutableArray array], *points = [NSMutableArray array];
 		[points addObject:[NSNumber numberWithLong: 0]];
 		[points addObject:[NSNumber numberWithLong: 255]];
 		
@@ -573,7 +573,7 @@ static NSHost *currentHost = nil;
 	
 	// ** PREFERENCES - SERVERS
 	
-	NSMutableArray *serversValues = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *serversValues = [NSMutableArray array];
 	
 	NSMutableDictionary *aServer = [[NSMutableDictionary alloc] init];
 	[aServer setObject:@"127.0.0.1" forKey: @"Address"];
@@ -587,7 +587,7 @@ static NSHost *currentHost = nil;
 	
 	[defaultValues setObject:serversValues forKey:@"SERVERS"];
 	
-	serversValues = [NSMutableArray arrayWithCapacity:0];
+	serversValues = [NSMutableArray array];
 	[defaultValues setObject:serversValues forKey:@"OSIRIXSERVERS"];
 	
 	//routing calendars

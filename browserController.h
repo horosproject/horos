@@ -314,7 +314,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSManagedObjectContext *) localManagedObjectContext;
 - (NSManagedObjectContext *) defaultManagerObjectContext;
 - (NSManagedObjectContext *) defaultManagerObjectContextForceLoading: (BOOL) forceLoading;
-+ (BOOL) isBonjour: (NSManagedObjectContext*) c;
+- (BOOL) isBonjour: (NSManagedObjectContext*) c;
 - (NSString *) localDocumentsDirectory;
 - (NSArray*) childrenArray: (NSManagedObject*) item;
 - (NSArray*) childrenArray: (NSManagedObject*) item onlyImages:(BOOL) onlyImages;

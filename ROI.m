@@ -668,7 +668,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		{
 			zPositions = [coder decodeObject];
 		}
-		else zPositions = [[NSMutableArray arrayWithCapacity:0] retain];
+		else zPositions = [[NSMutableArray array] retain];
 		
 		if( fileVersion >= 4)
 		{
@@ -1241,8 +1241,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		pixelSpacingX = ipixelSpacingx;
 		pixelSpacingY = ipixelSpacingy;
 		imageOrigin = iimageOrigin;
-		points = [[NSMutableArray arrayWithCapacity:0] retain];
-		zPositions = [[NSMutableArray arrayWithCapacity:0] retain];
+		points = [[NSMutableArray array] retain];
+		zPositions = [[NSMutableArray array] retain];
 		comments = [[NSString alloc] initWithString:@""];
 		fontListGL = -1;
 		stringTex = nil;
@@ -1319,8 +1319,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		pixelSpacingY = ipixelSpacingy;
 		imageOrigin = iimageOrigin;
 		
-		points = [[NSMutableArray arrayWithCapacity:0] retain];
-		zPositions = [[NSMutableArray arrayWithCapacity:0] retain];
+		points = [[NSMutableArray array] retain];
+		zPositions = [[NSMutableArray array] retain];
 		
 		comments = [[NSString alloc] initWithString:@""];
 		
@@ -1709,7 +1709,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 {
 	if(type == t2DPoint)
 	{
-		NSMutableArray  *tempArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray  *tempArray = [NSMutableArray array];
 		MyPoint			*tempPoint;
 		
 		tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( NSMinX( rect), NSMinY( rect))];
@@ -1721,7 +1721,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	if(type == tROI)
 	{
-		NSMutableArray  *tempArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray  *tempArray = [NSMutableArray array];
 		MyPoint			*tempPoint;
 		
 		tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( NSMinX( rect), NSMinY( rect))];
@@ -1745,7 +1745,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	if(  type == tOval)
 	{
-		NSMutableArray  *tempArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray  *tempArray = [NSMutableArray array];
 		MyPoint			*tempPoint;
 		float			angle;
 		
@@ -5406,7 +5406,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (NSMutableArray*) dataValues
 {
-	NSMutableArray*		array = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray*		array = [NSMutableArray array];
 	long				no;
 	float				*data;
 	
