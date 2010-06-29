@@ -1012,7 +1012,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	// TLS
 	[_cipherSuites release];
 	
-	NSLog( @"dealloc DICOM Send");
+//	NSLog( @"dealloc DICOM Send");
 	
 	[super dealloc];
 }
@@ -1023,7 +1023,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"%d files to send.\rTo: %@ - %@", nil), [_filesToSend count], _calledAET, _hostname] name:@"send"];
+	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Sending %d files...\rTo: %@ - %@", nil), [_filesToSend count], _calledAET, _hostname] name:@"send"];
 	
 //	NSString *tempFolder = [NSString stringWithFormat:@"/tmp/DICOMSend_%@-%@", _callingAET, [[NSDate date] description]];
 	NSMutableArray *paths = [[NSMutableArray alloc] init];
@@ -1739,10 +1739,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Errors ! %d of %d files generated errors.", nil), _numberErrors, _numberOfFiles]  name:@"send"];
 		}
 		else
-		{
 			[userInfo setObject:@"Complete" forKey:@"Message"];
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: NSLocalizedString(@"Done !", nil) name:@"send"];
-		}
 		
 		[self updateLogEntry: userInfo];
 		

@@ -101,7 +101,7 @@ static LogManager *currentLogManager = nil;
 			return;
 		}
 		
-		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour]) return;
+		if( [[BrowserController currentBrowser] isBonjour: context]) return;
 		
 		char logPatientName[ 1024];
 		char logStudyDescription[ 1024];

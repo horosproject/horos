@@ -2128,20 +2128,17 @@ static NSConditionLock *threadLock = nil;
 		
 	@catch (NSException *ne)
 	{
-		NSLog( @"Autorouting FAILED");
-		NSLog( @"%@", [ne name]);
-		NSLog( @"%@", [ne reason]);
-		[AppController printStackTrace: ne];
+		NSLog( @"Autorouting FAILED : %@", ne);
 		
 		[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", server, @"server", nil] waitUntilDone: NO];
 		
 		// We will try again later...
 		
-		if( [[dict valueForKey:@"failureRetry"] intValue] > 0)
+		if( [[dict valueForKey: @"failureRetry"] intValue] > 0)
 		{
 			[autoroutingQueue lock];
 			
-			NSLog( @"Autorouting failure count: %d", [[dict valueForKey:@"failureRetry"] intValue]);
+			NSLog( @"Autorouting failure count: %d", [[dict valueForKey: @"failureRetry"] intValue]);
 			
 			[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: samePatientArray, @"objects", [server objectForKey:@"Description"], @"server", dict, @"routingRule", [NSNumber numberWithInt: [[dict valueForKey:@"failureRetry"] intValue]-1], @"failureRetry", nil]];
 			[autoroutingQueue unlock];
@@ -2738,7 +2735,7 @@ static NSConditionLock *threadLock = nil;
 
 - (IBAction)createDatabase: (id)sender
 {
-	if(isCurrentDatabaseBonjour)
+	if( isCurrentDatabaseBonjour)
 	{
 		NSRunInformationalAlertPanel( NSLocalizedString(@"Database", nil), NSLocalizedString(@"Cannot create a SQL Index file for a distant database.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 		return;

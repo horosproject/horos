@@ -8801,17 +8801,13 @@ END_CREATE_ROIS:
 #ifdef OSIRIX_VIEWER
 			// LOAD THE FILE FROM BONJOUR SHARED DATABASE
 			
-			if( imageObj == nil) NSLog( @"We need imageObj for Bonjour loading");
-			
 			[srcFile release];
 			srcFile = nil;
 			srcFile = [[BrowserController currentBrowser] getLocalDCMPath: imageObj :0];
 			[srcFile retain];
 			
 			if( srcFile == nil)
-			{
 				return;
-			}
 #endif
 		}
 		

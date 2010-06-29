@@ -712,7 +712,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) setComment: (NSString*) c
 {
-	if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO)
+	if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
 	{
 		if( c == nil)
 			c = @"";
@@ -746,7 +746,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	#ifndef OSIRIX_LIGHT
 	@try 
 	{
-		if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO)
+		if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
 		{
 			if( c == nil)
 				c = [NSNumber numberWithInt: 0];
@@ -778,9 +778,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (void) setReportURL: (NSString*) url
 {
 	#ifdef OSIRIX_VIEWER
-	BrowserController	*cB = [BrowserController currentBrowser];
+	BrowserController *cB = [BrowserController currentBrowser];
 	
-	if( url && [cB isCurrentDatabaseBonjour] == NO)
+	if( url && [cB isBonjour: [self managedObjectContext]] == NO)
 	{
 		if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
 		{
@@ -812,9 +812,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
 		{
-			BrowserController	*cB = [BrowserController currentBrowser];
+			BrowserController *cB = [BrowserController currentBrowser];
 			
-			if( [cB isCurrentDatabaseBonjour] == NO)
+			if( [cB isBonjour: [self managedObjectContext]] == NO)
 			{
 				if( [url characterAtIndex: 0] != '/')
 					url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];

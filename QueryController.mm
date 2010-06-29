@@ -1940,13 +1940,13 @@ extern "C"
 			
 			[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
 			
-			NSLog( @"-------");
+			NSLog( @"______________________________________________");
 			NSLog( @"Will auto-retrieve these items:");
 			for( id item in selectedItems)
 			{
 				NSLog( @"%@ %@ %@ %@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"], [item valueForKey:@"date"]);
 			}
-			NSLog( @"-------");
+			NSLog( @"______________________________________________");
 			
 			NSString *desc = [NSString stringWithFormat: NSLocalizedString( @"Will auto-retrieve %d studies", nil), [selectedItems count]];
 			

@@ -214,7 +214,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	#ifdef OSIRIX_VIEWER
 	NSString *d;
 	
-	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+	if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
 		d = [DicomImage dbPathForManagedContext: [self managedObjectContext]];
 	else
 		d = [[DicomImage dbPathForManagedContext: [self managedObjectContext]] stringByAppendingPathComponent:ROIDATABASE];
@@ -834,7 +834,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		NSString			*path = [self valueForKey:@"path"];
 		BrowserController	*cB = [BrowserController currentBrowser];
 		
-		if( [cB isCurrentDatabaseBonjour])
+		if( [cB  isBonjour: [self managedObjectContext]])
 		{
 			if( download)
 				completePathCache = [[[BonjourBrowser currentBrowser] getDICOMFile: [cB currentBonjourService] forObject: self noOfImages: 1] retain];
