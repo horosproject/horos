@@ -1465,12 +1465,17 @@ static NSRecursiveLock *dbModifyLock = nil;
 				{
 					@try
 					{
-						NSArray *o = [NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: [i valueForKey: @"completePathResolved"]]];
+						NSData *d = [SRAnnotation roiFromDICOM: [i valueForKey: @"completePathResolved"]];
 						
-						if( [o count])
+						if( d)
 						{
-							[r addObjectsFromArray: o];
-							[SRAnnotation archiveROIsAsDICOM: [NSArray array] toPath: [i valueForKey: @"completePathResolved"] forImage: image];
+							NSArray *o = [NSUnarchiver unarchiveObjectWithData: d];
+							
+							if( [o count])
+							{
+								[r addObjectsFromArray: o];
+								[SRAnnotation archiveROIsAsDICOM: [NSArray array] toPath: [i valueForKey: @"completePathResolved"] forImage: image];
+							}
 						}
 					}
 					@catch (NSException * e)

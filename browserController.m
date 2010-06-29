@@ -1160,18 +1160,20 @@ static NSConditionLock *threadLock = nil;
 									[image setValue: [curDict objectForKey: @"numberOfROIs"] forKey:@"scale"];
 								}
 								
-								if( isBonjour)
-								{
-									NSLog( @"******** new images to a shared DB bonjour !!!");
-									
-									NSString *bonjourPath = [BonjourBrowser uniqueLocalPath: image];
-									
-									[[NSFileManager defaultManager] moveItemAtPath: newFile toPath: bonjourPath error: nil];
-									[bonjourFilesToSend addObject: bonjourPath];
-								}
-								
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
+								
+								if( isBonjour && local)
+								{
+									if( local)
+									{
+										NSString *bonjourPath = [BonjourBrowser uniqueLocalPath: image];
+										[[NSFileManager defaultManager] moveItemAtPath: newFile toPath: bonjourPath error: nil];
+										[bonjourFilesToSend addObject: bonjourPath];
+									}
+									else
+										[bonjourFilesToSend addObject: newFile];
+								}
 								
 								if( DICOMSR == NO)
 								{
@@ -1306,8 +1308,7 @@ static NSConditionLock *threadLock = nil;
 			
 			if( isBonjour && [bonjourFilesToSend count] > 0)
 			{
-				if( [[BrowserController currentBrowser] sendFilesToCurrentBonjourDB: bonjourFilesToSend] == NO)
-					NSLog( @"****** FAILED to send new DICOM files to original shared DB");
+				[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourDB:) toTarget: self withObject: bonjourFilesToSend];
 			}
 			
 			if( notifyAddedFiles)
@@ -1337,7 +1338,8 @@ static NSConditionLock *threadLock = nil;
 				[dockLabel retain];
 				[growlString retain];
 				
-				[browserController executeAutorouting: addedImagesArray rules: nil manually: NO generatedByOsiriX: generatedByOsiriX];
+				if( isBonjour == NO)
+					[browserController executeAutorouting: addedImagesArray rules: nil manually: NO generatedByOsiriX: generatedByOsiriX];
 				
 				[p release];
 			}
@@ -10981,9 +10983,7 @@ static BOOL needToRezoom;
 	
 	int row = [bonjourServicesList selectedRow];
 	if( row > 0)
-	{
 		result = [bonjourBrowser sendDICOMFile: row-1 paths: files];
-	}
 	
 	return result;
 }

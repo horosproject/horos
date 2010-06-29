@@ -80,9 +80,9 @@ extern const char *GetPrivateIP();
 	NSString	*uniqueFileName = nil;
 	
 	if( [[image valueForKey: @"numberOfFrames"] intValue] > 1)
-		uniqueFileName = [NSString stringWithFormat:@"%@-%@-%@.%@", [image valueForKeyPath:@"series.study.patientUID"], [image valueForKey:@"sopInstanceUID"], [[[image valueForKey:@"path"] lastPathComponent] stringByDeletingPathExtension], [image valueForKey:@"extension"]];
+		uniqueFileName = [NSString stringWithFormat:@"%@-%@.%@", [image valueForKeyPath:@"series.study.patientUID"], [image valueForKey:@"sopInstanceUID"], [image valueForKey:@"extension"]];
 	else
-		uniqueFileName = [NSString stringWithFormat:@"%@-%@-%@-%d.%@", [image valueForKeyPath:@"series.study.patientUID"], [image valueForKey:@"sopInstanceUID"], [[[image valueForKey:@"path"] lastPathComponent] stringByDeletingPathExtension], [[image valueForKey:@"instanceNumber"] intValue], [image valueForKey:@"extension"]];
+		uniqueFileName = [NSString stringWithFormat:@"%@-%@-%d.%@", [image valueForKeyPath:@"series.study.patientUID"], [image valueForKey:@"sopInstanceUID"], [[image valueForKey:@"instanceNumber"] intValue], [image valueForKey:@"extension"]];
 	
 	NSString *dicomFileName = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/TEMP.noindex/"] stringByAppendingPathComponent: [DicomFile NSreplaceBadCharacter:uniqueFileName]];
 
@@ -458,6 +458,9 @@ extern const char *GetPrivateIP();
 		if( currentDataPtr == nil)
 		{
 			currentDataPtr = malloc( BonjourDatabaseIndexFileSize);
+			if( currentDataPtr == nil)
+				NSLog( @"******** BonjourBrowser incomingConnectionProcess - not enough memory");
+			
 			currentDataPos = 0;
 		}
 		
@@ -474,6 +477,7 @@ extern const char *GetPrivateIP();
 				memcpy( currentDataPtr + currentDataPos, [incomingData bytes], length);
 			currentDataPos += length;
 		}
+		
 		
 		if( currentDataPos - lastAsyncPos > 1024L * 1024L * 20L)
 			[NSThread detachNewThreadSelector: @selector( asyncWrite:) toTarget: self withObject: tempDatabaseFile];
