@@ -247,67 +247,6 @@ extern const char *GetPrivateIP();
 				[FileModificationDate release];
 				FileModificationDate = [[NSString alloc] initWithData:data encoding: NSUnicodeStringEncoding];
 			}
-			else if ( strcmp( messageToRemoteService, "RFILE") == 0)
-			{
-				BOOL isPages = [[filePathToLoad pathExtension] isEqualToString:@"pages"];
-				NSString *zipFilePathToLoad = nil;
-				if(isPages)
-				{
-					zipFilePathToLoad = [filePathToLoad stringByAppendingString:@".zip"];
-				}
-				else zipFilePathToLoad = filePathToLoad;
-				
-			
-				NSString *destPath = [BonjourBrowser bonjour2local: zipFilePathToLoad];
-				[[NSFileManager defaultManager] removeFileAtPath: destPath handler:nil];
-				
-				int	pos = 0, size;
-				NSData	*curData = nil;
-				
-				// The File
-				size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
-				pos += 4;
-				curData = [data subdataWithRange: NSMakeRange(pos, size)];
-				pos += size;
-				
-				// Write the file
-				success = [curData writeToFile:destPath atomically:YES];
-				
-				if(isPages)
-				{
-					// unzip the file
-					NSTask *unzipTask   = [[NSTask alloc] init];
-					[unzipTask setLaunchPath:@"/usr/bin/unzip"];
-					[unzipTask setCurrentDirectoryPath:[[destPath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", destPath, nil]]; // -o to override existing report w/ same name
-					[unzipTask launch];
-					while( [unzipTask isRunning]) [NSThread sleepForTimeInterval: 0.002];
-					int result = [unzipTask terminationStatus];
-					[unzipTask release];
-					if(result==0)
-					{
-						destPath = [BonjourBrowser bonjour2local:filePathToLoad];
-					}
-				}
-				
-				// The modification date
-				size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
-				pos += 4;
-				curData = [data subdataWithRange: NSMakeRange(pos, size)];
-				pos += size;
-				
-				NSString	*str = [[NSString alloc] initWithData:curData encoding: NSUnicodeStringEncoding];
-				
-				// Change the modification & creation date
-				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:destPath traverseLink:YES];
-				
-				NSMutableDictionary *newfattrs = [NSMutableDictionary dictionaryWithDictionary: fattrs];
-				[newfattrs setObject:[NSDate dateWithString:str] forKey:NSFileModificationDate];
-				[newfattrs setObject:[NSDate dateWithString:str] forKey:NSFileCreationDate];
-				[[NSFileManager defaultManager] changeFileAttributes:newfattrs atPath:destPath];
-				
-				[str release];
-			}
 			else if (strcmp( messageToRemoteService, "DICOM") == 0)
 			{
 				// we asked for a DICOM file(s), let's write it on disc
@@ -639,16 +578,6 @@ extern const char *GetPrivateIP();
 					[toTransfer appendBytes:string length: strlen( string)+1];
 				}
 				
-				if (strcmp( messageToRemoteService, "RFILE") == 0)
-				{
-					NSLog(@"ask for : %@", filePathToLoad);
-					NSData	*filenameData = [filePathToLoad dataUsingEncoding: NSUnicodeStringEncoding];
-					int stringSize = NSSwapHostIntToBig( [filenameData length]);	// +1 to include the last 0 !
-					
-					[toTransfer appendBytes:&stringSize length: 4];
-					[toTransfer appendBytes:[filenameData bytes] length: [filenameData length]];
-				}
-				
 				if (strcmp( messageToRemoteService, "MFILE") == 0)
 				{
 					NSData	*filenameData = [filePathToLoad dataUsingEncoding: NSUnicodeStringEncoding];
@@ -656,52 +585,6 @@ extern const char *GetPrivateIP();
 					
 					[toTransfer appendBytes:&stringSize length: 4];
 					[toTransfer appendBytes:[filenameData bytes] length: [filenameData length]];
-				}
-				
-				if (strcmp( messageToRemoteService, "WFILE") == 0)
-				{				
-					NSLog(@"connectToService, WFILE");
-					BOOL isPages = [[filePathToLoad pathExtension] isEqualToString:@"pages"];
-					if(isPages)
-					{
-						NSLog(@"connectToService isPages");
-						
-						NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [filePathToLoad lastPathComponent]];
-						
-						[[NSFileManager defaultManager] removeFileAtPath: [[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingPathComponent: zipFileName] handler: nil];
-						
-						// zip the directory into a single archive file
-						NSTask *zipTask   = [[NSTask alloc] init];
-						[zipTask setLaunchPath:@"/usr/bin/zip"];
-						[zipTask setCurrentDirectoryPath:[[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-						[zipTask setArguments:[NSArray arrayWithObjects: @"--quiet", @"-r" , zipFileName, [filePathToLoad lastPathComponent], nil]];
-						[zipTask launch];
-						while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.002];
-						int result = [zipTask terminationStatus];
-						[zipTask release];
-						
-						if(result==0)
-						{
-							NSMutableString *path2 = (NSMutableString*)[[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingPathComponent: zipFileName];
-							[filePathToLoad release];
-							filePathToLoad = [path2 retain];
-							NSLog(@"filePathToLoad : %@", filePathToLoad);
-						}
-					}
-				
-					NSData	*filenameData = [filePathToLoad dataUsingEncoding: NSUnicodeStringEncoding];
-					int stringSize = NSSwapHostIntToBig( [filenameData length]);	// +1 to include the last 0 !
-					
-					[toTransfer appendBytes:&stringSize length: 4];
-					[toTransfer appendBytes:[filenameData bytes] length: [filenameData length]];
-					
-					NSData	*fileData = [NSData dataWithContentsOfFile: filePathToLoad];
-					int dataSize = NSSwapHostIntToBig( [fileData length]);
-					[toTransfer appendBytes:&dataSize length: 4];
-					[toTransfer appendData: fileData];
-					
-					if( isPages)
-						[[NSFileManager defaultManager] removeFileAtPath: filePathToLoad handler: nil];
 				}
 				
 				if (strcmp( messageToRemoteService, "DICOM") == 0)
@@ -1557,70 +1440,6 @@ extern const char *GetPrivateIP();
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	return modificationDate;
-}
-
-- (NSString*) getFile:(NSString*) pathFile index:(int) index 
-{
-	NSString	*returnedFile = nil;
-	
-	// Does the file already exist?
-	
-	returnedFile = [BonjourBrowser bonjour2local: pathFile];
-	
-	if( [[NSFileManager defaultManager] fileExistsAtPath:returnedFile]) return returnedFile;
-	else returnedFile = nil;
-	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	@try 
-	{
-		[filePathToLoad release];
-		filePathToLoad = [pathFile retain];
-		
-		[self connectToServer: index message:@"RFILE"];
-		
-		if( resolved == YES)
-		{
-			returnedFile = [BonjourBrowser bonjour2local: filePathToLoad];
-		}
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
-	
-	return returnedFile;
-}
-
-- (BOOL) sendFile:(NSString*) pathFile index:(int) index 
-{
-	BOOL succeed = NO;
-	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	@try 
-	{
-		[filePathToLoad release];
-	
-		filePathToLoad = [pathFile retain];
-		
-		[self connectToServer: index message:@"WFILE"];
-		
-		if( resolved == YES)
-		{
-			succeed = YES;
-		}
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
-	
-	return succeed;
 }
 
 - (NSString*) getDatabaseFile:(int) index

@@ -636,7 +636,7 @@ static NSConditionLock *threadLock = nil;
 		if([NSThread isMainThread] && ([newFilesArray count] > 50 || isCDMedia == YES) && generatedByOsiriX == NO)
 		{
 			splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString(@"Adding %@ files...", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[newFilesArray count]]]]];
-			[splash showWindow:self];
+			[splash showWindow: browserController];
 			
 			if( isCDMedia) [[splash progress] setMaxValue:[newFilesArray count]];
 			else [[splash progress] setMaxValue:[newFilesArray count]/30];
@@ -950,16 +950,13 @@ static NSConditionLock *threadLock = nil;
 						{
 							[study setValue:[curDict objectForKey: @"studyID"] forKey:@"studyInstanceUID"];
 							[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
-							
 							[study setValue:[curDict objectForKey: @"accessionNumber"] forKey:@"accessionNumber"];
-							
 							[study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
 							[study setValue:[curDict objectForKey: @"patientBirthDate"] forKey:@"dateOfBirth"];
 							[study setValue:[curDict objectForKey: @"patientSex"] forKey:@"patientSex"];
 							[study setValue:[curDict objectForKey: @"referringPhysiciansName"] forKey:@"referringPhysician"];
 							[study setValue:[curDict objectForKey: @"performingPhysiciansName"] forKey:@"performingPhysician"];
 							[study setValue:[curDict objectForKey: @"institutionName"] forKey:@"institutionName"];
-							
 							[study setValue:[curDict objectForKey: @"patientID"] forKey:@"patientID"];
 							[study setValue:[curDict objectForKey: @"patientName"] forKey:@"name"];
 							[study setValue:[curDict objectForKey: @"patientUID"] forKey:@"patientUID"];
@@ -1146,7 +1143,8 @@ static NSConditionLock *threadLock = nil;
 								[image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
 								[image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
 								[image setValue:[NSNumber numberWithBool:browserController.mountedVolume] forKey:@"mountedVolume"];
-								if (browserController.mountedVolume) [seriesTable setValue:[NSNumber numberWithBool:browserController.mountedVolume] forKey:@"mountedVolume"];
+								if( browserController.mountedVolume)
+									[seriesTable setValue:[NSNumber numberWithBool:browserController.mountedVolume] forKey:@"mountedVolume"];
 								[image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
 								
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
@@ -1222,7 +1220,7 @@ static NSConditionLock *threadLock = nil;
 								
 								if( DICOMSR == NO && [curDict valueForKey:@"album"] !=nil)
 								{
-									NSArray* albumArray = [self albumsInContext:context];
+									NSArray* albumArray = [BrowserController albumsInContext:context];
 									
 									DicomAlbum* album = NULL;
 									for (album in albumArray)
@@ -1308,7 +1306,7 @@ static NSConditionLock *threadLock = nil;
 			
 			if( isBonjour && [bonjourFilesToSend count] > 0)
 			{
-				[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourDB:) toTarget: self withObject: bonjourFilesToSend];
+				[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourDB:) toTarget: browserController withObject: bonjourFilesToSend];
 			}
 			
 			if( notifyAddedFiles)
@@ -1361,7 +1359,7 @@ static NSConditionLock *threadLock = nil;
 		{
 			if( [NSDate timeIntervalSinceReferenceDate] - browserController.lastSaved > 120 || context != browserController.managedObjectContext)
 			{
-				[browserController autoCleanDatabaseFreeSpace: self];
+				[browserController autoCleanDatabaseFreeSpace: browserController];
 				
 				if( [browserController saveDatabase: [[DicomImage dbPathForManagedContext: context] stringByAppendingString: DATAFILEPATH] context: context] != 0)
 				{
@@ -1422,7 +1420,7 @@ static NSConditionLock *threadLock = nil;
 				[browserController performSelectorOnMainThread:@selector( setGrowlMessage:) withObject: growlString waitUntilDone:NO];
 			
 			if([NSThread isMainThread])
-				[browserController newFilesGUIUpdate: self];
+				[browserController newFilesGUIUpdate: browserController];
 				
 			[browserController.newFilesConditionLock lock];
 			
@@ -1443,7 +1441,7 @@ static NSConditionLock *threadLock = nil;
 			else [browserController.newFilesConditionLock unlockWithCondition: 2];
 			
 			if([NSThread isMainThread])
-				[browserController newFilesGUIUpdate: self];
+				[browserController newFilesGUIUpdate: browserController];
 			
 			browserController.databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 		}
@@ -1469,12 +1467,12 @@ static NSConditionLock *threadLock = nil;
 
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder
 {
-	return [self addFiles:newFilesArray toContext:context toDatabase:NULL onlyDICOM:onlyDICOM  notifyAddedFiles:notifyAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
+	return [BrowserController addFiles:newFilesArray toContext:context toDatabase:NULL onlyDICOM:onlyDICOM  notifyAddedFiles:notifyAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
 }
 
 - (NSArray*) subAddFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
 {
-	return [BrowserController addFiles:newFilesArray toContext:context toDatabase:self onlyDICOM:onlyDICOM  notifyAddedFiles:produceAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
+	return [BrowserController addFiles:newFilesArray toContext:context toDatabase: [BrowserController currentBrowser] onlyDICOM:onlyDICOM  notifyAddedFiles:produceAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
 }
 
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
@@ -10977,15 +10975,17 @@ static BOOL needToRezoom;
 	else return nil;
 }
 
-- (BOOL) sendFilesToCurrentBonjourDB: (NSArray*) files
+- (void) sendFilesToCurrentBonjourDB: (NSArray*) files
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	BOOL result = NO;
 	
 	int row = [bonjourServicesList selectedRow];
 	if( row > 0)
 		result = [bonjourBrowser sendDICOMFile: row-1 paths: files];
 	
-	return result;
+	[pool release];
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
@@ -16007,8 +16007,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if([NSThread isMainThread])
 		splash = [[Wait alloc] initWithString: NSLocalizedString(@"Export...", nil) :YES];
 	
-	[splash setCancel:YES];
-	[splash showWindow:self];
+	[splash setCancel: YES];
+	[splash showWindow: browser];
 	[[splash progress] setMaxValue:[dicomFiles2Export count]];
 	
 	NSManagedObjectContext* managedObjectContext = NULL;
@@ -16093,7 +16093,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						NSString* fullPath = [previousPath stringByAppendingPathExtension: @"pdf"];
 						[[tempID PDFRepresentation] writeToFile:fullPath atomically: YES];
-						[self setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"pdf" toSeriesPaths:seriesPaths];
+						[BrowserController setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"pdf" toSeriesPaths:seriesPaths];
 						[imagesArray removeAllObjects];
 						[imagesArrayObjects removeAllObjects];
 					}
@@ -16119,8 +16119,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 					
 					NSString* fullPath = [previousPath stringByAppendingPathExtension: @"mov"];
-					[self writeMovieToPath:fullPath images:imagesArray];
-					[self setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"mov" toSeriesPaths:seriesPaths];
+					[BrowserController writeMovieToPath:fullPath images:imagesArray];
+					[BrowserController setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"mov" toSeriesPaths:seriesPaths];
 				}
 				else if( [imagesArray count] == 1)
 				{
@@ -16128,7 +16128,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 					NSString* fullPath = [previousPath stringByAppendingPathExtension: @"jpg"];
 					[bitmapData writeToFile:fullPath atomically:YES];
-					[self setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"jpg" toSeriesPaths:seriesPaths];
+					[BrowserController setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"jpg" toSeriesPaths:seriesPaths];
 				}
 				
 				//
@@ -16165,7 +16165,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 						NSString* fullPath = [[tempPath stringByAppendingFormat: @"_%d", uniqueSeriesID] stringByAppendingString:@"_thumb.jpg"];
 						[bitmapData writeToFile:fullPath atomically:YES];
-						[self setPath:fullPath relativeTo:path forSeriesId:[[curImage valueForKeyPath:@"series.id"] intValue] kind:@"thumb" toSeriesPaths:seriesPaths];
+						[BrowserController setPath:fullPath relativeTo:path forSeriesId:[[curImage valueForKeyPath:@"series.id"] intValue] kind:@"thumb" toSeriesPaths:seriesPaths];
 					}
 				}
 				
@@ -16312,7 +16312,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				NSString* fullPath = [previousPath stringByAppendingPathExtension: @"pdf"];
 				[[tempID PDFRepresentation] writeToFile:fullPath atomically: YES];
-				[self setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"pdf" toSeriesPaths:seriesPaths];
+				[BrowserController setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"pdf" toSeriesPaths:seriesPaths];
 				[imagesArray removeAllObjects];
 				[imagesArrayObjects removeAllObjects];
 			}
@@ -16338,8 +16338,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			
 			NSString* fullPath = [previousPath stringByAppendingPathExtension:@"mov"];
-			[self writeMovieToPath:fullPath images:imagesArray];
-			[self setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"mov" toSeriesPaths:seriesPaths];
+			[BrowserController writeMovieToPath:fullPath images:imagesArray];
+			[BrowserController setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"mov" toSeriesPaths:seriesPaths];
 		}
 		else if( [imagesArray count] == 1)
 		{
@@ -16347,7 +16347,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 			NSString* fullPath = [previousPath stringByAppendingPathExtension: @"jpg"];
 			[bitmapData writeToFile:fullPath atomically:YES];
-			[self setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"jpg" toSeriesPaths:seriesPaths];
+			[BrowserController setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"jpg" toSeriesPaths:seriesPaths];
 		}
 		
 		if(createHTML)
@@ -18939,38 +18939,38 @@ static volatile int numberOfThreadsForJPEG = 0;
 				{
 					NSString *localReportFile = nil;
 					
-					if (isCurrentDatabaseBonjour)
-					{
-						NSString	*localFile = nil;
-						
-						if( [item valueForKey:@"reportURL"])
-							[[NSFileManager defaultManager] removeItemAtPath: [BonjourBrowser bonjour2local: [item valueForKey:@"reportURL"]] error: nil];
-						
-						if( [item valueForKey:@"reportURL"])
-							localFile = [bonjourBrowser getFile:[item valueForKey:@"reportURL"] index:[bonjourServicesList selectedRow]-1];
-						
-						if( localFile != nil && [[NSFileManager defaultManager] fileExistsAtPath: localFile] == YES)
-						{
-							if (reportsMode != 3)
-								[[NSWorkspace sharedWorkspace] openFile: localFile];
-						}
-						else
-						{
-							Reports	*report = [[Reports alloc] init];
-							
-							[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP.noindex/", [self documentsDirectory]] type:reportsMode];
-							
-							[bonjourBrowser sendFile:[studySelected valueForKey:@"reportURL"] index: [bonjourServicesList selectedRow]-1];
-							
-							// Set only LAST component -> the bonjour server will complete the address
-							[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:[[studySelected valueForKey:@"reportURL"] lastPathComponent] forKey:@"reportURL"];
-							
-							[report release];
-						}
-						
-						localReportFile = [BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]];
-					}
-					else
+//					if (isCurrentDatabaseBonjour)
+//					{
+//						NSString	*localFile = nil;
+//						
+//						if( [item valueForKey:@"reportURL"])
+//							[[NSFileManager defaultManager] removeItemAtPath: [BonjourBrowser bonjour2local: [item valueForKey:@"reportURL"]] error: nil];
+//						
+//						if( [item valueForKey:@"reportURL"])
+//							localFile = [bonjourBrowser getFile:[item valueForKey:@"reportURL"] index:[bonjourServicesList selectedRow]-1];
+//						
+//						if( localFile != nil && [[NSFileManager defaultManager] fileExistsAtPath: localFile] == YES)
+//						{
+//							if (reportsMode != 3)
+//								[[NSWorkspace sharedWorkspace] openFile: localFile];
+//						}
+//						else
+//						{
+//							Reports	*report = [[Reports alloc] init];
+//							
+//							[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP.noindex/", [self documentsDirectory]] type:reportsMode];
+//							
+//							[bonjourBrowser sendFile:[studySelected valueForKey:@"reportURL"] index: [bonjourServicesList selectedRow]-1];
+//							
+//							// Set only LAST component -> the bonjour server will complete the address
+//							[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:[[studySelected valueForKey:@"reportURL"] lastPathComponent] forKey:@"reportURL"];
+//							
+//							[report release];
+//						}
+//						
+//						localReportFile = [BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]];
+//					}
+//					else
 					{
 						// *********************************************
 						//	LOCAL FILE

@@ -322,10 +322,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 								if( [image valueForKey:@"isKeyImage"])
 									[i setValue: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
 							}
-							else NSLog( @"----- applyAnnotationsFromDictionary : image not found : %@", [image valueForKey: @"sopInstanceUID"]);
+//							else NSLog( @"----- applyAnnotationsFromDictionary : image not found : %@", [image valueForKey: @"sopInstanceUID"]);
 						}
 					}
-					else NSLog( @"----- applyAnnotationsFromDictionary : series not found : %@", [series valueForKey: @"seriesInstanceUID"]);
+//					else NSLog( @"----- applyAnnotationsFromDictionary : series not found : %@", [series valueForKey: @"seriesInstanceUID"]);
 				}
 			}
 		}

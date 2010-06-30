@@ -99,8 +99,6 @@
 - (BOOL) sendDICOMFile:(int) index paths:(NSArray*) ip;
 - (BOOL) isBonjourDatabaseUpToDate: (int) index;
 
-- (NSString*) getFile:(NSString*) pathFile index:(int) index;
-- (BOOL) sendFile:(NSString*) pathFile index:(int) index;
 - (BOOL) retrieveDICOMFilesWithSTORESCU:(int) indexFrom to:(int) indexTo paths:(NSArray*) ip;
 - (NSDate*) getFileModification:(NSString*) pathFile index:(int) index;
 

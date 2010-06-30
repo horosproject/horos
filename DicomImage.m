@@ -527,7 +527,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	{
 		#ifdef OSIRIX_VIEWER
 		#ifndef OSIRIX_LIGHT
-		if( [self.series.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"])
+		if( [self.series.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"]  && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
 		{
 			NSString *c = nil;
 			

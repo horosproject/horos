@@ -369,7 +369,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) setDatabaseValue:(id) object item:(id) item forKey:(NSString*) key;
 - (void) setupToolbar;
 - (void) addAlbumsFile: (NSString*) file;
-- (BOOL) sendFilesToCurrentBonjourDB: (NSArray*) files;
+- (void) sendFilesToCurrentBonjourDB: (NSArray*) files;
 - (NSString*) getDatabaseFolderFor: (NSString*) path;
 - (NSString*) getDatabaseIndexFileFor: (NSString*) path;
 - (IBAction) copyToDBFolder: (id) sender;
