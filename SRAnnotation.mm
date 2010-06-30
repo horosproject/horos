@@ -595,18 +595,6 @@
 	return YES;
 }
 
-- (void)saveAsHTML;
-{
-	#ifdef OSIRIX_VIEWER
-	NSString *dbPath = [[BrowserController currentBrowser] documentsDirectory];
-	NSString *path = [[dbPath stringByAppendingPathComponent:@"tmp"] stringByAppendingPathExtension:@"html"];
-	
-	size_t renderFlags = DSRTypes::HF_renderDcmtkFootnote;		
-	ofstream stream([path UTF8String]);
-	document->renderHTML(stream, renderFlags, NULL);
-	#endif
-}
-
 - (NSString *)seriesInstanceUID
 {
 	if (!_seriesInstanceUID)

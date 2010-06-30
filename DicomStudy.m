@@ -823,10 +823,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 				if( [url characterAtIndex: 0] != '/')
 				{
 					if( [url hasPrefix: @"REPORTS/"])
-					{
 						url = [url stringByReplacingOccurrencesOfString: @"REPORTS/" withString: @"TEMP.noindex/"];
-						url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
-					}
+					url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
 				}
 			}
 			else
@@ -1480,6 +1478,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 				{
 					@try
 					{
+						if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
+							// The ROI file was maybe modified on the server
+							[[NSFileManager defaultManager] removeItemAtPath: [i valueForKey: @"completePath"] error: nil];
+						
 						NSData *d = [SRAnnotation roiFromDICOM: [i valueForKey: @"completePathResolved"]];
 						
 						if( d)
@@ -1502,9 +1504,14 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			if( [r count])
 			{
+				if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
+					// The ROI file was maybe modified on the server
+					[[NSFileManager defaultManager] removeItemAtPath: [[found lastObject] valueForKey: @"completePath"] error: nil];
+				
 				NSArray *o = [NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: [[found lastObject] valueForKey: @"completePathResolved"]]];
 				[r addObjectsFromArray: o];
-				[SRAnnotation archiveROIsAsDICOM: r toPath: [[found lastObject] valueForKey: @"completePathResolved"] forImage: image];
+				
+//				[SRAnnotation archiveROIsAsDICOM: r toPath: [[found lastObject] valueForKey: @"completePathResolved"] forImage: image];
 			}
 		}
 		

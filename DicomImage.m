@@ -826,15 +826,23 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 -(NSString*) completePathWithDownload:(BOOL) download
 {
-	if( completePathCache) return completePathCache;
+	BrowserController *cB = [BrowserController currentBrowser];
+	BOOL isBonjour = [cB  isBonjour: [self managedObjectContext]];
+	
+	if( completePathCache)
+	{
+		if( download == NO)
+			return completePathCache;
+		else if( isBonjour == NO)
+			return completePathCache;
+	}
 	
 	#ifdef OSIRIX_VIEWER
 	if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
 	{
-		NSString			*path = [self valueForKey:@"path"];
-		BrowserController	*cB = [BrowserController currentBrowser];
+		NSString *path = [self valueForKey:@"path"];
 		
-		if( [cB  isBonjour: [self managedObjectContext]])
+		if( isBonjour)
 		{
 			if( download)
 				completePathCache = [[[BonjourBrowser currentBrowser] getDICOMFile: [cB currentBonjourService] forObject: self noOfImages: 1] retain];

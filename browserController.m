@@ -512,39 +512,41 @@ static NSConditionLock *threadLock = nil;
 
 + (NSString*) extractReportSR: (NSString*) dicomSR
 {
-	NSString *uidName = [SRAnnotation getReportFilenameFromSR: dicomSR];
-	NSString *zipFile = [@"/tmp/" stringByAppendingPathComponent: uidName];
 	NSString *destPath = nil;
-	
-	// Extract the CONTENT to the REPORTS folder
-	SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dicomSR] autorelease];
-	[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
-	
-	// Check for http/https !
-	if( [[r reportURL] length] > 8 && ([[r reportURL] hasPrefix: @"http://"] || [[r reportURL] hasPrefix: @"https://"]))
-		destPath = [[[r reportURL] copy] autorelease];
-	else
+	NSString *uidName = [SRAnnotation getReportFilenameFromSR: dicomSR];
+	if( [uidName length] > 0)
 	{
-		if( [[r dataEncapsulated] length] > 0)
+		NSString *zipFile = [@"/tmp/" stringByAppendingPathComponent: uidName];
+		
+		// Extract the CONTENT to the REPORTS folder
+		SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dicomSR] autorelease];
+		[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
+		
+		// Check for http/https !
+		if( [[r reportURL] length] > 8 && ([[r reportURL] hasPrefix: @"http://"] || [[r reportURL] hasPrefix: @"https://"]))
+			destPath = [[[r reportURL] copy] autorelease];
+		else
 		{
-			[[r dataEncapsulated] writeToFile: zipFile atomically: YES];
-			
-			[BrowserController unzipFile: zipFile withPassword: nil destination: @"/tmp/zippedFile/" showGUI: NO];
-			[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
-			
-			for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp/zippedFile/" error: nil])
+			if( [[r dataEncapsulated] length] > 0)
 			{
-				if( [f hasPrefix: @"."] == NO)
+				[[r dataEncapsulated] writeToFile: zipFile atomically: YES];
+				
+				[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
+				[BrowserController unzipFile: zipFile withPassword: nil destination: @"/tmp/zippedFile/" showGUI: NO];
+				[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
+				
+				for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp/zippedFile/" error: nil])
 				{
-					if( destPath)
-						NSLog( @"*** multiple files in Report decompression ?");
-					
-					destPath = [@"/tmp/zippedFile/" stringByAppendingPathComponent: f];
+					if( [f hasPrefix: @"."] == NO)
+					{
+						if( destPath)
+							NSLog( @"*** multiple files in Report decompression ?");
+						
+						destPath = [@"/tmp/zippedFile/" stringByAppendingPathComponent: f];
+					}
 				}
 			}
 		}
-		
-		[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
 	}
 	
 	return destPath;
@@ -865,10 +867,16 @@ static NSConditionLock *threadLock = nil;
 							else // It's a file!
 							{
 								if( isBonjour) // Move it to the TEMP folder
-									[[NSFileManager defaultManager] movePath: reportPath toPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] handler: nil];
+								{
+									[[NSFileManager defaultManager] removeItemAtPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+									[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+								}
 								else // Move it to the REPORTS folder
-									[[NSFileManager defaultManager] movePath: reportPath toPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] handler: nil];
-							
+								{
+									[[NSFileManager defaultManager] removeItemAtPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+									[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+								}
+								
 								reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportPath lastPathComponent]];
 							}
 						}
@@ -1177,11 +1185,12 @@ static NSConditionLock *threadLock = nil;
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
 								
-								if( isBonjour && local)
+								if( isBonjour)
 								{
 									if( local)
 									{
 										NSString *bonjourPath = [BonjourBrowser uniqueLocalPath: image];
+										[[NSFileManager defaultManager] removeItemAtPath: bonjourPath error: nil];
 										[[NSFileManager defaultManager] moveItemAtPath: newFile toPath: bonjourPath error: nil];
 										[bonjourFilesToSend addObject: bonjourPath];
 									}
@@ -3477,6 +3486,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[self setFixedDocumentsDirectory];
 	[self managedObjectContext];
+	[managedObjectContext lock];
 	
 	[managedObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
 	
@@ -3537,6 +3547,8 @@ static NSConditionLock *threadLock = nil;
 	#endif
 	
 	[[LogManager currentLogManager] resetLogs];
+	
+	[managedObjectContext unlock];
 	
 //	NSData *str = [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"];
 //	
@@ -3695,8 +3707,8 @@ static NSConditionLock *threadLock = nil;
 						// Remove the '.'
 						
 						NSString *newDstPath = [[dstPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [[dstPath lastPathComponent] substringFromIndex: 1]];
-						[[NSFileManager defaultManager] removeItemAtPath: newDstPath error: nil];
 						
+						[[NSFileManager defaultManager] removeItemAtPath: newDstPath error: nil];
 						if( [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newDstPath error:nil] == NO)
 						{
 							[NSThread sleepForTimeInterval: 0.5];
@@ -15689,6 +15701,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					for( int i = 0 ; i < [twoStepsIndexingArrayFrom count] ; i++)
 					{
+						[[NSFileManager defaultManager] removeItemAtPath: [twoStepsIndexingArrayTo objectAtIndex: i]  error: nil];
 						[[NSFileManager defaultManager] moveItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i] toPath: [twoStepsIndexingArrayTo objectAtIndex: i] error: nil];
 						[[NSFileManager defaultManager] removeItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i]  error: nil];
 					}
@@ -18963,10 +18976,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					if( isCurrentDatabaseBonjour)
 					{
+						// The report was maybe changed on the server -> delete the report file
+						[[NSFileManager defaultManager] removeItemAtPath: localReportFile error: nil];
+						
 						DicomImage *reportSR = [studySelected reportImage];
 						
 						if( reportSR)
 						{
+							// The report was maybe changed on the server -> delete the DICOM SR file
+							[[NSFileManager defaultManager] removeItemAtPath: [reportSR valueForKey: @"completePath"] error: nil];
+							
 							NSString *reportPath = [BrowserController extractReportSR: [reportSR completePathResolved]];
 							
 							if( reportPath)
