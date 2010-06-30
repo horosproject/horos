@@ -1055,7 +1055,7 @@ static NSConditionLock *threadLock = nil;
 							
 						for( int f = 0 ; f < numberOfFrames; f++)
 						{
-							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]]];
+							index = imagesArray.count? [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]]] : NSNotFound;
 							
 							if( index != NSNotFound)
 							{
@@ -1216,7 +1216,7 @@ static NSConditionLock *threadLock = nil;
 								
 								[addedImagesArray addObject: image];
 								
-								if( [addedSeries containsObject: seriesTable] == NO) [addedSeries addObject: seriesTable];
+								if(seriesTable && [addedSeries containsObject: seriesTable] == NO) [addedSeries addObject: seriesTable];
 								
 								if( DICOMSR == NO && [curDict valueForKey:@"album"] !=nil)
 								{

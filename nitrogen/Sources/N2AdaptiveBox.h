@@ -20,14 +20,14 @@
 }
 
 -(void)setContentView:(NSView*)view;
--(void)adaptContainersToIdealSize:(NSSize)size;
--(void)adaptContainersToIdealSize;
+-(NSAnimation*)adaptContainersToIdealSize:(NSSize)size;
+-(NSAnimation*)adaptContainersToIdealSize;
 
 @end
 
 
 @interface NSWindowController (N2AdaptiveBox)
 
--(void)synchronizeSizeWithContent;
+-(NSAnimation*)synchronizeSizeWithContent;
 
 @end

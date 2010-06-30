@@ -22,20 +22,22 @@
 	idealContentSize = NSZeroSize;
 }
 
--(void)adaptContainersToIdealSize:(NSSize)size {
+-(NSAnimation*)adaptContainersToIdealSize:(NSSize)size {
 	idealContentSize = size;
-	[self adaptContainersToIdealSize];
+	return [self adaptContainersToIdealSize];
 }
 
 #define NSRectCenter(r) (r.origin+r.size/2)
 
--(void)adaptContainersToIdealSize {
+-(NSAnimation*)adaptContainersToIdealSize {
+	NSAnimation* ret = NULL;
+	
 	NSView* view = [self contentView];
 	NSRect contentFrame = view.frame;
 	NSSize contentSize = view.frame.size;
 	NSSize sizeDelta = idealContentSize - contentSize;
 	
-	NSLog(@"adaptContainersToIdealSize with contentSize [%f,%f], idealContentSize [%f,%f], sizeDelta [%f,%f]", contentSize.width, contentSize.height, idealContentSize.width, idealContentSize.height, sizeDelta.width, sizeDelta.height);
+//	NSLog(@"adaptContainersToIdealSize with contentSize [%f,%f], idealContentSize [%f,%f], sizeDelta [%f,%f]", contentSize.width, contentSize.height, idealContentSize.width, idealContentSize.height, sizeDelta.width, sizeDelta.height);
 
 	idealContentSize = NSZeroSize;
 
@@ -87,7 +89,7 @@
 								   NULL]];
 		else [parentScrollView.documentView setFrame:df];
 		
-		[self.window.windowController synchronizeSizeWithContent];
+		ret = [self.window.windowController synchronizeSizeWithContent];
 	} else {
 		NSRect wf = self.window.frame;
 		wf.size += sizeDelta;
@@ -95,11 +97,12 @@
 		[self.window setFrame:wf display:YES];
 	}
 	
-	NSLog(@"\tsize is now [%f,%f]", view.frame.size.width, view.frame.size.height);
+//	NSLog(@"\tsize is now [%f,%f]", view.frame.size.width, view.frame.size.height);
 
 	for (NSValue* key in autoresizingMasks)
 		[(NSView*)[key pointerValue] setAutoresizingMask:[[autoresizingMasks objectForKey:key] unsignedIntegerValue]];
-
+	
+	return ret;
 }
 
 -(void)setContentView:(NSView*)view {
@@ -114,11 +117,14 @@
 						   NULL]];*/
 	
 	[super setContentView:[[[NSView alloc] initWithFrame:view.frame] autorelease]];
+	
 	if (self.window)
 		[self adaptContainersToIdealSize];
+	
+	[super setContentView:view];
+		
 //	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewFrameDidChangeNotification object:self.contentView];
 
-	[super setContentView:view];
 //	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tempFrameDidChange:) name:NSViewFrameDidChangeNotification object:self.contentView];
 	
 /*	[animations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -127,6 +133,8 @@
 						   NULL]];*/
 	
 }
+
+
 
 
 /*
@@ -138,7 +146,7 @@
 */
 
 -(void)viewDidMoveToWindow {
-	NSLog(@"%@ viewDidMoveToWindow:%@ sized [%f,%f]", self, self.window, self.window.frame.size.width, self.window.frame.size.height);
+//	NSLog(@"%@ viewDidMoveToWindow:%@ sized [%f,%f]", self, self.window, self.window.frame.size.width, self.window.frame.size.height);
 	if (self.window && !NSEqualSizes(idealContentSize, NSZeroSize))
 		[self adaptContainersToIdealSize];
 	[super viewDidMoveToWindow];
@@ -148,7 +156,8 @@
 
 @implementation NSWindowController (N2AdaptiveBox)
 
--(void)synchronizeSizeWithContent {
+-(NSAnimation*)synchronizeSizeWithContent {
+	return NULL;
 }
 
 @end

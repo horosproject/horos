@@ -58,10 +58,10 @@
 			case 's': {
 				short temp = [number shortValue]; return [NSAppleEventDescriptor descriptorWithDescriptorType:'shor' bytes:&temp length:sizeof(temp)]; // 'shor': small integer
 			} break;
-			case 'l': {
+			case 'l':
+			case 'q': {
 				long temp = [number longValue]; return [NSAppleEventDescriptor descriptorWithDescriptorType:'comp' bytes:&temp length:sizeof(temp)]; // 'comp': double integer
 			} break;
-			  // 'q'
 			  // 'C'
 			case 'I': {
 				unsigned int temp = [number unsignedIntValue]; return [NSAppleEventDescriptor descriptorWithDescriptorType:'magn' bytes:&temp length:sizeof(temp)]; // 'magn': unsigned integer
@@ -97,6 +97,7 @@
 +(id)objectWithDescriptor:(NSAppleEventDescriptor*)descriptor {
 	switch (descriptor.descriptorType) {
 		case 'null':
+		case 'msng':
 			return [NSNull null];
 		case 'reco': {
 			NSAssert(descriptor.numberOfItems == 1, @"'reco' should contain only one subrecord");

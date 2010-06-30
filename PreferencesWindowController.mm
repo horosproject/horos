@@ -346,7 +346,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[self pane:currentContext.pane enable:NO];
 }
 
--(void)synchronizeSizeWithContent {
+-(NSAnimation*)synchronizeSizeWithContent {
 	NSRect paneFrame = [[scrollView documentView] frame];
 	for (NSDictionary* animation in animations)
 		if ([animation objectForKey:NSViewAnimationTargetKey] == [scrollView documentView] && [animation objectForKey:NSViewAnimationEndFrameKey])
@@ -413,6 +413,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	
 	[scrollView setHasHorizontalScroller:YES];
 	[scrollView setHasVerticalScroller:YES];
+	
+	return animation;
 }
 
 -(IBAction)navigationAction:(id)sender {
