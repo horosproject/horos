@@ -18772,7 +18772,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	while( (key = [enumerator nextObject]))
 	{
-		NSDictionary *d = [reportFilesToCheck objectForKey: key];
+		NSMutableDictionary *d = [reportFilesToCheck objectForKey: key];
 		NSDate *previousDate = [d objectForKey: @"date"];
 		DicomStudy *study = [d objectForKey: @"study"];
 			
@@ -18793,8 +18793,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				NSLog( @"Report -> File Modified -> Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
 				
-				d = [NSDictionary dictionaryWithObjectsAndKeys: [fattrs objectForKey: NSFileModificationDate], @"date", study, @"study", nil];
-				[reportFilesToCheck setObject: d forKey: key];
+				[d setObject: [fattrs objectForKey: NSFileModificationDate] forKey: @"date"];
 				
 				[study archiveReportAsDICOMSR];
 				
@@ -19027,7 +19026,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if( [[NSFileManager defaultManager] fileExistsAtPath: localReportFile])
 					{
 						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:localReportFile traverseLink:YES];
-						NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: studySelected, @"study", [fattrs objectForKey:NSFileModificationDate], @"date", nil];
+						NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: studySelected, @"study", [fattrs objectForKey:NSFileModificationDate], @"date", nil];
 						
 						[reportFilesToCheck setObject: d forKey: [localReportFile lastPathComponent]];
 					}
