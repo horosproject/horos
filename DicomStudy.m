@@ -780,7 +780,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	#ifdef OSIRIX_VIEWER
 	BrowserController *cB = [BrowserController currentBrowser];
 	
-	if( url && [cB isBonjour: [self managedObjectContext]] == NO)
+	if( url)
 	{
 		if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
 		{
@@ -789,7 +789,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 			if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
 			{
 				url = [url substringFromIndex: [[cB fixedDocumentsDirectory] length]];
-			
+				
+				if( [url hasPrefix: @"TEMP.noindex/"])
+					url = [url stringByReplacingOccurrencesOfString: @"TEMP.noindex/" withString: @"REPORTS/"];
+				
 				if( [url characterAtIndex: 0] == '/') url = [url substringFromIndex: 1];
 			}
 		}
@@ -814,7 +817,19 @@ static NSRecursiveLock *dbModifyLock = nil;
 		{
 			BrowserController *cB = [BrowserController currentBrowser];
 			
-			if( [cB isBonjour: [self managedObjectContext]] == NO)
+			if( [cB isBonjour: [self managedObjectContext]])
+			{
+				// We will give a path with TEMP.noindex, instead of REPORTS
+				if( [url characterAtIndex: 0] != '/')
+				{
+					if( [url hasPrefix: @"REPORTS/"])
+					{
+						url = [url stringByReplacingOccurrencesOfString: @"REPORTS/" withString: @"TEMP.noindex/"];
+						url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
+					}
+				}
+			}
+			else
 			{
 				if( [url characterAtIndex: 0] != '/')
 					url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];

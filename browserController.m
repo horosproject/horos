@@ -510,6 +510,46 @@ static NSConditionLock *threadLock = nil;
 	return [self addFilesToDatabase: newFilesArray onlyDICOM: onlyDICOM  produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context: context dbFolder: [self documentsDirectory]];
 }
 
++ (NSString*) extractReportSR: (NSString*) dicomSR
+{
+	NSString *uidName = [SRAnnotation getReportFilenameFromSR: dicomSR];
+	NSString *zipFile = [@"/tmp/" stringByAppendingPathComponent: uidName];
+	NSString *destPath = nil;
+	
+	// Extract the CONTENT to the REPORTS folder
+	SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dicomSR] autorelease];
+	[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
+	
+	// Check for http/https !
+	if( [[r reportURL] length] > 8 && ([[r reportURL] hasPrefix: @"http://"] || [[r reportURL] hasPrefix: @"https://"]))
+		destPath = [[[r reportURL] copy] autorelease];
+	else
+	{
+		if( [[r dataEncapsulated] length] > 0)
+		{
+			[[r dataEncapsulated] writeToFile: zipFile atomically: YES];
+			
+			[BrowserController unzipFile: zipFile withPassword: nil destination: @"/tmp/zippedFile/" showGUI: NO];
+			[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
+			
+			for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp/zippedFile/" error: nil])
+			{
+				if( [f hasPrefix: @"."] == NO)
+				{
+					if( destPath)
+						NSLog( @"*** multiple files in Report decompression ?");
+					
+					destPath = [@"/tmp/zippedFile/" stringByAppendingPathComponent: f];
+				}
+			}
+		}
+		
+		[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
+	}
+	
+	return destPath;
+}
+
 - (void) checkForExistingReport: (NSManagedObject*) study dbFolder: (NSString*) dbFolder
 {
 	#ifndef OSIRIX_LIGHT
@@ -593,7 +633,7 @@ static NSConditionLock *threadLock = nil;
 {
 	NSDate *today = [NSDate date];
 	NSError *error = nil;
-	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH], *newFile, *INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH], *reportsDirectory = [dbFolder stringByAppendingPathComponent:@"/REPORTS/"]; //roiFolder = [dbFolder stringByAppendingPathComponent:@"/ROIs"]
+	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH], *newFile, *INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH], *reportsDirectory = [dbFolder stringByAppendingPathComponent:@"/REPORTS/"], *tempDirectory = [dbFolder stringByAppendingPathComponent:@"/TEMP.noindex/"];
 	NSInteger index;
 	Wait *splash = nil;
 	NSManagedObjectModel *model = context.persistentStoreCoordinator.managedObjectModel;
@@ -814,49 +854,25 @@ static NSConditionLock *threadLock = nil;
 					{
 						[curDict setValue: @"OsiriX Report SR" forKey: @"seriesID"];
 						
-						// Move it to the REPORTS folder
-						NSString *uidName = [SRAnnotation getReportFilenameFromSR: newFile];
-						NSString *destPath = [reportsDirectory stringByAppendingPathComponent: uidName];
-						NSString *zipFile = [@"/tmp/" stringByAppendingPathComponent: [destPath lastPathComponent]];
+						NSString *reportPath = [BrowserController extractReportSR: newFile];
 						
-						// Extract the CONTENT to the REPORTS folder
-						SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: newFile] autorelease];
-						[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
-						
-						// Check for http/https !
-						if( [[r reportURL] length] > 8 && ([[r reportURL] hasPrefix: @"http://"] || [[r reportURL] hasPrefix: @"https://"]))
-							reportURL = [[[r reportURL] copy] autorelease];
-						else
+						if( reportPath)
 						{
-							if( [[r dataEncapsulated] length] > 0)
+							if( [reportPath length] > 8 && ([reportPath hasPrefix: @"http://"] || [reportPath hasPrefix: @"https://"]))
 							{
-								[[r dataEncapsulated] writeToFile: zipFile atomically: YES];
-								
-								[BrowserController unzipFile: zipFile withPassword: nil destination: @"/tmp/zippedFile/" showGUI: NO];
-								[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
-								
-								for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp/zippedFile/" error: nil])
-								{
-									if( [f hasPrefix: @"."] == NO)
-									{
-										if( reportURL)
-											NSLog( @"*** multiple files in Report decompression ?");
-										reportURL = [@"/tmp/zippedFile/" stringByAppendingPathComponent: f];
-									}
-								}
+								reportURL = reportPath;
 							}
-							
-							if( [reportURL length] > 0)
+							else // It's a file!
 							{
-								destPath = [[destPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [reportURL lastPathComponent]];
-								
-								// Move it to the REPORTS folder
-								[[NSFileManager defaultManager] movePath: reportURL toPath: destPath handler: nil];
-								reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportURL lastPathComponent]];
-							}
+								if( isBonjour) // Move it to the TEMP folder
+									[[NSFileManager defaultManager] movePath: reportPath toPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] handler: nil];
+								else // Move it to the REPORTS folder
+									[[NSFileManager defaultManager] movePath: reportPath toPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] handler: nil];
 							
-							[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
+								reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportPath lastPathComponent]];
+							}
 						}
+						
 						inParseExistingObject = YES;
 						DICOMSR = YES;
 					}
@@ -7046,28 +7062,30 @@ static NSConditionLock *threadLock = nil;
 		{
 			if( [item valueForKey:@"reportURL"])
 			{
-				if( [[item valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[item valueForKey: @"reportURL"] hasPrefix: @"https://"])
+				DicomStudy *study = (DicomStudy*) item;
+				DicomImage *report = [study reportImage];
+				
+				if( [report valueForKey: @"date"])
+					return [report valueForKey: @"date"];
+				else
 				{
-					return nil;
+					if( [[item valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[item valueForKey: @"reportURL"] hasPrefix: @"https://"])
+					{
+						return nil;
+					}
+					else if (isCurrentDatabaseBonjour)
+					{
+						return [bonjourBrowser getFileModification:[item valueForKey:@"reportURL"] index:[bonjourServicesList selectedRow]-1];
+					}
+					else if( [[NSFileManager defaultManager] fileExistsAtPath:[item valueForKey:@"reportURL"]])
+					{
+						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:[item valueForKey:@"reportURL"]  traverseLink:YES];
+						
+						return [fattrs objectForKey:NSFileModificationDate];
+					}
+					else return nil;
 				}
-				else if (isCurrentDatabaseBonjour)
-				{
-					return [bonjourBrowser getFileModification:[item valueForKey:@"reportURL"] index:[bonjourServicesList selectedRow]-1];
-				}
-				else if( [[NSFileManager defaultManager] fileExistsAtPath:[item valueForKey:@"reportURL"]])
-				{
-					NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:[item valueForKey:@"reportURL"]  traverseLink:YES];
-					
-					return [fattrs objectForKey:NSFileModificationDate];
-				}
-				else return nil;
 			}
-//			else if( [[item valueForKey:@"reportSeries"] count])
-//			{
-//				NSArray *images = [[[[item valueForKey:@"reportSeries"] lastObject] valueForKey:@"images"] allObjects];
-//				
-//				return [[images lastObject] valueForKey:@"date"];
-//			}
 			else return nil;
 		}
 		else return nil;
@@ -7273,7 +7291,7 @@ static NSConditionLock *threadLock = nil;
 			
 			if( [[tableColumn identifier] isEqualToString: @"reportURL"])
 			{
-				if( (isCurrentDatabaseBonjour && [item valueForKey:@"reportURL"] != nil) || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES) // || [[item valueForKey:@"reportSeries"] count] > 0)
+				if( (isCurrentDatabaseBonjour && [item valueForKey:@"reportURL"] != nil) || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES)
 				{
 					NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
 					[reportIcon setSize: NSMakeSize(16, 16)];
@@ -14509,6 +14527,10 @@ static NSArray*	openSubSeriesArray = nil;
 	@try
 	{
 		[t setLaunchPath: @"/usr/bin/unzip"];
+		
+		if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/"] == NO)
+			[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/" attributes: nil];
+			
 		[t setCurrentDirectoryPath: @"/tmp/"];
 		if( pass)
 			args = [NSArray arrayWithObjects: @"-qq", @"-o", @"-d", destination, @"-P", pass, file, nil];
@@ -16381,7 +16403,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)exportQuicktime: (id)sender
 {
-	NSOpenPanel			*sPanel			= [NSOpenPanel openPanel];
+	NSOpenPanel *sPanel	= [NSOpenPanel openPanel];
 	
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 	NSMutableArray *filesToExport;
@@ -18881,10 +18903,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			return;
 		}
 		
-		NSManagedObject *studySelected;
+		DicomStudy *studySelected = nil;
 		
 		if ([[[item entity] name] isEqual:@"Study"])
-			studySelected = item;
+			studySelected = (DicomStudy*) item;
 		else
 			studySelected = [item valueForKey:@"study"];
 		
@@ -18937,63 +18959,50 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				@try
 				{
-					NSString *localReportFile = nil;
+					NSString *localReportFile = [studySelected valueForKey: @"reportURL"];
 					
-//					if (isCurrentDatabaseBonjour)
-//					{
-//						NSString	*localFile = nil;
-//						
-//						if( [item valueForKey:@"reportURL"])
-//							[[NSFileManager defaultManager] removeItemAtPath: [BonjourBrowser bonjour2local: [item valueForKey:@"reportURL"]] error: nil];
-//						
-//						if( [item valueForKey:@"reportURL"])
-//							localFile = [bonjourBrowser getFile:[item valueForKey:@"reportURL"] index:[bonjourServicesList selectedRow]-1];
-//						
-//						if( localFile != nil && [[NSFileManager defaultManager] fileExistsAtPath: localFile] == YES)
-//						{
-//							if (reportsMode != 3)
-//								[[NSWorkspace sharedWorkspace] openFile: localFile];
-//						}
-//						else
-//						{
-//							Reports	*report = [[Reports alloc] init];
-//							
-//							[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP.noindex/", [self documentsDirectory]] type:reportsMode];
-//							
-//							[bonjourBrowser sendFile:[studySelected valueForKey:@"reportURL"] index: [bonjourServicesList selectedRow]-1];
-//							
-//							// Set only LAST component -> the bonjour server will complete the address
-//							[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:[[studySelected valueForKey:@"reportURL"] lastPathComponent] forKey:@"reportURL"];
-//							
-//							[report release];
-//						}
-//						
-//						localReportFile = [BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]];
-//					}
-//					else
+					if( isCurrentDatabaseBonjour)
 					{
-						// *********************************************
-						//	LOCAL FILE
-						// *********************************************
+						DicomImage *reportSR = [studySelected reportImage];
 						
-						// Is there a Report URL ? If yes, open it; If no, create a new one
-						if( [studySelected valueForKey:@"reportURL"] != nil && [[NSFileManager defaultManager] fileExistsAtPath:[studySelected valueForKey:@"reportURL"]] == YES)
+						if( reportSR)
 						{
-							if (reportsMode != 3)
-								[[NSWorkspace sharedWorkspace] openFile: [studySelected valueForKey:@"reportURL"]];
-						}
-						else
-						{
-							if (reportsMode != 3)
+							NSString *reportPath = [BrowserController extractReportSR: [reportSR completePathResolved]];
+							
+							if( reportPath)
 							{
-								Reports	*report = [[Reports alloc] init];
-								if([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])[report setTemplateName:[[sender selectedItem] title]];
-								[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", [self documentsDirectory]] type:reportsMode];					
-								[report release];
+								if( [reportPath length] > 8 && ([reportPath hasPrefix: @"http://"] || [reportPath hasPrefix: @"https://"]))
+								{
+									NSLog( @"**** generateReport: We should not be here....");
+								}
+								else // It's a file!
+								{
+									[[NSFileManager defaultManager] movePath: reportPath toPath: localReportFile handler: nil];
+								}
 							}
 						}
-						
-						localReportFile = [studySelected valueForKey:@"reportURL"];
+					}
+					
+					// Is there a Report URL ? If yes, open it; If no, create a new one
+					if( localReportFile != nil && [[NSFileManager defaultManager] fileExistsAtPath: localReportFile] == YES)
+					{
+						if (reportsMode != 3)
+							[[NSWorkspace sharedWorkspace] openFile: localReportFile];
+					}
+					else
+					{
+						if (reportsMode != 3)
+						{
+							Reports	*report = [[Reports alloc] init];
+							if([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])[report setTemplateName:[[sender selectedItem] title]];
+							
+							if (isCurrentDatabaseBonjour)
+								[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP.noindex/", [self documentsDirectory]] type:reportsMode];
+							else
+								[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", [self documentsDirectory]] type:reportsMode];
+							
+							[report release];
+						}
 					}
 					
 					if( [[NSFileManager defaultManager] fileExistsAtPath: localReportFile])
@@ -19001,7 +19010,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:localReportFile traverseLink:YES];
 						NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: studySelected, @"study", [fattrs objectForKey:NSFileModificationDate], @"date", nil];
 						
-						[reportFilesToCheck setObject: d forKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
+						[reportFilesToCheck setObject: d forKey: [localReportFile lastPathComponent]];
 					}
 				}
 				@catch (NSException * e)

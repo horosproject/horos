@@ -3036,6 +3036,9 @@ static BOOL initialized = NO;
 {
 	BOOL dialog = NO;
 	
+	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/"] == NO)
+		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/" attributes: nil];
+	
 	if( [[NSUserDefaults standardUserDefaults] valueForKey: @"timeZone"])
 	{
 		if( [[NSUserDefaults standardUserDefaults] integerForKey: @"timeZone"] != [[NSTimeZone localTimeZone] secondsFromGMT])
