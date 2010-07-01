@@ -2247,7 +2247,7 @@ static NSDate *lastWarningDate = nil;
 	NSFileManager       *defaultManager = [NSFileManager defaultManager];
 	BOOL                isDirectory;
 
-	if([filenames count]==1) // for iChat Theatre... (drag & drop a DICOM file on the video chat window)
+	if([filenames count] == 1) // for iChat Theatre... (drag & drop a DICOM file on the video chat window)
 	{
 		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 		{
@@ -2265,22 +2265,22 @@ static NSDate *lastWarningDate = nil;
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
-		return;
-
-	if( [[[BrowserController currentBrowser] window] isMiniaturized] == YES || [[[BrowserController currentBrowser] window] isVisible] == NO)
-	{
-		NSArray *winList = [NSApp windows];
-		
-		for( id loopItem in winList)
-		{
-			if( [[loopItem windowController] isKindOfClass:[ViewerController class]]) return;
-		}
-		
-		[[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
-	}
-	
 	[[BrowserController currentBrowser] syncReportsIfNecessary];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) // Server mode
+	{
+		if( [[[BrowserController currentBrowser] window] isMiniaturized] == YES || [[[BrowserController currentBrowser] window] isVisible] == NO)
+		{
+			NSArray *winList = [NSApp windows];
+			
+			for( id loopItem in winList)
+			{
+				if( [[loopItem windowController] isKindOfClass:[ViewerController class]]) return;
+			}
+			
+			[[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
+		}
+	}
 }
 
 - (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender

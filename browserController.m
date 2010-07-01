@@ -18775,11 +18775,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if( [study isFault] == NO)
 		{
 			NSString *file = [study valueForKey: @"reportURL"];
-			
 			BOOL isDirectory;
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: file isDirectory: &isDirectory])
 			{
+				NSLog( @"Check Report up-to-date: %@", [file lastPathComponent]);
+				
 				NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath: file error: nil];
 				
 				if( [previousDate isEqualToDate: [fattrs objectForKey: NSFileModificationDate]] == NO)
@@ -18793,7 +18794,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 					NSLog( @"Report -> New Content Date: %@", [[study reportImage] valueForKey: @"date"]);
 				}
 			}
-			else NSLog( @"******* syncReportsIfNecessary - file? %@", file);
 		}
 	}
 }
