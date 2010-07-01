@@ -17539,9 +17539,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[t setLaunchPath: @"/usr/bin/zip"];
 				
 				if( [password length] > 0)
-					args = [NSArray arrayWithObjects: @"--quiet", @"-j", @"-e", @"-P", password, destFile, nil];
+					args = [NSArray arrayWithObjects: @"-q", @"-j", @"-e", @"-P", password, destFile, nil];
 				else
-					args = [NSArray arrayWithObjects: @"--quiet", @"-j", destFile, nil];
+					args = [NSArray arrayWithObjects: @"-q", @"-j", destFile, nil];
 					
 				args = [args arrayByAddingObjectsFromArray: subArray];
 				
@@ -17608,9 +17608,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
 	
 			if( [password length] > 0)
-				args = [NSArray arrayWithObjects: @"--quiet", @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
+				args = [NSArray arrayWithObjects: @"-q", @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
 			else
-				args = [NSArray arrayWithObjects: @"--quiet", @"-r", destFile, [srcFolder lastPathComponent], nil];
+				args = [NSArray arrayWithObjects: @"-q", @"-r", destFile, [srcFolder lastPathComponent], nil];
 			
 			[t setArguments: args];
 			[t launch];
@@ -18954,17 +18954,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						if (reportsMode != 3)
 						{
-							[[NSWorkspace sharedWorkspace] openFile: localReportFile];
-							
-//							if( [[localReportFile pathExtension] isEqualToString: @"odt"])
-//							{
-//								//To force the application switch.... strange bug with odt files and textedit
-//								[[NSWorkspace sharedWorkspace] performSelector: @selector( openFile:) withObject: localReportFile afterDelay: 0.5];
-//							}
+							//To force the application switch.... 
+							[[NSWorkspace sharedWorkspace] performSelector: @selector( openFile:) withObject: localReportFile afterDelay: 0.5];
 						}
 					}
 					else
 					{
+						NSLog( @"New report for : %@", [studySelected valueForKey: @"name"]);
+						
 						if (reportsMode != 3)
 						{
 							Reports	*report = [[Reports alloc] init];

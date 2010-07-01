@@ -191,6 +191,7 @@ static id aedesc_to_id(AEDesc *desc)
 		case 0:
 		{
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"doc"];
+			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
 			
 			// Applescript doesnt support UTF-8 encoding
 
@@ -204,39 +205,17 @@ static id aedesc_to_id(AEDesc *desc)
 			
 			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
 			[[NSFileManager defaultManager] moveItemAtPath: tempPath toPath: destinationFile error: nil];
+			[study setValue: destinationFile forKey: @"reportURL"];
 			
-//			BOOL failed = NO;
-//			
-//			
-//			if( [[NSFileManager defaultManager] movePath:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/OsiriX-temp-report.doc"] toPath:destinationFile handler: nil] == NO)
-//			{
-//				char	s[1024];
-//				FSSpec	spec;
-//				FSRef	ref;
-//				
-//				if( FSFindFolder (kOnAppropriateDisk, kDocumentsFolderType, kCreateFolder, &ref) == noErr )
-//				{
-//					FSRefMakePath(&ref, (UInt8 *)s, sizeof(s));
-//					
-//					if( [[NSFileManager defaultManager] movePath: [[NSString stringWithUTF8String: s] stringByAppendingPathComponent:@"/OsiriX-temp-report.doc"] toPath:destinationFile handler: nil] == NO)
-//						failed = YES;
-//				}
-//				else failed = YES;
-//			}
-//			
-//			if( failed)
-//				NSRunCriticalAlertPanel( NSLocalizedString(@"Microsoft Word", nil),  NSLocalizedString(@"Microsoft Word failed to create a report for this study.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-//			else
-			{
-				[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"Microsoft Word"];
-				[study setValue: destinationFile forKey:@"reportURL"];
-			}
+			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"Microsoft Word"];
 		}
 		break;
 		
 		case 1:
 		{
-			NSString	*destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"rtf"];
+			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"rtf"];
+			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
+			
 			[[NSFileManager defaultManager] copyPath:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/ReportTemplate.rtf"] toPath:destinationFile handler: nil];
 			
 			NSDictionary                *attr;
@@ -294,66 +273,72 @@ static id aedesc_to_id(AEDesc *desc)
 			
 			// DICOM Fields
 			NSArray	*seriesArray = [[BrowserController currentBrowser] childrenArray: study];
-			NSArray	*imagePathsArray = [[BrowserController currentBrowser] imagesPathArray: [seriesArray objectAtIndex: 0]];
-			BOOL moreFields = NO;
-			do
+			if( [seriesArray count] > 0)
 			{
-				NSRange firstChar = [rtfString rangeOfString: @"«DICOM_FIELD:"];
-				if( firstChar.location != NSNotFound)
+				NSArray	*imagePathsArray = [[BrowserController currentBrowser] imagesPathArray: [seriesArray objectAtIndex: 0]];
+				BOOL moreFields = NO;
+				do
 				{
-					NSRange secondChar = [rtfString rangeOfString: @"»"];
-					
-					if( secondChar.location != NSNotFound)
+					NSRange firstChar = [rtfString rangeOfString: @"«DICOM_FIELD:"];
+					if( firstChar.location != NSNotFound)
 					{
-						NSString	*dicomField = [rtfString substringWithRange: NSMakeRange( firstChar.location+firstChar.length, secondChar.location - (firstChar.location+firstChar.length))];
+						NSRange secondChar = [rtfString rangeOfString: @"»"];
 						
-						
-						NSLog( @"%@", dicomField);
-						
-						DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [imagePathsArray objectAtIndex: 0] decodingPixelData:NO];
-						if (dcmObject)
+						if( secondChar.location != NSNotFound)
 						{
-							if( [dcmObject attributeValueWithName: dicomField])
+							NSString	*dicomField = [rtfString substringWithRange: NSMakeRange( firstChar.location+firstChar.length, secondChar.location - (firstChar.location+firstChar.length))];
+							
+							
+							NSLog( @"%@", dicomField);
+							
+							DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [imagePathsArray objectAtIndex: 0] decodingPixelData:NO];
+							if (dcmObject)
 							{
-								[rtf replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1)  withString: [dcmObject attributeValueWithName: dicomField]];
+								if( [dcmObject attributeValueWithName: dicomField])
+								{
+									[rtf replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1)  withString: [dcmObject attributeValueWithName: dicomField]];
+								}
+								else
+								{
+									NSLog( @"**** Dicom field not found: %@ in %@", dicomField, [imagePathsArray objectAtIndex: 0]);
+									[rtf replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1)  withString:@""];
+								}
 							}
-							else
-							{
-								NSLog( @"**** Dicom field not found: %@ in %@", dicomField, [imagePathsArray objectAtIndex: 0]);
-								[rtf replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1)  withString:@""];
-							}
+							moreFields = YES;
 						}
-						moreFields = YES;
+						else moreFields = NO;
 					}
 					else moreFields = NO;
 				}
-				else moreFields = NO;
+				while( moreFields);
 			}
-			while( moreFields);
 			
 			[[rtf RTFFromRange:NSMakeRange(0, [rtf length]) documentAttributes:attr] writeToFile:destinationFile atomically:YES];
 			
 			[rtf release];
+			[study setValue: destinationFile forKey:@"reportURL"];
 			
 			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"TextEdit"];
-			[study setValue: destinationFile forKey:@"reportURL"];
 		}
 		break;
 		
 		case 2:
 		{
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"pages"];
+			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
+			
 			[self createNewPagesReportForStudy:study toDestinationPath:destinationFile];
-			[study setValue:destinationFile forKey:@"reportURL"];
 		}
 		break;
 		
 		case 5:
 		{
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"odt"];
+			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
+			
 			[[NSFileManager defaultManager] copyPath:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/ReportTemplate.odt"] toPath:destinationFile handler: nil];
 			[self createNewOpenDocumentReportForStudy:study toDestinationPath:destinationFile];
-			[study setValue:destinationFile forKey:@"reportURL"];
+			
 		}
 		break;
 	}
@@ -607,7 +592,7 @@ CHECK;
 	unzip = [[[NSTask alloc] init] autorelease];
 	[unzip setLaunchPath:@"/usr/bin/zip"];
 	[unzip setCurrentDirectoryPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"OOOsiriX"]];
-	[unzip setArguments: [NSArray arrayWithObjects: @"--quiet", @"-r", aPath, @"content.xml", nil]];
+	[unzip setArguments: [NSArray arrayWithObjects: @"-q", @"-r", aPath, @"content.xml", nil]];
 	[unzip launch];
 
 	[unzip waitUntilExit];
@@ -622,6 +607,8 @@ CHECK;
 	}
 	
 	[[NSFileManager defaultManager] removeItemAtPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"OOOsiriX"] error: nil];
+	
+	[aStudy setValue:aPath forKey:@"reportURL"];
 	
 	// open the modified .odt file
 	if( [[NSWorkspace sharedWorkspace] openFile:aPath withApplication: @"OpenOffice"] == NO)
@@ -706,6 +693,8 @@ CHECK;
 	}
 	// we don't need to gzip anything anymore 
 	[gzip release];
+	
+	[aStudy setValue: aPath forKey:@"reportURL"];
 	
 	// open the modified .pages file
 	[[NSWorkspace sharedWorkspace] openFile:aPath withApplication:@"Pages"];

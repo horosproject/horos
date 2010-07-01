@@ -230,8 +230,6 @@
 		_DICOMSeriesNumber = @"5003";
 		if( file)
 			_dataEncapsulated = [[NSData dataWithContentsOfFile: file] retain];
-		else
-			_dataEncapsulated = [[NSData data] retain];
 		
 		_contentDate = [d retain];
 		
@@ -339,6 +337,8 @@
 				{
 					if( buffer)
 						_dataEncapsulated = [[NSData dataWithBytes: buffer length: length] retain];
+					else
+						_dataEncapsulated = [[NSData data] retain];
 				}
 				
 				@catch( NSException *ne)
@@ -576,7 +576,9 @@
 		if( _dataEncapsulated)
 		{
 			const Uint8 *buffer =  (const Uint8 *) [_dataEncapsulated bytes];
-			status = dataset->putAndInsertUint8Array(DCM_EncapsulatedDocument , buffer, [_dataEncapsulated length] , OFTrue);
+			
+			if( buffer)
+				status = dataset->putAndInsertUint8Array(DCM_EncapsulatedDocument , buffer, [_dataEncapsulated length] , OFTrue);
 		}
 		
 		document->getCodingSchemeIdentification().addPrivateDcmtkCodingScheme();

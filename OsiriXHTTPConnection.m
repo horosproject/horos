@@ -3124,7 +3124,7 @@ NSString* notNil( NSString *s)
 					[zipTask setLaunchPath:@"/usr/bin/zip"];
 					[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
 					if([reportType isEqualToString:@"pages"])
-						[zipTask setArguments:[NSArray arrayWithObjects: @"--quiet", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
+						[zipTask setArguments:[NSArray arrayWithObjects: @"-q", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
 					else
 						[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
 					[zipTask launch];
