@@ -1027,6 +1027,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
 			
 			[[NSWorkspace sharedWorkspace] openFile:path withApplication: nil andDeactivate: YES];
+			[NSThread sleepForTimeInterval: 1];
 		}
 		
 		[mov release];

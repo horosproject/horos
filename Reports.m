@@ -208,6 +208,7 @@ static id aedesc_to_id(AEDesc *desc)
 			[study setValue: destinationFile forKey: @"reportURL"];
 			
 			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"Microsoft Word" andDeactivate: YES];
+			[NSThread sleepForTimeInterval: 1];
 		}
 		break;
 		
@@ -319,6 +320,7 @@ static id aedesc_to_id(AEDesc *desc)
 			[study setValue: destinationFile forKey:@"reportURL"];
 			
 			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"TextEdit" andDeactivate: YES];
+			[NSThread sleepForTimeInterval: 1];
 		}
 		break;
 		
@@ -613,6 +615,7 @@ CHECK;
 	// open the modified .odt file
 	if( [[NSWorkspace sharedWorkspace] openFile:aPath withApplication: @"OpenOffice" andDeactivate: YES] == NO)
 		[[NSWorkspace sharedWorkspace] openFile:aPath withApplication: nil andDeactivate: YES];
+	[NSThread sleepForTimeInterval: 1];
 	
 	// end
 	return YES;
@@ -698,6 +701,7 @@ CHECK;
 	
 	// open the modified .pages file
 	[[NSWorkspace sharedWorkspace] openFile:aPath withApplication:@"Pages" andDeactivate: YES];
+	[NSThread sleepForTimeInterval: 1];
 	
 	// end
 	return YES;

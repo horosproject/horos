@@ -7552,6 +7552,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				NSRunAlertPanel( NSLocalizedString( @"MPEG-2 File", nil), NSLocalizedString( @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil), nil, nil, nil);
 			}
+			[NSThread sleepForTimeInterval: 1];
 			
 			r = YES;
 		}
@@ -7618,6 +7619,8 @@ static NSConditionLock *threadLock = nil;
 				r = NO;
 			else
 				r = YES;
+			
+			[NSThread sleepForTimeInterval: 1];
 		}
 		
 		#endif
@@ -9218,7 +9221,7 @@ static BOOL withReset = NO;
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	if( [fileManager createFileAtPath:pathToPDF contents:encapsulatedPDF attributes:nil]) [[NSWorkspace sharedWorkspace] openFile:pathToPDF withApplication: nil andDeactivate: YES];
 	else NSLog( @"couldn't open pdf");
-	
+	[NSThread sleepForTimeInterval: 1];
 	[pool release];	
 }
 #endif
@@ -10398,7 +10401,10 @@ static BOOL needToRezoom;
 - (IBAction)smartAlbumHelpButton: (id)sender
 {
 	if( [sender tag] == 0)
+	{
 		[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"] withApplication: nil andDeactivate: YES];
+		[NSThread sleepForTimeInterval: 1];
+	}
 	
 	if( [sender tag] == 1)
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
@@ -18986,8 +18992,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						if (reportsMode != 3)
 						{
-							
 							[[NSWorkspace sharedWorkspace] openFile: localReportFile withApplication: nil andDeactivate:YES];
+							[NSThread sleepForTimeInterval: 1];
 						}
 					}
 					else

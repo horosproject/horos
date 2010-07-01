@@ -15969,6 +15969,7 @@ int i,j,l;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
 	{
 		[[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES];
+		[NSThread sleepForTimeInterval: 1];
 	}
 }
 
@@ -17022,6 +17023,7 @@ int i,j,l;
 			NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		
 		[[NSWorkspace sharedWorkspace] openFile: [pathToPAGES stringByAppendingPathExtension:@"pages"] withApplication: nil andDeactivate: YES];
+		[NSThread sleepForTimeInterval: 1];
 	}
 }
 

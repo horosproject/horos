@@ -487,6 +487,7 @@ typedef struct _xyzArray
 			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
 			
 			[[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES];
+			[NSThread sleepForTimeInterval: 1];
 		}
 		
 		[mov release];
