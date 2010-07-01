@@ -15968,7 +15968,7 @@ int i,j,l;
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
 	{
-		[[NSWorkspace sharedWorkspace] openFile: path];
+		[[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES];
 	}
 }
 
@@ -17021,7 +17021,7 @@ int i,j,l;
 		if( [[NSFileManager defaultManager] fileExistsAtPath: [pathToPAGES stringByAppendingPathExtension:@"pages"]] == NO)
 			NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		
-		[[NSWorkspace sharedWorkspace] openFile:[pathToPAGES stringByAppendingPathExtension:@"pages"]];
+		[[NSWorkspace sharedWorkspace] openFile: [pathToPAGES stringByAppendingPathExtension:@"pages"] withApplication: nil andDeactivate: YES];
 	}
 }
 

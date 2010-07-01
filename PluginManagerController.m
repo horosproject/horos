@@ -501,7 +501,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	}
 	else
 	{
-		BOOL boo = [[NSWorkspace sharedWorkspace] openFile:path];
+		BOOL boo = [[NSWorkspace sharedWorkspace] openFile:path withApplication: nil andDeactivate: YES];
 		while(![[NSFileManager defaultManager] fileExistsAtPath:[path stringByDeletingPathExtension]]){ /*wait until unzip ends*/}
 		return boo;
 	}

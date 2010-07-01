@@ -207,7 +207,7 @@ static id aedesc_to_id(AEDesc *desc)
 			[[NSFileManager defaultManager] moveItemAtPath: tempPath toPath: destinationFile error: nil];
 			[study setValue: destinationFile forKey: @"reportURL"];
 			
-			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"Microsoft Word"];
+			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"Microsoft Word" andDeactivate: YES];
 		}
 		break;
 		
@@ -318,7 +318,7 @@ static id aedesc_to_id(AEDesc *desc)
 			[rtf release];
 			[study setValue: destinationFile forKey:@"reportURL"];
 			
-			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"TextEdit"];
+			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"TextEdit" andDeactivate: YES];
 		}
 		break;
 		
@@ -611,8 +611,8 @@ CHECK;
 	[aStudy setValue:aPath forKey:@"reportURL"];
 	
 	// open the modified .odt file
-	if( [[NSWorkspace sharedWorkspace] openFile:aPath withApplication: @"OpenOffice"] == NO)
-		[[NSWorkspace sharedWorkspace] openFile:aPath withApplication: nil];
+	if( [[NSWorkspace sharedWorkspace] openFile:aPath withApplication: @"OpenOffice" andDeactivate: YES] == NO)
+		[[NSWorkspace sharedWorkspace] openFile:aPath withApplication: nil andDeactivate: YES];
 	
 	// end
 	return YES;
@@ -697,7 +697,7 @@ CHECK;
 	[aStudy setValue: aPath forKey:@"reportURL"];
 	
 	// open the modified .pages file
-	[[NSWorkspace sharedWorkspace] openFile:aPath withApplication:@"Pages"];
+	[[NSWorkspace sharedWorkspace] openFile:aPath withApplication:@"Pages" andDeactivate: YES];
 	
 	// end
 	return YES;

@@ -1432,7 +1432,7 @@ public:
 			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
 			
-			[[NSWorkspace sharedWorkspace] openFile:path];
+			[[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES];
 		}
 		
 		[mov release];

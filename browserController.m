@@ -7548,7 +7548,7 @@ static NSConditionLock *threadLock = nil;
 		{
 			NSString *filePath = [im valueForKey: @"completePath"];
 			
-			if( [[NSWorkspace sharedWorkspace] openFile: filePath withApplication:@"VLC"] == NO)
+			if( [[NSWorkspace sharedWorkspace] openFile: filePath withApplication:@"VLC" andDeactivate: YES] == NO)
 			{
 				NSRunAlertPanel( NSLocalizedString( @"MPEG-2 File", nil), NSLocalizedString( @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil), nil, nil, nil);
 			}
@@ -7614,7 +7614,7 @@ static NSConditionLock *threadLock = nil;
 			}
 			else path = [im valueForKey: @"completePath"];
 			
-			if( path && [[NSWorkspace sharedWorkspace] openFile: path] == NO)
+			if( path && [[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES] == NO)
 				r = NO;
 			else
 				r = YES;
@@ -9216,7 +9216,7 @@ static BOOL withReset = NO;
 	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:[curObj valueForKey: @"completePath"] decodingPixelData:NO];
 	NSData *encapsulatedPDF = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-	if( [fileManager createFileAtPath:pathToPDF contents:encapsulatedPDF attributes:nil]) [[NSWorkspace sharedWorkspace] openFile:pathToPDF];
+	if( [fileManager createFileAtPath:pathToPDF contents:encapsulatedPDF attributes:nil]) [[NSWorkspace sharedWorkspace] openFile:pathToPDF withApplication: nil andDeactivate: YES];
 	else NSLog( @"couldn't open pdf");
 	
 	[pool release];	
@@ -10398,7 +10398,7 @@ static BOOL needToRezoom;
 - (IBAction)smartAlbumHelpButton: (id)sender
 {
 	if( [sender tag] == 0)
-		[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"]];
+		[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"] withApplication: nil andDeactivate: YES];
 	
 	if( [sender tag] == 1)
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
@@ -18986,8 +18986,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						if (reportsMode != 3)
 						{
-							//To force the application switch.... 
-							[[NSWorkspace sharedWorkspace] performSelector: @selector( openFile:) withObject: localReportFile afterDelay: 0.5];
+							
+							[[NSWorkspace sharedWorkspace] openFile: localReportFile withApplication: nil andDeactivate:YES];
 						}
 					}
 					else
