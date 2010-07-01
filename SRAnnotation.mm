@@ -553,7 +553,8 @@
 			document->setContentDate( [[[DCMCalendarDate date] dateString] UTF8String]);
 			document->setContentTime( [[[DCMCalendarDate date] timeString] UTF8String]);
 		}
-		else NSLog( @"********** no date for Report SR ?");
+		else if( [_dataEncapsulated length] > 0)
+			NSLog( @"********** no date for Report SR ?");
 	}
 	
 	// Image Reference

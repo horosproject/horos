@@ -19004,6 +19004,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 							else
 								[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", [self documentsDirectory]] type:reportsMode];
 							
+							localReportFile = [studySelected valueForKey: @"reportURL"];
+							
 							[report release];
 						}
 					}
