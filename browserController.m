@@ -854,6 +854,8 @@ static NSConditionLock *threadLock = nil;
 					// Check if it is an OsiriX Report SR
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
 					{
+						reportURL = @""; // <- For an empty DICOM SR File
+						
 						[curDict setValue: @"OsiriX Report SR" forKey: @"seriesID"];
 						
 						NSString *reportPath = [BrowserController extractReportSR: newFile];
@@ -879,6 +881,8 @@ static NSConditionLock *threadLock = nil;
 								
 								reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportPath lastPathComponent]];
 							}
+							
+							NSLog( @"--- DICOM SR -> Report : %@", [curDict valueForKey: @"patientName"]);
 						}
 						
 						inParseExistingObject = YES;
@@ -1238,6 +1242,8 @@ static NSConditionLock *threadLock = nil;
 								
 								if( [reportURL length] > 0)
 									[study setPrimitiveValue: reportURL forKey: @"reportURL"];
+								else if( [reportURL length] == 0)
+									[study setPrimitiveValue: 0L forKey: @"reportURL"];
 								
 								[addedImagesArray addObject: image];
 								
@@ -2219,24 +2225,31 @@ static NSConditionLock *threadLock = nil;
 					
 					for( NSManagedObject *objectToSend in objectsToSend)
 					{
-						if( [[NSFileManager defaultManager] fileExistsAtPath: [objectToSend valueForKey: @"completePath"]]) // Dont try to send files that are not available
+						@try
 						{
-							if( [previousPatientUID isEqualToString: [objectToSend valueForKeyPath:@"series.study.patientID"]])
+							if( [[NSFileManager defaultManager] fileExistsAtPath: [objectToSend valueForKey: @"completePath"]]) // Dont try to send files that are not available
 							{
-								[samePatientArray addObject: objectToSend];
+								if( previousPatientUID && [previousPatientUID isEqualToString: [objectToSend valueForKeyPath:@"series.study.patientID"]])
+								{
+									[samePatientArray addObject: objectToSend];
+								}
+								else
+								{
+									// Send the collected files from the same patient
+									
+									if( [samePatientArray count]) [self executeSend: samePatientArray server: server dictionary: copy];
+									
+									// Reset
+									[samePatientArray removeAllObjects];
+									[samePatientArray addObject: objectToSend];
+									
+									previousPatientUID = [objectToSend valueForKeyPath:@"series.study.patientID"];
+								}
 							}
-							else
-							{
-								// Send the collected files from the same patient
-								
-								if( [samePatientArray count]) [self executeSend: samePatientArray server: server dictionary: copy];
-								
-								// Reset
-								[samePatientArray removeAllObjects];
-								[samePatientArray addObject: objectToSend];
-								
-								previousPatientUID = [objectToSend valueForKeyPath:@"series.study.patientID"];
-							}
+						}
+						@catch( NSException *ne)
+						{
+							NSLog( @"----- Autorouting Prepare exception: %@", ne);
 						}
 					}
 					
@@ -2246,8 +2259,7 @@ static NSConditionLock *threadLock = nil;
 					
 				@catch( NSException *ne)
 				{
-					NSLog( @"----- %@", [ne name]);
-					NSLog( @"----- %@", [ne reason]);
+					NSLog( @"----- Autorouting exception: %@", ne);
 				}
 			}
 			else
@@ -6450,6 +6462,8 @@ static NSConditionLock *threadLock = nil;
 	NSManagedObjectContext *context = self.managedObjectContext;
 	NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
 	NSMutableArray *seriesArray = [NSMutableArray array], *studiesArray = [NSMutableArray array];
+	
+	[reportFilesToCheck removeAllObjects];
 	
 	[context lock];
 	
@@ -18757,27 +18771,30 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSMutableDictionary *d = [reportFilesToCheck objectForKey: key];
 		NSDate *previousDate = [d objectForKey: @"date"];
 		DicomStudy *study = [d objectForKey: @"study"];
-			
-		NSString *file = [study valueForKey: @"reportURL"];
 		
-		BOOL isDirectory;
-		
-		if( [[NSFileManager defaultManager] fileExistsAtPath: file isDirectory: &isDirectory])
+		if( [study isFault] == NO)
 		{
-			NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath: file error: nil];
+			NSString *file = [study valueForKey: @"reportURL"];
 			
-			if( [previousDate isEqualToDate: [fattrs objectForKey: NSFileModificationDate]] == NO)
+			BOOL isDirectory;
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: file isDirectory: &isDirectory])
 			{
-				NSLog( @"Report -> File Modified -> Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
+				NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath: file error: nil];
 				
-				[d setObject: [fattrs objectForKey: NSFileModificationDate] forKey: @"date"];
-				
-				[study archiveReportAsDICOMSR];
-				
-				NSLog( @"Report -> New Content Date: %@", [[study reportImage] valueForKey: @"date"]);
+				if( [previousDate isEqualToDate: [fattrs objectForKey: NSFileModificationDate]] == NO)
+				{
+					NSLog( @"Report -> File Modified -> Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
+					
+					[d setObject: [fattrs objectForKey: NSFileModificationDate] forKey: @"date"];
+					
+					[study archiveReportAsDICOMSR];
+					
+					NSLog( @"Report -> New Content Date: %@", [[study reportImage] valueForKey: @"date"]);
+				}
 			}
+			else NSLog( @"******* syncReportsIfNecessary - file? %@", file);
 		}
-		else NSLog( @"******* syncReportsIfNecessary - file? %@", file);
 	}
 }
 

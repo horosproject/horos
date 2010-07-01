@@ -544,6 +544,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				SRAnnotation *r = nil;
 				
+				NSLog( @"--- Report -> DICOM SR : %@", [self valueForKey: @"name"]);
+				
 				if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
 					r = [[[SRAnnotation alloc] initWithURLReport: [self valueForKey: @"reportURL"] path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
 				else
@@ -572,6 +574,16 @@ static NSRecursiveLock *dbModifyLock = nil;
 		[[self managedObjectContext] unlock];
 	}
 	#endif
+}
+
+- (BOOL)validateForDelete:(NSError **)error
+{
+	BOOL delete = [super validateForDelete:(NSError **)error];
+	if (delete)
+	{
+		[[NSFileManager defaultManager] removeItemAtPath: [self valueForKey: @"reportURL"] error: nil];
+	}
+	return delete;
 }
 
 - (NSString*) soundex
