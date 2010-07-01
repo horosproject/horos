@@ -228,10 +228,12 @@
 		_seriesInstanceUID = nil;
 		_DICOMSRDescription =  @"OsiriX Report SR";
 		_DICOMSeriesNumber = @"5003";
-		if( file)
-			_dataEncapsulated = [[NSData dataWithContentsOfFile: file] retain];
 		
-		_contentDate = [d retain];
+		if( file)
+		{
+			_dataEncapsulated = [[NSData dataWithContentsOfFile: file] retain];
+			_contentDate = [d retain];
+		}
 		
 		[_DICOMSRDescription retain];
 		[_DICOMSeriesNumber retain];
@@ -392,6 +394,8 @@
 		[_DICOMSRDescription retain];
 		[_DICOMSeriesNumber retain];
 		
+		_contentDate = [[NSDate date] retain];
+		
 		document = new DSRDocument();
 		_newSR = NO;
 		OFCondition status = EC_Normal;
@@ -483,59 +487,59 @@
 
 - (BOOL)writeToFileAtPath:(NSString *)path
 {
+	id study = [image valueForKeyPath:@"series.study"];
+	
 	//	Don't want to UIDs if already created
-	if (_newSR)
+	if( _newSR)
 	{
-		id study = [image valueForKeyPath:@"series.study"];
-		
 		//add to Study
 		document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
-		
-		NSNumber *v = [NSNumber numberWithInt: [[image valueForKey:@"frameID"] intValue]];
-		
-		document->setInstanceNumber( [[v stringValue] UTF8String]);
-		
-		// Add metadata for DICOM
-		//Study Description
-		if ([study valueForKey:@"studyName"])
-			document->setStudyDescription([[study valueForKey:@"studyName"] UTF8String]);
-		
-		document->setSpecificCharacterSet( "ISO_IR 192"); // UTF-8
-		
-		if ([study valueForKey:@"name"] )
-			document->setPatientsName([[study valueForKey:@"name"] UTF8String]);
-			
-		if ([study valueForKey:@"dateOfBirth"])
-			document->setPatientsBirthDate([[[study valueForKey:@"dateOfBirth"] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] UTF8String]);
-			
-		if ([study valueForKey:@"patientSex"])
-			document->setPatientsSex([[study valueForKey:@"patientSex"] UTF8String]);
-			
-		NSString *patientID = [study valueForKey:@"patientID"];
-		
-		if (patientID)
-			document->setPatientID([patientID UTF8String]);
-		
-		if ([study valueForKey:@"referringPhysician"])
-			document->setReferringPhysiciansName([[study valueForKey:@"referringPhysician"] UTF8String]);
-		
-		if ([study valueForKey:@"id"])
-		{
-			NSString *studyID = [study valueForKey:@"id"];
-			document->setStudyID([studyID UTF8String]);
-		}
-		
-		if ([study valueForKey:@"accessionNumber"])
-			document->setAccessionNumber( [[study valueForKey:@"accessionNumber"] UTF8String]);
-		
-		if( _DICOMSRDescription)
-			document->setSeriesDescription( [_DICOMSRDescription UTF8String]);
-		
-		document->setManufacturer( [@"OsiriX" UTF8String]);
-		
-		if( _DICOMSeriesNumber)
-			document->setSeriesNumber( [_DICOMSeriesNumber UTF8String]);
 	}
+	
+	NSNumber *v = [NSNumber numberWithInt: [[image valueForKey:@"frameID"] intValue]];
+	
+	document->setInstanceNumber( [[v stringValue] UTF8String]);
+	
+	// Add metadata for DICOM
+	//Study Description
+	if ([study valueForKey:@"studyName"])
+		document->setStudyDescription([[study valueForKey:@"studyName"] UTF8String]);
+	
+	document->setSpecificCharacterSet( "ISO_IR 192"); // UTF-8
+	
+	if ([study valueForKey:@"name"] )
+		document->setPatientsName([[study valueForKey:@"name"] UTF8String]);
+		
+	if ([study valueForKey:@"dateOfBirth"])
+		document->setPatientsBirthDate([[[study valueForKey:@"dateOfBirth"] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] UTF8String]);
+		
+	if ([study valueForKey:@"patientSex"])
+		document->setPatientsSex([[study valueForKey:@"patientSex"] UTF8String]);
+		
+	NSString *patientID = [study valueForKey:@"patientID"];
+	
+	if (patientID)
+		document->setPatientID([patientID UTF8String]);
+	
+	if ([study valueForKey:@"referringPhysician"])
+		document->setReferringPhysiciansName([[study valueForKey:@"referringPhysician"] UTF8String]);
+	
+	if ([study valueForKey:@"id"])
+	{
+		NSString *studyID = [study valueForKey:@"id"];
+		document->setStudyID([studyID UTF8String]);
+	}
+	
+	if ([study valueForKey:@"accessionNumber"])
+		document->setAccessionNumber( [[study valueForKey:@"accessionNumber"] UTF8String]);
+	
+	if( _DICOMSRDescription)
+		document->setSeriesDescription( [_DICOMSRDescription UTF8String]);
+	
+	document->setManufacturer( [@"OsiriX" UTF8String]);
+	
+	if( _DICOMSeriesNumber)
+		document->setSeriesNumber( [_DICOMSeriesNumber UTF8String]);
 	
 	if( _contentDate)
 	{
@@ -544,10 +548,13 @@
 	}
 	else
 	{
-		document->setContentDate( [[[DCMCalendarDate date] dateString] UTF8String]);
-		document->setContentTime( [[[DCMCalendarDate date] timeString] UTF8String]);
+		if( [_DICOMSRDescription isEqualToString: @"OsiriX Report SR"] == NO)
+		{
+			document->setContentDate( [[[DCMCalendarDate date] dateString] UTF8String]);
+			document->setContentTime( [[[DCMCalendarDate date] timeString] UTF8String]);
+		}
+		else NSLog( @"********** no date for Report SR ?");
 	}
-
 	
 	// Image Reference
 	OFString refsopClassUID = OFString([[image valueForKeyPath:@"series.seriesSOPClassUID"] UTF8String]);

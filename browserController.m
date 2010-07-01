@@ -510,7 +510,7 @@ static NSConditionLock *threadLock = nil;
 	return [self addFilesToDatabase: newFilesArray onlyDICOM: onlyDICOM  produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context: context dbFolder: [self documentsDirectory]];
 }
 
-+ (NSString*) extractReportSR: (NSString*) dicomSR
++ (NSString*) extractReportSR: (NSString*) dicomSR contentDate: (NSDate*) date
 {
 	NSString *destPath = nil;
 	NSString *uidName = [SRAnnotation getReportFilenameFromSR: dicomSR];
@@ -548,6 +548,9 @@ static NSConditionLock *threadLock = nil;
 			}
 		}
 	}
+	
+	if( destPath)
+		[[NSFileManager defaultManager] setAttributes: [NSDictionary dictionaryWithObjectsAndKeys: date, NSFileModificationDate, nil] ofItemAtPath: destPath error: nil];
 	
 	return destPath;
 }
@@ -714,7 +717,7 @@ static NSConditionLock *threadLock = nil;
 			if( curFile)
 			{
 				curDict = [curFile dicomElements];
-			
+				
 				if( onlyDICOM)
 				{
 					if( [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == NO)
@@ -828,7 +831,6 @@ static NSConditionLock *threadLock = nil;
 				
 				BOOL DICOMSR = NO;
 				BOOL inParseExistingObject = parseExistingObject;
-				NSString *reportURL = nil;
 				
 				NSString *SOPClassUID = [curDict objectForKey:@"SOPClassUID"];
 				
@@ -855,38 +857,6 @@ static NSConditionLock *threadLock = nil;
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
 					{
 						[curDict setValue: @"OsiriX Report SR" forKey: @"seriesID"];
-						
-						if( generatedByOsiriX == NO) // DICOM SR -> Report file, if generatedByOsiriX == YES, OsiriX already managed the Report file
-						{
-							reportURL = @""; // <- For an empty DICOM SR File
-							
-							NSString *reportPath = [BrowserController extractReportSR: newFile];
-							
-							if( reportPath)
-							{
-								if( [reportPath length] > 8 && ([reportPath hasPrefix: @"http://"] || [reportPath hasPrefix: @"https://"]))
-								{
-									reportURL = reportPath;
-								}
-								else // It's a file!
-								{
-									if( isBonjour) // Move it to the TEMP folder
-									{
-										[[NSFileManager defaultManager] removeItemAtPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
-										[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
-									}
-									else // Move it to the REPORTS folder
-									{
-										[[NSFileManager defaultManager] removeItemAtPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
-										[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
-									}
-									
-									reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportPath lastPathComponent]];
-								}
-								
-								NSLog( @"--- DICOM SR -> Report : %@", [curDict valueForKey: @"patientName"]);
-							}
-						}
 						
 						inParseExistingObject = YES;
 						DICOMSR = YES;
@@ -1243,14 +1213,56 @@ static NSConditionLock *threadLock = nil;
 									}
 								}
 								
-								if( [reportURL length] > 0)
-									[study setPrimitiveValue: reportURL forKey: @"reportURL"];
-								else if( reportURL && [reportURL length] == 0)
-									[study setPrimitiveValue: 0L forKey: @"reportURL"];
+								if( DICOMSR && [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
+								{
+									// DICOM SR -> Report file, if generatedByOsiriX == YES, OsiriX already managed the Report file
+									if( generatedByOsiriX == NO) 
+									{
+										NSString *reportURL = nil; // <- For an empty DICOM SR File
+										
+										DicomImage *reportSR = [study reportImage];
+										
+										if( reportSR == image) // Because we can have multiple reports -> only the most recent one is valid
+										{
+											NSString *reportURL = nil, *reportPath = [BrowserController extractReportSR: newFile contentDate: [curDict objectForKey: @"studyDate"]];
+											
+											if( reportPath)
+											{
+												if( [reportPath length] > 8 && ([reportPath hasPrefix: @"http://"] || [reportPath hasPrefix: @"https://"]))
+												{
+													reportURL = reportPath;
+												}
+												else // It's a file!
+												{
+													if( isBonjour) // Move it to the TEMP folder
+													{
+														[[NSFileManager defaultManager] removeItemAtPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+														[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+													}
+													else // Move it to the REPORTS folder
+													{
+														[[NSFileManager defaultManager] removeItemAtPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+														[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+													}
+													
+													reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportPath lastPathComponent]];
+												}
+												
+												NSLog( @"--- DICOM SR -> Report : %@", [curDict valueForKey: @"patientName"]);
+											}
+											
+											if( [reportURL length] > 0)
+												[study setPrimitiveValue: reportURL forKey: @"reportURL"];
+											else
+												[study setPrimitiveValue: 0L forKey: @"reportURL"];
+										}
+									}
+								}
 								
 								[addedImagesArray addObject: image];
 								
-								if(seriesTable && [addedSeries containsObject: seriesTable] == NO) [addedSeries addObject: seriesTable];
+								if(seriesTable && [addedSeries containsObject: seriesTable] == NO)
+									[addedSeries addObject: seriesTable];
 								
 								if( DICOMSR == NO && [curDict valueForKey:@"album"] !=nil)
 								{
@@ -18952,7 +18964,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							// The report was maybe changed on the server -> delete the DICOM SR file
 							[[NSFileManager defaultManager] removeItemAtPath: [reportSR valueForKey: @"completePath"] error: nil];
 							
-							NSString *reportPath = [BrowserController extractReportSR: [reportSR completePathResolved]];
+							NSString *reportPath = [BrowserController extractReportSR: [reportSR completePathResolved] contentDate: [reportSR valueForKey: @"date"]];
 							
 							if( reportPath)
 							{
