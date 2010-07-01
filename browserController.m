@@ -1245,7 +1245,7 @@ static NSConditionLock *threadLock = nil;
 								
 								if( [reportURL length] > 0)
 									[study setPrimitiveValue: reportURL forKey: @"reportURL"];
-								else if( [reportURL length] == 0)
+								else if( reportURL && [reportURL length] == 0)
 									[study setPrimitiveValue: 0L forKey: @"reportURL"];
 								
 								[addedImagesArray addObject: image];
