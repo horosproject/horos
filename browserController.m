@@ -854,35 +854,38 @@ static NSConditionLock *threadLock = nil;
 					// Check if it is an OsiriX Report SR
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
 					{
-						reportURL = @""; // <- For an empty DICOM SR File
-						
 						[curDict setValue: @"OsiriX Report SR" forKey: @"seriesID"];
 						
-						NSString *reportPath = [BrowserController extractReportSR: newFile];
-						
-						if( reportPath)
+						if( generatedByOsiriX == NO) // DICOM SR -> Report file, if generatedByOsiriX == YES, OsiriX already managed the Report file
 						{
-							if( [reportPath length] > 8 && ([reportPath hasPrefix: @"http://"] || [reportPath hasPrefix: @"https://"]))
+							reportURL = @""; // <- For an empty DICOM SR File
+							
+							NSString *reportPath = [BrowserController extractReportSR: newFile];
+							
+							if( reportPath)
 							{
-								reportURL = reportPath;
-							}
-							else // It's a file!
-							{
-								if( isBonjour) // Move it to the TEMP folder
+								if( [reportPath length] > 8 && ([reportPath hasPrefix: @"http://"] || [reportPath hasPrefix: @"https://"]))
 								{
-									[[NSFileManager defaultManager] removeItemAtPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
-									[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+									reportURL = reportPath;
 								}
-								else // Move it to the REPORTS folder
+								else // It's a file!
 								{
-									[[NSFileManager defaultManager] removeItemAtPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
-									[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+									if( isBonjour) // Move it to the TEMP folder
+									{
+										[[NSFileManager defaultManager] removeItemAtPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+										[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+									}
+									else // Move it to the REPORTS folder
+									{
+										[[NSFileManager defaultManager] removeItemAtPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+										[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
+									}
+									
+									reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportPath lastPathComponent]];
 								}
 								
-								reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportPath lastPathComponent]];
+								NSLog( @"--- DICOM SR -> Report : %@", [curDict valueForKey: @"patientName"]);
 							}
-							
-							NSLog( @"--- DICOM SR -> Report : %@", [curDict valueForKey: @"patientName"]);
 						}
 						
 						inParseExistingObject = YES;
@@ -18783,7 +18786,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath: file error: nil];
 				
-				if( [previousDate isEqualToDate: [fattrs objectForKey: NSFileModificationDate]] == NO)
+				if( [previousDate timeIntervalSinceDate: [fattrs objectForKey: NSFileModificationDate]] < 0)
 				{
 					NSLog( @"Report -> File Modified -> Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
 					
