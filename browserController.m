@@ -1299,9 +1299,7 @@ static NSConditionLock *threadLock = nil;
 						else
 						{
 							if( [[NSFileManager defaultManager] movePath: newFile toPath:[ERRpath stringByAppendingPathComponent: [newFile lastPathComponent]]  handler:nil] == NO)
-							{
 								[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
-							}
 						}
 					}
 				}
@@ -7080,23 +7078,7 @@ static NSConditionLock *threadLock = nil;
 				if( [report valueForKey: @"date"])
 					return [report valueForKey: @"date"];
 				else
-				{
-					if( [[item valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[item valueForKey: @"reportURL"] hasPrefix: @"https://"])
-					{
-						return nil;
-					}
-					else if (isCurrentDatabaseBonjour)
-					{
-						return [bonjourBrowser getFileModification:[item valueForKey:@"reportURL"] index:[bonjourServicesList selectedRow]-1];
-					}
-					else if( [[NSFileManager defaultManager] fileExistsAtPath:[item valueForKey:@"reportURL"]])
-					{
-						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:[item valueForKey:@"reportURL"]  traverseLink:YES];
-						
-						return [fattrs objectForKey:NSFileModificationDate];
-					}
-					else return nil;
-				}
+					return nil;
 			}
 			else return nil;
 		}
@@ -18776,12 +18758,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSDate *previousDate = [d objectForKey: @"date"];
 		DicomStudy *study = [d objectForKey: @"study"];
 			
-		NSString *file = nil;
-		
-		if( isCurrentDatabaseBonjour)
-			file = [BonjourBrowser bonjour2local: key];
-		else
-			file = [study valueForKey: @"reportURL"];
+		NSString *file = [study valueForKey: @"reportURL"];
 		
 		BOOL isDirectory;
 		
@@ -18847,45 +18824,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if( [[studySelected valueForKey:@"reportURL"] lastPathComponent])
 						[reportFilesToCheck removeObjectForKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
 					
+					[[NSFileManager defaultManager] removeFileAtPath: [studySelected valueForKey:@"reportURL"] handler:nil];
+					
 					if (isCurrentDatabaseBonjour)
-					{
-						[[NSFileManager defaultManager] removeFileAtPath:[BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]] handler:nil];
-						
-						// Set only LAST component -> the bonjour server will complete the address
 						[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:nil forKey:@"reportURL"];
-						
-						[studySelected setValue: nil forKey:@"reportURL"];
-					}
-					else
-					{
-						[[NSFileManager defaultManager] removeFileAtPath:[studySelected valueForKey:@"reportURL"] handler:nil];
-						[studySelected setValue: nil forKey:@"reportURL"];
-					}
+					
+					[studySelected setValue: nil forKey:@"reportURL"];
 					
 					[databaseOutline reloadData];
 				}
-//				else if( [[item valueForKey:@"reportSeries"] count])
-//				{
-//					NSManagedObjectContext	*context = self.managedObjectContext;
-//					
-//					[context lock];
-//					
-//					@try 
-//					{
-//						NSArray *array = [item valueForKey:@"reportSeries"];
-//					
-//						for( NSManagedObject *o in array)
-//							[context deleteObject: o];
-//					}
-//					@catch (NSException * e) 
-//					{
-//						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-//					}
-//					
-//					[context unlock];
-//					
-//					[self saveDatabase: currentDatabasePath];
-//				}
 				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDeletedReportNotification object:nil userInfo:nil];
 			}
 		}
@@ -18995,7 +18942,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 								}
 								else // It's a file!
 								{
-									[[NSFileManager defaultManager] movePath: reportPath toPath: localReportFile handler: nil];
+									[[NSFileManager defaultManager] removeItemAtPath: localReportFile error: nil];
+									[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: localReportFile error: nil];
 								}
 							}
 						}
@@ -19005,7 +18953,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if( localReportFile != nil && [[NSFileManager defaultManager] fileExistsAtPath: localReportFile] == YES)
 					{
 						if (reportsMode != 3)
+						{
 							[[NSWorkspace sharedWorkspace] openFile: localReportFile];
+							
+//							if( [[localReportFile pathExtension] isEqualToString: @"odt"])
+//							{
+//								//To force the application switch.... strange bug with odt files and textedit
+//								[[NSWorkspace sharedWorkspace] performSelector: @selector( openFile:) withObject: localReportFile afterDelay: 0.5];
+//							}
+						}
 					}
 					else
 					{
@@ -19041,8 +18997,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 		}
 	}
-	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 	
+	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixReportModeChangedNotification object: nil userInfo: nil];
 }
 #endif

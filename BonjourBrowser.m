@@ -62,22 +62,9 @@ extern const char *GetPrivateIP();
 	[c unlock];
 }
 
-+ (NSString*) bonjour2local: (NSString*) str
-{
-	if( str == nil) return nil;
-	
-	NSMutableString	*destPath = [NSMutableString string];
-	
-	[destPath appendString:[[BrowserController currentBrowser] documentsDirectory]];
-	[destPath appendString:@"/TEMP.noindex/"];
-	[destPath appendString: [str lastPathComponent]];
-
-	return destPath;
-}
-
 + (NSString*) uniqueLocalPath:(NSManagedObject*) image
 {
-	NSString	*uniqueFileName = nil;
+	NSString *uniqueFileName = nil;
 	
 	if( [[image valueForKey: @"numberOfFrames"] intValue] > 1)
 		uniqueFileName = [NSString stringWithFormat:@"%@-%@.%@", [image valueForKeyPath:@"series.study.patientUID"], [image valueForKey:@"sopInstanceUID"], [image valueForKey:@"extension"]];
@@ -1406,40 +1393,6 @@ extern const char *GetPrivateIP();
 	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
-}
-
-- (NSDate*) getFileModification:(NSString*) pathFile index:(int) index 
-{
-	NSDate *modificationDate = nil;
-	
-	if( [[NSFileManager defaultManager] fileExistsAtPath: [BonjourBrowser bonjour2local: pathFile]])
-	{
-		NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:[BonjourBrowser bonjour2local: pathFile] traverseLink:YES];
-		return [fattrs objectForKey:NSFileModificationDate];
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	@try 
-	{
-		[filePathToLoad release];
-	
-		filePathToLoad = [pathFile retain];
-		
-		[self connectToServer: index message:@"MFILE"];
-		
-		if( resolved == YES)
-		{
-			modificationDate = [NSDate dateWithString: FileModificationDate];
-		}
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
-	return modificationDate;
 }
 
 - (NSString*) getDatabaseFile:(int) index

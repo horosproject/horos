@@ -74,7 +74,6 @@
 	NSDictionary		*messageToSend;
 }
 
-+ (NSString*) bonjour2local: (NSString*) str;
 + (NSString*) uniqueLocalPath:(NSManagedObject*) image;
 + (BonjourBrowser*) currentBrowser;
 
@@ -100,7 +99,6 @@
 - (BOOL) isBonjourDatabaseUpToDate: (int) index;
 
 - (BOOL) retrieveDICOMFilesWithSTORESCU:(int) indexFrom to:(int) indexTo paths:(NSArray*) ip;
-- (NSDate*) getFileModification:(NSString*) pathFile index:(int) index;
 
 - (void) buildFixedIPList;
 - (void) buildLocalPathsList;
