@@ -1354,7 +1354,10 @@ static NSConditionLock *threadLock = nil;
 			
 			if( isBonjour && [bonjourFilesToSend count] > 0)
 			{
-				[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourDB:) toTarget: browserController withObject: bonjourFilesToSend];
+				if( generatedByOsiriX)
+					[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourGeneratedByOsiriXDB:) toTarget: browserController withObject: bonjourFilesToSend];
+				else 
+					[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourDB:) toTarget: browserController withObject: bonjourFilesToSend];
 			}
 			
 			if( notifyAddedFiles)
@@ -11034,7 +11037,20 @@ static BOOL needToRezoom;
 	
 	int row = [bonjourServicesList selectedRow];
 	if( row > 0)
-		result = [bonjourBrowser sendDICOMFile: row-1 paths: files];
+		result = [bonjourBrowser sendDICOMFile: row-1 paths: files generatedByOsiriX: NO];
+	
+	[pool release];
+}
+
+- (void) sendFilesToCurrentBonjourGeneratedByOsiriXDB: (NSArray*) files
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	BOOL result = NO;
+	
+	int row = [bonjourServicesList selectedRow];
+	if( row > 0)
+		result = [bonjourBrowser sendDICOMFile: row-1 paths: files generatedByOsiriX: YES];
 	
 	[pool release];
 }

@@ -469,7 +469,7 @@ extern const char *GetPrivateIP();
 						
 						representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
 					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SEND" length: 5]]) // SENDD & SENDG
+					else if ([[data subdataWithRange: NSMakeRange(0,4)] isEqualToData: [NSData dataWithBytes:"SEND" length: 4]]) // SENDD & SENDG
 					{
 						int pos = 6, i;
 						
