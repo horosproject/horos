@@ -845,7 +845,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		if( isBonjour)
 		{
 			if( download)
-				completePathCache = [[[BonjourBrowser currentBrowser] getDICOMFile: [cB currentBonjourService] forObject: self noOfImages: 1] retain];
+				completePathCache = [[cB getDICOMFile: [cB currentBonjourService] forObject: self noOfImages: 1] retain];
 			else
 				completePathCache = [[BonjourBrowser uniqueLocalPath: self] retain];
 			
