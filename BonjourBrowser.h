@@ -96,6 +96,7 @@
 - (void) setBonjourDatabaseValue:(int) index item:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key;
 
 - (BOOL) sendDICOMFile:(int) index paths:(NSArray*) ip;
+- (BOOL) sendDICOMFile:(int) index paths:(NSArray*) ip generatedByOsiriX: (BOOL) generatedByOsiriX;
 - (BOOL) isBonjourDatabaseUpToDate: (int) index;
 
 - (BOOL) retrieveDICOMFilesWithSTORESCU:(int) indexFrom to:(int) indexTo paths:(NSArray*) ip;

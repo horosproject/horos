@@ -373,35 +373,39 @@ static NSConditionLock *threadLock = nil;
 
 - (NSString*)getNewFileDatabasePath: (NSString*)extension dbFolder: (NSString*)dbFolder
 {
-	NSString        *OUTpath = [dbFolder stringByAppendingPathComponent:DATABASEPATH];
-	NSString		*dstPath;
-	NSString		*subFolder;
-	long			subFolderInt;
+	NSString *dstPath = nil;
 	
-	if( [extension length] == 0)
-		extension = [NSString stringWithString:@"dcm"];
-		
-	if( [extension length] > 4 || [extension length] < 3)
+	// This function can be called in multiple threads -> we want to be sure to have a UNIQUE file path
+	@synchronized( self)
 	{
-		NSLog( @" **** WARNING : strange extension : %@ - It will be replaced by dcm.", extension);
-		extension = [NSString stringWithString:@"dcm"]; 
+		NSString *OUTpath = [dbFolder stringByAppendingPathComponent:DATABASEPATH], *subFolder;
+		long subFolderInt;
+		
+		if( [extension length] == 0)
+			extension = [NSString stringWithString:@"dcm"];
+			
+		if( [extension length] > 4 || [extension length] < 3)
+		{
+			NSLog( @" **** WARNING : strange extension : %@ - It will be replaced by dcm.", extension);
+			extension = [NSString stringWithString:@"dcm"]; 
+		}
+		
+		[AppController createNoIndexDirectoryIfNecessary: OUTpath];
+		
+		do
+		{
+			subFolderInt = [BrowserController DefaultFolderSizeForDB] * ((DATABASEINDEX / [BrowserController DefaultFolderSizeForDB]) +1);
+			subFolder = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", subFolderInt]];
+			
+			if (![[NSFileManager defaultManager] fileExistsAtPath:subFolder])
+				[[NSFileManager defaultManager] createDirectoryAtPath:subFolder attributes:nil];
+			
+			dstPath = [subFolder stringByAppendingPathComponent: [NSString stringWithFormat:@"%d.%@", DATABASEINDEX, extension]];
+			
+			DATABASEINDEX++;
+		}
+		while ([[NSFileManager defaultManager] fileExistsAtPath: dstPath]);
 	}
-	
-	[AppController createNoIndexDirectoryIfNecessary: OUTpath];
-	
-	do
-	{
-		subFolderInt = [BrowserController DefaultFolderSizeForDB] * ((DATABASEINDEX / [BrowserController DefaultFolderSizeForDB]) +1);
-		subFolder = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", subFolderInt]];
-		
-		if (![[NSFileManager defaultManager] fileExistsAtPath:subFolder])
-			[[NSFileManager defaultManager] createDirectoryAtPath:subFolder attributes:nil];
-		
-		dstPath = [subFolder stringByAppendingPathComponent: [NSString stringWithFormat:@"%d.%@", DATABASEINDEX, extension]];
-		
-		DATABASEINDEX++;
-	}
-	while ([[NSFileManager defaultManager] fileExistsAtPath: dstPath]);
 	
 	return dstPath;
 }

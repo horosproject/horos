@@ -642,7 +642,7 @@ extern const char *GetPrivateIP();
 					}
 				}
 				
-				if ((strcmp( messageToRemoteService, "SENDD") == 0))
+				if ((strncmp( messageToRemoteService, "SEND", 4) == 0)) // SENDD & SENDG
 				{
 					int temp, noOfFiles = [paths count];
 					
@@ -1636,6 +1636,11 @@ extern const char *GetPrivateIP();
 
 - (BOOL) sendDICOMFile:(int) index paths:(NSArray*) ip
 {
+	return [self sendDICOMFile: index paths: ip generatedByOsiriX: NO];
+}
+
+- (BOOL) sendDICOMFile:(int) index paths:(NSArray*) ip generatedByOsiriX: (BOOL) generatedByOsiriX
+{
 	for( id loopItem in ip)
 	{
 		if( [[NSFileManager defaultManager] fileExistsAtPath: loopItem] == NO) return NO;
@@ -1649,8 +1654,12 @@ extern const char *GetPrivateIP();
 	{
 		[paths release];
 		paths = [ip retain];
-	
-		success = [self connectToServer: index message:@"SENDD"];
+		
+		NSString *order = nil;
+		if( generatedByOsiriX) order = @"SENDG";
+		else order = @"SENDD";
+		
+		success = [self connectToServer: index message: order];
 	}
 	@catch (NSException * e) 
 	{

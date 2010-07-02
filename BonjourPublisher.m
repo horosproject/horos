@@ -469,9 +469,11 @@ extern const char *GetPrivateIP();
 						
 						representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
 					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SENDD" length: 6]])
+					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SEND" length: 5]]) // SENDD & SENDG
 					{
 						int pos = 6, i;
+						
+						NSString *order = [NSString stringWithCString: [[data subdataWithRange: NSMakeRange(0,6)] bytes]];
 						
 						// We read 4 bytes that contain the no of file
 						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -479,6 +481,8 @@ extern const char *GetPrivateIP();
 						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileNo];
 						fileNo = NSSwapBigIntToHost( fileNo);
 						pos += 4;
+						
+						NSMutableArray *savedFiles = [NSMutableArray array];
 						
 						for( i = 0 ; i < fileNo; i++)
 						{			
@@ -492,24 +496,26 @@ extern const char *GetPrivateIP();
 							
 							while ( [data length] < pos + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 							
-							NSString	*incomingFolder = [[interfaceOsiriX documentsDirectory] stringByAppendingPathComponent:@"/INCOMING.noindex"];
-							NSString	*dstPath;
-							
-							int index = [NSDate timeIntervalSinceReferenceDate];
-							
-							do
-							{
-								dstPath = [incomingFolder stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", index]];
-								index++;
-							}
-							while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
-							
-							[[data subdataWithRange: NSMakeRange(pos,fileSize)] writeToFile:dstPath atomically: YES];
+							NSString *dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+							[[data subdataWithRange: NSMakeRange(pos,fileSize)] writeToFile: dstPath atomically: YES];
 							
 							pos += fileSize;
 						}
 						
-						[[BrowserController currentBrowser] checkIncomingNow: self];
+						BOOL generatedByOsiriX = NO;
+						if( [order isEqualToString: @"SENDD"]) generatedByOsiriX = NO;
+						else if( [order isEqualToString: @"SENDG"]) generatedByOsiriX = YES;
+						else
+							NSLog( @"******* unknown order: %@", order);
+							
+						NSArray *objects = [BrowserController addFiles: savedFiles
+															toContext: [[BrowserController currentBrowser] localManagedObjectContext]
+															toDatabase: [BrowserController currentBrowser]
+															onlyDICOM: NO 
+														notifyAddedFiles: YES
+													parseExistingObject: YES
+														dbFolder: [[BrowserController currentBrowser] documentsDirectory]
+													generatedByOsiriX: generatedByOsiriX];
 						
 						representationToSend = nil;
 					}
