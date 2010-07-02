@@ -499,6 +499,8 @@ extern const char *GetPrivateIP();
 							NSString *dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
 							[[data subdataWithRange: NSMakeRange(pos,fileSize)] writeToFile: dstPath atomically: YES];
 							
+							[savedFiles addObject: dstPath];
+							
 							pos += fileSize;
 						}
 						
