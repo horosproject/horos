@@ -12307,8 +12307,8 @@
 			isa = PBXGroup;
 			children = (
 				CE51BAF411E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld */,
-				8474A3F710DBE7F300D192D0 /* user.xcdatamodel */,
 				CE51BB4911E24E41006D180E /* OsiriXDB_DataMapping.xcmappingmodel */,
+				8474A3F710DBE7F300D192D0 /* user.xcdatamodel */,
 			);
 			name = Models;
 			sourceTree = "<group>";
