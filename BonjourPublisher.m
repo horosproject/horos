@@ -475,6 +475,8 @@ extern const char *GetPrivateIP();
 						
 						NSString *order = [NSString stringWithCString: [[data subdataWithRange: NSMakeRange(0,6)] bytes]];
 						
+						NSLog( @"subConnectionReceived BonjourPublisher: %@", order);
+						
 						// We read 4 bytes that contain the no of file
 						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 						int fileNo;

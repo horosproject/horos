@@ -546,12 +546,16 @@ static NSConditionLock *threadLock = nil;
 						if( destPath)
 							NSLog( @"*** multiple files in Report decompression ?");
 						
-						destPath = [@"/tmp/zippedFile/" stringByAppendingPathComponent: f];
+						destPath = [@"/tmp/" stringByAppendingPathComponent: f];
+						[[NSFileManager defaultManager] removeItemAtPath: destPath error: nil];
+						[[NSFileManager defaultManager] moveItemAtPath: [@"/tmp/zippedFile/" stringByAppendingPathComponent: f] toPath: destPath error: nil];
 					}
 				}
 			}
 		}
 	}
+	
+	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
 	
 	if( destPath)
 		[[NSFileManager defaultManager] setAttributes: [NSDictionary dictionaryWithObjectsAndKeys: date, NSFileModificationDate, nil] ofItemAtPath: destPath error: nil];
@@ -642,7 +646,7 @@ static NSConditionLock *threadLock = nil;
 {
 	NSDate *today = [NSDate date];
 	NSError *error = nil;
-	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH], *newFile, *INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH], *reportsDirectory = [dbFolder stringByAppendingPathComponent:@"/REPORTS/"], *tempDirectory = [dbFolder stringByAppendingPathComponent:@"/TEMP.noindex/"];
+	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH], *newFile, *dbDirectory = [dbFolder stringByAppendingPathComponent:DATABASEFPATH], *reportsDirectory = [dbFolder stringByAppendingPathComponent:@"/REPORTS/"], *tempDirectory = [dbFolder stringByAppendingPathComponent:@"/TEMP.noindex/"];
 	NSInteger index;
 	Wait *splash = nil;
 	NSManagedObjectModel *model = context.persistentStoreCoordinator.managedObjectModel;
@@ -656,8 +660,8 @@ static NSConditionLock *threadLock = nil;
 	if( isBonjour)
 		bonjourFilesToSend = [NSMutableArray array];
 	
-	if ([[NSFileManager defaultManager] fileExistsAtPath: INpath] == NO)
-		[[NSFileManager defaultManager] createDirectoryAtPath: INpath attributes:nil];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: dbDirectory] == NO)
+		[[NSFileManager defaultManager] createDirectoryAtPath: dbDirectory attributes:nil];
 	
 	if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirectory] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: reportsDirectory attributes:nil];
@@ -735,7 +739,7 @@ static NSConditionLock *threadLock = nil;
 				else
 				{
 					// This file was not readable -> If it is located in the DATABASE folder, we have to delete it or to move it to the 'NOT READABLE' folder
-					if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
+					if( [newFile hasPrefix: dbDirectory])
 					{
 						NSLog(@"**** Unreadable file: %@", newFile);
 						
@@ -1051,7 +1055,8 @@ static NSConditionLock *threadLock = nil;
 						/*********** Find image object *************/
 						
 						BOOL local = NO;
-						if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
+						
+						if( [newFile hasPrefix: dbDirectory])
 							local = YES;
 						
 						NSArray	*imagesArray = [[seriesTable valueForKey:@"images"] allObjects];
@@ -1132,7 +1137,7 @@ static NSConditionLock *threadLock = nil;
 								if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
 								else [image setValue:newFile forKey:@"path"];
 								
-								[image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
+								[image setValue:[NSNumber numberWithBool: local] forKey:@"inDatabaseFolder"];
 								
 								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
 								
@@ -1177,6 +1182,8 @@ static NSConditionLock *threadLock = nil;
 									}
 									else
 										[bonjourFilesToSend addObject: newFile];
+										
+									NSLog( @"------ AddFiles to a shared Bonjour DB: %@", [newFile lastPathComponent]);
 								}
 								
 								if( DICOMSR == NO)
@@ -1219,8 +1226,17 @@ static NSConditionLock *threadLock = nil;
 								
 								if( DICOMSR && [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
 								{
-									// DICOM SR -> Report file, if generatedByOsiriX == YES, OsiriX already managed the Report file
-									if( generatedByOsiriX == NO) 
+									BOOL reportUpToDate = NO;
+									NSString *p = [study reportURL];
+									
+									if( p && [[NSFileManager defaultManager] fileExistsAtPath: p])
+									{
+										NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath: p error: nil];
+										if( [[curDict objectForKey: @"studyDate"] isEqualToDate: [fattrs objectForKey: NSFileModificationDate]])
+											reportUpToDate = YES;
+									}
+									
+									if( reportUpToDate == NO)
 									{
 										NSString *reportURL = nil; // <- For an empty DICOM SR File
 										
@@ -1238,16 +1254,15 @@ static NSConditionLock *threadLock = nil;
 												}
 												else // It's a file!
 												{
-													if( isBonjour) // Move it to the TEMP folder
-													{
-														[[NSFileManager defaultManager] removeItemAtPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
-														[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
-													}
-													else // Move it to the REPORTS folder
-													{
-														[[NSFileManager defaultManager] removeItemAtPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
-														[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]] error: nil];
-													}
+													NSString *reportFilePath = nil;
+													
+													if( isBonjour)
+														reportFilePath = [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]];
+													else
+														reportFilePath = [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]];
+									
+													[[NSFileManager defaultManager] removeItemAtPath: reportFilePath error: nil];
+													[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: reportFilePath error: nil];
 													
 													reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportPath lastPathComponent]];
 												}
@@ -1313,7 +1328,7 @@ static NSConditionLock *threadLock = nil;
 				else
 				{
 					// This file was not readable -> If it is located in the DATABASE folder, we have to delete it or to move it to the 'NOT READABLE' folder
-					if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
+					if( [newFile hasPrefix: dbDirectory])
 					{
 						NSLog(@"**** Unreadable file: %@", newFile);
 						
@@ -18978,17 +18993,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 				{
 					NSString *localReportFile = [studySelected valueForKey: @"reportURL"];
 					
-					if( isCurrentDatabaseBonjour)
+					if( isCurrentDatabaseBonjour && localReportFile)
 					{
-						// The report was maybe changed on the server -> delete the report file
-						[[NSFileManager defaultManager] removeItemAtPath: localReportFile error: nil];
-						
 						DicomImage *reportSR = [studySelected reportImage];
 						
 						if( reportSR)
 						{
-							// The report was maybe changed on the server -> delete the DICOM SR file
-							[[NSFileManager defaultManager] removeItemAtPath: [reportSR valueForKey: @"completePath"] error: nil];
+							// Not modified on the 'bonjour client side'?
+							if( [[reportSR valueForKey:@"inDatabaseFolder"] boolValue])
+							{
+								// The report was maybe changed on the server -> delete the report file
+								[[NSFileManager defaultManager] removeItemAtPath: localReportFile error: nil];
+								
+								// The report was maybe changed on the server -> delete the DICOM SR file
+								[[NSFileManager defaultManager] removeItemAtPath: [reportSR valueForKey: @"completePath"] error: nil];
+							}
 							
 							NSString *reportPath = [BrowserController extractReportSR: [reportSR completePathResolved] contentDate: [reportSR valueForKey: @"date"]];
 							
@@ -19008,15 +19027,30 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 					
 					// Is there a Report URL ? If yes, open it; If no, create a new one
-					if( localReportFile != nil && [[NSFileManager defaultManager] fileExistsAtPath: localReportFile] == YES)
+					if( localReportFile)
 					{
-						if (reportsMode != 3)
+						if( [[NSFileManager defaultManager] fileExistsAtPath: localReportFile])
 						{
-							[[NSWorkspace sharedWorkspace] openFile: localReportFile withApplication: nil andDeactivate:YES];
-							[NSThread sleepForTimeInterval: 1];
+							if (reportsMode != 3)
+							{
+								[[NSWorkspace sharedWorkspace] openFile: localReportFile withApplication: nil andDeactivate:YES];
+								[NSThread sleepForTimeInterval: 1];
+							}
+						}
+						else
+						{
+							NSLog( @"***** reportURL contains a path, but file doesnt exist.");
+							
+							if( NSRunInformationalAlertPanel( NSLocalizedString(@"Report", nil),
+											 NSLocalizedString(@"Report file is not found... Should I create a new one?", nil),
+											 NSLocalizedString(@"OK",nil),
+											 NSLocalizedString(@"Cancel",nil),
+											 nil) == NSAlertDefaultReturn)
+												localReportFile = nil;
 						}
 					}
-					else
+					
+					if( localReportFile == nil)
 					{
 						NSLog( @"New report for : %@", [studySelected valueForKey: @"name"]);
 						

@@ -128,7 +128,8 @@ static NSLock *currentHostLock = nil;
 	{
 	
 	}
-	else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
+	else
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 	{
 		if( bugFixedForDNSResolve)
 		{

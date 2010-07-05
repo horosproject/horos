@@ -565,6 +565,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 								   dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
 						  generatedByOsiriX: YES];
 			}
+			
+			[[NSFileManager defaultManager] removeItemAtPath: zippedFile error: nil];
 		}
 		@catch (NSException * e) 
 		{
@@ -1491,8 +1493,14 @@ static NSRecursiveLock *dbModifyLock = nil;
 					@try
 					{
 						if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
-							// The ROI file was maybe modified on the server
-							[[NSFileManager defaultManager] removeItemAtPath: [i valueForKey: @"completePath"] error: nil];
+						{
+							// Not modified on the 'bonjour client side'?
+							if( [[i valueForKey:@"inDatabaseFolder"] boolValue])
+							{
+								// The ROI file was maybe changed on the server -> delete it
+								[[NSFileManager defaultManager] removeItemAtPath: [i valueForKey: @"completePath"] error: nil];
+							}
+						}
 						
 						NSData *d = [SRAnnotation roiFromDICOM: [i valueForKey: @"completePathResolved"]];
 						
@@ -1516,14 +1524,20 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			if( [r count])
 			{
-				if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
-					// The ROI file was maybe modified on the server
-					[[NSFileManager defaultManager] removeItemAtPath: [[found lastObject] valueForKey: @"completePath"] error: nil];
-				
 				NSArray *o = [NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: [[found lastObject] valueForKey: @"completePathResolved"]]];
 				[r addObjectsFromArray: o];
 				
-//				[SRAnnotation archiveROIsAsDICOM: r toPath: [[found lastObject] valueForKey: @"completePathResolved"] forImage: image];
+				[SRAnnotation archiveROIsAsDICOM: r toPath: [[found lastObject] valueForKey: @"completePathResolved"] forImage: image];
+			}
+		}
+		
+		if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
+		{
+			// Not modified on the 'bonjour client side'?
+			if( [[[found lastObject] valueForKey:@"inDatabaseFolder"] boolValue])
+			{
+				// The ROI file was maybe changed on the server -> delete it
+				[[NSFileManager defaultManager] removeItemAtPath: [[found lastObject] valueForKey: @"completePath"] error: nil];
 			}
 		}
 		
