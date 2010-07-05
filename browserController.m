@@ -449,48 +449,6 @@ static NSConditionLock *threadLock = nil;
 {
 	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Incoming Files", nil) description: message name: @"newfiles"];
 }
-					
-- (void) callAddFilesToDatabaseSafe: (NSArray*) newFilesArray
-{
-	NSLog( @"ERROR callAddFilesToDatabaseSafe is not AVAILABLE ANYMORE !");
-
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-	NSFileManager		*fm = [NSFileManager defaultManager];
-	NSString			*tempDirectory = [[self documentsDirectory] stringByAppendingPathComponent:@"/TEMP.noindex/"];
-	NSString			*arrayFile = [tempDirectory stringByAppendingPathComponent:@"array.plist"];
-	NSString			*databaseFile = [tempDirectory stringByAppendingPathComponent:@"database.plist"];
-	NSString			*modelFile = [tempDirectory stringByAppendingPathComponent:@"model.plist"];
-	
-	[fm removeFileAtPath:arrayFile handler:nil];
-	[fm removeFileAtPath:databaseFile handler:nil];
-	[fm removeFileAtPath:modelFile handler:nil];
-	
-	[newFilesArray writeToFile:arrayFile atomically: YES];
-	[[[self documentsDirectory] stringByAppendingPathComponent:DATABASEFPATH] writeToFile:databaseFile atomically: YES encoding : NSUTF8StringEncoding error: nil];
-	
-	NSMutableSet *allBundles = [[NSMutableSet alloc] init];
-	[allBundles addObject: [NSBundle mainBundle]];
-	[allBundles addObjectsFromArray: [NSBundle allFrameworks]];
-    [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.mom"] writeToFile:modelFile atomically: YES encoding : NSUTF8StringEncoding error: nil];
-    [allBundles release];
-	
-	[[NSUserDefaults standardUserDefaults] synchronize];
-	
-	NSTask *theTask = [[NSTask alloc] init];
-	
-	[theTask setCurrentDirectoryPath: tempDirectory];
-	[theTask setArguments: [NSArray arrayWithObjects:arrayFile, databaseFile, modelFile, nil]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/SafeDBRebuild"]];
-	[theTask launch];
-	[theTask waitUntilExit];
-	[theTask release];
-	
-	[fm removeFileAtPath:arrayFile handler:nil];
-	[fm removeFileAtPath:databaseFile handler:nil];
-	[fm removeFileAtPath:modelFile handler:nil];
-	
-	[pool release];
-}
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
 {
@@ -2433,7 +2391,7 @@ static NSConditionLock *threadLock = nil;
 	[allBundles addObject: [NSBundle mainBundle]];
 	[allBundles addObjectsFromArray: [NSBundle allFrameworks]];
     
-    managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.mom"]]];
+    managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.momd"]]];
     [allBundles release];
     
     return managedObjectModel;
@@ -2468,7 +2426,9 @@ static NSConditionLock *threadLock = nil;
 	if( [[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath] == NO)
 		newDB = YES;
 	
-	if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
+	NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, nil];	//[NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+	
+	if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:options error:&error])
 	{
 		NSLog(@"********** managedObjectContextLoadIfNecessary FAILED: %@", error);
 		localizedDescription = [error localizedDescription];
@@ -4077,19 +4037,10 @@ static NSConditionLock *threadLock = nil;
 	
 	[self waitForRunningProcesses];
 	
-	if( [sender tag])	{
-		//		switch( [rebuildMode selectedTag])
-		//		{
-		//			case 0:
-		//				REBUILDEXTERNALPROCESS = NO;
-		//			break;
-		//			
-		//			case 1:
-		//				REBUILDEXTERNALPROCESS = YES;
-		//			break;
-		//		}
-		
-		switch( [rebuildType selectedTag])	{
+	if( [sender tag])
+	{
+		switch( [rebuildType selectedTag])
+		{
 			case 0:
 				COMPLETEREBUILD = YES;
 				break;
@@ -4110,8 +4061,6 @@ static NSConditionLock *threadLock = nil;
 	[self waitForRunningProcesses];
 	
 	[[AppController sharedAppController] closeAllViewers: self];
-	
-	BOOL REBUILDEXTERNALPROCESS = NO;
 	
 	if( COMPLETEREBUILD)	// Delete the database file
 	{
@@ -4173,18 +4122,6 @@ static NSConditionLock *threadLock = nil;
 	
 	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
 	
-	Wait *REBUILDEXTERNALPROCESSProgress = nil;
-	
-	if( REBUILDEXTERNALPROCESS)
-	{
-		[managedObjectContext release];
-		managedObjectContext = nil;
-		
-		REBUILDEXTERNALPROCESSProgress = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString(@"Adding %@ files...", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:totalFiles]]]];
-		[REBUILDEXTERNALPROCESSProgress showWindow:self];
-		[[REBUILDEXTERNALPROCESSProgress progress] setMaxValue: totalFiles];
-	}
-	
 	NSLog( @"Start Rebuild");
 	
 	for( NSString *name in dirContent)
@@ -4199,17 +4136,7 @@ static NSConditionLock *threadLock = nil;
 			if( [subName characterAtIndex: 0] != '.')
 				[filesArray addObject: [curDir stringByAppendingPathComponent: subName]];
 		}
-		
-		if( REBUILDEXTERNALPROCESS)
-		{
-			[self callAddFilesToDatabaseSafe: filesArray];
-			
-			[filesArray release];
-			filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
-			
-			[REBUILDEXTERNALPROCESSProgress incrementBy: [[[[NSFileManager defaultManager] fileAttributesAtPath: curDir traverseLink: YES] objectForKey: NSFileReferenceCount] intValue]];
-		}
-		
+				
 		[pool release];
 	}
 	
@@ -4222,26 +4149,9 @@ static NSConditionLock *threadLock = nil;
 			[filesArray addObject: [[[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"] stringByAppendingPathComponent: name]];
 		}
 	}
-	
-	if( REBUILDEXTERNALPROCESS)
-	{
-		[self callAddFilesToDatabaseSafe: filesArray];
 		
-		[filesArray release];
-		filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
-	}
-	
 	// ** Finish the rebuild
-	if( REBUILDEXTERNALPROCESS == NO)
-	{
-		[[self addFilesToDatabase: filesArray onlyDICOM:NO produceAddedFiles:NO] valueForKey:@"completePath"];
-	}
-	else
-	{
-		[REBUILDEXTERNALPROCESSProgress close];
-		[REBUILDEXTERNALPROCESSProgress release];
-		REBUILDEXTERNALPROCESSProgress = nil;
-	}
+	[[self addFilesToDatabase: filesArray onlyDICOM:NO produceAddedFiles:NO] valueForKey:@"completePath"];
 	
 	NSLog( @"End Rebuild");
 	
