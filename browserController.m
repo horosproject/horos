@@ -7814,7 +7814,7 @@ static NSConditionLock *threadLock = nil;
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
-	if( [[tableColumn identifier] isEqualToString:@"comment"])
+	if( [[tableColumn identifier] isEqualToString:@"comment"] || [[tableColumn identifier] isEqualToString:@"comment2"] || [[tableColumn identifier] isEqualToString:@"comment3"] || [[tableColumn identifier] isEqualToString:@"comment4"])
 	{
 		DatabaseIsEdited = YES;
 		return YES;
