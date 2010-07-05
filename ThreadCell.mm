@@ -37,6 +37,7 @@
 	[_progressIndicator setMaxValue:1];
 	
 	_cancelButton = [[NSButton alloc] initWithFrame:NSZeroRect]; // TODO: the button is ugly, make it look better
+	[_cancelButton.cell release];
 	_cancelButton.cell = [[N2HighlightImageButtonCell alloc] init];
 	[_cancelButton.cell setImage:[NSImage imageNamed:@"NSStopProgressFreestandingTemplate"]];
 	_cancelButton.target = self;
@@ -79,8 +80,9 @@
 			[self.view setNeedsDisplayInRect:[self statusFrame]];
 			return;
 		} else if ([keyPath isEqual:NSThreadProgressKey]) {
-			[self.progressIndicator setDoubleValue:self.thread.progress];
-			[self.progressIndicator setIndeterminate: self.thread.progress < 0];	
+			[self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
+			[self.progressIndicator setIndeterminate: self.thread.progress < 0];
+			[self.progressIndicator startAnimation:self];
 			return;
 		} else if ([keyPath isEqual:NSThreadSupportsCancelKey]) {
 			[self.cancelButton setHidden:!self.thread.supportsCancel];
@@ -119,7 +121,7 @@
 	NSRect progressFrame = NSMakeRect(frame.origin.x+1, frame.origin.y+28, frame.size.width-2, frame.size.height-29);
 	if (![self.progressIndicator superview]) {
 		[view addSubview:self.progressIndicator];
-		[self.progressIndicator startAnimation:self];
+//		[self.progressIndicator startAnimation:self];
 	} if (!NSEqualRects(self.progressIndicator.frame, progressFrame)) [self.progressIndicator setFrame:progressFrame];
 	
 	[NSGraphicsContext restoreGraphicsState];

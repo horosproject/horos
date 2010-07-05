@@ -254,38 +254,46 @@ int main(int argc, char** argv)
 	task = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/unzip" arguments:[NSArray arrayWithObjects: @"-od", OsirixLiteLocation, [[NSBundle mainBundle] pathForResource:@"OsiriX Lite" ofType:@"zip"], NULL]];
 	[task waitUntilExit];
 	
-	// launch OsiriX Lite
-	[[NSWorkspace sharedWorkspace] launchApplication:[OsirixLiteLocation stringByAppendingPathComponent: @"OsiriX Lite.app"]];
+	// launch OsiriX if available
 	
-	// Write the path to DICOMDIR, if available
-	[[NSFileManager defaultManager] removeItemAtPath: [OsirixLiteLocation stringByAppendingPathComponent: @"DICOMDIRPATH"] error: nil];
-	NSString *DICOMDIR = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"DICOMDIR"];
-	if( [[NSFileManager defaultManager] fileExistsAtPath: DICOMDIR])
-		[DICOMDIR writeToFile: [OsirixLiteLocation stringByAppendingPathComponent: @"DICOMDIRPATH"] atomically: YES encoding: NSUTF8StringEncoding error: nil];
+	NSString* appName = @"OsiriX.app";
 	
-	[NSThread sleepForTimeInterval: 2];
+	BOOL launched = [[NSWorkspace sharedWorkspace] launchApplication:appName];
 	
-	// Put it as front process
-	const int kPIDArrayLength = 100;
+	if (!launched) {
+		appName = @"OsiriX Lite.app";
+		launched = [[NSWorkspace sharedWorkspace] launchApplication:[OsirixLiteLocation stringByAppendingPathComponent:appName]];
+	}
+	
+	if (launched) {
+		// Write the path to DICOMDIR, if available
+		[[NSFileManager defaultManager] removeItemAtPath: [OsirixLiteLocation stringByAppendingPathComponent: @"DICOMDIRPATH"] error: nil];
+		NSString *DICOMDIR = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"DICOMDIR"];
+		if( [[NSFileManager defaultManager] fileExistsAtPath: DICOMDIR])
+			[DICOMDIR writeToFile: [OsirixLiteLocation stringByAppendingPathComponent: @"DICOMDIRPATH"] atomically: YES encoding: NSUTF8StringEncoding error: nil];
+		
+		[NSThread sleepForTimeInterval: 2];
+		
+		// Put it as front process
+		const int kPIDArrayLength = 100;
 
-    pid_t MyArray [kPIDArrayLength];
-    unsigned int NumberOfMatches;
-    int Counter, Error;
-	
-    Error = GetAllPIDsForProcessName( [@"OsiriX Lite.app" UTF8String], MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
-	
-	if (Error == 0)
-    {
-        for (Counter = 0 ; Counter < NumberOfMatches ; Counter++)
-        {
-			if( MyArray[ Counter] != getpid())
-			{
-				ProcessSerialNumber psn; 
-				GetProcessForPID( MyArray[ Counter], &psn);
-				SetFrontProcess( &psn);
-			}
-        } 
-    }
+		pid_t MyArray [kPIDArrayLength];
+		unsigned int NumberOfMatches;
+		int Counter, Error;
+		
+		Error = GetAllPIDsForProcessName( [appName UTF8String], MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
+		
+		if (Error == 0)
+			for (Counter = 0 ; Counter < NumberOfMatches ; Counter++)
+				if( MyArray[ Counter] != getpid())
+				{
+					ProcessSerialNumber psn; 
+					GetProcessForPID( MyArray[ Counter], &psn);
+					SetFrontProcess( &psn);
+				}
+	} else {
+		// TODO: display error
+	}
 	
 	[pool release];
 }

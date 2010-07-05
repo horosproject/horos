@@ -103,10 +103,15 @@
 		
 		NSArray* cpuLoads = [menuMeterCPUStats currentLoad];
 		if (cpuLoads) {
-			CGFloat load = 0;
-			for (NSDictionary* cpuLoad in cpuLoads)
+			CGFloat meanload = 0, maxload = 0;
+			for (NSDictionary* cpuLoad in cpuLoads) {
+				CGFloat thisLoad = 0;
 				for (NSString* key in cpuLoad)
-					load += [[cpuLoad objectForKey:key] floatValue]/cpuLoad.count/cpuLoads.count;
+					thisLoad += [[cpuLoad objectForKey:key] floatValue]/cpuLoad.count;
+				meanload += thisLoad/cpuLoads.count;
+				maxload = std::max(maxload, thisLoad);
+			}
+			CGFloat load = maxload;//(meanload+maxload)/2;
 			if (fabs(cpuCurrLoad-load) > 0.01) {
 				[cpuActiView setImage:[cpuActiView.image imageWithHue:greenHue+deltaHue*load]];
 				[cpuActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];

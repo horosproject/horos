@@ -31,6 +31,7 @@
 #import "XMLControllerDCMTKCategory.h"
 #import "Notifications.h"
 #import "SRAnnotation.h"
+#import "NSFileManager+N2.h"
 #endif
 
 #define WBUFSIZE 512
@@ -446,6 +447,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	if( [self.hasDICOM boolValue] == YES)
 	{
 		[[self managedObjectContext] lock];
+		BOOL isMainDB = [self managedObjectContext] == [[BrowserController currentBrowser] managedObjectContext];
 		
 		@try
 		{
@@ -453,7 +455,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
 			
 			if( dstPath == nil)
-				dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+				dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
 			
 			NSDictionary *annotationsDict = [self annotationsAsDictionary];
 			
@@ -463,11 +465,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			[BrowserController addFiles: [NSArray arrayWithObject: dstPath]
 							  toContext: [self managedObjectContext]
-							 toDatabase: [BrowserController currentBrowser]
+							 toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
 							  onlyDICOM: YES 
 					   notifyAddedFiles: YES
 					parseExistingObject: YES
-							   dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
+							   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : NULL
 					  generatedByOsiriX: YES];
 		}
 		@catch (NSException * e) 
@@ -489,6 +491,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	if( [self.hasDICOM boolValue] == YES)
 	{
 		[[self managedObjectContext] lock];
+		BOOL isMainDB = [self managedObjectContext] == [[BrowserController currentBrowser] managedObjectContext];
 		
 		@try
 		{
@@ -501,7 +504,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			dstPath = [reportImage valueForKey: @"completePathResolved"];
 			
 			if( dstPath == nil)
-				dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+				dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
 			
 			if( [[self valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[self valueForKey: @"reportURL"] hasPrefix: @"https://"])
 			{
@@ -558,11 +561,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 				
 				[BrowserController addFiles: [NSArray arrayWithObject: dstPath]
 								  toContext: [self managedObjectContext]
-								 toDatabase: [BrowserController currentBrowser]
+								 toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
 								  onlyDICOM: YES 
 						   notifyAddedFiles: YES
 						parseExistingObject: YES
-								   dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
+								   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : NULL
 						  generatedByOsiriX: YES];
 			}
 			

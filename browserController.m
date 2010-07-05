@@ -668,7 +668,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [newFilesArray count] == 0) return [NSMutableArray array];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
+//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
 	
 //#define RANDOMFILES
 #ifdef RANDOMFILES
@@ -16243,7 +16243,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 					
 					if(!thumbnail)
-						thumbnail = [[NSImage alloc] initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"]];
+						thumbnail = [[[NSImage alloc] initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"]] autorelease];
 					
 					if( thumbnail)
 					{

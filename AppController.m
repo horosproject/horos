@@ -2413,9 +2413,6 @@ static NSDate *lastWarningDate = nil;
 	[IChatTheatreDelegate sharedDelegate];
 	#endif
 	
-	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey: OsirixActivityWindowVisibleDefaultsKey])
-		[[[ActivityWindowController defaultController] window] makeKeyAndOrderFront:self];	
-
 	return self;
 }
 
@@ -2951,7 +2948,7 @@ static BOOL initialized = NO;
 - (void) applicationDidFinishLaunching:(NSNotification*) aNotification
 {
 	unlink( "/tmp/kill_all_storescu");
-
+	
 	[NSSplitView loadSplitView];
 	
     [[[NSWorkspace sharedWorkspace] notificationCenter]
@@ -2965,7 +2962,9 @@ static BOOL initialized = NO;
             selector:@selector(switchHandler:)
             name:NSWorkspaceSessionDidResignActiveNotification
             object:nil];
-			
+	
+	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey: OsirixActivityWindowVisibleDefaultsKey])
+		[[[ActivityWindowController defaultController] window] makeKeyAndOrderFront:self];	
 	
 //	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];	// By default, we always start with VTKDelaunay, PowerCrush has memory leaks and can crash with some 3D objects....
 

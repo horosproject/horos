@@ -74,7 +74,33 @@ NSString* const NSThreadStatusKey = @"status";
 	[self didChangeValueForKey:NSThreadStatusKey];
 }
 
+NSString* const NSThreadSubthreadsArrayKey = @"subthreads";
+
+-(NSMutableArray*)subthreadsArray {
+	NSMutableArray* subthreadsArray = [self.threadDictionary objectForKey:NSThreadSubthreadsArrayKey];
+	
+	if (!subthreadsArray) {
+		subthreadsArray = [NSMutableArray array];
+		[self.threadDictionary setObject:subthreadsArray forKey:NSThreadSubthreadsArrayKey];
+	}
+	
+	return subthreadsArray;
+}
+
+-(void)enterSubthreadWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen {
+	[self.subthreadsArray addObject:[NSValue valueWithPoint:NSMakePoint(rangeLoc,rangeLen)]];
+//	NSLog(@"entering level %d subthread", self.subthreadsArray.count);
+	self.progress = 0;
+}
+
+-(void)exitSubthread {
+//	NSLog(@"exiting level %d subthread", self.subthreadsArray.count);
+	self.progress = 1;
+	[self.subthreadsArray removeLastObject];
+}
+
 NSString* const NSThreadProgressKey = @"progress";
+NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 
 -(CGFloat)progress {
 	NSNumber* progress = [self.threadDictionary objectForKey:NSThreadProgressKey];
@@ -87,6 +113,27 @@ NSString* const NSThreadProgressKey = @"progress";
 	[self.threadDictionary setObject:[NSNumber numberWithFloat:progress] forKey:NSThreadProgressKey];
 //	[self performSelectorOnMainThread:NotifyInfoChangeSelector withObject:NSThreadProgressKey waitUntilDone:NO];
 	[self didChangeValueForKey:NSThreadProgressKey];
+	[self didChangeValueForKey:NSThreadSubthreadsAwareProgressKey];
+	if (!progress) {
+		int bbb = 0;
+	}
+}
+
+-(CGFloat)subthreadsAwareProgress {
+	CGFloat progress = self.progress;
+	
+	if (progress < 0)
+		return progress;
+	
+	NSPoint range = NSMakePoint(0,1);
+	for (NSValue* iv in self.subthreadsArray) {
+		NSPoint ir = [iv pointValue];
+		range = NSMakePoint(range.x+range.y*ir.x, range.y*ir.y);
+	}
+	
+//	NSLog(@"progress %f means %f", progress, range.x+range.y*self.progress);
+	
+	return range.x+range.y*self.progress;
 }
 
 @end

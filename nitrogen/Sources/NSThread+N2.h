@@ -39,4 +39,10 @@ extern NSString* const NSThreadProgressKey;
 -(CGFloat)progress;
 -(void)setProgress:(CGFloat)progress;
 
+-(void)enterSubthreadWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen;
+-(void)exitSubthread;
+
+extern NSString* const NSThreadSubthreadsAwareProgressKey;
+-(CGFloat)subthreadsAwareProgress;
+
 @end

@@ -61,7 +61,7 @@
 		if ([keyPath isEqual:NSThreadProgressKey]) {
 			[self.progressIndicator setIndeterminate: self.thread.progress < 0];	
 			if (self.thread.progress >= 0)
-				[self.progressIndicator setDoubleValue:self.thread.progress];
+				[self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
 			return;
 		}
 	
