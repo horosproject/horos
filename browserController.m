@@ -7314,7 +7314,7 @@ static NSConditionLock *threadLock = nil;
 			else
 			{
 				NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-				NSMutableArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+				NSMutableArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
 				
 				r = [self exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
 			}
@@ -16832,7 +16832,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			
 			NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-			NSMutableArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+			NSMutableArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
 			
 			[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/zipFilesForMail" error: nil];
 			[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/zipFilesForMail" attributes: nil];
@@ -17888,8 +17888,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *files2Copy;
 	
 	[self checkResponder];
-	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) files2Copy = [self filesForDatabaseMatrixSelection: dicomFiles2Copy];
-	else files2Copy = [self filesForDatabaseOutlineSelection: dicomFiles2Copy];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) files2Copy = [self filesForDatabaseMatrixSelection: dicomFiles2Copy onlyImages: NO];
+	else files2Copy = [self filesForDatabaseOutlineSelection: dicomFiles2Copy onlyImages: NO];
 	
 	[files2Copy removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Copy];
 	

@@ -183,8 +183,8 @@ static NSString *albumDragType = @"Osirix Album drag";
 			}
 			else
 			{
-				NSMutableArray	*dicomFiles2Export = [NSMutableArray array];
-				NSMutableArray	 *filesToExport = [[BrowserController currentBrowser] filesForDatabaseMatrixSelection: dicomFiles2Export];
+				NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+				NSMutableArray *filesToExport = [[BrowserController currentBrowser] filesForDatabaseMatrixSelection: dicomFiles2Export];
 				
 				r = [[BrowserController currentBrowser] exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
 			}
