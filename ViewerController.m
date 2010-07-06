@@ -15773,8 +15773,8 @@ int i,j,l;
 	[printFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	[printTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	
+	[printFrom setIntValue: 1];
 	[printTo setIntValue: [pixList[ curMovieIndex] count]];
-	[printInterval setIntValue: 1];
 	
 	[printToText setIntValue: [printTo intValue]];
 	[printFromText setIntValue: [printFrom intValue]];
