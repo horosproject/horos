@@ -1104,9 +1104,6 @@ static NSConditionLock *threadLock = nil;
 								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
 								[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
 								
-//								if( [(NSString*)[curDict objectForKey: @"manufacturer"] length] > 0) MAC Address
-//									[image setValue:[curDict objectForKey: @"manufacturer"] forKey: @"comment"];
-								
 								[image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
 								[image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
 								[image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
@@ -1150,20 +1147,19 @@ static NSConditionLock *threadLock = nil;
 									{
 										if([curDict objectForKey: @"commentsAutoFill"])
 										{
-											[seriesTable setValue: [curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
-											
-											[study setValue:[curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
+											[seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
+											[study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
 										}
 									}
 									
 									if( generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"seriesComments"] length] > 0)
-										[seriesTable setValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
+										[seriesTable setPrimitiveValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
 									
 									if( generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"studyComments"] length] > 0)
-										[study setValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
+										[study setPrimitiveValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
 									
 									if( generatedByOsiriX == NO && [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
-										[study setValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
+										[study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
 									
 									if( generatedByOsiriX == NO && [curDict objectForKey: @"keyFrames"])
 									{
@@ -1173,7 +1169,7 @@ static NSConditionLock *threadLock = nil;
 											{
 												if( [k intValue] == f) // corresponding frame
 												{
-													[image setValue: [NSNumber numberWithBool: YES] forKey: @"storedIsKeyImage"];
+													[image setPrimitiveValue: [NSNumber numberWithBool: YES] forKey: @"storedIsKeyImage"];
 													break;
 												}
 											}
@@ -2460,8 +2456,10 @@ static NSConditionLock *threadLock = nil;
 			[mOC setPersistentStoreCoordinator: pSC];
 			
 			NSURL *url = [NSURL fileURLWithPath: [self localDatabasePath]];
-		
-			if (![pSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
+			
+			NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, nil];	//[NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+			
+			if (![pSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options: options error:&error])
 			{
 				NSLog(@"********** defaultManagerObjectContext FAILED: %@", error);
 			}
@@ -4979,8 +4977,10 @@ static NSConditionLock *threadLock = nil;
 	
     NSURL *url = [NSURL fileURLWithPath: [DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath]];
 	
+	NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, nil];	//[NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+	
 	#ifndef OSIRIX_LIGHT
-	if( ![userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
+	if( ![userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options: options error: &error])
 	{
 		NSLog( @"*********** userManagedObjectContext : %@", error);
 		
@@ -4993,7 +4993,7 @@ static NSConditionLock *threadLock = nil;
 		
 		[[NSFileManager defaultManager] removeItemAtPath: [DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath] error: nil];
 		[[NSFileManager defaultManager] removeItemAtPath: [[[DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"WebUsers.vers"] error: nil];
-		[userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options:nil error: &error];
+		[userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options: options error: &error];
 	}
 	#endif
 	
@@ -7330,23 +7330,11 @@ static NSConditionLock *threadLock = nil;
 
 - (BOOL)outlineView:(NSOutlineView *)olv writeItems:(NSArray*)pbItems toPasteboard:(NSPasteboard*)pboard
 {
-	NSMutableArray *xmlArray = [NSMutableArray array];
-	
-	BOOL extend = NO;
-	for( id pbItem in pbItems)
-	{
-		[olv selectRowIndexes: [NSIndexSet indexSetWithIndex: [olv rowForItem: pbItem]] byExtendingSelection: extend];
-		extend = YES;
-		[xmlArray addObject: [pbItem dictionary]];
-	}
-	
-	[pboard declareTypes: [NSArray arrayWithObjects: albumDragType, NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType,  @"OsirixXMLPboardType", nil] owner:self];
+	[pboard declareTypes: [NSArray arrayWithObjects: albumDragType, NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType, nil] owner:self];
 	
 	[pboard setPropertyList:nil forType:albumDragType];
 	
     [pboard setPropertyList:[NSArray arrayWithObject:@"dcm"] forType:NSFilesPromisePboardType];
-	
-	[pboard setData:[NSArchiver archivedDataWithRootObject:xmlArray]  forType:@"OsiriXPboardType"];
 	
 	[draggedItems release];
 	draggedItems = [pbItems retain];
@@ -11147,7 +11135,10 @@ static BOOL needToRezoom;
 						}
 						NSError	*error = nil;
 						NSArray *copiedObjects = nil;
-						if( [sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error] == nil)
+						
+						NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, nil];	//[NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+						
+						if( [sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options: options error:&error] == nil)
 							NSLog( @"****** tableView acceptDrop addPersistentStoreWithType error: %@", error);
 						
 						if( [dbFolder isEqualToString: [self.documentsDirectory stringByDeletingLastPathComponent]] && !isCurrentDatabaseBonjour)	// same database folder - we don't need to copy the files
