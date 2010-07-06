@@ -1112,6 +1112,11 @@ static NSConditionLock *threadLock = nil;
 									[seriesTable setValue:[NSNumber numberWithBool:browserController.mountedVolume] forKey:@"mountedVolume"];
 								[image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
 								
+								if( generatedByOsiriX)
+									[image setValue: [NSNumber numberWithBool: generatedByOsiriX] forKey: @"generatedByOsiriX"];
+								else
+									[image setValue: 0L forKey: @"generatedByOsiriX"];
+								
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[seriesTable setValue: nil forKey:@"thumbnail"];
@@ -1856,7 +1861,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		for( NSDictionary *routingRule in autoroutingRules)
 		{
-			if( [routingRule valueForKey:@"activated"] == nil || [[routingRule valueForKey:@"activated"] boolValue] == YES)
+			if( [routingRule valueForKey:@"activated"] == nil || [[routingRule valueForKey:@"activated"] boolValue] == YES || manually == YES)
 			{
 				NSManagedObjectContext *context = self.managedObjectContext;
 				
@@ -1875,7 +1880,12 @@ static NSConditionLock *threadLock = nil;
 						if( generatedByOsiriX)
 							predicate = [NSPredicate predicateWithValue: YES];
 						else
-							predicate = [NSPredicate predicateWithValue: NO];
+						{
+							if( manually)
+								predicate = [NSPredicate predicateWithFormat: @"generatedByOsiriX == YES"];
+							else
+								predicate = [NSPredicate predicateWithValue: NO];
+						}
 					}
 					
 					if( predicate)
