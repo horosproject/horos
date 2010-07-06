@@ -697,7 +697,7 @@ static NSConditionLock *threadLock = nil;
 				else
 				{
 					// This file was not readable -> If it is located in the DATABASE folder, we have to delete it or to move it to the 'NOT READABLE' folder
-					if( [newFile hasPrefix: dbDirectory])
+					if( dbDirectory && [newFile hasPrefix: dbDirectory])
 					{
 						NSLog(@"**** Unreadable file: %@", newFile);
 						
@@ -1014,7 +1014,7 @@ static NSConditionLock *threadLock = nil;
 						
 						BOOL local = NO;
 						
-						if( [newFile hasPrefix: dbDirectory])
+						if( dbDirectory && [newFile hasPrefix: dbDirectory])
 							local = YES;
 						
 						NSArray	*imagesArray = [[seriesTable valueForKey:@"images"] allObjects];
@@ -1282,7 +1282,7 @@ static NSConditionLock *threadLock = nil;
 				else
 				{
 					// This file was not readable -> If it is located in the DATABASE folder, we have to delete it or to move it to the 'NOT READABLE' folder
-					if( [newFile hasPrefix: dbDirectory])
+					if( dbDirectory && [newFile hasPrefix: dbDirectory])
 					{
 						NSLog(@"**** Unreadable file: %@", newFile);
 						
@@ -2805,7 +2805,7 @@ static NSConditionLock *threadLock = nil;
 		
 		NSError							*error = nil;
 		NSManagedObjectModel			*previousModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: model]]];
-		NSManagedObjectModel			*currentModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.mom"]]];
+		NSManagedObjectModel			*currentModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.momd"]]];
 		NSPersistentStoreCoordinator	*previousSC = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: previousModel];
 		NSPersistentStoreCoordinator	*currentSC = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: currentModel];
 		NSManagedObjectContext			*currentContext = [[NSManagedObjectContext alloc] init];
