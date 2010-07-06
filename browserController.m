@@ -1882,7 +1882,25 @@ static NSConditionLock *threadLock = nil;
 						else
 						{
 							if( manually)
+							{
+								NSMutableArray *studies = [NSMutableArray arrayWithArray: [newImages valueForKeyPath: @"series.study"]];
+								[studies removeDuplicatedObjects];
+								for( DicomStudy *study in studies)
+								{
+									[study archiveAnnotationsAsDICOMSR];
+									[study archiveReportAsDICOMSR];
+									
+									for( DicomImage *im in [[[study roiSRSeries] valueForKey: @"images"] allObjects])
+										[im setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
+										
+									for( DicomImage *im in [[[study reportSRSeries] valueForKey: @"images"] allObjects])
+										[im setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
+										
+									[[study annotationsSRImage] setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
+								}
+								
 								predicate = [NSPredicate predicateWithFormat: @"generatedByOsiriX == YES"];
+							}
 							else
 								predicate = [NSPredicate predicateWithValue: NO];
 						}

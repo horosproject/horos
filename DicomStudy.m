@@ -469,18 +469,22 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			NSDictionary *annotationsDict = [self annotationsAsDictionary];
 			
-			// Save or Re-Save it as DICOM SR
-			SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
-			[r writeToFileAtPath: dstPath];
-			
-			[BrowserController addFiles: [NSArray arrayWithObject: dstPath]
-							  toContext: [self managedObjectContext]
-							 toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
-							  onlyDICOM: YES 
-					   notifyAddedFiles: YES
-					parseExistingObject: YES
-							   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : NULL
-					  generatedByOsiriX: YES];
+			SRAnnotation *w = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+			if( [[w annotations] isEqualToDictionary: annotationsDict] == NO)
+			{
+				// Save or Re-Save it as DICOM SR
+				SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: dstPath forImage: [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject]] autorelease];
+				[r writeToFileAtPath: dstPath];
+				
+				[BrowserController addFiles: [NSArray arrayWithObject: dstPath]
+								  toContext: [self managedObjectContext]
+								 toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
+								  onlyDICOM: YES 
+						   notifyAddedFiles: YES
+						parseExistingObject: YES
+								   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : NULL
+						  generatedByOsiriX: YES];
+			}
 		}
 		@catch (NSException * e) 
 		{
