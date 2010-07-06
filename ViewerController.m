@@ -15742,7 +15742,7 @@ int i,j,l;
 		[AppController resizeWindowWithAnimation: [self window] newSize: newFrame];
 	}
 	
-	NSDictionary	*p = [[NSUserDefaults standardUserDefaults] objectForKey: @"previousPrintSettings"];
+	NSDictionary *p = [[NSUserDefaults standardUserDefaults] objectForKey: @"previousPrintSettings"];
 	
 	if( p)
 	{
@@ -15773,18 +15773,8 @@ int i,j,l;
 	[printFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	[printTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	
-//	if( [pixList[ curMovieIndex] count] < 20)
-//	{
-		[printFrom setIntValue: 1];
-		[printTo setIntValue: [pixList[ curMovieIndex] count]];
-		[printInterval setIntValue: 1];
-//	}
-//	else
-//	{
-//		if( [imageView flippedData]) [printFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
-//		else [printFrom setIntValue: 1+ [imageView curImage]];
-//		[printTo setIntValue: [pixList[ curMovieIndex] count]];
-//	}
+	[printTo setIntValue: [pixList[ curMovieIndex] count]];
+	[printInterval setIntValue: 1];
 	
 	[printToText setIntValue: [printTo intValue]];
 	[printFromText setIntValue: [printFrom intValue]];
