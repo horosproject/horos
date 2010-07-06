@@ -24,8 +24,8 @@
     self = [super initWithFrame:frame];
     if (self) {
 		[filterKeyPopup addItemsWithTitles:[NSArray arrayWithObjects:NSLocalizedString(@"Study ID", nil), NSLocalizedString(@"Study Description", nil), NSLocalizedString(@"Referring Physician", nil),
-		  NSLocalizedString(@"Performing Physician", nil), NSLocalizedString(@"Institution", nil), NSLocalizedString(@"Comments", nil),
-		  NSLocalizedString(@"Study Status", nil), NSLocalizedString(@"Date Added", nil), nil]];
+		  NSLocalizedString(@"Performing Physician", nil), NSLocalizedString(@"Institution", nil), NSLocalizedString(@"Comments", nil), 
+		  NSLocalizedString(@"Study Status", nil), NSLocalizedString(@"Date Added", nil), NSLocalizedString(@"Comments 2", nil), NSLocalizedString(@"Comments 3", nil), NSLocalizedString(@"Comments 4", nil), nil]];
 		
 		[[dateRangePopup menu] addItem: [NSMenuItem separatorItem]];
 		[dateRangePopup addItemsWithTitles:[NSArray arrayWithObjects:NSLocalizedString(@"last hour", nil), NSLocalizedString(@"last 6 hours", nil), NSLocalizedString(@"last 12 hours", nil), nil]];

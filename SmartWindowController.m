@@ -328,6 +328,12 @@
 			key = @"institutionName";
 		else if ([key isEqualToString:NSLocalizedString(@"Comments", nil)])	
 			key = @"comment";
+		else if ([key isEqualToString:NSLocalizedString(@"Comments 2", nil)])	
+			key = @"comment2";
+		else if ([key isEqualToString:NSLocalizedString(@"Comments 3", nil)])	
+			key = @"comment3";
+		else if ([key isEqualToString:NSLocalizedString(@"Comments 4", nil)])	
+			key = @"comment4";
 		else if ([key isEqualToString:NSLocalizedString(@"Study Status", nil)])
 		{
 			key = @"stateText";

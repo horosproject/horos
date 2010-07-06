@@ -986,15 +986,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	#endif
 }
 
-- (NSDictionary *)dictionary
-{
-	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-	return dict;
-}
-	
 - (NSString*) description
 {
-	NSString	*result = [super description];
+	NSString *result = [super description];
 	return [result stringByAppendingFormat:@"\rdicomTime: %@\rsopInstanceUID: %@", [self dicomTime], [self sopInstanceUID]];
 }
 

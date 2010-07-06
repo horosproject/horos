@@ -255,7 +255,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 		@try
 		{
 			// We are at root level
-			[self setPrimitiveValue: [rootDict valueForKey: @"comment"] forKey: @"comment"];
+			if( [rootDict valueForKey: @"comment"]) [self setPrimitiveValue: [rootDict valueForKey: @"comment"] forKey: @"comment"];
+			if( [rootDict valueForKey: @"comment2"]) [self setPrimitiveValue: [rootDict valueForKey: @"comment2"] forKey: @"comment2"];
+			if( [rootDict valueForKey: @"comment3"]) [self setPrimitiveValue: [rootDict valueForKey: @"comment3"] forKey: @"comment3"];
+			if( [rootDict valueForKey: @"comment4"]) [self setPrimitiveValue: [rootDict valueForKey: @"comment4"] forKey: @"comment4"];
+			
 			[self setPrimitiveValue: [rootDict valueForKey: @"stateText"] forKey: @"stateText"];
 			
 			NSArray *albums = [BrowserController albumsInContext: [self managedObjectContext]];
@@ -294,9 +298,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 					{
 						DicomSeries *s = [seriesArray objectAtIndex: index];
 						
-						if( [series valueForKey:@"comment"])
-							[s setValue: [series valueForKey:@"comment"] forKey: @"comment"];
-					
+						if( [series valueForKey:@"comment"]) [s setValue: [series valueForKey:@"comment"] forKey: @"comment"];
+						if( [series valueForKey:@"comment2"]) [s setValue: [series valueForKey:@"comment2"] forKey: @"comment2"];
+						if( [series valueForKey:@"comment3"]) [s setValue: [series valueForKey:@"comment3"] forKey: @"comment3"];
+						if( [series valueForKey:@"comment4"]) [s setValue: [series valueForKey:@"comment4"] forKey: @"comment4"];
+						
 						if( [series valueForKey:@"stateText"])
 							[s setValue: [series valueForKey:@"stateText"] forKey: @"stateText"];
 						
@@ -365,8 +371,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 	if( [self valueForKey:@"patientUID"])
 		[rootDict setObject: [self valueForKey:@"patientUID"] forKey: @"patientUID"];
 	
-	if( [self valueForKey:@"comment"])
-		[rootDict setObject: [self valueForKey:@"comment"] forKey: @"comment"];
+	if( [self valueForKey:@"comment"]) [rootDict setObject: [self valueForKey:@"comment"] forKey: @"comment"];
+	if( [self valueForKey:@"comment2"]) [rootDict setObject: [self valueForKey:@"comment2"] forKey: @"comment2"];
+	if( [self valueForKey:@"comment3"]) [rootDict setObject: [self valueForKey:@"comment3"] forKey: @"comment3"];
+	if( [self valueForKey:@"comment4"]) [rootDict setObject: [self valueForKey:@"comment4"] forKey: @"comment4"];
 	
 	if( [self valueForKey:@"stateText"])
 		[rootDict setObject: [self valueForKey:@"stateText"] forKey: @"stateText"];
@@ -396,8 +404,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		if( [series valueForKey:@"seriesInstanceUID"] && [series valueForKey:@"seriesDICOMUID"])
 		{
-			if( [series valueForKey:@"comment"])
-				[seriesDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
+			if( [series valueForKey:@"comment"]) [seriesDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
+			if( [series valueForKey:@"comment2"]) [seriesDict setObject: [series valueForKey:@"comment2"] forKey: @"comment2"];
+			if( [series valueForKey:@"comment3"]) [seriesDict setObject: [series valueForKey:@"comment3"] forKey: @"comment3"];
+			if( [series valueForKey:@"comment4"]) [seriesDict setObject: [series valueForKey:@"comment4"] forKey: @"comment4"];
 			
 			if( [series valueForKey:@"stateText"])
 				[seriesDict setObject: [series valueForKey:@"stateText"] forKey: @"stateText"];
@@ -749,6 +759,51 @@ static NSRecursiveLock *dbModifyLock = nil;
 	[self willChangeValueForKey: @"comment"];
 	[self setPrimitiveValue: c forKey: @"comment"];
 	[self didChangeValueForKey: @"comment"];
+	
+	if( [previousValue length] != 0 || [c length] != 0)
+	{
+		if( [c isEqualToString: previousValue] == NO)
+			[self archiveAnnotationsAsDICOMSR];
+	}
+}
+
+- (void) setComment2: (NSString*) c
+{
+	NSString *previousValue = [self primitiveValueForKey: @"comment2"];
+	
+	[self willChangeValueForKey: @"comment2"];
+	[self setPrimitiveValue: c forKey: @"comment2"];
+	[self didChangeValueForKey: @"comment2"];
+	
+	if( [previousValue length] != 0 || [c length] != 0)
+	{
+		if( [c isEqualToString: previousValue] == NO)
+			[self archiveAnnotationsAsDICOMSR];
+	}
+}
+
+- (void) setComment3: (NSString*) c
+{
+	NSString *previousValue = [self primitiveValueForKey: @"comment3"];
+	
+	[self willChangeValueForKey: @"comment3"];
+	[self setPrimitiveValue: c forKey: @"comment3"];
+	[self didChangeValueForKey: @"comment3"];
+	
+	if( [previousValue length] != 0 || [c length] != 0)
+	{
+		if( [c isEqualToString: previousValue] == NO)
+			[self archiveAnnotationsAsDICOMSR];
+	}
+}
+
+- (void) setComment4: (NSString*) c
+{
+	NSString *previousValue = [self primitiveValueForKey: @"comment4"];
+	
+	[self willChangeValueForKey: @"comment4"];
+	[self setPrimitiveValue: c forKey: @"comment4"];
+	[self didChangeValueForKey: @"comment4"];
 	
 	if( [previousValue length] != 0 || [c length] != 0)
 	{
@@ -1580,41 +1635,6 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	
 	return path;
-}
-
-- (NSDictionary *)dictionary
-{
-	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-	if ([self primitiveValueForKey:@"name"])
-		[dict  setObject: [self primitiveValueForKey:@"name"] forKey: @"Patients Name"];
-	if ([self primitiveValueForKey:@"patientID"])
-		[dict  setObject: [self primitiveValueForKey:@"patientID"] forKey: @"Patient ID"];
-	if ([self primitiveValueForKey:@"studyName"])
-		[dict  setObject: [self primitiveValueForKey:@"studyName"] forKey: @"Study Description"];
-	if ([self primitiveValueForKey:@"patientSex"] )
-		[dict  setObject: [self primitiveValueForKey:@"patientSex"] forKey: @"Patients Sex"];
-	if ([self primitiveValueForKey:@"dateOfBirth"] )
-		[dict  setObject: [self primitiveValueForKey:@"dateOfBirth"] forKey: @"Patients DOB"];
-	if ([self primitiveValueForKey:@"institutionName"])
-		[dict  setObject: [self primitiveValueForKey:@"institutionName"] forKey: @"Institution"];
-	if ([self primitiveValueForKey:@"accessionNumber"])
-		[dict  setObject: [self primitiveValueForKey:@"accessionNumber"] forKey: @"Accession Number"];
-	if ([self primitiveValueForKey:@"comment"])
-		[dict  setObject: [self primitiveValueForKey:@"comment"] forKey: @"Comment"];
-	if ([self primitiveValueForKey:@"modality"])
-		[dict  setObject: [self primitiveValueForKey:@"modality"] forKey: @"Modality"];
-	if ([self primitiveValueForKey:@"date"])
-		[dict  setObject: [self primitiveValueForKey:@"date"] forKey: @"Study Date"];
-	if ([self primitiveValueForKey:@"performingPhysician"] )
-		[dict  setObject: [self primitiveValueForKey:@"performingPhysician"] forKey: @"Performing Physician"];
-	if ([self primitiveValueForKey:@"referringPhysician"])
-		[dict  setObject: [self primitiveValueForKey:@"referringPhysician"] forKey: @"Referring Physician"];
-	if ([self primitiveValueForKey:@"id"])
-		[dict  setObject: [self primitiveValueForKey:@"id"] forKey: @"Study ID"];
-	if ([self primitiveValueForKey:@"studyInstanceUID"])
-		[dict  setObject: [self primitiveValueForKey:@"studyInstanceUID"] forKey: @"Study Instance UID"];
-
-	return dict;
 }
 
 - (NSComparisonResult)compareName:(DicomStudy*)study;

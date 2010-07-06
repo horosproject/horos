@@ -560,15 +560,15 @@ extern NSRecursiveLock *PapyrusLock;
 			[dicomElements setObject:protocol  forKey:@"protocolName"];
 		}
 		
-		//manufacturer
-		if (dataset->findAndGetString(DCM_Manufacturer, string, OFFalse).good() && string != NULL)
-		{
-			NSString *manufacturer = [DicomFile stringWithBytes: (char*) string encodings: encoding];
-			if( manufacturer == nil) manufacturer = [[[NSString alloc] initWithCString: string encoding: encoding[ 0]] autorelease];
-			
-			if( [manufacturer hasPrefix: @"MAC:"])
-				[dicomElements setObject: manufacturer forKey: @"manufacturer"];
-		}
+//		//manufacturer
+//		if (dataset->findAndGetString(DCM_Manufacturer, string, OFFalse).good() && string != NULL)
+//		{
+//			NSString *manufacturer = [DicomFile stringWithBytes: (char*) string encodings: encoding];
+//			if( manufacturer == nil) manufacturer = [[[NSString alloc] initWithCString: string encoding: encoding[ 0]] autorelease];
+//			
+//			if( [manufacturer hasPrefix: @"MAC:"])
+//				[dicomElements setObject: manufacturer forKey: @"manufacturer"];
+//		}
 		
 		//Echo Time
 		if (dataset->findAndGetString(DCM_EchoTime, string, OFFalse).good() && string != NULL)

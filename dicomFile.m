@@ -2139,13 +2139,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					[dicomElements setObject:[[[NSString alloc] initWithCString: val->a encoding: NSASCIIStringEncoding] autorelease] forKey:@"accessionNumber"];
 				}
 				
-				val = Papy3GetElement (theGroupP, papManufacturerGr, &nbVal, &itemType);
-				if (val != NULL)
-				{
-					NSString *manufacturer = [DicomFile stringWithBytes: (char*) val->a encodings:encoding];
-					if( [manufacturer hasPrefix: @"MAC:"])
-						[dicomElements setObject: manufacturer forKey: @"manufacturer"];
-				}
+//				val = Papy3GetElement (theGroupP, papManufacturerGr, &nbVal, &itemType);
+//				if (val != NULL)
+//				{
+//					NSString *manufacturer = [DicomFile stringWithBytes: (char*) val->a encodings:encoding];
+//					if( [manufacturer hasPrefix: @"MAC:"])
+//						[dicomElements setObject: manufacturer forKey: @"manufacturer"];
+//				}
 				
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
 			}
@@ -2899,12 +2899,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if ([dcmObject attributeValueWithName:@"ProtocolName"])
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"ProtocolName"] forKey:@"protocolName"];
 		
-		if ([dcmObject attributeValueWithName:@"Manufacturer"])
-		{
-			NSString *manufacturer = [dcmObject attributeValueWithName:@"Manufacturer"];
-			if( [manufacturer hasPrefix: @"MAC:"])
-				[dicomElements setObject: manufacturer forKey:@"manufacturer"];
-		}
+//		if ([dcmObject attributeValueWithName:@"Manufacturer"])
+//		{
+//			NSString *manufacturer = [dcmObject attributeValueWithName:@"Manufacturer"];
+//			if( [manufacturer hasPrefix: @"MAC:"])
+//				[dicomElements setObject: manufacturer forKey:@"manufacturer"];
+//		}
 		
 		if (imageID = [dcmObject attributeValueWithName:@"InstanceNumber"])
 		{

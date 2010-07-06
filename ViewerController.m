@@ -3773,10 +3773,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 				NSString	*name = [curStudy valueForKey:@"studyName"];
 				if( [name length] > 15) name = [name substringToIndex: 15];
 				
-				NSString	*stateText;
+				NSString *stateText;
 				if( [[curStudy valueForKey:@"stateText"] intValue]) stateText = [[BrowserController statesArray] objectAtIndex: [[curStudy valueForKey:@"stateText"] intValue]];
 				else stateText = @"";
-				NSString	*comment = [curStudy valueForKey:@"comment"];
+				NSString *comment = [curStudy valueForKey:@"comment"];
 				
 				if( comment == nil) comment = @"";
 				

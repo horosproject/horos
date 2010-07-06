@@ -1104,8 +1104,8 @@ static NSConditionLock *threadLock = nil;
 								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
 								[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
 								
-								if( [(NSString*)[curDict objectForKey: @"manufacturer"] length] > 0)
-									[image setValue:[curDict objectForKey: @"manufacturer"] forKey: @"comment"];
+//								if( [(NSString*)[curDict objectForKey: @"manufacturer"] length] > 0) MAC Address
+//									[image setValue:[curDict objectForKey: @"manufacturer"] forKey: @"comment"];
 								
 								[image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
 								[image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
@@ -1615,8 +1615,6 @@ static NSConditionLock *threadLock = nil;
     NSFileManager       *defaultManager = [NSFileManager defaultManager];
 	NSMutableArray		*filesArray;
 	BOOL				isDirectory = NO;
-	NSMutableArray		*commentsAndStatus = [NSMutableArray array];
-	NSMutableArray		*reports = [NSMutableArray array];
 	
 	filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	
@@ -1657,15 +1655,6 @@ static NSConditionLock *threadLock = nil;
 										{
 											if( [[itemPath pathExtension] isEqualToString: @"zip"] || [[itemPath pathExtension] isEqualToString: @"osirixzip"])
 												[self askForZIPPassword: itemPath destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
-												
-//											else if( [[itemPath lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
-//												[commentsAndStatus addObject: itemPath];
-											
-											else if( [[[itemPath lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
-												[reports addObject: itemPath];
-												
-//											else if( [[itemPath lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
-//											{ }
 											
 											else if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
 												[self addDICOMDIR: itemPath : filesArray];
@@ -1677,13 +1666,6 @@ static NSConditionLock *threadLock = nil;
 								else if( [[pathname pathExtension] isEqualToString:@"app"])
 								{
 									folderSkip = pathname;
-								}
-								else if( [[pathname pathExtension] isEqualToString:@"pages"])
-								{
-									folderSkip = pathname;
-									
-									if( [[[pathname lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
-										[reports addObject: itemPath];
 								}
 							}
 							@catch( NSException *e)
@@ -1704,15 +1686,6 @@ static NSConditionLock *threadLock = nil;
 							
 							[self askForZIPPassword: filename destination: unzipPath];
 						}
-//						else if( [[filename lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
-//							[commentsAndStatus addObject: filename];
-						
-						else if( [[[filename lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
-							[reports addObject: filename];
-						
-//						else if( [[filename lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
-//						{ }
-						
 						else if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
 							[self addDICOMDIR: filename :filesArray];
 						else if( [[filename pathExtension] isEqualToString: @"app"])
@@ -1758,20 +1731,6 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	NSArray	*newImages = [self addFilesToDatabase:filesArray];
-	
-	for( NSString *path in commentsAndStatus)
-	{
-		[self importCommentsAndStatusFromDictionary: [NSDictionary dictionaryWithContentsOfFile: path]];
-	}
-	
-	#ifndef OSIRIX_LIGHT
-	for( NSString *path in reports)
-	{
-		NSString *pathXML = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"reportStudyUID.xml"];
-	
-		[self importReport: path UID: [NSString stringWithContentsOfFile: pathXML]];
-	}
-	#endif
 	
 	[self checkIncomingNow: self];
 	[self outlineViewRefresh];
@@ -4530,7 +4489,19 @@ static NSConditionLock *threadLock = nil;
 								{
 									if( dontDeleteStudiesWithComments)
 									{
-										NSString *str = [[studiesArray objectAtIndex: x] valueForKey: @"comment"];
+										DicomStudy *dy = [studiesArray objectAtIndex: x];
+										
+										NSString *str = @"";
+										
+										if( [dy valueForKey: @"comment"])
+											str = [str stringByAppendingString: [dy valueForKey: @"comment"]];
+										if( [dy valueForKey: @"comment2"])
+											str = [str stringByAppendingString: [dy valueForKey: @"comment2"]];
+										if( [dy valueForKey: @"comment3"])
+											str = [str stringByAppendingString: [dy valueForKey: @"comment3"]];
+										if( [dy valueForKey: @"comment4"])
+											str = [str stringByAppendingString: [dy valueForKey: @"comment4"]];
+										
 										
 										if( str == nil || [str isEqualToString: @""])
 											[toBeRemoved addObject: [studiesArray objectAtIndex: x]];
@@ -4556,7 +4527,7 @@ static NSConditionLock *threadLock = nil;
 					{
 						for ( int i = 0; i < [toBeRemoved count]; i++)
 						{
-							NSString	*comment = [[toBeRemoved objectAtIndex: i] valueForKey: @"comment"];
+							NSString *comment = [[toBeRemoved objectAtIndex: i] valueForKey: @"comment"];
 							
 							if( comment == nil) comment = @"";
 							
@@ -4769,7 +4740,18 @@ static NSConditionLock *threadLock = nil;
 								}
 								else if( dontDeleteStudiesWithComments)
 								{
-									NSString *str = [[unlockedStudies objectAtIndex: i] valueForKey:@"comment"];
+									DicomStudy *dy = [unlockedStudies objectAtIndex: i];
+										
+									NSString *str = @"";
+									
+									if( [dy valueForKey: @"comment"])
+										str = [str stringByAppendingString: [dy valueForKey: @"comment"]];
+									if( [dy valueForKey: @"comment2"])
+										str = [str stringByAppendingString: [dy valueForKey: @"comment2"]];
+									if( [dy valueForKey: @"comment3"])
+										str = [str stringByAppendingString: [dy valueForKey: @"comment3"]];
+									if( [dy valueForKey: @"comment4"])
+										str = [str stringByAppendingString: [dy valueForKey: @"comment4"]];
 									
 									if( str != nil && [str isEqualToString:@""] == NO)
 									{
@@ -16952,58 +16934,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return mstr;
 }
 
-- (void) importCommentsAndStatusFromDictionary:(NSDictionary*) d
-{
-	NSManagedObjectContext *context = self.managedObjectContext;
-	
-	[context lock];
-	
-	@try
-	{
-		NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithFormat:  @"studyInstanceUID == %@", [d valueForKey: @"studyInstanceUID"]]];
-		
-		NSError *error = nil;
-		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-		
-		if( [studiesArray count])
-		{
-			DicomStudy *s = [studiesArray lastObject];
-			
-			if( [(NSString*) [d valueForKey: @"comment"] length])
-				[s setValue: [d valueForKey: @"comment"] forKey: @"comment"];
-			
-			if( [[d valueForKey: @"stateText"] intValue])
-				[s setValue: [d valueForKey: @"stateText"] forKey: @"stateText"];
-			
-			NSArray *series = [[s valueForKey:@"series"] allObjects];
-			
-			for( NSDictionary *ds in [d valueForKey: @"series"])
-			{
-				NSArray *ss = [series filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:  @"seriesInstanceUID == %@", [ds valueForKey: @"seriesInstanceUID"]]];
-				
-				if( [ss count])
-				{
-					if( [[ds valueForKey: @"stateText"] intValue])
-						[[ss lastObject] setValue: [ds valueForKey: @"stateText"] forKey: @"stateText"];
-					
-					if( [(NSString*) [ds valueForKey: @"comment"] length])
-						[[ss lastObject] setValue: [ds valueForKey: @"comment"] forKey: @"comment"];
-				}
-			}
-		}
-	}
-	
-	@catch (NSException * e)
-	{
-		NSLog( @"importCommentsAndStatusFromDictionary exception: %@", e);
-		[AppController printStackTrace: e];
-	}
-	
-	[context unlock];
-}
-
 #ifndef OSIRIX_LIGHT
 - (void) importReport:(NSString*) path UID: (NSString*) uid
 {
@@ -17049,51 +16979,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 #endif
-
-- (NSDictionary*) dictionaryWithCommentsAndStatus:(NSManagedObject *)s
-{
-	BOOL data = NO;
-	NSMutableDictionary *studyDict = [NSMutableDictionary dictionary];
-	@try
-	{
-		[studyDict setValue: [s valueForKey: @"studyInstanceUID"] forKey: @"studyInstanceUID"];
-		
-		if( [(NSString*) [s valueForKey: @"comment"] length]) data = YES;
-		[studyDict setValue: [s valueForKey: @"comment"] forKey: @"comment"];
-		
-		if( [[s valueForKey: @"stateText"] intValue]) data = YES;
-		[studyDict setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
-		
-		NSMutableArray *seriesArray = [NSMutableArray array];
-		for( DicomSeries *series in [[s valueForKey: @"series"] allObjects])
-		{
-			NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-			
-			if( [(NSString*) [series valueForKey: @"comment"] length]) data = YES;
-			[dict setValue: [series valueForKey: @"comment"] forKey: @"comment"];
-			
-			if( [[series valueForKey: @"stateText"] intValue]) data = YES;
-			[dict setValue: [series valueForKey: @"stateText"] forKey: @"stateText"];
-			
-			[dict setValue: [series valueForKey: @"seriesInstanceUID"] forKey: @"seriesInstanceUID"];
-			
-			[seriesArray addObject: dict];
-		}
-		
-		[studyDict setObject: seriesArray forKey: @"series"];
-	}
-	
-	@catch (NSException * e)
-	{
-		NSLog( @"dictionaryWithCommentsAndStatus exception: %@", e);
-		[AppController printStackTrace: e];
-	}
-	
-	if( data)
-		return studyDict;
-	else
-		return nil;
-}
 
 - (NSArray*) exportDICOMFileInt: (NSString*) location files: (NSMutableArray*)filesToExport objects: (NSMutableArray*)dicomFiles2Export
 {
@@ -17259,31 +17144,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if( previousStudy != [curImage valueForKeyPath: @"series.study"])
 			{
 				previousStudy = [curImage valueForKeyPath: @"series.study"];
-				
-//				NSDictionary *commentsAndStatus = [self dictionaryWithCommentsAndStatus: previousStudy];
-//				
-//				if( commentsAndStatus)
-//				{
-//					[[NSFileManager defaultManager] removeFileAtPath: [NSString stringWithFormat:@"%@/CommentAndStatus.xml", studyPath]  handler: nil];
-//					[commentsAndStatus writeToFile: [NSString stringWithFormat:@"%@/CommentAndStatus.xml", studyPath] atomically: YES];
-//				}
-				
-//				if( [previousStudy valueForKey:@"reportURL"])
-//				{
-//					NSString *extension = [[previousStudy valueForKey:@"reportURL"] pathExtension];
-//					
-//					NSString *filename;
-//					
-//					if( [extension length]) filename = [NSString stringWithFormat: @"report.%@", extension];
-//					else filename = @"report";
-//					
-//					if( [[NSFileManager defaultManager] fileExistsAtPath: [previousStudy valueForKey:@"reportURL"]])
-//					{
-//						[[NSFileManager defaultManager] removeFileAtPath: [NSString stringWithFormat:@"%@/%@", studyPath, filename]  handler: nil];
-//						[[NSFileManager defaultManager] copyPath: [previousStudy valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/%@", studyPath, filename] handler: nil];
-//						[[previousStudy valueForKey:@"studyInstanceUID"] writeToFile: [NSString stringWithFormat:@"%@/reportStudyUID.xml", studyPath] atomically: YES];
-//					}
-//				}
 			}
 			
 			long imageNo = [[curImage valueForKey:@"instanceNumber"] intValue];
@@ -20354,8 +20214,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 		case 6:			// Accession Number 
 			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Accession Number = %@", nil), _searchString];
 			break;
+		
+		case 8:			// Comments
+			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Comments 2 = %@", nil), _searchString];
+			break;
 			
-		case 100:			// Advanced
+		case 9:			// Comments
+			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Comments 3 = %@", nil), _searchString];
+			break;
+			
+		case 10:			// Comments
+			description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Comments 4 = %@", nil), _searchString];
+			break;
+			
+		case 100:		
+			// Advanced
 			break;
 		}
 		
@@ -20410,6 +20283,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			case 6:			// Accession Number 
 				predicate = [NSPredicate predicateWithFormat: @"accessionNumber CONTAINS[cd] %@", _searchString];
+			break;
+			
+			case 8:			// Comments
+				predicate = [NSPredicate predicateWithFormat: @"comment2 CONTAINS[cd] %@", _searchString];
+			break;
+			
+			case 9:			// Comments
+				predicate = [NSPredicate predicateWithFormat: @"comment3 CONTAINS[cd] %@", _searchString];
+			break;
+			
+			case 10:			// Comments
+				predicate = [NSPredicate predicateWithFormat: @"comment4 CONTAINS[cd] %@", _searchString];
 			break;
 			
 			case 100:		// Advanced

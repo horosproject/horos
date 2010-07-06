@@ -165,6 +165,51 @@
 	}
 }
 
+- (void) setComment2: (NSString*) c
+{
+	NSString *previousValue = [self primitiveValueForKey: @"comment2"];
+	
+	[self willChangeValueForKey: @"comment2"];
+	[self setPrimitiveValue: c forKey: @"comment2"];
+	[self didChangeValueForKey: @"comment2"];
+	
+	if( [previousValue length] != 0 || [c length] != 0)
+	{
+		if( [c isEqualToString: previousValue] == NO)
+			[[self valueForKey: @"study"] archiveAnnotationsAsDICOMSR];
+	}
+}
+
+- (void) setComment3: (NSString*) c
+{
+	NSString *previousValue = [self primitiveValueForKey: @"comment3"];
+	
+	[self willChangeValueForKey: @"comment3"];
+	[self setPrimitiveValue: c forKey: @"comment3"];
+	[self didChangeValueForKey: @"comment3"];
+	
+	if( [previousValue length] != 0 || [c length] != 0)
+	{
+		if( [c isEqualToString: previousValue] == NO)
+			[[self valueForKey: @"study"] archiveAnnotationsAsDICOMSR];
+	}
+}
+
+- (void) setComment4: (NSString*) c
+{
+	NSString *previousValue = [self primitiveValueForKey: @"comment4"];
+	
+	[self willChangeValueForKey: @"comment4"];
+	[self setPrimitiveValue: c forKey: @"comment4"];
+	[self didChangeValueForKey: @"comment4"];
+	
+	if( [previousValue length] != 0 || [c length] != 0)
+	{
+		if( [c isEqualToString: previousValue] == NO)
+			[[self valueForKey: @"study"] archiveAnnotationsAsDICOMSR];
+	}
+}
+
 - (void) setStateText: (NSNumber*) c
 {
 	NSNumber *previousState = [self primitiveValueForKey: @"stateText"];
@@ -457,26 +502,6 @@
 	[[self managedObjectContext] unlock];
 	
 	return [imageArray sortedArrayUsingDescriptors:sortDescriptors];
-}
-
-- (NSDictionary *)dictionary
-{
-	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-	if ([self primitiveValueForKey:@"seriesDescription"])
-		[dict  setObject: [self primitiveValueForKey:@"seriesDescription"] forKey: @"Series Protocol"];
-	if ([self primitiveValueForKey:@"name"])
-		[dict  setObject: [self primitiveValueForKey:@"name"] forKey: @"Series Description"];
-	if ([self primitiveValueForKey:@"id"])
-		[dict  setObject: [self primitiveValueForKey:@"id"] forKey: @"Series Number"];
-	if ([self primitiveValueForKey:@"modality"])
-		[dict  setObject: [self primitiveValueForKey:@"modality"] forKey: @"Modality"];
-	if ([self primitiveValueForKey:@"date"])
-		[dict  setObject: [self primitiveValueForKey:@"date"] forKey: @"Series Date"];
-	if ([self primitiveValueForKey:@"seriesDICOMUID"] )
-		[dict  setObject: [self primitiveValueForKey:@"seriesDICOMUID"] forKey: @"Series Instance UID"];
-	if ([self primitiveValueForKey:@"comment"] )
-		[dict  setObject: [self primitiveValueForKey:@"comment"] forKey: @"Comment"];
-	return dict;
 }
 
 - (NSComparisonResult)compareName:(DicomSeries*)series;

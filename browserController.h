@@ -520,9 +520,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (NSArray *)databaseSelection;
 
-- (void) importCommentsAndStatusFromDictionary:(NSDictionary*) d;
-- (NSDictionary*) dictionaryWithCommentsAndStatus:(NSManagedObject *)s;
-
 
 - (void) newFilesGUIUpdateRun:(int) state;
 - (void) newFilesGUIUpdateRun: (int) state viewersListToReload: (NSMutableArray*) cReload viewersListToRebuild: (NSMutableArray*) cRebuild;
