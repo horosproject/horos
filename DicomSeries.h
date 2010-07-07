@@ -57,7 +57,6 @@
 - (NSSet *)paths;
 - (NSSet *)keyImages;
 - (NSArray *)sortedImages;
-- (NSDictionary *)dictionary;
 - (NSComparisonResult)compareName:(DicomSeries*)series;
 - (NSNumber *) noFilesExcludingMultiFrames;
 

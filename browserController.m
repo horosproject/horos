@@ -422,8 +422,8 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	#ifndef OSIRIX_LIGHT
-	[[QueryController currentQueryController] refresh: self];
-	[[QueryController currentAutoQueryController] refresh: self];
+	[[QueryController currentQueryController] refresh: self now: YES];
+	[[QueryController currentAutoQueryController] refresh: self now: YES];
 	#endif
 }
 
@@ -1895,7 +1895,7 @@ static NSConditionLock *threadLock = nil;
 										
 									for( DicomImage *im in [[[study reportSRSeries] valueForKey: @"images"] allObjects])
 										[im setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
-										
+									
 									[[study annotationsSRImage] setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
 								}
 								

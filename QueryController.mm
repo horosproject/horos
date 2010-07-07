@@ -767,14 +767,19 @@ extern "C"
 
 - (void) refresh: (id) sender now: (BOOL) now
 {	
-	if( (DatabaseIsEdited == NO && [[self window] isVisible] == YES) || now == YES)
+	if( DatabaseIsEdited == NO)		// && now == YES)
 	{
-		if( [[self window] isKeyWindow] == YES || lastListRefresh < [NSDate timeIntervalSinceReferenceDate] || now == YES)
+		if( lastListRefresh < [NSDate timeIntervalSinceReferenceDate] || now == YES)
 		{
+			@synchronized( studyArrayInstanceUID)
+			{
+				[studyArrayInstanceUID release];
+				studyArrayInstanceUID = nil;
+				
+				[NSThread detachNewThreadSelector: @selector( computeStudyArrayInstanceUID:) toTarget: self withObject: self];
+			}
+			
 			lastListRefresh = [NSDate timeIntervalSinceReferenceDate] + 30;
-			[studyArrayInstanceUID release];
-			studyArrayInstanceUID = nil;
-			[outlineView reloadData];
 		}
 	}
 }
@@ -912,39 +917,56 @@ extern "C"
 	return seriesArray;
 }
 
-- (void) computeStudyArrayInstanceUID
+- (void) computeStudyArrayInstanceUID: (id) sender
 {
-	if( lastComputeStudyArrayInstanceUID == 0 || studyArrayInstanceUID == 0 || [NSDate timeIntervalSinceReferenceDate] - lastComputeStudyArrayInstanceUID > 1)
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	@synchronized( studyArrayInstanceUID)
 	{
-		NSError						*error = nil;
-		NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
-		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
-		NSPredicate					*predicate = [NSPredicate predicateWithValue: YES];
-		
-		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-		[request setPredicate: predicate];
-		
-		[context retain];
-		[context lock];
-		
 		@try
 		{
-			[studyArrayInstanceUID release];
-			[studyArrayCache release];
-			
-			studyArrayCache = [[context executeFetchRequest:request error:&error] retain];
-			studyArrayInstanceUID = [[studyArrayCache valueForKey:@"studyInstanceUID"] retain];
+			if( lastComputeStudyArrayInstanceUID == 0 || studyArrayInstanceUID == 0 || [NSDate timeIntervalSinceReferenceDate] - lastComputeStudyArrayInstanceUID > 1)
+			{
+				NSError						*error = nil;
+				NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
+				NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+				NSPredicate					*predicate = [NSPredicate predicateWithValue: YES];
+				
+				[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+				[request setPredicate: predicate];
+				
+				[context retain];
+				[context lock];
+				
+				@try
+				{
+					[studyArrayInstanceUID release];
+					[studyArrayCache release];
+					
+					studyArrayCache = [[context executeFetchRequest:request error:&error] retain];
+					studyArrayInstanceUID = [[studyArrayCache valueForKey:@"studyInstanceUID"] retain];
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				}
+				
+				[context unlock];
+				[context release];
+				
+				lastComputeStudyArrayInstanceUID = [NSDate timeIntervalSinceReferenceDate];
+			}
 		}
 		@catch (NSException * e)
 		{
 			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
 		
-		[context unlock];
-		[context release];
-		
-		lastComputeStudyArrayInstanceUID = [NSDate timeIntervalSinceReferenceDate];
+		if( sender == self)
+			[outlineView performSelectorOnMainThread: @selector( reloadData) withObject: nil waitUntilDone: NO];
 	}
+	
+	[pool release];
 }
 
 - (NSArray*) localStudy:(id) item
@@ -953,17 +975,28 @@ extern "C"
 	{
 		@try
 		{
-			if( studyArrayInstanceUID == nil) [self computeStudyArrayInstanceUID];
+			if( studyArrayInstanceUID == nil)
+				[self computeStudyArrayInstanceUID: nil];
 			
-			NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
+			NSArray *result = nil;
 			
-			if( index == NSNotFound) return [NSArray array];
-			else return [NSArray arrayWithObject: [studyArrayCache objectAtIndex: index]];
+			@synchronized( studyArrayInstanceUID)
+			{
+				NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
+				
+				if( index == NSNotFound) result = [NSArray array];
+				else result = [NSArray arrayWithObject: [studyArrayCache objectAtIndex: index]];
+			}
+			
+			return result;
 		}
 		@catch (NSException * e)
 		{
-			[studyArrayInstanceUID release];
-			studyArrayInstanceUID = nil;
+			@synchronized( studyArrayInstanceUID)
+			{
+				[studyArrayInstanceUID release];
+				studyArrayInstanceUID = nil;
+			}
 			return nil;
 		}
 	}
@@ -1040,13 +1073,11 @@ extern "C"
 {
 	@try
 	{
-		if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
+		if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database?
 		{
 			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 			{
-				NSArray	*studyArray;
-				
-				studyArray = [self localStudy: item];
+				NSArray	*studyArray = [self localStudy: item];
 				
 				if( [studyArray count] > 0)
 				{
@@ -2971,6 +3002,12 @@ extern "C"
 
 - (void)dealloc
 {
+	@synchronized( studyArrayInstanceUID)
+	{
+		[studyArrayInstanceUID release];
+		studyArrayInstanceUID = nil;
+	}
+	
 	[autoQueryLock lock];
 	[autoQueryLock unlock];
 	
@@ -2995,8 +3032,7 @@ extern "C"
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[studyArrayCache release];
 	studyArrayCache = nil;
-	[studyArrayInstanceUID release];
-	studyArrayInstanceUID = nil;
+	
 	[queryArrayPrefs release];
 		
 	[super dealloc];

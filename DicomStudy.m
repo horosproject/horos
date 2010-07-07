@@ -666,6 +666,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (void) dealloc
 {
 	[dicomTime release];
+	[cachedRawNoFiles release];
 	
 	[super dealloc];
 }
@@ -1019,9 +1020,22 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
+- (void) setNumberOfImages:(NSNumber *) n
+{
+	[cachedRawNoFiles release];
+	cachedRawNoFiles = nil;
+	
+	[self willChangeValueForKey: @"numberOfImages"];
+	[self setPrimitiveValue: n forKey:@"numberOfImages"];
+	[self didChangeValueForKey: @"numberOfImages"];
+}
+
 - (NSNumber *) rawNoFiles
 {
 	int sum = 0;
+	
+	if( cachedRawNoFiles)
+		return cachedRawNoFiles;
 	
 	[[self managedObjectContext] lock];
 	
@@ -1037,7 +1051,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	[[self managedObjectContext] unlock];
 	
-	return [NSNumber numberWithInt:sum];
+	cachedRawNoFiles = [[NSNumber numberWithInt:sum] retain];
+	
+	return cachedRawNoFiles;
 }
 
 - (NSNumber *) noFilesExcludingMultiFrames

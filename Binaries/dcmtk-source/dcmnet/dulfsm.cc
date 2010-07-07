@@ -3406,6 +3406,12 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     {
         return makeDcmnetCondition(DULC_CODINGERROR, OF_error, "Coding Error in DUL routine: buffer too small in readPDUTCPHead");
     }
+	
+	if( association == 0L)
+		return makeDcmnetCondition(DULC_CODINGERROR, OF_error, "association == nil");
+	
+	if( *association == 0L)
+		return makeDcmnetCondition(DULC_CODINGERROR, OF_error, "*association == nil");
 
     /* (for non-blocking reading) if the timeout refers to */
     /* the default timeout, set timeout correspondingly */

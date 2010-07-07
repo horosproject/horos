@@ -84,7 +84,6 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 #endif
 - (NSImage *)image;
 - (NSImage *)thumbnail;
-- (NSDictionary *)dictionary;
 - (NSString*) completePathWithDownload:(BOOL) download;
 + (NSString*) dbPathForManagedContext: (NSManagedObjectContext *) c;
 + (NSString*) completePathForLocalPath:(NSString*) path directory:(NSString*) directory;
