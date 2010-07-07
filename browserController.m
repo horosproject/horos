@@ -8958,7 +8958,7 @@ static BOOL withReset = NO;
 		if( i >= [previewPix count]) return;
 		if( i >= [previewPixThumbnails count]) return;
 		
-		NSImage		*img = nil;
+		NSImage *img = nil;
 		
 		img = [previewPixThumbnails objectAtIndex: i];
 		if( img == nil) NSLog( @"Error: [previewPixThumbnails objectAtIndex: i] == nil");
@@ -9012,9 +9012,7 @@ static BOOL withReset = NO;
 					[cell setMenu: contextualRT];
 				}
 				else
-				{
 					[cell setMenu: contextual];
-				}
 				
 				NSString	*name = [curFile valueForKey:@"name"];
 				
@@ -9054,6 +9052,18 @@ static BOOL withReset = NO;
 						else
 							[cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Images", nil), name, count]];
 					}
+					
+//					if( [[curFile valueForKey: @"keySeries"] boolValue])
+//					{
+//						[cell setBordered: NO];
+//						[cell setBackgroundColor: [NSColor yellowColor]];
+//					}
+//					else
+//					{
+//						[cell setBordered: YES];
+//						[cell setBackgroundColor: [NSColor whiteColor]];
+//					}
+
 				}
 				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"])
 				{
@@ -9061,6 +9071,17 @@ static BOOL withReset = NO;
 						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d\r%.2f", nil), i+1, [[curFile valueForKey: @"sliceLocation"] floatValue]]];
 					else
 						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d", nil), i+1]];
+					
+//					if( [[curFile valueForKey: @"isKeyImage"] boolValue])
+//					{
+//						[cell setBordered: NO];
+//						[cell setBackgroundColor: [NSColor yellowColor]];
+//					}
+//					else
+//					{
+//						[cell setBordered: YES];
+//						[cell setBackgroundColor: [NSColor whiteColor]];
+//					}
 				}
 				
 				[cell setButtonType:NSPushOnPushOffButton];
