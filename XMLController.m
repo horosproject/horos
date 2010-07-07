@@ -631,9 +631,48 @@ extern int delayedTileWindows;
 	[self release];
 }
 
+- (id) scanThrough: (id) main forString: (NSString*) s
+{
+	for( int i = 0; i < [main childCount] ; i++)
+	{
+		id item = [main childAtIndex: i];
+		
+		if( [item childCount] > 1)
+		{
+			id subItem = [self scanThrough: item forString: s];
+			if( subItem)
+			{
+				[tree addObject: item];
+				return subItem;
+			}
+		}
+		else
+			if( [self item: item containsString: [search stringValue]])
+				return item;
+	}
+	
+	return nil;
+}
+
 - (IBAction) setSearchString:(id) sender
 {
 	[table reloadData];
+	
+	if( [[search stringValue] length] > 0)
+	{
+		tree = [NSMutableArray array];
+		 
+		id item = [self scanThrough: xmlDocument forString: [search stringValue]];
+		
+		if( [tree count] > 0)
+		{
+			for( int i = [tree count]-1; i--; i >= 0)
+				[table expandItem: [tree objectAtIndex: i]];
+		}
+		
+		if( [table rowForItem: item] >= 0)
+			[table scrollRowToVisible: [table rowForItem: item]];
+	}
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
@@ -656,7 +695,7 @@ extern int delayedTileWindows;
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
 {
-	if( [[item valueForKey:@"name"] isEqualToString:@"value"])
+	if( [[item valueForKey: @"name"] isEqualToString: @"value"])
 		return NO;
 	else
 	{
@@ -683,49 +722,57 @@ extern int delayedTileWindows;
         }
 }
 
+- (BOOL) item: (id) item containsString: (NSString*) s
+{
+	NSRange range;
+	BOOL found = NO;
+	
+	if( found == NO)
+	{
+		@try
+		{
+			range = [[item valueForKey:@"name"] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
+			if( range.location != NSNotFound) found = YES;
+		}
+		@catch (NSException *e)
+		{
+		}
+	}
+	
+	if( found == NO)
+	{
+		@try
+		{
+			range = [[item valueForKey:@"attributeTag"] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
+			if( range.location != NSNotFound) found = YES;
+		}
+		@catch (NSException *e)
+		{
+		}
+	}
+	
+	if( found == NO)
+	{
+		@try
+		{
+			range = [[item valueForKey:@"stringValue"] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
+			if( range.location != NSNotFound) found = YES;
+		}
+		@catch (NSException *e)
+		{
+		}
+	}
+	
+	return found;
+}
+
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	BOOL found = NO;
 	
 	if( [[search stringValue] isEqualToString:@""] == NO)
 	{
-		NSRange range;
-		
-		if( found == NO)
-		{
-			@try
-			{
-				range = [[item valueForKey:@"name"] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
-				if( range.location != NSNotFound) found = YES;
-			}
-			@catch (NSException *e)
-			{
-			}
-		}
-		
-		if( found == NO)
-		{
-			@try
-			{
-				range = [[item valueForKey:@"attributeTag"] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
-				if( range.location != NSNotFound) found = YES;
-			}
-			@catch (NSException *e)
-			{
-			}
-		}
-		
-		if( found == NO)
-		{
-			@try
-			{
-				range = [[item valueForKey:@"stringValue"] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
-				if( range.location != NSNotFound) found = YES;
-			}
-			@catch (NSException *e)
-			{
-			}
-		}
+		found = [self item: item containsString: [search stringValue]];
 		
 		if( found)
 		{

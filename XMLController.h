@@ -28,7 +28,7 @@
     IBOutlet NSSearchField		*search;
     IBOutlet NSView				*searchView, *dicomEditingView;
 	
-    NSMutableArray				*xmlDcmData;    
+    NSMutableArray				*xmlDcmData, *tree;
     NSData						*xmlData;    
     NSToolbar					*toolbar;	
 	NSString					*srcFile;
@@ -68,7 +68,7 @@
 - (IBAction) validatorWebSite:(id) sender;
 - (IBAction) verify:(id) sender;
 - (void) reload:(id) sender;
-
+- (BOOL) item: (id) item containsString: (NSString*) s;
 - (void) expandAllItems: (id) sender;
 - (void) deepExpandAllItems: (id) sender;
 - (void) expandAll: (BOOL) deep;
