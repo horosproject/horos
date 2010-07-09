@@ -422,8 +422,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	#ifndef OSIRIX_LIGHT
-	[[QueryController currentQueryController] refresh: self now: YES];
-	[[QueryController currentAutoQueryController] refresh: self now: YES];
+	[[QueryController currentQueryController] refresh: self];
 	#endif
 }
 
@@ -3535,7 +3534,6 @@ static NSConditionLock *threadLock = nil;
 	
 	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] refresh: self];
-	[[QueryController currentAutoQueryController] refresh: self];
 	#endif
 	
 	[[LogManager currentLogManager] resetLogs];
@@ -4134,95 +4132,102 @@ static NSConditionLock *threadLock = nil;
 			[filesArray addObject: [[[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"] stringByAppendingPathComponent: name]];
 		}
 	}
-		
-	// ** Finish the rebuild
-	[[self addFilesToDatabase: filesArray onlyDICOM:NO produceAddedFiles:NO] valueForKey:@"completePath"];
 	
-	NSLog( @"End Rebuild");
-	
-	[filesArray release];
-	
-	Wait  *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Step 3: Cleaning Database...", nil)];
-	
-	[splash showWindow:self];
-	
-	NSManagedObjectContext		*context = self.managedObjectContext;
-	NSManagedObjectModel		*model = self.managedObjectModel;
+	NSManagedObjectContext *context = self.managedObjectContext;
+	NSManagedObjectModel *model = self.managedObjectModel;
 	
 	[context retain];
 	[context lock];
 	
-	NSFetchRequest	*dbRequest;
-	NSError			*error = nil;
-	
-	if( COMPLETEREBUILD == NO)
+	@try
 	{
-		// FIND ALL images, and REMOVE non-available images
+		// ** Finish the rebuild
+		[[self addFilesToDatabase: filesArray onlyDICOM:NO produceAddedFiles:NO] valueForKey:@"completePath"];
 		
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
+		NSLog( @"End Rebuild");
+		
+		[filesArray release];
+		
+		Wait  *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Step 3: Cleaning Database...", nil)];
+		
+		[splash showWindow:self];
+		
+		NSFetchRequest	*dbRequest;
+		NSError			*error = nil;
+		
+		if( COMPLETEREBUILD == NO)
+		{
+			// FIND ALL images, and REMOVE non-available images
+			
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+			error = nil;
+			NSArray *imagesArray = [context executeFetchRequest:dbRequest error:&error];
+			
+			[[splash progress] setMaxValue:[imagesArray count]/50];
+			
+			// Find unavailable files
+			int counter = 0;
+			for( NSManagedObject *aFile in imagesArray)
+			{
+				
+				FILE *fp = fopen( [[aFile valueForKey:@"completePath"] UTF8String], "r");
+				if( fp)
+				{
+					fclose( fp);
+				}
+				else
+					[context deleteObject: aFile];
+				
+				if( counter++ % 50 == 0) [splash incrementBy:1];
+			}
+		}
+		
+		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 		error = nil;
-		NSArray *imagesArray = [context executeFetchRequest:dbRequest error:&error];
+		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+		NSString	*basePath = [NSString stringWithFormat: @"%@/REPORTS/", [self documentsDirectory]];
 		
-		[[splash progress] setMaxValue:[imagesArray count]/50];
-		
-		// Find unavailable files
-		int counter = 0;
-		for( NSManagedObject *aFile in imagesArray)
+		if ([studiesArray count] > 0)
 		{
-			
-			FILE *fp = fopen( [[aFile valueForKey:@"completePath"] UTF8String], "r");
-			if( fp)
+			for( NSManagedObject *study in studiesArray)
 			{
-				fclose( fp);
+				BOOL deleted = NO;
+				
+				[self checkForExistingReport: study dbFolder: [self documentsDirectory]];
+				
+				if( [[study valueForKey:@"series"] count] == 0)
+				{
+					deleted = YES;
+					[context deleteObject: study];
+				}
+				
+				if( [[study valueForKey:@"noFiles"] intValue] == 0)
+				{
+					if( deleted == NO) [context deleteObject: study];
+				}
 			}
-			else
-				[context deleteObject: aFile];
-			
-			if( counter++ % 50 == 0) [splash incrementBy:1];
 		}
+		
+		[self saveDatabase: currentDatabasePath];
+		
+		[splash close];
+		[splash release];
+		
+		displayEmptyDatabase = NO;
+		
+		[self outlineViewRefresh];
+		
+		[checkIncomingLock unlock];
 	}
-	
-	dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-	error = nil;
-	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-	NSString	*basePath = [NSString stringWithFormat: @"%@/REPORTS/", [self documentsDirectory]];
-	
-	if ([studiesArray count] > 0)
+	@catch( NSException *e)
 	{
-		for( NSManagedObject *study in studiesArray)
-		{
-			BOOL deleted = NO;
-			
-			[self checkForExistingReport: study dbFolder: [self documentsDirectory]];
-			
-			if( [[study valueForKey:@"series"] count] == 0)
-			{
-				deleted = YES;
-				[context deleteObject: study];
-			}
-			
-			if( [[study valueForKey:@"noFiles"] intValue] == 0)
-			{
-				if( deleted == NO) [context deleteObject: study];
-			}
-		}
+		NSLog( @"ReBuildDatabase exception: %@", e);
+		[AppController printStackTrace: e];
 	}
-	
-	[self saveDatabase: currentDatabasePath];
-	
-	[splash close];
-	[splash release];
-	
-	displayEmptyDatabase = NO;
-	
-	[self outlineViewRefresh];
-	
-	[checkIncomingLock unlock];
-	
 	[context unlock];
 	[context release];
 	
@@ -5624,7 +5629,6 @@ static NSConditionLock *threadLock = nil;
 	
 	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] refresh: self];
-	[[QueryController currentAutoQueryController] refresh: self];
 	#endif
 }
 
@@ -5632,7 +5636,7 @@ static NSConditionLock *threadLock = nil;
 {
 	if( [item isFault] || [item isDeleted])
 	{
-		NSLog( @"******** isFault");
+		NSLog( @"******** isFault - childrenArray");
 		return nil;
 	}
 	
@@ -6838,7 +6842,6 @@ static NSConditionLock *threadLock = nil;
 		
 		#ifndef OSIRIX_LIGHT
 		[[QueryController currentQueryController] refresh: self];
-		[[QueryController currentAutoQueryController] refresh: self];
 		#endif
 	}
 	
@@ -7158,7 +7161,6 @@ static NSConditionLock *threadLock = nil;
 	
 	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] refresh: self];
-	[[QueryController currentAutoQueryController] refresh: self];
 	#endif
 	
 	[databaseOutline reloadData];

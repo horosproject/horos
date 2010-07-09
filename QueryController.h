@@ -66,9 +66,6 @@
 	
 	QueryArrayController					*queryManager;
 	
-	NSArray									*studyArrayInstanceUID, *studyArrayCache;
-	NSTimeInterval							lastComputeStudyArrayInstanceUID, lastListRefresh;
-	
 	BOOL									autoQuery, queryButtonPressed, performingCFind;
 	
 	NSInteger								autoRefreshQueryResults;
@@ -76,7 +73,8 @@
 }
 
 @property (readonly) NSRecursiveLock *autoQueryLock;
-@property BOOL autoQuery;
+@property (readonly) QueryOutlineView *outlineView;
+@property BOOL autoQuery, DatabaseIsEdited;
 @property NSInteger autoRefreshQueryResults;
 
 + (QueryController*) currentQueryController;
@@ -114,7 +112,6 @@
 - (IBAction) abort:(id)sender;
 - (IBAction) controlAction:(id)sender;
 - (void) refresh: (id) sender;
-- (void) refresh: (id) sender now: (BOOL) now;
 - (IBAction) pressButtons:(id) sender;
 - (NSArray*) localSeries:(id) item;
 - (NSArray*) localStudy:(id) item;
