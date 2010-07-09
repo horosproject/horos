@@ -774,12 +774,23 @@ extern "C"
 
 - (void) refresh: (id) sender
 {
+	if( [currentQueryController.window isVisible] == NO && [currentAutoQueryController.window isVisible] == NO)
+		return;
+	
 	if( afterDelayRefresh == NO)
 	{
 		afterDelayRefresh = YES;
 		
 		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector( executeRefresh:) object:nil];
-		[self performSelector: @selector( executeRefresh:) withObject: nil afterDelay: 5];
+		
+		int delay;
+		
+		if( [currentQueryController.window isKeyWindow] || [currentAutoQueryController.window isKeyWindow])
+			delay = 2;
+		else
+			delay = 10;
+		
+		[self performSelector: @selector( executeRefresh:) withObject: nil afterDelay: delay];
 	}
 }
 
@@ -1281,7 +1292,7 @@ extern "C"
 	id item = [outlineView itemAtRow: [outlineView selectedRow]];
 	
 	[resultArray sortUsingDescriptors: [self sortArray]];
-	[self refresh: self];
+	[outlineView reloadData];
 	
 	NSArray *s = [outlineView sortDescriptors];
 	
@@ -1723,7 +1734,7 @@ extern "C"
 	
 	[autoQueryLock unlock];
 	
-	[self performSelectorOnMainThread:@selector( refreshList: ) withObject: tempResultArray waitUntilDone: YES];
+	[self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: YES];
 	
 	if( atLeastOneSource == NO)
 	{
@@ -1870,7 +1881,7 @@ extern "C"
 	performingCFind = NO;
 	[progressIndicator stopAnimation:nil];
 	[resultArray sortUsingDescriptors: [self sortArray]];
-	[self refresh: self];
+	[outlineView reloadData];
 	[pool release];
 }
 
@@ -2116,7 +2127,7 @@ extern "C"
 	[searchFieldAN setStringValue:@""];
 	[searchFieldStudyDescription setStringValue:@""];
 	[searchFieldComments setStringValue: @""];
-	[self refresh: self];
+	[outlineView reloadData];
 }
 
 - (IBAction) copy: (id)sender
