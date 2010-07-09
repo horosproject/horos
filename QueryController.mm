@@ -764,8 +764,6 @@ extern "C"
 
 - (void) executeRefresh: (id) sender
 {
-	afterDelayRefresh = NO;
-	
 	if( currentQueryController.DatabaseIsEdited == NO) [currentQueryController.outlineView reloadData];
 	if( currentAutoQueryController.DatabaseIsEdited == NO) [currentAutoQueryController.outlineView reloadData];
 	
@@ -962,21 +960,19 @@ extern "C"
 	
 	@try
 	{
-		NSError						*error = nil;
-		NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
-		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
-		NSPredicate					*predicate = [NSPredicate predicateWithValue: YES];
+		NSError *error = nil;
+		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+		NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
 		
 		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 		[request setPredicate: predicate];
 		
-		[context retain];
 		[context lock];
 		
 		@try
 		{
 			local_studyArrayCache = [context executeFetchRequest:request error: &error];
-			local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
 		}
 		@catch (NSException * e)
 		{
@@ -984,7 +980,15 @@ extern "C"
 		}
 		
 		[context unlock];
-		[context release];
+		
+		@try
+		{
+			local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 		
 		if( local_studyArrayCache && local_studyArrayInstanceUID)
 		{
@@ -1002,6 +1006,8 @@ extern "C"
 	}
 	
 	NSLog( @"--- computeStudyArrayInstanceUID end");	
+	
+	afterDelayRefresh = NO;
 	
 	[pool release];
 }

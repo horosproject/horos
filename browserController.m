@@ -749,8 +749,8 @@ static NSConditionLock *threadLock = nil;
 	// Find all current studies
 	
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	[dbRequest setEntity: [[model entitiesByName] objectForKey: @"Study"]];
+	[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 	error = nil;
 	NSMutableArray *studiesArray = nil;
 	
@@ -760,9 +760,9 @@ static NSConditionLock *threadLock = nil;
 	}
 	@catch( NSException *ne)
 	{
-		NSLog(@"AddFilesToDatabase executeFetchRequest exception: %@", [ne description]);
-		NSLog(@"executeFetchRequest failed for studiesArray.");
-		error = [NSError errorWithDomain:@"OsiriXDomain" code:1 userInfo: nil];
+		NSLog( @"AddFilesToDatabase executeFetchRequest exception: %@", [ne description]);
+		NSLog( @"executeFetchRequest failed for studiesArray.");
+		error = [NSError errorWithDomain: @"OsiriXDomain" code: 1 userInfo: nil];
 		[AppController printStackTrace: ne];
 	}
 	
