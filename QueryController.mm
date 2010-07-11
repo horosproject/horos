@@ -953,8 +953,6 @@ extern "C"
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSLog( @"--- computeStudyArrayInstanceUID start");
-	
 	NSArray *local_studyArrayCache = nil;
 	NSArray *local_studyArrayInstanceUID = nil;
 	
@@ -1004,8 +1002,6 @@ extern "C"
 	{
 		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
-	
-	NSLog( @"--- computeStudyArrayInstanceUID end");	
 	
 	afterDelayRefresh = NO;
 	

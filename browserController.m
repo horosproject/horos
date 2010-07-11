@@ -2654,7 +2654,7 @@ static NSConditionLock *threadLock = nil;
 -(void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour refresh: (BOOL) refresh
 {
 	[self waitForRunningProcesses];
-	[self checkReportsDICOMSRConsistency];
+	
 	[reportFilesToCheck removeAllObjects];
 	
 	NSString *searchString = nil, *albumName = nil, *selectedItem = nil;
@@ -3530,7 +3530,6 @@ static NSConditionLock *threadLock = nil;
 	displayEmptyDatabase = NO;
 	[self outlineViewRefresh];
 	[self refreshMatrix: self];
-	[self checkReportsDICOMSRConsistency];
 	
 	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] refresh: self];
@@ -4219,6 +4218,8 @@ static NSConditionLock *threadLock = nil;
 		
 		displayEmptyDatabase = NO;
 		
+		[self checkReportsDICOMSRConsistency];
+		
 		[self outlineViewRefresh];
 		
 		[checkIncomingLock unlock];
@@ -4395,6 +4396,8 @@ static NSConditionLock *threadLock = nil;
  		[self updateDatabaseModel: currentDatabasePath :DATABASEVERSION];
 		
 		[self loadDatabase: currentDatabasePath];
+		
+		[self checkReportsDICOMSRConsistency];
 		
 		[[self window] display];
 		
@@ -13338,7 +13341,7 @@ static NSArray*	openSubSeriesArray = nil;
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 3*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain]; // 10
-		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 25 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain]; // 35
+		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 30 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain]; // 35
 		
 		
 		loadPreviewIndex = 0;
@@ -18647,13 +18650,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: file isDirectory: &isDirectory])
 			{
-				NSLog( @"Check Report up-to-date: %@", [file lastPathComponent]);
-				
 				NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath: file error: nil];
 				
 				if( [previousDate timeIntervalSinceDate: [fattrs objectForKey: NSFileModificationDate]] < 0)
 				{
-					NSLog( @"Report -> File Modified -> Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
+					NSLog( @"Report -> File Modified -> Sync %@ : \r %@ versus %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
 					
 					[d setObject: [fattrs objectForKey: NSFileModificationDate] forKey: @"date"];
 					
