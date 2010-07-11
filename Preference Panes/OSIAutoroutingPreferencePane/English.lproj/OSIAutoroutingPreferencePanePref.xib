@@ -2,16 +2,15 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10C540</string>
+		<string key="IBDocument.SystemVersion">10F569</string>
 		<string key="IBDocument.InterfaceBuilderVersion">732</string>
-		<string key="IBDocument.AppKitVersion">1038.25</string>
-		<string key="IBDocument.HIToolboxVersion">458.00</string>
+		<string key="IBDocument.AppKitVersion">1038.29</string>
+		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">732</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="6"/>
 			<integer value="239"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
@@ -41,7 +40,7 @@
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{224.663, 10}</string>
 				<object class="NSView" key="NSWindowView" id="84591715">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="534131059">
@@ -279,7 +278,6 @@
 									</array>
 									<string key="NSFrame">{{1, 17}, {655, 207}}</string>
 									<reference key="NSSuperview" ref="387379599"/>
-									<reference key="NSNextKeyView" ref="121118855"/>
 									<reference key="NSDocView" ref="121118855"/>
 									<reference key="NSBGColor" ref="652418709"/>
 									<int key="NScvFlags">4</int>
@@ -311,7 +309,6 @@
 									</array>
 									<string key="NSFrame">{{1, 0}, {655, 17}}</string>
 									<reference key="NSSuperview" ref="387379599"/>
-									<reference key="NSNextKeyView" ref="64063226"/>
 									<reference key="NSDocView" ref="64063226"/>
 									<reference key="NSBGColor" ref="652418709"/>
 									<int key="NScvFlags">4</int>
@@ -320,7 +317,6 @@
 							</array>
 							<string key="NSFrame">{{20, 52}, {657, 225}}</string>
 							<reference key="NSSuperview" ref="84591715"/>
-							<reference key="NSNextKeyView" ref="612080759"/>
 							<int key="NSsFlags">530</int>
 							<reference key="NSVScroller" ref="223124745"/>
 							<reference key="NSHScroller" ref="618069045"/>
@@ -412,7 +408,6 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{696, 364}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{224.663, 32}</string>
@@ -1155,9 +1150,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<string key="NSKeyEquivalent"/>
 								<int key="NSPeriodicDelay">400</int>
 								<int key="NSPeriodicInterval">75</int>
-								<object class="NSMenuItem" key="NSMenuItem" id="610287752">
+								<object class="NSMenuItem" key="NSMenuItem" id="43307803">
 									<reference key="NSMenu" ref="1024328962"/>
-									<string key="NSTitle">Don't try to re-send</string>
+									<string key="NSTitle">Try 5 times each 30 secs</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1165,13 +1160,24 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<reference key="NSOnImage" ref="880253232"/>
 									<reference key="NSMixedImage" ref="94624327"/>
 									<string key="NSAction">_popUpItemAction:</string>
+									<int key="NSTag">5</int>
 									<reference key="NSTarget" ref="688818518"/>
 								</object>
 								<bool key="NSMenuItemRespectAlignment">YES</bool>
 								<object class="NSMenu" key="NSMenu" id="1024328962">
 									<string key="NSTitle">OtherViews</string>
 									<array class="NSMutableArray" key="NSMenuItems">
-										<reference ref="610287752"/>
+										<object class="NSMenuItem" id="610287752">
+											<reference key="NSMenu" ref="1024328962"/>
+											<string key="NSTitle">Don't try to re-send</string>
+											<string key="NSKeyEquiv"/>
+											<int key="NSKeyEquivModMask">1048576</int>
+											<int key="NSMnemonicLoc">2147483647</int>
+											<reference key="NSOnImage" ref="880253232"/>
+											<reference key="NSMixedImage" ref="94624327"/>
+											<string key="NSAction">_popUpItemAction:</string>
+											<reference key="NSTarget" ref="688818518"/>
+										</object>
 										<object class="NSMenuItem" id="900862756">
 											<reference key="NSMenu" ref="1024328962"/>
 											<bool key="NSIsDisabled">YES</bool>
@@ -1184,21 +1190,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<string key="NSAction">_popUpItemAction:</string>
 											<reference key="NSTarget" ref="688818518"/>
 										</object>
-										<object class="NSMenuItem" id="43307803">
-											<reference key="NSMenu" ref="1024328962"/>
-											<string key="NSTitle">Try 5 times each min</string>
-											<string key="NSKeyEquiv"/>
-											<int key="NSKeyEquivModMask">1048576</int>
-											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="880253232"/>
-											<reference key="NSMixedImage" ref="94624327"/>
-											<string key="NSAction">_popUpItemAction:</string>
-											<int key="NSTag">5</int>
-											<reference key="NSTarget" ref="688818518"/>
-										</object>
+										<reference ref="43307803"/>
 										<object class="NSMenuItem" id="197321851">
 											<reference key="NSMenu" ref="1024328962"/>
-											<string key="NSTitle">Try 20 times each min</string>
+											<string key="NSTitle">Try 20 times each 30 secs</string>
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
@@ -1210,7 +1205,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										</object>
 										<object class="NSMenuItem" id="558763621">
 											<reference key="NSMenu" ref="1024328962"/>
-											<string key="NSTitle">Try 100 times each min</string>
+											<string key="NSTitle">Try 100 times each 30 secs</string>
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
@@ -1222,7 +1217,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										</object>
 										<object class="NSMenuItem" id="445651865">
 											<reference key="NSMenu" ref="1024328962"/>
-											<string key="NSTitle">Try 1400 times each min</string>
+											<string key="NSTitle">Try 1400 times each 30 secs</string>
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
@@ -1234,6 +1229,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										</object>
 									</array>
 								</object>
+								<int key="NSSelectedIndex">2</int>
 								<int key="NSPreferredEdge">1</int>
 								<bool key="NSUsesItemFromMenu">YES</bool>
 								<bool key="NSAltersState">YES</bool>
@@ -2454,7 +2450,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="324.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="325.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="326.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="327.IBEditorWindowLastContentRect">{{1075, 610}, {229, 81}}</string>
+				<string key="327.IBEditorWindowLastContentRect">{{919, 597}, {432, 93}}</string>
 				<string key="327.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="328.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="329.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2469,7 +2465,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="340.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="341.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="342.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="343.IBEditorWindowLastContentRect">{{999, 574}, {432, 113}}</string>
+				<string key="343.IBEditorWindowLastContentRect">{{919, 501}, {432, 113}}</string>
 				<string key="343.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="344.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="345.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
