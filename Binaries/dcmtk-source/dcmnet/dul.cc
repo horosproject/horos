@@ -599,8 +599,12 @@ DUL_ReceiveAssociationRQ(
     cond = receiveTransportConnection(network, block, timeout, params, association);
 
     if (cond.bad() || (cond.code() == DULC_FORKEDCHILD))
+	{
+		destroyAssociationKey(association);
+		*association = NULL;
         return cond;
-
+	}
+	
     cond = PRV_StateMachine(network, association,
                   TRANS_CONN_INDICATION, (*network)->protocolState, params);
     if (cond.bad())

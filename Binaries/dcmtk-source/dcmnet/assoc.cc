@@ -1585,8 +1585,14 @@ ASC_receiveAssociation(T_ASC_Network * network,
 
     cond = DUL_ReceiveAssociationRQ(&network->network, block, timeout,
                                     &(params->DULparams), &DULassociation, retrieveRawPDU);
-
-    if (cond.code() == DULC_FORKEDCHILD) return cond;
+	
+    if (cond.code() == DULC_FORKEDCHILD)
+    {
+        ASC_destroyAssociationParameters(&params);
+        free(*assoc);
+        *assoc = NULL;
+        return cond;
+    }
 
     (*assoc)->DULassociation = DULassociation;
 

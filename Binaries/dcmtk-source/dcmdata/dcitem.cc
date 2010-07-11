@@ -562,7 +562,8 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                         /* group length value to this element. */
                         if (actGLElem != NULL)
                         {
-                            actGLElem->putUint32(grplen);
+//                            actGLElem->putUint32(grplen);
+							actGLElem->putUint32Array(&grplen, 1);
                             DCM_dcmdataDebug(2, ("DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%u", actGLElem->getGTag(), grplen));
                         }
 
