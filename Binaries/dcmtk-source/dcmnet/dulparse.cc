@@ -152,11 +152,13 @@ parseAssociate(unsigned char *buf, unsigned int pduLength,
     assoc->rsv2[1] = *buf++;
     pduLength--;
     (void) strncpy(assoc->calledAPTitle, (char *) buf, 16);
+	assoc->calledAPTitle[16] = '\0';
     trim_trailing_spaces(assoc->calledAPTitle);
 
     buf += 16;
     pduLength -= 16;
     (void) strncpy(assoc->callingAPTitle, (char *) buf, 16);
+	assoc->callingAPTitle[16] = '\0';
     trim_trailing_spaces(assoc->callingAPTitle);
     buf += 16;
     pduLength -= 16;

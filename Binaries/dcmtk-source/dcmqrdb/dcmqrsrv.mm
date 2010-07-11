@@ -614,11 +614,15 @@ void DcmQueryRetrieveSCP::refuseAnyStorageContexts(T_ASC_Association * assoc)
     T_ASC_PresentationContextID pid;
 
     for (i = 0; i < numberOfAllDcmStorageSOPClassUIDs; i++) {
-        pid = ASC_findAcceptedPresentationContextID(assoc, dcmAllStorageSOPClassUIDs[i]);
-        if (pid != 0) {
-            /* refuse */
-            ASC_refusePresentationContext(assoc->params, pid, ASC_P_USERREJECTION);
-        }
+//        pid = ASC_findAcceptedPresentationContextID(assoc, dcmAllStorageSOPClassUIDs[i]);
+//        if (pid != 0) {
+//            /* refuse */
+//            ASC_refusePresentationContext(assoc->params, pid, ASC_P_USERREJECTION);
+//        }
+		do {            
+          pid = ASC_findAcceptedPresentationContextID(assoc, dcmAllStorageSOPClassUIDs[i]);
+          if (pid != 0) ASC_refusePresentationContext(assoc->params, pid, ASC_P_USERREJECTION);
+        } while (pid != 0); // repeat as long as we find presentation contexts for this SOP class - there might be multiple ones.
     }
 }
 

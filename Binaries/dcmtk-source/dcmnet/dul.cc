@@ -606,7 +606,9 @@ DUL_ReceiveAssociationRQ(
     if (cond.bad())
         return cond;
 
-    cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType);
+    //cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType);
+	cond = PRV_NextPDUType(association, block, timeout, &pduType); 
+	
     if (cond == DUL_NETWORKCLOSED)
         event = TRANS_CONN_CLOSED;
     else if (cond == DUL_READTIMEOUT)
@@ -1756,7 +1758,29 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
     }
-#endif
+	
+ #ifndef DISABLE_RECV_TIMEOUT
+     /* use a timeout of 60 seconds for the recv() function */
+     const int recvTimeout = 60;
+ #ifdef HAVE_WINSOCK_H
+     // for Windows, specify receive timeout in milliseconds
+     int timeoutVal = recvTimeout * 1000;
+     if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char *) &timeoutVal, sizeof(timeoutVal)) < 0)
+ #else
+     // for other systems, specify receive timeout as timeval struct
+     struct timeval timeoutVal;
+     timeoutVal.tv_sec = recvTimeout;
+     timeoutVal.tv_usec = 0;
+     if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeoutVal, sizeof(timeoutVal)) < 0)
+ #endif
+     {
+         // according to MSDN: available in the Microsoft implementation of Windows Sockets 2,
+         // so we are reporting a warning message but are not returning with an error code;
+         // this also applies to all other systems where the call to this function might fail
+     }
+ #endif
+ #endif
+	
     setTCPBufferLength(sock);
 
 #ifndef DONT_DISABLE_NAGLE_ALGORITHM

@@ -1070,14 +1070,19 @@ ASC_findAcceptedPresentationContextID(
     DUL_PRESENTATIONCONTEXT *pc;
     LST_HEAD **l;
     OFBool found = OFFalse;
-
+	
+	if (assoc->params->DULparams.acceptedPresentationContext == NULL)
+		return 0;
+	
     l = &assoc->params->DULparams.acceptedPresentationContext;
     pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
     (void)LST_Position(l, (LST_NODE*)pc);
     while (pc && !found)
     {
-        found = (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
-        found &= (pc->result == ASC_P_ACCEPTANCE);
+//        found = (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
+//      found &= (pc->result == ASC_P_ACCEPTANCE);
+		
+		found = ( (strcmp(pc->abstractSyntax, abstractSyntax) == 0) && (pc->result == ASC_P_ACCEPTANCE) );
         if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
     }
     if (found) return pc->presentationContextID;
@@ -1103,8 +1108,12 @@ ASC_findAcceptedPresentationContextID(
     LST_HEAD **l;
     OFBool found = OFFalse;
 
-    if ((transferSyntax==NULL)||(abstractSyntax==NULL)) return 0;
-
+    if ((transferSyntax==NULL)||(abstractSyntax==NULL)) 
+		return 0;
+	
+	if (assoc->params->DULparams.acceptedPresentationContext == NULL)
+		return 0;
+		
     /* first of all we look for a presentation context
      * matching both abstract and transfer syntax
      */
@@ -1113,9 +1122,12 @@ ASC_findAcceptedPresentationContextID(
     (void)LST_Position(l, (LST_NODE*)pc);
     while (pc && !found)
     {
-        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
-        found &= (pc->result == ASC_P_ACCEPTANCE);
-        found &= (strcmp(pc->acceptedTransferSyntax, transferSyntax) == 0);
+//        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
+//        found &= (pc->result == ASC_P_ACCEPTANCE);
+//        found &= (strcmp(pc->acceptedTransferSyntax, transferSyntax) == 0);
+		
+		found = (strcmp(pc->abstractSyntax, abstractSyntax) == 0) && (pc->result == ASC_P_ACCEPTANCE) && (strcmp(pc->acceptedTransferSyntax, transferSyntax) == 0);
+		
         if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
     }
     if (found) return pc->presentationContextID;
@@ -1126,10 +1138,16 @@ ASC_findAcceptedPresentationContextID(
     (void)LST_Position(l, (LST_NODE*)pc);
     while (pc && !found)
     {
-        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
-        found &= (pc->result == ASC_P_ACCEPTANCE);
-        found &= ((strcmp(pc->acceptedTransferSyntax, UID_LittleEndianExplicitTransferSyntax) == 0) ||
-                  (strcmp(pc->acceptedTransferSyntax, UID_BigEndianExplicitTransferSyntax) == 0));
+//        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
+//        found &= (pc->result == ASC_P_ACCEPTANCE);
+//        found &= ((strcmp(pc->acceptedTransferSyntax, UID_LittleEndianExplicitTransferSyntax) == 0) ||
+//                  (strcmp(pc->acceptedTransferSyntax, UID_BigEndianExplicitTransferSyntax) == 0));
+
+		found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0)
+          && (pc->result == ASC_P_ACCEPTANCE)
+          && ((strcmp(pc->acceptedTransferSyntax, UID_LittleEndianExplicitTransferSyntax) == 0)
+           || (strcmp(pc->acceptedTransferSyntax, UID_BigEndianExplicitTransferSyntax) == 0));
+
         if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
     }
     if (found) return pc->presentationContextID;
@@ -1140,26 +1158,33 @@ ASC_findAcceptedPresentationContextID(
     (void)LST_Position(l, (LST_NODE*)pc);
     while (pc && !found)
     {
-        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
-        found &= (pc->result == ASC_P_ACCEPTANCE);
-        found &= (strcmp(pc->acceptedTransferSyntax, UID_LittleEndianImplicitTransferSyntax) == 0);
+//        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
+//        found &= (pc->result == ASC_P_ACCEPTANCE);
+//        found &= (strcmp(pc->acceptedTransferSyntax, UID_LittleEndianImplicitTransferSyntax) == 0);
+
+		found = (strcmp(pc->abstractSyntax, abstractSyntax) == 0)
+                && (pc->result == ASC_P_ACCEPTANCE)
+                && (strcmp(pc->acceptedTransferSyntax, UID_LittleEndianImplicitTransferSyntax) == 0);
+
         if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
     }
     if (found) return pc->presentationContextID;
 
-    /* finally we accept everything we get. */
-    l = &assoc->params->DULparams.acceptedPresentationContext;
-    pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
-    (void)LST_Position(l, (LST_NODE*)pc);
-    while (pc && !found)
-    {
-        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
-        found &= (pc->result == ASC_P_ACCEPTANCE);
-        if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
-    }
-    if (found) return pc->presentationContextID;
- 
-    return 0;   /* otherwise */
+//    /* finally we accept everything we get. */
+//    l = &assoc->params->DULparams.acceptedPresentationContext;
+//    pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
+//    (void)LST_Position(l, (LST_NODE*)pc);
+//    while (pc && !found)
+//    {
+//        found =  (strcmp(pc->abstractSyntax, abstractSyntax) == 0);
+//        found &= (pc->result == ASC_P_ACCEPTANCE);
+//        if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+//    }
+//    if (found) return pc->presentationContextID;
+// 
+//    return 0;   /* otherwise */
+	
+	return ASC_findAcceptedPresentationContextID(assoc, abstractSyntax);
 }
 
 
