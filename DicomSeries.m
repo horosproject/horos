@@ -241,7 +241,7 @@
 
 -(NSData*)thumbnail
 {
-	NSData* thumbnailData = [self primitiveValueForKey:@"thumbnail"];
+	NSData *thumbnailData = [self primitiveValueForKey:@"thumbnail"];
 	
 	if( !thumbnailData)
 	{
@@ -266,17 +266,15 @@
 				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
 				[[[[[self valueForKey:@"study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
 				
-//				NSLog( @"Build thumbnail for: %@", image.completePath);
-				
 				NSImage *thumbnail = nil;
+				NSString *seriesSOPClassUID = [self valueForKey: @"seriesSOPClassUID"];
 				
-				if( [DCMAbstractSyntaxUID isSpectroscopy: [self valueForKey: @"seriesSOPClassUID"]])
+				if( [DCMAbstractSyntaxUID isSpectroscopy: seriesSOPClassUID])
 				{
-					thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"]; 
-					
+					thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"];
 					thumbnailData = [thumbnail TIFFRepresentation];
 				}
-				else if( [DCMAbstractSyntaxUID isStructuredReport: [self valueForKey: @"seriesSOPClassUID"]])
+				else if( [DCMAbstractSyntaxUID isStructuredReport: seriesSOPClassUID])
 				{
 					NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"pdf"];
 					
@@ -288,7 +286,7 @@
 					
 					thumbnailData = [thumbnail TIFFRepresentation];
 				}
-				else
+				else if( [DCMAbstractSyntaxUID isImageStorage: seriesSOPClassUID] || [DCMAbstractSyntaxUID isRadiotherapy: seriesSOPClassUID])
 				{
 					DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour: [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] imageObj:image];
 					[dcmPix CheckLoad];
@@ -300,6 +298,12 @@
 					
 					[dcmPix release];
 				}
+				else
+				{
+					thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
+					thumbnailData = [thumbnail TIFFRepresentation];
+				}
+				
 				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
 			}
 		}

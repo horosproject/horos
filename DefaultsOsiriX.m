@@ -240,7 +240,7 @@ static NSHost *currentHost = nil;
 	iww = 700;          iwl = -300;
 	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:@"VR - Endoscopy"];
 	
-	[defaultValues setObject:wlwwValues forKey:OsirixWLWWDefaultsKey];
+	[defaultValues setObject:wlwwValues forKey:@"WLWW3"];
 	
 	// ** CONVOLUTION PRESETS
 	

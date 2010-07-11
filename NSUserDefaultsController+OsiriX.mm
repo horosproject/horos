@@ -59,10 +59,4 @@ NSString* const OsirixBonjourSharingPasswordDefaultsKey = @"bonjourPassword";
 	return [self isBonjourSharingPasswordProtected]? [[self sharedUserDefaultsController] stringForKey:OsirixBonjourSharingPasswordDefaultsKey] : NULL;
 }
 
-#pragma mark Other
-
-NSString* const OsirixWLWWDefaultsKey = @"WLWW3";
-NSString* OsirixActivityWindowVisibleDefaultsKey = @"ActivityWindowVisibleFlag";
-NSString* OsirixBrowserDidResizeForDrawerSpace = @"BrowserDidResizeForDrawer";
-
 @end

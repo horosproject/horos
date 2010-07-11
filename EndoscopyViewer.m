@@ -622,7 +622,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
     NSArray     *sortedKeys;
 
     // Presets VIEWER Menu
-	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] allKeys];
+	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
     i = [[wlww2DPopup menu] numberOfItems];
@@ -659,7 +659,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	else
 	{
 		NSArray		*value;
-		value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] objectForKey:[sender title]];
+		value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:[sender title]];
 		[self set2DWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue]];
 	}
 	

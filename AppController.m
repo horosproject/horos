@@ -1547,9 +1547,9 @@ static NSDate *lastWarningDate = nil;
 		mainMenuWLWWMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
 	}
 	
-	if( [[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] != previousWLWWKeys)
+	if( [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] != previousWLWWKeys)
 	{
-		previousWLWWKeys = [[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey];
+		previousWLWWKeys = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"];
 		keys = [previousWLWWKeys allKeys];
 		
 		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
@@ -2370,7 +2370,7 @@ static NSDate *lastWarningDate = nil;
 
 	[NSSplitView saveSplitView];
 	
-	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [[ActivityWindowController defaultController].window isVisible] forKey: OsirixActivityWindowVisibleDefaultsKey];
+	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [[ActivityWindowController defaultController].window isVisible] forKey: @"ActivityWindowVisibleFlag"];
 	
 	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedCD/" handler: nil];
 }
@@ -2716,11 +2716,11 @@ static BOOL initialized = NO;
 				}
 				
 				//ww/wl
-				NSMutableDictionary *wlwwValues = [[[[NSUserDefaults standardUserDefaults] objectForKey:OsirixWLWWDefaultsKey] mutableCopy] autorelease];
+				NSMutableDictionary *wlwwValues = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"WLWW3"] mutableCopy] autorelease];
 				NSDictionary *wwwl = [wlwwValues objectForKey:@"VR - Endoscopy"];
 				if (!wwwl) {
 					[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:-300], [NSNumber numberWithFloat:700], nil] forKey:@"VR - Endoscopy"];
-					[[NSUserDefaults standardUserDefaults] setObject:wlwwValues forKey:OsirixWLWWDefaultsKey];
+					[[NSUserDefaults standardUserDefaults] setObject:wlwwValues forKey:@"WLWW3"];
 				}
 				
 				// CREATE A TEMPORATY FILE DURING STARTUP
@@ -2963,7 +2963,7 @@ static BOOL initialized = NO;
             name:NSWorkspaceSessionDidResignActiveNotification
             object:nil];
 	
-	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey: OsirixActivityWindowVisibleDefaultsKey])
+	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey: @"ActivityWindowVisibleFlag"])
 		[[[ActivityWindowController defaultController] window] makeKeyAndOrderFront:self];	
 	
 //	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];	// By default, we always start with VTKDelaunay, PowerCrush has memory leaks and can crash with some 3D objects....
@@ -3750,7 +3750,7 @@ static BOOL initialized = NO;
 	else
 		[controller.window orderOut:sender];
 	
-	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [controller.window isVisible] forKey:OsirixActivityWindowVisibleDefaultsKey];
+	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [controller.window isVisible] forKey:@"ActivityWindowVisibleFlag"];
 }
 
 //{

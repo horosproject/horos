@@ -1165,7 +1165,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @implementation DCMPix
 
 @synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation, subtractedfImage;
-@synthesize frameNo, notAbleToLoadImage, shutterPolygonal;
+@synthesize frameNo, notAbleToLoadImage, shutterPolygonal, SOPClassUID;
 @synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV, slope, offset;
 @synthesize isRGB, pwidth = width, pheight = height;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
@@ -5388,7 +5388,7 @@ END_CREATE_ROIS:
 		return NO;
 	}
 	
-	NSString *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
+	self.SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
 	
 	//-----------------------common----------------------------------------------------------	
 	
@@ -5396,7 +5396,7 @@ END_CREATE_ROIS:
 	short imageNb = frameNo;
 	
 #pragma mark *pdf
-	if ([ SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
+	if ([SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
 	{
 		NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
 		
@@ -7222,7 +7222,6 @@ END_CREATE_ROIS:
 		if( [self getPapyGroup: 0])	// This group is mandatory...
 		{
 			UValue_T *val3, *tmpVal3;
-			NSString *SOPClassUID = nil;
 			
 			modalityString = nil;
 			
@@ -7296,7 +7295,7 @@ END_CREATE_ROIS:
 				if (val != NULL) modalityString = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
 				
 				val = Papy3GetElement (theGroupP, papSOPClassUIDGr, &nbVal, &elemType);
-				if (val != NULL) SOPClassUID = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+				if (val != NULL) self.SOPClassUID = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
 			}
 			
 			theGroupP = (SElement*) [self getPapyGroup: 0x0010];
@@ -11861,6 +11860,7 @@ END_CREATE_ROIS:
 	[viewPosition release];
 	[decayCorrection release];
 	[generatedName release];
+	[SOPClassUID release];
 	
 	if( fExternalOwnedImage == nil)
 	{

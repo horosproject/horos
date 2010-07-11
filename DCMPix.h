@@ -74,12 +74,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 // DICOM params needed for SUV calculations
 	float				patientsWeight;
-	NSString			*repetitiontime;
-	NSString			*echotime;
-	NSString			*flipAngle, *laterality;
-	NSString			*viewPosition;
-	NSString			*patientPosition;
-	NSString			*acquisitionDate;
+	NSString			*repetitiontime, *echotime, *flipAngle, *laterality;
+	NSString			*viewPosition, *patientPosition, *acquisitionDate, *SOPClassUID;
 	BOOL				hasSUV, SUVConverted;
 	NSString			*units, *decayCorrection;
 	float				decayFactor, factorPET2SUV;
@@ -284,7 +280,7 @@ Note setter is different to not break existing usage. :-( */
 /** Database links */
 @property(readonly) NSManagedObject *seriesObj;
 @property(retain) NSManagedObject *imageObj;
-@property(retain) NSString *srcFile;
+@property(retain) NSString *srcFile, *SOPClassUID;
 @property(retain) NSMutableDictionary *annotationsDictionary;
 
 // Properties (aka accessors) needed for SUV calculations

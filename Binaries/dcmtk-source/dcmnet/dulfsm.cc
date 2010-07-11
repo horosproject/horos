@@ -755,9 +755,11 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
     {
       char buf1[256];
       sprintf(buf1, "DUL Finite State Machine Error: No action defined, state %d event %d", state, event);
-		
-	  restartSTORESCP();
-		
+	
+	#ifdef OSIRIX_VIEWER
+		restartSTORESCP();
+	#endif
+	
       return makeDcmnetCondition(DULC_FSMERROR, OF_error, buf1);
     }
 }

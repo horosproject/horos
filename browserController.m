@@ -9243,7 +9243,7 @@ static BOOL withReset = NO;
 
 - (void) buildThumbnail:(DicomSeries*)series
 {
-	[series thumbnail]; // generates thumbnail if null
+	[series thumbnail];
 }
 
 - (IBAction) buildAllThumbnails:(id) sender
@@ -9328,10 +9328,7 @@ static BOOL withReset = NO;
 				
 				for( int i = 0; i < maxSeries; i++)
 				{
-					NSManagedObject *series = [seriesArray objectAtIndex: i];
-					
-					if([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil)
-						[self buildThumbnail: series];
+					[self buildThumbnail: [seriesArray objectAtIndex: i]];
 				}
 				
 				[self saveDatabase: currentDatabasePath];
@@ -10320,7 +10317,7 @@ static BOOL needToRezoom;
 -(void)drawerDidClose:(NSNotification*)notification {
 	if (needToRezoom)
 		[self.window zoom:self];
-	else if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey:OsirixBrowserDidResizeForDrawerSpace]) {
+	else if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey:@"BrowserDidResizeForDrawer"]) {
 		NSRect windowFrame = self.window.frame;
 		windowFrame.origin.x -= albumDrawer.contentSize.width;
 		windowFrame.size.width += albumDrawer.contentSize.width;
@@ -10344,7 +10341,7 @@ static BOOL needToRezoom;
 		
 		#define DrawerMinVisibleRatio .5
 		BOOL adapt = (intersectedFrame.size.width*intersectedFrame.size.height)/(drawerFrame.size.width*drawerFrame.size.height) < DrawerMinVisibleRatio;
-		[[NSUserDefaultsController sharedUserDefaultsController] setBool:adapt forKey:OsirixBrowserDidResizeForDrawerSpace];
+		[[NSUserDefaultsController sharedUserDefaultsController] setBool:adapt forKey:@"BrowserDidResizeForDrawer"];
 		if (adapt) {
 			NSRect windowFrame = self.window.frame;
 			windowFrame.origin.x += albumDrawer.contentSize.width;

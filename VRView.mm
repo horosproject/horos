@@ -7921,7 +7921,7 @@ public:
 	
 	if ([hotKey length] > 0)
 	{
-		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey];
+		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"];
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
 		NSString *wwwlMenuString = nil;

@@ -3228,7 +3228,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 		// Presets VIEWER Menu
 		
-		keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] allKeys];
+		keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] allKeys];
 		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 		
 		[wlwwPresetsMenu release];
@@ -3289,9 +3289,9 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     if( [sender tag])   //User clicks OK Button
     {
-		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] mutableCopy] autorelease];
+		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] mutableCopy] autorelease];
 		[presetsDict setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:[newName stringValue]];
-		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey:OsirixWLWWDefaultsKey];
+		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey:@"WLWW3"];
         
 		if( curWLWWMenu != [newName stringValue])
 		{
@@ -8650,9 +8650,9 @@ static ViewerController *draggedController = nil;
 	
     if( returnCode == 1)
     {
-		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] mutableCopy] autorelease];
+		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] mutableCopy] autorelease];
 		[presetsDict removeObjectForKey: name];
-		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey:OsirixWLWWDefaultsKey];
+		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey:@"WLWW3"];
 		
 		lastMenuNotification = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
@@ -8688,7 +8688,7 @@ static ViewerController *draggedController = nil;
 		}
 		else
 		{
-			NSArray		*value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] objectForKey: name];
+			NSArray		*value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] objectForKey: name];
 			[imageView setWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue]];
 		}
 	}

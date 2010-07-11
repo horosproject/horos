@@ -288,7 +288,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
     NSArray     *sortedKeys;
 
     // Presets VIEWER Menu
-	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] allKeys];
+	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
     i = [[wlwwPopup menu] numberOfItems];
@@ -325,7 +325,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	else
 	{
 		NSArray		*value;
-		value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] objectForKey:menuString];
+		value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] objectForKey:menuString];
 		[self setWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue]];
 	}
 	

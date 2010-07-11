@@ -32,10 +32,4 @@ extern NSString* const OsirixBonjourSharingPasswordFlagDefaultsKey;
 extern NSString* const OsirixBonjourSharingPasswordDefaultsKey;
 +(NSString*)bonjourSharingPassword;
 
-#pragma mark Other
-
-extern NSString* const OsirixWLWWDefaultsKey;
-extern NSString* OsirixActivityWindowVisibleDefaultsKey;
-extern NSString* OsirixBrowserDidResizeForDrawerSpace;
-
 @end

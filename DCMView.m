@@ -584,13 +584,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 + (NSString*) findWLWWPreset: (float) wl :(float) ww :(DCMPix*) pix
 {
-	NSDictionary	*list = [[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey];
+	NSDictionary	*list = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"];
 	NSArray			*allKeys = [list allKeys];
 	
 	
 	for( id loopItem in allKeys)
 	{
-		NSArray		*value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey] objectForKey: loopItem];
+		NSArray		*value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] objectForKey: loopItem];
 		
 		if( [[value objectAtIndex: 0] floatValue] == wl && [[value objectAtIndex: 1] floatValue] == ww) return loopItem;
 	}
@@ -11916,7 +11916,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if ([hotKey length] > 0)
 	{
 		NSDictionary *userInfo = nil;
-		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:OsirixWLWWDefaultsKey];
+		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"];
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 		
 		NSArray *wwwl = nil;
