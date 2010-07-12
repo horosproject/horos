@@ -697,7 +697,7 @@ extern "C"
 				
 				if( [studyArray count] > 0)
 				{
-					NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0]] objectAtIndex:0];
+					NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0] onlyImages: NO] objectAtIndex:0];
 					[[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
 					extendingSelection = YES;
 				}
