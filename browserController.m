@@ -85,7 +85,7 @@
 
 #define DEFAULTUSERDATABASEPATH @"~/Library/Application Support/OsiriX/WebUsers.sql"
 #define USERDATABASEVERSION @"1.0"
-#define DATABASEVERSION @"2.4"
+#define DATABASEVERSION @"2.5"
 #define DATABASEPATH @"/DATABASE.noindex/"
 #define DECOMPRESSIONPATH @"/DECOMPRESSION.noindex/"
 #define INCOMINGPATH @"/INCOMING.noindex/"
@@ -2416,6 +2416,7 @@ static NSConditionLock *threadLock = nil;
 		localizedDescription = [error localizedDescription];
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
     }
+	
 	else
 	{
 		if( newDB)
@@ -2864,7 +2865,7 @@ static NSConditionLock *threadLock = nil;
 			[[previousContext undoManager] disableUndoRegistration];
 			
 			
-			NSArray *albums = [self albums];
+			NSArray *albums = [BrowserController albumsInContext: previousContext];
 			albumProperties = [[[[previousModel entitiesByName] objectForKey:@"Album"] attributesByName] allKeys];
 			for( NSManagedObject *previousAlbum in albums)
 			{

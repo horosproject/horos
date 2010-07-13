@@ -377,6 +377,7 @@
 		84B5EA4311A2BC0900193FDB /* dsr2html in Resources */ = {isa = PBXBuildFile; fileRef = 84B5EA4211A2BC0900193FDB /* dsr2html */; };
 		84C4510B10033B8100138F70 /* OSIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C450F51003384000138F70 /* OSIWindow.m */; };
 		84C4510C10033B8200138F70 /* OSIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C450F41003384000138F70 /* OSIWindow.h */; };
+		84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */ = {isa = PBXBuildFile; fileRef = 84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */; };
 		84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
 		84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
@@ -4683,8 +4684,6 @@
 		CE4E00BF0830B72F008DAFAE /* Revert.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE4E00BE0830B72F008DAFAE /* Revert.tif */; };
 		CE51BAF511E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CE51BAF411E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld */; };
 		CE51BAF611E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CE51BAF411E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld */; };
-		CE51BB4A11E24E41006D180E /* OsiriXDB_DataMapping.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = CE51BB4911E24E41006D180E /* OsiriXDB_DataMapping.xcmappingmodel */; };
-		CE51BB4B11E24E41006D180E /* OsiriXDB_DataMapping.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = CE51BB4911E24E41006D180E /* OsiriXDB_DataMapping.xcmappingmodel */; };
 		CE52264F077C48D900EED851 /* Sync.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE522648077C48D900EED851 /* Sync.tif */; };
 		CE542D2B0C6F8F7B0021A0E7 /* NrrdIO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */; };
 		CE5487410989346800CF4C60 /* BrushPalette.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5487400989346800CF4C60 /* BrushPalette.tif */; };
@@ -8310,6 +8309,7 @@
 		84B5EA4211A2BC0900193FDB /* dsr2html */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dsr2html; sourceTree = "<group>"; };
 		84C450F41003384000138F70 /* OSIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWindow.h; sourceTree = "<group>"; };
 		84C450F51003384000138F70 /* OSIWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIWindow.m; sourceTree = "<group>"; };
+		84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.4.mom; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
 		A90202BB0B980CD60001A00B /* PluginManagerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManagerController.m; sourceTree = "<group>"; };
 		A9044D370BBAA29200F36689 /* ROISelector.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROISelector.tif; sourceTree = "<group>"; };
@@ -9849,7 +9849,6 @@
 		BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrdbq.mm; sourceTree = "<group>"; };
 		CE03A3CB0EA2AE0300951EF4 /* iPhone.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPhone.tif; sourceTree = "<group>"; };
 		CE06475110F12DA500551AD9 /* PlayTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PlayTemplate.png; sourceTree = "<group>"; };
-		CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = OsiriXDB_DataModel.xcdatamodel; sourceTree = "<group>"; };
 		CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOff.tif; sourceTree = "<group>"; };
 		CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOn.tif; sourceTree = "<group>"; };
 		CE087B0A0DE9BD6E000E5593 /* GLString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLString.m; sourceTree = "<group>"; };
@@ -11571,7 +11570,6 @@
 		CE4E42ED08758A1700D0AFDB /* OSIGeneralPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIGeneralPreferencePane.xcodeproj; path = "Preference Panes/OSIGeneralPreferencePane/OSIGeneralPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		CE4E42F008758A1700D0AFDB /* OSIListenerPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIListenerPreferencePane.xcodeproj; path = "Preference Panes/OSIListenerPreferencePane/OSIListenerPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		CE51BAF711E2289C006D180E /* OsiriXDB_DataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "OsiriXDB_DataModel 2.xcdatamodel"; sourceTree = "<group>"; };
-		CE51BB4911E24E41006D180E /* OsiriXDB_DataMapping.xcmappingmodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcmappingmodel; path = OsiriXDB_DataMapping.xcmappingmodel; sourceTree = "<group>"; };
 		CE522648077C48D900EED851 /* Sync.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Sync.tif; sourceTree = "<group>"; };
 		CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NrrdIO.h; path = ITK180/Utilities/NrrdIO/NrrdIO.h; sourceTree = "<group>"; };
 		CE5487400989346800CF4C60 /* BrushPalette.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BrushPalette.tif; sourceTree = "<group>"; };
@@ -12307,7 +12305,6 @@
 			isa = PBXGroup;
 			children = (
 				CE51BAF411E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld */,
-				CE51BB4911E24E41006D180E /* OsiriXDB_DataMapping.xcmappingmodel */,
 				8474A3F710DBE7F300D192D0 /* user.xcdatamodel */,
 			);
 			name = Models;
@@ -13084,6 +13081,7 @@
 				AB97238C0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.1.mom */,
 				AB97238D0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.2.mom */,
 				AB97238E0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom */,
+				84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */,
 			);
 			name = DB_Previous_Models;
 			path = Binaries/DB_Previous_Models;
@@ -22109,6 +22107,7 @@
 				5926822D11CF610200CFA81F /* activity_cpu.png in Resources */,
 				5926822E11CF610200CFA81F /* activity_hdd.png in Resources */,
 				5926822F11CF610200CFA81F /* activity_net.png in Resources */,
+				84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23679,7 +23678,6 @@
 				5926824D11CF62DA00CFA81F /* ThreadCell.mm in Sources */,
 				5926824F11CF62DA00CFA81F /* ThreadModalForWindowController.mm in Sources */,
 				5926825111CF62DA00CFA81F /* ThreadsManager.mm in Sources */,
-				CE51BB4A11E24E41006D180E /* OsiriXDB_DataMapping.xcmappingmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24860,7 +24858,6 @@
 				5926825F11CF62DA00CFA81F /* ThreadsManager.mm in Sources */,
 				5926828411CF69B300CFA81F /* NSThread+N2.mm in Sources */,
 				5926828711CF69CB00CFA81F /* N2HighlightImageButtonCell.mm in Sources */,
-				CE51BB4B11E24E41006D180E /* OsiriXDB_DataMapping.xcmappingmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26994,7 +26991,6 @@
 		CE51BAF411E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */,
 				CE51BAF711E2289C006D180E /* OsiriXDB_DataModel 2.xcdatamodel */,
 			);
 			currentVersion = CE51BAF711E2289C006D180E /* OsiriXDB_DataModel 2.xcdatamodel */;

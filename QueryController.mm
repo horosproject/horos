@@ -1019,13 +1019,19 @@ extern "C"
 			
 			NSArray *result = nil;
 			
-			@synchronized( studyArrayInstanceUID)
+			if( studyArrayInstanceUID)
 			{
-				NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
-				
-				if( index == NSNotFound) result = [NSArray array];
-				else result = [NSArray arrayWithObject: [studyArrayCache objectAtIndex: index]];
+				@synchronized( studyArrayInstanceUID)
+				{
+					NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
+					
+					if( index == NSNotFound) result = [NSArray array];
+					else result = [NSArray arrayWithObject: [studyArrayCache objectAtIndex: index]];
+				}
 			}
+			else
+				NSLog( @"----- localStudy computeStudyArrayInstanceUID == nil");
+
 			
 			return result;
 		}
