@@ -378,6 +378,7 @@
 		84C4510B10033B8100138F70 /* OSIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C450F51003384000138F70 /* OSIWindow.m */; };
 		84C4510C10033B8200138F70 /* OSIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C450F41003384000138F70 /* OSIWindow.h */; };
 		84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */ = {isa = PBXBuildFile; fileRef = 84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */; };
+		84CD254C11ECB49A004669D6 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE51BAF711E2289C006D180E /* OsiriXDB_DataModel.xcdatamodel */; };
 		84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
 		84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
@@ -11569,7 +11570,7 @@
 		CE4E42EA08758A1700D0AFDB /* OSICDPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSICDPreferencePane.xcodeproj; path = "Preference Panes/OSICDPreferencePane/OSICDPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		CE4E42ED08758A1700D0AFDB /* OSIGeneralPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIGeneralPreferencePane.xcodeproj; path = "Preference Panes/OSIGeneralPreferencePane/OSIGeneralPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		CE4E42F008758A1700D0AFDB /* OSIListenerPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIListenerPreferencePane.xcodeproj; path = "Preference Panes/OSIListenerPreferencePane/OSIListenerPreferencePane.xcodeproj"; sourceTree = "<group>"; };
-		CE51BAF711E2289C006D180E /* OsiriXDB_DataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "OsiriXDB_DataModel 2.xcdatamodel"; sourceTree = "<group>"; };
+		CE51BAF711E2289C006D180E /* OsiriXDB_DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = OsiriXDB_DataModel.xcdatamodel; sourceTree = "<group>"; };
 		CE522648077C48D900EED851 /* Sync.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Sync.tif; sourceTree = "<group>"; };
 		CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NrrdIO.h; path = ITK180/Utilities/NrrdIO/NrrdIO.h; sourceTree = "<group>"; };
 		CE5487400989346800CF4C60 /* BrushPalette.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BrushPalette.tif; sourceTree = "<group>"; };
@@ -23678,6 +23679,7 @@
 				5926824D11CF62DA00CFA81F /* ThreadCell.mm in Sources */,
 				5926824F11CF62DA00CFA81F /* ThreadModalForWindowController.mm in Sources */,
 				5926825111CF62DA00CFA81F /* ThreadsManager.mm in Sources */,
+				84CD254C11ECB49A004669D6 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26991,9 +26993,9 @@
 		CE51BAF411E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				CE51BAF711E2289C006D180E /* OsiriXDB_DataModel 2.xcdatamodel */,
+				CE51BAF711E2289C006D180E /* OsiriXDB_DataModel.xcdatamodel */,
 			);
-			currentVersion = CE51BAF711E2289C006D180E /* OsiriXDB_DataModel 2.xcdatamodel */;
+			currentVersion = CE51BAF711E2289C006D180E /* OsiriXDB_DataModel.xcdatamodel */;
 			path = OsiriXDB_DataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
