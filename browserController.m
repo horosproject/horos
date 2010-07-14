@@ -75,6 +75,7 @@
 #import "NSUserDefaultsController+OsiriX.h"
 #import "NSUserDefaultsController+N2.h"
 #import "ThreadsManager.h"
+#import "ActivityWindowController.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
