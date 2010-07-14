@@ -15226,12 +15226,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	NSString *INpath = [[self localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
 	
-	if( [NSThread isMainThread] == NO)
-	{
-		[NSThread currentThread].name = NSLocalizedString( @"Decompressing DICOM files...", nil);
-		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
-	}
-	
 	[self decompressDICOMList: array to: INpath];
 	
 	[processorsLock lock];
@@ -15249,12 +15243,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 //	if([[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES)
 //	   windowVisible = YES;
-	
-	if( [NSThread isMainThread] == NO)
-	{
-		[NSThread currentThread].name = NSLocalizedString( @"Decompressing DICOM files...", nil);
-		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
-	}
 	
 	[self decompressDICOMList: array to: nil];
 	
@@ -15278,12 +15266,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
 	NSString *INpath = [[self localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
-	
-	if( [NSThread isMainThread] == NO)
-	{
-		[NSThread currentThread].name = NSLocalizedString( @"Compressing DICOM files...", nil);
-		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
-	}
 	
 	[self compressDICOMWithJPEG: array to: INpath];
 	
@@ -15495,7 +15477,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			switch( tow)
 			{
 				case 'C':
-					t = [[[NSThread alloc] initWithTarget:self selector:@selector(compressDICOMJPEG:) object: [array subarrayWithRange: range]] autorelease];
+					t = [[[NSThread alloc] initWithTarget:self selector:@selector( compressDICOMJPEG:) object: [array subarrayWithRange: range]] autorelease];
 					t.name = NSLocalizedString( @"Compressing DICOM files...", nil);
 				break;
 				
