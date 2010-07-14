@@ -23,7 +23,7 @@
 #import <IOKit/storage/IOBlockStorageDriver.h>
 #import <algorithm>
 #import "NSUserDefaultsController+OsiriX.h"
-
+#import "BrowserController.h"
 
 @implementation ActivityWindowController
 
@@ -38,7 +38,15 @@
 }
 
 -(id)initWithManager:(ThreadsManager*)manager {
-    self = [super initWithWindowNibName:@"ActivityWindow"];
+    self = [super init];
+	
+	tableView = [BrowserController currentBrowser].AtableView;
+	cpuActiView = [BrowserController currentBrowser].AcpuActiView;
+	hddActiView = [BrowserController currentBrowser].AhddActiView;
+	netActiView = [BrowserController currentBrowser].AnetActiView;
+	statusLabel = [BrowserController currentBrowser].AstatusLabel;
+	
+	[tableView setDelegate: self];
 	
 	_cells = [[NSMutableArray alloc] init];
 

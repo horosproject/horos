@@ -20,11 +20,11 @@
 @interface ActivityWindowController : NSWindowController {
 	ThreadsManager* _manager;
 	NSMutableArray* _cells;
-    IBOutlet NSTableView* tableView;
-	IBOutlet NSImageView* cpuActiView;
-	IBOutlet NSImageView* hddActiView;
-	IBOutlet NSImageView* netActiView;
-    IBOutlet NSTextField* statusLabel;
+	NSTableView* tableView;
+	NSImageView* cpuActiView;
+	NSImageView* hddActiView;
+	NSImageView* netActiView;
+    NSTextField* statusLabel;
 	NSThread* updateStatsThread;
 }
 

@@ -217,6 +217,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController, userManagedObjectContext, userManagedObjectModel;
 @synthesize needDBRefresh, mountedVolume, lastSaved, viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
+@synthesize AtableView, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel, activityController;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
 {
@@ -13907,6 +13908,8 @@ static NSArray*	openSubSeriesArray = nil;
 	else 
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
 	#endif
+	
+	[ActivityWindowController defaultController];
 	
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];

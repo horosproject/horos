@@ -2370,7 +2370,7 @@ static NSDate *lastWarningDate = nil;
 
 	[NSSplitView saveSplitView];
 	
-	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [[ActivityWindowController defaultController].window isVisible] forKey: @"ActivityWindowVisibleFlag"];
+//	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [[ActivityWindowController defaultController].window isVisible] forKey: @"ActivityWindowVisibleFlag"];
 	
 	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedCD/" handler: nil];
 }
@@ -2963,8 +2963,8 @@ static BOOL initialized = NO;
             name:NSWorkspaceSessionDidResignActiveNotification
             object:nil];
 	
-	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey: @"ActivityWindowVisibleFlag"])
-		[[[ActivityWindowController defaultController] window] makeKeyAndOrderFront:self];	
+//	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey: @"ActivityWindowVisibleFlag"])
+//		[[[ActivityWindowController defaultController] window] makeKeyAndOrderFront:self];	
 	
 //	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];	// By default, we always start with VTKDelaunay, PowerCrush has memory leaks and can crash with some 3D objects....
 
@@ -3742,16 +3742,16 @@ static BOOL initialized = NO;
 	}
 }
 
--(IBAction)toggleActivityWindow:(id)sender
-{
-	ActivityWindowController* controller = [ActivityWindowController defaultController];
-	if (![controller.window isVisible] || ![controller.window isKeyWindow])
-		[controller.window makeKeyAndOrderFront:sender];
-	else
-		[controller.window orderOut:sender];
-	
-	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [controller.window isVisible] forKey:@"ActivityWindowVisibleFlag"];
-}
+//-(IBAction)toggleActivityWindow:(id)sender
+//{
+//	ActivityWindowController* controller = [ActivityWindowController defaultController];
+//	if (![controller.window isVisible] || ![controller.window isKeyWindow])
+//		[controller.window makeKeyAndOrderFront:sender];
+//	else
+//		[controller.window orderOut:sender];
+//	
+//	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [controller.window isVisible] forKey:@"ActivityWindowVisibleFlag"];
+//}
 
 //{
 //	NSRect screenRect = [screen visibleFrame];

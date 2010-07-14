@@ -23,7 +23,7 @@
 @class LogWindowController,PreviewView;
 @class MyOutlineView,DCMView,DCMPix;
 @class StructuredReportController,BrowserMatrix;
-@class PluginManagerController,WaitRendering, Wait;
+@class PluginManagerController,WaitRendering, Wait, ActivityWindowController;
 
 enum RootTypes{PatientRootType, StudyRootType, RandomRootType};
 enum simpleSearchType {PatientNameSearch, PatientIDSearch};
@@ -235,6 +235,11 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSIndexSet						*cachedFilesForDatabaseOutlineSelectionIndex;
 	
 	NSArray							*mountedVolumes;
+	
+	IBOutlet NSTableView* AtableView;
+	IBOutlet NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
+	IBOutlet NSTextField* AstatusLabel;
+	IBOutlet ActivityWindowController *activityController;
 }
 
 @property(readonly) NSDateFormatter *DateTimeFormat, *DateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
@@ -251,6 +256,11 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) NSString *currentDatabasePath;
 @property(readonly) NSString *localDatabasePath;
 @property(readonly) long currentBonjourService;
+
+@property(readonly) NSTableView* AtableView;
+@property(readonly) NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
+@property(readonly) NSTextField* AstatusLabel;
+@property(readonly) ActivityWindowController *activityController;
 
 @property volatile BOOL bonjourDownloading;
 @property(readonly) NSBox *bonjourSourcesBox;
