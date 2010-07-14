@@ -2828,7 +2828,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void) updateDatabaseModel: (NSString*) path :(NSString*) DBVersion
 {
-	NSString	*model = [NSString stringWithFormat:@"/OsiriXDB_Previous_DataModel%@.mom", DBVersion];
+	NSString *model = [NSString stringWithFormat:@"/OsiriXDB_Previous_DataModel%@.mom", DBVersion];
 	
 	if( [DBVersion isEqualToString: DATABASEVERSION]) model = [NSString stringWithFormat:@"/OsiriXDB_DataModel.mom"];
 	
@@ -2838,10 +2838,10 @@ static NSConditionLock *threadLock = nil;
 		[self outlineViewRefresh];
 		[self refreshMatrix: self];
 		
+		[checkIncomingLock lock];
+		
 		[managedObjectContext lock];
-		[managedObjectContext unlock];
-		[managedObjectContext release];
-		managedObjectContext = nil;
+		[managedObjectContext retain];
 		
 		Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Updating database model...", nil)];
 		[splash showWindow:self];
@@ -3190,6 +3190,14 @@ static NSConditionLock *threadLock = nil;
 		
 		displayEmptyDatabase = NO;
 		needDBRefresh = YES;
+		
+		[managedObjectContext unlock];
+		[managedObjectContext release]; // For our local retain
+		
+		[managedObjectContext release]; // For the global retain
+		managedObjectContext = nil;
+		
+		[checkIncomingLock unlock];
 	}
 	else
 	{
