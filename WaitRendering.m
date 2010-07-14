@@ -25,9 +25,8 @@
 	
 	for( NSWindow *w in [NSApp windows])
 	{
-		if( [[w windowController] isKindOfClass: [WaitRendering class]] || [[w windowController] isKindOfClass: [Wait class]])
-			if( [w isVisible])
-				[winList addObject: [w windowController]];
+		if( [w isVisible] && ([[w windowController] isKindOfClass: [WaitRendering class]] || [[w windowController] isKindOfClass: [Wait class]]))
+			[winList addObject: [w windowController]];
 	}
 	
 	if( [[self window] isVisible] == NO)

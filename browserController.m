@@ -1372,12 +1372,9 @@ static NSConditionLock *threadLock = nil;
 			[AppController printStackTrace: ne];
 		}
 		
-		if( splash)
-		{
-			[splash close];
-			[splash release];
-			splash = nil;
-		}
+		[splash close];
+		[splash release];
+		splash = nil;
 		
 		@try
 		{
@@ -1501,7 +1498,7 @@ static NSConditionLock *threadLock = nil;
 
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
 {
-	#define CHUNK 50000
+	#define CHUNK 100000
 	
 	if( [newFilesArray count] < CHUNK)
 	{
@@ -1511,6 +1508,17 @@ static NSConditionLock *threadLock = nil;
 	{
 		int total = [newFilesArray count];
 		NSMutableArray *result = [NSMutableArray arrayWithCapacity: total];
+		
+		Wait *splash = nil;
+		
+		if( [NSThread isMainThread])
+		{
+			splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString( @"Adding %@ files...", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt: total]]]];
+			[splash showWindow: self];
+			
+			[[splash progress] setMaxValue: total / CHUNK];
+			[splash setCancel: YES];
+		}
 		
 		for( int i = 0; i < total;)
 		{
@@ -1528,13 +1536,20 @@ static NSConditionLock *threadLock = nil;
 				
 				NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
 				
-				[result addObjectsFromArray: [self subAddFilesToDatabase: subArray onlyDICOM: onlyDICOM  produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context:  context dbFolder: dbFolder]];
+				[result addObjectsFromArray: [self subAddFilesToDatabase: subArray onlyDICOM: onlyDICOM produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context:  context dbFolder: dbFolder]];
 				
 				free( objs);
 			}
 			
+			[splash incrementBy:1];
+			if( [splash aborted]) break;
+			
 			i += no;
 		}
+		
+		[splash close];
+		[splash release];
+		splash = nil;
 		
 		return result;
 	}
@@ -4100,9 +4115,6 @@ static NSConditionLock *threadLock = nil;
 		else totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey: NSFileReferenceCount] intValue];
 	}
 	
-	[wait close];
-	[wait release];
-	
 	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
 	
 	NSLog( @"Start Rebuild");
@@ -4122,6 +4134,10 @@ static NSConditionLock *threadLock = nil;
 				
 		[pool release];
 	}
+	
+	[wait close];
+	[wait release];
+	wait = nil;
 	
 	// ** DICOM ROI SR FOLDER
 	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"]];
