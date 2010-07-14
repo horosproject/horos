@@ -11081,7 +11081,7 @@ END_CREATE_ROIS:
 	
 	srcf = dstf;
 	srcf.data = result = malloc( height*width*sizeof(float));
-	if( srcf.data)
+	if( srcf.data && dstf.data)
 	{
 		short err;
 		
