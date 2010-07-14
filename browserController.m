@@ -3144,7 +3144,8 @@ static NSConditionLock *threadLock = nil;
 			error = nil;
 			[currentContext save: &error];
 			
-			[[NSFileManager defaultManager] removeFileAtPath:currentDatabasePath handler:nil];
+			[[NSFileManager defaultManager] removeFileAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"/Database-Old-PreviousVersion.sql"] handler: nil];
+			[[NSFileManager defaultManager] movePath:currentDatabasePath toPath:[[self documentsDirectory] stringByAppendingPathComponent:@"/Database-Old-PreviousVersion.sql"] handler:nil];
 			[[NSFileManager defaultManager] movePath:[[self documentsDirectory] stringByAppendingPathComponent:@"/Database3.sql"] toPath:currentDatabasePath handler:nil];
 			
 			[studies release];					studies = nil;
