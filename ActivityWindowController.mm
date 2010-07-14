@@ -57,11 +57,7 @@
 	updateStatsThread = [[NSThread alloc] initWithTarget:self selector:@selector(updateStatsThread:) object:NULL];
 	[updateStatsThread start];
 	
-	self.window; // load
-	if (![[NSUserDefaults standardUserDefaults] objectForKey:[self windowFrameAutosaveName]]) {
-		NSRect screenFrame = [[NSScreen mainScreen] visibleFrame];
-		[self.window setFrameOrigin:NSMakePoint(screenFrame.size.width-self.window.frame.size.width, screenFrame.origin.y)];
-	}
+	[[self.tableView tableColumnWithIdentifier:@"all"] bind:@"value" toObject:self.manager.threadsController withKeyPath:@"arrangedObjects" options:NULL];
 	
     return self;
 }
@@ -75,11 +71,6 @@
     [_manager release];
 	[_cells release];
     [super dealloc];
-}
-
--(void)awakeFromNib {
-	[[self.tableView tableColumnWithIdentifier:@"all"] bind:@"value" toObject:self.manager.threadsController withKeyPath:@"arrangedObjects" options:NULL];
-	[self.window setLevel:NSNormalWindowLevel];
 }
 
 -(NSString*)windowFrameAutosaveName {
