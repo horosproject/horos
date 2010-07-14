@@ -2870,8 +2870,8 @@ static NSConditionLock *threadLock = nil;
 			if( [currentSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: [[self documentsDirectory] stringByAppendingPathComponent:@"/Database3.sql"]] options:nil error:&error] == nil)
 				NSLog( @"****** currentSC addPersistentStoreWithType error: %@", error);
 			
-			NSEntityDescription		*currentStudyTable, *currentSeriesTable, *currentImageTable, *currentAlbumTable;
-			NSArray					*albumProperties, *studyProperties, *seriesProperties, *imageProperties;
+			NSManagedObject *currentStudyTable, *currentSeriesTable, *currentImageTable, *currentAlbumTable;
+			NSArray *albumProperties, *studyProperties, *seriesProperties, *imageProperties;
 						
 			[[currentContext undoManager] setLevelsOfUndo: 1];
 			[[currentContext undoManager] disableUndoRegistration];
@@ -2949,7 +2949,17 @@ static NSConditionLock *threadLock = nil;
 					
 					for ( NSString *name in studyProperties)
 					{
-						[currentStudyTable setValue: [previousStudy primitiveValueForKey: name] forKey: name];
+						if( [name isEqualToString: @"isKeyImage"] || 
+							[name isEqualToString: @"comment"] ||
+						    [name isEqualToString: @"comment2"] ||
+						    [name isEqualToString: @"comment3"] ||
+						    [name isEqualToString: @"comment4"] ||
+						    [name isEqualToString: @"reportURL"] ||
+							[name isEqualToString: @"stateText"])
+						{
+							[currentStudyTable setPrimitiveValue: [previousStudy primitiveValueForKey: name] forKey: name];
+						}
+						else [currentStudyTable setValue: [previousStudy primitiveValueForKey: name] forKey: name];
 						
 						if( [name isEqualToString: @"name"])
 							studyName = [previousStudy primitiveValueForKey: name];
@@ -2965,7 +2975,7 @@ static NSConditionLock *threadLock = nil;
 						{
 							currentSeriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext: currentContext];
 							
-							for ( NSString *name in seriesProperties)
+							for( NSString *name in seriesProperties)
 							{
 								if( [name isEqualToString: @"xOffset"] || 
 									[name isEqualToString: @"yOffset"] || 
@@ -2978,6 +2988,16 @@ static NSConditionLock *threadLock = nil;
 									[name isEqualToString: @"xFlipped"])
 								{
 									
+								}
+								else if(  [name isEqualToString: @"isKeyImage"] || 
+										  [name isEqualToString: @"comment"] ||
+										  [name isEqualToString: @"comment2"] ||
+										  [name isEqualToString: @"comment3"] ||
+										  [name isEqualToString: @"comment4"] ||
+										  [name isEqualToString: @"reportURL"] ||
+										  [name isEqualToString: @"stateText"])
+								{
+									[currentSeriesTable setPrimitiveValue: [previousSeries primitiveValueForKey: name] forKey: name];
 								}
 								else [currentSeriesTable setValue: [previousSeries primitiveValueForKey: name] forKey: name];
 							}
@@ -3003,6 +3023,16 @@ static NSConditionLock *threadLock = nil;
 											[name isEqualToString: @"xFlipped"])
 										{
 											
+										}
+										else if( [name isEqualToString: @"isKeyImage"] || 
+												[name isEqualToString: @"comment"] ||
+												[name isEqualToString: @"comment2"] ||
+												[name isEqualToString: @"comment3"] ||
+												[name isEqualToString: @"comment4"] ||
+												[name isEqualToString: @"reportURL"] ||
+												[name isEqualToString: @"stateText"])
+										{
+											[currentImageTable setPrimitiveValue: [previousImage primitiveValueForKey: name] forKey: name];
 										}
 										else [currentImageTable setValue: [previousImage primitiveValueForKey: name] forKey: name];
 									}
