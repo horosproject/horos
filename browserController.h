@@ -225,7 +225,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSTimeInterval					lastCheckIncoming;
 	
 	WaitRendering					*waitOpeningWindow;
-	Wait							*waitCompressionWindow;
+//	Wait							*waitCompressionWindow;
 	BOOL							waitCompressionAbort;
 	
 	BOOL							checkForMountedFiles;
@@ -540,7 +540,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 #ifndef OSIRIX_LIGHT
 - (void) decompressDICOMJPEG: (NSArray*) array;
-- (void) decompressWaitIncrementation: (NSNumber*) n;
+//- (void) decompressWaitIncrementation: (NSNumber*) n;
 - (void) compressDICOMJPEG:(NSArray*) array;
 - (void) decompressThread: (NSNumber*) typeOfWork;
 - (void) decompressArrayOfFiles: (NSArray*) array work:(NSNumber*) work;

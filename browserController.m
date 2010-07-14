@@ -2187,8 +2187,11 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [copyArray count])
 	{
-		[NSThread currentThread].name = NSLocalizedString( @"Autorouting...", nil);
-		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
+		if( [NSThread isMainThread] == NO)
+		{
+			[NSThread currentThread].name = NSLocalizedString( @"Autorouting...", nil);
+			[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
+		}
 		
 		NSLog( @"______________________________________________");
 		NSLog( @" Autorouting Queue START: %d objects", [copyArray count]);
@@ -13678,8 +13681,8 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	#endif
 	
-	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
-	[waitCompressionWindow setCancel:YES];
+//	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
+//	[waitCompressionWindow setCancel:YES];
 		
 	if( autoroutingQueueArray == nil) autoroutingQueueArray = [[NSMutableArray array] retain];
 	if( autoroutingQueue == nil) autoroutingQueue = [[NSLock alloc] init];
@@ -14395,8 +14398,11 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		NSMutableArray *folders = [NSMutableArray array];
 		
-		[NSThread currentThread].name = NSLocalizedString( @"Deleting files...", nil);
-		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
+		if( [NSThread isMainThread] == NO)
+		{
+			[NSThread currentThread].name = NSLocalizedString( @"Deleting files...", nil);
+			[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
+		}
 		
 		NSLog(@"delete Queue start: %d objects", [copyArray count]);
 		for( NSString *file in copyArray)
@@ -15220,6 +15226,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	NSString *INpath = [[self localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
 	
+	if( [NSThread isMainThread] == NO)
+	{
+		[NSThread currentThread].name = NSLocalizedString( @"Decompressing DICOM files...", nil);
+		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
+	}
+	
 	[self decompressDICOMList: array to: INpath];
 	
 	[processorsLock lock];
@@ -15235,18 +15247,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	BOOL windowVisible = NO;
 	
-	if([[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES)
-	   windowVisible = YES;
+//	if([[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES)
+//	   windowVisible = YES;
+	
+	if( [NSThread isMainThread] == NO)
+	{
+		[NSThread currentThread].name = NSLocalizedString( @"Decompressing DICOM files...", nil);
+		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
+	}
 	
 	[self decompressDICOMList: array to: nil];
 	
-	if( windowVisible)
-	{
-		if( [AppController mainThread] != [NSThread currentThread])
-			[self performSelectorOnMainThread: @selector(decompressWaitIncrementation:) withObject: [NSNumber numberWithInt: [array count]] waitUntilDone: NO];
-		else
-			[self decompressWaitIncrementation: [NSNumber numberWithInt: [array count]]];
-	}
+//	if( windowVisible)
+//	{
+//		if( [AppController mainThread] != [NSThread currentThread])
+//			[self performSelectorOnMainThread: @selector(decompressWaitIncrementation:) withObject: [NSNumber numberWithInt: [array count]] waitUntilDone: NO];
+//		else
+//			[self decompressWaitIncrementation: [NSNumber numberWithInt: [array count]]];
+//	}
 	
 	[processorsLock lock];
 	if( numberOfThreadsForJPEG >= 0) numberOfThreadsForJPEG--;
@@ -15259,7 +15277,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSString			*INpath = [[self localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+	NSString *INpath = [[self localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+	
+	if( [NSThread isMainThread] == NO)
+	{
+		[NSThread currentThread].name = NSLocalizedString( @"Compressing DICOM files...", nil);
+		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
+	}
 	
 	[self compressDICOMWithJPEG: array to: INpath];
 	
@@ -15276,18 +15300,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	BOOL windowVisible = NO;
 	
-	if( [[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES)
-		windowVisible = YES;
+//	if( [[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES)
+//		windowVisible = YES;
 	
 	[self compressDICOMWithJPEG: array];
 	
-	if( windowVisible)
-	{
-		if( [AppController mainThread] != [NSThread currentThread])
-			[self performSelectorOnMainThread: @selector(decompressWaitIncrementation:) withObject: [NSNumber numberWithInt: [array count]] waitUntilDone: NO];
-		else
-			[self decompressWaitIncrementation: [NSNumber numberWithInt: [array count]]];
-	}
+//	if( windowVisible)
+//	{
+//		if( [AppController mainThread] != [NSThread currentThread])
+//			[self performSelectorOnMainThread: @selector(decompressWaitIncrementation:) withObject: [NSNumber numberWithInt: [array count]] waitUntilDone: NO];
+//		else
+//			[self decompressWaitIncrementation: [NSNumber numberWithInt: [array count]]];
+//	}
 	
 	[processorsLock lock];
 	if( numberOfThreadsForJPEG >= 0) numberOfThreadsForJPEG--;
@@ -15339,8 +15363,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[decompressArray addObjectsFromArray: result];
 		[decompressArrayLock unlock];
 		
-		[waitCompressionWindow showWindow:self];
-		[[waitCompressionWindow progress] setMaxValue: [decompressArray count]];
+//		[waitCompressionWindow showWindow:self];
+//		[[waitCompressionWindow progress] setMaxValue: [decompressArray count]];
 		
 		[DCMPix purgeCachedDictionaries];
 		
@@ -15380,8 +15404,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[decompressArray addObjectsFromArray: result];
 		[decompressArrayLock unlock];
 		
-		[waitCompressionWindow showWindow:self];
-		[[waitCompressionWindow progress] setMaxValue: [decompressArray count]];
+//		[waitCompressionWindow showWindow:self];
+//		[[waitCompressionWindow progress] setMaxValue: [decompressArray count]];
 		
 		[DCMPix purgeCachedDictionaries];
 		
@@ -15391,21 +15415,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 	else NSRunInformationalAlertPanel(NSLocalizedString(@"Non-Local Database", nil), NSLocalizedString(@"Cannot decompress images in a distant database.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 }
 
-- (void) decompressWaitIncrementation: (NSNumber*) n
-{
-	if( ([[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES) && waitCompressionAbort == NO)
-	{
-		[waitCompressionWindow incrementBy: [n intValue]];
-		
-		waitCompressionAbort = [waitCompressionWindow aborted];
-		
-		if( [[waitCompressionWindow progress] doubleValue] >= [[waitCompressionWindow progress] maxValue] || waitCompressionAbort == YES)
-		{
-			[[waitCompressionWindow progress] setDoubleValue: 0];
-			[waitCompressionWindow close];
-		}
-	}
-}
+//- (void) decompressWaitIncrementation: (NSNumber*) n
+//{
+//	if( ([[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES) && waitCompressionAbort == NO)
+//	{
+//		[waitCompressionWindow incrementBy: [n intValue]];
+//		
+//		waitCompressionAbort = [waitCompressionWindow aborted];
+//		
+//		if( [[waitCompressionWindow progress] doubleValue] >= [[waitCompressionWindow progress] maxValue] || waitCompressionAbort == YES)
+//		{
+//			[[waitCompressionWindow progress] setDoubleValue: 0];
+//			[waitCompressionWindow close];
+//		}
+//	}
+//}
 
 - (void) decompressThread: (NSNumber*) typeOfWork
 {	
@@ -15451,10 +15475,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		int chunk = [array count] / MPProcessors();
 		if( chunk < 15) chunk = 15;
 		
-		if( ([[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES))
-		{
-			if( chunk > 20) chunk = 20;
-		}
+//		if( ([[waitCompressionWindow window] isVisible] == YES || [[waitCompressionWindow window] isMiniaturized] == YES))
+//		{
+//			if( chunk > 20) chunk = 20;
+//		}
 		
 		NSRange range = NSMakeRange( 0, chunk);
 		
@@ -15466,11 +15490,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			[self waitForAProcessor];
 			
+			NSThread* t = nil;
+			
 			switch( tow)
 			{
 				case 'C':
-					[NSThread detachNewThreadSelector: @selector( compressDICOMJPEG:) toTarget:self withObject: [array subarrayWithRange: range]];
-					break;
+					t = [[[NSThread alloc] initWithTarget:self selector:@selector(compressDICOMJPEG:) object: [array subarrayWithRange: range]] autorelease];
+					t.name = NSLocalizedString( @"Compressing DICOM files...", nil);
+				break;
 				
 				case 'X':
 					[NSThread detachNewThreadSelector: @selector( compressDICOMJPEGinINCOMING:) toTarget:self withObject: [array subarrayWithRange: range]];
@@ -15484,6 +15511,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEGinINCOMING:) toTarget:self withObject: [array subarrayWithRange: range]];
 					break;
 			}
+			
+			[[ThreadsManager defaultManager] addThread: t];
+			[t start];
 			
 			range.location += range.length;
 			if( range.location + range.length > [array count])
@@ -17335,8 +17365,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( [files2Compress count] > 0 && exportAborted == NO)
 	{
-		[waitCompressionWindow showWindow:self];
-		[[waitCompressionWindow progress] setMaxValue: [files2Compress count]];
+//		[waitCompressionWindow showWindow:self];
+//		[[waitCompressionWindow progress] setMaxValue: [files2Compress count]];
 		
 		#ifndef OSIRIX_LIGHT
 		switch( [compressionMatrix selectedTag])
@@ -17351,7 +17381,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		#endif
 		
-		[waitCompressionWindow close];
+//		[waitCompressionWindow close];
 	}
 	
 	// add DICOMDIR
