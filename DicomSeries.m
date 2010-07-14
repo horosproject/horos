@@ -26,6 +26,7 @@
 #import "DicomFileDCMTKCategory.h"
 #import "DICOMToNSString.h"
 #import "XMLControllerDCMTKCategory.h"
+#import "ThreadsManager.h"
 #endif
 
 @implementation DicomSeries
@@ -76,6 +77,9 @@
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	[[DicomStudy dbModifyLock] lock];
+	
+	[NSThread currentThread].name = NSLocalizedString( @"Updating DICOM files...", nil);
+	[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
 	
 	#ifdef OSIRIX_VIEWER
 	#ifndef OSIRIX_LIGHT

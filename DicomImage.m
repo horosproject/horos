@@ -31,6 +31,7 @@
 #import "VRController.h"
 #import "browserController.h"
 #import "BonjourBrowser.h"
+#import "ThreadsManager.h"
 #endif
 
 #define ROIDATABASE @"/ROIs/"
@@ -460,6 +461,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 #ifndef OSIRIX_LIGHT
 	@try 
 	{
+		[NSThread currentThread].name = NSLocalizedString( @"Updating DICOM files...", nil);
+		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
+		
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		
 		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)

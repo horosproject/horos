@@ -32,6 +32,7 @@
 #import "Notifications.h"
 #import "SRAnnotation.h"
 #import "NSFileManager+N2.h"
+#import "ThreadsManager.h"
 #endif
 
 #define WBUFSIZE 512
@@ -700,6 +701,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 	#ifndef OSIRIX_LIGHT
 	@try 
 	{
+		[NSThread currentThread].name = NSLocalizedString( @"Updating DICOM files...", nil);
+		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
+		
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		
 		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)

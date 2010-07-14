@@ -1,10 +1,16 @@
-//
-//  ThreadInfoCell.m
-//  ManualBindings
-//
-//  Created by Alessandro Volz on 2/16/10.
-//  Copyright 2010 Ingroppalgrillo. All rights reserved.
-//
+/*=========================================================================
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
 #import "ThreadCell.h"
 #import "ThreadsManager.h"
@@ -111,7 +117,7 @@
 	
 	NSRect statusFrame = [self statusFrame];
 	[textAttributes setObject:[NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:NSMiniControlSize]] forKey:NSFontAttributeName];
-	[(self.thread.status? self.thread.status : NSLocalizedString(@"No activity information was provided for this thread.", NULL)) drawWithRect:statusFrame options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes];
+	[(self.thread.status? self.thread.status : @"") drawWithRect:statusFrame options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes];
 	
 	NSRect cancelFrame = NSMakeRect(frame.origin.x+frame.size.width-15-5, frame.origin.y+6, 15, 15);
 	if (![self.cancelButton superview])

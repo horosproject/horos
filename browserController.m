@@ -74,7 +74,7 @@
 #import "NSString+N2.h"
 #import "NSUserDefaultsController+OsiriX.h"
 #import "NSUserDefaultsController+N2.h"
-
+#import "ThreadsManager.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -2185,6 +2185,9 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [copyArray count])
 	{
+		[NSThread currentThread].name = NSLocalizedString( @"Autorouting...", nil);
+		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
+		
 		NSLog( @"______________________________________________");
 		NSLog( @" Autorouting Queue START: %d objects", [copyArray count]);
 		for ( NSDictionary *copy in copyArray)
@@ -14377,7 +14380,7 @@ static NSArray*	openSubSeriesArray = nil;
 - (void) emptyDeleteQueueThread
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		
+	
 	[deleteInProgress lock];
 	[deleteQueue lock];
 	NSArray	*copyArray = [NSArray arrayWithArray: deleteQueueArray];
@@ -14386,9 +14389,10 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if( copyArray.count)
 	{
-		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files removing", nil) description: [NSString stringWithFormat: NSLocalizedString( @"%d files to delete", nil), [copyArray count]]  name:@"delete"];
-		
 		NSMutableArray *folders = [NSMutableArray array];
+		
+		[NSThread currentThread].name = NSLocalizedString( @"Deleting files...", nil);
+		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
 		
 		NSLog(@"delete Queue start: %d objects", [copyArray count]);
 		for( NSString *file in copyArray)
@@ -14440,8 +14444,6 @@ static NSArray*	openSubSeriesArray = nil;
 		[checkIncomingLock unlock];
 		
 		NSLog(@"delete Queue end");
-		
-		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files removing", nil) description: NSLocalizedString( @"Finished", nil) name:@"delete"];
 	}
 	else [deleteInProgress unlock];
 	
