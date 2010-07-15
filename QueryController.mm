@@ -29,7 +29,7 @@
 #import "DCMTKQueryRetrieveSCP.h"
 #import "DICOMToNSString.h"
 #import "ThreadsManager.h"
-
+#import "NSThread+N2.h"
 #import "PieChartImage.h"
 #import "OpenGLScreenReader.h"
 
@@ -2018,8 +2018,8 @@ extern "C"
 			
 			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
 			t.name = NSLocalizedString( @"Retrieving images...", nil);
-			[[ThreadsManager defaultManager] addThread: t];
-			[t start];
+			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
+			[[ThreadsManager defaultManager] addThreadAndStart: t];
 			
 //			[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
 			
@@ -2058,8 +2058,8 @@ extern "C"
 	{
 		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoRetrieveThread:) object: [NSArray arrayWithArray: resultArray]] autorelease];
 		t.name = NSLocalizedString( @"Retrieving images...", nil);
-		[[ThreadsManager defaultManager] addThread: t];
-		[t start];
+		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [resultArray count]];
+		[[ThreadsManager defaultManager] addThreadAndStart: t];
 		
 //		[NSThread detachNewThreadSelector:@selector( autoRetrieveThread:) toTarget:self withObject: [NSArray arrayWithArray: resultArray]];
 	}
@@ -2099,8 +2099,7 @@ extern "C"
 				
 				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoQueryThread) object: nil] autorelease];
 				t.name = NSLocalizedString( @"Auto-Querying images...", nil);
-				[[ThreadsManager defaultManager] addThread: t];
-				[t start];
+				[[ThreadsManager defaultManager] addThreadAndStart: t];
 				
 //				[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: nil];
 				
@@ -2313,8 +2312,8 @@ extern "C"
 				
 				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
 				t.name = NSLocalizedString( @"Retrieving images...", nil);
-				[[ThreadsManager defaultManager] addThread: t];
-				[t start];
+				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
+				[[ThreadsManager defaultManager] addThreadAndStart: t];
 				
 //				[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
 				

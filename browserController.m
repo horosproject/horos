@@ -76,6 +76,7 @@
 #import "NSUserDefaultsController+N2.h"
 #import "ThreadsManager.h"
 #import "ActivityWindowController.h"
+#import "NSThread+N2.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -2285,8 +2286,7 @@ static NSConditionLock *threadLock = nil;
 				
 				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( processAutorouting) object: nil] autorelease];
 				t.name = NSLocalizedString( @"Autorouting...", nil);
-				[[ThreadsManager defaultManager] addThread: t];
-				[t start];
+				[[ThreadsManager defaultManager] addThreadAndStart: t];
 			}
 		}
 	}
@@ -4009,8 +4009,8 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: filesInput] autorelease];
 		t.name = NSLocalizedString( @"Copying files...", nil);
-		[[ThreadsManager defaultManager] addThread: t];
-		[t start];
+		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]];
+		[[ThreadsManager defaultManager] addThreadAndStart: t];
 	}
 	else
 	{
@@ -4996,8 +4996,7 @@ static NSConditionLock *threadLock = nil;
 {
 	NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoCleanDatabaseFreeSpaceThread:) object: sender] autorelease];
 	t.name = NSLocalizedString( @"Auto Cleaning Database...", nil);
-	[[ThreadsManager defaultManager] addThread: t];
-	[t start];
+	[[ThreadsManager defaultManager] addThreadAndStart: t];
 }
 
 #pragma mark-
@@ -5621,8 +5620,8 @@ static NSConditionLock *threadLock = nil;
 				{
 					NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( checkBonjourUpToDateThread:) object: self] autorelease];
 					t.name = NSLocalizedString( @"Updating Bonjour Database...", nil);
-					[[ThreadsManager defaultManager] addThread: t];
-					[t start];
+					[[ThreadsManager defaultManager] addThreadAndStart: t];
+					
 					
 					[checkIncomingLock unlock];
 				}
@@ -14511,8 +14510,9 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( emptyDeleteQueueThread) object:  nil] autorelease];
 				t.name = NSLocalizedString( @"Deleting files...", nil);
-				[[ThreadsManager defaultManager] addThread: t];
-				[t start];
+				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [deleteQueueArray count]];
+				[[ThreadsManager defaultManager] addThreadAndStart: t];
+				
 			}
 		}
 	}
@@ -15502,8 +15502,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				break;
 			}
 			
-			[[ThreadsManager defaultManager] addThread: t];
-			[t start];
+			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), range.length];
+			[[ThreadsManager defaultManager] addThreadAndStart: t];
 			
 			range.location += range.length;
 			if( range.location + range.length > [array count])
@@ -15959,9 +15959,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 //		t.name = NSLocalizedString( @"Incoming files...", nil);
 //		
 //		if( [[[[NSFileManager defaultManager] attributesOfItemAtPath: INpath error: nil] objectForKey: NSFileReferenceCount] intValue] > 5)
-//			[[ThreadsManager defaultManager] addThread: t];
-//		
-//		[t start];
+//			[[ThreadsManager defaultManager] addThreadAndStart: t];
+		
 		
 		[NSThread detachNewThreadSelector: @selector( checkIncomingThread:) toTarget:self withObject: self];
 		[checkIncomingLock unlock];

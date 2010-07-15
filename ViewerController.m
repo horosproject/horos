@@ -6655,8 +6655,7 @@ static ViewerController *draggedController = nil;
 	
 	NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( loadImageData:) object: nil] autorelease];
 	t.name = NSLocalizedString( @"Loading images...", nil);
-	[[ThreadsManager defaultManager] addThread: t];
-	[t start];
+	[[ThreadsManager defaultManager] addThreadAndStart: t];
 	
 //	[NSThread detachNewThreadSelector: @selector(loadImageData:) toTarget: self withObject: nil];
 	[self setWindowTitle:self];

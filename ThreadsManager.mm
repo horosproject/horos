@@ -55,12 +55,15 @@
 	return [self objectInThreadsAtIndex:index];
 }
 
--(void)addThread:(NSThread*)thread {
+-(void)addThreadAndStart:(NSThread*)thread {
 	if (![[NSThread currentThread] isMainThread]) {
-		[self performSelectorOnMainThread:@selector(addThread:) withObject:thread waitUntilDone: YES]; //YES: We need to be sure that the thread is added, before the thread starts, to avoid the exit before created bug
+		[self performSelectorOnMainThread:@selector(addThread:) withObject:thread waitUntilDone: NO];
 	} else if (![_threads containsObject:thread]) {
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
 		[[self mutableArrayValueForKey:@"threads"] addObject:thread];
+		
+		if( [thread isMainThread] == NO)
+			[thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
 		
 		// We need this to avoid the exit before created bug...
 		[[ActivityWindowController defaultController].tableView reloadData];
@@ -70,7 +73,7 @@
 
 -(void)removeThread:(NSThread*)thread {
 	if (![[NSThread currentThread] isMainThread])
-		[self performSelectorOnMainThread:@selector(removeThread:) withObject:thread waitUntilDone:YES];
+		[self performSelectorOnMainThread:@selector(removeThread:) withObject:thread waitUntilDone:NO];
 	else {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
 		[[self mutableArrayValueForKey:@"threads"] removeObject:thread];

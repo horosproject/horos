@@ -310,7 +310,7 @@
 			
 			NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( performBurn:) object: nil] autorelease];
 			t.name = NSLocalizedString( @"Burning...", nil);
-			[[ThreadsManager defaultManager] addThread: t];
+			[[ThreadsManager defaultManager] addThreadAndStart: t];
 			[t start];
 			
 //			[NSThread detachNewThreadSelector:@selector(performBurn:) toTarget:self withObject:nil];

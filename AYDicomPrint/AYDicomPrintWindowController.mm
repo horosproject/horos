@@ -459,8 +459,7 @@
 	
 	NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( _sendPrintjob:) object: xmlPath] autorelease];
 	t.name = NSLocalizedString( @"DICOM Printing...", nil);
-	[[ThreadsManager defaultManager] addThread: t];
-	[t start];
+	[[ThreadsManager defaultManager] addThreadAndStart: t];
 	
 //	[NSThread detachNewThreadSelector:@selector( _sendPrintjob:) toTarget:self withObject: xmlPath];
 //	[self _sendPrintjob: xmlPath];	
