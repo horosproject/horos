@@ -62,12 +62,12 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
 		[[self mutableArrayValueForKey:@"threads"] addObject:thread];
 		
-		if( [thread isMainThread] == NO)
-			[thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
-		
 		// We need this to avoid the exit before created bug...
 		[[ActivityWindowController defaultController].tableView reloadData];
 		[[ActivityWindowController defaultController].tableView display];
+		
+		if( [thread isMainThread] == NO)
+			[thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
 	}
 }
 

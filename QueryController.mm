@@ -2058,7 +2058,6 @@ extern "C"
 	{
 		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoRetrieveThread:) object: [NSArray arrayWithArray: resultArray]] autorelease];
 		t.name = NSLocalizedString( @"Retrieving images...", nil);
-		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [resultArray count]];
 		[[ThreadsManager defaultManager] addThreadAndStart: t];
 		
 //		[NSThread detachNewThreadSelector:@selector( autoRetrieveThread:) toTarget:self withObject: [NSArray arrayWithArray: resultArray]];
