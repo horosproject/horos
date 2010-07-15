@@ -33,6 +33,7 @@
 #import "SRAnnotation.h"
 #import "NSFileManager+N2.h"
 #import "ThreadsManager.h"
+#import "NSThread+N2.h"
 #endif
 
 #define WBUFSIZE 512
