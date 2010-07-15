@@ -773,9 +773,6 @@ extern "C"
 
 - (void) refresh: (id) sender
 {
-	if( [currentQueryController.window isVisible] == NO && [currentAutoQueryController.window isVisible] == NO)
-		return;
-	
 	if( afterDelayRefresh == NO)
 	{
 		afterDelayRefresh = YES;
