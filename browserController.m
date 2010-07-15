@@ -4780,8 +4780,7 @@ static NSConditionLock *threadLock = nil;
 			
 			if( free <= 0)
 			{
-				NSLog( @"*** autoCleanDatabaseFreeSpace free <= 0 ??");
-				NSLog( @"%@", currentDatabasePath);
+				NSLog( @"*** autoCleanDatabaseFreeSpace free <= 0 ?? : %@", currentDatabasePath);
 				[pool release];
 				
 				return;

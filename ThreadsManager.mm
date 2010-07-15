@@ -14,7 +14,7 @@
 
 #import "ThreadsManager.h"
 #import "ThreadModalForWindowController.h"
-
+#import "ActivityWindowController.h"
 
 @implementation ThreadsManager
 
@@ -59,8 +59,12 @@
 	if (![[NSThread currentThread] isMainThread]) {
 		[self performSelectorOnMainThread:@selector(addThread:) withObject:thread waitUntilDone:NO];
 	} else if (![_threads containsObject:thread]) {
-		[[self mutableArrayValueForKey:@"threads"] addObject:thread];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
+		[[self mutableArrayValueForKey:@"threads"] addObject:thread];
+		
+		// We need this to avoid the disappearing thread before creation finished...
+		[[ActivityWindowController defaultController].tableView reloadData];
+		[[ActivityWindowController defaultController].tableView display];
 	}
 }
 
@@ -68,8 +72,8 @@
 	if (![[NSThread currentThread] isMainThread])
 		[self performSelectorOnMainThread:@selector(removeThread:) withObject:thread waitUntilDone:NO];
 	else {
-		[[self mutableArrayValueForKey:@"threads"] removeObject:thread];
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
+		[[self mutableArrayValueForKey:@"threads"] removeObject:thread];
 	}
 }
 

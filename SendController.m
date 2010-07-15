@@ -105,6 +105,8 @@ static volatile int sendControllerObjects = 0;
 		_lock = [[NSRecursiveLock alloc] init];
 		[_lock  lock];
 		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:OsirixDCMSendStatusNotification object:nil];
+		
 		[[NSNotificationCenter defaultCenter] addObserver: self
 												selector: @selector( updateDestinationPopup:)
 												name: OsirixServerArrayChangedNotification
@@ -273,7 +275,9 @@ static volatile int sendControllerObjects = 0;
 				
 				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( sendDICOMFilesOffis:) object: objectsToSend] autorelease];
 				t.name = NSLocalizedString( @"Sending DICOM files...", nil);
+				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [objectsToSend count]];
 				t.supportsCancel = YES;
+				t.progress = 0;
 				[[ThreadsManager defaultManager] addThread: t];
 				[t start];
 			}
@@ -368,6 +372,13 @@ static volatile int sendControllerObjects = 0;
 	
 	[storeSCU release];
 	storeSCU = nil;
+}
+
+- (void) setSendMessage:(NSNotification *)note
+{
+	NSDictionary *info = [note userInfo];
+	
+	[NSThread currentThread].progress = [[info objectForKey: @"NumberSent"] floatValue] / [[info objectForKey: @"SendTotal"] floatValue];
 }
 
 - (void) sendDICOMFilesOffis:(NSArray *) tempObjectsToSend 

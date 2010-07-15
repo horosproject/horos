@@ -196,7 +196,7 @@
 			prevTotalRW = totalRW;			
 		} else [hddActiView setImage:NULL];
 		
-		[statusLabel performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:NSLocalizedString(self.manager.threads.count==1?@"%d background thread is running":@"%d background threads are running", NULL), self.manager.threads.count] waitUntilDone:YES];
+		[statusLabel performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:NSLocalizedString(self.manager.threads.count==1?@"%d background thread":@"%d background threads", NULL), self.manager.threads.count] waitUntilDone:YES];
 		
 		previousTime = thisTime;
 		[pool release];
@@ -242,6 +242,9 @@
 }
 
 -(void)mouseDown:(NSEvent*)evt {
+}
+
+-(void)rightMouseDown:(NSEvent*)evt {
 }
 
 @end

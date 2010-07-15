@@ -28,6 +28,7 @@
 #import "BrowserController.h"
 #import "DCMTKQueryRetrieveSCP.h"
 #import "DICOMToNSString.h"
+#import "ThreadsManager.h"
 
 #import "PieChartImage.h"
 #import "OpenGLScreenReader.h"
@@ -2015,7 +2016,12 @@ extern "C"
 			for( id item in selectedItems)
 				[item setShowErrorMessage: NO];
 			
-			[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
+			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
+			t.name = NSLocalizedString( @"Retrieving images...", nil);
+			[[ThreadsManager defaultManager] addThread: t];
+			[t start];
+			
+//			[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
 			
 			NSLog( @"______________________________________________");
 			NSLog( @"Will auto-retrieve these items:");
@@ -2050,7 +2056,12 @@ extern "C"
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"] && autoQuery == YES)
 	{
-		[NSThread detachNewThreadSelector:@selector( autoRetrieveThread:) toTarget:self withObject: [NSArray arrayWithArray: resultArray]];
+		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoRetrieveThread:) object: [NSArray arrayWithArray: resultArray]] autorelease];
+		t.name = NSLocalizedString( @"Auto-Retrieving images...", nil);
+		[[ThreadsManager defaultManager] addThread: t];
+		[t start];
+		
+//		[NSThread detachNewThreadSelector:@selector( autoRetrieveThread:) toTarget:self withObject: [NSArray arrayWithArray: resultArray]];
 	}
 }
 
@@ -2086,7 +2097,12 @@ extern "C"
 				
 				[self saveSettings];
 				
-				[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: nil];
+				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoQueryThread) object: nil] autorelease];
+				t.name = NSLocalizedString( @"Auto-Querying images...", nil);
+				[[ThreadsManager defaultManager] addThread: t];
+				[t start];
+				
+//				[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: nil];
 				
 				autoQueryRemainingSecs = 60*self.autoRefreshQueryResults; 
 				
@@ -2294,7 +2310,13 @@ extern "C"
 				}
 				
 				checkAndViewTry = -1;
-				[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
+				
+				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
+				t.name = NSLocalizedString( @"Retrieving images...", nil);
+				[[ThreadsManager defaultManager] addThread: t];
+				[t start];
+				
+//				[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
 				
 				if( showGUI)
 				{

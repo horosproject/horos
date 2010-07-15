@@ -1554,7 +1554,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			
 			[self updateLogEntry: userInfo];
 			
-			[self performSelectorOnMainThread:@selector( sendStatusNotification:) withObject:userInfo waitUntilDone:NO];
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMSendStatusNotification object:self userInfo:userInfo];
+//			[self performSelectorOnMainThread:@selector( sendStatusNotification:) withObject:userInfo waitUntilDone:NO];
 		}
 		
 		/* tear down association, i.e. terminate network connection to SCP */
@@ -1742,7 +1744,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		
 		[self updateLogEntry: userInfo];
 		
-		[self performSelectorOnMainThread:@selector( sendStatusNotification:) withObject:userInfo waitUntilDone:NO];
+//		[self sendStatusNotification: userInfo];
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMSendStatusNotification object:self userInfo:userInfo];
 	}
 
 	[paths release];
@@ -1753,10 +1756,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	[localException raise];
 }
 
-- (void) sendStatusNotification:(NSMutableDictionary*) userInfo
-{
-	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMSendStatusNotification object:self userInfo:userInfo];
-}
+//- (void) sendStatusNotification:(NSMutableDictionary*) userInfo
+//{
+//	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMSendStatusNotification object:self userInfo:userInfo];
+//}
 
 - (void) updateLogEntry: (NSMutableDictionary*) userInfo
 {
