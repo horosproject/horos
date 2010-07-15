@@ -2016,6 +2016,8 @@ extern "C"
 			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
 			t.name = NSLocalizedString( @"Retrieving images...", nil);
 			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
+			t.progress = 0;
+			t.supportsCancel = YES;
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
 			
 //			[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
@@ -2309,6 +2311,8 @@ extern "C"
 				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
 				t.name = NSLocalizedString( @"Retrieving images...", nil);
 				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
+				t.progress = 0;
+				t.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 				
 //				[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
@@ -2455,6 +2459,7 @@ extern "C"
 		[dictionary release];
 		[subPool release];
 		
+		int i = 0;
 		for( NSDictionary *d in moveArray)
 		{
 			DCMTKQueryNode *object = [d objectForKey: @"query"];
@@ -2474,6 +2479,10 @@ extern "C"
 			{
 				[previousAutoRetrieve removeObjectForKey: [self stringIDForStudy: object]];
 			}
+			
+			[NSThread currentThread].progress = (float) i / (float) [moveArray count];
+			if( [NSThread currentThread].isCancelled)
+				break;
 		}
 		
 		[NSThread sleepForTimeInterval: 0.5];	// To allow errorMessage on the main thread...

@@ -144,6 +144,7 @@
 					
 					NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
 					t.name = NSLocalizedString( @"Updating DICOM files...", nil);
+					t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [[dict objectForKey: @"files"] count]];
 					[[ThreadsManager defaultManager] addThreadAndStart: t];
 				}
 			}

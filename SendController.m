@@ -302,6 +302,7 @@ static volatile int sendControllerObjects = 0;
 	NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( sendDICOMFilesOffis:) object: _files] autorelease];
 	t.name = NSLocalizedString( @"Sending DICOM files...", nil);
 	t.supportsCancel = YES;
+	t.progress = 0;
 	t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [_files count]];
 	[[ThreadsManager defaultManager] addThreadAndStart: t];
 }

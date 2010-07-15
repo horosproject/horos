@@ -5629,7 +5629,6 @@ static NSConditionLock *threadLock = nil;
 					t.name = NSLocalizedString( @"Updating Bonjour Database...", nil);
 					[[ThreadsManager defaultManager] addThreadAndStart: t];
 					
-					
 					[checkIncomingLock unlock];
 				}
 				else NSLog(@"checkBonjourUpToDate locked...");
@@ -14421,10 +14420,14 @@ static NSArray*	openSubSeriesArray = nil;
 		NSMutableArray *folders = [NSMutableArray array];
 		
 		NSLog(@"delete Queue start: %d objects", [copyArray count]);
+		
+		int f = 0;
 		for( NSString *file in copyArray)
 		{
 			unlink( [file UTF8String]);		// <- this is faster
 			[folders addObject: [file stringByDeletingLastPathComponent]];
+			
+			[NSThread currentThread].progress = (float) f++ / (float) [copyArray count];
 		}
 		
 		[deleteInProgress unlock];
@@ -14527,8 +14530,8 @@ static NSArray*	openSubSeriesArray = nil;
 				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( emptyDeleteQueueThread) object:  nil] autorelease];
 				t.name = NSLocalizedString( @"Deleting files...", nil);
 				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [deleteQueueArray count]];
+				t.progress = 0;
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
-				
 			}
 		}
 	}
