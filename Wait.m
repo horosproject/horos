@@ -185,8 +185,6 @@
 -(IBAction) abortButton: (id) sender
 {
 	aborted = YES;
-	[_target abort];
-//	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMAbortSendNotification" object:self];
 	[NSApp stopModal];
 }
 
@@ -194,9 +192,4 @@
 {
 	return aborted;
 }
-
-- (void)setTarget:(id)target{
-	_target = target;
-}
-
 @end

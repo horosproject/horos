@@ -24,6 +24,8 @@
 #import "Notifications.h"
 #import "QueryController.h"
 #import "DicomStudy.h"
+#import "ThreadsManager.h"
+#import "NSThread+N2.h"
 
 static volatile int sendControllerObjects = 0;
 
@@ -102,8 +104,6 @@ static volatile int sendControllerObjects = 0;
 		_readyForRelease = NO;
 		_lock = [[NSRecursiveLock alloc] init];
 		[_lock  lock];
-		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:OsirixDCMSendStatusNotification object:nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
 												selector: @selector( updateDestinationPopup:)
@@ -268,16 +268,14 @@ static volatile int sendControllerObjects = 0;
 			{
 				[_destinationServer release];
 				_destinationServer = [[self server] retain];
-
-				_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...", nil) :NO];
-				[_waitSendWindow  setTarget:self];
-				[_waitSendWindow showWindow:self];
-				[[_waitSendWindow progress] setMaxValue:[files2Send count]];
-				
-				[_waitSendWindow setCancel:YES];
 				
 				sendROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"];
-				[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: objectsToSend];
+				
+				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( sendDICOMFilesOffis:) object: objectsToSend] autorelease];
+				t.name = NSLocalizedString( @"Sending DICOM files...", nil);
+				t.supportsCancel = YES;
+				[[ThreadsManager defaultManager] addThread: t];
+				[t start];
 			}
 			else [_lock unlock];	// Will release the object
 		}
@@ -295,15 +293,14 @@ static volatile int sendControllerObjects = 0;
 	//	_destinationServer = [node retain];
 	[_destinationServer release];
 	_destinationServer = [node retain];
-
-	_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...", nil) :NO];
-	[_waitSendWindow  setTarget:self];
-	[_waitSendWindow showWindow:self];
-	[[_waitSendWindow progress] setMaxValue:[_files count]];
 	
-	[_waitSendWindow setCancel:YES];
 	sendROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"];
-	[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: _files];
+	
+	NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( sendDICOMFilesOffis:) object: _files] autorelease];
+	t.name = NSLocalizedString( @"Sending DICOM files...", nil);
+	t.supportsCancel = YES;
+	[[ThreadsManager defaultManager] addThread: t];
+	[t start];
 }
 
 #pragma mark Sending functions	
@@ -317,7 +314,8 @@ static volatile int sendControllerObjects = 0;
 
 - (void) executeSend :(NSArray*) samePatientArray
 {
-	if( _abort) return;
+	if( [NSThread currentThread].isCancelled)
+		return;
 	
 	if( sendROIs == NO)
 	{
@@ -365,10 +363,7 @@ static volatile int sendControllerObjects = 0;
 	
 	@catch( NSException *ne)
 	{
-		if( _waitSendWindow)
-		{
-			[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone: NO];
-		}
+		[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone: NO];
 	}
 	
 	[storeSCU release];
@@ -436,8 +431,6 @@ static volatile int sendControllerObjects = 0;
 		[info setObject:calledAET forKey:@"CalledAET"];
 		
 		sendControllerObjects--;
-		
-		[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone: YES];	
 	}
 	@catch (NSException *e)
 	{
@@ -450,28 +443,6 @@ static volatile int sendControllerObjects = 0;
 	
 	//need to unlock to allow release of self after send complete
 	[_lock performSelectorOnMainThread:@selector(unlock) withObject:nil waitUntilDone: NO];
-}
-
-- (void)closeSendPanel:(id)sender
-{
-	[_waitSendWindow close];			
-	[_waitSendWindow release];			
-	_waitSendWindow = nil;	
-}
-
-- (void) setSendMessageThread:(NSDictionary*) info
-{
-	if( _waitSendWindow)
-	{
-		[_waitSendWindow incrementBy:1];
-		[[[_waitSendWindow window] contentView] setNeedsDisplay:YES];
-	}
-}
-
-- (void)setSendMessage: (NSNotification *)note
-{
-	if( [note object] == storeSCU)
-		[self performSelectorOnMainThread:@selector(setSendMessageThread:) withObject:[note userInfo] waitUntilDone:YES]; // <- GUI operations are permitted ONLY on the main thread
 }
 
 #pragma mark serversArray functions
@@ -502,17 +473,4 @@ static volatile int sendControllerObjects = 0;
 		[currentTitle release];
 	}
 }
-
-- (void)listenForAbort:(id)handler
-{
-	[[_waitSendWindow window] orderOut:self];
-	[storeSCU abort];
-}
-
-- (void)abort
-{
-	[self listenForAbort:nil];
-	_abort = YES;
-}
-
 @end

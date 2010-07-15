@@ -40,5 +40,4 @@
 - (IBAction) abortButton: (id) sender;
 - (void) setCancel :(BOOL) val;
 - (void) setElapsedString :(NSString*) str;
-- (void)setTarget:(id)target;
 @end

@@ -32,7 +32,6 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 	int _port;
 	NSString *_hostname;
 	NSDictionary *_extraParameters;
-	BOOL _shouldAbort;
 	int _transferSyntax;
 	float _compression;
 
@@ -66,7 +65,6 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 			
 - (void)run:(id)sender;
 - (void)updateLogEntry: (NSMutableDictionary*) userInfo;
-- (void)abort;
 @end
 
 

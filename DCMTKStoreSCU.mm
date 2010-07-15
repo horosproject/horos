@@ -921,7 +921,6 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		_port = port;
 		_hostname = [hostname retain];
 		_extraParameters = [extraParameters retain];
-		_shouldAbort = NO;
 		_transferSyntax = transferSyntax;
 		_compression = compression;
 		
@@ -1531,7 +1530,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		OFListIterator(OFString) iter = fileNameList.begin();
 		OFListIterator(OFString) enditer = fileNameList.end();
 
-		while ((iter != enditer) && (cond == EC_Normal) && !_shouldAbort) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+		while ((iter != enditer) && (cond == EC_Normal) && ![[NSThread currentThread] isCancelled]) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
 		{
 			cond = cstore(assoc, *iter);
 			++iter;
@@ -1729,7 +1728,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		
 		if( _numberSent != _numberOfFiles || localException != nil)
 		{
-			if( _shouldAbort) [userInfo setObject:@"Aborted" forKey:@"Message"];
+			if( [[NSThread currentThread] isCancelled]) [userInfo setObject:@"Aborted" forKey:@"Message"];
 			else [userInfo setObject:@"Incomplete" forKey:@"Message"];
 			
 			_numberErrors = _numberOfFiles - _numberSent;
@@ -1799,9 +1798,5 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 
 	[context unlock];
 	[context release];
-}
-
-- (void)abort{
-	_shouldAbort = YES;
 }
 @end
