@@ -279,7 +279,6 @@ static volatile int sendControllerObjects = 0;
 				t.supportsCancel = YES;
 				t.progress = 0;
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
-				[t start];
 			}
 			else [_lock unlock];	// Will release the object
 		}
@@ -305,7 +304,6 @@ static volatile int sendControllerObjects = 0;
 	t.supportsCancel = YES;
 	t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [_files count]];
 	[[ThreadsManager defaultManager] addThreadAndStart: t];
-	[t start];
 }
 
 #pragma mark Sending functions	
