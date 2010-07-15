@@ -27,6 +27,7 @@
 #import "DICOMToNSString.h"
 #import "XMLControllerDCMTKCategory.h"
 #import "ThreadsManager.h"
+#import "NSThread+N2.h"
 #endif
 
 @implementation DicomSeries
