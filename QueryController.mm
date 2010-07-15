@@ -2057,7 +2057,7 @@ extern "C"
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"] && autoQuery == YES)
 	{
 		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoRetrieveThread:) object: [NSArray arrayWithArray: resultArray]] autorelease];
-		t.name = NSLocalizedString( @"Auto-Retrieving images...", nil);
+		t.name = NSLocalizedString( @"Retrieving images...", nil);
 		[[ThreadsManager defaultManager] addThread: t];
 		[t start];
 		

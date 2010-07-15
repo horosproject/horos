@@ -4758,7 +4758,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) autoCleanDatabaseFreeSpaceThread: (id)sender
 {
-	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	
+	[NSThread sleepForTimeInterval: 0.5];
 	
 	if (isCurrentDatabaseBonjour)
 		return;
