@@ -425,7 +425,11 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	#ifndef OSIRIX_LIGHT
-	[[QueryController currentQueryController] refresh: self];
+	if( [QueryController currentQueryController])
+		[[QueryController currentQueryController] refresh: self];
+	else if( [QueryController currentAutoQueryController])
+		[[QueryController currentAutoQueryController] refresh: self];
+	
 	#endif
 }
 
@@ -3593,7 +3597,10 @@ static NSConditionLock *threadLock = nil;
 	[self refreshMatrix: self];
 	
 	#ifndef OSIRIX_LIGHT
-	[[QueryController currentQueryController] refresh: self];
+	if( [QueryController currentQueryController])
+		[[QueryController currentQueryController] refresh: self];
+	else if( [QueryController currentAutoQueryController])
+		[[QueryController currentAutoQueryController] refresh: self];
 	#endif
 	
 	[[LogManager currentLogManager] resetLogs];
@@ -5701,7 +5708,10 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	#ifndef OSIRIX_LIGHT
-	[[QueryController currentQueryController] refresh: self];
+	if( [QueryController currentQueryController])
+		[[QueryController currentQueryController] refresh: self];
+	else if( [QueryController currentAutoQueryController])
+		[[QueryController currentAutoQueryController] refresh: self];
 	#endif
 }
 
@@ -6914,7 +6924,10 @@ static NSConditionLock *threadLock = nil;
 		}
 		
 		#ifndef OSIRIX_LIGHT
-		[[QueryController currentQueryController] refresh: self];
+		if( [QueryController currentQueryController])
+			[[QueryController currentQueryController] refresh: self];
+		else if( [QueryController currentAutoQueryController])
+			[[QueryController currentAutoQueryController] refresh: self];
 		#endif
 	}
 	
@@ -7233,7 +7246,10 @@ static NSConditionLock *threadLock = nil;
 	[self saveDatabase: currentDatabasePath];
 	
 	#ifndef OSIRIX_LIGHT
-	[[QueryController currentQueryController] refresh: self];
+	if( [QueryController currentQueryController])
+		[[QueryController currentQueryController] refresh: self];
+	else if( [QueryController currentAutoQueryController])
+		[[QueryController currentAutoQueryController] refresh: self];
 	#endif
 	
 	[databaseOutline reloadData];
