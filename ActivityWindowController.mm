@@ -82,6 +82,10 @@
 		if (cell.thread == thread)
 			return cell;
 	
+	return nil;
+}
+
+-(NSCell*) createCellForThread:(NSThread*)thread {
 	NSCell* cell = [[ThreadCell alloc] initWithThread:thread manager:self.manager view:self.tableView];
 	[_cells addObject:cell];
 	
@@ -208,15 +212,25 @@
 		if ([keyPath isEqual:@"threads"]) { // we observe the threads array so we can release cells when they're not needed anymore
 			if ([[change objectForKey:NSKeyValueChangeKindKey] unsignedIntValue] == NSKeyValueChangeRemoval)
 				for (NSThread* thread in [change objectForKey:NSKeyValueChangeOldKey])
-					[_cells removeObject:[self cellForThread:thread]];
+				{
+					id cell = [self cellForThread:thread];
+					if( cell)
+						[_cells removeObject: cell];
+				}
 			return;
 		}
 	
 	[super observeValueForKeyPath:keyPath ofObject:obj change:change context:context];
 }
 
--(NSCell*)tableView:(NSTableView *)tableView dataCellForTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row {
-	return [self cellForThread:[self.manager threadAtIndex:row]];
+-(NSCell*)tableView:(NSTableView *)tableView dataCellForTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row
+{
+	id cell = [self cellForThread: [self.manager threadAtIndex:row]];
+	
+	if( cell == nil)
+		cell = [self createCellForThread: [self.manager threadAtIndex:row]];
+	
+	return cell;
 }
 
 @end

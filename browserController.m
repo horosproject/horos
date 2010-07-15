@@ -2187,12 +2187,6 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [copyArray count])
 	{
-		if( [NSThread isMainThread] == NO)
-		{
-			[NSThread currentThread].name = NSLocalizedString( @"Autorouting...", nil);
-			[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
-		}
-		
 		NSLog( @"______________________________________________");
 		NSLog( @" Autorouting Queue START: %d objects", [copyArray count]);
 		for ( NSDictionary *copy in copyArray)
@@ -2288,7 +2282,11 @@ static NSConditionLock *threadLock = nil;
 			if( [autoroutingInProgress tryLock])
 			{
 				[autoroutingInProgress unlock];
-				[NSThread detachNewThreadSelector:@selector(processAutorouting) toTarget:self withObject:nil];
+				
+				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( processAutorouting) object: nil] autorelease];
+				t.name = NSLocalizedString( @"Autorouting...", nil);
+				[[ThreadsManager defaultManager] addThread: t];
+				[t start];
 			}
 		}
 	}
@@ -4009,7 +4007,10 @@ static NSConditionLock *threadLock = nil;
 	
 	if( async)
 	{
-		[NSThread detachNewThreadSelector:@selector(copyFilesThread:) toTarget:self withObject: filesInput];
+		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: filesInput] autorelease];
+		t.name = NSLocalizedString( @"Copying files...", nil);
+		[[ThreadsManager defaultManager] addThread: t];
+		[t start];
 	}
 	else
 	{
@@ -4994,7 +4995,10 @@ static NSConditionLock *threadLock = nil;
 
 - (void) autoCleanDatabaseFreeSpace: (id)sender
 {
-	[NSThread detachNewThreadSelector: @selector( autoCleanDatabaseFreeSpaceThread:) toTarget: self withObject: nil];
+	NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoCleanDatabaseFreeSpaceThread:) object: sender] autorelease];
+	t.name = NSLocalizedString( @"Auto Cleaning Database...", nil);
+	[[ThreadsManager defaultManager] addThread: t];
+	[t start];
 }
 
 #pragma mark-
@@ -5616,7 +5620,11 @@ static NSConditionLock *threadLock = nil;
 				
 				if( [checkIncomingLock tryLock])
 				{
-					[NSThread detachNewThreadSelector: @selector(checkBonjourUpToDateThread:) toTarget:self withObject: self];
+					NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( checkBonjourUpToDateThread:) object: self] autorelease];
+					t.name = NSLocalizedString( @"Updating Bonjour Database...", nil);
+					[[ThreadsManager defaultManager] addThread: t];
+					[t start];
+					
 					[checkIncomingLock unlock];
 				}
 				else NSLog(@"checkBonjourUpToDate locked...");
@@ -14398,12 +14406,6 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		NSMutableArray *folders = [NSMutableArray array];
 		
-		if( [NSThread isMainThread] == NO)
-		{
-			[NSThread currentThread].name = NSLocalizedString( @"Deleting files...", nil);
-			[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
-		}
-		
 		NSLog(@"delete Queue start: %d objects", [copyArray count]);
 		for( NSString *file in copyArray)
 		{
@@ -14507,7 +14509,11 @@ static NSArray*	openSubSeriesArray = nil;
 			if( [deleteInProgress tryLock])
 			{
 				[deleteInProgress unlock];
-				[NSThread detachNewThreadSelector:@selector(emptyDeleteQueueThread) toTarget:self withObject:nil];
+				
+				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( emptyDeleteQueueThread) object:  nil] autorelease];
+				t.name = NSLocalizedString( @"Deleting files...", nil);
+				[[ThreadsManager defaultManager] addThread: t];
+				[t start];
 			}
 		}
 	}
@@ -15482,16 +15488,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 				break;
 				
 				case 'X':
-					[NSThread detachNewThreadSelector: @selector( compressDICOMJPEGinINCOMING:) toTarget:self withObject: [array subarrayWithRange: range]];
-					break;
+					t = [[[NSThread alloc] initWithTarget:self selector:@selector( compressDICOMJPEGinINCOMING:) object: [array subarrayWithRange: range]] autorelease];
+					t.name = NSLocalizedString( @"Compressing DICOM files...", nil);
+				break;
 					
 				case 'D':
-					[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG:) toTarget:self withObject: [array subarrayWithRange: range]];
-					break;
+					t = [[[NSThread alloc] initWithTarget:self selector:@selector( decompressDICOMJPEG:) object: [array subarrayWithRange: range]] autorelease];
+					t.name = NSLocalizedString( @"Decompressing DICOM files...", nil);
+				break;
 					
 				case 'I':
-					[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEGinINCOMING:) toTarget:self withObject: [array subarrayWithRange: range]];
-					break;
+					t = [[[NSThread alloc] initWithTarget:self selector:@selector( decompressDICOMJPEGinINCOMING:) object: [array subarrayWithRange: range]] autorelease];
+					t.name = NSLocalizedString( @"Decompressing DICOM files...", nil);
+				break;
 			}
 			
 			[[ThreadsManager defaultManager] addThread: t];

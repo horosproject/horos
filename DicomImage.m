@@ -461,9 +461,6 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 #ifndef OSIRIX_LIGHT
 	@try 
 	{
-		[NSThread currentThread].name = NSLocalizedString( @"Updating DICOM files...", nil);
-		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
-		
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		
 		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
@@ -574,7 +571,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 				[dcmObject release];
 				
 				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
-				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+				
+				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
+				t.name = NSLocalizedString( @"Updating DICOM files...", nil);
+				[[ThreadsManager defaultManager] addThread: t];
+				[t start];
 				
 				[[DicomStudy dbModifyLock] unlock];
 			}
@@ -585,7 +586,10 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 					
 				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
 
-				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
+				t.name = NSLocalizedString( @"Updating DICOM files...", nil);
+				[[ThreadsManager defaultManager] addThread: t];
+				[t start];
 			}
 		}
 		#endif

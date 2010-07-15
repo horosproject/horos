@@ -701,9 +701,6 @@ static NSRecursiveLock *dbModifyLock = nil;
 	#ifndef OSIRIX_LIGHT
 	@try 
 	{
-		[NSThread currentThread].name = NSLocalizedString( @"Updating DICOM files...", nil);
-		[[ThreadsManager defaultManager] addThread: [NSThread currentThread]];
-		
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		
 		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
@@ -758,7 +755,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 			if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
 			{
 				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(0032,4000)", @"field", c, @"value", nil];
-				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+				
+				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
+				t.name = NSLocalizedString( @"Updating DICOM files...", nil);
+				[[ThreadsManager defaultManager] addThread: t];
+				[t start];
 			}
 		}
 	}
@@ -835,7 +836,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 			if( [c intValue] != [[self primitiveValueForKey: @"stateText"] intValue])
 			{
 				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(4008,0212)", @"field", [c stringValue], @"value", nil];
-				[NSThread detachNewThreadSelector: @selector( dcmodifyThread:) toTarget: self withObject: dict];
+				
+				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
+				t.name = NSLocalizedString( @"Updating DICOM files...", nil);
+				[[ThreadsManager defaultManager] addThread: t];
+				[t start];
 			}
 		}
 	}
