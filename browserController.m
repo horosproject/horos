@@ -15951,12 +15951,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( [checkIncomingLock tryLock])
 	{
+//		NSString *dbFolder = [self localDocumentsDirectory];
+//		NSString *INpath = [dbFolder stringByAppendingPathComponent:INCOMINGPATH];
+//		INpath = [self folderPathResolvingAliasAndSymLink:INpath];
+//		
+//		NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( checkIncomingThread:) object: self] autorelease];
+//		t.name = NSLocalizedString( @"Incoming files...", nil);
+//		
+//		if( [[[[NSFileManager defaultManager] attributesOfItemAtPath: INpath error: nil] objectForKey: NSFileReferenceCount] intValue] > 5)
+//			[[ThreadsManager defaultManager] addThread: t];
+//		
+//		[t start];
+		
 		[NSThread detachNewThreadSelector: @selector( checkIncomingThread:) toTarget:self withObject: self];
 		[checkIncomingLock unlock];
 	}
 	else
 	{
-		NSLog(@"checkIncoming locked...");
+		NSLog( @"checkIncoming locked...");
 		newFilesInIncoming = YES;
 	}
 	

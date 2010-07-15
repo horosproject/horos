@@ -19,6 +19,7 @@
 #import "AYNSImageToDicom.h"
 #import "Notifications.h"
 #import "OSIWindow.h"
+#import "ThreadsManager.h"
 
 #define VERSIONNUMBERSTRING	@"v1.00.000"
 #define ECHOTIMEOUT 5
@@ -455,7 +456,13 @@
 	[self closeSheet: self];
 	
 	// send printjob
-	[NSThread detachNewThreadSelector:@selector( _sendPrintjob:) toTarget:self withObject: xmlPath];
+	
+	NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( _sendPrintjob:) object: xmlPath] autorelease];
+	t.name = NSLocalizedString( @"DICOM Printing...", nil);
+	[[ThreadsManager defaultManager] addThread: t];
+	[t start];
+	
+//	[NSThread detachNewThreadSelector:@selector( _sendPrintjob:) toTarget:self withObject: xmlPath];
 //	[self _sendPrintjob: xmlPath];	
 		
 	[pool release];

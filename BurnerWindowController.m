@@ -25,6 +25,7 @@
 #import "Anonymization.h"
 #import "AnonymizationPanelController.h"
 #import "AnonymizationViewController.h"
+#import "ThreadsManager.h"
 
 @implementation BurnerWindowController
 @synthesize password, buttonsDisabled;
@@ -306,7 +307,13 @@
 		{
 			runBurnAnimation = YES;
 			[NSThread detachNewThreadSelector:@selector(burnAnimation:) toTarget:self withObject:nil];
-			[NSThread detachNewThreadSelector:@selector(performBurn:) toTarget:self withObject:nil];
+			
+			NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( performBurn:) object: nil] autorelease];
+			t.name = NSLocalizedString( @"Burning...", nil);
+			[[ThreadsManager defaultManager] addThread: t];
+			[t start];
+			
+//			[NSThread detachNewThreadSelector:@selector(performBurn:) toTarget:self withObject:nil];
 		}
 		else
 			NSBeginAlertSheet( NSLocalizedString( @"Burn Warning", nil) , NSLocalizedString( @"OK", nil), nil, nil, nil, nil, nil, nil, nil, NSLocalizedString( @"Please add CD name", nil));

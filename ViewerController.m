@@ -60,6 +60,7 @@
 #import "PaletteController.h"
 #import "ROIManagerController.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import "ThreadsManager.h"
 
 #import "ITKBrushROIFilter.h"
 #import "OsiriX/DCMAbstractSyntaxUID.h"
@@ -6651,7 +6652,13 @@ static ViewerController *draggedController = nil;
 	
 	stopThreadLoadImage = NO;
 //	[self loadImageData: self];
-	[NSThread detachNewThreadSelector: @selector(loadImageData:) toTarget: self withObject: nil];
+	
+	NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( loadImageData:) object: nil] autorelease];
+	t.name = NSLocalizedString( @"Loading images...", nil);
+	[[ThreadsManager defaultManager] addThread: t];
+	[t start];
+	
+//	[NSThread detachNewThreadSelector: @selector(loadImageData:) toTarget: self withObject: nil];
 	[self setWindowTitle:self];
 }
 
