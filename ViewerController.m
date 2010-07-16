@@ -9197,7 +9197,7 @@ static float oldsetww, oldsetwl;
 							[theCell setEnabled:YES];
 							if( [[theCell stringValue] isEqualToString:@""] == YES) [theCell setStringValue:@"0"];
 							[theCell setAlignment:NSCenterTextAlignment];
-							[[convMatrix cellAtRow:y column:x] setIntValue: [[array objectAtIndex:inc++] longValue]];
+							[[convMatrix cellAtRow:x column:y] setIntValue: [[array objectAtIndex:inc++] longValue]];
 						}
 					}
 				}
@@ -9214,7 +9214,7 @@ static float oldsetww, oldsetwl;
 						[theCell setEnabled:YES];
 						if( [[theCell stringValue] isEqualToString:@""] == YES) [theCell setStringValue:@"0"];
 						[theCell setAlignment:NSCenterTextAlignment];
-						[[convMatrix cellAtRow:y column:x] setIntValue: [[array objectAtIndex:inc++] longValue]];
+						[[convMatrix cellAtRow:x column:y] setIntValue: [[array objectAtIndex:inc++] longValue]];
 					}
 				}
 			break;
