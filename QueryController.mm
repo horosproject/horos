@@ -2464,6 +2464,10 @@ extern "C"
 		{
 			DCMTKQueryNode *object = [d objectForKey: @"query"];
 			
+			NSString *status = [NSString stringWithFormat: NSLocalizedString( @"%d studies - %@", nil), [array count], [object name]];
+			
+			[NSThread currentThread].status = [status stringByReplacingOccurrencesOfString: @"^" withString: @" "];
+			
 			FILE * pFile = fopen ("/tmp/kill_all_storescu", "r");
 			if( pFile)
 				fclose (pFile);
@@ -2482,7 +2486,12 @@ extern "C"
 			
 			[NSThread currentThread].progress = (float) i++ / (float) [moveArray count];
 			if( [NSThread currentThread].isCancelled)
+			{
+				[[NSFileManager defaultManager] createFileAtPath: @"/tmp/kill_all_storescu" contents: [NSData data] attributes: nil];
+				[NSThread sleepForTimeInterval: 3];
+				unlink( "/tmp/kill_all_storescu");
 				break;
+			}
 		}
 		
 		[NSThread sleepForTimeInterval: 0.5];	// To allow errorMessage on the main thread...

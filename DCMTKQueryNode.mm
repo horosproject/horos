@@ -677,9 +677,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	return [NSString stringWithFormat: @"&useOrig=true"];
 }
 
-- (void) WADODownload: (NSArray*) urlToDownload
+- (void) WADODownload: (NSDictionary*) dict
 {
-	[urlToDownload retain];
+	[dict retain];
 	
 	@synchronized( self)
 	{
@@ -690,6 +690,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	@try 
 	{
+		NSArray *urlToDownload = [dict valueForKey: @"URLs"];
+		
 		for( NSURL *url in urlToDownload)
 		{
 			NSError *error = nil;
@@ -716,6 +718,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
 				break;
+			
+			if( [[dict valueForKey: @"mainThread"] isCancelled])
+				break;
 		}
 	}
 	@catch (NSException * e) 
@@ -725,7 +730,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	[pool release];
 	
-	[urlToDownload release];
+	[dict release];
 	
 	WADOThreads--;
 }
@@ -822,7 +827,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				if( range.length > 0)
 				{
 					WADOThreads++;
-					[NSThread detachNewThreadSelector: @selector( WADODownload:) toTarget: self withObject: [urlToDownload subarrayWithRange: range]];
+					[NSThread detachNewThreadSelector: @selector( WADODownload:) toTarget: self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [urlToDownload subarrayWithRange: range], @"URLs", [NSThread currentThread], @"mainThread", nil]];
 				}
 				
 				range.location += range.length;

@@ -18,6 +18,7 @@
 #import "DicomFile.h"
 #import "Notifications.h"
 #import "MutableArrayCategory.h"
+#import "NSThread+N2.h"
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
@@ -1554,9 +1555,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			
 			[self updateLogEntry: userInfo];
 			
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMSendStatusNotification object:self userInfo:userInfo];
-//			[self performSelectorOnMainThread:@selector( sendStatusNotification:) withObject:userInfo waitUntilDone:NO];
+			if( [[userInfo objectForKey: @"SendTotal"] floatValue] >= 1)
+				[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
 		}
 		
 		/* tear down association, i.e. terminate network connection to SCP */
@@ -1744,8 +1744,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		
 		[self updateLogEntry: userInfo];
 		
+		if( [[userInfo objectForKey: @"SendTotal"] floatValue] >= 1)
+			[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
+		
 //		[self sendStatusNotification: userInfo];
-		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMSendStatusNotification object:self userInfo:userInfo];
+//		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMSendStatusNotification object:self userInfo:userInfo];
 	}
 
 	[paths release];

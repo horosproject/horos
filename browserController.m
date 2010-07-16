@@ -2134,7 +2134,7 @@ static NSConditionLock *threadLock = nil;
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"ShowErrorMessagesForAutorouting"];
 }
 
-- (void) executeSend :(NSArray*) samePatientArray server:(NSDictionary*) server dictionary: (NSDictionary*) dict
+- (void) executeSend: (NSArray*) samePatientArray server:(NSDictionary*) server dictionary: (NSDictionary*) dict
 {
 	if( [samePatientArray count] == 0) return;
 	

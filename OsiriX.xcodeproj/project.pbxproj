@@ -2062,7 +2062,7 @@
 		BFBF40CC09B6828D00545F5E /* dimecho.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D1E09B6828600545F5E /* dimecho.cc */; };
 		BFBF40CD09B6828D00545F5E /* dimfind.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D1F09B6828600545F5E /* dimfind.cc */; };
 		BFBF40CE09B6828D00545F5E /* dimget.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2009B6828600545F5E /* dimget.mm */; };
-		BFBF40CF09B6828D00545F5E /* dimmove.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2109B6828600545F5E /* dimmove.cc */; };
+		BFBF40CF09B6828D00545F5E /* dimmove.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2109B6828600545F5E /* dimmove.mm */; };
 		BFBF40D009B6828D00545F5E /* dimse.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2209B6828600545F5E /* dimse.cc */; };
 		BFBF40D109B6828D00545F5E /* dimse.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D2309B6828600545F5E /* dimse.h */; };
 		BFBF40D209B6828D00545F5E /* dimstore.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2409B6828600545F5E /* dimstore.cc */; };
@@ -7687,7 +7687,7 @@
 		CEFA94A510A7444D00F9512D /* dimdump.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D1D09B6828600545F5E /* dimdump.cc */; };
 		CEFA94A610A7444D00F9512D /* dimecho.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D1E09B6828600545F5E /* dimecho.cc */; };
 		CEFA94A710A7444D00F9512D /* dimfind.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D1F09B6828600545F5E /* dimfind.cc */; };
-		CEFA94A910A7444D00F9512D /* dimmove.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2109B6828600545F5E /* dimmove.cc */; };
+		CEFA94A910A7444D00F9512D /* dimmove.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2109B6828600545F5E /* dimmove.mm */; };
 		CEFA94AA10A7444D00F9512D /* dimse.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2209B6828600545F5E /* dimse.cc */; };
 		CEFA94AB10A7444D00F9512D /* dimse.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D2309B6828600545F5E /* dimse.h */; };
 		CEFA94AC10A7444D00F9512D /* dimstore.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D2409B6828600545F5E /* dimstore.cc */; };
@@ -9602,7 +9602,7 @@
 		BFBF3D1E09B6828600545F5E /* dimecho.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dimecho.cc; sourceTree = "<group>"; };
 		BFBF3D1F09B6828600545F5E /* dimfind.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dimfind.cc; sourceTree = "<group>"; };
 		BFBF3D2009B6828600545F5E /* dimget.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dimget.mm; sourceTree = "<group>"; };
-		BFBF3D2109B6828600545F5E /* dimmove.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dimmove.cc; sourceTree = "<group>"; };
+		BFBF3D2109B6828600545F5E /* dimmove.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dimmove.mm; sourceTree = "<group>"; };
 		BFBF3D2209B6828600545F5E /* dimse.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dimse.cc; sourceTree = "<group>"; };
 		BFBF3D2309B6828600545F5E /* dimse.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dimse.h; sourceTree = "<group>"; };
 		BFBF3D2409B6828600545F5E /* dimstore.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dimstore.cc; sourceTree = "<group>"; };
@@ -14413,7 +14413,7 @@
 				BFBF3D1E09B6828600545F5E /* dimecho.cc */,
 				BFBF3D1F09B6828600545F5E /* dimfind.cc */,
 				BFBF3D2009B6828600545F5E /* dimget.mm */,
-				BFBF3D2109B6828600545F5E /* dimmove.cc */,
+				BFBF3D2109B6828600545F5E /* dimmove.mm */,
 				BFBF3D2209B6828600545F5E /* dimse.cc */,
 				BFBF3D2309B6828600545F5E /* dimse.h */,
 				BFBF3D2409B6828600545F5E /* dimstore.cc */,
@@ -23108,7 +23108,7 @@
 				BFBF40CC09B6828D00545F5E /* dimecho.cc in Sources */,
 				BFBF40CD09B6828D00545F5E /* dimfind.cc in Sources */,
 				BFBF40CE09B6828D00545F5E /* dimget.mm in Sources */,
-				BFBF40CF09B6828D00545F5E /* dimmove.cc in Sources */,
+				BFBF40CF09B6828D00545F5E /* dimmove.mm in Sources */,
 				BFBF40D009B6828D00545F5E /* dimse.cc in Sources */,
 				BFBF40D209B6828D00545F5E /* dimstore.cc in Sources */,
 				BFBF40D309B6828D00545F5E /* diutil.cc in Sources */,
@@ -24616,7 +24616,7 @@
 				CEFA94A510A7444D00F9512D /* dimdump.cc in Sources */,
 				CEFA94A610A7444D00F9512D /* dimecho.cc in Sources */,
 				CEFA94A710A7444D00F9512D /* dimfind.cc in Sources */,
-				CEFA94A910A7444D00F9512D /* dimmove.cc in Sources */,
+				CEFA94A910A7444D00F9512D /* dimmove.mm in Sources */,
 				CEFA94AA10A7444D00F9512D /* dimse.cc in Sources */,
 				CEFA94AC10A7444D00F9512D /* dimstore.cc in Sources */,
 				CEFA94AD10A7444D00F9512D /* diutil.cc in Sources */,

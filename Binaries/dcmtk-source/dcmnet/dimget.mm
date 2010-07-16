@@ -136,6 +136,9 @@ DIMSE_getUser(
 	
     while (cond == EC_Normal && status == STATUS_Pending) {
 
+		if( [NSThread currentThread].isCancelled)
+			return EC_Normal;
+		
         /* if user wants, multiplex between net/subAssoc 
          * and responses over main assoc.
          */

@@ -43,8 +43,9 @@
 	[_progressIndicator setMaxValue:1];
 	
 	_cancelButton = [[NSButton alloc] initWithFrame:NSZeroRect]; // TODO: the button is ugly, make it look better
-	[_cancelButton.cell release];
-	_cancelButton.cell = [[N2HighlightImageButtonCell alloc] init];
+//	[_cancelButton.cell release]; <- BUG BUG ??????????? setCell WILL release the previous cell during next line
+	
+	[_cancelButton setCell: [[[N2HighlightImageButtonCell alloc] init] autorelease]];
 	[_cancelButton.cell setImage:[NSImage imageNamed:@"NSStopProgressFreestandingTemplate"]];
 	_cancelButton.target = self;
 	_cancelButton.action = @selector(cancelThreadAction:);
@@ -99,7 +100,9 @@
 	[super observeValueForKeyPath:keyPath ofObject:obj change:change context:context];
 }
 
--(void)cancelThreadAction:(id)source {
+-(void)cancelThreadAction:(id)source
+{
+	self.thread.status = NSLocalizedString( @"Cancelling...", nil);
 	[self.thread setIsCancelled:YES];
 }
 
@@ -112,7 +115,7 @@
 	
 	NSRect nameFrame = NSMakeRect(frame.origin.x+3, frame.origin.y, frame.size.width-23, frame.size.height);
 	NSString* name = self.thread.name;
-	if (!name) name = @"Untitled Thread";
+	if (!name) name = NSLocalizedString( @"Untitled Thread", nil);
 	[name drawWithRect:nameFrame options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes];
 	
 	NSRect statusFrame = [self statusFrame];

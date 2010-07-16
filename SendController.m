@@ -105,8 +105,6 @@ static volatile int sendControllerObjects = 0;
 		_lock = [[NSRecursiveLock alloc] init];
 		[_lock  lock];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:OsirixDCMSendStatusNotification object:nil];
-		
 		[[NSNotificationCenter defaultCenter] addObserver: self
 												selector: @selector( updateDestinationPopup:)
 												name: OsirixServerArrayChangedNotification
@@ -372,13 +370,6 @@ static volatile int sendControllerObjects = 0;
 	
 	[storeSCU release];
 	storeSCU = nil;
-}
-
-- (void) setSendMessage:(NSNotification *)note
-{
-	NSDictionary *info = [note userInfo];
-	
-	[NSThread currentThread].progress = [[info objectForKey: @"NumberSent"] floatValue] / [[info objectForKey: @"SendTotal"] floatValue];
 }
 
 - (void) sendDICOMFilesOffis:(NSArray *) tempObjectsToSend 
