@@ -174,8 +174,11 @@ DIMSE_moveUser(
 
     /* receive responses */
 
-    while (cond == EC_Normal && status == STATUS_Pending) {
-
+    while (cond == EC_Normal && status == STATUS_Pending)
+	{
+		if( [NSThread currentThread].isCancelled)
+			return EC_Normal;
+			
         /* if user wants, multiplex between net/subAssoc 
          * and move responses over main assoc.
          */
