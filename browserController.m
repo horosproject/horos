@@ -3719,6 +3719,7 @@ static NSConditionLock *threadLock = nil;
 	
 	copyThread = YES;
 	
+	int t = 0;
 	for( NSString *srcPath in filesInput)
 	{
 		NSString	*dstPath;
@@ -3827,6 +3828,12 @@ static NSConditionLock *threadLock = nil;
 				
 				if( curFile == nil)
 					[[NSFileManager defaultManager]removeItemAtPath: dstPath error: nil];
+				
+				if( [NSThread currentThread].isCancelled)
+					break;
+				
+				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]-t];
+				[NSThread currentThread].progress = (float) t++ / [filesInput count];
 			}
 		}
 		@catch (NSException * e)
@@ -4017,6 +4024,7 @@ static NSConditionLock *threadLock = nil;
 		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: filesInput] autorelease];
 		t.name = NSLocalizedString( @"Copying files...", nil);
 		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]];
+		t.supportsCancel = YES;
 		[[ThreadsManager defaultManager] addThreadAndStart: t];
 	}
 	else
