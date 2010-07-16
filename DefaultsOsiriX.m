@@ -293,23 +293,27 @@ static NSHost *currentHost = nil;
 	}
 	{
 		short				vals[9] = {1, 2, 1, 0, 0, 0, -1, -2, -1};
-		[self addConvolutionFilter:3 :vals :@"Edge north" :convValues];
+		[self addConvolutionFilter:3 :vals :@"Emboss north" :convValues];
 	}
 	{
 		short				vals[9] = {1, 0, -1, 2, 0, -2, 1, 0, -1};
-		[self addConvolutionFilter:3 :vals :@"Edge west" :convValues];
+		[self addConvolutionFilter:3 :vals :@"Emboss west" :convValues];
 	}
 	{
 		short				vals[9] = {0, 1, 0, -1, 0, 1, 0, -1, 0};
-		[self addConvolutionFilter:3 :vals :@"Edge diagonal" :convValues];
+		[self addConvolutionFilter:3 :vals :@"Emboss diagonal" :convValues];
 	}
 	{
 		short				vals[9] = {-1, -1, -1, -1, 8, -1, -1, -1, -1};
 		[self addConvolutionFilter:3 :vals :@"Laplacian 8" :convValues];
 	}
 	{
+		short				vals[9] = {0, -1, 0, -1, 4, -1, 0, -1, 0};
+		[self addConvolutionFilter:3 :vals :@"Laplacian 4" :convValues];
+	}	
+	{
 		short				vals[9] = {-1, 0, -1, 0, 7, 0, -1, 0, -1};
-		[self addConvolutionFilter:3 :vals :@"Laplacian 7" :convValues];
+		[self addConvolutionFilter:3 :vals :@"Sharpen 3x3" :convValues];
 	}
 	{
 		short				vals[9] = {-1, 0, 0, 0, 0, 0, 0, 0, 1};
@@ -325,7 +329,7 @@ static NSHost *currentHost = nil;
 	}
 	{
 		short				vals[9] = {1, -2, 1, -2, 4, -2, 1, -2, 1};
-		[self addConvolutionFilter:3 :vals :@"Highpass 3x3" :convValues];
+		[self addConvolutionFilter:3 :vals :@"Edge 3x3" :convValues];
 	}
 	{
 		short				vals[25] = {0, -1, -1, -1, 0, -1, 2, -4, 2, -1, -1, -4, 13, -4, -1, -1, 2, -4, 2, -1, 0, -1, -1, -1, 0};
@@ -342,10 +346,6 @@ static NSHost *currentHost = nil;
 	{
 		short				vals[25] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 24, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 		[self addConvolutionFilter:5 :vals :@"Laplacian" :convValues];
-	}
-	{
-		short				vals[9] = {-1, -1, -1, -1, 9, -1, -1, -1, -1};
-		[self addConvolutionFilter:3 :vals :@"Sharpen 3x3" :convValues];
 	}
 	{
 		short				vals[25] = {-1, -1, -1, -1, -1, -1, 2, 2, 2, -1, -1, 2, 8, 2, -1, -1, 2, 2, 2, -1, -1, -1, -1, -1, -1};
