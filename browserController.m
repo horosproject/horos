@@ -3720,14 +3720,13 @@ static NSConditionLock *threadLock = nil;
 	BOOL first = YES, studySelected = NO, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
 	NSArray *filesInput = [dict objectForKey: @"filesInput"];
 	
-	int t = 0;
 	for( int i = 0; i < [filesInput count]; i++)
 	{
 		@try
 		{
 			NSMutableArray *copiedFiles = [NSMutableArray array];
 			
-			#define COPYCHUNK 10
+			#define COPYCHUNK 20
 			
 			for( int t = 0; i < [filesInput count] && t < COPYCHUNK; i++, t++)
 			{
@@ -3740,8 +3739,8 @@ static NSConditionLock *threadLock = nil;
 				if( [NSThread currentThread].isCancelled)
 					break;
 			
-				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]-t];
-				[NSThread currentThread].progress = (float) t++ / [filesInput count];
+				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]-i];
+				[NSThread currentThread].progress = (float) i / [filesInput count];
 			}
 			
 			BOOL succeed = YES;
@@ -3759,7 +3758,7 @@ static NSConditionLock *threadLock = nil;
 												toDatabase: [BrowserController currentBrowser]
 												 onlyDICOM: onlyDICOM 
 										  notifyAddedFiles: YES
-									   parseExistingObject: YES
+									   parseExistingObject: NO
 												  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
 										 generatedByOsiriX: NO];
 			else
