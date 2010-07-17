@@ -74,11 +74,12 @@
 - (void)dealloc
 {
 	[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( setCLUTtoVRViewHighRes:) object: nil];
-	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
-	if(histogram) free(histogram);
 	[curves release];
+	curves = nil; // IMPORTANT - used in setCLUTtoVRViewHighRes to detect if the object was destroy
+	
+	if(histogram) free(histogram);
 	[pointColors release];
 	[selectedPointColor release];
 	[contextualMenu release];
@@ -2137,7 +2138,8 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 - (void)setCLUTtoVRViewHighRes;
 {
-	[self setCLUTtoVRView: NO];
+	if( curves)
+		[self setCLUTtoVRView: NO];
 }
 
 - (void)setCLUTtoVRView:(BOOL)lowRes;

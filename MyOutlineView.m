@@ -284,38 +284,7 @@
 		}
 		else
 		{
-			NSArray	*newImages = [[BrowserController currentBrowser] addFilesAndFolderToDatabase: fileArray];
-			
-			// Are we adding new files in a album?
-
-			//can't add to smart Album
-			if( [[[BrowserController currentBrowser] albumTable] selectedRow] > 0)
-			{
-				NSManagedObject *album = [[[BrowserController currentBrowser] albumArray] objectAtIndex: [[[BrowserController currentBrowser] albumTable] selectedRow]];
-				
-				if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
-				{
-					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
-					
-					for( NSManagedObject *object in newImages)
-					{
-						[studies addObject: [object valueForKeyPath:@"series.study"]];
-						
-						DicomStudy *std = [object valueForKeyPath:@"series.study"];
-						[std archiveAnnotationsAsDICOMSR];
-					}
-					
-					[[BrowserController currentBrowser] outlineViewRefresh];
-				}
-			}
-			
-			if( [newImages count] > 0)
-			{
-				NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
-					
-				[self selectRowIndexes: [NSIndexSet indexSetWithIndex: [self rowForItem: object]] byExtendingSelection: NO];
-				[self scrollRowToVisible: [self selectedRow]];
-			}
+			[[BrowserController currentBrowser] addFilesAndFolderToDatabase: fileArray];
 		}
 	}
 	

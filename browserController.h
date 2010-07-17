@@ -83,7 +83,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
     long                    COLUMN;
 	IBOutlet NSSplitView	*splitViewHorz, *splitViewVert;
     
-	BOOL					setDCMDone, mountedVolume, needDBRefresh, dontLoadSelectionSource;
+	BOOL					setDCMDone, needDBRefresh, dontLoadSelectionSource;
 	
 	NSMutableArray			*albumNoOfStudiesCache;
 	
@@ -248,14 +248,11 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) NSManagedObjectModel *userManagedObjectModel;
 @property(readonly) NSArray *matrixViewArray;
 @property(readonly) NSMatrix *oMatrix;
-@property(readonly) long COLUMN;
-@property(readonly) BOOL is2DViewer;
+@property(readonly) long COLUMN, currentBonjourService;
+@property(readonly) BOOL is2DViewer, isCurrentDatabaseBonjour;
 @property(readonly) MyOutlineView *databaseOutline;
 @property(readonly) NSTableView *albumTable;
-@property(readonly) BOOL isCurrentDatabaseBonjour;
-@property(readonly) NSString *currentDatabasePath;
-@property(readonly) NSString *localDatabasePath;
-@property(readonly) long currentBonjourService;
+@property(readonly) NSString *currentDatabasePath, *localDatabasePath, *documentsDirectory, *fixedDocumentsDirectory;
 
 @property(readonly) NSTableView* AtableView;
 @property(readonly) NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
@@ -265,9 +262,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property volatile BOOL bonjourDownloading;
 @property(readonly) NSBox *bonjourSourcesBox;
 @property(readonly) BonjourBrowser *bonjourBrowser;
-
-@property(readonly) NSString *documentsDirectory;
-@property(readonly) NSString *fixedDocumentsDirectory;
 @property(readonly) char *cfixedDocumentsDirectory, *cfixedIncomingDirectory;
 
 @property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail;
@@ -275,14 +269,11 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) NSPredicate *filterPredicate;
 @property(readonly) NSString *filterPredicateDescription;
 
-@property BOOL rtstructProgressBar;
+@property BOOL rtstructProgressBar, needDBRefresh;
 @property float rtstructProgressPercent;
-@property BOOL needDBRefresh, mountedVolume;
-@property NSTimeInterval lastSaved;
-@property(readonly) NSMutableArray* viewersListToReload;
-@property(readonly) NSMutableArray* viewersListToRebuild;
+@property NSTimeInterval lastSaved, databaseLastModification;
+@property(readonly) NSMutableArray *viewersListToReload, *viewersListToRebuild;
 @property(readonly) NSConditionLock* newFilesConditionLock;
-@property NSTimeInterval databaseLastModification;
 
 @property(readonly) PluginManagerController *pluginManagerController;
 
@@ -347,7 +338,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (long) saveDatabase:(NSString*) path;
 - (long) saveDatabase: (NSString*)path context: (NSManagedObjectContext*) context;
 - (void) addDICOMDIR:(NSString*) dicomdir :(NSMutableArray*) files;
-- (NSMutableArray*) copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput options: (NSDictionary*) options;
+- (void) copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput options: (NSDictionary*) options;
 - (ViewerController*) loadSeries :(NSManagedObject *)curFile :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages;
 - (void) loadNextPatient:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages;
 - (void) loadNextSeries:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages;
@@ -428,14 +419,14 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) regenerateAutoComments:(id) sender;
 - (DCMPix *)previewPix:(int)i;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray;
-- (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames;
-- (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames copied:(BOOL*) copied async:(BOOL) async addToAlbum:(NSManagedObject*) album select:(BOOL) select;
+- (void) addFilesAndFolderToDatabase:(NSArray*) filenames;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder;
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder;
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder;
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder generatedByOsiriX:(BOOL)generatedByOsiriX;
++(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX mountedVolume: (BOOL) mountedVolume;
 - (void) createDBContextualMenu;
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination;
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination showGUI: (BOOL) showGUI;

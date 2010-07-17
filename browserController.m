@@ -218,7 +218,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController, userManagedObjectContext, userManagedObjectModel;
-@synthesize needDBRefresh, mountedVolume, lastSaved, viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
+@synthesize needDBRefresh, lastSaved, viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
 @synthesize AtableView, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel, activityController;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
@@ -603,10 +603,15 @@ static NSConditionLock *threadLock = nil;
 #pragma mark-
 +(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder
 {
-	return [BrowserController addFiles: newFilesArray toContext: context toDatabase: browserController onlyDICOM: onlyDICOM  notifyAddedFiles: notifyAddedFiles parseExistingObject: parseExistingObject dbFolder:  dbFolder generatedByOsiriX:  NO];
+	return [BrowserController addFiles: newFilesArray toContext: context toDatabase: browserController onlyDICOM: onlyDICOM  notifyAddedFiles: notifyAddedFiles parseExistingObject: parseExistingObject dbFolder:  dbFolder generatedByOsiriX: NO mountedVolume: NO];
 }
 
 +(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX
+{
+	return [BrowserController addFiles: newFilesArray toContext: context toDatabase: browserController onlyDICOM: onlyDICOM  notifyAddedFiles: notifyAddedFiles parseExistingObject: parseExistingObject dbFolder:  dbFolder generatedByOsiriX:  generatedByOsiriX mountedVolume: NO];
+}
+
++(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX mountedVolume: (BOOL) mountedVolume
 {
 	NSDate *today = [NSDate date];
 	NSError *error = nil;
@@ -1113,9 +1118,9 @@ static NSConditionLock *threadLock = nil;
 								[image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
 								[image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
 								[image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
-								[image setValue:[NSNumber numberWithBool:browserController.mountedVolume] forKey:@"mountedVolume"];
-								if( browserController.mountedVolume)
-									[seriesTable setValue:[NSNumber numberWithBool:browserController.mountedVolume] forKey:@"mountedVolume"];
+								[image setValue:[NSNumber numberWithBool: mountedVolume] forKey:@"mountedVolume"];
+								if( mountedVolume)
+									[seriesTable setValue:[NSNumber numberWithBool:mountedVolume] forKey:@"mountedVolume"];
 								[image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
 								
 								if( generatedByOsiriX)
@@ -1632,12 +1637,7 @@ static NSConditionLock *threadLock = nil;
 	[newFilesConditionLock unlock];
 }
 
-- (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames copied:(BOOL*) copied
-{
-	return [self addFilesAndFolderToDatabase: filenames copied: copied async: NO addToAlbum: nil select: NO];
-}
-
-- (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames copied:(BOOL*) copied async:(BOOL) async addToAlbum:(NSManagedObject*) album select:(BOOL) select
+- (void) addFilesAndFolderToDatabase:(NSArray*) filenames
 {
     NSFileManager       *defaultManager = [NSFileManager defaultManager];
 	NSMutableArray		*filesArray;
@@ -1730,46 +1730,7 @@ static NSConditionLock *threadLock = nil;
 		}
 	}
 	
-	#ifndef OSIRIX_LIGHT
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
-	{
-		BOOL succeed = [self testFiles: filesArray];
-		
-		if( succeed == NO)
-		{
-			[filesArray removeAllObjects];
-			
-			NSRunCriticalAlertPanel( NSLocalizedString(@"Corrupted Files",nil), NSLocalizedString(@"These files are corrupted: they cannot be imported in OsiriX.",nil), NSLocalizedString( @"OK",nil), nil, nil);
-		}
-	}
-	#endif
-	
-	NSArray	*newImages = nil;
-	
-	NSMutableArray *newfilesArray = [self copyFilesIntoDatabaseIfNeeded: filesArray options: nil];
-	
-	if( newfilesArray == filesArray)
-	{
-		if( copied) *copied = NO;
-	}
-	else
-	{
-		if( copied) *copied = YES;
-		filesArray = newfilesArray;
-		mountedVolume = NO;
-		
-		newImages = [self addFilesToDatabase:filesArray];
-	}
-	
-	[self checkIncomingNow: self];
-	[self outlineViewRefresh];
-	
-	return newImages;
-}
-
-- (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames
-{
-	return [self addFilesAndFolderToDatabase: filenames copied: nil];
+	[self copyFilesIntoDatabaseIfNeeded: filesArray options: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: YES], @"async", [NSNumber numberWithBool: YES], @"addToAlbum",  [NSNumber numberWithBool: YES], @"selectStudy", nil]];
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -2459,6 +2420,11 @@ static NSConditionLock *threadLock = nil;
 			DicomAlbum *album = nil;
 			
 			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+			album.name = NSLocalizedString( @"Just Added", nil);
+			album.predicateString = @"(date >= CAST($LASTHOUR, 'NSDate'))";
+			album.smartAlbum = [NSNumber numberWithBool: YES];
+			
+			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 			album.name = NSLocalizedString( @"Today MR", nil);
 			album.predicateString = @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($TODAY, 'NSDate'))";
 			album.smartAlbum = [NSNumber numberWithBool: YES];
@@ -2570,7 +2536,9 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	// THEN, LOAD THEM
-	return [self addFilesAndFolderToDatabase: localFiles];
+	[self addFilesAndFolderToDatabase: localFiles];
+	
+	return localFiles;
 }
 
 - (void)addURLToDatabaseEnd: (id)sender
@@ -2623,37 +2591,7 @@ static NSConditionLock *threadLock = nil;
 		
 		[filenamesWithoutPlugins removeObjectsInArray: pluginsArray];
 		
-		NSArray	*newImages = [self addFilesAndFolderToDatabase: filenamesWithoutPlugins];
-		
-		// Are we adding new files in a album?
-		
-		//can't add to smart Album
-		if( albumTable.selectedRow > 0)
-		{
-			NSManagedObject *album = [self.albumArray objectAtIndex: albumTable.selectedRow];
-			
-			if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
-			{
-				NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
-				
-				for( NSManagedObject *object in newImages)
-				{
-					[studies addObject: [object valueForKeyPath:@"series.study"]];
-					[[object valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
-				}
-				
-				needDBRefresh = YES;
-				[self outlineViewRefresh];
-			}
-		}
-		
-		if( [newImages count] > 0)
-		{
-			NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
-			
-			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: object]] byExtendingSelection: NO];
-			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-		}
+		[self addFilesAndFolderToDatabase: filenamesWithoutPlugins];
 		
 		if( [pluginsArray count] > 0)
 		{
@@ -3519,14 +3457,16 @@ static NSConditionLock *threadLock = nil;
 		
 		if( i != [bonjourServicesList selectedRow])
 		{
-			if( i == -1) NSLog( @"**** NOT FOUND??? WHY? we added it... no?");
+			if( i == -1 && DICOMDIRCDMODE != YES) NSLog( @"**** NOT FOUND??? WHY? we added it... no?");
 			dontLoadSelectionSource = YES;
 			[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
 			dontLoadSelectionSource = NO;
 		}
 	}
 	
-	if( DBVersion == nil) 
+	if( DICOMDIRCDMODE)
+		DBVersion = nil;
+	else if( DBVersion == nil) 
 		DBVersion = [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"];
 	
 	NSLog(@"Opening DB: %@ Version: %@ DB Folder: %@", path, DBVersion, DBFolderLocation);
@@ -3704,7 +3644,6 @@ static NSConditionLock *threadLock = nil;
 
 - (void) selectThisStudy: (id)study
 {
-	NSLog( @"%@", [study description]);
 	[self outlineViewRefresh];
 	
 	[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: study]] byExtendingSelection: NO];
@@ -3732,10 +3671,19 @@ static NSConditionLock *threadLock = nil;
 			{
 				NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
 				
-				dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
-				if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil])
-					[copiedFiles addObject: dstPath];
-					
+				if( [[dict objectForKey: @"copyFiles"] boolValue])
+				{
+					dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+				
+					if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil])
+						[copiedFiles addObject: dstPath];
+				}
+				else
+				{
+					if( [[NSFileManager defaultManager] fileExistsAtPath: srcPath])
+						[copiedFiles addObject: srcPath];
+				}
+				
 				if( [NSThread currentThread].isCancelled)
 					break;
 			
@@ -3753,6 +3701,7 @@ static NSConditionLock *threadLock = nil;
 			NSArray *objects = nil;
 			
 			if( succeed)
+			{
 				objects = 	   [BrowserController addFiles: copiedFiles
 												 toContext: [[BrowserController currentBrowser] managedObjectContext]
 												toDatabase: [BrowserController currentBrowser]
@@ -3760,7 +3709,9 @@ static NSConditionLock *threadLock = nil;
 										  notifyAddedFiles: YES
 									   parseExistingObject: NO
 												  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
-										 generatedByOsiriX: NO];
+										 generatedByOsiriX: NO
+										     mountedVolume: [[dict objectForKey: @"mountedVolume"] boolValue]];
+			}
 			else
 			{
 				for( NSString * f in copiedFiles)
@@ -3776,6 +3727,22 @@ static NSConditionLock *threadLock = nil;
 						
 					studySelected = YES;
 				}
+				
+				if( albumTable.selectedRow > 0 && [[dict objectForKey: @"addToAlbum"] boolValue])
+				{
+					NSManagedObject *album = [self.albumArray objectAtIndex: albumTable.selectedRow];
+					
+					if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
+					{
+						NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
+						
+						for( NSManagedObject *object in objects)
+						{
+							[studies addObject: [object valueForKeyPath:@"series.study"]];
+							[[object valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
+						}
+					}
+				}
 			}
 			
 			if( [NSThread currentThread].isCancelled)
@@ -3790,7 +3757,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[autoroutingInProgress unlock];
 	
-	if( [[dict objectForKey: @"ejectCDDVD"] boolValue])
+	if( [[dict objectForKey: @"ejectCDDVD"] boolValue] == YES && [[dict objectForKey: @"copyFiles"] boolValue] == YES)
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EJECTCDDVD"])
 			[[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath: [filesInput objectAtIndex:0]];
@@ -3876,11 +3843,10 @@ static NSConditionLock *threadLock = nil;
 	[splash release];
 }
 
-- (NSMutableArray*) copyFilesIntoDatabaseIfNeeded: (NSMutableArray*) filesInput options: (NSDictionary*) options
+- (void) copyFilesIntoDatabaseIfNeeded: (NSMutableArray*) filesInput options: (NSDictionary*) options
 {
-	if( isCurrentDatabaseBonjour) return nil;
-	if( [filesInput count] == 0) return filesInput;
-	if( DICOMDIRCDMODE) return filesInput;
+	if( isCurrentDatabaseBonjour) return;
+	if( [filesInput count] == 0) return;
 	
 	BOOL COPYDATABASE = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"];
 	int COPYDATABASEMODE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASEMODE"];
@@ -3901,56 +3867,61 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	if( [newList count] == 0)
-		return filesInput;
+		return;
 	
-	BOOL copyFiles = YES;
+	BOOL copyFiles = NO;
 	
-	switch (COPYDATABASEMODE)
+	if( COPYDATABASE)
 	{
-		case always:
-			break;
-			
-		case notMainDrive:
+		copyFiles = YES;
+		
+		switch (COPYDATABASEMODE)
 		{
-			NSArray *pathFilesComponent = [[filesInput objectAtIndex:0] pathComponents];
-			
-			if( [[[pathFilesComponent objectAtIndex: 1] uppercaseString] isEqualToString:@"VOLUMES"])
-				NSLog(@"not the main drive!");
-			else
-				copyFiles = NO;
-		}
-		break;
-			
-		case cdOnly:
-		{
-			NSLog( @"%@", [filesInput objectAtIndex:0]);
-			
-			if( [BrowserController isItCD: [filesInput objectAtIndex:0]] == NO)
-				copyFiles = NO;
-		}
-		break;
-			
-		case ask:			
-			switch (NSRunInformationalAlertPanel(
-												 NSLocalizedString(@"OsiriX Database",@"OsiriX Database"),
-												 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?",@"Should I copy these files in OsiriX Database folder, or only copy links to these files?"),
-												 NSLocalizedString(@"Copy Files",@"Copy Files"),
-												 NSLocalizedString(@"Cancel",@"Cancel"),
-												 NSLocalizedString(@"Copy Links",@"Copy Links")))
-												{
-				case NSAlertDefaultReturn:
+			case always:
 				break;
 				
-				case NSAlertOtherReturn:
+			case notMainDrive:
+			{
+				NSArray *pathFilesComponent = [[filesInput objectAtIndex:0] pathComponents];
+				
+				if( [[[pathFilesComponent objectAtIndex: 1] uppercaseString] isEqualToString:@"VOLUMES"])
+					NSLog(@"not the main drive!");
+				else
 					copyFiles = NO;
-				break;
-				
-				case NSAlertAlternateReturn:
-					[filesInput removeAllObjects];		// zero the array before it is returned.
-					return filesInput;
-				break;
 			}
-		break;
+			break;
+				
+			case cdOnly:
+			{
+				NSLog( @"%@", [filesInput objectAtIndex:0]);
+				
+				if( [BrowserController isItCD: [filesInput objectAtIndex:0]] == NO)
+					copyFiles = NO;
+			}
+			break;
+				
+			case ask:			
+				switch (NSRunInformationalAlertPanel(
+													 NSLocalizedString(@"OsiriX Database",@"OsiriX Database"),
+													 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?",@"Should I copy these files in OsiriX Database folder, or only copy links to these files?"),
+													 NSLocalizedString(@"Copy Files",@"Copy Files"),
+													 NSLocalizedString(@"Cancel",@"Cancel"),
+													 NSLocalizedString(@"Copy Links",@"Copy Links")))
+													{
+					case NSAlertDefaultReturn:
+					break;
+					
+					case NSAlertOtherReturn:
+						copyFiles = NO;
+					break;
+					
+					case NSAlertAlternateReturn:
+						[filesInput removeAllObjects];		// zero the array before it is returned.
+						return;
+					break;
+				}
+			break;
+		}
 	}
 	
 	NSMutableArray  *filesOutput = [NSMutableArray array];
@@ -3963,11 +3934,11 @@ static NSConditionLock *threadLock = nil;
 		
 		if( [[options objectForKey: @"async"] boolValue])
 		{
-			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", nil];
+			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", [NSNumber numberWithBool: YES], @"copyFiles", nil];
 			[dict addEntriesFromDictionary: options];
 			
 			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: dict] autorelease];
-			t.name = NSLocalizedString( @"Copying files...", nil);
+			t.name = NSLocalizedString( @"Copying and indexing files...", nil);
 			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]];
 			t.supportsCancel = YES;
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
@@ -4033,9 +4004,21 @@ static NSConditionLock *threadLock = nil;
 			[splash release];
 		}
 	}
-	else filesOutput = filesInput;
+	else
+	{
+		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", [NSNumber numberWithBool: NO], @"copyFiles", nil];
+		[dict addEntriesFromDictionary: options];
+		
+		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: dict] autorelease];
+		t.name = NSLocalizedString( @"Indexing files...", nil);
+		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]];
+		t.supportsCancel = YES;
+		[[ThreadsManager defaultManager] addThreadAndStart: t];
+			
+		filesOutput = filesInput;
+	}
 	
-	return filesOutput;
+	return;
 }
 
 - (IBAction) endReBuildDatabase:(id) sender
@@ -13279,7 +13262,6 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		previousBonjourIndex = -1;
 		lastSaved = 0;
-		mountedVolume = NO;
 		toolbarSearchItem = nil;
 		managedObjectModel = nil;
 		managedObjectContext = nil;
@@ -13337,10 +13319,15 @@ static NSArray*	openSubSeriesArray = nil;
 			
 			[self loadDatabase: currentDatabasePath];
 			
-			NSMutableArray *filesArray = [[NSMutableArray alloc] initWithCapacity:0];
+			BOOL COPYDATABASE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASE"];
+	
+			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"COPYDATABASE"];
+			
+			NSMutableArray *filesArray = [NSMutableArray array];
 			[self addDICOMDIR:dicomdir: filesArray];
 			[self addFilesAndFolderToDatabase: filesArray];
-			[filesArray release];
+			
+			[[NSUserDefaults standardUserDefaults] setBool: COPYDATABASE forKey: @"COPYDATABASE"];
 		}
 		else  if ([[NSFileManager defaultManager] fileExistsAtPath: dicomdirPath])
 		{
@@ -13352,10 +13339,9 @@ static NSArray*	openSubSeriesArray = nil;
 			
 			[self loadDatabase: currentDatabasePath];
 			
-			NSMutableArray *filesArray = [[NSMutableArray alloc] initWithCapacity:0];
+			NSMutableArray *filesArray = [NSMutableArray array];
 			[self addDICOMDIR: [NSString stringWithContentsOfFile: dicomdirPath] :filesArray];
 			[self addFilesAndFolderToDatabase: filesArray];
-			[filesArray release];
 		}
 		else 
 			[self loadDatabase: currentDatabasePath];
@@ -14888,25 +14874,7 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				[self autoCleanDatabaseFreeSpace: self];
 				
-				NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded: filesArray options: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: YES], @"async", [NSNumber numberWithBool: YES], @"selectStudy", [NSNumber numberWithBool: YES], @"onlyDICOM", [NSNumber numberWithBool: YES], @"ejectCDDVD", [NSNumber numberWithBool: YES], @"mountedVolume", nil]];
-				
-//				if( newfilesArray == filesArray)
-//				{
-//					mountedVolume = YES;
-//					NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
-//					mountedVolume = NO;
-//					
-//					[self saveDatabase: nil];
-//					[self outlineViewRefresh];
-//					
-//					if( [newImages count] > 0)
-//					{
-//						NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
-//						
-//						[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: object]] byExtendingSelection: NO];
-//						[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-//					}
-//				}
+				[self copyFilesIntoDatabaseIfNeeded: filesArray options: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: YES], @"addToAlbum", [NSNumber numberWithBool: YES], @"async", [NSNumber numberWithBool: YES], @"selectStudy", [NSNumber numberWithBool: YES], @"onlyDICOM", [NSNumber numberWithBool: YES], @"ejectCDDVD", [NSNumber numberWithBool: YES], @"mountedVolume", nil]];
 				
 				[self autoCleanDatabaseFreeSpace: self];
 			}
@@ -17731,34 +17699,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[self delItem: sender];
 		
 		// Add the anonymized files
-		NSArray	*newImages = [self addFilesAndFolderToDatabase: [anonymizerController producedFiles]];
-		
-		// Are we adding new files in a album?
-		// can't add to smart Album
-		if( self.albumTable.selectedRow > 0)
-		{
-			NSManagedObject *album = [self.albumArray objectAtIndex: [[self albumTable] selectedRow]];
-			
-			if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
-			{
-				NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
-				
-				for( NSManagedObject *object in newImages)
-				{
-					[studies addObject: [object valueForKeyPath:@"series.study"]];
-				}
-				
-				[self outlineViewRefresh];
-			}
-		}
-		
-		if( [newImages count] > 0)
-		{
-			NSManagedObject *object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
-			
-			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: object]] byExtendingSelection: NO];
-			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-		}
+		[self addFilesAndFolderToDatabase: [anonymizerController producedFiles]];
 	}
 	
 	[anonymizerController release];*/
@@ -17794,33 +17735,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[[NSUserDefaults standardUserDefaults] setInteger: always forKey: @"COPYDATABASEMODE"];
 
 			// add new files
-			NSArray* newImageObjs = [self addFilesAndFolderToDatabase:anonymizedFiles.allValues];
+			[self addFilesAndFolderToDatabase:anonymizedFiles.allValues];
 			
 			[[NSUserDefaults standardUserDefaults] setBool: COPYDATABASE forKey: @"COPYDATABASE"];
 			[[NSUserDefaults standardUserDefaults] setInteger: COPYDATABASEMODE forKey: @"COPYDATABASEMODE"];
-			
-			// if this happened in an album then add new images to that album
-			if (self.albumTable.selectedRow > 0)
-			{
-				NSManagedObject* album = [self.albumArray objectAtIndex:[[self albumTable] selectedRow]];
-				if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
-				{
-					NSMutableSet* studies = [album mutableSetValueForKey: @"studies"];
-					for (DicomImage* image in newImageObjs)
-					{
-						[studies addObject: [image valueForKeyPath:@"series.study"]];
-						[[image valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
-					}
-					[self outlineViewRefresh];
-				}
-			}
-			
-			if (newImageObjs.count > 0)
-			{
-				DicomStudy* study = [[newImageObjs objectAtIndex:0] valueForKeyPath:@"series.study"];
-				[databaseOutline selectRowIndexes:[NSIndexSet indexSetWithIndex:[databaseOutline rowForItem:study]] byExtendingSelection:NO];
-				[databaseOutline scrollRowToVisible:[databaseOutline selectedRow]];
-			}
 		}
 		break;
 	}
