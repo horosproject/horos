@@ -3711,7 +3711,7 @@ static NSConditionLock *threadLock = nil;
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
-- (void) copyFilesThread: (NSArray*) filesInput
+- (void) copyFilesThread: (NSDictionary*) dict
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL studySelected = NO;
@@ -3719,6 +3719,9 @@ static NSConditionLock *threadLock = nil;
 	[autoroutingInProgress lock];
 	
 	BOOL first = YES;
+	
+	NSArray *filesInput = [dict objectForKey: @"filesInput"];
+	BOOL onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
 	
 	int t = 0;
 	for( int i = 0; i < [filesInput count]; i++)
@@ -3738,7 +3741,6 @@ static NSConditionLock *threadLock = nil;
 					[copiedFiles addObject: dstPath];
 			}
 			
-			
 			BOOL succeed = YES;
 			
 			#ifndef OSIRIX_LIGHT
@@ -3752,7 +3754,7 @@ static NSConditionLock *threadLock = nil;
 				objects = 	   [BrowserController addFiles: copiedFiles
 												 toContext: [[BrowserController currentBrowser] managedObjectContext]
 												toDatabase: [BrowserController currentBrowser]
-												 onlyDICOM: YES 
+												 onlyDICOM: onlyDICOM 
 										  notifyAddedFiles: YES
 									   parseExistingObject: YES
 												  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
@@ -3767,7 +3769,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				if( studySelected == NO)
 				{
-					[self performSelectorOnMainThread:@selector(selectThisStudy:) withObject: [[objects objectAtIndex: 0] valueForKeyPath: @"series.study"] waitUntilDone: NO];
+					[self performSelectorOnMainThread: @selector( selectThisStudy:) withObject: [[objects objectAtIndex: 0] valueForKeyPath: @"series.study"] waitUntilDone: NO];
 					studySelected = YES;
 				}
 			}
@@ -3787,7 +3789,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[autoroutingInProgress unlock];
 	
-	if( [filesInput count])
+	if( [[dict objectForKey: @"ejectCDDVD"] boolValue])
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"EJECTCDDVD"])
 			[[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath: [filesInput objectAtIndex:0]];
@@ -3959,7 +3961,9 @@ static NSConditionLock *threadLock = nil;
 	
 	if( async)
 	{
-		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: filesInput] autorelease];
+		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", YES, @"onlyDICOM", YES, @"ejectCDDVD", nil];
+		
+		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: dict] autorelease];
 		t.name = NSLocalizedString( @"Copying files...", nil);
 		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]];
 		t.supportsCancel = YES;
