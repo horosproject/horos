@@ -347,8 +347,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (long) saveDatabase:(NSString*) path;
 - (long) saveDatabase: (NSString*)path context: (NSManagedObjectContext*) context;
 - (void) addDICOMDIR:(NSString*) dicomdir :(NSMutableArray*) files;
-- (NSMutableArray*) copyFilesIntoDatabaseIfNeeded:(NSMutableArray*) filesInput;
-- (NSMutableArray*) copyFilesIntoDatabaseIfNeeded:(NSMutableArray*) filesInput async: (BOOL) async;
 - (NSMutableArray*) copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput options: (NSDictionary*) options;
 - (ViewerController*) loadSeries :(NSManagedObject *)curFile :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages;
 - (void) loadNextPatient:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages;

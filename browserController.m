@@ -1746,7 +1746,7 @@ static NSConditionLock *threadLock = nil;
 	
 	NSArray	*newImages = nil;
 	
-	NSMutableArray *newfilesArray = [self copyFilesIntoDatabaseIfNeeded: filesArray];
+	NSMutableArray *newfilesArray = [self copyFilesIntoDatabaseIfNeeded: filesArray options: nil];
 	
 	if( newfilesArray == filesArray)
 	{
@@ -3736,6 +3736,12 @@ static NSConditionLock *threadLock = nil;
 				dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
 				if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil])
 					[copiedFiles addObject: dstPath];
+					
+				if( [NSThread currentThread].isCancelled)
+					break;
+			
+				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]-t];
+				[NSThread currentThread].progress = (float) t++ / [filesInput count];
 			}
 			
 			BOOL succeed = YES;
@@ -3766,16 +3772,15 @@ static NSConditionLock *threadLock = nil;
 			{
 				if( studySelected == NO)
 				{
-					[self performSelectorOnMainThread: @selector( selectThisStudy:) withObject: [[objects objectAtIndex: 0] valueForKeyPath: @"series.study"] waitUntilDone: NO];
+					if( [[dict objectForKey: @"selectStudy"] boolValue])
+						[self performSelectorOnMainThread: @selector( selectThisStudy:) withObject: [[objects objectAtIndex: 0] valueForKeyPath: @"series.study"] waitUntilDone: NO];
+						
 					studySelected = YES;
 				}
 			}
 			
 			if( [NSThread currentThread].isCancelled)
 				break;
-			
-			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]-t];
-			[NSThread currentThread].progress = (float) t++ / [filesInput count];
 		}
 		@catch (NSException * e)
 		{
@@ -3788,16 +3793,11 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [[dict objectForKey: @"ejectCDDVD"] boolValue])
 	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"EJECTCDDVD"])
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EJECTCDDVD"])
 			[[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath: [filesInput objectAtIndex:0]];
 	}
 	
 	[pool release];
-}
-
-- (NSMutableArray*)copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput
-{
-	return [self copyFilesIntoDatabaseIfNeeded: filesInput async: NO];
 }
 
 - (IBAction) copyToDBFolder: (id) sender
@@ -3877,12 +3877,7 @@ static NSConditionLock *threadLock = nil;
 	[splash release];
 }
 
-- (NSMutableArray*)copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput async: (BOOL)async
-{
-	return [self copyFilesIntoDatabaseIfNeeded: filesInput options: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: async], @"async", nil]];
-}
-
-- (NSMutableArray*) copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput options: (NSDictionary*) options
+- (NSMutableArray*) copyFilesIntoDatabaseIfNeeded: (NSMutableArray*) filesInput options: (NSDictionary*) options
 {
 	if( isCurrentDatabaseBonjour) return nil;
 	if( [filesInput count] == 0) return filesInput;
@@ -3897,10 +3892,8 @@ static NSConditionLock *threadLock = nil;
 	if( [options objectForKey: @"COPYDATABASEMODE"])
 		COPYDATABASEMODE = [[options objectForKey: @"COPYDATABASEMODE"] integerValue];
 	
-	BOOL async = [[options objectForKey: @"async"] boolValue];
-	
 	NSMutableArray *newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
-	NSString *INpath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEFPATH];
+	NSString *INpath = [[self documentsDirectory] stringByAppendingPathComponent: DATABASEFPATH];
 	
 	for( NSString *file in filesInput)
 	{
@@ -3908,7 +3901,10 @@ static NSConditionLock *threadLock = nil;
 			[newList addObject: file];
 	}
 	
-	if( [newList count] == 0) return filesInput;
+	if( [newList count] == 0)
+		return filesInput;
+	
+	BOOL copyFiles = YES;
 	
 	switch (COPYDATABASEMODE)
 	{
@@ -3917,25 +3913,21 @@ static NSConditionLock *threadLock = nil;
 			
 		case notMainDrive:
 		{
-			NSArray			*pathFilesComponent = [[filesInput objectAtIndex:0] pathComponents];
+			NSArray *pathFilesComponent = [[filesInput objectAtIndex:0] pathComponents];
 			
-			if( [[[pathFilesComponent objectAtIndex: 1] uppercaseString] isEqualToString:@"VOLUMES"]) //
-			{
+			if( [[[pathFilesComponent objectAtIndex: 1] uppercaseString] isEqualToString:@"VOLUMES"])
 				NSLog(@"not the main drive!");
-			}
 			else
-			{
-				return filesInput;
-			}
+				copyFiles = NO;
 		}
 		break;
 			
 		case cdOnly:
 		{
-			
 			NSLog( @"%@", [filesInput objectAtIndex:0]);
 			
-			if( [BrowserController isItCD: [filesInput objectAtIndex:0]] == NO) return filesInput;
+			if( [BrowserController isItCD: [filesInput objectAtIndex:0]] == NO)
+				copyFiles = NO;
 		}
 		break;
 			
@@ -3948,103 +3940,101 @@ static NSConditionLock *threadLock = nil;
 												 NSLocalizedString(@"Copy Links",@"Copy Links")))
 												{
 				case NSAlertDefaultReturn:
-					break;
+				break;
+				
 				case NSAlertOtherReturn:
-					return filesInput;
-					break;
+					copyFiles = NO;
+				break;
+				
 				case NSAlertAlternateReturn:
 					[filesInput removeAllObjects];		// zero the array before it is returned.
 					return filesInput;
-					break;
+				break;
 			}
-			break;
+		break;
 	}
 	
-    NSString *OUTpath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEPATH];
+	NSMutableArray  *filesOutput = [NSMutableArray array];
 	
-	[AppController createNoIndexDirectoryIfNecessary: OUTpath];
-	
-    NSMutableArray  *filesOutput = [NSMutableArray array];
-	
-	if( async)
+	if( copyFiles)
 	{
-		NSNumber *onlyDICOM = [NSNumber numberWithBool: NO];
-		NSNumber *ejectCDDVD = [NSNumber numberWithBool: NO];
+		NSString *OUTpath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEPATH];
 		
-		if( [options objectForKey: @"onlyDICOM"])
-			onlyDICOM = [options objectForKey: @"onlyDICOM"];
+		[AppController createNoIndexDirectoryIfNecessary: OUTpath];
 		
-		if( [options objectForKey: @"ejectCDDVD"])
-			ejectCDDVD = [options objectForKey: @"ejectCDDVD"];
-		
-		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", onlyDICOM, @"onlyDICOM", ejectCDDVD, @"ejectCDDVD", nil];
-		
-		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: dict] autorelease];
-		t.name = NSLocalizedString( @"Copying files...", nil);
-		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]];
-		t.supportsCancel = YES;
-		[[ThreadsManager defaultManager] addThreadAndStart: t];
-	}
-	else
-	{
-		Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying into Database...", nil)];
-		
-		[splash showWindow:self];
-		[[splash progress] setMaxValue:[filesInput count]];
-		[splash setCancel: YES];
-		
-		for( NSString *srcPath in filesInput)
+		if( [[options objectForKey: @"async"] boolValue])
 		{
-			NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", nil];
+			[dict addEntriesFromDictionary: options];
 			
-			NSString	*extension = [srcPath pathExtension];
+			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: dict] autorelease];
+			t.name = NSLocalizedString( @"Copying files...", nil);
+			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]];
+			t.supportsCancel = YES;
+			[[ThreadsManager defaultManager] addThreadAndStart: t];
+		}
+		else
+		{
+			Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying into Database...", nil)];
 			
-			@try
+			[splash showWindow:self];
+			[[splash progress] setMaxValue:[filesInput count]];
+			[splash setCancel: YES];
+			
+			for( NSString *srcPath in filesInput)
 			{
-				if( [[[srcPath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
+				NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+				
+				NSString	*extension = [srcPath pathExtension];
+				
+				@try
 				{
-					DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
-					
-					if( curFile)
+					if( [[[srcPath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
 					{
-						[curFile release];
+						DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
 						
-						if( [extension isEqualToString:@""])
-							extension = [NSString stringWithString:@"dcm"]; 
-						
-						if( [extension length] > 4 || [extension length] < 3)
-							extension = [NSString stringWithString:@"dcm"];
-						
-						NSString *dstPath = [self getNewFileDatabasePath:extension];
-						
-						if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil] == YES)
+						if( curFile)
 						{
-							[filesOutput addObject:dstPath];
-						}
-						
-						if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
-						{
-							[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+							[curFile release];
+							
+							if( [extension isEqualToString:@""])
+								extension = [NSString stringWithString:@"dcm"]; 
+							
+							if( [extension length] > 4 || [extension length] < 3)
+								extension = [NSString stringWithString:@"dcm"];
+							
+							NSString *dstPath = [self getNewFileDatabasePath:extension];
+							
+							if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil] == YES)
+							{
+								[filesOutput addObject:dstPath];
+							}
+							
+							if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
+							{
+								[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+							}
 						}
 					}
 				}
+				@catch (NSException * e)
+				{
+					NSLog( @"copyFilesIntoDatabaseIfNeeded exception: %@", e);
+					[AppController printStackTrace: e];
+				}
+				[splash incrementBy:1];
+				
+				[pool release];
+				
+				if( [splash aborted])
+					break;
 			}
-			@catch (NSException * e)
-			{
-				NSLog( @"copyFilesIntoDatabaseIfNeeded exception: %@", e);
-				[AppController printStackTrace: e];
-			}
-			[splash incrementBy:1];
 			
-			[pool release];
-			
-			if( [splash aborted])
-				break;
+			[splash close];
+			[splash release];
 		}
-		
-		[splash close];
-		[splash release];
 	}
+	else filesOutput = filesInput;
 	
 	return filesOutput;
 }
@@ -14897,32 +14887,27 @@ static NSArray*	openSubSeriesArray = nil;
 					
 				}
 				
-				BOOL copyOnlyDICOM = [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"];
-				[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"onlyDICOM"];
-				
 				[self autoCleanDatabaseFreeSpace: self];
 				
-				NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded: filesArray async: YES];
+				NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded: filesArray options: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: YES], @"async", [NSNumber numberWithBool: YES], @"selectStudy", [NSNumber numberWithBool: YES], @"onlyDICOM", [NSNumber numberWithBool: YES], @"ejectCDDVD", [NSNumber numberWithBool: YES], @"mountedVolume", nil]];
 				
-				if( newfilesArray == filesArray)
-				{
-					mountedVolume = YES;
-					NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
-					mountedVolume = NO;
-					
-					[self saveDatabase: nil];
-					[self outlineViewRefresh];
-					
-					if( [newImages count] > 0)
-					{
-						NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
-						
-						[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: object]] byExtendingSelection: NO];
-						[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-					}
-				}
-				
-				[[NSUserDefaults standardUserDefaults] setBool: copyOnlyDICOM forKey: @"onlyDICOM"];
+//				if( newfilesArray == filesArray)
+//				{
+//					mountedVolume = YES;
+//					NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
+//					mountedVolume = NO;
+//					
+//					[self saveDatabase: nil];
+//					[self outlineViewRefresh];
+//					
+//					if( [newImages count] > 0)
+//					{
+//						NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
+//						
+//						[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: object]] byExtendingSelection: NO];
+//						[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+//					}
+//				}
 				
 				[self autoCleanDatabaseFreeSpace: self];
 			}
