@@ -3879,15 +3879,25 @@ static NSConditionLock *threadLock = nil;
 
 - (NSMutableArray*)copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput async: (BOOL)async
 {
-	return [self copyFilesIntoDatabaseIfNeeded: filesInput async: async COPYDATABASE: [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"] COPYDATABASEMODE: [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASEMODE"]];
+	return [self copyFilesIntoDatabaseIfNeeded: filesInput options: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: async], @"async", nil]];
 }
 
-- (NSMutableArray*)copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput async: (BOOL)async COPYDATABASE: (BOOL) COPYDATABASE COPYDATABASEMODE:(int) COPYDATABASEMODE;
+- (NSMutableArray*) copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput options: (NSDictionary*) options
 {
-	if (isCurrentDatabaseBonjour) return nil;
+	if( isCurrentDatabaseBonjour) return nil;
 	if( [filesInput count] == 0) return filesInput;
-	if( COPYDATABASE == NO) return filesInput;
 	if( DICOMDIRCDMODE) return filesInput;
+	
+	BOOL COPYDATABASE = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"];
+	int COPYDATABASEMODE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASEMODE"];
+	
+	if( [options objectForKey: @"COPYDATABASE"])
+		COPYDATABASE = [[options objectForKey: @"COPYDATABASE"] boolValue];
+		
+	if( [options objectForKey: @"COPYDATABASEMODE"])
+		COPYDATABASEMODE = [[options objectForKey: @"COPYDATABASEMODE"] integerValue];
+	
+	BOOL async = [[options objectForKey: @"async"] boolValue];
 	
 	NSMutableArray *newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
 	NSString *INpath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEFPATH];
@@ -3958,7 +3968,16 @@ static NSConditionLock *threadLock = nil;
 	
 	if( async)
 	{
-		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", YES, @"onlyDICOM", YES, @"ejectCDDVD", nil];
+		NSNumber *onlyDICOM = [NSNumber numberWithBool: NO];
+		NSNumber *ejectCDDVD = [NSNumber numberWithBool: NO];
+		
+		if( [options objectForKey: @"onlyDICOM"])
+			onlyDICOM = [options objectForKey: @"onlyDICOM"];
+		
+		if( [options objectForKey: @"ejectCDDVD"])
+			ejectCDDVD = [options objectForKey: @"ejectCDDVD"];
+		
+		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", onlyDICOM, @"onlyDICOM", ejectCDDVD, @"ejectCDDVD", nil];
 		
 		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: dict] autorelease];
 		t.name = NSLocalizedString( @"Copying files...", nil);
