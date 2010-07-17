@@ -3717,7 +3717,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[autoroutingInProgress lock];
 	
-	BOOL first = YES, studySelected = NO, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue]
+	BOOL first = YES, studySelected = NO, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
 	NSArray *filesInput = [dict objectForKey: @"filesInput"];
 	
 	int t = 0;
