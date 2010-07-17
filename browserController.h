@@ -431,6 +431,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (DCMPix *)previewPix:(int)i;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray;
 - (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames;
+- (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames copied:(BOOL*) copied async:(BOOL) async addToAlbum:(NSManagedObject*) album select:(BOOL) select;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder;
