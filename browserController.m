@@ -3714,14 +3714,11 @@ static NSConditionLock *threadLock = nil;
 - (void) copyFilesThread: (NSDictionary*) dict
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	BOOL studySelected = NO;
 	
 	[autoroutingInProgress lock];
 	
-	BOOL first = YES;
-	
+	BOOL first = YES, studySelected = NO, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue]
 	NSArray *filesInput = [dict objectForKey: @"filesInput"];
-	BOOL onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
 	
 	int t = 0;
 	for( int i = 0; i < [filesInput count]; i++)
