@@ -111,8 +111,7 @@
 /** Returns the COMMENTSAUTOFILL default. 
 * If Yes, comments will be filled from the DICOM tag  commentsGroup/commentsElement
 */
-//- (BOOL) SeparateCardiacMR;
-//- (int) SeparateCardiacMRMode;
+- (BOOL) commentsFromDICOMFiles;
 - (BOOL) autoFillComments; 
 - (BOOL) splitMultiEchoMR; /**< Returns the splitMultiEchoMR default If YES, splits multi echo series into separate series by Echo number. */
 - (BOOL) useSeriesDescription; /**< Returns the useSeriesDescription default. */

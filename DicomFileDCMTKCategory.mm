@@ -706,14 +706,17 @@ extern NSRecursiveLock *PapyrusLock;
 		if( studyIDs)
 			[dicomElements setObject:studyIDs forKey:@"studyNumber"];
 		
-		if (dataset->findAndGetString( DCM_StudyComments, string, OFFalse).good() && string != NULL)
-			[dicomElements setObject: [NSString stringWithCString:string encoding: NSASCIIStringEncoding] forKey:@"studyComments"];
-		
-		if (dataset->findAndGetString( DCM_ImageComments, string, OFFalse).good() && string != NULL)
-			[dicomElements setObject: [NSString stringWithCString:string encoding: NSASCIIStringEncoding] forKey:@"seriesComments"];
-		
-		if (dataset->findAndGetString( DCM_InterpretationStatusID, string, OFFalse).good() && string != NULL)
-			[dicomElements setObject: [NSNumber numberWithInt: [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] intValue]] forKey:@"stateText"];
+		if( [self commentsFromDICOMFiles])
+		{
+			if (dataset->findAndGetString( DCM_StudyComments, string, OFFalse).good() && string != NULL)
+				[dicomElements setObject: [NSString stringWithCString:string encoding: NSASCIIStringEncoding] forKey:@"studyComments"];
+			
+			if (dataset->findAndGetString( DCM_ImageComments, string, OFFalse).good() && string != NULL)
+				[dicomElements setObject: [NSString stringWithCString:string encoding: NSASCIIStringEncoding] forKey:@"seriesComments"];
+			
+			if (dataset->findAndGetString( DCM_InterpretationStatusID, string, OFFalse).good() && string != NULL)
+				[dicomElements setObject: [NSNumber numberWithInt: [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] intValue]] forKey:@"stateText"];
+		}
 		
 		//Rows
 		unsigned short rows = 0;

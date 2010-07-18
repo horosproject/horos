@@ -53,7 +53,7 @@ extern NSRecursiveLock *PapyrusLock;
 
 static BOOL DEFAULTSSET = NO;
 static int TOOLKITPARSER = NO, PREFERPAPYRUSFORCD = NO;
-static BOOL COMMENTSAUTOFILL = NO;
+static BOOL COMMENTSAUTOFILL = NO, COMMENTSFROMDICOMFILES = NO;
 static BOOL splitMultiEchoMR = NO;
 static BOOL useSeriesDescription = NO;
 static BOOL NOLOCALIZER = NO;
@@ -244,6 +244,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			TOOLKITPARSER = 2;
 			#endif
 			
+			COMMENTSFROMDICOMFILES = [sd boolForKey: @"CommentsFromDICOMFiles"];
 			COMMENTSAUTOFILL = [sd boolForKey: @"COMMENTSAUTOFILL"];
 			SEPARATECARDIAC4D = [sd boolForKey: @"SEPARATECARDIAC4D"];
 //			SeparateCardiacMR = [sd boolForKey: @"SeparateCardiacMR"];
@@ -274,6 +275,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			PREFERPAPYRUSFORCD = [[dict objectForKey: @"PREFERPAPYRUSFORCD"] intValue];
 			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER3"] intValue];
+			
+			COMMENTSFROMDICOMFILES = [[dict objectForKey: @"CommentsFromDICOMFiles"] intValue];
 			COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
 			SEPARATECARDIAC4D = [[dict objectForKey: @"SEPARATECARDIAC4D"] intValue];
 //			SeparateCardiacMR = [[dict objectForKey: @"SeparateCardiacMR"] intValue];
@@ -518,6 +521,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				NSXMLNode* theNode = [rootElement childAtIndex:i];
 				if ([[theNode name] isEqualToString:@"Description"])
 					[dicomElements setObject:[theNode stringValue] forKey:@"studyComments"];
+					
 				if ([[theNode name] isEqualToString:@"Acquisition Parameters"])
 					for (j = 0; j < [theNode childCount]; j++)
 					{
@@ -2451,10 +2455,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				if( studyIDs) [dicomElements setObject:studyIDs forKey:@"studyNumber"];
 				
-				val = Papy3GetElement (theGroupP, papImageCommentsGr, &nbVal, &itemType);
-				if (val != NULL && strlen( val->a) > 0)
-					[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"seriesComments"];
-					
+				if( COMMENTSFROMDICOMFILES)
+				{
+					val = Papy3GetElement (theGroupP, papImageCommentsGr, &nbVal, &itemType);
+					if (val != NULL && strlen( val->a) > 0)
+						[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"seriesComments"];
+				}
 				// free the module and the associated sequences 
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
 		   }
@@ -2489,14 +2495,17 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
 			}
 			
-			theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0032);
-			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+			if( COMMENTSFROMDICOMFILES)
 			{
-				val = Papy3GetElement (theGroupP, papStudyCommentsGr, &nbVal, &itemType);
-				if (val != NULL && strlen( val->a) > 0 && [dicomElements objectForKey: @"commentsAutoFill"] == nil)
-					[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"studyComments"];
-					
-				theErr = Papy3GroupFree (&theGroupP, TRUE);
+				theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0032);
+				if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+				{
+					val = Papy3GetElement (theGroupP, papStudyCommentsGr, &nbVal, &itemType);
+					if (val != NULL && strlen( val->a) > 0 && [dicomElements objectForKey: @"commentsAutoFill"] == nil)
+						[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"studyComments"];
+						
+					theErr = Papy3GroupFree (&theGroupP, TRUE);
+				}
 			}
 			
 			NoOfFrames = gArrNbImages [fileNb];
@@ -2566,14 +2575,17 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		#endif
 		#endif
 		
-		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x4008);
-		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		if( COMMENTSFROMDICOMFILES)
 		{
-			val = Papy3GetElement (theGroupP, papInterpretationStatusIDGr, &nbVal, &itemType);
-			if (val != NULL && strlen( val->a) > 0)
-				[dicomElements setObject: [NSNumber numberWithInt: [[NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] intValue]] forKey: @"stateText"];
-					
-			theErr = Papy3GroupFree (&theGroupP, TRUE);
+			theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x4008);
+			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+			{
+				val = Papy3GetElement (theGroupP, papInterpretationStatusIDGr, &nbVal, &itemType);
+				if (val != NULL && strlen( val->a) > 0)
+					[dicomElements setObject: [NSNumber numberWithInt: [[NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] intValue]] forKey: @"stateText"];
+				
+				theErr = Papy3GroupFree (&theGroupP, TRUE);
+			}
 		}
 		
 		// close and free the file and the associated allocated memory 
@@ -2982,14 +2994,20 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			studyIDs = [@"0" retain];
 		[dicomElements setObject:studyIDs forKey:@"studyNumber"];
 		
-		if( [dcmObject attributeValueWithName: @"StudyComments"])
-			[dicomElements setObject: [dcmObject attributeValueWithName: @"StudyComments"] forKey: @"studyComments"];
+		if( COMMENTSFROMDICOMFILES)
+		{
+			if( [dcmObject attributeValueWithName: @"StudyComments"])
+				[dicomElements setObject: [dcmObject attributeValueWithName: @"StudyComments"] forKey: @"studyComments"];
 		
-		if( [dcmObject attributeValueWithName: @"ImageComments"])
-			[dicomElements setObject: [dcmObject attributeValueWithName: @"ImageComments"] forKey: @"seriesComments"];
+			if( [dcmObject attributeValueWithName: @"ImageComments"])
+				[dicomElements setObject: [dcmObject attributeValueWithName: @"ImageComments"] forKey: @"seriesComments"];
+		}
 		
-		if( [dcmObject attributeValueWithName: @"InterpretationStatusID"])
-			[dicomElements setObject: [NSNumber numberWithInt: [[dcmObject attributeValueWithName: @"InterpretationStatusID"] intValue]] forKey: @"stateText"];
+		if( COMMENTSFROMDICOMFILES)
+		{
+			if( [dcmObject attributeValueWithName: @"InterpretationStatusID"])
+				[dicomElements setObject: [NSNumber numberWithInt: [[dcmObject attributeValueWithName: @"InterpretationStatusID"] intValue]] forKey: @"stateText"];
+		}
 		
 		if ([dcmObject attributeValueWithName:@"NumberofFrames"])
 			NoOfFrames = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
@@ -3648,15 +3666,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return self;
 }
 
-//- (BOOL) SeparateCardiacMR
-//{
-//	return SeparateCardiacMR;
-//}
-//
-//- (int) SeparateCardiacMRMode
-//{
-//	return SeparateCardiacMRMode;
-//}
+- (BOOL) commentsFromDICOMFiles
+{
+	return COMMENTSFROMDICOMFILES;
+}
 
 - (BOOL) autoFillComments
 {
