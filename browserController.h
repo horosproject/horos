@@ -453,7 +453,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSArray*) ROIsAndKeyImages: (id) sender sameSeries: (BOOL*) sameSeries;
 
 - (void) refreshColumns;
-- (void) outlineViewRefresh;
+- (NSString*) outlineViewRefresh;
 - (void) matrixInit:(long) noOfImages;
 - (IBAction) albumButtons: (id)sender;
 - (NSArray*) albumArray;

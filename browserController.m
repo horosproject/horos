@@ -2372,6 +2372,69 @@ static NSConditionLock *threadLock = nil;
     return managedObjectModel;
 }
 
+- (void) defaultAlbums: (id) sender
+{
+	// Add default albums
+	DicomAlbum *album = nil;
+	NSArray *albumsArray = [self albumArray];
+	
+	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Just Added", nil)] == NSNotFound)
+	{
+		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+		album.name = NSLocalizedString( @"Just Added", nil);
+		album.predicateString = @"(date >= CAST($LASTHOUR, 'NSDate'))";
+		album.smartAlbum = [NSNumber numberWithBool: YES];
+	}
+
+	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Today MR", nil)] == NSNotFound)
+	{
+		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+		album.name = NSLocalizedString( @"Today MR", nil);
+		album.predicateString = @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($TODAY, 'NSDate'))";
+		album.smartAlbum = [NSNumber numberWithBool: YES];
+	}
+
+	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Today CT", nil)] == NSNotFound)
+	{
+		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+		album.name = NSLocalizedString( @"Today CT", nil);
+		album.predicateString = @"(ANY series.modality CONTAINS[cd] 'CT') AND (date >= CAST($TODAY, 'NSDate'))";
+		album.smartAlbum = [NSNumber numberWithBool: YES];
+	}
+
+	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Yesterday MR", nil)] == NSNotFound)
+	{
+		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+		album.name = NSLocalizedString( @"Yesterday MR", nil);
+		album.predicateString = @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
+		album.smartAlbum = [NSNumber numberWithBool: YES];
+	}
+
+	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Yesterday CT", nil)] == NSNotFound)
+	{
+		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+		album.name = NSLocalizedString( @"Yesterday CT", nil);
+		album.predicateString = @"(ANY series.modality CONTAINS[cd] 'CT') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
+		album.smartAlbum = [NSNumber numberWithBool: YES];
+	}
+
+	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Interesting Cases", nil)] == NSNotFound)
+	{
+		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+		album.name = NSLocalizedString( @"Interesting Cases", nil);
+	}
+	
+	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Cases with comments", nil)] == NSNotFound)
+	{
+		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
+		album.name = NSLocalizedString( @"Cases with comments", nil);
+		album.predicateString = @"(ANY series.comment != '' AND ANY series.comment != NIL) OR (comment != '' AND comment != NIL)";
+		album.smartAlbum = [NSNumber numberWithBool: YES];
+	}
+
+	[self refreshAlbums];
+}
+
 - (NSManagedObjectContext *) managedObjectContextLoadIfNecessary:(BOOL) loadIfNecessary
 {
     NSError *error = nil;
@@ -2416,36 +2479,7 @@ static NSConditionLock *threadLock = nil;
 		{
 			NSLog( @"New SQL DB file created: %@", currentDatabasePath);
 			
-			// Add default albums
-			DicomAlbum *album = nil;
-			
-			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-			album.name = NSLocalizedString( @"Just Added", nil);
-			album.predicateString = @"(date >= CAST($LASTHOUR, 'NSDate'))";
-			album.smartAlbum = [NSNumber numberWithBool: YES];
-			
-			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-			album.name = NSLocalizedString( @"Today MR", nil);
-			album.predicateString = @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($TODAY, 'NSDate'))";
-			album.smartAlbum = [NSNumber numberWithBool: YES];
-			
-			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-			album.name = NSLocalizedString( @"Today CT", nil);
-			album.predicateString = @"(ANY series.modality CONTAINS[cd] 'CT') AND (date >= CAST($TODAY, 'NSDate'))";
-			album.smartAlbum = [NSNumber numberWithBool: YES];
-			
-			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-			album.name = NSLocalizedString( @"Yesterday MR", nil);
-			album.predicateString = @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
-			album.smartAlbum = [NSNumber numberWithBool: YES];
-			
-			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-			album.name = NSLocalizedString( @"Yesterday CT", nil);
-			album.predicateString = @"(ANY series.modality CONTAINS[cd] 'CT') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
-			album.smartAlbum = [NSNumber numberWithBool: YES];
-			
-			album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-			album.name = NSLocalizedString( @"Interesting Cases", nil);
+			[self defaultAlbums: self];
 		}
 	}
 	
@@ -5277,10 +5311,10 @@ static NSConditionLock *threadLock = nil;
 	return pred;
 }
 
-- (void) outlineViewRefresh		// This function creates the 'root' array for the outlineView
+- (NSString*) outlineViewRefresh		// This function creates the 'root' array for the outlineView
 {
-	if( databaseOutline == nil) return;
-	if( loadingIsOver == NO) return;
+	if( databaseOutline == nil) return nil;
+	if( loadingIsOver == NO) return nil;
 	
 	NSError				*error =nil;
 	NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
@@ -5290,6 +5324,7 @@ static NSConditionLock *threadLock = nil;
 	NSMutableArray		*previousObjects = [NSMutableArray array];
 	NSArray				*albumArrayContent = nil;
 	BOOL				filtered = NO;
+	NSString			*exception = nil;
 	
 	if( needDBRefresh) [albumNoOfStudiesCache removeAllObjects];
 	needDBRefresh = NO;
@@ -5428,6 +5463,8 @@ static NSConditionLock *threadLock = nil;
 		
 		[request setPredicate: [NSPredicate predicateWithValue:YES]];
 		outlineViewArray = [context executeFetchRequest:request error:&error];
+		
+		exception = [ne description];
 	}
 	
 	if( albumTable.selectedRow > 0) filtered = YES;
@@ -5503,6 +5540,8 @@ static NSConditionLock *threadLock = nil;
 	[databaseDescription setStringValue: description];
 	
 	[albumTable reloadData];
+	
+	return exception;
 }
 
 - (void)checkBonjourUpToDateThread: (id)sender
@@ -9989,7 +10028,13 @@ static BOOL withReset = NO;
 	
 	[albumContextual addItem: [NSMenuItem separatorItem]];
 	
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Add Albums", nil)  action:@selector( addAlbums:) keyEquivalent:@""] autorelease];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Import Albums", nil)  action:@selector( addAlbums:) keyEquivalent:@""] autorelease];
+	[item setTarget: self]; // required because the drawner is the first responder
+	[albumContextual addItem:item];
+	
+	[albumContextual addItem: [NSMenuItem separatorItem]];
+	
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Create Default Albums", nil)  action:@selector( defaultAlbums:) keyEquivalent:@""] autorelease];
 	[item setTarget: self]; // required because the drawner is the first responder
 	[albumContextual addItem:item];
 	
@@ -10392,9 +10437,12 @@ static BOOL needToRezoom;
 		@try
 		{
 			self.testPredicate = [[BrowserController currentBrowser] smartAlbumPredicateString: [editSmartAlbumQuery stringValue]];
-			[self outlineViewRefresh];
+			
+			NSString *exception = [self outlineViewRefresh];
 			self.testPredicate = nil;
-			NSRunInformationalAlertPanel( NSLocalizedString(@"It works !",nil), NSLocalizedString(@"This filter works: the result is now displayed in the Database Window.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+			
+			if( exception) NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), exception], NSLocalizedString(@"OK",nil), nil, nil);
+			else NSRunInformationalAlertPanel( NSLocalizedString(@"It works !",nil), NSLocalizedString(@"This filter works: the result is now displayed in the Database Window.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 		}
 		@catch (NSException * e)
 		{
