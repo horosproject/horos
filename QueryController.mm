@@ -2016,7 +2016,7 @@ extern "C"
 			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
 			t.name = NSLocalizedString( @"Retrieving images...", nil);
 			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
-			t.progress = 0;
+			if( [selectedItems count] > 1) t.progress = 0;
 			t.supportsCancel = YES;
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
 			
@@ -2311,7 +2311,7 @@ extern "C"
 				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
 				t.name = NSLocalizedString( @"Retrieving images...", nil);
 				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
-				t.progress = 0;
+				if( [selectedItems count] > 1) t.progress = 0;
 				t.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 				
