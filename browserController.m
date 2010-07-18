@@ -657,7 +657,7 @@ static NSConditionLock *threadLock = nil;
 		
 		if([NSThread isMainThread] && ([newFilesArray count] > 50 || isCDMedia == YES) && generatedByOsiriX == NO)
 		{
-			splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString(@"Adding %@ files...", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[newFilesArray count]]]]];
+			splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString(@"Adding %@ file(s)...", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[newFilesArray count]]]]];
 			[splash showWindow: browserController];
 			
 			if( isCDMedia) [[splash progress] setMaxValue:[newFilesArray count]];
@@ -1525,7 +1525,7 @@ static NSConditionLock *threadLock = nil;
 		
 		if( [NSThread isMainThread])
 		{
-			splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString( @"Adding %@ files...", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt: total]]]];
+			splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString( @"Adding %@ file(s)...", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt: total]]]];
 			[splash showWindow: self];
 			
 			[[splash progress] setMaxValue: total / CHUNK];
@@ -2236,6 +2236,9 @@ static NSConditionLock *threadLock = nil;
 				
 				[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", [NSDictionary dictionary], @"server", nil] waitUntilDone: NO];
 			}
+			
+			if( [NSThread currentThread].isCancelled)
+				break;
 		}
 		NSLog( @"______________________________________________");
 	}
@@ -2258,6 +2261,8 @@ static NSConditionLock *threadLock = nil;
 				
 				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( processAutorouting) object: nil] autorelease];
 				t.name = NSLocalizedString( @"Autorouting...", nil);
+				t.supportsCancel = YES;
+				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d rule(s)", nil), [autoroutingQueueArray count]];
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 			}
 		}
@@ -3721,7 +3726,7 @@ static NSConditionLock *threadLock = nil;
 				if( [NSThread currentThread].isCancelled)
 					break;
 			
-				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]-i];
+				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesInput count]-i];
 				[NSThread currentThread].progress = (float) i / [filesInput count];
 			}
 			
@@ -3973,7 +3978,7 @@ static NSConditionLock *threadLock = nil;
 			
 			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: dict] autorelease];
 			t.name = NSLocalizedString( @"Copying and indexing files...", nil);
-			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]];
+			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesInput count]];
 			t.supportsCancel = YES;
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
 		}
@@ -4045,7 +4050,7 @@ static NSConditionLock *threadLock = nil;
 		
 		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: dict] autorelease];
 		t.name = NSLocalizedString( @"Indexing files...", nil);
-		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [filesInput count]];
+		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesInput count]];
 		t.supportsCancel = YES;
 		[[ThreadsManager defaultManager] addThreadAndStart: t];
 			
@@ -11972,7 +11977,7 @@ static BOOL needToRezoom;
 						if( [viewerPix[0] count] == 0)
 							NSRunCriticalAlertPanel( NSLocalizedString(@"Files not available (readable)", nil), NSLocalizedString(@"No files available (readable) in this series.", nil), NSLocalizedString(@"Continue",nil), nil, nil);
 						else
-							NSRunCriticalAlertPanel( NSLocalizedString(@"Not all files available (readable)", nil),  [NSString stringWithFormat: NSLocalizedString(@"Not all files are available (readable) in this series.\r%d files are missing.", nil), [loadList count] - [viewerPix[0] count]], NSLocalizedString(@"Continue",nil), nil, nil);
+							NSRunCriticalAlertPanel( NSLocalizedString(@"Not all files available (readable)", nil),  [NSString stringWithFormat: NSLocalizedString(@"Not all files are available (readable) in this series.\r%d file(s) are missing.", nil), [loadList count] - [viewerPix[0] count]], NSLocalizedString(@"Continue",nil), nil, nil);
 					}
 					//opening images refered to in viewerPix[0] in the adequate viewer
 					
@@ -14516,7 +14521,7 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( emptyDeleteQueueThread) object:  nil] autorelease];
 				t.name = NSLocalizedString( @"Deleting files...", nil);
-				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), [deleteQueueArray count]];
+				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [deleteQueueArray count]];
 				t.progress = 0;
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 			}
@@ -15434,11 +15439,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		switch( tow)
 		{
 			case 'C':
-				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Compression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to compress %d files", nil), [array count]] name:@"result"];
+				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Compression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to compress %d file(s)", nil), [array count]] name:@"result"];
 				break;
 				
 			case 'D':
-				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Decompression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to decompress %d files", nil), [array count]] name:@"result"];
+				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Files Decompression", nil) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to decompress %d file(s)", nil), [array count]] name:@"result"];
 				break;
 		}
 		
@@ -15485,7 +15490,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				break;
 			}
 			
-			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d files", nil), range.length];
+			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), range.length];
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
 			
 			range.location += range.length;
@@ -18046,7 +18051,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		fileSize /= 1024;
 		fileSize /= 1024;
 		
-		WaitRendering *wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Sending files (%d files, %d MB) to iDisk", nil), [files2Copy count], fileSize]];
+		WaitRendering *wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Sending files (%d file(s), %d MB) to iDisk", nil), [files2Copy count], fileSize]];
 		[wait showWindow:self];
 		
 		[theTask setArguments: [NSArray arrayWithObjects: @"sendFilesToiDisk", @"/tmp/files2send", nil]];
