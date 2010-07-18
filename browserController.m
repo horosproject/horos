@@ -3694,7 +3694,7 @@ static NSConditionLock *threadLock = nil;
 			BOOL succeed = YES;
 			
 			#ifndef OSIRIX_LIGHT
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
 				succeed = [self testFiles: copiedFiles];
 			#endif
 			
