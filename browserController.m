@@ -14006,7 +14006,7 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void)waitForRunningProcesses
 {
-	NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + 120;
+	NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + 240;
 	while( ti - [NSDate timeIntervalSinceReferenceDate] > 0 && [[ThreadsManager defaultManager] threadsCount] > 0)
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
 	
