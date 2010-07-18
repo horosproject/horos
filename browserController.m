@@ -2395,7 +2395,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Just Added", nil);
-		album.predicateString = @"(date >= CAST($LASTHOUR, 'NSDate'))";
+		album.predicateString = @"(dateAdded >= CAST($LASTHOUR, 'NSDate'))";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
