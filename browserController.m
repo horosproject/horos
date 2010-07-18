@@ -14006,12 +14006,16 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void)waitForRunningProcesses
 {
+	NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + 120;
+	while( ti - [NSDate timeIntervalSinceReferenceDate] > 0 && [[ThreadsManager defaultManager] threadsCount] > 0)
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
+	
 	[BrowserController tryLock: checkIncomingLock during: 120];
 	[BrowserController tryLock: managedObjectContext during: 120];
 	[BrowserController tryLock: checkBonjourUpToDateThreadLock during: 60];
 	
 	while( [SendController sendControllerObjects] > 0)
-		[NSThread sleepForTimeInterval: 0.04];
+		[NSThread sleepForTimeInterval: 0.1];
 	
 	[BrowserController tryLock: decompressThreadRunning during: 120];
 	[BrowserController tryLock: deleteInProgress during: 600];
