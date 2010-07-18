@@ -7424,7 +7424,24 @@ static NSConditionLock *threadLock = nil;
 				NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 				NSMutableArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
 				
-				r = [self exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
+				NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [dropDestination path], @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil];
+		
+				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( exportDICOMFileInt: ) object: d] autorelease];
+				t.name = NSLocalizedString( @"Exporting...", nil);
+				t.supportsCancel = YES;
+				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesToExport count]];
+				
+				[[ThreadsManager defaultManager] addThreadAndStart: t];
+				
+				NSTimeInterval fourSeconds = [NSDate timeIntervalSinceReferenceDate] + 4.0;
+				while( [[d objectForKey: @"result"] count] == 0 && [NSDate timeIntervalSinceReferenceDate] < fourSeconds)
+					[NSThread sleepForTimeInterval: 0.1];
+				
+				@synchronized( d)
+				{
+					if( [[d objectForKey: @"result"] count])
+						r = [NSArray arrayWithArray: [d objectForKey: @"result"]];
+				}
 			}
 		}
 		@catch (NSException * e)
@@ -7433,7 +7450,10 @@ static NSConditionLock *threadLock = nil;
 		avoidRecursive = NO;
 	}
 	
-	return r;	//[NSArray array];	//r;
+	if( r == nil)
+		r = [NSArray array];
+	
+	return r;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)olv writeItems:(NSArray*)pbItems toPasteboard:(NSPasteboard*)pboard
@@ -17113,7 +17133,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSArray*) exportDICOMFileInt: (NSString*) location files: (NSMutableArray*) filesToExport objects: (NSMutableArray*) dicomFiles2Export
 {
-	return [self exportDICOMFileInt: [NSDictionary dictionaryWithObjectsAndKeys: location, @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil]];
+	return [self exportDICOMFileInt: [NSMutableDictionary dictionaryWithObjectsAndKeys: location, @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil]];
 }
 
 - (void) runInformationAlertPanel:(NSMutableDictionary*) dict
@@ -17123,15 +17143,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[dict setObject: [NSNumber numberWithInt: a] forKey: @"result"];
 }
 
-- (NSArray*) exportDICOMFileInt: (NSDictionary*) parameters
+- (NSArray*) exportDICOMFileInt: (NSMutableDictionary*) parameters
 {
 	NSAutoreleasePool *pool = nil;
-	NSMutableArray *result = nil;
 	
 	if( [NSThread isMainThread] == NO) // This is IMPORTANT for the result ! A thread cannot return a 'autorelease' object without a pool.... DO NOT MODIFY !
 		pool = [[NSAutoreleasePool alloc] init];
-	else
-		result = [NSMutableArray array];
+	
+	NSMutableArray *result = [NSMutableArray array];
+	
+	@synchronized( parameters)
+	{
+		[parameters setObject: result forKey: @"result"];
+	}
 	
 	@try 
 	{
@@ -17198,11 +17222,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 					tempPath = [path stringByAppendingPathComponent:name];
 				}
 				
+				@synchronized( parameters)
+				{
+					[result addObject: [tempPath lastPathComponent]];
+				}
+				
 				// Find the DICOM-PATIENT folder
 				if ( ![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
 				{
 					[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-					[result addObject: [tempPath lastPathComponent]];
 				}
 				else
 				{
@@ -17512,7 +17540,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[pool release];
 	
-	return result;
+	if( [NSThread isMainThread])
+		return result;
+	else
+		return nil;
 }
 
 + (void) encryptFiles: (NSArray*) srcFiles inZIPFile: (NSString*) destFile password: (NSString*) password
@@ -17711,7 +17742,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[wait close];
 		[wait release];
 		
-		NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: [[sPanel filenames] objectAtIndex:0], @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil];
+		NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [[sPanel filenames] objectAtIndex:0], @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil];
 		
 		NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( exportDICOMFileInt: ) object: d] autorelease];
 		t.name = NSLocalizedString( @"Exporting...", nil);

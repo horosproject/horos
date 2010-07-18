@@ -15,6 +15,8 @@ PURPOSE.
 #import "BrowserMatrix.h"
 #import "BrowserController.h"
 #import "DCMPix.h"
+#import "ThreadsManager.h"
+#import "NSThread+N2.h"
 
 static NSString *albumDragType = @"Osirix Album drag";
 
@@ -88,8 +90,6 @@ static NSString *albumDragType = @"Osirix Album drag";
 
 - (void) startDrag:(NSEvent *) event
 {
-	NSLog( @"startDrag");
-	
 	NS_DURING
 	
 	NSSize dragOffset = NSMakeSize(0.0, 0.0);
@@ -186,7 +186,26 @@ static NSString *albumDragType = @"Osirix Album drag";
 				NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 				NSMutableArray *filesToExport = [[BrowserController currentBrowser] filesForDatabaseMatrixSelection: dicomFiles2Export];
 				
-				r = [[BrowserController currentBrowser] exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
+//				r = [[BrowserController currentBrowser] exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
+				
+				NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [dropDestination path], @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil];
+				
+				NSThread* t = [[[NSThread alloc] initWithTarget:[BrowserController currentBrowser] selector:@selector( exportDICOMFileInt: ) object: d] autorelease];
+				t.name = NSLocalizedString( @"Exporting...", nil);
+				t.supportsCancel = YES;
+				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesToExport count]];
+				
+				[[ThreadsManager defaultManager] addThreadAndStart: t];
+				
+				NSTimeInterval fourSeconds = [NSDate timeIntervalSinceReferenceDate] + 4.0;
+				while( [[d objectForKey: @"result"] count] == 0 && [NSDate timeIntervalSinceReferenceDate] < fourSeconds)
+					[NSThread sleepForTimeInterval: 0.1];
+				
+				@synchronized( d)
+				{
+					if( [[d objectForKey: @"result"] count])
+						r = [NSArray arrayWithArray: [d objectForKey: @"result"]];
+				}
 			}
 		}
 		@catch ( NSException * e)
@@ -194,6 +213,9 @@ static NSString *albumDragType = @"Osirix Album drag";
 		}
 		avoidRecursive = NO;
 	}
+	
+	if( r == nil)
+		r = [NSArray array];
 	
 	return r;
 }
