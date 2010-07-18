@@ -7433,7 +7433,7 @@ static NSConditionLock *threadLock = nil;
 		avoidRecursive = NO;
 	}
 	
-	return r;
+	return r;	//[NSArray array];	//r;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)olv writeItems:(NSArray*)pbItems toPasteboard:(NSPasteboard*)pboard
@@ -17111,355 +17111,407 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 #endif
 
-- (NSArray*) exportDICOMFileInt: (NSString*) location files: (NSMutableArray*)filesToExport objects: (NSMutableArray*)dicomFiles2Export
+- (NSArray*) exportDICOMFileInt: (NSString*) location files: (NSMutableArray*) filesToExport objects: (NSMutableArray*) dicomFiles2Export
 {
-	[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
+	return [self exportDICOMFileInt: [NSDictionary dictionaryWithObjectsAndKeys: location, @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil]];
+}
 
-	NSString			*dest, *path = location;
-	Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", nil) :YES];
-	BOOL				addDICOMDIR = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddDICOMDIRForExport"];
-	long				previousSeries = -1;
-	long				serieCount = 0;
-	NSMutableArray		*result = [NSMutableArray array];
-	NSMutableArray		*files2Compress = [NSMutableArray array];
-	DicomStudy			*previousStudy = nil;
-	BOOL				exportAborted = NO;
-	NSMutableArray		*renameArray = [NSMutableArray array];
+- (void) runInformationAlertPanel:(NSMutableDictionary*) dict
+{
+	int a = NSRunInformationalAlertPanel( [dict objectForKey: @"title"], [dict objectForKey: @"message"], [dict objectForKey: @"button1"], [dict objectForKey: @"button2"], [dict objectForKey: @"button3"]);
 	
-	[splash setCancel:YES];
-	[splash showWindow:self];
-	[[splash progress] setMaxValue:[filesToExport count]];
+	[dict setObject: [NSNumber numberWithInt: a] forKey: @"result"];
+}
+
+- (NSArray*) exportDICOMFileInt: (NSDictionary*) parameters
+{
+	NSAutoreleasePool *pool = nil;
+	NSMutableArray *result = nil;
 	
-	[[DicomStudy dbModifyLock] lock];
+	if( [NSThread isMainThread] == NO) // This is IMPORTANT for the result ! A thread cannot return a 'autorelease' object without a pool.... DO NOT MODIFY !
+		pool = [[NSAutoreleasePool alloc] init];
+	else
+		result = [NSMutableArray array];
 	
-	@try
+	@try 
 	{
-		for( int i = 0; i < [filesToExport count]; i++)
+		NSString *location = [parameters objectForKey: @"location"];
+		NSMutableArray *filesToExport = [parameters objectForKey: @"filesToExport"];
+		NSMutableArray *dicomFiles2Export = [parameters objectForKey: @"dicomFiles2Export"];
+		
+		[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
+
+		NSString			*dest, *path = location;
+		Wait                *splash = nil;
+		BOOL				addDICOMDIR = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddDICOMDIRForExport"];
+		long				previousSeries = -1, serieCount = 0;
+		
+		if( [NSThread isMainThread])
+			splash = [[Wait alloc] initWithString:NSLocalizedString( @"Exporting...", nil) :YES];
+		
+		NSMutableArray		*files2Compress = [NSMutableArray array];
+		DicomStudy			*previousStudy = nil;
+		BOOL				exportAborted = NO;
+		NSMutableArray		*renameArray = [NSMutableArray array];
+		
+		[splash setCancel:YES];
+		[splash showWindow:self];
+		[[splash progress] setMaxValue:[filesToExport count]];
+		
+		[[DicomStudy dbModifyLock] lock];
+		
+		@try
 		{
-			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-			NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
-			NSString		*extension = [[filesToExport objectAtIndex:i] pathExtension];
-			
-			if( [curImage valueForKey: @"fileType"])
+			for( int i = 0; i < [filesToExport count]; i++)
 			{
-				if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"]) extension = [NSString stringWithString:@"dcm"];
-			}
-			
-			if([extension isEqualToString:@""]) extension = [NSString stringWithString:@"dcm"]; 
-			
-			NSString *tempPath;
-			// if creating DICOMDIR. Limit length to 8 char
-			if (!addDICOMDIR)  
-				tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
-			else
-			{
-				NSMutableString *name;
+				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+				NSString		*extension = [[filesToExport objectAtIndex:i] pathExtension];
 				
-				if( [curImage valueForKeyPath: @"series.study.name"] == nil)
-					name = [NSMutableString stringWithString: @"unnamed"];
-				else if ([(NSString*) [curImage valueForKeyPath: @"series.study.name"] length] > 8)
-					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
-				else
-					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
-				
-				NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
-				
-				[BrowserController replaceNotAdmitted: name];
-				
-				tempPath = [path stringByAppendingPathComponent:name];
-			}
-			
-			// Find the DICOM-PATIENT folder
-			if ( ![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
-			{
-				[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-				[result addObject: [tempPath lastPathComponent]];
-			}
-			else
-			{
-				if( i == 0)
+				if( [curImage valueForKey: @"fileType"])
 				{
-					int a = NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@), or merge the existing content with the new files?", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Merge", nil));
-					
-					if( a == NSAlertDefaultReturn)
-					{
-						[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
-						[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-					}
-					else if( a == NSAlertOtherReturn)
-					{
-						// Merge
-					}
-					else break;
+					if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"]) extension = [NSString stringWithString:@"dcm"];
 				}
-			}
-			
-			NSString *studyPath = nil;
-			
-			if( [folderTree selectedTag] == 0)
-			{
-				NSString *studyId = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.id"]]];
-				NSString *studyName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.studyName"]]];
 				
-				if( studyId == nil || [studyId length] == 0)
-					studyId = [NSString stringWithString: @"0"];
+				if([extension isEqualToString:@""]) extension = [NSString stringWithString:@"dcm"]; 
 				
-				if( studyName == nil || [studyName length] == 0)
-					studyName = [NSString stringWithString: @"unnamed"];
-				
-				if (!addDICOMDIR)
-					tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", studyName, studyId]];
+				NSString *tempPath;
+				// if creating DICOMDIR. Limit length to 8 char
+				if (!addDICOMDIR)  
+					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
 				else
-				{				
+				{
 					NSMutableString *name;
-					if ([(NSString*)studyId length] > 8)
-						name = [NSMutableString stringWithString:[[studyId substringToIndex:7] uppercaseString]];
+					
+					if( [curImage valueForKeyPath: @"series.study.name"] == nil)
+						name = [NSMutableString stringWithString: @"unnamed"];
+					else if ([(NSString*) [curImage valueForKeyPath: @"series.study.name"] length] > 8)
+						name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
 					else
-						name = [NSMutableString stringWithString:[studyId uppercaseString]];
+						name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
 					
 					NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 					name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
 					
 					[BrowserController replaceNotAdmitted: name];
-					tempPath = [tempPath stringByAppendingPathComponent:name];
+					
+					tempPath = [path stringByAppendingPathComponent:name];
 				}
 				
-				// Find the DICOM-STUDY folder
-				if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
+				// Find the DICOM-PATIENT folder
+				if ( ![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
+				{
 					[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-				
-				studyPath = tempPath;
-				
-				NSNumber *seriesId = [curImage valueForKeyPath: @"series.id"];
-				NSString *seriesName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]]];
-				
-				if( seriesId == nil)
-					seriesId = [NSNumber numberWithInt: 0];
-				
-				if( seriesName == nil || [seriesName length] == 0)
-					seriesName = [NSString stringWithString: @"unnamed"];
-				
-				if ( !addDICOMDIR)
-				{
-					NSMutableString *seriesStr = [NSMutableString stringWithString: seriesName];
-					
-					[BrowserController replaceNotAdmitted:seriesStr];
-					
-					tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
-					tempPath = [tempPath stringByAppendingFormat:@"_%@", seriesId];
+					[result addObject: [tempPath lastPathComponent]];
 				}
 				else
 				{
-					NSMutableString *name;
-					//				if ([[curImage valueForKeyPath: @"series.name"] length] > 8)
-					//					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.name"] substringToIndex:7] uppercaseString]];
-					//				else
-					//					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.name"] uppercaseString]];
-					
-					name = [NSMutableString stringWithString: [[seriesId stringValue] uppercaseString]];
-					
-					NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-					name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
-					
-					[BrowserController replaceNotAdmitted: name];
-					tempPath = [tempPath stringByAppendingPathComponent:name];
-				}
-				
-				// Find the DICOM-SERIE folder
-				if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
-					[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-			}
-			else studyPath = tempPath;
-			
-			if( previousStudy != [curImage valueForKeyPath: @"series.study"])
-			{
-				previousStudy = [curImage valueForKeyPath: @"series.study"];
-			}
-			
-			long imageNo = [[curImage valueForKey:@"instanceNumber"] intValue];
-			
-			if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue])
-			{
-				previousSeries = [[curImage valueForKeyPath: @"series.id"] intValue];
-				serieCount++;
-			}
-			if (!addDICOMDIR)
-				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension];
-			else
-				dest = [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, serieCount, imageNo];
-			
-			int t = 2;
-			while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
-			{
-				if (!addDICOMDIR)
-					dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, t, extension];
-				else
-					dest = [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, t];
-				t++;
-			}
-			
-			if( t != 2)
-			{
-				if (!addDICOMDIR)
-					[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension], @"oldName", [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension], @"newName", nil]];
-				else
-					[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, serieCount, imageNo], @"oldName", [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, 1], @"newName", nil]];
-			}
-			
-			NSError *error = nil;
-			if( [[NSFileManager defaultManager] copyItemAtPath:[filesToExport objectAtIndex:i] toPath:dest error: &error] == NO)
-			{
-				NSLog( @"***** %@", error);
-				NSLog( @"***** src = %@", [filesToExport objectAtIndex:i]);
-				NSLog( @"***** dst = %@", dest);
-			}
-			
-			if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"])
-			{
-				switch( [compressionMatrix selectedTag])
-				{
-					case 1:
-						[files2Compress addObject: dest];
-						break;
+					if( i == 0)
+					{
+						NSMutableDictionary *options = [NSMutableDictionary dictionaryWithObjectsAndKeys:	NSLocalizedString(@"Export", nil), @"title",
+																												[NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@), or merge the existing content with the new files?", nil), [tempPath lastPathComponent]], @"message",
+																												NSLocalizedString(@"Replace", nil), @"button1",
+																												NSLocalizedString(@"Cancel", nil), @"button2",
+																												NSLocalizedString(@"Merge", nil), @"button3",
+																												nil];
 						
-					case 2:
-						[files2Compress addObject: dest];
-						break;
+						[self performSelectorOnMainThread: @selector( runInformationAlertPanel:) withObject: options waitUntilDone: YES]; // YES : because we are waiting the result
+						
+						int a;
+						if( [options objectForKey: @"result"])
+							a = [[options objectForKey: @"result"] intValue];
+						else a = NSAlertAlternateReturn; // Cancel
+						
+						if( a == NSAlertDefaultReturn)
+						{
+							[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
+							[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+						}
+						else if( a == NSAlertOtherReturn)
+						{
+							// Merge
+						}
+						else break;
+					}
 				}
-			}
-			
-			if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
-			{
-				[[NSFileManager defaultManager] copyPath:[[[filesToExport objectAtIndex:i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dest stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-			}
-			
-			[splash incrementBy:1];
-			
-			if( [splash aborted])
-			{
-				i = [filesToExport count];
-				exportAborted = YES;
-			}
-			
-			[pool release];
-		}
-	}
-	@catch (NSException * e)
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
-	}
-	
-	[[DicomStudy dbModifyLock] unlock];
-	
-	for( NSDictionary *d in renameArray)
-		[[NSFileManager defaultManager] moveItemAtPath: [d objectForKey: @"oldName"] toPath: [d objectForKey: @"newName"] error: nil];
-	
-	//close progress window	
-	[splash close];
-	[splash release];
-	
-	if( [files2Compress count] > 0 && exportAborted == NO)
-	{
-//		[waitCompressionWindow showWindow:self];
-//		[[waitCompressionWindow progress] setMaxValue: [files2Compress count]];
-		
-		#ifndef OSIRIX_LIGHT
-		switch( [compressionMatrix selectedTag])
-		{
-			case 1:
-				[self decompressArrayOfFiles: files2Compress work: [NSNumber numberWithChar: 'C']];
-				break;
 				
-			case 2:
-				[self decompressArrayOfFiles: files2Compress work: [NSNumber numberWithChar: 'D']];
-				break;
-		}
-		#endif
-		
-//		[waitCompressionWindow close];
-	}
-	
-	// add DICOMDIR
-	//NSString *dicomdirPath = [NSString stringWithFormat:@"%@/DICOMDIR",path];
-	
-	// ANR - I had to create this loop, otherwise, if I export a folder on the desktop, the dcmkdir will scan all files and folders available on the desktop.... not only the exported folder.
-	
-	if (addDICOMDIR && exportAborted == NO)
-	{
-		for( int i = 0; i < [filesToExport count]; i++)
-		{
-			NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
-			NSMutableString *name;
-			
-			if ([(NSString*)[curImage valueForKeyPath: @"series.study.name"] length] > 8)
-				name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
-			else
-				name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
-			
-			NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-			name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
-			
-			[BrowserController replaceNotAdmitted: name];
-			
-			NSString *tempPath = [path stringByAppendingPathComponent:name];
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: [tempPath stringByAppendingPathComponent:@"DICOMDIR"]] == NO)
-			{
-				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+				NSString *studyPath = nil;
 				
-				NSTask *theTask;
-				NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", tempPath,  nil];
+				if( [folderTree selectedTag] == 0)
+				{
+					NSString *studyId = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.id"]]];
+					NSString *studyName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.studyName"]]];
+					
+					if( studyId == nil || [studyId length] == 0)
+						studyId = [NSString stringWithString: @"0"];
+					
+					if( studyName == nil || [studyName length] == 0)
+						studyName = [NSString stringWithString: @"unnamed"];
+					
+					if (!addDICOMDIR)
+						tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", studyName, studyId]];
+					else
+					{				
+						NSMutableString *name;
+						if ([(NSString*)studyId length] > 8)
+							name = [NSMutableString stringWithString:[[studyId substringToIndex:7] uppercaseString]];
+						else
+							name = [NSMutableString stringWithString:[studyId uppercaseString]];
+						
+						NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+						name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
+						
+						[BrowserController replaceNotAdmitted: name];
+						tempPath = [tempPath stringByAppendingPathComponent:name];
+					}
+					
+					// Find the DICOM-STUDY folder
+					if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
+						[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+					
+					studyPath = tempPath;
+					
+					NSNumber *seriesId = [curImage valueForKeyPath: @"series.id"];
+					NSString *seriesName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]]];
+					
+					if( seriesId == nil)
+						seriesId = [NSNumber numberWithInt: 0];
+					
+					if( seriesName == nil || [seriesName length] == 0)
+						seriesName = [NSString stringWithString: @"unnamed"];
+					
+					if ( !addDICOMDIR)
+					{
+						NSMutableString *seriesStr = [NSMutableString stringWithString: seriesName];
+						
+						[BrowserController replaceNotAdmitted:seriesStr];
+						
+						tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
+						tempPath = [tempPath stringByAppendingFormat:@"_%@", seriesId];
+					}
+					else
+					{
+						NSMutableString *name;
+						//				if ([[curImage valueForKeyPath: @"series.name"] length] > 8)
+						//					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.name"] substringToIndex:7] uppercaseString]];
+						//				else
+						//					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.name"] uppercaseString]];
+						
+						name = [NSMutableString stringWithString: [[seriesId stringValue] uppercaseString]];
+						
+						NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+						name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
+						
+						[BrowserController replaceNotAdmitted: name];
+						tempPath = [tempPath stringByAppendingPathComponent:name];
+					}
+					
+					// Find the DICOM-SERIE folder
+					if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
+						[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+				}
+				else studyPath = tempPath;
 				
-				theTask = [[NSTask alloc] init];
-				[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
-				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
-				[theTask setCurrentDirectoryPath:tempPath];
-				[theTask setArguments:theArguments];		
+				if( previousStudy != [curImage valueForKeyPath: @"series.study"])
+				{
+					previousStudy = [curImage valueForKeyPath: @"series.study"];
+				}
 				
-				[theTask launch];
-				[theTask waitUntilExit];
-				[theTask release];
+				long imageNo = [[curImage valueForKey:@"instanceNumber"] intValue];
+				
+				if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue])
+				{
+					previousSeries = [[curImage valueForKeyPath: @"series.id"] intValue];
+					serieCount++;
+				}
+				if (!addDICOMDIR)
+					dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension];
+				else
+					dest = [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, serieCount, imageNo];
+				
+				int t = 2;
+				while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
+				{
+					if (!addDICOMDIR)
+						dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, t, extension];
+					else
+						dest = [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, t];
+					t++;
+				}
+				
+				if( t != 2)
+				{
+					if (!addDICOMDIR)
+						[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension], @"oldName", [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension], @"newName", nil]];
+					else
+						[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, serieCount, imageNo], @"oldName", [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, 1], @"newName", nil]];
+				}
+				
+				NSError *error = nil;
+				if( [[NSFileManager defaultManager] copyItemAtPath:[filesToExport objectAtIndex:i] toPath:dest error: &error] == NO)
+				{
+					NSLog( @"***** %@", error);
+					NSLog( @"***** src = %@", [filesToExport objectAtIndex:i]);
+					NSLog( @"***** dst = %@", dest);
+				}
+				
+				if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"])
+				{
+					switch( [compressionMatrix selectedTag])
+					{
+						case 1:
+							[files2Compress addObject: dest];
+							break;
+							
+						case 2:
+							[files2Compress addObject: dest];
+							break;
+					}
+				}
+				
+				if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
+				{
+					[[NSFileManager defaultManager] copyPath:[[[filesToExport objectAtIndex:i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dest stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+				}
+				
+				[splash incrementBy:1];
+				
+				[NSThread currentThread].progress = (float) i / (float) [filesToExport count];
+				
+				if( [splash aborted] || [NSThread currentThread].isCancelled)
+				{
+					i = [filesToExport count];
+					exportAborted = YES;
+				}
 				
 				[pool release];
 			}
 		}
-	}
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"] == YES && exportAborted == NO)
-	{
-		for( int i = 0; i < [filesToExport count]; i++)
+		@catch (NSException * e)
 		{
-			NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
-			NSMutableString *name;
-			NSString *tempPath;
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			[AppController printStackTrace: e];
+		}
+		
+		[[DicomStudy dbModifyLock] unlock];
+		
+		for( NSDictionary *d in renameArray)
+			[[NSFileManager defaultManager] moveItemAtPath: [d objectForKey: @"oldName"] toPath: [d objectForKey: @"newName"] error: nil];
+		
+		//close progress window	
+		[splash close];
+		[splash release];
+		
+		if( [files2Compress count] > 0 && exportAborted == NO)
+		{
+	//		[waitCompressionWindow showWindow:self];
+	//		[[waitCompressionWindow progress] setMaxValue: [files2Compress count]];
 			
-			if( !addDICOMDIR)  
-				tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
-			else
+			#ifndef OSIRIX_LIGHT
+			switch( [compressionMatrix selectedTag])
 			{
+				case 1:
+					[self decompressArrayOfFiles: files2Compress work: [NSNumber numberWithChar: 'C']];
+					break;
+					
+				case 2:
+					[self decompressArrayOfFiles: files2Compress work: [NSNumber numberWithChar: 'D']];
+					break;
+			}
+			#endif
+			
+	//		[waitCompressionWindow close];
+		}
+		
+		// add DICOMDIR
+		//NSString *dicomdirPath = [NSString stringWithFormat:@"%@/DICOMDIR",path];
+		
+		// ANR - I had to create this loop, otherwise, if I export a folder on the desktop, the dcmkdir will scan all files and folders available on the desktop.... not only the exported folder.
+		
+		if (addDICOMDIR && exportAborted == NO)
+		{
+			for( int i = 0; i < [filesToExport count]; i++)
+			{
+				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+				NSMutableString *name;
+				
 				if ([(NSString*)[curImage valueForKeyPath: @"series.study.name"] length] > 8)
 					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
 				else
 					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
-			
+				
 				NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
-			
+				
 				[BrowserController replaceNotAdmitted: name];
-			
-				tempPath = [path stringByAppendingPathComponent:name];
+				
+				NSString *tempPath = [path stringByAppendingPathComponent:name];
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath: [tempPath stringByAppendingPathComponent:@"DICOMDIR"]] == NO)
+				{
+					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+					
+					NSTask *theTask;
+					NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", tempPath,  nil];
+					
+					theTask = [[NSTask alloc] init];
+					[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
+					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
+					[theTask setCurrentDirectoryPath:tempPath];
+					[theTask setArguments:theArguments];		
+					
+					[theTask launch];
+					[theTask waitUntilExit];
+					[theTask release];
+					
+					[pool release];
+				}
 			}
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: [tempPath stringByAppendingPathExtension: @"zip"]] == NO)
+		}
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"] == YES && exportAborted == NO)
+		{
+			for( int i = 0; i < [filesToExport count]; i++)
 			{
-				[BrowserController encryptFileOrFolder: tempPath inZIPFile: [tempPath stringByAppendingPathExtension: @"zip"] password: passwordForExportEncryption];
-				self.passwordForExportEncryption = @"";
+				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+				NSMutableString *name;
+				NSString *tempPath;
+				
+				if( !addDICOMDIR)  
+					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
+				else
+				{
+					if ([(NSString*)[curImage valueForKeyPath: @"series.study.name"] length] > 8)
+						name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
+					else
+						name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
+				
+					NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+					name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
+				
+					[BrowserController replaceNotAdmitted: name];
+				
+					tempPath = [path stringByAppendingPathComponent:name];
+				}
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath: [tempPath stringByAppendingPathExtension: @"zip"]] == NO)
+				{
+					[BrowserController encryptFileOrFolder: tempPath inZIPFile: [tempPath stringByAppendingPathExtension: @"zip"] password: passwordForExportEncryption];
+					self.passwordForExportEncryption = @"";
+				}
 			}
 		}
 	}
-		
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		#ifdef OSIRIX_VIEWER
+		[AppController printStackTrace: e];
+		#endif
+	}
+	
+	[pool release];
+	
 	return result;
 }
 
@@ -17659,7 +17711,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[wait close];
 		[wait release];
 		
-		[self exportDICOMFileInt: [[sPanel filenames] objectAtIndex:0] files: filesToExport objects: dicomFiles2Export];
+		NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: [[sPanel filenames] objectAtIndex:0], @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil];
+		
+		NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( exportDICOMFileInt: ) object: d] autorelease];
+		t.name = NSLocalizedString( @"Exporting...", nil);
+		t.supportsCancel = YES;
+		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesToExport count]];
+		
+		[[ThreadsManager defaultManager] addThreadAndStart: t];
 		
 		[[NSUserDefaults standardUserDefaults] setInteger:[compressionMatrix selectedTag] forKey:@"Compression Mode for Export"];
 	}
