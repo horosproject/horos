@@ -2125,8 +2125,11 @@ static NSConditionLock *threadLock = nil;
 	@catch (NSException *ne)
 	{
 		NSLog( @"Autorouting FAILED : %@", ne);
-		
+			
 		[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", server, @"server", nil] waitUntilDone: NO];
+		
+		[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"Sending failed. Will re-try later...", nil)];
+		[NSThread sleepForTimeInterval: 4];
 		
 		// We will try again later...
 		
@@ -2262,7 +2265,12 @@ static NSConditionLock *threadLock = nil;
 				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( processAutorouting) object: nil] autorelease];
 				t.name = NSLocalizedString( @"Autorouting...", nil);
 				t.supportsCancel = YES;
-				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d rule(s)", nil), [autoroutingQueueArray count]];
+				
+				int objects = 0;
+				for( NSArray *o in [autoroutingQueueArray valueForKey: @"objects"])
+					objects += [o count];
+				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d rule(s) - %d file(s)", nil), [autoroutingQueueArray count], objects];
+				
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 			}
 		}
