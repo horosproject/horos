@@ -66,7 +66,7 @@
 		[[ActivityWindowController defaultController].tableView reloadData];
 		[[ActivityWindowController defaultController].tableView display];
 		
-		if( [thread isMainThread] == NO)
+		if (![thread isMainThread] && ![thread isExecuting])
 			[thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
 	}
 }

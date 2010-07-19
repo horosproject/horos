@@ -114,9 +114,6 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 //	[self performSelectorOnMainThread:NotifyInfoChangeSelector withObject:NSThreadProgressKey waitUntilDone:NO];
 	[self didChangeValueForKey:NSThreadProgressKey];
 	[self didChangeValueForKey:NSThreadSubthreadsAwareProgressKey];
-	if (!progress) {
-		int bbb = 0;
-	}
 }
 
 -(CGFloat)subthreadsAwareProgress {

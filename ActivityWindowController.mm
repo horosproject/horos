@@ -18,6 +18,7 @@
 #import "MenuMeterCPUStats.h"
 #import "MenuMeterNetStats.h"
 #import <OsiriX Headers/NSImage+N2.h>
+#import <OsiriX Headers/N2Operators.h>
 #import <mach/mach_port.h>
 #import <IOKit/IOKitLib.h>
 #import <IOKit/storage/IOBlockStorageDriver.h>
@@ -92,12 +93,36 @@
 	return [cell autorelease];
 }
 
+const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
+
++(NSImage*)cpuActivityImage:(NSImage*)image meanLoad:(CGFloat)meanload maxLoad:(CGFloat)maxload {
+	NSImage* meanimage = [image imageWithHue:greenHue+deltaHue*meanload];
+	NSImage* maximage = [image imageWithHue:greenHue+deltaHue*maxload];
+	NSSize size = maximage.size;
+	
+	[meanimage lockFocus];
+	
+	[[NSGraphicsContext currentContext] saveGraphicsState];
+	
+	NSBezierPath* clipPath = [NSBezierPath bezierPath];
+	[clipPath moveToPoint:NSZeroPoint];
+	[clipPath lineToPoint:NSMakePoint(size.width, 0)];
+	[clipPath lineToPoint:NSMakePoint(size.width, size.height)];
+	[clipPath closePath];
+	[clipPath setClip];
+	
+	[maximage drawAtPoint:NSZeroPoint fromRect:NSMakeRect(NSZeroPoint, size) operation:NSCompositeCopy fraction:1];
+	
+	[[NSGraphicsContext currentContext] restoreGraphicsState];
+	
+	[meanimage unlockFocus];
+	return meanimage;
+}
+
 -(void)updateStatsThread:(id)obj {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	MenuMeterCPUStats* menuMeterCPUStats = [[MenuMeterCPUStats alloc] init];
 	MenuMeterNetStats* menuMeterNetStats = [[MenuMeterNetStats alloc] init];
-	
-	const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 	
 	#define historyLen 100
 	CGFloat cpuCurrLoad = -1, netCurrLoad = -1, hddCurrLoad = -1;
@@ -128,9 +153,9 @@
 				meanload += thisLoad/cpuLoads.count;
 				maxload = std::max(maxload, thisLoad);
 			}
-			CGFloat load = maxload;//(meanload+maxload)/2;
+			CGFloat load = meanload+maxload*10;//(meanload+maxload)/2;
 			if (fabs(cpuCurrLoad-load) > 0.01) {
-				[cpuActiView setImage:[cpuActiView.image imageWithHue:greenHue+deltaHue*load]];
+				[cpuActiView setImage:[ActivityWindowController cpuActivityImage:cpuActiView.image meanLoad:meanload maxLoad:maxload]];
 				[cpuActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 				cpuCurrLoad = load;
 			}

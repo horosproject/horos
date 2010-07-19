@@ -484,7 +484,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 								  onlyDICOM: YES 
 						   notifyAddedFiles: YES
 						parseExistingObject: YES
-								   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : NULL
+								   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : @"/tmp"
 						  generatedByOsiriX: YES];
 			}
 		}
@@ -581,7 +581,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 								  onlyDICOM: YES 
 						   notifyAddedFiles: YES
 						parseExistingObject: YES
-								   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : NULL
+								   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : @"/tmp"
 						  generatedByOsiriX: YES];
 			}
 			

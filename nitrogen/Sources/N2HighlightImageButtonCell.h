@@ -15,7 +15,11 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface N2HighlightImageButtonCell : NSButtonCell
+@interface N2HighlightImageButtonCell : NSButtonCell {
+	NSImage* highlightedImageCache;
+}
+
+@property(retain) NSImage* highlightedImageCache;
 
 -(id)initWithImage:(NSImage*)image;
 

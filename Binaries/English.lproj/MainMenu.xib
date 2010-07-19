@@ -3,16 +3,16 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">10F569</string>
-		<string key="IBDocument.InterfaceBuilderVersion">732</string>
+		<string key="IBDocument.InterfaceBuilderVersion">762</string>
 		<string key="IBDocument.AppKitVersion">1038.29</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">732</string>
+			<string key="NS.object.0">762</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="14144"/>
 			<integer value="24"/>
+			<integer value="14158"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -4533,7 +4533,6 @@
 									<reference key="NSHScroller" ref="435897027"/>
 									<reference key="NSContentView" ref="613998968"/>
 									<reference key="NSHeaderClipView" ref="903567248"/>
-									<reference key="NSCornerView" ref="1005257844"/>
 									<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 								</object>
 								<object class="NSSplitView" id="766578884">
@@ -5603,7 +5602,7 @@
 											<object class="NSTableView" id="550433050">
 												<reference key="NSNextResponder" ref="161150111"/>
 												<int key="NSvFlags">256</int>
-												<string key="NSFrameSize">{187, 103}</string>
+												<string key="NSFrameSize">{198, 103}</string>
 												<reference key="NSSuperview" ref="161150111"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="_NSCornerView" key="NSCornerView">
@@ -5614,7 +5613,7 @@
 												<array class="NSMutableArray" key="NSTableColumns">
 													<object class="NSTableColumn" id="973283301">
 														<string key="NSIdentifier">all</string>
-														<double key="NSWidth">184</double>
+														<double key="NSWidth">195</double>
 														<double key="NSMinWidth">10</double>
 														<double key="NSMaxWidth">1000</double>
 														<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -5662,7 +5661,7 @@
 												<int key="NSTableViewDraggingDestinationStyle">0</int>
 											</object>
 										</array>
-										<string key="NSFrame">{{1, 1}, {187, 103}}</string>
+										<string key="NSFrame">{{1, 1}, {198, 103}}</string>
 										<reference key="NSSuperview" ref="265203813"/>
 										<reference key="NSNextKeyView" ref="550433050"/>
 										<reference key="NSDocView" ref="550433050"/>
@@ -5671,7 +5670,7 @@
 									</object>
 									<object class="NSScroller" id="1033899909">
 										<reference key="NSNextResponder" ref="265203813"/>
-										<int key="NSvFlags">256</int>
+										<int key="NSvFlags">-2147483392</int>
 										<string key="NSFrame">{{188, 1}, {11, 103}}</string>
 										<reference key="NSSuperview" ref="265203813"/>
 										<int key="NSsFlags">256</int>
@@ -5695,7 +5694,7 @@
 								<string key="NSFrame">{{0, 653}, {200, 105}}</string>
 								<reference key="NSSuperview" ref="729579565"/>
 								<reference key="NSNextKeyView" ref="161150111"/>
-								<int key="NSsFlags">18</int>
+								<int key="NSsFlags">530</int>
 								<reference key="NSVScroller" ref="1033899909"/>
 								<reference key="NSHScroller" ref="845908278"/>
 								<reference key="NSContentView" ref="161150111"/>
@@ -8709,7 +8708,7 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 										</object>
 										<string key="decimalSeparator">.</string>
 										<integer value="1000" key="formatterBehavior"/>
-										<string key="groupingSeparator">'</string>
+										<string key="groupingSeparator">,</string>
 										<object class="NSLocale" key="locale">
 											<string key="NS.identifier">fr_CH</string>
 										</object>
@@ -8733,7 +8732,7 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 									<reference key="NS.max" ref="194147893"/>
 									<nil key="NS.rounding"/>
 									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">'</string>
+									<string key="NS.thousand">,</string>
 									<bool key="NS.hasthousands">YES</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -23007,16 +23006,34 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="Apply2DCLUT:">id</string>
 						<string key="ApplyWLWW:">id</string>
+						<string key="applyNewSettingForFlyAssistant:">id</string>
 						<string key="change2DTool:">id</string>
 						<string key="change3DTool:">id</string>
+						<string key="changeAssistantMode:">id</string>
+						<string key="clickAssistantToolbarBottonA:">id</string>
 						<string key="endDCMExportSettings:">id</string>
 						<string key="exportDICOMFile:">id</string>
+						<string key="lockCameraOrFocusOnPath:">id</string>
+						<string key="lookBackwards:">id</string>
 						<string key="setExportAllViews:">id</string>
+						<string key="showOrHideCenterlines:">id</string>
+						<string key="showingAssistantSettings:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="LODView">NSView</string>
 						<string key="WLWW2DView">NSView</string>
 						<string key="WLWW3DView">NSView</string>
+						<string key="assistantPanelSliderResampleSize">NSSlider</string>
+						<string key="assistantPanelSliderStepLength">NSSlider</string>
+						<string key="assistantPanelSliderThreshold">NSSlider</string>
+						<string key="assistantPanelTextResampleSize">NSTextField</string>
+						<string key="assistantPanelTextStepLength">NSTextField</string>
+						<string key="assistantPanelTextThreshold">NSTextField</string>
+						<string key="assistantSettingPanel">NSPanel</string>
+						<string key="assistantToolBarButtonA">NSButton</string>
+						<string key="assistantToolBarButtonLookBack">NSButton</string>
+						<string key="assistantToolBarMatrixCamOnPath">NSMatrix</string>
+						<string key="assistantToolBarView">NSView</string>
 						<string key="bottomSplitView">NSSplitView</string>
 						<string key="clut2DPopup">NSPopUpButton</string>
 						<string key="engineView">NSView</string>
@@ -25500,6 +25517,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 			</array>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
+		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
@@ -25511,5 +25529,31 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">../../OsiriX.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
+		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="Endoscopy">{32, 32}</string>
+			<string key="MIP">{32, 32}</string>
+			<string key="MPR">{32, 32}</string>
+			<string key="NSAddTemplate">{8, 8}</string>
+			<string key="NSLockLockedTemplate">{9, 12}</string>
+			<string key="NSMenuCheckmark">{9, 8}</string>
+			<string key="NSMenuMixedState">{7, 2}</string>
+			<string key="NSRemoveTemplate">{8, 8}</string>
+			<string key="NSSmartBadgeTemplate">{15, 15}</string>
+			<string key="NSSwitch">{15, 15}</string>
+			<string key="Realised1">{12, 12}</string>
+			<string key="Realised2">{12, 12}</string>
+			<string key="Realised3">{12, 12}</string>
+			<string key="Receiving">{12, 12}</string>
+			<string key="ReportPages">{32, 32}</string>
+			<string key="StartupDisk">{32, 32}</string>
+			<string key="Surface">{32, 32}</string>
+			<string key="VolumeRendering">{32, 32}</string>
+			<string key="activity_cpu">{19, 20}</string>
+			<string key="activity_hdd">{19, 16}</string>
+			<string key="activity_net">{14, 18}</string>
+			<string key="error">{32, 32}</string>
+			<string key="orthogonalReslice">{32, 32}</string>
+			<string key="smile">{32, 32}</string>
+		</dictionary>
 	</data>
 </archive>

@@ -91,6 +91,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 - (NSString*) SRPathForFrame: (int) frameNo;
 - (NSString*) SRPath;
 - (NSString	*)sopInstanceUID;
+@property(nonatomic, retain) NSString* modality;
 
 @end
 
