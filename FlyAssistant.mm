@@ -67,12 +67,18 @@
 		return nil;
 	}
 	csmap=(float*)malloc(CROSSECTIONIMSIZE*CROSSECTIONIMSIZE*sizeof(float));
+	if (csmap == nil) {
+		[self autorelease];
+		return nil;
+	}
+	
 	return self;
 }
 - (void) dealloc {
 	if(distmap)
 		free(distmap);
-	free(csmap);
+	if( csmap)
+		free(csmap);
 	[super dealloc];
 }
 - (int) setResampleVoxelSize:(float)vsize
@@ -95,7 +101,7 @@
 	distmap=(float*)malloc(distmapVolumeSize*sizeof(float));
 	if(!distmap)
 	{
-		printf("no enough memory for distance map");
+		NSLog( @"no enough memory for distance map");
 		return ERROR_NOENOUGHMEM;
 	}
 	return 0;
@@ -704,7 +710,7 @@ typedef GreaterPathNodeOnF NodeCompare;
 	float* costmap=(float*)malloc(distmapVolumeSize*sizeof(float));
 	if(!costmap)
 	{
-		printf("no enough memory");
+		NSLog( @"no enough memory");
 		return ERROR_NOENOUGHMEM;
 	}
 	
@@ -917,7 +923,7 @@ typedef GreaterPathNodeOnF NodeCompare;
 }
 - (void) createSmoothedCenterlin:(NSMutableArray*)centerline withStepLength:(float)len
 {
-	Spline3D* function = [[Spline3D alloc] init];
+	Spline3D* function = [[[Spline3D alloc] init] autorelease];
 	Point3D* pt = [Point3D point];
 	float delta_t= 1.0/(float)([centerline count]-1);
 	int i;

@@ -11117,6 +11117,40 @@ static BOOL needToRezoom;
 	[pool release];
 }
 
+- (void) copyToDB: (NSDictionary*) d
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSString *dbFolder = [d objectForKey: @"dbFolder"];
+	NSMutableArray *dstFiles = [NSMutableArray array];
+	NSManagedObjectContext *sqlContext = [d objectForKey: @"sqlContext"];
+	
+	int t = 0;
+	for( NSString *srcPath in [d objectForKey: @"packArray"])
+	{
+		NSString *dstPath;
+		BOOL isDicomFile = [DicomFile isDICOMFile:srcPath];
+		
+		if( isDicomFile) dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
+		else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString] dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
+		
+		if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
+			[dstFiles addObject: dstPath];
+		
+		if( [NSThread currentThread].isCancelled)
+			break;
+			
+		[NSThread currentThread].progress = (float) t++ / (float) [[d objectForKey: @"packArray"] count];
+		[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[d objectForKey: @"packArray"] count]-t];
+	}
+	
+	// Then we add the files to the sql file
+	[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"Indexing the files...", nil)];
+	[self addFilesToDatabase: dstFiles onlyDICOM: NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+						
+	[pool release];
+}
+
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
 	if ([tableView isEqual:albumTable])
@@ -11319,34 +11353,14 @@ static BOOL needToRezoom;
 							NSMutableArray	*dstFiles = [NSMutableArray array];
 							NSLog( @"Destination DB Folder is NOT identical to Current DB Folder");
 							
-							// First we copy the files to the DATABASE folder
-							splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying to OsiriX database...", nil)];
+							NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: packArray, @"packArray", dbFolder, @"dbFolder", sqlContext, @"sqlContext", nil];
 							
-							[splash setCancel:YES];
-							[splash showWindow:self];
-							[[splash progress] setMaxValue:[packArray count]];
-							
-							for( int i = 0; i < [packArray count]; i++)
-							{
-								[splash incrementBy:1];
-								
-								NSString *dstPath, *srcPath = [packArray objectAtIndex: i];
-								BOOL isDicomFile = [DicomFile isDICOMFile:srcPath];
-								
-								if( isDicomFile) dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
-								else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString] dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
-								
-								if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
-									[dstFiles addObject: dstPath];
-								
-								if( [splash aborted]) 
-									i = [packArray count];
-							}
-							[splash close];
-							[splash release];
-							
-							// Then we add the files to the sql file
-							copiedObjects = [self addFilesToDatabase: dstFiles onlyDICOM:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+							NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyToDB:) object: dict] autorelease];
+							t.name = NSLocalizedString( @"Copying files to another DB...", nil);
+							t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [packArray count]];
+							t.supportsCancel = YES;
+							t.progress = 0;
+							[[ThreadsManager defaultManager] addThreadAndStart: t];
 						}
 						
 						error = nil;
