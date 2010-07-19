@@ -334,7 +334,7 @@
 //	printf("interation: %d\n",its);
 	isDistanceTransformFinished = YES;
 }
-- (int) caculateSampleMetric:(float) a :(float) b :(float) c
+- (int) calculateSampleMetric:(float) a :(float) b :(float) c
 {
 	int err=0;
 	if (a*b*c==0) {
@@ -428,7 +428,7 @@
 
 -(int) resamplecrosssection:(Point3D*) pt : (Point3D*) dir :(float) steplength
 {
-	int err=[self caculateSampleMetric:dir.x :dir.y :dir.z];
+	int err=[self calculateSampleMetric:dir.x :dir.y :dir.z];
 	if (err) {
 		return err;
 	}

@@ -96,8 +96,8 @@
 const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 
 +(NSImage*)cpuActivityImage:(NSImage*)image meanLoad:(CGFloat)meanload maxLoad:(CGFloat)maxload {
-	NSImage* meanimage = [image imageWithHue:greenHue+deltaHue*meanload];
-	NSImage* maximage = [image imageWithHue:greenHue+deltaHue*maxload];
+	NSImage* meanimage = [image imageWithHue:deltaHue*meanload];
+	NSImage* maximage = [image imageWithHue:deltaHue*maxload];
 	NSSize size = maximage.size;
 	
 	[meanimage lockFocus];
@@ -134,6 +134,9 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 	mach_port_t masterPort;
 	IOMasterPort(MACH_PORT_NULL, &masterPort);
 	
+	NSImage *cpuImage = [NSImage imageNamed: @"activity_cpu.png"];
+	NSImage *netImage = [NSImage imageNamed: @"activity_net.png"];
+	NSImage *hddImage = [NSImage imageNamed: @"activity_hdd.png"];
 	
 	while (![[NSThread currentThread] isCancelled]) {
 		[NSThread sleepForTimeInterval:0.1];
@@ -155,7 +158,7 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 			}
 			CGFloat load = meanload+maxload*10;//(meanload+maxload)/2;
 			if (fabs(cpuCurrLoad-load) > 0.01) {
-				[cpuActiView setImage:[ActivityWindowController cpuActivityImage:cpuActiView.image meanLoad:meanload maxLoad:maxload]];
+				[cpuActiView setImage:[ActivityWindowController cpuActivityImage:cpuImage meanLoad:meanload maxLoad:maxload]];
 				[cpuActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 				cpuCurrLoad = load;
 			}
@@ -172,7 +175,7 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 				totdeltain += [[[netLoads objectForKey:key] objectForKey:@"deltain"] floatValue];;
 			} CGFloat load = totdeltain/totpeak;
 			if (fabs(netCurrLoad-load) > 0.01) {
-				[netActiView setImage:[netActiView.image imageWithHue:greenHue+deltaHue*load]];
+				[netActiView setImage:[netImage imageWithHue:deltaHue*load]];
 				[netActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 				netCurrLoad = load;
 			}
@@ -212,7 +215,7 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 				CGFloat load = hddTimedDeltaRWs[historyLen-1]/maxTimedDeltaRW;
 				
 				if (fabs(hddCurrLoad-load) > 0.01) {
-					[hddActiView setImage:[hddActiView.image imageWithHue:greenHue+deltaHue*load]];
+					[hddActiView setImage:[hddImage imageWithHue:deltaHue*load]];
 					[hddActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 					hddCurrLoad = load;
 				}
@@ -221,7 +224,7 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 			prevTotalRW = totalRW;			
 		} else [hddActiView setImage:NULL];
 		
-		[statusLabel performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:NSLocalizedString(self.manager.threads.count==1?@"%d background thread":@"%d background threads", NULL), self.manager.threads.count] waitUntilDone:YES];
+		[statusLabel performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:NSLocalizedString(self.manager.threads.count==1?@"%d thread":@"%d threads", NULL), self.manager.threads.count] waitUntilDone:YES];
 		
 		previousTime = thisTime;
 		[pool release];

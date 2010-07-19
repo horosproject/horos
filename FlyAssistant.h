@@ -70,7 +70,7 @@
 - (int) caculateNextPositionFrom: (Point3D*) pt Towards:(Point3D*)dir;
 - (int) createCenterline:(NSMutableArray*)centerline FromPointA:(Point3D*)pta ToPointB:(Point3D*)ptb;
 - (Point3D*) caculateNextCenterPointFrom: (Point3D*) pt Towards:(Point3D*)dir WithStepLength:(float)steplen;
-- (int) caculateSampleMetric:(float) a :(float) b :(float) c;
+- (int) calculateSampleMetric:(float) a :(float) b :(float) c;
 - (int) resamplecrosssection:(Point3D*) pt : (Point3D*) dir :(float) steplength;
 - (float) stepCostFrom:(int)index1 To:(int)index2;
 - (void) trackCenterline:(NSMutableArray*)line From:(int)currentindex WithLabel:(unsigned char*)labelmap;

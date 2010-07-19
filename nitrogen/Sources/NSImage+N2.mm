@@ -21,6 +21,7 @@
 //#include <complex>
 #import "N2Operators.h"
 #import "NSColor+N2.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation N2Image
 @synthesize inchSize = _inchSize, portion = _portion;
@@ -224,21 +225,10 @@ end_size_y:
 }
 
 -(NSImage*)imageWithHue:(CGFloat)hue {
-	NSUInteger w = self.size.width, h = self.size.height;
-	NSBitmapImageRep* bitmap = [[NSBitmapImageRep alloc] initWithData:[self TIFFRepresentation]];
-	
-	for (NSUInteger y = 0; y < h; ++y)
-		for (NSUInteger x = 0; x < w; ++x) {
-			NSColor* c = [bitmap colorAtX:x y:y];
-			c = [NSColor colorWithCalibratedHue:hue saturation:c.saturationComponent brightness:c.brightnessComponent alpha:c.alphaComponent];
-			[bitmap setColor:c atX:x y:y];
-		}
-	
-	NSImage* hued = [[NSImage alloc] initWithSize:[self size]];
-	[hued lockFocus];
-	[bitmap draw]; [bitmap release];
-	[hued unlockFocus];
-	return [hued autorelease];
+	NSImageRep *rep = [NSCIImageRep imageRepWithCIImage: [[CIFilter filterWithName:@"CIHueAdjust" keysAndValues:@"inputAngle", [NSNumber numberWithFloat: hue*2*M_PI] , @"inputImage", [CIImage imageWithData:[self TIFFRepresentation]], nil] valueForKey:@"outputImage"]];
+	NSImage *image = [[NSImage alloc] initWithSize:[rep size]];
+	[image addRepresentation:rep];
+	return [image autorelease];
 }
 
 @end
