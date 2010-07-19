@@ -157,7 +157,8 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 				maxload = std::max(maxload, thisLoad);
 			}
 			CGFloat load = meanload+maxload*10;//(meanload+maxload)/2;
-			if (fabs(cpuCurrLoad-load) > 0.01) {
+			if (fabs(cpuCurrLoad-load) > 0.01)
+			{
 				[cpuActiView setImage:[ActivityWindowController cpuActivityImage:cpuImage meanLoad:meanload maxLoad:maxload]];
 				[cpuActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 				cpuCurrLoad = load;
@@ -174,7 +175,8 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 				totpeak += [[[netLoads objectForKey:key] objectForKey:@"peak"] floatValue];
 				totdeltain += [[[netLoads objectForKey:key] objectForKey:@"deltain"] floatValue];;
 			} CGFloat load = totdeltain/totpeak;
-			if (fabs(netCurrLoad-load) > 0.01) {
+			if (fabs(netCurrLoad-load) > 0.01)
+			{
 				[netActiView setImage:[netImage imageWithHue:deltaHue*load]];
 				[netActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 				netCurrLoad = load;
@@ -214,7 +216,8 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 				
 				CGFloat load = hddTimedDeltaRWs[historyLen-1]/maxTimedDeltaRW;
 				
-				if (fabs(hddCurrLoad-load) > 0.01) {
+				if (fabs(hddCurrLoad-load) > 0.01)
+				{
 					[hddActiView setImage:[hddImage imageWithHue:deltaHue*load]];
 					[hddActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 					hddCurrLoad = load;
