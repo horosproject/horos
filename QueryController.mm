@@ -2015,7 +2015,8 @@ extern "C"
 			
 			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
 			t.name = NSLocalizedString( @"Retrieving images...", nil);
-			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
+			if( [selectedItems count] == 1) t.status = [NSString stringWithFormat: NSLocalizedString( @"%d study", nil), [selectedItems count]];
+			else t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
 			if( [selectedItems count] > 1) t.progress = 0;
 			t.supportsCancel = YES;
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
@@ -2030,7 +2031,10 @@ extern "C"
 			}
 			NSLog( @"______________________________________________");
 			
-			NSString *desc = [NSString stringWithFormat: NSLocalizedString( @"Will auto-retrieve %d studies", nil), [selectedItems count]];
+			NSString *desc = nil;
+			
+			if( [selectedItems count] == 1) desc = [NSString stringWithFormat: NSLocalizedString( @"Will auto-retrieve %d study", nil), [selectedItems count]];
+			else desc = [NSString stringWithFormat: NSLocalizedString( @"Will auto-retrieve %d studies", nil), [selectedItems count]];
 			
 			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: desc name: @"autoquery"];
 		}
@@ -2310,7 +2314,10 @@ extern "C"
 				
 				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
 				t.name = NSLocalizedString( @"Retrieving images...", nil);
-				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
+				
+				if( [selectedItems count] == 1) t.status = [NSString stringWithFormat: NSLocalizedString( @"%d study", nil), [selectedItems count]];
+				else t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
+				
 				if( [selectedItems count] > 1) t.progress = 0;
 				t.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
@@ -2464,7 +2471,10 @@ extern "C"
 		{
 			DCMTKQueryNode *object = [d objectForKey: @"query"];
 			
-			NSString *status = [NSString stringWithFormat: NSLocalizedString( @"%d studies - %@", nil), [array count], [object name]];
+			NSString *status = nil;
+			
+			if( [array count] == 1) status = [NSString stringWithFormat: NSLocalizedString( @"%d study - %@", nil), [array count], [object name]];
+			else status = [NSString stringWithFormat: NSLocalizedString( @"%d studies - %@", nil), [array count], [object name]];
 			
 			[NSThread currentThread].status = [status stringByReplacingOccurrencesOfString: @"^" withString: @" "];
 			

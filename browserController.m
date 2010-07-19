@@ -15503,22 +15503,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				case 'C':
 					t = [[[NSThread alloc] initWithTarget:self selector:@selector( compressDICOMJPEG:) object: [array subarrayWithRange: range]] autorelease];
-					t.name = NSLocalizedString( @"Compressing DICOM files...", nil);
+					t.name = NSLocalizedString( @"Compressing files...", nil);
 				break;
 				
 				case 'X':
 					t = [[[NSThread alloc] initWithTarget:self selector:@selector( compressDICOMJPEGinINCOMING:) object: [array subarrayWithRange: range]] autorelease];
-					t.name = NSLocalizedString( @"Compressing DICOM files...", nil);
+					t.name = NSLocalizedString( @"Compressing files...", nil);
 				break;
 					
 				case 'D':
 					t = [[[NSThread alloc] initWithTarget:self selector:@selector( decompressDICOMJPEG:) object: [array subarrayWithRange: range]] autorelease];
-					t.name = NSLocalizedString( @"Decompressing DICOM files...", nil);
+					t.name = NSLocalizedString( @"Decompressing files...", nil);
 				break;
 					
 				case 'I':
 					t = [[[NSThread alloc] initWithTarget:self selector:@selector( decompressDICOMJPEGinINCOMING:) object: [array subarrayWithRange: range]] autorelease];
-					t.name = NSLocalizedString( @"Decompressing DICOM files...", nil);
+					t.name = NSLocalizedString( @"Decompressing files...", nil);
 				break;
 			}
 			
