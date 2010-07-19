@@ -3706,7 +3706,11 @@ static NSConditionLock *threadLock = nil;
 		@try
 		{
 			NSMutableArray *copiedFiles = [NSMutableArray array];
-			NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 20.0;
+			
+			NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
+			
+			if( [[dict objectForKey: @"mountedVolume"] boolValue] == YES && [[dict objectForKey: @"copyFiles"] boolValue] == NO)
+				twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 20.0;
 			
 			for( ; i < [filesInput count] && twentySeconds > [NSDate timeIntervalSinceReferenceDate]; i++)
 			{
@@ -3990,7 +3994,8 @@ static NSConditionLock *threadLock = nil;
 			[dict addEntriesFromDictionary: options];
 			
 			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: dict] autorelease];
-			t.name = NSLocalizedString( @"Copying and indexing files...", nil);
+			if( [[options objectForKey: @"mountedVolume"] boolValue]) t.name = NSLocalizedString( @"Copying and indexing files from CD/DVD...", nil);
+			else t.name = NSLocalizedString( @"Copying and indexing files...", nil);
 			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesInput count]];
 			t.supportsCancel = YES;
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
@@ -4062,7 +4067,9 @@ static NSConditionLock *threadLock = nil;
 		[dict addEntriesFromDictionary: options];
 		
 		NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyFilesThread:) object: dict] autorelease];
-		t.name = NSLocalizedString( @"Indexing files...", nil);
+		
+		if( [[options objectForKey: @"mountedVolume"] boolValue]) t.name = NSLocalizedString( @"Indexing files from CD/DVD...", nil);
+		else t.name = NSLocalizedString( @"Indexing files...", nil);
 		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesInput count]];
 		t.supportsCancel = YES;
 		[[ThreadsManager defaultManager] addThreadAndStart: t];
