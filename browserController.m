@@ -14457,6 +14457,7 @@ static NSArray*	openSubSeriesArray = nil;
 			[folders addObject: [file stringByDeletingLastPathComponent]];
 			
 			[NSThread currentThread].progress = (float) f++ / (float) [copyArray count];
+			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [copyArray count]-f];
 		}
 		
 		[deleteInProgress unlock];
