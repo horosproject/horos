@@ -1756,6 +1756,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	NSString *sopClassUID = nil;
 	NSMutableArray *imageTypeArray = nil;
 	
+	if( filePath == nil)
+		return returnValue;
+		
 	[PapyrusLock lock];
 	
 	// open the test file

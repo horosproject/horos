@@ -3668,12 +3668,7 @@ static NSConditionLock *threadLock = nil;
 				[self outlineViewRefresh];
 		}
 		
-		@catch( NSException *ne)
-		{
-			NSLog( @"%@", [ne name]);
-			NSLog( @"%@", [ne reason]);
-			[AppController printStackTrace: ne];
-		}
+		@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
 	}
 	
 	return retError;
@@ -3711,10 +3706,9 @@ static NSConditionLock *threadLock = nil;
 		@try
 		{
 			NSMutableArray *copiedFiles = [NSMutableArray array];
+			NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 20.0;
 			
-			#define COPYCHUNK 20
-			
-			for( int t = 0; i < [filesInput count] && t < COPYCHUNK; i++, t++)
+			for( ; i < [filesInput count] && twentySeconds > [NSDate timeIntervalSinceReferenceDate]; i++)
 			{
 				NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
 				
@@ -3728,7 +3722,18 @@ static NSConditionLock *threadLock = nil;
 				else
 				{
 					if( [[NSFileManager defaultManager] fileExistsAtPath: srcPath])
-						[copiedFiles addObject: srcPath];
+					{
+						if( [[dict objectForKey: @"mountedVolume"] boolValue])
+						{
+							@try
+							{
+								if( [[[DicomFile alloc] init: srcPath] autorelease]) // Pre-load for CD/DVD in cache
+									[copiedFiles addObject: srcPath];
+							}
+							@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
+						}
+						else [copiedFiles addObject: srcPath];
+					}
 				}
 				
 				if( [NSThread currentThread].isCancelled)
@@ -15937,32 +15942,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)checkIncoming: (id)sender
 {
-//	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/RESTARTOSIRIXSTORESCP"])
-//	{
-//		@try
-//		{
-//			[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/RESTARTOSIRIXSTORESCP" error: nil];
-//			
-//			NSLog( @"********** RESTARTING STORE SCP ------- START");
-//			
-//			[[AppController sharedAppController] killDICOMListenerWait: YES];
-//			
-//			[NSThread sleepForTimeInterval: 5];
-//			
-//			[[AppController sharedAppController] restartSTORESCP];
-//			
-//			NSLog( @"********** RESTARTING STORE SCP -------- END");
-//			
-//			[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/RESTARTOSIRIXSTORESCP" error: nil];
-//		}
-//		@catch (NSException * e)
-//		{
-//			NSLog( @"****** exception during RESTARTING STORE SCP: %@", e);
-//			[AppController printStackTrace: e];
-//		}
-//	}
-	
-	
 	if( [[AppController sharedAppController] isSessionInactive]) return;
 	if( DICOMDIRCDMODE) return;
 	if( DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;

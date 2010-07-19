@@ -451,6 +451,9 @@ NSString* filenameWithDate( NSString *inputfile)
 
 NSString* convertDICOM( NSString *inputfile)
 {
+	if( inputfile == nil)
+		return nil;
+	
 	NSString *outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP.noindex/%@", filenameWithDate( inputfile)];
 	
 	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile])

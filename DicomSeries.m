@@ -258,7 +258,7 @@
 		{
 			DicomImage* image = [files objectAtIndex:[files count]/2];
 			
-			if ([NSData dataWithContentsOfFile: image.completePath])	// This means the file is readable...
+			if ([[NSFileHandle fileHandleForReadingAtPath: image.completePath] readDataOfLength: 100])	// This means the file is readable...
 			{
 				int frame = 0;
 				
