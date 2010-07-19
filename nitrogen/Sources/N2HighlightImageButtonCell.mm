@@ -27,24 +27,26 @@
 }
 
 +(NSImage*)highlightedImage:(NSImage*)image {
-	NSImage* highlightedImage = NULL;
+//	NSImage* highlightedImage = NULL;
+//
+//	NSUInteger w = image.size.width, h = image.size.height;
+//	highlightedImage = [[NSImage alloc] initWithSize:image.size];
+//	[highlightedImage lockFocus];
+//	NSBitmapImageRep* bitmap = [[NSBitmapImageRep alloc] initWithData:[image TIFFRepresentation]];
+//	
+//	for (NSUInteger y = 0; y < h; ++y)
+//		for (NSUInteger x = 0; x < w; ++x) {
+//			NSColor* c = [bitmap colorAtX:x y:y];
+//			c = [c highlightWithLevel:[c alphaComponent]/1.5];
+//			[bitmap setColor:c atX:x y:y];
+//		}
+//	
+//	[bitmap draw]; [bitmap release];
+//	[highlightedImage unlockFocus];
+//	
+//	return [highlightedImage autorelease];	
 
-	NSUInteger w = image.size.width, h = image.size.height;
-	highlightedImage = [[NSImage alloc] initWithSize:image.size];
-	[highlightedImage lockFocus];
-	NSBitmapImageRep* bitmap = [[NSBitmapImageRep alloc] initWithData:[image TIFFRepresentation]];
-	
-	for (NSUInteger y = 0; y < h; ++y)
-		for (NSUInteger x = 0; x < w; ++x) {
-			NSColor* c = [bitmap colorAtX:x y:y];
-			c = [c highlightWithLevel:[c alphaComponent]/1.5];
-			[bitmap setColor:c atX:x y:y];
-		}
-	
-	[bitmap draw]; [bitmap release];
-	[highlightedImage unlockFocus];
-	
-	return [highlightedImage autorelease];	
+	return image;
 }
 
 -(BOOL)isOpaque {
