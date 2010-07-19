@@ -17,25 +17,12 @@
 
 @implementation N2HighlightImageButtonCell
 
-@synthesize highlightedImageCache;
-
--(id)initWithImage:(NSImage*)image {
-	self = [super initImageCell:image];
-	
-	self.gradientType = NSGradientNone;
-	self.bezelStyle = 0;
-	
-	return self;
-}
-
--(void)dealloc {
-	self.highlightedImageCache = NULL;
-	[super dealloc];
-}
-
 +(NSImage*)highlightedImage:(NSImage*)image {
+	if (!image)
+		return NULL;
+	
 	NSImage* highlightedImage = NULL;
-
+	
 	NSUInteger w = image.size.width, h = image.size.height;
 	highlightedImage = [[NSImage alloc] initWithSize:image.size];
 	[highlightedImage lockFocus];
@@ -52,30 +39,15 @@
 	[highlightedImage unlockFocus];
 	
 	return [highlightedImage autorelease];	
-	
-	return image;
+}
+
+-(id)initWithImage:(NSImage*)image {
+	return [super initWithImage:image altImage:NULL]; // [N2HighlightImageButtonCell highlightedImage:image]
 }
 
 -(void)setImage:(NSImage*)image {
 	[super setImage:image];
-	self.highlightedImageCache = [N2HighlightImageButtonCell highlightedImage:image];
+	self.altImage = [N2HighlightImageButtonCell highlightedImage:image];
 }
-
--(BOOL)isOpaque {
-	return NO;
-}
-
--(void)drawWithFrame:(NSRect)frame inView:(NSView*)view {
-	NSImage* image = self.image;
-	if (![self isHighlighted])
-		image = self.highlightedImageCache;
-	NSRect imageFrame = NSZeroRect; imageFrame.size = image.size;
-	[image drawInRect:frame fromRect:imageFrame operation:NSCompositeSourceOver fraction:1];
-}
-
--(void)drawBezelWithFrame:(NSRect)frame inView:(NSView*)controlView {
-}
-
-
 
 @end

@@ -12,14 +12,10 @@
      PURPOSE.
 =========================================================================*/
 
-#import <Cocoa/Cocoa.h>
+#import "N2ImageButtonCell.h"
 
 
-@interface N2HighlightImageButtonCell : NSButtonCell {
-	NSImage* highlightedImageCache;
-}
-
-@property(retain) NSImage* highlightedImageCache;
+@interface N2HighlightImageButtonCell : N2ImageButtonCell
 
 -(id)initWithImage:(NSImage*)image;
 

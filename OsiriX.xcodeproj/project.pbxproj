@@ -231,6 +231,10 @@
 		59E379DB116B295B00E84FE3 /* DicomAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E379D7116B295B00E84FE3 /* DicomAlbum.m */; };
 		59F1A4C8104BA5BE009E3215 /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */; };
 		59F1A515104BA8AE009E3215 /* OsiriX Headers.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* OsiriX Headers.framework */; };
+		59F5F3F911F476030047A90D /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F3F711F476030047A90D /* N2ImageButtonCell.h */; };
+		59F5F3FA11F476030047A90D /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */; };
+		59F5F3FB11F476030047A90D /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F3F711F476030047A90D /* N2ImageButtonCell.h */; };
+		59F5F3FC11F476030047A90D /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -8167,6 +8171,8 @@
 		59E379D6116B295B00E84FE3 /* DicomAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomAlbum.h; sourceTree = "<group>"; };
 		59E379D7116B295B00E84FE3 /* DicomAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DicomAlbum.m; sourceTree = "<group>"; };
 		59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXHeaders.mm; sourceTree = "<group>"; };
+		59F5F3F711F476030047A90D /* N2ImageButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ImageButtonCell.h; path = nitrogen/Sources/N2ImageButtonCell.h; sourceTree = "<group>"; };
+		59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageButtonCell.mm; path = nitrogen/Sources/N2ImageButtonCell.mm; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
 		7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "DCM Framework_Prefix.pch"; sourceTree = "<group>"; };
@@ -12759,6 +12765,8 @@
 				59A31D5011BF9371001D4844 /* N2TextField.mm */,
 				5997898411B7B46A002DB107 /* N2HighlightImageButtonCell.h */,
 				5997898511B7B46A002DB107 /* N2HighlightImageButtonCell.mm */,
+				59F5F3F711F476030047A90D /* N2ImageButtonCell.h */,
+				59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */,
 				5997898811B7B476002DB107 /* N2CustomTitledPopUpButtonCell.h */,
 				5997898911B7B476002DB107 /* N2CustomTitledPopUpButtonCell.mm */,
 				AB10FACA1129338A009EB238 /* N2ButtonCell.h */,
@@ -19159,6 +19167,7 @@
 				5926824E11CF62DA00CFA81F /* ThreadModalForWindowController.h in Headers */,
 				5926825011CF62DA00CFA81F /* ThreadsManager.h in Headers */,
 				EC9BD81C11EDF349007421B2 /* FlyAssistant.h in Headers */,
+				59F5F3F911F476030047A90D /* N2ImageButtonCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21277,6 +21286,7 @@
 				5926825A11CF62DA00CFA81F /* ThreadCell.h in Headers */,
 				5926825C11CF62DA00CFA81F /* ThreadModalForWindowController.h in Headers */,
 				5926825E11CF62DA00CFA81F /* ThreadsManager.h in Headers */,
+				59F5F3FB11F476030047A90D /* N2ImageButtonCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23682,6 +23692,7 @@
 				5926825111CF62DA00CFA81F /* ThreadsManager.mm in Sources */,
 				84CD254C11ECB49A004669D6 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
 				EC9BD81D11EDF349007421B2 /* FlyAssistant.mm in Sources */,
+				59F5F3FA11F476030047A90D /* N2ImageButtonCell.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24862,6 +24873,7 @@
 				5926825F11CF62DA00CFA81F /* ThreadsManager.mm in Sources */,
 				5926828411CF69B300CFA81F /* NSThread+N2.mm in Sources */,
 				5926828711CF69CB00CFA81F /* N2HighlightImageButtonCell.mm in Sources */,
+				59F5F3FC11F476030047A90D /* N2ImageButtonCell.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

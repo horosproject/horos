@@ -138,6 +138,8 @@
 		59E924CF110F25CD0006FFFB /* N2ColorWell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E924CD110F25CD0006FFFB /* N2ColorWell.mm */; };
 		59E924D2110F277B0006FFFB /* N2UserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E924D0110F277B0006FFFB /* N2UserDefaults.h */; };
 		59E924D3110F277B0006FFFB /* N2UserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E924D1110F277B0006FFFB /* N2UserDefaults.mm */; };
+		59F5F4B111F4822E0047A90D /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F4AF11F4822E0047A90D /* N2ImageButtonCell.h */; };
+		59F5F4B211F4822E0047A90D /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F4B011F4822E0047A90D /* N2ImageButtonCell.mm */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -285,6 +287,8 @@
 		59E924CD110F25CD0006FFFB /* N2ColorWell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2ColorWell.mm; sourceTree = "<group>"; };
 		59E924D0110F277B0006FFFB /* N2UserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2UserDefaults.h; sourceTree = "<group>"; };
 		59E924D1110F277B0006FFFB /* N2UserDefaults.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2UserDefaults.mm; sourceTree = "<group>"; };
+		59F5F4AF11F4822E0047A90D /* N2ImageButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2ImageButtonCell.h; sourceTree = "<group>"; };
+		59F5F4B011F4822E0047A90D /* N2ImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2ImageButtonCell.mm; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* Nitrogen.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Nitrogen.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2F7E79907B2D74100F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
@@ -576,6 +580,8 @@
 				5903BBA11111E15D00F4358B /* N2PopUpButton.mm */,
 				5997856611B676DA002DB107 /* N2CustomTitledPopUpButtonCell.h */,
 				5997856711B676DA002DB107 /* N2CustomTitledPopUpButtonCell.mm */,
+				59F5F4AF11F4822E0047A90D /* N2ImageButtonCell.h */,
+				59F5F4B011F4822E0047A90D /* N2ImageButtonCell.mm */,
 				5997857411B6770C002DB107 /* N2HighlightImageButtonCell.h */,
 				5997857511B6770C002DB107 /* N2HighlightImageButtonCell.mm */,
 				5997857811B6771B002DB107 /* N2ImageView.h */,
@@ -654,6 +660,7 @@
 				59DC28E111C6164F00DAD5B4 /* N2CSV.h in Headers */,
 				59DC28E511C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h in Headers */,
 				59DC28E911C6168100DAD5B4 /* NSThread+N2.h in Headers */,
+				59F5F4B111F4822E0047A90D /* N2ImageButtonCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -855,6 +862,7 @@
 				59DC28E211C6164F00DAD5B4 /* N2CSV.mm in Sources */,
 				59DC28E611C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm in Sources */,
 				59DC28EA11C6168100DAD5B4 /* NSThread+N2.mm in Sources */,
+				59F5F4B211F4822E0047A90D /* N2ImageButtonCell.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
