@@ -26,6 +26,24 @@
 	else
 		[view mouseMoved:theEvent];
 }
+//navigator
+- (void) keyDown:(NSEvent *)event
+{
+    unichar c = [[event characters] characterAtIndex:0];
+    
+	if( c ==  NSUpArrowFunctionKey)
+	{
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriXFlyThroughGoForward" object:nil userInfo: 0L];
+	}
+	else if( c ==  NSDownArrowFunctionKey)
+	{
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriXFlyThroughGoBackward" object:nil userInfo: 0L];
+	}
+	else 
+	{
+		[super keyDown: event];
+	}
+}
 
 -(id)initWithFrame:(NSRect)frame;
 {

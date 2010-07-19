@@ -24,6 +24,8 @@
 
 @implementation EndoscopyMPRView
 
+@synthesize flyThroughPath;
+
 - (id)initWithFrame:(NSRect)frameRect
 {
 	self = [super initWithFrame:frameRect];
@@ -120,6 +122,23 @@
 				yCrossCenter+viewUpY*normalizationViewUpFactor);	//*[self pixelSpacingY]/[self pixelSpacingX]
 	glEnd();
 	
+	// draw the Fly Through Path
+	glColor3f (0.8f, 0.0f, 0.25f);
+	glLineWidth(1.0);
+	glBegin(GL_LINE_STRIP);
+	int i;
+	if(	flyThroughPath )
+		for(i=0;i<[flyThroughPath count];i++)
+		{
+			Point3D* pt = [flyThroughPath objectAtIndex:i];
+			float x = (pt.x-[[self curDCM] pwidth]/2) * scaleValue;
+			float y = (pt.y-[[self curDCM] pheight]/2) * scaleValue ; //* [self pixelSpacingY]/[self pixelSpacingX];
+			glVertex2f(x,y);
+		}
+	
+	glEnd();
+	
+	
 	// antialiasing end
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
@@ -162,8 +181,24 @@
 	
 	return NO;
 }
-
-
+//navigator
+- (void) keyDown:(NSEvent *)event
+{
+    unichar c = [[event characters] characterAtIndex:0];
+    
+	if( c ==  NSUpArrowFunctionKey)
+	{
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriXFlyThroughGoForward" object:nil userInfo: 0L];
+	}
+	else if( c ==  NSDownArrowFunctionKey)
+	{
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriXFlyThroughGoBackward" object:nil userInfo: 0L];
+	}
+	else 
+	{
+		[super keyDown: event];
+	}
+}
 -(void) mouseMoved: (NSEvent*) theEvent
 {
 	NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];

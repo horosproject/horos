@@ -7724,6 +7724,8 @@
 		CEFE605A0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		DB5961380CAB447B00809190 /* OSIVoxel.h in Headers */ = {isa = PBXBuildFile; fileRef = DB5961360CAB447B00809190 /* OSIVoxel.h */; };
 		DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */ = {isa = PBXBuildFile; fileRef = DB5961370CAB447B00809190 /* OSIVoxel.m */; };
+		EC9BD81C11EDF349007421B2 /* FlyAssistant.h in Headers */ = {isa = PBXBuildFile; fileRef = EC9BD81A11EDF349007421B2 /* FlyAssistant.h */; };
+		EC9BD81D11EDF349007421B2 /* FlyAssistant.mm in Sources */ = {isa = PBXBuildFile; fileRef = EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -11797,6 +11799,8 @@
 		CEFE60580979B1DB00891EA9 /* DotMacKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DotMacKit.framework; sourceTree = "<group>"; };
 		DB5961360CAB447B00809190 /* OSIVoxel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIVoxel.h; sourceTree = "<group>"; };
 		DB5961370CAB447B00809190 /* OSIVoxel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIVoxel.m; sourceTree = "<group>"; };
+		EC9BD81A11EDF349007421B2 /* FlyAssistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyAssistant.h; sourceTree = "<group>"; };
+		EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FlyAssistant.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -12590,6 +12594,8 @@
 		A90D665D094D7071000B425B /* Endoscopy */ = {
 			isa = PBXGroup;
 			children = (
+				EC9BD81A11EDF349007421B2 /* FlyAssistant.h */,
+				EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */,
 				A932B957094D722D0085B58A /* EndoscopyViewer.h */,
 				A932B958094D722D0085B58A /* EndoscopyViewer.m */,
 				A932BAE9094D87C90085B58A /* EndoscopyVRController.h */,
@@ -19152,6 +19158,7 @@
 				5926824C11CF62DA00CFA81F /* ThreadCell.h in Headers */,
 				5926824E11CF62DA00CFA81F /* ThreadModalForWindowController.h in Headers */,
 				5926825011CF62DA00CFA81F /* ThreadsManager.h in Headers */,
+				EC9BD81C11EDF349007421B2 /* FlyAssistant.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23674,6 +23681,7 @@
 				5926824F11CF62DA00CFA81F /* ThreadModalForWindowController.mm in Sources */,
 				5926825111CF62DA00CFA81F /* ThreadsManager.mm in Sources */,
 				84CD254C11ECB49A004669D6 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
+				EC9BD81D11EDF349007421B2 /* FlyAssistant.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25594,7 +25602,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = OsiriX_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;

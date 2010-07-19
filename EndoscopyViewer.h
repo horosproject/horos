@@ -20,6 +20,7 @@
 #import "EndoscopyVRController.h"
 #import "Camera.h"
 #import "OSIWindowController.h"
+#import "FlyAssistant.h"
 
 @class OSIVoxel;
 
@@ -49,6 +50,34 @@
 	IBOutlet NSTextField				*exportDCMSeriesName;
 	
 	BOOL								exportAllViews;
+	
+	
+	// used by assistant
+	FlyAssistant* assistant;
+	IBOutlet NSView						*assistantToolBarView;
+	NSMutableArray* centerline;
+	NSMutableArray* centerlineAxial, *centerlineCoronal, *centerlineSagittal;
+	IBOutlet NSButton	*assistantToolBarButtonA;
+	IBOutlet NSButton	*assistantToolBarButtonLookBack;
+	IBOutlet NSMatrix	*assistantToolBarMatrixCamOnPath;
+	IBOutlet NSTextField	*assistantPanelTextThreshold;
+	IBOutlet NSTextField	*assistantPanelTextResampleSize;
+	IBOutlet NSTextField	*assistantPanelTextStepLength;
+	
+	IBOutlet NSSlider	*assistantPanelSliderThreshold;
+	IBOutlet NSSlider	*assistantPanelSliderResampleSize;
+	IBOutlet NSSlider	*assistantPanelSliderStepLength;
+
+	Point3D*   pointA, *pointB;
+	float* assistantInputData;
+	int flyAssistantMode;
+	BOOL isFlyPathLocked;
+	int flyAssistantPositionIndex;
+	float centerlineResampleStepLength;
+	BOOL lockCameraFocusOnPath;
+	BOOL isShowCenterLine;
+	BOOL isLookingBackwards;
+	IBOutlet NSPanel				*assistantSettingPanel;
 }
 
 
@@ -88,4 +117,19 @@
 - (void) exportDICOMFile:(id) sender;
 - (IBAction) endDCMExportSettings:(id) sender;
 - (unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp;
+#pragma mark-
+#pragma mark fly assistant
+//assistant
+- (void) initFlyAssistant:(NSData*) vData;
+- (void) flyThruAssistantGoForward: (NSNotification*)note;
+- (void) flyThruAssistantGoBackward: (NSNotification*)note;
+- (IBAction) applyNewSettingForFlyAssistant:(id) sender;
+- (IBAction) changeAssistantMode:(id) sender;
+- (IBAction) clickAssistantToolbarBottonA:(id) sender;
+- (IBAction) showingAssistantSettings:(id) sender;
+- (IBAction) showOrHideCenterlines:(id) sender;
+- (IBAction) lookBackwards:(id) sender;
+- (IBAction) lockCameraOrFocusOnPath:(id) sender;
+- (void) updateCenterlineInMPRViews;
+- (void) setCameraAtPosition:(OSIVoxel *)cpos TowardsPosition:(OSIVoxel *)fpos;
 @end

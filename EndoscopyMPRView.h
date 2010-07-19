@@ -26,7 +26,10 @@
 	float	cameraAngle;
 	long	focalPointX, focalPointY, focalShiftX, focalShiftY, near, maxFocalLength;
 	long	viewUpX, viewUpY;
+	NSArray* flyThroughPath;
 }
+
+@property  (retain) NSArray* flyThroughPath;
 
 
 - (void) setCameraPosition: (float) x : (float) y;

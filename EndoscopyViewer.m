@@ -25,6 +25,9 @@
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
 
+#define	NAVIGATORMODE_BASIC 1
+#define NAVIGATORMODE_2POINT 2
+
 static NSString* 	EndoscopyToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
 static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
 static NSString*	endoMPRToolsToolbarItemIdentifier		= @"MPRTools";
@@ -36,6 +39,8 @@ static NSString*	WLWW2DToolbarItemIdentifier				= @"WLWW2D";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
 static NSString*	ShadingToolbarItemIdentifier			= @"Shading";
 static NSString*	LODToolbarItemIdentifier				= @"LOD";
+//assistant
+static NSString*	FlyAssistantToolbarItemIdentifier				= @"FlyAssistant";
 //static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 @implementation EndoscopyViewer
@@ -92,7 +97,10 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
            selector: @selector(CloseViewerNotification:)
                name: OsirixCloseViewerNotification
              object: nil];
-			 
+	//assistant
+	[nc addObserver: self selector: @selector(flyThruAssistantGoForward:) name:@"OsiriXFlyThroughGoForward" object:nil];
+	[nc addObserver: self selector: @selector(flyThruAssistantGoBackward:) name:@"OsiriXFlyThroughGoBackward" object:nil];
+	
 	// CLUT Menu
 	cur2DCLUTMenu = NSLocalizedString(@"No CLUT", nil);
 	
@@ -117,10 +125,25 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	
 	exportAllViews = NO;
 	
+	//assistant
+	[self initFlyAssistant:vData];
+	
 	return self;
 }
 
 - (void) dealloc {
+	//assistant delloc
+	[centerline release];
+	[(EndoscopyMPRView*)[mprController originalView] setFlyThroughPath:nil];
+	[(EndoscopyMPRView*)[mprController xReslicedView] setFlyThroughPath:nil];
+	[(EndoscopyMPRView*)[mprController yReslicedView] setFlyThroughPath:nil];
+	[centerlineAxial release];
+	[centerlineCoronal release];
+	[centerlineSagittal release];
+	[pointA release];
+	[pointB release];
+	[assistant release];
+	
 	[pixList release];
 	[toolbar setDelegate: nil];
 	[toolbar release];
@@ -927,6 +950,18 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 			
 		//[[wlwwPopup cell] setUsesItemFromMenu:YES];
     }
+	else if ([itemIdent isEqualToString: FlyAssistantToolbarItemIdentifier])
+	{
+		// Set up the standard properties 
+		[toolbarItem setLabel: NSLocalizedString(@"Fly Assistant",nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Fly Assistant",nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Fly Assistant",nil)];
+		
+		// Use a custom view, a text field, for the search item 
+		[toolbarItem setView: assistantToolBarView];
+		[toolbarItem setMinSize:NSMakeSize(NSWidth([assistantToolBarView frame]), NSHeight([assistantToolBarView frame]))];
+    }
+	
     else
 		{
 			[toolbarItem release];
@@ -946,6 +981,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 											FlyThruToolbarItemIdentifier,
 											ShadingToolbarItemIdentifier,
 											endo3DToolsToolbarItemIdentifier,
+											FlyAssistantToolbarItemIdentifier,
 											nil];
 }
 
@@ -968,6 +1004,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 											WLWW2DToolbarItemIdentifier,
 											ShadingToolbarItemIdentifier,
 											LODToolbarItemIdentifier,
+											FlyAssistantToolbarItemIdentifier,
 											nil];
 }
 
@@ -1186,6 +1223,488 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	return [vrController curCLUTMenu];
 }
 
+#pragma mark-
+#pragma mark Fly Assistant
+//assistant
+//
+- (void) initFlyAssistant:(NSData*) vData
+{
+	//init assistant
+	[[mprController originalView] becomeFirstResponder];
+	[[self window] makeKeyAndOrderFront:nil];
+	assistantInputData = (float*)[vData bytes];
+	int dim[3];
+	DCMPix* firstObject = [pixList objectAtIndex:0];
+	dim[0] = [firstObject pwidth];
+	dim[1] = [firstObject pheight];
+	dim[2] = [pixList count];
+	float spacing[3];
+	spacing[0]=[firstObject pixelSpacingX];
+	spacing[1]=[firstObject pixelSpacingY];
+	float sliceThickness = [firstObject sliceInterval];   
+	if( sliceThickness == 0)
+	{
+		NSLog(@"Slice interval = slice thickness!");
+		sliceThickness = [firstObject sliceThickness];
+	}
+	spacing[2]=sliceThickness;
+	float resamplesize=spacing[0];
+	if(dim[0]>256 || dim[1]>256)
+	{
+		if(spacing[0]*(float)dim[0]>spacing[1]*(float)dim[1])
+			resamplesize = spacing[0]*(float)dim[0]/256.0;
+		else {
+			resamplesize = spacing[1]*(float)dim[1]/256.0;
+		}
+		
+	}
+	
+	assistant = [[FlyAssistant alloc] initWithVolume:assistantInputData WidthDimension:dim Spacing:spacing ResampleVoxelSize:resamplesize];
+	centerlineResampleStepLength = 3.0; //mm
+	if(assistant)
+	{
+		[assistant setThreshold:-600.0 Asynchronous:YES];
+		
+		[assistant setCenterlineResampleStepLength:centerlineResampleStepLength];
+	}
+	else {
+		NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Fly Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+	}
+
+	
+	
+	
+	
+	//misc
+	
+	[assistantPanelTextThreshold setIntValue:-600];
+	[assistantPanelTextResampleSize setFloatValue:resamplesize];
+	[assistantPanelTextStepLength setFloatValue:centerlineResampleStepLength];
+	[assistantPanelSliderThreshold setIntValue:-600];
+	[assistantPanelSliderResampleSize setFloatValue:resamplesize];
+	[assistantPanelSliderStepLength setFloatValue:centerlineResampleStepLength];
+	
+	centerline = [[NSMutableArray alloc] initWithCapacity:100];
+	centerlineAxial = [[NSMutableArray alloc] initWithCapacity:100];
+	centerlineCoronal = [[NSMutableArray alloc] initWithCapacity:100];
+	centerlineSagittal = [[NSMutableArray alloc] initWithCapacity:100];
+	[(EndoscopyMPRView*)[mprController originalView] setFlyThroughPath:centerlineAxial];
+	[(EndoscopyMPRView*)[mprController xReslicedView] setFlyThroughPath:centerlineCoronal];
+	[(EndoscopyMPRView*)[mprController yReslicedView] setFlyThroughPath:centerlineSagittal];
+	
+	
+	flyAssistantMode = NAVIGATORMODE_BASIC;
+	isFlyPathLocked = NO;
+	[assistantToolBarButtonA setTitle:@"Lock Path"];
+
+	isLookingBackwards=NO;
+	isShowCenterLine=YES;
+	[assistantToolBarButtonLookBack setState:NSOffState];
+	[assistantToolBarButtonLookBack setEnabled:NO];
+	[assistantToolBarMatrixCamOnPath setEnabled:NO];
+	
+	
+}
+- (IBAction) applyNewSettingForFlyAssistant:(id) sender
+{
+	if(assistant)
+		[assistant release];
+	int dim[3];
+	DCMPix* firstObject = [pixList objectAtIndex:0];
+	dim[0] = [firstObject pwidth];
+	dim[1] = [firstObject pheight];
+	dim[2] = [pixList count];
+	float spacing[3];
+	spacing[0]=[firstObject pixelSpacingX];
+	spacing[1]=[firstObject pixelSpacingY];
+	float sliceThickness = [firstObject sliceInterval];   
+	if( sliceThickness == 0)
+	{
+		NSLog(@"Slice interval = slice thickness!");
+		sliceThickness = [firstObject sliceThickness];
+	}
+	spacing[2]=sliceThickness;
+	float resamplesize = [assistantPanelTextResampleSize floatValue];
+	assistant = [[FlyAssistant alloc] initWithVolume:assistantInputData WidthDimension:dim Spacing:spacing ResampleVoxelSize:resamplesize];
+	float threshold = [assistantPanelTextThreshold floatValue];
+	centerlineResampleStepLength = [assistantPanelTextStepLength floatValue];
+	if(assistant)
+	{
+		WaitRendering* waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Distance Transform...", nil)];
+		[waiting showWindow:self];
+		[assistant setThreshold:threshold Asynchronous:NO];
+		[assistant setCenterlineResampleStepLength:centerlineResampleStepLength];
+		[waiting close];
+		[waiting release];
+	}
+	else {
+		NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Fly Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+	}
+}
+- (void) flyThruAssistantGoForward: (NSNotification*)note
+{
+	if(flyAssistantMode == NAVIGATORMODE_2POINT || isFlyPathLocked)
+	{
+		if(flyAssistantPositionIndex < [centerline count]-1)
+		{
+			OSIVoxel* cpos = [centerline objectAtIndex:flyAssistantPositionIndex];
+			OSIVoxel * fpos = [centerline objectAtIndex:flyAssistantPositionIndex+1];
+			[self setCameraAtPosition:cpos TowardsPosition:fpos];
+			flyAssistantPositionIndex++;
+		}
+		
+	}
+	else if(flyAssistantMode == NAVIGATORMODE_BASIC && isFlyPathLocked==NO)
+	{
+		Point3D* pt = [Point3D point];
+		Point3D* dir = [Point3D point];
+		pt.x = [(EndoscopyMPRView*)[mprController originalView] crossPositionX];
+		pt.y = [(EndoscopyMPRView*)[mprController originalView] crossPositionY];
+		pt.z = [pixList count]-[[mprController xReslicedView] crossPositionY];
+		
+		dir.x = [(EndoscopyMPRView*)[mprController originalView] focalShiftX];
+		dir.y = [(EndoscopyMPRView*)[mprController originalView] focalShiftY];
+		dir.z = -[(EndoscopyMPRView*)[mprController xReslicedView] focalShiftY];
+		
+		int err= [assistant caculateNextPositionFrom:pt Towards:dir];
+		if(err==ERROR_NOENOUGHMEM)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Fly Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			return;
+		}		
+		else if(err==ERROR_CANNOTFINDPATH)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Fly Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			return;
+		}
+		else if(err==ERROR_DISTTRANSNOTFINISH)
+		{
+			int i;
+			WaitRendering* waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Distance Transform...", nil)];
+			[waiting showWindow:self];
+			
+			for(i=0; i<5; i++)
+			{
+				sleep(2);
+				err= [assistant caculateNextPositionFrom:pt Towards:dir];
+				if(err!=ERROR_DISTTRANSNOTFINISH)
+					break;
+			}
+			[waiting close];
+			[waiting release];
+			if(err==ERROR_CANNOTFINDPATH)
+			{
+				NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Fly Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+				return;
+			}
+			else if(err==ERROR_DISTTRANSNOTFINISH)
+			{
+				NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil), NSLocalizedString(@"Fly Assistant failed to initialize!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+				return;
+			}
+		}
+		
+		OSIVoxel * cpos=[OSIVoxel pointWithPoint3D:pt];
+		float foclength=30;
+		if(dir.z>0)
+			foclength = ([pixList count] -1 - pt.z)/dir.z;
+		else if(dir.z<0){
+			foclength = (1 - pt.z)/dir.z;
+		}
+		if(foclength>30)
+			foclength = 30;
+
+		dir.x=pt.x+dir.x*foclength;dir.y=pt.y+dir.y*foclength;dir.z=pt.z+dir.z*foclength;
+		OSIVoxel * fpos=[OSIVoxel pointWithPoint3D:dir];
+		
+		[self setCameraPosition:cpos focalPoint:fpos];
+		
+		[centerline addObject:cpos];
+		flyAssistantPositionIndex = [centerline count]-1;
+		
+		[self updateCenterlineInMPRViews];
+		
+	}
+
+	
+}
+- (void) flyThruAssistantGoBackward: (NSNotification*)note
+{
+	if(flyAssistantMode == NAVIGATORMODE_BASIC && isFlyPathLocked==NO )
+	{
+		if([centerline count]<2)
+			return;
+		OSIVoxel* cpos = [centerline objectAtIndex:[centerline count]-2];
+		OSIVoxel * fpos = [centerline objectAtIndex:[centerline count]-1];
+		[self setCameraAtPosition:cpos TowardsPosition:fpos];
+		[centerline removeLastObject];
+		flyAssistantPositionIndex = [centerline count]-1;
+		[self updateCenterlineInMPRViews];
+	}
+	else if(flyAssistantMode == NAVIGATORMODE_2POINT || isFlyPathLocked){
+		if(flyAssistantPositionIndex > 0)
+		{
+			OSIVoxel* cpos = [centerline objectAtIndex:flyAssistantPositionIndex-1];
+			OSIVoxel * fpos = [centerline objectAtIndex:flyAssistantPositionIndex];
+			[self setCameraAtPosition:cpos TowardsPosition:fpos];
+			flyAssistantPositionIndex--;
+		}
+	}
+
+}
+- (IBAction) changeAssistantMode:(id) sender
+{
+	
+	if([sender selectedRow]==0)
+	{
+		//[assistantToolBarButtonA setEnabled:NO];
+		isFlyPathLocked = NO;
+		[assistantToolBarButtonA setTitle:@"Lock Path"];
+		if([centerline count])
+		{
+			[self flyThruAssistantGoBackward:nil];
+		}
+		flyAssistantMode = NAVIGATORMODE_BASIC;
+	}
+	else if([sender selectedRow]==1){
+		//[assistantToolBarButtonA setEnabled:YES];
+		[assistantToolBarButtonA setTitle:@"Set point A"];
+		flyAssistantMode = NAVIGATORMODE_2POINT;
+	}
+
+}
+- (IBAction) clickAssistantToolbarBottonA:(id) sender
+{
+	isLookingBackwards=NO;
+	[assistantToolBarButtonLookBack setState:NSOffState];
+	if ([[assistantToolBarButtonA title] isEqualToString:@"Set point A"]) {
+		[assistantToolBarButtonA setTitle:@"Set point B"];
+		if(!pointA)
+			pointA = [[Point3D alloc] init];
+		pointA.x = [(EndoscopyMPRView*)[mprController originalView] crossPositionX];
+		pointA.y = [(EndoscopyMPRView*)[mprController originalView] crossPositionY];
+		pointA.z = [[mprController originalView] curImage];
+		return;
+	}
+	if ([[assistantToolBarButtonA title] isEqualToString:@"Set point B"]) {
+		[assistantToolBarButtonA setTitle:@"Set point A"];
+		if(!pointB)
+			pointB = [[Point3D alloc] init];
+		pointB.x = [(EndoscopyMPRView*)[mprController originalView] crossPositionX];
+		pointB.y = [(EndoscopyMPRView*)[mprController originalView] crossPositionY];
+		pointB.z = [[mprController originalView] curImage];
+		
+		[centerline removeAllObjects];
+		
+		WaitRendering* waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Finding Path...", nil)];
+		[waiting showWindow:self];		
+		int err=[assistant createCenterline:centerline FromPointA:pointA ToPointB:pointB];
+		[waiting close];
+		[waiting release];
+		
+		if(!err)
+		{
+			[self updateCenterlineInMPRViews];
+			flyAssistantPositionIndex=0;
+			OSIVoxel* cpos = [centerline objectAtIndex:0];
+			OSIVoxel * fpos = [centerline objectAtIndex:4];
+			[self setCameraPosition:cpos focalPoint:fpos];
+			
+			
+		}
+		else if(err == ERROR_NOENOUGHMEM)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Fly Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		}
+		else if(err == ERROR_CANNOTFINDPATH)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Fly Assistant can not find a path from A to B.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		}
+		else if(err==ERROR_DISTTRANSNOTFINISH)
+		{
+			int i;
+			waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Distance Transform...", nil)];
+			[waiting showWindow:self];
+			
+			for(i=0; i<5; i++)
+			{
+				sleep(2);
+				err= [assistant createCenterline:centerline FromPointA:pointA ToPointB:pointB];
+				if(err!=ERROR_DISTTRANSNOTFINISH)
+					break;
+			}
+			[waiting close];
+			[waiting release];
+			if(err==ERROR_CANNOTFINDPATH)
+			{
+				NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Fly Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+				return;
+			}
+			else if(err==ERROR_DISTTRANSNOTFINISH)
+			{
+				NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil), NSLocalizedString(@"Fly Assistant failed to initialize!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+				return;
+			}
+		}
+		return;
+	}
+	if ([[assistantToolBarButtonA title] isEqualToString:@"Lock Path"]) {
+		[assistantToolBarButtonA setTitle:@"Delete Path"];
+		isFlyPathLocked = YES;
+		[assistant downSampleCenterlineWithLocalRadius:centerline];
+		[assistant createSmoothedCenterlin:centerline withStepLength:centerlineResampleStepLength];
+		
+		[self updateCenterlineInMPRViews];
+		flyAssistantPositionIndex=0;
+		[self flyThruAssistantGoForward:nil];
 
 
+		return;
+	}
+	if ([[assistantToolBarButtonA title] isEqualToString:@"Delete Path"]) {
+		[assistantToolBarButtonA setTitle:@"Lock Path"];
+		isFlyPathLocked = NO;
+		[centerline removeAllObjects];
+		[self updateCenterlineInMPRViews];
+		flyAssistantPositionIndex=0;
+
+
+
+
+		return;
+	}
+	
+	
+}
+- (IBAction) showingAssistantSettings:(id) sender
+{
+	[assistantSettingPanel makeKeyAndOrderFront: self];
+}
+- (void) updateCenterlineInMPRViews
+{
+	int i;
+	[centerlineAxial removeAllObjects];
+	[centerlineCoronal removeAllObjects];
+	[centerlineSagittal removeAllObjects];
+	if(isShowCenterLine)
+	{
+		int zmax = [pixList count];
+		for(i=0;i<[centerline count];i++)
+		{
+			OSIVoxel* pt = [centerline objectAtIndex:i];
+			Point3D* pto = [Point3D point];
+			pto.x = pt.x; pto.y = pt.y;
+			[centerlineAxial addObject:pto];
+			Point3D* ptx = [Point3D point];
+			ptx.x = pt.x; ptx.y = zmax - pt.z;
+			[centerlineCoronal addObject:ptx];
+			Point3D* pty = [Point3D point];
+			pty.x = pt.y; pty.y = zmax - pt.z;
+			[centerlineSagittal addObject:pty];
+			
+		}
+	}
+	if([centerline count]>2&&(isFlyPathLocked||flyAssistantMode == NAVIGATORMODE_2POINT))
+	{
+		[assistantToolBarButtonLookBack setEnabled:YES];
+		[assistantToolBarMatrixCamOnPath setEnabled:YES];
+	}
+	else {
+		[assistantToolBarButtonLookBack setEnabled:NO];
+		[assistantToolBarMatrixCamOnPath setEnabled:NO];
+	}
+
+	[[mprController originalView] setNeedsDisplay: YES];
+	[[mprController xReslicedView] setNeedsDisplay: YES];
+	[[mprController yReslicedView] setNeedsDisplay: YES];
+	
+}
+- (void) setCameraAtPosition:(OSIVoxel *)cpos TowardsPosition:(OSIVoxel *)fpos
+{
+	OSIVoxel* dir=[OSIVoxel pointWithX:0 y:0 z:0 value:nil];
+	dir.x = fpos.x - cpos.x;
+	dir.y = fpos.y - cpos.y;
+	dir.z = fpos.z - cpos.z;
+	float len=sqrt(dir.x*dir.x + dir.y*dir.y + dir.z*dir.z);
+	if (len > 1.0e-6)
+	{
+		dir.x = dir.x/len;
+		dir.y = dir.y/len;
+		dir.z = dir.z/len;
+	}
+	if(isLookingBackwards)
+	{
+		dir.x = -dir.x;
+		dir.y = -dir.y;
+		dir.z = -dir.z;
+	}
+	
+	float localradius = [assistant radiusAtPoint:cpos];
+	if(localradius < centerlineResampleStepLength )
+		localradius = centerlineResampleStepLength;
+	int neighborrange = localradius*4.0/centerlineResampleStepLength;
+	localradius = [assistant averageRadiusAt:flyAssistantPositionIndex On:centerline InRange:neighborrange];
+	//float localradius = 30;
+	if(localradius < centerlineResampleStepLength )
+		localradius = centerlineResampleStepLength;
+	float foclength=localradius*2.0;
+	if(foclength<1.0)
+		foclength=1.0;
+	if(dir.z>0)
+		foclength = ([pixList count] -1 - cpos.z)/dir.z;
+	else if(dir.z<0){
+		foclength = (1 - cpos.z)/dir.z;
+	}
+	if(foclength>localradius*2.0)
+		foclength = localradius*2.0;
+	
+	if(lockCameraFocusOnPath)
+	{
+		dir.x = -dir.x*foclength + cpos.x;
+		dir.y = -dir.y*foclength + cpos.y;
+		dir.z = -dir.z*foclength + cpos.z;
+		[self setCameraPosition:dir focalPoint:cpos];
+	}
+	else {
+		dir.x = dir.x*foclength + cpos.x;
+		dir.y = dir.y*foclength + cpos.y;
+		dir.z = dir.z*foclength + cpos.z;
+		[self setCameraPosition:cpos focalPoint:dir];
+	}
+
+	
+
+	
+}
+- (IBAction) showOrHideCenterlines:(id) sender
+{
+	if([sender state]==NSOnState)
+		isShowCenterLine=YES;
+	else {
+		isShowCenterLine=NO;
+	}
+	[self updateCenterlineInMPRViews];
+
+		
+}
+- (IBAction) lookBackwards:(id) sender
+{
+	if([sender state]==NSOnState)
+		isLookingBackwards=YES;
+	else {
+		isLookingBackwards=NO;
+	}
+	[self flyThruAssistantGoBackward:nil];
+}
+- (IBAction) lockCameraOrFocusOnPath:(id) sender
+{
+	if([sender selectedRow]==0)
+	{
+		lockCameraFocusOnPath=NO;
+	}
+	else {
+		lockCameraFocusOnPath=YES;
+	}
+
+}
 @end
