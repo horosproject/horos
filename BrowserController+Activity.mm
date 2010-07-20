@@ -200,7 +200,7 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 			} CGFloat load = totdeltain/totpeak;
 			if (fabs(netCurrLoad-load) > 0.01)
 			{
-				[AnetActiView setImage:[netImage imageWithHue:greenHue+deltaHue*load]];
+				[AnetActiView setImage:[netImage imageWithHue: deltaHue*load]];
 				[AnetActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 				netCurrLoad = load;
 			}
@@ -241,7 +241,7 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 				
 				if (fabs(hddCurrLoad-load) > 0.01)
 				{
-					[AhddActiView setImage:[hddImage imageWithHue:greenHue+deltaHue*load]];
+					[AhddActiView setImage:[hddImage imageWithHue: deltaHue*load]];
 					[AhddActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 					hddCurrLoad = load;
 				}
