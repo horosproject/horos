@@ -139,7 +139,7 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 	NSImage *hddImage = [NSImage imageNamed: @"activity_hdd.png"];
 	
 	while (![[NSThread currentThread] isCancelled]) {
-		[NSThread sleepForTimeInterval:0.3];
+		[NSThread sleepForTimeInterval:0.5];
 
 		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 		NSTimeInterval thisTime = [NSDate timeIntervalSinceReferenceDate], thisInterval = thisTime - previousTime;
