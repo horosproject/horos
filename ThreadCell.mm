@@ -52,13 +52,13 @@
 
 	self.thread = thread;
 
-	NSLog(@"cell created!");
+//	NSLog(@"cell created!");
 	
 	return self;
 }
 
 -(void)dealloc {
-	NSLog(@"cell destroyed!");
+//	NSLog(@"cell destroyed!");
 	[self.progressIndicator removeFromSuperview];
 	self.progressIndicator = NULL;
 	[self.cancelButton removeFromSuperview];
