@@ -69,6 +69,7 @@ enum
 	NSLock	*ThreadLoadImageLock;
 	NSLock	*roiLock;
 	NSConditionLock *subLoadingThread, *flipDataThread;
+	NSThread *loadingThread;
 	
 	IBOutlet StudyView		*studyView;
 			SeriesView		*seriesView;

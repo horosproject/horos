@@ -61,7 +61,7 @@
 #import "ROIManagerController.h"
 #import "NSUserDefaultsController+OsiriX.h"
 #import "ThreadsManager.h"
-
+#import "NSThread+N2.h"
 #import "ITKBrushROIFilter.h"
 #import "OsiriX/DCMAbstractSyntaxUID.h"
 #import "printView.h"
@@ -2188,6 +2188,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			loading = [NSString stringWithFormat:NSLocalizedString(@" - %2.f%%", nil), loadingPercentage * 100.];
 			[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(setWindowTitle:)  userInfo:nil repeats:NO];
 		}
+		
+		loadingThread.progress = loadingPercentage;
 	}
 	
 	if( [fileList[ curMovieIndex] count])
@@ -6656,9 +6658,11 @@ static ViewerController *draggedController = nil;
 	stopThreadLoadImage = NO;
 //	[self loadImageData: self];
 	
-	NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( loadImageData:) object: nil] autorelease];
-	t.name = NSLocalizedString( @"Loading images...", nil);
-	[[ThreadsManager defaultManager] addThreadAndStart: t];
+	loadingThread = [[[NSThread alloc] initWithTarget:self selector:@selector( loadImageData:) object: nil] autorelease];
+	loadingThread.name = NSLocalizedString( @"Loading images...", nil);
+	if( [[self currentSeries] valueForKey:@"name"])
+		loadingThread.status = [[self currentSeries] valueForKey:@"name"];
+	[[ThreadsManager defaultManager] addThreadAndStart: loadingThread];
 	
 //	[NSThread detachNewThreadSelector: @selector(loadImageData:) toTarget: self withObject: nil];
 	[self setWindowTitle:self];
@@ -6798,6 +6802,7 @@ static ViewerController *draggedController = nil;
 	
 	if( ThreadLoadImageLock == nil)
 	{
+		loadingThread = nil;
 		[pool release];
 		return;
 	}
@@ -6886,6 +6891,7 @@ static ViewerController *draggedController = nil;
 		if( stopThreadLoadImage == YES)
 		{
 			ThreadLoadImage = NO;
+			loadingThread = nil;
 			[pool release];
 			[ThreadLoadImageLock unlock];
 			return;
@@ -6982,6 +6988,7 @@ static ViewerController *draggedController = nil;
 	}
 	
 	ThreadLoadImage = NO;
+	loadingThread = nil;
 	
     [pool release];
 }
