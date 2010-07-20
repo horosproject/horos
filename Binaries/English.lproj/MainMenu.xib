@@ -11,7 +11,7 @@
 			<string key="NS.object.0">762</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="11696"/>
+			<integer value="14144"/>
 			<integer value="24"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
@@ -5316,7 +5316,6 @@
 														<reference key="NSSuperview" ref="1049765271"/>
 														<reference key="NSTarget" ref="1049765271"/>
 														<string key="NSAction">_doScroller:</string>
-														<double key="NSCurValue">0.1157022018648447</double>
 														<double key="NSPercent">0.93137252330780029</double>
 													</object>
 													<object class="NSScroller" id="746770325">
@@ -5539,7 +5538,7 @@
 														<int key="NSsFlags">1</int>
 														<reference key="NSTarget" ref="470928104"/>
 														<string key="NSAction">_doScroller:</string>
-														<double key="NSCurValue">0.36082474226804123</double>
+														<double key="NSCurValue">0.36592678308436777</double>
 														<double key="NSPercent">0.91428571939468384</double>
 													</object>
 													<object class="NSClipView" id="950377065">
@@ -5593,17 +5592,17 @@
 								<int key="NSTitlePosition">0</int>
 								<bool key="NSTransparent">NO</bool>
 							</object>
-							<object class="NSBox" id="678980059">
+							<object class="NSBox" id="886004369">
 								<reference key="NSNextResponder" ref="729579565"/>
 								<int key="NSvFlags">274</int>
 								<array class="NSMutableArray" key="NSSubviews">
-									<object class="NSView" id="351919026">
-										<reference key="NSNextResponder" ref="678980059"/>
+									<object class="NSView" id="141241350">
+										<reference key="NSNextResponder" ref="886004369"/>
 										<int key="NSvFlags">256</int>
 										<array class="NSMutableArray" key="NSSubviews">
 											<object class="NSScrollView" id="265203813">
-												<reference key="NSNextResponder" ref="351919026"/>
-												<int key="NSvFlags">274</int>
+												<reference key="NSNextResponder" ref="141241350"/>
+												<int key="NSvFlags">4370</int>
 												<array class="NSMutableArray" key="NSSubviews">
 													<object class="NSClipView" id="161150111">
 														<reference key="NSNextResponder" ref="265203813"/>
@@ -5611,7 +5610,7 @@
 														<array class="NSMutableArray" key="NSSubviews">
 															<object class="NSTableView" id="550433050">
 																<reference key="NSNextResponder" ref="161150111"/>
-																<int key="NSvFlags">256</int>
+																<int key="NSvFlags">4352</int>
 																<string key="NSFrameSize">{196, 108}</string>
 																<reference key="NSSuperview" ref="161150111"/>
 																<bool key="NSEnabled">YES</bool>
@@ -5660,8 +5659,8 @@
 																	<int key="NSColorSpace">3</int>
 																	<bytes key="NSWhite">MC41IDAuMjUAA</bytes>
 																</object>
-																<double key="NSRowHeight">41</double>
-																<int key="NSTvFlags">306184192</int>
+																<double key="NSRowHeight">38</double>
+																<int key="NSTvFlags">314572800</int>
 																<reference key="NSDelegate"/>
 																<reference key="NSDataSource"/>
 																<int key="NSColumnAutoresizingStyle">5</int>
@@ -5696,22 +5695,22 @@
 														<int key="NSsFlags">1</int>
 														<reference key="NSTarget" ref="265203813"/>
 														<string key="NSAction">_doScroller:</string>
-														<double key="NSCurValue">0.69659946200938072</double>
+														<double key="NSCurValue">0.71190558445836027</double>
 														<double key="NSPercent">0.9970326409495549</double>
 													</object>
 												</array>
 												<string key="NSFrameSize">{198, 110}</string>
-												<reference key="NSSuperview" ref="351919026"/>
+												<reference key="NSSuperview" ref="141241350"/>
 												<reference key="NSNextKeyView" ref="161150111"/>
 												<int key="NSsFlags">530</int>
 												<reference key="NSVScroller" ref="1033899909"/>
 												<reference key="NSHScroller" ref="845908278"/>
 												<reference key="NSContentView" ref="161150111"/>
-												<bytes key="NSScrollAmts">QKAAAEBAAABCLAAAQiwAAA</bytes>
+												<bytes key="NSScrollAmts">QKAAAEBAAABCIAAAQiAAAA</bytes>
 											</object>
 										</array>
 										<string key="NSFrameSize">{200, 110}</string>
-										<reference key="NSSuperview" ref="678980059"/>
+										<reference key="NSSuperview" ref="886004369"/>
 									</object>
 								</array>
 								<string key="NSFrame">{{0, 648}, {200, 110}}</string>
@@ -5728,7 +5727,7 @@
 										<bytes key="NSWhite">MCAwLjgwMDAwMDAxMTkAA</bytes>
 									</object>
 								</object>
-								<reference key="NSContentView" ref="351919026"/>
+								<reference key="NSContentView" ref="141241350"/>
 								<int key="NSBorderType">0</int>
 								<int key="NSBoxType">0</int>
 								<int key="NSTitlePosition">0</int>
@@ -20739,7 +20738,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<array class="NSMutableArray" key="children">
 							<reference ref="348385774"/>
 							<reference ref="591651258"/>
-							<reference ref="678980059"/>
+							<reference ref="886004369"/>
 						</array>
 						<reference key="parent" ref="741316114"/>
 					</object>
@@ -20883,7 +20882,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">14167</int>
-						<reference key="object" ref="678980059"/>
+						<reference key="object" ref="886004369"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="265203813"/>
 						</array>
@@ -20897,7 +20896,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="1033899909"/>
 							<reference ref="845908278"/>
 						</array>
-						<reference key="parent" ref="678980059"/>
+						<reference key="parent" ref="886004369"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">14153</int>
@@ -22679,14 +22678,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
-					<string key="className">ActivityWindowController</string>
-					<string key="superclassName">NSWindowController</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="879525337">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">ActivityWindowController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">AppController</string>
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
@@ -22740,6 +22731,13 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">BrowserController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="949935893">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">BrowserController+Activity.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -22833,7 +22831,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="AtableView">NSTableView</string>
 						<string key="CDpasswordWindow">NSWindow</string>
 						<string key="ZIPpasswordWindow">NSWindow</string>
-						<string key="activityController">ActivityWindowController</string>
 						<string key="addStudiesToUserWindow">NSWindow</string>
 						<string key="albumDrawer">NSDrawer</string>
 						<string key="albumTable">NSTableView</string>
@@ -23992,7 +23989,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<object class="IBPartialClassDescription">
 					<string key="className">ThreadsTableView</string>
 					<string key="superclassName">NSTableView</string>
-					<reference key="sourceIdentifier" ref="879525337"/>
+					<reference key="sourceIdentifier" ref="949935893"/>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">VRController</string>

@@ -28,6 +28,7 @@
 
 -(NSUInteger)threadsCount;
 -(NSThread*)threadAtIndex:(NSUInteger)index;
+-(void)addThread:(NSThread*)thread;
 -(void)addThreadAndStart:(NSThread*)thread;
 -(void)removeThread:(NSThread*)thread;
 

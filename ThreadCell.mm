@@ -14,7 +14,7 @@
 
 #import "ThreadCell.h"
 #import "ThreadsManager.h"
-#import "ActivityWindowController.h"
+#import "BrowserController.h"
 #import <OsiriX Headers/N2HighlightImageButtonCell.h>
 #import <OsiriX Headers/NSString+N2.h>
 #import <OsiriX Headers/NSThread+N2.h>
@@ -34,8 +34,8 @@
 	_view = [view retain];
 	_manager = [manager retain];
 	
-	ActivityWindowController* threadsController = (id)view.delegate;
-	[self setTextColor:threadsController.statusLabel.textColor];
+	BrowserController* threadsBController = (id)view.delegate;
+	[self setTextColor:threadsBController.AstatusLabel.textColor];
 	
 	_progressIndicator = [[NSProgressIndicator alloc] initWithFrame:NSZeroRect];
 	[_progressIndicator setUsesThreadedAnimation:YES];
@@ -52,10 +52,13 @@
 
 	self.thread = thread;
 
+	NSLog(@"cell created!");
+	
 	return self;
 }
 
 -(void)dealloc {
+	NSLog(@"cell destroyed!");
 	[self.progressIndicator removeFromSuperview];
 	self.progressIndicator = NULL;
 	[self.cancelButton removeFromSuperview];
@@ -70,12 +73,14 @@
 		[self.thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
 		[self.thread removeObserver:self forKeyPath:NSThreadProgressKey];
 		[self.thread removeObserver:self forKeyPath:NSThreadStatusKey];
+		[self.thread removeObserver:self forKeyPath:NSThreadIsCancelledKey];
 	} @catch (...) {
 	}
 	
 	[_thread release];
 	_thread = [thread retain];
 	
+	[self.thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
 	[self.thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
 	[self.thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
 	[self.thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:NULL];
@@ -91,8 +96,8 @@
 			[self.progressIndicator setIndeterminate: self.thread.progress < 0];
 			[self.progressIndicator startAnimation:self];
 			return;
-		} else if ([keyPath isEqual:NSThreadSupportsCancelKey]) {
-			[self.cancelButton setHidden:!self.thread.supportsCancel];
+		} else if ([keyPath isEqual:NSThreadSupportsCancelKey] || [keyPath isEqual:NSThreadIsCancelledKey]) {
+			[self.cancelButton setHidden:(!self.thread.supportsCancel)||self.thread.isCancelled];
 			[self.cancelButton setEnabled:self.thread.supportsCancel];
 			return;
 		}
@@ -113,7 +118,7 @@
 
 	[NSGraphicsContext saveGraphicsState];
 	
-	NSRect nameFrame = NSMakeRect(frame.origin.x+3, frame.origin.y, frame.size.width-23, frame.size.height);
+	NSRect nameFrame = NSMakeRect(frame.origin.x+3, frame.origin.y-1, frame.size.width-23, frame.size.height);
 	NSString* name = self.thread.name;
 	if (!name) name = NSLocalizedString( @"Untitled Thread", nil);
 	[name drawWithRect:nameFrame options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes];
@@ -122,12 +127,12 @@
 	[textAttributes setObject:[NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:NSMiniControlSize]] forKey:NSFontAttributeName];
 	[(self.thread.status? self.thread.status : @"") drawWithRect:statusFrame options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes];
 	
-	NSRect cancelFrame = NSMakeRect(frame.origin.x+frame.size.width-15-5, frame.origin.y+6, 15, 15);
+	NSRect cancelFrame = NSMakeRect(frame.origin.x+frame.size.width-15-5, frame.origin.y+5, 15, 15);
 	if (![self.cancelButton superview])
 		[view addSubview:self.cancelButton];
 	if (!NSEqualRects(self.cancelButton.frame, cancelFrame)) [self.cancelButton setFrame:cancelFrame];
 	
-	NSRect progressFrame = NSMakeRect(frame.origin.x+1, frame.origin.y+28, frame.size.width-2, frame.size.height-29);
+	NSRect progressFrame = NSMakeRect(frame.origin.x+1, frame.origin.y+26, frame.size.width-2, frame.size.height-28);
 	if (![self.progressIndicator superview]) {
 		[view addSubview:self.progressIndicator];
 //		[self.progressIndicator startAnimation:self];
@@ -152,7 +157,7 @@ static NSPoint operator+(const NSPoint& p, const NSSize& s)
 
 -(NSRect)statusFrame {
 	NSRect frame = [self.view rectOfRow:[self.manager.threads indexOfObject:self.thread]];
-	return NSMakeRect(frame.origin.x+3, frame.origin.y+14, frame.size.width-23, frame.size.height-13);
+	return NSMakeRect(frame.origin.x+3, frame.origin.y+13, frame.size.width-22, frame.size.height-13);
 }
 
 @end

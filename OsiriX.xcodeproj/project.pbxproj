@@ -96,8 +96,6 @@
 		5926823111CF610200CFA81F /* activity_cpu.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822911CF610200CFA81F /* activity_cpu.png */; };
 		5926823211CF610200CFA81F /* activity_hdd.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822A11CF610200CFA81F /* activity_hdd.png */; };
 		5926823311CF610200CFA81F /* activity_net.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822B11CF610200CFA81F /* activity_net.png */; };
-		5926824411CF62DA00CFA81F /* ActivityWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823511CF62DA00CFA81F /* ActivityWindowController.h */; };
-		5926824511CF62DA00CFA81F /* ActivityWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926823611CF62DA00CFA81F /* ActivityWindowController.mm */; };
 		5926824611CF62DA00CFA81F /* MenuMeterCPUStats.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823811CF62DA00CFA81F /* MenuMeterCPUStats.h */; };
 		5926824711CF62DA00CFA81F /* MenuMeterCPUStats.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926823911CF62DA00CFA81F /* MenuMeterCPUStats.mm */; };
 		5926824811CF62DA00CFA81F /* MenuMeterNetPPP.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823A11CF62DA00CFA81F /* MenuMeterNetPPP.h */; };
@@ -110,8 +108,6 @@
 		5926824F11CF62DA00CFA81F /* ThreadModalForWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926824111CF62DA00CFA81F /* ThreadModalForWindowController.mm */; };
 		5926825011CF62DA00CFA81F /* ThreadsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926824211CF62DA00CFA81F /* ThreadsManager.h */; };
 		5926825111CF62DA00CFA81F /* ThreadsManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926824311CF62DA00CFA81F /* ThreadsManager.mm */; };
-		5926825211CF62DA00CFA81F /* ActivityWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823511CF62DA00CFA81F /* ActivityWindowController.h */; };
-		5926825311CF62DA00CFA81F /* ActivityWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926823611CF62DA00CFA81F /* ActivityWindowController.mm */; };
 		5926825411CF62DA00CFA81F /* MenuMeterCPUStats.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823811CF62DA00CFA81F /* MenuMeterCPUStats.h */; };
 		5926825511CF62DA00CFA81F /* MenuMeterCPUStats.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926823911CF62DA00CFA81F /* MenuMeterCPUStats.mm */; };
 		5926825611CF62DA00CFA81F /* MenuMeterNetPPP.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823A11CF62DA00CFA81F /* MenuMeterNetPPP.h */; };
@@ -235,6 +231,10 @@
 		59F5F3FA11F476030047A90D /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */; };
 		59F5F3FB11F476030047A90D /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F3F711F476030047A90D /* N2ImageButtonCell.h */; };
 		59F5F3FC11F476030047A90D /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */; };
+		59F5F4EC11F485CC0047A90D /* BrowserController+Activity.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */; };
+		59F5F4ED11F485CC0047A90D /* BrowserController+Activity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F4EB11F485CC0047A90D /* BrowserController+Activity.mm */; };
+		59F5F4EE11F485CC0047A90D /* BrowserController+Activity.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */; };
+		59F5F4EF11F485CC0047A90D /* BrowserController+Activity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F4EB11F485CC0047A90D /* BrowserController+Activity.mm */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -8082,8 +8082,6 @@
 		5926822911CF610200CFA81F /* activity_cpu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = activity_cpu.png; sourceTree = "<group>"; };
 		5926822A11CF610200CFA81F /* activity_hdd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = activity_hdd.png; sourceTree = "<group>"; };
 		5926822B11CF610200CFA81F /* activity_net.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = activity_net.png; sourceTree = "<group>"; };
-		5926823511CF62DA00CFA81F /* ActivityWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityWindowController.h; sourceTree = "<group>"; };
-		5926823611CF62DA00CFA81F /* ActivityWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ActivityWindowController.mm; sourceTree = "<group>"; };
 		5926823811CF62DA00CFA81F /* MenuMeterCPUStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuMeterCPUStats.h; sourceTree = "<group>"; };
 		5926823911CF62DA00CFA81F /* MenuMeterCPUStats.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuMeterCPUStats.mm; sourceTree = "<group>"; };
 		5926823A11CF62DA00CFA81F /* MenuMeterNetPPP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuMeterNetPPP.h; sourceTree = "<group>"; };
@@ -8173,6 +8171,8 @@
 		59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXHeaders.mm; sourceTree = "<group>"; };
 		59F5F3F711F476030047A90D /* N2ImageButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ImageButtonCell.h; path = nitrogen/Sources/N2ImageButtonCell.h; sourceTree = "<group>"; };
 		59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageButtonCell.mm; path = nitrogen/Sources/N2ImageButtonCell.mm; sourceTree = "<group>"; };
+		59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BrowserController+Activity.h"; sourceTree = "<group>"; };
+		59F5F4EB11F485CC0047A90D /* BrowserController+Activity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "BrowserController+Activity.mm"; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
 		7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "DCM Framework_Prefix.pch"; sourceTree = "<group>"; };
@@ -12352,8 +12352,8 @@
 		592681FB11CF5F5000CFA81F /* Activity */ = {
 			isa = PBXGroup;
 			children = (
-				5926823511CF62DA00CFA81F /* ActivityWindowController.h */,
-				5926823611CF62DA00CFA81F /* ActivityWindowController.mm */,
+				59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */,
+				59F5F4EB11F485CC0047A90D /* BrowserController+Activity.mm */,
 				5926823E11CF62DA00CFA81F /* ThreadCell.h */,
 				5926823F11CF62DA00CFA81F /* ThreadCell.mm */,
 				5926824011CF62DA00CFA81F /* ThreadModalForWindowController.h */,
@@ -19159,7 +19159,6 @@
 				59DC28C611C6152400DAD5B4 /* N2CSV.h in Headers */,
 				59DC290A11C6178500DAD5B4 /* DiscBurningOptions.h in Headers */,
 				59DC290E11C617A300DAD5B4 /* DicomCompressor.h in Headers */,
-				5926824411CF62DA00CFA81F /* ActivityWindowController.h in Headers */,
 				5926824611CF62DA00CFA81F /* MenuMeterCPUStats.h in Headers */,
 				5926824811CF62DA00CFA81F /* MenuMeterNetPPP.h in Headers */,
 				5926824A11CF62DA00CFA81F /* MenuMeterNetStats.h in Headers */,
@@ -19168,6 +19167,7 @@
 				5926825011CF62DA00CFA81F /* ThreadsManager.h in Headers */,
 				EC9BD81C11EDF349007421B2 /* FlyAssistant.h in Headers */,
 				59F5F3F911F476030047A90D /* N2ImageButtonCell.h in Headers */,
+				59F5F4EC11F485CC0047A90D /* BrowserController+Activity.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21279,7 +21279,6 @@
 				594830CF118B0AC100D7E606 /* N2ImageView.h in Headers */,
 				5912DCDA118EF447007F7D40 /* N2FlippedView.h in Headers */,
 				592681BF11CF4FB700CFA81F /* NSUserDefaultsController+N2.h in Headers */,
-				5926825211CF62DA00CFA81F /* ActivityWindowController.h in Headers */,
 				5926825411CF62DA00CFA81F /* MenuMeterCPUStats.h in Headers */,
 				5926825611CF62DA00CFA81F /* MenuMeterNetPPP.h in Headers */,
 				5926825811CF62DA00CFA81F /* MenuMeterNetStats.h in Headers */,
@@ -21287,6 +21286,7 @@
 				5926825C11CF62DA00CFA81F /* ThreadModalForWindowController.h in Headers */,
 				5926825E11CF62DA00CFA81F /* ThreadsManager.h in Headers */,
 				59F5F3FB11F476030047A90D /* N2ImageButtonCell.h in Headers */,
+				59F5F4EE11F485CC0047A90D /* BrowserController+Activity.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23683,7 +23683,6 @@
 				59DC28C711C6152400DAD5B4 /* N2CSV.mm in Sources */,
 				59DC290B11C6178500DAD5B4 /* DiscBurningOptions.mm in Sources */,
 				59DC290F11C617A300DAD5B4 /* DicomCompressor.mm in Sources */,
-				5926824511CF62DA00CFA81F /* ActivityWindowController.mm in Sources */,
 				5926824711CF62DA00CFA81F /* MenuMeterCPUStats.mm in Sources */,
 				5926824911CF62DA00CFA81F /* MenuMeterNetPPP.m in Sources */,
 				5926824B11CF62DA00CFA81F /* MenuMeterNetStats.m in Sources */,
@@ -23693,6 +23692,7 @@
 				84CD254C11ECB49A004669D6 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
 				EC9BD81D11EDF349007421B2 /* FlyAssistant.mm in Sources */,
 				59F5F3FA11F476030047A90D /* N2ImageButtonCell.mm in Sources */,
+				59F5F4ED11F485CC0047A90D /* BrowserController+Activity.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24864,7 +24864,6 @@
 				5912DCDB118EF447007F7D40 /* N2FlippedView.mm in Sources */,
 				59DC285C11C60E3C00DAD5B4 /* NSView+N2.mm in Sources */,
 				592681AB11CF4A5E00CFA81F /* NSUserDefaultsController+N2.mm in Sources */,
-				5926825311CF62DA00CFA81F /* ActivityWindowController.mm in Sources */,
 				5926825511CF62DA00CFA81F /* MenuMeterCPUStats.mm in Sources */,
 				5926825711CF62DA00CFA81F /* MenuMeterNetPPP.m in Sources */,
 				5926825911CF62DA00CFA81F /* MenuMeterNetStats.m in Sources */,
@@ -24874,6 +24873,7 @@
 				5926828411CF69B300CFA81F /* NSThread+N2.mm in Sources */,
 				5926828711CF69CB00CFA81F /* N2HighlightImageButtonCell.mm in Sources */,
 				59F5F3FC11F476030047A90D /* N2ImageButtonCell.mm in Sources */,
+				59F5F4EF11F485CC0047A90D /* BrowserController+Activity.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -75,8 +75,8 @@
 #import "NSUserDefaultsController+OsiriX.h"
 #import "NSUserDefaultsController+N2.h"
 #import "ThreadsManager.h"
-#import "ActivityWindowController.h"
 #import "NSThread+N2.h"
+#import "BrowserController+Activity.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -219,7 +219,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController, userManagedObjectContext, userManagedObjectModel;
 @synthesize needDBRefresh, lastSaved, viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
-@synthesize AtableView, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel, activityController;
+@synthesize AtableView, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
 {
@@ -13958,6 +13958,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[self outlineViewRefresh];
 	
+	[self awakeActivity];
 	[self.window makeKeyAndOrderFront: self];
 	
 	[self refreshMatrix: self];
@@ -13982,7 +13983,6 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
 	#endif
 	
-	[ActivityWindowController defaultController];
 	
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
@@ -14004,6 +14004,7 @@ static NSArray*	openSubSeriesArray = nil;
 }
 
 -(void)dealloc {
+	[self deallocActivity];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey];
 	[super dealloc];
 }

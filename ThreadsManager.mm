@@ -14,7 +14,6 @@
 
 #import "ThreadsManager.h"
 #import "ThreadModalForWindowController.h"
-#import "ActivityWindowController.h"
 
 @implementation ThreadsManager
 
@@ -55,17 +54,23 @@
 	return [self objectInThreadsAtIndex:index];
 }
 
+-(void)addThread:(NSThread*)thread {
+	if (![[NSThread currentThread] isMainThread]) {
+		[self performSelectorOnMainThread:@selector(addThread:) withObject:thread waitUntilDone: NO];
+	} else if (![_threads containsObject:thread]) {
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
+		[[self mutableArrayValueForKey:@"threads"] addObject:thread];
+		//// We need this to avoid the exit before created bug...
+		//[[ActivityWindowController defaultController].tableView reloadData];
+		//[[ActivityWindowController defaultController].tableView display];
+	}
+}
+
 -(void)addThreadAndStart:(NSThread*)thread {
 	if (![[NSThread currentThread] isMainThread]) {
 		[self performSelectorOnMainThread:@selector(addThreadAndStart:) withObject:thread waitUntilDone: NO];
 	} else if (![_threads containsObject:thread]) {
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
-		[[self mutableArrayValueForKey:@"threads"] addObject:thread];
-		
-		// We need this to avoid the exit before created bug...
-		[[ActivityWindowController defaultController].tableView reloadData];
-		[[ActivityWindowController defaultController].tableView display];
-		
+		[self addThread:thread];
 		if (![thread isMainThread] && ![thread isExecuting])
 			[thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
 	}
@@ -74,7 +79,7 @@
 -(void)removeThread:(NSThread*)thread {
 	if (![[NSThread currentThread] isMainThread])
 		[self performSelectorOnMainThread:@selector(removeThread:) withObject:thread waitUntilDone:NO];
-	else {
+	else if ([_threads containsObject:thread]) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
 		[[self mutableArrayValueForKey:@"threads"] removeObject:thread];
 	}

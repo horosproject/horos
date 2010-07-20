@@ -239,7 +239,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSTableView* AtableView;
 	IBOutlet NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
 	IBOutlet NSTextField* AstatusLabel;
-	IBOutlet ActivityWindowController *activityController;
+	NSMutableArray* _activityCells;
+	NSThread* AupdateStatsThread;
+	NSObject* activityObserver;
 }
 
 @property(readonly) NSDateFormatter *DateTimeFormat, *DateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
@@ -257,7 +259,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) NSTableView* AtableView;
 @property(readonly) NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
 @property(readonly) NSTextField* AstatusLabel;
-@property(readonly) ActivityWindowController *activityController;
 
 @property volatile BOOL bonjourDownloading;
 @property(readonly) NSBox *bonjourSourcesBox;

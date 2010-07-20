@@ -39,7 +39,6 @@
 #import "NSSplitViewSave.h"
 #import "altivecFunctions.h"
 #import "NSUserDefaultsController+OsiriX.h"
-#import "ActivityWindowController.h"
 #ifndef OSIRIX_LIGHT
 #import <ILCrashReporter/ILCrashReporter.h>
 #import <N2Debug.h>

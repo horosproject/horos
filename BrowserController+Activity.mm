@@ -12,7 +12,7 @@
  PURPOSE.
  =========================================================================*/
 
-#import "ActivityWindowController.h"
+#import "BrowserController+Activity.h"
 #import "ThreadsManager.h"
 #import "ThreadCell.h"
 #import "MenuMeterCPUStats.h"
@@ -24,62 +24,85 @@
 #import <IOKit/storage/IOBlockStorageDriver.h>
 #import <algorithm>
 #import "NSUserDefaultsController+OsiriX.h"
-#import "BrowserController.h"
 
-@implementation ActivityWindowController
-
-@synthesize manager = _manager;
-@synthesize tableView;
-@synthesize cpuActiView, hddActiView, netActiView;
-@synthesize statusLabel;
-
-+(ActivityWindowController*)defaultController {
-	static ActivityWindowController* defaultController = [[self alloc] initWithManager:[ThreadsManager defaultManager]];
-	return defaultController;
+@interface ActivityObserver : NSObject {
+	BrowserController* _bc;
 }
 
--(id)initWithManager:(ThreadsManager*)manager {
-    self = [super init];
-	
-	tableView = [BrowserController currentBrowser].AtableView;
-	cpuActiView = [BrowserController currentBrowser].AcpuActiView;
-	hddActiView = [BrowserController currentBrowser].AhddActiView;
-	netActiView = [BrowserController currentBrowser].AnetActiView;
-	statusLabel = [BrowserController currentBrowser].AstatusLabel;
-	
-	[tableView setDelegate: self];
-	
-	_cells = [[NSMutableArray alloc] init];
+-(id)initWithBrowserController:(BrowserController*)bc;
 
-	_manager = [manager retain];
+@end
+
+@implementation BrowserController (Activity)
+
+-(void)awakeActivity {
+//	tableView = [BrowserController currentBrowser].AtableView;
+//	cpuActiView = [BrowserController currentBrowser].AcpuActiView;
+//	hddActiView = [BrowserController currentBrowser].AhddActiView;
+//	netActiView = [BrowserController currentBrowser].AnetActiView;
+//	statusLabel = [BrowserController currentBrowser].AstatusLabel;
+	
+	[AtableView setDelegate: self];
+	
+	_activityCells = [[NSMutableArray alloc] init];
+
+//	_manager = [manager retain];
 	// we observe the threads array so we can release cells when they're not needed anymore
-	[self.manager addObserver:self forKeyPath:@"threads" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld|NSKeyValueObservingOptionInitial context:NULL];
+	activityObserver = [[ActivityObserver alloc] initWithBrowserController:self];
+	[[ThreadsManager defaultManager] addObserver:activityObserver forKeyPath:@"threads" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld|NSKeyValueObservingOptionInitial context:NULL];
 	
-	updateStatsThread = [[NSThread alloc] initWithTarget:self selector:@selector(updateStatsThread:) object:NULL];
-	[updateStatsThread start];
+	AupdateStatsThread = [[NSThread alloc] initWithTarget:self selector:@selector(updateStatsThread:) object:NULL];
+	[AupdateStatsThread start];
 	
-	[[self.tableView tableColumnWithIdentifier:@"all"] bind:@"value" toObject:self.manager.threadsController withKeyPath:@"arrangedObjects" options:NULL];
+	[[AtableView tableColumnWithIdentifier:@"all"] bind:@"value" toObject:[ThreadsManager defaultManager].threadsController withKeyPath:@"arrangedObjects" options:NULL];
 	
-    return self;
+//	[NSThread detachNewThreadSelector:@selector(testThread_creator:) toTarget:self withObject:NULL];
+//	[NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(testTimer_createThread2:) userInfo:NULL repeats:YES];
 }
 
--(void)dealloc {
-	[updateStatsThread cancel];
-	[updateStatsThread release];
+/*-(void)testThread_creator:(id)t {
+	[[ThreadsManager defaultManager] addThread:[NSThread currentThread]];
+	[NSThread currentThread].name = @"CreatorZ joinZyX";
+	[[NSThread currentThread] setSupportsCancel:YES];
+	int c = 0;
+	while (YES) { // ![[NSThread currentThread] isCancelled]
+		c++;
+		[NSThread detachNewThreadSelector:@selector(testThread_dummy:) toTarget:self withObject:NULL];
+		[[NSThread currentThread] setStatus:[NSString stringWithFormat:@"So far, I jungled %d threads..", c]];
+		[NSThread sleepForTimeInterval:CGFloat(random()%1000)/1000*2];
+	}
+}
+
+-(void)testThread_dummy:(id)obj {
+	[[ThreadsManager defaultManager] addThread:[NSThread currentThread]];
+	[NSThread sleepForTimeInterval:0.001];
+	[[ThreadsManager defaultManager] removeThread:[NSThread currentThread]];
+}
+
+-(void)testTimer_createThread2:(NSTimer*)t {
+//	NSThread* th = [NSThread detachNewThreadSelector:@selector(testThread_dummy2:) toTarget:self withObject:NULL];
+//	[[ThreadsManager defaultManager] addThread:th];
+}
+
+-(void)testThread_dummy2:(id)obj {
+	//
+}*/
+
+
+-(void)deallocActivity {
+	[AupdateStatsThread cancel];
+	[AupdateStatsThread release];
 	
-	[self.manager removeObserver:self forKeyPath:@"threads"];
+	[[ThreadsManager defaultManager] removeObserver:activityObserver forKeyPath:@"threads"];
+	[activityObserver release];
 	
-    [_manager release];
-	[_cells release];
+	[_activityCells release];
+	
     [super dealloc];
 }
 
--(NSString*)windowFrameAutosaveName {
-	return [NSString stringWithFormat:@"ActivityWindow frame: %@", [[self window] title]];
-}
-
 -(NSCell*)cellForThread:(NSThread*)thread {
-	for (ThreadCell* cell in _cells)
+	for (ThreadCell* cell in _activityCells)
 		if (cell.thread == thread)
 			return cell;
 	
@@ -87,8 +110,8 @@
 }
 
 -(NSCell*) createCellForThread:(NSThread*)thread {
-	NSCell* cell = [[ThreadCell alloc] initWithThread:thread manager:self.manager view:self.tableView];
-	[_cells addObject:cell];
+	NSCell* cell = [[ThreadCell alloc] initWithThread:thread manager:[ThreadsManager defaultManager] view:AtableView];
+	[_activityCells addObject:cell];
 	
 	return [cell autorelease];
 }
@@ -134,9 +157,9 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 	mach_port_t masterPort;
 	IOMasterPort(MACH_PORT_NULL, &masterPort);
 	
-	NSImage *cpuImage = [NSImage imageNamed: @"activity_cpu.png"];
-	NSImage *netImage = [NSImage imageNamed: @"activity_net.png"];
-	NSImage *hddImage = [NSImage imageNamed: @"activity_hdd.png"];
+	NSImage* cpuImage = [NSImage imageNamed:@"activity_cpu.png"];
+	NSImage* netImage = [NSImage imageNamed:@"activity_net.png"];
+	NSImage* hddImage = [NSImage imageNamed:@"activity_hdd.png"];
 	
 	while (![[NSThread currentThread] isCancelled]) {
 		[NSThread sleepForTimeInterval:0.5];
@@ -159,12 +182,12 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 			CGFloat load = meanload+maxload*10;//(meanload+maxload)/2;
 			if (fabs(cpuCurrLoad-load) > 0.01)
 			{
-				[cpuActiView setImage:[ActivityWindowController cpuActivityImage:cpuImage meanLoad:meanload maxLoad:maxload]];
-				[cpuActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
+				[AcpuActiView setImage:[BrowserController cpuActivityImage:cpuImage meanLoad:meanload maxLoad:maxload]];
+				[AcpuActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 				cpuCurrLoad = load;
 			}
 		} else
-			[cpuActiView setImage:NULL]; // TODO: grayed image
+			[AcpuActiView setImage:NULL]; // TO DO maybe: grayed image
 		
 		// NET
 		
@@ -177,12 +200,12 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 			} CGFloat load = totdeltain/totpeak;
 			if (fabs(netCurrLoad-load) > 0.01)
 			{
-				[netActiView setImage:[netImage imageWithHue:deltaHue*load]];
-				[netActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
+				[AnetActiView setImage:[netImage imageWithHue:greenHue+deltaHue*load]];
+				[AnetActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 				netCurrLoad = load;
 			}
 		} else
-			[netActiView setImage:NULL]; // TODO: grayed image
+			[AnetActiView setImage:NULL]; // TO DO maybe: grayed image
 		
 		// HDD
 		
@@ -218,16 +241,16 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 				
 				if (fabs(hddCurrLoad-load) > 0.01)
 				{
-					[hddActiView setImage:[hddImage imageWithHue:deltaHue*load]];
-					[hddActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
+					[AhddActiView setImage:[hddImage imageWithHue:greenHue+deltaHue*load]];
+					[AhddActiView performSelectorOnMainThread:@selector(setNeedsDisplay:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 					hddCurrLoad = load;
 				}
 			}
 			
 			prevTotalRW = totalRW;			
-		} else [hddActiView setImage:NULL];
+		} else [AhddActiView setImage:NULL];
 		
-		[statusLabel performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:NSLocalizedString(self.manager.threads.count==1?@"%d thread":@"%d threads", NULL), self.manager.threads.count] waitUntilDone:YES];
+		[AstatusLabel performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:NSLocalizedString([ThreadsManager defaultManager].threads.count==1?@"%d thread":@"%d threads", NULL), [ThreadsManager defaultManager].threads.count] waitUntilDone:YES];
 		
 		previousTime = thisTime;
 		[pool release];
@@ -238,30 +261,35 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 	[pool release];
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
-	if (obj == self.manager)
+-(void)activity_observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
+	if (obj == [ThreadsManager defaultManager])
 		if ([keyPath isEqual:@"threads"]) { // we observe the threads array so we can release cells when they're not needed anymore
 			if ([[change objectForKey:NSKeyValueChangeKindKey] unsignedIntValue] == NSKeyValueChangeRemoval)
 				for (NSThread* thread in [change objectForKey:NSKeyValueChangeOldKey])
 				{
 					id cell = [self cellForThread:thread];
 					if( cell)
-						[_cells removeObject: cell];
+						[_activityCells removeObject: cell];
 				}
 			return;
 		}
 	
-	[super observeValueForKeyPath:keyPath ofObject:obj change:change context:context];
 }
 
 -(NSCell*)tableView:(NSTableView *)tableView dataCellForTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row
 {
-	id cell = [self cellForThread: [self.manager threadAtIndex:row]];
+	if (tableView == AtableView)
+		@try {
+			id cell = [self cellForThread: [[ThreadsManager defaultManager] threadAtIndex:row]];
+		
+			if( cell == nil)
+				cell = [self createCellForThread: [[ThreadsManager defaultManager] threadAtIndex:row]];
+		
+			return cell;
+		} @catch (...) {
+		}
 	
-	if( cell == nil)
-		cell = [self createCellForThread: [self.manager threadAtIndex:row]];
-	
-	return cell;
+	return NULL;
 }
 
 @end
@@ -276,6 +304,20 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 }
 
 -(void)rightMouseDown:(NSEvent*)evt {
+}
+
+@end
+
+@implementation ActivityObserver
+
+-(id)initWithBrowserController:(BrowserController*)bc {
+	self = [super init];
+	_bc = bc; // no retaining here
+	return self;
+}
+
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
+	[_bc activity_observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 @end
