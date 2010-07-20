@@ -193,50 +193,55 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 		#ifndef OSIRIX_LIGHT
 		DcmDataset *dataset = fileformat.getDataset();
 		DcmItem *metaInfo = fileformat.getMetaInfo();
-		DcmRepresentationParameter *params;
+		DcmRepresentationParameter *params = nil;
 		DJ_RPLossy lossyParams( 90);
 		DcmRLERepresentationParameter rleParams;
 		DJ_RPLossless losslessParams; // codec parameters, we use the defaults
-		if (newXfer == EXS_JPEGProcess14SV1TransferSyntax)
-		params = &losslessParams;
-		else if (newXfer == EXS_JPEGProcess2_4TransferSyntax)
-		params = &lossyParams; 
-		else if (newXfer == EXS_RLELossless)
-		params = &rleParams; 
 		
-		// this causes the lossless JPEG version of the dataset to be created
-		dataset->chooseRepresentation(newXfer, params);
-
-		// check if everything went well
-		if (dataset->canWriteXfer(newXfer))
+		if (newXfer == EXS_JPEGProcess14SV1TransferSyntax)
+			params = &losslessParams;
+		else if (newXfer == EXS_JPEGProcess2_4TransferSyntax)
+			params = &lossyParams; 
+		else if (newXfer == EXS_RLELossless)
+			params = &rleParams; 
+		
+		if( params)
 		{
-			// force the meta-header UIDs to be re-generated when storing the file 
-			// since the UIDs in the data set may have changed 
-			delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-			delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+			// this causes the lossless JPEG version of the dataset to be created
+			dataset->chooseRepresentation(newXfer, params);
 
-			// store in lossless JPEG format
-			
-			fileformat.loadAllDataIntoMemory();
-			
-			unlink( outfname);
-			
-			cond = fileformat.saveFile(outfname, newXfer);
-			status =  (cond.good()) ? YES : NO;
-			
-			if (newXfer == EXS_JPEGProcess14SV1TransferSyntax)
-				printf("\n--- compressFileFormat EXS_JPEGProcess14SV1TransferSyntax\n");
-			else if (newXfer == EXS_JPEGProcess2_4TransferSyntax)
-				printf("\n--- compressFileFormat EXS_JPEGProcess2_4TransferSyntax\n");
-			else if (newXfer == EXS_RLELossless)
-				printf("\n--- compressFileFormat EXS_RLELossless\n");
+			// check if everything went well
+			if (dataset->canWriteXfer(newXfer))
+			{
+				// force the meta-header UIDs to be re-generated when storing the file 
+				// since the UIDs in the data set may have changed 
+				delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+				delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+
+				// store in lossless JPEG format
+				
+				fileformat.loadAllDataIntoMemory();
+				
+				unlink( outfname);
+				
+				cond = fileformat.saveFile(outfname, newXfer);
+				status =  (cond.good()) ? YES : NO;
+				
+				if (newXfer == EXS_JPEGProcess14SV1TransferSyntax)
+					printf("\n--- compressFileFormat EXS_JPEGProcess14SV1TransferSyntax\n");
+				else if (newXfer == EXS_JPEGProcess2_4TransferSyntax)
+					printf("\n--- compressFileFormat EXS_JPEGProcess2_4TransferSyntax\n");
+				else if (newXfer == EXS_RLELossless)
+					printf("\n--- compressFileFormat EXS_RLELossless\n");
+			}
+			else
+			{
+				status = NO;
+				printf("\n**** compressFileFormat failed\n");
+			}
 		}
-		else
-		{
-			status = NO;
-			
-			printf("\n**** compressFileFormat failed\n");
-		}
+		else status = NO;
+		
 		#endif
 	}
 	
