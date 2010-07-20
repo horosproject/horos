@@ -14122,6 +14122,11 @@ static NSArray*	openSubSeriesArray = nil;
 		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Sending - STORE", nil), NSLocalizedString(@"Files are currently being sent to a DICOM node. Are you sure you want to quit now? The sending will be stopped.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), nil) == NSAlertDefaultReturn) return NO;
 	}
 	
+	if( [[ThreadsManager defaultManager] threadsCount] > 0)
+	{
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Background Threads", nil), NSLocalizedString(@"Background threads are currently running. Are you sure you want to quit now? These threads will be cancelled.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), nil) == NSAlertDefaultReturn) return NO;
+	}
+	
 	return YES;
 }
 

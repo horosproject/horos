@@ -50,6 +50,8 @@
 #import "OsiriXHTTPConnection.h"
 #import "ThreadPoolServer.h"
 #import "DicomImage.h"
+#import "ThreadsManager.h"
+#import "NSThread+N2.h"
 
 #include <execinfo.h>
 #include <stdio.h>
@@ -2328,6 +2330,9 @@ static NSDate *lastWarningDate = nil;
 	XMLRPCServer = nil;
 	
 	[self closeAllViewers: self];
+	
+	for( NSThread *t in [[ThreadsManager defaultManager] threads])
+		[t setIsCancelled: YES];
 	
 	[[BrowserController currentBrowser] browserPrepareForClose];
 

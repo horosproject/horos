@@ -2419,6 +2419,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (BOOL)windowShouldClose:(id)sender
 {
+	if( [toolbar customizationPaletteIsRunning])
+		return NO;
+	
 	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
 		return NO;
 		
