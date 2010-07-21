@@ -15,7 +15,6 @@
 #import "ThreadCell.h"
 #import "ThreadsManager.h"
 #import "BrowserController.h"
-#import <OsiriX Headers/N2HighlightImageButtonCell.h>
 #import <OsiriX Headers/NSString+N2.h>
 #import <OsiriX Headers/NSThread+N2.h>
 
@@ -42,11 +41,11 @@
 	[_progressIndicator setMinValue:0];
 	[_progressIndicator setMaxValue:1];
 	
-	_cancelButton = [[NSButton alloc] initWithFrame:NSZeroRect]; // TODO: the button is ugly, make it look better
-//	[_cancelButton.cell release]; <- BUG BUG ??????????? setCell WILL release the previous cell during next line
-	
-	[_cancelButton setCell: [[[N2HighlightImageButtonCell alloc] init] autorelease]];
-	[_cancelButton.cell setImage:[NSImage imageNamed:@"NSStopProgressFreestandingTemplate"]];
+	_cancelButton = [[NSButton alloc] initWithFrame:NSZeroRect];
+	[_cancelButton setImage:[NSImage imageNamed:@"Activity_Stop"]];
+	[_cancelButton setAlternateImage:[NSImage imageNamed:@"Activity_StopPressed"]];
+	[_cancelButton setBordered:NO];
+	[_cancelButton setButtonType:NSMomentaryChangeButton];
 	_cancelButton.target = self;
 	_cancelButton.action = @selector(cancelThreadAction:);
 
