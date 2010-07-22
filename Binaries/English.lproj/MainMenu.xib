@@ -3,15 +3,15 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">10F569</string>
-		<string key="IBDocument.InterfaceBuilderVersion">762</string>
+		<string key="IBDocument.InterfaceBuilderVersion">761</string>
 		<string key="IBDocument.AppKitVersion">1038.29</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">762</string>
+			<string key="NS.object.0">761</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="14144"/>
+			<integer value="1580"/>
 			<integer value="24"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
@@ -5737,102 +5737,15 @@
 						<string key="NSFrame">{{0, 20}, {200, 758}}</string>
 						<reference key="NSSuperview" ref="741316114"/>
 					</object>
-					<object class="NSImageView" id="468507512">
-						<reference key="NSNextResponder" ref="741316114"/>
-						<int key="NSvFlags">292</int>
-						<set class="NSMutableSet" key="NSDragTypes">
-							<string>Apple PDF pasteboard type</string>
-							<string>Apple PICT pasteboard type</string>
-							<string>Apple PNG pasteboard type</string>
-							<string>NSFilenamesPboardType</string>
-							<string>NeXT Encapsulated PostScript v1.2 pasteboard type</string>
-							<string>NeXT TIFF v4.0 pasteboard type</string>
-						</set>
-						<string key="NSFrame">{{5, 1}, {15, 15}}</string>
-						<reference key="NSSuperview" ref="741316114"/>
-						<bool key="NSEnabled">YES</bool>
-						<object class="NSImageCell" key="NSCell" id="911764216">
-							<int key="NSCellFlags">67239424</int>
-							<int key="NSCellFlags2">33685504</int>
-							<object class="NSCustomResource" key="NSContents">
-								<string key="NSClassName">NSImage</string>
-								<string key="NSResourceName">activity_net</string>
-							</object>
-							<reference key="NSSupport" ref="26"/>
-							<int key="NSAlign">0</int>
-							<int key="NSScale">3</int>
-							<int key="NSStyle">0</int>
-							<bool key="NSAnimates">NO</bool>
-						</object>
-						<bool key="NSEditable">YES</bool>
-					</object>
-					<object class="NSImageView" id="869181605">
-						<reference key="NSNextResponder" ref="741316114"/>
-						<int key="NSvFlags">292</int>
-						<set class="NSMutableSet" key="NSDragTypes">
-							<string>Apple PDF pasteboard type</string>
-							<string>Apple PICT pasteboard type</string>
-							<string>Apple PNG pasteboard type</string>
-							<string>NSFilenamesPboardType</string>
-							<string>NeXT Encapsulated PostScript v1.2 pasteboard type</string>
-							<string>NeXT TIFF v4.0 pasteboard type</string>
-						</set>
-						<string key="NSFrame">{{24, 1}, {17, 17}}</string>
-						<reference key="NSSuperview" ref="741316114"/>
-						<bool key="NSEnabled">YES</bool>
-						<object class="NSImageCell" key="NSCell" id="30246366">
-							<int key="NSCellFlags">67239424</int>
-							<int key="NSCellFlags2">33685504</int>
-							<object class="NSCustomResource" key="NSContents">
-								<string key="NSClassName">NSImage</string>
-								<string key="NSResourceName">activity_hdd</string>
-							</object>
-							<reference key="NSSupport" ref="26"/>
-							<int key="NSAlign">0</int>
-							<int key="NSScale">3</int>
-							<int key="NSStyle">0</int>
-							<bool key="NSAnimates">NO</bool>
-						</object>
-						<bool key="NSEditable">YES</bool>
-					</object>
-					<object class="NSImageView" id="156916735">
-						<reference key="NSNextResponder" ref="741316114"/>
-						<int key="NSvFlags">292</int>
-						<set class="NSMutableSet" key="NSDragTypes">
-							<string>Apple PDF pasteboard type</string>
-							<string>Apple PICT pasteboard type</string>
-							<string>Apple PNG pasteboard type</string>
-							<string>NSFilenamesPboardType</string>
-							<string>NeXT Encapsulated PostScript v1.2 pasteboard type</string>
-							<string>NeXT TIFF v4.0 pasteboard type</string>
-						</set>
-						<string key="NSFrame">{{46, 1}, {16, 16}}</string>
-						<reference key="NSSuperview" ref="741316114"/>
-						<bool key="NSEnabled">YES</bool>
-						<object class="NSImageCell" key="NSCell" id="527788441">
-							<int key="NSCellFlags">67239424</int>
-							<int key="NSCellFlags2">33685504</int>
-							<object class="NSCustomResource" key="NSContents">
-								<string key="NSClassName">NSImage</string>
-								<string key="NSResourceName">activity_cpu</string>
-							</object>
-							<reference key="NSSupport" ref="26"/>
-							<int key="NSAlign">0</int>
-							<int key="NSScale">3</int>
-							<int key="NSStyle">0</int>
-							<bool key="NSAnimates">NO</bool>
-						</object>
-						<bool key="NSEditable">YES</bool>
-					</object>
 					<object class="NSTextField" id="457043866">
 						<reference key="NSNextResponder" ref="741316114"/>
 						<int key="NSvFlags">290</int>
-						<string key="NSFrame">{{67, 2}, {133, 14}}</string>
+						<string key="NSFrame">{{5, 3}, {190, 14}}</string>
 						<reference key="NSSuperview" ref="741316114"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="845293776">
 							<int key="NSCellFlags">67239488</int>
-							<int key="NSCellFlags2">272762880</int>
+							<int key="NSCellFlags2">71436288</int>
 							<string key="NSContents">The quick brown fox jumps over the lazy dog.</string>
 							<reference key="NSSupport" ref="26"/>
 							<reference key="NSControlView" ref="457043866"/>
@@ -8741,7 +8654,7 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 										</object>
 										<string key="decimalSeparator">.</string>
 										<integer value="1000" key="formatterBehavior"/>
-										<string key="groupingSeparator">,</string>
+										<string key="groupingSeparator">'</string>
 										<object class="NSLocale" key="locale">
 											<string key="NS.identifier">fr_CH</string>
 										</object>
@@ -8765,7 +8678,7 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 									<reference key="NS.max" ref="194147893"/>
 									<nil key="NS.rounding"/>
 									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">,</string>
+									<string key="NS.thousand">'</string>
 									<bool key="NS.hasthousands">YES</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -14724,30 +14637,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">AnetActiView</string>
-						<reference key="source" ref="772029037"/>
-						<reference key="destination" ref="468507512"/>
-					</object>
-					<int key="connectionID">14160</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">AhddActiView</string>
-						<reference key="source" ref="772029037"/>
-						<reference key="destination" ref="869181605"/>
-					</object>
-					<int key="connectionID">14161</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">AcpuActiView</string>
-						<reference key="source" ref="772029037"/>
-						<reference key="destination" ref="156916735"/>
-					</object>
-					<int key="connectionID">14162</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">AstatusLabel</string>
 						<reference key="source" ref="772029037"/>
 						<reference key="destination" ref="457043866"/>
@@ -17018,11 +16907,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<int key="objectID">1580</int>
 						<reference key="object" ref="741316114"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="457043866"/>
-							<reference ref="156916735"/>
-							<reference ref="869181605"/>
-							<reference ref="468507512"/>
 							<reference ref="729579565"/>
+							<reference ref="457043866"/>
 						</array>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Albums</string>
@@ -20689,45 +20575,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="parent" ref="741316114"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">14146</int>
-						<reference key="object" ref="156916735"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="527788441"/>
-						</array>
-						<reference key="parent" ref="741316114"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">14147</int>
-						<reference key="object" ref="869181605"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="30246366"/>
-						</array>
-						<reference key="parent" ref="741316114"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">14148</int>
-						<reference key="object" ref="468507512"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="911764216"/>
-						</array>
-						<reference key="parent" ref="741316114"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">14149</int>
-						<reference key="object" ref="911764216"/>
-						<reference key="parent" ref="468507512"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">14150</int>
-						<reference key="object" ref="30246366"/>
-						<reference key="parent" ref="869181605"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">14151</int>
-						<reference key="object" ref="527788441"/>
-						<reference key="parent" ref="156916735"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">14152</int>
 						<reference key="object" ref="845293776"/>
 						<reference key="parent" ref="457043866"/>
@@ -22468,12 +22315,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="14144.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="14144.ImportedFromIB2"/>
 				<string key="14145.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="14146.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="14147.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="14148.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="14149.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="14150.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="14151.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="14152.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="14153.CustomClassName">ThreadsTableView</string>
 				<string key="14153.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -22824,9 +22665,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="viewerDICOMMergeSelection:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="AcpuActiView">NSImageView</string>
-						<string key="AhddActiView">NSImageView</string>
-						<string key="AnetActiView">NSImageView</string>
 						<string key="AstatusLabel">NSTextField</string>
 						<string key="AtableView">NSTableView</string>
 						<string key="CDpasswordWindow">NSWindow</string>
@@ -25589,9 +25427,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 			<string key="StartupDisk">{32, 32}</string>
 			<string key="Surface">{32, 32}</string>
 			<string key="VolumeRendering">{32, 32}</string>
-			<string key="activity_cpu">{19, 20}</string>
-			<string key="activity_hdd">{19, 16}</string>
-			<string key="activity_net">{14, 18}</string>
 			<string key="error">{32, 32}</string>
 			<string key="orthogonalReslice">{32, 32}</string>
 			<string key="smile">{32, 32}</string>

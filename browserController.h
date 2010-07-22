@@ -237,7 +237,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSArray							*mountedVolumes;
 	
 	IBOutlet NSTableView* AtableView;
-	IBOutlet NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
+//	IBOutlet NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
 	IBOutlet NSTextField* AstatusLabel;
 	NSMutableArray* _activityCells;
 	NSThread* AupdateStatsThread;
@@ -257,7 +257,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) NSString *currentDatabasePath, *localDatabasePath, *documentsDirectory, *fixedDocumentsDirectory;
 
 @property(readonly) NSTableView* AtableView;
-@property(readonly) NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
+//@property(readonly) NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
 @property(readonly) NSTextField* AstatusLabel;
 
 @property volatile BOOL bonjourDownloading;

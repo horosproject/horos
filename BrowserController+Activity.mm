@@ -144,29 +144,29 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 
 -(void)updateStatsThread:(id)obj {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	MenuMeterCPUStats* menuMeterCPUStats = [[MenuMeterCPUStats alloc] init];
-	MenuMeterNetStats* menuMeterNetStats = [[MenuMeterNetStats alloc] init];
+//	MenuMeterCPUStats* menuMeterCPUStats = [[MenuMeterCPUStats alloc] init];
+//	MenuMeterNetStats* menuMeterNetStats = [[MenuMeterNetStats alloc] init];
 	
 	#define historyLen 100
-	CGFloat cpuCurrLoad = -1, netCurrLoad = -1, hddCurrLoad = -1;
-	NSUInteger prevTotalRW = 0;
-	CGFloat hddTimedDeltaRWs[historyLen];
-	memset(hddTimedDeltaRWs, 0, sizeof(hddTimedDeltaRWs));
-	NSTimeInterval previousTime = [NSDate timeIntervalSinceReferenceDate];
+//	CGFloat cpuCurrLoad = -1, netCurrLoad = -1, hddCurrLoad = -1;
+//	NSUInteger prevTotalRW = 0;
+//	CGFloat hddTimedDeltaRWs[historyLen];
+//	memset(hddTimedDeltaRWs, 0, sizeof(hddTimedDeltaRWs));
+//	NSTimeInterval previousTime = [NSDate timeIntervalSinceReferenceDate];
 	
-	mach_port_t masterPort;
-	IOMasterPort(MACH_PORT_NULL, &masterPort);
+//	mach_port_t masterPort;
+//	IOMasterPort(MACH_PORT_NULL, &masterPort);
 	
-	NSImage* cpuImage = [NSImage imageNamed:@"activity_cpu.png"];
-	NSImage* netImage = [NSImage imageNamed:@"activity_net.png"];
-	NSImage* hddImage = [NSImage imageNamed:@"activity_hdd.png"];
+//	NSImage* cpuImage = [NSImage imageNamed:@"activity_cpu.png"];
+//	NSImage* netImage = [NSImage imageNamed:@"activity_net.png"];
+//	NSImage* hddImage = [NSImage imageNamed:@"activity_hdd.png"];
 	
 	while (![[NSThread currentThread] isCancelled]) {
 		[NSThread sleepForTimeInterval:0.5];
 
 		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-		NSTimeInterval thisTime = [NSDate timeIntervalSinceReferenceDate], thisInterval = thisTime - previousTime;
-		
+		//NSTimeInterval thisTime = [NSDate timeIntervalSinceReferenceDate], thisInterval = thisTime - previousTime;
+		/*
 		// CPU
 		
 		NSArray* cpuLoads = [menuMeterCPUStats currentLoad];
@@ -249,15 +249,15 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 			
 			prevTotalRW = totalRW;			
 		} else [AhddActiView setImage:NULL];
-		
+		*/
 		[AstatusLabel performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:NSLocalizedString([ThreadsManager defaultManager].threads.count==1?@"%d thread":@"%d threads", NULL), [ThreadsManager defaultManager].threads.count] waitUntilDone:YES];
 		
-		previousTime = thisTime;
+		//previousTime = thisTime;
 		[pool release];
 	}
 	
-	[menuMeterNetStats release];
-	[menuMeterCPUStats release];
+//	[menuMeterNetStats release];
+//	[menuMeterCPUStats release];
 	[pool release];
 }
 

@@ -219,7 +219,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController, userManagedObjectContext, userManagedObjectModel;
 @synthesize needDBRefresh, lastSaved, viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
-@synthesize AtableView, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel;
+@synthesize AtableView, /*AcpuActiView, AhddActiView, AnetActiView,*/ AstatusLabel;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
 {
