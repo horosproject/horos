@@ -250,7 +250,13 @@ const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
 			prevTotalRW = totalRW;			
 		} else [AhddActiView setImage:NULL];
 		*/
-		[AstatusLabel performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:NSLocalizedString([ThreadsManager defaultManager].threads.count==1?@"%d thread":@"%d threads", NULL), [ThreadsManager defaultManager].threads.count] waitUntilDone:YES];
+		int threadCount = [ThreadsManager defaultManager].threads.count;
+		NSString *activityString = @"";
+		if (threadCount>0)
+		{
+			activityString = [NSString stringWithFormat:NSLocalizedString(threadCount==1?@"%d thread":@"%d threads", NULL), threadCount];
+		}
+		[AstatusLabel performSelectorOnMainThread:@selector(setStringValue:) withObject:activityString waitUntilDone:YES];
 		
 		//previousTime = thisTime;
 		[pool release];
