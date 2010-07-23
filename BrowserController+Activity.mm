@@ -111,37 +111,9 @@
 	return [cell autorelease];
 }
 
-const CGFloat greenHue = 1./3, redHue = 0, deltaHue = redHue-greenHue;
-
-+(NSImage*)cpuActivityImage:(NSImage*)image meanLoad:(CGFloat)meanload maxLoad:(CGFloat)maxload {
-	NSImage* meanimage = [image imageWithHue:deltaHue*meanload];
-	NSImage* maximage = [image imageWithHue:deltaHue*maxload];
-	NSSize size = maximage.size;
-	
-	[meanimage lockFocus];
-	
-	[[NSGraphicsContext currentContext] saveGraphicsState];
-	
-	NSBezierPath* clipPath = [NSBezierPath bezierPath];
-	[clipPath moveToPoint:NSZeroPoint];
-	[clipPath lineToPoint:NSMakePoint(size.width, 0)];
-	[clipPath lineToPoint:NSMakePoint(size.width, size.height)];
-	[clipPath closePath];
-	[clipPath setClip];
-	
-	[maximage drawAtPoint:NSZeroPoint fromRect:NSMakeRect(NSZeroPoint, size) operation:NSCompositeCopy fraction:1];
-	
-	[[NSGraphicsContext currentContext] restoreGraphicsState];
-	
-	[meanimage unlockFocus];
-	return meanimage;
-}
-
 -(void)updateStatsThread:(id)obj {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	
-	#define historyLen 100
-	
+		
 	while (![[NSThread currentThread] isCancelled]) {
 		[NSThread sleepForTimeInterval:0.5];
 
