@@ -90,12 +90,6 @@
 		592681BF11CF4FB700CFA81F /* NSUserDefaultsController+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997899011B7B48E002DB107 /* NSUserDefaultsController+N2.h */; };
 		5926822411CF60BD00CFA81F /* ThreadModalForWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5926822111CF60BD00CFA81F /* ThreadModalForWindow.xib */; };
 		5926822611CF60BD00CFA81F /* ThreadModalForWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5926822111CF60BD00CFA81F /* ThreadModalForWindow.xib */; };
-		5926822D11CF610200CFA81F /* activity_cpu.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822911CF610200CFA81F /* activity_cpu.png */; };
-		5926822E11CF610200CFA81F /* activity_hdd.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822A11CF610200CFA81F /* activity_hdd.png */; };
-		5926822F11CF610200CFA81F /* activity_net.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822B11CF610200CFA81F /* activity_net.png */; };
-		5926823111CF610200CFA81F /* activity_cpu.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822911CF610200CFA81F /* activity_cpu.png */; };
-		5926823211CF610200CFA81F /* activity_hdd.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822A11CF610200CFA81F /* activity_hdd.png */; };
-		5926823311CF610200CFA81F /* activity_net.png in Resources */ = {isa = PBXBuildFile; fileRef = 5926822B11CF610200CFA81F /* activity_net.png */; };
 		5926824C11CF62DA00CFA81F /* ThreadCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926823E11CF62DA00CFA81F /* ThreadCell.h */; };
 		5926824D11CF62DA00CFA81F /* ThreadCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926823F11CF62DA00CFA81F /* ThreadCell.mm */; };
 		5926824E11CF62DA00CFA81F /* ThreadModalForWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5926824011CF62DA00CFA81F /* ThreadModalForWindowController.h */; };
@@ -8071,9 +8065,6 @@
 		5912DCD6118EF447007F7D40 /* N2FlippedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2FlippedView.h; path = nitrogen/Sources/N2FlippedView.h; sourceTree = "<group>"; };
 		5912DCD7118EF447007F7D40 /* N2FlippedView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2FlippedView.mm; path = nitrogen/Sources/N2FlippedView.mm; sourceTree = "<group>"; };
 		5926822211CF60BD00CFA81F /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ThreadModalForWindow.xib; sourceTree = "<group>"; };
-		5926822911CF610200CFA81F /* activity_cpu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = activity_cpu.png; sourceTree = "<group>"; };
-		5926822A11CF610200CFA81F /* activity_hdd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = activity_hdd.png; sourceTree = "<group>"; };
-		5926822B11CF610200CFA81F /* activity_net.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = activity_net.png; sourceTree = "<group>"; };
 		5926823E11CF62DA00CFA81F /* ThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadCell.h; sourceTree = "<group>"; };
 		5926823F11CF62DA00CFA81F /* ThreadCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThreadCell.mm; sourceTree = "<group>"; };
 		5926824011CF62DA00CFA81F /* ThreadModalForWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadModalForWindowController.h; sourceTree = "<group>"; };
@@ -13237,9 +13228,6 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
-				5926822911CF610200CFA81F /* activity_cpu.png */,
-				5926822A11CF610200CFA81F /* activity_hdd.png */,
-				5926822B11CF610200CFA81F /* activity_net.png */,
 				A9A80E3611F73E22009F54B9 /* Activity_Stop.tif */,
 				A9A80E3711F73E22009F54B9 /* Activity_StopPressed.tif */,
 				5997896F11B7B40B002DB107 /* MinusButton.png */,
@@ -22087,9 +22075,6 @@
 				5997897E11B7B423002DB107 /* AnonymizationTemplateNamePanel.xib in Resources */,
 				5997897F11B7B423002DB107 /* AnonymizationView.xib in Resources */,
 				5926822411CF60BD00CFA81F /* ThreadModalForWindow.xib in Resources */,
-				5926822D11CF610200CFA81F /* activity_cpu.png in Resources */,
-				5926822E11CF610200CFA81F /* activity_hdd.png in Resources */,
-				5926822F11CF610200CFA81F /* activity_net.png in Resources */,
 				84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */,
 				A9A80E3811F73E22009F54B9 /* Activity_Stop.tif in Resources */,
 				A9A80E3911F73E22009F54B9 /* Activity_StopPressed.tif in Resources */,
@@ -22446,9 +22431,6 @@
 				59BDF107117EE61E007F1F2C /* PreferencesWindow.xib in Resources */,
 				CEBA5FE111B244EA005F3A0E /* SpectroIcon.jpg in Resources */,
 				5926822611CF60BD00CFA81F /* ThreadModalForWindow.xib in Resources */,
-				5926823111CF610200CFA81F /* activity_cpu.png in Resources */,
-				5926823211CF610200CFA81F /* activity_hdd.png in Resources */,
-				5926823311CF610200CFA81F /* activity_net.png in Resources */,
 				A9A80E4E11F744FB009F54B9 /* Activity_StopPressed.tif in Resources */,
 				A9A80E4F11F744FC009F54B9 /* Activity_Stop.tif in Resources */,
 			);
