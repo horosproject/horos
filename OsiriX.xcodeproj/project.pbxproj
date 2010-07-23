@@ -13,10 +13,10 @@
 			buildPhases = (
 			);
 			dependencies = (
+				AB0F3A421046BFB9004129DD /* PBXTargetDependency */,
 				4A2F590D078D124B00C514A2 /* PBXTargetDependency */,
 				CEA048B60C76E46F00B4CA0A /* PBXTargetDependency */,
 				AB72503C0ADE6F7000A212A0 /* PBXTargetDependency */,
-				AB0F3A421046BFB9004129DD /* PBXTargetDependency */,
 				CEACC7AD0878781000CF466E /* PBXTargetDependency */,
 				CEACC7AF0878781000CF466E /* PBXTargetDependency */,
 				CEACC7B10878781000CF466E /* PBXTargetDependency */,
@@ -21477,7 +21477,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = NO;
+				BuildIndependentTargetsInParallel = YES;
 				ORGANIZATIONNAME = "OsiriX Team";
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
