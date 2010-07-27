@@ -67,9 +67,9 @@ extern NSManagedObjectContext *staticContext;
 	return self;
 }
 
-+ (id)requestDataHandler
++ (id)allocRequestDataHandler
 {
-	return [[[OsiriXSCPDataHandler alloc] init] autorelease];
+	return [[OsiriXSCPDataHandler alloc] init];
 }
 
 //- (NSPredicate *)predicateForObject:(DCMObject *)object

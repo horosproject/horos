@@ -1998,8 +1998,9 @@ ComputeUndefinedItemLength3 (PapyShort inFileNb, PapyULong *ioItemLengthP)
 /*										*/
 /********************************************************************************/
 
-PapyShort
-ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
+static volatile int ComputeUndefinedSequenceLength3DepthProtection = 0;
+
+PapyShort ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
 {
   PapyULong	theElemLength, theBufPos, theFileStartPos, i;
   PapyUShort	theGrNb, theElemNb;
@@ -2007,7 +2008,13 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
   unsigned char	*theBuffP, theBuff [8];
   int 		OK, theErr = 0;
   
+  if( ComputeUndefinedSequenceLength3DepthProtection > 30)
+  {
+	  printf("\r******* ComputeUndefinedSequenceLength3DepthProtection \r");
+	  RETURN (papReadFile)
+  }
   
+  ComputeUndefinedSequenceLength3DepthProtection ++;
   /* initialisation */
   theGrNb         = 0;
   theElemNb       = 0;
@@ -2026,6 +2033,7 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
     if (Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP) < 0)
     {
       Papy3FClose (&(gPapyFile [inFileNb]));
+	  ComputeUndefinedSequenceLength3DepthProtection --;
       RETURN (papReadFile)
     } /* if */
     
@@ -2066,6 +2074,7 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
         if (Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP) < 0)
         {
 			Papy3FClose (&(gPapyFile [inFileNb]));
+			ComputeUndefinedSequenceLength3DepthProtection --;
 			RETURN (papReadFile)
         } /* if */
         *ioSeqLengthP += 4L;
@@ -2084,7 +2093,10 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
       {
         theElemLength = 0L;
         if ((theErr = (int) ComputeUndefinedItemLength3 (inFileNb, &theElemLength)) < 0)
+		{
+		  ComputeUndefinedSequenceLength3DepthProtection --;
           RETURN (theErr);
+		}
       } /* if */
 
       *ioSeqLengthP += theElemLength;
@@ -2099,6 +2111,7 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
   /* reset the file pointer to its previous position */
   Papy3FSeek (gPapyFile [inFileNb], (int) SEEK_SET, (PapyLong) theFileStartPos);
   
+  ComputeUndefinedSequenceLength3DepthProtection --;
   return 0;
   
 } /* endof ComputeUndefinedSequenceLength3 */

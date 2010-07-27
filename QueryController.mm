@@ -2509,7 +2509,7 @@ extern "C"
 				[previousAutoRetrieve removeObjectForKey: [self stringIDForStudy: object]];
 			}
 			
-			[NSThread currentThread].progress = (float) i++ / (float) [moveArray count];
+			[NSThread currentThread].progress = (float) ++i / (float) [moveArray count];
 			if( [NSThread currentThread].isCancelled)
 			{
 				[[NSFileManager defaultManager] createFileAtPath: @"/tmp/kill_all_storescu" contents: [NSData data] attributes: nil];

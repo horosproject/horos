@@ -63,7 +63,7 @@ typedef struct
 
 @property (retain) NSString *callingAET;
 
-+ (id)requestDataHandler;
++ (id)allocRequestDataHandler;
 
 -(NSTimeInterval)endOfDay:(NSCalendarDate *)day;
 -(NSTimeInterval)startOfDay:(NSCalendarDate *)day;

@@ -11140,7 +11140,7 @@ static BOOL needToRezoom;
 		if( [NSThread currentThread].isCancelled)
 			break;
 			
-		[NSThread currentThread].progress = (float) t++ / (float) [[d objectForKey: @"packArray"] count];
+		[NSThread currentThread].progress = (float) ++t / (float) [[d objectForKey: @"packArray"] count];
 		[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[d objectForKey: @"packArray"] count]-t];
 	}
 	

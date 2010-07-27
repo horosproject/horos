@@ -610,7 +610,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
 	
 	// Search Core Data here
 	if( handle -> dataHandler == 0L)
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandler] retain];
+		handle -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
 		
 	cond = [handle->dataHandler prepareFindForDataSet:findRequestIdentifiers];
 	MatchFound = [handle->dataHandler findMatchFound];
@@ -818,7 +818,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextFindResponse (
 	dbdebug(1, "nextFindResponse () : new dataset\n") ;
 	
 	if( handle -> dataHandler == 0L)
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandler] retain];
+		handle -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
 		
 	cond = [handle ->dataHandler nextFindObject:*findResponseIdentifiers  isComplete:&isComplete];
 	dbdebug(1, "nextFindResponse () : next response\n") ;
@@ -880,7 +880,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 	 status->setStatus(STATUS_Pending);
 	 /**** Goto the next matching image number  *****/
 	if( handle -> dataHandler == 0L)
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandler] retain];
+		handle -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
 		
 	OFCondition cond = [handle->dataHandler nextMoveObject:imageFileName];
 	DcmFileFormat fileformat;
@@ -1069,7 +1069,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
 	// Search Core Data here
 	//NSLog(@"search core data for move");
 	if( handle -> dataHandler == 0L)
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandler] retain];
+		handle -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
 	
 	handle -> dataHandler.callingAET = [NSString stringWithUTF8String: handle -> callingAET];
 	
@@ -1190,7 +1190,9 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 		DB_FreeElementList (handle -> findRequestList);
 		DB_FreeElementList (handle -> findResponseList);
 		DB_FreeUidList (handle -> uidList);
+		
 		[handle -> dataHandler release];
+		
 		free ( (char *) handle);
 		handle = nil;
 	}
