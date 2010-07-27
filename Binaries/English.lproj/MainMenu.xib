@@ -5484,7 +5484,7 @@
 															<object class="NSTableView" id="692127092">
 																<reference key="NSNextResponder" ref="1002041640"/>
 																<int key="NSvFlags">4370</int>
-																<string key="NSFrameSize">{196, 404}</string>
+																<string key="NSFrameSize">{196, 405}</string>
 																<reference key="NSSuperview" ref="1002041640"/>
 																<bool key="NSEnabled">YES</bool>
 																<object class="NSTableHeaderView" key="NSHeaderView" id="498184908">
@@ -5546,7 +5546,7 @@
 																<int key="NSTableViewDraggingDestinationStyle">0</int>
 															</object>
 														</array>
-														<string key="NSFrame">{{1, 17}, {196, 404}}</string>
+														<string key="NSFrame">{{1, 17}, {196, 405}}</string>
 														<reference key="NSSuperview" ref="470928104"/>
 														<reference key="NSNextKeyView" ref="692127092"/>
 														<reference key="NSDocView" ref="692127092"/>
@@ -5589,7 +5589,7 @@
 													</object>
 													<reference ref="242036415"/>
 												</array>
-												<string key="NSFrameSize">{198, 422}</string>
+												<string key="NSFrameSize">{198, 423}</string>
 												<reference key="NSSuperview" ref="997330803"/>
 												<reference key="NSNextKeyView" ref="1002041640"/>
 												<int key="NSsFlags">530</int>
@@ -5601,11 +5601,11 @@
 												<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 											</object>
 										</array>
-										<string key="NSFrameSize">{200, 422}</string>
+										<string key="NSFrameSize">{200, 423}</string>
 										<reference key="NSSuperview" ref="591651258"/>
 									</object>
 								</array>
-								<string key="NSFrame">{{0, 233}, {200, 422}}</string>
+								<string key="NSFrame">{{0, 233}, {200, 423}}</string>
 								<reference key="NSSuperview" ref="729579565"/>
 								<string key="NSOffsets">{0, 0}</string>
 								<object class="NSTextFieldCell" key="NSTitleCell">
@@ -5771,7 +5771,7 @@
 										<reference key="NSSuperview" ref="886004369"/>
 									</object>
 								</array>
-								<string key="NSFrame">{{0, 664}, {200, 112}}</string>
+								<string key="NSFrame">{{0, 665}, {200, 112}}</string>
 								<reference key="NSSuperview" ref="729579565"/>
 								<string key="NSOffsets">{0, 0}</string>
 								<object class="NSTextFieldCell" key="NSTitleCell">
@@ -5792,7 +5792,7 @@
 								<bool key="NSTransparent">NO</bool>
 							</object>
 						</array>
-						<string key="NSFrame">{{0, 2}, {200, 776}}</string>
+						<string key="NSFrame">{{0, 2}, {200, 777}}</string>
 						<reference key="NSSuperview" ref="741316114"/>
 					</object>
 				</array>
