@@ -14035,7 +14035,7 @@ static NSArray*	openSubSeriesArray = nil;
 {
 	WaitRendering *wait = nil;
 	
-	if( [NSThread isMainThread])
+	if( [NSThread isMainThread] && [[self window] isVisible])
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Wait for running processes...", nil)];
 	
 	@try
