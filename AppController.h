@@ -225,5 +225,7 @@ extern "C"
 + (void)set12BitInvocation:(NSInvocation*)invocation;
 + (NSInvocation*)fill12BitBufferInvocation;
 
+-(void)verifyHardwareInterpolation;
+
 @end
 

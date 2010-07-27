@@ -238,7 +238,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	IBOutlet NSTableView* AtableView;
 //	IBOutlet NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
-	IBOutlet NSTextField* AstatusLabel;
+//	IBOutlet NSTextField* AstatusLabel;
 	NSMutableArray* _activityCells;
 	NSThread* AupdateStatsThread;
 	NSObject* activityObserver;
@@ -258,7 +258,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @property(readonly) NSTableView* AtableView;
 //@property(readonly) NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
-@property(readonly) NSTextField* AstatusLabel;
+//@property(readonly) NSTextField* AstatusLabel;
 
 @property volatile BOOL bonjourDownloading;
 @property(readonly) NSBox *bonjourSourcesBox;

@@ -34,7 +34,7 @@
 	_manager = [manager retain];
 	
 	BrowserController* threadsBController = (id)view.delegate;
-	[self setTextColor:threadsBController.AstatusLabel.textColor];
+	//[self setTextColor:threadsBController.AstatusLabel.textColor];
 	
 	_progressIndicator = [[NSProgressIndicator alloc] initWithFrame:NSZeroRect];
 	[_progressIndicator setUsesThreadedAnimation:YES];

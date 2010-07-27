@@ -219,7 +219,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController, userManagedObjectContext, userManagedObjectModel;
 @synthesize needDBRefresh, lastSaved, viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
-@synthesize AtableView, /*AcpuActiView, AhddActiView, AnetActiView,*/ AstatusLabel;
+@synthesize AtableView/*, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel*/;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
 {
@@ -3743,7 +3743,7 @@ static NSConditionLock *threadLock = nil;
 				if( [NSThread currentThread].isCancelled)
 					break;
 			
-				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesInput count]-i];
+				[NSThread currentThread].status = [NSString stringWithFormat: @"%d %@", [filesInput count]-i, i==1? NSLocalizedString( @"file", nil) : NSLocalizedString( @"files", nil) ];
 				[NSThread currentThread].progress = (float) i / [filesInput count];
 			}
 			

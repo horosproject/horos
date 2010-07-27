@@ -46,8 +46,8 @@
 	activityObserver = [[ActivityObserver alloc] initWithBrowserController:self];
 	[[ThreadsManager defaultManager] addObserver:activityObserver forKeyPath:@"threads" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld|NSKeyValueObservingOptionInitial context:NULL];
 	
-	AupdateStatsThread = [[NSThread alloc] initWithTarget:self selector:@selector(updateStatsThread:) object:NULL];
-	[AupdateStatsThread start];
+//	AupdateStatsThread = [[NSThread alloc] initWithTarget:self selector:@selector(updateStatsThread:) object:NULL];
+//	[AupdateStatsThread start];
 	
 	[[AtableView tableColumnWithIdentifier:@"all"] bind:@"value" toObject:[ThreadsManager defaultManager].threadsController withKeyPath:@"arrangedObjects" options:NULL];
 	
@@ -85,8 +85,8 @@
 
 
 -(void)deallocActivity {
-	[AupdateStatsThread cancel];
-	[AupdateStatsThread release];
+//	[AupdateStatsThread cancel];
+//	[AupdateStatsThread release];
 	
 	[[ThreadsManager defaultManager] removeObserver:activityObserver forKeyPath:@"threads"];
 	[activityObserver release];
@@ -111,7 +111,7 @@
 	return [cell autorelease];
 }
 
--(void)updateStatsThread:(id)obj {
+/*-(void)updateStatsThread:(id)obj {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 		
 	while (![[NSThread currentThread] isCancelled]) {
@@ -131,7 +131,7 @@
 	}
 	
 	[pool release];
-}
+}*/
 
 -(void)activity_observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
 	if (obj == [ThreadsManager defaultManager])

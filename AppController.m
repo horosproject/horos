@@ -2946,6 +2946,8 @@ static BOOL initialized = NO;
 
 - (void) applicationDidFinishLaunching:(NSNotification*) aNotification
 {
+	[self verifyHardwareInterpolation];
+	
 	unlink( "/tmp/kill_all_storescu");
 	
 	[NSSplitView loadSplitView];
@@ -4577,6 +4579,17 @@ static BOOL initialized = NO;
 + (NSInvocation*)fill12BitBufferInvocation;
 {
 	return fill12BitBufferInvocation;
+}
+
+#pragma mark Hardware Interpolation
+
+-(void)verifyHardwareInterpolation {
+	//if ()
+	DCMView* dcmView = [[DCMView alloc] initWithSize:NSMakeSize(100,100)];
+	
+	
+	
+	[dcmView release];
 }
 
 @end
