@@ -649,7 +649,7 @@ static NSConditionLock *threadLock = nil;
 	newFilesArray = randomArray;
 #endif
 	
-	if( [AppController mainThread] == [NSThread currentThread])
+	if( [NSThread isMainThread])
 	{
 		isCDMedia = [BrowserController isItCD: [newFilesArray objectAtIndex: 0]];
 		
@@ -3664,7 +3664,7 @@ static NSConditionLock *threadLock = nil;
 			[context unlock];
 			[context release];
 			
-			if( [NSThread currentThread] == [AppController mainThread])
+			if( [NSThread isMainThread])
 				[self outlineViewRefresh];
 		}
 		
@@ -14033,32 +14033,57 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void)waitForRunningProcesses
 {
-	NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + 240;
-	while( ti - [NSDate timeIntervalSinceReferenceDate] > 0 && [[ThreadsManager defaultManager] threadsCount] > 0)
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
+	WaitRendering *wait = nil;
 	
-	[BrowserController tryLock: checkIncomingLock during: 120];
-	[BrowserController tryLock: managedObjectContext during: 120];
-	[BrowserController tryLock: checkBonjourUpToDateThreadLock during: 60];
+	if( [NSThread isMainThread])
+		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Wait for running processes...", nil)];
 	
-	while( [SendController sendControllerObjects] > 0)
-		[NSThread sleepForTimeInterval: 0.1];
-	
-	[BrowserController tryLock: decompressThreadRunning during: 120];
-	[BrowserController tryLock: deleteInProgress during: 600];
+	@try
+	{
+		NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + 240;
+		while( ti - [NSDate timeIntervalSinceReferenceDate] > 0 && [[ThreadsManager defaultManager] threadsCount] > 0)
+		{
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
+			
+			if( wait && [[wait window] isVisible] == NO)
+				[wait showWindow:self];
+		}
+			
+		[BrowserController tryLock: checkIncomingLock during: 120];
+		[BrowserController tryLock: managedObjectContext during: 120];
+		[BrowserController tryLock: checkBonjourUpToDateThreadLock during: 60];
 		
-	[self emptyDeleteQueueThread];
+		while( [SendController sendControllerObjects] > 0)
+		{
+			[NSThread sleepForTimeInterval: 0.1];
+			
+			if( wait && [[wait window] isVisible] == NO)
+				[wait showWindow:self];
+		}
+		[BrowserController tryLock: decompressThreadRunning during: 120];
+		[BrowserController tryLock: deleteInProgress during: 600];
+		
+		[self emptyDeleteQueueThread];
+		
+		[BrowserController tryLock: deleteInProgress during: 600];
+		[BrowserController tryLock: autoroutingInProgress during: 120];
+		
+		[self emptyAutoroutingQueue:self];
+		
+		[BrowserController tryLock: autoroutingInProgress during: 120];
+		
+		[self syncReportsIfNecessary];
+		
+		[BrowserController tryLock: checkIncomingLock during: 120];
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		[AppController printStackTrace: e];
+	}
 	
-	[BrowserController tryLock: deleteInProgress during: 600];
-	[BrowserController tryLock: autoroutingInProgress during: 120];
-	
-	[self emptyAutoroutingQueue:self];
-	
-	[BrowserController tryLock: autoroutingInProgress during: 120];
-	
-	[self syncReportsIfNecessary];
-	
-	[BrowserController tryLock: checkIncomingLock during: 120];
+	[wait close];
+	[wait release];
 }
 
 - (void) browserPrepareForClose
@@ -14663,7 +14688,7 @@ static NSArray*	openSubSeriesArray = nil;
 	NSArray *args;
 	WaitRendering *wait = nil;
 	
-	if( [NSThread currentThread] == [AppController mainThread] && showGUI == YES)
+	if( [NSThread isMainThread] && showGUI == YES)
 	{
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Decompressing the files...", nil)];
 		[wait showWindow:self];
@@ -14717,7 +14742,7 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		// Is it on writable media? Ask if the user want to delete the original file?
 		
-		if( [NSThread currentThread] == [AppController mainThread] && [[NSFileManager defaultManager] isWritableFileAtPath: file] && showGUI == YES)
+		if( [NSThread isMainThread] && [[NSFileManager defaultManager] isWritableFileAtPath: file] && showGUI == YES)
 		{
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"HideZIPSuppressionMessage"] == NO)
 			{
@@ -15306,7 +15331,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 //	if( windowVisible)
 //	{
-//		if( [AppController mainThread] != [NSThread currentThread])
+//		if( [AppController isMainThread] == NO)
 //			[self performSelectorOnMainThread: @selector(decompressWaitIncrementation:) withObject: [NSNumber numberWithInt: [array count]] waitUntilDone: NO];
 //		else
 //			[self decompressWaitIncrementation: [NSNumber numberWithInt: [array count]]];
@@ -15347,7 +15372,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 //	if( windowVisible)
 //	{
-//		if( [AppController mainThread] != [NSThread currentThread])
+//		if( [AppController isMainThread] == NO)
 //			[self performSelectorOnMainThread: @selector(decompressWaitIncrementation:) withObject: [NSNumber numberWithInt: [array count]] waitUntilDone: NO];
 //		else
 //			[self decompressWaitIncrementation: [NSNumber numberWithInt: [array count]]];
@@ -15595,7 +15620,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			case 'C':
 			case 'D':
-				if( [AppController mainThread] != [NSThread currentThread])
+				if( [NSThread isMainThread] == NO)
 					[DCMPix performSelectorOnMainThread: @selector( purgeCachedDictionaries) withObject: nil waitUntilDone: NO];
 				else
 					[DCMPix purgeCachedDictionaries];
@@ -17572,7 +17597,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
 	
 	WaitRendering *wait = nil;
-	if( [NSThread currentThread] == [AppController mainThread])
+	if( [NSThread isMainThread])
 	{
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Compressing the files...", nil)];
 		[wait showWindow:self];
@@ -17655,7 +17680,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
 	
 	WaitRendering *wait = nil;
-	if( [NSThread currentThread] == [AppController mainThread] && showGUI == YES)
+	if( [NSThread isMainThread] && showGUI == YES)
 	{
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Compressing the files...", nil)];
 		[wait showWindow:self];

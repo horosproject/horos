@@ -1725,7 +1725,7 @@ NSString* notNil( NSString *s)
 	QTMovie *aMovie = nil;
 	
     // create a QTMovie from the file
-	if( [AppController mainThread] != [NSThread currentThread])
+	if( [NSThread isMainThread] == NO)
 	{
 		[QTMovie enterQTKitOnThread];
 		
@@ -1768,7 +1768,7 @@ NSString* notNil( NSString *s)
 		NSLog(@"exportMovieToiPhone Error : %@", error);
     }
 	
-	if( [AppController mainThread] != [NSThread currentThread])
+	if( [NSThread isMainThread] == NO)
 	{
 		[aMovie detachFromCurrentThread];
 		[QTMovie exitQTKitOnThread];

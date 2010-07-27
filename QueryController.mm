@@ -1937,6 +1937,9 @@ extern "C"
 	if( autoQuery == NO)
 		return;
 	
+	if( [BrowserController currentBrowser].isCurrentDatabaseBonjour)
+		return;
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	[autoQueryLock lock];

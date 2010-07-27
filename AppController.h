@@ -135,7 +135,6 @@ extern "C"
 + (AppController*) sharedAppController; /**< Return the shared AppController instance */
 + (void)checkForPagesTemplate; /**< Check for Pages report template */
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
-+ (NSThread*) mainThread;
 + (void) pause;
 + (void) resetToolbars;
 + (NSString*) printStackTrace: (NSException*) e;

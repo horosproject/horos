@@ -70,7 +70,6 @@ static BOOL canDisplay12Bit = NO;
 static NSInvocation *fill12BitBufferInvocation = nil;
 static NSString *appStartingDate = nil;
 
-NSThread				*mainThread = nil;
 BOOL					NEEDTOREBUILD = NO;
 BOOL					COMPLETEREBUILD = NO;
 BOOL					USETOOLBARPANEL = NO;
@@ -1036,11 +1035,6 @@ static NSDate *lastWarningDate = nil;
 	[[AppController sharedAppController] performSelectorOnMainThread: @selector( pause) withObject: nil waitUntilDone: NO];
 }
 
-+ (NSThread*) mainThread
-{
-	return mainThread;
-}
-
 + (void) resetToolbars
 {
 	int numberOfScreens = [[NSScreen screens] count] + 1; //Just in case, we connect a second monitor when using OsiriX.
@@ -1232,7 +1226,7 @@ static NSDate *lastWarningDate = nil;
 	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
-	if( mainThread != [NSThread currentThread]) return;
+	if( [NSThread isMainThread] == NO) return;
 	
 	NSDictionary *dictionaryRepresentation = [defaults dictionaryRepresentation];
 	
@@ -1488,7 +1482,7 @@ static NSDate *lastWarningDate = nil;
 
 - (void) preferencesUpdated: (NSNotification*) note
 {
-	if( mainThread != [NSThread currentThread]) return;
+	if( [NSThread isMainThread] == NO) return;
 	if( checkForPreferencesUpdate == NO) return;
 	
 	if( updateTimer)
@@ -2565,8 +2559,6 @@ static BOOL initialized = NO;
 				
 				srandom(time(NULL));
 				
-				mainThread = [NSThread currentThread];
-							
 				Altivec = HasAltiVec();
 				//	if( Altivec == 0)
 				//	{
