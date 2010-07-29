@@ -432,7 +432,7 @@ extern NSManagedObjectContext *staticContext;
 			if( [c count] > 0)
 				specificCharacterSet = [[c objectAtIndex: 0] retain];
 			else
-				specificCharacterSet = [[NSString stringWithCString: scs] retain];
+				specificCharacterSet = [[NSString alloc] initWithCString: scs];
 		}
 		@catch (NSException * e)
 		{
@@ -444,7 +444,7 @@ extern NSManagedObjectContext *staticContext;
 	else
 	{
 		[specificCharacterSet release];
-		specificCharacterSet = [[NSString stringWithString:@"ISO_IR 100"] retain];
+		specificCharacterSet = [[NSString alloc] initWithString:@"ISO_IR 100"];
 		encoding = NSISOLatin1StringEncoding;
 	}
 	
@@ -979,7 +979,7 @@ extern NSManagedObjectContext *staticContext;
 		NSLog( @"--- cannot encode %@ -> switch to UTF-8 (ISO_IR 192) encoding", str);
 		
 		[specificCharacterSet release];
-		specificCharacterSet = [[NSString stringWithString: @"ISO_IR 192"] retain];
+		specificCharacterSet = [[NSString alloc] initWithString: @"ISO_IR 192"];
 		encoding = [NSString encodingForDICOMCharacterSet: specificCharacterSet];
 		
 		a = [str cStringUsingEncoding:encoding];
@@ -997,7 +997,7 @@ extern NSManagedObjectContext *staticContext;
 					if( [str cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: encodingString]])
 					{
 						[specificCharacterSet release];
-						specificCharacterSet = [[NSString stringWithString: encodingString] retain];
+						specificCharacterSet = [[NSString alloc] initWithString: encodingString];
 						encoding = [NSString encodingForDICOMCharacterSet: specificCharacterSet];
 						
 						a = [str cStringUsingEncoding:encoding];
@@ -1598,7 +1598,6 @@ extern NSManagedObjectContext *staticContext;
 		error = nil;
 		
 		[context release];
-		
 		context = staticContext;
 		[context retain];
 		[context lock];
@@ -1788,7 +1787,6 @@ extern NSManagedObjectContext *staticContext;
 	error = nil;
 	
 	[context release];
-	
 	context = staticContext;
 	[context retain];
 	[context lock];
@@ -1907,7 +1905,7 @@ extern NSManagedObjectContext *staticContext;
 	
 	BOOL fileExist = YES;
 	char dir[ 1024];
-	sprintf( dir, "%s", "/tmp/lock_process");
+	sprintf( dir, "%s-%d", "/tmp/lock_process", getpid());
 	
 	int inc = 0;
 	do

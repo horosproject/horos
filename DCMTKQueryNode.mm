@@ -1210,7 +1210,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	WaitRendering *wait = nil;
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO && [NSThread isMainThread])
+	if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 	{
 		wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Connecting to %@...", nil), _hostname]];
 		[wait setCancel: YES];
@@ -1451,7 +1451,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		if (_verbose)
 			printf("Requesting Association\n");
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
+		if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 		{
 			NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: net], @"net", [NSValue valueWithPointer: params], @"params", nil];
@@ -1546,7 +1546,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		{
 			if (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
 			{
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
+				if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 				{
 					NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
 					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: dataset], @"dataset", nil];

@@ -144,7 +144,7 @@ void DcmQueryRetrieveSCP::lockFile(void)
 {
 	char dir[ 1024];
 	
-	sprintf( dir, "%s", "/tmp/lock_process");
+	sprintf( dir, "%s-%d", "/tmp/lock_process", getpid());
 	unlink( dir);
 	FILE * pFile = fopen (dir,"w+");
 	if( pFile)
@@ -155,7 +155,7 @@ void DcmQueryRetrieveSCP::unlockFile(void)
 {
 	BOOL fileExist = YES;
 	char dir[ 1024];
-	sprintf( dir, "%s", "/tmp/lock_process");
+	sprintf( dir, "%s-%d", "/tmp/lock_process", getpid());
 	
 	int inc = 0;
 	do
@@ -197,7 +197,7 @@ void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
 	BOOL fileExist = YES;
 	int inc = 0, rc = pid, state;
 	char dir[ 1024];
-	sprintf( dir, "%s", "/tmp/lock_process");
+	sprintf( dir, "%s-%d", "/tmp/lock_process", pid);
 	
 	do
 	{
@@ -213,10 +213,9 @@ void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
 		usleep( 100000);
 		inc++;
 	}
-	
 	#define TIMEOUT 300
-	
 	while( fileExist == YES && inc < TIMEOUT && rc >= 0);
+	
 	if( inc > TIMEOUT)
 	{
 		kill( pid, 15);
@@ -224,7 +223,12 @@ void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
 	}
 	
 	if( rc < 0)
+	{
+		kill( pid, 15);
 		NSLog( @"******* waitUnlockFile : child process died...");
+	}
+	
+	unlink( dir);
 }
 
 OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool correctUIDPadding)
@@ -1272,19 +1276,42 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 		
 		if (singleProcess)
         {
-			staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
-			[staticContext retain];
+			NSManagedObjectContext *dbContext = [[BrowserController currentBrowser] localManagedObjectContext];
+			[dbContext retain];
+			[dbContext lock];
+			
 			@try
 			{
-				/* don't spawn a sub-process to handle the association */
-				cond = handleAssociation(assoc, options_.correctUIDPadding_);
+				[dbContext save: nil];
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
+			
+			@try
+			{
+				staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
+				[staticContext retain];
+				@try
+				{
+					/* don't spawn a sub-process to handle the association */
+					cond = handleAssociation(assoc, options_.correctUIDPadding_);
+				}
+				@catch( NSException *e)
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				}
+				[staticContext release];
+				staticContext = nil;
 			}
 			@catch( NSException *e)
 			{
 				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 			}
-			[staticContext release];
-			staticContext = nil;
+			
+			[dbContext unlock];
+			[dbContext release];
 			
 			NSString *str = getErrorMessage();
 			
@@ -1302,6 +1329,15 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				[dbContext retain];
 				[dbContext lock];
 				
+				@try
+				{
+					[dbContext save: nil];
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				}
+				
 				staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
 				[staticContext retain];
 				[staticContext lock]; //Try to avoid deadlock
@@ -1309,8 +1345,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				@try
 				{
 					[DCMNetServiceDelegate DICOMServersList];
-					
-					lockFile();
 					
 					/* spawn a sub-process to handle the association */
 					pid = (int)(fork());
@@ -1323,6 +1357,10 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					}
 					else if (pid > 0)
 					{
+						// Father
+						
+						[NSThread sleepForTimeInterval: 1.0]; // To allow the creation of lock_process file with corresponding pid
+						
 						/* parent process, note process in table */
 						processtable_.addProcessToTable(pid, assoc);
 						
@@ -1334,6 +1372,10 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					}
 					else
 					{
+						// Child
+						
+						lockFile();
+						
 						/* child process, handle the association */
 						cond = handleAssociation(assoc, options_.correctUIDPadding_);
 						

@@ -1190,8 +1190,11 @@ static NSDate *lastWarningDate = nil;
 			if( MyArray[ Counter] != getpid())
 			{
 				NSLog( @"Child Process to kill: %d (PID)", MyArray[ Counter]);
-				
 				kill( MyArray[ Counter], 15);
+				
+				char dir[ 1024];
+				sprintf( dir, "%s-%d", "/tmp/lock_process", MyArray[ Counter]);
+				unlink( dir);
 			}
         } 
     }

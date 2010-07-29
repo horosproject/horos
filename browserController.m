@@ -5596,9 +5596,51 @@ static NSConditionLock *threadLock = nil;
 	
 	if( path != nil)
 	{
-		[self performSelectorOnMainThread:@selector( openDatabaseInBonjour:) withObject: path waitUntilDone:YES];
+		[self performSelectorOnMainThread: @selector( openDatabaseInBonjour:) withObject: path waitUntilDone: YES];
 	}
 	
+	[pool release];
+}
+
+- (void) seachDeadProcesses
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	@try
+	{
+		// Test for deadlock processes lock_process pid in tmp folder
+		for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp" error: nil]) 
+		{
+			if( [s hasPrefix: @"lock_process-"])
+			{
+				int timeIntervalSinceNow = [[[[NSFileManager defaultManager] attributesOfItemAtPath: [@"/tmp/" stringByAppendingPathComponent: s] error: nil] fileCreationDate] timeIntervalSinceNow];
+				
+				if( timeIntervalSinceNow < -60*60*1)
+				{
+					NSLog( @"****** dead process found lock_process %@", s);
+					NSLog( @"****** dead process timeIntervalSinceNow %d", timeIntervalSinceNow);
+					
+					int pid = [[s stringByReplacingOccurrencesOfString: @"lock_process-" withString: @""] intValue];
+					
+					if( pid)
+					{
+						NSLog( @"****** kill pid %@", s);
+						kill( pid, 15);
+						
+						char dir[ 1024];
+						sprintf( dir, "%s-%d", "/tmp/lock_process", pid);
+						unlink( dir);
+					}
+				}
+			}
+		 }
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		[AppController printStackTrace: e];
+	}
+			 
 	[pool release];
 }
 
@@ -5607,6 +5649,8 @@ static NSConditionLock *threadLock = nil;
 	if( [[AppController sharedAppController] isSessionInactive]) return;
 	
 	[self testAutorouting];
+	
+	[NSThread detachNewThreadSelector: @selector( seachDeadProcesses) toTarget: self withObject: nil];
 	
 	if( bonjourDownloading) return;
 	if( DatabaseIsEdited) return;
@@ -9338,7 +9382,7 @@ static BOOL withReset = NO;
 	
 	@catch( NSException *ne)
 	{
-		NSLog(@"matrixDisplayIcons exception: %@", [ne description]);
+		NSLog( @"matrixDisplayIcons exception: %@", [ne description]);
 		[AppController printStackTrace: ne];
 	}
 }
@@ -18094,8 +18138,46 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[wait release];
 }
 
+//- (void) cThread
+//{
+//	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+//	
+//	NSString *src = @"/Volumes/pacs/OsiriX Data/DATABASE.noindex/";
+//	NSString *dst = @"/Volumes/G-DRIVE/OsiriX Data/INCOMING.noindex/WD";
+//	
+//	
+//	int d = [[NSUserDefaults standardUserDefaults] integerForKey: @"rebuild"];
+//	NSLog( @"cThread start : %d", d);
+//	
+//	for( int i = d; i < 70000; i++)
+//	{
+//		NSAutoreleasePool *z = [[NSAutoreleasePool alloc] init];
+//			
+//		NSString *path = [src stringByAppendingFormat: @"%d", i * 1000];
+//		
+//		if( [[NSFileManager defaultManager] fileExistsAtPath: path])
+//		{
+//			NSLog( @"%@ - IN", path);
+//			
+//			[[NSFileManager defaultManager] copyItemAtPath: path toPath: [dst stringByAppendingFormat: @"%d", i] error: nil];
+//			
+//			NSLog( @"%@ - OUT", path);
+//		}
+//		
+//		[z release];
+//	}
+//	[p release];
+//}
+
 - (IBAction)sendiDisk: (id)sender
 {
+//	
+//	[NSThread detachNewThreadSelector: @selector( cThread) toTarget: self withObject:nil];
+//	
+//	return;
+//	
+//	
+//	
 	int					success;
 	
 	// Copy the files!

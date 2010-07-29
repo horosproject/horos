@@ -1182,8 +1182,9 @@ NSString* notNil( NSString *s)
 			tempHTML = [self setBlock:@"StudyModalityBlock" visible:displayBlock forString:tempHTML];
 					
 			NSString *stateText = @"";
-			if( [[study valueForKey:@"stateText"] intValue])
-				stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKey:@"stateText"] intValue]];
+			int v = [[study valueForKey:@"stateText"] intValue];
+			if( v > 0 && v < [[BrowserController statesArray] count])
+				stateText = [[BrowserController statesArray] objectAtIndex: v];
 			
 			NSString *studyStateLabel = notNil( stateText);
 			displayBlock = YES;
