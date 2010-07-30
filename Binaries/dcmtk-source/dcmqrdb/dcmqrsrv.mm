@@ -213,13 +213,13 @@ void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
 		usleep( 100000);
 		inc++;
 	}
-	#define TIMEOUT 300
+	#define TIMEOUT 3000
 	while( fileExist == YES && inc < TIMEOUT && rc >= 0);
 	
-	if( inc > TIMEOUT)
+	if( inc >= TIMEOUT)
 	{
 		kill( pid, 15);
-		NSLog( @"******* waitUnlockFile for %d min", inc / 60);
+		NSLog( @"******* waitUnlockFile for %d sec", inc/10);
 	}
 	
 	if( rc < 0)

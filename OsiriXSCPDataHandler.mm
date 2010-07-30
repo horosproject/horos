@@ -1665,6 +1665,12 @@ extern NSManagedObjectContext *staticContext;
 	[findEnumerator release];
 	findEnumerator = [[findArray objectEnumerator] retain];
 	
+//	for( int i = 0 ; i < 60; i++)
+//	{
+//		printf( "tic\r");
+//		usleep( 1000000);
+//	}
+	
 	return cond;
 	 
 }

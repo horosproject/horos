@@ -129,7 +129,7 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 			status = NO;
 	}
 	
-	printf("\n*** Decompress for C-Move/C-Get\n");
+	printf("\n--- Decompress for C-Move/C-Get\n");
 	if( status == NO)
 		cond = EC_MemoryExhausted;
 	
