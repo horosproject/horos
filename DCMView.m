@@ -3265,7 +3265,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		lensTexture = calloc( LENSSIZE * LENSSIZE, 4);
 		
-		if( lensTexture)
+		if( lensTexture && src)
 		{
 			NSRect l = NSMakeRect( p.x*LENSRATIO - (LENSSIZE/2), p.y*LENSRATIO - (LENSSIZE/2), LENSSIZE, LENSSIZE);
 			
