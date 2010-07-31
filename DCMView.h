@@ -340,6 +340,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 + (float) Magnitude:( NSPoint) Point1 :(NSPoint) Point2;
 + (int) DistancePointLine: (NSPoint) Point :(NSPoint) startPoint :(NSPoint) endPoint :(float*) Distance;
 + (float) pbase_Plane: (float*) point :(float*) planeOrigin :(float*) planeVector :(float*) pointProjection;
++ (short)syncro;
++ (void)setSyncro:(short) s;
 - (BOOL) softwareInterpolation;
 - (void) applyImageTransformation;
 - (void) initFont;

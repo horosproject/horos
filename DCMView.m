@@ -6680,7 +6680,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 - (short)syncro { return syncro; }
++ (short)syncro { return syncro; }
 
++ (void)setSyncro:(short) s
+{
+	syncro = s;
+	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: nil];
+}
 - (void)setSyncro:(short) s
 {
 	syncro = s;

@@ -12079,6 +12079,11 @@ static BOOL needToRezoom;
 					}
 					//opening images refered to in viewerPix[0] in the adequate viewer
 					
+					int copySyncro = [DCMView syncro];
+					[DCMView setSyncro: syncroOFF];
+					BOOL copyCOPYSETTINGS = [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"];
+					[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"COPYSETTINGS"];
+					
 					if( [viewerPix[0] count] > 0)
 					{
 						if( movieViewer == NO)
@@ -12137,16 +12142,15 @@ static BOOL needToRezoom;
 						{
 							//movieViewer==YES
 							if( movieController == nil)
-							{
 								movieController = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:[NSMutableArray arrayWithArray:correspondingObjects] withVolume:volumeData];
-							}
 							else
-							{
 								[movieController addMovieSerie:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
-							}
 						}
 						[volumeData release];
 					}
+					
+					[[NSUserDefaults standardUserDefaults] setBool: copyCOPYSETTINGS forKey:@"COPYSETTINGS"];
+					[DCMView setSyncro: copySyncro];
 					
 					[viewerPix[0] release];
 					[correspondingObjects release];
