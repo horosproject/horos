@@ -166,7 +166,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSMatrix				*compressionMatrix, *folderTree;
 	
 	NSRecursiveLock					*checkIncomingLock, *checkBonjourUpToDateThreadLock;
-	NSTimeInterval					lastSaved;
 	NSPredicate						*testPredicate;
 	
     BOOL							showAllImages, DatabaseIsEdited, isNetworkLogsActive, displayEmptyDatabase;
@@ -272,7 +271,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @property BOOL rtstructProgressBar, needDBRefresh;
 @property float rtstructProgressPercent;
-@property NSTimeInterval lastSaved, databaseLastModification;
+@property NSTimeInterval databaseLastModification;
 @property(readonly) NSMutableArray *viewersListToReload, *viewersListToRebuild;
 @property(readonly) NSConditionLock* newFilesConditionLock;
 

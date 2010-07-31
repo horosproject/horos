@@ -218,7 +218,7 @@ static NSNumberFormatter* decimalNumberFormatter = NULL;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController, userManagedObjectContext, userManagedObjectModel;
-@synthesize needDBRefresh, lastSaved, viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
+@synthesize needDBRefresh, viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
 @synthesize AtableView/*, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel*/;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
@@ -907,7 +907,7 @@ static NSConditionLock *threadLock = nil;
 						if( study == nil)
 						{
 							// Fields
-							study = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:context];
+							study = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: context];
 							
 							newObject = YES;
 							newStudy = YES;
@@ -987,7 +987,7 @@ static NSConditionLock *threadLock = nil;
 							if( index == NSNotFound)
 							{
 								// Fields
-								seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
+								seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext: context];
 								[seriesTable setValue:today forKey:@"dateAdded"];
 								
 								newObject = YES;
@@ -1069,7 +1069,7 @@ static NSConditionLock *threadLock = nil;
 							}
 							else
 							{
-								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
+								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext: context];
 								
 								newObject = YES;
 							}
@@ -1255,7 +1255,7 @@ static NSConditionLock *threadLock = nil;
 								
 								if( DICOMSR == NO && [curDict valueForKey:@"album"] !=nil)
 								{
-									NSArray* albumArray = [BrowserController albumsInContext:context];
+									NSArray* albumArray = [BrowserController albumsInContext: context];
 									
 									DicomAlbum* album = NULL;
 									for (album in albumArray)
@@ -1390,19 +1390,19 @@ static NSConditionLock *threadLock = nil;
 		
 		@try
 		{
-			if( [NSDate timeIntervalSinceReferenceDate] - browserController.lastSaved > 120 || context != browserController.managedObjectContext)
-			{
-				[browserController autoCleanDatabaseFreeSpace: browserController];
-				
-				if( [browserController saveDatabase: [[DicomImage dbPathForManagedContext: context] stringByAppendingString: DATAFILEPATH] context: context] != 0)
-				{
-					//All these files were NOT saved..... due to an error. Move them back to the INCOMING folder.
-					addFailed = YES;
-				}
+			[browserController autoCleanDatabaseFreeSpace: browserController];
 			
-				browserController.lastSaved = [NSDate timeIntervalSinceReferenceDate];
+			NSError *error = nil;
+			[context save: &error];
+			
+			if( error)
+			{
+				NSLog( @"***** error saving DB: %@", [[error userInfo] description]);
+				NSLog( @"***** saveDatabase ERROR: %@", [error localizedDescription]);
+				
+				addFailed = YES;
 			}
-		
+			
 			if( addFailed == NO)
 			{
 				NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
@@ -2470,6 +2470,7 @@ static NSConditionLock *threadLock = nil;
 	
     managedObjectContext = [[NSManagedObjectContext alloc] init];
     [managedObjectContext setPersistentStoreCoordinator: persistentStoreCoordinator];
+	[managedObjectContext setUndoManager: nil];
 	
     NSURL *url = [NSURL fileURLWithPath: currentDatabasePath];
 	
@@ -2527,6 +2528,7 @@ static NSConditionLock *threadLock = nil;
 			
 			mOC = [[[NSManagedObjectContext alloc] init] autorelease];
 			[mOC setPersistentStoreCoordinator: pSC];
+			[mOC setUndoManager: nil];
 			
 			NSURL *url = [NSURL fileURLWithPath: [self localDatabasePath]];
 			
@@ -2862,6 +2864,9 @@ static NSConditionLock *threadLock = nil;
 			
 			[currentContext setPersistentStoreCoordinator: currentSC];
 			[previousContext setPersistentStoreCoordinator: previousSC];
+			
+			[currentContext setUndoManager: nil];
+			[previousContext setUndoManager: nil];
 			
 			[[NSFileManager defaultManager] removeFileAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"/Database3.sql"] handler: nil];
 			[[NSFileManager defaultManager] removeFileAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"/Database3.sql-journal"] handler: nil];
@@ -3649,8 +3654,8 @@ static NSConditionLock *threadLock = nil;
 			[context save: &error];
 			if (error)
 			{
-				NSLog( @"error saving DB: %@", [[error userInfo] description]);
-				NSLog( @"saveDatabase ERROR: %@", [error localizedDescription]);
+				NSLog( @"****** error saving DB: %@", [[error userInfo] description]);
+				NSLog( @"****** saveDatabase ERROR: %@", [error localizedDescription]);
 				retError = -1L;
 			}
 			
@@ -5021,8 +5026,8 @@ static NSConditionLock *threadLock = nil;
 		[userManagedObjectContext save: &error];
 		if (error)
 		{
-			NSLog(@"error saving DB: %@", [[error userInfo] description]);
-			NSLog( @"saveDatabase ERROR: %@", [error localizedDescription]);
+			NSLog( @"***** error saving DB: %@", [[error userInfo] description]);
+			NSLog( @"***** saveDatabase ERROR: %@", [error localizedDescription]);
 			retError = -1L;
 		}
 		
@@ -5080,6 +5085,7 @@ static NSConditionLock *threadLock = nil;
 	
     userManagedObjectContext = [[NSManagedObjectContext alloc] init];
     [userManagedObjectContext setPersistentStoreCoordinator: userPersistentStoreCoordinator];
+	[userManagedObjectContext setUndoManager: nil];
 	
     NSURL *url = [NSURL fileURLWithPath: [DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath]];
 	
@@ -11372,12 +11378,8 @@ static BOOL needToRezoom;
 						NSManagedObjectContext *sqlContext = [[NSManagedObjectContext alloc] init];
 						
 						[sqlContext setPersistentStoreCoordinator: sc];
+						[sqlContext setUndoManager: nil];
 						
-						if( [[sqlContext undoManager] isUndoRegistrationEnabled])
-						{
-							[[sqlContext undoManager] setLevelsOfUndo: 1];
-							[[sqlContext undoManager] disableUndoRegistration];
-						}
 						NSError	*error = nil;
 						NSArray *copiedObjects = nil;
 						
@@ -13416,7 +13418,6 @@ static NSArray*	openSubSeriesArray = nil;
 		DatabaseIsEdited = NO;
 		
 		previousBonjourIndex = -1;
-		lastSaved = 0;
 		toolbarSearchItem = nil;
 		managedObjectModel = nil;
 		managedObjectContext = nil;
@@ -18147,7 +18148,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 //	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 //	
 //	NSString *src = @"/Volumes/pacs/OsiriX Data/DATABASE.noindex/";
-//	NSString *dst = @"/Volumes/G-DRIVE/OsiriX Data/INCOMING.noindex/WD";
+//	NSString *dst = @"/Users/admin/Documents/OsiriX Data/INCOMING.noindex/WD";
+//	
+//	
 //	
 //	
 //	int d = [[NSUserDefaults standardUserDefaults] integerForKey: @"rebuild"];
