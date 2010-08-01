@@ -191,7 +191,7 @@ static NSString*	ViewersToolbarItemIdentifier	= @"windows.tif";
 static NSString*	WebServerSingleNotification	= @"Safari.tif";
 static NSString*	AddStudiesToUserItemIdentifier	= @"NSUserAccounts";
 
-static NSTimeInterval	gLastActivity = 0;
+static NSTimeInterval gLastActivity = 0, gLastCoreDataReset = 0;
 static BOOL DICOMDIRCDMODE = NO;
 static BOOL dontShowOpenSubSeries = NO;
 
@@ -4528,55 +4528,70 @@ static NSConditionLock *threadLock = nil;
 		[checkIncomingLock unlock];
 	}
 	
-	// reduce memory footprint for CoreData - ONLY FOR SERVER MODE
+	// reduce memory footprint for CoreData - ONLY FOR SERVER MODE - NOT MORE THAN 1x / 4 hours
+	if( gLastCoreDataReset == 0)
+		gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
 	
-	if( [checkIncomingLock tryLock])
+	if( [NSDate timeIntervalSinceReferenceDate] - gLastCoreDataReset > 60*60*4)
 	{
-		if( newFilesInIncoming == NO && [SendController sendControllerObjects] == 0 && [[ThreadsManager defaultManager] threadsCount] == 0 && [AppController numberOfSubOsiriXProcesses] == 0)
+		if( [checkIncomingLock tryLock])
 		{
-			if( [managedObjectContext tryLock] && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
+			if( newFilesInIncoming == NO && [SendController sendControllerObjects] == 0 && [[ThreadsManager defaultManager] threadsCount] == 0 && [AppController numberOfSubOsiriXProcesses] == 0)
 			{
-				NSLog( @"----- reduce memory footprint for CoreData - IN");
-				
-				[self waitForRunningProcesses];
-				[reportFilesToCheck removeAllObjects];
-				[[LogManager currentLogManager] checkLogs: nil];
-				[self resetLogWindowController];
-				[[LogManager currentLogManager] resetLogs];
-				[[AppController sharedAppController] closeAllViewers: self];
-				displayEmptyDatabase = YES;
-				[self outlineViewRefresh];
-				[self refreshMatrix: self];
-				
-				NSManagedObjectContext *oldManagedObjectContext = managedObjectContext;
-				NSManagedObjectContext *newManagedObjectContext = [[NSManagedObjectContext alloc] init];
-				[newManagedObjectContext setPersistentStoreCoordinator: [oldManagedObjectContext persistentStoreCoordinator]];
-				[newManagedObjectContext lock];
-				
-				NSError *error = nil;
-				[oldManagedObjectContext save: &error];
-				if( error == nil)
+				if( [managedObjectContext tryLock] && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
 				{
-					managedObjectContext = newManagedObjectContext;
-					[oldManagedObjectContext reset];
-					[oldManagedObjectContext release];
+					gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
+					
+					@try 
+					{
+						[self waitForRunningProcesses];
+						[reportFilesToCheck removeAllObjects];
+						[[LogManager currentLogManager] checkLogs: nil];
+						[self resetLogWindowController];
+						[[LogManager currentLogManager] resetLogs];
+						[[AppController sharedAppController] closeAllViewers: self];
+						displayEmptyDatabase = YES;
+						[self outlineViewRefresh];
+						[self refreshMatrix: self];
+						
+						NSManagedObjectContext *oldManagedObjectContext = managedObjectContext;
+						NSManagedObjectContext *newManagedObjectContext = [[NSManagedObjectContext alloc] init];
+						[newManagedObjectContext setPersistentStoreCoordinator: [oldManagedObjectContext persistentStoreCoordinator]];
+						[newManagedObjectContext lock];
+						
+						NSError *error = nil;
+						[oldManagedObjectContext save: &error];
+						if( error == nil)
+						{
+							managedObjectContext = newManagedObjectContext;
+							[oldManagedObjectContext reset];
+							[oldManagedObjectContext release];
+						}
+						else
+						{
+							[newManagedObjectContext release];
+						}
+						
+						[managedObjectContext unlock];
+						
+						displayEmptyDatabase = NO;
+						[self outlineViewRefresh];
+						[self refreshMatrix: self];
+					}
+					@catch (NSException * e) 
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+						#ifdef OSIRIX_VIEWER
+						[AppController printStackTrace: e];
+						#endif
+					}
+					
+					NSLog( @"----- reduce memory footprint for CoreData");
 				}
-				else
-				{
-					[newManagedObjectContext release];
-				}
-				
-				[managedObjectContext unlock];
-				
-				displayEmptyDatabase = NO;
-				[self outlineViewRefresh];
-				[self refreshMatrix: self];
-				
-				NSLog( @"----- reduce memory footprint for CoreData - OUT");
 			}
+			
+			[checkIncomingLock unlock];
 		}
-		
-		[checkIncomingLock unlock];
 	}
 	
 	// Build thumbnails
