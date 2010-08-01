@@ -32,6 +32,8 @@
  */
 
 #import "browserController.h"
+#import "ThreadsManager.h"
+#import "NSThread+N2.h"
 #import "AppController.h"
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
@@ -1357,6 +1359,12 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					}
 					else if (pid > 0)
 					{
+						// Display a thread in the ThreadsManager for this pid
+						NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector( waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
+						t.name = NSLocalizedString( @"Providing DICOM services...", nil);
+						t.status = [NSString stringWithFormat: NSLocalizedString( @"Address: %s", nil), assoc->params->DULparams.callingPresentationAddress];
+						[[ThreadsManager defaultManager] addThreadAndStart: t];
+					
 						// Father
 						
 						[NSThread sleepForTimeInterval: 1.0]; // To allow the creation of lock_process file with corresponding pid

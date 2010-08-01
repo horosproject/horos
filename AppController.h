@@ -138,6 +138,7 @@ extern "C"
 + (void) pause;
 + (void) resetToolbars;
 + (NSString*) printStackTrace: (NSException*) e;
++ (int) numberOfSubOsiriXProcesses;
 
 #pragma mark-
 #pragma mark HTML Templates

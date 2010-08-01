@@ -4488,6 +4488,8 @@ static NSConditionLock *threadLock = nil;
 	if( managedObjectContext == nil) return;
 	if( [NSDate timeIntervalSinceReferenceDate] - gLastActivity < 60*10) return;
 	
+	// Log cleaning
+	
 	if( [checkIncomingLock tryLock])
 	{
 		NSError					*error = nil;
@@ -4525,6 +4527,59 @@ static NSConditionLock *threadLock = nil;
 		
 		[checkIncomingLock unlock];
 	}
+	
+	// reduce memory footprint for CoreData - ONLY FOR SERVER MODE
+	
+	if( [checkIncomingLock tryLock])
+	{
+		if( newFilesInIncoming == NO && [SendController sendControllerObjects] == 0 && [[ThreadsManager defaultManager] threadsCount] == 0 && [AppController numberOfSubOsiriXProcesses] == 0)
+		{
+			if( [managedObjectContext tryLock] && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
+			{
+				NSLog( @"----- reduce memory footprint for CoreData - IN");
+				
+				[self waitForRunningProcesses];
+				[reportFilesToCheck removeAllObjects];
+				[[LogManager currentLogManager] checkLogs: nil];
+				[self resetLogWindowController];
+				[[LogManager currentLogManager] resetLogs];
+				[[AppController sharedAppController] closeAllViewers: self];
+				displayEmptyDatabase = YES;
+				[self outlineViewRefresh];
+				[self refreshMatrix: self];
+				
+				NSManagedObjectContext *oldManagedObjectContext = managedObjectContext;
+				NSManagedObjectContext *newManagedObjectContext = [[NSManagedObjectContext alloc] init];
+				[newManagedObjectContext setPersistentStoreCoordinator: [oldManagedObjectContext persistentStoreCoordinator]];
+				[newManagedObjectContext lock];
+				
+				NSError *error = nil;
+				[oldManagedObjectContext save: &error];
+				if( error == nil)
+				{
+					managedObjectContext = newManagedObjectContext;
+					[oldManagedObjectContext reset];
+					[oldManagedObjectContext release];
+				}
+				else
+				{
+					[newManagedObjectContext release];
+				}
+				
+				[managedObjectContext unlock];
+				
+				displayEmptyDatabase = NO;
+				[self outlineViewRefresh];
+				[self refreshMatrix: self];
+				
+				NSLog( @"----- reduce memory footprint for CoreData - OUT");
+			}
+		}
+		
+		[checkIncomingLock unlock];
+	}
+	
+	// Build thumbnails
 	
 	[self buildAllThumbnails: self];
 	

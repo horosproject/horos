@@ -1173,7 +1173,47 @@ static NSDate *lastWarningDate = nil;
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
 
-+(void) cleanOsiriXSubProcesses
+- (void) waitForPID: (NSNumber*) pidNumber
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	int pid = [pidNumber intValue];
+	int rc, state;
+	
+	do
+	{
+		rc = waitpid( pid, &state, WNOHANG);
+		[NSThread sleepForTimeInterval: 0.1];
+	}
+	while( rc >= 0);
+	
+	[pool release];
+}
+
++ (int) numberOfSubOsiriXProcesses
+{
+	const int kPIDArrayLength = 100;
+
+    pid_t MyArray [kPIDArrayLength];
+    unsigned int NumberOfMatches;
+    int Counter, Error;
+	int number = 0;
+	
+    Error = GetAllPIDsForProcessName( [[[NSProcessInfo processInfo] processName] UTF8String], MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
+	
+	if (Error == 0)
+    {
+        for (Counter = 0 ; Counter < NumberOfMatches ; Counter++)
+        {
+			if( MyArray[ Counter] != getpid())
+				number++;
+        } 
+    }
+	
+	return number;
+}
+
++ (void) cleanOsiriXSubProcesses
 {
 	const int kPIDArrayLength = 100;
 
