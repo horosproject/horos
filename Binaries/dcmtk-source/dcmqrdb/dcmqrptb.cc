@@ -261,12 +261,12 @@ void DcmQueryRetrieveProcessTable::cleanChildren(OFBool verbose)
       } 
       else if (child > 0)
       {
-          if (verbose)
-          {
-            time_t t = time(NULL);
-            ofConsole.lockCerr() << "Cleaned up after child (" << child << ") " << ctime(&t) << endl;
-            ofConsole.unlockCerr();
-          }
+//          if (verbose)
+//          {
+//            time_t t = time(NULL);
+//            ofConsole.lockCerr() << "Cleaned up after child (" << child << ") " << ctime(&t) << endl;
+//            ofConsole.unlockCerr();
+//          }
 
           /* Remove Entry from Process Table */
           removeProcessFromTable(child);

@@ -112,6 +112,7 @@ static int DicomDirScanDepth = 0;
 static int DefaultFolderSizeForDB = 0;
 static NSTimeInterval lastHardDiskCheck = 0;
 static long DATABASEINDEX = 0;
+static unsigned long long lastFreeSpace = 0;
 
 extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
@@ -4868,7 +4869,11 @@ static NSConditionLock *threadLock = nil;
 			free /= thousand;
 			free /= thousand;
 			
-			NSLog(@"HD Free Space: %d MB", (long) free);
+			if( lastFreeSpace != free)
+			{
+				lastFreeSpace = free;
+				NSLog(@"HD Free Space: %d MB", (long) free);
+			}
 			
 			int freeMemoryRequested = [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue];
 			
