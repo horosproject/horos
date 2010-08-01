@@ -121,6 +121,7 @@ private:
   void waitUnlockFile(void);
   void waitUnlockFileWithPID(int pid);
   void writeErrorMessage( const char *str);
+  void writeStateProcess( const char *str);
   NSString* getErrorMessage();
   
   /** perform association negotiation for an incoming A-ASSOCIATE request based

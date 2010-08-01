@@ -171,6 +171,20 @@ void DcmQueryRetrieveSCP::unlockFile(void)
 	while( fileExist == YES && inc < 100000);
 }
 
+void DcmQueryRetrieveSCP::writeStateProcess( const char *str)
+{
+	char dir[ 1024];
+	sprintf( dir, "%s-%d", "/tmp/process_state", getpid());
+	unlink( dir);
+	
+	FILE * pFile = fopen (dir,"w+");
+	if( pFile)
+	{
+		fprintf( pFile, "%s", str);
+		fclose (pFile);
+	}
+}
+
 void DcmQueryRetrieveSCP::writeErrorMessage( const char *str)
 {
 	char dir[ 1024];
@@ -281,21 +295,26 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                 switch (msg.CommandField)
 				{
                 case DIMSE_C_ECHO_RQ:
+					writeStateProcess( "C-ECHO SCP...");
 					unlockFile();
                     cond = echoSCP(assoc, &msg.msg.CEchoRQ, presID);
                     break;
                 case DIMSE_C_STORE_RQ:
+					writeStateProcess( "C-STORE SCP...");
 					unlockFile();
                     cond = storeSCP(assoc, &msg.msg.CStoreRQ, presID, *dbHandle, correctUIDPadding);
                     break;
                 case DIMSE_C_FIND_RQ:
+					writeStateProcess( "C-FIND SCP...");
                     cond = findSCP(assoc, &msg.msg.CFindRQ, presID, *dbHandle);
                     break;
                 case DIMSE_C_MOVE_RQ:
+					writeStateProcess( "C-MOVE SCP...");
 					//* unlockFile(); is done in DCMTKDataHandlerCategory.mm
                     cond = moveSCP(assoc, &msg.msg.CMoveRQ, presID, *dbHandle);
                     break;
                 case DIMSE_C_GET_RQ:
+					writeStateProcess( "C-GET SCP...");
 					if( activateCGETSCP_)
 						cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
                     else
@@ -1362,7 +1381,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						// Display a thread in the ThreadsManager for this pid
 						NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector( waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
 						t.name = NSLocalizedString( @"Providing DICOM services...", nil);
-						t.status = [NSString stringWithFormat: NSLocalizedString( @"Address: %s", nil), assoc->params->DULparams.callingPresentationAddress];
+						if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
+							t.status = [NSString stringWithFormat: NSLocalizedString( @"Address: %s", nil), assoc->params->DULparams.callingPresentationAddress];
 						[[ThreadsManager defaultManager] addThreadAndStart: t];
 					
 						// Father

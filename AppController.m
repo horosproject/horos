@@ -1179,9 +1179,23 @@ static NSDate *lastWarningDate = nil;
 	
 	int pid = [pidNumber intValue];
 	int rc, state;
+	BOOL threadStateChanged = NO;
+	NSString *path = [NSString stringWithFormat: @"/tmp/process_state-%d", pid]; 
 	
 	do
 	{
+		if( threadStateChanged == NO)
+		{
+			if( [[NSFileManager defaultManager] fileExistsAtPath: path] && [[NSString stringWithContentsOfFile: path] length] > 0)
+			{
+				[NSThread currentThread].status = [[NSThread currentThread].status stringByAppendingFormat: NSLocalizedString( @" Service: %@", nil), [NSString stringWithContentsOfFile: path]];
+				[NSThread sleepForTimeInterval: 1];
+				
+				[[NSFileManager defaultManager] removeItemAtPath: path error: nil];
+				threadStateChanged = YES;
+			}
+		}
+	
 		rc = waitpid( pid, &state, WNOHANG);
 		[NSThread sleepForTimeInterval: 0.1];
 	}
