@@ -3440,6 +3440,15 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     }
 #endif
 
+	if( buffer == 0L)
+		return makeDcmnetCondition(DULC_CODINGERROR, OF_error, "buffer == nil");
+
+	if( type == 0L)
+		return makeDcmnetCondition(DULC_CODINGERROR, OF_error, "type == nil");
+
+	if( reserved == 0L)
+		return makeDcmnetCondition(DULC_CODINGERROR, OF_error, "reserved == nil");
+
     /* determine PDU type (captured in byte 0 of buffer) and assign it to reference parameter */
     *type = *buffer++;
 
