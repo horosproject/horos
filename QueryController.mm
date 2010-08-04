@@ -2043,7 +2043,7 @@ extern "C"
 		}
 		else
 		{
-			NSLog( @"--- autoRetrieving is up to date! Nothing to retrieve ---");
+//			NSLog( @"--- autoRetrieving is up to date! Nothing to retrieve ---");
 		}
 	}
 	@catch (NSException * e) 
