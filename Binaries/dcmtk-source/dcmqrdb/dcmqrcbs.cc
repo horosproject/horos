@@ -114,6 +114,7 @@ void DcmQueryRetrieveStoreContext::writeToFile(
     if (cond.bad())
     {
       fprintf(stderr, "storescp: Cannot write image file: %s\n", fname);
+	  DimseCondition::dump(cond);
       rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
     }
 }

@@ -1190,8 +1190,6 @@ static NSDate *lastWarningDate = nil;
 			{
 				[NSThread currentThread].status = [[NSThread currentThread].status stringByAppendingFormat: NSLocalizedString( @" Service: %@", nil), [NSString stringWithContentsOfFile: path]];
 				[NSThread sleepForTimeInterval: 1];
-				
-				[[NSFileManager defaultManager] removeItemAtPath: path error: nil];
 				threadStateChanged = YES;
 			}
 		}
@@ -1266,6 +1264,26 @@ static NSDate *lastWarningDate = nil;
 		c = [c substringToIndex: 16];
 	
 	[[NSUserDefaults standardUserDefaults] setObject: c forKey:@"AETITLE"];
+}
+
+- (void) checkForRestartStoreSCPOrder: (NSTimer*) t
+{
+	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/RESTARTOSIRIXSTORESCP"])
+	{
+		[NSThread sleepForTimeInterval: 1];
+		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/RESTARTOSIRIXSTORESCP" error: nil];
+		
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Only for server mode
+		{
+			NSLog( @"******* RESTARTOSIRIXSTORESCP : killDICOMListenerWait");
+			[self killDICOMListenerWait: YES];
+			
+			[NSThread sleepForTimeInterval: 4];
+						
+			NSLog( @"******* RESTARTOSIRIXSTORESCP : restartSTORESCP");
+			[self restartSTORESCP];
+		}
+	}
 }
 
 - (void) runPreferencesUpdateCheck:(NSTimer*) timer
@@ -3132,6 +3150,8 @@ static BOOL initialized = NO;
 	appController = self;
 	[self initDCMTK];
 	[self restartSTORESCP];
+	
+	[NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector( checkForRestartStoreSCPOrder:) userInfo: nil repeats: YES];
 	
 	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])

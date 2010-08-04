@@ -175,14 +175,18 @@ void DcmQueryRetrieveSCP::writeStateProcess( const char *str)
 {
 	char dir[ 1024];
 	sprintf( dir, "%s-%d", "/tmp/process_state", getpid());
-	unlink( dir);
 	
-	FILE * pFile = fopen (dir,"w+");
-	if( pFile)
+	FILE * pFile = fopen (dir,"r");
+	if( pFile == nil)
 	{
-		fprintf( pFile, "%s", str);
-		fclose (pFile);
+		pFile = fopen (dir,"w+");
+		if( pFile)
+		{
+			fprintf( pFile, "%s", str);
+			fclose (pFile);
+		}
 	}
+	else fclose (pFile);
 }
 
 void DcmQueryRetrieveSCP::writeErrorMessage( const char *str)
@@ -378,10 +382,29 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
     } else if (cond == DUL_PEERABORTEDASSOCIATION) {
         if (options_.verbose_)
             printf("Association Aborted\n");
-    } else {
+    }
+	else
+	{
         DcmQueryRetrieveOptions::errmsg("DIMSE Failure (aborting association):\n");
         DimseCondition::dump(cond);
-    /* some kind of error so abort the association */
+		
+		if( cond == DIMSE_NODATAAVAILABLE)
+		{
+			char dir[ 1024];
+			sprintf( dir, "%s", "/tmp/RESTARTOSIRIXSTORESCP");
+			unlink( dir);
+			
+			FILE * pFile = fopen (dir,"w+");
+			if( pFile)
+			{
+				fprintf( pFile, "restart");
+				fclose (pFile);
+			}
+			
+			NSLog( @"******* RESTARTOSIRIXSTORESCP");
+		}
+		
+		/* some kind of error so abort the association */
         cond = ASC_abortAssociation(assoc);
     }
 
@@ -1380,7 +1403,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					{
 						// Display a thread in the ThreadsManager for this pid
 						NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector( waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
-						t.name = NSLocalizedString( @"Providing DICOM services...", nil);
+						t.name = NSLocalizedString( @"DICOM services...", nil);
 						if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
 							t.status = [NSString stringWithFormat: NSLocalizedString( @"Address: %s", nil), assoc->params->DULparams.callingPresentationAddress];
 						[[ThreadsManager defaultManager] addThreadAndStart: t];
@@ -1408,6 +1431,11 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						cond = handleAssociation(assoc, options_.correctUIDPadding_);
 						
 						unlockFile();
+						
+						char dir[ 1024];
+						sprintf( dir, "%s-%d", "/tmp/process_state", getpid());
+						printf( "%s", dir);
+						unlink( dir);
 						
 						/* the child process is done so exit */
 						_Exit(3);	//to avoid spin_lock

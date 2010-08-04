@@ -267,7 +267,7 @@ void DcmQueryRetrieveProcessTable::cleanChildren(OFBool verbose)
 //            ofConsole.lockCerr() << "Cleaned up after child (" << child << ") " << ctime(&t) << endl;
 //            ofConsole.unlockCerr();
 //          }
-
+		  
           /* Remove Entry from Process Table */
           removeProcessFromTable(child);
       }

@@ -2,16 +2,16 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10D2084</string>
-		<string key="IBDocument.InterfaceBuilderVersion">762</string>
+		<string key="IBDocument.SystemVersion">10F569</string>
+		<string key="IBDocument.InterfaceBuilderVersion">732</string>
 		<string key="IBDocument.AppKitVersion">1038.29</string>
-		<string key="IBDocument.HIToolboxVersion">460.00</string>
+		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">762</string>
+			<string key="NS.object.0">732</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="112"/>
+			<integer value="104"/>
 			<integer value="538"/>
 			<integer value="787"/>
 		</array>
@@ -335,8 +335,8 @@
 															<array class="NSMutableArray" key="NSTableColumns">
 																<object class="NSTableColumn" id="962753257">
 																	<string key="NSIdentifier">Address</string>
-																	<double key="NSWidth">65</double>
-																	<double key="NSMinWidth">40</double>
+																	<double key="NSWidth">100</double>
+																	<double key="NSMinWidth">60</double>
 																	<double key="NSMaxWidth">400</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
 																		<int key="NSCellFlags">75628096</int>
@@ -378,7 +378,7 @@
 																	<bool key="NSIsResizeable">YES</bool>
 																	<bool key="NSIsEditable">YES</bool>
 																	<reference key="NSTableView" ref="42370160"/>
-																	<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+																	<object class="NSSortDescriptor" key="NSSortDescriptorPrototype" id="385263303">
 																		<string key="NSKey">Address</string>
 																		<bool key="NSAscending">YES</bool>
 																		<string key="NSSelector">compare:</string>
@@ -702,7 +702,7 @@
 																</object>
 																<object class="NSTableColumn" id="801244195">
 																	<string key="NSIdentifier">Transfer Syntax</string>
-																	<double key="NSWidth">194</double>
+																	<double key="NSWidth">159</double>
 																	<double key="NSMinWidth">87.552726745605469</double>
 																	<double key="NSMaxWidth">300</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -870,6 +870,9 @@
 															<reference key="NSDelegate"/>
 															<reference key="NSDataSource"/>
 															<string key="NSAutosaveName">LocationsTablePrefs</string>
+															<array key="NSSortDescriptors">
+																<reference ref="385263303"/>
+															</array>
 															<int key="NSColumnAutoresizingStyle">4</int>
 															<int key="NSDraggingSourceMaskForLocal">15</int>
 															<int key="NSDraggingSourceMaskForNonLocal">0</int>
@@ -891,19 +894,18 @@
 													<reference key="NSSuperview" ref="23618400"/>
 													<reference key="NSTarget" ref="23618400"/>
 													<string key="NSAction">_doScroller:</string>
-													<double key="NSCurValue">1</double>
-													<double key="NSPercent">0.71249997615814209</double>
+													<double key="NSPercent">0.91477272727272729</double>
 												</object>
 												<object class="NSScroller" id="464887026">
 													<reference key="NSNextResponder" ref="23618400"/>
 													<int key="NSvFlags">-2147483392</int>
 													<string key="NSFrame">{{1, 104}, {644, 15}}</string>
 													<reference key="NSSuperview" ref="23618400"/>
+													<bool key="NSEnabled">YES</bool>
 													<int key="NSsFlags">1</int>
 													<reference key="NSTarget" ref="23618400"/>
 													<string key="NSAction">_doScroller:</string>
-													<double key="NSCurValue">0.9599406528189911</double>
-													<double key="NSPercent">0.98021310567855835</double>
+													<double key="NSPercent">0.98538011695906436</double>
 												</object>
 												<object class="NSClipView" id="839745731">
 													<reference key="NSNextResponder" ref="23618400"/>
@@ -923,7 +925,7 @@
 											<string key="NSFrame">{{8, 118}, {676, 194}}</string>
 											<reference key="NSSuperview" ref="780474503"/>
 											<reference key="NSNextKeyView" ref="843396249"/>
-											<int key="NSsFlags">562</int>
+											<int key="NSsFlags">690</int>
 											<reference key="NSVScroller" ref="977052346"/>
 											<reference key="NSHScroller" ref="464887026"/>
 											<reference key="NSContentView" ref="843396249"/>
@@ -6038,9 +6040,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<integer value="1" key="111.ImportedFromIB2"/>
 				<string key="112.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="112.ImportedFromIB2"/>
-				<string key="12.IBEditorWindowLastContentRect">{{30, 81}, {729, 783}}</string>
+				<string key="12.IBEditorWindowLastContentRect">{{11, 127}, {729, 783}}</string>
 				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="12.IBWindowTemplateEditedContentRect">{{30, 81}, {729, 783}}</string>
+				<string key="12.IBWindowTemplateEditedContentRect">{{11, 127}, {729, 783}}</string>
 				<integer value="1" key="12.ImportedFromIB2"/>
 				<string key="12.editorWindowContentRectSynchronizationRect">{{744, 378}, {729, 738}}</string>
 				<integer value="0" key="12.windowTemplate.hasMaxSize"/>
@@ -7157,7 +7159,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			</array>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
-		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
@@ -7169,12 +7170,5 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">../OSILocationsPreferencePane.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NSColorPanel">{32, 32}</string>
-			<string key="NSMenuCheckmark">{9, 8}</string>
-			<string key="NSMenuMixedState">{7, 2}</string>
-			<string key="NSRefreshTemplate">{10, 12}</string>
-			<string key="NSSwitch">{15, 15}</string>
-		</dictionary>
 	</data>
 </archive>
