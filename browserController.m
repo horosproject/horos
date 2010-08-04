@@ -113,6 +113,7 @@ static int DefaultFolderSizeForDB = 0;
 static NSTimeInterval lastHardDiskCheck = 0;
 static long DATABASEINDEX = 0;
 static unsigned long long lastFreeSpace = 0;
+static NSTimeInterval lastFreeSpaceLogTime = 0;
 
 extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
@@ -4869,9 +4870,11 @@ static NSConditionLock *threadLock = nil;
 			free /= thousand;
 			free /= thousand;
 			
-			if( lastFreeSpace != free)
+			if( lastFreeSpace != free && ([NSDate timeIntervalSinceReferenceDate] - lastFreeSpaceLogTime) > 60*10)
 			{
 				lastFreeSpace = free;
+				lastFreeSpaceLogTime = [NSDate timeIntervalSinceReferenceDate];
+				
 				NSLog(@"HD Free Space: %d MB", (long) free);
 			}
 			
@@ -5031,7 +5034,6 @@ static NSConditionLock *threadLock = nil;
 						free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
 						free /= 1024;
 						free /= 1024;
-						NSLog(@"HD Free Space: %d MB", (long) free);
 					}
 					while( (long) free < freeMemoryRequested && [unlockedStudies count] > 2);
 				}
@@ -5059,8 +5061,6 @@ static NSConditionLock *threadLock = nil;
 		
 		free /= thousand;
 		free /= thousand;
-		
-		NSLog(@"HD Free Space: %d MB", (long) free);
 		
 		if( free < 300 && free > 0)
 		{

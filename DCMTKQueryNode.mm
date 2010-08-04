@@ -726,6 +726,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	@catch (NSException * e) 
 	{
 		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		[AppController printStackTrace: e];
 	}
 	
 	[pool release];
@@ -748,7 +749,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"******* [NSURLRequest setAllowsAnyHTTPSCertificate");
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		[AppController printStackTrace: e];
 	}
 	
 	int quality = 100;
@@ -841,6 +843,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		@catch (NSException * e) 
 		{
 			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			[AppController printStackTrace: e];
 		}
 		
 		[WADODownloadLock unlock];
@@ -1117,7 +1120,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"requestAssociationThread exception: %@", e);
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		[AppController printStackTrace: e];
 	}
 	
 	[lock unlock];
@@ -1150,7 +1154,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"cFindThread exception: %@", e);
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		[AppController printStackTrace: e];
 	}
 	
 	[lock unlock];
@@ -1684,7 +1689,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		else
 			[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"autoquery"];
 		
-		NSLog(@"Exception: %@", [e description]);
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		[AppController printStackTrace: e];
 		
 		succeed = NO;
 	}
@@ -1935,102 +1941,106 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (OFCondition)moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset destination: (char*) destination
 {
-	//add self to list of moves. Prevents deallocating  the move if a new query is done
-	[[MoveManager sharedManager] addMove:self];
-
-  T_ASC_PresentationContextID presId;
+	T_ASC_PresentationContextID presId;
     T_DIMSE_C_MoveRQ    req;
     T_DIMSE_C_MoveRSP   rsp;
     DIC_US              msgId = assoc->nextMsgID++;
     DcmDataset          *rspIds = NULL;
     DcmDataset          *statusDetail = NULL;
     MyCallbackInfo      callbackData;
-		
+	OFCondition			cond = EC_Normal;
+	
    // sopClass = querySyntax[opt_queryModel].moveSyntax;
 
     /* which presentation context should be used */
     presId = ASC_findAcceptedPresentationContextID(assoc, UID_MOVEStudyRootQueryRetrieveInformationModel);
     if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
-    if (_verbose)
-	{
-        printf("Move SCU RQ: MsgID %d\n", msgId);
-        printf("Request:\n");
-        dataset->print(COUT);
-    }
-
-    /* prepare the callback data */
-    callbackData.assoc = assoc;
-    callbackData.presId = presId;
-	callbackData.node = self;
-
-    req.MessageID = msgId;
-    strcpy(req.AffectedSOPClassUID, UID_MOVEStudyRootQueryRetrieveInformationModel);
-    req.Priority = DIMSE_PRIORITY_MEDIUM;
-    req.DataSetType = DIMSE_DATASET_PRESENT;
- 
-	if( destination)
-	{
-		strcpy(req.MoveDestination, destination);
-	}
-	else
-	{
-		/* set the destination to be me */
-		ASC_getAPTitles(assoc->params, req.MoveDestination, NULL, NULL);
-	}
+	//add self to list of moves. Prevents deallocating  the move if a new query is done
+	[[MoveManager sharedManager] addMove:self];
 	
-	OFCondition cond;
-	
-	cond = DIMSE_moveUser(assoc, presId, &req, dataset,
-        moveCallback, &callbackData, _blockMode, _dimse_timeout,
-        net, subOpCallback, NULL,
-        &rsp, &statusDetail, &rspIds , OFTrue);
-	
-    if (cond == EC_Normal)
+	@try
 	{
-		if( DICOM_WARNING_STATUS(rsp.DimseStatus))
+		if (_verbose)
 		{
-			 DIMSE_printCMoveRSP(stdout, &rsp);
+			printf("Move SCU RQ: MsgID %d\n", msgId);
+			printf("Request:\n");
+			dataset->print(COUT);
 		}
-		else if (DICOM_PENDING_STATUS(rsp.DimseStatus))
+
+		/* prepare the callback data */
+		callbackData.assoc = assoc;
+		callbackData.presId = presId;
+		callbackData.node = self;
+
+		req.MessageID = msgId;
+		strcpy(req.AffectedSOPClassUID, UID_MOVEStudyRootQueryRetrieveInformationModel);
+		req.Priority = DIMSE_PRIORITY_MEDIUM;
+		req.DataSetType = DIMSE_DATASET_PRESENT;
+	 
+		if( destination)
+			strcpy(req.MoveDestination, destination);
+		else
 		{
-			 DIMSE_printCMoveRSP(stdout, &rsp);
-		}
-		else if( rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
-		{
-			DIMSE_printCMoveRSP(stdout, &rsp);
-			
-			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
+			/* set the destination to be me */
+			ASC_getAPTitles(assoc->params, req.MoveDestination, NULL, NULL);
 		}
 		
-        if (_verbose)
+		cond = DIMSE_moveUser(assoc, presId, &req, dataset,
+			moveCallback, &callbackData, _blockMode, _dimse_timeout,
+			net, subOpCallback, NULL,
+			&rsp, &statusDetail, &rspIds , OFTrue);
+		
+		if (cond == EC_Normal)
 		{
-            DIMSE_printCMoveRSP(stdout, &rsp);
-            if (rspIds != NULL) {
-                printf("Response Identifiers:\n");
-                rspIds->print(COUT);
+			if( DICOM_WARNING_STATUS(rsp.DimseStatus))
+			{
+				 DIMSE_printCMoveRSP(stdout, &rsp);
 			}
-        }
-    }
-	else
+			else if (DICOM_PENDING_STATUS(rsp.DimseStatus))
+			{
+				 DIMSE_printCMoveRSP(stdout, &rsp);
+			}
+			else if( rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
+			{
+				DIMSE_printCMoveRSP(stdout, &rsp);
+				
+				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
+			}
+			
+			if (_verbose)
+			{
+				DIMSE_printCMoveRSP(stdout, &rsp);
+				if (rspIds != NULL) {
+					printf("Response Identifiers:\n");
+					rspIds->print(COUT);
+				}
+			}
+		}
+		else
+		{
+			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
+			errmsg("Move Failed:");
+			DimseCondition::dump(cond);
+		}
+		
+		if (statusDetail != NULL) {
+			printf("  Status Detail:\n");
+			statusDetail->print(COUT);
+			delete statusDetail;
+		}
+		
+		if (rspIds != NULL) delete rspIds;
+		
+		[[MoveManager sharedManager] removeMove:self];
+	}
+	@catch (NSException * e)
 	{
-		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
-        errmsg("Move Failed:");
-        DimseCondition::dump(cond);
-    }
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		[AppController printStackTrace: e];
+	}
 	
-    if (statusDetail != NULL) {
-        printf("  Status Detail:\n");
-        statusDetail->print(COUT);
-        delete statusDetail;
-    }
-	
-    if (rspIds != NULL) delete rspIds;
-	
-	[[MoveManager sharedManager] removeMove:self];
-
     return cond;
-
 }
 
 - (OFCondition)getSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset

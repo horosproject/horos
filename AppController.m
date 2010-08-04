@@ -2367,7 +2367,7 @@ static NSDate *lastWarningDate = nil;
 	
 	unlink( "/tmp/kill_all_storescu");
 	
-	[[BrowserController currentBrowser] checkIncomingNow: self];
+//	[[BrowserController currentBrowser] checkIncomingNow: self];
 }
 
 - (void) applicationWillTerminate: (NSNotification*) aNotification

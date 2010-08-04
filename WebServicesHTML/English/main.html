@@ -42,10 +42,20 @@
 				</td>
 				</tr>
 				<tr>
-				<td class="searchPatientLabel">ID</td>
+				<td class="searchPatientLabel">Patient ID</td>
 				<td>
 					<form class="searchPatientForm" action="/studyList" method="get">
 						<input type="text" id="searchID" name="searchID"/>
+						<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
+						<input type="submit" id="searchButton" value="Search"/>
+					</form>	
+				</td>
+				</tr>
+				<tr>
+				<td class="searchPatientLabel">Accession Number</td>
+				<td>
+					<form class="searchPatientForm" action="/studyList" method="get">
+						<input type="text" id="searchAccessionNumber" name="searchAccessionNumber"/>
 						<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 						<input type="submit" id="searchButton" value="Search"/>
 					</form>	

@@ -843,6 +843,7 @@ NSString* notNil( NSString *s)
 		[dateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat2"]];
 		
 		[returnHTML replaceOccurrencesOfString:@"%PatientDOB%" withString: notNil( [dobDateFormat stringFromDate:[study valueForKey:@"dateOfBirth"]]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+		[returnHTML replaceOccurrencesOfString:@"%AccessionNumber%" withString: notNil( [study valueForKey:@"accessionNumber"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 		[returnHTML replaceOccurrencesOfString:@"%StudyDate%" withString: [OsiriXHTTPConnection iPhoneCompatibleNumericalFormat: [dateFormat stringFromDate: [study valueForKey:@"date"]]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 		
 		NSArray *seriesArray = [study valueForKey:@"imageSeries"];
@@ -1151,8 +1152,23 @@ NSString* notNil( NSString *s)
 				[tempHTML replaceOccurrencesOfString:@"%SeriesCount%" withString:seriesCountLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 			else
 				displayBlock = NO;
-				
 			tempHTML = [self setBlock:@"SeriesCountBlock" visible:displayBlock forString:tempHTML];
+			
+			NSString *patientIDLabel = [NSString stringWithFormat:@"%@", notNil([study valueForKey:@"patientID"])];
+			displayBlock = YES;
+			if([patientIDLabel length])
+				[tempHTML replaceOccurrencesOfString:@"%PatientID%" withString:patientIDLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			else
+				displayBlock = NO;
+			tempHTML = [self setBlock:@"PatientIDBlock" visible:displayBlock forString:tempHTML];
+			
+			NSString *accessionNumberLabel = [NSString stringWithFormat:@"%@", notNil([study valueForKey:@"accessionNumber"])];
+			displayBlock = YES;
+			if([accessionNumberLabel length])
+				[tempHTML replaceOccurrencesOfString:@"%AccessionNumber%" withString:accessionNumberLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			else
+				displayBlock = NO;
+			tempHTML = [self setBlock:@"AccessionNumberBlock" visible:displayBlock forString:tempHTML];
 			
 			NSString *studyCommentLabel = notNil([study valueForKey:@"comment"]);
 			displayBlock = YES;
@@ -2636,6 +2652,26 @@ NSString* notNil( NSString *s)
 				searchString = [newComponents componentsJoinedByString:@" "];
 				
 				[search appendFormat:@"patientID CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+				browsePredicate = [NSPredicate predicateWithFormat:search];
+				pageTitle = NSLocalizedString(@"Search Result", nil);
+			}
+			else if([urlParameters objectForKey:@"searchAccessionNumber"])
+			{
+				NSMutableString *search = [NSMutableString string];
+				NSString *searchString = [NSString stringWithString: [[[urlParameters objectForKey:@"searchAccessionNumber"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+				searchString = [OsiriXHTTPConnection decodeURLString:searchString];
+				
+				NSArray *components = [searchString componentsSeparatedByString:@" "];
+				NSMutableArray *newComponents = [NSMutableArray array];
+				for (NSString *comp in components)
+				{
+					if(![comp isEqualToString:@""])
+						[newComponents addObject:comp];
+				}
+				
+				searchString = [newComponents componentsJoinedByString:@" "];
+				
+				[search appendFormat:@"accessionNumber CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
 				browsePredicate = [NSPredicate predicateWithFormat:search];
 				pageTitle = NSLocalizedString(@"Search Result", nil);
 			}
