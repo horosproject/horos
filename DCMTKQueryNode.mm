@@ -1987,7 +1987,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		}
 		
 		cond = DIMSE_moveUser(assoc, presId, &req, dataset,
-			moveCallback, &callbackData, _blockMode, _dimse_timeout,
+			moveCallback, &callbackData, _blockMode, _dimse_timeout, //  _blockMode
 			net, subOpCallback, NULL,
 			&rsp, &statusDetail, &rspIds , OFTrue);
 		

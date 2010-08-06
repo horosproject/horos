@@ -4490,6 +4490,8 @@ static NSConditionLock *threadLock = nil;
 	if( managedObjectContext == nil) return;
 	if( [NSDate timeIntervalSinceReferenceDate] - gLastActivity < 60*10) return;
 	
+	[self refreshSmartAlbums];
+	
 	// Log cleaning
 	
 	if( [checkIncomingLock tryLock])

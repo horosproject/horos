@@ -173,7 +173,9 @@ DIMSE_moveUser(
     }
 
     /* receive responses */
-
+	
+	NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
+	
     while (cond == EC_Normal && status == STATUS_Pending)
 	{
 		if( [NSThread currentThread].isCancelled)
@@ -182,19 +184,28 @@ DIMSE_moveUser(
         /* if user wants, multiplex between net/subAssoc 
          * and move responses over main assoc.
          */
-        switch (selectReadable(assoc, net, subAssoc, blockMode, timeout)) {
+        switch (selectReadable(assoc, net, subAssoc, blockMode, timeout))
+		{
         case 0:
             /* none are readble, timeout */
-            if (blockMode == DIMSE_BLOCKING) {
-                continue;       /* continue with while loop */
-            } else {
+            if (blockMode == DIMSE_BLOCKING)
+			{
+				if( [NSDate timeIntervalSinceReferenceDate] - startTime > timeout)
+					return DIMSE_NODATAAVAILABLE;
+				else
+					continue;       /* continue with while loop */
+            }
+			else
+			{
                 return DIMSE_NODATAAVAILABLE;
             }
             /* break; */ // never reached after continue or return.
         case 1:
+			startTime = [NSDate timeIntervalSinceReferenceDate];
             /* main association readable */
             break;
         case 2:
+			startTime = [NSDate timeIntervalSinceReferenceDate];
             /* net/subAssoc readable */
             if (subOpCallback) {
                 subOpCallback(subOpCallbackData, net, &subAssoc);

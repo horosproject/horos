@@ -1434,7 +1434,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						
 						char dir[ 1024];
 						sprintf( dir, "%s-%d", "/tmp/process_state", getpid());
-						printf( "%s", dir);
 						unlink( dir);
 						
 						/* the child process is done so exit */

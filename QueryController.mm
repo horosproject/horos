@@ -2493,15 +2493,22 @@ extern "C"
 			
 			[NSThread currentThread].status = [status stringByReplacingOccurrencesOfString: @"^" withString: @" "];
 			
-			FILE * pFile = fopen ("/tmp/kill_all_storescu", "r");
-			if( pFile)
-				fclose (pFile);
-			else
+			@try
 			{
-				if( allowNonCMOVE)
-					[object move: d retrieveMode: [[d objectForKey: @"retrieveMode"] intValue]];
+				FILE * pFile = fopen ("/tmp/kill_all_storescu", "r");
+				if( pFile)
+					fclose (pFile);
 				else
-					[object move: d retrieveMode: CMOVERetrieveMode];
+				{
+					if( allowNonCMOVE)
+						[object move: d retrieveMode: [[d objectForKey: @"retrieveMode"] intValue]];
+					else
+						[object move: d retrieveMode: CMOVERetrieveMode];
+				}
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"performRetrieve move exception: %@", e);
 			}
 			
 			@synchronized( previousAutoRetrieve)
@@ -2516,6 +2523,21 @@ extern "C"
 				[NSThread sleepForTimeInterval: 3];
 				unlink( "/tmp/kill_all_storescu");
 				break;
+			}
+		}
+		
+		@synchronized( previousAutoRetrieve)
+		{
+			for( DCMTKQueryNode *object in [moveArray valueForKey: @"query"])
+			{
+				@try
+				{
+					[previousAutoRetrieve removeObjectForKey: [self stringIDForStudy: object]];
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"performRetrieve previousAutoRetrieve removeObjectForKey exception: %@", e);
+				}
 			}
 		}
 		
