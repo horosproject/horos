@@ -22474,7 +22474,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${PROJECT_DIR}\"\nSVNVERSION=`/usr/bin/svnversion -n | /usr/bin/sed -e 's/^[^:]*://;s/[A-Za-z]/+/'`\nif [ -n \"${DEBUG:+x}\" ]; then\n\tSVNVERSION=\"${SVNVERSION}d\"\nfi\n\nPLISTPATH=\"${PROJECT_DIR}/OsiriX Launcher/Info.plist\"\nINFOVERSION=`/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' \"$OSIRIXPLISTPATH\"`\n\nVERSION=\"$INFOVERSION build $SVNVERSION\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $VERSION\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nINFOVERSIONSTR=`/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' \"$PLISTPATH\"`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString ${INFOVERSIONSTR/__VERSION__/$VERSION}\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nexit 0";
+			shellScript = "cd \"${PROJECT_DIR}\"\nSVNVERSION=`/usr/bin/svnversion -n | /usr/bin/sed -e 's/^[^:]*://;s/[A-Za-z]/+/'`\nif [ -n \"${DEBUG:+x}\" ]; then\n\tSVNVERSION=\"${SVNVERSION}d\"\nfi\n\nPLISTPATH=\"${PROJECT_DIR}/OsiriX Launcher/Info.plist\"\nINFOVERSION=`/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' \"$PLISTPATH\"`\n\nVERSION=\"$INFOVERSION build $SVNVERSION\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $VERSION\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nINFOVERSIONSTR=`/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' \"$PLISTPATH\"`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString ${INFOVERSIONSTR/__VERSION__/$VERSION}\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nexit 0";
 		};
 		59BDEDC8117CAB86007F1F2C /* Zip OsiriX Lite into Resources */ = {
 			isa = PBXShellScriptBuildPhase;

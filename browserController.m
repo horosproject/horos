@@ -20476,6 +20476,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (char *) cfixedIncomingDirectory
 { return cfixedIncomingDirectory;}
 
++ (NSString *) defaultDocumentsDirectory
+{
+	NSString *dir = documentsDirectory();
+	return dir;
+}
+
 - (NSString *) documentsDirectory
 {
 	NSString *dir = documentsDirectory();
