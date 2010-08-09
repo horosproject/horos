@@ -271,7 +271,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 }
 
 -(BOOL)isUnlocked {
-	return [authView authorizationState] == SFAuthorizationViewUnlockedState;
+	return ![[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"] || ([authView authorizationState] == SFAuthorizationViewUnlockedState);
 }
 
 -(void)setCurrentContext:(PreferencesWindowContext*)context {
