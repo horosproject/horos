@@ -2565,6 +2565,8 @@ static NSDate *lastWarningDate = nil;
 					NSLog( @"------- %@", frame_description);
 					[r appendFormat: @"%@\r", frame_description];
 				}
+				free( frameStrings);
+				frameStrings = nil;
 			}
 		}
 	}

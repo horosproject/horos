@@ -2679,7 +2679,7 @@ extern "C"
 {
 	[modalityQueryFilter release];
 	
-	NSMutableString *m = [NSMutableString string];
+	NSMutableString *m = [NSMutableString stringWithString: @""];
 	for( NSCell *cell in [sender cells])
 	{
 		if( [cell state] == NSOnState)
