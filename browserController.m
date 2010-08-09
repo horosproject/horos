@@ -4481,6 +4481,56 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
+- (void) reduceCoreDataFootPrint
+{
+	@try 
+	{
+		[self waitForRunningProcesses];
+		[reportFilesToCheck removeAllObjects];
+		[[LogManager currentLogManager] checkLogs: nil];
+		[self resetLogWindowController];
+		[[LogManager currentLogManager] resetLogs];
+		[[AppController sharedAppController] closeAllViewers: self];
+		displayEmptyDatabase = YES;
+		[self outlineViewRefresh];
+		[self refreshMatrix: self];
+		
+		NSManagedObjectContext *oldManagedObjectContext = managedObjectContext;
+		NSManagedObjectContext *newManagedObjectContext = [[NSManagedObjectContext alloc] init];
+		[newManagedObjectContext setPersistentStoreCoordinator: [oldManagedObjectContext persistentStoreCoordinator]];
+		[newManagedObjectContext lock];
+		
+		NSError *error = nil;
+		[oldManagedObjectContext save: &error];
+		if( error == nil)
+		{
+			managedObjectContext = newManagedObjectContext;
+			[oldManagedObjectContext reset];
+			[oldManagedObjectContext release];
+			
+			[newManagedObjectContext unlock];
+		}
+		else
+		{
+			[newManagedObjectContext unlock];
+			[newManagedObjectContext release];
+		}
+		
+		displayEmptyDatabase = NO;
+		[self outlineViewRefresh];
+		[self refreshMatrix: self];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		#ifdef OSIRIX_VIEWER
+		[AppController printStackTrace: e];
+		#endif
+	}
+	
+	NSLog( @"----- reduce memory footprint for CoreData");
+}
+
 - (void) autoCleanDatabaseDate: (id)sender
 {
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
@@ -4546,51 +4596,8 @@ static NSConditionLock *threadLock = nil;
 				{
 					gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
 					
-					@try 
-					{
-						[self waitForRunningProcesses];
-						[reportFilesToCheck removeAllObjects];
-						[[LogManager currentLogManager] checkLogs: nil];
-						[self resetLogWindowController];
-						[[LogManager currentLogManager] resetLogs];
-						[[AppController sharedAppController] closeAllViewers: self];
-						displayEmptyDatabase = YES;
-						[self outlineViewRefresh];
-						[self refreshMatrix: self];
-						
-						NSManagedObjectContext *oldManagedObjectContext = managedObjectContext;
-						NSManagedObjectContext *newManagedObjectContext = [[NSManagedObjectContext alloc] init];
-						[newManagedObjectContext setPersistentStoreCoordinator: [oldManagedObjectContext persistentStoreCoordinator]];
-						[newManagedObjectContext lock];
-						
-						NSError *error = nil;
-						[oldManagedObjectContext save: &error];
-						if( error == nil)
-						{
-							managedObjectContext = newManagedObjectContext;
-							[oldManagedObjectContext reset];
-							[oldManagedObjectContext release];
-						}
-						else
-						{
-							[newManagedObjectContext release];
-						}
-						
-						[managedObjectContext unlock];
-						
-						displayEmptyDatabase = NO;
-						[self outlineViewRefresh];
-						[self refreshMatrix: self];
-					}
-					@catch (NSException * e) 
-					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-						#ifdef OSIRIX_VIEWER
-						[AppController printStackTrace: e];
-						#endif
-					}
 					
-					NSLog( @"----- reduce memory footprint for CoreData");
+					[self reduceCoreDataFootPrint];
 				}
 			}
 			
@@ -18255,6 +18262,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction)sendiDisk: (id)sender
 {
+	[self reduceCoreDataFootPrint];
+	return;
+
 //	
 //	[NSThread detachNewThreadSelector: @selector( cThread) toTarget: self withObject:nil];
 //	
