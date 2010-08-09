@@ -84,37 +84,53 @@
 -(NSUInteger)sizeAtFSRef:(FSRef*)theFileRef {
 	FSIterator thisDirEnum = NULL;
 	NSUInteger totalSize = 0;
+	
+	NSMutableArray* fsRefs = [NSMutableArray arrayWithCapacity:1];
+	[fsRefs addObject:[NSData dataWithBytes:theFileRef length:sizeof(FSRef)]];
 
-	FSCatalogInfo fetchedInfos;
-	OSErr fsErr = FSGetCatalogInfo(theFileRef, kFSCatInfoDataSizes|kFSCatInfoRsrcSizes|kFSCatInfoNodeFlags, &fetchedInfos, NULL, NULL, NULL);
-	if (fsErr == noErr)
-		if (fetchedInfos.nodeFlags &kFSNodeIsDirectoryMask) {
-			if (FSOpenIterator(theFileRef, kFSIterateFlat, &thisDirEnum) == noErr) {
-				const ItemCount kMaxEntriesPerFetch = 256;
-				ItemCount actualFetched;
-				FSRef fetchedRefs[kMaxEntriesPerFetch];
-				FSCatalogInfo fetchedInfos[kMaxEntriesPerFetch];
-				
-				OSErr fsErr = FSGetCatalogInfoBulk(thisDirEnum, kMaxEntriesPerFetch, &actualFetched, NULL, kFSCatInfoDataSizes|kFSCatInfoRsrcSizes|kFSCatInfoNodeFlags, fetchedInfos, fetchedRefs, NULL, NULL);
-				while ((fsErr == noErr) || (fsErr == errFSNoMoreItems)) {
-					for (ItemCount thisIndex = 0; thisIndex < actualFetched; thisIndex++)
-						if (fetchedInfos[thisIndex].nodeFlags &kFSNodeIsDirectoryMask)
-							totalSize += [self sizeAtFSRef:&fetchedRefs[thisIndex]];
-						else {
-							totalSize += fetchedInfos[thisIndex].dataLogicalSize;
-							totalSize += fetchedInfos[thisIndex].rsrcLogicalSize;
+	@try {
+		while (fsRefs.count) {
+			NSData* d = [[fsRefs objectAtIndex:0] retain];
+			[fsRefs removeObjectAtIndex:0];
+			FSRef currFsRef;
+			[d getBytes:&currFsRef length:sizeof(FSRef)];
+			[d release];
+			
+			FSCatalogInfo fetchedInfos;
+			//HFSUniStr255 outName;
+			OSErr fsErr = FSGetCatalogInfo(&currFsRef, kFSCatInfoDataSizes|kFSCatInfoRsrcSizes|kFSCatInfoNodeFlags, &fetchedInfos, NULL, NULL, NULL);
+			//NSLog(@"ok for %@", [NSString stringWithCharacters:outName.unicode length:outName.length]);
+			
+			if (fsErr == noErr)
+				if (fetchedInfos.nodeFlags&kFSNodeIsDirectoryMask) {
+					if (FSOpenIterator(&currFsRef, kFSIterateFlat, &thisDirEnum) == noErr) {
+						const ItemCount kMaxEntriesPerFetch = 256;
+						ItemCount actualFetched;
+						FSRef fetchedRefs[kMaxEntriesPerFetch];
+						FSCatalogInfo fetchedInfos[kMaxEntriesPerFetch];
+						
+						OSErr fsErr = FSGetCatalogInfoBulk(thisDirEnum, kMaxEntriesPerFetch, &actualFetched, NULL, kFSCatInfoDataSizes|kFSCatInfoRsrcSizes|kFSCatInfoNodeFlags, fetchedInfos, fetchedRefs, NULL, NULL);
+						while ((fsErr == noErr) || (fsErr == errFSNoMoreItems)) {
+							for (ItemCount thisIndex = 0; thisIndex < actualFetched; ++thisIndex)
+								[fsRefs addObject:[NSData dataWithBytes:&fetchedRefs[thisIndex] length:sizeof(FSRef)]];
+							if (fsErr == errFSNoMoreItems)
+								break;
+							fsErr = FSGetCatalogInfoBulk(thisDirEnum, kMaxEntriesPerFetch, &actualFetched, NULL, kFSCatInfoDataSizes|kFSCatInfoRsrcSizes|kFSCatInfoNodeFlags, fetchedInfos, fetchedRefs, NULL, NULL);
 						}
-					if (fsErr == errFSNoMoreItems)
-						break;
-					else fsErr = FSGetCatalogInfoBulk(thisDirEnum, kMaxEntriesPerFetch, &actualFetched, NULL, kFSCatInfoDataSizes|kFSCatInfoRsrcSizes|kFSCatInfoNodeFlags, fetchedInfos, fetchedRefs, NULL, NULL);
+						
+						FSCloseIterator(thisDirEnum);
+					}
+				} else {
+					totalSize += fetchedInfos.dataLogicalSize;
+					totalSize += fetchedInfos.rsrcLogicalSize;
 				}
-				
-				FSCloseIterator(thisDirEnum);
-			}
-		} else {
-			totalSize += fetchedInfos.dataLogicalSize;
-			totalSize += fetchedInfos.rsrcLogicalSize;
+			else
+				NSLog(@"[NSFileManager sizeAtFSRef:] error: %d", fsErr);
 		}
+		
+	} @catch (NSException* e) {
+		NSLog(@"[NSFileManager sizeAtFSRef:] error: %@", e.description);
+	}
 
 	return totalSize;
 }
