@@ -2467,7 +2467,6 @@ static NSConditionLock *threadLock = nil;
 	fileManager = [NSFileManager defaultManager];
 	
 	[persistentStoreCoordinator release];
-	
 	persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel];
 	
     managedObjectContext = [[NSManagedObjectContext alloc] init];
@@ -2499,9 +2498,6 @@ static NSConditionLock *threadLock = nil;
 		}
 	}
 	
-	[[managedObjectContext undoManager] setLevelsOfUndo: 1];
-	[[managedObjectContext undoManager] disableUndoRegistration];
-
 	// This line is very important, if there is NO database.sql file
 	[self saveDatabase: currentDatabasePath];
 	
@@ -2540,9 +2536,6 @@ static NSConditionLock *threadLock = nil;
 			{
 				NSLog(@"********** defaultManagerObjectContext FAILED: %@", error);
 			}
-		
-			[[mOC undoManager] setLevelsOfUndo: 1];
-			[[mOC undoManager] disableUndoRegistration];
 		}
 		@catch ( NSException *e)
 		{
@@ -2881,13 +2874,6 @@ static NSConditionLock *threadLock = nil;
 			
 			NSManagedObject *currentStudyTable, *currentSeriesTable, *currentImageTable, *currentAlbumTable;
 			NSArray *albumProperties, *studyProperties, *seriesProperties, *imageProperties;
-						
-			[[currentContext undoManager] setLevelsOfUndo: 1];
-			[[currentContext undoManager] disableUndoRegistration];
-				
-			[[previousContext undoManager] setLevelsOfUndo: 1];
-			[[previousContext undoManager] disableUndoRegistration];
-			
 			
 			NSArray *albums = [BrowserController albumsInContext: previousContext];
 			albumProperties = [[[[previousModel entitiesByName] objectForKey:@"Album"] attributesByName] allKeys];
@@ -2931,12 +2917,6 @@ static NSConditionLock *threadLock = nil;
 			imageProperties = [[[[previousModel entitiesByName] objectForKey:@"Image"] attributesByName] allKeys];
 			
 			int counter = 0;
-
-			[[currentContext undoManager] setLevelsOfUndo: 1];
-			[[currentContext undoManager] disableUndoRegistration];
-				
-			[[previousContext undoManager] setLevelsOfUndo: 1];
-			[[previousContext undoManager] disableUndoRegistration];
 			
 			NSArray *currentAlbums = nil;
 			NSArray *currentAlbumsNames = nil;
@@ -4495,26 +4475,10 @@ static NSConditionLock *threadLock = nil;
 		[self outlineViewRefresh];
 		[self refreshMatrix: self];
 		
-		NSManagedObjectContext *oldManagedObjectContext = managedObjectContext;
-		NSManagedObjectContext *newManagedObjectContext = [[NSManagedObjectContext alloc] init];
-		[newManagedObjectContext setPersistentStoreCoordinator: [oldManagedObjectContext persistentStoreCoordinator]];
-		[newManagedObjectContext lock];
-		
 		NSError *error = nil;
-		[oldManagedObjectContext save: &error];
+		[managedObjectContext save: &error];
 		if( error == nil)
-		{
-			managedObjectContext = newManagedObjectContext;
-			[oldManagedObjectContext reset];
-			[oldManagedObjectContext release];
-			
-			[newManagedObjectContext unlock];
-		}
-		else
-		{
-			[newManagedObjectContext unlock];
-			[newManagedObjectContext release];
-		}
+			[managedObjectContext reset];
 		
 		displayEmptyDatabase = NO;
 		[self outlineViewRefresh];
@@ -4595,8 +4559,6 @@ static NSConditionLock *threadLock = nil;
 				if( [managedObjectContext tryLock] && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
 				{
 					gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
-					
-					
 					[self reduceCoreDataFootPrint];
 				}
 			}
@@ -5193,9 +5155,6 @@ static NSConditionLock *threadLock = nil;
 	}
 	#endif
 	
-	[[userManagedObjectContext undoManager] setLevelsOfUndo: 1];
-	[[userManagedObjectContext undoManager] disableUndoRegistration];
-
 	// This line is very important, if there is NO sql file
 	[self saveUserDatabase];
 	
@@ -9484,7 +9443,11 @@ static BOOL withReset = NO;
 
 - (void) buildThumbnail:(DicomSeries*)series
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	[series thumbnail];
+	
+	[pool release];
 }
 
 - (IBAction) buildAllThumbnails:(id) sender
@@ -14166,6 +14129,8 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void)waitForRunningProcesses
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	WaitRendering *wait = nil;
 	
 	if( [NSThread isMainThread] && [[self window] isVisible])
@@ -14217,6 +14182,8 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[wait close];
 	[wait release];
+	
+	[pool release];
 }
 
 - (void) browserPrepareForClose
@@ -18264,7 +18231,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 //	[self reduceCoreDataFootPrint];
 //	return;
-
+//
 //	
 //	[NSThread detachNewThreadSelector: @selector( cThread) toTarget: self withObject:nil];
 //	
@@ -18272,10 +18239,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 //	
 //	
 //	
-	int					success;
+	int success;
 	
 	// Copy the files!
-
+	
 	NSMutableArray *dicomFiles2Copy = [NSMutableArray array];
 	NSMutableArray *files2Copy;
 	

@@ -1278,7 +1278,7 @@ static NSDate *lastWarningDate = nil;
 			NSLog( @"******* RESTARTOSIRIXSTORESCP : killDICOMListenerWait");
 			[self killDICOMListenerWait: YES];
 			
-			[NSThread sleepForTimeInterval: 4];
+			[NSThread sleepForTimeInterval: 1];
 						
 			NSLog( @"******* RESTARTOSIRIXSTORESCP : restartSTORESCP");
 			[self restartSTORESCP];

@@ -388,21 +388,21 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
         DcmQueryRetrieveOptions::errmsg("DIMSE Failure (aborting association):\n");
         DimseCondition::dump(cond);
 		
-		if( cond == DIMSE_NODATAAVAILABLE)
-		{
-			char dir[ 1024];
-			sprintf( dir, "%s", "/tmp/RESTARTOSIRIXSTORESCP");
-			unlink( dir);
-			
-			FILE * pFile = fopen (dir,"w+");
-			if( pFile)
-			{
-				fprintf( pFile, "restart");
-				fclose (pFile);
-			}
-			
-			NSLog( @"******* RESTARTOSIRIXSTORESCP");
-		}
+//		if( cond == DIMSE_NODATAAVAILABLE)
+//		{
+//			char dir[ 1024];
+//			sprintf( dir, "%s", "/tmp/RESTARTOSIRIXSTORESCP");
+//			unlink( dir);
+//			
+//			FILE * pFile = fopen (dir,"w+");
+//			if( pFile)
+//			{
+//				fprintf( pFile, "restart");
+//				fclose (pFile);
+//			}
+//			
+//			NSLog( @"******* RESTARTOSIRIXSTORESCP");
+//		}
 		
 		/* some kind of error so abort the association */
         cond = ASC_abortAssociation(assoc);
