@@ -18262,8 +18262,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction)sendiDisk: (id)sender
 {
-	[self reduceCoreDataFootPrint];
-	return;
+//	[self reduceCoreDataFootPrint];
+//	return;
 
 //	
 //	[NSThread detachNewThreadSelector: @selector( cThread) toTarget: self withObject:nil];

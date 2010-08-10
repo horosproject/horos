@@ -2443,7 +2443,14 @@ static NSDate *lastWarningDate = nil;
 	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: nil];
 	decompressionDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DECOMPRESSION/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: nil];
-
+	
+	// Delete all process_state files
+	for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp" error: nil]) 
+	{
+		if( [s hasPrefix: @"process_state-"])
+			[[NSFileManager defaultManager] removeItemAtPath: [@"/tmp/" stringByAppendingPathComponent: s] error: nil];
+	}
+	
 	[NSSplitView saveSplitView];
 	
 //	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [[ActivityWindowController defaultController].window isVisible] forKey: @"ActivityWindowVisibleFlag"];
