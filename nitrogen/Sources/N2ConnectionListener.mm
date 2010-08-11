@@ -45,12 +45,15 @@ const NSString* N2ConnectionListenerOpenedConnection = @"N2ConnectionListenerOpe
 		}
 	}
 	
+	DLog(@"Handling new connection from %@", address);
+	
 	N2Connection* connection = [[[_class alloc] initWithAddress:address port:0 is:istr os:ostr] autorelease];
 	[_clients addObject:connection];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:N2ConnectionListenerOpenedConnectionNotification object:self userInfo:[NSDictionary dictionaryWithObject:connection forKey:N2ConnectionListenerOpenedConnection]];
 	
 	return connection;
+	
 }
 
 static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
@@ -65,6 +68,8 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 	NSData* peer = NULL;
 	if (0 == getpeername(nativeSocketHandle, (struct sockaddr*)name, &namelen))
 		peer = [NSData dataWithBytes:name length:namelen];
+	
+	DLog(@"Accepting connection from %@", peer);
 	
 	CFReadStreamRef readStream = NULL;
 	CFWriteStreamRef writeStream = NULL;

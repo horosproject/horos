@@ -17,6 +17,16 @@
 		5903BBA71111E3B800F4358B /* PopUpArrows.png in Resources */ = {isa = PBXBuildFile; fileRef = 5903BBA61111E3B800F4358B /* PopUpArrows.png */; };
 		5915D5F01099D8CC0024F610 /* N2Shell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5915D5EE1099D8CC0024F610 /* N2Shell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5915D5F11099D8CC0024F610 /* N2Shell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5915D5EF1099D8CC0024F610 /* N2Shell.mm */; };
+		592CFD0C1212898800176E39 /* N2WebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD0A1212898800176E39 /* N2WebServiceClient.h */; };
+		592CFD0D1212898800176E39 /* N2WebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD0B1212898800176E39 /* N2WebServiceClient.mm */; };
+		592CFD1912128D3300176E39 /* N2RedundantWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD1712128D3300176E39 /* N2RedundantWebServiceClient.h */; };
+		592CFD1A12128D3300176E39 /* N2RedundantWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD1812128D3300176E39 /* N2RedundantWebServiceClient.mm */; };
+		592CFD2712128DAE00176E39 /* N2SOAPWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD2512128DAE00176E39 /* N2SOAPWebServiceClient.h */; };
+		592CFD2812128DAE00176E39 /* N2SOAPWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD2612128DAE00176E39 /* N2SOAPWebServiceClient.mm */; };
+		592CFD2F12128E8700176E39 /* N2XMLRPCWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD2D12128E8700176E39 /* N2XMLRPCWebServiceClient.h */; };
+		592CFD3012128E8700176E39 /* N2XMLRPCWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD2E12128E8700176E39 /* N2XMLRPCWebServiceClient.mm */; };
+		592CFD331212CA7D00176E39 /* N2WSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD311212CA7D00176E39 /* N2WSDL.h */; };
+		592CFD341212CA7D00176E39 /* N2WSDL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD321212CA7D00176E39 /* N2WSDL.mm */; };
 		595B87EC1116DC870026B899 /* N2UserDefaultsTest.h in Headers */ = {isa = PBXBuildFile; fileRef = 595B87EA1116DC870026B899 /* N2UserDefaultsTest.h */; };
 		595B88261116E1550026B899 /* N2UserDefaultsTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 595B87EB1116DC870026B899 /* N2UserDefaultsTest.mm */; };
 		596EB3CC118ABA6E00880192 /* NSWindow+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3CA118ABA6E00880192 /* NSWindow+N2.h */; };
@@ -165,6 +175,16 @@
 		591403CE1105BDCF00D6A504 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Resources/Info.plist; sourceTree = "<group>"; };
 		5915D5EE1099D8CC0024F610 /* N2Shell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2Shell.h; sourceTree = "<group>"; };
 		5915D5EF1099D8CC0024F610 /* N2Shell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2Shell.mm; sourceTree = "<group>"; };
+		592CFD0A1212898800176E39 /* N2WebServiceClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2WebServiceClient.h; sourceTree = "<group>"; };
+		592CFD0B1212898800176E39 /* N2WebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2WebServiceClient.mm; sourceTree = "<group>"; };
+		592CFD1712128D3300176E39 /* N2RedundantWebServiceClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2RedundantWebServiceClient.h; sourceTree = "<group>"; };
+		592CFD1812128D3300176E39 /* N2RedundantWebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2RedundantWebServiceClient.mm; sourceTree = "<group>"; };
+		592CFD2512128DAE00176E39 /* N2SOAPWebServiceClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2SOAPWebServiceClient.h; sourceTree = "<group>"; };
+		592CFD2612128DAE00176E39 /* N2SOAPWebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2SOAPWebServiceClient.mm; sourceTree = "<group>"; };
+		592CFD2D12128E8700176E39 /* N2XMLRPCWebServiceClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2XMLRPCWebServiceClient.h; sourceTree = "<group>"; };
+		592CFD2E12128E8700176E39 /* N2XMLRPCWebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2XMLRPCWebServiceClient.mm; sourceTree = "<group>"; };
+		592CFD311212CA7D00176E39 /* N2WSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2WSDL.h; sourceTree = "<group>"; };
+		592CFD321212CA7D00176E39 /* N2WSDL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2WSDL.mm; sourceTree = "<group>"; };
 		595B87EA1116DC870026B899 /* N2UserDefaultsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2UserDefaultsTest.h; path = "Unit Tests/N2UserDefaultsTest.h"; sourceTree = SOURCE_ROOT; };
 		595B87EB1116DC870026B899 /* N2UserDefaultsTest.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2UserDefaultsTest.mm; path = "Unit Tests/N2UserDefaultsTest.mm"; sourceTree = SOURCE_ROOT; };
 		596EB3CA118ABA6E00880192 /* NSWindow+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWindow+N2.h"; sourceTree = "<group>"; };
@@ -405,6 +425,67 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
+		592CFCFC1212892B00176E39 /* Web Services */ = {
+			isa = PBXGroup;
+			children = (
+				592CFD0A1212898800176E39 /* N2WebServiceClient.h */,
+				592CFD0B1212898800176E39 /* N2WebServiceClient.mm */,
+				592CFD1712128D3300176E39 /* N2RedundantWebServiceClient.h */,
+				592CFD1812128D3300176E39 /* N2RedundantWebServiceClient.mm */,
+				592CFD1B12128D3D00176E39 /* XMLRPC */,
+				592CFD2312128D8F00176E39 /* SOAP */,
+			);
+			name = "Web Services";
+			sourceTree = "<group>";
+		};
+		592CFD1B12128D3D00176E39 /* XMLRPC */ = {
+			isa = PBXGroup;
+			children = (
+				598D1D0F1070D63400EE85EA /* N2XMLRPC.h */,
+				598D1D101070D63400EE85EA /* N2XMLRPC.mm */,
+				592CFD1D12128D7200176E39 /* Client */,
+				592CFD1C12128D6400176E39 /* Server */,
+			);
+			name = XMLRPC;
+			sourceTree = "<group>";
+		};
+		592CFD1C12128D6400176E39 /* Server */ = {
+			isa = PBXGroup;
+			children = (
+				59CF83861069302D00A4444F /* N2XMLRPCConnection.h */,
+				59CF83871069302D00A4444F /* N2XMLRPCConnection.mm */,
+			);
+			name = Server;
+			sourceTree = "<group>";
+		};
+		592CFD1D12128D7200176E39 /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				592CFD2D12128E8700176E39 /* N2XMLRPCWebServiceClient.h */,
+				592CFD2E12128E8700176E39 /* N2XMLRPCWebServiceClient.mm */,
+			);
+			name = Client;
+			sourceTree = "<group>";
+		};
+		592CFD2312128D8F00176E39 /* SOAP */ = {
+			isa = PBXGroup;
+			children = (
+				592CFD311212CA7D00176E39 /* N2WSDL.h */,
+				592CFD321212CA7D00176E39 /* N2WSDL.mm */,
+				592CFD2C12128E4B00176E39 /* Client */,
+			);
+			name = SOAP;
+			sourceTree = "<group>";
+		};
+		592CFD2C12128E4B00176E39 /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				592CFD2512128DAE00176E39 /* N2SOAPWebServiceClient.h */,
+				592CFD2612128DAE00176E39 /* N2SOAPWebServiceClient.mm */,
+			);
+			name = Client;
+			sourceTree = "<group>";
+		};
 		59A632821042791E003F4069 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -536,13 +617,10 @@
 			isa = PBXGroup;
 			children = (
 				59CF837E1069301700A4444F /* N2Connection.h */,
-				59CF83811069301700A4444F /* N2ConnectionListener.h */,
 				59CF837F1069301700A4444F /* N2Connection.mm */,
+				59CF83811069301700A4444F /* N2ConnectionListener.h */,
 				59CF83801069301700A4444F /* N2ConnectionListener.mm */,
-				598D1D0F1070D63400EE85EA /* N2XMLRPC.h */,
-				598D1D101070D63400EE85EA /* N2XMLRPC.mm */,
-				59CF83861069302D00A4444F /* N2XMLRPCConnection.h */,
-				59CF83871069302D00A4444F /* N2XMLRPCConnection.mm */,
+				592CFCFC1212892B00176E39 /* Web Services */,
 			);
 			name = Connections;
 			sourceTree = "<group>";
@@ -665,6 +743,11 @@
 				59DC28E511C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h in Headers */,
 				59DC28E911C6168100DAD5B4 /* NSThread+N2.h in Headers */,
 				59F5F4B111F4822E0047A90D /* N2ImageButtonCell.h in Headers */,
+				592CFD0C1212898800176E39 /* N2WebServiceClient.h in Headers */,
+				592CFD1912128D3300176E39 /* N2RedundantWebServiceClient.h in Headers */,
+				592CFD2712128DAE00176E39 /* N2SOAPWebServiceClient.h in Headers */,
+				592CFD2F12128E8700176E39 /* N2XMLRPCWebServiceClient.h in Headers */,
+				592CFD331212CA7D00176E39 /* N2WSDL.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -867,6 +950,11 @@
 				59DC28E611C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm in Sources */,
 				59DC28EA11C6168100DAD5B4 /* NSThread+N2.mm in Sources */,
 				59F5F4B211F4822E0047A90D /* N2ImageButtonCell.mm in Sources */,
+				592CFD0D1212898800176E39 /* N2WebServiceClient.mm in Sources */,
+				592CFD1A12128D3300176E39 /* N2RedundantWebServiceClient.mm in Sources */,
+				592CFD2812128DAE00176E39 /* N2SOAPWebServiceClient.mm in Sources */,
+				592CFD3012128E8700176E39 /* N2XMLRPCWebServiceClient.mm in Sources */,
+				592CFD341212CA7D00176E39 /* N2WSDL.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

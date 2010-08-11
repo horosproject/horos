@@ -19,6 +19,7 @@
 
 +(NSString*)execute:(NSString*)path;
 +(NSString*)execute:(NSString*)path arguments:(NSArray*)arguments;
++(NSString*)execute:(NSString*)path arguments:(NSArray*)arguments outStatus:(int*)outStatus;
 +(NSString*)execute:(NSString*)path arguments:(NSArray*)arguments expectedStatus:(int)expectedStatus;
 +(NSString*)hostname;
 +(NSString*)mac;

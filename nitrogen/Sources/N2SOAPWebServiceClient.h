@@ -12,14 +12,18 @@
  PURPOSE.
  =========================================================================*/
 
-#import <Cocoa/Cocoa.h>
+#import "N2RedundantWebServiceClient.h"
 
+@class N2WSDL;
 
-@interface N2XMLRPC : NSObject {
+@interface N2SOAPWebServiceClient : N2RedundantWebServiceClient {
+	N2WSDL* _wsdl;
 }
 
-+(NSObject*)ParseElement:(NSXMLNode*)n;
-+(NSString*)FormatElement:(NSObject*)o;
-+(NSString*)ReturnElement:(NSInvocation*)invocation;
+@property(readonly) N2WSDL* wsdl;
+
+-(id)initWithWSDL:(N2WSDL*)wsdl;
+-(id)execute:(NSString*)method;
+-(id)execute:(NSString*)function params:(NSArray*)params;
 
 @end

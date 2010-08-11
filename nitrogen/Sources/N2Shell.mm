@@ -26,7 +26,7 @@
 	return [N2Shell execute:path arguments:arguments expectedStatus:0];
 }
 
-+(NSString*)execute:(NSString*)path arguments:(NSArray*)arguments expectedStatus:(int)expectedStatus {
++(NSString*)execute:(NSString*)path arguments:(NSArray*)arguments outStatus:(int*)outStatus {
 	if (!arguments) arguments = [NSArray array];
 	
 	NSTask* task = [[[NSTask alloc] init] autorelease];
@@ -37,13 +37,22 @@
 	[task launch];
 	[task waitUntilExit];
 	
-//	int status = [task terminationStatus];
 	NSString* stdout = [[[[NSString alloc] initWithData:[[[task standardOutput] fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	
-//	if (status != expectedStatus)
-//		[NSException raise:NSGenericException format:@"Task %@ exited with status %d\n%@", path, status, stdout];
+	if (outStatus)
+		*outStatus = [task terminationStatus];
 	
 	return stdout;
+}
+
++(NSString*)execute:(NSString*)path arguments:(NSArray*)arguments expectedStatus:(int)expectedStatus {
+	int status;
+	NSString* r = [self execute:path arguments:arguments outStatus:&status];
+	
+	if (status != expectedStatus)
+		[NSException raise:NSGenericException format:@"Task %@ exited with status %d", path, status];
+	
+	return r;
 }
 
 +(NSString*)hostname {
@@ -55,7 +64,7 @@
 }
 
 +(NSString*)mac {
-	NSString* temp = [N2Shell execute:@"/usr/sbin/ipconfig" arguments:[NSArray arrayWithObjects:@"getpacket", @"en0", NULL] expectedStatus:1];
+	NSString* temp = [N2Shell execute:@"/usr/sbin/ipconfig" arguments:[NSArray arrayWithObjects:@"getpacket", @"en0", NULL] outStatus:NULL];
 	NSArray* lines = [temp componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 	
 	const NSString* const chaddrPrefix = @"chaddr = ";

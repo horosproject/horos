@@ -104,6 +104,43 @@
 		5926825F11CF62DA00CFA81F /* ThreadsManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926824311CF62DA00CFA81F /* ThreadsManager.mm */; };
 		5926828411CF69B300CFA81F /* NSThread+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28B111C611F100DAD5B4 /* NSThread+N2.mm */; };
 		5926828711CF69CB00CFA81F /* N2HighlightImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997898511B7B46A002DB107 /* N2HighlightImageButtonCell.mm */; };
+		592CFF081212F84F00176E39 /* N2Connection.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEF01212F84F00176E39 /* N2Connection.h */; };
+		592CFF091212F84F00176E39 /* N2Connection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEF11212F84F00176E39 /* N2Connection.mm */; };
+		592CFF0A1212F84F00176E39 /* N2ConnectionListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEF21212F84F00176E39 /* N2ConnectionListener.h */; };
+		592CFF0B1212F84F00176E39 /* N2ConnectionListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEF31212F84F00176E39 /* N2ConnectionListener.mm */; };
+		592CFF0C1212F84F00176E39 /* N2WebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEF51212F84F00176E39 /* N2WebServiceClient.h */; };
+		592CFF0D1212F84F00176E39 /* N2WebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEF61212F84F00176E39 /* N2WebServiceClient.mm */; };
+		592CFF0E1212F84F00176E39 /* N2RedundantWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEF71212F84F00176E39 /* N2RedundantWebServiceClient.h */; };
+		592CFF0F1212F84F00176E39 /* N2RedundantWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEF81212F84F00176E39 /* N2RedundantWebServiceClient.mm */; };
+		592CFF101212F84F00176E39 /* N2XMLRPC.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEFA1212F84F00176E39 /* N2XMLRPC.h */; };
+		592CFF111212F84F00176E39 /* N2XMLRPC.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEFB1212F84F00176E39 /* N2XMLRPC.mm */; };
+		592CFF121212F84F00176E39 /* N2XMLRPCWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEFD1212F84F00176E39 /* N2XMLRPCWebServiceClient.h */; };
+		592CFF131212F84F00176E39 /* N2XMLRPCWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEFE1212F84F00176E39 /* N2XMLRPCWebServiceClient.mm */; };
+		592CFF141212F84F00176E39 /* N2XMLRPCConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFF001212F84F00176E39 /* N2XMLRPCConnection.h */; };
+		592CFF151212F84F00176E39 /* N2XMLRPCConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFF011212F84F00176E39 /* N2XMLRPCConnection.mm */; };
+		592CFF161212F84F00176E39 /* N2WSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFF031212F84F00176E39 /* N2WSDL.h */; };
+		592CFF171212F84F00176E39 /* N2WSDL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFF041212F84F00176E39 /* N2WSDL.mm */; };
+		592CFF181212F84F00176E39 /* N2SOAPWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFF061212F84F00176E39 /* N2SOAPWebServiceClient.h */; };
+		592CFF191212F84F00176E39 /* N2SOAPWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFF071212F84F00176E39 /* N2SOAPWebServiceClient.mm */; };
+		592CFF1A1212F84F00176E39 /* N2Connection.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEF01212F84F00176E39 /* N2Connection.h */; };
+		592CFF1B1212F84F00176E39 /* N2Connection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEF11212F84F00176E39 /* N2Connection.mm */; };
+		592CFF1C1212F84F00176E39 /* N2ConnectionListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEF21212F84F00176E39 /* N2ConnectionListener.h */; };
+		592CFF1D1212F84F00176E39 /* N2ConnectionListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEF31212F84F00176E39 /* N2ConnectionListener.mm */; };
+		592CFF1E1212F84F00176E39 /* N2WebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEF51212F84F00176E39 /* N2WebServiceClient.h */; };
+		592CFF1F1212F84F00176E39 /* N2WebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEF61212F84F00176E39 /* N2WebServiceClient.mm */; };
+		592CFF201212F84F00176E39 /* N2RedundantWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEF71212F84F00176E39 /* N2RedundantWebServiceClient.h */; };
+		592CFF211212F84F00176E39 /* N2RedundantWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEF81212F84F00176E39 /* N2RedundantWebServiceClient.mm */; };
+		592CFF221212F84F00176E39 /* N2XMLRPC.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEFA1212F84F00176E39 /* N2XMLRPC.h */; };
+		592CFF231212F84F00176E39 /* N2XMLRPC.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEFB1212F84F00176E39 /* N2XMLRPC.mm */; };
+		592CFF241212F84F00176E39 /* N2XMLRPCWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEFD1212F84F00176E39 /* N2XMLRPCWebServiceClient.h */; };
+		592CFF251212F84F00176E39 /* N2XMLRPCWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEFE1212F84F00176E39 /* N2XMLRPCWebServiceClient.mm */; };
+		592CFF261212F84F00176E39 /* N2XMLRPCConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFF001212F84F00176E39 /* N2XMLRPCConnection.h */; };
+		592CFF271212F84F00176E39 /* N2XMLRPCConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFF011212F84F00176E39 /* N2XMLRPCConnection.mm */; };
+		592CFF281212F84F00176E39 /* N2WSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFF031212F84F00176E39 /* N2WSDL.h */; };
+		592CFF291212F84F00176E39 /* N2WSDL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFF041212F84F00176E39 /* N2WSDL.mm */; };
+		592CFF2A1212F84F00176E39 /* N2SOAPWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFF061212F84F00176E39 /* N2SOAPWebServiceClient.h */; };
+		592CFF2B1212F84F00176E39 /* N2SOAPWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFF071212F84F00176E39 /* N2SOAPWebServiceClient.mm */; };
+		592CFF671212F91D00176E39 /* ISO8601DateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB10FB1E1129338A009EB238 /* ISO8601DateFormatter.m */; };
 		594830CD118B0AC100D7E606 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 594830CB118B0AC100D7E606 /* N2ImageView.h */; };
 		594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 594830CC118B0AC100D7E606 /* N2ImageView.mm */; };
 		594830CF118B0AC100D7E606 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 594830CB118B0AC100D7E606 /* N2ImageView.h */; };
@@ -584,14 +621,6 @@
 		AB10FB2A1129338A009EB238 /* N2PopUpButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAD51129338A009EB238 /* N2PopUpButton.mm */; };
 		AB10FB2B1129338A009EB238 /* N2Exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = AB10FAD71129338A009EB238 /* N2Exceptions.h */; };
 		AB10FB2C1129338A009EB238 /* N2Exceptions.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAD81129338A009EB238 /* N2Exceptions.mm */; };
-		AB10FB2D1129338A009EB238 /* N2Connection.h in Headers */ = {isa = PBXBuildFile; fileRef = AB10FADA1129338A009EB238 /* N2Connection.h */; };
-		AB10FB2E1129338A009EB238 /* N2ConnectionListener.h in Headers */ = {isa = PBXBuildFile; fileRef = AB10FADB1129338A009EB238 /* N2ConnectionListener.h */; };
-		AB10FB2F1129338A009EB238 /* N2Connection.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FADC1129338A009EB238 /* N2Connection.mm */; };
-		AB10FB301129338A009EB238 /* N2ConnectionListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FADD1129338A009EB238 /* N2ConnectionListener.mm */; };
-		AB10FB311129338A009EB238 /* N2XMLRPC.h in Headers */ = {isa = PBXBuildFile; fileRef = AB10FADE1129338A009EB238 /* N2XMLRPC.h */; };
-		AB10FB321129338A009EB238 /* N2XMLRPC.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FADF1129338A009EB238 /* N2XMLRPC.mm */; };
-		AB10FB331129338A009EB238 /* N2XMLRPCConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = AB10FAE01129338A009EB238 /* N2XMLRPCConnection.h */; };
-		AB10FB341129338A009EB238 /* N2XMLRPCConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAE11129338A009EB238 /* N2XMLRPCConnection.mm */; };
 		AB10FB351129338A009EB238 /* N2View.h in Headers */ = {isa = PBXBuildFile; fileRef = AB10FAE31129338A009EB238 /* N2View.h */; };
 		AB10FB361129338A009EB238 /* N2View.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAE41129338A009EB238 /* N2View.mm */; };
 		AB10FB371129338A009EB238 /* N2Panel.h in Headers */ = {isa = PBXBuildFile; fileRef = AB10FAE51129338A009EB238 /* N2Panel.h */; };
@@ -8071,6 +8100,24 @@
 		5926824111CF62DA00CFA81F /* ThreadModalForWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThreadModalForWindowController.mm; sourceTree = "<group>"; };
 		5926824211CF62DA00CFA81F /* ThreadsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadsManager.h; sourceTree = "<group>"; };
 		5926824311CF62DA00CFA81F /* ThreadsManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThreadsManager.mm; sourceTree = "<group>"; };
+		592CFEF01212F84F00176E39 /* N2Connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Connection.h; path = nitrogen/Sources/N2Connection.h; sourceTree = "<group>"; };
+		592CFEF11212F84F00176E39 /* N2Connection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2Connection.mm; path = nitrogen/Sources/N2Connection.mm; sourceTree = "<group>"; };
+		592CFEF21212F84F00176E39 /* N2ConnectionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ConnectionListener.h; path = nitrogen/Sources/N2ConnectionListener.h; sourceTree = "<group>"; };
+		592CFEF31212F84F00176E39 /* N2ConnectionListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ConnectionListener.mm; path = nitrogen/Sources/N2ConnectionListener.mm; sourceTree = "<group>"; };
+		592CFEF51212F84F00176E39 /* N2WebServiceClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2WebServiceClient.h; path = nitrogen/Sources/N2WebServiceClient.h; sourceTree = "<group>"; };
+		592CFEF61212F84F00176E39 /* N2WebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2WebServiceClient.mm; path = nitrogen/Sources/N2WebServiceClient.mm; sourceTree = "<group>"; };
+		592CFEF71212F84F00176E39 /* N2RedundantWebServiceClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2RedundantWebServiceClient.h; path = nitrogen/Sources/N2RedundantWebServiceClient.h; sourceTree = "<group>"; };
+		592CFEF81212F84F00176E39 /* N2RedundantWebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2RedundantWebServiceClient.mm; path = nitrogen/Sources/N2RedundantWebServiceClient.mm; sourceTree = "<group>"; };
+		592CFEFA1212F84F00176E39 /* N2XMLRPC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2XMLRPC.h; path = nitrogen/Sources/N2XMLRPC.h; sourceTree = "<group>"; };
+		592CFEFB1212F84F00176E39 /* N2XMLRPC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2XMLRPC.mm; path = nitrogen/Sources/N2XMLRPC.mm; sourceTree = "<group>"; };
+		592CFEFD1212F84F00176E39 /* N2XMLRPCWebServiceClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2XMLRPCWebServiceClient.h; path = nitrogen/Sources/N2XMLRPCWebServiceClient.h; sourceTree = "<group>"; };
+		592CFEFE1212F84F00176E39 /* N2XMLRPCWebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2XMLRPCWebServiceClient.mm; path = nitrogen/Sources/N2XMLRPCWebServiceClient.mm; sourceTree = "<group>"; };
+		592CFF001212F84F00176E39 /* N2XMLRPCConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2XMLRPCConnection.h; path = nitrogen/Sources/N2XMLRPCConnection.h; sourceTree = "<group>"; };
+		592CFF011212F84F00176E39 /* N2XMLRPCConnection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2XMLRPCConnection.mm; path = nitrogen/Sources/N2XMLRPCConnection.mm; sourceTree = "<group>"; };
+		592CFF031212F84F00176E39 /* N2WSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2WSDL.h; path = nitrogen/Sources/N2WSDL.h; sourceTree = "<group>"; };
+		592CFF041212F84F00176E39 /* N2WSDL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2WSDL.mm; path = nitrogen/Sources/N2WSDL.mm; sourceTree = "<group>"; };
+		592CFF061212F84F00176E39 /* N2SOAPWebServiceClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2SOAPWebServiceClient.h; path = nitrogen/Sources/N2SOAPWebServiceClient.h; sourceTree = "<group>"; };
+		592CFF071212F84F00176E39 /* N2SOAPWebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2SOAPWebServiceClient.mm; path = nitrogen/Sources/N2SOAPWebServiceClient.mm; sourceTree = "<group>"; };
 		594830CB118B0AC100D7E606 /* N2ImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ImageView.h; path = nitrogen/Sources/N2ImageView.h; sourceTree = "<group>"; };
 		594830CC118B0AC100D7E606 /* N2ImageView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageView.mm; path = nitrogen/Sources/N2ImageView.mm; sourceTree = "<group>"; };
 		596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPreferencePane+OsiriX.h"; sourceTree = "<group>"; };
@@ -8533,14 +8580,6 @@
 		AB10FAD51129338A009EB238 /* N2PopUpButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2PopUpButton.mm; path = nitrogen/Sources/N2PopUpButton.mm; sourceTree = "<group>"; };
 		AB10FAD71129338A009EB238 /* N2Exceptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Exceptions.h; path = nitrogen/Sources/N2Exceptions.h; sourceTree = "<group>"; };
 		AB10FAD81129338A009EB238 /* N2Exceptions.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2Exceptions.mm; path = nitrogen/Sources/N2Exceptions.mm; sourceTree = "<group>"; };
-		AB10FADA1129338A009EB238 /* N2Connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Connection.h; path = nitrogen/Sources/N2Connection.h; sourceTree = "<group>"; };
-		AB10FADB1129338A009EB238 /* N2ConnectionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ConnectionListener.h; path = nitrogen/Sources/N2ConnectionListener.h; sourceTree = "<group>"; };
-		AB10FADC1129338A009EB238 /* N2Connection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2Connection.mm; path = nitrogen/Sources/N2Connection.mm; sourceTree = "<group>"; };
-		AB10FADD1129338A009EB238 /* N2ConnectionListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ConnectionListener.mm; path = nitrogen/Sources/N2ConnectionListener.mm; sourceTree = "<group>"; };
-		AB10FADE1129338A009EB238 /* N2XMLRPC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2XMLRPC.h; path = nitrogen/Sources/N2XMLRPC.h; sourceTree = "<group>"; };
-		AB10FADF1129338A009EB238 /* N2XMLRPC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2XMLRPC.mm; path = nitrogen/Sources/N2XMLRPC.mm; sourceTree = "<group>"; };
-		AB10FAE01129338A009EB238 /* N2XMLRPCConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2XMLRPCConnection.h; path = nitrogen/Sources/N2XMLRPCConnection.h; sourceTree = "<group>"; };
-		AB10FAE11129338A009EB238 /* N2XMLRPCConnection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2XMLRPCConnection.mm; path = nitrogen/Sources/N2XMLRPCConnection.mm; sourceTree = "<group>"; };
 		AB10FAE31129338A009EB238 /* N2View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2View.h; path = nitrogen/Sources/N2View.h; sourceTree = "<group>"; };
 		AB10FAE41129338A009EB238 /* N2View.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2View.mm; path = nitrogen/Sources/N2View.mm; sourceTree = "<group>"; };
 		AB10FAE51129338A009EB238 /* N2Panel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Panel.h; path = nitrogen/Sources/N2Panel.h; sourceTree = "<group>"; };
@@ -12343,6 +12382,79 @@
 			name = Activity;
 			sourceTree = "<group>";
 		};
+		592CFEEF1212F84F00176E39 /* Connections */ = {
+			isa = PBXGroup;
+			children = (
+				592CFEF41212F84F00176E39 /* Web Services */,
+				592CFEF01212F84F00176E39 /* N2Connection.h */,
+				592CFEF11212F84F00176E39 /* N2Connection.mm */,
+				592CFEF21212F84F00176E39 /* N2ConnectionListener.h */,
+				592CFEF31212F84F00176E39 /* N2ConnectionListener.mm */,
+			);
+			name = Connections;
+			sourceTree = "<group>";
+		};
+		592CFEF41212F84F00176E39 /* Web Services */ = {
+			isa = PBXGroup;
+			children = (
+				592CFF021212F84F00176E39 /* SOAP */,
+				592CFEF91212F84F00176E39 /* XMLRPC */,
+				592CFEF51212F84F00176E39 /* N2WebServiceClient.h */,
+				592CFEF61212F84F00176E39 /* N2WebServiceClient.mm */,
+				592CFEF71212F84F00176E39 /* N2RedundantWebServiceClient.h */,
+				592CFEF81212F84F00176E39 /* N2RedundantWebServiceClient.mm */,
+			);
+			name = "Web Services";
+			sourceTree = "<group>";
+		};
+		592CFEF91212F84F00176E39 /* XMLRPC */ = {
+			isa = PBXGroup;
+			children = (
+				592CFEFF1212F84F00176E39 /* Server */,
+				592CFEFC1212F84F00176E39 /* Client */,
+				592CFEFA1212F84F00176E39 /* N2XMLRPC.h */,
+				592CFEFB1212F84F00176E39 /* N2XMLRPC.mm */,
+			);
+			name = XMLRPC;
+			sourceTree = "<group>";
+		};
+		592CFEFC1212F84F00176E39 /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				592CFEFD1212F84F00176E39 /* N2XMLRPCWebServiceClient.h */,
+				592CFEFE1212F84F00176E39 /* N2XMLRPCWebServiceClient.mm */,
+			);
+			name = Client;
+			sourceTree = "<group>";
+		};
+		592CFEFF1212F84F00176E39 /* Server */ = {
+			isa = PBXGroup;
+			children = (
+				592CFF001212F84F00176E39 /* N2XMLRPCConnection.h */,
+				592CFF011212F84F00176E39 /* N2XMLRPCConnection.mm */,
+			);
+			name = Server;
+			sourceTree = "<group>";
+		};
+		592CFF021212F84F00176E39 /* SOAP */ = {
+			isa = PBXGroup;
+			children = (
+				592CFF051212F84F00176E39 /* Client */,
+				592CFF031212F84F00176E39 /* N2WSDL.h */,
+				592CFF041212F84F00176E39 /* N2WSDL.mm */,
+			);
+			name = SOAP;
+			sourceTree = "<group>";
+		};
+		592CFF051212F84F00176E39 /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				592CFF061212F84F00176E39 /* N2SOAPWebServiceClient.h */,
+				592CFF071212F84F00176E39 /* N2SOAPWebServiceClient.mm */,
+			);
+			name = Client;
+			sourceTree = "<group>";
+		};
 		5997894211B7B3C6002DB107 /* Anonymization */ = {
 			isa = PBXGroup;
 			children = (
@@ -12714,7 +12826,7 @@
 				AB10FAF81129338A009EB238 /* Stuff */,
 				AB10FAEF1129338A009EB238 /* Steps */,
 				AB10FAE21129338A009EB238 /* Layout */,
-				AB10FAD91129338A009EB238 /* Connections */,
+				592CFEEF1212F84F00176E39 /* Connections */,
 				AB10FAD61129338A009EB238 /* Exceptions */,
 				AB10FAC91129338A009EB238 /* Controls */,
 			);
@@ -12759,21 +12871,6 @@
 				AB10FAD81129338A009EB238 /* N2Exceptions.mm */,
 			);
 			name = Exceptions;
-			sourceTree = "<group>";
-		};
-		AB10FAD91129338A009EB238 /* Connections */ = {
-			isa = PBXGroup;
-			children = (
-				AB10FADA1129338A009EB238 /* N2Connection.h */,
-				AB10FADB1129338A009EB238 /* N2ConnectionListener.h */,
-				AB10FADC1129338A009EB238 /* N2Connection.mm */,
-				AB10FADD1129338A009EB238 /* N2ConnectionListener.mm */,
-				AB10FADE1129338A009EB238 /* N2XMLRPC.h */,
-				AB10FADF1129338A009EB238 /* N2XMLRPC.mm */,
-				AB10FAE01129338A009EB238 /* N2XMLRPCConnection.h */,
-				AB10FAE11129338A009EB238 /* N2XMLRPCConnection.mm */,
-			);
-			name = Connections;
 			sourceTree = "<group>";
 		};
 		AB10FAE21129338A009EB238 /* Layout */ = {
@@ -19049,10 +19146,6 @@
 				AB10FB271129338A009EB238 /* N2ColorWell.h in Headers */,
 				AB10FB291129338A009EB238 /* N2PopUpButton.h in Headers */,
 				AB10FB2B1129338A009EB238 /* N2Exceptions.h in Headers */,
-				AB10FB2D1129338A009EB238 /* N2Connection.h in Headers */,
-				AB10FB2E1129338A009EB238 /* N2ConnectionListener.h in Headers */,
-				AB10FB311129338A009EB238 /* N2XMLRPC.h in Headers */,
-				AB10FB331129338A009EB238 /* N2XMLRPCConnection.h in Headers */,
 				AB10FB351129338A009EB238 /* N2View.h in Headers */,
 				AB10FB371129338A009EB238 /* N2Panel.h in Headers */,
 				AB10FB391129338A009EB238 /* N2Window.h in Headers */,
@@ -19129,6 +19222,15 @@
 				EC9BD81C11EDF349007421B2 /* FlyAssistant.h in Headers */,
 				59F5F3F911F476030047A90D /* N2ImageButtonCell.h in Headers */,
 				59F5F4EC11F485CC0047A90D /* BrowserController+Activity.h in Headers */,
+				592CFF081212F84F00176E39 /* N2Connection.h in Headers */,
+				592CFF0A1212F84F00176E39 /* N2ConnectionListener.h in Headers */,
+				592CFF0C1212F84F00176E39 /* N2WebServiceClient.h in Headers */,
+				592CFF0E1212F84F00176E39 /* N2RedundantWebServiceClient.h in Headers */,
+				592CFF101212F84F00176E39 /* N2XMLRPC.h in Headers */,
+				592CFF121212F84F00176E39 /* N2XMLRPCWebServiceClient.h in Headers */,
+				592CFF141212F84F00176E39 /* N2XMLRPCConnection.h in Headers */,
+				592CFF161212F84F00176E39 /* N2WSDL.h in Headers */,
+				592CFF181212F84F00176E39 /* N2SOAPWebServiceClient.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21245,6 +21347,15 @@
 				5926825E11CF62DA00CFA81F /* ThreadsManager.h in Headers */,
 				59F5F3FB11F476030047A90D /* N2ImageButtonCell.h in Headers */,
 				59F5F4EE11F485CC0047A90D /* BrowserController+Activity.h in Headers */,
+				592CFF1A1212F84F00176E39 /* N2Connection.h in Headers */,
+				592CFF1C1212F84F00176E39 /* N2ConnectionListener.h in Headers */,
+				592CFF1E1212F84F00176E39 /* N2WebServiceClient.h in Headers */,
+				592CFF201212F84F00176E39 /* N2RedundantWebServiceClient.h in Headers */,
+				592CFF221212F84F00176E39 /* N2XMLRPC.h in Headers */,
+				592CFF241212F84F00176E39 /* N2XMLRPCWebServiceClient.h in Headers */,
+				592CFF261212F84F00176E39 /* N2XMLRPCConnection.h in Headers */,
+				592CFF281212F84F00176E39 /* N2WSDL.h in Headers */,
+				592CFF2A1212F84F00176E39 /* N2SOAPWebServiceClient.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23565,10 +23676,6 @@
 				AB10FB281129338A009EB238 /* N2ColorWell.mm in Sources */,
 				AB10FB2A1129338A009EB238 /* N2PopUpButton.mm in Sources */,
 				AB10FB2C1129338A009EB238 /* N2Exceptions.mm in Sources */,
-				AB10FB2F1129338A009EB238 /* N2Connection.mm in Sources */,
-				AB10FB301129338A009EB238 /* N2ConnectionListener.mm in Sources */,
-				AB10FB321129338A009EB238 /* N2XMLRPC.mm in Sources */,
-				AB10FB341129338A009EB238 /* N2XMLRPCConnection.mm in Sources */,
 				AB10FB361129338A009EB238 /* N2View.mm in Sources */,
 				AB10FB381129338A009EB238 /* N2Panel.mm in Sources */,
 				AB10FB3A1129338A009EB238 /* N2Window.mm in Sources */,
@@ -23646,6 +23753,15 @@
 				EC9BD81D11EDF349007421B2 /* FlyAssistant.mm in Sources */,
 				59F5F3FA11F476030047A90D /* N2ImageButtonCell.mm in Sources */,
 				59F5F4ED11F485CC0047A90D /* BrowserController+Activity.mm in Sources */,
+				592CFF091212F84F00176E39 /* N2Connection.mm in Sources */,
+				592CFF0B1212F84F00176E39 /* N2ConnectionListener.mm in Sources */,
+				592CFF0D1212F84F00176E39 /* N2WebServiceClient.mm in Sources */,
+				592CFF0F1212F84F00176E39 /* N2RedundantWebServiceClient.mm in Sources */,
+				592CFF111212F84F00176E39 /* N2XMLRPC.mm in Sources */,
+				592CFF131212F84F00176E39 /* N2XMLRPCWebServiceClient.mm in Sources */,
+				592CFF151212F84F00176E39 /* N2XMLRPCConnection.mm in Sources */,
+				592CFF171212F84F00176E39 /* N2WSDL.mm in Sources */,
+				592CFF191212F84F00176E39 /* N2SOAPWebServiceClient.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24824,6 +24940,16 @@
 				5926828711CF69CB00CFA81F /* N2HighlightImageButtonCell.mm in Sources */,
 				59F5F3FC11F476030047A90D /* N2ImageButtonCell.mm in Sources */,
 				59F5F4EF11F485CC0047A90D /* BrowserController+Activity.mm in Sources */,
+				592CFF1B1212F84F00176E39 /* N2Connection.mm in Sources */,
+				592CFF1D1212F84F00176E39 /* N2ConnectionListener.mm in Sources */,
+				592CFF1F1212F84F00176E39 /* N2WebServiceClient.mm in Sources */,
+				592CFF211212F84F00176E39 /* N2RedundantWebServiceClient.mm in Sources */,
+				592CFF231212F84F00176E39 /* N2XMLRPC.mm in Sources */,
+				592CFF251212F84F00176E39 /* N2XMLRPCWebServiceClient.mm in Sources */,
+				592CFF271212F84F00176E39 /* N2XMLRPCConnection.mm in Sources */,
+				592CFF291212F84F00176E39 /* N2WSDL.mm in Sources */,
+				592CFF2B1212F84F00176E39 /* N2SOAPWebServiceClient.mm in Sources */,
+				592CFF671212F91D00176E39 /* ISO8601DateFormatter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

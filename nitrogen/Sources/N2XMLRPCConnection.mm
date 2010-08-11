@@ -1,17 +1,16 @@
 /*=========================================================================
-  Program:   OsiriX
-
-  Copyright (c) OsiriX Team
-  All rights reserved.
-  Distributed under GNU - LGPL
-  
-  See http://www.osirix-viewer.com/copyright.html for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.
-=========================================================================*/
-
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
 #import "N2XMLRPCConnection.h"
 #import "N2Debug.h"
@@ -54,7 +53,7 @@
 	if (!CFHTTPMessageIsHeaderComplete(request))
 		return;
 	
-	DLog(@"XMLRPC request received: %@", [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]);
+//	DLog(@"XMLRPC request received: %@", [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]);
 	
 	NSString* contentLength = (NSString*)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Content-Length");
 	if (contentLength) [contentLength autorelease];
@@ -95,8 +94,6 @@
 	if (contentLengthString && contentLength < [content length])
 		content = [content subdataWithRange:NSMakeRange(0, contentLength)];
 	
-	NSLog(@"ssssss");
-	
 	@try {
 		NSXMLDocument* doc = [[[NSXMLDocument alloc] initWithData:content options:NSXMLNodeOptionsNone error:NULL] autorelease];
 
@@ -109,6 +106,8 @@
 		if ([methodNames count] != 1)
 			[NSException raise:NSGenericException format:@"method call contains %d method names", [methodNames count]];
 		NSString* methodName = [[methodNames objectAtIndex:0] stringValue];
+		
+		DLog(@"Handling XMLRPC method call: %@", methodName);
 		
 //		NSArray* methodParameterNames = [doc nodesForXPath:@"methodCall/params//member/name" error:NULL];
 //		NSMutableArray* methodParameterValues = [[doc nodesForXPath:@"methodCall/params//member/value" error:NULL] mutableArray];

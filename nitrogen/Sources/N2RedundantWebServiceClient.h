@@ -12,14 +12,14 @@
  PURPOSE.
  =========================================================================*/
 
-#import <Cocoa/Cocoa.h>
+
+#import "N2WebServiceClient.h"
 
 
-@interface N2XMLRPC : NSObject {
+@interface N2RedundantWebServiceClient : N2WebServiceClient {
+	NSArray* _urls;
 }
 
-+(NSObject*)ParseElement:(NSXMLNode*)n;
-+(NSString*)FormatElement:(NSObject*)o;
-+(NSString*)ReturnElement:(NSInvocation*)invocation;
+@property(retain) NSArray* urls;
 
 @end

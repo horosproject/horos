@@ -15,11 +15,16 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface N2XMLRPC : NSObject {
+@interface N2WSDL : NSObject {
+	NSMutableArray* _types;
+	NSMutableArray* _messages;
+	NSMutableArray* _operations;
+	NSMutableArray* _portTypes;
+	NSMutableArray* _bindings;
+	NSMutableArray* _ports;
+	NSMutableArray* _services;
 }
 
-+(NSObject*)ParseElement:(NSXMLNode*)n;
-+(NSString*)FormatElement:(NSObject*)o;
-+(NSString*)ReturnElement:(NSInvocation*)invocation;
+-(id)initWithContentsOfURL:(NSURL*)url;
 
 @end
