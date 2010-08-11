@@ -36,7 +36,6 @@ extern NSManagedObjectContext *staticContext;
 
 - (void)dealloc
 {
-	[context release];
 	context = 0L;
 	
 	for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
@@ -1597,9 +1596,7 @@ extern NSManagedObjectContext *staticContext;
 					
 		error = nil;
 		
-		[context release];
 		context = staticContext;
-		[context retain];
 		[context lock];
 		
 		[findArray release];
@@ -1792,9 +1789,7 @@ extern NSManagedObjectContext *staticContext;
 	
 	error = nil;
 	
-	[context release];
 	context = staticContext;
-	[context retain];
 	[context lock];
 	
 	NSArray *array = nil;
@@ -1904,7 +1899,6 @@ extern NSManagedObjectContext *staticContext;
 	}
 
 	[context unlock];
-	[context release];
 	context = 0L;
 	
 	// TO AVOID DEADLOCK
@@ -1967,7 +1961,6 @@ extern NSManagedObjectContext *staticContext;
 		else
 		{
 			[context unlock];
-			[context release];
 			context = nil;
 			
 			*isComplete = YES;

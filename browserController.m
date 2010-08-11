@@ -431,7 +431,6 @@ static NSConditionLock *threadLock = nil;
 		[[QueryController currentQueryController] refresh: self];
 	else if( [QueryController currentAutoQueryController])
 		[[QueryController currentAutoQueryController] refresh: self];
-	
 	#endif
 }
 
@@ -4479,6 +4478,9 @@ static NSConditionLock *threadLock = nil;
 		[managedObjectContext save: &error];
 		if( error == nil)
 			[managedObjectContext reset];
+		
+		[DCMPix purgeCachedDictionaries];
+		[DCMView purgeStringTextureCache];
 		
 		displayEmptyDatabase = NO;
 		[self outlineViewRefresh];
@@ -14138,6 +14140,9 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	@try
 	{
+		for( NSInteger x = 0, row; x < [[ThreadsManager defaultManager] threadsCount]; x++)  
+			[[[ThreadsManager defaultManager] objectInThreadsAtIndex: x] cancel];
+		
 		NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + 240;
 		while( ti - [NSDate timeIntervalSinceReferenceDate] > 0 && [[ThreadsManager defaultManager] threadsCount] > 0)
 		{
@@ -14146,7 +14151,7 @@ static NSArray*	openSubSeriesArray = nil;
 			if( wait && [[wait window] isVisible] == NO)
 				[wait showWindow:self];
 		}
-			
+		
 		[BrowserController tryLock: checkIncomingLock during: 120];
 		[BrowserController tryLock: managedObjectContext during: 120];
 		[BrowserController tryLock: checkBonjourUpToDateThreadLock during: 60];
@@ -18229,8 +18234,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction)sendiDisk: (id)sender
 {
-//	[self reduceCoreDataFootPrint];
-//	return;
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
+	{
+		[self reduceCoreDataFootPrint];
+		return;
+	}
 //
 //	
 //	[NSThread detachNewThreadSelector: @selector( cThread) toTarget: self withObject:nil];

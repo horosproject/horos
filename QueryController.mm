@@ -782,7 +782,7 @@ extern "C"
 		int delay;
 		
 		if( [currentQueryController.window isKeyWindow] || [currentAutoQueryController.window isKeyWindow])
-			delay = 2;
+			delay = 1;
 		else
 			delay = 10;
 		
@@ -2569,8 +2569,17 @@ extern "C"
 
 - (void) checkAndView:(id) item
 {
-	if( [[self window] isVisible] == NO) return;
-	if( checkAndViewTry < 0) return;
+	if( [[self window] isVisible] == NO)
+	{
+		[item release];
+		return;
+	}
+	
+	if( checkAndViewTry < 0)
+	{
+		[item release];
+		return;
+	}
 	
 	[[BrowserController currentBrowser] checkIncoming: self];
 	
@@ -2652,9 +2661,7 @@ extern "C"
 		}
 		
 		if( success)
-		{
 			[item release];
-		}
 				
 	}
 	@catch (NSException * e)
@@ -2707,12 +2714,12 @@ extern "C"
 		[fromDate setEnabled: YES];
 		[toDate setEnabled: YES];
 		
-		NSDate	*later = [[fromDate dateValue] laterDate: [toDate dateValue]];
-		NSDate	*earlier = [[fromDate dateValue] earlierDate: [toDate dateValue]];
+		NSDate *later = [[fromDate dateValue] laterDate: [toDate dateValue]];
+		NSDate *earlier = [[fromDate dateValue] earlierDate: [toDate dateValue]];
 		
-		NSString	*between = [NSString stringWithFormat:@"%@-%@", [earlier descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil], [later descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]];
+		NSString *between = [NSString stringWithFormat:@"%@-%@", [earlier descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil], [later descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]];
 		
-		dateQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
+		dateQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch forKey:@"StudyDate"] retain];
 	}
 	else
 	{

@@ -3335,7 +3335,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		[dicomElements setObject:[NSNumber numberWithInt: NoOfFrames] forKey:@"numberOfFrames"];
 		[dicomElements setObject:[NSNumber numberWithInt: NoOfSeries] forKey:@"numberOfSeries"];
 		[dicomElements setObject:f forKey:@"filePath"];
-	}
+	} 
 	
 	return returnVal;
 }

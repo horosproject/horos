@@ -54,7 +54,8 @@
 	return [self objectInThreadsAtIndex:index];
 }
 
--(void)addThread:(NSThread*)thread {
+-(void)addThread:(NSThread*)thread
+{
 	if (![[NSThread currentThread] isMainThread]) {
 		[self performSelectorOnMainThread:@selector(addThread:) withObject:thread waitUntilDone: NO];
 	} else if (![_threads containsObject:thread]) {
