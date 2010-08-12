@@ -1170,443 +1170,480 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset destination:(NSString*) destination
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	OFCondition cond;
-	const char *opt_peer = NULL;
-    OFCmdUnsignedInt opt_port = 104;
-    const char *opt_peerTitle = PEERAPPLICATIONTITLE;
-    const char *opt_ourTitle = APPLICATIONTITLE;
 	BOOL succeed = YES;
 	
-	if (_callingAET)
-		opt_ourTitle = [_callingAET UTF8String];
-		
-	if (_calledAET)
-		opt_peerTitle = [_calledAET UTF8String];
-		
-    T_ASC_Network *net = NULL;
-    T_ASC_Parameters *params;
-    DIC_NODENAME localHost;
-    DIC_NODENAME peerHost;
-    T_ASC_Association *assoc = NULL;
-   
-//	NSLog(@"hostname: %@ calledAET %@", _hostname, _calledAET);
-	
-	opt_peer = [_hostname UTF8String];
-	opt_port = _port;
-	_abortAssociation = NO;
-	
-//
-//	
-//	//debug code activated for now
-//	_debug = OFTrue;
-//	DUL_Debug(OFTrue);
-//	DIMSE_debug(OFTrue);
-//	SetDebugLevel(3);
-	
-	if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
-		strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
-		strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+	@try 
 	{
-		_networkTransferSyntax = (E_TransferSyntax) [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"];
-	}
-	else
-		_networkTransferSyntax = EXS_LittleEndianExplicit;
-	
-	WaitRendering *wait = nil;
-	
-	if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
-	{
-		wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Connecting to %@...", nil), _hostname]];
-		[wait setCancel: YES];
-		[wait start];
-	}
-	
-	DcmTLSTransportLayer *tLayer = NULL;
-	NSString *uniqueStringID = [NSString stringWithFormat:@"%d.%d.%d", getpid(), inc++, random()];	
-	
-//	if (_secureConnection)
-//		[DDKeychain lockTmpFiles];
-
-	@try
-	{
-		#ifdef WITH_OPENSSL		
-		if(_cipherSuites)
-		{
-			const char *current = NULL;
-			const char *currentOpenSSL;
-			
-			opt_ciphersuites.clear();
-			
-			for (NSString *suite in _cipherSuites)
-			{
-				current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
-				
-				if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
-				{
-					NSLog(@"ciphersuite '%s' is unknown.", current);
-					NSLog(@"Known ciphersuites are:");
-					unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-					for (unsigned long cs=0; cs < numSuites; cs++)
-					{
-						NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
-					}
-					
-					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil];
-					[queryException raise];
-				}
-				else
-				{
-					if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
-					opt_ciphersuites += currentOpenSSL;
-				}
-				
-			}
-		}
+		OFCondition cond;
+		const char *opt_peer = NULL;
+		OFCmdUnsignedInt opt_port = 104;
+		const char *opt_peerTitle = PEERAPPLICATIONTITLE;
+		const char *opt_ourTitle = APPLICATIONTITLE;
 		
-		#endif
-
-		/* make sure data dictionary is loaded */
-		if (!dcmDataDict.isDictionaryLoaded()) {
-			fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-					DCM_DICT_ENVIRONMENT_VARIABLE);
-		}
+		if (_callingAET)
+			opt_ourTitle = [_callingAET UTF8String];
+			
+		if (_calledAET)
+			opt_peerTitle = [_calledAET UTF8String];
+			
+		T_ASC_Network *net = NULL;
+		T_ASC_Parameters *params;
+		DIC_NODENAME localHost;
+		DIC_NODENAME peerHost;
+		T_ASC_Association *assoc = NULL;
+	   
+	//	NSLog(@"hostname: %@ calledAET %@", _hostname, _calledAET);
 		
-		/* initialize network, i.e. create an instance of T_ASC_Network*. */
-		cond = ASC_initializeNetwork(NET_REQUESTOR, 0, _acse_timeout, &net);
-		if (cond.bad())
-		{
-			DimseCondition::dump(cond);
-			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-			[queryException raise];
-		}
+		opt_peer = [_hostname UTF8String];
+		opt_port = _port;
+		_abortAssociation = NO;
 		
-	#ifdef WITH_OPENSSL // joris
-			
-		if (_secureConnection)
-		{
-			[DDKeychain generatePseudoRandomFileToPath:TLS_SEED_FILE];
-			tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, _readSeedFile);
-			if (tLayer == NULL)
-			{
-				NSLog(@"unable to create TLS transport layer");
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:@"unable to create TLS transport layer" userInfo:nil];
-				[queryException raise];
-			}
-			
-			if(certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
-			{
-				NSString *trustedCertificatesDir = [NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID];
-				[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:trustedCertificatesDir];
-				NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:trustedCertificatesDir error:nil];
-				
-				for (NSString *cert in trustedCertificates)
-				{
-					if (TCS_ok != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
-					{
-						queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]] userInfo:nil];
-						[queryException raise];
-					}
-				}
-						//--add-cert-dir //// add certificates in d to list of certificates
-						//.... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
-						
-						//			if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
-						//			{
-						//				const char *current = NULL;
-						//				do
-						//				{
-						//					app.checkValue(cmd.getValue(current));
-						//					if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
-						//					{
-						//						CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << endl;
-						//					}
-						//				} while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
-						//			}
-			}		
-			
-			if (_dhparam && ! (tLayer->setTempDHParameters(_dhparam)))
-			{
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load temporary DH parameter file %s", _dhparam] userInfo:nil];
-				[queryException raise];
-			}
-			
-			if (_doAuthenticate)
-			{				
-				tLayer->setPrivateKeyPasswd([TLS_PRIVATE_KEY_PASSWORD cStringUsingEncoding:NSUTF8StringEncoding]);
-				
-				[DICOMTLS generateCertificateAndKeyForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // export certificate/key from the Keychain to the disk
-				
-				NSString *_privateKeyFile = [DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // generates the PEM file for the private key
-				NSString *_certificateFile = [DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // generates the PEM file for the certificate
-				
-				if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
-				{
-					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil];
-					[queryException raise];
-				}
-				
-				if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
-				{
-					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil];
-					[queryException raise];
-				}
-				
-				if (!tLayer->checkPrivateKeyMatchesCertificate())
-				{
-					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil];
-					[queryException raise];
-				}
-			}
-			
-			if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
-			{
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:@"Unable to set selected cipher suites" userInfo:nil];
-				[queryException raise];
-			}
-			
-			DcmCertificateVerification _certVerification;
-			
-			if(certVerification==RequirePeerCertificate)
-				_certVerification = DCV_requireCertificate;
-			else if(certVerification==VerifyPeerCertificate)
-				_certVerification = DCV_checkCertificate;
-			else
-				_certVerification = DCV_ignoreCertificate;
-			
-			tLayer->setCertificateVerification(_certVerification);
-			
-			cond = ASC_setTransportLayer(net, tLayer, 0);
-			if (cond.bad())
-			{
-				DimseCondition::dump(cond);
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-				[queryException raise];
-			}
-		}
-
-	#endif
+	//
+	//	
+	//	//debug code activated for now
+	//	_debug = OFTrue;
+	//	DUL_Debug(OFTrue);
+	//	DIMSE_debug(OFTrue);
+	//	SetDebugLevel(3);
 		
-		
-	/* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
-		cond = ASC_createAssociationParameters(&params, _maxReceivePDULength);
-//		DimseCondition::dump(cond);
-		if (cond.bad()) {
-			DimseCondition::dump(cond);
-			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-			[queryException raise];
-		}
-		
-		/* sets this application's title and the called application's title in the params */
-		/* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
-		ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
-
-		/* Set the transport layer type (type of network connection) in the params */
-		/* strucutre. The default is an insecure connection; where OpenSSL is  */
-		/* available the user is able to request an encrypted,secure connection. */
-		cond = ASC_setTransportLayerType(params, _secureConnection);
-		if (cond.bad()) {
-			DimseCondition::dump(cond);
-			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-			[queryException raise];
-		}
-		
-		/* Figure out the presentation addresses and copy the */
-		/* corresponding values into the association parameters.*/
-		gethostname(localHost, sizeof(localHost) - 1);
-		sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
-		//NSLog(@"peer host: %s", peerHost);
-		ASC_setPresentationAddresses(params, localHost, peerHost);	//localHost
-		
-		/* Set the presentation contexts which will be negotiated */
-		/* when the network connection will be established */
-		/*
-		abstract syntax should be 
-		UID_MOVEStudyRootQueryRetrieveInformationModel
-		UID_FINDStudyRootQueryRetrieveInformationModel
-		UID_GETStudyRootQueryRetrieveInformationModel
-		*/
-		cond = [self addPresentationContext:params abstractSyntax:abstractSyntax];
-		
-		if (cond.bad())
-		{
-			DimseCondition::dump(cond);
-			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"addPresentationContext - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-			[queryException raise];
-		}
-
-		/* dump presentation contexts if required */
-		if (_verbose)
-		{
-			if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+		if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
 			strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
 			strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
-			{
-			
-			}
-			else
-			{
-				printf("Request Parameters:\n");
-				ASC_dumpParameters(params, COUT);
-			}
+		{
+			_networkTransferSyntax = (E_TransferSyntax) [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"];
 		}
+		else
+			_networkTransferSyntax = EXS_LittleEndianExplicit;
 		
-		/* create association, i.e. try to establish a network connection to another */
-		/* DICOM application. This call creates an instance of T_ASC_Association*. */
-		if (_verbose)
-			printf("Requesting Association\n");
+		WaitRendering *wait = nil;
 		
 		if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 		{
-			NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
-			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: net], @"net", [NSValue valueWithPointer: params], @"params", nil];
-			
-			globalCondition = EC_Normal;
-			[NSThread detachNewThreadSelector: @selector( requestAssociationThread:) toTarget: self withObject: dict];
-			[NSThread sleepForTimeInterval: 0.1];
-			
-			while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO)
+			wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Connecting to %@...", nil), _hostname]];
+			[wait setCancel: YES];
+			[wait start];
+		}
+		
+		DcmTLSTransportLayer *tLayer = NULL;
+		NSString *uniqueStringID = [NSString stringWithFormat:@"%d.%d.%d", getpid(), inc++, random()];	
+		
+	//	if (_secureConnection)
+	//		[DDKeychain lockTmpFiles];
+
+		@try
+		{
+			#ifdef WITH_OPENSSL		
+			if(_cipherSuites)
 			{
-				[wait run];
-			}
-			
-			if( [wait aborted])
-			{
-				_abortAssociation = YES;
-				cond = DUL_NETWORKCLOSED;
-			}
-			else
-			{
-				[lock unlock];
-				cond = globalCondition;
+				const char *current = NULL;
+				const char *currentOpenSSL;
 				
-				if( cond == EC_Normal)
+				opt_ciphersuites.clear();
+				
+				for (NSString *suite in _cipherSuites)
 				{
-					if( [dict objectForKey: @"assoc"])
-						assoc = (T_ASC_Association *) [[dict objectForKey: @"assoc"] pointerValue];
+					current = [suite cStringUsingEncoding:NSUTF8StringEncoding];
+					
+					if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
+					{
+						NSLog(@"ciphersuite '%s' is unknown.", current);
+						NSLog(@"Known ciphersuites are:");
+						unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
+						for (unsigned long cs=0; cs < numSuites; cs++)
+						{
+							NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
+						}
+						
+						queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil];
+						[queryException raise];
+					}
 					else
-						cond = EC_IllegalParameter;
+					{
+						if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
+						opt_ciphersuites += currentOpenSSL;
+					}
+					
 				}
 			}
 			
-			if( cond != EC_Normal)
-			{
-				[wait end];
-				[wait release];
-				wait = nil;
+			#endif
+
+			/* make sure data dictionary is loaded */
+			if (!dcmDataDict.isDictionaryLoaded()) {
+				fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+						DCM_DICT_ENVIRONMENT_VARIABLE);
 			}
 			
-			[lock release];
-		}
-		else cond = ASC_requestAssociation(net, params, &assoc);
-		
-		if (cond.bad())
-		{
-			if (cond == DUL_ASSOCIATIONREJECTED)
+			/* initialize network, i.e. create an instance of T_ASC_Network*. */
+			cond = ASC_initializeNetwork(NET_REQUESTOR, 0, _acse_timeout, &net);
+			if (cond.bad())
 			{
-				T_ASC_RejectParameters rej;
-				ASC_getRejectParameters(params, &rej);
-				errmsg("Association Rejected:");
-				ASC_printRejectParameters(stderr, &rej);
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Rejected : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-				[queryException raise];
-
-			}
-			else
-			{
-				errmsg("Association Request Failed:");
 				DimseCondition::dump(cond);
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Request Failed : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
 				[queryException raise];
 			}
-		}
-		
-		  /* dump the presentation contexts which have been accepted/refused */
-		if (_verbose)
-		{
-			if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
-			strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
-			strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+			
+		#ifdef WITH_OPENSSL // joris
+				
+			if (_secureConnection)
 			{
-//				printf("Association Parameters Negotiated:\n");
-//				ASC_dumpParameters(params, COUT);
-			}
-			else
-			{
-				printf("Association Parameters Negotiated:\n");
-				ASC_dumpParameters(params, COUT);
-			}
-		}
-		
-			/* count the presentation contexts which have been accepted by the SCP */
-		/* If there are none, finish the execution */
-		if (ASC_countAcceptedPresentationContexts(params) == 0) {
-			errmsg("No Acceptable Presentation Contexts");
-			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"No acceptable presentation contexts" userInfo:nil];
-			[queryException raise];
-		}
-		
-		//specific for Move vs find
-		if (strcmp(abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0)
-		{
-			if (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
-			{
-				if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
+				[DDKeychain generatePseudoRandomFileToPath:TLS_SEED_FILE];
+				tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, _readSeedFile);
+				if (tLayer == NULL)
 				{
-					NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
-					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: dataset], @"dataset", nil];
+					NSLog(@"unable to create TLS transport layer");
+					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:@"unable to create TLS transport layer" userInfo:nil];
+					[queryException raise];
+				}
+				
+				if(certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
+				{
+					NSString *trustedCertificatesDir = [NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID];
+					[DDKeychain KeychainAccessExportTrustedCertificatesToDirectory:trustedCertificatesDir];
+					NSArray *trustedCertificates = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:trustedCertificatesDir error:nil];
 					
-					globalCondition = EC_Normal;
-					[NSThread detachNewThreadSelector: @selector( cFindThread:) toTarget: self withObject: dict];
-					[NSThread sleepForTimeInterval: 0.1];
-					
-					while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO)
+					for (NSString *cert in trustedCertificates)
 					{
-						[wait run];
+						if (TCS_ok != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
+						{
+							queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]] userInfo:nil];
+							[queryException raise];
+						}
+					}
+							//--add-cert-dir //// add certificates in d to list of certificates
+							//.... needs to use OpenSSL & rename files (see http://forum.dicom-cd.de/viewtopic.php?p=3237&sid=bd17bd76876a8fd9e7fdf841b90cf639 )
+							
+							//			if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
+							//			{
+							//				const char *current = NULL;
+							//				do
+							//				{
+							//					app.checkValue(cmd.getValue(current));
+							//					if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
+							//					{
+							//						CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << endl;
+							//					}
+							//				} while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
+							//			}
+				}		
+				
+				if (_dhparam && ! (tLayer->setTempDHParameters(_dhparam)))
+				{
+					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load temporary DH parameter file %s", _dhparam] userInfo:nil];
+					[queryException raise];
+				}
+				
+				if (_doAuthenticate)
+				{				
+					tLayer->setPrivateKeyPasswd([TLS_PRIVATE_KEY_PASSWORD cStringUsingEncoding:NSUTF8StringEncoding]);
+					
+					[DICOMTLS generateCertificateAndKeyForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // export certificate/key from the Keychain to the disk
+					
+					NSString *_privateKeyFile = [DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // generates the PEM file for the private key
+					NSString *_certificateFile = [DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID]; // generates the PEM file for the certificate
+					
+					if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
+					{
+						queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil];
+						[queryException raise];
 					}
 					
-					if( [wait aborted])
+					if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 					{
-						_abortAssociation = YES;
-						cond = DUL_NETWORKCLOSED;
+						queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil];
+						[queryException raise];
 					}
-					else
-					{
-						[lock unlock];
-						cond = globalCondition;
-					}
-					[lock release];
 					
+					if (!tLayer->checkPrivateKeyMatchesCertificate())
+					{
+						queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil];
+						[queryException raise];
+					}
+				}
+				
+				if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
+				{
+					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:@"Unable to set selected cipher suites" userInfo:nil];
+					[queryException raise];
+				}
+				
+				DcmCertificateVerification _certVerification;
+				
+				if(certVerification==RequirePeerCertificate)
+					_certVerification = DCV_requireCertificate;
+				else if(certVerification==VerifyPeerCertificate)
+					_certVerification = DCV_checkCertificate;
+				else
+					_certVerification = DCV_ignoreCertificate;
+				
+				tLayer->setCertificateVerification(_certVerification);
+				
+				cond = ASC_setTransportLayer(net, tLayer, 0);
+				if (cond.bad())
+				{
+					DimseCondition::dump(cond);
+					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+					[queryException raise];
+				}
+			}
+
+		#endif
+			
+			
+		/* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
+			cond = ASC_createAssociationParameters(&params, _maxReceivePDULength);
+	//		DimseCondition::dump(cond);
+			if (cond.bad()) {
+				DimseCondition::dump(cond);
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+				[queryException raise];
+			}
+			
+			/* sets this application's title and the called application's title in the params */
+			/* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
+			ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
+
+			/* Set the transport layer type (type of network connection) in the params */
+			/* strucutre. The default is an insecure connection; where OpenSSL is  */
+			/* available the user is able to request an encrypted,secure connection. */
+			cond = ASC_setTransportLayerType(params, _secureConnection);
+			if (cond.bad()) {
+				DimseCondition::dump(cond);
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+				[queryException raise];
+			}
+			
+			/* Figure out the presentation addresses and copy the */
+			/* corresponding values into the association parameters.*/
+			gethostname(localHost, sizeof(localHost) - 1);
+			sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
+			//NSLog(@"peer host: %s", peerHost);
+			ASC_setPresentationAddresses(params, localHost, peerHost);	//localHost
+			
+			/* Set the presentation contexts which will be negotiated */
+			/* when the network connection will be established */
+			/*
+			abstract syntax should be 
+			UID_MOVEStudyRootQueryRetrieveInformationModel
+			UID_FINDStudyRootQueryRetrieveInformationModel
+			UID_GETStudyRootQueryRetrieveInformationModel
+			*/
+			cond = [self addPresentationContext:params abstractSyntax:abstractSyntax];
+			
+			if (cond.bad())
+			{
+				DimseCondition::dump(cond);
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"addPresentationContext - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+				[queryException raise];
+			}
+
+			/* dump presentation contexts if required */
+			if (_verbose)
+			{
+				if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+				strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
+				strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+				{
+				
+				}
+				else
+				{
+					printf("Request Parameters:\n");
+					ASC_dumpParameters(params, COUT);
+				}
+			}
+			
+			/* create association, i.e. try to establish a network connection to another */
+			/* DICOM application. This call creates an instance of T_ASC_Association*. */
+			if (_verbose)
+				printf("Requesting Association\n");
+			
+			if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
+			{
+				NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
+				NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: net], @"net", [NSValue valueWithPointer: params], @"params", nil];
+				
+				globalCondition = EC_Normal;
+				[NSThread detachNewThreadSelector: @selector( requestAssociationThread:) toTarget: self withObject: dict];
+				[NSThread sleepForTimeInterval: 0.1];
+				
+				while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO)
+				{
+					[wait run];
+				}
+				
+				if( [wait aborted])
+				{
+					_abortAssociation = YES;
+					cond = DUL_NETWORKCLOSED;
+				}
+				else
+				{
+					[lock unlock];
+					cond = globalCondition;
+					
+					if( cond == EC_Normal)
+					{
+						if( [dict objectForKey: @"assoc"])
+							assoc = (T_ASC_Association *) [[dict objectForKey: @"assoc"] pointerValue];
+						else
+							cond = EC_IllegalParameter;
+					}
+				}
+				
+				if( cond != EC_Normal)
+				{
 					[wait end];
 					[wait release];
 					wait = nil;
 				}
-				else cond = [self cfind:assoc dataset:dataset];
+				
+				[lock release];
 			}
-		}
-		else if (strcmp(abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)
-		{
-			if( destination) cond = [self cmove:assoc network:net dataset:dataset destination: (char*) [destination UTF8String]];
-			else cond = [self cmove:assoc network:net dataset:dataset];
-		}
-		else if (strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 || strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
-		{
-			cond = [self cget:assoc network:net dataset:dataset];
-		}
-		else
-		{
-			NSLog(@"Q/R SCU bad Abstract Sytnax: %s", abstractSyntax);
-			//shouldn't get here
-		}
-		
-		/* tear down association, i.e. terminate network connection to SCP */
-		if (cond == EC_Normal)
-		{
-			if (_abortAssociation)
+			else cond = ASC_requestAssociation(net, params, &assoc);
+			
+			if (cond.bad())
 			{
+				if (cond == DUL_ASSOCIATIONREJECTED)
+				{
+					T_ASC_RejectParameters rej;
+					ASC_getRejectParameters(params, &rej);
+					errmsg("Association Rejected:");
+					ASC_printRejectParameters(stderr, &rej);
+					queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Rejected : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+					[queryException raise];
+
+				}
+				else
+				{
+					errmsg("Association Request Failed:");
+					DimseCondition::dump(cond);
+					queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Request Failed : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+					[queryException raise];
+				}
+			}
+			
+			  /* dump the presentation contexts which have been accepted/refused */
+			if (_verbose)
+			{
+				if( strcmp(abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+				strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
+				strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+				{
+	//				printf("Association Parameters Negotiated:\n");
+	//				ASC_dumpParameters(params, COUT);
+				}
+				else
+				{
+					printf("Association Parameters Negotiated:\n");
+					ASC_dumpParameters(params, COUT);
+				}
+			}
+			
+				/* count the presentation contexts which have been accepted by the SCP */
+			/* If there are none, finish the execution */
+			if (ASC_countAcceptedPresentationContexts(params) == 0) {
+				errmsg("No Acceptable Presentation Contexts");
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"No acceptable presentation contexts" userInfo:nil];
+				[queryException raise];
+			}
+			
+			//specific for Move vs find
+			if (strcmp(abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0)
+			{
+				if (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+				{
+					if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
+					{
+						NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
+						NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: dataset], @"dataset", nil];
+						
+						globalCondition = EC_Normal;
+						[NSThread detachNewThreadSelector: @selector( cFindThread:) toTarget: self withObject: dict];
+						[NSThread sleepForTimeInterval: 0.1];
+						
+						while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO)
+						{
+							[wait run];
+						}
+						
+						if( [wait aborted])
+						{
+							_abortAssociation = YES;
+							cond = DUL_NETWORKCLOSED;
+						}
+						else
+						{
+							[lock unlock];
+							cond = globalCondition;
+						}
+						[lock release];
+						
+						[wait end];
+						[wait release];
+						wait = nil;
+					}
+					else cond = [self cfind:assoc dataset:dataset];
+				}
+			}
+			else if (strcmp(abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)
+			{
+				if( destination) cond = [self cmove:assoc network:net dataset:dataset destination: (char*) [destination UTF8String]];
+				else cond = [self cmove:assoc network:net dataset:dataset];
+			}
+			else if (strcmp(abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 || strcmp(abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+			{
+				cond = [self cget:assoc network:net dataset:dataset];
+			}
+			else
+			{
+				NSLog(@"Q/R SCU bad Abstract Sytnax: %s", abstractSyntax);
+				//shouldn't get here
+			}
+			
+			/* tear down association, i.e. terminate network connection to SCP */
+			if (cond == EC_Normal)
+			{
+				if (_abortAssociation)
+				{
+					if (_verbose)
+						printf("Aborting Association\n");
+						
+					AbortAssociationTimeOut = 2;
+					cond = ASC_abortAssociation(assoc);
+					AbortAssociationTimeOut = -1;
+					
+					if (cond.bad())
+					{
+						errmsg("Association Abort Failed:");
+						DimseCondition::dump(cond);
+						queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+						[queryException raise];
+					}
+				}
+				else
+				{
+					/* release association */
+					if (_verbose)
+						printf("Releasing Association\n");
+					cond = ASC_releaseAssociation(assoc);
+					if (cond.bad())
+					{
+						errmsg("Association Release Failed:");
+						DimseCondition::dump(cond);
+						queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+						[queryException raise];
+					}
+				}
+			}
+			else if (cond == DUL_PEERREQUESTEDRELEASE)
+			{
+				errmsg("Protocol Error: peer requested release (Aborting)");
 				if (_verbose)
 					printf("Aborting Association\n");
-					
+				
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+				
 				AbortAssociationTimeOut = 2;
 				cond = ASC_abortAssociation(assoc);
 				AbortAssociationTimeOut = -1;
@@ -1615,139 +1652,113 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				{
 					errmsg("Association Abort Failed:");
 					DimseCondition::dump(cond);
-					queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-					[queryException raise];
 				}
+				[queryException raise];
+			}
+			else if (cond == DUL_PEERABORTEDASSOCIATION)
+			{
+				if (_verbose) printf("Peer Aborted Association\n");
 			}
 			else
 			{
-				/* release association */
+				errmsg("SCU Failed:");
+				DimseCondition::dump(cond);
 				if (_verbose)
-					printf("Releasing Association\n");
-				cond = ASC_releaseAssociation(assoc);
+					printf("Aborting Association\n");
+				
+				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+				
+				AbortAssociationTimeOut = 2;
+				cond = ASC_abortAssociation(assoc);
+				AbortAssociationTimeOut = -1;
+				
 				if (cond.bad())
 				{
-					errmsg("Association Release Failed:");
+					errmsg("Association Abort Failed:");
 					DimseCondition::dump(cond);
-					queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-					[queryException raise];
 				}
+				
+				[queryException raise];
 			}
 		}
-		else if (cond == DUL_PEERREQUESTEDRELEASE)
+		
+		@catch (NSException *e)
 		{
-			errmsg("Protocol Error: peer requested release (Aborting)");
-			if (_verbose)
-				printf("Aborting Association\n");
+			NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [e name], [e description]];
 			
-			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+			if( showErrorMessage == YES && _abortAssociation == NO)
+				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+			else
+				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"autoquery"];
 			
-			AbortAssociationTimeOut = 2;
-			cond = ASC_abortAssociation(assoc);
-			AbortAssociationTimeOut = -1;
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			[AppController printStackTrace: e];
 			
+			succeed = NO;
+		}
+		
+		[wait end];
+		[wait release];
+		wait = nil;
+		
+		// CLEANUP
+		
+		/* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
+		/* call is the counterpart of ASC_requestAssociation(...) which was called above. */
+		if( assoc)
+		{
+			cond = ASC_destroyAssociation(&assoc);
 			if (cond.bad())
-			{
-				errmsg("Association Abort Failed:");
-				DimseCondition::dump(cond);
-			}
-			[queryException raise];
+				DimseCondition::dump(cond); 
 		}
-		else if (cond == DUL_PEERABORTEDASSOCIATION)
+		
+		/* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
+		/* is the counterpart of ASC_initializeNetwork(...) which was called above. */
+		if( net)
 		{
-			if (_verbose) printf("Peer Aborted Association\n");
-		}
-		else
-		{
-			errmsg("SCU Failed:");
-			DimseCondition::dump(cond);
-			if (_verbose)
-				printf("Aborting Association\n");
-			
-			queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-			
-			AbortAssociationTimeOut = 2;
-			cond = ASC_abortAssociation(assoc);
-			AbortAssociationTimeOut = -1;
-			
+			cond = ASC_dropNetwork(&net);
 			if (cond.bad())
-			{
-				errmsg("Association Abort Failed:");
 				DimseCondition::dump(cond);
-			}
-			
-			[queryException raise];
 		}
-	}
-	
-	@catch (NSException *e)
-	{
-		NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [e name], [e description]];
-		
-		if( showErrorMessage == YES && _abortAssociation == NO)
-			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
-		else
-			[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"autoquery"];
-		
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
-		
-		succeed = NO;
-	}
-	
-	[wait end];
-	[wait release];
-	wait = nil;
-	
-	// CLEANUP
-	
-    /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
-    /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
-	if( assoc)
-	{
-		cond = ASC_destroyAssociation(&assoc);
-		if (cond.bad())
-			DimseCondition::dump(cond); 
-    }
-	
-    /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
-    /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
-	if( net)
-	{
-		cond = ASC_dropNetwork(&net);
-		if (cond.bad())
-			DimseCondition::dump(cond);
-    }
 
-#ifdef WITH_OPENSSL
-/*
-    if (tLayer && opt_writeSeedFile)
-    {
-      if (tLayer->canWriteRandomSeed())
-      {
-        if (!tLayer->writeRandomSeed(opt_writeSeedFile))
-        {
-          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
-        }
-      } else {
-        CERR << "Warning: cannot write random seed, ignoring." << endl;
-      }
-    }
-    delete tLayer;
-*/
-	if( tLayer)
+	#ifdef WITH_OPENSSL
+	/*
+		if (tLayer && opt_writeSeedFile)
+		{
+		  if (tLayer->canWriteRandomSeed())
+		  {
+			if (!tLayer->writeRandomSeed(opt_writeSeedFile))
+			{
+			  CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
+			}
+		  } else {
+			CERR << "Warning: cannot write random seed, ignoring." << endl;
+		  }
+		}
 		delete tLayer;
-	
-	// cleanup
-	if (_secureConnection)
-	{
-//		[DDKeychain unlockTmpFiles];
-		[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] handler:nil];
-		[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] handler:nil];
-		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID] handler:nil];		
+	*/
+		if( tLayer)
+			delete tLayer;
 		
+		// cleanup
+		if (_secureConnection)
+		{
+	//		[DDKeychain unlockTmpFiles];
+			[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] handler:nil];
+			[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] handler:nil];
+			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID] handler:nil];		
+			
+		}
+	#endif
+
 	}
-#endif
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		#ifdef OSIRIX_VIEWER
+		[AppController printStackTrace: e];
+		#endif
+	}
 
 	[pool release];
 	

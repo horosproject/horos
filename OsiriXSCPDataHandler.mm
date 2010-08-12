@@ -1766,158 +1766,167 @@ extern NSManagedObjectContext *staticContext;
 - (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
-	NSError *error = nil;
-	NSEntityDescription *entity;
-	NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
-	NSPredicate *predicate = [self predicateForDataset:dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate seriesLevelPredicate: &seriesLevelPredicate];
-	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-	const char *sType;
-	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
-	
-	if (strcmp(sType, "STUDY") == 0) 
-		entity = [[model entitiesByName] objectForKey:@"Study"];
-	else if (strcmp(sType, "SERIES") == 0) 
-		entity = [[model entitiesByName] objectForKey:@"Series"];
-	else if (strcmp(sType, "IMAGE") == 0) 
-		entity = [[model entitiesByName] objectForKey:@"Image"];
-	else 
-		entity = nil;
-	
-	[request setEntity: entity];
-	[request setPredicate: predicate];
-	
-	error = nil;
-	
-	context = staticContext;
-	[context lock];
-	
-	NSArray *array = nil;
-	
 	OFCondition cond = EC_IllegalParameter;
-	
-	@try
+	@try 
 	{
-		if( seriesLevelPredicate) // First find at series level, then move to image level
-		{
-			NSFetchRequest *seriesRequest = [[[NSFetchRequest alloc] init] autorelease];
-			
-			[seriesRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-			[seriesRequest setPredicate: seriesLevelPredicate];
-			
-			NSArray *allSeries = [context executeFetchRequest: seriesRequest error: &error];
-			
-			array = [NSArray array];
-			
-			for( id series in allSeries)
-				array = [array arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
-			
-			array = [array filteredArrayUsingPredicate: predicate];
-		}
-		else
-			array = [context executeFetchRequest:request error:&error];
+		NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
+		NSError *error = nil;
+		NSEntityDescription *entity;
+		NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
+		NSPredicate *predicate = [self predicateForDataset:dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate seriesLevelPredicate: &seriesLevelPredicate];
+		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+		const char *sType;
+		dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 		
-		if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
-			array = [array filteredArrayUsingPredicate: compressedSOPInstancePredicate];
+		if (strcmp(sType, "STUDY") == 0) 
+			entity = [[model entitiesByName] objectForKey:@"Study"];
+		else if (strcmp(sType, "SERIES") == 0) 
+			entity = [[model entitiesByName] objectForKey:@"Series"];
+		else if (strcmp(sType, "IMAGE") == 0) 
+			entity = [[model entitiesByName] objectForKey:@"Image"];
+		else 
+			entity = nil;
 		
-		if( [array count] == 0)
-		{
-			// not found !!!!
-		}
+		[request setEntity: entity];
+		[request setPredicate: predicate];
 		
-		if (error)
+		error = nil;
+		
+		context = staticContext;
+		[context lock];
+		
+		NSArray *array = nil;
+		
+		@try
 		{
-			for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
-			free( moveArray);
-			moveArray = nil;
-			moveArraySize = 0;
-			
-			cond = EC_IllegalParameter;
-		}
-		else
-		{
-			NSEnumerator *enumerator = [array objectEnumerator];
-			id moveEntity;
-			
-			[self updateLog: array];
-			
-			NSMutableSet *moveSet = [NSMutableSet set];
-			while (moveEntity = [enumerator nextObject])
-				[moveSet unionSet:[moveEntity valueForKey:@"paths"]];
-			
-			NSArray *tempMoveArray = [moveSet allObjects];
-			
-			/*
-			create temp folder for Move paths. 
-			Create symbolic links. 
-			Will allow us to convert the sytax on copies if necessary
-			*/
-			
-			//delete if necessary and create temp folder. Allows us to compress and deompress files. Wish we could do on the fly
-	//		tempMoveFolder = [[NSString stringWithFormat:@"/tmp/DICOMMove_%@", [[NSDate date] descriptionWithCalendarFormat:@"%H%M%S%F"  timeZone:nil locale:nil]] retain]; 
-	//		
-	//		NSFileManager *fileManager = [NSFileManager defaultManager];
-	//		if ([fileManager fileExistsAtPath:tempMoveFolder]) [fileManager removeFileAtPath:tempMoveFolder handler:nil];
-	//		if ([fileManager createDirectoryAtPath:tempMoveFolder attributes:nil]) 
-	//			NSLog(@"created temp Folder: %@", tempMoveFolder);
-	//		
-	//		//NSLog(@"Temp Move array: %@", [tempMoveArray description]);
-	//		NSEnumerator *tempEnumerator = [tempMoveArray objectEnumerator];
-	//		NSString *path;
-	//		while (path = [tempEnumerator nextObject]) {
-	//			NSString *lastPath = [path lastPathComponent];
-	//			NSString *newPath = [tempMoveFolder stringByAppendingPathComponent:lastPath];
-	//			[fileManager createSymbolicLinkAtPath:newPath pathContent:path];
-	//			[paths addObject:newPath];
-	//		}
-			
-			tempMoveArray = [tempMoveArray sortedArrayUsingSelector:@selector(compare:)];
-			
-			for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
-			free( moveArray);
-			moveArray = nil;
-			moveArraySize = 0;
-			
-			moveArraySize = [tempMoveArray count];
-			moveArray = (char**) malloc( sizeof( char*) * moveArraySize);
-			for( int i = 0 ; i < moveArraySize; i++)
+			if( seriesLevelPredicate) // First find at series level, then move to image level
 			{
-				const char *str = [[tempMoveArray objectAtIndex: i] UTF8String];
+				NSFetchRequest *seriesRequest = [[[NSFetchRequest alloc] init] autorelease];
 				
-				moveArray[ i] = (char*) malloc( strlen( str) + 1);
-				strcpy( moveArray[ i], str);
+				[seriesRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+				[seriesRequest setPredicate: seriesLevelPredicate];
+				
+				NSArray *allSeries = [context executeFetchRequest: seriesRequest error: &error];
+				
+				array = [NSArray array];
+				
+				for( id series in allSeries)
+					array = [array arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
+				
+				array = [array filteredArrayUsingPredicate: predicate];
+			}
+			else
+				array = [context executeFetchRequest:request error:&error];
+			
+			if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
+				array = [array filteredArrayUsingPredicate: compressedSOPInstancePredicate];
+			
+			if( [array count] == 0)
+			{
+				// not found !!!!
 			}
 			
-			cond = EC_Normal;
+			if (error)
+			{
+				for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
+				free( moveArray);
+				moveArray = nil;
+				moveArraySize = 0;
+				
+				cond = EC_IllegalParameter;
+			}
+			else
+			{
+				NSEnumerator *enumerator = [array objectEnumerator];
+				id moveEntity;
+				
+				[self updateLog: array];
+				
+				NSMutableSet *moveSet = [NSMutableSet set];
+				while (moveEntity = [enumerator nextObject])
+					[moveSet unionSet:[moveEntity valueForKey:@"paths"]];
+				
+				NSArray *tempMoveArray = [moveSet allObjects];
+				
+				/*
+				create temp folder for Move paths. 
+				Create symbolic links. 
+				Will allow us to convert the sytax on copies if necessary
+				*/
+				
+				//delete if necessary and create temp folder. Allows us to compress and deompress files. Wish we could do on the fly
+		//		tempMoveFolder = [[NSString stringWithFormat:@"/tmp/DICOMMove_%@", [[NSDate date] descriptionWithCalendarFormat:@"%H%M%S%F"  timeZone:nil locale:nil]] retain]; 
+		//		
+		//		NSFileManager *fileManager = [NSFileManager defaultManager];
+		//		if ([fileManager fileExistsAtPath:tempMoveFolder]) [fileManager removeFileAtPath:tempMoveFolder handler:nil];
+		//		if ([fileManager createDirectoryAtPath:tempMoveFolder attributes:nil]) 
+		//			NSLog(@"created temp Folder: %@", tempMoveFolder);
+		//		
+		//		//NSLog(@"Temp Move array: %@", [tempMoveArray description]);
+		//		NSEnumerator *tempEnumerator = [tempMoveArray objectEnumerator];
+		//		NSString *path;
+		//		while (path = [tempEnumerator nextObject]) {
+		//			NSString *lastPath = [path lastPathComponent];
+		//			NSString *newPath = [tempMoveFolder stringByAppendingPathComponent:lastPath];
+		//			[fileManager createSymbolicLinkAtPath:newPath pathContent:path];
+		//			[paths addObject:newPath];
+		//		}
+				
+				tempMoveArray = [tempMoveArray sortedArrayUsingSelector:@selector(compare:)];
+				
+				for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
+				free( moveArray);
+				moveArray = nil;
+				moveArraySize = 0;
+				
+				moveArraySize = [tempMoveArray count];
+				moveArray = (char**) malloc( sizeof( char*) * moveArraySize);
+				for( int i = 0 ; i < moveArraySize; i++)
+				{
+					const char *str = [[tempMoveArray objectAtIndex: i] UTF8String];
+					
+					moveArray[ i] = (char*) malloc( strlen( str) + 1);
+					strcpy( moveArray[ i], str);
+				}
+				
+				cond = EC_Normal;
+			}
 		}
-	}
-	@catch (NSException * e)
-	{
-		NSLog( @"prepareMoveForDataSet exception");
-		NSLog( @"%@", [e description]);
-		NSLog( @"%@", [predicate description]);
-	}
+		@catch (NSException * e)
+		{
+			NSLog( @"prepareMoveForDataSet exception");
+			NSLog( @"%@", [e description]);
+			NSLog( @"%@", [predicate description]);
+		}
 
-	[context unlock];
-	context = 0L;
-	
-	// TO AVOID DEADLOCK
-	
-	BOOL fileExist = YES;
-	char dir[ 1024];
-	sprintf( dir, "%s-%d", "/tmp/lock_process", getpid());
-	
-	int inc = 0;
-	do
-	{
-		int err = unlink( dir);
-		if( err  == 0 || errno == ENOENT) fileExist = NO;
+		[context unlock];
+		context = 0L;
 		
-		usleep( 1000);
-		inc++;
+		// TO AVOID DEADLOCK
+		
+		BOOL fileExist = YES;
+		char dir[ 1024];
+		sprintf( dir, "%s-%d", "/tmp/lock_process", getpid());
+		
+		int inc = 0;
+		do
+		{
+			int err = unlink( dir);
+			if( err  == 0 || errno == ENOENT) fileExist = NO;
+			
+			usleep( 1000);
+			inc++;
+		}
+		while( fileExist == YES && inc < 100000);
+		
 	}
-	while( fileExist == YES && inc < 100000);
-	
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		#ifdef OSIRIX_VIEWER
+		[AppController printStackTrace: e];
+		#endif
+	}
 	[pool release];
 	
 	return cond;

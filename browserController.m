@@ -16210,11 +16210,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		for ( id img in imagesArray)
 		{
-			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+			NSAutoreleasePool *a = [[NSAutoreleasePool alloc] init];
 			
 			[mMovie addImage: img forDuration:curTime withAttributes: myDict];
 			
-			[pool release];
+			[a release];
 		}
 		
 		[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
@@ -16231,7 +16231,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[AppController printStackTrace: e];
 	}
 	
-	@finally {
+	@finally
+	{
 		if (![NSThread isMainThread])
 			[QTMovie exitQTKitOnThread];
 		[pool release];
@@ -16715,7 +16716,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		for( int i = 0; i < [filesToExport count]; i++)
 		{
-			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
 			NSString *extension = format;
 			
@@ -16807,8 +16807,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			if( [splash aborted]) 
 				i = [filesToExport count];
-			
-			[pool release];
 		}
 		
 		for( NSDictionary *d in renameArray)
@@ -17329,7 +17327,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			for( int i = 0; i < [filesToExport count]; i++)
 			{
-				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
 				NSString		*extension = [[filesToExport objectAtIndex:i] pathExtension];
 				
@@ -17552,8 +17549,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 					i = [filesToExport count];
 					exportAborted = YES;
 				}
-				
-				[pool release];
 			}
 		}
 		@catch (NSException * e)
