@@ -49,7 +49,7 @@
 	_cancelButton.target = self;
 	_cancelButton.action = @selector(cancelThreadAction:);
 
-	_thread = [thread retain];
+	self.thread = thread;
 
 //	NSLog(@"cell created!");
 	
@@ -64,7 +64,7 @@
 	[self.cancelButton removeFromSuperview];
 	[_cancelButton release];
 	
-	[_thread release];
+	self.thread = nil;
 	
 	[_view release];
 	[_manager release];
@@ -142,7 +142,8 @@
 	if (![self.progressIndicator superview]) {
 		[view addSubview:self.progressIndicator];
 //		[self.progressIndicator startAnimation:self];
-	} if (!NSEqualRects(self.progressIndicator.frame, progressFrame)) [self.progressIndicator setFrame:progressFrame];
+	}
+	if (!NSEqualRects(self.progressIndicator.frame, progressFrame)) [self.progressIndicator setFrame:progressFrame];
 	
 	[NSGraphicsContext restoreGraphicsState];
 }

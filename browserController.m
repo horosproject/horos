@@ -14090,6 +14090,8 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
 	#endif
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"])
+		[self ReadDicomCDRom: nil];
 	
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
@@ -14921,13 +14923,15 @@ static NSArray*	openSubSeriesArray = nil;
 {
 	if (isCurrentDatabaseBonjour)
 	{
-		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"Switch to a local database to load a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+		if( sender)
+			NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"Switch to a local database to load a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 		return;
 	}
 	
 	if( DICOMDIRCDMODE)
 	{
-		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+		if( sender)
+			NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 		return;
 	}
 	
@@ -15138,7 +15142,7 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 	}
 	
-	if( found == NO)
+	if( found == NO && sender)
 	{
 		if( [[DRDevice devices] count])
 		{
@@ -18463,7 +18467,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( [BrowserController isItCD: sNewDrive] == YES)
 	{
-		[self ReadDicomCDRom: nil];
+		[self ReadDicomCDRom: self];
 	}
 	
 	[mountedVolumes release];
