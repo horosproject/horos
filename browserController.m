@@ -4464,27 +4464,35 @@ static NSConditionLock *threadLock = nil;
 {
 	@try 
 	{
-		[self waitForRunningProcesses];
-		[reportFilesToCheck removeAllObjects];
-		[[LogManager currentLogManager] checkLogs: nil];
-		[self resetLogWindowController];
-		[[LogManager currentLogManager] resetLogs];
-		[[AppController sharedAppController] closeAllViewers: self];
-		displayEmptyDatabase = YES;
-		[self outlineViewRefresh];
-		[self refreshMatrix: self];
-		
-		NSError *error = nil;
-		[managedObjectContext save: &error];
-		if( error == nil)
-			[managedObjectContext reset];
-		
-		[DCMPix purgeCachedDictionaries];
-		[DCMView purgeStringTextureCache];
-		
-		displayEmptyDatabase = NO;
-		[self outlineViewRefresh];
-		[self refreshMatrix: self];
+		if( [managedObjectContext tryLock])
+		{
+			[[AppController sharedAppController] closeAllViewers: self];
+			
+			[reportFilesToCheck removeAllObjects];
+			
+			[[LogManager currentLogManager] checkLogs: nil];
+			[self resetLogWindowController];
+			[[LogManager currentLogManager] resetLogs];
+			
+			
+			displayEmptyDatabase = YES;
+			[self outlineViewRefresh];
+			[self refreshMatrix: self];
+			
+			NSError *error = nil;
+			[managedObjectContext save: &error];
+			if( error == nil)
+				[managedObjectContext reset];
+			
+			[DCMPix purgeCachedDictionaries];
+			[DCMView purgeStringTextureCache];
+			
+			displayEmptyDatabase = NO;
+			[self outlineViewRefresh];
+			[self refreshMatrix: self];
+			
+			[managedObjectContext unlock];
+		}
 	}
 	@catch (NSException * e) 
 	{
@@ -4548,11 +4556,11 @@ static NSConditionLock *threadLock = nil;
 		[checkIncomingLock unlock];
 	}
 	
-	// reduce memory footprint for CoreData - ONLY FOR SERVER MODE - NOT MORE THAN 1x / 4 hours
+	// reduce memory footprint for CoreData - ONLY FOR SERVER MODE
 	if( gLastCoreDataReset == 0)
 		gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
 	
-	if( [NSDate timeIntervalSinceReferenceDate] - gLastCoreDataReset > 60*60*4)
+	if( [NSDate timeIntervalSinceReferenceDate] - gLastCoreDataReset > 60*60)
 	{
 		if( [checkIncomingLock tryLock])
 		{
@@ -18232,6 +18240,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 	{
 		[self reduceCoreDataFootPrint];
+		
 		return;
 	}
 //
