@@ -180,9 +180,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
 	if( str == nil) return nil;
 
-	char				c;
-	int					i, from, len = strlen( str), index;
-	NSMutableString		*result = [NSMutableString string];
+	char c;
+	int	i, from, len = strlen( str), index;
+	NSMutableString	*result = [NSMutableString string];
+	BOOL separators = NO;
 	
 	for( i = 0, from = 0, index = 0; i < len; i++)
 	{
@@ -190,6 +191,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		 
 		if( c == 0x1b || i == len-1)
 		{
+			if( c == 0x1b)
+				separators = YES;
+			
 			if( i == len-1)
 				i = len;
 			
@@ -213,6 +217,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					index--;
 			}
 		}
+	}
+	
+	if( separators)
+	{
+		[result replaceOccurrencesOfString: @"\x1b" withString: @"" options: 0 range: NSMakeRange(0, [result length])];
+		[result replaceOccurrencesOfString: @"(B=)" withString: @"=" options: 0 range: NSMakeRange(0, [result length])];
+		[result replaceOccurrencesOfString: @"(B" withString: @"" options: 0 range: NSMakeRange(0, [result length])];
 	}
 	
 	return [DicomFile NSreplaceBadCharacter: result];

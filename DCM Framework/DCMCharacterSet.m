@@ -63,7 +63,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	
 	char c;
 	int i, x, from, index;
-	
+	BOOL separators = NO;
 	NSMutableString *result = [NSMutableString string];
 	
 	for( i = 0, from = 0, index = 0; i < length; i++)
@@ -72,6 +72,9 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 		
 		if( c == 0x1b || i == length-1)
 		{
+			if( c == 0x1b)
+				separators = YES;
+				
 			if( i == length-1) i = length;
 			
 			NSString *s = [[NSString alloc] initWithBytes: str+from length:i-from encoding:encodings[ index]];
@@ -94,6 +97,13 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 					index--;
 			}
 		}
+	}
+	
+	if( separators)
+	{
+		[result replaceOccurrencesOfString: @"\x1b" withString: @"" options: 0 range: NSMakeRange(0, [result length])];
+		[result replaceOccurrencesOfString: @"(B=)" withString: @"=" options: 0 range: NSMakeRange(0, [result length])];
+		[result replaceOccurrencesOfString: @"(B" withString: @"" options: 0 range: NSMakeRange(0, [result length])];
 	}
 	
 	return [DCMCharacterSet NSreplaceBadCharacter: result];
