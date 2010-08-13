@@ -349,8 +349,9 @@
 		
 	if ([DCMValueRepresentation isAffectedBySpecificCharacterSet:_vr])
 	{
-		string =  [_values componentsJoinedByString: @"\\"];
-		[container addString:string withEncoding: [characterSet encoding]];
+		string = [_values componentsJoinedByString: @"\\"];
+		
+		[container addString:string withEncodings: [characterSet encodings]];
 	}
 	else
 	{

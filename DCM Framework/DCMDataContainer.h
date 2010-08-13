@@ -100,6 +100,7 @@
 - (void)addString:(NSString *)string;
 - (void)addStringWithZeroPadding:(NSString *)string;
 - (void)addString:(NSString *)string withEncoding:(NSStringEncoding)encoding;
+- (void)addString:(NSString *)string withEncodings:(NSStringEncoding*)encoding;
 - (void)addStringWithoutPadding:(NSString *)string;
 - (void)addDate:(DCMCalendarDate *)date;
 - (void)addTime:(DCMCalendarDate *)time;

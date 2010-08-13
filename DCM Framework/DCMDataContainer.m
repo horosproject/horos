@@ -738,6 +738,48 @@
 		[self addUnsignedChar: 0x00];
 }
 
+
+- (void)addString:(NSString *)string withEncodings:(NSStringEncoding*)encodings
+{
+//	unichar c;
+//	int	 i, from, index;
+//	NSMutableData *result = [NSMutableData data];
+//	
+//	for( i = 0, from = 0, index = 0; i < [string length]; i++)
+//	{
+//		c = [string characterAtIndex: i];
+//		
+//		if( c == 0x1b)
+//		{
+//			NSRange range = NSMakeRange( from, i-from);
+//			
+//			NSData *s = [[string substringWithRange: range] dataUsingEncoding: encodings[ index]];
+//			
+//			if( s)
+//				[result appendData: s];
+//			
+//			from = i;
+//			if( index < 9)
+//			{
+//				index++;
+//				if( encodings[ index] == 0)
+//					index--;
+//			}
+//		}
+//	}
+//	
+//	[dicomData appendData: result];
+//	int length = [result length];
+//	if (length%2)
+//		[self addUnsignedChar:' '];
+	
+	NSData *data = [string dataUsingEncoding:encodings[ 0]];
+	[dicomData appendData:data];
+	int length = [data length];
+	if (length%2)
+		[self addUnsignedChar:' '];
+}
+
 - (void)addString:(NSString *)string withEncoding:(NSStringEncoding)encoding
 {
 	NSData *data = [string dataUsingEncoding:encoding];

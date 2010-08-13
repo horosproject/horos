@@ -1779,7 +1779,14 @@ PixelRepresentation
 				if( attr.attrTag.group == 0x0008 && attr.attrTag.element == 0x0005)
 				{
 					[specificCharacterSet release];
-					specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"\\"]];
+					
+					if( [[attr values] count] > 1) // DCMFramework doesn't support multi-encoded string when writing -> switch for UTF-8
+					{
+						specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: @"ISO_IR 192"];
+						attr.values = [NSArray arrayWithObject: @"ISO_IR 192"];
+					}
+					else
+						specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"\\"]];
 				}
 				
 				[attr setCharacterSet: specificCharacterSet];

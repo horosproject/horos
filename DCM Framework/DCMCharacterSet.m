@@ -74,16 +74,14 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 		{
 			if( i == length-1) i = length;
 			
-			NSString	*s = [[NSString alloc] initWithBytes: str+from length:i-from encoding:encodings[ index]];
+			NSString *s = [[NSString alloc] initWithBytes: str+from length:i-from encoding:encodings[ index]];
 			
 			if( s)
 			{
 				[result appendString: s];
 				
 				if( encodings[ index] == -2147481280)	// Korean support
-				{
 					[result replaceOccurrencesOfString:@"$)C" withString:@"" options:0 range:NSMakeRange(0, [result length])];
-				}
 				
 				[s release];
 			}

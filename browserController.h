@@ -326,6 +326,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSManagedObjectContext *) managedObjectContextLoadIfNecessary:(BOOL) loadIfNecessary;
 - (void) setNetworkLogs;
 - (BOOL) isNetworkLogsActive;
+- (void) ReadDicomCDRom:(id) sender;
 - (IBAction) matrixDoublePressed:(id)sender;
 - (void) addURLToDatabaseEnd:(id) sender;
 - (void) addURLToDatabase:(id) sender;
