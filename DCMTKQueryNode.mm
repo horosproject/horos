@@ -695,7 +695,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		for( NSURL *url in urlToDownload)
 		{
 			NSError *error = nil;
-			NSData *dicom = [NSData dataWithContentsOfURL: url options: 0 error: &error];
+			NSData *dicom = [[NSData alloc] initWithContentsOfURL: url options: 0 error: &error];
 			
 			if( error)
 			{
@@ -715,6 +715,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				wadoUnique++;
 			}
 			[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d-%d.dcm", wadoUnique, wadoUniqueThreadID] atomically: YES];
+			[dicom release];
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
 				break;
