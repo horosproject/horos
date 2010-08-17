@@ -152,6 +152,8 @@ static NSPoint operator+(const NSPoint& p, const NSSize& s)
 { return NSMakePoint(p.x+s.width, p.y+s.height); }
 
 -(void)drawWithFrame:(NSRect)frame inView:(NSView*)view {
+	if ([self.thread isFinished]) return;
+	
 	[self drawInteriorWithFrame:frame inView:view];
 	
 	[NSGraphicsContext saveGraphicsState];

@@ -62,17 +62,29 @@ NSString* const NSThreadIsCancelledKey = @"isCancelled";
 
 NSString* const NSThreadStatusKey = @"status";
 
--(NSString*)status {
-	return [self.threadDictionary objectForKey:NSThreadStatusKey];
+-(NSString*)status
+{
+	NSString *s = nil;
+	
+	@synchronized (self.threadDictionary)
+	{
+		s = [[[self.threadDictionary objectForKey:NSThreadStatusKey] copy] autorelease];
+	}
+	
+	return s;
 }
 
 -(void)setStatus:(NSString*)status {
 	if( [status isEqual:self.status]) return;
 	
-	[self willChangeValueForKey:NSThreadStatusKey];
-	[self.threadDictionary setObject: [[status copy] autorelease] forKey:NSThreadStatusKey];
-//	[self performSelectorOnMainThread:NotifyInfoChangeSelector withObject:NSThreadStatusKey waitUntilDone:NO];
-	[self didChangeValueForKey:NSThreadStatusKey];
+	@synchronized (self.threadDictionary)
+	{
+		[self willChangeValueForKey:NSThreadStatusKey];
+		if( status == nil) [self.threadDictionary removeObjectForKey: NSThreadStatusKey];
+		else [self.threadDictionary setObject: [[status copy] autorelease] forKey:NSThreadStatusKey];
+		//	[self performSelectorOnMainThread:NotifyInfoChangeSelector withObject:NSThreadStatusKey waitUntilDone:NO];
+		[self didChangeValueForKey:NSThreadStatusKey];
+	}
 }
 
 NSString* const NSThreadSubthreadsArrayKey = @"subthreads";

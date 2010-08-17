@@ -14,6 +14,7 @@
 
 #import "ThreadsManager.h"
 #import "ThreadModalForWindowController.h"
+#import "NSThread+N2.h"
 
 @implementation ThreadsManager
 
@@ -78,6 +79,9 @@
 }
 
 -(void)removeThread:(NSThread*)thread {
+	
+	thread.status = nil;
+	
 	if (![[NSThread currentThread] isMainThread])
 		[self performSelectorOnMainThread:@selector(removeThread:) withObject:thread waitUntilDone:NO];
 	else if ([_threads containsObject:thread]) {
