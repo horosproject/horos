@@ -388,8 +388,11 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
         DcmQueryRetrieveOptions::errmsg("DIMSE Failure (aborting association):\n");
         DimseCondition::dump(cond);
 		
-//		if( cond == DIMSE_NODATAAVAILABLE)
-//		{
+		if( cond == DIMSE_NODATAAVAILABLE)
+		{
+			NSLog( @"----- options_.dimse_timeout_ : %d", options_.dimse_timeout_);
+			NSLog( @"----- options_.blockMode_ : %d", options_.blockMode_);
+			
 //			char dir[ 1024];
 //			sprintf( dir, "%s", "/tmp/RESTARTOSIRIXSTORESCP");
 //			unlink( dir);
@@ -402,7 +405,7 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
 //			}
 //			
 //			NSLog( @"******* RESTARTOSIRIXSTORESCP");
-//		}
+		}
 		
 		/* some kind of error so abort the association */
         cond = ASC_abortAssociation(assoc);
@@ -1158,8 +1161,10 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     {
       if (processtable_.countChildProcesses() > 0)
       {
-        timeout = 1;
-      } else {
+        timeout = 5;
+      }
+	  else
+	  {
         timeout = 30000;
       }
     }
