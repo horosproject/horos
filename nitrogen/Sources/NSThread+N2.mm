@@ -67,9 +67,10 @@ NSString* const NSThreadStatusKey = @"status";
 }
 
 -(void)setStatus:(NSString*)status {
-	if ([status isEqual:self.status]) return;
+	if( [status isEqual:self.status]) return;
+	
 	[self willChangeValueForKey:NSThreadStatusKey];
-	[self.threadDictionary setObject:status forKey:NSThreadStatusKey];
+	[self.threadDictionary setObject: [[status copy] autorelease] forKey:NSThreadStatusKey];
 //	[self performSelectorOnMainThread:NotifyInfoChangeSelector withObject:NSThreadStatusKey waitUntilDone:NO];
 	[self didChangeValueForKey:NSThreadStatusKey];
 }
