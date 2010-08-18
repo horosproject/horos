@@ -1312,68 +1312,22 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 	
     if (! go_cleanup)
     {
-
-        if (options_.verbose_)
-        {
-            printf("Association Acknowledged (Max Send PDV: %u)\n",
-                   assoc->sendPDVLength);
-            if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
-                printf("    (but no valid presentation contexts)\n");
-            if (options_.debug_)
-                ASC_dumpParameters(assoc->params, COUT);
-        }
+		NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 		
-		if (singleProcess)
-        {
-			NSManagedObjectContext *dbContext = [[BrowserController currentBrowser] localManagedObjectContext];
-			[dbContext retain];
-			[dbContext lock];
-			
-			@try
+		@try
+		{
+			if (options_.verbose_)
 			{
-				[dbContext save: nil];
-			}
-			@catch (NSException * e)
-			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				printf("Association Acknowledged (Max Send PDV: %u)\n",
+					   assoc->sendPDVLength);
+				if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
+					printf("    (but no valid presentation contexts)\n");
+				if (options_.debug_)
+					ASC_dumpParameters(assoc->params, COUT);
 			}
 			
-			@try
+			if (singleProcess)
 			{
-				staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
-				[staticContext retain];
-				@try
-				{
-					/* don't spawn a sub-process to handle the association */
-					cond = handleAssociation(assoc, options_.correctUIDPadding_);
-				}
-				@catch( NSException *e)
-				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-				}
-				[staticContext release];
-				staticContext = nil;
-			}
-			@catch( NSException *e)
-			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			}
-			
-			[dbContext unlock];
-			[dbContext release];
-			
-			NSString *str = getErrorMessage();
-			
-			if( str)
-				[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
-        }
-#ifdef HAVE_FORK
-        else
-        {
-			if( cond != ASC_SHUTDOWNAPPLICATION)
-			{
-//				[[[BrowserController currentBrowser] checkIncomingLock] lock];
-				
 				NSManagedObjectContext *dbContext = [[BrowserController currentBrowser] localManagedObjectContext];
 				[dbContext retain];
 				[dbContext lock];
@@ -1387,78 +1341,138 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 				}
 				
-				staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
-				[staticContext retain];
-				[staticContext lock]; //Try to avoid deadlock
-				
 				@try
 				{
-					[DCMNetServiceDelegate DICOMServersList];
-					
-					/* spawn a sub-process to handle the association */
-					pid = (int)(fork());
-					if (pid < 0)
+					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
+					[staticContext retain];
+					@try
 					{
-						printf("pid < 0. Cannot spawn new process\n");
-						DcmQueryRetrieveOptions::errmsg("Cannot create association sub-process: %s", strerror(errno));
-						cond = refuseAssociation(&assoc, CTN_CannotFork);
-						go_cleanup = OFTrue;
-					}
-					else if (pid > 0)
-					{
-						// Display a thread in the ThreadsManager for this pid
-						NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector( waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
-						t.name = NSLocalizedString( @"DICOM services...", nil);
-						if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
-							t.status = [NSString stringWithFormat: NSLocalizedString( @"Address: %s", nil), assoc->params->DULparams.callingPresentationAddress];
-						[[ThreadsManager defaultManager] addThreadAndStart: t];
-					
-						// Father
-						
-						[NSThread sleepForTimeInterval: 1.0]; // To allow the creation of lock_process file with corresponding pid
-						
-						/* parent process, note process in table */
-						processtable_.addProcessToTable(pid, assoc);
-						
-						waitUnlockFileWithPID( pid);
-						
-						NSString *str = getErrorMessage();
-						if( str)
-							[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
-					}
-					else
-					{
-						// Child
-						
-						lockFile();
-						
-						/* child process, handle the association */
+						/* don't spawn a sub-process to handle the association */
 						cond = handleAssociation(assoc, options_.correctUIDPadding_);
-						
-						unlockFile();
-						
-						char dir[ 1024];
-						sprintf( dir, "%s-%d", "/tmp/process_state", getpid());
-						unlink( dir);
-						
-						/* the child process is done so exit */
-						_Exit(3);	//to avoid spin_lock
 					}
+					@catch( NSException *e)
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					}
+					[staticContext release];
+					staticContext = nil;
 				}
 				@catch( NSException *e)
 				{
 					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 				}
 				
-				[staticContext unlock];
-				[staticContext release];
-				staticContext = nil;
-				
 				[dbContext unlock];
 				[dbContext release];
-//				[[[BrowserController currentBrowser] checkIncomingLock] unlock];
+				
+				NSString *str = getErrorMessage();
+				
+				if( str)
+					[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+			}
+	#ifdef HAVE_FORK
+			else
+			{
+				if( cond != ASC_SHUTDOWNAPPLICATION)
+				{
+					
+					
+	//				[[[BrowserController currentBrowser] checkIncomingLock] lock];
+					
+					NSManagedObjectContext *dbContext = [[BrowserController currentBrowser] localManagedObjectContext];
+					[dbContext retain];
+					[dbContext lock];
+					
+					@try
+					{
+						[dbContext save: nil];
+					}
+					@catch (NSException * e)
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					}
+					
+					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
+					[staticContext retain];
+					[staticContext lock]; //Try to avoid deadlock
+					
+					@try
+					{
+						[DCMNetServiceDelegate DICOMServersList];
+						
+						/* spawn a sub-process to handle the association */
+						pid = (int)(fork());
+						if (pid < 0)
+						{
+							printf("pid < 0. Cannot spawn new process\n");
+							DcmQueryRetrieveOptions::errmsg("Cannot create association sub-process: %s", strerror(errno));
+							cond = refuseAssociation(&assoc, CTN_CannotFork);
+							go_cleanup = OFTrue;
+						}
+						else if (pid > 0)
+						{
+							// Display a thread in the ThreadsManager for this pid
+							NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector( waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
+							t.name = NSLocalizedString( @"DICOM services...", nil);
+							if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
+								t.status = [NSString stringWithFormat: NSLocalizedString( @"Address: %s", nil), assoc->params->DULparams.callingPresentationAddress];
+							[[ThreadsManager defaultManager] addThreadAndStart: t];
+						
+							// Father
+							
+							[NSThread sleepForTimeInterval: 1.0]; // To allow the creation of lock_process file with corresponding pid
+							
+							/* parent process, note process in table */
+							processtable_.addProcessToTable(pid, assoc);
+							
+							waitUnlockFileWithPID( pid);
+							
+							NSString *str = getErrorMessage();
+							if( str)
+								[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+						}
+						else
+						{
+							// Child
+							
+							lockFile();
+							
+							/* child process, handle the association */
+							cond = handleAssociation(assoc, options_.correctUIDPadding_);
+							
+							unlockFile();
+							
+							char dir[ 1024];
+							sprintf( dir, "%s-%d", "/tmp/process_state", getpid());
+							unlink( dir);
+							
+							/* the child process is done so exit */
+							_Exit(3);	//to avoid spin_lock
+						}
+					}
+					@catch( NSException *e)
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					}
+					
+					
+					[staticContext reset];
+					[staticContext unlock];
+					[staticContext release];
+					staticContext = nil;
+					
+					[dbContext unlock];
+					[dbContext release];
+	//				[[[BrowserController currentBrowser] checkIncomingLock] unlock];
+				}
 			}
 		}
+		@catch (NSException * e)
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
+		[p release];
 #endif
     }
 

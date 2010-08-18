@@ -108,7 +108,7 @@ selectReadable(T_ASC_Association *assoc,
     assocList[1] = subAssoc;
     if (subAssoc != NULL) assocCount++;
     if (subAssoc == NULL) {
-        timeout = 1;    /* poll wait until an assoc req or move rsp */
+        timeout = 5;    /* poll wait until an assoc req or move rsp */
     } else {
         if (blockMode == DIMSE_BLOCKING) {
             timeout = 10000;    /* a long time */

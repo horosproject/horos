@@ -2524,6 +2524,7 @@ static NSConditionLock *threadLock = nil;
 			NSPersistentStoreCoordinator *pSC = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel] autorelease];
 			
 			mOC = [[[NSManagedObjectContext alloc] init] autorelease];
+			
 			[mOC setPersistentStoreCoordinator: pSC];
 			[mOC setUndoManager: nil];
 			

@@ -1106,7 +1106,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	{
 		[threadLock lockWhenCondition: 1];
 		
-		[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: p object: [dict valueForKey:@"self"]];
+		if( [[dict valueForKey:@"fResult"] pointerValue])
+			[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: p object: [dict valueForKey:@"self"]];
 		
 		[threadLock unlockWithCondition: 0];
 	}
@@ -11306,6 +11307,12 @@ END_CREATE_ROIS:
 			
 			[processorsLock lockWhenCondition: 0];
 			[processorsLock unlock];
+			
+			for( int i = 0; i < numberOfThreadsForCompute; i++)
+			{
+				NSMutableDictionary *d = [minmaxThreads objectAtIndex: i];
+				[d setObject: [NSValue valueWithPointer: nil] forKey: @"fResult"];
+			}
 			
 			if( countstackMean > 1)
 			{
