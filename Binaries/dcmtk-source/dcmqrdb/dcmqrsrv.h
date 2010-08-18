@@ -171,7 +171,7 @@ private:
   const DcmQueryRetrieveConfig *config_;
 
   /// child process table, only used in multi-processing mode
-  DcmQueryRetrieveProcessTable processtable_;
+//  DcmQueryRetrieveProcessTable processtable_;
 
   /// flag for database interface: check C-FIND identifier
   OFBool dbCheckFindIdentifier_;

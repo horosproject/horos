@@ -2116,8 +2116,6 @@
 		BFBF414E09B6828D00545F5E /* dcmqridx.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA209B6828800545F5E /* dcmqridx.h */; };
 		BFBF414F09B6828D00545F5E /* dcmqropt.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA309B6828800545F5E /* dcmqropt.cc */; };
 		BFBF415009B6828D00545F5E /* dcmqropt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA409B6828800545F5E /* dcmqropt.h */; };
-		BFBF415109B6828D00545F5E /* dcmqrptb.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA509B6828800545F5E /* dcmqrptb.cc */; };
-		BFBF415209B6828D00545F5E /* dcmqrptb.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA609B6828800545F5E /* dcmqrptb.h */; };
 		BFBF415409B6828D00545F5E /* dcmqrsrv.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA809B6828800545F5E /* dcmqrsrv.h */; };
 		BFBF415709B6828D00545F5E /* dcsignat.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DAC09B6828800545F5E /* dcsignat.cc */; };
 		BFBF415809B6828D00545F5E /* dcsignat.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DAD09B6828800545F5E /* dcsignat.h */; };
@@ -17202,7 +17200,6 @@
 				BFBF414D09B6828D00545F5E /* dcmqrdbs.h in Headers */,
 				BFBF414E09B6828D00545F5E /* dcmqridx.h in Headers */,
 				BFBF415009B6828D00545F5E /* dcmqropt.h in Headers */,
-				BFBF415209B6828D00545F5E /* dcmqrptb.h in Headers */,
 				BFBF415409B6828D00545F5E /* dcmqrsrv.h in Headers */,
 				BFBF415809B6828D00545F5E /* dcsignat.h in Headers */,
 				BFBF415909B6828D00545F5E /* sialgo.h in Headers */,
@@ -23209,7 +23206,6 @@
 				BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */,
 				BFBF414C09B6828D00545F5E /* dcmqrdbs.cc in Sources */,
 				BFBF414F09B6828D00545F5E /* dcmqropt.cc in Sources */,
-				BFBF415109B6828D00545F5E /* dcmqrptb.cc in Sources */,
 				BFBF415709B6828D00545F5E /* dcsignat.cc in Sources */,
 				BFBF415A09B6828D00545F5E /* siautopr.cc in Sources */,
 				BFBF415C09B6828D00545F5E /* sibrsapr.cc in Sources */,

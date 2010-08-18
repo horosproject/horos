@@ -1159,14 +1159,16 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     if (singleProcess) timeout = 30000;
     else
     {
-      if (processtable_.countChildProcesses() > 0)
-      {
-        timeout = 5;
-      }
-	  else
-	  {
-        timeout = 30000;
-      }
+//      if (processtable_.countChildProcesses() > 0)
+//      {
+//        timeout = 5;
+//      }
+//	  else
+//	  {
+//        timeout = 30000;
+//      }
+		
+	  timeout = 30000;
     }
 
     if (ASC_associationWaiting(theNet, timeout))
@@ -1285,11 +1287,11 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     if (! go_cleanup)
     {
         // too many concurrent associations ??
-        if (processtable_.countChildProcesses() >= OFstatic_cast(size_t, options_.maxAssociations_))
-        {
-            cond = refuseAssociation(&assoc, CTN_TooManyAssociations);
-            go_cleanup = OFTrue;
-        }
+//        if (processtable_.countChildProcesses() >= OFstatic_cast(size_t, options_.maxAssociations_))
+//        {
+//            cond = refuseAssociation(&assoc, CTN_TooManyAssociations);
+//            go_cleanup = OFTrue;
+//        }
     }
 
     if (! go_cleanup)
@@ -1417,19 +1419,36 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 							if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
 								t.status = [NSString stringWithFormat: NSLocalizedString( @"Address: %s", nil), assoc->params->DULparams.callingPresentationAddress];
 							[[ThreadsManager defaultManager] addThreadAndStart: t];
-						
+							
+							/* the child will handle the association, we can drop it */
+							cond = ASC_dropAssociation(assoc);
+							if (cond.bad())
+							{
+								//DcmQueryRetrieveOptions::errmsg("Cannot Drop Association:");
+								DimseCondition::dump(cond);
+							}
+							
+							cond = ASC_destroyAssociation(&assoc);
+							if (cond.bad())
+							{
+								//DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
+								DimseCondition::dump(cond);
+							}
+							
 							// Father
 							
 							[NSThread sleepForTimeInterval: 1.0]; // To allow the creation of lock_process file with corresponding pid
 							
 							/* parent process, note process in table */
-							processtable_.addProcessToTable(pid, assoc);
+							// processtable_.addProcessToTable(pid, assoc);
 							
 							waitUnlockFileWithPID( pid);
 							
 							NSString *str = getErrorMessage();
 							if( str)
 								[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+							
+							
 						}
 						else
 						{
@@ -1501,7 +1520,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 
 void DcmQueryRetrieveSCP::cleanChildren(OFBool verbose)
 {
-  processtable_.cleanChildren(verbose);
+//  processtable_.cleanChildren(verbose);
 }
 
 

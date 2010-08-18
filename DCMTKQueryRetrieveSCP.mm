@@ -534,6 +534,7 @@ DcmQueryRetrieveConfig config;
 	{
 		while(!_abort)
 		{
+			
 			if( _abort == NO)
 				cond = localSCP->waitForAssociation(options.net_);
 			
