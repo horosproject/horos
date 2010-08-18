@@ -4561,7 +4561,7 @@ static NSConditionLock *threadLock = nil;
 	if( gLastCoreDataReset == 0)
 		gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
 	
-	if( [NSDate timeIntervalSinceReferenceDate] - gLastCoreDataReset > 60*60)
+	if( [NSDate timeIntervalSinceReferenceDate] - gLastCoreDataReset > 60*60*4)
 	{
 		if( [checkIncomingLock tryLock])
 		{
