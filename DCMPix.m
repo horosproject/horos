@@ -1104,12 +1104,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	do
 	{
+		NSAutoreleasePool *p2 = [[NSAutoreleasePool alloc] init];
+		
 		[threadLock lockWhenCondition: 1];
 		
 		if( [[dict valueForKey:@"fResult"] pointerValue])
 			[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: p object: [dict valueForKey:@"self"]];
 		
 		[threadLock unlockWithCondition: 0];
+		
+		[p2 release];
 	}
 	while( 1);
 	
@@ -1124,31 +1128,37 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	do
 	{
+		NSAutoreleasePool *p2 = [[NSAutoreleasePool alloc] init];
+		
 		[threadLock lockWhenCondition: 1];
 		
 		DCMPix *o = [dict valueForKey:@"self"];
-		int startLine = [[dict valueForKey:@"start"] intValue];
-		int endLine = [[dict valueForKey:@"end"] intValue];
 		
-		register int			ii = (endLine - startLine) * [o pwidth];
-		register unsigned char	*dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
-		register float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
-		register float			from = [o wl] - [o ww]/2.;
-		register float			ratio = 4096. / [o ww];
-		register float			*tfPtr = [o transferFunctionPtr];
-		
-		src32Ptr += startLine * [o pwidth];
-		
-		if( tfPtr)
+		if( o)
 		{
-			while( ii-- > 0)
+			int startLine = [[dict valueForKey:@"start"] intValue];
+			int endLine = [[dict valueForKey:@"end"] intValue];
+			
+			register int			ii = (endLine - startLine) * [o pwidth];
+			register unsigned char	*dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
+			register float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
+			register float			from = [o wl] - [o ww]/2.;
+			register float			ratio = 4096. / [o ww];
+			register float			*tfPtr = [o transferFunctionPtr];
+			
+			src32Ptr += startLine * [o pwidth];
+			
+			if( tfPtr)
 			{
-				int value = ratio * (*src32Ptr++ - from);
-				
-				if( value < 0) value = 0;
-				else if( value >= 4095) value = 4095;
-				
-				*dst8Ptr++ = 255.*tfPtr[ value];
+				while( ii-- > 0)
+				{
+					int value = ratio * (*src32Ptr++ - from);
+					
+					if( value < 0) value = 0;
+					else if( value >= 4095) value = 4095;
+					
+					*dst8Ptr++ = 255.*tfPtr[ value];
+				}
 			}
 		}
 		
@@ -1156,6 +1166,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		[processorsLock unlockWithCondition: [processorsLock condition]-1];
 		
 		[threadLock unlockWithCondition: 0];
+		
+		[p2 release];
 	}
 	while( 1);
 
@@ -11306,13 +11318,12 @@ END_CREATE_ROIS:
 			}
 			
 			[processorsLock lockWhenCondition: 0];
-			[processorsLock unlock];
-			
 			for( int i = 0; i < numberOfThreadsForCompute; i++)
 			{
 				NSMutableDictionary *d = [minmaxThreads objectAtIndex: i];
 				[d setObject: [NSValue valueWithPointer: nil] forKey: @"fResult"];
 			}
+			[processorsLock unlock];
 			
 			if( countstackMean > 1)
 			{
@@ -11480,6 +11491,9 @@ END_CREATE_ROIS:
 						}
 						
 						[processorsLock lockWhenCondition: 0];
+						for( int i = 0; i < numberOfThreadsForCompute; i++)
+							[[nonLinearWLWWThreads objectAtIndex: i] removeObjectForKey: @"self"];
+							
 						[processorsLock unlock];
 					}
 					
