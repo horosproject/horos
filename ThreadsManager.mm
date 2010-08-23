@@ -57,36 +57,61 @@
 
 -(void)addThread:(NSThread*)thread
 {
-	if (![[NSThread currentThread] isMainThread]) {
-		[self performSelectorOnMainThread:@selector(addThread:) withObject:thread waitUntilDone: NO];
-	} else if (![_threads containsObject:thread]) {
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
-		[[self mutableArrayValueForKey:@"threads"] addObject:thread];
-		//// We need this to avoid the exit before created bug...
-		//[[ActivityWindowController defaultController].tableView reloadData];
-		//[[ActivityWindowController defaultController].tableView display];
+	@synchronized( thread)
+	{
+		[thread retain];
+		if (![[NSThread currentThread] isMainThread])
+		{
+			[self performSelectorOnMainThread:@selector(addThread:) withObject:thread waitUntilDone: NO];
+		}
+		else if (![_threads containsObject:thread])
+		{
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
+			[[self mutableArrayValueForKey:@"threads"] addObject:thread];
+			//// We need this to avoid the exit before created bug...
+			//[[ActivityWindowController defaultController].tableView reloadData];
+			//[[ActivityWindowController defaultController].tableView display];
+		}
+		[thread release];
 	}
 }
 
--(void)addThreadAndStart:(NSThread*)thread {
-	if (![[NSThread currentThread] isMainThread]) {
-		[self performSelectorOnMainThread:@selector(addThreadAndStart:) withObject:thread waitUntilDone: NO];
-	} else if (![_threads containsObject:thread]) {
-		[self addThread:thread];
-		if (![thread isMainThread] && ![thread isExecuting])
-			[thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
+-(void)addThreadAndStart:(NSThread*)thread
+{
+	@synchronized( thread)
+	{
+		[thread retain];
+		if (![[NSThread currentThread] isMainThread])
+		{
+			[self performSelectorOnMainThread:@selector(addThreadAndStart:) withObject:thread waitUntilDone: NO];
+		}
+		else if (![_threads containsObject:thread])
+		{
+			[self addThread:thread];
+			if (![thread isMainThread] && ![thread isExecuting])
+				[thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
+		}
+		[thread release];
 	}
 }
 
--(void)removeThread:(NSThread*)thread {
-	
-	thread.status = nil;
-	
-	if (![[NSThread currentThread] isMainThread])
-		[self performSelectorOnMainThread:@selector(removeThread:) withObject:thread waitUntilDone:NO];
-	else if ([_threads containsObject:thread]) {
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
-		[[self mutableArrayValueForKey:@"threads"] removeObject:thread];
+-(void)removeThread:(NSThread*)thread
+{
+	@synchronized( thread)
+	{
+		[thread retain];
+		thread.status = nil;
+		
+		if (![[NSThread currentThread] isMainThread])
+		{
+			[self performSelectorOnMainThread:@selector(removeThread:) withObject:thread waitUntilDone:NO];
+		}
+		else if ([_threads containsObject:thread])
+		{
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
+			[[self mutableArrayValueForKey:@"threads"] removeObject:thread];
+		}
+		[thread release];
 	}
 }
 

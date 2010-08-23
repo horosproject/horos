@@ -74,17 +74,19 @@ NSString* const NSThreadStatusKey = @"status";
 	return s;
 }
 
--(void)setStatus:(NSString*)status {
+-(void)setStatus:(NSString*)status
+{
 	if( [status isEqual:self.status]) return;
+	
+	[self willChangeValueForKey:NSThreadStatusKey];
 	
 	@synchronized (self.threadDictionary)
 	{
-		[self willChangeValueForKey:NSThreadStatusKey];
 		if( status == nil) [self.threadDictionary removeObjectForKey: NSThreadStatusKey];
 		else [self.threadDictionary setObject: [[status copy] autorelease] forKey:NSThreadStatusKey];
-		//	[self performSelectorOnMainThread:NotifyInfoChangeSelector withObject:NSThreadStatusKey waitUntilDone:NO];
-		[self didChangeValueForKey:NSThreadStatusKey];
 	}
+	
+	[self didChangeValueForKey:NSThreadStatusKey];
 }
 
 NSString* const NSThreadSubthreadsArrayKey = @"subthreads";
