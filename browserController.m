@@ -4463,54 +4463,44 @@ static NSConditionLock *threadLock = nil;
 
 - (void) reduceCoreDataFootPrint
 {
-	@try 
+	if( [managedObjectContext tryLock])
 	{
-		if( [managedObjectContext tryLock])
+		@try 
 		{
-			@try 
-			{
-				[[AppController sharedAppController] closeAllViewers: self];
-				
-				[reportFilesToCheck removeAllObjects];
-				
-				[[LogManager currentLogManager] checkLogs: nil];
-				[self resetLogWindowController];
-				[[LogManager currentLogManager] resetLogs];
-				
-				
-				displayEmptyDatabase = YES;
-				[self outlineViewRefresh];
-				[self refreshMatrix: self];
-				
-				NSError *error = nil;
-				[managedObjectContext save: &error];
-				if( error == nil)
-					[managedObjectContext reset];
-				
-				[DCMPix purgeCachedDictionaries];
-				[DCMView purgeStringTextureCache];
-				
-				displayEmptyDatabase = NO;
-				[self outlineViewRefresh];
-				[self refreshMatrix: self];
-			}
-			@catch (NSException * e) 
-			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-				#ifdef OSIRIX_VIEWER
-				[AppController printStackTrace: e];
-				#endif
-			}
+			[[AppController sharedAppController] closeAllViewers: self];
 			
-			[managedObjectContext unlock];
+			[reportFilesToCheck removeAllObjects];
+			
+			[[LogManager currentLogManager] checkLogs: nil];
+			[self resetLogWindowController];
+			[[LogManager currentLogManager] resetLogs];
+			
+			
+			displayEmptyDatabase = YES;
+			[self outlineViewRefresh];
+			[self refreshMatrix: self];
+			
+			NSError *error = nil;
+			[managedObjectContext save: &error];
+			if( error == nil)
+				[managedObjectContext reset];
+			
+			[DCMPix purgeCachedDictionaries];
+			[DCMView purgeStringTextureCache];
+			
+			displayEmptyDatabase = NO;
+			[self outlineViewRefresh];
+			[self refreshMatrix: self];
 		}
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		#ifdef OSIRIX_VIEWER
-		[AppController printStackTrace: e];
-		#endif
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			#ifdef OSIRIX_VIEWER
+			[AppController printStackTrace: e];
+			#endif
+		}
+		
+		[managedObjectContext unlock];
 	}
 	
 	NSLog( @"----- reduce memory footprint for CoreData");
