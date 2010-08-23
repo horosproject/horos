@@ -4467,30 +4467,40 @@ static NSConditionLock *threadLock = nil;
 	{
 		if( [managedObjectContext tryLock])
 		{
-			[[AppController sharedAppController] closeAllViewers: self];
-			
-			[reportFilesToCheck removeAllObjects];
-			
-			[[LogManager currentLogManager] checkLogs: nil];
-			[self resetLogWindowController];
-			[[LogManager currentLogManager] resetLogs];
-			
-			
-			displayEmptyDatabase = YES;
-			[self outlineViewRefresh];
-			[self refreshMatrix: self];
-			
-			NSError *error = nil;
-			[managedObjectContext save: &error];
-			if( error == nil)
-				[managedObjectContext reset];
-			
-			[DCMPix purgeCachedDictionaries];
-			[DCMView purgeStringTextureCache];
-			
-			displayEmptyDatabase = NO;
-			[self outlineViewRefresh];
-			[self refreshMatrix: self];
+			@try 
+			{
+				[[AppController sharedAppController] closeAllViewers: self];
+				
+				[reportFilesToCheck removeAllObjects];
+				
+				[[LogManager currentLogManager] checkLogs: nil];
+				[self resetLogWindowController];
+				[[LogManager currentLogManager] resetLogs];
+				
+				
+				displayEmptyDatabase = YES;
+				[self outlineViewRefresh];
+				[self refreshMatrix: self];
+				
+				NSError *error = nil;
+				[managedObjectContext save: &error];
+				if( error == nil)
+					[managedObjectContext reset];
+				
+				[DCMPix purgeCachedDictionaries];
+				[DCMView purgeStringTextureCache];
+				
+				displayEmptyDatabase = NO;
+				[self outlineViewRefresh];
+				[self refreshMatrix: self];
+			}
+			@catch (NSException * e) 
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				#ifdef OSIRIX_VIEWER
+				[AppController printStackTrace: e];
+				#endif
+			}
 			
 			[managedObjectContext unlock];
 		}
@@ -4567,11 +4577,14 @@ static NSConditionLock *threadLock = nil;
 		{
 			if( newFilesInIncoming == NO && [SendController sendControllerObjects] == 0 && [[ThreadsManager defaultManager] threadsCount] == 0 && [AppController numberOfSubOsiriXProcesses] == 0)
 			{
-				if( [managedObjectContext tryLock] && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
 				{
-					gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
-					[self reduceCoreDataFootPrint];
-					[managedObjectContext unlock];
+					if( [managedObjectContext tryLock])
+					{
+						gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
+						[self reduceCoreDataFootPrint];
+						[managedObjectContext unlock];
+					}
 				}
 			}
 			
