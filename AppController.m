@@ -39,9 +39,9 @@
 #import "NSSplitViewSave.h"
 #import "altivecFunctions.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import <N2Debug.h>
 #ifndef OSIRIX_LIGHT
 #import <ILCrashReporter/ILCrashReporter.h>
-#import <N2Debug.h>
 #endif
 #import "PluginManagerController.h"
 #import "OSIWindowController.h"
@@ -2485,6 +2485,9 @@ static NSDate *lastWarningDate = nil;
 {
 	self = [super init];
 	appController = self;
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/Application Support/OsiriX/DLog.enable"])
+		[N2Debug setActive:YES];
 	
 	PapyrusLock = [[NSRecursiveLock alloc] init];
 	STORESCP = [[NSRecursiveLock alloc] init];

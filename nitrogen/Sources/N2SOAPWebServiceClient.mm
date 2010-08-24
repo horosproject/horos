@@ -36,6 +36,34 @@
 
 -(id)execute:(NSString*)function params:(NSArray*)params {
 	[NSException raise:NSGenericException format:@"NOT IMPLEMENTED"]; // TODO: this
+	
+/*	NSMutableString* request = [NSMutableString stringWithCapacity:1024];
+	
+	[request appendFormat:@"<?xml version=\"1.0\"?>\n\n"];
+	[request appendFormat:@"<soap:Envelope xmlns:soap=\"http://www.w3.org/2001/12/soap-envelope\" soap:encodingStyle=\"http://www.w3.org/2001/12/soap-encoding\">"];
+
+//	if (...) {
+//		[request appendFormat:@"<soap:Header>"];
+//		
+//		// mustUnderstand
+//		// actor
+//		// encodingStyle
+//		
+//		[request appendFormat:@"</soap:Header>"];
+//	}
+	
+	[request appendFormat:@"<soap:Body>"];
+	[request appendFormat:@"</soap:Body>"];
+
+	[request appendFormat:@"</soap:Envelope>"];
+	
+	
+	<soap:Fault>
+	...
+	</soap:Fault>
+	
+	*/
+	
 	return NULL;
 }
 

@@ -20,6 +20,7 @@
 #import "QueryController.h"
 #import "DCMNetServiceDelegate.h"
 #import "Notifications.h"
+#import "N2Debug.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -164,6 +165,7 @@ static NSTimeInterval lastConnection = 0;
 		if( [array count] == 1)
 		{
 			NSString *selName = [[array objectAtIndex:0] objectValue];
+			DLog(@"XMLRPC call: %@", selName);
 			
 			selName = [selName stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 			
@@ -233,6 +235,7 @@ static NSTimeInterval lastConnection = 0;
 							return;
 						}
 						// *****
+						//DLog(@"\tParamDict: %@", paramDict);
 						
 						NSString *listOfElements = nil;
 						NSNumber *ret = nil;
