@@ -12326,7 +12326,7 @@ static BOOL needToRezoom;
 						if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
 						{
 							[splittedSeries addObject: [NSMutableArray array]];
-							NSLog(@"split at: %d", x);
+							//NSLog(@"split at: %d", x);
 							
 							previousinterval = 0;
 						}
@@ -12335,7 +12335,7 @@ static BOOL needToRezoom;
 							if( fabs(interval/previousinterval) > 2.0f || fabs(interval/previousinterval) < 0.5f)
 							{
 								[splittedSeries addObject: [NSMutableArray array]];
-								NSLog(@"split at: %d", x);
+								//NSLog(@"split at: %d", x);
 								previousinterval = 0;
 							}
 							else previousinterval = interval;
@@ -12464,7 +12464,7 @@ static BOOL needToRezoom;
 								if( x % repetition == 0)
 								{
 									[splittedSeries addObject: [NSMutableArray array]];
-									NSLog(@"split at: %d", x);
+									//NSLog(@"split at: %d", x);
 								}
 								
 								[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
@@ -12481,7 +12481,7 @@ static BOOL needToRezoom;
 									if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
 									{
 										[splittedSeries addObject: [NSMutableArray array]];
-										NSLog(@"split at: %d", x);
+										//NSLog(@"split at: %d", x);
 										previousinterval = 0;
 									}
 									else if( previousinterval)
@@ -12489,7 +12489,7 @@ static BOOL needToRezoom;
 										if( fabs(interval/previousinterval) > 1.2f || fabs(interval/previousinterval) < 0.8f)
 										{
 											[splittedSeries addObject: [NSMutableArray array]];
-											NSLog(@"split at: %d", x);
+											//NSLog(@"split at: %d", x);
 											previousinterval = 0;
 										}
 										else previousinterval = interval;
