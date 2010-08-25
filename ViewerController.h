@@ -428,7 +428,7 @@ enum
 - (NSMutableArray*) pixList;
 - (NSMutableArray*) pixList: (long) i;
 
-/** Return the array of DicomFile objects */
+/** Return the array of DicomImage objects */
 - (NSMutableArray*) fileList;
 - (NSMutableArray*) fileList: (long) i;
 
