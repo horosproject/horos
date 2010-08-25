@@ -20,50 +20,82 @@
 
 NSString* const NSThreadUniqueIdKey = @"uniqueId";
 
--(NSString*)uniqueId {
-	return [self.threadDictionary objectForKey:NSThreadUniqueIdKey];
+-(NSString*)uniqueId
+{
+	NSString *uniqueId = nil;
+	
+	@synchronized (self.threadDictionary)
+	{
+		uniqueId = [self.threadDictionary objectForKey:NSThreadUniqueIdKey];
+	}
+	
+	return uniqueId;
 }
 
--(void)setUniqueId:(NSString*)uniqueId {
-	if ([uniqueId isEqual:self.uniqueId]) return;
-	[self willChangeValueForKey:NSThreadUniqueIdKey];
-	[self.threadDictionary setObject:uniqueId forKey:NSThreadUniqueIdKey];
-	[self didChangeValueForKey:NSThreadUniqueIdKey];
+-(void)setUniqueId:(NSString*)uniqueId
+{
+	if ([uniqueId isEqual:self.uniqueId])
+		return;
+	
+	@synchronized (self.threadDictionary)
+	{
+		[self willChangeValueForKey:NSThreadUniqueIdKey];
+		[self.threadDictionary setObject:uniqueId forKey:NSThreadUniqueIdKey];
+		[self didChangeValueForKey:NSThreadUniqueIdKey];
+	}
 }
 
 NSString* const NSThreadSupportsCancelKey = @"supportsCancel";
 
--(BOOL)supportsCancel {
-	NSNumber* supportsCancel = [self.threadDictionary objectForKey:NSThreadSupportsCancelKey];
+-(BOOL)supportsCancel
+{
+	NSNumber* supportsCancel = nil;
+	@synchronized (self.threadDictionary)
+	{
+		supportsCancel = [self.threadDictionary objectForKey:NSThreadSupportsCancelKey];
+	}
 	return supportsCancel? [supportsCancel boolValue] : NO;
 }
 
--(void)setSupportsCancel:(BOOL)supportsCancel {
+-(void)setSupportsCancel:(BOOL)supportsCancel
+{
 	if (supportsCancel == self.supportsCancel) return;
-	[self willChangeValueForKey:NSThreadSupportsCancelKey];
-	[self.threadDictionary setObject:[NSNumber numberWithBool:supportsCancel] forKey:NSThreadSupportsCancelKey];
-	[self didChangeValueForKey:NSThreadSupportsCancelKey];
+	
+	@synchronized (self.threadDictionary)
+	{
+		[self willChangeValueForKey:NSThreadSupportsCancelKey];
+		[self.threadDictionary setObject:[NSNumber numberWithBool:supportsCancel] forKey:NSThreadSupportsCancelKey];
+		[self didChangeValueForKey:NSThreadSupportsCancelKey];
+	}
 }
 
 NSString* const NSThreadIsCancelledKey = @"isCancelled";
 
-/*-(BOOL)isCancelled {
-	NSNumber* isCancelled = [self.threadDictionary objectForKey:NSThreadSupportsCancelKey];
-	return isCancelled? isCancelled.boolValue : NO;
-}*/
-
--(void)setIsCancelled:(BOOL)isCancelled {
+-(void)setIsCancelled:(BOOL)isCancelled
+{
 	if (isCancelled == self.isCancelled) return;
-	if (!isCancelled) [NSException raise:NSGenericException format:@"a cancelled thread cannot be uncancelled"];
-	[self willChangeValueForKey:NSThreadIsCancelledKey];
-	[self cancel];
-	[self didChangeValueForKey:NSThreadIsCancelledKey];
+	
+	@synchronized (self.threadDictionary)
+	{
+		[self willChangeValueForKey:NSThreadIsCancelledKey];
+		[self cancel];
+		[self didChangeValueForKey:NSThreadIsCancelledKey];
+	}
 }
 
 NSString* const NSThreadStatusKey = @"status";
 
 -(NSString*)status
 {
+	if( self.isFinished)
+		return nil;
+	
+	if( self.isCancelled)
+		return nil;
+	
+	if( self.isExecuting == NO)
+		return nil;
+	
 	NSString *s = nil;
 	
 	@synchronized (self.threadDictionary)
@@ -91,25 +123,33 @@ NSString* const NSThreadStatusKey = @"status";
 
 NSString* const NSThreadSubthreadsArrayKey = @"subthreads";
 
--(NSMutableArray*)subthreadsArray {
-	NSMutableArray* subthreadsArray = [self.threadDictionary objectForKey:NSThreadSubthreadsArrayKey];
+-(NSMutableArray*)subthreadsArray
+{
+	NSMutableArray* subthreadsArray = nil;
 	
-	if (!subthreadsArray) {
-		subthreadsArray = [NSMutableArray array];
-		[self.threadDictionary setObject:subthreadsArray forKey:NSThreadSubthreadsArrayKey];
+	@synchronized (self.threadDictionary)
+	{
+		subthreadsArray = [self.threadDictionary objectForKey:NSThreadSubthreadsArrayKey];
+	
+		if (!subthreadsArray)
+		{
+			subthreadsArray = [NSMutableArray array];
+			[self.threadDictionary setObject:subthreadsArray forKey:NSThreadSubthreadsArrayKey];
+		}
 	}
 	
 	return subthreadsArray;
 }
 
--(void)enterSubthreadWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen {
+-(void)enterSubthreadWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen
+{
 	[self.subthreadsArray addObject:[NSValue valueWithPoint:NSMakePoint(rangeLoc,rangeLen)]];
 //	NSLog(@"entering level %d subthread", self.subthreadsArray.count);
 	self.progress = 0;
 }
 
--(void)exitSubthread {
-//	NSLog(@"exiting level %d subthread", self.subthreadsArray.count);
+-(void)exitSubthread
+{
 	self.progress = 1;
 	[self.subthreadsArray removeLastObject];
 }
@@ -117,33 +157,43 @@ NSString* const NSThreadSubthreadsArrayKey = @"subthreads";
 NSString* const NSThreadProgressKey = @"progress";
 NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 
--(CGFloat)progress {
-	NSNumber* progress = [self.threadDictionary objectForKey:NSThreadProgressKey];
+-(CGFloat)progress
+{
+	NSNumber* progress = nil;
+	@synchronized (self.threadDictionary)
+	{
+		progress = [self.threadDictionary objectForKey:NSThreadProgressKey];
+	}
 	return progress? [progress floatValue] : -1;
 }
 
--(void)setProgress:(CGFloat)progress {
+-(void)setProgress:(CGFloat)progress
+{
 	if (progress == self.progress) return;
-	[self willChangeValueForKey:NSThreadProgressKey];
-	[self.threadDictionary setObject:[NSNumber numberWithFloat:progress] forKey:NSThreadProgressKey];
-//	[self performSelectorOnMainThread:NotifyInfoChangeSelector withObject:NSThreadProgressKey waitUntilDone:NO];
-	[self didChangeValueForKey:NSThreadProgressKey];
-	[self didChangeValueForKey:NSThreadSubthreadsAwareProgressKey];
+
+	@synchronized (self.threadDictionary)
+	{
+		[self willChangeValueForKey:NSThreadProgressKey];
+		[self.threadDictionary setObject:[NSNumber numberWithFloat:progress] forKey:NSThreadProgressKey];
+		//	[self performSelectorOnMainThread:NotifyInfoChangeSelector withObject:NSThreadProgressKey waitUntilDone:NO];
+		[self didChangeValueForKey:NSThreadProgressKey];
+		[self didChangeValueForKey:NSThreadSubthreadsAwareProgressKey];
+	}
 }
 
--(CGFloat)subthreadsAwareProgress {
+-(CGFloat)subthreadsAwareProgress
+{
 	CGFloat progress = self.progress;
 	
 	if (progress < 0)
 		return progress;
 	
 	NSPoint range = NSMakePoint(0,1);
-	for (NSValue* iv in self.subthreadsArray) {
+	for (NSValue* iv in self.subthreadsArray)
+	{
 		NSPoint ir = [iv pointValue];
 		range = NSMakePoint(range.x+range.y*ir.x, range.y*ir.y);
 	}
-	
-//	NSLog(@"progress %f means %f", progress, range.x+range.y*self.progress);
 	
 	return range.x+range.y*self.progress;
 }

@@ -18,7 +18,6 @@
 
 @interface NSThread (N2)
 
-
 extern NSString* const NSThreadUniqueIdKey;
 -(NSString*)uniqueId;
 -(void)setUniqueId:(NSString*)uniqueId;
@@ -44,5 +43,4 @@ extern NSString* const NSThreadProgressKey;
 
 extern NSString* const NSThreadSubthreadsAwareProgressKey;
 -(CGFloat)subthreadsAwareProgress;
-
 @end
