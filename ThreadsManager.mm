@@ -76,7 +76,7 @@
 {
 	@synchronized( thread)
 	{
-		[thread retain]; // This is not a memory leak - release will happen in removeThread:
+		[thread retain]; // This is not a memory leak - release will happen in subAddThread:
 		
 		if (![[NSThread currentThread] isMainThread])
 			[self performSelectorOnMainThread:@selector(subAddThread:) withObject:thread waitUntilDone: NO];
@@ -104,7 +104,7 @@
 {
 	@synchronized( thread)
 	{
-		[thread retain]; // This is not a memory leak - release will happen in removeThread:
+		[thread retain]; // This is not a memory leak - release will happen in subRemoveThread:
 		
 		if (![[NSThread currentThread] isMainThread])
 			[self performSelectorOnMainThread:@selector( subRemoveThread:) withObject:thread waitUntilDone:NO];
