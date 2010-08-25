@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "OSIViewerPreferencePanePref.h"
+#import <OsiriX Headers/AppController.h>
 
 @implementation OSIViewerPreferencePanePref
 
@@ -72,6 +73,10 @@
 		i /= 2;
 		x++;
 	}
+}
+
+-(AppController*)appController {
+	return [AppController sharedAppController];
 }
 
 - (IBAction) setAutoTiling: (id) sender

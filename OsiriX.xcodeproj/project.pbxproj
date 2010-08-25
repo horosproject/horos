@@ -145,6 +145,7 @@
 		594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 594830CC118B0AC100D7E606 /* N2ImageView.mm */; };
 		594830CF118B0AC100D7E606 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 594830CB118B0AC100D7E606 /* N2ImageView.h */; };
 		594830D0118B0AC100D7E606 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 594830CC118B0AC100D7E606 /* N2ImageView.mm */; };
+		5963226C122544C40062066C /* N2Shell.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAAA11293378009EB238 /* N2Shell.mm */; };
 		596EB3061189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */; };
 		596EB3071189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */; };
 		596EB3081189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */; };
@@ -24946,6 +24947,7 @@
 				592CFF291212F84F00176E39 /* N2WSDL.mm in Sources */,
 				592CFF2B1212F84F00176E39 /* N2SOAPWebServiceClient.mm in Sources */,
 				592CFF671212F91D00176E39 /* ISO8601DateFormatter.m in Sources */,
+				5963226C122544C40062066C /* N2Shell.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,6 +14,8 @@
 
 #import <PreferencePanes/PreferencePanes.h>
 
+@class AppController;
+
 @interface OSIViewerPreferencePanePref : NSPreferencePane 
 {
 	IBOutlet NSButton						*autoHideMatrix,
@@ -30,6 +32,7 @@
 	IBOutlet NSTextField					*iPhotoAlbumName;
 }
 
+-(AppController*)appController;
 - (void) mainViewDidLoad;
 - (IBAction) setToolbarMatrix: (id) sender;
 - (IBAction) setExportSize: (id) sender;
