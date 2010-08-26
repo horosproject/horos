@@ -118,14 +118,13 @@ extern "C"
 	XMLRPCMethods					*XMLRPCServer;
 	ThreadPoolServer				*webServer;
 	
-	BOOL							checkAllWindowsAreVisibleIsOff, isSessionInactive, has32bitPipeline;
+	BOOL							checkAllWindowsAreVisibleIsOff, isSessionInactive;
 	
 	int								lastColumns, lastRows, lastCount;
 //	NSMutableArray					*viewersAddresses;
 }
 
 @property BOOL checkAllWindowsAreVisibleIsOff, isSessionInactive;
-@property(readonly) BOOL has32bitPipeline;
 @property (readonly) NSMenu *filtersMenu, *windowsTilingMenuRows, *windowsTilingMenuColumns;
 
 #pragma mark-

@@ -814,7 +814,7 @@ static NSDate *lastWarningDate = nil;
 
 @implementation AppController
 
-@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, has32bitPipeline;
+@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive;
 
 - (void) pause
 {
@@ -3124,9 +3124,9 @@ static BOOL initialized = NO;
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
 	
-	if( [NSDate timeIntervalSinceReferenceDate] - [[NSUserDefaults standardUserDefaults] doubleForKey: @"last32bitPipelineCheck"] > 60*60*24*30) // 30 days
+	if( [NSDate timeIntervalSinceReferenceDate] - [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastDate32bitPipelineCheck"] > 60*60*24*30) // 30 days
 	{
-		[[NSUserDefaults standardUserDefaults] setDouble: [NSDate timeIntervalSinceReferenceDate] forKey: @"last32bitPipelineCheck"];
+		[[NSUserDefaults standardUserDefaults] setDouble: [NSDate timeIntervalSinceReferenceDate] forKey: @"lastDate32bitPipelineCheck"];
 		[self verifyHardwareInterpolation];
 	}
 	
@@ -4784,22 +4784,20 @@ static BOOL initialized = NO;
 	CGFloat delta = 0;
 	for (int i = 0; i < size2; ++i)
 		delta += fabsf((float)gray_1[i]-(float)gray_2[i]);
-	has32bitPipeline = delta > 1000; // we may want to raise this..
+	BOOL has32bitPipeline = delta > 1000; // we may want to raise this..
 	
 	if (has32bitPipeline)
 	{
 		NSLog( @"-- 32bit pipeline activated");
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"hasFULL32BITPIPELINE"];
 		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
 	}
 	else
 	{
 		NSLog( @"-- 32bit pipeline inactivated");
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"hasFULL32BITPIPELINE"];
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FULL32BITPIPELINE"];
 	}
-}
-
--(BOOL)has32bitPipeline {
-	return has32bitPipeline;
 }
 
 @end
