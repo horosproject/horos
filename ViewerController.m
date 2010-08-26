@@ -4347,7 +4347,8 @@ static ViewerController *draggedController = nil;
 	}
 	else if( c == '0')
 	{
-		if( timer)  [self PlayStop:[self findPlayStopButton]];  // STOP
+		if( timer)
+			[self PlayStop:[self findPlayStopButton]];  // STOP
 	}
 	
 	else if (c == NSUpArrowFunctionKey)
@@ -4625,7 +4626,7 @@ static ViewerController *draggedController = nil;
 	else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier]) {
         
 	[toolbarItem setLabel: NSLocalizedString(@"DICOM File", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Save as DICOM", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Export as DICOM File", nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Export this image/series in a DICOM file", nil)];
 	[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
 	[toolbarItem setTarget: self];

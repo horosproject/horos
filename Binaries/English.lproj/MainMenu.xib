@@ -3,17 +3,17 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">10F569</string>
-		<string key="IBDocument.InterfaceBuilderVersion">762</string>
+		<string key="IBDocument.InterfaceBuilderVersion">732</string>
 		<string key="IBDocument.AppKitVersion">1038.29</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">762</string>
+			<string key="NS.object.0">732</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="24"/>
-			<integer value="12421"/>
 			<integer value="1580"/>
+			<integer value="11543"/>
+			<integer value="12421"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -390,7 +390,7 @@
 											</object>
 											<object class="NSMenuItem" id="884241353">
 												<reference key="NSMenu" ref="150963371"/>
-												<string key="NSTitle">Export Database Displayed List as...</string>
+												<string key="NSTitle">Export Displayed Database List as...</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
@@ -4510,7 +4510,6 @@
 											<int key="NSsFlags">1</int>
 											<reference key="NSTarget" ref="832526649"/>
 											<string key="NSAction">_doScroller:</string>
-											<double key="NSCurValue">0.00030613785661465182</double>
 											<double key="NSPercent">0.43685872138910814</double>
 										</object>
 										<object class="NSClipView" id="903567248">
@@ -4828,7 +4827,6 @@
 														</object>
 													</array>
 													<string key="NSFrame">{{1, 1}, {422, 435}}</string>
-													<string key="NSBounds">{{0, 2}, {422, 435}}</string>
 													<reference key="NSSuperview" ref="84064525"/>
 													<reference key="NSNextKeyView" ref="691984007"/>
 													<reference key="NSDocView" ref="691984007"/>
@@ -4843,7 +4841,6 @@
 													<bool key="NSEnabled">YES</bool>
 													<reference key="NSTarget" ref="84064525"/>
 													<string key="NSAction">_doScroller:</string>
-													<double key="NSCurValue">0.11764705882352941</double>
 													<double key="NSPercent">0.96238938053097345</double>
 												</object>
 												<object class="NSScroller" id="828164548">
@@ -8662,7 +8659,7 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 										</object>
 										<string key="decimalSeparator">.</string>
 										<integer value="1000" key="formatterBehavior"/>
-										<string key="groupingSeparator">,</string>
+										<string key="groupingSeparator">'</string>
 										<object class="NSLocale" key="locale">
 											<string key="NS.identifier">fr_CH</string>
 										</object>
@@ -8686,7 +8683,7 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 									<reference key="NS.max" ref="194147893"/>
 									<nil key="NS.rounding"/>
 									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">,</string>
+									<string key="NS.thousand">'</string>
 									<bool key="NS.hasthousands">YES</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -20893,7 +20890,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<integer value="1" key="11536.ImportedFromIB2"/>
 				<string key="11542.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="11542.ImportedFromIB2"/>
-				<string key="11543.IBEditorWindowLastContentRect">{{520, 984}, {331, 223}}</string>
+				<string key="11543.IBEditorWindowLastContentRect">{{488, 543}, {331, 223}}</string>
 				<string key="11543.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="11543.ImportedFromIB2"/>
 				<string key="11543.editorWindowContentRectSynchronizationRect">{{1036, 637}, {306, 203}}</string>
@@ -22469,7 +22466,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<integer value="1" key="847.ImportedFromIB2"/>
 				<string key="848.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="848.ImportedFromIB2"/>
-				<string key="849.IBEditorWindowLastContentRect">{{178, 834}, {342, 503}}</string>
+				<string key="849.IBEditorWindowLastContentRect">{{146, 393}, {342, 503}}</string>
 				<string key="849.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="849.ImportedFromIB2"/>
 				<string key="849.editorWindowContentRectSynchronizationRect">{{706, 407}, {337, 613}}</string>
@@ -22585,6 +22582,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="ReBuildDatabase:">id</string>
 						<string key="ReBuildDatabaseSheet:">id</string>
+						<string key="ReadDicomCDRom:">id</string>
 						<string key="addSmartAlbum:">id</string>
 						<string key="addURLToDatabase:">id</string>
 						<string key="addURLToDatabaseEnd:">id</string>
@@ -25386,7 +25384,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 			</array>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
-		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
@@ -25398,28 +25395,5 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">../../OsiriX.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="Endoscopy">{32, 32}</string>
-			<string key="MIP">{32, 32}</string>
-			<string key="MPR">{32, 32}</string>
-			<string key="NSAddTemplate">{8, 8}</string>
-			<string key="NSLockLockedTemplate">{9, 12}</string>
-			<string key="NSMenuCheckmark">{9, 8}</string>
-			<string key="NSMenuMixedState">{7, 2}</string>
-			<string key="NSRemoveTemplate">{8, 8}</string>
-			<string key="NSSmartBadgeTemplate">{15, 15}</string>
-			<string key="NSSwitch">{15, 15}</string>
-			<string key="Realised1">{12, 12}</string>
-			<string key="Realised2">{12, 12}</string>
-			<string key="Realised3">{12, 12}</string>
-			<string key="Receiving">{12, 12}</string>
-			<string key="ReportPages">{32, 32}</string>
-			<string key="StartupDisk">{32, 32}</string>
-			<string key="Surface">{32, 32}</string>
-			<string key="VolumeRendering">{32, 32}</string>
-			<string key="error">{32, 32}</string>
-			<string key="orthogonalReslice">{32, 32}</string>
-			<string key="smile">{32, 32}</string>
-		</dictionary>
 	</data>
 </archive>

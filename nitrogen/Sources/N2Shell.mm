@@ -56,6 +56,7 @@
 }
 
 +(NSString*)hostname {
+	NSLog( @"****** WARNING [[NSHost currentHost] name] can be VERY slow on some network configurations/settings - AVOID TO CALL THIS FUNCTION.");
 	NSString* host = [[NSHost currentHost] name];
 	NSRange r = [host rangeOfString:@"."];
 	host = r.location!=NSNotFound? [host substringToIndex:r.location] : host;

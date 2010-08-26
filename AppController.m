@@ -3123,7 +3123,12 @@ static BOOL initialized = NO;
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
-	[self verifyHardwareInterpolation];
+	
+	if( [NSDate timeIntervalSinceReferenceDate] - [[NSUserDefaults standardUserDefaults] doubleForKey: @"last32bitPipelineCheck"] > 60*60*24*30) // 30 days
+	{
+		[[NSUserDefaults standardUserDefaults] setDouble: [NSDate timeIntervalSinceReferenceDate] forKey: @"last32bitPipelineCheck"];
+		[self verifyHardwareInterpolation];
+	}
 	
 	BOOL dialog = NO;
 	
@@ -4676,7 +4681,8 @@ static BOOL initialized = NO;
 
 #pragma mark Hardware Interpolation
 
--(void)verifyHardwareInterpolation {
+-(void)verifyHardwareInterpolation
+{
 	NSUInteger size = 32, size2 = size*size;
 	
 	NSWindow* win = [[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,size,size) styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO];
@@ -4704,6 +4710,7 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NOINTERPOLATION"];
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
+	
 	dcmView = [[DCMView alloc] initWithSize:NSMakeSize(size,size)];
 	[dcmView setPixels:[NSArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
 	[dcmView setScaleValueCentered:size];
@@ -4763,6 +4770,13 @@ static BOOL initialized = NO;
 	
 	[win release];
 	[dcmPix release];
+	
+	
+	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey:@"ANNOTATIONS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey:@"CLUTBARS"];
+	[[NSUserDefaults standardUserDefaults] setBool: noInterpolationCopy forKey:@"NOINTERPOLATION"];
+	[[NSUserDefaults standardUserDefaults] setBool: highQInterpolationCopy forKey:@"SOFTWAREINTERPOLATION"];
+	
 	[DCMView setCLUTBARS:clutBarsCopy ANNOTATIONS:annotCopy];
 	
 	// eval results
@@ -4770,19 +4784,17 @@ static BOOL initialized = NO;
 	CGFloat delta = 0;
 	for (int i = 0; i < size2; ++i)
 		delta += fabsf((float)gray_1[i]-(float)gray_2[i]);
-	has32bitPipeline = delta > 0; // we may want to raise this..
+	has32bitPipeline = delta > 1000; // we may want to raise this..
 	
-	if (![[[NSUserDefaults standardUserDefaults] stringForKey:@"verifyHardwareInterpolation_RUN"] isEqual:[N2Shell hostname]]) {
-		[[NSUserDefaults standardUserDefaults] setObject:[N2Shell hostname] forKey:@"verifyHardwareInterpolation_RUN"];
-		if (has32bitPipeline) {
-			[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NOINTERPOLATION"];
-			[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
-			[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
-		} else {
-			[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NOINTERPOLATION"];
-			[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"SOFTWAREINTERPOLATION"];
-			[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FULL32BITPIPELINE"];
-		}
+	if (has32bitPipeline)
+	{
+		NSLog( @"-- 32bit pipeline activated");
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
+	}
+	else
+	{
+		NSLog( @"-- 32bit pipeline inactivated");
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FULL32BITPIPELINE"];
 	}
 }
 
