@@ -24,6 +24,15 @@ NSString* const NSThreadUniqueIdKey = @"uniqueId";
 {
 	NSString *uniqueId = nil;
 	
+	if( self.isFinished)
+		return nil;
+	
+	if( self.isCancelled)
+		return nil;
+	
+	if( self.isExecuting == NO)
+		return nil;
+	
 	@synchronized (self.threadDictionary)
 	{
 		uniqueId = [self.threadDictionary objectForKey:NSThreadUniqueIdKey];
@@ -34,6 +43,15 @@ NSString* const NSThreadUniqueIdKey = @"uniqueId";
 
 -(void)setUniqueId:(NSString*)uniqueId
 {
+	if( self.isFinished)
+		return;
+	
+	if( self.isCancelled)
+		return;
+	
+	if( self.isExecuting == NO)
+		return;
+	
 	if ([uniqueId isEqual:self.uniqueId])
 		return;
 	
@@ -49,6 +67,15 @@ NSString* const NSThreadSupportsCancelKey = @"supportsCancel";
 
 -(BOOL)supportsCancel
 {
+	if( self.isFinished)
+		return NO;
+	
+	if( self.isCancelled)
+		return NO;
+	
+	if( self.isExecuting == NO)
+		return NO;
+	
 	NSNumber* supportsCancel = nil;
 	@synchronized (self.threadDictionary)
 	{
@@ -59,6 +86,15 @@ NSString* const NSThreadSupportsCancelKey = @"supportsCancel";
 
 -(void)setSupportsCancel:(BOOL)supportsCancel
 {
+	if( self.isFinished)
+		return;
+	
+	if( self.isCancelled)
+		return;
+	
+	if( self.isExecuting == NO)
+		return;
+	
 	if (supportsCancel == self.supportsCancel) return;
 	
 	@synchronized (self.threadDictionary)
@@ -73,6 +109,15 @@ NSString* const NSThreadIsCancelledKey = @"isCancelled";
 
 -(void)setIsCancelled:(BOOL)isCancelled
 {
+	if( self.isFinished)
+		return;
+	
+	if( self.isCancelled)
+		return;
+	
+	if( self.isExecuting == NO)
+		return;
+	
 	if (isCancelled == self.isCancelled) return;
 	
 	@synchronized (self.threadDictionary)
@@ -108,6 +153,15 @@ NSString* const NSThreadStatusKey = @"status";
 
 -(void)setStatus:(NSString*)status
 {
+	if( self.isFinished)
+		return;
+	
+	if( self.isCancelled)
+		return;
+	
+	if( self.isExecuting == NO)
+		return;
+	
 	if( [status isEqual:self.status]) return;
 	
 	[self willChangeValueForKey:NSThreadStatusKey];
@@ -126,6 +180,15 @@ NSString* const NSThreadSubthreadsArrayKey = @"subthreads";
 -(NSMutableArray*)subthreadsArray
 {
 	NSMutableArray* subthreadsArray = nil;
+	
+	if( self.isFinished)
+		return nil;
+	
+	if( self.isCancelled)
+		return nil;
+	
+	if( self.isExecuting == NO)
+		return nil;
 	
 	@synchronized (self.threadDictionary)
 	{
@@ -159,6 +222,15 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 
 -(CGFloat)progress
 {
+	if( self.isFinished)
+		return -1;
+	
+	if( self.isCancelled)
+		return -1;
+	
+	if( self.isExecuting == NO)
+		return -1;
+	
 	NSNumber* progress = nil;
 	@synchronized (self.threadDictionary)
 	{
@@ -169,6 +241,15 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 
 -(void)setProgress:(CGFloat)progress
 {
+	if( self.isFinished)
+		return;
+	
+	if( self.isCancelled)
+		return;
+	
+	if( self.isExecuting == NO)
+		return;
+	
 	if (progress == self.progress) return;
 
 	@synchronized (self.threadDictionary)
