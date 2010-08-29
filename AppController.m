@@ -1099,27 +1099,19 @@ static NSDate *lastWarningDate = nil;
 
 + (void) displayImportantNotice:(id) sender
 {
-	int saved = [[NSUserDefaults standardUserDefaults] integerForKey: @"lastWarningDay"];
-	
-	if( saved == 0)
+	if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*60*16) // 16 hours
 	{
-		if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*60*16)
-		{
-			int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device (FDA or CE-1) for primary diagnosis.\r\rPlease check with local compliance office for possible limitations in its clinical use.\r\rFor a FDA / CE-1 certified version, please check our partners web page:\r\rhttp://www.osirix-viewer.com/Partners.html\r", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil), NSLocalizedString( @"Partners", nil));
-			
-			if( result == NSAlertOtherReturn)
-			{
-				[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Partners.html"]];
-			}
-			else if( result != NSAlertDefaultReturn)
-				[[AppController sharedAppController] terminate: self];
-			else
-				[[NSUserDefaults standardUserDefaults] setInteger: [[NSCalendarDate date] dayOfYear] forKey: @"lastWarningDay"];
-		}
+		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device (FDA or CE-1) for primary diagnosis.\r\rFor a FDA / CE-1 certified version, please check our web page:\r\rhttp://www.osirix-viewer.com/Certifications.html\r", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil), NSLocalizedString( @"Certifications", nil));
 		
-		[lastWarningDate release];
-		lastWarningDate = [[NSDate date] retain];
+		if( result == NSAlertOtherReturn)
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Certifications.html"]];
+			
+		else if( result != NSAlertDefaultReturn)
+			[[AppController sharedAppController] terminate: self];
 	}
+	
+	[lastWarningDate release];
+	lastWarningDate = [[NSDate date] retain];
 }
 
 - (NSString *)computerName
@@ -3495,6 +3487,22 @@ static BOOL initialized = NO;
 	[pool release];
 	
 	[msg release];
+}
+
+- (id) splashScreen
+{
+	WaitRendering *wait = nil;
+	
+	#ifdef OSIRIX_LIGHT
+	wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX Lite...", nil)] autorelease];
+	#else
+	if( sizeof( long) == 8)
+		wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 64-bit", nil)] autorelease];
+	else
+		wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 32-bit", nil)] autorelease];
+	#endif
+
+	return wait;
 }
 
 #ifndef OSIRIX_LIGHT

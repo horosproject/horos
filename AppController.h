@@ -184,6 +184,8 @@ extern "C"
 
 - (IBAction) killAllStoreSCU:(id) sender;
 
+- (id) splashScreen;
+
 #pragma mark-
 #pragma mark window routines
 - (IBAction) updateViews:(id) sender;  /**< Update Viewers */

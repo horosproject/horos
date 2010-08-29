@@ -13846,20 +13846,7 @@ static NSArray*	openSubSeriesArray = nil;
 //		printf("%u\n",i);
 //	});
 
-	WaitRendering *wait = nil;
-	
-	#ifdef OSIRIX_LIGHT
-	wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX Lite...", nil)];
-	#else
-	if( sizeof( long) == 8)
-	{
-		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 64-bit", nil)];
-	}
-	else
-	{
-		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 32-bit", nil)];
-	}
-	#endif
+	WaitRendering *wait = [[AppController sharedAppController] splashScreen];
 	
 //	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
 //	[waitCompressionWindow setCancel:YES];
@@ -14050,7 +14037,6 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	
 	[wait close];
-	[wait release];
 	
 	[self testAutorouting];
 	
