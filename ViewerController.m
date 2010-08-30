@@ -5673,7 +5673,7 @@ static ViewerController *draggedController = nil;
 	{
 		if( check4D == YES || x == curMovieIndex)
 		{
-			if( [pixList[ x] count] > 2)
+			if( [pixList[ x] count] > 4)
 			{
 				float orientation[ 9];
 				
@@ -5799,6 +5799,10 @@ static ViewerController *draggedController = nil;
 							[self refresh];
 							[imageView setNeedsDisplay: YES];
 						}
+						
+						DCMPix *otherPix = [pixList[ x] objectAtIndex: 2];
+						[pix setPixelSpacingX: [otherPix pixelSpacingX]];
+						[pix setPixelSpacingY: [otherPix pixelSpacingY]];
 					}
 					else
 					{
@@ -5892,6 +5896,10 @@ static ViewerController *draggedController = nil;
 							[self refresh];
 							[imageView setNeedsDisplay: YES];
 						}
+						
+						DCMPix *otherPix = [pixList[ x] objectAtIndex: [pixList[ x] count]-3];
+						[pix setPixelSpacingX: [otherPix pixelSpacingX]];
+						[pix setPixelSpacingY: [otherPix pixelSpacingY]];
 					}
 					else
 					{
