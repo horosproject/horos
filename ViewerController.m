@@ -16149,7 +16149,10 @@ int i,j,l;
 		annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 		clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 		
-		[DCMView setCLUTBARS: barHide ANNOTATIONS: annotGraphics];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"keepCLUTBarsForSecondaryCapture"])
+			[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotGraphics];
+		else
+			[DCMView setCLUTBARS: barHide ANNOTATIONS: annotGraphics];
 	}
 	
 	BOOL force8bits = YES;

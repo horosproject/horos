@@ -9670,7 +9670,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 	long clutBarsCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-	[DCMView setCLUTBARS: barHide ANNOTATIONS: annotGraphics];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"keepCLUTBarsForSecondaryCapture"])
+		[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotGraphics];
+	else
+		[DCMView setCLUTBARS: barHide ANNOTATIONS: annotGraphics];
 	
 	unsigned char *data = [self getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
 	
