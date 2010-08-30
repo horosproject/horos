@@ -3729,9 +3729,13 @@ static NSConditionLock *threadLock = nil;
 				
 				if( [NSThread currentThread].isCancelled)
 					break;
-			
-				[NSThread currentThread].status = [NSString stringWithFormat: @"%d %@", [filesInput count]-i, i==1? NSLocalizedString( @"file", nil) : NSLocalizedString( @"files", nil) ];
-				[NSThread currentThread].progress = (float) i / [filesInput count];
+				
+				if( i == [filesInput count]-1)
+					[NSThread currentThread].status =  NSLocalizedString( @"Done. Finishing...", nil);
+				else
+					[NSThread currentThread].status = [NSString stringWithFormat: @"%d %@", [filesInput count]-i, i==1? NSLocalizedString( @"file", nil) : NSLocalizedString( @"files", nil) ];
+				
+				[NSThread currentThread].progress = (float) (i+1) / [filesInput count];
 			}
 			
 			BOOL succeed = YES;
