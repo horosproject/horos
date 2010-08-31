@@ -13660,27 +13660,59 @@ static NSArray*	openSubSeriesArray = nil;
 
 + (NSString*) DateTimeWithSecondsFormat:(NSDate*) t
 {
-	return [[[BrowserController currentBrowser] DateTimeWithSecondsFormat] stringFromDate: t];
+	NSString *s = nil;
+	
+	@synchronized( [[BrowserController currentBrowser] DateTimeWithSecondsFormat])
+	{
+		s = [[[BrowserController currentBrowser] DateTimeWithSecondsFormat] stringFromDate: t];  
+	}
+	
+	return s;
 }
 
 + (NSString*) TimeWithSecondsFormat:(NSDate*) t
 {
-	return [[[BrowserController currentBrowser] TimeWithSecondsFormat] stringFromDate: t];
+	NSString *s = nil;
+	
+	@synchronized( [[BrowserController currentBrowser] TimeWithSecondsFormat])
+	{
+		s = [[[BrowserController currentBrowser] TimeWithSecondsFormat] stringFromDate: t];
+	}
+	
+	return s;
 }
 
 + (NSString*) TimeFormat:(NSDate*) t
 {
-	return [[[BrowserController currentBrowser] TimeFormat] stringFromDate: t];
+	NSString *s = nil;
+	
+	@synchronized( [[BrowserController currentBrowser] TimeFormat])
+	{
+		s = [[[BrowserController currentBrowser] TimeFormat] stringFromDate: t];
+	}
+	return s;
 }
 
 + (NSString*) DateOfBirthFormat:(NSDate*) d
 {
-	return [[[BrowserController currentBrowser] DateOfBirthFormat] stringFromDate: d];
+	NSString *s = nil;
+	
+	@synchronized( [[BrowserController currentBrowser] DateOfBirthFormat])
+	{
+		s = [[[BrowserController currentBrowser] DateOfBirthFormat] stringFromDate: d];
+	}
+	return s;
 }
 
 + (NSString*) DateTimeFormat:(NSDate*) d
 {
-	return [[[BrowserController currentBrowser] DateTimeFormat] stringFromDate: d];
+	NSString *s = nil;
+	
+	@synchronized( [[BrowserController currentBrowser] DateTimeFormat])
+	{
+		s = [[[BrowserController currentBrowser] DateTimeFormat] stringFromDate: d];
+	}
+	return s;
 }
 
 - (void) createDBContextualMenu // DATABASE contextual menu
