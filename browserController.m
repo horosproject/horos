@@ -5562,35 +5562,6 @@ static NSConditionLock *threadLock = nil;
 	
 	if( albumTable.selectedRow > 0) filtered = YES;
 	
-	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0 && [outlineViewArray count] < 300)
-	{
-		NSMutableArray	*patientPredicateArray = [NSMutableArray array];
-		
-		for( id obj in outlineViewArray)
-		{
-			[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientID == %@)", [obj valueForKey:@"patientID"]]];
-		}
-		
-		[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray]];
-		error = nil;
-		[originalOutlineViewArray release];
-		originalOutlineViewArray = [outlineViewArray retain];
-		outlineViewArray = [context executeFetchRequest:request error:&error];
-	}
-	else
-	{
-		[originalOutlineViewArray release];
-		originalOutlineViewArray = nil;
-	}
-	
-	long images = 0;
-	for( id obj in outlineViewArray)
-	{
-		images += [[obj valueForKey:@"noFiles"] intValue];
-	}
-	
-	description = [description stringByAppendingFormat: NSLocalizedString(@" / Result = %@ studies (%@ images)", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt: [outlineViewArray count]]], [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:images]]];
-	
 	NSSortDescriptor * sortdate = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease];
 	NSArray * sortDescriptors;
 	if( [databaseOutline sortDescriptors] == nil || [[databaseOutline sortDescriptors] count] == 0)
@@ -5605,7 +5576,68 @@ static NSConditionLock *threadLock = nil;
 	}
 	else sortDescriptors = [databaseOutline sortDescriptors];
 	
-	outlineViewArray = [[outlineViewArray sortedArrayUsingDescriptors: sortDescriptors] retain];
+	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0 && [outlineViewArray count] < 300)
+	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogetherAndGrouped"])
+		{
+			outlineViewArray = [outlineViewArray sortedArrayUsingDescriptors: sortDescriptors];
+			
+			NSMutableArray *copyOutlineViewArray = [NSMutableArray arrayWithArray: outlineViewArray];
+			int studyIndex = 0;
+			
+			for( id obj in outlineViewArray)
+			{
+				[request setPredicate: [NSPredicate predicateWithFormat: @"(patientID == %@) AND (studyInstanceUID != %@)", [obj valueForKey:@"patientID"], [obj valueForKey:@"studyInstanceUID"]]];
+				
+				for( id patientStudy in [[context executeFetchRequest: request error: &error] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease]]])
+				{
+					if( [copyOutlineViewArray containsObject: patientStudy] == NO)
+					{
+						studyIndex++;
+						[copyOutlineViewArray insertObject: patientStudy atIndex: studyIndex];
+					}
+				}
+				
+				studyIndex++;
+			}
+			
+			[originalOutlineViewArray release];
+			originalOutlineViewArray = [outlineViewArray retain];
+			outlineViewArray = copyOutlineViewArray;
+		}
+		else
+		{
+			NSMutableArray	*patientPredicateArray = [NSMutableArray array];
+			
+			for( id obj in outlineViewArray)
+			{
+				[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientID == %@)", [obj valueForKey:@"patientID"]]];
+			}
+			
+			[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray]];
+			error = nil;
+			[originalOutlineViewArray release];
+			originalOutlineViewArray = [outlineViewArray retain];
+			outlineViewArray = [[context executeFetchRequest:request error:&error] sortedArrayUsingDescriptors: sortDescriptors];
+		}
+	}
+	else
+	{
+		[originalOutlineViewArray release];
+		originalOutlineViewArray = nil;
+		
+		outlineViewArray = [outlineViewArray sortedArrayUsingDescriptors: sortDescriptors];
+	}
+	
+	long images = 0;
+	for( id obj in outlineViewArray)
+	{
+		images += [[obj valueForKey:@"noFiles"] intValue];
+	}
+	
+	description = [description stringByAppendingFormat: NSLocalizedString(@" / Result = %@ studies (%@ images)", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt: [outlineViewArray count]]], [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:images]]];
+	
+	outlineViewArray = [outlineViewArray retain];
 	
 	[context unlock];
 	[context release];

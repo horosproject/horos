@@ -784,6 +784,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"0" forKey: @"AUTOHIDEMATRIX"];
 	[defaultValues setObject: @"1" forKey: @"AutoPlayAnimation"];
 	[defaultValues setObject: @"1" forKey: @"KeepStudiesOfSamePatientTogether"];
+	[defaultValues setObject: @"1" forKey: @"KeepStudiesOfSamePatientTogetherAndGrouped"];
 	[defaultValues setObject: @"1" forKey: @"USEPAPYRUSDCMPIX3"];
 	[defaultValues setObject: @"2" forKey: @"TOOLKITPARSER3"];	// 0:DCM Framework 1:Papyrus 2:DCMTK
 	[defaultValues setObject: @"1" forKey: @"PREFERPAPYRUSFORCD"];

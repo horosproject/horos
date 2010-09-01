@@ -12,8 +12,8 @@
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<integer value="1580"/>
+			<integer value="966"/>
 			<integer value="11543"/>
-			<integer value="12421"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3871,7 +3871,7 @@
 															<bool key="NSIsResizeable">YES</bool>
 															<reference key="NSTableView" ref="300364488"/>
 															<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
-																<string key="NSKey">yearOldInDays</string>
+																<string key="NSKey">yearOld</string>
 																<bool key="NSAscending">YES</bool>
 																<string key="NSSelector">compare:</string>
 															</object>
@@ -22472,9 +22472,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="849.editorWindowContentRectSynchronizationRect">{{706, 407}, {337, 613}}</string>
 				<string key="854.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="854.ImportedFromIB2"/>
-				<string key="885.IBEditorWindowLastContentRect">{{13, 198}, {1132, 808}}</string>
+				<string key="885.IBEditorWindowLastContentRect">{{13, 148}, {1132, 808}}</string>
 				<string key="885.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="885.IBWindowTemplateEditedContentRect">{{13, 198}, {1132, 808}}</string>
+				<string key="885.IBWindowTemplateEditedContentRect">{{13, 148}, {1132, 808}}</string>
 				<integer value="1" key="885.ImportedFromIB2"/>
 				<string key="885.editorWindowContentRectSynchronizationRect">{{1, 48}, {1132, 808}}</string>
 				<integer value="1" key="885.windowTemplate.hasMaxSize"/>
