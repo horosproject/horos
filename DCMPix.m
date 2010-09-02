@@ -1188,15 +1188,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize DCMPixShutterRectOriginX = shutterRect_x;
 @synthesize DCMPixShutterRectOriginY = shutterRect_y;
 
-@synthesize frameOfReferenceUID;
-@synthesize repetitiontime, echotime;
-@synthesize flipAngle, laterality;
-@synthesize viewPosition, patientPosition;
+@synthesize frameOfReferenceUID, repetitiontime, echotime;
+@synthesize flipAngle, laterality, viewPosition, patientPosition;
 
-@synthesize serieNo, pixArray;
-@synthesize pixPos, transferFunctionPtr;
-@synthesize stackMode, generated, generatedName;
-@synthesize imageObj;
+@synthesize serieNo, pixArray, pixPos, transferFunctionPtr;
+@synthesize stackMode, generated, generatedName, imageObj;
 @synthesize srcFile, annotationsDictionary;
 
 // SUV properties
@@ -1205,8 +1201,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize radionuclideTotalDoseCorrected, acquisitionTime, acquisitionDate;
 @synthesize radiopharmaceuticalStartTime, SUVConverted;
 @synthesize hasSUV, decayFactor;
-@synthesize units, decayCorrection;
-@synthesize displaySUVValue;
+@synthesize units, decayCorrection, displaySUVValue;
 
 @synthesize isLUT12Bit;
 
@@ -1217,54 +1212,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	return NO;
 }
-
-//- (void) convertToFull16Bits: (unsigned short*) rawdata size:(long) RawSize BitsAllocated:(long) BitsAllocated BitsStored:(long) BitsStored HighBitPosition:(long) HighBitPosition PixelSign:(BOOL) PixelSign
-//{
-//	int l = (int)( RawSize / ( BitsAllocated / 8));
-//	int i;
-//	
-//	if ( BitsAllocated == 16)
-//	{
-//		// pmask : to mask the 'unused bits' (may contain overlays)
-//		uint16_t pmask = 0xffff;
-//		pmask = pmask >> ( BitsAllocated - BitsStored);
-//
-//		uint16_t *deb = (uint16_t*) rawdata;
-//	
-//		if ( !PixelSign)  // Pixels are unsigned
-//		{
-//			for(i = 0; i<l; i++)
-//			{   
-//				*deb = (*deb >> (BitsStored - HighBitPosition - 1)) & pmask;
-//				deb++;
-//			}
-//		}
-//		else // Pixels are signed
-//		{
-//			// smask : to check the 'sign' when BitsStored != BitsAllocated
-//			uint16_t smask = 0x0001;
-//			smask = smask << ( 16 - (BitsAllocated - BitsStored + 1));
-//			// nmask : to propagate sign bit on negative values
-//			int16_t nmask = (int16_t)0x8000;  
-//			nmask = nmask >> ( BitsAllocated - BitsStored - 1);
-//			
-//			for(i = 0; i<l; i++)
-//			{
-//				*deb = *deb >> (BitsStored - HighBitPosition - 1);
-//				if ( *deb & smask)
-//				{
-//					*deb = *deb | nmask;
-//				}
-//				else
-//				{
-//					*deb = *deb & pmask;
-//				}
-//				
-//				deb++;
-//			}
-//		}
-//	}
-//}
 
 + (void) resetUserDefaults
 {
@@ -1291,6 +1238,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 #ifdef OSIRIX_LIGHT
 		gUSEPAPYRUSDCMPIX = YES;
+#endif
+
+#if __LP64__
+		gUSEPAPYRUSDCMPIX = YES; // To avoid the DCM Framework bug in 64bit
 #endif
 
 #ifdef STATIC_DICOM_LIB
@@ -1388,44 +1339,54 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	{
 		// Rescale image if resolution is too high, compared to the original resolution
 		
-		float MAXSIZE = 1.8;
-		
-		int minWidth = [dcmPix pwidth]*MAXSIZE;
-		int minHeight = [dcmPix pheight]*MAXSIZE;
-		
-		if( minWidth < 1024) MAXSIZE = 1024 / [dcmPix pwidth];
-		if( minHeight < 1024) MAXSIZE = 1024 / [dcmPix pheight];
-		
-		minWidth = [dcmPix pwidth]*MAXSIZE;
-		minHeight = [dcmPix pheight]*MAXSIZE;
-		
-		if( [currentImage size].width > minWidth && [currentImage size].height > minHeight)
+		@try 
 		{
-			if( [currentImage size].width/[dcmPix pwidth] < [currentImage size].height / [dcmPix pheight])
+			float MAXSIZE = 1.8;
+		
+			int minWidth = [dcmPix pwidth]*MAXSIZE;
+			int minHeight = [dcmPix pheight]*MAXSIZE;
+			
+			if( minWidth < 1024) MAXSIZE = 1024 / [dcmPix pwidth];
+			if( minHeight < 1024) MAXSIZE = 1024 / [dcmPix pheight];
+			
+			minWidth = [dcmPix pwidth]*MAXSIZE;
+			minHeight = [dcmPix pheight]*MAXSIZE;
+			
+			if( [currentImage size].width > minWidth && [currentImage size].height > minHeight)
 			{
-				float ratio = [currentImage size].width / (minWidth);
-				imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
+				if( [currentImage size].width/[dcmPix pwidth] < [currentImage size].height / [dcmPix pheight])
+				{
+					float ratio = [currentImage size].width / (minWidth);
+					imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
+				}
+				else
+				{
+					float ratio = [currentImage size].height / (minHeight);
+					imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
+				}
+				[currentImage setScalesWhenResized:YES];
+				
+				NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
+				
+				if( [compositingImage size].width > 0 && [compositingImage size].height > 0)
+				{
+					[compositingImage lockFocus];
+				//		[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationDefault];
+					[currentImage drawInRect: imageRect fromRect: sourceRect operation: NSCompositeCopy fraction: 1.0];
+					[compositingImage unlockFocus];
+				}
+				
+				NSLog( @"New Size: %f %f", [compositingImage size].width, [compositingImage size].height);
+				
+				return [compositingImage autorelease];
 			}
-			else
-			{
-				float ratio = [currentImage size].height / (minHeight);
-				imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
-			}
-			[currentImage setScalesWhenResized:YES];
-			
-			NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
-			
-			if( [compositingImage size].width > 0 && [compositingImage size].height > 0)
-			{
-				[compositingImage lockFocus];
-			//		[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationDefault];
-				[currentImage drawInRect: imageRect fromRect: sourceRect operation: NSCompositeCopy fraction: 1.0];
-				[compositingImage unlockFocus];
-			}
-			
-			NSLog( @"New Size: %f %f", [compositingImage size].width, [compositingImage size].height);
-			
-			return [compositingImage autorelease];
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			#ifdef OSIRIX_VIEWER
+			[AppController printStackTrace: e];
+			#endif
 		}
 	}
 	
@@ -1846,7 +1807,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return values;
 }
 
-- (float*) getROIValue: (long*)numberOfValues : (ROI*)roi : (float**)locations {
+- (float*) getROIValue: (long*)numberOfValues : (ROI*)roi : (float**)locations
+{
     long			count = 0, no;
 	float			*values = nil;
 	long			upleftx, uplefty, downrightx, downrighty;
@@ -9865,70 +9827,82 @@ END_CREATE_ROIS:
 	if( [o isRGB]) return nil;
 	if( [self isRGB]) return nil;
 	
-	int ox = oo.x;
-	int oy = oo.y;
+	DCMPix *newPix = nil;
 	
-	NSRect dstRect = NSMakeRect( 0, 0, [self pwidth], [self pheight]);
-	
-	NSPoint center = NSMakePoint( [self pwidth]/2 - [o pwidth]/2, [self pheight]/2 - [o pheight]/2);
-	NSRect srcRect = NSMakeRect( ox + center.x, oy + center.y, [o pwidth], [o pheight]);
-	
-	NSRect unionRect = NSUnionRect( dstRect, srcRect);
-	
-	vImage_Buffer src;
-	vImage_Buffer dst;
-	
-	dst.height = unionRect.size.height;
-	dst.width = unionRect.size.width;
-	dst.rowBytes = dst.width * 4;
-	dst.data = malloc( dst.height * dst.rowBytes);
-	
-	// Draw first image
-	src.height = [self pheight];
-	src.width = [self pwidth];
-	src.rowBytes = [self pwidth]*4;
-	src.data = [self fImage];
-		
-	[self drawImage:&src inImage:&dst offset:NSMakePoint( -unionRect.origin.x, -unionRect.origin.y) background: [self minValueOfSeries]-1024 transparency: NO];
-	
-	// Adapt the window level
-	
-	if( [self wl] != [o wl])
+	@try 
 	{
-		long i = dst.height * dst.width;
-		float *ptr = dst.data;
-		float diffww = [o ww]/[self ww];
-		float diffwl = ([o wl] - [self wl])*diffww;
+		int ox = oo.x;
+		int oy = oo.y;
 		
-		while (i-- > 0)
+		NSRect dstRect = NSMakeRect( 0, 0, [self pwidth], [self pheight]);
+		
+		NSPoint center = NSMakePoint( [self pwidth]/2 - [o pwidth]/2, [self pheight]/2 - [o pheight]/2);
+		NSRect srcRect = NSMakeRect( ox + center.x, oy + center.y, [o pwidth], [o pheight]);
+		
+		NSRect unionRect = NSUnionRect( dstRect, srcRect);
+		
+		vImage_Buffer src;
+		vImage_Buffer dst;
+		
+		dst.height = unionRect.size.height;
+		dst.width = unionRect.size.width;
+		dst.rowBytes = dst.width * 4;
+		dst.data = malloc( dst.height * dst.rowBytes);
+		
+		// Draw first image
+		src.height = [self pheight];
+		src.width = [self pwidth];
+		src.rowBytes = [self pwidth]*4;
+		src.data = [self fImage];
+			
+		[self drawImage:&src inImage:&dst offset:NSMakePoint( -unionRect.origin.x, -unionRect.origin.y) background: [self minValueOfSeries]-1024 transparency: NO];
+		
+		// Adapt the window level
+		
+		if( [self wl] != [o wl])
 		{
-			*ptr  += diffwl;
-			*ptr++ *= diffww;
+			long i = dst.height * dst.width;
+			float *ptr = dst.data;
+			float diffww = [o ww]/[self ww];
+			float diffwl = ([o wl] - [self wl])*diffww;
+			
+			while (i-- > 0)
+			{
+				*ptr  += diffwl;
+				*ptr++ *= diffww;
+			}
 		}
+
+		src.height = [o pheight];
+		src.width = [o pwidth];
+		src.rowBytes = [o pwidth]*4;
+		src.data = [o fImage];
+		
+		[self drawImage:&src inImage:&dst offset:NSMakePoint( ox+center.x-unionRect.origin.x, oy+center.y-unionRect.origin.y) background: [self minValueOfSeries]-1024 transparency: YES];
+		
+		// Create final DCMPix
+		newPix = [[self copy] autorelease];
+		
+		[newPix freefImageWhenDone: NO];
+		[newPix setfImage: dst.data];
+		[newPix freefImageWhenDone: YES];
+		
+		newPix.pheight = dst.height;
+		newPix.pwidth = dst.width;
+		
+		// New origin
+		float or[ 3];
+		[newPix convertPixX: unionRect.origin.x pixY: unionRect.origin.y toDICOMCoords: or pixelCenter: NO];
+		[newPix setOrigin: or];
 	}
-
-	src.height = [o pheight];
-	src.width = [o pwidth];
-	src.rowBytes = [o pwidth]*4;
-	src.data = [o fImage];
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		#ifdef OSIRIX_VIEWER
+		[AppController printStackTrace: e];
+		#endif
+	}
 	
-	[self drawImage:&src inImage:&dst offset:NSMakePoint( ox+center.x-unionRect.origin.x, oy+center.y-unionRect.origin.y) background: [self minValueOfSeries]-1024 transparency: YES];
-	
-	// Create final DCMPix
-	DCMPix *newPix = [[self copy] autorelease];
-	
-	[newPix freefImageWhenDone: NO];
-	[newPix setfImage: dst.data];
-	[newPix freefImageWhenDone: YES];
-	
-	newPix.pheight = dst.height;
-	newPix.pwidth = dst.width;
-	
-	// New origin
-	float or[ 3];
-	[newPix convertPixX: unionRect.origin.x pixY: unionRect.origin.y toDICOMCoords: or pixelCenter: NO];
-	[newPix setOrigin: or];
-
 	return newPix;
 }
 
