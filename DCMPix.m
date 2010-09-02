@@ -8004,37 +8004,12 @@ END_CREATE_ROIS:
 						err = Papy3GotoNumber (fileNb, (PapyShort) imageNb, DataSetID);
 						
 						// then goto group 0x7FE0 
-						if ((err = Papy3GotoGroupNb (fileNb, 0x7FE0)) == 0)
+						if ((err = Papy3GotoGroupNb0x7FE0 (fileNb, &theGroupP)) > 0) 
 						{
-							// read group 0x7FE0 from the file 
-							if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
-							{
-								if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY || gArrCompression [fileNb] == JPEG2000)
-								{
-									if(gArrPhotoInterpret [fileNb] == RGB)
-										fPlanarConf = 0;
-								}
-								
 								if( bitsStored == 8 && bitsAllocated == 16 && gArrPhotoInterpret[ fileNb] == RGB)
 									bitsAllocated = 8;
 								
-								// PIXEL DATA
-								if( gUseJPEGColorSpace)
-								{
-									if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY)
-									{
-										if(	gArrPhotoInterpret [fileNb] == YBR_FULL  	||
-										   gArrPhotoInterpret [fileNb] == YBR_FULL_422	||
-										   gArrPhotoInterpret [fileNb] == YBR_RCT  	||
-										   gArrPhotoInterpret [fileNb] == YBR_ICT	||
-										   gArrPhotoInterpret [fileNb] == YUV_RCT	||
-										   gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422 ||
-										   gArrPhotoInterpret [fileNb] == RGB)
-											gArrPhotoInterpret [fileNb] = UNKNOWN_COLOR;
-									}
-								}
-								
-								oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP);
+								oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP, gUseJPEGColorSpace, &fPlanarConf);
 								
 								[PapyrusLock unlock];
 								toBeUnlocked = NO;
@@ -8339,7 +8314,6 @@ END_CREATE_ROIS:
 								// free group 7FE0 
 								err = Papy3GroupFree (&theGroupP, TRUE);
 								[PapyrusLock unlock];
-							} // endif ...group 7FE0 read 
 						}
 					
 						#pragma mark RGB or fPlanar

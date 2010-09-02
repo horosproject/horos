@@ -77,6 +77,9 @@ Papy3SkipNextGroup  	(PapyShort);
 extern EXPORT32 PapyShort EXPORT 
 Papy3GotoGroupNb    	(PapyShort, PapyShort);
 
+extern EXPORT32 PapyShort EXPORT 
+Papy3GotoGroupNb0x7FE0  (PapyShort, SElement **);
+
 extern EXPORT32 PapyUShort EXPORT 
 Papy3FindOwnerRange   	(PapyShort, PapyUShort, char *);
 
@@ -177,7 +180,7 @@ extern EXPORT32 UValue_T*  EXPORT
 Papy3GetElement		(SElement*, int, PapyULong *, int *);
 
 extern EXPORT32 PapyUShort* EXPORT 
-Papy3GetPixelData	(PapyShort, int, SElement *);
+Papy3GetPixelData (PapyShort , int , SElement *, int , long *);
 
 extern EXPORT32 PapyShort EXPORT 
 Papy3GroupRead 		(PapyShort, SElement **);
