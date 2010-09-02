@@ -177,7 +177,7 @@ extern EXPORT32 UValue_T*  EXPORT
 Papy3GetElement		(SElement*, int, PapyULong *, int *);
 
 extern EXPORT32 PapyUShort* EXPORT 
-Papy3GetPixelData	(PapyShort, int, SElement *, int);
+Papy3GetPixelData	(PapyShort, int, SElement *);
 
 extern EXPORT32 PapyShort EXPORT 
 Papy3GroupRead 		(PapyShort, SElement **);

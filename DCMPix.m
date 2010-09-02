@@ -8072,7 +8072,7 @@ END_CREATE_ROIS:
 									}
 								}
 								
-								oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP, ImagePixel);
+								oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP);
 								
 								[PapyrusLock unlock];
 								toBeUnlocked = NO;

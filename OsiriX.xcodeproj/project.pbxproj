@@ -4679,6 +4679,8 @@
 		CE6692DA0AF545F90073D923 /* printView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6692D80AF545F90073D923 /* printView.h */; };
 		CE6692DB0AF545F90073D923 /* printView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6692D90AF545F90073D923 /* printView.m */; };
 		CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
+		CE66BDC812303EC700BE2799 /* libPapyrusToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEED77DD1230393A00258D00 /* libPapyrusToolkit.a */; };
+		CE66BE2E123044A000BE2799 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
 		CE6B2E2008DAFC6500872E84 /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };
 		CE6C77ED09739B3100F951C2 /* Rotate3DCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */; };
 		CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
@@ -4799,7 +4801,6 @@
 		CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */; };
 		CEAF4ECF089D6E9400DE46AF /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
 		CEB1DA6908A3B1040058C303 /* smalltrash.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEB1DA6608A3B1040058C303 /* smalltrash.tif */; };
-		CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
 		CEBA30130EEDB3FF00D920B4 /* libvtkexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE24490D0DA42A7600B8D506 /* libvtkexpat.a */; };
 		CEBA30160EEDB4EB00D920B4 /* libvtkFiltering.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449000DA42A7600B8D506 /* libvtkFiltering.a */; };
 		CEBA30180EEDB52100D920B4 /* libvtkfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449050DA42A7600B8D506 /* libvtkfreetype.a */; };
@@ -6849,7 +6850,6 @@
 		CEC70A0910A5C844008935EA /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A17105D4DE200CE6AAF /* AddressBook.framework */; };
 		CEC70A0A10A5C844008935EA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A18105D4DE200CE6AAF /* Security.framework */; };
 		CEC70A0B10A5C844008935EA /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
-		CEC70A8A10A5CBB4008935EA /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
 		CEC7FC6E10A5C844008935EA /* MyOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0813D6057C698900A72813 /* MyOutlineView.h */; };
 		CEC7FC7010A5C844008935EA /* NSFont_OpenGL.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3C6A8E057ADCA60001052D /* NSFont_OpenGL.h */; };
 		CEC7FC7110A5C844008935EA /* NSFullScreenWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABAA284B058A4F7F00F0601D /* NSFullScreenWindow.h */; };
@@ -7456,8 +7456,6 @@
 		CEC7FFFF10A5C844008935EA /* vtkCone.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355E5E0EED998A005A823F /* vtkCone.h */; };
 		CECBF93A0FE6B1C200425ED4 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
 		CECBF93B0FE6B1C300425ED4 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
-		CECBF93C0FE6B1C300425ED4 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
-		CECBF93D0FE6B1C400425ED4 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
 		CECDBE6A0C95467B006B11A5 /* AnnotationsDefault.plist in Resources */ = {isa = PBXBuildFile; fileRef = CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */; };
 		CECEF72E081BB265002ECC99 /* DICOMExport.h in Headers */ = {isa = PBXBuildFile; fileRef = CECEF72C081BB265002ECC99 /* DICOMExport.h */; };
 		CECEF72F081BB265002ECC99 /* DICOMExport.m in Sources */ = {isa = PBXBuildFile; fileRef = CECEF72D081BB265002ECC99 /* DICOMExport.m */; };
@@ -11741,8 +11739,9 @@
 				BFE0652B06755B7200AC4B67 /* Cocoa.framework in Frameworks */,
 				7E47658007428C80000C9A74 /* Accelerate.framework in Frameworks */,
 				BFB8F7F7087B805F007ABE20 /* libjasper2.a in Frameworks */,
-				CECBF93C0FE6B1C300425ED4 /* libopenjpeg.a in Frameworks */,
 				AB61D9BE11BD32E5003BC1A4 /* IOKit.framework in Frameworks */,
+				CE66BDC812303EC700BE2799 /* libPapyrusToolkit.a in Frameworks */,
+				CE66BE2E123044A000BE2799 /* libopenjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11777,7 +11776,6 @@
 				CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */,
 				A97E19EF0CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */,
 				CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
-				CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */,
 				BFBF3AA109B681F500545F5E /* libcrypto.dylib in Frameworks */,
 				BFBF3AA209B681F500545F5E /* libssl.dylib in Frameworks */,
 				BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */,
@@ -11833,7 +11831,6 @@
 				ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */,
 				84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */,
 				CE8D057E0FD8505000165DDE /* OsiriX.framework in Frameworks */,
-				CECBF93D0FE6B1C400425ED4 /* libopenjpeg.a in Frameworks */,
 				CE790A1A105D4DE200CE6AAF /* AddressBook.framework in Frameworks */,
 				CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */,
 				CE790A1C105D4DE200CE6AAF /* WebKit.framework in Frameworks */,
@@ -11901,7 +11898,6 @@
 				CEC70A0910A5C844008935EA /* AddressBook.framework in Frameworks */,
 				CEC70A0A10A5C844008935EA /* Security.framework in Frameworks */,
 				CEC70A0B10A5C844008935EA /* WebKit.framework in Frameworks */,
-				CEC70A8A10A5CBB4008935EA /* libopenjpeg.a in Frameworks */,
 				8406956410B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
 				841524C6113D6BDB008250E6 /* QuartzCore.framework in Frameworks */,
 				597DA7B41188340500D3BBCF /* SecurityInterface.framework in Frameworks */,
@@ -12218,9 +12214,9 @@
 			children = (
 				CE11138608EDD5E2005B15E1 /* ITKLibs */,
 				CE11138108EDD5CE005B15E1 /* VTKLibs */,
-				CEED77DD1230393A00258D00 /* libPapyrusToolkit.a */,
 				CEB7179706CE7CBD00084CA5 /* libjasper2.a */,
 				ABDEB38B0D1827440079C938 /* libopenjpeg.a */,
+				CEED77DD1230393A00258D00 /* libPapyrusToolkit.a */,
 				ABDEB38C0D1827440079C938 /* openjpeg.h */,
 				ABDE6E0806398E3400F0C5DD /* LibTiff */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
@@ -25409,6 +25405,7 @@
 					Binaries/Jasper,
 					"$(SRCROOT)/Binaries/Jasper",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
+					"\"$(SRCROOT)/Binaries\"",
 				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
@@ -25889,6 +25886,7 @@
 					Binaries/Jasper,
 					"$(SRCROOT)/Binaries/Jasper",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
+					"\"$(SRCROOT)/Binaries\"",
 				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
@@ -26196,6 +26194,7 @@
 					Binaries/Jasper,
 					"$(SRCROOT)/Binaries/Jasper",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
+					"\"$(SRCROOT)/Binaries\"",
 				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
