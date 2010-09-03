@@ -36,6 +36,7 @@
 #endif
 #import "DicomFileDCMTKCategory.h"
 #import "PluginManager.h"
+#import "NSString+N2.h"
 
 #ifndef DECOMPRESS_APP
 #include "nifti1.h"
@@ -159,11 +160,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	NSMutableString	*mutable = [NSMutableString stringWithString: str];
 	
-	[mutable replaceOccurrencesOfString:@"^" withString:@" " options:0 range:NSMakeRange(0, [mutable length])]; 
-	[mutable replaceOccurrencesOfString:@"/" withString:@"-" options:0 range:NSMakeRange(0, [mutable length])]; 
-	[mutable replaceOccurrencesOfString:@"\r" withString:@"" options:0 range:NSMakeRange(0, [mutable length])]; 
-	[mutable replaceOccurrencesOfString:@"\n" withString:@"" options:0 range:NSMakeRange(0, [mutable length])]; 
-	[mutable replaceOccurrencesOfString:@"\"" withString:@"'" options:0 range:NSMakeRange(0, [mutable length])];
+	[mutable replaceOccurrencesOfString:@"^" withString:@" " options:0 range:mutable.range]; 
+	[mutable replaceOccurrencesOfString:@"/" withString:@"-" options:0 range:mutable.range]; 
+	[mutable replaceOccurrencesOfString:@"\r" withString:@"" options:0 range:mutable.range]; 
+	[mutable replaceOccurrencesOfString:@"\n" withString:@"" options:0 range:mutable.range]; 
+	[mutable replaceOccurrencesOfString:@"\"" withString:@"'" options:0 range:mutable.range];
 	
 	
 	int i = [mutable length];
@@ -204,7 +205,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[result appendString: s];
 				
 				if( encoding[ index] == -2147481280)	// Korean support
-					[result replaceOccurrencesOfString:@"$)C" withString:@"" options:0 range:NSMakeRange(0, [result length])];
+					[result replaceOccurrencesOfString:@"$)C" withString:@"" options:0 range:result.range];
 				
 				[s release];
 			}
@@ -221,9 +222,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	if( separators)
 	{
-		[result replaceOccurrencesOfString: @"\x1b" withString: @"" options: 0 range: NSMakeRange(0, [result length])];
-		[result replaceOccurrencesOfString: @"(B=)" withString: @"=" options: 0 range: NSMakeRange(0, [result length])];
-		[result replaceOccurrencesOfString: @"(B" withString: @"" options: 0 range: NSMakeRange(0, [result length])];
+		[result replaceOccurrencesOfString: @"\x1b" withString: @"" options: 0 range:result.range];
+		[result replaceOccurrencesOfString: @"(B=)" withString: @"=" options: 0 range:result.range];
+		[result replaceOccurrencesOfString: @"(B" withString: @"" options: 0 range:result.range];
 	}
 	
 	return [DicomFile NSreplaceBadCharacter: result];

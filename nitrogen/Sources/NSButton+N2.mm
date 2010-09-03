@@ -15,6 +15,7 @@
 #import "NSButton+N2.h"
 #import "NS(Attributed)String+Geometrics.h"
 #import "N2Operators.h"
+#import "NSString+N2.h"
 
 @implementation NSButton (N2)
 
@@ -45,7 +46,7 @@
 
 -(void)setTextColor:(NSColor*)color {
 	NSMutableAttributedString* text = [[self attributedTitle] mutableCopy];
-	NSRange range = NSMakeRange(0, [text length]);
+	NSRange range = text.range;
 	
 	[text addAttribute:NSForegroundColorAttributeName value:color range:range];
 	[text fixAttributesInRange:range];

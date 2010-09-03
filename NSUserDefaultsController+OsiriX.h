@@ -19,17 +19,28 @@
 
 #pragma mark Bonjour Sharing
 
++(void)InitOsirixPrefs;
+
 extern NSString* const OsirixBonjourSharingActiveFlagDefaultsKey;
-+(BOOL)isBonjourSharingActive;
++(BOOL)IsBonjourSharingActive;
 
 extern NSString* const OsirixBonjourSharingNameDefaultsKey;
-+(NSString*)bonjourSharingName;
-+(NSString*)defaultBonjourSharingName;
++(NSString*)BonjourSharingName;
++(NSString*)DefaultBonjourSharingName;
 
 extern NSString* const OsirixBonjourSharingPasswordFlagDefaultsKey;
-+(BOOL)isBonjourSharingPasswordProtected;
++(BOOL)IsBonjourSharingPasswordProtected;
 
 extern NSString* const OsirixBonjourSharingPasswordDefaultsKey;
-+(NSString*)bonjourSharingPassword;
++(NSString*)BonjourSharingPassword;
+
+extern NSString* const OsirixWebServerUsesWeasisDefaultsKey;
++(BOOL)WebServerUsesWeasis;
+
+extern NSString* const OsirixWadoServerActiveDefaultsKey;
++(BOOL)WadoServerActive;
+
+extern NSString* const OsirixWebServerPrefersFlashDefaultsKey;
++(BOOL)WebServerPrefersFlash;
 
 @end

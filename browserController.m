@@ -5370,7 +5370,7 @@ static NSConditionLock *threadLock = nil;
 	
 	while ((key = [enumerator nextObject]))
 	{
-		[pred replaceOccurrencesOfString:key withString: [sub valueForKey: key]	options: NSCaseInsensitiveSearch	range: NSMakeRange(0, [pred length])];
+		[pred replaceOccurrencesOfString:key withString: [sub valueForKey: key]	options: NSCaseInsensitiveSearch range:pred.range];
 	}
 	
 	NSPredicate *predicate;
@@ -16322,7 +16322,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if (seriesPaths) {
 		NSNumber* seriesIdK = [NSNumber numberWithInt:seriesId];
 		
-		path = [path stringByReplacingCharactersInRange:NSMakeRange(0,dirPath.length) withString:@""];
+		path = [path stringByReplacingCharactersInRange:dirPath.range withString:@""];
 		if ([path characterAtIndex:0] == '/')
 			path = [path stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:@""];
 		
@@ -17276,21 +17276,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 	else
 		mstr = [[name mutableCopy] autorelease];
 		
-	[mstr replaceOccurrencesOfString:@" " withString:@"_" options:0 range:NSMakeRange(0, mstr.length)];
-	[mstr replaceOccurrencesOfString:@"." withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
-	[mstr replaceOccurrencesOfString:@"," withString:@"" options:0 range:NSMakeRange(0, mstr.length)]; 
-	[mstr replaceOccurrencesOfString:@"^" withString:@"" options:0 range:NSMakeRange(0, mstr.length)]; 
-	[mstr replaceOccurrencesOfString:@"/" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
-	[mstr replaceOccurrencesOfString:@"\\" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
-	[mstr replaceOccurrencesOfString:@"|" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
-	[mstr replaceOccurrencesOfString:@"-" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
-	[mstr replaceOccurrencesOfString:@":" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
-	[mstr replaceOccurrencesOfString:@"*" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
-	[mstr replaceOccurrencesOfString:@"<" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
-	[mstr replaceOccurrencesOfString:@">" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
-	[mstr replaceOccurrencesOfString:@"?" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
-	[mstr replaceOccurrencesOfString:@"#" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
-	[mstr replaceOccurrencesOfString:@"%" withString:@"" options:0 range:NSMakeRange(0, mstr.length)];
+	[mstr replaceOccurrencesOfString:@" " withString:@"_" options:0 range:mstr.range];
+	[mstr replaceOccurrencesOfString:@"." withString:@"" options:0 range:mstr.range];
+	[mstr replaceOccurrencesOfString:@"," withString:@"" options:0 range:mstr.range]; 
+	[mstr replaceOccurrencesOfString:@"^" withString:@"" options:0 range:mstr.range]; 
+	[mstr replaceOccurrencesOfString:@"/" withString:@"" options:0 range:mstr.range];
+	[mstr replaceOccurrencesOfString:@"\\" withString:@"" options:0 range:mstr.range];
+	[mstr replaceOccurrencesOfString:@"|" withString:@"" options:0 range:mstr.range];
+	[mstr replaceOccurrencesOfString:@"-" withString:@"" options:0 range:mstr.range];
+	[mstr replaceOccurrencesOfString:@":" withString:@"" options:0 range:mstr.range];
+	[mstr replaceOccurrencesOfString:@"*" withString:@"" options:0 range:mstr.range];
+	[mstr replaceOccurrencesOfString:@"<" withString:@"" options:0 range:mstr.range];
+	[mstr replaceOccurrencesOfString:@">" withString:@"" options:0 range:mstr.range];
+	[mstr replaceOccurrencesOfString:@"?" withString:@"" options:0 range:mstr.range];
+	[mstr replaceOccurrencesOfString:@"#" withString:@"" options:0 range:mstr.range];
+	[mstr replaceOccurrencesOfString:@"%" withString:@"" options:0 range:mstr.range];
 	
 	return mstr;
 }

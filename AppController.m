@@ -1770,7 +1770,7 @@ static NSDate *lastWarningDate = nil;
 
 	BonjourDICOMService = [[NSNetService alloc] initWithDomain:@"" type:@"_dicom._tcp." name: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
 	
-	NSString* description = [NSUserDefaultsController defaultBonjourSharingName];
+	NSString* description = [NSUserDefaultsController BonjourSharingName];
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	
 	if( description && [description length] > 0)
@@ -3115,6 +3115,7 @@ static BOOL initialized = NO;
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
+	[NSUserDefaultsController InitOsirixPrefs];
 	
 	if( [NSDate timeIntervalSinceReferenceDate] - [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastDate32bitPipelineCheck"] > 60*60*24*30) // 30 days
 	{

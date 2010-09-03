@@ -30,7 +30,7 @@
 		8D202CF80486D31800D8A456 /* OSIWebSharingPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIWebSharingPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB80A1BD0A19C3C000FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		ABB3CA7410FB711900E0FA88 /* DDKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDKeychain.h; path = ../../cocoahttpserver/DDKeychain.h; sourceTree = SOURCE_ROOT; };
-		CE3B7A0C113BD54200B64FC2 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CE3B7A0C113BD54200B64FC2 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE4B5C7010E5F6B300C11948 /* OSIWebSharingPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWebSharingPreferencePanePref.h; sourceTree = "<group>"; };
 		CE4B5C7110E5F6B300C11948 /* OSIWebSharingPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIWebSharingPreferencePanePref.m; sourceTree = "<group>"; };
 		CE4B5C7410E5F6BF00C11948 /* OSIWebSharingPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWebSharingPreferencePane_Prefix.pch; sourceTree = "<group>"; };

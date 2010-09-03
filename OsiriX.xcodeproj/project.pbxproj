@@ -255,6 +255,12 @@
 		59F5F4ED11F485CC0047A90D /* BrowserController+Activity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F4EB11F485CC0047A90D /* BrowserController+Activity.mm */; };
 		59F5F4EE11F485CC0047A90D /* BrowserController+Activity.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */; };
 		59F5F4EF11F485CC0047A90D /* BrowserController+Activity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F4EB11F485CC0047A90D /* BrowserController+Activity.mm */; };
+		59FB64391230EE4100EBA136 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64341230EE4100EBA136 /* libfreetype.a */; };
+		59FB643A1230EE4100EBA136 /* libgif.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64351230EE4100EBA136 /* libgif.a */; };
+		59FB643B1230EE4100EBA136 /* libming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64361230EE4100EBA136 /* libming.a */; };
+		59FB643C1230EE4100EBA136 /* libpng12.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64371230EE4100EBA136 /* libpng12.a */; };
+		59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
+		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -8121,6 +8127,13 @@
 		59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageButtonCell.mm; path = nitrogen/Sources/N2ImageButtonCell.mm; sourceTree = "<group>"; };
 		59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BrowserController+Activity.h"; sourceTree = "<group>"; };
 		59F5F4EB11F485CC0047A90D /* BrowserController+Activity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "BrowserController+Activity.mm"; sourceTree = "<group>"; };
+		59FB64341230EE4100EBA136 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = Binaries/Ming/libfreetype.a; sourceTree = "<group>"; };
+		59FB64351230EE4100EBA136 /* libgif.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgif.a; path = Binaries/Ming/libgif.a; sourceTree = "<group>"; };
+		59FB64361230EE4100EBA136 /* libming.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libming.a; path = Binaries/Ming/libming.a; sourceTree = "<group>"; };
+		59FB64371230EE4100EBA136 /* libpng12.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng12.a; path = Binaries/Ming/libpng12.a; sourceTree = "<group>"; };
+		59FB64771231101B00EBA136 /* mingpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mingpp.h; path = Binaries/Ming/mingpp.h; sourceTree = "<group>"; };
+		59FB647D1231106000EBA136 /* ming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ming.h; path = Binaries/Ming/ming.h; sourceTree = "<group>"; };
+		59FB652912312D8900EBA136 /* weasis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = weasis; path = Binaries/weasis; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
 		7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "DCM Framework_Prefix.pch"; sourceTree = "<group>"; };
@@ -8621,7 +8634,7 @@
 		AB73E1480649839300545980 /* Studies.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Studies.tif; sourceTree = "<group>"; };
 		AB746742065938DB005838D5 /* Pencil.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Pencil.tif; sourceTree = "<group>"; };
 		AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagSmallOpposite.tif; sourceTree = "<group>"; };
-		AB78245B0D3BACC700460DCE /* WebServicesHTML */ = {isa = PBXFileReference; lastKnownFileType = folder; path = WebServicesHTML; sourceTree = "<group>"; };
+		AB78245B0D3BACC700460DCE /* WebServicesHTML */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WebServicesHTML; path = Binaries/WebServicesHTML; sourceTree = "<group>"; };
 		AB785FB6061A3C0700EC48D3 /* MyNSTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyNSTextView.h; sourceTree = "<group>"; };
 		AB785FB7061A3C0700EC48D3 /* MyNSTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyNSTextView.m; sourceTree = "<group>"; };
 		AB7CB7AF0A6E3886008DFCC9 /* error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = error.png; sourceTree = "<group>"; };
@@ -11860,6 +11873,10 @@
 				CE30BB1D10D97E8A009E297C /* QTKit.framework in Frameworks */,
 				84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */,
 				CEED780812303C8E00258D00 /* libPapyrusToolkit.a in Frameworks */,
+				59FB64391230EE4100EBA136 /* libfreetype.a in Frameworks */,
+				59FB643A1230EE4100EBA136 /* libgif.a in Frameworks */,
+				59FB643B1230EE4100EBA136 /* libming.a in Frameworks */,
+				59FB643C1230EE4100EBA136 /* libpng12.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12112,6 +12129,7 @@
 				ABE0D6920CDB1A4400F0494B /* iChatHelper.xib */,
 				CE5A7F8B0CB9430D009C80B4 /* 32-bit shell.app */,
 				CE898D8A0CBA1B470029E907 /* Osirix32bitShell.icns */,
+				59FB652912312D8900EBA136 /* weasis */,
 				CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */,
 				CE897DD30C21D951005C669E /* texture.tif */,
 				844003990E8CF99500A00EBD /* dciodvfy */,
@@ -12216,6 +12234,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				59FB64331230EE2F00EBA136 /* Ming */,
 				CE11138608EDD5E2005B15E1 /* ITKLibs */,
 				CE11138108EDD5CE005B15E1 /* VTKLibs */,
 				CEB7179706CE7CBD00084CA5 /* libjasper2.a */,
@@ -12404,6 +12423,19 @@
 				596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */,
 			);
 			name = Preferences;
+			sourceTree = "<group>";
+		};
+		59FB64331230EE2F00EBA136 /* Ming */ = {
+			isa = PBXGroup;
+			children = (
+				59FB64341230EE4100EBA136 /* libfreetype.a */,
+				59FB64351230EE4100EBA136 /* libgif.a */,
+				59FB64361230EE4100EBA136 /* libming.a */,
+				59FB64371230EE4100EBA136 /* libpng12.a */,
+				59FB647D1231106000EBA136 /* ming.h */,
+				59FB64771231101B00EBA136 /* mingpp.h */,
+			);
+			name = Ming;
 			sourceTree = "<group>";
 		};
 		7E0339E307415C330025DDB4 /* Burning */ = {
@@ -22056,6 +22088,7 @@
 				84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */,
 				A9A80E3811F73E22009F54B9 /* Activity_Stop.tif in Resources */,
 				A9A80E3911F73E22009F54B9 /* Activity_StopPressed.tif in Resources */,
+				59FB654F12312D8900EBA136 /* weasis in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22438,7 +22471,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo libPapyrusToolkit.a.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd \"$SRCROOT\"\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd \"$SRCROOT\"\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo WebServicesHTML.zip\nunzip -uo Weasis.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd \"$SRCROOT\"\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd \"$SRCROOT\"\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
 		59BDEC81117C9951007F1F2C /* Version */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -23971,6 +24004,7 @@
 				CE111A641165CDC000EDD254 /* jcshuff.c in Sources */,
 				59BDEF45117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */,
 				CEED77DA123038F300258D00 /* PapyVars3.c in Sources */,
+				59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25708,6 +25742,7 @@
 					Binaries/LibTiff,
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/Binaries/Ming\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -25996,6 +26031,7 @@
 					Binaries/LibTiff,
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/Binaries/Ming\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -26284,6 +26320,7 @@
 					Binaries/LibTiff,
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/Binaries/Ming\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",

@@ -73,8 +73,7 @@ char *GetPrivateIP()
 }
 
 -(void)awakeFromNib {
-	NSLog(@"def: %@", [NSUserDefaultsController defaultBonjourSharingName]);
-	[sharingNameField.cell setPlaceholderString:[NSUserDefaultsController defaultBonjourSharingName]];
+	[sharingNameField.cell setPlaceholderString:[NSUserDefaultsController DefaultBonjourSharingName]];
 }
 
 - (void) dealloc

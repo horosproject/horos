@@ -16,6 +16,7 @@
 #import "DicomFile.h"
 #import "OsiriX/DCM.h"
 #import "BrowserController.h"
+#import "NSString+N2.h"
 
 // if you want check point log info, define CHECK to the next line, uncommented:
 #define CHECK NSLog(@"Applescript result code = %d", ok);
@@ -116,7 +117,7 @@ static id aedesc_to_id(AEDesc *desc)
 	
 	NSMutableAttributedString	*rtf = [[NSMutableAttributedString alloc] initWithString: file];
 	
-	[[rtf RTFFromRange:NSMakeRange(0, [rtf length]) documentAttributes: nil] writeToFile: path atomically:YES]; // To support full encoding in MicroSoft Word
+	[[rtf RTFFromRange:rtf.range documentAttributes: nil] writeToFile: path atomically:YES]; // To support full encoding in MicroSoft Word
 	
 	return path;
 }
@@ -243,7 +244,7 @@ static id aedesc_to_id(AEDesc *desc)
 				}
 				else string = [[study valueForKey: name] description];
 				
-				NSRange	searchRange = NSMakeRange(0, [rtf length]);
+				NSRange	searchRange = rtf.range;
 				
 				do
 				{
@@ -264,7 +265,7 @@ static id aedesc_to_id(AEDesc *desc)
 			
 			// TODAY
 			
-			NSRange	searchRange = NSMakeRange(0, [rtf length]);
+			NSRange	searchRange = rtf.range;
 			
 			range = [rtfString rangeOfString: [NSString stringWithString:@"«today»"] options:0 range: searchRange];
 			if( range.length > 0)
@@ -314,7 +315,7 @@ static id aedesc_to_id(AEDesc *desc)
 				while( moreFields);
 			}
 			
-			[[rtf RTFFromRange:NSMakeRange(0, [rtf length]) documentAttributes:attr] writeToFile:destinationFile atomically:YES];
+			[[rtf RTFFromRange:rtf.range documentAttributes:attr] writeToFile:destinationFile atomically:YES];
 			
 			[rtf release];
 			[study setValue: destinationFile forKey:@"reportURL"];
@@ -472,13 +473,13 @@ CHECK;
 			
 		//		« is encoded as &#xAB;
 		//      » is encoded as &#xBB;
-		[aString replaceOccurrencesOfString:[NSString stringWithFormat:@"&#xAB;%@&#xBB;", propertyName] withString:propertyValue options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
-		[aString replaceOccurrencesOfString:[NSString stringWithFormat:@"«%@»", propertyName] withString:propertyValue options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
+		[aString replaceOccurrencesOfString:[NSString stringWithFormat:@"&#xAB;%@&#xBB;", propertyName] withString:propertyValue options:NSLiteralSearch range:aString.range];
+		[aString replaceOccurrencesOfString:[NSString stringWithFormat:@"«%@»", propertyName] withString:propertyValue options:NSLiteralSearch range:aString.range];
 	}
 	
 	// "today"
-	[aString replaceOccurrencesOfString:@"&#xAB;today&#xBB;" withString:[date stringFromDate: [NSDate date]] options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
-	[aString replaceOccurrencesOfString:@"«today»" withString:[date stringFromDate: [NSDate date]] options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
+	[aString replaceOccurrencesOfString:@"&#xAB;today&#xBB;" withString:[date stringFromDate: [NSDate date]] options:NSLiteralSearch range:aString.range];
+	[aString replaceOccurrencesOfString:@"«today»" withString:[date stringFromDate: [NSDate date]] options:NSLiteralSearch range:aString.range];
 	
 	NSArray	*seriesArray = [[BrowserController currentBrowser] childrenArray: aStudy];
 	NSArray	*imagePathsArray = [[BrowserController currentBrowser] imagesPathArray: [seriesArray objectAtIndex: 0]];
@@ -738,7 +739,7 @@ CHECK;
 - (void)setTemplateName:(NSString *)aName;
 {
 	[templateName setString:aName];
-	[templateName replaceOccurrencesOfString:@".template" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateName length])];
+	[templateName replaceOccurrencesOfString:@".template" withString:@"" options:NSLiteralSearch range:templateName.range];
 	[templateName insertString:@"OsiriX " atIndex:0];
 }
 

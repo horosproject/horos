@@ -89,7 +89,7 @@
 	
 	NSMutableString* temp = [self mutableCopy];
 	for (NSString* k in chars)
-		[temp replaceOccurrencesOfString:k withString:[chars objectForKey:k] options:NSLiteralSearch range:NSMakeRange(0, [temp length])];
+		[temp replaceOccurrencesOfString:k withString:[chars objectForKey:k] options:NSLiteralSearch range:temp.range];
 	return [NSString stringWithString: temp];
 }
 
@@ -105,8 +105,8 @@
 	NSMutableString* temp = [self mutableCopy];
 	for (NSString* k in chars)
 		if (!unescape)
-			[temp replaceOccurrencesOfString:k withString:[chars objectForKey:k] options:NSLiteralSearch range:NSMakeRange(0, [temp length])];
-		else [temp replaceOccurrencesOfString:[chars objectForKey:k] withString:k options:NSLiteralSearch range:NSMakeRange(0, [temp length])];
+			[temp replaceOccurrencesOfString:k withString:[chars objectForKey:k] options:NSLiteralSearch range:temp.range];
+		else [temp replaceOccurrencesOfString:[chars objectForKey:k] withString:k options:NSLiteralSearch range:temp.range];
 	
 	return [NSString stringWithString:temp];
 }
@@ -148,6 +148,18 @@
 		else break;
 	if (dotsCount >= 3) return self;
 	return [self stringByAppendingString:[NSString stringByRepeatingString:@"." times:3-dotsCount]];
+}
+
+-(NSRange)range {
+	return NSMakeRange(0, self.length);
+}
+
+@end
+
+@implementation NSAttributedString (N2)
+
+-(NSRange)range {
+	return NSMakeRange(0, self.length);
 }
 
 @end

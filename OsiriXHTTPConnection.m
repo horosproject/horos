@@ -17,7 +17,11 @@
 #import "CSMailMailClient.h"
 #import "UserTable.h"
 #import "DicomFile.h"
+#import "NSUserDefaultsController+OsiriX.h"
+#import "N2Debug.h"
+#import "NSString+N2.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
+#import "NSString+N2.h"
 
 #import "JSON.h"
 
@@ -182,7 +186,57 @@ NSString* notNil( NSString *s)
 }
 @end
 
+@interface HTTPMimeDataResponse : HTTPDataResponse {
+	NSString* mime;
+}
+
+@property(retain) NSString* mime;
+
+-(id)initWithMime:(NSString*)mime data:(NSData*)data;
+
+@end
+@implementation HTTPMimeDataResponse
+
+@synthesize mime;
+
+-(id)initWithMime:(NSString*)inmime data:(NSData*)indata {
+	self = [super initWithData:indata];
+	self.mime = inmime;
+	return self;
+}
+
+-(NSDictionary*)httpHeaders {
+	if (mime)
+		return [NSDictionary dictionaryWithObject:mime forKey:@"Content-Type"];
+	return NULL;
+}
+
+-(void)dealloc {
+	self.mime = NULL;
+	[super dealloc];
+}
+
+@end
+
+
 @implementation OsiriXHTTPConnection
+
++(BOOL)IsSecureServer {
+	return [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"];
+}
+
++(NSString*)WebServerAddress {
+	NSString* webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey:@"webServerAddress"];
+	if (!webServerAddress.length)
+		webServerAddress = [[AppController sharedAppController] privateIP];
+	return webServerAddress;
+}
+
++(NSString*)WebServerURL {
+	int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
+	NSString* http = self.IsSecureServer ? @"https":@"http";
+	return [NSString stringWithFormat: @"%@://%@:%d", http, self.WebServerAddress, webPort];
+}
 
 + (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message forUser: (NSString*) user ip: (NSString*) ip
 {
@@ -301,12 +355,7 @@ NSString* notNil( NSString *s)
 {
 	[OsiriXHTTPConnection checkWebDirectory];
 	
-	int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
-	
-	NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
-	if( [webServerAddress length] == 0)
-		webServerAddress = [[AppController sharedAppController] privateIP];
 	
 	if( fromEmailAddress == nil)
 		fromEmailAddress = @"";
@@ -322,28 +371,26 @@ NSString* notNil( NSString *s)
 		
 		if( emailMessage)
 		{
-			NSString *http = [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"] ? @"https":@"http";
-			
 			if( customText == nil) customText = @"";
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%customText%" withString: notNil( [customText stringByAppendingString:@"\r\r"]) options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString: notNil( [user valueForKey: @"name"]) options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString: [NSString stringWithFormat: @"%@://%@:%d", http, webServerAddress, webPort] options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%customText%" withString: notNil( [customText stringByAppendingString:@"\r\r"]) options: NSLiteralSearch range:emailMessage.range];
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString: notNil( [user valueForKey: @"name"]) options: NSLiteralSearch range:emailMessage.range];
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString:self.WebServerURL options: NSLiteralSearch range:emailMessage.range];
 			
 			NSMutableString *urls = [NSMutableString string];
 			
 			if( [filteredStudies count] > 1 && predicate != nil)
 			{
 				[urls appendString: NSLocalizedString( @"To view this entire list, including patients names:\r", nil)]; 
-				[urls appendFormat: @"%@ : %@://%@:%d/studyList?%@\r\r\r\r", NSLocalizedString( @"Click here", nil), http, webServerAddress, webPort, predicate]; 
+				[urls appendFormat: @"%@ : %@/studyList?%@\r\r\r\r", NSLocalizedString( @"Click here", nil), self.WebServerURL, predicate]; 
 			}
 			
 			for( NSManagedObject *s in filteredStudies)
 			{
 				[urls appendFormat: @"%@ - %@ (%@)\r", [s valueForKey: @"modality"], [s valueForKey: @"studyName"], [BrowserController DateTimeFormat: [s valueForKey: @"date"]]]; 
-				[urls appendFormat: @"%@ : %@://%@:%d/study?id=%@&browse=all\r\r", NSLocalizedString( @"Click here", nil), http, webServerAddress, webPort, [s valueForKey: @"studyInstanceUID"]]; 
+				[urls appendFormat: @"%@ : %@/study?id=%@&browse=all\r\r", NSLocalizedString( @"Click here", nil), self.WebServerURL, [s valueForKey: @"studyInstanceUID"]]; 
 			}
 			
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString: notNil( urls) options: NSLiteralSearch range: NSMakeRange(0, [emailMessage length])];
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString: notNil( urls) options: NSLiteralSearch range:emailMessage.range];
 			
 			NSString *emailAddress = [user valueForKey: @"email"];
 			
@@ -357,7 +404,7 @@ NSString* notNil( NSString *s)
 			
 			for( NSManagedObject *s in filteredStudies)
 			{
-				[OsiriXHTTPConnection updateLogEntryForStudy: s withMessage: @"notification email" forUser: [user valueForKey: @"name"] ip: webServerAddress];
+				[OsiriXHTTPConnection updateLogEntryForStudy: s withMessage: @"notification email" forUser: [user valueForKey: @"name"] ip:[OsiriXHTTPConnection WebServerAddress]];
 			}
 		}
 		else NSLog( @"********* warning : CANNOT send notifications emails, because emailTemplate.txt == nil");
@@ -448,8 +495,6 @@ NSString* notNil( NSString *s)
 			if( [webServerAddress length] == 0)
 				webServerAddress = [[AppController sharedAppController] privateIP];
 			
-			int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
-			
 			if( [studies count] > 0)
 			{
 				// Find all users
@@ -524,7 +569,10 @@ NSString* notNil( NSString *s)
 	
 	if( [path hasPrefix: @"/index"])
 		return NO;
-		
+	
+	if( [path hasPrefix:@"/weasis/"])
+		return NO;
+	
 	if( [path isEqualToString: @"/favicon.ico"])
 		return NO;
 	
@@ -566,7 +614,7 @@ NSString* notNil( NSString *s)
 	[currentUser release];
 	currentUser = nil;
 	
-	if( [username length] > 3)
+	if( [username length] >= 2)
 	{
 		NSArray	*users = nil;
 		
@@ -605,13 +653,17 @@ NSString* notNil( NSString *s)
 	return [currentUser valueForKey: @"password"];
 }
 
+/*-(BOOL)isAuthenticated {
+	
+}*/
+
 /**
  * Overrides HTTPConnection's method
  **/
 - (BOOL)isSecureServer
 {
 	// Create an HTTPS server (all connections will be secured via SSL/TLS)
-	return [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"];
+	return [OsiriXHTTPConnection IsSecureServer];
 }
 
 /**
@@ -696,8 +748,8 @@ NSString* notNil( NSString *s)
 	
 	if( v != NO)
 	{
-		[s replaceOccurrencesOfString: begin withString: @"" options: NSLiteralSearch range: NSMakeRange(0, [s length])];
-		[s replaceOccurrencesOfString: end withString: @"" options: NSLiteralSearch range: NSMakeRange(0, [s length])];
+		[s replaceOccurrencesOfString: begin withString: @"" options: NSLiteralSearch range:s.range];
+		[s replaceOccurrencesOfString: end withString: @"" options: NSLiteralSearch range:s.range];
 	}
 	
 	return s;
@@ -707,12 +759,16 @@ NSString* notNil( NSString *s)
 {
 	BOOL dicomSend = NO;
 	BOOL shareSend = NO;
+	BOOL weasis = NO;
 	
 	if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue])
 		dicomSend = YES;
 		
 	if( currentUser && [[currentUser valueForKey: @"shareStudyWithUser"] boolValue])
 		shareSend = YES;
+	
+	if ([NSUserDefaultsController WebServerUsesWeasis])
+		weasis = YES;
 	
 	NSArray *users = nil;
 	
@@ -749,23 +805,24 @@ NSString* notNil( NSString *s)
 	{
 		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"study.html"]];
 		
-		templateString = [self setBlock: @"SendingFunctions1" visible: dicomSend forString: templateString];
-		templateString = [self setBlock: @"SendingFunctions2" visible: dicomSend forString: templateString];
+		templateString = [self setBlock: @"SendingFunctions1" visible: dicomSend|weasis forString: templateString];
+		templateString = [self setBlock: @"SendingFunctions2" visible: dicomSend|weasis forString: templateString];
 		templateString = [self setBlock: @"SendingFunctions3" visible: dicomSend forString: templateString];
 		templateString = [self setBlock: @"SharingFunctions" visible: shareSend forString: templateString];
 		templateString = [self setBlock: @"ZIPFunctions" visible:((currentUser == nil || [[currentUser valueForKey: @"downloadZIP"] boolValue]) && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
+		templateString = [self setBlock: @"Weasis" visible: ( weasis && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
 		
-		[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:templateString.range];
 		
 		NSString *browse = notNil( [parameters objectForKey:@"browse"]);
 		NSString *browseParameter = notNil( [parameters objectForKey:@"browseParameter"]);
 		NSString *search = notNil( [parameters objectForKey:@"search"]);
 		NSString *album = notNil( [parameters objectForKey:@"album"]);
 		
-		[templateString replaceOccurrencesOfString:@"%browse%" withString: notNil( browse) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: notNil( browseParameter) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%search%" withString: notNil( [OsiriXHTTPConnection decodeURLString:search]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-		[templateString replaceOccurrencesOfString:@"%album%" withString: notNil( [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%browse%" withString: notNil( browse) options:NSLiteralSearch range:templateString.range];
+		[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: notNil( browseParameter) options:NSLiteralSearch range:templateString.range];
+		[templateString replaceOccurrencesOfString:@"%search%" withString: notNil( [OsiriXHTTPConnection decodeURLString:search]) options:NSLiteralSearch range:templateString.range];
+		[templateString replaceOccurrencesOfString:@"%album%" withString: notNil( [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]) options:NSLiteralSearch range:templateString.range];
 		
 		NSString *LocalizedLabel_StudyList = @"";
 		if(![search isEqualToString:@""])
@@ -782,14 +839,14 @@ NSString* notNil( NSString *s)
 				LocalizedLabel_StudyList = NSLocalizedString(@"Study List", nil);
 		}
 		
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString: notNil( LocalizedLabel_StudyList) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString: notNil( LocalizedLabel_StudyList) options:NSLiteralSearch range:templateString.range];
 		
 		if( [[study valueForKey:@"reportURL"] hasPrefix: @"http://"] || [[study valueForKey:@"reportURL"] hasPrefix: @"https://"])
 		{
 			templateString = [self setBlock: @"Report" visible: NO forString: templateString];
 			templateString = [self setBlock: @"ReportURL" visible: YES forString: templateString];
 			
-			[templateString replaceOccurrencesOfString:@"%ReportURLString%" withString: notNil( [study valueForKey:@"reportURL"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString:@"%ReportURLString%" withString: notNil( [study valueForKey:@"reportURL"]) options:NSLiteralSearch range:templateString.range];
 		}
 		else
 		{
@@ -797,9 +854,9 @@ NSString* notNil( NSString *s)
 			templateString = [self setBlock: @"Report" visible: ([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
 			
 			if( [[[study valueForKey:@"reportURL"] pathExtension] isEqualToString: @"pages"])
-				[templateString replaceOccurrencesOfString:@"%reportExtension%" withString: notNil( @"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%reportExtension%" withString: notNil( @"zip") options:NSLiteralSearch range:templateString.range];
 			else
-				[templateString replaceOccurrencesOfString:@"%reportExtension%" withString: notNil( [[study valueForKey:@"reportURL"] pathExtension]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%reportExtension%" withString: notNil( [[study valueForKey:@"reportURL"] pathExtension]) options:NSLiteralSearch range:templateString.range];
 		}
 
 			
@@ -811,18 +868,18 @@ NSString* notNil( NSString *s)
 		
 		returnHTML = [NSMutableString stringWithString: templateStringStart];
 		
-		[returnHTML replaceOccurrencesOfString:@"%PageTitle%" withString:notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-		[returnHTML replaceOccurrencesOfString:@"%PatientID%" withString:notNil( [study valueForKey:@"patientID"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-		[returnHTML replaceOccurrencesOfString:@"%PatientName%" withString:notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-		[returnHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:notNil( [study valueForKey:@"studyName"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-		[returnHTML replaceOccurrencesOfString:@"%StudyModality%" withString:notNil( [study valueForKey:@"modality"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+		[returnHTML replaceOccurrencesOfString:@"%PageTitle%" withString:notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:returnHTML.range];
+		[returnHTML replaceOccurrencesOfString:@"%PatientID%" withString:notNil( [study valueForKey:@"patientID"]) options:NSLiteralSearch range:returnHTML.range];
+		[returnHTML replaceOccurrencesOfString:@"%PatientName%" withString:notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:returnHTML.range];
+		[returnHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:notNil( [study valueForKey:@"studyName"]) options:NSLiteralSearch range:returnHTML.range];
+		[returnHTML replaceOccurrencesOfString:@"%StudyModality%" withString:notNil( [study valueForKey:@"modality"]) options:NSLiteralSearch range:returnHTML.range];
 
 		if(![study valueForKey:@"comment"])
 			returnHTML = [self setBlock:@"StudyCommentBlock" visible:NO forString:returnHTML];
 		else
 		{
 			returnHTML = [self setBlock:@"StudyCommentBlock" visible:YES forString:returnHTML];
-			[returnHTML replaceOccurrencesOfString:@"%StudyComment%" withString:notNil([study valueForKey:@"comment"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+			[returnHTML replaceOccurrencesOfString:@"%StudyComment%" withString:notNil([study valueForKey:@"comment"]) options:NSLiteralSearch range:returnHTML.range];
 		}
 
 		NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKey:@"stateText"] intValue]];
@@ -834,7 +891,7 @@ NSString* notNil( NSString *s)
 		else
 		{
 			returnHTML = [self setBlock:@"StudyStateBlock" visible:YES forString:returnHTML];
-			[returnHTML replaceOccurrencesOfString:@"%StudyState%" withString:notNil(stateText) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+			[returnHTML replaceOccurrencesOfString:@"%StudyState%" withString:notNil(stateText) options:NSLiteralSearch range:returnHTML.range];
 		}
 		
 		NSDateFormatter *dobDateFormat = [[[NSDateFormatter alloc] init] autorelease];
@@ -842,9 +899,9 @@ NSString* notNil( NSString *s)
 		NSDateFormatter *dateFormat = [[[NSDateFormatter alloc] init] autorelease];
 		[dateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat2"]];
 		
-		[returnHTML replaceOccurrencesOfString:@"%PatientDOB%" withString: notNil( [dobDateFormat stringFromDate:[study valueForKey:@"dateOfBirth"]]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-		[returnHTML replaceOccurrencesOfString:@"%AccessionNumber%" withString: notNil( [study valueForKey:@"accessionNumber"]) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-		[returnHTML replaceOccurrencesOfString:@"%StudyDate%" withString: [OsiriXHTTPConnection iPhoneCompatibleNumericalFormat: [dateFormat stringFromDate: [study valueForKey:@"date"]]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+		[returnHTML replaceOccurrencesOfString:@"%PatientDOB%" withString: notNil( [dobDateFormat stringFromDate:[study valueForKey:@"dateOfBirth"]]) options:NSLiteralSearch range:returnHTML.range];
+		[returnHTML replaceOccurrencesOfString:@"%AccessionNumber%" withString: notNil( [study valueForKey:@"accessionNumber"]) options:NSLiteralSearch range:returnHTML.range];
+		[returnHTML replaceOccurrencesOfString:@"%StudyDate%" withString: [OsiriXHTTPConnection iPhoneCompatibleNumericalFormat: [dateFormat stringFromDate: [study valueForKey:@"date"]]] options:NSLiteralSearch range:returnHTML.range];
 		
 		NSArray *seriesArray = [study valueForKey:@"imageSeries"];
 		
@@ -863,26 +920,26 @@ NSString* notNil( NSString *s)
 		{
 			NSMutableString *tempHTML = [NSMutableString stringWithString:seriesListItemString];
 			
-			[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:tempHTML.range];
 			lineNumber++;
 			
-			[tempHTML replaceOccurrencesOfString:@"%SeriesName%" withString: notNil( [series valueForKey:@"name"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-			[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString: [NSString stringWithFormat:@"thumbnail?id=%@&studyID=%@", notNil( [series valueForKey:@"seriesInstanceUID"]), notNil( [study valueForKey:@"studyInstanceUID"])] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-			[tempHTML replaceOccurrencesOfString:@"%SeriesID%" withString: notNil( [series valueForKey:@"seriesInstanceUID"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-			[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString: notNil( [series valueForKey:@"comment"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-			[tempHTML replaceOccurrencesOfString:@"%PatientName%" withString: notNil( [series valueForKeyPath:@"study.name"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%SeriesName%" withString: notNil(series.name) options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString: [NSString stringWithFormat:@"thumbnail?id=%@&studyID=%@", notNil( [series valueForKey:@"seriesInstanceUID"]), notNil( [study valueForKey:@"studyInstanceUID"])] options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%SeriesID%" withString: notNil(series.seriesInstanceUID) options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString: notNil( [series valueForKey:@"comment"]) options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%PatientName%" withString: notNil(series.study.name) options:NSLiteralSearch range:tempHTML.range];
 			
 			if( [DCMAbstractSyntaxUID isPDF: [series valueForKey: @"seriesSOPClassUID"]])
-				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"  options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"  options:NSLiteralSearch range:tempHTML.range];
 			else if( [DCMAbstractSyntaxUID isStructuredReport: [series valueForKey: @"seriesSOPClassUID"]])
-				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"  options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"  options:NSLiteralSearch range:tempHTML.range];
 			else
-				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @""  options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @""  options:NSLiteralSearch range:tempHTML.range];
 
 			NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[series valueForKey: @"stateText"] intValue]];
 			if( [[series valueForKey:@"stateText"] intValue] == 0)
 				stateText = nil;
-			[tempHTML replaceOccurrencesOfString:@"%SeriesState%" withString: notNil( stateText) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%SeriesState%" withString: notNil( stateText) options:NSLiteralSearch range:tempHTML.range];
 			
 			int nbFiles = [[series valueForKey:@"noFiles"] intValue];
 			if( nbFiles <= 1)
@@ -891,12 +948,12 @@ NSString* notNil( NSString *s)
 					nbFiles = 1;
 			}
 			NSString *imagesLabel = (nbFiles>1)? NSLocalizedString(@"Images", nil) : NSLocalizedString(@"Image", nil);
-			[tempHTML replaceOccurrencesOfString:@"%SeriesImageNumber%" withString: [NSString stringWithFormat:@"%d %@", nbFiles, imagesLabel] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%SeriesImageNumber%" withString: [NSString stringWithFormat:@"%d %@", nbFiles, imagesLabel] options:NSLiteralSearch range:tempHTML.range];
 			
 			NSString *comment = [series valueForKey:@"comment"];
 			if( comment == nil)
 				comment = @"";
-			[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString: comment options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString: comment options:NSLiteralSearch range:tempHTML.range];
 			
 			
 			NSString *checked = @"";
@@ -906,13 +963,13 @@ NSString* notNil( NSString *s)
 					checked = @"checked";
 			}
 			
-			[tempHTML replaceOccurrencesOfString:@"%checked%" withString: notNil( checked) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%checked%" withString: notNil( checked) options:NSLiteralSearch range:tempHTML.range];
 			
 			[returnHTML appendString:tempHTML];
 		}
 		
 		NSMutableString *tempHTML = [NSMutableString stringWithString:templateStringEnd];
-		[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:NSMakeRange(0, [templateStringEnd length])];
+		[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:templateStringEnd.range];
 		templateStringEnd = [NSString stringWithString:tempHTML];
 		
 		NSString *dicomNodesListItemString = @"";
@@ -927,7 +984,7 @@ NSString* notNil( NSString *s)
 			
 			NSString *checkAllStyle = @"";
 			if([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
-			[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString: notNil( checkAllStyle) options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+			[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString: notNil( checkAllStyle) options:NSLiteralSearch range:returnHTML.range];
 			
 			BOOL selectedDone = NO;
 			
@@ -943,15 +1000,15 @@ NSString* notNil( NSString *s)
 				NSString *dicomNodeDescription = @"This Computer";
 				
 				NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString: notNil( dicomNodeAddress) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-				[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString: notNil( dicomNodePort) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString: notNil( dicomNodeAETitle) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-				[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString: notNil( dicomNodeSyntax) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString: notNil( dicomNodeAddress) options:NSLiteralSearch range:tempHTML.range];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString: notNil( dicomNodePort) options:NSLiteralSearch range:tempHTML.range];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString: notNil( dicomNodeAETitle) options:NSLiteralSearch range:tempHTML.range];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString: notNil( dicomNodeSyntax) options:NSLiteralSearch range:tempHTML.range];
 
 				if(![[settings valueForKey:@"iPhone"] boolValue])
 					dicomNodeDescription = [dicomNodeDescription stringByAppendingFormat:@" [%@:%@]", notNil( dicomNodeAddress), notNil( dicomNodePort)];
 				
-				[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString: notNil( dicomNodeDescription) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString: notNil( dicomNodeDescription) options:NSLiteralSearch range:tempHTML.range];
 				
 				NSString *selected = @"";
 					
@@ -971,7 +1028,7 @@ NSString* notNil( NSString *s)
 					}
 				}
 				
-				[tempHTML replaceOccurrencesOfString:@"%selected%" withString: notNil( selected) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%selected%" withString: notNil( selected) options:NSLiteralSearch range:tempHTML.range];
 				
 				[returnHTML appendString:tempHTML];
 			}
@@ -989,15 +1046,15 @@ NSString* notNil( NSString *s)
 					NSString *dicomNodeDescription = notNil( [node objectForKey:@"Description"]);
 					
 					NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString: notNil( dicomNodeAddress) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString: notNil( dicomNodePort) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString: notNil( dicomNodeAETitle) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString: notNil( dicomNodeSyntax) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+					[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString: notNil( dicomNodeAddress) options:NSLiteralSearch range:tempHTML.range];
+					[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString: notNil( dicomNodePort) options:NSLiteralSearch range:tempHTML.range];
+					[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString: notNil( dicomNodeAETitle) options:NSLiteralSearch range:tempHTML.range];
+					[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString: notNil( dicomNodeSyntax) options:NSLiteralSearch range:tempHTML.range];
 					
 					if(![[settings valueForKey:@"iPhone"] boolValue])
 						dicomNodeDescription = [dicomNodeDescription stringByAppendingFormat:@" [%@:%@]", notNil( dicomNodeAddress), notNil( dicomNodePort)];
 					
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString: notNil( dicomNodeDescription) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+					[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString: notNil( dicomNodeDescription) options:NSLiteralSearch range:tempHTML.range];
 					
 					NSString *selected = @"";
 					
@@ -1017,7 +1074,7 @@ NSString* notNil( NSString *s)
 						}
 					}
 					
-					[tempHTML replaceOccurrencesOfString:@"%selected%" withString: notNil( selected) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+					[tempHTML replaceOccurrencesOfString:@"%selected%" withString: notNil( selected) options:NSLiteralSearch range:tempHTML.range];
 					
 					[returnHTML appendString:tempHTML];
 				}
@@ -1027,11 +1084,11 @@ NSString* notNil( NSString *s)
 			
 			if([[parameters objectForKey:@"CheckAll"] isEqualToString:@"on"] || [[parameters objectForKey:@"CheckAll"] isEqualToString:@"checked"])
 			{
-				[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString: @"checked" options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+				[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString: @"checked" options:NSLiteralSearch range:returnHTML.range];
 			}
 			else
 			{
-				[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+				[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString:@"" options:NSLiteralSearch range:returnHTML.range];
 			}
 		}
 		else [returnHTML appendString:templateStringEnd];
@@ -1058,14 +1115,14 @@ NSString* notNil( NSString *s)
 					{
 						NSMutableString *tempHTML = [NSMutableString stringWithString: userListItemString];
 						
-						[tempHTML replaceOccurrencesOfString:@"%username%" withString: notNil( [user valueForKey: @"name"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
-						[tempHTML replaceOccurrencesOfString:@"%email%" withString: notNil( [user valueForKey: @"email"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+						[tempHTML replaceOccurrencesOfString:@"%username%" withString: notNil( [user valueForKey: @"name"]) options:NSLiteralSearch range:tempHTML.range];
+						[tempHTML replaceOccurrencesOfString:@"%email%" withString: notNil( [user valueForKey: @"email"]) options:NSLiteralSearch range:tempHTML.range];
 						
 						NSString *userDescription = [NSString stringWithString:notNil([user valueForKey:@"name"])];
 						if(![[settings valueForKey:@"iPhone"] boolValue])
 							userDescription = [userDescription stringByAppendingFormat:@" (%@)", notNil([user valueForKey:@"email"])];
 						
-						[tempHTML replaceOccurrencesOfString:@"%userDescription%" withString: notNil(userDescription) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+						[tempHTML replaceOccurrencesOfString:@"%userDescription%" withString: notNil(userDescription) options:NSLiteralSearch range:tempHTML.range];
 						
 						[returnHTML appendString: tempHTML];
 					}
@@ -1102,8 +1159,9 @@ NSString* notNil( NSString *s)
 		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"studyList.html"]];
 		
 		templateString = [self setBlock: @"ZIPFunctions" visible: ( currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
+		templateString = [self setBlock: @"Weasis" visible: ( [NSUserDefaultsController WebServerUsesWeasis] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
 		
-		[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:templateString.range];
 		
 		NSArray *tempArray = [templateString componentsSeparatedByString:@"%StudyListItem%"];
 		NSString *templateStringStart = [tempArray objectAtIndex:0];
@@ -1118,11 +1176,11 @@ NSString* notNil( NSString *s)
 		{
 			NSMutableString *tempHTML = [NSMutableString stringWithString:studyListItemString];
 			
-			[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:tempHTML.range];
 			lineNumber++;
 			
 			// filenameString?
-			[tempHTML replaceOccurrencesOfString:@"%StudyListItemName%" withString: notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%StudyListItemName%" withString: notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:tempHTML.range];
 			
 			NSArray *seriesArray = [study valueForKey:@"imageSeries"] ; //imageSeries
 			int count = 0;
@@ -1140,7 +1198,7 @@ NSString* notNil( NSString *s)
 			dateLabel = [OsiriXHTTPConnection unbreakableStringWithString:dateLabel];
 			BOOL displayBlock = YES;
 			if([dateLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:dateLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:dateLabel options:NSLiteralSearch range:tempHTML.range];
 			else
 				displayBlock = NO;
 				
@@ -1149,7 +1207,7 @@ NSString* notNil( NSString *s)
 			NSString *seriesCountLabel = [NSString stringWithFormat:@"%d Series", count];
 			displayBlock = YES;
 			if([seriesCountLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%SeriesCount%" withString:seriesCountLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%SeriesCount%" withString:seriesCountLabel options:NSLiteralSearch range:tempHTML.range];
 			else
 				displayBlock = NO;
 			tempHTML = [self setBlock:@"SeriesCountBlock" visible:displayBlock forString:tempHTML];
@@ -1157,7 +1215,7 @@ NSString* notNil( NSString *s)
 			NSString *patientIDLabel = [NSString stringWithFormat:@"%@", notNil([study valueForKey:@"patientID"])];
 			displayBlock = YES;
 			if([patientIDLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%PatientID%" withString:patientIDLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%PatientID%" withString:patientIDLabel options:NSLiteralSearch range:tempHTML.range];
 			else
 				displayBlock = NO;
 			tempHTML = [self setBlock:@"PatientIDBlock" visible:displayBlock forString:tempHTML];
@@ -1165,7 +1223,7 @@ NSString* notNil( NSString *s)
 			NSString *accessionNumberLabel = [NSString stringWithFormat:@"%@", notNil([study valueForKey:@"accessionNumber"])];
 			displayBlock = YES;
 			if([accessionNumberLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%AccessionNumber%" withString:accessionNumberLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%AccessionNumber%" withString:accessionNumberLabel options:NSLiteralSearch range:tempHTML.range];
 			else
 				displayBlock = NO;
 			tempHTML = [self setBlock:@"AccessionNumberBlock" visible:displayBlock forString:tempHTML];
@@ -1173,7 +1231,7 @@ NSString* notNil( NSString *s)
 			NSString *studyCommentLabel = notNil([study valueForKey:@"comment"]);
 			displayBlock = YES;
 			if([studyCommentLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%StudyComment%" withString:studyCommentLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%StudyComment%" withString:studyCommentLabel options:NSLiteralSearch range:tempHTML.range];
 			else
 				displayBlock = NO;
 				
@@ -1182,7 +1240,7 @@ NSString* notNil( NSString *s)
 			NSString *studyDescriptionLabel = notNil([study valueForKey:@"studyName"]);
 			displayBlock = YES;
 			if([studyDescriptionLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:studyDescriptionLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:studyDescriptionLabel options:NSLiteralSearch range:tempHTML.range];
 			else
 				displayBlock = NO;
 				
@@ -1191,7 +1249,7 @@ NSString* notNil( NSString *s)
 			NSString *studyModalityLabel = notNil([study valueForKey:@"modality"]);
 			displayBlock = YES;
 			if([studyModalityLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%StudyModality%" withString:studyModalityLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%StudyModality%" withString:studyModalityLabel options:NSLiteralSearch range:tempHTML.range];
 			else
 				displayBlock = NO;
 				
@@ -1205,13 +1263,13 @@ NSString* notNil( NSString *s)
 			NSString *studyStateLabel = notNil( stateText);
 			displayBlock = YES;
 			if([studyStateLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%StudyState%" withString:studyStateLabel options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+				[tempHTML replaceOccurrencesOfString:@"%StudyState%" withString:studyStateLabel options:NSLiteralSearch range:tempHTML.range];
 			else
 				displayBlock = NO;
 			
 			tempHTML = [self setBlock:@"StudyStateBlock" visible:displayBlock forString:tempHTML];
 			
-			[tempHTML replaceOccurrencesOfString:@"%StudyListItemID%" withString: notNil( [study valueForKey:@"studyInstanceUID"]) options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+			[tempHTML replaceOccurrencesOfString:@"%StudyListItemID%" withString: notNil( [study valueForKey:@"studyInstanceUID"]) options:NSLiteralSearch range:tempHTML.range];
 			[returnHTML appendString:tempHTML];
 		}
 		
@@ -1545,14 +1603,14 @@ NSString* notNil( NSString *s)
 	if( aString == nil) aString = @"";
 	
 	NSMutableString *encodedString = [NSMutableString stringWithString:aString];
-	[encodedString replaceOccurrencesOfString:@":" withString:@"%3A" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@"/" withString:@"%2F" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@"%" withString:@"%25" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@"#" withString:@"%23" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@";" withString:@"%3B" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@"@" withString:@"%40" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@" " withString:@"+" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@"&" withString:@"%26" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
+	[encodedString replaceOccurrencesOfString:@":" withString:@"%3A" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"/" withString:@"%2F" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"%" withString:@"%25" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"#" withString:@"%23" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@";" withString:@"%3B" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"@" withString:@"%40" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@" " withString:@"+" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"&" withString:@"%26" options:NSLiteralSearch range:encodedString.range];
 	return encodedString;
 }
 
@@ -1561,14 +1619,14 @@ NSString* notNil( NSString *s)
 	if( aString == nil) aString = @"";
 	
 	NSMutableString *encodedString = [NSMutableString stringWithString:aString];
-	[encodedString replaceOccurrencesOfString:@"%3A" withString:@":" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@"%2F" withString:@"/" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@"%25" withString:@"%" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@"%23" withString:@"#" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@"%3B" withString:@";" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@"%40" withString:@"@" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@"+" withString:@" " options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
-	[encodedString replaceOccurrencesOfString:@"%26" withString:@"&" options:NSLiteralSearch range:NSMakeRange(0, [encodedString length])];
+	[encodedString replaceOccurrencesOfString:@"%3A" withString:@":" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"%2F" withString:@"/" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"%25" withString:@"%" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"%23" withString:@"#" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"%3B" withString:@";" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"%40" withString:@"@" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"+" withString:@" " options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"%26" withString:@"&" options:NSLiteralSearch range:encodedString.range];
 	return encodedString;
 }
 
@@ -1604,7 +1662,7 @@ NSString* notNil( NSString *s)
 				[escaped replaceOccurrencesOfString: [NSString stringWithFormat: @"%C", 160 + i]
 										 withString: [codes objectAtIndex: i] 
 											options: NSLiteralSearch 
-											  range: NSMakeRange(0, [escaped length])];
+											  range: escaped.range];
 			}
 		}
 		return escaped;    // Note this is autoreleased
@@ -1644,7 +1702,7 @@ NSString* notNil( NSString *s)
 				[escaped replaceOccurrencesOfString: [codes objectAtIndex: i] 
 										 withString: [NSString stringWithFormat: @"%C", 160 + i] 
 											options: NSLiteralSearch 
-											  range: NSMakeRange(0, [escaped length])];
+											  range: escaped.range];
 			}
 		}
 		return escaped;    // Note this is autoreleased
@@ -1670,7 +1728,7 @@ NSString* notNil( NSString *s)
 + (NSString*)unbreakableStringWithString:(NSString*)aString;
 {
 	NSMutableString* newString = [NSMutableString stringWithString:aString];
-	[newString replaceOccurrencesOfString:@" " withString:@"&nbsp;" options:NSLiteralSearch range:NSMakeRange(0, [newString length])];
+	[newString replaceOccurrencesOfString:@" " withString:@"&nbsp;" options:NSLiteralSearch range:newString.range];
 	return [NSString stringWithString:newString];
 }
 
@@ -1887,9 +1945,14 @@ NSString* notNil( NSString *s)
 			int inc = 0;
 			for( NSImage *img in imagesArray)
 			{
+				NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 				//[[img TIFFRepresentation] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
-				[[img TIFFRepresentationUsingCompression: NSTIFFCompressionLZW factor: 1.0] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
+				if ([outFile hasSuffix:@"swf"])
+					[[[NSBitmapImageRep imageRepWithData:[img TIFFRepresentation]] representationUsingType:NSPNGFileType properties:NULL] writeToFile:[[fileName stringByAppendingString:@" dir"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%6.6d.png", inc]] atomically:YES];
+				else
+					[[img TIFFRepresentationUsingCompression: NSTIFFCompressionLZW factor: 1.0] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
 				inc++;
+				[pool release];
 			}
 			
 			NSTask *theTask = [[[NSTask alloc] init] autorelease];
@@ -1994,11 +2057,11 @@ NSString* notNil( NSString *s)
 	NSMutableString *fileName = [NSMutableString stringWithString:name];
 	[BrowserController replaceNotAdmitted: fileName];
 	fileName = [NSMutableString stringWithString:[path stringByAppendingPathComponent: fileName]];
-	[fileName appendString:@".mov"];
+	[fileName appendFormat:@".%@", fileURL.pathExtension];
 
 	NSString *outFile;
 
-	if( isiPhone)
+	if (isiPhone)
 		outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
 	else
 		outFile = fileName;
@@ -2154,6 +2217,11 @@ NSString* notNil( NSString *s)
 		url = [url stringByAppendingString: [[[NSString alloc] initWithBytes: [[multipartData lastObject] bytes] length: [(NSData*) [multipartData lastObject] length] encoding: NSUTF8StringEncoding] autorelease]];
 	}
 	
+	DLog(@"HTTP GET %@", url);
+	if ([url isEqual:@"/weasis/weasis-launcher.jar"]) {
+		NSLog(@"!!!");
+	}
+	
 	// parse the URL to find the parameters (if any)
 	NSArray *urlComponenents = [url componentsSeparatedByString:@"?"];
 	NSString *parameterString = @"";
@@ -2189,6 +2257,7 @@ NSString* notNil( NSString *s)
 	NSString *requestedFile, *reportType;
 	NSData *data = nil;
 	BOOL err = YES;
+	NSString* dataMime = NULL;
 	
 	if([fileURL isEqualToString:@"/"])
 	{
@@ -2202,6 +2271,10 @@ NSString* notNil( NSString *s)
 		// SECURITY : we cannot allow the client to read any file on the hard disk !?!?!!!
 		requestedFile = [requestedFile stringByReplacingOccurrencesOfString: @".." withString: @""];
 		
+		// Weasis is NOT in the WebServicesHTML dir
+		if ([fileURL hasPrefix:@"/weasis/"])
+			requestedFile = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:fileURL];
+		
 		err = ![[NSFileManager defaultManager] fileExistsAtPath: requestedFile];
 	}
 	
@@ -2210,6 +2283,12 @@ NSString* notNil( NSString *s)
 	@try
 	{
 		data = [NSData dataWithContentsOfFile:requestedFile];
+		
+		NSString* ext = [fileURL pathExtension];
+		if ([ext compare:@"jar" options:NSCaseInsensitiveSearch|NSLiteralSearch range:ext.range] == NSOrderedSame)
+			dataMime = @"application/java-archive";
+		if ([ext compare:@"swf" options:NSCaseInsensitiveSearch|NSLiteralSearch range:ext.range] == NSOrderedSame)
+			dataMime = @"application/x-shockwave-flash";
 		
 		#pragma mark index
 		if( [fileURL isEqualToString: @"/index.html"] || [fileURL isEqualToString: @"/"])
@@ -2233,9 +2312,9 @@ NSString* notNil( NSString *s)
 			
 			if( currentUser)
 			{				
-				[templateString replaceOccurrencesOfString:@"%UserNameLabel%" withString: notNil([currentUser valueForKey: @"name"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%UserEmailLabel%" withString: notNil([currentUser valueForKey: @"email"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%UserPhoneLabel%" withString: notNil([currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%UserNameLabel%" withString: notNil([currentUser valueForKey: @"name"]) options:NSLiteralSearch range:templateString.range];
+				[templateString replaceOccurrencesOfString:@"%UserEmailLabel%" withString: notNil([currentUser valueForKey: @"email"]) options:NSLiteralSearch range:templateString.range];
+				[templateString replaceOccurrencesOfString:@"%UserPhoneLabel%" withString: notNil([currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:templateString.range];
 			}
 			
 			templateString = [self setBlock: @"AuthorizedUploadDICOMFiles" visible: ( currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] && !isiPhone) forString: templateString];
@@ -2257,12 +2336,12 @@ NSString* notNil( NSString *s)
 				if(![[album valueForKey:@"name"] isEqualToString: NSLocalizedString(@"Database", nil)])
 				{
 					NSMutableString *tempString = [NSMutableString stringWithString:albumListItemString];
-					[tempString replaceOccurrencesOfString: @"%AlbumName%" withString: notNil( [album valueForKey:@"name"]) options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
-					[tempString replaceOccurrencesOfString: @"%AlbumNameURL%" withString: [OsiriXHTTPConnection encodeURLString: [album valueForKey:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
+					[tempString replaceOccurrencesOfString: @"%AlbumName%" withString: notNil( [album valueForKey:@"name"]) options:NSLiteralSearch range:tempString.range];
+					[tempString replaceOccurrencesOfString: @"%AlbumNameURL%" withString: [OsiriXHTTPConnection encodeURLString: [album valueForKey:@"name"]] options:NSLiteralSearch range:tempString.range];
 					if([[album valueForKey:@"smartAlbum"] intValue] == 1)
-						[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"SmartAlbum" options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
+						[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"SmartAlbum" options:NSLiteralSearch range:tempString.range];
 					else
-						[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"Album" options:NSLiteralSearch range:NSMakeRange(0, [tempString length])];
+						[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"Album" options:NSLiteralSearch range:tempString.range];
 					[returnHTML appendString:tempString];
 				}
 			}
@@ -2284,7 +2363,7 @@ NSString* notNil( NSString *s)
 			
 			returnHTML = [self setBlock: @"accessStudies" visible: accessStudies forString: returnHTML];
 			
-			[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+			[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:returnHTML.range];
 			
 			data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
 			
@@ -2305,6 +2384,7 @@ NSString* notNil( NSString *s)
 					NSLog( @"***** WADO with objectUID == nil -> wado will fail");
 				
 				NSString *contentType = [[[[urlParameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
+				contentType = [contentType stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 				int rows = [[urlParameters objectForKey:@"rows"] intValue];
 				int columns = [[urlParameters objectForKey:@"columns"] intValue];
 				int windowCenter = [[urlParameters objectForKey:@"windowCenter"] intValue];
@@ -2694,40 +2774,40 @@ NSString* notNil( NSString *s)
 					}
 				}
 				
-				[html replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( pageTitle) options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				[html replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( pageTitle) options:NSLiteralSearch range:html.range];
 				
-				if([urlParameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-				else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]; 
+				if([urlParameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]] options:NSLiteralSearch range:html.range];
+				else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:html.range]; 
 				
-				if([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-				else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])]; 
+				if([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:html.range];
+				else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:html.range]; 
 				
-				if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-				else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:html.range];
+				else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:html.range];
 				
-				if([urlParameters objectForKey:@"album"])[html replaceOccurrencesOfString:@"%album%" withString:[NSString stringWithFormat:@"&album=%@",[urlParameters objectForKey:@"album"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-				else [html replaceOccurrencesOfString:@"%album%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				if([urlParameters objectForKey:@"album"])[html replaceOccurrencesOfString:@"%album%" withString:[NSString stringWithFormat:@"&album=%@",[urlParameters objectForKey:@"album"]] options:NSLiteralSearch range:html.range];
+				else [html replaceOccurrencesOfString:@"%album%" withString:@"" options:NSLiteralSearch range:html.range];
 
 				if([urlParameters objectForKey:@"order"])
 				{
 					if([[urlParameters objectForKey:@"order"] isEqualToString:@"name"])
 					{
-						[html replaceOccurrencesOfString:@"%orderByName%" withString:@"sortedBy" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-						[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+						[html replaceOccurrencesOfString:@"%orderByName%" withString:@"sortedBy" options:NSLiteralSearch range:html.range];
+						[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"" options:NSLiteralSearch range:html.range];
 					}
 					else
 					{
-						[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-						[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+						[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:html.range];
+						[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:html.range];
 					}
 				}
 				else
 				{
-					[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-					[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+					[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:html.range];
+					[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:html.range];
 				}
 				
-				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:html.range];
 				
 				data = [html dataUsingEncoding:NSUTF8StringEncoding];
 				err = NO;
@@ -2898,7 +2978,7 @@ NSString* notNil( NSString *s)
 				
 				NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:urlParameters settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"iPhone", [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
 				
-				[html replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				[html replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:html.range];
 				
 //				if( [[urlParameters allKeys] containsObject:@"dicomSend"])
 //				{
@@ -2912,20 +2992,20 @@ NSString* notNil( NSString *s)
 //					}
 //				}
 				
-				[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: notNil( message) options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: notNil( message) options:NSLiteralSearch range:html.range];
 				
 				if( [urlParameters objectForKey:@"browse"])
-					[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+					[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]] options:NSLiteralSearch range:html.range];
 				else
-					[html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+					[html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:html.range];
 				
-				if([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-				else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				if([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:html.range];
+				else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:html.range];
 				
-				if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
-				else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:html.range];
+				else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:html.range];
 				
-				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:NSMakeRange(0, [html length])];
+				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:html.range];
 				
 				data = [html dataUsingEncoding:NSUTF8StringEncoding];
 			}
@@ -3050,41 +3130,36 @@ NSString* notNil( NSString *s)
 			if([fileURL isEqualToString:@"/series"])
 			{
 				NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"series.html"]];			
-				[templateString replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"studyID"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%SeriesID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"studyID"]) options:NSLiteralSearch range:templateString.range];
+				[templateString replaceOccurrencesOfString:@"%SeriesID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:templateString.range];
 				
 				NSString *browse =  notNil( [urlParameters objectForKey:@"browse"]);
 				NSString *browseParameter =  notNil( [urlParameters objectForKey:@"browseParameter"]);
 				NSString *search =  notNil( [urlParameters objectForKey:@"search"]);
 				NSString *album = notNil( [urlParameters objectForKey:@"album"]);
 				
-				[templateString replaceOccurrencesOfString:@"%browse%" withString: notNil( browse) options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: notNil( browseParameter) options: NSLiteralSearch range: NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%search%" withString: [OsiriXHTTPConnection decodeURLString:search] options: NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%album%" withString: [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%browse%" withString: notNil( browse) options: NSLiteralSearch range:templateString.range];
+				[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: notNil( browseParameter) options: NSLiteralSearch range:templateString.range];
+				[templateString replaceOccurrencesOfString:@"%search%" withString: [OsiriXHTTPConnection decodeURLString:search] options: NSLiteralSearch range:templateString.range];
+				[templateString replaceOccurrencesOfString:@"%album%" withString: [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:templateString.range];
 				
 				// This is probably wrong... video/quictime, see Series.html
-				// [templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString:@"%MovieExtension%" withString: isiPhone? @"m4v":@"mov" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				// [templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:templateString.range];
+				[templateString replaceOccurrencesOfString:@"%MovieExtension%" withString: isiPhone? @"m4v":@"mov" options:NSLiteralSearch range:templateString.range];
 				
+				templateString = [self setBlock:@"image" visible: [imagesArray count] == 1 forString: templateString];
+				templateString = [self setBlock:@"movie" visible: [imagesArray count] != 1 forString: templateString];
 				if([imagesArray count] == 1)
 				{
-					[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-					[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-					
-					[templateString replaceOccurrencesOfString:@"%movie%" withString:@"<!--" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-					[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"-->" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-					
-					[templateString replaceOccurrencesOfString:@"%image%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-					[templateString replaceOccurrencesOfString:@"%/image%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+					[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@"" options:NSLiteralSearch range:templateString.range];
 				}
 				else
 				{
-					[templateString replaceOccurrencesOfString:@"%image%" withString:@"<!--" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-					[templateString replaceOccurrencesOfString:@"%/image%" withString:@"-->" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];			
-					[templateString replaceOccurrencesOfString:@"%movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-					[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-					
+					BOOL flash = [NSUserDefaultsController WebServerPrefersFlash] && !isiPhone;
+					templateString = [self setBlock:@"movieqt" visible:!flash forString: templateString];
+					templateString = [self setBlock:@"moviefla" visible:flash forString: templateString];
+
 					int width, height;
 					
 					[self getWidth: &width height:&height fromImagesArray: imagesArray isiPhone: isiPhone];
@@ -3092,20 +3167,20 @@ NSString* notNil( NSString *s)
 					height += 15; // quicktime controller height
 					
 					//NSLog(@"NEW w: %d, h: %d", width, height);
-					[templateString replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-					[templateString replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+					[templateString replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:templateString.range];
 					
 					// We will generate the movie now, if required... to avoid Quicktime plugin problem waiting for it.
-					[self produceMovieForSeries: [series lastObject] isiPhone: isiPhone fileURL: fileURL lockReleased: &lockReleased];
+					[self produceMovieForSeries: [series lastObject] isiPhone: isiPhone fileURL:fileURL lockReleased: &lockReleased];
 				}
 				
 				NSString *seriesName = notNil( [[series lastObject] valueForKey:@"name"]);
-				[templateString replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( seriesName) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( seriesName) options:NSLiteralSearch range:templateString.range];
 				
 				NSString *studyName = notNil( [[series lastObject] valueForKeyPath:@"study.name"]);
-				[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString: notNil( studyName) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString: notNil( studyName) options:NSLiteralSearch range:templateString.range];
 				
-				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:templateString.range];
 				
 				data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
 				err = NO;
@@ -3390,8 +3465,8 @@ NSString* notNil( NSString *s)
 			
 			err = NO;
 		}
-	#pragma mark movie
-		else if( [fileURL isEqualToString:@"/movie.mov"] || [fileURL isEqualToString:@"/movie.m4v"])
+	#pragma mark movie .mov .m4v .swf
+		else if( [fileURL isEqualToString:@"/movie.mov"] || [fileURL isEqualToString:@"/movie.m4v"] || [fileURL isEqualToString:@"/movie.swf"])
 		{
 			NSPredicate *browsePredicate;
 			if([[urlParameters allKeys] containsObject:@"id"])
@@ -3506,7 +3581,7 @@ NSString* notNil( NSString *s)
 			
 			templateString = [self setBlock: @"MessageToWrite" visible: [message length] forString: templateString];
 			
-			[templateString replaceOccurrencesOfString: @"%Localized_Message%" withString: notNil( message) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+			[templateString replaceOccurrencesOfString: @"%Localized_Message%" withString: notNil( message) options:NSLiteralSearch range:templateString.range];
 			
 			data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
 			
@@ -3588,16 +3663,16 @@ NSString* notNil( NSString *s)
 
 				templateString = [self setBlock:block visible: [message length] forString:templateString];
 				
-				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: notNil( message) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: notNil( message) options:NSLiteralSearch range:templateString.range];
 				
-				[templateString replaceOccurrencesOfString: @"%name%" withString: notNil( [currentUser valueForKey: @"name"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%name%" withString: notNil( [currentUser valueForKey: @"name"]) options:NSLiteralSearch range:templateString.range];
 				
-				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:templateString.range];
 				
-				[templateString replaceOccurrencesOfString: @"%email%" withString: notNil( [currentUser valueForKey: @"email"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%address%" withString: notNil( [currentUser valueForKey: @"address"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%phone%" withString: notNil( [currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-				[templateString replaceOccurrencesOfString: @"%emailNotification%" withString: ([[currentUser valueForKey: @"emailNotification"] boolValue]?@"checked":@"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+				[templateString replaceOccurrencesOfString: @"%email%" withString: notNil( [currentUser valueForKey: @"email"]) options:NSLiteralSearch range:templateString.range];
+				[templateString replaceOccurrencesOfString: @"%address%" withString: notNil( [currentUser valueForKey: @"address"]) options:NSLiteralSearch range:templateString.range];
+				[templateString replaceOccurrencesOfString: @"%phone%" withString: notNil( [currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:templateString.range];
+				[templateString replaceOccurrencesOfString: @"%emailNotification%" withString: ([[currentUser valueForKey: @"emailNotification"] boolValue]?@"checked":@"") options:NSLiteralSearch range:templateString.range];
 				
 				data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
 				
@@ -3636,6 +3711,22 @@ NSString* notNil( NSString *s)
 			}
 			else err = YES;
 		}
+		#pragma mark weasis.jnlp
+		else if ([NSUserDefaultsController WebServerUsesWeasis] && [fileURL isEqualToString:@"/weasis.jnlp"])
+		{
+			NSString* jnlp = [self weasisJnlpWithParamsString:parameterString];
+			data = [jnlp dataUsingEncoding:NSUTF8StringEncoding];
+			dataMime = @"application/x-java-jnlp-file";
+			err = NO;
+		}
+		#pragma mark weasis.xml
+		else if ([NSUserDefaultsController WebServerUsesWeasis] && [fileURL isEqualToString:@"/weasis.xml"])
+		{
+			NSString* jnlp = [self weasisXmlWithParams:urlParameters];
+			data = [jnlp dataUsingEncoding:NSUTF8StringEncoding];
+			dataMime = @"text/xml";
+			err = NO;
+		}
 	}
 	
 	@catch( NSException *e)
@@ -3654,7 +3745,7 @@ NSString* notNil( NSString *s)
 	if( err)
 		data = [[NSString stringWithString: NSLocalizedString( @"Error 404\r\rFailed to process this request.\r\rThis error will be logged and the webmaster will be notified.", nil)] dataUsingEncoding: NSUTF8StringEncoding];
 	
-	return [[[HTTPDataResponse alloc] initWithData: data] autorelease];
+	return [[[HTTPMimeDataResponse alloc] initWithMime:dataMime data:data] autorelease];
 }
 
 - (BOOL)supportsMethod:(NSString *)method atPath:(NSString *)relativePath
@@ -4130,6 +4221,139 @@ NSString* notNil( NSString *s)
 	[context unlock];
 	
 	return [jsonImagesArray JSONRepresentation];
+}
+
+#pragma mark Weasis
+
++(NSString*)WeasisXmlFormatDate:(NSDate*)date {
+	NSDateFormatter* format = [[[NSDateFormatter alloc] init] autorelease];
+	format.dateFormat = @"dd-MM-yyyy";
+	return [format stringFromDate:date];
+}
+
++(NSString*)WeasisXmlFormatTime:(NSDate*)date {
+	NSDateFormatter* format = [[[NSDateFormatter alloc] init] autorelease];
+	format.dateFormat = @"HH:mm:ss";
+	return [format stringFromDate:date];
+}
+
+-(NSString*)weasisJnlpWithParamsString:(NSString*)parameters {
+	NSMutableString* templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"weasis.jnlp"]];
+	
+	NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
+	if( [webServerAddress length] == 0)
+		webServerAddress = [[AppController sharedAppController] privateIP];
+	
+	
+	[templateString replaceOccurrencesOfString:@"%WebServerAddress%" withString:notNil([OsiriXHTTPConnection WebServerURL]) options:NSLiteralSearch range:templateString.range];
+	[templateString replaceOccurrencesOfString:@"%parameters%" withString:notNil(parameters) options:NSLiteralSearch range:templateString.range];
+	
+	return templateString;
+}
+
+-(NSString*)weasisXmlWithParams:(NSDictionary*)parameters {
+	NSString* studyInstanceUID = [parameters objectForKey:@"StudyInstanceUID"];
+	NSString* seriesInstanceUID = [parameters objectForKey:@"SeriesInstanceUID"];
+	NSArray* selectedSeries = [parameters objectForKey:@"selected"];
+	
+	NSMutableArray* requestedStudies = [NSMutableArray arrayWithCapacity:8];
+	NSMutableArray* requestedSeries = [NSMutableArray arrayWithCapacity:64];
+	
+	// find requosted core data objects
+	if (studyInstanceUID)
+		[requestedStudies addObjectsFromArray:[self studiesForPredicate:[NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyInstanceUID]]];
+	if (seriesInstanceUID)
+		[requestedSeries addObjectsFromArray:[self seriesForPredicate:[NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", seriesInstanceUID]]];
+	for (NSString* selSeriesInstanceUID in selectedSeries)
+		[requestedSeries addObjectsFromArray:[self seriesForPredicate:[NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", selSeriesInstanceUID]]];
+	
+	// if a requested series is part of a requested study, remove the series as it will be included anyway
+	//for (int i = requestedSeries.count-1; i >= 0; i--)
+	//	if ([requestedStudies containsObject:[[requestedSeries objectAtIndex:i] study]])
+	//		[requestedSeries removeObjectAtIndex:i];
+	
+	NSMutableArray* patientIds = [NSMutableArray arrayWithCapacity:2];
+	NSMutableArray* studies = [NSMutableArray arrayWithCapacity:8];
+	NSMutableArray* series = [NSMutableArray arrayWithCapacity:64];
+	
+	for (DicomStudy* study in requestedStudies) {
+		if (![studies containsObject:study])
+			[studies addObject:study];
+		if (![patientIds containsObject:study.patientID])
+			[patientIds addObject:study.patientID];
+		for (DicomSeries* serie in study.series)
+			if (![series containsObject:serie])
+				[series addObject:serie];
+	}
+	
+	for (DicomSeries* serie in requestedSeries) {
+		if (![studies containsObject:serie.study])
+			[studies addObject:serie.study];
+		if (![patientIds containsObject:serie.study.patientID])
+			[patientIds addObject:serie.study.patientID];
+		if (![series containsObject:serie])
+			[series addObject:serie];
+	}
+	
+	// TODO: filter by user rights
+	
+	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?><wado_query wadoURL=\"%@/wado\"></wado_query>", [OsiriXHTTPConnection WebServerURL]];
+	NSXMLDocument* doc = [[NSXMLDocument alloc] initWithXMLString:baseXML options:NSXMLDocumentIncludeContentTypeDeclaration|NSXMLDocumentTidyXML error:NULL];
+	[doc setCharacterEncoding:@"ISO-8859-1"];
+	
+	for (NSString* patientId in patientIds) {
+		NSXMLElement* patientNode = [NSXMLNode elementWithName:@"Patient"];
+		[patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientID" stringValue:patientId]];
+		BOOL patientDataSet = NO;
+		[doc.rootElement addChild:patientNode];
+		
+		for (DicomStudy* study in studies)
+			if ([study.patientID isEqual:patientId]) {
+				NSXMLElement* studyNode = [NSXMLNode elementWithName:@"Study"];
+				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyInstanceUID" stringValue:study.studyInstanceUID]];
+				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDescription" stringValue:study.studyName]];
+				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDate" stringValue:[OsiriXHTTPConnection WeasisXmlFormatDate:study.date]]];
+				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyTime" stringValue:[OsiriXHTTPConnection WeasisXmlFormatTime:study.date]]];
+				[studyNode addAttribute:[NSXMLNode attributeWithName:@"AccessionNumber" stringValue:study.accessionNumber]];
+				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyID" stringValue:study.id]]; // ?
+				[studyNode addAttribute:[NSXMLNode attributeWithName:@"ReferringPhysicianName" stringValue:study.referringPhysician]];
+				[patientNode addChild:studyNode];
+				
+				for (DicomSeries* serie in series)
+					if (serie.study == study) {
+						NSXMLElement* serieNode = [NSXMLNode elementWithName:@"Series"];
+						[serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesInstanceUID" stringValue:serie.seriesDICOMUID]];
+						[serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesDescription" stringValue:serie.seriesDescription]];
+						[serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesNumber" stringValue:[serie.id stringValue]]]; // ?
+						[serieNode addAttribute:[NSXMLNode attributeWithName:@"Modality" stringValue:serie.modality]];
+						[studyNode addChild:serieNode];
+
+						for (DicomImage* image in serie.images) {
+							NSXMLElement* instanceNode = [NSXMLNode elementWithName:@"Instance"];
+							[instanceNode addAttribute:[NSXMLNode attributeWithName:@"SOPInstanceUID" stringValue:image.sopInstanceUID]];
+							[instanceNode addAttribute:[NSXMLNode attributeWithName:@"InstanceNumber" stringValue:[image.instanceNumber stringValue]]];
+							[serieNode addChild:instanceNode];
+						}
+					}
+				
+				if (!patientDataSet) {
+					[patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientName" stringValue:study.name]];
+					[patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientBirthDate" stringValue:[OsiriXHTTPConnection WeasisXmlFormatDate:study.dateOfBirth]]];
+					[patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientSex" stringValue:study.patientSex]];
+				}
+			}
+	}
+
+	NSLog(@"DOC %@", doc);
+//	NSLog(@"XML req:\n\tStudyInstanceUID = %@\n\tSeriesInstanceUID = %@\n\t%@", studyInstanceUID, seriesInstanceUID);
+	
+	[doc autorelease];
+	return [doc XMLString];
+	
+	/*
+	NSXMLDocument* doc = NULL;
+	*/
+	
 }
 
 @end

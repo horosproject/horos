@@ -39,4 +39,8 @@
 - (NSString*)jsonSeriesListForSeries:(NSArray*)series;
 - (NSString*)jsonImageListForImages:(NSArray*)images;
 
+#pragma mark Weasis
+-(NSString*)weasisJnlpWithParamsString:(NSString*)parameters;
+-(NSString*)weasisXmlWithParams:(NSDictionary*)parameters;
+
 @end

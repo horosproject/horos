@@ -1014,7 +1014,7 @@ extern const char *GetPrivateIP();
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
 	// remove my own sharing service
-	if( aNetService == [publisher netService] || [[aNetService name] isEqualToString: [NSUserDefaultsController bonjourSharingName]] == YES)
+	if( aNetService == [publisher netService] || [[aNetService name] isEqualToString: [NSUserDefaultsController BonjourSharingName]] == YES)
 	{
 		
 	}

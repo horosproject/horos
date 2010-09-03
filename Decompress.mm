@@ -9,6 +9,7 @@
 #import "QTKit/QTMovie.h"
 #import "DCMPix.h"
 #import <WebKit/WebKit.h>
+#include <mingpp.h>
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -551,35 +552,94 @@ int main(int argc, const char *argv[])
 		
 		if( [what isEqualToString: @"writeMovie"])
 		{
-			QTMovie *mMovie = nil;
-			
-			[[QTMovie movie] writeToFile: [path stringByAppendingString:@"temp"] withAttributes: nil];
-			mMovie = [QTMovie movieWithFile:[path stringByAppendingString:@"temp"] error:nil];
-			
-			[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
-			
-			long long timeValue = 60;
-			long timeScale = 600;
-			
-			QTTime curTime = QTMakeTime(timeValue, timeScale);
-			
-			NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObjectsAndKeys: @"jpeg", QTAddImageCodecType, [NSNumber numberWithInt: codecNormalQuality], QTAddImageCodecQuality, nil];
-			
-			NSString *root = [NSString stringWithUTF8String: argv[fileListFirstItemIndex]];
-			
-			for( NSString *img in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil])
-			{
-				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+			if (![path hasSuffix:@".swf"]) {
+				QTMovie *mMovie = nil;
 				
-				[mMovie addImage: [[[NSImage alloc] initWithContentsOfFile: [root stringByAppendingPathComponent: img]] autorelease] forDuration:curTime withAttributes: myDict];
+				[[QTMovie movie] writeToFile: [path stringByAppendingString:@"temp"] withAttributes: nil];
+				mMovie = [QTMovie movieWithFile:[path stringByAppendingString:@"temp"] error:nil];
 				
-				[pool release];
+				[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
+				
+				long long timeValue = 60;
+				long timeScale = 600;
+				
+				QTTime curTime = QTMakeTime(timeValue, timeScale);
+				
+				NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObjectsAndKeys: @"jpeg", QTAddImageCodecType, [NSNumber numberWithInt: codecNormalQuality], QTAddImageCodecQuality, nil];
+				
+				NSString *root = [NSString stringWithUTF8String: argv[fileListFirstItemIndex]];
+				
+				for( NSString *img in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil])
+				{
+					NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+					
+					[mMovie addImage: [[[NSImage alloc] initWithContentsOfFile: [root stringByAppendingPathComponent: img]] autorelease] forDuration:curTime withAttributes: myDict];
+					
+					[pool release];
+				}
+				
+				[mMovie writeToFile: path withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
+				[[NSFileManager defaultManager] removeFileAtPath:[path stringByAppendingString:@"temp"] handler: nil];
+				
+				[[NSFileManager defaultManager] removeItemAtPath: root error: nil];
+			} else { // SWF!!
+				NSLog(@"SWFFFFFFF %@", path);
+				[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
+				
+				NSString* inputDir = [NSString stringWithUTF8String:argv[fileListFirstItemIndex]];
+				NSArray* inputFiles = [inputDir stringsByAppendingPaths:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:inputDir error:NULL]];
+				
+				Ming_init();
+				Ming_setSWFCompression(4); // 9 = maximum compression
+				SWFMovie* swf = new SWFMovie(7);
+				swf->setBackground(0x00, 0x00, 0x00);
+				int w, h; BOOL dimensionsSet = NO;
+				swf->setRate(10);
+				
+				SWFBitmap* bitmap[inputFiles.count];
+				SWFDisplayItem* displayItem[inputFiles.count];
+				for (int i = 0; i < inputFiles.count; ++i) {
+					NSString* imgPath = [inputFiles objectAtIndex:i];
+					NSLog(@"%@", imgPath);
+					
+					bitmap[i] = new SWFBitmap(imgPath.UTF8String, NULL);
+					if (!bitmap[i])
+						NSLog(@"SWF creation FAILED: could not read %@", imgPath);
+					
+					if (!dimensionsSet) {
+						swf->setDimension(w = bitmap[i]->getWidth(), h = bitmap[i]->getHeight()+15); // 15 is the controller height
+						dimensionsSet = YES;
+					}
+					
+					SWFShape* shape = new SWFShape();
+					shape->drawLine(100,0);
+					shape->drawLine(0,100);
+					shape->drawLine(-100,0);
+					shape->drawLine(0,-100);
+					shape->setRightFill(shape->addBitmapFill(bitmap[i], 0x41)); // 0x41 is SWFFILL_CLIPPED_BITMAP
+					
+					displayItem[i] = swf->add(shape);
+					displayItem[i]->moveTo(-100.00, -100.0);
+				}
+				
+				for (int i = 0; i < inputFiles.count; ++i) {
+					if (i) swf->nextFrame();
+					displayItem[i]->moveTo(100.00, 100.0);
+					if (i) displayItem[i-1]->moveTo(-100.00, -100.0);
+				}
+				
+				swf->save(path.UTF8String);
+				
+				for (int i = 0; i < inputFiles.count; ++i)
+					delete bitmap[i];
+				
+				delete swf;
+				Ming_cleanup();
+				
+				
+				
+				
 			}
-			
-			[mMovie writeToFile: path withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
-			[[NSFileManager defaultManager] removeFileAtPath:[path stringByAppendingString:@"temp"] handler: nil];
-			
-			[[NSFileManager defaultManager] removeItemAtPath: root error: nil];
 		}
 		
 		if( [what isEqualToString: @"writeMovieiPhone"])

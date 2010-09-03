@@ -36,4 +36,12 @@
 +(NSString*)stringByRepeatingString:(NSString*)string times:(NSUInteger)times;
 -(NSString*)suspendedString;
 
+-(NSRange)range;
+
 @end
+
+@interface NSAttributedString (N2)
+
+-(NSRange)range;
+
+@end;

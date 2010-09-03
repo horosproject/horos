@@ -96,7 +96,7 @@ extern const char *GetPrivateIP();
 	if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
 		keyPath = [keyPath substringFromIndex:7];
 		if ([keyPath isEqual:OsirixBonjourSharingActiveFlagDefaultsKey]) {
-			[self toggleSharing:[NSUserDefaultsController isBonjourSharingActive]];
+			[self toggleSharing:[NSUserDefaultsController IsBonjourSharingActive]];
 			return;
 		} else
 		if ([keyPath isEqual:OsirixBonjourSharingNameDefaultsKey]) {
@@ -213,7 +213,7 @@ extern const char *GetPrivateIP();
 	{
         // lazily instantiate the NSNetService object that will advertise on our behalf.  Passing in "" for the domain causes the service
         // to be registered in the default registration domain, which will currently always be "local"
-        netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdb._tcp." name:[NSUserDefaultsController bonjourSharingName] port:chosenPort];
+        netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdb._tcp." name:[NSUserDefaultsController BonjourSharingName] port:chosenPort];
         [netService setDelegate:self];
 		
 		NSMutableDictionary *params = [NSMutableDictionary dictionary];
@@ -437,7 +437,7 @@ extern const char *GetPrivateIP();
 					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"ISPWD" length: 6]])
 					{
 						// is this database protected by a password
-						NSString* pswd = [NSUserDefaultsController bonjourSharingPassword];
+						NSString* pswd = [NSUserDefaultsController BonjourSharingPassword];
 						
 						int val = 0;
 						
@@ -462,7 +462,7 @@ extern const char *GetPrivateIP();
 						
 						int val = 0;
 						
-						if (![NSUserDefaultsController bonjourSharingPassword] || [incomingPswd isEqualToString: [NSUserDefaultsController bonjourSharingPassword]])
+						if (![NSUserDefaultsController BonjourSharingPassword] || [incomingPswd isEqualToString: [NSUserDefaultsController BonjourSharingPassword]])
 						{
 							val = NSSwapHostIntToBig(1);
 						}
@@ -1036,7 +1036,7 @@ extern const char *GetPrivateIP();
 {
 //	[bonjourServiceName setEnabled:YES];
 	
-	if ([NSUserDefaultsController isBonjourSharingActive])
+	if ([NSUserDefaultsController IsBonjourSharingActive])
 	{
 		NSLog(@"**** Bonjour did stop ! Restarting it!");
 		[self toggleSharing:YES];
