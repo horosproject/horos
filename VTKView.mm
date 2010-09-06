@@ -72,7 +72,7 @@
 	[super dealloc];
 }
 
-- (void) prepareForRelease
+- (void) prepareForRelease // VTK memory leak
 {
 	_cocoaRenderWindow->SetWindowId( nil);
 	_cocoaRenderWindow->SetDisplayId( nil);

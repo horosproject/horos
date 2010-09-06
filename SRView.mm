@@ -862,6 +862,10 @@ typedef struct _xyzArray
 {
 	if( [notification object] == [self window])
 	{
+		[self deleteMouseDownTimer];
+		
+		[self prepareForRelease];
+		
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 	}
 }
