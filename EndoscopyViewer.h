@@ -78,6 +78,9 @@
 	BOOL isShowCenterLine;
 	BOOL isLookingBackwards;
 	IBOutlet NSPanel				*assistantSettingPanel;
+	
+	// Path Assistant
+	IBOutlet NSPanel *pathAssistantPanel;
 }
 
 
@@ -117,6 +120,9 @@
 - (void) exportDICOMFile:(id) sender;
 - (IBAction) endDCMExportSettings:(id) sender;
 - (unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp;
+#pragma mark-
+#pragma mark path assistant
+- (IBAction)showPathAssistantPanel:(id)sender;
 #pragma mark-
 #pragma mark fly assistant
 //assistant

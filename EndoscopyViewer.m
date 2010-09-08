@@ -40,7 +40,8 @@ static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
 static NSString*	ShadingToolbarItemIdentifier			= @"Shading";
 static NSString*	LODToolbarItemIdentifier				= @"LOD";
 //assistant
-static NSString*	FlyAssistantToolbarItemIdentifier				= @"FlyAssistant";
+static NSString*	FlyAssistantToolbarItemIdentifier		= @"FlyAssistant";
+static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 //static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 @implementation EndoscopyViewer
@@ -961,6 +962,19 @@ static NSString*	FlyAssistantToolbarItemIdentifier				= @"FlyAssistant";
 		[toolbarItem setView: assistantToolBarView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([assistantToolBarView frame]), NSHeight([assistantToolBarView frame]))];
     }
+	else if ([itemIdent isEqualToString:PathAssistantToolbarItemIdentifier])
+	{
+		// Set up the standard properties 
+		[toolbarItem setLabel:NSLocalizedString(@"Path Assistant", nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Path Assistant", nil)];
+		[toolbarItem setToolTip:NSLocalizedString(@"Path Assistant", nil)];
+		
+		// Use a custom view, a text field, for the search item 
+		[toolbarItem setImage:[NSImage imageNamed:PathAssistantToolbarItemIdentifier]];
+		// target is not set, it will be the first responder
+		[toolbarItem setTarget:self];
+		[toolbarItem setAction:@selector(showPathAssistantPanel:)];
+    }
 	
     else
 		{
@@ -982,6 +996,7 @@ static NSString*	FlyAssistantToolbarItemIdentifier				= @"FlyAssistant";
 											ShadingToolbarItemIdentifier,
 											endo3DToolsToolbarItemIdentifier,
 											FlyAssistantToolbarItemIdentifier,
+											PathAssistantToolbarItemIdentifier,
 											nil];
 }
 
@@ -1005,6 +1020,7 @@ static NSString*	FlyAssistantToolbarItemIdentifier				= @"FlyAssistant";
 											ShadingToolbarItemIdentifier,
 											LODToolbarItemIdentifier,
 											FlyAssistantToolbarItemIdentifier,
+											PathAssistantToolbarItemIdentifier,
 											nil];
 }
 
@@ -1221,6 +1237,14 @@ static NSString*	FlyAssistantToolbarItemIdentifier				= @"FlyAssistant";
 
 - (NSString *)curCLUTMenu{
 	return [vrController curCLUTMenu];
+}
+
+#pragma mark-
+#pragma mark Path Assistant
+
+- (IBAction)showPathAssistantPanel:(id)sender;
+{
+	[pathAssistantPanel makeKeyAndOrderFront: self];
 }
 
 #pragma mark-

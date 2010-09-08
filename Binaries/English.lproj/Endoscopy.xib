@@ -11,9 +11,9 @@
 			<string key="NS.object.0">761</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="640"/>
 			<integer value="673"/>
-			<integer value="766"/>
+			<integer value="767"/>
+			<integer value="640"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3393,6 +3393,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSWindowTitle">Window</string>
 				<string key="NSWindowClass">NSPanel</string>
 				<nil key="NSViewClass"/>
+				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<object class="NSView" key="NSWindowView" id="947165623">
 					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
@@ -3615,13 +3616,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="259079757">
 											<reference key="NSNextResponder" ref="270729024"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{157, 17}, {69, 16}}</string>
+											<string key="NSFrame">{{193, 17}, {30, 16}}</string>
 											<reference key="NSSuperview" ref="270729024"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="89625036">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">134479872</int>
-												<string key="NSContents">Stop Point</string>
+												<string key="NSContents">B</string>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="259079757"/>
 												<int key="NSButtonFlags">-2038284033</int>
@@ -3635,13 +3636,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="1011646855">
 											<reference key="NSNextResponder" ref="270729024"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{81, 17}, {70, 16}}</string>
+											<string key="NSFrame">{{148, 17}, {31, 16}}</string>
 											<reference key="NSSuperview" ref="270729024"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="260224540">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">134479872</int>
-												<string key="NSContents">Start Point</string>
+												<string key="NSContents">A</string>
 												<reference key="NSSupport" ref="22"/>
 												<reference key="NSControlView" ref="1011646855"/>
 												<int key="NSButtonFlags">-2038284033</int>
@@ -3919,7 +3920,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="171298659">
 											<reference key="NSNextResponder" ref="644120385"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{12, 6}, {188, 32}}</string>
+											<string key="NSFrame">{{10, 6}, {188, 32}}</string>
 											<reference key="NSSuperview" ref="644120385"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="641021190">
@@ -5300,6 +5301,30 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="212821748"/>
 					</object>
 					<int key="connectionID">789</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">showingAssistantSettings:</string>
+						<reference key="source" ref="558133940"/>
+						<reference key="destination" ref="171298659"/>
+					</object>
+					<int key="connectionID">792</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">changeAssistantMode:</string>
+						<reference key="source" ref="558133940"/>
+						<reference key="destination" ref="1065493636"/>
+					</object>
+					<int key="connectionID">793</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">pathAssistantPanel</string>
+						<reference key="source" ref="558133940"/>
+						<reference key="destination" ref="876487562"/>
+					</object>
+					<int key="connectionID">794</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -7216,8 +7241,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<array class="NSMutableArray" key="children">
 							<reference ref="1065493636"/>
 							<reference ref="224935793"/>
-							<reference ref="259079757"/>
 							<reference ref="1011646855"/>
+							<reference ref="259079757"/>
 						</array>
 						<reference key="parent" ref="947165623"/>
 					</object>
@@ -7842,7 +7867,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<string key="64.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="64.ImportedFromIB2"/>
-				<string key="640.IBEditorWindowLastContentRect">{{0, 335}, {320, 43}}</string>
+				<string key="640.IBEditorWindowLastContentRect">{{347, 211}, {320, 43}}</string>
 				<string key="640.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="641.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="642.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -7976,7 +8001,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">791</int>
+			<int key="maxID">794</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -8164,6 +8189,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="lookBackwards:">id</string>
 						<string key="setExportAllViews:">id</string>
 						<string key="showOrHideCenterlines:">id</string>
+						<string key="showPathAssistantPanel:">id</string>
 						<string key="showingAssistantSettings:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
@@ -8188,6 +8214,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="exportDCMViewsChoice">NSMatrix</string>
 						<string key="exportDCMWindow">NSWindow</string>
 						<string key="mprController">OrthogonalMPRController</string>
+						<string key="pathAssistantPanel">NSPanel</string>
 						<string key="shadingView">NSView</string>
 						<string key="tools2DMatrix">NSMatrix</string>
 						<string key="tools2DView">NSView</string>
