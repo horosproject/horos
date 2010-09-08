@@ -3731,11 +3731,23 @@ static NSConditionLock *threadLock = nil;
 					break;
 				
 				if( i == [filesInput count]-1)
-					[NSThread currentThread].status =  NSLocalizedString( @"Done. Finishing...", nil);
+				{
+					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
+					{
+						[NSThread currentThread].progress = -1;
+						[NSThread currentThread].status =  NSLocalizedString( @"Validating the files...", nil);
+					}
+					else
+					{
+						[NSThread currentThread].progress = 1;
+						[NSThread currentThread].status =  NSLocalizedString( @"Done. Finishing...", nil);
+					}
+				}
 				else
+				{
 					[NSThread currentThread].status = [NSString stringWithFormat: @"%d %@", [filesInput count]-i, i==1? NSLocalizedString( @"file", nil) : NSLocalizedString( @"files", nil) ];
-				
-				[NSThread currentThread].progress = (float) (i+1) / [filesInput count];
+					[NSThread currentThread].progress = (float) (i+1) / [filesInput count];
+				}
 			}
 			
 			BOOL succeed = YES;
