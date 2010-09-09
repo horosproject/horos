@@ -81,6 +81,11 @@
 	
 	// Path Assistant
 	IBOutlet NSPanel *pathAssistantPanel;
+	IBOutlet NSButton *pathAssistantBasicModeButton;
+	IBOutlet NSButton *pathAssistantSetPointAButton;
+	IBOutlet NSButton *pathAssistantSetPointBButton;
+	IBOutlet NSButton *pathAssistantLookBackButton;
+	IBOutlet NSMatrix *pathAssistantCameraOrFocalOnPathMatrix;
 }
 
 
@@ -123,6 +128,10 @@
 #pragma mark-
 #pragma mark path assistant
 - (IBAction)showPathAssistantPanel:(id)sender;
+- (IBAction)pathAssistantSetPointA:(id)sender;
+- (IBAction)pathAssistantSetPointB:(id)sender;
+- (IBAction)pathAssistantBasicModeButtonAction:(id)sender;
+- (IBAction)pathAssistantChangeMode:(id)sender;
 #pragma mark-
 #pragma mark fly assistant
 //assistant
