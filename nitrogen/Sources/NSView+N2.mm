@@ -27,4 +27,8 @@
 	return NSZeroRect;
 }
 
+- (NSImage *) screenshotByCreatingPDF {
+	NSData *imageData = [self dataWithPDFInsideRect: [self bounds]];
+	return [[[NSImage alloc] initWithData: imageData] autorelease];
+}
 @end

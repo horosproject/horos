@@ -20,6 +20,7 @@
 // Shortcut to [NSView initWithFrame:NSMakeRect(NSZeroPoint, size)]
 -(id)initWithSize:(NSSize)size;
 -(NSRect)sizeAdjust;
+-(NSImage *) screenshotByCreatingPDF;
 
 @end
 
