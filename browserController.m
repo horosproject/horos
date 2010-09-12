@@ -3721,18 +3721,20 @@ static NSConditionLock *threadLock = nil;
 							{
 								if( [[[DicomFile alloc] init: srcPath] autorelease]) // Pre-load for CD/DVD in cache
 								{
-									if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
-									{
-										// Pre-load for faster validating
-										NSData *d = [NSData dataWithContentsOfFile: srcPath];
-									}
-									
 									[copiedFiles addObject: srcPath];
 								}
 							}
 							@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
 						}
-						else [copiedFiles addObject: srcPath];
+						else
+						{
+							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
+							{
+								// Pre-load for faster validating
+								NSData *d = [NSData dataWithContentsOfFile: srcPath];
+							}
+							[copiedFiles addObject: srcPath];
+						}
 					}
 				}
 				
