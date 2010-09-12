@@ -3741,7 +3741,7 @@ static NSConditionLock *threadLock = nil;
 				if( [NSThread currentThread].isCancelled)
 					break;
 				
-				if( i == [filesInput count]-1)
+				if( i == [filesInput count]-1 || twentySeconds <= [NSDate timeIntervalSinceReferenceDate])
 				{
 					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
 					{
