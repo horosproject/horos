@@ -4267,11 +4267,6 @@ NSString* notNil( NSString *s)
 	for (NSString* selSeriesInstanceUID in selectedSeries)
 		[requestedSeries addObjectsFromArray:[self seriesForPredicate:[NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", selSeriesInstanceUID]]];
 	
-	// if a requested series is part of a requested study, remove the series as it will be included anyway
-	//for (int i = requestedSeries.count-1; i >= 0; i--)
-	//	if ([requestedStudies containsObject:[[requestedSeries objectAtIndex:i] study]])
-	//		[requestedSeries removeObjectAtIndex:i];
-	
 	NSMutableArray* patientIds = [NSMutableArray arrayWithCapacity:2];
 	NSMutableArray* studies = [NSMutableArray arrayWithCapacity:8];
 	NSMutableArray* series = [NSMutableArray arrayWithCapacity:64];
@@ -4344,16 +4339,8 @@ NSString* notNil( NSString *s)
 			}
 	}
 
-	NSLog(@"DOC %@", doc);
-//	NSLog(@"XML req:\n\tStudyInstanceUID = %@\n\tSeriesInstanceUID = %@\n\t%@", studyInstanceUID, seriesInstanceUID);
-	
 	[doc autorelease];
 	return [doc XMLString];
-	
-	/*
-	NSXMLDocument* doc = NULL;
-	*/
-	
 }
 
 @end
