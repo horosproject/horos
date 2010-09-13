@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>OsiriX Web Server</title>
+	<meta http-equiv=content-type content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+	<link rel="stylesheet" type="text/css" href="style.css" title="standard" />
+	<link rel="alternate stylesheet" type="text/css" href="iPhoneStyle.css" title="iPhone" />
+	<script type="text/javascript" language="javascript" src="styleswitcher.js"></script>
+</head> 
+
+<body>
+	<div id="pageContent">
+	    <h1 id="pageTitle">OsiriX Web Server</h1>
+		%userAccount%
+		<a class="series" href="account?dicomcstoreport=%DicomCStorePort%">
+			<div id="userAccountLabel">
+				<div id="CurrentlyLoggedLabel">Logged as:</div>
+				<div id="UserNameLabel">%UserNameLabel%</div>
+				<div id="UserEmailLabel">%UserEmailLabel%</div>
+				<div id="UserPhoneLabel">%UserPhoneLabel%</div>
+			</div>
+		</a>
+		%/userAccount%
+
+		<div id="Home" class="panel">
+		
+			%accessStudies%
+			<div class="block">
+			<h2>Search Patient</h2>
+			<table id="searchPatient">
+				<tr>
+				<td class="searchPatientLabel">Name</td>
+				<td>
+					<form class="searchPatientForm" action="/studyList" method="get">
+						<input type="text" id="search" name="search"/>
+						<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
+						<input type="submit" id="searchButton" value="Search"/>
+					</form>
+				</td>
+				</tr>
+				<tr>
+				<td class="searchPatientLabel">Patient ID</td>
+				<td>
+					<form class="searchPatientForm" action="/studyList" method="get">
+						<input type="text" id="searchID" name="searchID"/>
+						<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
+						<input type="submit" id="searchButton" value="Search"/>
+					</form>	
+				</td>
+				</tr>
+				<tr>
+				<td class="searchPatientLabel">Accession Number</td>
+				<td>
+					<form class="searchPatientForm" action="/studyList" method="get">
+						<input type="text" id="searchAccessionNumber" name="searchAccessionNumber"/>
+						<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
+						<input type="submit" id="searchButton" value="Search"/>
+					</form>	
+				</td>
+				</tr>
+			</table>
+			</div>
+		
+			<div class="block">
+			<h2>Browse</h2>
+			<ul>
+				<li class="timeFrameStudyList"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=6hours">Last 6 hours</a></li>
+				<li class="timeFrameStudyList"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=today">Today</a></li>
+				<li class="peopleStudyList"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=all">Study List</a></li>
+			</ul>
+			
+			%Albums%
+			<h3 class="albums">Albums</h3>
+			<ul>
+				%AlbumListItem%
+				<li class="%AlbumType%"><a href="studyList?dicomcstoreport=%DicomCStorePort%&album=%AlbumNameURL%">%AlbumName%</a></li>
+				%/AlbumListItem%
+			</ul>
+			%/Albums%
+			
+			</div>
+			%/accessStudies%
+			
+			%AuthorizedUploadDICOMFiles%
+		
+			<div class="blockEnd">
+			<h2>DICOM Upload</h2>
+				<div class="uploadBlock">
+					<form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
+						<div>Upload a file</div>
+						<div class="small">Choose a file from you computer. It can be a single DICOM file or a zip file containing several DICOM files.</div>
+						<div class="upload">
+							<input type="file" name="file" id="file" />
+							<input type="submit" name="button" id="button" value="Upload" />
+						</div>
+					</form>
+				</div>
+			</div>
+			%/AuthorizedUploadDICOMFiles%
+		</div>
+		<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.</div>
+	</div>
+</body>
+</html>

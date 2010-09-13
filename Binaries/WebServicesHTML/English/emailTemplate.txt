@@ -1,0 +1,21 @@
+Dear %Username%,
+
+You are registered on an OsiriX Web Portal server (%WebServerAddress%).
+
+%customText%
+New radiology exam(s) are available on your account. Click on the following URLs to log in and review them :
+
+
+%URLsList%
+
+
+Your username (%Username%) and password are required to log on the web server.
+
+These studies can be downloaded as DICOM files, and directly reviewed on the OsiriX software, available for free at this address: http://www.osirix-viewer.com
+
+
+Sincerely,
+
+OsiriX Web Portal administrator
+
+

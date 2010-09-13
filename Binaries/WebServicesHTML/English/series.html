@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>%PageTitle%</title>
+	<meta http-equiv=content-type content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=10.0, user-scalable=1"/>
+	<link rel="stylesheet" type="text/css" href="style.css" title="standard" />
+	<link rel="alternate stylesheet" type="text/css" href="iPhoneStyle.css" title="iPhone" />
+	<script type="text/javascript" language="javascript" src="styleswitcher.js"></script>
+</head>
+
+<body>
+	<div id="pageContent">
+	    <h1 id="pageTitle">%PageTitle%</h1>
+
+		<div id="toolbar">
+	    	<a id="backButton" class="button" href="/study?id=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">%LinkToStudyLevel%</a>
+		</div>
+		
+		%image%
+		<div id="image">
+			<img src="/image.jpg?id=%SeriesID%&studyID=%StudyID%" />
+		</div>
+		%/image%
+		
+		%movie%
+		<div id="movie">
+		%movieqt%
+		<OBJECT CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="%width%" HEIGHT="%height%" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">
+		<PARAM name="SRC" VALUE="/image.jpg?id=%SeriesID%&studyID=%StudyID%&previewForMovie=true">
+		<param name="HREF" value="/movie.mov?id=%SeriesID%&studyID=%StudyID%">
+		<param name="TYPE" value="video/quicktime">
+		<embed src="/image.jpg?id=%SeriesID%&studyID=%StudyID%&previewForMovie=true" type="video/quicktime" href="/movie.mov?id=%SeriesID%&studyID=%StudyID%" width="%width%" height="%height%" target="myself">
+		</embed>
+		</OBJECT>
+		<br>
+		<span class="small">Viewing this movie requires <a href="http://www.apple.com/quicktime">Apple Quicktime</a></span>
+		<br>
+		%/movieqt%
+        %moviefla%
+        <object width="%width%" height="%height%">
+        <param name="movie" value="/movie.swf?id=%SeriesID%&studyID=%StudyID%">
+        <embed src="/movie.swf?id=%SeriesID%&studyID=%StudyID%" width="%width%" height="%height%">
+        </embed>
+        </object>
+		%/moviefla%
+		</div>
+		%/movie%
+		
+		<!--
+		Please keep this for testing purposes...
+		<div style="margin-top:20px;">
+		<a href="/movie.%MovieExtension%?id=%SeriesID%&studyID=%StudyID%"><img class="image" src="/image.jpg?id=%SeriesID%&studyID=%StudyID%&previewForMovie=true" /></a>
+		</div>
+		-->
+		<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.</div>
+	</div>
+  </body>
+</html>

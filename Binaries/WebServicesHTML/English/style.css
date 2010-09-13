@@ -1,0 +1,553 @@
+body
+{
+    margin: 0px;
+    font-family: Helvetica;
+	font-size:12pt;
+    background:#ffFFff;
+    color:#000000;
+}
+
+#pageContent
+{
+	background-color:#ffFFff;
+	margin:0px;
+	padding:30px;
+}
+
+h1
+{
+	border-bottom: #555555 solid thin;
+	font-size:16pt;
+}
+
+h2
+{
+	color:#333333;
+	font-size:14pt;
+}
+
+#error
+{
+	background-color:#ffFFff;
+	opacity:0.8;
+	position:absolute;
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+}
+
+#errorMessage
+{
+	position:absolute;
+	top:35%;
+	left:30%;
+	right:30%;
+	width:40%;
+	padding:20px;
+	vertical-align:middle;
+	text-align: center;	
+	background-color:#aa0000;
+	border:thin solid #330000;
+	color:#ffFFff;
+	font-size:14pt;
+}
+
+#notification
+{
+	background-color:#ffFFff;
+	opacity:0.8;
+	position:absolute;
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+}
+
+#notificationMessage
+{
+	position:absolute;
+	top:35%;
+	left:30%;
+	right:30%;
+	width:40%;
+	padding:20px;
+	vertical-align:middle;
+	text-align: center;	
+	background-color:#333333;
+	border:thin solid black;
+	color:#ffFFff;
+	font-size:14pt;
+}
+
+h3
+{
+	color:#333333;
+	font-size:12pt;
+}
+
+ul
+{
+	list-style-type: none;
+}
+
+li a
+{
+	color: black;
+	text-decoration:none;
+}
+
+li a:hover
+{
+	text-decoration:none;
+}
+
+a
+{
+	color: #000000;
+	text-decoration:none;
+}
+
+a:hover
+{
+	text-decoration:underline;
+}
+
+.block
+{
+	border-bottom:thin dotted #aaAAaa;
+	padding:10px;
+	margin:10px;
+}
+
+.blockEnd
+{
+	padding:10px;
+	margin:10px;
+	margin-bottom:0px;
+	padding-bottom:0px;
+}
+/* Toolbar */
+
+#toolbar
+{
+	width:100%;
+}
+
+#backButton
+{
+    background: url(images/chevron_left.png) no-repeat left center;
+	padding-left: 15px;
+}
+
+#sortBy
+{
+	float:right;
+	font-size:10pt;
+}
+
+#sortByName
+{
+}
+
+#sortByDate
+{
+}
+
+.sortedBy
+{
+	text-decoration:underline;
+}
+
+/* Search Patient */
+#searchPatient
+{
+	margin-left:40px;
+}
+
+.searchPatientLabel
+{
+	padding:10px;
+	padding-left:0px;
+	vertical-align:middle;
+	text-align: right;
+}
+
+.searchPatientForm
+{
+	display:inline;
+}
+
+/* Browse*/
+.timeFrameStudyList
+{
+	background:url(images/clock.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:2px;
+}
+
+.peopleStudyList
+{
+	background:url(images/users.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:2px;
+}
+
+/* Albums */
+
+h3.albums
+{
+	margin-left:30px;
+}
+
+.Album
+{
+	background:url(images/album.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:2px;
+}
+
+.SmartAlbum
+{
+	background:url(images/smartAlbum.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:2px;
+}
+
+/* File Upload */
+
+.uploadBlock
+{
+	margin-left:30px;
+}
+.upload
+{
+	margin:10px;
+}
+
+/* Current user infos */
+#userAccountLabel
+{
+	float:right;
+	font-size:10pt;
+	padding:5px;
+	background-color:#eeEEee;
+	border:thin dotted #ddDDdd;
+}
+
+#userAccountLabel:hover
+{
+	background-color:#fdfed6;
+	border:thin solid #fad51b;
+}
+
+#CurrentlyLoggedLabel
+{
+	color:#666666;
+}
+
+#UserNameLabel
+{
+	text-align:center;
+	margin:5px;
+}
+
+#UserEmailLabel
+{
+	color:#666666;
+	text-align:right;
+	font-style: italic;
+}
+
+#UserPhoneLabel
+{
+	display:block;
+	color:#666666;
+	text-align:right;
+	font-style: italic;
+}
+
+/* Study List */
+
+.studyList
+{
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 30px;
+	width:80%;	
+	border: 1px solid #999999;
+	border-collapse: collapse;
+}
+
+.studyListItem0
+{
+	padding: 10px;
+	line-height:12pt;
+	margin-bottom: 0px;
+	padding-left: 10px;
+	background-color: #eeEEee;
+	vertical-align:top;
+}
+
+.studyListItem0 td
+{
+	padding:10px;	
+}
+
+.studyListItem0:hover
+{
+	background-color: #fdfed6;
+}
+
+.studyListItem1
+{
+	padding: 10px;
+	line-height:12pt;
+	margin-bottom: 1px;
+	background-color: #ffFFff;
+	vertical-align:top;
+}
+
+.studyListItem1 td
+{
+	padding:10px;	
+}
+
+.studyListItem1:hover
+{
+	background-color: #fdfed6;
+}
+
+a.studyListItem:hover
+{
+	text-decoration:none;
+}
+
+.StudyListItemName
+{
+	color: black;
+}
+
+.StudyListItemDate
+{
+	display:block;
+	color: #666666;
+	font-size:10pt;
+}
+
+.StudyListItemState
+{
+	color: #666666;
+	font-size: 10pt;
+	font-style: italic;
+}
+
+div.StudyListItemDetails
+{
+	margin-left:20px;
+	margin-right:10px;
+}
+
+.StudyListItemDetailItem
+{
+	display:inline;
+	color: #666666;
+	font-size:10pt;
+}
+
+.StudyListItemComment
+{
+	color: #666666;
+	font-size: 10pt;
+	font-style: italic;
+}
+
+.StudyListItemLabel
+{
+	font-size:10pt;
+}
+
+/* Series List */
+
+.StudyInformation
+{
+	margin-left:10%;
+	width:80%;
+	padding:1px;
+	font-size:11pt;
+}
+
+.StudyInformation td
+{
+}
+
+.StudyInformationLabel
+{
+	vertical-align:top;
+	color: #666666;
+	padding-right: 10px;
+	width:100px;
+}
+
+
+.thumbnail
+{
+	vertical-align: middle;
+	width:50px;
+	border:0px;
+}
+
+.SeriesName
+{
+	margin-left:10px;
+}
+
+#imageList
+{
+	width:80%;
+	margin-left: 10%;
+	margin-right: 10%;
+	padding: 0px;
+	border: 1px solid #999999;
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
+
+.image0
+{
+	padding: 10px;
+	line-height:12pt;
+	margin-bottom: 1px;
+	background-color: #eeEEee;
+	padding:5px;
+}
+
+.image0:hover
+{
+	background-color: #fdfed6;
+}
+
+.image0 td
+{
+	padding:5px;
+}
+
+.image1
+{
+	padding: 10px;
+	line-height:12pt;
+	margin-bottom: 1px;
+	background-color: #ffFFff;
+	padding:5px;
+}
+
+.image1:hover
+{
+	background-color: #fdfed6;
+}
+
+.image1 td
+{
+	padding:5px;
+}
+
+.tdThumbnail
+{
+	width:50px;
+}
+
+.tdCheckbox
+{
+	width:20px;
+}
+
+#CheckAll
+{
+	padding-top:20px;
+	font-size:10pt;
+}
+
+.SeriesImageNumber
+{
+	display:block;
+	color: #666666;
+	font-size:10pt;
+	margin-left:10px;
+}
+
+.DownloadAsZIP
+{
+	background:url(images/download.png) no-repeat left center;
+	width:32px;
+	height:32px;
+	float:right;
+}
+
+.OpenInWeasis
+{
+	background:url(images/weasis.png) no-repeat left center;
+	width:32px;
+	height:32px;
+}
+
+.tdSeriesImageNumber
+{
+	display:block;
+}
+
+.small
+{
+	font-size:10pt;
+}
+
+a.series:hover
+{
+	text-decoration:none;
+}
+
+a.report
+{
+	background:url(images/mail-attachment24.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:2px;
+}
+
+#image, #movie
+{
+	margin-top:20px;
+	text-align:center;
+}
+
+/* Study Sharing */
+#userDestination
+{
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+#shareStudy
+{
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+#shareStudyMessage
+{
+	width: 600px;
+	height: 120px;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+/* Footer */
+#footer
+{
+	width: auto;
+	border-top: #555555 solid thin;
+	right: 0;
+	left: 0;
+	padding-top: 20px;
+	margin-top: 50px;
+	text-align: center;
+	font-size:10pt;
+}

@@ -1,0 +1,32 @@
+<jnlp spec="1.5+" codebase="%WebServerAddress%/weasis/" version="V3.0.2">
+  <information>
+    <title>Weasis</title>
+    <vendor>H&#244;pitaux Universitaires de Gen&#232;ve (HUG)</vendor>
+    <homepage href="%WebServerAddress%/weasis/docs/help.html"/>
+    <description>DICOM images viewer</description>
+    <description kind="short">An application to visualize and analyze DICOM images.</description>
+    <description kind="one-line">DICOM images viewer</description>
+    <description kind="tooltip">Weasis</description>
+    <icon href="%WebServerAddress%/weasis/images/logo-button.png" kind="default"/>
+    <icon href="%WebServerAddress%/weasis/images/about.png" kind="splash"/>
+    <shortcut online="false">
+      <menu submenu="Weasis"/>
+    </shortcut>
+  </information>
+  <security>
+    <all-permissions/>
+  </security>
+  <resources>
+    <j2se initial-heap-size="134217728" max-heap-size="536870912" href="http://java.sun.com/products/autodl/j2se" version="1.6.0_18"/>
+    <j2se initial-heap-size="134217728" max-heap-size="536870912" href="http://java.sun.com/products/autodl/j2se" version="1.6+"/>
+    <j2se initial-heap-size="134217728" max-heap-size="536870912" version="1.6+"/>
+    <jar href="%WebServerAddress%/weasis/weasis-launcher.jar" download="eager" main="true"/>
+    <jar href="%WebServerAddress%/weasis/felix.jar" download="eager" main="false"/>
+    <property name="felix.config.properties" value="%WebServerAddress%/weasis/conf/config.properties"/>
+    <property name="weasis.codebase.url" value="%WebServerAddress%/weasis"/>
+    <property name="gosh.args" value="-sc telnetd -p 17179 start"/>
+  </resources>
+  <application-desc main-class="org.weasis.launcher.WebstartLauncher">
+    <argument>$dicom:get -w %WebServerAddress%/weasis.xml?%parameters%</argument>
+  </application-desc>
+</jnlp>

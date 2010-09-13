@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>%PageTitle%</title>
+	<meta http-equiv=content-type content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+	<link rel="stylesheet" type="text/css" href="style.css" title="standard" />
+	<link rel="alternate stylesheet" type="text/css" href="iPhoneStyle.css" title="iPhone" />
+	<script type="text/javascript" language="javascript" src="styleswitcher.js"></script>
+	
+	<script language="JavaScript">
+	function insertParam(key, value) {
+        key = escape(key); value = escape(value);
+		
+        var kvp = document.location.search.substr(1).split('&');
+        if (kvp == "") {
+            document.location.search = key + "=" + value;
+        }
+        else {
+
+            var i = kvp.length; var x; while (i--) {
+                x = kvp[i].split('=');
+
+                if (x[0] == key) {
+                    x[1] = value;
+                    kvp[i] = x.join('=');
+                    break;
+                }
+            }
+
+            if (i < 0) { kvp[kvp.length] = [key, value].join('='); }
+			
+            document.location.search = kvp.join('&');
+        }
+    }
+	</script>
+</head>
+
+<body onorientationchange="updateOrientation()">
+	<div id="pageContent">
+	    <h1 id="pageTitle">%PageTitle%</h1>
+ 	
+		<div id="toolbar">
+			<a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">Home</a>
+			<span id="sortBy">
+				Sorted by:
+				<a id="sortByName" class='%orderByName%' href="javascript:insertParam('order', 'name');">Name</a>
+				<a id="sortByDate" class='%orderByDate%'href="javascript:insertParam('order', 'date');">Date</a>
+			</span>
+		</div>
+		
+		<table id="studyList" title="Study List" class="studyList">
+	        %StudyListItem%
+				<tr title="%StudyListItemName%" class="studyListItem%lineParity%">	
+					<td>
+						<a href="study?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%" class="studyListItem">
+						<span class="StudyListItemName">%StudyListItemName%</span>
+						%StudyModalityBlock%
+						<span class="StudyListItemDetailItem">%StudyModality%</span>
+						%/StudyModalityBlock%
+						%SeriesCountBlock%
+						<span class="StudyListItemDetailItem">%SeriesCount%</span>
+						%/SeriesCountBlock%
+						%PatientIDBlock%
+						<span class="StudyListItemDetailItem">%PatientID%</span>
+						%/PatientIDBlock%
+						%AccessionNumberBlock%
+						<span class="StudyListItemDetailItem">%AccessionNumber%</span>
+						%/AccessionNumberBlock%
+				
+				
+						<div class="StudyListItemDetails">
+							%StudyDescriptionBlock%
+							<div>
+								<span class="StudyListItemDetailItem">%StudyDescription%</span>
+							</div>
+							%/StudyDescriptionBlock%
+				
+							%StudyCommentBlock%
+								<span class="StudyListItemLabel">Comment: </span>
+								<span class="StudyListItemComment">%StudyComment%</span>
+							%/StudyCommentBlock%
+						</div>
+						</a>
+					</td>
+				
+					<td align="right">
+						%StudyDateBlock%
+						<span class="StudyListItemDate">%StudyDate%</span>
+						%/StudyDateBlock%
+			
+						%StudyStateBlock%
+						<span class="StudyListItemState">%StudyState%</span>
+						%/StudyStateBlock%						
+					</td>
+				
+				    %Weasis%
+					<td width="32px" class="tdWeasis">
+						<a title="Open in Weasis" href="/weasis.jnlp?StudyInstanceUID=%StudyListItemID%">
+							<div class="OpenInWeasis"></div>
+						</a>
+					</td>
+					%/Weasis%
+				
+					%ZIPFunctions%
+					<td width="32px" class="tdDownloadAsZIP">
+						<a title="Download as zip" href="%StudyListItemName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
+							<div class="DownloadAsZIP"></div>
+						</a>
+					</td>
+					%/ZIPFunctions%
+				</tr>
+			%/StudyListItem%
+	    </table>
+
+		<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.</div>
+	</div>
+  </body>
+</html>
