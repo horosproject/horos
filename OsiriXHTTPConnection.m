@@ -399,7 +399,8 @@ NSString* const SessionUsernameKey = @"Username";
 	NSMutableString* html = [OsiriXHTTPConnection WebServicesHTMLMutableString:file];
 	
 	[self setBlock:@"userAccount" visible: currentUser? YES : NO forString:html];
-	
+	[self setBlock:@"IfAuthenticationRequired" visible: [[NSUserDefaults standardUserDefaults] boolForKey:@"passwordWebServer"] && ![session valueForKey:SessionUsernameKey] forString:html];
+
 	if (currentUser) {			
 		[html replaceOccurrencesOfString:@"%UserNameLabel%" withString:notNil([currentUser valueForKey: @"name"]) options:NSLiteralSearch range:html.range];
 		[html replaceOccurrencesOfString:@"%UserEmailLabel%" withString:notNil([currentUser valueForKey: @"email"]) options:NSLiteralSearch range:html.range];
@@ -2382,7 +2383,6 @@ NSString* const SessionUsernameKey = @"Username";
 				NSMutableString* templateString = [self webServicesHTMLMutableString:@"index.html"];
 				
 				[self setBlock:@"AuthorizedRestorePasswordWebServer" visible:[[NSUserDefaults standardUserDefaults] boolForKey:@"restorePasswordWebServer"] forString:templateString];
-				[self setBlock:@"IfAuthenticationRequired" visible:[[NSUserDefaults standardUserDefaults] boolForKey:@"passwordWebServer"] forString:templateString];
 				
 				data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
 				
@@ -4438,9 +4438,7 @@ NSString* const SessionUsernameKey = @"Username";
 		self.session = [OsiriXHTTPSession create];
 	
 	[super replyToHTTPRequest];
-}
 
--(BOOL)isAuthenticated {
 	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
 	if ([method isEqualToString:@"POST"] && multipartData.count == 1) // POST auth ?
 	{
@@ -4462,7 +4460,9 @@ NSString* const SessionUsernameKey = @"Username";
 			return NO;
 		}
 	}
-	
+}
+
+-(BOOL)isAuthenticated {
 	NSString* sessionUser = [session valueForKey:SessionUsernameKey];
 	if (sessionUser) {	// this sets currentUser to sessionUser
 		[self passwordForUser:sessionUser];
@@ -4470,8 +4470,10 @@ NSString* const SessionUsernameKey = @"Username";
 			return YES;
 	}
 	
-	if ([super isAuthenticated]) // we still allow HTTP based auth - but is it still used?
+	if ([super isAuthenticated]) { // we still allow HTTP based auth - but is it still used?
+		[session setValue:[currentUser valueForKey:@"username"] forKey:SessionUsernameKey];
 		return YES;
+	}
 		
 	return NO;
 }
