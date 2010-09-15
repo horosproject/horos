@@ -399,14 +399,24 @@ NSString* const SessionUsernameKey = @"Username";
 -(NSMutableString*)webServicesHTMLMutableString:(NSString*)file {
 	NSMutableString* html = [OsiriXHTTPConnection WebServicesHTMLMutableString:file];
 	
+	NSRange includeRange;
+	while ((includeRange = [html rangeOfString:@"%INCLUDE:"]).length) {
+		NSRange includeRangeEnd = [html rangeOfString:@"%" options:NSLiteralSearch range:NSMakeRange(includeRange.location+includeRange.length, html.length-(includeRange.location+includeRange.length))];
+		NSString* replaceFilename = [html substringWithRange:NSMakeRange(includeRange.location+includeRange.length, includeRangeEnd.location-(includeRange.location+includeRange.length))];
+		NSString* replaceFilepath = [[file stringByDeletingLastPathComponent] stringByAppendingPathComponent:replaceFilename];
+		[html replaceCharactersInRange:NSMakeRange(includeRange.location, includeRangeEnd.location+includeRangeEnd.length-includeRange.location) withString:[self webServicesHTMLMutableString:replaceFilepath]];
+	}
+	
 	[self setBlock:@"userAccount" visible: currentUser? YES : NO forString:html];
-	[self setBlock:@"IfAuthenticationRequired" visible: [[NSUserDefaults standardUserDefaults] boolForKey:@"passwordWebServer"] && ![session valueForKey:SessionUsernameKey] forString:html];
+	[self setBlock:@"IfAuthenticationRequired" visible: [[NSUserDefaults standardUserDefaults] boolForKey:@"passwordWebServer"] && !currentUser forString:html];
 
 	if (currentUser) {			
 		[html replaceOccurrencesOfString:@"%UserNameLabel%" withString:notNil([currentUser valueForKey: @"name"]) options:NSLiteralSearch range:html.range];
 		[html replaceOccurrencesOfString:@"%UserEmailLabel%" withString:notNil([currentUser valueForKey: @"email"]) options:NSLiteralSearch range:html.range];
 		[html replaceOccurrencesOfString:@"%UserPhoneLabel%" withString:notNil([currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:html.range];
 	}
+	
+	
 	
 	return html;
 }
@@ -2375,7 +2385,8 @@ NSString* const SessionUsernameKey = @"Username";
 		
 		@try
 		{
-			data = [OsiriXHTTPConnection WebServicesHTMLData:fileURL];
+			if (![fileURL rangeOfString:@".pvt."].length)
+				data = [OsiriXHTTPConnection WebServicesHTMLData:fileURL];
 			err = !data;
 			
 			#pragma mark index

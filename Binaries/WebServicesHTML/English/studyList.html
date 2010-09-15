@@ -39,9 +39,7 @@
 </head>
 
 <body onorientationchange="updateOrientation()">
-	%userAccount%
-    <div id="authbox">Logged in as <a href="/account">%UserNameLabel%</a><form style="display:inline" method="post"><input type="submit" id="logout" name="logout" value="Logout"/></form></div>
-	%/userAccount%
+	%INCLUDE:userbox.pvt.html%
 	<div id="pageContent">
 	    <h1 id="pageTitle">%PageTitle%</h1>
  	
@@ -118,7 +116,7 @@
 			%/StudyListItem%
 	    </table>
 
-		<div id="footer">Service provided by <a href="http://www.osirix-viewer.com">OsiriX</a>.</div>
+		%INCLUDE:footer.pvt.html%
 	</div>
   </body>
 </html>
