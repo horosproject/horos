@@ -127,6 +127,38 @@ a:hover
 	margin-bottom:0px;
 	padding-bottom:0px;
 }
+
+/* Login */
+
+table#login {
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+}
+
+table#login td:first-child {
+    text-align: right;
+}
+
+div#authbox {
+    float: right;
+    position: static;
+    border: 1px solid #dddddd;
+    margin: 3px;
+    padding: 3px 7px 3px 7px;
+    font-size: 10pt;
+}
+
+div#authbox form {
+    margin: 0 0 0 7px;
+    padding-left: 7px;
+    border-left: 1px solid #dddddd;
+}
+
+div#authbox a {
+    color: #005500;
+}
+
 /* Toolbar */
 
 #toolbar
@@ -238,7 +270,7 @@ h3.albums
 #userAccountLabel:hover
 {
 	background-color:#fdfed6;
-	border:thin solid #fad51b;
+/*	border:thin solid #fad51b; */
 }
 
 #CurrentlyLoggedLabel

@@ -38,6 +38,8 @@
 
 -(NSRange)range;
 
+-(NSString*)resolvedPathString;
+
 @end
 
 @interface NSAttributedString (N2)

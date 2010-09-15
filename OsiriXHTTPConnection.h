@@ -1,5 +1,38 @@
+/*=========================================================================
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
+
 #import <Cocoa/Cocoa.h>
 #import "HTTPConnection.h"
+
+
+@interface OsiriXHTTPSession : NSObject {
+@private
+	NSMutableDictionary* dict;
+	NSString* sid;
+	NSLock* lock;
+}
+
+@property(readonly) NSString* sid;
+
++(id)create;
++(id)sessionForId:(NSString*)sid;
+
+-(void)setValue:(id)o forKey:(NSString*)k;
+-(id)valueForKey:(NSString*)k;
+
+@end
+
 
 @interface OsiriXHTTPConnection : HTTPConnection
 {
@@ -8,7 +41,7 @@
 	NSLock *sendLock, *running;
 	NSString *ipAddressString;
 	NSManagedObject *currentUser;
-	NSMutableDictionary *urlParameters;
+	NSMutableDictionary *urlParameters; // GET and POST params
 	
 	// POST / PUT support
 	int dataStartIndex;
@@ -16,7 +49,11 @@
 	BOOL postHeaderOK;
 	NSData *postBoundary;
 	NSString *POSTfilename;
+
+	OsiriXHTTPSession* session;
 }
+
+@property(retain) OsiriXHTTPSession* session;
 
 + (void) emailNotifications;
 + (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate message: (NSString*) message replyTo: (NSString*) replyto customText: (NSString*) customText;

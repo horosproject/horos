@@ -15,14 +15,15 @@
 	<div id="pageContent">
 	    <h1 id="pageTitle">OsiriX Web Server</h1>
 		%userAccount%
-		<a class="series" href="account?dicomcstoreport=%DicomCStorePort%">
 			<div id="userAccountLabel">
-				<div id="CurrentlyLoggedLabel">Logged as:</div>
+        		<a class="series" href="account?dicomcstoreport=%DicomCStorePort%">
+				<div id="CurrentlyLoggedLabel">Logged in as:</div>
 				<div id="UserNameLabel">%UserNameLabel%</div>
 				<div id="UserEmailLabel">%UserEmailLabel%</div>
 				<div id="UserPhoneLabel">%UserPhoneLabel%</div>
+		        </a>
+				<form method="post" action="/"><input type="submit" id="logout" name="logout" value="Logout"/></form>
 			</div>
-		</a>
 		%/userAccount%
 
 		<div id="Home" class="panel">

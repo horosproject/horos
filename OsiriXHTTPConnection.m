@@ -1,3 +1,17 @@
+/*=========================================================================
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
+
 #import "OsiriXHTTPConnection.h"
 #import "AsyncSocket.h"
 #import "DDKeychain.h"
@@ -20,8 +34,10 @@
 #import "NSUserDefaultsController+OsiriX.h"
 #import "N2Debug.h"
 #import "NSString+N2.h"
+#import "NSUserDefaultsController+N2.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "NSString+N2.h"
+#import "DDData.h"
 
 #import "JSON.h"
 
@@ -35,8 +51,6 @@
 #define INCOMINGPATH @"/INCOMING.noindex/"
 
 static NSMutableDictionary *movieLock = nil;
-static NSString *webDirectory = nil;
-static NSString *language = nil;
 static NSMutableDictionary *wadoJPEGCache = nil;
 
 #define minResolution 400
@@ -50,6 +64,13 @@ NSString* notNil( NSString *s)
 	else
 		return s;
 }
+
+// make compiler aware of this method's existance
+@interface HTTPConnection ()
+-(BOOL)isAuthenticated;
+-(void)replyToHTTPRequest;
+@end
+
 
 @interface NSImage (ProportionalScaling)
 - (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
@@ -186,40 +207,124 @@ NSString* notNil( NSString *s)
 }
 @end
 
-@interface HTTPMimeDataResponse : HTTPDataResponse {
-	NSString* mime;
+@interface OsiriXHTTPResponse : HTTPDataResponse {
+	NSMutableDictionary* httpHeaders;
 }
 
-@property(retain) NSString* mime;
+@property(readonly) NSMutableDictionary* httpHeaders;
 
--(id)initWithMime:(NSString*)mime data:(NSData*)data;
+-(id)initWithData:(NSData*)data mime:(NSString*)mime sessionId:(NSString*)sessionId;
 
 @end
-@implementation HTTPMimeDataResponse
+@implementation OsiriXHTTPResponse
 
-@synthesize mime;
+@synthesize httpHeaders;
 
--(id)initWithMime:(NSString*)inmime data:(NSData*)indata {
-	self = [super initWithData:indata];
-	self.mime = inmime;
+-(id)initWithData:(NSData*)idata {
+	self = [super initWithData:idata];
+	httpHeaders = [[NSMutableDictionary alloc] initWithCapacity:4];
 	return self;
 }
 
--(NSDictionary*)httpHeaders {
-	if (mime)
-		return [NSDictionary dictionaryWithObject:mime forKey:@"Content-Type"];
-	return NULL;
+-(id)initWithData:(NSData*)idata mime:(NSString*)mime sessionId:(NSString*)sessionId {
+	self = [self initWithData:idata];
+	if (mime) [httpHeaders setObject:mime forKey:@"Content-Type"];
+	if (sessionId) [httpHeaders setObject:[NSString stringWithFormat:@"SID=%@", sessionId] forKey:@"Set-Cookie"];
+	return self;
 }
 
 -(void)dealloc {
-	self.mime = NULL;
+	[httpHeaders release];
 	[super dealloc];
 }
 
 @end
 
 
+@implementation OsiriXHTTPSession
+
+static NSMutableArray* Sessions = NULL;
+static NSLock* SessionsArrayLock = NULL;
+static NSLock* SessionCreateLock = NULL;
+
++(void)initialize {
+	Sessions = [[NSMutableArray alloc] initWithCapacity:64];
+	SessionsArrayLock = [[NSLock alloc] init];
+	SessionCreateLock = [[NSLock alloc] init];
+}
+
+@synthesize sid;
+
+-(id)initWithId:(NSString*)isid {
+	self = [super init];
+	sid = [isid retain];
+	lock = [[NSLock alloc] init];
+	dict = [[NSMutableDictionary alloc] initWithCapacity:8];
+	return self;
+}
+
+-(void)dealloc {
+	[dict release];
+	[sid release];
+	[lock release];
+	[super dealloc];
+}
+
++(id)sessionForId:(NSString*)sid {
+	[SessionsArrayLock lock];
+	OsiriXHTTPSession* session = NULL;
+
+	for (OsiriXHTTPSession* isession in Sessions)
+		if ([isession.sid isEqual:sid]) {
+			session = isession;
+			break;
+		}
+	
+	[SessionsArrayLock unlock];
+	return session;
+}
+
++(id)create {
+	[SessionCreateLock lock];
+
+	NSString* sid;
+	long sidd;
+	do { // is this a dumb way to generate SIDs?
+		sidd = random();
+	} while ([self sessionForId: sid = [[[NSData dataWithBytes:&sidd length:sizeof(long)] md5Digest] description]]);
+	
+	OsiriXHTTPSession* session = [[OsiriXHTTPSession alloc] initWithId:sid];
+	[SessionsArrayLock lock];
+	[Sessions addObject:session];
+	[SessionsArrayLock unlock];
+	[session release];
+	
+	[SessionCreateLock unlock];
+	return session;
+}
+
+-(void)setValue:(id)o forKey:(NSString*)k {
+	[lock lock];
+	if (o) [dict setObject:o forKey:k];
+	else [dict removeObjectForKey:k];
+	[lock unlock];
+}
+
+-(id)valueForKey:(NSString*)k {
+	[lock lock];
+	id value = [dict objectForKey:k];
+	[lock unlock];
+	return value;
+}
+
+@end
+
+NSString* const SessionUsernameKey = @"Username";
+
+
 @implementation OsiriXHTTPConnection
+
+@synthesize session;
 
 +(BOOL)IsSecureServer {
 	return [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"];
@@ -236,6 +341,72 @@ NSString* notNil( NSString *s)
 	int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
 	NSString* http = self.IsSecureServer ? @"https":@"http";
 	return [NSString stringWithFormat: @"%@://%@:%d", http, self.WebServerAddress, webPort];
+}
+
++(NSData*)WebServicesHTMLData:(NSString*)file {
+	NSMutableArray* dirsToScanForFile = [NSMutableArray arrayWithCapacity:2];
+	// did the user choose the WebServicesHTML in Library?
+	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey:@"customWebPages"]) [dirsToScanForFile addObject:@"~/Library/Application Support/OsiriX/WebServicesHTML"];
+	[dirsToScanForFile addObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"WebServicesHTML"]];
+	
+	const NSString* const DefaultLanguage = @"English";
+	BOOL isDirectory;
+	
+	for (NSInteger i = 0; i < dirsToScanForFile.count; ++i) {
+		NSString* path = [dirsToScanForFile objectAtIndex:i];
+		
+		// path not on disk, ignore
+		if (![[NSFileManager defaultManager] fileExistsAtPath:[path resolvedPathString] isDirectory:&isDirectory] || !isDirectory) {
+			[dirsToScanForFile removeObjectAtIndex:i];
+			--i; continue;
+		}
+		
+		// path exists, look for a localized subdir first, otherwise in the dir itself
+		
+		for (NSString* lang in [[[NSBundle mainBundle] preferredLocalizations] arrayByAddingObject:DefaultLanguage]) {
+			NSString* langPath = [path stringByAppendingPathComponent:lang];
+			if ([[NSFileManager defaultManager] fileExistsAtPath:[langPath resolvedPathString] isDirectory:&isDirectory] && isDirectory) {
+				[dirsToScanForFile insertObject:langPath atIndex:i];
+				++i; break;
+			}
+		}
+	}
+	
+	for (NSString* dirToScanForFile in dirsToScanForFile) {
+		NSString* path = [dirToScanForFile stringByAppendingPathComponent:file];
+		@try {
+			NSData* data = [NSData dataWithContentsOfFile:[path resolvedPathString]];
+			if (data) return data;
+		} @catch (NSException* e) {
+			// do nothing, just try next
+		}
+	}
+	
+	return NULL;
+}
+
++(NSString*)WebServicesHTMLString:(NSString*)file {
+	NSData* data = [self WebServicesHTMLData:file];
+	if (data) return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+	return NULL;
+}
+
++(NSMutableString*)WebServicesHTMLMutableString:(NSString*)file {
+	return [[[self WebServicesHTMLString:file] mutableCopy] autorelease];
+}
+
+-(NSMutableString*)webServicesHTMLMutableString:(NSString*)file {
+	NSMutableString* html = [OsiriXHTTPConnection WebServicesHTMLMutableString:file];
+	
+	[self setBlock:@"userAccount" visible: currentUser? YES : NO forString:html];
+	
+	if (currentUser) {			
+		[html replaceOccurrencesOfString:@"%UserNameLabel%" withString:notNil([currentUser valueForKey: @"name"]) options:NSLiteralSearch range:html.range];
+		[html replaceOccurrencesOfString:@"%UserEmailLabel%" withString:notNil([currentUser valueForKey: @"email"]) options:NSLiteralSearch range:html.range];
+		[html replaceOccurrencesOfString:@"%UserPhoneLabel%" withString:notNil([currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:html.range];
+	}
+	
+	return html;
 }
 
 + (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message forUser: (NSString*) user ip: (NSString*) ip
@@ -309,52 +480,8 @@ NSString* notNil( NSString *s)
 	[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: message forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
 }
 
-+ (void) checkWebDirectory
-{
-	#define PATH2HTML @"~/Library/Application Support/OsiriX/"
-	
-	if( webDirectory == nil)
-	{
-		language = [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex: 0];
-		
-		if( language == nil)
-			language = @"English";
-		
-		[language retain];
-		
-		webDirectory = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"WebServicesHTML"];
-		
-		BOOL isDirectory;
-		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"customWebPages"])
-		{
-			NSString *supportPath = [PATH2HTML stringByExpandingTildeInPath];
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: [supportPath stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
-				webDirectory = [supportPath stringByAppendingPathComponent: @"WebServicesHTML"];
-			else
-			{
-				[[NSFileManager defaultManager] copyItemAtPath: webDirectory toPath: [supportPath stringByAppendingPathComponent: [webDirectory lastPathComponent]] error: nil];
-				
-				if( [[NSFileManager defaultManager] fileExistsAtPath: [supportPath stringByAppendingPathComponent: @"WebServicesHTML"] isDirectory: &isDirectory] == YES && isDirectory == YES)
-					webDirectory = [supportPath stringByAppendingPathComponent: @"WebServicesHTML"];
-			}
-		}
-		
-		if( [[NSFileManager defaultManager] fileExistsAtPath: [webDirectory stringByAppendingPathComponent: language] isDirectory: &isDirectory] == YES && isDirectory == YES)
-			webDirectory = [webDirectory stringByAppendingPathComponent: language];
-		else
-			webDirectory = [webDirectory stringByAppendingPathComponent: @"English"];
-		
-			
-		[webDirectory retain];
-	}
-}
-
 + (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate message: (NSString*) message replyTo: (NSString*) replyto customText: (NSString*) customText
 {
-	[OsiriXHTTPConnection checkWebDirectory];
-	
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
 	
 	if( fromEmailAddress == nil)
@@ -365,7 +492,7 @@ NSString* notNil( NSString *s)
 		NSMutableAttributedString *emailMessage = nil;
 		
 		if( message == nil)
-			emailMessage = [[[NSMutableAttributedString alloc] initWithPath: [webDirectory stringByAppendingPathComponent:@"emailTemplate.txt"] documentAttributes: nil] autorelease];
+			emailMessage = [[[NSMutableAttributedString alloc] initWithData:[OsiriXHTTPConnection WebServicesHTMLData:@"emailTemplate.txt"] options:NULL documentAttributes:nil error:NULL] autorelease];
 		else
 			emailMessage = [[[NSMutableAttributedString alloc] initWithString: message] autorelease];
 		
@@ -420,8 +547,6 @@ NSString* notNil( NSString *s)
 		NSLog( @"********* applescript needs to be in the main thread");
 		return;
 	}
-	
-	[OsiriXHTTPConnection checkWebDirectory];
 
 	// Lets check if new studies are available for each users! and if temporary users reached the end of their life.....
 	
@@ -579,35 +704,9 @@ NSString* notNil( NSString *s)
 	return [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"];
 }
 
-- (BOOL)useDigestAccessAuthentication
-{
-	// Digest access authentication is the default setting.
-	// Notice in Safari that when you're prompted for your password,
-	// Safari tells you "Your login information will be sent securely."
-	// 
-	// If you return NO in this method, the HTTP server will use
-	// basic authentication. Try it and you'll see that Safari
-	// will tell you "Your password will be sent unencrypted",
-	// which is strongly discouraged.
-	
+/*-(BOOL)useDigestAccessAuthentication {
 	return YES;
-}
-
-- (void)handleAuthenticationFailed
-{
-	[super handleAuthenticationFailed];
-	
-	HTTPAuthenticationRequest *auth = [[[HTTPAuthenticationRequest alloc] initWithRequest:request] autorelease];
-	
-	if( [self useDigestAccessAuthentication])
-	{
-		if(![auth isDigest])
-			return ;
-		
-		if( [auth username])
-			[self updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"Wrong password for user %@", [auth username]]];
-	}
-}
+}*/ // commented becauso is default superclass behavior
 
 - (NSString *) passwordForUser:(NSString *)username
 {
@@ -653,10 +752,6 @@ NSString* notNil( NSString *s)
 	return [currentUser valueForKey: @"password"];
 }
 
-/*-(BOOL)isAuthenticated {
-	
-}*/
-
 /**
  * Overrides HTTPConnection's method
  **/
@@ -692,15 +787,6 @@ NSString* notNil( NSString *s)
 	return [NSArray arrayWithArray:array];
 }
 
-- (id)initWithAsyncSocket:(AsyncSocket *)newSocket forServer:(HTTPServer *)myServer
-{
-    if ((self = [super initWithAsyncSocket: newSocket forServer: myServer]))
-	{
-		[OsiriXHTTPConnection checkWebDirectory];
-    }
-    return self;
-}
-
 - (void) dealloc
 {
 	[sendLock lock];
@@ -717,6 +803,7 @@ NSString* notNil( NSString *s)
 	[POSTfilename release];
 	[urlParameters release];
 	
+	self.session = NULL;
 	
 	[super dealloc];
 }
@@ -727,30 +814,22 @@ NSString* notNil( NSString *s)
 	return [start timeIntervalSinceReferenceDate];
 }
 
-- (NSMutableString*) setBlock: (NSString*) b visible: (BOOL) v forString: (NSMutableString*) s
+-(NSMutableString*)setBlock:(NSString*)b visible:(BOOL)visible forString:(NSMutableString*)s
 {
-	NSString *begin = [NSString stringWithFormat: @"%%%@%%", b];
-	NSString *end = [NSString stringWithFormat: @"%%/%@%%", b];
+	NSString* begin = [NSString stringWithFormat: @"%%%@%%", b];
+	NSString* end = [NSString stringWithFormat: @"%%/%@%%", b];
 	
-	if( v == NO)
-	{
-		NSArray *tempArray = [s componentsSeparatedByString: begin];
-		NSArray *tempArray2 = [[tempArray lastObject] componentsSeparatedByString: end];
-		
-		if( [tempArray count] >= 2)
-			s = [NSMutableString stringWithFormat: @"%@%@", [tempArray objectAtIndex:0], [tempArray2 lastObject]];
-		else
-		{
-			v = YES;
-			NSLog( @"**** block separators %@ not found", b);
+	if (!visible)
+		while (true) {
+			NSRange range1 = [s rangeOfString:begin];
+			if (!range1.length) break;
+			NSRange range2 = [s rangeOfString:end options:NSLiteralSearch range:s.range];
+			if (!range2.length) break;
+			[s replaceCharactersInRange:NSMakeRange(range1.location, range2.location+range2.length-range1.location) withString:@""];
 		}
-	}
 	
-	if( v != NO)
-	{
-		[s replaceOccurrencesOfString: begin withString: @"" options: NSLiteralSearch range:s.range];
-		[s replaceOccurrencesOfString: end withString: @"" options: NSLiteralSearch range:s.range];
-	}
+	[s replaceOccurrencesOfString:begin withString:@"" options:NSLiteralSearch range:s.range];
+	[s replaceOccurrencesOfString:end withString:@"" options:NSLiteralSearch range:s.range];
 	
 	return s;
 }
@@ -803,7 +882,7 @@ NSString* notNil( NSString *s)
 	
 	@try
 	{
-		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"study.html"]];
+		NSMutableString* templateString = [self webServicesHTMLMutableString:@"study.html"];
 		
 		templateString = [self setBlock: @"SendingFunctions1" visible: dicomSend|weasis forString: templateString];
 		templateString = [self setBlock: @"SendingFunctions2" visible: dicomSend|weasis forString: templateString];
@@ -1156,8 +1235,8 @@ NSString* notNil( NSString *s)
 	
 	@try
 	{
-		NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"studyList.html"]];
-		
+		NSMutableString *templateString = [self webServicesHTMLMutableString:@"studyList.html"];
+
 		templateString = [self setBlock: @"ZIPFunctions" visible: ( currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
 		templateString = [self setBlock: @"Weasis" visible: ( [NSUserDefaultsController WebServerUsesWeasis] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
 		
@@ -2158,6 +2237,34 @@ NSString* notNil( NSString *s)
 	return portString;
 }
 
++(NSDictionary*)ExtractParams:(NSString*)paramsString {
+	if (!paramsString.length)
+		return [NSDictionary dictionary];
+	
+	NSArray* paramsArray = [paramsString componentsSeparatedByString:@"&"];
+	NSMutableDictionary* params = [NSMutableDictionary dictionaryWithCapacity:paramsArray.count];
+
+	for (NSString* param in paramsArray)
+	{
+		NSArray* paramArray = [param componentsSeparatedByString:@"="];
+		
+		NSString* paramName = [paramArray objectAtIndex:0];
+		NSString* paramValue = paramArray.count > 1? [paramArray objectAtIndex:1] : [NSNull null];
+		
+		NSMutableArray* prevVal = [params objectForKey:paramName];
+		if (prevVal && ![prevVal isKindOfClass:[NSMutableArray class]]) {
+			prevVal = [NSMutableArray arrayWithObject:prevVal];
+			[params setObject:prevVal forKey:paramName];
+		}
+		
+		if (prevVal)
+			[prevVal addObject:paramValue];
+		else [params setObject:paramValue forKey:paramName];
+	}
+	
+	return params;
+}
+
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
 {
 	BOOL lockReleased = NO, waitBeforeReturning = NO;
@@ -2211,42 +2318,26 @@ NSString* notNil( NSString *s)
 	
 	NSString *url = [[(id)CFHTTPMessageCopyRequestURL(request) autorelease] description];
 	
-	if( [method isEqualToString: @"POST"] && multipartData && [multipartData count] == 1) // through POST
-	{
-		url = [url stringByAppendingString: @"?"];
-		url = [url stringByAppendingString: [[[NSString alloc] initWithBytes: [[multipartData lastObject] bytes] length: [(NSData*) [multipartData lastObject] length] encoding: NSUTF8StringEncoding] autorelease]];
-	}
-	
-	DLog(@"HTTP GET %@", url);
-	if ([url isEqual:@"/weasis/weasis-launcher.jar"]) {
-		NSLog(@"!!!");
-	}
+	DLog(@"HTTP %@ %@", method, url);
 	
 	// parse the URL to find the parameters (if any)
 	NSArray *urlComponenents = [url componentsSeparatedByString:@"?"];
-	NSString *parameterString = @"";
+	NSString *parameterString = NULL;
 	if([urlComponenents count] == 2) parameterString = [urlComponenents lastObject];
 	
 	[urlParameters release];
 	urlParameters = [[NSMutableDictionary dictionary] retain];
-	if(![parameterString isEqualToString:@""])
+	
+	// GET params
+	[urlParameters addEntriesFromDictionary:[OsiriXHTTPConnection ExtractParams:parameterString]];
+	
+	// POST params
+	if( [method isEqualToString: @"POST"] && multipartData && [multipartData count] == 1) // through POST
 	{
-		NSArray *paramArray = [parameterString componentsSeparatedByString:@"&"];
-		NSMutableArray *selected = [NSMutableArray array];
-		for(NSString *param in paramArray)
-		{
-			NSArray *p = [param componentsSeparatedByString:@"="];
-			if([[p objectAtIndex:0] isEqualToString:@"selected"])
-			{
-				[selected addObject:[p lastObject]];
-			}
-			else if([p count]==2)
-				[urlParameters setObject:[p lastObject] forKey:[p objectAtIndex:0]];
-		}
-		
-		if([selected count])
-			[urlParameters setObject:selected forKey:@"selected"];
+		NSString* postParamsString = [[[NSString alloc] initWithBytes: [[multipartData lastObject] bytes] length: [(NSData*) [multipartData lastObject] length] encoding: NSUTF8StringEncoding] autorelease];
+		[urlParameters addEntriesFromDictionary:[OsiriXHTTPConnection ExtractParams:postParamsString]];
 	}
+	
 	
 	NSString *portString = [urlParameters objectForKey: @"dicomcstoreport"];
 	
@@ -2254,1486 +2345,1475 @@ NSString* notNil( NSString *s)
 	urlComponenents = [(NSString*)[urlComponenents objectAtIndex:0] componentsSeparatedByString:@"?"];
 	NSString *fileURL = [urlComponenents objectAtIndex:0];
 	
-	NSString *requestedFile, *reportType;
+	NSString *reportType;
 	NSData *data = nil;
 	BOOL err = YES;
 	NSString* dataMime = NULL;
 	
-	if([fileURL isEqualToString:@"/"])
+	// SECURITY : we cannot allow the client to read any file on the hard disk !?!?!!!
+	fileURL = [fileURL stringByReplacingOccurrencesOfString:@".." withString:@""];
+
+	if ([fileURL isEqualToString:@"/"])
+		fileURL = @"/index";
+	
+	NSString* ext = [fileURL pathExtension];
+	if ([ext compare:@"jar" options:NSCaseInsensitiveSearch|NSLiteralSearch range:ext.range] == NSOrderedSame)
+		dataMime = @"application/java-archive";
+	if ([ext compare:@"swf" options:NSCaseInsensitiveSearch|NSLiteralSearch range:ext.range] == NSOrderedSame)
+		dataMime = @"application/x-shockwave-flash";
+	
+	if ([fileURL hasPrefix:@"/weasis/"])
 	{
-		requestedFile = [webDirectory stringByAppendingPathComponent:@"index.html"];
-		err = NO;
+		data = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:fileURL]];
+		err = !data;
 	}
 	else
 	{
-		requestedFile = [webDirectory stringByAppendingPathComponent: fileURL];
+		[[[BrowserController currentBrowser] managedObjectContext] lock];
 		
-		// SECURITY : we cannot allow the client to read any file on the hard disk !?!?!!!
-		requestedFile = [requestedFile stringByReplacingOccurrencesOfString: @".." withString: @""];
-		
-		// Weasis is NOT in the WebServicesHTML dir
-		if ([fileURL hasPrefix:@"/weasis/"])
-			requestedFile = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:fileURL];
-		
-		err = ![[NSFileManager defaultManager] fileExistsAtPath: requestedFile];
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	@try
-	{
-		data = [NSData dataWithContentsOfFile:requestedFile];
-		
-		NSString* ext = [fileURL pathExtension];
-		if ([ext compare:@"jar" options:NSCaseInsensitiveSearch|NSLiteralSearch range:ext.range] == NSOrderedSame)
-			dataMime = @"application/java-archive";
-		if ([ext compare:@"swf" options:NSCaseInsensitiveSearch|NSLiteralSearch range:ext.range] == NSOrderedSame)
-			dataMime = @"application/x-shockwave-flash";
-		
-		#pragma mark index
-		if( [fileURL isEqualToString: @"/index.html"] || [fileURL isEqualToString: @"/"])
+		@try
 		{
-			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile: [webDirectory stringByAppendingPathComponent:@"index.html"]];
+			data = [OsiriXHTTPConnection WebServicesHTMLData:fileURL];
+			err = !data;
 			
-			templateString = [self setBlock: @"AuthorizedRestorePasswordWebServer" visible: [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"] forString: templateString];
-			
-			data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
-			
-			err = NO;
-		}
-		
-		#pragma mark main
-		
-		if([fileURL isEqualToString: @"/main"])
-		{
-			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"main.html"]];
-			
-			templateString = [self setBlock: @"userAccount" visible: currentUser ? YES : NO forString: templateString];
-			
-			if( currentUser)
-			{				
-				[templateString replaceOccurrencesOfString:@"%UserNameLabel%" withString: notNil([currentUser valueForKey: @"name"]) options:NSLiteralSearch range:templateString.range];
-				[templateString replaceOccurrencesOfString:@"%UserEmailLabel%" withString: notNil([currentUser valueForKey: @"email"]) options:NSLiteralSearch range:templateString.range];
-				[templateString replaceOccurrencesOfString:@"%UserPhoneLabel%" withString: notNil([currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:templateString.range];
+			#pragma mark index
+			if ([fileURL isEqualToString: @"/index"])
+			{
+				NSMutableString* templateString = [self webServicesHTMLMutableString:@"index.html"];
+				
+				[self setBlock:@"AuthorizedRestorePasswordWebServer" visible:[[NSUserDefaults standardUserDefaults] boolForKey:@"restorePasswordWebServer"] forString:templateString];
+				[self setBlock:@"IfAuthenticationRequired" visible:[[NSUserDefaults standardUserDefaults] boolForKey:@"passwordWebServer"] forString:templateString];
+				
+				data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+				
+				err = NO;
 			}
 			
-			templateString = [self setBlock: @"AuthorizedUploadDICOMFiles" visible: ( currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] && !isiPhone) forString: templateString];
+			#pragma mark main
 			
-			if( currentUser == nil || (currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] == YES))
-				[self supportsPOST: nil withSize: 0];
-			
-			NSArray *tempArray = [templateString componentsSeparatedByString:@"%AlbumListItem%"];
-			NSString *templateStringStart = [tempArray objectAtIndex:0];
-			tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/AlbumListItem%"];
-			NSString *albumListItemString = [tempArray objectAtIndex:0];
-			NSString *templateStringEnd = [tempArray lastObject];
-			
-			NSMutableString *returnHTML = [NSMutableString stringWithString:templateStringStart];
-			
-			NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
-			for(NSManagedObject *album in albumArray)
+			if([fileURL isEqualToString: @"/main"])
 			{
-				if(![[album valueForKey:@"name"] isEqualToString: NSLocalizedString(@"Database", nil)])
+				NSMutableString *templateString = [self webServicesHTMLMutableString:@"main.html"];
+				
+				templateString = [self setBlock: @"AuthorizedUploadDICOMFiles" visible: ( currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] && !isiPhone) forString: templateString];
+				
+				if( currentUser == nil || (currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] == YES))
+					[self supportsPOST: nil withSize: 0];
+				
+				NSArray *tempArray = [templateString componentsSeparatedByString:@"%AlbumListItem%"];
+				NSString *templateStringStart = [tempArray objectAtIndex:0];
+				tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/AlbumListItem%"];
+				NSString *albumListItemString = [tempArray objectAtIndex:0];
+				NSString *templateStringEnd = [tempArray lastObject];
+				
+				NSMutableString *returnHTML = [NSMutableString stringWithString:templateStringStart];
+				
+				NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
+				for(NSManagedObject *album in albumArray)
 				{
-					NSMutableString *tempString = [NSMutableString stringWithString:albumListItemString];
-					[tempString replaceOccurrencesOfString: @"%AlbumName%" withString: notNil( [album valueForKey:@"name"]) options:NSLiteralSearch range:tempString.range];
-					[tempString replaceOccurrencesOfString: @"%AlbumNameURL%" withString: [OsiriXHTTPConnection encodeURLString: [album valueForKey:@"name"]] options:NSLiteralSearch range:tempString.range];
-					if([[album valueForKey:@"smartAlbum"] intValue] == 1)
-						[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"SmartAlbum" options:NSLiteralSearch range:tempString.range];
-					else
-						[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"Album" options:NSLiteralSearch range:tempString.range];
-					[returnHTML appendString:tempString];
-				}
-			}
-						
-			[returnHTML appendString:templateStringEnd];
-			
-			BOOL showAlbums = YES;
-			if([albumArray count]==1) // this is the Database 'Album'
-				showAlbums = NO;
-			returnHTML = [self setBlock:@"Albums" visible:showAlbums forString:returnHTML];
-			
-			BOOL accessStudies = YES;
-			
-			if( currentUser)
-			{
-				if( [[self studiesForPredicate: [NSPredicate predicateWithValue:YES] sortBy: nil] count] == 0)
-					accessStudies = NO;
-			}
-			
-			returnHTML = [self setBlock: @"accessStudies" visible: accessStudies forString: returnHTML];
-			
-			[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:returnHTML.range];
-			
-			data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
-			
-			err = NO;
-		}
-	#pragma mark wado
-		// wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX
-		// 127.0.0.1:3333/wado?requestType=WADO&frameNumber=1&studyUID=1.2.840.113619.2.16.1.155.1066226137.2.5290&seriesUID=1.2.840.113619.2.16.1.155.1066226137.2.5290.1&objectUID=1.2.840.113619.2.16.1.155.1066230214.1.74055
-		else if( [fileURL hasSuffix: @"/wado"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
-		{
-			if( [[[urlParameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
-			{
-				NSString *studyUID = [urlParameters objectForKey:@"studyUID"];
-				NSString *seriesUID = [urlParameters objectForKey:@"seriesUID"];
-				NSString *objectUID = [urlParameters objectForKey:@"objectUID"];
-				
-				if( objectUID == nil)
-					NSLog( @"***** WADO with objectUID == nil -> wado will fail");
-				
-				NSString *contentType = [[[[urlParameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
-				contentType = [contentType stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-				int rows = [[urlParameters objectForKey:@"rows"] intValue];
-				int columns = [[urlParameters objectForKey:@"columns"] intValue];
-				int windowCenter = [[urlParameters objectForKey:@"windowCenter"] intValue];
-				int windowWidth = [[urlParameters objectForKey:@"windowWidth"] intValue];
-				int frameNumber = [[urlParameters objectForKey:@"frameNumber"] intValue];	// -> OsiriX stores frames as images
-				int imageQuality = DCMLosslessQuality;
-				
-				if( [urlParameters objectForKey:@"imageQuality"])
-				{
-					if( [[urlParameters objectForKey:@"imageQuality"] intValue] > 80)
-						imageQuality = DCMLosslessQuality;
-					else if( [[urlParameters objectForKey:@"imageQuality"] intValue] > 60)
-						imageQuality = DCMHighQuality;
-					else if( [[urlParameters objectForKey:@"imageQuality"] intValue] > 30)
-						imageQuality = DCMMediumQuality;
-					else if( [[urlParameters objectForKey:@"imageQuality"] intValue] >= 0)
-						imageQuality = DCMLowQuality;
-				}
-				
-				NSString *transferSyntax = [[urlParameters objectForKey:@"transferSyntax"] lowercaseString];
-				NSString *useOrig = [[urlParameters objectForKey:@"useOrig"] lowercaseString];
-				
-				NSError *error = nil;
-				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-				
-				@try
-				{
-					NSMutableDictionary *imageCache = nil;
-					NSArray *images = nil;
-					
-					if( wadoJPEGCache == nil)
-						wadoJPEGCache = [[NSMutableDictionary alloc] initWithCapacity: WADOCACHESIZE];
-					
-					if( [wadoJPEGCache count] > WADOCACHESIZE)
-						[wadoJPEGCache removeAllObjects];
-					
-					if( [contentType length] == 0 || [contentType isEqualToString: @"image/jpeg"] || [contentType isEqualToString: @"image/png"] || [contentType isEqualToString: @"image/gif"] || [contentType isEqualToString: @"image/jp2"])
+					if(![[album valueForKey:@"name"] isEqualToString: NSLocalizedString(@"Database", nil)])
 					{
-						imageCache = [wadoJPEGCache objectForKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
-					}
-					
-					if( imageCache == nil)
-					{
-						if( studyUID)
-							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
+						NSMutableString *tempString = [NSMutableString stringWithString:albumListItemString];
+						[tempString replaceOccurrencesOfString: @"%AlbumName%" withString: notNil( [album valueForKey:@"name"]) options:NSLiteralSearch range:tempString.range];
+						[tempString replaceOccurrencesOfString: @"%AlbumNameURL%" withString: [OsiriXHTTPConnection encodeURLString: [album valueForKey:@"name"]] options:NSLiteralSearch range:tempString.range];
+						if([[album valueForKey:@"smartAlbum"] intValue] == 1)
+							[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"SmartAlbum" options:NSLiteralSearch range:tempString.range];
 						else
-							[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-						
-						NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
-						
-						if( [studies count] == 0)
-							NSLog( @"****** WADO Server : study not found");
-						
-						if( [studies count] > 1)
-							NSLog( @"****** WADO Server : more than 1 study with same uid");
-						
-						NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
-						
-						if( seriesUID)
-							allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
-						
-						NSArray *allImages = [NSArray array];
-						for( id series in allSeries)
-							allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
-						
-						NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
-						NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
-						
-						images = [[allImages filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
-						
-						if( [images count] > 1)
-						{
-							images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending:YES] autorelease]]];
+							[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"Album" options:NSLiteralSearch range:tempString.range];
+						[returnHTML appendString:tempString];
+					}
+				}
 							
-							if( frameNumber < [images count])
-								images = [NSArray arrayWithObject: [images objectAtIndex: frameNumber]];
-						}
-						
-						if( [images count])
-						{
-							[OsiriXHTTPConnection updateLogEntryForStudy: [studies lastObject] withMessage: @"WADO Send" forUser: nil ip: [asyncSocket connectedHost]];
-						}
+				[returnHTML appendString:templateStringEnd];
+				
+				BOOL showAlbums = YES;
+				if([albumArray count]==1) // this is the Database 'Album'
+					showAlbums = NO;
+				returnHTML = [self setBlock:@"Albums" visible:showAlbums forString:returnHTML];
+				
+				BOOL accessStudies = YES;
+				
+				if( currentUser)
+				{
+					if( [[self studiesForPredicate: [NSPredicate predicateWithValue:YES] sortBy: nil] count] == 0)
+						accessStudies = NO;
+				}
+				
+				returnHTML = [self setBlock: @"accessStudies" visible: accessStudies forString: returnHTML];
+				
+				[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:returnHTML.range];
+				
+				data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
+				
+				err = NO;
+			}
+		#pragma mark wado
+			// wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX
+			// 127.0.0.1:3333/wado?requestType=WADO&frameNumber=1&studyUID=1.2.840.113619.2.16.1.155.1066226137.2.5290&seriesUID=1.2.840.113619.2.16.1.155.1066226137.2.5290.1&objectUID=1.2.840.113619.2.16.1.155.1066230214.1.74055
+			else if( [fileURL hasSuffix: @"/wado"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
+			{
+				if( [[[urlParameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
+				{
+					NSString *studyUID = [urlParameters objectForKey:@"studyUID"];
+					NSString *seriesUID = [urlParameters objectForKey:@"seriesUID"];
+					NSString *objectUID = [urlParameters objectForKey:@"objectUID"];
+					
+					if( objectUID == nil)
+						NSLog( @"***** WADO with objectUID == nil -> wado will fail");
+					
+					NSString *contentType = [[[[urlParameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
+					contentType = [contentType stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+					int rows = [[urlParameters objectForKey:@"rows"] intValue];
+					int columns = [[urlParameters objectForKey:@"columns"] intValue];
+					int windowCenter = [[urlParameters objectForKey:@"windowCenter"] intValue];
+					int windowWidth = [[urlParameters objectForKey:@"windowWidth"] intValue];
+					int frameNumber = [[urlParameters objectForKey:@"frameNumber"] intValue];	// -> OsiriX stores frames as images
+					int imageQuality = DCMLosslessQuality;
+					
+					if( [urlParameters objectForKey:@"imageQuality"])
+					{
+						if( [[urlParameters objectForKey:@"imageQuality"] intValue] > 80)
+							imageQuality = DCMLosslessQuality;
+						else if( [[urlParameters objectForKey:@"imageQuality"] intValue] > 60)
+							imageQuality = DCMHighQuality;
+						else if( [[urlParameters objectForKey:@"imageQuality"] intValue] > 30)
+							imageQuality = DCMMediumQuality;
+						else if( [[urlParameters objectForKey:@"imageQuality"] intValue] >= 0)
+							imageQuality = DCMLowQuality;
 					}
 					
-					if( [images count] || imageCache != nil)
+					NSString *transferSyntax = [[urlParameters objectForKey:@"transferSyntax"] lowercaseString];
+					NSString *useOrig = [[urlParameters objectForKey:@"useOrig"] lowercaseString];
+					
+					NSError *error = nil;
+					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+					[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+					
+					@try
 					{
-						if( [contentType isEqualToString: @"application/dicom"])
+						NSMutableDictionary *imageCache = nil;
+						NSArray *images = nil;
+						
+						if( wadoJPEGCache == nil)
+							wadoJPEGCache = [[NSMutableDictionary alloc] initWithCapacity: WADOCACHESIZE];
+						
+						if( [wadoJPEGCache count] > WADOCACHESIZE)
+							[wadoJPEGCache removeAllObjects];
+						
+						if( [contentType length] == 0 || [contentType isEqualToString: @"image/jpeg"] || [contentType isEqualToString: @"image/png"] || [contentType isEqualToString: @"image/gif"] || [contentType isEqualToString: @"image/jp2"])
 						{
-							if( [useOrig isEqualToString: @"true"] || [useOrig isEqualToString: @"1"] || [useOrig isEqualToString: @"yes"])
-							{
-								data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
-							}
+							imageCache = [wadoJPEGCache objectForKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
+						}
+						
+						if( imageCache == nil)
+						{
+							if( studyUID)
+								[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
 							else
+								[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+							
+							NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
+							
+							if( [studies count] == 0)
+								NSLog( @"****** WADO Server : study not found");
+							
+							if( [studies count] > 1)
+								NSLog( @"****** WADO Server : more than 1 study with same uid");
+							
+							NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
+							
+							if( seriesUID)
+								allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
+							
+							NSArray *allImages = [NSArray array];
+							for( id series in allSeries)
+								allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
+							
+							NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
+							NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+							
+							images = [[allImages filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
+							
+							if( [images count] > 1)
 							{
-								DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS: transferSyntax] autorelease];
+								images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending:YES] autorelease]]];
 								
-								if( [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LosslessTransferSyntax]] ||
-								   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LossyTransferSyntax]] ||
-								   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]] ||
-								   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGLossless14TransferSyntax]] ||
-								   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]])
+								if( frameNumber < [images count])
+									images = [NSArray arrayWithObject: [images objectAtIndex: frameNumber]];
+							}
+							
+							if( [images count])
+							{
+								[OsiriXHTTPConnection updateLogEntryForStudy: [studies lastObject] withMessage: @"WADO Send" forUser: nil ip: [asyncSocket connectedHost]];
+							}
+						}
+						
+						if( [images count] || imageCache != nil)
+						{
+							if( [contentType isEqualToString: @"application/dicom"])
+							{
+								if( [useOrig isEqualToString: @"true"] || [useOrig isEqualToString: @"1"] || [useOrig isEqualToString: @"yes"])
 								{
-									
+									data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
 								}
-								else // Explicit VR Little Endian
-									ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
-								
-								data = [[BrowserController currentBrowser] getDICOMFile: [[images lastObject] valueForKey: @"completePath"] inSyntax: ts.transferSyntax quality: imageQuality];
-							}
-							err = NO;
-						}
-						else if( [contentType isEqualToString: @"video/mpeg"])
-						{
-							DicomImage *im = [images lastObject];
-							
-							NSArray *dicomImageArray = [[[im valueForKey: @"series"] valueForKey:@"images"] allObjects];
-							
-							@try
-							{
-								// Sort images with "instanceNumber"
-								NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
-								NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
-								[sort release];
-								dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors: sortDescriptors];
-								
-							}
-							@catch (NSException * e)
-							{
-								NSLog( @"%@", [e description]);
-							}
-							
-							if( [dicomImageArray count] > 1)
-							{
-								NSString *path = @"/tmp/osirixwebservices";
-								[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-								
-								NSString *name = [NSString stringWithFormat:@"%@",[urlParameters objectForKey:@"id"]];
-								name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
-								
-								NSMutableString *fileName = [NSMutableString stringWithString: [path stringByAppendingPathComponent:name]];
-								
-								[BrowserController replaceNotAdmitted: fileName];
-								
-								[fileName appendString:@".mov"];
-								
-								NSString *outFile;
-								if( isiPhone)
-									outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
 								else
-									outFile = fileName;
-								
-								NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", urlParameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: columns], @"columns", nil];
-								
-								lockReleased = YES;
-								[[[BrowserController currentBrowser] managedObjectContext] unlock];
-								
-								[self generateMovie: dict];
-								
-								data = [NSData dataWithContentsOfFile: outFile];
-								
-								if( data)
-									err = NO;
+								{
+									DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS: transferSyntax] autorelease];
+									
+									if( [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LosslessTransferSyntax]] ||
+									   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LossyTransferSyntax]] ||
+									   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]] ||
+									   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGLossless14TransferSyntax]] ||
+									   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]])
+									{
+										
+									}
+									else // Explicit VR Little Endian
+										ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
+									
+									data = [[BrowserController currentBrowser] getDICOMFile: [[images lastObject] valueForKey: @"completePath"] inSyntax: ts.transferSyntax quality: imageQuality];
+								}
+								err = NO;
 							}
-						}
-						else // image/jpeg
-						{
-							DCMPix* dcmPix = [imageCache valueForKey: @"dcmPix"];
-							
-							if( dcmPix)
-							{
-								// It's in the cache
-							}
-							else if( [images count] > 0)
+							else if( [contentType isEqualToString: @"video/mpeg"])
 							{
 								DicomImage *im = [images lastObject];
 								
-								dcmPix = [[[DCMPix alloc] initWithPath: [im valueForKey: @"completePathResolved"] :0 :1 :nil :frameNumber :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
+								NSArray *dicomImageArray = [[[im valueForKey: @"series"] valueForKey:@"images"] allObjects];
 								
-								if( dcmPix == nil)
+								@try
 								{
-									NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
-									float *imPtr = malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof( float));
-									for( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
-										imPtr[ i] = i;
+									// Sort images with "instanceNumber"
+									NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
+									NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
+									[sort release];
+									dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors: sortDescriptors];
 									
-									dcmPix = [[[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0] autorelease];
+								}
+								@catch (NSException * e)
+								{
+									NSLog( @"%@", [e description]);
 								}
 								
-								imageCache = [NSMutableDictionary dictionaryWithObject: dcmPix forKey: @"dcmPix"];
-								
-								[wadoJPEGCache setObject: imageCache forKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
+								if( [dicomImageArray count] > 1)
+								{
+									NSString *path = @"/tmp/osirixwebservices";
+									[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+									
+									NSString *name = [NSString stringWithFormat:@"%@",[urlParameters objectForKey:@"id"]];
+									name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
+									
+									NSMutableString *fileName = [NSMutableString stringWithString: [path stringByAppendingPathComponent:name]];
+									
+									[BrowserController replaceNotAdmitted: fileName];
+									
+									[fileName appendString:@".mov"];
+									
+									NSString *outFile;
+									if( isiPhone)
+										outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
+									else
+										outFile = fileName;
+									
+									NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", urlParameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: columns], @"columns", nil];
+									
+									lockReleased = YES;
+									[[[BrowserController currentBrowser] managedObjectContext] unlock];
+									
+									[self generateMovie: dict];
+									
+									data = [NSData dataWithContentsOfFile: outFile];
+									
+									if( data)
+										err = NO;
+								}
 							}
-							
-							if( dcmPix)
+							else // image/jpeg
 							{
-								NSImage *image = nil;
-								NSManagedObject *im =  [dcmPix imageObj];
+								DCMPix* dcmPix = [imageCache valueForKey: @"dcmPix"];
 								
-								float curWW = windowWidth;
-								float curWL = windowCenter;
-								
-								if( curWW == 0 && [[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+								if( dcmPix)
 								{
-									curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-									curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+									// It's in the cache
 								}
-								
-								if( curWW == 0)
+								else if( [images count] > 0)
 								{
-									curWW = [dcmPix savedWW];
-									curWL = [dcmPix savedWL];
-								}
-								
-								data = [imageCache objectForKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
-								
-								if( data == nil)
-								{
-									[dcmPix checkImageAvailble: curWW :curWL];
+									DicomImage *im = [images lastObject];
 									
-									image = [dcmPix image];
-									float width = [image size].width;
-									float height = [image size].height;
+									dcmPix = [[[DCMPix alloc] initWithPath: [im valueForKey: @"completePathResolved"] :0 :1 :nil :frameNumber :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
 									
-									int maxWidth = columns;
-									int maxHeight = rows;
-									
-									BOOL resize = NO;
-									
-									if(width > maxWidth && maxWidth > 0)
+									if( dcmPix == nil)
 									{
-										height =  height * maxWidth / width;
-										width = maxWidth;
-										resize = YES;
+										NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
+										float *imPtr = malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof( float));
+										for( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
+											imPtr[ i] = i;
+										
+										dcmPix = [[[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0] autorelease];
 									}
 									
-									if(height > maxHeight && maxHeight > 0)
-									{
-										width = width * maxHeight / height;
-										height = maxHeight;
-										resize = YES;
-									}
+									imageCache = [NSMutableDictionary dictionaryWithObject: dcmPix forKey: @"dcmPix"];
 									
-									NSImage *newImage;
-									
-									if( resize)
-										newImage = [image imageByScalingProportionallyToSize: NSMakeSize(width, height)];
-									else
-										newImage = image;
-									
-									NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
-									NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
-									
-									if( [contentType isEqualToString: @"image/gif"])
-										data = [imageRep representationUsingType: NSGIFFileType properties:imageProps];
-									else if( [contentType isEqualToString: @"image/png"])
-										data = [imageRep representationUsingType: NSPNGFileType properties:imageProps];
-									else if( [contentType isEqualToString: @"image/jp2"])
-										data = [imageRep representationUsingType: NSJPEG2000FileType properties:imageProps];
-									else
-										data = [imageRep representationUsingType: NSJPEGFileType properties:imageProps];
-									
-									[imageCache setObject: data forKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
+									[wadoJPEGCache setObject: imageCache forKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
 								}
 								
-								if( data)
-									err = NO;
+								if( dcmPix)
+								{
+									NSImage *image = nil;
+									NSManagedObject *im =  [dcmPix imageObj];
+									
+									float curWW = windowWidth;
+									float curWL = windowCenter;
+									
+									if( curWW == 0 && [[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+									{
+										curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+										curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+									}
+									
+									if( curWW == 0)
+									{
+										curWW = [dcmPix savedWW];
+										curWL = [dcmPix savedWL];
+									}
+									
+									data = [imageCache objectForKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
+									
+									if( data == nil)
+									{
+										[dcmPix checkImageAvailble: curWW :curWL];
+										
+										image = [dcmPix image];
+										float width = [image size].width;
+										float height = [image size].height;
+										
+										int maxWidth = columns;
+										int maxHeight = rows;
+										
+										BOOL resize = NO;
+										
+										if(width > maxWidth && maxWidth > 0)
+										{
+											height =  height * maxWidth / width;
+											width = maxWidth;
+											resize = YES;
+										}
+										
+										if(height > maxHeight && maxHeight > 0)
+										{
+											width = width * maxHeight / height;
+											height = maxHeight;
+											resize = YES;
+										}
+										
+										NSImage *newImage;
+										
+										if( resize)
+											newImage = [image imageByScalingProportionallyToSize: NSMakeSize(width, height)];
+										else
+											newImage = image;
+										
+										NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
+										NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
+										
+										if( [contentType isEqualToString: @"image/gif"])
+											data = [imageRep representationUsingType: NSGIFFileType properties:imageProps];
+										else if( [contentType isEqualToString: @"image/png"])
+											data = [imageRep representationUsingType: NSPNGFileType properties:imageProps];
+										else if( [contentType isEqualToString: @"image/jp2"])
+											data = [imageRep representationUsingType: NSJPEG2000FileType properties:imageProps];
+										else
+											data = [imageRep representationUsingType: NSJPEGFileType properties:imageProps];
+										
+										[imageCache setObject: data forKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
+									}
+									
+									if( data)
+										err = NO;
+								}
 							}
 						}
+						else NSLog( @"****** WADO Server : image uid not found !");
+					
+						if( err)
+						{
+							data = [NSData data];
+							err = NO;
+						}
 					}
-					else NSLog( @"****** WADO Server : image uid not found !");
-				
-					if( err)
+					@catch (NSException * e)
 					{
-						data = [NSData data];
-						err = NO;
+						NSLog( @"****** WADO Server exception: %@", e);
 					}
 				}
-				@catch (NSException * e)
+			}
+		#pragma mark studyList
+			else if([fileURL isEqualToString:@"/studyList"] || [fileURL isEqualToString:@"/studyList.json"])
+			{
+				NSPredicate *browsePredicate;
+				NSString *pageTitle;
+				if( [[urlParameters objectForKey:@"browse"] isEqualToString: @"newAddedStudies"] && [[urlParameters objectForKey:@"browseParameter"] doubleValue] > 0)
 				{
-					NSLog( @"****** WADO Server exception: %@", e);
+					browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [[urlParameters objectForKey:@"browseParameter"] doubleValue]];
+					pageTitle = NSLocalizedString( @"New Studies Available", nil);
 				}
-			}
-		}
-	#pragma mark studyList
-		else if([fileURL isEqualToString:@"/studyList"] || [fileURL isEqualToString:@"/studyList.json"])
-		{
-			NSPredicate *browsePredicate;
-			NSString *pageTitle;
-			if( [[urlParameters objectForKey:@"browse"] isEqualToString: @"newAddedStudies"] && [[urlParameters objectForKey:@"browseParameter"] doubleValue] > 0)
-			{
-				browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [[urlParameters objectForKey:@"browseParameter"] doubleValue]];
-				pageTitle = NSLocalizedString( @"New Studies Available", nil);
-			}
-			else if([(NSString*)[urlParameters objectForKey:@"browse"] isEqualToString:@"today"])
-			{
-				browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [self startOfDay:[NSCalendarDate calendarDate]]];
-				pageTitle = NSLocalizedString( @"Today", nil);
-			}
-			else if([(NSString*)[urlParameters objectForKey:@"browse"] isEqualToString:@"6hours"])
-			{
-				NSCalendarDate *now = [NSCalendarDate calendarDate];
-				browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
-				pageTitle = NSLocalizedString( @"Last 6 hours", nil);
-			}
-			else if([(NSString*)[urlParameters objectForKey:@"browse"] isEqualToString:@"all"])
-			{
-				browsePredicate = [NSPredicate predicateWithValue:YES];
-				pageTitle = NSLocalizedString(@"Study List", nil);
-			}
-			else if([urlParameters objectForKey:@"search"])
-			{
-				NSMutableString *search = [NSMutableString string];
-				NSString *searchString = [NSString stringWithString: [[[urlParameters objectForKey:@"search"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-				searchString = [OsiriXHTTPConnection decodeURLString:searchString];
-				
-				NSArray *components = [searchString componentsSeparatedByString:@" "];
-				NSMutableArray *newComponents = [NSMutableArray array];
-				for (NSString *comp in components)
+				else if([(NSString*)[urlParameters objectForKey:@"browse"] isEqualToString:@"today"])
 				{
-					if(![comp isEqualToString:@""])
-						[newComponents addObject:comp];
+					browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [self startOfDay:[NSCalendarDate calendarDate]]];
+					pageTitle = NSLocalizedString( @"Today", nil);
 				}
-				
-				searchString = [newComponents componentsJoinedByString:@" "];
-				
-				[search appendFormat:@"name CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
-				browsePredicate = [NSPredicate predicateWithFormat:search];
-				pageTitle = NSLocalizedString(@"Search Result", nil);
-			}
-			else if([urlParameters objectForKey:@"searchID"])
-			{
-				NSMutableString *search = [NSMutableString string];
-				NSString *searchString = [NSString stringWithString: [[[urlParameters objectForKey:@"searchID"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-				searchString = [OsiriXHTTPConnection decodeURLString:searchString];
-				
-				NSArray *components = [searchString componentsSeparatedByString:@" "];
-				NSMutableArray *newComponents = [NSMutableArray array];
-				for (NSString *comp in components)
+				else if([(NSString*)[urlParameters objectForKey:@"browse"] isEqualToString:@"6hours"])
 				{
-					if(![comp isEqualToString:@""])
-						[newComponents addObject:comp];
+					NSCalendarDate *now = [NSCalendarDate calendarDate];
+					browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
+					pageTitle = NSLocalizedString( @"Last 6 hours", nil);
 				}
-				
-				searchString = [newComponents componentsJoinedByString:@" "];
-				
-				[search appendFormat:@"patientID CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
-				browsePredicate = [NSPredicate predicateWithFormat:search];
-				pageTitle = NSLocalizedString(@"Search Result", nil);
-			}
-			else if([urlParameters objectForKey:@"searchAccessionNumber"])
-			{
-				NSMutableString *search = [NSMutableString string];
-				NSString *searchString = [NSString stringWithString: [[[urlParameters objectForKey:@"searchAccessionNumber"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-				searchString = [OsiriXHTTPConnection decodeURLString:searchString];
-				
-				NSArray *components = [searchString componentsSeparatedByString:@" "];
-				NSMutableArray *newComponents = [NSMutableArray array];
-				for (NSString *comp in components)
+				else if([(NSString*)[urlParameters objectForKey:@"browse"] isEqualToString:@"all"])
 				{
-					if(![comp isEqualToString:@""])
-						[newComponents addObject:comp];
+					browsePredicate = [NSPredicate predicateWithValue:YES];
+					pageTitle = NSLocalizedString(@"Study List", nil);
 				}
-				
-				searchString = [newComponents componentsJoinedByString:@" "];
-				
-				[search appendFormat:@"accessionNumber CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
-				browsePredicate = [NSPredicate predicateWithFormat:search];
-				pageTitle = NSLocalizedString(@"Search Result", nil);
-			}
-			else
-			{
-				browsePredicate = [NSPredicate predicateWithValue:YES];
-				pageTitle = NSLocalizedString(@"Study List", nil);
-			}
-			
-			if([fileURL isEqualToString:@"/studyList"])
-			{
-				NSMutableString *html = [self htmlStudyListForStudies: [self studiesForPredicate: browsePredicate sortBy: [urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", [NSNumber numberWithBool: isiPhone], @"iPhone", nil]];
-				
-				if([urlParameters objectForKey:@"album"])
+				else if([urlParameters objectForKey:@"search"])
 				{
-					if(![[urlParameters objectForKey:@"album"] isEqualToString:@""])
+					NSMutableString *search = [NSMutableString string];
+					NSString *searchString = [NSString stringWithString: [[[urlParameters objectForKey:@"search"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+					searchString = [OsiriXHTTPConnection decodeURLString:searchString];
+					
+					NSArray *components = [searchString componentsSeparatedByString:@" "];
+					NSMutableArray *newComponents = [NSMutableArray array];
+					for (NSString *comp in components)
 					{
-						html = [self htmlStudyListForStudies: [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] sortBy:[urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
-						pageTitle = [OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						if(![comp isEqualToString:@""])
+							[newComponents addObject:comp];
 					}
+					
+					searchString = [newComponents componentsJoinedByString:@" "];
+					
+					[search appendFormat:@"name CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+					browsePredicate = [NSPredicate predicateWithFormat:search];
+					pageTitle = NSLocalizedString(@"Search Result", nil);
+				}
+				else if([urlParameters objectForKey:@"searchID"])
+				{
+					NSMutableString *search = [NSMutableString string];
+					NSString *searchString = [NSString stringWithString: [[[urlParameters objectForKey:@"searchID"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+					searchString = [OsiriXHTTPConnection decodeURLString:searchString];
+					
+					NSArray *components = [searchString componentsSeparatedByString:@" "];
+					NSMutableArray *newComponents = [NSMutableArray array];
+					for (NSString *comp in components)
+					{
+						if(![comp isEqualToString:@""])
+							[newComponents addObject:comp];
+					}
+					
+					searchString = [newComponents componentsJoinedByString:@" "];
+					
+					[search appendFormat:@"patientID CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+					browsePredicate = [NSPredicate predicateWithFormat:search];
+					pageTitle = NSLocalizedString(@"Search Result", nil);
+				}
+				else if([urlParameters objectForKey:@"searchAccessionNumber"])
+				{
+					NSMutableString *search = [NSMutableString string];
+					NSString *searchString = [NSString stringWithString: [[[urlParameters objectForKey:@"searchAccessionNumber"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+					searchString = [OsiriXHTTPConnection decodeURLString:searchString];
+					
+					NSArray *components = [searchString componentsSeparatedByString:@" "];
+					NSMutableArray *newComponents = [NSMutableArray array];
+					for (NSString *comp in components)
+					{
+						if(![comp isEqualToString:@""])
+							[newComponents addObject:comp];
+					}
+					
+					searchString = [newComponents componentsJoinedByString:@" "];
+					
+					[search appendFormat:@"accessionNumber CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+					browsePredicate = [NSPredicate predicateWithFormat:search];
+					pageTitle = NSLocalizedString(@"Search Result", nil);
+				}
+				else
+				{
+					browsePredicate = [NSPredicate predicateWithValue:YES];
+					pageTitle = NSLocalizedString(@"Study List", nil);
 				}
 				
-				[html replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( pageTitle) options:NSLiteralSearch range:html.range];
-				
-				if([urlParameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]] options:NSLiteralSearch range:html.range];
-				else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:html.range]; 
-				
-				if([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:html.range];
-				else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:html.range]; 
-				
-				if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:html.range];
-				else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:html.range];
-				
-				if([urlParameters objectForKey:@"album"])[html replaceOccurrencesOfString:@"%album%" withString:[NSString stringWithFormat:@"&album=%@",[urlParameters objectForKey:@"album"]] options:NSLiteralSearch range:html.range];
-				else [html replaceOccurrencesOfString:@"%album%" withString:@"" options:NSLiteralSearch range:html.range];
+				if([fileURL isEqualToString:@"/studyList"])
+				{
+					NSMutableString *html = [self htmlStudyListForStudies: [self studiesForPredicate: browsePredicate sortBy: [urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", [NSNumber numberWithBool: isiPhone], @"iPhone", nil]];
+					
+					if([urlParameters objectForKey:@"album"])
+					{
+						if(![[urlParameters objectForKey:@"album"] isEqualToString:@""])
+						{
+							html = [self htmlStudyListForStudies: [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] sortBy:[urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
+							pageTitle = [OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						}
+					}
+					
+					[html replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( pageTitle) options:NSLiteralSearch range:html.range];
+					
+					if([urlParameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]] options:NSLiteralSearch range:html.range];
+					else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:html.range]; 
+					
+					if([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:html.range];
+					else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:html.range]; 
+					
+					if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:html.range];
+					else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:html.range];
+					
+					if([urlParameters objectForKey:@"album"])[html replaceOccurrencesOfString:@"%album%" withString:[NSString stringWithFormat:@"&album=%@",[urlParameters objectForKey:@"album"]] options:NSLiteralSearch range:html.range];
+					else [html replaceOccurrencesOfString:@"%album%" withString:@"" options:NSLiteralSearch range:html.range];
 
-				if([urlParameters objectForKey:@"order"])
-				{
-					if([[urlParameters objectForKey:@"order"] isEqualToString:@"name"])
+					if([urlParameters objectForKey:@"order"])
 					{
-						[html replaceOccurrencesOfString:@"%orderByName%" withString:@"sortedBy" options:NSLiteralSearch range:html.range];
-						[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"" options:NSLiteralSearch range:html.range];
+						if([[urlParameters objectForKey:@"order"] isEqualToString:@"name"])
+						{
+							[html replaceOccurrencesOfString:@"%orderByName%" withString:@"sortedBy" options:NSLiteralSearch range:html.range];
+							[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"" options:NSLiteralSearch range:html.range];
+						}
+						else
+						{
+							[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:html.range];
+							[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:html.range];
+						}
 					}
 					else
 					{
 						[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:html.range];
 						[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:html.range];
 					}
-				}
-				else
-				{
-					[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:html.range];
-					[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:html.range];
-				}
-				
-				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:html.range];
-				
-				data = [html dataUsingEncoding:NSUTF8StringEncoding];
-				err = NO;
-			}
-			#pragma mark studyList (JSON)
-			else if([fileURL isEqualToString:@"/studyList.json"])
-			{
-				NSArray *studies;
-				
-				if([urlParameters objectForKey:@"album"])
-				{
-					if(![[urlParameters objectForKey:@"album"] isEqualToString:@""])
-					{
-						studies = [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] sortBy:[urlParameters objectForKey:@"order"]];
-					}
-				}
-				else
-					studies = [self studiesForPredicate:browsePredicate sortBy:[urlParameters objectForKey:@"order"]];
-				NSString *json = [self jsonStudyListForStudies:studies];
-				data = [json dataUsingEncoding:NSUTF8StringEncoding];
-				err = NO;
-			}
-		}
-	#pragma mark study
-		else if([fileURL isEqualToString:@"/study"])
-		{
-			NSString *message = nil;
-			
-			NSPredicate *browsePredicate;
-			if([[urlParameters allKeys] containsObject:@"id"])
-			{
-				browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
-			}
-			else
-				browsePredicate = [NSPredicate predicateWithValue:NO];
-			
-			#pragma mark dicomSend
-			if( [[urlParameters allKeys] containsObject:@"dicomSend"])
-			{
-				NSString *dicomDestination = [[[urlParameters objectForKey:@"dicomDestination"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-				NSArray *tempArray = [dicomDestination componentsSeparatedByString:@":"];
-				
-				if( [tempArray count] >= 4)
-				{
-					NSString *dicomDestinationAddress = [[[tempArray objectAtIndex:0]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-					NSString *dicomDestinationPort = [tempArray objectAtIndex:1];
-					NSString *dicomDestinationAETitle = [[[tempArray objectAtIndex:2]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-					NSString *dicomDestinationSyntax = [tempArray objectAtIndex:3];
 					
-					if( dicomDestinationAddress && dicomDestinationPort && dicomDestinationAETitle && dicomDestinationSyntax)
+					[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:html.range];
+					
+					data = [html dataUsingEncoding:NSUTF8StringEncoding];
+					err = NO;
+				}
+				#pragma mark studyList (JSON)
+				else if([fileURL isEqualToString:@"/studyList.json"])
+				{
+					NSArray *studies;
+					
+					if([urlParameters objectForKey:@"album"])
 					{
-						[selectedDICOMNode release];
-						selectedDICOMNode = [NSMutableDictionary dictionary];
-						[selectedDICOMNode setObject:dicomDestinationAddress forKey:@"Address"];
-						[selectedDICOMNode setObject:dicomDestinationPort forKey:@"Port"];
-						[selectedDICOMNode setObject:dicomDestinationAETitle forKey:@"AETitle"];
-						[selectedDICOMNode setObject:dicomDestinationSyntax forKey:@"TransferSyntax"];
-						[selectedDICOMNode retain];
-						
-						[selectedImages release];
-						selectedImages = [NSMutableArray array];
-						NSArray *seriesArray;
-						for(NSString* selectedID in [urlParameters objectForKey:@"selected"])
+						if(![[urlParameters objectForKey:@"album"] isEqualToString:@""])
 						{
-							NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"id"], [[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+							studies = [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] sortBy:[urlParameters objectForKey:@"order"]];
+						}
+					}
+					else
+						studies = [self studiesForPredicate:browsePredicate sortBy:[urlParameters objectForKey:@"order"]];
+					NSString *json = [self jsonStudyListForStudies:studies];
+					data = [json dataUsingEncoding:NSUTF8StringEncoding];
+					err = NO;
+				}
+			}
+		#pragma mark study
+			else if([fileURL isEqualToString:@"/study"])
+			{
+				NSString *message = nil;
+				
+				NSPredicate *browsePredicate;
+				if([[urlParameters allKeys] containsObject:@"id"])
+				{
+					browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
+				}
+				else
+					browsePredicate = [NSPredicate predicateWithValue:NO];
+				
+				#pragma mark dicomSend
+				if( [[urlParameters allKeys] containsObject:@"dicomSend"])
+				{
+					NSString *dicomDestination = [[[urlParameters objectForKey:@"dicomDestination"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					NSArray *tempArray = [dicomDestination componentsSeparatedByString:@":"];
+					
+					if( [tempArray count] >= 4)
+					{
+						NSString *dicomDestinationAddress = [[[tempArray objectAtIndex:0]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						NSString *dicomDestinationPort = [tempArray objectAtIndex:1];
+						NSString *dicomDestinationAETitle = [[[tempArray objectAtIndex:2]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						NSString *dicomDestinationSyntax = [tempArray objectAtIndex:3];
+						
+						if( dicomDestinationAddress && dicomDestinationPort && dicomDestinationAETitle && dicomDestinationSyntax)
+						{
+							[selectedDICOMNode release];
+							selectedDICOMNode = [NSMutableDictionary dictionary];
+							[selectedDICOMNode setObject:dicomDestinationAddress forKey:@"Address"];
+							[selectedDICOMNode setObject:dicomDestinationPort forKey:@"Port"];
+							[selectedDICOMNode setObject:dicomDestinationAETitle forKey:@"AETitle"];
+							[selectedDICOMNode setObject:dicomDestinationSyntax forKey:@"TransferSyntax"];
+							[selectedDICOMNode retain];
 							
-							seriesArray = [self seriesForPredicate: pred];
-							for(NSManagedObject *series in seriesArray)
+							[selectedImages release];
+							selectedImages = [NSMutableArray array];
+							NSArray *seriesArray;
+							for(NSString* selectedID in [urlParameters objectForKey:@"selected"])
 							{
-								NSArray *images = [[series valueForKey:@"images"] allObjects];
-								[selectedImages addObjectsFromArray:images];
+								NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"id"], [[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+								
+								seriesArray = [self seriesForPredicate: pred];
+								for(NSManagedObject *series in seriesArray)
+								{
+									NSArray *images = [[series valueForKey:@"images"] allObjects];
+									[selectedImages addObjectsFromArray:images];
+								}
 							}
-						}
-						
-						[selectedImages retain];
-						
-						if( [selectedImages count])
-						{
-							[self dicomSend: self];
 							
-							message = [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
-						}
-						else
-							message = [NSString stringWithFormat: NSLocalizedString( @"No images selected ! Select one or more series.", nil), dicomDestinationAddress, dicomDestinationAETitle];
+							[selectedImages retain];
+							
+							if( [selectedImages count])
+							{
+								[self dicomSend: self];
+								
+								message = [NSString stringWithFormat: NSLocalizedString( @"Images sent to DICOM node: %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
+							}
+							else
+								message = [NSString stringWithFormat: NSLocalizedString( @"No images selected ! Select one or more series.", nil), dicomDestinationAddress, dicomDestinationAETitle];
 
+						}
+						
+						if( message == nil)
+							message = [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed to node : %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
 					}
 					
 					if( message == nil)
-						message = [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed to node : %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
+						message = [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed to node : cannot identify DICOM node.", nil)];
 				}
 				
-				if( message == nil)
-					message = [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed to node : cannot identify DICOM node.", nil)];
-			}
-			
-			NSArray *studies = [self studiesForPredicate:browsePredicate];
-			
-			if( [studies count] == 1)
-			{
-				if( [[urlParameters allKeys] containsObject:@"shareStudy"])
+				NSArray *studies = [self studiesForPredicate:browsePredicate];
+				
+				if( [studies count] == 1)
 				{
-					NSString *userDestination = [[[urlParameters objectForKey:@"userDestination"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-					NSString *messageFromUser = [[[urlParameters objectForKey:@"message"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-					
-					if( userDestination)
+					if( [[urlParameters allKeys] containsObject:@"shareStudy"])
 					{
-						id study = [studies lastObject];
+						NSString *userDestination = [[[urlParameters objectForKey:@"userDestination"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						NSString *messageFromUser = [[[urlParameters objectForKey:@"message"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
 						
-						// Find this user
-						NSError *error = nil;
-						NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-						[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
-						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"name == %@", userDestination]];
-						
-						error = nil;
-						NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
-						
-						if( [users count] == 1)
+						if( userDestination)
 						{
-							// Add study to specific study list for this user
-							NSManagedObject *destUser = [users lastObject];
+							id study = [studies lastObject];
 							
-							NSArray *studiesArrayStudyInstanceUID = [[[destUser valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
-							NSArray *studiesArrayPatientUID = [[[destUser valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+							// Find this user
+							NSError *error = nil;
+							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+							[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"name == %@", userDestination]];
 							
-							NSManagedObject *studyLink = nil;
+							error = nil;
+							NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
 							
-							if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+							if( [users count] == 1)
 							{
-								NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: [BrowserController currentBrowser].userManagedObjectContext];
-							
-								[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
-								[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
+								// Add study to specific study list for this user
+								NSManagedObject *destUser = [users lastObject];
+								
+								NSArray *studiesArrayStudyInstanceUID = [[[destUser valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
+								NSArray *studiesArrayPatientUID = [[[destUser valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
+								
+								NSManagedObject *studyLink = nil;
+								
+								if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+								{
+									NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: [BrowserController currentBrowser].userManagedObjectContext];
+								
+									[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
+									[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
+								}
+								else studyLink = [studiesArrayStudyInstanceUID objectAtIndex: [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]]];
+								
+								[studyLink setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]] forKey: @"dateAdded"];
+								[studyLink setValue: destUser forKey: @"user"];
+								
+								@try
+								{
+									[[BrowserController currentBrowser].userManagedObjectContext save: nil];
+								}
+								@catch (NSException * e)
+								{
+									NSLog( @"*********** [[BrowserController currentBrowser].userManagedObjectContext save: nil]");
+								}
+								
+								// Send the email
+								
+								[OsiriXHTTPConnection sendNotificationsEmailsTo: users aboutStudies: [NSArray arrayWithObject: study] predicate: nil message: [messageFromUser stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo: [currentUser valueForKey: @"email"] customText: nil];
+								
+								[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", userDestination] forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
+								
+								message = [NSString stringWithFormat: NSLocalizedString( @"This study is now shared with %@.", nil), userDestination];
 							}
-							else studyLink = [studiesArrayStudyInstanceUID objectAtIndex: [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]]];
+						}
+						
+						if( message == nil)
+							message = [NSString stringWithFormat: NSLocalizedString( @"Failed to share this study with %@.", nil), userDestination];
+					}
+				
+				
+					[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Display Study"];
+					
+					[ipAddressString release];
+					ipAddressString = [[asyncSocket connectedHost] copy];
+					
+					NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:urlParameters settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"iPhone", [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
+					
+					[html replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:html.range];
+					
+	//				if( [[urlParameters allKeys] containsObject:@"dicomSend"])
+	//				{
+	//					NSString *dicomDestination = [urlParameters objectForKey:@"dicomDestination"];
+	//					NSArray *tempArray = [dicomDestination componentsSeparatedByString:@":"];
+	//					
+	//					if( [tempArray count] >= 3)
+	//					{
+	//						NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	//						NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	//					}
+	//				}
+					
+					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: notNil( message) options:NSLiteralSearch range:html.range];
+					
+					if( [urlParameters objectForKey:@"browse"])
+						[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]] options:NSLiteralSearch range:html.range];
+					else
+						[html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:html.range];
+					
+					if([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:html.range];
+					else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:html.range];
+					
+					if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:html.range];
+					else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:html.range];
+					
+					[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:html.range];
+					
+					data = [html dataUsingEncoding:NSUTF8StringEncoding];
+				}
+				err = NO;
+			}
+		#pragma mark thumbnail
+			else if([fileURL isEqualToString:@"/thumbnail"])
+			{
+				NSPredicate *browsePredicate;
+				if([[urlParameters allKeys] containsObject:@"id"])
+				{
+					if( [[urlParameters allKeys] containsObject:@"studyID"])
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					else
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				}
+				else
+					browsePredicate = [NSPredicate predicateWithValue:NO];
+					
+				NSArray *series = [self seriesForPredicate:browsePredicate];
+				
+				if( [series count] == 1)
+				{
+					if(![[series lastObject] valueForKey:@"thumbnail"])
+						[[BrowserController currentBrowser] buildThumbnail:[series lastObject]];
+					
+					NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[[series lastObject] valueForKey:@"thumbnail"]];				
+					NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
+					data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
+				}
+				err = NO;
+			}
+		#pragma mark series.pdf
+			else if( [fileURL isEqualToString:@"/series.pdf"])
+			{
+				NSPredicate *browsePredicate;
+				if([[urlParameters allKeys] containsObject:@"id"])
+				{
+					if( [[urlParameters allKeys] containsObject:@"studyID"])
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					else
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				}
+				else
+					browsePredicate = [NSPredicate predicateWithValue:NO];
+				
+				NSArray *series = [self seriesForPredicate: browsePredicate];
+				
+				if( [series count] == 1)
+				{
+					if( [DCMAbstractSyntaxUID isPDF: [[series lastObject] valueForKey: @"seriesSOPClassUID"]])
+					{
+						DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"]  decodingPixelData:NO];
+					
+						if ([[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
+						{
+							data = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
 							
-							[studyLink setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]] forKey: @"dateAdded"];
-							[studyLink setValue: destUser forKey: @"user"];
-							
-							@try
-							{
-								[[BrowserController currentBrowser].userManagedObjectContext save: nil];
-							}
-							@catch (NSException * e)
-							{
-								NSLog( @"*********** [[BrowserController currentBrowser].userManagedObjectContext save: nil]");
-							}
-							
-							// Send the email
-							
-							[OsiriXHTTPConnection sendNotificationsEmailsTo: users aboutStudies: [NSArray arrayWithObject: study] predicate: nil message: [messageFromUser stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo: [currentUser valueForKey: @"email"] customText: nil];
-							
-							[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", userDestination] forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
-							
-							message = [NSString stringWithFormat: NSLocalizedString( @"This study is now shared with %@.", nil), userDestination];
+							if( data)
+								err = NO;
 						}
 					}
 					
-					if( message == nil)
-						message = [NSString stringWithFormat: NSLocalizedString( @"Failed to share this study with %@.", nil), userDestination];
-				}
-			
-			
-				[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Display Study"];
-				
-				[ipAddressString release];
-				ipAddressString = [[asyncSocket connectedHost] copy];
-				
-				NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:urlParameters settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"iPhone", [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
-				
-				[html replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:html.range];
-				
-//				if( [[urlParameters allKeys] containsObject:@"dicomSend"])
-//				{
-//					NSString *dicomDestination = [urlParameters objectForKey:@"dicomDestination"];
-//					NSArray *tempArray = [dicomDestination componentsSeparatedByString:@":"];
-//					
-//					if( [tempArray count] >= 3)
-//					{
-//						NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//						NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//					}
-//				}
-				
-				[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: notNil( message) options:NSLiteralSearch range:html.range];
-				
-				if( [urlParameters objectForKey:@"browse"])
-					[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]] options:NSLiteralSearch range:html.range];
-				else
-					[html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:html.range];
-				
-				if([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:html.range];
-				else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:html.range];
-				
-				if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:html.range];
-				else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:html.range];
-				
-				[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:html.range];
-				
-				data = [html dataUsingEncoding:NSUTF8StringEncoding];
-			}
-			err = NO;
-		}
-	#pragma mark thumbnail
-		else if([fileURL isEqualToString:@"/thumbnail"])
-		{
-			NSPredicate *browsePredicate;
-			if([[urlParameters allKeys] containsObject:@"id"])
-			{
-				if( [[urlParameters allKeys] containsObject:@"studyID"])
-					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-				else
-					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			}
-			else
-				browsePredicate = [NSPredicate predicateWithValue:NO];
-				
-			NSArray *series = [self seriesForPredicate:browsePredicate];
-			
-			if( [series count] == 1)
-			{
-				if(![[series lastObject] valueForKey:@"thumbnail"])
-					[[BrowserController currentBrowser] buildThumbnail:[series lastObject]];
-				
-				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[[series lastObject] valueForKey:@"thumbnail"]];				
-				NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
-				data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
-			}
-			err = NO;
-		}
-	#pragma mark series.pdf
-		else if( [fileURL isEqualToString:@"/series.pdf"])
-		{
-			NSPredicate *browsePredicate;
-			if([[urlParameters allKeys] containsObject:@"id"])
-			{
-				if( [[urlParameters allKeys] containsObject:@"studyID"])
-					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-				else
-					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			}
-			else
-				browsePredicate = [NSPredicate predicateWithValue:NO];
-			
-			NSArray *series = [self seriesForPredicate: browsePredicate];
-			
-			if( [series count] == 1)
-			{
-				if( [DCMAbstractSyntaxUID isPDF: [[series lastObject] valueForKey: @"seriesSOPClassUID"]])
-				{
-					DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"]  decodingPixelData:NO];
-				
-					if ([[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
+					if( [DCMAbstractSyntaxUID isStructuredReport: [[series lastObject] valueForKey: @"seriesSOPClassUID"]])
 					{
-						data = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
+						if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
+							[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
+					
+						NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [[[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"] lastPathComponent]] stringByAppendingPathExtension: @"html"];
 						
+						if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
+						{
+							NSTask *aTask = [[[NSTask alloc] init] autorelease];		
+							[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+							[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
+							[aTask setArguments: [NSArray arrayWithObjects: [[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"], htmlpath, nil]];		
+							[aTask launch];
+							[aTask waitUntilExit];		
+							[aTask interrupt];
+						}
+						
+						if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
+						{
+							NSTask *aTask = [[[NSTask alloc] init] autorelease];
+							[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+							[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
+							[aTask launch];
+							[aTask waitUntilExit];		
+							[aTask interrupt];
+						}
+						
+						data = [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]];
+							
 						if( data)
 							err = NO;
 					}
 				}
 				
-				if( [DCMAbstractSyntaxUID isStructuredReport: [[series lastObject] valueForKey: @"seriesSOPClassUID"]])
+				if( err)
 				{
-					if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
-						[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
-				
-					NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [[[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"] lastPathComponent]] stringByAppendingPathExtension: @"html"];
-					
-					if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
-					{
-						NSTask *aTask = [[[NSTask alloc] init] autorelease];		
-						[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-						[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-						[aTask setArguments: [NSArray arrayWithObjects: [[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"], htmlpath, nil]];		
-						[aTask launch];
-						[aTask waitUntilExit];		
-						[aTask interrupt];
-					}
-					
-					if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
-					{
-						NSTask *aTask = [[[NSTask alloc] init] autorelease];
-						[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-						[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
-						[aTask launch];
-						[aTask waitUntilExit];		
-						[aTask interrupt];
-					}
-					
-					data = [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]];
-						
-					if( data)
-						err = NO;
+					data = [NSData data];
+					err = NO;
 				}
 			}
-			
-			if( err)
+		#pragma mark series
+			else if( [fileURL isEqualToString:@"/series"] || [fileURL isEqualToString:@"/series.json"])
 			{
-				data = [NSData data];
-				err = NO;
-			}
-		}
-	#pragma mark series
-		else if( [fileURL isEqualToString:@"/series"] || [fileURL isEqualToString:@"/series.json"])
-		{
-			NSPredicate *browsePredicate;
-			if([[urlParameters allKeys] containsObject:@"id"])
-			{
-				if( [[urlParameters allKeys] containsObject:@"studyID"])
-					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				NSPredicate *browsePredicate;
+				if([[urlParameters allKeys] containsObject:@"id"])
+				{
+					if( [[urlParameters allKeys] containsObject:@"studyID"])
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					else
+						browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				}
 				else
-					browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			}
-			else
-				browsePredicate = [NSPredicate predicateWithValue:NO];
-			
-			NSArray *series = [self seriesForPredicate:browsePredicate];
-			NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
+					browsePredicate = [NSPredicate predicateWithValue:NO];
+				
+				NSArray *series = [self seriesForPredicate:browsePredicate];
+				NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 
-			if([fileURL isEqualToString:@"/series"])
-			{
-				NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"series.html"]];			
-				[templateString replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"studyID"]) options:NSLiteralSearch range:templateString.range];
-				[templateString replaceOccurrencesOfString:@"%SeriesID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:templateString.range];
-				
-				NSString *browse =  notNil( [urlParameters objectForKey:@"browse"]);
-				NSString *browseParameter =  notNil( [urlParameters objectForKey:@"browseParameter"]);
-				NSString *search =  notNil( [urlParameters objectForKey:@"search"]);
-				NSString *album = notNil( [urlParameters objectForKey:@"album"]);
-				
-				[templateString replaceOccurrencesOfString:@"%browse%" withString: notNil( browse) options: NSLiteralSearch range:templateString.range];
-				[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: notNil( browseParameter) options: NSLiteralSearch range:templateString.range];
-				[templateString replaceOccurrencesOfString:@"%search%" withString: [OsiriXHTTPConnection decodeURLString:search] options: NSLiteralSearch range:templateString.range];
-				[templateString replaceOccurrencesOfString:@"%album%" withString: [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:templateString.range];
-				
-				// This is probably wrong... video/quictime, see Series.html
-				// [templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:templateString.range];
-				[templateString replaceOccurrencesOfString:@"%MovieExtension%" withString: isiPhone? @"m4v":@"mov" options:NSLiteralSearch range:templateString.range];
-				
-				templateString = [self setBlock:@"image" visible: [imagesArray count] == 1 forString: templateString];
-				templateString = [self setBlock:@"movie" visible: [imagesArray count] != 1 forString: templateString];
-				if([imagesArray count] == 1)
+				if([fileURL isEqualToString:@"/series"])
 				{
-					[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:templateString.range];
-					[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@"" options:NSLiteralSearch range:templateString.range];
-				}
-				else
-				{
-					BOOL flash = [NSUserDefaultsController WebServerPrefersFlash] && !isiPhone;
-					templateString = [self setBlock:@"movieqt" visible:!flash forString: templateString];
-					templateString = [self setBlock:@"moviefla" visible:flash forString: templateString];
+					NSMutableString *templateString = [self webServicesHTMLMutableString:@"series.html"];			
+					[templateString replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"studyID"]) options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString:@"%SeriesID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:templateString.range];
+					
+					NSString *browse =  notNil( [urlParameters objectForKey:@"browse"]);
+					NSString *browseParameter =  notNil( [urlParameters objectForKey:@"browseParameter"]);
+					NSString *search =  notNil( [urlParameters objectForKey:@"search"]);
+					NSString *album = notNil( [urlParameters objectForKey:@"album"]);
+					
+					[templateString replaceOccurrencesOfString:@"%browse%" withString: notNil( browse) options: NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: notNil( browseParameter) options: NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString:@"%search%" withString: [OsiriXHTTPConnection decodeURLString:search] options: NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString:@"%album%" withString: [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:templateString.range];
+					
+					// This is probably wrong... video/quictime, see Series.html
+					// [templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString:@"%MovieExtension%" withString: isiPhone? @"m4v":@"mov" options:NSLiteralSearch range:templateString.range];
+					
+					templateString = [self setBlock:@"image" visible: [imagesArray count] == 1 forString: templateString];
+					templateString = [self setBlock:@"movie" visible: [imagesArray count] != 1 forString: templateString];
+					if([imagesArray count] == 1)
+					{
+						[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:templateString.range];
+						[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@"" options:NSLiteralSearch range:templateString.range];
+					}
+					else
+					{
+						BOOL flash = [NSUserDefaultsController WebServerPrefersFlash] && !isiPhone;
+						templateString = [self setBlock:@"movieqt" visible:!flash forString: templateString];
+						templateString = [self setBlock:@"moviefla" visible:flash forString: templateString];
 
-					int width, height;
-					
-					[self getWidth: &width height:&height fromImagesArray: imagesArray isiPhone: isiPhone];
-					
-					height += 15; // quicktime controller height
-					
-					//NSLog(@"NEW w: %d, h: %d", width, height);
-					[templateString replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:templateString.range];
-					[templateString replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:templateString.range];
-					
-					// We will generate the movie now, if required... to avoid Quicktime plugin problem waiting for it.
-					[self produceMovieForSeries: [series lastObject] isiPhone: isiPhone fileURL:fileURL lockReleased: &lockReleased];
-				}
-				
-				NSString *seriesName = notNil( [[series lastObject] valueForKey:@"name"]);
-				[templateString replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( seriesName) options:NSLiteralSearch range:templateString.range];
-				
-				NSString *studyName = notNil( [[series lastObject] valueForKeyPath:@"study.name"]);
-				[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString: notNil( studyName) options:NSLiteralSearch range:templateString.range];
-				
-				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:templateString.range];
-				
-				data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
-				err = NO;
-			}
-			#pragma mark series (JSON)
-			else if([fileURL isEqualToString:@"/series.json"])
-			{
-				@try
-				{
-					// Sort images with "instanceNumber"
-					NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
-					NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
-					[sort release];
-					imagesArray = [imagesArray sortedArrayUsingDescriptors: sortDescriptors];
-				}
-				@catch (NSException * e)
-				{
-					NSLog( @"%@", [e description]);
-				}
-				
-				NSString *json = [self jsonImageListForImages:imagesArray];
-				data = [json dataUsingEncoding:NSUTF8StringEncoding];
-				err = NO;			
-			}
-
-		}
-#pragma mark report
-		else if( [fileURL hasPrefix:@"/report"])
-		{
-			NSPredicate *browsePredicate;
-			if([[urlParameters allKeys] containsObject:@"id"])
-			{
-				browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
-			}
-			else
-				browsePredicate = [NSPredicate predicateWithValue:NO];
-			
-			NSArray *studies = [self studiesForPredicate:browsePredicate];
-			
-			if( [studies count] == 1)
-			{
-				[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Download Report"];
-				
-				NSString *reportFilePath = [[studies lastObject] valueForKey:@"reportURL"];
-				
-				reportType = [reportFilePath pathExtension];
-				
-				if( [reportType isEqualToString: @"pages"])
-				{
-					NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
-					// zip the directory into a single archive file
-					NSTask *zipTask   = [[NSTask alloc] init];
-					[zipTask setLaunchPath:@"/usr/bin/zip"];
-					[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-					if([reportType isEqualToString:@"pages"])
-						[zipTask setArguments:[NSArray arrayWithObjects: @"-q", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
-					else
-						[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
-					[zipTask launch];
-					while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-					int result = [zipTask terminationStatus];
-					[zipTask release];
-					
-					if(result==0)
-					{
-						reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
-					}
-					
-					data = [NSData dataWithContentsOfFile: reportFilePath];
-					
-					[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
-					
-					if( data)
-						err = NO;
-				}
-				else
-				{
-					data = [NSData dataWithContentsOfFile: reportFilePath];
-					
-					if( data)
-						err = NO;
-				}
-			}
-		}
-	#pragma mark ZIP
-		else if( [fileURL hasSuffix:@".zip"] || [fileURL hasSuffix:@".osirixzip"])
-		{
-			NSPredicate *browsePredicate;
-			if([[urlParameters allKeys] containsObject:@"id"])
-			{
-				if( [[urlParameters allKeys] containsObject:@"studyID"])
-					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-				else
-					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			}
-			else
-				browsePredicate = [NSPredicate predicateWithValue:NO];
-			
-			NSArray *series = [self seriesForPredicate:browsePredicate];
-			
-			NSMutableArray *imagesArray = [NSMutableArray array];
-			for( DicomSeries *s in series)
-				[imagesArray addObjectsFromArray: [[s valueForKey:@"images"] allObjects]];
-			
-			if( [imagesArray count])
-			{
-				if( [[currentUser valueForKey: @"encryptedZIP"] boolValue])
-					[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download encrypted DICOM ZIP"];
-				else
-					[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download DICOM ZIP"];
-					
-				@try
-				{
-					NSString *srcFolder = @"/tmp";
-					NSString *destFile = @"/tmp";
-					
-					srcFolder = [srcFolder stringByAppendingPathComponent: [[[imagesArray lastObject] valueForKeyPath: @"series.study.name"] filenameString]];
-					destFile = [destFile stringByAppendingPathComponent: [[[imagesArray lastObject] valueForKeyPath: @"series.study.name"] filenameString]];
-					
-					if( isMacOS)
-						destFile = [destFile  stringByAppendingPathExtension: @"zip"];
-					else
-						destFile = [destFile  stringByAppendingPathExtension: @"osirixzip"];
-					
-					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
-					[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
-					
-					[[NSFileManager defaultManager] createDirectoryAtPath: srcFolder attributes: nil];
-					
-					if( lockReleased == NO)
-					{
-						[[[BrowserController currentBrowser] managedObjectContext] unlock];
-						lockReleased = YES;
-					}
-					
-					if( [[currentUser valueForKey: @"encryptedZIP"] boolValue])
-						[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: [currentUser valueForKey: @"password"]];
-					else
-						[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: nil];
-					
-					data = [NSData dataWithContentsOfFile: destFile];
-					
-					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
-					[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
-					
-					if( data)
-						err = NO;
-					else
-					{
-						data = [NSData data];
-						err = NO;
-					}
-				}
-				@catch( NSException *e)
-				{
-					NSLog( @"**** web seriesAsZIP exception : %@", e);
-				}
-			}
-		}
-	#pragma mark image
-		else if([fileURL hasPrefix:@"/image."])
-		{
-			NSPredicate *browsePredicate;
-			if( [[urlParameters allKeys] containsObject:@"id"])
-			{
-				if( [[urlParameters allKeys] containsObject:@"studyID"])
-					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-				else
-					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			}
-			else
-				browsePredicate = [NSPredicate predicateWithValue:NO];
-			
-			NSArray *series = [self seriesForPredicate:browsePredicate];
-			if( [series count] == 1)
-			{
-				NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
-				DicomImage *im;
-				if([dicomImageArray count] == 1)
-					im = [dicomImageArray lastObject];
-				else
-					im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
-				
-				DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
-				
-				if( dcmPix == nil)
-				{
-					NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
-					float *imPtr = malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof( float));
-					for( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
-						imPtr[ i] = i;
-					
-					dcmPix = [[[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0] autorelease];
-				}
-				
-				if( dcmPix)
-				{
-					float curWW = 0;
-					float curWL = 0;
-					
-					if([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
-					{
-						curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-						curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
-					}
-					
-					if( curWW != 0)
-						[dcmPix checkImageAvailble:curWW :curWL];
-					else
-						[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
-					
-					NSImage *image = [dcmPix image];
-					
-					float width = [image size].width;
-					float height = [image size].height;
-					
-					int maxWidth = maxResolution, maxHeight = maxResolution;
-					int minWidth = minResolution, minHeight = minResolution;
-					
-					BOOL resize = NO;
-					
-					if(width>maxWidth)
-					{
-						height =  height * maxWidth / width;
-						width = maxWidth;
-						resize = YES;
-					}
-					if(height>maxHeight)
-					{
-						width = width * maxHeight / height;
-						height = maxHeight;
-						resize = YES;
-					}
-					
-					if(width < minWidth)
-					{
-						height = (float)height * (float)minWidth / (float)width;
-						width = minWidth;
-						resize = YES;
-					}
-					
-					if(height < minHeight)
-					{
-						width = (float)width * (float)minHeight / (float)height;
-						height = minHeight;
-						resize = YES;
-					}
-					
-					NSImage *newImage;
-					
-					if( resize)
-						newImage = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];
-					else
-						newImage = image;
-					
-					if( [[urlParameters allKeys] containsObject:@"previewForMovie"])
-					{
-						[newImage lockFocus];
+						int width, height;
 						
-						NSImage *r = [NSImage imageNamed: @"PlayTemplate.png"];
+						[self getWidth: &width height:&height fromImagesArray: imagesArray isiPhone: isiPhone];
 						
-						[r drawInRect: [self centerRect: NSMakeRect( 0,  0, [r size].width, [r size].height) inRect: NSMakeRect( 0,  0, [newImage size].width, [newImage size].height)] fromRect: NSMakeRect( 0,  0, [r size].width, [r size].height)  operation: NSCompositeSourceOver fraction: 1.0];
+						height += 15; // quicktime controller height
 						
-						[newImage unlockFocus];
+						//NSLog(@"NEW w: %d, h: %d", width, height);
+						[templateString replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:templateString.range];
+						[templateString replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:templateString.range];
+						
+						// We will generate the movie now, if required... to avoid Quicktime plugin problem waiting for it.
+						[self produceMovieForSeries: [series lastObject] isiPhone: isiPhone fileURL:fileURL lockReleased: &lockReleased];
 					}
 					
-					NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [newImage TIFFRepresentation]];
+					NSString *seriesName = notNil( [[series lastObject] valueForKey:@"name"]);
+					[templateString replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( seriesName) options:NSLiteralSearch range:templateString.range];
 					
-					if( [[fileURL pathExtension] isEqualToString: @"png"])
-					{
-						NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
-						data = [imageRep representationUsingType:NSPNGFileType properties: imageProps];
-					}
-					else if( [[fileURL pathExtension] isEqualToString: @"jpg"])
-					{
-						NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
-						data = [imageRep representationUsingType: NSJPEGFileType properties: imageProps];
-					}
-					else NSLog( @"***** unknown path extension: %@", [fileURL pathExtension]);
+					NSString *studyName = notNil( [[series lastObject] valueForKeyPath:@"study.name"]);
+					[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString: notNil( studyName) options:NSLiteralSearch range:templateString.range];
+					
+					[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:templateString.range];
+					
+					data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
+					err = NO;
 				}
-			}
-			
-			err = NO;
-		}
-	#pragma mark movie .mov .m4v .swf
-		else if( [fileURL isEqualToString:@"/movie.mov"] || [fileURL isEqualToString:@"/movie.m4v"] || [fileURL isEqualToString:@"/movie.swf"])
-		{
-			NSPredicate *browsePredicate;
-			if([[urlParameters allKeys] containsObject:@"id"])
-			{
-				if( [[urlParameters allKeys] containsObject:@"studyID"])
-					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-				else
-					browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			}
-			else
-				browsePredicate = [NSPredicate predicateWithValue:NO];
-			
-			NSArray *series = [self seriesForPredicate:browsePredicate];
-			
-			if( [series count] == 1)
-			{
-				data = [self produceMovieForSeries: [series lastObject] isiPhone: isiPhone fileURL: fileURL lockReleased: &lockReleased];
-			}
-			
-			if( data == nil || [data length] == 0)
-				NSLog( @"****** movie data == nil");
-				
-			err = NO;
-		}
-//		#pragma mark m4v
-//		else if([fileURL hasSuffix:@".m4v"]) -- I DONT UNDERSTAND WHERE THIS IS NEEDED...
-//		{
-//			data = [NSData dataWithContentsOfFile: requestedFile];
-//			totalLength = [data length];
-//			
-//			err = NO;
-//		}
-		#pragma mark password forgotten
-		else if( [fileURL isEqualToString: @"/password_forgotten"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"])
-		{
-			NSMutableString *templateString = [NSMutableString stringWithContentsOfFile: [webDirectory stringByAppendingPathComponent:@"password_forgotten.html"]];
-			
-			NSString *message = @"";
-			
-			if( [[urlParameters valueForKey: @"what"] isEqualToString: @"restorePassword"])
-			{
-				NSString *email = [[[urlParameters valueForKey: @"email"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-				NSString *username = [[[urlParameters valueForKey: @"username"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-				
-				// TRY TO FIND THIS USER
-				if( [email length] > 0 || [username length] > 0)
+				#pragma mark series (JSON)
+				else if([fileURL isEqualToString:@"/series.json"])
 				{
-					[[[BrowserController currentBrowser] userManagedObjectContext] lock];
-					
 					@try
 					{
-						NSError *error = nil;
-						NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-						[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
-						
-						if( [email length] > [username length])
-							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email]];
+						// Sort images with "instanceNumber"
+						NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
+						NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
+						[sort release];
+						imagesArray = [imagesArray sortedArrayUsingDescriptors: sortDescriptors];
+					}
+					@catch (NSException * e)
+					{
+						NSLog( @"%@", [e description]);
+					}
+					
+					NSString *json = [self jsonImageListForImages:imagesArray];
+					data = [json dataUsingEncoding:NSUTF8StringEncoding];
+					err = NO;			
+				}
+
+			}
+	#pragma mark report
+			else if( [fileURL hasPrefix:@"/report"])
+			{
+				NSPredicate *browsePredicate;
+				if([[urlParameters allKeys] containsObject:@"id"])
+				{
+					browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
+				}
+				else
+					browsePredicate = [NSPredicate predicateWithValue:NO];
+				
+				NSArray *studies = [self studiesForPredicate:browsePredicate];
+				
+				if( [studies count] == 1)
+				{
+					[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Download Report"];
+					
+					NSString *reportFilePath = [[studies lastObject] valueForKey:@"reportURL"];
+					
+					reportType = [reportFilePath pathExtension];
+					
+					if( [reportType isEqualToString: @"pages"])
+					{
+						NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
+						// zip the directory into a single archive file
+						NSTask *zipTask   = [[NSTask alloc] init];
+						[zipTask setLaunchPath:@"/usr/bin/zip"];
+						[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+						if([reportType isEqualToString:@"pages"])
+							[zipTask setArguments:[NSArray arrayWithObjects: @"-q", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
 						else
-							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username]];
-							
-						error = nil;
-						NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+							[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
+						[zipTask launch];
+						while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+						int result = [zipTask terminationStatus];
+						[zipTask release];
 						
-						if( [users count] >= 1)
+						if(result==0)
 						{
-							for( UserTable *user in users)
-							{
-								NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
-								
-								if( fromEmailAddress == nil)
-									fromEmailAddress = @"";
-								
-								NSString *emailSubject = NSLocalizedString( @"Your password has been reset.", nil);
-								NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
-								
-								[user generatePassword];
-								
-								[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
-								[emailMessage appendString: [user valueForKey: @"name"]];
-								[emailMessage appendString: @"\r\r"];
-								[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
-								[emailMessage appendString: [user valueForKey: @"password"]];
-								[emailMessage appendString: @"\r\r"];
-								
-								[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Password resetted for user" forUser: [user valueForKey: @"name"] ip: nil];
-								
-								[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: [user valueForKey: @"email"], @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
-							
-								message = NSLocalizedString( @"You will receive shortly an email with a new password.", nil);
-								
-								[[BrowserController currentBrowser] saveUserDatabase];
-							}
+							reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
 						}
+						
+						data = [NSData dataWithContentsOfFile: reportFilePath];
+						
+						[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
+						
+						if( data)
+							err = NO;
+					}
+					else
+					{
+						data = [NSData dataWithContentsOfFile: reportFilePath];
+						
+						if( data)
+							err = NO;
+					}
+				}
+			}
+		#pragma mark ZIP
+			else if( [fileURL hasSuffix:@".zip"] || [fileURL hasSuffix:@".osirixzip"])
+			{
+				NSPredicate *browsePredicate;
+				if([[urlParameters allKeys] containsObject:@"id"])
+				{
+					if( [[urlParameters allKeys] containsObject:@"studyID"])
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					else
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				}
+				else
+					browsePredicate = [NSPredicate predicateWithValue:NO];
+				
+				NSArray *series = [self seriesForPredicate:browsePredicate];
+				
+				NSMutableArray *imagesArray = [NSMutableArray array];
+				for( DicomSeries *s in series)
+					[imagesArray addObjectsFromArray: [[s valueForKey:@"images"] allObjects]];
+				
+				if( [imagesArray count])
+				{
+					if( [[currentUser valueForKey: @"encryptedZIP"] boolValue])
+						[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download encrypted DICOM ZIP"];
+					else
+						[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download DICOM ZIP"];
+						
+					@try
+					{
+						NSString *srcFolder = @"/tmp";
+						NSString *destFile = @"/tmp";
+						
+						srcFolder = [srcFolder stringByAppendingPathComponent: [[[imagesArray lastObject] valueForKeyPath: @"series.study.name"] filenameString]];
+						destFile = [destFile stringByAppendingPathComponent: [[[imagesArray lastObject] valueForKeyPath: @"series.study.name"] filenameString]];
+						
+						if( isMacOS)
+							destFile = [destFile  stringByAppendingPathExtension: @"zip"];
+						else
+							destFile = [destFile  stringByAppendingPathExtension: @"osirixzip"];
+						
+						[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+						[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
+						
+						[[NSFileManager defaultManager] createDirectoryAtPath: srcFolder attributes: nil];
+						
+						if( lockReleased == NO)
+						{
+							[[[BrowserController currentBrowser] managedObjectContext] unlock];
+							lockReleased = YES;
+						}
+						
+						if( [[currentUser valueForKey: @"encryptedZIP"] boolValue])
+							[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: [currentUser valueForKey: @"password"]];
+						else
+							[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: nil];
+						
+						data = [NSData dataWithContentsOfFile: destFile];
+						
+						[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+						[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
+						
+						if( data)
+							err = NO;
 						else
 						{
-							// To avoid someone scanning for the username
-							waitBeforeReturning = YES;
-							
-							[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
-							
-							message = NSLocalizedString( @"This user doesn't exist in our database.", nil);
+							data = [NSData data];
+							err = NO;
 						}
 					}
 					@catch( NSException *e)
 					{
-						NSLog( @"******* password_forgotten: %@", e);
+						NSLog( @"**** web seriesAsZIP exception : %@", e);
 					}
-					
-					[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
 				}
 			}
-			
-			templateString = [self setBlock: @"MessageToWrite" visible: [message length] forString: templateString];
-			
-			[templateString replaceOccurrencesOfString: @"%Localized_Message%" withString: notNil( message) options:NSLiteralSearch range:templateString.range];
-			
-			data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
-			
-			err = NO;
-		}
-		#pragma mark account
-		else if( [fileURL isEqualToString: @"/account"])
-		{
-			if( currentUser)
+		#pragma mark image
+			else if([fileURL hasPrefix:@"/image."])
 			{
-				NSString *message = @"";
-				BOOL messageIsError = NO;
-				
-				if( [[urlParameters valueForKey: @"what"] isEqualToString: @"changePassword"])
+				NSPredicate *browsePredicate;
+				if( [[urlParameters allKeys] containsObject:@"id"])
 				{
-					NSString * previouspassword = [[[urlParameters valueForKey: @"previouspassword"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-					NSString * password = [[[urlParameters valueForKey: @"password"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					if( [[urlParameters allKeys] containsObject:@"studyID"])
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					else
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				}
+				else
+					browsePredicate = [NSPredicate predicateWithValue:NO];
+				
+				NSArray *series = [self seriesForPredicate:browsePredicate];
+				if( [series count] == 1)
+				{
+					NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
+					DicomImage *im;
+					if([dicomImageArray count] == 1)
+						im = [dicomImageArray lastObject];
+					else
+						im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
 					
-					if( [previouspassword isEqualToString: [currentUser valueForKey: @"password"]])
+					DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
+					
+					if( dcmPix == nil)
 					{
-						if( [[urlParameters valueForKey: @"password"] isEqualToString: [urlParameters valueForKey: @"password2"]])
+						NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
+						float *imPtr = malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof( float));
+						for( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
+							imPtr[ i] = i;
+						
+						dcmPix = [[[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0] autorelease];
+					}
+					
+					if( dcmPix)
+					{
+						float curWW = 0;
+						float curWL = 0;
+						
+						if([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
 						{
-							if( [password length] >= 4)
+							curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+							curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+						}
+						
+						if( curWW != 0)
+							[dcmPix checkImageAvailble:curWW :curWL];
+						else
+							[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+						
+						NSImage *image = [dcmPix image];
+						
+						float width = [image size].width;
+						float height = [image size].height;
+						
+						int maxWidth = maxResolution, maxHeight = maxResolution;
+						int minWidth = minResolution, minHeight = minResolution;
+						
+						BOOL resize = NO;
+						
+						if(width>maxWidth)
+						{
+							height =  height * maxWidth / width;
+							width = maxWidth;
+							resize = YES;
+						}
+						if(height>maxHeight)
+						{
+							width = width * maxHeight / height;
+							height = maxHeight;
+							resize = YES;
+						}
+						
+						if(width < minWidth)
+						{
+							height = (float)height * (float)minWidth / (float)width;
+							width = minWidth;
+							resize = YES;
+						}
+						
+						if(height < minHeight)
+						{
+							width = (float)width * (float)minHeight / (float)height;
+							height = minHeight;
+							resize = YES;
+						}
+						
+						NSImage *newImage;
+						
+						if( resize)
+							newImage = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];
+						else
+							newImage = image;
+						
+						if( [[urlParameters allKeys] containsObject:@"previewForMovie"])
+						{
+							[newImage lockFocus];
+							
+							NSImage *r = [NSImage imageNamed: @"PlayTemplate.png"];
+							
+							[r drawInRect: [self centerRect: NSMakeRect( 0,  0, [r size].width, [r size].height) inRect: NSMakeRect( 0,  0, [newImage size].width, [newImage size].height)] fromRect: NSMakeRect( 0,  0, [r size].width, [r size].height)  operation: NSCompositeSourceOver fraction: 1.0];
+							
+							[newImage unlockFocus];
+						}
+						
+						NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [newImage TIFFRepresentation]];
+						
+						if( [[fileURL pathExtension] isEqualToString: @"png"])
+						{
+							NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
+							data = [imageRep representationUsingType:NSPNGFileType properties: imageProps];
+						}
+						else if( [[fileURL pathExtension] isEqualToString: @"jpg"])
+						{
+							NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
+							data = [imageRep representationUsingType: NSJPEGFileType properties: imageProps];
+						}
+						else NSLog( @"***** unknown path extension: %@", [fileURL pathExtension]);
+					}
+				}
+				
+				err = NO;
+			}
+		#pragma mark movie .mov .m4v .swf
+			else if( [fileURL isEqualToString:@"/movie.mov"] || [fileURL isEqualToString:@"/movie.m4v"] || [fileURL isEqualToString:@"/movie.swf"])
+			{
+				NSPredicate *browsePredicate;
+				if([[urlParameters allKeys] containsObject:@"id"])
+				{
+					if( [[urlParameters allKeys] containsObject:@"studyID"])
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+					else
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				}
+				else
+					browsePredicate = [NSPredicate predicateWithValue:NO];
+				
+				NSArray *series = [self seriesForPredicate:browsePredicate];
+				
+				if( [series count] == 1)
+				{
+					data = [self produceMovieForSeries: [series lastObject] isiPhone: isiPhone fileURL: fileURL lockReleased: &lockReleased];
+				}
+				
+				if( data == nil || [data length] == 0)
+					NSLog( @"****** movie data == nil");
+					
+				err = NO;
+			}
+	//		#pragma mark m4v
+	//		else if([fileURL hasSuffix:@".m4v"]) -- I DONT UNDERSTAND WHERE THIS IS NEEDED...
+	//		{
+	//			data = [NSData dataWithContentsOfFile: requestedFile];
+	//			totalLength = [data length];
+	//			
+	//			err = NO;
+	//		}
+			#pragma mark password forgotten
+			else if( [fileURL isEqualToString: @"/password_forgotten"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"])
+			{
+				NSMutableString *templateString = [self webServicesHTMLMutableString:@"password_forgotten.html"];
+				
+				NSString *message = @"";
+				
+				if( [[urlParameters valueForKey: @"what"] isEqualToString: @"restorePassword"])
+				{
+					NSString *email = [[[urlParameters valueForKey: @"email"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					NSString *username = [[[urlParameters valueForKey: @"username"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					
+					// TRY TO FIND THIS USER
+					if( [email length] > 0 || [username length] > 0)
+					{
+						[[[BrowserController currentBrowser] userManagedObjectContext] lock];
+						
+						@try
+						{
+							NSError *error = nil;
+							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+							[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+							
+							if( [email length] > [username length])
+								[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email]];
+							else
+								[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username]];
+								
+							error = nil;
+							NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+							
+							if( [users count] >= 1)
 							{
-								// We can update the user password
-								[currentUser setValue: password forKey: @"password"];
-								message = NSLocalizedString( @"Password updated successfully !", nil);
-								[self updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"]];
+								for( UserTable *user in users)
+								{
+									NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
+									
+									if( fromEmailAddress == nil)
+										fromEmailAddress = @"";
+									
+									NSString *emailSubject = NSLocalizedString( @"Your password has been reset.", nil);
+									NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
+									
+									[user generatePassword];
+									
+									[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
+									[emailMessage appendString: [user valueForKey: @"name"]];
+									[emailMessage appendString: @"\r\r"];
+									[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
+									[emailMessage appendString: [user valueForKey: @"password"]];
+									[emailMessage appendString: @"\r\r"];
+									
+									[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Password resetted for user" forUser: [user valueForKey: @"name"] ip: nil];
+									
+									[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: [user valueForKey: @"email"], @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+								
+									message = NSLocalizedString( @"You will receive shortly an email with a new password.", nil);
+									
+									[[BrowserController currentBrowser] saveUserDatabase];
+								}
 							}
 							else
 							{
-								message = NSLocalizedString( @"Password needs to be at least 4 characters !", nil);
+								// To avoid someone scanning for the username
+								waitBeforeReturning = YES;
+								
+								[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
+								
+								message = NSLocalizedString( @"This user doesn't exist in our database.", nil);
+							}
+						}
+						@catch( NSException *e)
+						{
+							NSLog( @"******* password_forgotten: %@", e);
+						}
+						
+						[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
+					}
+				}
+				
+				templateString = [self setBlock: @"MessageToWrite" visible: [message length] forString: templateString];
+				
+				[templateString replaceOccurrencesOfString: @"%Localized_Message%" withString: notNil( message) options:NSLiteralSearch range:templateString.range];
+				
+				data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+				
+				err = NO;
+			}
+			#pragma mark account
+			else if( [fileURL isEqualToString: @"/account"])
+			{
+				if( currentUser)
+				{
+					NSString *message = @"";
+					BOOL messageIsError = NO;
+					
+					if( [[urlParameters valueForKey: @"what"] isEqualToString: @"changePassword"])
+					{
+						NSString * previouspassword = [[[urlParameters valueForKey: @"previouspassword"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						NSString * password = [[[urlParameters valueForKey: @"password"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						
+						if( [previouspassword isEqualToString: [currentUser valueForKey: @"password"]])
+						{
+							if( [[urlParameters valueForKey: @"password"] isEqualToString: [urlParameters valueForKey: @"password2"]])
+							{
+								if( [password length] >= 4)
+								{
+									// We can update the user password
+									[currentUser setValue: password forKey: @"password"];
+									message = NSLocalizedString( @"Password updated successfully !", nil);
+									[self updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"]];
+								}
+								else
+								{
+									message = NSLocalizedString( @"Password needs to be at least 4 characters !", nil);
+									messageIsError = YES;
+								}
+							}
+							else
+							{
+								message = NSLocalizedString( @"New passwords are not identical !", nil);
 								messageIsError = YES;
 							}
 						}
 						else
 						{
-							message = NSLocalizedString( @"New passwords are not identical !", nil);
+							message = NSLocalizedString( @"Wrong current password !", nil);
 							messageIsError = YES;
 						}
 					}
+					
+					if( [[urlParameters valueForKey: @"what"] isEqualToString: @"changeSettings"])
+					{
+						NSString * email = [[[urlParameters valueForKey: @"email"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						NSString * address = [[[urlParameters valueForKey: @"address"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						NSString * phone = [[[urlParameters valueForKey: @"phone"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						
+						[currentUser setValue: email forKey: @"email"];
+						[currentUser setValue: address forKey: @"address"];
+						[currentUser setValue: phone forKey: @"phone"];
+						
+						if( [[[urlParameters valueForKey: @"emailNotification"] lowercaseString] isEqualToString: @"on"])
+							[currentUser setValue: [NSNumber numberWithBool: YES] forKey: @"emailNotification"];
+						else
+							[currentUser setValue: [NSNumber numberWithBool: NO] forKey: @"emailNotification"];
+							
+						message = NSLocalizedString( @"Personal Information updated successfully !", nil);
+					}
+					
+					NSMutableString *templateString = [self webServicesHTMLMutableString:@"account.html"];
+					
+					NSString *block = @"MessageToWrite";
+					if( messageIsError)
+					{
+						block = @"ErrorToWrite";
+						templateString = [self setBlock:@"MessageToWrite" visible:NO forString:templateString];
+					}
 					else
 					{
-						message = NSLocalizedString( @"Wrong current password !", nil);
-						messageIsError = YES;
+						templateString = [self setBlock:@"ErrorToWrite" visible:NO forString:templateString];
 					}
-				}
-				
-				if( [[urlParameters valueForKey: @"what"] isEqualToString: @"changeSettings"])
-				{
-					NSString * email = [[[urlParameters valueForKey: @"email"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-					NSString * address = [[[urlParameters valueForKey: @"address"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-					NSString * phone = [[[urlParameters valueForKey: @"phone"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-					
-					[currentUser setValue: email forKey: @"email"];
-					[currentUser setValue: address forKey: @"address"];
-					[currentUser setValue: phone forKey: @"phone"];
-					
-					if( [[[urlParameters valueForKey: @"emailNotification"] lowercaseString] isEqualToString: @"on"])
-						[currentUser setValue: [NSNumber numberWithBool: YES] forKey: @"emailNotification"];
-					else
-						[currentUser setValue: [NSNumber numberWithBool: NO] forKey: @"emailNotification"];
-						
-					message = NSLocalizedString( @"Personal Information updated successfully !", nil);
-				}
-				
-				NSMutableString *templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"account.html"]];
-				
-				NSString *block = @"MessageToWrite";
-				if( messageIsError)
-				{
-					block = @"ErrorToWrite";
-					templateString = [self setBlock:@"MessageToWrite" visible:NO forString:templateString];
-				}
-				else
-				{
-					templateString = [self setBlock:@"ErrorToWrite" visible:NO forString:templateString];
-				}
 
-				templateString = [self setBlock:block visible: [message length] forString:templateString];
-				
-				[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: notNil( message) options:NSLiteralSearch range:templateString.range];
-				
-				[templateString replaceOccurrencesOfString: @"%name%" withString: notNil( [currentUser valueForKey: @"name"]) options:NSLiteralSearch range:templateString.range];
-				
-				[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:templateString.range];
-				
-				[templateString replaceOccurrencesOfString: @"%email%" withString: notNil( [currentUser valueForKey: @"email"]) options:NSLiteralSearch range:templateString.range];
-				[templateString replaceOccurrencesOfString: @"%address%" withString: notNil( [currentUser valueForKey: @"address"]) options:NSLiteralSearch range:templateString.range];
-				[templateString replaceOccurrencesOfString: @"%phone%" withString: notNil( [currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:templateString.range];
-				[templateString replaceOccurrencesOfString: @"%emailNotification%" withString: ([[currentUser valueForKey: @"emailNotification"] boolValue]?@"checked":@"") options:NSLiteralSearch range:templateString.range];
-				
-				data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
-				
-				[[BrowserController currentBrowser] saveUserDatabase];
-				
-				err = NO;
+					templateString = [self setBlock:block visible: [message length] forString:templateString];
+					
+					[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: notNil( message) options:NSLiteralSearch range:templateString.range];
+					
+					[templateString replaceOccurrencesOfString: @"%name%" withString: notNil( [currentUser valueForKey: @"name"]) options:NSLiteralSearch range:templateString.range];
+					
+					[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:templateString.range];
+					
+					[templateString replaceOccurrencesOfString: @"%email%" withString: notNil( [currentUser valueForKey: @"email"]) options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString: @"%address%" withString: notNil( [currentUser valueForKey: @"address"]) options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString: @"%phone%" withString: notNil( [currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString: @"%emailNotification%" withString: ([[currentUser valueForKey: @"emailNotification"] boolValue]?@"checked":@"") options:NSLiteralSearch range:templateString.range];
+					
+					data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+					
+					[[BrowserController currentBrowser] saveUserDatabase];
+					
+					err = NO;
+				}
 			}
-		}
-		#pragma mark Albums (JSON)
-		else if([fileURL isEqualToString:@"/albums.json"])
-		{
-			NSString *json = [self jsonAlbumList];
-			data = [json dataUsingEncoding:NSUTF8StringEncoding];
-			err = NO;
-		}
-		#pragma mark seriesList (JSON)
-		else if([fileURL isEqualToString:@"/seriesList.json"])
-		{
-			NSPredicate *browsePredicate;
-			if([[urlParameters allKeys] containsObject:@"id"])
+			#pragma mark Albums (JSON)
+			else if([fileURL isEqualToString:@"/albums.json"])
 			{
-				browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
-			}
-			else
-				browsePredicate = [NSPredicate predicateWithValue:NO];
-			
-			
-			NSArray *studies = [self studiesForPredicate:browsePredicate];
-			
-			if([studies count] == 1)
-			{
-				NSArray *seriesArray = [[studies objectAtIndex:0] valueForKey:@"imageSeries"];
-				NSString *json = [self jsonSeriesListForSeries:seriesArray];
+				NSString *json = [self jsonAlbumList];
 				data = [json dataUsingEncoding:NSUTF8StringEncoding];
 				err = NO;
 			}
-			else err = YES;
+			#pragma mark seriesList (JSON)
+			else if([fileURL isEqualToString:@"/seriesList.json"])
+			{
+				NSPredicate *browsePredicate;
+				if([[urlParameters allKeys] containsObject:@"id"])
+				{
+					browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
+				}
+				else
+					browsePredicate = [NSPredicate predicateWithValue:NO];
+				
+				
+				NSArray *studies = [self studiesForPredicate:browsePredicate];
+				
+				if([studies count] == 1)
+				{
+					NSArray *seriesArray = [[studies objectAtIndex:0] valueForKey:@"imageSeries"];
+					NSString *json = [self jsonSeriesListForSeries:seriesArray];
+					data = [json dataUsingEncoding:NSUTF8StringEncoding];
+					err = NO;
+				}
+				else err = YES;
+			}
+			#pragma mark weasis.jnlp
+			else if ([NSUserDefaultsController WebServerUsesWeasis] && [fileURL isEqualToString:@"/weasis.jnlp"])
+			{
+				NSString* jnlp = [self weasisJnlpWithParamsString:parameterString];
+				data = [jnlp dataUsingEncoding:NSUTF8StringEncoding];
+				dataMime = @"application/x-java-jnlp-file";
+				err = NO;
+			}
+			#pragma mark weasis.xml
+			else if ([NSUserDefaultsController WebServerUsesWeasis] && [fileURL isEqualToString:@"/weasis.xml"])
+			{
+				NSString* jnlp = [self weasisXmlWithParams:urlParameters];
+				data = [jnlp dataUsingEncoding:NSUTF8StringEncoding];
+				dataMime = @"text/xml";
+				err = NO;
+			}
 		}
-		#pragma mark weasis.jnlp
-		else if ([NSUserDefaultsController WebServerUsesWeasis] && [fileURL isEqualToString:@"/weasis.jnlp"])
-		{
-			NSString* jnlp = [self weasisJnlpWithParamsString:parameterString];
-			data = [jnlp dataUsingEncoding:NSUTF8StringEncoding];
-			dataMime = @"application/x-java-jnlp-file";
-			err = NO;
-		}
-		#pragma mark weasis.xml
-		else if ([NSUserDefaultsController WebServerUsesWeasis] && [fileURL isEqualToString:@"/weasis.xml"])
-		{
-			NSString* jnlp = [self weasisXmlWithParams:urlParameters];
-			data = [jnlp dataUsingEncoding:NSUTF8StringEncoding];
-			dataMime = @"text/xml";
-			err = NO;
-		}
-	}
 	
-	@catch( NSException *e)
-	{
-		NSLog( @"******** httpResponseForMethod OsiriXHTTPConnection exception: %@", e);
-		NSLog( @"******** method : %@ path : %@", method, path);
-		err = YES;
+		@catch( NSException *e)
+		{
+			NSLog( @"******** httpResponseForMethod OsiriXHTTPConnection exception: %@", e);
+			NSLog( @"******** method : %@ path : %@", method, path);
+			err = YES;
+		}
+		
 	}
 	
 	if( lockReleased == NO)
@@ -3745,7 +3825,7 @@ NSString* notNil( NSString *s)
 	if( err)
 		data = [[NSString stringWithString: NSLocalizedString( @"Error 404\r\rFailed to process this request.\r\rThis error will be logged and the webmaster will be notified.", nil)] dataUsingEncoding: NSUTF8StringEncoding];
 	
-	return [[[HTTPMimeDataResponse alloc] initWithMime:dataMime data:data] autorelease];
+	return [[[OsiriXHTTPResponse alloc] initWithData:data mime:dataMime sessionId:session.sid] autorelease];
 }
 
 - (BOOL)supportsMethod:(NSString *)method atPath:(NSString *)relativePath
@@ -4238,7 +4318,7 @@ NSString* notNil( NSString *s)
 }
 
 -(NSString*)weasisJnlpWithParamsString:(NSString*)parameters {
-	NSMutableString* templateString = [NSMutableString stringWithContentsOfFile:[webDirectory stringByAppendingPathComponent:@"weasis.jnlp"]];
+	NSMutableString* templateString = [OsiriXHTTPConnection WebServicesHTMLMutableString:@"weasis.jnlp"];
 	
 	NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
 	if( [webServerAddress length] == 0)
@@ -4342,5 +4422,91 @@ NSString* notNil( NSString *s)
 	[doc autorelease];
 	return [doc XMLString];
 }
+
+#pragma mark Custom authentication
+
+
+-(void)replyToHTTPRequest {
+	NSString* cookie = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease];
+	NSLog(@"COOOOOOKIE: %@", cookie);
+	
+	NSArray* cookieBits = [cookie componentsSeparatedByString:@"="];
+	if (cookieBits.count == 2 && [[cookieBits objectAtIndex:0] isEqual:@"SID"])
+		self.session = [OsiriXHTTPSession sessionForId:[cookieBits objectAtIndex:1]];
+	
+	if (!session)
+		self.session = [OsiriXHTTPSession create];
+	
+	[super replyToHTTPRequest];
+}
+
+-(BOOL)isAuthenticated {
+	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
+	if ([method isEqualToString:@"POST"] && multipartData.count == 1) // POST auth ?
+	{
+		NSData* data = multipartData.lastObject;
+		NSString* paramsString = [[[NSString alloc] initWithBytes:data.bytes length:data.length encoding:NSUTF8StringEncoding] autorelease];
+		NSDictionary* params = [OsiriXHTTPConnection ExtractParams:paramsString];
+		
+		if ([params objectForKey:@"login"]) {
+			NSString* username = [params objectForKey:@"username"];
+			NSString* password = [params objectForKey:@"password"];
+			if (username && password && [password isEqual:[self passwordForUser:username]]) {
+				[session setValue:username forKey:SessionUsernameKey];
+				return YES;
+			}
+		}
+		
+		if ([params objectForKey:@"logout"]) {
+			[session setValue:NULL forKey:SessionUsernameKey];
+			return NO;
+		}
+	}
+	
+	NSString* sessionUser = [session valueForKey:SessionUsernameKey];
+	if (sessionUser) {	// this sets currentUser to sessionUser
+		[self passwordForUser:sessionUser];
+		if (currentUser)
+			return YES;
+	}
+	
+	if ([super isAuthenticated]) // we still allow HTTP based auth - but is it still used?
+		return YES;
+		
+	return NO;
+}
+
+-(NSString*)htmlLogin {
+	NSMutableString* html = [self webServicesHTMLMutableString:@"login.html"];
+	
+	[self setBlock:@"AuthorizedRestorePasswordWebServer" visible:[[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"] forString:html];
+	
+	return html;
+}
+
+// #defines from HTTPConnection.m
+#define WRITE_ERROR_TIMEOUT 240
+#define HTTP_RESPONSE 30
+
+-(void)handleAuthenticationFailed
+{
+	HTTPAuthenticationRequest *auth = [[[HTTPAuthenticationRequest alloc] initWithRequest:request] autorelease];
+	if (auth.username)
+		[self updateLogEntryForStudy:nil withMessage:[NSString stringWithFormat:@"Wrong password for user %@", auth.username]];
+
+	NSData* bodyData = [[self htmlLogin] dataUsingEncoding:NSUTF8StringEncoding];
+	// Status Code 401 - Unauthorized
+	CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 401, NULL, kCFHTTPVersion1_1);
+	CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Length"), (CFStringRef)[NSString stringWithFormat:@"%d", bodyData.length]);
+	CFHTTPMessageSetBody(response, (CFDataRef)bodyData);
+	
+	[asyncSocket writeData:[self preprocessErrorResponse:response] withTimeout:WRITE_ERROR_TIMEOUT tag:HTTP_RESPONSE];
+	
+	CFRelease(response);
+}
+
+
+
+
 
 @end
