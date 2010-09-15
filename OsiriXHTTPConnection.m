@@ -38,6 +38,7 @@
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "NSString+N2.h"
 #import "DDData.h"
+#import "NSData+N2.h"
 
 #import "JSON.h"
 
@@ -291,7 +292,7 @@ static NSLock* SessionCreateLock = NULL;
 	long sidd;
 	do { // is this a dumb way to generate SIDs?
 		sidd = random();
-	} while ([self sessionForId: sid = [[[NSData dataWithBytes:&sidd length:sizeof(long)] md5Digest] description]]);
+	} while ([self sessionForId: sid = [[[NSData dataWithBytes:&sidd length:sizeof(long)] md5Digest] hex]]);
 	
 	OsiriXHTTPSession* session = [[OsiriXHTTPSession alloc] initWithId:sid];
 	[SessionsArrayLock lock];
@@ -4428,7 +4429,6 @@ NSString* const SessionUsernameKey = @"Username";
 
 -(void)replyToHTTPRequest {
 	NSString* cookie = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease];
-	NSLog(@"COOOOOOKIE: %@", cookie);
 	
 	NSArray* cookieBits = [cookie componentsSeparatedByString:@"="];
 	if (cookieBits.count == 2 && [[cookieBits objectAtIndex:0] isEqual:@"SID"])
