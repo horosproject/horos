@@ -4436,8 +4436,6 @@ NSString* const SessionUsernameKey = @"Username";
 	
 	if (!session)
 		self.session = [OsiriXHTTPSession create];
-	
-	[super replyToHTTPRequest];
 
 	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
 	if ([method isEqualToString:@"POST"] && multipartData.count == 1) // POST auth ?
@@ -4449,17 +4447,15 @@ NSString* const SessionUsernameKey = @"Username";
 		if ([params objectForKey:@"login"]) {
 			NSString* username = [params objectForKey:@"username"];
 			NSString* password = [params objectForKey:@"password"];
-			if (username && password && [password isEqual:[self passwordForUser:username]]) {
+			if (username && password && [password isEqual:[self passwordForUser:username]])
 				[session setValue:username forKey:SessionUsernameKey];
-				return YES;
-			}
 		}
 		
-		if ([params objectForKey:@"logout"]) {
+		if ([params objectForKey:@"logout"])
 			[session setValue:NULL forKey:SessionUsernameKey];
-			return NO;
-		}
 	}
+	
+	[super replyToHTTPRequest];
 }
 
 -(BOOL)isAuthenticated {
