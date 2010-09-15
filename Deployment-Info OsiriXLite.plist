@@ -153,7 +153,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Osirix.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.rossetantoine.osirix</string>
+	<string>com.rossetantoine.osirix-lite</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
