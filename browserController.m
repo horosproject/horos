@@ -18367,7 +18367,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				if( [[[files objectAtIndex: x] pathExtension] isEqualToString: @"zip"])
 				{
-					path = [files objectAtIndex: x];
+					path = [root stringByAppendingPathComponent: [files objectAtIndex: x]];
 					
 					[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/files2send" handler: nil];
 					[path writeToFile: @"/tmp/files2send" atomically: YES];

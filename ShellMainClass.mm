@@ -175,41 +175,44 @@ int executeProcess(int argc, char *argv[])
 				{
 					NSLog( @"mySession");
 					
-					Wait *wait = [[Wait alloc] initWithString:NSLocalizedString(@"Receiving files from iDisk...", nil)];
-					
-					[wait setCancel: YES];
-					
-					// Find the DICOM folder
-					if( ![mySession fileExistsAtPath: DICOMpath]) success = [mySession createDirectoryAtPath: DICOMpath attributes:nil];
-					
-					if( success )
+					WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Receiving files from iDisk...", nil)];
+					@try
 					{
-						NSArray *dirContent = [mySession directoryContentsAtPath: DICOMpath];
+						[wait setCancel: YES];
 						
-						NSLog( @"%@", [dirContent description]);
+						// Find the DICOM folder
+						if( ![mySession fileExistsAtPath: DICOMpath]) success = [mySession createDirectoryAtPath: DICOMpath attributes:nil];
 						
-						scaniDiskDir( mySession, DICOMpath, dirContent, filesArray);
-						
-						NSLog( @"%@", [filesArray description]);
-						
-						[wait showWindow: nil];
-						[[wait progress] setMaxValue: [filesArray count]];
-						
-						for( long i = 0; i < [filesArray count] && [wait aborted] == NO; i++ )
+						if( success )
 						{
-							dstPath = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", i]];
+							NSArray *dirContent = [mySession directoryContentsAtPath: DICOMpath];
 							
-							[mySession movePath: [filesArray objectAtIndex: i] toPath: dstPath handler: nil];
+							NSLog( @"%@", [dirContent description]);
 							
-							[filesArray replaceObjectAtIndex:i withObject: dstPath];
+							scaniDiskDir( mySession, DICOMpath, dirContent, filesArray);
 							
-							[wait incrementBy:1];
+							NSLog( @"%@", [filesArray description]);
+							
+							[wait showWindow: nil];
+							[wait run];
+							
+							for( long i = 0; i < [filesArray count] && [wait aborted] == NO; i++ )
+							{
+								dstPath = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d.%@", i, [[filesArray objectAtIndex: i] pathExtension]]];
+								
+								[mySession movePath: [filesArray objectAtIndex: i] toPath: dstPath handler: nil];
+								
+								[filesArray replaceObjectAtIndex:i withObject: dstPath];
+							}
+							
+							if( deleteFolder)
+								[mySession removeFileAtPath: DICOMpath handler: nil];
 						}
-						
-						if( deleteFolder)
-							[mySession removeFileAtPath: DICOMpath handler: nil];
 					}
-					
+					@catch (NSException * e)
+					{
+						NSLog( @"***** exception shell main class: &@", e);
+					}
 					[wait close];
 					[wait release];
 				}
@@ -226,9 +229,9 @@ int executeProcess(int argc, char *argv[])
 		
 		if( [what isEqualToString:@"sendFilesToiDisk"])
 		{
-			NSString *files2Copy = [NSString stringWithUTF8String:argv[ 2]];
+			NSString *files2Copy = [NSString stringWithContentsOfFile: [NSString stringWithUTF8String:argv[ 2]]];
 			
-			NSString	*DICOMpath = @"Documents/DICOM";
+			NSString *DICOMpath = @"Documents/DICOM";
 			
 			DMMemberAccount		*myDotMacMemberAccount = [DMMemberAccount accountFromPreferencesWithApplicationID:@"----"];
 			
@@ -244,29 +247,35 @@ int executeProcess(int argc, char *argv[])
 					// Find the DICOM folder
 					if( ![mySession fileExistsAtPath: DICOMpath]) [mySession createDirectoryAtPath: DICOMpath attributes:nil];
 					
-					Wait *wait = [[Wait alloc] initWithString:NSLocalizedString(@"Sending zip file to iDisk...", nil)];
-					
-					[wait setCancel: YES];
-					
-					[wait showWindow: nil];
-					
-					NSString *dstPath, *srcPath = files2Copy;
-					
-					dstPath = [DICOMpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
-					
-					NSLog( @"%@", srcPath);
-					NSLog( @"%@", dstPath);
-					
-					if( ![mySession fileExistsAtPath: dstPath]) [mySession copyPath: srcPath toPath: dstPath handler:nil];
-					else
+					WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Sending zip file to iDisk...", nil)];
+					@try
 					{
-						if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString( @"A file already exists: %@. Should I replace it?", nil), [srcPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+						[wait setCancel: YES];
+						
+						[wait showWindow: nil];
+						[wait run];
+						
+						NSString *dstPath, *srcPath = files2Copy;
+						
+						dstPath = [DICOMpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
+						
+						NSLog( @"%@", srcPath);
+						NSLog( @"%@", dstPath);
+						
+						if( ![mySession fileExistsAtPath: dstPath]) [mySession copyPath: srcPath toPath: dstPath handler:nil];
+						else
 						{
-							[mySession removeFileAtPath: dstPath handler:nil];
-							[mySession copyPath: srcPath toPath: dstPath handler:nil];
+							if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString( @"A file already exists: %@. Should I replace it?", nil), [srcPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+							{
+								[mySession removeFileAtPath: dstPath handler:nil];
+								[mySession copyPath: srcPath toPath: dstPath handler:nil];
+							}
 						}
 					}
-					
+					@catch (NSException * e)
+					{
+						NSLog( @"***** exception shell main class: &@", e);
+					}
 					[wait close];
 					[wait release];
 				}
@@ -552,36 +561,42 @@ CHECK;
 	NSArray *arguments = [[NSProcessInfo processInfo] arguments];
 
 	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
-	
-	[wait showWindow:self];
-	
-	NSLog( @"**** 32-bit shell started");
-	
-	NSLog( @"%@", [arguments description]);
-	
-	int argc = [arguments count];
-	
-	char **argv = (char**) malloc( argc * sizeof( char*));
-	
-	for( int i = 0; i < argc; i++)
-		argv[ i] = (char*) [[arguments objectAtIndex: i] UTF8String];
-	
-	[[NSApplication sharedApplication] activateIgnoringOtherApps: YES];
-	
-	ProcessSerialNumber psn;
-	
-	if (!GetCurrentProcess(&psn))
+	@try
 	{
-        TransformProcessType(&psn, kProcessTransformToForegroundApplication);
-        SetFrontProcess(&psn);
-    }
-	
-	executeProcess( argc, argv);
-	
-	free( argv);
-	
-	NSLog( @"**** 32-bit shell exit");
-	
+		[wait showWindow:self];
+		[wait run];
+		
+		NSLog( @"**** 32-bit shell started");
+		
+		NSLog( @"%@", [arguments description]);
+		
+		int argc = [arguments count];
+		
+		char **argv = (char**) malloc( argc * sizeof( char*));
+		
+		for( int i = 0; i < argc; i++)
+			argv[ i] = (char*) [[arguments objectAtIndex: i] UTF8String];
+		
+		[[NSApplication sharedApplication] activateIgnoringOtherApps: YES];
+		
+		ProcessSerialNumber psn;
+		
+		if (!GetCurrentProcess(&psn))
+		{
+			TransformProcessType(&psn, kProcessTransformToForegroundApplication);
+			SetFrontProcess(&psn);
+		}
+		
+		executeProcess( argc, argv);
+		
+		free( argv);
+		
+		NSLog( @"**** 32-bit shell exit");
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception shell main class: &@", e);
+	}
 	[wait close];
 	[wait release];
 	
