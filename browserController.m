@@ -17233,10 +17233,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			NSArray *r = [self exportDICOMFileInt: @"/tmp/zipFilesForMail/" files: filesToExport objects: dicomFiles2Export];
 			
+			[[NSUserDefaults standardUserDefaults] setBool: encrypt forKey: @"encryptForExport"];
+			
 			if( [r count] > 0)
 			{
-				[[NSUserDefaults standardUserDefaults] setBool: encrypt forKey: @"encryptForExport"];
-				
 				int f = 0;
 				NSString *root = @"/tmp/zipFilesForMail";
 				NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
@@ -18334,107 +18334,67 @@ static volatile int numberOfThreadsForJPEG = 0;
 //	
 	int success;
 	
-	// Copy the files!
+	// Zip the files, and copy them!
 	
-	NSMutableArray *dicomFiles2Copy = [NSMutableArray array];
-	NSMutableArray *files2Copy;
+	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+	NSMutableArray *filesToExport;
 	
 	[self checkResponder];
-	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) files2Copy = [self filesForDatabaseMatrixSelection: dicomFiles2Copy onlyImages: NO];
-	else files2Copy = [self filesForDatabaseOutlineSelection: dicomFiles2Copy onlyImages: NO];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: NO];
+	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
 	
-	[files2Copy removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Copy];
+	[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
 	
-	if( files2Copy)
+	if( filesToExport)
 	{
-		NSMutableArray	*directories2copy = [NSMutableArray array];
+		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/zipFilesForIdisk" error: nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/zipFilesForIdisk" attributes: nil];
 		
-		NSString *path = @"/tmp/folder2send2iDisk/";
+		BOOL encrypt = [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"];
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"encryptForExport"];
+		self.passwordForExportEncryption = @"";
 		
-		[[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
-		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: nil];
+		NSArray *r = [self exportDICOMFileInt: @"/tmp/zipFilesForIdisk/" files: filesToExport objects: dicomFiles2Export];
 		
-		for( int x = 0 ; x < [files2Copy count]; x++)
+		[[NSUserDefaults standardUserDefaults] setBool: encrypt forKey: @"encryptForExport"];
+		
+		if( [r count] > 0)
 		{
-			NSString *dstPath, *srcPath = [files2Copy objectAtIndex:x], *extension = [srcPath pathExtension], *tempPath;
-			NSManagedObject *curImage = [dicomFiles2Copy objectAtIndex:x];
-			
-			if([curImage valueForKey: @"fileType"])
+			NSString *path = nil;
+			NSString *root = @"/tmp/zipFilesForIdisk";
+			NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
+			for( int x = 0; x < [files count]; x++)
 			{
-				if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"])
-					extension = [NSString stringWithString:@"dcm"];
-			}
-			
-			if([extension isEqualToString:@""])
-				extension = [NSString stringWithString:@"dcm"];
-			
-			tempPath = [path stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.name"]];
-			
-			// Find the DICOM-PATIENT folder
-			if( [[NSFileManager defaultManager] fileExistsAtPath: tempPath] == NO)
-			{
-				success = [[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: nil];
-				NSLog( @"success = %d", success);
-				[directories2copy addObject: tempPath];
-			}
-			
-			tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.studyName"] ];
-			
-			success = [[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: nil];
-			NSLog( @"success = %d %@", success, tempPath);
-			
-			tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.name"] ];
-			
-			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
-			
-			success = [[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: nil];
-			NSLog( @"success = %d %@", success, tempPath);
-			
-			dstPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d.%@", [[curImage valueForKey:@"instanceNumber"] intValue], extension]];
-			
-			long t = 2;
-			while( [[NSFileManager defaultManager] fileExistsAtPath: dstPath])
-			{
-				dstPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d%4.4d.%@", [[curImage valueForKey:@"instanceNumber"] intValue], t, extension]];
-				t++;
-			}
+				if( [[[files objectAtIndex: x] pathExtension] isEqualToString: @"zip"])
+				{
+					path = [files objectAtIndex: x];
 					
-			success = [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler: nil];
-			NSLog( @"success = %d %@", success, dstPath);
+					[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/files2send" handler: nil];
+					[path writeToFile: @"/tmp/files2send" atomically: YES];
 					
-			if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
-			{
-				[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler: nil];
+					NSTask *theTask = [[NSTask alloc] init];
+					
+					long long fileSize = [[[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink: YES] objectForKey:NSFileSize] longLongValue];
+					
+					fileSize /= 1024;
+					fileSize /= 1024;
+					
+					WaitRendering *wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Sending zip file (%d MB) to iDisk", nil), fileSize]];
+					[wait showWindow:self];
+					
+					[theTask setArguments: [NSArray arrayWithObjects: @"sendFilesToiDisk", @"/tmp/files2send", nil]];
+					[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
+					[theTask launch];
+					[theTask waitUntilExit];
+					[theTask release];
+					
+					[wait close];
+					[wait release];
+				}
 			}
+			
+			[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zipFilesForIdisk" handler: nil];
 		}
-		
-		[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/files2send" handler: nil];
-		[directories2copy writeToFile: @"/tmp/files2send" atomically: YES];
-		
-		NSTask *theTask = [[NSTask alloc] init];
-		
-		long fileSize = 0;
-		
-		for( NSString *file in files2Copy)
-			fileSize += [[[[NSFileManager defaultManager] fileAttributesAtPath:file traverseLink: YES] objectForKey:NSFileSize] longLongValue];
-		
-		fileSize /= 1024;
-		fileSize /= 1024;
-		
-		WaitRendering *wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Sending files (%d file(s), %d MB) to iDisk", nil), [files2Copy count], fileSize]];
-		[wait showWindow:self];
-		
-		[theTask setArguments: [NSArray arrayWithObjects: @"sendFilesToiDisk", @"/tmp/files2send", nil]];
-		[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
-		[theTask launch];
-		[theTask waitUntilExit];
-		[theTask release];
-		
-		[wait close];
-		[wait release];
-		
-		for( NSString *directoryPath in directories2copy)
-			[[NSFileManager defaultManager] removeFileAtPath: directoryPath handler: nil];
 	}
 }
 

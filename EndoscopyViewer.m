@@ -484,6 +484,10 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 #pragma mark-
 #pragma mark Tools Selection
 
+- (void)bringToFrontROI:(ROI*)roi;{}
+
+- (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;{}
+
 - (IBAction) change2DTool:(id) sender
 {
 	if( [sender tag] >= 0)

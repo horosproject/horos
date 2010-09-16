@@ -226,9 +226,7 @@ int executeProcess(int argc, char *argv[])
 		
 		if( [what isEqualToString:@"sendFilesToiDisk"])
 		{
-			NSArray	*files2Copy = [NSArray arrayWithContentsOfFile: [NSString stringWithUTF8String:argv[ 2]]];
-			
-			NSLog( @"%@", [files2Copy description]);
+			NSString *files2Copy = [NSString stringWithUTF8String:argv[ 2]];
 			
 			NSString	*DICOMpath = @"Documents/DICOM";
 			
@@ -246,33 +244,27 @@ int executeProcess(int argc, char *argv[])
 					// Find the DICOM folder
 					if( ![mySession fileExistsAtPath: DICOMpath]) [mySession createDirectoryAtPath: DICOMpath attributes:nil];
 					
-					Wait *wait = [[Wait alloc] initWithString:NSLocalizedString(@"Sending files to iDisk...", nil)];
+					Wait *wait = [[Wait alloc] initWithString:NSLocalizedString(@"Sending zip file to iDisk...", nil)];
 					
 					[wait setCancel: YES];
 					
 					[wait showWindow: nil];
-					[[wait progress] setMaxValue: [files2Copy count]];
 					
-					for( long x = 0 ; x < [files2Copy count] && [wait aborted] == NO; x++ )
+					NSString *dstPath, *srcPath = files2Copy;
+					
+					dstPath = [DICOMpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
+					
+					NSLog( @"%@", srcPath);
+					NSLog( @"%@", dstPath);
+					
+					if( ![mySession fileExistsAtPath: dstPath]) [mySession copyPath: srcPath toPath: dstPath handler:nil];
+					else
 					{
-						NSString			*dstPath, *srcPath = [files2Copy objectAtIndex:x];
-						
-						dstPath = [DICOMpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
-						
-						NSLog( @"%@", srcPath);
-						NSLog( @"%@", dstPath);
-						
-						if( ![mySession fileExistsAtPath: dstPath]) [mySession copyPath: srcPath toPath: dstPath handler:nil];
-						else {
-								if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [srcPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-								{
-									[mySession removeFileAtPath: dstPath handler:nil];
-									[mySession copyPath: srcPath toPath: dstPath handler:nil];
-								}
-								else break;
+						if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString( @"A file already exists: %@. Should I replace it?", nil), [srcPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+						{
+							[mySession removeFileAtPath: dstPath handler:nil];
+							[mySession copyPath: srcPath toPath: dstPath handler:nil];
 						}
-						
-						[wait incrementBy:1];
 					}
 					
 					[wait close];
