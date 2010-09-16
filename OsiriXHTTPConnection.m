@@ -386,6 +386,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 		}
 	}
 	
+	NSLog( @"****** File not found: %@", file);
+	
 	return NULL;
 }
 
@@ -401,6 +403,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 
 -(NSMutableString*)webServicesHTMLMutableString:(NSString*)file {
 	NSMutableString* html = [OsiriXHTTPConnection WebServicesHTMLMutableString:file];
+	
+	if( !html)
+		NSLog( @"********* html == nil : webServicesHTMLMutableString");
 	
 	NSRange includeRange;
 	while ((includeRange = [html rangeOfString:@"%INCLUDE:"]).length) {
