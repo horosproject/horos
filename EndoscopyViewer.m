@@ -1276,6 +1276,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	isLookingBackwards=NO;
 	[pathAssistantLookBackButton setState:NSOffState];
 	[pathAssistantSetPointBButton setEnabled:YES];
+	[pathAssistantExportToFlyThruButton setEnabled:NO];
 	
 	if(!pointA)
 		pointA = [[Point3D alloc] init];
@@ -1288,6 +1289,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 {
 	isLookingBackwards=NO;
 	[pathAssistantLookBackButton setState:NSOffState];
+	[pathAssistantExportToFlyThruButton setEnabled:YES];
 	
 	if(!pointB)
 		pointB = [[Point3D alloc] init];
@@ -1313,11 +1315,11 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	}
 	else if(err == ERROR_NOENOUGHMEM)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Fly Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Path Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 	else if(err == ERROR_CANNOTFINDPATH)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Fly Assistant can not find a path from A to B.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from A to B.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 	else if(err==ERROR_DISTTRANSNOTFINISH)
 	{
@@ -1336,12 +1338,12 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[waiting release];
 		if(err==ERROR_CANNOTFINDPATH)
 		{
-			NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Fly Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 			return;
 		}
 		else if(err==ERROR_DISTTRANSNOTFINISH)
 		{
-			NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil), NSLocalizedString(@"Fly Assistant failed to initialize!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil), NSLocalizedString(@"Path Assistant failed to initialize!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 			return;
 		}
 	}
@@ -1351,6 +1353,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 {
 	isLookingBackwards=NO;
 	[pathAssistantLookBackButton setState:NSOffState];
+	[pathAssistantExportToFlyThruButton setEnabled:YES];
 	
 	isFlyPathLocked = YES;
 	[assistant downSampleCenterlineWithLocalRadius:centerline];
@@ -1365,7 +1368,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 {
 	isLookingBackwards=NO;
 	[pathAssistantLookBackButton setState:NSOffState];
-
+	[pathAssistantExportToFlyThruButton setEnabled:NO];
+	
 	isFlyPathLocked = NO;
 	[centerline removeAllObjects];
 	[self updateCenterlineInMPRViews];
@@ -1395,6 +1399,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[pathAssistantBasicModeButton setTitle:@"Lock Path"];
 		[pathAssistantSetPointAButton setEnabled:NO];
 		[pathAssistantSetPointBButton setEnabled:NO];
+		[pathAssistantExportToFlyThruButton setEnabled:NO];
 		if([centerline count])
 		{
 			[self flyThruAssistantGoBackward:nil];
@@ -1406,9 +1411,52 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[pathAssistantBasicModeButton setTitle:@"Lock Path"];
 		[pathAssistantSetPointAButton setEnabled:YES];
 		[pathAssistantSetPointBButton setEnabled:NO];
+		[pathAssistantExportToFlyThruButton setEnabled:NO];
 		flyAssistantMode = NAVIGATORMODE_2POINT;
 	}
 	
+}
+
+- (IBAction)pathAssistantExportToFlyThru:(id)sender;
+{
+	[self flyThruControllerInit:sender];	
+	
+	if(flyAssistantMode == NAVIGATORMODE_2POINT || isFlyPathLocked)
+	{
+		int numberOfPointsInCenterline = [centerline count];
+		int increment = 1;
+		
+		if(numberOfPointsInCenterline<=30)
+		{
+			increment = 1;
+		}
+		else if(numberOfPointsInCenterline<=100)
+		{
+			increment = 2;
+		}
+		else
+		{
+			increment = numberOfPointsInCenterline/50;
+		}		
+		
+		[[vrController flyThruController].stepsArrayController flyThruTag:2]; // reset fly thru
+		
+		flyAssistantPositionIndex = 0;
+		while(flyAssistantPositionIndex < numberOfPointsInCenterline-1)
+		{
+			// move camera
+			OSIVoxel* cpos = [centerline objectAtIndex:flyAssistantPositionIndex];
+			OSIVoxel * fpos = [centerline objectAtIndex:flyAssistantPositionIndex+1];
+			[self setCameraAtPosition:cpos TowardsPosition:fpos];
+			
+			// add current camera to Fly Thru
+			[[vrController flyThruController].stepsArrayController addObject:[vrController flyThruController].currentCamera];
+			[[vrController flyThruController].stepsArrayController resetCameraIndexes];
+
+			// prepare the next move
+			flyAssistantPositionIndex += increment;
+		}
+	}	
 }
 
 #pragma mark-
@@ -1456,7 +1504,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[assistant setCenterlineResampleStepLength:centerlineResampleStepLength];
 	}
 	else {
-		NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Fly Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Path Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 
 	//misc
@@ -1490,6 +1538,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	[pathAssistantLookBackButton setState:NSOffState];
 	[pathAssistantLookBackButton setEnabled:NO];
 	[pathAssistantCameraOrFocalOnPathMatrix setEnabled:NO];
+	[pathAssistantExportToFlyThruButton setEnabled:NO];
 	
 }
 - (IBAction) applyNewSettingForFlyAssistant:(id) sender
@@ -1525,7 +1574,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[waiting release];
 	}
 	else {
-		NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Fly Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Path Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 }
 - (void) flyThruAssistantGoForward: (NSNotification*)note
@@ -1556,12 +1605,12 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		int err= [assistant caculateNextPositionFrom:pt Towards:dir];
 		if(err==ERROR_NOENOUGHMEM)
 		{
-			NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Fly Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Path Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 			return;
 		}		
 		else if(err==ERROR_CANNOTFINDPATH)
 		{
-			NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Fly Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 			return;
 		}
 		else if(err==ERROR_DISTTRANSNOTFINISH)
@@ -1581,12 +1630,12 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 			[waiting release];
 			if(err==ERROR_CANNOTFINDPATH)
 			{
-				NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Fly Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+				NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 				return;
 			}
 			else if(err==ERROR_DISTTRANSNOTFINISH)
 			{
-				NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil), NSLocalizedString(@"Fly Assistant failed to initialize!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+				NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil), NSLocalizedString(@"Path Assistant failed to initialize!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 				return;
 			}
 		}
@@ -1736,11 +1785,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		dir.z = dir.z*foclength + cpos.z;
 		[self setCameraPosition:cpos focalPoint:dir];
 	}
-
-	
-
-	
 }
+
 - (IBAction) showOrHideCenterlines:(id) sender
 {
 	if([sender state]==NSOnState)

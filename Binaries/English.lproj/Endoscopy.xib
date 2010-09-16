@@ -12,7 +12,7 @@
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<integer value="199"/>
-			<integer value="765"/>
+			<integer value="778"/>
 			<integer value="672"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
@@ -3100,7 +3100,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<reference key="NSControlView" ref="212821748"/>
 												<int key="NSButtonFlags">1211912703</int>
 												<int key="NSButtonFlags2">2</int>
-												<object class="NSCustomResource" key="NSNormalImage" id="687762020">
+												<object class="NSCustomResource" key="NSNormalImage" id="402375903">
 													<string key="NSClassName">NSImage</string>
 													<string key="NSResourceName">NSSwitch</string>
 												</object>
@@ -3125,7 +3125,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<reference key="NSControlView" ref="250042713"/>
 												<int key="NSButtonFlags">1211912703</int>
 												<int key="NSButtonFlags2">2</int>
-												<reference key="NSNormalImage" ref="687762020"/>
+												<reference key="NSNormalImage" ref="402375903"/>
 												<reference key="NSAlternateImage" ref="420048915"/>
 												<string key="NSAlternateContents"/>
 												<string key="NSKeyEquivalent"/>
@@ -3340,18 +3340,18 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<int key="NSPeriodicInterval">25</int>
 											</object>
 										</object>
-										<object class="NSButton" id="420046700">
+										<object class="NSButton" id="30187606">
 											<reference key="NSNextResponder" ref="644120385"/>
 											<int key="NSvFlags">268</int>
 											<string key="NSFrame">{{19, 7}, {20, 20}}</string>
 											<reference key="NSSuperview" ref="644120385"/>
 											<bool key="NSEnabled">YES</bool>
-											<object class="NSButtonCell" key="NSCell" id="899825940">
+											<object class="NSButtonCell" key="NSCell" id="200144237">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">134479872</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="22"/>
-												<reference key="NSControlView" ref="420046700"/>
+												<reference key="NSControlView" ref="30187606"/>
 												<int key="NSButtonFlags">-2033958657</int>
 												<int key="NSButtonFlags2">134</int>
 												<object class="NSCustomResource" key="NSNormalImage">
@@ -3364,18 +3364,18 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<int key="NSPeriodicInterval">75</int>
 											</object>
 										</object>
-										<object class="NSTextField" id="574334799">
+										<object class="NSTextField" id="470565704">
 											<reference key="NSNextResponder" ref="644120385"/>
 											<int key="NSvFlags">268</int>
 											<string key="NSFrame">{{44, 10}, {118, 14}}</string>
 											<reference key="NSSuperview" ref="644120385"/>
 											<bool key="NSEnabled">YES</bool>
-											<object class="NSTextFieldCell" key="NSCell" id="739109102">
+											<object class="NSTextFieldCell" key="NSCell" id="153795489">
 												<int key="NSCellFlags">68288064</int>
 												<int key="NSCellFlags2">272761856</int>
 												<string key="NSContents">Export to Fly Thru</string>
 												<reference key="NSSupport" ref="26"/>
-												<reference key="NSControlView" ref="574334799"/>
+												<reference key="NSControlView" ref="470565704"/>
 												<reference key="NSBackgroundColor" ref="262339783"/>
 												<reference key="NSTextColor" ref="292154196"/>
 											</object>
@@ -4975,6 +4975,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="219001406"/>
 					</object>
 					<int key="connectionID">803</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">pathAssistantExportToFlyThru:</string>
+						<reference key="source" ref="558133940"/>
+						<reference key="destination" ref="30187606"/>
+					</object>
+					<int key="connectionID">816</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">pathAssistantExportToFlyThruButton</string>
+						<reference key="source" ref="558133940"/>
+						<reference key="destination" ref="30187606"/>
+					</object>
+					<int key="connectionID">817</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -6696,8 +6712,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="250042713"/>
 							<reference ref="219001406"/>
 							<reference ref="171298659"/>
-							<reference ref="420046700"/>
-							<reference ref="574334799"/>
+							<reference ref="30187606"/>
+							<reference ref="470565704"/>
 						</array>
 						<reference key="parent" ref="947165623"/>
 					</object>
@@ -6767,29 +6783,29 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">810</int>
-						<reference key="object" ref="420046700"/>
+						<reference key="object" ref="30187606"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="899825940"/>
+							<reference ref="200144237"/>
 						</array>
 						<reference key="parent" ref="298331767"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">811</int>
-						<reference key="object" ref="899825940"/>
-						<reference key="parent" ref="420046700"/>
+						<reference key="object" ref="200144237"/>
+						<reference key="parent" ref="30187606"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">812</int>
-						<reference key="object" ref="574334799"/>
+						<reference key="object" ref="470565704"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="739109102"/>
+							<reference ref="153795489"/>
 						</array>
 						<reference key="parent" ref="298331767"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">813</int>
-						<reference key="object" ref="739109102"/>
-						<reference key="parent" ref="574334799"/>
+						<reference key="object" ref="153795489"/>
+						<reference key="parent" ref="470565704"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">672</int>
@@ -7546,7 +7562,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">815</int>
+			<int key="maxID">817</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -7732,6 +7748,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="lookBackwards:">id</string>
 						<string key="pathAssistantBasicModeButtonAction:">id</string>
 						<string key="pathAssistantChangeMode:">id</string>
+						<string key="pathAssistantExportToFlyThru:">id</string>
 						<string key="pathAssistantSetPointA:">id</string>
 						<string key="pathAssistantSetPointB:">id</string>
 						<string key="setExportAllViews:">id</string>
@@ -7759,6 +7776,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="mprController">OrthogonalMPRController</string>
 						<string key="pathAssistantBasicModeButton">NSButton</string>
 						<string key="pathAssistantCameraOrFocalOnPathMatrix">NSMatrix</string>
+						<string key="pathAssistantExportToFlyThruButton">NSButton</string>
 						<string key="pathAssistantLookBackButton">NSButton</string>
 						<string key="pathAssistantPanel">NSPanel</string>
 						<string key="pathAssistantSetPointAButton">NSButton</string>

@@ -73,7 +73,8 @@
 	IBOutlet NSButton *pathAssistantSetPointBButton;
 	IBOutlet NSButton *pathAssistantLookBackButton;
 	IBOutlet NSMatrix *pathAssistantCameraOrFocalOnPathMatrix;
-
+	IBOutlet NSButton *pathAssistantExportToFlyThruButton;
+	
 	// assistant advanced settings
 	IBOutlet NSPanel *assistantSettingPanel;
 	IBOutlet NSTextField *assistantPanelTextThreshold;
@@ -128,6 +129,7 @@
 - (IBAction)pathAssistantSetPointB:(id)sender;
 - (IBAction)pathAssistantBasicModeButtonAction:(id)sender;
 - (IBAction)pathAssistantChangeMode:(id)sender;
+- (IBAction)pathAssistantExportToFlyThru:(id)sender;
 #pragma mark-
 #pragma mark fly assistant
 //assistant
