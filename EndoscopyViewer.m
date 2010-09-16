@@ -40,7 +40,6 @@ static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
 static NSString*	ShadingToolbarItemIdentifier			= @"Shading";
 static NSString*	LODToolbarItemIdentifier				= @"LOD";
 //assistant
-static NSString*	FlyAssistantToolbarItemIdentifier		= @"FlyAssistant";
 static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 //static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
@@ -989,17 +988,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 			
 		//[[wlwwPopup cell] setUsesItemFromMenu:YES];
     }
-	else if ([itemIdent isEqualToString: FlyAssistantToolbarItemIdentifier])
-	{
-		// Set up the standard properties 
-		[toolbarItem setLabel: NSLocalizedString(@"Fly Assistant",nil)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Fly Assistant",nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Fly Assistant",nil)];
-		
-		// Use a custom view, a text field, for the search item 
-		[toolbarItem setView: assistantToolBarView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([assistantToolBarView frame]), NSHeight([assistantToolBarView frame]))];
-    }
 	else if ([itemIdent isEqualToString:PathAssistantToolbarItemIdentifier])
 	{
 		// Set up the standard properties 
@@ -1033,7 +1021,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 											FlyThruToolbarItemIdentifier,
 											ShadingToolbarItemIdentifier,
 											endo3DToolsToolbarItemIdentifier,
-											FlyAssistantToolbarItemIdentifier,
 											PathAssistantToolbarItemIdentifier,
 											nil];
 }
@@ -1057,7 +1044,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 											WLWW2DToolbarItemIdentifier,
 											ShadingToolbarItemIdentifier,
 											LODToolbarItemIdentifier,
-											FlyAssistantToolbarItemIdentifier,
 											PathAssistantToolbarItemIdentifier,
 											nil];
 }
@@ -1288,7 +1274,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 - (IBAction)pathAssistantSetPointA:(id)sender;
 {
 	isLookingBackwards=NO;
-	[assistantToolBarButtonLookBack setState:NSOffState];
+	[pathAssistantLookBackButton setState:NSOffState];
+	[pathAssistantSetPointBButton setEnabled:YES];
 	
 	if(!pointA)
 		pointA = [[Point3D alloc] init];
@@ -1300,8 +1287,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 - (IBAction)pathAssistantSetPointB:(id)sender;
 {
 	isLookingBackwards=NO;
-	[assistantToolBarButtonLookBack setState:NSOffState];
-
+	[pathAssistantLookBackButton setState:NSOffState];
+	
 	if(!pointB)
 		pointB = [[Point3D alloc] init];
 	pointB.x = [(EndoscopyMPRView*)[mprController originalView] crossPositionX];
@@ -1363,8 +1350,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 - (IBAction)pathAssistantLockPath:(id)sender;
 {
 	isLookingBackwards=NO;
-	[assistantToolBarButtonLookBack setState:NSOffState];
-
+	[pathAssistantLookBackButton setState:NSOffState];
+	
 	isFlyPathLocked = YES;
 	[assistant downSampleCenterlineWithLocalRadius:centerline];
 	[assistant createSmoothedCenterlin:centerline withStepLength:centerlineResampleStepLength];
@@ -1377,7 +1364,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 - (IBAction)pathAssistantDeletePath:(id)sender;
 {
 	isLookingBackwards=NO;
-	[assistantToolBarButtonLookBack setState:NSOffState];
+	[pathAssistantLookBackButton setState:NSOffState];
 
 	isFlyPathLocked = NO;
 	[centerline removeAllObjects];
@@ -1418,7 +1405,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[pathAssistantBasicModeButton setEnabled:NO];
 		[pathAssistantBasicModeButton setTitle:@"Lock Path"];
 		[pathAssistantSetPointAButton setEnabled:YES];
-		[pathAssistantSetPointBButton setEnabled:YES];
+		[pathAssistantSetPointBButton setEnabled:NO];
 		flyAssistantMode = NAVIGATORMODE_2POINT;
 	}
 	
@@ -1492,16 +1479,17 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	
 	flyAssistantMode = NAVIGATORMODE_BASIC;
 	isFlyPathLocked = NO;
-	[assistantToolBarButtonA setTitle:@"Lock Path"];
+	
+	[pathAssistantBasicModeButton setTitle:@"Lock Path"];
 	[pathAssistantSetPointAButton setEnabled:NO];
 	[pathAssistantSetPointBButton setEnabled:NO];
 
 	isLookingBackwards=NO;
 	isShowCenterLine=YES;
-	[assistantToolBarButtonLookBack setState:NSOffState];
-	[assistantToolBarButtonLookBack setEnabled:NO];
-	[assistantToolBarMatrixCamOnPath setEnabled:NO];
 	
+	[pathAssistantLookBackButton setState:NSOffState];
+	[pathAssistantLookBackButton setEnabled:NO];
+	[pathAssistantCameraOrFocalOnPathMatrix setEnabled:NO];
 	
 }
 - (IBAction) applyNewSettingForFlyAssistant:(id) sender
@@ -1651,130 +1639,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	}
 
 }
-- (IBAction) changeAssistantMode:(id) sender
-{
-	
-	if([sender selectedRow]==0)
-	{
-		//[assistantToolBarButtonA setEnabled:NO];
-		isFlyPathLocked = NO;
-		[assistantToolBarButtonA setTitle:@"Lock Path"];
-		if([centerline count])
-		{
-			[self flyThruAssistantGoBackward:nil];
-		}
-		flyAssistantMode = NAVIGATORMODE_BASIC;
-	}
-	else if([sender selectedRow]==1){
-		//[assistantToolBarButtonA setEnabled:YES];
-		[assistantToolBarButtonA setTitle:@"Set point A"];
-		flyAssistantMode = NAVIGATORMODE_2POINT;
-	}
 
-}
-- (IBAction) clickAssistantToolbarBottonA:(id) sender
-{
-	isLookingBackwards=NO;
-	[assistantToolBarButtonLookBack setState:NSOffState];
-	if ([[assistantToolBarButtonA title] isEqualToString:@"Set point A"]) {
-		[assistantToolBarButtonA setTitle:@"Set point B"];
-		if(!pointA)
-			pointA = [[Point3D alloc] init];
-		pointA.x = [(EndoscopyMPRView*)[mprController originalView] crossPositionX];
-		pointA.y = [(EndoscopyMPRView*)[mprController originalView] crossPositionY];
-		pointA.z = [[mprController originalView] curImage];
-		return;
-	}
-	if ([[assistantToolBarButtonA title] isEqualToString:@"Set point B"]) {
-		[assistantToolBarButtonA setTitle:@"Set point A"];
-		if(!pointB)
-			pointB = [[Point3D alloc] init];
-		pointB.x = [(EndoscopyMPRView*)[mprController originalView] crossPositionX];
-		pointB.y = [(EndoscopyMPRView*)[mprController originalView] crossPositionY];
-		pointB.z = [[mprController originalView] curImage];
-		
-		[centerline removeAllObjects];
-		
-		WaitRendering* waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Finding Path...", nil)];
-		[waiting showWindow:self];		
-		int err=[assistant createCenterline:centerline FromPointA:pointA ToPointB:pointB];
-		[waiting close];
-		[waiting release];
-		
-		if(!err)
-		{
-			[self updateCenterlineInMPRViews];
-			flyAssistantPositionIndex=0;
-			OSIVoxel* cpos = [centerline objectAtIndex:0];
-			OSIVoxel * fpos = [centerline objectAtIndex:4];
-			[self setCameraPosition:cpos focalPoint:fpos];
-			
-			
-		}
-		else if(err == ERROR_NOENOUGHMEM)
-		{
-			NSRunAlertPanel(NSLocalizedString(@"No Enough Memory", nil), NSLocalizedString(@"Fly Assistant can not allocate enough momery, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		}
-		else if(err == ERROR_CANNOTFINDPATH)
-		{
-			NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Fly Assistant can not find a path from A to B.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		}
-		else if(err==ERROR_DISTTRANSNOTFINISH)
-		{
-			int i;
-			waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Distance Transform...", nil)];
-			[waiting showWindow:self];
-			
-			for(i=0; i<5; i++)
-			{
-				sleep(2);
-				err= [assistant createCenterline:centerline FromPointA:pointA ToPointB:pointB];
-				if(err!=ERROR_DISTTRANSNOTFINISH)
-					break;
-			}
-			[waiting close];
-			[waiting release];
-			if(err==ERROR_CANNOTFINDPATH)
-			{
-				NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Fly Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-				return;
-			}
-			else if(err==ERROR_DISTTRANSNOTFINISH)
-			{
-				NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil), NSLocalizedString(@"Fly Assistant failed to initialize!", nil), NSLocalizedString(@"OK", nil), nil, nil);
-				return;
-			}
-		}
-		return;
-	}
-	if ([[assistantToolBarButtonA title] isEqualToString:@"Lock Path"]) {
-		[assistantToolBarButtonA setTitle:@"Delete Path"];
-		isFlyPathLocked = YES;
-		[assistant downSampleCenterlineWithLocalRadius:centerline];
-		[assistant createSmoothedCenterlin:centerline withStepLength:centerlineResampleStepLength];
-		
-		[self updateCenterlineInMPRViews];
-		flyAssistantPositionIndex=0;
-		[self flyThruAssistantGoForward:nil];
-
-
-		return;
-	}
-	if ([[assistantToolBarButtonA title] isEqualToString:@"Delete Path"]) {
-		[assistantToolBarButtonA setTitle:@"Lock Path"];
-		isFlyPathLocked = NO;
-		[centerline removeAllObjects];
-		[self updateCenterlineInMPRViews];
-		flyAssistantPositionIndex=0;
-
-
-
-
-		return;
-	}
-	
-	
-}
 - (IBAction) showingAssistantSettings:(id) sender
 {
 	[assistantSettingPanel makeKeyAndOrderFront: self];
@@ -1805,12 +1670,13 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	}
 	if([centerline count]>2&&(isFlyPathLocked||flyAssistantMode == NAVIGATORMODE_2POINT))
 	{
-		[assistantToolBarButtonLookBack setEnabled:YES];
-		[assistantToolBarMatrixCamOnPath setEnabled:YES];
+		[pathAssistantLookBackButton setEnabled:YES];
+		[pathAssistantCameraOrFocalOnPathMatrix setEnabled:YES];
 	}
-	else {
-		[assistantToolBarButtonLookBack setEnabled:NO];
-		[assistantToolBarMatrixCamOnPath setEnabled:NO];
+	else
+	{
+		[pathAssistantLookBackButton setEnabled:NO];
+		[pathAssistantCameraOrFocalOnPathMatrix setEnabled:NO];
 	}
 
 	[[mprController originalView] setNeedsDisplay: YES];

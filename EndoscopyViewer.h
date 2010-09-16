@@ -52,22 +52,10 @@
 	BOOL								exportAllViews;
 	
 	
-	// used by assistant
+	// Fly assistant
 	FlyAssistant* assistant;
-	IBOutlet NSView						*assistantToolBarView;
 	NSMutableArray* centerline;
 	NSMutableArray* centerlineAxial, *centerlineCoronal, *centerlineSagittal;
-	IBOutlet NSButton	*assistantToolBarButtonA;
-	IBOutlet NSButton	*assistantToolBarButtonLookBack;
-	IBOutlet NSMatrix	*assistantToolBarMatrixCamOnPath;
-	IBOutlet NSTextField	*assistantPanelTextThreshold;
-	IBOutlet NSTextField	*assistantPanelTextResampleSize;
-	IBOutlet NSTextField	*assistantPanelTextStepLength;
-	
-	IBOutlet NSSlider	*assistantPanelSliderThreshold;
-	IBOutlet NSSlider	*assistantPanelSliderResampleSize;
-	IBOutlet NSSlider	*assistantPanelSliderStepLength;
-
 	Point3D*   pointA, *pointB;
 	float* assistantInputData;
 	int flyAssistantMode;
@@ -77,7 +65,6 @@
 	BOOL lockCameraFocusOnPath;
 	BOOL isShowCenterLine;
 	BOOL isLookingBackwards;
-	IBOutlet NSPanel				*assistantSettingPanel;
 	
 	// Path Assistant
 	IBOutlet NSPanel *pathAssistantPanel;
@@ -86,6 +73,15 @@
 	IBOutlet NSButton *pathAssistantSetPointBButton;
 	IBOutlet NSButton *pathAssistantLookBackButton;
 	IBOutlet NSMatrix *pathAssistantCameraOrFocalOnPathMatrix;
+
+	// assistant advanced settings
+	IBOutlet NSPanel *assistantSettingPanel;
+	IBOutlet NSTextField *assistantPanelTextThreshold;
+	IBOutlet NSTextField *assistantPanelTextResampleSize;
+	IBOutlet NSTextField *assistantPanelTextStepLength;
+	IBOutlet NSSlider *assistantPanelSliderThreshold;
+	IBOutlet NSSlider *assistantPanelSliderResampleSize;
+	IBOutlet NSSlider *assistantPanelSliderStepLength;
 }
 
 
@@ -139,8 +135,6 @@
 - (void) flyThruAssistantGoForward: (NSNotification*)note;
 - (void) flyThruAssistantGoBackward: (NSNotification*)note;
 - (IBAction) applyNewSettingForFlyAssistant:(id) sender;
-- (IBAction) changeAssistantMode:(id) sender;
-- (IBAction) clickAssistantToolbarBottonA:(id) sender;
 - (IBAction) showingAssistantSettings:(id) sender;
 - (IBAction) showOrHideCenterlines:(id) sender;
 - (IBAction) lookBackwards:(id) sender;
