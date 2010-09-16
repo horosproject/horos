@@ -407,7 +407,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 		NSRange includeRangeEnd = [html rangeOfString:@"%" options:NSLiteralSearch range:NSMakeRange(includeRange.location+includeRange.length, html.length-(includeRange.location+includeRange.length))];
 		NSString* replaceFilename = [html substringWithRange:NSMakeRange(includeRange.location+includeRange.length, includeRangeEnd.location-(includeRange.location+includeRange.length))];
 		NSString* replaceFilepath = [[file stringByDeletingLastPathComponent] stringByAppendingPathComponent:replaceFilename];
-		[html replaceCharactersInRange:NSMakeRange(includeRange.location, includeRangeEnd.location+includeRangeEnd.length-includeRange.location) withString:[self webServicesHTMLMutableString:replaceFilepath]];
+		[html replaceCharactersInRange:NSMakeRange(includeRange.location, includeRangeEnd.location+includeRangeEnd.length-includeRange.location) withString:notNil([self webServicesHTMLMutableString:replaceFilepath])];
 	}
 	
 	[self setBlock:@"userAccount" visible: currentUser? YES : NO forString:html];
