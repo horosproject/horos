@@ -27,6 +27,6 @@
     <property name="gosh.args" value="-sc telnetd -p 17179 start"/>
   </resources>
   <application-desc main-class="org.weasis.launcher.WebstartLauncher">
-    <argument>$dicom:get -w %WebServerAddress%/weasis.xml?%parameters%</argument>
+    <argument>$dicom:get -w %WebServerAddress%/weasis.xml?%userAccount%username=%UserNameLabel%&token=%NewSessionToken%&%/userAccount%%parameters%</argument>
   </application-desc>
 </jnlp>

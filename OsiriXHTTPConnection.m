@@ -274,12 +274,30 @@ static NSLock* SessionCreateLock = NULL;
 	[super dealloc];
 }
 
+NSString* const SessionUsernameKey = @"Username"; // NSString
+NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int)
+NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
+
 +(id)sessionForId:(NSString*)sid {
 	[SessionsArrayLock lock];
 	OsiriXHTTPSession* session = NULL;
-
+	
 	for (OsiriXHTTPSession* isession in Sessions)
 		if ([isession.sid isEqual:sid]) {
+			session = isession;
+			break;
+		}
+	
+	[SessionsArrayLock unlock];
+	return session;
+}
+
++(id)sessionForUsername:(NSString*)username token:(NSString*)token {
+	[SessionsArrayLock lock];
+	OsiriXHTTPSession* session = NULL;
+	
+	for (OsiriXHTTPSession* isession in Sessions)
+		if ([[isession objectForKey:SessionUsernameKey] isEqual:username] && [isession consumeToken:token]) {
 			session = isession;
 			break;
 		}
@@ -321,10 +339,43 @@ static NSLock* SessionCreateLock = NULL;
 	return value;
 }
 
+-(NSMutableDictionary*)tokensDictionary {
+	[lock lock];
+	NSMutableDictionary* tdict = [dict objectForKey:SessionTokensDictKey];
+	if (!tdict) [dict setObject: tdict = [NSMutableDictionary dictionary] forKey:SessionTokensDictKey];
+	[lock unlock];
+	return tdict;
+}
+
+-(NSString*)createToken {
+	NSMutableDictionary* tokensDictionary = [self tokensDictionary];
+	[lock lock];
+	
+	NSString* token;
+	long tokend;
+	do { // is this a dumb way to generate tokens?
+		tokend = random();
+	} while ([[tokensDictionary allKeys] containsObject: token = [[[NSData dataWithBytes:&tokend length:sizeof(long)] md5Digest] hex]]);
+	
+	[tokensDictionary setObject:[NSDate date] forKey:token];
+	
+	[lock unlock];
+	return token;
+}
+
+-(BOOL)consumeToken:(NSString*)token {
+	NSMutableDictionary* tokensDictionary = [self tokensDictionary];
+	[lock lock];
+	
+	BOOL ok = [[tokensDictionary allKeys] containsObject:token];
+	if (ok) [tokensDictionary removeObjectForKey:token];
+	
+	[lock unlock];
+	return ok;
+}
+
 @end
 
-NSString* const SessionUsernameKey = @"Username";
-NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 
 @implementation OsiriXHTTPConnection
 
@@ -403,16 +454,15 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 
 -(NSMutableString*)webServicesHTMLMutableString:(NSString*)file {
 	NSMutableString* html = [OsiriXHTTPConnection WebServicesHTMLMutableString:file];
-	
-	if( !html)
-		NSLog( @"********* html == nil : webServicesHTMLMutableString");
-	
-	NSRange includeRange;
-	while ((includeRange = [html rangeOfString:@"%INCLUDE:"]).length) {
-		NSRange includeRangeEnd = [html rangeOfString:@"%" options:NSLiteralSearch range:NSMakeRange(includeRange.location+includeRange.length, html.length-(includeRange.location+includeRange.length))];
-		NSString* replaceFilename = [html substringWithRange:NSMakeRange(includeRange.location+includeRange.length, includeRangeEnd.location-(includeRange.location+includeRange.length))];
+	if (!html)
+		NSLog(@"********* html == nil : webServicesHTMLMutableString");
+
+	NSRange range;
+	while ((range = [html rangeOfString:@"%INCLUDE:"]).length) {
+		NSRange rangeEnd = [html rangeOfString:@"%" options:NSLiteralSearch range:NSMakeRange(range.location+range.length, html.length-(range.location+range.length))];
+		NSString* replaceFilename = [html substringWithRange:NSMakeRange(range.location+range.length, rangeEnd.location-(range.location+range.length))];
 		NSString* replaceFilepath = [[file stringByDeletingLastPathComponent] stringByAppendingPathComponent:replaceFilename];
-		[html replaceCharactersInRange:NSMakeRange(includeRange.location, includeRangeEnd.location+includeRangeEnd.length-includeRange.location) withString:notNil([self webServicesHTMLMutableString:replaceFilepath])];
+		[html replaceCharactersInRange:NSMakeRange(range.location, rangeEnd.location+rangeEnd.length-range.location) withString:notNil([self webServicesHTMLMutableString:replaceFilepath])];
 	}
 	
 	[self setBlock:@"userAccount" visible: currentUser? YES : NO forString:html];
@@ -422,10 +472,15 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 		[html replaceOccurrencesOfString:@"%UserNameLabel%" withString:notNil([currentUser valueForKey: @"name"]) options:NSLiteralSearch range:html.range];
 		[html replaceOccurrencesOfString:@"%UserEmailLabel%" withString:notNil([currentUser valueForKey: @"email"]) options:NSLiteralSearch range:html.range];
 		[html replaceOccurrencesOfString:@"%UserPhoneLabel%" withString:notNil([currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:html.range];
+		
+		if (((range = [html rangeOfString:@"%NewSessionToken%"]).length)) {
+			NSString* token = [session createToken];
+			do {
+				[html replaceCharactersInRange:range withString:token];
+			} while ((range = [html rangeOfString:@"%NewSessionToken%"]).length);
+		}
 	}
-	
-	
-	
+
 	return html;
 }
 
@@ -917,16 +972,16 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 		NSString *search = notNil( [parameters objectForKey:@"search"]);
 		NSString *album = notNil( [parameters objectForKey:@"album"]);
 		
-		[templateString replaceOccurrencesOfString:@"%browse%" withString: notNil( browse) options:NSLiteralSearch range:templateString.range];
-		[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: notNil( browseParameter) options:NSLiteralSearch range:templateString.range];
-		[templateString replaceOccurrencesOfString:@"%search%" withString: notNil( [OsiriXHTTPConnection decodeURLString:search]) options:NSLiteralSearch range:templateString.range];
-		[templateString replaceOccurrencesOfString:@"%album%" withString: notNil( [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]) options:NSLiteralSearch range:templateString.range];
+		[templateString replaceOccurrencesOfString:@"%browse%" withString:browse options:NSLiteralSearch range:templateString.range];
+		[templateString replaceOccurrencesOfString:@"%browseParameter%" withString:browseParameter options:NSLiteralSearch range:templateString.range];
+		[templateString replaceOccurrencesOfString:@"%search%" withString:search options:NSLiteralSearch range:templateString.range];
+		[templateString replaceOccurrencesOfString:@"%album%" withString:album options:NSLiteralSearch range:templateString.range];
 		
 		NSString *LocalizedLabel_StudyList = @"";
 		if(![search isEqualToString:@""])
-			LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Search Result for", nil), [[OsiriXHTTPConnection decodeURLString:search] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Search Result for", nil), search];
 		else if(![album isEqualToString:@""])
-			LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Album", nil), [[OsiriXHTTPConnection decodeURLString:album] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Album", nil), album];
 		else
 		{
 			if([browse isEqualToString:@"6hours"])
@@ -1057,7 +1112,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 			NSString *checked = @"";
 			for(NSString* selectedID in [parameters objectForKey:@"selected"])
 			{
-				if([[series valueForKey:@"seriesInstanceUID"] isEqualToString:[[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]])
+				if([[series valueForKey:@"seriesInstanceUID"] isEqualToString:[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "]])
 					checked = @"checked";
 			}
 			
@@ -1112,7 +1167,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 					
 				if( [parameters objectForKey:@"dicomDestination"])
 				{
-					NSString * s = [[parameters objectForKey:@"dicomDestination"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+					NSString * s = [parameters objectForKey:@"dicomDestination"];
 					
 					NSArray *sArray = [s componentsSeparatedByString: @":"];
 					
@@ -1158,7 +1213,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 					
 					if( [parameters objectForKey:@"dicomDestination"] && selectedDone == NO)
 					{
-						NSString * s = [[parameters objectForKey:@"dicomDestination"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+						NSString * s = [parameters objectForKey:@"dicomDestination"];
 						
 						NSArray *sArray = [s componentsSeparatedByString: @":"];
 						
@@ -1696,7 +1751,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 	[pool release];
 }
 
-+ (NSString*)encodeURLString:(NSString*)aString;
+/*+ (NSString*)encodeURLString:(NSString*)aString;
 {
 	if( aString == nil) aString = @"";
 	
@@ -1710,9 +1765,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 	[encodedString replaceOccurrencesOfString:@" " withString:@"+" options:NSLiteralSearch range:encodedString.range];
 	[encodedString replaceOccurrencesOfString:@"&" withString:@"%26" options:NSLiteralSearch range:encodedString.range];
 	return encodedString;
-}
+}*/
 
-+ (NSString*)decodeURLString:(NSString*)aString;
+/*+ (NSString*)decodeURLString:(NSString*)aString;
 {
 	if( aString == nil) aString = @"";
 	
@@ -1726,9 +1781,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 	[encodedString replaceOccurrencesOfString:@"+" withString:@" " options:NSLiteralSearch range:encodedString.range];
 	[encodedString replaceOccurrencesOfString:@"%26" withString:@"&" options:NSLiteralSearch range:encodedString.range];
 	return encodedString;
-}
+}*/
 
-+ (NSString *)encodeCharacterEntitiesIn:(NSString *)source;
+/*+ (NSString *)encodeCharacterEntitiesIn:(NSString *)source;
 { 
 	if(!source) return nil;
 	else
@@ -1806,7 +1861,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 		return escaped;    // Note this is autoreleased
 	}
 }
-
+*/
 + (NSString*)iPhoneCompatibleNumericalFormat:(NSString*)aString; // this is to avoid numbers to be interpreted as phone numbers
 {
 	NSMutableString* newString = [NSMutableString string];
@@ -2262,8 +2317,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 	{
 		NSArray* paramArray = [param componentsSeparatedByString:@"="];
 		
-		NSString* paramName = [paramArray objectAtIndex:0];
-		NSString* paramValue = paramArray.count > 1? [paramArray objectAtIndex:1] : [NSNull null];
+		NSString* paramName = [[[paramArray objectAtIndex:0] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		NSString* paramValue = paramArray.count > 1? [[[paramArray objectAtIndex:1] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] : (NSString*)[NSNull null];
 		
 		NSMutableArray* prevVal = [params objectForKey:paramName];
 		if (prevVal && ![prevVal isKindOfClass:[NSMutableArray class]]) {
@@ -2426,7 +2481,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 					{
 						NSMutableString *tempString = [NSMutableString stringWithString:albumListItemString];
 						[tempString replaceOccurrencesOfString: @"%AlbumName%" withString: notNil( [album valueForKey:@"name"]) options:NSLiteralSearch range:tempString.range];
-						[tempString replaceOccurrencesOfString: @"%AlbumNameURL%" withString: [OsiriXHTTPConnection encodeURLString: [album valueForKey:@"name"]] options:NSLiteralSearch range:tempString.range];
+						[tempString replaceOccurrencesOfString: @"%AlbumNameURL%" withString: [[album valueForKey:@"name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] options:NSLiteralSearch range:tempString.range];
 						if([[album valueForKey:@"smartAlbum"] intValue] == 1)
 							[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"SmartAlbum" options:NSLiteralSearch range:tempString.range];
 						else
@@ -2473,7 +2528,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 						NSLog( @"***** WADO with objectUID == nil -> wado will fail");
 					
 					NSString *contentType = [[[[urlParameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
-					contentType = [contentType stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+//					contentType = [contentType stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 					int rows = [[urlParameters objectForKey:@"rows"] intValue];
 					int columns = [[urlParameters objectForKey:@"columns"] intValue];
 					int windowCenter = [[urlParameters objectForKey:@"windowCenter"] intValue];
@@ -2787,8 +2842,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				else if([urlParameters objectForKey:@"search"])
 				{
 					NSMutableString *search = [NSMutableString string];
-					NSString *searchString = [NSString stringWithString: [[[urlParameters objectForKey:@"search"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-					searchString = [OsiriXHTTPConnection decodeURLString:searchString];
+					NSString *searchString = [urlParameters objectForKey:@"search"];
 					
 					NSArray *components = [searchString componentsSeparatedByString:@" "];
 					NSMutableArray *newComponents = [NSMutableArray array];
@@ -2807,8 +2861,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				else if([urlParameters objectForKey:@"searchID"])
 				{
 					NSMutableString *search = [NSMutableString string];
-					NSString *searchString = [NSString stringWithString: [[[urlParameters objectForKey:@"searchID"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-					searchString = [OsiriXHTTPConnection decodeURLString:searchString];
+					NSString *searchString = [NSString stringWithString:[urlParameters objectForKey:@"searchID"]];
 					
 					NSArray *components = [searchString componentsSeparatedByString:@" "];
 					NSMutableArray *newComponents = [NSMutableArray array];
@@ -2827,8 +2880,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				else if([urlParameters objectForKey:@"searchAccessionNumber"])
 				{
 					NSMutableString *search = [NSMutableString string];
-					NSString *searchString = [NSString stringWithString: [[[urlParameters objectForKey:@"searchAccessionNumber"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-					searchString = [OsiriXHTTPConnection decodeURLString:searchString];
+					NSString *searchString = [NSString stringWithString:[urlParameters objectForKey:@"searchAccessionNumber"]];
 					
 					NSArray *components = [searchString componentsSeparatedByString:@" "];
 					NSMutableArray *newComponents = [NSMutableArray array];
@@ -2858,8 +2910,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 					{
 						if(![[urlParameters objectForKey:@"album"] isEqualToString:@""])
 						{
-							html = [self htmlStudyListForStudies: [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] sortBy:[urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
-							pageTitle = [OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+							html = [self htmlStudyListForStudies: [self studiesForAlbum:[urlParameters objectForKey:@"album"] sortBy:[urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
+							pageTitle = [urlParameters objectForKey:@"album"];
 						}
 					}
 					
@@ -2910,7 +2962,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 					{
 						if(![[urlParameters objectForKey:@"album"] isEqualToString:@""])
 						{
-							studies = [self studiesForAlbum:[OsiriXHTTPConnection decodeURLString:[[urlParameters objectForKey:@"album"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] sortBy:[urlParameters objectForKey:@"order"]];
+							studies = [self studiesForAlbum:[urlParameters objectForKey:@"album"] sortBy:[urlParameters objectForKey:@"order"]];
 						}
 					}
 					else
@@ -2936,14 +2988,14 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				#pragma mark dicomSend
 				if( [[urlParameters allKeys] containsObject:@"dicomSend"])
 				{
-					NSString *dicomDestination = [[[urlParameters objectForKey:@"dicomDestination"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					NSString *dicomDestination = [urlParameters objectForKey:@"dicomDestination"];
 					NSArray *tempArray = [dicomDestination componentsSeparatedByString:@":"];
 					
 					if( [tempArray count] >= 4)
 					{
-						NSString *dicomDestinationAddress = [[[tempArray objectAtIndex:0]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						NSString *dicomDestinationAddress = [tempArray objectAtIndex:0];
 						NSString *dicomDestinationPort = [tempArray objectAtIndex:1];
-						NSString *dicomDestinationAETitle = [[[tempArray objectAtIndex:2]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						NSString *dicomDestinationAETitle = [tempArray objectAtIndex:2];
 						NSString *dicomDestinationSyntax = [tempArray objectAtIndex:3];
 						
 						if( dicomDestinationAddress && dicomDestinationPort && dicomDestinationAETitle && dicomDestinationSyntax)
@@ -2961,7 +3013,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 							NSArray *seriesArray;
 							for(NSString* selectedID in [urlParameters objectForKey:@"selected"])
 							{
-								NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"id"], [[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+								NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"id"], selectedID];
 								
 								seriesArray = [self seriesForPredicate: pred];
 								for(NSManagedObject *series in seriesArray)
@@ -2998,8 +3050,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				{
 					if( [[urlParameters allKeys] containsObject:@"shareStudy"])
 					{
-						NSString *userDestination = [[[urlParameters objectForKey:@"userDestination"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-						NSString *messageFromUser = [[[urlParameters objectForKey:@"message"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						NSString *userDestination = [urlParameters objectForKey:@"userDestination"];
+						NSString *messageFromUser = [urlParameters objectForKey:@"message"];
 						
 						if( userDestination)
 						{
@@ -3073,8 +3125,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 	//					
 	//					if( [tempArray count] >= 3)
 	//					{
-	//						NSString *dicomDestinationAETitle = [[tempArray objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-	//						NSString *dicomDestinationAddress = [[tempArray objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	//						NSString *dicomDestinationAETitle = [tempArray objectAtIndex:2];
+	//						NSString *dicomDestinationAddress = [tempArray objectAtIndex:0];
 	//					}
 	//				}
 					
@@ -3104,9 +3156,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				if([[urlParameters allKeys] containsObject:@"id"])
 				{
 					if( [[urlParameters allKeys] containsObject:@"studyID"])
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"] ];
 					else
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"id"] ];
 				}
 				else
 					browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -3131,9 +3183,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				if([[urlParameters allKeys] containsObject:@"id"])
 				{
 					if( [[urlParameters allKeys] containsObject:@"studyID"])
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"]];
 					else
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"id"] ];
 				}
 				else
 					browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -3203,9 +3255,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				if([[urlParameters allKeys] containsObject:@"id"])
 				{
 					if( [[urlParameters allKeys] containsObject:@"studyID"])
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"]];
 					else
-						browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [urlParameters objectForKey:@"id"]];
 				}
 				else
 					browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -3226,8 +3278,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 					
 					[templateString replaceOccurrencesOfString:@"%browse%" withString: notNil( browse) options: NSLiteralSearch range:templateString.range];
 					[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: notNil( browseParameter) options: NSLiteralSearch range:templateString.range];
-					[templateString replaceOccurrencesOfString:@"%search%" withString: [OsiriXHTTPConnection decodeURLString:search] options: NSLiteralSearch range:templateString.range];
-					[templateString replaceOccurrencesOfString:@"%album%" withString: [OsiriXHTTPConnection decodeURLString: [album stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString:@"%search%" withString:search options: NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString:@"%album%" withString:album options:NSLiteralSearch range:templateString.range];
 					
 					// This is probably wrong... video/quictime, see Series.html
 					// [templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:templateString.range];
@@ -3358,9 +3410,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				if([[urlParameters allKeys] containsObject:@"id"])
 				{
 					if( [[urlParameters allKeys] containsObject:@"studyID"])
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"]];
 					else
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
 				}
 				else
 					browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -3433,9 +3485,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				if( [[urlParameters allKeys] containsObject:@"id"])
 				{
 					if( [[urlParameters allKeys] containsObject:@"studyID"])
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"]];
 					else
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
 				}
 				else
 					browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -3558,9 +3610,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				if([[urlParameters allKeys] containsObject:@"id"])
 				{
 					if( [[urlParameters allKeys] containsObject:@"studyID"])
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [[urlParameters objectForKey:@"studyID"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"]];
 					else
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [[urlParameters objectForKey:@"id"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
 				}
 				else
 					browsePredicate = [NSPredicate predicateWithValue:NO];
@@ -3594,8 +3646,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				
 				if( [[urlParameters valueForKey: @"what"] isEqualToString: @"restorePassword"])
 				{
-					NSString *email = [[[urlParameters valueForKey: @"email"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-					NSString *username = [[[urlParameters valueForKey: @"username"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+					NSString *email = [urlParameters valueForKey: @"email"];
+					NSString *username = [urlParameters valueForKey: @"username"];
 					
 					// TRY TO FIND THIS USER
 					if( [email length] > 0 || [username length] > 0)
@@ -3683,8 +3735,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 					
 					if( [[urlParameters valueForKey: @"what"] isEqualToString: @"changePassword"])
 					{
-						NSString * previouspassword = [[[urlParameters valueForKey: @"previouspassword"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-						NSString * password = [[[urlParameters valueForKey: @"password"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						NSString * previouspassword = [urlParameters valueForKey: @"previouspassword"];
+						NSString * password = [urlParameters valueForKey: @"password"];
 						
 						if( [previouspassword isEqualToString: [currentUser valueForKey: @"password"]])
 						{
@@ -3718,9 +3770,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 					
 					if( [[urlParameters valueForKey: @"what"] isEqualToString: @"changeSettings"])
 					{
-						NSString * email = [[[urlParameters valueForKey: @"email"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-						NSString * address = [[[urlParameters valueForKey: @"address"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
-						NSString * phone = [[[urlParameters valueForKey: @"phone"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+						NSString * email = [urlParameters valueForKey: @"email"];
+						NSString * address = [urlParameters valueForKey: @"address"];
+						NSString * phone = [urlParameters valueForKey: @"phone"];
 						
 						[currentUser setValue: email forKey: @"email"];
 						[currentUser setValue: address forKey: @"address"];
@@ -4175,7 +4227,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 			NSMutableDictionary *albumDictionary = [NSMutableDictionary dictionary];
 			
 			[albumDictionary setObject:notNil([album valueForKey:@"name"]) forKey:@"name"];
-			[albumDictionary setObject:notNil([OsiriXHTTPConnection encodeURLString: [album valueForKey:@"name"]]) forKey:@"nameURLSafe"];
+			[albumDictionary setObject:notNil([[album valueForKey:@"name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]) forKey:@"nameURLSafe"];
 			
 			if([[album valueForKey:@"smartAlbum"] intValue] == 1)
 				[albumDictionary setObject:@"SmartAlbum" forKey:@"type"];
@@ -4326,7 +4378,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 }
 
 -(NSString*)weasisJnlpWithParamsString:(NSString*)parameters {
-	NSMutableString* templateString = [OsiriXHTTPConnection WebServicesHTMLMutableString:@"weasis.jnlp"];
+	NSMutableString* templateString = [self webServicesHTMLMutableString:@"weasis.jnlp"];
 	
 	NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
 	if( [webServerAddress length] == 0)
@@ -4435,16 +4487,28 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 
 
 -(void)replyToHTTPRequest {
+	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
 	NSString* cookie = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease];
 	
 	NSArray* cookieBits = [cookie componentsSeparatedByString:@"="];
 	if (cookieBits.count == 2 && [[cookieBits objectAtIndex:0] isEqual:SessionCookieName])
 		self.session = [OsiriXHTTPSession sessionForId:[cookieBits objectAtIndex:1]];
 	
+	if ([method isEqualToString:@"GET"]) { // no session, GET... check for tokens
+		NSString* url = [[NSMakeCollectable(CFHTTPMessageCopyRequestURL(request)) autorelease] description];
+		NSArray* urlComponenents = [url componentsSeparatedByString:@"?"];
+		if (urlComponenents.count > 1) {
+			NSDictionary* params = [OsiriXHTTPConnection ExtractParams:urlComponenents.lastObject];
+			NSString* username = [params objectForKey:@"username"];
+			NSString* token = [params objectForKey:@"token"];
+			if (username && token) // has token, user exists
+				self.session = [OsiriXHTTPSession sessionForUsername:username token:token];
+		}
+	}
+	
 	if (!session)
 		self.session = [OsiriXHTTPSession create];
 
-	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
 	if ([method isEqualToString:@"POST"] && multipartData.count == 1) // POST auth ?
 	{
 		NSData* data = multipartData.lastObject;
@@ -4458,8 +4522,10 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 				[session setObject:username forKey:SessionUsernameKey];
 		}
 		
-		if ([params objectForKey:@"logout"])
+		if ([params objectForKey:@"logout"]) {
 			[session setObject:NULL forKey:SessionUsernameKey];
+			[currentUser release]; currentUser = NULL;
+		}
 	}
 	
 	if (![session objectForKey:SessionDicomCStorePortKey])

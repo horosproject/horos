@@ -31,6 +31,9 @@
 -(void)setObject:(id)o forKey:(NSString*)k;
 -(id)objectForKey:(NSString*)k;
 
+-(NSString*)createToken;
+-(BOOL)consumeToken:(NSString*)token;
+
 @end
 
 
@@ -57,10 +60,10 @@
 + (void) emailNotifications;
 + (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate message: (NSString*) message replyTo: (NSString*) replyto customText: (NSString*) customText;
 + (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message forUser: (NSString*) user ip: (NSString*) ip;
-+ (NSString*)decodeURLString:(NSString*)aString;
+//+ (NSString*)decodeURLString:(NSString*)aString;
 + (NSString*)iPhoneCompatibleNumericalFormat:(NSString*)aString;
 + (NSString*)unbreakableStringWithString:(NSString*)aString;
-+ (NSString*)encodeURLString:(NSString*)aString;
+//+ (NSString*)encodeURLString:(NSString*)aString;
 - (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message;
 - (BOOL)supportsPOST:(NSString *)path withSize:(UInt64)contentLength;
 - (NSArray*) addSpecificStudiesToArray: (NSArray*) array;
