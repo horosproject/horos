@@ -17,7 +17,7 @@
 	    <h1 id="pageTitle">OsiriX Web Server</h1>
 		%userAccount%
 			<div id="userAccountLabel">
-        		<a class="series" href="account?dicomcstoreport=%DicomCStorePort%">
+        		<a class="series" href="account">
 				<div id="CurrentlyLoggedLabel">Logged in as:</div>
 				<div id="UserNameLabel">%UserNameLabel%</div>
 				<div id="UserEmailLabel">%UserEmailLabel%</div>
@@ -38,7 +38,6 @@
 				<td>
 					<form class="searchPatientForm" action="/studyList" method="get">
 						<input type="text" id="search" name="search"/>
-						<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 						<input type="submit" id="searchButton" value="Search"/>
 					</form>
 				</td>
@@ -48,7 +47,6 @@
 				<td>
 					<form class="searchPatientForm" action="/studyList" method="get">
 						<input type="text" id="searchID" name="searchID"/>
-						<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 						<input type="submit" id="searchButton" value="Search"/>
 					</form>	
 				</td>
@@ -58,7 +56,6 @@
 				<td>
 					<form class="searchPatientForm" action="/studyList" method="get">
 						<input type="text" id="searchAccessionNumber" name="searchAccessionNumber"/>
-						<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 						<input type="submit" id="searchButton" value="Search"/>
 					</form>	
 				</td>
@@ -69,16 +66,16 @@
 			<div class="block">
 			<h2>Browse</h2>
 			<ul>
-				<li class="timeFrameStudyList"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=6hours">Last 6 hours</a></li>
-				<li class="timeFrameStudyList"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=today">Today</a></li>
-				<li class="peopleStudyList"><a href="studyList?dicomcstoreport=%DicomCStorePort%&browse=all">Study List</a></li>
+				<li class="timeFrameStudyList"><a href="studyList?browse=6hours">Last 6 hours</a></li>
+				<li class="timeFrameStudyList"><a href="studyList?browse=today">Today</a></li>
+				<li class="peopleStudyList"><a href="studyList?browse=all">Study List</a></li>
 			</ul>
 			
 			%Albums%
 			<h3 class="albums">Albums</h3>
 			<ul>
 				%AlbumListItem%
-				<li class="%AlbumType%"><a href="studyList?dicomcstoreport=%DicomCStorePort%&album=%AlbumNameURL%">%AlbumName%</a></li>
+				<li class="%AlbumType%"><a href="studyList?album=%AlbumNameURL%">%AlbumName%</a></li>
 				%/AlbumListItem%
 			</ul>
 			%/Albums%

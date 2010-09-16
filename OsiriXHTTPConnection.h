@@ -28,8 +28,8 @@
 +(id)create;
 +(id)sessionForId:(NSString*)sid;
 
--(void)setValue:(id)o forKey:(NSString*)k;
--(id)valueForKey:(NSString*)k;
+-(void)setObject:(id)o forKey:(NSString*)k;
+-(id)objectForKey:(NSString*)k;
 
 @end
 
@@ -39,7 +39,6 @@
 	NSMutableArray *selectedImages;
 	NSMutableDictionary *selectedDICOMNode;
 	NSLock *sendLock, *running;
-	NSString *ipAddressString;
 	NSManagedObject *currentUser;
 	NSMutableDictionary *urlParameters; // GET and POST params
 	

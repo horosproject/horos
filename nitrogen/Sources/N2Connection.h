@@ -52,4 +52,6 @@ enum N2ConnectionStatus {
 -(void)writeData:(NSData*)data;
 -(void)handleData:(NSMutableData*)data;
 
+//+(BOOL)host:(NSString*)host1 isEqualToHost:(NSString*)host2;
+
 @end

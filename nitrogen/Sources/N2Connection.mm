@@ -202,5 +202,13 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	[_outputBuffer appendData:data];
 	// the putput buffer is sent every 0.01 seconds - that's quick enough, otherwise [self transferData:NULL];
 }
+/*
+-(NSString*)host2ipv6:(NSString*)host {
+	
+}
 
++(BOOL)host:(NSString*)host1 isEqualToHost:(NSString*)host2 {
+	return [[self host2ipv6:host1] isEqual:[self host2ipv6:host2]];
+}
+*/
 @end

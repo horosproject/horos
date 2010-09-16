@@ -45,7 +45,7 @@
 	    <h1 id="pageTitle">%PageTitle%</h1>
 
 		<div id="toolbar">
-	    	<a id="backButton" class="button" href="studyList?dicomcstoreport=%DicomCStorePort%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">%LocalizedLabel_StudyList%</a>
+	    	<a id="backButton" class="button" href="studyList?browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">%LocalizedLabel_StudyList%</a>
 		</div>
 		
 		<div id="Home" class="panel">
@@ -97,7 +97,7 @@
 					%Report%
 					<tr>
 						<td class="StudyInformationLabel">Report</td>
-						<td><a href="report.%reportExtension%?dicomcstoreport=%DicomCStorePort%&id=%StudyID%" class="report">Download Report</a></td>
+						<td><a href="report.%reportExtension%?id=%StudyID%" class="report">Download Report</a></td>
 					</tr>
 					%/Report%
 					%ReportURL%
@@ -122,12 +122,12 @@
 								</td>
 								%/SendingFunctions1%
 								<td class="tdThumbnail">
-									<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
+									<a class="series" href="series%seriesExtension%?id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
 										<img src="%thumbnail%" class="thumbnail">
 									</a>
 								</td>
 								<td class="tdSeriesInfo">
-									<a class="series" href="series%seriesExtension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
+									<a class="series" href="series%seriesExtension%?id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
 										<span class="SeriesName">%SeriesName% %SeriesComment% %SeriesState%</span>
 										<span class="SeriesImageNumber">%SeriesImageNumber%</span>
 										<span class="SeriesImageNumber">%SeriesComment%</span>
@@ -136,7 +136,7 @@
 				
 								<td class="tdDownloadAsZIP">
 									%ZIPFunctions%
-									<a class="series" title="Download as zip" href="%PatientName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
+									<a class="series" title="Download as zip" href="%PatientName%.%zipextension%?id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
 										<div class="DownloadAsZIP"></div>
 									</a>
 									%/ZIPFunctions%
@@ -167,7 +167,6 @@
 					<input type="hidden" name="browse" value="%browse%"/>
 					<input type="hidden" name="browseParameter" value="%browseParameter%"/>
 					<input type="hidden" name="album" value="%album%"/>
-					<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="search"/>
 		
 				%SendingFunctions3%
 					<h2>DICOM Transfer</h2>

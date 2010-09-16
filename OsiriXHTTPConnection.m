@@ -208,6 +208,9 @@ NSString* notNil( NSString *s)
 }
 @end
 
+
+NSString* const SessionCookieName = @"SID";
+
 @interface OsiriXHTTPResponse : HTTPDataResponse {
 	NSMutableDictionary* httpHeaders;
 }
@@ -230,7 +233,7 @@ NSString* notNil( NSString *s)
 -(id)initWithData:(NSData*)idata mime:(NSString*)mime sessionId:(NSString*)sessionId {
 	self = [self initWithData:idata];
 	if (mime) [httpHeaders setObject:mime forKey:@"Content-Type"];
-	if (sessionId) [httpHeaders setObject:[NSString stringWithFormat:@"SID=%@", sessionId] forKey:@"Set-Cookie"];
+	if (sessionId) [httpHeaders setObject:[NSString stringWithFormat:@"%@=%@", SessionCookieName, sessionId] forKey:@"Set-Cookie"];
 	return self;
 }
 
@@ -304,14 +307,14 @@ static NSLock* SessionCreateLock = NULL;
 	return session;
 }
 
--(void)setValue:(id)o forKey:(NSString*)k {
+-(void)setObject:(id)o forKey:(NSString*)k {
 	[lock lock];
 	if (o) [dict setObject:o forKey:k];
 	else [dict removeObjectForKey:k];
 	[lock unlock];
 }
 
--(id)valueForKey:(NSString*)k {
+-(id)objectForKey:(NSString*)k {
 	[lock lock];
 	id value = [dict objectForKey:k];
 	[lock unlock];
@@ -321,7 +324,7 @@ static NSLock* SessionCreateLock = NULL;
 @end
 
 NSString* const SessionUsernameKey = @"Username";
-
+NSString* const SessionDicomCStorePortKey = @"DicomCStorePort";
 
 @implementation OsiriXHTTPConnection
 
@@ -807,7 +810,6 @@ NSString* const SessionUsernameKey = @"Username";
 	
 	[selectedDICOMNode release];
 	[selectedImages release];
-	[ipAddressString release];
 	[currentUser release];
 	
 	[multipartData release];
@@ -880,10 +882,10 @@ NSString* const SessionUsernameKey = @"Username";
 	
 	if( currentUser && [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES && [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == NO)
 	{
-		if( [[parameters objectForKey: @"dicomcstoreport"] intValue] > 0 && [ipAddressString length] >= 7)
-		{
-		}
-		else dicomSend = NO;
+		//if ([[session objectForKey:SessionDicomCStorePortKey] intValue] > 0 && [ipAddressString length] >= 7)
+		//{
+		//}
+		//else dicomSend = NO;
 	}
 	
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
@@ -1081,8 +1083,8 @@ NSString* const SessionUsernameKey = @"Username";
 			
 			if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES)
 			{
-				NSString *dicomNodeAddress = ipAddressString;
-				NSString *dicomNodePort = [parameters objectForKey: @"dicomcstoreport"];
+				NSString *dicomNodeAddress = [asyncSocket connectedHost];
+				NSString *dicomNodePort = [[session objectForKey:SessionDicomCStorePortKey] stringValue];
 				NSString *dicomNodeAETitle = @"This Computer";
 				
 				NSString *dicomNodeSyntax;
@@ -2192,61 +2194,56 @@ NSString* const SessionUsernameKey = @"Username";
 
 	return data;
 }
+/*
++(NSString*)ipv6:(NSString*)inadd {
+	const char* inaddc = [[node valueForKey:@"Address"] UTF8String];
+	
+	struct sockaddr_in service;
+	bzero((char*)&service, sizeof(service));
+	
+	service.sin_family = AF_INET6;
+	
+}*/
 
-- (NSString*) checkPortString: (NSString*) portString
+-(int)guessDicomCStorePort
 {
-	if( [portString intValue] == 0L)
+	DLog(@"Trying to guess DICOM C-Store Port...");
+	
+	for (NSDictionary *node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
 	{
-		[ipAddressString release];
-		ipAddressString = [[asyncSocket connectedHost] copy];
+		NSString *dicomNodeAddress = notNil([node objectForKey:@"Address"]);
+		int dicomNodePort = [[node objectForKey:@"Port"] intValue];
 		
-		NSLog( @"----- Try to find DICOM C-Store Port");
+		struct sockaddr_in service;
+		const char	*host_name = [[node valueForKey:@"Address"] UTF8String];
 		
-		for(NSDictionary *node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
+		bzero((char *) &service, sizeof(service));
+		service.sin_family = AF_INET;
+		
+		if (host_name)
 		{
-			NSString *dicomNodeAddress = notNil( [node objectForKey:@"Address"]);
-			NSString *dicomNodePort = [NSString stringWithFormat:@"%d", [[node objectForKey:@"Port"] intValue]];
-			
-			struct sockaddr_in service;
-			const char	*host_name = [[node valueForKey:@"Address"] UTF8String];
-			
-			bzero((char *) &service, sizeof(service));
-			service.sin_family = AF_INET;
-			
-			if( host_name)
+			if (isalpha(host_name[0]))
 			{
-				if (isalpha(host_name[0]))
+				struct hostent* hp = gethostbyname(host_name);
+				if (hp) bcopy(hp->h_addr, (char*)&service.sin_addr, hp->h_length);
+				else service.sin_addr.s_addr = inet_addr(host_name);
+			}
+			else service.sin_addr.s_addr = inet_addr(host_name);
+			
+			char buffer[256];
+			if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
+			{
+				if ([[NSString stringWithCString:buffer] isEqualToString:[asyncSocket connectedHost]]) // TODO: this may fail because of comparaisons between ipv6 and ipv4 addys
 				{
-					struct hostent *hp;
-					
-					hp = gethostbyname( host_name);
-					if( hp) bcopy(hp->h_addr, (char *) &service.sin_addr, hp->h_length);
-					else service.sin_addr.s_addr = inet_addr( host_name);
-				}
-				else service.sin_addr.s_addr = inet_addr( host_name);
-				
-				char buffer[256];
-				
-				if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
-				{
-					if( [[NSString stringWithCString:buffer] isEqualToString: ipAddressString])
-					{
-						portString = [NSString stringWithString: dicomNodePort];
-						
-						NSLog( @"----- Did find it ! %@:%@", ipAddressString, dicomNodePort);
-					}
+					DLog( @"\tFound! %@:%d", [asyncSocket connectedHost], dicomNodePort);
+					return dicomNodePort;
 				}
 			}
 		}
-		
-		if( [portString intValue] == 0L)
-		{
-			portString = @"11112";
-			NSLog( @"----- Not found, will use 11112");
-		}
 	}
 	
-	return portString;
+	DLog(@"\tNot found, will use 11112");
+	return 11112;
 }
 
 +(NSDictionary*)ExtractParams:(NSString*)paramsString {
@@ -2350,9 +2347,6 @@ NSString* const SessionUsernameKey = @"Username";
 		[urlParameters addEntriesFromDictionary:[OsiriXHTTPConnection ExtractParams:postParamsString]];
 	}
 	
-	
-	NSString *portString = [urlParameters objectForKey: @"dicomcstoreport"];
-	
 	// find the name of the requested file
 	urlComponenents = [(NSString*)[urlComponenents objectAtIndex:0] componentsSeparatedByString:@"?"];
 	NSString *fileURL = [urlComponenents objectAtIndex:0];
@@ -2452,8 +2446,8 @@ NSString* const SessionUsernameKey = @"Username";
 				}
 				
 				returnHTML = [self setBlock: @"accessStudies" visible: accessStudies forString: returnHTML];
-				
-				[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:returnHTML.range];
+				 
+				[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString:[[session objectForKey:SessionDicomCStorePortKey] stringValue] options:NSLiteralSearch range:returnHTML.range];
 				
 				data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
 				
@@ -2897,7 +2891,7 @@ NSString* const SessionUsernameKey = @"Username";
 						[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:html.range];
 					}
 					
-					[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:html.range];
+					[html replaceOccurrencesOfString:@"%DicomCStorePort%" withString:[[session objectForKey:SessionDicomCStorePortKey] stringValue] options:NSLiteralSearch range:html.range];
 					
 					data = [html dataUsingEncoding:NSUTF8StringEncoding];
 					err = NO;
@@ -3062,10 +3056,7 @@ NSString* const SessionUsernameKey = @"Username";
 				
 				
 					[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Display Study"];
-					
-					[ipAddressString release];
-					ipAddressString = [[asyncSocket connectedHost] copy];
-					
+										
 					NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:urlParameters settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"iPhone", [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
 					
 					[html replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:html.range];
@@ -3095,7 +3086,7 @@ NSString* const SessionUsernameKey = @"Username";
 					if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:html.range];
 					else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:html.range];
 					
-					[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:html.range];
+					[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString:[[session objectForKey:SessionDicomCStorePortKey] stringValue] options:NSLiteralSearch range:html.range];
 					
 					data = [html dataUsingEncoding:NSUTF8StringEncoding];
 				}
@@ -3270,7 +3261,7 @@ NSString* const SessionUsernameKey = @"Username";
 					NSString *studyName = notNil( [[series lastObject] valueForKeyPath:@"study.name"]);
 					[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString: notNil( studyName) options:NSLiteralSearch range:templateString.range];
 					
-					[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString:[[session objectForKey:SessionDicomCStorePortKey] stringValue] options:NSLiteralSearch range:templateString.range];
 					
 					data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
 					err = NO;
@@ -3757,7 +3748,7 @@ NSString* const SessionUsernameKey = @"Username";
 					
 					[templateString replaceOccurrencesOfString: @"%name%" withString: notNil( [currentUser valueForKey: @"name"]) options:NSLiteralSearch range:templateString.range];
 					
-					[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString: [self checkPortString: portString] options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString:[[session objectForKey:SessionDicomCStorePortKey] stringValue] options:NSLiteralSearch range:templateString.range];
 					
 					[templateString replaceOccurrencesOfString: @"%email%" withString: notNil( [currentUser valueForKey: @"email"]) options:NSLiteralSearch range:templateString.range];
 					[templateString replaceOccurrencesOfString: @"%address%" withString: notNil( [currentUser valueForKey: @"address"]) options:NSLiteralSearch range:templateString.range];
@@ -4435,14 +4426,14 @@ NSString* const SessionUsernameKey = @"Username";
 	return [doc XMLString];
 }
 
-#pragma mark Custom authentication
+#pragma mark Session, custom authentication
 
 
 -(void)replyToHTTPRequest {
 	NSString* cookie = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease];
 	
 	NSArray* cookieBits = [cookie componentsSeparatedByString:@"="];
-	if (cookieBits.count == 2 && [[cookieBits objectAtIndex:0] isEqual:@"SID"])
+	if (cookieBits.count == 2 && [[cookieBits objectAtIndex:0] isEqual:SessionCookieName])
 		self.session = [OsiriXHTTPSession sessionForId:[cookieBits objectAtIndex:1]];
 	
 	if (!session)
@@ -4459,18 +4450,21 @@ NSString* const SessionUsernameKey = @"Username";
 			NSString* username = [params objectForKey:@"username"];
 			NSString* password = [params objectForKey:@"password"];
 			if (username && password && [password isEqual:[self passwordForUser:username]])
-				[session setValue:username forKey:SessionUsernameKey];
+				[session setObject:username forKey:SessionUsernameKey];
 		}
 		
 		if ([params objectForKey:@"logout"])
-			[session setValue:NULL forKey:SessionUsernameKey];
+			[session setObject:NULL forKey:SessionUsernameKey];
 	}
+	
+	if (![session objectForKey:SessionDicomCStorePortKey])
+		[session setObject:[NSNumber numberWithInt:[self guessDicomCStorePort]] forKey:SessionDicomCStorePortKey];
 	
 	[super replyToHTTPRequest];
 }
 
 -(BOOL)isAuthenticated {
-	NSString* sessionUser = [session valueForKey:SessionUsernameKey];
+	NSString* sessionUser = [session objectForKey:SessionUsernameKey];
 	if (sessionUser) {	// this sets currentUser to sessionUser
 		[self passwordForUser:sessionUser];
 		if (currentUser)
@@ -4478,7 +4472,7 @@ NSString* const SessionUsernameKey = @"Username";
 	}
 	
 	if ([super isAuthenticated]) { // we still allow HTTP based auth - but is it still used?
-		[session setValue:[currentUser valueForKey:@"username"] forKey:SessionUsernameKey];
+		[session setObject:[currentUser valueForKey:@"username"] forKey:SessionUsernameKey];
 		return YES;
 	}
 		

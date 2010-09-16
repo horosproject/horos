@@ -44,7 +44,7 @@
 	    <h1 id="pageTitle">%PageTitle%</h1>
  	
 		<div id="toolbar">
-			<a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">Home</a>
+			<a id="backButton" class="button" href="/main">Home</a>
 			<span id="sortBy">
 				Sorted by:
 				<a id="sortByName" class='%orderByName%' href="javascript:insertParam('order', 'name');">Name</a>
@@ -56,7 +56,7 @@
 	        %StudyListItem%
 				<tr title="%StudyListItemName%" class="studyListItem%lineParity%">	
 					<td>
-						<a href="study?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%" class="studyListItem">
+						<a href="study?id=%StudyListItemID%%browse%%browseParameter%%search%%album%" class="studyListItem">
 						<span class="StudyListItemName">%StudyListItemName%</span>
 						%StudyModalityBlock%
 						<span class="StudyListItemDetailItem">%StudyModality%</span>
@@ -107,7 +107,7 @@
 				
 					%ZIPFunctions%
 					<td width="32px" class="tdDownloadAsZIP">
-						<a title="Download as zip" href="%StudyListItemName%.%zipextension%?dicomcstoreport=%DicomCStorePort%&id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
+						<a title="Download as zip" href="%StudyListItemName%.%zipextension%?id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
 							<div class="DownloadAsZIP"></div>
 						</a>
 					</td>
