@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">10F569</string>
-		<string key="IBDocument.InterfaceBuilderVersion">762</string>
+		<string key="IBDocument.InterfaceBuilderVersion">804</string>
 		<string key="IBDocument.AppKitVersion">1038.29</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">762</string>
+			<string key="NS.object.0">804</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<integer value="6"/>
@@ -16,7 +16,10 @@
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</array>
-		<dictionary class="NSMutableDictionary" key="IBDocument.Metadata"/>
+		<object class="NSMutableDictionary" key="IBDocument.Metadata">
+			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
+			<integer value="1" key="NS.object.0"/>
+		</object>
 		<array class="NSMutableArray" key="IBDocument.RootObjects" id="546536848">
 			<object class="NSCustomObject" id="649897355">
 				<string key="NSClassName">OSIWebSharingPreferencePanePref</string>
@@ -176,7 +179,7 @@
 						<object class="NSButton" id="605011559">
 							<reference key="NSNextResponder" ref="738391672"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{384, 676}, {356, 18}}</string>
+							<string key="NSFrame">{{16, 676}, {356, 18}}</string>
 							<reference key="NSSuperview" ref="738391672"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="25209493">
@@ -251,28 +254,6 @@
 								<string key="NSContents">Use Weasis as web viewer</string>
 								<reference key="NSSupport" ref="349069678"/>
 								<reference key="NSControlView" ref="485429567"/>
-								<int key="NSButtonFlags">1211912703</int>
-								<int key="NSButtonFlags2">2</int>
-								<reference key="NSNormalImage" ref="413341662"/>
-								<reference key="NSAlternateImage" ref="385854006"/>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">200</int>
-								<int key="NSPeriodicInterval">25</int>
-							</object>
-						</object>
-						<object class="NSButton" id="823351784">
-							<reference key="NSNextResponder" ref="738391672"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{16, 676}, {358, 18}}</string>
-							<reference key="NSSuperview" ref="738391672"/>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="717010279">
-								<int key="NSCellFlags">-2080244224</int>
-								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">Prefer Flash over QuickTime movies</string>
-								<reference key="NSSupport" ref="349069678"/>
-								<reference key="NSControlView" ref="823351784"/>
 								<int key="NSButtonFlags">1211912703</int>
 								<int key="NSButtonFlags2">2</int>
 								<reference key="NSNormalImage" ref="413341662"/>
@@ -3897,22 +3878,6 @@ ZW1wdHkgbGlzdC4</string>
 					</object>
 					<int key="connectionID">944</int>
 				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.WebServerPrefersFlash</string>
-						<reference key="source" ref="823351784"/>
-						<reference key="destination" ref="896066363"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="823351784"/>
-							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">value: values.WebServerPrefersFlash</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.WebServerPrefersFlash</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">945</int>
-				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -3963,8 +3928,6 @@ ZW1wdHkgbGlzdC4</string>
 							<reference ref="616184470"/>
 							<reference ref="485429567"/>
 							<reference ref="927135998"/>
-							<reference ref="823351784"/>
-							<reference ref="605011559"/>
 							<reference ref="814469278"/>
 							<reference ref="909526999"/>
 							<reference ref="145483343"/>
@@ -3975,6 +3938,7 @@ ZW1wdHkgbGlzdC4</string>
 							<reference ref="503036514"/>
 							<reference ref="144829372"/>
 							<reference ref="807742229"/>
+							<reference ref="605011559"/>
 						</array>
 						<reference key="parent" ref="689525341"/>
 					</object>
@@ -4965,19 +4929,6 @@ ZW1wdHkgbGlzdC4</string>
 						<reference key="parent" ref="485429567"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">940</int>
-						<reference key="object" ref="823351784"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="717010279"/>
-						</array>
-						<reference key="parent" ref="738391672"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">941</int>
-						<reference key="object" ref="717010279"/>
-						<reference key="parent" ref="823351784"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">702</int>
 						<reference key="object" ref="723557412"/>
 						<array class="NSMutableArray" key="children">
@@ -5020,11 +4971,11 @@ ZW1wdHkgbGlzdC4</string>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
 				<string key="-3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="12.IBEditorWindowLastContentRect">{{34, 145}, {761, 787}}</string>
+				<string key="12.IBEditorWindowLastContentRect">{{34, 129}, {761, 787}}</string>
 				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="0" key="12.IBViewEditorWindowController.showingBoundsRectangles"/>
 				<integer value="0" key="12.IBViewEditorWindowController.showingLayoutRectangles"/>
-				<string key="12.IBWindowTemplateEditedContentRect">{{34, 145}, {761, 787}}</string>
+				<string key="12.IBWindowTemplateEditedContentRect">{{34, 129}, {761, 787}}</string>
 				<integer value="1" key="12.ImportedFromIB2"/>
 				<string key="12.editorWindowContentRectSynchronizationRect">{{770, 336}, {725, 672}}</string>
 				<integer value="0" key="12.windowTemplate.hasMaxSize"/>
@@ -5046,6 +4997,9 @@ ZW1wdHkgbGlzdC4</string>
 				<string key="470.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="471.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="481.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<object class="NSAffineTransform" key="481.IBViewBoundsToFrameTransform">
+					<bytes key="NSTransformStruct">P4AAAL+AAABDwAAAxC0AAA</bytes>
+				</object>
 				<string key="482.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="483.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="484.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -5227,8 +5181,6 @@ ZW1wdHkgbGlzdC4</string>
 				<string key="925.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="936.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="937.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="940.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="941.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="947.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="948.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			</dictionary>
@@ -5246,6 +5198,13 @@ ZW1wdHkgbGlzdC4</string>
 					<object class="NSMutableDictionary" key="actions">
 						<string key="NS.key.0">:</string>
 						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
@@ -5269,11 +5228,47 @@ ZW1wdHkgbGlzdC4</string>
 						<string key="smartAlbumHelpButton:">id</string>
 						<string key="viewTLSCertificate:">id</string>
 					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="chooseTLSCertificate:">
+							<string key="name">chooseTLSCertificate:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="openKeyChainAccess:">
+							<string key="name">openKeyChainAccess:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="smartAlbumHelpButton:">
+							<string key="name">smartAlbumHelpButton:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="viewTLSCertificate:">
+							<string key="name">viewTLSCertificate:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="TLSCertificateButton">NSButton</string>
 						<string key="TLSChooseCertificateButton">NSButton</string>
 						<string key="studiesArrayController">NSArrayController</string>
 						<string key="userArrayController">NSArrayController</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="TLSCertificateButton">
+							<string key="name">TLSCertificateButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="TLSChooseCertificateButton">
+							<string key="name">TLSChooseCertificateButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="studiesArrayController">
+							<string key="name">studiesArrayController</string>
+							<string key="candidateClassName">NSArrayController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="userArrayController">
+							<string key="name">userArrayController</string>
+							<string key="candidateClassName">NSArrayController</string>
+						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
@@ -5753,6 +5748,24 @@ ZW1wdHkgbGlzdC4</string>
 						<string key="_initialKeyView">NSView</string>
 						<string key="_lastKeyView">NSView</string>
 						<string key="_window">NSWindow</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="_firstKeyView">
+							<string key="name">_firstKeyView</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="_initialKeyView">
+							<string key="name">_initialKeyView</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="_lastKeyView">
+							<string key="name">_lastKeyView</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="_window">
+							<string key="name">_window</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>

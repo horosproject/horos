@@ -15,6 +15,7 @@
 
 #import "QueryController.h"
 #import "AYDicomPrintWindowController.h"
+#import "AYDicomPrintPref.h"
 #import "NSFont_OpenGL.h"
 #import "AYNSImageToDicom.h"
 #import "Notifications.h"
@@ -203,12 +204,12 @@
 	
 	NSDictionary *dict = [[m_PrinterController selectedObjects] objectAtIndex: 0];
 	
-	if ([[formatPopUp menu] itemWithTitle: [dict valueForKey: @"imageDisplayFormat"]] == nil)
+	if ([[formatPopUp menu] itemWithTag: [[dict valueForKey: @"imageDisplayFormatTag"] intValue]] == nil)
 	{
-		[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: [[[formatPopUp menu] itemAtIndex: 0] title] forKey:@"imageDisplayFormat"];
+		[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: @"0" forKey:@"imageDisplayFormat"];
 	}
 	
-	int ipp = [[[formatPopUp menu] itemWithTitle: [dict valueForKey: @"imageDisplayFormat"]] tag];
+	int ipp = imageDisplayFormatNumbers[[[dict valueForKey: @"imageDisplayFormatTag"] intValue]];
 	
 	if( [[m_ImageSelection selectedCell] tag] == eAllImages)
 	{
@@ -251,25 +252,25 @@
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoAdjustPrintingFormat"])
 	{
-		NSInteger index = 0, tag;
+		NSInteger index = 0, no;
 		do
 		{
-			tag = [[[formatPopUp menu] itemAtIndex: index] tag];
+			no = imageDisplayFormatNumbers[[[[formatPopUp menu] itemAtIndex: index] tag]];
 			index++;
 		}
-		while( no_of_images > tag && index < [[formatPopUp menu] numberOfItems]);
+		while( no_of_images > no && index < [[formatPopUp menu] numberOfItems]);
 		
-		if( tag == 2)
+		if( no == 2)
 		{
-			if( [[[dict valueForKey: @"filmOrientation"] uppercaseString] isEqualToString: @"PORTRAIT"])
-				[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: @"Standard 1,2" forKey:@"imageDisplayFormat"];
+			if( [[filmOrientationTag[[[dict valueForKey: @"filmOrientationTag"] intValue]] uppercaseString] isEqualToString: @"PORTRAIT"])
+				[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: @"1" forKey:@"imageDisplayFormatTag"];
 			else
-				[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: @"Standard 2,1" forKey:@"imageDisplayFormat"];
+				[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: @"2" forKey:@"imageDisplayFormatTag"];
 		}
 		else
 		{
-			[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: [[[formatPopUp menu] itemWithTag: tag] title] forKey:@"imageDisplayFormat"];
-			ipp = [[[formatPopUp menu] itemWithTitle: [dict valueForKey: @"imageDisplayFormat"]] tag];
+			[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: [NSString stringWithFormat: @"%@", index-1]  forKey:@"imageDisplayFormatTag"];
+			ipp = imageDisplayFormatNumbers[[[dict valueForKey: @"imageDisplayFormatTag"] intValue]];
 		}
 	}
 	
@@ -341,25 +342,25 @@
 	[filmsession addAttribute: [NSXMLNode attributeWithName: @"number_of_copies" stringValue: copies]];
 	[filmsession addAttribute: [NSXMLNode attributeWithName: @"print_priority" stringValue: [dict valueForKey: @"priority"]]];
 	[filmsession addAttribute: [NSXMLNode attributeWithName: @"medium_type" stringValue: [[dict valueForKey: @"medium"] uppercaseString]]];
-	[filmsession addAttribute: [NSXMLNode attributeWithName: @"film_destination" stringValue: [[dict valueForKey: @"filmDestination"] uppercaseString]]];
+	[filmsession addAttribute: [NSXMLNode attributeWithName: @"film_destination" stringValue: [filmDestinationTag[[[dict valueForKey: @"filmDestinationTag"] intValue]] uppercaseString]]];
 	[association addChild: filmsession];
 
 	// filmbox
-	NSMutableString *imageDisplayFormat = [NSMutableString stringWithString: [dict valueForKey: @"imageDisplayFormat"]];
 	
 	// show alert, if displayFormat is invalid
-	if ([[formatPopUp menu] itemWithTitle: imageDisplayFormat] == nil)
+	if ([[formatPopUp menu] itemWithTag: [[dict valueForKey: @"imageDisplayFormatTag"] intValue]] == nil)
 	{
 		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: NSLocalizedString( @"The Format you selected is not valid.", nil) waitUntilDone: NO];
 		[pool release];
 		return;
 	}
 	
-	int ipp = [[[formatPopUp menu] itemWithTitle: imageDisplayFormat] tag];
-
+	NSMutableString *imageDisplayFormat = [NSMutableString stringWithString: imageDisplayFormatTag[[[dict valueForKey: @"imageDisplayFormatTag"] intValue]]];
 	[imageDisplayFormat replaceOccurrencesOfString: @" " withString: @"\\" options: nil range: NSMakeRange(0, [imageDisplayFormat length])];
-	int rows = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 1, 1)] intValue];
-	int columns = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 3, 1)] intValue];
+	
+	int ipp = imageDisplayFormatNumbers[[[dict valueForKey: @"imageDisplayFormatTag"] intValue]];
+	int rows = imageDisplayFormatRows[[[dict valueForKey: @"imageDisplayFormatTag"] intValue]];
+	int columns = imageDisplayFormatColumns[[[dict valueForKey: @"imageDisplayFormatTag"] intValue]];
 	
 	NSString *destPath = @"/tmp/dicomPrint/";
 	NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -409,19 +410,19 @@
 	{
 		NSXMLElement *filmbox = [NSXMLElement elementWithName: @"filmbox"];
 		NSLog(@"Creating Filmbox for image nr %d", i);
-		NSMutableString *filmSize = [NSMutableString stringWithString: [dict valueForKey: @"filmSize"]];
+		NSMutableString *filmSize = [NSMutableString stringWithString: filmSizeTag[[[dict valueForKey: @"filmSizeTag"] intValue]]];
 		[filmSize replaceOccurrencesOfString: @" " withString: @"" options: nil range: NSMakeRange(0, [filmSize length])];
 		[filmSize replaceOccurrencesOfString: @"." withString: @"_" options: nil range: NSMakeRange(0, [filmSize length])];
 
 		[filmbox addAttribute: [NSXMLNode attributeWithName: @"image_display_format" stringValue: [imageDisplayFormat uppercaseString]]];
-		[filmbox addAttribute: [NSXMLNode attributeWithName: @"film_orientation" stringValue: [[dict valueForKey: @"filmOrientation"] uppercaseString]]];
+		[filmbox addAttribute: [NSXMLNode attributeWithName: @"film_orientation" stringValue: [filmOrientationTag[[[dict valueForKey: @"filmOrientationTag"] intValue]] uppercaseString]]];
 		[filmbox addAttribute: [NSXMLNode attributeWithName: @"film_size_id" stringValue: [filmSize uppercaseString]]];
 
 		[filmbox addAttribute: [NSXMLNode attributeWithName: @"border_density" stringValue: [dict valueForKey: @"borderDensity"]]];
 		[filmbox addAttribute: [NSXMLNode attributeWithName: @"empty_image_density" stringValue: [dict valueForKey: @"emptyImageDensity"]]];
 		[filmbox addAttribute: [NSXMLNode attributeWithName: @"requested_resolution_id" stringValue: [dict valueForKey: @"requestedResolution"]]];
-		[filmbox addAttribute: [NSXMLNode attributeWithName: @"magnification_type" stringValue: [dict valueForKey: @"magnificationType"]]];
-		[filmbox addAttribute: [NSXMLNode attributeWithName: @"trim" stringValue: [dict valueForKey: @"trim"]]];
+		[filmbox addAttribute: [NSXMLNode attributeWithName: @"magnification_type" stringValue: magnificationTypeTag[[[dict valueForKey: @"magnificationTypeTag"] intValue]]]];
+		[filmbox addAttribute: [NSXMLNode attributeWithName: @"trim" stringValue: trimTag[[[dict valueForKey: @"trimTag"] intValue]]]];
 		[filmbox addAttribute: [NSXMLNode attributeWithName: @"configuration_information" stringValue: [dict valueForKey: @"configurationInformation"]]];
 
 		// imagebox

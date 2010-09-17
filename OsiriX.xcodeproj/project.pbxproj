@@ -373,6 +373,8 @@
 		8417228B10D9043B001A833F /* OsiriXHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417228910D9043B001A833F /* OsiriXHTTPConnection.m */; };
 		841722B010D90595001A833F /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 841722AE10D90595001A833F /* DDKeychain.h */; };
 		841722B110D90595001A833F /* DDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 841722AF10D90595001A833F /* DDKeychain.m */; };
+		843F847B12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
+		843F847C12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
 		845344C6113FBEAE0020A2B7 /* user.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 8474A3F710DBE7F300D192D0 /* user.xcdatamodel */; };
 		8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459A7250F5D63EF00146B28 /* VREmpty.xib */; };
@@ -8245,6 +8247,7 @@
 		8417228910D9043B001A833F /* OsiriXHTTPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OsiriXHTTPConnection.m; sourceTree = "<group>"; };
 		841722AE10D90595001A833F /* DDKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDKeychain.h; path = cocoahttpserver/DDKeychain.h; sourceTree = "<group>"; };
 		841722AF10D90595001A833F /* DDKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDKeychain.m; path = cocoahttpserver/DDKeychain.m; sourceTree = "<group>"; };
+		843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDicomPrintPref.h; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrintPref.h"; sourceTree = SOURCE_ROOT; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		844719AF0FD8EF50003BFDF8 /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8459A7260F5D63EF00146B28 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VREmpty.xib; sourceTree = "<group>"; };
@@ -13034,6 +13037,7 @@
 		AB80EBA30AF1F5B600E7E934 /* AYDicomPrint */ = {
 			isa = PBXGroup;
 			children = (
+				843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */,
 				AB80EBA50AF1F5B600E7E934 /* AYDicomPrintWindowController.h */,
 				AB80EBA60AF1F5B600E7E934 /* AYDicomPrintWindowController.mm */,
 				AB80EBA70AF1F5B600E7E934 /* AYNSImageToDicom.h */,
@@ -19133,6 +19137,7 @@
 				592CFF141212F84F00176E39 /* N2XMLRPCConnection.h in Headers */,
 				592CFF161212F84F00176E39 /* N2WSDL.h in Headers */,
 				592CFF181212F84F00176E39 /* N2SOAPWebServiceClient.h in Headers */,
+				843F847B12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21258,6 +21263,7 @@
 				592CFF261212F84F00176E39 /* N2XMLRPCConnection.h in Headers */,
 				592CFF281212F84F00176E39 /* N2WSDL.h in Headers */,
 				592CFF2A1212F84F00176E39 /* N2SOAPWebServiceClient.h in Headers */,
+				843F847C12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21445,6 +21451,7 @@
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
