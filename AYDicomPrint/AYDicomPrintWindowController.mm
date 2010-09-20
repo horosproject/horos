@@ -66,15 +66,15 @@
 			NSMutableDictionary *mDict = [NSMutableDictionary dictionaryWithDictionary: dict];
 			
 			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"filmOrientation"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"filmOrientationTag"];
-			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"filmDestination"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"filmDestinationTag"];
-			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"filmSize"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"filmSizeTag"];
-			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"magnificationType"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"magnificationTypeTag"];
-			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"trim"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"trimTag"];
-			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"imageDisplayFormat"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"imageDisplayFormatTag"];
-			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"borderDensity"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"borderDensityTag"];
-			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"emptyImageDensity"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"emptyImageDensityTag"];
-			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"priority"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"priorityTag"];
-			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"medium"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"mediumTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"filmDestination"] array: filmDestinationTag size: NUM_OF(filmDestinationTag)] forKey: @"filmDestinationTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"filmSize"] array: filmSizeTag size: NUM_OF(filmSizeTag)] forKey: @"filmSizeTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"magnificationType"] array: magnificationTypeTag size: NUM_OF(magnificationTypeTag)] forKey: @"magnificationTypeTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"trim"] array: trimTag size: NUM_OF(trimTag)] forKey: @"trimTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"imageDisplayFormat"] array: imageDisplayFormatTag size: NUM_OF(imageDisplayFormatTag)] forKey: @"imageDisplayFormatTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"borderDensity"] array: borderDensityTag size: NUM_OF(borderDensityTag)] forKey: @"borderDensityTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"emptyImageDensity"] array: emptyImageDensityTag size: NUM_OF(emptyImageDensityTag)] forKey: @"emptyImageDensityTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"priority"] array: priorityTag size: NUM_OF(priorityTag)] forKey: @"priorityTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"medium"] array: mediumTag size: NUM_OF(mediumTag)] forKey: @"mediumTag"];
 			
 			[printers replaceObjectAtIndex: i withObject: mDict];
 			

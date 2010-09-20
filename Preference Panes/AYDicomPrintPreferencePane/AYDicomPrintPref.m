@@ -4,16 +4,6 @@
 
 @implementation AYDicomPrintPref
 
-- (id) init
-{
-	if (self = [super init])
-	{
-		[AYDicomPrintWindowController updateAllPreferencesFormat];
-	}
-
-	return self;
-}
-
 - (void) dealloc
 {
 	[m_PrinterDefaults release];
@@ -28,6 +18,8 @@
 
 - (void) awakeFromNib
 {
+	[AYDicomPrintWindowController updateAllPreferencesFormat];
+	
 	// select default printer
 	NSArray *printer = [m_PrinterController arrangedObjects];
 
