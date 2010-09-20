@@ -34,23 +34,6 @@
 
 @implementation NSUserDefaultsController (OsiriX)
 
-+(void)InitOsirixPrefs {
-	NSUserDefaultsController* defaults = [NSUserDefaultsController sharedUserDefaultsController];
-	
-	// merge our initial values with the existing ones
-	NSMutableDictionary* initialValues = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-										  [NSNumber numberWithBool:YES], OsirixWadoServerActiveDefaultsKey,
-										  [NSNumber numberWithBool:YES], OsirixWebServerUsesWeasisDefaultsKey,
-										  [NSNumber numberWithBool:YES], OsirixWebServerPrefersFlashDefaultsKey,
-										  NULL];
-	[initialValues addEntriesFromDictionary:[defaults initialValues]];
-	[defaults setInitialValues:[NSDictionary dictionaryWithDictionary:initialValues]];
-	
-	NSUserDefaultsControllerOsirixHelper* helper = [[NSUserDefaultsControllerOsirixHelper alloc] init];
-	//	[defaults addObserver:helper forValuesKey:DiscPublishingBurnMediaTypeDefaultsKey options:NULL context:NULL];
-	[defaults addObserver:helper forValuesKey:OsirixWadoServerActiveDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
-}
-
 #pragma mark Bonjour Sharing
 
 NSString* const OsirixBonjourSharingActiveFlagDefaultsKey = @"bonjourSharing";

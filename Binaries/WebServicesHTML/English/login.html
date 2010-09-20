@@ -17,11 +17,7 @@
 		<div id="Home" class="panel">
     		Access to this page is restricted.
 			<form method="post">
-			<table id="login">
-			    <tr><td>Username:</td><td><input type="text" id="username" name="username"></td></tr>
-			    <tr><td>Password:</td><td><input type="password" id="password" name="password"></td></tr>
-				<tr><td></td><td><input type="submit" id="login" name="login" value="Login"/></td></tr>
-			</table>
+        	%INCLUDE:login.pvt.html%
 			</form>
 			%AuthorizedRestorePasswordWebServer%<a href="password_forgotten"><span class="small">Password Forgotten?</span></a>%/AuthorizedRestorePasswordWebServer%
 		</div>

@@ -275,6 +275,7 @@ static NSLock* SessionCreateLock = NULL;
 }
 
 NSString* const SessionUsernameKey = @"Username"; // NSString
+NSString* const SessionChallengeKey = @"Challenge"; // NSString
 NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int)
 NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
@@ -352,10 +353,10 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	[lock lock];
 	
 	NSString* token;
-	long tokend;
+	double tokend;
 	do { // is this a dumb way to generate tokens?
-		tokend = random();
-	} while ([[tokensDictionary allKeys] containsObject: token = [[[NSData dataWithBytes:&tokend length:sizeof(long)] md5Digest] hex]]);
+		tokend = [NSDate timeIntervalSinceReferenceDate];
+	} while ([[tokensDictionary allKeys] containsObject: token = [[[NSData dataWithBytes:&tokend length:sizeof(double)] md5Digest] hex]]);
 	
 	[tokensDictionary setObject:[NSDate date] forKey:token];
 	
@@ -473,7 +474,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		[html replaceOccurrencesOfString:@"%UserEmailLabel%" withString:notNil([currentUser valueForKey: @"email"]) options:NSLiteralSearch range:html.range];
 		[html replaceOccurrencesOfString:@"%UserPhoneLabel%" withString:notNil([currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:html.range];
 		
-		if (((range = [html rangeOfString:@"%NewSessionToken%"]).length)) {
+		if ((range = [html rangeOfString:@"%NewSessionToken%"]).length) {
 			NSString* token = [session createToken];
 			do {
 				[html replaceCharactersInRange:range withString:token];
@@ -481,6 +482,13 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		}
 	}
 
+	if ((range = [html rangeOfString:@"%NewChallenge%"]).length) {
+		double challenged = [NSDate timeIntervalSinceReferenceDate];
+		NSString* challenge = [[[NSData dataWithBytes:&challenged length:sizeof(double)] md5Digest] hex];
+		[html replaceOccurrencesOfString:@"%NewChallenge%" withString:notNil(challenge) options:NSLiteralSearch range:html.range];
+		[session setObject:challenge forKey:SessionChallengeKey];
+	}
+	
 	return html;
 }
 
@@ -758,7 +766,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	if( [path isEqualToString: @"/style.css"])
 		return NO;
 	
-	if( [path isEqualToString: @"/styleswitcher.js"])
+	if( [path hasSuffix:@".js"])
 		return NO;
 	
 	if( [path isEqualToString: @"/iPhoneStyle.css"])
@@ -775,7 +783,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	if( [path isEqualToString: @"/favicon.ico"])
 		return NO;
-	
+
 	return [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"];
 }
 
@@ -3294,7 +3302,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					}
 					else
 					{
-						BOOL flash = [NSUserDefaultsController WebServerPrefersFlash] && !isiPhone;
+						BOOL flash = NO;// TODO: [NSUserDefaultsController WebServerPrefersFlash] && !isiPhone;
 						templateString = [self setBlock:@"movieqt" visible:!flash forString: templateString];
 						templateString = [self setBlock:@"moviefla" visible:flash forString: templateString];
 
@@ -4518,8 +4526,20 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		if ([params objectForKey:@"login"]) {
 			NSString* username = [params objectForKey:@"username"];
 			NSString* password = [params objectForKey:@"password"];
-			if (username && password && [password isEqual:[self passwordForUser:username]])
+			NSString* sha1 = [params objectForKey:@"sha1"];
+			if (username.length && password.length && [password isEqual:[self passwordForUser:username]])
 				[session setObject:username forKey:SessionUsernameKey];
+			else if (username.length && sha1.length) {
+				NSString *pw= [self passwordForUser:username];
+				NSString *ch= [session objectForKey:SessionChallengeKey];
+				NSString *pc= [[self passwordForUser:username] stringByAppendingString:notNil([session objectForKey:SessionChallengeKey])];
+				
+				NSString* sha1internal = [[[[[self passwordForUser:username] stringByAppendingString:notNil([session objectForKey:SessionChallengeKey])] dataUsingEncoding:NSUTF8StringEncoding] sha1Digest] hex];
+				if ([sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame) {
+					[session setObject:username forKey:SessionUsernameKey];
+					[session setObject:NULL forKey:SessionChallengeKey];
+				}
+			}
 		}
 		
 		if ([params objectForKey:@"logout"]) {
@@ -4535,18 +4555,20 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 }
 
 -(BOOL)isAuthenticated {
+	if ([super isAuthenticated]) { // we still allow HTTP based auth - but is it still used?
+		[session setObject:[currentUser valueForKey:@"username"] forKey:SessionUsernameKey];
+		return YES;
+	}
+
 	NSString* sessionUser = [session objectForKey:SessionUsernameKey];
 	if (sessionUser) {	// this sets currentUser to sessionUser
 		[self passwordForUser:sessionUser];
 		if (currentUser)
 			return YES;
+	} else {
+		[currentUser release]; currentUser = NULL;
 	}
 	
-	if ([super isAuthenticated]) { // we still allow HTTP based auth - but is it still used?
-		[session setObject:[currentUser valueForKey:@"username"] forKey:SessionUsernameKey];
-		return YES;
-	}
-		
 	return NO;
 }
 

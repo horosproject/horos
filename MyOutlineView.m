@@ -346,4 +346,12 @@
 	
 	return self;
 }*/
+
+/*-(void)resetCursorRects {
+	[super resetCursorRects];
+	
+	
+	
+}*/
+
 @end

@@ -19,8 +19,6 @@
 
 #pragma mark Bonjour Sharing
 
-+(void)InitOsirixPrefs;
-
 extern NSString* const OsirixBonjourSharingActiveFlagDefaultsKey;
 +(BOOL)IsBonjourSharingActive;
 

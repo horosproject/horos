@@ -1407,6 +1407,14 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"displayCalciumScore"];
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"CalciumScoreCTType"];
 	
+	
+	
+	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWadoServerActiveDefaultsKey];
+	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWebServerUsesWeasisDefaultsKey];
+	[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:OsirixWebServerPrefersFlashDefaultsKey]; // TODO: change
+	
+	
+	
 	return defaultValues;
 }
 @end
