@@ -14,7 +14,8 @@
 
 
 #import <Cocoa/Cocoa.h>
-#include "ViewerController.h"
+
+@class ViewerController;
 
 /** \brief Window Controller for DICOM printing */
 @interface AYDicomPrintWindowController : NSWindowController
@@ -46,6 +47,7 @@
 	
 	NSLock					*printing;
 }
++ (void) updateAllPreferencesFormat;
 
 - (IBAction) cancel: (id) sender;
 - (IBAction) printImages: (id) sender;

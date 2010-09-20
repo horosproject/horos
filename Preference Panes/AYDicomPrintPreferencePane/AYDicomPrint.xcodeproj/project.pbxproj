@@ -13,6 +13,7 @@
 		8D202CF10486D31800D8A456 /* AYDicomPrintPref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* AYDicomPrintPref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
+		AB631BAB12475287003488D2 /* AYDicomPrintWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB631BAA12475287003488D2 /* AYDicomPrintWindowController.h */; };
 		ABE0D67C0CDB179800F0494B /* AYDicomPrintPref.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABE0D67A0CDB179800F0494B /* AYDicomPrintPref.xib */; };
 /* End PBXBuildFile section */
 
@@ -24,6 +25,7 @@
 		32DBCFA20370C41700C91783 /* AYDicomPrint_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AYDicomPrint_Prefix.pch; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* AYDicomPrint.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AYDicomPrint.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB631BAA12475287003488D2 /* AYDicomPrintWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDicomPrintWindowController.h; path = ../../AYDicomPrint/AYDicomPrintWindowController.h; sourceTree = SOURCE_ROOT; };
 		ABE0D67B0CDB179800F0494B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/AYDicomPrintPref.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AYDicomPrintPref.h; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 			children = (
 				F506C03C013D9D7901CA16C8 /* AYDicomPrintPref.h */,
 				F506C03D013D9D7901CA16C8 /* AYDicomPrintPref.m */,
+				AB631BAA12475287003488D2 /* AYDicomPrintWindowController.h */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -126,6 +129,7 @@
 			files = (
 				8D202CEA0486D31800D8A456 /* AYDicomPrint_Prefix.pch in Headers */,
 				8D202CEB0486D31800D8A456 /* AYDicomPrintPref.h in Headers */,
+				AB631BAB12475287003488D2 /* AYDicomPrintWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,7 +163,6 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DBD214C08BA80EA00186707 /* Build configuration list for PBXProject "AYDicomPrint" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -239,6 +242,12 @@
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
+				OTHER_LDFLAGS = (
+					"-bundle",
+					"-twolevel_namespace",
+					"-undefined",
+					dynamic_lookup,
+				);
 				PRODUCT_NAME = AYDicomPrint;
 				WRAPPER_EXTENSION = prefPane;
 			};

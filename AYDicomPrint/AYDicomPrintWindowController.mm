@@ -37,10 +37,63 @@
 
 @implementation AYDicomPrintWindowController
 
+#define NUM_OF(x) (sizeof (x) / sizeof *(x))
+
++ (NSString*) tagForKey: (NSString*) v array: (NSString *[]) array size: (int) size
+{
+	for( int i = 0 ; i < size; i++)
+	{
+		if( [array[ i] isEqualToString: v])
+			return [NSString stringWithFormat: @"%d", i];
+	}
+	
+	NSLog( @"*** not found updateAllPreferencesFormat : %@", v);
+	
+	return @"0";
+}
+
++ (void) updateAllPreferencesFormat
+{
+	BOOL updated = NO;
+	NSMutableArray *printers = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"AYDicomPrinter"] mutableCopy] autorelease];
+	
+	for( int i = 0 ; i < [printers count] ; i++)
+	{
+		NSDictionary *dict = [printers objectAtIndex: i];
+		
+		if( [dict valueForKey: @"imageDisplayFormatTag"] == nil)
+		{
+			NSMutableDictionary *mDict = [NSMutableDictionary dictionaryWithDictionary: dict];
+			
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"filmOrientation"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"filmOrientationTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"filmDestination"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"filmDestinationTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"filmSize"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"filmSizeTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"magnificationType"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"magnificationTypeTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"trim"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"trimTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"imageDisplayFormat"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"imageDisplayFormatTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"borderDensity"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"borderDensityTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"emptyImageDensity"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"emptyImageDensityTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"priority"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"priorityTag"];
+			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"medium"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"mediumTag"];
+			
+			[printers replaceObjectAtIndex: i withObject: mDict];
+			
+			updated = YES;
+		}
+	}
+	
+	if( updated)
+	{
+		[[NSUserDefaults standardUserDefaults] setObject: printers forKey: @"AYDicomPrinter"];
+	}
+}
+
 - (id) init
 {
 	if (self = [super init])
 	{
+		[AYDicomPrintWindowController updateAllPreferencesFormat];
+		
 		// fetch current viewer
 		m_CurrentViewer = [self _currentViewer];
 
@@ -340,8 +393,8 @@
 	NSXMLElement *filmsession = [NSXMLElement elementWithName: @"filmsession"];
 	NSString *copies = [NSString stringWithFormat: @"%d", [[dict valueForKey: @"copies"] intValue]];
 	[filmsession addAttribute: [NSXMLNode attributeWithName: @"number_of_copies" stringValue: copies]];
-	[filmsession addAttribute: [NSXMLNode attributeWithName: @"print_priority" stringValue: [dict valueForKey: @"priority"]]];
-	[filmsession addAttribute: [NSXMLNode attributeWithName: @"medium_type" stringValue: [[dict valueForKey: @"medium"] uppercaseString]]];
+	[filmsession addAttribute: [NSXMLNode attributeWithName: @"print_priority" stringValue: priorityTag[ [[dict valueForKey: @"priorityTag"] intValue]]]];
+	[filmsession addAttribute: [NSXMLNode attributeWithName: @"medium_type" stringValue: [mediumTag[ [[dict valueForKey: @"mediumTag"] intValue]] uppercaseString]]];
 	[filmsession addAttribute: [NSXMLNode attributeWithName: @"film_destination" stringValue: [filmDestinationTag[[[dict valueForKey: @"filmDestinationTag"] intValue]] uppercaseString]]];
 	[association addChild: filmsession];
 
@@ -389,7 +442,7 @@
 	if( from < 0) from = 0;
 	if( to == from) to = from+1;
 
-	NSDictionary	*options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: columns], @"columns", [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: [[m_ImageSelection selectedCell] tag]], @"mode", [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", [NSNumber numberWithInt: [entireSeriesInterval intValue]], @"interval", nil];
+	NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: columns], @"columns", [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: [[m_ImageSelection selectedCell] tag]], @"mode", [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", [NSNumber numberWithInt: [entireSeriesInterval intValue]], @"interval", nil];
 	
 	// collect images for printing
 	AYNSImageToDicom *dicomConverter = [[AYNSImageToDicom alloc] init];
@@ -418,8 +471,8 @@
 		[filmbox addAttribute: [NSXMLNode attributeWithName: @"film_orientation" stringValue: [filmOrientationTag[[[dict valueForKey: @"filmOrientationTag"] intValue]] uppercaseString]]];
 		[filmbox addAttribute: [NSXMLNode attributeWithName: @"film_size_id" stringValue: [filmSize uppercaseString]]];
 
-		[filmbox addAttribute: [NSXMLNode attributeWithName: @"border_density" stringValue: [dict valueForKey: @"borderDensity"]]];
-		[filmbox addAttribute: [NSXMLNode attributeWithName: @"empty_image_density" stringValue: [dict valueForKey: @"emptyImageDensity"]]];
+		[filmbox addAttribute: [NSXMLNode attributeWithName: @"border_density" stringValue: borderDensityTag[ [[dict valueForKey: @"borderDensityTag"] intValue]]]];
+		[filmbox addAttribute: [NSXMLNode attributeWithName: @"empty_image_density" stringValue: emptyImageDensityTag[ [[dict valueForKey: @"emptyImageDensityTag"] intValue]]]];
 		[filmbox addAttribute: [NSXMLNode attributeWithName: @"requested_resolution_id" stringValue: [dict valueForKey: @"requestedResolution"]]];
 		[filmbox addAttribute: [NSXMLNode attributeWithName: @"magnification_type" stringValue: magnificationTypeTag[[[dict valueForKey: @"magnificationTypeTag"] intValue]]]];
 		[filmbox addAttribute: [NSXMLNode attributeWithName: @"trim" stringValue: trimTag[[[dict valueForKey: @"trimTag"] intValue]]]];

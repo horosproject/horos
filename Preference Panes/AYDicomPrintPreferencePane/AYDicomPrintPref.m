@@ -1,6 +1,6 @@
 #import "AYDicomPrintPref.h"
 #import <SecurityInterface/SFAuthorizationView.h>
-
+#import "AYDicomPrintWindowController.h"
 
 @implementation AYDicomPrintPref
 
@@ -8,6 +8,7 @@
 {
 	if (self = [super init])
 	{
+		[AYDicomPrintWindowController updateAllPreferencesFormat];
 	}
 
 	return self;
