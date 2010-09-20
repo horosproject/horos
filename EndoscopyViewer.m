@@ -100,6 +100,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	//assistant
 	[nc addObserver: self selector: @selector(flyThruAssistantGoForward:) name:@"PathAssistantGoForwardNotification" object:nil];
 	[nc addObserver: self selector: @selector(flyThruAssistantGoBackward:) name:@"PathAssistantGoBackwardNotification" object:nil];
+	[nc addObserver:self selector:@selector(windowWillCloseNotificationSelector:) name:NSWindowWillCloseNotification object:nil];
 	
 	// CLUT Menu
 	cur2DCLUTMenu = NSLocalizedString(@"No CLUT", nil);
@@ -1461,6 +1462,18 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 			flyAssistantPositionIndex += increment;
 		}
 	}	
+}
+
+- (void)windowWillCloseNotificationSelector:(NSNotification*)notification
+{
+	if([notification object]==pathAssistantPanel)
+	{
+		if(assistantSettingPanel)
+		{
+			[assistantSettingPanel close];
+		}
+		
+	}
 }
 
 #pragma mark-
