@@ -313,16 +313,18 @@
 		}
 		while( no_of_images > no && index < [[formatPopUp menu] numberOfItems]);
 		
+		NSMutableDictionary *currentPrinter = [[m_PrinterController selectedObjects] objectAtIndex: 0];
+		
 		if( no == 2)
 		{
 			if( [[filmOrientationTag[[[dict valueForKey: @"filmOrientationTag"] intValue]] uppercaseString] isEqualToString: @"PORTRAIT"])
-				[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: @"1" forKey:@"imageDisplayFormatTag"];
+				[currentPrinter setObject: @"1" forKey:@"imageDisplayFormatTag"];
 			else
-				[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: @"2" forKey:@"imageDisplayFormatTag"];
+				[currentPrinter setObject: @"2" forKey:@"imageDisplayFormatTag"];
 		}
 		else
 		{
-			[[[m_PrinterController selectedObjects] objectAtIndex: 0] setObject: [NSString stringWithFormat: @"%@", index-1]  forKey:@"imageDisplayFormatTag"];
+			[currentPrinter setObject: [NSString stringWithFormat: @"%d", index-1]  forKey:@"imageDisplayFormatTag"];
 			ipp = imageDisplayFormatNumbers[[[dict valueForKey: @"imageDisplayFormatTag"] intValue]];
 		}
 	}
