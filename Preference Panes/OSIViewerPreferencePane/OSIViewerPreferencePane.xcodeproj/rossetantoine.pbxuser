@@ -57,7 +57,7 @@
 		};
 		perUserProjectItems = {
 			AB631BC3124752FB003488D2 /* PBXTextBookmark */ = AB631BC3124752FB003488D2 /* PBXTextBookmark */;
-			ABBE70350DAE371600B07421 /* PBXTextBookmark */ = ABBE70350DAE371600B07421 /* PBXTextBookmark */;
+			AB631C7C12475A6C003488D2 /* PBXTextBookmark */ = AB631C7C12475A6C003488D2 /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB29966A09AB2BCA00F810FC /* Source Control */;
 		userBuildSettings = {
@@ -91,15 +91,15 @@
 		vrLen = 1166;
 		vrLoc = 401;
 	};
-	ABBE70350DAE371600B07421 /* PBXTextBookmark */ = {
+	AB631C7C12475A6C003488D2 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
-		name = "OSIViewerPreferencePanePref.m: 33";
+		name = "OSIViewerPreferencePanePref.m: 25";
 		rLen = 6;
 		rLoc = 917;
 		rType = 0;
-		vrLen = 1106;
-		vrLoc = 417;
+		vrLen = 1166;
+		vrLoc = 401;
 	};
 	F506C03C013D9D7901CA16C8 /* OSIViewerPreferencePanePref.h */ = {
 		uiCtxt = {
