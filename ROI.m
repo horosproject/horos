@@ -1967,21 +1967,23 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 				float distance;
 				NSMutableArray *splinePoints = [self splinePoints: scale];
 				
-				for( int i = 0; i < ([splinePoints count] - 1); i++ )
+				if( [splinePoints count] > 0)
 				{
-					[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:(i+1)] point] :&distance];
-					
-					if( distance*scale < 5.0)
+					for( int i = 0; i < ([splinePoints count] - 1); i++ )
 					{
-						imode = ROI_selected;
-						break;
+						[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:(i+1)] point] :&distance];
+						
+						if( distance*scale < 5.0)
+						{
+							imode = ROI_selected;
+							break;
+						}
 					}
 				}
 			}
 			break;
-			//JJCP
+			
 			case tDynAngle:
-			//JJCP
 			case tAxis:
 			case tCPolygon:
 			case tPencil:
@@ -1989,21 +1991,22 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 				float distance;
 				NSMutableArray *splinePoints = [self splinePoints: scale];
 				
-				int i;
-				for( i = 0; i < ([splinePoints count] - 1); i++ )
+				if( [splinePoints count] > 0)
 				{
-					
-					[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:(i+1)] point] :&distance];
-					if( distance*scale < 5.0)
-					{
-						imode = ROI_selected;
-						break;
+					int i;
+					for( i = 0; i < ([splinePoints count] - 1); i++ )
+					{					
+						[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:(i+1)] point] :&distance];
+						if( distance*scale < 5.0)
+						{
+							imode = ROI_selected;
+							break;
+						}
 					}
+					
+					[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:0] point] :&distance];
+					if( distance*scale < 5.0f )	imode = ROI_selected;
 				}
-				
-				[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:0] point] :&distance];
-				if( distance*scale < 5.0f )	imode = ROI_selected;
-
 			}
 			break;
 

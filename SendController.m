@@ -209,18 +209,21 @@ static volatile int sendControllerObjects = 0;
 	[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] objectForKey:@"Address"], [[self server] objectForKey:@"Port"]]];
 }
 
-- (int)keyImageIndex{
+- (int) keyImageIndex
+{
 	return _keyImageIndex;
 }
 
--(void)setKeyImageIndex:(int)index{
+- (void) setKeyImageIndex:(int)index
+{
 	_keyImageIndex = index;
 	[[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"lastSendWhat"];
 }
 
 #pragma mark sheet functions
 
-- (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
+- (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo
+{
 }
 
 - (IBAction) endSelectServer:(id) sender
@@ -278,9 +281,19 @@ static volatile int sendControllerObjects = 0;
 				t.progress = 0;
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 			}
-			else [_lock unlock];	// Will release the object
+			else
+			{
+				[_lock unlock];	// Will release the object
+				sendControllerObjects--;
+			}
 		}
-		else [_lock unlock];	// Will release the object
+		else
+		{
+			NSRunAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"There are no files of selected type to send.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+			
+			[_lock unlock];	// Will release the object
+			sendControllerObjects--;
+		}
 	}
 	else // Cancel
 	{

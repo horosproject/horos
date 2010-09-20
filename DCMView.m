@@ -1180,10 +1180,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				if( [r containsObject: curROI]) no++;
 			}
-		
+			
 			if( no <= 1 || force == YES)
 			{
 				curROI.ROImode = ROI_selected;
+				
+				if( [curROI valid] == NO)
+				{
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: curROI userInfo: nil];
+					
+					@try
+					{
+						[curRoiList removeObject: curROI];
+					}
+					@catch (NSException * e) {}
+				}
+				
 				[curROI release];
 				curROI = nil;
 			}
@@ -2531,7 +2543,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
 							[curRoiList removeObjectAtIndex:i];
 							i--;
-							if(groupID!=0.0)[self deleteROIGroupID:groupID];
+							if( groupID != 0.0)
+								[self deleteROIGroupID:groupID];
 						}
 					}
 				}
@@ -2546,7 +2559,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
 						[curRoiList removeObjectAtIndex:i];
 						i--;
-						if(groupID!=0.0)[self deleteROIGroupID:groupID];
+						if( groupID != 0.0)
+							[self deleteROIGroupID:groupID];
 					}
 				}
 				

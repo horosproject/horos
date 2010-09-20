@@ -162,6 +162,9 @@ PURPOSE.
 	
 	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
 	
+	if( [curRoiList count] <= row)
+		return nil;
+		
 	if( [[tableColumn identifier] isEqualToString:@"Index"])
 	{
 		return [NSString stringWithFormat:@"%d", row+1];
@@ -191,7 +194,7 @@ PURPOSE.
 		}
 		else
 		#endif
-			return [NSString stringWithString:@"n/a"];
+			return [NSString stringWithString: NSLocalizedString( @"n/a", @"Abreviation for not available")];
 	}
 	
 	return nil;

@@ -753,6 +753,14 @@
 	[NSApp stopModal];
 }
 
+- (NSString*) cleanStringForFile: (NSString*) s
+{
+	s = [s stringByReplacingOccurrencesOfString:@"/" withString:@"-"];
+	s = [s stringByReplacingOccurrencesOfString:@":" withString:@"-"];
+	
+	return s;	
+}
+
 - (void) addDicomdir
 {
 	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"" waitUntilDone:YES];
@@ -953,7 +961,7 @@
 			
 			for( NSManagedObject *study in studies)
 			{
-				[manager copyPath: [study valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [study valueForKey:@"modality"], [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]], [[study valueForKey:@"reportURL"] pathExtension]] handler:nil]; 
+				[manager copyPath: [study valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] handler:nil]; 
 			}
 			
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];

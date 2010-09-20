@@ -10651,8 +10651,7 @@ short				matrix[25];
 - (void) saveROI:(long) mIndex
 {
 	BOOL isDir = YES, toBeSaved = NO;
-	int i;
-	DicomStudy *study = [[fileList[0] objectAtIndex:0] valueForKeyPath: @"series.study"];
+	DicomStudy *study = [[fileList[ mIndex] objectAtIndex:0] valueForKeyPath: @"series.study"];
 	NSArray *roisArray = [[[study roiSRSeries] valueForKey: @"images"] allObjects];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"] == NO)
@@ -10666,7 +10665,7 @@ short				matrix[25];
 		{
 			NSMutableArray *allDICOMSR = [NSMutableArray array];
 			
-			for( i = 0; i < [fileList[ mIndex] count]; i++)
+			for( int i = 0; i < [fileList[ mIndex] count]; i++)
 			{
 				if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
 				{
