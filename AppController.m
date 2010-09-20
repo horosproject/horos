@@ -41,6 +41,7 @@
 #import "altivecFunctions.h"
 #import "NSUserDefaultsController+OsiriX.h"
 #import <N2Debug.h>
+#import "NSFileManager+N2.h"
 #ifndef OSIRIX_LIGHT
 #import <ILCrashReporter/ILCrashReporter.h>
 #endif
@@ -2484,7 +2485,7 @@ static NSDate *lastWarningDate = nil;
 	self = [super init];
 	appController = self;
 	
-	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/Application Support/OsiriX/DLog.enable"])
+	if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])
 		[N2Debug setActive:YES];
 	
 	PapyrusLock = [[NSRecursiveLock alloc] init];
