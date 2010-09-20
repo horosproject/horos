@@ -1,7 +1,7 @@
 // !$*UTF8*$!
 {
 	089C1669FE841209C02AAC07 /* Project object */ = {
-		activeBuildConfigurationName = Development;
+		activeBuildConfigurationName = "Deployment 64-bit";
 		activeTarget = 8D202CE80486D31800D8A456 /* OSIViewerPreferencePane */;
 		addToTargets = (
 			8D202CE80486D31800D8A456 /* OSIViewerPreferencePane */,
