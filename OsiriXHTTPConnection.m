@@ -4530,10 +4530,6 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			if (username.length && password.length && [password isEqual:[self passwordForUser:username]])
 				[session setObject:username forKey:SessionUsernameKey];
 			else if (username.length && sha1.length) {
-				NSString *pw= [self passwordForUser:username];
-				NSString *ch= [session objectForKey:SessionChallengeKey];
-				NSString *pc= [[self passwordForUser:username] stringByAppendingString:notNil([session objectForKey:SessionChallengeKey])];
-				
 				NSString* sha1internal = [[[[[self passwordForUser:username] stringByAppendingString:notNil([session objectForKey:SessionChallengeKey])] dataUsingEncoding:NSUTF8StringEncoding] sha1Digest] hex];
 				if ([sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame) {
 					[session setObject:username forKey:SessionUsernameKey];
