@@ -26,24 +26,41 @@
 	else
 		[view mouseMoved:theEvent];
 }
-//navigator
+//path navigator
 - (void) keyDown:(NSEvent *)event
 {
     unichar c = [[event characters] characterAtIndex:0];
     
 	if( c ==  NSUpArrowFunctionKey)
 	{
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriXFlyThroughGoForward" object:nil userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"PathAssistantGoForwardNotification" object:nil userInfo:0L];
 	}
 	else if( c ==  NSDownArrowFunctionKey)
 	{
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriXFlyThroughGoBackward" object:nil userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"PathAssistantGoBackwardNotification" object:nil userInfo:0L];
 	}
 	else 
 	{
 		[super keyDown: event];
 	}
 }
+
+//path navigator
+- (void)scrollWheel:(NSEvent *)theEvent
+{
+	if([[NSUserDefaults standardUserDefaults] boolForKey:@"PATH_ASSISTANT_USES_SCROLLWHEEL"])
+	{
+		if([theEvent deltaY]>0)
+		{
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"PathAssistantGoForwardNotification" object:nil userInfo:0L];
+		}
+		else if([theEvent deltaY]<0)
+		{
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"PathAssistantGoBackwardNotification" object:nil userInfo:0L];
+		}
+	}	
+}
+
 
 -(id)initWithFrame:(NSRect)frame;
 {

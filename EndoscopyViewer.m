@@ -98,8 +98,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
                name: OsirixCloseViewerNotification
              object: nil];
 	//assistant
-	[nc addObserver: self selector: @selector(flyThruAssistantGoForward:) name:@"OsiriXFlyThroughGoForward" object:nil];
-	[nc addObserver: self selector: @selector(flyThruAssistantGoBackward:) name:@"OsiriXFlyThroughGoBackward" object:nil];
+	[nc addObserver: self selector: @selector(flyThruAssistantGoForward:) name:@"PathAssistantGoForwardNotification" object:nil];
+	[nc addObserver: self selector: @selector(flyThruAssistantGoBackward:) name:@"PathAssistantGoBackwardNotification" object:nil];
 	
 	// CLUT Menu
 	cur2DCLUTMenu = NSLocalizedString(@"No CLUT", nil);

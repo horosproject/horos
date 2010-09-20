@@ -188,11 +188,11 @@
     
 	if( c ==  NSUpArrowFunctionKey)
 	{
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriXFlyThroughGoForward" object:nil userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"PathAssistantGoForwardNotification" object:nil userInfo: 0L];
 	}
 	else if( c ==  NSDownArrowFunctionKey)
 	{
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriXFlyThroughGoBackward" object:nil userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"PathAssistantGoBackwardNotification" object:nil userInfo: 0L];
 	}
 	else 
 	{
