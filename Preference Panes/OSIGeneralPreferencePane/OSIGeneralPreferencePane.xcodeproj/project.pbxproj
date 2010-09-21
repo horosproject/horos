@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		59BDF3D711809917007F1F2C /* OsiriX Headers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59BDF3D611809917007F1F2C /* OsiriX Headers.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		846A53241248AF6D007D5988 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 846A53221248AF6D007D5988 /* Localizable.strings */; };
 		8D202CEA0486D31800D8A456 /* OSIGeneralPreferencePane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32DBCFA20370C41700C91783 /* OSIGeneralPreferencePane_Prefix.pch */; };
 		8D202CEB0486D31800D8A456 /* OSIGeneralPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = F506C03C013D9D7901CA16C8 /* OSIGeneralPreferencePanePref.h */; };
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
@@ -25,6 +26,7 @@
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCFA20370C41700C91783 /* OSIGeneralPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIGeneralPreferencePane_Prefix.pch; sourceTree = "<group>"; };
 		59BDF3D611809917007F1F2C /* OsiriX Headers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "OsiriX Headers.framework"; path = "../../build/Development/OsiriX Headers.framework"; sourceTree = SOURCE_ROOT; };
+		846A53231248AF6D007D5988 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIGeneralPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIGeneralPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB80A6810A19C90F00FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -75,6 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				8D202CF70486D31800D8A456 /* Info.plist */,
+				846A53221248AF6D007D5988 /* Localizable.strings */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				CE5C6D1E0CAD9B3D00597FEF /* OSIGeneralPreferencePanePref.xib */,
 			);
@@ -167,7 +170,14 @@
 			isa = PBXProject;
 			buildConfigurationList = CE3E1F7508758865007FFD6F /* Build configuration list for PBXProject "OSIGeneralPreferencePane" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 089C166AFE841209C02AAC07 /* OSIGeneralPreferencePane */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -184,6 +194,7 @@
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
 				CE5C6D200CAD9B3D00597FEF /* OSIGeneralPreferencePanePref.xib in Resources */,
+				846A53241248AF6D007D5988 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,6 +228,14 @@
 				089C167EFE841241C02AAC07 /* English */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		846A53221248AF6D007D5988 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				846A53231248AF6D007D5988 /* English */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 		CE5C6D1E0CAD9B3D00597FEF /* OSIGeneralPreferencePanePref.xib */ = {

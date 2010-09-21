@@ -3697,7 +3697,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 									[emailMessage appendString: [user valueForKey: @"password"]];
 									[emailMessage appendString: @"\r\r"];
 									
-									[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Password resetted for user" forUser: [user valueForKey: @"name"] ip: nil];
+									[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Password reseted for user" forUser: [user valueForKey: @"name"] ip: nil];
 									
 									[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: [user valueForKey: @"email"], @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
 								
