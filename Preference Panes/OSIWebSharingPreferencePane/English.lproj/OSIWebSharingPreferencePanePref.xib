@@ -141,7 +141,7 @@
 							<object class="NSButtonCell" key="NSCell" id="249206404">
 								<int key="NSCellFlags">-2080244224</int>
 								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">Enable Notifications Emails:</string>
+								<string key="NSContents">Enable Automatic Notifications Emails:</string>
 								<reference key="NSSupport" ref="349069678"/>
 								<reference key="NSControlView" ref="426784300"/>
 								<int key="NSButtonFlags">1211912703</int>
@@ -4971,11 +4971,11 @@ ZW1wdHkgbGlzdC4</string>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
 				<string key="-3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="12.IBEditorWindowLastContentRect">{{34, 129}, {761, 787}}</string>
+				<string key="12.IBEditorWindowLastContentRect">{{460, 129}, {761, 787}}</string>
 				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="0" key="12.IBViewEditorWindowController.showingBoundsRectangles"/>
 				<integer value="0" key="12.IBViewEditorWindowController.showingLayoutRectangles"/>
-				<string key="12.IBWindowTemplateEditedContentRect">{{34, 129}, {761, 787}}</string>
+				<string key="12.IBWindowTemplateEditedContentRect">{{460, 129}, {761, 787}}</string>
 				<integer value="1" key="12.ImportedFromIB2"/>
 				<string key="12.editorWindowContentRectSynchronizationRect">{{770, 336}, {725, 672}}</string>
 				<integer value="0" key="12.windowTemplate.hasMaxSize"/>

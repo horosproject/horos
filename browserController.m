@@ -20218,7 +20218,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( [[toolbarItem itemIdentifier] isEqualToString: WebServerSingleNotification])
 	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpWebServer"]  == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"] == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"notificationsEmails"] == NO)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpWebServer"]  == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"] == NO)
 		{
 			return NO;
 		}
