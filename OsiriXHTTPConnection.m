@@ -469,6 +469,54 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	return [[[self WebServicesHTMLString:file] mutableCopy] autorelease];
 }
 
+-(int)guessDicomCStorePort
+{
+	DLog(@"Trying to guess DICOM C-Store Port...");
+	
+	for (NSDictionary *node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
+	{
+		NSString *dicomNodeAddress = notNil([node objectForKey:@"Address"]);
+		int dicomNodePort = [[node objectForKey:@"Port"] intValue];
+		
+		struct sockaddr_in service;
+		const char	*host_name = [[node valueForKey:@"Address"] UTF8String];
+		
+		bzero((char *) &service, sizeof(service));
+		service.sin_family = AF_INET;
+		
+		if (host_name)
+		{
+			if (isalpha(host_name[0]))
+			{
+				struct hostent* hp = gethostbyname(host_name);
+				if (hp) bcopy(hp->h_addr, (char*)&service.sin_addr, hp->h_length);
+				else service.sin_addr.s_addr = inet_addr(host_name);
+			}
+			else service.sin_addr.s_addr = inet_addr(host_name);
+			
+			char buffer[256];
+			if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
+			{
+				if ([[NSString stringWithCString:buffer] isEqualToString:[asyncSocket connectedHost]]) // TODO: this may fail because of comparaisons between ipv6 and ipv4 addys
+				{
+					DLog( @"\tFound! %@:%d", [asyncSocket connectedHost], dicomNodePort);
+					return dicomNodePort;
+				}
+			}
+		}
+	}
+	
+	DLog(@"\tNot found, will use 11112");
+	return 11112;
+}
+
+-(NSString*)dicomCStorePortString {
+	NSNumber* n = [session objectForKey:SessionDicomCStorePortKey];
+	if (!n)
+		[session setObject: n = [NSNumber numberWithInt:[self guessDicomCStorePort]] forKey:SessionDicomCStorePortKey];
+	return [n stringValue];
+}
+
 -(NSMutableString*)webServicesHTMLMutableString:(NSString*)file {
 	NSMutableString* html = [OsiriXHTTPConnection WebServicesHTMLMutableString:file];
 	if (!html)
@@ -503,6 +551,10 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		NSString* challenge = [[[NSData dataWithBytes:&challenged length:sizeof(double)] md5Digest] hex];
 		[html replaceOccurrencesOfString:@"%NewChallenge%" withString:notNil(challenge) options:NSLiteralSearch range:html.range];
 		[session setObject:challenge forKey:SessionChallengeKey];
+	}
+	
+	if ((range = [html rangeOfString:@"%DicomCStorePort%"]).length) { // only if necessary, so dicomCStorePortString is only generated for sessions that need it
+		[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString:self.dicomCStorePortString options:NSLiteralSearch range:html.range];
 	}
 	
 	return html;
@@ -1172,7 +1224,6 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES)
 			{
 				NSString *dicomNodeAddress = [asyncSocket connectedHost];
-				NSString *dicomNodePort = [[session objectForKey:SessionDicomCStorePortKey] stringValue];
 				NSString *dicomNodeAETitle = @"This Computer";
 				
 				NSString *dicomNodeSyntax;
@@ -1182,12 +1233,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				
 				NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
 				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString: notNil( dicomNodeAddress) options:NSLiteralSearch range:tempHTML.range];
-				[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString: notNil( dicomNodePort) options:NSLiteralSearch range:tempHTML.range];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString: notNil(self.dicomCStorePortString) options:NSLiteralSearch range:tempHTML.range];
 				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString: notNil( dicomNodeAETitle) options:NSLiteralSearch range:tempHTML.range];
 				[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString: notNil( dicomNodeSyntax) options:NSLiteralSearch range:tempHTML.range];
 
 				if(![[settings valueForKey:@"iPhone"] boolValue])
-					dicomNodeDescription = [dicomNodeDescription stringByAppendingFormat:@" [%@:%@]", notNil( dicomNodeAddress), notNil( dicomNodePort)];
+					dicomNodeDescription = [dicomNodeDescription stringByAppendingFormat:@" [%@:%@]", notNil( dicomNodeAddress), notNil(self.dicomCStorePortString)];
 				
 				[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString: notNil( dicomNodeDescription) options:NSLiteralSearch range:tempHTML.range];
 				
@@ -1201,7 +1252,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					
 					if( [sArray count] >= 2)
 					{
-						if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && [[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
+						if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && [[sArray objectAtIndex: 1] isEqualToString:self.dicomCStorePortString])
 						{
 							selected = @"selected";
 							selectedDone = YES;
@@ -2293,47 +2344,6 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 }*/
 
--(int)guessDicomCStorePort
-{
-	DLog(@"Trying to guess DICOM C-Store Port...");
-	
-	for (NSDictionary *node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
-	{
-		NSString *dicomNodeAddress = notNil([node objectForKey:@"Address"]);
-		int dicomNodePort = [[node objectForKey:@"Port"] intValue];
-		
-		struct sockaddr_in service;
-		const char	*host_name = [[node valueForKey:@"Address"] UTF8String];
-		
-		bzero((char *) &service, sizeof(service));
-		service.sin_family = AF_INET;
-		
-		if (host_name)
-		{
-			if (isalpha(host_name[0]))
-			{
-				struct hostent* hp = gethostbyname(host_name);
-				if (hp) bcopy(hp->h_addr, (char*)&service.sin_addr, hp->h_length);
-				else service.sin_addr.s_addr = inet_addr(host_name);
-			}
-			else service.sin_addr.s_addr = inet_addr(host_name);
-			
-			char buffer[256];
-			if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
-			{
-				if ([[NSString stringWithCString:buffer] isEqualToString:[asyncSocket connectedHost]]) // TODO: this may fail because of comparaisons between ipv6 and ipv4 addys
-				{
-					DLog( @"\tFound! %@:%d", [asyncSocket connectedHost], dicomNodePort);
-					return dicomNodePort;
-				}
-			}
-		}
-	}
-	
-	DLog(@"\tNot found, will use 11112");
-	return 11112;
-}
-
 +(NSDictionary*)ExtractParams:(NSString*)paramsString {
 	if (!paramsString.length)
 		return [NSDictionary dictionary];
@@ -2360,6 +2370,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	}
 	
 	return params;
+}
+
++(NSArray*)MakeArray:(id)obj {
+	if ([obj isKindOfClass:[NSArray class]])
+		return obj;
+	return [NSArray arrayWithObject:obj];
 }
 
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
@@ -2535,8 +2551,6 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				
 				returnHTML = [self setBlock: @"accessStudies" visible: accessStudies forString: returnHTML];
 				 
-				[returnHTML replaceOccurrencesOfString: @"%DicomCStorePort%" withString:[[session objectForKey:SessionDicomCStorePortKey] stringValue] options:NSLiteralSearch range:returnHTML.range];
-				
 				data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
 				
 				err = NO;
@@ -2976,8 +2990,6 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:html.range];
 					}
 					
-					[html replaceOccurrencesOfString:@"%DicomCStorePort%" withString:[[session objectForKey:SessionDicomCStorePortKey] stringValue] options:NSLiteralSearch range:html.range];
-					
 					data = [html dataUsingEncoding:NSUTF8StringEncoding];
 					err = NO;
 				}
@@ -3039,7 +3051,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							[selectedImages release];
 							selectedImages = [NSMutableArray array];
 							NSArray *seriesArray;
-							for(NSString* selectedID in [urlParameters objectForKey:@"selected"])
+							for (NSString* selectedID in [OsiriXHTTPConnection MakeArray:[urlParameters objectForKey:@"selected"]])
 							{
 								NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"id"], selectedID];
 								
@@ -3170,8 +3182,6 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					
 					if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:html.range];
 					else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:html.range];
-					
-					[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString:[[session objectForKey:SessionDicomCStorePortKey] stringValue] options:NSLiteralSearch range:html.range];
 					
 					data = [html dataUsingEncoding:NSUTF8StringEncoding];
 				}
@@ -3345,8 +3355,6 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					
 					NSString *studyName = notNil( [[series lastObject] valueForKeyPath:@"study.name"]);
 					[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString: notNil( studyName) options:NSLiteralSearch range:templateString.range];
-					
-					[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString:[[session objectForKey:SessionDicomCStorePortKey] stringValue] options:NSLiteralSearch range:templateString.range];
 					
 					data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
 					err = NO;
@@ -3832,8 +3840,6 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: notNil( message) options:NSLiteralSearch range:templateString.range];
 					
 					[templateString replaceOccurrencesOfString: @"%name%" withString: notNil( [currentUser valueForKey: @"name"]) options:NSLiteralSearch range:templateString.range];
-					
-					[templateString replaceOccurrencesOfString: @"%DicomCStorePort%" withString:[[session objectForKey:SessionDicomCStorePortKey] stringValue] options:NSLiteralSearch range:templateString.range];
 					
 					[templateString replaceOccurrencesOfString: @"%email%" withString: notNil( [currentUser valueForKey: @"email"]) options:NSLiteralSearch range:templateString.range];
 					[templateString replaceOccurrencesOfString: @"%address%" withString: notNil( [currentUser valueForKey: @"address"]) options:NSLiteralSearch range:templateString.range];
@@ -4417,7 +4423,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 -(NSString*)weasisXmlWithParams:(NSDictionary*)parameters {
 	NSString* studyInstanceUID = [parameters objectForKey:@"StudyInstanceUID"];
 	NSString* seriesInstanceUID = [parameters objectForKey:@"SeriesInstanceUID"];
-	NSArray* selectedSeries = [parameters objectForKey:@"selected"];
+	NSArray* selectedSeries = [OsiriXHTTPConnection MakeArray:[parameters objectForKey:@"selected"]];
 	
 	NSMutableArray* requestedStudies = [NSMutableArray arrayWithCapacity:8];
 	NSMutableArray* requestedSeries = [NSMutableArray arrayWithCapacity:64];
@@ -4560,9 +4566,6 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			[currentUser release]; currentUser = NULL;
 		}
 	}
-	
-	if (![session objectForKey:SessionDicomCStorePortKey])
-		[session setObject:[NSNumber numberWithInt:[self guessDicomCStorePort]] forKey:SessionDicomCStorePortKey];
 	
 	[super replyToHTTPRequest];
 }
