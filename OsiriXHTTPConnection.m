@@ -1205,6 +1205,13 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:templateStringEnd.range];
 		templateStringEnd = [NSString stringWithString:tempHTML];
 		
+		NSString *checkAllStyle = @"";
+		if([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
+		[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString: notNil( checkAllStyle) options:NSLiteralSearch range:returnHTML.range];
+		
+		BOOL checkAllChecked = [[parameters objectForKey:@"CheckAll"] isEqualToString:@"on"] || [[parameters objectForKey:@"CheckAll"] isEqualToString:@"checked"];
+		[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString: checkAllChecked? @"checked=\"checked\"" : @"" options:NSLiteralSearch range:returnHTML.range];
+		
 		NSString *dicomNodesListItemString = @"";
 		if( dicomSend)
 		{
@@ -1214,10 +1221,6 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			dicomNodesListItemString = [tempArray objectAtIndex:0];
 			templateStringEnd = [tempArray lastObject];
 			[returnHTML appendString:templateStringStart];
-			
-			NSString *checkAllStyle = @"";
-			if([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
-			[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString: notNil( checkAllStyle) options:NSLiteralSearch range:returnHTML.range];
 			
 			BOOL selectedDone = NO;
 			
@@ -1313,15 +1316,6 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			}
 			
 			[returnHTML appendString:templateStringEnd];
-			
-			if([[parameters objectForKey:@"CheckAll"] isEqualToString:@"on"] || [[parameters objectForKey:@"CheckAll"] isEqualToString:@"checked"])
-			{
-				[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString: @"checked" options:NSLiteralSearch range:returnHTML.range];
-			}
-			else
-			{
-				[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString:@"" options:NSLiteralSearch range:returnHTML.range];
-			}
 		}
 		else [returnHTML appendString:templateStringEnd];
 		
