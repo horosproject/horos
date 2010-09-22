@@ -4453,8 +4453,11 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			[series addObject:serie];
 	}
 	
-	// TODO: filter by user rights
-	
+	// filter by user rights
+	if (currentUser)
+		studies = (id)[studies filteredArrayUsingPredicate:[[BrowserController currentBrowser] smartAlbumPredicateString:[currentUser valueForKey:@"studyPredicate"]]]; // is not mutable, but we won't mutate it anymore
+
+	// produce XML
 	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?><wado_query wadoURL=\"%@/wado\"></wado_query>", self.webServerURL];
 	NSXMLDocument* doc = [[NSXMLDocument alloc] initWithXMLString:baseXML options:NSXMLDocumentIncludeContentTypeDeclaration|NSXMLDocumentTidyXML error:NULL];
 	[doc setCharacterEncoding:@"ISO-8859-1"];
@@ -4502,8 +4505,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			}
 	}
 
-	[doc autorelease];
-	return [doc XMLString];
+	return [[doc autorelease] XMLString];
 }
 
 #pragma mark Session, custom authentication
