@@ -646,10 +646,6 @@
 		[[dicomNodes tableView] selectRow: i byExtendingSelection: NO];
 		[[dicomNodes tableView] display];
 		
-		int numberPacketsReceived = 0;
-		
-		//if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue] AET:[aServer objectForKey:@"AETitle"]] == 0) status = 0;
-		
 		if ([OSILocationsPreferencePanePref echoServer:aServer])
 			status = 0;
 		else
