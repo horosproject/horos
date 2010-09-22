@@ -13,6 +13,7 @@
 	<script type="text/javascript" language="javascript">
 		function checkAll(field)
 		{
+		    field.checked = true;
 			for (i = 0; i < field.length; i++)
 				field[i].checked = true;
 			document.getElementById('CheckAllLabel').innerHTML = "Uncheck All";
@@ -20,6 +21,7 @@
 
 		function uncheckAll(field)
 		{
+		    field.checked = false;
 			for (i = 0; i < field.length; i++)
 				field[i].checked = false;
 			document.getElementById('CheckAllLabel').innerHTML = "Check All";
