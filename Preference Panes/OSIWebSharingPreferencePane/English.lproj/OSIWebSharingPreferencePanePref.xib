@@ -1631,7 +1631,7 @@ ZW1wdHkgbGlzdC4</string>
 						<object class="NSTextField" id="305081980">
 							<reference key="NSNextResponder" ref="738391672"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{288, 759}, {126, 17}}</string>
+							<string key="NSFrame">{{288, 758}, {126, 17}}</string>
 							<reference key="NSSuperview" ref="738391672"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="701380493">
@@ -1647,7 +1647,7 @@ ZW1wdHkgbGlzdC4</string>
 						<object class="NSTextField" id="291305975">
 							<reference key="NSNextResponder" ref="738391672"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{618, 759}, {54, 17}}</string>
+							<string key="NSFrame">{{618, 758}, {54, 17}}</string>
 							<reference key="NSSuperview" ref="738391672"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="813552343">
@@ -4971,11 +4971,11 @@ ZW1wdHkgbGlzdC4</string>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
 				<string key="-3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="12.IBEditorWindowLastContentRect">{{460, 129}, {761, 787}}</string>
+				<string key="12.IBEditorWindowLastContentRect">{{555, 129}, {761, 787}}</string>
 				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="0" key="12.IBViewEditorWindowController.showingBoundsRectangles"/>
 				<integer value="0" key="12.IBViewEditorWindowController.showingLayoutRectangles"/>
-				<string key="12.IBWindowTemplateEditedContentRect">{{460, 129}, {761, 787}}</string>
+				<string key="12.IBWindowTemplateEditedContentRect">{{555, 129}, {761, 787}}</string>
 				<integer value="1" key="12.ImportedFromIB2"/>
 				<string key="12.editorWindowContentRectSynchronizationRect">{{770, 336}, {725, 672}}</string>
 				<integer value="0" key="12.windowTemplate.hasMaxSize"/>
