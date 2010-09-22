@@ -393,10 +393,26 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	return webServerAddress;
 }
 
-+(NSString*)WebServerURL {
+-(NSString*)webServerAddress {
+	NSString* webServerAddress = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Host") autorelease];
+	if (webServerAddress)
+		webServerAddress = [[webServerAddress componentsSeparatedByString:@":"] objectAtIndex:0];
+	else webServerAddress = OsiriXHTTPConnection.WebServerAddress;
+	return webServerAddress;
+}
+
++(NSString*)WebServerURLForAddress:(NSString*)webServerAddress {
+	NSString* http = OsiriXHTTPConnection.IsSecureServer ? @"https":@"http";
 	int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
-	NSString* http = self.IsSecureServer ? @"https":@"http";
-	return [NSString stringWithFormat: @"%@://%@:%d", http, self.WebServerAddress, webPort];
+	return [NSString stringWithFormat: @"%@://%@:%d", http, webServerAddress, webPort];
+}
+
++(NSString*)WebServerURL {
+	return [self WebServerURLForAddress:self.WebServerAddress];
+}
+
+-(NSString*)webServerURL {
+	return [OsiriXHTTPConnection WebServerURLForAddress:self.webServerAddress];
 }
 
 +(NSData*)WebServicesHTMLData:(NSString*)file {
@@ -563,8 +579,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: message forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
 }
 
-+ (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate message: (NSString*) message replyTo: (NSString*) replyto customText: (NSString*) customText
++(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate message:(NSString*)message replyTo:(NSString*)replyto customText:(NSString*)customText webServerAddress:(NSString*)webServerAddress
 {
+	if (!webServerAddress)
+		webServerAddress = self.WebServerAddress;
+	NSString* webServerURL = [self WebServerURLForAddress:webServerAddress];
+	
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
 	
 	if( fromEmailAddress == nil)
@@ -584,20 +604,20 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			if( customText == nil) customText = @"";
 			[[emailMessage mutableString] replaceOccurrencesOfString: @"%customText%" withString: notNil( [customText stringByAppendingString:@"\r\r"]) options: NSLiteralSearch range:emailMessage.range];
 			[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString: notNil( [user valueForKey: @"name"]) options: NSLiteralSearch range:emailMessage.range];
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString:self.WebServerURL options: NSLiteralSearch range:emailMessage.range];
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString:webServerURL options: NSLiteralSearch range:emailMessage.range];
 			
 			NSMutableString *urls = [NSMutableString string];
 			
 			if( [filteredStudies count] > 1 && predicate != nil)
 			{
 				[urls appendString: NSLocalizedString( @"To view this entire list, including patients names:\r", nil)]; 
-				[urls appendFormat: @"%@ : %@/studyList?%@\r\r\r\r", NSLocalizedString( @"Click here", nil), self.WebServerURL, predicate]; 
+				[urls appendFormat: @"%@ : %@/studyList?%@\r\r\r\r", NSLocalizedString( @"Click here", nil), webServerURL, predicate]; 
 			}
 			
 			for( NSManagedObject *s in filteredStudies)
 			{
 				[urls appendFormat: @"%@ - %@ (%@)\r", [s valueForKey: @"modality"], [s valueForKey: @"studyName"], [BrowserController DateTimeFormat: [s valueForKey: @"date"]]]; 
-				[urls appendFormat: @"%@ : %@/study?id=%@&browse=all\r\r", NSLocalizedString( @"Click here", nil), self.WebServerURL, [s valueForKey: @"studyInstanceUID"]]; 
+				[urls appendFormat: @"%@ : %@/study?id=%@&browse=all\r\r", NSLocalizedString( @"Click here", nil), webServerURL, [s valueForKey: @"studyInstanceUID"]]; 
 			}
 			
 			[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString: notNil( urls) options: NSLiteralSearch range:emailMessage.range];
@@ -614,13 +634,17 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			
 			for( NSManagedObject *s in filteredStudies)
 			{
-				[OsiriXHTTPConnection updateLogEntryForStudy: s withMessage: @"notification email" forUser: [user valueForKey: @"name"] ip:[OsiriXHTTPConnection WebServerAddress]];
+				[OsiriXHTTPConnection updateLogEntryForStudy: s withMessage: @"notification email" forUser: [user valueForKey: @"name"] ip:self.WebServerAddress];
 			}
 		}
 		else NSLog( @"********* warning : CANNOT send notifications emails, because emailTemplate.txt == nil");
 	}
 	
 	return YES; // succeeded
+}
+
++(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate message:(NSString*)message replyTo:(NSString*)replyto customText:(NSString*)customText {
+	return [self sendNotificationsEmailsTo:users aboutStudies:filteredStudies predicate:predicate message:message replyTo:replyto customText:customText webServerAddress:NULL];
 }
 
 + (void) emailNotifications
@@ -698,10 +722,6 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			
 			error = nil;
 			NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
-			
-			NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
-			if( [webServerAddress length] == 0)
-				webServerAddress = [[AppController sharedAppController] privateIP];
 			
 			if( [studies count] > 0)
 			{
@@ -2190,7 +2210,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 - (NSString *)realm
 {
 	// Change the realm each day
-	return [NSString stringWithFormat: @"OsiriX Web Portal (%@ - %@)" , [[AppController sharedAppController] privateIP], [BrowserController  DateOfBirthFormat: [NSDate date]] ];
+	return [NSString stringWithFormat: @"OsiriX Web Portal (%@ - %@)" , [OsiriXHTTPConnection WebServerAddress], [BrowserController DateOfBirthFormat:[NSDate date]] ];
 }
 
 - (NSRect) centerRect: (NSRect) smallRect
@@ -3107,7 +3127,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 								
 								// Send the email
 								
-								[OsiriXHTTPConnection sendNotificationsEmailsTo: users aboutStudies: [NSArray arrayWithObject: study] predicate: nil message: [messageFromUser stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo: [currentUser valueForKey: @"email"] customText: nil];
+								[OsiriXHTTPConnection sendNotificationsEmailsTo: users aboutStudies: [NSArray arrayWithObject: study] predicate: nil message: [messageFromUser stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo: [currentUser valueForKey: @"email"] customText:nil webServerAddress:self.webServerAddress];
 								
 								[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", userDestination] forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
 								
@@ -4388,12 +4408,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 -(NSString*)weasisJnlpWithParamsString:(NSString*)parameters {
 	NSMutableString* templateString = [self webServicesHTMLMutableString:@"weasis.jnlp"];
 	
-	NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
-	if( [webServerAddress length] == 0)
-		webServerAddress = [[AppController sharedAppController] privateIP];
-	
-	
-	[templateString replaceOccurrencesOfString:@"%WebServerAddress%" withString:notNil([OsiriXHTTPConnection WebServerURL]) options:NSLiteralSearch range:templateString.range];
+	[templateString replaceOccurrencesOfString:@"%WebServerAddress%" withString:self.webServerURL options:NSLiteralSearch range:templateString.range];
 	[templateString replaceOccurrencesOfString:@"%parameters%" withString:notNil(parameters) options:NSLiteralSearch range:templateString.range];
 	
 	return templateString;
@@ -4440,7 +4455,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	// TODO: filter by user rights
 	
-	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?><wado_query wadoURL=\"%@/wado\"></wado_query>", [OsiriXHTTPConnection WebServerURL]];
+	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?><wado_query wadoURL=\"%@/wado\"></wado_query>", self.webServerURL];
 	NSXMLDocument* doc = [[NSXMLDocument alloc] initWithXMLString:baseXML options:NSXMLDocumentIncludeContentTypeDeclaration|NSXMLDocumentTidyXML error:NULL];
 	[doc setCharacterEncoding:@"ISO-8859-1"];
 	
