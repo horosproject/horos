@@ -13,7 +13,6 @@
 =========================================================================*/
 
 #import "OSILocationsPreferencePanePref.h"
-#include <OsiriX Headers/SimplePing.h>
 
 #import "DDKeychain.h"
 
@@ -648,16 +647,13 @@
 		[[dicomNodes tableView] display];
 		
 		int numberPacketsReceived = 0;
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
-		{
-			//if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue] AET:[aServer objectForKey:@"AETitle"]] == 0) status = 0;
-			
-			if ([OSILocationsPreferencePanePref echoServer:aServer])
-				status = 0;
-			else
-				status = -1;
-		}
-		else status = -2;
+		
+		//if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue] AET:[aServer objectForKey:@"AETitle"]] == 0) status = 0;
+		
+		if ([OSILocationsPreferencePanePref echoServer:aServer])
+			status = 0;
+		else
+			status = -1;
 		
 		[aServer setObject:[NSNumber numberWithInt: status] forKey:@"test"];
 	}
