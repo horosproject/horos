@@ -438,7 +438,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		}
 	}
 	
-	NSLog( @"****** File not found: %@", file);
+//	NSLog( @"****** File not found: %@", file);
 	
 	return NULL;
 }
@@ -1552,9 +1552,9 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
 		
 		if( [sortValue length] && [sortValue isEqualToString: @"date"] == NO)
-			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES] autorelease]]];
+			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
 		else
-			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
+			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: NO] autorelease]]];
 	}
 	
 	@catch(NSException *e)
@@ -1697,7 +1697,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		else studiesArray = originalAlbum;
 		
 		if( [sortValue length] && [sortValue isEqualToString: @"date"] == NO)
-			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES] autorelease]]];
+			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
 		else
 			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];								
 	}
