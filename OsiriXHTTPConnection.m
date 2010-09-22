@@ -2456,7 +2456,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			{
 				NSMutableString* templateString = [self webServicesHTMLMutableString:@"index.html"];
 				
-				[self setBlock:@"AuthorizedRestorePasswordWebServer" visible:[[NSUserDefaults standardUserDefaults] boolForKey:@"restorePasswordWebServer"] forString:templateString];
+				[self setBlock:@"AuthorizedRestorePasswordWebServer" visible:[[NSUserDefaults standardUserDefaults] boolForKey:@"restorePasswordWebServer"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"passwordWebServer"] forString:templateString];
 				
 				data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
 				
