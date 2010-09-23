@@ -179,6 +179,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 + (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding
 {
+	return [DicomFile stringWithBytes: str encodings: encoding replaceBadCharacters: YES];
+}
+
++ (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding replaceBadCharacters: (BOOL) replace
+{
 	if( str == nil) return nil;
 
 	char c;
@@ -227,10 +232,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		[result replaceOccurrencesOfString: @"(B" withString: @"" options: 0 range:result.range];
 	}
 	
-	return [DicomFile NSreplaceBadCharacter: result];
+	if( replace)
+		return [DicomFile NSreplaceBadCharacter: result];
+	else
+		return result;
 }
 
-+ (char *) replaceBadCharacter:(char *) str encoding: (NSStringEncoding) encoding{
++ (char *) replaceBadCharacter:(char *) str encoding: (NSStringEncoding) encoding
+{
 	return replaceBadCharacter (str, encoding);
 }
 
@@ -2155,7 +2164,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				val = Papy3GetElement (theGroupP, papAccessionNumberGr, &nbVal, &itemType);
 				if (val != NULL)
 				{
-					[dicomElements setObject:[[[NSString alloc] initWithCString: val->a encoding: NSASCIIStringEncoding] autorelease] forKey:@"accessionNumber"];
+					[dicomElements setObject:[DicomFile stringWithBytes: (char*) val->a encodings:encoding replaceBadCharacters: NO] forKey:@"accessionNumber"];
 				}
 				
 //				val = Papy3GetElement (theGroupP, papManufacturerGr, &nbVal, &itemType);
@@ -2200,7 +2209,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				val = Papy3GetElement (theGroupP, papPatientIDGr, &nbVal, &itemType);
 				if (val != NULL)
 				{
-					patientID = [[NSString alloc] initWithCString:val->a encoding: encoding[ 0]];
+					patientID = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding replaceBadCharacters: NO] retain];
 					[dicomElements setObject:patientID forKey:@"patientID"];
 				}
 				

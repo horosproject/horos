@@ -482,7 +482,7 @@ extern NSRecursiveLock *PapyrusLock;
 		//Accession Number
 		if (dataset->findAndGetString(DCM_AccessionNumber,  string, OFFalse).good() && string != NULL)
 		{
-			NSString *accessionNumber = [DicomFile stringWithBytes: (char*) string encodings:encoding];
+			NSString *accessionNumber = [DicomFile stringWithBytes: (char*) string encodings:encoding replaceBadCharacters: NO];
 			[dicomElements setObject:accessionNumber forKey:@"accessionNumber"];
 		}
 		
@@ -500,7 +500,7 @@ extern NSRecursiveLock *PapyrusLock;
 		//Patient ID
 		if (dataset->findAndGetString(DCM_PatientID, string, OFFalse).good() && string != NULL)
 		{
-			patientID  = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+			patientID  = [[DicomFile stringWithBytes: (char*) string encodings:encoding replaceBadCharacters: NO] retain];
 			[dicomElements setObject:patientID forKey: @"patientID"];
 		}
 		

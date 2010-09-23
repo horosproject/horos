@@ -112,6 +112,8 @@ extern int delayedTileWindows;
 	
 	result = editingLevel;
 	
+	[[NSUserDefaults standardUserDefaults] setInteger: editingLevel forKey: @"editingLevel"];
+	
 	switch ( result) 
 	{
 		case 0:
@@ -560,12 +562,12 @@ extern int delayedTileWindows;
 
 -(id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name viewer:(ViewerController*) v
 {
-	if (self = [super initWithWindowNibName:@"XMLViewer"])
+	if (self = [super initWithWindowNibName: @"XMLViewer"])
 	{
 		[self setMagnetic: YES];
 		
 		allowSelectionChange = YES;
-		editingLevel = 1;
+		editingLevel = [[NSUserDefaults standardUserDefaults] integerForKey: @"editingLevel"];
 		
 		viewer = [v retain];
 		

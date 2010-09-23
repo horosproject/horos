@@ -857,6 +857,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"http://www.osirix-viewer.com/internet.dcm" forKey: @"LASTURL"];
 	[defaultValues setObject: @"0" forKey: @"MAPPERMODEVR"];
 	[defaultValues setObject: @"1" forKey: @"STARTCOUNT"];
+	[defaultValues setObject: @"1" forKey: @"editingLevel"];
 	[defaultValues setObject: @"1" forKey: @"publishDICOMBonjour"];
 	[defaultValues setObject: @"1" forKey: @"searchDICOMBonjour"];
 	[defaultValues setObject: @"1" forKey: @"autorotate3D"];
