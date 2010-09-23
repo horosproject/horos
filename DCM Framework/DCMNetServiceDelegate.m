@@ -34,6 +34,7 @@ static NSLock *currentHostLock = nil;
 {
 	if (! _netServiceDelegate)
 		_netServiceDelegate = [[DCMNetServiceDelegate alloc] init];
+	
 	return _netServiceDelegate;
 }
 
