@@ -100,7 +100,7 @@ static NSLock *currentHostLock = nil;
 
 - (NSArray *)dicomServices
 {
-	return _dicomServices;
+	return [NSArray arrayWithArray: _dicomServices];
 }
 
 - (int)portForNetService:(NSNetService *)netService
@@ -243,14 +243,10 @@ static NSLock *currentHostLock = nil;
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 				{
-					NSArray *dicomServices = [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
-					
-					for( int i = 0 ; i < [dicomServices count] ; i++)
+					for( NSNetService* aServer in [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices])
 					{
-						NSNetService*	aServer = [dicomServices objectAtIndex: i];
-						
-						NSString		*hostname;
-						int				port;
+						NSString *hostname;
+						int port;
 						
 						hostname = [DCMNetServiceDelegate gethostnameAndPort:&port forService: aServer];
 						

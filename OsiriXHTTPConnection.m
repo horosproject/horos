@@ -2369,6 +2369,10 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 +(NSArray*)MakeArray:(id)obj {
 	if ([obj isKindOfClass:[NSArray class]])
 		return obj;
+	
+	if( obj == nil)
+		return [NSArray array];
+	
 	return [NSArray arrayWithObject:obj];
 }
 
