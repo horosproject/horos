@@ -251,7 +251,7 @@ static NSMutableArray* Sessions = NULL;
 static NSLock* SessionsArrayLock = NULL;
 static NSLock* SessionCreateLock = NULL;
 
-+(void)load {
++(void)initialize {
 	Sessions = [[NSMutableArray alloc] initWithCapacity:64];
 	SessionsArrayLock = [[NSLock alloc] init];
 	SessionCreateLock = [[NSLock alloc] init];
