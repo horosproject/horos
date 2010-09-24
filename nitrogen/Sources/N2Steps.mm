@@ -14,6 +14,7 @@
 
 #import <N2Steps.h>
 #import <N2Step.h>
+#import <N2StepView.h>
 
 NSString* N2StepsDidAddStepNotification = @"N2StepsDidAddStepNotification";
 NSString* N2StepsWillRemoveStepNotification = @"N2StepsWillRemoveStepNotification";
@@ -52,13 +53,13 @@ NSString* N2StepsNotificationStep = @"N2StepsNotificationStep";
 }
 
 -(void)setCurrentStep:(N2Step*)step {
-	if (step == _currentStep)
-		return;
+//	if (step == _currentStep)
+//		return;
 	
 	if (![[self content] containsObject:step])
 		return;
 	
-	if (_currentStep)
+	if (_currentStep != step)
 		[_currentStep setActive:NO];
 	
 	_currentStep = step;
@@ -78,18 +79,35 @@ NSString* N2StepsNotificationStep = @"N2StepsNotificationStep";
 	return [[self content] indexOfObject:_currentStep] > 0;
 }
 
--(IBAction)nextStep:(id)sender {
-	if ([_delegate respondsToSelector:@selector(steps:shouldValidateStep:)] && ![_delegate steps:self shouldValidateStep:_currentStep])
+-(IBAction)stepDone:(id)sender {
+	N2Step* step = NULL;
+	if ([sender isKindOfClass:[N2Step class]])
+		step = (id)sender;
+	if ([sender isKindOfClass:[NSView class]]) {
+		N2StepView* view = (id)sender;
+		while (view && ![view isKindOfClass:[N2StepView class]])
+			view = (id)view.superview;
+		step = view.step;
+	}
+	
+	if (!step) {
+		NSLog(@"Warning: unidentified step done");
+		return;
+	}
+	
+	if ([_delegate respondsToSelector:@selector(steps:shouldValidateStep:)] && ![_delegate steps:self shouldValidateStep:step])
 		return;
 	
 	if ([_delegate respondsToSelector:@selector(steps:validateStep:)])
-		[_delegate steps:self validateStep:[self currentStep]];
-	[_currentStep setDone:YES];
-
-	if (![self hasNextStep])
-		return;
+		[_delegate steps:self validateStep:step];
+	[step setDone:YES];
 	
-	[self setCurrentStep:[[self content] objectAtIndex:[[self content] indexOfObject:_currentStep]+1]];
+	if (_currentStep == step && [self hasNextStep])
+		[self setCurrentStep:[[self content] objectAtIndex:[[self content] indexOfObject:step]+1]];
+}
+
+-(IBAction)nextStep:(id)sender {
+	[self stepDone:sender];
 }
 
 -(IBAction)previousStep:(id)sender {

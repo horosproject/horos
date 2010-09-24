@@ -14,6 +14,7 @@
 
 #import <N2StepView.h>
 #import <N2Step.h>
+#import <N2Operators.h>
 
 @implementation N2StepView
 @synthesize step = _step;
@@ -38,9 +39,17 @@
 }
 
 -(void)stepDidBecomeActiveInactive:(NSNotification*)notification {
-	if ([[notification name] isEqualToString:N2StepDidBecomeActiveNotification])
+	if ([[notification name] isEqualToString:N2StepDidBecomeActiveNotification]) {
+	//	[(NSButton*)self.step.enclosedView.nextKeyView setKeyEquivalent:@"\r"];
+		[[(NSButton*)self.step.defaultButton cell] setBackgroundColor:[NSColor colorWithCalibratedRed:.5 green:.66 blue:1 alpha:.5]];
+		self.fillColor = [NSColor.grayColor colorWithAlphaComponent:0.25];
 		[self expand:self];
-	else if (![_step shouldStayVisibleWhenInactive]) [self collapse:self];
+	} else {
+		if (![_step shouldStayVisibleWhenInactive]) [self collapse:self];
+	//	[(NSButton*)self.step.enclosedView.nextKeyView setKeyEquivalent:@""];
+		[[(NSButton*)self.step.defaultButton cell] setBackgroundColor:[NSColor colorWithCalibratedRed:0 green:0 blue:0 alpha:0]];
+		self.fillColor = [NSColor.grayColor colorWithAlphaComponent:0];
+	}
 }
 
 -(void)stepDidBecomeEnabledDisabled:(NSNotification*)notification {
@@ -49,6 +58,20 @@
 
 -(void)stepTitleDidChange:(NSNotification*)notification {
 	[self setTitle:[_step title]];
+}
+
+-(void)drawRect:(NSRect)rect {
+	[NSGraphicsContext saveGraphicsState];
+	
+	NSSize s = -self.contentViewMargins;
+	NSRect r = NSInsetRect([self.contentView frame], -3.5, -1);
+	r.origin.y -= 1.5;
+
+	[self.fillColor set];
+	[[NSBezierPath bezierPathWithRect:r] fill];
+	
+	[NSGraphicsContext restoreGraphicsState];
+	[super drawRect:rect];
 }
 
 @end

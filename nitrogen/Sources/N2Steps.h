@@ -35,7 +35,8 @@ extern NSString* N2StepsNotificationStep;
 -(BOOL)hasNextStep;
 -(BOOL)hasPreviousStep;
 
--(IBAction)nextStep:(id)sender;
+-(IBAction)stepDone:(id)sender;
+-(IBAction)nextStep:(id)sender __deprecated;
 -(IBAction)previousStep:(id)sender;
 -(IBAction)skipStep:(id)sender;
 -(IBAction)stepValueChanged:(id)sender;
