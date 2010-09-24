@@ -93,4 +93,10 @@ NSString* const OsirixWebServerPrefersFlashDefaultsKey = @"WebServerPrefersFlash
 	return [[NSUserDefaultsController sharedUserDefaultsController] boolForKey:OsirixWebServerPrefersFlashDefaultsKey];
 }
 
+NSString* const OsirixWebServerPrefersCustomWebPagesKey = @"customWebPages";
++(BOOL)WebServerPrefersCustomWebPages {
+	return [[NSUserDefaultsController sharedUserDefaultsController] boolForKey:OsirixWebServerPrefersCustomWebPagesKey];
+}
+
+
 @end

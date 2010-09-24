@@ -157,7 +157,7 @@
 						<object class="NSButton" id="538953529">
 							<reference key="NSNextResponder" ref="738391672"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{16, 656}, {722, 18}}</string>
+							<string key="NSFrame">{{16, 656}, {602, 18}}</string>
 							<reference key="NSSuperview" ref="738391672"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="324470989">
@@ -1888,6 +1888,26 @@ ZW1wdHkgbGlzdC4</string>
 								<string key="NSContents">Choose</string>
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="372921936"/>
+								<int key="NSButtonFlags">-2038152961</int>
+								<int key="NSButtonFlags2">164</int>
+								<string key="NSAlternateContents"/>
+								<string key="NSKeyEquivalent"/>
+								<int key="NSPeriodicDelay">400</int>
+								<int key="NSPeriodicInterval">75</int>
+							</object>
+						</object>
+						<object class="NSButton" id="510906047">
+							<reference key="NSNextResponder" ref="738391672"/>
+							<int key="NSvFlags">268</int>
+							<string key="NSFrame">{{619, 656}, {119, 17}}</string>
+							<reference key="NSSuperview" ref="738391672"/>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSButtonCell" key="NSCell" id="421883833">
+								<int key="NSCellFlags">-2080244224</int>
+								<int key="NSCellFlags2">134348800</int>
+								<string key="NSContents">Create missing files</string>
+								<reference key="NSSupport" ref="26"/>
+								<reference key="NSControlView" ref="510906047"/>
 								<int key="NSButtonFlags">-2038152961</int>
 								<int key="NSButtonFlags2">164</int>
 								<string key="NSAlternateContents"/>
@@ -3878,6 +3898,14 @@ ZW1wdHkgbGlzdC4</string>
 					</object>
 					<int key="connectionID">944</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">copyMissingCustomizedFiles:</string>
+						<reference key="source" ref="649897355"/>
+						<reference key="destination" ref="510906047"/>
+					</object>
+					<int key="connectionID">953</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -3939,6 +3967,7 @@ ZW1wdHkgbGlzdC4</string>
 							<reference ref="144829372"/>
 							<reference ref="807742229"/>
 							<reference ref="605011559"/>
+							<reference ref="510906047"/>
 						</array>
 						<reference key="parent" ref="689525341"/>
 					</object>
@@ -4967,6 +4996,19 @@ ZW1wdHkgbGlzdC4</string>
 						<reference key="object" ref="813552343"/>
 						<reference key="parent" ref="291305975"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">949</int>
+						<reference key="object" ref="510906047"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="421883833"/>
+						</array>
+						<reference key="parent" ref="738391672"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">950</int>
+						<reference key="object" ref="421883833"/>
+						<reference key="parent" ref="510906047"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -5145,6 +5187,9 @@ ZW1wdHkgbGlzdC4</string>
 				<string key="836.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="837.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="872.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<object class="NSAffineTransform" key="872.IBViewBoundsToFrameTransform">
+					<bytes key="NSTransformStruct">P4AAAL+AAABEKUAAxDHAAA</bytes>
+				</object>
 				<string key="873.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="874.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="875.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -5183,12 +5228,17 @@ ZW1wdHkgbGlzdC4</string>
 				<string key="937.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="947.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="948.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="949.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<object class="NSAffineTransform" key="949.IBViewBoundsToFrameTransform">
+					<bytes key="NSTransformStruct">P4AAAL+AAABEKoAAxDCAAA</bytes>
+				</object>
+				<string key="950.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">948</int>
+			<int key="maxID">953</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -5224,6 +5274,7 @@ ZW1wdHkgbGlzdC4</string>
 					<string key="superclassName">NSPreferencePane</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="chooseTLSCertificate:">id</string>
+						<string key="copyMissingCustomizedFiles:">id</string>
 						<string key="openKeyChainAccess:">id</string>
 						<string key="smartAlbumHelpButton:">id</string>
 						<string key="viewTLSCertificate:">id</string>
@@ -5231,6 +5282,10 @@ ZW1wdHkgbGlzdC4</string>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="chooseTLSCertificate:">
 							<string key="name">chooseTLSCertificate:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="copyMissingCustomizedFiles:">
+							<string key="name">copyMissingCustomizedFiles:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="openKeyChainAccess:">

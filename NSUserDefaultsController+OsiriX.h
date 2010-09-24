@@ -41,4 +41,7 @@ extern NSString* const OsirixWadoServerActiveDefaultsKey;
 extern NSString* const OsirixWebServerPrefersFlashDefaultsKey;
 +(BOOL)WebServerPrefersFlash;
 
+extern NSString* const OsirixWebServerPrefersCustomWebPagesKey;
++(BOOL)WebServerPrefersCustomWebPages;
+
 @end

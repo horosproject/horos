@@ -19,6 +19,8 @@
 #import <OsiriX Headers/DefaultsOsiriX.h>
 #import <OsiriX Headers/BrowserController.h>
 #import <OsiriX Headers/AppController.h>
+#import <OsiriX Headers/NSFileManager+N2.h>
+
 #import "DDKeychain.h"
 
 #include <netdb.h>
@@ -180,4 +182,9 @@ extern BOOL hasMacOSXSnowLeopard();
 	
 	[[NSWorkspace sharedWorkspace] launchApplication: path];
 }
+
+- (IBAction) copyMissingCustomizedFiles: (id) sender {
+	[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"WebServicesHTML"] toPath:@"~/Library/Application Support/OsiriX/WebServicesHTML" byReplacingExisting:NO error:NULL];
+}
+
 @end

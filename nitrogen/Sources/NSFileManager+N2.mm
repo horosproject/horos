@@ -14,6 +14,7 @@
 
 
 #import "NSFileManager+N2.h"
+#import "NSString+N2.h"
 
 
 @implementation NSFileManager (N2)
@@ -134,5 +135,47 @@
 
 	return totalSize;
 }
+
+-(BOOL)copyItemAtPath:(NSString*)srcPath toPath:(NSString*)dstPath byReplacingExisting:(BOOL)replace error:(NSError**)err {
+	BOOL success = YES;
+	NSMutableArray* pairs = [NSMutableArray arrayWithObject:[NSArray arrayWithObjects: srcPath, dstPath, NULL]];
+	
+	while (pairs.count) {
+		NSArray* pair = [pairs objectAtIndex:0];
+		[pairs removeObjectAtIndex:0];
+		srcPath = [pair objectAtIndex:0];
+		dstPath = [pair objectAtIndex:1];
+		
+		NSString* srcPathRes = [srcPath resolvedPathString];
+		NSString* dstPathRes = [dstPath resolvedPathString];
+		if (!dstPathRes)
+			dstPathRes = [[[dstPath stringByDeletingLastPathComponent] resolvedPathString] stringByAppendingPathComponent:[dstPath lastPathComponent]];
+		
+		BOOL srcPathIsDir, srcPathExists = [self fileExistsAtPath:srcPathRes isDirectory:&srcPathIsDir];
+		BOOL dstPathIsDir, dstPathExists = [self fileExistsAtPath:dstPathRes isDirectory:&dstPathIsDir];
+		
+		if (dstPathExists && replace) {
+			[self removeItemAtPath:dstPath error:NULL];
+			dstPathRes = dstPath;
+			dstPathExists = [self fileExistsAtPath:dstPathRes isDirectory:&dstPathIsDir];
+		}
+	
+		if (!dstPathExists)
+			success = [self copyItemAtPath:srcPathRes toPath:dstPathRes error:err] && success;
+		else if (dstPathIsDir)
+			for (NSString* subPath in [self contentsOfDirectoryAtPath:srcPathRes error:NULL])
+				[pairs addObject:[NSArray arrayWithObjects: [srcPath stringByAppendingPathComponent:subPath], [dstPath stringByAppendingPathComponent:subPath], NULL]];
+	}
+
+	return success;
+}
+
+
+
+
+
+
+
+
 
 @end

@@ -251,7 +251,7 @@ static NSMutableArray* Sessions = NULL;
 static NSLock* SessionsArrayLock = NULL;
 static NSLock* SessionCreateLock = NULL;
 
-+(void)initialize {
++(void)load {
 	Sessions = [[NSMutableArray alloc] initWithCapacity:64];
 	SessionsArrayLock = [[NSLock alloc] init];
 	SessionCreateLock = [[NSLock alloc] init];
@@ -418,7 +418,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 +(NSData*)WebServicesHTMLData:(NSString*)file {
 	NSMutableArray* dirsToScanForFile = [NSMutableArray arrayWithCapacity:2];
 	// did the user choose the WebServicesHTML in Library?
-	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey:@"customWebPages"]) [dirsToScanForFile addObject:@"~/Library/Application Support/OsiriX/WebServicesHTML"];
+	if ([NSUserDefaultsController WebServerPrefersCustomWebPages]) [dirsToScanForFile addObject:@"~/Library/Application Support/OsiriX/WebServicesHTML"];
 	[dirsToScanForFile addObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"WebServicesHTML"]];
 	
 	const NSString* const DefaultLanguage = @"English";
