@@ -127,6 +127,8 @@ extern "C"
 @property BOOL checkAllWindowsAreVisibleIsOff, isSessionInactive;
 @property (readonly) NSMenu *filtersMenu, *windowsTilingMenuRows, *windowsTilingMenuColumns;
 
++ (BOOL) isFDACleared;
+
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
 

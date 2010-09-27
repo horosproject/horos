@@ -1510,6 +1510,11 @@ static NSConditionLock *threadLock = nil;
 	return [BrowserController addFiles:newFilesArray toContext:context toDatabase: [BrowserController currentBrowser] onlyDICOM:onlyDICOM  notifyAddedFiles:produceAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
 }
 
+- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  safeRebuild:(BOOL) safeRebuild produceAddedFiles:(BOOL) produceAddedFiles
+{
+    return [self addFilesToDatabase:newFilesArray onlyDICOM:onlyDICOM  produceAddedFiles:produceAddedFiles];
+}
+
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
 {
 	#define CHUNK 100000

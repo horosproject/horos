@@ -2587,6 +2587,11 @@ static NSDate *lastWarningDate = nil;
 	return r;
 }
 
++ (BOOL) isFDACleared
+{
+	return NO;
+}
+
 static BOOL initialized = NO;
 + (void) initialize
 {
