@@ -3750,13 +3750,20 @@ static NSConditionLock *threadLock = nil;
 				{
 					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
 					{
-						[NSThread currentThread].progress = -1;
+						if( i == [filesInput count]-1)
+							[NSThread currentThread].progress = -1;
+						
 						[NSThread currentThread].status =  NSLocalizedString( @"Validating the files...", nil);
 					}
 					else
 					{
-						[NSThread currentThread].progress = 1;
-						[NSThread currentThread].status =  NSLocalizedString( @"Done. Finishing...", nil);
+						if( i == [filesInput count]-1)
+						{
+							[NSThread currentThread].progress = 1;
+							[NSThread currentThread].status =  NSLocalizedString( @"Done. Finishing...", nil);
+						}
+						else
+							[NSThread currentThread].status =  NSLocalizedString( @"Indexing the files...", nil);
 					}
 				}
 				else
