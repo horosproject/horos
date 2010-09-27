@@ -1060,8 +1060,6 @@ static NSDate *lastWarningDate = nil;
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"])
 	{
-		
-		
 		@try
 		{
 			NSDictionary *windowResize = [NSDictionary dictionaryWithObjectsAndKeys:
