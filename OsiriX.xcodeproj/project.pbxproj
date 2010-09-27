@@ -21339,6 +21339,7 @@
 				CECA66E306CD8C1500D8750E /* CopyFiles */,
 				CEED244F0C71EEDC00E3BEC5 /* SVN Revision number */,
 				59F69A4E1056328D008585F5 /* Clean frameworks */,
+				CED88262125064F70085A861 /* CodeSigning */,
 			);
 			buildRules = (
 			);
@@ -21451,7 +21452,6 @@
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -22594,6 +22594,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/csh;
 			shellScript = "cd \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/\"\n\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/Nitrogen.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/DotMacKit.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/Growl.framework/Versions/A/Headers\"\nrm -Rf \"$TARGET_BUILD_DIR/OsiriX Lite.app/Contents/Frameworks/OsiriX.framework/Versions/A/Headers\"\n";
+		};
+		CED88262125064F70085A861 /* CodeSigning */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = CodeSigning;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ ${CONFIGURATION} == \"Deployment 32-bit\" ]]\nthen\n# -f means force to re-sign even if already signed\ncodesign -f -s \"OsiriX\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi\n\nif [[ ${CONFIGURATION} == \"Deployment 64-bit\" ]]\nthen\n# -f means force to re-sign even if already signed\ncodesign -f -s \"OsiriX\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi";
 		};
 		CEED244F0C71EEDC00E3BEC5 /* SVN Revision number */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -25565,6 +25579,10 @@
 					AppKit,
 					"-weak_framework",
 					3DconnexionClient,
+					"-sectcreate",
+					__TEXT,
+					__info_plist,
+					"Deployment-Info.plist",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = OsiriX;
