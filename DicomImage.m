@@ -884,7 +884,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (BOOL)validateForDelete:(NSError **)error
 {
-	BOOL delete = [super validateForDelete:(NSError **)error];
+	BOOL delete = [super validateForDelete: error];
 	if (delete)
 	{
 		#ifdef OSIRIX_VIEWER
@@ -902,7 +902,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		#endif
 		
 		#ifndef OSIRIX_LIGHT
-		if( [[NSFileManager defaultManager] fileExistsAtPath: [VRController getUniqueFilenameScissorStateFor: self]])
+		if( [VRController getUniqueFilenameScissorStateFor: self] && [[NSFileManager defaultManager] fileExistsAtPath: [VRController getUniqueFilenameScissorStateFor: self]])
 			[[NSFileManager defaultManager] removeFileAtPath: [VRController getUniqueFilenameScissorStateFor: self] handler: nil];
 		#endif
 	}

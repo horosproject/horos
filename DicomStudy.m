@@ -599,10 +599,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (BOOL)validateForDelete:(NSError **)error
 {
-	BOOL delete = [super validateForDelete:(NSError **)error];
+	BOOL delete = [super validateForDelete: error];
 	if (delete)
 	{
-		[[NSFileManager defaultManager] removeItemAtPath: [self valueForKey: @"reportURL"] error: nil];
+		if( [self valueForKey: @"reportURL"] && [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
+			[[NSFileManager defaultManager] removeItemAtPath: [self valueForKey: @"reportURL"] error: nil];
 	}
 	return delete;
 }
