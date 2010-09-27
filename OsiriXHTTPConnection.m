@@ -686,7 +686,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			
 			for( NSManagedObject *s in filteredStudies)
 			{
-				[OsiriXHTTPConnection updateLogEntryForStudy: s withMessage: @"notification email" forUser: [user valueForKey: @"name"] ip:self.WebServerAddress];
+				[OsiriXHTTPConnection updateLogEntryForStudy: s withMessage: @"notification email" forUser: [user valueForKey: @"name"] ip:webServerAddress];
 			}
 		}
 		else NSLog( @"********* warning : CANNOT send notifications emails, because emailTemplate.txt == nil");

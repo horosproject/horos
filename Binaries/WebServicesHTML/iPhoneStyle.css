@@ -103,6 +103,39 @@ input[type=password]
 	width:95%;
 	height:30px;
 }
+/* Login */
+
+table#login {
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+}
+
+table#login td:first-child {
+    text-align: right;
+}
+
+div#authbox {
+    right: 8px;
+    top: 5px;
+    position: absolute;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+    font-size: 10pt;
+}
+
+div#authbox input[type=submit] {
+    font-size: 10pt;
+    width: 80px;
+    height: 20px;
+}
+
+div#authbox .text {
+    display: none;
+}
+
+/* rest */
 
 ul
 {
@@ -624,8 +657,9 @@ input[type=checkbox]
 	border-top: #555555 solid thin;
 	right: 0;
 	left: 0;
-	padding-top: 20px;
+	padding-top: 2px;
 	margin-top: 50px;
 	text-align: center;
 	font-size:10pt;
 }
+
