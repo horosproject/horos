@@ -386,7 +386,6 @@ static NSConditionLock *threadLock = nil;
 	@synchronized( self)
 	{
 		NSString *OUTpath = [dbFolder stringByAppendingPathComponent:DATABASEPATH], *subFolder;
-		long subFolderInt;
 		
 		if( [extension length] == 0)
 			extension = [NSString stringWithString:@"dcm"];
@@ -399,19 +398,29 @@ static NSConditionLock *threadLock = nil;
 		
 		[AppController createNoIndexDirectoryIfNecessary: OUTpath];
 		
+		BOOL fileExist = NO, firstExist = YES;
+		
 		do
 		{
-			subFolderInt = [BrowserController DefaultFolderSizeForDB] * ((DATABASEINDEX / [BrowserController DefaultFolderSizeForDB]) +1);
+			long subFolderInt = [BrowserController DefaultFolderSizeForDB] * ((DATABASEINDEX / [BrowserController DefaultFolderSizeForDB]) +1);
 			subFolder = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", subFolderInt]];
 			
-			if (![[NSFileManager defaultManager] fileExistsAtPath:subFolder])
+			if( ![[NSFileManager defaultManager] fileExistsAtPath:subFolder])
 				[[NSFileManager defaultManager] createDirectoryAtPath:subFolder attributes:nil];
 			
 			dstPath = [subFolder stringByAppendingPathComponent: [NSString stringWithFormat:@"%d.%@", DATABASEINDEX, extension]];
 			
-			DATABASEINDEX++;
+			fileExist = [[NSFileManager defaultManager] fileExistsAtPath: dstPath];
+			
+			if( fileExist == YES && firstExist == YES)
+			{
+				firstExist = NO;
+				[BrowserController computeDATABASEINDEXforDatabase: OUTpath];
+			}
+			else
+				DATABASEINDEX++;
 		}
-		while ([[NSFileManager defaultManager] fileExistsAtPath: dstPath]);
+		while( fileExist == YES);
 	}
 	
 	return dstPath;
@@ -13437,27 +13446,27 @@ static NSArray*	openSubSeriesArray = nil;
 		if( [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: nil])
 			path = [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: nil];
 		
-//		// Delete empty directory <- This is too slow for NAS systems
-//		for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
-//		{
-//			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: [path stringByAppendingPathComponent: f] traverseLink:YES];
-//			
-//			if ( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
-//			{
-//				if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
-//				{
-//					int numberOfValidFiles = 0;
-//					for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [path stringByAppendingPathComponent: f] error: nil])
-//					{
-//						if( [[s stringByDeletingPathExtension] integerValue] > 0)
-//							numberOfValidFiles++;
-//					}
-//					
-//					if( numberOfValidFiles == 0)
-//						[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingPathComponent: f] handler: nil];
-//				}
-//			}
-//		}
+		// Delete empty directory <- This is too slow for NAS systems
+		for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
+		{
+			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: [path stringByAppendingPathComponent: f] traverseLink:YES];
+			
+			if ( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
+			{
+				if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
+				{
+					int numberOfValidFiles = 0;
+					for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [path stringByAppendingPathComponent: f] error: nil])
+					{
+						if( [[s stringByDeletingPathExtension] integerValue] > 0)
+							numberOfValidFiles++;
+					}
+					
+					if( numberOfValidFiles == 0)
+						[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingPathComponent: f] handler: nil];
+				}
+			}
+		}
 		
 		/// SCAN
 		for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
