@@ -25908,10 +25908,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../nitrogen/build/Development\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -26027,10 +26024,7 @@
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 					"\"$(SRCROOT)/build/Development\"",
-					"\"$(SRCROOT)/../nitrogen/build/Release\"",
-					"\"$(SRCROOT)/../nitrogen/build/Development\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -26334,10 +26328,7 @@
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/../plugins/ROI Enhancement\"",
 					"\"$(SRCROOT)/build/Development\"",
-					"\"$(SRCROOT)/../nitrogen/build/Release\"",
-					"\"$(SRCROOT)/../nitrogen/build/Development\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -26793,11 +26784,7 @@
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
 					"\\\"$(SRCROOT)/Binaries\\\"",
-					"\\\"$(SRCROOT)/../plugins/ROI\\ Enhancement\\\"",
 					"\\\"$(SRCROOT)/build/Development\\\"",
-					"\\\"$(SRCROOT)/../nitrogen/build/Release\\\"",
-					"\\\"$(SRCROOT)/../nitrogen/build/Development\\\"",
-					"\"$(SRCROOT)/../nitrogen/build/Development\"",
 					"\"$(SRCROOT)/Binaries\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;

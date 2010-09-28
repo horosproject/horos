@@ -950,13 +950,13 @@ static NSConditionLock *threadLock = nil;
 							
 							if( [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] && inParseExistingObject)
 							{
-								if( [[curDict objectForKey: @"studyDescription"] length])
+								if( [(NSString*)[curDict objectForKey: @"studyDescription"] length])
 									[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
-								if( [[curDict objectForKey: @"referringPhysiciansName"] length])
+								if( [(NSString*)[curDict objectForKey: @"referringPhysiciansName"] length])
 									[study setValue:[curDict objectForKey: @"referringPhysiciansName"] forKey:@"referringPhysician"];
-								if( [[curDict objectForKey: @"performingPhysiciansName"] length])
+								if( [(NSString*)[curDict objectForKey: @"performingPhysiciansName"] length])
 									[study setValue:[curDict objectForKey: @"performingPhysiciansName"] forKey:@"performingPhysician"];
-								if( [[curDict objectForKey: @"institutionName"] length])
+								if( [(NSString*)[curDict objectForKey: @"institutionName"] length])
 									[study setValue:[curDict objectForKey: @"institutionName"] forKey:@"institutionName"];
 							}
 							else
