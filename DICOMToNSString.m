@@ -16,18 +16,21 @@
 
 @implementation NSString (DICOMToNSString)
 
-- (id) initWithCString:(const char *)cString  DICOMEncoding:(NSString *)encoding{	
-//	NSLog(@"String %s  encoding: %@",cString,  encoding);
-	NSStringEncoding stringEncoding = [NSString encodingForDICOMCharacterSet:encoding];
+- (id) initWithCString:(const char *)cString  DICOMEncoding:(NSString *)encoding
+{
+	NSStringEncoding stringEncoding = [NSString encodingForDICOMCharacterSet: encoding];
+	
 	return [self initWithCString:cString  encoding:stringEncoding];
 }
 
-+ (id) stringWithCString:(const char *)cString  DICOMEncoding:(NSString *)encoding{
-	return [[[NSString alloc] initWithCString:(char *)cString  DICOMEncoding:(NSString *)encoding] autorelease];
++ (id) stringWithCString:(const char *)cString  DICOMEncoding:(NSString *)encoding
+{
+	return [[[NSString alloc] initWithCString: cString  DICOMEncoding: encoding] autorelease];
 }
 
-+ (NSStringEncoding)encodingForDICOMCharacterSet:(NSString *)characterSet{
-	NSStringEncoding	encoding = NSISOLatin1StringEncoding;
++ (NSStringEncoding)encodingForDICOMCharacterSet:(NSString *)characterSet
+{
+	NSStringEncoding encoding = NSISOLatin1StringEncoding;
 	
 	if( characterSet == nil) return encoding;
 	if( [characterSet isEqualToString:@""]) return encoding;

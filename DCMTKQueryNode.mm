@@ -524,8 +524,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet:stringEncoding];
 	
 	dataset->putAndInsertString(DCM_SpecificCharacterSet, [stringEncoding UTF8String]);
-	const char *queryLevel;
-	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good()){}
+	
+//	const char *queryLevel;
+//	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good())
+//	{
+//		const char *string = [[NSString stringWithCString: queryLevel] cStringUsingEncoding: encoding];
+//		dataset->putAndInsertString(DCM_QueryRetrieveLevel, string);
+//	}
 	
 	if( values)
 	{
@@ -540,10 +545,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			if ([key isEqualToString:@"PatientsName"])
 			{	
 				string = [(NSString*)value cStringUsingEncoding:encoding];
-				dataset->putAndInsertString(DCM_PatientsName, string);				
-//				const char *encodingTest;
-//				dataset->findAndGetString(DCM_PatientsName, encodingTest);
-//				NSLog( @"***** encoding test: %@", [NSString stringWithCString: encodingTest encoding: encoding]);
+				dataset->putAndInsertString(DCM_PatientsName, string);
 			}
 			else if ([key isEqualToString:@"ReferringPhysiciansName"])
 			{

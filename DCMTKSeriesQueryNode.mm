@@ -16,10 +16,10 @@
 #import <OsiriX/DCMCalendarDate.h>
 #import "DCMTKImageQueryNode.h"
 #import "DICOMToNSString.h"
+#import "dicomFile.h"
 
 #undef verify
 #include "dcdeftag.h"
-
 
 @implementation DCMTKSeriesQueryNode
 
@@ -61,10 +61,26 @@
 	{
 		_studyInstanceUID = nil;
 		const char *string = nil;
+		NSStringEncoding encoding[ 10];
+		
+		for( int i = 0; i < 10; i++) encoding[ i] = 0;
+		encoding[ 0] = NSISOLatin1StringEncoding;
 		
 		if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
+		{
 			_specificCharacterSet = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
-
+			
+			NSArray	*c = [_specificCharacterSet componentsSeparatedByString:@"\\"];
+			
+			if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+			
+			if( [c count] < 10)
+			{
+				for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+				for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+			}
+		}
+		
 		if (dataset ->findAndGetString(DCM_SeriesInstanceUID, string).good() && string != nil) 
 			_uid = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			
@@ -74,13 +90,13 @@
 			_studyInstanceUID = [[extraParameters valueForKey: @"StudyInstanceUID"] retain];
 		
 		if (dataset ->findAndGetString(DCM_SeriesDescription, string).good() && string != nil) 
-			_theDescription = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
+			_theDescription = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
 			
 		if (dataset ->findAndGetString(DCM_SeriesNumber, string).good() && string != nil) 
-			_name = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
+			_name = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
 			
 		if (dataset ->findAndGetString(DCM_ImageComments, string).good() && string != nil) 
-			_comments = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
+			_comments = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
 			
 		if (dataset ->findAndGetString(DCM_SeriesDate, string).good() && string != nil)
 		{

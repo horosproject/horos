@@ -16,7 +16,7 @@
 #import "DCMTKImageQueryNode.h"
 #import <OsiriX/DCMCalendarDate.h>
 #import "DICOMToNSString.h"
-
+#import "dicomFile.h"
 
 #undef verify
 #include "dcdeftag.h"
@@ -49,7 +49,8 @@
 				port:(int)port 
 				transferSyntax:(int)transferSyntax
 				compression: (float)compression
-				extraParameters:(NSDictionary *)extraParameters{
+				extraParameters:(NSDictionary *)extraParameters
+{
 	if (self = [super initWithDataset:(DcmDataset *)dataset
 				callingAET:(NSString *)myAET  
 				calledAET:(NSString *)theirAET  
@@ -57,12 +58,30 @@
 				port:(int)port 
 				transferSyntax:(int)transferSyntax
 				compression: (float)compression
-				extraParameters:(NSDictionary *)extraParameters]) {
+				extraParameters:(NSDictionary *)extraParameters])
+	{
 		const char *string = nil;
-				
+		
+		NSStringEncoding encoding[ 10];
+		
+		for( int i = 0; i < 10; i++) encoding[ i] = 0;
+		encoding[ 0] = NSISOLatin1StringEncoding;
+		
 		if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
+		{
 			_specificCharacterSet = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
-
+			
+			NSArray	*c = [_specificCharacterSet componentsSeparatedByString:@"\\"];
+			
+			if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+			
+			if( [c count] < 10)
+			{
+				for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+				for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+			}
+		}
+		
 		if (dataset ->findAndGetString(DCM_SOPInstanceUID, string).good() && string != nil) 
 			_uid = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			
@@ -73,7 +92,7 @@
 			_studyInstanceUID = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 		
 		if (dataset ->findAndGetString(DCM_InstanceNumber, string).good() && string != nil) 
-			_name = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
+			_name = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
 		
 		if (dataset ->findAndGetString(DCM_InstanceCreationDate, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
