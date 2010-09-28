@@ -12117,9 +12117,12 @@ static BOOL needToRezoom;
 		{
 			// Pre-Flip data ?
 			
-			NSMutableArray *resortedToOpenArray = [NSMutableArray array];
+			NSMutableArray *resortedToOpenArray = [NSMutableArray array], *isFlippedData = [NSMutableArray array];
+			
 			for( NSArray *a in toOpenArray)
 			{
+				BOOL flipped = NO;
+				
 				if( multiFrame == NO && tryToFlipData == YES && [a count] > 2)
 				{
 					@try 
@@ -12145,6 +12148,7 @@ static BOOL needToRezoom;
 							{
 								a = [a sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
 								preFlippedData = YES;
+								flipped = YES;
 							}
 						}
 						
@@ -12159,6 +12163,7 @@ static BOOL needToRezoom;
 				}
 				
 				[resortedToOpenArray addObject: a];
+				[isFlippedData addObject: [NSNumber numberWithBool: flipped]];
 			}
 			
 			if( preFlippedData)
@@ -12282,7 +12287,7 @@ static BOOL needToRezoom;
 									[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :NO ];
 									[viewer startLoadImageThread];
 									
-									if( preFlippedData)
+									if( [[isFlippedData objectAtIndex: x] boolValue])
 										[viewer flipDataSeries: self];
 								}
 								else
@@ -12292,7 +12297,7 @@ static BOOL needToRezoom;
 									[createdViewer showWindowTransition];
 									[createdViewer startLoadImageThread];
 									
-									if( preFlippedData)
+									if( [[isFlippedData objectAtIndex: x] boolValue])
 										[createdViewer flipDataSeries: self];
 								}
 							}
