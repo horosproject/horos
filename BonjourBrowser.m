@@ -362,7 +362,11 @@ extern const char *GetPrivateIP();
 			lastAsyncPos = currentDataPos;
 		[async unlock];
 		
-		if( size > 0)
+		if( pos + size > BonjourDatabaseIndexFileSize)
+		{
+			NSLog( @"***** currentDataPos + pos + size > BonjourDatabaseIndexFileSize");
+		}
+		else if( size > 0)
 		{
 			FILE *f = fopen ([p UTF8String], "ab");
 			fwrite( currentDataPtr + pos, size, 1, f);
@@ -1732,9 +1736,12 @@ extern const char *GetPrivateIP();
 		
 		[self connectToServer: index message:@"DICOM"];
 		
-		if( [dicomFileNames count] == 0) returnString = nil;
-		else if( [[NSFileManager defaultManager] fileExistsAtPath: [dicomFileNames objectAtIndex: 0]] == NO) returnString =  nil;
-		else returnString = [NSString stringWithString: [dicomFileNames objectAtIndex: 0]];
+		if( [dicomFileNames count] == 0)
+			returnString = nil;
+		else if( [[NSFileManager defaultManager] fileExistsAtPath: [dicomFileNames objectAtIndex: 0]] == NO)
+			returnString =  nil;
+		else
+			returnString = [NSString stringWithString: [dicomFileNames objectAtIndex: 0]];
 	}
 	@catch (NSException * e) 
 	{
