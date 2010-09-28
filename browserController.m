@@ -930,18 +930,33 @@ static NSConditionLock *threadLock = nil;
 						if( newObject || inParseExistingObject)
 						{
 							[study setValue:[curDict objectForKey: @"studyID"] forKey:@"studyInstanceUID"];
-							[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
 							[study setValue:[curDict objectForKey: @"accessionNumber"] forKey:@"accessionNumber"];
 							[study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
 							[study setValue:[curDict objectForKey: @"patientBirthDate"] forKey:@"dateOfBirth"];
 							[study setValue:[curDict objectForKey: @"patientSex"] forKey:@"patientSex"];
-							[study setValue:[curDict objectForKey: @"referringPhysiciansName"] forKey:@"referringPhysician"];
-							[study setValue:[curDict objectForKey: @"performingPhysiciansName"] forKey:@"performingPhysician"];
-							[study setValue:[curDict objectForKey: @"institutionName"] forKey:@"institutionName"];
 							[study setValue:[curDict objectForKey: @"patientID"] forKey:@"patientID"];
 							[study setValue:[curDict objectForKey: @"patientName"] forKey:@"name"];
 							[study setValue:[curDict objectForKey: @"patientUID"] forKey:@"patientUID"];
 							[study setValue:[curDict objectForKey: @"studyNumber"] forKey:@"id"];
+							
+							if( [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] && inParseExistingObject)
+							{
+								if( [[curDict objectForKey: @"studyDescription"] length])
+									[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
+								if( [[curDict objectForKey: @"referringPhysiciansName"] length])
+									[study setValue:[curDict objectForKey: @"referringPhysiciansName"] forKey:@"referringPhysician"];
+								if( [[curDict objectForKey: @"performingPhysiciansName"] length])
+									[study setValue:[curDict objectForKey: @"performingPhysiciansName"] forKey:@"performingPhysician"];
+								if( [[curDict objectForKey: @"institutionName"] length])
+									[study setValue:[curDict objectForKey: @"institutionName"] forKey:@"institutionName"];
+							}
+							else
+							{
+								[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
+								[study setValue:[curDict objectForKey: @"referringPhysiciansName"] forKey:@"referringPhysician"];
+								[study setValue:[curDict objectForKey: @"performingPhysiciansName"] forKey:@"performingPhysician"];
+								[study setValue:[curDict objectForKey: @"institutionName"] forKey:@"institutionName"];
+							}
 							
 							//need to know if is DICOM so only DICOM is queried for Q/R
 							if ([curDict objectForKey: @"hasDICOM"])
