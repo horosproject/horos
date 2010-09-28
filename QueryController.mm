@@ -1940,6 +1940,12 @@ extern "C"
 	if( [BrowserController currentBrowser].isCurrentDatabaseBonjour)
 		return;
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAuthorizeAutoRetrieve"])
+	{
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"autoRetrieving"];
+		return;
+	}
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	[autoQueryLock lock];
@@ -2975,6 +2981,13 @@ extern "C"
 	[toDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
 	
 	[[self window] setDelegate: self];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAuthorizeAutoRetrieve"])
+	{
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"autoRetrieving"];
+		
+		NSLog( @"--- autoretrieving is not authorized - see locations preferences");
+	}
 }
 
 //******
