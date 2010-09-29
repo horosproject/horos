@@ -190,14 +190,33 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	int	i, from, len = strlen( str), index;
 	NSMutableString	*result = [NSMutableString string];
 	BOOL separators = NO;
+	BOOL twoCharsEncoding = NO;
 	
 	for( i = 0, from = 0, index = 0; i < len; i++)
 	{
 		c = str[ i];
-		 
-		if( c == 0x1b || i == len-1)
-		{
+		
+//		if( encoding[ index] == NSISO2022JPStringEncoding || encoding[ index] == -2147483647)
+//			twoCharsEncoding = YES;
+//		else
+//			twoCharsEncoding = NO;
+		
+		BOOL separatorFound = NO;
+		
+//		if( twoCharsEncoding)
+//		{
+//			if( c == 0x1b && str[ i+1] == '(')
+//				separatorFound = YES;
+//		}
+//		else
+//		{
 			if( c == 0x1b)
+				separatorFound = YES;
+//		}
+		
+		if( separatorFound || i == len-1)
+		{
+			if( separatorFound)
 				separators = YES;
 			
 			if( i == len-1)
