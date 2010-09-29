@@ -29,6 +29,6 @@
 
 +(BOOL)tagsValues:(NSArray*)a1 isEqualTo:(NSArray*)a2;
 
-+(NSDictionary*)anonymizeFiles:(NSArray*)files toPath:(NSString*)dirPath withTags:(NSArray*)tags;
++(NSDictionary*)anonymizeFiles:(NSArray*)files dicomImages: (NSArray*) dicomImages toPath:(NSString*)dirPath withTags:(NSArray*)intags;
 
 @end

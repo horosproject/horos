@@ -18078,6 +18078,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *filesToAnonymize;
 	
 	[self checkResponder];
+	
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToAnonymize = [[self filesForDatabaseMatrixSelection: dicomFiles2Anonymize] retain];
 	else filesToAnonymize = [[self filesForDatabaseOutlineSelection: dicomFiles2Anonymize] retain];
 	
@@ -18097,7 +18098,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if ([scanner scanInt: &num] && [scanner isAtEnd]) extension = [NSString stringWithString:@"dcm"];
 		}
 		
-		if (![extension caseInsensitiveCompare:@"dcm"] == NSOrderedSame) {
+		if (![extension caseInsensitiveCompare:@"dcm"] == NSOrderedSame)
+		{
 			[dicomFiles2Anonymize removeObjectAtIndex:[filesToAnonymize indexOfObject:file]];
 			[filesToAnonymize removeObject:file];
 		}
@@ -18131,14 +18133,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[filesToAnonymize release];
 }
 
--(void)anonymizationSavePanelDidEnd:(AnonymizationSavePanelController*)aspc {
+-(void)anonymizationSavePanelDidEnd:(AnonymizationSavePanelController*)aspc
+{
 	NSArray* imagePaths = [aspc.representedObject objectAtIndex:0];
 	NSArray* imageObjs = [aspc.representedObject objectAtIndex:1];
 	
-	switch (aspc.end) {
+	switch (aspc.end)
+	{
 		case AnonymizationSavePanelSaveAs:
 		{
-			[Anonymization anonymizeFiles:imagePaths toPath:aspc.outputDir withTags:aspc.anonymizationViewController.tagsValues];
+			[Anonymization anonymizeFiles:imagePaths dicomImages: imageObjs toPath:aspc.outputDir withTags:aspc.anonymizationViewController.tagsValues];
 		}
 		break;
 		
@@ -18146,7 +18150,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		case AnonymizationSavePanelReplace:
 		{
 			NSString* tempDir = [[NSFileManager defaultManager] tmpFilePathInTmp];
-			NSDictionary* anonymizedFiles = [Anonymization anonymizeFiles:imagePaths toPath:tempDir withTags:aspc.anonymizationViewController.tagsValues];
+			NSDictionary* anonymizedFiles = [Anonymization anonymizeFiles:imagePaths dicomImages: imageObjs toPath:tempDir withTags:aspc.anonymizationViewController.tagsValues];
 			
 			// remove old files?
 			if (aspc.end == AnonymizationSavePanelReplace)

@@ -284,13 +284,12 @@
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
 		{
-			
 			AnonymizationPanelController* panelController = [Anonymization showPanelForDefaultsKey:@"AnonymizationFields" modalForWindow:self.window modalDelegate:NULL didEndSelector:NULL representedObject:NULL];
 			
 			if (panelController.end == AnonymizationPanelCancel)
 				return;
 			
-			NSDictionary* anonOut = [Anonymization anonymizeFiles:files toPath:@"/tmp/burnAnonymized" withTags:panelController.anonymizationViewController.tagsValues];
+			NSDictionary* anonOut = [Anonymization anonymizeFiles:files dicomImages: dbObjects toPath:@"/tmp/burnAnonymized" withTags:panelController.anonymizationViewController.tagsValues];
 			
 			[anonymizedFiles release];
 			anonymizedFiles = [[anonOut allValues] retain];

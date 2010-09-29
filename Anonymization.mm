@@ -25,6 +25,7 @@
 #import "DicomSeries.h"
 #import "BrowserController.h"
 #import "AppController.h"
+#import "Wait.h"
 
 @interface AnonymizationPanelRepresentation : NSObject {
 	NSString* defaultsKey;
@@ -242,20 +243,30 @@
 
 #pragma mark Anonymization
 
-+(NSDictionary*)anonymizeFiles:(NSArray*)files toPath:(NSString*)dirPath withTags:(NSArray*)intags {
++(NSDictionary*)anonymizeFiles:(NSArray*)files dicomImages: (NSArray*) dicomImages toPath:(NSString*)dirPath withTags:(NSArray*)intags
+{
+	if( [files count] != [dicomImages count])
+	{
+		NSLog( @"***** anonymizeFiles [files count] != [dicomImages count]");
+		return nil;
+	}
+
 	NSMutableArray* tags = [NSMutableArray arrayWithCapacity:intags.count];
-	for (NSArray* intag in intags) {
+	for (NSArray* intag in intags)
+	{
 		DCMAttributeTag* tag = [intag objectAtIndex:0];
 		id val = intag.count>1? [intag objectAtIndex:1] : NULL;
 		
-		if ([val isKindOfClass:[NSDate class]]) {
+		if ([val isKindOfClass:[NSDate class]])
+		{
 			if ([tag.vr isEqual:@"DA"]) //Date String
 				val = [DCMCalendarDate dicomDateWithDate:val];
 			else if ([tag.vr isEqual:@"TM"]) //Time String
 				val = [DCMCalendarDate dicomTimeWithDate:val];
 			else if ([tag.vr isEqual:@"DT"]) //Date Time
 				val = [DCMCalendarDate dicomDateTimeWithDicomDate:[DCMCalendarDate dicomDateWithDate:val] dicomTime:[DCMCalendarDate dicomTimeWithDate:val]];
-		} else if ([val isKindOfClass:[NSNumber class]]) {
+		} else if ([val isKindOfClass:[NSNumber class]])
+		{
 			if ([tag.vr isEqual:@"DS"]) //Decimal String representing floating point
 				val = [val stringValue];
 			else if ([tag.vr isEqual:@"IS"]) //Integer String
@@ -270,62 +281,96 @@
 	NSString* tempDirPath = [dirPath stringByAppendingPathComponent:@".temp"];
 	[[NSFileManager defaultManager] confirmDirectoryAtPath:tempDirPath];
 	
+	Wait *splash = [[[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString( @"Processing...", nil)]] autorelease];
+	[splash showWindow: self];
+	[[splash progress] setMaxValue: [files count]];
+	[splash setCancel: YES];
+	
+	NSMutableArray* producedFiles = [NSMutableArray arrayWithCapacity: files.count];
 	NSInteger fileIndex = 0;
-	for (NSString* filePath in files) {
-		NSString* ext = [filePath pathExtension];
-		if (!ext.length) ext = @"dcm";
-		NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", fileIndex, ext];
-		NSString* tempFilePath = [tempDirPath stringByAppendingPathComponent:tempFileName];
-		[DCMObject anonymizeContentsOfFile:filePath tags:tags writingToFile:tempFilePath];
-		[filenameTranslation setObject:tempFilePath forKey:filePath];
-		++fileIndex;
+	for( NSString* filePath in files)
+	{
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
+		@try
+		{
+			NSString* ext = [filePath pathExtension];
+			if (!ext.length) ext = @"dcm";
+			NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", fileIndex, ext];
+			NSString* tempFilePath = [tempDirPath stringByAppendingPathComponent:tempFileName];
+			[DCMObject anonymizeContentsOfFile:filePath tags:tags writingToFile:tempFilePath];
+			[filenameTranslation setObject:tempFilePath forKey:filePath];
+			++fileIndex;
+			
+			[producedFiles addObject: tempFilePath];
+			
+			[splash incrementBy: 1];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"%@", [e description]);
+			[AppController printStackTrace: e];
+		}
+		
+		[pool release];
+		
+		if( [splash aborted]) break;
 	}
 	
-	NSManagedObjectModel* managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.momd"]]];
-	NSPersistentStoreCoordinator* persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:managedObjectModel];
-	[persistentStoreCoordinator addPersistentStoreWithType:NSInMemoryStoreType configuration:NULL URL:NULL options:NULL error:NULL];
-    NSManagedObjectContext* managedObjectContext = [[NSManagedObjectContext alloc] init];
-    [managedObjectContext setPersistentStoreCoordinator:persistentStoreCoordinator];
-	managedObjectContext.undoManager.levelsOfUndo = 1;	
-	[managedObjectContext.undoManager disableUndoRegistration];
-	
-	NSArray* dicomImages = [BrowserController addFiles:[filenameTranslation allValues] toContext:managedObjectContext onlyDICOM:YES notifyAddedFiles:NO parseExistingObject:NO dbFolder:NULL];
-		
-	NSMutableArray* dicomSeries = [NSMutableArray array];
-	for (DicomImage* image in dicomImages)
+	if( [producedFiles count] != [dicomImages count])
 	{
-		if (![dicomSeries containsObject:image.series])
-			[dicomSeries addObject:image.series];
+		NSLog( @"***** anonymizeFiles [producedFiles count] != [dicomImages count]");
 		
-		NSString* tempFilePath = image.completePathResolved;
-		NSString* ext = [tempFilePath pathExtension];
+		[splash close];
 		
-		NSString* fileDirPath = [dirPath stringByAppendingPathComponent:image.series.study.name];
-		fileDirPath = [fileDirPath stringByAppendingPathComponent:image.series.study.studyName];
-		fileDirPath = [fileDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@ - %@", image.series.name, image.series.id]];
-		[[NSFileManager defaultManager] confirmDirectoryAtPath:fileDirPath];
+		return nil;
+	}
+	
+	NSMutableArray* dicomSeries = [NSMutableArray array];
+	for (int i = 0; i < [dicomImages count]; i++)
+	{
+		DicomImage *image = [dicomImages objectAtIndex: i];
 		
-		NSString* filePath;
-		NSInteger i = 0;
-		do {
-			++i;
-			NSString* is = i ? [NSString stringWithFormat:@"-%4.4d", i] : @"";
-			NSString* fileName = [NSString stringWithFormat:@"IM-%4.4d-%4.4d%@.%@", dicomSeries.count, image.instanceNumber, is, ext];
-			filePath = [fileDirPath stringByAppendingPathComponent:fileName];
-		} while ([[NSFileManager defaultManager] fileExistsAtPath:filePath]);
-		
-		[[NSFileManager defaultManager] moveItemAtPath:tempFilePath toPath:filePath error:NULL];
-		
-		NSString* k = [filenameTranslation keyForObject:tempFilePath];
-		if (k) [filenameTranslation setObject:filePath forKey:filenameTranslation];
-		else NSLog(@"Warning: anonymization file naming error: unknown original for %@ which should have changed to %@", tempFilePath, filePath);
+		@try
+		{		
+			if (![dicomSeries containsObject:image.series])
+				[dicomSeries addObject:image.series];
+			
+			NSString* tempFilePath = [producedFiles objectAtIndex: i];
+			NSString* ext = [tempFilePath pathExtension];
+			
+			NSString* fileDirPath = [dirPath stringByAppendingPathComponent:image.series.study.name];
+			fileDirPath = [fileDirPath stringByAppendingPathComponent:image.series.study.studyName];
+			fileDirPath = [fileDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@ - %@", image.series.name, image.series.id]];
+			[[NSFileManager defaultManager] confirmDirectoryAtPath:fileDirPath];
+			
+			NSString* filePath;
+			NSInteger i = 0;
+			do
+			{
+				++i;
+				NSString* is = i ? [NSString stringWithFormat:@"-%4.4d", i] : @"";
+				NSString* fileName = [NSString stringWithFormat:@"IM-%4.4d-%4.4d%@.%@", dicomSeries.count, image.instanceNumber, is, ext];
+				filePath = [fileDirPath stringByAppendingPathComponent:fileName];
+			} while ([[NSFileManager defaultManager] fileExistsAtPath:filePath]);
+			
+			[[NSFileManager defaultManager] moveItemAtPath:tempFilePath toPath:filePath error:NULL];
+			
+			NSString* k = [filenameTranslation keyForObject:tempFilePath];
+			
+			if (k) [filenameTranslation setObject:filePath forKey:filenameTranslation];
+			else NSLog(@"Warning: anonymization file naming error: unknown original for %@ which should have changed to %@", tempFilePath, filePath);
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"%@", [e description]);
+			[AppController printStackTrace: e];
+		}
 	}
 	
 	[[NSFileManager defaultManager] removeItemAtPath:tempDirPath error:NULL];
 	
-	[managedObjectContext release];
-	[persistentStoreCoordinator release];
-	[managedObjectModel release];	
+	[splash close];
 	
 	return [[filenameTranslation copy] autorelease];
 }
