@@ -553,7 +553,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 					zippedFile = nil;	//We will archive an empty NSData
 				}
 				
-				if( [self valueForKey: @"reportURL"])
+				if( [self valueForKey: @"reportURL"] && [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
 					[[NSFileManager defaultManager] removeItemAtPath: [self valueForKey: @"reportURL"] error: nil];
 				
 				[self setPrimitiveValue: nil forKey: @"reportURL"];

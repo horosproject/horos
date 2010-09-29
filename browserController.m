@@ -19113,7 +19113,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if( [[studySelected valueForKey:@"reportURL"] lastPathComponent])
 						[reportFilesToCheck removeObjectForKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
 					
-					[[NSFileManager defaultManager] removeFileAtPath: [studySelected valueForKey:@"reportURL"] handler:nil];
+					
+					if( [studySelected valueForKey:@"reportURL"] && [[NSFileManager defaultManager] fileExistsAtPath: [studySelected valueForKey:@"reportURL"]])
+						[[NSFileManager defaultManager] removeFileAtPath: [studySelected valueForKey:@"reportURL"] handler: nil];
 					
 					if (isCurrentDatabaseBonjour)
 						[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:nil forKey:@"reportURL"];
