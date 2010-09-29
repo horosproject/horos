@@ -1934,19 +1934,19 @@ extern "C"
 
 - (void) autoRetrieveThread: (NSArray*) list
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	if( autoQuery == NO)
-		return;
+		goto returnFromThread;
 	
 	if( [BrowserController currentBrowser].isCurrentDatabaseBonjour)
-		return;
+		goto returnFromThread;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAuthorizeAutoRetrieve"])
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"autoRetrieving"];
-		return;
+		goto returnFromThread;
 	}
-	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	[autoQueryLock lock];
 	
@@ -2062,6 +2062,8 @@ extern "C"
 	}
 	
 	[autoQueryLock unlock];
+	
+	returnFromThread:
 	
 	[pool release];
 }

@@ -1169,6 +1169,60 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[pool release];
 }
 
++ (void) releaseNetworkVariables: (NSDictionary *) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	T_ASC_Association *assoc = (T_ASC_Association*) [[dict objectForKey: @"assoc"] pointerValue];
+	T_ASC_Network *net = (T_ASC_Network*) [[dict objectForKey: @"net"] pointerValue];
+	DcmTLSTransportLayer *tLayer = (DcmTLSTransportLayer*) [[dict objectForKey: @"tLayer"] pointerValue];
+	OFCondition cond;
+	
+	// CLEANUP
+	
+	[NSThread sleepForTimeInterval: 240];
+	
+	/* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
+	/* call is the counterpart of ASC_requestAssociation(...) which was called above. */
+	if( assoc)
+	{
+		cond = ASC_destroyAssociation(&assoc);
+		if (cond.bad())
+			DimseCondition::dump(cond); 
+	}
+	
+	/* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
+	/* is the counterpart of ASC_initializeNetwork(...) which was called above. */
+	if( net)
+	{
+		cond = ASC_dropNetwork(&net);
+		if (cond.bad())
+			DimseCondition::dump(cond);
+	}
+	
+#ifdef WITH_OPENSSL
+	/*
+	 if (tLayer && opt_writeSeedFile)
+	 {
+	 if (tLayer->canWriteRandomSeed())
+	 {
+	 if (!tLayer->writeRandomSeed(opt_writeSeedFile))
+	 {
+	 CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
+	 }
+	 } else {
+	 CERR << "Warning: cannot write random seed, ignoring." << endl;
+	 }
+	 }
+	 delete tLayer;
+	 */
+	if( tLayer)
+		delete tLayer;
+#endif WITH_OPENSSL
+	
+	[pool release];
+}
+
 //common network code for move and query
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset destination:(NSString*) destination
 {
@@ -1687,7 +1741,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		@catch (NSException *e)
 		{
-			NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [e name], [e description]];
+			NSString *response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [e name], [e description]];
 			
 			if( showErrorMessage == YES && _abortAssociation == NO)
 				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
@@ -1704,45 +1758,50 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		[wait release];
 		wait = nil;
 		
-		// CLEANUP
-		
-		/* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
-		/* call is the counterpart of ASC_requestAssociation(...) which was called above. */
-		if( assoc)
-		{
-			cond = ASC_destroyAssociation(&assoc);
-			if (cond.bad())
-				DimseCondition::dump(cond); 
-		}
-		
-		/* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
-		/* is the counterpart of ASC_initializeNetwork(...) which was called above. */
-		if( net)
-		{
-			cond = ASC_dropNetwork(&net);
-			if (cond.bad())
-				DimseCondition::dump(cond);
-		}
+		//We want to give time for other threads that are maybe using assoc or net variables
+		[NSThread detachNewThreadSelector: @selector( releaseNetworkVariables:) toTarget: [DCMTKQueryNode class] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: net], @"net", [NSValue valueWithPointer: tLayer], @"tLayer", nil]];
 
-	#ifdef WITH_OPENSSL
-	/*
-		if (tLayer && opt_writeSeedFile)
-		{
-		  if (tLayer->canWriteRandomSeed())
-		  {
-			if (!tLayer->writeRandomSeed(opt_writeSeedFile))
-			{
-			  CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
-			}
-		  } else {
-			CERR << "Warning: cannot write random seed, ignoring." << endl;
-		  }
-		}
-		delete tLayer;
-	*/
-		if( tLayer)
-			delete tLayer;
+//		// CLEANUP
+//		
+//		/* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
+//		/* call is the counterpart of ASC_requestAssociation(...) which was called above. */
+//		if( assoc)
+//		{
+//			cond = ASC_destroyAssociation(&assoc);
+//			if (cond.bad())
+//				DimseCondition::dump(cond); 
+//		}
+//		
+//		/* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
+//		/* is the counterpart of ASC_initializeNetwork(...) which was called above. */
+//		if( net)
+//		{
+//			cond = ASC_dropNetwork(&net);
+//			if (cond.bad())
+//				DimseCondition::dump(cond);
+//		}
+//
+//	#ifdef WITH_OPENSSL
+//	/*
+//		if (tLayer && opt_writeSeedFile)
+//		{
+//		  if (tLayer->canWriteRandomSeed())
+//		  {
+//			if (!tLayer->writeRandomSeed(opt_writeSeedFile))
+//			{
+//			  CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
+//			}
+//		  } else {
+//			CERR << "Warning: cannot write random seed, ignoring." << endl;
+//		  }
+//		}
+//		delete tLayer;
+//	*/
+//		if( tLayer)
+//			delete tLayer;
+	
 		
+	#ifdef WITH_OPENSSL
 		// cleanup
 		if (_secureConnection)
 		{

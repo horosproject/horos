@@ -1779,7 +1779,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 			NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with B/W data series.", nil), nil, nil, nil);
 			return;
 		}
-	
+		
+		// To stop any attempt to reload the data...
+		postprocessed = YES;
+		
 		BOOL newViewer = NO;
 		
 		[imageView setDrawing: NO];
@@ -1787,7 +1790,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[imageView stopROIEditingForce: YES];
 		[self checkEverythingLoaded];
 
-		if( blendingController) [self ActivateBlending: nil];
+		if( blendingController)
+			[self ActivateBlending: nil];
 		
 		BOOL succeed = YES;
 		
