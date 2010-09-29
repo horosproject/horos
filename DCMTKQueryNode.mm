@@ -1180,7 +1180,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	// CLEANUP
 	
-	[NSThread sleepForTimeInterval: 240];
+	[NSThread sleepForTimeInterval: 60];
 	
 	/* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
 	/* call is the counterpart of ASC_requestAssociation(...) which was called above. */
