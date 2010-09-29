@@ -26700,8 +26700,6 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
-					"\\\"$(SRCROOT)/Binaries\\\"",
-					"\\\"$(SRCROOT)/build/Development\\\"",
 					"\"$(SRCROOT)/Binaries\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -26735,13 +26733,8 @@
 				INFOPLIST_FILE = "Deployment-Info OsiriXLite.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
-					Binaries/VTKLibs,
 					Binaries/Jasper,
-					ITK180/bin,
 					AYDicomPrint,
-					"\\\"$(SRCROOT)/Binaries/openjpeg\\\"",
-					"\\\"$(SRCROOT)/Binaries/VTKLibs\\\"",
-					"\\\"$(SRCROOT)/ITK180/bin\\\"",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
@@ -26776,8 +26769,6 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
-					"\\\"$(SRCROOT)/Binaries\\\"",
-					"\\\"$(SRCROOT)/build/Development\\\"",
 					"\"$(SRCROOT)/Binaries\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -26811,13 +26802,8 @@
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				KEEP_PRIVATE_EXTERNS = YES;
 				LIBRARY_SEARCH_PATHS = (
-					Binaries/VTKLibs,
 					Binaries/Jasper,
-					ITK180/bin,
 					AYDicomPrint,
-					"\\\"$(SRCROOT)/Binaries/openjpeg\\\"",
-					"\\\"$(SRCROOT)/Binaries/VTKLibs\\\"",
-					"\\\"$(SRCROOT)/ITK180/bin\\\"",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
