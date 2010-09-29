@@ -1631,7 +1631,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	}
 	
 	// CLEANUP
-
+	// Give time for other threads that are maybe using these variables
+	[NSThread sleepForTimeInterval: 1];
+	
     /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
     /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
 	if( assoc)
