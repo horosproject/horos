@@ -523,8 +523,11 @@ static NSConditionLock *threadLock = nil;
 							NSLog( @"*** multiple files in Report decompression ?");
 						
 						destPath = [@"/tmp/" stringByAppendingPathComponent: f];
-						[[NSFileManager defaultManager] removeItemAtPath: destPath error: nil];
-						[[NSFileManager defaultManager] moveItemAtPath: [@"/tmp/zippedFile/" stringByAppendingPathComponent: f] toPath: destPath error: nil];
+						if( destPath)
+						{
+							[[NSFileManager defaultManager] removeItemAtPath: destPath error: nil];
+							[[NSFileManager defaultManager] moveItemAtPath: [@"/tmp/zippedFile/" stringByAppendingPathComponent: f] toPath: destPath error: nil];
+						}
 					}
 				}
 			}
@@ -1257,7 +1260,7 @@ static NSConditionLock *threadLock = nil;
 														reportFilePath = [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]];
 													else
 														reportFilePath = [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]];
-									
+													
 													[[NSFileManager defaultManager] removeItemAtPath: reportFilePath error: nil];
 													[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: reportFilePath error: nil];
 													
@@ -15950,7 +15953,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 							if( [atr fileModificationDate] && [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
 							{
 								NSLog( @"old files with '.' -> delete it : %@", srcPath);
-								[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+								if( srcPath)
+									[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
 							}
 						}
 						continue;
@@ -17831,7 +17835,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		return;
 	}
 	
-	[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
+	if( destFile)
+		[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
 	
 	WaitRendering *wait = nil;
 	if( [NSThread isMainThread])
@@ -17914,7 +17919,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		return;
 	}
 	
-	[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
+	if( destFile)
+		[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
 	
 	WaitRendering *wait = nil;
 	if( [NSThread isMainThread] && showGUI == YES)
@@ -17944,7 +17950,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[t waitUntilExit];
 			
 			if( [t terminationStatus] == 0 && deleteSource == YES)
-				[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+			{
+				if( srcFolder)
+					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+			}
 		}
 	}
 	@catch (NSException *e)
@@ -19225,10 +19234,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 							if( [[reportSR valueForKey:@"inDatabaseFolder"] boolValue])
 							{
 								// The report was maybe changed on the server -> delete the report file
-								[[NSFileManager defaultManager] removeItemAtPath: localReportFile error: nil];
+								if( localReportFile)
+									[[NSFileManager defaultManager] removeItemAtPath: localReportFile error: nil];
 								
 								// The report was maybe changed on the server -> delete the DICOM SR file
-								[[NSFileManager defaultManager] removeItemAtPath: [reportSR valueForKey: @"completePath"] error: nil];
+								if( [reportSR valueForKey: @"completePath"])
+									[[NSFileManager defaultManager] removeItemAtPath: [reportSR valueForKey: @"completePath"] error: nil];
 							}
 							
 							NSString *reportPath = [BrowserController extractReportSR: [reportSR completePathResolved] contentDate: [reportSR valueForKey: @"date"]];
@@ -19241,8 +19252,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 								}
 								else // It's a file!
 								{
-									[[NSFileManager defaultManager] removeItemAtPath: localReportFile error: nil];
-									[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: localReportFile error: nil];
+									if( localReportFile)
+									{
+										[[NSFileManager defaultManager] removeItemAtPath: localReportFile error: nil];
+										[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: localReportFile error: nil];
+									}
 								}
 							}
 						}

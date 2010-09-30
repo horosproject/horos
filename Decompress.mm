@@ -581,10 +581,14 @@ int main(int argc, const char *argv[])
 				[mMovie writeToFile: path withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
 				[[NSFileManager defaultManager] removeFileAtPath:[path stringByAppendingString:@"temp"] handler: nil];
 				
-				[[NSFileManager defaultManager] removeItemAtPath: root error: nil];
-			} else { // SWF!!
+				if( root)
+					[[NSFileManager defaultManager] removeItemAtPath: root error: nil];
+			}
+			else
+			{ // SWF!!
 				NSLog(@"SWFFFFFFF %@", path);
-				[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
+				if( path)
+					[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 				
 				NSString* inputDir = [NSString stringWithUTF8String:argv[fileListFirstItemIndex]];
 				NSArray* inputFiles = [inputDir stringsByAppendingPaths:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:inputDir error:NULL]];
@@ -674,8 +678,9 @@ int main(int argc, const char *argv[])
 			}
 			else
 				NSLog(@"writeMovieiPhone Error : %@", error);
-				
-			[[NSFileManager defaultManager] removeItemAtPath: inFile error: nil];
+			
+			if( inFile)
+				[[NSFileManager defaultManager] removeItemAtPath: inFile error: nil];
 		}
 		
 		if( [what isEqualToString: @"pdfFromURL"])

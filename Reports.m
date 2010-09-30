@@ -639,9 +639,11 @@ CHECK;
 	NSString *creationScript = [self generatePagesReportScriptUsingTemplate:templateName completeFilePath: tempPath];
 	[self runScript: creationScript];
 	
-	[[NSFileManager defaultManager] removeItemAtPath: aPath error: nil];
-	[[NSFileManager defaultManager] moveItemAtPath: tempPath toPath: aPath error: nil];
-	
+	if( aPath)
+	{
+		[[NSFileManager defaultManager] removeItemAtPath: aPath error: nil];
+		[[NSFileManager defaultManager] moveItemAtPath: tempPath toPath: aPath error: nil];
+	}
 	
 	BOOL isDirectory;
 	if( [[NSFileManager defaultManager] fileExistsAtPath: aPath isDirectory: &isDirectory] == NO)

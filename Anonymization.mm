@@ -368,7 +368,8 @@
 		}
 	}
 	
-	[[NSFileManager defaultManager] removeItemAtPath:tempDirPath error:NULL];
+	if( tempDirPath)
+		[[NSFileManager defaultManager] removeItemAtPath:tempDirPath error:NULL];
 	
 	[splash close];
 	

@@ -585,7 +585,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 						  generatedByOsiriX: YES];
 			}
 			
-			[[NSFileManager defaultManager] removeItemAtPath: zippedFile error: nil];
+			if( zippedFile)
+				[[NSFileManager defaultManager] removeItemAtPath: zippedFile error: nil];
 		}
 		@catch (NSException * e) 
 		{
@@ -1622,7 +1623,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 			if( [[[found lastObject] valueForKey:@"inDatabaseFolder"] boolValue])
 			{
 				// The ROI file was maybe changed on the server -> delete it
-				[[NSFileManager defaultManager] removeItemAtPath: [[found lastObject] valueForKey: @"completePath"] error: nil];
+				if( [[found lastObject] valueForKey: @"completePath"])
+					[[NSFileManager defaultManager] removeItemAtPath: [[found lastObject] valueForKey: @"completePath"] error: nil];
 			}
 		}
 		

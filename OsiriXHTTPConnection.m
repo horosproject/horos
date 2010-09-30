@@ -3477,8 +3477,11 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						else
 							destFile = [destFile  stringByAppendingPathExtension: @"osirixzip"];
 						
-						[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
-						[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
+						if( srcFolder)
+							[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+						
+						if( destFile)
+							[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
 						
 						[[NSFileManager defaultManager] createDirectoryAtPath: srcFolder attributes: nil];
 						
@@ -3495,8 +3498,11 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						
 						data = [NSData dataWithContentsOfFile: destFile];
 						
-						[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
-						[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
+						if( srcFolder)
+							[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+						
+						if( destFile)
+							[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
 						
 						if( data)
 							err = NO;
@@ -3998,7 +4004,8 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			NSLog( @"***** unzipFile exception: %@", e);
 		}
 		
-		[[NSFileManager defaultManager] removeItemAtPath: POSTfilename error: nil];
+		if( POSTfilename)
+			[[NSFileManager defaultManager] removeItemAtPath: POSTfilename error: nil];
 		
 		NSString *rootDir = @"/tmp/osirixUnzippedFolder";
 		BOOL isDirectory = NO;
