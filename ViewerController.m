@@ -6713,13 +6713,13 @@ static ViewerController *draggedController = nil;
 	stopThreadLoadImage = NO;
 //	[self loadImageData: self];
 	
-	loadingThread = [[[NSThread alloc] initWithTarget:self selector:@selector( loadImageData:) object: nil] autorelease];
-	loadingThread.name = NSLocalizedString( @"Loading images...", nil);
-	if( [[self currentSeries] valueForKey:@"name"])
-		loadingThread.status = [[self currentSeries] valueForKey:@"name"];
-	[[ThreadsManager defaultManager] addThreadAndStart: loadingThread];
+//	loadingThread = [[[NSThread alloc] initWithTarget:self selector:@selector( loadImageData:) object: nil] autorelease];
+//	loadingThread.name = NSLocalizedString( @"Loading images...", nil);
+//	if( [[self currentSeries] valueForKey:@"name"])
+//		loadingThread.status = [[self currentSeries] valueForKey:@"name"];
+//	[[ThreadsManager defaultManager] addThreadAndStart: loadingThread];
 	
-//	[NSThread detachNewThreadSelector: @selector(loadImageData:) toTarget: self withObject: nil];
+	[NSThread detachNewThreadSelector: @selector(loadImageData:) toTarget: self withObject: nil];
 	[self setWindowTitle:self];
 }
 
