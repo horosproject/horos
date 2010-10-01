@@ -1452,12 +1452,25 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						}
 						else
 						{
-							// Child
-							
 							lockFile();
 							
-							/* child process, handle the association */
-							cond = handleAssociation(assoc, options_.correctUIDPadding_);
+							// Child
+							@try
+							{
+								try
+								{
+									/* child process, handle the association */
+									cond = handleAssociation(assoc, options_.correctUIDPadding_);
+								}
+								catch(...)
+								{
+									printf( "***** C++ exception in %s\r", __PRETTY_FUNCTION__);
+								}
+							}
+							@catch (NSException * e)
+							{
+								printf( "***** exception in %s\r", __PRETTY_FUNCTION__);
+							}
 							
 							unlockFile();
 							

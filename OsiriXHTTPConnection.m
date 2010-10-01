@@ -4466,8 +4466,10 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	// filter by user rights
 	if (currentUser)
-		studies = (id)[studies filteredArrayUsingPredicate:[[BrowserController currentBrowser] smartAlbumPredicateString:[currentUser valueForKey:@"studyPredicate"]]]; // is not mutable, but we won't mutate it anymore
-
+	{
+		studies = (NSMutableArray*) [self studiesForPredicate: [NSPredicate predicateWithValue:YES] sortBy: nil];// is not mutable, but we won't mutate it anymore
+	}
+	
 	// produce XML
 	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?><wado_query wadoURL=\"%@/wado\"></wado_query>", self.webServerURL];
 	NSXMLDocument* doc = [[NSXMLDocument alloc] initWithXMLString:baseXML options:NSXMLDocumentIncludeContentTypeDeclaration|NSXMLDocumentTidyXML error:NULL];

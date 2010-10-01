@@ -534,12 +534,25 @@ DcmQueryRetrieveConfig config;
 	{
 		while(!_abort)
 		{
-			
-			if( _abort == NO)
-				cond = localSCP->waitForAssociation(options.net_);
-			
-			if( _abort == NO)
-				localSCP->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
+			@try
+			{
+				try
+				{
+					if( _abort == NO)
+						cond = localSCP->waitForAssociation(options.net_);
+					
+					if( _abort == NO)
+						localSCP->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
+				}
+				catch(...)
+				{
+					NSLog( @"***** C++ exception in %s", __PRETTY_FUNCTION__);
+				}
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
 		}
 	}
 	
