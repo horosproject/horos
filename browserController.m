@@ -305,8 +305,7 @@ static NSConditionLock *threadLock = nil;
 							 [[d objectForKey: @"scale"] floatValue],
 							 kvImageDoNotTile);
 	}
-	
-	if( [[d objectForKey: @"what"] isEqualToString: @"16UtoF"])
+	else if( [[d objectForKey: @"what"] isEqualToString: @"16UToF"])
 	{
 		vImage_Buffer src = *(vImage_Buffer*) [[d objectForKey: @"src"] pointerValue];
 		vImage_Buffer dst = *(vImage_Buffer*) [[d objectForKey: @"dst"] pointerValue];
@@ -321,6 +320,7 @@ static NSConditionLock *threadLock = nil;
 							 [[d objectForKey: @"scale"] floatValue],
 							 kvImageDoNotTile);
 	}
+	else NSLog( @"****** unknown vImageThread what: %@", [d objectForKey: @"what"]);
 	
 	[threadLock lock];
 	[threadLock unlockWithCondition: [threadLock condition]-1];
