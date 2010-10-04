@@ -2174,7 +2174,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 				//[[img TIFFRepresentation] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
 				if ([outFile hasSuffix:@"swf"])
-					[[[NSBitmapImageRep imageRepWithData:[img TIFFRepresentation]] representationUsingType:NSPNGFileType properties:NULL] writeToFile:[[fileName stringByAppendingString:@" dir"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%6.6d.png", inc]] atomically:YES];
+					[[[NSBitmapImageRep imageRepWithData:[img TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:NULL] writeToFile:[[fileName stringByAppendingString:@" dir"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%6.6d.jpg", inc]] atomically:YES];
 				else
 					[[img TIFFRepresentationUsingCompression: NSTIFFCompressionLZW factor: 1.0] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
 				inc++;
@@ -3330,7 +3330,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					}
 					else
 					{
-						BOOL flash = NO;// TODO: [NSUserDefaultsController WebServerPrefersFlash] && !isiPhone;
+						BOOL flash = [NSUserDefaultsController WebServerPrefersFlash] && !isiPhone;
 						templateString = [self setBlock:@"movieqt" visible:!flash forString: templateString];
 						templateString = [self setBlock:@"moviefla" visible:flash forString: templateString];
 
@@ -4471,9 +4471,9 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	}
 	
 	// produce XML
-	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?><wado_query wadoURL=\"%@/wado\"></wado_query>", self.webServerURL];
+	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?><wado_query wadoURL=\"%@/wado\"></wado_query>", self.webServerURL];
 	NSXMLDocument* doc = [[NSXMLDocument alloc] initWithXMLString:baseXML options:NSXMLDocumentIncludeContentTypeDeclaration|NSXMLDocumentTidyXML error:NULL];
-	[doc setCharacterEncoding:@"ISO-8859-1"];
+	[doc setCharacterEncoding:@"UTF-8"];
 	
 	for (NSString* patientId in patientIds) {
 		NSXMLElement* patientNode = [NSXMLNode elementWithName:@"Patient"];
