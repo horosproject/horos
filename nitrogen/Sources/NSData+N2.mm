@@ -41,7 +41,7 @@ char hex2char(const char* hex) {
 	char* buffer = (char*)malloc(length);
 	const char* utf8 = [hex UTF8String];
 	
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (int i = 0; i < (int)length; ++i)
 		buffer[i] = hex2char(&utf8[i*2]);
 	

@@ -75,7 +75,7 @@ struct P {
 	size_t bpp = [self bytesPerPlane], bpr = [self bytesPerRow];
 	assert(bpp = 4);
 	NSLog(@"time1!!!!!! %f", [NSDate timeIntervalSinceReferenceDate]);
-#pragma omp parallel for default(shared)
+//#pragma omp parallel for default(shared)
 	for (int x = 0; x < width; ++x)
 		for (int y = 0; y < height; ++y)
 			v[x][y] = bitmapData[y*bpr+x*bpp+3];
