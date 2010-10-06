@@ -262,6 +262,7 @@ int main(int argc, const char *argv[])
 								
 								BOOL succeed = NO;
 								
+								// See - (BOOL) needToCompressFile: (NSString*) path in BrowserControllerDCMTKCategory for these exceptions
 								if( [DCMAbstractSyntaxUID isImageStorage: [dcmObject attributeValueWithName:@"SOPClassUID"]] == YES && [[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]] == NO && [DCMAbstractSyntaxUID isStructuredReport: [dcmObject attributeValueWithName:@"SOPClassUID"]] == NO)
 								{
 									@try
@@ -274,6 +275,11 @@ int main(int argc, const char *argv[])
 										NSLog( @"dcmObject writeToFile failed: %@", e);
 									}
 								}
+								else
+								{
+									succeed = [[NSData dataWithContentsOfFile: curFile] writeToFile: curFileDest atomically: YES];
+								}
+								
 								[dcmObject release];
 								
 								if( succeed)

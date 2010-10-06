@@ -736,7 +736,7 @@ extern NSRecursiveLock *PapyrusLock;
 		{
 			const Uint8 *buffer = nil;
 			unsigned int length;
-			if (dataset->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good() && string != NULL)
+			if (dataset->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good() && length > 0)
 			{
 				NSData *pdfData = [NSData dataWithBytes:buffer length:(unsigned)length];;
 				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];

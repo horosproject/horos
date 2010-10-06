@@ -16,6 +16,7 @@
 #import <OsiriX/DCMObject.h>
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMTransferSyntax.h>
+#import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "AppController.h"
 #import "DCMPix.h"
 #import "WaitRendering.h"
@@ -129,32 +130,38 @@ extern NSRecursiveLock *PapyrusLock;
 		else
 		{
 			const char *string = NULL;
-			NSString *modality;
+			NSString *modality = @"OT";
 			if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
 				modality = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
-			else
-				modality = @"OT";
 			
-			int resolution = 0;
-			unsigned short rows = 0;
-			if (dataset->findAndGetUint16( DCM_Rows, rows, OFFalse).good())
+			NSString *SOPClassUID = @"";
+			if (dataset->findAndGetString(DCM_SOPClassUID, string, OFFalse).good() && string != NULL)
+				SOPClassUID = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
+			
+			// See Decompress.mm for these exceptions
+			if( [DCMAbstractSyntaxUID isImageStorage: SOPClassUID] == YES && [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]] == NO && [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] == NO)
 			{
-				if( resolution == 0 || resolution > rows)
-					resolution = rows;
-			}
-			unsigned short columns = 0;
-			if (dataset->findAndGetUint16( DCM_Columns, columns, OFFalse).good())
-			{
-				if( resolution == 0 || resolution > columns)
-					resolution = columns;
-			}
-			
-			int quality, compression = [BrowserController compressionForModality: modality quality: &quality resolution: resolution];
-			
-			if( compression == compression_none)
-				return NO;
+				int resolution = 0;
+				unsigned short rows = 0;
+				if (dataset->findAndGetUint16( DCM_Rows, rows, OFFalse).good())
+				{
+					if( resolution == 0 || resolution > rows)
+						resolution = rows;
+				}
+				unsigned short columns = 0;
+				if (dataset->findAndGetUint16( DCM_Columns, columns, OFFalse).good())
+				{
+					if( resolution == 0 || resolution > columns)
+						resolution = columns;
+				}
 				
-			return YES;
+				int quality, compression = [BrowserController compressionForModality: modality quality: &quality resolution: resolution];
+				
+				if( compression == compression_none)
+					return NO;
+				
+				return YES;
+			}
 		}
 	}
 	
