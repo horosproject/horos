@@ -1436,9 +1436,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 							}
 							
 							// Father
-							
-							[NSThread sleepForTimeInterval: 1.0]; // To allow the creation of lock_process file with corresponding pid
-							
+							[NSThread sleepForTimeInterval: 0.2]; // To allow the creation of lock_process file with corresponding pid
 							/* parent process, note process in table */
 							// processtable_.addProcessToTable(pid, assoc);
 							
