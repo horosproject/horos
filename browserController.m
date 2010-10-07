@@ -3812,6 +3812,11 @@ static NSConditionLock *threadLock = nil;
 			
 			if( succeed)
 			{
+				BOOL mountedVolume = [[dict objectForKey: @"mountedVolume"] boolValue];
+				
+				if( [[dict objectForKey: @"copyFiles"] boolValue])
+					mountedVolume = NO;
+				
 				objects = 	   [BrowserController addFiles: copiedFiles
 												 toContext: [[BrowserController currentBrowser] managedObjectContext]
 												toDatabase: [BrowserController currentBrowser]
@@ -3820,7 +3825,7 @@ static NSConditionLock *threadLock = nil;
 									   parseExistingObject: NO
 												  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
 										 generatedByOsiriX: NO
-										     mountedVolume: [[dict objectForKey: @"mountedVolume"] boolValue]];
+										     mountedVolume: mountedVolume];
 			}
 			else
 			{
