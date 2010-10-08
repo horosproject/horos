@@ -53,6 +53,7 @@
 }
 
 -(NSString*)confirmDirectoryAtPath:(NSString*)dirPath {
+	if( dirPath == nil) return nil;
 	NSString* parentDirPath = [dirPath stringByDeletingLastPathComponent];
 	if (![dirPath isEqual:parentDirPath])
 		[self confirmDirectoryAtPath:parentDirPath];

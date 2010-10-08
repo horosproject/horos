@@ -243,6 +243,14 @@
 
 #pragma mark Anonymization
 
++ (NSString*) cleanStringForFile: (NSString*) s
+{
+	s = [s stringByReplacingOccurrencesOfString:@"/" withString:@"-"];
+	s = [s stringByReplacingOccurrencesOfString:@":" withString:@"-"];
+	
+	return s;	
+}
+
 +(NSDictionary*)anonymizeFiles:(NSArray*)files dicomImages: (NSArray*) dicomImages toPath:(NSString*)dirPath withTags:(NSArray*)intags
 {
 	if( [files count] != [dicomImages count])
@@ -338,10 +346,17 @@
 			
 			NSString* tempFilePath = [producedFiles objectAtIndex: i];
 			NSString* ext = [tempFilePath pathExtension];
+			NSString* fileDirPath = nil;
 			
-			NSString* fileDirPath = [dirPath stringByAppendingPathComponent:image.series.study.name];
-			fileDirPath = [fileDirPath stringByAppendingPathComponent:image.series.study.studyName];
-			fileDirPath = [fileDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@ - %@", image.series.name, image.series.id]];
+			if( [image.series.study.patientID length] > 0)
+				fileDirPath = [dirPath stringByAppendingPathComponent: [NSString stringWithFormat: NSLocalizedString( @"Anonymized - %@", nil), [Anonymization cleanStringForFile:image.series.study.patientID]]];
+			else
+				fileDirPath = [dirPath stringByAppendingPathComponent: NSLocalizedString( @"Anonymized", nil)];
+			
+			fileDirPath = [fileDirPath stringByAppendingPathComponent: [Anonymization cleanStringForFile: image.series.study.studyName]];
+			
+			fileDirPath = [fileDirPath stringByAppendingPathComponent: [Anonymization cleanStringForFile: [NSString stringWithFormat:@"%@ - %@", image.series.name, image.series.id]]];
+			
 			[[NSFileManager defaultManager] confirmDirectoryAtPath:fileDirPath];
 			
 			NSString* filePath;
