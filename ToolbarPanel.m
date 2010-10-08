@@ -15,6 +15,7 @@
 #import "ToolbarPanel.h"
 #import "ToolBarNSWindow.h"
 #import "ViewerController.h"
+#import "AppController.h"
 
 extern BOOL USETOOLBARPANEL;
 
@@ -79,7 +80,8 @@ static int increment = 0;
 		
 		firstTime = YES;
 		
-//		[[self window] setCollectionBehavior: NSWindowCollectionBehaviorMoveToActiveSpace];
+		if( [AppController hasMacOSXSnowLeopard])
+			[[self window] setCollectionBehavior: 1 << 6]; //NSWindowCollectionBehaviorIgnoresCycle
 	}
 	
 	return self;

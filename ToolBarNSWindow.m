@@ -15,6 +15,7 @@
 #import "ToolBarNSWindow.h"
 #import "ToolbarPanel.h"
 
+
 @implementation ToolBarNSWindow
 
 - (BOOL) canBecomeMainWindow

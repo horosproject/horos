@@ -15,8 +15,7 @@
 #import "UserTable.h"
 #import "PSGenerator.h"
 #import "BrowserController.h"
-
-extern BOOL hasMacOSXSnowLeopard();
+#import "AppController.h"
 
 static PSGenerator *generator = nil;
 
@@ -112,7 +111,7 @@ static PSGenerator *generator = nil;
 	
 	if( [key isEqualToString: @"downloadZIP"] && [*value boolValue] == YES)
 	{
-		if( hasMacOSXSnowLeopard() == NO)
+		if( [AppController hasMacOSXSnowLeopard] == NO)
 		{
 			if( error)
 			{

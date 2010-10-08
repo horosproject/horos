@@ -118,7 +118,6 @@ static NSTimeInterval lastFreeSpaceLogTime = 0;
 
 extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
-BOOL hasMacOSXSnowLeopard();
 
 #pragma deprecated(asciiString)
 NSString* asciiString(NSString* str)
@@ -17223,7 +17222,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction) sendMail: (id) sender
 {
-	if( hasMacOSXSnowLeopard())
+	if( [AppController hasMacOSXSnowLeopard])
 	{
 		#define kScriptName (@"Mail")
 		#define kScriptType (@"scpt")
@@ -17833,7 +17832,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSTask *t;
 	NSArray *args;
 	
-	if( hasMacOSXSnowLeopard() == NO && [NSThread isMainThread] && [password length] > 0)
+	if( [AppController hasMacOSXSnowLeopard] == NO && [NSThread isMainThread] && [password length] > 0)
 	{
 		password = nil;
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher. The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);
@@ -17917,7 +17916,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSTask *t;
 	NSArray *args;
 	
-	if( hasMacOSXSnowLeopard() == NO && [NSThread isMainThread] && [password length] > 0)
+	if( [AppController hasMacOSXSnowLeopard] == NO && [NSThread isMainThread] && [password length] > 0)
 	{
 		password = nil;
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ZIP Encryption", nil), NSLocalizedString(@"ZIP encryption requires MacOS 10.6 or higher. The ZIP file will be generated, but NOT encrypted with a password.", nil), NSLocalizedString(@"OK",nil),nil, nil);

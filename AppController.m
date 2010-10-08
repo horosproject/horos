@@ -560,54 +560,6 @@ short HasAltiVec ( )
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-BOOL hasMacOSXSnowLeopard()
-{
-	OSErr						err;       
-	SInt32						osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );       
-	if ( err == noErr)       
-	{
-		if ( osVersion < 0x1060UL )
-		{
-			return NO;
-		}
-	}
-	return YES;                   
-}
-
-BOOL hasMacOSXLeopard()
-{
-	OSErr						err;       
-	SInt32						osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );       
-	if ( err == noErr)       
-	{
-		if ( osVersion < 0x1050UL )
-		{
-			return NO;
-		}
-	}
-	return YES;                   
-}
-
-BOOL hasMacOSXTiger()
-{
-	OSErr						err;       
-	SInt32						osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );       
-	if ( err == noErr)       
-	{
-		if ( osVersion < 0x1040UL )
-		{
-			return NO;
-		}
-	}
-	return YES;                   
-}
-
 SInt32 osVersion()
 {
 	OSErr						err;       
@@ -999,6 +951,39 @@ static NSDate *lastWarningDate = nil;
 		
 		NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date. Restart OsiriX to use the new or updated plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
 	}
+}
+
+
++(BOOL) hasMacOSXSnowLeopard
+{
+	OSErr						err;       
+	SInt32						osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );       
+	if ( err == noErr)       
+	{
+		if ( osVersion < 0x1060UL )
+		{
+			return NO;
+		}
+	}
+	return YES;                   
+}
+
++(BOOL) hasMacOSXLeopard
+{
+	OSErr						err;       
+	SInt32						osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );       
+	if ( err == noErr)       
+	{
+		if ( osVersion < 0x1050UL )
+		{
+			return NO;
+		}
+	}
+	return YES;                   
 }
 
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path
@@ -1398,7 +1383,7 @@ static NSDate *lastWarningDate = nil;
 	
 	if( [defaults integerForKey: @"httpWebServer"] == 1 && [defaults integerForKey: @"httpWebServer"] != [[previousDefaults valueForKey: @"httpWebServer"] intValue])
 	{
-		if( hasMacOSXSnowLeopard() == NO)
+		if( [AppController hasMacOSXSnowLeopard] == NO)
 			NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the OsiriX Web Server.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
 	}
 	
@@ -2655,7 +2640,7 @@ static BOOL initialized = NO;
 				//		exit(0);
 				//	}
 				
-				if (hasMacOSXLeopard() == NO)
+				if ([AppController hasMacOSXLeopard] == NO)
 				{
 					NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", nil), NSLocalizedString(@"This application requires MacOS X 10.5 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 					exit(0);
@@ -3319,9 +3304,9 @@ static BOOL initialized = NO;
 	
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"SAMESTUDY"];
 		
-	[[NSUserDefaults standardUserDefaults] setBool: hasMacOSXSnowLeopard() forKey: @"hasMacOSXSnowLeopard"];
+	[[NSUserDefaults standardUserDefaults] setBool: [AppController hasMacOSXSnowLeopard] forKey: @"hasMacOSXSnowLeopard"];
 	
-	if( hasMacOSXSnowLeopard() == NO)
+	if( [AppController hasMacOSXSnowLeopard] == NO)
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"encryptForExport"];
@@ -3519,7 +3504,7 @@ static BOOL initialized = NO;
 	if( sender != self) verboseUpdateCheck = YES;
 	else verboseUpdateCheck = NO;
 	
-	if (hasMacOSXLeopard())
+	if( [AppController hasMacOSXLeopard])
 		url = [NSURL URLWithString:@"http://www.osirix-viewer.com/versionLeopard.xml"];
 	else
 		url = [NSURL URLWithString:@"http://www.osirix-viewer.com/version.xml"];

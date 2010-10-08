@@ -128,6 +128,8 @@ extern "C"
 @property (readonly) NSMenu *filtersMenu, *windowsTilingMenuRows, *windowsTilingMenuColumns;
 
 + (BOOL) isFDACleared;
++ (BOOL) hasMacOSXSnowLeopard;
++ (BOOL) hasMacOSXLeopard;
 
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
