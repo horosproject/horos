@@ -529,6 +529,10 @@
 				if([dcmObject attributeValueWithName:@"PatientsSex"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"PatientsSex"]] forName:@"PatientsSex"];
 				if([dcmObject attributeValueWithName:@"PatientsBirthDate"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"PatientsBirthDate"]] forName:@"PatientsBirthDate"];
 				if([dcmObject attributeValueWithName:@"AccessionNumber"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"AccessionNumber"]] forName:@"AccessionNumber"];
+				if([dcmObject attributeValueWithName:@"InstitutionName"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"InstitutionName"]] forName:@"InstitutionName"];
+				if([dcmObject attributeValueWithName:@"InstitutionAddress"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"InstitutionAddress"]] forName:@"InstitutionAddress"];
+				if([dcmObject attributeValueWithName:@"PerformingPhysiciansName"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"PerformingPhysiciansName"]] forName:@"PerformingPhysiciansName"];
+				
 				if([dcmObject attributeValueWithName:@"ReferringPhysiciansName"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"ReferringPhysiciansName"]] forName:@"ReferringPhysiciansName"];
 				else [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @""] forName:@"ReferringPhysiciansName"];
 				
