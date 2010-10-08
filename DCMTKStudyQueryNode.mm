@@ -88,19 +88,19 @@
 			_uid = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			
 		if (dataset ->findAndGetString(DCM_StudyDescription, string).good() && string != nil) 
-			_theDescription = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+			_theDescription = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
 		
 		if (dataset ->findAndGetString(DCM_PatientsName, string).good() && string != nil)
 			_name = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
 		
 		if (dataset ->findAndGetString(DCM_PatientID, string).good() && string != nil)		
-			_patientID = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+			_patientID = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
 			
 		if (dataset ->findAndGetString(DCM_AccessionNumber, string).good() && string != nil)		
-			_accessionNumber = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+			_accessionNumber = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
 		
 		if (dataset ->findAndGetString(DCM_StudyComments, string).good() && string != nil)		
-			_comments = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+			_comments = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
 		
 		if (dataset ->findAndGetString(DCM_ReferringPhysiciansName, string).good() && string != nil)		
 			_referringPhysician = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];

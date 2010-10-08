@@ -90,13 +90,13 @@
 			_studyInstanceUID = [[extraParameters valueForKey: @"StudyInstanceUID"] retain];
 		
 		if (dataset ->findAndGetString(DCM_SeriesDescription, string).good() && string != nil) 
-			_theDescription = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+			_theDescription = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
 			
 		if (dataset ->findAndGetString(DCM_SeriesNumber, string).good() && string != nil) 
 			_name = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
 			
 		if (dataset ->findAndGetString(DCM_ImageComments, string).good() && string != nil) 
-			_comments = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+			_comments = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
 			
 		if (dataset ->findAndGetString(DCM_SeriesDate, string).good() && string != nil)
 		{
