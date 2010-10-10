@@ -5854,9 +5854,13 @@ END_CREATE_ROIS:
 			}
 			
 			//get PixelData
+			short *oImage = nil;
 			NSData *pixData = [pixelAttr decodeFrameAtIndex:imageNb];
-			short *oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
-			[pixData getBytes:oImage];
+			if( [pixData length] > 0)
+			{
+				oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
+				[pixData getBytes:oImage];
+			}
 			
 			if( oImage == nil) //there was no data for this frame -> create empty image
 			{
@@ -5871,6 +5875,7 @@ END_CREATE_ROIS:
 					if( yo>= width) yo = 0;
 				}
 			}
+			
 			
 			//-----------------------frame data already loaded in (short) oImage --------------
 			

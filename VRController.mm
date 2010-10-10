@@ -1038,7 +1038,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			[BrowserController multiThreadedImageConvert: @"16UToF" :&src16 :&dstf :-[view offset] :1./[view valueFactor]];
 			
 //			vImageConvert_16UToF( &src16, &dstf, -[view offset], 1./[view valueFactor], 0);
-			
 			//BlockMoveData( undodata[ i], data, memSize);
 		}
 		
