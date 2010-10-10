@@ -28,8 +28,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-extern BOOL hasMacOSXSnowLeopard();
-
 @implementation OSIWebSharingPreferencePanePref
 
 @synthesize TLSAuthenticationCertificate;
@@ -126,7 +124,7 @@ extern BOOL hasMacOSXSnowLeopard();
 	[self getTLSCertificate];
 	
 	
-	if( hasMacOSXSnowLeopard() == NO)
+	if( [AppController hasMacOSXSnowLeopard] == NO)
 		NSRunCriticalAlertPanel( NSLocalizedStringFromTableInBundle( @"Unsupported", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the OsiriX Web Server.", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"OK", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil) , nil, nil);
 }
 
