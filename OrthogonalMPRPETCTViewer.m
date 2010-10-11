@@ -925,6 +925,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 			{
 				@try
 				{
+					[item setEnabled: YES];
 					im = [[item view] screenshotByCreatingPDF];
 				}
 				@catch (NSException * e)

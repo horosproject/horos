@@ -2542,6 +2542,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			{
 				@try
 				{
+					[item setEnabled: YES];
 					im = [[item view] screenshotByCreatingPDF];
 				}
 				@catch (NSException * e)

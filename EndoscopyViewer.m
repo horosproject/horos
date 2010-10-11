@@ -830,6 +830,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 			{
 				@try
 				{
+					[item setEnabled: YES];
 					im = [[item view] screenshotByCreatingPDF];
 				}
 				@catch (NSException * e)

@@ -4,3 +4,4 @@
 
 #define OSIRIX_VIEWER
 //#define _STEREO_VISION_
+#define EXPORTTOOLBARITEM 1

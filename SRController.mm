@@ -558,6 +558,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			{
 				@try
 				{
+					[item setEnabled: YES];
 					im = [[item view] screenshotByCreatingPDF];
 				}
 				@catch (NSException * e)

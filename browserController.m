@@ -19566,6 +19566,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				@try
 				{
+					[item setEnabled: YES];
 					im = [[item view] screenshotByCreatingPDF];
 				}
 				@catch (NSException * e)
