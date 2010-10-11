@@ -14491,6 +14491,10 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (BOOL) validateMenuItem: (NSMenuItem*) menuItem
 {
+	#ifdef EXPORTTOOLBARITEM
+	return YES;
+	#endif
+
 	if( [[databaseOutline selectedRowIndexes] count] < 1) // No Database Selection
 	{
 		if(	[menuItem action] == @selector( rebuildThumbnails:) ||
@@ -19547,41 +19551,43 @@ static volatile int numberOfThreadsForJPEG = 0;
     
 	//    [self.window makeKeyAndOrderFront:nil];
 	
-//	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
-//	{
-//		
-//		@try
-//		{
-//			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
-//			
-//			
-//			NSImage *im = [item image];
-//			
-//			if( im == nil)
-//			{
-//				@try
-//				{
-//					im = [[item view] screenshotByCreatingPDF];
-//				}
-//				@catch (NSException * e)
-//				{
-//					NSLog( @"a");
-//				}
-//			}
-//			
-//			if( im)
-//			{
-//				NSBitmapImageRep *bits = [[[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]] autorelease];
-//				
-//				NSString *path = [NSString stringWithFormat: @"/tmp/sc/%@.png", [[item label] stringByReplacingOccurrencesOfString: @"/" withString:@"-"]];
-//				[[bits representationUsingType: NSPNGFileType properties: nil] writeToFile:path  atomically: NO];
-//			}
-//		}
-//		@catch (NSException * e)
-//		{
-//			NSLog( @"b");
-//		}
-//	}
+	#ifdef EXPORTTOOLBARITEM
+	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
+	{
+		
+		@try
+		{
+			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
+			
+			
+			NSImage *im = [item image];
+			
+			if( im == nil)
+			{
+				@try
+				{
+					im = [[item view] screenshotByCreatingPDF];
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"a");
+				}
+			}
+			
+			if( im)
+			{
+				NSBitmapImageRep *bits = [[[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]] autorelease];
+				
+				NSString *path = [NSString stringWithFormat: @"/tmp/sc/%@.png", [[item label] stringByReplacingOccurrencesOfString: @"/" withString:@"-"]];
+				[[bits representationUsingType: NSPNGFileType properties: nil] writeToFile:path  atomically: NO];
+			}
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"b");
+		}
+	}
+	#endif
 }
 
 - (void)drawerToggle: (id)sender
@@ -20236,6 +20242,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (BOOL)validateToolbarItem: (NSToolbarItem *)toolbarItem
 {
+	#ifdef EXPORTTOOLBARITEM
+	return YES;
+	#endif
+	
 	if( [[databaseOutline selectedRowIndexes] count] < 1) // No Database Selection
 	{
 		if(	[toolbarItem action] == @selector( rebuildThumbnails:) ||

@@ -376,6 +376,9 @@ static int hotKeyToolCrossTable[] =
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
+#ifdef EXPORTTOOLBARITEM
+return YES;
+#endif
 	BOOL valid = NO;
 	
 	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
@@ -5271,6 +5274,10 @@ static ViewerController *draggedController = nil;
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem
 {
+#ifdef EXPORTTOOLBARITEM
+return YES;
+#endif
+
 	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
 		return NO;
 	
@@ -5647,41 +5654,42 @@ static ViewerController *draggedController = nil;
 	[[self window] setShowsToolbarButton:NO];
 	[[[self window] toolbar] setVisible: YES];
 	
-//	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
-//	{
-//		
-//		@try
-//		{
-//			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
-//			
-//			
-//			NSImage *im = [item image];
-//			
-//			if( im == nil)
-//			{
-//				@try
-//				{
-//					im = [[item view] screenshotByCreatingPDF];
-//				}
-//				@catch (NSException * e)
-//				{
-//					NSLog( @"a");
-//				}
-//			}
-//			
-//			if( im)
-//			{
-//				NSBitmapImageRep *bits = [[[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]] autorelease];
-//				
-//				NSString *path = [NSString stringWithFormat: @"/tmp/sc/%@.png", [[item label] stringByReplacingOccurrencesOfString: @"/" withString:@"-"]];
-//				[[bits representationUsingType: NSPNGFileType properties: nil] writeToFile:path  atomically: NO];
-//			}
-//		}
-//		@catch (NSException * e)
-//		{
-//			NSLog( @"b");
-//		}
-//	}
+	#ifdef EXPORTTOOLBARITEM
+	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
+	{
+		@try
+		{
+			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
+			
+			
+			NSImage *im = [item image];
+			
+			if( im == nil)
+			{
+				@try
+				{
+					im = [[item view] screenshotByCreatingPDF];
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"a");
+				}
+			}
+			
+			if( im)
+			{
+				NSBitmapImageRep *bits = [[[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]] autorelease];
+				
+				NSString *path = [NSString stringWithFormat: @"/tmp/sc/%@.png", [[item label] stringByReplacingOccurrencesOfString: @"/" withString:@"-"]];
+				[[bits representationUsingType: NSPNGFileType properties: nil] writeToFile:path  atomically: NO];
+			}
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"b");
+		}
+	}
+	#endif
 }
 
 #pragma mark-
