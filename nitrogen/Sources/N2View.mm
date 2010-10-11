@@ -22,15 +22,7 @@ NSString* N2ViewBoundsSizeDidChangeNotificationOldBoundsSize = @"oldBoundsSize";
 @implementation N2View
 @synthesize controlSize = _controlSize, minSize = _minSize, maxSize = _maxSize, layout = _layout, foreColor = _foreColor, backColor = _backColor;
 
-- (void)setRecursiveEnabled:(BOOL)enabled
-{
-	if( [self respondsToSelector:@selector(setEnabled:)])
-		[(NSControl *)self setEnabled:enabled];
-		
-	for( NSView *subview in [self subviews])
-		[subview setRecursiveEnabled:enabled];
-}
- 
+
 -(void)dealloc {
 	[self setForeColor:NULL];
 	[self setBackColor:NULL];

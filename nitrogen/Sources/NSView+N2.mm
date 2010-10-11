@@ -19,6 +19,15 @@
 
 @implementation NSView (N2)
 
+- (void)setRecursiveEnabled:(BOOL)enabled
+{
+	if( [self respondsToSelector:@selector(setEnabled:)])
+		[(NSControl *)self setEnabled:enabled];
+		
+	for( NSView *subview in [self subviews])
+		[subview setRecursiveEnabled:enabled];
+}
+
 -(id)initWithSize:(NSSize)size {
 	return [self initWithFrame:NSMakeRect(NSZeroPoint, size)];
 }

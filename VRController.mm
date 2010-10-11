@@ -1657,9 +1657,9 @@ return YES;
 //    [window makeKeyAndOrderFront:nil];
 
 	#ifdef EXPORTTOOLBARITEM
+	NSLog(@"************** WARNING EXPORTTOOLBARITEM ACTIVATED");
 	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
 	{
-		
 		@try
 		{
 			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
@@ -1671,7 +1671,13 @@ return YES;
 			{
 				@try
 				{
-					[item setEnabled: YES];
+					if( [item respondsToSelector:@selector( setRecursiveEnabled:)])
+						[item setRecursiveEnabled: YES];
+					else if( [[item view] respondsToSelector:@selector( setRecursiveEnabled:)])
+						[[item view] setRecursiveEnabled: YES];
+					else if( item)
+						NSLog( @"%@", item);
+						
 					im = [[item view] screenshotByCreatingPDF];
 				}
 				@catch (NSException * e)
