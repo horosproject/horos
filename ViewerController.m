@@ -102,6 +102,7 @@ static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.icns";
 static NSString*	iPhotoToolbarItemIdentifier			= @"iPhoto2";
 static NSString*	PlayToolbarItemIdentifier			= @"Play.icns";
+static NSString*	PauseToolbarItemIdentifier			= @"Pause.icns";
 static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
 static NSString*	SpeedToolbarItemIdentifier			= @"Speed";
 static NSString*	ToolsToolbarItemIdentifier			= @"Tools";
@@ -15136,6 +15137,7 @@ int i,j,l;
         [timer release];
         timer = nil;
         
+		[sender setImage: [NSImage imageNamed: PlayToolbarItemIdentifier]];
         [sender setLabel: NSLocalizedString(@"Browse", nil)];
 		[sender setPaletteLabel: NSLocalizedString(@"Browse", nil)];
         [sender setToolTip: NSLocalizedString(@"Browse this series", nil)];
@@ -15153,6 +15155,7 @@ int i,j,l;
         lastTime = [NSDate timeIntervalSinceReferenceDate];
         lastTimeFrame = [NSDate timeIntervalSinceReferenceDate];
         
+		[sender setImage: [NSImage imageNamed: PauseToolbarItemIdentifier]];
         [sender setLabel: NSLocalizedString(@"Stop", nil)];
 		[sender setPaletteLabel: NSLocalizedString(@"Stop", nil)];
         [sender setToolTip: NSLocalizedString(@"Stop", nil)];

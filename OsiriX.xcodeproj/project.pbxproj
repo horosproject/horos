@@ -4797,6 +4797,8 @@
 		CE6E2CB706CAE45A00BC7907 /* PlotWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6E2CAF06CAE45A00BC7907 /* PlotWindow.h */; };
 		CE6E2CB806CAE45A00BC7907 /* PlotWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6E2CB006CAE45A00BC7907 /* PlotWindow.m */; };
 		CE6E2CB906CAE45A00BC7907 /* PlotView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6E2CB106CAE45A00BC7907 /* PlotView.m */; };
+		CE72D7C31263702500874EF6 /* Pause.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE72D7C21263702500874EF6 /* Pause.icns */; };
+		CE72D7C41263702500874EF6 /* Pause.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE72D7C21263702500874EF6 /* Pause.icns */; };
 		CE74456906DBA4CB0034D05E /* ITK.h in Headers */ = {isa = PBXBuildFile; fileRef = CE74456706DBA4CB0034D05E /* ITK.h */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CE74456A06DBA4CB0034D05E /* ITK.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE74456806DBA4CB0034D05E /* ITK.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CE74824206C9701200FFA74C /* trash.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE74824006C9701200FFA74C /* trash.icns */; };
@@ -11644,6 +11646,7 @@
 		CE6E2CAF06CAE45A00BC7907 /* PlotWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PlotWindow.h; sourceTree = "<group>"; };
 		CE6E2CB006CAE45A00BC7907 /* PlotWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PlotWindow.m; sourceTree = "<group>"; };
 		CE6E2CB106CAE45A00BC7907 /* PlotView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PlotView.m; sourceTree = "<group>"; };
+		CE72D7C21263702500874EF6 /* Pause.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Pause.icns; sourceTree = "<group>"; };
 		CE74456706DBA4CB0034D05E /* ITK.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ITK.h; sourceTree = "<group>"; };
 		CE74456806DBA4CB0034D05E /* ITK.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ITK.mm; sourceTree = "<group>"; };
 		CE74824006C9701200FFA74C /* trash.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = trash.icns; sourceTree = "<group>"; };
@@ -13492,6 +13495,7 @@
 				ABBB6496063587B200D9531F /* Oval.tif */,
 				B7CDAD000AB30E7600068D70 /* page.tif */,
 				A97569571237D132003F00D3 /* PathAssistant.png */,
+				CE72D7C21263702500874EF6 /* Pause.icns */,
 				B7CDAD010AB30E7600068D70 /* pdf.tif */,
 				AB746742065938DB005838D5 /* Pencil.tif */,
 				AB9139B706839830006F3936 /* PIC.icns */,
@@ -22248,6 +22252,7 @@
 				A9A80E3911F73E22009F54B9 /* Activity_StopPressed.tif in Resources */,
 				59FB654F12312D8900EBA136 /* weasis in Resources */,
 				A97569581237D132003F00D3 /* PathAssistant.png in Resources */,
+				CE72D7C31263702500874EF6 /* Pause.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22603,6 +22608,7 @@
 				5926822611CF60BD00CFA81F /* ThreadModalForWindow.xib in Resources */,
 				A9A80E4E11F744FB009F54B9 /* Activity_StopPressed.tif in Resources */,
 				A9A80E4F11F744FC009F54B9 /* Activity_Stop.tif in Resources */,
+				CE72D7C41263702500874EF6 /* Pause.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
