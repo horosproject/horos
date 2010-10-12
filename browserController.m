@@ -17810,7 +17810,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 				if( [[NSFileManager defaultManager] fileExistsAtPath: [tempPath stringByAppendingPathExtension: @"zip"]] == NO)
 				{
 					[BrowserController encryptFileOrFolder: tempPath inZIPFile: [tempPath stringByAppendingPathExtension: @"zip"] password: passwordForExportEncryption];
-					self.passwordForExportEncryption = @"";
 				}
 			}
 		}
@@ -17822,6 +17821,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[AppController printStackTrace: e];
 		#endif
 	}
+	
+	self.passwordForExportEncryption = @"";
 	
 	[pool release];
 	
@@ -17986,6 +17987,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[sPanel setTitle: NSLocalizedString(@"Export",nil)];
 	[sPanel setCanCreateDirectories:YES];
 	[sPanel setAccessoryView:exportAccessoryView];
+	self.passwordForExportEncryption = @"";
 	
 	[compressionMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"Compression Mode for Export"]];
 	
