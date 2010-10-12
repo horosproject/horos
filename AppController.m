@@ -3052,10 +3052,16 @@ static BOOL initialized = NO;
 //	[AppController displayImportantNotice: self];
 
 	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER3"] == 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX3"] == NO)
+	{
 		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil)  name:@"result"];
+		NSLog( @"******** %@", NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil));
+	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseOpenJpegForJPEG2000"] == NO)
+	{
 		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"Jasper library is selected for JPEG2000. The performance and quality of this toolkit are lower.", nil)  name:@"result"];
+		NSLog( @"******** %@", NSLocalizedString( @"Jasper library is selected for JPEG2000. The performance and quality of this toolkit are lower.", nil));
+	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
 	{
