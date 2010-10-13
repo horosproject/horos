@@ -14303,7 +14303,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		while( [SendController sendControllerObjects] > 0)
 		{
-			[NSThread sleepForTimeInterval: 0.1];
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
 			
 			if( wait && [[wait window] isVisible] == NO)
 				[wait showWindow:self];

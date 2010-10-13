@@ -48,11 +48,9 @@ static volatile int sendControllerObjects = 0;
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"sendROIs"];
 	[[NSUserDefaults standardUserDefaults] setInteger: syntax forKey:@"syntaxListOffis"];
 	
-	SendController *sendController = [[SendController alloc] initWithFiles:files];
+	SendController *sendController = [[SendController alloc] initWithFiles: files];
 	
-	[sendController sendToNode: node];
-	
-	[NSThread detachNewThreadSelector: @selector(releaseSelfWhenDone:) toTarget:sendController withObject: nil];
+	[sendController sendToNode: node objects: nil];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: s forKey: @"sendROIs"];
 }
@@ -71,14 +69,16 @@ static volatile int sendControllerObjects = 0;
 		{
 			SendController *sendController = [[SendController alloc] initWithFiles:files];
 			[NSApp beginSheet: [sendController window] modalForWindow:[NSApp mainWindow] modalDelegate:sendController didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
-			[NSThread detachNewThreadSelector: @selector(releaseSelfWhenDone:) toTarget:sendController withObject: nil];
 		}
 		else
 		{
 			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"No DICOM destinations available. See Preferences to add DICOM locations.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 		}
 	}
-	else NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"No files are selected...",nil),NSLocalizedString( @"OK",nil), nil, nil);
+	else
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"No files are selected...",nil),NSLocalizedString( @"OK",nil), nil, nil);
+	}
 }
 
 - (id)initWithFiles:(NSArray *)files
@@ -103,7 +103,6 @@ static volatile int sendControllerObjects = 0;
 		
 		_readyForRelease = NO;
 		_lock = [[NSRecursiveLock alloc] init];
-		[_lock  lock];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
 												selector: @selector( updateDestinationPopup:)
@@ -139,6 +138,8 @@ static volatile int sendControllerObjects = 0;
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
+	sendControllerObjects--;
 	
 	NSLog(@"SendController Released");
 	[_destinationServer release];
@@ -227,8 +228,7 @@ static volatile int sendControllerObjects = 0;
 }
 
 - (IBAction) endSelectServer:(id) sender
-{
-	NSLog(@"end select server");
+{	
 	[[self window] orderOut:sender];
 	[NSApp endSheet: [self window] returnCode:[sender tag]];
 	NSArray *objectsToSend = _files;
@@ -251,60 +251,30 @@ static volatile int sendControllerObjects = 0;
 		
 		if( files2Send != nil && [files2Send count] > 0)
 		{
-//			if( !([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask && [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask))
-//			{
-//				// DONT REMOVE THESE LINES - THANX ANTOINE
-//				if( [[PluginManager plugins] valueForKey:@"ComPACS"] != 0)
-//				{
-//					long result = [[[PluginManager plugins] objectForKey:@"ComPACS"] prepareFilter: nil];
-//					
-//					result = [[[PluginManager plugins] objectForKey:@"ComPACS"] filterImage: [NSString stringWithFormat:@"dicomSEND%@", [[objectsToSend objectAtIndex: 0] valueForKeyPath:@"series.study.patientUID"]]];
-//					if( result != 0)
-//					{
-//						NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"Smart card authentication is required for DICOM sending.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-//						files2Send = nil;
-//					}
-//				}
-//			}
-			
 			if( files2Send)
-			{
-				[_destinationServer release];
-				_destinationServer = [[self server] retain];
-				
-				sendROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"];
-				
-				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( sendDICOMFilesOffis:) object: objectsToSend] autorelease];
-				t.name = NSLocalizedString( @"Sending DICOM files...", nil);
-				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [objectsToSend count]];
-				t.supportsCancel = YES;
-				t.progress = 0;
-				[[ThreadsManager defaultManager] addThreadAndStart: t];
-			}
+				[self sendToNode: [self server] objects: objectsToSend];
 			else
-			{
-				[_lock unlock];	// Will release the object
-				sendControllerObjects--;
-			}
+				[self release];
 		}
 		else
 		{
 			NSRunAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"There are no files of selected type to send.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 			
-			[_lock unlock];	// Will release the object
-			sendControllerObjects--;
+			[self release];
 		}
 	}
 	else // Cancel
-	{
-		[_lock unlock];	// Will release the object
-		sendControllerObjects--;
-	}
+		[self release];
 }
 
-- (void) sendToNode: (NSDictionary*) node
+- (void) sendToNode: (NSDictionary*) node objects:(NSArray*) objects
 {
-	//	_destinationServer = [node retain];
+	if( objects == nil)
+		objects = _files;
+	
+	[_lock lock];
+	[NSThread detachNewThreadSelector: @selector(releaseSelfWhenDone:) toTarget: self withObject: nil];
+	
 	[_destinationServer release];
 	_destinationServer = [node retain];
 	
@@ -444,8 +414,6 @@ static volatile int sendControllerObjects = 0;
 		[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"NumberSent"];
 		[info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
 		[info setObject:calledAET forKey:@"CalledAET"];
-		
-		sendControllerObjects--;
 	}
 	@catch (NSException *e)
 	{

@@ -30,7 +30,7 @@
 
 #define FILESSIZE 512*512*2
 
-static int TIMEOUT	= 10;
+static int TIMEOUT	= 100;
 static NSLock *resolveServiceThreadLock = nil;
 static BonjourBrowser *currentBrowser = nil;
 

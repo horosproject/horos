@@ -75,7 +75,7 @@ enum SendServerType { osirixServer, offisServer };
 - (void)setKeyImageIndex:(int)index;
 - (void)releaseSelfWhenDone:(id)sender;
 - (IBAction)selectServer: (id)sender;
-- (void) sendToNode: (NSDictionary*) node;
+- (void) sendToNode: (NSDictionary*) node objects:(NSArray*) objects;
 - (void) updateDestinationPopup:(NSNotification*) note;
 
 @end
