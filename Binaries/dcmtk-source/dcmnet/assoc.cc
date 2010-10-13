@@ -1033,6 +1033,7 @@ ASC_findAcceptedPresentationContext(
     if ((pc == NULL) || (pc->result != ASC_P_ACCEPTANCE)) return ASC_BADPRESENTATIONCONTEXTID;
 
     l = &pc->proposedTransferSyntax;
+	if( l == NULL || *l == NULL) return ASC_BADPRESENTATIONCONTEXTID;
     transfer = (DUL_TRANSFERSYNTAX*) LST_Head(l);
     (void)LST_Position(l, (LST_NODE*)transfer);
     while (transfer != NULL) {
