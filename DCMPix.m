@@ -5680,36 +5680,36 @@ END_CREATE_ROIS:
 			NSString *acqTime = [[dcmObject attributeValueWithName:@"AcquisitionTime"] timeString];
 			NSString *radioTime = [[radionuclideTotalDoseObject attributeValueWithName:@"RadiopharmaceuticalStartTime"] timeString];
 			
-			if (acqDate)
-			{
-				if( [radioTime length] >= 6)
-					radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:radioTime] calendarFormat:@"%Y%m%d%H%M%S"];
-				else
-					radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:radioTime] calendarFormat:@"%Y%m%d%H%M"];
-			}
-			else if( seriesDate)
+			if( seriesDate)
 			{
 				if( [seriesTime length] >= 6)
 					radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:radioTime] calendarFormat:@"%Y%m%d%H%M%S"];
 				else
 					radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:radioTime] calendarFormat:@"%Y%m%d%H%M"];
 			}
-			
-			if (acqDate && acqTime)
+			else if (acqDate)
 			{
-				if( [acqTime length] >= 6)
-					acquisitionTime = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M%S"];
+				if( [radioTime length] >= 6)
+					radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:radioTime] calendarFormat:@"%Y%m%d%H%M%S"];
 				else
-					acquisitionTime = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M"];
+					radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:radioTime] calendarFormat:@"%Y%m%d%H%M"];
 			}
-			else if (seriesDate && seriesTime)
+			
+			if (seriesDate && seriesTime)
 			{
 				if( [seriesTime length] >= 6)
 					acquisitionTime = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:seriesTime] calendarFormat:@"%Y%m%d%H%M%S"];
 				else
 					acquisitionTime = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:seriesTime] calendarFormat:@"%Y%m%d%H%M"];
 			}
-			
+			else if (acqDate && acqTime)
+			{
+				if( [acqTime length] >= 6)
+					acquisitionTime = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M%S"];
+				else
+					acquisitionTime = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M"];
+			}
+
 			[self computeTotalDoseCorrected];
 		}
 		
@@ -7220,29 +7220,6 @@ END_CREATE_ROIS:
 				if ( val) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 				
 				acquisitionTime = nil;
-				val = Papy3GetElement (theGroupP, papAcquisitionDateGr, &nbVal, &elemType);
-				if (val != NULL)
-				{
-					NSString	*studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-					if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
-					
-					val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &elemType);
-					if (val != NULL)
-					{
-						NSString*   completeDate;
-						NSString*   studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-						
-						completeDate = [studyDate stringByAppendingString:studyTime];
-						
-						if( [studyTime length] >= 6)
-							acquisitionTime = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
-						else
-							acquisitionTime = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
-						
-						if( acquisitionTime)
-							acquisitionDate = [studyDate copy];
-					}
-				}
 				
 				if( acquisitionTime == nil)
 				{
@@ -7265,6 +7242,33 @@ END_CREATE_ROIS:
 							else
 								acquisitionTime = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
 								
+							if( acquisitionTime)
+								acquisitionDate = [studyDate copy];
+						}
+					}
+				}
+				
+				if( acquisitionTime == nil)
+				{
+					val = Papy3GetElement (theGroupP, papAcquisitionDateGr, &nbVal, &elemType);	
+					if (val != NULL)
+					{
+						NSString	*studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+						if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
+						
+						val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &elemType);
+						if (val != NULL)
+						{
+							NSString*   completeDate;
+							NSString*   studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+							
+							completeDate = [studyDate stringByAppendingString:studyTime];
+							
+							if( [studyTime length] >= 6)
+								acquisitionTime = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+							else
+								acquisitionTime = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
+							
 							if( acquisitionTime)
 								acquisitionDate = [studyDate copy];
 						}
