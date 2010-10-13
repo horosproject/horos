@@ -240,6 +240,7 @@ static volatile BOOL waitForRunningProcess = NO;
 		}
 		
 		[NSThread sleepForTimeInterval: 0.2];
+//		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];		
 	}
 	
 	NSLog( @"******* tryLockDuring failed for this lock: %@ (%d sec)", c, sec);
@@ -14303,7 +14304,8 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		while( [SendController sendControllerObjects] > 0)
 		{
-			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
+			//[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
+			[NSThread sleepForTimeInterval: 0.2];
 			
 			if( wait && [[wait window] isVisible] == NO)
 				[wait showWindow:self];
