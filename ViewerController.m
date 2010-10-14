@@ -6224,7 +6224,8 @@ return YES;
 		[[AppController sharedAppController] tileWindows: nil];
 	}
 	
-	if( curMovieIndex != 0) [self setMovieIndex: 0];
+	if( curMovieIndex != 0)
+		[self setMovieIndex: 0];
 	
 	BOOL		sameSeries = NO;
 	long		i, imageIndex;
