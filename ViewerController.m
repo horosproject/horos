@@ -6119,7 +6119,10 @@ return YES;
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: r userInfo: nil];
 			}
 		}
-		
+	}
+	
+	for( i = 0; i < maxMovieIndex; i++)
+	{
 		[copyRoiList[ i] release];
 		[roiList[ i] release];
 		[pixList[ i] release];
@@ -6220,7 +6223,9 @@ return YES;
 		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
 		[[AppController sharedAppController] tileWindows: nil];
 	}
-
+	
+	if( curMovieIndex != 0) [self setMovieIndex: 0];
+	
 	BOOL		sameSeries = NO;
 	long		i, imageIndex;
 	long		previousColumns = [imageView columns], previousRows = [imageView rows];
