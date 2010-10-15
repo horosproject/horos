@@ -9852,11 +9852,6 @@ static BOOL withReset = NO;
 
 - (CGFloat)splitView: (NSSplitView *)sender constrainSplitPosition: (CGFloat)proposedPosition ofSubviewAt: (NSInteger)offset
 {
-	if ([sender isEqual:sourcesSplitView])
-	{
-		return proposedPosition;
-	}
-	
     if( [sender isVertical] == YES)
 	{
         NSSize size = oMatrix.cellSize;
@@ -10019,12 +10014,7 @@ static BOOL withReset = NO;
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate: (CGFloat)proposedMin ofSubviewAt: (NSInteger)offset
 {	
-	if ([sender isEqual:sourcesSplitView])
-	{
-		// minimum size of the top view (db, albums)
-		return 200;
-	}
-	else if ([sender isEqual: splitViewHorz])
+	if ([sender isEqual: splitViewHorz])
 	{
 		return oMatrix.cellSize.height;
 	}
@@ -10039,11 +10029,6 @@ static BOOL withReset = NO;
 	if ([sender isEqual:splitViewVert])
 	{
 		return [sender bounds].size.width-200;
-	}
-	else if ([sender isEqual:sourcesSplitView])
-	{
-		// maximum size of the top view (db, album) = opposite of the minimum size of the bottom view (bonjour)
-		return [sender bounds].size.height-200;
 	}
 	else if ([sender isEqual: splitViewHorz])
 	{
@@ -14131,13 +14116,6 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[splitViewVert restoreDefault:@"SPLITVERT2"];
 		[splitViewHorz restoreDefault:@"SPLITHORZ2"];
-//		[sourcesSplitView restoreDefault:@"SPLITSOURCE"];
-		
-		//remove LogView. Code no longer needed. LP
-		//NSRect	frame = [[[logViewSplit subviews] objectAtIndex: 1] frame];
-		//frame.size.height = 0;
-		//[[[logViewSplit subviews] objectAtIndex: 1] setFrame: frame];
-		//[logViewSplit adjustSubviews];
 		
 		[self autoCleanDatabaseDate: self];
 		
@@ -14199,8 +14177,6 @@ static NSArray*	openSubSeriesArray = nil;
 	[self.window makeKeyAndOrderFront: self];
 	
 	[self refreshMatrix: self];
-	
-	[sourcesSplitView restoreDefault:@"SPLITSOURCE"];
 	
 	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"restartAutoQueryAndRetrieve"] == YES && [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"] != nil)
@@ -14362,7 +14338,6 @@ static NSArray*	openSubSeriesArray = nil;
 	newFilesInIncoming = NO;
 	[self setDockIcon];
 	
-	[sourcesSplitView saveDefault:@"SPLITSOURCE"];
     [splitViewVert saveDefault:@"SPLITVERT2"];
     [splitViewHorz saveDefault:@"SPLITHORZ2"];
 	

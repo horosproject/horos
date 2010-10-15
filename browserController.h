@@ -101,7 +101,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSTableView			*albumTable;
 	IBOutlet NSSegmentedControl		*segmentedAlbumButton;
 	
-	IBOutlet NSSplitView			*sourcesSplitView;
 	IBOutlet NSBox					*bonjourSourcesBox;
 	
 	IBOutlet NSTableView			*bonjourServicesList;
