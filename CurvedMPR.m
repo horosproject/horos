@@ -604,7 +604,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 		values for 'view':
 		0 - axial
 		1 - coronal
-		2 - saggital
+		2 - sagittal
 	*/
 
 	newPixList = [NSMutableArray array];
@@ -644,7 +644,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			length += [self lengthPoints:newPtA :newPtB :newRatio];
 		}
 	}
-	else if(view==2) // saggital
+	else if(view==2) // sagittal
 	{
 		pts = [selectedROI points];
 		newY = [firstObject pwidth];
@@ -737,7 +737,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 							width = [[pixList objectAtIndex: 0] pwidth];
 							maxY = [[pixList objectAtIndex: 0] pheight];
 						}
-						else if(view==2) // saggital
+						else if(view==2) // sagittal
 						{
 							pts = [selectedROI points];
 							ptA = [[pts objectAtIndex:i] point];
@@ -857,7 +857,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 								*(curData + x + xInc + newX*y) = (*(srcIm1 + xInt + 1 + y * width) * rightLeftX + *(srcIm1 + xInt + y * width) * rightLeftXInv) * rightLeftY  + (*(srcIm + xInt + 1 + y * width) * rightLeftX + *(srcIm + xInt + y * width) * rightLeftXInv) * rightLeftYInv;
 							}
 						}
-						else if(view==2) // saggital
+						else if(view==2) // sagittal
 						{
 							float *srcIm = nil, *srcIm1 = nil;
 							
@@ -895,7 +895,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 								*(curData + x + xInc + newX*y) = [[pixList objectAtIndex: 0] minValueOfSeries];
 							}
 						}
-						else if(view==2) // saggital
+						else if(view==2) // sagittal
 						{
 							for( y = 0; y < newY ; y++)
 							{
@@ -919,7 +919,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				xSpace = fabs([firstObject sliceInterval]);
 				ySpace = [firstObject pixelSpacingX];
 			}
-			else if(view==2) // saggital
+			else if(view==2) // sagittal
 			{
 				xSpace = fabs([firstObject sliceInterval]);
 				ySpace = [firstObject pixelSpacingX];
@@ -992,7 +992,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	return nil;
 }
 
-- (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forAxial:(BOOL)axial forCoronal:(BOOL)coronal forSagittal:(BOOL)saggital
+- (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forAxial:(BOOL)axial forCoronal:(BOOL)coronal forSagittal:(BOOL)sagittal
 {
 	
 	self = [super init];
@@ -1048,7 +1048,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	if(coronal)
 		[self computeForView:1];
 	firstTime = YES;
-	if(saggital)
+	if(sagittal)
 		[self computeForView:2];
 	//firstTime = YES;
 
