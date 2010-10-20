@@ -6373,7 +6373,8 @@ END_CREATE_ROIS:
 		sliceThickness = atof( val->a);
 	
 	val = Papy3GetElement (theGroupP, papSpacingBetweenSlicesGr, &nbVal, &elemType);
-	if ( val) spacingBetweenSlices = atof( val->a);
+	if ( val)
+		spacingBetweenSlices = atof( val->a);
 	
 	val = Papy3GetElement (theGroupP, papRepetitionTimeGr, &nbVal, &elemType);
 	if ( val)
@@ -7374,8 +7375,7 @@ END_CREATE_ROIS:
 					}
 					
 					val = Papy3GetElement (theGroupP, papDetectorInformationSequenceGr, &pos, &elemType);
-					
-					if ( val)
+					if( val)
 					{
 						if( val->sq)
 						{

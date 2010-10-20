@@ -5954,15 +5954,17 @@ static NSConditionLock *threadLock = nil;
 		{
 			int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
 			
-			NSSortDescriptor *sort = nil;
+			NSSortDescriptor *sortInstance = nil, *sortLocation = nil;
 			
-			// Sort images with "instanceNumber"
+			sortInstance = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease];
+			sortLocation = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO] autorelease];
+			
+			NSArray *sortDescriptors = nil;
+			
 			if( sortSeriesBySliceLocation == 0)
-				sort = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease];
+				sortDescriptors = [NSArray arrayWithObjects: sortInstance, sortLocation, nil];
 			else
-				sort = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO] autorelease];
-			
-			NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
+				sortDescriptors = [NSArray arrayWithObjects: sortLocation, sortInstance, nil];
 			
 			sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
 		}
@@ -12139,16 +12141,18 @@ static BOOL needToRezoom;
 						{
 							int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
 							
-							NSSortDescriptor *sort = nil;
+							NSSortDescriptor *sortInstance, *sortLocation;
 							
-							if( sortSeriesBySliceLocation == 0)
-								sort = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: NO] autorelease];
-							else 
-								sort = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? NO : YES] autorelease];
+							sortInstance = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: NO] autorelease];
+							sortLocation = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? NO : YES] autorelease];
 							
-							if( sort)
+							if( sortInstance && sortLocation)
 							{
-								a = [a sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
+								if( sortSeriesBySliceLocation == 0)
+									a = [a sortedArrayUsingDescriptors: [NSArray arrayWithObjects: sortInstance, sortLocation, nil]];
+								else
+									a = [a sortedArrayUsingDescriptors: [NSArray arrayWithObjects: sortLocation, sortInstance, nil]];
+								
 								preFlippedData = YES;
 								flipped = YES;
 							}
