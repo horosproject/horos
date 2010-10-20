@@ -5493,7 +5493,8 @@ static NSConditionLock *threadLock = nil;
 	NSInteger index = [selectedRowIndexes firstIndex];
 	while (index != NSNotFound)
 	{
-		[previousObjects addObject: [databaseOutline itemAtRow: index]];
+		if( [databaseOutline itemAtRow: index])
+			[previousObjects addObject: [databaseOutline itemAtRow: index]];
 		index = [selectedRowIndexes indexGreaterThanIndex:index];
 	}
 	
@@ -5646,47 +5647,55 @@ static NSConditionLock *threadLock = nil;
 	
 	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0 && [outlineViewArray count] < 300)
 	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogetherAndGrouped"])
+		@try
 		{
-			outlineViewArray = [outlineViewArray sortedArrayUsingDescriptors: sortDescriptors];
-			
-			NSMutableArray *copyOutlineViewArray = [NSMutableArray arrayWithArray: outlineViewArray];
-			int studyIndex = 0;
-			
-			for( id obj in outlineViewArray)
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogetherAndGrouped"])
 			{
-				[request setPredicate: [NSPredicate predicateWithFormat: @"(patientID == %@) AND (studyInstanceUID != %@)", [obj valueForKey:@"patientID"], [obj valueForKey:@"studyInstanceUID"]]];
+				outlineViewArray = [outlineViewArray sortedArrayUsingDescriptors: sortDescriptors];
 				
-				for( id patientStudy in [[context executeFetchRequest: request error: &error] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease]]])
+				NSMutableArray *copyOutlineViewArray = [NSMutableArray arrayWithArray: outlineViewArray];
+				int studyIndex = 0;
+				
+				for( id obj in outlineViewArray)
 				{
-					if( [copyOutlineViewArray containsObject: patientStudy] == NO)
+					[request setPredicate: [NSPredicate predicateWithFormat: @"(patientID == %@) AND (studyInstanceUID != %@)", [obj valueForKey:@"patientID"], [obj valueForKey:@"studyInstanceUID"]]];
+					
+					for( id patientStudy in [[context executeFetchRequest: request error: &error] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease]]])
 					{
-						studyIndex++;
-						[copyOutlineViewArray insertObject: patientStudy atIndex: studyIndex];
+						if( [copyOutlineViewArray containsObject: patientStudy] == NO && patientStudy != nil)
+						{
+							studyIndex++;
+							[copyOutlineViewArray insertObject: patientStudy atIndex: studyIndex];
+						}
 					}
+					
+					studyIndex++;
 				}
 				
-				studyIndex++;
+				[originalOutlineViewArray release];
+				originalOutlineViewArray = [outlineViewArray retain];
+				outlineViewArray = copyOutlineViewArray;
 			}
-			
-			[originalOutlineViewArray release];
-			originalOutlineViewArray = [outlineViewArray retain];
-			outlineViewArray = copyOutlineViewArray;
-		}
-		else
-		{
-			NSMutableArray	*patientPredicateArray = [NSMutableArray array];
-			
-			for( id obj in outlineViewArray)
+			else
 			{
-				[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientID == %@)", [obj valueForKey:@"patientID"]]];
+				NSMutableArray	*patientPredicateArray = [NSMutableArray array];
+				
+				for( id obj in outlineViewArray)
+				{
+					[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientID == %@)", [obj valueForKey:@"patientID"]]];
+				}
+				
+				[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray]];
+				error = nil;
+				[originalOutlineViewArray release];
+				originalOutlineViewArray = [outlineViewArray retain];
+				outlineViewArray = [[context executeFetchRequest:request error:&error] sortedArrayUsingDescriptors: sortDescriptors];
 			}
-			
-			[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray]];
-			error = nil;
-			[originalOutlineViewArray release];
-			originalOutlineViewArray = [outlineViewArray retain];
-			outlineViewArray = [[context executeFetchRequest:request error:&error] sortedArrayUsingDescriptors: sortDescriptors];
+		}
+		@catch( NSException *ne)
+		{
+			NSLog(@"OutlineRefresh exception: %@", [ne description]);
+			[AppController printStackTrace: ne];
 		}
 	}
 	else
