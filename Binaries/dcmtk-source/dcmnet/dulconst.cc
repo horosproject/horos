@@ -613,7 +613,7 @@ streamDataPDUHead(DUL_DATAPDU * pdu, unsigned char *buf,
     COPY_LONG_BIG(l, buf);
     buf += 4;
     *buf++ = pdu->presentationDataValue.presentationContextID;
-    *buf++ = pdu->presentationDataValue.messageControlHeader & (!0x2);
+    *buf++ = pdu->presentationDataValue.messageControlHeader & (~0x2);
 #endif
 
     /* append PDV length field information to buffer */
@@ -999,9 +999,13 @@ constructSCUSCPRoles(unsigned char type,
 		presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->requestedPresentationContext);
     }
   } else {
-	  presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext);
+	  presentationCtx = params->acceptedPresentationContext != NULL ?
+			(DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext) :
+			(DUL_PRESENTATIONCONTEXT*)NULL;
+	  
 	  if (presentationCtx != NULL)
 	    (void) LST_Position(&params->acceptedPresentationContext, (LST_NODE*)presentationCtx);
+	  
 	  while (presentationCtx != NULL) {
 	    if (presentationCtx->acceptedSCRole != DUL_SC_ROLE_DEFAULT) {
 		    scuscpItem = (PRV_SCUSCPROLE*)malloc(sizeof(*scuscpItem));

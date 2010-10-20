@@ -1402,7 +1402,7 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
     length = pduLength;                     //set length to the PDU's length
     pdvCount = 0;                           //set counter variable to 0
     p = (*association)->fragmentBuffer;     //set p to the buffer which contains the PDU's PDVs
-    while (length > 0) {                    //as long as length is greater than 0
+    while (length >= 4) {                    //as long as length is greater than 0
         EXTRACT_LONG_BIG(p, pdvLength);     //determine the length of the current PDV (the PDV p points to)
         p += 4 + pdvLength;                 //move p so that it points to the next PDV (move p 4 bytes over the length field plus the amount of bytes which is captured in the PDV's length field (over presentation context.Id, message information header and data fragment))
         length -= 4 + pdvLength;            //update length (i.e. determine the length of the buffer which has not been evaluated yet.)

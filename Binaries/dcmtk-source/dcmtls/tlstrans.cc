@@ -208,13 +208,22 @@ ssize_t DcmTLSConnection::write(void *buf, size_t nbyte)
 
 void DcmTLSConnection::close()
 {
-  if (tlsConnection) SSL_shutdown(tlsConnection);
+  if (tlsConnection)
+  {
+	  SSL_shutdown(tlsConnection);
+	  SSL_free(tlsConnection);
+	  tlsConnection = NULL;
+  }
+
+  if (getSocket()!=-1)
+  {
 #ifdef HAVE_WINSOCK_H
   (void) shutdown(getSocket(),  1 /* SD_SEND */);
   (void) closesocket(getSocket());
 #else
   (void) ::close(getSocket());
 #endif
+  }
 }
 
 unsigned int DcmTLSConnection::getPeerCertificateLength()
@@ -226,6 +235,7 @@ unsigned int DcmTLSConnection::getPeerCertificateLength()
     if (peerCert)
     {
       result = (unsigned int) i2d_X509(peerCert, NULL);
+	  X509_free(peerCert);
     }
   }
   return result;
@@ -245,6 +255,7 @@ unsigned int DcmTLSConnection::getPeerCertificate(void *buf, unsigned int bufLen
       	unsigned char *p = (unsigned char *)buf;
         result = (unsigned int) i2d_X509(peerCert, &p);
       }
+	  X509_free(peerCert);
     }
   }
   return result;

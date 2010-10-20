@@ -35,6 +35,8 @@ void deleteListMembers(SOPClassExtendedNegotiationSubItemList& lst)
 {
     OFListIterator(SOPClassExtendedNegotiationSubItem*) i = lst.begin();
     while (i != lst.end()) {
+		delete[] (*i)->serviceClassAppInfo;
+		(*i)->serviceClassAppInfo = NULL;
         delete *i;
         ++i;
     }
