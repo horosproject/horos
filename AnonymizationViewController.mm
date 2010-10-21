@@ -129,6 +129,9 @@
 }
 
 -(void)addTag:(DCMAttributeTag*)tag {
+	
+	if( tag == nil) return;
+	
 	if ([self.tags containsObject:tag])
 		return;
 	
