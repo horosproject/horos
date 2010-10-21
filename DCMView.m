@@ -8996,37 +8996,43 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		// All views are identical
 		
 		unsigned char	*firstView = [[views objectAtIndex: 0] getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:NO origin: imOrigin spacing: imSpacing offset: offset isSigned: isSigned];
-		unsigned char	*globalView;
+		unsigned char	*globalView = nil;
 		
 		long viewSize =  *bpp * *spp * *width * *height / 8;
 		int	globalWidth = *width * _imageColumns;
 		int globalHeight = *height * _imageRows;
-			
-		globalView = malloc( viewSize * _imageColumns * _imageRows);
 		
-		free( firstView);
-		
-		if( globalView)
+		if( firstView)
 		{
-			for( int x = 0; x < _imageColumns; x++ )
-			{
-				for( int y = 0; y < _imageRows; y++)
-				{
-					unsigned char	*aView = [[views objectAtIndex: x + y*_imageColumns] getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:NO origin: imOrigin spacing: imSpacing offset: offset isSigned: isSigned];
-					
-					unsigned char	*o = globalView + *spp*globalWidth*y**height**bpp/8 +  x**width**spp**bpp/8;
-				
-					for( int yy = 0 ; yy < *height; yy++)
-					{
-						memcpy( o + yy**spp*globalWidth**bpp/8, aView + yy**spp**width**bpp/8, *spp**width**bpp/8);
-					}
-					
-					free( aView);
-				}
-			}
+			globalView = malloc( viewSize * _imageColumns * _imageRows);
 			
-			*width = globalWidth;
-			*height = globalHeight;
+			free( firstView);
+			
+			if( globalView)
+			{
+				for( int x = 0; x < _imageColumns; x++ )
+				{
+					for( int y = 0; y < _imageRows; y++)
+					{
+						unsigned char	*aView = [[views objectAtIndex: x + y*_imageColumns] getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:NO origin: imOrigin spacing: imSpacing offset: offset isSigned: isSigned];
+						
+						if( aView)
+						{
+							unsigned char	*o = globalView + *spp*globalWidth*y**height**bpp/8 +  x**width**spp**bpp/8;
+						
+							for( int yy = 0 ; yy < *height; yy++)
+							{
+								memcpy( o + yy**spp*globalWidth**bpp/8, aView + yy**spp**width**bpp/8, *spp**width**bpp/8);
+							}
+							
+							free( aView);
+						}
+					}
+				}
+				
+				*width = globalWidth;
+				*height = globalHeight;
+			}
 		}
 		
 		return globalView;
@@ -9263,16 +9269,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				long rowBytes = *width**spp**bpp/8;
 				
-				unsigned char	*tempBuf = malloc( rowBytes);
+				unsigned char *tempBuf = malloc( rowBytes);
 				
-				for( long i = 0; i < *height/2; i++ )
+				if( tempBuf)
 				{
-					memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
-					memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
-					memcpy( buf + i*rowBytes, tempBuf, rowBytes);
+					for( long i = 0; i < *height/2; i++ )
+					{
+						memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+						memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
+						memcpy( buf + i*rowBytes, tempBuf, rowBytes);
+					}
+					
+					free( tempBuf);
 				}
-				
-				free( tempBuf);
 			}
 		}
 		else // Screen Capture in 16 bit BW
@@ -9291,66 +9300,69 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			DCMPix *im = [curDCM renderInRectSize: destRectSize atPosition:o rotation: [self rotation] scale: s xFlipped: xFlipped yFlipped: yFlipped smartCrop: YES];
 			
-			if( imSpacing)
+			if( im)
 			{
-				imSpacing[ 0] = [im pixelSpacingX];
-				imSpacing[ 1] = [im pixelSpacingX];
-			}
-			
-			if( imOrigin)
-			{
-				imOrigin[ 0] = [im originX];
-				imOrigin[ 1] = [im originY];
-				imOrigin[ 2] = [im originZ];
-			}
-			
-			*width = [im pwidth];
-			*height = [im pheight];
-			*spp = 1;
-			*bpp = 16;
-			
-			vImage_Buffer srcf, dst8;
-			
-			srcf.height = *height;
-			srcf.width = *width;
-			srcf.rowBytes = *width * sizeof( float);
-			
-			dst8.height =  *height;
-			dst8.width = *width;
-			dst8.rowBytes = *width * sizeof( short);
-
-			buf = malloc( *width * *height * *spp * *bpp/8);
-			
-			srcf.data = [im fImage];
-			dst8.data = buf;
-			
-			float slope = 1;
-			
-			if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"] == YES)
-				slope = im.appliedFactorPET2SUV * im.slope;
-			
-			if( buf)
-			{
-				if( [curDCM minValueOfSeries] < -1024)
+				if( imSpacing)
 				{
-					if( isSigned) *isSigned = YES;
-					if( offset) *offset = 0;
-					
-					vImageConvert_FTo16S( &srcf, &dst8, 0,  slope, 0);
+					imSpacing[ 0] = [im pixelSpacingX];
+					imSpacing[ 1] = [im pixelSpacingX];
 				}
-				else
+				
+				if( imOrigin)
 				{
-					if( isSigned) *isSigned = NO;
-					
-					if( [curDCM minValueOfSeries] >= 0)
+					imOrigin[ 0] = [im originX];
+					imOrigin[ 1] = [im originY];
+					imOrigin[ 2] = [im originZ];
+				}
+				
+				*width = [im pwidth];
+				*height = [im pheight];
+				*spp = 1;
+				*bpp = 16;
+				
+				vImage_Buffer srcf, dst8;
+				
+				srcf.height = *height;
+				srcf.width = *width;
+				srcf.rowBytes = *width * sizeof( float);
+				
+				dst8.height =  *height;
+				dst8.width = *width;
+				dst8.rowBytes = *width * sizeof( short);
+
+				buf = malloc( *width * *height * *spp * *bpp/8);
+				
+				srcf.data = [im fImage];
+				dst8.data = buf;
+				
+				float slope = 1;
+				
+				if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"] == YES)
+					slope = im.appliedFactorPET2SUV * im.slope;
+				
+				if( buf)
+				{
+					if( [curDCM minValueOfSeries] < -1024)
 					{
+						if( isSigned) *isSigned = YES;
 						if( offset) *offset = 0;
-						vImageConvert_FTo16U( &srcf, &dst8, 0,  slope, 0);
+						
+						vImageConvert_FTo16S( &srcf, &dst8, 0,  slope, 0);
 					}
 					else
 					{
-						if( offset) *offset = -1024;
-						vImageConvert_FTo16U( &srcf, &dst8, -1024,  slope, 0);
+						if( isSigned) *isSigned = NO;
+						
+						if( [curDCM minValueOfSeries] >= 0)
+						{
+							if( offset) *offset = 0;
+							vImageConvert_FTo16U( &srcf, &dst8, 0,  slope, 0);
+						}
+						else
+						{
+							if( offset) *offset = -1024;
+							vImageConvert_FTo16U( &srcf, &dst8, -1024,  slope, 0);
+						}
 					}
 				}
 			}
@@ -9363,205 +9375,214 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [self xFlipped] || [self yFlipped] || [self rotation] != 0)
 			dcm = [curDCM renderWithRotation: [self rotation] scale: 1.0 xFlipped: [self xFlipped] yFlipped: [self yFlipped] backgroundOffset: 0];
 		
-		if( imOrigin)
-		{	
-			imOrigin[ 0] = [dcm originX];
-			imOrigin[ 1] = [dcm originY];
-			imOrigin[ 2] = [dcm originZ];
-		}
-		
-		if( imSpacing)
+		if( dcm)
 		{
-			imSpacing[ 0] = [dcm pixelSpacingX];
-			imSpacing[ 1] = [dcm pixelSpacingY];
-		}
-		
-		BOOL isRGB = dcm.isRGB;
-		
-		*width = dcm.pwidth;
-		*height = dcm.pheight;
-		
-		if( [dcm thickSlabVRActivated])
-		{
-			force8bits = YES;
-			
-			if( dcm.stackMode == 4 || dcm.stackMode == 5) isRGB = YES;
-		}
-		
-		if( isRGB == YES)
-		{
-			[self display];
-			
-			*spp = 3;
-			*bpp = 8;
-			
-			long i = *width * *height * *spp * *bpp / 8;
-			buf = malloc( i );
-			if( buf )
-			{
-				unsigned char *dst = buf, *src = (unsigned char*) dcm.baseAddr;
-				i = *width * *height;
-				
-				// CONVERT ARGB TO RGB
-				while( i-- > 0)
-				{
-					src++;
-					*dst++ = *src++;
-					*dst++ = *src++;
-					*dst++ = *src++;
-				}
+			if( imOrigin)
+			{	
+				imOrigin[ 0] = [dcm originX];
+				imOrigin[ 1] = [dcm originY];
+				imOrigin[ 2] = [dcm originZ];
 			}
-		}
-//		else if( colorBuf != nil)		// A CLUT is applied
-//		{
-////			BOOL BWInverse = YES;
-////			
-////			// Is it inverse BW? We consider an inverse BW as a mono-channel image.
-////			for( int i = 0; i < 256 && BWInverse == YES; i++)
-////			{
-////				if( redTable[i] != 255-i || greenTable[i] != 255 -i || blueTable[i] != 255-i) BWInverse = NO;
-////			}
-////			
-////			if( BWInverse == NO)
-////			{
-//				[self display];
-//				
-//				*spp = 3;
-//				*bpp = 8;
-//				
-//				long i = *width * *height * *spp * *bpp / 8;
-//				buf = malloc( i );
-//				if( buf)
-//				{
-//					unsigned char *dst = buf, *src = colorBuf;
-//					i = *width * *height;
-//					
-//					// CONVERT ARGB TO RGB
-//					while( i-- > 0)
-//					{
-//						src++;
-//						*dst++ = *src++;
-//						*dst++ = *src++;
-//						*dst++ = *src++;
-//					}
-//				}
-////			}
-////			else processed = NO;
-//		}
-		else
-		{
-			if( force8bits)	// I don't want 16 bits data, only 8 bits data
+			
+			if( imSpacing)
+			{
+				imSpacing[ 0] = [dcm pixelSpacingX];
+				imSpacing[ 1] = [dcm pixelSpacingY];
+			}
+			
+			BOOL isRGB = dcm.isRGB;
+			
+			*width = dcm.pwidth;
+			*height = dcm.pheight;
+			
+			if( [dcm thickSlabVRActivated])
+			{
+				force8bits = YES;
+				
+				if( dcm.stackMode == 4 || dcm.stackMode == 5) isRGB = YES;
+			}
+			
+			if( isRGB == YES)
 			{
 				[self display];
 				
-				*spp = 1;
+				*spp = 3;
 				*bpp = 8;
 				
 				long i = *width * *height * *spp * *bpp / 8;
-				buf = malloc( i);
-				if( buf ) memcpy( buf, dcm.baseAddr, *width**height);
-			}
-			else	// Give me 16 bits !
-			{
-				vImage_Buffer			srcf, dst8;
-				
-				*spp = 1;
-				*bpp = 16;
-				
-				srcf.height = *height;
-				srcf.width = *width;
-				srcf.rowBytes = *width * sizeof( float);
-				
-				dst8.height =  *height;
-				dst8.width = *width;
-				dst8.rowBytes = *width * sizeof( short);
-				
-				srcf.data = [dcm computefImage];
-				
-				float slope = 1;
-				
-				if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"] == YES)
-					slope = dcm.appliedFactorPET2SUV * dcm.slope;
-				
-				long i = *width * *height * *spp * *bpp / 8;
-				buf = malloc( i);
-				if( buf)
+				buf = malloc( i );
+				if( buf )
 				{
-					dst8.data = buf;
+					unsigned char *dst = buf, *src = (unsigned char*) dcm.baseAddr;
+					i = *width * *height;
 					
-					if( [dcm minValueOfSeries] < -1024)
+					// CONVERT ARGB TO RGB
+					while( i-- > 0)
 					{
-						if( isSigned) *isSigned = YES;
-						if( offset) *offset = 0;
-						
-						vImageConvert_FTo16S( &srcf, &dst8, 0,  slope, 0);
+						src++;
+						*dst++ = *src++;
+						*dst++ = *src++;
+						*dst++ = *src++;
 					}
-					else
+				}
+			}
+	//		else if( colorBuf != nil)		// A CLUT is applied
+	//		{
+	////			BOOL BWInverse = YES;
+	////			
+	////			// Is it inverse BW? We consider an inverse BW as a mono-channel image.
+	////			for( int i = 0; i < 256 && BWInverse == YES; i++)
+	////			{
+	////				if( redTable[i] != 255-i || greenTable[i] != 255 -i || blueTable[i] != 255-i) BWInverse = NO;
+	////			}
+	////			
+	////			if( BWInverse == NO)
+	////			{
+	//				[self display];
+	//				
+	//				*spp = 3;
+	//				*bpp = 8;
+	//				
+	//				long i = *width * *height * *spp * *bpp / 8;
+	//				buf = malloc( i );
+	//				if( buf)
+	//				{
+	//					unsigned char *dst = buf, *src = colorBuf;
+	//					i = *width * *height;
+	//					
+	//					// CONVERT ARGB TO RGB
+	//					while( i-- > 0)
+	//					{
+	//						src++;
+	//						*dst++ = *src++;
+	//						*dst++ = *src++;
+	//						*dst++ = *src++;
+	//					}
+	//				}
+	////			}
+	////			else processed = NO;
+	//		}
+			else
+			{
+				if( force8bits)	// I don't want 16 bits data, only 8 bits data
+				{
+					[self display];
+					
+					*spp = 1;
+					*bpp = 8;
+					
+					long i = *width * *height * *spp * *bpp / 8;
+					buf = malloc( i);
+					if( buf ) memcpy( buf, dcm.baseAddr, *width**height);
+				}
+				else	// Give me 16 bits !
+				{
+					vImage_Buffer			srcf, dst8;
+					
+					*spp = 1;
+					*bpp = 16;
+					
+					srcf.height = *height;
+					srcf.width = *width;
+					srcf.rowBytes = *width * sizeof( float);
+					
+					dst8.height =  *height;
+					dst8.width = *width;
+					dst8.rowBytes = *width * sizeof( short);
+					
+					srcf.data = [dcm computefImage];
+					
+					float slope = 1;
+					
+					if( [[[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"] isEqualToString:@"PT"] == YES)
+						slope = dcm.appliedFactorPET2SUV * dcm.slope;
+					
+					long i = *width * *height * *spp * *bpp / 8;
+					buf = malloc( i);
+					if( buf)
 					{
-						if( isSigned) *isSigned = NO;
+						dst8.data = buf;
 						
-						if( [dcm minValueOfSeries] >= 0)
+						if( [dcm minValueOfSeries] < -1024)
 						{
+							if( isSigned) *isSigned = YES;
 							if( offset) *offset = 0;
-							vImageConvert_FTo16U( &srcf, &dst8, 0,  slope, 0);
+							
+							vImageConvert_FTo16S( &srcf, &dst8, 0,  slope, 0);
 						}
 						else
 						{
-							if( offset) *offset = -1024;
-							vImageConvert_FTo16U( &srcf, &dst8, -1024,  slope, 0);
+							if( isSigned) *isSigned = NO;
+							
+							if( [dcm minValueOfSeries] >= 0)
+							{
+								if( offset) *offset = 0;
+								vImageConvert_FTo16U( &srcf, &dst8, 0,  slope, 0);
+							}
+							else
+							{
+								if( offset) *offset = -1024;
+								vImageConvert_FTo16U( &srcf, &dst8, -1024,  slope, 0);
+							}
 						}
 					}
+					
+					if( srcf.data != dcm.fImage ) free( srcf.data );
+				}
+			}
+			
+			// IF 8 bits or RGB, IF non-square pixels -> square pixels
+			
+			if( squarePixels == YES && *bpp == 8 && self.pixelSpacingX != self.pixelSpacingY)
+			{
+				vImage_Buffer	srcVimage, dstVimage;
+				
+				srcVimage.data = buf;
+				srcVimage.height = *height;
+				srcVimage.width = *width;
+				srcVimage.rowBytes = *width * (*bpp/8) * *spp;
+				
+				dstVimage.height =  (int) ((float) *height * self.pixelSpacingY / self.pixelSpacingX);
+				dstVimage.width = *width;
+				dstVimage.rowBytes = *width * (*bpp/8) * *spp;
+				dstVimage.data = malloc( dstVimage.rowBytes * dstVimage.height);
+				
+				if( *spp == 3)
+				{
+					vImage_Buffer	argbsrcVimage, argbdstVimage;
+					
+					argbsrcVimage = srcVimage;
+					argbsrcVimage.rowBytes =  *width * 4;
+					argbsrcVimage.data = calloc( argbsrcVimage.rowBytes * argbsrcVimage.height, 1);
+					
+					argbdstVimage = dstVimage;
+					argbdstVimage.rowBytes =  *width * 4;
+					argbdstVimage.data = calloc( argbdstVimage.rowBytes * argbdstVimage.height, 1);
+					
+					if( dstVimage.data && argbsrcVimage.data && argbdstVimage.data)
+					{
+						vImageConvert_RGB888toARGB8888( &srcVimage, nil, 0, &argbsrcVimage, 0, 0);
+						vImageScale_ARGB8888( &argbsrcVimage, &argbdstVimage, nil, kvImageHighQualityResampling);
+						vImageConvert_ARGB8888toRGB888( &argbdstVimage, &dstVimage, 0);
+						
+						free( argbsrcVimage.data);
+						free( argbdstVimage.data);
+					}
+				}
+				else
+				{
+					if( dstVimage.data)
+						vImageScale_Planar8( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
 				}
 				
-				if( srcf.data != dcm.fImage ) free( srcf.data );
+				free( buf);
+				
+				if( imSpacing)
+					imSpacing[ 1] = imSpacing[ 0];
+				
+				buf = dstVimage.data;
+				*height = dstVimage.height;
 			}
-		}
-		
-		// IF 8 bits or RGB, IF non-square pixels -> square pixels
-		
-		if( squarePixels == YES && *bpp == 8 && self.pixelSpacingX != self.pixelSpacingY)
-		{
-			vImage_Buffer	srcVimage, dstVimage;
-			
-			srcVimage.data = buf;
-			srcVimage.height = *height;
-			srcVimage.width = *width;
-			srcVimage.rowBytes = *width * (*bpp/8) * *spp;
-			
-			dstVimage.height =  (int) ((float) *height * self.pixelSpacingY / self.pixelSpacingX);
-			dstVimage.width = *width;
-			dstVimage.rowBytes = *width * (*bpp/8) * *spp;
-			dstVimage.data = malloc( dstVimage.rowBytes * dstVimage.height);
-			
-			if( *spp == 3)
-			{
-				vImage_Buffer	argbsrcVimage, argbdstVimage;
-				
-				argbsrcVimage = srcVimage;
-				argbsrcVimage.rowBytes =  *width * 4;
-				argbsrcVimage.data = calloc( argbsrcVimage.rowBytes * argbsrcVimage.height, 1);
-				
-				argbdstVimage = dstVimage;
-				argbdstVimage.rowBytes =  *width * 4;
-				argbdstVimage.data = calloc( argbdstVimage.rowBytes * argbdstVimage.height, 1);
-				
-				vImageConvert_RGB888toARGB8888( &srcVimage, nil, 0, &argbsrcVimage, 0, 0);
-				vImageScale_ARGB8888( &argbsrcVimage, &argbdstVimage, nil, kvImageHighQualityResampling);
-				vImageConvert_ARGB8888toRGB888( &argbdstVimage, &dstVimage, 0);
-				
-				free( argbsrcVimage.data);
-				free( argbdstVimage.data);
-			}
-			else
-				vImageScale_Planar8( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
-				
-			free( buf);
-			
-			if( imSpacing)
-				imSpacing[ 1] = imSpacing[ 0];
-			
-			buf = dstVimage.data;
-			*height = dstVimage.height;
 		}
 	}
 	
