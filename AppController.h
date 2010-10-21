@@ -128,6 +128,7 @@ extern "C"
 @property (readonly) NSMenu *filtersMenu, *windowsTilingMenuRows, *windowsTilingMenuColumns;
 
 + (BOOL) isFDACleared;
++ (BOOL) willExecutePlugin;
 + (BOOL) hasMacOSXSnowLeopard;
 + (BOOL) hasMacOSXLeopard;
 

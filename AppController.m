@@ -2575,6 +2575,35 @@ static NSDate *lastWarningDate = nil;
 	return NO;
 }
 
++ (BOOL) willExecutePlugin
+{
+	BOOL returnValue = YES;
+	
+	if( [AppController isFDACleared])
+	{
+		NSString *alertSuppress = @"FDA Plugin warning";
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
+		{
+			NSAlert* alert = [[NSAlert new] autorelease];
+			[alert setMessageText: NSLocalizedString(@"FDA & Plugins", nil)];
+			[alert setInformativeText: NSLocalizedString(@"Plugins are not covered by the FDA clearance of OsiriX MD. Check with the plugin manufacturer, if it is cleared for a primary diagnostic usage.", nil)];
+			[alert setShowsSuppressionButton:YES ];
+			[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
+			[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
+			
+			if( [alert runModal] == NSAlertFirstButtonReturn)
+				returnValue = YES;
+			else
+				returnValue = NO;
+			
+			if ([[alert suppressionButton] state] == NSOnState)
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:alertSuppress];
+		}
+	}
+	
+	return returnValue;
+}
+
 static BOOL initialized = NO;
 + (void) initialize
 {

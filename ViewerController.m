@@ -7156,8 +7156,11 @@ return YES;
 {
 	long			result;
     id				filter = [[PluginManager plugins] objectForKey:name];
-
-	if(filter==nil)
+	
+	if( [AppController willExecutePlugin] == NO)
+		return;
+	
+	if( filter == nil)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 		return;
