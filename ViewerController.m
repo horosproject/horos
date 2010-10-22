@@ -10334,16 +10334,38 @@ short				matrix[25];
 			[self ActivateBlending: bc];
 		break;
 		
-		case 2:		// Image subtraction
-			for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
+		case 2:
+		{	// Image subtraction
+			NSUInteger modifierFlags = [[[NSApplication sharedApplication] currentEvent] modifierFlags];
+			
+			if ((modifierFlags & NSControlKeyMask) != 0)
 			{
-				[imageView setIndex:i];
-				[imageView sendSyncMessage: 0];
-				[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
-				
-//				[imageView subtract: [bc imageView]];
-				[imageView subtract: [bc imageView] absolute: (([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) != 0)];
+				NSUInteger count = MIN([[self pixList] count], [[bc pixList] count]);
+				for( i = 0; i < count; i++)
+				{
+					[imageView setIndex:i];
+					[imageView sendSyncMessage: 0];
+					[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
+					
+					[[bc imageView] setIndex:i];
+					[[bc imageView] sendSyncMessage:0];
+					[[[bc seriesView] imageViews] makeObjectsPerformSelector:@selector(display)];
+					
+					[imageView subtract: [bc imageView] absolute: ((modifierFlags & NSAlternateKeyMask) != 0)];
+				}
 			}
+			else
+			{
+				for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
+				{
+					[imageView setIndex:i];
+					[imageView sendSyncMessage: 0];
+					[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
+					
+					[imageView subtract: [bc imageView] absolute: ((modifierFlags & NSAlternateKeyMask) != 0)];
+				}
+ 			}
+		}
 		break;
 		
 		case 3:		// Image multiplication
