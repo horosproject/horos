@@ -327,6 +327,10 @@
 	return thumbnailData;
 }
 
+- (NSString*) modalities
+{
+	return [self valueForKey: @"modality"];
+}
 
 - (NSString*) type
 {
