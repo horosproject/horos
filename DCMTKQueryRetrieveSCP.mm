@@ -298,9 +298,9 @@ void errmsg(const char* msg, ...)
 	if (overrideMaxPDU > 0) options.maxPDU_ = overrideMaxPDU;	//;
 	
 	    /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) {
-    fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-        DCM_DICT_ENVIRONMENT_VARIABLE);
+    if (!dcmDataDict.isDictionaryLoaded())
+	{
+		fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",  DCM_DICT_ENVIRONMENT_VARIABLE);
 		return;
     }
 
@@ -340,9 +340,8 @@ void errmsg(const char* msg, ...)
 		tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_ACCEPTOR, [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding]); // joris DICOM_APPLICATION_ACCEPTOR for server!!
 		if (tLayer == NULL)
 		{
-			NSLog(@"unable to create TLS transport layer");
-			//localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:@"unable to create TLS transport layer" userInfo:nil];
-			//[localException raise];
+			[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: @"unable to create TLS transport layer" waitUntilDone: NO];
+			return;
 		}
 		
 		TLSCertificateVerificationType certVerification = (TLSCertificateVerificationType)[[[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPCertificateVerification"] intValue];
@@ -357,9 +356,9 @@ void errmsg(const char* msg, ...)
 			{
 				if (TCS_ok != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 				{
-					NSLog(@"DICOM Network Failure (storescp TLS) : Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]);
-//					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]] userInfo:nil];
-//					[localException raise];
+					NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]];
+					[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+					return;
 				}
 			}
 			
@@ -397,23 +396,23 @@ void errmsg(const char* msg, ...)
 			
 			if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 			{
-				NSLog(@"DICOM Network Failure (storescp TLS) : Unable to load private TLS key from %@", _privateKeyFile);
-//				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil];
-//				[localException raise];
+				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load private TLS key from %@", _privateKeyFile];
+				[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+				return;
 			}
 			
 			if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 			{
-				NSLog(@"DICOM Network Failure (storescp TLS) : Unable to load certificate from %@", _certificateFile);
-//				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil];
-//				[localException raise];
+				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load certificate from %@", _certificateFile];
+				[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+				return;
 			}
 			
 			if (!tLayer->checkPrivateKeyMatchesCertificate())
 			{
-				NSLog(@"DICOM Network Failure (storescp TLS) : Unable to load certificate from %@private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile);
-//				localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil];
-//				[localException raise];
+				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load certificate from %@private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile];
+				[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+				return;
 			}
 		}
 		
@@ -444,15 +443,16 @@ void errmsg(const char* msg, ...)
 				{
 					NSLog(@"ciphersuite '%s' is unknown.", current);
 					NSLog(@"Known ciphersuites are:");
+					
 					unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
 					for (unsigned long cs=0; cs < numSuites; cs++)
 					{
 						NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
 					}
 					
-					NSLog(@"DICOM Network Failure (storescp TLS) : Ciphersuite '%s' is unknown.", current);
-//					localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil];
-//					[localException raise];
+					NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Ciphersuite '%s' is unknown.", current];
+					[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+					return;
 				}
 				else
 				{
@@ -464,10 +464,9 @@ void errmsg(const char* msg, ...)
 		
 			if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
 			{
-				NSLog(@"DICOM Network Failure (storescp TLS) : Unable to set selected cipher suites.");
-
-	//			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:@"Unable to set selected cipher suites" userInfo:nil];
-	//			[localException raise];
+				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to set selected cipher suites."];
+				[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+				return;
 			}
 		}
 
@@ -486,9 +485,9 @@ void errmsg(const char* msg, ...)
 		if (cond.bad())
 		{
 			DimseCondition::dump(cond);
-			NSLog(@"DICOM Network Failure (storescp TLS) : ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text());
-//			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescp TLS)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-//			[localException raise];
+			NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()];
+			[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+			return;
 		}
 	}
 	
