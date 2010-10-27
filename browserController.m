@@ -18391,6 +18391,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		[self reduceCoreDataFootPrint];
 		
+		[managedObjectContext release];
+		managedObjectContext = nil;
+		
+		[self managedObjectContext];
+		
 		return;
 	}
 //

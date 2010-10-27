@@ -3213,9 +3213,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							NSDictionary *seriesThumbnail = [thumbnailCache objectForKey: [urlParameters objectForKey:@"studyID"]];
 							
 							if( [seriesThumbnail objectForKey: [urlParameters objectForKey:@"id"]])
-							{
 								data = [seriesThumbnail objectForKey: [urlParameters objectForKey:@"id"]];
-							}
 						}
 						
 						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"studyID"]];// AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"]];
@@ -3257,7 +3255,8 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							}
 						}
 						
-						[thumbnailCache setObject: seriesThumbnails forKey: studyInstanceUID];
+						if( studyInstanceUID && seriesThumbnails)
+							[thumbnailCache setObject: seriesThumbnails forKey: studyInstanceUID];
 					}
 				}
 				err = NO;
