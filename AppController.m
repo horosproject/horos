@@ -2000,19 +2000,17 @@ static NSDate *lastWarningDate = nil;
 
 -(void) displayListenerError: (NSString*) err
 {
+	NSLog( @"*** listener error (displayListenerError): %@", err);
+	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
 	{
 		NSAlert* alert = [[NSAlert new] autorelease];
 		[alert setMessageText: NSLocalizedString( @"DICOM Listener Error", nil)];
-		[alert setInformativeText: err];
-		[alert setShowsSuppressionButton:YES ];
+		[alert setInformativeText: [err stringByAppendingString: @"\r\rThis error message can be hidden by activating the Server Mode (see Listener Preferences)"]];
 		[alert addButtonWithTitle: NSLocalizedString(@"OK", nil)];
 		
-		if ([[alert suppressionButton] state] == NSOnState)
-			[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideListenerError"];
+		[alert runModal];
 	}
-	else
-		NSLog( @"*** listener error (not displayed - hideListenerError): %@", err);
 }
 
 -(void) startSTORESCP:(id) sender
@@ -2346,7 +2344,7 @@ static NSDate *lastWarningDate = nil;
 - (BOOL) applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
-			return YES;
+		return YES;
 	
 	if( flag == NO)
 		[[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
