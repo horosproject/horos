@@ -19,7 +19,7 @@
 
 @implementation DCMDataContainer
 
-@synthesize offset, dicomData;
+@synthesize offset, dicomData, position;
 
 + (id) dataContainer {
 	return [[[DCMDataContainer alloc] init] autorelease];

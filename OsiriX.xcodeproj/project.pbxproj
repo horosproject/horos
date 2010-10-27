@@ -273,7 +273,6 @@
 		7E0B3A7C0675274000908593 /* DCMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0B3A1B067526A600908593 /* DCMObject.m */; };
 		7E0B3A820675274100908593 /* DCMValueRepresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A1C067526A600908593 /* DCMValueRepresentation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A880675274200908593 /* DCMValueRepresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0B3A1D067526A600908593 /* DCMValueRepresentation.m */; };
-		7E0B3A8E0675274300908593 /* dicomDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A1E067526A600908593 /* dicomDictionary.plist */; };
 		7E0B3AA00675274500908593 /* version.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A21067526A600908593 /* version.plist */; };
 		7E172F580933CAE00057BCE8 /* DCMObjectDBImport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E172F540933CAE00057BCE8 /* DCMObjectDBImport.h */; };
 		7E172F590933CAE00057BCE8 /* DCMObjectDBImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E172F550933CAE00057BCE8 /* DCMObjectDBImport.m */; };
@@ -8248,7 +8247,6 @@
 		7E0B3A1B067526A600908593 /* DCMObject.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMObject.m; sourceTree = "<group>"; };
 		7E0B3A1C067526A600908593 /* DCMValueRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMValueRepresentation.h; sourceTree = "<group>"; };
 		7E0B3A1D067526A600908593 /* DCMValueRepresentation.m */ = {isa = PBXFileReference; fileEncoding = 30; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = DCMValueRepresentation.m; sourceTree = "<group>"; };
-		7E0B3A1E067526A600908593 /* dicomDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = dicomDictionary.plist; sourceTree = "<group>"; };
 		7E0B3A1F067526A600908593 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7E0B3A21067526A600908593 /* version.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = version.plist; sourceTree = "<group>"; };
 		7E0B3A40067526CD00908593 /* DCM-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "DCM-Info.plist"; path = "DCM Framework/DCM-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -12600,7 +12598,6 @@
 				7E8340DA08E9F7C500E41C5E /* DCMPresentationState.m */,
 				BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */,
 				BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */,
-				7E0B3A1E067526A600908593 /* dicomDictionary.plist */,
 				7E0B3A1F067526A600908593 /* Info.plist */,
 				7E0B3A21067526A600908593 /* version.plist */,
 				7E0B3A40067526CD00908593 /* DCM-Info.plist */,
@@ -21826,7 +21823,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */,
-				7E0B3A8E0675274300908593 /* dicomDictionary.plist in Resources */,
 				7E0B3AA00675274500908593 /* version.plist in Resources */,
 				BFEB76410677FDA700F242F3 /* nameDictionary.plist in Resources */,
 				BFEB76420677FDA700F242F3 /* tagDictionary.plist in Resources */,

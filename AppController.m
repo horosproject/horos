@@ -3111,6 +3111,58 @@ static BOOL initialized = NO;
 	if (NSCancelButton == button)
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
 #endif
+	
+	
+//	NSString *source = [NSString stringWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"]];
+//	
+//	NSArray *lines = [source componentsSeparatedByString: @"\n"];
+//	
+//	NSMutableDictionary *nameDictionary = [NSMutableDictionary dictionary], *tagDictionary = [NSMutableDictionary dictionary];
+//	
+//	for( NSString *l in lines)
+//	{
+//		if( [l hasPrefix: @"#"] == NO)
+//		{
+//			NSArray *f = [l componentsSeparatedByString: @"\t"];
+//			
+//			if( [f count] == 5)
+//			{
+//				NSString *grel = [[f objectAtIndex: 0] stringByReplacingOccurrencesOfString: @"(" withString:@""];
+//				grel = [grel stringByReplacingOccurrencesOfString: @")" withString:@""];
+//				grel = [grel uppercaseString];
+//				
+//				if( [grel length] >= 9 && [grel characterAtIndex:4] == ',')
+//				{
+//					grel = [grel substringToIndex: 9];
+//					
+//					NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: [f objectAtIndex: 2], @"Description", [f objectAtIndex: 3], @"VM", [f objectAtIndex: 1], @"VR", nil];	//[f objectAtIndex: 4], @"Version", nil];
+//					
+//					[tagDictionary setObject: d forKey: grel];
+//					
+//					[nameDictionary setObject: grel forKey: [f objectAtIndex: 2]];
+//				}
+//			}
+//			else
+//				NSLog( @"%@", f);
+//		}
+//	}
+//	
+//	[tagDictionary writeToFile: @"/tmp/tagDictionary.plist" atomically: YES];
+//	[nameDictionary writeToFile: @"/tmp/nameDictionary.plist" atomically: YES];
+	
+//	<?xml version="1.0" encoding="UTF-8"?>
+//	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+//	<plist version="1.0">
+//	<dict>
+//	<key>Description</key>
+//	<string>PhilipsFactor</string>
+//	<key>VM</key>
+//	<string>1</string>
+//	<key>VR</key>
+//	<string>DS</string>
+//	</dict>
+//	</plist>
+	
 }
 
 - (void) checkForOsirixMimeType

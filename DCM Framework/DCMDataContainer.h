@@ -27,7 +27,7 @@
 	unsigned char *_ptr;
 }
 
-@property(readonly) int offset;
+@property(readonly) int offset, position;
 @property(readonly) unsigned int length;
 @property(readonly) NSMutableData *dicomData;
 

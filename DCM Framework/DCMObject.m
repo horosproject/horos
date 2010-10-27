@@ -697,6 +697,7 @@ PixelRepresentation
 	BOOL undefinedLength = lengthToRead == 0xFFFFFFFF;	
 	int endByteOffset= (undefinedLength) ? 0xFFFFFFFF : *byteOffset + lengthToRead - 1;
 	BOOL isExplicit = [[dicomData transferSyntaxInUse] isExplicit];
+	unsigned dicomDataLength = [dicomData length];
 	BOOL forImplicitUseOW = NO;
 	
 	BOOL pixelRepresentationIsSigned = NO;
@@ -844,7 +845,7 @@ PixelRepresentation
 					dcmObject:self
 					decodeData:_decodePixelData] autorelease];
 					
-					*byteOffset = endByteOffset;
+					*byteOffset += vl;
 				}
 				else if (vl != 0xFFFFFFFF) // && vl != 0 ANR 2009
 				{
@@ -910,7 +911,9 @@ PixelRepresentation
 
 			}
 			[subPool release];
-					
+			
+			if( dicomDataLength <= [dicomData position])
+				*byteOffset = endByteOffset;
 		}
 		[transferSyntax release];
 		transferSyntax = [[dicomData transferSyntaxForDataset] retain];

@@ -206,19 +206,21 @@
 					*byteOffset = [self readNewSequenceAttribute:attr dicomData:dicomData byteOffset:byteOffset lengthToRead:vl specificCharacterSet:specificCharacterSet];
 
 			}
-			else if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"PixelData"]]) {
-			
-			attr = (DCMPixelDataAttribute *) [[[DCMPixelDataAttribute alloc]	initWithAttributeTag:(DCMAttributeTag *)tag 
-			vr:(NSString *)vr 
-			length:(long) vl 
-			data:(DCMDataContainer *)dicomData 
-			specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
-			transferSyntax:[dicomData transferSyntaxForDataset]
-			dcmObject:self
-			decodeData:NO] autorelease];
+			else if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"PixelData"]])
+			{
+				attr = (DCMPixelDataAttribute *) [[[DCMPixelDataAttribute alloc]	initWithAttributeTag:(DCMAttributeTag *)tag 
+				vr:(NSString *)vr 
+				length:(long) vl 
+				data:(DCMDataContainer *)dicomData 
+				specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
+				transferSyntax:[dicomData transferSyntaxForDataset]
+				dcmObject:self
+				decodeData:NO] autorelease];
+				
 				*byteOffset = endByteOffset;
 			}
-			else if (vl != 0xFFFFFFFF && vl != 0) {
+			else if (vl != 0xFFFFFFFF && vl != 0)
+			{
 				//[self newAttr];
 				attr = [[[DCMAttribute alloc] initWithAttributeTag:tag 
 						vr:vr 
