@@ -718,108 +718,110 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		return;
 	}
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	[[[BrowserController currentBrowser] userManagedObjectContext] lock];
-	
-	// TEMPORARY USERS
-	
-	@try
+	if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
 	{
-		BOOL toBeSaved = NO;
+		[[[BrowserController currentBrowser] userManagedObjectContext] lock];
 		
-		// Find all users
-		NSError *error = nil;
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+		// TEMPORARY USERS
 		
-		error = nil;
-		NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
-		
-		for( NSManagedObject *user in users)
-		{
-			if( [[user valueForKey: @"autoDelete"] boolValue] == YES && [user valueForKey: @"deletionDate"] && [[user valueForKey: @"deletionDate"] timeIntervalSinceDate: [NSDate date]] < 0)
-			{
-				NSLog( @"----- Temporary User reached the EOL (end-of-life) : %@", [user valueForKey: @"name"]);
-				
-				[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"temporary user deleted" forUser: [user valueForKey: @"name"] ip: [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"]];
-				
-				toBeSaved = YES;
-				[[[BrowserController currentBrowser] userManagedObjectContext] deleteObject: user];
-			}
-		}
-		
-		if( toBeSaved)
-			[[[BrowserController currentBrowser] userManagedObjectContext] save: nil];
-	}
-	@catch (NSException *e)
-	{
-		NSLog( @"***** emailNotifications exception for deleting temporary users: %@", e);
-	}
-	
-	// CHECK dateAdded
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"notificationsEmails"] == YES)
-	{
 		@try
 		{
-			NSError *error = nil;
-			NSFetchRequest *dbRequest = nil;
+			BOOL toBeSaved = NO;
 			
-			// Find all studies AFTER the lastCheckDate
-			error = nil;
-			dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
+			// Find all users
+			NSError *error = nil;
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
 			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 			
 			error = nil;
-			NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
+			NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
 			
-			if( [studies count] > 0)
+			for( NSManagedObject *user in users)
 			{
-				// Find all users
+				if( [[user valueForKey: @"autoDelete"] boolValue] == YES && [user valueForKey: @"deletionDate"] && [[user valueForKey: @"deletionDate"] timeIntervalSinceDate: [NSDate date]] < 0)
+				{
+					NSLog( @"----- Temporary User reached the EOL (end-of-life) : %@", [user valueForKey: @"name"]);
+					
+					[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"temporary user deleted" forUser: [user valueForKey: @"name"] ip: [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"]];
+					
+					toBeSaved = YES;
+					[[[BrowserController currentBrowser] userManagedObjectContext] deleteObject: user];
+				}
+			}
+			
+			if( toBeSaved)
+				[[[BrowserController currentBrowser] userManagedObjectContext] save: nil];
+		}
+		@catch (NSException *e)
+		{
+			NSLog( @"***** emailNotifications exception for deleting temporary users: %@", e);
+		}
+		
+		// CHECK dateAdded
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"notificationsEmails"] == YES)
+		{
+			@try
+			{
+				NSError *error = nil;
+				NSFetchRequest *dbRequest = nil;
+				
+				// Find all studies AFTER the lastCheckDate
 				error = nil;
 				dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+				[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
 				[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 				
 				error = nil;
-				NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+				NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
 				
-				for( NSManagedObject *user in users)
+				if( [studies count] > 0)
 				{
-					if( [[user valueForKey: @"emailNotification"] boolValue] == YES && [(NSString*) [user valueForKey: @"email"] length] > 2)
+					// Find all users
+					error = nil;
+					dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+					[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
+					[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+					
+					error = nil;
+					NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
+					
+					for( NSManagedObject *user in users)
 					{
-						NSArray *filteredStudies = studies;
-						
-						@try
+						if( [[user valueForKey: @"emailNotification"] boolValue] == YES && [(NSString*) [user valueForKey: @"email"] length] > 2)
 						{
-							filteredStudies = [studies filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [user valueForKey: @"studyPredicate"]]];
-							filteredStudies = [OsiriXHTTPConnection addSpecificStudiesToArray: filteredStudies forUser: user predicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]];
+							NSArray *filteredStudies = studies;
 							
-							filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
-							filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
-						}
-						@catch (NSException * e)
-						{
-							NSLog( @"******* studyPredicate exception : %@ %@", e, user);
-						}
-						
-						if( [filteredStudies count] > 0)
-						{
-							[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] message: nil replyTo: nil customText: nil];
+							@try
+							{
+								filteredStudies = [studies filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [user valueForKey: @"studyPredicate"]]];
+								filteredStudies = [OsiriXHTTPConnection addSpecificStudiesToArray: filteredStudies forUser: user predicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]];
+								
+								filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
+								filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
+							}
+							@catch (NSException * e)
+							{
+								NSLog( @"******* studyPredicate exception : %@ %@", e, user);
+							}
+							
+							if( [filteredStudies count] > 0)
+							{
+								[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] message: nil replyTo: nil customText: nil];
+							}
 						}
 					}
 				}
 			}
+			@catch (NSException *e)
+			{
+				NSLog( @"***** emailNotifications exception: %@", e);
+			}
 		}
-		@catch (NSException *e)
-		{
-			NSLog( @"***** emailNotifications exception: %@", e);
-		}
+		[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
+		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	}
-	[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
 	[[NSUserDefaults standardUserDefaults] setValue: newCheckString forKey: @"lastNotificationsDate"];
 }

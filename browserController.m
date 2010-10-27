@@ -5477,6 +5477,11 @@ static NSConditionLock *threadLock = nil;
 	if( databaseOutline == nil) return nil;
 	if( loadingIsOver == NO) return nil;
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
+	{
+		if( [[self window] isVisible] == NO) return nil;
+	}
+	
 	NSError				*error =nil;
 	NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
 	NSPredicate			*predicate = nil, *subPredicate = nil;
@@ -13684,7 +13689,10 @@ static NSArray*	openSubSeriesArray = nil;
 		if( [[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] < 1)
 			[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"LISTENERCHECKINTERVAL"];
 		IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
-		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 63.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];	//63.33
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
+			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 63.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];	//63.33
+		
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 3*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain]; // 10
