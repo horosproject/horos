@@ -253,74 +253,80 @@
 	{
 		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 		
-		NSArray* files = [self sortedImages];
-		if (files.count)
+		@try
 		{
-			DicomImage* image = [files objectAtIndex:[files count]/2];
-			
-			if ([[NSFileHandle fileHandleForReadingAtPath: image.completePath] readDataOfLength: 100])	// This means the file is readable...
+			NSArray* files = [self sortedImages];
+			if (files.count)
 			{
-				int frame = 0;
+				DicomImage* image = [files objectAtIndex:[files count]/2];
 				
-				if (files.count == 1 && image.numberOfFrames.intValue > 1)
-					frame = [image.numberOfFrames intValue]/2;
-				
-				if (image.frameID)
-					frame = image.frameID.intValue;
-				
-				NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
-				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
-				[[[[[self valueForKey:@"study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
-				
-				NSImage *thumbnail = nil;
-				NSString *seriesSOPClassUID = [self valueForKey: @"seriesSOPClassUID"];
-				
-				if( [DCMAbstractSyntaxUID isSpectroscopy: seriesSOPClassUID])
+				if ([[NSFileHandle fileHandleForReadingAtPath: image.completePath] readDataOfLength: 100])	// This means the file is readable...
 				{
-					thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"];
-					thumbnailData = [thumbnail TIFFRepresentation];
+					int frame = 0;
+					
+					if (files.count == 1 && image.numberOfFrames.intValue > 1)
+						frame = [image.numberOfFrames intValue]/2;
+					
+					if (image.frameID)
+						frame = image.frameID.intValue;
+					
+					NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+					[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
+					[[[[[self valueForKey:@"study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+					
+					NSImage *thumbnail = nil;
+					NSString *seriesSOPClassUID = [self valueForKey: @"seriesSOPClassUID"];
+					
+					if( [DCMAbstractSyntaxUID isSpectroscopy: seriesSOPClassUID])
+					{
+						thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"];
+						thumbnailData = [thumbnail TIFFRepresentation];
+					}
+					else if( [DCMAbstractSyntaxUID isStructuredReport: seriesSOPClassUID])
+					{
+						NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"pdf"];
+						
+						thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( 70, 70)] autorelease];
+						
+						[thumbnail lockFocus];
+						[icon drawInRect: NSMakeRect( 0, 0, 70, 70) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
+						[thumbnail unlockFocus];
+						
+						thumbnailData = [thumbnail TIFFRepresentation];
+					}
+					else if( [DCMAbstractSyntaxUID isImageStorage: seriesSOPClassUID] || [DCMAbstractSyntaxUID isRadiotherapy: seriesSOPClassUID] || [seriesSOPClassUID length] == 0)
+					{
+						DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour: [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] imageObj:image];
+						[dcmPix CheckLoad];
+						
+						thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
+						
+						if (!dcmPix.notAbleToLoadImage)
+							thumbnailData = [thumbnail JPEGRepresentationWithQuality:0.3];
+						
+						[dcmPix release];
+					}
+					else
+					{
+						thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
+						thumbnailData = [thumbnail TIFFRepresentation];
+					}
+					
+					[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
 				}
-				else if( [DCMAbstractSyntaxUID isStructuredReport: seriesSOPClassUID])
-				{
-					NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"pdf"];
-					
-					thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( 70, 70)] autorelease];
-					
-					[thumbnail lockFocus];
-					[icon drawInRect: NSMakeRect( 0, 0, 70, 70) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
-					[thumbnail unlockFocus];
-					
-					thumbnailData = [thumbnail TIFFRepresentation];
-				}
-				else if( [DCMAbstractSyntaxUID isImageStorage: seriesSOPClassUID] || [DCMAbstractSyntaxUID isRadiotherapy: seriesSOPClassUID] || [seriesSOPClassUID length] == 0)
-				{
-					DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour: [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] imageObj:image];
-					[dcmPix CheckLoad];
-					
-					thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
-					
-					if (!dcmPix.notAbleToLoadImage)
-						thumbnailData = [thumbnail JPEGRepresentationWithQuality:0.3];
-					
-					[dcmPix release];
-				}
-				else
-				{
-					thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
-					thumbnailData = [thumbnail TIFFRepresentation];
-				}
-				
-				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
+			}
+
+			if( thumbnailData)
+			{
+				[self willChangeValueForKey: @"thumbnail"];
+				[self setPrimitiveValue:thumbnailData forKey:@"thumbnail"];
+				[self didChangeValueForKey: @"thumbnail"];
 			}
 		}
-
-		if( thumbnailData)
+		@catch (NSException * e)
 		{
-			[self willChangeValueForKey: @"thumbnail"];
-			[self setPrimitiveValue:thumbnailData forKey:@"thumbnail"];
-			[self didChangeValueForKey: @"thumbnail"];
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
-		
 		[pool release];
 	}
 	

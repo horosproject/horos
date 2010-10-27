@@ -266,8 +266,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		length /= 2;
 		
 		char *ss = sopInstanceUIDEncode( s);
-		[self setValue: [NSData dataWithBytes: ss length: length] forKey:@"compressedSopInstanceUID"];
-		free( ss);
+		[self setValue: [NSData dataWithBytesNoCopy: ss length: length] forKey:@"compressedSopInstanceUID"];
 		
 //		if( [[self sopInstanceUID] isEqualToString: s] == NO)
 //			NSLog(@"******** ERROR sopInstanceUID : %@ %@", s, [self sopInstanceUID]);

@@ -53,10 +53,12 @@
 
 static NSMutableDictionary *movieLock = nil;
 static NSMutableDictionary *wadoJPEGCache = nil;
+static NSMutableDictionary *thumbnailCache = nil;
 
 #define minResolution 400
 #define maxResolution 800
 #define WADOCACHESIZE 2000
+#define THUMBNAILCACHE 20
 
 NSString* notNil( NSString *s)
 {
@@ -1684,15 +1686,18 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	[[BrowserController currentBrowser].managedObjectContext unlock];
 	
-	NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
-	NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
-	NSArray * sortDescriptors;
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
-	[sortid release];
-	[sortdate release];
-	
-	seriesArray = [seriesArray sortedArrayUsingDescriptors: sortDescriptors];
+	if( [seriesArray count] > 1)
+	{
+		NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
+		NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
+		NSArray * sortDescriptors;
+		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
+		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
+		[sortid release];
+		[sortdate release];
+		
+		seriesArray = [seriesArray sortedArrayUsingDescriptors: sortDescriptors];
+	}
 	
 	return seriesArray;
 }
@@ -3190,27 +3195,70 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		#pragma mark thumbnail
 			else if([fileURL isEqualToString:@"/thumbnail"])
 			{
-				NSPredicate *browsePredicate;
+				NSPredicate *browsePredicate = nil;
+				NSString *seriesInstanceUID = nil, *studyInstanceUID = nil;
+				
 				if([[urlParameters allKeys] containsObject:@"id"])
 				{
 					if( [[urlParameters allKeys] containsObject:@"studyID"])
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"] ];
+					{
+						if( thumbnailCache == nil)
+							thumbnailCache = [[NSMutableDictionary alloc] initWithCapacity: THUMBNAILCACHE];
+						
+						if( [thumbnailCache count] > THUMBNAILCACHE)
+							[thumbnailCache removeAllObjects];
+						
+						if( [thumbnailCache objectForKey: [urlParameters objectForKey:@"studyID"]])
+						{
+							NSDictionary *seriesThumbnail = [thumbnailCache objectForKey: [urlParameters objectForKey:@"studyID"]];
+							
+							if( [seriesThumbnail objectForKey: [urlParameters objectForKey:@"id"]])
+							{
+								data = [seriesThumbnail objectForKey: [urlParameters objectForKey:@"id"]];
+							}
+						}
+						
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"studyID"]];// AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"]];
+						
+						studyInstanceUID = [urlParameters objectForKey:@"studyID"];
+						seriesInstanceUID = [urlParameters objectForKey:@"id"];
+					}
 					else
-						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"id"] ];
+					{
+						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
+						studyInstanceUID = [urlParameters objectForKey:@"id"];
+					}
 				}
 				else
 					browsePredicate = [NSPredicate predicateWithValue:NO];
 					
-				NSArray *series = [self seriesForPredicate:browsePredicate];
-				
-				if( [series count] == 1)
+				if( data == nil)
 				{
-					if(![[series lastObject] valueForKey:@"thumbnail"])
-						[[BrowserController currentBrowser] buildThumbnail:[series lastObject]];
+					NSArray *series = [self seriesForPredicate:browsePredicate];
 					
-					NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[[series lastObject] valueForKey:@"thumbnail"]];				
-					NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
-					data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
+					if( [series count]  > 0)
+					{
+						NSMutableDictionary *seriesThumbnails = [NSMutableDictionary dictionary];
+						
+						for( DicomSeries *s in series)
+						{
+							NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [s valueForKey:@"thumbnail"]];
+							
+							NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
+							
+							NSData *dataThumbnail = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
+							
+							if( dataThumbnail && [s valueForKey: @"seriesInstanceUID"])
+							{
+								[seriesThumbnails setObject: dataThumbnail forKey: [s valueForKey: @"seriesInstanceUID"]];
+							
+								if( [seriesInstanceUID isEqualToString: [s valueForKey: @"seriesInstanceUID"]])
+									data = dataThumbnail;
+							}
+						}
+						
+						[thumbnailCache setObject: seriesThumbnails forKey: studyInstanceUID];
+					}
 				}
 				err = NO;
 			}

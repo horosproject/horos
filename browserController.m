@@ -9644,44 +9644,44 @@ static BOOL withReset = NO;
 		displayEmptyDatabase = NO;
 	}
 	
-	if( [checkIncomingLock tryLock])
-	{	
-		if( [context tryLock])
-		{
-			[context retain];
-			
-			DatabaseIsEdited = YES;
-			
-			@try
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
+	{
+		if( [checkIncomingLock tryLock])
+		{	
+			if( [context tryLock])
 			{
-				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-				[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
-				NSError	*error = nil;
-				NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
+				DatabaseIsEdited = YES;
 				
-				int maxSeries = [seriesArray count];
-				
-				if( maxSeries > 60) maxSeries = 60;	// We will continue next time...
-				
-				for( int i = 0; i < maxSeries; i++)
+				@try
 				{
-					[self buildThumbnail: [seriesArray objectAtIndex: i]];
+					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+					[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+					[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
+					NSError	*error = nil;
+					NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
+					
+					int maxSeries = [seriesArray count];
+					
+					if( maxSeries > 60) maxSeries = 60;	// We will continue next time...
+					
+					for( int i = 0; i < maxSeries; i++)
+					{
+						[self buildThumbnail: [seriesArray objectAtIndex: i]];
+					}
+					
+					[self saveDatabase: currentDatabasePath];
 				}
 				
-				[self saveDatabase: currentDatabasePath];
+				@catch( NSException *ne)
+				{
+					NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+					[AppController printStackTrace: ne];
+				}
+				
+				[context unlock];
 			}
-			
-			@catch( NSException *ne)
-			{
-				NSLog(@"buildAllThumbnails exception: %@", [ne description]);
-				[AppController printStackTrace: ne];
-			}
-			
-			[context unlock];
-			[context release];
+			[checkIncomingLock unlock];
 		}
-		[checkIncomingLock unlock];
 	}
 	
 	DatabaseIsEdited = NO;
