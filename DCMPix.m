@@ -3450,7 +3450,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", savedWidthInDB, width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
@@ -3458,7 +3458,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", savedHeightInDB, height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -3668,7 +3668,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", savedHeightInDB, height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -3676,7 +3676,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", savedWidthInDB, width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
@@ -4253,7 +4253,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					
 					if( savedWidthInDB != 0 && savedWidthInDB != width)
 					{
-						NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+						NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", savedWidthInDB, width);
 						[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 						if( width > savedWidthInDB)
 							width = savedWidthInDB;
@@ -4265,7 +4265,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					
 					if( savedHeightInDB != 0 && savedHeightInDB != height)
 					{
-						NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+						NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", savedHeightInDB, height);
 						[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 						if( height > savedHeightInDB)
 							height = savedHeightInDB;
@@ -5194,7 +5194,7 @@ END_CREATE_ROIS:
 	
 	if( savedHeightInDB != 0 && savedHeightInDB != height)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", savedHeightInDB, height);
 		[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 		if( height > savedHeightInDB)
 			height = savedHeightInDB;
@@ -5202,7 +5202,7 @@ END_CREATE_ROIS:
 	
 	if( savedWidthInDB != 0 && savedWidthInDB != width)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", savedWidthInDB, width);
 		[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 		if( width > savedWidthInDB)
 			width = savedWidthInDB;
@@ -6691,7 +6691,7 @@ END_CREATE_ROIS:
 		height = (int) (*val).us;
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height");
+			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", savedHeightInDB, height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -6705,7 +6705,7 @@ END_CREATE_ROIS:
 		width = (int) (*val).us;
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width");
+			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", savedWidthInDB, width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;

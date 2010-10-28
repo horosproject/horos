@@ -3739,7 +3739,15 @@ static NSConditionLock *threadLock = nil;
 				
 				if( [[dict objectForKey: @"copyFiles"] boolValue])
 				{
-					dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+					NSString *extension = [srcPath pathExtension];
+					
+					if( [extension isEqualToString:@""])
+						extension = [NSString stringWithString:@"dcm"]; 
+					
+					if( [extension length] > 4 || [extension length] < 3)
+						extension = [NSString stringWithString:@"dcm"];
+					
+					dstPath = [self getNewFileDatabasePath: extension];
 				
 					if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil])
 						[copiedFiles addObject: dstPath];
@@ -4560,7 +4568,12 @@ static NSConditionLock *threadLock = nil;
 			[DCMPix purgeCachedDictionaries];
 			[DCMView purgeStringTextureCache];
 			
+			[albumNoOfStudiesCache removeAllObjects];
+			[outlineViewArray release];
+			outlineViewArray = nil;
+			
 			displayEmptyDatabase = NO;
+			
 			[self outlineViewRefresh];
 			[self refreshMatrix: self];
 		}
@@ -19407,55 +19420,62 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)setToolbarReportIconForItem: (NSToolbarItem *)item
 {
-	#ifndef OSIRIX_LIGHT
-	NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
-	
-	NSIndexSet *index = [databaseOutline selectedRowIndexes];
-	NSManagedObject	*selectedItem = [databaseOutline itemAtRow:[index firstIndex]];
-	NSManagedObject *studySelected;
-	if ([[[selectedItem entity] name] isEqual:@"Study"])
-		studySelected = selectedItem;
-	else
-		studySelected = [selectedItem valueForKey:@"study"];
-	
-	if([pagesTemplatesArray count] > 1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 2 && [studySelected valueForKey:@"reportURL"] == nil)
+	@try
 	{
-		[item setView: reportTemplatesView];
-		[item setMinSize: NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
-		[item setMaxSize: NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
+		#ifndef OSIRIX_LIGHT
+		NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
 		
-		reportToolbarItemType = -1;
-	}
-	else
-	{
-		NSImage *icon = nil;
+		NSIndexSet *index = [databaseOutline selectedRowIndexes];
+		NSManagedObject	*selectedItem = [databaseOutline itemAtRow:[index firstIndex]];
+		NSManagedObject *studySelected;
+		if ([[[selectedItem entity] name] isEqual:@"Study"])
+			studySelected = selectedItem;
+		else
+			studySelected = [selectedItem valueForKey:@"study"];
 		
-		if( [studySelected valueForKey: @"reportURL"])
+		if([pagesTemplatesArray count] > 1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 2 && [studySelected valueForKey:@"reportURL"] == nil)
 		{
-			if( [[studySelected valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[studySelected valueForKey: @"reportURL"] hasPrefix: @"https://"])
-			{
-				icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"download"]; // Safari document
+			[item setView: reportTemplatesView];
+			[item setMinSize: NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
+			[item setMaxSize: NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
 			
-				if( icon)
-					reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate];	// To force the update
-			}
-			else if( [[NSFileManager defaultManager] fileExistsAtPath: [studySelected valueForKey: @"reportURL"]])
-			{
-				icon = [[NSWorkspace sharedWorkspace] iconForFile: [studySelected valueForKey: @"reportURL"]];
-				
-				if( icon)
-					reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate];	// To force the update
-			}
+			reportToolbarItemType = -1;
 		}
-		
-		if( icon == nil)
-			icon = [self reportIcon];	// Keep this line! Because item can be nil! see updateReportToolbarIcon function
-		
-		[item setImage: icon];
+		else
+		{
+			NSImage *icon = nil;
+			
+			if( [studySelected valueForKey: @"reportURL"])
+			{
+				if( [[studySelected valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[studySelected valueForKey: @"reportURL"] hasPrefix: @"https://"])
+				{
+					icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"download"]; // Safari document
+				
+					if( icon)
+						reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate];	// To force the update
+				}
+				else if( [[NSFileManager defaultManager] fileExistsAtPath: [studySelected valueForKey: @"reportURL"]])
+				{
+					icon = [[NSWorkspace sharedWorkspace] iconForFile: [studySelected valueForKey: @"reportURL"]];
+					
+					if( icon)
+						reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate];	// To force the update
+				}
+			}
+			
+			if( icon == nil)
+				icon = [self reportIcon];	// Keep this line! Because item can be nil! see updateReportToolbarIcon function
+			
+			[item setImage: icon];
+		}
+		#else
+		[item setImage: [NSImage imageNamed: @"Report.icns"]];
+		#endif
 	}
-	#else
-	[item setImage: [NSImage imageNamed: @"Report.icns"]];
-	#endif
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
 }
 
 
@@ -19557,6 +19577,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	//    [self.window makeKeyAndOrderFront:nil];
 	
 	#ifdef EXPORTTOOLBARITEM
+	dd
 	NSLog(@"************** WARNING EXPORTTOOLBARITEM ACTIVATED");
 	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
 	{
@@ -19582,7 +19603,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				@catch (NSException * e)
 				{
-					NSLog( @"a");
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 				}
 			}
 			
@@ -19596,7 +19617,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"b");
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
 	}
 	#endif

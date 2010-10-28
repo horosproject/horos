@@ -276,8 +276,10 @@
 	if( arguments == nil || [arguments count] < 1  ) {
 		err = AuthorizationExecuteWithPrivileges(authorizationRef, [pathToCommand UTF8String], 0, NULL, NULL);
 	}
-	else {
-		while( i < [arguments count] && i < 19) {
+	else
+	{
+		while( i < [arguments count] && i < 19)
+		{
 			args[i] = (char*)[[arguments objectAtIndex:i] cString];
 			i++;
 		}
@@ -288,15 +290,20 @@
 												0, args, NULL);
 	}
 	
-	unsigned long finalTicks;
-	Delay(30, &finalTicks); // do not delete this line... [joris/antoine]
-
-    if(err!=0) {
+    if(err!=0)
+	{
 		NSBeep();
 		NSLog(@"Error %d in AuthorizationExecuteWithPrivileges",err);
 		return NO;
 	}
-	else {
+	else
+	{
+		int status;
+		while ( wait( &status) != -1)
+		{
+            // wait for forked process to terminate
+        }
+		[NSThread sleepForTimeInterval: 0.1];
 		return YES;
 	}
 }
