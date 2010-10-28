@@ -4571,8 +4571,15 @@ static NSConditionLock *threadLock = nil;
 			[albumNoOfStudiesCache removeAllObjects];
 			[outlineViewArray release];
 			outlineViewArray = nil;
+
+			[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
+			[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
+			[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
 			
 			displayEmptyDatabase = NO;
+			
+			[databaseOutline reloadData];
+			[albumTable reloadData];
 			
 			[self outlineViewRefresh];
 			[self refreshMatrix: self];
@@ -4646,7 +4653,7 @@ static NSConditionLock *threadLock = nil;
 	if( gLastCoreDataReset == 0)
 		gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
 	
-	if( [NSDate timeIntervalSinceReferenceDate] - gLastCoreDataReset > 60*60*4)
+	if( [NSDate timeIntervalSinceReferenceDate] - gLastCoreDataReset > 60*60)
 	{
 		if( [checkIncomingLock tryLock])
 		{
