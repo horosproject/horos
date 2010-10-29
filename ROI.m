@@ -1487,8 +1487,14 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
    
    return fabs( area );
 }
+
 -(float) Area
 {
+	if( type == tPlain)
+	{
+		return [self plainArea];
+	}
+	
 	return [self Area: [self splinePoints]];
 }
 
@@ -5451,9 +5457,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	{
 		case tOval:
 		case tROI:
-		//JJCP
 		case tDynAngle:
-		//JJCP
 		case tAxis:
 		case tCPolygon:
 		case tOPolygon:
