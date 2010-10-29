@@ -224,6 +224,7 @@
 		59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */; };
 		59C512C21189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */; };
 		59C512C31189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */; };
+		59D9471D125333640095680D /* SWFInit.as in Resources */ = {isa = PBXBuildFile; fileRef = 59D9471C125333640095680D /* SWFInit.as */; };
 		59DC285C11C60E3C00DAD5B4 /* NSView+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FB191129338A009EB238 /* NSView+N2.mm */; };
 		59DC28B211C611F100DAD5B4 /* NSThread+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28B011C611F100DAD5B4 /* NSThread+N2.h */; };
 		59DC28B311C611F100DAD5B4 /* NSThread+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28B111C611F100DAD5B4 /* NSThread+N2.mm */; };
@@ -8203,6 +8204,7 @@
 		59BDF126117EFA41007F1F2C /* PreferencesView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferencesView.mm; sourceTree = "<group>"; };
 		59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SFAuthorizationView+OsiriX.h"; sourceTree = "<group>"; };
 		59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "SFAuthorizationView+OsiriX.mm"; sourceTree = "<group>"; };
+		59D9471C125333640095680D /* SWFInit.as */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SWFInit.as; path = Binaries/SWFInit.as; sourceTree = "<group>"; };
 		59DC28B011C611F100DAD5B4 /* NSThread+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSThread+N2.h"; path = "nitrogen/Sources/NSThread+N2.h"; sourceTree = "<group>"; };
 		59DC28B111C611F100DAD5B4 /* NSThread+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSThread+N2.mm"; path = "nitrogen/Sources/NSThread+N2.mm"; sourceTree = "<group>"; };
 		59DC28B411C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAppleEventDescriptor+N2.h"; path = "nitrogen/Sources/NSAppleEventDescriptor+N2.h"; sourceTree = "<group>"; };
@@ -12224,6 +12226,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				59D9471C125333640095680D /* SWFInit.as */,
 				AB78245B0D3BACC700460DCE /* WebServicesHTML */,
 				CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */,
 				ABE0D69A0CDB1B9E00F0494B /* iChatTheatreHelp */,
@@ -22248,6 +22251,7 @@
 				A9A80E3911F73E22009F54B9 /* Activity_StopPressed.tif in Resources */,
 				59FB654F12312D8900EBA136 /* weasis in Resources */,
 				A97569581237D132003F00D3 /* PathAssistant.png in Resources */,
+				59D9471D125333640095680D /* SWFInit.as in Resources */,
 				CE72D7C31263702500874EF6 /* Pause.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
