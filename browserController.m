@@ -17710,6 +17710,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[splash incrementBy:1];
 				
 				[NSThread currentThread].progress = (float) i / (float) [filesToExport count];
+				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesToExport count]-i];
 				
 				if( [splash aborted] || [NSThread currentThread].isCancelled)
 				{
