@@ -55,7 +55,8 @@ DcmBufferProducer::DcmBufferProducer()
 
 DcmBufferProducer::~DcmBufferProducer()
 {
-  delete[] backup_;
+	if( backup_)
+		delete[] backup_;
 }
 
 
