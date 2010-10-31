@@ -236,7 +236,7 @@ ASC_initializeNetwork(T_ASC_NetworkRole role,
     OFCondition cond = DUL_InitializeNetwork(mode, &acceptorPort, timeout, DUL_ORDERBIGENDIAN | options, &netkey);
     if (cond.bad()) return cond;
 
-    *network = (T_ASC_Network *) malloc(sizeof(T_ASC_Network));
+    *network = (T_ASC_Network *) calloc(sizeof(T_ASC_Network), 1);
     if (*network == NULL) return EC_MemoryExhausted;
     (*network)->role = role;
     (*network)->acceptorPort = acceptorPort;
