@@ -1940,7 +1940,7 @@ createNetworkKey(const char *mode,
         sprintf(buf1, "Unrecognized Network Mode: %s", mode);
         return makeDcmnetCondition(DULC_ILLEGALPARAMETER, OF_error, buf1);
     }
-    *key = (PRIVATE_NETWORKKEY *) malloc(sizeof(PRIVATE_NETWORKKEY));
+    *key = (PRIVATE_NETWORKKEY *) calloc(sizeof(PRIVATE_NETWORKKEY), 1);
     if (*key == NULL) return EC_MemoryExhausted;
     (void) strcpy((*key)->keyType, KEY_NETWORK);
 
@@ -2118,8 +2118,8 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
 {
     PRIVATE_ASSOCIATIONKEY *key;
 
-    key = (PRIVATE_ASSOCIATIONKEY *) malloc(
-        size_t(sizeof(PRIVATE_ASSOCIATIONKEY) + maxPDU + 100));
+    key = (PRIVATE_ASSOCIATIONKEY *) calloc(
+        size_t(sizeof(PRIVATE_ASSOCIATIONKEY) + maxPDU + 100), 1);
     if (key == NULL) return EC_MemoryExhausted;
     key->receivePDUQueue = NULL;
 

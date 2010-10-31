@@ -270,7 +270,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
         long maxReceivePDUSize)
 {
 
-    *params = (T_ASC_Parameters *) malloc(sizeof(**params));
+    *params = (T_ASC_Parameters *) calloc(sizeof(**params), 1);
     if (*params == NULL) return EC_MemoryExhausted;
     bzero((char*)*params, sizeof(**params));
 
@@ -719,7 +719,7 @@ ASC_addPresentationContext(
     OFCondition cond = EC_Normal;
     for (i=0; i<transferSyntaxListCount; i++)
     {
-        transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(DUL_TRANSFERSYNTAX));
+        transfer = (DUL_TRANSFERSYNTAX*) calloc(sizeof(DUL_TRANSFERSYNTAX), 1);
         if (transfer == NULL) return EC_MemoryExhausted;
         strcpy(transfer->transferSyntax, transferSyntaxList[i]);
         cond = LST_Enqueue(&lst, (LST_NODE*)transfer);
@@ -1577,7 +1577,7 @@ ASC_receiveAssociation(T_ASC_Network * network,
     cond = ASC_setTransportLayerType(params, useSecureLayer);
     if (cond.bad()) return cond;
 
-    *assoc = (T_ASC_Association *) malloc(sizeof(**assoc));
+    *assoc = (T_ASC_Association *) calloc(sizeof(**assoc), 1);
     if (*assoc == NULL) return EC_MemoryExhausted;
     bzero((char*)*assoc, sizeof(**assoc));
 
@@ -1714,7 +1714,7 @@ ASC_requestAssociation(T_ASC_Network * network,
       return makeDcmnetCondition(ASCC_CODINGERROR, OF_error, "ASC Coding error in ASC_requestAssociation: missing presentation contexts");
     }
 
-    *assoc = (T_ASC_Association *) malloc(sizeof(**assoc));
+    *assoc = (T_ASC_Association *) calloc(sizeof(**assoc), 1);
     if (*assoc == NULL) return EC_MemoryExhausted;
     bzero((char*)*assoc, sizeof(**assoc));
 
@@ -1792,7 +1792,7 @@ ASC_requestAssociation(T_ASC_Network * network,
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
         (*assoc)->sendPDVLength = sendLen;
-        (*assoc)->sendPDVBuffer = (unsigned char*)malloc(size_t(sendLen));
+        (*assoc)->sendPDVBuffer = (unsigned char*) calloc(size_t(sendLen), 1);
         if ((*assoc)->sendPDVBuffer == NULL) return EC_MemoryExhausted;
         strcpy(params->theirImplementationClassUID,
            params->DULparams.calledImplementationClassUID);
@@ -1878,7 +1878,7 @@ ASC_acknowledgeAssociation(
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
         assoc->sendPDVLength = sendLen;
-        assoc->sendPDVBuffer = (unsigned char*)malloc(size_t(sendLen));
+        assoc->sendPDVBuffer = (unsigned char*) calloc(size_t(sendLen), 1);
         if (assoc->sendPDVBuffer == NULL) return EC_MemoryExhausted;
     }
     return cond;
