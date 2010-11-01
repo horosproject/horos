@@ -71,10 +71,10 @@ static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 static int inc = 0;
 static BOOL firstWadoErrorDisplayed = NO;
 
-NSException* queryException = nil;
-int debugLevel = 0;
-int wadoUnique = 0, wadoUniqueThreadID = 0;
-OFCondition globalCondition = EC_Normal;
+static NSException* queryException = nil;
+static int debugLevel = 0;
+static int wadoUnique = 0, wadoUniqueThreadID = 0;
+static OFCondition globalCondition = EC_Normal;
 
 typedef struct {
     T_ASC_Association *assoc;
