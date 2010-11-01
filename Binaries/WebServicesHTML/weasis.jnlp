@@ -25,6 +25,7 @@
     <property name="felix.config.properties" value="%WebServerAddress%/weasis/conf/config.properties"/>
     <property name="weasis.codebase.url" value="%WebServerAddress%/weasis"/>
     <property name="gosh.args" value="-sc telnetd -p 17179 start"/>
+    <property name="java.ext.dirs" value=""/>
     <property name="com.apple.macos.useScreenMenuBar" value="true"/>
   </resources>
   <application-desc main-class="org.weasis.launcher.WebstartLauncher">
