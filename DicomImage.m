@@ -901,8 +901,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		#endif
 		
 		#ifndef OSIRIX_LIGHT
-		if( [VRController getUniqueFilenameScissorStateFor: self] && [[NSFileManager defaultManager] fileExistsAtPath: [VRController getUniqueFilenameScissorStateFor: self]])
-			[[NSFileManager defaultManager] removeFileAtPath: [VRController getUniqueFilenameScissorStateFor: self] handler: nil];
+		NSString *vrFile = [VRController getUniqueFilenameScissorStateFor: self];
+		if( vrFile && [[NSFileManager defaultManager] fileExistsAtPath: vrFile])
+			[[NSFileManager defaultManager] removeFileAtPath: vrFile handler: nil];
 		#endif
 	}
 	return delete;
