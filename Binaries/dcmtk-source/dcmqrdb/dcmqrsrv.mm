@@ -135,6 +135,7 @@ DcmQueryRetrieveSCP::DcmQueryRetrieveSCP(
 , options_(options)
 {
 	activateCGETSCP_ = [[NSUserDefaults standardUserDefaults] boolForKey: @"activateCGETSCP"];
+	secureConnection_ = 0;
 }
 
 DcmQueryRetrieveSCP::~DcmQueryRetrieveSCP()
