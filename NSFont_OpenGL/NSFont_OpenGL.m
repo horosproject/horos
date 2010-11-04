@@ -175,49 +175,59 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 	retval = TRUE;
 	for( currentUnichar = first; currentUnichar < first + count; currentUnichar++ )
 	{
-		currentChar = [ NSString stringWithCharacters:&currentUnichar length:1 ];
-		charSize = [ currentChar sizeWithAttributes:attribDict ];
-		charRect.size = charSize;
-		charRect = NSIntegralRect( charRect );
-		if( charRect.size.width <= 0 && charRect.size.height <= 0 ) // character with no glyph in the current font
+		@try
 		{
-			currentChar = [ NSString stringWithString:@"?"];
+			currentChar = [ NSString stringWithCharacters:&currentUnichar length:1 ];
 			charSize = [ currentChar sizeWithAttributes:attribDict ];
 			charRect.size = charSize;
 			charRect = NSIntegralRect( charRect );
-		}	
-		theImage = [[NSImage alloc ] initWithSize:NSMakeSize( 0, 0 ) ];
-		curSizeArray[ currentUnichar] = charRect.size.width;
-		[ theImage setSize:charRect.size ];
-		
-		if( [theImage size].width > 0 && [theImage size].height > 0)
-		{
-			[ theImage lockFocus ];
-			[ blackColor set ];
-			[ NSBezierPath fillRect:charRect ];
-			[ [ NSGraphicsContext currentContext ] setShouldAntialias:NO ];
-			[ currentChar drawInRect:charRect withAttributes:attribDict ];
-			[ theImage unlockFocus ];
+			if( charRect.size.width <= 0 && charRect.size.height <= 0 ) // character with no glyph in the current font
+			{
+				currentChar = [ NSString stringWithString:@"?"];
+				charSize = [ currentChar sizeWithAttributes:attribDict ];
+				charRect.size = charSize;
+				charRect = NSIntegralRect( charRect );
+			}	
+			theImage = [[NSImage alloc ] initWithSize:NSMakeSize( 0, 0 ) ];
+			curSizeArray[ currentUnichar] = charRect.size.width;
+			[theImage setSize: charRect.size];
+			
+			if([theImage size].width > 0 && [theImage size].height > 0)
+			{
+				[theImage lockFocus];
+				[blackColor set];
+				[NSBezierPath fillRect:charRect];
+				[[NSGraphicsContext currentContext] setShouldAntialias: NO];
+				[currentChar drawInRect:charRect withAttributes:attribDict];
+				[theImage unlockFocus];
+			}
+			
+			bitmap = [NSBitmapImageRep imageRepWithData:[ theImage TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:0]];
+			
+			if( bitmap)
+			{
+				[curArray addObject: bitmap];
+				[theImage release];
+				
+				switch( fontType)
+				{
+					case 1:
+						charPtrArrayPreview[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
+					break;
+					
+					case 0:
+						charPtrArray[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
+					break;
+					
+					case 2:
+						charPtrArrayROI[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
+					break;
+				}
+			}
 		}
-		
-		bitmap = [NSBitmapImageRep imageRepWithData:[ theImage TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:0]];
-
-		[curArray addObject: bitmap];
-		[theImage release];
-			
-		switch( fontType)
+		@catch (NSException * e)
 		{
-			case 1:
-				charPtrArrayPreview[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
-			break;
-			
-			case 0:
-				charPtrArray[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
-			break;
-			
-			case 2:
-				charPtrArrayROI[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
-			break;
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
 	}
 
@@ -302,27 +312,30 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
    for( dListNum = base, currentUnichar = first; currentUnichar < first + count;
         dListNum++, currentUnichar++ )
    {
-		charSizeArrayIn[ currentUnichar] = curSizeArray[ currentUnichar];
+	   charSizeArrayIn[ currentUnichar] = curSizeArray[ currentUnichar];
 		
-		NSBitmapImageRep *bitmap = [curArray objectAtIndex: currentUnichar - first];
-		
-		glNewList( dListNum, GL_COMPILE );
-		
-		switch( fontType)
+	   if( currentUnichar - first < curArray.count)
 		{
-			case 0:
-				glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArray[ currentUnichar]);
-			break;
+			NSBitmapImageRep *bitmap = [curArray objectAtIndex: currentUnichar - first];
 			
-			case 1:
-				glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayPreview[ currentUnichar]);
-			break;
+			glNewList( dListNum, GL_COMPILE );
 			
-			case 2:
-				glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayROI[ currentUnichar]);
-			break;
+			switch( fontType)
+			{
+				case 0:
+					glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArray[ currentUnichar]);
+				break;
+				
+				case 1:
+					glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayPreview[ currentUnichar]);
+				break;
+				
+				case 2:
+					glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayROI[ currentUnichar]);
+				break;
+			}
+			glEndList();
 		}
-		glEndList();
    }
 
    glPopClientAttrib();
