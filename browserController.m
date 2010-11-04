@@ -3722,7 +3722,9 @@ static NSConditionLock *threadLock = nil;
 	BOOL first = YES, studySelected = NO, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
 	NSArray *filesInput = [dict objectForKey: @"filesInput"];
 	
-	for( int i = 0; i < [filesInput count]; i++)
+	int total = 0;
+	
+	for( int i = 0; i < [filesInput count];)
 	{
 		@try
 		{
@@ -3751,6 +3753,8 @@ static NSConditionLock *threadLock = nil;
 				
 					if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil])
 						[copiedFiles addObject: dstPath];
+					else
+						NSLog( @"***** copyItemAtPath failed : srcPath");
 				}
 				else
 				{
@@ -3764,6 +3768,7 @@ static NSConditionLock *threadLock = nil;
 								{
 									[copiedFiles addObject: srcPath];
 								}
+								else NSLog( @"**** DicomFile *curFile = nil");
 							}
 							@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
 						}
@@ -3834,6 +3839,13 @@ static NSConditionLock *threadLock = nil;
 												  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
 										 generatedByOsiriX: NO
 										     mountedVolume: mountedVolume];
+				
+				if( [copiedFiles count] != [objects count])
+				{
+					NSLog( @"******* [copiedFiles count] != [objects count]");
+				}
+				
+				total += [objects count];
 			}
 			else
 			{
@@ -4085,7 +4097,7 @@ static NSConditionLock *threadLock = nil;
 				{
 					if( [[[srcPath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
 					{
-						DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
+						DicomFile *curFile = [[DicomFile alloc] init: srcPath];
 						
 						if( curFile)
 						{
@@ -4109,6 +4121,7 @@ static NSConditionLock *threadLock = nil;
 								[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
 							}
 						}
+						else NSLog( @"**** DicomFile *curFile = nil");
 					}
 				}
 				@catch (NSException * e)
