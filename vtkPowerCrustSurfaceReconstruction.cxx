@@ -5439,6 +5439,7 @@ simplex *make_facets(simplex *seen) {
 
     for (i=0,bn = seen->neigh; i<cdim; i++,bn++) {
         n = bn->simp;
+		if( !n) return NULL;
         if (pnum != n->visit) {
             n->visit = pnum;
             if (sees(p,n)) make_facets(n);
