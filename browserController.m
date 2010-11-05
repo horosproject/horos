@@ -13802,7 +13802,6 @@ static NSArray*	openSubSeriesArray = nil;
 - (void) createDBContextualMenu // DATABASE contextual menu
 {
 	NSMenu *menu = [[[NSMenu alloc] initWithTitle:@"Tools"] autorelease];
-	NSMenuItem *item;
 	
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Display only this patient", nil) action: @selector(searchForCurrentPatient:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [NSMenuItem separatorItem]];
@@ -13823,11 +13822,7 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to TIFF", nil) action: @selector(exportTIFF:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM File(s)", nil) action: @selector(exportDICOMFile:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to iDisk", nil) action: @selector(sendiDisk:) keyEquivalent:@""] autorelease]];
-	[menu addItem:item];
-		
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to Email", nil)  action:@selector(sendMail:) keyEquivalent:@""] autorelease]];
-	[menu addItem:item];
-		
 	[menu addItem: [NSMenuItem separatorItem]];
 	
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add selected study(s) to user(s)", nil)  action:@selector( addStudiesToUser:) keyEquivalent:@""] autorelease]];
@@ -13843,8 +13838,6 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItem: [NSMenuItem separatorItem]];
 	
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Report", nil) action: @selector(generateReport:) keyEquivalent:@""] autorelease]];
-	[menu addItem:item];
-		
 	[menu addItem: [NSMenuItem separatorItem]];
 	
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Merge Selected Studies", nil) action: @selector(mergeStudies:) keyEquivalent:@""] autorelease]];
@@ -13872,7 +13865,7 @@ static NSArray*	openSubSeriesArray = nil;
 		{
 			submenu = [[[NSMenu alloc] initWithTitle: NSLocalizedString(@"Apply this Routing Rule to Selection", nil)] autorelease];
 			
-			item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"All routing rules", nil)  action:@selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
+			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"All routing rules", nil)  action:@selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
 			[submenu addItem: item];
 			[submenu addItem: [NSMenuItem separatorItem]];
 			
