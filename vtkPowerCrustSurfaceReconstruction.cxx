@@ -119,7 +119,7 @@ void vtkPowerCrustSurfaceReconstruction::Error(const char *message)
     vtkErrorMacro(<<"ASSERT:"<<message);
 }
 
-void OSIRIX_ASSERT(int b)
+void OSIRIX_ASSERT(long b)
 {
 	if(!b)
 		throw "PowerCrustSurface exception";
@@ -225,7 +225,7 @@ X *new_block_##X(int make_blocks)        \
   X *xlm, *xbt;          \
   static int num_##X##_blocks;        \
   if (make_blocks) {          \
-    OSIRIX_ASSERT((int) (num_##X##_blocks<max_blocks));    \
+    OSIRIX_ASSERT((long) (num_##X##_blocks<max_blocks));    \
         DEB(0, before) DEBEXP(0, Nobj * X##_size)      \
                 \
     xbt = X##_block_table[num_##X##_blocks++] =  (X*)malloc(Nobj * X##_size); \
@@ -233,7 +233,7 @@ X *new_block_##X(int make_blocks)        \
     if (!xbt) {          \
       DEBEXP(-10,num_##X##_blocks)    \
     }            \
-    OSIRIX_ASSERT((int) (xbt));          \
+    OSIRIX_ASSERT((long) (xbt));          \
                 \
     xlm = INCP(X,xbt,Nobj);        \
     for (i=0;i<Nobj; i++) {        \
@@ -258,7 +258,7 @@ void free_##X##_storage(void) {new_block_##X(0);}    \
 #define NEWL(X,p)            \
 {                \
    p = X##_list ? X##_list : new_block_##X(1);    \
-  OSIRIX_ASSERT((int) (p));            \
+  OSIRIX_ASSERT((long) (p));            \
    X##_list = p->next;          \
 }                \
 
@@ -267,7 +267,7 @@ void free_##X##_storage(void) {new_block_##X(0);}    \
 #define NEWLRC(X,p)            \
 {                \
   p = X##_list ? X##_list : new_block_##X(1);    \
-  OSIRIX_ASSERT((int) (p));            \
+  OSIRIX_ASSERT((long) (p));            \
   X##_list = p->next;          \
   p->ref_count = 1;          \
 }                \
@@ -1061,9 +1061,9 @@ long site_numm(site p) {
 
 site new_site (site p, long j) {
 
-    OSIRIX_ASSERT((int) (num_blocks+1<MAXBLOCKS));
+    OSIRIX_ASSERT((long) (num_blocks+1<MAXBLOCKS));
     if (0==(j%BLOCKSIZE)) {
-        OSIRIX_ASSERT((int) (num_blocks < MAXBLOCKS));
+        OSIRIX_ASSERT((long) (num_blocks < MAXBLOCKS));
         return(site_blocks[num_blocks++]=(site)malloc(BLOCKSIZE*site_size));
     } else
         return p+dim;
@@ -1152,7 +1152,7 @@ void read_bounding_box(long j)
 // TJH: trying to replace file use
 site vtk_read_next_site(long j)
 {
-    OSIRIX_ASSERT((int) (j>=0));
+    OSIRIX_ASSERT((long) (j>=0));
     p = new_site(p,j);
     
     for(int i=0;i<dim;i++)
@@ -1169,7 +1169,7 @@ site vtk_read_next_site(long j)
 // TJH: trying to replace file use
 site vtk_pole_read_next_site(long j)
 {
-    OSIRIX_ASSERT((int) (j>=0));
+    OSIRIX_ASSERT((long) (j>=0));
     p = new_site(p,j);
     
     for(int i=0;i<dim;i++)
@@ -1223,7 +1223,7 @@ site vtk_pole_read_next_site(long j)
     // TFILE is a temporary file 'temp'
     // TJH: we have bypassed the file handling so don't need this bit
     //if (j!=0) {
-    //    OSIRIX_ASSERT((int) (TFILE != NULL));
+    //    OSIRIX_ASSERT((long) (TFILE != NULL));
     //    fprintf(TFILE, "%s", &(buf[k]) );fflush(TFILE);
     //}
 
@@ -1239,7 +1239,7 @@ site vtk_pole_read_next_site(long j)
                 // TJH: added this if statement
                 if(DFILE)
                     fprintf(DFILE, "bad input line: %s\n", buf);
-                OSIRIX_ASSERT((int) (pcFALSE));
+                OSIRIX_ASSERT((long) (pcFALSE));
             }
             // TJH: we multiply the coordinates by some large user-supplied value
             // to get everything into integer values (for speed later!)
@@ -1265,7 +1265,7 @@ site vtk_pole_read_next_site(long j)
         // make a debug call
         DEB(-10,inconsistent input);
         DEBTR(-10); 
-        OSIRIX_ASSERT((int) (pcFALSE,"inconsistent input"));
+        OSIRIX_ASSERT((long) (pcFALSE,"inconsistent input"));
     }  
 
     return p;
@@ -3736,7 +3736,7 @@ int check_perps(simplex *s) {
     for (i=1; i<cdim; i++) if (NEARZERO(s->neigh[i].basis->sqb)) return 0;
     if (!b) {
         b = (basis_s*)malloc(basis_s_size);
-        OSIRIX_ASSERT((int) (b));
+        OSIRIX_ASSERT((long) (b));
     }
     else b->lscale = 0;
     z = VB(b);
@@ -3791,7 +3791,7 @@ void get_normal_sede(simplex *s) {
             c[0] = -c[0]; c[1] = -c[1]; c[2] = -c[2];
             break;
         }
-        DEBS(-1) if (!check_perps(s)) /* TJH exit(1);*/ OSIRIX_ASSERT((int) (pcFALSE)); EDEBS
+        DEBS(-1) if (!check_perps(s)) /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE)); EDEBS
                                                    return;
     }   
         
@@ -3802,7 +3802,7 @@ void get_normal_sede(simplex *s) {
         if (s->normal->sqb != 0) break;
     }
 
-    DEBS(-1) if (!check_perps(s)) {DEBTR(-1) /* TJH exit(1);*/ OSIRIX_ASSERT((int) (pcFALSE));} EDEBS
+    DEBS(-1) if (!check_perps(s)) {DEBTR(-1) /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));} EDEBS
 
                                                            }
 
@@ -3819,7 +3819,7 @@ int sees(site p, simplex *s) {
 
     if (!b) {
         b = (basis_s*)malloc(basis_s_size);
-        OSIRIX_ASSERT((int) (b));
+        OSIRIX_ASSERT((long) (b));
     }
     else b->lscale = 0;
     zz = VB(b);
@@ -3848,7 +3848,7 @@ int sees(site p, simplex *s) {
     DEBS(-7) if (i==3) {
         DEB(-6, looped too much in sees);
         DEBEXP(-6,dd) DEBEXP(-6,dds) DEBEXP(-6,site_num(p));
-        print_simplex_f(s, DFILE, &print_neighbor_full); /* TJH exit(1);*/ OSIRIX_ASSERT((int) (pcFALSE));}
+        print_simplex_f(s, DFILE, &print_neighbor_full); /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));}
     EDEBS
         return 0;
 }
@@ -3932,7 +3932,7 @@ int alph_test(simplex *s, int i, void *alphap) {
     if (ssees) return alpha<rs;
     if (nsees) return alpha<rsi;
 
-    OSIRIX_ASSERT((int) (rsfi<=rs+FLT_EPSILON && rsfi<=rsi+FLT_EPSILON));
+    OSIRIX_ASSERT((long) (rsfi<=rs+FLT_EPSILON && rsfi<=rsi+FLT_EPSILON));
 
     return alpha<=rsfi;
 }
@@ -3990,7 +3990,7 @@ double find_alpha(simplex *root) {
 
     for (ah=i=0;i<pdim;i++) ah += (maxs[i]-mins[i])*(maxs[i]-mins[i]);
     int check_ashape_returns = check_ashape(root,ah);
-    OSIRIX_ASSERT((int) (check_ashape_returns));
+    OSIRIX_ASSERT((long) (check_ashape_returns));
     for (i=0;i<17;i++) {
         if (check_ashape(root, am = (al+ah)/2)) ah = am;
         else al = am;
@@ -4033,7 +4033,7 @@ void vols(fg *f, Tree *t, basis_s* n, int depth) {
         else vols(t->fgs, t->fgs->facets, nn, depth+1);
     }
 
-    OSIRIX_ASSERT((int) (f->dist!=Huge || t->fgs->dist==Huge));
+    OSIRIX_ASSERT((long) (f->dist!=Huge || t->fgs->dist==Huge));
     if (t->fgs->dist==Huge || t->fgs->vol==Huge) f->vol = Huge;
     else {
         sqq = t->fgs->dist - f->dist;
@@ -4094,7 +4094,7 @@ simplex *build_convex_hull(gsitef *get_s, site_n *site_numm, short dim, short vd
     b_err_min = DBL_EPSILON*MAXDIM*(1<<MAXDIM)*MAXDIM*3.01;
     b_err_min_sq = b_err_min * b_err_min;
 
-    OSIRIX_ASSERT((int) (get_site!=NULL)); OSIRIX_ASSERT((int) (site_num!=NULL));
+    OSIRIX_ASSERT((long) (get_site!=NULL)); OSIRIX_ASSERT((long) (site_num!=NULL));
 
     rdim = vd ? pdim+1 : pdim;
     if (rdim > MAXDIM)
@@ -4513,7 +4513,7 @@ void newOpposite(int p1index, int p2index, double pole_angle) {
     newplist->next = opplist[p1index];
     opplist[p1index] = newplist;
     if (adjlist[p1index].oppradius > adjlist[p2index].sqradius) {
-        OSIRIX_ASSERT((int) (adjlist[p2index].sqradius > 0.0)); 
+        OSIRIX_ASSERT((long) (adjlist[p2index].sqradius > 0.0)); 
         adjlist[p1index].oppradius = adjlist[p2index].sqradius;
     }
 }
@@ -4894,7 +4894,7 @@ void *add_to_fg(simplex *s, void *dum) {
     /* include all superset relations */
     for (q=1; q<Q; q++) {
         fq = find_fg(s,q);
-        OSIRIX_ASSERT((int) (fq));
+        OSIRIX_ASSERT((long) (fq));
         for (m=1,si=sn;si<sn+cdim;si++,m<<=1) if (!(q&m)) {
             fq->facets = insert(si->vert,fq->facets);
             fq->facets->fgs = find_fg(s, q|m);
@@ -4915,7 +4915,7 @@ void visit_fg_i(   void (*v_fg)(Tree *, int, int),
 
     if (!t) return;
 
-    OSIRIX_ASSERT((int) (t->fgs));
+    OSIRIX_ASSERT((long) (t->fgs));
     if (t->fgs->mark!=vn) {
         t->fgs->mark = vn;
         if (t->key!=infinity && !mo[site_num(t->key)]) boundaryc = 0; 
@@ -4937,7 +4937,7 @@ int visit_fg_i_far(void (*v_fg)(Tree *, int),
 
     if (!t) return 0;
 
-    OSIRIX_ASSERT((int) (t->fgs));
+    OSIRIX_ASSERT((long) (t->fgs));
     if (t->fgs->mark!=vn) {
         t->fgs->mark = vn;
         nb = (t->key==infinity) || mo[site_num(t->key)];
@@ -5263,7 +5263,7 @@ STORAGE(simplex)
     vnum--;
     if (!st) {
         st=(simplex**)malloc((ss+MAXDIM+1)*sizeof(simplex*));
-        OSIRIX_ASSERT((int) (st));
+        OSIRIX_ASSERT((long) (st));
     }
     if (s) push(s);
     while (tms) {
@@ -5271,7 +5271,7 @@ STORAGE(simplex)
         if (tms>ss) {
             DEBEXP(-1,tms);
             st=(simplex**)realloc(st,((ss+=ss)+MAXDIM+1)*sizeof(simplex*));
-            OSIRIX_ASSERT((int) (st));
+            OSIRIX_ASSERT((long) (st));
         }
         pop(t);
         if (!t || t->visit == vnum) continue;
@@ -5323,7 +5323,7 @@ void *visit_hull(simplex *root, visit_func *visit)
         if(DFILE)
             fprintf(DFILE,"---------------------\n"); 
         print_triang(a,DFILE, &print_neighbor_full);
-        OSIRIX_ASSERT((int) (pcFALSE)); 
+        OSIRIX_ASSERT((long) (pcFALSE)); 
         return 0; 
     }  
 }*/  
@@ -5345,7 +5345,7 @@ void *visit_hull(simplex *root, visit_func *visit)
         if(DFILE)
             fprintf(DFILE,"---------------------\n"); 
         print_triang(a,DFILE, &print_neighbor_full);
-        /* TJH exit(1);*/ /*OSIRIX_ASSERT((int) (pcFALSE,"adjacency failure!")); 
+        /* TJH exit(1);*/ /*OSIRIX_ASSERT((long) (pcFALSE,"adjacency failure!")); 
         return 0; 
     }  
 }*/   
@@ -5366,7 +5366,7 @@ void *visit_hull(simplex *root, visit_func *visit)
         if(DFILE)\
             fprintf(DFILE,"---------------------\n");       \
         print_triang(a,DFILE, &print_neighbor_full);        \
-        /* TJH exit(1);*/ OSIRIX_ASSERT((int) (pcFALSE,"adjacency failure!"));                        \
+        /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE,"adjacency failure!"));                        \
         return 0;                       \
     }                               \
 }                                   \
@@ -5389,7 +5389,7 @@ void connect(simplex *s) {
     neighbor *sn;
 	
     if (!s) return;
-    OSIRIX_ASSERT((int) (!s->peak.vert
+    OSIRIX_ASSERT((long) (!s->peak.vert
            && s->peak.simp->peak.vert==p
            && !op_vert(s,p)->simp->peak.vert));
     if (s->visit==pnum) return;
@@ -5434,7 +5434,7 @@ simplex *make_facets(simplex *seen) {
 
 
     if (!seen) return NULL;
-    DEBS(-1) OSIRIX_ASSERT((int) (sees(p,seen) && !seen->peak.vert));
+    DEBS(-1) OSIRIX_ASSERT((long) (sees(p,seen) && !seen->peak.vert));
     EDEBS seen->peak.vert = p;
 
     for (i=0,bn = seen->neigh; i<cdim; i++,bn++) {
@@ -5513,7 +5513,7 @@ simplex *search(simplex *root) {
         if(tms>ss) 
         {
             st=(simplex**)realloc(st,((ss+=ss)+MAXDIM+1)*sizeof(simplex*));
-            OSIRIX_ASSERT((int) (st));
+            OSIRIX_ASSERT((long) (st));
         }
         pop(s);
         if (s->visit == pnum) continue;
@@ -5605,7 +5605,7 @@ void panic(const char *fmt, ...) {
     }
     va_end(args);
 
-    /* TJH exit(1);*/ OSIRIX_ASSERT((int) (pcFALSE,fmt));
+    /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE,fmt));
 }
 
 
@@ -5628,7 +5628,7 @@ FILE* efopen(char *file, char *mode) {
     // TJH: added this if statement
     if(DFILE)
         fprintf(DFILE, "couldn't open file %s mode %s\n",file,mode);
-    OSIRIX_ASSERT((int) (pcFALSE));
+    OSIRIX_ASSERT((long) (pcFALSE));
     return NULL;
 }
 
@@ -5641,7 +5641,7 @@ FILE* epopen(char *com, char *mode) {
     FILE* fp;
     if ((fp = popen(com, mode))!=NULL) return fp;
     fprintf(stderr, "couldn't open stream %s mode %s\n",com,mode);
-    OSIRIX_ASSERT((int) (pcFALSE));
+    OSIRIX_ASSERT((long) (pcFALSE));
     return 0;
 }*/
 
@@ -5651,7 +5651,7 @@ void print_neighbor_snum(FILE* F, neighbor *n){}
     // TJH: added this line
     if(!F) return;
 
-    OSIRIX_ASSERT((int) (site_num!=NULL));
+    OSIRIX_ASSERT((long) (site_num!=NULL));
     if (n->vert)
         fprintf(F, "%ld ", (*site_num)(n->vert));
     else
@@ -5792,7 +5792,7 @@ void *check_simplex(simplex *s, void *dum){
                 fprintf(DFILE, "huh?\n");
             print_simplex_f(s, DFILE, &print_neighbor_full);
             print_simplex_f(sns, DFILE, &print_neighbor_full);
-            /* TJH exit(1);*/ OSIRIX_ASSERT((int) (pcFALSE));
+            /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));
         }
         for (j=-1,snn=sns->neigh-1; j<cdim && snn->simp!=s; j++,snn++);
         if (j==cdim) {
@@ -5802,7 +5802,7 @@ void *check_simplex(simplex *s, void *dum){
             DEBEXP(-1,site_num(p))
             print_simplex_f(sns, DFILE, &print_neighbor_full);
             print_simplex_f(s, DFILE, &print_neighbor_full);
-            /* TJH exit(1);*/ OSIRIX_ASSERT((int) (pcFALSE));
+            /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));
         }
         for (k=-1,snn=sns->neigh-1; k<cdim; k++,snn++){
             vn = snn->vert;
@@ -5819,7 +5819,7 @@ void *check_simplex(simplex *s, void *dum){
                     }
                     print_simplex_f(sns, DFILE, &print_neighbor_full);
                     print_simplex_f(s, DFILE, &print_neighbor_full);
-                    /* TJH exit(1);*/ OSIRIX_ASSERT((int) (pcFALSE));
+                    /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));
                 }   
             }
         }
@@ -6104,7 +6104,7 @@ void *afacets_print(simplex *s, void *p) {
                 print_simplex_f(s,DFILE,&print_neighbor_full);
             print_simplex_f(s->neigh[j].simp,DFILE,&print_neighbor_full);
             fflush(DFILE);
-            /* TJH exit(1);*/ OSIRIX_ASSERT((int) (pcFALSE));
+            /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));
         }
     }
     for (j=0;j<cdim;j++) {
