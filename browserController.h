@@ -299,6 +299,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) setDBDate;
 - (void) emptyDeleteQueueNow: (id) sender;
 - (void) setDockIcon;
+- (void)drawerToggle: (id)sender;
 - (void) showEntireDatabase;
 - (void) subSelectFilesAndFoldersToAdd: (NSArray*) filenames;
 - (void)matrixNewIcon:(long) index: (NSManagedObject*)curFile;

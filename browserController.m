@@ -14302,6 +14302,9 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if( newFilesInIncoming || [[ThreadsManager defaultManager] threadsCount] > 0)
 	{
+		if( NSDrawerClosedState == [albumDrawer state])
+			[self drawerToggle: self];
+		
 		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Background Threads", nil), NSLocalizedString(@"Background threads are currently running. Are you sure you want to quit now? These threads will be cancelled.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), nil) == NSAlertDefaultReturn) return NO;
 	
 		[[AppController sharedAppController] killAllStoreSCU: self];
@@ -14309,6 +14312,9 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if( [SendController sendControllerObjects] > 0)
 	{
+		if( NSDrawerClosedState == [albumDrawer state])
+			[self drawerToggle: self];
+		
 		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Sending - STORE", nil), NSLocalizedString(@"Files are currently being sent to a DICOM node. Are you sure you want to quit now? The sending will be stopped.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), nil) == NSAlertDefaultReturn) return NO;
 	}
 	
