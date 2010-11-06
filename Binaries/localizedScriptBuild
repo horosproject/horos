@@ -38,3 +38,5 @@ cp -R OSIViewerPreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/
 
 cp -R OSIWebSharingPreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/OSIWebSharingPreferencePane.prefPane/Contents/Resources
 
+
+cp -R AYDicomPrintPreferencePane/$1.lproj /Users/antoinerosset/osirix/osirix/build/Deployment\ Universal\ 32-bit/OsiriX.app/Contents/Resources/AYDicomPrint.prefPane/Contents/Resources
