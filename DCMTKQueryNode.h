@@ -50,6 +50,7 @@
 	BOOL showErrorMessage;
 	volatile int WADOThreads;
 	NSRecursiveLock *WADODownloadLock;
+	OFCondition globalCondition;
 }
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset

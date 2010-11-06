@@ -74,7 +74,6 @@ static BOOL firstWadoErrorDisplayed = NO;
 static NSException* queryException = nil;
 static int debugLevel = 0;
 static int wadoUnique = 0, wadoUniqueThreadID = 0;
-static OFCondition globalCondition = EC_Normal;
 
 typedef struct {
     T_ASC_Association *assoc;
