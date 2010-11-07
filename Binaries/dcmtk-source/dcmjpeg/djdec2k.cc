@@ -34,3 +34,36 @@ OFBool DJDecoderJP2k::isJPEG2000() const
 {
 	return OFTrue;
 }
+
+// **************
+
+DJDecoderJP2kLossLess::DJDecoderJP2kLossLess()
+: DJCodecDecoder()
+{
+}
+
+
+DJDecoderJP2kLossLess::~DJDecoderJP2kLossLess()
+{
+}
+
+
+E_TransferSyntax DJDecoderJP2kLossLess::supportedTransferSyntax() const
+{
+  return EXS_JPEG2000LosslessOnly;
+}
+
+
+DJDecoder *DJDecoderJP2kLossLess::createDecoderInstance(
+    const DcmRepresentationParameter * /* toRepParam */,
+    const DJCodecParameter *cp,
+    Uint8 bitsPerSample,
+    OFBool isYBR) const
+{
+	return new DJDecompressJP2k(*cp, isYBR);
+}
+
+OFBool DJDecoderJP2kLossLess::isJPEG2000() const
+{
+	return OFTrue;
+}

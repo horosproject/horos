@@ -41,6 +41,7 @@
 #include "djencpro.h"
 #include "djencsv1.h"
 #include "djenclol.h"
+#include "djenc2k.h"
 #include "djcparam.h"
 
 // initialization of static members
@@ -52,6 +53,8 @@ DJEncoderSpectralSelection *DJEncoderRegistration::encsps = NULL;
 DJEncoderProgressive *DJEncoderRegistration::encpro       = NULL;
 DJEncoderP14SV1 *DJEncoderRegistration::encsv1            = NULL;
 DJEncoderLossless *DJEncoderRegistration::enclol          = NULL;
+DJEncoder2K *DJEncoderRegistration::enc2K				  = NULL;
+DJEncoder2KLossLess *DJEncoderRegistration::enc2KLoL	  = NULL;
 
 void DJEncoderRegistration::registerCodecs(
     E_CompressionColorSpaceConversion pCompressionCSConversion,
@@ -133,7 +136,15 @@ void DJEncoderRegistration::registerCodecs(
       // lossless JPEG
       enclol = new DJEncoderLossless();
       if (enclol) DcmCodecList::registerCodec(enclol, NULL, cp);
-
+	  
+	   // JPEG 2K
+      enc2K = new DJEncoder2K();
+      if (enc2K) DcmCodecList::registerCodec(enc2K, NULL, cp);
+	  
+	   // JPEG 2K Lossy
+      enc2KLoL = new DJEncoder2KLossLess();
+      if (enc2KLoL) DcmCodecList::registerCodec(enc2KLoL, NULL, cp);
+	  
       registered = OFTrue;
     }
   }

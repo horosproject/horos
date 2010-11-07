@@ -463,7 +463,7 @@ int main(int argc, const char *argv[])
 					{
 						DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 						
-						//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
+						//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future: November 7th 2010 : I did it !
 						
 						if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
 						{
@@ -491,7 +491,8 @@ int main(int argc, const char *argv[])
 									NSLog( @"failed to decompress file: %@", curFile);
 							}
 						}
-						else if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
+						else
+						if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
 						{
 							DcmDataset *dataset = fileformat.getDataset();
 							
@@ -560,7 +561,8 @@ int main(int argc, const char *argv[])
 		
 		if( [what isEqualToString: @"writeMovie"])
 		{
-			if (![path hasSuffix:@".swf"]) {
+			if( ![path hasSuffix:@".swf"])
+			{
 				QTMovie *mMovie = nil;
 				
 				[[QTMovie movie] writeToFile: [path stringByAppendingString:@"temp"] withAttributes: nil];
