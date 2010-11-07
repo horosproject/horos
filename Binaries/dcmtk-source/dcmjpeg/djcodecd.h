@@ -144,6 +144,8 @@ public:
    */
   virtual E_TransferSyntax supportedTransferSyntax() const = 0;
 
+  virtual OFBool isJPEG2000() const = 0;
+
 private: 
 
   /** creates an instance of the compression library to be used for decoding.
@@ -158,6 +160,9 @@ private:
     const DJCodecParameter *cp,
     Uint8 bitsPerSample,
     OFBool isYBR) const = 0;
+
+
+  
 
   // static private helper methods
 

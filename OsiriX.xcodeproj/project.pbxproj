@@ -7771,6 +7771,12 @@
 		CEFBB1940B358C8F00666FA9 /* ForwardPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18E0B358C8F00666FA9 /* ForwardPressed.tif */; };
 		CEFC048208D4B1AA00058461 /* Point.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFC048108D4B1AA00058461 /* Point.tif */; };
 		CEFE605A0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
+		CEFFFE261286895300D69BB8 /* djdec2k.h in Headers */ = {isa = PBXBuildFile; fileRef = CEFFFE241286895300D69BB8 /* djdec2k.h */; };
+		CEFFFE271286895300D69BB8 /* djdec2k.cc in Sources */ = {isa = PBXBuildFile; fileRef = CEFFFE251286895300D69BB8 /* djdec2k.cc */; };
+		CEFFFE2A1286897200D69BB8 /* djdec2k.cc in Sources */ = {isa = PBXBuildFile; fileRef = CEFFFE251286895300D69BB8 /* djdec2k.cc */; };
+		CEFFFE3B12868F5400D69BB8 /* djdijp2k.h in Headers */ = {isa = PBXBuildFile; fileRef = CEFFFE3912868F5400D69BB8 /* djdijp2k.h */; };
+		CEFFFE3C12868F5400D69BB8 /* djdijp2k.cc in Sources */ = {isa = PBXBuildFile; fileRef = CEFFFE3A12868F5400D69BB8 /* djdijp2k.cc */; };
+		CEFFFE3D12868F5400D69BB8 /* djdijp2k.cc in Sources */ = {isa = PBXBuildFile; fileRef = CEFFFE3A12868F5400D69BB8 /* djdijp2k.cc */; };
 		DB5961380CAB447B00809190 /* OSIVoxel.h in Headers */ = {isa = PBXBuildFile; fileRef = DB5961360CAB447B00809190 /* OSIVoxel.h */; };
 		DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */ = {isa = PBXBuildFile; fileRef = DB5961370CAB447B00809190 /* OSIVoxel.m */; };
 		EC9BD81C11EDF349007421B2 /* FlyAssistant.h in Headers */ = {isa = PBXBuildFile; fileRef = EC9BD81A11EDF349007421B2 /* FlyAssistant.h */; };
@@ -11836,6 +11842,10 @@
 		CEFBB18E0B358C8F00666FA9 /* ForwardPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ForwardPressed.tif; sourceTree = "<group>"; };
 		CEFC048108D4B1AA00058461 /* Point.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Point.tif; sourceTree = "<group>"; };
 		CEFE60580979B1DB00891EA9 /* DotMacKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DotMacKit.framework; sourceTree = "<group>"; };
+		CEFFFE241286895300D69BB8 /* djdec2k.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = djdec2k.h; sourceTree = "<group>"; };
+		CEFFFE251286895300D69BB8 /* djdec2k.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = djdec2k.cc; sourceTree = "<group>"; };
+		CEFFFE3912868F5400D69BB8 /* djdijp2k.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = djdijp2k.h; sourceTree = "<group>"; };
+		CEFFFE3A12868F5400D69BB8 /* djdijp2k.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = djdijp2k.cc; sourceTree = "<group>"; };
 		DB5961360CAB447B00809190 /* OSIVoxel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIVoxel.h; sourceTree = "<group>"; };
 		DB5961370CAB447B00809190 /* OSIVoxel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIVoxel.m; sourceTree = "<group>"; };
 		EC9BD81A11EDF349007421B2 /* FlyAssistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyAssistant.h; sourceTree = "<group>"; };
@@ -14155,6 +14165,10 @@
 				BFBF3BDA09B6828100545F5E /* ddpiimpl.h */,
 				BFBF3BDB09B6828100545F5E /* dipijpeg.cc */,
 				BFBF3BDC09B6828100545F5E /* dipijpeg.h */,
+				CEFFFE241286895300D69BB8 /* djdec2k.h */,
+				CEFFFE251286895300D69BB8 /* djdec2k.cc */,
+				CEFFFE3912868F5400D69BB8 /* djdijp2k.h */,
+				CEFFFE3A12868F5400D69BB8 /* djdijp2k.cc */,
 				BFBF3BDD09B6828100545F5E /* djcodecd.cc */,
 				BFBF3BDE09B6828100545F5E /* djcodecd.h */,
 				BFBF3BDF09B6828100545F5E /* djcodece.cc */,
@@ -19237,6 +19251,8 @@
 				592CFF161212F84F00176E39 /* N2WSDL.h in Headers */,
 				592CFF181212F84F00176E39 /* N2SOAPWebServiceClient.h in Headers */,
 				843F847B12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */,
+				CEFFFE261286895300D69BB8 /* djdec2k.h in Headers */,
+				CEFFFE3B12868F5400D69BB8 /* djdijp2k.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23814,6 +23830,8 @@
 				592CFF171212F84F00176E39 /* N2WSDL.mm in Sources */,
 				592CFF191212F84F00176E39 /* N2SOAPWebServiceClient.mm in Sources */,
 				CEED77D8123038F300258D00 /* PapyVars3.c in Sources */,
+				CEFFFE271286895300D69BB8 /* djdec2k.cc in Sources */,
+				CEFFFE3C12868F5400D69BB8 /* djdijp2k.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24184,6 +24202,8 @@
 				59BDEF45117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */,
 				CEED77DA123038F300258D00 /* PapyVars3.c in Sources */,
 				59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */,
+				CEFFFE2A1286897200D69BB8 /* djdec2k.cc in Sources */,
+				CEFFFE3D12868F5400D69BB8 /* djdijp2k.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

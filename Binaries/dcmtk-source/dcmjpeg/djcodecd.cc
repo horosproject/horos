@@ -57,14 +57,14 @@ DJCodecDecoder::~DJCodecDecoder()
 {
 }
 
-
 OFBool DJCodecDecoder::canChangeCoding(
     const E_TransferSyntax oldRepType,
     const E_TransferSyntax newRepType) const
 {
   E_TransferSyntax myXfer = supportedTransferSyntax();
   DcmXfer newRep(newRepType);
-  if (newRep.isNotEncapsulated() && (oldRepType == myXfer)) return OFTrue; // decompress requested
+  if (newRep.isNotEncapsulated() && (oldRepType == myXfer))
+	return OFTrue; // decompress requested
 
   // we don't support re-coding for now.
   return OFFalse;
@@ -93,6 +93,7 @@ OFCondition DJCodecDecoder::decode(
     Uint16 imageColumns = 0;
     Sint32 imageFrames = 1;
     Uint16 imageBitsStored = 0;
+	Uint16 imageBitsAllocated = 0;
     Uint16 imageHighBit = 0;
     const char *sopClassUID = NULL;
     OFBool createPlanarConfiguration = OFFalse;
@@ -104,6 +105,7 @@ OFCondition DJCodecDecoder::decode(
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_Rows, imageRows);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_Columns, imageColumns);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, imageBitsStored);
+	if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsAllocated, imageBitsAllocated);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_HighBit, imageHighBit);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_PixelRepresentation, pixelRep);
     isSigned = (pixelRep == 0) ? OFFalse : OFTrue;
@@ -113,7 +115,7 @@ OFCondition DJCodecDecoder::decode(
     // we consider SOP Class UID as optional since we only need it to determine SOP Class specific
     // encoding rules for planar configuration.
     if (result.good()) (void) ((DcmItem *)dataset)->findAndGetString(DCM_SOPClassUID, sopClassUID);
-
+	
     EP_Interpretation dicomPI = DcmJpegHelper::getPhotometricInterpretation((DcmItem *)dataset);
 
     OFBool isYBR = OFFalse;
@@ -132,8 +134,13 @@ OFCondition DJCodecDecoder::decode(
         if (result.good())
         {
           Uint8 precision = scanJpegDataForBitDepth(jpegData, fragmentLength);
-		  printf("%d", precision);
-          if (precision == 0) result = EC_CannotChangeRepresentation; // something has gone wrong, bail out
+		  
+		  OFBool jp2k = isJPEG2000();
+		  
+		  if( jp2k) // JPEG2000 support
+			precision = imageBitsAllocated;
+		  
+		  if( precision == 0) result = EC_CannotChangeRepresentation; // something has gone wrong, bail out
           else
           {
             DJDecoder *jpeg = createDecoderInstance(fromRepParam, djcp, precision, isYBR);

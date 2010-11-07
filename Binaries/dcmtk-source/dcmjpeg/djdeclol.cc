@@ -50,6 +50,12 @@ DJDecoderLossless::~DJDecoderLossless()
 }
 
 
+OFBool DJDecoderLossless::isJPEG2000() const
+{
+	return OFFalse;
+}
+
+
 E_TransferSyntax DJDecoderLossless::supportedTransferSyntax() const
 {
   return EXS_JPEGProcess14TransferSyntax;

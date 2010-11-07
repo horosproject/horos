@@ -49,6 +49,10 @@ DJDecoderExtended::~DJDecoderExtended()
 {
 }
 
+OFBool DJDecoderExtended::isJPEG2000() const
+{
+	return OFFalse;
+}
 
 E_TransferSyntax DJDecoderExtended::supportedTransferSyntax() const
 {

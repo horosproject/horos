@@ -271,6 +271,35 @@ extern NSRecursiveLock *PapyrusLock;
 
 - (BOOL)decompressDICOMList:(NSArray *) files to:(NSString*) dest
 {
+//	OFCondition cond;
+//	
+//	const char *fname = (const char *)[[files lastObject] UTF8String];
+//	const char *destination = (const char *)[[[files lastObject]stringByAppendingString:@"bb.dcm"] UTF8String];
+//	
+//	DcmFileFormat fileformat;
+//	cond = fileformat.loadFile(fname);
+//	
+//	if (cond.good())
+//	{
+//		DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+//		
+//		if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
+//		{
+//			DcmDataset *dataset = fileformat.getDataset();
+//			
+//			// decompress data set if compressed
+//			dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+//			
+//			// check if everything went well
+//			if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+//			{
+//				fileformat.loadAllDataIntoMemory();
+//				cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
+//			}
+//		}
+//	}
+//	return YES;
+	
 //	DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: [files lastObject] decodingPixelData: NO];
 //							
 //	BOOL succeed = NO;

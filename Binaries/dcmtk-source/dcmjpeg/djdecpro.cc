@@ -49,6 +49,11 @@ DJDecoderProgressive::~DJDecoderProgressive()
 {
 }
 
+OFBool DJDecoderProgressive::isJPEG2000() const
+{
+	return OFFalse;
+}
+
 
 E_TransferSyntax DJDecoderProgressive::supportedTransferSyntax() const
 {

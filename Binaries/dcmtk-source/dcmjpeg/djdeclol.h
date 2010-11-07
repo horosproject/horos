@@ -70,7 +70,8 @@ private:
     const DJCodecParameter *cp,
     Uint8 bitsPerSample,
     OFBool isYBR) const;
-    
+
+virtual OFBool isJPEG2000() const;
 };
 
 #endif

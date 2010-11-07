@@ -40,8 +40,10 @@
 #include "djdecsps.h"
 #include "djdecpro.h"
 #include "djdecsv1.h"
+#include "djdec2k.h"
 #include "djdeclol.h"
 #include "djcparam.h"
+
 
 // initialization of static members
 OFBool DJDecoderRegistration::registered                  = OFFalse;
@@ -52,6 +54,7 @@ DJDecoderSpectralSelection *DJDecoderRegistration::decsps = NULL;
 DJDecoderProgressive *DJDecoderRegistration::decpro       = NULL;
 DJDecoderP14SV1 *DJDecoderRegistration::decsv1            = NULL;
 DJDecoderLossless *DJDecoderRegistration::declol          = NULL;
+DJDecoderJP2k *DJDecoderRegistration::dec2k				  = NULL;
 
 void DJDecoderRegistration::registerCodecs(
     E_DecompressionColorSpaceConversion pDecompressionCSConversion,
@@ -93,6 +96,10 @@ void DJDecoderRegistration::registerCodecs(
       declol = new DJDecoderLossless();
       if (declol) DcmCodecList::registerCodec(declol, NULL, cp);
 
+	  // lossless JPEG
+      dec2k = new DJDecoderJP2k();
+      if (dec2k) DcmCodecList::registerCodec(dec2k, NULL, cp);
+	  
       registered = OFTrue;
     }
   }
