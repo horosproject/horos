@@ -161,6 +161,8 @@ int main(int argc, const char *argv[])
 		
 		dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
 		
+		BOOL useDCMTKForJP2K = [[dict objectForKey:@"useDCMTKForJP2K"] intValue];
+		
 		if( [what isEqualToString:@"compress"])
 		{
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
@@ -258,7 +260,7 @@ int main(int argc, const char *argv[])
 							
 							int quality, compression = compressionForModality( compressionSettings, compressionSettingsLowRes, limit, modality, &quality, resolution);
 							
-							if( compression == compression_JPEG2000)
+							if( useDCMTKForJP2K == NO && compression == compression_JPEG2000)
 							{
 								DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
 								
@@ -294,24 +296,52 @@ int main(int argc, const char *argv[])
 								{
 									[[NSFileManager defaultManager] removeFileAtPath: curFileDest handler:nil];
 									
-									if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue]) {
+									if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
+									{
 										[[NSFileManager defaultManager] movePath: curFile toPath: curFileDest handler: nil];
-									} else
-										if( destDirec)
-										{
-											[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
-											NSLog( @"failed to compress file: %@, the file is deleted", curFile);
-										}
-										else
-											NSLog( @"failed to compress file: %@", curFile);
+									}
+									else if( destDirec)
+									{
+										[[NSFileManager defaultManager] removeFileAtPath: curFile handler: nil];
+										NSLog( @"failed to compress file: %@, the file is deleted", curFile);
+									}
+									else
+										NSLog( @"failed to compress file: %@", curFile);
 								}
 							}
-							else if( compression == compression_JPEG)
+							else if( compression == compression_JPEG || compression == compression_JPEG2000)
 							{
+								DcmRepresentationParameter *params;
+								E_TransferSyntax tSyntax;
 								DJ_RPLossless losslessParams(6,0);
+								DJ_RPLossy JP2KParams( quality);
+								DJ_RPLossy JP2KParamsLossLess( DCMLosslessQuality);
 								
-								DcmRepresentationParameter *params = &losslessParams;
-								E_TransferSyntax tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+								if( compression == compression_JPEG)
+								{
+									params = &losslessParams;
+									tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+								}
+								else if( compression == compression_JPEG2000)
+								{
+									if( quality == DCMLosslessQuality)
+									{
+										params = &JP2KParamsLossLess;
+										tSyntax = EXS_JPEG2000LosslessOnly;
+									}
+									else
+									{
+										params = &JP2KParams;
+										tSyntax = EXS_JPEG2000;
+									}
+								}
+								else
+								{
+									params = &JP2KParamsLossLess;
+									tSyntax = EXS_JPEG2000LosslessOnly;
+									
+									NSLog( @" ****** UNKNOW compression Decompress.mm");
+								}
 								
 								// this causes the lossless JPEG version of the dataset to be created
 								DcmXfer oxferSyn( tSyntax);
@@ -465,7 +495,7 @@ int main(int argc, const char *argv[])
 						
 						//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future: November 7th 2010 : I did it !
 						
-						if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
+						if( useDCMTKForJP2K == NO && (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000))
 						{
 							DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
 							@try
@@ -491,8 +521,7 @@ int main(int argc, const char *argv[])
 									NSLog( @"failed to decompress file: %@", curFile);
 							}
 						}
-						else
-						if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
+						else if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
 						{
 							DcmDataset *dataset = fileformat.getDataset();
 							

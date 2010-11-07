@@ -545,8 +545,10 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 	OFBool status = YES;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 	
+	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"];
+	
 	#ifndef OSIRIX_LIGHT
-	if (opt_networkTransferSyntax == EXS_JPEG2000)
+	if( useDCMTKForJP2K == NO && opt_networkTransferSyntax == EXS_JPEG2000)
 	{
 		NSLog(@"SEND - Compress JPEG 2000 Lossy (%d) : %s", opt_Quality, fname);
 		NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
@@ -568,7 +570,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		}
 		[dcmObject release];
 	}
-	else if  (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
+	else if( useDCMTKForJP2K == NO && opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
 	{
 		NSLog(@"SEND - Compress JPEG 2000 Lossless: %s", fname);
 		
@@ -593,21 +595,28 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 	#endif
 	{
 		#ifndef OSIRIX_LIGHT
-		NSLog(@"SEND - Compress JPEG: %s", fname);
+		NSLog(@"SEND - Compress JPEG: %s - ");
 		
 		DcmDataset *dataset = fileformat.getDataset();
 		DcmItem *metaInfo = fileformat.getMetaInfo();
+		
 		DcmRepresentationParameter *params;
-		DJ_RPLossy lossyParams(opt_Quality);
+		DJ_RPLossy lossyParams( 90);
+		DJ_RPLossy JP2KParams( opt_Quality);
+		DJ_RPLossy JP2KParamsLossLess( DCMLosslessQuality);
 		DcmRLERepresentationParameter rleParams;
-		DJ_RPLossless losslessParams; // codec parameters, we use the defaults
+		DJ_RPLossless losslessParams(6,0);
+		
 		if (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
-		params = &losslessParams;
+			params = &losslessParams;
 		else if (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax)
-		params = &lossyParams; 
+			params = &lossyParams; 
 		else if (opt_networkTransferSyntax == EXS_RLELossless)
-		params = &rleParams; 
-
+			params = &rleParams;
+		else if (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
+			params = &JP2KParamsLossLess; 
+		else if (opt_networkTransferSyntax == EXS_JPEG2000)
+			params = &JP2KParams; 
 	
 		// this causes the lossless JPEG version of the dataset to be created
 		dataset->chooseRepresentation(opt_networkTransferSyntax, params);
@@ -615,11 +624,11 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		// check if everything went well
 		if (dataset->canWriteXfer(opt_networkTransferSyntax))
 		{
-		// force the meta-header UIDs to be re-generated when storing the file 
-		// since the UIDs in the data set may have changed 
-		delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-		delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
-
+			// force the meta-header UIDs to be re-generated when storing the file 
+			// since the UIDs in the data set may have changed 
+			delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+			delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+			
 			// store in lossless JPEG format
 			
 			fileformat.loadAllDataIntoMemory();

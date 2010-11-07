@@ -141,9 +141,10 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 	OFCondition cond = EC_Normal;
 	OFBool status = YES;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"];
 	
 	#ifndef OSIRIX_LIGHT
-	if (newXfer == EXS_JPEG2000)
+	if( useDCMTKForJP2K == NO && newXfer == EXS_JPEG2000)
 	{
 		@try
 		{
@@ -165,7 +166,7 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 			status = NO;
 		}
 	}
-	else if  (newXfer == EXS_JPEG2000LosslessOnly)
+	else if( useDCMTKForJP2K == NO && newXfer == EXS_JPEG2000LosslessOnly)
 	{
 		@try
 		{
@@ -196,7 +197,9 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 		DcmRepresentationParameter *params = nil;
 		DJ_RPLossy lossyParams( 90);
 		DcmRLERepresentationParameter rleParams;
-		DJ_RPLossless losslessParams; // codec parameters, we use the defaults
+		DJ_RPLossless losslessParams(6,0);
+		DJ_RPLossy JP2KParams( DCMHighQuality);
+		DJ_RPLossy JP2KParamsLossLess( DCMLosslessQuality);
 		
 		if (newXfer == EXS_JPEGProcess14SV1TransferSyntax)
 			params = &losslessParams;
@@ -204,6 +207,10 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 			params = &lossyParams; 
 		else if (newXfer == EXS_RLELossless)
 			params = &rleParams; 
+		else if (newXfer == EXS_JPEG2000LosslessOnly)
+			params = &JP2KParamsLossLess; 
+		else if (newXfer == EXS_JPEG2000)
+			params = &JP2KParams;
 		
 		if( params)
 		{
@@ -233,6 +240,10 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 					printf("\n--- compressFileFormat EXS_JPEGProcess2_4TransferSyntax\n");
 				else if (newXfer == EXS_RLELossless)
 					printf("\n--- compressFileFormat EXS_RLELossless\n");
+				else if (newXfer == EXS_JPEG2000LosslessOnly)
+					printf("\n--- compressFileFormat EXS_JPEG2000LosslessOnly\n");
+				else if (newXfer == EXS_JPEG2000)
+					printf("\n--- compressFileFormat EXS_JPEG2000\n");
 			}
 			else
 			{

@@ -90,7 +90,7 @@ DJEncoder *DJEncoder2K::createEncoderInstance(
   const DJ_RPLossy *rp = toRepParam ? (const DJ_RPLossy *)toRepParam : &defaultRP ;
   DJEncoder * result = NULL;
   
-  result = new DJCompressJP2K(*cp, EJM_JP2K_lossy, rp->getQuality(), 16);
+  result = new DJCompressJP2K(*cp, EJM_JP2K_lossy, rp->getQuality(), bitsPerSample);
   
   return result;  
 }
@@ -149,7 +149,7 @@ DJEncoder *DJEncoder2KLossLess::createEncoderInstance(
   const DJ_RPLossy *rp = toRepParam ? (const DJ_RPLossy *)toRepParam : &defaultRP ;
   DJEncoder * result = NULL;
   
-  result = new DJCompressJP2K(*cp, EJM_JP2K_lossless, rp->getQuality(), 16);
+  result = new DJCompressJP2K(*cp, EJM_JP2K_lossless, rp->getQuality(), bitsPerSample);
   
   return result;  
 }
