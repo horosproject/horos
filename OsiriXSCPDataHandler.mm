@@ -370,6 +370,24 @@ extern NSManagedObjectContext *staticContext;
 
 - (NSPredicate*) predicateWithString: (NSString*) s forField: (NSString*) f any: (BOOL) any
 {
+	if( [s length] > 3)
+	{
+		for( int i = 1 ; i < [s length]-1; i++)
+		{
+			if( [s characterAtIndex: i] == '*') // contains a wildchar
+			{
+				if( any)
+				{
+					return [NSPredicate predicateWithFormat:@"ANY %K LIKE[cd] %@", f, s];
+				}
+				else
+				{
+					return [NSPredicate predicateWithFormat:@"%K LIKE[cd] %@", f, s];
+				}
+			}
+		}
+	}
+	
 	NSString *v = [s stringByReplacingOccurrencesOfString: @"*" withString:@""];
 	NSPredicate *predicate = nil;
 	
