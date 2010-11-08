@@ -131,10 +131,7 @@ void DJEncoder2KLossLess::createDerivationDescription(
   const DJ_RPLossy *rp = toRepParam ? (const DJ_RPLossy *)toRepParam : &defaultRP ;
   char buf[64];
  
-  derivationDescription =  "LossLess compression with JPEG 2K ";
-  derivationDescription += ", quality factor ";
-  sprintf(buf, "%u", rp->getQuality());
-  derivationDescription += buf;
+  derivationDescription =  "LossLess compression with JPEG 2K";
   derivationDescription += ", compression ratio ";
   appendCompressionRatio(derivationDescription, ratio);
 }

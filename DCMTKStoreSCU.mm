@@ -600,7 +600,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		DcmDataset *dataset = fileformat.getDataset();
 		DcmItem *metaInfo = fileformat.getMetaInfo();
 		
-		DcmRepresentationParameter *params;
+		DcmRepresentationParameter *params = nil;
 		DJ_RPLossy lossyParams( 90);
 		DJ_RPLossy JP2KParams( opt_Quality);
 		DJ_RPLossy JP2KParamsLossLess( DCMLosslessQuality);
@@ -616,8 +616,8 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		else if (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
 			params = &JP2KParamsLossLess; 
 		else if (opt_networkTransferSyntax == EXS_JPEG2000)
-			params = &JP2KParams; 
-	
+			params = &JP2KParams;
+		
 		// this causes the lossless JPEG version of the dataset to be created
 		dataset->chooseRepresentation(opt_networkTransferSyntax, params);
 

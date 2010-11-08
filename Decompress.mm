@@ -311,7 +311,7 @@ int main(int argc, const char *argv[])
 							}
 							else if( compression == compression_JPEG || compression == compression_JPEG2000)
 							{
-								DcmRepresentationParameter *params;
+								DcmRepresentationParameter *params = nil;
 								E_TransferSyntax tSyntax;
 								DJ_RPLossless losslessParams(6,0);
 								DJ_RPLossy JP2KParams( quality);

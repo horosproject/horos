@@ -2562,7 +2562,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			}
 		#pragma mark wado
 			// wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX
-			// 127.0.0.1:3333/wado?requestType=WADO&frameNumber=1&studyUID=1.2.840.113619.2.16.1.155.1066226137.2.5290&seriesUID=1.2.840.113619.2.16.1.155.1066226137.2.5290.1&objectUID=1.2.840.113619.2.16.1.155.1066230214.1.74055
+			// 127.0.0.1:3333/wado?requestType=WADO&frameNumber=1&studyUID=2.16.840.1.113669.632.20.1211.10000591592&seriesUID=1.3.6.1.4.1.19291.2.1.2.2867252960399100001&objectUID=1.3.6.1.4.1.19291.2.1.3.2867252960616100004
 			else if( [fileURL hasSuffix: @"/wado"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
 			{
 				if( [[[urlParameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
