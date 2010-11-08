@@ -504,9 +504,10 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 	
 	NSLog( @"SEND - decompress: %@", [NSString stringWithUTF8String: fname]);
-	
+
 	#ifndef OSIRIX_LIGHT
-	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
+	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"];
+	if( useDCMTKForJP2K == NO && (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000))
 	{
 		NSString *path = [NSString stringWithCString: fname encoding: NSUTF8StringEncoding];
 		NSString *outpath = [NSString stringWithCString: outfname encoding: NSUTF8StringEncoding];
@@ -545,9 +546,8 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 	OFBool status = YES;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 	
-	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"];
-	
 	#ifndef OSIRIX_LIGHT
+	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"];
 	if( useDCMTKForJP2K == NO && opt_networkTransferSyntax == EXS_JPEG2000)
 	{
 		NSLog(@"SEND - Compress JPEG 2000 Lossy (%d) : %s", opt_Quality, fname);
