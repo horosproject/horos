@@ -93,7 +93,9 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 	
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 	#ifndef OSIRIX_LIGHT
-	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
+	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"];
+	
+	if( useDCMTKForJP2K == NO && (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000))
 	{
 		@try
 		{
