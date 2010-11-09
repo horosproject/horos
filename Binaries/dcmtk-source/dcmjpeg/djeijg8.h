@@ -88,7 +88,9 @@ public:
     Uint16 samplesPerPixel,
     Uint16 *image_buffer,
     Uint8 *&to,
-    Uint32 &length);
+    Uint32 &length,
+	Uint8 pixelRepresentation,
+	double minUsed, double maxUsed);
 
   /** single frame compression routine for 8-bit raw pixel data.
    *  May only be called if bytesPerSample() == 1.
@@ -109,7 +111,9 @@ public:
     Uint16 samplesPerPixel,
     Uint8 *image_buffer,
     Uint8 *&to,
-    Uint32 &length);
+    Uint32 &length,
+	Uint8 pixelRepresentation,
+	double minUsed, double maxUsed);
 
   /** returns the number of bytes per sample that will be expected when encoding.
    */

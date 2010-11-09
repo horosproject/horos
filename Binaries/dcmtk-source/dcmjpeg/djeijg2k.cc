@@ -319,9 +319,11 @@ OFCondition DJCompressJP2K::encode(
   Uint16 samplesPerPixel,
   Uint8 * image_buffer,
   Uint8 * & to,
-  Uint32 & length)
+  Uint32 & length,
+  Uint8 pixelRepresentation,
+  double minUsed, double maxUsed)
 {
-	return encode( columns, rows, colorSpace, samplesPerPixel, (Uint8*) image_buffer, to, length, 8);
+	return encode( columns, rows, colorSpace, samplesPerPixel, (Uint8*) image_buffer, to, length, 8, pixelRepresentation, minUsed, maxUsed);
 }
 
 OFCondition DJCompressJP2K::encode(
@@ -331,9 +333,11 @@ OFCondition DJCompressJP2K::encode(
     Uint16  samplesPerPixel ,
     Uint16 *  image_buffer ,
     Uint8 *&  to ,
-    Uint32 &  length )
+    Uint32 &  length,
+	Uint8 pixelRepresentation,
+	double minUsed, double maxUsed)
 {
-	return encode( columns, rows, interpr, samplesPerPixel, (Uint8*) image_buffer, to, length, 16);
+	return encode( columns, rows, interpr, samplesPerPixel, (Uint8*) image_buffer, to, length, 16, pixelRepresentation, minUsed, maxUsed);
 }
 
 Uint16 DJCompressJP2K::bytesPerSample() const
@@ -357,7 +361,9 @@ OFCondition DJCompressJP2K::encode(
   Uint8 * image_buffer,
   Uint8 * & to,
   Uint32 & length,
-  Uint8 bitsAllocated)
+  Uint8 bitsAllocated,
+  Uint8 pixelRepresentation,
+  double minUsed, double maxUsed)
 {
 	opj_cparameters_t parameters;
 	opj_event_mgr_t event_mgr;
@@ -424,14 +430,19 @@ OFCondition DJCompressJP2K::encode(
 	
 	if( bitsAllocated >= 16)
 	{
-		int _min = 0, _max = 0;
+		if( minUsed == 0 && maxUsed == 0)
+		{
+			int _min = 0, _max = 0;
+			findMinMax( _min, _max, (char*) image_buffer, columns*rows*samplesPerPixel*bitsAllocated/8, isSigned, rows, columns, bitsAllocated);
+			
+			minUsed = _min;
+			maxUsed = _max;
+		}
 		
-		findMinMax( _min, _max, (char*) image_buffer, columns*rows*samplesPerPixel*bitsAllocated/8, isSigned, rows, columns, bitsAllocated);
+		int amplitude = maxUsed;
 		
-		int amplitude = _max;
-		
-		if( _min < 0)
-			amplitude -= _min;
+		if( minUsed < 0)
+			amplitude -= minUsed;
 		
 		int bits = 1, value = 2;
 		
@@ -441,13 +452,13 @@ OFCondition DJCompressJP2K::encode(
 			bits++;
 		}
 		
-		if( _min < 0)
+		if( minUsed < 0)
 			bits++;
 		
 		if( bits < 9) bits = 9;
 		
 		// avoid the artifacts... switch to lossless
-		if( (_max >= 32000 && _min <= -32000) || _max >= 65000 || bits > 16)
+		if( (maxUsed >= 32000 && minUsed <= -32000) || maxUsed >= 65000 || bits > 16)
 		{
 			parameters.tcp_rates[0] = 0;
 			parameters.tcp_numlayers = 1;

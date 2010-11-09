@@ -30,7 +30,9 @@ public:
     Uint16 samplesPerPixel,
     Uint8 *image_buffer,
     Uint8 *&to,
-    Uint32 &length);
+    Uint32 &length,
+	Uint8 pixelRepresentation,
+	double minUsed, double maxUsed);
 	
  virtual OFCondition encode(
     Uint16 columns,
@@ -39,7 +41,9 @@ public:
     Uint16 samplesPerPixel,
     Uint16 *image_buffer,
     Uint8 *&to,
-    Uint32 &length);
+    Uint32 &length,
+	Uint8 pixelRepresentation,
+	double minUsed, double maxUsed);
 
 virtual OFCondition encode( 
   Uint16 columns,
@@ -49,7 +53,9 @@ virtual OFCondition encode(
   Uint8 * image_buffer,
   Uint8 * & to,
   Uint32 & length,
-  Uint8 bitsAllocated);
+  Uint8 bitsAllocated,
+  Uint8 pixelRepresentation,
+  double minUsed, double maxUsed);
   
   
   /** returns the number of bytes per sample that will be expected when encoding.

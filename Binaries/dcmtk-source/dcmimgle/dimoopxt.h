@@ -885,7 +885,7 @@ class DiMonoOutputPixelTemplate
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, absmin);             // points to 'zero' entry
                         q = Data;
-                        for (i = Count; i != 0; --i)                                  // apply LUT
+						for (i = Count; i != 0; --i)                                  // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                  // use "normal" transformation

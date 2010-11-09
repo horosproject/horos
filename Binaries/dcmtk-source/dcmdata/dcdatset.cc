@@ -508,8 +508,7 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
     DcmStack resultStack;
     resultStack.push(this);
     while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue).good() && l_error.good())
-    {
-
+	{
         if (resultStack.top()->ident() == EVR_PixelData)
         {
             DcmPixelData * pixelData = OFstatic_cast(DcmPixelData *, resultStack.top());
@@ -524,8 +523,7 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
     {
         while(pixelStack.size() && l_error.good())
         {
-            l_error = OFstatic_cast(DcmPixelData *, pixelStack.top().top())->
-                chooseRepresentation(repType, repParam, pixelStack.top());
+            l_error = OFstatic_cast(DcmPixelData *, pixelStack.top().top())-> chooseRepresentation(repType, repParam, pixelStack.top());
 
 #ifdef PIXELSTACK_MEMORY_LEAK_WORKAROUND
             // on certain platforms there seems to be a memory leak
