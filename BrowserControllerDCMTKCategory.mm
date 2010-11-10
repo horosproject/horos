@@ -276,10 +276,12 @@ extern NSRecursiveLock *PapyrusLock;
 //				if( status == NO)
 //					NSLog( @"failed to compress file: %@", [paths lastObject]);
 //			}
+//			else NSLog( @"err");
 //		}
+//		else NSLog( @"err");
 //	}
 //	}
-//	return YES;
+	return YES;
 
 
 //	DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: [paths lastObject] decodingPixelData: NO];
@@ -380,30 +382,36 @@ extern NSRecursiveLock *PapyrusLock;
 {
 //	OFCondition cond;
 //	
-//	const char *fname = (const char *)[[files lastObject] UTF8String];
-//	const char *destination = (const char *)[[[files lastObject]stringByAppendingString:@"bb.dcm"] UTF8String];
-//	
-//	DcmFileFormat fileformat;
-//	cond = fileformat.loadFile(fname);
-//	
-//	if (cond.good())
+//	for( NSString *file in files)
 //	{
-//		DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+//		const char *fname = (const char *)[file UTF8String];
+//		const char *destination = (const char *)[[file stringByAppendingString:@"bb.dcm"] UTF8String];
 //		
-//		if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
+//		DcmFileFormat fileformat;
+//		cond = fileformat.loadFile(fname);
+//		
+//		if (cond.good())
 //		{
-//			DcmDataset *dataset = fileformat.getDataset();
+//			DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 //			
-//			// decompress data set if compressed
-//			dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
-//			
-//			// check if everything went well
-//			if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+//			if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
 //			{
-//				fileformat.loadAllDataIntoMemory();
-//				cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
+//				DcmDataset *dataset = fileformat.getDataset();
+//				
+//				// decompress data set if compressed
+//				dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+//				
+//				// check if everything went well
+//				if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+//				{
+//					fileformat.loadAllDataIntoMemory();
+//					cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
+//				}
+//				else NSLog( @"err");
 //			}
+//			else NSLog( @"err");
 //		}
+//		else NSLog( @"err");
 //	}
 //	return YES;
 	
