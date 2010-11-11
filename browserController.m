@@ -14052,6 +14052,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[splitViewVert restoreDefault:@"SPLITVERT2"];
 		[splitViewHorz restoreDefault:@"SPLITHORZ2"];
+		[splitAlbums restoreDefault:@"SPLITALBUMS"];
 		
 		[self autoCleanDatabaseDate: self];
 		
@@ -14276,6 +14277,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
     [splitViewVert saveDefault:@"SPLITVERT2"];
     [splitViewHorz saveDefault:@"SPLITHORZ2"];
+	[splitAlbums saveDefault:@"SPLITALBUMS"];
 	
 	if( [[databaseOutline sortDescriptors] count] >= 1)
 	{

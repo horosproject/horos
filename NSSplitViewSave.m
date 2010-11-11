@@ -58,7 +58,7 @@ static float a,b,c,d,e,f,g,h;
 
 - (void) restoreDefault: (NSString *) defaultName
 {
-	NSRect r0, r1;
+	NSRect r0, r1, r2;
 	
 	if( [defaultName isEqualToString: @"SPLITVIEWER"])
 	{
@@ -72,6 +72,12 @@ static float a,b,c,d,e,f,g,h;
 		r1.origin.y = f;
 		r1.size.width = g;
 		r1.size.height = h;
+		
+		if( [[self subviews] count] > 1)
+		{
+			[[[self subviews] objectAtIndex: 0] setFrame: r0];
+			[[[self subviews] objectAtIndex: 1] setFrame: r1];
+		}
 	}
 	else
 	{
@@ -80,42 +86,94 @@ static float a,b,c,d,e,f,g,h;
 		
 		NSScanner* scanner = [NSScanner scannerWithString: string];
 		
-		float aa,bb,cc,dd,ee,ff,gg,hh;
+		if( [[self subviews] count] > 1)
+		{
+			float aa,bb,cc,dd,ee,ff,gg,hh, ii, jj, kk, ll;
+			
+			BOOL didScan =
+			[scanner scanFloat: &aa]            &&
+			[scanner scanFloat: &bb]            &&
+			[scanner scanFloat: &cc]			&&
+			[scanner scanFloat: &dd]			&&
+			[scanner scanFloat: &ee]            &&
+			[scanner scanFloat: &ff]            &&
+			[scanner scanFloat: &gg]			&&
+			[scanner scanFloat: &hh]			&&
+			[scanner scanFloat: &ii]			&&
+			[scanner scanFloat: &jj]			&&
+			[scanner scanFloat: &kk]			&&
+			[scanner scanFloat: &ll];
+			
+			if (didScan == NO) return;
+			
+			r0.origin.x = aa;
+			r0.origin.y = bb;
+			r0.size.width = cc;
+			r0.size.height = dd;
+			r1.origin.x = ee;
+			r1.origin.y = ff;
+			r1.size.width = gg;
+			r1.size.height = hh;
+			r2.origin.x = ii;
+			r2.origin.y = jj;
+			r2.size.width = kk;
+			r2.size.height = ll;
 		
-		BOOL didScan =
-		[scanner scanFloat: &aa]            &&
-		[scanner scanFloat: &bb]            &&
-		[scanner scanFloat: &cc]			&&
-		[scanner scanFloat: &dd]			&&
-		[scanner scanFloat: &ee]            &&
-		[scanner scanFloat: &ff]            &&
-		[scanner scanFloat: &gg]			&&
-		[scanner scanFloat: &hh];
+			[[[self subviews] objectAtIndex: 0] setFrame: r0];
+			[[[self subviews] objectAtIndex: 1] setFrame: r1];
+			[[[self subviews] objectAtIndex: 2] setFrame: r2];
+		}
+		else if( [[self subviews] count] > 1)
+		{
+			float aa,bb,cc,dd,ee,ff,gg,hh;
+			
+			BOOL didScan =
+			[scanner scanFloat: &aa]            &&
+			[scanner scanFloat: &bb]            &&
+			[scanner scanFloat: &cc]			&&
+			[scanner scanFloat: &dd]			&&
+			[scanner scanFloat: &ee]            &&
+			[scanner scanFloat: &ff]            &&
+			[scanner scanFloat: &gg]			&&
+			[scanner scanFloat: &hh];
+			
+			if (didScan == NO) return;
+			
+			r0.origin.x = aa;
+			r0.origin.y = bb;
+			r0.size.width = cc;
+			r0.size.height = dd;
+			r1.origin.x = ee;
+			r1.origin.y = ff;
+			r1.size.width = gg;
+			r1.size.height = hh;
 		
-		if (didScan == NO) return;
-		
-		r0.origin.x = aa;
-		r0.origin.y = bb;
-		r0.size.width = cc;
-		r0.size.height = dd;
-		r1.origin.x = ee;
-		r1.origin.y = ff;
-		r1.size.width = gg;
-		r1.size.height = hh;
+			[[[self subviews] objectAtIndex: 0] setFrame: r0];
+			[[[self subviews] objectAtIndex: 1] setFrame: r1];
+		}
 	}
 	
-	if( [[self subviews] count] > 1)
-	{
-		[[[self subviews] objectAtIndex: 0] setFrame: r0];
-		[[[self subviews] objectAtIndex: 1] setFrame: r1];
-	}
+	
 	
 	[self adjustSubviews];
 }
 
 - (void) saveDefault: (NSString *) defaultName
 {
-	if( [[self subviews] count] > 1)
+	if( [[self subviews] count] > 2)
+	{
+		NSRect r0 = [[[self subviews] objectAtIndex: 0] frame];
+		NSRect r1 = [[[self subviews] objectAtIndex: 1] frame];
+		NSRect r2 = [[[self subviews] objectAtIndex: 2] frame];
+		
+		NSString * string = [NSString stringWithFormat: @"%f %f %f %f %f %f %f %f %f %f %f %f",
+				r0.origin.x, r0.origin.y, r0.size.width, r0.size.height,
+				r1.origin.x, r1.origin.y, r1.size.width, r1.size.height,
+				r2.origin.x, r2.origin.y, r2.size.width, r2.size.height];
+			
+		[[NSUserDefaults standardUserDefaults] setObject: string forKey: defaultName];
+	}
+	else if( [[self subviews] count] > 1)
 	{
 		NSRect r0 = [[[self subviews] objectAtIndex: 0] frame];
 		NSRect r1 = [[[self subviews] objectAtIndex: 1] frame];

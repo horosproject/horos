@@ -12,7 +12,7 @@
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<integer value="966"/>
-			<integer value="1580"/>
+			<integer value="14158"/>
 			<integer value="13994"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
@@ -5763,7 +5763,6 @@
 						</array>
 						<string key="NSFrame">{{0, 2}, {200, 777}}</string>
 						<reference key="NSSuperview" ref="741316114"/>
-						<string key="NSAutosaveName">sourcesSplitViewSaved</string>
 					</object>
 				</array>
 				<string key="NSFrameSize">{200, 778}</string>
@@ -14652,6 +14651,14 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 					<int key="connectionID">14181</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">splitAlbums</string>
+						<reference key="source" ref="772029037"/>
+						<reference key="destination" ref="729579565"/>
+					</object>
+					<int key="connectionID">14182</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -21557,7 +21564,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<integer value="1" key="13049.ImportedFromIB2"/>
 				<string key="13064.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="13064.ImportedFromIB2"/>
-				<string key="13065.IBEditorWindowLastContentRect">{{373, 204}, {428, 913}}</string>
+				<string key="13065.IBEditorWindowLastContentRect">{{953, 73}, {428, 913}}</string>
 				<string key="13065.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="13065.ImportedFromIB2"/>
 				<string key="13065.editorWindowContentRectSynchronizationRect">{{390, 35}, {428, 753}}</string>
@@ -22187,7 +22194,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="13990.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13991.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13992.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="13994.IBEditorWindowLastContentRect">{{801, -16}, {102, 353}}</string>
+				<string key="13994.IBEditorWindowLastContentRect">{{1381, -147}, {102, 353}}</string>
 				<string key="13994.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13998.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13999.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -22456,7 +22463,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="24.IBEditorWindowLastContentRect">{{659, 783}, {209, 113}}</string>
 				<string key="24.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="24.ImportedFromIB2"/>
-				<string key="29.IBEditorWindowLastContentRect">{{71, 1117}, {671, 20}}</string>
+				<string key="29.IBEditorWindowLastContentRect">{{651, 986}, {671, 20}}</string>
 				<string key="29.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="29.ImportedFromIB2"/>
 				<string key="29.editorWindowContentRectSynchronizationRect">{{163, 788}, {596, 20}}</string>
@@ -22484,9 +22491,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="849.editorWindowContentRectSynchronizationRect">{{706, 407}, {337, 613}}</string>
 				<string key="854.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="854.ImportedFromIB2"/>
-				<string key="885.IBEditorWindowLastContentRect">{{367, 148}, {1132, 808}}</string>
+				<string key="885.IBEditorWindowLastContentRect">{{190, 148}, {1132, 808}}</string>
 				<string key="885.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="885.IBWindowTemplateEditedContentRect">{{367, 148}, {1132, 808}}</string>
+				<string key="885.IBWindowTemplateEditedContentRect">{{190, 148}, {1132, 808}}</string>
 				<integer value="1" key="885.ImportedFromIB2"/>
 				<string key="885.editorWindowContentRectSynchronizationRect">{{1, 48}, {1132, 808}}</string>
 				<integer value="1" key="885.windowTemplate.hasMaxSize"/>
@@ -22514,7 +22521,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">14181</int>
+			<int key="maxID">14182</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -22740,6 +22747,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="decompressSelectedFiles:">id</string>
 						<string key="delItem:">id</string>
 						<string key="deleteReport:">id</string>
+						<string key="drawerToggle:">id</string>
 						<string key="emptyDeleteQueue:">id</string>
 						<string key="emptyDeleteQueueNow:">id</string>
 						<string key="endCustomInterval:">id</string>
@@ -22896,6 +22904,10 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="deleteReport:">
 							<string key="name">deleteReport:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="drawerToggle:">
+							<string key="name">drawerToggle:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="emptyDeleteQueue:">
@@ -23131,6 +23143,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="searchField">NSSearchField</string>
 						<string key="searchView">NSView</string>
 						<string key="segmentedAlbumButton">NSSegmentedControl</string>
+						<string key="splitAlbums">NSSplitView</string>
 						<string key="splitViewHorz">NSSplitView</string>
 						<string key="splitViewVert">NSSplitView</string>
 						<string key="subOpenMatrix3D">NSMatrix</string>
@@ -23366,6 +23379,10 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBToOneOutletInfo" key="segmentedAlbumButton">
 							<string key="name">segmentedAlbumButton</string>
 							<string key="candidateClassName">NSSegmentedControl</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="splitAlbums">
+							<string key="name">splitAlbums</string>
+							<string key="candidateClassName">NSSplitView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="splitViewHorz">
 							<string key="name">splitViewHorz</string>
