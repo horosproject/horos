@@ -1565,7 +1565,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			[self updateLogEntry: userInfo];
 			
 			if( [[userInfo objectForKey: @"SendTotal"] floatValue] >= 1)
+			{
+				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue]];
 				[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
+			}
 		}
 		
 		/* tear down association, i.e. terminate network connection to SCP */
@@ -1756,8 +1759,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		[self updateLogEntry: userInfo];
 		
 		if( [[userInfo objectForKey: @"SendTotal"] floatValue] >= 1)
+		{
+			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue]];		
 			[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
-		
+		}
 //		[self sendStatusNotification: userInfo];
 //		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDCMSendStatusNotification object:self userInfo:userInfo];
 	}

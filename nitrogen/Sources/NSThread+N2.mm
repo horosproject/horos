@@ -236,7 +236,6 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 {
 	NSException *e = [NSException exceptionWithName: @"NSThread compare" reason: @"compare:" userInfo: nil];	
 	[AppController printStackTrace: e];
-	[e raise];
 	
 	return NSOrderedSame;
 }
