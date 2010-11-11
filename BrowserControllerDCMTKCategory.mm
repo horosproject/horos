@@ -281,7 +281,7 @@ extern NSRecursiveLock *PapyrusLock;
 //		else NSLog( @"err");
 //	}
 //	}
-	return YES;
+//	return YES;
 
 
 //	DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: [paths lastObject] decodingPixelData: NO];
