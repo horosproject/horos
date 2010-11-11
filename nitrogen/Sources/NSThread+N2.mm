@@ -14,7 +14,7 @@
 
 
 #import "NSThread+N2.h"
-
+#import "AppController.h"
 
 @implementation NSThread (N2)
 
@@ -230,6 +230,15 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 		[self didChangeValueForKey:NSThreadProgressKey];
 		[self didChangeValueForKey:NSThreadSubthreadsAwareProgressKey];
 	}
+}
+
+- (NSComparisonResult)compare:(id) obj
+{
+	NSException *e = [NSException exceptionWithName: @"NSThread compare" reason: @"compare:" userInfo: nil];	
+	[AppController printStackTrace: e];
+	[e raise];
+	
+	return NSOrderedSame;
 }
 
 -(CGFloat)subthreadsAwareProgress
