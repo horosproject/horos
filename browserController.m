@@ -3840,12 +3840,7 @@ static NSConditionLock *threadLock = nil;
 										 generatedByOsiriX: NO
 										     mountedVolume: mountedVolume];
 				
-				if( [copiedFiles count] != [objects count])
-				{
-					NSLog( @"******* [copiedFiles count] != [objects count]");
-				}
-				
-				total += [objects count];
+				total += [copiedFiles count];
 			}
 			else
 			{
