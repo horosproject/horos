@@ -305,6 +305,22 @@ static int hotKeyToolCrossTable[] =
 	return -1;
 }
 
++ (BOOL) isFrontMost2DViewer: (NSWindow*) ww
+{
+	for( NSWindow *w in [NSApp orderedWindows])
+	{
+		if( [[w windowController] isKindOfClass:[ViewerController class]])
+		{
+			if( w == ww)
+				return YES;
+			else
+				return NO;
+		}
+	}
+	
+	return NO;
+}
+
 + (NSMutableArray*) getDisplayed2DViewers
 {
 	NSMutableArray *viewersList = [NSMutableArray arrayWithCapacity: numberOf2DViewer];

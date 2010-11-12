@@ -4349,7 +4349,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	if( isKeyView == NO)
 		[[self window] makeFirstResponder: self];
-		
+	
+	if( [[self window] isMainWindow] == NO)
+		[[self window] makeKeyAndOrderFront: self];
+	
 	float deltaX = [theEvent deltaX];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ZoomWithHorizonScroll"] == NO) deltaX = 0;
@@ -6564,7 +6567,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
 				{
-					if( [[self window] isMainWindow] == NO && [[otherView window] isMainWindow] == YES)
+					if( [ViewerController isFrontMost2DViewer: [otherView window]])
 					{
 						if( ([oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer))
 						{
@@ -6579,7 +6582,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;
 						}
 					}
-					else if( [[otherView window] isMainWindow] == NO)
+					else
 					{
 						sliceFromTo[ 0][ 0] = HUGE_VALF;
 						sliceFromTo2[ 0][ 0] = HUGE_VALF;
@@ -7878,16 +7881,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
 	NSRect savedDrawingFrameRect;
-	long		clutBars	= CLUTBARS;
-	long		annotations	= ANNOTATIONS;
+	long clutBars = CLUTBARS, annotations	= ANNOTATIONS;
+	BOOL frontMost = NO, is2DViewer = [self is2DViewer];
 	
 	#ifndef OSIRIX_LIGHT
-	BOOL		iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
+	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
 	#else
-	BOOL		iChatRunning = NO;
+	BOOL iChatRunning = NO;
 	#endif
 	
-	if( firstTimeDisplay == NO && [self is2DViewer])
+	if( is2DViewer)
+		frontMost = [ViewerController isFrontMost2DViewer: [self window]];
+	
+	if( firstTimeDisplay == NO && is2DViewer)
 	{
 		firstTimeDisplay = YES;
 		[self updatePresentationStateFromSeries];
@@ -7954,7 +7960,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			BOOL noBlending = NO;
 			
-			if( [self is2DViewer] == YES)
+			if( is2DViewer == YES)
 			{
 				if( isKeyView == NO) noBlending = YES;
 			}	
@@ -7972,7 +7978,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				glDisable( GL_BLEND);
 			}
 			
-			if( [self is2DViewer])
+			if( is2DViewer)
 			{
 				if( [[self windowController] highLighted] > 0)
 				{
@@ -8061,7 +8067,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			// ***********************
 			// DRAW CLUT BARS ********
 			
-			if( [self is2DViewer] == YES && annotations != annotNone && ctx!=_alternateContext)
+			if( is2DViewer == YES && annotations != annotNone && ctx!=_alternateContext)
 			{
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f /(drawingFrameRect.size.width), -2.0f / (drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
@@ -8198,7 +8204,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 					}
 				} //blendingView
-			} //[self is2DViewer] == YES
+			} //is2DViewer == YES
 			
 			if (annotations != annotNone)
 			{
@@ -8207,11 +8213,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 				//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST : BORDER AROUND THE IMAGE
 				
-				if(( [ViewerController numberOf2DViewer] > 1 && [self is2DViewer] == YES && stringID == nil) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+				if(( [ViewerController numberOf2DViewer] > 1 && is2DViewer == YES && stringID == nil) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
 				{
 					// draw line around key View
 					
-					if( [[self window] isMainWindow] && isKeyView && ctx!=_alternateContext)
+					if( frontMost  && isKeyView && ctx!=_alternateContext)
 					{
 						float heighthalf = drawingFrameRect.size.height/2;
 						float widthhalf = drawingFrameRect.size.width/2;
@@ -8232,7 +8238,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}  //drawLines for ImageView Frames
 				
-				if ((_imageColumns > 1 || _imageRows > 1) && [self is2DViewer] == YES && stringID == nil )
+				if ((_imageColumns > 1 || _imageRows > 1) && is2DViewer == YES && stringID == nil )
 				{
 					float heighthalf = drawingFrameRect.size.height/2 - 1;
 					float widthhalf = drawingFrameRect.size.width/2 - 1;
@@ -8246,7 +8252,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						glVertex2f(  widthhalf, -heighthalf);
 					glEnd();
 					glLineWidth(1.0);
-					if (isKeyView && [[self window] isMainWindow])
+					
+					if (isKeyView && frontMost)
 					{
 						float heighthalf = drawingFrameRect.size.height/2 - 1;
 						float widthhalf = drawingFrameRect.size.width/2 - 1;
@@ -8270,7 +8277,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				// Draw ROIs
 				BOOL drawROI = NO;
 				
-				if( [self is2DViewer] == YES) drawROI = [[[self windowController] roiLock] tryLock];
+				if( is2DViewer == YES) drawROI = [[[self windowController] roiLock] tryLock];
 				else drawROI = YES;
 				
 				if( drawROI )
@@ -8317,7 +8324,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					rectArray = nil;
 				}
 				
-				if( drawROI && [self is2DViewer] == YES) [[[self windowController] roiLock] unlock];
+				if( drawROI && is2DViewer == YES) [[[self windowController] roiLock] unlock];
 				
 				// Draw 2D point cross (used when double-click in 3D panel)
 				
@@ -8348,7 +8355,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				//** SLICE CUT BETWEEN SERIES - CROSS REFERENCES LINES
 				
-				if( (stringID == nil || [stringID isEqualToString:@"export"]) && [[self window] isMainWindow] == NO)
+				if( (stringID == nil || [stringID isEqualToString:@"export"]) && frontMost == NO)
 				{
 					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 					glEnable(GL_BLEND);
@@ -8860,20 +8867,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( dcmPixList && [[self window] isVisible] && dontEnterReshape == NO)
     {
+		BOOL is2DViewer = [self is2DViewer];
+		
 		[[self openGLContext] makeCurrentContext];
 		
 		NSRect rect = [self frame];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"] && [self is2DViewer])
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"] && is2DViewer)
 		{
 			if( NSEqualSizes( previousViewSize, rect.size) == NO)
 			{
-				if( [self is2DViewer])
+				if( is2DViewer)
 					[[self windowController] setUpdateTilingViewsValue: YES];
 				
 				[self scaleToFit];
 				
-				if( [self is2DViewer] == YES)
+				if( is2DViewer == YES)
 				{
 					if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
 					{
@@ -8926,7 +8935,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( yChanged > 0.01 && yChanged < 1000) yChanged = yChanged;
 				else yChanged = 0.01;
 				
-				if( [self is2DViewer])
+				if( is2DViewer)
 				{
 					[[self windowController] setUpdateTilingViewsValue: YES];
 				
@@ -8952,7 +8961,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				self.scaleValue = scaleValue * yChanged;
 				
-				if( [self is2DViewer])
+				if( is2DViewer)
 					[[self windowController] setUpdateTilingViewsValue: NO];
 				
 				origin.x *= yChanged;
@@ -8961,7 +8970,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				originOffset.x *= yChanged;
 				originOffset.y *= yChanged;
 				
-				if( [self is2DViewer] == YES)
+				if( is2DViewer == YES)
 				{
 					if( [[self window] isMainWindow])
 						[[self windowController] propagateSettings];

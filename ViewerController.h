@@ -361,6 +361,7 @@ enum
 /** Array of all 2D Viewers */
 + (NSMutableArray*) getDisplayed2DViewers;
 + (NSArray*) getDisplayedSeries;
++ (BOOL) isFrontMost2DViewer: (NSWindow*) ww;
 + (void) closeAllWindows;
 
 /**  Create a new 2D Viewer
