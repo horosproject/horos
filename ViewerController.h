@@ -360,8 +360,10 @@ enum
 
 /** Array of all 2D Viewers */
 + (NSMutableArray*) getDisplayed2DViewers;
++ (NSMutableArray*) get2DViewers;
 + (NSArray*) getDisplayedSeries;
 + (BOOL) isFrontMost2DViewer: (NSWindow*) ww;
++ (ViewerController*) frontMostDisplayed2DViewer;
 + (void) closeAllWindows;
 
 /**  Create a new 2D Viewer

@@ -305,6 +305,19 @@ static int hotKeyToolCrossTable[] =
 	return -1;
 }
 
++ (ViewerController*) frontMostDisplayed2DViewer
+{
+	for( NSWindow *w in [NSApp orderedWindows])
+	{
+		if( [[w windowController] isKindOfClass:[ViewerController class]])
+		{
+			return [w windowController];
+		}
+	}
+	
+	return nil;
+}
+
 + (BOOL) isFrontMost2DViewer: (NSWindow*) ww
 {
 	for( NSWindow *w in [NSApp orderedWindows])
@@ -319,6 +332,37 @@ static int hotKeyToolCrossTable[] =
 	}
 	
 	return NO;
+}
+
++ (NSMutableArray*) get2DViewers // on screen and off screen
+{
+	NSMutableArray *viewersList = [NSMutableArray arrayWithCapacity: numberOf2DViewer];
+	
+	{
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		NSMutableArray *viewersCtrl = [[NSMutableArray alloc] initWithCapacity: numberOf2DViewer];
+		
+		NSArray *winList = [NSApp windows];
+		for( NSWindow *w in winList)
+		{
+			if( [w windowController])
+				[viewersCtrl addObject: [w windowController]];
+		}
+		
+		for( NSWindowController *ctrl in viewersCtrl)
+		{
+			if( [ctrl isKindOfClass:[ViewerController class]])
+			{
+				if( [(ViewerController*) ctrl windowWillClose] == NO)
+					[viewersList addObject: ctrl];
+			}
+		}
+		
+		[viewersCtrl release];
+		[pool release];
+	}
+	
+	return viewersList;
 }
 
 + (NSMutableArray*) getDisplayed2DViewers
@@ -6107,15 +6151,15 @@ return YES;
 	if( resampleRatio != 1)
 		resampleRatio = 1;
 	
-	@try
-	{
-		[[fileList[0] objectAtIndex:0] setValue: nil forKeyPath:@"series.thumbnail"];
-		[[BrowserController currentBrowser] buildThumbnail: [[fileList[0] objectAtIndex:0] valueForKey: @"series"]];
-	}
-	@catch ( NSException *e)
-	{
-		NSLog( @"***** finalizeSeriesViewing : %@", e);
-	}
+//	@try
+//	{
+//		[[fileList[0] objectAtIndex:0] setValue: nil forKeyPath:@"series.thumbnail"];
+//		[[BrowserController currentBrowser] buildThumbnail: [[fileList[0] objectAtIndex:0] valueForKey: @"series"]];
+//	}
+//	@catch ( NSException *e)
+//	{
+//		NSLog( @"***** finalizeSeriesViewing : %@", e);
+//	}
 	
 	for( i = 0; i < maxMovieIndex; i++)
 	{

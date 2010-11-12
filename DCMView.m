@@ -3060,9 +3060,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	// If caplock is on changes to scale, rotation, zoom, ww/wl will apply only to the current image
 	BOOL modifyImageOnly = NO;
-	if ([event modifierFlags] & NSAlphaShiftKeyMask) modifyImageOnly = YES;
-	
-	
+	if ([event modifierFlags] & NSAlphaShiftKeyMask)
+		modifyImageOnly = YES;
 	
     if( dcmPixList)
     {
@@ -4350,8 +4349,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( isKeyView == NO)
 		[[self window] makeFirstResponder: self];
 	
-	if( [[self window] isMainWindow] == NO)
-		[[self window] makeKeyAndOrderFront: self];
+	BOOL SelectWindowScrollWheel = [[NSUserDefaults standardUserDefaults] boolForKey: @"SelectWindowScrollWheel"];
+	
+	if( [theEvent modifierFlags] & NSAlphaShiftKeyMask) // Caps Lock
+		SelectWindowScrollWheel = !SelectWindowScrollWheel;
+	
+	if( SelectWindowScrollWheel)
+	{
+		if( [[self window] isMainWindow] == NO)
+			[[self window] makeKeyAndOrderFront: self];
+	}
 	
 	float deltaX = [theEvent deltaX];
 	
@@ -4644,6 +4651,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[[self window] makeKeyAndOrderFront: self];
 	[[self window] makeFirstResponder: self];
+	[self sendSyncMessage: 0];
 	
 	[self mouseDown: event];
 }
@@ -4656,8 +4664,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[[self window] makeKeyAndOrderFront: self];
 	[[self window] makeFirstResponder: self];
+	[self sendSyncMessage: 0];
 	
-	if ( pluginOverridesMouse )
+	if( pluginOverridesMouse)
 	{
 		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:

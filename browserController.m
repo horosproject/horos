@@ -9018,13 +9018,45 @@ static BOOL withReset = NO;
 	withReset = NO;
 }
 
+- (DCMPix*) getDCMPixFromViewerIfAvailable: (NSString*) pathToFind
+{
+	//Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
+	for( ViewerController *v in [ViewerController get2DViewers])
+	{
+		for( int i = 0 ; i < [[v fileList] count]; i++)
+		{
+			NSString *path = [[[v fileList] objectAtIndex: i] valueForKey:@"completePath"];
+			
+			if( [path isEqualToString: pathToFind])
+			{
+				DCMPix *dcmPix = [[[v pixList] objectAtIndex: i] copy];
+				if( dcmPix)
+				{
+					float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+					if( fImage)
+					{
+						memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+						[dcmPix setfImage: fImage];
+						[dcmPix freefImageWhenDone: YES];
+						
+						return [dcmPix autorelease];
+					}
+					else
+						[dcmPix release];
+				}
+			}
+		}
+	}
+	return nil;
+}
+
 - (void) previewSliderAction:(id) sender
 {
 	BOOL	animate = NO;
 	long	noOfImages = 0;
 	
-    NSButtonCell    *cell = [oMatrix selectedCell];
-    if( cell)
+    NSButtonCell *cell = [oMatrix selectedCell];
+    if( cell && dontUpdatePreviewPane == NO)
 	{
 		if( [cell isEnabled])
 		{
@@ -9040,7 +9072,13 @@ static BOOL withReset = NO;
 				noOfImages = [[image valueForKey:@"numberOfFrames"] intValue];
 				animate = YES;
 				
-				DCMPix *dcmPix = [[DCMPix alloc] initWithPath: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
+				DCMPix *dcmPix = nil;
+				
+				//Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
+				dcmPix = [[self getDCMPixFromViewerIfAvailable: [image valueForKey:@"completePath"]] retain];
+				
+				if( dcmPix == nil)
+					dcmPix = [[DCMPix alloc] initWithPath: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
 				
 				if( dcmPix)
 				{
@@ -9084,7 +9122,11 @@ static BOOL withReset = NO;
 						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[[imageView imageObj] valueForKey: @"frameID"] intValue])
 						{
 							DCMPix *dcmPix = nil;
-							dcmPix = [[DCMPix alloc] initWithPath: [imageObj valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :nil :[[imageObj valueForKey: @"frameID"] intValue] :[[imageObj valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: imageObj];
+							
+							dcmPix = [[self getDCMPixFromViewerIfAvailable: [imageObj valueForKey:@"completePath"]] retain];
+							
+							if( dcmPix == nil)
+								dcmPix = [[DCMPix alloc] initWithPath: [imageObj valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :nil :[[imageObj valueForKey: @"frameID"] intValue] :[[imageObj valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: imageObj];
 							
 							if( dcmPix)
 							{
@@ -9125,7 +9167,12 @@ static BOOL withReset = NO;
 						   || [[imageView curDCM] frameNo] != [animationSlider intValue]
 						   || [[imageView curDCM] serieNo] != [[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue])
 						{
-							DCMPix*     dcmPix = [[DCMPix alloc] initWithPath: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
+							DCMPix *dcmPix = nil;
+							
+							dcmPix = [[self getDCMPixFromViewerIfAvailable: [[images objectAtIndex: 0] valueForKey:@"completePath"]] retain];
+							
+							if( dcmPix == nil)
+								dcmPix = [[DCMPix alloc] initWithPath: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
 							
 							if( dcmPix)
 							{
@@ -9849,7 +9896,10 @@ static BOOL withReset = NO;
 			
 			if( [[files objectAtIndex: i] valueForKey: @"frameID"]) frame = [[[files objectAtIndex: i] valueForKey:@"frameID"] intValue];
 			
-			DCMPix *dcmPix  = [[DCMPix alloc] initWithPath:[filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
+			DCMPix *dcmPix = [[self getDCMPixFromViewerIfAvailable: [filesPaths objectAtIndex:i]] retain];
+			
+			if( dcmPix == nil)
+				dcmPix = [[DCMPix alloc] initWithPath: [filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
 			
 			if( dcmPix)
 			{
@@ -13129,7 +13179,12 @@ static BOOL needToRezoom;
 		{
 			if( [matrixViewArray count] > [[oMatrix selectedCell] tag] && [self isUsingExternalViewer: [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]]] == NO)
 			{
-				[self viewerDICOMInt:NO	dcmFile: [self databaseSelection] viewer: nil];
+				//To avoid loading the dcmpix in previewSliderAction
+				dontUpdatePreviewPane = YES;
+				[self viewerDICOMInt: NO dcmFile: [self databaseSelection] viewer: nil];
+				dontUpdatePreviewPane = NO;
+				
+				[self previewSliderAction: nil];
 			}
 		}
 	}

@@ -891,6 +891,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"10" forKey:@"quicktimeExportRateValue"];
 	[defaultValues setObject:@"0" forKey:@"32bitDICOMAreAlwaysIntegers"];
 	[defaultValues setObject:@"1" forKey:@"archiveReportsAndAnnotationsAsDICOMSR"];
+	[defaultValues setObject:@"1" forKey:@"SelectWindowScrollWheel"];
 	
 	[defaultValues setObject: [NSArray arrayWithObjects: [DCMAbstractSyntaxUID MRSpectroscopyStorage], nil] forKey:@"additionalDisplayedStorageSOPClassUIDArray"];
 	
