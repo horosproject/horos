@@ -54,7 +54,7 @@
 - (id)copyWithZone:(NSZone*)zone
 {
 	MyPoint* p = [[[self class] allocWithZone: zone] init];
-	
+	if( p == nil) return nil;
 	p->pt = pt;
 	
 	return p;

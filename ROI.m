@@ -796,6 +796,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 - (id) copyWithZone:(NSZone *)zone
 {
 	ROI *c = [[[self class] allocWithZone: zone] init];
+	if( c == nil) return nil;
 	
 	c->uniqueID = [[NSNumber numberWithInt: gUID++] retain];
 	c->groupID = 0.0;
@@ -835,7 +836,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		c->textureDownRightCornerY = textureDownRightCornerY;
 		
 		c->textureBuffer = (unsigned char*) malloc( textureWidth*textureHeight*sizeof(unsigned char));
-		memcpy( c->textureBuffer, textureBuffer, textureWidth*textureHeight*sizeof(unsigned char));
+		if( c->textureBuffer && textureBuffer)
+			memcpy( c->textureBuffer, textureBuffer, textureWidth*textureHeight*sizeof(unsigned char));
 	}
 	
 	NSMutableArray *z = [[NSMutableArray array] retain];

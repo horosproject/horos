@@ -80,6 +80,7 @@
 
 - copyWithZone:(NSZone *)zone {
     ImageAndTextCell *cell = (ImageAndTextCell *)[super copyWithZone:zone];
+	if( cell == nil) return nil;
     cell->image = [image retain];
 	[cell setEditable:[self isEditable]];
     return cell;

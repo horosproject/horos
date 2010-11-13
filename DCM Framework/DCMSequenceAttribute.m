@@ -68,6 +68,7 @@
 - (id)copyWithZone:(NSZone *)zone
 {
 	DCMSequenceAttribute *seq = [super copyWithZone:zone];
+	if( seq == nil) return nil;
 	
 	sequenceItems = [self.sequenceItems mutableCopy];
 	

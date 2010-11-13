@@ -3344,6 +3344,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if( copy == nil)
 	{
 		copy = [[[self class] allocWithZone: zone] init];
+		if( copy == nil) return nil;
+		
 		{
 			//-------------------------received parameters
 			copy->srcFile = [self->srcFile retain];
