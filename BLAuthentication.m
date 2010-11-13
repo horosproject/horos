@@ -299,11 +299,9 @@
 	else
 	{
 		int status;
-		while ( wait( &status) != -1)
-		{
-            // wait for forked process to terminate
-        }
-		[NSThread sleepForTimeInterval: 0.1];
+		pid_t result = wait( &status);
+		[NSThread sleepForTimeInterval: 0.5];
+		
 		return YES;
 	}
 }

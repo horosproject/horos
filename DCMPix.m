@@ -2013,11 +2013,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) prepareRestore
 {
-	if( restoreImageCache) [self freeRestore];
+	if( restoreImageCache)
+		[self freeRestore];
 	
 	restoreImageCache = malloc( [pixArray count] * sizeof(void*));
 	
-	if( restoreImageCache)	{
+	if( restoreImageCache)
+	{
 		for( int i = 0; i < [pixArray count]; i++)
 		{
 			DCMPix	*s = [pixArray objectAtIndex:i];
@@ -2034,7 +2036,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	if( restoreImageCache)
 	{
-		for( int i = 0; i < pixArray.count; i++)	[restoreImageCache[ i] release];
+		for( int i = 0; i < pixArray.count; i++)
+			[restoreImageCache[ i] release];
 		
 		free( restoreImageCache);
 		restoreImageCache = nil;
