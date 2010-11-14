@@ -161,7 +161,17 @@
 	BOOL wasVisible = [[self window] isVisible];
 	if( wasVisible) [[self window] orderOut: self];
 	
-	float scale = [[imageViews objectAtIndex:0] scaleValue];
+	BOOL imageLevel = NO;
+	for( id imageObj in dcmFilesList)
+	{
+		float scale = [[imageObj valueForKey: @"scale"] floatValue];
+		
+		if( scale)
+		{
+			[imageObj setValue: [NSNumber numberWithFloat: (scale * (float) imageRows) / (float) rows] forKey: @"scale"];
+			imageLevel = YES;
+		}
+	}
 	
 	// remove views
 	if (newSize < currentSize)
@@ -187,8 +197,8 @@
 		}	
 	}
 	
-	for ( i = 0 ; i < [imageViews count];  i++) 
-		[[imageViews objectAtIndex:i] setRows:rows columns:columns];
+	for( id view in imageViews) 
+		[view setRows:rows columns:columns];
 	
 	[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
 	[[[self window] windowController] setUpdateTilingViewsValue: NO];
@@ -196,8 +206,16 @@
 	[self resizeSubviewsWithOldSize:[self bounds].size];
 	[imageViews makeObjectsPerformSelector:@selector(setImageParamatersFromView:) withObject:[imageViews objectAtIndex:0]];
 	
-	scale = (scale * (float) imageRows) / (float) rows;
-	[[imageViews objectAtIndex:0] setScaleValueCentered: scale];
+	
+	if( imageLevel == NO)
+	{
+		[[imageViews objectAtIndex: 0] setScaleValueCentered: ([[imageViews objectAtIndex: 0] scaleValue] * (float) imageRows) / (float) rows];
+	}
+	else
+	{
+		for( id view in imageViews)
+			[view updatePresentationStateFromSeriesOnlyImageLevel: NO]; // Apply the scale modifications
+	}
 	
 	imageRows = rows;
 	imageColumns = columns;

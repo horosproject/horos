@@ -8019,16 +8019,23 @@ return YES;
 	}
 }
 
-
 - (IBAction) resetImage:(id) sender
 {
-	[imageView setOrigin: NSMakePoint( 0, 0)];
-	[imageView scaleToFit];
-	[imageView setRotation: 0];
+	[self setUpdateTilingViewsValue: YES];
 	
-	[imageView setWLWW:[[imageView curDCM] savedWL] :[[imageView curDCM] savedWW]];
+	for( DCMView *v in [seriesView imageViews])
+	{
+		[v setOrigin: NSMakePoint( 0, 0)];
+		[v scaleToFit];
+		[v setRotation: 0];
 	
-	[self propagateSettings];
+		[v setWLWW:[[v curDCM] savedWL] :[[v curDCM] savedWW]];
+	}
+	
+	[self setUpdateTilingViewsValue: NO];
+	
+	[self selectFirstTilingView];
+	[imageView updateTilingViews];
 }
 
 -(IBAction) ConvertToRGBMenu:(id) sender
