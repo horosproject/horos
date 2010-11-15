@@ -286,7 +286,7 @@
 	[currentViewer setMatrixVisible: v];
 	
 	if( previousRows != 1 || previousColumns != 1)
-		[self setImageRows: previousRows columns: previousColumns];
+		[currentViewer setImageRows: previousRows columns: previousColumns];
 	
 	[OSIWindowController setDontEnterMagneticFunctions: NO];
 	[OSIWindowController setDontEnterWindowDidChangeScreen: NO];
