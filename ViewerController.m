@@ -15755,6 +15755,11 @@ int i,j,l;
 		[OSIWindowController setDontEnterMagneticFunctions: YES];
 		[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
 		
+		int previousRows = [seriesView imageRows], previousColumns = [seriesView imageColumns];
+		
+		if( previousRows != 1 || previousColumns != 1)
+			[self setImageRows: 1 columns: 1];
+		
 		int i;
 		for( i = from; i < to; i += interval)
 		{
@@ -15853,6 +15858,9 @@ int i,j,l;
 		[self setMagnetic : m];
 		[[self window] setFrame: rf display: YES];
 		[self setMatrixVisible: v];
+		
+		if( previousRows != 1 || previousColumns != 1)
+			[self setImageRows: previousRows columns: previousColumns];
 		
 		[OSIWindowController setDontEnterMagneticFunctions: NO];
 		[OSIWindowController setDontEnterWindowDidChangeScreen: NO];

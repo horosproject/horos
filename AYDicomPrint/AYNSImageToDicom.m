@@ -214,6 +214,11 @@
 	[OSIWindowController setDontEnterMagneticFunctions: YES];
 	[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
 	
+	int previousRows = [seriesView imageRows], previousColumns = [seriesView imageColumns];
+	
+	if( previousRows != 1 || previousColumns != 1)
+		[self setImageRows: 1 columns: 1];
+	
 	for(NSNumber *imageIndex in fileList)
 	{
 		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
@@ -261,9 +266,6 @@
 		if( windowSizeChanged)
 			[[currentViewer window] setFrame: NSMakeRect( o.x, o.y, rf.size.width, rf.size.height) display: YES];
 		
-		[OSIWindowController setDontEnterMagneticFunctions: NO];
-		[OSIWindowController setDontEnterWindowDidChangeScreen: NO];
-		
 		[pool release];
 	}
 	
@@ -281,6 +283,12 @@
 	[currentViewer setMagnetic : m];
 	[[currentViewer window] setFrame: rf display: YES];
 	[currentViewer setMatrixVisible: v];
+	
+	if( previousRows != 1 || previousColumns != 1)
+		[self setImageRows: previousRows columns: previousColumns];
+	
+	[OSIWindowController setDontEnterMagneticFunctions: NO];
+	[OSIWindowController setDontEnterWindowDidChangeScreen: NO];
 	
 	/////// ****************
 	
