@@ -16,6 +16,7 @@
 #import "OSIWindow.h"
 #import "NSFont_OpenGL.h"
 #import "Notifications.h"
+#import "SeriesView.h"
 
 @interface AYNSImageToDicom (private)
 - (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer toDestinationPath: (NSString *) destPath asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations;
@@ -214,10 +215,10 @@
 	[OSIWindowController setDontEnterMagneticFunctions: YES];
 	[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
 	
-	int previousRows = [seriesView imageRows], previousColumns = [seriesView imageColumns];
+	int previousRows = [[currentViewer seriesView] imageRows], previousColumns = [[currentViewer seriesView] imageColumns];
 	
 	if( previousRows != 1 || previousColumns != 1)
-		[self setImageRows: 1 columns: 1];
+		[currentViewer setImageRows: 1 columns: 1];
 	
 	for(NSNumber *imageIndex in fileList)
 	{
