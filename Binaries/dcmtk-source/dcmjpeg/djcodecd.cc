@@ -148,8 +148,6 @@ OFCondition DJCodecDecoder::decode(
 				result = uncompressedPixelData.createUint16Array(fragmentLength/sizeof(Uint16), imageData16);
 				if (result.good())
 					memcpy( imageData16, jpegData, fragmentLength);
-				
-				printf( "%d ", (int) fragmentLength);
 			}
 			else
 			{

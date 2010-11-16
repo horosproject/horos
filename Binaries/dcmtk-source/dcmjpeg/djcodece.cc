@@ -1124,8 +1124,6 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
 			
 			pixelSequence->storeCompressedFrame(offsetList, (Uint8 *) pixelData, length, cp->getFragmentSize());
 			compressedSize += length;
-			
-			printf( "%d ", (int) length);
 		}
 		else
 		{

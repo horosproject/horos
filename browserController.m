@@ -396,7 +396,11 @@ static NSConditionLock *threadLock = nil;
 			extension = [NSString stringWithString:@"dcm"]; 
 		}
 		
-		[AppController createNoIndexDirectoryIfNecessary: OUTpath];
+		if( [NSDate timeIntervalSinceReferenceDate] - lastCheckForDirectory > 3) // 3 secs
+		{
+			lastCheckForDirectory = [NSDate timeIntervalSinceReferenceDate];
+			[AppController createNoIndexDirectoryIfNecessary: OUTpath];
+		}
 		
 		BOOL fileExist = NO, firstExist = YES;
 		
@@ -15928,18 +15932,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				int maxNumberOfFiles = [[NSUserDefaults standardUserDefaults] integerForKey: @"maxNumberOfFilesForCheckIncoming"];
 				if( maxNumberOfFiles < 100) maxNumberOfFiles = 100;
+				if( maxNumberOfFiles > 10000) maxNumberOfFiles = 10000;
 				
 				while( (pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles)
 				{
 					NSString *srcPath = [INpath stringByAppendingPathComponent:pathname];
 					NSString *originalPath = srcPath;
+					NSString *lastPathComponent = [srcPath lastPathComponent];
 					
-					if ([[[srcPath lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"])
+					if ([[lastPathComponent uppercaseString] isEqualToString:@".DS_STORE"])
 						continue;
 					
-					if ( [[srcPath lastPathComponent] length] > 0 && [[srcPath lastPathComponent] characterAtIndex: 0] == '.')
+					if ( [lastPathComponent length] > 0 && [lastPathComponent characterAtIndex: 0] == '.')
 					{
-						NSDictionary *atr = [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
+						NSDictionary *atr = [enumer fileAttributes];// [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
 						if( [atr fileModificationDate] && [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
 						{
 							[NSThread sleepForTimeInterval: 0.1]; //We want to be 100% sure...
@@ -15962,10 +15968,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 					// Is it a real file? Is it writable (transfer done)?
 //					if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES)	<- Problems with CD : read-only files, but valid files
 					{
-						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:srcPath traverseLink: YES];
+						NSDictionary *fattrs = [enumer fileAttributes];	//[[NSFileManager defaultManager] fileAttributesAtPath:srcPath traverseLink: YES];
 						
-						// http://www.noodlesoft.com/blog/2007/03/07/mystery-bug-heisenbergs-uncertainty-principle/
-						[fattrs allKeys];
+//						// http://www.noodlesoft.com/blog/2007/03/07/mystery-bug-heisenbergs-uncertainty-principle/
+//						[fattrs allKeys];
+						
+//						NSLog( @"%@", [fattrs objectForKey:NSFileBusy]);
 						
 						if( [[fattrs objectForKey:NSFileType] isEqualToString: NSFileTypeDirectory] == YES)
 						{
@@ -15983,14 +15991,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 						{
 							if( [[srcPath pathExtension] isEqualToString: @"zip"] || [[srcPath pathExtension] isEqualToString: @"osirixzip"])
 							{
-								NSString *compressedPath = [DECOMPRESSIONpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
+								NSString *compressedPath = [DECOMPRESSIONpath stringByAppendingPathComponent: lastPathComponent];
 								[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
 								[compressedPathArray addObject: compressedPath];
 							}
 							else
 							{
 								BOOL isDicomFile, isJPEGCompressed, isImage;
-								NSString *dstPath = [OUTpath stringByAppendingPathComponent:[srcPath lastPathComponent]];
+								NSString *dstPath = [OUTpath stringByAppendingPathComponent: lastPathComponent];
 								
 								isDicomFile = [DicomFile isDICOMFile:srcPath compressed: &isJPEGCompressed image: &isImage];
 								
@@ -16010,7 +16018,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 										if( (isJPEGCompressed == YES && ListenerCompressionSettings == 1) || (isJPEGCompressed == NO && ListenerCompressionSettings == 2))
 										#endif
 										{
-											NSString *compressedPath = [DECOMPRESSIONpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
+											NSString *compressedPath = [DECOMPRESSIONpath stringByAppendingPathComponent: lastPathComponent];
 											
 											[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
 											
@@ -16073,7 +16081,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 									{
 										//NSLog( [ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]);
 										
-										if( [[NSFileManager defaultManager] movePath:srcPath toPath:[ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]  handler:nil] == NO)
+										if( [[NSFileManager defaultManager] movePath:srcPath toPath:[ERRpath stringByAppendingPathComponent: lastPathComponent]  handler:nil] == NO)
 											[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
 									}
 								}
