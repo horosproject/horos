@@ -6097,11 +6097,19 @@ END_CREATE_ROIS:
 				
 				if( oData && gDisplayDICOMOverlays)
 				{
+					float maxValue = 0;
+					
+					if( savedWW != 0)
+						maxValue = savedWL + savedWW/2;
+					
+					if( maxValue < 255)
+						maxValue = 255;
+					
 					for( int y = 0; y < oRows; y++)
 					{
 						for( int x = 0; x < oColumns; x++)
 						{
-							if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
+							if( oData[ y * oColumns + x]) fImage[ y * width + x] = maxValue;
 						}
 					}
 				}
@@ -8453,13 +8461,20 @@ END_CREATE_ROIS:
 							
 							if( oData && gDisplayDICOMOverlays && fImage)
 							{
-								int			y, x;
+								int y, x;
+								float maxValue = 0;
+								
+								if( savedWW != 0)
+									maxValue = savedWL + savedWW/2;
+								
+								if( maxValue < 255)
+									maxValue = 255;
 								
 								for( y = 0; y < oRows; y++)
 								{
 									for( x = 0; x < oColumns; x++)
 									{
-										if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
+										if( oData[ y * oColumns + x]) fImage[ y * width + x] = maxValue;
 									}
 								}
 							}
