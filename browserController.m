@@ -12001,23 +12001,31 @@ static BOOL needToRezoom;
 						}
 					}
 					
-					[DCMView purgeStringTextureCache];
-					@try
-					{
-						for( DCMPix *p in previewPix)
-						{
-							[p kill8bitsImage];
-							[p revert: NO];
-						}
-					}
-					@catch (NSException *e) {}
 					if ( memBlock < 256 * 256) memBlock = 256 * 256;  // This is the size of array created when when an image doesn't exist, a 256 square graduated gray scale.
 					
 					testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);
 					if( testPtr[ x] == nil)
 					{
-						memTestFailed = YES;
-						NSLog(@"Failed to allocate memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
+						// Try to find the memory...
+						
+						[DCMView purgeStringTextureCache];
+						@try
+						{
+							for( DCMPix *p in previewPix)
+							{
+								[p kill8bitsImage];
+								[p revert: NO];
+							}
+						}
+						@catch (NSException *e) {}
+						
+						testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);
+						if( testPtr[ x] == nil)
+						{
+							memTestFailed = YES;
+							
+							NSLog(@"Failed to allocate memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
+						}
 					}
 					memBlockSize[ x] = memBlock;
 				}

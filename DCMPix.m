@@ -5631,24 +5631,27 @@ END_CREATE_ROIS:
 			if (data && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
 			{
 				if( oData) free( oData);
-				oData = malloc( oRows*oColumns);
+				oData = calloc( oRows*oColumns, 1);
 				if( oData)
 				{
-					unsigned short *pixels = (unsigned short*) [data bytes];
-					char			valBit [ 16];
-					char			mask = 1;
+					register unsigned short *pixels = (unsigned short*) [data bytes];
+					register unsigned char *oD = oData;
+					register char mask = 1;
+					register long t = oColumns*oRows/16;
 					
-					for ( int i = 0; i < oColumns*oRows/16; i++)
+					while( t-->0)
 					{
-						unsigned short	octet = pixels[ i];
-						
-						for ( int x = 0; x < 16; x++)
+						register unsigned short	octet = *pixels++;
+						register int x = 16;
+						while( x-->0)
 						{
-							valBit[ x ] = octet & mask ? 1 : 0;
+							char v = octet & mask ? 1 : 0;
 							octet = octet >> 1;
 							
-							if ( valBit[ x]) oData[ i*16 + x] = 0xFF;
-							else oData[ i*16 + x] = 0;
+							if( v)
+								*oD = 0xFF;
+							
+							oD++;
 						}
 					}
 				}
@@ -6099,18 +6102,40 @@ END_CREATE_ROIS:
 				{
 					float maxValue = 0;
 					
-					if( savedWW != 0)
-						maxValue = savedWL + savedWW/2;
-					
-					if( maxValue < 255)
-						maxValue = 255;
-					
-					for( int y = 0; y < oRows; y++)
+					if( inverseVal)
+						maxValue = -offset;
+					else
 					{
-						for( int x = 0; x < oColumns; x++)
+						maxValue = pow( 2, bitsStored);
+						maxValue *= slope;
+						maxValue += offset;
+					}
+					
+					if( oColumns == width)
+					{
+						register unsigned long x = oRows * oColumns;
+						register unsigned char *d = oData;
+						register float *ffI = fImage;
+						
+						while( x-- > 0)
 						{
-							if( oData[ y * oColumns + x]) fImage[ y * width + x] = maxValue;
+							if( *oData++)
+								*ffI = maxValue;
+							ffI++;
 						}
+					}
+					else
+					{
+						NSLog( @"-- oColumns != width");
+						
+						for( int y = 0; y < oRows; y++)
+						{
+							for( int x = 0; x < oColumns; x++)
+							{
+								if( oData[ y * oColumns + x]) fImage[ y * width + x] = maxValue;
+							}
+						}
+						
 					}
 				}
 			}
@@ -7831,25 +7856,27 @@ END_CREATE_ROIS:
 					if (val != NULL && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
 					{
 						if( oData) free( oData);
-						oData = malloc( oRows*oColumns);
+						oData = calloc( oRows*oColumns, 1);
 						if( oData)
 						{
-							unsigned short *pixels = val->ow;
-							char			valBit [ 16];
-							char			mask = 1;
-							int				x;
+							register unsigned short *pixels = val->ow;
+							register unsigned char *oD = oData;
+							register char mask = 1;
+							register long t = oColumns*oRows/16;
 							
-							for ( i = 0; i < oColumns*oRows/16; i++)
+							while( t-->0)
 							{
-								unsigned short	octet = pixels[ i];
-								
-								for (x = 0; x < 16;x ++)
+								register unsigned short	octet = *pixels++;
+								register int x = 16;
+								while( x-->0)
 								{
-									valBit[ x] = octet & mask ? 1 : 0;
+									char v = octet & mask ? 1 : 0;
 									octet = octet >> 1;
 									
-									if( valBit[ x]) oData[ i*16 + x] = 0xFF;
-									else oData[ i*16 + x] = 0;
+									if( v)
+										*oD = 0xFF;
+									
+									oD++;
 								}
 							}
 						}
@@ -8464,18 +8491,40 @@ END_CREATE_ROIS:
 								int y, x;
 								float maxValue = 0;
 								
-								if( savedWW != 0)
-									maxValue = savedWL + savedWW/2;
-								
-								if( maxValue < 255)
-									maxValue = 255;
-								
-								for( y = 0; y < oRows; y++)
+								if( inverseVal)
+									maxValue = -offset;
+								else
 								{
-									for( x = 0; x < oColumns; x++)
+									maxValue = pow( 2, bitsStored);
+									maxValue *= slope;
+									maxValue += offset;
+								}
+								
+								if( oColumns == width)
+								{
+									register unsigned long x = oRows * oColumns;
+									register unsigned char *d = oData;
+									register float *ffI = fImage;
+									
+									while( x-- > 0)
 									{
-										if( oData[ y * oColumns + x]) fImage[ y * width + x] = maxValue;
+										if( *oData++)
+											*ffI = maxValue;
+										ffI++;
 									}
+								}
+								else
+								{
+									NSLog( @"-- oColumns != width");
+									
+									for( int y = 0; y < oRows; y++)
+									{
+										for( int x = 0; x < oColumns; x++)
+										{
+											if( oData[ y * oColumns + x]) fImage[ y * width + x] = maxValue;
+										}
+									}
+									
 								}
 							}
 						}
