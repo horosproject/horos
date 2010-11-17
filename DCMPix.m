@@ -5604,7 +5604,7 @@ END_CREATE_ROIS:
 		
 	#pragma mark *tag group 6000
 		
-		if( [dcmObject attributeValueForKey: @"6000,0010"] && [[dcmObject attributeValueForKey: @"6000,0010"] isKindOfClass: [NSNumber class]])
+		if( [dcmObject attributeValueForKey: @"6000,0010"])// && [[dcmObject attributeValueForKey: @"6000,0010"] isKindOfClass: [NSNumber class]])
 		{
 			oRows = [[dcmObject attributeValueForKey: @"6000,0010"] intValue];
 			
@@ -6119,7 +6119,7 @@ END_CREATE_ROIS:
 						
 						while( x-- > 0)
 						{
-							if( *oData++)
+							if( *d++)
 								*ffI = maxValue;
 							ffI++;
 						}
@@ -8508,7 +8508,7 @@ END_CREATE_ROIS:
 									
 									while( x-- > 0)
 									{
-										if( *oData++)
+										if( *d++)
 											*ffI = maxValue;
 										ffI++;
 									}
