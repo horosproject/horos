@@ -354,8 +354,8 @@ int main(int argc, const char *argv[])
 									// since the UIDs in the data set may have changed 
 									
 									//only need to do this for lossy
-									delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-									delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+									//delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+									//delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
 									
 									// store in lossless JPEG format
 									fileformat.loadAllDataIntoMemory();

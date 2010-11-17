@@ -626,8 +626,8 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 		{
 			// force the meta-header UIDs to be re-generated when storing the file 
 			// since the UIDs in the data set may have changed 
-			delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-			delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+			//delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+			//delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
 			
 			// store in lossless JPEG format
 			

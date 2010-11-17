@@ -121,8 +121,8 @@ extern NSRecursiveLock *PapyrusLock;
 			{
 				// force the meta-header UIDs to be re-generated when storing the file 
 				// since the UIDs in the data set may have changed 
-				delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-				delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+				//delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+				//delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
 				
 				fileformat.loadAllDataIntoMemory();
 				
