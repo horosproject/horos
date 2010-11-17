@@ -108,7 +108,7 @@ int main(int argc, const char *argv[])
 		// register global JPEG compression codecs
 		DJEncoderRegistration::registerCodecs(
 			ECC_lossyYCbCr,
-			EUC_default,
+			EUC_never,
 			OFFalse,
 			OFFalse,
 			0,

@@ -64,7 +64,7 @@ public:
    */   
   static void registerCodecs(
     E_DecompressionColorSpaceConversion pDecompressionCSConversion = EDC_photometricInterpretation,
-    E_UIDCreation pCreateSOPInstanceUID = EUC_default,
+    E_UIDCreation pCreateSOPInstanceUID = EUC_never,
     E_PlanarConfiguration pPlanarConfiguration = EPC_default,
     OFBool pVerbose = OFFalse);
 

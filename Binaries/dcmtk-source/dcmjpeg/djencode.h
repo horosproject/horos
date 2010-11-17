@@ -88,7 +88,7 @@ public:
    */
   static void registerCodecs(
     E_CompressionColorSpaceConversion pCompressionCSConversion = ECC_lossyYCbCr,
-    E_UIDCreation pCreateSOPInstanceUID = EUC_default,
+    E_UIDCreation pCreateSOPInstanceUID = EUC_never,
     OFBool pVerbose = OFFalse,
     OFBool pOptimizeHuffman = OFFalse,
     int pSmoothingFactor = 0,
