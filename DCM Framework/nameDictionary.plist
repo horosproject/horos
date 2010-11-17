@@ -4002,5 +4002,37 @@
 	<string>300A,00F9</string>
 	<key>ReferencedRelatedGeneralSOPClassUIDinFile</key>
 	<string>0004,151A</string>
+	<key>OverlayRows</key>
+	<string>6000,0010</string>
+	<key>OverlayColumns</key>
+	<string>6000,0011</string>
+	<key>NumberOfFramesInOverlay</key>
+	<string>6000,0015</string>
+	<key>OverlayDescription</key>
+	<string>6000,0022</string>
+	<key>OverlayType</key>
+	<string>6000,0040</string>
+	<key>OverlaySubtype</key>
+	<string>6000,0045</string>
+	<key>OverlayOrigin</key>
+	<string>6000,0050</string>
+	<key>ImageFrameOrigin</key>
+	<string>6000,0051</string>
+	<key>OverlayBitsAllocated</key>
+	<string>6000,0100</string>
+	<key>OverlayBitPosition</key>
+	<string>6000,0102</string>
+	<key>OverlayActivationLayer</key>
+	<string>6000,1001</string>
+	<key>ROIArea</key>
+	<string>6000,1301</string>
+	<key>ROIMean</key>
+	<string>6000,1302</string>
+	<key>ROIStandardDeviation</key>
+	<string>6000,1303</string>
+	<key>OverlayLabel</key>
+	<string>6000,1500</string>
+	<key>OverlayData</key>
+	<string>6000,3000</string>
 </dict>
 </plist>

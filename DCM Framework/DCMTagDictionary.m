@@ -28,7 +28,9 @@ static DCMTagDictionary *sharedTagDictionary;
 		NSString *path = [bundle pathForResource:@"tagDictionary" ofType:@"plist"];
 		if( path == nil) NSLog(@"Cannot find tagDictionary");
 			sharedTagDictionary  = [[NSDictionary alloc] initWithContentsOfFile:path];
-				
+		
+//		NSLog( @"%@", sharedTagDictionary);
+		
 		//NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:date];
 	}
 	

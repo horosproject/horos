@@ -47,6 +47,7 @@
 			_name = [[dict objectForKey:@"Description"] retain];
 			_vr = [[dict objectForKey:@"VR"] retain];
 		}
+		
 		if (!_vr)
 			_vr = @"UN";
 		/*

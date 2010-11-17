@@ -5180,7 +5180,8 @@ END_CREATE_ROIS:
 	if( [dcmObject attributeValueWithName:@"PixelRepresentation"]) fIsSigned = [[dcmObject attributeValueWithName:@"PixelRepresentation"] intValue];
 	if( [dcmObject attributeValueWithName:@"BitsAllocated"]) bitsAllocated = [[dcmObject attributeValueWithName:@"BitsAllocated"] intValue]; 
 	
-	if( [[dcmObject attributeValueWithName:@"BitsStored"] intValue] == 8 && bitsAllocated == 16 && [[dcmObject attributeValueWithName:@"PhotometricInterpretation"] isEqualToString:@"RGB"])
+	bitsStored = [[dcmObject attributeValueWithName:@"BitsStored"] intValue];
+	if( bitsStored == 8 && bitsAllocated == 16 && [[dcmObject attributeValueWithName:@"PhotometricInterpretation"] isEqualToString:@"RGB"])
 		bitsAllocated = 8;
 	
 	if ([dcmObject attributeValueWithName:@"RescaleIntercept"]) offset = [[dcmObject attributeValueWithName:@"RescaleIntercept"] floatValue];
@@ -5604,57 +5605,55 @@ END_CREATE_ROIS:
 		
 	#pragma mark *tag group 6000
 		
-		if( [dcmObject attributeValueForKey: @"6000,0010"])// && [[dcmObject attributeValueForKey: @"6000,0010"] isKindOfClass: [NSNumber class]])
+		if( [dcmObject attributeValueWithName: @"OverlayRows"])
 		{
-			oRows = [[dcmObject attributeValueForKey: @"6000,0010"] intValue];
-			
-			if( [dcmObject attributeValueForKey: @"6000,0011"])
-				oColumns = [[dcmObject attributeValueForKey: @"6000,0011"] intValue];
-			
-			if( [dcmObject attributeValueForKey: @"6000,0040"])
-				oType = [[dcmObject attributeValueForKey: @"6000,0040"] characterAtIndex: 0];
-			
-			if( [dcmObject attributeValueForKey: @"6000,0050"]) 
+			@try
 			{
-				oOrigin[ 0] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
-				oOrigin[ 1] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
-			}
-			
-			if( [dcmObject attributeValueForKey: @"6000,0100"])
-				oBits = [[dcmObject attributeValueForKey: @"6000,0100"] intValue];
-			
-			if( [dcmObject attributeValueForKey: @"6000,0102"])
-				oBitPosition = [[dcmObject attributeValueForKey: @"6000,0102"] intValue];
-			
-			NSData	*data = [dcmObject attributeValueForKey: @"6000,3000"];
-			
-			if (data && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
-			{
-				if( oData) free( oData);
-				oData = calloc( oRows*oColumns, 1);
-				if( oData)
+				oRows = [[dcmObject attributeValueWithName: @"OverlayRows"] intValue];
+				oColumns = [[dcmObject attributeValueWithName: @"OverlayColumns"] intValue];
+				oType = [[dcmObject attributeValueWithName: @"OverlayType"] characterAtIndex: 0];
+				
+				oOrigin[ 0] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 0] intValue];
+				oOrigin[ 1] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 1] intValue];
+				
+				oBits = [[dcmObject attributeValueWithName: @"OverlayBitsAllocated"] intValue];
+				
+				oBitPosition = [[dcmObject attributeValueWithName: @"OverlayBitPosition"] intValue];
+				
+				NSData	*data = [dcmObject attributeValueWithName: @"OverlayData"];
+				
+				if (data && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
 				{
-					register unsigned short *pixels = (unsigned short*) [data bytes];
-					register unsigned char *oD = oData;
-					register char mask = 1;
-					register long t = oColumns*oRows/16;
-					
-					while( t-->0)
+					if( oData) free( oData);
+					oData = calloc( oRows*oColumns, 1);
+					if( oData)
 					{
-						register unsigned short	octet = *pixels++;
-						register int x = 16;
-						while( x-->0)
+						register unsigned short *pixels = (unsigned short*) [data bytes];
+						register unsigned char *oD = oData;
+						register char mask = 1;
+						register long t = oColumns*oRows/16;
+						
+						while( t-->0)
 						{
-							char v = octet & mask ? 1 : 0;
-							octet = octet >> 1;
-							
-							if( v)
-								*oD = 0xFF;
-							
-							oD++;
+							register unsigned short	octet = *pixels++;
+							register int x = 16;
+							while( x-->0)
+							{
+								char v = octet & mask ? 1 : 0;
+								octet = octet >> 1;
+								
+								if( v)
+									*oD = 0xFF;
+								
+								oD++;
+							}
 						}
 					}
 				}
+			}
+			@catch (NSException *e)
+			{
+				NSLog( @"***** exception in overlays DCMFramework : %s: %@", __PRETTY_FUNCTION__, e);
 			}
 		}
 		
