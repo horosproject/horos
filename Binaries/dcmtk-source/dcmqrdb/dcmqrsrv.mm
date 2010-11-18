@@ -234,7 +234,7 @@ void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
 		usleep( 100000);
 		inc++;
 	}
-	#define TIMEOUT 3000
+	#define TIMEOUT 300 // 300*100000 = 30 secs
 	while( fileExist == YES && inc < TIMEOUT && rc >= 0);
 	
 	if( inc >= TIMEOUT)

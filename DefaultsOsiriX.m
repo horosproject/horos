@@ -892,6 +892,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey:@"32bitDICOMAreAlwaysIntegers"];
 	[defaultValues setObject:@"1" forKey:@"archiveReportsAndAnnotationsAsDICOMSR"];
 	[defaultValues setObject:@"1" forKey:@"SelectWindowScrollWheel"];
+	[defaultValues setObject:@"1" forKey:@"useDCMTKForJP2K"];
 	
 	[defaultValues setObject: [NSArray arrayWithObjects: [DCMAbstractSyntaxUID MRSpectroscopyStorage], nil] forKey:@"additionalDisplayedStorageSOPClassUIDArray"];
 	
@@ -1413,9 +1414,7 @@ static NSHost *currentHost = nil;
 	
 	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWadoServerActiveDefaultsKey];
 	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWebServerUsesWeasisDefaultsKey];
-	[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:OsirixWebServerPrefersFlashDefaultsKey]; // TODO: change
-	
-	
+	[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:OsirixWebServerPrefersFlashDefaultsKey];
 	
 	return defaultValues;
 }
