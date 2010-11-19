@@ -23,16 +23,21 @@
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
 	NSUserDefaultsController* defaults = [NSUserDefaultsController sharedUserDefaultsController];
 	
-	if ([keyPath isEqual:valuesKeyPath(OsirixWadoServerActiveDefaultsKey)]) {
+	if ([keyPath isEqual:valuesKeyPath(OsirixWadoServerActiveDefaultsKey)])
 		if (![defaults boolForKey:OsirixWadoServerActiveDefaultsKey])
-			[defaults setBool:NO forKey:OsirixWebServerUsesWeasisDefaultsKey];	
-	}
+			[defaults setBool:NO forKey:OsirixWebServerUsesWeasisDefaultsKey];
 }
 
 @end
 
 
 @implementation NSUserDefaultsController (OsiriX)
+
++(void)initialize {
+	NSUserDefaultsControllerOsirixHelper* helper = [[NSUserDefaultsControllerOsirixHelper alloc] init];
+	// [defaults addObserver:helper forValuesKey:DiscPublishingBurnMediaTypeDefaultsKey options:NULL context:NULL];
+	[[self sharedUserDefaultsController] addObserver:helper forValuesKey:OsirixWadoServerActiveDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
+}
 
 #pragma mark Bonjour Sharing
 
