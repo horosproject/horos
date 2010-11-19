@@ -22,4 +22,8 @@
 	[self removeObjectForKey:[self keyForObject:obj]];
 }
 
+-(void)setBool:(BOOL)b forKey:(NSString*)key {
+	[self setObject:[NSNumber numberWithBool:b] forKey:key];
+}
+
 @end

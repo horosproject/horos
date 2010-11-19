@@ -1,0 +1,7 @@
+%[IF:Messages.count%
+<div class="block">
+    %[FOREACH:Messages:Message%
+    <div class="error">%X:Message%</div>
+    %]FOREACH:Messages:Message%
+</div>
+%]IF:Messages.count%

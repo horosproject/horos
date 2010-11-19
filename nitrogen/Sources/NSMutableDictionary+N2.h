@@ -19,4 +19,6 @@
 
 -(void)removeObject:(id)obj;
 
+-(void)setBool:(BOOL)b forKey:(NSString*)key;
+
 @end

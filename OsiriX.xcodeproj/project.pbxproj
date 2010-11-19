@@ -104,6 +104,10 @@
 		5926825F11CF62DA00CFA81F /* ThreadsManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5926824311CF62DA00CFA81F /* ThreadsManager.mm */; };
 		5926828411CF69B300CFA81F /* NSThread+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28B111C611F100DAD5B4 /* NSThread+N2.mm */; };
 		5926828711CF69CB00CFA81F /* N2HighlightImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997898511B7B46A002DB107 /* N2HighlightImageButtonCell.mm */; };
+		592BA51D12966ABD00179C27 /* NSError+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 592BA51B12966ABD00179C27 /* NSError+OsiriX.h */; };
+		592BA51E12966ABD00179C27 /* NSError+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592BA51C12966ABD00179C27 /* NSError+OsiriX.mm */; };
+		592BA51F12966ABD00179C27 /* NSError+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 592BA51B12966ABD00179C27 /* NSError+OsiriX.h */; };
+		592BA52012966ABD00179C27 /* NSError+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592BA51C12966ABD00179C27 /* NSError+OsiriX.mm */; };
 		592CFF081212F84F00176E39 /* N2Connection.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEF01212F84F00176E39 /* N2Connection.h */; };
 		592CFF091212F84F00176E39 /* N2Connection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFEF11212F84F00176E39 /* N2Connection.mm */; };
 		592CFF0A1212F84F00176E39 /* N2ConnectionListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFEF21212F84F00176E39 /* N2ConnectionListener.h */; };
@@ -145,6 +149,18 @@
 		594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 594830CC118B0AC100D7E606 /* N2ImageView.mm */; };
 		594830CF118B0AC100D7E606 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 594830CB118B0AC100D7E606 /* N2ImageView.h */; };
 		594830D0118B0AC100D7E606 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 594830CC118B0AC100D7E606 /* N2ImageView.mm */; };
+		59526E8512816FDC0016F6C0 /* WebPortalSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526E8312816FDC0016F6C0 /* WebPortalSession.h */; };
+		59526E8612816FDC0016F6C0 /* WebPortalSession.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526E8412816FDC0016F6C0 /* WebPortalSession.mm */; };
+		59526E8C128172C80016F6C0 /* WebPortalData.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526E8A128172C80016F6C0 /* WebPortalData.h */; };
+		59526E8D128172C80016F6C0 /* WebPortalData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526E8B128172C80016F6C0 /* WebPortalData.mm */; };
+		59526E9E1281896F0016F6C0 /* NSMutableString+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526E9C1281896F0016F6C0 /* NSMutableString+N2.h */; };
+		59526E9F1281896F0016F6C0 /* NSMutableString+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526E9D1281896F0016F6C0 /* NSMutableString+N2.mm */; };
+		59526F331281ACA90016F6C0 /* WebPortalDB.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 59526F301281ACA90016F6C0 /* WebPortalDB.xcdatamodeld */; };
+		59526F3C1281ADC10016F6C0 /* WebPortalUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526F3A1281ADC10016F6C0 /* WebPortalUser.h */; };
+		59526F3D1281ADC10016F6C0 /* WebPortalUser.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526F3B1281ADC10016F6C0 /* WebPortalUser.mm */; };
+		59526F6C1281AFCA0016F6C0 /* WebPortalConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526F6A1281AFCA0016F6C0 /* WebPortalConnection.h */; };
+		59526F6D1281AFCA0016F6C0 /* WebPortalConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526F6B1281AFCA0016F6C0 /* WebPortalConnection.mm */; };
+		59526F7D1281B1AA0016F6C0 /* WebPortalDB 1-2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59526F7C1281B1AA0016F6C0 /* WebPortalDB 1-2.xcmappingmodel */; };
 		5963226C122544C40062066C /* N2Shell.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAAA11293378009EB238 /* N2Shell.mm */; };
 		596EB3061189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */; };
 		596EB3071189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */; };
@@ -155,6 +171,8 @@
 		596EB3F8118ABBB000880192 /* NSWindow+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3F4118ABBB000880192 /* NSWindow+N2.h */; };
 		596EB3F9118ABBB000880192 /* NSWindow+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3F5118ABBB000880192 /* NSWindow+N2.mm */; };
 		597DA7B41188340500D3BBCF /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A997B15610E0C412004C5BB1 /* SecurityInterface.framework */; };
+		599423C912897A3D0026696E /* WebPortalPages.h in Headers */ = {isa = PBXBuildFile; fileRef = 599423C712897A3D0026696E /* WebPortalPages.h */; };
+		599423CA12897A3D0026696E /* WebPortalPages.mm in Sources */ = {isa = PBXBuildFile; fileRef = 599423C812897A3D0026696E /* WebPortalPages.mm */; };
 		5997895D11B7B3E9002DB107 /* Anonymization.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997894D11B7B3E9002DB107 /* Anonymization.h */; };
 		5997895E11B7B3E9002DB107 /* Anonymization.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997894E11B7B3E9002DB107 /* Anonymization.mm */; };
 		5997895F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997894F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h */; };
@@ -369,16 +387,12 @@
 		8417221A10D8DB93001A833F /* basicHTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417221810D8DB93001A833F /* basicHTTPServer.m */; };
 		8417225410D8F01C001A833F /* ThreadPoolServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8417225010D8F01C001A833F /* ThreadPoolServer.h */; };
 		8417225510D8F01C001A833F /* ThreadPoolServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417225110D8F01C001A833F /* ThreadPoolServer.m */; };
-		8417228A10D9043B001A833F /* OsiriXHTTPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 8417228810D9043B001A833F /* OsiriXHTTPConnection.h */; };
-		8417228B10D9043B001A833F /* OsiriXHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417228910D9043B001A833F /* OsiriXHTTPConnection.m */; };
 		841722B010D90595001A833F /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 841722AE10D90595001A833F /* DDKeychain.h */; };
 		841722B110D90595001A833F /* DDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 841722AF10D90595001A833F /* DDKeychain.m */; };
 		843F847B12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
 		843F847C12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
-		845344C6113FBEAE0020A2B7 /* user.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 8474A3F710DBE7F300D192D0 /* user.xcdatamodel */; };
 		8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459A7250F5D63EF00146B28 /* VREmpty.xib */; };
-		8474A3F810DBE7F300D192D0 /* user.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 8474A3F710DBE7F300D192D0 /* user.xcdatamodel */; };
 		847BE3A4128BF0E100A87E98 /* bio.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE378128BF0E100A87E98 /* bio.c */; };
 		847BE3A5128BF0E100A87E98 /* bio.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE379128BF0E100A87E98 /* bio.h */; };
 		847BE3A6128BF0E100A87E98 /* cio.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE37A128BF0E100A87E98 /* cio.c */; };
@@ -7857,8 +7871,6 @@
 		CEF64DD10B44266700C1C902 /* Forward.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18A0B358C8F00666FA9 /* Forward.tif */; };
 		CEF64DD20B44266700C1C902 /* Back.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB1890B358C8F00666FA9 /* Back.tif */; };
 		CEF6A444080324E0001A8BF7 /* 3DCut.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEF6A441080324E0001A8BF7 /* 3DCut.tif */; };
-		CEF7BCB910DCBE0000B009D1 /* UserTable.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF7BCB710DCBE0000B009D1 /* UserTable.h */; };
-		CEF7BCBA10DCBE0000B009D1 /* UserTable.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7BCB810DCBE0000B009D1 /* UserTable.m */; };
 		CEF9E7CB0811B64D00412C8A /* Schedulable.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF9E7CA0811B64D00412C8A /* Schedulable.h */; };
 		CEF9E7D10811B66500412C8A /* Scheduler.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF9E7D00811B66500412C8A /* Scheduler.h */; };
 		CEF9E7D70811B67D00412C8A /* Scheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9E7D60811B67D00412C8A /* Scheduler.m */; };
@@ -8306,6 +8318,8 @@
 		5926824111CF62DA00CFA81F /* ThreadModalForWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThreadModalForWindowController.mm; sourceTree = "<group>"; };
 		5926824211CF62DA00CFA81F /* ThreadsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadsManager.h; sourceTree = "<group>"; };
 		5926824311CF62DA00CFA81F /* ThreadsManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThreadsManager.mm; sourceTree = "<group>"; };
+		592BA51B12966ABD00179C27 /* NSError+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+OsiriX.h"; sourceTree = "<group>"; };
+		592BA51C12966ABD00179C27 /* NSError+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSError+OsiriX.mm"; sourceTree = "<group>"; };
 		592CFEF01212F84F00176E39 /* N2Connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Connection.h; path = nitrogen/Sources/N2Connection.h; sourceTree = "<group>"; };
 		592CFEF11212F84F00176E39 /* N2Connection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2Connection.mm; path = nitrogen/Sources/N2Connection.mm; sourceTree = "<group>"; };
 		592CFEF21212F84F00176E39 /* N2ConnectionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ConnectionListener.h; path = nitrogen/Sources/N2ConnectionListener.h; sourceTree = "<group>"; };
@@ -8326,10 +8340,25 @@
 		592CFF071212F84F00176E39 /* N2SOAPWebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2SOAPWebServiceClient.mm; path = nitrogen/Sources/N2SOAPWebServiceClient.mm; sourceTree = "<group>"; };
 		594830CB118B0AC100D7E606 /* N2ImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ImageView.h; path = nitrogen/Sources/N2ImageView.h; sourceTree = "<group>"; };
 		594830CC118B0AC100D7E606 /* N2ImageView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageView.mm; path = nitrogen/Sources/N2ImageView.mm; sourceTree = "<group>"; };
+		59526E8312816FDC0016F6C0 /* WebPortalSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalSession.h; sourceTree = "<group>"; };
+		59526E8412816FDC0016F6C0 /* WebPortalSession.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalSession.mm; sourceTree = "<group>"; };
+		59526E8A128172C80016F6C0 /* WebPortalData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalData.h; sourceTree = "<group>"; };
+		59526E8B128172C80016F6C0 /* WebPortalData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalData.mm; sourceTree = "<group>"; };
+		59526E9C1281896F0016F6C0 /* NSMutableString+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSMutableString+N2.h"; path = "nitrogen/Sources/NSMutableString+N2.h"; sourceTree = "<group>"; };
+		59526E9D1281896F0016F6C0 /* NSMutableString+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSMutableString+N2.mm"; path = "nitrogen/Sources/NSMutableString+N2.mm"; sourceTree = "<group>"; };
+		59526F311281ACA90016F6C0 /* WebPortalDB 1.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 1.xcdatamodel"; sourceTree = "<group>"; };
+		59526F321281ACA90016F6C0 /* WebPortalDB 2.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 2.xcdatamodel"; sourceTree = "<group>"; };
+		59526F3A1281ADC10016F6C0 /* WebPortalUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalUser.h; sourceTree = "<group>"; };
+		59526F3B1281ADC10016F6C0 /* WebPortalUser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalUser.mm; sourceTree = "<group>"; };
+		59526F6A1281AFCA0016F6C0 /* WebPortalConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalConnection.h; sourceTree = "<group>"; };
+		59526F6B1281AFCA0016F6C0 /* WebPortalConnection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalConnection.mm; sourceTree = "<group>"; };
+		59526F7C1281B1AA0016F6C0 /* WebPortalDB 1-2.xcmappingmodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcmappingmodel; name = "WebPortalDB 1-2.xcmappingmodel"; path = "Binaries/WebPortalDB Mapping Models/WebPortalDB 1-2.xcmappingmodel"; sourceTree = "<group>"; };
 		596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPreferencePane+OsiriX.h"; sourceTree = "<group>"; };
 		596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSPreferencePane+OsiriX.mm"; sourceTree = "<group>"; };
 		596EB3F4118ABBB000880192 /* NSWindow+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSWindow+N2.h"; path = "nitrogen/Sources/NSWindow+N2.h"; sourceTree = "<group>"; };
 		596EB3F5118ABBB000880192 /* NSWindow+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSWindow+N2.mm"; path = "nitrogen/Sources/NSWindow+N2.mm"; sourceTree = "<group>"; };
+		599423C712897A3D0026696E /* WebPortalPages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalPages.h; sourceTree = "<group>"; };
+		599423C812897A3D0026696E /* WebPortalPages.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalPages.mm; sourceTree = "<group>"; };
 		5997894D11B7B3E9002DB107 /* Anonymization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Anonymization.h; sourceTree = "<group>"; };
 		5997894E11B7B3E9002DB107 /* Anonymization.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Anonymization.mm; sourceTree = "<group>"; };
 		5997894F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizationCustomTagPanelController.h; sourceTree = "<group>"; };
@@ -8516,15 +8545,12 @@
 		8417221810D8DB93001A833F /* basicHTTPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = basicHTTPServer.m; sourceTree = "<group>"; };
 		8417225010D8F01C001A833F /* ThreadPoolServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreadPoolServer.h; path = cocoahttpserver/ThreadPoolServer.h; sourceTree = "<group>"; };
 		8417225110D8F01C001A833F /* ThreadPoolServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadPoolServer.m; path = cocoahttpserver/ThreadPoolServer.m; sourceTree = "<group>"; };
-		8417228810D9043B001A833F /* OsiriXHTTPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OsiriXHTTPConnection.h; sourceTree = "<group>"; };
-		8417228910D9043B001A833F /* OsiriXHTTPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OsiriXHTTPConnection.m; sourceTree = "<group>"; };
 		841722AE10D90595001A833F /* DDKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDKeychain.h; path = cocoahttpserver/DDKeychain.h; sourceTree = "<group>"; };
 		841722AF10D90595001A833F /* DDKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDKeychain.m; path = cocoahttpserver/DDKeychain.m; sourceTree = "<group>"; };
 		843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDicomPrintPref.h; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrintPref.h"; sourceTree = SOURCE_ROOT; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		844719AF0FD8EF50003BFDF8 /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8459A7260F5D63EF00146B28 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VREmpty.xib; sourceTree = "<group>"; };
-		8474A3F710DBE7F300D192D0 /* user.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = user.xcdatamodel; sourceTree = "<group>"; };
 		847BE378128BF0E100A87E98 /* bio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bio.c; path = Binaries/openjpeg/bio.c; sourceTree = "<group>"; };
 		847BE379128BF0E100A87E98 /* bio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bio.h; path = Binaries/openjpeg/bio.h; sourceTree = "<group>"; };
 		847BE37A128BF0E100A87E98 /* cio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cio.c; path = Binaries/openjpeg/cio.c; sourceTree = "<group>"; };
@@ -12037,8 +12063,6 @@
 		CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		CEF30FD00945DEA300824A2B /* windows.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = windows.tif; sourceTree = "<group>"; };
 		CEF6A441080324E0001A8BF7 /* 3DCut.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DCut.tif; sourceTree = "<group>"; };
-		CEF7BCB710DCBE0000B009D1 /* UserTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserTable.h; sourceTree = "<group>"; };
-		CEF7BCB810DCBE0000B009D1 /* UserTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserTable.m; sourceTree = "<group>"; };
 		CEF9E7CA0811B64D00412C8A /* Schedulable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Schedulable.h; sourceTree = "<group>"; };
 		CEF9E7D00811B66500412C8A /* Scheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scheduler.h; sourceTree = "<group>"; };
 		CEF9E7D60811B67D00412C8A /* Scheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scheduler.m; sourceTree = "<group>"; };
@@ -12575,8 +12599,8 @@
 		324AD88708B23B0500101139 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				CE51BAF411E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld */,
-				8474A3F710DBE7F300D192D0 /* user.xcdatamodel */,
+				59E3E445127EE6150077B88A /* Studies */,
+				59E3E446127EE6260077B88A /* Web Portal */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -12701,6 +12725,32 @@
 			name = Client;
 			sourceTree = "<group>";
 		};
+		59526F3E1281ADF90016F6C0 /* Web Portal */ = {
+			isa = PBXGroup;
+			children = (
+				59526F3A1281ADC10016F6C0 /* WebPortalUser.h */,
+				59526F3B1281ADC10016F6C0 /* WebPortalUser.mm */,
+			);
+			name = "Web Portal";
+			sourceTree = "<group>";
+		};
+		59526F3F1281AE0B0016F6C0 /* Dicom */ = {
+			isa = PBXGroup;
+			children = (
+				CEE1922C08636FA100DED1F0 /* DicomImage.m */,
+				CEE1922D08636FA100DED1F0 /* DicomImage.h */,
+				CE9DD280086B35050058DD2A /* DicomStudy.m */,
+				CE9DD281086B35050058DD2A /* DicomStudy.h */,
+				CE9DD283086B35050058DD2A /* DicomSeries.m */,
+				CE9DD282086B35050058DD2A /* DicomSeries.h */,
+				59E379D7116B295B00E84FE3 /* DicomAlbum.m */,
+				59E379D6116B295B00E84FE3 /* DicomAlbum.h */,
+				BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */,
+				BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */,
+			);
+			name = Dicom;
+			sourceTree = "<group>";
+		};
 		5997894211B7B3C6002DB107 /* Anonymization */ = {
 			isa = PBXGroup;
 			children = (
@@ -12747,6 +12797,23 @@
 				596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */,
 			);
 			name = Preferences;
+			sourceTree = "<group>";
+		};
+		59E3E445127EE6150077B88A /* Studies */ = {
+			isa = PBXGroup;
+			children = (
+				CE51BAF411E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld */,
+			);
+			name = Studies;
+			sourceTree = "<group>";
+		};
+		59E3E446127EE6260077B88A /* Web Portal */ = {
+			isa = PBXGroup;
+			children = (
+				59526F301281ACA90016F6C0 /* WebPortalDB.xcdatamodeld */,
+				59526F7C1281B1AA0016F6C0 /* WebPortalDB 1-2.xcmappingmodel */,
+			);
+			name = "Web Portal";
 			sourceTree = "<group>";
 		};
 		59FB64331230EE2F00EBA136 /* Ming */ = {
@@ -13245,6 +13312,8 @@
 				AB10FAFF1129338A009EB238 /* NSTextView+N2.mm */,
 				AB10FB001129338A009EB238 /* NSString+N2.h */,
 				AB10FB011129338A009EB238 /* NSString+N2.mm */,
+				59526E9C1281896F0016F6C0 /* NSMutableString+N2.h */,
+				59526E9D1281896F0016F6C0 /* NSMutableString+N2.mm */,
 				AB10FB021129338A009EB238 /* NSImage+N2.h */,
 				AB10FB031129338A009EB238 /* NSImage+N2.mm */,
 				AB10FB041129338A009EB238 /* NSBitmapImageRep+N2.h */,
@@ -13474,6 +13543,8 @@
 			children = (
 				59BDEF3F117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h */,
 				59BDEF40117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm */,
+				592BA51B12966ABD00179C27 /* NSError+OsiriX.h */,
+				592BA51C12966ABD00179C27 /* NSError+OsiriX.mm */,
 				CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */,
 				A98FFBE30CA92B58000291C8 /* altivecFunctions.c */,
 				A98FFBE40CA92B58000291C8 /* altivecFunctions.h */,
@@ -16922,10 +16993,16 @@
 				CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */,
 				CE882AC50C889B6500D4F982 /* XMLRPCMethods.m */,
 				8417219210D8D707001A833F /* HTTP-HTTPS Server */,
-				8417228810D9043B001A833F /* OsiriXHTTPConnection.h */,
-				8417228910D9043B001A833F /* OsiriXHTTPConnection.m */,
 				CE2119C710E4C25300F9C50C /* CSMailMailClient.h */,
 				CE2119C810E4C25300F9C50C /* CSMailMailClient.m */,
+				59526F6A1281AFCA0016F6C0 /* WebPortalConnection.h */,
+				59526F6B1281AFCA0016F6C0 /* WebPortalConnection.mm */,
+				59526E8312816FDC0016F6C0 /* WebPortalSession.h */,
+				59526E8412816FDC0016F6C0 /* WebPortalSession.mm */,
+				59526E8A128172C80016F6C0 /* WebPortalData.h */,
+				59526E8B128172C80016F6C0 /* WebPortalData.mm */,
+				599423C712897A3D0026696E /* WebPortalPages.h */,
+				599423C812897A3D0026696E /* WebPortalPages.mm */,
 			);
 			name = "Web Server";
 			sourceTree = "<group>";
@@ -16933,18 +17010,8 @@
 		CE9DD29A086B35740058DD2A /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				CEF7BCB710DCBE0000B009D1 /* UserTable.h */,
-				CEF7BCB810DCBE0000B009D1 /* UserTable.m */,
-				CEE1922C08636FA100DED1F0 /* DicomImage.m */,
-				CEE1922D08636FA100DED1F0 /* DicomImage.h */,
-				CE9DD280086B35050058DD2A /* DicomStudy.m */,
-				CE9DD281086B35050058DD2A /* DicomStudy.h */,
-				CE9DD283086B35050058DD2A /* DicomSeries.m */,
-				CE9DD282086B35050058DD2A /* DicomSeries.h */,
-				59E379D7116B295B00E84FE3 /* DicomAlbum.m */,
-				59E379D6116B295B00E84FE3 /* DicomAlbum.h */,
-				BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */,
-				BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */,
+				59526F3F1281AE0B0016F6C0 /* Dicom */,
+				59526F3E1281ADF90016F6C0 /* Web Portal */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -19422,11 +19489,9 @@
 				8417221310D8DB72001A833F /* TCPServer.h in Headers */,
 				8417221910D8DB93001A833F /* basicHTTPServer.h in Headers */,
 				8417225410D8F01C001A833F /* ThreadPoolServer.h in Headers */,
-				8417228A10D9043B001A833F /* OsiriXHTTPConnection.h in Headers */,
 				841722B010D90595001A833F /* DDKeychain.h in Headers */,
 				AB91224E10DA7199006E0AAB /* BonjourPublisher.h in Headers */,
 				A9FE55F410DB7DCF000D0395 /* OpenGLScreenReader.h in Headers */,
-				CEF7BCB910DCBE0000B009D1 /* UserTable.h in Headers */,
 				CEDDD87F10DCC93500FFE72B /* PSGenerator.h in Headers */,
 				CE2119C910E4C25300F9C50C /* CSMailMailClient.h in Headers */,
 				A9C5496510FF2C9F0026EA70 /* DICOMTLS.h in Headers */,
@@ -19538,10 +19603,16 @@
 				592CFF161212F84F00176E39 /* N2WSDL.h in Headers */,
 				592CFF181212F84F00176E39 /* N2SOAPWebServiceClient.h in Headers */,
 				843F847B12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */,
+				59526E8512816FDC0016F6C0 /* WebPortalSession.h in Headers */,
+				59526E8C128172C80016F6C0 /* WebPortalData.h in Headers */,
+				59526E9E1281896F0016F6C0 /* NSMutableString+N2.h in Headers */,
+				59526F3C1281ADC10016F6C0 /* WebPortalUser.h in Headers */,
+				59526F6C1281AFCA0016F6C0 /* WebPortalConnection.h in Headers */,
 				CEFFFE261286895300D69BB8 /* djdec2k.h in Headers */,
 				CEFFFE3B12868F5400D69BB8 /* djdijp2k.h in Headers */,
 				CEFF00FF1286F7A700D69BB8 /* djenc2k.h in Headers */,
 				CEFF01451286FB2000D69BB8 /* djeijg2k.h in Headers */,
+				599423C912897A3D0026696E /* WebPortalPages.h in Headers */,
 				847BE3A5128BF0E100A87E98 /* bio.h in Headers */,
 				847BE3A7128BF0E100A87E98 /* cio.h in Headers */,
 				847BE3A9128BF0E100A87E98 /* dwt.h in Headers */,
@@ -19566,6 +19637,7 @@
 				847BE3CB128BF0E200A87E98 /* t2.h in Headers */,
 				847BE3CD128BF0E200A87E98 /* tcd.h in Headers */,
 				847BE3CF128BF0E200A87E98 /* tgt.h in Headers */,
+				592BA51D12966ABD00179C27 /* NSError+OsiriX.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21791,6 +21863,7 @@
 				847BE3F7128BF0E200A87E98 /* t2.h in Headers */,
 				847BE3F9128BF0E200A87E98 /* tcd.h in Headers */,
 				847BE3FB128BF0E200A87E98 /* tgt.h in Headers */,
+				592BA51F12966ABD00179C27 /* NSError+OsiriX.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21979,7 +22052,6 @@
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -23010,7 +23082,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo WebServicesHTML.zip\nunzip -uo Weasis.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd \"$SRCROOT\"\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd \"$SRCROOT\"\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
+			shellScript = "\n\ncd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo WebServicesHTML.zip\nunzip -uo Weasis.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd \"$SRCROOT\"\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd \"$SRCROOT\"\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
 		59BDEC81117C9951007F1F2C /* Version */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -24092,11 +24164,8 @@
 				8417221410D8DB72001A833F /* TCPServer.m in Sources */,
 				8417221A10D8DB93001A833F /* basicHTTPServer.m in Sources */,
 				8417225510D8F01C001A833F /* ThreadPoolServer.m in Sources */,
-				8417228B10D9043B001A833F /* OsiriXHTTPConnection.m in Sources */,
 				841722B110D90595001A833F /* DDKeychain.m in Sources */,
 				A930149510DA63C200AF0051 /* OpenGLScreenReader.m in Sources */,
-				8474A3F810DBE7F300D192D0 /* user.xcdatamodel in Sources */,
-				CEF7BCBA10DCBE0000B009D1 /* UserTable.m in Sources */,
 				CEDDD88010DCC93500FFE72B /* PSGenerator.m in Sources */,
 				CE2119CA10E4C25300F9C50C /* CSMailMailClient.m in Sources */,
 				A9C5496610FF2C9F0026EA70 /* DICOMTLS.m in Sources */,
@@ -24207,10 +24276,18 @@
 				592CFF171212F84F00176E39 /* N2WSDL.mm in Sources */,
 				592CFF191212F84F00176E39 /* N2SOAPWebServiceClient.mm in Sources */,
 				CEED77D8123038F300258D00 /* PapyVars3.c in Sources */,
+				59526E8612816FDC0016F6C0 /* WebPortalSession.mm in Sources */,
+				59526E8D128172C80016F6C0 /* WebPortalData.mm in Sources */,
+				59526E9F1281896F0016F6C0 /* NSMutableString+N2.mm in Sources */,
+				59526F331281ACA90016F6C0 /* WebPortalDB.xcdatamodeld in Sources */,
+				59526F3D1281ADC10016F6C0 /* WebPortalUser.mm in Sources */,
+				59526F6D1281AFCA0016F6C0 /* WebPortalConnection.mm in Sources */,
+				59526F7D1281B1AA0016F6C0 /* WebPortalDB 1-2.xcmappingmodel in Sources */,
 				CEFFFE271286895300D69BB8 /* djdec2k.cc in Sources */,
 				CEFFFE3C12868F5400D69BB8 /* djdijp2k.cc in Sources */,
 				CEFF00FE1286F7A700D69BB8 /* djenc2k.cc in Sources */,
 				CEFF01461286FB2000D69BB8 /* djeijg2k.cc in Sources */,
+				599423CA12897A3D0026696E /* WebPortalPages.mm in Sources */,
 				847BE3A4128BF0E100A87E98 /* bio.c in Sources */,
 				847BE3A6128BF0E100A87E98 /* cio.c in Sources */,
 				847BE3A8128BF0E100A87E98 /* dwt.c in Sources */,
@@ -24230,6 +24307,7 @@
 				847BE3CA128BF0E200A87E98 /* t2.c in Sources */,
 				847BE3CC128BF0E200A87E98 /* tcd.c in Sources */,
 				847BE3CE128BF0E200A87E98 /* tgt.c in Sources */,
+				592BA51E12966ABD00179C27 /* NSError+OsiriX.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25162,7 +25240,6 @@
 				CEDDD88210DCC93500FFE72B /* PSGenerator.m in Sources */,
 				CE85FF5D10E6764100175CEB /* OpenGLScreenReader.m in Sources */,
 				CEE72C091101F14A00758DCA /* BrowserControllerDCMTKCategory.mm in Sources */,
-				845344C6113FBEAE0020A2B7 /* user.xcdatamodel in Sources */,
 				59E379D2116B294200E84FE3 /* NSImage+OsiriX.m in Sources */,
 				59E379DB116B295B00E84FE3 /* DicomAlbum.m in Sources */,
 				CE0E4F24117059E6007D7657 /* jaricom.c in Sources */,
@@ -25453,6 +25530,7 @@
 				847BE3F6128BF0E200A87E98 /* t2.c in Sources */,
 				847BE3F8128BF0E200A87E98 /* tcd.c in Sources */,
 				847BE3FA128BF0E200A87E98 /* tgt.c in Sources */,
+				592BA52012966ABD00179C27 /* NSError+OsiriX.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27554,6 +27632,17 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
+		59526F301281ACA90016F6C0 /* WebPortalDB.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				59526F311281ACA90016F6C0 /* WebPortalDB 1.xcdatamodel */,
+				59526F321281ACA90016F6C0 /* WebPortalDB 2.xcdatamodel */,
+			);
+			currentVersion = 59526F321281ACA90016F6C0 /* WebPortalDB 2.xcdatamodel */;
+			path = WebPortalDB.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
 		CE51BAF411E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (

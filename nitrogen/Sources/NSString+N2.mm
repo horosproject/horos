@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "NSString+N2.h"
+#import "NSMutableString+N2.h"
 #include <cmath>
 #include <sys/stat.h>
 
@@ -66,7 +67,7 @@
 	return [self substringWithRange:NSMakeRange(start, i-start+1)];
 }
 
--(NSString*)urlEncodedString {
+-(NSString*)urlEncodedString /* deprecated */ {
 	static const NSDictionary* chars = [[NSDictionary dictionaryWithObjectsAndKeys:
 											@"%3B", @";",
 											@"%2F", @"/",
@@ -98,16 +99,21 @@
 	static const NSDictionary* chars = [[NSDictionary dictionaryWithObjectsAndKeys:
 										 @"&lt;", @"<",
 										 @"&gt;", @">",
-										 @"&amp;", @"&",
+									/*	 @"&amp;", @"&",	*/
 										 @"&apos;", @"'",
 										 @"&quot;", @"\"",
 										 NULL] retain];
 	
 	NSMutableString* temp = [self mutableCopy];
+	// apmp first!!
+	if (!unescape)
+		[temp replaceOccurrencesOfString:@"&" withString:@"&amp;"];
+	else [temp replaceOccurrencesOfString:@"&amp;" withString:@"&"];
+	// other chars
 	for (NSString* k in chars)
 		if (!unescape)
-			[temp replaceOccurrencesOfString:k withString:[chars objectForKey:k] options:NSLiteralSearch range:temp.range];
-		else [temp replaceOccurrencesOfString:[chars objectForKey:k] withString:k options:NSLiteralSearch range:temp.range];
+			[temp replaceOccurrencesOfString:k withString:[chars objectForKey:k]];
+		else [temp replaceOccurrencesOfString:[chars objectForKey:k] withString:k];
 	
 	return [NSString stringWithString:temp];
 }

@@ -24,6 +24,8 @@
 -(NSImage*)shadowImage;
 -(NSImage*)imageWithHue:(CGFloat)hue;
 
+-(NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
+
 @end
 
 @interface N2Image : NSImage {

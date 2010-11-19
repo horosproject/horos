@@ -176,6 +176,7 @@
 }
 
 -(void)updateFormatsAreOk {
+	NSLog(@"updateFormatsAreOk");
 	BOOL ok = YES;
 	for (DCMAttributeTag* tag in tags) {
 		N2TextField* textField = [tagsView textFieldForObject:tag];
@@ -186,6 +187,7 @@
 }
 
 -(void)setFormatsAreOk:(BOOL)flag {
+	NSLog(@"setFormatsAreOk:%d",flag);
 	if (flag == formatsAreOk)
 		return;
 	formatsAreOk = flag;

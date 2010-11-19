@@ -1,0 +1,27 @@
+%INCLUDE:/head.pvt.html%
+
+<body>
+	%INCLUDE:/userbox.pvt.html%
+	
+	<div id="pageContent">
+		<h1 id="pageTitle">%X:PageTitle%</h1>
+
+		<div id="toolbar">
+			<a id="backButton" class="button" href="/main">Main</a>
+		</div>
+		
+		<div class="block">
+			<h2>Users</h2>
+			<ul>
+			%[FOREACH:Users:User%
+			<li><a href="/admin/user?name=%U:User.name%">→ %X:User.name%</a></li>
+			%]FOREACH:Users:User%
+			</ul>
+			<form method="GET" action="/admin/user"><button type="submit" name="action" value="new">Create New User</button></form>
+		</div>
+	</div>
+	
+	%INCLUDE:/footer.pvt.html%
+</body>
+
+</html>

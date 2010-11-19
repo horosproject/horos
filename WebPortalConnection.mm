@@ -12,7 +12,11 @@
  PURPOSE.
  =========================================================================*/
 
-#import "OsiriXHTTPConnection.h"
+#import "WebPortalConnection.h"
+#import "WebPortalSession.h"
+#import "WebPortalData.h"
+#import "WebPortalPages.h"
+
 #import "AsyncSocket.h"
 #import "DDKeychain.h"
 #import "BrowserController.h"
@@ -29,7 +33,7 @@
 #import "HTTPResponse.h"
 #import "HTTPAuthenticationRequest.h"
 #import "CSMailMailClient.h"
-#import "UserTable.h"
+#import "WebPortalUser.h"
 #import "DicomFile.h"
 #import "NSUserDefaultsController+OsiriX.h"
 #import "N2Debug.h"
@@ -39,6 +43,10 @@
 #import "NSString+N2.h"
 #import "DDData.h"
 #import "NSData+N2.h"
+#import "NSMutableString+N2.h"
+#import "NSImage+N2.h"
+#import "NSMutableDictionary+N2.h"
+#import "DicomAlbum.h"
 
 #import "JSON.h"
 
@@ -60,329 +68,73 @@ static NSMutableDictionary *thumbnailCache = nil;
 #define WADOCACHESIZE 2000
 #define THUMBNAILCACHE 20
 
-NSString* notNil( NSString *s)
-{
-	if( s == nil)
-		return @"";
-	else
-		return s;
+NSString* NotNil(NSString *s) {
+	return s? s : @"";
 }
 
-// make compiler aware of this method's existance
+// make compiler aware of these methods' existance
 @interface HTTPConnection ()
 -(BOOL)isAuthenticated;
 -(void)replyToHTTPRequest;
 @end
 
 
-@interface NSImage (ProportionalScaling)
-- (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
-@end
-
-@implementation NSImage (ProportionalScaling)
-
-- (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSImage* sourceImage = self;
-	NSImage* newImage = nil;
-	
-	if( [sourceImage isValid])
-	{
-		NSSize imageSize = [sourceImage size];
-		float width  = imageSize.width;
-		float height = imageSize.height;
-		
-		float targetWidth  = targetSize.width;
-		float targetHeight = targetSize.height;
-		
-		float scaleFactor  = 0.0;
-		float scaledWidth  = targetWidth;
-		float scaledHeight = targetHeight;
-		
-		NSPoint thumbnailPoint = NSZeroPoint;
-		
-		if( NSEqualSizes( imageSize, targetSize) == NO)
-		{
-			float widthFactor  = targetWidth / width;
-			float heightFactor = targetHeight / height;
-			
-			if ( widthFactor < heightFactor )
-				scaleFactor = widthFactor;
-			else
-				scaleFactor = heightFactor;
-			
-			scaledWidth  = width  * scaleFactor;
-			scaledHeight = height * scaleFactor;
-			
-			if ( widthFactor < heightFactor )
-				thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
-			
-			else if ( widthFactor > heightFactor )
-				thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
-		}
-
-//		***** QuartzCore
-		
-//		if( thumbnailPoint.x < 1 && thumbnailPoint.y < 1)
-		{
-			NSSize size = [sourceImage size];
-			
-			[sourceImage lockFocus];
-			
-			NSBitmapImageRep* rep = [[[NSBitmapImageRep alloc] initWithFocusedViewRect: NSMakeRect(0, 0, size.width, size.height)] autorelease];
-			CIImage *bitmap = [[[CIImage alloc] initWithBitmapImageRep: rep] autorelease];
-			
-			[sourceImage unlockFocus];
-			
-			CIFilter *scaleTransformFilter = [CIFilter filterWithName:@"CILanczosScaleTransform"];
-			
-			[scaleTransformFilter setDefaults];
-			[scaleTransformFilter setValue: bitmap forKey:@"inputImage"];
-			[scaleTransformFilter setValue:[NSNumber numberWithFloat: scaleFactor] forKey:@"inputScale"];
-			
-			CIImage *outputCIImage = [scaleTransformFilter valueForKey:@"outputImage"];
-			
-			CGRect extent = [outputCIImage extent];
-			if (CGRectIsInfinite(extent))
-			{
-				NSLog( @"****** imageByScalingProportionallyToSize : OUTPUT IMAGE HAS INFINITE EXTENT");
-			}
-			else
-			{
-				newImage = [[[NSImage alloc] initWithSize: targetSize] autorelease];
-				
-				if( [newImage size].width > 0 && [newImage size].height > 0)
-				{
-					[newImage lockFocus];
-					
-					[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
-					
-					NSRect thumbnailRect;
-					thumbnailRect.origin = thumbnailPoint;
-					thumbnailRect.size.width = extent.size.width;
-					thumbnailRect.size.height = extent.size.height;
-					
-					[outputCIImage drawInRect: thumbnailRect
-								   fromRect: NSMakeRect( extent.origin.x , extent.origin.y, extent.size.width, extent.size.height)
-								  operation: NSCompositeCopy
-								   fraction: 1.0];
-					
-					[newImage unlockFocus];
-				}
-			}
-		}
-//		else
-//
-////		***** NSImage
-//		{
-//			newImage = [[[NSImage alloc] initWithSize: targetSize] autorelease];
-//			
-//			if( [newImage size].width > 0 && [newImage size].height > 0)
-//			{
-//				[newImage lockFocus];
-//				
-//				[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
-//				
-//				NSRect thumbnailRect;
-//				thumbnailRect.origin = thumbnailPoint;
-//				thumbnailRect.size.width = scaledWidth;
-//				thumbnailRect.size.height = scaledHeight;
-//				
-//				[sourceImage drawInRect: thumbnailRect
-//							   fromRect: NSZeroRect
-//							  operation: NSCompositeCopy
-//							   fraction: 1.0];
-//				
-//				[newImage unlockFocus];
-//			}
-//		}
-	}
-	
-	NSImage *returnImage = nil;
-	
-	if( newImage)
-		returnImage = [[NSImage alloc] initWithData: [newImage TIFFRepresentation]];
-	
-	[pool release];
-	
-	return [returnImage autorelease];
-}
-@end
-
-
 NSString* const SessionCookieName = @"SID";
 
-@interface OsiriXHTTPResponse : HTTPDataResponse {
+@interface WebPortalResponse : HTTPDataResponse {
 	NSMutableDictionary* httpHeaders;
+	NSUInteger httpStatusCode;
 }
 
+@property(retain) NSData* data;
+@property NSUInteger httpStatusCode;
 @property(readonly) NSMutableDictionary* httpHeaders;
 
--(id)initWithData:(NSData*)data mime:(NSString*)mime sessionId:(NSString*)sessionId;
+-(id)init;
+//-(id)initWithData:(NSData*)data mime:(NSString*)mime sessionId:(NSString*)sessionId __deprecated;
 
 @end
-@implementation OsiriXHTTPResponse
+@implementation WebPortalResponse
 
-@synthesize httpHeaders;
+@synthesize data, httpHeaders, httpStatusCode;
 
--(id)initWithData:(NSData*)idata {
-	self = [super initWithData:idata];
+-(id)init {
+	self = [super initWithData:NULL];
 	httpHeaders = [[NSMutableDictionary alloc] initWithCapacity:4];
 	return self;
 }
 
--(id)initWithData:(NSData*)idata mime:(NSString*)mime sessionId:(NSString*)sessionId {
-	self = [self initWithData:idata];
-	if (mime) [httpHeaders setObject:mime forKey:@"Content-Type"];
-	if (sessionId) [httpHeaders setObject:[NSString stringWithFormat:@"%@=%@", SessionCookieName, sessionId] forKey:@"Set-Cookie"];
+/*-(id)initWithData:(NSData*)idata mime:(NSString*)mime sessionId:(NSString*)sessionId {
+	self = [self init];
+	self.data = idata;
+	// if (mime) [httpHeaders setObject:mime forKey:@"Content-Type"];
+	if (sessionId) ;
 	return self;
-}
+}*/
 
 -(void)dealloc {
 	[httpHeaders release];
 	[super dealloc];
 }
 
+-(void)setSessionId:(NSString*)sessionId {
+	[httpHeaders setObject:[NSString stringWithFormat:@"%@=%@; path=/", SessionCookieName, sessionId] forKey:@"Set-Cookie"];
+}
+
+-(void)setDataWithString:(NSString*)str {
+	[self setData:[str dataUsingEncoding:NSUTF8StringEncoding]];
+}
+
 @end
 
 
-@implementation OsiriXHTTPSession
 
-static NSMutableArray* Sessions = NULL;
-static NSLock* SessionsArrayLock = NULL;
-static NSLock* SessionCreateLock = NULL;
+@implementation WebPortalConnection
 
-+(void)initialize {
-	Sessions = [[NSMutableArray alloc] initWithCapacity:64];
-	SessionsArrayLock = [[NSLock alloc] init];
-	SessionCreateLock = [[NSLock alloc] init];
-}
+@synthesize session, currentUser;
 
-@synthesize sid;
-
--(id)initWithId:(NSString*)isid {
-	self = [super init];
-	sid = [isid retain];
-	lock = [[NSLock alloc] init];
-	dict = [[NSMutableDictionary alloc] initWithCapacity:8];
-	return self;
-}
-
--(void)dealloc {
-	[dict release];
-	[sid release];
-	[lock release];
-	[super dealloc];
-}
-
-NSString* const SessionUsernameKey = @"Username"; // NSString
 NSString* const SessionChallengeKey = @"Challenge"; // NSString
 NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int)
-NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
-
-+(id)sessionForId:(NSString*)sid {
-	[SessionsArrayLock lock];
-	OsiriXHTTPSession* session = NULL;
-	
-	for (OsiriXHTTPSession* isession in Sessions)
-		if ([isession.sid isEqual:sid]) {
-			session = isession;
-			break;
-		}
-	
-	[SessionsArrayLock unlock];
-	return session;
-}
-
-+(id)sessionForUsername:(NSString*)username token:(NSString*)token {
-	[SessionsArrayLock lock];
-	OsiriXHTTPSession* session = NULL;
-	
-	for (OsiriXHTTPSession* isession in Sessions)
-		if ([[isession objectForKey:SessionUsernameKey] isEqual:username] && [isession consumeToken:token]) {
-			session = isession;
-			break;
-		}
-	
-	[SessionsArrayLock unlock];
-	return session;
-}
-
-+(id)create {
-	[SessionCreateLock lock];
-
-	NSString* sid;
-	long sidd;
-	do { // is this a dumb way to generate SIDs?
-		sidd = random();
-	} while ([self sessionForId: sid = [[[NSData dataWithBytes:&sidd length:sizeof(long)] md5Digest] hex]]);
-	
-	OsiriXHTTPSession* session = [[OsiriXHTTPSession alloc] initWithId:sid];
-	[SessionsArrayLock lock];
-	[Sessions addObject:session];
-	[SessionsArrayLock unlock];
-	[session release];
-	
-	[SessionCreateLock unlock];
-	return session;
-}
-
--(void)setObject:(id)o forKey:(NSString*)k {
-	[lock lock];
-	if (o) [dict setObject:o forKey:k];
-	else [dict removeObjectForKey:k];
-	[lock unlock];
-}
-
--(id)objectForKey:(NSString*)k {
-	[lock lock];
-	id value = [dict objectForKey:k];
-	[lock unlock];
-	return value;
-}
-
--(NSMutableDictionary*)tokensDictionary {
-	[lock lock];
-	NSMutableDictionary* tdict = [dict objectForKey:SessionTokensDictKey];
-	if (!tdict) [dict setObject: tdict = [NSMutableDictionary dictionary] forKey:SessionTokensDictKey];
-	[lock unlock];
-	return tdict;
-}
-
--(NSString*)createToken {
-	NSMutableDictionary* tokensDictionary = [self tokensDictionary];
-	[lock lock];
-	
-	NSString* token;
-	double tokend;
-	do { // is this a dumb way to generate tokens?
-		tokend = [NSDate timeIntervalSinceReferenceDate];
-	} while ([[tokensDictionary allKeys] containsObject: token = [[[NSData dataWithBytes:&tokend length:sizeof(double)] md5Digest] hex]]);
-	
-	[tokensDictionary setObject:[NSDate date] forKey:token];
-	
-	[lock unlock];
-	return token;
-}
-
--(BOOL)consumeToken:(NSString*)token {
-	NSMutableDictionary* tokensDictionary = [self tokensDictionary];
-	[lock lock];
-	
-	BOOL ok = [[tokensDictionary allKeys] containsObject:token];
-	if (ok) [tokensDictionary removeObjectForKey:token];
-	
-	[lock unlock];
-	return ok;
-}
-
-@end
-
-
-@implementation OsiriXHTTPConnection
-
-@synthesize session;
 
 +(BOOL)IsSecureServer {
 	return [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"];
@@ -399,12 +151,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	NSString* webServerAddress = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Host") autorelease];
 	if (webServerAddress)
 		webServerAddress = [[webServerAddress componentsSeparatedByString:@":"] objectAtIndex:0];
-	else webServerAddress = OsiriXHTTPConnection.WebServerAddress;
+	else webServerAddress = WebPortalConnection.WebServerAddress;
 	return webServerAddress;
 }
 
 +(NSString*)WebServerURLForAddress:(NSString*)webServerAddress {
-	NSString* http = OsiriXHTTPConnection.IsSecureServer ? @"https":@"http";
+	NSString* http = WebPortalConnection.IsSecureServer ? @"https":@"http";
 	int webPort = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"];
 	return [NSString stringWithFormat: @"%@://%@:%d", http, webServerAddress, webPort];
 }
@@ -414,7 +166,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 }
 
 -(NSString*)webServerURL {
-	return [OsiriXHTTPConnection WebServerURLForAddress:self.webServerAddress];
+	return [WebPortalConnection WebServerURLForAddress:self.webServerAddress];
 }
 
 +(NSData*)WebServicesHTMLData:(NSString*)file {
@@ -477,7 +229,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	for (NSDictionary *node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
 	{
-		NSString *dicomNodeAddress = notNil([node objectForKey:@"Address"]);
+		NSString *dicomNodeAddress = NotNil([node objectForKey:@"Address"]);
 		int dicomNodePort = [[node objectForKey:@"Port"] intValue];
 		
 		struct sockaddr_in service;
@@ -519,26 +271,33 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	return [n stringValue];
 }
 
++(NSString*)composePath:(NSString*)base with:(NSString*)rel {
+	NSURL* baseurl = [NSURL URLWithString: [base characterAtIndex:0] == '/' ? base : [NSString stringWithFormat:@"/%@", base] ];
+	NSURL* url = [NSURL URLWithString:rel relativeToURL:baseurl];
+	return [base characterAtIndex:0] == '/' ? url.path : [url.path substringFromIndex:1];
+}
+
 -(NSMutableString*)webServicesHTMLMutableString:(NSString*)file {
-	NSMutableString* html = [OsiriXHTTPConnection WebServicesHTMLMutableString:file];
+	NSMutableString* html = [WebPortalConnection WebServicesHTMLMutableString:file];
 	if (!html)
-		NSLog(@"********* html == nil : webServicesHTMLMutableString");
+		NSLog(@"********* html == nil : webServicesHTMLMutableString:%@", file);
 
 	NSRange range;
 	while ((range = [html rangeOfString:@"%INCLUDE:"]).length) {
 		NSRange rangeEnd = [html rangeOfString:@"%" options:NSLiteralSearch range:NSMakeRange(range.location+range.length, html.length-(range.location+range.length))];
 		NSString* replaceFilename = [html substringWithRange:NSMakeRange(range.location+range.length, rangeEnd.location-(range.location+range.length))];
-		NSString* replaceFilepath = [[file stringByDeletingLastPathComponent] stringByAppendingPathComponent:replaceFilename];
-		[html replaceCharactersInRange:NSMakeRange(range.location, rangeEnd.location+rangeEnd.length-range.location) withString:notNil([self webServicesHTMLMutableString:replaceFilepath])];
+		NSString* replaceFilepath = [WebPortalConnection composePath:file with:replaceFilename];
+		[html replaceCharactersInRange:NSMakeRange(range.location, rangeEnd.location+rangeEnd.length-range.location) withString:NotNil([self webServicesHTMLMutableString:replaceFilepath])];
 	}
 	
-	[self setBlock:@"userAccount" visible: currentUser? YES : NO forString:html];
-	[self setBlock:@"IfAuthenticationRequired" visible: [[NSUserDefaults standardUserDefaults] boolForKey:@"passwordWebServer"] && !currentUser forString:html];
+	[WebPortalData mutableString:html block:@"userAccount" setVisible: currentUser? YES : NO];
+	[WebPortalData mutableString:html block:@"IfAuthenticationRequired" setVisible: [[NSUserDefaults standardUserDefaults] boolForKey:@"passwordWebServer"] && !currentUser];
+	[WebPortalData mutableString:html block:@"IfUserIsAdmin" setVisible: currentUser.isAdmin? YES : NO];
 
 	if (currentUser) {			
-		[html replaceOccurrencesOfString:@"%UserNameLabel%" withString:notNil([currentUser valueForKey: @"name"]) options:NSLiteralSearch range:html.range];
-		[html replaceOccurrencesOfString:@"%UserEmailLabel%" withString:notNil([currentUser valueForKey: @"email"]) options:NSLiteralSearch range:html.range];
-		[html replaceOccurrencesOfString:@"%UserPhoneLabel%" withString:notNil([currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:html.range];
+		[html replaceOccurrencesOfString:@"%UserNameLabel%" withString:NotNil(currentUser.name)];
+		[html replaceOccurrencesOfString:@"%UserEmailLabel%" withString:NotNil(currentUser.email)];
+		[html replaceOccurrencesOfString:@"%UserPhoneLabel%" withString:NotNil(currentUser.phone)];
 		
 		if ((range = [html rangeOfString:@"%NewSessionToken%"]).length) {
 			NSString* token = [session createToken];
@@ -547,16 +306,16 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			} while ((range = [html rangeOfString:@"%NewSessionToken%"]).length);
 		}
 	}
-
+	
 	if ((range = [html rangeOfString:@"%NewChallenge%"]).length) {
 		double challenged = [NSDate timeIntervalSinceReferenceDate];
 		NSString* challenge = [[[NSData dataWithBytes:&challenged length:sizeof(double)] md5Digest] hex];
-		[html replaceOccurrencesOfString:@"%NewChallenge%" withString:notNil(challenge) options:NSLiteralSearch range:html.range];
+		[html replaceOccurrencesOfString:@"%NewChallenge%" withString:NotNil(challenge)];
 		[session setObject:challenge forKey:SessionChallengeKey];
 	}
 	
 	if ((range = [html rangeOfString:@"%DicomCStorePort%"]).length) { // only if necessary, so dicomCStorePortString is only generated for sessions that need it
-		[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString:self.dicomCStorePortString options:NSLiteralSearch range:html.range];
+		[html replaceOccurrencesOfString: @"%DicomCStorePort%" withString:self.dicomCStorePortString];
 	}
 	
 	return html;
@@ -564,20 +323,20 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 + (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message forUser: (NSString*) user ip: (NSString*) ip
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"logWebServer"] == NO) return;
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"logWebServer"] == NO) return;
 	
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-	if( context == nil)
+	if (context == nil)
 		return;
 	
 	[context lock];
 	
 	@try
 	{
-		if( user)
+		if (user)
 			message = [user stringByAppendingFormat:@" : %@", message];
 	
-		if( ip == nil)
+		if (ip == nil)
 			ip = [[AppController sharedAppController] privateIP];
 	
 		// Search for same log entry during last 5 min
@@ -597,7 +356,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
 		
-		if( [logs count] == 0)
+		if ([logs count] == 0)
 		{
 			NSManagedObject *logEntry = nil;
 			
@@ -606,15 +365,15 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			[logEntry setValue: [NSDate date] forKey: @"endTime"];
 			[logEntry setValue: @"Web" forKey: @"type"];
 			
-			if( study)
+			if (study)
 				[logEntry setValue: [study valueForKey: @"name"] forKey: @"patientName"];
 			
-			if( study)
+			if (study)
 				[logEntry setValue: [study valueForKey: @"studyName"] forKey: @"studyName"];
 			
 			[logEntry setValue: message forKey: @"message"];
 			
-			if( ip)
+			if (ip)
 				[logEntry setValue: ip forKey: @"originName"];
 		}
 		else
@@ -630,7 +389,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 - (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message
 {
-	[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: message forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
+	[WebPortalConnection updateLogEntryForStudy: study withMessage: message forUser:currentUser.name ip: [asyncSocket connectedHost]];
 }
 
 +(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate message:(NSString*)message replyTo:(NSString*)replyto customText:(NSString*)customText webServerAddress:(NSString*)webServerAddress
@@ -640,55 +399,54 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	NSString* webServerURL = [self WebServerURLForAddress:webServerAddress];
 	
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
-	
-	if( fromEmailAddress == nil)
+	if (fromEmailAddress == nil)
 		fromEmailAddress = @"";
 	
-	for( NSManagedObject *user in users)
+	for ( NSManagedObject *user in users)
 	{
 		NSMutableAttributedString *emailMessage = nil;
 		
-		if( message == nil)
-			emailMessage = [[[NSMutableAttributedString alloc] initWithData:[OsiriXHTTPConnection WebServicesHTMLData:@"emailTemplate.txt"] options:NULL documentAttributes:nil error:NULL] autorelease];
+		if (message == nil)
+			emailMessage = [[[NSMutableAttributedString alloc] initWithData:[WebPortalConnection WebServicesHTMLData:@"emailTemplate.txt"] options:NULL documentAttributes:nil error:NULL] autorelease];
 		else
 			emailMessage = [[[NSMutableAttributedString alloc] initWithString: message] autorelease];
 		
-		if( emailMessage)
+		if (emailMessage)
 		{
-			if( customText == nil) customText = @"";
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%customText%" withString: notNil( [customText stringByAppendingString:@"\r\r"]) options: NSLiteralSearch range:emailMessage.range];
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString: notNil( [user valueForKey: @"name"]) options: NSLiteralSearch range:emailMessage.range];
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString:webServerURL options: NSLiteralSearch range:emailMessage.range];
+			if (customText == nil) customText = @"";
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%customText%" withString:NotNil([customText stringByAppendingString:@"\r\r"])];
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString:NotNil([user valueForKey: @"name"])];
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString:webServerURL];
 			
 			NSMutableString *urls = [NSMutableString string];
 			
-			if( [filteredStudies count] > 1 && predicate != nil)
+			if ([filteredStudies count] > 1 && predicate != nil)
 			{
 				[urls appendString: NSLocalizedString( @"To view this entire list, including patients names:\r", nil)]; 
 				[urls appendFormat: @"%@ : %@/studyList?%@\r\r\r\r", NSLocalizedString( @"Click here", nil), webServerURL, predicate]; 
 			}
 			
-			for( NSManagedObject *s in filteredStudies)
+			for ( NSManagedObject *s in filteredStudies)
 			{
 				[urls appendFormat: @"%@ - %@ (%@)\r", [s valueForKey: @"modality"], [s valueForKey: @"studyName"], [BrowserController DateTimeFormat: [s valueForKey: @"date"]]]; 
 				[urls appendFormat: @"%@ : %@/study?id=%@&browse=all\r\r", NSLocalizedString( @"Click here", nil), webServerURL, [s valueForKey: @"studyInstanceUID"]]; 
 			}
 			
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString: notNil( urls) options: NSLiteralSearch range:emailMessage.range];
+			[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString:NotNil(urls)];
 			
 			NSString *emailAddress = [user valueForKey: @"email"];
 			
 			NSString *emailSubject = nil;
-			if( replyto)
+			if (replyto)
 				emailSubject = [NSString stringWithFormat: NSLocalizedString( @"A new radiology exam is available for you, from %@", nil), replyto];
 			else
 				emailSubject = NSLocalizedString( @"A new radiology exam is available for you !", nil);
 			
 			[[CSMailMailClient mailClient] deliverMessage: emailMessage headers: [NSDictionary dictionaryWithObjectsAndKeys: emailAddress, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", replyto, @"ReplyTo", nil]];
 			
-			for( NSManagedObject *s in filteredStudies)
+			for ( NSManagedObject *s in filteredStudies)
 			{
-				[OsiriXHTTPConnection updateLogEntryForStudy: s withMessage: @"notification email" forUser: [user valueForKey: @"name"] ip:webServerAddress];
+				[WebPortalConnection updateLogEntryForStudy: s withMessage: @"notification email" forUser: [user valueForKey: @"name"] ip:webServerAddress];
 			}
 		}
 		else NSLog( @"********* warning : CANNOT send notifications emails, because emailTemplate.txt == nil");
@@ -703,7 +461,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 + (void) emailNotifications
 {
-	if( [NSThread isMainThread] == NO)
+	if ([NSThread isMainThread] == NO)
 	{
 		NSLog( @"********* applescript needs to be in the main thread");
 		return;
@@ -714,13 +472,13 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	NSDate *lastCheckDate = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]];
 	NSString *newCheckString = [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]];
 	
-	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"lastNotificationsDate"] == nil)
+	if ([[NSUserDefaults standardUserDefaults] objectForKey: @"lastNotificationsDate"] == nil)
 	{
 		[[NSUserDefaults standardUserDefaults] setValue: [NSString stringWithFormat: @"%lf", [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastNotificationsDate"];
 		return;
 	}
 	
-	if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+	if ([[[BrowserController currentBrowser] managedObjectContext] tryLock])
 	{
 		[[[BrowserController currentBrowser] userManagedObjectContext] lock];
 		
@@ -739,20 +497,20 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			error = nil;
 			NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
 			
-			for( NSManagedObject *user in users)
+			for ( NSManagedObject *user in users)
 			{
-				if( [[user valueForKey: @"autoDelete"] boolValue] == YES && [user valueForKey: @"deletionDate"] && [[user valueForKey: @"deletionDate"] timeIntervalSinceDate: [NSDate date]] < 0)
+				if ([[user valueForKey: @"autoDelete"] boolValue] == YES && [user valueForKey: @"deletionDate"] && [[user valueForKey: @"deletionDate"] timeIntervalSinceDate: [NSDate date]] < 0)
 				{
 					NSLog( @"----- Temporary User reached the EOL (end-of-life) : %@", [user valueForKey: @"name"]);
 					
-					[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"temporary user deleted" forUser: [user valueForKey: @"name"] ip: [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"]];
+					[WebPortalConnection updateLogEntryForStudy: nil withMessage: @"temporary user deleted" forUser: [user valueForKey: @"name"] ip: [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"]];
 					
 					toBeSaved = YES;
 					[[[BrowserController currentBrowser] userManagedObjectContext] deleteObject: user];
 				}
 			}
 			
-			if( toBeSaved)
+			if (toBeSaved)
 				[[[BrowserController currentBrowser] userManagedObjectContext] save: nil];
 		}
 		@catch (NSException *e)
@@ -762,7 +520,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		
 		// CHECK dateAdded
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"notificationsEmails"] == YES)
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"notificationsEmails"] == YES)
 		{
 			@try
 			{
@@ -778,7 +536,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				error = nil;
 				NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
 				
-				if( [studies count] > 0)
+				if ([studies count] > 0)
 				{
 					// Find all users
 					error = nil;
@@ -789,16 +547,16 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					error = nil;
 					NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
 					
-					for( NSManagedObject *user in users)
+					for ( NSManagedObject *user in users)
 					{
-						if( [[user valueForKey: @"emailNotification"] boolValue] == YES && [(NSString*) [user valueForKey: @"email"] length] > 2)
+						if ([[user valueForKey: @"emailNotification"] boolValue] == YES && [(NSString*) [user valueForKey: @"email"] length] > 2)
 						{
 							NSArray *filteredStudies = studies;
 							
 							@try
 							{
 								filteredStudies = [studies filteredArrayUsingPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [user valueForKey: @"studyPredicate"]]];
-								filteredStudies = [OsiriXHTTPConnection addSpecificStudiesToArray: filteredStudies forUser: user predicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]];
+								filteredStudies = [WebPortalConnection addSpecificStudiesToArray: filteredStudies forUser: user predicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]];
 								
 								filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
 								filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
@@ -808,9 +566,9 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 								NSLog( @"******* studyPredicate exception : %@ %@", e, user);
 							}
 							
-							if( [filteredStudies count] > 0)
+							if ([filteredStudies count] > 0)
 							{
-								[OsiriXHTTPConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] message: nil replyTo: nil customText: nil];
+								[WebPortalConnection sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] message: nil replyTo: nil customText: nil];
 							}
 						}
 					}
@@ -830,34 +588,34 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 - (BOOL) isPasswordProtected:(NSString *)path
 {
-	if( [path hasPrefix: @"/wado"])
+	if ([path hasPrefix: @"/wado"])
 		return NO;
 		
-	if( [path hasPrefix: @"/images/"])
+	if ([path hasPrefix: @"/images/"])
 		return NO;
 	
-	if( [path isEqualToString: @"/"])
+	if ([path isEqualToString: @"/"])
 		return NO;
 	
-	if( [path isEqualToString: @"/style.css"])
+	if ([path isEqualToString: @"/style.css"])
 		return NO;
 	
-	if( [path hasSuffix:@".js"])
+	if ([path hasSuffix:@".js"])
 		return NO;
 	
-	if( [path isEqualToString: @"/iPhoneStyle.css"])
+	if ([path isEqualToString: @"/iPhoneStyle.css"])
 		return NO;
 	
-	if( [path hasPrefix: @"/password_forgotten"])
+	if ([path hasPrefix: @"/password_forgotten"])
 		return NO;
 	
-	if( [path hasPrefix: @"/index"])
+	if ([path hasPrefix: @"/index"])
 		return NO;
 	
-	if( [path hasPrefix:@"/weasis/"])
+	if ([path hasPrefix:@"/weasis/"])
 		return NO;
 	
-	if( [path isEqualToString: @"/favicon.ico"])
+	if ([path isEqualToString: @"/favicon.ico"])
 		return NO;
 
 	return [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"];
@@ -869,10 +627,9 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 - (NSString *) passwordForUser:(NSString *)username
 {
-	[currentUser release];
-	currentUser = nil;
+	self.currentUser = NULL;
 	
-	if( [username length] >= 2)
+	if ([username length] >= 2)
 	{
 		NSArray	*users = nil;
 		
@@ -887,28 +644,28 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			NSError *error = nil;
 			users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: r error: &error];
 		}
-		@catch ( NSException *e)
+		@catch (NSException *e)
 		{
 			NSLog( @"******* passwordForUser exception: %@", e);
 		}
 		
 		[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
 		
-		if( [users count] == 0)
+		if ([users count] == 0)
 		{
 			[self updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"Unknown user: %@", username]];
 			return nil;
 		}
-		if( [users count] > 1)
+		if ([users count] > 1)
 		{
 			NSLog( @"******** WARNING multiple users with identical user name : %@", username);
 		}
 		
-		currentUser = [[users lastObject] retain];
+		self.currentUser = users.lastObject;
 	}
 	else return nil;
 	
-	return [currentUser valueForKey: @"password"];
+	return currentUser.password;
 }
 
 /**
@@ -917,7 +674,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 - (BOOL)isSecureServer
 {
 	// Create an HTTPS server (all connections will be secured via SSL/TLS)
-	return [OsiriXHTTPConnection IsSecureServer];
+	return [WebPortalConnection IsSecureServer];
 }
 
 /**
@@ -930,7 +687,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 {
 //	NSArray *result = [DDKeychain SSLIdentityAndCertificates];
 	id identity = (id)[DDKeychain KeychainAccessPreferredIdentityForName:@"com.osirixviewer.osirixwebserver" keyUse:CSSM_KEYUSE_ANY];
-	if( identity == nil)
+	if (identity == nil)
 	{
 		[DDKeychain createNewIdentity];
 		identity = (id)[DDKeychain KeychainAccessPreferredIdentityForName:@"com.osirixviewer.osirixwebserver" keyUse:CSSM_KEYUSE_ANY];
@@ -954,7 +711,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	[selectedDICOMNode release];
 	[selectedImages release];
-	[currentUser release];
+	self.currentUser = NULL;
 	
 	[multipartData release];
 	[postBoundary release];
@@ -972,36 +729,16 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	return [start timeIntervalSinceReferenceDate];
 }
 
--(NSMutableString*)setBlock:(NSString*)b visible:(BOOL)visible forString:(NSMutableString*)s
-{
-	NSString* begin = [NSString stringWithFormat: @"%%%@%%", b];
-	NSString* end = [NSString stringWithFormat: @"%%/%@%%", b];
-	
-	if (!visible)
-		while (true) {
-			NSRange range1 = [s rangeOfString:begin];
-			if (!range1.length) break;
-			NSRange range2 = [s rangeOfString:end options:NSLiteralSearch range:s.range];
-			if (!range2.length) break;
-			[s replaceCharactersInRange:NSMakeRange(range1.location, range2.location+range2.length-range1.location) withString:@""];
-		}
-	
-	[s replaceOccurrencesOfString:begin withString:@"" options:NSLiteralSearch range:s.range];
-	[s replaceOccurrencesOfString:end withString:@"" options:NSLiteralSearch range:s.range];
-	
-	return s;
-}
-
 - (NSMutableString*)htmlStudy:(DicomStudy*)study parameters:(NSDictionary*)parameters settings: (NSDictionary*) settings;
 {
 	BOOL dicomSend = NO;
 	BOOL shareSend = NO;
 	BOOL weasis = NO;
 	
-	if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue])
+	if (currentUser == nil || currentUser.sendDICOMtoSelfIP.boolValue)
 		dicomSend = YES;
 		
-	if( currentUser && [[currentUser valueForKey: @"shareStudyWithUser"] boolValue])
+	if (currentUser && currentUser.shareStudyWithUser.boolValue)
 		shareSend = YES;
 	
 	if ([NSUserDefaultsController WebServerUsesWeasis])
@@ -1009,7 +746,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	NSArray *users = nil;
 	
-	if( shareSend)
+	if (shareSend)
 	{
 		// Find all users
 		NSError *error = nil;
@@ -1020,11 +757,11 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		error = nil;
 		users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error: &error];
 		
-		if( [users count] == 1) // only current user...
+		if ([users count] == 1) // only current user...
 			shareSend = NO;
 	}
 	
-	if( currentUser && [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES && [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == NO)
+	if (currentUser && [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES && [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == NO)
 	{
 		//if ([[session objectForKey:SessionDicomCStorePortKey] intValue] > 0 && [ipAddressString length] >= 7)
 		//{
@@ -1042,58 +779,58 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	{
 		NSMutableString* templateString = [self webServicesHTMLMutableString:@"study.html"];
 		
-		templateString = [self setBlock: @"SendingFunctions1" visible: dicomSend|weasis forString: templateString];
-		templateString = [self setBlock: @"SendingFunctions2" visible: dicomSend|weasis forString: templateString];
-		templateString = [self setBlock: @"SendingFunctions3" visible: dicomSend forString: templateString];
-		templateString = [self setBlock: @"SharingFunctions" visible: shareSend forString: templateString];
-		templateString = [self setBlock: @"ZIPFunctions" visible:((currentUser == nil || [[currentUser valueForKey: @"downloadZIP"] boolValue]) && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
-		templateString = [self setBlock: @"Weasis" visible: ( weasis && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
+		[WebPortalData mutableString:templateString block:@"SendingFunctions1" setVisible: dicomSend|weasis];
+		[WebPortalData mutableString:templateString block:@"SendingFunctions2" setVisible:dicomSend|weasis];
+		[WebPortalData mutableString:templateString block:@"SendingFunctions3" setVisible:dicomSend];
+		[WebPortalData mutableString:templateString block:@"SharingFunctions" setVisible:shareSend];
+		[WebPortalData mutableString:templateString block:@"ZIPFunctions" setVisible:((currentUser == nil || [[currentUser valueForKey: @"downloadZIP"] boolValue]) && ![[settings valueForKey:@"iPhone"] boolValue])];
+		[WebPortalData mutableString:templateString block:@"Weasis" setVisible: (weasis && ![[settings valueForKey:@"iPhone"] boolValue])];
 		
-		[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:templateString.range];
+		[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip")];
 		
-		NSString *browse = notNil( [parameters objectForKey:@"browse"]);
-		NSString *browseParameter = notNil( [parameters objectForKey:@"browseParameter"]);
-		NSString *search = notNil( [parameters objectForKey:@"search"]);
-		NSString *album = notNil( [parameters objectForKey:@"album"]);
+		NSString *browse = NotNil([parameters objectForKey:@"browse"]);
+		NSString *browseParameter = NotNil([parameters objectForKey:@"browseParameter"]);
+		NSString *search = NotNil([parameters objectForKey:@"search"]);
+		NSString *album = NotNil([parameters objectForKey:@"album"]);
 		
-		[templateString replaceOccurrencesOfString:@"%browse%" withString:browse options:NSLiteralSearch range:templateString.range];
-		[templateString replaceOccurrencesOfString:@"%browseParameter%" withString:browseParameter options:NSLiteralSearch range:templateString.range];
-		[templateString replaceOccurrencesOfString:@"%search%" withString:search options:NSLiteralSearch range:templateString.range];
-		[templateString replaceOccurrencesOfString:@"%album%" withString:album options:NSLiteralSearch range:templateString.range];
+		[templateString replaceOccurrencesOfString:@"%browse%" withString:browse];
+		[templateString replaceOccurrencesOfString:@"%browseParameter%" withString:browseParameter];
+		[templateString replaceOccurrencesOfString:@"%search%" withString:search];
+		[templateString replaceOccurrencesOfString:@"%album%" withString:album];
 		
 		NSString *LocalizedLabel_StudyList = @"";
-		if(![search isEqualToString:@""])
+		if (![search isEqualToString:@""])
 			LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Search Result for", nil), search];
-		else if(![album isEqualToString:@""])
+		else if (![album isEqualToString:@""])
 			LocalizedLabel_StudyList = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Album", nil), album];
 		else
 		{
-			if([browse isEqualToString:@"6hours"])
+			if ([browse isEqualToString:@"6hours"])
 				LocalizedLabel_StudyList = NSLocalizedString(@"Last 6 Hours", nil);
-			else if([browse isEqualToString:@"today"])
+			else if ([browse isEqualToString:@"today"])
 				LocalizedLabel_StudyList = NSLocalizedString(@"Today", nil);
 			else
 				LocalizedLabel_StudyList = NSLocalizedString(@"Study List", nil);
 		}
 		
-		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString: notNil( LocalizedLabel_StudyList) options:NSLiteralSearch range:templateString.range];
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString:NotNil(LocalizedLabel_StudyList)];
 		
-		if( [[study valueForKey:@"reportURL"] hasPrefix: @"http://"] || [[study valueForKey:@"reportURL"] hasPrefix: @"https://"])
+		if ([[study valueForKey:@"reportURL"] hasPrefix: @"http://"] || [[study valueForKey:@"reportURL"] hasPrefix: @"https://"])
 		{
-			templateString = [self setBlock: @"Report" visible: NO forString: templateString];
-			templateString = [self setBlock: @"ReportURL" visible: YES forString: templateString];
+			[WebPortalData mutableString:templateString block:@"Report" setVisible:NO];
+			[WebPortalData mutableString:templateString block:@"ReportURL" setVisible:NO];
 			
-			[templateString replaceOccurrencesOfString:@"%ReportURLString%" withString: notNil( [study valueForKey:@"reportURL"]) options:NSLiteralSearch range:templateString.range];
+			[templateString replaceOccurrencesOfString:@"%ReportURLString%" withString:NotNil([study valueForKey:@"reportURL"])];
 		}
 		else
 		{
-			templateString = [self setBlock: @"ReportURL" visible: NO forString: templateString];
-			templateString = [self setBlock: @"Report" visible: ([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
+			[WebPortalData mutableString:templateString block:@"ReportURL" setVisible:NO];
+			[WebPortalData mutableString:templateString block:@"Report" setVisible:([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue])];
 			
-			if( [[[study valueForKey:@"reportURL"] pathExtension] isEqualToString: @"pages"])
-				[templateString replaceOccurrencesOfString:@"%reportExtension%" withString: notNil( @"zip") options:NSLiteralSearch range:templateString.range];
+			if ([[[study valueForKey:@"reportURL"] pathExtension] isEqualToString: @"pages"])
+				[templateString replaceOccurrencesOfString:@"%reportExtension%" withString:NotNil(@"zip")];
 			else
-				[templateString replaceOccurrencesOfString:@"%reportExtension%" withString: notNil( [[study valueForKey:@"reportURL"] pathExtension]) options:NSLiteralSearch range:templateString.range];
+				[templateString replaceOccurrencesOfString:@"%reportExtension%" withString:NotNil([[study valueForKey:@"reportURL"] pathExtension])];
 		}
 
 			
@@ -1105,30 +842,30 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		
 		returnHTML = [NSMutableString stringWithString: templateStringStart];
 		
-		[returnHTML replaceOccurrencesOfString:@"%PageTitle%" withString:notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:returnHTML.range];
-		[returnHTML replaceOccurrencesOfString:@"%PatientID%" withString:notNil( [study valueForKey:@"patientID"]) options:NSLiteralSearch range:returnHTML.range];
-		[returnHTML replaceOccurrencesOfString:@"%PatientName%" withString:notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:returnHTML.range];
-		[returnHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:notNil( [study valueForKey:@"studyName"]) options:NSLiteralSearch range:returnHTML.range];
-		[returnHTML replaceOccurrencesOfString:@"%StudyModality%" withString:notNil( [study valueForKey:@"modality"]) options:NSLiteralSearch range:returnHTML.range];
+		[returnHTML replaceOccurrencesOfString:@"%PageTitle%" withString:NotNil([study valueForKey:@"name"])];
+		[returnHTML replaceOccurrencesOfString:@"%PatientID%" withString:NotNil([study valueForKey:@"patientID"])];
+		[returnHTML replaceOccurrencesOfString:@"%PatientName%" withString:NotNil([study valueForKey:@"name"])];
+		[returnHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:NotNil([study valueForKey:@"studyName"])];
+		[returnHTML replaceOccurrencesOfString:@"%StudyModality%" withString:NotNil([study valueForKey:@"modality"])];
 
-		if(![study valueForKey:@"comment"])
-			returnHTML = [self setBlock:@"StudyCommentBlock" visible:NO forString:returnHTML];
+		if (![study valueForKey:@"comment"])
+			[WebPortalData mutableString:returnHTML block:@"StudyCommentBlock" setVisible:NO];
 		else
 		{
-			returnHTML = [self setBlock:@"StudyCommentBlock" visible:YES forString:returnHTML];
-			[returnHTML replaceOccurrencesOfString:@"%StudyComment%" withString:notNil([study valueForKey:@"comment"]) options:NSLiteralSearch range:returnHTML.range];
+			[WebPortalData mutableString:returnHTML block:@"StudyCommentBlock" setVisible:YES];
+			[returnHTML replaceOccurrencesOfString:@"%StudyComment%" withString:NotNil([study valueForKey:@"comment"])];
 		}
 
 		NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKey:@"stateText"] intValue]];
-		if( [[study valueForKey:@"stateText"] intValue] == 0)
+		if ([[study valueForKey:@"stateText"] intValue] == 0)
 			stateText = nil;
 		
-		if(!stateText)
-			returnHTML = [self setBlock:@"StudyStateBlock" visible:NO forString:returnHTML];
+		if (!stateText)
+			[WebPortalData mutableString:returnHTML block:@"StudyStateBlock" setVisible:NO];
 		else
 		{
-			returnHTML = [self setBlock:@"StudyStateBlock" visible:YES forString:returnHTML];
-			[returnHTML replaceOccurrencesOfString:@"%StudyState%" withString:notNil(stateText) options:NSLiteralSearch range:returnHTML.range];
+			[WebPortalData mutableString:returnHTML block:@"StudyStateBlock" setVisible:YES];
+			[returnHTML replaceOccurrencesOfString:@"%StudyState%" withString:NotNil(stateText)];
 		}
 		
 		NSDateFormatter *dobDateFormat = [[[NSDateFormatter alloc] init] autorelease];
@@ -1136,9 +873,9 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		NSDateFormatter *dateFormat = [[[NSDateFormatter alloc] init] autorelease];
 		[dateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat2"]];
 		
-		[returnHTML replaceOccurrencesOfString:@"%PatientDOB%" withString: notNil( [dobDateFormat stringFromDate:[study valueForKey:@"dateOfBirth"]]) options:NSLiteralSearch range:returnHTML.range];
-		[returnHTML replaceOccurrencesOfString:@"%AccessionNumber%" withString: notNil( [study valueForKey:@"accessionNumber"]) options:NSLiteralSearch range:returnHTML.range];
-		[returnHTML replaceOccurrencesOfString:@"%StudyDate%" withString: [OsiriXHTTPConnection iPhoneCompatibleNumericalFormat: [dateFormat stringFromDate: [study valueForKey:@"date"]]] options:NSLiteralSearch range:returnHTML.range];
+		[returnHTML replaceOccurrencesOfString:@"%PatientDOB%" withString:NotNil([dobDateFormat stringFromDate:[study valueForKey:@"dateOfBirth"]])];
+		[returnHTML replaceOccurrencesOfString:@"%AccessionNumber%" withString:NotNil([study valueForKey:@"accessionNumber"])];
+		[returnHTML replaceOccurrencesOfString:@"%StudyDate%" withString: [WebPortalConnection iPhoneCompatibleNumericalFormat: [dateFormat stringFromDate: [study valueForKey:@"date"]]]];
 		
 		NSArray *seriesArray = [study valueForKey:@"imageSeries"];
 		
@@ -1153,71 +890,71 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		seriesArray = [seriesArray sortedArrayUsingDescriptors: sortDescriptors];
 		
 		int lineNumber=0;
-		for(DicomSeries *series in seriesArray)
+		for (DicomSeries *series in seriesArray)
 		{
 			NSMutableString *tempHTML = [NSMutableString stringWithString:seriesListItemString];
 			
-			[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2]];
 			lineNumber++;
 			
-			[tempHTML replaceOccurrencesOfString:@"%SeriesName%" withString: notNil(series.name) options:NSLiteralSearch range:tempHTML.range];
-			[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString: [NSString stringWithFormat:@"thumbnail?id=%@&studyID=%@", notNil( [series valueForKey:@"seriesInstanceUID"]), notNil( [study valueForKey:@"studyInstanceUID"])] options:NSLiteralSearch range:tempHTML.range];
-			[tempHTML replaceOccurrencesOfString:@"%SeriesID%" withString: notNil(series.seriesInstanceUID) options:NSLiteralSearch range:tempHTML.range];
-			[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString: notNil( [series valueForKey:@"comment"]) options:NSLiteralSearch range:tempHTML.range];
-			[tempHTML replaceOccurrencesOfString:@"%PatientName%" withString: notNil(series.study.name) options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%SeriesName%" withString:NotNil(series.name)];
+			[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString: [NSString stringWithFormat:@"thumbnail?id=%@&studyID=%@", NotNil([series valueForKey:@"seriesInstanceUID"]), NotNil([study valueForKey:@"studyInstanceUID"])]];
+			[tempHTML replaceOccurrencesOfString:@"%SeriesID%" withString:NotNil(series.seriesInstanceUID)];
+			[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString:NotNil([series valueForKey:@"comment"])];
+			[tempHTML replaceOccurrencesOfString:@"%PatientName%" withString:NotNil(series.study.name)];
 			
-			if( [DCMAbstractSyntaxUID isPDF: [series valueForKey: @"seriesSOPClassUID"]])
-				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"  options:NSLiteralSearch range:tempHTML.range];
-			else if( [DCMAbstractSyntaxUID isStructuredReport: [series valueForKey: @"seriesSOPClassUID"]])
-				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"  options:NSLiteralSearch range:tempHTML.range];
+			if ([DCMAbstractSyntaxUID isPDF: [series valueForKey: @"seriesSOPClassUID"]])
+				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"];
+			else if ([DCMAbstractSyntaxUID isStructuredReport: [series valueForKey: @"seriesSOPClassUID"]])
+				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"];
 			else
-				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @""  options:NSLiteralSearch range:tempHTML.range];
+				[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @""];
 
 			NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[series valueForKey: @"stateText"] intValue]];
-			if( [[series valueForKey:@"stateText"] intValue] == 0)
+			if ([[series valueForKey:@"stateText"] intValue] == 0)
 				stateText = nil;
-			[tempHTML replaceOccurrencesOfString:@"%SeriesState%" withString: notNil( stateText) options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%SeriesState%" withString:NotNil(stateText)];
 			
 			int nbFiles = [[series valueForKey:@"noFiles"] intValue];
-			if( nbFiles <= 1)
+			if (nbFiles <= 1)
 			{
-				if( nbFiles == 0)
+				if (nbFiles == 0)
 					nbFiles = 1;
 			}
 			NSString *imagesLabel = (nbFiles>1)? NSLocalizedString(@"Images", nil) : NSLocalizedString(@"Image", nil);
-			[tempHTML replaceOccurrencesOfString:@"%SeriesImageNumber%" withString: [NSString stringWithFormat:@"%d %@", nbFiles, imagesLabel] options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%SeriesImageNumber%" withString: [NSString stringWithFormat:@"%d %@", nbFiles, imagesLabel]];
 			
 			NSString *comment = [series valueForKey:@"comment"];
-			if( comment == nil)
+			if (comment == nil)
 				comment = @"";
-			[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString: comment options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString: comment];
 			
 			
 			NSString *checked = @"";
-			for(NSString* selectedID in [parameters objectForKey:@"selected"])
+			for (NSString* selectedID in [parameters objectForKey:@"selected"])
 			{
-				if([[series valueForKey:@"seriesInstanceUID"] isEqualToString:[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "]])
+				if ([[series valueForKey:@"seriesInstanceUID"] isEqualToString:[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "]])
 					checked = @"checked";
 			}
 			
-			[tempHTML replaceOccurrencesOfString:@"%checked%" withString: notNil( checked) options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%checked%" withString:NotNil(checked)];
 			
 			[returnHTML appendString:tempHTML];
 		}
 		
 		NSMutableString *tempHTML = [NSMutableString stringWithString:templateStringEnd];
-		[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:templateStringEnd.range];
+		[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2]];
 		templateStringEnd = [NSString stringWithString:tempHTML];
 		
 		NSString *checkAllStyle = @"";
-		if([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
-		[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString: notNil( checkAllStyle) options:NSLiteralSearch range:returnHTML.range];
+		if ([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
+		[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString:NotNil(checkAllStyle)];
 		
 		BOOL checkAllChecked = [[parameters objectForKey:@"CheckAll"] isEqualToString:@"on"] || [[parameters objectForKey:@"CheckAll"] isEqualToString:@"checked"];
-		[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString: checkAllChecked? @"checked=\"checked\"" : @"" options:NSLiteralSearch range:returnHTML.range];
+		[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString: checkAllChecked? @"checked=\"checked\"" : @""];
 		
 		NSString *dicomNodesListItemString = @"";
-		if( dicomSend)
+		if (dicomSend)
 		{
 			tempArray = [templateStringEnd componentsSeparatedByString:@"%dicomNodesListItem%"];
 			templateStringStart = [tempArray objectAtIndex:0];
@@ -1228,38 +965,38 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			
 			BOOL selectedDone = NO;
 			
-			if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES)
+			if (currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoSelfIP"] boolValue] == YES)
 			{
 				NSString *dicomNodeAddress = [asyncSocket connectedHost];
 				NSString *dicomNodeAETitle = @"This Computer";
 				
 				NSString *dicomNodeSyntax;
-				if( [[settings valueForKey:@"iPhone"] boolValue]) dicomNodeSyntax = @"5";
+				if ([[settings valueForKey:@"iPhone"] boolValue]) dicomNodeSyntax = @"5";
 				else dicomNodeSyntax = @"0";
 				NSString *dicomNodeDescription = @"This Computer";
 				
 				NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString: notNil( dicomNodeAddress) options:NSLiteralSearch range:tempHTML.range];
-				[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString: notNil(self.dicomCStorePortString) options:NSLiteralSearch range:tempHTML.range];
-				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString: notNil( dicomNodeAETitle) options:NSLiteralSearch range:tempHTML.range];
-				[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString: notNil( dicomNodeSyntax) options:NSLiteralSearch range:tempHTML.range];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString:NotNil(dicomNodeAddress)];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString:NotNil(self.dicomCStorePortString)];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString:NotNil(dicomNodeAETitle)];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString:NotNil(dicomNodeSyntax)];
 
-				if(![[settings valueForKey:@"iPhone"] boolValue])
-					dicomNodeDescription = [dicomNodeDescription stringByAppendingFormat:@" [%@:%@]", notNil( dicomNodeAddress), notNil(self.dicomCStorePortString)];
+				if (![[settings valueForKey:@"iPhone"] boolValue])
+					dicomNodeDescription = [dicomNodeDescription stringByAppendingFormat:@" [%@:%@]", NotNil(dicomNodeAddress), NotNil(self.dicomCStorePortString)];
 				
-				[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString: notNil( dicomNodeDescription) options:NSLiteralSearch range:tempHTML.range];
+				[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString:NotNil(dicomNodeDescription)];
 				
 				NSString *selected = @"";
 					
-				if( [parameters objectForKey:@"dicomDestination"])
+				if ([parameters objectForKey:@"dicomDestination"])
 				{
 					NSString * s = [parameters objectForKey:@"dicomDestination"];
 					
 					NSArray *sArray = [s componentsSeparatedByString: @":"];
 					
-					if( [sArray count] >= 2)
+					if ([sArray count] >= 2)
 					{
-						if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && [[sArray objectAtIndex: 1] isEqualToString:self.dicomCStorePortString])
+						if ([[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && [[sArray objectAtIndex: 1] isEqualToString:self.dicomCStorePortString])
 						{
 							selected = @"selected";
 							selectedDone = YES;
@@ -1267,45 +1004,45 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					}
 				}
 				
-				[tempHTML replaceOccurrencesOfString:@"%selected%" withString: notNil( selected) options:NSLiteralSearch range:tempHTML.range];
+				[tempHTML replaceOccurrencesOfString:@"%selected%" withString:NotNil(selected)];
 				
 				[returnHTML appendString:tempHTML];
 			}
 		
-			if( currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == YES)
+			if (currentUser == nil || [[currentUser valueForKey: @"sendDICOMtoAnyNodes"] boolValue] == YES)
 			{
 				NSArray *nodes = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 				
-				for(NSDictionary *node in nodes)
+				for (NSDictionary *node in nodes)
 				{
-					NSString *dicomNodeAddress = notNil( [node objectForKey:@"Address"]);
+					NSString *dicomNodeAddress = NotNil([node objectForKey:@"Address"]);
 					NSString *dicomNodePort = [NSString stringWithFormat:@"%d", [[node objectForKey:@"Port"] intValue]];
-					NSString *dicomNodeAETitle = notNil( [node objectForKey:@"AETitle"]);
+					NSString *dicomNodeAETitle = NotNil([node objectForKey:@"AETitle"]);
 					NSString *dicomNodeSyntax = [NSString stringWithFormat:@"%d", [[node objectForKey:@"TransferSyntax"] intValue]];
-					NSString *dicomNodeDescription = notNil( [node objectForKey:@"Description"]);
+					NSString *dicomNodeDescription = NotNil([node objectForKey:@"Description"]);
 					
 					NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString: notNil( dicomNodeAddress) options:NSLiteralSearch range:tempHTML.range];
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString: notNil( dicomNodePort) options:NSLiteralSearch range:tempHTML.range];
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString: notNil( dicomNodeAETitle) options:NSLiteralSearch range:tempHTML.range];
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString: notNil( dicomNodeSyntax) options:NSLiteralSearch range:tempHTML.range];
+					[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString:NotNil(dicomNodeAddress)];
+					[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString:NotNil(dicomNodePort)];
+					[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString:NotNil(dicomNodeAETitle)];
+					[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString:NotNil(dicomNodeSyntax)];
 					
-					if(![[settings valueForKey:@"iPhone"] boolValue])
-						dicomNodeDescription = [dicomNodeDescription stringByAppendingFormat:@" [%@:%@]", notNil( dicomNodeAddress), notNil( dicomNodePort)];
+					if (![[settings valueForKey:@"iPhone"] boolValue])
+						dicomNodeDescription = [dicomNodeDescription stringByAppendingFormat:@" [%@:%@]", NotNil(dicomNodeAddress), NotNil(dicomNodePort)];
 					
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString: notNil( dicomNodeDescription) options:NSLiteralSearch range:tempHTML.range];
+					[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString:NotNil(dicomNodeDescription)];
 					
 					NSString *selected = @"";
 					
-					if( [parameters objectForKey:@"dicomDestination"] && selectedDone == NO)
+					if ([parameters objectForKey:@"dicomDestination"] && selectedDone == NO)
 					{
 						NSString * s = [parameters objectForKey:@"dicomDestination"];
 						
 						NSArray *sArray = [s componentsSeparatedByString: @":"];
 						
-						if( [sArray count] >= 2)
+						if ([sArray count] >= 2)
 						{
-							if( [[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && [[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
+							if ([[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && [[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
 							{
 								selected = @"selected";
 								selectedDone = YES;
@@ -1313,7 +1050,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						}
 					}
 					
-					[tempHTML replaceOccurrencesOfString:@"%selected%" withString: notNil( selected) options:NSLiteralSearch range:tempHTML.range];
+					[tempHTML replaceOccurrencesOfString:@"%selected%" withString:NotNil(selected)];
 					
 					[returnHTML appendString:tempHTML];
 				}
@@ -1323,7 +1060,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		}
 		else [returnHTML appendString:templateStringEnd];
 		
-		if( shareSend)
+		if (shareSend)
 		{
 			tempArray = [returnHTML componentsSeparatedByString:@"%userListItem%"];
 			templateStringStart = [tempArray objectAtIndex:0];
@@ -1339,26 +1076,26 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			{
 				users = [users sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]];
 				
-				for( NSManagedObject *user in users)
+				for ( NSManagedObject *user in users)
 				{
-					if( user != currentUser)
+					if (user != currentUser)
 					{
 						NSMutableString *tempHTML = [NSMutableString stringWithString: userListItemString];
 						
-						[tempHTML replaceOccurrencesOfString:@"%username%" withString: notNil( [user valueForKey: @"name"]) options:NSLiteralSearch range:tempHTML.range];
-						[tempHTML replaceOccurrencesOfString:@"%email%" withString: notNil( [user valueForKey: @"email"]) options:NSLiteralSearch range:tempHTML.range];
+						[tempHTML replaceOccurrencesOfString:@"%username%" withString:NotNil([user valueForKey: @"name"])];
+						[tempHTML replaceOccurrencesOfString:@"%email%" withString:NotNil([user valueForKey: @"email"])];
 						
-						NSString *userDescription = [NSString stringWithString:notNil([user valueForKey:@"name"])];
-						if(![[settings valueForKey:@"iPhone"] boolValue])
-							userDescription = [userDescription stringByAppendingFormat:@" (%@)", notNil([user valueForKey:@"email"])];
+						NSString *userDescription = [NSString stringWithString:NotNil([user valueForKey:@"name"])];
+						if (![[settings valueForKey:@"iPhone"] boolValue])
+							userDescription = [userDescription stringByAppendingFormat:@" (%@)", NotNil([user valueForKey:@"email"])];
 						
-						[tempHTML replaceOccurrencesOfString:@"%userDescription%" withString: notNil(userDescription) options:NSLiteralSearch range:tempHTML.range];
+						[tempHTML replaceOccurrencesOfString:@"%userDescription%" withString:NotNil(userDescription)];
 						
 						[returnHTML appendString: tempHTML];
 					}
 				}
 			}
-			@catch ( NSException *e)
+			@catch (NSException *e)
 			{
 				NSLog( @"****** exception in find all users htmlStudy: %@", e);
 			}
@@ -1366,7 +1103,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			[returnHTML appendString: templateStringEnd];
 		}
 	}
-	@catch ( NSException *e)
+	@catch (NSException *e)
 	{
 		NSLog( @"******* htmlStudy exception: %@", e);
 	}
@@ -1388,10 +1125,10 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	{
 		NSMutableString *templateString = [self webServicesHTMLMutableString:@"studyList.html"];
 
-		templateString = [self setBlock: @"ZIPFunctions" visible: ( currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
-		templateString = [self setBlock: @"Weasis" visible: ( [NSUserDefaultsController WebServerUsesWeasis] && ![[settings valueForKey:@"iPhone"] boolValue]) forString: templateString];
+		[WebPortalData mutableString:templateString block:@"ZIPFunctions" setVisible:(currentUser && [[currentUser valueForKey: @"downloadZIP"] boolValue] && ![[settings valueForKey:@"iPhone"] boolValue])];
+		[WebPortalData mutableString:templateString block:@"Weasis" setVisible:([NSUserDefaultsController WebServerUsesWeasis] && ![[settings valueForKey:@"iPhone"] boolValue])];
 		
-		[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip") options:NSLiteralSearch range:templateString.range];
+		[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip")];
 		
 		NSArray *tempArray = [templateString componentsSeparatedByString:@"%StudyListItem%"];
 		NSString *templateStringStart = [tempArray objectAtIndex:0];
@@ -1402,19 +1139,19 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		returnHTML = [NSMutableString stringWithString:templateStringStart];
 		
 		int lineNumber = 0;
-		for(DicomStudy *study in studies)
+		for (DicomStudy *study in studies)
 		{
 			NSMutableString *tempHTML = [NSMutableString stringWithString:studyListItemString];
 			
-			[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2] options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2]];
 			lineNumber++;
 			
 			// filenameString?
-			[tempHTML replaceOccurrencesOfString:@"%StudyListItemName%" withString: notNil( [study valueForKey:@"name"]) options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%StudyListItemName%" withString:NotNil([study valueForKey:@"name"])];
 			
 			NSArray *seriesArray = [study valueForKey:@"imageSeries"] ; //imageSeries
 			int count = 0;
-			for(DicomSeries *series in seriesArray)
+			for (DicomSeries *series in seriesArray)
 			{
 				count++;
 			}
@@ -1424,88 +1161,84 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			
 			NSString *date = [dateFormat stringFromDate:[study valueForKey:@"date"]];
 			
-			NSString *dateLabel = [NSString stringWithFormat:@"%@", [OsiriXHTTPConnection iPhoneCompatibleNumericalFormat:date]];
-			dateLabel = [OsiriXHTTPConnection unbreakableStringWithString:dateLabel];
+			NSString *dateLabel = [NSString stringWithFormat:@"%@", [WebPortalConnection iPhoneCompatibleNumericalFormat:date]];
+			dateLabel = [WebPortalConnection unbreakableStringWithString:dateLabel];
 			BOOL displayBlock = YES;
-			if([dateLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:dateLabel options:NSLiteralSearch range:tempHTML.range];
+			if ([dateLabel length])
+				[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:dateLabel];
 			else
 				displayBlock = NO;
-				
-			tempHTML = [self setBlock:@"StudyDateBlock" visible:displayBlock forString:tempHTML];
+			[WebPortalData mutableString:tempHTML block:@"StudyDateBlock" setVisible:displayBlock];
 
 			NSString *seriesCountLabel = [NSString stringWithFormat:@"%d Series", count];
 			displayBlock = YES;
-			if([seriesCountLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%SeriesCount%" withString:seriesCountLabel options:NSLiteralSearch range:tempHTML.range];
+			if ([seriesCountLabel length])
+				[tempHTML replaceOccurrencesOfString:@"%SeriesCount%" withString:seriesCountLabel];
 			else
 				displayBlock = NO;
-			tempHTML = [self setBlock:@"SeriesCountBlock" visible:displayBlock forString:tempHTML];
+			[WebPortalData mutableString:tempHTML block:@"SeriesCountBlock" setVisible:displayBlock];
 			
-			NSString *patientIDLabel = [NSString stringWithFormat:@"%@", notNil([study valueForKey:@"patientID"])];
+			NSString *patientIDLabel = [NSString stringWithFormat:@"%@", NotNil([study valueForKey:@"patientID"])];
 			displayBlock = YES;
-			if([patientIDLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%PatientID%" withString:patientIDLabel options:NSLiteralSearch range:tempHTML.range];
+			if ([patientIDLabel length])
+				[tempHTML replaceOccurrencesOfString:@"%PatientID%" withString:patientIDLabel];
 			else
 				displayBlock = NO;
-			tempHTML = [self setBlock:@"PatientIDBlock" visible:displayBlock forString:tempHTML];
+			[WebPortalData mutableString:tempHTML block:@"PatientIDBlock" setVisible:displayBlock];
 			
-			NSString *accessionNumberLabel = [NSString stringWithFormat:@"%@", notNil([study valueForKey:@"accessionNumber"])];
+			NSString *accessionNumberLabel = [NSString stringWithFormat:@"%@", NotNil([study valueForKey:@"accessionNumber"])];
 			displayBlock = YES;
-			if([accessionNumberLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%AccessionNumber%" withString:accessionNumberLabel options:NSLiteralSearch range:tempHTML.range];
+			if ([accessionNumberLabel length])
+				[tempHTML replaceOccurrencesOfString:@"%AccessionNumber%" withString:accessionNumberLabel];
 			else
 				displayBlock = NO;
-			tempHTML = [self setBlock:@"AccessionNumberBlock" visible:displayBlock forString:tempHTML];
+			[WebPortalData mutableString:tempHTML block:@"AccessionNumberBlock" setVisible:displayBlock];
 			
-			NSString *studyCommentLabel = notNil([study valueForKey:@"comment"]);
+			NSString *studyCommentLabel = NotNil([study valueForKey:@"comment"]);
 			displayBlock = YES;
-			if([studyCommentLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%StudyComment%" withString:studyCommentLabel options:NSLiteralSearch range:tempHTML.range];
+			if ([studyCommentLabel length])
+				[tempHTML replaceOccurrencesOfString:@"%StudyComment%" withString:studyCommentLabel];
 			else
 				displayBlock = NO;
-				
-			tempHTML = [self setBlock:@"StudyCommentBlock" visible:displayBlock forString:tempHTML];
+			[WebPortalData mutableString:tempHTML block:@"StudyCommentBlock" setVisible:displayBlock];
 			
-			NSString *studyDescriptionLabel = notNil([study valueForKey:@"studyName"]);
+			NSString *studyDescriptionLabel = NotNil([study valueForKey:@"studyName"]);
 			displayBlock = YES;
-			if([studyDescriptionLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:studyDescriptionLabel options:NSLiteralSearch range:tempHTML.range];
+			if ([studyDescriptionLabel length])
+				[tempHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:studyDescriptionLabel];
 			else
 				displayBlock = NO;
-				
-			tempHTML = [self setBlock:@"StudyDescriptionBlock" visible:displayBlock forString:tempHTML];
+			[WebPortalData mutableString:tempHTML block:@"StudyDescriptionBlock" setVisible:displayBlock];
 			
-			NSString *studyModalityLabel = notNil([study valueForKey:@"modality"]);
+			NSString *studyModalityLabel = NotNil([study valueForKey:@"modality"]);
 			displayBlock = YES;
-			if([studyModalityLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%StudyModality%" withString:studyModalityLabel options:NSLiteralSearch range:tempHTML.range];
+			if ([studyModalityLabel length])
+				[tempHTML replaceOccurrencesOfString:@"%StudyModality%" withString:studyModalityLabel];
 			else
 				displayBlock = NO;
-				
-			tempHTML = [self setBlock:@"StudyModalityBlock" visible:displayBlock forString:tempHTML];
+			[WebPortalData mutableString:tempHTML block:@"StudyModalityBlock" setVisible:displayBlock];
 					
 			NSString *stateText = @"";
 			int v = [[study valueForKey:@"stateText"] intValue];
-			if( v > 0 && v < [[BrowserController statesArray] count])
+			if (v > 0 && v < [[BrowserController statesArray] count])
 				stateText = [[BrowserController statesArray] objectAtIndex: v];
 			
-			NSString *studyStateLabel = notNil( stateText);
+			NSString *studyStateLabel = NotNil(stateText);
 			displayBlock = YES;
-			if([studyStateLabel length])
-				[tempHTML replaceOccurrencesOfString:@"%StudyState%" withString:studyStateLabel options:NSLiteralSearch range:tempHTML.range];
+			if ([studyStateLabel length])
+				[tempHTML replaceOccurrencesOfString:@"%StudyState%" withString:studyStateLabel];
 			else
 				displayBlock = NO;
 			
-			tempHTML = [self setBlock:@"StudyStateBlock" visible:displayBlock forString:tempHTML];
+			[WebPortalData mutableString:tempHTML block:@"StudyStateBlock" setVisible:displayBlock];
 			
-			[tempHTML replaceOccurrencesOfString:@"%StudyListItemID%" withString: notNil( [study valueForKey:@"studyInstanceUID"]) options:NSLiteralSearch range:tempHTML.range];
+			[tempHTML replaceOccurrencesOfString:@"%StudyListItemID%" withString:NotNil([study valueForKey:@"studyInstanceUID"])];
 			[returnHTML appendString:tempHTML];
 		}
 		
 		[returnHTML appendString:templateStringEnd];
 	}
-	@catch ( NSException *e)
+	@catch (NSException *e)
 	{
 		NSLog( @"**** htmlStudyListForStudies exception: %@", e);
 	}
@@ -1516,7 +1249,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 - (NSArray*) addSpecificStudiesToArray: (NSArray*) array
 {
-	return [OsiriXHTTPConnection addSpecificStudiesToArray: array forUser: currentUser predicate: nil];
+	return [WebPortalConnection addSpecificStudiesToArray: array forUser: currentUser predicate: nil];
 }
 
 + (NSArray*) addSpecificStudiesToArray: (NSArray*) array forUser: (NSManagedObject*) user predicate: (NSPredicate*) predicate
@@ -1524,7 +1257,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	NSMutableArray *specificArray = [NSMutableArray array];
 	BOOL truePredicate = NO;
 	
-	if( predicate == nil)
+	if (predicate == nil)
 	{
 		predicate = [NSPredicate predicateWithValue: YES];
 		truePredicate = YES;
@@ -1534,7 +1267,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	{
 		NSArray *userStudies = nil;
 		
-		if( truePredicate == NO)
+		if (truePredicate == NO)
 		{
 			NSArray *allUserStudies = [[user valueForKey: @"studies"] allObjects];
 			NSArray *userStudies = [allUserStudies filteredArrayUsingPredicate: predicate];
@@ -1545,15 +1278,15 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			NSMutableArray *mutableArray = [NSMutableArray arrayWithArray: array];
 			
 			// First remove all user studies from array, we will re-add them after, if necessary
-			for( NSManagedObject *study in excludedStudies)
+			for ( NSManagedObject *study in excludedStudies)
 			{
 				NSArray *obj = [mutableArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", [study valueForKey: @"patientUID"], [study valueForKey: @"studyInstanceUID"]]];
 				
-				if( [obj count] == 1)
+				if ([obj count] == 1)
 				{
 					[mutableArray removeObject: [obj lastObject]];
 				}
-				else if( [obj count] > 1)
+				else if ([obj count] > 1)
 					NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
 			}
 			
@@ -1570,18 +1303,18 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		error = nil;
 		NSArray *studiesArray = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
 		
-		for( NSManagedObject *study in userStudies)
+		for ( NSManagedObject *study in userStudies)
 		{
 			NSArray *obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", [study valueForKey: @"patientUID"], [study valueForKey: @"studyInstanceUID"]]];
 			
-			if( [obj count] == 1)
+			if ([obj count] == 1)
 			{
-				if( [array containsObject: [obj lastObject]] == NO && [specificArray containsObject: [obj lastObject]] == NO)
+				if ([array containsObject: [obj lastObject]] == NO && [specificArray containsObject: [obj lastObject]] == NO)
 					[specificArray addObject: [obj lastObject]];
 			}
-			else if( [obj count] > 1)
+			else if ([obj count] > 1)
 				NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
-			else if( truePredicate && [obj count] == 0)
+			else if (truePredicate && [obj count] == 0)
 			{
 				// It means this study doesnt exist in the entire DB -> remove it from this user list
 				NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
@@ -1620,7 +1353,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		studiesArray = [self addSpecificStudiesToArray: studiesArray];
 		studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
 		
-		if( [sortValue length] && [sortValue isEqualToString: @"date"] == NO)
+		if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
 			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
 		else
 			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: NO] autorelease]]];
@@ -1643,7 +1376,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	[[BrowserController currentBrowser].managedObjectContext lock];
 	
-	if( [(NSString*) [currentUser valueForKey: @"studyPredicate"] length] > 0) // First, take all the available studies for this user, and then get the series : SECURITY : we want to be sure that he cannot access to unauthorized images
+	if ([(NSString*) [currentUser valueForKey: @"studyPredicate"] length] > 0) // First, take all the available studies for this user, and then get the series : SECURITY : we want to be sure that he cannot access to unauthorized images
 	{
 		@try
 		{
@@ -1669,7 +1402,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 		[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
 		
-		if( studiesArray)
+		if (studiesArray)
 			predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, [NSPredicate predicateWithFormat: @"study.patientUID IN %@", studiesArray], nil]];
 		
 		[dbRequest setPredicate: predicate];
@@ -1686,7 +1419,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	[[BrowserController currentBrowser].managedObjectContext unlock];
 	
-	if( [seriesArray count] > 1)
+	if ([seriesArray count] > 1)
 	{
 		NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
 		NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
@@ -1734,7 +1467,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	NSManagedObject *album = [albumArray lastObject];
 	
-	if([[album valueForKey:@"smartAlbum"] intValue] == 1)
+	if ([[album valueForKey:@"smartAlbum"] intValue] == 1)
 	{
 		studiesArray = [self studiesForPredicate: [[BrowserController currentBrowser] smartAlbumPredicateString: [album valueForKey:@"predicateString"]] sortBy: [urlParameters objectForKey:@"order"]];
 	}
@@ -1742,7 +1475,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	{
 		NSArray *originalAlbum = [[album valueForKey:@"studies"] allObjects];
 		
-		if( currentUser && [(NSString*) [currentUser valueForKey: @"studyPredicate"] length] > 0)
+		if (currentUser && [(NSString*) [currentUser valueForKey: @"studyPredicate"] length] > 0)
 		{
 			@try
 			{
@@ -1750,9 +1483,9 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				
 				NSArray *specificArray = [self addSpecificStudiesToArray: [NSArray array]];
 				
-				for( NSManagedObject *specificStudy in specificArray)
+				for ( NSManagedObject *specificStudy in specificArray)
 				{
-					if( [originalAlbum containsObject: specificStudy] == YES && [studiesArray containsObject: specificStudy] == NO)
+					if ([originalAlbum containsObject: specificStudy] == YES && [studiesArray containsObject: specificStudy] == NO)
 					{
 						studiesArray = [studiesArray arrayByAddingObject: specificStudy];						
 					}
@@ -1768,7 +1501,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		}
 		else studiesArray = originalAlbum;
 		
-		if( [sortValue length] && [sortValue isEqualToString: @"date"] == NO)
+		if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
 			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
 		else
 			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];								
@@ -1797,7 +1530,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
-	if( sendLock == nil)
+	if (sendLock == nil)
 		sendLock = [[NSLock alloc] init];
 	
 	[sendLock lock];
@@ -1833,39 +1566,39 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 /*+ (NSString*)encodeURLString:(NSString*)aString;
 {
-	if( aString == nil) aString = @"";
+	if (aString == nil) aString = @"";
 	
 	NSMutableString *encodedString = [NSMutableString stringWithString:aString];
-	[encodedString replaceOccurrencesOfString:@":" withString:@"%3A" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@"/" withString:@"%2F" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@"%" withString:@"%25" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@"#" withString:@"%23" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@";" withString:@"%3B" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@"@" withString:@"%40" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@" " withString:@"+" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@"&" withString:@"%26" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@":" withString:@"%3A"];
+	[encodedString replaceOccurrencesOfString:@"/" withString:@"%2F"];
+	[encodedString replaceOccurrencesOfString:@"%" withString:@"%25"];
+	[encodedString replaceOccurrencesOfString:@"#" withString:@"%23"];
+	[encodedString replaceOccurrencesOfString:@";" withString:@"%3B"];
+	[encodedString replaceOccurrencesOfString:@"@" withString:@"%40"];
+	[encodedString replaceOccurrencesOfString:@" " withString:@"+"];
+	[encodedString replaceOccurrencesOfString:@"&" withString:@"%26"];
 	return encodedString;
 }*/
 
 /*+ (NSString*)decodeURLString:(NSString*)aString;
 {
-	if( aString == nil) aString = @"";
+	if (aString == nil) aString = @"";
 	
 	NSMutableString *encodedString = [NSMutableString stringWithString:aString];
-	[encodedString replaceOccurrencesOfString:@"%3A" withString:@":" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@"%2F" withString:@"/" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@"%25" withString:@"%" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@"%23" withString:@"#" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@"%3B" withString:@";" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@"%40" withString:@"@" options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@"+" withString:@" " options:NSLiteralSearch range:encodedString.range];
-	[encodedString replaceOccurrencesOfString:@"%26" withString:@"&" options:NSLiteralSearch range:encodedString.range];
+	[encodedString replaceOccurrencesOfString:@"%3A" withString:@":"];
+	[encodedString replaceOccurrencesOfString:@"%2F" withString:@"/"];
+	[encodedString replaceOccurrencesOfString:@"%25" withString:@"%"];
+	[encodedString replaceOccurrencesOfString:@"%23" withString:@"#"];
+	[encodedString replaceOccurrencesOfString:@"%3B" withString:@";"];
+	[encodedString replaceOccurrencesOfString:@"%40" withString:@"@"];
+	[encodedString replaceOccurrencesOfString:@"+" withString:@" "];
+	[encodedString replaceOccurrencesOfString:@"%26" withString:@"&"];
 	return encodedString;
 }*/
 
 /*+ (NSString *)encodeCharacterEntitiesIn:(NSString *)source;
 { 
-	if(!source) return nil;
+	if (!source) return nil;
 	else
 	{
 		NSMutableString *escaped = [NSMutableString stringWithString: source];
@@ -1887,15 +1620,13 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		int i, count = [codes count];
 		
 		// Html
-		for(i = 0; i < count; i++)
+		for (i = 0; i < count; i++)
 		{
 			NSRange range = [source rangeOfString: [NSString stringWithFormat: @"%C", 160 + i]];
-			if(range.location != NSNotFound)
+			if (range.location != NSNotFound)
 			{
 				[escaped replaceOccurrencesOfString: [NSString stringWithFormat: @"%C", 160 + i]
-										 withString: [codes objectAtIndex: i] 
-											options: NSLiteralSearch 
-											  range: escaped.range];
+										 withString: [codes objectAtIndex: i] ];
 			}
 		}
 		return escaped;    // Note this is autoreleased
@@ -1904,8 +1635,8 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 + (NSString *)decodeCharacterEntitiesIn:(NSString *)source;
 { 
-	if(!source) return nil;
-	else if([source rangeOfString: @"&"].location == NSNotFound) return source;
+	if (!source) return nil;
+	else if ([source rangeOfString: @"&"].location == NSNotFound) return source;
 	else
 	{
 		NSMutableString *escaped = [NSMutableString stringWithString: source];
@@ -1927,15 +1658,13 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		int i, count = [codes count];
 		
 		// Html
-		for(i = 0; i < count; i++)
+		for (i = 0; i < count; i++)
 		{
 			NSRange range = [source rangeOfString: [codes objectAtIndex: i]];
-			if(range.location != NSNotFound)
+			if (range.location != NSNotFound)
 			{
 				[escaped replaceOccurrencesOfString: [codes objectAtIndex: i] 
-										 withString: [NSString stringWithFormat: @"%C", 160 + i] 
-											options: NSLiteralSearch 
-											  range: escaped.range];
+										 withString: [NSString stringWithFormat: @"%C", 160 + i] ];
 			}
 		}
 		return escaped;    // Note this is autoreleased
@@ -1961,7 +1690,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 + (NSString*)unbreakableStringWithString:(NSString*)aString;
 {
 	NSMutableString* newString = [NSMutableString stringWithString:aString];
-	[newString replaceOccurrencesOfString:@" " withString:@"&nbsp;" options:NSLiteralSearch range:newString.range];
+	[newString replaceOccurrencesOfString:@" " withString:@"&nbsp;"];
 	return [NSString stringWithString:newString];
 }
 
@@ -1970,11 +1699,11 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	*width = 0;
 	*height = 0;
 	
-	for( NSNumber *im in [imagesArray valueForKey: @"width"])
-		if( [im intValue] > *width) *width = [im intValue];
+	for ( NSNumber *im in [imagesArray valueForKey: @"width"])
+		if ([im intValue] > *width) *width = [im intValue];
 
-	for( NSNumber *im in [imagesArray valueForKey: @"height"])
-		if( [im intValue] > *height) *height = [im intValue];
+	for ( NSNumber *im in [imagesArray valueForKey: @"height"])
+		if ([im intValue] > *height) *height = [im intValue];
 
 	int maxWidth, maxHeight;
 	int minWidth, minHeight;
@@ -1982,7 +1711,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	minWidth = minResolution;
 	minHeight = minResolution;
 
-	if( isiPhone)
+	if (isiPhone)
 	{
 		maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
 		maxHeight = 310;
@@ -1993,25 +1722,25 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		maxHeight = maxResolution;
 	}
 
-	if( *width > maxWidth)
+	if (*width > maxWidth)
 	{
 		*height = (float) *height * (float)maxWidth / (float) *width;
 		*width = maxWidth;
 	}
 
-	if( *height > maxHeight)
+	if (*height > maxHeight)
 	{
 		*width = (float) *width * (float)maxHeight / (float) *height;
 		*height = maxHeight;
 	}
 
-	if( *width < minWidth)
+	if (*width < minWidth)
 	{
 		*height = (float) *height * (float)minWidth / (float) *width;
 		*width = minWidth;
 	}
 
-	if( *height < minHeight)
+	if (*height < minHeight)
 	{
 		*width = (float) *width * (float)minHeight / (float) *height;
 		*height = minHeight;
@@ -2033,7 +1762,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	QTMovie *aMovie = nil;
 	
     // create a QTMovie from the file
-	if( [NSThread isMainThread] == NO)
+	if ([NSThread isMainThread] == NO)
 	{
 		[QTMovie enterQTKitOnThread];
 		
@@ -2076,7 +1805,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		NSLog(@"exportMovieToiPhone Error : %@", error);
     }
 	
-	if( [NSThread isMainThread] == NO)
+	if ([NSThread isMainThread] == NO)
 	{
 		[aMovie detachFromCurrentThread];
 		[QTMovie exitQTKitOnThread];
@@ -2087,7 +1816,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	if( movieLock == nil)
+	if (movieLock == nil)
 		movieLock = [[NSMutableDictionary alloc] init];
 	
 	NSString *outFile = [dict objectForKey: @"outFile"];
@@ -2097,14 +1826,14 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	NSMutableArray *imagesArray = [NSMutableArray array];
 	
-	if( [movieLock objectForKey: outFile] == nil)
+	if ([movieLock objectForKey: outFile] == nil)
 		[movieLock setObject: [[[NSRecursiveLock alloc] init] autorelease] forKey: outFile];
 	
 	[[movieLock objectForKey: outFile] lock];
 	
 	@try
 	{
-		if( ![[NSFileManager defaultManager] fileExistsAtPath: outFile] || ([[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0))
+		if (![[NSFileManager defaultManager] fileExistsAtPath: outFile] || ([[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0))
 		{
 			NSMutableArray *pixs = [NSMutableArray arrayWithCapacity: [dicomImageArray count]];
 			
@@ -2114,18 +1843,18 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			{
 				DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey:@"frameID"] intValue] :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
 				
-				if(dcmPix)
+				if (dcmPix)
 				{
 					float curWW = 0;
 					float curWL = 0;
 					
-					if([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+					if ([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
 					{
 						curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
 						curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
 					}
 					
-					if( curWW != 0)
+					if (curWW != 0)
 						[dcmPix checkImageAvailble:curWW :curWL];
 					else
 						[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
@@ -2136,8 +1865,8 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				else
 				{
 					NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
-					float *imPtr = malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof( float));
-					for( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
+					float *imPtr = (float*)malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof(float));
+					for ( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
 						imPtr[ i] = i;
 					
 					dcmPix = [[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0];
@@ -2150,7 +1879,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			
 			int width, height;
 			
-			if( [[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0)
+			if ([[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0)
 			{
 				width = [[dict objectForKey: @"columns"] intValue];
 				height = [[dict objectForKey: @"rows"] intValue];
@@ -2164,7 +1893,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				
 				NSImage *newImage;
 				
-				if( [dcmPix pwidth] != width || [dcmPix pheight] != height)
+				if ([dcmPix pwidth] != width || [dcmPix pheight] != height)
 					newImage = [im imageByScalingProportionallyToSize: NSMakeSize( width, height)];
 				else
 					newImage = im;
@@ -2176,7 +1905,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] attributes: nil];
 			
 			int inc = 0;
-			for( NSImage *img in imagesArray)
+			for ( NSImage *img in imagesArray)
 			{
 				NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 				//[[img TIFFRepresentation] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
@@ -2190,7 +1919,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			
 			NSTask *theTask = [[[NSTask alloc] init] autorelease];
 			
-			if( isiPhone)
+			if (isiPhone)
 			{
 				@try
 				{
@@ -2202,7 +1931,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					
 					while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 				}
-				@catch ( NSException *e)
+				@catch (NSException *e)
 				{
 					NSLog( @"***** writeMovie exception : %@", e);
 				}
@@ -2219,7 +1948,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					
 					while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 				}
-				@catch ( NSException *e)
+				@catch (NSException *e)
 				{
 					NSLog( @"***** writeMovieiPhone exception : %@", e);
 				}
@@ -2236,21 +1965,21 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					
 					while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 				}
-				@catch ( NSException *e)
+				@catch (NSException *e)
 				{
 					NSLog( @"***** writeMovie exception : %@", e);
 				}
 			}
 		}
 	}
-	@catch ( NSException *e)
+	@catch (NSException *e)
 	{
 		NSLog( @"***** generate movie exception : %@", e);
 	}
 	
 	[[movieLock objectForKey: outFile] unlock];
 	
-	if( [[movieLock objectForKey: outFile] tryLock])
+	if ([[movieLock objectForKey: outFile] tryLock])
 	{
 		[[movieLock objectForKey: outFile] unlock];
 		[movieLock removeObjectForKey: outFile];
@@ -2262,7 +1991,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 - (NSString *)realm
 {
 	// Change the realm each day
-	return [NSString stringWithFormat: @"OsiriX Web Portal (%@ - %@)" , [OsiriXHTTPConnection WebServerAddress], [BrowserController DateOfBirthFormat:[NSDate date]] ];
+	return [NSString stringWithFormat: @"OsiriX Web Portal (%@ - %@)" , [WebPortalConnection WebServerAddress], [BrowserController DateOfBirthFormat:[NSDate date]] ];
 }
 
 - (NSRect) centerRect: (NSRect) smallRect
@@ -2301,11 +2030,11 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 	data = [NSData dataWithContentsOfFile: outFile];
 
-	if( data == nil)
+	if (data == nil)
 	{
 		NSArray *dicomImageArray = [[series valueForKey:@"images"] allObjects];
 		
-		if( [dicomImageArray count] > 1)
+		if ([dicomImageArray count] > 1)
 		{
 			@try
 			{
@@ -2377,7 +2106,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	if ([obj isKindOfClass:[NSArray class]])
 		return obj;
 	
-	if( obj == nil)
+	if (obj == nil)
 		return [NSArray array];
 	
 	return [NSArray arrayWithObject:obj];
@@ -2385,6 +2114,9 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
 {
+	WebPortalResponse* response = [[[WebPortalResponse alloc] init] autorelease];
+	[response setSessionId:session.sid];
+
 	BOOL lockReleased = NO, waitBeforeReturning = NO;
 	
 	NSString *contentRange = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Range") autorelease];
@@ -2396,8 +2128,8 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	while(![scan isAtEnd])
 	{
-		if( !isSafari) isSafari = [scan scanString:@"Safari/" intoString:nil];
-		if( !isMacOS) isMacOS = [scan scanString:@"Mac OS" intoString: nil];
+		if (!isSafari) isSafari = [scan scanString:@"Safari/" intoString:nil];
+		if (!isMacOS) isMacOS = [scan scanString:@"Mac OS" intoString: nil];
 		[scan setScanLocation:[scan scanLocation]+1];
 	}
 	
@@ -2411,7 +2143,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	BOOL isiPhone = isSafari && isMobile; // works only with Mobile Safari
 	
-	if(!isiPhone) // look
+	if (!isiPhone) // look
 	{
 		scan = [NSScanner scannerWithString:userAgent];
 		BOOL isiPhoneOS = NO;
@@ -2441,19 +2173,19 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	// parse the URL to find the parameters (if any)
 	NSArray *urlComponenents = [url componentsSeparatedByString:@"?"];
 	NSString *parameterString = NULL;
-	if([urlComponenents count] == 2) parameterString = [urlComponenents lastObject];
+	if ([urlComponenents count] == 2) parameterString = [urlComponenents lastObject];
 	
 	[urlParameters release];
 	urlParameters = [[NSMutableDictionary dictionary] retain];
 	
 	// GET params
-	[urlParameters addEntriesFromDictionary:[OsiriXHTTPConnection ExtractParams:parameterString]];
+	[urlParameters addEntriesFromDictionary:[WebPortalConnection ExtractParams:parameterString]];
 	
 	// POST params
-	if( [method isEqualToString: @"POST"] && multipartData && [multipartData count] == 1) // through POST
+	if ([method isEqualToString: @"POST"] && multipartData && [multipartData count] == 1) // through POST
 	{
 		NSString* postParamsString = [[[NSString alloc] initWithBytes: [[multipartData lastObject] bytes] length: [(NSData*) [multipartData lastObject] length] encoding: NSUTF8StringEncoding] autorelease];
-		[urlParameters addEntriesFromDictionary:[OsiriXHTTPConnection ExtractParams:postParamsString]];
+		[urlParameters addEntriesFromDictionary:[WebPortalConnection ExtractParams:postParamsString]];
 	}
 	
 	// find the name of the requested file
@@ -2489,7 +2221,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		@try
 		{
 			if (![fileURL rangeOfString:@".pvt."].length)
-				data = [OsiriXHTTPConnection WebServicesHTMLData:fileURL];
+				data = [WebPortalConnection WebServicesHTMLData:fileURL];
 			err = !data;
 			
 			#pragma mark index
@@ -2497,7 +2229,8 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			{
 				NSMutableString* templateString = [self webServicesHTMLMutableString:@"index.html"];
 				
-				[self setBlock:@"AuthorizedRestorePasswordWebServer" visible:[[NSUserDefaults standardUserDefaults] boolForKey:@"restorePasswordWebServer"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"passwordWebServer"] forString:templateString];
+				[WebPortalData mutableString:templateString block:@"AuthorizedRestorePasswordWebServer" setVisible:[[NSUserDefaults standardUserDefaults] boolForKey:@"restorePasswordWebServer"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"passwordWebServer"]];
+				[templateString replaceOccurrencesOfString:@"%PageTitle%" withString:@"OsiriX Web Portal"];
 				
 				data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
 				
@@ -2505,73 +2238,48 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			}
 			
 			#pragma mark main
-			
-			if([fileURL isEqualToString: @"/main"])
+			if ([fileURL isEqualToString: @"/main"])
 			{
 				NSMutableString *templateString = [self webServicesHTMLMutableString:@"main.html"];
 				
-				templateString = [self setBlock: @"AuthorizedUploadDICOMFiles" visible: ( currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] && !isiPhone) forString: templateString];
+				if (!currentUser || currentUser.uploadDICOM.boolValue)
+					[self supportsPOST:NULL withSize:0];
+
+				NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
+
+				[tokens setObject:NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, main page, title") forKey:@"PageTitle"];
+				[tokens setObject:currentUser forKey:@"User"];
+				[tokens setBool: currentUser.uploadDICOM && !isiPhone forKey:@"AuthorizedUploadDICOMFiles"];
+				[tokens setBool: !currentUser || [[self studiesForPredicate:[NSPredicate predicateWithValue:YES] sortBy:nil] count] forKey:@"accessStudies"];
 				
-				if( currentUser == nil || (currentUser && [[currentUser valueForKey: @"uploadDICOM"] boolValue] == YES))
-					[self supportsPOST: nil withSize: 0];
-				
-				NSArray *tempArray = [templateString componentsSeparatedByString:@"%AlbumListItem%"];
-				NSString *templateStringStart = [tempArray objectAtIndex:0];
-				tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/AlbumListItem%"];
-				NSString *albumListItemString = [tempArray objectAtIndex:0];
-				NSString *templateStringEnd = [tempArray lastObject];
-				
-				NSMutableString *returnHTML = [NSMutableString stringWithString:templateStringStart];
-				
-				NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
-				for(NSManagedObject *album in albumArray)
-				{
-					if(![[album valueForKey:@"name"] isEqualToString: NSLocalizedString(@"Database", nil)])
-					{
-						NSMutableString *tempString = [NSMutableString stringWithString:albumListItemString];
-						[tempString replaceOccurrencesOfString: @"%AlbumName%" withString: notNil( [album valueForKey:@"name"]) options:NSLiteralSearch range:tempString.range];
-						[tempString replaceOccurrencesOfString: @"%AlbumNameURL%" withString: [[album valueForKey:@"name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] options:NSLiteralSearch range:tempString.range];
-						if([[album valueForKey:@"smartAlbum"] intValue] == 1)
-							[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"SmartAlbum" options:NSLiteralSearch range:tempString.range];
-						else
-							[tempString replaceOccurrencesOfString: @"%AlbumType%" withString:@"Album" options:NSLiteralSearch range:tempString.range];
-						[returnHTML appendString:tempString];
-					}
+				NSArray* unfilteredAlbums = [[BrowserController currentBrowser] albumArray];
+				NSMutableArray* albums = [NSMutableArray array];
+				for (NSArray* album in unfilteredAlbums) {
+		//			NSLog(@"DicomAlbum]]] %@", album.description);
+					if ([[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", nil)])
+						continue;
+					else [albums addObject:[WebPortalProxy createWithObject:album transformer:[AlbumTransformer create]]];
 				}
-							
-				[returnHTML appendString:templateStringEnd];
+				[tokens setObject:albums forKey:@"Albums"];
 				
-				BOOL showAlbums = YES;
-				if([albumArray count]==1) // this is the Database 'Album'
-					showAlbums = NO;
-				returnHTML = [self setBlock:@"Albums" visible:showAlbums forString:returnHTML];
+				[WebPortalData mutableString:templateString evaluateTokensWithDictionary:tokens];
 				
-				BOOL accessStudies = YES;
-				
-				if( currentUser)
-				{
-					if( [[self studiesForPredicate: [NSPredicate predicateWithValue:YES] sortBy: nil] count] == 0)
-						accessStudies = NO;
-				}
-				
-				returnHTML = [self setBlock: @"accessStudies" visible: accessStudies forString: returnHTML];
-				 
-				data = [returnHTML dataUsingEncoding:NSUTF8StringEncoding];
-				
+				data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
 				err = NO;
 			}
-		#pragma mark wado
+			
+			#pragma mark wado
 			// wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX
 			// 127.0.0.1:3333/wado?requestType=WADO&frameNumber=1&studyUID=2.16.840.1.113669.632.20.1211.10000591592&seriesUID=1.3.6.1.4.1.19291.2.1.2.2867252960399100001&objectUID=1.3.6.1.4.1.19291.2.1.3.2867252960616100004
-			else if( [fileURL hasSuffix: @"/wado"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
+			else if ([fileURL hasSuffix: @"/wado"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
 			{
-				if( [[[urlParameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
+				if ([[[urlParameters objectForKey:@"requestType"] lowercaseString] isEqualToString: @"wado"])
 				{
 					NSString *studyUID = [urlParameters objectForKey:@"studyUID"];
 					NSString *seriesUID = [urlParameters objectForKey:@"seriesUID"];
 					NSString *objectUID = [urlParameters objectForKey:@"objectUID"];
 					
-					if( objectUID == nil)
+					if (objectUID == nil)
 						NSLog( @"***** WADO with objectUID == nil -> wado will fail");
 					
 					NSString *contentType = [[[[urlParameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
@@ -2583,15 +2291,15 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					int frameNumber = [[urlParameters objectForKey:@"frameNumber"] intValue];	// -> OsiriX stores frames as images
 					int imageQuality = DCMLosslessQuality;
 					
-					if( [urlParameters objectForKey:@"imageQuality"])
+					if ([urlParameters objectForKey:@"imageQuality"])
 					{
-						if( [[urlParameters objectForKey:@"imageQuality"] intValue] > 80)
+						if ([[urlParameters objectForKey:@"imageQuality"] intValue] > 80)
 							imageQuality = DCMLosslessQuality;
-						else if( [[urlParameters objectForKey:@"imageQuality"] intValue] > 60)
+						else if ([[urlParameters objectForKey:@"imageQuality"] intValue] > 60)
 							imageQuality = DCMHighQuality;
-						else if( [[urlParameters objectForKey:@"imageQuality"] intValue] > 30)
+						else if ([[urlParameters objectForKey:@"imageQuality"] intValue] > 30)
 							imageQuality = DCMMediumQuality;
-						else if( [[urlParameters objectForKey:@"imageQuality"] intValue] >= 0)
+						else if ([[urlParameters objectForKey:@"imageQuality"] intValue] >= 0)
 							imageQuality = DCMLowQuality;
 					}
 					
@@ -2607,65 +2315,65 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						NSMutableDictionary *imageCache = nil;
 						NSArray *images = nil;
 						
-						if( wadoJPEGCache == nil)
+						if (wadoJPEGCache == nil)
 							wadoJPEGCache = [[NSMutableDictionary alloc] initWithCapacity: WADOCACHESIZE];
 						
-						if( [wadoJPEGCache count] > WADOCACHESIZE)
+						if ([wadoJPEGCache count] > WADOCACHESIZE)
 							[wadoJPEGCache removeAllObjects];
 						
-						if( [contentType length] == 0 || [contentType isEqualToString: @"image/jpeg"] || [contentType isEqualToString: @"image/png"] || [contentType isEqualToString: @"image/gif"] || [contentType isEqualToString: @"image/jp2"])
+						if ([contentType length] == 0 || [contentType isEqualToString: @"image/jpeg"] || [contentType isEqualToString: @"image/png"] || [contentType isEqualToString: @"image/gif"] || [contentType isEqualToString: @"image/jp2"])
 						{
 							imageCache = [wadoJPEGCache objectForKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
 						}
 						
-						if( imageCache == nil)
+						if (imageCache == nil)
 						{
-							if( studyUID)
+							if (studyUID)
 								[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
 							else
 								[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 							
 							NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
 							
-							if( [studies count] == 0)
+							if ([studies count] == 0)
 								NSLog( @"****** WADO Server : study not found");
 							
-							if( [studies count] > 1)
+							if ([studies count] > 1)
 								NSLog( @"****** WADO Server : more than 1 study with same uid");
 							
 							NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
 							
-							if( seriesUID)
+							if (seriesUID)
 								allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
 							
 							NSArray *allImages = [NSArray array];
-							for( id series in allSeries)
+							for ( id series in allSeries)
 								allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
 							
 							NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
-							NSPredicate *notNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+							NSPredicate *NotNilPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
 							
-							images = [[allImages filteredArrayUsingPredicate: notNilPredicate] filteredArrayUsingPredicate: predicate];
+							images = [[allImages filteredArrayUsingPredicate: NotNilPredicate] filteredArrayUsingPredicate: predicate];
 							
-							if( [images count] > 1)
+							if ([images count] > 1)
 							{
 								images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending:YES] autorelease]]];
 								
-								if( frameNumber < [images count])
+								if (frameNumber < [images count])
 									images = [NSArray arrayWithObject: [images objectAtIndex: frameNumber]];
 							}
 							
-							if( [images count])
+							if ([images count])
 							{
-								[OsiriXHTTPConnection updateLogEntryForStudy: [studies lastObject] withMessage: @"WADO Send" forUser: nil ip: [asyncSocket connectedHost]];
+								[WebPortalConnection updateLogEntryForStudy: [studies lastObject] withMessage: @"WADO Send" forUser: nil ip: [asyncSocket connectedHost]];
 							}
 						}
 						
-						if( [images count] || imageCache != nil)
+						if ([images count] || imageCache != nil)
 						{
-							if( [contentType isEqualToString: @"application/dicom"])
+							if ([contentType isEqualToString: @"application/dicom"])
 							{
-								if( [useOrig isEqualToString: @"true"] || [useOrig isEqualToString: @"1"] || [useOrig isEqualToString: @"yes"])
+								if ([useOrig isEqualToString: @"true"] || [useOrig isEqualToString: @"1"] || [useOrig isEqualToString: @"yes"])
 								{
 									data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
 								}
@@ -2673,7 +2381,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 								{
 									DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS: transferSyntax] autorelease];
 									
-									if( [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LosslessTransferSyntax]] ||
+									if ([ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LosslessTransferSyntax]] ||
 									   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LossyTransferSyntax]] ||
 									   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]] ||
 									   [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGLossless14TransferSyntax]] ||
@@ -2688,7 +2396,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 								}
 								err = NO;
 							}
-							else if( [contentType isEqualToString: @"video/mpeg"])
+							else if ([contentType isEqualToString: @"video/mpeg"])
 							{
 								DicomImage *im = [images lastObject];
 								
@@ -2708,7 +2416,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 									NSLog( @"%@", [e description]);
 								}
 								
-								if( [dicomImageArray count] > 1)
+								if ([dicomImageArray count] > 1)
 								{
 									NSString *path = @"/tmp/osirixwebservices";
 									[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
@@ -2723,7 +2431,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 									[fileName appendString:@".mov"];
 									
 									NSString *outFile;
-									if( isiPhone)
+									if (isiPhone)
 										outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
 									else
 										outFile = fileName;
@@ -2737,7 +2445,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 									
 									data = [NSData dataWithContentsOfFile: outFile];
 									
-									if( data)
+									if (data)
 										err = NO;
 								}
 							}
@@ -2745,21 +2453,21 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							{
 								DCMPix* dcmPix = [imageCache valueForKey: @"dcmPix"];
 								
-								if( dcmPix)
+								if (dcmPix)
 								{
 									// It's in the cache
 								}
-								else if( [images count] > 0)
+								else if ([images count] > 0)
 								{
 									DicomImage *im = [images lastObject];
 									
 									dcmPix = [[[DCMPix alloc] initWithPath: [im valueForKey: @"completePathResolved"] :0 :1 :nil :frameNumber :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
 									
-									if( dcmPix == nil)
+									if (dcmPix == nil)
 									{
 										NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
-										float *imPtr = malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof( float));
-										for( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
+										float *imPtr = (float*)malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof(float));
+										for ( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
 											imPtr[ i] = i;
 										
 										dcmPix = [[[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0] autorelease];
@@ -2770,7 +2478,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 									[wadoJPEGCache setObject: imageCache forKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
 								}
 								
-								if( dcmPix)
+								if (dcmPix)
 								{
 									NSImage *image = nil;
 									NSManagedObject *im =  [dcmPix imageObj];
@@ -2778,13 +2486,13 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 									float curWW = windowWidth;
 									float curWL = windowCenter;
 									
-									if( curWW == 0 && [[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+									if (curWW == 0 && [[im valueForKey:@"series"] valueForKey:@"windowWidth"])
 									{
 										curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
 										curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
 									}
 									
-									if( curWW == 0)
+									if (curWW == 0)
 									{
 										curWW = [dcmPix savedWW];
 										curWL = [dcmPix savedWL];
@@ -2792,7 +2500,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 									
 									data = [imageCache objectForKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
 									
-									if( data == nil)
+									if (data == nil)
 									{
 										[dcmPix checkImageAvailble: curWW :curWL];
 										
@@ -2805,14 +2513,14 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 										
 										BOOL resize = NO;
 										
-										if(width > maxWidth && maxWidth > 0)
+										if (width > maxWidth && maxWidth > 0)
 										{
 											height =  height * maxWidth / width;
 											width = maxWidth;
 											resize = YES;
 										}
 										
-										if(height > maxHeight && maxHeight > 0)
+										if (height > maxHeight && maxHeight > 0)
 										{
 											width = width * maxHeight / height;
 											height = maxHeight;
@@ -2821,7 +2529,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 										
 										NSImage *newImage;
 										
-										if( resize)
+										if (resize)
 											newImage = [image imageByScalingProportionallyToSize: NSMakeSize(width, height)];
 										else
 											newImage = image;
@@ -2829,11 +2537,11 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 										NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]];
 										NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
 										
-										if( [contentType isEqualToString: @"image/gif"])
+										if ([contentType isEqualToString: @"image/gif"])
 											data = [imageRep representationUsingType: NSGIFFileType properties:imageProps];
-										else if( [contentType isEqualToString: @"image/png"])
+										else if ([contentType isEqualToString: @"image/png"])
 											data = [imageRep representationUsingType: NSPNGFileType properties:imageProps];
-										else if( [contentType isEqualToString: @"image/jp2"])
+										else if ([contentType isEqualToString: @"image/jp2"])
 											data = [imageRep representationUsingType: NSJPEG2000FileType properties:imageProps];
 										else
 											data = [imageRep representationUsingType: NSJPEGFileType properties:imageProps];
@@ -2841,14 +2549,14 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 										[imageCache setObject: data forKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
 									}
 									
-									if( data)
+									if (data)
 										err = NO;
 								}
 							}
 						}
 						else NSLog( @"****** WADO Server : image uid not found !");
 					
-						if( err)
+						if (err)
 						{
 							data = [NSData data];
 							err = NO;
@@ -2860,33 +2568,34 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					}
 				}
 			}
-		#pragma mark studyList
-			else if([fileURL isEqualToString:@"/studyList"] || [fileURL isEqualToString:@"/studyList.json"])
+			
+			#pragma mark studyList
+			else if ([fileURL isEqualToString:@"/studyList"] || [fileURL isEqualToString:@"/studyList.json"])
 			{
 				NSPredicate *browsePredicate;
 				NSString *pageTitle;
-				if( [[urlParameters objectForKey:@"browse"] isEqualToString: @"newAddedStudies"] && [[urlParameters objectForKey:@"browseParameter"] doubleValue] > 0)
+				if ([[urlParameters objectForKey:@"browse"] isEqualToString: @"newAddedStudies"] && [[urlParameters objectForKey:@"browseParameter"] doubleValue] > 0)
 				{
 					browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", [[urlParameters objectForKey:@"browseParameter"] doubleValue]];
 					pageTitle = NSLocalizedString( @"New Studies Available", nil);
 				}
-				else if([(NSString*)[urlParameters objectForKey:@"browse"] isEqualToString:@"today"])
+				else if ([(NSString*)[urlParameters objectForKey:@"browse"] isEqualToString:@"today"])
 				{
 					browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [self startOfDay:[NSCalendarDate calendarDate]]];
 					pageTitle = NSLocalizedString( @"Today", nil);
 				}
-				else if([(NSString*)[urlParameters objectForKey:@"browse"] isEqualToString:@"6hours"])
+				else if ([(NSString*)[urlParameters objectForKey:@"browse"] isEqualToString:@"6hours"])
 				{
 					NSCalendarDate *now = [NSCalendarDate calendarDate];
 					browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
 					pageTitle = NSLocalizedString( @"Last 6 hours", nil);
 				}
-				else if([(NSString*)[urlParameters objectForKey:@"browse"] isEqualToString:@"all"])
+				else if ([(NSString*)[urlParameters objectForKey:@"browse"] isEqualToString:@"all"])
 				{
 					browsePredicate = [NSPredicate predicateWithValue:YES];
 					pageTitle = NSLocalizedString(@"Study List", nil);
 				}
-				else if([urlParameters objectForKey:@"search"])
+				else if ([urlParameters objectForKey:@"search"])
 				{
 					NSMutableString *search = [NSMutableString string];
 					NSString *searchString = [urlParameters objectForKey:@"search"];
@@ -2895,7 +2604,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					NSMutableArray *newComponents = [NSMutableArray array];
 					for (NSString *comp in components)
 					{
-						if(![comp isEqualToString:@""])
+						if (![comp isEqualToString:@""])
 							[newComponents addObject:comp];
 					}
 					
@@ -2905,7 +2614,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					browsePredicate = [NSPredicate predicateWithFormat:search];
 					pageTitle = NSLocalizedString(@"Search Result", nil);
 				}
-				else if([urlParameters objectForKey:@"searchID"])
+				else if ([urlParameters objectForKey:@"searchID"])
 				{
 					NSMutableString *search = [NSMutableString string];
 					NSString *searchString = [NSString stringWithString:[urlParameters objectForKey:@"searchID"]];
@@ -2914,7 +2623,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					NSMutableArray *newComponents = [NSMutableArray array];
 					for (NSString *comp in components)
 					{
-						if(![comp isEqualToString:@""])
+						if (![comp isEqualToString:@""])
 							[newComponents addObject:comp];
 					}
 					
@@ -2924,7 +2633,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					browsePredicate = [NSPredicate predicateWithFormat:search];
 					pageTitle = NSLocalizedString(@"Search Result", nil);
 				}
-				else if([urlParameters objectForKey:@"searchAccessionNumber"])
+				else if ([urlParameters objectForKey:@"searchAccessionNumber"])
 				{
 					NSMutableString *search = [NSMutableString string];
 					NSString *searchString = [NSString stringWithString:[urlParameters objectForKey:@"searchAccessionNumber"]];
@@ -2933,7 +2642,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					NSMutableArray *newComponents = [NSMutableArray array];
 					for (NSString *comp in components)
 					{
-						if(![comp isEqualToString:@""])
+						if (![comp isEqualToString:@""])
 							[newComponents addObject:comp];
 					}
 					
@@ -2949,63 +2658,63 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					pageTitle = NSLocalizedString(@"Study List", nil);
 				}
 				
-				if([fileURL isEqualToString:@"/studyList"])
+				if ([fileURL isEqualToString:@"/studyList"])
 				{
 					NSMutableString *html = [self htmlStudyListForStudies: [self studiesForPredicate: browsePredicate sortBy: [urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", [NSNumber numberWithBool: isiPhone], @"iPhone", nil]];
 					
-					if([urlParameters objectForKey:@"album"])
+					if ([urlParameters objectForKey:@"album"])
 					{
-						if(![[urlParameters objectForKey:@"album"] isEqualToString:@""])
+						if (![[urlParameters objectForKey:@"album"] isEqualToString:@""])
 						{
 							html = [self htmlStudyListForStudies: [self studiesForAlbum:[urlParameters objectForKey:@"album"] sortBy:[urlParameters objectForKey:@"order"]] settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
 							pageTitle = [urlParameters objectForKey:@"album"];
 						}
 					}
 					
-					[html replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( pageTitle) options:NSLiteralSearch range:html.range];
+					[html replaceOccurrencesOfString:@"%PageTitle%" withString:NotNil(pageTitle)];
 					
-					if([urlParameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]] options:NSLiteralSearch range:html.range];
-					else [html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:html.range]; 
+					if ([urlParameters objectForKey:@"browse"])[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]]];
+					else [html replaceOccurrencesOfString:@"%browse%" withString:@""]; 
 					
-					if([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:html.range];
-					else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:html.range]; 
+					if ([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]]];
+					else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@""]; 
 					
-					if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:html.range];
-					else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:html.range];
+					if ([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]]];
+					else [html replaceOccurrencesOfString:@"%search%" withString:@""];
 					
-					if([urlParameters objectForKey:@"album"])[html replaceOccurrencesOfString:@"%album%" withString:[NSString stringWithFormat:@"&album=%@",[urlParameters objectForKey:@"album"]] options:NSLiteralSearch range:html.range];
-					else [html replaceOccurrencesOfString:@"%album%" withString:@"" options:NSLiteralSearch range:html.range];
+					if ([urlParameters objectForKey:@"album"])[html replaceOccurrencesOfString:@"%album%" withString:[NSString stringWithFormat:@"&album=%@",[urlParameters objectForKey:@"album"]]];
+					else [html replaceOccurrencesOfString:@"%album%" withString:@""];
 
-					if([urlParameters objectForKey:@"order"])
+					if ([urlParameters objectForKey:@"order"])
 					{
-						if([[urlParameters objectForKey:@"order"] isEqualToString:@"name"])
+						if ([[urlParameters objectForKey:@"order"] isEqualToString:@"name"])
 						{
-							[html replaceOccurrencesOfString:@"%orderByName%" withString:@"sortedBy" options:NSLiteralSearch range:html.range];
-							[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"" options:NSLiteralSearch range:html.range];
+							[html replaceOccurrencesOfString:@"%orderByName%" withString:@"sortedBy"];
+							[html replaceOccurrencesOfString:@"%orderByDate%" withString:@""];
 						}
 						else
 						{
-							[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:html.range];
-							[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:html.range];
+							[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy"];
+							[html replaceOccurrencesOfString:@"%orderByName%" withString:@""];
 						}
 					}
 					else
 					{
-						[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy" options:NSLiteralSearch range:html.range];
-						[html replaceOccurrencesOfString:@"%orderByName%" withString:@"" options:NSLiteralSearch range:html.range];
+						[html replaceOccurrencesOfString:@"%orderByDate%" withString:@"sortedBy"];
+						[html replaceOccurrencesOfString:@"%orderByName%" withString:@""];
 					}
 					
 					data = [html dataUsingEncoding:NSUTF8StringEncoding];
 					err = NO;
 				}
-				#pragma mark studyList (JSON)
-				else if([fileURL isEqualToString:@"/studyList.json"])
+				#pragma mark     JSON
+				else if ([fileURL isEqualToString:@"/studyList.json"])
 				{
 					NSArray *studies;
 					
-					if([urlParameters objectForKey:@"album"])
+					if ([urlParameters objectForKey:@"album"])
 					{
-						if(![[urlParameters objectForKey:@"album"] isEqualToString:@""])
+						if (![[urlParameters objectForKey:@"album"] isEqualToString:@""])
 						{
 							studies = [self studiesForAlbum:[urlParameters objectForKey:@"album"] sortBy:[urlParameters objectForKey:@"order"]];
 						}
@@ -3018,12 +2727,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				}
 			}
 		#pragma mark study
-			else if([fileURL isEqualToString:@"/study"])
+			else if ([fileURL isEqualToString:@"/study"])
 			{
 				NSString *message = nil;
 				
 				NSPredicate *browsePredicate;
-				if([[urlParameters allKeys] containsObject:@"id"])
+				if ([[urlParameters allKeys] containsObject:@"id"])
 				{
 					browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
 				}
@@ -3031,19 +2740,19 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					browsePredicate = [NSPredicate predicateWithValue:NO];
 				
 				#pragma mark dicomSend
-				if( [[urlParameters allKeys] containsObject:@"dicomSend"])
+				if ([[urlParameters allKeys] containsObject:@"dicomSend"])
 				{
 					NSString *dicomDestination = [urlParameters objectForKey:@"dicomDestination"];
 					NSArray *tempArray = [dicomDestination componentsSeparatedByString:@":"];
 					
-					if( [tempArray count] >= 4)
+					if ([tempArray count] >= 4)
 					{
 						NSString *dicomDestinationAddress = [tempArray objectAtIndex:0];
 						NSString *dicomDestinationPort = [tempArray objectAtIndex:1];
 						NSString *dicomDestinationAETitle = [tempArray objectAtIndex:2];
 						NSString *dicomDestinationSyntax = [tempArray objectAtIndex:3];
 						
-						if( dicomDestinationAddress && dicomDestinationPort && dicomDestinationAETitle && dicomDestinationSyntax)
+						if (dicomDestinationAddress && dicomDestinationPort && dicomDestinationAETitle && dicomDestinationSyntax)
 						{
 							[selectedDICOMNode release];
 							selectedDICOMNode = [NSMutableDictionary dictionary];
@@ -3056,12 +2765,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							[selectedImages release];
 							selectedImages = [NSMutableArray array];
 							NSArray *seriesArray;
-							for (NSString* selectedID in [OsiriXHTTPConnection MakeArray:[urlParameters objectForKey:@"selected"]])
+							for (NSString* selectedID in [WebPortalConnection MakeArray:[urlParameters objectForKey:@"selected"]])
 							{
 								NSPredicate *pred = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"id"], selectedID];
 								
 								seriesArray = [self seriesForPredicate: pred];
-								for(NSManagedObject *series in seriesArray)
+								for (NSManagedObject *series in seriesArray)
 								{
 									NSArray *images = [[series valueForKey:@"images"] allObjects];
 									[selectedImages addObjectsFromArray:images];
@@ -3070,7 +2779,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							
 							[selectedImages retain];
 							
-							if( [selectedImages count])
+							if ([selectedImages count])
 							{
 								[self dicomSend: self];
 								
@@ -3081,24 +2790,24 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 						}
 						
-						if( message == nil)
+						if (message == nil)
 							message = [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed to node : %@ - %@", nil), dicomDestinationAddress, dicomDestinationAETitle];
 					}
 					
-					if( message == nil)
+					if (message == nil)
 						message = [NSString stringWithFormat: NSLocalizedString( @"DICOM Transfer failed to node : cannot identify DICOM node.", nil)];
 				}
 				
 				NSArray *studies = [self studiesForPredicate:browsePredicate];
 				
-				if( [studies count] == 1)
+				if ([studies count] == 1)
 				{
-					if( [[urlParameters allKeys] containsObject:@"shareStudy"])
+					if ([[urlParameters allKeys] containsObject:@"shareStudy"])
 					{
 						NSString *userDestination = [urlParameters objectForKey:@"userDestination"];
 						NSString *messageFromUser = [urlParameters objectForKey:@"message"];
 						
-						if( userDestination)
+						if (userDestination)
 						{
 							id study = [studies lastObject];
 							
@@ -3111,7 +2820,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							error = nil;
 							NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
 							
-							if( [users count] == 1)
+							if ([users count] == 1)
 							{
 								// Add study to specific study list for this user
 								NSManagedObject *destUser = [users lastObject];
@@ -3121,7 +2830,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 								
 								NSManagedObject *studyLink = nil;
 								
-								if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+								if ([studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
 								{
 									studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: [BrowserController currentBrowser].userManagedObjectContext];
 								
@@ -3144,15 +2853,15 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 								
 								// Send the email
 								
-								[OsiriXHTTPConnection sendNotificationsEmailsTo: users aboutStudies: [NSArray arrayWithObject: study] predicate: nil message: [messageFromUser stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo: [currentUser valueForKey: @"email"] customText:nil webServerAddress:self.webServerAddress];
+								[WebPortalConnection sendNotificationsEmailsTo: users aboutStudies: [NSArray arrayWithObject: study] predicate: nil message: [messageFromUser stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo: [currentUser valueForKey: @"email"] customText:nil webServerAddress:self.webServerAddress];
 								
-								[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", userDestination] forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
+								[WebPortalConnection updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", userDestination] forUser: [currentUser valueForKey: @"name"] ip: [asyncSocket connectedHost]];
 								
 								message = [NSString stringWithFormat: NSLocalizedString( @"This study is now shared with %@.", nil), userDestination];
 							}
 						}
 						
-						if( message == nil)
+						if (message == nil)
 							message = [NSString stringWithFormat: NSLocalizedString( @"Failed to share this study with %@.", nil), userDestination];
 					}
 				
@@ -3161,58 +2870,58 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 										
 					NSMutableString *html = [self htmlStudy:[studies lastObject] parameters:urlParameters settings: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"iPhone", [NSNumber numberWithBool: isMacOS], @"MacOS", nil]];
 					
-					[html replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:html.range];
+					[html replaceOccurrencesOfString:@"%StudyID%" withString:NotNil([urlParameters objectForKey:@"id"])];
 					
-	//				if( [[urlParameters allKeys] containsObject:@"dicomSend"])
+	//				if ([[urlParameters allKeys] containsObject:@"dicomSend"])
 	//				{
 	//					NSString *dicomDestination = [urlParameters objectForKey:@"dicomDestination"];
 	//					NSArray *tempArray = [dicomDestination componentsSeparatedByString:@":"];
 	//					
-	//					if( [tempArray count] >= 3)
+	//					if ([tempArray count] >= 3)
 	//					{
 	//						NSString *dicomDestinationAETitle = [tempArray objectAtIndex:2];
 	//						NSString *dicomDestinationAddress = [tempArray objectAtIndex:0];
 	//					}
 	//				}
 					
-					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString: notNil( message) options:NSLiteralSearch range:html.range];
+					[html replaceOccurrencesOfString:@"%LocalizedLabel_SendStatus%" withString:NotNil(message)];
 					
-					if( [urlParameters objectForKey:@"browse"])
-						[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]] options:NSLiteralSearch range:html.range];
+					if ([urlParameters objectForKey:@"browse"])
+						[html replaceOccurrencesOfString:@"%browse%" withString:[NSString stringWithFormat:@"&browse=%@",[urlParameters objectForKey:@"browse"]]];
 					else
-						[html replaceOccurrencesOfString:@"%browse%" withString:@"" options:NSLiteralSearch range:html.range];
+						[html replaceOccurrencesOfString:@"%browse%" withString:@""];
 					
-					if([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]] options:NSLiteralSearch range:html.range];
-					else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@"" options:NSLiteralSearch range:html.range];
+					if ([urlParameters objectForKey:@"browseParameter"])[html replaceOccurrencesOfString:@"%browseParameter%" withString:[NSString stringWithFormat:@"&browseParameter=%@",[urlParameters objectForKey:@"browseParameter"]]];
+					else [html replaceOccurrencesOfString:@"%browseParameter%" withString:@""];
 					
-					if([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]] options:NSLiteralSearch range:html.range];
-					else [html replaceOccurrencesOfString:@"%search%" withString:@"" options:NSLiteralSearch range:html.range];
+					if ([urlParameters objectForKey:@"search"])[html replaceOccurrencesOfString:@"%search%" withString:[NSString stringWithFormat:@"&search=%@",[urlParameters objectForKey:@"search"]]];
+					else [html replaceOccurrencesOfString:@"%search%" withString:@""];
 					
 					data = [html dataUsingEncoding:NSUTF8StringEncoding];
 				}
 				err = NO;
 			}
 		#pragma mark thumbnail
-			else if([fileURL isEqualToString:@"/thumbnail"])
+			else if ([fileURL isEqualToString:@"/thumbnail"])
 			{
 				NSPredicate *browsePredicate = nil;
 				NSString *seriesInstanceUID = nil, *studyInstanceUID = nil;
 				
-				if([[urlParameters allKeys] containsObject:@"id"])
+				if ([[urlParameters allKeys] containsObject:@"id"])
 				{
-					if( [[urlParameters allKeys] containsObject:@"studyID"])
+					if ([[urlParameters allKeys] containsObject:@"studyID"])
 					{
-						if( thumbnailCache == nil)
+						if (thumbnailCache == nil)
 							thumbnailCache = [[NSMutableDictionary alloc] initWithCapacity: THUMBNAILCACHE];
 						
-						if( [thumbnailCache count] > THUMBNAILCACHE)
+						if ([thumbnailCache count] > THUMBNAILCACHE)
 							[thumbnailCache removeAllObjects];
 						
-						if( [thumbnailCache objectForKey: [urlParameters objectForKey:@"studyID"]])
+						if ([thumbnailCache objectForKey: [urlParameters objectForKey:@"studyID"]])
 						{
 							NSDictionary *seriesThumbnail = [thumbnailCache objectForKey: [urlParameters objectForKey:@"studyID"]];
 							
-							if( [seriesThumbnail objectForKey: [urlParameters objectForKey:@"id"]])
+							if ([seriesThumbnail objectForKey: [urlParameters objectForKey:@"id"]])
 								data = [seriesThumbnail objectForKey: [urlParameters objectForKey:@"id"]];
 						}
 						
@@ -3230,15 +2939,15 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				else
 					browsePredicate = [NSPredicate predicateWithValue:NO];
 					
-				if( data == nil)
+				if (data == nil)
 				{
 					NSArray *series = [self seriesForPredicate:browsePredicate];
 					
-					if( [series count]  > 0)
+					if ([series count]  > 0)
 					{
 						NSMutableDictionary *seriesThumbnails = [NSMutableDictionary dictionary];
 						
-						for( DicomSeries *s in series)
+						for ( DicomSeries *s in series)
 						{
 							NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [s valueForKey:@"thumbnail"]];
 							
@@ -3246,28 +2955,28 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							
 							NSData *dataThumbnail = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
 							
-							if( dataThumbnail && [s valueForKey: @"seriesInstanceUID"])
+							if (dataThumbnail && [s valueForKey: @"seriesInstanceUID"])
 							{
 								[seriesThumbnails setObject: dataThumbnail forKey: [s valueForKey: @"seriesInstanceUID"]];
 							
-								if( [seriesInstanceUID isEqualToString: [s valueForKey: @"seriesInstanceUID"]])
+								if ([seriesInstanceUID isEqualToString: [s valueForKey: @"seriesInstanceUID"]])
 									data = dataThumbnail;
 							}
 						}
 						
-						if( studyInstanceUID && seriesThumbnails)
+						if (studyInstanceUID && seriesThumbnails)
 							[thumbnailCache setObject: seriesThumbnails forKey: studyInstanceUID];
 					}
 				}
 				err = NO;
 			}
 		#pragma mark series.pdf
-			else if( [fileURL isEqualToString:@"/series.pdf"])
+			else if ([fileURL isEqualToString:@"/series.pdf"])
 			{
 				NSPredicate *browsePredicate;
-				if([[urlParameters allKeys] containsObject:@"id"])
+				if ([[urlParameters allKeys] containsObject:@"id"])
 				{
-					if( [[urlParameters allKeys] containsObject:@"studyID"])
+					if ([[urlParameters allKeys] containsObject:@"studyID"])
 						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"]];
 					else
 						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"id"] ];
@@ -3277,9 +2986,9 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				
 				NSArray *series = [self seriesForPredicate: browsePredicate];
 				
-				if( [series count] == 1)
+				if ([series count] == 1)
 				{
-					if( [DCMAbstractSyntaxUID isPDF: [[series lastObject] valueForKey: @"seriesSOPClassUID"]])
+					if ([DCMAbstractSyntaxUID isPDF: [[series lastObject] valueForKey: @"seriesSOPClassUID"]])
 					{
 						DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"]  decodingPixelData:NO];
 					
@@ -3287,19 +2996,19 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						{
 							data = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
 							
-							if( data)
+							if (data)
 								err = NO;
 						}
 					}
 					
-					if( [DCMAbstractSyntaxUID isStructuredReport: [[series lastObject] valueForKey: @"seriesSOPClassUID"]])
+					if ([DCMAbstractSyntaxUID isStructuredReport: [[series lastObject] valueForKey: @"seriesSOPClassUID"]])
 					{
-						if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
+						if ([[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
 							[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
 					
 						NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [[[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"] lastPathComponent]] stringByAppendingPathExtension: @"html"];
 						
-						if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
+						if ([[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
 						{
 							NSTask *aTask = [[[NSTask alloc] init] autorelease];		
 							[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
@@ -3310,7 +3019,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							[aTask interrupt];
 						}
 						
-						if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
+						if ([[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
 						{
 							NSTask *aTask = [[[NSTask alloc] init] autorelease];
 							[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
@@ -3322,24 +3031,24 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						
 						data = [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]];
 							
-						if( data)
+						if (data)
 							err = NO;
 					}
 				}
 				
-				if( err)
+				if (err)
 				{
 					data = [NSData data];
 					err = NO;
 				}
 			}
 		#pragma mark series
-			else if( [fileURL isEqualToString:@"/series"] || [fileURL isEqualToString:@"/series.json"])
+			else if ([fileURL isEqualToString:@"/series"] || [fileURL isEqualToString:@"/series.json"])
 			{
 				NSPredicate *browsePredicate;
-				if([[urlParameters allKeys] containsObject:@"id"])
+				if ([[urlParameters allKeys] containsObject:@"id"])
 				{
-					if( [[urlParameters allKeys] containsObject:@"studyID"])
+					if ([[urlParameters allKeys] containsObject:@"studyID"])
 						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"]];
 					else
 						browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [urlParameters objectForKey:@"id"]];
@@ -3350,38 +3059,38 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				NSArray *series = [self seriesForPredicate:browsePredicate];
 				NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 
-				if([fileURL isEqualToString:@"/series"])
+				if ([fileURL isEqualToString:@"/series"])
 				{
 					NSMutableString *templateString = [self webServicesHTMLMutableString:@"series.html"];			
-					[templateString replaceOccurrencesOfString:@"%StudyID%" withString: notNil( [urlParameters objectForKey:@"studyID"]) options:NSLiteralSearch range:templateString.range];
-					[templateString replaceOccurrencesOfString:@"%SeriesID%" withString: notNil( [urlParameters objectForKey:@"id"]) options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString:@"%StudyID%" withString:NotNil([urlParameters objectForKey:@"studyID"])];
+					[templateString replaceOccurrencesOfString:@"%SeriesID%" withString:NotNil([urlParameters objectForKey:@"id"])];
 					
-					NSString *browse =  notNil( [urlParameters objectForKey:@"browse"]);
-					NSString *browseParameter =  notNil( [urlParameters objectForKey:@"browseParameter"]);
-					NSString *search =  notNil( [urlParameters objectForKey:@"search"]);
-					NSString *album = notNil( [urlParameters objectForKey:@"album"]);
+					NSString *browse =  NotNil([urlParameters objectForKey:@"browse"]);
+					NSString *browseParameter =  NotNil([urlParameters objectForKey:@"browseParameter"]);
+					NSString *search =  NotNil([urlParameters objectForKey:@"search"]);
+					NSString *album = NotNil([urlParameters objectForKey:@"album"]);
 					
-					[templateString replaceOccurrencesOfString:@"%browse%" withString: notNil( browse) options: NSLiteralSearch range:templateString.range];
-					[templateString replaceOccurrencesOfString:@"%browseParameter%" withString: notNil( browseParameter) options: NSLiteralSearch range:templateString.range];
-					[templateString replaceOccurrencesOfString:@"%search%" withString:search options: NSLiteralSearch range:templateString.range];
-					[templateString replaceOccurrencesOfString:@"%album%" withString:album options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString:@"%browse%" withString:NotNil(browse)];
+					[templateString replaceOccurrencesOfString:@"%browseParameter%" withString:NotNil(browseParameter)];
+					[templateString replaceOccurrencesOfString:@"%search%" withString:search];
+					[templateString replaceOccurrencesOfString:@"%album%" withString:album];
 					
 					// This is probably wrong... video/quictime, see Series.html
-					// [templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov" options:NSLiteralSearch range:templateString.range];
-					[templateString replaceOccurrencesOfString:@"%MovieExtension%" withString: isiPhone? @"m4v":@"mov" options:NSLiteralSearch range:templateString.range];
+					// [templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov"];
+					[templateString replaceOccurrencesOfString:@"%MovieExtension%" withString: isiPhone? @"m4v":@"mov"];
 					
-					templateString = [self setBlock:@"image" visible: [imagesArray count] == 1 forString: templateString];
-					templateString = [self setBlock:@"movie" visible: [imagesArray count] != 1 forString: templateString];
-					if([imagesArray count] == 1)
+					[WebPortalData mutableString:templateString block:@"image" setVisible: [imagesArray count] == 1];
+					[WebPortalData mutableString:templateString block:@"movie" setVisible: [imagesArray count] != 1];
+					if ([imagesArray count] == 1)
 					{
-						[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:templateString.range];
-						[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@"" options:NSLiteralSearch range:templateString.range];
+						[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@""];
+						[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@""];
 					}
 					else
 					{
 						BOOL flash = [NSUserDefaultsController WebServerPrefersFlash] && !isiPhone;
-						templateString = [self setBlock:@"movieqt" visible:!flash forString: templateString];
-						templateString = [self setBlock:@"moviefla" visible:flash forString: templateString];
+						[WebPortalData mutableString:templateString block:@"movieqt" setVisible:!flash];
+						[WebPortalData mutableString:templateString block:@"moviefla" setVisible:flash];
 
 						int width, height;
 						
@@ -3390,24 +3099,24 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						height += 15; // quicktime controller height
 						
 						//NSLog(@"NEW w: %d, h: %d", width, height);
-						[templateString replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width] options:NSLiteralSearch range:templateString.range];
-						[templateString replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height] options:NSLiteralSearch range:templateString.range];
+						[templateString replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width]];
+						[templateString replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height]];
 						
-						// We will generate the movie now, if required... to avoid Quicktime plugin problem waiting for it.
-						[self produceMovieForSeries: [series lastObject] isiPhone: isiPhone fileURL:fileURL lockReleased: &lockReleased];
+						// We will generate the movie now, if required... to avoid Quicktime plugin problem waiting for it. REMOVED
+					//	[self produceMovieForSeries: [series lastObject] isiPhone: isiPhone fileURL:fileURL lockReleased: &lockReleased];
 					}
 					
-					NSString *seriesName = notNil( [[series lastObject] valueForKey:@"name"]);
-					[templateString replaceOccurrencesOfString:@"%PageTitle%" withString: notNil( seriesName) options:NSLiteralSearch range:templateString.range];
+					NSString *seriesName = NotNil([[series lastObject] valueForKey:@"name"]);
+					[templateString replaceOccurrencesOfString:@"%PageTitle%" withString:NotNil(seriesName)];
 					
-					NSString *studyName = notNil( [[series lastObject] valueForKeyPath:@"study.name"]);
-					[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString: notNil( studyName) options:NSLiteralSearch range:templateString.range];
+					NSString *studyName = NotNil([[series lastObject] valueForKeyPath:@"study.name"]);
+					[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString:NotNil(studyName)];
 					
 					data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
 					err = NO;
 				}
-				#pragma mark series (JSON)
-				else if([fileURL isEqualToString:@"/series.json"])
+				#pragma mark     JSON
+				else if ([fileURL isEqualToString:@"/series.json"])
 				{
 					@try
 					{
@@ -3429,10 +3138,10 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 			}
 	#pragma mark report
-			else if( [fileURL hasPrefix:@"/report"])
+			else if ([fileURL hasPrefix:@"/report"])
 			{
 				NSPredicate *browsePredicate;
-				if([[urlParameters allKeys] containsObject:@"id"])
+				if ([[urlParameters allKeys] containsObject:@"id"])
 				{
 					browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
 				}
@@ -3441,7 +3150,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				
 				NSArray *studies = [self studiesForPredicate:browsePredicate];
 				
-				if( [studies count] == 1)
+				if ([studies count] == 1)
 				{
 					[self updateLogEntryForStudy: [studies lastObject] withMessage: @"Download Report"];
 					
@@ -3449,14 +3158,14 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					
 					reportType = [reportFilePath pathExtension];
 					
-					if( [reportType isEqualToString: @"pages"])
+					if ([reportType isEqualToString: @"pages"])
 					{
 						NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
 						// zip the directory into a single archive file
 						NSTask *zipTask   = [[NSTask alloc] init];
 						[zipTask setLaunchPath:@"/usr/bin/zip"];
 						[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-						if([reportType isEqualToString:@"pages"])
+						if ([reportType isEqualToString:@"pages"])
 							[zipTask setArguments:[NSArray arrayWithObjects: @"-q", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
 						else
 							[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
@@ -3465,7 +3174,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						int result = [zipTask terminationStatus];
 						[zipTask release];
 						
-						if(result==0)
+						if (result==0)
 						{
 							reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
 						}
@@ -3474,25 +3183,25 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						
 						[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
 						
-						if( data)
+						if (data)
 							err = NO;
 					}
 					else
 					{
 						data = [NSData dataWithContentsOfFile: reportFilePath];
 						
-						if( data)
+						if (data)
 							err = NO;
 					}
 				}
 			}
 		#pragma mark ZIP
-			else if( [fileURL hasSuffix:@".zip"] || [fileURL hasSuffix:@".osirixzip"])
+			else if ([fileURL hasSuffix:@".zip"] || [fileURL hasSuffix:@".osirixzip"])
 			{
 				NSPredicate *browsePredicate;
-				if([[urlParameters allKeys] containsObject:@"id"])
+				if ([[urlParameters allKeys] containsObject:@"id"])
 				{
-					if( [[urlParameters allKeys] containsObject:@"studyID"])
+					if ([[urlParameters allKeys] containsObject:@"studyID"])
 						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"]];
 					else
 						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
@@ -3503,12 +3212,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				NSArray *series = [self seriesForPredicate:browsePredicate];
 				
 				NSMutableArray *imagesArray = [NSMutableArray array];
-				for( DicomSeries *s in series)
+				for ( DicomSeries *s in series)
 					[imagesArray addObjectsFromArray: [[s valueForKey:@"images"] allObjects]];
 				
-				if( [imagesArray count])
+				if ([imagesArray count])
 				{
-					if( [[currentUser valueForKey: @"encryptedZIP"] boolValue])
+					if ([[currentUser valueForKey: @"encryptedZIP"] boolValue])
 						[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download encrypted DICOM ZIP"];
 					else
 						[self updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download DICOM ZIP"];
@@ -3521,39 +3230,39 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						srcFolder = [srcFolder stringByAppendingPathComponent: [[[imagesArray lastObject] valueForKeyPath: @"series.study.name"] filenameString]];
 						destFile = [destFile stringByAppendingPathComponent: [[[imagesArray lastObject] valueForKeyPath: @"series.study.name"] filenameString]];
 						
-						if( isMacOS)
+						if (isMacOS)
 							destFile = [destFile  stringByAppendingPathExtension: @"zip"];
 						else
 							destFile = [destFile  stringByAppendingPathExtension: @"osirixzip"];
 						
-						if( srcFolder)
+						if (srcFolder)
 							[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
 						
-						if( destFile)
+						if (destFile)
 							[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
 						
 						[[NSFileManager defaultManager] createDirectoryAtPath: srcFolder attributes: nil];
 						
-						if( lockReleased == NO)
+						if (lockReleased == NO)
 						{
 							[[[BrowserController currentBrowser] managedObjectContext] unlock];
 							lockReleased = YES;
 						}
 						
-						if( [[currentUser valueForKey: @"encryptedZIP"] boolValue])
+						if ([[currentUser valueForKey: @"encryptedZIP"] boolValue])
 							[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: [currentUser valueForKey: @"password"]];
 						else
 							[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: nil];
 						
 						data = [NSData dataWithContentsOfFile: destFile];
 						
-						if( srcFolder)
+						if (srcFolder)
 							[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
 						
-						if( destFile)
+						if (destFile)
 							[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
 						
-						if( data)
+						if (data)
 							err = NO;
 						else
 						{
@@ -3568,12 +3277,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				}
 			}
 		#pragma mark image
-			else if([fileURL hasPrefix:@"/image."])
+			else if ([fileURL hasPrefix:@"/image."])
 			{
 				NSPredicate *browsePredicate;
-				if( [[urlParameters allKeys] containsObject:@"id"])
+				if ([[urlParameters allKeys] containsObject:@"id"])
 				{
-					if( [[urlParameters allKeys] containsObject:@"studyID"])
+					if ([[urlParameters allKeys] containsObject:@"studyID"])
 						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"]];
 					else
 						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
@@ -3582,39 +3291,39 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					browsePredicate = [NSPredicate predicateWithValue:NO];
 				
 				NSArray *series = [self seriesForPredicate:browsePredicate];
-				if( [series count] == 1)
+				if ([series count] == 1)
 				{
 					NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 					DicomImage *im;
-					if([dicomImageArray count] == 1)
+					if ([dicomImageArray count] == 1)
 						im = [dicomImageArray lastObject];
 					else
 						im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
 					
 					DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
 					
-					if( dcmPix == nil)
+					if (dcmPix == nil)
 					{
 						NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
-						float *imPtr = malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof( float));
-						for( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
+						float *imPtr = (float*)malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof(float));
+						for ( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
 							imPtr[ i] = i;
 						
 						dcmPix = [[[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0] autorelease];
 					}
 					
-					if( dcmPix)
+					if (dcmPix)
 					{
 						float curWW = 0;
 						float curWL = 0;
 						
-						if([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+						if ([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
 						{
 							curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
 							curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
 						}
 						
-						if( curWW != 0)
+						if (curWW != 0)
 							[dcmPix checkImageAvailble:curWW :curWL];
 						else
 							[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
@@ -3629,27 +3338,27 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						
 						BOOL resize = NO;
 						
-						if(width>maxWidth)
+						if (width>maxWidth)
 						{
 							height =  height * maxWidth / width;
 							width = maxWidth;
 							resize = YES;
 						}
-						if(height>maxHeight)
+						if (height>maxHeight)
 						{
 							width = width * maxHeight / height;
 							height = maxHeight;
 							resize = YES;
 						}
 						
-						if(width < minWidth)
+						if (width < minWidth)
 						{
 							height = (float)height * (float)minWidth / (float)width;
 							width = minWidth;
 							resize = YES;
 						}
 						
-						if(height < minHeight)
+						if (height < minHeight)
 						{
 							width = (float)width * (float)minHeight / (float)height;
 							height = minHeight;
@@ -3658,12 +3367,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						
 						NSImage *newImage;
 						
-						if( resize)
+						if (resize)
 							newImage = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];
 						else
 							newImage = image;
 						
-						if( [[urlParameters allKeys] containsObject:@"previewForMovie"])
+						if ([[urlParameters allKeys] containsObject:@"previewForMovie"])
 						{
 							[newImage lockFocus];
 							
@@ -3676,12 +3385,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						
 						NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [newImage TIFFRepresentation]];
 						
-						if( [[fileURL pathExtension] isEqualToString: @"png"])
+						if ([[fileURL pathExtension] isEqualToString: @"png"])
 						{
 							NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
 							data = [imageRep representationUsingType:NSPNGFileType properties: imageProps];
 						}
-						else if( [[fileURL pathExtension] isEqualToString: @"jpg"])
+						else if ([[fileURL pathExtension] isEqualToString: @"jpg"])
 						{
 							NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
 							data = [imageRep representationUsingType: NSJPEGFileType properties: imageProps];
@@ -3692,13 +3401,14 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				
 				err = NO;
 			}
-		#pragma mark movie .mov .m4v .swf
-			else if( [fileURL isEqualToString:@"/movie.mov"] || [fileURL isEqualToString:@"/movie.m4v"] || [fileURL isEqualToString:@"/movie.swf"])
+			
+			#pragma mark movie.mov/.m4v/.swf
+			else if ([fileURL isEqualToString:@"/movie.mov"] || [fileURL isEqualToString:@"/movie.m4v"] || [fileURL isEqualToString:@"/movie.swf"])
 			{
 				NSPredicate *browsePredicate;
-				if([[urlParameters allKeys] containsObject:@"id"])
+				if ([[urlParameters allKeys] containsObject:@"id"])
 				{
-					if( [[urlParameters allKeys] containsObject:@"studyID"])
+					if ([[urlParameters allKeys] containsObject:@"studyID"])
 						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [urlParameters objectForKey:@"studyID"], [urlParameters objectForKey:@"id"]];
 					else
 						browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
@@ -3708,38 +3418,39 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				
 				NSArray *series = [self seriesForPredicate:browsePredicate];
 				
-				if( [series count] == 1)
+				if ([series count] == 1)
 				{
 					data = [self produceMovieForSeries: [series lastObject] isiPhone: isiPhone fileURL: fileURL lockReleased: &lockReleased];
 				}
 				
-				if( data == nil || [data length] == 0)
+				if (data == nil || [data length] == 0)
 					NSLog( @"****** movie data == nil");
 					
 				err = NO;
 			}
 	//		#pragma mark m4v
-	//		else if([fileURL hasSuffix:@".m4v"]) -- I DONT UNDERSTAND WHERE THIS IS NEEDED...
+	//		else if ([fileURL hasSuffix:@".m4v"]) -- I DONT UNDERSTAND WHERE THIS IS NEEDED...
 	//		{
 	//			data = [NSData dataWithContentsOfFile: requestedFile];
 	//			totalLength = [data length];
 	//			
 	//			err = NO;
 	//		}
+			
 			#pragma mark password forgotten
-			else if( [fileURL isEqualToString: @"/password_forgotten"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"])
+			else if ([fileURL isEqualToString: @"/password_forgotten"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"])
 			{
 				NSMutableString *templateString = [self webServicesHTMLMutableString:@"password_forgotten.html"];
 				
 				NSString *message = @"";
 				
-				if( [[urlParameters valueForKey: @"what"] isEqualToString: @"restorePassword"])
+				if ([[urlParameters valueForKey: @"what"] isEqualToString: @"restorePassword"])
 				{
 					NSString *email = [urlParameters valueForKey: @"email"];
 					NSString *username = [urlParameters valueForKey: @"username"];
 					
 					// TRY TO FIND THIS USER
-					if( [email length] > 0 || [username length] > 0)
+					if ([email length] > 0 || [username length] > 0)
 					{
 						[[[BrowserController currentBrowser] userManagedObjectContext] lock];
 						
@@ -3749,7 +3460,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 							[dbRequest setEntity: [[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey: @"User"]];
 							
-							if( [email length] > [username length])
+							if ([email length] > [username length])
 								[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email]];
 							else
 								[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username]];
@@ -3757,13 +3468,13 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							error = nil;
 							NSArray *users = [[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest: dbRequest error:&error];
 							
-							if( [users count] >= 1)
+							if ([users count] >= 1)
 							{
-								for( UserTable *user in users)
+								for (WebPortalUser *user in users)
 								{
 									NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
 									
-									if( fromEmailAddress == nil)
+									if (fromEmailAddress == nil)
 										fromEmailAddress = @"";
 									
 									NSString *emailSubject = NSLocalizedString( @"Your password has been reset.", nil);
@@ -3778,7 +3489,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 									[emailMessage appendString: [user valueForKey: @"password"]];
 									[emailMessage appendString: @"\r\r"];
 									
-									[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Password reseted for user" forUser: [user valueForKey: @"name"] ip: nil];
+									[WebPortalConnection updateLogEntryForStudy: nil withMessage: @"Password reseted for user" forUser: [user valueForKey: @"name"] ip: nil];
 									
 									[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: [user valueForKey: @"email"], @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
 								
@@ -3792,7 +3503,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 								// To avoid someone scanning for the username
 								waitBeforeReturning = YES;
 								
-								[OsiriXHTTPConnection updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
+								[WebPortalConnection updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
 								
 								message = NSLocalizedString( @"This user doesn't exist in our database.", nil);
 							}
@@ -3806,32 +3517,34 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					}
 				}
 				
-				templateString = [self setBlock: @"MessageToWrite" visible: [message length] forString: templateString];
+				[WebPortalData mutableString:templateString block:@"MessageToWrite" setVisible:message.length];
+				[templateString replaceOccurrencesOfString:@"%PageTitle%" withString:@"Password Forgotten"];
 				
-				[templateString replaceOccurrencesOfString: @"%Localized_Message%" withString: notNil( message) options:NSLiteralSearch range:templateString.range];
+				[templateString replaceOccurrencesOfString: @"%Localized_Message%" withString:NotNil(message)];
 				
 				data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
 				
 				err = NO;
 			}
+			
 			#pragma mark account
-			else if( [fileURL isEqualToString: @"/account"])
+			else if ([fileURL isEqualToString: @"/account"])
 			{
-				if( currentUser)
+				if (currentUser)
 				{
 					NSString *message = @"";
 					BOOL messageIsError = NO;
 					
-					if( [[urlParameters valueForKey: @"what"] isEqualToString: @"changePassword"])
+					if ([[urlParameters valueForKey: @"what"] isEqualToString: @"changePassword"])
 					{
 						NSString * previouspassword = [urlParameters valueForKey: @"previouspassword"];
 						NSString * password = [urlParameters valueForKey: @"password"];
 						
-						if( [previouspassword isEqualToString: [currentUser valueForKey: @"password"]])
+						if ([previouspassword isEqualToString: [currentUser valueForKey: @"password"]])
 						{
-							if( [[urlParameters valueForKey: @"password"] isEqualToString: [urlParameters valueForKey: @"password2"]])
+							if ([[urlParameters valueForKey: @"password"] isEqualToString: [urlParameters valueForKey: @"password2"]])
 							{
-								if( [password length] >= 4)
+								if ([password length] >= 4)
 								{
 									// We can update the user password
 									[currentUser setValue: password forKey: @"password"];
@@ -3857,7 +3570,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						}
 					}
 					
-					if( [[urlParameters valueForKey: @"what"] isEqualToString: @"changeSettings"])
+					if ([[urlParameters valueForKey: @"what"] isEqualToString: @"changeSettings"])
 					{
 						NSString * email = [urlParameters valueForKey: @"email"];
 						NSString * address = [urlParameters valueForKey: @"address"];
@@ -3867,7 +3580,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						[currentUser setValue: address forKey: @"address"];
 						[currentUser setValue: phone forKey: @"phone"];
 						
-						if( [[[urlParameters valueForKey: @"emailNotification"] lowercaseString] isEqualToString: @"on"])
+						if ([[[urlParameters valueForKey: @"emailNotification"] lowercaseString] isEqualToString: @"on"])
 							[currentUser setValue: [NSNumber numberWithBool: YES] forKey: @"emailNotification"];
 						else
 							[currentUser setValue: [NSNumber numberWithBool: NO] forKey: @"emailNotification"];
@@ -3878,26 +3591,27 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					NSMutableString *templateString = [self webServicesHTMLMutableString:@"account.html"];
 					
 					NSString *block = @"MessageToWrite";
-					if( messageIsError)
+					if (messageIsError)
 					{
 						block = @"ErrorToWrite";
-						templateString = [self setBlock:@"MessageToWrite" visible:NO forString:templateString];
+						[WebPortalData mutableString:templateString block:@"MessageToWrite" setVisible:NO];
 					}
 					else
 					{
-						templateString = [self setBlock:@"ErrorToWrite" visible:NO forString:templateString];
+						[WebPortalData mutableString:templateString block:@"ErrorToWrite" setVisible:NO];
 					}
 
-					templateString = [self setBlock:block visible: [message length] forString:templateString];
+					[WebPortalData mutableString:templateString block:block setVisible:message.length];
 					
-					[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString: notNil( message) options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString:NotNil(message)];
 					
-					[templateString replaceOccurrencesOfString: @"%name%" withString: notNil( [currentUser valueForKey: @"name"]) options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString: @"%name%" withString:NotNil([currentUser valueForKey: @"name"])];
+					[templateString replaceOccurrencesOfString: @"%PageTitle%" withString:[NSString stringWithFormat:@"User account for: %@", currentUser.name]];
 					
-					[templateString replaceOccurrencesOfString: @"%email%" withString: notNil( [currentUser valueForKey: @"email"]) options:NSLiteralSearch range:templateString.range];
-					[templateString replaceOccurrencesOfString: @"%address%" withString: notNil( [currentUser valueForKey: @"address"]) options:NSLiteralSearch range:templateString.range];
-					[templateString replaceOccurrencesOfString: @"%phone%" withString: notNil( [currentUser valueForKey: @"phone"]) options:NSLiteralSearch range:templateString.range];
-					[templateString replaceOccurrencesOfString: @"%emailNotification%" withString: ([[currentUser valueForKey: @"emailNotification"] boolValue]?@"checked":@"") options:NSLiteralSearch range:templateString.range];
+					[templateString replaceOccurrencesOfString: @"%email%" withString:NotNil([currentUser valueForKey: @"email"])];
+					[templateString replaceOccurrencesOfString: @"%address%" withString:NotNil([currentUser valueForKey: @"address"])];
+					[templateString replaceOccurrencesOfString: @"%phone%" withString:NotNil([currentUser valueForKey: @"phone"])];
+					[templateString replaceOccurrencesOfString: @"%emailNotification%" withString: ([[currentUser valueForKey: @"emailNotification"] boolValue]?@"checked":@"")];
 					
 					data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
 					
@@ -3906,18 +3620,20 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					err = NO;
 				}
 			}
+			
 			#pragma mark Albums (JSON)
-			else if([fileURL isEqualToString:@"/albums.json"])
+			else if ([fileURL isEqualToString:@"/albums.json"])
 			{
 				NSString *json = [self jsonAlbumList];
 				data = [json dataUsingEncoding:NSUTF8StringEncoding];
 				err = NO;
 			}
+			
 			#pragma mark seriesList (JSON)
-			else if([fileURL isEqualToString:@"/seriesList.json"])
+			else if ([fileURL isEqualToString:@"/seriesList.json"])
 			{
 				NSPredicate *browsePredicate;
-				if([[urlParameters allKeys] containsObject:@"id"])
+				if ([[urlParameters allKeys] containsObject:@"id"])
 				{
 					browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [urlParameters objectForKey:@"id"]];
 				}
@@ -3927,7 +3643,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				
 				NSArray *studies = [self studiesForPredicate:browsePredicate];
 				
-				if([studies count] == 1)
+				if ([studies count] == 1)
 				{
 					NSArray *seriesArray = [[studies objectAtIndex:0] valueForKey:@"imageSeries"];
 					NSString *json = [self jsonSeriesListForSeries:seriesArray];
@@ -3936,6 +3652,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				}
 				else err = YES;
 			}
+			
 			#pragma mark weasis.jnlp
 			else if ([NSUserDefaultsController WebServerUsesWeasis] && [fileURL isEqualToString:@"/weasis.jnlp"])
 			{
@@ -3944,6 +3661,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				dataMime = @"application/x-java-jnlp-file";
 				err = NO;
 			}
+			
 			#pragma mark weasis.xml
 			else if ([NSUserDefaultsController WebServerUsesWeasis] && [fileURL isEqualToString:@"/weasis.xml"])
 			{
@@ -3952,32 +3670,58 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				dataMime = @"text/xml";
 				err = NO;
 			}
+			
+			#pragma mark admin
+			else if ([fileURL hasPrefix:@"/admin/"])
+			{
+				if (currentUser.isAdmin) {
+					#pragma mark     index
+					if ([fileURL isEqualToString:@"/admin/"] || [fileURL isEqualToString:@"/admin/index"]) {
+						[self generate:response adminIndex:urlParameters];
+						//data = [html dataUsingEncoding:NSUTF8StringEncoding];
+						err = NO;
+					}
+					
+					#pragma mark     user
+					if ([fileURL isEqualToString:@"/admin/user"]) {
+						[self generate:response adminUser:urlParameters];
+						err = NO;
+					}
+				} else {
+					[NSException raise:NSGenericException format:NSLocalizedString(@"Access to the administration interface is only granted to administrators.", @"Web Portal, admin, access error")];
+				}
+			}
 		}
 	
 		@catch( NSException *e)
 		{
-			NSLog( @"******** httpResponseForMethod OsiriXHTTPConnection exception: %@", e);
+			NSLog( @"******** httpResponseForMethod WebPortalConnection exception: %@", e);
 			NSLog( @"******** method : %@ path : %@", method, path);
 			err = YES;
 		}
 		
 	}
 	
-	if( lockReleased == NO)
+	if (lockReleased == NO)
 		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	
-	if( waitBeforeReturning)
+	if (waitBeforeReturning)
 		[NSThread sleepForTimeInterval: 3];
 	
-	if( err)
+	if (err)
 		data = [[NSString stringWithString: NSLocalizedString( @"Error 404\r\rFailed to process this request.\r\rThis error will be logged and the webmaster will be notified.", nil)] dataUsingEncoding: NSUTF8StringEncoding];
 	
-	return [[[OsiriXHTTPResponse alloc] initWithData:data mime:dataMime sessionId:session.sid] autorelease];
+	if (data)
+		[response setData:data];
+	if (dataMime)
+		[response.httpHeaders setObject:dataMime forKey:@"Content-Type"];
+	
+	return response; // [[[WebPortalResponse alloc] initWithData:data mime:dataMime sessionId:session.sid] autorelease];
 }
 
 - (BOOL)supportsMethod:(NSString *)method atPath:(NSString *)relativePath
 {
-	if( [@"POST" isEqualToString:method])
+	if ([@"POST" isEqualToString:method])
 	{
 		return YES;
 	}
@@ -4008,9 +3752,9 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	#define CHECKLASTPART 4096
 	
-	for( int x = [postDataChunk length]-CHECKLASTPART; x < [postDataChunk length]-l; x++)
+	for ( int x = [postDataChunk length]-CHECKLASTPART; x < [postDataChunk length]-l; x++)
 	{
-		if( x >= 0)
+		if (x >= 0)
 		{
 			NSRange searchRange = {x, l};
 			
@@ -4033,7 +3777,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	NSString *root = [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
 	NSMutableArray *filesArray = [NSMutableArray array];
 	
-	if( [[POSTfilename pathExtension] isEqualToString: @"zip"] || [[POSTfilename pathExtension] isEqualToString: @"osirixzip"])
+	if ([[POSTfilename pathExtension] isEqualToString: @"zip"] || [[POSTfilename pathExtension] isEqualToString: @"osirixzip"])
 	{
 		NSTask *t = [[[NSTask alloc] init] autorelease];
 		
@@ -4053,15 +3797,15 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			NSLog( @"***** unzipFile exception: %@", e);
 		}
 		
-		if( POSTfilename)
+		if (POSTfilename)
 			[[NSFileManager defaultManager] removeItemAtPath: POSTfilename error: nil];
 		
 		NSString *rootDir = @"/tmp/osirixUnzippedFolder";
 		BOOL isDirectory = NO;
 		
-		for( NSString *file in [[NSFileManager defaultManager] subpathsOfDirectoryAtPath: rootDir error: nil])
+		for ( NSString *file in [[NSFileManager defaultManager] subpathsOfDirectoryAtPath: rootDir error: nil])
 		{
-			if( [file hasSuffix: @".DS_Store"] == NO && [file hasPrefix: @"__MACOSX"] == NO && [[NSFileManager defaultManager] fileExistsAtPath: [rootDir stringByAppendingPathComponent: file] isDirectory: &isDirectory] && isDirectory == NO)
+			if ([file hasSuffix: @".DS_Store"] == NO && [file hasPrefix: @"__MACOSX"] == NO && [[NSFileManager defaultManager] fileExistsAtPath: [rootDir stringByAppendingPathComponent: file] isDirectory: &isDirectory] && isDirectory == NO)
 				[filesArray addObject: [rootDir stringByAppendingPathComponent: file]];
 		}
 	}
@@ -4072,11 +3816,11 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	NSString *previousStudyInstanceUID = nil;
 	
 	// We want to find this file after db insert: get studyInstanceUID, patientUID and instanceSOPUID
-	for( NSString *oFile in filesArray)
+	for ( NSString *oFile in filesArray)
 	{
 		DicomFile *f = [[[DicomFile alloc] init: oFile DICOMOnly: YES] autorelease];
 		
-		if( f)
+		if (f)
 		{
 			do
 			{
@@ -4086,11 +3830,11 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		
 			[[NSFileManager defaultManager] moveItemAtPath: oFile toPath: file error: nil];
 			
-			if( [[currentUser valueForKey: @"uploadDICOMAddToSpecificStudies"] boolValue])
+			if ([[currentUser valueForKey: @"uploadDICOMAddToSpecificStudies"] boolValue])
 			{
 				NSString *studyInstanceUID = [f elementForKey: @"studyID"], *patientUID = [f elementForKey: @"patientUID"];	//, *sopInstanceUID = [f elementForKey: @"SOPUID"];
 				
-				if( [studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID isEqualToString: previousPatientUID] == NO)
+				if ([studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID isEqualToString: previousPatientUID] == NO)
 				{
 					previousStudyInstanceUID = [[studyInstanceUID copy] autorelease];
 					previousPatientUID = [[patientUID copy] autorelease];
@@ -4099,7 +3843,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 					[NSThread sleepForTimeInterval: 1];
 					[[BrowserController currentBrowser] checkIncomingNow: self];
 					
-					if( studyInstanceUID && patientUID)
+					if (studyInstanceUID && patientUID)
 					{
 						[[[BrowserController currentBrowser] managedObjectContext] lock];
 						
@@ -4112,7 +3856,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							NSError *error = nil;
 							NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
 							
-							if( [studies count] == 0)
+							if ([studies count] == 0)
 								NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST");
 							
 							// Add study to specific study list for this user
@@ -4120,12 +3864,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 							NSArray *studiesArrayStudyInstanceUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
 							NSArray *studiesArrayPatientUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
 							
-							for( NSManagedObject *study in studies)
+							for ( NSManagedObject *study in studies)
 							{
-								if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
+								if ([[study valueForKey: @"type"] isEqualToString:@"Series"])
 									study = [study valueForKey:@"study"];
 								
-								if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+								if ([studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
 								{
 									NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: [BrowserController currentBrowser].userManagedObjectContext];
 									
@@ -4147,13 +3891,13 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 									studiesArrayStudyInstanceUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
 									studiesArrayPatientUID = [[[currentUser valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
 									
-									[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [currentUser valueForKey: @"name"] ip: nil];
+									[WebPortalConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [currentUser valueForKey: @"name"] ip: nil];
 								}
 							}
 						}
 						@catch( NSException *e)
 						{
-							NSLog( @"********* OsiriXHTTPConnection closeFileHandleAndClean exception : %@", e);
+							NSLog( @"********* WebPortalConnection closeFileHandleAndClean exception : %@", e);
 						}
 						///
 						
@@ -4186,9 +3930,9 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	//NSLog(@"processPostDataChunk");
 	
-	if( !postHeaderOK)
+	if (!postHeaderOK)
 	{
-		if( multipartData == nil)
+		if (multipartData == nil)
 			[self supportsPOST: nil withSize: 0];
 		
 		UInt16 separatorBytes = 0x0A0D;
@@ -4256,12 +4000,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 						}
 						else NSLog( @"***** Failed to create file - processDataChunk : %@", POSTfilename);
 						
-						if( eof)
+						if (eof)
 							[self closeFileHandleAndClean];
 						
 						[file release];
 					}
-					@catch ( NSException *e)
+					@catch (NSException *e)
 					{
 						NSLog( @"******* POST processDataChunk : %@", e);
 					}
@@ -4274,7 +4018,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 		
 		// For other POST, like account update
 		
-		if( [postDataChunk length] < 4096)
+		if ([postDataChunk length] < 4096)
 		{
 			[multipartData release];
 			multipartData = [[NSMutableArray array] retain];
@@ -4296,7 +4040,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			NSLog( @"******* writeData processDataChunk exception: %@", e);
 		}
 		
-		if( eof)
+		if (eof)
 			[self closeFileHandleAndClean];
 	}
 }
@@ -4308,16 +4052,16 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	NSMutableArray *jsonAlbumsArray = [NSMutableArray array];
 	
 	NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
-	for(NSManagedObject *album in albumArray)
+	for (NSManagedObject *album in albumArray)
 	{
-		if(![[album valueForKey:@"name"] isEqualToString: NSLocalizedString(@"Database", nil)])
+		if (![[album valueForKey:@"name"] isEqualToString: NSLocalizedString(@"Database", nil)])
 		{
 			NSMutableDictionary *albumDictionary = [NSMutableDictionary dictionary];
 			
-			[albumDictionary setObject:notNil([album valueForKey:@"name"]) forKey:@"name"];
-			[albumDictionary setObject:notNil([[album valueForKey:@"name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]) forKey:@"nameURLSafe"];
+			[albumDictionary setObject:NotNil([album valueForKey:@"name"]) forKey:@"name"];
+			[albumDictionary setObject:NotNil([[album valueForKey:@"name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]) forKey:@"nameURLSafe"];
 			
-			if([[album valueForKey:@"smartAlbum"] intValue] == 1)
+			if ([[album valueForKey:@"smartAlbum"] intValue] == 1)
 				[albumDictionary setObject:@"SmartAlbum" forKey:@"type"];
 			else
 				[albumDictionary setObject:@"Album" forKey:@"type"];
@@ -4341,15 +4085,15 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	{
 		
 		int lineNumber = 0;
-		for(DicomStudy *study in studies)
+		for (DicomStudy *study in studies)
 		{
 			NSMutableDictionary *studyDictionary = [NSMutableDictionary dictionary];
 			
-			[studyDictionary setObject:notNil([study valueForKey:@"name"]) forKey:@"name"];
+			[studyDictionary setObject:NotNil([study valueForKey:@"name"]) forKey:@"name"];
 			
 			NSArray *seriesArray = [study valueForKey:@"imageSeries"];
 			int count = 0;
-			for(DicomSeries *series in seriesArray)
+			for (DicomSeries *series in seriesArray)
 			{
 				count++;
 			}
@@ -4362,24 +4106,24 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			NSString *date = [dateFormat stringFromDate:[study valueForKey:@"date"]];		
 			[studyDictionary setObject:date forKey:@"date"];		
 			
-			[studyDictionary setObject:notNil([study valueForKey:@"comment"]) forKey:@"comment"];
+			[studyDictionary setObject:NotNil([study valueForKey:@"comment"]) forKey:@"comment"];
 
-			[studyDictionary setObject:notNil([study valueForKey:@"studyName"]) forKey:@"studyName"];
+			[studyDictionary setObject:NotNil([study valueForKey:@"studyName"]) forKey:@"studyName"];
 
-			[studyDictionary setObject:notNil([study valueForKey:@"modality"]) forKey:@"modality"];
+			[studyDictionary setObject:NotNil([study valueForKey:@"modality"]) forKey:@"modality"];
 			
 			NSString *stateText = @"";
-			if( [[study valueForKey:@"stateText"] intValue])
+			if ([[study valueForKey:@"stateText"] intValue])
 				stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKey:@"stateText"] intValue]];
 			
-			[studyDictionary setObject:notNil(stateText) forKey:@"stateText"];
+			[studyDictionary setObject:NotNil(stateText) forKey:@"stateText"];
 
-			[studyDictionary setObject:notNil([study valueForKey:@"studyInstanceUID"]) forKey:@"studyInstanceUID"];
+			[studyDictionary setObject:NotNil([study valueForKey:@"studyInstanceUID"]) forKey:@"studyInstanceUID"];
 			
 			[jsonStudiesArray addObject:studyDictionary];
 		}	
 	}
-	@catch ( NSException *e)
+	@catch (NSException *e)
 	{
 		NSLog( @"****** jsonStudyListForStudies exception: %@", e);
 	}
@@ -4399,16 +4143,16 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 
 	@try
 	{
-		for(DicomSeries *s in series)
+		for (DicomSeries *s in series)
 		{
 			NSMutableDictionary *seriesDictionary = [NSMutableDictionary dictionary];
 			
-			[seriesDictionary setObject:notNil([s valueForKey:@"seriesInstanceUID"]) forKey:@"seriesInstanceUID"];
-			[seriesDictionary setObject:notNil([s valueForKey:@"seriesDICOMUID"]) forKey:@"seriesDICOMUID"];
+			[seriesDictionary setObject:NotNil([s valueForKey:@"seriesInstanceUID"]) forKey:@"seriesInstanceUID"];
+			[seriesDictionary setObject:NotNil([s valueForKey:@"seriesDICOMUID"]) forKey:@"seriesDICOMUID"];
 			
 			NSArray *dicomImageArray = [[s valueForKey:@"images"] allObjects];
 			DicomImage *im;
-			if([dicomImageArray count] == 1)
+			if ([dicomImageArray count] == 1)
 				im = [dicomImageArray lastObject];
 			else
 				im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
@@ -4418,7 +4162,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			[jsonSeriesArray addObject:seriesDictionary];
 		}
 	}
-	@catch ( NSException *e)
+	@catch (NSException *e)
 	{
 		NSLog( @"******* jsonSeriesListForSeries exception: %@", e);
 	}
@@ -4436,12 +4180,12 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	@try
 	{
-		for(DicomImage *image in images)
+		for (DicomImage *image in images)
 		{
-			[jsonImagesArray addObject:notNil([image valueForKey:@"sopInstanceUID"])];
+			[jsonImagesArray addObject:NotNil([image valueForKey:@"sopInstanceUID"])];
 		}
 	}
-	@catch ( NSException *e)
+	@catch (NSException *e)
 	{
 		NSLog( @"***** jsonImageListForImages exception: %@", e);
 	}
@@ -4468,8 +4212,8 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 -(NSString*)weasisJnlpWithParamsString:(NSString*)parameters {
 	NSMutableString* templateString = [self webServicesHTMLMutableString:@"weasis.jnlp"];
 	
-	[templateString replaceOccurrencesOfString:@"%WebServerAddress%" withString:self.webServerURL options:NSLiteralSearch range:templateString.range];
-	[templateString replaceOccurrencesOfString:@"%parameters%" withString:notNil(parameters) options:NSLiteralSearch range:templateString.range];
+	[templateString replaceOccurrencesOfString:@"%WebServerAddress%" withString:self.webServerURL];
+	[templateString replaceOccurrencesOfString:@"%parameters%" withString:NotNil(parameters)];
 	
 	return templateString;
 }
@@ -4477,7 +4221,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 -(NSString*)weasisXmlWithParams:(NSDictionary*)parameters {
 	NSString* studyInstanceUID = [parameters objectForKey:@"StudyInstanceUID"];
 	NSString* seriesInstanceUID = [parameters objectForKey:@"SeriesInstanceUID"];
-	NSArray* selectedSeries = [OsiriXHTTPConnection MakeArray:[parameters objectForKey:@"selected"]];
+	NSArray* selectedSeries = [WebPortalConnection MakeArray:[parameters objectForKey:@"selected"]];
 	
 	NSMutableArray* requestedStudies = [NSMutableArray arrayWithCapacity:8];
 	NSMutableArray* requestedSeries = [NSMutableArray arrayWithCapacity:64];
@@ -4535,8 +4279,8 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				NSXMLElement* studyNode = [NSXMLNode elementWithName:@"Study"];
 				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyInstanceUID" stringValue:study.studyInstanceUID]];
 				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDescription" stringValue:study.studyName]];
-				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDate" stringValue:[OsiriXHTTPConnection WeasisXmlFormatDate:study.date]]];
-				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyTime" stringValue:[OsiriXHTTPConnection WeasisXmlFormatTime:study.date]]];
+				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDate" stringValue:[WebPortalConnection WeasisXmlFormatDate:study.date]]];
+				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyTime" stringValue:[WebPortalConnection WeasisXmlFormatTime:study.date]]];
 				[studyNode addAttribute:[NSXMLNode attributeWithName:@"AccessionNumber" stringValue:study.accessionNumber]];
 				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyID" stringValue:study.id]]; // ?
 				[studyNode addAttribute:[NSXMLNode attributeWithName:@"ReferringPhysicianName" stringValue:study.referringPhysician]];
@@ -4561,7 +4305,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 				
 				if (!patientDataSet) {
 					[patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientName" stringValue:study.name]];
-					[patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientBirthDate" stringValue:[OsiriXHTTPConnection WeasisXmlFormatDate:study.dateOfBirth]]];
+					[patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientBirthDate" stringValue:[WebPortalConnection WeasisXmlFormatDate:study.dateOfBirth]]];
 					[patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientSex" stringValue:study.patientSex]];
 				}
 			}
@@ -4570,8 +4314,130 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	return [[doc autorelease] XMLString];
 }
 
-#pragma mark Session, custom authentication
+#pragma mark Administration HTML
 
+-(void)generate:(WebPortalResponse*)response adminIndex:(NSDictionary*)parameters {
+	NSMutableString* templateString = [self webServicesHTMLMutableString:@"admin/index.html"];
+	
+	NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
+	
+	[tokens setObject:NSLocalizedString(@"Administration", @"Web Portal, admin, index, title") forKey:@"PageTitle"];
+	
+	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+	[req setEntity:[[[[BrowserController currentBrowser] userManagedObjectModel] entitiesByName] objectForKey:@"User"]];
+	[req setPredicate:[NSPredicate predicateWithValue:YES]];
+	[tokens setObject:[[[BrowserController currentBrowser] userManagedObjectContext] executeFetchRequest:req error:NULL] forKey:@"Users"];
+	
+	[WebPortalData mutableString:templateString evaluateTokensWithDictionary:tokens];
+	
+	[response setDataWithString:templateString];
+}
+
+-(void)generate:(WebPortalResponse*)response adminUser:(NSDictionary*)parameters {
+	NSMutableString* templateString = [self webServicesHTMLMutableString:@"admin/user.html"];
+	
+	NSMutableDictionary* tokens = [[NSMutableDictionary alloc] init];
+
+	NSObject* user = NULL;
+	BOOL userRecycleParams = NO;
+	NSString* action = [parameters objectForKey:@"action"];
+	NSString* originalName = NULL;
+	
+	if ([action isEqual:@"delete"]) {
+		originalName = [parameters objectForKey:@"originalName"];
+		NSManagedObject* tempUser = [[BrowserController currentBrowser] userWithName:originalName];
+		if (!tempUser)
+			[tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't delete user %@ because it doesn't exists.", @"Web Portal, admin, user edition, delete error"), originalName]];
+		else {
+			[[[BrowserController currentBrowser] userManagedObjectContext] deleteObject:tempUser];
+			[tempUser.managedObjectContext save:NULL];
+			[tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"User %@ successfully deleted.", @"Web Portal, admin, user edition, delete ok"), originalName]];
+		}
+	}
+	
+	if ([action isEqual:@"save"]) {
+		originalName = [parameters objectForKey:@"originalName"];
+		WebPortalUser* webUser = [[BrowserController currentBrowser] userWithName:originalName];
+		if (!webUser) {
+			[tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't save changes for user %@ because it doesn't exists.", @"Web Portal, admin, user edition, save error"), originalName]];
+			userRecycleParams = YES;
+		} else {
+			NSLog(@"SAVE params: %@", parameters.description);
+			
+			NSString* name = [parameters objectForKey:@"name"];
+			NSString* password = [parameters objectForKey:@"password"];
+			NSString* studyPredicate = [parameters objectForKey:@"studyPredicate"];
+			NSNumber* downloadZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"downloadZIP"] isEqual:@"on"]];
+			
+			NSError* err;
+
+			err = NULL;
+			if (![webUser validateName:&name error:&err])
+				[tokens addError:err.localizedDescription];
+			err = NULL;
+			if (![webUser validatePassword:&password error:&err])
+				[tokens addError:err.localizedDescription];
+			err = NULL;
+			if (![webUser validateStudyPredicate:&studyPredicate error:&err])
+				[tokens addError:err.localizedDescription];
+			err = NULL;
+			if (![webUser validateDownloadZIP:&downloadZIP error:&err])
+				[tokens addError:err.localizedDescription];
+			
+			if (!tokens.errors.count) {
+				webUser.name = name;
+				webUser.password = password;
+				webUser.email = [parameters objectForKey:@"email"];
+				webUser.phone = [parameters objectForKey:@"phone"];
+				webUser.address = [parameters objectForKey:@"address"];
+				webUser.studyPredicate = studyPredicate;
+				
+				webUser.autoDelete = [NSNumber numberWithBool:[[parameters objectForKey:@"autoDelete"] isEqual:@"on"]];
+				webUser.downloadZIP = downloadZIP;
+				webUser.emailNotification = [NSNumber numberWithBool:[[parameters objectForKey:@"emailNotification"] isEqual:@"on"]];
+				webUser.encryptedZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"encryptedZIP"] isEqual:@"on"]];
+				webUser.uploadDICOM = [NSNumber numberWithBool:[[parameters objectForKey:@"uploadDICOM"] isEqual:@"on"]];
+				webUser.sendDICOMtoSelfIP = [NSNumber numberWithBool:[[parameters objectForKey:@"sendDICOMtoSelfIP"] isEqual:@"on"]];
+				webUser.uploadDICOMAddToSpecificStudies = [NSNumber numberWithBool:[[parameters objectForKey:@"uploadDICOMAddToSpecificStudies"] isEqual:@"on"]];
+				webUser.sendDICOMtoAnyNodes = [NSNumber numberWithBool:[[parameters objectForKey:@"sendDICOMtoAnyNodes"] isEqual:@"on"]];
+				webUser.shareStudyWithUser = [NSNumber numberWithBool:[[parameters objectForKey:@"shareStudyWithUser"] isEqual:@"on"]];
+				
+				if (webUser.autoDelete)
+					webUser.deletionDate = [NSCalendarDate dateWithYear:[[parameters objectForKey:@"deletionDate_year"] integerValue] month:[[parameters objectForKey:@"deletionDate_month"] integerValue]+1 day:[[parameters objectForKey:@"deletionDate_day"] integerValue] hour:0 minute:0 second:0 timeZone:NULL];
+				
+				[webUser.managedObjectContext save:NULL];
+				
+				[tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Changes for user %@ successfully saved.", @"Web Portal, admin, user edition, save ok"), webUser.name]];
+				user = webUser;
+			} else
+				userRecycleParams = YES;
+		}
+	}
+	
+	if ([action isEqual:@"new"]) {
+		user = [NSEntityDescription insertNewObjectForEntityForName:@"User" inManagedObjectContext:[[BrowserController currentBrowser] userManagedObjectContext]];
+	//	[[[BrowserController currentBrowser] usersArrayController] addObject:user];
+	}
+	
+	if (!action) { // edit
+		originalName = [parameters objectForKey:@"name"];
+		user = [[BrowserController currentBrowser] userWithName:originalName];
+		if (!user)
+			[tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't find user with name %@.", @"Web Portal, admin, user edition, edit error"), originalName]];
+	}
+	
+	[tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"User Administration: %@", @"Web Portal, admin, user edition, title"), user? [user valueForKey:@"name"] : originalName] forKey:@"PageTitle"];
+	if (user) [tokens setObject:[WebPortalProxy createWithObject:user transformer:[UserTransformer create]] forKey:@"User"];
+	else if (userRecycleParams) [tokens setObject:parameters forKey:@"User"];
+	
+	//NSLog(@"USER: %@", user.description);
+	
+	[WebPortalData mutableString:templateString evaluateTokensWithDictionary:tokens];
+	
+	[response setDataWithString:templateString];
+}
+
+#pragma mark Session, custom authentication
 
 -(void)replyToHTTPRequest {
 	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
@@ -4579,28 +4445,28 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	NSArray* cookieBits = [cookie componentsSeparatedByString:@"="];
 	if (cookieBits.count == 2 && [[cookieBits objectAtIndex:0] isEqual:SessionCookieName])
-		self.session = [OsiriXHTTPSession sessionForId:[cookieBits objectAtIndex:1]];
+		self.session = [WebPortalSession sessionForId:[cookieBits objectAtIndex:1]];
 	
 	if ([method isEqualToString:@"GET"]) { // no session, GET... check for tokens
 		NSString* url = [[NSMakeCollectable(CFHTTPMessageCopyRequestURL(request)) autorelease] description];
 		NSArray* urlComponenents = [url componentsSeparatedByString:@"?"];
 		if (urlComponenents.count > 1) {
-			NSDictionary* params = [OsiriXHTTPConnection ExtractParams:urlComponenents.lastObject];
+			NSDictionary* params = [WebPortalConnection ExtractParams:urlComponenents.lastObject];
 			NSString* username = [params objectForKey:@"username"];
 			NSString* token = [params objectForKey:@"token"];
 			if (username && token) // has token, user exists
-				self.session = [OsiriXHTTPSession sessionForUsername:username token:token];
+				self.session = [WebPortalSession sessionForUsername:username token:token];
 		}
 	}
 	
 	if (!session)
-		self.session = [OsiriXHTTPSession create];
+		self.session = [WebPortalSession create];
 
 	if ([method isEqualToString:@"POST"] && multipartData.count == 1) // POST auth ?
 	{
 		NSData* data = multipartData.lastObject;
 		NSString* paramsString = [[[NSString alloc] initWithBytes:data.bytes length:data.length encoding:NSUTF8StringEncoding] autorelease];
-		NSDictionary* params = [OsiriXHTTPConnection ExtractParams:paramsString];
+		NSDictionary* params = [WebPortalConnection ExtractParams:paramsString];
 		
 		if ([params objectForKey:@"login"]) {
 			NSString* username = [params objectForKey:@"username"];
@@ -4609,7 +4475,7 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 			if (username.length && password.length && [password isEqual:[self passwordForUser:username]])
 				[session setObject:username forKey:SessionUsernameKey];
 			else if (username.length && sha1.length) {
-				NSString* sha1internal = [[[[[self passwordForUser:username] stringByAppendingString:notNil([session objectForKey:SessionChallengeKey])] dataUsingEncoding:NSUTF8StringEncoding] sha1Digest] hex];
+				NSString* sha1internal = [[[[[self passwordForUser:username] stringByAppendingString:NotNil([session objectForKey:SessionChallengeKey])] dataUsingEncoding:NSUTF8StringEncoding] sha1Digest] hex];
 				if ([sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame) {
 					[session setObject:username forKey:SessionUsernameKey];
 					[session setObject:NULL forKey:SessionChallengeKey];
@@ -4647,7 +4513,8 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 -(NSString*)htmlLogin {
 	NSMutableString* html = [self webServicesHTMLMutableString:@"login.html"];
 	
-	[self setBlock:@"AuthorizedRestorePasswordWebServer" visible:[[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"] forString:html];
+	[WebPortalData mutableString:html block:@"AuthorizedRestorePasswordWebServer" setVisible:[[NSUserDefaults standardUserDefaults] boolForKey: @"restorePasswordWebServer"]];
+	[html replaceOccurrencesOfString:@"%PageTitle%" withString:[NSString stringWithFormat:@"OsiriX Web Portal", currentUser.name]];
 	
 	return html;
 }

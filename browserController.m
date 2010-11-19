@@ -66,7 +66,7 @@
 #import "DicomAlbum.h"
 #import "PluginManager.h"
 #import "XMLController.h"
-#import "OsiriXHTTPConnection.h"
+#import "WebPortalConnection.h"
 #import "Notifications.h"
 #import "NSAppleScript+HandlerCalls.h"
 #import "CSMailMailClient.h"
@@ -78,6 +78,7 @@
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
 #import "BrowserController+Activity.h"
+#import "NSError+OsiriX.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -87,7 +88,7 @@
 #endif
 
 #define DEFAULTUSERDATABASEPATH @"~/Library/Application Support/OsiriX/WebUsers.sql"
-#define USERDATABASEVERSION @"1.0"
+//#define USERDATABASEVERSION @"1.0"
 #define DATABASEVERSION @"2.5"
 #define DATABASEPATH @"/DATABASE.noindex/"
 #define DECOMPRESSIONPATH @"/DECOMPRESSION.noindex/"
@@ -793,7 +794,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSLog( @"AddFilesToDatabase executeFetchRequest exception: %@", [ne description]);
 		NSLog( @"executeFetchRequest failed for studiesArray.");
-		error = [NSError errorWithDomain: @"OsiriXDomain" code: 1 userInfo: nil];
+		error = [NSError errorWithDomain:OsirixErrorDomain code:1 userInfo:NULL];
 		[AppController printStackTrace: ne];
 	}
 	
@@ -2490,7 +2491,6 @@ static NSConditionLock *threadLock = nil;
 - (NSManagedObjectContext *) managedObjectContextLoadIfNecessary:(BOOL) loadIfNecessary
 {
     NSError *error = nil;
-    NSString *localizedDescription;
 	NSFileManager *fileManager;
 	
 	if( currentDatabasePath == nil)
@@ -2521,8 +2521,7 @@ static NSConditionLock *threadLock = nil;
 	if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:options error:&error])
 	{
 		NSLog(@"********** managedObjectContextLoadIfNecessary FAILED: %@", error);
-		localizedDescription = [error localizedDescription];
-		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
+		error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
     }
 	
 	else
@@ -5198,8 +5197,8 @@ static NSConditionLock *threadLock = nil;
 		
 		NSString *path = [DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath];
 		
-		[[NSString stringWithString: USERDATABASEVERSION] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"WebUsers.vers"] atomically:YES];
-		[[NSUserDefaults standardUserDefaults] setObject: USERDATABASEVERSION forKey: @"USERS_DATABASEVERSION"];
+	//	[[NSString stringWithString: USERDATABASEVERSION] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"WebUsers.vers"] atomically:YES];
+//		[[NSUserDefaults standardUserDefaults] setObject: USERDATABASEVERSION forKey: @"USERS_DATABASEVERSION"];
 		
 		
 	}
@@ -5225,7 +5224,7 @@ static NSConditionLock *threadLock = nil;
 	[allBundles addObject: [NSBundle mainBundle]];
 	[allBundles addObjectsFromArray: [NSBundle allFrameworks]];
     
-    userManagedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/user.mom"]]];
+    userManagedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/WebPortalDB.momd"]]];
     [allBundles release];
     
     return userManagedObjectModel;
@@ -5263,13 +5262,12 @@ static NSConditionLock *threadLock = nil;
 		
 		NSRunCriticalAlertPanel( NSLocalizedString( @"Web Users Database Error", nil), [error localizedDescription], NSLocalizedString( @"OK", nil), nil, nil);
 		
-		localizedDescription = [error localizedDescription];
-		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
+		error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
 		
 		// Delete the old non-working file...
 		
 		[[NSFileManager defaultManager] removeItemAtPath: [DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath] error: nil];
-		[[NSFileManager defaultManager] removeItemAtPath: [[[DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"WebUsers.vers"] error: nil];
+//		[[NSFileManager defaultManager] removeItemAtPath: [[[DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"WebUsers.vers"] error: nil];
 		[userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options: options error: &error];
 	}
 	#endif
@@ -5278,6 +5276,16 @@ static NSConditionLock *threadLock = nil;
 	[self saveUserDatabase];
 	
     return userManagedObjectContext;
+}
+
+-(WebPortalUser*)userWithName:(NSString*)name {
+	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+	[req setEntity:[[[self userManagedObjectModel] entitiesByName] objectForKey:@"User"]];
+	[req setPredicate:[NSPredicate predicateWithFormat:@"name == %@", name]];
+	NSArray* res = [[self userManagedObjectContext] executeFetchRequest:req error:NULL];
+	if (res.count)
+		return [res objectAtIndex:0];
+	return NULL;
 }
 
 
@@ -17041,7 +17049,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
 							studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
 							
-							[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
+							[WebPortalConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
 						}
 					}
 				}
@@ -17132,7 +17140,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							[user setValue: [NSNumber numberWithBool: YES] forKey: @"autoDelete"];
 							[user setValue: @"NO == YES" forKey: @"studyPredicate"];
 							
-							[OsiriXHTTPConnection updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User Created" forUser: [user valueForKey: @"name"] ip: nil];
+							[WebPortalConnection updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User Created" forUser: [user valueForKey: @"name"] ip: nil];
 							
 							// Send a separate email with user name and password
 							
@@ -17152,7 +17160,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							[emailMessage appendString: @"\r\r"];
 							[emailMessage appendFormat: NSLocalizedString( @"This account is a temporary account. It will be automatically deleted in %d days.", nil), [[NSUserDefaults standardUserDefaults] integerForKey: @"temporaryUserDuration"]];
 							
-							[OsiriXHTTPConnection updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User name & password sent by email" forUser: [user valueForKey: @"name"] ip: nil];
+							[WebPortalConnection updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User name & password sent by email" forUser: [user valueForKey: @"name"] ip: nil];
 							
 							[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: temporaryNotificationEmail, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
 						
@@ -17199,12 +17207,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 									studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
 									studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
 									
-									[OsiriXHTTPConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
+									[WebPortalConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
 								}
 							}
 						}
 						
-						[OsiriXHTTPConnection sendNotificationsEmailsTo: destinationUsers aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil customText: self.customTextNotificationEmail];
+						[WebPortalConnection sendNotificationsEmailsTo: destinationUsers aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil customText: self.customTextNotificationEmail];
 					}
 				}
 				@catch( NSException *e)

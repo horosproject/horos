@@ -24,7 +24,7 @@
 +(NSString*)dateString:(NSTimeInterval)date;
 -(NSString*)stringByTrimmingStartAndEnd;
 
--(NSString*)urlEncodedString;
+-(NSString*)urlEncodedString __deprecated;
 -(NSString*)xmlEscapedString;
 -(NSString*)xmlUnescapedString;
 

@@ -24,6 +24,7 @@
 @class MyOutlineView,DCMView,DCMPix;
 @class StructuredReportController,BrowserMatrix;
 @class PluginManagerController,WaitRendering, Wait, ActivityWindowController;
+@class WebPortalUser;
 
 enum RootTypes{PatientRootType, StudyRootType, RandomRootType};
 enum simpleSearchType {PatientNameSearch, PatientIDSearch};
@@ -554,6 +555,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) initAnimationSlider;
 
 - (long) saveUserDatabase;
+
+-(WebPortalUser*)userWithName:(NSString*)name;
 
 + (NSString*) DateTimeWithSecondsFormat:(NSDate*) t;
 + (NSString*) TimeWithSecondsFormat:(NSDate*) t;

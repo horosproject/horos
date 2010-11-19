@@ -49,7 +49,7 @@
 #import "OSIWindowController.h"
 #import "Notifications.h"
 #import "WaitRendering.h"
-#import "OsiriXHTTPConnection.h"
+#import "WebPortalConnection.h"
 #import "ThreadPoolServer.h"
 #import "DicomImage.h"
 #import "ThreadsManager.h"
@@ -1804,7 +1804,7 @@ static NSDate *lastWarningDate = nil;
 
 - (void) webServerEmailNotifications: (NSTimer*) t
 {
-	[OsiriXHTTPConnection emailNotifications];
+	[WebPortalConnection emailNotifications];
 }
 
 - (void) startHTTPserver: (id) sender
@@ -1814,7 +1814,7 @@ static NSDate *lastWarningDate = nil;
 	if( webServer == nil) webServer = [[ThreadPoolServer alloc] init];
 //		if( webServer == nil) webServer = [[ThreadPerConnectionServer alloc] init];
 		
-	[webServer setConnectionClass: [OsiriXHTTPConnection class]];
+	[webServer setConnectionClass:[WebPortalConnection class]];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"])
 		[webServer setType: @"_https._tcp."];

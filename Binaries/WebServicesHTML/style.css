@@ -120,12 +120,57 @@ a:hover
 	margin:10px;
 }
 
+.block:last-child
+{
+	border-bottom:none;
+}
+
 .blockEnd
 {
 	padding:10px;
 	margin:10px;
 	margin-bottom:0px;
 	padding-bottom:0px;
+}
+
+.separated {
+    margin-top: 10px;
+}
+
+/* tables */
+
+table {
+    border-collapse: collapse;
+}
+
+table.wide {
+    width: 100%;
+}
+
+.form {
+    font-size: 10pt;
+}
+
+.form textarea, .form input[type=text], .form input[type=password] {
+    width: 100%;
+    padding: 2px 0 2px 0;
+    border: 0;
+    background-color: #eeeeee;
+    font: 10pt Courier, "Courier New", monospace;
+}
+
+table.form td {
+    vertical-align: baseline;
+}
+
+table.form td:first-child {
+    text-align: right;
+    padding-right: 3px;
+    width: 2%;
+}
+
+table.eq td {
+    width: 50%;
 }
 
 /* Login */
@@ -548,6 +593,9 @@ a.report
 {
 	margin-top:20px;
 	text-align:center;
+    background-image:url(/images/loading.png);
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 /* Study Sharing */

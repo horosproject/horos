@@ -14,35 +14,16 @@
 
 #import <Cocoa/Cocoa.h>
 #import "HTTPConnection.h"
+#import "WebPortalUser.h"
 
+@class WebPortalSession, WebPortalResponse;
 
-@interface OsiriXHTTPSession : NSObject {
-@private
-	NSMutableDictionary* dict;
-	NSString* sid;
-	NSLock* lock;
-}
-
-@property(readonly) NSString* sid;
-
-+(id)create;
-+(id)sessionForId:(NSString*)sid;
-
--(void)setObject:(id)o forKey:(NSString*)k;
--(id)objectForKey:(NSString*)k;
-
--(NSString*)createToken;
--(BOOL)consumeToken:(NSString*)token;
-
-@end
-
-
-@interface OsiriXHTTPConnection : HTTPConnection
+@interface WebPortalConnection : HTTPConnection
 {
 	NSMutableArray *selectedImages;
 	NSMutableDictionary *selectedDICOMNode;
 	NSLock *sendLock, *running;
-	NSManagedObject *currentUser;
+	WebPortalUser* currentUser;
 	NSMutableDictionary *urlParameters; // GET and POST params
 	
 	// POST / PUT support
@@ -52,10 +33,11 @@
 	NSData *postBoundary;
 	NSString *POSTfilename;
 
-	OsiriXHTTPSession* session;
+	WebPortalSession* session;
 }
 
-@property(retain) OsiriXHTTPSession* session;
+@property(retain) WebPortalSession* session;
+@property(retain) WebPortalUser* currentUser;
 
 + (void) emailNotifications;
 + (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate message: (NSString*) message replyTo: (NSString*) replyto customText: (NSString*) customText;
@@ -68,7 +50,7 @@
 - (BOOL)supportsPOST:(NSString *)path withSize:(UInt64)contentLength;
 - (NSArray*) addSpecificStudiesToArray: (NSArray*) array;
 + (NSArray*) addSpecificStudiesToArray: (NSArray*) array forUser: (NSManagedObject*) user predicate: (NSPredicate*) predicate;
-- (NSMutableString*) setBlock: (NSString*) b visible: (BOOL) v forString: (NSMutableString*) s;
+//- (NSMutableString*) setBlock: (NSString*) b visible: (BOOL) v forString: (NSMutableString*) s;
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate sortBy: (NSString*) sortValue;
 - (NSArray*)studiesForAlbum:(NSString *)albumName sortBy: (NSString*) sortValue;
 
@@ -81,5 +63,9 @@
 #pragma mark Weasis
 -(NSString*)weasisJnlpWithParamsString:(NSString*)parameters;
 -(NSString*)weasisXmlWithParams:(NSDictionary*)parameters;
+
+#pragma mark Administration HTML
+-(void)generate:(WebPortalResponse*)response adminIndex:(NSDictionary*)parameters;
+-(void)generate:(WebPortalResponse*)response adminUser:(NSDictionary*)parameters;
 
 @end
