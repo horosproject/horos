@@ -3712,6 +3712,42 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: self userInfo: instructions];
 }
 
+// TrackPad support
+
+-(void) magnifyWithEvent:(NSEvent *)anEvent
+{
+	[self setScaleValue: scaleValue + anEvent.deltaZ / 40.];
+	
+	[self setNeedsDisplay:YES];
+}
+
+-(void) rotateWithEvent:(NSEvent *)anEvent
+{
+	[self setRotation: rotation - anEvent.rotation * 2.];
+	
+	[self setNeedsDisplay:YES];
+}
+
+-(void) swipeWithEvent:(NSEvent *)anEvent
+{
+	if( [self is2DViewer])
+	{
+		ViewerController *v = [self windowController];
+		
+		if( anEvent.deltaX < -0.5)
+			[v loadSeriesUp];
+			
+		if( anEvent.deltaX > 0.5)
+			[v loadSeriesDown];
+			
+		if( anEvent.deltaY < -0.5)
+			[v loadSeriesUp];
+			
+		if( anEvent.deltaY > 0.5)
+			[v loadSeriesDown];
+	}
+}
+
 - (void) mouseDown:(NSEvent *)event
 {	
 	if ([self eventToPlugins:event]) return;

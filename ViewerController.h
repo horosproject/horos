@@ -693,6 +693,8 @@ enum
 - (IBAction) roiSetPixels:(id) sender;
 - (IBAction) roiPropagateSetup: (id) sender;
 - (IBAction) roiPropagate:(id) sender;
+- (void) loadSeriesUp;
+- (void) loadSeriesDown;
 - (void) showWindowTransition;
 - (float) computeInterval;
 + (float) computeIntervalForDCMPix: (DCMPix*) p1 And: (DCMPix*) p2;
