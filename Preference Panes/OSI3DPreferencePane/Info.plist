@@ -24,5 +24,7 @@
 	<string>OSIPETPreferencePane</string>
 	<key>NSPrincipalClass</key>
 	<string>OSI3DPreferencePanePref</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
 </dict>
 </plist>
