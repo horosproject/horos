@@ -3164,6 +3164,13 @@ static BOOL initialized = NO;
 //	</dict>
 //	</plist>
 	
+//	NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData: [NSData dataWithContentsOfFile: @"/tmp/test.jp2"]];
+//	
+//	NSUInteger pix;
+//	
+//	[rep getPixel: &pix atX: 2 y: 2];
+//	
+//	NSLog( @"%@", rep);
 }
 
 - (void) checkForOsirixMimeType
