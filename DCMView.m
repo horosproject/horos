@@ -11645,8 +11645,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( ww == 0)
 		{
-			ww = curDCM.savedWW;
-			wl = curDCM.savedWL;
+			if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+			{
+				ww = curDCM.savedWW;
+				wl = curDCM.savedWL;
+			}
+			else
+			{
+				ww = [[dcmPixList objectAtIndex: [dcmPixList count]/2] savedWW];
+				wl = [[dcmPixList objectAtIndex: [dcmPixList count]/2] savedWL];
+			}
+
 		}
 		
 		if( ww != 0 || wl != 0)
