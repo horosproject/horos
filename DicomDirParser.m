@@ -60,6 +60,8 @@ static int validFilePathDepth = 0;
 	{
 		for( NSString *filePath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: startDirectory error: nil])
 		{
+			NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
+			
 			filePath = [startDirectory stringByAppendingPathComponent: filePath];
 			
 			NSString *uppercaseFilePath = [filePath uppercaseString];
@@ -85,6 +87,8 @@ static int validFilePathDepth = 0;
 							
 							if( [cutFilePath length] < 2000)
 							{
+								NSAutoreleasePool *pool3 = [[NSAutoreleasePool alloc] init];
+								
 								BOOL found = NO;
 								
 								for( NSString *s in dicomdirFileList)
@@ -109,6 +113,8 @@ static int validFilePathDepth = 0;
 								
 //								if( found == NO)
 //									NSLog( @"--- Not found in DICOMDIR: %@", cutFilePath);
+								
+								[pool3 release];
 							}
 						}
 					}
@@ -126,6 +132,8 @@ static int validFilePathDepth = 0;
 					[pool release];
 				}
 			}
+			
+			[pool2 release];
 		}
 	}
 	@catch (NSException * e) 
