@@ -229,7 +229,8 @@
     if (lstat([[NSFileManager defaultManager]
 			   fileSystemRepresentationWithPath:path], &fileInfo) < 0)
     {
-        return nil;
+        // doesn't exist, just return it
+		return self;
     }
     
     // While the file is a symlink or resolves as an alias, keep iterating.
@@ -278,8 +279,13 @@
 	// Process all remaining components.
 	for (NSString *component in pathComponents)
 	{
-		resolvedPath = [resolvedPath stringByAppendingPathComponent:component];
-		resolvedPath = [resolvedPath stringByIterativelyResolvingSymlinkOrAlias];
+		if ([component isEqual:@".."])
+			resolvedPath = [resolvedPath stringByDeletingLastPathComponent];
+		else {
+			resolvedPath = [resolvedPath stringByAppendingPathComponent:component];
+			resolvedPath = [resolvedPath stringByIterativelyResolvingSymlinkOrAlias];
+		}
+		
 		if (!resolvedPath) {
 			return nil;
 		}

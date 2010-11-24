@@ -152,7 +152,7 @@
 		if (!dstPathRes)
 			dstPathRes = [[[dstPath stringByDeletingLastPathComponent] resolvedPathString] stringByAppendingPathComponent:[dstPath lastPathComponent]];
 		
-		BOOL srcPathIsDir, srcPathExists = [self fileExistsAtPath:srcPathRes isDirectory:&srcPathIsDir];
+		/*BOOL srcPathIsDir, srcPathExists = [self fileExistsAtPath:srcPathRes isDirectory:&srcPathIsDir]*/;
 		BOOL dstPathIsDir, dstPathExists = [self fileExistsAtPath:dstPathRes isDirectory:&dstPathIsDir];
 		
 		if (dstPathExists && replace) {

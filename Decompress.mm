@@ -163,6 +163,7 @@ int main(int argc, const char *argv[])
 		
 		BOOL useDCMTKForJP2K = [[dict objectForKey:@"useDCMTKForJP2K"] intValue];
 		
+# pragma mark compress
 		if( [what isEqualToString:@"compress"])
 		{
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
@@ -406,6 +407,7 @@ int main(int argc, const char *argv[])
 			}
 		}
 		
+# pragma mark testFiles
 		if( [what isEqualToString: @"testFiles"])
 		{
 			Papy3Init();
@@ -435,6 +437,7 @@ int main(int argc, const char *argv[])
 			}
 		}
 		
+# pragma mark decompressList
 		if( [what isEqualToString:@"decompressList"])
 		{
 			NSString *destDirec;
@@ -588,6 +591,7 @@ int main(int argc, const char *argv[])
 			}
 		}
 		
+# pragma mark writeMovie
 		if( [what isEqualToString: @"writeMovie"])
 		{
 			if( ![path hasSuffix:@".swf"])
@@ -631,6 +635,7 @@ int main(int argc, const char *argv[])
 			}
 		}
 		
+# pragma mark writeMovieiPhone
 		if( [what isEqualToString: @"writeMovieiPhone"])
 		{
 			NSError *error = nil;
@@ -668,6 +673,7 @@ int main(int argc, const char *argv[])
 				[[NSFileManager defaultManager] removeItemAtPath: inFile error: nil];
 		}
 		
+# pragma mark pdfFromURL
 		if( [what isEqualToString: @"pdfFromURL"])
 		{
 			@try
