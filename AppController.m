@@ -77,7 +77,7 @@ static NSString *appStartingDate = nil;
 BOOL					NEEDTOREBUILD = NO;
 BOOL					COMPLETEREBUILD = NO;
 BOOL					USETOOLBARPANEL = NO;
-short					Altivec = 1, UseOpenJpeg = 1;
+short					Altivec = 1, UseOpenJpeg = 1, Use_kdu_IfAvailable = 1;
 AppController			*appController = nil;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil, *dcmtkQRSCPTLS = nil;
 NSString				*checkSN64String = nil;
@@ -1507,9 +1507,11 @@ static NSDate *lastWarningDate = nil;
 	}
 	
 	UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
+	Use_kdu_IfAvailable = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseKDUForJPEG2000"];
 	
 	#ifndef OSIRIX_LIGHT
 	[DCMPixelDataAttribute setUseOpenJpeg: UseOpenJpeg];
+	[DCMPixelDataAttribute setUse_kdu_IfAvailable: Use_kdu_IfAvailable];
 	#endif
 	
 	[[BrowserController currentBrowser] setNetworkLogs];
@@ -2882,9 +2884,11 @@ static BOOL initialized = NO;
 				[AppController checkForPagesTemplate];
 				
 				UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
+				Use_kdu_IfAvailable = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseKDUForJPEG2000"];
 				
 				#ifndef OSIRIX_LIGHT
 				[DCMPixelDataAttribute setUseOpenJpeg: UseOpenJpeg];
+				[DCMPixelDataAttribute setUse_kdu_IfAvailable: Use_kdu_IfAvailable];
 				#endif
 				
 				// CHECK FOR THE HTML TEMPLATES DIRECTORY

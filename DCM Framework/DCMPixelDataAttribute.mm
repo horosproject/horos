@@ -25,8 +25,13 @@
 
 #import "jasper.h"
 
+
+static int Use_kdu_IfAvailable = 0;
 static int UseOpenJpeg = 0;
 static int JasperInitialized = 0;
+
+// KDU support
+#include "kdu_OsiriXSupport.h"
 
 #if __ppc__
 
@@ -734,6 +739,11 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	UseOpenJpeg = b;
 }
 
++ (void) setUse_kdu_IfAvailable:(int) b
+{
+	Use_kdu_IfAvailable = b;
+}
+
 - (void)dealloc
 {
 	[singleThread release];
@@ -1244,7 +1254,24 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 	
 	BOOL succeed = NO;
 	
-	if( UseOpenJpeg)
+	if( Use_kdu_IfAvailable && kdu_available())
+	{
+		long decompressedLength = 0;
+		
+		int processors = 0;
+		
+		if( [jpegData length] > 512*1024)
+			processors = MPProcessors()/2;
+		
+		void *p = kdu_decompressJPEG2K( (void*) [jpegData bytes], [jpegData length], &decompressedLength, processors);
+		if( p)
+		{
+			pixelData = [NSMutableData dataWithBytesNoCopy: p length:decompressedLength freeWhenDone: YES];
+			succeed = YES;
+		}
+	}
+	
+	if( UseOpenJpeg && succeed == NO)
 	{
 		unsigned char *newPixelData;
 		
@@ -1503,6 +1530,54 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 
 - (NSMutableData *)encodeJPEG2000:(NSMutableData *)data quality:(int)quality
 {
+	if( Use_kdu_IfAvailable && kdu_available())
+	{
+		int precision = [[_dcmObject attributeValueWithName:@"BitsStored"] intValue];
+		int rate = 0;
+		
+		switch( quality)
+		{
+			case DCMLosslessQuality:
+				rate = 0;
+			break;
+				
+			case DCMHighQuality:
+				rate = 4;
+			break;
+				
+			case DCMMediumQuality:
+				if( _columns <= 600 || _rows <= 600) rate = 6;
+				else rate = 8;
+			break;
+				
+			case DCMLowQuality:
+				rate = 16;
+			break;
+				
+			default:
+				NSLog( @"****** warning unknown compression rate -> lossless : %d", quality);
+				rate = 0;
+			break;
+		}
+		
+		long compressedLength = 0;
+		
+		int processors = 0;
+		
+		if( _rows*_columns > 256*1024) // 512 * 512
+			processors = MPProcessors()/2;
+		
+		void *outBuffer = kdu_compressJPEG2K( (void*) [data bytes], _samplesPerPixel, _rows, _columns, precision, false, rate, &compressedLength, processors);
+		
+		NSMutableData *jpeg2000Data = [NSMutableData dataWithBytesNoCopy: outBuffer length: compressedLength freeWhenDone: YES];
+		
+		char zero = 0;
+		if ([jpeg2000Data length] % 2) 
+			[jpeg2000Data appendBytes:&zero length:1];
+		
+		return jpeg2000Data;
+	}
+	
 	if( UseOpenJpeg == YES)
 	{
 		opj_cparameters_t parameters;

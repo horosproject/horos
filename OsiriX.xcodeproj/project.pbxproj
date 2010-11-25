@@ -358,6 +358,15 @@
 		7EE416FB08B2615A00D4C9CC /* QueryLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE416C708B2612600D4C9CC /* QueryLogController.h */; };
 		7EE416FC08B2615B00D4C9CC /* QueryLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE416C808B2612600D4C9CC /* QueryLogController.m */; };
 		7EE713BC097450B000510E88 /* dcmmkdir in Resources */ = {isa = PBXBuildFile; fileRef = 7EE713BA097450B000510E88 /* dcmmkdir */; };
+		8404A981129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */; };
+		8404A982129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */; };
+		8404A983129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */; };
+		8404A984129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */; };
+		8404A985129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */; };
+		8404A986129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */; };
+		8404A987129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */; };
+		8404A988129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */; };
+		8404A989129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */; };
 		8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
 		8406956410B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
 		841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841524C4113D6BDB008250E6 /* QuartzCore.framework */; };
@@ -410,7 +419,7 @@
 		847BE3B2128BF0E100A87E98 /* j2k.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE386128BF0E100A87E98 /* j2k.c */; };
 		847BE3B3128BF0E100A87E98 /* j2k.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE387128BF0E100A87E98 /* j2k.h */; };
 		847BE3B4128BF0E100A87E98 /* jp2.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE388128BF0E100A87E98 /* jp2.c */; };
-		847BE3B5128BF0E100A87E98 /* jp2.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE389128BF0E100A87E98 /* jp2.h */; };
+		847BE3B5128BF0E100A87E98 /* jp2-opj.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE389128BF0E100A87E98 /* jp2-opj.h */; };
 		847BE3B6128BF0E100A87E98 /* jpt.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE38A128BF0E100A87E98 /* jpt.c */; };
 		847BE3B7128BF0E100A87E98 /* jpt.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE38B128BF0E100A87E98 /* jpt.h */; };
 		847BE3B8128BF0E100A87E98 /* mct.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE38C128BF0E100A87E98 /* mct.c */; };
@@ -453,7 +462,7 @@
 		847BE3DE128BF0E200A87E98 /* j2k.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE386128BF0E100A87E98 /* j2k.c */; };
 		847BE3DF128BF0E200A87E98 /* j2k.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE387128BF0E100A87E98 /* j2k.h */; };
 		847BE3E0128BF0E200A87E98 /* jp2.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE388128BF0E100A87E98 /* jp2.c */; };
-		847BE3E1128BF0E200A87E98 /* jp2.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE389128BF0E100A87E98 /* jp2.h */; };
+		847BE3E1128BF0E200A87E98 /* jp2-opj.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE389128BF0E100A87E98 /* jp2-opj.h */; };
 		847BE3E2128BF0E200A87E98 /* jpt.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE38A128BF0E100A87E98 /* jpt.c */; };
 		847BE3E3128BF0E200A87E98 /* jpt.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE38B128BF0E100A87E98 /* jpt.h */; };
 		847BE3E4128BF0E200A87E98 /* mct.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE38C128BF0E100A87E98 /* mct.c */; };
@@ -496,7 +505,7 @@
 		847BE416128BF17F00A87E98 /* j2k.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE386128BF0E100A87E98 /* j2k.c */; };
 		847BE417128BF17F00A87E98 /* j2k.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE387128BF0E100A87E98 /* j2k.h */; };
 		847BE418128BF17F00A87E98 /* jp2.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE388128BF0E100A87E98 /* jp2.c */; };
-		847BE419128BF17F00A87E98 /* jp2.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE389128BF0E100A87E98 /* jp2.h */; };
+		847BE419128BF17F00A87E98 /* jp2-opj.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE389128BF0E100A87E98 /* jp2-opj.h */; };
 		847BE41A128BF17F00A87E98 /* jpt.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE38A128BF0E100A87E98 /* jpt.c */; };
 		847BE41B128BF17F00A87E98 /* jpt.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE38B128BF0E100A87E98 /* jpt.h */; };
 		847BE41C128BF17F00A87E98 /* mct.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE38C128BF0E100A87E98 /* mct.c */; };
@@ -538,7 +547,7 @@
 		847BE441128BF18200A87E98 /* j2k.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE386128BF0E100A87E98 /* j2k.c */; };
 		847BE442128BF18200A87E98 /* j2k.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE387128BF0E100A87E98 /* j2k.h */; };
 		847BE443128BF18200A87E98 /* jp2.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE388128BF0E100A87E98 /* jp2.c */; };
-		847BE444128BF18200A87E98 /* jp2.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE389128BF0E100A87E98 /* jp2.h */; };
+		847BE444128BF18200A87E98 /* jp2-opj.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE389128BF0E100A87E98 /* jp2-opj.h */; };
 		847BE445128BF18200A87E98 /* jpt.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE38A128BF0E100A87E98 /* jpt.c */; };
 		847BE446128BF18200A87E98 /* jpt.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE38B128BF0E100A87E98 /* jpt.h */; };
 		847BE447128BF18200A87E98 /* mct.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE38C128BF0E100A87E98 /* mct.c */; };
@@ -8517,6 +8526,8 @@
 		7EE416C708B2612600D4C9CC /* QueryLogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryLogController.h; sourceTree = "<group>"; };
 		7EE416C808B2612600D4C9CC /* QueryLogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryLogController.m; sourceTree = "<group>"; };
 		7EE713BA097450B000510E88 /* dcmmkdir */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmmkdir; sourceTree = "<group>"; };
+		8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kdu_OsiriXSupport.h; sourceTree = "<group>"; };
+		8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kdu_OsiriXSupport.cpp; sourceTree = "<group>"; };
 		8406956210B6800E00C37AD0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		841524C4113D6BDB008250E6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		841721A410D8D745001A833F /* AsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncSocket.h; path = cocoahttpserver/AsyncSocket.h; sourceTree = "<group>"; };
@@ -8568,7 +8579,7 @@
 		847BE386128BF0E100A87E98 /* j2k.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = j2k.c; path = Binaries/openjpeg/j2k.c; sourceTree = "<group>"; };
 		847BE387128BF0E100A87E98 /* j2k.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = j2k.h; path = Binaries/openjpeg/j2k.h; sourceTree = "<group>"; };
 		847BE388128BF0E100A87E98 /* jp2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jp2.c; path = Binaries/openjpeg/jp2.c; sourceTree = "<group>"; };
-		847BE389128BF0E100A87E98 /* jp2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jp2.h; path = Binaries/openjpeg/jp2.h; sourceTree = "<group>"; };
+		847BE389128BF0E100A87E98 /* jp2-opj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "jp2-opj.h"; path = "Binaries/openjpeg/jp2-opj.h"; sourceTree = "<group>"; };
 		847BE38A128BF0E100A87E98 /* jpt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jpt.c; path = Binaries/openjpeg/jpt.c; sourceTree = "<group>"; };
 		847BE38B128BF0E100A87E98 /* jpt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpt.h; path = Binaries/openjpeg/jpt.h; sourceTree = "<group>"; };
 		847BE38C128BF0E100A87E98 /* mct.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mct.c; path = Binaries/openjpeg/mct.c; sourceTree = "<group>"; };
@@ -12434,6 +12445,8 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */,
+				8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */,
 				59BDEC17117C927D007F1F2C /* OsiriX Launcher */,
 				AB10FA9611293361009EB238 /* Nitrogen */,
 				CE7A0D670AED557500540017 /* 32-bit Shell */,
@@ -12979,7 +12992,7 @@
 				847BE386128BF0E100A87E98 /* j2k.c */,
 				847BE387128BF0E100A87E98 /* j2k.h */,
 				847BE388128BF0E100A87E98 /* jp2.c */,
-				847BE389128BF0E100A87E98 /* jp2.h */,
+				847BE389128BF0E100A87E98 /* jp2-opj.h */,
 				847BE38A128BF0E100A87E98 /* jpt.c */,
 				847BE38B128BF0E100A87E98 /* jpt.h */,
 				847BE38C128BF0E100A87E98 /* mct.c */,
@@ -17191,7 +17204,7 @@
 				847BE413128BF17F00A87E98 /* int.h in Headers */,
 				847BE415128BF17F00A87E98 /* j2k_lib.h in Headers */,
 				847BE417128BF17F00A87E98 /* j2k.h in Headers */,
-				847BE419128BF17F00A87E98 /* jp2.h in Headers */,
+				847BE419128BF17F00A87E98 /* jp2-opj.h in Headers */,
 				847BE41B128BF17F00A87E98 /* jpt.h in Headers */,
 				847BE41D128BF17F00A87E98 /* mct.h in Headers */,
 				847BE41F128BF17F00A87E98 /* mqc.h in Headers */,
@@ -17205,6 +17218,7 @@
 				847BE42E128BF17F00A87E98 /* t2.h in Headers */,
 				847BE430128BF17F00A87E98 /* tcd.h in Headers */,
 				847BE432128BF17F00A87E98 /* tgt.h in Headers */,
+				8404A986129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19622,7 +19636,7 @@
 				847BE3AF128BF0E100A87E98 /* int.h in Headers */,
 				847BE3B1128BF0E100A87E98 /* j2k_lib.h in Headers */,
 				847BE3B3128BF0E100A87E98 /* j2k.h in Headers */,
-				847BE3B5128BF0E100A87E98 /* jp2.h in Headers */,
+				847BE3B5128BF0E100A87E98 /* jp2-opj.h in Headers */,
 				847BE3B7128BF0E100A87E98 /* jpt.h in Headers */,
 				847BE3B9128BF0E100A87E98 /* mct.h in Headers */,
 				847BE3BB128BF0E100A87E98 /* mqc.h in Headers */,
@@ -19638,6 +19652,7 @@
 				847BE3CD128BF0E200A87E98 /* tcd.h in Headers */,
 				847BE3CF128BF0E200A87E98 /* tgt.h in Headers */,
 				592BA51D12966ABD00179C27 /* NSError+OsiriX.h in Headers */,
+				8404A988129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19719,7 +19734,7 @@
 				847BE43E128BF18200A87E98 /* int.h in Headers */,
 				847BE440128BF18200A87E98 /* j2k_lib.h in Headers */,
 				847BE442128BF18200A87E98 /* j2k.h in Headers */,
-				847BE444128BF18200A87E98 /* jp2.h in Headers */,
+				847BE444128BF18200A87E98 /* jp2-opj.h in Headers */,
 				847BE446128BF18200A87E98 /* jpt.h in Headers */,
 				847BE448128BF18200A87E98 /* mct.h in Headers */,
 				847BE44A128BF18200A87E98 /* mqc.h in Headers */,
@@ -19733,6 +19748,7 @@
 				847BE459128BF18200A87E98 /* t2.h in Headers */,
 				847BE45B128BF18200A87E98 /* tcd.h in Headers */,
 				847BE45D128BF18200A87E98 /* tgt.h in Headers */,
+				8404A984129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21848,7 +21864,7 @@
 				847BE3DB128BF0E200A87E98 /* int.h in Headers */,
 				847BE3DD128BF0E200A87E98 /* j2k_lib.h in Headers */,
 				847BE3DF128BF0E200A87E98 /* j2k.h in Headers */,
-				847BE3E1128BF0E200A87E98 /* jp2.h in Headers */,
+				847BE3E1128BF0E200A87E98 /* jp2-opj.h in Headers */,
 				847BE3E3128BF0E200A87E98 /* jpt.h in Headers */,
 				847BE3E5128BF0E200A87E98 /* mct.h in Headers */,
 				847BE3E7128BF0E200A87E98 /* mqc.h in Headers */,
@@ -21864,6 +21880,7 @@
 				847BE3F9128BF0E200A87E98 /* tcd.h in Headers */,
 				847BE3FB128BF0E200A87E98 /* tgt.h in Headers */,
 				592BA51F12966ABD00179C27 /* NSError+OsiriX.h in Headers */,
+				8404A981129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22047,11 +22064,12 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = YES;
+				BuildIndependentTargetsInParallel = NO;
 				ORGANIZATIONNAME = "OsiriX Team";
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -23470,6 +23488,7 @@
 				847BE42D128BF17F00A87E98 /* t2.c in Sources */,
 				847BE42F128BF17F00A87E98 /* tcd.c in Sources */,
 				847BE431128BF17F00A87E98 /* tgt.c in Sources */,
+				8404A987129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24308,6 +24327,7 @@
 				847BE3CC128BF0E200A87E98 /* tcd.c in Sources */,
 				847BE3CE128BF0E200A87E98 /* tgt.c in Sources */,
 				592BA51E12966ABD00179C27 /* NSError+OsiriX.mm in Sources */,
+				8404A989129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24682,6 +24702,7 @@
 				CEFFFE3D12868F5400D69BB8 /* djdijp2k.cc in Sources */,
 				CEFF01001286F7A700D69BB8 /* djenc2k.cc in Sources */,
 				CEFF01471286FB2000D69BB8 /* djeijg2k.cc in Sources */,
+				8404A983129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24922,6 +24943,7 @@
 				847BE458128BF18200A87E98 /* t2.c in Sources */,
 				847BE45A128BF18200A87E98 /* tcd.c in Sources */,
 				847BE45C128BF18200A87E98 /* tgt.c in Sources */,
+				8404A985129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25531,6 +25553,7 @@
 				847BE3F8128BF0E200A87E98 /* tcd.c in Sources */,
 				847BE3FA128BF0E200A87E98 /* tgt.c in Sources */,
 				592BA52012966ABD00179C27 /* NSError+OsiriX.mm in Sources */,
+				8404A982129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26202,6 +26225,7 @@
 					"$(SRCROOT)/Binaries/Jasper",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
@@ -26299,6 +26323,7 @@
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
 					"\"$(SRCROOT)/ITK180/bin\"",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -26490,6 +26515,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Ming\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -26606,6 +26632,7 @@
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
 					"\"$(SRCROOT)/ITK180/bin\"",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -26670,6 +26697,7 @@
 					"$(SRCROOT)/Binaries/Jasper",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
@@ -26776,6 +26804,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Ming\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -26910,6 +26939,7 @@
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
 					"\"$(SRCROOT)/ITK180/bin\"",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -26976,6 +27006,7 @@
 					"$(SRCROOT)/Binaries/Jasper",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
@@ -27062,6 +27093,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Ming\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -27123,6 +27155,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
@@ -27142,6 +27175,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
@@ -27161,6 +27195,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
@@ -27212,6 +27247,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -27280,6 +27316,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -27349,6 +27386,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
+					"\"$(SRCROOT)/lib\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",

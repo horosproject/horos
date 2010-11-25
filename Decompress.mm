@@ -40,7 +40,7 @@ NSThread				*mainThread = 0L;
 BOOL					NEEDTOREBUILD = NO;
 NSMutableDictionary		*DATABASECOLUMNS = 0L;
 short					Altivec = 0;
-short					UseOpenJpeg = 0;
+short					UseOpenJpeg = 1, Use_kdu_IfAvailable = 1;
 
 extern void dcmtkSetJPEGColorSpace( int);
 
@@ -167,6 +167,7 @@ int main(int argc, const char *argv[])
 		if( [what isEqualToString:@"compress"])
 		{
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
+			[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
 			
 			NSArray *compressionSettings = [dict valueForKey: @"CompressionSettings"];
 			NSArray *compressionSettingsLowRes = [dict valueForKey: @"CompressionSettingsLowRes"];
@@ -413,6 +414,7 @@ int main(int argc, const char *argv[])
 			Papy3Init();
 			
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
+			[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
 			
 			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
 			
@@ -447,6 +449,7 @@ int main(int argc, const char *argv[])
 				destDirec = path;
 			
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
+			[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
 			
 			int i;
 			for( i = fileListFirstItemIndex; i < argc ; i++)

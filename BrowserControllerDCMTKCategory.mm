@@ -237,70 +237,68 @@ extern NSRecursiveLock *PapyrusLock;
 {
 //	@synchronized( [BrowserController currentBrowser])
 //	{
-//	for( NSString *path in paths)
-//	{
-//		DcmFileFormat fileformat;
-//		OFCondition cond = fileformat.loadFile( [path UTF8String]);
-//		
-//		if( cond.good())
+//		for( NSString *path in paths)
 //		{
-//			DJ_RPLossy lossyParams( DCMHighQuality);
+//			DcmFileFormat fileformat;
+//			OFCondition cond = fileformat.loadFile( [path UTF8String]);
 //			
-//			DcmDataset *dataset = fileformat.getDataset();
-//			DcmItem *metaInfo = fileformat.getMetaInfo();
-//			DcmXfer original_xfer(dataset->getOriginalXfer());
-//			
-//			DcmRepresentationParameter *params = &lossyParams;
-//			E_TransferSyntax tSyntax = EXS_JPEG2000;
-//			
-//			DcmXfer oxferSyn( tSyntax);
-//			dataset->chooseRepresentation(tSyntax, params);
-//			
-//			// check if everything went well
-//			if (dataset->canWriteXfer(tSyntax))
+//			if( cond.good())
 //			{
-//				// force the meta-header UIDs to be re-generated when storing the file 
-//				// since the UIDs in the data set may have changed 
+//				DJ_RPLossy lossyParams( DCMHighQuality);
 //				
-//				//only need to do this for lossy
-//				//delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-//				//delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+//				DcmDataset *dataset = fileformat.getDataset();
+//				DcmItem *metaInfo = fileformat.getMetaInfo();
+//				DcmXfer original_xfer(dataset->getOriginalXfer());
 //				
-//				// store in lossless JPEG format
-//				fileformat.loadAllDataIntoMemory();
+//				DcmRepresentationParameter *params = &lossyParams;
+//				E_TransferSyntax tSyntax = EXS_JPEG2000;
 //				
-//				[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingString: @"cc.dcm"] handler:nil];
-//				cond = fileformat.saveFile( [[path stringByAppendingString: @"cc.dcm"] UTF8String], tSyntax);
-//				BOOL status =  (cond.good()) ? YES : NO;
+//				DcmXfer oxferSyn( tSyntax);
+//				dataset->chooseRepresentation(tSyntax, params);
 //				
-//				if( status == NO)
-//					NSLog( @"failed to compress file: %@", [paths lastObject]);
+//				// check if everything went well
+//				if (dataset->canWriteXfer(tSyntax))
+//				
+//					// store in lossless JPEG format
+//					fileformat.loadAllDataIntoMemory();
+//					
+//					[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingString: @"cc.dcm"] handler:nil];
+//					cond = fileformat.saveFile( [[path stringByAppendingString: @"cc.dcm"] UTF8String], tSyntax);
+//					BOOL status =  (cond.good()) ? YES : NO;
+//					
+//					if( status == NO)
+//						NSLog( @"failed to compress file: %@", [paths lastObject]);
+//				}
+//				else NSLog( @"err");
 //			}
 //			else NSLog( @"err");
 //		}
-//		else NSLog( @"err");
-//	}
 //	}
 //	return YES;
 
-
-//	DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: [paths lastObject] decodingPixelData: NO];
-//							
-//	BOOL succeed = NO;
-//	
-//	@try
+//	@synchronized( [BrowserController currentBrowser])
 //	{
-//		DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax]; // JPEG2000LosslessTransferSyntax];
-//		succeed = [dcmObject writeToFile: [[paths lastObject] stringByAppendingString:@"aa.dcm"] withTransferSyntax: tsx quality: DCMLowQuality AET:@"OsiriX" atomically:YES];
+//		for( int i = DCMLosslessQuality ; i <= DCMLowQuality ; i++)
+//		{
+//			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: [paths lastObject] decodingPixelData: NO];
+//									
+//			BOOL succeed = NO;
+//			
+//			@try
+//			{
+//				DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax]; // JPEG2000LosslessTransferSyntax];
+//				
+//				succeed = [dcmObject writeToFile: [NSString stringWithFormat: @"/tmp/testjp-%d.dcm", i] withTransferSyntax: tsx quality: i AET:@"OsiriX" atomically:YES];
+//			}
+//			@catch (NSException *e)
+//			{
+//				NSLog( @"dcmObject writeToFile failed: %@", e);
+//			}
+//			[dcmObject release];
+//		}
+//		return YES;
 //	}
-//	@catch (NSException *e)
-//	{
-//		NSLog( @"dcmObject writeToFile failed: %@", e);
-//	}
-//	[dcmObject release];
-//	
-//	return YES;
-
+	
 // ********
 
 //	NSLog( @"** START");

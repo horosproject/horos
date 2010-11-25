@@ -52,6 +52,11 @@
 #undef HAVE_STDDEF_H
 #endif
 
+// KDU support
+#include <CoreServices/CoreServices.h>
+#include "kdu_OsiriXSupport.h"
+extern short Use_kdu_IfAvailable;
+
 // use 16K blocks for temporary storage of compressed JPEG data
 #define IJGE12_BLOCKSIZE 16384
 
@@ -365,65 +370,6 @@ OFCondition DJCompressJP2K::encode(
   Uint8 pixelRepresentation,
   double minUsed, double maxUsed)
 {
-	opj_cparameters_t parameters;
-	opj_event_mgr_t event_mgr;
-	opj_image_t *image = NULL;
-	
-	printf( "JP2K-DCMTK-Encode ");
-	
-	memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
-	event_mgr.error_handler = error_callback;
-	event_mgr.warning_handler = warning_callback;
-	event_mgr.info_handler = info_callback;
-
-	memset(&parameters, 0, sizeof(parameters));
-	opj_set_default_encoder_parameters(&parameters);
-	
-	parameters.tcp_numlayers = 1;
-	parameters.cp_disto_alloc = 1;
-	
-	switch( quality)
-	{
-		case 0: // DCMLosslessQuality
-			parameters.tcp_rates[0] = 0;
-		break;
-		
-		case 1: // DCMHighQuality
-			parameters.tcp_rates[0] = 4;
-		break;
-		
-		case 2: // DCMMediumQuality
-			if( columns <= 600 || rows <= 600)
-				parameters.tcp_rates[0] = 6;
-			else
-				parameters.tcp_rates[0] = 8;
-		break;
-		
-		case 3: // DCMLowQuality
-			parameters.tcp_rates[0] = 16;
-		break;
-		
-		default:
-			printf( "****** warning unknown compression rate -> lossless : %d", quality);
-			parameters.tcp_rates[0] = 0;
-		break;
-	}
-	
-	int image_width = columns;
-	int image_height = rows;
-	int sample_pixel = samplesPerPixel;
-	
-	if (colorSpace == EPI_Monochrome1 || colorSpace == EPI_Monochrome2)
-	{
-	
-	}
-	else
-	{
-		if( sample_pixel != 3)
-			printf( "*** RGB Photometric?, but... SamplesPerPixel != 3 ?");
-		sample_pixel = 3;
-	}
-	
 	int bitsstored = bitsAllocated;
 	
 	OFBool isSigned = 0;
@@ -459,55 +405,162 @@ OFCondition DJCompressJP2K::encode(
 		
 		// avoid the artifacts... switch to lossless
 		if( (maxUsed >= 32000 && minUsed <= -32000) || maxUsed >= 65000 || bits > 16)
-		{
-			parameters.tcp_rates[0] = 0;
-			parameters.tcp_numlayers = 1;
-			parameters.cp_disto_alloc = 1;
-		}
+			quality = 0;
 		
 		if( bits > 16) bits = 16;
 		
 		bitsstored = bits;
 	}
 	
-	image = rawtoimage( (char*) image_buffer, &parameters,  static_cast<int>( columns*rows*samplesPerPixel*bitsAllocated/8),  image_width, image_height, sample_pixel, bitsAllocated, bitsstored, isSigned, 0);
-	
-	parameters.cod_format = 0; /* J2K format output */
-	int codestream_length;
-	opj_cio_t *cio = NULL;
-	
-	opj_cinfo_t* cinfo = opj_create_compress(CODEC_J2K);
-
-	/* catch events using our callbacks and give a local context */
-	opj_set_event_mgr((opj_common_ptr)cinfo, &event_mgr, stderr);
-
-	/* setup the encoder parameters using the current image and using user parameters */
-	opj_setup_encoder(cinfo, &parameters, image);
-
-	/* open a byte stream for writing */
-	/* allocate memory for all tiles */
-	cio = opj_cio_open((opj_common_ptr)cinfo, NULL, 0);
-
-	/* encode the image */
-	int bSuccess = opj_encode(cinfo, cio, image, NULL);
-	if (!bSuccess) {
-	  opj_cio_close(cio);
-	  fprintf(stderr, "failed to encode image\n");
-	  return false;
+	if( Use_kdu_IfAvailable && kdu_available())
+	{
+		printf( "JP2K KDU-DCMTK-Encode ");
+		
+		int precision = bitsstored;
+		int rate = 0;
+		
+		switch( quality)
+		{
+			case 0: //DCMLosslessQuality:
+				rate = 0;
+				break;
+				
+			case 1: //DCMHighQuality:
+				rate = 4;
+				break;
+				
+			case 2: //DCMMediumQuality:
+				if( columns <= 600 || rows <= 600) rate = 6;
+				else rate = 8;
+				break;
+				
+			case 3: //DCMLowQuality:
+				rate = 16;
+				break;
+				
+			default:
+				printf( "****** warning unknown compression rate -> lossless : %d", quality);
+				rate = 0;
+				break;
+		}
+		
+		long compressedLength = 0;
+		
+		int processors = 0;
+		
+		if( rows*columns > 256*1024) // 512 * 512
+			processors = MPProcessors()/2;
+		
+		void *outBuffer = kdu_compressJPEG2K( (void*) image_buffer, samplesPerPixel, rows, columns, bitsstored, false, rate, &compressedLength, processors);
+		
+		if( outBuffer)
+		{
+			to = new Uint8[ compressedLength];
+			memcpy( to, outBuffer, compressedLength);
+			length = compressedLength;
+		
+			free( outBuffer);
+		}
 	}
-	codestream_length = cio_tell(cio);
-	
-	to = new Uint8[ codestream_length];
-	memcpy( to, cio->buffer, codestream_length);
-	length = codestream_length;
-	
-	 /* close and free the byte stream */
-	opj_cio_close(cio);
-	
-	/* free remaining compression structures */
-	opj_destroy_compress(cinfo);
-	
-	opj_image_destroy(image);
-	
-return EC_Normal;
+	else
+	{
+		opj_cparameters_t parameters;
+		opj_event_mgr_t event_mgr;
+		opj_image_t *image = NULL;
+		
+		printf( "JP2K OPJ-DCMTK-Encode ");
+		
+		memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
+		event_mgr.error_handler = error_callback;
+		event_mgr.warning_handler = warning_callback;
+		event_mgr.info_handler = info_callback;
+
+		memset(&parameters, 0, sizeof(parameters));
+		opj_set_default_encoder_parameters(&parameters);
+		
+		parameters.tcp_numlayers = 1;
+		parameters.cp_disto_alloc = 1;
+		
+		switch( quality)
+		{
+			case 0: // DCMLosslessQuality
+				parameters.tcp_rates[0] = 0;
+			break;
+			
+			case 1: // DCMHighQuality
+				parameters.tcp_rates[0] = 4;
+			break;
+			
+			case 2: // DCMMediumQuality
+				if( columns <= 600 || rows <= 600)
+					parameters.tcp_rates[0] = 6;
+				else
+					parameters.tcp_rates[0] = 8;
+			break;
+			
+			case 3: // DCMLowQuality
+				parameters.tcp_rates[0] = 16;
+			break;
+			
+			default:
+				printf( "****** warning unknown compression rate -> lossless : %d", quality);
+				parameters.tcp_rates[0] = 0;
+			break;
+		}
+		
+		int image_width = columns;
+		int image_height = rows;
+		int sample_pixel = samplesPerPixel;
+		
+		if (colorSpace == EPI_Monochrome1 || colorSpace == EPI_Monochrome2)
+		{
+		
+		}
+		else
+		{
+			if( sample_pixel != 3)
+				printf( "*** RGB Photometric?, but... SamplesPerPixel != 3 ?");
+			sample_pixel = 3;
+		}
+		
+		image = rawtoimage( (char*) image_buffer, &parameters,  static_cast<int>( columns*rows*samplesPerPixel*bitsAllocated/8),  image_width, image_height, sample_pixel, bitsAllocated, bitsstored, isSigned, 0);
+		
+		parameters.cod_format = 0; /* J2K format output */
+		int codestream_length;
+		opj_cio_t *cio = NULL;
+		
+		opj_cinfo_t* cinfo = opj_create_compress(CODEC_J2K);
+
+		/* catch events using our callbacks and give a local context */
+		opj_set_event_mgr((opj_common_ptr)cinfo, &event_mgr, stderr);
+
+		/* setup the encoder parameters using the current image and using user parameters */
+		opj_setup_encoder(cinfo, &parameters, image);
+
+		/* open a byte stream for writing */
+		/* allocate memory for all tiles */
+		cio = opj_cio_open((opj_common_ptr)cinfo, NULL, 0);
+
+		/* encode the image */
+		int bSuccess = opj_encode(cinfo, cio, image, NULL);
+		if (!bSuccess) {
+		  opj_cio_close(cio);
+		  fprintf(stderr, "failed to encode image\n");
+		  return false;
+		}
+		codestream_length = cio_tell(cio);
+		
+		to = new Uint8[ codestream_length];
+		memcpy( to, cio->buffer, codestream_length);
+		length = codestream_length;
+		
+		 /* close and free the byte stream */
+		opj_cio_close(cio);
+		
+		/* free remaining compression structures */
+		opj_destroy_compress(cinfo);
+		
+		opj_image_destroy(image);
+	}
+	return EC_Normal;
 }
