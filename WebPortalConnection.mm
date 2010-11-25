@@ -96,7 +96,21 @@ NSString* const SessionCookieName = @"SID";
 @end
 @implementation WebPortalResponse
 
-@synthesize data, httpHeaders, httpStatusCode;
+@synthesize httpHeaders, httpStatusCode;
+
+-(NSData*) data
+{
+	return data;
+}
+
+-(void) setData:(NSData *) d
+{
+	if( data != d)
+	{
+		[data release];
+		data = [d retain];
+	}
+}
 
 -(id)init {
 	self = [super initWithData:NULL];
