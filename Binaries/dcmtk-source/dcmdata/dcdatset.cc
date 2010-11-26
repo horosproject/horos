@@ -370,7 +370,14 @@ OFCondition DcmDataset::write(DcmOutputStream &outStream,
           do
           {
             dO = elementList->get();
-            errorFlag = dO->write(outStream, newXfer, enctype);
+			
+			if( dO->getGTag() == 0x9 && dO->getETag() == 0x1010) // GE Icon bug.... JPEG Data
+				errorFlag = errorFlag;
+//            else if( dO->getGTag() == 0x7fe0 && dO->getETag() == 0x0010) //7fe0,0010
+//				errorFlag = dO->write(outStream, newXfer, enctype);
+			else
+				errorFlag = dO->write(outStream, newXfer, enctype);
+			  
           } while (errorFlag.good() && elementList->seek(ELP_next));
         }
 

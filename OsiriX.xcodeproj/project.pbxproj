@@ -367,6 +367,7 @@
 		8404A987129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */; };
 		8404A988129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */; };
 		8404A989129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */; };
+		8404B193129F9FD200C57EA4 /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8404B192129F9FD200C57EA4 /* dcmqrcbs.cc */; };
 		8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
 		8406956410B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
 		841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841524C4113D6BDB008250E6 /* QuartzCore.framework */; };
@@ -2384,7 +2385,6 @@
 		BFBF414109B6828D00545F5E /* dcmqrcbg.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9509B6828700545F5E /* dcmqrcbg.mm */; };
 		BFBF414209B6828D00545F5E /* dcmqrcbg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9609B6828800545F5E /* dcmqrcbg.h */; };
 		BFBF414409B6828D00545F5E /* dcmqrcbm.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9809B6828800545F5E /* dcmqrcbm.h */; };
-		BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */; };
 		BFBF414609B6828D00545F5E /* dcmqrcbs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */; };
 		BFBF414809B6828D00545F5E /* dcmqrcnf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9C09B6828800545F5E /* dcmqrcnf.h */; };
 		BFBF414909B6828D00545F5E /* dcmqrdba.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9D09B6828800545F5E /* dcmqrdba.h */; };
@@ -8528,6 +8528,7 @@
 		7EE713BA097450B000510E88 /* dcmmkdir */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmmkdir; sourceTree = "<group>"; };
 		8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kdu_OsiriXSupport.h; sourceTree = "<group>"; };
 		8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kdu_OsiriXSupport.cpp; sourceTree = "<group>"; };
+		8404B192129F9FD200C57EA4 /* dcmqrcbs.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrcbs.cc; sourceTree = "<group>"; };
 		8406956210B6800E00C37AD0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		841524C4113D6BDB008250E6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		841721A410D8D745001A833F /* AsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncSocket.h; path = cocoahttpserver/AsyncSocket.h; sourceTree = "<group>"; };
@@ -9927,7 +9928,6 @@
 		BFBF3D9509B6828700545F5E /* dcmqrcbg.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcbg.mm; sourceTree = "<group>"; };
 		BFBF3D9609B6828800545F5E /* dcmqrcbg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrcbg.h; sourceTree = "<group>"; };
 		BFBF3D9809B6828800545F5E /* dcmqrcbm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrcbm.h; sourceTree = "<group>"; };
-		BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrcbs.cc; sourceTree = "<group>"; };
 		BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrcbs.h; sourceTree = "<group>"; };
 		BFBF3D9C09B6828800545F5E /* dcmqrcnf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrcnf.h; sourceTree = "<group>"; };
 		BFBF3D9D09B6828800545F5E /* dcmqrdba.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrdba.h; sourceTree = "<group>"; };
@@ -14903,8 +14903,8 @@
 				BFBF3D9609B6828800545F5E /* dcmqrcbg.h */,
 				BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */,
 				BFBF3D9809B6828800545F5E /* dcmqrcbm.h */,
-				BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */,
 				BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */,
+				8404B192129F9FD200C57EA4 /* dcmqrcbs.cc */,
 				BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */,
 				BFBF3D9C09B6828800545F5E /* dcmqrcnf.h */,
 				BFBF3D9D09B6828800545F5E /* dcmqrdba.h */,
@@ -23752,7 +23752,6 @@
 				BFBF40E109B6828D00545F5E /* lst.cc in Sources */,
 				BFBF413F09B6828D00545F5E /* dcmqrcbf.cc in Sources */,
 				BFBF414109B6828D00545F5E /* dcmqrcbg.mm in Sources */,
-				BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */,
 				BFBF414C09B6828D00545F5E /* dcmqrdbs.cc in Sources */,
 				BFBF414F09B6828D00545F5E /* dcmqropt.cc in Sources */,
 				BFBF415709B6828D00545F5E /* dcsignat.cc in Sources */,
@@ -24328,6 +24327,7 @@
 				847BE3CE128BF0E200A87E98 /* tgt.c in Sources */,
 				592BA51E12966ABD00179C27 /* NSError+OsiriX.mm in Sources */,
 				8404A989129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */,
+				8404B193129F9FD200C57EA4 /* dcmqrcbs.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -281,8 +281,22 @@ void errmsg(const char* msg, ...)
 	//write metaheader
 	options.useMetaheader_ = OFTrue;
 	
-	//write with same syntax as it came in
-	options.writeTransferSyntax_ = EXS_Unknown;	//;
+	options.writeTransferSyntax_ = EXS_Unknown;
+	
+//	switch ( [[NSUserDefaults standardUserDefaults] integerForKey:@"ListenerCompressionSettings"]) //It's not a good idea, because it's a single process... no multi-threads
+//	{
+//		case 0:
+//			options.writeTransferSyntax_ = EXS_Unknown;	//write with same syntax as it came in
+//		break;
+//			
+//		case 1:
+//			options.writeTransferSyntax_ = EXS_LittleEndianExplicit; //decompress
+//		break;
+//			
+//		case 2:
+//			options.writeTransferSyntax_ = EXS_JPEG2000;	// compress
+//		break;
+//	}
 	
 	//remove group lengths
 	options.groupLength_ = EGL_withoutGL;

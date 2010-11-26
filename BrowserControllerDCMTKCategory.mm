@@ -258,7 +258,7 @@ extern NSRecursiveLock *PapyrusLock;
 //				
 //				// check if everything went well
 //				if (dataset->canWriteXfer(tSyntax))
-//				
+//				{
 //					// store in lossless JPEG format
 //					fileformat.loadAllDataIntoMemory();
 //					

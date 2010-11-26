@@ -934,6 +934,7 @@ OFCondition DcmPixelData::write(
   else
   {
     DcmXfer xferSyn(oxfer);
+	
     if (xferSyn.isEncapsulated() && (! alwaysUnencapsulated))
     {
       if (fTransferState == ERW_init)

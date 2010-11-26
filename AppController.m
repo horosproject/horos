@@ -765,6 +765,7 @@ void exceptionHandler(NSException *exception)
 
 static NSDate *lastWarningDate = nil;
 
+
 @implementation AppController
 
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive;

@@ -42,6 +42,62 @@
 #include "dcmqrdbs.h"
 #include "dcmqrdbi.h"
 
+//@interface writeClass : NSObject
+//{
+//	
+//}
+//+(void) writeFile: (NSDictionary*) params;
+//
+//@end
+//
+//@implementation writeClass
+//
+//+(void) writeFile: (NSDictionary*) params
+//{
+//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//	
+//	const char* fname = (const char*) [[params objectForKey: @"fname"] UTF8String];
+//	DcmQueryRetrieveOptions *options = (DcmQueryRetrieveOptions*) [[params objectForKey: @"options"] pointerValue];
+//	DcmFileFormat *ff = (DcmFileFormat*) [[params objectForKey: @"ff"] pointerValue];
+//	E_TransferSyntax xfer = (E_TransferSyntax) [[params objectForKey: @"xfer"] intValue];
+//
+//	E_TransferSyntax ofer = ff->getDataset()->getOriginalXfer();
+//	
+//	DcmXfer oType( ofer), xType( xfer);
+//	
+//	if( (ofer == EXS_JPEG2000LosslessOnly || ofer == EXS_JPEG2000) &&
+//	   (xfer == EXS_JPEG2000LosslessOnly || xfer == EXS_JPEG2000))
+//		xfer = ff->getDataset()->getOriginalXfer();
+//	
+//	else if( ofer == xfer)
+//		xfer = ff->getDataset()->getOriginalXfer();
+//	
+//	else if( oType.isEncapsulated() == OFFalse && xType.isEncapsulated() == OFFalse)
+//		xfer = xfer;
+//	
+//	else
+//	{
+//		if( ff->getDataset()->chooseRepresentation( xfer, NULL) != EC_Normal)
+//			xfer = ff->getDataset()->getOriginalXfer();
+//	}
+//	
+//	
+//	OFCondition cond = ff->saveFile(fname, xfer, options->sequenceType_, 
+//									options->groupLength_, options->paddingType_, (Uint32)options->filepad_, 
+//									(Uint32)options->itempad_, (!options->useMetaheader_));
+//	
+//	if (cond.bad())
+//	{
+//		fprintf(stderr, "storescp: Cannot write image file: %s\n", fname);
+//		DimseCondition::dump(cond);
+////		rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
+//	}
+//	
+//	[pool release];
+//}
+//
+//@end
+
 
 void DcmQueryRetrieveStoreContext::updateDisplay(T_DIMSE_StoreProgress * progress)
 {
@@ -104,23 +160,51 @@ void DcmQueryRetrieveStoreContext::writeToFile(
     const char* fname,
     T_DIMSE_C_StoreRSP *rsp)
 {
-    E_TransferSyntax xfer = options_.writeTransferSyntax_;
-    if (xfer == EXS_Unknown) xfer = ff->getDataset()->getOriginalXfer();
-
-    OFCondition cond = ff->saveFile(fname, xfer, options_.sequenceType_, 
-        options_.groupLength_, options_.paddingType_, (Uint32)options_.filepad_, 
-        (Uint32)options_.itempad_, (!options_.useMetaheader_));
-
-    if (cond.bad())
-    {
-      fprintf(stderr, "storescp: Cannot write image file: %s\n", fname);
-	  DimseCondition::dump(cond);
-      rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
-    }
+	
+	E_TransferSyntax xfer = ff->getDataset()->getOriginalXfer();
+	
+	OFCondition cond = ff->saveFile(fname, xfer, options_.sequenceType_, 
+									options_.groupLength_, options_.paddingType_, (Uint32)options_.filepad_, 
+									(Uint32)options_.itempad_, (!options_.useMetaheader_));
+	
+	if (cond.bad())
+	{
+		fprintf(stderr, "storescp: Cannot write image file: %s\n", fname);
+		DimseCondition::dump(cond);
+		rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
+	}
+	
+//    E_TransferSyntax xfer = options_.writeTransferSyntax_;
+//    if (xfer == EXS_Unknown)
+//	{
+//		xfer = ff->getDataset()->getOriginalXfer();
+//		
+//		OFCondition cond = ff->saveFile(fname, xfer, options_.sequenceType_, 
+//			options_.groupLength_, options_.paddingType_, (Uint32)options_.filepad_, 
+//			(Uint32)options_.itempad_, (!options_.useMetaheader_));
+//		
+//		if (cond.bad())
+//		{
+//		  fprintf(stderr, "storescp: Cannot write image file: %s\n", fname);
+//		  DimseCondition::dump(cond);
+//		  rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
+//		}
+//	}
+//	else
+//	{
+//		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//		
+//		NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: ff->clone()], @"ff", [NSString stringWithUTF8String: fname], @"fname", [NSNumber numberWithInt: xfer], @"xfer", [NSValue valueWithPointer: &options_], @"options", nil];
+//	
+//		[NSThread detachNewThreadSelector: @selector( writeFile:) toTarget: [writeClass class] withObject: params];
+//		
+//		[pool release];
+//	}
 }
 
 void DcmQueryRetrieveStoreContext::checkRequestAgainstDataset(
-    T_DIMSE_C_StoreRQ *req,     /* original store request */
+    T_DIMSE_C_StoreRQ *req,   
+															  /* original store request */
     const char* fname,          /* filename of dataset */
     DcmDataset *dataSet,        /* dataset to check */
     T_DIMSE_C_StoreRSP *rsp,    /* final store response */
@@ -172,10 +256,12 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
         }
 		*/
         if (!options_.ignoreStoreData_ && rsp->DimseStatus == STATUS_Success) {
-            if ((imageDataSet)&&(*imageDataSet)) {
-                writeToFile(dcmff, fileName, rsp);
+            if ((imageDataSet)&&(*imageDataSet))
+			{
+				writeToFile(dcmff, fileName, rsp);
             }
-            if (rsp->DimseStatus == STATUS_Success) {
+            if (rsp->DimseStatus == STATUS_Success)
+			{
                 saveImageToDB(req, fileName, rsp, stDetail);
             }
         }
