@@ -39,10 +39,11 @@
 }*/
 
 -(void)updateFormatIsOk {
+	NSLog(@"updateFormatIsOk");
 	if (self.formatter) {
 		id obj = NULL;
 		
-		self.formatIsOk = [self.formatter getObjectValue:&obj forString:self.stringValue errorDescription:NULL];
+		self.formatIsOk = self.stringValue.length? [self.formatter getObjectValue:&obj forString:self.stringValue errorDescription:NULL] : YES;
 		
 	/*	if (invalidContentBackgroundColor) {
 			[self setBackgroundColor: self.formatIsOk? [NSColor whiteColor] : invalidContentBackgroundColor ];
