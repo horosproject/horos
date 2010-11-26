@@ -39,7 +39,6 @@
 }*/
 
 -(void)updateFormatIsOk {
-	NSLog(@"updateFormatIsOk");
 	if (self.formatter) {
 		id obj = NULL;
 		
