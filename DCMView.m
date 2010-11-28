@@ -3714,16 +3714,56 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 // TrackPad support
 
+//- (void)touchesBeganWithEvent:(NSEvent *)event
+//{
+//    NSSet *touches = [event touchesMatchingPhase: NSTouchPhaseTouching inView: self];
+//    
+//    if (touches.count == 2)
+//	{
+//		NSPoint initialPoint = [self convertPointFromBase: [event locationInWindow]];
+//        NSArray *array = [touches allObjects];
+//        
+//		NSLog( @"%@", array);
+//    }
+//	else if (touches.count == 3)
+//	{
+//		
+//    }
+//}
+//
+//- (void)touchesMovedWithEvent:(NSEvent *)event
+//{
+//    self.modifiers = [event modifierFlags];
+//    NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseTouching inView: self];
+//    
+//    if (touches.count == 2 && _initialTouches[0])
+//	{
+//        NSArray *array = [touches allObjects];
+//		
+//        NSLog( @"%@", array);
+//    }
+//}
+//
+//- (void)touchesEndedWithEvent:(NSEvent *)event
+//{
+//
+//}
+//
+//- (void)touchesCancelledWithEvent:(NSEvent *)event
+//{
+//	
+//}
+
 -(void) magnifyWithEvent:(NSEvent *)anEvent
 {
-	[self setScaleValue: scaleValue + anEvent.deltaZ / 40.];
+	[self setScaleValue: scaleValue + anEvent.deltaZ / 60.];
 	
 	[self setNeedsDisplay:YES];
 }
 
 -(void) rotateWithEvent:(NSEvent *)anEvent
 {
-	[self setRotation: rotation - anEvent.rotation * 2.];
+	[self setRotation: rotation - anEvent.rotation * 1.5];
 	
 	[self setNeedsDisplay:YES];
 }

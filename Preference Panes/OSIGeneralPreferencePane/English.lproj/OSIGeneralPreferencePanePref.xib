@@ -818,7 +818,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<object class="NSButtonCell" id="794643842">
 													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Kakadu - Ultra-Fast, High Quality (KDU Plugin required)</string>
+													<string key="NSContents">Kakadu - Ultra-Fast, High Quality (KDU Version required)</string>
 													<reference key="NSSupport" ref="257743695"/>
 													<reference key="NSControlView" ref="895965936"/>
 													<int key="NSTag">1</int>
@@ -924,7 +924,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 												<object class="NSButtonCell" id="929149408">
 													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Jasper - Slow</string>
+													<string key="NSContents">Jasper - Slow (not recommended)</string>
 													<reference key="NSSupport" ref="257743695"/>
 													<reference key="NSControlView" ref="895965936"/>
 													<int key="NSTag">2</int>
@@ -1024,7 +1024,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<object class="NSButtonCell" id="1013525647">
 													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">DCM Framework</string>
+													<string key="NSContents">DCM Framework (not recommended)</string>
 													<reference key="NSSupport" ref="257743695"/>
 													<reference key="NSControlView" ref="378058235"/>
 													<int key="NSButtonFlags">1211912703</int>

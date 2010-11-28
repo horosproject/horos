@@ -15761,6 +15761,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	[decompressThreadRunning lock];
 	
+	NSLog( @"Compress/Decompress START");
+	
 	@try 
 	{
 		char tow = [typeOfWork charValue];
@@ -15894,6 +15896,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	[decompressThreadRunning unlock];
+	
+	NSLog( @"Compress/Decompress END");
 	
 	[pool release];
 }

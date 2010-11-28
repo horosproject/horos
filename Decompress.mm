@@ -169,6 +169,9 @@ int main(int argc, const char *argv[])
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
 			[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
 			
+			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
+			Use_kdu_IfAvailable = [[dict objectForKey:@"UseKDUForJPEG2000"] intValue];
+			
 			NSArray *compressionSettings = [dict valueForKey: @"CompressionSettings"];
 			NSArray *compressionSettingsLowRes = [dict valueForKey: @"CompressionSettingsLowRes"];
 			
@@ -417,6 +420,7 @@ int main(int argc, const char *argv[])
 			[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
 			
 			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
+			Use_kdu_IfAvailable = [[dict objectForKey:@"UseKDUForJPEG2000"] intValue];
 			
 			int i;
 			for( i = fileListFirstItemIndex; i < argc ; i++)
@@ -450,6 +454,9 @@ int main(int argc, const char *argv[])
 			
 			[DCMPixelDataAttribute setUseOpenJpeg: [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue]];
 			[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
+			
+			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
+			Use_kdu_IfAvailable = [[dict objectForKey:@"UseKDUForJPEG2000"] intValue];
 			
 			int i;
 			for( i = fileListFirstItemIndex; i < argc ; i++)

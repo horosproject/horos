@@ -44,7 +44,19 @@
 
 - (void) setJP2KWriter:(NSUInteger) v
 {
-	return [[NSUserDefaults standardUserDefaults] setBool: v forKey: @"useDCMTKForJP2K"];
+	[[NSUserDefaults standardUserDefaults] setBool: v forKey: @"useDCMTKForJP2K"];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"])
+	{
+		// Jasper not available with DCMTK
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseOpenJpegForJPEG2000"];
+	}
+	
+	[self willChangeValueForKey: @"JP2KWriter"];
+	[self didChangeValueForKey: @"JP2KWriter"];
+	
+	[self willChangeValueForKey: @"JP2KEngine"];
+	[self didChangeValueForKey: @"JP2KEngine"];
 }
 
 - (void) setJP2KEngine: (NSUInteger) val;
@@ -65,7 +77,19 @@
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseKDUForJPEG2000"];
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseOpenJpegForJPEG2000"];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"])
+		{
+			// Jasper not available with DCMTK
+			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"useDCMTKForJP2K"];
+		}
 	}
+	
+	[self willChangeValueForKey: @"JP2KWriter"];
+	[self didChangeValueForKey: @"JP2KWriter"];
+	
+	[self willChangeValueForKey: @"JP2KEngine"];
+	[self didChangeValueForKey: @"JP2KEngine"];
 }
 
 - (NSUInteger) JP2KEngine
