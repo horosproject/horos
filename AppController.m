@@ -57,6 +57,8 @@
 
 #include <OpenGL/OpenGL.h>
 
+#include <kdu_OsiriXSupport.h>
+
 #include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1097,6 +1099,11 @@ static NSDate *lastWarningDate = nil;
 	
 	[lastWarningDate release];
 	lastWarningDate = [[NSDate date] retain];
+}
+
++ (BOOL) isKDUEngineAvailable
+{
+	return kdu_available();
 }
 
 - (NSString *)computerName

@@ -144,6 +144,7 @@ extern "C"
 + (void) resetToolbars;
 + (NSString*) printStackTrace: (NSException*) e;
 + (int) numberOfSubOsiriXProcesses;
++ (BOOL) isKDUEngineAvailable;
 
 #pragma mark-
 #pragma mark HTML Templates

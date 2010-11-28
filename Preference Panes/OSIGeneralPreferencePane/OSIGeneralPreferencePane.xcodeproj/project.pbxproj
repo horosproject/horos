@@ -279,6 +279,8 @@
 				OTHER_LDFLAGS = (
 					"-bundle",
 					"-twolevel_namespace",
+					"-undefined",
+					dynamic_lookup,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = OSIGeneralPreferencePane;
