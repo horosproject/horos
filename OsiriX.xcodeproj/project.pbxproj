@@ -1848,6 +1848,8 @@
 		ABEF7E7909A21070006CEC3E /* Reports.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEF7E7709A21070006CEC3E /* Reports.m */; };
 		ABEF846A09A23EF5006CEC3E /* ReportTemplate.doc in Resources */ = {isa = PBXBuildFile; fileRef = ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */; };
 		ABF09BBA0642FD220044FE6C /* Stereo.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABF09BB80642FD220044FE6C /* Stereo.icns */; };
+		ABF3BE0B12A3F948003AAD73 /* WebPortalDB.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 59526F301281ACA90016F6C0 /* WebPortalDB.xcdatamodeld */; };
+		ABF3BE0C12A3F949003AAD73 /* WebPortalDB 1-2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59526F7C1281B1AA0016F6C0 /* WebPortalDB 1-2.xcmappingmodel */; };
 		ABF68A44061DD18600FEED6D /* StringTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = ABF68A40061DD18600FEED6D /* StringTexture.m */; };
 		ABF68A45061DD18600FEED6D /* StringTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF68A41061DD18600FEED6D /* StringTexture.h */; };
 		ABF7D84D0BE1EB5E00D1A1B4 /* DynamicAngle.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABF7D84B0BE1EB5E00D1A1B4 /* DynamicAngle.tif */; };
@@ -25554,6 +25556,8 @@
 				847BE3FA128BF0E200A87E98 /* tgt.c in Sources */,
 				592BA52012966ABD00179C27 /* NSError+OsiriX.mm in Sources */,
 				8404A982129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */,
+				ABF3BE0B12A3F948003AAD73 /* WebPortalDB.xcdatamodeld in Sources */,
+				ABF3BE0C12A3F949003AAD73 /* WebPortalDB 1-2.xcmappingmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
