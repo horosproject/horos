@@ -8385,23 +8385,34 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						[r release];
 					}
 					
-					if ( !suppress_labels )
+					if ( !suppress_labels)
 					{
 						NSArray	*sortedROIs = [curRoiList sortedArrayUsingDescriptors: [NSArray arrayWithObject: roiSorting]];
-						for( int i = [sortedROIs count]-1; i>=0; i-- )
+						
+						BOOL drawingRoiMode = NO;
+						for( ROI *r in sortedROIs)
 						{
-							ROI *r = [[sortedROIs objectAtIndex:i] retain];
-							
-							@try
+							if( r.ROImode == ROI_drawing)
+								drawingRoiMode = YES;
+						}
+						
+						if( drawingRoiMode == NO)
+						{
+							for( int i = [sortedROIs count]-1; i>=0; i--)
 							{
-								[r drawTextualData];
+								ROI *r = [[sortedROIs objectAtIndex:i] retain];
+								
+								@try
+								{
+									[r drawTextualData];
+								}
+								@catch (NSException * e)
+								{
+									NSLog( @"drawTextualData ROI Exception : %@", e);
+								}
+								
+								[r release];
 							}
-							@catch (NSException * e)
-							{
-								NSLog( @"drawTextualData ROI Exception : %@", e);
-							}
-							
-							[r release];
 						}
 					}
 					

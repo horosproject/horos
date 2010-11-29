@@ -7484,6 +7484,9 @@ END_CREATE_ROIS:
 												
 												for (int j = nbVal; j < 6; j++)
 													orientation[ j] = 0;
+													
+//												orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0; tests, force axial matrix
+//												orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
 											}
 											else // doesnt the root Image Orientation contains valid data? if not use the normal vector
 											{

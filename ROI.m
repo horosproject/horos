@@ -5116,7 +5116,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				if( [splinePoints count] >= 1)
 				{
-					if( type == tCPolygon || type == tPencil) glBegin(GL_LINE_LOOP);
+					if( (type == tCPolygon || type == tPencil) && mode != ROI_drawing ) glBegin(GL_LINE_LOOP);
 					else glBegin(GL_LINE_STRIP);
 					
 					for(long i=0; i<[splinePoints count]; i++)
@@ -6025,16 +6025,21 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	// available only for polygons with at least 3 points
 	if([points count]<3) return [self points];
 	
-	int nb; // number of points
-	if(type==tOPolygon) nb = [points count];
+	
+	int nb, localType = type;
+	
+	if( mode == ROI_drawing)
+		localType = tOPolygon;
+	
+	if( localType == tOPolygon) nb = [points count];
 	else nb = [points count]+1;
 
 	NSPoint pts[nb];
 	
-	for(long i=0; i<[points count]; i++)
+	for( int i=0; i<[points count]; i++)
 		pts[i] = [[points objectAtIndex:i] point];
 	
-	if(type != tOPolygon && [points count] > 0)
+	if( localType != tOPolygon && [points count] > 0)
 		pts[[points count]] = [[points objectAtIndex:0] point]; // we add the first point as the last one to smooth the spline
 							
 	NSPoint *splinePts;
