@@ -3096,6 +3096,12 @@ static BOOL initialized = NO;
 		NSLog( @"******** %@", NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil));
 	}
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SINGLEPROCESS"])
+	{
+		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"DICOM Listener is in Single Process mode. The performances will be slower.", nil)  name:@"result"];
+		NSLog( @"******** %@", NSLocalizedString( @"DICOM Listener is in Single Process mode. The performances will be slower.", nil));
+	}
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseOpenJpegForJPEG2000"] == NO)
 	{
 		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"Jasper library is selected for JPEG2000. The performance and quality of this toolkit are lower.", nil)  name:@"result"];
