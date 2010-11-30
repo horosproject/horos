@@ -19,6 +19,9 @@
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+	if( ![[self window] isVisible])
+		return;
+	
 	NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];
 	
 	if( view == self)

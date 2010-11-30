@@ -4497,6 +4497,9 @@ static ViewerController *draggedController = nil;
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+	if( ![[self window] isVisible])
+		return;
+	
 	if( windowWillClose) return;
 	
 	if (AUTOHIDEMATRIX)

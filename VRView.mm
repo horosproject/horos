@@ -2601,6 +2601,9 @@ public:
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+	if( ![[self window] isVisible])
+		return;
+	
 	if( [controller windowWillClose])
 		return;
 

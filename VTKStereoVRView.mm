@@ -135,6 +135,9 @@ static NSRecursiveLock *drawLock = nil;
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+	if( ![[self window] isVisible])
+		return;
+	
 	[superVRView mouseMoved:theEvent];
 }
 

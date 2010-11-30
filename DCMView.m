@@ -3432,6 +3432,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+	if( ![[self window] isVisible])
+		return;
+	
 	if ([self eventToPlugins:theEvent]) return;
 	
 	if( !drawing) return;

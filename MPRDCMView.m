@@ -1546,6 +1546,9 @@ static BOOL frameZoomed = NO;
 
 - (void) mouseMoved: (NSEvent *) theEvent
 {
+	if( ![[self window] isVisible])
+		return;
+	
 	if( [windowController windowWillClose])
 		return;
 		

@@ -1319,6 +1319,9 @@ NSRect rect = drawingRect;
 
 - (void)mouseMoved:(NSEvent *)theEvent
 {
+	if( ![[self window] isVisible])
+		return;
+	
 	[super mouseMoved:theEvent];
 
 	if( ![[self window] isMainWindow]) return;

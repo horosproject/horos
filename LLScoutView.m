@@ -214,6 +214,9 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 
 -(void) mouseMoved: (NSEvent*) event
 {
+	if( ![[self window] isVisible])
+		return;
+	
 //NSLog(@"mouseMoved");
 	NSPoint eventLocation = [event locationInWindow];
 	NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];

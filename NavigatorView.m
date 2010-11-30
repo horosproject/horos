@@ -876,6 +876,9 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)mouseMoved:(NSEvent *)theEvent
 {
+	if( ![[self window] isVisible])
+		return;
+	
 	NSPoint event_location = [theEvent locationInWindow];
 	mouseMovedPosition = [self convertPointFromWindowToOpenGL:event_location];	
 	
