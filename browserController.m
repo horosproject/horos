@@ -14376,14 +14376,9 @@ static NSArray*	openSubSeriesArray = nil;
 {
 	if( newFilesInIncoming || [[ThreadsManager defaultManager] threadsCount] > 0)
 	{
-		
 	}
-	else
-	{
-		NSAlert *w = [tt userInfo];
+	else 
 		[[NSApplication sharedApplication] stopModalWithCode: NSAlertAlternateReturn];
-	}
-
 }
 
 - (BOOL)shouldTerminate: (id)sender
