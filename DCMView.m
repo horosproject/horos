@@ -10119,25 +10119,28 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		bpp = 8;
 		
 		data = calloc( 1, width * height * spp * bpp/8);
-		for( long i = 0; i < [viewers count]; i++)
+		if( data)
 		{
-			long	iwidth, iheight, ispp, ibpp;
-			
-			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixelsWidth:&iwidth height:&iheight spp:&ispp bpp:&ibpp screenCapture:YES force8bits:YES removeGraphical: NO squarePixels: YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: NO origin: nil spacing: nil];
-			
-			NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[[[viewers objectAtIndex: i] imageView] bounds];
-			
-			bounds.origin.x -= unionRect.origin.x;
-			bounds.origin.y -= unionRect.origin.y;
-			
-			unsigned char	*o = data + spp*width* (int) (height - bounds.origin.y - iheight) + (int) bounds.origin.x*spp;
-			
-			for( int y = 0 ; y < iheight; y++)
+			for( long i = 0; i < [viewers count]; i++)
 			{
-				memcpy( o + y*spp*width, tempData + y*ispp*iwidth, ispp*iwidth);
+				long iwidth, iheight, ispp, ibpp;
+				
+				tempData = [[[viewers objectAtIndex: i] imageView] getRawPixelsWidth:&iwidth height:&iheight spp:&ispp bpp:&ibpp screenCapture:YES force8bits:YES removeGraphical: NO squarePixels: YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: NO origin: nil spacing: nil];
+				
+				NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[[[viewers objectAtIndex: i] imageView] bounds];
+				
+				bounds.origin.x -= unionRect.origin.x;
+				bounds.origin.y -= unionRect.origin.y;
+				
+				unsigned char	*o = data + spp*width* (int) (height - bounds.origin.y - iheight) + (int) bounds.origin.x*spp;
+				
+				for( int y = 0 ; y < iheight; y++)
+				{
+					memcpy( o + y*spp*width, tempData + y*ispp*iwidth, ispp*iwidth);
+				}
+				
+				free( tempData);
 			}
-			
-			free( tempData);
 		}
 	}
 	else data = [self getRawPixelsWidth :&width height:&height spp:&spp bpp:&bpp screenCapture:!originalSize force8bits: YES removeGraphical:NO squarePixels:YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: [[NSUserDefaults standardUserDefaults] boolForKey: @"allowSmartCropping"] origin: nil spacing: nil];
@@ -10164,16 +10167,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	else colorSpace = NSCalibratedWhiteColorSpace;
 	
 	rep = [[[NSBitmapImageRep alloc]
-			 initWithBitmapDataPlanes:nil
-						   pixelsWide:width
-						   pixelsHigh:height
-						bitsPerSample:bpp
-					  samplesPerPixel:spp
-							 hasAlpha:NO
-							 isPlanar:NO
-					   colorSpaceName:colorSpace
-						  bytesPerRow:width*bpp*spp/8
-						 bitsPerPixel:bpp*spp] autorelease];
+			 initWithBitmapDataPlanes: nil
+						   pixelsWide: width
+						   pixelsHigh: height
+						bitsPerSample: bpp
+					  samplesPerPixel: spp
+							 hasAlpha: NO
+							 isPlanar: NO
+					   colorSpaceName: colorSpace
+						  bytesPerRow: width*bpp*spp/8
+						 bitsPerPixel: bpp*spp] autorelease];
 	
 	if( data)
 		memcpy( [rep bitmapData], data, height*width*bpp*spp/8);
