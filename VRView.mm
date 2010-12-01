@@ -4645,7 +4645,7 @@ public:
 	
 	if(clutOpacityView)
 	{
-		[clutOpacityView computeHistogram];
+		[clutOpacityView callComputeHistogram];
 		[clutOpacityView updateView];
 	}
 }

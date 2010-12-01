@@ -127,6 +127,12 @@
 	HUmax = max;
 }
 
+- (void)callComputeHistogram
+{
+	protectionAgainstReentry = 0;
+	[self computeHistogram];
+}
+
 - (void)computeHistogram;
 {
 	vImage_Buffer buffer;
@@ -166,6 +172,10 @@
 				histogram[i] = (vImagePixelCount)temp;
 		}
 	}
+	
+	if( protectionAgainstReentry++ > 20)
+		return;
+	
 	[self simplifyHistogram];
 }
 
@@ -684,7 +694,7 @@
 - (void)drawRect:(NSRect)rect
 {
 	if( histogram == nil)
-		[self computeHistogram];
+		[self callComputeHistogram];
 	
 	[backgroundColor set];
 	NSRectFill(rect);
@@ -1400,7 +1410,7 @@ NSRect rect = drawingRect;
 
 - (IBAction)computeHistogram:(id)sender;
 {
-	[self computeHistogram];
+	[self callComputeHistogram];
 	[self updateView];
 }
 

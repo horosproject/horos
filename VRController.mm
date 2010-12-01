@@ -2723,7 +2723,7 @@ return YES;
 		[clutOpacityDrawer openOnEdge:NSMinYEdge];
 	else
 		[clutOpacityDrawer close];
-	[clutOpacityView computeHistogram];
+	[clutOpacityView callComputeHistogram];
 	[clutOpacityView addCurveIfNeeded];
 	[clutOpacityView updateView];
 	[clutOpacityView setCLUTtoVRView:NO];
