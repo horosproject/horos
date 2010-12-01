@@ -3100,6 +3100,18 @@ static BOOL initialized = NO;
 	{
 		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"DICOM Listener is in Single Process mode. The performances will be slower.", nil)  name:@"result"];
 		NSLog( @"******** %@", NSLocalizedString( @"DICOM Listener is in Single Process mode. The performances will be slower.", nil));
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideAlertSingleProcess"] == NO)
+		{
+			NSAlert* alert = [[NSAlert new] autorelease];
+			[alert setMessageText: NSLocalizedString( @"Warning!", nil)];
+			[alert setInformativeText: NSLocalizedString( @"DICOM Listener is in Single Process mode. The performances will be slower. See Listener - Preferences.", nil)];
+			[alert setShowsSuppressionButton:YES ];
+			[alert addButtonWithTitle: NSLocalizedString( @"Continue", nil)];
+			[alert runModal];
+			if ([[alert suppressionButton] state] == NSOnState)
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideAlertSingleProcess"];
+		}
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseOpenJpegForJPEG2000"] == NO)

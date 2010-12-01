@@ -13732,7 +13732,11 @@ static NSArray*	openSubSeriesArray = nil;
 		timer = [[NSTimer scheduledTimerWithTimeInterval: 0.15 target:self selector:@selector(previewPerformAnimation:) userInfo:self repeats:YES] retain];
 		if( [[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] < 1)
 			[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"LISTENERCHECKINTERVAL"];
-		IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
+		
+		IncomingTimer = [[NSTimer timerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
+		
+		[[NSRunLoop currentRunLoop] addTimer: IncomingTimer forMode: NSModalPanelRunLoopMode];
+		[[NSRunLoop currentRunLoop] addTimer: IncomingTimer forMode: NSDefaultRunLoopMode];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
 			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 63.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];	//63.33
@@ -14368,6 +14372,20 @@ static NSArray*	openSubSeriesArray = nil;
 	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dicomsr_osirix" handler: nil];
 }
 
+-(void)shouldTerminateCallback:(NSTimer*) tt
+{
+	if( newFilesInIncoming || [[ThreadsManager defaultManager] threadsCount] > 0)
+	{
+		
+	}
+	else
+	{
+		NSAlert *w = [tt userInfo];
+		[[NSApplication sharedApplication] stopModalWithCode: NSAlertAlternateReturn];
+	}
+
+}
+
 - (BOOL)shouldTerminate: (id)sender
 {
 	[self saveDatabase: currentDatabasePath];
@@ -14377,9 +14395,27 @@ static NSArray*	openSubSeriesArray = nil;
 		if( NSDrawerClosedState == [albumDrawer state])
 			[self drawerToggle: self];
 		
-		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Background Threads", nil), NSLocalizedString(@"Background threads are currently running. Are you sure you want to quit now? These threads will be cancelled.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), nil) == NSAlertDefaultReturn) return NO;
-	
-		[[AppController sharedAppController] killAllStoreSCU: self];
+		NSAlert* w = [NSAlert alertWithMessageText: NSLocalizedString( @"Background Threads", NULL)
+									 defaultButton: NSLocalizedString( @"Cancel", NULL) 
+								   alternateButton: NSLocalizedString( @"Quit", NULL)
+									   otherButton: NULL
+						 informativeTextWithFormat: NSLocalizedString( @"Background threads are currently running. Are you sure you want to quit now? These threads will be cancelled.", NULL)];
+		
+		NSTimer *t = [NSTimer timerWithTimeInterval: 0.3 target:self selector:@selector( shouldTerminateCallback:) userInfo: w repeats:YES];
+		
+		[[NSRunLoop currentRunLoop] addTimer: t forMode:NSModalPanelRunLoopMode];
+		
+		NSInteger r = [w runModal];
+		
+		[t invalidate];
+		
+		if( newFilesInIncoming || [[ThreadsManager defaultManager] threadsCount] > 0)
+		{
+			if( r == NSAlertDefaultReturn)
+				return NO;
+			
+			[[AppController sharedAppController] killAllStoreSCU: self];
+		}
 	}
 	
 	if( [SendController sendControllerObjects] > 0)
