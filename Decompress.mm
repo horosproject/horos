@@ -127,7 +127,7 @@ int main(int argc, const char *argv[])
 			0,
 			0,
 			OFTrue,
-			OFFalse,
+			OFTrue,
 			OFFalse,
 			OFFalse,
 			OFTrue);
