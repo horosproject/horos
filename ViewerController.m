@@ -7234,20 +7234,37 @@ return YES;
 	
 	[imageView stopROIEditingForce: YES];
 	
-	NSLog(@"executeFilter");
+	NSLog( @"executeFilter");
 	
-	result = [filter prepareFilter: self];
-	if( result)
+	@try
 	{
+		result = [filter prepareFilter: self];
+		if( result)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
+			return;
+		}
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 		return;
-	}   
+	}
 	
-	result = [filter filterImage: name];
-	if( result)
+	@try
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot apply the selected plugin.", nil), nil, nil, nil);
-		return;
+		result = [filter filterImage: name];
+		if( result)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot apply the selected plugin.", nil), nil, nil, nil);
+			return;
+		}
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 	}
 	
 	[imageView roiSet];
