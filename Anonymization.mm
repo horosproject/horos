@@ -26,6 +26,11 @@
 #import "BrowserController.h"
 #import "AppController.h"
 #import "Wait.h"
+#import "DicomFile.h"
+#import "DICOMToNSString.h"
+#import "XMLController.h"
+#import "DicomFileDCMTKCategory.h"
+#import "XMLControllerDCMTKCategory.h"
 
 @interface AnonymizationPanelRepresentation : NSObject {
 	NSString* defaultsKey;
@@ -273,7 +278,8 @@
 				val = [DCMCalendarDate dicomTimeWithDate:val];
 			else if ([tag.vr isEqual:@"DT"]) //Date Time
 				val = [DCMCalendarDate dicomDateTimeWithDicomDate:[DCMCalendarDate dicomDateWithDate:val] dicomTime:[DCMCalendarDate dicomTimeWithDate:val]];
-		} else if ([val isKindOfClass:[NSNumber class]])
+		}
+		else if ([val isKindOfClass:[NSNumber class]])
 		{
 			if ([tag.vr isEqual:@"DS"]) //Decimal String representing floating point
 				val = [val stringValue];
@@ -295,34 +301,101 @@
 	[splash setCancel: YES];
 	
 	NSMutableArray* producedFiles = [NSMutableArray arrayWithCapacity: files.count];
-	NSInteger fileIndex = 0;
-	for( NSString* filePath in files)
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForAnonymization"])
 	{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		NSInteger fileIndex = 0;
+		for( NSString* filePath in files)
+		{
+			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+			
+			@try
+			{
+				NSString* ext = [filePath pathExtension];
+				if (!ext.length) ext = @"dcm";
+				NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", fileIndex, ext];
+				NSString* tempFilePath = [tempDirPath stringByAppendingPathComponent:tempFileName];
+				
+				[[NSFileManager defaultManager] copyItemAtPath: filePath toPath: tempFilePath byReplacingExisting: YES error: nil];
+				
+				[filenameTranslation setObject:tempFilePath forKey:filePath];
+				++fileIndex;
+				
+				[producedFiles addObject: tempFilePath];
+				
+				[splash incrementBy: 1];
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"%@", [e description]);
+				[AppController printStackTrace: e];
+			}
+			
+			[pool release];
+			
+			if( [splash aborted]) break;
+		}
+		
+		// Prepare the parameters
+		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
+		for( NSArray *intag in tags)
+		{
+			DCMAttributeTag* tag = [intag objectAtIndex:0];
+			id val = intag.count>1? [intag objectAtIndex:1] : NULL;
+			
+			if( val == nil || [[val description] length] == 0)
+				[params addObjectsFromArray: [NSArray arrayWithObjects: @"-e", [NSString stringWithFormat: @"(%@)", tag.stringValue], nil]];
+			else
+				[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"(%@)=%@", tag.stringValue, [val description]], nil]];
+		}
+		
+		[params addObjectsFromArray: producedFiles];
 		
 		@try
 		{
-			NSString* ext = [filePath pathExtension];
-			if (!ext.length) ext = @"dcm";
-			NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", fileIndex, ext];
-			NSString* tempFilePath = [tempDirPath stringByAppendingPathComponent:tempFileName];
-			[DCMObject anonymizeContentsOfFile:filePath tags:tags writingToFile:tempFilePath];
-			[filenameTranslation setObject:tempFilePath forKey:filePath];
-			++fileIndex;
+			NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [producedFiles lastObject]] objectAtIndex: 0]];
 			
-			[producedFiles addObject: tempFilePath];
+			[XMLController modifyDicom: params encoding: encoding];
 			
-			[splash incrementBy: 1];
+			for( id loopItem in files)
+				[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"%@", [e description]);
-			[AppController printStackTrace: e];
+			NSLog(@"**** DicomStudy setComment: %@", e);
 		}
-		
-		[pool release];
-		
-		if( [splash aborted]) break;
+	}
+	else
+	{
+		NSInteger fileIndex = 0;
+		for( NSString* filePath in files)
+		{
+			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+			
+			@try
+			{
+				NSString* ext = [filePath pathExtension];
+				if (!ext.length) ext = @"dcm";
+				NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", fileIndex, ext];
+				NSString* tempFilePath = [tempDirPath stringByAppendingPathComponent:tempFileName];
+				[DCMObject anonymizeContentsOfFile:filePath tags:tags writingToFile:tempFilePath];
+				[filenameTranslation setObject:tempFilePath forKey:filePath];
+				++fileIndex;
+				
+				[producedFiles addObject: tempFilePath];
+				
+				[splash incrementBy: 1];
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"%@", [e description]);
+				[AppController printStackTrace: e];
+			}
+			
+			[pool release];
+			
+			if( [splash aborted]) break;
+		}
 	}
 	
 	if( [producedFiles count] != [dicomImages count])
