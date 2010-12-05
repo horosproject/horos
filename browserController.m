@@ -3753,9 +3753,25 @@ static NSConditionLock *threadLock = nil;
 						extension = [NSString stringWithString:@"dcm"];
 					
 					dstPath = [self getNewFileDatabasePath: extension];
-				
+					
 					if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil])
+					{
+						if( [extension isEqualToString: @"dcm"] == NO)
+						{
+							DicomFile *dcmFile = [[[DicomFile alloc] init: dstPath] autorelease];
+							
+							if( [[[dcmFile dicomElements] objectForKey: @"fileType"] hasPrefix: @"DICOM"])
+							{
+								NSString *newPathExtension = [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"dcm"];
+								
+								[[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newPathExtension error: nil];
+								
+								dstPath = newPathExtension;
+							}
+						}
+						
 						[copiedFiles addObject: dstPath];
+					}
 					else
 						NSLog( @"***** copyItemAtPath failed : srcPath");
 				}
@@ -3939,7 +3955,10 @@ static NSConditionLock *threadLock = nil;
 				NSString *srcPath = [im valueForKey:@"completePath"];
 				NSString *extension = [srcPath pathExtension];
 				
-				if([extension isEqualToString:@""])
+				if( [[im valueForKey: @"fileType"] hasPrefix: @"DICOM"])
+					extension = [NSString stringWithString:@"dcm"];
+				
+				if( [extension isEqualToString:@""])
 					extension = [NSString stringWithString:@"dcm"]; 
 				
 				NSString *dstPath = [self getNewFileDatabasePath:extension];
@@ -4089,7 +4108,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 				
-				NSString	*extension = [srcPath pathExtension];
+				NSString *extension = [srcPath pathExtension];
 				
 				@try
 				{
@@ -4099,6 +4118,9 @@ static NSConditionLock *threadLock = nil;
 						
 						if( curFile)
 						{
+							if( [[[curFile dicomElements] objectForKey: @"fileType"] hasPrefix: @"DICOM"])
+								extension = [NSString stringWithString:@"dcm"];
+							
 							[curFile release];
 							
 							if( [extension isEqualToString:@""])
@@ -16078,7 +16100,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 											continue;
 										}
 										
-										dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: dbFolder];
+										dstPath = [self getNewFileDatabasePath: @"dcm" dbFolder: dbFolder];
 									}
 									else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString] dbFolder: dbFolder];
 									
@@ -17527,10 +17549,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				if( [curImage valueForKey: @"fileType"])
 				{
-					if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"]) extension = [NSString stringWithString:@"dcm"];
+					if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"])
+						extension = [NSString stringWithString:@"dcm"];
 				}
 				
-				if([extension isEqualToString:@""]) extension = [NSString stringWithString:@"dcm"]; 
+				if([extension isEqualToString:@""])
+					extension = [NSString stringWithString:@"dcm"]; 
 				
 				NSString *tempPath;
 				// if creating DICOMDIR. Limit length to 8 char
@@ -18145,39 +18169,33 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[self checkResponder];
 	
-	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToAnonymize = [[self filesForDatabaseMatrixSelection: dicomFiles2Anonymize] retain];
-	else filesToAnonymize = [[self filesForDatabaseOutlineSelection: dicomFiles2Anonymize] retain];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
+		filesToAnonymize = [[self filesForDatabaseMatrixSelection: dicomFiles2Anonymize] retain];
+	else
+		filesToAnonymize = [[self filesForDatabaseOutlineSelection: dicomFiles2Anonymize] retain];
 	
 	[filesToAnonymize removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Anonymize];
 	
-	NSString *file;
-	for (file in filesToAnonymize)
+	for( int i = 0 ; i < dicomFiles2Anonymize.count; i++)
 	{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		
-		NSString* extension = [file pathExtension];
-		if (!extension.length)
-			extension = @"dcm";
-		else { // Added by rbrakes - check to see if "extension" includes only numbers (UID perhaps?).
-			int num;
-			NSScanner *scanner = [NSScanner scannerWithString: extension];
-			if ([scanner scanInt: &num] && [scanner isAtEnd]) extension = [NSString stringWithString:@"dcm"];
-		}
-		
-		if (![extension caseInsensitiveCompare:@"dcm"] == NSOrderedSame)
+		if( [[[dicomFiles2Anonymize objectAtIndex: i] fileType] isEqualToString: @"DICOM"] == NO)
 		{
-			[dicomFiles2Anonymize removeObjectAtIndex:[filesToAnonymize indexOfObject:file]];
-			[filesToAnonymize removeObject:file];
+			[dicomFiles2Anonymize removeObjectAtIndex: i];
+			[filesToAnonymize removeObjectAtIndex: i];
+			
+			i--;
 		}
-		
-		[pool release];
 	}
 	
-	NSArray* ref = [NSArray arrayWithObjects: filesToAnonymize, dicomFiles2Anonymize, NULL];
-	[Anonymization showSavePanelForDefaultsKey:@"AnonymizationFields" modalForWindow:self.window modalDelegate:self didEndSelector:@selector(anonymizationSavePanelDidEnd:) representedObject:ref];
-	
-	
-	
+	if( dicomFiles2Anonymize.count == 0)
+	{
+		NSRunAlertPanel( NSLocalizedString(@"Anonymize Error", nil), NSLocalizedString(@"No DICOM files in this selection.", nil), nil, nil, nil);
+	}
+	else
+	{
+		NSArray* ref = [NSArray arrayWithObjects: filesToAnonymize, dicomFiles2Anonymize, NULL];
+		[Anonymization showSavePanelForDefaultsKey:@"AnonymizationFields" modalForWindow:self.window modalDelegate:self didEndSelector:@selector(anonymizationSavePanelDidEnd:) representedObject:ref];
+	}
 	/*
 	AnonymizerWindowController	*anonymizerController = [[AnonymizerWindowController alloc] init];
 	
