@@ -32,6 +32,8 @@
 #import "DicomFileDCMTKCategory.h"
 #import "XMLControllerDCMTKCategory.h"
 
+static NSString *templateDicomFile = nil;
+
 @interface AnonymizationPanelRepresentation : NSObject {
 	NSString* defaultsKey;
 	id representedObject;
@@ -194,7 +196,25 @@
 
 #pragma mark Panel
 
++(NSString*) templateDicomFile
+{
+	return templateDicomFile;
+}
+
 +(id)showPanelClass:(Class)c forDefaultsKey:(NSString*)defaultsKey modalForWindow:(NSWindow*)window modalDelegate:(id)delegate didEndSelector:(SEL)sel representedObject:(id)representedObject  {
+	
+	@try
+	{
+		[templateDicomFile release];
+		templateDicomFile = nil;
+		
+		templateDicomFile = [[[representedObject objectAtIndex: 0] objectAtIndex: [[representedObject objectAtIndex: 0] count]/2] retain];
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
 	NSArray* values = [Anonymization tagsValuesArrayFromDictionary:[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:defaultsKey]];
 	NSArray* tags = [self tagsArrayFromStringsArray:[[NSUserDefaultsController sharedUserDefaultsController] arrayForKey:[NSString stringWithFormat:@"%@All", defaultsKey]]];
 	

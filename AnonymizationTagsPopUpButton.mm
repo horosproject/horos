@@ -12,13 +12,15 @@
      PURPOSE.
 =========================================================================*/
 
-
+#import "Anonymization.h"
 #import "AnonymizationTagsPopUpButton.h"
 #import "DCMTagDictionary.h"
 #import "DCMAttributeTag.h"
 #import "N2CustomTitledPopUpButtonCell.h"
 #import "AnonymizationCustomTagPanelController.h"
-
+#import "DicomFile.h"
+#import <OsiriX/DCMObject.h>
+#import <OsiriX/DCMAttribute.h>
 
 @implementation AnonymizationTagsPopUpButton
 
@@ -36,8 +38,67 @@ NSInteger CompareDCMAttributeTagStringValues(DCMAttributeTag* lsp, DCMAttributeT
 	return [self tagsMenuWithTarget:NULL action:NULL];
 }
 
++ (NSArray*) tagsForFile: (NSString*) dicomFile
+{
+	if([DicomFile isDICOMFile: dicomFile])
+	{
+		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: dicomFile decodingPixelData:NO];
+		
+		NSArray *sortedKeys = [[[dcmObject attributes] allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+		NSMutableArray *tags = [NSMutableArray arrayWithCapacity: [sortedKeys count]];
+
+		for( NSString *key in sortedKeys)
+		{
+			DCMAttribute *attr = [[dcmObject attributes] objectForKey: key];
+			if( attr)
+				[tags addObject: attr];
+		}
+		
+		return tags;
+	}
+	return nil;
+}
+
 +(NSMenu*)tagsMenuWithTarget:(id)obj action:(SEL)action {
 	NSMenu* tagsMenu = [[NSMenu alloc] initWithTitle:@"DCM Annotation Tags"];
+	
+	NSArray *tagsOfFile = [self tagsForFile: [Anonymization templateDicomFile]];
+	if( tagsOfFile)
+	{
+		NSMenu* tagsOfTheDICOMFile = [[NSMenu alloc] initWithTitle:@""];
+		NSMenuItem* tagsOfTheDICOMFileMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"File(s) tags", NULL) action:NULL keyEquivalent:@""];
+		[tagsOfTheDICOMFileMenuItem setSubmenu:tagsOfTheDICOMFile];
+		[tagsMenu addItem:tagsOfTheDICOMFileMenuItem];
+		for (DCMAttribute* tag in tagsOfFile)
+		{
+			@try
+			{
+				NSString* valDescription = @"";
+				
+				if( [tag valueLength] < 100)
+				{
+					for( id v in [tag values])
+						valDescription = [valDescription stringByAppendingFormat:@" %@", [v description]];
+				}
+				
+				NSString *description;
+				
+				if( [valDescription length])
+					description = [NSString stringWithFormat:@"%@ - %@ - %@", [tag attrTag].stringValue, [tag attrTag].name, valDescription];
+				else
+					description = [NSString stringWithFormat:@"%@ - %@", [tag attrTag].stringValue, [tag attrTag].name];
+				
+				NSMenuItem* item = [[NSMenuItem alloc] initWithTitle: description action:action keyEquivalent:@""];
+				item.representedObject = [tag attrTag];
+				item.target = obj;
+				[tagsOfTheDICOMFile addItem:item];
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			}
+		}
+	}
 	
 	NSMutableArray* dcmTags = [NSMutableArray arrayWithCapacity:[[DCMTagDictionary sharedTagDictionary] count]];
 	for (NSString* dcmTagsKey in [[DCMTagDictionary sharedTagDictionary] allKeys])
@@ -59,7 +120,8 @@ NSInteger CompareDCMAttributeTagStringValues(DCMAttributeTag* lsp, DCMAttributeT
 	NSMenuItem* tagsSortedByStringValueMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sorted by Value", NULL) action:NULL keyEquivalent:@""];
 	[tagsSortedByStringValueMenuItem setSubmenu:tagsSortedByStringValueMenu];
 	[tagsMenu addItem:tagsSortedByStringValueMenuItem];
-	for (DCMAttributeTag* tag in [dcmTags sortedArrayUsingFunction:CompareDCMAttributeTagStringValues context:NULL]) {
+	for (DCMAttributeTag* tag in [dcmTags sortedArrayUsingFunction:CompareDCMAttributeTagStringValues context:NULL])
+	{
 		NSMenuItem* item = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ - %@", tag.stringValue, tag.name] action:action keyEquivalent:@""];
 		item.representedObject = tag;
 		item.target = obj;
@@ -125,6 +187,13 @@ NSInteger CompareDCMAttributeTagStringValues(DCMAttributeTag* lsp, DCMAttributeT
 	[self setNeedsDisplay:YES];
 	
 	[self didChangeValueForKey:@"selectedTag"];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
+{
+	NSLog( @"%@", menuItem);
+	
+	return YES;
 }
 
 @end

@@ -31,4 +31,6 @@
 
 +(NSDictionary*)anonymizeFiles:(NSArray*)files dicomImages: (NSArray*) dicomImages toPath:(NSString*)dirPath withTags:(NSArray*)intags;
 
++(NSString*) templateDicomFile;
+
 @end
