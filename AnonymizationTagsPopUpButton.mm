@@ -86,7 +86,7 @@ NSInteger CompareDCMAttributeTagStringValues(DCMAttributeTag* lsp, DCMAttributeT
 				NSString *description;
 				
 				if( [valDescription length])
-					description = [NSString stringWithFormat:@"%@ - %@ - %@", [tag attrTag].stringValue, [tag attrTag].name, valDescription];
+					description = [NSString stringWithFormat:@"%@ - %@ -%@", [tag attrTag].stringValue, [tag attrTag].name, valDescription];
 				else
 					description = [NSString stringWithFormat:@"%@ - %@", [tag attrTag].stringValue, [tag attrTag].name];
 				
