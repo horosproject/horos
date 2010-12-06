@@ -18,6 +18,8 @@
 #import "DCMAttributeTag.h"
 #import "N2CustomTitledPopUpButtonCell.h"
 #import "AnonymizationCustomTagPanelController.h"
+#import "AnonymizationViewController.h"
+#import "AnonymizationSavePanelController.h"
 #import "DicomFile.h"
 #import <OsiriX/DCMObject.h>
 #import <OsiriX/DCMAttribute.h>
@@ -191,7 +193,24 @@ NSInteger CompareDCMAttributeTagStringValues(DCMAttributeTag* lsp, DCMAttributeT
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem
 {
-	//
+	AnonymizationSavePanelController *s = [[self window] windowController];
+	AnonymizationViewController *v = [s anonymizationViewController];
+	
+	BOOL found = NO;
+	int mg = [[menuItem representedObject] group], me = [[menuItem representedObject] element];
+	for( DCMAttributeTag * t in [v tags])
+	{
+		if( t.group == mg && t.element == me)
+		{
+			found = YES;
+			break;
+		}
+	}
+	
+	if( found)
+		[menuItem setState: NSOnState];
+	else
+		[menuItem setState: NSOffState];
 	
 	return YES;
 }
