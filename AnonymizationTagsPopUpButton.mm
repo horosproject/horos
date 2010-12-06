@@ -191,7 +191,7 @@ NSInteger CompareDCMAttributeTagStringValues(DCMAttributeTag* lsp, DCMAttributeT
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem
 {
-	NSLog( @"%@", menuItem);
+	//
 	
 	return YES;
 }
