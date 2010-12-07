@@ -6300,6 +6300,7 @@ return YES;
 	float		previousOrientation[ 9];
 	float		previousLocation = 0;
 	int			previousCurImage = [imageView curImage];
+	BOOL		wasFlipped = [imageView flippedData];
 	
 	@try 
 	{
@@ -6350,6 +6351,7 @@ return YES;
 			[self clear8bitRepresentations];
 			
 			[self setFusionMode: 0];
+			
 			[imageView setIndex: 0];
 
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCloseViewerNotification object: self userInfo: nil];
@@ -6635,6 +6637,8 @@ return YES;
 								
 								if( index != 0)
 								{
+									if( wasFlipped)
+										index = [fileList[ 0] count] - index;
 									[imageView setIndex: index];
 									[self adjustSlider];
 									keepFusion = YES;
@@ -8222,12 +8226,12 @@ return YES;
 {
 	int activatedFusionState = [activatedFusion state];
 	int previousFusion = [popFusion selectedTag];
-//	int previousCurImage = [imageView curImage];
+	int previousCurImage = [imageView curImage];
 	
 	[seriesView setFlippedData: ![imageView flippedData]];
 	[self setFusionMode: 0];
 	
-//	[imageView setIndex: [pixList[ 0] count] -1 -previousCurImage];
+	[imageView setIndex: [pixList[ 0] count] -1 -previousCurImage];
 	
 	[self adjustSlider];
 	
