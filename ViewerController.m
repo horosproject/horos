@@ -6299,6 +6299,7 @@ return YES;
 	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
 	float		previousOrientation[ 9];
 	float		previousLocation = 0;
+	int			previousCurImage = [imageView curImage];
 	
 	@try 
 	{
@@ -6598,37 +6599,46 @@ return YES;
 						float start = [[[fileList[ 0] objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
 						float end = [[[fileList[ 0] objectAtIndex: [fileList[ 0] count]-1] valueForKey:@"sliceLocation"] floatValue];
 						
-						if( start > end)
+						if( start == end)
 						{
-							float temp = end;
-							
-							end = start;
-							start = temp;
+							[imageView setIndex: previousCurImage];
+							[self adjustSlider];
+							keepFusion = YES;
 						}
-						
-						if( previousLocation > start && previousLocation < end)
+						else
 						{
-							long	index = 0, i;
-							float   smallestdiff = -1, fdiff;
-							
-							for( i = 0; i < [fileList[ 0] count]; i++)
+							if( start > end)
 							{
-								float slicePosition = [[[fileList[ 0] objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
+								float temp = end;
 								
-								fdiff = fabs( slicePosition - previousLocation);
-								
-								if( fdiff < smallestdiff || smallestdiff == -1)
-								{
-									smallestdiff = fdiff;
-									index = i;
-								}
+								end = start;
+								start = temp;
 							}
 							
-							if( index != 0)
+							if( previousLocation > start && previousLocation < end)
 							{
-								[imageView setIndex: index];
-								[self adjustSlider];
-								keepFusion = YES;
+								long	index = 0, i;
+								float   smallestdiff = -1, fdiff;
+								
+								for( i = 0; i < [fileList[ 0] count]; i++)
+								{
+									float slicePosition = [[[fileList[ 0] objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
+									
+									fdiff = fabs( slicePosition - previousLocation);
+									
+									if( fdiff < smallestdiff || smallestdiff == -1)
+									{
+										smallestdiff = fdiff;
+										index = i;
+									}
+								}
+								
+								if( index != 0)
+								{
+									[imageView setIndex: index];
+									[self adjustSlider];
+									keepFusion = YES;
+								}
 							}
 						}
 					}
@@ -8212,11 +8222,12 @@ return YES;
 {
 	int activatedFusionState = [activatedFusion state];
 	int previousFusion = [popFusion selectedTag];
+//	int previousCurImage = [imageView curImage];
 	
 	[seriesView setFlippedData: ![imageView flippedData]];
 	[self setFusionMode: 0];
 	
-	[imageView setIndex: [pixList[ 0] count] -1 -[imageView curImage]];
+//	[imageView setIndex: [pixList[ 0] count] -1 -previousCurImage];
 	
 	[self adjustSlider];
 	

@@ -107,7 +107,7 @@
 
 static BrowserController *browserWindow = nil;
 static NSString *albumDragType = @"Osirix Album drag";
-static BOOL loadingIsOver = NO;
+static BOOL loadingIsOver = NO, isAutoCleanDatabaseRunning = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
 static int DicomDirScanDepth = 0;
@@ -4929,23 +4929,28 @@ static NSConditionLock *threadLock = nil;
 	if( [NSDate timeIntervalSinceReferenceDate] - lastHardDiskCheck < 30) return NO;
 	
 	NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: [[BrowserController currentBrowser] localDocumentsDirectory]];
-			
-	unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
-	unsigned long long thousand = 1024;
 	
-	free /= thousand;
-	free /= thousand;
-	
-	lastHardDiskCheck = [NSDate timeIntervalSinceReferenceDate];
-	
-	// 300 MB is the extreme lower limit
-	if( free < 300 && free > 0)
+	if( [fsattrs objectForKey:NSFileSystemFreeSize])
 	{
-		NSLog( @"******* HARD DISK is FULL: we will not accept DICOM network communications, we will delete all incoming files !");
-		return YES;
+		unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
+		unsigned long long thousand = 1024;
+		
+		free /= thousand;
+		free /= thousand;
+		
+		lastHardDiskCheck = [NSDate timeIntervalSinceReferenceDate];
+		
+		// 300 MB is the extreme lower limit
+		if( free < 300)
+		{
+			NSLog( @"******* HARD DISK is FULL: we will not accept DICOM network communications, we will delete all incoming files !");
+			return YES;
+		}
+		else
+			return NO;
 	}
-	else
-		return NO;
+	
+	return YES;
 }
 
 - (void) autoCleanDatabaseFreeSpaceThread: (id)sender
@@ -4953,6 +4958,9 @@ static NSConditionLock *threadLock = nil;
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
 	if (isCurrentDatabaseBonjour)
+		return;
+	
+	if( isAutoCleanDatabaseRunning)
 		return;
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -4970,9 +4978,9 @@ static NSConditionLock *threadLock = nil;
 			unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
 			unsigned long long thousand = 1024;
 			
-			if( free <= 0)
+			if( [fsattrs objectForKey:NSFileSystemFreeSize] == nil)
 			{
-				NSLog( @"*** autoCleanDatabaseFreeSpace free <= 0 ?? : %@", currentDatabasePath);
+				NSLog( @"*** autoCleanDatabaseFreeSpace [fsattrs objectForKey:NSFileSystemFreeSize] == nil ?? : %@", currentDatabasePath);
 				[pool release];
 				
 				return;
@@ -4988,6 +4996,8 @@ static NSConditionLock *threadLock = nil;
 				
 				NSLog(@"HD Free Space: %d MB", (long) free);
 			}
+			
+			isAutoCleanDatabaseRunning = YES;
 			
 			int freeMemoryRequested = [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue];
 			
@@ -5167,17 +5177,22 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSDictionary	*fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: currentDatabasePath];
 		
-		unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
-		unsigned long long thousand = 1024;
-		
-		free /= thousand;
-		free /= thousand;
-		
-		if( free < 300 && free > 0)
+		if( [fsattrs objectForKey:NSFileSystemFreeSize])
 		{
-			[self performSelectorOnMainThread: @selector( autoCleanDatabaseFreeSpaceWarning:) withObject: nil waitUntilDone: NO];
+			unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
+			unsigned long long thousand = 1024;
+			
+			free /= thousand;
+			free /= thousand;
+			
+			if( free < 300)
+			{
+				[self performSelectorOnMainThread: @selector( autoCleanDatabaseFreeSpaceWarning:) withObject: nil waitUntilDone: NO];
+			}
 		}
 	}
+	
+	isAutoCleanDatabaseRunning = NO;
 	
 	[pool release];
 }
