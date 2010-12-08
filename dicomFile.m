@@ -132,6 +132,24 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 @implementation DicomFile
 
+- (BOOL) containsLocalizerInString: (NSString*) str
+{
+	NSArray *stringsToFind = [[[NSUserDefaults standardUserDefaults] valueForKey: @"NOLOCALIZER_Strings"] componentsSeparatedByString:@","];
+	
+	for( NSString *localizerString in stringsToFind)
+	{
+		if( [localizerString hasPrefix: @" "])
+			localizerString = [localizerString substringFromIndex: 1];
+		
+		if( [localizerString hasSuffix: @" "])
+			localizerString = [localizerString substringToIndex: localizerString.length-2];
+		
+		if( [str rangeOfString: localizerString options: NSCaseInsensitiveSearch].location != NSNotFound)
+			return YES;
+	}
+	
+	return NO;
+}
 
 - (BOOL) containsString: (NSString*) s inArray: (NSArray*) a
 {
@@ -2477,7 +2495,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					
 				[dicomElements setObject:studyID forKey:@"studyID"];
 				
-				if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [serie rangeOfString:@"scout" options:NSCaseInsensitiveSearch].location != NSNotFound || [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch].location != NSNotFound))
+				if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]))
 				{
 					NSString	*n;
 
@@ -2649,7 +2667,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		{
 			[dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
 		}
-		else if (combineProjectionSeries && ([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
+		else if (combineProjectionSeries && ([Modality isEqualToString:@"MG"] || [Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
 		{
 			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{
@@ -3096,7 +3114,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			serieID = n;
 		}
 		
-		if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [serie rangeOfString:@"scout" options:NSCaseInsensitiveSearch].location != NSNotFound || [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch].location != NSNotFound))
+		if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]))
 		{
 			NSString	*n;
 			
@@ -3195,7 +3213,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		{
 			[dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
 		}
-		else if( combineProjectionSeries && ([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
+		else if( combineProjectionSeries && ([Modality isEqualToString:@"MG"] || [Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
 		{
 			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{

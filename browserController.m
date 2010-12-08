@@ -1125,7 +1125,7 @@ static NSConditionLock *threadLock = nil;
 									[image setValue: [NSNumber numberWithInt: f] forKey:@"frameID"];
 									
 									NSString *Modality = [study valueForKey: @"modality"];
-									if( combineProjectionSeries && combineProjectionSeriesMode == 0 && ([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
+									if( combineProjectionSeries && combineProjectionSeriesMode == 0 && ([Modality isEqualToString:@"MG"] || [Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
 									{
 										// *******Combine all CR and DR Modality series in a study into one series
 										long imageInstance = [[curDict objectForKey: [ @"imageID" stringByAppendingString: SeriesNum]] intValue];
