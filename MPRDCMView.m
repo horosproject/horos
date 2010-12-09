@@ -1220,9 +1220,9 @@ static BOOL frameZoomed = NO;
 	
 	if( clickCount == 2)
 	{
-		long tool = [self getTool: theEvent];
+		mouseDownTool = [self getTool: theEvent];
 		
-		if( tool == tText)
+		if( mouseDownTool == tText)
 		{
 			[[self windowController] roiGetInfo: self];
 		}
@@ -1296,10 +1296,17 @@ static BOOL frameZoomed = NO;
 		}
 		else
 		{
-			long tool = [self getTool: theEvent];
+			mouseDownTool = [self getTool: theEvent];
+			
+			if( [self roiTool: currentTool])
+			{
+				NSPoint tempPt = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
+				if( [self clickInROI: tempPt])
+					mouseDownTool = currentTool;
+			}
 			
 			vrView.keep3DRotateCentered = YES;
-			if( tool == tCamera3D)
+			if( mouseDownTool == tCamera3D)
 			{
 				if( displayCrossLines == NO || frameZoomed == YES)
 					vrView.keep3DRotateCentered = NO;
@@ -1312,7 +1319,7 @@ static BOOL frameZoomed = NO;
 			
 			[self restoreCamera];
 			
-			if([self is2DTool: tool])
+			if([self is2DTool: mouseDownTool])
 			{
 				[super mouseDown: theEvent];
 				[windowController propagateWLWW: self];
@@ -1385,14 +1392,12 @@ static BOOL frameZoomed = NO;
 	}
 	else
 	{
-		long tool = [self getTool: theEvent];
-		
-		if([self is2DTool:tool])
+		if([self is2DTool: mouseDownTool])
 		{
 			[super mouseUp: theEvent];
 			[windowController propagateWLWW: self];
 		
-			if( tool == tNext)
+			if( mouseDownTool == tNext)
 				[windowController updateViewsAccordingToFrame: self];
 			
 			for( ROI *r in curRoiList)
@@ -1497,9 +1502,7 @@ static BOOL frameZoomed = NO;
 	}
 	else
 	{
-		long tool = [self getTool: theEvent];
-		
-		if([self is2DTool:tool])
+		if( [self is2DTool: mouseDownTool])
 		{
 			[super mouseDragged: theEvent];
 			[windowController propagateWLWW: self];

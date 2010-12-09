@@ -20,7 +20,7 @@
 
 @interface MPRDCMView : DCMView
 {
-	int viewID;
+	int viewID, mouseDownTool;
 	VRView *vrView;
 	DCMPix *pix;
 	Camera *camera;

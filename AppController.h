@@ -131,6 +131,7 @@ extern "C"
 + (BOOL) willExecutePlugin;
 + (BOOL) hasMacOSXSnowLeopard;
 + (BOOL) hasMacOSXLeopard;
++ (void) createDBFoldersIfNecessary;
 
 #pragma mark-
 #pragma mark initialization of the main event loop singleton

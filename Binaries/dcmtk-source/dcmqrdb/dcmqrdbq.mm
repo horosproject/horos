@@ -401,7 +401,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	
 	FILE * pFile;
 	char dir[ 1024], newdir[1024];
-	sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP.noindex/store_log_", handle->logUID);
+	sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "store_log_", handle->logUID);
 	pFile = fopen (dir,"w+");
 	if( pFile)
 	{
@@ -1173,7 +1173,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 			
 			FILE * pFile;
 			char dir[ 1024], newdir[1024];
-			sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP.noindex/store_log_", handle->logUID);
+			sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "store_log_", handle->logUID);
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
@@ -1219,9 +1219,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
 	unsigned seedvalue = seed;
     newImageFileName[0] = 0; // return empty string in case of error
 	
-	char dir[ 4096];
-	sprintf( dir, "%s/%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP.noindex");
-	if (! fnamecreator.makeFilename(seedvalue, dir, prefix, ".dcm", filename))
+	if (! fnamecreator.makeFilename(seedvalue, [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], prefix, ".dcm", filename))
 	{
 		return DcmQROsiriXDatabaseError;
 	}

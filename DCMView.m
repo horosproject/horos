@@ -4987,9 +4987,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	BOOL haveHit = NO;
 
-	for( int i = 0; i < [curRoiList count]; i++)
+	for( ROI *r in curRoiList)
 	{
-		if( [[curRoiList objectAtIndex:i] mouseRoiDragged: point :[event modifierFlags] :scaleValue] != NO)
+		if( [r mouseRoiDragged: point :[event modifierFlags] :scaleValue] != NO)
 		{
 			haveHit = YES;
 		}

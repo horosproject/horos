@@ -431,7 +431,6 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
 	char outfname[ 4096];
 	
 	strcpy( outfname, "");
-	
 	sprintf( outfname, "%s/%s/QR-CGET-%d-%d.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP.noindex", seed++, getpid());
 	unlink( outfname);
 	

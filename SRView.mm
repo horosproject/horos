@@ -2685,6 +2685,12 @@ typedef struct _xyzArray
 
 - (void) convert3Dto2Dpoint:(double*) pt3D :(double*) pt2D
 {
+	if( pt3D == nil)
+		return;
+	
+	if( pt2D == nil)
+		return;
+	
 	vtkTransform *Transform = vtkTransform::New();
 			
 	Transform->SetMatrix( matrice);

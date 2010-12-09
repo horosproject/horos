@@ -1,0 +1,1 @@
+diskutil erasevolume HFS+ "OsiriX-RAM-disk" `/usr/bin/hdiutil attach -nomount ram://1165430`

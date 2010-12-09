@@ -216,7 +216,7 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize checkIncomingLock, CDpassword, DateTimeFormat, passwordForExportEncryption;
 @synthesize DateOfBirthFormat,TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
-@synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
+@synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath, saveDBLock;
 @synthesize isCurrentDatabaseBonjour, bonjourDownloading, bonjourSourcesBox;
 @synthesize bonjourBrowser, pathToEncryptedFile, bonjourManagedObjectContext;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
@@ -1428,7 +1428,12 @@ static NSConditionLock *threadLock = nil;
 			[browserController autoCleanDatabaseFreeSpace: browserController];
 			
 			NSError *error = nil;
-			[context save: &error];
+			
+			if( [[browserController saveDBLock] tryLock])
+			{
+				[context save: &error];
+				[[browserController saveDBLock] unlock];
+			}
 			
 			if( error)
 			{
@@ -2925,7 +2930,9 @@ static NSConditionLock *threadLock = nil;
 			}
 			
 			error = nil;
+			[saveDBLock lock];
 			[currentContext save: &error];
+			[saveDBLock unlock];
 			
 			// STUDIES
 			NSFetchRequest* dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -3138,7 +3145,9 @@ static NSConditionLock *threadLock = nil;
 				if( counter % 100 == 0)
 				{
 					error = nil;
+					[saveDBLock lock];
 					[currentContext save: &error];
+					[saveDBLock unlock];
 					
 					[currentContext reset];
 					[previousContext reset];
@@ -3168,7 +3177,9 @@ static NSConditionLock *threadLock = nil;
 			}
 			
 			error = nil;
+			[saveDBLock lock];
 			[currentContext save: &error];
+			[saveDBLock unlock];
 			
 			[[NSFileManager defaultManager] removeFileAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"/Database-Old-PreviousVersion.sql"] handler: nil];
 			[[NSFileManager defaultManager] movePath:currentDatabasePath toPath:[[self documentsDirectory] stringByAppendingPathComponent:@"/Database-Old-PreviousVersion.sql"] handler:nil];
@@ -3623,6 +3634,8 @@ static NSConditionLock *threadLock = nil;
 	
 	[[LogManager currentLogManager] resetLogs];
 	
+	[AppController createDBFoldersIfNecessary];
+	
 	[managedObjectContext unlock];
 	
 //	NSData *str = [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"];
@@ -3670,7 +3683,10 @@ static NSConditionLock *threadLock = nil;
 			[context retain];
 			[context lock];
 			
+			[saveDBLock lock];
 			[context save: &error];
+			[saveDBLock unlock];
+			
 			if (error)
 			{
 				NSLog( @"****** error saving DB: %@", [[error userInfo] description]);
@@ -4594,7 +4610,10 @@ static NSConditionLock *threadLock = nil;
 			[self refreshMatrix: self];
 			
 			NSError *error = nil;
+			[saveDBLock lock];
 			[managedObjectContext save: &error];
+			[saveDBLock unlock];
+			
 			if( error == nil)
 				[managedObjectContext reset];
 			
@@ -6881,7 +6900,9 @@ static NSConditionLock *threadLock = nil;
 	
 	@try
 	{
+		[saveDBLock lock];
 		[context save: nil];
+		[saveDBLock unlock];
 	}
 	@catch( NSException *e)
 	{
@@ -6915,7 +6936,9 @@ static NSConditionLock *threadLock = nil;
 		
 		@try
 		{
+			[saveDBLock lock];
 			[context save: nil];
+			[saveDBLock unlock];
 		}
 		@catch( NSException *e)
 		{	NSLog( @"context save: nil: %@", e); [AppController printStackTrace: e];}
@@ -11637,7 +11660,9 @@ static BOOL needToRezoom;
 						}
 						
 						error = nil;
+						[saveDBLock lock];
 						[sqlContext save: &error];
+						[saveDBLock unlock];
 						
 						[sc release];
 						[sqlContext release];
@@ -12846,7 +12871,10 @@ static BOOL needToRezoom;
 							}
 								
 							[context deleteObject: originalSeries];
+							
+							[saveDBLock lock];
 							[context save: nil];
+							[saveDBLock unlock];
 						}
 						@catch (NSException * e)
 						{
@@ -12919,7 +12947,9 @@ static BOOL needToRezoom;
 							}
 							
 							[context deleteObject: originalSeries];
+							[saveDBLock lock];
 							[context save: nil];
+							[saveDBLock unlock];
 						}
 						@catch (NSException * e)
 						{
@@ -13664,6 +13694,7 @@ static NSArray*	openSubSeriesArray = nil;
 		checkIncomingLock = [[NSRecursiveLock alloc] init];
 		decompressArrayLock = [[NSRecursiveLock alloc] init];
 		decompressThreadRunning = [[NSRecursiveLock alloc] init];
+		saveDBLock = [[NSRecursiveLock alloc] init];
 		processorsLock = [[NSConditionLock alloc] initWithCondition: 1];
 		decompressArray = [[NSMutableArray alloc] initWithCapacity: 0];
 		
@@ -20700,6 +20731,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	else strcpy( cfixedIncomingDirectory, [fixedDocumentsDirectory UTF8String]);
 	
+	NSString *r;
+	
+	r = [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: [NSString stringWithFormat:@"%s/%s", cfixedIncomingDirectory, "TEMP.noindex"] error: nil];
+	if( r == nil)
+		r = [NSString stringWithFormat:@"%s/%s", cfixedIncomingDirectory, "TEMP.noindex"];
+	strcpy( cfixedTempNoIndexDirectory, [r UTF8String]);
+	
+	r = [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: [NSString stringWithFormat:@"%s/%s", cfixedIncomingDirectory, "INCOMING.noindex"] error: nil];
+	if( r == nil)
+		r = [NSString stringWithFormat:@"%s/%s", cfixedIncomingDirectory, "INCOMING.noindex"];
+	strcpy( cfixedIncomingNoIndexDirectory, [r UTF8String]);
+	
 	return fixedDocumentsDirectory;
 }
 
@@ -20725,7 +20768,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 { return cfixedDocumentsDirectory; }
 
 - (char *) cfixedIncomingDirectory
-{ return cfixedIncomingDirectory;}
+{ return cfixedIncomingDirectory; }
+
+- (char *) cfixedTempNoIndexDirectory
+{ return cfixedTempNoIndexDirectory; }
+
+- (char *) cfixedIncomingNoIndexDirectory
+{ return cfixedIncomingNoIndexDirectory; }
 
 + (NSString *) defaultDocumentsDirectory
 {

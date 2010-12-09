@@ -650,7 +650,7 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 	if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
 	{
 		char dir[ 1024];
-		sprintf( dir, "%s/%s/%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "INCOMING.noindex", last( imageFileName, '/'));
+		sprintf( dir, "%s/%s", [[BrowserController currentBrowser] cfixedIncomingNoIndexDirectory], last( imageFileName, '/'));
 		rename( imageFileName, dir);
 	}
 	
@@ -1321,8 +1321,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 		{
 			if (options_.verbose_)
 			{
-				printf("Association Acknowledged (Max Send PDV: %u)\n",
-					   assoc->sendPDVLength);
+				printf("Association Acknowledged (Max Send PDV: %u)\n", assoc->sendPDVLength);
 				if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
 					printf("    (but no valid presentation contexts)\n");
 				if (options_.debug_)
@@ -1333,20 +1332,30 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			{
 				NSManagedObjectContext *dbContext = [[BrowserController currentBrowser] localManagedObjectContext];
 				[dbContext retain];
-				[dbContext lock];
 				
-				@try
+				if( [dbContext tryLock])
 				{
-					[dbContext save: nil];
+					[[[BrowserController currentBrowser] saveDBLock] lock];
+					@try
+					{
+						[dbContext save: nil];
+					}
+					@catch (NSException * e)
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					}
+					
+					[dbContext unlock];
 				}
-				@catch (NSException * e)
-				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-				}
+				else
+					[[[BrowserController currentBrowser] saveDBLock] lock];
+				
+				[dbContext release];
 				
 				@try
 				{
 					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
+										
 					[staticContext retain];
 					@try
 					{
@@ -1365,8 +1374,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 				}
 				
-				[dbContext unlock];
-				[dbContext release];
+				[[[BrowserController currentBrowser] saveDBLock] unlock];
 				
 				NSString *str = getErrorMessage();
 				
@@ -1378,22 +1386,25 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			{
 				if( cond != ASC_SHUTDOWNAPPLICATION)
 				{
-					
-					
-	//				[[[BrowserController currentBrowser] checkIncomingLock] lock];
-					
 					NSManagedObjectContext *dbContext = [[BrowserController currentBrowser] localManagedObjectContext];
 					[dbContext retain];
-					[dbContext lock];
+					if( [dbContext tryLock])
+					{
+						[[[BrowserController currentBrowser] saveDBLock] lock];
+						@try
+						{
+							[dbContext save: nil];
+						}
+						@catch (NSException * e)
+						{
+							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+						}
+						[dbContext unlock];
+					}
+					else
+						[[[BrowserController currentBrowser] saveDBLock] lock];
 					
-					@try
-					{
-						[dbContext save: nil];
-					}
-					@catch (NSException * e)
-					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-					}
+					[dbContext release];
 					
 					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
 					[staticContext retain];
@@ -1446,8 +1457,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 							NSString *str = getErrorMessage();
 							if( str)
 								[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
-							
-							
 						}
 						else
 						{
@@ -1486,14 +1495,15 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 					}
 					
+					[[[BrowserController currentBrowser] saveDBLock] unlock];
 					
 					[staticContext reset];
 					[staticContext unlock];
 					[staticContext release];
 					staticContext = nil;
 					
-					[dbContext unlock];
-					[dbContext release];
+	//				[dbContext unlock];
+	//				[dbContext release];
 	//				[[[BrowserController currentBrowser] checkIncomingLock] unlock];
 				}
 			}

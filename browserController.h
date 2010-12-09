@@ -178,14 +178,14 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSString						*fixedDocumentsDirectory, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption;
 	
-	char							cfixedDocumentsDirectory[ 4096], cfixedIncomingDirectory[ 4096];
+	char							cfixedDocumentsDirectory[ 4096], cfixedIncomingDirectory[ 4096], cfixedTempNoIndexDirectory[ 4096], cfixedIncomingNoIndexDirectory[ 4096];
 	
 	NSTimeInterval					databaseLastModification, lastCheckForDirectory;
 	NSUInteger						previousFlags;
 //	StructuredReportController		*structuredReportController;
 	
 	NSMutableArray					*deleteQueueArray;
-	NSRecursiveLock					*deleteQueue, *deleteInProgress;
+	NSRecursiveLock					*deleteQueue, *deleteInProgress, *saveDBLock;
 	
 	NSMutableArray					*autoroutingQueueArray;
 	NSLock							*autoroutingQueue, *autoroutingInProgress;
@@ -244,7 +244,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 }
 
 @property(readonly) NSDateFormatter *DateTimeFormat, *DateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
-@property(readonly) NSRecursiveLock *checkIncomingLock;
+@property(readonly) NSRecursiveLock *checkIncomingLock, *saveDBLock;
 @property(readonly) NSManagedObjectContext *userManagedObjectContext, *bonjourManagedObjectContext;
 @property(readonly) NSManagedObjectModel *userManagedObjectModel;
 @property(readonly) NSArray *matrixViewArray;
@@ -262,7 +262,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property volatile BOOL bonjourDownloading;
 @property(readonly) NSBox *bonjourSourcesBox;
 @property(readonly) BonjourBrowser *bonjourBrowser;
-@property(readonly) char *cfixedDocumentsDirectory, *cfixedIncomingDirectory;
+@property(readonly) char *cfixedDocumentsDirectory, *cfixedIncomingDirectory, *cfixedTempNoIndexDirectory, *cfixedIncomingNoIndexDirectory;
 
 @property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail;
 @property(retain) NSPredicate *fetchPredicate, *testPredicate;
