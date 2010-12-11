@@ -229,7 +229,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	
 	name = NSLocalizedString(@"Basics", @"Section in preferences window");
 	[self addPaneWithResourceNamed:@"OSIGeneralPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"General", @"Panel in preferences window") image:[NSImage imageNamed:@"GeneralPreferences"] toGroupWithName:name];
-	[self addPaneWithResourceNamed:@"OSIDatabasePreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Database", @"Panel in preferences window") image:[NSImage imageNamed:@"StartupDisk"] toGroupWithName:name];
+	[self addPaneWithResourceNamed:@"OSIDatabasePreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Database", @"Panel in preferences window") image:[NSImage imageNamed:@"DatabaseIcon"] toGroupWithName:name];
 	[self addPaneWithResourceNamed:@"OSICDPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"CD/DVD", @"Panel in preferences window") image:[NSImage imageNamed:@"CD"] toGroupWithName:name];
 	[self addPaneWithResourceNamed:@"OSIHangingPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Protocols", @"Panel in preferences window") image:[NSImage imageNamed:@"ZoomToFit"] toGroupWithName:name];
 	name = NSLocalizedString(@"Display", @"Section in preferences window");

@@ -5020,6 +5020,8 @@
 		CE897DD50C21D951005C669E /* texture.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE897DD30C21D951005C669E /* texture.tif */; };
 		CE898D8B0CBA1B470029E907 /* Osirix32bitShell.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898D8A0CBA1B470029E907 /* Osirix32bitShell.icns */; };
 		CE8CAB0E0B4715DD0068DBAE /* DICOMPrint in Resources */ = {isa = PBXBuildFile; fileRef = CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */; };
+		CE8CDAF212B3C88D00268E4F /* DatabaseIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE8CDAF112B3C88D00268E4F /* DatabaseIcon.tif */; };
+		CE8CDAF312B3C88D00268E4F /* DatabaseIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE8CDAF112B3C88D00268E4F /* DatabaseIcon.tif */; };
 		CE8D057E0FD8505000165DDE /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8D057D0FD8505000165DDE /* OsiriX.framework */; };
 		CE8D05CE0FD851F400165DDE /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CE8D062A0FD8731B00165DDE /* libDCM StaticLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */; };
@@ -11925,6 +11927,7 @@
 		CE897DD30C21D951005C669E /* texture.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = texture.tif; path = Binaries/Icons/texture.tif; sourceTree = "<group>"; };
 		CE898D8A0CBA1B470029E907 /* Osirix32bitShell.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Osirix32bitShell.icns; path = Binaries/Icons/Osirix32bitShell.icns; sourceTree = "<group>"; };
 		CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = DICOMPrint; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE8CDAF112B3C88D00268E4F /* DatabaseIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DatabaseIcon.tif; sourceTree = "<group>"; };
 		CE8D057D0FD8505000165DDE /* OsiriX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE90D8C3095F5B48004FC7E2 /* FlipData.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipData.tif; sourceTree = "<group>"; };
 		CE94FC001053FFD3006D92E4 /* CurveFitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurveFitter.h; sourceTree = "<group>"; };
@@ -13776,6 +13779,7 @@
 				A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */,
 				ABBB6488063587B200D9531F /* DAT.icns */,
 				CE1E7F5A07E2DD0D00A85908 /* DatabaseWindow.icns */,
+				CE8CDAF112B3C88D00268E4F /* DatabaseIcon.tif */,
 				ABBB6489063587B200D9531F /* dcm.icns */,
 				CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */,
 				A9897D970D4A142200BAC447 /* displayRGB.tif */,
@@ -22720,6 +22724,7 @@
 				A97569581237D132003F00D3 /* PathAssistant.png in Resources */,
 				59D9471D125333640095680D /* SWFInit.as in Resources */,
 				CE72D7C31263702500874EF6 /* Pause.icns in Resources */,
+				CE8CDAF212B3C88D00268E4F /* DatabaseIcon.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23075,6 +23080,7 @@
 				A9A80E4E11F744FB009F54B9 /* Activity_StopPressed.tif in Resources */,
 				A9A80E4F11F744FC009F54B9 /* Activity_Stop.tif in Resources */,
 				CE72D7C41263702500874EF6 /* Pause.icns in Resources */,
+				CE8CDAF312B3C88D00268E4F /* DatabaseIcon.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
