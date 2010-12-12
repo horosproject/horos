@@ -2262,9 +2262,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 				NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
 
 				[tokens setObject:NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, main page, title") forKey:@"PageTitle"];
-				[tokens setObject:currentUser forKey:@"User"];
-				[tokens setBool: currentUser.uploadDICOM && !isiPhone forKey:@"AuthorizedUploadDICOMFiles"];
-				[tokens setBool: !currentUser || [[self studiesForPredicate:[NSPredicate predicateWithValue:YES] sortBy:nil] count] forKey:@"accessStudies"];
+				
+				if( currentUser)
+				{
+					[tokens setObject: currentUser forKey:@"User"];
+					[tokens setBool: currentUser.uploadDICOM && !isiPhone forKey:@"AuthorizedUploadDICOMFiles"];
+					[tokens setBool: !currentUser || [[self studiesForPredicate:[NSPredicate predicateWithValue:YES] sortBy:nil] count] forKey:@"accessStudies"];
+				}
 				
 				NSArray* unfilteredAlbums = [[BrowserController currentBrowser] albumArray];
 				NSMutableArray* albums = [NSMutableArray array];

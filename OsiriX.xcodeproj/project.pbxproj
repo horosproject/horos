@@ -1273,8 +1273,6 @@
 		AB7251950ADE786E00A212A0 /* diqthash.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7809B6827F00545F5E /* diqthash.cc */; };
 		AB7251960ADE786F00A212A0 /* diqtfs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7609B6827F00545F5E /* diqtfs.cc */; };
 		AB7251970ADE786F00A212A0 /* diqtctab.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7409B6827F00545F5E /* diqtctab.cc */; };
-		AB7251980ADE786F00A212A0 /* dipitiff.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7109B6827F00545F5E /* dipitiff.cc */; };
-		AB7251990ADE786F00A212A0 /* dipipng.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6F09B6827F00545F5E /* dipipng.cc */; };
 		AB72519A0ADE787000A212A0 /* dipalimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6C09B6827F00545F5E /* dipalimg.cc */; };
 		AB72519B0ADE787000A212A0 /* dihsvimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6909B6827F00545F5E /* dihsvimg.cc */; };
 		AB72519D0ADE788600A212A0 /* dibaslut.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9609B6828000545F5E /* dibaslut.cc */; };
@@ -1910,10 +1908,6 @@
 		BF3F215F09CB86FC002736A5 /* dipalimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6C09B6827F00545F5E /* dipalimg.cc */; };
 		BF3F216009CB86FD002736A5 /* dipalimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6D09B6827F00545F5E /* dipalimg.h */; };
 		BF3F216109CB86FF002736A5 /* dipalpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6E09B6827F00545F5E /* dipalpxt.h */; };
-		BF3F216209CB86FF002736A5 /* dipipng.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6F09B6827F00545F5E /* dipipng.cc */; };
-		BF3F216309CB8700002736A5 /* dipipng.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7009B6827F00545F5E /* dipipng.h */; };
-		BF3F216409CB8701002736A5 /* dipitiff.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7109B6827F00545F5E /* dipitiff.cc */; };
-		BF3F216509CB8705002736A5 /* dipitiff.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7209B6827F00545F5E /* dipitiff.h */; };
 		BF3F216609CB8706002736A5 /* diqtcmap.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7309B6827F00545F5E /* diqtcmap.h */; };
 		BF3F216709CB8706002736A5 /* diqtctab.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7409B6827F00545F5E /* diqtctab.cc */; };
 		BF3F216809CB8707002736A5 /* diqtctab.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7509B6827F00545F5E /* diqtctab.h */; };
@@ -9479,10 +9473,6 @@
 		BFBF3B6C09B6827F00545F5E /* dipalimg.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dipalimg.cc; sourceTree = "<group>"; };
 		BFBF3B6D09B6827F00545F5E /* dipalimg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dipalimg.h; sourceTree = "<group>"; };
 		BFBF3B6E09B6827F00545F5E /* dipalpxt.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dipalpxt.h; sourceTree = "<group>"; };
-		BFBF3B6F09B6827F00545F5E /* dipipng.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dipipng.cc; sourceTree = "<group>"; };
-		BFBF3B7009B6827F00545F5E /* dipipng.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dipipng.h; sourceTree = "<group>"; };
-		BFBF3B7109B6827F00545F5E /* dipitiff.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dipitiff.cc; sourceTree = "<group>"; };
-		BFBF3B7209B6827F00545F5E /* dipitiff.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dipitiff.h; sourceTree = "<group>"; };
 		BFBF3B7309B6827F00545F5E /* diqtcmap.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = diqtcmap.h; sourceTree = "<group>"; };
 		BFBF3B7409B6827F00545F5E /* diqtctab.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = diqtctab.cc; sourceTree = "<group>"; };
 		BFBF3B7509B6827F00545F5E /* diqtctab.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = diqtctab.h; sourceTree = "<group>"; };
@@ -14391,10 +14381,6 @@
 				BFBF3B6C09B6827F00545F5E /* dipalimg.cc */,
 				BFBF3B6D09B6827F00545F5E /* dipalimg.h */,
 				BFBF3B6E09B6827F00545F5E /* dipalpxt.h */,
-				BFBF3B6F09B6827F00545F5E /* dipipng.cc */,
-				BFBF3B7009B6827F00545F5E /* dipipng.h */,
-				BFBF3B7109B6827F00545F5E /* dipitiff.cc */,
-				BFBF3B7209B6827F00545F5E /* dipitiff.h */,
 				BFBF3B7309B6827F00545F5E /* diqtcmap.h */,
 				BFBF3B7409B6827F00545F5E /* diqtctab.cc */,
 				BFBF3B7509B6827F00545F5E /* diqtctab.h */,
@@ -17717,8 +17703,6 @@
 				BF3F215E09CB86FC002736A5 /* dihsvpxt.h in Headers */,
 				BF3F216009CB86FD002736A5 /* dipalimg.h in Headers */,
 				BF3F216109CB86FF002736A5 /* dipalpxt.h in Headers */,
-				BF3F216309CB8700002736A5 /* dipipng.h in Headers */,
-				BF3F216509CB8705002736A5 /* dipitiff.h in Headers */,
 				BF3F216609CB8706002736A5 /* diqtcmap.h in Headers */,
 				BF3F216809CB8707002736A5 /* diqtctab.h in Headers */,
 				BF3F216A09CB8708002736A5 /* diqtfs.h in Headers */,
@@ -23856,8 +23840,6 @@
 				BF3F215609CB86F6002736A5 /* dicopx.cc in Sources */,
 				BF3F215C09CB86FA002736A5 /* dihsvimg.cc in Sources */,
 				BF3F215F09CB86FC002736A5 /* dipalimg.cc in Sources */,
-				BF3F216209CB86FF002736A5 /* dipipng.cc in Sources */,
-				BF3F216409CB8701002736A5 /* dipitiff.cc in Sources */,
 				BF3F216709CB8706002736A5 /* diqtctab.cc in Sources */,
 				BF3F216909CB8708002736A5 /* diqtfs.cc in Sources */,
 				BF3F216B09CB870A002736A5 /* diqthash.cc in Sources */,
@@ -24540,8 +24522,6 @@
 				AB7251950ADE786E00A212A0 /* diqthash.cc in Sources */,
 				AB7251960ADE786F00A212A0 /* diqtfs.cc in Sources */,
 				AB7251970ADE786F00A212A0 /* diqtctab.cc in Sources */,
-				AB7251980ADE786F00A212A0 /* dipitiff.cc in Sources */,
-				AB7251990ADE786F00A212A0 /* dipipng.cc in Sources */,
 				AB72519A0ADE787000A212A0 /* dipalimg.cc in Sources */,
 				AB72519B0ADE787000A212A0 /* dihsvimg.cc in Sources */,
 				AB72519D0ADE788600A212A0 /* dibaslut.cc in Sources */,
