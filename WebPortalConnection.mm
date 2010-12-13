@@ -2263,6 +2263,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 				[tokens setObject:NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, main page, title") forKey:@"PageTitle"];
 				
+				// There are not necessarly user : WebServer can be used WITHOUT users (see Preferences)
 				if( currentUser)
 				{
 					[tokens setObject: currentUser forKey:@"User"];
