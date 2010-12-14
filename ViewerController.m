@@ -16420,22 +16420,22 @@ int i,j,l;
 			[viewsRect addObject: [NSValue valueWithRect: bounds]];
 		}
 		
-		data = [imageView getRawPixelsWidth:  &width
-								height: &height
-								   spp: &spp
-								   bpp: &bpp
-						 screenCapture: screenCapture
-							force8bits: force8bits
-					   removeGraphical: YES
-						  squarePixels: YES
-							  allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"]
-					allowSmartCropping: NO
-								origin: imOrigin
-							   spacing: imSpacing
-								offset: &offset
-							  isSigned: &isSigned
-								 views: [viewers valueForKey: @"imageView"]
-							 viewsRect: viewsRect];
+		data = [imageView getRawPixelsWidth: &width
+									 height: &height
+										spp: &spp
+										bpp: &bpp
+							  screenCapture: screenCapture
+								 force8bits: force8bits
+							removeGraphical: YES
+							   squarePixels: YES
+								   allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"]
+						 allowSmartCropping: NO
+									 origin: imOrigin
+									spacing: imSpacing
+									 offset: &offset
+								   isSigned: &isSigned
+									  views: [viewers valueForKey: @"imageView"]
+								  viewsRect: viewsRect];
 	}
 	else data = [imageView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
 	
