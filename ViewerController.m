@@ -16437,7 +16437,20 @@ int i,j,l;
 									  views: [viewers valueForKey: @"imageView"]
 								  viewsRect: viewsRect];
 	}
-	else data = [imageView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
+	else data = [imageView getRawPixelsWidth: &width
+									  height: &height
+										 spp: &spp
+										 bpp: &bpp
+							   screenCapture: screenCapture
+								  force8bits: force8bits
+							 removeGraphical: YES
+								squarePixels: YES
+									allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"]
+						  allowSmartCropping: YES
+									  origin: imOrigin
+									 spacing: imSpacing
+									  offset: &offset
+									isSigned: &isSigned];
 	
 	NSString *f = nil;
 	
