@@ -9127,7 +9127,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						if( aView)
 						{
 							unsigned char	*o = globalView + *spp*globalWidth*y**height**bpp/8 +  x**width**spp**bpp/8;
-						
+							
 							for( int yy = 0 ; yy < *height; yy++)
 							{
 								memcpy( o + yy**spp*globalWidth**bpp/8, aView + yy**spp**width**bpp/8, *spp**width**bpp/8);
@@ -9146,6 +9146,184 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		return globalView;
 	}
 	else return [self getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:allowSmartCropping origin: imOrigin spacing: imSpacing offset: offset isSigned: isSigned];
+}
+
+- (unsigned char*) getRawPixelsWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allTiles:(BOOL) allTiles allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing offset:(int*) offset isSigned:(BOOL*) isSigned views: (NSArray*) views viewsRect: (NSArray*) rects
+{
+	NSMutableArray *viewsRect = [NSMutableArray arrayWithArray: rects];
+	
+	if( [views count] > 1 && [views count] == [viewsRect count])
+	{
+		unsigned char	*tempData = nil;
+		
+		NSRect unionRect = [[viewsRect objectAtIndex: 0] rectValue];
+		for( NSValue *rect in viewsRect)
+			unionRect = NSUnionRect( [rect rectValue], unionRect);
+		
+		for( int i = 0; i < [views count]; i++ )
+		{
+			NSRect curRect = [[viewsRect objectAtIndex: i] rectValue];
+			BOOL intersect;
+			
+			// X move
+			do
+			{
+				intersect = NO;
+				
+				for( int x = 0 ; x < [views count]; x++)
+				{
+					if( x != i)
+					{
+						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
+						if( NSIntersectsRect( curRect, rect))
+						{
+							curRect.origin.x += 2;
+							intersect = YES;
+						}
+					}
+				}
+				
+				if( intersect == NO)
+				{
+					curRect.origin.x --;
+					if( curRect.origin.x <= unionRect.origin.x) intersect = YES;
+				}
+			}
+			while( intersect == NO);
+			
+			[viewsRect replaceObjectAtIndex: i withObject: [NSValue valueWithRect: curRect]];
+		}
+		
+		for( int i = 0; i < [views count]; i++)
+		{
+			NSRect curRect = [[viewsRect objectAtIndex: i] rectValue];
+			BOOL intersect;
+			
+			// Y move
+			do {
+				intersect = NO;
+				
+				for( int x = 0 ; x < [views count]; x++)
+				{
+					if( x != i)
+					{
+						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
+						if( NSIntersectsRect( curRect, rect))
+						{
+							curRect.origin.y-= 2;
+							intersect = YES;
+						}
+					}
+				}
+				
+				if( intersect == NO)
+				{
+					curRect.origin.y ++;
+					if( curRect.origin.y + curRect.size.height > unionRect.origin.y + unionRect.size.height) intersect = YES;
+				}
+			}
+			while( intersect == NO);
+			
+			[viewsRect replaceObjectAtIndex: i withObject: [NSValue valueWithRect: curRect]];
+		}
+		
+		// Re-Compute the enclosing rect
+		unionRect = [[viewsRect objectAtIndex: 0] rectValue];
+		for( int i = 0; i < [views count]; i++)
+		{
+			unionRect = NSUnionRect( [[viewsRect objectAtIndex: i] rectValue], unionRect);
+		}
+		
+		*width = unionRect.size.width;
+		if( *width % 4 != 0) *width += 4;
+		*width /= 4;
+		*width *= 4;
+		*height = unionRect.size.height;
+		
+		unsigned char * data = nil;
+		
+		for( int i = 0; i < [views count]; i++)
+		{
+			long iwidth, iheight, ispp, ibpp;
+			float iimOrigin[ 3], iimSpacing[ 2];
+			BOOL iisSigned;
+			int ioffset;
+			
+			tempData = [[views objectAtIndex: i] getRawPixelsWidth: &iwidth
+															height: &iheight
+															   spp: &ispp
+															   bpp: &ibpp
+													 screenCapture: screenCapture
+														force8bits: force8bits
+												   removeGraphical: removeGraphical
+													  squarePixels: squarePixels
+														  allTiles: allTiles
+												allowSmartCropping: allowSmartCropping
+															origin: nil
+														   spacing: iimSpacing
+															offset: &ioffset
+														  isSigned: &iisSigned];
+			
+			if( i == 0)
+			{
+				imSpacing[ 0] = iimSpacing[ 0];
+				imSpacing[ 1] = iimSpacing[ 1];
+				
+				imOrigin[ 0] = 0;
+				imOrigin[ 1] = 0;
+				imOrigin[ 2] = 0;
+				
+				*spp = ispp;
+				*bpp = ibpp;
+				*offset = ioffset;
+				*isSigned = iisSigned;
+				
+				data = calloc( 1, *width * *height * *spp * *bpp/8);
+			}
+			else
+			{
+				if( imSpacing[ 0] != iimSpacing[ 0] || imSpacing[ 1] != iimSpacing[ 1])
+				{
+					imSpacing[ 0] = 0;
+					imSpacing[ 1] = 0;
+				}
+			}
+
+			
+			NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[views bounds];
+			
+			bounds.origin.x -= unionRect.origin.x;
+			bounds.origin.y -= unionRect.origin.y;
+			
+			unsigned char	*o = data + (*bpp/8) * *spp * *width * (int) (*height - bounds.origin.y - iheight) + (int) bounds.origin.x * *spp * (*bpp/8);
+			 
+			for( int y = 0 ; y < iheight; y++)
+			{
+				memcpy( o + (*bpp/8) * y * *spp * *width, tempData + (*bpp/8) * y *ispp * iwidth, (*bpp/8) * ispp * iwidth);
+			}
+			
+			free( tempData);
+		}
+		
+		return data;
+	}
+	else
+	{
+		return [self getRawPixelsWidth: width
+								height: height
+								   spp: spp
+								   bpp: bpp
+						 screenCapture: screenCapture
+							force8bits: force8bits
+					   removeGraphical: removeGraphical
+						  squarePixels: squarePixels
+							  allTiles: allTiles
+					allowSmartCropping: allowSmartCropping
+								origin: imOrigin
+							   spacing: imSpacing
+								offset: offset
+							  isSigned: isSigned];
+	}
 }
 
 - (NSRect) smartCrop: (NSPoint*) ori
@@ -9931,17 +10109,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil];
 }
 
--(NSImage*) nsimage
+- (NSImage*) nsimage
 {
 	return [self nsimage: NO allViewers: NO];
 }
 
--(NSImage*) nsimage:(BOOL) originalSize
+- (NSImage*) nsimage:(BOOL) originalSize
 {
 	return [self nsimage: originalSize allViewers: NO];
 }
 
--(NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers
+- (NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers
 {
 	NSBitmapImageRep	*rep;
 	long				width, height, spp, bpp;
@@ -9971,9 +10149,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( allViewers)
 	{
-		unsigned char	*tempData = nil;
-		NSRect			unionRect;
-		NSArray			*viewers = [ViewerController getDisplayed2DViewers];
+		NSArray	*viewers = [ViewerController getDisplayed2DViewers];
 		
 		//order windows from left-top to right-bottom
 		NSMutableArray	*cWindows = [NSMutableArray arrayWithArray: viewers];
@@ -10032,116 +10208,24 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			bounds = NSIntegralRect( bounds);
 			
 			[viewsRect addObject: [NSValue valueWithRect: bounds]];
-			
-			if( i == 0)  unionRect = bounds;
-			else unionRect = NSUnionRect( bounds, unionRect);
 		}
 		
-		for( int i = 0; i < [viewers count]; i++ )
-		{
-			NSRect curRect = [[viewsRect objectAtIndex: i] rectValue];
-			BOOL intersect;
-			
-			// X move
-			do
-			{
-				intersect = NO;
-				
-				for( int x = 0 ; x < [viewers count]; x++)
-				{
-					if( x != i) {
-						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
-						if( NSIntersectsRect( curRect, rect))
-						{
-							curRect.origin.x += 2;
-							intersect = YES;
-						}
-					}
-				}
-				
-				if( intersect == NO)
-				{
-					curRect.origin.x --;
-					if( curRect.origin.x <= unionRect.origin.x) intersect = YES;
-				}
-			}
-			while( intersect == NO);
-			
-			[viewsRect replaceObjectAtIndex: i withObject: [NSValue valueWithRect: curRect]];
-		}
-		
-		for( int i = 0; i < [viewers count]; i++)
-		{
-			NSRect curRect = [[viewsRect objectAtIndex: i] rectValue];
-			BOOL intersect;
-			
-			// Y move
-			do {
-				intersect = NO;
-				
-				for( int x = 0 ; x < [viewers count]; x++)
-				{
-					if( x != i)
-					{
-						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
-						if( NSIntersectsRect( curRect, rect))
-						{
-							curRect.origin.y-= 2;
-							intersect = YES;
-						}
-					}
-				}
-				
-				if( intersect == NO)
-				{
-					curRect.origin.y ++;
-					if( curRect.origin.y + curRect.size.height > unionRect.origin.y + unionRect.size.height) intersect = YES;
-				}
-			}
-			while( intersect == NO);
-			
-			[viewsRect replaceObjectAtIndex: i withObject: [NSValue valueWithRect: curRect]];
-		}
-		
-		// Re-Compute the enclosing rect
-		unionRect = [[viewsRect objectAtIndex: 0] rectValue];
-		for( int i = 0; i < [viewers count]; i++)
-		{
-			unionRect = NSUnionRect( [[viewsRect objectAtIndex: i] rectValue], unionRect);
-		}
-		
-		width = unionRect.size.width;
-		if(width % 4 != 0) width += 4;
-		width /= 4;
-		width *= 4;
-		height = unionRect.size.height;
-		spp = 3;
-		bpp = 8;
-		
-		data = calloc( 1, width * height * spp * bpp/8);
-		if( data)
-		{
-			for( long i = 0; i < [viewers count]; i++)
-			{
-				long iwidth, iheight, ispp, ibpp;
-				
-				tempData = [[[viewers objectAtIndex: i] imageView] getRawPixelsWidth:&iwidth height:&iheight spp:&ispp bpp:&ibpp screenCapture:YES force8bits:YES removeGraphical: NO squarePixels: YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: NO origin: nil spacing: nil];
-				
-				NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[[[viewers objectAtIndex: i] imageView] bounds];
-				
-				bounds.origin.x -= unionRect.origin.x;
-				bounds.origin.y -= unionRect.origin.y;
-				
-				unsigned char	*o = data + spp*width* (int) (height - bounds.origin.y - iheight) + (int) bounds.origin.x*spp;
-				
-				for( int y = 0 ; y < iheight; y++)
-				{
-					memcpy( o + y*spp*width, tempData + y*ispp*iwidth, ispp*iwidth);
-				}
-				
-				free( tempData);
-			}
-		}
+		data = [self getRawPixelsWidth:  &width
+								 height: &height
+									spp: &spp
+									bpp: &bpp
+						  screenCapture: YES
+							 force8bits: YES
+						removeGraphical: NO
+						   squarePixels: YES
+							   allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"]
+					 allowSmartCropping: [[NSUserDefaults standardUserDefaults] boolForKey: @"allowSmartCropping"]
+								 origin: nil
+								spacing: nil
+	 							 offset: nil
+							   isSigned: nil
+								  views: [viewers valueForKey: @"imageView"]
+							  viewsRect: viewsRect];
 	}
 	else data = [self getRawPixelsWidth :&width height:&height spp:&spp bpp:&bpp screenCapture:!originalSize force8bits: YES removeGraphical:NO squarePixels:YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: [[NSUserDefaults standardUserDefaults] boolForKey: @"allowSmartCropping"] origin: nil spacing: nil];
 	

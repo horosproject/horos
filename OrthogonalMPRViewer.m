@@ -1349,7 +1349,45 @@ return YES;
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
 	[DCMView setDefaults];
 	
-	unsigned char *data = [[self keyView] getRawPixelsViewWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:NO removeGraphical:YES squarePixels:YES allowSmartCropping: YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
+	unsigned char *data = nil;
+	
+	if( 1)
+	{
+		NSMutableArray *views = [NSMutableArray array], *viewsRect = [NSMutableArray array];
+		
+		[views addObject: [controller originalView]];
+		[views addObject: [controller xReslicedView]];
+		[views addObject: [controller yReslicedView]];
+		
+		for( id v in views)
+		{
+			NSRect bounds = [v bounds];
+			NSPoint or = [v convertPoint: bounds.origin toView: nil];
+			bounds.origin = [[self window] convertBaseToScreen: or];
+			[viewsRect addObject: [NSValue valueWithRect: bounds]];
+		}
+		
+		data = [[self keyView]     getRawPixelsWidth: &width
+											  height: &height
+												 spp: &spp
+												 bpp: &bpp
+									   screenCapture: YES
+										  force8bits: YES
+									 removeGraphical: NO
+										squarePixels: YES
+											allTiles: NO
+								  allowSmartCropping: YES
+											  origin: imOrigin
+											 spacing: imSpacing
+											  offset: &offset
+											isSigned: &isSigned
+											   views: views
+										   viewsRect: viewsRect];
+	}
+	else
+	{
+		data = [[self keyView] getRawPixelsViewWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:NO removeGraphical:YES squarePixels:YES allowSmartCropping: YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
+	}
 	
 	if( data)
 	{
