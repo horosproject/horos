@@ -16479,16 +16479,21 @@ int i,j,l;
 		float thickness, location;
 		
 		[imageView getThickSlabThickness:&thickness location:&location];
-		[exportDCM setSliceThickness: thickness];
-		[exportDCM setSlicePosition: location];
 		
-		[imageView orientationCorrectedToView: o];
-//		if( screenCapture) [imageView orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
-//		else [curPix orientation: o];
+		if( allViewers == NO)
+		{
+			[exportDCM setSliceThickness: thickness];
+			[exportDCM setSlicePosition: location];
+			
+			[imageView orientationCorrectedToView: o];
+	//		if( screenCapture) [imageView orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
+	//		else [curPix orientation: o];
+			
+			[exportDCM setOrientation: o];
+			
+			[exportDCM setPosition: imOrigin];
+		}
 		
-		[exportDCM setOrientation: o];
-		
-		[exportDCM setPosition: imOrigin];
 		[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
 				
 		[exportDCM setPixelData: data samplesPerPixel:spp bitsPerSample:bpp width: width height: height];

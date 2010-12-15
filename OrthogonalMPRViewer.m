@@ -96,6 +96,11 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 		[splitView setVertical: NO];
 	else
 		[splitView setVertical: YES];
+	
+	[[NSUserDefaultsController sharedUserDefaultsController] addObserver: self
+															  forKeyPath: @"values.exportDCMIncludeAllViews"
+																 options: NSKeyValueObservingOptionNew
+																 context: NULL];
 }
 
 -(id)initWithPixList:(NSMutableArray*)pix :(NSArray*)files :(NSData*)vData :(ViewerController*)vC :(ViewerController*)bC
@@ -170,7 +175,9 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 {
 	NSLog(@"OrthogonalMPRViewer dealloc");
 	
-	[[NSUserDefaults standardUserDefaults] setInteger:[thickSlabSlider intValue] forKey:@"stackThicknessOrthoMPR"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.exportDCMIncludeAllViews"];
+	
+	[[NSUserDefaults standardUserDefaults] setInteger:[thickSlabSlider intValue] forKey: @"stackThicknessOrthoMPR"];
 	
 	[curOpacityMenu release];
 	[curWLWWMenu release];
@@ -1330,6 +1337,12 @@ return YES;
 	}
 }
 
+- (void) observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context
+{
+	if( [keyPath isEqualToString: @"values.exportDCMIncludeAllViews"])
+		[dcmFormat selectCellWithTag: 1]; // Screen capture
+}
+
 #ifndef OSIRIX_LIGHT
 - (NSDictionary*) exportDICOMFileInt :(BOOL) screenCapture
 {
@@ -1351,7 +1364,7 @@ return YES;
 	
 	unsigned char *data = nil;
 	
-	if( 1)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"])
 	{
 		NSMutableArray *views = [NSMutableArray array], *viewsRect = [NSMutableArray array];
 		
@@ -1386,7 +1399,19 @@ return YES;
 	}
 	else
 	{
-		data = [[self keyView] getRawPixelsViewWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:NO removeGraphical:YES squarePixels:YES allowSmartCropping: YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
+		data = [[self keyView] getRawPixelsViewWidth: &width
+											  height: &height
+												 spp: &spp
+												 bpp: &bpp
+									   screenCapture: screenCapture
+										  force8bits: NO
+									 removeGraphical: YES
+										squarePixels: YES
+								  allowSmartCropping: YES
+											  origin: imOrigin
+											 spacing: imSpacing
+											  offset: &offset
+											isSigned: &isSigned];
 	}
 	
 	if( data)
@@ -1406,20 +1431,24 @@ return YES;
 		[exportDCM setDefaultWWWL: cww :cwl];
 		
 		[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"] == NO)
+		{
+			[exportDCM setSliceThickness: [curPix sliceThickness]];
+			[exportDCM setSlicePosition: [curPix sliceLocation]];
 			
-		[exportDCM setSliceThickness: [curPix sliceThickness]];
-		[exportDCM setSlicePosition: [curPix sliceLocation]];
-		
-		[[self keyView] orientationCorrectedToView: o];
-		
-//		if( screenCapture)
-//			[[self keyView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
-//		else
-//			[curPix orientation: o];
+			[[self keyView] orientationCorrectedToView: o];
 			
-		[exportDCM setOrientation: o];
+	//		if( screenCapture)
+	//			[[self keyView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
+	//		else
+	//			[curPix orientation: o];
+				
+			[exportDCM setOrientation: o];
+			
+			[exportDCM setPosition: imOrigin];
+		}
 		
-		[exportDCM setPosition: imOrigin];
 		[exportDCM setPixelData: data samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
 		[exportDCM setSigned: isSigned];
 		[exportDCM setOffset: offset];
