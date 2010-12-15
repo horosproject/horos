@@ -247,6 +247,11 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 //	[[self window] performZoom:self];
 //	[[self window] display];
 	
+	[[NSUserDefaultsController sharedUserDefaultsController] addObserver: self
+															  forKeyPath: @"values.exportDCMIncludeAllViews"
+																 options: NSKeyValueObservingOptionNew
+																 context: NULL];
+	
 	return self;
 }
 
@@ -258,6 +263,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 - (void) dealloc
 {
 	NSLog(@"OrthogonalMPRPETCTViewer dealloc");
+	
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.exportDCMIncludeAllViews"];
 	
 	[transferFunction release];
 	[curCLUTMenu release];
@@ -1147,6 +1154,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 											ThickSlabToolbarItemIdentifier,
 											MovieToolbarItemIdentifier,
                                             NSToolbarFlexibleSpaceItemIdentifier, 
+											ExportToolbarItemIdentifier,
 											MailToolbarItemIdentifier,
 											SameHeightSplitViewToolbarItemIdentifier,
 											SameWidthSplitViewToolbarItemIdentifier,
@@ -2101,6 +2109,12 @@ return YES;
 	return [self exportDICOMFileInt:screenCapture view:[self keyView]];
 }
 
+- (void) observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context
+{
+	if( [keyPath isEqualToString: @"values.exportDCMIncludeAllViews"])
+		[dcmFormat selectCellWithTag: 1]; // Screen capture
+}
+
 - (NSDictionary*) exportDICOMFileInt :(BOOL) screenCapture view:(DCMView*) curView
 {
 	DCMPix *curPix = [curView curDCM];
@@ -2117,7 +2131,63 @@ return YES;
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
 	[DCMView setDefaults];
 	
-	unsigned char *data = [curView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:YES removeGraphical:YES squarePixels:NO allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing offset: &offset isSigned: &isSigned];
+	unsigned char *data = nil;
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"])
+	{
+		NSMutableArray *views = [NSMutableArray array], *viewsRect = [NSMutableArray array];
+		
+		[views addObject: [[self CTController] originalView]];
+		[views addObject: [[self PETCTController] originalView]];
+		[views addObject: [[self PETController] originalView]];
+		
+		[views addObject: [[self CTController] xReslicedView]];
+		[views addObject: [[self PETCTController] xReslicedView]];
+		[views addObject: [[self PETController] xReslicedView]];
+		
+		[views addObject: [[self CTController] yReslicedView]];
+		[views addObject: [[self PETCTController] yReslicedView]];
+		[views addObject: [[self PETController] yReslicedView]];
+		
+		for( id v in views)
+		{
+			NSRect bounds = [v bounds];
+			NSPoint or = [v convertPoint: bounds.origin toView: nil];
+			bounds.origin = [[self window] convertBaseToScreen: or];
+			[viewsRect addObject: [NSValue valueWithRect: bounds]];
+		}
+		
+		data = [[self keyView]     getRawPixelsWidth: &width
+											  height: &height
+												 spp: &spp
+												 bpp: &bpp
+									   screenCapture: YES
+										  force8bits: YES
+									 removeGraphical: NO
+										squarePixels: YES
+											allTiles: NO
+								  allowSmartCropping: YES
+											  origin: imOrigin
+											 spacing: imSpacing
+											  offset: &offset
+											isSigned: &isSigned
+											   views: views
+										   viewsRect: viewsRect];
+	}
+	else data = [curView getRawPixelsWidth: &width
+									height: &height
+									   spp: &spp
+									   bpp: &bpp
+							 screenCapture: screenCapture
+								force8bits: YES
+						   removeGraphical: YES
+							  squarePixels: NO
+								  allTiles: NO
+						allowSmartCropping: YES
+									origin: imOrigin
+								   spacing: imSpacing
+									offset: &offset
+								  isSigned: &isSigned];
 	
 	if( data)
 	{
@@ -2136,17 +2206,21 @@ return YES;
 		[exportDCM setDefaultWWWL: cww :cwl];
 		
 		[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"] == NO)
+		{
+			[exportDCM setSliceThickness: [curPix sliceThickness]];
+			[exportDCM setSlicePosition: [curPix sliceLocation]];
 			
-		[exportDCM setSliceThickness: [curPix sliceThickness]];
-		[exportDCM setSlicePosition: [curPix sliceLocation]];
+			[curView orientationCorrectedToView: o];
+			
+	//		if( screenCapture) [curView orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
+	//		else [curPix orientation: o];
+			
+			[exportDCM setOrientation: o];
+			[exportDCM setPosition: imOrigin];
+		}
 		
-		[curView orientationCorrectedToView: o];
-		
-//		if( screenCapture) [curView orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
-//		else [curPix orientation: o];
-		
-		[exportDCM setOrientation: o];
-		[exportDCM setPosition: imOrigin];
 		[exportDCM setPixelData: data samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
 		[exportDCM setSigned: isSigned];
 		[exportDCM setOffset: offset];
@@ -2183,7 +2257,7 @@ return YES;
 		
 		if( [[dcmSelection selectedCell] tag] == 0) // current image only
 		{
-			if([dcmExport3Modalities state]==NSOffState)
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"export3modalities"] == NO)
 			{
 				[producedFiles addObject: [self exportDICOMFileInt: YES]];
 			}
@@ -2291,13 +2365,11 @@ return YES;
 			
 			@try
 			{
-				
-				
 				if( exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
 				[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
 				[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 				
-				if([dcmExport3Modalities state]==NSOffState)
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"export3modalities"] == NO)
 				{
 					[[splash progress] setMaxValue:(int)((to-from)/interval)];
 					

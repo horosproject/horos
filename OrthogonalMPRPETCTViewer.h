@@ -48,7 +48,6 @@
 	IBOutlet NSSlider						*dcmInterval, *dcmFrom, *dcmTo;
 	IBOutlet NSTextField					*dcmSeriesName, *dcmFromTextField, *dcmToTextField, *dcmIntervalTextField, *dcmCountTextField;
 	IBOutlet NSBox							*dcmBox;
-	IBOutlet NSButton						*dcmExport3Modalities;
 	DICOMExport								*exportDCM;
 	
     IBOutlet NSView							*WLWWView;
