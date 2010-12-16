@@ -362,11 +362,12 @@ extern "C"
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"]  && autoQuery == YES)
 	{
-		if( [autoQueryLock tryLock])
-		{
-			[self autoQueryThread];
-			[autoQueryLock unlock];
-		}
+		[self refreshAutoQR: self];
+//		if( [autoQueryLock tryLock])
+//		{
+//			[self autoQueryThread];
+//			[autoQueryLock unlock];
+//		}
 	}
 }
 
@@ -2357,7 +2358,7 @@ extern "C"
 				
 				if( showGUI)
 				{
-					[NSThread sleepForTimeInterval: 0.7];
+					[NSThread sleepForTimeInterval: 0.4];
 				
 					[wait close];
 					[wait release];
@@ -3122,14 +3123,11 @@ extern "C"
 		timeQueryFilter = nil;
 		modalityQueryFilter = nil;
 		currentQueryKey = nil;
-		echoSuccess = nil;
-		activeMoves = nil;
 		autoQuery = autoQR;
 		
 		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		queryFilters = [[NSMutableArray array] retain];
 		resultArray = [[NSMutableArray array] retain];
-		activeMoves = [[NSMutableDictionary dictionary] retain];
 		previousAutoRetrieve = [[NSMutableDictionary dictionary] retain];
 		autoQueryLock = [[NSRecursiveLock alloc] init];
 		
@@ -3147,10 +3145,11 @@ extern "C"
 		
 		[[self window] setDelegate:self];
 		
-		[self setDateQuery: dateFilterMatrix];
-		
 		if( autoQuery == NO)
 		{
+			[dateFilterMatrix selectCellWithTag: 1]; // Today
+			[self setDateQuery: dateFilterMatrix];
+			
 			currentQueryController = self;
 			[[self window] setTitle: NSLocalizedString( @"DICOM Query/Retrieve", nil)];
 
@@ -3159,6 +3158,8 @@ extern "C"
 		}
 		else
 		{
+			[self setDateQuery: dateFilterMatrix];
+			
 			currentAutoQueryController = self;
 			[[self window] setTitle: NSLocalizedString( @"DICOM Auto Query/Retrieve", nil)];
 			
@@ -3188,7 +3189,6 @@ extern "C"
 	[dateQueryFilter release];
 	[timeQueryFilter release];
 	[modalityQueryFilter release];
-	[activeMoves release];
 	[previousAutoRetrieve release];
 	[sourcesArray release];
 	[resultArray release];

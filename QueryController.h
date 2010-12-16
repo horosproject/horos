@@ -56,8 +56,6 @@
 	
 	QueryFilter								*dateQueryFilter, *timeQueryFilter, *modalityQueryFilter;
 	NSString								*currentQueryKey, *queryArrayPrefs;
-	BOOL									echoSuccess;
-	NSMutableDictionary						*activeMoves;
 	int										checkAndViewTry;
 	
 	NSImage									*Realised3, *Realised2;
