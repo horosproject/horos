@@ -369,10 +369,17 @@ static float deg2rad = 3.14159265358979/180.0;
 	[shadingsPresetsController setWindowController: self];
 	[shadingCheck setAction:@selector(switchShading:)];
 	[shadingCheck setTarget:self];
+	
+	[[NSUserDefaultsController sharedUserDefaultsController] addObserver: self
+															  forKeyPath: @"values.exportDCMIncludeAllViews"
+																 options: NSKeyValueObservingOptionNew
+																 context: NULL];
 }
 
 - (void) dealloc
 {
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.exportDCMIncludeAllViews"];
+	
 	[mousePosition release];
 	[wlwwMenuItems release];
 	[toolbar release];
@@ -1751,6 +1758,15 @@ static float deg2rad = 3.14159265358979/180.0;
 	return v;
 }
 
+- (void) observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context
+{
+	if( [keyPath isEqualToString: @"values.exportDCMIncludeAllViews"])
+	{
+		self.dcmFormat = 0; // Screen capture
+		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey:@"EXPORTMATRIXFOR3D"];
+	}
+}
+
 -(IBAction) endDCMExportSettings:(id) sender
 {
 	[dcmWindow makeFirstResponder: nil];	// To force nstextfield validation.
@@ -1820,13 +1836,33 @@ static float deg2rad = 3.14159265358979/180.0;
 			case 2: resizeImage = 768; break;
 		}
 		
+		NSMutableArray *views = nil, *viewsRect = nil;
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"])
+		{
+			views = [NSMutableArray array];
+			viewsRect = [NSMutableArray array];
+			
+			[views addObject: mprView1];
+			[views addObject: mprView2];
+			[views addObject: mprView3];
+			
+			for( id v in views)
+			{
+				NSRect bounds = [v bounds];
+				NSPoint or = [v convertPoint: bounds.origin toView: nil];
+				bounds.origin = [[self window] convertBaseToScreen: or];
+				[viewsRect addObject: [NSValue valueWithRect: bounds]];
+			}
+		}
+		
 		// CURRENT image only
 		if( dcmMode == 1)
 		{
 			if( self.dcmFormat) 
 				[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 			else
-				[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+				[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage views: views viewsRect: viewsRect]];
 		}
 		// 4th dimension
 		else if( dcmMode == 2)
@@ -1863,7 +1899,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					else
 					{
 						[curExportView updateViewMPR: NO];
-						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+						[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage  views: views viewsRect: viewsRect]];
 					}
 				}
 				
@@ -1989,7 +2025,7 @@ static float deg2rad = 3.14159265358979/180.0;
 						else
 						{
 							[curExportView updateViewMPR: NO];
-							[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+							[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage  views: views viewsRect: viewsRect]];
 						}
 					}
 					
@@ -2040,7 +2076,7 @@ static float deg2rad = 3.14159265358979/180.0;
 						else
 						{
 							[curExportView updateViewMPR: NO];
-							[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage]];
+							[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage  views: views viewsRect: viewsRect]];
 						}
 					}
 					
@@ -2159,6 +2195,12 @@ static float deg2rad = 3.14159265358979/180.0;
 		self.dcmFormat = 0; //SC in 8-bit
 	else
 		self.dcmFormat = 1; // full depth
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"])
+	{
+		self.dcmFormat = 0; // screen cature
+		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey:@"EXPORTMATRIXFOR3D"]; // Current size
+	}
 	
 	if( [[[self selectedView] curRoiList] count] > 0)
 		self.dcmFormat = 0; //SC in 8-bit

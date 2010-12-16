@@ -610,7 +610,7 @@ static BOOL frameZoomed = NO;
 
 - (void) subDrawRect: (NSRect) r
 {
-	if( [stringID isEqualToString: @"export"])
+	if( [stringID isEqualToString: @"export"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"] == NO)
 		return;
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -706,6 +706,9 @@ static BOOL frameZoomed = NO;
 			break;
 		}
 	}
+	
+	if( [stringID isEqualToString: @"export"])
+		return;
 	
 	float heighthalf = self.frame.size.height/2;
 	float widthhalf = self.frame.size.width/2;

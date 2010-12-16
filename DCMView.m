@@ -8427,9 +8427,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				// Draw 2D point cross (used when double-click in 3D panel)
 				
-				[self draw2DPointMarker];
-				if( blendingView) [blendingView draw2DPointMarker];
-				
+				if( is2DViewer)
+				{
+					[self draw2DPointMarker];
+					if( blendingView) [blendingView draw2DPointMarker];
+				}
 				// Draw any Plugin objects
 				
 				NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithFloat: scaleValue], @"scaleValue",
@@ -8441,20 +8443,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawObjectsNotification object: self userInfo: userInfo];
 				
-				//**SLICE CUR FOR 3D MPR
-	//			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f);
-	//			if( stringID )
-				{
-	//				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-					{
-						[self subDrawRect: aRect];
-						self.scaleValue = scaleValue;
-					}
-				}
+				[self subDrawRect: aRect];
+				self.scaleValue = scaleValue;
 				
 				//** SLICE CUT BETWEEN SERIES - CROSS REFERENCES LINES
 				
-				if( (stringID == nil || [stringID isEqualToString:@"export"]) && frontMost == NO)
+				if( is2DViewer && (stringID == nil || [stringID isEqualToString:@"export"]) && frontMost == NO)
 				{
 					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 					glEnable(GL_BLEND);
@@ -9275,8 +9269,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				*spp = ispp;
 				*bpp = ibpp;
-				*offset = ioffset;
-				*isSigned = iisSigned;
+				if( offset) *offset = ioffset;
+				if( isSigned) *isSigned = iisSigned;
 				
 				data = calloc( 1, *width * *height * *spp * *bpp/8);
 			}
@@ -9985,6 +9979,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM size:(int) size
 {
+	return [self exportDCMCurrentImage: exportDCM size: size views: nil viewsRect: nil];
+}
+
+- (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM size:(int) size  views: (NSArray*) views viewsRect: (NSArray*) viewsRect
+{
 	NSString *f = nil;
 	float o[ 9], imOrigin[ 3], imSpacing[ 2];
 	long width, height, spp, bpp;
@@ -9997,7 +9996,43 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	else
 		[DCMView setCLUTBARS: barHide ANNOTATIONS: annotGraphics];
 	
-	unsigned char *data = [self getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
+	unsigned char *data = nil;
+	
+	if( [views count] > 1 && [views count] == [viewsRect count])
+	{
+		data = [self getRawPixelsWidth: &width
+							 height: &height
+								spp: &spp
+								bpp: &bpp
+					  screenCapture: YES
+						 force8bits: YES
+					removeGraphical: YES
+					   squarePixels: YES
+						   allTiles: NO
+				 allowSmartCropping: NO
+							 origin: imOrigin
+							spacing: imSpacing
+							 offset: nil
+						   isSigned: nil
+							  views: views
+						  viewsRect: viewsRect];
+	}
+	else
+	{
+		data = [self getRawPixelsViewWidth: &width
+							 height: &height
+								spp: &spp
+								bpp: &bpp
+					  screenCapture: YES
+						 force8bits: YES
+					removeGraphical: YES
+					   squarePixels: YES
+				 allowSmartCropping: NO
+							 origin: imOrigin
+							spacing: imSpacing
+							 offset: nil
+						   isSigned: nil];
+	}
 	
 	if( data)
 	{
