@@ -9441,7 +9441,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			*spp = 3;
 			*bpp = 8;
 			
-			buf = malloc( 10 + *width * *height * 4 * *bpp/8);
+			buf = calloc( 1, 10 + *width * *height * 4 * *bpp/8);
 			if( buf)
 			{
 				NSOpenGLContext *c = [self openGLContext];
