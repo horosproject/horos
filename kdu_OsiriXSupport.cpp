@@ -11,12 +11,12 @@ extern "C" int kdu_available()
 	return 0;
 }
 
-extern "C" void* kdu_decompressJPEG2K( void* jp2Data, long jp2DataSize, long *decompressedBufferSize, int num_threads)
+extern "C" void* kdu_decompressJPEG2K( void* jp2Data, long jp2DataSize, long *decompressedBufferSize, int *colorModel, int num_threads)
 {
 	return 0L;
 }
 
-extern "C" void* kdu_decompressJPEG2KWithBuffer( void* inputBuffer, void* jp2Data, long jp2DataSize, long *decompressedBufferSize, int num_threads)
+extern "C" void* kdu_decompressJPEG2KWithBuffer( void* inputBuffer, void* jp2Data, long jp2DataSize, long *decompressedBufferSize, int *colorModel, int num_threads)
 {
 	return 0L;
 }

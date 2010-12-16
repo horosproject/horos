@@ -110,8 +110,11 @@ OFCondition DJDecompressJP2k::decode(
 			processors = MPProcessors()/2;
 		
 		long decompressedBufferSize = 0;
+		int colorModel;
 		
-		kdu_decompressJPEG2KWithBuffer( uncompressedFrameBuffer, compressedFrameBuffer, compressedFrameBufferSize, &decompressedBufferSize, processors);
+		kdu_decompressJPEG2KWithBuffer( uncompressedFrameBuffer, compressedFrameBuffer, compressedFrameBufferSize, &decompressedBufferSize, &colorModel, processors);
+		
+		decompressedColorModel = (EP_Interpretation) colorModel;
 	}
 	else
 	{
@@ -183,6 +186,8 @@ OFCondition DJDecompressJP2k::decode(
 		   
 		   if( wr == w && numcomps == 1)
 		   {
+			   decompressedColorModel = EPI_Monochrome2;
+			   
 			   if (comp->prec <= 8)
 			   {
 				   uint8_t *data8 = (uint8_t*)uncompressedFrameBuffer + compno;
@@ -211,6 +216,8 @@ OFCondition DJDecompressJP2k::decode(
 		   }
 		   else
 		   {
+				decompressedColorModel = EPI_RGB;
+				
 				if (comp->prec <= 8)
 				{
 				 uint8_t *data8 = (uint8_t*)uncompressedFrameBuffer + compno;
@@ -254,6 +261,7 @@ OFCondition DJDecompressJP2k::decode(
 		opj_image_destroy(image);
 
 	}
+	
 	return EC_Normal;
 }
 

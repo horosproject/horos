@@ -1263,7 +1263,9 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		if( [jpegData length] > 512*1024)
 			processors = MPProcessors()/2;
 		
-		void *p = kdu_decompressJPEG2K( (void*) [jpegData bytes], [jpegData length], &decompressedLength, processors);
+		int colorModel;
+		
+		void *p = kdu_decompressJPEG2K( (void*) [jpegData bytes], [jpegData length], &decompressedLength, &colorModel, processors);
 		if( p)
 		{
 			pixelData = [NSMutableData dataWithBytesNoCopy: p length:decompressedLength freeWhenDone: YES];
