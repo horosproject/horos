@@ -25,7 +25,7 @@
 {
     IBOutlet    QueryOutlineView			*outlineView;
 	IBOutlet	NSProgressIndicator			*progressIndicator;
-	IBOutlet	NSSearchField				*searchFieldName, *searchFieldRefPhysician, *searchFieldID, *searchFieldAN, *searchFieldStudyDescription, *searchFieldComments;
+	IBOutlet	NSSearchField				*searchFieldName, *searchFieldRefPhysician, *searchFieldID, *searchFieldAN, *searchFieldStudyDescription, *searchFieldComments, *searchInstitutionName;
 	
 				NSMutableArray				*sourcesArray;
 	IBOutlet	sourcesTableView			*sourcesTable;

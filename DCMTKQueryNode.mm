@@ -379,6 +379,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		_patientID = nil;
 		_accessionNumber = nil;
 		_referringPhysician = nil;
+		_institutionName = nil;
 		_comments = nil;
 		_date = nil;
 		_birthdate = nil;
@@ -401,6 +402,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[_patientID release];
 	[_accessionNumber release];
 	[_referringPhysician release];
+	[_institutionName release];
 	[_comments release];
 	[_date release];
 	[_birthdate release];
@@ -434,6 +436,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 }
 - (NSString *)referringPhysician{
 	return _referringPhysician;
+}
+- (NSString *)institutionName{
+	return _institutionName;
 }
 - (NSString *)comments{
 	return _comments;
@@ -549,6 +554,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			{
 				string = [(NSString*)value cStringUsingEncoding:encoding];
 				dataset->putAndInsertString(DCM_ReferringPhysiciansName, string);
+			}
+			else if ([key isEqualToString:@"InstitutionName"])
+			{
+				string = [(NSString*)value cStringUsingEncoding:encoding];
+				dataset->putAndInsertString(DCM_InstitutionName, string);
 			}
 			else if ([key isEqualToString:@"Comments"])
 			{

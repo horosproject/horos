@@ -40,6 +40,7 @@ static NSString *StudyDescription = @"StudyDescription";
 static NSString *Comments = @"Comments";
 static NSString *PatientBirthDate = @"PatientBirthDate";
 static NSString *ReferringPhysician = @"ReferringPhysiciansName";
+static NSString *InstitutionName = @"InstitutionName";
 
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
@@ -1528,6 +1529,7 @@ extern "C"
 						case 4:		currentQueryKey = StudyDescription;	break;
 						case 5:		currentQueryKey = ReferringPhysician;	break;
 						case 6:		currentQueryKey = Comments;	break;
+						case 7:		currentQueryKey = InstitutionName; break;
 					}
 					
 					BOOL queryItem = NO;
@@ -1569,7 +1571,26 @@ extern "C"
 							[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
 							queryItem = YES;
 						}
-					}					
+					}
+					else if( currentQueryKey == InstitutionName)
+					{
+						if( showError && [[searchInstitutionName stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+						{
+							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+							{
+								[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+								[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+							}
+						}
+						
+						NSString *filterValue = [[searchInstitutionName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						
+						if ([filterValue length] > 0)
+						{
+							[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+							queryItem = YES;
+						}
+					}
 					else if( currentQueryKey == PatientBirthDate)
 					{
 						[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];

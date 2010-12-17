@@ -38,6 +38,7 @@
 	NSString *_name;
 	NSString *_patientID;
 	NSString *_referringPhysician;
+	NSString *_institutionName;
 	NSString *_comments;
 	NSString *_accessionNumber;
 	DCMCalendarDate *_date;
@@ -77,6 +78,7 @@
 - (NSString *)patientID;
 - (NSString *)accessionNumber;
 - (NSString *)referringPhysician;
+- (NSString *)institutionName;
 - (DCMCalendarDate *)date;
 - (DCMCalendarDate *)time;
 - (NSString *)modality;
