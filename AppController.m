@@ -3493,6 +3493,11 @@ static BOOL initialized = NO;
 //	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
 	
 //	[html2pdf pdfFromURL: @"http://zimbra.latour.ch"];
+
+	if( [AppController isKDUEngineAvailable])
+		NSLog( @"**** KDU Engine AVAILABLE ****");
+	else
+		NSLog( @"KDU Engine NOT available");
 }
 
 - (IBAction) updateViews:(id) sender

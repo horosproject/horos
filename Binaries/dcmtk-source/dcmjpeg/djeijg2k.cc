@@ -414,7 +414,7 @@ OFCondition DJCompressJP2K::encode(
 	
 	if( Use_kdu_IfAvailable && kdu_available())
 	{
-		printf( "JP2K KDU-DCMTK-Encode ");
+//		printf( "JP2K KDU-DCMTK-Encode ");
 		
 		int precision = bitsstored;
 		int rate = 0;
@@ -468,7 +468,7 @@ OFCondition DJCompressJP2K::encode(
 		opj_event_mgr_t event_mgr;
 		opj_image_t *image = NULL;
 		
-		printf( "JP2K OPJ-DCMTK-Encode ");
+//		printf( "JP2K OPJ-DCMTK-Encode ");
 		
 		memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
 		event_mgr.error_handler = error_callback;

@@ -171,7 +171,7 @@ OFCondition DJDecompressJP2k::decode(
 
 	  /* free the memory containing the code-stream */
 
-	   printf( "JP2K-DCMTK-Decode ");
+//	   printf( "JP2K-DCMTK-Decode ");
 
 	   // Copy buffer
 	   for (int compno = 0; compno < image->numcomps; compno++)
