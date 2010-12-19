@@ -157,7 +157,7 @@
 	
 	if( spp == 4 && bps == 8)
 	{
-		localData = malloc( width * height * 3);
+		localData = (unsigned char*) malloc( width * height * 3);
 		if( localData)
 		{
 			spp = 3;
@@ -221,7 +221,7 @@
 			
 			if( [imageRepresentation bytesPerRow] != w)
 			{
-				imageData = malloc( h * w * [imageRepresentation samplesPerPixel]);
+				imageData = (unsigned char*) malloc( h * w * [imageRepresentation samplesPerPixel]);
 				freeImageData = YES;
 				
 				for( i = 0; i < height; i++)
@@ -387,10 +387,10 @@
 						newHeight /= 2;
 						newHeight *= 2;
 						
-						squaredata = malloc( newHeight * width * bps/8);
+						squaredata = (unsigned char*) malloc( newHeight * width * bps/8);
 						
-						float	*tempFloatSrc = malloc( height * width * sizeof( float));
-						float	*tempFloatDst = malloc( newHeight * width * sizeof( float));
+						float	*tempFloatSrc = (float*) malloc( height * width * sizeof( float));
+						float	*tempFloatDst = (float*) malloc( newHeight * width * sizeof( float));
 						
 						if( squaredata != nil && tempFloatSrc != nil && tempFloatDst != nil)
 						{

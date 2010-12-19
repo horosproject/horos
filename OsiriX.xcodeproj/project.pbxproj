@@ -7751,7 +7751,7 @@
 		CEC7FFFF10A5C844008935EA /* vtkCone.h in Headers */ = {isa = PBXBuildFile; fileRef = CE355E5E0EED998A005A823F /* vtkCone.h */; };
 		CECDBE6A0C95467B006B11A5 /* AnnotationsDefault.plist in Resources */ = {isa = PBXBuildFile; fileRef = CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */; };
 		CECEF72E081BB265002ECC99 /* DICOMExport.h in Headers */ = {isa = PBXBuildFile; fileRef = CECEF72C081BB265002ECC99 /* DICOMExport.h */; };
-		CECEF72F081BB265002ECC99 /* DICOMExport.m in Sources */ = {isa = PBXBuildFile; fileRef = CECEF72D081BB265002ECC99 /* DICOMExport.m */; };
+		CECEF72F081BB265002ECC99 /* DICOMExport.mm in Sources */ = {isa = PBXBuildFile; fileRef = CECEF72D081BB265002ECC99 /* DICOMExport.mm */; };
 		CED1FD1B1035E9BB0076AB33 /* SetPixelValue.png in Resources */ = {isa = PBXBuildFile; fileRef = CED1FD191035E9BB0076AB33 /* SetPixelValue.png */; };
 		CED1FD1C1035E9BB0076AB33 /* GrowingRegion.png in Resources */ = {isa = PBXBuildFile; fileRef = CED1FD1A1035E9BB0076AB33 /* GrowingRegion.png */; };
 		CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */ = {isa = PBXBuildFile; fileRef = CED2CF950C9B288C0047F123 /* CIADICOMField.m */; };
@@ -11976,7 +11976,7 @@
 		CEC70A1E10A5C845008935EA /* OsiriX Lite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OsiriX Lite.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AnnotationsDefault.plist; path = Binaries/AnnotationsDefault.plist; sourceTree = "<group>"; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
-		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
+		CECEF72D081BB265002ECC99 /* DICOMExport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DICOMExport.mm; sourceTree = "<group>"; };
 		CED1FD191035E9BB0076AB33 /* SetPixelValue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SetPixelValue.png; sourceTree = "<group>"; };
 		CED1FD1A1035E9BB0076AB33 /* GrowingRegion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GrowingRegion.png; sourceTree = "<group>"; };
 		CED2CF950C9B288C0047F123 /* CIADICOMField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CIADICOMField.m; path = "Preference Panes/OSICustomImageAnnotations/CIADICOMField.m"; sourceTree = "<group>"; };
@@ -13578,7 +13578,7 @@
 				59DC290C11C617A300DAD5B4 /* DicomCompressor.h */,
 				59DC290D11C617A300DAD5B4 /* DicomCompressor.mm */,
 				CECEF72C081BB265002ECC99 /* DICOMExport.h */,
-				CECEF72D081BB265002ECC99 /* DICOMExport.m */,
+				CECEF72D081BB265002ECC99 /* DICOMExport.mm */,
 				BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */,
 				BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */,
 				CE087B0B0DE9BD6E000E5593 /* GLString.h */,
@@ -23563,7 +23563,7 @@
 				CEDE5B6207F206B5003034B6 /* ROIDefaultsWindow.m in Sources */,
 				CEF9E7D70811B67D00412C8A /* Scheduler.m in Sources */,
 				CEF9E7E70811B6AD00412C8A /* StaticScheduler.m in Sources */,
-				CECEF72F081BB265002ECC99 /* DICOMExport.m in Sources */,
+				CECEF72F081BB265002ECC99 /* DICOMExport.mm in Sources */,
 				CE0CB171084A623C00C6385F /* DCMPix.m in Sources */,
 				183C864B08563F3A000E6A68 /* Camera.m in Sources */,
 				183C864D08563F3A000E6A68 /* FlyThru.m in Sources */,
