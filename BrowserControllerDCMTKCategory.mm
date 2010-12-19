@@ -235,47 +235,47 @@ extern NSRecursiveLock *PapyrusLock;
 
 - (BOOL)compressDICOMWithJPEG:(NSArray *) paths to:(NSString*) dest
 {
-	@synchronized( [BrowserController currentBrowser])
-	{
-		for( NSString *path in paths)
-		{
-			DcmFileFormat fileformat;
-			OFCondition cond = fileformat.loadFile( [path UTF8String]);
-			
-			if( cond.good())
-			{
-				DJ_RPLossy lossyParams( DCMHighQuality);
-				
-				DcmDataset *dataset = fileformat.getDataset();
-				DcmItem *metaInfo = fileformat.getMetaInfo();
-				DcmXfer original_xfer(dataset->getOriginalXfer());
-				
-				DcmRepresentationParameter *params = &lossyParams;
-				E_TransferSyntax tSyntax = EXS_JPEG2000; //EXS_JPEG2000LosslessOnly
-				
-				DcmXfer oxferSyn( tSyntax);
-				dataset->chooseRepresentation(tSyntax, params);
-				
-				// check if everything went well
-				if (dataset->canWriteXfer(tSyntax))
-				{
-					// store in lossless JPEG format
-					fileformat.loadAllDataIntoMemory();
-					
-					[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingString: @"cc.dcm"] handler:nil];
-					cond = fileformat.saveFile( [[path stringByAppendingString: @"cc.dcm"] UTF8String], tSyntax);
-					BOOL status =  (cond.good()) ? YES : NO;
-					
-					if( status == NO)
-						NSLog( @"failed to compress file: %@", [paths lastObject]);
-				}
-				else NSLog( @"err");
-			}
-			else NSLog( @"err");
-		}
-	}
-	return YES;
-
+//	@synchronized( [BrowserController currentBrowser])
+//	{
+//		for( NSString *path in paths)
+//		{
+//			DcmFileFormat fileformat;
+//			OFCondition cond = fileformat.loadFile( [path UTF8String]);
+//			
+//			if( cond.good())
+//			{
+//				DJ_RPLossy lossyParams( DCMHighQuality);
+//				
+//				DcmDataset *dataset = fileformat.getDataset();
+//				DcmItem *metaInfo = fileformat.getMetaInfo();
+//				DcmXfer original_xfer(dataset->getOriginalXfer());
+//				
+//				DcmRepresentationParameter *params = &lossyParams;
+//				E_TransferSyntax tSyntax = EXS_JPEG2000; //EXS_JPEG2000LosslessOnly
+//				
+//				DcmXfer oxferSyn( tSyntax);
+//				dataset->chooseRepresentation(tSyntax, params);
+//				
+//				// check if everything went well
+//				if (dataset->canWriteXfer(tSyntax))
+//				{
+//					// store in lossless JPEG format
+//					fileformat.loadAllDataIntoMemory();
+//					
+//					[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingString: @"cc.dcm"] handler:nil];
+//					cond = fileformat.saveFile( [[path stringByAppendingString: @"cc.dcm"] UTF8String], tSyntax);
+//					BOOL status =  (cond.good()) ? YES : NO;
+//					
+//					if( status == NO)
+//						NSLog( @"failed to compress file: %@", [paths lastObject]);
+//				}
+//				else NSLog( @"err");
+//			}
+//			else NSLog( @"err");
+//		}
+//	}
+//	return YES;
+//
 //	@synchronized( [BrowserController currentBrowser])
 //	{
 //		for( int i = DCMLosslessQuality ; i <= DCMLowQuality ; i++)
