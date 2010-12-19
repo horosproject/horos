@@ -17,6 +17,10 @@ public:
   /// destructor
   virtual ~DJDecoderJP2k();
 
+  virtual OFBool canChangeCoding(
+    const E_TransferSyntax oldRepType,
+    const E_TransferSyntax newRepType) const;
+
   /** returns the transfer syntax that this particular codec
    *  is able to encode and decode.
    *  @return supported transfer syntax
@@ -24,7 +28,16 @@ public:
   virtual E_TransferSyntax supportedTransferSyntax() const;
   
   virtual OFBool isJPEG2000() const;
-  
+
+virtual OFCondition encode(
+    const E_TransferSyntax fromRepType,
+    const DcmRepresentationParameter * fromRepParam,
+    DcmPixelSequence *fromPixSeq,
+    const DcmRepresentationParameter *toRepParam,
+    DcmPixelSequence * & toPixSeq,
+    const DcmCodecParameter * cp,
+    DcmStack & objStack) const;
+
 private:
 
   /** creates an instance of the compression library to be used for decoding.
@@ -56,6 +69,10 @@ public:
   /// destructor
   virtual ~DJDecoderJP2kLossLess();
 
+  virtual OFBool canChangeCoding(
+    const E_TransferSyntax oldRepType,
+    const E_TransferSyntax newRepType) const;
+
   /** returns the transfer syntax that this particular codec
    *  is able to encode and decode.
    *  @return supported transfer syntax
@@ -64,6 +81,15 @@ public:
   
   virtual OFBool isJPEG2000() const;
   
+virtual OFCondition encode(
+    const E_TransferSyntax fromRepType,
+    const DcmRepresentationParameter * fromRepParam,
+    DcmPixelSequence *fromPixSeq,
+    const DcmRepresentationParameter *toRepParam,
+    DcmPixelSequence * & toPixSeq,
+    const DcmCodecParameter * cp,
+    DcmStack & objStack) const;
+	
 private:
 
   /** creates an instance of the compression library to be used for decoding.
