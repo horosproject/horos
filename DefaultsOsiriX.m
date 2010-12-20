@@ -723,7 +723,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"printAt100%Minimum"];
 	[defaultValues setObject:@"1" forKey:@"allowSmartCropping"];
 	[defaultValues setObject:@"1" forKey:@"useDCMTKForAnonymization"];
-	[defaultValues setObject:@"0" forKey:@"useDCMTKForDicomExport"];
+	[defaultValues setObject:@"1" forKey:@"useDCMTKForDicomExport"];
 	
 	if( MPProcessors() >= 4)
 		[defaultValues setObject:@"2.0" forKey:@"superSampling"];

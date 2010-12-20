@@ -474,52 +474,50 @@
 				
 					if( exportSeriesUID) dataset->putAndInsertString( DCM_SeriesInstanceUID, [exportSeriesUID UTF8String]);
 					if( exportSeriesDescription) dataset->putAndInsertString( DCM_SeriesDescription, [exportSeriesDescription UTF8String]);				
-				
+					
 					if( modalityAsSource == NO) dataset->putAndInsertString( DCM_Modality, "SC");
 				
 					dataset->putAndInsertString( DCM_ManufacturersModelName, "OsiriX");
-					dataset->putAndInsertUint16( DCM_InstanceNumber, exportInstanceNumber++);
-					dataset->putAndInsertUint16( DCM_AcquisitionNumber, 1);
+					dataset->putAndInsertString( DCM_InstanceNumber, [[NSString stringWithFormat: @"%d", exportInstanceNumber++] UTF8String]);
+					dataset->putAndInsertString( DCM_AcquisitionNumber, "1");
 					
-					dataset->putAndInsertUint16( DCM_Rows, [rows intValue]);
-					dataset->putAndInsertUint16( DCM_Columns, [columns intValue]);
-					dataset->putAndInsertUint16( DCM_SamplesPerPixel, spp);
+					dataset->putAndInsertString( DCM_Rows, [[NSString stringWithFormat: @"%d", height] UTF8String]);
+					dataset->putAndInsertString( DCM_Columns, [[NSString stringWithFormat: @"%d", width] UTF8String]);
+					dataset->putAndInsertString( DCM_SamplesPerPixel, [[NSString stringWithFormat: @"%d", spp] UTF8String]);
 					dataset->putAndInsertString( DCM_PhotometricInterpretation, [photometricInterpretation UTF8String]);
-					dataset->putAndInsertUint16( DCM_PixelRepresentation, isSigned);
+					dataset->putAndInsertString( DCM_PixelRepresentation, [[NSString stringWithFormat: @"%d", isSigned] UTF8String]);
 				
-					dataset->putAndInsertUint16( DCM_HighBit, highBit);
-					dataset->putAndInsertUint16( DCM_BitsAllocated, bitsAllocated);
-					dataset->putAndInsertUint16( DCM_BitsStored, bitsAllocated);
+					dataset->putAndInsertString( DCM_HighBit, [[NSString stringWithFormat: @"%d", highBit] UTF8String]);
+					dataset->putAndInsertString( DCM_BitsAllocated, [[NSString stringWithFormat: @"%d", bitsAllocated] UTF8String]);
+					dataset->putAndInsertString( DCM_BitsStored, [[NSString stringWithFormat: @"%d", bitsAllocated] UTF8String]);
 					
-					delete dataset->remove(DCM_ImagerPixelSpacing);
-					delete dataset->remove(DCM_PixelSpacing);
+					delete dataset->remove( DCM_ImagerPixelSpacing);
+					delete dataset->remove( DCM_PixelSpacing);
 					
 					if( spacingX != 0 && spacingY != 0)
-					{
-						dataset->putAndInsertFloat32( DCM_PixelSpacing, spacingY, 0);
-						dataset->putAndInsertFloat32( DCM_PixelSpacing, spacingX, 1);
-					}
+						dataset->putAndInsertString( DCM_PixelSpacing, [[NSString stringWithFormat: @"%f\\%f", spacingY, spacingX] UTF8String]);
 					
-					if( sliceThickness != 0) dataset->putAndInsertFloat32( DCM_SliceThickness, sliceThickness);
+					delete dataset->remove( DCM_SliceThickness);
+					if( sliceThickness != 0)
+						dataset->putAndInsertString( DCM_SliceThickness, [[NSString stringWithFormat: @"%f", sliceThickness] UTF8String]);
 					
+					delete dataset->remove( DCM_ImageOrientationPatient);
 					if( orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0)
-					{
-						dataset->putAndInsertFloat32( DCM_ImageOrientationPatient, orientation[ 0], 0);
-						dataset->putAndInsertFloat32( DCM_ImageOrientationPatient, orientation[ 1], 1);
-						dataset->putAndInsertFloat32( DCM_ImageOrientationPatient, orientation[ 2], 2);
-						dataset->putAndInsertFloat32( DCM_ImageOrientationPatient, orientation[ 3], 3);
-						dataset->putAndInsertFloat32( DCM_ImageOrientationPatient, orientation[ 4], 4);
-						dataset->putAndInsertFloat32( DCM_ImageOrientationPatient, orientation[ 5], 5);
-					}
+						dataset->putAndInsertString( DCM_ImageOrientationPatient, [[NSString stringWithFormat: @"%f\\%f\\%f\\%f\\%f\\%f", orientation[ 0], orientation[ 1], orientation[ 2], orientation[ 3], orientation[ 4], orientation[ 5]] UTF8String]);
+					
+					delete dataset->remove( DCM_ImagePositionPatient);
 					if( position[ 0] != 0 || position[ 1] != 0 || position[ 2] != 0)
 					{
-						dataset->putAndInsertFloat32( DCM_ImagePositionPatient, position[ 0], 0);
-						dataset->putAndInsertFloat32( DCM_ImagePositionPatient, position[ 1], 0);
-						dataset->putAndInsertFloat32( DCM_ImagePositionPatient, position[ 2], 0);
+						dataset->putAndInsertString( DCM_ImagePositionPatient, [[NSString stringWithFormat: @"%f\\%f\\%f", position[ 0], position[ 1], position[ 2]] UTF8String]);
 					}
 					
-					if( slicePosition != 0) dataset->putAndInsertFloat32( DCM_SliceLocation, slicePosition);
-					if( spp == 3) dataset->putAndInsertUint16( DCM_PlanarConfiguration, 0);
+					delete dataset->remove( DCM_SliceLocation);
+					if( slicePosition != 0)
+						dataset->putAndInsertString( DCM_SliceLocation, [[NSString stringWithFormat: @"%f", slicePosition] UTF8String]);
+					
+					delete dataset->remove( DCM_PlanarConfiguration);
+					if( spp == 3)
+						dataset->putAndInsertString( DCM_PlanarConfiguration, 0);
 					
 					if( dataset->findAndGetString( DCM_Modality, string, OFFalse).good() && string != NULL)
 						modality = string;
@@ -528,8 +526,8 @@
 					{
 						vr = @"FL";
 						
-						dataset->putAndInsertUint16( DCM_RescaleIntercept, 0);
-						dataset->putAndInsertFloat32( DCM_RescaleSlope, 1);
+						dataset->putAndInsertString( DCM_RescaleIntercept, "0");
+						dataset->putAndInsertString( DCM_RescaleSlope, "1");
 						
 						if( strcmp( modality, "CT") == 0)
 							dataset->putAndInsertString( DCM_RescaleType, "HU");
@@ -538,8 +536,8 @@
 						
 						if( ww != -1 && ww != -1)
 						{
-							dataset->putAndInsertFloat32( DCM_WindowCenter, wl);
-							dataset->putAndInsertFloat32( DCM_WindowWidth, ww);
+							dataset->putAndInsertString( DCM_WindowCenter, [[NSString stringWithFormat: @"%d", wl] UTF8String]);
+							dataset->putAndInsertString( DCM_WindowWidth, [[NSString stringWithFormat: @"%d", ww] UTF8String]);
 						}
 					}
 					else if( bps == 16)
@@ -547,11 +545,11 @@
 						vr = @"OW";
 						
 						if( isSigned == NO)
-							dataset->putAndInsertUint16( DCM_RescaleIntercept, offset);
+							dataset->putAndInsertString( DCM_RescaleIntercept, [[NSString stringWithFormat: @"%d", offset] UTF8String]);
 						else
-							dataset->putAndInsertUint16( DCM_RescaleIntercept, 0);
+							dataset->putAndInsertString( DCM_RescaleIntercept, "0");
 						
-						dataset->putAndInsertFloat32( DCM_RescaleSlope, slope);
+						dataset->putAndInsertString( DCM_RescaleSlope, [[NSString stringWithFormat: @"%f", slope] UTF8String]);
 						
 						if( strcmp( modality, "CT") == 0)
 							dataset->putAndInsertString( DCM_RescaleType, "HU");
@@ -560,16 +558,16 @@
 						
 						if( ww != -1 && ww != -1)
 						{
-							dataset->putAndInsertFloat32( DCM_WindowCenter, wl);
-							dataset->putAndInsertFloat32( DCM_WindowWidth, ww);
+							dataset->putAndInsertString( DCM_WindowCenter, [[NSString stringWithFormat: @"%d", wl] UTF8String]);
+							dataset->putAndInsertString( DCM_WindowWidth, [[NSString stringWithFormat: @"%d", ww] UTF8String]);
 						}
 					}
 					else
 					{
 						if( spp != 3)
 						{
-							dataset->putAndInsertUint16( DCM_RescaleIntercept, 0);
-							dataset->putAndInsertFloat32( DCM_RescaleSlope, 1);
+							dataset->putAndInsertString( DCM_RescaleIntercept, "0");
+							dataset->putAndInsertString( DCM_RescaleSlope, "1");
 							dataset->putAndInsertString( DCM_RescaleType, "US");
 						}
 						
@@ -581,8 +579,15 @@
 					else
 						dataset->putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(Uint16 *, OFconst_cast(void *, [imageNSData bytes])), height*width*spp);
 					
-					delete dataset->remove(DCM_SmallestImagePixelValue);
-					delete dataset->remove(DCM_LargestImagePixelValue);
+					delete dataset->remove( DCM_SmallestImagePixelValue);
+					delete dataset->remove( DCM_LargestImagePixelValue);
+					
+					delete dataset->remove( DCM_MediaStorageSOPClassUID);
+					
+					char buf[70];
+					dcmGenerateUniqueIdentifier( buf);
+					dataset->putAndInsertString( DCM_SOPInstanceUID, buf);
+					dataset->putAndInsertString( DCM_MediaStorageSOPInstanceUID, buf);
 					
 					dcmtkFileFormat->chooseRepresentation( EXS_LittleEndianExplicit, NULL);
 					
@@ -602,7 +607,6 @@
 					
 					return dstPath;
 				}
-				return nil;
 			}
 			else
 			{
