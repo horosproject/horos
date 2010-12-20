@@ -2811,9 +2811,9 @@ typedef struct _xyzArray
 	// add some random points
 	for(i=0; i<n ; i++)
 	{
-		[self add3DPoint: ((double)(random()/(pow(2,31)-1))*2.0-1.0)*(double)r // x coordinate
-						: ((double)(random()/(pow(2,31)-1))*2.0-1.0)*(double)r // y
-						: ((double)(random()/(pow(2,31)-1))*2.0-1.0)*(double)r // z
+		[self add3DPoint: ((double)(random()/(pow(2.,31.)-1))*2.0-1.0)*(double)r // x coordinate
+						: ((double)(random()/(pow(2.,31.)-1))*2.0-1.0)*(double)r // y
+						: ((double)(random()/(pow(2.,31.)-1))*2.0-1.0)*(double)r // z
 						: 2.0 // radius
 						: 1.0 // red
 						: 0.0 // green

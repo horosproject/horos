@@ -19,11 +19,30 @@
 @class DCMObject;
 @class DCMExportPlugin;
 
+
+#ifdef __cplusplus
+#include "osconfig.h"
+#include "dcfilefo.h"
+#include "dcdeftag.h"
+#include "ofstd.h"
+
+#include "dctk.h"
+#include "dcdebug.h"
+#include "cmdlnarg.h"
+#include "ofconapp.h"
+#include "dcuid.h"       /* for dcmtk version name */
+
+#else
+typedef char* DcmFileFormat;
+#endif
+
 /** \brief Export image as DICOM  */
 @interface DICOMExport : NSObject
 {
 		NSString			*dcmSourcePath;
+		
 		DCMObject			*dcmDst;
+		DcmFileFormat		*dcmtkFileFormat;
 		
 		// Raw data support
 		unsigned char		*data, *localData;
