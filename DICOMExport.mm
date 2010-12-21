@@ -282,6 +282,60 @@
 	modalityAsSource = v;
 }
 
+- (BOOL) createDICOMHeader: (DcmItem *) dataset dictionary: (NSDictionary*) dict
+{
+	OFCondition result = EC_Normal;
+	char buf[80];
+	
+	// insert empty type 2 attributes
+	if (result.good()) result = dataset->insertEmptyElement(DCM_StudyDate);
+	if (result.good()) result = dataset->insertEmptyElement(DCM_StudyTime);
+	if (result.good()) result = dataset->insertEmptyElement(DCM_AccessionNumber);
+	if (result.good()) result = dataset->insertEmptyElement(DCM_Manufacturer);
+	if (result.good()) result = dataset->insertEmptyElement(DCM_ReferringPhysiciansName);
+	if (result.good()) result = dataset->insertEmptyElement(DCM_StudyID);
+	if (result.good()) result = dataset->insertEmptyElement(DCM_ContentDate);
+	if (result.good()) result = dataset->insertEmptyElement(DCM_ContentTime);
+	if (result.good()) result = dataset->insertEmptyElement(DCM_AcquisitionDate);
+	if (result.good()) result = dataset->insertEmptyElement(DCM_AcquisitionTime);
+	if (result.good()) result = dataset->insertEmptyElement(DCM_AcquisitionDatetime);
+	if (result.good()) result = dataset->insertEmptyElement(DCM_ConceptNameCodeSequence);
+	
+	// insert const value attributes
+	if (result.good()) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 100");
+	if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID,          UID_SecondaryCaptureImageStorage);
+	if (result.good()) result = dataset->putAndInsertString(DCM_Modality,             "OT");
+	
+	// there is no way we could determine a meaningful series number, so we just use a constant.
+	if (result.good()) result = dataset->putAndInsertString(DCM_SeriesNumber,         "1");
+	
+	// insert variable value attributes
+	if (result.good() && [dict objectForKey: @"patientsName"])		result = dataset->putAndInsertString(DCM_PatientsName,			[[dict objectForKey: @"patientsName"] UTF8String]);
+	if (result.good() && [dict objectForKey: @"patientID"])			result = dataset->putAndInsertString(DCM_PatientID,				[[dict objectForKey: @"patientID"] UTF8String]);
+	if (result.good() && [dict objectForKey: @"patientsBirthdate"]) result = dataset->putAndInsertString(DCM_PatientsBirthDate,		[[dict objectForKey: @"patientsBirthdate"] UTF8String]);
+	if (result.good() && [dict objectForKey: @"patientsSex"])		result = dataset->putAndInsertString(DCM_PatientsSex,			[[dict objectForKey: @"patientsSex"] UTF8String]);
+	if (result.good() && [dict objectForKey: @"studyDate"])			result = dataset->putAndInsertString(DCM_AcquisitionDate,		[[[DCMCalendarDate dicomDateWithDate: [dict objectForKey: @"studyDate"]] dateString] UTF8String]);
+	if (result.good() && [dict objectForKey: @"studyDate"])			result = dataset->putAndInsertString(DCM_AcquisitionTime,		[[[DCMCalendarDate dicomDateWithDate: [dict objectForKey: @"studyDate"]] timeString] UTF8String]);
+	
+	dcmGenerateUniqueIdentifier(buf, SITE_STUDY_UID_ROOT);
+	if (result.good()) result = dataset->putAndInsertString(DCM_StudyInstanceUID,     [[dict objectForKey: @"studyUID"] UTF8String]);
+	
+	dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
+	if (result.good()) result = dataset->putAndInsertString(DCM_SeriesInstanceUID,    [[dict objectForKey: @"seriesUID"] UTF8String]);
+	
+	dcmGenerateUniqueIdentifier(buf, SITE_INSTANCE_UID_ROOT);
+	if (result.good()) result = dataset->putAndInsertString(DCM_SOPInstanceUID,       buf);
+	
+	// set instance creation date and time
+	OFString s;
+	if (result.good()) result = DcmDate::getCurrentDate(s);
+	if (result.good()) result = dataset->putAndInsertOFStringArray(DCM_InstanceCreationDate, s);
+	if (result.good()) result = DcmTime::getCurrentTime(s);
+	if (result.good()) result = dataset->putAndInsertOFStringArray(DCM_InstanceCreationTime, s);
+	
+	return result.good();
+}
+
 - (NSString*) writeDCMFile: (NSString*) dstPath
 {
 	return [self writeDCMFile: dstPath withExportDCM: nil];
@@ -314,14 +368,10 @@
 	{
 		@try
 		{
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForDicomExport"] && dcmSourcePath && [DicomFile isDICOMFile: dcmSourcePath])
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForDicomExport"])
 			{
-				const char *patientName = nil, *patientID = nil, *studyDescription = nil, *studyUID = nil, *studyID = nil, *charSet = nil, *modality = nil, *string = nil;
-				const char *studyDate = nil, *studyTime = nil, *acquisitionDate = nil, *acquisitionTime = nil, *seriesDate = nil, *seriesTime = nil, *contentDate = nil, *contentTime = nil;
-				NSNumber *seriesNumber = nil;
+				const char *string = nil, *modality = nil;
 				unsigned char *squaredata = nil;
-				
-				seriesNumber = [NSNumber numberWithInt: exportSeriesNumber];
 				
 				if( spacingX != 0 && spacingY != 0)
 				{
@@ -420,11 +470,6 @@
 					if( elemLength%2 != 0) NSLog( @"***************** ODD element !!!!!!!!!!");
 				}
 				
-				NSNumber *rows = [NSNumber numberWithInt: height];
-				NSNumber *columns  = [NSNumber numberWithInt: width];
-				
-				NSMutableData *imageNSData = [NSMutableData dataWithBytes:data length: elemLength];
-				NSString *vr;
 				int highBit;
 				int bitsAllocated;
 				float numberBytes;
@@ -463,12 +508,46 @@
 				
 				dcmtkFileFormat = new DcmFileFormat();
 				
-				OFCondition status = dcmtkFileFormat->loadFile( [dcmSourcePath UTF8String],  EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
-				if( status.bad())
-				{
+				BOOL succeed = NO;
 				
+				dcmSourcePath = nil;
+				if( dcmSourcePath)
+				{
+					if( [DicomFile isDICOMFile: dcmSourcePath])
+					{
+						OFCondition cond = dcmtkFileFormat->loadFile( [dcmSourcePath UTF8String],  EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
+						succeed =  (cond.good()) ? YES : NO;
+					}
+					else
+					{
+						DicomFile* file = [[[DicomFile alloc] init:dcmSourcePath] autorelease];
+						
+						if( file)
+						{
+							succeed = [self createDICOMHeader: dcmtkFileFormat->getDataset()
+												   dictionary: [NSDictionary dictionaryWithObjectsAndKeys:
+																[file elementForKey: @"patientName"], @"patientsName",
+																[file elementForKey: @"patientID"], @"patientID",
+																[file elementForKey: @"patientBirthDate"], @"patientsBirthdate",
+																[file elementForKey: @"patientSex"], @"patientsSex",
+																[file elementForKey: @"studyDate"], @"studyDate",
+																nil]];
+						}
+					}
 				}
-				else
+				
+				if( succeed == NO)
+				{
+					succeed = [self createDICOMHeader: dcmtkFileFormat->getDataset()
+											 dictionary: [NSDictionary dictionaryWithObjectsAndKeys:@"unknown", @"patientsName",
+																									@"unknown ID", @"patientID",
+																									@"19000101", @"patientsBirthdate",
+																									@"M", @"patientsSex",
+																									[NSCalendarDate date], @"studyDate", 
+																									nil]];
+				}
+				
+				if( succeed)
 				{
 					DcmItem *dataset = dcmtkFileFormat->getDataset();
 				
@@ -524,8 +603,6 @@
 						
 					if( bps == 32) // float support
 					{
-						vr = @"FL";
-						
 						dataset->putAndInsertString( DCM_RescaleIntercept, "0");
 						dataset->putAndInsertString( DCM_RescaleSlope, "1");
 						
@@ -539,11 +616,11 @@
 							dataset->putAndInsertString( DCM_WindowCenter, [[NSString stringWithFormat: @"%d", wl] UTF8String]);
 							dataset->putAndInsertString( DCM_WindowWidth, [[NSString stringWithFormat: @"%d", ww] UTF8String]);
 						}
+						
+						dataset->putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(Uint8 *, OFconst_cast(void *, (void*) data)), height*width*4);
 					}
 					else if( bps == 16)
 					{
-						vr = @"OW";
-						
 						if( isSigned == NO)
 							dataset->putAndInsertString( DCM_RescaleIntercept, [[NSString stringWithFormat: @"%d", offset] UTF8String]);
 						else
@@ -561,6 +638,9 @@
 							dataset->putAndInsertString( DCM_WindowCenter, [[NSString stringWithFormat: @"%d", wl] UTF8String]);
 							dataset->putAndInsertString( DCM_WindowWidth, [[NSString stringWithFormat: @"%d", ww] UTF8String]);
 						}
+						
+						dataset->putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(Uint16 *, OFconst_cast(void *, (void*) data)), height*width*spp);
+						
 					}
 					else
 					{
@@ -571,13 +651,8 @@
 							dataset->putAndInsertString( DCM_RescaleType, "US");
 						}
 						
-						vr = @"OB";
+						dataset->putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(Uint8 *, OFconst_cast(void *, (void*) data)), height*width*spp);
 					}
-					
-					if( bitsAllocated <= 8)
-						dataset->putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(Uint8 *, OFconst_cast(void *, [imageNSData bytes])), height*width*spp);
-					else
-						dataset->putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(Uint16 *, OFconst_cast(void *, [imageNSData bytes])), height*width*spp);
 					
 					delete dataset->remove( DCM_SmallestImagePixelValue);
 					delete dataset->remove( DCM_LargestImagePixelValue);
