@@ -510,7 +510,6 @@
 				
 				BOOL succeed = NO;
 				
-				dcmSourcePath = nil;
 				if( dcmSourcePath)
 				{
 					if( [DicomFile isDICOMFile: dcmSourcePath])
