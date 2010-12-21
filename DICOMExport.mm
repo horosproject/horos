@@ -514,7 +514,7 @@
 				{
 					if( [DicomFile isDICOMFile: dcmSourcePath])
 					{
-						OFCondition cond = dcmtkFileFormat->loadFile( [dcmSourcePath UTF8String],  EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
+						OFCondition cond = dcmtkFileFormat->loadFile( [dcmSourcePath UTF8String], EXS_Unknown, EGL_noChange);
 						succeed =  (cond.good()) ? YES : NO;
 					}
 					else
@@ -548,10 +548,16 @@
 				
 				if( succeed)
 				{
+					dcmtkFileFormat->loadAllDataIntoMemory();
+					
 					DcmItem *dataset = dcmtkFileFormat->getDataset();
-				
-					if( exportSeriesUID) dataset->putAndInsertString( DCM_SeriesInstanceUID, [exportSeriesUID UTF8String]);
-					if( exportSeriesDescription) dataset->putAndInsertString( DCM_SeriesDescription, [exportSeriesDescription UTF8String]);				
+					DcmMetaInfo *metaInfo = dcmtkFileFormat->getMetaInfo();
+					
+					if( exportSeriesUID)
+						dataset->putAndInsertString( DCM_SeriesInstanceUID, [exportSeriesUID UTF8String]);
+					
+					if( exportSeriesDescription)
+						dataset->putAndInsertString( DCM_SeriesDescription, [exportSeriesDescription UTF8String]);				
 					
 					if( modalityAsSource == NO) dataset->putAndInsertString( DCM_Modality, "SC");
 				
@@ -599,7 +605,9 @@
 					
 					if( dataset->findAndGetString( DCM_Modality, string, OFFalse).good() && string != NULL)
 						modality = string;
-						
+					
+					delete dataset->remove( DCM_PixelData);
+					
 					if( bps == 32) // float support
 					{
 						dataset->putAndInsertString( DCM_RescaleIntercept, "0");
@@ -655,23 +663,23 @@
 					
 					delete dataset->remove( DCM_SmallestImagePixelValue);
 					delete dataset->remove( DCM_LargestImagePixelValue);
-					
+
 					delete dataset->remove( DCM_MediaStorageSOPClassUID);
+					delete dataset->remove( DCM_MediaStorageSOPInstanceUID);
 					
 					char buf[70];
 					dcmGenerateUniqueIdentifier( buf);
 					dataset->putAndInsertString( DCM_SOPInstanceUID, buf);
-					dataset->putAndInsertString( DCM_MediaStorageSOPInstanceUID, buf);
+					metaInfo->putAndInsertString( DCM_MediaStorageSOPInstanceUID, buf);
 					
 					dcmtkFileFormat->chooseRepresentation( EXS_LittleEndianExplicit, NULL);
-					
 					if( dcmtkFileFormat->canWriteXfer( EXS_LittleEndianExplicit))
 					{
 						// Add to the current DB
 						if( dstPath == nil)
 							dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
 						
-						OFCondition cond = dcmtkFileFormat->saveFile( [dstPath UTF8String], EXS_LittleEndianExplicit);
+						OFCondition cond = dcmtkFileFormat->saveFile( [dstPath UTF8String], EXS_LittleEndianExplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
 						OFBool fileWriteSucceeded =  (cond.good()) ? YES : NO;
 					}
 					
