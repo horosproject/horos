@@ -2168,7 +2168,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[contextualMenu addItem:[NSMenuItem separatorItem]];
 		
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(actualSize:) keyEquivalent:@""];
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"No Rescale Size (100%)", nil) action: @selector(actualSize:) keyEquivalent:@""];
+		[contextualMenu addItem:item];
+		[item release];
+		
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""];
 		[contextualMenu addItem:item];
 		[item release];
 		

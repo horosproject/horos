@@ -1345,9 +1345,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 	}
 	else
-	{
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Save Error",nil), NSLocalizedString(@"No ROI(s) selected to save!",nil) , NSLocalizedString(@"OK",nil), nil, nil);
-	}
 }
 
 - (IBAction) roiLoadFromXMLFiles: (NSArray*) filenames
@@ -11690,6 +11688,34 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 + (void)setPluginOverridesMouse: (BOOL)override { // is deprecated in @interface
 	pluginOverridesMouse = override;
+}
+
+- (IBAction) realSize:(id)sender
+{
+	if( curDCM.pixelSpacingX == 0 || curDCM.pixelSpacingY == 0)
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"Real Size Error",nil), NSLocalizedString(@"This image is not calibrated.",nil) , NSLocalizedString( @"OK",nil), nil, nil);
+	}
+	else
+	{
+		CGSize f = CGDisplayScreenSize( [[[[[self window] screen] deviceDescription] valueForKey: @"NSScreenNumber"] intValue]);
+		CGRect r = CGDisplayBounds( [[[[[self window] screen] deviceDescription] valueForKey: @"NSScreenNumber"] intValue]); 
+		
+		if( f.width != 0 && f.height != 0)
+		{
+			NSLog( @"screen pixel ratio: %f", fabs( (f.width/r.size.width) - (f.height/r.size.height)));
+			if( fabs( (f.width/r.size.width) - (f.height/r.size.height)) < 0.01)
+			{
+				[self setScaleValue: curDCM.pixelSpacingX / (f.width/r.size.width)];
+			}
+			else
+			{
+				NSRunCriticalAlertPanel(NSLocalizedString(@"Real Size Error",nil), NSLocalizedString(@"Displayed pixels are non-squared pixel. Images cannot be displayed at real size.",nil) , NSLocalizedString( @"OK",nil), nil, nil);
+			}
+		}
+		else
+			NSRunCriticalAlertPanel(NSLocalizedString(@"Real Size Error",nil), NSLocalizedString(@"This screen doesn't support this function.",nil) , NSLocalizedString( @"OK",nil), nil, nil);
+	}
 }
 
 - (IBAction)actualSize:(id)sender

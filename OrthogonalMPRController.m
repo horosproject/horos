@@ -1082,10 +1082,13 @@
 			
 			[contextual addItem:[NSMenuItem separatorItem]];
 			
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(actualSize:) keyEquivalent:@""];
+			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"No Rescale Size (100%)", nil) action: @selector(actualSize:) keyEquivalent:@""];
 			[contextual addItem:item];
 			[item release];
 			
+			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""];
+			[contextual addItem:item];
+			[item release];
 
 			/********** Orientation submenu ************/ 
 			
