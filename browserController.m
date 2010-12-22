@@ -6905,10 +6905,7 @@ static NSConditionLock *threadLock = nil;
 		[saveDBLock unlock];
 	}
 	@catch( NSException *e)
-	{
-		NSLog( @"context save: nil: %@", e);
-		[AppController printStackTrace: e];
-	}
+	{	NSLog( @"context save: nil: %@", e); [AppController printStackTrace: e];}
 	
 	@try
 	{
