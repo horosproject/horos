@@ -513,7 +513,7 @@
 											<object class="NSButtonCell" key="NSCell" id="30843909">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Zoom view centered around mouse position</string>
+												<string key="NSContents">Zoom centered around mouse position</string>
 												<reference key="NSSupport" ref="835218876"/>
 												<reference key="NSControlView" ref="592630302"/>
 												<int key="NSButtonFlags">1211912703</int>
@@ -1635,10 +1635,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="749501989">
-				<object class="NSMutableArray" key="NSDeclaredKeys">
-					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>MouseClickZoomCentered</string>
-				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 		</object>
