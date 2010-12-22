@@ -896,6 +896,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"SelectWindowScrollWheel"];
 	[defaultValues setObject:@"1" forKey:@"useDCMTKForJP2K"];
 	[defaultValues setObject:@"1" forKey:@"UseKDUForJPEG2000"];
+	[defaultValues setObject:@"1" forKey:@"MouseClickZoomCentered"];
 	
 	[defaultValues setObject: [NSArray arrayWithObjects: [DCMAbstractSyntaxUID MRSpectroscopyStorage], nil] forKey:@"additionalDisplayedStorageSOPClassUIDArray"];
 	
