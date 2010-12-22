@@ -1131,6 +1131,12 @@ static NSDate *lastWarningDate = nil;
     [NSApp stopModal];
 }
 
+#ifndef OSIRIX_LIGHT
+- (IBAction) autoQueryRefresh:(id)sender
+{
+	[[QueryController currentAutoQueryController] refreshAutoQR: sender];
+}
+#endif
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
@@ -4170,6 +4176,16 @@ static BOOL initialized = NO;
 				[item setState: NSOnState];
 			else
 				[item setState: NSOffState];
+		}
+		
+		if( [item action] == @selector(autoQueryRefresh:))
+		{
+			#ifndef OSIRIX_LIGHT
+			if( [QueryController currentAutoQueryController])
+				return YES;
+			else
+			#endif
+				return NO;
 		}
 		
 		if( [item action] == @selector(setFixedTilingRows:))

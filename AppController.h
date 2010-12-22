@@ -174,6 +174,7 @@ extern "C"
 - (IBAction) setFixedTilingRows: (id) sender;
 - (IBAction) setFixedTilingColumns: (id) sender;
 - (void) initTilingWindows;
+- (IBAction) autoQueryRefresh:(id)sender;
 - (void) tileWindows:(id)sender;  /**< Tile open window */
 - (void) scaleToFit:(id)sender;    /**< Scale opened windows */
 - (IBAction) closeAllViewers: (id) sender;  /**< Close All Viewers */

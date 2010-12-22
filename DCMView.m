@@ -5107,23 +5107,33 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 // Method for mouse dragging while 3D rotate. Does nothing
 - (void)mouseDragged3DRotate:(NSEvent *)event
-{}
+{
+}
 
 - (void)mouseDraggedCrosshair:(NSEvent *)event
 {
 }
 
-
 // Methods for Zooming with mouse Drag
 - (void)mouseDraggedZoom:(NSEvent *)event
 {
 	NSPoint current = [self currentPointInView:event];
+	
+	float previousScale = scaleValue;
+	
 	[self setScaleValue: (startScaleValue + (current.y - start.y) / (80. * [curDCM pwidth] / 512.))];
 	
-	[self setOriginX: ((originStart.x * scaleValue) / startScaleValue) Y: ((originStart.y * scaleValue) / startScaleValue)];
+	NSPoint o = NSMakePoint( 0, 0);
 	
-	originOffset.x = ((originOffsetStart.x * scaleValue) / startScaleValue);
-	originOffset.y = ((originOffsetStart.y * scaleValue) / startScaleValue);
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MouseClickZoomCentered"])
+	{
+		o.x = (start.x - [self frame].size.width/2.) - (((start.x - [self frame].size.width/2.)* scaleValue) / startScaleValue);
+		o.y = (start.y - [self frame].size.height/2.) - (((start.y - [self frame].size.height/2.)* scaleValue) / startScaleValue);
+	}
+	
+	[self setOriginX: (((originStart.x ) * scaleValue) / startScaleValue) + o.x
+				   Y: (((originStart.y ) * scaleValue) / startScaleValue) + o.y];
+	
 }
 
 
@@ -11694,7 +11704,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( curDCM.pixelSpacingX == 0 || curDCM.pixelSpacingY == 0)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Real Size Error",nil), NSLocalizedString(@"This image is not calibrated.",nil) , NSLocalizedString( @"OK",nil), nil, nil);
+		NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil), NSLocalizedString(@"This image is not calibrated.",nil) , NSLocalizedString( @"OK",nil), nil, nil);
 	}
 	else
 	{
@@ -11710,11 +11720,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 			else
 			{
-				NSRunCriticalAlertPanel(NSLocalizedString(@"Real Size Error",nil), NSLocalizedString(@"Displayed pixels are non-squared pixel. Images cannot be displayed at real size.",nil) , NSLocalizedString( @"OK",nil), nil, nil);
+				NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil), NSLocalizedString(@"Displayed pixels are non-squared pixel. Images cannot be displayed at actual size.",nil) , NSLocalizedString( @"OK",nil), nil, nil);
 			}
 		}
 		else
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Real Size Error",nil), NSLocalizedString(@"This screen doesn't support this function.",nil) , NSLocalizedString( @"OK",nil), nil, nil);
+			NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil), NSLocalizedString(@"This screen doesn't support this function.",nil) , NSLocalizedString( @"OK",nil), nil, nil);
 	}
 }
 
