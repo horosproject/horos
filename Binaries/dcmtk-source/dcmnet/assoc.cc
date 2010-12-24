@@ -358,8 +358,8 @@ ASC_destroyAssociationParameters(T_ASC_Parameters ** params)
   * association terminates. 
   */
 {
-	if( params == nil) return EC_Normal;
-	if( *params == nil) return EC_Normal;
+	if( params == NULL) return EC_Normal;
+	if( *params == NULL) return EC_Normal;
 	
     /* free the elements in the requested presentation context list */
     destroyPresentationContextList(
