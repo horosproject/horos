@@ -2420,12 +2420,7 @@ static NSConditionLock *threadLock = nil;
 {
     if (managedObjectModel) return managedObjectModel;
 	
-	NSMutableSet *allBundles = [[NSMutableSet alloc] init];
-	[allBundles addObject: [NSBundle mainBundle]];
-	[allBundles addObjectsFromArray: [NSBundle allFrameworks]];
-    
     managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.momd"]]];
-    [allBundles release];
     
     return managedObjectModel;
 }
