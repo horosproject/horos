@@ -169,12 +169,12 @@ extern "C"
 - (IBAction) showPreferencePanel:(id)sender; /**< Show Preferences window */
 #ifndef OSIRIX_LIGHT
 - (IBAction) checkForUpdates:(id) sender;  /**< Check for update */
+- (IBAction) autoQueryRefresh:(id)sender;
 #endif
 //===============WINDOW========================
 - (IBAction) setFixedTilingRows: (id) sender;
 - (IBAction) setFixedTilingColumns: (id) sender;
 - (void) initTilingWindows;
-- (IBAction) autoQueryRefresh:(id)sender;
 - (void) tileWindows:(id)sender;  /**< Tile open window */
 - (void) scaleToFit:(id)sender;    /**< Scale opened windows */
 - (IBAction) closeAllViewers: (id) sender;  /**< Close All Viewers */
