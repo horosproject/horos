@@ -1784,8 +1784,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 {
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 	
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-	if( context == nil) return;
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	if( context == nil)
+		return;
 	
 	[context retain];
 	[context lock];
@@ -1817,7 +1818,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	{
 		NSLog( @"********* updateLogEntry exception: %@", e);
 	}
-
+	
 	[context unlock];
 	[context release];
 }

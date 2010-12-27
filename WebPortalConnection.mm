@@ -339,7 +339,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"logWebServer"] == NO) return;
 	
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	if (context == nil)
 		return;
 	

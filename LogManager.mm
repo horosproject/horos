@@ -40,7 +40,7 @@ static LogManager *currentLogManager = nil;
 
 - (void) resetLogs
 {
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
 	[context retain];
 	[context lock];
@@ -94,7 +94,7 @@ static LogManager *currentLogManager = nil;
 {
 	if( [[BrowserController currentBrowser] isNetworkLogsActive])
 	{
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
+		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 		if( context == nil)
 		{
 			NSLog(@"***** log context == nil");

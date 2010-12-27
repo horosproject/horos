@@ -46,7 +46,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 {
 	NSManagedObjectModel			*managedObjectModel, *userManagedObjectModel;
     NSManagedObjectContext			*managedObjectContext, *userManagedObjectContext;
-	NSPersistentStoreCoordinator	*persistentStoreCoordinator, *userPersistentStoreCoordinator;
+	NSPersistentStoreCoordinator	*userPersistentStoreCoordinator;
+	NSMutableDictionary				*persistentStoreCoordinatorDictionary;
 	
 	NSDateFormatter			*DateTimeFormat, *DateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
 	
@@ -312,10 +313,17 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSString*) getNewFileDatabasePath: (NSString*) extension;
 - (NSString*) getNewFileDatabasePath: (NSString*) extension dbFolder: (NSString*) dbFolder;
 - (NSManagedObjectModel *) managedObjectModel;
-- (NSManagedObjectContext *) managedObjectContext;
+
 - (NSManagedObjectContext *) localManagedObjectContext;
+- (NSManagedObjectContext *) localManagedObjectContextIndependentContext: (BOOL) independentContext;
+
+- (NSManagedObjectContext *) managedObjectContext;
+- (NSManagedObjectContext *) managedObjectContextIndependentContext:(BOOL) independentContext;
+- (NSManagedObjectContext *) managedObjectContextIndependentContext:(BOOL) independentContext path: (NSString *) path;
+
 - (NSManagedObjectContext *) defaultManagerObjectContext;
-- (NSManagedObjectContext *) defaultManagerObjectContextForceLoading: (BOOL) forceLoading;
+- (NSManagedObjectContext *) defaultManagerObjectContextIndependentContext: (BOOL) independentContext;
+
 - (BOOL) isBonjour: (NSManagedObjectContext*) c;
 - (NSString *) localDocumentsDirectory;
 - (NSArray*) childrenArray: (NSManagedObject*) item;
@@ -324,7 +332,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject;
 - (NSArray*) imagesArray: (NSManagedObject*) item onlyImages:(BOOL) onlyImages;
 - (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject onlyImages:(BOOL) onlyImages;
-- (NSManagedObjectContext *) managedObjectContextLoadIfNecessary:(BOOL) loadIfNecessary;
 - (void) setNetworkLogs;
 - (BOOL) isNetworkLogsActive;
 - (void) ReadDicomCDRom:(id) sender;

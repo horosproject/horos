@@ -1354,7 +1354,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				
 				@try
 				{
-					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
+					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextIndependentContext: YES];
 										
 					[staticContext retain];
 					@try
@@ -1406,7 +1406,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					
 					[dbContext release];
 					
-					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextForceLoading: YES];
+					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextIndependentContext: YES];
 					[staticContext retain];
 					[staticContext lock]; //Try to avoid deadlock
 					
