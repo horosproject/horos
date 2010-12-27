@@ -1429,11 +1429,9 @@ static NSConditionLock *threadLock = nil;
 			
 			NSError *error = nil;
 			
-			if( [[browserController saveDBLock] tryLock])
-			{
-				[context save: &error];
-				[[browserController saveDBLock] unlock];
-			}
+			[[browserController saveDBLock] lock];
+			[context save: &error];
+			[[browserController saveDBLock] unlock];
 			
 			if( error)
 			{
@@ -13687,7 +13685,7 @@ static NSArray*	openSubSeriesArray = nil;
 		checkIncomingLock = [[NSRecursiveLock alloc] init];
 		decompressArrayLock = [[NSRecursiveLock alloc] init];
 		decompressThreadRunning = [[NSRecursiveLock alloc] init];
-		saveDBLock = [[NSRecursiveLock alloc] init];
+		saveDBLock = nil;	//[[NSRecursiveLock alloc] init];
 		processorsLock = [[NSConditionLock alloc] initWithCondition: 1];
 		decompressArray = [[NSMutableArray alloc] initWithCapacity: 0];
 		
@@ -16228,7 +16226,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[filter processFiles: filesArray];
 					}
 					
-					NSManagedObjectContext *sqlContext = [self localManagedObjectContext];
+					NSManagedObjectContext *sqlContext = [self localManagedObjectContextIndependentContext: YES];
 					NSArray* addedFiles = [[self addFilesToDatabase: filesArray onlyDICOM:NO produceAddedFiles:YES parseExistingObject: NO context: sqlContext dbFolder: dbFolder] valueForKey:@"completePath"];
 					
 					if( addedFiles)
