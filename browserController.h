@@ -186,7 +186,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 //	StructuredReportController		*structuredReportController;
 	
 	NSMutableArray					*deleteQueueArray;
-	NSRecursiveLock					*deleteQueue, *deleteInProgress, *saveDBLock;
+	NSRecursiveLock					*deleteQueue, *deleteInProgress;
 	
 	NSMutableArray					*autoroutingQueueArray;
 	NSLock							*autoroutingQueue, *autoroutingInProgress;
@@ -245,7 +245,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 }
 
 @property(readonly) NSDateFormatter *DateTimeFormat, *DateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
-@property(readonly) NSRecursiveLock *checkIncomingLock, *saveDBLock;
+@property(readonly) NSRecursiveLock *checkIncomingLock;
 @property(readonly) NSManagedObjectContext *userManagedObjectContext, *bonjourManagedObjectContext;
 @property(readonly) NSManagedObjectModel *userManagedObjectModel;
 @property(readonly) NSArray *matrixViewArray;

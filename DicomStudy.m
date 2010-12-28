@@ -1377,9 +1377,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 						[[self managedObjectContext] deleteObject: i];
 					}
 				}
-				[[[BrowserController currentBrowser] saveDBLock] lock];
 				[[self managedObjectContext] save: nil];
-				[[[BrowserController currentBrowser] saveDBLock] unlock];
 				
 				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
 			}
@@ -1471,9 +1469,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 						[[self managedObjectContext] deleteObject: i];
 					}
 				}
-				[[[BrowserController currentBrowser] saveDBLock] lock];
 				[[self managedObjectContext] save: nil];
-				[[[BrowserController currentBrowser] saveDBLock] unlock];
 				
 				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
 			}
@@ -1530,9 +1526,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 						[[self managedObjectContext] deleteObject: i];
 					}
 				}
-				[[[BrowserController currentBrowser] saveDBLock] lock];
 				[[self managedObjectContext] save: nil];
-				[[[BrowserController currentBrowser] saveDBLock] unlock];
 				
 				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
 			}

@@ -216,7 +216,7 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize checkIncomingLock, CDpassword, DateTimeFormat, passwordForExportEncryption;
 @synthesize DateOfBirthFormat,TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
-@synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath, saveDBLock;
+@synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
 @synthesize isCurrentDatabaseBonjour, bonjourDownloading, bonjourSourcesBox;
 @synthesize bonjourBrowser, pathToEncryptedFile, bonjourManagedObjectContext;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
@@ -1429,9 +1429,7 @@ static NSConditionLock *threadLock = nil;
 			
 			NSError *error = nil;
 			
-			[[browserController saveDBLock] lock];
 			[context save: &error];
-			[[browserController saveDBLock] unlock];
 			
 			if( error)
 			{
@@ -2923,9 +2921,7 @@ static NSConditionLock *threadLock = nil;
 			}
 			
 			error = nil;
-			[saveDBLock lock];
 			[currentContext save: &error];
-			[saveDBLock unlock];
 			
 			// STUDIES
 			NSFetchRequest* dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -3138,9 +3134,7 @@ static NSConditionLock *threadLock = nil;
 				if( counter % 100 == 0)
 				{
 					error = nil;
-					[saveDBLock lock];
 					[currentContext save: &error];
-					[saveDBLock unlock];
 					
 					[currentContext reset];
 					[previousContext reset];
@@ -3170,9 +3164,7 @@ static NSConditionLock *threadLock = nil;
 			}
 			
 			error = nil;
-			[saveDBLock lock];
 			[currentContext save: &error];
-			[saveDBLock unlock];
 			
 			[[NSFileManager defaultManager] removeFileAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"/Database-Old-PreviousVersion.sql"] handler: nil];
 			[[NSFileManager defaultManager] movePath:currentDatabasePath toPath:[[self documentsDirectory] stringByAppendingPathComponent:@"/Database-Old-PreviousVersion.sql"] handler:nil];
@@ -3676,9 +3668,7 @@ static NSConditionLock *threadLock = nil;
 			[context retain];
 			[context lock];
 			
-			[saveDBLock lock];
 			[context save: &error];
-			[saveDBLock unlock];
 			
 			if (error)
 			{
@@ -4603,9 +4593,7 @@ static NSConditionLock *threadLock = nil;
 			[self refreshMatrix: self];
 			
 			NSError *error = nil;
-			[saveDBLock lock];
 			[managedObjectContext save: &error];
-			[saveDBLock unlock];
 			
 			if( error == nil)
 				[managedObjectContext reset];
@@ -6893,9 +6881,7 @@ static NSConditionLock *threadLock = nil;
 	
 	@try
 	{
-		[saveDBLock lock];
 		[context save: nil];
-		[saveDBLock unlock];
 	}
 	@catch( NSException *e)
 	{	NSLog( @"context save: nil: %@", e); [AppController printStackTrace: e];}
@@ -6926,9 +6912,7 @@ static NSConditionLock *threadLock = nil;
 		
 		@try
 		{
-			[saveDBLock lock];
 			[context save: nil];
-			[saveDBLock unlock];
 		}
 		@catch( NSException *e)
 		{	NSLog( @"context save: nil: %@", e); [AppController printStackTrace: e];}
@@ -11650,9 +11634,7 @@ static BOOL needToRezoom;
 						}
 						
 						error = nil;
-						[saveDBLock lock];
 						[sqlContext save: &error];
-						[saveDBLock unlock];
 						
 						[sc release];
 						[sqlContext release];
@@ -12862,9 +12844,7 @@ static BOOL needToRezoom;
 								
 							[context deleteObject: originalSeries];
 							
-							[saveDBLock lock];
 							[context save: nil];
-							[saveDBLock unlock];
 						}
 						@catch (NSException * e)
 						{
@@ -12937,9 +12917,8 @@ static BOOL needToRezoom;
 							}
 							
 							[context deleteObject: originalSeries];
-							[saveDBLock lock];
+							
 							[context save: nil];
-							[saveDBLock unlock];
 						}
 						@catch (NSException * e)
 						{
@@ -13685,7 +13664,6 @@ static NSArray*	openSubSeriesArray = nil;
 		checkIncomingLock = [[NSRecursiveLock alloc] init];
 		decompressArrayLock = [[NSRecursiveLock alloc] init];
 		decompressThreadRunning = [[NSRecursiveLock alloc] init];
-		saveDBLock = nil;	//[[NSRecursiveLock alloc] init];
 		processorsLock = [[NSConditionLock alloc] initWithCondition: 1];
 		decompressArray = [[NSMutableArray alloc] initWithCapacity: 0];
 		
@@ -15851,7 +15829,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	[decompressThreadRunning lock];
 	
-	NSLog( @"Compress/Decompress START");
+//	NSLog( @"Compress/Decompress START");
 	
 	@try 
 	{
@@ -15987,7 +15965,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[decompressThreadRunning unlock];
 	
-	NSLog( @"Compress/Decompress END");
+//	NSLog( @"Compress/Decompress END");
 	
 	[pool release];
 }

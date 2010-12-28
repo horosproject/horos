@@ -588,9 +588,7 @@ extern const char *GetPrivateIP();
 							}
 							
 							NSError *error = nil;
-							[[[BrowserController currentBrowser] saveDBLock] lock];
 							[context save: &error];
-							[[[BrowserController currentBrowser] saveDBLock] unlock];
 							[context unlock];
 						}
 						
@@ -642,9 +640,7 @@ extern const char *GetPrivateIP();
 							}
 							
 							NSError *error = nil;
-							[[[BrowserController currentBrowser] saveDBLock] lock];
 							[context save: &error];
-							[[[BrowserController currentBrowser] saveDBLock] unlock];
 							[context unlock];
 						}
 						
@@ -728,9 +724,7 @@ extern const char *GetPrivateIP();
 						}
 						
 						NSError *error = nil;
-						[[[BrowserController currentBrowser] saveDBLock] lock];
 						[context save: &error];
-						[[[BrowserController currentBrowser] saveDBLock] unlock];
 						[context unlock];
 						
 						refreshDB = YES;

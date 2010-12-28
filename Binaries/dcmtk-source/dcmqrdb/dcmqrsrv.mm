@@ -1335,7 +1335,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				
 				if( [dbContext tryLock])
 				{
-					[[[BrowserController currentBrowser] saveDBLock] lock];
 					@try
 					{
 						[dbContext save: nil];
@@ -1347,8 +1346,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					
 					[dbContext unlock];
 				}
-				else
-					[[[BrowserController currentBrowser] saveDBLock] lock];
 				
 				[dbContext release];
 				
@@ -1374,8 +1371,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 				}
 				
-				[[[BrowserController currentBrowser] saveDBLock] unlock];
-				
 				NSString *str = getErrorMessage();
 				
 				if( str)
@@ -1390,7 +1385,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					[dbContext retain];
 					if( [dbContext tryLock])
 					{
-						[[[BrowserController currentBrowser] saveDBLock] lock];
 						@try
 						{
 							[dbContext save: nil];
@@ -1401,8 +1395,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						}
 						[dbContext unlock];
 					}
-					else
-						[[[BrowserController currentBrowser] saveDBLock] lock];
 					
 					[dbContext release];
 					
@@ -1495,16 +1487,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 					}
 					
-					[[[BrowserController currentBrowser] saveDBLock] unlock];
-					
-					[staticContext reset];
 					[staticContext unlock];
 					[staticContext release];
 					staticContext = nil;
-					
-	//				[dbContext unlock];
-	//				[dbContext release];
-	//				[[[BrowserController currentBrowser] checkIncomingLock] unlock];
 				}
 			}
 		}
