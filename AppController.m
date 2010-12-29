@@ -3537,6 +3537,18 @@ static BOOL initialized = NO;
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"encryptForExport"];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideNoSnowLeopardWarning"] == NO)
+		{
+			NSAlert* alert = [[NSAlert new] autorelease];
+			[alert setMessageText: NSLocalizedString( @"Warning!", nil)];
+			[alert setInformativeText: NSLocalizedString( @"You should upgrade to MacOS 10.6 or higher, for better performances, more features and more stability.", nil)];
+			[alert setShowsSuppressionButton:YES ];
+			[alert addButtonWithTitle: NSLocalizedString( @"Continue", nil)];
+			[alert runModal];
+			if ([[alert suppressionButton] state] == NSOnState)
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideNoSnowLeopardWarning"];
+		}
 	}
 	
 	[self initTilingWindows];
