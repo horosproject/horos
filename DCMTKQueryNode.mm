@@ -1282,7 +1282,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		WaitRendering *wait = nil;
 		
-		if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
+		if( [NSThread isMainThread] == YES)// && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 		{
 			wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Connecting to %@...", nil), _hostname]];
 			[wait setCancel: YES];
@@ -1523,7 +1523,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			if (_verbose)
 				printf("Requesting Association\n");
 			
-			if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
+//			if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 			{
 				NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
 				NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: net], @"net", [NSValue valueWithPointer: params], @"params", nil];
@@ -1532,12 +1532,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				[NSThread detachNewThreadSelector: @selector( requestAssociationThread:) toTarget: self withObject: dict];
 				[NSThread sleepForTimeInterval: 0.1];
 				
-				while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO)
+				while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO && [NSThread currentThread].isCancelled == NO && [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
 				{
 					[wait run];
+					[NSThread sleepForTimeInterval: 0.1];
 				}
 				
-				if( [wait aborted])
+				if( [wait aborted] || _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
 				{
 					_abortAssociation = YES;
 					cond = DUL_NETWORKCLOSED;
@@ -1565,7 +1566,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				
 				[lock release];
 			}
-			else cond = ASC_requestAssociation(net, params, &assoc);
+//			else cond = ASC_requestAssociation(net, params, &assoc);
 			
 			if (cond.bad())
 			{
@@ -1618,7 +1619,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			{
 				if (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
 				{
-					if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
+//					if( [NSThread isMainThread] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"dontUseThreadForAssociationAndCFind"] == NO)
 					{
 						NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
 						NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: dataset], @"dataset", nil];
@@ -1627,12 +1628,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 						[NSThread detachNewThreadSelector: @selector( cFindThread:) toTarget: self withObject: dict];
 						[NSThread sleepForTimeInterval: 0.1];
 						
-						while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO)
+						while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO && [NSThread currentThread].isCancelled == NO && [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
 						{
 							[wait run];
+							[NSThread sleepForTimeInterval: 0.1];
 						}
 						
-						if( [wait aborted])
+						if( [wait aborted] || _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
 						{
 							_abortAssociation = YES;
 							cond = DUL_NETWORKCLOSED;
@@ -1648,7 +1650,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 						[wait release];
 						wait = nil;
 					}
-					else cond = [self cfind:assoc dataset:dataset];
+//					else cond = [self cfind:assoc dataset:dataset];
 				}
 			}
 			else if (strcmp(abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)

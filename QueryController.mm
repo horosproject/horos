@@ -2150,6 +2150,7 @@ extern "C"
 				
 				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoQueryThread) object: nil] autorelease];
 				t.name = NSLocalizedString( @"Auto-Querying images...", nil);
+				t.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 				
 //				[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: nil];
