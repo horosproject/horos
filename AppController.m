@@ -972,7 +972,7 @@ static NSDate *lastWarningDate = nil;
 			return NO;
 		}
 	}
-	return YES;                   
+	return NO;                   
 }
 
 +(BOOL) hasMacOSXLeopard
@@ -3541,7 +3541,7 @@ static BOOL initialized = NO;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideNoSnowLeopardWarning"] == NO)
 		{
 			NSAlert* alert = [[NSAlert new] autorelease];
-			[alert setMessageText: NSLocalizedString( @"Warning!", nil)];
+			[alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
 			[alert setInformativeText: NSLocalizedString( @"You should upgrade to MacOS 10.6 or higher, for better performances, more features and more stability.", nil)];
 			[alert setShowsSuppressionButton:YES ];
 			[alert addButtonWithTitle: NSLocalizedString( @"Continue", nil)];
