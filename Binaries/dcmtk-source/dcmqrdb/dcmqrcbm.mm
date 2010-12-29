@@ -126,10 +126,8 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 			cond = fileformat.saveFile( fname, EXS_LittleEndianExplicit);
 			status =  (cond.good()) ? YES : NO;
 			  
-			if( status)
-			{
+			if( status == NO)
 				printf("\n*** decompressFileFormat failed\n");
-			}
 		}
 		else
 			status = NO;
