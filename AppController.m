@@ -2375,6 +2375,10 @@ static NSDate *lastWarningDate = nil;
 	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Abort Incoming DICOM processes...", nil)];
 	[wait showWindow: self];
 	
+	BOOL hideListenerError_copy = [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"];
+	
+	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"hideListenerError"];
+	
 	[[NSFileManager defaultManager] createFileAtPath: @"/tmp/kill_all_storescu" contents: [NSData data] attributes: nil];
 	[NSThread sleepForTimeInterval: 3];
 	
@@ -2383,8 +2387,63 @@ static NSDate *lastWarningDate = nil;
 	
 	unlink( "/tmp/kill_all_storescu");
 	
+	[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"hideListenerError"];
+	
 //	[[BrowserController currentBrowser] checkIncomingNow: self];
 }
+
+- (void) waitUnlockFileWithPID: (NSNumber*) nspid
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	BOOL fileExist = YES;
+	int pid = [nspid intValue], inc = 0, rc = pid, state;
+	char dir[ 1024];
+	sprintf( dir, "%s-%d", "/tmp/lock_process", pid);
+	
+	do
+	{
+		FILE * pFile = fopen (dir,"r");
+		if( pFile)
+		{
+			rc = waitpid( pid, &state, WNOHANG);	// Check to see if this pid is still alive?
+			fclose (pFile);
+		}
+		else
+			fileExist = NO;
+		
+		usleep( 100000);
+		inc++;
+	}
+#define TIMEOUT 1200 // 1200*100000 = 120 secs
+	while( fileExist == YES && inc < TIMEOUT && rc >= 0);
+	
+	if( inc >= TIMEOUT)
+	{
+		kill( pid, 15);
+		NSLog( @"******* waitUnlockFile for %d sec", inc/10);
+	}
+	
+	if( rc < 0)
+	{
+		kill( pid, 15);
+		NSLog( @"******* waitUnlockFile : child process died...");
+	}
+	
+	unlink( dir);
+	
+	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
+	{
+		NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message"];
+		[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/error_message" handler: nil];
+		
+		if( str && [str length] > 0)
+			[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+	}
+	
+	[pool release];
+}
+
 
 - (void) applicationWillTerminate: (NSNotification*) aNotification
 {
@@ -3501,7 +3560,7 @@ static BOOL initialized = NO;
 //	[html2pdf pdfFromURL: @"http://zimbra.latour.ch"];
 
 	if( [AppController isKDUEngineAvailable])
-		NSLog( @"**** KDU Engine AVAILABLE ****");
+		NSLog( @"/*\\ /*\\ KDU Engine AVAILABLE /*\\ /*\\");
 	else
 		NSLog( @"KDU Engine NOT available");
 }

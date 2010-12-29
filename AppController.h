@@ -191,6 +191,7 @@ extern "C"
 //=============================================
 
 - (IBAction) killAllStoreSCU:(id) sender;
+- (void) waitUnlockFileWithPID: (NSNumber*) nspid;
 
 - (id) splashScreen;
 

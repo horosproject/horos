@@ -482,9 +482,13 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
 				}
 				else
 				{
-					printf("Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID( filexfer.getXferID()), dcmFindNameOfUID( preferredXfer.getXferID()));
+					printf("---- Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID( filexfer.getXferID()), dcmFindNameOfUID( preferredXfer.getXferID()));
 					cond = decompressFileFormat(fileformat, subImgFileName);
-					status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
+					
+					DcmFileFormat fileformatDecompress;
+					cond = fileformatDecompress.loadFile( subImgFileName);
+					
+					status = compressFileFormat( fileformatDecompress, subImgFileName, outfname, xferSyntax);
 					
 					if( status)
 						strcpy( subImgFileName, outfname);

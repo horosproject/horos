@@ -251,7 +251,7 @@ extern NSRecursiveLock *PapyrusLock;
 //				DcmXfer original_xfer(dataset->getOriginalXfer());
 //				
 //				DcmRepresentationParameter *params = &lossyParams;
-//				E_TransferSyntax tSyntax = EXS_JPEG2000; //EXS_JPEG2000LosslessOnly
+//				E_TransferSyntax tSyntax = EXS_JPEG2000LosslessOnly; //EXS_JPEG2000LosslessOnly
 //				
 //				DcmXfer oxferSyn( tSyntax);
 //				dataset->chooseRepresentation(tSyntax, params);

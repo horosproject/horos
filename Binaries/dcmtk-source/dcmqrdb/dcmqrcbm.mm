@@ -114,24 +114,29 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 	else
 	#endif
 	{
-		  DcmDataset *dataset = fileformat.getDataset();
+		DcmDataset *dataset = fileformat.getDataset();
 
-		  // decompress data set if compressed
-		  dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+		// decompress data set if compressed
+		dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
 
-		  // check if everything went well
-		  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
-		  {
+		// check if everything went well
+		if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+		{
 			fileformat.loadAllDataIntoMemory();
-			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:0L];
-			cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
+			cond = fileformat.saveFile( fname, EXS_LittleEndianExplicit);
 			status =  (cond.good()) ? YES : NO;
-		  }
-		  else
+			  
+			if( status)
+			{
+				printf("\n*** decompressFileFormat failed\n");
+			}
+		}
+		else
 			status = NO;
 	}
 	
 	printf("\n--- Decompress for C-Move/C-Get\n");
+	
 	if( status == NO)
 		cond = EC_MemoryExhausted;
 	
@@ -196,6 +201,7 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 		#ifndef OSIRIX_LIGHT
 		DcmDataset *dataset = fileformat.getDataset();
 		DcmItem *metaInfo = fileformat.getMetaInfo();
+		
 		DcmRepresentationParameter *params = nil;
 		DJ_RPLossy lossyParams( 90);
 		DcmRLERepresentationParameter rleParams;
@@ -224,8 +230,8 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 			{
 				// force the meta-header UIDs to be re-generated when storing the file 
 				// since the UIDs in the data set may have changed 
-				//delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-				//delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+				// delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+				// delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
 
 				// store in lossless JPEG format
 				
@@ -817,9 +823,13 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 				}
 				else
 				{
-					printf("Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID( filexfer.getXferID()), dcmFindNameOfUID( preferredXfer.getXferID()));
+					printf("---- Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID( filexfer.getXferID()), dcmFindNameOfUID( preferredXfer.getXferID()));
 					cond = decompressFileFormat(fileformat, subImgFileName);
-					status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
+					
+					DcmFileFormat fileformatDecompress;
+					cond = fileformatDecompress.loadFile( subImgFileName);
+					
+					status = compressFileFormat(fileformatDecompress, subImgFileName, outfname, xferSyntax);
 					
 					if( status)
 						strcpy( subImgFileName, outfname);

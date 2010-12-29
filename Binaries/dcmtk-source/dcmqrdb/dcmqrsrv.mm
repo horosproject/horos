@@ -213,44 +213,44 @@ NSString* DcmQueryRetrieveSCP::getErrorMessage()	// see emptyDeleteQueue: for re
 	return str;
 }
 
-void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
-{
-	BOOL fileExist = YES;
-	int inc = 0, rc = pid, state;
-	char dir[ 1024];
-	sprintf( dir, "%s-%d", "/tmp/lock_process", pid);
-	
-	do
-	{
-		FILE * pFile = fopen (dir,"r");
-		if( pFile)
-		{
-			rc = waitpid( pid, &state, WNOHANG);	// Check to see if this pid is still alive?
-			fclose (pFile);
-		}
-		else
-			fileExist = NO;
-		
-		usleep( 100000);
-		inc++;
-	}
-	#define TIMEOUT 300 // 300*100000 = 30 secs
-	while( fileExist == YES && inc < TIMEOUT && rc >= 0);
-	
-	if( inc >= TIMEOUT)
-	{
-		kill( pid, 15);
-		NSLog( @"******* waitUnlockFile for %d sec", inc/10);
-	}
-	
-	if( rc < 0)
-	{
-		kill( pid, 15);
-		NSLog( @"******* waitUnlockFile : child process died...");
-	}
-	
-	unlink( dir);
-}
+//void DcmQueryRetrieveSCP::waitUnlockFileWithPID(int pid)
+//{
+//	BOOL fileExist = YES;
+//	int inc = 0, rc = pid, state;
+//	char dir[ 1024];
+//	sprintf( dir, "%s-%d", "/tmp/lock_process", pid);
+//	
+//	do
+//	{
+//		FILE * pFile = fopen (dir,"r");
+//		if( pFile)
+//		{
+//			rc = waitpid( pid, &state, WNOHANG);	// Check to see if this pid is still alive?
+//			fclose (pFile);
+//		}
+//		else
+//			fileExist = NO;
+//		
+//		usleep( 100000);
+//		inc++;
+//	}
+//	#define TIMEOUT 300 // 300*100000 = 30 secs
+//	while( fileExist == YES && inc < TIMEOUT && rc >= 0);
+//	
+//	if( inc >= TIMEOUT)
+//	{
+//		kill( pid, 15);
+//		NSLog( @"******* waitUnlockFile for %d sec", inc/10);
+//	}
+//	
+//	if( rc < 0)
+//	{
+//		kill( pid, 15);
+//		NSLog( @"******* waitUnlockFile : child process died...");
+//	}
+//	
+//	unlink( dir);
+//}
 
 OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool correctUIDPadding)
 {
@@ -1440,15 +1440,15 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 							}
 							
 							// Father
-							[NSThread sleepForTimeInterval: 0.1]; // To allow the creation of lock_process file with corresponding pid
-							/* parent process, note process in table */
-							// processtable_.addProcessToTable(pid, assoc);
+							[NSThread sleepForTimeInterval: 0.2]; // To allow the creation of lock_process file with corresponding pid
 							
-							waitUnlockFileWithPID( pid);
+							[NSThread detachNewThreadSelector: @selector(waitUnlockFileWithPID:) toTarget: [AppController sharedAppController] withObject: [NSNumber numberWithInt: pid]];
 							
-							NSString *str = getErrorMessage();
-							if( str)
-								[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+//							waitUnlockFileWithPID( pid);
+//							
+//							NSString *str = getErrorMessage();
+//							if( str)
+//								[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
 						}
 						else
 						{
