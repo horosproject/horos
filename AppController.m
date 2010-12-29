@@ -972,7 +972,7 @@ static NSDate *lastWarningDate = nil;
 			return NO;
 		}
 	}
-	return NO;                   
+	return YES;                   
 }
 
 +(BOOL) hasMacOSXLeopard
