@@ -8424,13 +8424,13 @@ END_CREATE_ROIS:
 										{
 											unsigned long x = height * width;
 											while( x-- > 0)
-												*tDestF++ = ((double) (*sint++)) * dSlope + dOffset;
+												*tDestF++ = (((double) (*sint++)) + dOffset) * dSlope;
 										}
 										else
 										{
 											unsigned long x = height * width;
 											while( x-- > 0)
-												*tDestF++ = ((double) (*usint++)) * dSlope + dOffset;
+												*tDestF++ = (((double) (*usint++)) + dOffset) * dSlope;
 										}
 									}
 								}

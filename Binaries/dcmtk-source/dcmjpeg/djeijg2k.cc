@@ -376,10 +376,13 @@ OFCondition DJCompressJP2K::encode(
 	
 	if( bitsAllocated >= 16)
 	{
-//		if( minUsed == 0 && maxUsed == 0)
+		if( minUsed == 0 && maxUsed == 0)
 		{
 			int _min = 0, _max = 0;
 			findMinMax( _min, _max, (char*) image_buffer, columns*rows*samplesPerPixel*bitsAllocated/8, isSigned, rows, columns, bitsAllocated);
+			
+//			if( minUsed != _min || maxUsed != _max)
+//				printf("\r******* ( minUsed != _min || maxUsed != _max) ********\r");
 			
 			minUsed = _min;
 			maxUsed = _max;

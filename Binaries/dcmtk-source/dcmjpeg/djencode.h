@@ -87,7 +87,7 @@ public:
    *  @param pRealLossless Enables true lossless compression (replaces old "pseudo" lossless encoders)
    */
   static void registerCodecs(
-    E_CompressionColorSpaceConversion pCompressionCSConversion = ECC_lossyYCbCr,
+    E_CompressionColorSpaceConversion pCompressionCSConversion = ECC_lossyRGB,
     E_UIDCreation pCreateSOPInstanceUID = EUC_never,
     OFBool pVerbose = OFFalse,
     OFBool pOptimizeHuffman = OFFalse,

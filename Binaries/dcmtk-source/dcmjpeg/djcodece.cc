@@ -1138,11 +1138,11 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
 				  jpegData = NULL;
 				  if (bytesPerSample == 1)
 				  {
-					result = jpeg->encode(columns, rows, EPI_Monochrome2, 1, (Uint8 *)frame, jpegData, jpegLen, pixelRepresentation, minUsed, maxUsed);
+					result = jpeg->encode(columns, rows, EPI_Monochrome2, 1, (Uint8 *)frame, jpegData, jpegLen, pixelRepresentation, (minUsed-rescaleIntercept)*rescaleSlope, (maxUsed-rescaleIntercept)*rescaleSlope);
 				  } 
 				  else
 				  {
-					result = jpeg->encode(columns, rows, EPI_Monochrome2, 1, (Uint16 *)frame, jpegData, jpegLen, pixelRepresentation, minUsed, maxUsed);
+					result = jpeg->encode(columns, rows, EPI_Monochrome2, 1, (Uint16 *)frame, jpegData, jpegLen, pixelRepresentation, (minUsed-rescaleIntercept)*rescaleSlope, (maxUsed-rescaleIntercept)*rescaleSlope);
 				  }
 				  
 				  // store frame
