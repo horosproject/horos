@@ -1027,7 +1027,7 @@ extern const char *GetPrivateIP();
 	// we should send an error message
 	// here ...
 	
-	NSLog(@"did not publish... why?");
+	NSLog(@"******* did not publish... why? %@", errorDict);
     [netService release];
     netService = nil;
 }

@@ -376,7 +376,7 @@ OFCondition DJCompressJP2K::encode(
 	
 	if( bitsAllocated >= 16)
 	{
-		if( minUsed == 0 && maxUsed == 0)
+//		if( minUsed == 0 && maxUsed == 0)
 		{
 			int _min = 0, _max = 0;
 			findMinMax( _min, _max, (char*) image_buffer, columns*rows*samplesPerPixel*bitsAllocated/8, isSigned, rows, columns, bitsAllocated);
@@ -401,7 +401,8 @@ OFCondition DJCompressJP2K::encode(
 		if( minUsed < 0)
 			bits++;
 		
-		if( bits < 9) bits = 9;
+		if( bits < 9)
+			bits = 9;
 		
 		// avoid the artifacts... switch to lossless
 		if( (maxUsed >= 32000 && minUsed <= -32000) || maxUsed >= 65000 || bits > 16)
