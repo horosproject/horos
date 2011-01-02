@@ -1789,7 +1789,7 @@ static NSDate *lastWarningDate = nil;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpWebServer"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
 	{
-		int port = [[[NSUserDefaults standardUserDefaults] @"httpWebServerPort"] intValue];
+		int port = [[NSUserDefaults standardUserDefaults] integerForKey: @"httpWebServerPort"];
 		[dict setValue: @"YES" forKey: @"WADO"]; // TXTRECORD doesnt support NSNumber
 		[dict setValue: [NSString stringWithFormat:@"%d", port] forKey: @"WADOPort"];
 		[dict setValue: @"/wado" forKey: @"WADOURL"];
