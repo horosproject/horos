@@ -1780,11 +1780,21 @@ static NSDate *lastWarningDate = nil;
 	if( description && [description length] > 0)
 		[dict setValue: description forKey: @"serverDescription"];
 	
+	[dict setValue: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"AETitle"]; 
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"activateCGETSCP"])
 		[dict setValue: @"YES" forKey: @"CGET"]; // TXTRECORD doesnt support NSNumber
 	else
 		[dict setValue: @"NO" forKey: @"CGET"];  // TXTRECORD doesnt support NSNumber
-		
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpWebServer"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
+	{
+		int port = [[[NSUserDefaults standardUserDefaults] @"httpWebServerPort"] intValue];
+		[dict setValue: @"YES" forKey: @"WADO"]; // TXTRECORD doesnt support NSNumber
+		[dict setValue: [NSString stringWithFormat:@"%d", port] forKey: @"WADOPort"];
+		[dict setValue: @"/wado" forKey: @"WADOURL"];
+	}
+	
 	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"])
 	{
 		case 0:
