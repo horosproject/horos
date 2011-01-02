@@ -251,20 +251,22 @@ extern NSRecursiveLock *PapyrusLock;
 //				DcmItem *metaInfo = fileformat.getMetaInfo();
 //				DcmXfer original_xfer(dataset->getOriginalXfer());
 //				
-//				DcmRepresentationParameter *params = &lossyParams;
-//				E_TransferSyntax tSyntax = EXS_JPEG2000;
+////				DcmRepresentationParameter *params = &lossyParams;
+////				E_TransferSyntax tSyntax = EXS_JPEG2000;
 //				
-////				DcmRepresentationParameter *params = &losslessParams;
-////				E_TransferSyntax tSyntax = EXS_JPEGProcess14TransferSyntax;	//EXS_JPEG2000; //EXS_JPEG2000LosslessOnly
+//				DcmRepresentationParameter *params = &losslessParams;
+//				E_TransferSyntax tSyntax = EXS_JPEGProcess14TransferSyntax;	//EXS_JPEG2000; //EXS_JPEG2000LosslessOnly
 //				
 //				DcmXfer oxferSyn( tSyntax);
 //				dataset->chooseRepresentation(tSyntax, params);
+//				
+//				fileformat.loadAllDataIntoMemory();
 //				
 //				// check if everything went well
 //				if (dataset->canWriteXfer(tSyntax))
 //				{
 //					// store in lossless JPEG format
-//					fileformat.loadAllDataIntoMemory();
+//					//fileformat.loadAllDataIntoMemory();
 //					
 //					[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingString: @"cc.dcm"] handler:nil];
 //					cond = fileformat.saveFile( [[path stringByAppendingString: @"cc.dcm"] UTF8String], tSyntax);

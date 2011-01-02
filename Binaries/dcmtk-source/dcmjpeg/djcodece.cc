@@ -542,14 +542,17 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
           result = togglePlanarConfiguration8((Uint8*)pixelData, length, samplesPerPixel, (Uint16)1 /* switch to "by pixel"*/);
         else
           result = togglePlanarConfiguration16((Uint16*)pixelData, length/2 /*16 bit*/, samplesPerPixel, (Uint16)1 /* switch to "by pixel"*/);
-        planConfSwitched = OFTrue;
+        
+		if (result.bad())
+		{
+			CERR << "True Lossless Encoder: Unable to change Planar Configuration for encoding" << endl;
+			return result;
+		}
+		
+		planConfSwitched = OFTrue;
       }
     }
-    if (result.bad())
-    {
-        CERR << "True Lossless Encoder: Unable to change Planar Configuration for encoding" << endl;
-        return result;
-    }
+    
 
     //check whether enough raw data is available for encoding
 //    if (bytesAllocated * samplesPerPixel * columns * rows * OFstatic_cast(unsigned int,numberOfFrames) > length)

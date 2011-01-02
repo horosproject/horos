@@ -601,7 +601,7 @@
 					
 					delete dataset->remove( DCM_PlanarConfiguration);
 					if( spp == 3)
-						dataset->putAndInsertString( DCM_PlanarConfiguration, 0);
+						dataset->putAndInsertString( DCM_PlanarConfiguration, "0");
 					
 					if( dataset->findAndGetString( DCM_Modality, string, OFFalse).good() && string != NULL)
 						modality = string;
