@@ -517,6 +517,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) queryWithValues:(NSArray *)values dataset:(DcmDataset*) dataset
 {
+	[self purgeChildren];
+	
 	//add query keys
 	
 	if( dataset == nil)

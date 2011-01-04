@@ -1793,6 +1793,11 @@ static NSDate *lastWarningDate = nil;
 		[dict setValue: @"YES" forKey: @"WADO"]; // TXTRECORD doesnt support NSNumber
 		[dict setValue: [NSString stringWithFormat:@"%d", port] forKey: @"WADOPort"];
 		[dict setValue: @"/wado" forKey: @"WADOURL"];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"])
+			[dict setValue: @"https" forKey: @"WADOProtocol"];
+		else
+			[dict setValue: @"http" forKey: @"WADOProtocol"];
 	}
 	
 	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"])
