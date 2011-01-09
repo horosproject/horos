@@ -753,7 +753,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
 	NSString *protocol = [[_extraParameters valueForKey: @"WADOhttps"] intValue] ? @"https" : @"http";
 	
-	NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@?requestType=WADO", protocol, _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], [_extraParameters valueForKey: @"WADOUrl"]];
+	NSString *wadoSubUrl = [_extraParameters valueForKey: @"WADOUrl"];
+	
+	if( [wadoSubUrl hasPrefix: @"/"])
+		wadoSubUrl = [wadoSubUrl substringFromIndex: 1];
+	
+	NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@?requestType=WADO", protocol, _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], wadoSubUrl];
 	
 	@try
 	{
