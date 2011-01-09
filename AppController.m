@@ -2839,6 +2839,7 @@ static BOOL initialized = NO;
 				// ** REGISTER DEFAULTS DICTIONARY
 
 				[[NSUserDefaults standardUserDefaults] registerDefaults: [DefaultsOsiriX getDefaults]];
+//				[[NSUserDefaults standardUserDefaults] addSuiteNamed: @"com.rossetantoine.osirix"]; // Backward compatibility
 				
 				[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
 				[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
