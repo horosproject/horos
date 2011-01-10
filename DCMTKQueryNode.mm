@@ -746,7 +746,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	[dict release];
 	
-	WADOThreads--;
+	@synchronized( self)
+	{
+		WADOThreads--;
+	}
 }
 
 - (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
@@ -831,7 +834,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		if( showErrorMessage == NO)
 			firstWadoErrorDisplayed = YES; // dont show errors
 		
-		#define NumberOfWADOThreads 3
+		#define NumberOfWADOThreads 2
 		NSRange range = NSMakeRange( 0, 1+ ([urlToDownload count] / NumberOfWADOThreads));
 		
 		if( WADODownloadLock == nil)
@@ -846,7 +849,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			{
 				if( range.length > 0)
 				{
-					WADOThreads++;
+					@synchronized( self)
+					{
+						WADOThreads++;
+					}
 					[NSThread detachNewThreadSelector: @selector( WADODownload:) toTarget: self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [urlToDownload subarrayWithRange: range], @"URLs", [NSThread currentThread], @"mainThread", nil]];
 				}
 				
