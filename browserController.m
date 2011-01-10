@@ -240,7 +240,7 @@ static volatile BOOL waitForRunningProcess = NO;
 			return YES;
 		}
 		
-		[NSThread sleepForTimeInterval: 0.2];
+		[NSThread sleepForTimeInterval: 0.1];
 //		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];		
 	}
 	
@@ -3687,8 +3687,8 @@ static NSConditionLock *threadLock = nil;
 			[context unlock];
 			[context release];
 			
-			if( [NSThread isMainThread])
-				[self outlineViewRefresh];
+//			if( [NSThread isMainThread])
+//				[self outlineViewRefresh];
 		}
 		
 		@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
@@ -5584,8 +5584,9 @@ static NSConditionLock *threadLock = nil;
 	
 	predicate = [NSPredicate predicateWithValue:YES];
 	
-	if( displayEmptyDatabase) predicate = [NSPredicate predicateWithValue:NO];
-	
+	if( displayEmptyDatabase)
+		predicate = [NSPredicate predicateWithValue:NO];
+		
 	if (isCurrentDatabaseBonjour && [bonjourServicesList selectedRow] > 0)
 	{
 		int rowIndex = [bonjourServicesList selectedRow];
@@ -5654,7 +5655,7 @@ static NSConditionLock *threadLock = nil;
 	// SEARCH FIELD
 	// ********************
 	
-	if ( self.filterPredicate)
+	if( self.filterPredicate)
 	{
 		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, self.filterPredicate, nil]];
 		description = [description stringByAppendingString: self.filterPredicateDescription];
@@ -5675,7 +5676,7 @@ static NSConditionLock *threadLock = nil;
 	
 	@try
 	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && (searchType == 7 || searchType == 0))
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && (searchType == 7 || searchType == 0) && [_searchString length] > 0)
 		{
 			if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
 			else
@@ -14316,7 +14317,7 @@ static NSArray*	openSubSeriesArray = nil;
 		NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + 240;
 		while( ti - [NSDate timeIntervalSinceReferenceDate] > 0 && [[ThreadsManager defaultManager] threadsCount] > 0)
 		{
-			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
 			
 			if( wait && [[wait window] isVisible] == NO)
 				[wait showWindow:self];
@@ -14329,7 +14330,7 @@ static NSArray*	openSubSeriesArray = nil;
 		while( [SendController sendControllerObjects] > 0)
 		{
 			//[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
-			[NSThread sleepForTimeInterval: 0.2];
+			[NSThread sleepForTimeInterval: 0.1];
 			
 			if( wait && [[wait window] isVisible] == NO)
 				[wait showWindow:self];
@@ -20494,15 +20495,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)openDatabasePath: (NSString*)path
 {
 	BOOL isDirectory;
-	
+		
 	if( DICOMDIRCDMODE)
 	{
 		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 		return;
 	}
-	
+
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
 	{
+		displayEmptyDatabase = YES;
+		[self outlineViewRefresh];
+		[self refreshMatrix: self];
+		
 		if( isDirectory)
 		{
 			[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey:@"DATABASELOCATION"];
@@ -20517,6 +20522,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[self openDatabaseIn: path Bonjour:NO];
 			}
 		}
+		
+		displayEmptyDatabase = NO;
 	}
 	else
 	{
@@ -20607,7 +20614,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction)bonjourServiceClicked: (id)sender
 {
-	[self syncReportsIfNecessary];
 	[albumNoOfStudiesCache removeAllObjects];
 	
 	[[AppController sharedAppController] closeAllViewers: self];	
@@ -20767,17 +20773,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)setSearchString: (NSString *)searchString
 {
-	if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
-		[searchField setTextColor: [NSColor whiteColor]];
-	else
-		[searchField setTextColor: [NSColor blackColor]];
-	
-	[_searchString release];
-	_searchString = [searchString retain];
-	
-	[self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
-	[self outlineViewRefresh];
-	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];	
+	if( [_searchString isEqualToString: searchString] == NO && _searchString != searchString)
+	{
+		if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+			[searchField setTextColor: [NSColor whiteColor]];
+		else
+			[searchField setTextColor: [NSColor blackColor]];
+		
+		[_searchString release];
+		_searchString = [searchString retain];
+		
+		[self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
+		[self outlineViewRefresh];
+		[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+	}
 }
 
 - (IBAction)searchForCurrentPatient: (id)sender
