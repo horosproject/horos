@@ -563,6 +563,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (long) saveUserDatabase;
 
+- (void) setSearchString: (NSString *)searchString;
+
 -(WebPortalUser*)userWithName:(NSString*)name;
 
 + (NSString*) DateTimeWithSecondsFormat:(NSDate*) t;

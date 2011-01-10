@@ -81,8 +81,8 @@
 
 - (void) close
 {
-	while( [NSDate timeIntervalSinceReferenceDate] - displayedTime < 0.1)
-		[NSThread sleepForTimeInterval: 0.1];
+	while( [NSDate timeIntervalSinceReferenceDate] - displayedTime < 0.05)
+		[NSThread sleepForTimeInterval: 0.05];
 	
 	[super close];
 }

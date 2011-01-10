@@ -2705,13 +2705,11 @@ static NSConditionLock *threadLock = nil;
 	
 	[reportFilesToCheck removeAllObjects];
 	
-	NSString *searchString = nil, *albumName = nil, *selectedItem = nil;
+	NSString *albumName = nil, *selectedItem = nil;
 	int timeInt;
 	
 	if( refresh)
 	{
-		searchString = [[[searchField stringValue] copy] autorelease];
-		
 		NSArray *albumArray = self.albumArray;
 		if( [albumArray count] > albumTable.selectedRow && albumTable.selectedRow >= 0)
 			albumName = [[[[albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"name"] copy] autorelease];
@@ -2757,7 +2755,7 @@ static NSConditionLock *threadLock = nil;
 			timeIntervalType = timeInt;
 			[timeIntervalPopup selectItemWithTag: 0];
 			
-			[self setSearchString: searchString];
+			[self setSearchString: nil];
 			
 			for( NSManagedObject *obj in outlineViewArray)
 			{
@@ -5586,7 +5584,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( displayEmptyDatabase)
 		predicate = [NSPredicate predicateWithValue:NO];
-		
+	
 	if (isCurrentDatabaseBonjour && [bonjourServicesList selectedRow] > 0)
 	{
 		int rowIndex = [bonjourServicesList selectedRow];
@@ -5824,7 +5822,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[databaseDescription setStringValue: description];
 	
-	[albumTable reloadData];
+//	[albumTable reloadData];
 	
 	return exception;
 }
@@ -11843,12 +11841,11 @@ static BOOL needToRezoom;
 	if( [[aNotification object] isEqual: albumTable])
 	{
 		// Clear search field
-		[self setSearchString:nil];
+		[self setSearchString: nil];
 		
 		if( albumTable.selectedRow < albumNoOfStudiesCache.count)
-		{
 			[albumNoOfStudiesCache replaceObjectAtIndex: albumTable.selectedRow withObject:@""];
-		}
+		
 		[albumTable reloadData];
 	}
 	
@@ -20606,7 +20603,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[self openDatabaseIn: path Bonjour: NO];
 	}
 	
-	[self setSearchString:nil];
+	
 	previousBonjourIndex = [bonjourServicesList selectedRow]-1;
 	
 	dontLoadSelectionSource = NO;
@@ -20773,27 +20770,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)setSearchString: (NSString *)searchString
 {
-	if( [_searchString isEqualToString: searchString] == NO && _searchString != searchString)
-	{
-		if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
-			[searchField setTextColor: [NSColor whiteColor]];
-		else
-			[searchField setTextColor: [NSColor blackColor]];
-		
-		[_searchString release];
-		_searchString = [searchString retain];
-		
-		[self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
-		[self outlineViewRefresh];
-		[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-	}
+	if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+		[searchField setTextColor: [NSColor whiteColor]];
+	else
+		[searchField setTextColor: [NSColor blackColor]];
+	
+	[_searchString release];
+	_searchString = [searchString retain];
+	
+	[self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
+	[self outlineViewRefresh];
+	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
 - (IBAction)searchForCurrentPatient: (id)sender
 {
 	if( [databaseOutline selectedRow] != -1)
 	{
-		NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+		NSManagedObject *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 		
 		if( aFile)
 		{
@@ -20807,7 +20801,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)setFilterPredicate: (NSPredicate *)predicate description: (NSString*)desc
 {
-	//NSLog(@"set Filter Predicate");
 	[_filterPredicate release];
 	_filterPredicate = [predicate retain];
 	
@@ -20888,14 +20881,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 			case 7:			// All Fields
 				s = [NSString stringWithFormat:@"%@", _searchString];
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"]) 
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [s length] > 0) 
 					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (ANY series.modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s, s];
 				else
 					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (ANY series.modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s];
 			break;
 			
 			case 0:			// Patient Name
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"])
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [_searchString length] > 0)
 					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@)", [DicomStudy soundex: _searchString], s];
 				else
 					predicate = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", _searchString];
