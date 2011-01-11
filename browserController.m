@@ -2743,6 +2743,13 @@ static NSConditionLock *threadLock = nil;
 		currentDatabasePath = [a retain];
 		isCurrentDatabaseBonjour = isBonjour;
 		
+		if( isCurrentDatabaseBonjour)
+		{
+			// Remove the file from persistent store if needed -> we artifically modified the file (download)
+			if( [persistentStoreCoordinatorDictionary objectForKey: currentDatabasePath])
+				[persistentStoreCoordinatorDictionary removeObjectForKey: currentDatabasePath];
+		}
+		
 		[self loadDatabase: currentDatabasePath];
 		
 		if (refresh)
