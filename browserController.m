@@ -3611,6 +3611,7 @@ static NSConditionLock *threadLock = nil;
 	displayEmptyDatabase = NO;
 	[self outlineViewRefresh];
 	[self refreshMatrix: self];
+	[self refreshAlbums];
 	
 	#ifndef OSIRIX_LIGHT
 	if( [QueryController currentQueryController])
@@ -3663,13 +3664,12 @@ static NSConditionLock *threadLock = nil;
 	
 	if( DICOMDIRCDMODE == NO)
 	{
+		NSError *error = nil;
+		
+		[context lock];
+		
 		@try
 		{
-			NSError *error = nil;
-			
-			[context retain];
-			[context lock];
-			
 			[context save: &error];
 			
 			if (error)
@@ -3685,15 +3685,10 @@ static NSConditionLock *threadLock = nil;
 			[[NSString stringWithString:DATABASEVERSION] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_VERSION"] atomically:YES];
 			
 			[[NSUserDefaults standardUserDefaults] setObject:DATABASEVERSION forKey: @"DATABASEVERSION"];
-			
-			[context unlock];
-			[context release];
-			
-//			if( [NSThread isMainThread])
-//				[self outlineViewRefresh];
 		}
-		
 		@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
+		
+		[context unlock];
 	}
 	
 	return retError;
@@ -5743,8 +5738,6 @@ static NSConditionLock *threadLock = nil;
 		[[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification  object:databaseOutline userInfo: nil];
 	
 	[databaseDescription setStringValue: description];
-	
-//	[albumTable reloadData];
 	
 	return exception;
 }
