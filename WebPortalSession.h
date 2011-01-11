@@ -15,24 +15,29 @@
 #import <Cocoa/Cocoa.h>
 
 extern NSString* const SessionUsernameKey; // NSString
+extern NSString* const SessionCookieName;
 
 @interface WebPortalSession : NSObject {
 @private
 	NSMutableDictionary* dict;
 	NSString* sid;
-	NSLock* lock;
+	NSLock* dictLock;
+	NSLock* sendLock;
 }
 
 @property(readonly) NSString* sid;
+@property(readonly) NSLock* sendLock;
 
-+(id)create;
-+(id)sessionForId:(NSString*)sid;
-+(id)sessionForUsername:(NSString*)username token:(NSString*)token;
+-(id)initWithId:(NSString*)isid;
 
 -(void)setObject:(id)o forKey:(NSString*)k;
 -(id)objectForKey:(NSString*)k;
 
 -(NSString*)createToken;
 -(BOOL)consumeToken:(NSString*)token;
+
+-(NSString*)newChallenge;
+-(NSString*)challenge;
+-(void)deleteChallenge;
 
 @end

@@ -138,6 +138,8 @@
 		59DC28E611C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E411C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm */; };
 		59DC28E911C6168100DAD5B4 /* NSThread+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28E711C6168100DAD5B4 /* NSThread+N2.h */; };
 		59DC28EA11C6168100DAD5B4 /* NSThread+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E811C6168100DAD5B4 /* NSThread+N2.mm */; };
+		59E5235112BF5DC30094E668 /* N2Task.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E5234F12BF5DC30094E668 /* N2Task.h */; };
+		59E5235212BF5DC30094E668 /* N2Task.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E5235012BF5DC30094E668 /* N2Task.mm */; };
 		59E6DD11105E3DBD002C8245 /* NSColor+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E6DD0F105E3DBD002C8245 /* NSColor+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		59E6DD12105E3DBD002C8245 /* NSColor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E6DD10105E3DBD002C8245 /* NSColor+N2.mm */; };
 		59E7A17B108C9ACF007F82BA /* NSURL+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E7A179108C9ACF007F82BA /* NSURL+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -148,6 +150,8 @@
 		59E924CF110F25CD0006FFFB /* N2ColorWell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E924CD110F25CD0006FFFB /* N2ColorWell.mm */; };
 		59E924D2110F277B0006FFFB /* N2UserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E924D0110F277B0006FFFB /* N2UserDefaults.h */; };
 		59E924D3110F277B0006FFFB /* N2UserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E924D1110F277B0006FFFB /* N2UserDefaults.mm */; };
+		59ECEA7F12AE36A7003231BF /* NSMutableString+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59ECEA7D12AE36A7003231BF /* NSMutableString+N2.h */; };
+		59ECEA8012AE36A7003231BF /* NSMutableString+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59ECEA7E12AE36A7003231BF /* NSMutableString+N2.mm */; };
 		59F5F4B111F4822E0047A90D /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F4AF11F4822E0047A90D /* N2ImageButtonCell.h */; };
 		59F5F4B211F4822E0047A90D /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F4B011F4822E0047A90D /* N2ImageButtonCell.mm */; };
 		59F5F88D11F5D9A10047A90D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59F5F88C11F5D9A10047A90D /* QuartzCore.framework */; };
@@ -298,6 +302,8 @@
 		59DC28E411C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSAppleEventDescriptor+N2.mm"; sourceTree = "<group>"; };
 		59DC28E711C6168100DAD5B4 /* NSThread+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSThread+N2.h"; sourceTree = "<group>"; };
 		59DC28E811C6168100DAD5B4 /* NSThread+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSThread+N2.mm"; sourceTree = "<group>"; };
+		59E5234F12BF5DC30094E668 /* N2Task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2Task.h; sourceTree = "<group>"; };
+		59E5235012BF5DC30094E668 /* N2Task.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2Task.mm; sourceTree = "<group>"; };
 		59E6DD0F105E3DBD002C8245 /* NSColor+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+N2.h"; sourceTree = "<group>"; };
 		59E6DD10105E3DBD002C8245 /* NSColor+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSColor+N2.mm"; sourceTree = "<group>"; };
 		59E7A179108C9ACF007F82BA /* NSURL+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+N2.h"; sourceTree = "<group>"; };
@@ -308,6 +314,8 @@
 		59E924CD110F25CD0006FFFB /* N2ColorWell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2ColorWell.mm; sourceTree = "<group>"; };
 		59E924D0110F277B0006FFFB /* N2UserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2UserDefaults.h; sourceTree = "<group>"; };
 		59E924D1110F277B0006FFFB /* N2UserDefaults.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2UserDefaults.mm; sourceTree = "<group>"; };
+		59ECEA7D12AE36A7003231BF /* NSMutableString+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableString+N2.h"; sourceTree = "<group>"; };
+		59ECEA7E12AE36A7003231BF /* NSMutableString+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSMutableString+N2.mm"; sourceTree = "<group>"; };
 		59F5F4AF11F4822E0047A90D /* N2ImageButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2ImageButtonCell.h; sourceTree = "<group>"; };
 		59F5F4B011F4822E0047A90D /* N2ImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2ImageButtonCell.mm; sourceTree = "<group>"; };
 		59F5F88C11F5D9A10047A90D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
@@ -505,6 +513,8 @@
 				59E924D1110F277B0006FFFB /* N2UserDefaults.mm */,
 				5997857011B67701002DB107 /* N2HexadecimalNumberFormatter.h */,
 				5997857111B67701002DB107 /* N2HexadecimalNumberFormatter.mm */,
+				59E5234F12BF5DC30094E668 /* N2Task.h */,
+				59E5235012BF5DC30094E668 /* N2Task.mm */,
 				59E924C0110F257A0006FFFB /* Controls */,
 				59D8757810AAC93900AAA0FE /* Exceptions */,
 				59CF837210692FFC00A4444F /* Connections */,
@@ -579,6 +589,8 @@
 				59A6332810428715003F4069 /* NSTextView+N2.mm */,
 				59A6332B10428715003F4069 /* NSString+N2.h */,
 				59A6332A10428715003F4069 /* NSString+N2.mm */,
+				59ECEA7D12AE36A7003231BF /* NSMutableString+N2.h */,
+				59ECEA7E12AE36A7003231BF /* NSMutableString+N2.mm */,
 				59A63F3E1042DB51003F4069 /* NSImage+N2.h */,
 				59A63F3F1042DB51003F4069 /* NSImage+N2.mm */,
 				59A6333110428715003F4069 /* NSBitmapImageRep+N2.h */,
@@ -748,6 +760,8 @@
 				592CFD2712128DAE00176E39 /* N2SOAPWebServiceClient.h in Headers */,
 				592CFD2F12128E8700176E39 /* N2XMLRPCWebServiceClient.h in Headers */,
 				592CFD331212CA7D00176E39 /* N2WSDL.h in Headers */,
+				59ECEA7F12AE36A7003231BF /* NSMutableString+N2.h in Headers */,
+				59E5235112BF5DC30094E668 /* N2Task.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -961,6 +975,8 @@
 				592CFD2812128DAE00176E39 /* N2SOAPWebServiceClient.mm in Sources */,
 				592CFD3012128E8700176E39 /* N2XMLRPCWebServiceClient.mm in Sources */,
 				592CFD341212CA7D00176E39 /* N2WSDL.mm in Sources */,
+				59ECEA8012AE36A7003231BF /* NSMutableString+N2.mm in Sources */,
+				59E5235212BF5DC30094E668 /* N2Task.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

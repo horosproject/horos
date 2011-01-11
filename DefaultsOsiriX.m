@@ -14,7 +14,7 @@
 
 #import "DefaultsOsiriX.h"
 #import "PluginManager.h"
-#import "NSUserDefaultsController+OsiriX.h"
+#import "NSUserDefaults+OsiriX.h"
 #import "OsiriX/DCMAbstractSyntaxUID.h"
 
 #ifdef OSIRIX_VIEWER
@@ -779,8 +779,8 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey:@"AUTOROUTINGACTIVATED"];
 	[defaultValues setObject:@"0" forKey:@"httpXMLRPCServer"];
 	[defaultValues setObject:@"8080" forKey:@"httpXMLRPCServerPort"];
-	[defaultValues setObject:@"0" forKey:@"httpWebServer"];
-	[defaultValues setObject:@"3333" forKey:@"httpWebServerPort"];
+	[defaultValues setObject:@"0" forKey:OsirixWebPortalEnabledDefaultsKey];
+//	[defaultValues setObject:@"3333" forKey:OsirixWebPortalPortNumberDefaultsKey];
 	[defaultValues setObject:@"1" forKey:@"StrechWindows"];
 	[defaultValues setObject:@"0" forKey:@"ROUTINGACTIVATED"];
 	[defaultValues setObject: @"0" forKey: @"AUTOHIDEMATRIX"];
@@ -1417,9 +1417,9 @@ static NSHost *currentHost = nil;
 	
 	
 	
-	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWadoServerActiveDefaultsKey];
-	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWebServerUsesWeasisDefaultsKey];
-	[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:OsirixWebServerPrefersFlashDefaultsKey];
+	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWadoServiceEnabledDefaultsKey];
+	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWebPortalUsesWeasisDefaultsKey];
+	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWebPortalPrefersFlashDefaultsKey];
 	
 	return defaultValues;
 }

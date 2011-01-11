@@ -14,6 +14,8 @@
 
 
 #import "N2Shell.h"
+#include <netdb.h>
+#include <arpa/inet.h>
 
 
 @implementation N2Shell
@@ -29,15 +31,24 @@
 +(NSString*)execute:(NSString*)path arguments:(NSArray*)arguments outStatus:(int*)outStatus {
 	if (!arguments) arguments = [NSArray array];
 	
+//	int r = random();
+//	NSLog(@"%d [N2Shell execute:] %@ %@", r, path, [arguments componentsJoinedByString:@" "]);
+	
 	NSTask* task = [[[NSTask alloc] init] autorelease];
 	[task setLaunchPath:path];
 	[task setArguments:arguments];
 	[task setStandardOutput:[NSPipe pipe]];
+	[task setStandardError:[NSPipe pipe]];
 	
 	[task launch];
 	[task waitUntilExit];
 	
 	NSString* stdout = [[[[NSString alloc] initWithData:[[[task standardOutput] fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//	NSString* stderr = [[[[NSString alloc] initWithData:[[[task standardError] fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	
+//	
+//	NSLog(@"%d STDOUT:\n\n%@\n\n", r, stdout);
+//	NSLog(@"%d STDERR:\n\n%@\n\n", r, stderr);
 	
 	if (outStatus)
 		*outStatus = [task terminationStatus];
@@ -56,7 +67,23 @@
 }
 
 +(NSString*)hostname {
-	NSLog( @"****** WARNING [[NSHost currentHost] name] can be VERY slow on some network configurations/settings - AVOID TO CALL THIS FUNCTION.");
+	char hostname[128];
+	gethostname(hostname, 127);
+	hostname[127] = 0;
+	return [NSString stringWithCString:hostname encoding:NSUTF8StringEncoding];
+}
+
++(NSString*)ip {
+	char hostname[128];
+	gethostname(hostname, 127);
+	hostname[127] = 0;
+	
+	struct hostent* he = gethostbyname(hostname);
+	return [NSString stringWithCString: he? (char*)inet_ntoa(*((struct in_addr*)he->h_addr)) : hostname encoding:NSUTF8StringEncoding];
+}
+
++(NSString*)hostnameAwareOfSlowness:(BOOL)aware {
+	if (!aware) NSLog( @"****** WARNING [[NSHost currentHost] name] can be VERY slow on some network configurations/settings - AVOID TO CALL THIS FUNCTION.");
 	NSString* host = [[NSHost currentHost] name];
 	NSRange r = [host rangeOfString:@"."];
 	host = r.location!=NSNotFound? [host substringToIndex:r.location] : host;

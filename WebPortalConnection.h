@@ -16,15 +16,18 @@
 #import "HTTPConnection.h"
 #import "WebPortalUser.h"
 
-@class WebPortalSession, WebPortalResponse;
+@class WebPortal, WebPortalServer, WebPortalSession, WebPortalResponse;
 
 @interface WebPortalConnection : HTTPConnection
 {
-	NSMutableArray *selectedImages;
-	NSMutableDictionary *selectedDICOMNode;
 	NSLock *sendLock, *running;
-	WebPortalUser* currentUser;
-	NSMutableDictionary *urlParameters; // GET and POST params
+	WebPortalUser* user;
+	WebPortalSession* session;
+	
+	NSString* GETParams;
+	NSDictionary* parameters; // GET and POST params
+	
+	WebPortalResponse* response;
 	
 	// POST / PUT support
 	int dataStartIndex;
@@ -33,39 +36,24 @@
 	NSData *postBoundary;
 	NSString *POSTfilename;
 
-	WebPortalSession* session;
 }
 
-@property(retain) WebPortalSession* session;
-@property(retain) WebPortalUser* currentUser;
+-(CFHTTPMessageRef)request;
 
-+ (void) emailNotifications;
-+ (BOOL) sendNotificationsEmailsTo: (NSArray*) users aboutStudies: (NSArray*) filteredStudies predicate: (NSString*) predicate message: (NSString*) message replyTo: (NSString*) replyto customText: (NSString*) customText;
-+ (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message forUser: (NSString*) user ip: (NSString*) ip;
-//+ (NSString*)decodeURLString:(NSString*)aString;
-+ (NSString*)iPhoneCompatibleNumericalFormat:(NSString*)aString;
-+ (NSString*)unbreakableStringWithString:(NSString*)aString;
-//+ (NSString*)encodeURLString:(NSString*)aString;
-- (void) updateLogEntryForStudy: (NSManagedObject*) study withMessage:(NSString*) message;
-- (BOOL)supportsPOST:(NSString *)path withSize:(UInt64)contentLength;
-- (NSArray*) addSpecificStudiesToArray: (NSArray*) array;
-+ (NSArray*) addSpecificStudiesToArray: (NSArray*) array forUser: (NSManagedObject*) user predicate: (NSPredicate*) predicate;
-//- (NSMutableString*) setBlock: (NSString*) b visible: (BOOL) v forString: (NSMutableString*) s;
-- (NSArray*)studiesForPredicate:(NSPredicate *)predicate sortBy: (NSString*) sortValue;
-- (NSArray*)studiesForAlbum:(NSString *)albumName sortBy: (NSString*) sortValue;
+@property(retain,readonly) WebPortalResponse* response;
+@property(retain,readonly) WebPortalSession* session;
+@property(retain,readonly) WebPortalUser* user;
+@property(retain,readonly) NSDictionary* parameters;
+@property(retain,readonly) NSString* GETParams;
 
-#pragma mark JSON
-- (NSString*)jsonAlbumList;
-- (NSString*)jsonStudyListForStudies:(NSArray*)studies;
-- (NSString*)jsonSeriesListForSeries:(NSArray*)series;
-- (NSString*)jsonImageListForImages:(NSArray*)images;
+@property(assign,readonly) WebPortalServer* server;
+@property(assign,readonly) WebPortal* portal;
+@property(assign,readonly) AsyncSocket* asyncSocket;
 
-#pragma mark Weasis
--(NSString*)weasisJnlpWithParamsString:(NSString*)parameters;
--(NSString*)weasisXmlWithParams:(NSDictionary*)parameters;
-
-#pragma mark Administration HTML
--(void)generate:(WebPortalResponse*)response adminIndex:(NSDictionary*)parameters;
--(void)generate:(WebPortalResponse*)response adminUser:(NSDictionary*)parameters;
+-(BOOL)requestIsIOS;
+-(BOOL)requestIsMacOS;
+-(NSString*)portalAddress;
+-(NSString*)portalURL;
+-(NSString*)dicomCStorePortString;
 
 @end

@@ -13,8 +13,9 @@
 =========================================================================*/
 
 #import "WebPortalUser.h"
+#import "DicomDatabase.h"
 #import "PSGenerator.h"
-#import "BrowserController.h"
+#import "WebPortal.h"
 #import "AppController.h"
 #import "NSError+OsiriX.h"
 
@@ -142,14 +143,14 @@ static PSGenerator *generator = nil;
 		return NO;
 	}
 	
-	NSFetchRequest* request = [[[NSFetchRequest alloc] init] autorelease];
-	request.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:BrowserController.currentBrowser.userManagedObjectContext];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"name == %@", *value]];
-	[[[BrowserController currentBrowser] userManagedObjectContext] lock];
+	[self.managedObjectContext lock];
 	@try {
-		NSError* e = NULL;
-		NSArray* users = [BrowserController.currentBrowser.userManagedObjectContext executeFetchRequest:request error:&e];
-		if (e) [NSException exceptionWithName:NSGenericException reason:@"Database error." userInfo:[NSDictionary dictionaryWithObject:e forKey:NSUnderlyingErrorKey]];
+		NSError* err = NULL;
+		NSFetchRequest* request = [[[NSFetchRequest alloc] init] autorelease];
+		request.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.managedObjectContext];
+		request.predicate = [NSPredicate predicateWithFormat:@"name == %@", *value];
+		NSArray* users = [self.managedObjectContext executeFetchRequest:request error:&err];
+		if (err) [NSException exceptionWithName:NSGenericException reason:@"Database error." userInfo:[NSDictionary dictionaryWithObject:err forKey:NSUnderlyingErrorKey]];
 		
 		if ((users.count == 1 && users.lastObject != self) || users.count > 1) {
 			if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString(@"A user with that name already exists. Two users cannot have the same name.", NULL)];
@@ -161,7 +162,7 @@ static PSGenerator *generator = nil;
 		if (error) *error = [NSError errorWithDomain:@"OsiriXDomain" code:-31 userInfo:info];
 		return NO;
 	} @finally {
-		[[[BrowserController currentBrowser] userManagedObjectContext] unlock];
+		[self.managedObjectContext unlock];
 	}
 
 	return YES;
@@ -170,11 +171,11 @@ static PSGenerator *generator = nil;
 -(BOOL)validateStudyPredicate:(NSString**)value error:(NSError**)error {
 	@try {
 		NSFetchRequest* request = [[[NSFetchRequest alloc] init] autorelease];
-		request.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:BrowserController.currentBrowser.userManagedObjectContext];
-		request.predicate = [BrowserController.currentBrowser smartAlbumPredicateString:*value];
+		request.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:self.managedObjectContext];
+		request.predicate = [DicomDatabase predicateForSmartAlbumFilter:*value];
 		
 		NSError* e = NULL;
-		[BrowserController.currentBrowser.managedObjectContext executeFetchRequest:request error:&e];
+		[WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:request error:&e];
 		if (e) {
 			if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescriptionFormat:NSLocalizedString(@"Syntax error in study predicate filter: %@", NULL), e.localizedDescription? e.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
 			return NO;

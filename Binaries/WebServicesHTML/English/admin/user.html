@@ -5,6 +5,41 @@
 	
 	<script language="JavaScript">
 		
+		var savedStudies;
+		
+		function onload() {
+			var form = document.getElementById('userEditionForm');
+			
+			savedStudies = new Array();
+			var i;
+			for (i = 0; i < form.studies.options.length; ++i) {
+				var o = form.studies.options[i];
+				savedStudies.push(new Array(o.value, o.text));
+			}
+		}
+		
+		function revertToSaved(form) {
+			while (form.studies.options.length)
+				form.studies.remove(0);
+				
+			var i;
+			for (i = 0; i < savedStudies.length; ++i) {
+				var o = savedStudies[i];
+				var option = document.createElement("option");
+				option.value = o[0];
+				option.text = o[1];
+				try {
+					form.studies.add(option, null); // standards compliant; doesn't work in IE
+				} catch(ex) {
+					form.studies.add(option); // IE only
+				}
+			}
+			
+			return true;
+		}
+		
+		window.onload = onload;
+		
 		function confirmDelete() {
 			return confirm("Do you really want to delete the user named \"%X:User.name%\"?");
 		}
@@ -65,6 +100,30 @@
 			}
 		}
 		
+		function selectedStudiesChanged(form) {
+			var selCount = 0;
+			var i;
+			for (i = 0; i < form.studies.options.length; ++i)
+				if (form.studies.options[i].selected)
+					++selCount;
+			form.removeSelectedStudiesButton.disabled = selCount==0;
+		}
+		
+		function removeSelectedStudies(form) {
+			while (form.studies.selectedIndex != -1)
+				form.studies.remove(form.studies.selectedIndex);
+		}
+		
+		function willSubmit(form) {
+			form.remainingStudies.value = "";
+			
+			var i;
+			for (i = 0; i < form.studies.options.length; ++i)
+				form.remainingStudies.value += (form.remainingStudies.value.length? "," : "") + escape(form.studies.options[i].value);
+
+			return true;
+		}
+		
 	</script>
 	
 	<div id="pageContent">
@@ -79,7 +138,7 @@
 		
 		%[IF:User%
 		<div class="block">
-			<form method="POST" action="?" class="form" id="userForm">
+			<form method="POST" action="?" class="form" id="userEditionForm">
 				<input type="hidden" name="originalName" value="%X:User.originalName%" />
 				<table class="wide form">
 					<tr><td><label for="name">Name:</label></td><td><input type="text" name="name" id="name" value="%X:User.name%" /></td></tr>
@@ -105,7 +164,7 @@
 								<option value="%X:Month.value%"%[IF:Month.selected% selected="selected"%]IF:Month.selected%%[IF:Month.disabled% disabled="disabled"%]IF:Month.disabled%>%X:Month.name%</option>
 								%]FOREACH:User.deletionDate.Months:Month%
 							</select>
-							<select name="deletionDate_day" id="deletionDate_day">
+							<select name="deletionDate_day">
 								%[FOREACH:User.deletionDate.Days:Day%
 								<option value="%X:Day.value%"%[IF:Day.selected% selected="selected"%]IF:Day.selected%%[IF:Day.disabled% disabled="disabled"%]IF:Day.disabled%>%X:Day.name%</option>
 								%]FOREACH:User.deletionDate.Days:Day%
@@ -116,7 +175,7 @@
 								%]FOREACH:User.deletionDate.NextYears:Year%
 							</select>
 							<script language="JavaScript">
-								adjustDates(document.getElementById('deletionDate_day'));
+								adjustDates(document.getElementById('userEditionForm').deletionDate_day);
 							</script>
 						</td>
 						<td><label><input type="checkbox" name="downloadZIP" onchange="adjustForm(this)"%[IF:User.downloadZIP% checked="checked"%]IF:User.downloadZIP%/>Authorized to download DICOM ZIP files</label></td>
@@ -138,11 +197,26 @@
 						<td></td>
 					</tr>
 					<script language="JavaScript">
-						adjustForm(document.getElementById('userForm'));
+						adjustForm(document.getElementById('userEditionForm'));
 					</script>
 				</table>
+				<table class="separated wide">
+					<tr><td>
+						<label for="studies">Specific studies:</label><br/>
+						<select multiple="multiple" name="studies" onchange="selectedStudiesChanged(this.form)">
+							%[FOREACH:User.studies:Study%
+							<option value="%X:Study.objectID.URIRepresentation%">%X:Study.study.name%: %X:Study.study.studyName%, %X:Study.study.date%</option>
+							%]FOREACH:User.studies:Study%
+						</select>
+						<button type="button" name="removeSelectedStudiesButton" onClick="removeSelectedStudies(this.form)">Remove Selected Studies</button>
+						<input type="hidden" name="remainingStudies" value="" />
+					<script language="JavaScript">
+						selectedStudiesChanged(document.getElementById('userEditionForm'))
+					</script>
+					</td></tr>
+				</table>
 				<div class="separated">
-					<button type="submit" name="action" value="save">Save Changes</button><button type="reset">Revert to Saved</button><button type="submit" name="action" value="delete" onClick="return confirmDelete()">Delete User</button>
+					<button type="submit" name="action" value="save"  onClick="return willSubmit(this.form)">Save Changes</button><button type="reset" onClick="return revertToSaved(this.form)">Revert to Saved</button><button type="submit" name="action" value="delete" onClick="return confirmDelete()">Delete User</button>
 				</div>
 			</form>
 		</div>

@@ -12,29 +12,26 @@
  PURPOSE.
  =========================================================================*/
 
-#import "WebPortalData.h"
+#import <Cocoa/Cocoa.h>
 
 
-@interface WebPortalPages : NSObject
-
-@end
+@class WebPortalUser;
 
 
-@interface ArrayTransformer : WebPortalProxyObjectTransformer
-+(id)create;
-@end
+@interface WebPortalDatabase : NSObject {
+    NSManagedObjectContext* managedObjectContext;
+}
 
++(NSManagedObjectModel*)managedObjectModel;
 
-@interface DateTransformer : WebPortalProxyObjectTransformer
-+(id)create;
-@end
+@property(readonly,retain) NSManagedObjectContext* managedObjectContext;
 
+-(id)initWithContext:(NSManagedObjectContext*)context;
 
-@interface AlbumTransformer : WebPortalProxyObjectTransformer
-+(id)create;
-@end
+-(void)save:(NSError**)err;
+-(NSEntityDescription*)entityForName:(NSString*)name;
 
+-(WebPortalUser*)userWithName:(NSString*)name;
+-(WebPortalUser*)newUser;
 
-@interface UserTransformer : WebPortalProxyObjectTransformer
-+(id)create;
 @end

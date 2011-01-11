@@ -15,6 +15,7 @@
 #import <Cocoa/Cocoa.h>
 
 /** \brief  Core Data Entity for a web user */
+@class WebPortalStudy;
 
 @interface WebPortalUser : NSManagedObject {
 }
@@ -50,8 +51,9 @@
 @end
 
 @interface WebPortalUser (CoreDataGeneratedAccessors)
-- (void)addStudiesObject:(NSManagedObject *)value;
-- (void)removeStudiesObject:(NSManagedObject *)value;
+
+- (void)addStudiesObject:(WebPortalStudy*)value;
+- (void)removeStudiesObject:(WebPortalStudy*)value;
 - (void)addStudies:(NSSet *)value;
 - (void)removeStudies:(NSSet *)value;
 

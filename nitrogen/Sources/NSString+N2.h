@@ -15,6 +15,8 @@
 #import <Cocoa/Cocoa.h>
 
 
+extern NSString* N2NonNullString(NSString* s);
+
 @interface NSString (N2)
 
 -(NSString*)markedString;
@@ -39,6 +41,7 @@
 -(NSRange)range;
 
 -(NSString*)resolvedPathString;
+-(NSString*)stringByComposingPathWithString:(NSString*)rel;
 
 @end
 

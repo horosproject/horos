@@ -51,7 +51,7 @@
 #import "OSIWindowController.h"
 #import "Notifications.h"
 #import "WaitRendering.h"
-#import "WebPortalConnection.h"
+#import "WebPortal.h"
 #import "ThreadPoolServer.h"
 #import "DicomImage.h"
 #import "ThreadsManager.h"
@@ -1412,8 +1412,8 @@ static NSDate *lastWarningDate = nil;
 		[[BrowserController currentBrowser] outlineViewRefresh];
 	}
 	
-	if( [(NSString*) [defaults valueForKey: @"webServerAddress"] length] == 0)
-		[defaults setValue: [[AppController sharedAppController] privateIP] forKey: @"webServerAddress"];
+//	if( [(NSString*) [defaults valueForKey:OsirixWebPortalAddressDefaultsKey] length] == 0)
+//		[defaults setValue: [[AppController sharedAppController] privateIP] forKey:OsirixWebPortalAddressDefaultsKey];
 	
 	if (restartListener)
 	{
@@ -1830,70 +1830,6 @@ static NSDate *lastWarningDate = nil;
 	[[DCMNetServiceDelegate sharedNetServiceDelegate] setPublisher: BonjourDICOMService];
 }
 
-#pragma mark-
-#pragma mark http server
-
-#ifndef OSIRIX_LIGHT
-
-- (void) webServerEmailNotifications: (NSTimer*) t
-{
-	[WebPortalConnection emailNotifications];
-}
-
-- (void) startHTTPserver: (id) sender
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	if( webServer == nil) webServer = [[ThreadPoolServer alloc] init];
-//		if( webServer == nil) webServer = [[ThreadPerConnectionServer alloc] init];
-		
-	[webServer setConnectionClass:[WebPortalConnection class]];
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptedWebServer"])
-		[webServer setType: @"_https._tcp."];
-	else
-		[webServer setType: @"_http._tcp."];
-	
-	[webServer setTXTRecordDictionary:[NSDictionary dictionaryWithObject:@"OsiriX" forKey:@"ServerType"]];
-	[webServer setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
-	[webServer setDocumentRoot:[NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]]];
-	
-	NSString *webServerAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"webServerAddress"];
-	if( [webServerAddress length] == 0)
-		[[NSUserDefaults standardUserDefaults] setValue: [self privateIP] forKey: @"webServerAddress"];
-	
-	NSError *error = nil;
-	BOOL success = [webServer start: &error];
-	
-	if( success == NO)
-	{
-		NSLog( @"************ WEB SERVER ERROR: %@", error);
-		[self performSelectorOnMainThread:@selector( displayError:) withObject: NSLocalizedString( @"Cannot start Web Server. TCP/IP port is probably already used by another process.", nil) waitUntilDone: YES];
-	}
-	else
-	{
-//		[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector( ignore:) userInfo:nil repeats:NO];
-		
-		[[NSRunLoop currentRunLoop] addTimer: [NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector( ignore:) userInfo:nil repeats:NO] forMode: @"privateHTTPWebServerRunMode"];
-		
-		@try
-		{
-//			[[NSRunLoop currentRunLoop] run];
-			
-			BOOL shouldKeepRunning = YES;
-			NSRunLoop *theRL = [NSRunLoop currentRunLoop];
-			while (shouldKeepRunning && [theRL runMode: @"privateHTTPWebServerRunMode" beforeDate: [NSDate distantFuture]]);
-		}
-		
-		@catch( NSException *e)
-		{
-			NSLog( @"************ startHTTPserver exception: %@", e);
-		}
-	}
-	
-	[pool release];
-}
-#endif
 
 #pragma mark-
 
@@ -2475,7 +2411,12 @@ static NSDate *lastWarningDate = nil;
 	for( NSThread *t in [[ThreadsManager defaultManager] threads])
 		[t setIsCancelled: YES];
 	
+	
 	[[BrowserController currentBrowser] browserPrepareForClose];
+
+#ifndef OSIRIX_LIGHT
+	[WebPortal applicationWillTerminate];
+#endif
 
 	[ROI saveDefaultSettings];
 	
@@ -3405,12 +3346,8 @@ static BOOL initialized = NO;
 		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCMethods alloc] init];
 	}
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpWebServer"])
-	{
-		[[BrowserController currentBrowser] userManagedObjectContext];
-		[NSThread detachNewThreadSelector: @selector( startHTTPserver:) toTarget: self withObject:nil];
-		NSTimer *t = [[NSTimer scheduledTimerWithTimeInterval: 60 * [[NSUserDefaults standardUserDefaults] integerForKey: @"notificationsEmailsInterval"] target: self selector: @selector( webServerEmailNotifications:) userInfo: nil repeats: YES] retain];
-	}
+	[WebPortal applicationWillFinishLaunching];
+	
 	#endif
 	
 	#if __LP64__
@@ -5066,6 +5003,16 @@ static BOOL initialized = NO;
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"hasFULL32BITPIPELINE"];
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FULL32BITPIPELINE"];
 	}
+}
+
+#pragma mark -
+
+-(WebPortal*)defaultWebPortal {
+#ifndef OSIRIX_LIGHT
+	return [WebPortal defaultWebPortal];
+#else
+	return NULL;
+#endif
 }
 
 @end

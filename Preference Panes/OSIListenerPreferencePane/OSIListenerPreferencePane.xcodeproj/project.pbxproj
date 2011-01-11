@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		590A3E0012A93CCC004581C2 /* OSIListenerPreferencePanePref.mm in Sources */ = {isa = PBXBuildFile; fileRef = 590A3DFF12A93CCC004581C2 /* OSIListenerPreferencePanePref.mm */; };
 		592683FD11CFA8C400CFA81F /* OpenNetworkSysPrefs.scpt in Resources */ = {isa = PBXBuildFile; fileRef = 592683DA11CFA66B00CFA81F /* OpenNetworkSysPrefs.scpt */; };
 		592683FE11CFA8C400CFA81F /* OpenSharingSysPrefs.scpt in Resources */ = {isa = PBXBuildFile; fileRef = 592683DB11CFA66B00CFA81F /* OpenSharingSysPrefs.scpt */; };
 		59BDF4AE1180A061007F1F2C /* OsiriX Headers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59BDF4AD1180A061007F1F2C /* OsiriX Headers.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		8D202CEA0486D31800D8A456 /* OSIListenerPreferencePane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32DBCFA20370C41700C91783 /* OSIListenerPreferencePane_Prefix.pch */; };
 		8D202CEB0486D31800D8A456 /* OSIListenerPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */; };
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
-		8D202CF10486D31800D8A456 /* OSIListenerPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 		A9C549D810FF43AF0026EA70 /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = A9C549D710FF43AF0026EA70 /* DDKeychain.h */; };
@@ -29,6 +29,7 @@
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCFA20370C41700C91783 /* OSIListenerPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIListenerPreferencePane_Prefix.pch; sourceTree = "<group>"; };
+		590A3DFF12A93CCC004581C2 /* OSIListenerPreferencePanePref.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OSIListenerPreferencePanePref.mm; sourceTree = "<group>"; };
 		592683DA11CFA66B00CFA81F /* OpenNetworkSysPrefs.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.scpt; path = OpenNetworkSysPrefs.scpt; sourceTree = "<group>"; };
 		592683DB11CFA66B00CFA81F /* OpenSharingSysPrefs.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.scpt; path = OpenSharingSysPrefs.scpt; sourceTree = "<group>"; };
 		59BDF4AD1180A061007F1F2C /* OsiriX Headers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "OsiriX Headers.framework"; path = "../../build/Development/OsiriX Headers.framework"; sourceTree = SOURCE_ROOT; };
@@ -41,7 +42,6 @@
 		CEB0705C0C87502F0011AEE1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIListenerPreferencePanePref.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIListenerPreferencePanePref.h; sourceTree = "<group>"; };
-		F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIListenerPreferencePanePref.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,7 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */,
-				F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */,
+				590A3DFF12A93CCC004581C2 /* OSIListenerPreferencePanePref.mm */,
 				A9C549D710FF43AF0026EA70 /* DDKeychain.h */,
 			);
 			name = Classes;
@@ -184,7 +184,6 @@
 			isa = PBXProject;
 			buildConfigurationList = CE3E1F5408758851007FFD6F /* Build configuration list for PBXProject "OSIListenerPreferencePane" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -231,7 +230,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D202CF10486D31800D8A456 /* OSIListenerPreferencePanePref.m in Sources */,
+				590A3E0012A93CCC004581C2 /* OSIListenerPreferencePanePref.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

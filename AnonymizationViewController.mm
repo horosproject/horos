@@ -176,7 +176,6 @@
 }
 
 -(void)updateFormatsAreOk {
-//	NSLog(@"updateFormatsAreOk");
 	BOOL ok = YES;
 	for (DCMAttributeTag* tag in tags) {
 		N2TextField* textField = [tagsView textFieldForObject:tag];
@@ -187,7 +186,6 @@
 }
 
 -(void)setFormatsAreOk:(BOOL)flag {
-//	NSLog(@"setFormatsAreOk:%d",flag);
 	if (flag == formatsAreOk)
 		return;
 	formatsAreOk = flag;
@@ -222,7 +220,7 @@
 //}
 
 -(void)dealloc {
-	NSLog(@"AnonymizationViewController dealloc");
+//	NSLog(@"AnonymizationViewController dealloc");
 //	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewFrameDidChangeNotification object:self.view];
 	
 	while (tags.count)

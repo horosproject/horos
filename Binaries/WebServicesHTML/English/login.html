@@ -1,16 +1,12 @@
 %INCLUDE:head.pvt.html%
-<body>
-	<div id="pageContent">
-	    <h1 id="pageTitle">%PageTitle%</h1>
 
-		<div id="Home" class="panel">
+	<div id="content">
+		<div class="block">
     		Access to this page is restricted.
-			<form method="post">
+			<form action="" method="post">
         	%INCLUDE:login.pvt.html%
 			</form>
-			%AuthorizedRestorePasswordWebServer%<a href="password_forgotten"><span class="small">Password Forgotten?</span></a>%/AuthorizedRestorePasswordWebServer%
 		</div>
-		%INCLUDE:footer.pvt.html%
 	</div>
-</body>
-</html>
+
+%INCLUDE:footer.pvt.html%

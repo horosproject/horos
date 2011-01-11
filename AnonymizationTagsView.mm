@@ -74,7 +74,7 @@
 }
 
 -(void)dealloc {
-	NSLog(@"AnonymizationTagsView dealloc");
+//	NSLog(@"AnonymizationTagsView dealloc");
 	[dcmTagsPopUpButton release];
 	[dcmTagAddButton release];
 	[viewGroups release];

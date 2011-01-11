@@ -17,20 +17,29 @@
 
 #import "OSIWebSharingPreferencePanePref.h"
 #import <OsiriX Headers/DefaultsOsiriX.h>
+#import <OsiriX Headers/NSUserDefaults+OsiriX.h>
 #import <OsiriX Headers/BrowserController.h>
 #import <OsiriX Headers/AppController.h>
 #import <OsiriX Headers/NSFileManager+N2.h>
+#import <OsiriX Headers/WebPortal.h>
+#import <OsiriX Headers/WebPortalDatabase.h>
+#import <OsiriX Headers/DicomDatabase.h>
 
 #import "DDKeychain.h"
 
-#include <netdb.h>
-#include <unistd.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+//#include <netdb.h>
+//#include <unistd.h>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
 
 @implementation OSIWebSharingPreferencePanePref
 
 @synthesize TLSAuthenticationCertificate;
+
+-(void)awakeFromNib {
+	[addressTextField.cell setPlaceholderString:NSUserDefaults.defaultWebPortalAddress];
+	[portTextField.cell setPlaceholderString:[NSNumber numberWithInteger:NSUserDefaults.webPortalPortNumber].stringValue];
+}
 
 - (NSString*) UniqueLabelForSelectedServer;
 {
@@ -99,9 +108,9 @@
 	[DDKeychain openCertificatePanelForLabel:label];
 }
 
-- (NSManagedObjectContext*) managedObjectContext
+- (NSManagedObjectContext*)managedObjectContext
 {
-	return [[BrowserController currentBrowser] userManagedObjectContext];
+	return WebPortal.defaultWebPortal.database.managedObjectContext;
 }
 
 //- (void) enableControls: (BOOL) val
@@ -142,7 +151,7 @@
 {
 	[[[self mainView] window] makeFirstResponder: nil];
 	
-	[[BrowserController currentBrowser] saveUserDatabase];
+	[WebPortal.defaultWebPortal.database save:NULL];
 	
 	[BrowserController currentBrowser].testPredicate = nil;
 	[[BrowserController currentBrowser] outlineViewRefresh];
@@ -162,7 +171,7 @@
 		
 		@try
 		{
-			[BrowserController currentBrowser].testPredicate = [[BrowserController currentBrowser] smartAlbumPredicateString: [[[userArrayController selectedObjects] lastObject] valueForKey: @"studyPredicate"]];
+			[BrowserController currentBrowser].testPredicate = [DicomDatabase predicateForSmartAlbumFilter: [[[userArrayController selectedObjects] lastObject] valueForKey: @"studyPredicate"]];
 			[[BrowserController currentBrowser] outlineViewRefresh];
 			[BrowserController currentBrowser].testPredicate = nil;
 			NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle(@"Study Filter", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"The result is now displayed in the Database Window.", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), nil, nil);

@@ -20,6 +20,9 @@
 	
 	NSString *TLSAuthenticationCertificate;
 	IBOutlet NSButton *TLSChooseCertificateButton, *TLSCertificateButton;
+	
+	IBOutlet NSTextField* addressTextField;
+	IBOutlet NSTextField* portTextField;
 }
 @property (retain) NSString *TLSAuthenticationCertificate;
 

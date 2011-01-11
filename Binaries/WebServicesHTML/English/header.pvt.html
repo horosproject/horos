@@ -6,5 +6,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
 	<link rel="stylesheet" type="text/css" href="/style.css" title="standard" />
 	<link rel="alternate stylesheet" type="text/css" href="/iPhoneStyle.css" title="iPhone" />
-	<script type="text/javascript" language="javascript" src="/styleswitcher.js"></script>
+	<script type="text/javascript" src="/styleswitcher.js"></script>
 </head>
+<body>
+	<!--% userAccount%-->
+	<div id="userbox"><form method="POST" action="/"><div><span name="text">Logged in as <a href="/account">%X:User.name%</a></span><button type="submit" name="logout" value="logout">Logout</button></div></form></div>
+	<!--% /userAccount%-->
+	<div id="header">
+		%PageTitle%
+	</div>

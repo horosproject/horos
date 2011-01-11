@@ -1,16 +1,11 @@
-%INCLUDE:head.pvt.html%
-<body>
-	%INCLUDE:userbox.pvt.html%
-	<div id="pageContent">
-	    <h1 id="pageTitle">%PageTitle%</h1>
-
-		<div id="Home" class="panel">
+%INCLUDE:header.pvt.html%
+	
+	<div id="content">
+		<div class="block">
 			<form action="/main" method="post">
-        	%INCLUDE:login.pvt.html%
+			%INCLUDE:login.pvt.html%
 			</form>
-			%AuthorizedRestorePasswordWebServer%<a href="password_forgotten"><span class="small">Password Forgotten?</span></a>%/AuthorizedRestorePasswordWebServer%
 		</div>
-		%INCLUDE:footer.pvt.html%
 	</div>
-</body>
-</html>
+
+%INCLUDE:footer.pvt.html%

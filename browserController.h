@@ -44,9 +44,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @interface BrowserController : NSWindowController   //NSObject
 {
-	NSManagedObjectModel			*managedObjectModel, *userManagedObjectModel;
-    NSManagedObjectContext			*managedObjectContext, *userManagedObjectContext;
-	NSPersistentStoreCoordinator	*userPersistentStoreCoordinator;
+	NSManagedObjectModel			*managedObjectModel;//, *userManagedObjectModel;
+    NSManagedObjectContext			*managedObjectContext;//, *userManagedObjectContext;
+//	NSPersistentStoreCoordinator	*userPersistentStoreCoordinator;
 	NSMutableDictionary				*persistentStoreCoordinatorDictionary;
 	
 	NSDateFormatter			*DateTimeFormat, *DateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
@@ -244,10 +244,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSObject* activityObserver;
 }
 
+@property(readonly) NSManagedObjectContext *bonjourManagedObjectContext;
+
 @property(readonly) NSDateFormatter *DateTimeFormat, *DateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
 @property(readonly) NSRecursiveLock *checkIncomingLock;
-@property(readonly) NSManagedObjectContext *userManagedObjectContext, *bonjourManagedObjectContext;
-@property(readonly) NSManagedObjectModel *userManagedObjectModel;
 @property(readonly) NSArray *matrixViewArray;
 @property(readonly) NSMatrix *oMatrix;
 @property(readonly) long COLUMN, currentBonjourService;
@@ -561,11 +561,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (void) initAnimationSlider;
 
-- (long) saveUserDatabase;
 
 - (void) setSearchString: (NSString *)searchString;
-
--(WebPortalUser*)userWithName:(NSString*)name;
 
 + (NSString*) DateTimeWithSecondsFormat:(NSDate*) t;
 + (NSString*) TimeWithSecondsFormat:(NSDate*) t;
@@ -586,5 +583,15 @@ OsirixNewStudySelectedNotification with userinfo key @"Selected Study" posted wh
 @"DCMImageTilingHasChanged" when image tiling has changed
 OsirixAddToDBNotification posted when files are added to the DB
 */
+
+#pragma mark Deprecated
+
+@property(readonly) NSManagedObjectContext *userManagedObjectContext __deprecated;
+@property(readonly) NSManagedObjectModel *userManagedObjectModel __deprecated;
+
+-(long)saveUserDatabase __deprecated;
+-(WebPortalUser*)userWithName:(NSString*)name __deprecated;
+
+
 
 @end

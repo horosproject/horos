@@ -14,94 +14,55 @@
 
 #import "NSUserDefaultsController+OsiriX.h"
 #import "NSUserDefaultsController+N2.h"
-
-
-@interface NSUserDefaultsControllerOsirixHelper : NSObject
-@end
-@implementation NSUserDefaultsControllerOsirixHelper
-
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
-	NSUserDefaultsController* defaults = [NSUserDefaultsController sharedUserDefaultsController];
-	
-	if ([keyPath isEqual:valuesKeyPath(OsirixWadoServerActiveDefaultsKey)])
-		if (![defaults boolForKey:OsirixWadoServerActiveDefaultsKey])
-			[defaults setBool:NO forKey:OsirixWebServerUsesWeasisDefaultsKey];
-}
-
-@end
+#import "NSUserDefaults+OsiriX.h"
 
 
 @implementation NSUserDefaultsController (OsiriX)
+@end
 
-+(void)initialize {
-	NSUserDefaultsControllerOsirixHelper* helper = [[NSUserDefaultsControllerOsirixHelper alloc] init];
-	// [defaults addObserver:helper forValuesKey:DiscPublishingBurnMediaTypeDefaultsKey options:NULL context:NULL];
-	[[self sharedUserDefaultsController] addObserver:helper forValuesKey:OsirixWadoServerActiveDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
-}
+@implementation NSUserDefaultsController (Deprecated)
 
-#pragma mark Bonjour Sharing
-
-NSString* const OsirixBonjourSharingActiveFlagDefaultsKey = @"bonjourSharing";
+NSString* const OsirixBonjourSharingActiveFlagDefaultsKey = OsirixBonjourSharingIsActiveDefaultsKey;
+NSString* const OsirixBonjourSharingPasswordFlagDefaultsKey = OsirixBonjourSharingIsPasswordProtectedDefaultsKey;
+NSString* const OsirixWebServerUsesWeasisDefaultsKey = OsirixWebPortalUsesWeasisDefaultsKey;
+NSString* const OsirixWadoServerActiveDefaultsKey = OsirixWadoServiceEnabledDefaultsKey;
+NSString* const OsirixWebServerPrefersFlashDefaultsKey = OsirixWebPortalPrefersFlashDefaultsKey;
+NSString* const OsirixWebServerPrefersCustomWebPagesKey = OsirixWebPortalPrefersCustomWebPagesKey;
 
 +(BOOL)IsBonjourSharingActive {
-	return [[self sharedUserDefaultsController] boolForKey:OsirixBonjourSharingActiveFlagDefaultsKey];
+	return NSUserDefaults.bonjourSharingIsActive;
 }
 
-NSString* const OsirixBonjourSharingNameDefaultsKey = @"bonjourServiceName";
++(BOOL)IsBonjourSharingPasswordProtected {
+	return NSUserDefaults.bonjourSharingIsPasswordProtected;
+}
+
++(NSString*)BonjourSharingPassword {
+	return NSUserDefaults.bonjourSharingPassword;
+}
 
 +(NSString*)BonjourSharingName {
-	NSString* r = [[self sharedUserDefaultsController] stringForKey:OsirixBonjourSharingNameDefaultsKey];
-	if (!r) r = [self DefaultBonjourSharingName];
-	return r;
+	return NSUserDefaults.bonjourSharingName;
 }
 
 +(NSString*)DefaultBonjourSharingName {
-	char s[_POSIX_HOST_NAME_MAX+1];
-	gethostname(s, _POSIX_HOST_NAME_MAX);
-	
-	NSString* r = [NSString stringWithUTF8String:s];
-	
-	NSRange range = [r rangeOfString: @"."];
-	if (range.location != NSNotFound)
-		r = [r substringToIndex:range.location];
-	
-	return r;
+	return NSUserDefaults.defaultBonjourSharingName;
 }
-
-NSString* const OsirixBonjourSharingPasswordFlagDefaultsKey = @"bonjourPasswordProtected";
-
-+(BOOL)IsBonjourSharingPasswordProtected {
-	return [[self sharedUserDefaultsController] boolForKey:OsirixBonjourSharingPasswordFlagDefaultsKey];
-}
-
-NSString* const OsirixBonjourSharingPasswordDefaultsKey = @"bonjourPassword";
-
-+(NSString*)BonjourSharingPassword {
-	return [self IsBonjourSharingPasswordProtected]? [[self sharedUserDefaultsController] stringForKey:OsirixBonjourSharingPasswordDefaultsKey] : NULL;
-}
-
-NSString* const OsirixWebServerUsesWeasisDefaultsKey = @"WebServerUsesWeasis";
 
 +(BOOL)WebServerUsesWeasis {
-	return [[NSUserDefaultsController sharedUserDefaultsController] boolForKey:OsirixWebServerUsesWeasisDefaultsKey];
+	return NSUserDefaults.webPortalUsesWeasis;
 }
-
-NSString* const OsirixWadoServerActiveDefaultsKey = @"wadoServer";
 
 +(BOOL)WadoServerActive {
-	return [[NSUserDefaultsController sharedUserDefaultsController] boolForKey:OsirixWadoServerActiveDefaultsKey];
+	return NSUserDefaults.wadoServiceEnabled;
 }
-
-NSString* const OsirixWebServerPrefersFlashDefaultsKey = @"WebServerPrefersFlash";
 
 +(BOOL)WebServerPrefersFlash {
-	return [[NSUserDefaultsController sharedUserDefaultsController] boolForKey:OsirixWebServerPrefersFlashDefaultsKey];
+	return NSUserDefaults.webPortalPrefersFlash;
 }
 
-NSString* const OsirixWebServerPrefersCustomWebPagesKey = @"customWebPages";
 +(BOOL)WebServerPrefersCustomWebPages {
-	return [[NSUserDefaultsController sharedUserDefaultsController] boolForKey:OsirixWebServerPrefersCustomWebPagesKey];
+	return NSUserDefaults.webPortalPrefersCustomWebPages;
 }
-
 
 @end

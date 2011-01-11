@@ -21,22 +21,13 @@ NSString* const SessionCookieName = @"SID";
 
 @implementation WebPortalSession
 
-static NSMutableArray* Sessions = NULL;
-static NSLock* SessionsArrayLock = NULL;
-static NSLock* SessionCreateLock = NULL;
-
-+(void)initialize {
-	Sessions = [[NSMutableArray alloc] initWithCapacity:64];
-	SessionsArrayLock = [[NSLock alloc] init];
-	SessionCreateLock = [[NSLock alloc] init];
-}
-
-@synthesize sid;
+@synthesize sid, sendLock;
 
 -(id)initWithId:(NSString*)isid {
 	self = [super init];
 	sid = [isid retain];
-	lock = [[NSLock alloc] init];
+	dictLock = [[NSLock alloc] init];
+	sendLock = [[NSLock alloc] init];
 	dict = [[NSMutableDictionary alloc] initWithCapacity:8];
 	return self;
 }
@@ -44,85 +35,40 @@ static NSLock* SessionCreateLock = NULL;
 -(void)dealloc {
 	[dict release];
 	[sid release];
-	[lock release];
+	[dictLock release];
+	[sendLock release];
 	[super dealloc];
 }
 
 NSString* const SessionUsernameKey = @"Username"; // NSString
 NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
-
-+(id)sessionForId:(NSString*)sid {
-	[SessionsArrayLock lock];
-	WebPortalSession* session = NULL;
-	
-	for (WebPortalSession* isession in Sessions)
-		if ([isession.sid isEqual:sid]) {
-			session = isession;
-			break;
-		}
-	
-	[SessionsArrayLock unlock];
-	return session;
-}
-
-+(id)sessionForUsername:(NSString*)username token:(NSString*)token {
-	[SessionsArrayLock lock];
-	WebPortalSession* session = NULL;
-	
-	for (WebPortalSession* isession in Sessions)
-		if ([[isession objectForKey:SessionUsernameKey] isEqual:username] && [isession consumeToken:token]) {
-			session = isession;
-			break;
-		}
-	
-	[SessionsArrayLock unlock];
-	return session;
-}
-
-+(id)create {
-	[SessionCreateLock lock];
-
-	NSString* sid;
-	long sidd;
-	do { // is this a dumb way to generate SIDs?
-		sidd = random();
-	} while ([self sessionForId: sid = [[[NSData dataWithBytes:&sidd length:sizeof(long)] md5Digest] hex]]);
-	
-	WebPortalSession* session = [[WebPortalSession alloc] initWithId:sid];
-	[SessionsArrayLock lock];
-	[Sessions addObject:session];
-	[SessionsArrayLock unlock];
-	[session release];
-	
-	[SessionCreateLock unlock];
-	return session;
-}
+NSString* const SessionChallengeKey = @"Challenge"; // NSString
 
 -(void)setObject:(id)o forKey:(NSString*)k {
-	[lock lock];
+	[dictLock lock];
 	if (o) [dict setObject:o forKey:k];
 	else [dict removeObjectForKey:k];
-	[lock unlock];
+	[dictLock unlock];
 }
 
 -(id)objectForKey:(NSString*)k {
-	[lock lock];
+	[dictLock lock];
 	id value = [dict objectForKey:k];
-	[lock unlock];
+	[dictLock unlock];
 	return value;
 }
 
 -(NSMutableDictionary*)tokensDictionary {
-	[lock lock];
+	[dictLock lock];
 	NSMutableDictionary* tdict = [dict objectForKey:SessionTokensDictKey];
 	if (!tdict) [dict setObject: tdict = [NSMutableDictionary dictionary] forKey:SessionTokensDictKey];
-	[lock unlock];
+	[dictLock unlock];
 	return tdict;
 }
 
 -(NSString*)createToken {
 	NSMutableDictionary* tokensDictionary = [self tokensDictionary];
-	[lock lock];
+	[dictLock lock];
 	
 	NSString* token;
 	double tokend;
@@ -132,19 +78,36 @@ NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 	
 	[tokensDictionary setObject:[NSDate date] forKey:token];
 	
-	[lock unlock];
+	[dictLock unlock];
 	return token;
 }
 
 -(BOOL)consumeToken:(NSString*)token {
 	NSMutableDictionary* tokensDictionary = [self tokensDictionary];
-	[lock lock];
+	[dictLock lock];
 	
 	BOOL ok = [[tokensDictionary allKeys] containsObject:token];
 	if (ok) [tokensDictionary removeObjectForKey:token];
 	
-	[lock unlock];
+	[dictLock unlock];
 	return ok;
 }
+
+-(NSString*)newChallenge {
+	double challenged = [NSDate timeIntervalSinceReferenceDate];
+	NSString* challenge = [[[NSData dataWithBytes:&challenged length:sizeof(double)] md5Digest] hex];
+	[dict setObject:challenge forKey:SessionChallengeKey];
+	return challenge;
+}
+
+-(NSString*)challenge {
+	return [self objectForKey:SessionChallengeKey];
+}
+
+-(void)deleteChallenge {
+	return [dict removeObjectForKey:SessionChallengeKey];
+}
+
+
 
 @end

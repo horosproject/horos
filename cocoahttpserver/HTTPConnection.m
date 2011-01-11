@@ -736,8 +736,13 @@ static NSMutableArray *recentNonces;
 	
 	if(!isRangeRequest)
 	{
-		// Status Code 200 - OK
-		response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, kCFHTTPVersion1_1);
+		CFIndex statusCode = 0;
+		if ([httpResponse respondsToSelector:@selector(statusCode)])
+			statusCode = [httpResponse statusCode];
+		if (!statusCode)
+			statusCode = 200; // OK
+		
+		response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, statusCode, NULL, kCFHTTPVersion1_1);
 		
 		if(isChunked)
 		{

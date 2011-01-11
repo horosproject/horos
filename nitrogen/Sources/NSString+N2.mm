@@ -18,6 +18,10 @@
 #include <sys/stat.h>
 
 
+NSString* N2NonNullString(NSString* s) {
+	return s? s : @"";
+}
+
 @implementation NSString (N2)
 
 -(NSString*)markedString {
@@ -104,7 +108,7 @@
 										 @"&quot;", @"\"",
 										 NULL] retain];
 	
-	NSMutableString* temp = [self mutableCopy];
+	NSMutableString* temp = self.mutableCopy;
 	// apmp first!!
 	if (!unescape)
 		[temp replaceOccurrencesOfString:@"&" withString:@"&amp;"];
@@ -292,6 +296,12 @@
 	}
 	
 	return resolvedPath;
+}
+
+-(NSString*)stringByComposingPathWithString:(NSString*)rel {
+	NSURL* baseurl = [NSURL URLWithString: [self characterAtIndex:0] == '/' ? self : [NSString stringWithFormat:@"/%@", self] ];
+	NSURL* url = [NSURL URLWithString:rel relativeToURL:baseurl];
+	return [self characterAtIndex:0] == '/' ? url.path : [url.path substringFromIndex:1];
 }
 
 @end

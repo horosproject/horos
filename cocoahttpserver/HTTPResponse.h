@@ -42,6 +42,8 @@
 // Important: You should read the discussion at the bottom of this header.
 - (BOOL)isChunked;
 
+- (int)statusCode;
+
 #endif
 
 @end

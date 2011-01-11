@@ -18,6 +18,8 @@
 #import <OsiriX Headers/NSUserDefaultsController+OsiriX.h>
 #import "DDKeychain.h"
 #import <SecurityInterface/SFChooseIdentityPanel.h>
+#import <OsiriX Headers/WebPortal.h>
+#import <OsiriX Headers/WebPortalDatabase.h>
 
 #include <netdb.h>
 #include <unistd.h>
@@ -32,7 +34,7 @@ char *GetPrivateIP()
 	if ((h=gethostbyname(hostname)) == NULL)
 	{
         perror("Error: ");
-        return "(Error locating Private IP Address)";
+        return (char*)"(Error locating Private IP Address)";
     }
 	
     return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
@@ -50,7 +52,7 @@ char *GetPrivateIP()
 
 - (NSManagedObjectContext*) managedObjectContext
 {
-	return [[BrowserController currentBrowser] userManagedObjectContext];
+	return WebPortal.defaultWebPortal.database.managedObjectContext;
 }
 
 -(NSArray*)IPv4Address;
@@ -73,7 +75,7 @@ char *GetPrivateIP()
 }
 
 -(void)awakeFromNib {
-	[sharingNameField.cell setPlaceholderString:[NSUserDefaultsController DefaultBonjourSharingName]];
+	[sharingNameField.cell setPlaceholderString:NSUserDefaults.defaultBonjourSharingName];
 }
 
 - (void) dealloc
@@ -171,7 +173,7 @@ char *GetPrivateIP()
 	self.TLSDHParameterFileURL = [NSURL fileURLWithPath:dhParameterFileURL];
 	
 	if([[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPCertificateVerification"])
-		self.TLSCertificateVerification = [[[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPCertificateVerification"] intValue];
+		self.TLSCertificateVerification = (TLSCertificateVerificationType)[[[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPCertificateVerification"] intValue];
 	else
 		self.TLSCertificateVerification = IgnorePeerCertificate;
 	

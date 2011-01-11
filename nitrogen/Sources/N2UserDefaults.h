@@ -24,35 +24,35 @@
 @property(readonly, retain) NSString* identifier;
 @property BOOL autosave;
 
-+(N2UserDefaults*)defaultsForObject:(id)o;
-+(N2UserDefaults*)defaultsForClass:(Class)c;
-+(N2UserDefaults*)defaultsForIdentifier:(NSString*)identifier;
++(N2UserDefaults*)defaultsForObject:(id)o __deprecated;
++(N2UserDefaults*)defaultsForClass:(Class)c __deprecated;
++(N2UserDefaults*)defaultsForIdentifier:(NSString*)identifier __deprecated;
 
--(id)initWithIdentifier:(NSString*)identifier;
+-(id)initWithIdentifier:(NSString*)identifier __deprecated;
 
--(id)objectForKey:(NSString*)key;
--(BOOL)hasObjectForKey:(NSString*)key;
--(void)setObject:(id)obj forKey:(NSString*)key;
+-(id)objectForKey:(NSString*)key __deprecated;
+-(BOOL)hasObjectForKey:(NSString*)key __deprecated;
+-(void)setObject:(id)obj forKey:(NSString*)key __deprecated;
 
--(id)unarchiveObjectForKey:(NSString*)key default:(id)def class:(Class)c;
--(void)archiveAndSetObject:(id)value forKey:(NSString*)key;
+-(id)unarchiveObjectForKey:(NSString*)key default:(id)def class:(Class)c __deprecated;
+-(void)archiveAndSetObject:(id)value forKey:(NSString*)key __deprecated;
 	
--(NSInteger)integerForKey:(NSString*)key default:(NSInteger)def;
--(void)setInteger:(NSInteger)value forKey:(NSString*)key;
+-(NSInteger)integerForKey:(NSString*)key default:(NSInteger)def __deprecated;
+-(void)setInteger:(NSInteger)value forKey:(NSString*)key __deprecated;
 
--(float)floatForKey:(NSString*)key default:(float)def;
--(void)setFloat:(float)value forKey:(NSString*)key;
+-(float)floatForKey:(NSString*)key default:(float)def __deprecated;
+-(void)setFloat:(float)value forKey:(NSString*)key __deprecated;
 
--(double)doubleForKey:(NSString*)key default:(double)def;
--(void)setDouble:(double)value forKey:(NSString*)key;
+-(double)doubleForKey:(NSString*)key default:(double)def __deprecated;
+-(void)setDouble:(double)value forKey:(NSString*)key __deprecated;
 
--(BOOL)boolForKey:(NSString*)key default:(BOOL)def;
--(void)setBool:(BOOL)value forKey:(NSString*)key;
+-(BOOL)boolForKey:(NSString*)key default:(BOOL)def __deprecated;
+-(void)setBool:(BOOL)value forKey:(NSString*)key __deprecated;
 
--(NSColor*)colorForKey:(NSString*)key default:(NSColor*)def;
--(void)setColor:(NSColor*)value forKey:(NSString*)key;
+-(NSColor*)colorForKey:(NSString*)key default:(NSColor*)def __deprecated;
+-(void)setColor:(NSColor*)value forKey:(NSString*)key __deprecated;
 
--(NSRect)rectForKey:(NSString*)key default:(NSRect)def;
--(void)setRect:(NSRect)value forKey:(NSString*)key;
+-(NSRect)rectForKey:(NSString*)key default:(NSRect)def __deprecated;
+-(void)setRect:(NSRect)value forKey:(NSString*)key __deprecated;
 
 @end

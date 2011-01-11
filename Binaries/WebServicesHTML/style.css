@@ -1,220 +1,196 @@
-body
-{
+html {
+    margin: 0;
+    padding: 0;
+}
+
+body {
     margin: 0px;
+    padding: 0;
     font-family: Helvetica;
-	font-size:12pt;
-    background:#ffFFff;
-    color:#000000;
+	font-size: 12pt;
+    background: #ffffff;
+    color: #000000;
 }
 
-#pageContent
-{
-	background-color:#ffFFff;
-	margin:0px;
-	padding:30px;
+body > * {
+	padding: 0 15px 0 15px;
 }
 
-h1
-{
+#header {
+	padding-top: 15px;
+	margin-bottom: 1px;
+	font-size: 20px;
+	font-weight: bold;
+	border-bottom: thin solid #555555;
+}
+
+#header * {
+	font-size: 10pt;
+	font-weight: normal;
+}
+
+#content {
+	margin: 0px;
+	padding: 15px;
+}
+
+#footer {
+	border-top: thin solid #555555;
+	padding-top: 3px;
+	margin: 1px 0 0 0;
+	text-align: center;
+	font-size: 10pt;
+}
+
+h1 {
 	border-bottom: #555555 solid thin;
-	font-size:16pt;
+	font-size: 16pt;
 }
 
-h2
-{
-	color:#333333;
-	font-size:14pt;
+h2 {
+	color: #333333;
+	font-size: 14pt;
 }
 
-#error
-{
-	background-color:#ffFFff;
-	opacity:0.8;
-	position:absolute;
-	left:0;
-	right:0;
-	top:0;
-	bottom:0;
+h3 {
+	color: #333333;
+	font-size: 12pt;
 }
 
-#errorMessage
-{
-	position:absolute;
-	top:35%;
-	left:30%;
-	right:30%;
-	width:40%;
-	padding:20px;
-	vertical-align:middle;
-	text-align: center;	
-	background-color:#aa0000;
-	border:thin solid #330000;
-	color:#ffFFff;
-	font-size:14pt;
-}
-
-#notification
-{
-	background-color:#ffFFff;
-	opacity:0.8;
-	position:absolute;
-	left:0;
-	right:0;
-	top:0;
-	bottom:0;
-}
-
-#notificationMessage
-{
-	position:absolute;
-	top:35%;
-	left:30%;
-	right:30%;
-	width:40%;
-	padding:20px;
-	vertical-align:middle;
-	text-align: center;	
-	background-color:#333333;
-	border:thin solid black;
-	color:#ffFFff;
-	font-size:14pt;
-}
-
-h3
-{
-	color:#333333;
-	font-size:12pt;
-}
-
-ul
-{
+ul {
 	list-style-type: none;
 }
 
-li a
-{
+a {
 	color: black;
-	text-decoration:none;
+	text-decoration: none;
 }
 
-li a:hover
-{
-	text-decoration:none;
-}
-
-a
-{
-	color: #000000;
-	text-decoration:none;
-}
-
-a:hover
-{
+a:hover {
 	text-decoration:underline;
 }
 
-.block
-{
-	border-bottom:thin dotted #aaAAaa;
-	padding:10px;
-	margin:10px;
+li a:hover {
+	text-decoration:none;
 }
-
-.block:last-child
-{
-	border-bottom:none;
-}
-
-.blockEnd
-{
-	padding:10px;
-	margin:10px;
-	margin-bottom:0px;
-	padding-bottom:0px;
-}
-
-.separated {
-    margin-top: 10px;
-}
-
-/* tables */
 
 table {
     border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-table.wide {
+.wide {
     width: 100%;
+}
+
+.form td {
+    vertical-align: baseline;
+}
+
+.form td:first-child {
+    text-align: right;
+    padding-right: 3px;
+    color: #555555;
+}
+
+.basic td:first-child {
+    width: 2%;
+}
+
+.eq td {
+    width: 50%;
 }
 
 .form {
     font-size: 10pt;
 }
 
-.form textarea, .form input[type=text], .form input[type=password] {
-    width: 100%;
+.basic textarea, .basic input[type=text], .basic input[type=password], .basic select[multiple=multiple] {
     padding: 2px 0 2px 0;
     border: 0;
     background-color: #eeeeee;
     font: 10pt Courier, "Courier New", monospace;
 }
 
-table.form td {
-    vertical-align: baseline;
+.wide textarea, .wide input[type=text], .wide input[type=password], .wide select[multiple=multiple] {
+    width: 100%;
 }
 
-table.form td:first-child {
-    text-align: right;
-    padding-right: 3px;
-    width: 2%;
+/* Content */
+
+#content > div {
+	margin: 10px 0 0 0;
+	padding: 0 0 10px 0;
+	border-bottom: thin solid #cccccc;
 }
 
-table.eq td {
-    width: 50%;
+#content > div:last-child {
+	border-bottom:none;
+	padding: 0;
 }
 
-/* Login */
+/* Auth */
 
-table#login {
-    margin-left: auto;
-    margin-right: auto;
-    border-collapse: collapse;
+#userbox {
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	right: 10px;
+	top: 8px;
+    font-family: "Lucida Grande", Helvetica;
+	font-size: 11px;
 }
 
-table#login td:first-child {
-    text-align: right;
+#userbox * {
+	display: inline;
 }
 
-div#authbox {
-    float: right;
-    position: static;
-    border: 1px solid #dddddd;
-    margin: 3px;
-    padding: 3px 7px 3px 7px;
-    font-size: 10pt;
+#userbox span[name=text] {
+    margin: 0 7px 0 0;
+    padding-right: 7px;
+    border-right: 1px solid #dddddd;
 }
 
-div#authbox form {
-    margin: 0 0 0 7px;
-    padding-left: 7px;
-    border-left: 1px solid #dddddd;
-}
-
-div#authbox a {
+#userbox a {
     color: #005500;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* REMOVE! */
+
+.separated {
+    margin-top: 10px;
 }
 
 /* Toolbar */
 
-#toolbar
-{
+#top {
 	width:100%;
+	margin: 3px 0 3px 0;
 }
 
-#backButton
+#top h1 {
+    margin: 5px 0 2px 0;
+    padding: 0 15px 0px 15px;
+}
+
+#top a.back
 {
     background: url(images/chevron_left.png) no-repeat left center;
 	padding-left: 15px;
+	margin-left: 1px;
 }
 
 #sortBy
@@ -302,7 +278,7 @@ h3.albums
 	margin:10px;
 }
 
-/* Current user infos */
+/* Current user infos *//*
 #userAccountLabel
 {
 	float:right;
@@ -315,7 +291,7 @@ h3.albums
 #userAccountLabel:hover
 {
 	background-color:#fdfed6;
-/*	border:thin solid #fad51b; */
+/*	border:thin solid #fad51b; *
 }
 
 #CurrentlyLoggedLabel
@@ -342,7 +318,7 @@ h3.albums
 	color:#666666;
 	text-align:right;
 	font-style: italic;
-}
+}*/
 
 /* Study List */
 
@@ -362,7 +338,7 @@ h3.albums
 	line-height:12pt;
 	margin-bottom: 0px;
 	padding-left: 10px;
-	background-color: #eeEEee;
+	background-color: #fefefe;
 	vertical-align:top;
 }
 
@@ -481,12 +457,7 @@ div.StudyListItemDetails
 
 #imageList
 {
-	width:80%;
-	margin-left: 10%;
-	margin-right: 10%;
-	padding: 0px;
-	border: 1px solid #999999;
-	border-spacing: 0px;
+	width: 100%;
 	border-collapse: collapse;
 }
 
@@ -619,15 +590,3 @@ a.report
 	margin-bottom:10px;
 }
 
-/* Footer */
-#footer
-{
-	width: auto;
-	border-top: #555555 solid thin;
-	right: 0;
-	left: 0;
-	padding-top: 2px;
-	margin-top: 50px;
-	text-align: center;
-	font-size:10pt;
-}

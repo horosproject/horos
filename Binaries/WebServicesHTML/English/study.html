@@ -1,191 +1,195 @@
-%INCLUDE:head.pvt.html%
-<body>
-	<script type="text/javascript" language="javascript">
-		function checkAll(field)
-		{
-		    field.checked = true;
-			for (i = 0; i < field.length; i++)
-				field[i].checked = true;
-			document.getElementById('CheckAllLabel').innerHTML = "Uncheck All";
-		}
+%INCLUDE:header.pvt.html%
 
-		function uncheckAll(field)
-		{
-		    field.checked = false;
-			for (i = 0; i < field.length; i++)
-				field[i].checked = false;
-			document.getElementById('CheckAllLabel').innerHTML = "Check All";
-		}
+	<a class="back button" href="studyList?browse=%U:Request.browse%&browseParameter=%U:Request.browseParameter%&search=%U:Request.search%&album=%U:Request.album%">%BackLinkLabel%</a>
+
+	<div id="content">
+
+		<script type="text/javascript" language="javascript">
 		
-		function OnSubmitForm()
-        {
-            if(document.pressed == 'Weasis')
-                document.selectDicomDestination.action ="weasis.jnlp";
-            else if (document.pressed == 'Send')
-                document.selectDicomDestination.action ="";
-            return true;
-        }
-	</script>
-	%INCLUDE:userbox.pvt.html%
-	<div id="pageContent">
-	    <h1 id="pageTitle">%PageTitle%</h1>
-
-		<div id="toolbar">
-	    	<a id="backButton" class="button" href="studyList?browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">%LocalizedLabel_StudyList%</a>
-		</div>
+			function checkAll(field) {
+				  field.checked = true;
+				for (i = 0; i < field.length; i++)
+					field[i].checked = true;
+				document.getElementById('CheckAllLabel').innerHTML = "Uncheck All";
+			}
+	
+			function uncheckAll(field) {
+				  field.checked = false;
+				for (i = 0; i < field.length; i++)
+					field[i].checked = false;
+				document.getElementById('CheckAllLabel').innerHTML = "Check All";
+			}
+			
+			function OnSubmitForm() {
+				if(document.pressed == 'Weasis')
+					document.selectDicomDestination.action ="weasis.jnlp";
+				else if (document.pressed == 'Send')
+					document.selectDicomDestination.action ="";
+				return true;
+			}
+			
+		</script>
 		
-		<div id="Home" class="panel">
-			<h2>%LocalizedLabel_SendStatus%</h2>
-
+		<form id="selectDicomDestination" name="selectDicomDestination" onSubmit="return OnSubmitForm();">
+		<div id="content">
+			<input type="hidden" name="id" value="%X:Study.studyInstanceUID%"/>
+			<input type="hidden" name="search" value="%X:Request.search%"/>
+			<input type="hidden" name="browse" value="%X:Request.browse%"/>
+			<input type="hidden" name="browseParameter" value="%X:Request.browseParameter%"/>
+			<input type="hidden" name="album" value="%X:Request.album%"/>
+	
+			%INCLUDE:/errors.pvt.html%
+			%INCLUDE:/messages.pvt.html%
+	
 			<div class="block">
 				<h2>Study Informations</h2>
-				<table class="StudyInformation">
+				<table class="form StudyInformation">
 					<tr>
-						<td class="StudyInformationLabel">Patient&nbsp;name</td>
-						<td>%PatientName%</td>
+						<td class="StudyInformationLabel">Patient's name:</td>
+						<td>%X:Study.name%</td>
 					</tr>
 					<tr>
-						<td class="StudyInformationLabel">Date&nbsp;of&nbsp;birth</td>
-						<td>%PatientDOB%</td>
+						<td class="StudyInformationLabel">Date&nbsp;of&nbsp;birth:</td>
+						<td>%X:Study.dateOfBirth.formatDOB%</td>
 					</tr>
 					<tr>
-						<td class="StudyInformationLabel">Patient&nbsp;ID</td>
-						<td>%PatientID%</td>
+						<td class="StudyInformationLabel">Patient&nbsp;ID:</td>
+						<td>%X:Study.patientID%</td>
 					</tr>
 					<tr>
-						<td class="StudyInformationLabel">Accession&nbsp;Number</td>
-						<td>%AccessionNumber%</td>
+						<td class="StudyInformationLabel">Accession&nbsp;number:</td>
+						<td>%X:Study.accessionNumber%</td>
 					</tr>
 					<tr>
-						<td class="StudyInformationLabel">Study&nbsp;Date</td>
-						<td>%StudyDate%</td>
+						<td class="StudyInformationLabel">Study&nbsp;date:</td>
+						<td>%Study.studyDate.format.Spanned%</td>
 					</tr>
 					<tr>
-						<td class="StudyInformationLabel">Modality</td>
-						<td>%StudyModality%</td>
+						<td class="StudyInformationLabel">Modality:</td>
+						<td>%X:Study.modality%</td>
 					</tr>
 					<tr>
-						<td class="StudyInformationLabel">Description</td>
-						<td>%StudyDescription%</td>
+						<td class="StudyInformationLabel">Description:</td>
+						<td>%X:Study.name%</td>
 					</tr>
-					%StudyCommentBlock%
+					%[IF:Study.comment%
 					<tr>
-						<td class="StudyInformationLabel">Comment</td>
-						<td>%StudyComment%</td>
+						<td class="StudyInformationLabel">Comment:</td>
+						<td>%X:Study.comment%</td>
 					</tr>
-					%/StudyCommentBlock%
-					%StudyStateBlock%
+					%]IF:Study.comment%
+					%[IF:Study.stateText%
 					<tr>
-						<td class="StudyInformationLabel">Study&nbsp;State</td>
-						<td>%StudyState%</td>
+						<td class="StudyInformationLabel">Study&nbsp;state:</td>
+						<td>%X:Study.stateText%</td>
 					</tr>
-					%/StudyStateBlock%
-					%Report%
+					%]IF:Study.stateText%
+					%[IF:Study.reportIsLink%
 					<tr>
-						<td class="StudyInformationLabel">Report</td>
-						<td><a href="report.%reportExtension%?id=%StudyID%" class="report">Download Report</a></td>
+						<td class="StudyInformationLabel">Report:</td>
+						<td><a href="%X:Study.reportURL%" target="blank" class="report">Link to Report</a></td>
 					</tr>
-					%/Report%
-					%ReportURL%
+					%ELSE:Study.reportIsLink%
+					%[IF:Study.reportURL&&!Info.iOS%
 					<tr>
-						<td class="StudyInformationLabel">Report</td>
-						<td><a href="%ReportURLString%" target="blank" class="report">Link to Report</a></td>
+						<td class="StudyInformationLabel">Report:</td>
+						<td><a href="report.%U:Study.reportExtension%?id=%U:Study.studyInstanceUID%" class="report">Download Report</a></td>
 					</tr>
-					%/ReportURL%
+					%]IF:!Info.iOS%
+					%]IF:Study.reportIsLink%
 				</table>
 			</div>
-		
-			<form id="selectDicomDestination" name="selectDicomDestination" onSubmit="return OnSubmitForm();">
+	
+			<div class="block">
+				<h2>Series</h2>
+				<table id="imageList" class="images">
+					%[FOREACH:Series:Series%
+						<tr class="image%X:Series_Index2%">				
+							%[IF:User.proposeDicomSend||Info.proposeWeasis%
+							<td class="tdCheckbox">
+								<input type="checkbox" class="checkbox" name="selected" value="%X:Series.webUID%" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
+							</td>
+							%]IF:User.proposeDicomSend||Info.proposeWeasis%
+							<td class="tdThumbnail">
+								<a class="series" href="series%Series.seriesExtension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%&browse=%U:Request.browse%&browseParameter=%U:Request.browseParameter%&search=%U:Request.search%&album=%U:Request.album%">
+									<img src="/thumbnail?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%" class="thumbnail" />
+								</a>
+							</td>
+							<td class="tdSeriesInfo">
+								<a class="series" href="series%Series.seriesExtension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%&browse=%U:Request.browse%&browseParameter=%U:Request.browseParameter%&search=%U:Request.search%&album=%U:Request.album%">
+									<span class="SeriesName">%X:Series.name% %X:Series.stateText%</span>
+									<span class="SeriesImageNumber">
+										%[IF:Series.noFiles<2%
+											1 image
+										%ELSE:Series.noFiles<2%
+											%Series.noFiles% images
+										%]IF:Series.noFiles<2%
+									</span>
+									<span class="SeriesImageNumber">%X:Series.comment%</span>
+								</a>
+							</td>
 			
-				<div class="block">
-					<h2>Series</h2>
-					<table id="imageList" class="images">
-						%SeriesListItem%
-							<tr class="image%lineParity%">				
-								%SendingFunctions1%
-								<td class="tdCheckbox">
-									<input type="checkbox" class="checkbox" name="selected" value="%SeriesID%" %checked% />
-								</td>
-								%/SendingFunctions1%
-								<td class="tdThumbnail">
-									<a class="series" href="series%seriesExtension%?id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
-										<img src="%thumbnail%" class="thumbnail">
-									</a>
-								</td>
-								<td class="tdSeriesInfo">
-									<a class="series" href="series%seriesExtension%?id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
-										<span class="SeriesName">%SeriesName% %SeriesComment% %SeriesState%</span>
-										<span class="SeriesImageNumber">%SeriesImageNumber%</span>
-										<span class="SeriesImageNumber">%SeriesComment%</span>
-									</a>
-								</td>
-				
-								<td class="tdDownloadAsZIP">
-									%ZIPFunctions%
-									<a class="series" title="Download as zip" href="%PatientName%.%zipextension%?id=%SeriesID%&studyID=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">
-										<div class="DownloadAsZIP"></div>
-									</a>
-									%/ZIPFunctions%
-								</td>
-								
-                                %Weasis%
-                                <td width="37px" class="tdWeasis">
-                                    <a title="Open in Weasis" href="/weasis.jnlp?SeriesInstanceUID=%SeriesID%">
-                                        <div class="OpenInWeasis"></div>
-                                    </a>
-                                </td>
-                                %/Weasis%
-							</tr>
-						%/SeriesListItem%
-
-						%SendingFunctions2%
-						<tr class="image%lineParity%" id="CheckAll" %CheckAllStyle%>
-							<td><input type="checkbox" class="checkbox" name="CheckAll" onClick="if(document.selectDicomDestination.CheckAll.checked == true){checkAll(document.selectDicomDestination.selected);} else {uncheckAll(document.selectDicomDestination.selected);}" %CheckAllChecked% /></td>
-							<td colspan="3"><span id="CheckAllLabel">Check All</span></td>
-                                %Weasis%
-                                <td><input type="image" src="images/weasis.png" onClick="document.pressed=this.value" value="Weasis" alt="Open checked series in Weasis" /></td>
-                                %/Weasis%
+							<td class="tdDownloadAsZIP">
+								%[IF:User.proposeZipDownload%
+								<a class="series" title="Download as zip" href="%U:Study.name%.%zipextension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%&browse=%U:Request.browse%&browseParameter=%U:Request.browseParameter%&search=%U:Request.search%&album=%U:Request.album%">
+									<div class="DownloadAsZIP"></div>
+								</a>
+								%]IF:User.proposeZipDownload%
+							</td>
+							
+							%[IF:Info.proposeWeasis%
+							<td width="37px" class="tdWeasis">
+								<a title="Open in Weasis" href="/weasis.jnlp?SeriesInstanceUID=%U:Series.seriesInstanceUID%">
+									<div class="OpenInWeasis"></div>
+								</a>
+							</td>
+							%]IF:Info.proposeWeasis%
 						</tr>
-						%/SendingFunctions2%
-					</table>
-					<input type="hidden" name="id" value="%StudyID%"/>
-					<input type="hidden" name="search" value="%search%"/>
-					<input type="hidden" name="browse" value="%browse%"/>
-					<input type="hidden" name="browseParameter" value="%browseParameter%"/>
-					<input type="hidden" name="album" value="%album%"/>
+					%]FOREACH:Series:Series%
+	
+					%[IF:Series.count>1&&User.proposeDicomSend||Info.proposeWeasis%
+					<tr class="image%lineParity%" id="CheckAll">
+						<td><input type="checkbox" class="checkbox" name="CheckAll" onClick="if(document.selectDicomDestination.CheckAll.checked == true){checkAll(document.selectDicomDestination.selected);} else {uncheckAll(document.selectDicomDestination.selected);}" %[IF:Series.areSelected%checked="checked"%]IF:Series.areSelected% /></td>
+						<td colspan="3"><span id="CheckAllLabel">Check All</span></td>
+							%[IF:Info.proposeWeasis%
+							<td><input type="image" src="images/weasis.png" onClick="document.pressed=this.value" value="Weasis" alt="Open checked series in Weasis" /></td>
+							%]IF:Info.proposeWeasis%
+					</tr>
+					%]IF:Series.count>1&&User.proposeDicomSend||Info.proposeWeasis%
+				</table>
+	
+			%[IF:User.proposeDicomSend%
+				<h2>DICOM Transfer</h2>
+					Send selected series to:
+					<select name="dicomDestination" id="dicomDestination">
+						%[FOREACH:DicomDestinations:Dest%
+						<option value="%X:Dest.address%:%X:Dest.port%:%X:Dest.aeTitle%:%X:Dest.syntax%" %[IF:Dest.isSelected%checked="cherked"%]IF:Dest.isSelected%>%X:Dest.description%</option>
+						%]FOREACH:DicomDestinations:Dest%
+					</select>
+					<button type="submit" name="action" onClick="document.pressed=this.value" id="dicomSend" value="dicomSend">Send</button>
+			%]IF:User.proposeDicomSend%
+		</div>
+			
+		%[IF:User.shareStudyWithUser%
+		<div class="block">
+			<h2>Share This Study</h2>
+			<div>Share with user:</div>
+			<select name="shareStudyDestination" id="userDestination">
+				%[FOREACH:ShareDestination:Dest%
+				<option value="%X:Dest.username%" %[IF:Dest.isSelected%checked="checked"%]IF:Dest.isSelected%>%X:Dest.description%</option>
+				%]FOREACH:ShareDestination:Dest%
+			</select>
+			<div>Message:</div>
+			<div>
+				<textarea name="message" id="shareStudyMessage">Enter here a message for this user. He will receive it by email.</textarea>
+			</div>
+			<button type="submit" name="action" id="shareStudy" value="shareStudy">Send</button>
+		</div>
+		%]IF:User.shareStudyWithUser%
+	
+		</div>
+		</form>
 		
-				%SendingFunctions3%
-					<h2>DICOM Transfer</h2>
-						Send selected series to:
-						<select name="dicomDestination" id="dicomDestination">
-							%dicomNodesListItem%
-							<option value="%dicomNodeAddress%:%dicomNodePort%:%dicomNodeAETitle%:%dicomNodeSyntax%" %selected% >%dicomNodeDescription%</option>
-							%/dicomNodesListItem%
-						</select>
-						<input type="submit" name="dicomSend" onClick="document.pressed=this.value" id="dicomSend" value="Send"/>
-				%/SendingFunctions3%
-			</div>
-				
-			%SharingFunctions%
-			<div class="blockEnd">
-				<h2>Share This Study</h2>
-				<div>Share This Study with user:</div>
-				<select name="userDestination" id="userDestination">
-					%userListItem%
-					<option value="%username%" %selected% >%userDescription%</option>
-					%/userListItem%
-				</select>
-				<div>Message:</div>
-				<div>
-					<textarea name="message" id="shareStudyMessage">Enter here a message for this user. He will receive it by email.</textarea>
-				</div>
-				<input type="submit" name="shareStudy" id="shareStudy" value="Send"/>
-			</div>
-			%/SharingFunctions%
-
-			</form>
-	    </div>
 	</div>
-	%INCLUDE:footer.pvt.html%
-  </body>
-</html>
+
+%INCLUDE:footer.pvt.html%

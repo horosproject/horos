@@ -55,18 +55,18 @@
                 <h3 class="albums">Albums</h3>
                 <ul>
                     %[FOREACH:Albums:Album%
-                    <li class="%Album.type%"><a href="studyList?album=%U:Album.name%">%X:Album.name%</a></li>
+                    <li class="%[IF:Album.smartAlbum%SmartAlbum%ELSE:Album.smartAlbum%Album%]IF:Album.smartAlbum%"><a href="studyList?album=%U:Album.name%">%X:Album.name%</a></li>
                     %]FOREACH:Albums:Album%
                 </ul>
                 %]IF:Albums.count%
 			</div>
 			%]IF:accessStudies%
 			
-    		%[IF:AuthorizedUploadDICOMFiles%
+    		%[IF:User.canUploadDicom%
 			<div class="blockEnd">
                 <h2>DICOM Upload</h2>
 				<div class="uploadBlock">
-					<form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
+					<form action="" method="post" enctype="multipart/form-data" id="form1">
 						<div>Upload a file</div>
 						<div class="small">Choose a file from you computer. It can be a single DICOM file or a zip file containing several DICOM files.</div>
 						<div class="upload">
@@ -76,7 +76,7 @@
 					</form>
 				</div>
 			</div>
-            %]IF:AuthorizedUploadDICOMFiles%
+            %]IF:User.canUploadDicom%
 		</div>
 		
 		%INCLUDE:footer.pvt.html%

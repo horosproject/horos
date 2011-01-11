@@ -16,6 +16,8 @@
 #import "N2Debug.h"
 #import "N2XMLRPC.h"
 
+#import "N2Shell.h"
+
 @implementation N2XMLRPCConnection
 @synthesize delegate = _delegate;
 
@@ -133,6 +135,7 @@
 		[invocation setTarget:_delegate];
 		[invocation setSelector:methodSelector];
 		
+		NSLog(@"71210test2 1 %@", [N2Shell hostname]);
 		for (int i = 0; i < [params count]; ++i) {
 			const char* argType = [methodSignature getArgumentTypeAtIndex:2+i];
 			NSXMLNode* n = [params objectAtIndex:i];
@@ -166,12 +169,14 @@
 			}
 		}
 		
+		NSLog(@"71210test2 8");
 		[invocation invoke];
 
 		NSString* returnValue = [N2XMLRPC ReturnElement:invocation];
 		NSString* responseXml = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", returnValue];
 		NSData* responseData = [responseXml dataUsingEncoding:NSUTF8StringEncoding];
 		
+		NSLog(@"71210test2 9");
 		CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, kCFHTTPVersion1_0);
 		CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [responseData length]]);
 		CFHTTPMessageSetBody(response, (CFDataRef)responseData);

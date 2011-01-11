@@ -43,6 +43,7 @@
 @class BrowserController;
 @class SplashScreen;
 @class DCMNetServiceDelegate;
+@class WebPortal;
 
 enum
 {
@@ -238,6 +239,9 @@ extern "C"
 + (NSInvocation*)fill12BitBufferInvocation;
 
 -(void)verifyHardwareInterpolation;
+
+#pragma mark -
+-(WebPortal*)defaultWebPortal;
 
 @end
 

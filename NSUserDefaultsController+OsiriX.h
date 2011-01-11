@@ -12,36 +12,31 @@
  PURPOSE.
  =========================================================================*/
 
-#import <Cocoa/Cocoa.h>
+#import "NSUserDefaults+OsiriX.h"
+#import "NSUserDefaultsController+N2.h"
 
 
 @interface NSUserDefaultsController (OsiriX)
+@end
 
-#pragma mark Bonjour Sharing
+@interface NSUserDefaultsController (Deprecated)
 
-extern NSString* const OsirixBonjourSharingActiveFlagDefaultsKey;
-+(BOOL)IsBonjourSharingActive;
+extern NSString* const OsirixBonjourSharingActiveFlagDefaultsKey __deprecated;
+extern NSString* const OsirixBonjourSharingPasswordFlagDefaultsKey __deprecated;
+extern NSString* const OsirixWebServerUsesWeasisDefaultsKey __deprecated;
+extern NSString* const OsirixWadoServerActiveDefaultsKey __deprecated;
+extern NSString* const OsirixWebServerPrefersFlashDefaultsKey __deprecated;
+extern NSString* const OsirixWebServerPrefersCustomWebPagesKey __deprecated;
 
-extern NSString* const OsirixBonjourSharingNameDefaultsKey;
-+(NSString*)BonjourSharingName;
-+(NSString*)DefaultBonjourSharingName;
++(BOOL)IsBonjourSharingActive __deprecated;
++(BOOL)IsBonjourSharingPasswordProtected __deprecated;
++(NSString*)BonjourSharingPassword __deprecated;
++(NSString*)BonjourSharingName __deprecated;
++(NSString*)DefaultBonjourSharingName __deprecated;
 
-extern NSString* const OsirixBonjourSharingPasswordFlagDefaultsKey;
-+(BOOL)IsBonjourSharingPasswordProtected;
-
-extern NSString* const OsirixBonjourSharingPasswordDefaultsKey;
-+(NSString*)BonjourSharingPassword;
-
-extern NSString* const OsirixWebServerUsesWeasisDefaultsKey;
-+(BOOL)WebServerUsesWeasis;
-
-extern NSString* const OsirixWadoServerActiveDefaultsKey;
-+(BOOL)WadoServerActive;
-
-extern NSString* const OsirixWebServerPrefersFlashDefaultsKey;
-+(BOOL)WebServerPrefersFlash;
-
-extern NSString* const OsirixWebServerPrefersCustomWebPagesKey;
-+(BOOL)WebServerPrefersCustomWebPages;
++(BOOL)WebServerUsesWeasis __deprecated;
++(BOOL)WadoServerActive __deprecated;
++(BOOL)WebServerPrefersFlash __deprecated;
++(BOOL)WebServerPrefersCustomWebPages __deprecated;
 
 @end

@@ -87,6 +87,10 @@
 #import "NSFileManager+N2.h"
 #endif
 
+#import "WebPortal.h"
+#import "WebPortal+Email+Log.h"
+#import "WebPortalDatabase.h"
+
 #define DEFAULTUSERDATABASEPATH @"~/Library/Application Support/OsiriX/WebUsers.sql"
 //#define USERDATABASEVERSION @"1.0"
 #define DATABASEVERSION @"2.5"
@@ -221,7 +225,7 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize bonjourBrowser, pathToEncryptedFile, bonjourManagedObjectContext;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
-@synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController, userManagedObjectContext, userManagedObjectModel;
+@synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;//, userManagedObjectContext, userManagedObjectModel;
 @synthesize needDBRefresh, viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
 @synthesize AtableView/*, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel*/;
 
@@ -5208,119 +5212,37 @@ static NSConditionLock *threadLock = nil;
 }
 
 #pragma mark-
-#pragma mark User Database functions
+#pragma mark Web Portal Database // deprecated, use WebPortal.defaultWebPortal
 
--(long) saveUserDatabase
-{
-	long retError = 0;
-	
-	#ifndef OSIRIX_LIGHT
-	
-	[userManagedObjectContext lock];
-	
-	@try
-	{
-		NSError *error = nil;
-		
-		[userManagedObjectContext save: &error];
-		if (error)
-		{
-			NSLog( @"***** error saving DB: %@", [[error userInfo] description]);
-			NSLog( @"***** saveDatabase ERROR: %@", [error localizedDescription]);
-			retError = -1L;
-		}
-		
-		NSString *path = [DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath];
-		
-	//	[[NSString stringWithString: USERDATABASEVERSION] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"WebUsers.vers"] atomically:YES];
-//		[[NSUserDefaults standardUserDefaults] setObject: USERDATABASEVERSION forKey: @"USERS_DATABASEVERSION"];
-		
-		
-	}
-	@catch( NSException *ne)
-	{
-		NSLog( @"%@", [ne name]);
-		NSLog( @"%@", [ne reason]);
-		[AppController printStackTrace: ne];
-	}
-	
-	[userManagedObjectContext unlock];
-	
-	#endif
-	
-	return retError;
+-(long)saveUserDatabase { // deprecated
+#ifndef OSIRIX_LIGHT
+	[[[WebPortal defaultWebPortal] database] save:NULL];
+#endif
+	return 0;
 }
 
-- (NSManagedObjectModel *) userManagedObjectModel
-{
-    if( userManagedObjectModel) return userManagedObjectModel;
-	
-	NSMutableSet *allBundles = [[NSMutableSet alloc] init];
-	[allBundles addObject: [NSBundle mainBundle]];
-	[allBundles addObjectsFromArray: [NSBundle allFrameworks]];
-    
-    userManagedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/WebPortalDB.momd"]]];
-    [allBundles release];
-    
-    return userManagedObjectModel;
-}
-
-- (NSManagedObjectContext *) userManagedObjectContext
-{
-    NSError *error = nil;
-    NSString *localizedDescription;
-	NSFileManager *fileManager;
-	
-    if( userManagedObjectContext)
-		return userManagedObjectContext;
-	
-	if( self.userManagedObjectModel == nil)
-		return nil;
-	
-	fileManager = [NSFileManager defaultManager];
-	
-	[userPersistentStoreCoordinator release];
-	userPersistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.userManagedObjectModel];
-	
-    userManagedObjectContext = [[NSManagedObjectContext alloc] init];
-    [userManagedObjectContext setPersistentStoreCoordinator: userPersistentStoreCoordinator];
-	[userManagedObjectContext setUndoManager: nil];
-	
-    NSURL *url = [NSURL fileURLWithPath: [DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath]];
-	
-	NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, nil];	//[NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
-	
-	#ifndef OSIRIX_LIGHT
-	if( ![userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options: options error: &error])
-	{
-		NSLog( @"*********** userManagedObjectContext : %@", error);
-		
-		NSRunCriticalAlertPanel( NSLocalizedString( @"Web Users Database Error", nil), [error localizedDescription], NSLocalizedString( @"OK", nil), nil, nil);
-		
-		error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
-		
-		// Delete the old non-working file...
-		
-		[[NSFileManager defaultManager] removeItemAtPath: [DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath] error: nil];
-//		[[NSFileManager defaultManager] removeItemAtPath: [[[DEFAULTUSERDATABASEPATH stringByExpandingTildeInPath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"WebUsers.vers"] error: nil];
-		[userPersistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration:nil URL:url options: options error: &error];
-	}
-	#endif
-	
-	// This line is very important, if there is NO sql file
-	[self saveUserDatabase];
-	
-    return userManagedObjectContext;
-}
-
--(WebPortalUser*)userWithName:(NSString*)name {
-	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-	[req setEntity:[[[self userManagedObjectModel] entitiesByName] objectForKey:@"User"]];
-	[req setPredicate:[NSPredicate predicateWithFormat:@"name == %@", name]];
-	NSArray* res = [[self userManagedObjectContext] executeFetchRequest:req error:NULL];
-	if (res.count)
-		return [res objectAtIndex:0];
+-(NSManagedObjectModel*)userManagedObjectModel { // deprecated
+#ifndef OSIRIX_LIGHT
+	return [WebPortalDatabase managedObjectModel];
+#else
 	return NULL;
+#endif
+}
+
+-(NSManagedObjectContext*)userManagedObjectContext { // deprecated
+#ifndef OSIRIX_LIGHT
+	return [[[WebPortal defaultWebPortal] database] managedObjectContext];
+#else
+	return NULL;
+#endif
+}
+
+-(WebPortalUser*)userWithName:(NSString*)name { // deprecated
+#ifndef OSIRIX_LIGHT
+	return [[[WebPortal defaultWebPortal] database] userWithName:name];
+#else
+	return NULL;
+#endif
 }
 
 
@@ -17119,7 +17041,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
 							studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
 							
-							[WebPortalConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
+							[[WebPortal defaultWebPortal] updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
 						}
 					}
 				}
@@ -17137,8 +17059,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[addStudiesToUserWindow orderOut: self];
 }
 
-- (IBAction) sendEmailNotification: (id) sender
-{
+-(IBAction)sendEmailNotification:(id)sender {
+#ifndef OSIRIX_LIGHT
 	self.temporaryNotificationEmail = @"";
 	self.customTextNotificationEmail = @"";
 	
@@ -17210,7 +17132,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							[user setValue: [NSNumber numberWithBool: YES] forKey: @"autoDelete"];
 							[user setValue: @"NO == YES" forKey: @"studyPredicate"];
 							
-							[WebPortalConnection updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User Created" forUser: [user valueForKey: @"name"] ip: nil];
+							[[WebPortal defaultWebPortal] updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User Created" forUser: [user valueForKey: @"name"] ip: nil];
 							
 							// Send a separate email with user name and password
 							
@@ -17230,7 +17152,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							[emailMessage appendString: @"\r\r"];
 							[emailMessage appendFormat: NSLocalizedString( @"This account is a temporary account. It will be automatically deleted in %d days.", nil), [[NSUserDefaults standardUserDefaults] integerForKey: @"temporaryUserDuration"]];
 							
-							[WebPortalConnection updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User name & password sent by email" forUser: [user valueForKey: @"name"] ip: nil];
+							[[WebPortal defaultWebPortal] updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User name & password sent by email" forUser: [user valueForKey: @"name"] ip: nil];
 							
 							[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: temporaryNotificationEmail, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
 						
@@ -17277,12 +17199,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 									studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
 									studiesArrayPatientUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"patientUID"];
 									
-									[WebPortalConnection updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
+									[[WebPortal defaultWebPortal] updateLogEntryForStudy: study withMessage: @"Add Study to User" forUser: [user valueForKey: @"name"] ip: nil];
 								}
 							}
 						}
 						
-						[WebPortalConnection sendNotificationsEmailsTo: destinationUsers aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil customText: self.customTextNotificationEmail];
+						[[WebPortal defaultWebPortal] sendNotificationsEmailsTo: destinationUsers aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil customText: self.customTextNotificationEmail];
 					}
 				}
 				@catch( NSException *e)
@@ -17303,10 +17225,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[NSApp endSheet: notificationEmailWindow];
 	[notificationEmailWindow orderOut: self];
+#endif
 }
 
-- (IBAction) sendMail: (id) sender
-{
+-(IBAction)sendMail:(id)sender {
+#ifndef OSIRIX_LIGHT
 	if( [AppController hasMacOSXSnowLeopard])
 	{
 		#define kScriptName (@"Mail")
@@ -17423,6 +17346,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[arguments release];
 	}
 	else if( [NSThread isMainThread]) NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"This function requires MacOS 10.6 or higher.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+#endif
 }
 
 #endif
