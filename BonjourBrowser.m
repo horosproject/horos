@@ -348,30 +348,31 @@ extern const char *GetPrivateIP();
 //	[pool release];
 //}
 
-- (void) asyncWrite: (NSString*) p
+- (void) asyncWrite: (NSDictionary*) dict
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	if( currentDataPtr != nil)
 	{
 		[asyncWrite lock];
-		
-		[async lock];
-			int size = currentDataPos - lastAsyncPos;
-			int pos = lastAsyncPos;
-			lastAsyncPos = currentDataPos;
-		[async unlock];
-		
-		if( pos + size > BonjourDatabaseIndexFileSize)
+		@try
 		{
-			NSLog( @"***** currentDataPos + pos + size > BonjourDatabaseIndexFileSize");
+			long pos = [[dict objectForKey:@"pos"] longValue];
+			long size = [[dict objectForKey:@"size"] longValue];
+			
+			if( pos + size > BonjourDatabaseIndexFileSize)
+			{
+				NSLog( @"***** currentDataPos + pos + size > BonjourDatabaseIndexFileSize");
+			}
+			else if( size > 0)
+			{
+				FILE *f = fopen ([[dict objectForKey:@"file"] UTF8String], "ab");
+				fwrite( currentDataPtr + pos, size, 1, f);
+				fclose( f);
+			}
 		}
-		else if( size > 0)
-		{
-			FILE *f = fopen ([p UTF8String], "ab");
-			fwrite( currentDataPtr + pos, size, 1, f);
-			fclose( f);
-		}
+		@catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+		
 		[asyncWrite unlock];
 	}
 	
@@ -409,8 +410,13 @@ extern const char *GetPrivateIP();
 		}
 		
 		
-		if( currentDataPos - lastAsyncPos > 1024L * 1024L * 20L)
-			[NSThread detachNewThreadSelector: @selector( asyncWrite:) toTarget: self withObject: tempDatabaseFile];
+		if( currentDataPos - lastAsyncPos > 1024L * 1024L * 40L)
+		{
+			NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: tempDatabaseFile, @"file", [NSNumber numberWithLong: currentDataPos - lastAsyncPos], @"size", [NSNumber numberWithLong: lastAsyncPos], @"pos", nil];
+			lastAsyncPos = currentDataPos;
+			
+			[NSThread detachNewThreadSelector: @selector( asyncWrite:) toTarget: self withObject: d];
+		}
 		
 		[async unlock];
 		
@@ -420,7 +426,9 @@ extern const char *GetPrivateIP();
 	}
 	else
 	{
-		[self asyncWrite: tempDatabaseFile];
+		NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: tempDatabaseFile, @"file", [NSNumber numberWithLong: currentDataPos - lastAsyncPos], @"size", [NSNumber numberWithLong: lastAsyncPos], @"pos", nil];
+		
+		[self asyncWrite: d];
 		
 		[asyncWrite lock];
 		[async lock];

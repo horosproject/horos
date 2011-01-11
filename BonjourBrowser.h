@@ -23,7 +23,7 @@
 {
 	NSRecursiveLock		*async, *asyncWrite;
 	
-	int					lastAsyncPos;
+	long				lastAsyncPos;
 	NSString			*tempDatabaseFile;
 		
     NSNetServiceBrowser	*browser;
@@ -47,7 +47,7 @@
 	id					setValueValue;
 	
 	NSTimeInterval		localVersion, BonjourDatabaseVersion;
-	int					BonjourDatabaseIndexFileSize;
+	long				BonjourDatabaseIndexFileSize;
 	
 	NSString			*modelVersion;
 	NSString			*filePathToLoad;
@@ -65,7 +65,7 @@
 	NSFileHandle		*currentConnection;
 	
 	void				*currentDataPtr;
-	int					currentDataPos;
+	long				currentDataPos;
 	
 	NSDate				*currentTimeOut;
 	
