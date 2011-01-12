@@ -1,15 +1,15 @@
 html {
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
 }
 
 body {
-    margin: 0px;
-    padding: 0;
-    font-family: Helvetica;
-	font-size: 12pt;
-    background: #ffffff;
-    color: #000000;
+	margin: 0px;
+	padding: 0;
+	font-family: Helvetica;
+	font-size: 11pt;
+	background: #ffffff;
+	color: #000000;
 }
 
 body > * {
@@ -30,8 +30,8 @@ body > * {
 }
 
 #content {
-	margin: 0px;
-	padding: 15px;
+	margin: 25px 0 25px 0;
+	padding: 0 15px 0px 15px;
 }
 
 #footer {
@@ -75,59 +75,72 @@ li a:hover {
 }
 
 table {
-    border-collapse: collapse;
-    margin-left: auto;
-    margin-right: auto;
+	border-collapse: collapse;
+}
+
+.centered {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .wide {
-    width: 100%;
+	width: 100%;
 }
 
 .form td {
-    vertical-align: baseline;
+	vertical-align: baseline;
 }
 
 .form td:first-child {
-    text-align: right;
-    padding-right: 3px;
-    color: #555555;
+	text-align: right;
+	padding-right: 3px;
+	color: #555555;
 }
 
 .basic td:first-child {
-    width: 2%;
+	width: 2%;
 }
 
 .eq td {
-    width: 50%;
+	width: 50%;
 }
 
 .form {
-    font-size: 10pt;
+	font-size: 10pt;
 }
 
 .basic textarea, .basic input[type=text], .basic input[type=password], .basic select[multiple=multiple] {
-    padding: 2px 0 2px 0;
-    border: 0;
-    background-color: #eeeeee;
-    font: 10pt Courier, "Courier New", monospace;
+	padding: 2px 0 2px 0;
+	border: 0;
+	background-color: #eeeeee;
+	font: 10pt Courier, "Courier New", monospace;
 }
 
 .wide textarea, .wide input[type=text], .wide input[type=password], .wide select[multiple=multiple] {
-    width: 100%;
+	width: 100%;
 }
 
 /* Content */
 
 #content > div {
-	margin: 10px 0 0 0;
-	padding: 0 0 10px 0;
+	margin: 10px 0 20px 0;
+	padding: 0 0 20px 0;
 	border-bottom: thin solid #cccccc;
 }
 
 #content > div:last-child {
 	border-bottom:none;
 	padding: 0;
+}
+
+#content > div > div {
+	margin: 2px 0 2px 20px;
+}
+
+#content > div > .title {
+	margin: 10px 0 10px 0;
+	font-size: 13pt;
+	font-weight: bold;
 }
 
 /* Auth */
@@ -138,7 +151,7 @@ table {
 	position: absolute;
 	right: 10px;
 	top: 8px;
-    font-family: "Lucida Grande", Helvetica;
+	font-family: "Lucida Grande", Helvetica;
 	font-size: 11px;
 }
 
@@ -147,32 +160,18 @@ table {
 }
 
 #userbox span[name=text] {
-    margin: 0 7px 0 0;
-    padding-right: 7px;
-    border-right: 1px solid #dddddd;
+	margin: 0 7px 0 0;
+	padding-right: 7px;
+	border-right: 1px solid #dddddd;
 }
 
 #userbox a {
-    color: #005500;
+	color: #005500;
 }
 
 
 
 
-
-
-
-
-
-
-
-
-
-/* REMOVE! */
-
-.separated {
-    margin-top: 10px;
-}
 
 /* Toolbar */
 
@@ -182,101 +181,56 @@ table {
 }
 
 #top h1 {
-    margin: 5px 0 2px 0;
-    padding: 0 15px 0px 15px;
+	margin: 5px 0 2px 0;
+	padding: 0 15px 0px 15px;
 }
 
 #top a.back
 {
-    background: url(images/chevron_left.png) no-repeat left center;
+	background: url(images/chevron_left.png) no-repeat left center;
 	padding-left: 15px;
 	margin-left: 1px;
 }
 
-#sortBy
-{
-	float:right;
-	font-size:10pt;
-}
 
-#sortByName
-{
-}
-
-#sortByDate
-{
-}
 
 .sortedBy
 {
 	text-decoration:underline;
 }
 
-/* Search Patient */
-#searchPatient
-{
+/* Search Patient
+#searchPatient {
 	margin-left:40px;
-}
+}*/
 
-.searchPatientLabel
-{
-	padding:10px;
-	padding-left:0px;
-	vertical-align:middle;
-	text-align: right;
-}
 
-.searchPatientForm
-{
-	display:inline;
-}
+/* Browse, decorations for main page */
 
-/* Browse*/
-.timeFrameStudyList
-{
+.timeFrameStudyList {
 	background:url(images/clock.png) no-repeat left center;
-	padding-left:24px;
-	padding-top:2px;
+	padding-left:22px;
 }
 
-.peopleStudyList
-{
+.peopleStudyList {
 	background:url(images/users.png) no-repeat left center;
-	padding-left:24px;
-	padding-top:2px;
+	padding-left:22px;
 }
 
-/* Albums */
-
-h3.albums
-{
-	margin-left:30px;
-}
-
-.Album
-{
+.Album {
 	background:url(images/album.png) no-repeat left center;
-	padding-left:24px;
-	padding-top:2px;
+	padding-left:22px;
 }
 
-.SmartAlbum
-{
+.SmartAlbum {
 	background:url(images/smartAlbum.png) no-repeat left center;
-	padding-left:24px;
-	padding-top:2px;
+	padding-left:22px;
 }
+
+/* Albums 
 
 /* File Upload */
 
-.uploadBlock
-{
-	margin-left:30px;
-}
-.upload
-{
-	margin:10px;
-}
 
 /* Current user infos *//*
 #userAccountLabel
@@ -320,7 +274,7 @@ h3.albums
 	font-style: italic;
 }*/
 
-/* Study List */
+/* Study List 
 
 .studyList
 {
@@ -420,7 +374,7 @@ div.StudyListItemDetails
 	font-size:10pt;
 }
 
-/* Series List */
+/* Series List 
 
 .StudyInformation
 {
@@ -564,12 +518,12 @@ a.report
 {
 	margin-top:20px;
 	text-align:center;
-    background-image:url(/images/loading.png);
-    background-repeat: no-repeat;
-    background-position: center center;
+	background-image:url(/images/loading.png);
+	background-repeat: no-repeat;
+	background-position: center center;
 }
 
-/* Study Sharing */
+/* Study Sharing 
 #userDestination
 {
 	margin-top:10px;
@@ -590,3 +544,4 @@ a.report
 	margin-bottom:10px;
 }
 
+*/

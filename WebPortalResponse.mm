@@ -27,7 +27,7 @@
 
 @implementation WebPortalResponse
 
-@synthesize httpHeaders, httpStatusCode, templateString, statusCode, wpc;
+@synthesize httpHeaders, templateString, statusCode, wpc;
 
 -(id)initWithWebPortalConnection:(WebPortalConnection*)iwpc {
 	self = [super initWithData:NULL];
@@ -77,13 +77,17 @@
 	}
 	
 	if (!data) {
-		data = [@"" dataUsingEncoding:NSUTF8StringEncoding];
+		data = [NSData data];
 		if (!self.statusCode)
 			self.statusCode = 404;
 	}
 	
 	return data;
 }
+/*
+-(UInt64)contentLength {
+	return self.data.length;
+}*/
 
 -(void)setData:(NSData*)d {
 	if (data != d) {
@@ -100,7 +104,7 @@
 
 
 
-+(NSRange)string:(NSString*)string rangeOfFirstOccurrenceOfBlock:(NSString*)b {
+/*+(NSRange)string:(NSString*)string rangeOfFirstOccurrenceOfBlock:(NSString*)b {
 	NSString* begin = [NSString stringWithFormat: @"%%%@%%", b];
 	NSString* end = [NSString stringWithFormat: @"%%/%@%%", b];
 	
@@ -125,7 +129,7 @@
 	
 	[string replaceOccurrencesOfString:begin withString:@"" options:NSLiteralSearch range:string.range];
 	[string replaceOccurrencesOfString:end withString:@"" options:NSLiteralSearch range:string.range];
-}
+}*/
 
 -(id)object:(id)o valueForKeyPath:(NSString*)keyPath context:(id)context {
 	NSArray* parts = [keyPath componentsSeparatedByString:@"."];
@@ -159,6 +163,7 @@
 			return [self object:value valueForKeyPath:[[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@"."] context:context];
 		return value;
 	} @catch (NSException* e) {
+		NSLog(@"[WebPortalRosponse object:valueForKeyPath:context] %@", e);
 	}
 	
 	return NULL;
@@ -449,8 +454,8 @@
 		return wpc.dicomCStorePortString;
 	if ([key isEqual:@"newChallenge"])
 		return [wpc.session newChallenge];
-	if ([key isEqual:@"canUploadDicom"])
-		return [NSNumber numberWithBool: wpc.user.uploadDICOM && !wpc.requestIsIOS ];
+	if ([key isEqual:@"proposeDicomUpload"])
+		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM) && !wpc.requestIsIOS ];
 	
 	return NULL;
 }

@@ -164,6 +164,10 @@
 		59526F6D1281AFCA0016F6C0 /* WebPortalConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526F6B1281AFCA0016F6C0 /* WebPortalConnection.mm */; };
 		59526F7D1281B1AA0016F6C0 /* WebPortalDB 1-2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59526F7C1281B1AA0016F6C0 /* WebPortalDB 1-2.xcmappingmodel */; };
 		5963226C122544C40062066C /* N2Shell.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAAA11293378009EB238 /* N2Shell.mm */; };
+		5969033D12DDE30800379E41 /* WebPortalConnection+Data.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969033912DDE30800379E41 /* WebPortalConnection+Data.h */; };
+		5969033E12DDE30800379E41 /* WebPortalConnection+Data.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */; };
+		5969034512DDE5EA00379E41 /* WebPortalResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969034312DDE5EA00379E41 /* WebPortalResponse.h */; };
+		5969034612DDE5EA00379E41 /* WebPortalResponse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969034412DDE5EA00379E41 /* WebPortalResponse.mm */; };
 		596EB3061189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */; };
 		596EB3071189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */; };
 		596EB3081189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */; };
@@ -281,10 +285,6 @@
 		59E52B3A12C109B80094E668 /* DicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E52B3612C109B80094E668 /* DicomDatabase.mm */; };
 		59EBF40B12B8B90100809C61 /* WebPortal+Databases.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBF40912B8B90100809C61 /* WebPortal+Databases.h */; };
 		59EBF40C12B8B90100809C61 /* WebPortal+Databases.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */; };
-		59EBF5BE12B91B5300809C61 /* WebPortalResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBF5BC12B91B5300809C61 /* WebPortalResponse.h */; };
-		59EBF5BF12B91B5300809C61 /* WebPortalResponse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBF5BD12B91B5300809C61 /* WebPortalResponse.mm */; };
-		59EBFDAD12BA196200809C61 /* WebPortalResponse+Data.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFDAB12BA196200809C61 /* WebPortalResponse+Data.h */; };
-		59EBFDAE12BA196200809C61 /* WebPortalResponse+Data.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDAC12BA196200809C61 /* WebPortalResponse+Data.mm */; };
 		59EBFDDC12BA5A1B00809C61 /* WebPortal+Email+Log.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */; };
 		59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */; };
 		59EBFEA412BB500C00809C61 /* BrowserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFEA212BB500C00809C61 /* BrowserController.h */; };
@@ -8383,6 +8383,10 @@
 		59526F6A1281AFCA0016F6C0 /* WebPortalConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalConnection.h; sourceTree = "<group>"; };
 		59526F6B1281AFCA0016F6C0 /* WebPortalConnection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalConnection.mm; sourceTree = "<group>"; };
 		59526F7C1281B1AA0016F6C0 /* WebPortalDB 1-2.xcmappingmodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcmappingmodel; name = "WebPortalDB 1-2.xcmappingmodel"; path = "Binaries/WebPortalDB Mapping Models/WebPortalDB 1-2.xcmappingmodel"; sourceTree = "<group>"; };
+		5969033912DDE30800379E41 /* WebPortalConnection+Data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebPortalConnection+Data.h"; sourceTree = "<group>"; };
+		5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortalConnection+Data.mm"; sourceTree = "<group>"; };
+		5969034312DDE5EA00379E41 /* WebPortalResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalResponse.h; sourceTree = "<group>"; };
+		5969034412DDE5EA00379E41 /* WebPortalResponse.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalResponse.mm; sourceTree = "<group>"; };
 		596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPreferencePane+OsiriX.h"; sourceTree = "<group>"; };
 		596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSPreferencePane+OsiriX.mm"; sourceTree = "<group>"; };
 		596EB3F4118ABBB000880192 /* NSWindow+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSWindow+N2.h"; path = "nitrogen/Sources/NSWindow+N2.h"; sourceTree = "<group>"; };
@@ -8467,10 +8471,6 @@
 		59E52B3612C109B80094E668 /* DicomDatabase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomDatabase.mm; sourceTree = "<group>"; };
 		59EBF40912B8B90100809C61 /* WebPortal+Databases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebPortal+Databases.h"; sourceTree = "<group>"; };
 		59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortal+Databases.mm"; sourceTree = "<group>"; };
-		59EBF5BC12B91B5300809C61 /* WebPortalResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalResponse.h; sourceTree = "<group>"; };
-		59EBF5BD12B91B5300809C61 /* WebPortalResponse.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalResponse.mm; sourceTree = "<group>"; };
-		59EBFDAB12BA196200809C61 /* WebPortalResponse+Data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebPortalResponse+Data.h"; sourceTree = "<group>"; };
-		59EBFDAC12BA196200809C61 /* WebPortalResponse+Data.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortalResponse+Data.mm"; sourceTree = "<group>"; };
 		59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebPortal+Email+Log.h"; sourceTree = "<group>"; };
 		59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortal+Email+Log.mm"; sourceTree = "<group>"; };
 		59EBFEA212BB500C00809C61 /* BrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserController.h; sourceTree = "<group>"; };
@@ -12694,14 +12694,14 @@
 				59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */,
 				59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */,
 				59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */,
-				59526F6A1281AFCA0016F6C0 /* WebPortalConnection.h */,
-				59526F6B1281AFCA0016F6C0 /* WebPortalConnection.mm */,
 				59526E8312816FDC0016F6C0 /* WebPortalSession.h */,
 				59526E8412816FDC0016F6C0 /* WebPortalSession.mm */,
-				59EBF5BC12B91B5300809C61 /* WebPortalResponse.h */,
-				59EBF5BD12B91B5300809C61 /* WebPortalResponse.mm */,
-				59EBFDAB12BA196200809C61 /* WebPortalResponse+Data.h */,
-				59EBFDAC12BA196200809C61 /* WebPortalResponse+Data.mm */,
+				59526F6A1281AFCA0016F6C0 /* WebPortalConnection.h */,
+				59526F6B1281AFCA0016F6C0 /* WebPortalConnection.mm */,
+				5969033912DDE30800379E41 /* WebPortalConnection+Data.h */,
+				5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */,
+				5969034312DDE5EA00379E41 /* WebPortalResponse.h */,
+				5969034412DDE5EA00379E41 /* WebPortalResponse.mm */,
 			);
 			name = "Web Portal";
 			sourceTree = "<group>";
@@ -19714,11 +19714,11 @@
 				597BB93112A7E0F200D0A172 /* NSUserDefaults+OsiriX.h in Headers */,
 				590A3DCD12A92920004581C2 /* WebPortalDatabase.h in Headers */,
 				59EBF40B12B8B90100809C61 /* WebPortal+Databases.h in Headers */,
-				59EBF5BE12B91B5300809C61 /* WebPortalResponse.h in Headers */,
-				59EBFDAD12BA196200809C61 /* WebPortalResponse+Data.h in Headers */,
 				59EBFDDC12BA5A1B00809C61 /* WebPortal+Email+Log.h in Headers */,
 				59EBFEA412BB500C00809C61 /* BrowserController.h in Headers */,
 				59E52B3712C109B80094E668 /* DicomDatabase.h in Headers */,
+				5969033D12DDE30800379E41 /* WebPortalConnection+Data.h in Headers */,
+				5969034512DDE5EA00379E41 /* WebPortalResponse.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22136,7 +22136,6 @@
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -24390,12 +24389,12 @@
 				597BB93212A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm in Sources */,
 				590A3DCE12A92920004581C2 /* WebPortalDatabase.mm in Sources */,
 				59EBF40C12B8B90100809C61 /* WebPortal+Databases.mm in Sources */,
-				59EBF5BF12B91B5300809C61 /* WebPortalResponse.mm in Sources */,
-				59EBFDAE12BA196200809C61 /* WebPortalResponse+Data.mm in Sources */,
 				59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */,
 				59E5236012BF5E440094E668 /* N2Task.mm in Sources */,
 				59E52B3812C109B80094E668 /* DicomDatabase.mm in Sources */,
 				599115F012D7224A00924B5C /* browserController.m in Sources */,
+				5969033E12DDE30800379E41 /* WebPortalConnection+Data.mm in Sources */,
+				5969034612DDE5EA00379E41 /* WebPortalResponse.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

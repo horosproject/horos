@@ -20,7 +20,6 @@
 	WebPortalConnection* wpc;
 	WebPortal* portal;
 	NSMutableDictionary* httpHeaders;
-	NSUInteger httpStatusCode;
 	NSString* templateString;
 	NSMutableDictionary* tokens;
 	int statusCode;
@@ -28,7 +27,6 @@
 
 @property(assign,readonly) WebPortalConnection* wpc;
 @property(retain) NSData* data;
-@property NSUInteger httpStatusCode;
 @property(readonly) NSMutableDictionary* httpHeaders;
 @property(retain) NSString* mimeType;
 @property(retain) NSString* templateString;
@@ -41,8 +39,8 @@
 
 -(void)setDataWithString:(NSString*)str;
 
-+(NSRange)string:(NSString*)string rangeOfFirstOccurrenceOfBlock:(NSString*)b;
-+(void)mutableString:(NSMutableString*)string block:(NSString*)blockTag setVisible:(BOOL)visible;
+//+(NSRange)string:(NSString*)string rangeOfFirstOccurrenceOfBlock:(NSString*)b;
+//+(void)mutableString:(NSMutableString*)string block:(NSString*)blockTag setVisible:(BOOL)visible;
 -(void)mutableString:(NSMutableString*)string evaluateTokensWithDictionary:(NSDictionary*)localtokens context:(id)context;
 
 @end

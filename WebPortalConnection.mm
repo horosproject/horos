@@ -19,7 +19,7 @@
 #import "WebPortalDatabase.h"
 #import "WebPortalSession.h"
 #import "WebPortalResponse.h"
-#import "WebPortalResponse+Data.h"
+#import "WebPortalConnection+Data.h"
 #import "WebPortalUser.h"
 #import "WebPortalStudy.h"
 #import "DicomDatabase.h"
@@ -112,7 +112,6 @@ static NSString* NotNil(NSString *s) {
 
 -(id)initWithAsyncSocket:(AsyncSocket*)newSocket forServer:(HTTPServer*)myServer {
 	self = [super initWithAsyncSocket:newSocket forServer:myServer];
-	self.response = [[[WebPortalResponse alloc] initWithWebPortalConnection:self] autorelease];
 	sendLock = [[NSLock alloc] init];
 	return self;
 }
@@ -735,6 +734,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		[params addEntriesFromDictionary:[WebPortalConnection ExtractParams:POSTParams]];
 	}
 	parameters = params;
+	[response.tokens setObject:parameters forKey:@"Request"];
 	
 	// find the name of the requested file
 	// SECURITY: we cannot allow the client to read any file on the hard disk (outside the shared dir), so no ".." 
@@ -759,81 +759,79 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	}
 	else
 	{
-		[response.tokens setObject:NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title") forKey:@"PageTitle"]; // the default title
-		[response.tokens setObject:parameters forKey:@"Request"];
-		[response.tokens setObject:[WebPortalProxy createWithObject:self transformer:[InfoTransformer create]] forKey:@"Info"];
-		if (user) [response.tokens setObject:[WebPortalProxy createWithObject:user transformer:[WebPortalUserTransformer create]] forKey:@"User"];
-		
 		[self.portal.dicomDatabase.managedObjectContext lock];
 		BOOL lockReleased = NO;
 		@try {
 			if ([fileURL isEqual:@"/"] || [fileURL isEqual: @"/index"])
-				[response processIndexHtml];
+				[self processIndexHtml];
 			else
 			if ([fileURL isEqual: @"/main"])
-				[response processMainHtml];
+				[self processMainHtml];
 			else
 			if ([fileURL isEqual:@"/studyList"])
-				[response processStudyListHtml];
+				[self processStudyListHtml];
 			else	
 			if ([fileURL isEqual:@"/studyList.json"])
-				[response processStudyListJson];
+				[self processStudyListJson];
 			else
 			if ([fileURL isEqual:@"/study"])
-				[response processStudyHtml];
+				[self processStudyHtml];
 			else
 			if ([fileURL isEqual:@"/wado"])
-				[response processWado];
+				[self processWado];
 			else
 			if ([fileURL isEqual:@"/thumbnail"])
-				[response processThumbnail];
+				[self processThumbnail];
 			else
 			if ([fileURL isEqual:@"/series.pdf"])
-				[response processSeriesPdf];
+				[self processSeriesPdf];
 			else
 			if ([fileURL isEqual:@"/series"])
-				[response processSeriesHtml];
+				[self processSeriesHtml];
 			else
 			if ([fileURL isEqual:@"/series.json"])
-				[response processSeriesJson];
+				[self processSeriesJson];
 			else
 			if ([fileURL hasPrefix:@"/report"])
-				[response processReport];
+				[self processReport];
 			else
 			if ([fileURL hasSuffix:@".zip"] || [fileURL hasSuffix:@".osirixzip"])
-				[response processZip];
+				[self processZip];
 			else
 			if ([fileURL hasPrefix:@"/image."])
-				[response processImage];
+				[self processImage];
 			else
 			if ([fileURL isEqual:@"/movie.mov"] || [fileURL isEqual:@"/movie.m4v"] || [fileURL isEqual:@"/movie.swf"])
-				[response processMovie];
+				[self processMovie];
 			else
 			if ([fileURL isEqual:@"/password_forgotten"])
-				[response processPasswordForgottenHtml];
+				[self processPasswordForgottenHtml];
 			else
 			if ([fileURL isEqual: @"/account"])
-				[response processAccountHtml];
+				[self processAccountHtml];
 			else
 			if ([fileURL isEqual:@"/albums.json"])
-				[response processAlbumsJson];
+				[self processAlbumsJson];
 			else
 			if ([fileURL isEqual:@"/seriesList.json"])
-				[response processSeriesListJson];
+				[self processSeriesListJson];
 			else
 			if ([fileURL isEqual:@"/weasis.jnlp"])
-				[response processWeasisJnlp];
+				[self processWeasisJnlp];
 			else
 			if ([fileURL isEqual:@"/weasis.xml"])
-				[response processWeasisXml];
+				[self processWeasisXml];
 			else
 			if ([fileURL isEqual:@"/admin/"] || [fileURL isEqual:@"/admin/index"])
-				[response processAdminIndexHtml];
+				[self processAdminIndexHtml];
 			else
 			if ([fileURL isEqualToString:@"/admin/user"])
-				[response processAdminUserHtml];
+				[self processAdminUserHtml];
 			else
 			response.data = [self.portal dataForPath:fileURL];
+			
+			if (!response.data.length && !response.statusCode)
+				response.statusCode = 404;
 			
 		} @catch (NSException* e) {
 			response.statusCode = 500;
@@ -842,13 +840,11 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			if (!lockReleased)
 				[self.portal.dicomDatabase.managedObjectContext unlock];
 		}
-		
 	}
 	
-	if (!response.data.length && !response.statusCode)
-		response.statusCode = 404;
-		
-	return response; // [[[WebPortalResponse alloc] initWithData:data mime:dataMime sessionId:session.sid] autorelease];
+	if (response.data && !response.statusCode)
+		return [[[HTTPDataResponse alloc] initWithData:response.data] autorelease]; // [[[WebPortalResponse alloc] initWithData:data mime:dataMime sessionId:session.sid] autorelease];*/
+	else return NULL;
 }
 
 -(BOOL)supportsMethod:(NSString *)method atPath:(NSString *)relativePath {
@@ -1179,6 +1175,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 #pragma mark Session, custom authentication
 
 -(void)replyToHTTPRequest {
+	self.response = [[[WebPortalResponse alloc] initWithWebPortalConnection:self] autorelease];
+	
 	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
 
 	NSArray* cookies = [[(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease] componentsSeparatedByString:@";"];
@@ -1236,7 +1234,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		}
 	}
 	
+	[response.tokens setObject:NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title") forKey:@"PageTitle"]; // the default title
+	[response.tokens setObject:[WebPortalProxy createWithObject:self transformer:[InfoTransformer create]] forKey:@"Info"];
+	if (user) [response.tokens setObject:[WebPortalProxy createWithObject:user transformer:[WebPortalUserTransformer create]] forKey:@"User"];	
+	
 	[super replyToHTTPRequest];
+	
+	self.response = NULL;
 }
 
 -(BOOL)isAuthenticated {
@@ -1262,14 +1266,14 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 -(void)handleAuthenticationFailed
 {
-	NSLog(@"handleAuthenticationFailed usor %@", user);
+	NSLog(@"handleAuthenticationFailed user %@", user);
 	
 	
-	HTTPAuthenticationRequest *auth = [[[HTTPAuthenticationRequest alloc] initWithRequest:request] autorelease];
-	if (auth.username)
-		[self.portal updateLogEntryForStudy:nil withMessage:[NSString stringWithFormat:@"Wrong password for user %@", auth.username] forUser:NULL ip:asyncSocket.connectedHost];
-
-	[self.response processLoginHtml];
+	//	HTTPAuthenticationRequest* auth = [[[HTTPAuthenticationRequest alloc] initWithRequest:request] autorelease];
+	//	if (auth.username)
+	//		[self.portal updateLogEntryForStudy:nil withMessage:[NSString stringWithFormat:@"Wrong password for user %@", auth.username] forUser:NULL ip:asyncSocket.connectedHost];
+	
+	[self processLoginHtml];
 	
 	NSData* bodyData = self.response.data;
 	// Status Code 401 - Unauthorized
@@ -1278,6 +1282,22 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	CFHTTPMessageSetBody(resp, (CFDataRef)bodyData);
 	
 	[asyncSocket writeData:[self preprocessErrorResponse:resp] withTimeout:WRITE_ERROR_TIMEOUT tag:HTTP_RESPONSE];
+	
+	CFRelease(response);
+}
+
+-(void)handleResourceNotFound { // also other errors, actually
+	int status = response.statusCode;
+	if (!status) status = 404;
+	
+	CFHTTPMessageRef resp = CFHTTPMessageCreateResponse(kCFAllocatorDefault, status, NULL, kCFHTTPVersion1_1);
+	
+	NSData* bodyData = response.data;
+	CFHTTPMessageSetHeaderFieldValue(resp, CFSTR("Content-Length"), (CFStringRef)[NSString stringWithFormat:@"%d", bodyData.length]);
+	CFHTTPMessageSetBody(resp, (CFDataRef)bodyData);
+	
+	NSData *responseData = [self preprocessErrorResponse:resp];
+	[asyncSocket writeData:responseData withTimeout:WRITE_ERROR_TIMEOUT tag:HTTP_RESPONSE];
 	
 	CFRelease(response);
 }

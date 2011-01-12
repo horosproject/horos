@@ -12,10 +12,10 @@
  PURPOSE.
  =========================================================================*/
 
-#import "WebPortalResponse.h"
+#import "WebPortalConnection.h"
 
 
-@interface WebPortalResponse (Data)
+@interface WebPortalConnection (Data)
 
 -(void)processLoginHtml;
 -(void)processIndexHtml;

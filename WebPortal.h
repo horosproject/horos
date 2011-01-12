@@ -64,8 +64,8 @@
 @property BOOL weasisEnabled;
 @property BOOL flashEnabled;
 
--(id)initWithDatabase:(WebPortalDatabase*)database;
--(id)initWithDatabaseAtPath:(NSString*)sqlFilePath;
+-(id)initWithDatabase:(WebPortalDatabase*)database dicomDatabase:(DicomDatabase*)dd;
+-(id)initWithDatabaseAtPath:(NSString*)sqlFilePath dicomDatabase:(DicomDatabase*)dd;
 
 -(void)startAcceptingConnections;
 -(void)stopAcceptingConnections;

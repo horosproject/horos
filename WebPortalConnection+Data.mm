@@ -12,13 +12,15 @@
  PURPOSE.
  =========================================================================*/
 
-#import "WebPortalResponse+Data.h"
+#import "WebPortalConnection+Data.h"
+#import "WebPortalResponse.h"
 #import "DicomAlbum.h"
 #import "DicomDatabase.h"
 #import "WebPortalUser.h"
 #import "WebPortalSession.h"
 #import "WebPortal.h"
 #import "WebPortal+Email+Log.h"
+#import "WebPortal+Databases.h"
 #import "AsyncSocket.h"
 #import "WebPortalDatabase.h"
 #import "WebPortal+Databases.h"
@@ -44,7 +46,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 
 
 
-@implementation WebPortalResponse (Data)
+@implementation WebPortalConnection (Data)
 
 +(NSArray*)MakeArray:(id)obj {
 	if ([obj isKindOfClass:[NSArray class]])
@@ -56,18 +58,18 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	return [NSArray arrayWithObject:obj];
 }
 
--(NSArray*)studyList_studiesForUser:(WebPortalUser*)user outTitle:(NSString**)title {
+-(NSArray*)studyList_studiesForUser:(WebPortalUser*)luser outTitle:(NSString**)title {
 	NSString* ignore = NULL;
 	if (!title) title = &ignore;
 	
-	NSString* albumReq = [wpc.parameters objectForKey:@"album"];
+	NSString* albumReq = [parameters objectForKey:@"album"];
 	if (albumReq.length) {
 		*title = [NSString stringWithFormat:NSLocalizedString(@"%@", @"Web portal, study list, title format (%@ is album name)"), albumReq];
-		return [portal studiesForUser:user album:albumReq sortBy:[wpc.parameters objectForKey:@"order"]];
+		return [self.portal studiesForUser:luser album:albumReq sortBy:[parameters objectForKey:@"order"]];
 	}
 	
-	NSString* browseReq = [wpc.parameters objectForKey:@"browse"];
-	NSString* browseParameterReq = [wpc.parameters objectForKey:@"browseParameter"];
+	NSString* browseReq = [parameters objectForKey:@"browse"];
+	NSString* browseParameterReq = [parameters objectForKey:@"browseParameter"];
 	
 	NSPredicate* browsePredicate = NULL;
 	
@@ -90,12 +92,12 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 				browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
 			}
 			else
-				if ([wpc.parameters objectForKey:@"search"])
+				if ([parameters objectForKey:@"search"])
 				{
 					*title = NSLocalizedString(@"Search Results", @"Web portal, study list, title");
 					
 					NSMutableString* search = [NSMutableString string];
-					NSString *searchString = [wpc.parameters objectForKey:@"search"];
+					NSString *searchString = [parameters objectForKey:@"search"];
 					
 					NSArray* components = [searchString componentsSeparatedByString:@" "];
 					NSMutableArray *newComponents = [NSMutableArray array];
@@ -111,11 +113,11 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 					browsePredicate = [NSPredicate predicateWithFormat:search];
 				}
 				else
-					if ([wpc.parameters objectForKey:@"searchID"])
+					if ([parameters objectForKey:@"searchID"])
 					{
 						*title = NSLocalizedString(@"Search Results", @"Web portal, study list, title");
 						NSMutableString *search = [NSMutableString string];
-						NSString *searchString = [NSString stringWithString:[wpc.parameters objectForKey:@"searchID"]];
+						NSString *searchString = [NSString stringWithString:[parameters objectForKey:@"searchID"]];
 						
 						NSArray *components = [searchString componentsSeparatedByString:@" "];
 						NSMutableArray *newComponents = [NSMutableArray array];
@@ -131,11 +133,11 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 						browsePredicate = [NSPredicate predicateWithFormat:search];
 					}
 					else
-						if ([wpc.parameters objectForKey:@"searchAccessionNumber"])
+						if ([parameters objectForKey:@"searchAccessionNumber"])
 						{
 							*title = NSLocalizedString(@"Search Results", @"Web portal, study list, title");
 							NSMutableString *search = [NSMutableString string];
-							NSString *searchString = [NSString stringWithString:[wpc.parameters objectForKey:@"searchAccessionNumber"]];
+							NSString *searchString = [NSString stringWithString:[parameters objectForKey:@"searchAccessionNumber"]];
 							
 							NSArray *components = [searchString componentsSeparatedByString:@" "];
 							NSMutableArray *newComponents = [NSMutableArray array];
@@ -156,21 +158,21 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 		browsePredicate = [NSPredicate predicateWithValue:YES];
 	}	
 	
-	return [portal studiesForUser:user predicate:browsePredicate sortBy:[wpc.parameters objectForKey:@"order"]];
+	return [self.portal studiesForUser:luser predicate:browsePredicate sortBy:[parameters objectForKey:@"order"]];
 }
 
 
--(DicomSeries*)series_seriesForUser:(WebPortalUser*)user {
+-(DicomSeries*)series_seriesForUser:(WebPortalUser*)luser {
 	NSPredicate* browsePredicate;
 	
-	if ([wpc.parameters objectForKey:@"id"]) {
-		if ([wpc.parameters objectForKey:@"studyID"])
-			browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [wpc.parameters objectForKey:@"studyID"], [wpc.parameters objectForKey:@"id"]];
-		else browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [wpc.parameters objectForKey:@"id"]];
+	if ([parameters objectForKey:@"id"]) {
+		if ([parameters objectForKey:@"studyID"])
+			browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"studyID"], [parameters objectForKey:@"id"]];
+		else browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [parameters objectForKey:@"id"]];
 	} else
 		return NULL;
 	
-	NSArray* series = [portal seriesForUser:user predicate:browsePredicate];
+	NSArray* series = [self.portal seriesForUser:luser predicate:browsePredicate];
 	if (series.count)
 		return series.lastObject;
 	
@@ -178,7 +180,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 }
 
 -(void)sendImages:(NSArray*)images toDicomNode:(NSDictionary*)dicomNodeDescription {
-	[portal updateLogEntryForStudy: [[images lastObject] valueForKeyPath: @"series.study"] withMessage: [NSString stringWithFormat: @"DICOM Send to: %@", [dicomNodeDescription objectForKey:@"Address"]] forUser:wpc.user.name ip:wpc.asyncSocket.connectedHost];
+	[self.portal updateLogEntryForStudy: [[images lastObject] valueForKeyPath: @"series.study"] withMessage: [NSString stringWithFormat: @"DICOM Send to: %@", [dicomNodeDescription objectForKey:@"Address"]] forUser:user.name ip:asyncSocket.connectedHost];
 	
 	@try {
 		NSDictionary* todo = [NSDictionary dictionaryWithObjectsAndKeys: [dicomNodeDescription objectForKey:@"Address"], @"Address", [dicomNodeDescription objectForKey:@"TransferSyntax"], @"TransferSyntax", [dicomNodeDescription objectForKey:@"Port"], @"Port", [dicomNodeDescription objectForKey:@"AETitle"], @"AETitle", [images valueForKey: @"completePath"], @"Files", nil];
@@ -191,7 +193,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 - (void)sendImagesToDicomNodeThread:(NSDictionary*)todo;
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	[wpc.session.sendLock lock];
+	[session.sendLock lock];
 	@try {
 		[[[[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
 										  calledAET:[todo objectForKey:@"AETitle"] 
@@ -204,7 +206,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	} @catch (NSException* e) {
 		NSLog(@"Error: [WebServiceConnection sendImagesToDicomNodeThread:] %@", e);
 	} @finally {
-		[wpc.session.sendLock unlock];
+		[session.sendLock unlock];
 		[pool release];
 	}
 }
@@ -218,43 +220,44 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 #pragma mark HTML
 
 -(void)processLoginHtml {
-	self.templateString = [portal stringForPath:@"login.html"];
+	response.templateString = [self.portal stringForPath:@"login.html"];
 }
 
 -(void)processIndexHtml {
-	self.templateString = [portal stringForPath:@"index.html"];
+	response.templateString = [self.portal stringForPath:@"index.html"];
 }
 
 -(void)processMainHtml {
-//	if (!wpc.user || wpc.user.uploadDICOM.boolValue)
+//	if (!user || user.uploadDICOM.boolValue)
 //		[self supportsPOST:NULL withSize:0];
 	
 	NSMutableArray* albums = [NSMutableArray array];
 	for (NSArray* album in [[BrowserController currentBrowser] albumArray]) // TODO: badness here
 		if (![[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", nil)])
 			[albums addObject:album];
-	[self.tokens setObject:albums forKey:@"Albums"];
-
-	self.templateString = [portal stringForPath:@"main.html"];
+	[response.tokens setObject:albums forKey:@"Albums"];
+	[response.tokens setObject:[self.portal studiesForUser:user predicate:NULL] forKey:@"Studies"];
+	
+	response.templateString = [self.portal stringForPath:@"main.html"];
 }
 
 -(void)processStudyHtml {
 	NSArray* studies = NULL;
-	NSString* studyId = [wpc.parameters objectForKey:@"id"];
+	NSString* studyId = [parameters objectForKey:@"id"];
 	if (studyId)
-		studies = [portal studiesForUser:wpc.user predicate:[NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyId] sortBy:NULL];
+		studies = [self.portal studiesForUser:user predicate:[NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyId] sortBy:NULL];
 	DicomStudy* study = studies.count == 1 ? [studies objectAtIndex:0] : NULL;
 	if (!study)
-		[self.tokens addError:NSLocalizedString(@"Invalid study selection.", @"Web Portal, study, error")];
+		[response.tokens addError:NSLocalizedString(@"Invalid study selection.", @"Web Portal, study, error")];
 	
 	NSMutableArray* selectedSeries = [NSMutableArray array];
-	for (NSString* selectedID in [WebPortalResponse MakeArray:[wpc.parameters objectForKey:@"selected"]])
-		[selectedSeries addObjectsFromArray:[portal seriesForUser:wpc.user predicate:[NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyId, selectedID]]];
+	for (NSString* selectedID in [WebPortalConnection MakeArray:[parameters objectForKey:@"selected"]])
+		[selectedSeries addObjectsFromArray:[self.portal seriesForUser:user predicate:[NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyId, selectedID]]];
 	
-	NSString* action = [wpc.parameters objectForKey:@"action"];
+	NSString* action = [parameters objectForKey:@"action"];
 	
 	if ([action isEqual:@"dicomSend"] && study) {
-		NSArray* dicomDestinationArray = [[wpc.parameters objectForKey:@"dicomDestination"] componentsSeparatedByString:@":"];
+		NSArray* dicomDestinationArray = [[parameters objectForKey:@"dicomDestination"] componentsSeparatedByString:@":"];
 		if (dicomDestinationArray.count >= 4) {
 			NSMutableDictionary* dicomDestination = [NSMutableDictionary dictionary];
 			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:0] forKey:@"Address"];
@@ -263,56 +266,56 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:3] forKey:@"TransferSyntax"];
 			
 			NSMutableArray* selectedImages = [NSMutableArray array];
-			for (NSString* selectedID in [WebPortalResponse MakeArray:[wpc.parameters objectForKey:@"selected"]])
-				for (DicomSeries* series in [portal seriesForUser:wpc.user predicate:[NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyId, selectedID]])
+			for (NSString* selectedID in [WebPortalConnection MakeArray:[parameters objectForKey:@"selected"]])
+				for (DicomSeries* series in [self.portal seriesForUser:user predicate:[NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyId, selectedID]])
 					[selectedImages addObjectsFromArray:series.images.allObjects];
 			
 			if (selectedImages.count) {
 				[self sendImages:selectedImages toDicomNode:dicomDestination];
-				[self.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Dicom send to node %@ initiated.", @"Web Portal, study, dicom send, success"), [dicomDestination objectForKey:@"AETitle"]]];
+				[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Dicom send to node %@ initiated.", @"Web Portal, study, dicom send, success"), [dicomDestination objectForKey:@"AETitle"]]];
 			} else
-				[self.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")]];
+				[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")]];
 		} else
-			[self.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: cannot identify node.", @"Web Portal, study, dicom send, error")]];
+			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: cannot identify node.", @"Web Portal, study, dicom send, error")]];
 	}
 	
 	if ([action isEqual:@"shareStudy"] && study) {
-		NSString* destUserName = [wpc.parameters objectForKey:@"shareStudyUser"];
+		NSString* destUserName = [parameters objectForKey:@"shareStudyUser"];
 		// find this user
 		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-		req.entity = [portal.database entityForName:@"User"];
+		req.entity = [self.portal.database entityForName:@"User"];
 		req.predicate = [NSPredicate predicateWithFormat: @"name == %@", destUserName];
-		NSArray* users = [portal.database.managedObjectContext executeFetchRequest:req error:NULL];
+		NSArray* users = [self.portal.database.managedObjectContext executeFetchRequest:req error:NULL];
 		if (users.count == 1) {
 			// add study to specific study list for this user
 			WebPortalUser* destUser = users.lastObject;
 			if (![[destUser.studies.allObjects valueForKey:@"study"] containsObject:study]) {
-				WebPortalStudy* wpStudy = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:portal.database.managedObjectContext];
+				WebPortalStudy* wpStudy = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:self.portal.database.managedObjectContext];
 				wpStudy.user = destUser;
 				wpStudy.patientUID = study.patientUID;
 				wpStudy.studyInstanceUID = study.studyInstanceUID;
 				wpStudy.dateAdded = [NSDate dateWithTimeIntervalSinceReferenceDate:[[NSUserDefaults standardUserDefaults] doubleForKey:@"lastNotificationsDate"]];
-				[portal.database save:NULL];
+				[self.portal.database save:NULL];
 			}
 			
 			// Send the email
-			[portal sendNotificationsEmailsTo: users aboutStudies:[NSArray arrayWithObject:study] predicate:NULL message:[N2NonNullString([wpc.parameters objectForKey:@"message"]) stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo:wpc.user.email customText:nil webServerAddress:wpc.portalAddress];
-			[portal updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", destUserName] forUser:wpc.user.name ip:wpc.asyncSocket.connectedHost];
+			[self.portal sendNotificationsEmailsTo: users aboutStudies:[NSArray arrayWithObject:study] predicate:NULL message:[N2NonNullString([parameters objectForKey:@"message"]) stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo:user.email customText:nil webServerAddress:self.portalAddress];
+			[self.portal updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", destUserName] forUser:user.name ip:asyncSocket.connectedHost];
 			
-			[tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUserName]];
+			[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUserName]];
 		} else
-			[self.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Study share failed: cannot identify user.", @"Web Portal, study, share, error")]];
+			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Study share failed: cannot identify user.", @"Web Portal, study, share, error")]];
 	}
 	
-	[self.tokens setObject:[WebPortalProxy createWithObject:study transformer:DicomStudyTransformer.create] forKey:@"Study"];
-	[self.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"%@", @"Web Portal, study, title format (%@ is study.name)"), study.name] forKey:@"PageTitle"];
+	[response.tokens setObject:[WebPortalProxy createWithObject:study transformer:DicomStudyTransformer.create] forKey:@"Study"];
+	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"%@", @"Web Portal, study, title format (%@ is study.name)"), study.name] forKey:@"PageTitle"];
 	
 	if (study) {
-		[portal updateLogEntryForStudy:study withMessage:@"Browsing Study" forUser:wpc.user.name ip:wpc.asyncSocket.connectedHost];
+		[self.portal updateLogEntryForStudy:study withMessage:@"Browsing Study" forUser:user.name ip:asyncSocket.connectedHost];
 		
-		[portal.dicomDatabase.managedObjectContext lock];
+		[self.portal.dicomDatabase.managedObjectContext lock];
 		@try {
-			[self.tokens setObject:wpc.requestIsMacOS?@"osirixzip":@"zip" forKey:@"zipextension"];
+			[response.tokens setObject:self.requestIsMacOS?@"osirixzip":@"zip" forKey:@"zipextension"];
 			
 			
 			
@@ -321,10 +324,10 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 		//	[templateString replaceOccurrencesOfString:@"%search%" withString:search];
 		//	[templateString replaceOccurrencesOfString:@"%album%" withString:album];
 			
-			NSString* browse = [wpc.parameters objectForKey:@"browse"];
-			NSString* browseParameter = [wpc.parameters objectForKey:@"browseParameter"];
-			NSString* search = [wpc.parameters objectForKey:@"search"];
-			NSString* album = [wpc.parameters objectForKey:@"album"];
+			NSString* browse = [parameters objectForKey:@"browse"];
+			NSString* browseParameter = [parameters objectForKey:@"browseParameter"];
+			NSString* search = [parameters objectForKey:@"search"];
+			NSString* album = [parameters objectForKey:@"album"];
 			NSString* studyListLinkLabel = NSLocalizedString(@"Study list", nil);
 			if (search.length)
 				studyListLinkLabel = [NSString stringWithFormat:NSLocalizedString(@"Search results for: %@", nil), search];
@@ -334,7 +337,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 				studyListLinkLabel = NSLocalizedString(@"Last 6 Hours", nil);
 			else if ([browse isEqualToString:@"today"])
 				studyListLinkLabel = NSLocalizedString(@"Today", nil);
-			[self.tokens setObject:studyListLinkLabel forKey:@"BackLinkLabel"];
+			[response.tokens setObject:studyListLinkLabel forKey:@"BackLinkLabel"];
 			
 			/*if ([[study valueForKey:@"reportURL"] hasPrefix: @"http://"] || [[study valueForKey:@"reportURL"] hasPrefix: @"https://"])
 			{
@@ -410,7 +413,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 			NSMutableArray* seriesArray = [NSMutableArray array];
 			for (DicomSeries* s in [study.imageSeries sortedArrayUsingDescriptors:[self seriesSortDescriptors]])
 				[seriesArray addObject:[WebPortalProxy createWithObject:s transformer:[DicomSeriesTransformer create]]];
-			[self.tokens setObject:seriesArray forKey:@"Series"];
+			[response.tokens setObject:seriesArray forKey:@"Series"];
 			
 				
 				//[tempHTML replaceOccurrencesOfString:@"%SeriesName%" withString:N2NonNullString(series.name)];
@@ -468,13 +471,13 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 			*/
 			
 			NSMutableArray* dicomDestinations = [NSMutableArray array];
-			if (!wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue) {
+			if (!user || user.sendDICOMtoSelfIP.boolValue) {
 				
-				if (!wpc.user || wpc.user.sendDICOMtoAnyNodes.boolValue) {
+				if (!user || user.sendDICOMtoAnyNodes.boolValue) {
 					
 				}
 			}
-			[self.tokens setObject:dicomDestinations forKey:@"DicomDestinations"];
+			[response.tokens setObject:dicomDestinations forKey:@"DicomDestinations"];
 
 			/*
 			
@@ -490,7 +493,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 				
 				BOOL selectedDone = NO;
 				
-				if (wpc.user == nil || wpc.user.sendDICOMtoSelfIP.boolValue)
+				if (user == nil || user.sendDICOMtoSelfIP.boolValue)
 				{
 					NSString *dicomNodeAddress = [asyncSocket connectedHost];
 					NSString *dicomNodeAETitle = @"This Computer";
@@ -534,7 +537,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 					[returnHTML appendString:tempHTML];
 				}
 				
-				if (wpc.user == nil || wpc.user.sendDICOMtoAnyNodes.boolValue)
+				if (user == nil || user.sendDICOMtoAnyNodes.boolValue)
 				{
 					NSArray *nodes = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 					
@@ -586,10 +589,10 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 			else [returnHTML appendString:templateStringEnd];*/
 			
 			NSMutableArray* shareDestinations = [NSMutableArray array];
-			if (!wpc.user || wpc.user.shareStudyWithUser.boolValue) {
+			if (!user || user.shareStudyWithUser.boolValue) {
 				
 			}
-			[self.tokens setObject:shareDestinations forKey:@"ShareDestinations"];
+			[response.tokens setObject:shareDestinations forKey:@"ShareDestinations"];
 			
 			
 			/*if (shareSend)
@@ -613,7 +616,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 					
 					for ( NSManagedObject *user in users)
 					{
-						if (user != wpc.user)
+						if (user != self.user)
 						{
 							NSMutableString *tempHTML = [NSMutableString stringWithString: userListItemString];
 							
@@ -640,7 +643,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 		} @catch (NSException* e) {
 			NSLog(@"Error: [WebPortalResponse processStudyHtml:] %@", e);
 		} @finally {
-			[portal.dicomDatabase.managedObjectContext unlock];
+			[self.portal.dicomDatabase.managedObjectContext unlock];
 		}
 		
 	}
@@ -655,7 +658,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	
 	
 	
-	self.templateString = [portal stringForPath:@"study.html"];
+	response.templateString = [self.portal stringForPath:@"study.html"];
 }
 
 
@@ -667,8 +670,8 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 
 -(void)processStudyListHtml {
 	/*NSString* title = NULL;
-	[self.tokens setObject:[self studyList_studiesForUser:wpc.user outTitle:&title] forKey:@"Studies"]	
-	if (title) [self.tokens setObject:title forKey:@"PageTitle"];
+	[response.tokens setObject:[self studyList_studiesForUser:self.user outTitle:&title] forKey:@"Studies"]	
+	if (title) [response.tokens setObject:title forKey:@"PageTitle"];
 	
 	
 	{
@@ -680,7 +683,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 		{
 			NSMutableString *templateString = [self webServicesHTMLMutableString:@"studyList.html"];
 			
-			[WebPortalResponse mutableString:templateString block:@"ZIPFunctions" setVisible:(wpc.user && wpc.user.downloadZIP.boolValue && ![[settings valueForKey:@"iPhone"] boolValue])];
+			[WebPortalResponse mutableString:templateString block:@"ZIPFunctions" setVisible:(self.user && self.user.downloadZIP.boolValue && ![[settings valueForKey:@"iPhone"] boolValue])];
 			[WebPortalResponse mutableString:templateString block:@"Weasis" setVisible:(NSUserDefaults.webPortalUsesWeasis && ![[settings valueForKey:@"iPhone"] boolValue])];
 			
 			[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip")];
@@ -803,7 +806,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	}
 	
 	
-	self.templateString = [portal stringForPath:@"studyList.html"];*/
+	response.templateString = [self.portal stringForPath:@"studyList.html"];*/
 }
 
 
@@ -812,7 +815,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 
 
 -(void)processSeriesHtml {
-	/*DicomSeries* series = [self series_seriesForUser:wpc.user];
+	/*DicomSeries* series = [self series_seriesForUser:self.user];
 	
 	NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 	
@@ -974,7 +977,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 
 
 -(void)processAccountHtml {/*
-	if (!wpc.user) {
+	if (!self.user) {
 		self.statusCode = 404;
 		return;
 	}
@@ -998,7 +1001,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 						// We can update the user password
 						[user setValue: password forKey: @"password"];
 						message = NSLocalizedString( @"Password updated successfully !", nil);
-						[portal updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"] forUser:wpc.user.name ip:wpc.asyncSocket.connectedHost];
+						[portal updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"] forUser:self.user.name ip:wpc.asyncSocket.connectedHost];
 					}
 					else
 					{
@@ -1079,98 +1082,98 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 #pragma mark Administration HTML
 
 -(void)processAdminIndexHtml {
-	if (!wpc.user.isAdmin) {
-		self.statusCode = 401;
-		[portal updateLogEntryForStudy:NULL withMessage:@"Attempt to access admin area without being an admin" forUser:wpc.user.name ip:wpc.asyncSocket.connectedHost];
+	if (!user.isAdmin) {
+		response.statusCode = 401;
+		[self.portal updateLogEntryForStudy:NULL withMessage:@"Attempt to access admin area without being an admin" forUser:user.name ip:asyncSocket.connectedHost];
 		return;
 	}
 	
-	[self.tokens setObject:NSLocalizedString(@"Administration", @"Web Portal, admin, index, title") forKey:@"PageTitle"];
+	[response.tokens setObject:NSLocalizedString(@"Administration", @"Web Portal, admin, index, title") forKey:@"PageTitle"];
 	
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-	req.entity = [portal.database entityForName:@"User"];
+	req.entity = [self.portal.database entityForName:@"User"];
 	req.predicate = [NSPredicate predicateWithValue:YES];
-	[self.tokens setObject:[portal.database.managedObjectContext executeFetchRequest:req error:NULL] forKey:@"Users"];
+	[response.tokens setObject:[self.portal.database.managedObjectContext executeFetchRequest:req error:NULL] forKey:@"Users"];
 	
-	self.templateString = [portal stringForPath:@"admin/index.html"];
+	response.templateString = [self.portal stringForPath:@"admin/index.html"];
 }
 
 -(void)processAdminUserHtml {
-	if (!wpc.user.isAdmin) {
-		self.statusCode = 401;
-		[portal updateLogEntryForStudy:NULL withMessage:@"Attempt to access admin area without being an admin" forUser:wpc.user.name ip:wpc.asyncSocket.connectedHost];
+	if (!user.isAdmin) {
+		response.statusCode = 401;
+		[self.portal updateLogEntryForStudy:NULL withMessage:@"Attempt to access admin area without being an admin" forUser:user.name ip:asyncSocket.connectedHost];
 		return;
 	}
 
-	NSObject* user = NULL;
+	NSObject* luser = NULL;
 	BOOL userRecycleParams = NO;
-	NSString* action = [wpc.parameters objectForKey:@"action"];
+	NSString* action = [parameters objectForKey:@"action"];
 	NSString* originalName = NULL;
 	
 	if ([action isEqual:@"delete"]) {
-		originalName = [wpc.parameters objectForKey:@"originalName"];
-		NSManagedObject* tempUser = [portal.database userWithName:originalName];
+		originalName = [parameters objectForKey:@"originalName"];
+		NSManagedObject* tempUser = [self.portal.database userWithName:originalName];
 		if (!tempUser)
-			[self.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't delete user <b>%@</b> because it doesn't exists.", @"Web Portal, admin, user edition, delete error (%@ is user.name)"), originalName]];
+			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't delete user <b>%@</b> because it doesn't exists.", @"Web Portal, admin, user edition, delete error (%@ is user.name)"), originalName]];
 		else {
-			[portal.database.managedObjectContext deleteObject:tempUser];
+			[self.portal.database.managedObjectContext deleteObject:tempUser];
 			[tempUser.managedObjectContext save:NULL];
-			[self.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"User <b>%@</b> successfully deleted.", @"Web Portal, admin, user edition, delete ok (%@ is user.name)"), originalName]];
+			[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"User <b>%@</b> successfully deleted.", @"Web Portal, admin, user edition, delete ok (%@ is user.name)"), originalName]];
 		}
 	}
 	
 	if ([action isEqual:@"save"]) {
-		originalName = [wpc.parameters objectForKey:@"originalName"];
-		WebPortalUser* webUser = [portal.database userWithName:originalName];
+		originalName = [parameters objectForKey:@"originalName"];
+		WebPortalUser* webUser = [self.portal.database userWithName:originalName];
 		if (!webUser) {
-			[self.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't save changes for user <b>%@</b> because it doesn't exists.", @"Web Portal, admin, user edition, save error (%@ is user.name)"), originalName]];
+			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't save changes for user <b>%@</b> because it doesn't exists.", @"Web Portal, admin, user edition, save error (%@ is user.name)"), originalName]];
 			userRecycleParams = YES;
 		} else {
-			// NSLog(@"SAVE params: %@", wpc.parameters.description);
+			// NSLog(@"SAVE params: %@", parameters.description);
 			
-			NSString* name = [wpc.parameters objectForKey:@"name"];
-			NSString* password = [wpc.parameters objectForKey:@"password"];
-			NSString* studyPredicate = [wpc.parameters objectForKey:@"studyPredicate"];
-			NSNumber* downloadZIP = [NSNumber numberWithBool:[[wpc.parameters objectForKey:@"downloadZIP"] isEqual:@"on"]];
+			NSString* name = [parameters objectForKey:@"name"];
+			NSString* password = [parameters objectForKey:@"password"];
+			NSString* studyPredicate = [parameters objectForKey:@"studyPredicate"];
+			NSNumber* downloadZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"downloadZIP"] isEqual:@"on"]];
 			
 			NSError* err;
 			
 			err = NULL;
 			if (![webUser validateName:&name error:&err])
-				[self.tokens addError:err.localizedDescription];
+				[response.tokens addError:err.localizedDescription];
 			err = NULL;
 			if (![webUser validatePassword:&password error:&err])
-				[self.tokens addError:err.localizedDescription];
+				[response.tokens addError:err.localizedDescription];
 			err = NULL;
 			if (![webUser validateStudyPredicate:&studyPredicate error:&err])
-				[self.tokens addError:err.localizedDescription];
+				[response.tokens addError:err.localizedDescription];
 			err = NULL;
 			if (![webUser validateDownloadZIP:&downloadZIP error:&err])
-				[self.tokens addError:err.localizedDescription];
+				[response.tokens addError:err.localizedDescription];
 			
-			if (!self.tokens.errors.count) {
+			if (!response.tokens.errors.count) {
 				webUser.name = name;
 				webUser.password = password;
-				webUser.email = [wpc.parameters objectForKey:@"email"];
-				webUser.phone = [wpc.parameters objectForKey:@"phone"];
-				webUser.address = [wpc.parameters objectForKey:@"address"];
+				webUser.email = [parameters objectForKey:@"email"];
+				webUser.phone = [parameters objectForKey:@"phone"];
+				webUser.address = [parameters objectForKey:@"address"];
 				webUser.studyPredicate = studyPredicate;
 				
-				webUser.autoDelete = [NSNumber numberWithBool:[[wpc.parameters objectForKey:@"autoDelete"] isEqual:@"on"]];
+				webUser.autoDelete = [NSNumber numberWithBool:[[parameters objectForKey:@"autoDelete"] isEqual:@"on"]];
 				webUser.downloadZIP = downloadZIP;
-				webUser.emailNotification = [NSNumber numberWithBool:[[wpc.parameters objectForKey:@"emailNotification"] isEqual:@"on"]];
-				webUser.encryptedZIP = [NSNumber numberWithBool:[[wpc.parameters objectForKey:@"encryptedZIP"] isEqual:@"on"]];
-				webUser.uploadDICOM = [NSNumber numberWithBool:[[wpc.parameters objectForKey:@"uploadDICOM"] isEqual:@"on"]];
-				webUser.sendDICOMtoSelfIP = [NSNumber numberWithBool:[[wpc.parameters objectForKey:@"sendDICOMtoSelfIP"] isEqual:@"on"]];
-				webUser.uploadDICOMAddToSpecificStudies = [NSNumber numberWithBool:[[wpc.parameters objectForKey:@"uploadDICOMAddToSpecificStudies"] isEqual:@"on"]];
-				webUser.sendDICOMtoAnyNodes = [NSNumber numberWithBool:[[wpc.parameters objectForKey:@"sendDICOMtoAnyNodes"] isEqual:@"on"]];
-				webUser.shareStudyWithUser = [NSNumber numberWithBool:[[wpc.parameters objectForKey:@"shareStudyWithUser"] isEqual:@"on"]];
+				webUser.emailNotification = [NSNumber numberWithBool:[[parameters objectForKey:@"emailNotification"] isEqual:@"on"]];
+				webUser.encryptedZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"encryptedZIP"] isEqual:@"on"]];
+				webUser.uploadDICOM = [NSNumber numberWithBool:[[parameters objectForKey:@"uploadDICOM"] isEqual:@"on"]];
+				webUser.sendDICOMtoSelfIP = [NSNumber numberWithBool:[[parameters objectForKey:@"sendDICOMtoSelfIP"] isEqual:@"on"]];
+				webUser.uploadDICOMAddToSpecificStudies = [NSNumber numberWithBool:[[parameters objectForKey:@"uploadDICOMAddToSpecificStudies"] isEqual:@"on"]];
+				webUser.sendDICOMtoAnyNodes = [NSNumber numberWithBool:[[parameters objectForKey:@"sendDICOMtoAnyNodes"] isEqual:@"on"]];
+				webUser.shareStudyWithUser = [NSNumber numberWithBool:[[parameters objectForKey:@"shareStudyWithUser"] isEqual:@"on"]];
 				
 				if (webUser.autoDelete.boolValue)
-					webUser.deletionDate = [NSCalendarDate dateWithYear:[[wpc.parameters objectForKey:@"deletionDate_year"] integerValue] month:[[wpc.parameters objectForKey:@"deletionDate_month"] integerValue]+1 day:[[wpc.parameters objectForKey:@"deletionDate_day"] integerValue] hour:0 minute:0 second:0 timeZone:NULL];
+					webUser.deletionDate = [NSCalendarDate dateWithYear:[[parameters objectForKey:@"deletionDate_year"] integerValue] month:[[parameters objectForKey:@"deletionDate_month"] integerValue]+1 day:[[parameters objectForKey:@"deletionDate_day"] integerValue] hour:0 minute:0 second:0 timeZone:NULL];
 				
 				NSMutableArray* remainingStudies = [NSMutableArray array];
-				for (NSString* studyObjectID in [[wpc.parameters objectForKey:@"remainingStudies"] componentsSeparatedByString:@","]) {
+				for (NSString* studyObjectID in [[self.parameters objectForKey:@"remainingStudies"] componentsSeparatedByString:@","]) {
 					studyObjectID = [studyObjectID.stringByTrimmingStartAndEnd stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 					
 					WebPortalStudy* wpStudy = NULL;
@@ -1182,7 +1185,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 						}
 					
 					if (wpStudy) [remainingStudies addObject:wpStudy];
-					else NSLog(@"Warning: Web Portal user %@ is referencing a study with CoreData ID %@, which doesn't exist", wpc.user.name, studyObjectID);
+					else NSLog(@"Warning: Web Portal user %@ is referencing a study with CoreData ID %@, which doesn't exist", self.user.name, studyObjectID);
 				}
 				for (WebPortalStudy* iwpStudy in webUser.studies.allObjects)
 					if (![remainingStudies containsObject:iwpStudy])
@@ -1190,36 +1193,36 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 				
 				[webUser.managedObjectContext save:NULL];
 				
-				[self.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Changes for user <b>%@</b> successfully saved.", @"Web Portal, admin, user edition, save ok (%@ is user.name)"), webUser.name]];
-				user = webUser;
+				[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Changes for user <b>%@</b> successfully saved.", @"Web Portal, admin, user edition, save ok (%@ is user.name)"), webUser.name]];
+				luser = webUser;
 			} else
 				userRecycleParams = YES;
 		}
 	}
 	
 	if ([action isEqual:@"new"]) {
-		user = [portal.database newUser];
+		luser = [self.portal.database newUser];
 	}
 	
 	if (!action) { // edit
-		originalName = [wpc.parameters objectForKey:@"name"];
-		user = [portal.database userWithName:originalName];
-		if (!user)
-			[self.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't find user with name <b>%@</b>.", @"Web Portal, admin, user edition, edit error (%@ is user.name)"), originalName]];
+		originalName = [self.parameters objectForKey:@"name"];
+		luser = [self.portal.database userWithName:originalName];
+		if (!luser)
+			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't find user with name <b>%@</b>.", @"Web Portal, admin, user edition, edit error (%@ is user.name)"), originalName]];
 	}
 	
-	[self.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"User Administration: %@", @"Web Portal, admin, user edition, title (%@ is user.name)"), user? [user valueForKey:@"name"] : originalName] forKey:@"PageTitle"];
-	if (user)
-		[self.tokens setObject:[WebPortalProxy createWithObject:user transformer:[WebPortalUserTransformer create]] forKey:@"User"];
-	else if (userRecycleParams) [self.tokens setObject:wpc.parameters forKey:@"User"];
+	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"User Administration: %@", @"Web Portal, admin, user edition, title (%@ is user.name)"), luser? [luser valueForKey:@"name"] : originalName] forKey:@"PageTitle"];
+	if (luser)
+		[response.tokens setObject:[WebPortalProxy createWithObject:luser transformer:[WebPortalUserTransformer create]] forKey:@"User"];
+	else if (userRecycleParams) [response.tokens setObject:self.parameters forKey:@"User"];
 	
-	self.templateString = [portal stringForPath:@"admin/user.html"];
+	response.templateString = [self.portal stringForPath:@"admin/user.html"];
 }
 
 #pragma mark JSON
 
 -(void)processStudyListJson {
-	/*NSArray* studies = [self studyList_studiesForUser:wpc.user parameters:wpc.parameters outTitle:NULL]	
+	/*NSArray* studies = [self studyList_studiesForUser:self.user parameters:self.parameters outTitle:NULL]	
 	
 	[portal.dicomDatabase lock];
 	@try {
@@ -1252,7 +1255,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 }
 
 -(void)processSeriesJson {
-	/*DicomSeries* series = [self series_seriesForUser:wpc.user];
+	/*DicomSeries* series = [self series_seriesForUser:self.user];
 	
 	NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 	
@@ -1512,7 +1515,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 			
 			if ([images count])
 			{
-				[portal updateLogEntryForStudy: [studies lastObject] withMessage: @"WADO Send" forUser: nil ip: [asyncSocket connectedHost] forUser:wpc.user.name ip:wpc.asyncSocket.connectedHost];
+				[portal updateLogEntryForStudy: [studies lastObject] withMessage: @"WADO Send" forUser: nil ip: [asyncSocket connectedHost] forUser:self.user.name ip:wpc.asyncSocket.connectedHost];
 			}
 		}
 		
@@ -1717,38 +1720,38 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 #pragma mark Weasis
 
 -(void)processWeasisJnlp {
-	if (!portal.weasisEnabled) {
-		self.statusCode = 404;
+	if (!self.portal.weasisEnabled) {
+		response.statusCode = 404;
 		return;
 	}
 	
-	[self.tokens setObject:wpc.portalURL forKey:@"WebServerAddress"];
-	[self.tokens setObject:wpc.GETParams forKey:@"parameters"];
+	[response.tokens setObject:self.portalURL forKey:@"WebServerAddress"];
+	[response.tokens setObject:self.GETParams forKey:@"parameters"];
 	
-	self.templateString = [portal stringForPath:@"weasis.jnlp"];
-	self.mimeType = @"application/x-java-jnlp-file";
+	response.templateString = [self.portal stringForPath:@"weasis.jnlp"];
+	response.mimeType = @"application/x-java-jnlp-file";
 }
 
 -(void)processWeasisXml {
-	if (!portal.weasisEnabled) {
-		self.statusCode = 404;
+	if (!self.portal.weasisEnabled) {
+		response.statusCode = 404;
 		return;
 	}
 	
-	NSString* studyInstanceUID = [wpc.parameters objectForKey:@"StudyInstanceUID"];
-	NSString* seriesInstanceUID = [wpc.parameters objectForKey:@"SeriesInstanceUID"];
-	NSArray* selectedSeries = [WebPortalResponse MakeArray:[wpc.parameters objectForKey:@"selected"]];
+	NSString* studyInstanceUID = [self.parameters objectForKey:@"StudyInstanceUID"];
+	NSString* seriesInstanceUID = [self.parameters objectForKey:@"SeriesInstanceUID"];
+	NSArray* selectedSeries = [WebPortalConnection MakeArray:[self.parameters objectForKey:@"selected"]];
 	
 	NSMutableArray* requestedStudies = [NSMutableArray arrayWithCapacity:8];
 	NSMutableArray* requestedSeries = [NSMutableArray arrayWithCapacity:64];
 	
 	// find requosted core data objects
 	if (studyInstanceUID)
-		[requestedStudies addObjectsFromArray:[portal studiesForUser:wpc.user predicate:[NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyInstanceUID] sortBy:NULL]];
+		[requestedStudies addObjectsFromArray:[self.portal studiesForUser:self.user predicate:[NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyInstanceUID] sortBy:NULL]];
 	if (seriesInstanceUID)
-		[requestedSeries addObjectsFromArray:[portal seriesForUser:wpc.user predicate:[NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", seriesInstanceUID]]];
+		[requestedSeries addObjectsFromArray:[self.portal seriesForUser:self.user predicate:[NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", seriesInstanceUID]]];
 	for (NSString* selSeriesInstanceUID in selectedSeries)
-		[requestedSeries addObjectsFromArray:[portal seriesForUser:wpc.user predicate:[NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", selSeriesInstanceUID]]];
+		[requestedSeries addObjectsFromArray:[self.portal seriesForUser:self.user predicate:[NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", selSeriesInstanceUID]]];
 	
 	NSMutableArray* patientIds = [NSMutableArray arrayWithCapacity:2];
 	NSMutableArray* studies = [NSMutableArray arrayWithCapacity:8];
@@ -1774,12 +1777,12 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	}
 	
 	// filter by user rights
-	if (wpc.user) {
-		studies = (NSMutableArray*) [portal studiesForUser:wpc.user predicate:[NSPredicate predicateWithValue:YES] sortBy:nil];// is not mutable, but we won't mutate it anymore
+	if (self.user) {
+		studies = (NSMutableArray*) [self.portal studiesForUser:self.user predicate:[NSPredicate predicateWithValue:YES] sortBy:nil];// is not mutable, but we won't mutate it anymore
 	}
 	
 	// produce XML
-	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?><wado_query wadoURL=\"%@/wado\"></wado_query>", wpc.portalURL];
+	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?><wado_query wadoURL=\"%@/wado\"></wado_query>", self.portalURL];
 	NSXMLDocument* doc = [[NSXMLDocument alloc] initWithXMLString:baseXML options:NSXMLDocumentIncludeContentTypeDeclaration|NSXMLDocumentTidyXML error:NULL];
 	[doc setCharacterEncoding:@"UTF-8"];
 	
@@ -1831,8 +1834,8 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 			}
 	}
 	
-	[self setDataWithString:[[doc autorelease] XMLString]];
-	self.mimeType = @"text/xml";	
+	[response setDataWithString:[[doc autorelease] XMLString]];
+	response.mimeType = @"text/xml";	
 }
 
 #pragma mark Other
@@ -1853,7 +1856,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 		
 		if ([studies count] == 1)
 		{
-			[portal updateLogEntryForStudy: [studies lastObject] withMessage: @"Download Report" forUser:wpc.user.name ip:wpc.asyncSocket.connectedHost];
+			[portal updateLogEntryForStudy: [studies lastObject] withMessage: @"Download Report" forUser:self.user.name ip:wpc.asyncSocket.connectedHost];
 			
 			NSString *reportFilePath = [[studies lastObject] valueForKey:@"reportURL"];
 			
@@ -2063,9 +2066,9 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 		if ([imagesArray count])
 		{
 			if (user.encryptedZIP.boolValue)
-				[portal updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download encrypted DICOM ZIP" forUser:wpc.user.name ip:wpc.asyncSocket.connectedHost];
+				[portal updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download encrypted DICOM ZIP" forUser:self.user.name ip:wpc.asyncSocket.connectedHost];
 			else
-				[portal updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download DICOM ZIP" forUser:wpc.user.name ip:wpc.asyncSocket.connectedHost];
+				[portal updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download DICOM ZIP" forUser:self.user.name ip:wpc.asyncSocket.connectedHost];
 			
 			@try
 			{

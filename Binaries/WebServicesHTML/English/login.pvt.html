@@ -1,5 +1,5 @@
 <div>
-	<script src="/sha1-min.js" type="text/javascript"></script>
+	<!--script src="/sha1-min.js" type="text/javascript"></script-->
 	<script type="text/javascript">
 	function loginAction(form) {
 		form.sha1.value = hex_sha1(form.password.value+form.challenge.value);
@@ -10,18 +10,14 @@
 	</script>
 	<input type="hidden" id="challenge" name="challenge" value="%X:Info.newChallenge%" />
 	<input type="hidden" id="sha1" name="sha1" value="" />
-	<table class="form">
-		%[IF:Info.requireAuthentication%
+	<table class="centered form">
+		%[IF:Info.authenticationRequired%
 		<tr><td>Username:</td><td><input type="text" name="username" /></td></tr>
 		<tr><td>Password:</td><td><input type="password" name="password" /></td></tr>
-		%]IF:Info.requireAuthentication%
+		%]IF:Info.authenticationRequired%
 		<tr><td></td><td><input type="submit" name="login" value="Login" onclick="return loginAction(this.form)" /></td></tr>
+		%[IF:Info.authenticationRequired&&Info.passwordRestoreAllowed%
+		<tr><td></td><td><a href="password_forgotten">Password Forgotten?</a></td></tr>
+		%]IF:Info.authenticationRequired&&Info.passwordRestoreAllowed%
 	</table>
 </div>
-%[IF:Info.requireAuthentication%
-%[IF:Info.passwordRestoreAllowed%
-<div>
-	<a href="password_forgotten">Password Forgotten?</a>
-</div>
-%]IF:Info.passwordRestoreAllowed%
-%]IF:Info.requireAuthentication%

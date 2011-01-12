@@ -23,6 +23,9 @@
 #import "NSData+N2.h"
 #import "NSString+N2.h"
 #import "DDData.h"
+#import "DicomDatabase.h"
+
+#import "BrowserController.h" // TODO: REMOVE with badness
 
 
 @interface WebPortalServer ()
@@ -138,7 +141,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 +(WebPortal*)defaultWebPortal {
 	static WebPortal* defaultWebPortal = NULL;
 	if (!defaultWebPortal)
-		defaultWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath];
+		defaultWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath dicomDatabase:[[[DicomDatabase alloc] initWithContext:[[BrowserController currentBrowser] localManagedObjectContext]] autorelease]]; // TODO: should not point to BrowserController
 	
 	return defaultWebPortal;
 }
@@ -152,12 +155,13 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 @synthesize address;
 @synthesize dirsToScanForFiles;
 @synthesize authenticationRequired;
+
 @synthesize passwordRestoreAllowed;
 @synthesize wadoEnabled;
 @synthesize weasisEnabled;
 @synthesize flashEnabled;
 
--(id)initWithDatabase:(WebPortalDatabase*)db {
+-(id)initWithDatabase:(WebPortalDatabase*)db dicomDatabase:(DicomDatabase*)dd; {
 	self = [super init];
 	
 	sessions = [[NSMutableArray alloc] initWithCapacity:64];
@@ -165,14 +169,15 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	sessionCreateLock = [[NSLock alloc] init];
 
 	self.database = db;
+	self.dicomDatabase = dd;
 	server = [[WebPortalServer alloc] init];
 	server.portal = self;
 	
 	return self;
 }
 
--(id)initWithDatabaseAtPath:(NSString*)sqlFilePath {
-	return [self initWithDatabase:[[[WebPortalDatabase alloc] initWithPath:DefaultWebPortalDatabasePath] autorelease]];
+-(id)initWithDatabaseAtPath:(NSString*)sqlFilePath dicomDatabase:(DicomDatabase*)dd; {
+	return [self initWithDatabase:[[[WebPortalDatabase alloc] initWithPath:DefaultWebPortalDatabasePath] autorelease] dicomDatabase:dd];
 }
 
 -(void)invalidate {

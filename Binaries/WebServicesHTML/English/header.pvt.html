@@ -9,9 +9,9 @@
 	<script type="text/javascript" src="/styleswitcher.js"></script>
 </head>
 <body>
-	<!--% userAccount%-->
+	%[IF:User%
 	<div id="userbox"><form method="POST" action="/"><div><span name="text">Logged in as <a href="/account">%X:User.name%</a></span><button type="submit" name="logout" value="logout">Logout</button></div></form></div>
-	<!--% /userAccount%-->
+	%]IF:User%
 	<div id="header">
 		%PageTitle%
 	</div>

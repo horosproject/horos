@@ -65,23 +65,26 @@
 		req.predicate = [NSPredicate predicateWithValue:YES];
 		NSArray* studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
 		
-		for (WebPortalStudy* study in userStudies) {
-			NSArray *obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", study.patientUID, study.studyInstanceUID]];
-			
-			if ([obj count] == 1)
-			{
-				if ([array containsObject: [obj lastObject]] == NO && [specificArray containsObject: [obj lastObject]] == NO)
-					[specificArray addObject: [obj lastObject]];
+		if (!userStudies)
+			[specificArray addObjectsFromArray:studiesArray];
+		else
+			for (WebPortalStudy* study in userStudies) {
+				NSArray *obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", study.patientUID, study.studyInstanceUID]];
+				
+				if ([obj count] == 1)
+				{
+					if ([array containsObject: [obj lastObject]] == NO && [specificArray containsObject: [obj lastObject]] == NO)
+						[specificArray addObject: [obj lastObject]];
+				}
+				else if ([obj count] > 1)
+					NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
+				else if (truePredicate && [obj count] == 0)
+				{
+					// It means this study doesnt exist in the entire DB -> remove it from this user list
+					NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
+					[self.database.managedObjectContext deleteObject:study];
+				}
 			}
-			else if ([obj count] > 1)
-				NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
-			else if (truePredicate && [obj count] == 0)
-			{
-				// It means this study doesnt exist in the entire DB -> remove it from this user list
-				NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
-				[self.database.managedObjectContext deleteObject:study];
-			}
-		}
 	}
 	@catch (NSException * e)
 	{
@@ -103,10 +106,11 @@
 		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
 		req.predicate = [DicomDatabase predicateForSmartAlbumFilter:user.studyPredicate];
-		
 		studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+		
 		studiesArray = [self arrayByAddingSpecificStudiesForUser:user predicate:NULL toArray:studiesArray];
-		studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
+		
+		if (predicate) studiesArray = [studiesArray filteredArrayUsingPredicate:predicate];
 		
 		if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
 			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];

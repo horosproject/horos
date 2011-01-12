@@ -175,9 +175,9 @@
 			<h2>Share This Study</h2>
 			<div>Share with user:</div>
 			<select name="shareStudyDestination" id="userDestination">
-				%[FOREACH:ShareDestination:Dest%
+				%[FOREACH:ShareDestinations:Dest%
 				<option value="%X:Dest.username%" %[IF:Dest.isSelected%checked="checked"%]IF:Dest.isSelected%>%X:Dest.description%</option>
-				%]FOREACH:ShareDestination:Dest%
+				%]FOREACH:ShareDestinations:Dest%
 			</select>
 			<div>Message:</div>
 			<div>
