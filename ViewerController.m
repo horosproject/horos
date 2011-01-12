@@ -2099,7 +2099,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			{
 				item = [[NSMenuItem alloc] initWithTitle: [subItem title] action: @selector(setROITool:) keyEquivalent:@""];
 				[item setTag:tag];
-				[item setImage: [self imageForROI: tag]];
+				
 				[item setTarget:self];
 				[submenu addItem:item];
 				[item release];
@@ -2122,7 +2122,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 		item = [[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"ROI", nil) action: nil keyEquivalent:@""];
 		[item setTag: -1];
 		[item setTarget: self];
-		[item setImage: [self imageForROI: [imageView currentTool]]];
+		
+		
+		if( [imageView currentTool] >= tMesure)
+			[item setImage: [self imageForROI: [imageView currentTool]]];
+		else
+			[item setImage: [self imageForROI: tMesure]];
+		
 		[contextualMenu addItem:item];
 		[item release];
 		
