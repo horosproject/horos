@@ -1283,7 +1283,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	[asyncSocket writeData:[self preprocessErrorResponse:resp] withTimeout:WRITE_ERROR_TIMEOUT tag:HTTP_RESPONSE];
 	
-	CFRelease(response);
+	CFRelease(resp);
 }
 
 -(void)handleResourceNotFound { // also other errors, actually
@@ -1293,13 +1293,16 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	CFHTTPMessageRef resp = CFHTTPMessageCreateResponse(kCFAllocatorDefault, status, NULL, kCFHTTPVersion1_1);
 	
 	NSData* bodyData = response.data;
+	if (!bodyData.length)
+		bodyData = [[NSString stringWithFormat:@"HTTP error %d", status] dataUsingEncoding:NSUTF8StringEncoding];
+	
 	CFHTTPMessageSetHeaderFieldValue(resp, CFSTR("Content-Length"), (CFStringRef)[NSString stringWithFormat:@"%d", bodyData.length]);
 	CFHTTPMessageSetBody(resp, (CFDataRef)bodyData);
 	
 	NSData *responseData = [self preprocessErrorResponse:resp];
 	[asyncSocket writeData:responseData withTimeout:WRITE_ERROR_TIMEOUT tag:HTTP_RESPONSE];
 	
-	CFRelease(response);
+	CFRelease(resp);
 }
 
 

@@ -77,7 +77,7 @@
 	}
 	
 	if (!data) {
-		data = [NSData data];
+		self.data = [NSData data];
 		if (!self.statusCode)
 			self.statusCode = 404;
 	}
