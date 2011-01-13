@@ -297,7 +297,7 @@ extern "C"
 		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
 	
-	return NO;
+	return YES;
 }
 
 - (void) setAutoRefreshQueryResults: (NSInteger) i
