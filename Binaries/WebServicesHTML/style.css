@@ -29,6 +29,11 @@ body > * {
 	font-weight: normal;
 }
 
+#subheader {
+	margin: 0px 0 0 0;
+	padding: 0 0 0 2px;
+}
+
 #content {
 	margin: 25px 0 25px 0;
 	padding: 0 15px 0px 15px;
@@ -127,6 +132,13 @@ table {
 
 .separated {
     margin-top: 10px;
+}
+
+a.back:before {
+	content: url(images/chevron_left.png);
+	vertical-align: -30%;
+	margin-right: 3px;
+	padding: 0;
 }
 
 /* Content */

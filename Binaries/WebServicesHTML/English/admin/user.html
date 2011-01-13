@@ -1,4 +1,7 @@
 %INCLUDE:/header.pvt.html%
+<div id="subheader">
+	<a class="back" href="./">Administration</a>
+</div>
 
 <script language="JavaScript">
 	
@@ -125,6 +128,9 @@
 
 %[IF:User%
 <div id="content">
+	%INCLUDE:/errors.pvt.html%
+	%INCLUDE:/messages.pvt.html%
+
 	<form method="POST" action="?" class="basic form" id="userEditionForm">
 		<input type="hidden" name="originalName" value="%X:User.originalName%" />
 		<table class="wide form">

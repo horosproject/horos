@@ -1726,7 +1726,6 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	}
 	
 	[response.tokens setObject:self.portalURL forKey:@"WebServerAddress"];
-	[response.tokens setObject:self.GETParams forKey:@"parameters"];
 	
 	response.templateString = [self.portal stringForPath:@"weasis.jnlp"];
 	response.mimeType = @"application/x-java-jnlp-file";

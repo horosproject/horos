@@ -456,6 +456,8 @@
 		return [wpc.session newChallenge];
 	if ([key isEqual:@"proposeDicomUpload"])
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM) && !wpc.requestIsIOS ];
+	if ([key isEqual:@"getParameters"])
+		return wpc.GETParams;
 	
 	return NULL;
 }
