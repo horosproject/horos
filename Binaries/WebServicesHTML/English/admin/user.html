@@ -1,229 +1,212 @@
-%INCLUDE:/head.pvt.html%
+%INCLUDE:/header.pvt.html%
 
-<body>
-	%INCLUDE:/userbox.pvt.html%
+<script language="JavaScript">
 	
-	<script language="JavaScript">
-		
-		var savedStudies;
-		
-		function onload() {
-			var form = document.getElementById('userEditionForm');
-			
-			savedStudies = new Array();
-			var i;
-			for (i = 0; i < form.studies.options.length; ++i) {
-				var o = form.studies.options[i];
-				savedStudies.push(new Array(o.value, o.text));
-			}
-		}
-		
-		function revertToSaved(form) {
-			while (form.studies.options.length)
-				form.studies.remove(0);
-				
-			var i;
-			for (i = 0; i < savedStudies.length; ++i) {
-				var o = savedStudies[i];
-				var option = document.createElement("option");
-				option.value = o[0];
-				option.text = o[1];
-				try {
-					form.studies.add(option, null); // standards compliant; doesn't work in IE
-				} catch(ex) {
-					form.studies.add(option); // IE only
-				}
-			}
-			
-			return true;
-		}
-		
-		window.onload = onload;
-		
-		function confirmDelete() {
-			return confirm("Do you really want to delete the user named \"%X:User.name%\"?");
-		}
-		
-		function daysInMonth(year, month) {
-			return new Date(year, month+1, 0).getDate();
-		}
-		
-		function adjustForm(sel) {
-			var form = sel;
-			if (sel.form)
-				form = sel.form;
-				
-			if (sel == form || sel.name == "autoDelete")
-				form.deletionDate_year.disabled = form.deletionDate_month.disabled = form.deletionDate_day.disabled = !form.autoDelete.checked;
-				
-			if (sel == form || sel.name == "downloadZIP")
-				form.encryptedZIP.disabled = !form.downloadZIP.checked;
-			
-			if (sel == form || sel.name == "uploadDICOM")
-				form.uploadDICOMAddToSpecificStudies.disabled = !form.uploadDICOM.checked;
-				
-			if (sel == form || sel.name == "sendDICOMtoSelfIP") {
-				form.sendDICOMtoAnyNodes.disabled = !form.sendDICOMtoSelfIP.checked;
-				if (!form.sendDICOMtoSelfIP.checked)
-					form.sendDICOMtoAnyNodes.checked = false;
-			}
-		}
-		
-		function adjustDates(sel) {
-			var form = sel.form;
-			var prefix = sel.name.substring(0, sel.name.lastIndexOf("_")+1);
-			
-			var days = form[prefix+"day"];
-			var months = form[prefix+"month"];
-			var years = form[prefix+"year"];
-			
-			var month = parseInt(months.value);
-			var year = parseInt(years.value);
-			
-			var n = daysInMonth(year, month);
-			
-			// if selected day won't be available select the nearest day
-			if (days.selectedIndex >= n)
-				days.selectedIndex = n-1;
-			
-			// remove/add days
-			while (days.length > n)
-				days.remove(days.length-1);
-			while (days.length < n) {
-				var option = document.createElement("option");
-				option.text = option.value = days.length+1;
-				try {
-					days.add(option, null); // standards compliant; doesn't work in IE
-				} catch(ex) {
-					days.add(option); // IE only
-				}
-			}
-		}
-		
-		function selectedStudiesChanged(form) {
-			var selCount = 0;
-			var i;
-			for (i = 0; i < form.studies.options.length; ++i)
-				if (form.studies.options[i].selected)
-					++selCount;
-			form.removeSelectedStudiesButton.disabled = selCount==0;
-		}
-		
-		function removeSelectedStudies(form) {
-			while (form.studies.selectedIndex != -1)
-				form.studies.remove(form.studies.selectedIndex);
-		}
-		
-		function willSubmit(form) {
-			form.remainingStudies.value = "";
-			
-			var i;
-			for (i = 0; i < form.studies.options.length; ++i)
-				form.remainingStudies.value += (form.remainingStudies.value.length? "," : "") + escape(form.studies.options[i].value);
-
-			return true;
-		}
-		
-	</script>
+	var savedStudies;
 	
-	<div id="pageContent">
-		<h1 id="pageTitle">%X:PageTitle%</h1>
+	function onload() {
+		var form = document.getElementById('userEditionForm');
+		
+		savedStudies = new Array();
+		var i;
+		for (i = 0; i < form.studies.options.length; ++i) {
+			var o = form.studies.options[i];
+			savedStudies.push(new Array(o.value, o.text));
+		}
+	}
+	
+	function revertToSaved(form) {
+		while (form.studies.options.length)
+			form.studies.remove(0);
+			
+		var i;
+		for (i = 0; i < savedStudies.length; ++i) {
+			var o = savedStudies[i];
+			var option = document.createElement("option");
+			option.value = o[0];
+			option.text = o[1];
+			try {
+				form.studies.add(option, null); // standards compliant; doesn't work in IE
+			} catch(ex) {
+				form.studies.add(option); // IE only
+			}
+		}
+		
+		return true;
+	}
+	
+	window.onload = onload;
+	
+	function confirmDelete() {
+		return confirm("Do you really want to delete the user named \"%X:User.name%\"?");
+	}
+	
+	function daysInMonth(year, month) {
+		return new Date(year, month+1, 0).getDate();
+	}
+	
+	function adjustForm(sel) {
+		var form = sel;
+		if (sel.form)
+			form = sel.form;
+			
+		if (sel == form || sel.name == "autoDelete")
+			form.deletionDate_year.disabled = form.deletionDate_month.disabled = form.deletionDate_day.disabled = !form.autoDelete.checked;
+			
+		if (sel == form || sel.name == "downloadZIP")
+			form.encryptedZIP.disabled = !form.downloadZIP.checked;
+		
+		if (sel == form || sel.name == "uploadDICOM")
+			form.uploadDICOMAddToSpecificStudies.disabled = !form.uploadDICOM.checked;
+			
+		if (sel == form || sel.name == "sendDICOMtoSelfIP") {
+			form.sendDICOMtoAnyNodes.disabled = !form.sendDICOMtoSelfIP.checked;
+			if (!form.sendDICOMtoSelfIP.checked)
+				form.sendDICOMtoAnyNodes.checked = false;
+		}
+	}
+	
+	function adjustDates(sel) {
+		var form = sel.form;
+		var prefix = sel.name.substring(0, sel.name.lastIndexOf("_")+1);
+		
+		var days = form[prefix+"day"];
+		var months = form[prefix+"month"];
+		var years = form[prefix+"year"];
+		
+		var month = parseInt(months.value);
+		var year = parseInt(years.value);
+		
+		var n = daysInMonth(year, month);
+		
+		// if selected day won't be available select the nearest day
+		if (days.selectedIndex >= n)
+			days.selectedIndex = n-1;
+		
+		// remove/add days
+		while (days.length > n)
+			days.remove(days.length-1);
+		while (days.length < n) {
+			var option = document.createElement("option");
+			option.text = option.value = days.length+1;
+			try {
+				days.add(option, null); // standards compliant; doesn't work in IE
+			} catch(ex) {
+				days.add(option); // IE only
+			}
+		}
+	}
+	
+	function selectedStudiesChanged(form) {
+		var selCount = 0;
+		var i;
+		for (i = 0; i < form.studies.options.length; ++i)
+			if (form.studies.options[i].selected)
+				++selCount;
+		form.removeSelectedStudiesButton.disabled = selCount==0;
+	}
+	
+	function removeSelectedStudies(form) {
+		while (form.studies.selectedIndex != -1)
+			form.studies.remove(form.studies.selectedIndex);
+	}
+	
+	function willSubmit(form) {
+		form.remainingStudies.value = "";
+		
+		var i;
+		for (i = 0; i < form.studies.options.length; ++i)
+			form.remainingStudies.value += (form.remainingStudies.value.length? "," : "") + escape(form.studies.options[i].value);
 
-		<div id="toolbar">
-			<a id="backButton" class="button" href="./">Administration</a>
-		</div>
-		
-		%INCLUDE:/errors.pvt.html%
-		%INCLUDE:/messages.pvt.html%
-		
-		%[IF:User%
-		<div class="block">
-			<form method="POST" action="?" class="form" id="userEditionForm">
-				<input type="hidden" name="originalName" value="%X:User.originalName%" />
-				<table class="wide form">
-					<tr><td><label for="name">Name:</label></td><td><input type="text" name="name" id="name" value="%X:User.name%" /></td></tr>
-					<tr><td><label for="password">Password:</label></td><td><input type="password" name="password" id="password" value="%X:User.password%" /></td></tr>
-					<tr><td><label for="email">Email:</label></td><td><input type="text" name="email" id="email" value="%X:User.email%" /></td></tr>
-					<tr><td><label for="phone">Phone:</label></td><td><input type="text" name="phone" id="phone" value="%X:User.phone%" /></td></tr>
-					<tr><td><label for="address">Address:</label></td><td><input type="text" name="address" id="address" value="%X:User.address%" /></td></tr>
-					<tr><td colspan="2" style="text-align:left">
-					</td></tr>
-				</table>
-				<table class="separated wide">
-					<tr><td>
-						<label for="studyPredicate">Filter (study table level):</label><br/>
-						<textarea name="studyPredicate" id="studyPredicate">%X:User.studyPredicate%</textarea>
-					</td></tr>
-				</table>
-				<table class="separated wide eq">
-					<tr>
-						<td>
-							<label><input type="checkbox" name="autoDelete" onchange="adjustForm(this)"%[IF:User.autoDelete% checked="checked"%]IF:User.autoDelete%/>Delete this user after:</label>
-							<select name="deletionDate_month" onChange="adjustDates(this)">
-								%[FOREACH:User.deletionDate.Months:Month%
-								<option value="%X:Month.value%"%[IF:Month.selected% selected="selected"%]IF:Month.selected%%[IF:Month.disabled% disabled="disabled"%]IF:Month.disabled%>%X:Month.name%</option>
-								%]FOREACH:User.deletionDate.Months:Month%
-							</select>
-							<select name="deletionDate_day">
-								%[FOREACH:User.deletionDate.Days:Day%
-								<option value="%X:Day.value%"%[IF:Day.selected% selected="selected"%]IF:Day.selected%%[IF:Day.disabled% disabled="disabled"%]IF:Day.disabled%>%X:Day.name%</option>
-								%]FOREACH:User.deletionDate.Days:Day%
-							</select>
-							<select name="deletionDate_year" onChange="adjustDates(this)">
-								%[FOREACH:User.deletionDate.NextYears:Year%
-								<option value="%X:Year.value%"%[IF:Year.selected% selected="selected"%]IF:Year.selected%%[IF:Year.disabled% disabled="disabled"%]IF:Year.disabled%>%X:Year.name%</option>
-								%]FOREACH:User.deletionDate.NextYears:Year%
-							</select>
-							<script language="JavaScript">
-								adjustDates(document.getElementById('userEditionForm').deletionDate_day);
-							</script>
-						</td>
-						<td><label><input type="checkbox" name="downloadZIP" onchange="adjustForm(this)"%[IF:User.downloadZIP% checked="checked"%]IF:User.downloadZIP%/>Authorized to download DICOM ZIP files</label></td>
-					</tr>
-					<tr>
-						<td><label><input type="checkbox" name="emailNotification" onchange="adjustForm(this)"%[IF:User.emailNotification% checked="checked"%]IF:User.emailNotification% %[IF:Prefs.webServerNotificationEmails%disabled="disabled"%]IF:Prefs.webServerNotificationEmails%/>Automatic Notification Emails</label></td>
-						<td style="padding-left:20px"><label><input type="checkbox" name="encryptedZIP" onchange="adjustForm(this)"%[IF:User.encryptedZIP% checked="checked"%]IF:User.encryptedZIP%/>Encrypt ZIP files with user password</label></td>
-					</tr>
-					<tr>
-						<td><label><input type="checkbox" name="uploadDICOM" onchange="adjustForm(this)"%[IF:User.uploadDICOM% checked="checked"%]IF:User.uploadDICOM%/>Authorized to upload DICOM files</label></td>
-						<td><label><input type="checkbox" name="sendDICOMtoSelfIP" onchange="adjustForm(this)"%[IF:User.sendDICOMtoSelfIP% checked="checked"%]IF:User.sendDICOMtoSelfIP%/>Authorized to transfer DICOM files to itself</label></td>
-					</tr>
-					<tr>
-						<td style="padding-left:20px"><label><input type="checkbox" name="uploadDICOMAddToSpecificStudies" onchange="adjustForm(this)"%[IF:User.uploadDICOMAddToSpecificStudies% checked="checked"%]IF:User.uploadDICOMAddToSpecificStudies%/>Add uploaded files to specific studies</label></td>
-						<td style="padding-left:20px"><label><input type="checkbox" name="sendDICOMtoAnyNodes" onchange="adjustForm(this)"%[IF:User.sendDICOMtoAnyNodes% checked="checked"%]IF:User.sendDICOMtoAnyNodes%/>Authorized to transfer DICOM files to any node</label></td>
-					</tr>
-					<tr>
-						<td><label><input type="checkbox" name="shareStudyWithUser" onchange="adjustForm(this)"%[IF:User.shareStudyWithUser% checked="checked"%]IF:User.shareStudyWithUser%/>Authorized to share a study with another user</label></td>
-						<td></td>
-					</tr>
+		return true;
+	}
+	
+</script>
+
+%[IF:User%
+<div id="content">
+	<form method="POST" action="?" class="basic form" id="userEditionForm">
+		<input type="hidden" name="originalName" value="%X:User.originalName%" />
+		<table class="wide form">
+			<tr><td><label for="name">Name:</label></td><td><input type="text" name="name" id="name" value="%X:User.name%" /></td></tr>
+			<tr><td><label for="password">Password:</label></td><td><input type="password" name="password" id="password" value="%X:User.password%" /></td></tr>
+			<tr><td><label for="email">Email:</label></td><td><input type="text" name="email" id="email" value="%X:User.email%" /></td></tr>
+			<tr><td><label for="phone">Phone:</label></td><td><input type="text" name="phone" id="phone" value="%X:User.phone%" /></td></tr>
+			<tr><td><label for="address">Address:</label></td><td><input type="text" name="address" id="address" value="%X:User.address%" /></td></tr>
+			<tr><td colspan="2" style="text-align:left">
+			</td></tr>
+		</table>
+		<table class="separated wide">
+			<tr><td>
+				<label for="studyPredicate">Filter (study table level):</label><br/>
+				<textarea name="studyPredicate" id="studyPredicate">%X:User.studyPredicate%</textarea>
+			</td></tr>
+		</table>
+		<table class="separated wide eq">
+			<tr>
+				<td>
+					<label><input type="checkbox" name="autoDelete" onchange="adjustForm(this)"%[IF:User.autoDelete% checked="checked"%]IF:User.autoDelete%/>Delete this user after:</label>
+					<select name="deletionDate_month" onChange="adjustDates(this)">
+						%[FOREACH:User.deletionDate.Months:Month%
+						<option value="%X:Month.value%"%[IF:Month.selected% selected="selected"%]IF:Month.selected%%[IF:Month.disabled% disabled="disabled"%]IF:Month.disabled%>%X:Month.name%</option>
+						%]FOREACH:User.deletionDate.Months:Month%
+					</select>
+					<select name="deletionDate_day">
+						%[FOREACH:User.deletionDate.Days:Day%
+						<option value="%X:Day.value%"%[IF:Day.selected% selected="selected"%]IF:Day.selected%%[IF:Day.disabled% disabled="disabled"%]IF:Day.disabled%>%X:Day.name%</option>
+						%]FOREACH:User.deletionDate.Days:Day%
+					</select>
+					<select name="deletionDate_year" onChange="adjustDates(this)">
+						%[FOREACH:User.deletionDate.NextYears:Year%
+						<option value="%X:Year.value%"%[IF:Year.selected% selected="selected"%]IF:Year.selected%%[IF:Year.disabled% disabled="disabled"%]IF:Year.disabled%>%X:Year.name%</option>
+						%]FOREACH:User.deletionDate.NextYears:Year%
+					</select>
 					<script language="JavaScript">
-						adjustForm(document.getElementById('userEditionForm'));
+						adjustDates(document.getElementById('userEditionForm').deletionDate_day);
 					</script>
-				</table>
-				<table class="separated wide">
-					<tr><td>
-						<label for="studies">Specific studies:</label><br/>
-						<select multiple="multiple" name="studies" onchange="selectedStudiesChanged(this.form)">
-							%[FOREACH:User.studies:Study%
-							<option value="%X:Study.objectID.URIRepresentation%">%X:Study.study.name%: %X:Study.study.studyName%, %X:Study.study.date%</option>
-							%]FOREACH:User.studies:Study%
-						</select>
-						<button type="button" name="removeSelectedStudiesButton" onClick="removeSelectedStudies(this.form)">Remove Selected Studies</button>
-						<input type="hidden" name="remainingStudies" value="" />
-					<script language="JavaScript">
-						selectedStudiesChanged(document.getElementById('userEditionForm'))
-					</script>
-					</td></tr>
-				</table>
-				<div class="separated">
-					<button type="submit" name="action" value="save"  onClick="return willSubmit(this.form)">Save Changes</button><button type="reset" onClick="return revertToSaved(this.form)">Revert to Saved</button><button type="submit" name="action" value="delete" onClick="return confirmDelete()">Delete User</button>
-				</div>
-			</form>
+				</td>
+				<td><label><input type="checkbox" name="downloadZIP" onchange="adjustForm(this)"%[IF:User.downloadZIP% checked="checked"%]IF:User.downloadZIP%/>Authorized to download DICOM ZIP files</label></td>
+			</tr>
+			<tr>
+				<td><label><input type="checkbox" name="emailNotification" onchange="adjustForm(this)"%[IF:User.emailNotification% checked="checked"%]IF:User.emailNotification% %[IF:Prefs.webServerNotificationEmails%disabled="disabled"%]IF:Prefs.webServerNotificationEmails%/>Automatic Notification Emails</label></td>
+				<td style="padding-left:20px"><label><input type="checkbox" name="encryptedZIP" onchange="adjustForm(this)"%[IF:User.encryptedZIP% checked="checked"%]IF:User.encryptedZIP%/>Encrypt ZIP files with user password</label></td>
+			</tr>
+			<tr>
+				<td><label><input type="checkbox" name="uploadDICOM" onchange="adjustForm(this)"%[IF:User.uploadDICOM% checked="checked"%]IF:User.uploadDICOM%/>Authorized to upload DICOM files</label></td>
+				<td><label><input type="checkbox" name="sendDICOMtoSelfIP" onchange="adjustForm(this)"%[IF:User.sendDICOMtoSelfIP% checked="checked"%]IF:User.sendDICOMtoSelfIP%/>Authorized to transfer DICOM files to itself</label></td>
+			</tr>
+			<tr>
+				<td style="padding-left:20px"><label><input type="checkbox" name="uploadDICOMAddToSpecificStudies" onchange="adjustForm(this)"%[IF:User.uploadDICOMAddToSpecificStudies% checked="checked"%]IF:User.uploadDICOMAddToSpecificStudies%/>Add uploaded files to specific studies</label></td>
+				<td style="padding-left:20px"><label><input type="checkbox" name="sendDICOMtoAnyNodes" onchange="adjustForm(this)"%[IF:User.sendDICOMtoAnyNodes% checked="checked"%]IF:User.sendDICOMtoAnyNodes%/>Authorized to transfer DICOM files to any node</label></td>
+			</tr>
+			<tr>
+				<td><label><input type="checkbox" name="shareStudyWithUser" onchange="adjustForm(this)"%[IF:User.shareStudyWithUser% checked="checked"%]IF:User.shareStudyWithUser%/>Authorized to share a study with another user</label></td>
+				<td></td>
+			</tr>
+			<script language="JavaScript">
+				adjustForm(document.getElementById('userEditionForm'));
+			</script>
+		</table>
+		<table class="separated wide">
+			<tr><td>
+				<label for="studies">Specific studies:</label><br/>
+				<select multiple="multiple" name="studies" onchange="selectedStudiesChanged(this.form)">
+					%[FOREACH:User.studies:Study%
+					<option value="%X:Study.objectID.URIRepresentation%">%X:Study.study.name%: %X:Study.study.studyName%, %X:Study.study.date%</option>
+					%]FOREACH:User.studies:Study%
+				</select>
+				<button type="button" name="removeSelectedStudiesButton" onClick="removeSelectedStudies(this.form)">Remove Selected Studies</button>
+				<input type="hidden" name="remainingStudies" value="" />
+			<script language="JavaScript">
+				selectedStudiesChanged(document.getElementById('userEditionForm'))
+			</script>
+			</td></tr>
+		</table>
+		<div class="separated">
+			<button type="submit" name="action" value="save"  onClick="return willSubmit(this.form)">Save Changes</button><button type="reset" onClick="return revertToSaved(this.form)">Revert to Saved</button><button type="submit" name="action" value="delete" onClick="return confirmDelete()">Delete User</button>
 		</div>
-		%]IF:User%
-	</div>
+	</form>
+</div>
+%]IF:User%
 	
-	%INCLUDE:/footer.pvt.html%
-</body>
-
-</html>
+%INCLUDE:/footer.pvt.html%

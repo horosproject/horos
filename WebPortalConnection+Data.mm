@@ -1093,7 +1093,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = [self.portal.database entityForName:@"User"];
 	req.predicate = [NSPredicate predicateWithValue:YES];
-	[response.tokens setObject:[self.portal.database.managedObjectContext executeFetchRequest:req error:NULL] forKey:@"Users"];
+	[response.tokens setObject:[[self.portal.database.managedObjectContext executeFetchRequest:req error:NULL] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]]] forKey:@"Users"];
 	
 	response.templateString = [self.portal stringForPath:@"admin/index.html"];
 }

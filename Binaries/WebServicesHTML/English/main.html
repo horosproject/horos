@@ -1,67 +1,67 @@
 %INCLUDE:header.pvt.html%
 
-	<div id="content">
-		%[IF:User.isAdmin%
-		<div>
-			<div class="title">Admin</div>
-			<div>Access the <a href="/admin/">administration zone</a>.</div>
-		</div>
-		%]IF:User.isAdmin%
-			
-		%[IF:Studies.count%
-		<div>
-			<div class="title">Search</div>
-			<div>
-				<table class="form">
-					<tr><td>Name:</td><td>
-						<form action="/studyList" method="get">
-							<input type="text" id="search" name="search"/>
-							<input type="submit" id="searchButton" value="Search"/>
-						</form>
-					</td></tr>
-					<tr><td>Patient ID:</td><td>
-						<form action="/studyList" method="get">
-							<input type="text" id="searchID" name="searchID"/>
-							<input type="submit" id="searchButton" value="Search"/>
-						</form>	
-					</td></tr>
-					<tr><td>Accession Number:</td><td>
-						<form action="/studyList" method="get">
-							<input type="text" id="searchAccessionNumber" name="searchAccessionNumber"/>
-							<input type="submit" id="searchButton" value="Search"/>
-						</form>	
-					</td></tr>
-				</table>
-			</div>
-		</div>
-		
-		<div>
-			<div class="title">Browse</div>
-			<div class="timeFrameStudyList"><a href="studyList?browse=6hours">Last 6 hours</a></div>
-			<div class="timeFrameStudyList"><a href="studyList?browse=today">Today</a></div>
-			<div class="peopleStudyList"><a href="studyList?browse=all">Study List</a></div>
-			
-			%[IF:Albums.count%
-				<div class="title">Albums</div>
-				%[FOREACH:Albums:Album%
-				<div class="%[IF:Album.smartAlbum%SmartAlbum%ELSE:Album.smartAlbum%Album%]IF:Album.smartAlbum%"><a href="studyList?album=%U:Album.name%">%X:Album.name%</a></div>
-				%]FOREACH:Albums:Album%
-			%]IF:Albums.count%
-		</div>
-		%]IF:Studies.count%
-		
-		%[IF:Info.proposeDicomUpload%
-		<div>
-			<div class="title">DICOM files upload</div>
-			<div>
-				Choose a file from your computer. It can be a single DICOM file or a zip file containing several DICOM files.
-				<form action="" method="post" enctype="multipart/form-data">
-					<input type="file" name="file" />
-					<button type="submit" name="button">Upload</button>
-				</form>
-			</div>
-		</div>
-		%]IF:Info.proposeDicomUpload%
+<div id="content">
+	%[IF:User.isAdmin%
+	<div>
+		<div class="title">Admin</div>
+		<div>Access the <a href="/admin/">administration zone</a>.</div>
 	</div>
+	%]IF:User.isAdmin%
+		
+	%[IF:Studies.count%
+	<div>
+		<div class="title">Search</div>
+		<div>
+			<table class="form">
+				<tr><td>Name:</td><td>
+					<form action="/studyList" method="get">
+						<input type="text" id="search" name="search"/>
+						<input type="submit" id="searchButton" value="Search"/>
+					</form>
+				</td></tr>
+				<tr><td>Patient ID:</td><td>
+					<form action="/studyList" method="get">
+						<input type="text" id="searchID" name="searchID"/>
+						<input type="submit" id="searchButton" value="Search"/>
+					</form>	
+				</td></tr>
+				<tr><td>Accession Number:</td><td>
+					<form action="/studyList" method="get">
+						<input type="text" id="searchAccessionNumber" name="searchAccessionNumber"/>
+						<input type="submit" id="searchButton" value="Search"/>
+					</form>	
+				</td></tr>
+			</table>
+		</div>
+	</div>
+	
+	<div>
+		<div class="title">Browse</div>
+		<div class="timeFrameStudyList"><a href="studyList?browse=6hours">Last 6 hours</a></div>
+		<div class="timeFrameStudyList"><a href="studyList?browse=today">Today</a></div>
+		<div class="peopleStudyList"><a href="studyList?browse=all">Study List</a></div>
+		
+		%[IF:Albums.count%
+			<div class="title">Albums</div>
+			%[FOREACH:Albums:Album%
+			<div class="%[IF:Album.smartAlbum%SmartAlbum%ELSE:Album.smartAlbum%Album%]IF:Album.smartAlbum%"><a href="studyList?album=%U:Album.name%">%X:Album.name%</a></div>
+			%]FOREACH:Albums:Album%
+		%]IF:Albums.count%
+	</div>
+	%]IF:Studies.count%
+	
+	%[IF:Info.proposeDicomUpload%
+	<div>
+		<div class="title">DICOM files upload</div>
+		<div>
+			Choose a file from your computer. It can be a single DICOM file or a zip file containing several DICOM files.
+			<form action="" method="post" enctype="multipart/form-data">
+				<input type="file" name="file" />
+				<button type="submit" name="button">Upload</button>
+			</form>
+		</div>
+	</div>
+	%]IF:Info.proposeDicomUpload%
+</div>
 		
 %INCLUDE:footer.pvt.html%

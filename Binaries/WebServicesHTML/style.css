@@ -91,7 +91,12 @@ table {
 	vertical-align: baseline;
 }
 
-.form td:first-child {
+.form > tbody > tr > td[colspan=2] {
+	text-align: left;
+	padding-right: 0;
+}
+
+.form > tbody > tr > td:first-child {
 	text-align: right;
 	padding-right: 3px;
 	color: #555555;
@@ -101,7 +106,7 @@ table {
 	width: 2%;
 }
 
-.eq td {
+.eq td, .eq td:first-child {
 	width: 50%;
 }
 
@@ -112,12 +117,16 @@ table {
 .basic textarea, .basic input[type=text], .basic input[type=password], .basic select[multiple=multiple] {
 	padding: 2px 0 2px 0;
 	border: 0;
-	background-color: #eeeeee;
+	background-color: #f7f7f7;
 	font: 10pt Courier, "Courier New", monospace;
 }
 
 .wide textarea, .wide input[type=text], .wide input[type=password], .wide select[multiple=multiple] {
 	width: 100%;
+}
+
+.separated {
+    margin-top: 10px;
 }
 
 /* Content */
@@ -141,6 +150,11 @@ table {
 	margin: 10px 0 10px 0;
 	font-size: 13pt;
 	font-weight: bold;
+}
+
+#content ul, #content li {
+	margin: 0;
+	padding: 0;
 }
 
 /* Auth */

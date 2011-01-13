@@ -724,6 +724,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	// parse the URL to find the parameters (if any)
 	NSArray *urlComponenents = [url componentsSeparatedByString:@"?"];
 	if ([urlComponenents count] == 2) GETParams = [urlComponenents lastObject];
+	else GETParams = NULL;
 	
 	NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
 	// GET params
@@ -1266,7 +1267,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 -(void)handleAuthenticationFailed
 {
-	NSLog(@"handleAuthenticationFailed user %@", user);
+	//NSLog(@"handleAuthenticationFailed user %@", user);
 	
 	
 	//	HTTPAuthenticationRequest* auth = [[[HTTPAuthenticationRequest alloc] initWithRequest:request] autorelease];
