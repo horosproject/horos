@@ -252,9 +252,6 @@
 						NSComparisonResult cr = [(NSNumber*)vl compare:(NSNumber*)vr];
 						NSString* op = [condition substringWithRange:NSMakeRange(sl.length, condition.length-sl.length-sr.length)];
 						
-						NSLog(@"session is %@", self.wpc.session.dict);
-						NSLog(@"comparing %@ and %@", vl, vr);
-						
 						if ([op isEqual:@"=="])
 							satisfied = cr==NSOrderedSame;
 						if ([op isEqual:@"<"])

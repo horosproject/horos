@@ -68,11 +68,11 @@
 						</td>
 					
 						%[IF:Info.proposeWeasis%
-						<td><a class="OpenInWeasis" href="/weasis.jnlp?StudyInstanceUID=%U:Study.studyInstanceUID%"></a></td>
+						<td class="OpenInWeasis"><a href="/weasis.jnlp?StudyInstanceUID=%U:Study.studyInstanceUID%"><img src="images/weasis.png"/></a></td>
 						%]IF:Info.proposeWeasis%
 					
 						%[IF:Info.proposeZipDownload%
-						<td><a class="DownloadAsZIP" href="%U:Study.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?id=%U:Study.studyInstanceUID%"></a></td>
+						<td class="middle DownloadAsZIP"><a href="%U:Study.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?id=%U:Study.studyInstanceUID%"><img src="images/download.png"/></a></td>
 						%]IF:Info.proposeZipDownload%
 					</tr>
 				%]FOREACH:Studies:Study%

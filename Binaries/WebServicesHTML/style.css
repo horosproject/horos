@@ -75,6 +75,10 @@ a:hover {
 	text-decoration:underline;
 }
 
+img {
+	border: 0;
+}
+
 li a:hover {
 	text-decoration:none;
 }
@@ -90,6 +94,10 @@ table {
 
 .top {
 	vertical-align: top;
+}
+
+.middle {
+	vertical-align: middle;
 }
 
 .right {
@@ -285,17 +293,10 @@ a.back:before {
 
 /* Link images */
 
-.DownloadAsZIP {
-	background:url(images/download.png) no-repeat left center;
+.DownloadAsZIP, .OpenInWeasis {
 	width:36px;
 	height:36px;
-	float:right;
-}
-
-.OpenInWeasis {
-	background:url(images/weasis.png) no-repeat left center;
-	width:36px;
-	height:36px;
+	padding: 3px 0 0 0
 }
 
 /* Albums 
