@@ -122,7 +122,6 @@ static NSString* NotNil(NSString *s) {
 	[sendLock release];
 	
 	self.user = NULL;
-	self.response = NULL;
 	
 	[multipartData release];
 	[postBoundary release];
@@ -688,6 +687,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 }*/
 
++(NSString*)FormatParams:(NSDictionary*)dict {
+	NSMutableString* str = [NSMutableString string];
+	for (NSString* key in dict)
+		[str appendFormat:@"%@%@=%@", str.length?@"&":@"", [key urlEncodedString], [[dict objectForKey:key] urlEncodedString]];
+	return str;
+}
+
 +(NSDictionary*)ExtractParams:(NSString*)paramsString {
 	if (!paramsString.length)
 		return [NSDictionary dictionary];
@@ -844,7 +850,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	}
 	
 	if (response.data && !response.statusCode)
-		return [[[HTTPDataResponse alloc] initWithData:response.data] autorelease]; // [[[WebPortalResponse alloc] initWithData:data mime:dataMime sessionId:session.sid] autorelease];*/
+		return [[response retain] autorelease]; // [[[WebPortalResponse alloc] initWithData:data mime:dataMime sessionId:session.sid] autorelease];*/
 	else return NULL;
 }
 
@@ -1180,6 +1186,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
 
+//	NSLog(@"--- Cookies: %@", [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease]);
+	
 	NSArray* cookies = [[(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease] componentsSeparatedByString:@";"];
 	for (NSString* cookie in cookies) {
 		// cookie = [cookie stringByTrimmingStartAndEnd];
@@ -1204,9 +1212,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	if (!session)
 		self.session = [self.portal newSession];
-
 	[response setSessionId:session.sid];
-	
 	
 	if ([method isEqualToString:@"POST"] && multipartData.count == 1) // POST auth ?
 	{
@@ -1238,10 +1244,12 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	[response.tokens setObject:NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title") forKey:@"PageTitle"]; // the default title
 	[response.tokens setObject:[WebPortalProxy createWithObject:self transformer:[InfoTransformer create]] forKey:@"Info"];
 	if (user) [response.tokens setObject:[WebPortalProxy createWithObject:user transformer:[WebPortalUserTransformer create]] forKey:@"User"];	
+	[response.tokens setObject:session forKey:@"Session"];
 	
 	[super replyToHTTPRequest];
 	
 	self.response = NULL;
+	self.session = NULL;
 }
 
 -(BOOL)isAuthenticated {

@@ -194,8 +194,8 @@
 		NSInteger c = 0;
 		for (id i in [self object:dict valueForKeyPath:arrayName context:context]) {
 			[idict setObject:i forKey:iName];
-			[idict setObject:[NSNumber numberWithInteger:c] forKey:[NSString stringWithFormat:@"%@-Index", iName]];
-			[idict setObject:[NSNumber numberWithInteger:c%2] forKey:[NSString stringWithFormat:@"%@-Index2", iName]];
+			[idict setObject:[NSNumber numberWithInteger:c] forKey:[NSString stringWithFormat:@"%@_Index", iName]];
+			[idict setObject:[NSNumber numberWithInteger:c%2] forKey:[NSString stringWithFormat:@"%@_Index2", iName]];
 			
 			NSMutableString* istr = [[body mutableCopy] autorelease];
 			[self mutableString:istr evaluateTokensWithDictionary:idict context:context];
@@ -225,8 +225,12 @@
 				
 				BOOL satisfied = NO;
 				NSArray* conditionPartsOp = [condition componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"=<>"]];
-				if (conditionPartsOp.count == 2) {
-					NSString* sl = [conditionPartsOp objectAtIndex:0];
+				NSMutableArray* conditionPartsOp2 = [NSMutableArray array];
+				for (NSString* s in conditionPartsOp)
+					if (s.length)
+						[conditionPartsOp2 addObject:s];
+				if (conditionPartsOp2.count == 2) {
+					NSString* sl = [conditionPartsOp2 objectAtIndex:0];
 					unichar sl0 = [sl characterAtIndex:0];
 					NSObject* vl = NULL;
 					if (sl0 == '"' && [sl characterAtIndex:sl.length-1] == '"')
@@ -235,7 +239,7 @@
 						vl = [NSNumber numberWithFloat:sl.floatValue];
 					else vl = [self object:dict valueForKeyPath:sl context:context];
 					
-					NSString* sr = [conditionPartsOp objectAtIndex:1];
+					NSString* sr = [conditionPartsOp2 objectAtIndex:1];
 					unichar sr0 = [sr characterAtIndex:0];
 					NSObject* vr = NULL;
 					if (sr0 == '"' && [sr characterAtIndex:sr.length-1] == '"')
@@ -247,6 +251,9 @@
 					if ([vl class] == [vr class] && ([vl isKindOfClass:NSString.class] || [vl isKindOfClass:NSNumber.class])) {
 						NSComparisonResult cr = [(NSNumber*)vl compare:(NSNumber*)vr];
 						NSString* op = [condition substringWithRange:NSMakeRange(sl.length, condition.length-sl.length-sr.length)];
+						
+						NSLog(@"session is %@", self.wpc.session.dict);
+						NSLog(@"comparing %@ and %@", vl, vr);
 						
 						if ([op isEqual:@"=="])
 							satisfied = cr==NSOrderedSame;
@@ -436,7 +443,9 @@
 }
 
 -(id)valueForKey:(NSString*)key object:(WebPortalConnection*)wpc context:(WebPortalConnection*)wpcagain {
-	if ([key isEqual:@"iOS"])
+	if ([key isEqual:@"isIOS"])
+		return [NSNumber numberWithBool:wpc.requestIsIOS];
+	if ([key isEqual:@"isMacOS"])
 		return [NSNumber numberWithBool:wpc.requestIsIOS];
 	if ([key isEqual:@"proposeWeasis"])
 		return [NSNumber numberWithBool: wpc.portal.weasisEnabled && !wpc.requestIsIOS ];
@@ -456,9 +465,49 @@
 		return [wpc.session newChallenge];
 	if ([key isEqual:@"proposeDicomUpload"])
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM) && !wpc.requestIsIOS ];
-	if ([key isEqual:@"getParameters"])
-		return wpc.GETParams;
+	if ([key isEqual:@"proposeDicomSend"])
+		return [NSNumber numberWithBool: (!wpc.user || wpc.user.sendDICOMtoSelfIP) && !wpc.requestIsIOS ];
+	if ([key isEqual:@"proposeZipDownload"])
+		return [NSNumber numberWithBool: (!wpc.user || wpc.user.downloadZIP) && !wpc.requestIsIOS ];
 	
+	if ([key isEqual:@"proposeShare"])
+		if (!wpc.user || wpc.user.shareStudyWithUser) {
+			NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+			req.entity = [wpc.portal.database entityForName:@"User"];
+			req.predicate = [NSPredicate predicateWithValue:YES];
+			return [NSNumber numberWithBool: [wpc.portal.database.managedObjectContext countForFetchRequest:req error:NULL] > (wpc.user? 1 : 0) ];
+		} else
+			return [NSNumber numberWithBool:NO];
+	
+	if ([key hasPrefix:@"getParameters"]) {
+		NSString* rest = [key substringFromIndex:13];
+		if (rest.length && [rest characterAtIndex:0] == '(' && [rest characterAtIndex:rest.length-1] == ')') {
+			NSMutableDictionary* vars = [[[WebPortalConnection ExtractParams:wpc.GETParams] mutableCopy] autorelease];
+			NSArray* set = [[rest substringWithRange:NSMakeRange(1,rest.length-2)] componentsSeparatedByString:@"="];
+			if (set.count == 2) {
+				[vars setObject:[set objectAtIndex:1] forKey:[set objectAtIndex:0]];
+				return [WebPortalConnection FormatParams:vars];
+			}
+		}
+		
+		return wpc.GETParams;
+	}
+	
+	return NULL;
+}
+
+@end
+
+
+@implementation WebPortalUserTransformer
+
++(id)create {
+	return [[[self alloc] init] autorelease];
+}
+
+-(id)valueForKey:(NSString*)key object:(WebPortalUser*)user context:(WebPortalConnection*)wpc {
+	if ([key isEqual:@"originalName"])
+		return user.name;
 	return NULL;
 }
 
@@ -641,36 +690,6 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 				checked = @"checked";
 		}*/
 	}
-	
-	return NULL;
-}
-
-@end
-
-
-@implementation WebPortalUserTransformer
-
-+(id)create {
-	return [[[self alloc] init] autorelease];
-}
-
--(id)valueForKey:(NSString*)key object:(WebPortalUser*)user context:(WebPortalConnection*)wpc {
-	if ([key isEqual:@"originalName"])
-		return user.name;
-	
-	if ([key isEqual:@"proposeDicomSend"])
-		return [NSNumber numberWithBool: (!user || user.sendDICOMtoSelfIP) && !wpc.requestIsIOS ];
-	if ([key isEqual:@"proposeZipDownload"])
-		return [NSNumber numberWithBool: (!user || user.downloadZIP) && !wpc.requestIsIOS ];
-	
-	if ([key isEqual:@"shareStudyWithUser"])
-		if (!user || user.shareStudyWithUser) {
-			NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-			req.entity = [wpc.portal.database entityForName:@"User"];
-			req.predicate = [NSPredicate predicateWithValue:YES];
-			return [NSNumber numberWithBool: [wpc.portal.database.managedObjectContext countForFetchRequest:req error:NULL] > (user? 1 : 0) ];
-		} else
-			return [NSNumber numberWithBool:NO];
 	
 	return NULL;
 }

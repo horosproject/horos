@@ -1,110 +1,85 @@
-%INCLUDE:head.pvt.html%
-<body onorientationchange="updateOrientation()">
-    <script language="JavaScript">
-        function insertParam(key, value) {
-            key = escape(key); value = escape(value);
-            
-            var kvp = document.location.search.substr(1).split('&');
-            if (kvp == "") {
-                document.location.search = key + "=" + value;
-            }
-            else {
-    
-                var i = kvp.length; var x; while (i--) {
-                    x = kvp[i].split('=');
-    
-                    if (x[0] == key) {
-                        x[1] = value;
-                        kvp[i] = x.join('=');
-                        break;
-                    }
-                }
-    
-                if (i < 0) { kvp[kvp.length] = [key, value].join('='); }
-                
-                document.location.search = kvp.join('&');
-            }
-        }
-	</script>
+%INCLUDE:header.pvt.html%
+<div id="subheader">
+	<a class="back" href="../main">Home</a>
+</div>
 
-	%INCLUDE:userbox.pvt.html%
-	<div id="pageContent">
-	    <h1 id="pageTitle">%PageTitle%</h1>
- 	
-		<div id="toolbar">
-			<a id="backButton" class="button" href="/main">Home</a>
-			<span id="sortBy">
-				Sorted by:
-				<a id="sortByName" class='%orderByName%' href="javascript:insertParam('order', 'name');">Name</a>
-				<a id="sortByDate" class='%orderByDate%'href="javascript:insertParam('order', 'date');">Date</a>
-			</span>
-		</div>
+<script language="JavaScript">
+
+/*function insertParam(key, value) {
+	key = escape(key); value = escape(value);
+	
+	var kvp = document.location.search.substr(1).split('&');
+	
+	if (kvp == "") {
+		document.location.search = key + "=" + value;
+	} else {
+		var i = kvp.length; var x; while (i--) {
+			x = kvp[i].split('=');
+			if (x[0] == key) {
+				x[1] = value;
+				kvp[i] = x.join('=');
+				break;
+			}
+		}
+
+		if (i < 0)
+			kvp[kvp.length] = [key, value].join('=');
 		
-		<table id="studyList" title="Study List" class="studyList">
-	        %StudyListItem%
-				<tr title="%StudyListItemName%" class="studyListItem%lineParity%">	
-					<td>
-						<a href="study?id=%StudyListItemID%%browse%%browseParameter%%search%%album%" class="studyListItem">
-						<span class="StudyListItemName">%StudyListItemName%</span>
-						%StudyModalityBlock%
-						<span class="StudyListItemDetailItem">%StudyModality%</span>
-						%/StudyModalityBlock%
-						%SeriesCountBlock%
-						<span class="StudyListItemDetailItem">%SeriesCount%</span>
-						%/SeriesCountBlock%
-						%PatientIDBlock%
-						<span class="StudyListItemDetailItem">%PatientID%</span>
-						%/PatientIDBlock%
-						%AccessionNumberBlock%
-						<span class="StudyListItemDetailItem">%AccessionNumber%</span>
-						%/AccessionNumberBlock%
-				
-				
-						<div class="StudyListItemDetails">
-							%StudyDescriptionBlock%
-							<div>
-								<span class="StudyListItemDetailItem">%StudyDescription%</span>
-							</div>
-							%/StudyDescriptionBlock%
-				
-							%StudyCommentBlock%
-								<span class="StudyListItemLabel">Comment: </span>
-								<span class="StudyListItemComment">%StudyComment%</span>
-							%/StudyCommentBlock%
-						</div>
-						</a>
-					</td>
-				
-					<td align="right">
-						%StudyDateBlock%
-						<span class="StudyListItemDate">%StudyDate%</span>
-						%/StudyDateBlock%
-			
-						%StudyStateBlock%
-						<span class="StudyListItemState">%StudyState%</span>
-						%/StudyStateBlock%						
-					</td>
-				
-				    %Weasis%
-					<td width="32px" class="tdWeasis">
-						<a title="Open in Weasis" href="/weasis.jnlp?StudyInstanceUID=%StudyListItemID%">
-							<div class="OpenInWeasis"></div>
-						</a>
-					</td>
-					%/Weasis%
-				
-					%ZIPFunctions%
-					<td width="32px" class="tdDownloadAsZIP">
-						<a title="Download as zip" href="%StudyListItemName%.%zipextension%?id=%StudyListItemID%%browse%%browseParameter%%search%%album%">
-							<div class="DownloadAsZIP"></div>
-						</a>
-					</td>
-					%/ZIPFunctions%
-				</tr>
-			%/StudyListItem%
-	    </table>
+		document.location.search = kvp.join('&');
+	}
+}*/
 
-		%INCLUDE:footer.pvt.html%
+</script>
+
+<div id="content">
+	%INCLUDE:/errors.pvt.html%
+	%INCLUDE:/messages.pvt.html%
+
+	<div>
+		<div class="title">Studies</div>
+		<div>
+			<div class="smaller right gray">
+				Sorted by:
+				<a %[IF:Session.StudiesSortKey=="name"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="name"% href="?%Info.getParameters(sortKey=name)%">name</a>,
+				<a %[IF:Session.StudiesSortKey=="date"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="date"% href="?%Info.getParameters(sortKey=date)%">date</a>,
+				<a %[IF:Session.StudiesSortKey=="accessionNumber"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="accessionNumber"% href="?%Info.getParameters(sortKey=accessionNumber)%">accession number</a>
+			</div>
+			<table class="wide separated">
+				%[FOREACH:Studies:Study%
+					<tr class="li%Study_Index2%">	
+						<td class="fat">
+							<a href="study?%Info.getParameters%&id=%U:Study.studyInstanceUID%">
+								<span class="bigger">%X:Study.name%</span> <span class="gray">%X:Study.modality%, %X:Study.imageSeries.count% series%[IF:Study.patientID%, %X:Study.patientID%%]IF:Study.patientID%%[IF:Study.accessionNumber%, %X:Study.accessionNumber%%]IF:Study.accessionNumber%</span>
+								<div class="gray indent">
+									%X:Study.studyName%
+									%[IF:Study.comment%<div class="italic indent">%X:Study.comment%</div>%]IF:Study.comment%
+								</div>
+							</a>
+						</td>
+					
+						<td class="fat gray top right">
+							%[IF:Study.date%
+							<div>%Study.date.Format.Spanned%</div>
+							%]IF:Study.date%
+				
+							%[IF:Study.stateText%
+							<div>%X:Study.stateText%</span>
+							%]IF:Study.stateText%						
+						</td>
+					
+						%[IF:Info.proposeWeasis%
+						<td><a class="OpenInWeasis" href="/weasis.jnlp?StudyInstanceUID=%U:Study.studyInstanceUID%"></a></td>
+						%]IF:Info.proposeWeasis%
+					
+						%[IF:Info.proposeZipDownload%
+						<td><a class="DownloadAsZIP" href="%U:Study.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?id=%U:Study.studyInstanceUID%"></a></td>
+						%]IF:Info.proposeZipDownload%
+					</tr>
+				%]FOREACH:Studies:Study%
+			</table>
+		</div>
 	</div>
-  </body>
-</html>
+
+</div>
+
+%INCLUDE:footer.pvt.html%

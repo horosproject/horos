@@ -21,7 +21,7 @@ NSString* const SessionCookieName = @"SID";
 
 @implementation WebPortalSession
 
-@synthesize sid, sendLock;
+@synthesize sid, sendLock, dict;
 
 -(id)initWithId:(NSString*)isid {
 	self = [super init];
@@ -56,6 +56,10 @@ NSString* const SessionChallengeKey = @"Challenge"; // NSString
 	id value = [dict objectForKey:k];
 	[dictLock unlock];
 	return value;
+}
+
+-(id)valueForKey:(NSString*)key {
+	return [self objectForKey:key];
 }
 
 -(NSMutableDictionary*)tokensDictionary {

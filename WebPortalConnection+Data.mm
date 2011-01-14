@@ -158,7 +158,13 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 		browsePredicate = [NSPredicate predicateWithValue:YES];
 	}	
 	
-	return [self.portal studiesForUser:luser predicate:browsePredicate sortBy:[parameters objectForKey:@"order"]];
+	if ([parameters objectForKey:@"sortKey"])
+		if ([[[self.portal.dicomDatabase entityForName:@"Study"] attributesByName] objectForKey:[parameters objectForKey:@"sortKey"]])
+			[session setObject:[parameters objectForKey:@"sortKey"] forKey:@"StudiesSortKey"];
+	if (![session objectForKey:@"StudiesSortKey"])
+		[session setObject:@"name" forKey:@"StudiesSortKey"];
+	
+	return [self.portal studiesForUser:luser predicate:browsePredicate sortBy:[session objectForKey:@"StudiesSortKey"]];
 }
 
 
@@ -668,145 +674,19 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 
 
 
+
+
+
+
+
+
+
+
 -(void)processStudyListHtml {
-	/*NSString* title = NULL;
-	[response.tokens setObject:[self studyList_studiesForUser:self.user outTitle:&title] forKey:@"Studies"]	
+	NSString* title = NULL;
+	[response.tokens setObject:[self studyList_studiesForUser:self.user outTitle:&title] forKey:@"Studies"];	
 	if (title) [response.tokens setObject:title forKey:@"PageTitle"];
-	
-	
-	{
-		[self.portal.dicomDatabase.managedObjectContext lock];
-		
-		NSMutableString *returnHTML = nil;
-		
-		@try
-		{
-			NSMutableString *templateString = [self webServicesHTMLMutableString:@"studyList.html"];
-			
-			[WebPortalResponse mutableString:templateString block:@"ZIPFunctions" setVisible:(self.user && self.user.downloadZIP.boolValue && ![[settings valueForKey:@"iPhone"] boolValue])];
-			[WebPortalResponse mutableString:templateString block:@"Weasis" setVisible:(NSUserDefaults.webPortalUsesWeasis && ![[settings valueForKey:@"iPhone"] boolValue])];
-			
-			[templateString replaceOccurrencesOfString:@"%zipextension%" withString: ([[settings valueForKey:@"MacOS"] boolValue]?@"osirixzip":@"zip")];
-			
-			NSArray *tempArray = [templateString componentsSeparatedByString:@"%StudyListItem%"];
-			NSString *templateStringStart = [tempArray objectAtIndex:0];
-			tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/StudyListItem%"];
-			NSString *studyListItemString = [tempArray objectAtIndex:0];
-			NSString *templateStringEnd = [tempArray lastObject];
-			
-			returnHTML = [NSMutableString stringWithString:templateStringStart];
-			
-			int lineNumber = 0;
-			for (DicomStudy *study in studies)
-			{
-				NSMutableString *tempHTML = [NSMutableString stringWithString:studyListItemString];
-				
-				[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2]];
-				lineNumber++;
-				
-				// filenameString?
-				[tempHTML replaceOccurrencesOfString:@"%StudyListItemName%" withString:N2NonNullString([study valueForKey:@"name"])];
-				
-				NSArray *seriesArray = [study valueForKey:@"imageSeries"] ; //imageSeries
-				int count = 0;
-				for (DicomSeries *series in seriesArray)
-				{
-					count++;
-				}
-				
-				NSDateFormatter *dateFormat = [[[NSDateFormatter alloc] init] autorelease];
-				[dateFormat setDateFormat:[[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat2"]];
-				
-				NSString *date = [dateFormat stringFromDate:[study valueForKey:@"date"]];
-				
-				NSString *dateLabel = [NSString stringWithFormat:@"%@", [WebPortalConnection iPhoneCompatibleNumericalFormat:date]];
-				dateLabel = [WebPortalConnection unbreakableStringWithString:dateLabel];
-				BOOL displayBlock = YES;
-				if ([dateLabel length])
-					[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:dateLabel];
-				else
-					displayBlock = NO;
-				[WebPortalResponse mutableString:tempHTML block:@"StudyDateBlock" setVisible:displayBlock];
-				
-				NSString *seriesCountLabel = [NSString stringWithFormat:@"%d Series", count];
-				displayBlock = YES;
-				if ([seriesCountLabel length])
-					[tempHTML replaceOccurrencesOfString:@"%SeriesCount%" withString:seriesCountLabel];
-				else
-					displayBlock = NO;
-				[WebPortalResponse mutableString:tempHTML block:@"SeriesCountBlock" setVisible:displayBlock];
-				
-				NSString *patientIDLabel = [NSString stringWithFormat:@"%@", N2NonNullString([study valueForKey:@"patientID"])];
-				displayBlock = YES;
-				if ([patientIDLabel length])
-					[tempHTML replaceOccurrencesOfString:@"%PatientID%" withString:patientIDLabel];
-				else
-					displayBlock = NO;
-				[WebPortalResponse mutableString:tempHTML block:@"PatientIDBlock" setVisible:displayBlock];
-				
-				NSString *accessionNumberLabel = [NSString stringWithFormat:@"%@", N2NonNullString([study valueForKey:@"accessionNumber"])];
-				displayBlock = YES;
-				if ([accessionNumberLabel length])
-					[tempHTML replaceOccurrencesOfString:@"%AccessionNumber%" withString:accessionNumberLabel];
-				else
-					displayBlock = NO;
-				[WebPortalResponse mutableString:tempHTML block:@"AccessionNumberBlock" setVisible:displayBlock];
-				
-				NSString *studyCommentLabel = N2NonNullString([study valueForKey:@"comment"]);
-				displayBlock = YES;
-				if ([studyCommentLabel length])
-					[tempHTML replaceOccurrencesOfString:@"%StudyComment%" withString:studyCommentLabel];
-				else
-					displayBlock = NO;
-				[WebPortalResponse mutableString:tempHTML block:@"StudyCommentBlock" setVisible:displayBlock];
-				
-				NSString *studyDescriptionLabel = N2NonNullString([study valueForKey:@"studyName"]);
-				displayBlock = YES;
-				if ([studyDescriptionLabel length])
-					[tempHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:studyDescriptionLabel];
-				else
-					displayBlock = NO;
-				[WebPortalResponse mutableString:tempHTML block:@"StudyDescriptionBlock" setVisible:displayBlock];
-				
-				NSString *studyModalityLabel = N2NonNullString([study valueForKey:@"modality"]);
-				displayBlock = YES;
-				if ([studyModalityLabel length])
-					[tempHTML replaceOccurrencesOfString:@"%StudyModality%" withString:studyModalityLabel];
-				else
-					displayBlock = NO;
-				[WebPortalResponse mutableString:tempHTML block:@"StudyModalityBlock" setVisible:displayBlock];
-				
-				NSString *stateText = @"";
-				int v = [[study valueForKey:@"stateText"] intValue];
-				if (v > 0 && v < [[BrowserController statesArray] count])
-					stateText = [[BrowserController statesArray] objectAtIndex: v];
-				
-				NSString *studyStateLabel = N2NonNullString(stateText);
-				displayBlock = YES;
-				if ([studyStateLabel length])
-					[tempHTML replaceOccurrencesOfString:@"%StudyState%" withString:studyStateLabel];
-				else
-					displayBlock = NO;
-				
-				[WebPortalResponse mutableString:tempHTML block:@"StudyStateBlock" setVisible:displayBlock];
-				
-				[tempHTML replaceOccurrencesOfString:@"%StudyListItemID%" withString:N2NonNullString([study valueForKey:@"studyInstanceUID"])];
-				[returnHTML appendString:tempHTML];
-			}
-			
-			[returnHTML appendString:templateStringEnd];
-		}
-		@catch (NSException *e)
-		{
-			NSLog( @"**** htmlStudyListForStudies exception: %@", e);
-		}
-		[self.portal.dicomDatabase.managedObjectContext unlock];
-		
-		return returnHTML;
-	}
-	
-	
-	response.templateString = [self.portal stringForPath:@"studyList.html"];*/
+	response.templateString = [self.portal stringForPath:@"studyList.html"];
 }
 
 

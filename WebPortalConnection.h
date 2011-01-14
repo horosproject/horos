@@ -50,6 +50,9 @@
 @property(assign,readonly) WebPortal* portal;
 @property(assign,readonly) AsyncSocket* asyncSocket;
 
++(NSString*)FormatParams:(NSDictionary*)dict;
++(NSDictionary*)ExtractParams:(NSString*)paramsString;
+
 -(BOOL)requestIsIOS;
 -(BOOL)requestIsMacOS;
 -(NSString*)portalAddress;

@@ -26,6 +26,7 @@ extern NSString* const SessionCookieName;
 }
 
 @property(readonly) NSString* sid;
+@property(readonly) NSMutableDictionary* dict;
 @property(readonly) NSLock* sendLock;
 
 -(id)initWithId:(NSString*)isid;
