@@ -131,6 +131,8 @@
 
 - (void) windowWillClose: (NSNotification*) notification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	[sqlQueryTimer invalidate];
 	
     [[self window] setDelegate:nil];

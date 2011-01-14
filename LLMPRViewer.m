@@ -374,6 +374,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 - (void)windowWillClose:(NSNotification *)aNotification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	[[self window] setDelegate:nil];
 	[self release];

@@ -731,6 +731,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 
 - (void) windowWillClose:(NSNotification *)notification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixWindow3dCloseNotification object: self userInfo: 0];
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixWindow3dCloseNotification object: vrController userInfo: 0];	//<- to close the FlyThru controller !
 	

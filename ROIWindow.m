@@ -229,6 +229,8 @@
 
 - (void) windowWillClose:(NSNotification *)notification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	[getName invalidate];
 	[getName release];
 	getName = nil;

@@ -1131,6 +1131,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 {
 	if( [notification object] == [self window])
 	{
+		[[self window] setAcceptsMouseMovedEvents: NO];
+		
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixWindow3dCloseNotification object: self userInfo: 0];
 		
 		if( movieTimer)
@@ -3744,6 +3746,8 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 {
 	if( [notification object] == presetsPanel)
 	{
+		[[self window] setAcceptsMouseMovedEvents: NO];
+		
 		[presetsInfoPanel close];
 		if(needToMovePresetsPanelToUserDefinedPosition)
 		{

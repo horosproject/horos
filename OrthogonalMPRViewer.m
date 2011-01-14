@@ -519,6 +519,8 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 
 - (void) windowWillClose:(NSNotification *)notification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 	if( movieTimer)

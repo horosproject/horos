@@ -54,6 +54,8 @@ static NSRecursiveLock *drawLock = nil;
 {
 	if( [notification object] == [self window])
 	{
+		[[self window] setAcceptsMouseMovedEvents: NO];
+		
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 	}
 }

@@ -862,6 +862,8 @@ typedef struct _xyzArray
 {
 	if( [notification object] == [self window])
 	{
+		[[self window] setAcceptsMouseMovedEvents: NO];
+		
 		[self deleteMouseDownTimer];
 		
 		[self prepareForRelease];

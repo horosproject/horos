@@ -2518,6 +2518,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	[imageView stopROIEditingForce: YES];
 	
 	loadingPauseDelay = 0;

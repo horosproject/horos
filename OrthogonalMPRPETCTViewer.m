@@ -797,6 +797,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 
 - (void) windowWillClose:(NSNotification *)notification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 //	[[NSUserDefaults standardUserDefaults] setBool:[modalitySplitView isVertical] forKey: @"orthogonalMPRPETCTVerticalNSSplitView"];

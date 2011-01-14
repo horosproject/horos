@@ -140,6 +140,8 @@
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	[self release];
 }
 

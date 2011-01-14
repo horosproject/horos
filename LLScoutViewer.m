@@ -138,6 +138,8 @@
 //	if(mprVieweMiddle)[[mprVieweMiddle window] close];
 //	if(mprViewerBottom)[[mprViewerBottom window] close];
 
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	NSWindow *w;
 	if(mprViewerTop)
 	{

@@ -214,6 +214,8 @@ PURPOSE.
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
  
 	NSLog( @"ROIManager windowWillClose");

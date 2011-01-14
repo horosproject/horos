@@ -103,6 +103,8 @@
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
     if( movieTimer)
     {
         [movieTimer invalidate];

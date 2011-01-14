@@ -233,6 +233,8 @@ static ThreeDPositionController *nav = nil;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	[[self window] orderOut:self];
 	[self release];
 }

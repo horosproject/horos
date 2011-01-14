@@ -181,6 +181,8 @@
 
 - (void) windowWillClose:(NSNotification *)notification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	NSLog( @"ROIVolumeManager windowWillClose");
 	[tableView setDataSource: nil];

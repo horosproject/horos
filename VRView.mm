@@ -1813,6 +1813,8 @@ public:
 {
 	if( [self window] && [self window] == [notification object])
 	{
+		[[self window] setAcceptsMouseMovedEvents: NO];
+		
 		[startAutoRotate invalidate];
 		[startAutoRotate release];
 		startAutoRotate = nil;

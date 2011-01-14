@@ -62,6 +62,8 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	[viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", nil)];
 	
 	NSLog(@"windowWillClose");

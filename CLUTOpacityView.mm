@@ -73,6 +73,8 @@
 
 - (void)dealloc
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( setCLUTtoVRViewHighRes:) object: nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	

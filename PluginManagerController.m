@@ -175,6 +175,8 @@ static NSDate *CachedPluginsListDate = nil;
 
 - (void)windowWillClose:(NSNotification *)aNotification;
 {
+	[[self window] setAcceptsMouseMovedEvents: NO];
+	
 	if( pluginsNeedToReload)
 	{
 		@try
