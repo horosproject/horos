@@ -1789,7 +1789,7 @@ static NSDate *lastWarningDate = nil;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpWebServer"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoServer"])
 	{
-		int port = [[NSUserDefaults standardUserDefaults] integerForKey: @"httpWebServerPort"];
+		int port = [NSUserDefaults webPortalPortNumber];
 		[dict setValue: @"YES" forKey: @"WADO"]; // TXTRECORD doesnt support NSNumber
 		[dict setValue: [NSString stringWithFormat:@"%d", port] forKey: @"WADOPort"];
 		[dict setValue: @"/wado" forKey: @"WADOURL"];
@@ -1920,7 +1920,7 @@ static NSDate *lastWarningDate = nil;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"publishDICOMBonjour"])
 	{
 		//Start DICOM Bonjour 
-		[NSTimer scheduledTimerWithTimeInterval: 10 target: self selector: @selector( startDICOMBonjour:) userInfo: nil repeats: NO];
+		[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector( startDICOMBonjour:) userInfo: nil repeats: NO];
 	}
 }
 
@@ -2331,7 +2331,7 @@ static NSDate *lastWarningDate = nil;
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"hideListenerError"];
 	
 	[[NSFileManager defaultManager] createFileAtPath: @"/tmp/kill_all_storescu" contents: [NSData data] attributes: nil];
-	[NSThread sleepForTimeInterval: 3];
+	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 3]];
 	
 	[wait close];
 	[wait release];
@@ -2339,8 +2339,6 @@ static NSDate *lastWarningDate = nil;
 	unlink( "/tmp/kill_all_storescu");
 	
 	[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"hideListenerError"];
-	
-//	[[BrowserController currentBrowser] checkIncomingNow: self];
 }
 
 - (void) waitUnlockFileWithPID: (NSNumber*) nspid

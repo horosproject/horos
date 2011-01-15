@@ -975,7 +975,7 @@ extern "C"
 		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 		NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
 		
-		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+		[request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
 		[request setPredicate: predicate];
 		
 		[context lock];

@@ -26,6 +26,8 @@
 #import "AppController.h"
 #import "SendController.h"
 #import "DCMTKQueryRetrieveSCP.h"
+#import "DicomSeries.h"
+#import "MutableArrayCategory.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -777,6 +779,30 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	int quality = 100;
 	NSString *ts = [self syntaxStringFor: [[_extraParameters valueForKey: @"WADOTransferSyntax"] intValue] imageQuality: &quality];
 	
+	// Local Study?
+	NSMutableArray *localObjectUIDs = [NSMutableArray array];
+	@try
+	{
+		NSError *error = nil;
+		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextIndependentContext: YES];
+		
+		NSPredicate *predicate = [NSPredicate predicateWithValue: NO];
+		if( [self isMemberOfClass: [DCMTKSeriesQueryNode class]])
+			predicate = [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", [study uid]];
+		if( [self isMemberOfClass: [DCMTKStudyQueryNode class]])
+			predicate = [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", [self uid]];
+			
+		[request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey: @"Study"]];
+		[request setPredicate: predicate];
+		
+		DicomStudy *localStudy = [[context executeFetchRequest: request error: &error] lastObject];
+		
+		for( DicomSeries *s in [localStudy valueForKey: @"series"])
+			[localObjectUIDs addObjectsFromArray: [[s images] valueForKey: @"sopInstanceUID"]];
+	}
+	@catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+	
 	NSMutableArray *urlToDownload = [NSMutableArray array];
 	
 	if( [self isMemberOfClass:[DCMTKStudyQueryNode class]])
@@ -797,8 +823,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		{
 			if( [image uid])
 			{
-				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]];
-				[urlToDownload addObject: url];
+				if( [localObjectUIDs containsString: [image uid]] == NO)
+				{
+					NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]];
+					[urlToDownload addObject: url];
+				}
 			}
 			else NSLog( @"****** no image uid !");
 		}
@@ -816,8 +845,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		{
 			if( [image uid])
 			{
-				NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [self uid], [image uid], ts]];
-				[urlToDownload addObject: url];
+				if( [localObjectUIDs containsString: [image uid]] == NO)
+				{
+					NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [self uid], [image uid], ts]];
+					[urlToDownload addObject: url];
+				}
 			}
 			else NSLog( @"****** no image uid !");
 		}

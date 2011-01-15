@@ -780,7 +780,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey:@"httpXMLRPCServer"];
 	[defaultValues setObject:@"8080" forKey:@"httpXMLRPCServerPort"];
 	[defaultValues setObject:@"0" forKey:OsirixWebPortalEnabledDefaultsKey];
-//	[defaultValues setObject:@"3333" forKey:OsirixWebPortalPortNumberDefaultsKey];
+	[defaultValues setObject:@"3333" forKey:OsirixWebPortalPortNumberDefaultsKey];
 	[defaultValues setObject:@"1" forKey:@"StrechWindows"];
 	[defaultValues setObject:@"0" forKey:@"ROUTINGACTIVATED"];
 	[defaultValues setObject: @"0" forKey: @"AUTOHIDEMATRIX"];
