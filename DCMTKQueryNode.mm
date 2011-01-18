@@ -74,7 +74,7 @@ static int inc = 0;
 static BOOL firstWadoErrorDisplayed = NO;
 static NSException* queryException = nil;
 static int debugLevel = 0;
-static int wadoUnique = 0, wadoUniqueThreadID = 0;
+static int wadoUnique = 0;	//wadoUniqueThreadID = 0;
 
 typedef struct {
     T_ASC_Association *assoc;
@@ -892,8 +892,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		if( showErrorMessage == NO)
 			firstWadoErrorDisplayed = YES; // dont show errors
-				
-		
 		
 		WADODownloadDictionary = [NSMutableDictionary dictionary];
 		
@@ -907,13 +905,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			[downloadConnection start];
 			
 			if( downloadConnection == nil)
-			{
 				@synchronized( self) {WADOThreads--;}
-			}
 		}
 		
 		while( WADOThreads > 0)
-			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.5]];
 		
 		
 //		#define NumberOfWADOThreads 2
@@ -952,8 +948,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 //			[AppController printStackTrace: e];
 //		}
-		
-		[WADODownloadLock unlock];
+//		
+//		[WADODownloadLock unlock];
 		
 		NSLog( @"------ WADO downloading : %d files - finished", [urlToDownload count]);
 	}
