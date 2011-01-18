@@ -1432,7 +1432,6 @@ static NSConditionLock *threadLock = nil;
 			[browserController autoCleanDatabaseFreeSpace: browserController];
 			
 			NSError *error = nil;
-			
 			[context save: &error];
 			
 			if( error)
@@ -6960,41 +6959,46 @@ static NSConditionLock *threadLock = nil;
 				wait = [[WaitRendering alloc] init: NSLocalizedString(@"Deleting...", nil)];
 				[wait showWindow:self];
 				
-				if( result == NSAlertAlternateReturn)
+				@try
 				{
-					NSLog( @"Cancel");
-				}
-				else
-				{
-					if( result == NSAlertDefaultReturn || result == NSAlertOtherReturn)
-						[self proceedDeleteObjects: objectsToDelete];
-					
-					if( result == NSAlertOtherReturn)
+					if( result == NSAlertAlternateReturn)
 					{
-						for( NSString *path in nonLocalImagesPath)
+						NSLog( @"Cancel");
+					}
+					else
+					{
+						if( result == NSAlertDefaultReturn || result == NSAlertOtherReturn)
+							[self proceedDeleteObjects: objectsToDelete];
+						
+						if( result == NSAlertOtherReturn)
 						{
-							[[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
-							
-							if( [[path pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+							for( NSString *path in nonLocalImagesPath)
 							{
-								[[NSFileManager defaultManager] removeFileAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-							}
-							
-							NSString *currentDirectory = [[path stringByDeletingLastPathComponent] stringByAppendingString:@"/"];
-							NSArray *dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:currentDirectory];
-							
-							//Is this directory empty?? If yes, delete it!
-							
-							if( [dirContent count] == 0) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
-							if( [dirContent count] == 1)
-							{
-								if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
+								[[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
+								
+								if( [[path pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+								{
+									[[NSFileManager defaultManager] removeFileAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+								}
+								
+								NSString *currentDirectory = [[path stringByDeletingLastPathComponent] stringByAppendingString:@"/"];
+								NSArray *dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:currentDirectory];
+								
+								//Is this directory empty?? If yes, delete it!
+								
+								if( [dirContent count] == 0) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
+								if( [dirContent count] == 1)
+								{
+									if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
+								}
 							}
 						}
+						
+						[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [selectedRows firstIndex]] byExtendingSelection:NO];
 					}
-					
-					[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [selectedRows firstIndex]] byExtendingSelection:NO];
-				}
+						
+					}
+				@catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
 				[wait close];
 				[wait release];
 			}

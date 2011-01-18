@@ -691,67 +691,94 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	return [NSString stringWithFormat: @"&useOrig=true"];
 }
 
-- (void) WADODownload: (NSDictionary*) dict
+//- (void) WADODownload: (NSDictionary*) dict
+//{
+//	[dict retain];
+//	
+//	@synchronized( self)
+//	{
+//		wadoUniqueThreadID++;
+//	}
+//	
+//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//	
+//	@try 
+//	{
+//		NSArray *urlToDownload = [dict valueForKey: @"URLs"];
+//		
+//		for( NSURL *url in urlToDownload)
+//		{
+//			NSError *error = nil;
+//			NSData *dicom = [[NSData alloc] initWithContentsOfURL: url options: 0 error: &error];
+//			
+//			if( error)
+//			{
+//				NSLog( @"****** error WADO download: %@ - url: %@", error, url);
+//				
+//				if( firstWadoErrorDisplayed == NO)
+//				{
+//					firstWadoErrorDisplayed = YES;
+//					[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@ - %@", [error localizedDescription], url], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+//				}
+//			}
+//			
+//			NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
+//			
+//			@synchronized( self)
+//			{
+//				wadoUnique++;
+//			}
+//			[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d-%d.dcm", wadoUnique, wadoUniqueThreadID] atomically: YES];
+//			[dicom release];
+//			
+//			if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
+//				break;
+//			
+//			if( [[dict valueForKey: @"mainThread"] isCancelled])
+//				break;
+//		}
+//	}
+//	@catch (NSException * e) 
+//	{
+//		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+//		[AppController printStackTrace: e];
+//	}
+//	
+//	[pool release];
+//	
+//	[dict release];
+//	
+//	@synchronized( self)
+//	{
+//		WADOThreads--;
+//	}
+//}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-	[dict retain];
+	NSMutableData *d = [WADODownloadDictionary objectForKey: [NSString stringWithFormat:@"%ld", connection]];
+	[d appendData: data];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    [connection release];
+	@synchronized( self) { WADOThreads--; }
+}
+
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+	NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
 	
-	@synchronized( self)
-	{
-		wadoUniqueThreadID++;
-	}
+	NSString *key = [NSString stringWithFormat:@"%ld", connection];
+	NSMutableData *d = [WADODownloadDictionary objectForKey: key];
+	[d writeToFile: [path stringByAppendingFormat: @"WADO-%d-%ld.dcm", WADOThreads, self] atomically: YES];
+	[WADODownloadDictionary removeObjectForKey: key];
 	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    [connection release];
 	
-	@try 
-	{
-		NSArray *urlToDownload = [dict valueForKey: @"URLs"];
-		
-		for( NSURL *url in urlToDownload)
-		{
-			NSError *error = nil;
-			NSData *dicom = [[NSData alloc] initWithContentsOfURL: url options: 0 error: &error];
-			
-			if( error)
-			{
-				NSLog( @"****** error WADO download: %@ - url: %@", error, url);
-				
-				if( firstWadoErrorDisplayed == NO)
-				{
-					firstWadoErrorDisplayed = YES;
-					[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@ - %@", [error localizedDescription], url], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
-				}
-			}
-			
-			NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
-			
-			@synchronized( self)
-			{
-				wadoUnique++;
-			}
-			[dicom writeToFile: [path stringByAppendingFormat: @"WADO-%d-%d.dcm", wadoUnique, wadoUniqueThreadID] atomically: YES];
-			[dicom release];
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
-				break;
-			
-			if( [[dict valueForKey: @"mainThread"] isCancelled])
-				break;
-		}
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
-	}
-	
-	[pool release];
-	
-	[dict release];
-	
-	@synchronized( self)
-	{
-		WADOThreads--;
-	}
+	@synchronized( self) { WADOThreads--; }
 }
 
 - (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
@@ -865,42 +892,66 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		if( showErrorMessage == NO)
 			firstWadoErrorDisplayed = YES; // dont show errors
-		
-		#define NumberOfWADOThreads 2
-		NSRange range = NSMakeRange( 0, 1+ ([urlToDownload count] / NumberOfWADOThreads));
-		
-		if( WADODownloadLock == nil)
-			WADODownloadLock = [[NSRecursiveLock alloc] init];
-			
-		[WADODownloadLock lock];
-		
-		@try 
-		{
-			WADOThreads = 0;
-			for( int i = 0 ; i < NumberOfWADOThreads; i++)
-			{
-				if( range.length > 0)
-				{
-					@synchronized( self)
-					{
-						WADOThreads++;
-					}
-					[NSThread detachNewThreadSelector: @selector( WADODownload:) toTarget: self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [urlToDownload subarrayWithRange: range], @"URLs", [NSThread currentThread], @"mainThread", nil]];
-				}
 				
-				range.location += range.length;
-				if( range.location + range.length > [urlToDownload count])
-					range.length = [urlToDownload count] - range.location;
-			}
-			
-			while( WADOThreads > 0)
-				[NSThread sleepForTimeInterval: 0.1];
-		}
-		@catch (NSException * e) 
+		
+		
+		WADODownloadDictionary = [NSMutableDictionary dictionary];
+		
+		WADOThreads = [urlToDownload count];
+		for( NSURL *url in urlToDownload)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[AppController printStackTrace: e];
+			NSURLConnection *downloadConnection = [[NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url] delegate: self] retain];
+			
+			[WADODownloadDictionary setObject: [NSMutableData data] forKey: [NSString stringWithFormat:@"%ld", downloadConnection]];
+			
+			[downloadConnection start];
+			
+			if( downloadConnection == nil)
+			{
+				@synchronized( self) {WADOThreads--;}
+			}
 		}
+		
+		while( WADOThreads > 0)
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+		
+		
+//		#define NumberOfWADOThreads 2
+//		NSRange range = NSMakeRange( 0, 1+ ([urlToDownload count] / NumberOfWADOThreads));
+//		
+//		if( WADODownloadLock == nil)
+//			WADODownloadLock = [[NSRecursiveLock alloc] init];
+//		
+//		[WADODownloadLock lock];
+//		
+//		
+//		@try 
+//		{
+//			WADOThreads = 0;
+//			for( int i = 0 ; i < NumberOfWADOThreads; i++)
+//			{
+//				if( range.length > 0)
+//				{
+//					@synchronized( self)
+//					{
+//						WADOThreads++;
+//					}
+//					[NSThread detachNewThreadSelector: @selector( WADODownload:) toTarget: self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [urlToDownload subarrayWithRange: range], @"URLs", [NSThread currentThread], @"mainThread", nil]];
+//				}
+//				
+//				range.location += range.length;
+//				if( range.location + range.length > [urlToDownload count])
+//					range.length = [urlToDownload count] - range.location;
+//			}
+//			
+//			while( WADOThreads > 0)
+//				[NSThread sleepForTimeInterval: 0.1];
+//		}
+//		@catch (NSException * e) 
+//		{
+//			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+//			[AppController printStackTrace: e];
+//		}
 		
 		[WADODownloadLock unlock];
 		

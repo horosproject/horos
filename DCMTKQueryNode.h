@@ -52,6 +52,7 @@
 	volatile int WADOThreads;
 	NSRecursiveLock *WADODownloadLock;
 	OFCondition globalCondition;
+	NSMutableDictionary *WADODownloadDictionary;
 }
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
