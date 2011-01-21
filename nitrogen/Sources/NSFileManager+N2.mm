@@ -23,7 +23,7 @@
     FSRef folder;
     NSString* result = NULL;
 	
-    OSErr err = FSFindFolder(domain, folderType, false, &folder);
+    OSErr err = FSFindFolder(domain, folderType, kCreateFolder, &folder);
     if (err == noErr) {
         CFURLRef url = CFURLCreateFromFSRef(kCFAllocatorDefault, &folder);
         result = [(NSURL*)url path];
@@ -75,6 +75,38 @@
 	}
 	
 	return dirPath;
+}
+
+-(NSString*)confirmNoIndexDirectoryAtPath:(NSString*)path {
+	NSString* pathWithExt;
+	NSString* pathWithoutExt;
+	const NSString* const ext = @".noindex";
+	
+	if ([path hasSuffix:ext]) {
+		pathWithExt = path;
+		pathWithoutExt = [path stringByAppendingString:ext];
+	} else {
+		pathWithoutExt = path;
+		pathWithExt = [path substringToIndex:path.length-ext.length];
+	}
+	
+	BOOL pathWithoutExtIsDir = YES, pathWithoutExtExists = [self fileExistsAtPath:pathWithoutExt isDirectory:&pathWithoutExtIsDir];
+	BOOL pathWithExtIsDir = YES, pathWithExtExists = [self fileExistsAtPath:pathWithExt isDirectory:&pathWithExtIsDir];
+	
+	if (pathWithExtExists && !pathWithExtIsDir) {
+		[self removeItemAtPath:pathWithExt error:NULL];
+		pathWithExtExists = [self fileExistsAtPath:pathWithExt isDirectory:&pathWithExtIsDir];
+		if (pathWithExtExists) [NSException raise:NSGenericException format:@"Could not delete file at %@", pathWithExt];
+	}
+	
+	if (!pathWithExtExists && pathWithoutExtExists && pathWithoutExtIsDir) {
+		[self moveItemAtPath:pathWithoutExt toPath:pathWithExt error:NULL];
+		pathWithoutExtExists = [self fileExistsAtPath:pathWithoutExt isDirectory:&pathWithoutExtIsDir];
+		pathWithExtExists = [self fileExistsAtPath:pathWithExt isDirectory:&pathWithExtIsDir];
+		if (!pathWithExtExists) [NSException raise:NSGenericException format:@"Could not rename directory at %@ to %@", pathWithoutExt, pathWithExt];
+	}
+	
+	return [self confirmDirectoryAtPath:pathWithExt];
 }
 
 -(NSUInteger)sizeAtPath:(NSString*)path {

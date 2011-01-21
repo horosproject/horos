@@ -22,6 +22,7 @@
 -(NSString*)tmpFilePathInDir:(NSString*)dirPath;
 -(NSString*)tmpFilePathInTmp;
 -(NSString*)confirmDirectoryAtPath:(NSString*)dirPath;
+-(NSString*)confirmNoIndexDirectoryAtPath:(NSString*)path;
 -(NSUInteger)sizeAtPath:(NSString*)path;
 -(NSUInteger)sizeAtFSRef:(FSRef*)theFileRef;
 -(BOOL)copyItemAtPath:(NSString*)srcPath toPath:(NSString*)dstPath byReplacingExisting:(BOOL)replace error:(NSError**)err;
