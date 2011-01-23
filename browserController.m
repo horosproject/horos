@@ -5930,7 +5930,7 @@ static NSConditionLock *threadLock = nil;
 	else
 	{
 		//For filters depending on time....
-		if( [[NSDate timeIntervalSinceReferenceDate] - lastPassiveRefreshDatabase > 10*60) //10 mins
+		if( [NSDate timeIntervalSinceReferenceDate] - lastPassiveRefreshDatabase > 10*60) //10 mins
 		{
 			lastPassiveRefreshDatabase = [NSDate timeIntervalSinceReferenceDate];
 			

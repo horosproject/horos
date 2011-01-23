@@ -114,7 +114,8 @@ OFCondition DJDecompressJP2k::decode(
 		
 		kdu_decompressJPEG2KWithBuffer( uncompressedFrameBuffer, compressedFrameBuffer, compressedFrameBufferSize, &decompressedBufferSize, &colorModel, processors);
 		
-		decompressedColorModel = (EP_Interpretation) colorModel;
+		if( colorModel >= 0)
+			decompressedColorModel = (EP_Interpretation) colorModel;
 	}
 	else
 	{
@@ -186,7 +187,7 @@ OFCondition DJDecompressJP2k::decode(
 		   
 		   if( wr == w && numcomps == 1)
 		   {
-			   decompressedColorModel = EPI_Monochrome2;
+//			   decompressedColorModel = EPI_Monochrome2; //It could be EPI_Monochrome1
 			   
 			   if (comp->prec <= 8)
 			   {
