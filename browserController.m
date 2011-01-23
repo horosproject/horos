@@ -5490,7 +5490,8 @@ static NSConditionLock *threadLock = nil;
 	BOOL				filtered = NO;
 	NSString			*exception = nil;
 	
-	if( needDBRefresh) [albumNoOfStudiesCache removeAllObjects];
+	if( needDBRefresh)
+		[albumNoOfStudiesCache removeAllObjects];
 	needDBRefresh = NO;
 	
 	NSInteger index = [selectedRowIndexes firstIndex];
@@ -5882,10 +5883,12 @@ static NSConditionLock *threadLock = nil;
 		for ( unsigned int i = 0; i < [a count]; i++)
 		{
 			if( [albumNoOfStudiesCache count] > i)
-				if( [[[a objectAtIndex: i] valueForKey:@"smartAlbum"] boolValue] == YES) [albumNoOfStudiesCache replaceObjectAtIndex:i withObject:@""];
+				if( [[[a objectAtIndex: i] valueForKey:@"smartAlbum"] boolValue] == YES)
+					[albumNoOfStudiesCache replaceObjectAtIndex:i withObject:@""];
 		}
 	}
-	else [albumNoOfStudiesCache removeAllObjects];
+	else
+		[albumNoOfStudiesCache removeAllObjects];
 	
 	[albumTable reloadData];
 }
@@ -5926,8 +5929,14 @@ static NSConditionLock *threadLock = nil;
 	}
 	else
 	{
-		[self refreshAlbums];
-		[databaseOutline reloadData];
+		//For filters depending on time....
+		if( [[NSDate timeIntervalSinceReferenceDate] - lastPassiveRefreshDatabase > 10*60) //10 mins
+		{
+			lastPassiveRefreshDatabase = [NSDate timeIntervalSinceReferenceDate];
+			
+			[self refreshAlbums];
+			[databaseOutline reloadData];
+		}
 	}
 	
 	#ifndef OSIRIX_LIGHT

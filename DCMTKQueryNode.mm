@@ -356,6 +356,25 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 									compression: (float)compression
 									extraParameters:(NSDictionary *)extraParameters] autorelease];
 }
+
+- (id) initWithCallingAET:(NSString *)myAET  
+				calledAET:(NSString *)theirAET  
+				 hostname:(NSString *)hostname 
+					 port:(int)port 
+		   transferSyntax:(int)transferSyntax
+			  compression: (float)compression
+		  extraParameters:(NSDictionary *)extraParameters
+{
+	return [self initWithDataset: nil
+				callingAET: myAET
+				calledAET: theirAET
+				hostname: hostname
+				port: port
+				transferSyntax: transferSyntax
+				compression: compression
+				extraParameters: extraParameters];
+}
+
 - (id)initWithDataset:(DcmDataset *)dataset
 			callingAET:(NSString *)myAET  
 			calledAET:(NSString *)theirAET  

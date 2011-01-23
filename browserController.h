@@ -181,7 +181,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	char							cfixedDocumentsDirectory[ 4096], cfixedIncomingDirectory[ 4096], cfixedTempNoIndexDirectory[ 4096], cfixedIncomingNoIndexDirectory[ 4096];
 	
-	NSTimeInterval					databaseLastModification, lastCheckForDirectory;
+	NSTimeInterval					databaseLastModification, lastCheckForDirectory, lastPassiveRefreshDatabase;
 	NSUInteger						previousFlags;
 //	StructuredReportController		*structuredReportController;
 	
