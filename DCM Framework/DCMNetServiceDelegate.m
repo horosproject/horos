@@ -182,6 +182,23 @@ static NSLock *currentHostLock = nil;
     NSLog( @"There was an error while attempting to resolve address for %@", [sender name]);
 }
 
++ (void) syncDICOMNodes
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncDICOMNodesURL"]];
+	
+	if( url)
+	{
+		NSArray	*r = [NSArray arrayWithContentsOfURL: url];
+		
+		if( r)
+			[[NSUserDefaults standardUserDefaults] setObject: r forKey:@"SERVERS"];
+	}
+	
+	[pool release];
+}
+
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR cached:(BOOL) cached
 {
 	NSMutableArray *serversArray = nil;
@@ -194,15 +211,7 @@ static NSLock *currentHostLock = nil;
 			{
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncDICOMNodes"])
 				{
-					NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncDICOMNodesURL"]];
-					
-					if( url)
-					{
-						NSArray	*r = [NSArray arrayWithContentsOfURL: url];
-						
-						if( r)
-							[[NSUserDefaults standardUserDefaults] setObject: r forKey:@"SERVERS"];
-					}
+					[NSThread detachNewThreadSelector:@selector(syncDICOMNodes) toTarget:self withObject:nil];
 				}
 			}
 			

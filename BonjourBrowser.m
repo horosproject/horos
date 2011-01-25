@@ -785,18 +785,27 @@ extern const char *GetPrivateIP();
 		NSLog( @"*** Bonjour Browser Error (not displayed - hideListenerError): %@", s);
 }
 
+- (void) syncOsiriXDBList
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncOsiriXDBURL"]];
+	
+	if( url)
+	{
+		NSArray	*r = [NSArray arrayWithContentsOfURL: url];
+		if( r)
+			[[NSUserDefaults standardUserDefaults] setObject: r forKey: @"OSIRIXSERVERS"];
+	}
+	
+	[pool release];
+}
+
 - (void) buildFixedIPList
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncOsiriXDB"])
 	{
-		NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncOsiriXDBURL"]];
-		
-		if( url)
-		{
-			NSArray	*r = [NSArray arrayWithContentsOfURL: url];
-			if( r)
-				[[NSUserDefaults standardUserDefaults] setObject: r forKey: @"OSIRIXSERVERS"];
-		}
+		[NSThread detachNewThreadSelector:@selector(syncOsiriXDBList) toTarget:self withObject:nil];
 	}
 
 	int			i;
