@@ -5127,13 +5127,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MouseClickZoomCentered"])
 	{
+		float xInv = 1, yInv = 1;
+		
+		if( xFlipped)
+			xInv = -1;
+		
+		if( yFlipped)
+			yInv = -1;
+		
 		o.x = (start.x - [self frame].size.width/2.) - (((start.x - [self frame].size.width/2.)* scaleValue) / startScaleValue);
-		o.y = (start.y - [self frame].size.height/2.) - (((start.y - [self frame].size.height/2.)* scaleValue) / startScaleValue);
+		o.y = (start.y - [self frame].size.height/2.) - (((start.y -[self frame].size.height/2.)* scaleValue) / startScaleValue);
+		
+		o.x *= xInv;
+		o.y *= yInv;
 	}
 	
 	[self setOriginX: (((originStart.x ) * scaleValue) / startScaleValue) + o.x
 				   Y: (((originStart.y ) * scaleValue) / startScaleValue) + o.y];
-	
 }
 
 
