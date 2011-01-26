@@ -5481,6 +5481,9 @@ static NSConditionLock *threadLock = nil;
 		if( [[self window] isVisible] == NO) return nil;
 	}
 	
+	if( [NSThread isMainThread] == NO)
+		NSLog( @"******* We HAVE TO be in main thread !");
+	
 	NSError				*error =nil;
 	NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
 	NSPredicate			*predicate = nil, *subPredicate = nil;

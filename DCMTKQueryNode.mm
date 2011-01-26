@@ -775,29 +775,48 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-	NSMutableData *d = [WADODownloadDictionary objectForKey: [NSString stringWithFormat:@"%ld", connection]];
-	[d appendData: data];
+	if( connection)
+	{
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
+		NSMutableData *d = [WADODownloadDictionary objectForKey: [NSString stringWithFormat:@"%ld", connection]];
+		[d appendData: data];
+		
+		[pool release];
+	}
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    [connection release];
-	@synchronized( self) { WADOThreads--; }
+	if( connection)
+	{
+		[WADODownloadDictionary removeObjectForKey: [NSString stringWithFormat:@"%ld", connection]];
+		[connection release];
+		@synchronized( self) { WADOThreads--; }
+	}
 }
 
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-	NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
-	
-	NSString *key = [NSString stringWithFormat:@"%ld", connection];
-	NSMutableData *d = [WADODownloadDictionary objectForKey: key];
-	[d writeToFile: [path stringByAppendingFormat: @"WADO-%d-%ld.dcm", WADOThreads, self] atomically: YES];
-	[WADODownloadDictionary removeObjectForKey: key];
-	
-    [connection release];
-	
-	@synchronized( self) { WADOThreads--; }
+	if( connection)
+	{
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
+		NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
+		
+		NSString *key = [NSString stringWithFormat:@"%ld", connection];
+		NSMutableData *d = [WADODownloadDictionary objectForKey: key];
+		[d writeToFile: [path stringByAppendingFormat: @"WADO-%d-%ld.dcm", WADOThreads, self] atomically: YES];
+		[d setLength: 0]; // Free the memory immediately
+		[WADODownloadDictionary removeObjectForKey: key];
+		
+		[connection release];
+		
+		@synchronized( self) { WADOThreads--; }
+		
+		[pool release];
+	}
 }
 
 - (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
@@ -905,6 +924,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	if( [urlToDownload count])
 	{
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSLog( @"------ WADO downloading : %d files", [urlToDownload count]);
 		
 		firstWadoErrorDisplayed = NO;
@@ -930,6 +950,14 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		while( WADOThreads > 0)
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.5]];
 		
+		
+		if( [[WADODownloadDictionary allKeys] count] > 0)
+			NSLog( @"**** [[WADODownloadDictionary allKeys] count] > 0");
+		
+		[WADODownloadDictionary removeAllObjects];
+		WADODownloadDictionary = nil;
+		
+		[pool release];
 		
 //		#define NumberOfWADOThreads 2
 //		NSRange range = NSMakeRange( 0, 1+ ([urlToDownload count] / NumberOfWADOThreads));
