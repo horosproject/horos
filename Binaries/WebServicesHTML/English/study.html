@@ -90,13 +90,12 @@
 						<td><a href="%X:Study.reportURL%" target="blank" class="report">Link to Report</a></td>
 					</tr>
 					%ELSE:Study.reportIsLink%
-					%[IF:Study.reportURL&&!Info.iOS%
+					%[IF:Study.reportURL&&!Info.isIOS%
 					<tr>
 						<td class="StudyInformationLabel">Report:</td>
 						<td><a href="report.%U:Study.reportExtension%?id=%U:Study.studyInstanceUID%" class="report">Download Report</a></td>
 					</tr>
-					%]IF:!Info.iOS%
-					%]IF:Study.reportIsLink%
+					%]IF:Study.reportURL&&!Info.isIOS%
 				</table>
 			</div>
 	

@@ -69,9 +69,6 @@ static NSMutableDictionary *movieLock = nil;
 static NSMutableDictionary *wadoJPEGCache = nil;
 static NSMutableDictionary *thumbnailCache = nil;
 
-#define minResolution 400
-#define maxResolution 800
-#define WADOCACHESIZE 2000
 #define THUMBNAILCACHE 20
 
 static NSString* NotNil(NSString *s) {
@@ -304,7 +301,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 
 
-
+/*
 
 
 
@@ -314,59 +311,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	[newString replaceOccurrencesOfString:@" " withString:@"&nbsp;"];
 	return [NSString stringWithString:newString];
 }
+*/
 
-- (void) getWidth: (int*) width height: (int*) height fromImagesArray: (NSArray*) imagesArray isiPhone: (BOOL) isiPhone;
-{
-	*width = 0;
-	*height = 0;
-	
-	for ( NSNumber *im in [imagesArray valueForKey: @"width"])
-		if ([im intValue] > *width) *width = [im intValue];
-
-	for ( NSNumber *im in [imagesArray valueForKey: @"height"])
-		if ([im intValue] > *height) *height = [im intValue];
-
-	int maxWidth, maxHeight;
-	int minWidth, minHeight;
-
-	minWidth = minResolution;
-	minHeight = minResolution;
-
-	if (isiPhone)
-	{
-		maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically)
-		maxHeight = 310;
-	}
-	else
-	{
-		maxWidth = maxResolution;
-		maxHeight = maxResolution;
-	}
-
-	if (*width > maxWidth)
-	{
-		*height = (float) *height * (float)maxWidth / (float) *width;
-		*width = maxWidth;
-	}
-
-	if (*height > maxHeight)
-	{
-		*width = (float) *width * (float)maxHeight / (float) *height;
-		*height = maxHeight;
-	}
-
-	if (*width < minWidth)
-	{
-		*height = (float) *height * (float)minWidth / (float) *width;
-		*width = minWidth;
-	}
-
-	if (*height < minHeight)
-	{
-		*width = (float) *width * (float)minHeight / (float) *height;
-		*height = minHeight;
-	}
-}
 
 - (void) movieWithFile:(NSMutableDictionary*) dict
 {
@@ -433,175 +379,6 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	}
 }
 
-- (void) generateMovie: (NSMutableDictionary*) dict
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	if (movieLock == nil)
-		movieLock = [[NSMutableDictionary alloc] init];
-	
-	NSString *outFile = [dict objectForKey: @"outFile"];
-	NSString *fileName = [dict objectForKey: @"fileName"];
-	NSArray *dicomImageArray = [dict objectForKey: @"dicomImageArray"];
-	BOOL isiPhone = [[dict objectForKey:@"isiPhone"] boolValue];
-	
-	NSMutableArray *imagesArray = [NSMutableArray array];
-	
-	if ([movieLock objectForKey: outFile] == nil)
-		[movieLock setObject: [[[NSRecursiveLock alloc] init] autorelease] forKey: outFile];
-	
-	[[movieLock objectForKey: outFile] lock];
-	
-	@try
-	{
-		if (![[NSFileManager defaultManager] fileExistsAtPath: outFile] || ([[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0))
-		{
-			NSMutableArray *pixs = [NSMutableArray arrayWithCapacity: [dicomImageArray count]];
-			
-			[[[BrowserController currentBrowser] managedObjectContext] lock];
-			
-			for (DicomImage *im in dicomImageArray)
-			{
-				DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey:@"frameID"] intValue] :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
-				
-				if (dcmPix)
-				{
-					float curWW = 0;
-					float curWL = 0;
-					
-					if ([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
-					{
-						curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-						curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
-					}
-					
-					if (curWW != 0)
-						[dcmPix checkImageAvailble:curWW :curWL];
-					else
-						[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
-					
-					[pixs addObject: dcmPix];
-					[dcmPix release];
-				}
-				else
-				{
-					NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
-					float *imPtr = (float*)malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof(float));
-					for ( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
-						imPtr[ i] = i;
-					
-					dcmPix = [[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0];
-					[pixs addObject: dcmPix];
-					[dcmPix release];
-				}
-			}
-			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
-			
-			int width, height;
-			
-			if ([[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0)
-			{
-				width = [[dict objectForKey: @"columns"] intValue];
-				height = [[dict objectForKey: @"rows"] intValue];
-			}
-			else 
-				[self getWidth: &width height:&height fromImagesArray: dicomImageArray isiPhone: isiPhone];
-			
-			for (DCMPix *dcmPix in pixs)
-			{
-				NSImage *im = [dcmPix image];
-				
-				NSImage *newImage;
-				
-				if ([dcmPix pwidth] != width || [dcmPix pheight] != height)
-					newImage = [im imageByScalingProportionallyToSize: NSMakeSize( width, height)];
-				else
-					newImage = im;
-				
-				[imagesArray addObject: newImage];
-			}
-			
-			[[NSFileManager defaultManager] removeItemAtPath: [fileName stringByAppendingString: @" dir"] error: nil];
-			[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] attributes: nil];
-			
-			int inc = 0;
-			for ( NSImage *img in imagesArray)
-			{
-				NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-				//[[img TIFFRepresentation] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
-				if ([outFile hasSuffix:@"swf"])
-					[[[NSBitmapImageRep imageRepWithData:[img TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:NULL] writeToFile:[[fileName stringByAppendingString:@" dir"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%6.6d.jpg", inc]] atomically:YES];
-				else
-					[[img TIFFRepresentationUsingCompression: NSTIFFCompressionLZW factor: 1.0] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
-				inc++;
-				[pool release];
-			}
-			
-			NSTask *theTask = [[[NSTask alloc] init] autorelease];
-			
-			if (isiPhone)
-			{
-				@try
-				{
-					[theTask setArguments: [NSArray arrayWithObjects: fileName, @"writeMovie", [fileName stringByAppendingString: @" dir"], nil]];
-					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
-					[theTask launch];
-					
-					while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-				}
-				@catch (NSException *e)
-				{
-					NSLog( @"***** writeMovie exception : %@", e);
-				}
-				
-				theTask = [[[NSTask alloc] init] autorelease];
-				
-				@try
-				{
-					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovieiPhone", fileName, nil]];
-					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
-					[theTask launch];
-					
-					while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-				}
-				@catch (NSException *e)
-				{
-					NSLog( @"***** writeMovieiPhone exception : %@", e);
-				}
-			}
-			else
-			{
-				@try
-				{
-					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovie", [outFile stringByAppendingString: @" dir"], nil]];
-					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
-					[theTask launch];
-					
-					while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-				}
-				@catch (NSException *e)
-				{
-					NSLog( @"***** writeMovie exception : %@", e);
-				}
-			}
-		}
-	}
-	@catch (NSException *e)
-	{
-		NSLog( @"***** generate movie exception : %@", e);
-	}
-	
-	[[movieLock objectForKey: outFile] unlock];
-	
-	if ([[movieLock objectForKey: outFile] tryLock])
-	{
-		[[movieLock objectForKey: outFile] unlock];
-		[movieLock removeObjectForKey: outFile];
-	}
-	
-	[pool release];
-}
 
 
 
@@ -617,64 +394,6 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
     centerRect.origin.y = (bigRect.size.height - smallRect.size.height) / 2.0;
 
     return (centerRect);
-}
-
-- (NSData*) produceMovieForSeries: (NSManagedObject *) series isiPhone:(BOOL) isiPhone fileURL: (NSString*) fileURL lockReleased: (BOOL*) lockReleased
-{
-	NSData *data = nil;
-	
-	NSString *path = @"/tmp/osirixwebservices";
-	[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-
-	NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"id"]]; //[series valueForKey:@"id"];
-	name = [name stringByAppendingFormat:@"-NBIM-%ld", [series valueForKey: @"dateAdded"]];
-
-	NSMutableString *fileName = [NSMutableString stringWithString:name];
-	[BrowserController replaceNotAdmitted: fileName];
-	fileName = [NSMutableString stringWithString:[path stringByAppendingPathComponent: fileName]];
-	[fileName appendFormat:@".%@", fileURL.pathExtension];
-
-	NSString *outFile;
-
-	if (isiPhone)
-		outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
-	else
-		outFile = fileName;
-
-	data = [NSData dataWithContentsOfFile: outFile];
-
-	if (data == nil)
-	{
-		NSArray *dicomImageArray = [[series valueForKey:@"images"] allObjects];
-		
-		if ([dicomImageArray count] > 1)
-		{
-			@try
-			{
-				// Sort images with "instanceNumber"
-				NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
-				NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
-				[sort release];
-				dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors: sortDescriptors];
-				
-			}
-			@catch (NSException * e)
-			{
-				NSLog( @"%@", [e description]);
-			}
-			
-			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
-			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];	
-			
-			*lockReleased = YES;
-			[self generateMovie: dict];
-			
-			data = [NSData dataWithContentsOfFile: outFile];
-		}
-	}
-
-	return data;
 }
 /*
 +(NSString*)ipv6:(NSString*)inadd {

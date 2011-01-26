@@ -38,6 +38,8 @@
 	BOOL wadoEnabled;
 	BOOL weasisEnabled;
 	BOOL flashEnabled;
+	NSMutableDictionary* cache;
+	NSMutableDictionary* locks;
 }
 
 // called from AppController
@@ -48,6 +50,8 @@
 
 @property(readonly, retain) WebPortalDatabase* database;
 @property(readonly, retain) DicomDatabase* dicomDatabase;
+@property(readonly, retain) NSMutableDictionary* cache;
+@property(readonly, retain) NSMutableDictionary* locks;
 
 @property(readonly) BOOL isAcceptingConnections;
 

@@ -45,6 +45,8 @@
 
 @property(readwrite, retain) WebPortalDatabase* database;
 @property(readwrite, retain) DicomDatabase* dicomDatabase;
+@property(readwrite, retain) NSMutableDictionary* cache;
+@property(readwrite, retain) NSMutableDictionary* locks;
 @property(readwrite) BOOL isAcceptingConnections;
 
 @end
@@ -148,7 +150,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 
 #pragma mark Instance
 
-@synthesize database, dicomDatabase;
+@synthesize database, dicomDatabase, cache, locks;
 @synthesize isAcceptingConnections;
 @synthesize usesSSL;
 @synthesize portNumber;
@@ -170,6 +172,8 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 
 	self.database = db;
 	self.dicomDatabase = dd;
+	self.cache = [NSMutableDictionary dictionary];
+	self.locks = [NSMutableDictionary dictionary];
 	server = [[WebPortalServer alloc] init];
 	server.portal = self;
 	
@@ -190,6 +194,8 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	[server release];
 	self.database = NULL;
 	self.dicomDatabase = NULL;
+	self.cache = NULL;
+	self.locks = NULL;
 	
 	[sessionCreateLock release];
 	[sessionsArrayLock release];

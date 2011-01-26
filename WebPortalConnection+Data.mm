@@ -27,15 +27,19 @@
 #import "WebPortalConnection.h"
 #import "NSUserDefaults+OsiriX.h"
 #import "NSString+N2.h"
+#import "NSImage+N2.h"
 #import "DicomSeries.h"
 #import "DicomStudy.h"
 #import "WebPortalStudy.h"
 #import "DicomImage.h"
+#import "DCM.h"
+#import "DCMPix.h"
 #import "DCMTKStoreSCU.h"
 
 
 
 #import "BrowserController.h" // TODO: remove when badness solved
+#import "BrowserControllerDCMTKCategory.h" // TODO: remove when badness solved
 
 
 
@@ -221,6 +225,296 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	return NULL; // TODO: update&return session series sort keys
 }
 
+- (void) getWidth: (int*) width height: (int*) height fromImagesArray: (NSArray*) imagesArray isiPhone: (BOOL) isiPhone;
+{
+	*width = 0;
+	*height = 0;
+	
+	for ( NSNumber *im in [imagesArray valueForKey: @"width"])
+		if ([im intValue] > *width) *width = [im intValue];
+	
+	for ( NSNumber *im in [imagesArray valueForKey: @"height"])
+		if ([im intValue] > *height) *height = [im intValue];
+	
+	int maxWidth, maxHeight;
+	int minWidth, minHeight;
+	
+	
+	const int minResolution = 400;
+	const int maxResolution = 800;
+
+	minWidth = minResolution;
+	minHeight = minResolution;
+	
+	if (isiPhone)
+	{
+		maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically) // TODO: this made sense before Retina displays and iPads and NEEDS to be reconsidered
+		maxHeight = 310;
+	}
+	else
+	{
+		maxWidth = maxResolution;
+		maxHeight = maxResolution;
+	}
+	
+	if (*width > maxWidth)
+	{
+		*height = (float) *height * (float)maxWidth / (float) *width;
+		*width = maxWidth;
+	}
+	
+	if (*height > maxHeight)
+	{
+		*width = (float) *width * (float)maxHeight / (float) *height;
+		*height = maxHeight;
+	}
+	
+	if (*width < minWidth)
+	{
+		*height = (float) *height * (float)minWidth / (float) *width;
+		*width = minWidth;
+	}
+	
+	if (*height < minHeight)
+	{
+		*width = (float) *width * (float)minHeight / (float) *height;
+		*height = minHeight;
+	}
+}
+
+const NSString* const GenerateMovieOutFileParamKey = @"outFile";
+const NSString* const GenerateMovieFileNameParamKey = @"fileName";
+const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
+const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
+
+-(void)generateMovie:(NSMutableDictionary*)dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSString *outFile = [dict objectForKey:GenerateMovieOutFileParamKey];
+	NSString *fileName = [dict objectForKey:GenerateMovieFileNameParamKey];
+	NSArray *dicomImageArray = [dict objectForKey:GenerateMovieDicomImagesParamKey];
+	BOOL isiPhone = [[dict objectForKey:GenerateMovieIsIOSParamKey] boolValue];
+	
+	NSMutableArray *imagesArray = [NSMutableArray array];
+	
+	@synchronized(self.portal.locks) {
+		if (![self.portal.locks objectForKey:outFile])
+			[self.portal.locks setObject:[[[NSRecursiveLock alloc] init] autorelease] forKey:outFile];
+	}
+		
+	[[self.portal.locks objectForKey:outFile] lock];
+	
+	@try
+	{
+		if (![[NSFileManager defaultManager] fileExistsAtPath: outFile] || ([[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0))
+		{
+			NSMutableArray *pixs = [NSMutableArray arrayWithCapacity: [dicomImageArray count]];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			
+			for (DicomImage *im in dicomImageArray)
+			{
+				DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey:@"frameID"] intValue] :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+				
+				if (dcmPix)
+				{
+					float curWW = 0;
+					float curWL = 0;
+					
+					if ([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+					{
+						curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+						curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+					}
+					
+					if (curWW != 0)
+						[dcmPix checkImageAvailble:curWW :curWL];
+					else
+						[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+					
+					[pixs addObject: dcmPix];
+					[dcmPix release];
+				}
+				else
+				{
+					NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
+					float *imPtr = (float*)malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof(float));
+					for ( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
+						imPtr[ i] = i;
+					
+					dcmPix = [[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0];
+					[pixs addObject: dcmPix];
+					[dcmPix release];
+				}
+			}
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			
+			int width, height;
+			
+			if ([[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0)
+			{
+				width = [[dict objectForKey: @"columns"] intValue];
+				height = [[dict objectForKey: @"rows"] intValue];
+			}
+			else 
+				[self getWidth: &width height:&height fromImagesArray: dicomImageArray isiPhone: isiPhone];
+			
+			for (DCMPix *dcmPix in pixs)
+			{
+				NSImage *im = [dcmPix image];
+				
+				NSImage *newImage;
+				
+				if ([dcmPix pwidth] != width || [dcmPix pheight] != height)
+					newImage = [im imageByScalingProportionallyToSize: NSMakeSize( width, height)];
+				else
+					newImage = im;
+				
+				[imagesArray addObject: newImage];
+			}
+			
+			[[NSFileManager defaultManager] removeItemAtPath: [fileName stringByAppendingString: @" dir"] error: nil];
+			[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] attributes: nil];
+			
+			int inc = 0;
+			for ( NSImage *img in imagesArray)
+			{
+				NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+				//[[img TIFFRepresentation] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
+				if ([outFile hasSuffix:@"swf"])
+					[[[NSBitmapImageRep imageRepWithData:[img TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:NULL] writeToFile:[[fileName stringByAppendingString:@" dir"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%6.6d.jpg", inc]] atomically:YES];
+				else
+					[[img TIFFRepresentationUsingCompression: NSTIFFCompressionLZW factor: 1.0] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
+				inc++;
+				[pool release];
+			}
+			
+			NSTask *theTask = [[[NSTask alloc] init] autorelease];
+			
+			if (isiPhone)
+			{
+				@try
+				{
+					[theTask setArguments: [NSArray arrayWithObjects: fileName, @"writeMovie", [fileName stringByAppendingString: @" dir"], nil]];
+					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
+					[theTask launch];
+					
+					while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+				}
+				@catch (NSException *e)
+				{
+					NSLog( @"***** writeMovie exception : %@", e);
+				}
+				
+				theTask = [[[NSTask alloc] init] autorelease];
+				
+				@try
+				{
+					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovieiPhone", fileName, nil]];
+					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
+					[theTask launch];
+					
+					while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+				}
+				@catch (NSException *e)
+				{
+					NSLog( @"***** writeMovieiPhone exception : %@", e);
+				}
+			}
+			else
+			{
+				@try
+				{
+					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovie", [outFile stringByAppendingString: @" dir"], nil]];
+					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
+					[theTask launch];
+					
+					while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+				}
+				@catch (NSException *e)
+				{
+					NSLog( @"***** writeMovie exception : %@", e);
+				}
+			}
+		}
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"***** generate movie exception : %@", e);
+	}
+	
+	[[self.portal.locks objectForKey:outFile] unlock];
+	
+	@synchronized(self.portal.locks) {
+		if ([[self.portal.locks objectForKey:outFile] tryLock]) {
+			[[self.portal.locks objectForKey: outFile] unlock];
+			[self.portal.locks removeObjectForKey: outFile];
+		}
+	}
+	
+	[pool release];
+}
+
+
+
+- (NSData*) produceMovieForSeries: (NSManagedObject *) series isiPhone:(BOOL) isiPhone fileURL: (NSString*) fileURL lockReleased: (BOOL*) lockReleased {
+	NSData *data = nil;
+	
+	NSString *path = @"/tmp/osirixwebservices";
+	[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+	
+	NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"id"]]; //[series valueForKey:@"id"];
+	name = [name stringByAppendingFormat:@"-NBIM-%ld", [series valueForKey: @"dateAdded"]];
+	
+	NSMutableString *fileName = [NSMutableString stringWithString:name];
+	[BrowserController replaceNotAdmitted: fileName];
+	fileName = [NSMutableString stringWithString:[path stringByAppendingPathComponent: fileName]];
+	[fileName appendFormat:@".%@", fileURL.pathExtension];
+	
+	NSString *outFile;
+	
+	if (isiPhone)
+		outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
+	else
+		outFile = fileName;
+	
+	data = [NSData dataWithContentsOfFile: outFile];
+	
+	if (data == nil)
+	{
+		NSArray *dicomImageArray = [[series valueForKey:@"images"] allObjects];
+		
+		if ([dicomImageArray count] > 1)
+		{
+			@try
+			{
+				// Sort images with "instanceNumber"
+				NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
+				NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
+				[sort release];
+				dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors: sortDescriptors];
+				
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"%@", [e description]);
+			}
+			
+			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];	
+			
+			*lockReleased = YES;
+			[self generateMovie: dict];
+			
+			data = [NSData dataWithContentsOfFile: outFile];
+		}
+	}
+	
+	return data;
+}
 
 
 #pragma mark HTML
@@ -1291,21 +1585,30 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 
 #pragma mark WADO
 
+#define WadoCacheSize 2000
+
+-(NSMutableDictionary*)wadoCache {
+	const NSString* const WadoCacheKey = @"WADO Cache";
+	NSMutableDictionary* dict = [self.portal.cache objectForKey:WadoCacheKey];
+	if (!dict || ![dict isKindOfClass:NSMutableDictionary.class])
+		[self.portal.cache setObject: dict = [NSMutableDictionary dictionaryWithCapacity:WadoCacheSize] forKey:WadoCacheKey];
+	return dict;
+}
+
 // wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX
 // 127.0.0.1:3333/wado?requestType=WADO&frameNumber=1&studyUID=2.16.840.1.113669.632.20.1211.10000591592&seriesUID=1.3.6.1.4.1.19291.2.1.2.2867252960399100001&objectUID=1.3.6.1.4.1.19291.2.1.3.2867252960616100004
--(void)processWado {/*
+-(void)processWado {
 	if (!self.portal.wadoEnabled) {
-		self.statusCode = 403;
-		[self setDataWithString:NSLocalizedString(@"OsiriX cannot fulfill your request because the WADO service is disabled.", NULL)];
+		self.response.statusCode = 403;
+		[self.response setDataWithString:NSLocalizedString(@"OsiriX cannot fulfill your request because the WADO service is disabled.", NULL)];
 		return;
 	}
 	
 	if (![[[parameters objectForKey:@"requestType"] lowercaseString] isEqual:@"wado"]) {
-		self.statusCode = 404;
+		self.response.statusCode = 404;
 		return;
 	}
-		
-		
+	
 	NSString* studyUID = [parameters objectForKey:@"studyUID"];
 	NSString* seriesUID = [parameters objectForKey:@"seriesUID"];
 	NSString* objectUID = [parameters objectForKey:@"objectUID"];
@@ -1313,8 +1616,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	if (objectUID == nil)
 		NSLog(@"***** WADO with objectUID == nil -> wado will fail");
 	
-	NSString *contentType = [[[[parameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
-	//					contentType = [contentType stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	NSString* contentType = [[[[parameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
 	int rows = [[parameters objectForKey:@"rows"] intValue];
 	int columns = [[parameters objectForKey:@"columns"] intValue];
 	int windowCenter = [[parameters objectForKey:@"windowCenter"] intValue];
@@ -1322,48 +1624,42 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	int frameNumber = [[parameters objectForKey:@"frameNumber"] intValue];	// -> OsiriX stores frames as images
 	int imageQuality = DCMLosslessQuality;
 	
-	if ([parameters objectForKey:@"imageQuality"])
-	{
-		if ([[parameters objectForKey:@"imageQuality"] intValue] > 80)
+	NSString* imageQualityParam = [parameters objectForKey:@"imageQuality"];
+	if (imageQualityParam) {
+		int imageQualityParamInt = imageQualityParam.intValue;
+		if (imageQualityParamInt > 80)
 			imageQuality = DCMLosslessQuality;
-		else if ([[parameters objectForKey:@"imageQuality"] intValue] > 60)
+		else if (imageQualityParamInt > 60)
 			imageQuality = DCMHighQuality;
-		else if ([[parameters objectForKey:@"imageQuality"] intValue] > 30)
+		else if (imageQualityParamInt > 30)
 			imageQuality = DCMMediumQuality;
-		else if ([[parameters objectForKey:@"imageQuality"] intValue] >= 0)
+		else if (imageQualityParamInt >= 0)
 			imageQuality = DCMLowQuality;
 	}
 	
-	NSString *transferSyntax = [[parameters objectForKey:@"transferSyntax"] lowercaseString];
-	NSString *useOrig = [[parameters objectForKey:@"useOrig"] lowercaseString];
+	NSString* transferSyntax = [[parameters objectForKey:@"transferSyntax"] lowercaseString];
+	NSString* useOrig = [[parameters objectForKey:@"useOrig"] lowercaseString];
 	
-	NSError *error = nil;
-	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+	NSFetchRequest* dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+	dbRequest.entity = [self.portal.dicomDatabase entityForName:@"Study"];
 	
 	@try {
 		NSMutableDictionary *imageCache = nil;
 		NSArray *images = nil;
 		
-		if (wadoJPEGCache == nil)
-			wadoJPEGCache = [[NSMutableDictionary alloc] initWithCapacity: WADOCACHESIZE];
+		if (self.wadoCache.count > WadoCacheSize)
+			[self.wadoCache removeAllObjects]; // TODO: not actually a good way to limit the cache
 		
-		if ([wadoJPEGCache count] > WADOCACHESIZE)
-			[wadoJPEGCache removeAllObjects];
+		if (contentType.length == 0 || [contentType isEqualToString:@"image/jpeg"] || [contentType isEqualToString:@"image/png"] || [contentType isEqualToString:@"image/gif"] || [contentType isEqualToString:@"image/jp2"])
+			imageCache = [self.wadoCache objectForKey:[objectUID stringByAppendingFormat:@"%d", frameNumber]];
 		
-		if ([contentType length] == 0 || [contentType isEqualToString: @"image/jpeg"] || [contentType isEqualToString: @"image/png"] || [contentType isEqualToString: @"image/gif"] || [contentType isEqualToString: @"image/jp2"])
-		{
-			imageCache = [wadoJPEGCache objectForKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
-		}
-		
-		if (imageCache == nil)
-		{
+		if (!imageCache) {
 			if (studyUID)
 				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
 			else
 				[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 			
-			NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error: &error];
+			NSArray *studies = [self.portal.dicomDatabase.managedObjectContext executeFetchRequest:dbRequest error:NULL];
 			
 			if ([studies count] == 0)
 				NSLog( @"****** WADO Server : study not found");
@@ -1395,7 +1691,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 			
 			if ([images count])
 			{
-				[portal updateLogEntryForStudy: [studies lastObject] withMessage: @"WADO Send" forUser: nil ip: [asyncSocket connectedHost] forUser:self.user.name ip:wpc.asyncSocket.connectedHost];
+				[self.portal updateLogEntryForStudy: [studies lastObject] withMessage:@"WADO Send" forUser:self.user.name ip:self.asyncSocket.connectedHost];
 			}
 		}
 		
@@ -1405,7 +1701,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 			{
 				if ([useOrig isEqualToString: @"true"] || [useOrig isEqualToString: @"1"] || [useOrig isEqualToString: @"yes"])
 				{
-					data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
+					response.data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
 				}
 				else
 				{
@@ -1422,9 +1718,9 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 					else // Explicit VR Little Endian
 						ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 					
-					data = [[BrowserController currentBrowser] getDICOMFile: [[images lastObject] valueForKey: @"completePath"] inSyntax: ts.transferSyntax quality: imageQuality];
+					response.data = [[BrowserController currentBrowser] getDICOMFile:[[images lastObject] valueForKey: @"completePath"] inSyntax: ts.transferSyntax quality: imageQuality];
 				}
-				err = NO;
+				//err = NO;
 			}
 			else if ([contentType isEqualToString: @"video/mpeg"])
 			{
@@ -1461,22 +1757,19 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 					[fileName appendString:@".mov"];
 					
 					NSString *outFile;
-					if (isIOS)
+					if (self.requestIsIOS)
 						outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
 					else
 						outFile = fileName;
 					
-					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isIOS], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: columns], @"columns", nil];
+					NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: self.requestIsIOS], GenerateMovieIsIOSParamKey, /*fileURL, @"fileURL",*/ fileName, GenerateMovieFileNameParamKey, outFile, GenerateMovieOutFileParamKey, parameters, @"parameters", dicomImageArray, GenerateMovieDicomImagesParamKey, [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: columns], @"columns", nil];
 					
-					lockReleased = YES;
 					[self.portal.dicomDatabase.managedObjectContext unlock];
+					[self generateMovie:dict];
+					[self.portal.dicomDatabase.managedObjectContext lock];
 					
-					[self generateMovie: dict];
+					self.response.data = [NSData dataWithContentsOfFile:outFile];
 					
-					data = [NSData dataWithContentsOfFile: outFile];
-					
-					if (data)
-						err = NO;
 				}
 			}
 			else // image/jpeg
@@ -1505,7 +1798,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 					
 					imageCache = [NSMutableDictionary dictionaryWithObject: dcmPix forKey: @"dcmPix"];
 					
-					[wadoJPEGCache setObject: imageCache forKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
+					[self.wadoCache setObject: imageCache forKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
 				}
 				
 				if (dcmPix)
@@ -1528,9 +1821,9 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 						curWL = [dcmPix savedWL];
 					}
 					
-					data = [imageCache objectForKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
+					self.response.data = [imageCache objectForKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
 					
-					if (data == nil)
+					if (!self.response.data.length)
 					{
 						[dcmPix checkImageAvailble: curWW :curWL];
 						
@@ -1568,33 +1861,32 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 						NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
 						
 						if ([contentType isEqualToString: @"image/gif"])
-							data = [imageRep representationUsingType: NSGIFFileType properties:imageProps];
+							self.response.data = [imageRep representationUsingType: NSGIFFileType properties:imageProps];
 						else if ([contentType isEqualToString: @"image/png"])
-							data = [imageRep representationUsingType: NSPNGFileType properties:imageProps];
+							self.response.data = [imageRep representationUsingType: NSPNGFileType properties:imageProps];
 						else if ([contentType isEqualToString: @"image/jp2"])
-							data = [imageRep representationUsingType: NSJPEG2000FileType properties:imageProps];
+							self.response.data = [imageRep representationUsingType: NSJPEG2000FileType properties:imageProps];
 						else
-							data = [imageRep representationUsingType: NSJPEGFileType properties:imageProps];
+							self.response.data = [imageRep representationUsingType: NSJPEGFileType properties:imageProps];
 						
-						[imageCache setObject: data forKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
+						[imageCache setObject:self.response.data forKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
 					}
 					
-					if (data)
-						err = NO;
+					// Alessandro: I'm not sure here, from Joris' code it seems WADO must always return HTTP 200, eventually with length 0..
+					self.response.data;
+					self.response.statusCode = 0;
 				}
 			}
 		}
 		else NSLog( @"****** WADO Server : image uid not found !");
 		
-		if (err)
-		{
-			data = [NSData data];
-			err = NO;
-		}
+		if (!self.response.data)
+			self.response.data = [NSData data];
+
 	} @catch (NSException * e) {
 		NSLog(@"Error: [WebPortalResponse processWado:] %@", e);
-		self.statusCode = 500;
-	}*/
+		self.response.statusCode = 500;
+	}
 }
 
 #pragma mark Weasis

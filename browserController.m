@@ -79,6 +79,7 @@
 #import "NSThread+N2.h"
 #import "BrowserController+Activity.h"
 #import "NSError+OsiriX.h"
+#import "NSImage+N2.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -165,9 +166,9 @@ void restartSTORESCP()
 
 @end
 
-@interface NSImage (ProportionalScaling)
-- (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
-@end
+/*@interface NSImage (ProportionalScaling)
+- (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize; // Moved to NSImage+N2
+@end*/
 
 @implementation BrowserController
 
