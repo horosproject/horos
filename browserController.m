@@ -226,7 +226,7 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;//, userManagedObjectContext, userManagedObjectModel;
-@synthesize needDBRefresh, viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
+@synthesize viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
 @synthesize AtableView/*, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel*/;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
@@ -281,7 +281,12 @@ static volatile BOOL waitForRunningProcess = NO;
 	[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Album"]];
 	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 	
-	return [context executeFetchRequest:dbRequest error:NULL];
+	NSArray *albumsArray = [context executeFetchRequest:dbRequest error: NULL];
+	
+	NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
+	albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, nil]];
+	
+	return albumsArray;
 }
 
 -(NSArray*)albums
@@ -1117,8 +1122,6 @@ static NSConditionLock *threadLock = nil;
 							
 							if( newObject || inParseExistingObject)
 							{
-								browserController.needDBRefresh = YES;
-								
 								if( DICOMSR == NO)
 									[seriesTable setValue:today forKey:@"dateAdded"];
 								
@@ -3220,7 +3223,6 @@ static NSConditionLock *threadLock = nil;
 		[splash release];
 		
 		displayEmptyDatabase = NO;
-		needDBRefresh = YES;
 		
 		[managedObjectContext unlock];
 		[managedObjectContext release]; // For our local retain
@@ -4604,7 +4606,6 @@ static NSConditionLock *threadLock = nil;
 			[DCMPix purgeCachedDictionaries];
 			[DCMView purgeStringTextureCache];
 			
-			[albumNoOfStudiesCache removeAllObjects];
 			[outlineViewArray release];
 			outlineViewArray = nil;
 
@@ -5490,10 +5491,6 @@ static NSConditionLock *threadLock = nil;
 	BOOL				filtered = NO;
 	NSString			*exception = nil;
 	
-	if( needDBRefresh)
-		[albumNoOfStudiesCache removeAllObjects];
-	needDBRefresh = NO;
-	
 	NSInteger index = [selectedRowIndexes firstIndex];
 	while (index != NSNotFound)
 	{
@@ -5617,9 +5614,14 @@ static NSConditionLock *threadLock = nil;
 		if( error)
 			NSLog( @"**** executeFetchRequest: %@", error);
 		
-		if( [albumNoOfStudiesCache count] > albumTable.selectedRow && filtered == NO)
+		@synchronized( albumNoOfStudiesCache)
 		{
-			[albumNoOfStudiesCache replaceObjectAtIndex:albumTable.selectedRow withObject:[NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[outlineViewArray count]]]]];
+			if( [albumNoOfStudiesCache count] > albumTable.selectedRow && filtered == NO)
+			{
+				[albumNoOfStudiesCache replaceObjectAtIndex:albumTable.selectedRow withObject:[NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[outlineViewArray count]]]]];
+			}
+			
+			[albumTable reloadData];
 		}
 	}
 	
@@ -5874,29 +5876,90 @@ static NSConditionLock *threadLock = nil;
 	[self checkBonjourUpToDate: sender];
 }
 
+- (void) computeNumberOfStudiesForAlbums
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	@try
+	{
+		NSMutableArray *NoOfStudies = [NSMutableArray array];
+		
+		NSManagedObjectContext *context = [self managedObjectContextIndependentContext: YES];
+
+		// Find all studies
+		NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+		
+		NSError *error = nil;
+		NSArray *studiesArray = nil;
+		@try 
+		{
+			studiesArray = [context executeFetchRequest:dbRequest error:&error];
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			[AppController printStackTrace: e];
+		}
+		
+		[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+		
+		NSArray *albums = [BrowserController albumsInContext: context];
+		
+		for( int rowIndex = 0 ; rowIndex < [albums count]; rowIndex++)
+		{
+			NSManagedObject	*object = [albums objectAtIndex: rowIndex];
+			
+			if( [[object valueForKey:@"smartAlbum"] boolValue] == YES)
+			{
+				@try
+				{
+					error = nil;
+					[dbRequest setPredicate: [self smartAlbumPredicate: object]];
+					
+					NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+					
+					[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+				}
+				
+				@catch( NSException *e)
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					[AppController printStackTrace: e];
+				}
+			}
+			else
+				[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]]];
+		}
+		
+		if( albumNoOfStudiesCache == nil)
+			albumNoOfStudiesCache = [[NSMutableArray array] retain];
+		
+		@synchronized( albumNoOfStudiesCache)
+		{
+			[albumNoOfStudiesCache removeAllObjects];
+			[albumNoOfStudiesCache addObjectsFromArray: NoOfStudies];
+		}
+		
+		[albumTable performSelectorOnMainThread: @selector( reloadData) withObject: nil waitUntilDone: NO];
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	[pool release];
+}
+
 - (void)refreshSmartAlbums
 {
- 	NSArray	*a = self.albumArray;
-	
-	if( self.albumArray.count == albumNoOfStudiesCache.count)
-	{
-		for ( unsigned int i = 0; i < [a count]; i++)
-		{
-			if( [albumNoOfStudiesCache count] > i)
-				if( [[[a objectAtIndex: i] valueForKey:@"smartAlbum"] boolValue] == YES)
-					[albumNoOfStudiesCache replaceObjectAtIndex:i withObject:@""];
-		}
-	}
-	else
-		[albumNoOfStudiesCache removeAllObjects];
-	
-	[albumTable reloadData];
+	[NSThread detachNewThreadSelector: @selector( computeNumberOfStudiesForAlbums) toTarget:self withObject:nil];
 }
+
 
 - (void)refreshAlbums
 {
-	[albumNoOfStudiesCache removeAllObjects];
-	[albumTable reloadData];
+	[NSThread detachNewThreadSelector: @selector( computeNumberOfStudiesForAlbums) toTarget:self withObject:nil];
 }
 
 - (void)refreshDatabase: (id)sender
@@ -5909,13 +5972,14 @@ static NSConditionLock *threadLock = nil;
 	
 	if( albumTable.selectedRow >= [self.albumArray count]) return;
 	
-	if( needDBRefresh || [[[self.albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"smartAlbum"] boolValue] == YES)
+	if( [[[self.albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"smartAlbum"] boolValue] == YES)
 	{
 		if( [checkIncomingLock tryLock])
 		{
 			@try
 			{
 				[self outlineViewRefresh];
+				[self refreshAlbums];
 			}
 			@catch (NSException * e)
 			{
@@ -5930,13 +5994,9 @@ static NSConditionLock *threadLock = nil;
 	else
 	{
 		//For filters depending on time....
-		if( [NSDate timeIntervalSinceReferenceDate] - lastPassiveRefreshDatabase > 10*60) //10 mins
-		{
-			lastPassiveRefreshDatabase = [NSDate timeIntervalSinceReferenceDate];
-			
-			[self refreshAlbums];
-			[databaseOutline reloadData];
-		}
+		[self refreshAlbums];
+		
+		[databaseOutline reloadData];
 	}
 	
 	#ifndef OSIRIX_LIGHT
@@ -6870,6 +6930,9 @@ static NSConditionLock *threadLock = nil;
 		previousItem = nil;
 		
 		[self saveDatabase];
+		
+		[self outlineViewRefresh];
+		[self refreshAlbums];
 	}
 	
 	@catch( NSException *ne)
@@ -7051,8 +7114,6 @@ static NSConditionLock *threadLock = nil;
 		level = NSLocalizedString( @"Selected Thumbnails", nil);
 	else
 		level = NSLocalizedString( @"Selected Lines", nil);
-	
-	needDBRefresh = YES;
 	
 	[animationCheck setState: NSOffState];
 	
@@ -10311,8 +10372,7 @@ static BOOL withReset = NO;
 				}
 			}
 			
-			needDBRefresh = YES;
-			[albumTable reloadData];
+			[self refreshAlbums];
 		}
 		@catch (NSException * e) 
 		{
@@ -10495,8 +10555,7 @@ static BOOL withReset = NO;
 			
 			[self saveDatabase: currentDatabasePath];
 			
-			needDBRefresh = YES;
-			[albumTable reloadData];
+			[self refreshAlbums];
 			
 			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject: album]] byExtendingSelection: NO];
 		}
@@ -10565,8 +10624,7 @@ static BOOL withReset = NO;
 					
 					[self saveDatabase: currentDatabasePath];
 					
-					needDBRefresh = YES;
-					[albumTable reloadData];
+					[self refreshAlbums];
 				}
 				@catch (NSException * e) 
 				{
@@ -10608,11 +10666,9 @@ static BOOL withReset = NO;
 							[context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
 						}
 						
-						[albumNoOfStudiesCache removeAllObjects];
-
 						[self saveDatabase: currentDatabasePath];
 						
-						[albumTable reloadData];
+						[self refreshAlbums];
 					}
 					@catch (NSException * e) 
 					{
@@ -10770,8 +10826,7 @@ static BOOL needToRezoom;
 					
 					[self outlineViewRefresh];
 					
-					[albumNoOfStudiesCache removeAllObjects];
-					[albumTable reloadData];
+					[self refreshAlbums];
 				}
 				@catch (NSException * e) 
 				{
@@ -10916,93 +10971,18 @@ static BOOL needToRezoom;
 		
 		if([[aTableColumn identifier] isEqualToString:@"no"])
 		{
-			int albumNo = [self.albumArray count];
-			
-			if( albumNoOfStudiesCache == nil || [albumNoOfStudiesCache count] != albumNo || [[albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES)
+			@synchronized( albumNoOfStudiesCache)
 			{
-				if( albumNoOfStudiesCache == nil || [albumNoOfStudiesCache count] != albumNo)
+				if( albumNoOfStudiesCache == nil || rowIndex >= [albumNoOfStudiesCache count] || [[albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES)
 				{
-					[albumNoOfStudiesCache release];
+					[self refreshAlbums];
 					
-					albumNoOfStudiesCache = [[NSMutableArray alloc] initWithCapacity: albumNo];
-					
-					for( int i = 0; i < albumNo; i++) [albumNoOfStudiesCache addObject:@""];
-				}
-				
-				if( rowIndex == 0)
-				{
-					// Find all studies
-					NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-					[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-					[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-					NSManagedObjectContext *context = self.managedObjectContext;
-					
-					[context retain];
-					[context lock];
-					NSError *error = nil;
-					NSArray *studiesArray = nil;
-					@try 
-					{
-						studiesArray = [context executeFetchRequest:dbRequest error:&error];
-					}
-					@catch (NSException * e) 
-					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-						[AppController printStackTrace: e];
-					}
-					
-					[context unlock];
-					[context release];
-					
-					if( [albumNoOfStudiesCache count] > rowIndex)
-						[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+					// It will be computed in a separate thread, and then displayed later.
+					return @"#";
 				}
 				else
-				{
-					NSManagedObject	*object = [self.albumArray  objectAtIndex: rowIndex];
-					
-					if( [[object valueForKey:@"smartAlbum"] boolValue] == YES)
-					{
-						NSManagedObjectContext *context = self.managedObjectContext;
-						
-						[context retain];
-						[context lock];
-						
-						@try
-						{
-							// Find all studies
-							NSError			*error = nil;
-							NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-							[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-							[dbRequest setPredicate: [self smartAlbumPredicate: object]];
-							
-							error = nil;
-							NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-							
-							if( [albumNoOfStudiesCache count] > rowIndex)
-								[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
-						}
-						
-						@catch( NSException *ne)
-						{
-							NSLog(@"TableView exception: %@", ne.description);
-							[AppController printStackTrace: ne];
-							if( [albumNoOfStudiesCache count] > rowIndex)
-								[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject:@"err"];
-						}
-						
-						[context unlock];
-						[context release];
-					}
-					else
-					{
-						if( [albumNoOfStudiesCache count] > rowIndex)
-							[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]]];
-					}
-				}
+					return [albumNoOfStudiesCache objectAtIndex: rowIndex];
 			}
-			
-			return [albumNoOfStudiesCache objectAtIndex: rowIndex];
 		}
 		else
 		{
@@ -11400,8 +11380,7 @@ static BOOL needToRezoom;
 			
 			[self saveDatabase: currentDatabasePath];
 			
-			if( [albumNoOfStudiesCache count] > row)
-				[albumNoOfStudiesCache replaceObjectAtIndex:row withObject:@""];
+			[self refreshAlbums];
 			
 			[tableView reloadData];
 			
@@ -11778,10 +11757,7 @@ static BOOL needToRezoom;
 		// Clear search field
 		[self setSearchString: nil];
 		
-		if( albumTable.selectedRow < albumNoOfStudiesCache.count)
-			[albumNoOfStudiesCache replaceObjectAtIndex: albumTable.selectedRow withObject:@""];
-		
-		[albumTable reloadData];
+		[self refreshAlbums];
 	}
 	
 	if( [[aNotification object] isEqual: bonjourServicesList])
@@ -20547,9 +20523,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 
 - (IBAction)bonjourServiceClicked: (id)sender
-{
-	[albumNoOfStudiesCache removeAllObjects];
-	
+{	
 	[[AppController sharedAppController] closeAllViewers: self];	
 	
 	[self waitForRunningProcesses];

@@ -85,7 +85,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
     long                    COLUMN;
 	IBOutlet NSSplitView	*splitViewHorz, *splitViewVert, *splitAlbums;
     
-	BOOL					setDCMDone, needDBRefresh, dontLoadSelectionSource, dontUpdatePreviewPane;
+	BOOL					setDCMDone, dontLoadSelectionSource, dontUpdatePreviewPane;
 	
 	NSMutableArray			*albumNoOfStudiesCache;
 	
@@ -181,7 +181,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	char							cfixedDocumentsDirectory[ 4096], cfixedIncomingDirectory[ 4096], cfixedTempNoIndexDirectory[ 4096], cfixedIncomingNoIndexDirectory[ 4096];
 	
-	NSTimeInterval					databaseLastModification, lastCheckForDirectory, lastPassiveRefreshDatabase;
+	NSTimeInterval					databaseLastModification, lastCheckForDirectory;
 	NSUInteger						previousFlags;
 //	StructuredReportController		*structuredReportController;
 	
@@ -270,7 +270,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) NSPredicate *filterPredicate;
 @property(readonly) NSString *filterPredicateDescription;
 
-@property BOOL rtstructProgressBar, needDBRefresh;
+@property BOOL rtstructProgressBar;
 @property float rtstructProgressPercent;
 @property NSTimeInterval databaseLastModification;
 @property(readonly) NSMutableArray *viewersListToReload, *viewersListToRebuild;
