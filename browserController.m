@@ -277,11 +277,21 @@ static volatile BOOL waitForRunningProcess = NO;
 
 + (NSArray*) albumsInContext:(NSManagedObjectContext*)context
 {
-	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	[context lock];
 	
-	NSArray *albumsArray = [context executeFetchRequest:dbRequest error: NULL];
+	@try
+	{
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	
+		NSArray *albumsArray = [context executeFetchRequest:dbRequest error: NULL];
+	}
+	@catch( NSException *e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	[context unlock];
 	
 	NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
 	albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, nil]];
