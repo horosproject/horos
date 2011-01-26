@@ -8323,7 +8323,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					// draw line around key View
 					
-					if( frontMost  && isKeyView && ctx!=_alternateContext)
+					if( frontMost  && isKeyView && ctx!=_alternateContext && [[self windowController] FullScreenON] == FALSE)
 					{
 						float heighthalf = drawingFrameRect.size.height/2;
 						float widthhalf = drawingFrameRect.size.width/2;
