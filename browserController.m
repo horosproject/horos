@@ -13656,7 +13656,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSRunLoop currentRunLoop] addTimer: IncomingTimer forMode: NSDefaultRunLoopMode];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
-			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 63.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];	//63.33
+			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 40.3 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];	//63.33
 		
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 3*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
