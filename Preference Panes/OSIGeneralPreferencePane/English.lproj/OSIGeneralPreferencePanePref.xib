@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10H574</string>
+		<string key="IBDocument.SystemVersion">10J567</string>
 		<string key="IBDocument.InterfaceBuilderVersion">823</string>
 		<string key="IBDocument.AppKitVersion">1038.35</string>
-		<string key="IBDocument.HIToolboxVersion">461.00</string>
+		<string key="IBDocument.HIToolboxVersion">462.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">823</string>
@@ -802,11 +802,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSMutableArray" key="NSCells">
 												<bool key="EncodedWithXMLCoder">YES</bool>
 												<object class="NSButtonCell" id="664064233">
-													<int key="NSCellFlags">-2080244224</int>
+													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">OpenJPEG - Fast, High Quality</string>
+													<string key="NSContents">Kakadu SDK - Ultra-Fast, High Quality (recommended)</string>
 													<reference key="NSSupport" ref="257743695"/>
 													<reference key="NSControlView" ref="895965936"/>
+													<int key="NSTag">1</int>
 													<int key="NSButtonFlags">1211912703</int>
 													<int key="NSButtonFlags2">0</int>
 													<reference key="NSAlternateImage" ref="127426506"/>
@@ -816,12 +817,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 													<int key="NSPeriodicInterval">25</int>
 												</object>
 												<object class="NSButtonCell" id="794643842">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">-2080244224</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Kakadu - Ultra-Fast, High Quality (KDU Version required)</string>
+													<string key="NSContents">OpenJPEG SDK - Fast, High Quality</string>
 													<reference key="NSSupport" ref="257743695"/>
 													<reference key="NSControlView" ref="895965936"/>
-													<int key="NSTag">1</int>
 													<int key="NSButtonFlags">1211912703</int>
 													<int key="NSButtonFlags2">0</int>
 													<object class="NSImage" key="NSNormalImage">
@@ -924,7 +924,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 												<object class="NSButtonCell" id="929149408">
 													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Jasper - Slow (not recommended)</string>
+													<string key="NSContents">Jasper SDK - Slow (not recommended)</string>
 													<reference key="NSSupport" ref="257743695"/>
 													<reference key="NSControlView" ref="895965936"/>
 													<int key="NSTag">2</int>
@@ -991,7 +991,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<int key="NSPeriodicDelay">400</int>
 												<int key="NSPeriodicInterval">75</int>
 											</object>
-											<reference key="NSSelectedCell" ref="664064233"/>
+											<int key="NSSelectedRow">1</int>
+											<reference key="NSSelectedCell" ref="794643842"/>
 											<reference key="NSBackgroundColor" ref="270201559"/>
 											<reference key="NSCellBackgroundColor" ref="386309632"/>
 											<reference key="NSFont" ref="257743695"/>
@@ -3554,9 +3555,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{681, 302}, {724, 663}}</string>
+					<string>{{363, 341}, {724, 663}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{681, 302}, {724, 663}}</string>
+					<string>{{363, 341}, {724, 663}}</string>
 					<integer value="1"/>
 					<string>{{398, 479}, {724, 534}}</string>
 					<integer value="0"/>
