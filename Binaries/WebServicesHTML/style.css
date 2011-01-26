@@ -127,7 +127,12 @@ table {
 	color: #555555;
 }
 
-.basic td:first-child {
+form {
+	padding: 0;
+	margin: 0;
+}
+
+.basic td:first-child, .narrow {
 	width: 2%;
 }
 
@@ -156,6 +161,19 @@ table {
 
 .fat {
 	padding: 10px;
+}
+
+table.fat td {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+table.fat td:first-child {
+	padding-left: 10px;
+}
+
+table.fat td:last-child {
+	padding-right: 10px;
 }
 
 .indent {
@@ -294,8 +312,8 @@ a.back:before {
 /* Link images */
 
 .DownloadAsZIP, .OpenInWeasis {
-	width:36px;
-	height:36px;
+	width: 36px;
+	height: 36px;
 	padding: 3px 0 0 0
 }
 

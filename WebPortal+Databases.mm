@@ -91,7 +91,10 @@
 		NSLog( @"********** addSpecificStudiesToArray : %@", e);
 	}
 	
-	return array? [array arrayByAddingObjectsFromArray: specificArray] : specificArray;
+	for (id study in array)
+		if (![specificArray containsObject:study])
+			[specificArray addObject:study];
+	return specificArray;
 }
 
 -(NSArray*)studiesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate {
@@ -108,7 +111,8 @@
 		req.predicate = [DicomDatabase predicateForSmartAlbumFilter:user.studyPredicate];
 		studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
 		
-		studiesArray = [self arrayByAddingSpecificStudiesForUser:user predicate:NULL toArray:studiesArray];
+		if (user)
+			studiesArray = [self arrayByAddingSpecificStudiesForUser:user predicate:NULL toArray:studiesArray];
 		
 		if (predicate) studiesArray = [studiesArray filteredArrayUsingPredicate:predicate];
 		

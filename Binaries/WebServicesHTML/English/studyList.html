@@ -44,10 +44,10 @@
 				<a %[IF:Session.StudiesSortKey=="date"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="date"% href="?%Info.getParameters(sortKey=date)%">date</a>,
 				<a %[IF:Session.StudiesSortKey=="accessionNumber"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="accessionNumber"% href="?%Info.getParameters(sortKey=accessionNumber)%">accession number</a>
 			</div>
-			<table class="wide separated">
+			<table class="wide separated fat">
 				%[FOREACH:Studies:Study%
 					<tr class="li%Study_Index2%">	
-						<td class="fat">
+						<td class="">
 							<a href="study?%Info.getParameters%&id=%U:Study.studyInstanceUID%">
 								<span class="bigger">%X:Study.name%</span> <span class="gray">%X:Study.modality%, %X:Study.imageSeries.count% series%[IF:Study.patientID%, %X:Study.patientID%%]IF:Study.patientID%%[IF:Study.accessionNumber%, %X:Study.accessionNumber%%]IF:Study.accessionNumber%</span>
 								<div class="gray indent">
@@ -57,7 +57,7 @@
 							</a>
 						</td>
 					
-						<td class="fat gray top right">
+						<td class="gray top right fat">
 							%[IF:Study.date%
 							<div>%Study.date.Format.Spanned%</div>
 							%]IF:Study.date%
@@ -67,13 +67,17 @@
 							%]IF:Study.stateText%						
 						</td>
 					
-						%[IF:Info.proposeWeasis%
-						<td class="OpenInWeasis"><a href="/weasis.jnlp?StudyInstanceUID=%U:Study.studyInstanceUID%"><img src="images/weasis.png"/></a></td>
-						%]IF:Info.proposeWeasis%
-					
 						%[IF:Info.proposeZipDownload%
-						<td class="middle DownloadAsZIP"><a href="%U:Study.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?id=%U:Study.studyInstanceUID%"><img src="images/download.png"/></a></td>
+						<td class="narrow middle">
+							<a href="%U:Study.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?id=%U:Study.studyInstanceUID%"><img src="images/download.png"/></a>
+						</td>
 						%]IF:Info.proposeZipDownload%
+						
+						%[IF:Info.proposeWeasis%
+						<td class="narrow middle">
+							<a href="/weasis.jnlp?StudyInstanceUID=%U:Study.studyInstanceUID%"><img src="images/weasis.png"/></a>
+						</td>
+						%]IF:Info.proposeWeasis%
 					</tr>
 				%]FOREACH:Studies:Study%
 			</table>

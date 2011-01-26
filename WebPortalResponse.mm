@@ -248,21 +248,22 @@
 						vr = [NSNumber numberWithFloat:sr.floatValue];
 					else vr = [self object:dict valueForKeyPath:sr context:context];
 					
-					if ([vl class] == [vr class] && ([vl isKindOfClass:NSString.class] || [vl isKindOfClass:NSNumber.class])) {
-						NSComparisonResult cr = [(NSNumber*)vl compare:(NSNumber*)vr];
-						NSString* op = [condition substringWithRange:NSMakeRange(sl.length, condition.length-sl.length-sr.length)];
-						
-						if ([op isEqual:@"=="])
-							satisfied = cr==NSOrderedSame;
-						if ([op isEqual:@"<"])
-							satisfied = cr==NSOrderedAscending;
-						if ([op isEqual:@">"])
-							satisfied = cr==NSOrderedDescending;
-						if ([op isEqual:@">="])
-							satisfied = cr!=NSOrderedAscending;
-						if ([op isEqual:@"<="])
-							satisfied = cr!=NSOrderedDescending;
-					}
+					if ([vl isKindOfClass:[vr class]] || [vr isKindOfClass:[vl class]])
+						if ([vl isKindOfClass:NSString.class] || [vl isKindOfClass:NSNumber.class]) {
+							NSComparisonResult cr = [(NSNumber*)vl compare:(NSNumber*)vr];
+							NSString* op = [condition substringWithRange:NSMakeRange(sl.length, condition.length-sl.length-sr.length)];
+							
+							if ([op isEqual:@"=="])
+								satisfied = cr==NSOrderedSame;
+							if ([op isEqual:@"<"])
+								satisfied = cr==NSOrderedAscending;
+							if ([op isEqual:@">"])
+								satisfied = cr==NSOrderedDescending;
+							if ([op isEqual:@">="])
+								satisfied = cr!=NSOrderedAscending;
+							if ([op isEqual:@"<="])
+								satisfied = cr!=NSOrderedDescending;
+						}
 				} else {
 					id o = [self object:dict valueForKeyPath:condition context:context];
 					
@@ -482,7 +483,9 @@
 			NSMutableDictionary* vars = [[[WebPortalConnection ExtractParams:wpc.GETParams] mutableCopy] autorelease];
 			NSArray* set = [[rest substringWithRange:NSMakeRange(1,rest.length-2)] componentsSeparatedByString:@"="];
 			if (set.count == 2) {
-				[vars setObject:[set objectAtIndex:1] forKey:[set objectAtIndex:0]];
+				if ([[set objectAtIndex:1] length])
+					[vars setObject:[set objectAtIndex:1] forKey:[set objectAtIndex:0]];
+				else [vars removeObjectForKey:[set objectAtIndex:0]];
 				return [WebPortalConnection FormatParams:vars];
 			}
 		}
@@ -663,7 +666,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 	if ([key isEqual:@"seriesExtension"]) {
 		if ([DCMAbstractSyntaxUID isPDF:series.seriesSOPClassUID] || [DCMAbstractSyntaxUID isStructuredReport:series.seriesSOPClassUID])
 			return @".pdf";
-		return NULL;
+		return @"";
 	}
 	
 	if ([key isEqual:@"stateText"]) {
@@ -674,6 +677,11 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 	
 	if ([key isEqual:@"webUID"]) {
 		return series.seriesInstanceUID;
+	}
+	
+	
+	if ([key isEqual:@"noFiles"]) {
+		return [NSNumber numberWithInt:[[series performSelector:@selector(noFiles)] intValue]];
 	}
 	
 	if ([key isEqual:@"isSelected"]) {

@@ -159,7 +159,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	
 	if (!browsePredicate) {
 		*title = NSLocalizedString(@"Study List", @"Web portal, study list, title");
-		browsePredicate = [NSPredicate predicateWithValue:YES];
+		//browsePredicate = [NSPredicate predicateWithValue:YES];
 	}	
 	
 	if ([parameters objectForKey:@"sortKey"])
@@ -2074,7 +2074,18 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	*/
 }
 
--(void)processThumbnail {/*
+#define ThumbnailsCacheSize 20
+
+
+-(NSMutableDictionary*)thumbnailsCache {
+	const NSString* const ThumbsCacheKey = @"Thumbnails Cache";
+	NSMutableDictionary* dict = [self.portal.cache objectForKey:ThumbsCacheKey];
+	if (!dict || ![dict isKindOfClass:NSMutableDictionary.class])
+		[self.portal.cache setObject: dict = [NSMutableDictionary dictionaryWithCapacity:ThumbnailsCacheSize] forKey:ThumbsCacheKey];
+	return dict;
+}
+
+-(void)processThumbnail {
 	NSPredicate *browsePredicate = nil;
 	NSString *seriesInstanceUID = nil, *studyInstanceUID = nil;
 	
@@ -2082,18 +2093,15 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	{
 		if ([[parameters allKeys] containsObject:@"studyID"])
 		{
-			if (thumbnailCache == nil)
-				thumbnailCache = [[NSMutableDictionary alloc] initWithCapacity: THUMBNAILCACHE];
+			if (self.thumbnailsCache.count > ThumbnailsCacheSize)
+				[self.thumbnailsCache removeAllObjects];
 			
-			if ([thumbnailCache count] > THUMBNAILCACHE)
-				[thumbnailCache removeAllObjects];
-			
-			if ([thumbnailCache objectForKey: [parameters objectForKey:@"studyID"]])
+			if ([self.thumbnailsCache objectForKey: [parameters objectForKey:@"studyID"]])
 			{
-				NSDictionary *seriesThumbnail = [thumbnailCache objectForKey: [parameters objectForKey:@"studyID"]];
+				NSDictionary *seriesThumbnail = [self.thumbnailsCache objectForKey: [parameters objectForKey:@"studyID"]];
 				
 				if ([seriesThumbnail objectForKey: [parameters objectForKey:@"id"]])
-					data = [seriesThumbnail objectForKey: [parameters objectForKey:@"id"]];
+					response.data = [seriesThumbnail objectForKey: [parameters objectForKey:@"id"]];
 			}
 			
 			browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [parameters objectForKey:@"studyID"]];// AND seriesInstanceUID == %@", [parameters objectForKey:@"studyID"], [parameters objectForKey:@"id"]];
@@ -2110,9 +2118,9 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	else
 		browsePredicate = [NSPredicate predicateWithValue:NO];
 	
-	if (data == nil)
+	if (!response.data.length)
 	{
-		NSArray *series = [self seriesForPredicate:browsePredicate];
+		NSArray *series = [self.portal seriesForUser:self.user predicate:browsePredicate];
 		
 		if ([series count]  > 0)
 		{
@@ -2131,15 +2139,14 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 					[seriesThumbnails setObject: dataThumbnail forKey: [s valueForKey: @"seriesInstanceUID"]];
 					
 					if ([seriesInstanceUID isEqualToString: [s valueForKey: @"seriesInstanceUID"]])
-						data = dataThumbnail;
+						response.data = dataThumbnail;
 				}
 			}
 			
 			if (studyInstanceUID && seriesThumbnails)
-				[thumbnailCache setObject: seriesThumbnails forKey: studyInstanceUID];
+				[self.thumbnailsCache setObject: seriesThumbnails forKey: studyInstanceUID];
 		}
 	}
-	err = NO;*/
 }
 
 -(void)processSeriesPdf {/*

@@ -69,8 +69,6 @@ static NSMutableDictionary *movieLock = nil;
 static NSMutableDictionary *wadoJPEGCache = nil;
 static NSMutableDictionary *thumbnailCache = nil;
 
-#define THUMBNAILCACHE 20
-
 static NSString* NotNil(NSString *s) {
 	return s? s : @"";
 }
