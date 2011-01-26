@@ -277,6 +277,8 @@ static volatile BOOL waitForRunningProcess = NO;
 
 + (NSArray*) albumsInContext:(NSManagedObjectContext*)context
 {
+	NSArray *albumsArray = nil;
+	
 	[context lock];
 	
 	@try
@@ -285,7 +287,7 @@ static volatile BOOL waitForRunningProcess = NO;
 		[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Album"]];
 		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 	
-		NSArray *albumsArray = [context executeFetchRequest:dbRequest error: NULL];
+		albumsArray = [context executeFetchRequest:dbRequest error: NULL];
 	}
 	@catch( NSException *e)
 	{
