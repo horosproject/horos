@@ -972,7 +972,7 @@ extern "C"
 	{
 		NSError *error = nil;
 		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextIndependentContext: YES];
+		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 		NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
 		
 		[request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
