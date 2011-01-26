@@ -2583,7 +2583,7 @@ static NSConditionLock *threadLock = nil;
 
 	[moc save: &error];	// This line is very important, if there is NO database.sql file
 	
-	if( managedObjectContext == nil && [path isEqualToString: currentDatabasePath] == YES)
+	if( managedObjectContext == nil && [path isEqualToString: currentDatabasePath] == YES && independentContext == NO)
 		managedObjectContext = [moc retain];
 	
     return moc;
@@ -5620,8 +5620,6 @@ static NSConditionLock *threadLock = nil;
 			{
 				[albumNoOfStudiesCache replaceObjectAtIndex:albumTable.selectedRow withObject:[NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[outlineViewArray count]]]]];
 			}
-			
-			[albumTable reloadData];
 		}
 	}
 	
@@ -5955,7 +5953,6 @@ static NSConditionLock *threadLock = nil;
 {
 	[NSThread detachNewThreadSelector: @selector( computeNumberOfStudiesForAlbums) toTarget:self withObject:nil];
 }
-
 
 - (void)refreshAlbums
 {
@@ -10902,39 +10899,9 @@ static BOOL needToRezoom;
 }
 - (NSArray*) albumArray
 {
-	NSManagedObjectContext	*context = self.managedObjectContext;
-	NSManagedObjectModel	*model = self.managedObjectModel;
+	NSArray *albumsArray = [BrowserController albumsInContext: [self managedObjectContext]];
 	
-	[context retain];
-	[context lock];
-	
-	NSArray *albumsArray = nil;
-	NSArray *result = nil;
-	
-	@try
-	{
-		//Find all albums
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Album"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		NSError *error = nil;
-		albumsArray = [context executeFetchRequest:dbRequest error:&error];
-		
-		NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
-		albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, nil]];
-		result = [NSArray arrayWithObject: [NSDictionary dictionaryWithObject: NSLocalizedString(@"Database", nil) forKey:@"name"]];
-	}
-	
-	@catch (NSException *e)
-	{
-		NSLog( @"albumArray exception : %@", e);
-		[AppController printStackTrace: e];
-	}
-	
-	[context unlock];
-	[context release];
-	
-	return [result arrayByAddingObjectsFromArray: albumsArray];
+	return [[NSArray arrayWithObject: [NSDictionary dictionaryWithObject: NSLocalizedString(@"Database", nil) forKey:@"name"]] arrayByAddingObjectsFromArray: albumsArray];
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -10987,6 +10954,7 @@ static BOOL needToRezoom;
 		else
 		{
 			NSManagedObject	*object = [self.albumArray  objectAtIndex: rowIndex];
+			
 			return [object valueForKey:@"name"];
 		}
 	}
