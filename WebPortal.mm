@@ -26,8 +26,6 @@
 
 #import "BrowserController.h" // TODO: REMOVE with badness
 
-#define THREAD_POOL_SIZE 1
-
 @interface WebPortalServer ()
 
 @property(readwrite, assign) WebPortal* portal;
@@ -37,6 +35,70 @@
 @implementation WebPortalServer
 
 @synthesize portal;
+
+- (NSRunLoop *)onSocket:(AsyncSocket *)sock wantsRunLoopForNewSocket:(AsyncSocket *)newSocket
+{
+	// Figure out what thread/runloop to run the new connection on.
+	// We choose the thread/runloop with the lowest number of connections.
+	
+	uint m = 0;
+	NSRunLoop *mLoop = nil;
+	uint mLoad = 0;
+	
+	@synchronized( [portal runLoops])
+	{
+		mLoop = [[portal runLoops] objectAtIndex:0];
+		mLoad = [[[portal runLoopsLoad] objectAtIndex:0] unsignedIntValue];
+		
+		uint i;
+		for(i = 1; i < THREAD_POOL_SIZE; i++)
+		{
+			uint iLoad = [[[portal runLoopsLoad] objectAtIndex:i] unsignedIntValue];
+			
+			if(iLoad < mLoad)
+			{
+				m = i;
+				mLoop = [[portal runLoops] objectAtIndex:i];
+				mLoad = iLoad;
+			}
+		}
+		
+		[[portal runLoopsLoad] replaceObjectAtIndex:m withObject:[NSNumber numberWithUnsignedInt:(mLoad + 1)]];
+		
+//		NSLog(@"Updating run loop %u with load %@", m, mLoad + 1);
+	}
+	// And finally, return the proper run loop
+	return mLoop;
+}
+
+/**
+ * This method is automatically called when a HTTPConnection dies.
+ * We need to update the number of connections per thread.
+ **/
+- (void)connectionDidDie:(NSNotification *)notification
+{
+	// Note: This method is called on the thread/runloop that posted the notification
+	
+	@synchronized( [portal runLoops])
+	{
+		unsigned int runLoopIndex = [[portal runLoops] indexOfObject:[NSRunLoop currentRunLoop]];
+		
+		if(runLoopIndex < [[portal runLoops] count])
+		{
+			unsigned int runLoopLoad = [[[portal runLoopsLoad] objectAtIndex:runLoopIndex] unsignedIntValue];
+			
+			NSNumber *newLoad = [NSNumber numberWithUnsignedInt:(runLoopLoad - 1)];
+			
+			[[portal runLoopsLoad] replaceObjectAtIndex:runLoopIndex withObject:newLoad];
+			
+//			NSLog(@"Updating run loop %u with load %@", runLoopIndex, newLoad);
+		}
+	}
+	
+	// Don't forget to call super, or the connection won't get proper deallocated!
+	[super connectionDidDie:notification];
+}
+
 
 @end
 
@@ -161,7 +223,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 @synthesize passwordRestoreAllowed;
 @synthesize wadoEnabled;
 @synthesize weasisEnabled;
-@synthesize flashEnabled;
+@synthesize flashEnabled, runLoops, runLoopsLoad;
 
 -(id)initWithDatabase:(WebPortalDatabase*)db dicomDatabase:(DicomDatabase*)dd; {
 	self = [super init];
@@ -174,8 +236,6 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	self.dicomDatabase = dd;
 	self.cache = [NSMutableDictionary dictionary];
 	self.locks = [NSMutableDictionary dictionary];
-	server = [[WebPortalServer alloc] init];
-	server.portal = self;
 	
 	return self;
 }
@@ -191,12 +251,13 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 
 -(void)dealloc {
 	[self invalidate];
-	[server release];
+	
 	self.database = NULL;
 	self.dicomDatabase = NULL;
 	self.cache = NULL;
 	self.locks = NULL;
 	
+	[httpThreads release];
 	[runLoopsLoad release];
 	[runLoops release];
 	[sessionCreateLock release];
@@ -233,6 +294,17 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 -(void)startAcceptingConnections {
 	if (!isAcceptingConnections) {
 		@try {
+			// Initialize an array to reference all the threads
+			runLoops = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
+			
+			// Initialize an array to hold the number of connections being processed for each thread
+			runLoopsLoad = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
+			
+			httpThreads = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
+			
+			server = [[WebPortalServer alloc] init];
+			server.portal = self;
+			
 			server.connectionClass = WebPortalConnection.class;
 			
 			if (self.usesSSL)
@@ -243,90 +315,25 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 			server.port = self.portNumber;
 			server.documentRoot = [NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]];
 			
-			
-			// Initialize an array to reference all the threads
-			runLoops = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
-			
-			// Initialize an array to hold the number of connections being processed for each thread
-			runLoopsLoad = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
+			NSError* err = NULL;
+			if (![server start:&err])
+			{
+				NSLog(@"Exception: [WebPortal startAcceptingConnectionsThread:] %@", err);
+				[AppController.sharedAppController performSelectorOnMainThread:@selector(displayError:) withObject:NSLocalizedString(@"Cannot start Web Server. TCP/IP port is probably already used by another process.", NULL) waitUntilDone:YES];
+				return;
+			}
 			
 			// Start threads
 			uint i;
 			for(i = 0; i < THREAD_POOL_SIZE; i++)
 			{
-				[NSThread detachNewThreadSelector:@selector(connectionsThread:)
-										 toTarget:self
-									   withObject:[NSNumber numberWithUnsignedInt:i]];
+				[NSThread detachNewThreadSelector:@selector(connectionsThread:) toTarget: self withObject: [NSNumber numberWithUnsignedInt:i]];
 			}
-			
-//			thread = [[[NSThread alloc] initWithTarget:self selector:@selector(connectionsThread:) object:NULL] autorelease];
-//			[thread start];
 		} @catch (NSException * e) {
 			NSLog(@"Exception: [WebPortal startAcceptingConnections] %@", e);
 		}
 	}
 }
-
-//- (NSRunLoop *)onSocket:(AsyncSocket *)sock wantsRunLoopForNewSocket:(AsyncSocket *)newSocket
-//{
-//	// Figure out what thread/runloop to run the new connection on.
-//	// We choose the thread/runloop with the lowest number of connections.
-//	
-//	uint m = 0;
-//	NSRunLoop *mLoop = nil;
-//	uint mLoad = 0;
-//	
-//	@synchronized(runLoops)
-//	{
-//		mLoop = [runLoops objectAtIndex:0];
-//		mLoad = [[runLoopsLoad objectAtIndex:0] unsignedIntValue];
-//		
-//		uint i;
-//		for(i = 1; i < THREAD_POOL_SIZE; i++)
-//		{
-//			uint iLoad = [[runLoopsLoad objectAtIndex:i] unsignedIntValue];
-//			
-//			if(iLoad < mLoad)
-//			{
-//				m = i;
-//				mLoop = [runLoops objectAtIndex:i];
-//				mLoad = iLoad;
-//			}
-//		}
-//		
-//		[runLoopsLoad replaceObjectAtIndex:m withObject:[NSNumber numberWithUnsignedInt:(mLoad + 1)]];
-//	}
-//	// And finally, return the proper run loop
-//	return mLoop;
-//}
-
-/**
- * This method is automatically called when a HTTPConnection dies.
- * We need to update the number of connections per thread.
- **/
-//- (void)connectionDidDie:(NSNotification *)notification
-//{
-//	// Note: This method is called on the thread/runloop that posted the notification
-//	
-//	@synchronized(runLoops)
-//	{
-//		unsigned int runLoopIndex = [runLoops indexOfObject:[NSRunLoop currentRunLoop]];
-//		
-//		if(runLoopIndex < [runLoops count])
-//		{
-//			unsigned int runLoopLoad = [[runLoopsLoad objectAtIndex:runLoopIndex] unsignedIntValue];
-//			
-//			NSNumber *newLoad = [NSNumber numberWithUnsignedInt:(runLoopLoad - 1)];
-//			
-//			[runLoopsLoad replaceObjectAtIndex:runLoopIndex withObject:newLoad];
-//			
-//			//			NSLog(@"Updating run loop %u with load %@", runLoopIndex, newLoad);
-//		}
-//	}
-//	
-//	// Don't forget to call super, or the connection won't get proper deallocated!
-//	[super connectionDidDie:notification];
-//}
 
 -(void)connectionsThread:(id)obj {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -336,13 +343,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 		{
 			[runLoops addObject:[NSRunLoop currentRunLoop]];
 			[runLoopsLoad addObject:[NSNumber numberWithUnsignedInt:0]];
-		}
-		
-		NSError* err = NULL;
-		if (![server start:&err]) {
-			NSLog(@"Exception: [WebPortal startAcceptingConnectionsThread:] %@", err);
-			[AppController.sharedAppController performSelectorOnMainThread:@selector(displayError:) withObject:NSLocalizedString(@"Cannot start Web Server. TCP/IP port is probably already used by another process.", NULL) waitUntilDone:YES];
-			return;
+			[httpThreads addObject: NSThread.currentThread];
 		}
 		
 		isAcceptingConnections = YES;
@@ -360,9 +361,12 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 -(void)stopAcceptingConnections {
 	if (isAcceptingConnections) {
 		isAcceptingConnections = NO;
-		@try {
+		@try 
+		{
 			[server stop];
-			[thread cancel];
+			for( NSThread *thread in httpThreads)
+				[thread cancel];
+			
 		} @catch (NSException* e) {
 			NSLog(@"Exception: [WebPortal stopAcceptingConnections] %@", e);
 		}

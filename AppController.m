@@ -52,7 +52,6 @@
 #import "Notifications.h"
 #import "WaitRendering.h"
 #import "WebPortal.h"
-#import "ThreadPoolServer.h"
 #import "DicomImage.h"
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"

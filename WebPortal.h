@@ -17,14 +17,13 @@
 
 @class WebPortalDatabase, WebPortalSession, WebPortalServer, DicomDatabase;
 
+#define THREAD_POOL_SIZE 4
 
 @interface WebPortal : NSObject {
 @private
 	WebPortalDatabase* database;
 	DicomDatabase* dicomDatabase;
 	BOOL isAcceptingConnections;
-	WebPortalServer* server;
-	NSThread* thread;
 	NSMutableArray* sessions;
 	NSLock* sessionsArrayLock;
 	NSLock* sessionCreateLock;
@@ -39,7 +38,8 @@
 	BOOL flashEnabled;
 	NSMutableDictionary* cache;
 	NSMutableDictionary* locks;
-	NSMutableArray *runLoops, *runLoopsLoad;
+	NSMutableArray *runLoops, *runLoopsLoad, *httpThreads;
+	WebPortalServer *server;
 }
 
 // called from AppController
@@ -54,6 +54,8 @@
 @property(readonly, retain) NSMutableDictionary* locks;
 
 @property(readonly) BOOL isAcceptingConnections;
+
+@property(readonly) NSMutableArray *runLoops, *runLoopsLoad;
 
 @property BOOL usesSSL;
 @property NSInteger portNumber;

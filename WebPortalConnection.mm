@@ -893,9 +893,6 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	}
 }
 
-
-
-
 #pragma mark Session, custom authentication
 
 -(void)replyToHTTPRequest {

@@ -8590,8 +8590,6 @@
 		8417221210D8DB72001A833F /* TCPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCPServer.m; sourceTree = "<group>"; };
 		8417221710D8DB93001A833F /* basicHTTPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = basicHTTPServer.h; sourceTree = "<group>"; };
 		8417221810D8DB93001A833F /* basicHTTPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = basicHTTPServer.m; sourceTree = "<group>"; };
-		8417225010D8F01C001A833F /* ThreadPoolServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreadPoolServer.h; path = cocoahttpserver/ThreadPoolServer.h; sourceTree = "<group>"; };
-		8417225110D8F01C001A833F /* ThreadPoolServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadPoolServer.m; path = cocoahttpserver/ThreadPoolServer.m; sourceTree = "<group>"; };
 		841722AE10D90595001A833F /* DDKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDKeychain.h; path = cocoahttpserver/DDKeychain.h; sourceTree = "<group>"; };
 		841722AF10D90595001A833F /* DDKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDKeychain.m; path = cocoahttpserver/DDKeychain.m; sourceTree = "<group>"; };
 		843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDicomPrintPref.h; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrintPref.h"; sourceTree = SOURCE_ROOT; };
@@ -13030,8 +13028,6 @@
 				841721B510D8D745001A833F /* HTTPServer.m */,
 				841721B610D8D745001A833F /* SSCrypto.h */,
 				841721B710D8D745001A833F /* SSCrypto.m */,
-				8417225010D8F01C001A833F /* ThreadPoolServer.h */,
-				8417225110D8F01C001A833F /* ThreadPoolServer.m */,
 				A9E0E4A011182C480086A15A /* JSON */,
 			);
 			name = "HTTP-HTTPS Server";
