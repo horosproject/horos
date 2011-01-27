@@ -14,6 +14,7 @@
 
 #import "WebPortalResponse.h"
 #import "WebPortalConnection.h"
+#import "WebPortalConnection+Data.h"
 #import "WebPortalSession.h"
 #import "WebPortalDatabase.h"
 #import "WebPortal.h"
@@ -146,6 +147,8 @@
 		return [self object:[WebPortalProxy createWithObject:o transformer:[DateTransformer create]] valueForKeyPath:keyPath context:context];
 	if ([o isKindOfClass:[NSArray class]])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[ArrayTransformer create]] valueForKeyPath:keyPath context:context];
+	if ([o isKindOfClass:[NSSet class]])
+		return [self object:[WebPortalProxy createWithObject:o transformer:[SetTransformer create]] valueForKeyPath:keyPath context:context];
 	
 	/*@try {
 		id value = [o valueForKeyPath:keyPath];
@@ -427,9 +430,29 @@
 
 @implementation WebPortalProxyObjectTransformer : NSObject
 
--(id)valueForKey:(NSString*)k object:(NSObject*)o context:(WebPortalConnection*)wpc {
+-(id)valueForKey:(NSString*)key object:(NSObject*)o context:(WebPortalConnection*)wpc {
+	if ([key isEqual:@"webUID"])
+		@try {
+			if ([o isKindOfClass:NSManagedObject.class])
+				return [[[(NSManagedObject*)o objectID] URIRepresentation] absoluteString];
+		} @catch (NSException* e) {
+			return NULL;
+		}
+	
+	if ([key isEqual:@"isSelected"]) {
+		NSLog(@"sel: %@", [wpc.parameters objectForKey:@"selected"]);
+		return [NSNumber numberWithBool:NO];
+		
+		/*		for (NSString* selectedID in [parameters objectForKey:@"selected"])
+		 {
+		 if ([[series valueForKey:@"seriesInstanceUID"] isEqualToString:[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "]])
+		 checked = @"checked";
+		 }*/
+	}
+	
 	return NULL;
 }
+
 
 @end
 
@@ -481,19 +504,24 @@
 		NSString* rest = [key substringFromIndex:13];
 		if (rest.length && [rest characterAtIndex:0] == '(' && [rest characterAtIndex:rest.length-1] == ')') {
 			NSMutableDictionary* vars = [[[WebPortalConnection ExtractParams:wpc.GETParams] mutableCopy] autorelease];
-			NSArray* set = [[rest substringWithRange:NSMakeRange(1,rest.length-2)] componentsSeparatedByString:@"="];
-			if (set.count == 2) {
-				if ([[set objectAtIndex:1] length])
-					[vars setObject:[set objectAtIndex:1] forKey:[set objectAtIndex:0]];
-				else [vars removeObjectForKey:[set objectAtIndex:0]];
-				return [WebPortalConnection FormatParams:vars];
+			rest = [rest substringWithRange:NSMakeRange(1,rest.length-2)];
+			
+			for (rest in [rest componentsSeparatedByString:@","]) {
+				NSArray* set = [rest componentsSeparatedByString:@"="];
+				if (set.count == 2) {
+					if ([[set objectAtIndex:1] length])
+						[vars setObject:[set objectAtIndex:1] forKey:[set objectAtIndex:0]];
+					else [vars removeObjectForKey:[set objectAtIndex:0]];
+				}
 			}
+			
+			return [WebPortalConnection FormatParams:vars];
 		}
 		
 		return wpc.GETParams;
 	}
 	
-	return NULL;
+	return [super valueForKey:key object:wpc context:wpcagain];
 }
 
 @end
@@ -508,7 +536,8 @@
 -(id)valueForKey:(NSString*)key object:(WebPortalUser*)user context:(WebPortalConnection*)wpc {
 	if ([key isEqual:@"originalName"])
 		return user.name;
-	return NULL;
+	
+	return [super valueForKey:key object:user context:wpc];
 }
 
 @end
@@ -533,7 +562,8 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 -(id)valueForKey:(NSString*)key object:(NSString*)object context:(WebPortalConnection*)wpc {
 	if ([key isEqual:@"Spanned"])
 		return iPhoneCompatibleNumericalFormat(object);
-	return NULL;
+	
+	return [super valueForKey:key object:object context:wpc];
 }
 
 @end
@@ -560,7 +590,23 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		 }*/
 	}
 	
-	return NULL;
+	return [super valueForKey:key object:object context:wpc];
+}
+
+@end
+
+
+@implementation SetTransformer
+
++(id)create {
+	return [[[self alloc] init] autorelease];
+}
+
+-(id)valueForKey:(NSString*)key object:(NSSet*)object context:(WebPortalConnection*)wpc {
+	if ([key isEqual:@"count"])
+		return [NSNumber numberWithUnsignedInt:object.count];
+	
+	return [super valueForKey:key object:object context:wpc];
 }
 
 @end
@@ -620,7 +666,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		return years;
 	}
 	
-	return NULL;
+	return [super valueForKey:key object:object context:wpc];
 }
 
 @end
@@ -650,7 +696,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		return [BrowserController.statesArray objectAtIndex:study.stateText.intValue];
 	}
 	
-	return NULL;
+	return [super valueForKey:key object:study context:wpc];
 }
 
 @end
@@ -660,6 +706,12 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 
 +(id)create {
 	return [[[self alloc] init] autorelease];
+}
+
+-(id)init {
+	self = [super init];
+	size = NSMakeSize(-1,-1);
+	return self;
 }
 
 -(id)valueForKey:(NSString*)key object:(DicomSeries*)series context:(WebPortalConnection*)wpc {
@@ -675,28 +727,24 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		return NULL;
 	}
 	
-	if ([key isEqual:@"webUID"]) {
-		return series.seriesInstanceUID;
-	}
-	
-	
 	if ([key isEqual:@"noFiles"]) {
 		return [NSNumber numberWithInt:[[series performSelector:@selector(noFiles)] intValue]];
 	}
-	
-	if ([key isEqual:@"isSelected"]) {
-		
-		NSLog(@"sel: %@", [wpc.parameters objectForKey:@"selected"]);
-		return [NSNumber numberWithBool:NO];
-		
-/*		for (NSString* selectedID in [parameters objectForKey:@"selected"])
-		{
-			if ([[series valueForKey:@"seriesInstanceUID"] isEqualToString:[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "]])
-				checked = @"checked";
-		}*/
+
+	if ([key isEqual:@"width"] || [key isEqual:@"height"]) {
+		if (size.height == -1) {
+			NSArray* images = [series.images allObjects];
+			[wpc getWidth:&size.width height:&size.height fromImagesArray:images isiPhone:wpc.requestIsIOS];
+			if (images.count > 1)
+				size.height += 15; // controller height
+		}
+		if ([key isEqual:@"width"])
+			return [NSNumber numberWithInt:size.width];
+		if ([key isEqual:@"height"])
+			return [NSNumber numberWithInt:size.height];
 	}
 	
-	return NULL;
+	return [super valueForKey:key object:series context:wpc];
 }
 
 @end

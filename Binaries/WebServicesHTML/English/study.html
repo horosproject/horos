@@ -29,7 +29,7 @@ function OnSubmitForm(form) {
 
 </script>
 
-<form onSubmit="return OnSubmitForm();">
+<form onsubmit="return OnSubmitForm();">
 <div id="content">
 	<input type="hidden" name="id" value="%X:Study.studyInstanceUID%"/>
 	<input type="hidden" name="search" value="%X:Request.search%"/>
@@ -110,12 +110,12 @@ function OnSubmitForm(form) {
 						</td>
 						%]IF:Info.proposeDicomSend||Info.proposeWeasis%
 						<td class="narrow middle">
-							<a class="series" href="series%Series.seriesExtension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%&browse=%U:Request.browse%&browseParameter=%U:Request.browseParameter%&search=%U:Request.search%&album=%U:Request.album%">
+							<a class="series" href="series%Series.seriesExtension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%&%Info.getParameters(id=)%">
 								<img src="/thumbnail?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%" />
 							</a>
 						</td>
 						<td class="fat">
-							<a class="series" href="series%Series.seriesExtension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%&browse=%U:Request.browse%&browseParameter=%U:Request.browseParameter%&search=%U:Request.search%&album=%U:Request.album%">
+							<a class="series" href="series%Series.seriesExtension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%&%Info.getParameters(id=)%">
 								<span class="bigger">%X:Series.name%</span>
 								<span class="gray">
 									%[IF:Series.stateText%
@@ -161,7 +161,7 @@ function OnSubmitForm(form) {
 					%]IF:Info.proposeZipDownload%
 					%[IF:Info.proposeWeasis%
 					<td class="narrow middle">
-						<input type="image" src="images/weasis.png" onclick="document.pressed=this.value" value="Weasis" alt="Open checked series in Weasis" />
+						<input type="image" src="images/weasis.png" onclick="document.pressed=this.value" value="Weasis" alt="Open selected series in Weasis" />
 					</td>
 					%]IF:Info.proposeWeasis%
 				</tr>
@@ -169,36 +169,54 @@ function OnSubmitForm(form) {
 			</table>
 		</div>
 	
+		%[IF:Info.proposeShare%
+		<div class="title separated">Share</div>
+		<div>
+			<table class="basic wide form">
+				<tr>
+					<td>User:</td>
+					<td>
+						<select name="shareStudyDestination" id="userDestination">
+							%[FOREACH:ShareDestinations:Dest%
+							<option value="%X:Dest.webUID%">%X:Dest.name%</option>
+							%]FOREACH:ShareDestinations:Dest%
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Message:</td>
+					<td>
+						<textarea name="message" id="shareStudyMessage" onfocus="if (!this.cleared) { this.cleared = true; this.value=''; this.style.color='#000000'; }" style="color:#555555">Fill this field to specify a message that will be included in the notification e-mail sent to this user.</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<button type="submit" name="action" id="shareStudy" value="shareStudy">Share</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+		%]IF:Info.proposeShare%
+	
 		%[IF:Info.proposeDicomSend%
 		<div class="title separated">DICOM Transfer</div>
 		<div>
-			Destination: 
-			<select name="dicomDestination" id="dicomDestination">
-				%[FOREACH:DicomDestinations:Dest%
-				<option value="%X:Dest.address%:%X:Dest.port%:%X:Dest.aeTitle%:%X:Dest.syntax%" %[IF:Dest.isSelected%checked="cherked"%]IF:Dest.isSelected%>%X:Dest.description%</option>
-				%]FOREACH:DicomDestinations:Dest%
-			</select>
-			<button type="submit" name="action" onClick="document.pressed=this.value" id="dicomSend" value="dicomSend">Send</button>
+			<table class="form">
+				<tr>
+					<td>Destination:</td>
+					<td>
+						<select name="dicomDestination" id="dicomDestination">
+							%[FOREACH:DicomDestinations:Dest%
+							<option value="%X:Dest.address%:%X:Dest.port%:%X:Dest.aeTitle%:%X:Dest.syntax%">%X:Dest.description%</option>
+							%]FOREACH:DicomDestinations:Dest%
+						</select>
+						<button type="submit" name="action" onClick="document.pressed=this.value" id="dicomSend" value="dicomSend">Send</button>
+					</td>
+				</tr>
+			</table>
 		</div>
 		%]IF:Info.proposeDicomSend%
-	
-		%[IF:Info.shareStudyWithUser%
-		<div class="title separated">Share</div>
-		<div>
-			<h2> This Study</h2>
-			<div>Share with user:</div>
-			<select name="shareStudyDestination" id="userDestination">
-				%[FOREACH:ShareDestinations:Dest%
-				<option value="%X:Dest.username%" %[IF:Dest.isSelected%checked="checked"%]IF:Dest.isSelected%>%X:Dest.description%</option>
-				%]FOREACH:ShareDestinations:Dest%
-			</select>
-			<div>Message:</div>
-			<div>
-				<textarea name="message" id="shareStudyMessage">Enter here a message for this user. He will receive it by email.</textarea>
-			</div>
-			<button type="submit" name="action" id="shareStudy" value="shareStudy">Send</button>
-		</div>
-		%]IF:Info.shareStudyWithUser%
 	</div>
 	
 </div>

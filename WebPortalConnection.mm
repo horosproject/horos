@@ -53,6 +53,7 @@
 #import "NSImage+N2.h"
 #import "NSMutableDictionary+N2.h"
 #import "DicomAlbum.h"
+#import "N2Alignment.h"
 
 #import "JSON.h"
 
@@ -381,7 +382,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 
 
-
+/*
 - (NSRect) centerRect: (NSRect) smallRect
                inRect: (NSRect) bigRect
 {
@@ -392,7 +393,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
     centerRect.origin.y = (bigRect.size.height - smallRect.size.height) / 2.0;
 
     return (centerRect);
-}
+}*/
 /*
 +(NSString*)ipv6:(NSString*)inadd {
 	const char* inaddc = [[node valueForKey:@"Address"] UTF8String];
@@ -462,23 +463,23 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	// find the name of the requested file
 	// SECURITY: we cannot allow the client to read any file on the hard disk (outside the shared dir), so no ".." 
-	NSString* fileURL = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@".." withString:@""];
+	requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@".." withString:@""];
 	
 //	NSString* userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
 //	BOOL isIOS [userAgent contains:@"iPhone"] || [userAgent contains:@"iPad"];	
 //	BOOL isMacOS [userAgent contains:@"Mac OS"];	
 
-	NSString* ext = [fileURL pathExtension];
+	NSString* ext = [requestedPath pathExtension];
 	if ([ext compare:@"jar" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
 		response.mimeType = @"application/java-archive";
 	if ([ext compare:@"swf" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
 		response.mimeType = @"application/x-shockwave-flash";
 	
-	if ([fileURL hasPrefix:@"/weasis/"])
+	if ([requestedPath hasPrefix:@"/weasis/"])
 	{
-		response.data = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:fileURL]];
+		response.data = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:requestedPath]];
 	}
-	else if ([fileURL rangeOfString:@".pvt."].length) {
+	else if ([requestedPath rangeOfString:@".pvt."].length) {
 		response.statusCode = 404;
 	}
 	else
@@ -486,73 +487,73 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		[self.portal.dicomDatabase.managedObjectContext lock];
 		BOOL lockReleased = NO;
 		@try {
-			if ([fileURL isEqual:@"/"] || [fileURL isEqual: @"/index"])
+			if ([requestedPath isEqual:@"/"] || [requestedPath isEqual: @"/index"])
 				[self processIndexHtml];
 			else
-			if ([fileURL isEqual: @"/main"])
+			if ([requestedPath isEqual: @"/main"])
 				[self processMainHtml];
 			else
-			if ([fileURL isEqual:@"/studyList"])
+			if ([requestedPath isEqual:@"/studyList"])
 				[self processStudyListHtml];
 			else	
-			if ([fileURL isEqual:@"/studyList.json"])
+			if ([requestedPath isEqual:@"/studyList.json"])
 				[self processStudyListJson];
 			else
-			if ([fileURL isEqual:@"/study"])
+			if ([requestedPath isEqual:@"/study"])
 				[self processStudyHtml];
 			else
-			if ([fileURL isEqual:@"/wado"])
+			if ([requestedPath isEqual:@"/wado"])
 				[self processWado];
 			else
-			if ([fileURL isEqual:@"/thumbnail"])
+			if ([requestedPath isEqual:@"/thumbnail"])
 				[self processThumbnail];
 			else
-			if ([fileURL isEqual:@"/series.pdf"])
+			if ([requestedPath isEqual:@"/series.pdf"])
 				[self processSeriesPdf];
 			else
-			if ([fileURL isEqual:@"/series"])
+			if ([requestedPath isEqual:@"/series"])
 				[self processSeriesHtml];
 			else
-			if ([fileURL isEqual:@"/series.json"])
+			if ([requestedPath isEqual:@"/series.json"])
 				[self processSeriesJson];
 			else
-			if ([fileURL hasPrefix:@"/report"])
+			if ([requestedPath hasPrefix:@"/report"])
 				[self processReport];
 			else
-			if ([fileURL hasSuffix:@".zip"] || [fileURL hasSuffix:@".osirixzip"])
+			if ([requestedPath hasSuffix:@".zip"] || [requestedPath hasSuffix:@".osirixzip"])
 				[self processZip];
 			else
-			if ([fileURL hasPrefix:@"/image."])
+			if ([requestedPath hasPrefix:@"/image."])
 				[self processImage];
 			else
-			if ([fileURL isEqual:@"/movie.mov"] || [fileURL isEqual:@"/movie.m4v"] || [fileURL isEqual:@"/movie.swf"])
+			if ([requestedPath isEqual:@"/movie.mov"] || [requestedPath isEqual:@"/movie.m4v"] || [requestedPath isEqual:@"/movie.swf"])
 				[self processMovie];
 			else
-			if ([fileURL isEqual:@"/password_forgotten"])
+			if ([requestedPath isEqual:@"/password_forgotten"])
 				[self processPasswordForgottenHtml];
 			else
-			if ([fileURL isEqual: @"/account"])
+			if ([requestedPath isEqual: @"/account"])
 				[self processAccountHtml];
 			else
-			if ([fileURL isEqual:@"/albums.json"])
+			if ([requestedPath isEqual:@"/albums.json"])
 				[self processAlbumsJson];
 			else
-			if ([fileURL isEqual:@"/seriesList.json"])
+			if ([requestedPath isEqual:@"/seriesList.json"])
 				[self processSeriesListJson];
 			else
-			if ([fileURL isEqual:@"/weasis.jnlp"])
+			if ([requestedPath isEqual:@"/weasis.jnlp"])
 				[self processWeasisJnlp];
 			else
-			if ([fileURL isEqual:@"/weasis.xml"])
+			if ([requestedPath isEqual:@"/weasis.xml"])
 				[self processWeasisXml];
 			else
-			if ([fileURL isEqual:@"/admin/"] || [fileURL isEqual:@"/admin/index"])
+			if ([requestedPath isEqual:@"/admin/"] || [requestedPath isEqual:@"/admin/index"])
 				[self processAdminIndexHtml];
 			else
-			if ([fileURL isEqualToString:@"/admin/user"])
+			if ([requestedPath isEqualToString:@"/admin/user"])
 				[self processAdminUserHtml];
 			else
-			response.data = [self.portal dataForPath:fileURL];
+			response.data = [self.portal dataForPath:requestedPath];
 			
 			if (!response.data.length && !response.statusCode)
 				response.statusCode = 404;

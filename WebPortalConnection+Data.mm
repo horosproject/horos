@@ -35,6 +35,7 @@
 #import "DCM.h"
 #import "DCMPix.h"
 #import "DCMTKStoreSCU.h"
+#import "N2Alignment.h"
 
 
 
@@ -172,7 +173,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 }
 
 
--(DicomSeries*)series_seriesForUser:(WebPortalUser*)luser {
+-(DicomSeries*)series_requestedSeries {
 	NSPredicate* browsePredicate;
 	
 	if ([parameters objectForKey:@"id"]) {
@@ -182,7 +183,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	} else
 		return NULL;
 	
-	NSArray* series = [self.portal seriesForUser:luser predicate:browsePredicate];
+	NSArray* series = [self.portal seriesForUser:user predicate:browsePredicate];
 	if (series.count)
 		return series.lastObject;
 	
@@ -225,8 +226,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	return NULL; // TODO: update&return session series sort keys
 }
 
-- (void) getWidth: (int*) width height: (int*) height fromImagesArray: (NSArray*) imagesArray isiPhone: (BOOL) isiPhone;
-{
+-(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)imagesArray isiPhone:(BOOL)isiPhone {
 	*width = 0;
 	*height = 0;
 	
@@ -238,7 +238,6 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	
 	int maxWidth, maxHeight;
 	int minWidth, minHeight;
-	
 	
 	const int minResolution = 400;
 	const int maxResolution = 800;
@@ -259,25 +258,25 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	
 	if (*width > maxWidth)
 	{
-		*height = (float) *height * (float)maxWidth / (float) *width;
+		*height = *height * (float)maxWidth / (float) *width;
 		*width = maxWidth;
 	}
 	
 	if (*height > maxHeight)
 	{
-		*width = (float) *width * (float)maxHeight / (float) *height;
+		*width = *width * (float)maxHeight / (float) *height;
 		*height = maxHeight;
 	}
 	
 	if (*width < minWidth)
 	{
-		*height = (float) *height * (float)minWidth / (float) *width;
+		*height = *height * (float)minWidth / (float) *width;
 		*width = minWidth;
 	}
 	
 	if (*height < minHeight)
 	{
-		*width = (float) *width * (float)minHeight / (float) *height;
+		*width = *width * (float)minHeight / (float) *height;
 		*height = minHeight;
 	}
 }
@@ -351,7 +350,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 			
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 			
-			int width, height;
+			CGFloat width, height;
 			
 			if ([[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0)
 			{
@@ -459,17 +458,15 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 
 
 
-- (NSData*) produceMovieForSeries: (NSManagedObject *) series isiPhone:(BOOL) isiPhone fileURL: (NSString*) fileURL lockReleased: (BOOL*) lockReleased {
-	NSData *data = nil;
+-(NSData*)produceMovieForSeries:(DicomSeries*)series isiPhone:(BOOL)isiPhone fileURL:(NSString*)fileURL {
+	NSString* path = @"/tmp/osirixwebservices";
+	[NSFileManager.defaultManager confirmDirectoryAtPath:path];
 	
-	NSString *path = @"/tmp/osirixwebservices";
-	[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+	NSString* name = [NSString stringWithFormat:@"%@", [parameters objectForKey:@"id"]]; //[series valueForKey:@"id"];
+	name = [name stringByAppendingFormat:@"-NBIM-%ld", series.dateAdded];
 	
-	NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"id"]]; //[series valueForKey:@"id"];
-	name = [name stringByAppendingFormat:@"-NBIM-%ld", [series valueForKey: @"dateAdded"]];
-	
-	NSMutableString *fileName = [NSMutableString stringWithString:name];
-	[BrowserController replaceNotAdmitted: fileName];
+	NSMutableString* fileName = [NSMutableString stringWithString:name];
+	[BrowserController replaceNotAdmitted:fileName];
 	fileName = [NSMutableString stringWithString:[path stringByAppendingPathComponent: fileName]];
 	[fileName appendFormat:@".%@", fileURL.pathExtension];
 	
@@ -480,9 +477,9 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	else
 		outFile = fileName;
 	
-	data = [NSData dataWithContentsOfFile: outFile];
+	NSData* data = [NSData dataWithContentsOfFile: outFile];
 	
-	if (data == nil)
+	if (!data)
 	{
 		NSArray *dicomImageArray = [[series valueForKey:@"images"] allObjects];
 		
@@ -506,8 +503,10 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 			
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];	
 			
-			*lockReleased = YES;
 			[self generateMovie: dict];
+			
+			[[[BrowserController currentBrowser] managedObjectContext] lock];	
+
 			
 			data = [NSData dataWithContentsOfFile: outFile];
 		}
@@ -617,13 +616,6 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 		@try {
 			[response.tokens setObject:self.requestIsMacOS?@"osirixzip":@"zip" forKey:@"zipextension"];
 			
-			
-			
-			//	[templateString replaceOccurrencesOfString:@"%browse%" withString:browse];
-		//	[templateString replaceOccurrencesOfString:@"%browseParameter%" withString:browseParameter];
-		//	[templateString replaceOccurrencesOfString:@"%search%" withString:search];
-		//	[templateString replaceOccurrencesOfString:@"%album%" withString:album];
-			
 			NSString* browse = [parameters objectForKey:@"browse"];
 			NSString* browseParameter = [parameters objectForKey:@"browseParameter"];
 			NSString* search = [parameters objectForKey:@"search"];
@@ -639,342 +631,59 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 				studyListLinkLabel = NSLocalizedString(@"Today", nil);
 			[response.tokens setObject:studyListLinkLabel forKey:@"BackLinkLabel"];
 			
-			/*if ([[study valueForKey:@"reportURL"] hasPrefix: @"http://"] || [[study valueForKey:@"reportURL"] hasPrefix: @"https://"])
-			{
-				[WebPortalResponse mutableString:templateString block:@"Report" setVisible:NO];
-				[WebPortalResponse mutableString:templateString block:@"ReportURL" setVisible:NO];
-				
-				[templateString replaceOccurrencesOfString:@"%ReportURLString%" withString:N2NonNullString([study valueForKey:@"reportURL"])];
-			}
-			else
-			{
-				[WebPortalResponse mutableString:templateString block:@"ReportURL" setVisible:NO];
-				[WebPortalResponse mutableString:templateString block:@"Report" setVisible:([study valueForKey:@"reportURL"] && ![[settings valueForKey:@"iPhone"] boolValue])];
-				
-				if ([[[study valueForKey:@"reportURL"] pathExtension] isEqualToString: @"pages"])
-					[templateString replaceOccurrencesOfString:@"%reportExtension%" withString:N2NonNullString(@"zip")];
-				else
-					[templateString replaceOccurrencesOfString:@"%reportExtension%" withString:N2NonNullString([[study valueForKey:@"reportURL"] pathExtension])];
-			}
-			*/
-			
-			//NSArray *tempArray = [templateString componentsSeparatedByString:@"%SeriesListItem%"];
-			/*NSString *templateStringStart = [tempArray objectAtIndex:0];
-			tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/SeriesListItem%"];
-			NSString *seriesListItemString = [tempArray objectAtIndex:0];
-			NSString *templateStringEnd = [tempArray lastObject];*/
-			
-			//returnHTML = [NSMutableString stringWithString: templateStringStart];
-			
-			//[returnHTML replaceOccurrencesOfString:@"%PatientID%" withString:N2NonNullString([study valueForKey:@"patientID"])];
-			//[returnHTML replaceOccurrencesOfString:@"%PatientName%" withString:N2NonNullString([study valueForKey:@"name"])];
-			//[returnHTML replaceOccurrencesOfString:@"%StudyDescription%" withString:N2NonNullString([study valueForKey:@"studyName"])];
-			//[returnHTML replaceOccurrencesOfString:@"%StudyModality%" withString:N2NonNullString([study valueForKey:@"modality"])];
-			
-			/*if (![study valueForKey:@"comment"])
-				[WebPortalResponse mutableString:returnHTML block:@"StudyCommentBlock" setVisible:NO];
-			else
-			{
-				[WebPortalResponse mutableString:returnHTML block:@"StudyCommentBlock" setVisible:YES];
-				[returnHTML replaceOccurrencesOfString:@"%StudyComment%" withString:N2NonNullString([study valueForKey:@"comment"])];
-			}*/
-			
-			/*NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKey:@"stateText"] intValue]];
-			if ([[study valueForKey:@"stateText"] intValue] == 0)
-				stateText = nil;
-			
-			if (!stateText)
-				[WebPortalResponse mutableString:returnHTML block:@"StudyStateBlock" setVisible:NO];
-			else
-			{
-				[WebPortalResponse mutableString:returnHTML block:@"StudyStateBlock" setVisible:YES];
-				[returnHTML replaceOccurrencesOfString:@"%StudyState%" withString:N2NonNullString(stateText)];
-			}*/
-			
-//			NSDateFormatter *dobDateFormat = [[[NSDateFormatter alloc] init] autorelease];
-//			[dobDateFormat setDateFormat:[[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateOfBirthFormat2"]];
-			//NSDateFormatter *dateFormat = [[[NSDateFormatter alloc] init] autorelease];
-			//[dateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat2"]];
-			
-			//[returnHTML replaceOccurrencesOfString:@"%PatientDOB%" withString:N2NonNullString([dobDateFormat stringFromDate:[study valueForKey:@"dateOfBirth"]])];
-			//[returnHTML replaceOccurrencesOfString:@"%AccessionNumber%" withString:N2NonNullString([study valueForKey:@"accessionNumber"])];
-			//[returnHTML replaceOccurrencesOfString:@"%StudyDate%" withString: [WebPortalConnection iPhoneCompatibleNumericalFormat: [dateFormat stringFromDate: [study valueForKey:@"date"]]]];
-			
-			//NSArray *seriesArray = [study valueForKey:@"imageSeries"];
-			
-			/*NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
-			NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
-			NSArray * sortDescriptors;
-			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
-			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
-			[sortid release];
-			[sortdate release];*/
+			// Series
 			
 			NSMutableArray* seriesArray = [NSMutableArray array];
 			for (DicomSeries* s in [study.imageSeries sortedArrayUsingDescriptors:[self seriesSortDescriptors]])
 				[seriesArray addObject:[WebPortalProxy createWithObject:s transformer:[DicomSeriesTransformer create]]];
 			[response.tokens setObject:seriesArray forKey:@"Series"];
-			
 				
-				//[tempHTML replaceOccurrencesOfString:@"%SeriesName%" withString:N2NonNullString(series.name)];
-				//[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString: [NSString stringWithFormat:@"thumbnail?id=%@&studyID=%@", N2NonNullString([series valueForKey:@"seriesInstanceUID"]), N2NonNullString([study valueForKey:@"studyInstanceUID"])]];
-				//[tempHTML replaceOccurrencesOfString:@"%SeriesID%" withString:N2NonNullString(series.seriesInstanceUID)];
-				//[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString:N2NonNullString([series valueForKey:@"comment"])];
-				//[tempHTML replaceOccurrencesOfString:@"%PatientName%" withString:N2NonNullString(series.study.name)];
-				
-				/*if ([DCMAbstractSyntaxUID isPDF: [series valueForKey: @"seriesSOPClassUID"]])
-					[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"];
-				else if ([DCMAbstractSyntaxUID isStructuredReport: [series valueForKey: @"seriesSOPClassUID"]])
-					[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @".pdf"];
-				else
-					[tempHTML replaceOccurrencesOfString:@"%seriesExtension%" withString: @""];*/
-				
-				/*NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[series valueForKey: @"stateText"] intValue]];
-				if ([[series valueForKey:@"stateText"] intValue] == 0)
-					stateText = nil;
-				[tempHTML replaceOccurrencesOfString:@"%SeriesState%" withString:N2NonNullString(stateText)];*/
-				
-				/*t nbFiles = series.noFiles.intValue;
-				if (nbFiles == 0)
-					nbFiles = 1;
-				NSString *imagesLabel = (nbFiles!=1)? NSLocalizedString(@"Images", nil) : NSLocalizedString(@"Image", nil);
-				[tempHTML replaceOccurrencesOfString:@"%SeriesImageNumber%" withString: [NSString stringWithFormat:@"%d %@", nbFiles, imagesLabel]];
-				*/
-			/*	NSString *comment = [series valueForKey:@"comment"];
-				if (comment == nil)
-					comment = @"";
-				[tempHTML replaceOccurrencesOfString:@"%SeriesComment%" withString: comment];*/
-				
-				
-				/*NSString *checked = @"";
-				for (NSString* selectedID in [parameters objectForKey:@"selected"])
-				{
-					if ([[series valueForKey:@"seriesInstanceUID"] isEqualToString:[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "]])
-						checked = @"checked";
-				}*/
-				
-				/*[tempHTML replaceOccurrencesOfString:@"%checked%" withString:N2NonNullString(checked)];*/
-				
-				//[returnHTML appendString:tempHTML];
-			//}
-			
-			//NSMutableString *tempHTML = [NSMutableString stringWithString:templateStringEnd];
-			//[tempHTML replaceOccurrencesOfString:@"%lineParity%" withString:[NSString stringWithFormat:@"%d",lineNumber%2]];
-			//templateStringEnd = [NSString stringWithString:tempHTML];
-			
-			/*NSString *checkAllStyle = @"";
-			if ([seriesArray count]<=1) checkAllStyle = @"style='display:none;'";
-			[returnHTML replaceOccurrencesOfString:@"%CheckAllStyle%" withString:N2NonNullString(checkAllStyle)];*/
-			
-			/*BOOL checkAllChecked = [[parameters objectForKey:@"CheckAll"] isEqualToString:@"on"] || [[parameters objectForKey:@"CheckAll"] isEqualToString:@"checked"];
-			[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString: checkAllChecked? @"checked=\"checked\"" : @""];
-			*/
-			
-			NSMutableArray* dicomDestinations = [NSMutableArray array];
-			if (!user || user.sendDICOMtoSelfIP.boolValue) {
-				
-				if (!user || user.sendDICOMtoAnyNodes.boolValue) {
-					
-				}
-			}
-			[response.tokens setObject:dicomDestinations forKey:@"DicomDestinations"];
+			// DICOM destinations
 
-			/*
+			NSMutableArray* dicomDestinations = [NSMutableArray array];
+			if (!user || user.sendDICOMtoSelfIP.boolValue)
+				[dicomDestinations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+											  [asyncSocket connectedHost], @"address",
+											  self.dicomCStorePortString, @"port",
+											  @"This Computer", @"aeTitle",
+											  self.requestIsIOS? @"5" : @"0", @"syntax",
+											  self.requestIsIOS? @"This Computer" : [NSString stringWithFormat:@"This Computer [%@:%@]", [asyncSocket connectedHost], self.dicomCStorePortString], @"description",
+											  NULL]];
+			if (!user || user.sendDICOMtoAnyNodes.boolValue)
+				for (NSDictionary* node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
+					[dicomDestinations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+												  [node objectForKey:@"Address"], @"address",
+												  [node objectForKey:@"Port"], @"port",
+												  [node objectForKey:@"AETitle"], @"aeTitle",
+												  [node objectForKey:@"TransferSyntax"], @"syntax",
+												  self.requestIsIOS? [node objectForKey:@"Description"] : [NSString stringWithFormat:@"%@ [%@:%@]", [node objectForKey:@"Description"], [node objectForKey:@"Address"], [node objectForKey:@"Port"]], @"description",
+												  NULL]];
+			[response.tokens setObject:dicomDestinations forKey:@"DicomDestinations"];
 			
-			NSString *dicomNodesListItemString = @"";
-			if (dicomSend)
-			{
-				tempArray = [templateStringEnd componentsSeparatedByString:@"%dicomNodesListItem%"];
-				templateStringStart = [tempArray objectAtIndex:0];
-				tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/dicomNodesListItem%"];
-				dicomNodesListItemString = [tempArray objectAtIndex:0];
-				templateStringEnd = [tempArray lastObject];
-				[returnHTML appendString:templateStringStart];
-				
-				BOOL selectedDone = NO;
-				
-				if (user == nil || user.sendDICOMtoSelfIP.boolValue)
-				{
-					NSString *dicomNodeAddress = [asyncSocket connectedHost];
-					NSString *dicomNodeAETitle = @"This Computer";
-					
-					NSString *dicomNodeSyntax;
-					if ([[settings valueForKey:@"iPhone"] boolValue]) dicomNodeSyntax = @"5";
-					else dicomNodeSyntax = @"0";
-					NSString *dicomNodeDescription = @"This Computer";
-					
-					NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString:N2NonNullString(dicomNodeAddress)];
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString:N2NonNullString(self.dicomCStorePortString)];
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString:N2NonNullString(dicomNodeAETitle)];
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString:N2NonNullString(dicomNodeSyntax)];
-					
-					if (![[settings valueForKey:@"iPhone"] boolValue])
-						dicomNodeDescription = [dicomNodeDescription stringByAppendingFormat:@" [%@:%@]", N2NonNullString(dicomNodeAddress), N2NonNullString(self.dicomCStorePortString)];
-					
-					[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString:N2NonNullString(dicomNodeDescription)];
-					
-					NSString *selected = @"";
-					
-					if ([parameters objectForKey:@"dicomDestination"])
-					{
-						NSString * s = [parameters objectForKey:@"dicomDestination"];
-						
-						NSArray *sArray = [s componentsSeparatedByString: @":"];
-						
-						if ([sArray count] >= 2)
-						{
-							if ([[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && [[sArray objectAtIndex: 1] isEqualToString:self.dicomCStorePortString])
-							{
-								selected = @"selected";
-								selectedDone = YES;
-							}
-						}
-					}
-					
-					[tempHTML replaceOccurrencesOfString:@"%selected%" withString:N2NonNullString(selected)];
-					
-					[returnHTML appendString:tempHTML];
-				}
-				
-				if (user == nil || user.sendDICOMtoAnyNodes.boolValue)
-				{
-					NSArray *nodes = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
-					
-					for (NSDictionary *node in nodes)
-					{
-						NSString *dicomNodeAddress = N2NonNullString([node objectForKey:@"Address"]);
-						NSString *dicomNodePort = [NSString stringWithFormat:@"%d", [[node objectForKey:@"Port"] intValue]];
-						NSString *dicomNodeAETitle = N2NonNullString([node objectForKey:@"AETitle"]);
-						NSString *dicomNodeSyntax = [NSString stringWithFormat:@"%d", [[node objectForKey:@"TransferSyntax"] intValue]];
-						NSString *dicomNodeDescription = N2NonNullString([node objectForKey:@"Description"]);
-						
-						NSMutableString *tempHTML = [NSMutableString stringWithString:dicomNodesListItemString];
-						[tempHTML replaceOccurrencesOfString:@"%dicomNodeAddress%" withString:N2NonNullString(dicomNodeAddress)];
-						[tempHTML replaceOccurrencesOfString:@"%dicomNodePort%" withString:N2NonNullString(dicomNodePort)];
-						[tempHTML replaceOccurrencesOfString:@"%dicomNodeAETitle%" withString:N2NonNullString(dicomNodeAETitle)];
-						[tempHTML replaceOccurrencesOfString:@"%dicomNodeSyntax%" withString:N2NonNullString(dicomNodeSyntax)];
-						
-						if (![[settings valueForKey:@"iPhone"] boolValue])
-							dicomNodeDescription = [dicomNodeDescription stringByAppendingFormat:@" [%@:%@]", N2NonNullString(dicomNodeAddress), N2NonNullString(dicomNodePort)];
-						
-						[tempHTML replaceOccurrencesOfString:@"%dicomNodeDescription%" withString:N2NonNullString(dicomNodeDescription)];
-						
-						NSString *selected = @"";
-						
-						if ([parameters objectForKey:@"dicomDestination"] && selectedDone == NO)
-						{
-							NSString * s = [parameters objectForKey:@"dicomDestination"];
-							
-							NSArray *sArray = [s componentsSeparatedByString: @":"];
-							
-							if ([sArray count] >= 2)
-							{
-								if ([[sArray objectAtIndex: 0] isEqualToString: dicomNodeAddress] && [[sArray objectAtIndex: 1] isEqualToString: dicomNodePort])
-								{
-									selected = @"selected";
-									selectedDone = YES;
-								}
-							}
-						}
-						
-						[tempHTML replaceOccurrencesOfString:@"%selected%" withString:N2NonNullString(selected)];
-						
-						[returnHTML appendString:tempHTML];
-					}
-				}
-				
-				[returnHTML appendString:templateStringEnd];
-			}
-			else [returnHTML appendString:templateStringEnd];*/
+			// Share
 			
 			NSMutableArray* shareDestinations = [NSMutableArray array];
 			if (!user || user.shareStudyWithUser.boolValue) {
+				NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+				req.entity = [self.portal.database entityForName:@"User"];
+				req.predicate = [NSPredicate predicateWithValue:YES];
+				NSArray* users = [[self.portal.database.managedObjectContext executeFetchRequest:req error:NULL] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]];
 				
+				for (WebPortalUser* u in users)
+					if (u != self.user)
+						[shareDestinations addObject:[WebPortalProxy createWithObject:u transformer:[WebPortalUserTransformer create]]];
 			}
 			[response.tokens setObject:shareDestinations forKey:@"ShareDestinations"];
-			
-			
-			/*if (shareSend)
-			{
-				tempArray = [returnHTML componentsSeparatedByString:@"%userListItem%"];
-				templateStringStart = [tempArray objectAtIndex:0];
-				
-				tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/userListItem%"];
-				NSString *userListItemString = [tempArray objectAtIndex:0];
-				
-				templateStringEnd = [tempArray lastObject];
-				
-				returnHTML = [NSMutableString stringWithString: templateStringStart];
-				
-				@try
-				{
-					NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-					req.entity = [self.portal.database entityForName:@"User"];
-					req.predicate = [NSPredicate predicateWithValue:YES];
-					NSArray* users = [[self.portal.database.managedObjectContext countForFetchRequest:req error:NULL] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]];
-					
-					for ( NSManagedObject *user in users)
-					{
-						if (user != self.user)
-						{
-							NSMutableString *tempHTML = [NSMutableString stringWithString: userListItemString];
-							
-							[tempHTML replaceOccurrencesOfString:@"%username%" withString:N2NonNullString([user valueForKey: @"name"])];
-							[tempHTML replaceOccurrencesOfString:@"%email%" withString:N2NonNullString([user valueForKey: @"email"])];
-							
-							NSString *userDescription = [NSString stringWithString:N2NonNullString([user valueForKey:@"name"])];
-							if (![[settings valueForKey:@"iPhone"] boolValue])
-								userDescription = [userDescription stringByAppendingFormat:@" (%@)", N2NonNullString([user valueForKey:@"email"])];
-							
-							[tempHTML replaceOccurrencesOfString:@"%userDescription%" withString:N2NonNullString(userDescription)];
-							
-							[returnHTML appendString: tempHTML];
-						}
-					}
-				}
-				@catch (NSException *e)
-				{
-					NSLog( @"****** exception in find all users htmlStudy: %@", e);
-				}
-				
-				[returnHTML appendString: templateStringEnd];
-			}*/
+
 		} @catch (NSException* e) {
 			NSLog(@"Error: [WebPortalResponse processStudyHtml:] %@", e);
 		} @finally {
 			[self.portal.dicomDatabase.managedObjectContext unlock];
 		}
-		
 	}
 		
-		
-		
-		
-			
-	
-	
-	
-	
-	
-	
 	response.templateString = [self.portal stringForPath:@"study.html"];
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 -(void)processStudyListHtml {
 	NSString* title = NULL;
@@ -983,70 +692,12 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	response.templateString = [self.portal stringForPath:@"studyList.html"];
 }
 
-
-
-
-
-
 -(void)processSeriesHtml {
-	/*DicomSeries* series = [self series_seriesForUser:self.user];
-	
-	NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
-	
-	NSMutableString *templateString = [self webServicesHTMLMutableString:@"series.html"];			
-	[templateString replaceOccurrencesOfString:@"%StudyID%" withString:N2NonNullString([parameters objectForKey:@"studyID"])];
-	[templateString replaceOccurrencesOfString:@"%SeriesID%" withString:N2NonNullString([parameters objectForKey:@"id"])];
-	
-	NSString *browse =  N2NonNullString([parameters objectForKey:@"browse"]);
-	NSString *browseParameter =  N2NonNullString([parameters objectForKey:@"browseParameter"]);
-	NSString *search =  N2NonNullString([parameters objectForKey:@"search"]);
-	NSString *album = N2NonNullString([parameters objectForKey:@"album"]);
-	
-	[templateString replaceOccurrencesOfString:@"%browse%" withString:N2NonNullString(browse)];
-	[templateString replaceOccurrencesOfString:@"%browseParameter%" withString:N2NonNullString(browseParameter)];
-	[templateString replaceOccurrencesOfString:@"%search%" withString:search];
-	[templateString replaceOccurrencesOfString:@"%album%" withString:album];
-	
-	// This is probably wrong... video/quictime, see Series.html
-	// [templateString replaceOccurrencesOfString:@"%VideoType%" withString: isiPhone? @"video/x-m4v":@"video/x-mov"];
-	[templateString replaceOccurrencesOfString:@"%MovieExtension%" withString: isIOS? @"m4v":@"mov"];
-	
-	[WebPortalResponse mutableString:templateString block:@"image" setVisible: [imagesArray count] == 1];
-	[WebPortalResponse mutableString:templateString block:@"movie" setVisible: [imagesArray count] != 1];
-	if ([imagesArray count] == 1)
-	{
-		[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@""];
-		[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@""];
-	}
-	else
-	{
-		BOOL flash = NSUserDefaults.webPortalPrefersFlash && !isiPhone;
-		[WebPortalResponse mutableString:templateString block:@"movieqt" setVisible:!flash];
-		[WebPortalResponse mutableString:templateString block:@"moviefla" setVisible:flash];
-		
-		int width, height;
-		
-		[self getWidth: &width height:&height fromImagesArray: imagesArray isiPhone: isiPhone];
-		
-		height += 15; // quicktime controller height
-		
-		//NSLog(@"NEW w: %d, h: %d", width, height);
-		[templateString replaceOccurrencesOfString:@"%width%" withString: [NSString stringWithFormat:@"%d", width]];
-		[templateString replaceOccurrencesOfString:@"%height%" withString: [NSString stringWithFormat:@"%d", height]];
-		
-		// We will generate the movie now, if required... to avoid Quicktime plugin problem waiting for it. REMOVED
-		//	[self produceMovieForSeries: [series lastObject] isiPhone: isiPhone fileURL:fileURL lockReleased: &lockReleased];
-	}
-	
-	NSString *seriesName = N2NonNullString([[series lastObject] valueForKey:@"name"]);
-	[templateString replaceOccurrencesOfString:@"%PageTitle%" withString:[NSString stringWithFormat:NSLocalizedString(@"%@", @"Web portal, series, title format (%@ is series name)"), seriesName]];
-	
-	NSString *studyName = N2NonNullString([[series lastObject] valueForKeyPath:@"study.name"]);
-	[templateString replaceOccurrencesOfString:@"%LinkToStudyLevel%" withString:N2NonNullString(studyName)];
-	
-	data = [templateString dataUsingEncoding:NSUTF8StringEncoding];
-	err = NO;
-	*/
+	DicomSeries* series = [self series_requestedSeries];
+	[response.tokens setObject:[WebPortalProxy createWithObject:series transformer:[DicomSeriesTransformer create]] forKey:@"Series"];
+	[response.tokens setObject:series.name forKey:@"PageTitle"];
+	[response.tokens setObject:series.study.name forKey:@"BackLinkLabel"];
+	response.templateString = [self.portal stringForPath:@"series.html"];
 }
 
 
@@ -1429,8 +1080,8 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 }
 
 -(void)processSeriesJson {
-	/*DicomSeries* series = [self series_seriesForUser:self.user];
-	
+	/*DicomSeries* series = [self series_requestedSeries];
+
 	NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 	
 	
@@ -2076,7 +1727,6 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 
 #define ThumbnailsCacheSize 20
 
-
 -(NSMutableDictionary*)thumbnailsCache {
 	const NSString* const ThumbsCacheKey = @"Thumbnails Cache";
 	NSMutableDictionary* dict = [self.portal.cache objectForKey:ThumbsCacheKey];
@@ -2306,161 +1956,109 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	*/
 }
 
--(void)processImage {/*
+-(void)processImage {
+	DicomSeries* series = [self series_requestedSeries];
+	if (!series)
+		return;
 	
+	NSArray* images = [series.images allObjects];
+	DicomImage* dicomImage = images.count == 1 ? [images lastObject] : [images objectAtIndex:images.count/2];
+	
+	DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:dicomImage.completePathResolved :0 :1 :nil :dicomImage.numberOfFrames.intValue/2 :dicomImage.series.id.intValue isBonjour:NO imageObj:dicomImage] autorelease];
+	
+	/*if (!dcmPix)
 	{
-		NSPredicate *browsePredicate;
-		if ([[parameters allKeys] containsObject:@"id"])
-		{
-			if ([[parameters allKeys] containsObject:@"studyID"])
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"studyID"], [parameters objectForKey:@"id"]];
-			else
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [parameters objectForKey:@"id"]];
-		}
-		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
+		NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
+		float *imPtr = (float*)malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof(float));
+		for (int i = 0; i < dicomImage.width.intValue*dicomImage.height.intValue; i++)
+			imPtr[i] = i;
 		
-		NSArray *series = [self seriesForPredicate:browsePredicate];
-		if ([series count] == 1)
-		{
-			NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
-			DicomImage *im;
-			if ([dicomImageArray count] == 1)
-				im = [dicomImageArray lastObject];
-			else
-				im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
-			
-			DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:[im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im] autorelease];
-			
-			if (dcmPix == nil)
-			{
-				NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
-				float *imPtr = (float*)malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof(float));
-				for ( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
-					imPtr[ i] = i;
-				
-				dcmPix = [[[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0] autorelease];
-			}
-			
-			if (dcmPix)
-			{
-				float curWW = 0;
-				float curWL = 0;
-				
-				if ([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
-				{
-					curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-					curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
-				}
-				
-				if (curWW != 0)
-					[dcmPix checkImageAvailble:curWW :curWL];
-				else
-					[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
-				
-				NSImage *image = [dcmPix image];
-				
-				float width = [image size].width;
-				float height = [image size].height;
-				
-				int maxWidth = maxResolution, maxHeight = maxResolution;
-				int minWidth = minResolution, minHeight = minResolution;
-				
-				BOOL resize = NO;
-				
-				if (width>maxWidth)
-				{
-					height =  height * maxWidth / width;
-					width = maxWidth;
-					resize = YES;
-				}
-				if (height>maxHeight)
-				{
-					width = width * maxHeight / height;
-					height = maxHeight;
-					resize = YES;
-				}
-				
-				if (width < minWidth)
-				{
-					height = (float)height * (float)minWidth / (float)width;
-					width = minWidth;
-					resize = YES;
-				}
-				
-				if (height < minHeight)
-				{
-					width = (float)width * (float)minHeight / (float)height;
-					height = minHeight;
-					resize = YES;
-				}
-				
-				NSImage *newImage;
-				
-				if (resize)
-					newImage = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];
-				else
-					newImage = image;
-				
-				if ([[parameters allKeys] containsObject:@"previewForMovie"])
-				{
-					[newImage lockFocus];
-					
-					NSImage *r = [NSImage imageNamed: @"PlayTemplate.png"];
-					
-					[r drawInRect: [self centerRect: NSMakeRect( 0,  0, [r size].width, [r size].height) inRect: NSMakeRect( 0,  0, [newImage size].width, [newImage size].height)] fromRect: NSMakeRect( 0,  0, [r size].width, [r size].height)  operation: NSCompositeSourceOver fraction: 1.0];
-					
-					[newImage unlockFocus];
-				}
-				
-				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [newImage TIFFRepresentation]];
-				
-				if ([[fileURL pathExtension] isEqualToString: @"png"])
-				{
-					NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
-					data = [imageRep representationUsingType:NSPNGFileType properties: imageProps];
-				}
-				else if ([[fileURL pathExtension] isEqualToString: @"jpg"])
-				{
-					NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
-					data = [imageRep representationUsingType: NSJPEGFileType properties: imageProps];
-				}
-				else NSLog( @"***** unknown path extension: %@", [fileURL pathExtension]);
-			}
-		}
-		
-		err = NO;
+		dcmPix = [[[DCMPix alloc] initWithData: imPtr :32 :[[dicomImage valueForKey: @"width"] intValue] :[[dicomImage valueForKey: @"height"] intValue] :0 :0 :0 :0 :0] autorelease];
 	}*/
 	
+	if (!dcmPix)
+		return;
+	
+	float curWW = 0;
+	float curWL = 0;
+	
+	if (dicomImage.series.windowWidth) {
+		curWW = dicomImage.series.windowWidth.floatValue;
+		curWL = dicomImage.series.windowLevel.floatValue;
+	}
+	
+	if (curWW != 0)
+		[dcmPix checkImageAvailble:curWW :curWL];
+	else [dcmPix checkImageAvailble:dcmPix.savedWW :dcmPix.savedWL];
+	
+	NSImage* image = [dcmPix image];
+	
+	float width = image.size.width;
+	float height = image.size.height;
+	
+/*	int maxWidth = maxResolution, maxHeight = maxResolution;
+	int minWidth = minResolution, minHeight = minResolution;
+	
+	BOOL resize = NO;
+	
+	if (width>maxWidth) {
+		height =  height * maxWidth / width;
+		width = maxWidth;
+		resize = YES;
+	}
+	
+	if (height>maxHeight) {
+		width = width * maxHeight / height;
+		height = maxHeight;
+		resize = YES;
+	}
+	
+	if (width < minWidth) {
+		height = height * (float)minWidth / width;
+		width = minWidth;
+		resize = YES;
+	}
+	
+	if (height < minHeight) {
+		width = width * (float)minHeight / height;
+		height = minHeight;
+		resize = YES;
+	}
+	
+	if (resize)
+		image = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];*/
+	
+	if ([parameters objectForKey:@"previewForMovie"]) {
+		[image lockFocus];
+		
+		NSImage* r = [NSImage imageNamed:@"PlayTemplate.png"];
+		[r drawInRect:NSRectCenteredInRect(NSMakeRect(0,0,r.size.width,r.size.height), NSMakeRect(0,0,image.size.width,image.size.height)) fromRect:NSMakeRect(0,0,r.size.width,r.size.height) operation:NSCompositeSourceOver fraction:1.0];
+		
+		[image unlockFocus];
+	}
+	
+	NSBitmapImageRep* imageRep = [NSBitmapImageRep imageRepWithData:image.TIFFRepresentation];
+	
+	NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
+	if ([requestedPath.pathExtension isEqualToString:@"png"]){
+		response.data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
+		response.mimeType = @"image/png";
+		
+	} else if ([requestedPath.pathExtension isEqualToString:@"jpg"]) {
+		response.data = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
+		response.mimeType = @"image/jpeg";
+	} // else NSLog( @"***** unknown path extension: %@", [fileURL pathExtension]);
 }
 
--(void)processMovie {/*
+-(void)processMovie {
+	DicomSeries* series = [self series_requestedSeries];
+	if (!series)
+		return;
 	
-	{
-		NSPredicate *browsePredicate;
-		if ([[parameters allKeys] containsObject:@"id"])
-		{
-			if ([[parameters allKeys] containsObject:@"studyID"])
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"studyID"], [parameters objectForKey:@"id"]];
-			else
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [parameters objectForKey:@"id"]];
-		}
-		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
-		
-		NSArray *series = [self seriesForPredicate:browsePredicate];
-		
-		if ([series count] == 1)
-		{
-			data = [self produceMovieForSeries: [series lastObject] isiPhone: isIOS fileURL: fileURL lockReleased: &lockReleased];
-		}
-		
-		if (data == nil || [data length] == 0)
-			NSLog( @"****** movie data == nil");
-		
-		err = NO;
-	}
-	*/
+	response.data = [self produceMovieForSeries:series isiPhone:self.requestIsIOS fileURL:requestedPath];
+	
+	//if (data == nil || [data length] == 0)
+	//	NSLog( @"****** movie data == nil");
 }
 
 

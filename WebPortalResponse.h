@@ -91,6 +91,11 @@
 @end
 
 
+@interface SetTransformer : WebPortalProxyObjectTransformer
++(id)create;
+@end
+
+
 @interface DateTransformer : WebPortalProxyObjectTransformer
 +(id)create;
 @end
@@ -101,7 +106,9 @@
 @end
 
 
-@interface DicomSeriesTransformer : WebPortalProxyObjectTransformer
+@interface DicomSeriesTransformer : WebPortalProxyObjectTransformer {
+	NSSize size;
+}
 +(id)create;
 @end
 

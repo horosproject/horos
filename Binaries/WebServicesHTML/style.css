@@ -96,6 +96,10 @@ table {
 	vertical-align: top;
 }
 
+.center {
+	text-align: center;
+}
+
 .middle {
 	vertical-align: middle;
 }
@@ -142,6 +146,10 @@ form {
 
 .form {
 	font-size: 10pt;
+}
+
+.form textarea {
+	vertical-align: 0%;
 }
 
 .basic textarea, .basic input[type=text], .basic input[type=password], .basic select[multiple=multiple] {
@@ -237,6 +245,12 @@ a.back:before {
 
 .li1 {
 	background-color: #ffffff;
+}
+
+.loading {
+	background-image:url(/images/loading.png);
+	background-repeat: no-repeat;
+	background-position: center center;
 }
 
 /* Auth */
@@ -589,15 +603,6 @@ a.report
 	background:url(images/mail-attachment24.png) no-repeat left center;
 	padding-left:24px;
 	padding-top:2px;
-}
-
-#image, #movie
-{
-	margin-top:20px;
-	text-align:center;
-	background-image:url(/images/loading.png);
-	background-repeat: no-repeat;
-	background-position: center center;
 }
 
 /* Study Sharing 

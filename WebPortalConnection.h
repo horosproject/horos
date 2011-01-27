@@ -24,6 +24,7 @@
 	WebPortalUser* user;
 	WebPortalSession* session;
 	
+	NSString* requestedPath;
 	NSString* GETParams;
 	NSDictionary* parameters; // GET and POST params
 	

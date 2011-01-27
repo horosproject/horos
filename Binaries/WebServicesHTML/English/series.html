@@ -1,51 +1,39 @@
-%INCLUDE:head.pvt.html%
-<body>
-	%INCLUDE:userbox.pvt.html%
-	<div id="pageContent">
-		<h1 id="pageTitle">%PageTitle%</h1>
+%INCLUDE:header.pvt.html%
+<div id="subheader">
+	<a class="back" href="study?id=%U:Series.study.studyInstanceUID%&%Info.getParameters(id=,studyID=)%">%BackLinkLabel%</a>
+</div>
 
-		<div id="toolbar">
-		 	<a id="backButton" class="button" href="/study?id=%StudyID%&browse=%browse%&browseParameter=%browseParameter%&search=%search%&album=%album%">%LinkToStudyLevel%</a>
-		</div>
-		
-		%image%
-		<div id="image">
-			<img src="/image.jpg?id=%SeriesID%&studyID=%StudyID%" />
-		</div>
-		%/image%
-		
-		%movie%
-		<div id="movie">
-		%movieqt%
-		<OBJECT CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="%width%" HEIGHT="%height%" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">
-		<PARAM name="SRC" VALUE="/image.jpg?id=%SeriesID%&studyID=%StudyID%&previewForMovie=true">
-		<param name="HREF" value="/movie.mov?id=%SeriesID%&studyID=%StudyID%">
-		<param name="TYPE" value="video/quicktime">
-		<embed src="/image.jpg?id=%SeriesID%&studyID=%StudyID%&previewForMovie=true" type="video/quicktime" href="/movie.mov?id=%SeriesID%&studyID=%StudyID%" width="%width%" height="%height%" target="myself">
-		</embed>
-		</OBJECT>
-		<br>
-		<span class="small">Viewing this movie requires <a href="http://www.apple.com/quicktime">Apple Quicktime</a></span>
-		<br>
-		%/movieqt%
-		%moviefla%
-		<object width="%width%" height="%height%" id="idFlash" name="Flash">
-		<param name="movie" value="/movie.swf?id=%SeriesID%&studyID=%StudyID%" />
-		<param name="allowscriptaccess" value="always" />
-		<param name="wmode" value="transparent" />
-		<embed src="/movie.swf?id=%SeriesID%&studyID=%StudyID%" width="%width%" height="%height%" wmode="transparent" allowScriptAccess="always" />
-		</object>
-		%/moviefla%
-		</div>
-		%/movie%
-		
-		<!--
-		Please keep this for testing purposes...
-		<div style="margin-top:20px;">
-		<a href="/movie.%MovieExtension%?id=%SeriesID%&studyID=%StudyID%"><img class="image" src="/image.jpg?id=%SeriesID%&studyID=%StudyID%&previewForMovie=true" /></a>
-		</div>
-		-->
-		%INCLUDE:footer.pvt.html%
+<div id="content">
+	<div class="loading center">
+	%[IF:Series.images.count<2%
+		<img src="/image.jpg?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" style="max-width:100%" />
+	%ELSE:Series.images.count<2%
+		%[IF:Info.proposeFlash%
+			<object width="%X:Series.width%" height="%X:Series.height%" id="idFlash" name="Flash">
+				<param name="movie" value="/movie.swf?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" />
+				<param name="allowscriptaccess" value="always" />
+				<param name="wmode" value="transparent" />
+				<embed src="/movie.swf?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" width="%X:Series.width%" height="%X:Series.height%" wmode="transparent" allowScriptAccess="always" />
+			</object>
+			<div class="smaller">Viewing this series requires <a href="http://get.adobe.com/flashplayer/">Adobe Flash Player</a></div>
+		%ELSE:Info.proposeFlash%
+			<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="%X:Series.width%" height="%X:Series.height%" codebase="http://www.apple.com/qtactivex/qtplugin.cab">
+				<param name="src" value="/image.jpg?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%&previewForMovie=true" />
+				<param name="href" value="/movie.mov?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" />
+				<param name="type" value="video/quicktime" />
+				<embed src="/image.jpg?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%&previewForMovie=true" type="video/quicktime" href="/movie.mov?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" width="%X:Series.width%" height="%X:Series.height%" target="myself" />
+			</object>
+			<div class="smaller">Viewing this series requires <a href="http://www.apple.com/quicktime/">Apple Quicktime</a></div>
+		%]IF:Info.proposeFlash%
+	%]IF:Series.images.count<2%
 	</div>
-  </body>
-</html>
+	
+	<!--
+	Please keep this for testing purposes...
+	<div style="margin-top:20px;">
+	<a href="/movie.%MovieExtension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%"><img class="image" src="/image.jpg?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%&previewForMovie=true" /></a>
+	</div>
+	-->
+</div>
+
+%INCLUDE:footer.pvt.html%
