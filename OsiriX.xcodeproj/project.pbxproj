@@ -420,8 +420,6 @@
 		8417221410D8DB72001A833F /* TCPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417221210D8DB72001A833F /* TCPServer.m */; };
 		8417221910D8DB93001A833F /* basicHTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8417221710D8DB93001A833F /* basicHTTPServer.h */; };
 		8417221A10D8DB93001A833F /* basicHTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417221810D8DB93001A833F /* basicHTTPServer.m */; };
-		8417225410D8F01C001A833F /* ThreadPoolServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8417225010D8F01C001A833F /* ThreadPoolServer.h */; };
-		8417225510D8F01C001A833F /* ThreadPoolServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417225110D8F01C001A833F /* ThreadPoolServer.m */; };
 		841722B010D90595001A833F /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 841722AE10D90595001A833F /* DDKeychain.h */; };
 		841722B110D90595001A833F /* DDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 841722AF10D90595001A833F /* DDKeychain.m */; };
 		843F847B12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
@@ -19560,7 +19558,6 @@
 				841721FC10D8D8A0001A833F /* HTTPServer.h in Headers */,
 				8417221310D8DB72001A833F /* TCPServer.h in Headers */,
 				8417221910D8DB93001A833F /* basicHTTPServer.h in Headers */,
-				8417225410D8F01C001A833F /* ThreadPoolServer.h in Headers */,
 				841722B010D90595001A833F /* DDKeychain.h in Headers */,
 				AB91224E10DA7199006E0AAB /* BonjourPublisher.h in Headers */,
 				A9FE55F410DB7DCF000D0395 /* OpenGLScreenReader.h in Headers */,
@@ -24240,7 +24237,6 @@
 				841721CB10D8D745001A833F /* SSCrypto.m in Sources */,
 				8417221410D8DB72001A833F /* TCPServer.m in Sources */,
 				8417221A10D8DB93001A833F /* basicHTTPServer.m in Sources */,
-				8417225510D8F01C001A833F /* ThreadPoolServer.m in Sources */,
 				841722B110D90595001A833F /* DDKeychain.m in Sources */,
 				A930149510DA63C200AF0051 /* OpenGLScreenReader.m in Sources */,
 				CEDDD88010DCC93500FFE72B /* PSGenerator.m in Sources */,

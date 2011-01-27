@@ -13,8 +13,7 @@
  =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import "ThreadPoolServer.h"
-
+#import "HTTPServer.h"
 
 @class WebPortalDatabase, WebPortalSession, WebPortalServer, DicomDatabase;
 
@@ -40,6 +39,7 @@
 	BOOL flashEnabled;
 	NSMutableDictionary* cache;
 	NSMutableDictionary* locks;
+	NSMutableArray *runLoops, *runLoopsLoad;
 }
 
 // called from AppController
@@ -87,7 +87,7 @@
 @end
 
 
-@interface WebPortalServer : ThreadPoolServer {
+@interface WebPortalServer : HTTPServer {
 	WebPortal* portal;
 }
 

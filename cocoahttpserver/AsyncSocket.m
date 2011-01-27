@@ -28,14 +28,19 @@
 #define READALL_CHUNKSIZE	256         // Incremental increase in buffer size
 #define WRITE_CHUNKSIZE    (1024 * 4)   // Limit on size of each write pass
 
+// AsyncSocket is RunLoop based, and is thus not thread-safe.
+// You must always access your AsyncSocket instance from the thread/runloop in which the instance is running.
+// You can use methods such as performSelectorOnThread to accomplish this.
+// Failure to comply with these thread-safety rules may result in errors.
+// You can enable this option to help diagnose where you are incorrectly accessing your socket.
+#define DEBUG_THREAD_SAFETY 1
+// 
+// If you constantly need to access your socket from multiple threads
+// then you may consider using GCDAsyncSocket instead, which is thread-safe.
+
 NSString *const AsyncSocketException = @"AsyncSocketException";
 NSString *const AsyncSocketErrorDomain = @"AsyncSocketErrorDomain";
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-// Mutex lock used by all instances of AsyncSocket, to protect getaddrinfo.
-// Prior to Mac OS X 10.5 this method was not thread-safe.
-static NSString *getaddrinfoLock = @"lock";
-#endif
 
 enum AsyncSocketFlags
 {
@@ -60,6 +65,7 @@ enum AsyncSocketFlags
 // Connecting
 - (void)startConnectTimeout:(NSTimeInterval)timeout;
 - (void)endConnectTimeout;
+- (void)doConnectTimeout:(NSTimer *)timer;
 
 // Socket Implementation
 - (CFSocketRef)newAcceptSocketForAddress:(NSData *)addr error:(NSError **)errPtr;
@@ -724,7 +730,7 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 		theContext.copyDescription = nil;
 		
 		// Default run loop modes
-		theRunLoopModes = [[NSArray arrayWithObject: @"privateHTTPWebServerRunMode"] retain];
+		theRunLoopModes = [[NSArray arrayWithObject: NSDefaultRunLoopMode] retain];
 	}
 	return self;
 }
@@ -742,36 +748,88 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Thread-Safety
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (void)checkForThreadSafety
+{
+	if (theRunLoop && (theRunLoop != CFRunLoopGetCurrent()))
+	{
+		// AsyncSocket is RunLoop based.
+		// It is designed to be run and accessed from a particular thread/runloop.
+		// As such, it is faster as it does not have the overhead of locks/synchronization.
+		// 
+		// However, this places a minimal requirement on the developer to maintain thread-safety.
+		// If you are seeing errors or crashes in AsyncSocket,
+		// it is very likely that thread-safety has been broken.
+		// This method may be enabled via the DEBUG_THREAD_SAFETY macro,
+		// and will allow you to discover the place in your code where thread-safety is being broken.
+		
+		[NSException raise:AsyncSocketException
+		            format:@"Attempting to access AsyncSocket instance from incorrect thread."];
+		
+		// Note:
+		// 
+		// If you find you constantly need to access your socket from various threads,
+		// you may prefer to use GCDAsyncSocket which is thread-safe.
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Accessors
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (long)userData
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	return theUserData;
 }
 
 - (void)setUserData:(long)userData
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	theUserData = userData;
 }
 
 - (id)delegate
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	return theDelegate;
 }
 
 - (void)setDelegate:(id)delegate
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	theDelegate = delegate;
 }
 
 - (BOOL)canSafelySetDelegate
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	return ([theReadQueue count] == 0 && [theWriteQueue count] == 0 && theCurrentRead == nil && theCurrentWrite == nil);
 }
 
 - (CFSocketRef)getCFSocket
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	if(theSocket4)
 		return theSocket4;
 	else
@@ -780,11 +838,19 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 
 - (CFReadStreamRef)getCFReadStream
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	return theReadStream;
 }
 
 - (CFWriteStreamRef)getCFWriteStream
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	return theWriteStream;
 }
 
@@ -794,6 +860,10 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 
 - (float)progressOfReadReturningTag:(long *)tag bytesDone:(NSUInteger *)done total:(NSUInteger *)total
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	// Check to make sure we're actually reading something right now,
 	// and that the read packet isn't an AsyncSpecialPacket (upgrade to TLS).
 	if (!theCurrentRead || ![theCurrentRead isKindOfClass:[AsyncReadPacket class]])
@@ -824,6 +894,10 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 
 - (float)progressOfWriteReturningTag:(long *)tag bytesDone:(NSUInteger *)done total:(NSUInteger *)total
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	// Check to make sure we're actually writing something right now,
 	// and that the write packet isn't an AsyncSpecialPacket (upgrade to TLS).
 	if (!theCurrentWrite || ![theCurrentWrite isKindOfClass:[AsyncWritePacket class]])
@@ -851,21 +925,17 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 
 - (void)runLoopAddSource:(CFRunLoopSourceRef)source
 {
-	NSUInteger i, count = [theRunLoopModes count];
-	for(i = 0; i < count; i++)
+	for (NSString *runLoopMode in theRunLoopModes)
 	{
-		CFStringRef runLoopMode = (CFStringRef)[theRunLoopModes objectAtIndex:i];
-		CFRunLoopAddSource(theRunLoop, source, runLoopMode);
+		CFRunLoopAddSource(theRunLoop, source, (CFStringRef)runLoopMode);
 	}
 }
 
 - (void)runLoopRemoveSource:(CFRunLoopSourceRef)source
 {
-	NSUInteger i, count = [theRunLoopModes count];
-	for(i = 0; i < count; i++)
+	for (NSString *runLoopMode in theRunLoopModes)
 	{
-		CFStringRef runLoopMode = (CFStringRef)[theRunLoopModes objectAtIndex:i];
-		CFRunLoopRemoveSource(theRunLoop, source, runLoopMode);
+		CFRunLoopRemoveSource(theRunLoop, source, (CFStringRef)runLoopMode);
 	}
 }
 
@@ -881,21 +951,17 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 
 - (void)runLoopAddTimer:(NSTimer *)timer
 {
-	NSUInteger i, count = [theRunLoopModes count];
-	for(i = 0; i < count; i++)
+	for (NSString *runLoopMode in theRunLoopModes)
 	{
-		CFStringRef runLoopMode = (CFStringRef)[theRunLoopModes objectAtIndex:i];
-		CFRunLoopAddTimer(theRunLoop, (CFRunLoopTimerRef)timer, runLoopMode);
+		CFRunLoopAddTimer(theRunLoop, (CFRunLoopTimerRef)timer, (CFStringRef)runLoopMode);
 	}
 }
 
 - (void)runLoopRemoveTimer:(NSTimer *)timer
 {
-	NSUInteger i, count = [theRunLoopModes count];
-	for(i = 0; i < count; i++)		
+	for (NSString *runLoopMode in theRunLoopModes)		
 	{
-		CFStringRef runLoopMode = (CFStringRef)[theRunLoopModes objectAtIndex:i];
-		CFRunLoopRemoveTimer(theRunLoop, (CFRunLoopTimerRef)timer, runLoopMode);
+		CFRunLoopRemoveTimer(theRunLoop, (CFRunLoopTimerRef)timer, (CFStringRef)runLoopMode);
 	}
 }
 
@@ -911,22 +977,18 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 
 - (void)runLoopUnscheduleReadStream
 {
-	NSUInteger i, count = [theRunLoopModes count];
-	for(i = 0; i < count; i++)
+	for (NSString *runLoopMode in theRunLoopModes)
 	{
-		CFStringRef runLoopMode = (CFStringRef)[theRunLoopModes objectAtIndex:i];
-		CFReadStreamUnscheduleFromRunLoop(theReadStream, theRunLoop, runLoopMode);
+		CFReadStreamUnscheduleFromRunLoop(theReadStream, theRunLoop, (CFStringRef)runLoopMode);
 	}
 	CFReadStreamSetClient(theReadStream, kCFStreamEventNone, NULL, NULL);
 }
 
 - (void)runLoopUnscheduleWriteStream
 {
-	NSUInteger i, count = [theRunLoopModes count];
-	for(i = 0; i < count; i++)
+	for (NSString *runLoopMode in theRunLoopModes)
 	{
-		CFStringRef runLoopMode = (CFStringRef)[theRunLoopModes objectAtIndex:i];
-		CFWriteStreamUnscheduleFromRunLoop(theWriteStream, theRunLoop, runLoopMode);
+		CFWriteStreamUnscheduleFromRunLoop(theWriteStream, theRunLoop, (CFStringRef)runLoopMode);
 	}
 	CFWriteStreamSetClient(theWriteStream, kCFStreamEventNone, NULL, NULL);
 }
@@ -941,6 +1003,10 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 **/
 - (void)enablePreBuffering
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	theFlags |= kEnablePreBuffering;
 }
 
@@ -1170,6 +1236,10 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 
 - (NSArray *)runLoopModes
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	return [[theRunLoopModes retain] autorelease];
 }
 
@@ -1195,11 +1265,14 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 		            format:@"Attempting to accept without a delegate. Set a delegate first."];
     }
 	
-	if (theSocket4 != NULL || theSocket6 != NULL)
+	if (![self isDisconnected])
     {
 		[NSException raise:AsyncSocketException
 		            format:@"Attempting to accept while connected or accepting connections. Disconnect first."];
     }
+	
+	// Clear queues (spurious read/write requests post disconnect)
+	[self emptyQueues];
 
 	// Set up the listen sockaddr structs if needed.
 	
@@ -1252,40 +1325,37 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 	{
 		NSString *portStr = [NSString stringWithFormat:@"%hu", port];
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-		@synchronized (getaddrinfoLock)
-#endif
+		struct addrinfo hints, *res, *res0;
+		
+		memset(&hints, 0, sizeof(hints));
+		hints.ai_family   = PF_UNSPEC;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_protocol = IPPROTO_TCP;
+		hints.ai_flags    = AI_PASSIVE;
+		
+		int error = getaddrinfo([interface UTF8String], [portStr UTF8String], &hints, &res0);
+		
+		if (error)
 		{
-			struct addrinfo hints, *res, *res0;
-			
-			memset(&hints, 0, sizeof(hints));
-			hints.ai_family   = PF_UNSPEC;
-			hints.ai_socktype = SOCK_STREAM;
-			hints.ai_protocol = IPPROTO_TCP;
-			hints.ai_flags    = AI_PASSIVE;
-			
-			int error = getaddrinfo([interface UTF8String], [portStr UTF8String], &hints, &res0);
-			
-			if(error)
+			if (errPtr)
 			{
-				if(errPtr)
-				{
-					NSString *errMsg = [NSString stringWithCString:gai_strerror(error) encoding:NSASCIIStringEncoding];
-					NSDictionary *info = [NSDictionary dictionaryWithObject:errMsg forKey:NSLocalizedDescriptionKey];
-					
-					*errPtr = [NSError errorWithDomain:@"kCFStreamErrorDomainNetDB" code:error userInfo:info];
-				}
+				NSString *errMsg = [NSString stringWithCString:gai_strerror(error) encoding:NSASCIIStringEncoding];
+				NSDictionary *info = [NSDictionary dictionaryWithObject:errMsg forKey:NSLocalizedDescriptionKey];
+				
+				*errPtr = [NSError errorWithDomain:@"kCFStreamErrorDomainNetDB" code:error userInfo:info];
 			}
-			
-			for(res = res0; res; res = res->ai_next)
+		}
+		else
+		{
+			for (res = res0; res; res = res->ai_next)
 			{
-				if(!address4 && (res->ai_family == AF_INET))
+				if (!address4 && (res->ai_family == AF_INET))
 				{
 					// Found IPv4 address
 					// Wrap the native address structures for CFSocketSetAddress.
 					address4 = [NSData dataWithBytes:res->ai_addr length:res->ai_addrlen];
 				}
-				else if(!address6 && (res->ai_family == AF_INET6))
+				else if (!address6 && (res->ai_family == AF_INET6))
 				{
 					// Found IPv6 address
 					// Wrap the native address structures for CFSocketSetAddress.
@@ -1398,17 +1468,20 @@ Failed:
 		  withTimeout:(NSTimeInterval)timeout
 				error:(NSError **)errPtr
 {
-	if(theDelegate == NULL)
+	if (theDelegate == NULL)
 	{
 		[NSException raise:AsyncSocketException
 		            format:@"Attempting to connect without a delegate. Set a delegate first."];
 	}
 
-	if(![self isDisconnected])
+	if (![self isDisconnected])
 	{
 		[NSException raise:AsyncSocketException
 		            format:@"Attempting to connect while connected or accepting connections. Disconnect first."];
 	}
+	
+	// Clear queues (spurious read/write requests post disconnect)
+	[self emptyQueues];
 	
 	if(![self createStreamsToHost:hostname onPort:port error:errPtr]) goto Failed;
 	if(![self attachStreamsToRunLoop:nil error:errPtr])               goto Failed;
@@ -1470,6 +1543,9 @@ Failed:
 		            format:@"Attempting to connect while connected or accepting connections. Disconnect first."];
 	}
 	
+	// Clear queues (spurious read/write requests post disconnect)
+	[self emptyQueues];
+	
 	if(![self createSocketForAddress:remoteAddr error:errPtr])   goto Failed;
 	if(![self bindSocketToAddress:interfaceAddr error:errPtr])   goto Failed;
 	if(![self attachSocketsToRunLoop:nil error:errPtr])          goto Failed;
@@ -1507,6 +1583,8 @@ Failed:
 
 - (void)doConnectTimeout:(NSTimer *)timer
 {
+	#pragma unused(timer)
+	
 	[self endConnectTimeout];
 	[self closeWithError:[self getConnectTimeoutError]];
 }
@@ -1631,7 +1709,9 @@ Failed:
  * Adds the CFSocket's to the run-loop so that callbacks will work properly.
 **/
 - (BOOL)attachSocketsToRunLoop:(NSRunLoop *)runLoop error:(NSError **)errPtr
-{	
+{
+	#pragma unused(errPtr)
+	
 	// Get the CFRunLoop to which the socket should be attached.
 	theRunLoop = (runLoop == nil) ? CFRunLoopGetCurrent() : [runLoop getCFRunLoop];
 	
@@ -1901,12 +1981,10 @@ Failed:
 	
 	// Add read and write streams to run loop
 	
-	NSUInteger i, count = [theRunLoopModes count];
-	for(i = 0; i < count; i++)
+	for (NSString *runLoopMode in theRunLoopModes)
 	{
-		CFStringRef runLoopMode = (CFStringRef)[theRunLoopModes objectAtIndex:i];
-		CFReadStreamScheduleWithRunLoop(theReadStream, theRunLoop, runLoopMode);
-		CFWriteStreamScheduleWithRunLoop(theWriteStream, theRunLoop, runLoopMode);
+		CFReadStreamScheduleWithRunLoop(theReadStream, theRunLoop, (CFStringRef)runLoopMode);
+		CFWriteStreamScheduleWithRunLoop(theWriteStream, theRunLoop, (CFStringRef)runLoopMode);
 	}
 	
 	return YES;
@@ -1990,8 +2068,6 @@ Failed:
 
 - (BOOL)setSocketFromStreamsAndReturnError:(NSError **)errPtr
 {
-	if( theReadStream == nil) return NO;
-	
 	// Get the CFSocketNativeHandle from theReadStream
 	CFSocketNativeHandle native;
 	CFDataRef nativeProp = CFReadStreamCopyProperty(theReadStream, kCFStreamPropertySocketNativeHandle);
@@ -2213,6 +2289,10 @@ Failed:
 **/
 - (void)disconnect
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	[self close];
 }
 
@@ -2221,6 +2301,10 @@ Failed:
 **/
 - (void)disconnectAfterReading
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	theFlags |= (kForbidReadsWrites | kDisconnectAfterReads);
 	
 	[self maybeScheduleDisconnect];
@@ -2231,6 +2315,10 @@ Failed:
 **/
 - (void)disconnectAfterWriting
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	theFlags |= (kForbidReadsWrites | kDisconnectAfterWrites);
 	
 	[self maybeScheduleDisconnect];
@@ -2241,6 +2329,10 @@ Failed:
 **/
 - (void)disconnectAfterReadingAndWriting
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	theFlags |= (kForbidReadsWrites | kDisconnectAfterReads | kDisconnectAfterWrites);
 	
 	[self maybeScheduleDisconnect];
@@ -2292,6 +2384,10 @@ Failed:
 **/
 - (NSData *)unreadData
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	// Ensure this method will only return data in the event of an error
 	if (!(theFlags & kClosingWithError)) return nil;
 	
@@ -2501,6 +2597,10 @@ Failed:
 
 - (BOOL)isDisconnected
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	if (theNativeSocket4 > 0) return NO;
 	if (theNativeSocket6 > 0) return NO;
 	
@@ -2515,11 +2615,19 @@ Failed:
 
 - (BOOL)isConnected
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	return [self areStreamsConnected];
 }
 
 - (NSString *)connectedHost
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	if(theSocket4)
 		return [self connectedHostFromCFSocket4:theSocket4];
 	if(theSocket6)
@@ -2535,6 +2643,10 @@ Failed:
 
 - (UInt16)connectedPort
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	if(theSocket4)
 		return [self connectedPortFromCFSocket4:theSocket4];
 	if(theSocket6)
@@ -2550,6 +2662,10 @@ Failed:
 
 - (NSString *)localHost
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	if(theSocket4)
 		return [self localHostFromCFSocket4:theSocket4];
 	if(theSocket6)
@@ -2565,6 +2681,10 @@ Failed:
 
 - (UInt16)localPort
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	if(theSocket4)
 		return [self localPortFromCFSocket4:theSocket4];
 	if(theSocket6)
@@ -2918,6 +3038,10 @@ Failed:
 
 - (NSData *)connectedAddress
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	// Extract address from CFSocket
 	
     CFSocketRef theSocket;
@@ -2933,13 +3057,7 @@ Failed:
 		
 		if (peeraddr == NULL) return nil;
 		
-	#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-		NSData *result = [NSData dataWithBytes:CFDataGetBytePtr(peeraddr) length:CFDataGetLength(peeraddr)];
-		CFRelease(peeraddr);
-		return result;
-	#else
 		return [(NSData *)NSMakeCollectable(peeraddr) autorelease];
-	#endif
 	}
 	
 	// Extract address from CFSocketNativeHandle
@@ -2975,6 +3093,10 @@ Failed:
 
 - (NSData *)localAddress
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	// Extract address from CFSocket
 	
     CFSocketRef theSocket;
@@ -2990,13 +3112,7 @@ Failed:
 		
 		if (selfaddr == NULL) return nil;
 		
-	#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-		NSData *result = [NSData dataWithBytes:CFDataGetBytePtr(selfaddr) length:CFDataGetLength(selfaddr)];
-		CFRelease(selfaddr);
-		return result;
-	#else
 		return [(NSData *)NSMakeCollectable(selfaddr) autorelease];
-	#endif
 	}
 	
 	// Extract address from CFSocketNativeHandle
@@ -3032,11 +3148,19 @@ Failed:
 
 - (BOOL)isIPv4
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	return (theNativeSocket4 > 0 || theSocket4 != NULL);
 }
 
 - (BOOL)isIPv6
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	return (theNativeSocket6 > 0 || theSocket6 != NULL);
 }
 
@@ -3065,6 +3189,10 @@ Failed:
 
 - (NSString *)description
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	static const char *statstr[] = {"not open","opening","open","reading","writing","at end","closed","has error"};
 	CFStreamStatus rs = (theReadStream != NULL) ? CFReadStreamGetStatus(theReadStream) : 0;
 	CFStreamStatus ws = (theWriteStream != NULL) ? CFWriteStreamGetStatus(theWriteStream) : 0;
@@ -3203,6 +3331,10 @@ Failed:
                   maxLength:(NSUInteger)length
                         tag:(long)tag
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	if (offset > [buffer length]) return;
 	if (theFlags & kForbidReadsWrites) return;
 	
@@ -3230,6 +3362,10 @@ Failed:
             bufferOffset:(NSUInteger)offset
                      tag:(long)tag
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	if (length == 0) return;
 	if (offset > [buffer length]) return;
 	if (theFlags & kForbidReadsWrites) return;
@@ -3273,6 +3409,10 @@ Failed:
              maxLength:(NSUInteger)length
                    tag:(long)tag
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	if (data == nil || [data length] == 0) return;
 	if (offset > [buffer length]) return;
 	if (length > 0 && length < [data length]) return;
@@ -3694,6 +3834,8 @@ Failed:
 
 - (void)doReadTimeout:(NSTimer *)timer
 {
+	#pragma unused(timer)
+	
 	NSTimeInterval timeoutExtension = 0.0;
 	
 	if([theDelegate respondsToSelector:@selector(onSocket:shouldTimeoutReadWithTag:elapsed:bytesDone:)])
@@ -3729,6 +3871,10 @@ Failed:
 
 - (void)writeData:(NSData *)data withTimeout:(NSTimeInterval)timeout tag:(long)tag
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	if (data == nil || [data length] == 0) return;
 	if (theFlags & kForbidReadsWrites) return;
 	
@@ -3926,6 +4072,8 @@ Failed:
 
 - (void)doWriteTimeout:(NSTimer *)timer
 {
+	#pragma unused(timer)
+	
 	NSTimeInterval timeoutExtension = 0.0;
 	
 	if([theDelegate respondsToSelector:@selector(onSocket:shouldTimeoutWriteWithTag:elapsed:bytesDone:)])
@@ -3958,6 +4106,10 @@ Failed:
 
 - (void)startTLS:(NSDictionary *)tlsSettings
 {
+#if DEBUG_THREAD_SAFETY
+	[self checkForThreadSafety];
+#endif
+	
 	if(tlsSettings == nil)
     {
         // Passing nil/NULL to CFReadStreamSetProperty will appear to work the same as passing an empty dictionary,
@@ -4035,6 +4187,8 @@ Failed:
 			   withAddress:(NSData *)address
 				  withData:(const void *)pData
 {
+	#pragma unused(address)
+	
 	NSParameterAssert ((sock == theSocket4) || (sock == theSocket6));
 	
 	switch (type)
@@ -4057,6 +4211,8 @@ Failed:
 
 - (void)doCFReadStreamCallback:(CFStreamEventType)type forStream:(CFReadStreamRef)stream
 {
+	#pragma unused(stream)
+	
 	NSParameterAssert(theReadStream != NULL);
 	
 	CFStreamError err;
@@ -4087,6 +4243,8 @@ Failed:
 
 - (void)doCFWriteStreamCallback:(CFStreamEventType)type forStream:(CFWriteStreamRef)stream
 {
+	#pragma unused(stream)
+	
 	NSParameterAssert(theWriteStream != NULL);
 	
 	CFStreamError err;

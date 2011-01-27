@@ -16,7 +16,6 @@
 #import "WebPortalDatabase.h"
 #import "WebPortalSession.h"
 #import "WebPortalConnection.h"
-#import "ThreadPoolServer.h"
 #import "NSUserDefaults+OsiriX.h"
 #import "NSUserDefaultsController+N2.h"
 #import "AppController.h"
@@ -27,6 +26,7 @@
 
 #import "BrowserController.h" // TODO: REMOVE with badness
 
+#define THREAD_POOL_SIZE 1
 
 @interface WebPortalServer ()
 
@@ -197,6 +197,8 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	self.cache = NULL;
 	self.locks = NULL;
 	
+	[runLoopsLoad release];
+	[runLoops release];
 	[sessionCreateLock release];
 	[sessionsArrayLock release];
 	[sessions release];
@@ -241,17 +243,101 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 			server.port = self.portNumber;
 			server.documentRoot = [NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]];
 			
-			thread = [[[NSThread alloc] initWithTarget:self selector:@selector(connectionsThread:) object:NULL] autorelease];
-			[thread start];
+			
+			// Initialize an array to reference all the threads
+			runLoops = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
+			
+			// Initialize an array to hold the number of connections being processed for each thread
+			runLoopsLoad = [[NSMutableArray alloc] initWithCapacity:THREAD_POOL_SIZE];
+			
+			// Start threads
+			uint i;
+			for(i = 0; i < THREAD_POOL_SIZE; i++)
+			{
+				[NSThread detachNewThreadSelector:@selector(connectionsThread:)
+										 toTarget:self
+									   withObject:[NSNumber numberWithUnsignedInt:i]];
+			}
+			
+//			thread = [[[NSThread alloc] initWithTarget:self selector:@selector(connectionsThread:) object:NULL] autorelease];
+//			[thread start];
 		} @catch (NSException * e) {
 			NSLog(@"Exception: [WebPortal startAcceptingConnections] %@", e);
 		}
 	}
 }
 
+//- (NSRunLoop *)onSocket:(AsyncSocket *)sock wantsRunLoopForNewSocket:(AsyncSocket *)newSocket
+//{
+//	// Figure out what thread/runloop to run the new connection on.
+//	// We choose the thread/runloop with the lowest number of connections.
+//	
+//	uint m = 0;
+//	NSRunLoop *mLoop = nil;
+//	uint mLoad = 0;
+//	
+//	@synchronized(runLoops)
+//	{
+//		mLoop = [runLoops objectAtIndex:0];
+//		mLoad = [[runLoopsLoad objectAtIndex:0] unsignedIntValue];
+//		
+//		uint i;
+//		for(i = 1; i < THREAD_POOL_SIZE; i++)
+//		{
+//			uint iLoad = [[runLoopsLoad objectAtIndex:i] unsignedIntValue];
+//			
+//			if(iLoad < mLoad)
+//			{
+//				m = i;
+//				mLoop = [runLoops objectAtIndex:i];
+//				mLoad = iLoad;
+//			}
+//		}
+//		
+//		[runLoopsLoad replaceObjectAtIndex:m withObject:[NSNumber numberWithUnsignedInt:(mLoad + 1)]];
+//	}
+//	// And finally, return the proper run loop
+//	return mLoop;
+//}
+
+/**
+ * This method is automatically called when a HTTPConnection dies.
+ * We need to update the number of connections per thread.
+ **/
+//- (void)connectionDidDie:(NSNotification *)notification
+//{
+//	// Note: This method is called on the thread/runloop that posted the notification
+//	
+//	@synchronized(runLoops)
+//	{
+//		unsigned int runLoopIndex = [runLoops indexOfObject:[NSRunLoop currentRunLoop]];
+//		
+//		if(runLoopIndex < [runLoops count])
+//		{
+//			unsigned int runLoopLoad = [[runLoopsLoad objectAtIndex:runLoopIndex] unsignedIntValue];
+//			
+//			NSNumber *newLoad = [NSNumber numberWithUnsignedInt:(runLoopLoad - 1)];
+//			
+//			[runLoopsLoad replaceObjectAtIndex:runLoopIndex withObject:newLoad];
+//			
+//			//			NSLog(@"Updating run loop %u with load %@", runLoopIndex, newLoad);
+//		}
+//	}
+//	
+//	// Don't forget to call super, or the connection won't get proper deallocated!
+//	[super connectionDidDie:notification];
+//}
+
 -(void)connectionsThread:(id)obj {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	@try {
+		
+		@synchronized(runLoops)
+		{
+			[runLoops addObject:[NSRunLoop currentRunLoop]];
+			[runLoopsLoad addObject:[NSNumber numberWithUnsignedInt:0]];
+		}
+		
 		NSError* err = NULL;
 		if (![server start:&err]) {
 			NSLog(@"Exception: [WebPortal startAcceptingConnectionsThread:] %@", err);
@@ -260,8 +346,8 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 		}
 		
 		isAcceptingConnections = YES;
-		[NSRunLoop.currentRunLoop addTimer:[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector(ignore:) userInfo:NULL repeats:NO] forMode:@"privateHTTPWebServerRunMode"];
-		while (!NSThread.currentThread.isCancelled && [NSRunLoop.currentRunLoop runMode:@"privateHTTPWebServerRunMode" beforeDate:NSDate.distantFuture]);
+		[NSRunLoop.currentRunLoop addTimer:[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector(ignore:) userInfo:NULL repeats:NO] forMode: NSDefaultRunLoopMode];
+		while (!NSThread.currentThread.isCancelled && [NSRunLoop.currentRunLoop runMode: NSDefaultRunLoopMode beforeDate:NSDate.distantFuture]);
 		
 		NSLog(@"[WebPortal connectionsThread:] finishing");
 	} @catch (NSException* e) {
