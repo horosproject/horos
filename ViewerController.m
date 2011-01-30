@@ -90,6 +90,7 @@
 #import "DicomSeries.h"
 #import "dicomFile.h"
 #import "MPRController.h"
+#import "CPRController.h"
 #import "Notifications.h"
 
 int delayedTileWindows = NO;
@@ -13357,10 +13358,10 @@ int i,j,l;
 
 - (NSLock*) roiLock { return roiLock;}
 
-#ifndef OSIRIX_LIGHT
 //obligatory class for protocol Schedulable.h
 -(void)performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
 {
+	#ifndef OSIRIX_LIGHT
 	NSDictionary	*object;
 	
 	for (object in workUnits)
@@ -13406,8 +13407,10 @@ int i,j,l;
 		if( [[object valueForKey:@"action"] isEqualToString:@"erode"])
 			[[object objectForKey:@"filter"] erode: [object objectForKey:@"roi"] withStructuringElementRadius: [[object objectForKey:@"radius"] intValue]];
 	}
+	#endif
 }
 
+#ifndef OSIRIX_LIGHT
 - (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius sendNotification: (BOOL) sendNotification
 {
 	NSLog( @"****** applyMorphology - START");
@@ -19050,6 +19053,70 @@ int i,j,l;
 		else
 		{
 			viewer = [self openMPRViewer];
+			[self place3DViewerWindow:viewer];
+			[viewer showWindow:self];
+			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
+		}
+	}
+}
+
+/** Action to open the CPRViewer */
+- (CPRController *)openCPRViewer
+{
+	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
+	
+	CPRController *viewer;
+	viewer = [[AppController sharedAppController] FindViewer:@"CPR" :pixList[0]];
+	if (viewer)
+		return viewer;
+	
+	viewer = [[CPRController alloc] initWithDCMPixList:pixList[0] filesList:fileList[0] volumeData:volumeData[0] viewerController:self fusedViewerController:blendingController];
+	for( int i = 1; i < maxMovieIndex; i++)
+	{
+		[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
+	}
+	
+	return viewer;
+}
+
+
+- (IBAction) cprViewer:(id) sender
+{
+	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
+	
+	if( [self computeInterval] == 0 ||
+	   [[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
+	   [[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
+	   ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
+	{
+		[self SetThicknessInterval:sender];
+	}
+	else
+	{
+		if( [self isDataVolumicIn4D: YES] == NO || [[imageView curDCM] isRGB] == YES)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"CPR", nil), NSLocalizedString(@"CPR requires volumic data and BW images.", nil), nil, nil, nil);
+			return;
+		}
+		
+		[self displayAWarningIfNonTrueVolumicData];
+		[self displayWarningIfGantryTitled];
+		
+		[self MovieStop: self];
+		
+		CPRController *viewer;
+		
+		viewer = [[AppController sharedAppController] FindViewer :@"CPR" :pixList[0]];
+		
+		if( viewer)
+		{
+			[[viewer window] makeKeyAndOrderFront:self];
+		}
+		else
+		{
+			viewer = [self openCPRViewer];
 			[self place3DViewerWindow:viewer];
 			[viewer showWindow:self];
 			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];

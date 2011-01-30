@@ -5041,6 +5041,45 @@
 		CE8D05CE0FD851F400165DDE /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CE8D062A0FD8731B00165DDE /* libDCM StaticLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */; };
 		CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
+		CE9054EF12F5B64300263AB6 /* CPRBezierCore.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054C912F5B64200263AB6 /* CPRBezierCore.h */; };
+		CE9054F012F5B64300263AB6 /* CPRBezierCore.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054CA12F5B64200263AB6 /* CPRBezierCore.m */; };
+		CE9054F112F5B64300263AB6 /* CPRBezierCoreAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054CB12F5B64200263AB6 /* CPRBezierCoreAdditions.h */; };
+		CE9054F212F5B64300263AB6 /* CPRBezierCoreAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054CC12F5B64200263AB6 /* CPRBezierCoreAdditions.m */; };
+		CE9054F312F5B64300263AB6 /* CPRBezierPath.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054CD12F5B64200263AB6 /* CPRBezierPath.h */; };
+		CE9054F412F5B64300263AB6 /* CPRBezierPath.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054CE12F5B64200263AB6 /* CPRBezierPath.m */; };
+		CE9054F512F5B64300263AB6 /* CPRClusterView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054CF12F5B64200263AB6 /* CPRClusterView.h */; };
+		CE9054F612F5B64300263AB6 /* CPRClusterView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054D012F5B64200263AB6 /* CPRClusterView.m */; };
+		CE9054F712F5B64300263AB6 /* CPRController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054D112F5B64200263AB6 /* CPRController.h */; };
+		CE9054F812F5B64300263AB6 /* CPRController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054D212F5B64200263AB6 /* CPRController.m */; };
+		CE9054F912F5B64300263AB6 /* CPRCurvedPath.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054D312F5B64200263AB6 /* CPRCurvedPath.h */; };
+		CE9054FA12F5B64300263AB6 /* CPRCurvedPath.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054D412F5B64200263AB6 /* CPRCurvedPath.m */; };
+		CE9054FB12F5B64300263AB6 /* CPRDisplayInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054D512F5B64200263AB6 /* CPRDisplayInfo.h */; };
+		CE9054FC12F5B64300263AB6 /* CPRDisplayInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054D612F5B64200263AB6 /* CPRDisplayInfo.m */; };
+		CE9054FD12F5B64300263AB6 /* CPRGenerator.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054D712F5B64200263AB6 /* CPRGenerator.h */; };
+		CE9054FE12F5B64300263AB6 /* CPRGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054D812F5B64200263AB6 /* CPRGenerator.m */; };
+		CE9054FF12F5B64300263AB6 /* CPRGeneratorOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054D912F5B64200263AB6 /* CPRGeneratorOperation.h */; };
+		CE90550012F5B64300263AB6 /* CPRGeneratorOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054DA12F5B64200263AB6 /* CPRGeneratorOperation.m */; };
+		CE90550112F5B64300263AB6 /* CPRGeneratorRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054DB12F5B64200263AB6 /* CPRGeneratorRequest.h */; };
+		CE90550212F5B64300263AB6 /* CPRGeneratorRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054DC12F5B64200263AB6 /* CPRGeneratorRequest.m */; };
+		CE90550312F5B64300263AB6 /* CPRGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054DD12F5B64200263AB6 /* CPRGeometry.h */; };
+		CE90550412F5B64300263AB6 /* CPRGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054DE12F5B64200263AB6 /* CPRGeometry.m */; };
+		CE90550512F5B64300263AB6 /* CPRHorizontalFillOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054DF12F5B64200263AB6 /* CPRHorizontalFillOperation.h */; };
+		CE90550612F5B64300263AB6 /* CPRHorizontalFillOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054E012F5B64200263AB6 /* CPRHorizontalFillOperation.m */; };
+		CE90550712F5B64300263AB6 /* CPRMPRDCMView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054E112F5B64200263AB6 /* CPRMPRDCMView.h */; };
+		CE90550812F5B64300263AB6 /* CPRMPRDCMView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054E212F5B64200263AB6 /* CPRMPRDCMView.m */; };
+		CE90550912F5B64300263AB6 /* CPRProjectionOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054E312F5B64200263AB6 /* CPRProjectionOperation.h */; };
+		CE90550A12F5B64300263AB6 /* CPRProjectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054E412F5B64200263AB6 /* CPRProjectionOperation.m */; };
+		CE90550B12F5B64300263AB6 /* CPRStraightenedOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054E512F5B64200263AB6 /* CPRStraightenedOperation.h */; };
+		CE90550C12F5B64300263AB6 /* CPRStraightenedOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054E612F5B64200263AB6 /* CPRStraightenedOperation.m */; };
+		CE90550D12F5B64300263AB6 /* CPRTransverseView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054E712F5B64200263AB6 /* CPRTransverseView.h */; };
+		CE90550E12F5B64300263AB6 /* CPRTransverseView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054E812F5B64200263AB6 /* CPRTransverseView.m */; };
+		CE90550F12F5B64300263AB6 /* CPRUnsignedInt16ImageRep.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054E912F5B64200263AB6 /* CPRUnsignedInt16ImageRep.h */; };
+		CE90551012F5B64300263AB6 /* CPRUnsignedInt16ImageRep.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054EA12F5B64200263AB6 /* CPRUnsignedInt16ImageRep.m */; };
+		CE90551112F5B64300263AB6 /* CPRView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054EB12F5B64200263AB6 /* CPRView.h */; };
+		CE90551212F5B64300263AB6 /* CPRView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054EC12F5B64300263AB6 /* CPRView.m */; };
+		CE90551312F5B64300263AB6 /* CPRVolumeData.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054ED12F5B64300263AB6 /* CPRVolumeData.h */; };
+		CE90551412F5B64300263AB6 /* CPRVolumeData.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054EE12F5B64300263AB6 /* CPRVolumeData.m */; };
+		CE90551812F5B68100263AB6 /* CPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE90551612F5B68100263AB6 /* CPR.xib */; };
 		CE90D8C4095F5B48004FC7E2 /* FlipData.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE90D8C3095F5B48004FC7E2 /* FlipData.tif */; };
 		CE94FC021053FFD3006D92E4 /* CurveFitter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE94FC001053FFD3006D92E4 /* CurveFitter.h */; };
 		CE94FC031053FFD3006D92E4 /* CurveFitter.m in Sources */ = {isa = PBXBuildFile; fileRef = CE94FC011053FFD3006D92E4 /* CurveFitter.m */; };
@@ -11952,6 +11991,45 @@
 		CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = DICOMPrint; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE8CDAF112B3C88D00268E4F /* DatabaseIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DatabaseIcon.tif; sourceTree = "<group>"; };
 		CE8D057D0FD8505000165DDE /* OsiriX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE9054C912F5B64200263AB6 /* CPRBezierCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRBezierCore.h; sourceTree = "<group>"; };
+		CE9054CA12F5B64200263AB6 /* CPRBezierCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRBezierCore.m; sourceTree = "<group>"; };
+		CE9054CB12F5B64200263AB6 /* CPRBezierCoreAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRBezierCoreAdditions.h; sourceTree = "<group>"; };
+		CE9054CC12F5B64200263AB6 /* CPRBezierCoreAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRBezierCoreAdditions.m; sourceTree = "<group>"; };
+		CE9054CD12F5B64200263AB6 /* CPRBezierPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRBezierPath.h; sourceTree = "<group>"; };
+		CE9054CE12F5B64200263AB6 /* CPRBezierPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRBezierPath.m; sourceTree = "<group>"; };
+		CE9054CF12F5B64200263AB6 /* CPRClusterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRClusterView.h; sourceTree = "<group>"; };
+		CE9054D012F5B64200263AB6 /* CPRClusterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRClusterView.m; sourceTree = "<group>"; };
+		CE9054D112F5B64200263AB6 /* CPRController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRController.h; sourceTree = "<group>"; };
+		CE9054D212F5B64200263AB6 /* CPRController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRController.m; sourceTree = "<group>"; };
+		CE9054D312F5B64200263AB6 /* CPRCurvedPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRCurvedPath.h; sourceTree = "<group>"; };
+		CE9054D412F5B64200263AB6 /* CPRCurvedPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRCurvedPath.m; sourceTree = "<group>"; };
+		CE9054D512F5B64200263AB6 /* CPRDisplayInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRDisplayInfo.h; sourceTree = "<group>"; };
+		CE9054D612F5B64200263AB6 /* CPRDisplayInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRDisplayInfo.m; sourceTree = "<group>"; };
+		CE9054D712F5B64200263AB6 /* CPRGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRGenerator.h; sourceTree = "<group>"; };
+		CE9054D812F5B64200263AB6 /* CPRGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRGenerator.m; sourceTree = "<group>"; };
+		CE9054D912F5B64200263AB6 /* CPRGeneratorOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRGeneratorOperation.h; sourceTree = "<group>"; };
+		CE9054DA12F5B64200263AB6 /* CPRGeneratorOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRGeneratorOperation.m; sourceTree = "<group>"; };
+		CE9054DB12F5B64200263AB6 /* CPRGeneratorRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRGeneratorRequest.h; sourceTree = "<group>"; };
+		CE9054DC12F5B64200263AB6 /* CPRGeneratorRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRGeneratorRequest.m; sourceTree = "<group>"; };
+		CE9054DD12F5B64200263AB6 /* CPRGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRGeometry.h; sourceTree = "<group>"; };
+		CE9054DE12F5B64200263AB6 /* CPRGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRGeometry.m; sourceTree = "<group>"; };
+		CE9054DF12F5B64200263AB6 /* CPRHorizontalFillOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRHorizontalFillOperation.h; sourceTree = "<group>"; };
+		CE9054E012F5B64200263AB6 /* CPRHorizontalFillOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRHorizontalFillOperation.m; sourceTree = "<group>"; };
+		CE9054E112F5B64200263AB6 /* CPRMPRDCMView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRMPRDCMView.h; sourceTree = "<group>"; };
+		CE9054E212F5B64200263AB6 /* CPRMPRDCMView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRMPRDCMView.m; sourceTree = "<group>"; };
+		CE9054E312F5B64200263AB6 /* CPRProjectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRProjectionOperation.h; sourceTree = "<group>"; };
+		CE9054E412F5B64200263AB6 /* CPRProjectionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRProjectionOperation.m; sourceTree = "<group>"; };
+		CE9054E512F5B64200263AB6 /* CPRStraightenedOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRStraightenedOperation.h; sourceTree = "<group>"; };
+		CE9054E612F5B64200263AB6 /* CPRStraightenedOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRStraightenedOperation.m; sourceTree = "<group>"; };
+		CE9054E712F5B64200263AB6 /* CPRTransverseView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRTransverseView.h; sourceTree = "<group>"; };
+		CE9054E812F5B64200263AB6 /* CPRTransverseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRTransverseView.m; sourceTree = "<group>"; };
+		CE9054E912F5B64200263AB6 /* CPRUnsignedInt16ImageRep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRUnsignedInt16ImageRep.h; sourceTree = "<group>"; };
+		CE9054EA12F5B64200263AB6 /* CPRUnsignedInt16ImageRep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRUnsignedInt16ImageRep.m; sourceTree = "<group>"; };
+		CE9054EB12F5B64200263AB6 /* CPRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRView.h; sourceTree = "<group>"; };
+		CE9054EC12F5B64300263AB6 /* CPRView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRView.m; sourceTree = "<group>"; };
+		CE9054ED12F5B64300263AB6 /* CPRVolumeData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRVolumeData.h; sourceTree = "<group>"; };
+		CE9054EE12F5B64300263AB6 /* CPRVolumeData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRVolumeData.m; sourceTree = "<group>"; };
+		CE90551712F5B68100263AB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CPR.xib; sourceTree = "<group>"; };
 		CE90D8C3095F5B48004FC7E2 /* FlipData.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipData.tif; sourceTree = "<group>"; };
 		CE94FC001053FFD3006D92E4 /* CurveFitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurveFitter.h; sourceTree = "<group>"; };
 		CE94FC011053FFD3006D92E4 /* CurveFitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CurveFitter.m; sourceTree = "<group>"; };
@@ -12365,6 +12443,7 @@
 				A90D665D094D7071000B425B /* Endoscopy */,
 				A93CFF6E0A5169FE00078038 /* LL */,
 				A9333D280F56E68B0097DAB7 /* MPR */,
+				CE90547412F5B5D700263AB6 /* CPR */,
 				AB3F4A1D0672674000E61A6C /* Window3DController.h */,
 				AB3F4A1E0672674000E61A6C /* Window3DController.m */,
 				A9F2E557092227A400055899 /* DarkWindow.h */,
@@ -12548,6 +12627,7 @@
 				CE3F99400C84724B00CB38F1 /* AYDicomPrint.xib */,
 				CE3F992C0C84724B00CB38F1 /* BurnViewer.xib */,
 				CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */,
+				CE90551612F5B68100263AB6 /* CPR.xib */,
 				CE3F990A0C84724B00CB38F1 /* Endoscopy.xib */,
 				CE3F98EC0C84724B00CB38F1 /* FlyThru.xib */,
 				CE3F99140C84724B00CB38F1 /* Histogram.xib */,
@@ -17061,6 +17141,51 @@
 			name = ROIVolume;
 			sourceTree = "<group>";
 		};
+		CE90547412F5B5D700263AB6 /* CPR */ = {
+			isa = PBXGroup;
+			children = (
+				CE9054C912F5B64200263AB6 /* CPRBezierCore.h */,
+				CE9054CA12F5B64200263AB6 /* CPRBezierCore.m */,
+				CE9054CB12F5B64200263AB6 /* CPRBezierCoreAdditions.h */,
+				CE9054CC12F5B64200263AB6 /* CPRBezierCoreAdditions.m */,
+				CE9054CD12F5B64200263AB6 /* CPRBezierPath.h */,
+				CE9054CE12F5B64200263AB6 /* CPRBezierPath.m */,
+				CE9054CF12F5B64200263AB6 /* CPRClusterView.h */,
+				CE9054D012F5B64200263AB6 /* CPRClusterView.m */,
+				CE9054D112F5B64200263AB6 /* CPRController.h */,
+				CE9054D212F5B64200263AB6 /* CPRController.m */,
+				CE9054D312F5B64200263AB6 /* CPRCurvedPath.h */,
+				CE9054D412F5B64200263AB6 /* CPRCurvedPath.m */,
+				CE9054D512F5B64200263AB6 /* CPRDisplayInfo.h */,
+				CE9054D612F5B64200263AB6 /* CPRDisplayInfo.m */,
+				CE9054D712F5B64200263AB6 /* CPRGenerator.h */,
+				CE9054D812F5B64200263AB6 /* CPRGenerator.m */,
+				CE9054D912F5B64200263AB6 /* CPRGeneratorOperation.h */,
+				CE9054DA12F5B64200263AB6 /* CPRGeneratorOperation.m */,
+				CE9054DB12F5B64200263AB6 /* CPRGeneratorRequest.h */,
+				CE9054DC12F5B64200263AB6 /* CPRGeneratorRequest.m */,
+				CE9054DD12F5B64200263AB6 /* CPRGeometry.h */,
+				CE9054DE12F5B64200263AB6 /* CPRGeometry.m */,
+				CE9054DF12F5B64200263AB6 /* CPRHorizontalFillOperation.h */,
+				CE9054E012F5B64200263AB6 /* CPRHorizontalFillOperation.m */,
+				CE9054E112F5B64200263AB6 /* CPRMPRDCMView.h */,
+				CE9054E212F5B64200263AB6 /* CPRMPRDCMView.m */,
+				CE9054E312F5B64200263AB6 /* CPRProjectionOperation.h */,
+				CE9054E412F5B64200263AB6 /* CPRProjectionOperation.m */,
+				CE9054E512F5B64200263AB6 /* CPRStraightenedOperation.h */,
+				CE9054E612F5B64200263AB6 /* CPRStraightenedOperation.m */,
+				CE9054E712F5B64200263AB6 /* CPRTransverseView.h */,
+				CE9054E812F5B64200263AB6 /* CPRTransverseView.m */,
+				CE9054E912F5B64200263AB6 /* CPRUnsignedInt16ImageRep.h */,
+				CE9054EA12F5B64200263AB6 /* CPRUnsignedInt16ImageRep.m */,
+				CE9054EB12F5B64200263AB6 /* CPRView.h */,
+				CE9054EC12F5B64300263AB6 /* CPRView.m */,
+				CE9054ED12F5B64300263AB6 /* CPRVolumeData.h */,
+				CE9054EE12F5B64300263AB6 /* CPRVolumeData.m */,
+			);
+			name = CPR;
+			sourceTree = "<group>";
+		};
 		CE9101AA0C86A6B800D8D273 /* XMLRPC Service */ = {
 			isa = PBXGroup;
 			children = (
@@ -19712,6 +19837,25 @@
 				59E52B3712C109B80094E668 /* DicomDatabase.h in Headers */,
 				5969033D12DDE30800379E41 /* WebPortalConnection+Data.h in Headers */,
 				5969034512DDE5EA00379E41 /* WebPortalResponse.h in Headers */,
+				CE9054EF12F5B64300263AB6 /* CPRBezierCore.h in Headers */,
+				CE9054F112F5B64300263AB6 /* CPRBezierCoreAdditions.h in Headers */,
+				CE9054F312F5B64300263AB6 /* CPRBezierPath.h in Headers */,
+				CE9054F512F5B64300263AB6 /* CPRClusterView.h in Headers */,
+				CE9054F712F5B64300263AB6 /* CPRController.h in Headers */,
+				CE9054F912F5B64300263AB6 /* CPRCurvedPath.h in Headers */,
+				CE9054FB12F5B64300263AB6 /* CPRDisplayInfo.h in Headers */,
+				CE9054FD12F5B64300263AB6 /* CPRGenerator.h in Headers */,
+				CE9054FF12F5B64300263AB6 /* CPRGeneratorOperation.h in Headers */,
+				CE90550112F5B64300263AB6 /* CPRGeneratorRequest.h in Headers */,
+				CE90550312F5B64300263AB6 /* CPRGeometry.h in Headers */,
+				CE90550512F5B64300263AB6 /* CPRHorizontalFillOperation.h in Headers */,
+				CE90550712F5B64300263AB6 /* CPRMPRDCMView.h in Headers */,
+				CE90550912F5B64300263AB6 /* CPRProjectionOperation.h in Headers */,
+				CE90550B12F5B64300263AB6 /* CPRStraightenedOperation.h in Headers */,
+				CE90550D12F5B64300263AB6 /* CPRTransverseView.h in Headers */,
+				CE90550F12F5B64300263AB6 /* CPRUnsignedInt16ImageRep.h in Headers */,
+				CE90551112F5B64300263AB6 /* CPRView.h in Headers */,
+				CE90551312F5B64300263AB6 /* CPRVolumeData.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22129,6 +22273,7 @@
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -22771,6 +22916,7 @@
 				59D9471D125333640095680D /* SWFInit.as in Resources */,
 				CE72D7C31263702500874EF6 /* Pause.icns in Resources */,
 				CE8CDAF212B3C88D00268E4F /* DatabaseIcon.tif in Resources */,
+				CE90551812F5B68100263AB6 /* CPR.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24387,6 +24533,25 @@
 				599115F012D7224A00924B5C /* browserController.m in Sources */,
 				5969033E12DDE30800379E41 /* WebPortalConnection+Data.mm in Sources */,
 				5969034612DDE5EA00379E41 /* WebPortalResponse.mm in Sources */,
+				CE9054F012F5B64300263AB6 /* CPRBezierCore.m in Sources */,
+				CE9054F212F5B64300263AB6 /* CPRBezierCoreAdditions.m in Sources */,
+				CE9054F412F5B64300263AB6 /* CPRBezierPath.m in Sources */,
+				CE9054F612F5B64300263AB6 /* CPRClusterView.m in Sources */,
+				CE9054F812F5B64300263AB6 /* CPRController.m in Sources */,
+				CE9054FA12F5B64300263AB6 /* CPRCurvedPath.m in Sources */,
+				CE9054FC12F5B64300263AB6 /* CPRDisplayInfo.m in Sources */,
+				CE9054FE12F5B64300263AB6 /* CPRGenerator.m in Sources */,
+				CE90550012F5B64300263AB6 /* CPRGeneratorOperation.m in Sources */,
+				CE90550212F5B64300263AB6 /* CPRGeneratorRequest.m in Sources */,
+				CE90550412F5B64300263AB6 /* CPRGeometry.m in Sources */,
+				CE90550612F5B64300263AB6 /* CPRHorizontalFillOperation.m in Sources */,
+				CE90550812F5B64300263AB6 /* CPRMPRDCMView.m in Sources */,
+				CE90550A12F5B64300263AB6 /* CPRProjectionOperation.m in Sources */,
+				CE90550C12F5B64300263AB6 /* CPRStraightenedOperation.m in Sources */,
+				CE90550E12F5B64300263AB6 /* CPRTransverseView.m in Sources */,
+				CE90551012F5B64300263AB6 /* CPRUnsignedInt16ImageRep.m in Sources */,
+				CE90551212F5B64300263AB6 /* CPRView.m in Sources */,
+				CE90551412F5B64300263AB6 /* CPRVolumeData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26173,6 +26338,14 @@
 				CE40ED580D86D634007C6D49 /* English */,
 			);
 			name = 3DPosition.xib;
+			sourceTree = "<group>";
+		};
+		CE90551612F5B68100263AB6 /* CPR.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE90551712F5B68100263AB6 /* English */,
+			);
+			name = CPR.xib;
 			sourceTree = "<group>";
 		};
 		CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */ = {

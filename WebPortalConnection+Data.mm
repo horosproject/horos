@@ -36,7 +36,7 @@
 #import "DCMPix.h"
 #import "DCMTKStoreSCU.h"
 #import "N2Alignment.h"
-
+#import "NSFileManager+N2.h"
 
 
 #import "BrowserController.h" // TODO: remove when badness solved

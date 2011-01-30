@@ -32,6 +32,11 @@
 	[[self viewer] mprViewer: sender];
 }
 
+- (void) cprViewer:(id) sender
+{
+	[[self viewer] cprViewer: sender];
+}
+
 - (void) endoscopyViewer:(id) sender
 {
 	[[self viewer] endoscopyViewer: sender];

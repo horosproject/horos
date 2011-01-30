@@ -36,6 +36,7 @@
 @class SRController;
 @class EndoscopyViewer;
 @class MPRController;
+@class CPRController;
 @class ViewerController;
 
 
@@ -60,11 +61,7 @@ enum
 
 /** \brief Window Controller for 2D Viewer*/
 
-#ifndef OSIRIX_LIGHT
 @interface ViewerController : OSIWindowController  <Schedulable>
-#else
-@interface ViewerController : OSIWindowController
-#endif
 {
 	NSLock	*ThreadLoadImageLock;
 	NSLock	*roiLock;
@@ -1012,6 +1009,10 @@ enum
 
 - (MPRController *)openMPRViewer;
 - (IBAction)mprViewer:(id)sender;
+
+/** Action to open the CPRViewer */
+- (id)openCPRViewer;
+- (IBAction)cprViewer:(id)sender;
 #endif
 
 /** Current SeriesView */
