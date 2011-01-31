@@ -568,7 +568,6 @@
     BOOL overNode;
     NSInteger hoverNodeIndex;
     CGFloat relativePosition;
-    BOOL sentDidBegin;
     BOOL didChangeHover;
 	NSString *planeName;
 	CPRVector vector;
@@ -578,7 +577,6 @@
     
     if (NSPointInRect(viewPoint, self.bounds) && curDCM.pwidth > 0) {
 		[self _sendWillEditDisplayInfo];
-        sentDidBegin = YES;
         _displayInfo.mouseCursorPosition = MIN(MAX(pixVector.x/(CGFloat)curDCM.pwidth, 0.0), 1.0);
         [self setNeedsDisplay:YES];
     
@@ -609,30 +607,18 @@
             
             if (overNode) {
                 if (_displayInfo.hoverNodeHidden == YES || _displayInfo.hoverNodeIndex != hoverNodeIndex) {
-					if (sentDidBegin == NO) {
-						[self _sendWillEditCurvedPath];
-						sentDidBegin = YES;
-					}
                     _displayInfo.hoverNodeHidden = NO;
                     _displayInfo.hoverNodeIndex = hoverNodeIndex;
-                    [self setNeedsDisplay:YES];
                 }
             } else {
                 if (_displayInfo.hoverNodeHidden == NO) {
-					if (sentDidBegin == NO) {
-						[self _sendWillEditCurvedPath];
-						sentDidBegin = YES;
-					}
                     _displayInfo.hoverNodeHidden = YES;
                     _displayInfo.hoverNodeIndex = 0;
-                    [self setNeedsDisplay:YES];
                 }
             }
         }
         
-        if (sentDidBegin) {
-			[self _sendDidEditDisplayInfo];
-        }
+		[self _sendDidEditDisplayInfo];
     }
     
     [super mouseMoved:theEvent];
