@@ -69,7 +69,7 @@
 					
 						%[IF:Info.proposeZipDownload%
 						<td class="narrow middle">
-							<a href="%U:Study.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?id=%U:Study.studyInstanceUID%"><img src="images/download.png"/></a>
+							<a href="%U:Study.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?studyID=%U:Study.studyInstanceUID%"><img src="images/download.png"/></a>
 						</td>
 						%]IF:Info.proposeZipDownload%
 						

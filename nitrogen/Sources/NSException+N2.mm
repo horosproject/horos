@@ -22,7 +22,7 @@
 	NSMutableString* stackTrace = [NSMutableString string];
 	
 	@try {
-		NSArray* addresses = [e callStackReturnAddresses];
+		NSArray* addresses = [self callStackReturnAddresses];
 		if (addresses.count) {
 			void* backtrace_frames[addresses.count];
 			for (int i = addresses.count-1; i >= 0; --i)
@@ -45,8 +45,8 @@
 }
 
 -(NSString*)printStackTrace {
-	NSString stackTrace = [self stackTrace];
-	NSLog(stackTrace);
+	NSString* stackTrace = [self stackTrace];
+	NSLog(@"%@", stackTrace);
 	return stackTrace;
 }
 

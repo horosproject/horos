@@ -149,6 +149,8 @@
 		592CFF2A1212F84F00176E39 /* N2SOAPWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFF061212F84F00176E39 /* N2SOAPWebServiceClient.h */; };
 		592CFF2B1212F84F00176E39 /* N2SOAPWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFF071212F84F00176E39 /* N2SOAPWebServiceClient.mm */; };
 		592CFF671212F91D00176E39 /* ISO8601DateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB10FB1E1129338A009EB238 /* ISO8601DateFormatter.m */; };
+		592D333912F2C71A00C7C002 /* NSException+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 592D333512F2C71A00C7C002 /* NSException+N2.h */; };
+		592D333A12F2C71A00C7C002 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592D333612F2C71A00C7C002 /* NSException+N2.mm */; };
 		594830CD118B0AC100D7E606 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 594830CB118B0AC100D7E606 /* N2ImageView.h */; };
 		594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 594830CC118B0AC100D7E606 /* N2ImageView.mm */; };
 		594830CF118B0AC100D7E606 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 594830CB118B0AC100D7E606 /* N2ImageView.h */; };
@@ -8407,6 +8409,8 @@
 		592CFF041212F84F00176E39 /* N2WSDL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2WSDL.mm; path = nitrogen/Sources/N2WSDL.mm; sourceTree = "<group>"; };
 		592CFF061212F84F00176E39 /* N2SOAPWebServiceClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2SOAPWebServiceClient.h; path = nitrogen/Sources/N2SOAPWebServiceClient.h; sourceTree = "<group>"; };
 		592CFF071212F84F00176E39 /* N2SOAPWebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2SOAPWebServiceClient.mm; path = nitrogen/Sources/N2SOAPWebServiceClient.mm; sourceTree = "<group>"; };
+		592D333512F2C71A00C7C002 /* NSException+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSException+N2.h"; path = "nitrogen/Sources/NSException+N2.h"; sourceTree = "<group>"; };
+		592D333612F2C71A00C7C002 /* NSException+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSException+N2.mm"; path = "nitrogen/Sources/NSException+N2.mm"; sourceTree = "<group>"; };
 		594830CB118B0AC100D7E606 /* N2ImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ImageView.h; path = nitrogen/Sources/N2ImageView.h; sourceTree = "<group>"; };
 		594830CC118B0AC100D7E606 /* N2ImageView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageView.mm; path = nitrogen/Sources/N2ImageView.mm; sourceTree = "<group>"; };
 		59526E8312816FDC0016F6C0 /* WebPortalSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalSession.h; sourceTree = "<group>"; };
@@ -13455,6 +13459,8 @@
 			children = (
 				59DC28B411C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.h */,
 				59DC28B511C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.mm */,
+				592D333512F2C71A00C7C002 /* NSException+N2.h */,
+				592D333612F2C71A00C7C002 /* NSException+N2.mm */,
 				59DC28BE11C614A100DAD5B4 /* NSXMLNode+N2.h */,
 				59DC28BF11C614A100DAD5B4 /* NSXMLNode+N2.mm */,
 				59DC28B011C611F100DAD5B4 /* NSThread+N2.h */,
@@ -22086,6 +22092,7 @@
 				597BB93312A7E0F200D0A172 /* NSUserDefaults+OsiriX.h in Headers */,
 				59EBFEA612BB500C00809C61 /* BrowserController.h in Headers */,
 				59E52B3912C109B80094E668 /* DicomDatabase.h in Headers */,
+				592D333912F2C71A00C7C002 /* NSException+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22273,7 +22280,6 @@
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -25782,6 +25788,7 @@
 				597BB93412A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm in Sources */,
 				59E52B3A12C109B80094E668 /* DicomDatabase.mm in Sources */,
 				599115F112D7224A00924B5C /* browserController.m in Sources */,
+				592D333A12F2C71A00C7C002 /* NSException+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

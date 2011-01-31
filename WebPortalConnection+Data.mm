@@ -35,8 +35,11 @@
 #import "DCM.h"
 #import "DCMPix.h"
 #import "DCMTKStoreSCU.h"
-#import "N2Alignment.h"
 #import "NSFileManager+N2.h"
+#import "N2Alignment.h"
+#import "DCMAbstractSyntaxUID.h"
+#import "NSFileManager+N2.h"
+#import "CSMailMailClient.h"
 
 
 #import "BrowserController.h" // TODO: remove when badness solved
@@ -173,17 +176,21 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 }
 
 
--(DicomSeries*)series_requestedSeries {
-	NSPredicate* browsePredicate;
+-(id)series_requestedSeries:(BOOL)returnArray {
+	NSPredicate* browsePredicate = nil;
 	
 	if ([parameters objectForKey:@"id"]) {
 		if ([parameters objectForKey:@"studyID"])
 			browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"studyID"], [parameters objectForKey:@"id"]];
 		else browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [parameters objectForKey:@"id"]];
 	} else
-		return NULL;
+		if ([parameters objectForKey:@"studyID"])
+			browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [parameters objectForKey:@"studyID"]];
 	
 	NSArray* series = [self.portal seriesForUser:user predicate:browsePredicate];
+	if (returnArray)
+		return series;
+	
 	if (series.count)
 		return series.lastObject;
 	
@@ -222,8 +229,10 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	}
 }
 
--(NSArray*)seriesSortDescriptors {
-	return NULL; // TODO: update&return session series sort keys
+-(NSArray*)seriesSortDescriptors { // TODO: update&return session series sort keys
+	return [NSArray arrayWithObjects:
+			[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease],
+			NULL];
 }
 
 -(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)imagesArray isiPhone:(BOOL)isiPhone {
@@ -290,9 +299,9 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSString *outFile = [dict objectForKey:GenerateMovieOutFileParamKey];
-	NSString *fileName = [dict objectForKey:GenerateMovieFileNameParamKey];
-	NSArray *dicomImageArray = [dict objectForKey:GenerateMovieDicomImagesParamKey];
+	NSString* outFile = [dict objectForKey:GenerateMovieOutFileParamKey];
+	NSString* fileName = [dict objectForKey:GenerateMovieFileNameParamKey];
+	NSArray* dicomImageArray = [dict objectForKey:GenerateMovieDicomImagesParamKey];
 	BOOL isiPhone = [[dict objectForKey:GenerateMovieIsIOSParamKey] boolValue];
 	
 	NSMutableArray *imagesArray = [NSMutableArray array];
@@ -693,7 +702,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 }
 
 -(void)processSeriesHtml {
-	DicomSeries* series = [self series_requestedSeries];
+	DicomSeries* series = [self series_requestedSeries:NO];
 	[response.tokens setObject:[WebPortalProxy createWithObject:series transformer:[DicomSeriesTransformer create]] forKey:@"Series"];
 	[response.tokens setObject:series.name forKey:@"PageTitle"];
 	[response.tokens setObject:series.study.name forKey:@"BackLinkLabel"];
@@ -702,201 +711,137 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 
 
 -(void)processPasswordForgottenHtml {
-	/*
-	if (!portal.passwordRestoreAllowed) {
-		response.statusCode = 404;
+	if (!self.portal.passwordRestoreAllowed)
 		return;
-	}
 	
-	
+	if ([[parameters valueForKey:@"action"] isEqualToString:@"restorePassword"])
 	{
+		NSString* email = [parameters valueForKey: @"email"];
+		NSString* username = [parameters valueForKey: @"username"];
 		
-		NSMutableString *templateString = [self webServicesHTMLMutableString:@"password_forgotten.html"];
-		
-		NSString *message = @"";
-		
-		if ([[parameters valueForKey: @"what"] isEqualToString: @"restorePassword"])
-		{
-			NSString *email = [parameters valueForKey: @"email"];
-			NSString *username = [parameters valueForKey: @"username"];
+		// TRY TO FIND THIS USER
+		if ([email length] > 0 || [username length] > 0) {
+			[self.portal.database.managedObjectContext lock];
 			
-			// TRY TO FIND THIS USER
-			if ([email length] > 0 || [username length] > 0)
+			@try
 			{
-				[self.portal.database.managedObjectContext lock];
+				NSError *error = nil;
+				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+				[dbRequest setEntity:[NSEntityDescription entityForName:@"User" inManagedObjectContext:self.portal.database.managedObjectContext]];
 				
-				@try
-				{
-					NSError *error = nil;
-					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-					[dbRequest setEntity:[NSEntityDescription entityForName:@"User" inManagedObjectContext:self.portal.database.managedObjectContext]];
-					
-					if ([email length] > [username length])
-						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email]];
-					else
-						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username]];
-					
-					error = nil;
-					NSArray *users = [self.portal.database.managedObjectContext executeFetchRequest: dbRequest error:&error];
-					
-					if ([users count] >= 1)
-					{
-						for (WebPortalUser *user in users)
-						{
-							NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
-							
-							if (fromEmailAddress == nil)
-								fromEmailAddress = @"";
-							
-							NSString *emailSubject = NSLocalizedString( @"Your password has been reset.", nil);
-							NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
-							
-							[user generatePassword];
-							
-							[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
-							[emailMessage appendString: [user valueForKey: @"name"]];
-							[emailMessage appendString: @"\r\r"];
-							[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
-							[emailMessage appendString: [user valueForKey: @"password"]];
-							[emailMessage appendString: @"\r\r"];
-							
-							[portal updateLogEntryForStudy: nil withMessage: @"Password reseted for user" forUser: [user valueForKey: @"name"] ip: nil];
-							
-							[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: [user valueForKey: @"email"], @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
-							
-							message = NSLocalizedString( @"You will receive shortly an email with a new password.", nil);
-							
-							[self.portal.database save:NULL];
-						}
-					}
-					else
-					{
-						// To avoid someone scanning for the username
-						[NSThread sleepForTimeInterval:3];
-						
-						[portal updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
-						
-						message = NSLocalizedString( @"This user doesn't exist in our database.", nil);
-					}
-				}
-				@catch( NSException *e)
-				{
-					NSLog( @"******* password_forgotten: %@", e);
-				}
+				if ([email length] > [username length])
+					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email]];
+				else [dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username]];
 				
-				[self.portal.database.managedObjectContext unlock];
-			}
-		}
-		
-		[WebPortalResponse mutableString:templateString block:@"MessageToWrite" setVisible:message.length];
-		[templateString replaceOccurrencesOfString:@"%PageTitle%" withString:NSLocalizedString(@"Password Forgotten", @"Web portal, password forgotten, title")];
-		
-		[templateString replaceOccurrencesOfString: @"%Localized_Message%" withString:N2NonNullString(message)];
-		
-		data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
-		
-		err = NO;
-	}
-	*/
-}
-
-
--(void)processAccountHtml {/*
-	if (!self.user) {
-		self.statusCode = 404;
-		return;
-	}
-	
-	
-	{
-		NSString *message = @"";
-		BOOL messageIsError = NO;
-		
-		if ([[parameters valueForKey: @"what"] isEqualToString: @"changePassword"])
-		{
-			NSString * previouspassword = [parameters valueForKey: @"previouspassword"];
-			NSString * password = [parameters valueForKey: @"password"];
-			
-			if ([previouspassword isEqualToString:user.password])
-			{
-				if ([[parameters valueForKey: @"password"] isEqualToString: [parameters valueForKey: @"password2"]])
+				NSArray *users = [self.portal.database.managedObjectContext executeFetchRequest: dbRequest error:NULL];
+				
+				if ([users count] >= 1)
 				{
-					if ([password length] >= 4)
+					for (WebPortalUser *u in users)
 					{
-						// We can update the user password
-						[user setValue: password forKey: @"password"];
-						message = NSLocalizedString( @"Password updated successfully !", nil);
-						[portal updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"] forUser:self.user.name ip:wpc.asyncSocket.connectedHost];
-					}
-					else
-					{
-						message = NSLocalizedString( @"Password needs to be at least 4 characters !", nil);
-						messageIsError = YES;
+						NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
+						
+						if (fromEmailAddress == nil)
+							fromEmailAddress = @"";
+						
+						NSString *emailSubject = NSLocalizedString( @"Your password has been reset.", nil);
+						NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
+						
+						[u generatePassword];
+						
+						[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
+						[emailMessage appendString: u.name];
+						[emailMessage appendString: @"\r\r"];
+						[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
+						[emailMessage appendString: u.password];
+						[emailMessage appendString: @"\r\r"];
+						
+						[self.portal updateLogEntryForStudy: nil withMessage: @"Password reset for user" forUser:u.name ip: nil];
+						
+						[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: u.email, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+						
+						[self.session.dict addMessage:NSLocalizedString(@"You will shortly receive an email with your new password.", nil)];
+						
+						[self.portal.database save:NULL];
 					}
 				}
 				else
 				{
-					message = NSLocalizedString( @"New passwords are not identical !", nil);
-					messageIsError = YES;
+					// To avoid someone scanning for the username
+					[NSThread sleepForTimeInterval:3];
+					
+					[self.portal updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
+					
+					[self.session.dict addError:NSLocalizedString(@"This username doesn't exist in our database.", nil)];
+				}
+			}
+			@catch (NSException* e) {
+				NSLog( @"******* password_forgotten: %@", e);
+			}
+			@finally {
+				[self.portal.database.managedObjectContext unlock];
+			}
+		}
+	}
+	
+	[response.tokens setObject:NSLocalizedString(@"Forgetten Password", @"Web portal, password forgotten, title") forKey:@"PageTitle"];
+	response.templateString = [self.portal stringForPath:@"password_forgotten.html"];
+}
+
+
+-(void)processAccountHtml {
+	if (!self.user)
+		return;
+	
+	if ([[parameters valueForKey:@"action"] isEqualToString:@"changePassword"])
+	{
+		NSString * previouspassword = [parameters valueForKey: @"previouspassword"];
+		NSString * password = [parameters valueForKey: @"password"];
+		
+		if ([previouspassword isEqualToString:user.password]) {
+			if ([[parameters valueForKey: @"password"] isEqualToString: [parameters valueForKey: @"password2"]])
+			{
+				if ([password length] >= 4)
+				{
+					// We can update the user password
+					user.password = password;
+					[self.portal.database save:NULL];
+					[self.session.dict addMessage:NSLocalizedString(@"Password updated successfully!", nil)];
+					[self.portal updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"] forUser:self.user.name ip:asyncSocket.connectedHost];
+				}
+				else
+				{
+					[self.session.dict addError:NSLocalizedString(@"Password needs to be at least 4 characters long!", nil)];
 				}
 			}
 			else
 			{
-				message = NSLocalizedString( @"Wrong current password !", nil);
-				messageIsError = YES;
+				[self.session.dict addError:NSLocalizedString(@"New passwords are not identical!", nil)];
 			}
-		}
-		
-		if ([[parameters valueForKey: @"what"] isEqualToString: @"changeSettings"])
-		{
-			NSString * email = [parameters valueForKey: @"email"];
-			NSString * address = [parameters valueForKey: @"address"];
-			NSString * phone = [parameters valueForKey: @"phone"];
-			
-			[user setValue: email forKey: @"email"];
-			[user setValue: address forKey: @"address"];
-			[user setValue: phone forKey: @"phone"];
-			
-			if ([[[parameters valueForKey: @"emailNotification"] lowercaseString] isEqualToString: @"on"])
-				[user setValue: [NSNumber numberWithBool: YES] forKey: @"emailNotification"];
-			else
-				[user setValue: [NSNumber numberWithBool: NO] forKey: @"emailNotification"];
-			
-			message = NSLocalizedString( @"Personal Information updated successfully !", nil);
-		}
-		
-		NSMutableString *templateString = [self webServicesHTMLMutableString:@"account.html"];
-		
-		NSString *block = @"MessageToWrite";
-		if (messageIsError)
-		{
-			block = @"ErrorToWrite";
-			[WebPortalResponse mutableString:templateString block:@"MessageToWrite" setVisible:NO];
 		}
 		else
 		{
-			[WebPortalResponse mutableString:templateString block:@"ErrorToWrite" setVisible:NO];
+			[self.session.dict addError:NSLocalizedString(@"Wrong password!", nil)];
 		}
+	}
+	
+	if ([[parameters valueForKey:@"action"] isEqualToString:@"changeSettings"])
+	{
+		user.email = [parameters valueForKey: @"email"];
+		user.address = [parameters valueForKey: @"address"];
+		user.phone = [parameters valueForKey: @"phone"];
 		
-		[WebPortalResponse mutableString:templateString block:block setVisible:message.length];
-		
-		[templateString replaceOccurrencesOfString: @"%LocalizedLabel_MessageAccount%" withString:N2NonNullString(message)];
-		
-		[templateString replaceOccurrencesOfString: @"%name%" withString:N2NonNullString(user.name)];
-		[templateString replaceOccurrencesOfString: @"%PageTitle%" withString:[NSString stringWithFormat:NSLocalizedString(@"User account for: %@", @"Web portal, account, title format (%@ is user.name)"), user.name]];
-		
-		[templateString replaceOccurrencesOfString: @"%email%" withString:N2NonNullString(user.email)];
-		[templateString replaceOccurrencesOfString: @"%address%" withString:N2NonNullString(user.address)];
-		[templateString replaceOccurrencesOfString: @"%phone%" withString:N2NonNullString(user.phone)];
-		[templateString replaceOccurrencesOfString: @"%emailNotification%" withString: (user.emailNotification.boolValue?@"checked":@"")];
-		
-		data = [templateString dataUsingEncoding: NSUTF8StringEncoding];
+		if ([[[parameters valueForKey:@"emailNotification"] lowercaseString] isEqualToString:@"on"])
+			user.emailNotification = [NSNumber numberWithBool:YES];
+		else user.emailNotification = [NSNumber numberWithBool: NO];
 		
 		[self.portal.database save:NULL];
 		
-		err = NO;
+		[self.session.dict addMessage:NSLocalizedString(@"Personal information updated successfully!", nil)];
 	}
-	*/
+	
+	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"User account for: %@", @"Web portal, account, title format (%@ is user.name)"), user.name] forKey:@"PageTitle"];
+	response.templateString = [self.portal stringForPath:@"account.html"];
 }
 
 
@@ -1080,7 +1025,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 }
 
 -(void)processSeriesJson {
-	/*DicomSeries* series = [self series_requestedSeries];
+	/*DicomSeries* series = [self series_requestedSeries:NO];
 
 	NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 	
@@ -1663,66 +1608,49 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 #pragma mark Other
 
 -(void)processReport {
-	/*
+	NSPredicate *browsePredicate;
+	if ([[parameters allKeys] containsObject:@"id"])
+		browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [parameters objectForKey:@"id"]];
+	else browsePredicate = [NSPredicate predicateWithValue:NO];
 	
+	NSArray *studies = [self.portal studiesForUser:user predicate:browsePredicate];
+	
+	if ([studies count] == 1)
 	{
-		NSPredicate *browsePredicate;
-		if ([[parameters allKeys] containsObject:@"id"])
+		[self.portal updateLogEntryForStudy:[studies lastObject] withMessage: @"Download Report" forUser:user.name ip:asyncSocket.connectedHost];
+		
+		NSString *reportFilePath = [[studies lastObject] valueForKey:@"reportURL"];
+		
+		NSString *reportType = [reportFilePath pathExtension];
+		
+		if ([reportType isEqualToString: @"pages"])
 		{
-			browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [parameters objectForKey:@"id"]];
+			NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
+			// zip the directory into a single archive file
+			NSTask *zipTask   = [[NSTask alloc] init];
+			[zipTask setLaunchPath:@"/usr/bin/zip"];
+			[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+			if ([reportType isEqualToString:@"pages"])
+				[zipTask setArguments:[NSArray arrayWithObjects: @"-q", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
+			else
+				[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
+			[zipTask launch];
+			while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+			int result = [zipTask terminationStatus];
+			[zipTask release];
+			
+			if (result==0)
+				reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:zipFileName];
+			
+			response.data = [NSData dataWithContentsOfFile: reportFilePath];
+			
+			[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
 		}
 		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
-		
-		NSArray *studies = [self studiesForPredicate:browsePredicate];
-		
-		if ([studies count] == 1)
 		{
-			[portal updateLogEntryForStudy: [studies lastObject] withMessage: @"Download Report" forUser:self.user.name ip:wpc.asyncSocket.connectedHost];
-			
-			NSString *reportFilePath = [[studies lastObject] valueForKey:@"reportURL"];
-			
-			NSString *reportType = [reportFilePath pathExtension];
-			
-			if ([reportType isEqualToString: @"pages"])
-			{
-				NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
-				// zip the directory into a single archive file
-				NSTask *zipTask   = [[NSTask alloc] init];
-				[zipTask setLaunchPath:@"/usr/bin/zip"];
-				[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-				if ([reportType isEqualToString:@"pages"])
-					[zipTask setArguments:[NSArray arrayWithObjects: @"-q", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
-				else
-					[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
-				[zipTask launch];
-				while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-				int result = [zipTask terminationStatus];
-				[zipTask release];
-				
-				if (result==0)
-				{
-					reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
-				}
-				
-				data = [NSData dataWithContentsOfFile: reportFilePath];
-				
-				[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
-				
-				if (data)
-					err = NO;
-			}
-			else
-			{
-				data = [NSData dataWithContentsOfFile: reportFilePath];
-				
-				if (data)
-					err = NO;
-			}
+			response.data = [NSData dataWithContentsOfFile: reportFilePath];
 		}
 	}
-	
-	*/
 }
 
 #define ThumbnailsCacheSize 20
@@ -1799,165 +1727,94 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	}
 }
 
--(void)processSeriesPdf {/*
-	NSPredicate *browsePredicate;
-	if ([[parameters allKeys] containsObject:@"id"])
-	{
-		if ([[parameters allKeys] containsObject:@"studyID"])
-			browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"studyID"], [parameters objectForKey:@"id"]];
-		else
-			browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [parameters objectForKey:@"id"] ];
+-(void)processSeriesPdf {
+	DicomSeries* series = [self series_requestedSeries:NO];
+	
+	if ([DCMAbstractSyntaxUID isPDF:series.seriesSOPClassUID]) {
+		DCMObject* dcmObject = [DCMObject objectWithContentsOfFile:[series.images.anyObject valueForKey:@"completePath"] decodingPixelData:NO];
+		if ([[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
+			response.data = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
 	}
-	else
-		browsePredicate = [NSPredicate predicateWithValue:NO];
 	
-	NSArray *series = [self seriesForPredicate: browsePredicate];
-	
-	if ([series count] == 1)
-	{
-		if ([DCMAbstractSyntaxUID isPDF: [[series lastObject] valueForKey: @"seriesSOPClassUID"]])
-		{
-			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"]  decodingPixelData:NO];
-			
-			if ([[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
-			{
-				data = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
-				
-				if (data)
-					err = NO;
-			}
+	if ([DCMAbstractSyntaxUID isStructuredReport:series.seriesSOPClassUID]) {
+		NSString* path = [NSFileManager.defaultManager confirmDirectoryAtPath:@"/tmp/dicomsr_osirix"];
+		NSString* htmlpath = [path stringByAppendingPathComponent:[[[series.images.anyObject valueForKey:@"completePath"] lastPathComponent] stringByAppendingPathExtension:@"html"]];
+		
+		if (![NSFileManager.defaultManager fileExistsAtPath:htmlpath]) {
+			NSTask* aTask = [[[NSTask alloc] init] autorelease];
+			[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"dicom.dic"] forKey:@"DCMDICTPATH"]];
+			[aTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"dsr2html"]];
+			[aTask setArguments:[NSArray arrayWithObjects:[series.images.anyObject valueForKey:@"completePath"], htmlpath, nil]];		
+			[aTask launch];
+			[aTask waitUntilExit];		
 		}
 		
-		if ([DCMAbstractSyntaxUID isStructuredReport: [[series lastObject] valueForKey: @"seriesSOPClassUID"]])
-		{
-			if ([[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
-				[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
-			
-			NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [[[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"] lastPathComponent]] stringByAppendingPathExtension: @"html"];
-			
-			if ([[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
-			{
-				NSTask *aTask = [[[NSTask alloc] init] autorelease];		
-				[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-				[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-				[aTask setArguments: [NSArray arrayWithObjects: [[[[series lastObject] valueForKey: @"images"] anyObject] valueForKey: @"completePath"], htmlpath, nil]];		
-				[aTask launch];
-				[aTask waitUntilExit];		
-				[aTask interrupt];
-			}
-			
-			if ([[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
-			{
-				NSTask *aTask = [[[NSTask alloc] init] autorelease];
-				[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-				[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
-				[aTask launch];
-				[aTask waitUntilExit];		
-				[aTask interrupt];
-			}
-			
-			data = [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]];
-			
-			if (data)
-				err = NO;
+		NSString* pdfpath = [htmlpath stringByAppendingPathExtension:@"pdf"];
+		
+		if ([[NSFileManager defaultManager] fileExistsAtPath:pdfpath] == NO) {
+			NSTask* aTask = [[[NSTask alloc] init] autorelease];
+			[aTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
+			[aTask setArguments:[NSArray arrayWithObjects:htmlpath, @"pdfFromURL", nil]];		
+			[aTask launch];
+			[aTask waitUntilExit];	
 		}
+		
+		response.data = [NSData dataWithContentsOfFile:pdfpath];
 	}
-	
-	if (err)
-	{
-		data = [NSData data];
-		err = NO;
-	}*/
 }
 
 
--(void)processZip {/*
-
-	{
-		NSPredicate *browsePredicate;
-		if ([[parameters allKeys] containsObject:@"id"])
-		{
-			if ([[parameters allKeys] containsObject:@"studyID"])
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"studyID"], [parameters objectForKey:@"id"]];
-			else
-				browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [parameters objectForKey:@"id"]];
-		}
-		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
-		
-		NSArray *series = [self seriesForPredicate:browsePredicate];
-		
-		NSMutableArray *imagesArray = [NSMutableArray array];
-		for ( DicomSeries *s in series)
-			[imagesArray addObjectsFromArray: [[s valueForKey:@"images"] allObjects]];
-		
-		if ([imagesArray count])
-		{
-			if (user.encryptedZIP.boolValue)
-				[portal updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download encrypted DICOM ZIP" forUser:self.user.name ip:wpc.asyncSocket.connectedHost];
-			else
-				[portal updateLogEntryForStudy: [[series lastObject] valueForKey: @"study"] withMessage: @"Download DICOM ZIP" forUser:self.user.name ip:wpc.asyncSocket.connectedHost];
-			
-			@try
-			{
-				NSString *srcFolder = @"/tmp";
-				NSString *destFile = @"/tmp";
-				
-				srcFolder = [srcFolder stringByAppendingPathComponent: [[[imagesArray lastObject] valueForKeyPath: @"series.study.name"] filenameString]];
-				destFile = [destFile stringByAppendingPathComponent: [[[imagesArray lastObject] valueForKeyPath: @"series.study.name"] filenameString]];
-				
-				if (isMacOS)
-					destFile = [destFile  stringByAppendingPathExtension: @"zip"];
-				else
-					destFile = [destFile  stringByAppendingPathExtension: @"osirixzip"];
-				
-				if (srcFolder)
-					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
-				
-				if (destFile)
-					[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
-				
-				[[NSFileManager defaultManager] createDirectoryAtPath: srcFolder attributes: nil];
-				
-				if (lockReleased == NO)
-				{
-					[self.portal.dicomDatabase.managedObjectContext unlock];
-					lockReleased = YES;
-				}
-				
-				if (user.encryptedZIP.boolValue)
-					[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password:user.password];
-				else
-					[BrowserController encryptFiles: [imagesArray valueForKey: @"completePath"] inZIPFile: destFile password: nil];
-				
-				data = [NSData dataWithContentsOfFile: destFile];
-				
-				if (srcFolder)
-					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
-				
-				if (destFile)
-					[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
-				
-				if (data)
-					err = NO;
-				else
-				{
-					data = [NSData data];
-					err = NO;
-				}
-			}
-			@catch( NSException *e)
-			{
-				NSLog( @"**** web seriesAsZIP exception : %@", e);
-			}
-		}
-	}
+-(void)processZip {
+	NSArray* series = [self series_requestedSeries:YES];
 	
-	*/
+	NSMutableArray* images = [NSMutableArray array];
+	for ( DicomSeries *s in series)
+		[images addObjectsFromArray: [[s valueForKey:@"images"] allObjects]];
+	
+	if (!images.count)
+		return;
+		
+	if (user.encryptedZIP.boolValue)
+		[self.portal updateLogEntryForStudy: [[series lastObject] valueForKey:@"study"] withMessage:@"Download encrypted DICOM ZIP" forUser:self.user.name ip:asyncSocket.connectedHost];
+	else [self.portal updateLogEntryForStudy: [[series lastObject] valueForKey:@"study"] withMessage:@"Download DICOM ZIP" forUser:self.user.name ip:asyncSocket.connectedHost];
+		
+	@try
+	{
+		NSString *srcFolder = @"/tmp";
+		NSString *destFile = @"/tmp";
+		
+		srcFolder = [srcFolder stringByAppendingPathComponent: [[[images lastObject] valueForKeyPath:@"series.study.name"] filenameString]];
+		destFile = [destFile stringByAppendingPathComponent: [[[images lastObject] valueForKeyPath:@"series.study.name"] filenameString]];
+		
+		if (self.requestIsMacOS)
+			destFile = [destFile stringByAppendingPathExtension:@"osirixzip"];
+		else destFile = [destFile stringByAppendingPathExtension:@"zip"];
+		
+		if (srcFolder)
+			[NSFileManager.defaultManager removeItemAtPath:srcFolder error:nil];
+		if (destFile)
+			[NSFileManager.defaultManager removeItemAtPath:destFile error:nil];
+		
+		[NSFileManager.defaultManager confirmDirectoryAtPath:srcFolder];
+		
+		[self.portal.dicomDatabase.managedObjectContext unlock];
+		[BrowserController encryptFiles:[images valueForKey:@"completePath"] inZIPFile:destFile password: user.encryptedZIP.boolValue? user.password : NULL ];
+		[self.portal.dicomDatabase.managedObjectContext lock];
+
+		response.data = [NSData dataWithContentsOfFile:destFile];
+		
+		if (srcFolder)
+			[NSFileManager.defaultManager removeItemAtPath:srcFolder error:nil];
+		if (destFile)
+			[NSFileManager.defaultManager removeItemAtPath:destFile error:nil];
+	}
+	@catch(NSException* e) {
+		NSLog(@"**** web seriesAsZIP exception : %@", e);
+	}
 }
 
 -(void)processImage {
-	DicomSeries* series = [self series_requestedSeries];
+	DicomSeries* series = [self series_requestedSeries:NO];
 	if (!series)
 		return;
 	
@@ -2051,7 +1908,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 }
 
 -(void)processMovie {
-	DicomSeries* series = [self series_requestedSeries];
+	DicomSeries* series = [self series_requestedSeries:NO];
 	if (!series)
 		return;
 	

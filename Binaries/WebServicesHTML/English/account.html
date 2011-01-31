@@ -1,103 +1,45 @@
-%INCLUDE:head.pvt.html%
-<body>
-	%INCLUDE:userbox.pvt.html%
-	<div id="pageContent">
-	    <h1 id="pageTitle">%PageTitle%</h1>
-		<div id="toolbar">
-			<a id="backButton" class="button" href="/main?dicomcstoreport=%DicomCStorePort%">Home</a>
- 		</div>
-		<div id="Home" class="panel">
-		
-			%MessageToWrite%
-			<div id="notification" onClick="document.getElementById('notification').style.display='none';">
-			
-				<div id="notificationMessage" onClick="document.getElementById('notification').style.display='none';">
-					<div>%LocalizedLabel_MessageAccount%</div>
-					<input type="button" onClick="document.getElementById('notification').style.display='none';" value="OK"/>
-				</div>
-			</div>
-			%/MessageToWrite%
-		
-			%ErrorToWrite%
-			<div id="error" onClick="document.getElementById('error').style.display='none';">
-			
-				<div id="errorMessage" onClick="document.getElementById('error').style.display='none';">
-					<div>Error:</div>
-					<div>%LocalizedLabel_MessageAccount%</div>
-					<input type="button" onClick="document.getElementById('error').style.display='none';" value="OK"/>
-				</div>
-			</div>
-			%/ErrorToWrite%
-		
-			<div class="block">
-				<h2>Username</h2>
-				<span>%name%</span>
-			</div>
-		
-			<div class="block">
-				<h2>Change Password</h2>
-				<form action="/account" method="POST">
-					<table>
-						<tr>
-							<td>Previous Password</td>
-							<td><input type="password" id="previouspassword" name="previouspassword" size="30"/></td>
-						</tr>
-						<tr>
-							<td>New Password</td>
-							<td><input type="password" id="password" name="password" size="30"/></td>
-						</tr>
-						<tr>
-							<td>Repeat New Password</td>
-							<td><input type="password" id="password2" name="password2" size="30"/></td>
-						</tr>
-					</table>
-					<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="cstoreport"/>
-					<input type="hidden" name="what" value="changePassword" name="changePassword"/>
-					<input type="submit" id="updatePassword" value="Update"/>
-				</form>
-			</div>
-		
-			<div class="blockEnd">
-				<h2>Change Informations</h2>
-				<form action="/account" method="POST">
-					<table>
-						<tr>
-							<td>Email</td>
-							<td><input type="text" id="email" name="email" size="40" value="%email%"/></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td class="small">%email%</td>
-						</tr>
-						<tr>
-							<td>Address</td>
-							<td><input type="text" id="address" name="address" size="80" value="%address%"/></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td class="small">%address%</td>
-						</tr>
-						<tr>
-							<td>Phone</td>
-							<td><input type="text" id="phone" name="phone" size="40" value="%phone%"/></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td class="small">%phone%</td>
-						</tr>
-						<tr>
-							<td>Notification Email</td>
-							<td><input type="checkbox" id="emailNotification" name="emailNotification" %emailNotification%/></td>
-						</tr>
-					</table>
-				
-					<input type="hidden" name="dicomcstoreport" value="%DicomCStorePort%" name="cstoreport"/>
-					<input type="hidden" name="what" value="changeSettings" name="changeSettings"/>
-					<input type="submit" id="updateSettings" value="Update"/>
-				</form>	
-			</div>
-		</div>
-		%INCLUDE:footer.pvt.html%
+%INCLUDE:header.pvt.html%
+<div id="subheader">
+	<a class="back" href="/main">Home</a>
+</div>
+
+<div id="content">
+	%INCLUDE:/errors.pvt.html%
+	%INCLUDE:/messages.pvt.html%
+
+	<div>
+		<div class="title">Username</div>
+		<div>%X:User.name%</div>
 	</div>
-</body>
-</html>
+
+	<div>
+		<div class="title">Password</div>
+		<div>
+			<form action="" method="POST">
+				<table class="wide form">
+					<tr><td>Previous Password:</td><td><input type="password" name="previouspassword" /></td></tr>
+					<tr><td>New Password:</td><td><input type="password" name="password" /></td></tr>
+					<tr><td>Repeat New Password:</td><td><input type="password" name="password2" /></td></tr>
+					<tr><td></td><td><button type="submit" name="action" value="changePassword">Save Password</button></td></tr>
+				</table>
+			</form>
+		</div>
+	</div>
+
+	<div>
+		<div class="title">Personal Information</div>
+		<div>
+			<form action="/account" method="POST">
+				<table class="wide form">
+					<tr><td>Email:</td><td><input type="text" name="email" value="%X:User.email%"/></td></tr>
+					<tr><td>Address:</td><td><input type="text" name="address" value="%X:User.address%"/></td></tr>
+					<tr><td>Phone:</td><td><input type="text" name="phone" value="%X:User.phone%"/></td></tr>
+					<tr><td></td><td><input type="checkbox" id="emailNotification" name="emailNotification" %[IF:User.emailNotification%checked="checked"%]IF:User.emailNotification% /><label for="emailNotification">Notify me by e-mail when something interesting happens</label></td></tr>
+					<tr><td></td><td><button type="submit" name="action" value="changeSettings">Save Informations</button></td></tr>
+				</table>
+			</form>	
+		</div>
+	</div>
+</div>
+
+%INCLUDE:footer.pvt.html%

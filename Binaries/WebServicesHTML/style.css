@@ -248,7 +248,7 @@ a.back:before {
 }
 
 .loading {
-	background-image:url(/images/loading.png);
+	background-image:url(/images/loading.gif);
 	background-repeat: no-repeat;
 	background-position: center center;
 }

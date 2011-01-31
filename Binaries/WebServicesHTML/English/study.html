@@ -45,54 +45,54 @@ function OnSubmitForm(form) {
 		<div>
 			<table class="form">
 				<tr>
-					<td class="StudyInformationLabel">Patient's name:</td>
+					<td>Patient's name:</td>
 					<td>%X:Study.name%</td>
 				</tr>
 				<tr>
-					<td class="StudyInformationLabel">Date&nbsp;of&nbsp;birth:</td>
+					<td>Date&nbsp;of&nbsp;birth:</td>
 					<td>%X:Study.dateOfBirth.FormatDOB%</td>
 				</tr>
 				<tr>
-					<td class="StudyInformationLabel">Patient&nbsp;ID:</td>
+					<td>Patient&nbsp;ID:</td>
 					<td>%X:Study.patientID%</td>
 				</tr>
 				<tr>
-					<td class="StudyInformationLabel">Accession&nbsp;number:</td>
+					<td>Accession&nbsp;number:</td>
 					<td>%X:Study.accessionNumber%</td>
 				</tr>
 				<tr>
-					<td class="StudyInformationLabel">Study&nbsp;date:</td>
+					<td>Study&nbsp;date:</td>
 					<td>%Study.date.Format.Spanned%</td>
 				</tr>
 				<tr>
-					<td class="StudyInformationLabel">Modality:</td>
+					<td>Modality:</td>
 					<td>%X:Study.modality%</td>
 				</tr>
 				<tr>
-					<td class="StudyInformationLabel">Description:</td>
+					<td>Description:</td>
 					<td>%X:Study.name%</td>
 				</tr>
 				%[IF:Study.comment%
 				<tr>
-					<td class="StudyInformationLabel">Comment:</td>
+					<td>Comment:</td>
 					<td>%X:Study.comment%</td>
 				</tr>
 				%]IF:Study.comment%
 				%[IF:Study.stateText%
 				<tr>
-					<td class="StudyInformationLabel">Study&nbsp;state:</td>
+					<td>Study&nbsp;state:</td>
 					<td>%X:Study.stateText%</td>
 				</tr>
 				%]IF:Study.stateText%
 				%[IF:Study.reportIsLink%
 				<tr>
-					<td class="StudyInformationLabel">Report:</td>
+					<td>Report:</td>
 					<td><a href="%X:Study.reportURL%" target="blank" class="report">Link to Report</a></td>
 				</tr>
 				%ELSE:Study.reportIsLink%
 				%[IF:Study.reportURL&&!Info.isIOS%
 				<tr>
-					<td class="StudyInformationLabel">Report:</td>
+					<td>Report:</td>
 					<td><a href="report.%U:Study.reportExtension%?id=%U:Study.studyInstanceUID%" class="report">Download Report</a></td>
 				</tr>
 				%]IF:Study.reportURL&&!Info.isIOS%
@@ -109,7 +109,7 @@ function OnSubmitForm(form) {
 							<input type="checkbox" class="checkbox" name="selected" value="%X:Series.webUID%" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
 						</td>
 						%]IF:Info.proposeDicomSend||Info.proposeWeasis%
-						<td class="narrow middle">
+						<td class="narrow middle center">
 							<a class="series" href="series%Series.seriesExtension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%&%Info.getParameters(id=)%">
 								<img src="/thumbnail?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%" />
 							</a>
@@ -136,7 +136,7 @@ function OnSubmitForm(form) {
 		
 						<td class="narrow middle">
 							%[IF:Info.proposeZipDownload%
-							<a href="%U:Study.name%.%zipextension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%"><img src="images/download.png"/></a>
+							<a href="%U:Study.name% - %U:Series.name%.%zipextension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%"><img src="images/download.png"/></a>
 							%]IF:Info.proposeZipDownload%
 						</td>
 	
@@ -176,7 +176,7 @@ function OnSubmitForm(form) {
 				<tr>
 					<td>User:</td>
 					<td>
-						<select name="shareStudyDestination" id="userDestination">
+						<select name="shareStudyDestination">
 							%[FOREACH:ShareDestinations:Dest%
 							<option value="%X:Dest.webUID%">%X:Dest.name%</option>
 							%]FOREACH:ShareDestinations:Dest%
@@ -186,7 +186,10 @@ function OnSubmitForm(form) {
 				<tr>
 					<td>Message:</td>
 					<td>
-						<textarea name="message" id="shareStudyMessage" onfocus="if (!this.cleared) { this.cleared = true; this.value=''; this.style.color='#000000'; }" style="color:#555555">Fill this field to specify a message that will be included in the notification e-mail sent to this user.</textarea>
+						<textarea name="message" id="shareStudyMessage" style="color:#666666"
+							onfocus="if (this.value == this.defaultValue) { this.value=''; this.style.color='#000000'; }"
+							onblur="if (this.value == '') { this.value = this.defaultValue; this.style.color='#666666'; }">Fill this field to specify a message that will be included in the notification e-mail sent to this user.
+						</textarea>
 					</td>
 				</tr>
 				<tr>
