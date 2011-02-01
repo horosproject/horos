@@ -1097,16 +1097,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
-	int x,y;
-	int i = [[dict valueForKey:@"i"] intValue];
-	int sign = [[dict valueForKey:@"sign"] intValue];
-	int newX = [[dict valueForKey:@"newX"] intValue];
-	float *curPixFImage = [[dict valueForKey:@"curPix"] fImage];
-	int rowBytes = [[dict valueForKey:@"rowBytes"] intValue];
-	int j = [[dict valueForKey:@"curMovieIndex"] intValue];
+	register int i = [[dict valueForKey:@"i"] intValue];
+	register int sign = [[dict valueForKey:@"sign"] intValue];
+	register int newX = [[dict valueForKey:@"newX"] intValue];
+	register float *restrict curPixFImage = [[dict valueForKey:@"curPix"] fImage];
+	register int rowBytes = [[dict valueForKey:@"rowBytes"] intValue] / 4;
+	register int j = [[dict valueForKey:@"curMovieIndex"] intValue];
 	
-	float *srcPtr, *dstPtr, *mainSrcPtr;
-	int count = [pixList[ j] count];
+	register float *restrict srcPtr, *restrict dstPtr, *restrict mainSrcPtr;
+	register int count = [pixList[ j] count];
 	
 	count /= 2;
 	count *= 2;
@@ -1118,19 +1117,38 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	int sliceSize = [[pixList[ j] objectAtIndex: 0] pwidth] * [[pixList[ j] objectAtIndex: 0] pheight];
 	
-	for(x = 0; x < count; x++)
+	mainSrcPtr += i;
+	
+	if( sign > 0)
 	{
-		if( sign > 0)
-			srcPtr = mainSrcPtr - x*sliceSize + i;
-		else
-			srcPtr = mainSrcPtr + x*sliceSize + i;
-		dstPtr = curPixFImage + x * newX;
-		
-		y = newX;
-		while (y-->0)
+		register int x = count;
+		while (x-->0)
 		{
-			*dstPtr++ = *srcPtr;
-			srcPtr += rowBytes/4;
+			srcPtr = mainSrcPtr - x*sliceSize;
+			dstPtr = curPixFImage + x * newX;
+			
+			register int y = newX;
+			while (y-->0)
+			{
+				*dstPtr++ = *srcPtr;
+				srcPtr += rowBytes;
+			}
+		}
+	}
+	else
+	{
+		register int x = count;
+		while (x-->0)
+		{
+			srcPtr = mainSrcPtr + x*sliceSize;
+			dstPtr = curPixFImage + x * newX;
+			
+			register int y = newX;
+			while (y-->0)
+			{
+				*dstPtr++ = *srcPtr;
+				srcPtr += rowBytes;
+			}
 		}
 	}
 

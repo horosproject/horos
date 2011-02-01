@@ -5129,17 +5129,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		float xInv = 1, yInv = 1;
 		
-		if( xFlipped)
-			xInv = -1;
+		NSPoint oo = start;
 		
-		if( yFlipped)
-			yInv = -1;
+		oo.x = (oo.x - drawingFrameRect.size.width/2.) - (((oo.x - drawingFrameRect.size.width/2.)* scaleValue) / startScaleValue);
+		oo.y = (oo.y - drawingFrameRect.size.height/2.) - (((oo.y -drawingFrameRect.size.height/2.)* scaleValue) / startScaleValue);
 		
-		o.x = (start.x - [self frame].size.width/2.) - (((start.x - [self frame].size.width/2.)* scaleValue) / startScaleValue);
-		o.y = (start.y - [self frame].size.height/2.) - (((start.y -[self frame].size.height/2.)* scaleValue) / startScaleValue);
+		oo.y = -oo.y;
 		
-		o.x *= xInv;
-		o.y *= yInv;
+		if( xFlipped) oo.x = -oo.x;
+		if( yFlipped) oo.y = -oo.y;
+		
+		o.x = oo.x*cos((rotation)*deg2rad) + oo.y*sin((rotation)*deg2rad);
+		o.y = oo.x*sin((rotation)*deg2rad) - oo.y*cos((rotation)*deg2rad);
 	}
 	
 	[self setOriginX: (((originStart.x ) * scaleValue) / startScaleValue) + o.x
