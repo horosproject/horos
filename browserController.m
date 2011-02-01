@@ -2587,10 +2587,7 @@ static NSConditionLock *threadLock = nil;
 		else
 		{
 			if( newDB)
-			{
 				NSLog( @"New SQL DB file created: %@", path);
-				[self defaultAlbums: self];
-			}
 		}
 	}
 
@@ -2598,6 +2595,13 @@ static NSConditionLock *threadLock = nil;
 	
 	if( managedObjectContext == nil && [path isEqualToString: currentDatabasePath] == YES && independentContext == NO)
 		managedObjectContext = [moc retain];
+	
+	if( newDB)
+	{
+		[self defaultAlbums: self];
+		NEEDTOREBUILD = NO;
+		COMPLETEREBUILD = NO;
+	}
 	
     return moc;
 }
@@ -5894,74 +5898,78 @@ static NSConditionLock *threadLock = nil;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	@try
+	if( displayEmptyDatabase == NO && [[self window] isVisible] == YES)
 	{
-		NSMutableArray *NoOfStudies = [NSMutableArray array];
-		
-		NSManagedObjectContext *context = [self managedObjectContextIndependentContext: YES];
-
-		// Find all studies
-		NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		
-		NSError *error = nil;
-		NSArray *studiesArray = nil;
-		@try 
+		@try
 		{
-			studiesArray = [context executeFetchRequest:dbRequest error:&error];
+			NSMutableArray *NoOfStudies = [NSMutableArray array];
+			
+			NSManagedObjectContext *context = [self managedObjectContextIndependentContext: YES];
+
+			// Find all studies
+			NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+			
+			NSError *error = nil;
+			NSArray *studiesArray = nil;
+			@try 
+			{
+				studiesArray = [context executeFetchRequest:dbRequest error:&error];
+			}
+			@catch (NSException * e) 
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				[AppController printStackTrace: e];
+			}
+			
+			[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+			
+			NSArray *albums = [BrowserController albumsInContext: context];
+			
+			for( int rowIndex = 0 ; rowIndex < [albums count]; rowIndex++)
+			{
+				NSManagedObject	*object = [albums objectAtIndex: rowIndex];
+				
+				if( [[object valueForKey:@"smartAlbum"] boolValue] == YES)
+				{
+					@try
+					{
+						error = nil;
+						[dbRequest setPredicate: [self smartAlbumPredicate: object]];
+						
+						NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+						
+						[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+					}
+					
+					@catch( NSException *e)
+					{
+						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+						[AppController printStackTrace: e];
+					}
+				}
+				else
+					[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]]];
+			}
+			
+			if( albumNoOfStudiesCache == nil)
+				albumNoOfStudiesCache = [[NSMutableArray array] retain];
+			
+			@synchronized( albumNoOfStudiesCache)
+			{
+				[albumNoOfStudiesCache removeAllObjects];
+				[albumNoOfStudiesCache addObjectsFromArray: NoOfStudies];
+			}
+			
+			[albumTable performSelectorOnMainThread: @selector( reloadData) withObject: nil waitUntilDone: NO];
 		}
-		@catch (NSException * e) 
+		@catch (NSException * e)
 		{
 			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[AppController printStackTrace: e];
 		}
-		
-		[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
-		
-		NSArray *albums = [BrowserController albumsInContext: context];
-		
-		for( int rowIndex = 0 ; rowIndex < [albums count]; rowIndex++)
-		{
-			NSManagedObject	*object = [albums objectAtIndex: rowIndex];
-			
-			if( [[object valueForKey:@"smartAlbum"] boolValue] == YES)
-			{
-				@try
-				{
-					error = nil;
-					[dbRequest setPredicate: [self smartAlbumPredicate: object]];
-					
-					NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-					
-					[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
-				}
-				
-				@catch( NSException *e)
-				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-					[AppController printStackTrace: e];
-				}
-			}
-			else
-				[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]]];
-		}
-		
-		if( albumNoOfStudiesCache == nil)
-			albumNoOfStudiesCache = [[NSMutableArray array] retain];
-		
-		@synchronized( albumNoOfStudiesCache)
-		{
-			[albumNoOfStudiesCache removeAllObjects];
-			[albumNoOfStudiesCache addObjectsFromArray: NoOfStudies];
-		}
-		
-		[albumTable performSelectorOnMainThread: @selector( reloadData) withObject: nil waitUntilDone: NO];
 	}
-	@catch (NSException * e)
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
+	
 	[pool release];
 }
 
