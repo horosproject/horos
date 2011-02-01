@@ -385,15 +385,6 @@
 		7EE416FB08B2615A00D4C9CC /* QueryLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE416C708B2612600D4C9CC /* QueryLogController.h */; };
 		7EE416FC08B2615B00D4C9CC /* QueryLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE416C808B2612600D4C9CC /* QueryLogController.m */; };
 		7EE713BC097450B000510E88 /* dcmmkdir in Resources */ = {isa = PBXBuildFile; fileRef = 7EE713BA097450B000510E88 /* dcmmkdir */; };
-		8404A981129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */; };
-		8404A982129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */; };
-		8404A983129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */; };
-		8404A984129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */; };
-		8404A985129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */; };
-		8404A986129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */; };
-		8404A987129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */; };
-		8404A988129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */; };
-		8404A989129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */; };
 		8404B193129F9FD200C57EA4 /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8404B192129F9FD200C57EA4 /* dcmqrcbs.cc */; };
 		8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
 		8406956410B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
@@ -604,6 +595,15 @@
 		84A220E80F25E41800C6C3EB /* ROIs.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E60F25E41800C6C3EB /* ROIs.tif */; };
 		84A220E90F25E41800C6C3EB /* Keys.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E70F25E41800C6C3EB /* Keys.tif */; };
 		84A6790E0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */; };
+		84A9D48C12F7F8EA00DA1F99 /* libkdu_v64R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v64R.a */; };
+		84A9D48D12F7F8EB00DA1F99 /* libkdu_v64R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v64R.a */; };
+		84A9D48E12F7F8EB00DA1F99 /* libkdu_v64R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v64R.a */; };
+		84A9D48F12F7F8EB00DA1F99 /* libkdu_v64R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v64R.a */; };
+		84A9D49012F7F8EB00DA1F99 /* libkdu_v64R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v64R.a */; };
+		84A9D49612F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */; };
+		84A9D49912F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */; };
+		84A9D49C12F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */; };
+		84A9D49F12F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */; };
 		84ADF472115B622D00FE18B2 /* SRController+StereoVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF460115B622D00FE18B2 /* SRController+StereoVision.h */; };
 		84ADF473115B622D00FE18B2 /* SRController+StereoVision.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF461115B622D00FE18B2 /* SRController+StereoVision.mm */; };
 		84ADF474115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF462115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.h */; };
@@ -8604,8 +8604,6 @@
 		7EE416C708B2612600D4C9CC /* QueryLogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryLogController.h; sourceTree = "<group>"; };
 		7EE416C808B2612600D4C9CC /* QueryLogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryLogController.m; sourceTree = "<group>"; };
 		7EE713BA097450B000510E88 /* dcmmkdir */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmmkdir; sourceTree = "<group>"; };
-		8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kdu_OsiriXSupport.h; sourceTree = "<group>"; };
-		8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kdu_OsiriXSupport.cpp; sourceTree = "<group>"; };
 		8404B192129F9FD200C57EA4 /* dcmqrcbs.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrcbs.cc; sourceTree = "<group>"; };
 		8406956210B6800E00C37AD0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		841524C4113D6BDB008250E6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
@@ -8687,6 +8685,8 @@
 		84A220E60F25E41800C6C3EB /* ROIs.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROIs.tif; sourceTree = "<group>"; };
 		84A220E70F25E41800C6C3EB /* Keys.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Keys.tif; sourceTree = "<group>"; };
 		84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpeg_memsrc.h; path = Papyrus3/jpeg_memsrc.h; sourceTree = "<group>"; };
+		84A9D48B12F7F8EA00DA1F99 /* libkdu_v64R.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkdu_v64R.a; path = "Binaries/KDU SDK/libkdu_v64R.a"; sourceTree = "<group>"; };
+		84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kdu_OsiriXSupport.h; path = "Binaries/KDU SDK/kdu_OsiriXSupport.h"; sourceTree = "<group>"; };
 		84ADF460115B622D00FE18B2 /* SRController+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SRController+StereoVision.h"; sourceTree = "<group>"; };
 		84ADF461115B622D00FE18B2 /* SRController+StereoVision.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "SRController+StereoVision.mm"; sourceTree = "<group>"; };
 		84ADF462115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SRFlyThruAdapter+StereoVision.h"; sourceTree = "<group>"; };
@@ -12229,6 +12229,7 @@
 				BFB8F7F7087B805F007ABE20 /* libjasper2.a in Frameworks */,
 				AB61D9BE11BD32E5003BC1A4 /* IOKit.framework in Frameworks */,
 				CE66BDC812303EC700BE2799 /* libPapyrusToolkit.a in Frameworks */,
+				84A9D48E12F7F8EB00DA1F99 /* libkdu_v64R.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12325,6 +12326,7 @@
 				A997B15710E0C412004C5BB1 /* SecurityInterface.framework in Frameworks */,
 				841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */,
 				CEED780C12303CB800258D00 /* libPapyrusToolkit.a in Frameworks */,
+				84A9D48C12F7F8EA00DA1F99 /* libkdu_v64R.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12348,6 +12350,7 @@
 				59FB643A1230EE4100EBA136 /* libgif.a in Frameworks */,
 				59FB643B1230EE4100EBA136 /* libming.a in Frameworks */,
 				59FB643C1230EE4100EBA136 /* libpng12.a in Frameworks */,
+				84A9D49012F7F8EB00DA1F99 /* libkdu_v64R.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12356,6 +12359,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE6DEB640F91BF9B0009FEF3 /* libjasper2.a in Frameworks */,
+				84A9D48F12F7F8EB00DA1F99 /* libkdu_v64R.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12392,6 +12396,7 @@
 				597DA7B41188340500D3BBCF /* SecurityInterface.framework in Frameworks */,
 				CEED780D12303CC900258D00 /* libPapyrusToolkit.a in Frameworks */,
 				848DEDD712311287003DE0C5 /* libjasper2.a in Frameworks */,
+				84A9D48D12F7F8EB00DA1F99 /* libkdu_v64R.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12556,8 +12561,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
-				8404A97F129CFA8200C57EA4 /* kdu_OsiriXSupport.h */,
-				8404A980129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp */,
+				84A9D44712F7F8BE00DA1F99 /* KDU SDK */,
 				59BDEC17117C927D007F1F2C /* OsiriX Launcher */,
 				AB10FA9611293361009EB238 /* Nitrogen */,
 				CE7A0D670AED557500540017 /* 32-bit Shell */,
@@ -13165,6 +13169,15 @@
 				847BE3A3128BF0E100A87E98 /* tgt.h */,
 			);
 			name = OpenJPEG;
+			sourceTree = "<group>";
+		};
+		84A9D44712F7F8BE00DA1F99 /* KDU SDK */ = {
+			isa = PBXGroup;
+			children = (
+				84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */,
+				84A9D48B12F7F8EA00DA1F99 /* libkdu_v64R.a */,
+			);
+			name = "KDU SDK";
 			sourceTree = "<group>";
 		};
 		84AA013C104EA39E0091E49B /* Log Window */ = {
@@ -17404,7 +17417,7 @@
 				847BE42E128BF17F00A87E98 /* t2.h in Headers */,
 				847BE430128BF17F00A87E98 /* tcd.h in Headers */,
 				847BE432128BF17F00A87E98 /* tgt.h in Headers */,
-				8404A986129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */,
+				84A9D49C12F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19832,7 +19845,6 @@
 				847BE3CD128BF0E200A87E98 /* tcd.h in Headers */,
 				847BE3CF128BF0E200A87E98 /* tgt.h in Headers */,
 				592BA51D12966ABD00179C27 /* NSError+OsiriX.h in Headers */,
-				8404A988129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */,
 				590BB22012A002FA009E9758 /* WebPortalStudy.h in Headers */,
 				597BB90B12A7D3C000D0A172 /* WebPortal.h in Headers */,
 				597BB93112A7E0F200D0A172 /* NSUserDefaults+OsiriX.h in Headers */,
@@ -19862,6 +19874,7 @@
 				CE90550F12F5B64300263AB6 /* CPRUnsignedInt16ImageRep.h in Headers */,
 				CE90551112F5B64300263AB6 /* CPRView.h in Headers */,
 				CE90551312F5B64300263AB6 /* CPRVolumeData.h in Headers */,
+				84A9D49612F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19957,7 +19970,7 @@
 				847BE459128BF18200A87E98 /* t2.h in Headers */,
 				847BE45B128BF18200A87E98 /* tcd.h in Headers */,
 				847BE45D128BF18200A87E98 /* tgt.h in Headers */,
-				8404A984129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */,
+				84A9D49F12F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22088,11 +22101,11 @@
 				847BE3F9128BF0E200A87E98 /* tcd.h in Headers */,
 				847BE3FB128BF0E200A87E98 /* tgt.h in Headers */,
 				592BA51F12966ABD00179C27 /* NSError+OsiriX.h in Headers */,
-				8404A981129CFA8200C57EA4 /* kdu_OsiriXSupport.h in Headers */,
 				597BB93312A7E0F200D0A172 /* NSUserDefaults+OsiriX.h in Headers */,
 				59EBFEA612BB500C00809C61 /* BrowserController.h in Headers */,
 				59E52B3912C109B80094E668 /* DicomDatabase.h in Headers */,
 				592D333912F2C71A00C7C002 /* NSException+N2.h in Headers */,
+				84A9D49912F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22280,6 +22293,7 @@
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -23694,7 +23708,6 @@
 				847BE42D128BF17F00A87E98 /* t2.c in Sources */,
 				847BE42F128BF17F00A87E98 /* tcd.c in Sources */,
 				847BE431128BF17F00A87E98 /* tgt.c in Sources */,
-				8404A987129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24526,7 +24539,6 @@
 				847BE3CC128BF0E200A87E98 /* tcd.c in Sources */,
 				847BE3CE128BF0E200A87E98 /* tgt.c in Sources */,
 				592BA51E12966ABD00179C27 /* NSError+OsiriX.mm in Sources */,
-				8404A989129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */,
 				8404B193129F9FD200C57EA4 /* dcmqrcbs.cc in Sources */,
 				590BB22112A002FA009E9758 /* WebPortalStudy.mm in Sources */,
 				597BB90C12A7D3C000D0A172 /* WebPortal.mm in Sources */,
@@ -24930,7 +24942,6 @@
 				CEFFFE3D12868F5400D69BB8 /* djdijp2k.cc in Sources */,
 				CEFF01001286F7A700D69BB8 /* djenc2k.cc in Sources */,
 				CEFF01471286FB2000D69BB8 /* djeijg2k.cc in Sources */,
-				8404A983129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */,
 				597BB99912A9225700D0A172 /* NSUserDefaults+OsiriX.mm in Sources */,
 				597BB9E712A923FD00D0A172 /* N2Shell.mm in Sources */,
 			);
@@ -25173,7 +25184,6 @@
 				847BE458128BF18200A87E98 /* t2.c in Sources */,
 				847BE45A128BF18200A87E98 /* tcd.c in Sources */,
 				847BE45C128BF18200A87E98 /* tgt.c in Sources */,
-				8404A985129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25782,7 +25792,6 @@
 				847BE3F8128BF0E200A87E98 /* tcd.c in Sources */,
 				847BE3FA128BF0E200A87E98 /* tgt.c in Sources */,
 				592BA52012966ABD00179C27 /* NSError+OsiriX.mm in Sources */,
-				8404A982129CFA8200C57EA4 /* kdu_OsiriXSupport.cpp in Sources */,
 				ABF3BE0B12A3F948003AAD73 /* WebPortalDB.xcdatamodeld in Sources */,
 				ABF3BE0C12A3F949003AAD73 /* WebPortalDB 1-2.xcmappingmodel in Sources */,
 				597BB93412A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm in Sources */,
@@ -26469,6 +26478,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
@@ -26567,6 +26577,7 @@
 					"\"$(SRCROOT)/ITK180/bin\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -26760,6 +26771,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Ming\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -26877,6 +26889,7 @@
 					"\"$(SRCROOT)/ITK180/bin\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -26942,6 +26955,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
@@ -27049,6 +27063,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Ming\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -27184,6 +27199,7 @@
 					"\"$(SRCROOT)/ITK180/bin\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -27251,6 +27267,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
@@ -27338,6 +27355,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Ming\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -27400,6 +27418,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
@@ -27420,6 +27439,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
@@ -27440,6 +27460,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
@@ -27492,6 +27513,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -27561,6 +27583,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -27631,6 +27654,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",

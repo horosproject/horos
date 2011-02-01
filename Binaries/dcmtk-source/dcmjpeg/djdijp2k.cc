@@ -114,8 +114,8 @@ OFCondition DJDecompressJP2k::decode(
 		
 		kdu_decompressJPEG2KWithBuffer( uncompressedFrameBuffer, compressedFrameBuffer, compressedFrameBufferSize, &decompressedBufferSize, &colorModel, processors);
 		
-		if( colorModel >= 0)
-			decompressedColorModel = (EP_Interpretation) colorModel;
+		if( colorModel == 1)
+			decompressedColorModel = (EP_Interpretation) EPI_RGB;
 	}
 	else
 	{
