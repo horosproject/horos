@@ -6,37 +6,42 @@
 <script type="text/javascript" language="javascript">
 
 function checkAll(form) {
-	form.checked = true;
-	for (var i = 0; i < form.length; i++)
-		form[i].checked = true;
-	document.getElementById('CheckAllLabel').innerHTML = "Uncheck All";
+	for (var i = 0; i < form.selected.length; i++)
+		form.selected[i].checked = true;
+	checkboxChanged(form);
 }
 
 function uncheckAll(form) {
-	form.checked = false;
-	for (var i = 0; i < form.length; i++)
-		form[i].checked = false;
-	document.getElementById('CheckAllLabel').innerHTML = "Check All";
+	for (var i = 0; i < form.selected.length; i++)
+		form.selected[i].checked = false;
+	checkboxChanged(form);
 }
 
-function OnSubmitForm(form) {
-	if (document.pressed == 'Weasis')
+function checkboxChanged(form) {
+	var allChecked = true;
+	var allUnchecked = true;
+	for (var i = 0; i < form.selected.length; i++) {
+		if (allChecked && !form.selected[i].checked) allChecked = false;
+		if (allUnchecked && form.selected[i].checked) allUnchecked = false;
+	}
+	
+	form.CheckAll.disabled = allChecked;
+	form.UncheckAll.disabled = allUnchecked;
+}
+
+function onSubmitForm(form) {
+	if (document.submitting == 'Weasis')
 		form.action ="weasis.jnlp";
-	else if (document.pressed == 'Send')
-		form.action ="%?info.getParameters%";
+	else form.action = document.location;
+	if (form.message.value == form.message.defaultValue)
+		form.message.value = '';
 	return true;
 }
 
 </script>
 
-<form onsubmit="return OnSubmitForm();">
+<form id="form" method="post" onsubmit="return onSubmitForm(this);">
 <div id="content">
-	<input type="hidden" name="id" value="%X:Study.studyInstanceUID%"/>
-	<input type="hidden" name="search" value="%X:Request.search%"/>
-	<input type="hidden" name="browse" value="%X:Request.browse%"/>
-	<input type="hidden" name="browseParameter" value="%X:Request.browseParameter%"/>
-	<input type="hidden" name="album" value="%X:Request.album%"/>
-
 	%INCLUDE:/errors.pvt.html%
 	%INCLUDE:/messages.pvt.html%
 
@@ -96,6 +101,7 @@ function OnSubmitForm(form) {
 					<td><a href="report.%U:Study.reportExtension%?id=%U:Study.studyInstanceUID%" class="report">Download Report</a></td>
 				</tr>
 				%]IF:Study.reportURL&&!Info.isIOS%
+				%]IF:Study.reportIsLink%
 			</table>
 		</div>
 
@@ -106,7 +112,7 @@ function OnSubmitForm(form) {
 					<tr class="li%X:Series_Index2%">				
 						%[IF:Info.proposeDicomSend||Info.proposeWeasis%
 						<td class="narrow fat">
-							<input type="checkbox" class="checkbox" name="selected" value="%X:Series.webUID%" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
+							<input type="checkbox" class="checkbox" name="selected" value="%X:Series.webUID%" onchange="checkboxChanged(this.form)" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
 						</td>
 						%]IF:Info.proposeDicomSend||Info.proposeWeasis%
 						<td class="narrow middle center">
@@ -152,7 +158,11 @@ function OnSubmitForm(form) {
 				<tr>
 					<td colspan="3">
 					%[IF:Series.count>1%
-						<input type="checkbox" name="CheckAll" onchange="if (this.checked == true) checkAll(this.form); else uncheckAll(this.form);" %[IF:Series.areSelected%checked="checked"%]IF:Series.areSelected% /> <label for="CheckAll" id="CheckAllLabel">%[IF:Series.areSelected%Uncheck All%ELSE:Series.areSelected%Check All%]IF:Series.areSelected%</label>
+						<button type="button" name="CheckAll" onclick="checkAll(this.form)">Check All</button>
+						<button type="button" name="UncheckAll" onclick="uncheckAll(this.form)">Uncheck All</button>
+						<script type="text/javascript" language="javascript">
+							checkboxChanged(document.getElementById('form'));
+						</script>
 					%]IF:Series.count>1%
 					</td>
 					%[IF:Info.proposeZipDownload%
@@ -161,7 +171,7 @@ function OnSubmitForm(form) {
 					%]IF:Info.proposeZipDownload%
 					%[IF:Info.proposeWeasis%
 					<td class="narrow middle">
-						<input type="image" src="images/weasis.png" onclick="document.pressed=this.value" value="Weasis" alt="Open selected series in Weasis" />
+						<input type="image" src="images/weasis.png" alt="Open selected series in Weasis" onclick="document.submitting='Weasis'" />
 					</td>
 					%]IF:Info.proposeWeasis%
 				</tr>
@@ -169,7 +179,7 @@ function OnSubmitForm(form) {
 			</table>
 		</div>
 	
-		%[IF:Info.proposeShare%
+		%[IF:Info.proposeShare&&ShareDestinations.count%
 		<div class="title separated">Share</div>
 		<div>
 			<table class="basic wide form">
@@ -188,19 +198,18 @@ function OnSubmitForm(form) {
 					<td>
 						<textarea name="message" id="shareStudyMessage" style="color:#666666"
 							onfocus="if (this.value == this.defaultValue) { this.value=''; this.style.color='#000000'; }"
-							onblur="if (this.value == '') { this.value = this.defaultValue; this.style.color='#666666'; }">Fill this field to specify a message that will be included in the notification e-mail sent to this user.
-						</textarea>
+							onblur="if (this.value == '') { this.value = this.defaultValue; this.style.color='#666666'; }">Fill this field to specify a message that will be included in the notification e-mail sent to this user.</textarea>
 					</td>
 				</tr>
 				<tr>
 					<td></td>
 					<td>
-						<button type="submit" name="action" id="shareStudy" value="shareStudy">Share</button>
+						<button type="submit" name="shareStudy" value="shareStudy" onclick="document.submitting='Share'">Share</button>
 					</td>
 				</tr>
 			</table>
 		</div>
-		%]IF:Info.proposeShare%
+		%]IF:Info.proposeShare&&ShareDestinations.count%
 	
 		%[IF:Info.proposeDicomSend%
 		<div class="title separated">DICOM Transfer</div>
@@ -214,7 +223,7 @@ function OnSubmitForm(form) {
 							<option value="%X:Dest.address%:%X:Dest.port%:%X:Dest.aeTitle%:%X:Dest.syntax%">%X:Dest.description%</option>
 							%]FOREACH:DicomDestinations:Dest%
 						</select>
-						<button type="submit" name="action" onClick="document.pressed=this.value" id="dicomSend" value="dicomSend">Send</button>
+						<button type="submit" name="dicomSend" value="dicomSend" onclick="document.submitting='Send'">Send</button>
 					</td>
 				</tr>
 			</table>

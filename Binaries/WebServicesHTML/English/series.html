@@ -9,7 +9,7 @@
 		<img src="/image.jpg?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" style="max-width:100%" />
 	%ELSE:Series.images.count<2%
 		%[IF:Info.proposeFlash%
-			<object width="%X:Series.width%" height="%X:Series.height%" id="idFlash" name="Flash">
+			<object width="%X:Series.width%" height="%X:Series.height%" id="flash" name="Flash">
 				<param name="movie" value="/movie.swf?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" />
 				<param name="allowscriptaccess" value="always" />
 				<param name="wmode" value="transparent" />

@@ -16,10 +16,10 @@
 		<div class="title">Password</div>
 		<div>
 			<form action="" method="POST">
-				<table class="wide form">
-					<tr><td>Previous Password:</td><td><input type="password" name="previouspassword" /></td></tr>
-					<tr><td>New Password:</td><td><input type="password" name="password" /></td></tr>
-					<tr><td>Repeat New Password:</td><td><input type="password" name="password2" /></td></tr>
+				<table class="basic wide form">
+					<tr><td>Previous Password:</td><td><input type="password" name="previouspassword" /></td></tr>
+					<tr><td>New Password:</td><td><input type="password" name="password" /></td></tr>
+					<tr><td>Repeat New Password:</td><td><input type="password" name="password2" /></td></tr>
 					<tr><td></td><td><button type="submit" name="action" value="changePassword">Save Password</button></td></tr>
 				</table>
 			</form>
@@ -30,7 +30,7 @@
 		<div class="title">Personal Information</div>
 		<div>
 			<form action="/account" method="POST">
-				<table class="wide form">
+				<table class="basic wide form">
 					<tr><td>Email:</td><td><input type="text" name="email" value="%X:User.email%"/></td></tr>
 					<tr><td>Address:</td><td><input type="text" name="address" value="%X:User.address%"/></td></tr>
 					<tr><td>Phone:</td><td><input type="text" name="phone" value="%X:User.phone%"/></td></tr>

@@ -30,6 +30,7 @@
 
 -(void)save:(NSError**)err;
 -(NSEntityDescription*)entityForName:(NSString*)name;
+-(NSManagedObject*)objectWithID:(NSString*)theId;
 
 -(WebPortalUser*)userWithName:(NSString*)name;
 -(WebPortalUser*)newUser;

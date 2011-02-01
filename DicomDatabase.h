@@ -30,7 +30,9 @@
 
 -(void)save:(NSError**)err;
 -(NSEntityDescription*)entityForName:(NSString*)name;
+-(NSManagedObject*)objectWithID:(NSString*)theId;
 
+-(NSArray*)albums;
 
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string;
 

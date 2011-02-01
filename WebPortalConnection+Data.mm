@@ -40,6 +40,7 @@
 #import "DCMAbstractSyntaxUID.h"
 #import "NSFileManager+N2.h"
 #import "CSMailMailClient.h"
+#import "NSObject+SBJSON.h"
 
 
 #import "BrowserController.h" // TODO: remove when badness solved
@@ -66,14 +67,14 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	return [NSArray arrayWithObject:obj];
 }
 
--(NSArray*)studyList_studiesForUser:(WebPortalUser*)luser outTitle:(NSString**)title {
+-(NSArray*)studyList_requestedStudies:(NSString**)title {
 	NSString* ignore = NULL;
 	if (!title) title = &ignore;
 	
 	NSString* albumReq = [parameters objectForKey:@"album"];
 	if (albumReq.length) {
-		*title = [NSString stringWithFormat:NSLocalizedString(@"%@", @"Web portal, study list, title format (%@ is album name)"), albumReq];
-		return [self.portal studiesForUser:luser album:albumReq sortBy:[parameters objectForKey:@"order"]];
+		*title = [NSString stringWithFormat:NSLocalizedString(@"Album: %@", @"Web portal, study list, title format (%@ is album name)"), albumReq];
+		return [self.portal studiesForUser:user album:albumReq sortBy:[parameters objectForKey:@"order"]];
 	}
 	
 	NSString* browseReq = [parameters objectForKey:@"browse"];
@@ -83,7 +84,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	
 	if ([browseReq isEqual:@"newAddedStudies"] && browseParameterReq.doubleValue > 0)
 	{
-		*title = NSLocalizedString( @"New Available Studies", @"Web portal, study list, title");
+		*title = NSLocalizedString( @"New Studies", @"Web portal, study list, title");
 		browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", browseParameterReq.doubleValue];
 	}
 	else
@@ -172,7 +173,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	if (![session objectForKey:@"StudiesSortKey"])
 		[session setObject:@"name" forKey:@"StudiesSortKey"];
 	
-	return [self.portal studiesForUser:luser predicate:browsePredicate sortBy:[session objectForKey:@"StudiesSortKey"]];
+	return [self.portal studiesForUser:user predicate:browsePredicate sortBy:[session objectForKey:@"StudiesSortKey"]];
 }
 
 
@@ -202,7 +203,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	
 	@try {
 		NSDictionary* todo = [NSDictionary dictionaryWithObjectsAndKeys: [dicomNodeDescription objectForKey:@"Address"], @"Address", [dicomNodeDescription objectForKey:@"TransferSyntax"], @"TransferSyntax", [dicomNodeDescription objectForKey:@"Port"], @"Port", [dicomNodeDescription objectForKey:@"AETitle"], @"AETitle", [images valueForKey: @"completePath"], @"Files", nil];
-		[NSThread detachNewThreadSelector:@selector(dicomSendThread:) toTarget:self withObject:todo];
+		[NSThread detachNewThreadSelector:@selector(sendImagesToDicomNodeThread:) toTarget:self withObject:todo];
 	} @catch (NSException* e) {
 		NSLog( @"Error: [WebPortalConnection sendImages:toDicomNode:] %@", e);
 	}	
@@ -562,21 +563,18 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	for (NSString* selectedID in [WebPortalConnection MakeArray:[parameters objectForKey:@"selected"]])
 		[selectedSeries addObjectsFromArray:[self.portal seriesForUser:user predicate:[NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyId, selectedID]]];
 	
-	NSString* action = [parameters objectForKey:@"action"];
-	
-	if ([action isEqual:@"dicomSend"] && study) {
+	if ([[parameters objectForKey:@"dicomSend"] isEqual:@"dicomSend"] && study) {
 		NSArray* dicomDestinationArray = [[parameters objectForKey:@"dicomDestination"] componentsSeparatedByString:@":"];
 		if (dicomDestinationArray.count >= 4) {
 			NSMutableDictionary* dicomDestination = [NSMutableDictionary dictionary];
-			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:0] forKey:@"Address"];
-			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:1] forKey:@"Port"];
-			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:2] forKey:@"AETitle"];
-			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:3] forKey:@"TransferSyntax"];
+			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:dicomDestinationArray.count-4] forKey:@"Address"];
+			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:dicomDestinationArray.count-3] forKey:@"Port"];
+			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:dicomDestinationArray.count-2] forKey:@"AETitle"];
+			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:dicomDestinationArray.count-1] forKey:@"TransferSyntax"];
 			
 			NSMutableArray* selectedImages = [NSMutableArray array];
 			for (NSString* selectedID in [WebPortalConnection MakeArray:[parameters objectForKey:@"selected"]])
-				for (DicomSeries* series in [self.portal seriesForUser:user predicate:[NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyId, selectedID]])
-					[selectedImages addObjectsFromArray:series.images.allObjects];
+				[selectedImages addObjectsFromArray:[(DicomSeries*)[self.portal.dicomDatabase objectWithID:selectedID] sortedImages]];
 			
 			if (selectedImages.count) {
 				[self sendImages:selectedImages toDicomNode:dicomDestination];
@@ -587,16 +585,10 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: cannot identify node.", @"Web Portal, study, dicom send, error")]];
 	}
 	
-	if ([action isEqual:@"shareStudy"] && study) {
-		NSString* destUserName = [parameters objectForKey:@"shareStudyUser"];
-		// find this user
-		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-		req.entity = [self.portal.database entityForName:@"User"];
-		req.predicate = [NSPredicate predicateWithFormat: @"name == %@", destUserName];
-		NSArray* users = [self.portal.database.managedObjectContext executeFetchRequest:req error:NULL];
-		if (users.count == 1) {
+	if ([[parameters objectForKey:@"shareStudy"] isEqual:@"shareStudy"] && study) {
+		WebPortalUser* destUser = (WebPortalUser*)[self.portal.database objectWithID:[parameters objectForKey:@"shareStudyDestination"]];
+		if ([destUser isKindOfClass:WebPortalUser.class]) {
 			// add study to specific study list for this user
-			WebPortalUser* destUser = users.lastObject;
 			if (![[destUser.studies.allObjects valueForKey:@"study"] containsObject:study]) {
 				WebPortalStudy* wpStudy = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:self.portal.database.managedObjectContext];
 				wpStudy.user = destUser;
@@ -607,10 +599,10 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 			}
 			
 			// Send the email
-			[self.portal sendNotificationsEmailsTo: users aboutStudies:[NSArray arrayWithObject:study] predicate:NULL message:[N2NonNullString([parameters objectForKey:@"message"]) stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo:user.email customText:nil webServerAddress:self.portalAddress];
-			[self.portal updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", destUserName] forUser:user.name ip:asyncSocket.connectedHost];
+			[self.portal sendNotificationsEmailsTo:[NSArray arrayWithObject:destUser] aboutStudies:[NSArray arrayWithObject:study] predicate:NULL message:[N2NonNullString([parameters objectForKey:@"message"]) stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo:user.email customText:nil webServerAddress:self.portalAddress];
+			[self.portal updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", destUser.name] forUser:user.name ip:asyncSocket.connectedHost];
 			
-			[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUserName]];
+			[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUser.name]];
 		} else
 			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Study share failed: cannot identify user.", @"Web Portal, study, share, error")]];
 	}
@@ -650,23 +642,24 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 			// DICOM destinations
 
 			NSMutableArray* dicomDestinations = [NSMutableArray array];
-			if (!user || user.sendDICOMtoSelfIP.boolValue)
-				[dicomDestinations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-											  [asyncSocket connectedHost], @"address",
-											  self.dicomCStorePortString, @"port",
-											  @"This Computer", @"aeTitle",
-											  self.requestIsIOS? @"5" : @"0", @"syntax",
-											  self.requestIsIOS? @"This Computer" : [NSString stringWithFormat:@"This Computer [%@:%@]", [asyncSocket connectedHost], self.dicomCStorePortString], @"description",
-											  NULL]];
-			if (!user || user.sendDICOMtoAnyNodes.boolValue)
-				for (NSDictionary* node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
+			if (!user || user.sendDICOMtoSelfIP.boolValue) {
 					[dicomDestinations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-												  [node objectForKey:@"Address"], @"address",
-												  [node objectForKey:@"Port"], @"port",
-												  [node objectForKey:@"AETitle"], @"aeTitle",
-												  [node objectForKey:@"TransferSyntax"], @"syntax",
-												  self.requestIsIOS? [node objectForKey:@"Description"] : [NSString stringWithFormat:@"%@ [%@:%@]", [node objectForKey:@"Description"], [node objectForKey:@"Address"], [node objectForKey:@"Port"]], @"description",
+												  [asyncSocket connectedHost], @"address",
+												  self.dicomCStorePortString, @"port",
+												  @"This Computer", @"aeTitle",
+												  self.requestIsIOS? @"5" : @"0", @"syntax",
+												  self.requestIsIOS? @"This Computer" : [NSString stringWithFormat:@"This Computer [%@:%@]", [asyncSocket connectedHost], self.dicomCStorePortString], @"description",
 												  NULL]];
+				if (!user || user.sendDICOMtoAnyNodes.boolValue)
+					for (NSDictionary* node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
+						[dicomDestinations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+													  [node objectForKey:@"Address"], @"address",
+													  [node objectForKey:@"Port"], @"port",
+													  [node objectForKey:@"AETitle"], @"aeTitle",
+													  [node objectForKey:@"TransferSyntax"], @"syntax",
+													  self.requestIsIOS? [node objectForKey:@"Description"] : [NSString stringWithFormat:@"%@ [%@:%@]", [node objectForKey:@"Description"], [node objectForKey:@"Address"], [node objectForKey:@"Port"]], @"description",
+													  NULL]];
+			}
 			[response.tokens setObject:dicomDestinations forKey:@"DicomDestinations"];
 			
 			// Share
@@ -679,7 +672,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 				NSArray* users = [[self.portal.database.managedObjectContext executeFetchRequest:req error:NULL] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]];
 				
 				for (WebPortalUser* u in users)
-					if (u != self.user)
+					if (u != self.user && ![[self.portal studiesForUser:u predicate:NULL] containsObject:study])
 						[shareDestinations addObject:[WebPortalProxy createWithObject:u transformer:[WebPortalUserTransformer create]]];
 			}
 			[response.tokens setObject:shareDestinations forKey:@"ShareDestinations"];
@@ -696,7 +689,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 
 -(void)processStudyListHtml {
 	NSString* title = NULL;
-	[response.tokens setObject:[self studyList_studiesForUser:self.user outTitle:&title] forKey:@"Studies"];	
+	[response.tokens setObject:[self studyList_requestedStudies:&title] forKey:@"Studies"];	
 	if (title) [response.tokens setObject:title forKey:@"PageTitle"];
 	response.templateString = [self.portal stringForPath:@"studyList.html"];
 }
@@ -760,7 +753,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 						
 						[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: u.email, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
 						
-						[self.session.dict addMessage:NSLocalizedString(@"You will shortly receive an email with your new password.", nil)];
+						[response.tokens addMessage:NSLocalizedString(@"You will shortly receive an email with your new password.", nil)];
 						
 						[self.portal.database save:NULL];
 					}
@@ -772,7 +765,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 					
 					[self.portal updateLogEntryForStudy: nil withMessage: @"Unknown user" forUser: [NSString stringWithFormat: @"%@ %@", username, email] ip: nil];
 					
-					[self.session.dict addError:NSLocalizedString(@"This username doesn't exist in our database.", nil)];
+					[response.tokens addError:NSLocalizedString(@"This username doesn't exist in our database.", nil)];
 				}
 			}
 			@catch (NSException* e) {
@@ -793,43 +786,35 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	if (!self.user)
 		return;
 	
-	if ([[parameters valueForKey:@"action"] isEqualToString:@"changePassword"])
-	{
+	if ([[parameters valueForKey:@"action"] isEqualToString:@"changePassword"]) {
 		NSString * previouspassword = [parameters valueForKey: @"previouspassword"];
 		NSString * password = [parameters valueForKey: @"password"];
 		
 		if ([previouspassword isEqualToString:user.password]) {
-			if ([[parameters valueForKey: @"password"] isEqualToString: [parameters valueForKey: @"password2"]])
+			if ([[parameters valueForKey:@"password"] isEqualToString:[parameters valueForKey:@"password2"]])
 			{
-				if ([password length] >= 4)
-				{
+				NSError* err = NULL;
+				if (![user validatePassword:&password error:&err])
+					[response.tokens addError:err.localizedDescription];
+				else {
 					// We can update the user password
 					user.password = password;
 					[self.portal.database save:NULL];
-					[self.session.dict addMessage:NSLocalizedString(@"Password updated successfully!", nil)];
+					[response.tokens addMessage:NSLocalizedString(@"Password updated successfully!", nil)];
 					[self.portal updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"] forUser:self.user.name ip:asyncSocket.connectedHost];
-				}
-				else
-				{
-					[self.session.dict addError:NSLocalizedString(@"Password needs to be at least 4 characters long!", nil)];
 				}
 			}
 			else
-			{
-				[self.session.dict addError:NSLocalizedString(@"New passwords are not identical!", nil)];
-			}
+				[response.tokens addError:NSLocalizedString(@"The new password wasn't repeated correctly.", nil)];
 		}
 		else
-		{
-			[self.session.dict addError:NSLocalizedString(@"Wrong password!", nil)];
-		}
+			[response.tokens addError:NSLocalizedString(@"Wrong current password.", nil)];
 	}
 	
-	if ([[parameters valueForKey:@"action"] isEqualToString:@"changeSettings"])
-	{
-		user.email = [parameters valueForKey: @"email"];
-		user.address = [parameters valueForKey: @"address"];
-		user.phone = [parameters valueForKey: @"phone"];
+	if ([[parameters valueForKey:@"action"] isEqualToString:@"changeSettings"]) {
+		user.email = [parameters valueForKey:@"email"];
+		user.address = [parameters valueForKey:@"address"];
+		user.phone = [parameters valueForKey:@"phone"];
 		
 		if ([[[parameters valueForKey:@"emailNotification"] lowercaseString] isEqualToString:@"on"])
 			user.emailNotification = [NSNumber numberWithBool:YES];
@@ -837,15 +822,12 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 		
 		[self.portal.database save:NULL];
 		
-		[self.session.dict addMessage:NSLocalizedString(@"Personal information updated successfully!", nil)];
+		[response.tokens addMessage:NSLocalizedString(@"Personal information updated successfully!", nil)];
 	}
 	
 	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"User account for: %@", @"Web portal, account, title format (%@ is user.name)"), user.name] forKey:@"PageTitle"];
 	response.templateString = [self.portal stringForPath:@"account.html"];
 }
-
-
-
 
 
 
@@ -992,9 +974,9 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 #pragma mark JSON
 
 -(void)processStudyListJson {
-	/*NSArray* studies = [self studyList_studiesForUser:self.user parameters:self.parameters outTitle:NULL]	
+	NSArray* studies = [self studyList_requestedStudies:NULL];
 	
-	[portal.dicomDatabase lock];
+	[self.portal.dicomDatabase.managedObjectContext lock];
 	@try {
 		NSMutableArray* r = [NSMutableArray array];
 		for (DicomStudy* study in studies) {
@@ -1006,9 +988,9 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 			[s setObject:N2NonNullString(study.studyName) forKey:@"studyName"];
 			[s setObject:N2NonNullString(study.modality) forKey:@"modality"];
 			
-			NSString* stateText = study.stateText;
+			NSString* stateText = (NSString*)study.stateText;
 			if (stateText.intValue)
-				stateText = [BrowserController.statesArray objectAtIndex:studyText.intValue];
+				stateText = [BrowserController.statesArray objectAtIndex:stateText.intValue];
 			[s setObject:N2NonNullString(stateText) forKey:@"stateText"];
 
 			[s setObject:N2NonNullString(study.studyInstanceUID) forKey:@"studyInstanceUID"];
@@ -1016,166 +998,96 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 			[r addObject:s];
 		}
 		
-		return [r JSONRepresentation];
+		[response setDataWithString:[r JSONRepresentation]];
 	} @catch (NSException* e) {
 		NSLog(@"Error: [WebPortalResponse processStudyListJson:] %@", e);
 	} @finally {
-		[portal.dicomDatabase unlock];
-	}*/
+		[self.portal.dicomDatabase.managedObjectContext unlock];
+	}
 }
 
 -(void)processSeriesJson {
-	/*DicomSeries* series = [self series_requestedSeries:NO];
+	DicomSeries* series = [self series_requestedSeries:NO];
 
-	NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
-	
-	
-	@try
-	{
-		// Sort images with "instanceNumber"
+	NSArray* imagesArray = series.images.allObjects;
+	@try { // Sort images with "instanceNumber"
 		NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
 		NSArray *sortDescriptors = [NSArray arrayWithObject:sort];
 		[sort release];
 		imagesArray = [imagesArray sortedArrayUsingDescriptors: sortDescriptors];
+	} @catch (NSException* e) { /* ignore */ }
+	
+	
+	[self.portal.dicomDatabase.managedObjectContext lock];
+	@try {
+		NSMutableArray* jsonImagesArray = [NSMutableArray array];
+		for (DicomImage* image in imagesArray)
+			if (image.sopInstanceUID)
+				[jsonImagesArray addObject:image.sopInstanceUID];
+		[response setDataWithString:[jsonImagesArray JSONRepresentation]];
 	}
-	@catch (NSException * e)
-	{
-		NSLog( @"%@", [e description]);
-	}
-	
-	
-	
-	
-	
-	NSMutableArray *jsonImagesArray = [NSMutableArray array];
-	
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-	[context lock];
-	
-	@try
-	{
-		for (DicomImage *image in images)
-		{
-			[jsonImagesArray addObject:N2NonNullString([image valueForKey:@"sopInstanceUID"])];
-		}
-	}
-	@catch (NSException *e)
-	{
+	@catch (NSException *e) {
 		NSLog( @"***** jsonImageListForImages exception: %@", e);
+	} @finally {
+		[self.portal.dicomDatabase.managedObjectContext unlock];
 	}
-	
-	[context unlock];
-	
-	return [jsonImagesArray JSONRepresentation];
-	
-	
-	
-	
-	
-	
-	
-	
-	data = [json dataUsingEncoding:NSUTF8StringEncoding];
-	err = NO;*/		
 }
 
--(void)processAlbumsJson {/*
+-(void)processAlbumsJson {
+	NSMutableArray* jsonAlbumsArray = [NSMutableArray array];
 	
-	NSMutableArray *jsonAlbumsArray = [NSMutableArray array];
-	
-	NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
-	for (NSManagedObject *album in albumArray)
-	{
-		if (![[album valueForKey:@"name"] isEqualToString: NSLocalizedString(@"Database", nil)])
-		{
-			NSMutableDictionary *albumDictionary = [NSMutableDictionary dictionary];
+	for (DicomAlbum* album in [self.portal.dicomDatabase albums])
+		if (![album.name isEqualToString:NSLocalizedString(@"Database", nil)]) {
+			NSMutableDictionary* albumDictionary = [NSMutableDictionary dictionary];
 			
-			[albumDictionary setObject:N2NonNullString([album valueForKey:@"name"]) forKey:@"name"];
-			[albumDictionary setObject:N2NonNullString([[album valueForKey:@"name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]) forKey:@"nameURLSafe"];
+			[albumDictionary setObject:N2NonNullString(album.name) forKey:@"name"];
+			[albumDictionary setObject:N2NonNullString([album.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]) forKey:@"nameURLSafe"];
 			
-			if ([[album valueForKey:@"smartAlbum"] intValue] == 1)
+			if (album.smartAlbum.intValue == 1)
 				[albumDictionary setObject:@"SmartAlbum" forKey:@"type"];
-			else
-				[albumDictionary setObject:@"Album" forKey:@"type"];
+			else [albumDictionary setObject:@"Album" forKey:@"type"];
 			
 			[jsonAlbumsArray addObject:albumDictionary];
 		}
-	}
 	
-	NSString *json = [jsonAlbumsArray JSONRepresentation];
-	
-		data = [json dataUsingEncoding:NSUTF8StringEncoding];
-		err = NO;
-	*/
+	[response setDataWithString:[jsonAlbumsArray JSONRepresentation]];
 }
 
--(void)processSeriesListJson {/*
-
-	{
-		NSPredicate *browsePredicate;
-		if ([[parameters allKeys] containsObject:@"id"])
-		{
-			browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [parameters objectForKey:@"id"]];
+-(void)processSeriesListJson {
+	NSPredicate* browsePredicate = NULL;
+	if ([parameters objectForKey:@"id"])
+		browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [parameters objectForKey:@"id"]];
+	else browsePredicate = [NSPredicate predicateWithValue:NO];
+	NSArray* studies = [self.portal studiesForUser:user predicate:browsePredicate];
+	
+	if (studies.count != 1)
+		return;
+	DicomStudy* study = [studies lastObject];
+	
+	NSMutableArray *jsonSeriesArray = [NSMutableArray array];
+	
+	[self.portal.dicomDatabase.managedObjectContext lock];
+	@try {
+		for (DicomSeries* s in [study imageSeries]) {
+			NSMutableDictionary* seriesDictionary = [NSMutableDictionary dictionary];
+			
+			[seriesDictionary setObject:s.seriesInstanceUID forKey:@"seriesInstanceUID"];
+			[seriesDictionary setObject:s.seriesDICOMUID forKey:@"seriesDICOMUID"];
+			
+			NSArray* dicomImageArray = s.images.allObjects;
+			DicomImage* im = dicomImageArray.count == 1 ? [dicomImageArray lastObject] : [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
+			
+			[seriesDictionary setObject:im.sopInstanceUID forKey:@"keyInstanceUID"];
+			
+			[jsonSeriesArray addObject:seriesDictionary];
 		}
-		else
-			browsePredicate = [NSPredicate predicateWithValue:NO];
-		
-		
-		NSArray *studies = [self studiesForPredicate:browsePredicate];
-		
-		if ([studies count] == 1)
-		{
-			NSArray *series = [[studies objectAtIndex:0] valueForKey:@"imageSeries"];
-			
-			
-			
-			
-			
-			
-			NSMutableArray *jsonSeriesArray = [NSMutableArray array];
-			
-			NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-			
-			[context lock];
-			
-			@try
-			{
-				for (DicomSeries *s in series)
-				{
-					NSMutableDictionary *seriesDictionary = [NSMutableDictionary dictionary];
-					
-					[seriesDictionary setObject:N2NonNullString([s valueForKey:@"seriesInstanceUID"]) forKey:@"seriesInstanceUID"];
-					[seriesDictionary setObject:N2NonNullString([s valueForKey:@"seriesDICOMUID"]) forKey:@"seriesDICOMUID"];
-					
-					NSArray *dicomImageArray = [[s valueForKey:@"images"] allObjects];
-					DicomImage *im;
-					if ([dicomImageArray count] == 1)
-						im = [dicomImageArray lastObject];
-					else
-						im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
-					
-					[seriesDictionary setObject:[im valueForKey:@"sopInstanceUID"] forKey:@"keyInstanceUID"];
-					
-					[jsonSeriesArray addObject:seriesDictionary];
-				}
-			}
-			@catch (NSException *e)
-			{
-				NSLog( @"******* jsonSeriesListForSeries exception: %@", e);
-			}
-			[context unlock];
-			
-			NSString *json =  [jsonSeriesArray JSONRepresentation];
-			
-			
-			
-			
-			data = [json dataUsingEncoding:NSUTF8StringEncoding];
-			err = NO;
-		}
-		else err = YES;
+	} @catch (NSException *e) {
+		NSLog( @"******* jsonSeriesListForSeries exception: %@", e);
+	} @finally {
+		[self.portal.dicomDatabase.managedObjectContext unlock];
 	}
-	*/
+	
+	[response setDataWithString:[jsonSeriesArray JSONRepresentation]];
 }
 
 
@@ -1517,8 +1429,8 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 		[requestedStudies addObjectsFromArray:[self.portal studiesForUser:self.user predicate:[NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyInstanceUID] sortBy:NULL]];
 	if (seriesInstanceUID)
 		[requestedSeries addObjectsFromArray:[self.portal seriesForUser:self.user predicate:[NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", seriesInstanceUID]]];
-	for (NSString* selSeriesInstanceUID in selectedSeries)
-		[requestedSeries addObjectsFromArray:[self.portal seriesForUser:self.user predicate:[NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", selSeriesInstanceUID]]];
+	for (NSString* objectId in selectedSeries)
+		[requestedSeries addObject:[self.portal.dicomDatabase objectWithID:objectId]];
 	
 	NSMutableArray* patientIds = [NSMutableArray arrayWithCapacity:2];
 	NSMutableArray* studies = [NSMutableArray arrayWithCapacity:8];

@@ -67,6 +67,34 @@
 	return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
 }
 
+-(NSManagedObject*)objectWithID:(NSString*)theId {
+	return [managedObjectContext objectWithID:[managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:theId]]];
+}
+
++(NSArray*)albumsInContext:(NSManagedObjectContext*)context {
+	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+	req.entity = [NSEntityDescription entityForName:@"Album" inManagedObjectContext:context];
+	req.predicate = [NSPredicate predicateWithValue:YES];
+	return [context executeFetchRequest:req error:NULL];	
+}
+
+-(NSArray*)albums {
+	[managedObjectContext lock];
+	@try {
+		NSArray* albums = [DicomDatabase albumsInContext:managedObjectContext];
+		
+		NSSortDescriptor* sd = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
+
+		return [albums sortedArrayUsingDescriptors:[NSArray arrayWithObject: sd]];
+	} @catch (NSException* e) {
+		NSLog(@"Exception: [DicomDatabase albums] %@", e);
+	} @finally {
+		[managedObjectContext unlock];
+	}
+	
+	return NULL;
+}
+
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string {
 	if (!string.length)
 		return [NSPredicate predicateWithValue:YES];

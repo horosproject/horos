@@ -440,14 +440,11 @@
 		}
 	
 	if ([key isEqual:@"isSelected"]) {
-		NSLog(@"sel: %@", [wpc.parameters objectForKey:@"selected"]);
+		NSString* myId = [self valueForKey:@"webUID" object:o context:wpc];
+		for (NSString* selectedID in [WebPortalConnection MakeArray:[wpc.parameters objectForKey:@"selected"]])
+			if ([selectedID isEqualToString:myId])
+				return [NSNumber numberWithBool:YES];
 		return [NSNumber numberWithBool:NO];
-		
-		/*		for (NSString* selectedID in [parameters objectForKey:@"selected"])
-		 {
-		 if ([[series valueForKey:@"seriesInstanceUID"] isEqualToString:[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "]])
-		 checked = @"checked";
-		 }*/
 	}
 	
 	return NULL;
@@ -485,14 +482,15 @@
 	if ([key isEqual:@"newChallenge"])
 		return [wpc.session newChallenge];
 	if ([key isEqual:@"proposeDicomUpload"])
-		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM) && !wpc.requestIsIOS ];
-	if ([key isEqual:@"proposeDicomSend"])
-		return [NSNumber numberWithBool: (!wpc.user || wpc.user.sendDICOMtoSelfIP) && !wpc.requestIsIOS ];
+		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM.boolValue) && !wpc.requestIsIOS ];
+	if ([key isEqual:@"proposeDicomSend"]) {
+		return [NSNumber numberWithBool: ((!wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue) && !wpc.requestIsIOS) || (wpc.user.sendDICOMtoAnyNodes.boolValue /* TODO: && destinations.count */)]; 
+	}
 	if ([key isEqual:@"proposeZipDownload"])
-		return [NSNumber numberWithBool: (!wpc.user || wpc.user.downloadZIP) && !wpc.requestIsIOS ];
+		return [NSNumber numberWithBool: (!wpc.user || wpc.user.downloadZIP.boolValue) && !wpc.requestIsIOS ];
 	
 	if ([key isEqual:@"proposeShare"])
-		if (!wpc.user || wpc.user.shareStudyWithUser) {
+		if (!wpc.user || wpc.user.shareStudyWithUser.boolValue) {
 			NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 			req.entity = [wpc.portal.database entityForName:@"User"];
 			req.predicate = [NSPredicate predicateWithValue:YES];

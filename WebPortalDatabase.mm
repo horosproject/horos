@@ -78,20 +78,6 @@
 	[super dealloc];
 }
 
--(WebPortalUser*)userWithName:(NSString*)name {
-	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-	req.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.managedObjectContext];
-	req.predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
-	NSArray* res = [managedObjectContext executeFetchRequest:req error:NULL];
-	if (res.count)
-		return [res objectAtIndex:0];
-	return NULL;
-}
-
--(WebPortalUser*)newUser {
-	return [NSEntityDescription insertNewObjectForEntityForName:@"User" inManagedObjectContext:self.managedObjectContext];
-}
-
 -(void)save:(NSError**)err {
 	[managedObjectContext lock];
 	@try {
@@ -110,6 +96,24 @@
 
 -(NSEntityDescription*)entityForName:(NSString*)name {
 	return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
+}
+
+-(NSManagedObject*)objectWithID:(NSString*)theId {
+	return [managedObjectContext objectWithID:[managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:theId]]];
+}
+
+-(WebPortalUser*)userWithName:(NSString*)name {
+	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+	req.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.managedObjectContext];
+	req.predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
+	NSArray* res = [managedObjectContext executeFetchRequest:req error:NULL];
+	if (res.count)
+		return [res objectAtIndex:0];
+	return NULL;
+}
+
+-(WebPortalUser*)newUser {
+	return [NSEntityDescription insertNewObjectForEntityForName:@"User" inManagedObjectContext:self.managedObjectContext];
 }
 
 @end
