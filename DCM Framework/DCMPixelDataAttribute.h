@@ -56,7 +56,6 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 @property float compression;
 @property BOOL isDecoded;
 
-+ (void) setUseOpenJpeg:(int) b;
 + (void) setUse_kdu_IfAvailable:(int) b;
 
 - (id) initWithAttributeTag:(DCMAttributeTag *)tag 

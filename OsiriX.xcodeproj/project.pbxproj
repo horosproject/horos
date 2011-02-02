@@ -591,7 +591,6 @@
 		847BE45D128BF18200A87E98 /* tgt.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE3A3128BF0E100A87E98 /* tgt.h */; };
 		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
 		848631C30FE77E1F00B96E99 /* jpeg_memdest.h in Headers */ = {isa = PBXBuildFile; fileRef = 848631C10FE77E1F00B96E99 /* jpeg_memdest.h */; };
-		848DEDD712311287003DE0C5 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
 		84A220E80F25E41800C6C3EB /* ROIs.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E60F25E41800C6C3EB /* ROIs.tif */; };
 		84A220E90F25E41800C6C3EB /* Keys.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E70F25E41800C6C3EB /* Keys.tif */; };
 		84A6790E0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */; };
@@ -1462,7 +1461,6 @@
 		AB7CB7B60A6E3922008DFCC9 /* smile.png in Resources */ = {isa = PBXBuildFile; fileRef = AB7CB7B30A6E3922008DFCC9 /* smile.png */; };
 		AB7D0BB50615F94D00890872 /* ROI.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7D0BB30615F94D00890872 /* ROI.h */; };
 		AB7D0BB60615F94D00890872 /* ROI.m in Sources */ = {isa = PBXBuildFile; fileRef = AB7D0BB40615F94D00890872 /* ROI.m */; };
-		AB7D5E5C0669A698000C16AE /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7D5E5A0669A698000C16AE /* jasper.h */; };
 		AB80EBAB0AF1F5B600E7E934 /* AYDicomPrintWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB80EBA50AF1F5B600E7E934 /* AYDicomPrintWindowController.h */; };
 		AB80EBAC0AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB80EBA60AF1F5B600E7E934 /* AYDicomPrintWindowController.mm */; };
 		AB80EBAD0AF1F5B600E7E934 /* AYNSImageToDicom.h in Headers */ = {isa = PBXBuildFile; fileRef = AB80EBA70AF1F5B600E7E934 /* AYNSImageToDicom.h */; };
@@ -2086,7 +2084,6 @@
 		BFAEB41B06BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB41706BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.m */; };
 		BFAFEE9408F2220B002AD789 /* PluginFileFormatDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAFEE9208F2220B002AD789 /* PluginFileFormatDecoder.h */; };
 		BFAFEE9508F2220B002AD789 /* PluginFileFormatDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */; };
-		BFB8F7F7087B805F007ABE20 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
 		BFBCD8A709E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */; };
 		BFBCD8A809E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */; };
 		BFBF3AA109B681F500545F5E /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9D09B681F500545F5E /* libcrypto.dylib */; };
@@ -5001,7 +4998,6 @@
 		CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
 		CE6CD06D0CFB0462001DF429 /* OsiriXToolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6CD06B0CFB0462001DF429 /* OsiriXToolbar.h */; };
 		CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6CD06C0CFB0462001DF429 /* OsiriXToolbar.m */; };
-		CE6DEB640F91BF9B0009FEF3 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
 		CE6E2CB606CAE45A00BC7907 /* PlotView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6E2CAE06CAE45A00BC7907 /* PlotView.h */; };
 		CE6E2CB706CAE45A00BC7907 /* PlotWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6E2CAF06CAE45A00BC7907 /* PlotWindow.h */; };
 		CE6E2CB806CAE45A00BC7907 /* PlotWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6E2CB006CAE45A00BC7907 /* PlotWindow.m */; };
@@ -7235,7 +7231,6 @@
 		CEC7FC9E10A5C844008935EA /* PreviewView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB73E13606497EDA00545980 /* PreviewView.h */; };
 		CEC7FC9F10A5C844008935EA /* SmartWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E569397065007D6001A9762 /* SmartWindowController.h */; };
 		CEC7FCA010A5C844008935EA /* ImageAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */; };
-		CEC7FCA210A5C844008935EA /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7D5E5A0669A698000C16AE /* jasper.h */; };
 		CEC7FCA310A5C844008935EA /* ToolbarPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = AB866038066E40970015E1C4 /* ToolbarPanel.h */; };
 		CEC7FCA410A5C844008935EA /* ToolBarNSWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDC3C730670FF440042069D /* ToolBarNSWindow.h */; };
 		CEC7FCA510A5C844008935EA /* Window3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3F4A1D0672674000E61A6C /* Window3DController.h */; };
@@ -7289,24 +7284,6 @@
 		CEC7FCDC10A5C844008935EA /* jas_types.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14F60768392E00375F65 /* jas_types.h */; };
 		CEC7FCDD10A5C844008935EA /* jas_version.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14FB0768392E00375F65 /* jas_version.h */; };
 		CEC7FCDE10A5C844008935EA /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB15000768392E00375F65 /* jasper.h */; };
-		CEC7FCDF10A5C844008935EA /* jas_cm.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14AB0768392E00375F65 /* jas_cm.h */; };
-		CEC7FCE010A5C844008935EA /* jas_config.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14B00768392E00375F65 /* jas_config.h */; };
-		CEC7FCE110A5C844008935EA /* jas_config2.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14B50768392E00375F65 /* jas_config2.h */; };
-		CEC7FCE210A5C844008935EA /* jas_debug.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14BA0768392E00375F65 /* jas_debug.h */; };
-		CEC7FCE310A5C844008935EA /* jas_fix.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14BF0768392E00375F65 /* jas_fix.h */; };
-		CEC7FCE410A5C844008935EA /* jas_getopt.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14C40768392E00375F65 /* jas_getopt.h */; };
-		CEC7FCE510A5C844008935EA /* jas_icc.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14C90768392E00375F65 /* jas_icc.h */; };
-		CEC7FCE610A5C844008935EA /* jas_image.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14CE0768392E00375F65 /* jas_image.h */; };
-		CEC7FCE710A5C844008935EA /* jas_init.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14D30768392E00375F65 /* jas_init.h */; };
-		CEC7FCE810A5C844008935EA /* jas_malloc.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14D80768392E00375F65 /* jas_malloc.h */; };
-		CEC7FCE910A5C844008935EA /* jas_math.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14DD0768392E00375F65 /* jas_math.h */; };
-		CEC7FCEA10A5C844008935EA /* jas_seq.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14E20768392E00375F65 /* jas_seq.h */; };
-		CEC7FCEB10A5C844008935EA /* jas_stream.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14E70768392E00375F65 /* jas_stream.h */; };
-		CEC7FCEC10A5C844008935EA /* jas_string.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14EC0768392E00375F65 /* jas_string.h */; };
-		CEC7FCED10A5C844008935EA /* jas_tvp.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14F10768392E00375F65 /* jas_tvp.h */; };
-		CEC7FCEE10A5C844008935EA /* jas_types.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14F60768392E00375F65 /* jas_types.h */; };
-		CEC7FCEF10A5C844008935EA /* jas_version.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14FB0768392E00375F65 /* jas_version.h */; };
-		CEC7FCF010A5C844008935EA /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB15000768392E00375F65 /* jasper.h */; };
 		CEC7FCF310A5C844008935EA /* CurvedMPR.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3E695B07AFB6DE00541E20 /* CurvedMPR.h */; };
 		CEC7FCF410A5C844008935EA /* ROIDefaultsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDE5B5D07F206B5003034B6 /* ROIDefaultsWindow.h */; };
 		CEC7FCF510A5C844008935EA /* Schedulable.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF9E7CA0811B64D00412C8A /* Schedulable.h */; };
@@ -7868,24 +7845,6 @@
 		CEDB15370768392F00375F65 /* jas_types.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14F60768392E00375F65 /* jas_types.h */; };
 		CEDB15380768392F00375F65 /* jas_version.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14FB0768392E00375F65 /* jas_version.h */; };
 		CEDB15390768392F00375F65 /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB15000768392E00375F65 /* jasper.h */; };
-		CEDB153A0768392F00375F65 /* jas_cm.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14AB0768392E00375F65 /* jas_cm.h */; };
-		CEDB153B0768392F00375F65 /* jas_config.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14B00768392E00375F65 /* jas_config.h */; };
-		CEDB153C0768392F00375F65 /* jas_config2.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14B50768392E00375F65 /* jas_config2.h */; };
-		CEDB153D0768392F00375F65 /* jas_debug.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14BA0768392E00375F65 /* jas_debug.h */; };
-		CEDB153E0768392F00375F65 /* jas_fix.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14BF0768392E00375F65 /* jas_fix.h */; };
-		CEDB153F0768392F00375F65 /* jas_getopt.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14C40768392E00375F65 /* jas_getopt.h */; };
-		CEDB15400768392F00375F65 /* jas_icc.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14C90768392E00375F65 /* jas_icc.h */; };
-		CEDB15410768392F00375F65 /* jas_image.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14CE0768392E00375F65 /* jas_image.h */; };
-		CEDB15420768392F00375F65 /* jas_init.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14D30768392E00375F65 /* jas_init.h */; };
-		CEDB15430768392F00375F65 /* jas_malloc.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14D80768392E00375F65 /* jas_malloc.h */; };
-		CEDB15440768392F00375F65 /* jas_math.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14DD0768392E00375F65 /* jas_math.h */; };
-		CEDB15450768392F00375F65 /* jas_seq.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14E20768392E00375F65 /* jas_seq.h */; };
-		CEDB15460768392F00375F65 /* jas_stream.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14E70768392E00375F65 /* jas_stream.h */; };
-		CEDB15470768392F00375F65 /* jas_string.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14EC0768392E00375F65 /* jas_string.h */; };
-		CEDB15480768392F00375F65 /* jas_tvp.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14F10768392E00375F65 /* jas_tvp.h */; };
-		CEDB15490768392F00375F65 /* jas_types.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14F60768392E00375F65 /* jas_types.h */; };
-		CEDB154A0768392F00375F65 /* jas_version.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14FB0768392E00375F65 /* jas_version.h */; };
-		CEDB154B0768392F00375F65 /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB15000768392E00375F65 /* jasper.h */; };
 		CEDC793C0CBB7EF600411DDB /* ITKSegmentation3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDC793A0CBB7EF600411DDB /* ITKSegmentation3DController.h */; };
 		CEDCDD5B099C8AA20026AA4B /* ROIManager.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCDD5A099C8AA20026AA4B /* ROIManager.tif */; };
 		CEDCFB3C0B4C4A4B00510ABD /* SyncSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB380B4C4A4B00510ABD /* SyncSmall.tif */; };
@@ -9076,7 +9035,6 @@
 		AB7CB7B30A6E3922008DFCC9 /* smile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = smile.png; sourceTree = "<group>"; };
 		AB7D0BB30615F94D00890872 /* ROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROI.h; sourceTree = "<group>"; };
 		AB7D0BB40615F94D00890872 /* ROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ROI.m; sourceTree = "<group>"; };
-		AB7D5E5A0669A698000C16AE /* jasper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jasper.h; path = Binaries/Jasper/Headers/jasper.h; sourceTree = "<group>"; };
 		AB80EBA40AF1F5B600E7E934 /* AYDcmPrintSCU.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AYDcmPrintSCU.h; path = AYDicomPrint/AYDcmPrintSCU.h; sourceTree = "<group>"; };
 		AB80EBA50AF1F5B600E7E934 /* AYDicomPrintWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AYDicomPrintWindowController.h; sourceTree = "<group>"; };
 		AB80EBA60AF1F5B600E7E934 /* AYDicomPrintWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = AYDicomPrintWindowController.mm; sourceTree = "<group>"; };
@@ -12062,7 +12020,6 @@
 		CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DICOMDestination.tif; sourceTree = "<group>"; };
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
-		CEB7179706CE7CBD00084CA5 /* libjasper2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjasper2.a; path = Binaries/Jasper/libjasper2.a; sourceTree = SOURCE_ROOT; };
 		CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SpectroIcon.jpg; sourceTree = "<group>"; };
 		CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetPrimaryMACAddress.m; sourceTree = "<group>"; };
 		CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSICDPreferencePane.prefPane; path = "Preference Panes/OSICDPreferencePane/build/Development/OSICDPreferencePane.prefPane"; sourceTree = "<group>"; };
@@ -12129,24 +12086,24 @@
 		CED8BC7B097F93D1002665CE /* SUV.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SUV.tif; sourceTree = "<group>"; };
 		CEDAAECA0C7B486A00809161 /* 32-bit shell.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "32-bit shell.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDAAECC0C7B486A00809161 /* 32bit shell-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "32bit shell-Info.plist"; sourceTree = "<group>"; };
-		CEDB14AB0768392E00375F65 /* jas_cm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_cm.h; sourceTree = "<group>"; };
-		CEDB14B00768392E00375F65 /* jas_config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_config.h; sourceTree = "<group>"; };
-		CEDB14B50768392E00375F65 /* jas_config2.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_config2.h; sourceTree = "<group>"; };
-		CEDB14BA0768392E00375F65 /* jas_debug.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_debug.h; sourceTree = "<group>"; };
-		CEDB14BF0768392E00375F65 /* jas_fix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_fix.h; sourceTree = "<group>"; };
-		CEDB14C40768392E00375F65 /* jas_getopt.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_getopt.h; sourceTree = "<group>"; };
-		CEDB14C90768392E00375F65 /* jas_icc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_icc.h; sourceTree = "<group>"; };
-		CEDB14CE0768392E00375F65 /* jas_image.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_image.h; sourceTree = "<group>"; };
-		CEDB14D30768392E00375F65 /* jas_init.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_init.h; sourceTree = "<group>"; };
-		CEDB14D80768392E00375F65 /* jas_malloc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_malloc.h; sourceTree = "<group>"; };
-		CEDB14DD0768392E00375F65 /* jas_math.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_math.h; sourceTree = "<group>"; };
-		CEDB14E20768392E00375F65 /* jas_seq.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_seq.h; sourceTree = "<group>"; };
-		CEDB14E70768392E00375F65 /* jas_stream.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_stream.h; sourceTree = "<group>"; };
-		CEDB14EC0768392E00375F65 /* jas_string.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_string.h; sourceTree = "<group>"; };
-		CEDB14F10768392E00375F65 /* jas_tvp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_tvp.h; sourceTree = "<group>"; };
-		CEDB14F60768392E00375F65 /* jas_types.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_types.h; sourceTree = "<group>"; };
-		CEDB14FB0768392E00375F65 /* jas_version.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_version.h; sourceTree = "<group>"; };
-		CEDB15000768392E00375F65 /* jasper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jasper.h; sourceTree = "<group>"; };
+		CEDB14AB0768392E00375F65 /* jas_cm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_cm.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_cm.h; sourceTree = "<absolute>"; };
+		CEDB14B00768392E00375F65 /* jas_config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_config.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_config.h; sourceTree = "<absolute>"; };
+		CEDB14B50768392E00375F65 /* jas_config2.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_config2.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_config2.h; sourceTree = "<absolute>"; };
+		CEDB14BA0768392E00375F65 /* jas_debug.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_debug.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_debug.h; sourceTree = "<absolute>"; };
+		CEDB14BF0768392E00375F65 /* jas_fix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_fix.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_fix.h; sourceTree = "<absolute>"; };
+		CEDB14C40768392E00375F65 /* jas_getopt.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_getopt.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_getopt.h; sourceTree = "<absolute>"; };
+		CEDB14C90768392E00375F65 /* jas_icc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_icc.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_icc.h; sourceTree = "<absolute>"; };
+		CEDB14CE0768392E00375F65 /* jas_image.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_image.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_image.h; sourceTree = "<absolute>"; };
+		CEDB14D30768392E00375F65 /* jas_init.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_init.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_init.h; sourceTree = "<absolute>"; };
+		CEDB14D80768392E00375F65 /* jas_malloc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_malloc.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_malloc.h; sourceTree = "<absolute>"; };
+		CEDB14DD0768392E00375F65 /* jas_math.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_math.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_math.h; sourceTree = "<absolute>"; };
+		CEDB14E20768392E00375F65 /* jas_seq.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_seq.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_seq.h; sourceTree = "<absolute>"; };
+		CEDB14E70768392E00375F65 /* jas_stream.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_stream.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_stream.h; sourceTree = "<absolute>"; };
+		CEDB14EC0768392E00375F65 /* jas_string.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_string.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_string.h; sourceTree = "<absolute>"; };
+		CEDB14F10768392E00375F65 /* jas_tvp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_tvp.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_tvp.h; sourceTree = "<absolute>"; };
+		CEDB14F60768392E00375F65 /* jas_types.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_types.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_types.h; sourceTree = "<absolute>"; };
+		CEDB14FB0768392E00375F65 /* jas_version.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jas_version.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jas_version.h; sourceTree = "<absolute>"; };
+		CEDB15000768392E00375F65 /* jasper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jasper.h; path = /Users/admin/osirix/osirix/Binaries/Jasper/Headers/jasper.h; sourceTree = "<absolute>"; };
 		CEDC793A0CBB7EF600411DDB /* ITKSegmentation3DController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITKSegmentation3DController.h; sourceTree = "<group>"; };
 		CEDCDD5A099C8AA20026AA4B /* ROIManager.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROIManager.tif; sourceTree = "<group>"; };
 		CEDCFB380B4C4A4B00510ABD /* SyncSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncSmall.tif; sourceTree = "<group>"; };
@@ -12226,7 +12183,6 @@
 			files = (
 				BFE0652B06755B7200AC4B67 /* Cocoa.framework in Frameworks */,
 				7E47658007428C80000C9A74 /* Accelerate.framework in Frameworks */,
-				BFB8F7F7087B805F007ABE20 /* libjasper2.a in Frameworks */,
 				AB61D9BE11BD32E5003BC1A4 /* IOKit.framework in Frameworks */,
 				CE66BDC812303EC700BE2799 /* libPapyrusToolkit.a in Frameworks */,
 				84A9D48E12F7F8EB00DA1F99 /* libkdu_v64R.a in Frameworks */,
@@ -12358,7 +12314,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE6DEB640F91BF9B0009FEF3 /* libjasper2.a in Frameworks */,
 				84A9D48F12F7F8EB00DA1F99 /* libkdu_v64R.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -12395,7 +12350,6 @@
 				841524C6113D6BDB008250E6 /* QuartzCore.framework in Frameworks */,
 				597DA7B41188340500D3BBCF /* SecurityInterface.framework in Frameworks */,
 				CEED780D12303CC900258D00 /* libPapyrusToolkit.a in Frameworks */,
-				848DEDD712311287003DE0C5 /* libjasper2.a in Frameworks */,
 				84A9D48D12F7F8EB00DA1F99 /* libkdu_v64R.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -12715,7 +12669,6 @@
 				59FB64331230EE2F00EBA136 /* Ming */,
 				CE11138608EDD5E2005B15E1 /* ITKLibs */,
 				CE11138108EDD5CE005B15E1 /* VTKLibs */,
-				CEB7179706CE7CBD00084CA5 /* libjasper2.a */,
 				CEED77DD1230393A00258D00 /* libPapyrusToolkit.a */,
 				ABDEB38C0D1827440079C938 /* openjpeg.h */,
 				ABDE6E0806398E3400F0C5DD /* LibTiff */,
@@ -14235,10 +14188,8 @@
 		ABF1427B056469CC00CB071B /* Papyrus */ = {
 			isa = PBXGroup;
 			children = (
-				CEDB14A70768392E00375F65 /* Headers */,
 				848631C10FE77E1F00B96E99 /* jpeg_memdest.h */,
 				84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */,
-				AB7D5E5A0669A698000C16AE /* jasper.h */,
 				AB8CC212067E4146008D5ED7 /* PapyGlobalVar3.h */,
 				AB8CC213067E4147008D5ED7 /* PapyFileSystem3.h */,
 				AB8CC214067E4147008D5ED7 /* PapyErrorMacros3.h */,
@@ -17276,32 +17227,6 @@
 			path = BurnAnimation;
 			sourceTree = "<group>";
 		};
-		CEDB14A70768392E00375F65 /* Headers */ = {
-			isa = PBXGroup;
-			children = (
-				CEDB14AB0768392E00375F65 /* jas_cm.h */,
-				CEDB14B00768392E00375F65 /* jas_config.h */,
-				CEDB14B50768392E00375F65 /* jas_config2.h */,
-				CEDB14BA0768392E00375F65 /* jas_debug.h */,
-				CEDB14BF0768392E00375F65 /* jas_fix.h */,
-				CEDB14C40768392E00375F65 /* jas_getopt.h */,
-				CEDB14C90768392E00375F65 /* jas_icc.h */,
-				CEDB14CE0768392E00375F65 /* jas_image.h */,
-				CEDB14D30768392E00375F65 /* jas_init.h */,
-				CEDB14D80768392E00375F65 /* jas_malloc.h */,
-				CEDB14DD0768392E00375F65 /* jas_math.h */,
-				CEDB14E20768392E00375F65 /* jas_seq.h */,
-				CEDB14E70768392E00375F65 /* jas_stream.h */,
-				CEDB14EC0768392E00375F65 /* jas_string.h */,
-				CEDB14F10768392E00375F65 /* jas_tvp.h */,
-				CEDB14F60768392E00375F65 /* jas_types.h */,
-				CEDB14FB0768392E00375F65 /* jas_version.h */,
-				CEDB15000768392E00375F65 /* jasper.h */,
-			);
-			name = Headers;
-			path = Binaries/Jasper/Headers;
-			sourceTree = "<group>";
-		};
 		CEDF6E1E0B46FF46008B45B8 /* DICOMPrint */ = {
 			isa = PBXGroup;
 			children = (
@@ -17474,7 +17399,6 @@
 				AB73E13A06497EDA00545980 /* PreviewView.h in Headers */,
 				7E569399065007D6001A9762 /* SmartWindowController.h in Headers */,
 				BF5C0187065320A800BAFCF7 /* ImageAndTextCell.h in Headers */,
-				AB7D5E5C0669A698000C16AE /* jasper.h in Headers */,
 				AB86603C066E40970015E1C4 /* ToolbarPanel.h in Headers */,
 				ABDC3C770670FF440042069D /* ToolBarNSWindow.h in Headers */,
 				AB3F4A1F0672674000E61A6C /* Window3DController.h in Headers */,
@@ -17532,24 +17456,6 @@
 				CEDB15370768392F00375F65 /* jas_types.h in Headers */,
 				CEDB15380768392F00375F65 /* jas_version.h in Headers */,
 				CEDB15390768392F00375F65 /* jasper.h in Headers */,
-				CEDB153A0768392F00375F65 /* jas_cm.h in Headers */,
-				CEDB153B0768392F00375F65 /* jas_config.h in Headers */,
-				CEDB153C0768392F00375F65 /* jas_config2.h in Headers */,
-				CEDB153D0768392F00375F65 /* jas_debug.h in Headers */,
-				CEDB153E0768392F00375F65 /* jas_fix.h in Headers */,
-				CEDB153F0768392F00375F65 /* jas_getopt.h in Headers */,
-				CEDB15400768392F00375F65 /* jas_icc.h in Headers */,
-				CEDB15410768392F00375F65 /* jas_image.h in Headers */,
-				CEDB15420768392F00375F65 /* jas_init.h in Headers */,
-				CEDB15430768392F00375F65 /* jas_malloc.h in Headers */,
-				CEDB15440768392F00375F65 /* jas_math.h in Headers */,
-				CEDB15450768392F00375F65 /* jas_seq.h in Headers */,
-				CEDB15460768392F00375F65 /* jas_stream.h in Headers */,
-				CEDB15470768392F00375F65 /* jas_string.h in Headers */,
-				CEDB15480768392F00375F65 /* jas_tvp.h in Headers */,
-				CEDB15490768392F00375F65 /* jas_types.h in Headers */,
-				CEDB154A0768392F00375F65 /* jas_version.h in Headers */,
-				CEDB154B0768392F00375F65 /* jasper.h in Headers */,
 				7EB4AAE7079494CB007AD271 /* QueryArrayController.h in Headers */,
 				7E54307707A05ED100500ABB /* BurnerWindowController.h in Headers */,
 				CE3E696107AFB6DE00541E20 /* CurvedMPR.h in Headers */,
@@ -20015,7 +19921,6 @@
 				CEC7FC9E10A5C844008935EA /* PreviewView.h in Headers */,
 				CEC7FC9F10A5C844008935EA /* SmartWindowController.h in Headers */,
 				CEC7FCA010A5C844008935EA /* ImageAndTextCell.h in Headers */,
-				CEC7FCA210A5C844008935EA /* jasper.h in Headers */,
 				CEC7FCA310A5C844008935EA /* ToolbarPanel.h in Headers */,
 				CEC7FCA410A5C844008935EA /* ToolBarNSWindow.h in Headers */,
 				CEC7FCA510A5C844008935EA /* Window3DController.h in Headers */,
@@ -20069,24 +19974,6 @@
 				CEC7FCDC10A5C844008935EA /* jas_types.h in Headers */,
 				CEC7FCDD10A5C844008935EA /* jas_version.h in Headers */,
 				CEC7FCDE10A5C844008935EA /* jasper.h in Headers */,
-				CEC7FCDF10A5C844008935EA /* jas_cm.h in Headers */,
-				CEC7FCE010A5C844008935EA /* jas_config.h in Headers */,
-				CEC7FCE110A5C844008935EA /* jas_config2.h in Headers */,
-				CEC7FCE210A5C844008935EA /* jas_debug.h in Headers */,
-				CEC7FCE310A5C844008935EA /* jas_fix.h in Headers */,
-				CEC7FCE410A5C844008935EA /* jas_getopt.h in Headers */,
-				CEC7FCE510A5C844008935EA /* jas_icc.h in Headers */,
-				CEC7FCE610A5C844008935EA /* jas_image.h in Headers */,
-				CEC7FCE710A5C844008935EA /* jas_init.h in Headers */,
-				CEC7FCE810A5C844008935EA /* jas_malloc.h in Headers */,
-				CEC7FCE910A5C844008935EA /* jas_math.h in Headers */,
-				CEC7FCEA10A5C844008935EA /* jas_seq.h in Headers */,
-				CEC7FCEB10A5C844008935EA /* jas_stream.h in Headers */,
-				CEC7FCEC10A5C844008935EA /* jas_string.h in Headers */,
-				CEC7FCED10A5C844008935EA /* jas_tvp.h in Headers */,
-				CEC7FCEE10A5C844008935EA /* jas_types.h in Headers */,
-				CEC7FCEF10A5C844008935EA /* jas_version.h in Headers */,
-				CEC7FCF010A5C844008935EA /* jasper.h in Headers */,
 				CEC7FCF310A5C844008935EA /* CurvedMPR.h in Headers */,
 				CEC7FCF410A5C844008935EA /* ROIDefaultsWindow.h in Headers */,
 				CEC7FCF510A5C844008935EA /* Schedulable.h in Headers */,

@@ -170,6 +170,7 @@
 			isa = PBXProject;
 			buildConfigurationList = CE3E1F7508758865007FFD6F /* Build configuration list for PBXProject "OSIGeneralPreferencePane" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,

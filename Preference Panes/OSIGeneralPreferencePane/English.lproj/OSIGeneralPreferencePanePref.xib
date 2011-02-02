@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="357"/>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -36,7 +36,7 @@
 			<object class="NSWindowTemplate" id="285668304">
 				<int key="NSWindowStyleMask">7</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{1018, 855}, {724, 663}}</string>
+				<string key="NSWindowRect">{{1018, 875}, {724, 643}}</string>
 				<int key="NSWTFlags">1081606144</int>
 				<string key="NSWindowTitle">&lt;&lt; do not localize &gt;&gt;</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -593,7 +593,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<reference key="NSSuperview" ref="173156564"/>
 								</object>
 							</object>
-							<string key="NSFrame">{{17, 328}, {690, 237}}</string>
+							<string key="NSFrame">{{17, 308}, {690, 237}}</string>
 							<reference key="NSSuperview" ref="237168707"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
@@ -669,7 +669,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<reference key="NSSuperview" ref="659426781"/>
 								</object>
 							</object>
-							<string key="NSFrame">{{17, 569}, {690, 85}}</string>
+							<string key="NSFrame">{{17, 549}, {690, 85}}</string>
 							<reference key="NSSuperview" ref="237168707"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
@@ -794,10 +794,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSMatrix" id="895965936">
 											<reference key="NSNextResponder" ref="511037251"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{172, 90}, {517, 58}}</string>
+											<string key="NSFrame">{{172, 90}, {517, 38}}</string>
 											<reference key="NSSuperview" ref="511037251"/>
 											<bool key="NSEnabled">YES</bool>
-											<int key="NSNumRows">3</int>
+											<int key="NSNumRows">2</int>
 											<int key="NSNumCols">1</int>
 											<object class="NSMutableArray" key="NSCells">
 												<bool key="EncodedWithXMLCoder">YES</bool>
@@ -917,19 +917,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 														</object>
 														<reference key="NSColor" ref="427675193"/>
 													</object>
-													<reference key="NSAlternateImage" ref="127426506"/>
-													<int key="NSPeriodicDelay">400</int>
-													<int key="NSPeriodicInterval">75</int>
-												</object>
-												<object class="NSButtonCell" id="929149408">
-													<int key="NSCellFlags">67239424</int>
-													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Jasper SDK - Slow (not recommended)</string>
-													<reference key="NSSupport" ref="257743695"/>
-													<reference key="NSControlView" ref="895965936"/>
-													<int key="NSTag">2</int>
-													<int key="NSButtonFlags">1211912703</int>
-													<int key="NSButtonFlags2">0</int>
 													<reference key="NSAlternateImage" ref="127426506"/>
 													<int key="NSPeriodicDelay">400</int>
 													<int key="NSPeriodicInterval">75</int>
@@ -1192,7 +1179,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSTextField" id="531766442">
 											<reference key="NSNextResponder" ref="511037251"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{2, 131}, {155, 17}}</string>
+											<string key="NSFrame">{{2, 111}, {155, 17}}</string>
 											<reference key="NSSuperview" ref="511037251"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="151967361">
@@ -1222,11 +1209,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 										</object>
 									</object>
-									<string key="NSFrame">{{2, 2}, {686, 155}}</string>
+									<string key="NSFrame">{{2, 2}, {686, 135}}</string>
 									<reference key="NSSuperview" ref="850270833"/>
 								</object>
 							</object>
-							<string key="NSFrame">{{17, 152}, {690, 172}}</string>
+							<string key="NSFrame">{{17, 152}, {690, 152}}</string>
 							<reference key="NSSuperview" ref="237168707"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
@@ -1247,7 +1234,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<bool key="NSTransparent">NO</bool>
 						</object>
 					</object>
-					<string key="NSFrameSize">{724, 663}</string>
+					<string key="NSFrameSize">{724, 643}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
@@ -3277,17 +3264,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="895965936"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="929149408"/>
 							<reference ref="76985163"/>
 							<reference ref="794643842"/>
 							<reference ref="664064233"/>
 						</object>
 						<reference key="parent" ref="850270833"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">368</int>
-						<reference key="object" ref="929149408"/>
-						<reference key="parent" ref="895965936"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">369</int>
@@ -3555,9 +3536,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{363, 341}, {724, 663}}</string>
+					<string>{{363, 361}, {724, 643}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{363, 341}, {724, 663}}</string>
+					<string>{{363, 361}, {724, 643}}</string>
 					<integer value="1"/>
 					<string>{{398, 479}, {724, 534}}</string>
 					<integer value="0"/>
