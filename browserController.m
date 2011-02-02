@@ -2557,6 +2557,16 @@ static NSConditionLock *threadLock = nil;
 		return managedObjectContext;
 	
 	NSPersistentStoreCoordinator *psc = [persistentStoreCoordinatorDictionary objectForKey: path];
+	
+	if( psc)
+	{
+		if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
+		{
+			NSLog( @"-------- WARNING: persistentStore exists, but not the associated file : persistentStore will be reseted to a new one.");
+			psc = nil;
+		}
+	}
+	
 	if( psc == nil)
 	{
 		psc = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel] autorelease];
@@ -2591,17 +2601,14 @@ static NSConditionLock *threadLock = nil;
 		}
 	}
 
-	[moc save: &error];	// This line is very important, if there is NO database.sql file
-	
+	if( [moc save: &error] == NO)	// This line is very important, if there is NO database.sql file
+		NSLog( @"**** managedObjectContextIndependentContext save error: %@", error);
+		
 	if( managedObjectContext == nil && [path isEqualToString: currentDatabasePath] == YES && independentContext == NO)
 		managedObjectContext = [moc retain];
 	
 	if( newDB)
-	{
 		[self defaultAlbums: self];
-		NEEDTOREBUILD = NO;
-		COMPLETEREBUILD = NO;
-	}
 	
     return moc;
 }
@@ -3472,7 +3479,6 @@ static NSConditionLock *threadLock = nil;
 	
 	[[LogManager currentLogManager] checkLogs: nil];
 	[self resetLogWindowController];
-	[[LogManager currentLogManager] resetLogs];
 	
 	[[AppController sharedAppController] closeAllViewers: self];
 	
@@ -3572,8 +3578,11 @@ static NSConditionLock *threadLock = nil;
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"recomputePatientUID"];
 	}
 	
-	[self resetLogWindowController];
-	[[LogManager currentLogManager] resetLogs];
+	if( managedObjectContext)
+	{
+		[self resetLogWindowController];
+		[[LogManager currentLogManager] resetLogs];
+	}
 	
 	[managedObjectContext lock];
 	[managedObjectContext unlock];
@@ -3650,6 +3659,8 @@ static NSConditionLock *threadLock = nil;
 	[AppController createDBFoldersIfNecessary];
 	
 	[managedObjectContext unlock];
+	
+	[[LogManager currentLogManager] resetLogs];
 	
 //	NSData *str = [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"];
 //	
@@ -4259,7 +4270,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[databaseOutline reloadData];
 	
-	NSMutableArray				*filesArray;
+	NSMutableArray *filesArray;
 	
 	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Step 1: Checking files...", nil)];
 	[wait showWindow:self];
@@ -5969,8 +5980,17 @@ static NSConditionLock *threadLock = nil;
 			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
 	}
-	
+	else
+	{
+		[self performSelectorOnMainThread: @selector( delayedRefreshAlbums) withObject: nil waitUntilDone: NO];
+	}
 	[pool release];
+}
+
+- (void)delayedRefreshAlbums
+{
+	[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( computeNumberOfStudiesForAlbums) object: nil];
+	[self performSelector: @selector( computeNumberOfStudiesForAlbums) withObject: nil afterDelay: 3];
 }
 
 - (void)refreshSmartAlbums
@@ -13677,7 +13697,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSRunLoop currentRunLoop] addTimer: IncomingTimer forMode: NSDefaultRunLoopMode];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
-			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 40.3 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];	//63.33
+			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 20 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];	//63.33
 		
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 3*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
@@ -13714,6 +13734,8 @@ static NSArray*	openSubSeriesArray = nil;
 //		[[NSTimer scheduledTimerWithTimeInterval: 5 target:self selector:@selector(autoTest:) userInfo:self repeats:NO] retain];
 		
 		displayEmptyDatabase = NO;
+		
+		[self refreshAlbums];
 	}
 	return self;
 }
