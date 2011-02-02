@@ -6761,6 +6761,9 @@ return YES;
 				
 				for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 					[v buildMatrixPreview: NO];
+				
+				NSPoint subtractionOffset = [[imageView curDCM] subPixOffset];
+				[self offsetMatrixSetting:([self threeTestsFivePosibilities: (int)subtractionOffset.y] * 5) + [self threeTestsFivePosibilities: (int)subtractionOffset.x]];
 			}
 			@catch ( NSException *e)
 			{
@@ -7769,14 +7772,16 @@ return YES;
 
 - (IBAction) subCtrlOffset:(id) sender
 {
-	if(enableSubtraction)
+	if( enableSubtraction)
 	{
 		if ([subCtrlOnOff state] == NSOnState) //only when in subtraction mode
 		{
-		subCtrlOffset = [  [[imageView dcmPixList] objectAtIndex:[imageView curImage]]  subPixOffset];
-		NSLog(@"subPixOffset before x:%f y:%f", subCtrlOffset.x, subCtrlOffset.y);
-		switch( [sender tag]) //same tags in the main menu and in the subtraction tool
-				{
+			subCtrlOffset = [[[imageView dcmPixList] objectAtIndex:[imageView curImage]] subPixOffset];
+			
+			NSLog( @"subPixOffset before x: %2.2f y: %2.2f", subCtrlOffset.x, subCtrlOffset.y);
+			
+			switch( [sender tag]) //same tags in the main menu and in the subtraction tool
+			{
 				case 1://SW
 						--subCtrlOffset.x;
 						--subCtrlOffset.y;
@@ -7817,22 +7822,19 @@ return YES;
 						++subCtrlOffset.x;
 						++subCtrlOffset.y;
 				break;				
-				}
-				//NSLog(@"subCtrlOffset x:%f :y:%f",subCtrlOffset.x, subCtrlOffset.y);
+			}
 		}
 
-	if ((subCtrlOffset.x > -30) && (subCtrlOffset.x < 30) && (subCtrlOffset.y > -30) && (subCtrlOffset.y < 30))
+		if ((subCtrlOffset.x > -30) && (subCtrlOffset.x < 30) && (subCtrlOffset.y > -30) && (subCtrlOffset.y < 30))
 		{
-		//write changes in dcmPixList
-		long i;	
-		for ( i = 0; i < [[imageView dcmPixList] count]; i ++) [[[imageView dcmPixList] objectAtIndex:i] setSubPixOffset: subCtrlOffset];
-		//refresh tool
-		[self offsetMatrixSetting:([self threeTestsFivePosibilities: (int)subCtrlOffset.y] * 5) + [self threeTestsFivePosibilities: (int)subCtrlOffset.x]];		
-		//refresh window image
-		[imageView setIndex:[imageView curImage]];
+			for(int i = 0; i < [[imageView dcmPixList] count]; i ++)
+				[[[imageView dcmPixList] objectAtIndex:i] setSubPixOffset: subCtrlOffset];
+			
+			[self offsetMatrixSetting:([self threeTestsFivePosibilities: (int)subCtrlOffset.y] * 5) + [self threeTestsFivePosibilities: (int)subCtrlOffset.x]];
+			
+			[imageView setIndex:[imageView curImage]];
 		}
-	}	
-
+	}
 }
 
 - (int) threeTestsFivePosibilities: (int) f
@@ -7857,7 +7859,7 @@ return YES;
 
 - (void) offsetMatrixSetting: (int) twentyFiveCodes
 {
-		switch(twentyFiveCodes)
+	switch(twentyFiveCodes)
 	{
 	// On stronger than Off
 	//----------------------------------------------------------------------------------  y=-2
