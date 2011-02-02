@@ -6015,22 +6015,17 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [[[self.albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"smartAlbum"] boolValue] == YES)
 	{
-		if( [checkIncomingLock tryLock])
+		@try
 		{
-			@try
-			{
-				[self outlineViewRefresh];
-				[self refreshAlbums];
-			}
-			@catch (NSException * e)
-			{
-				NSLog( @"refreshDatabase exception");
-				NSLog( @"%@", [e description]);
-				[AppController printStackTrace: e];
-			}
-			[checkIncomingLock unlock];
+			[self outlineViewRefresh];
+			[self refreshAlbums];
 		}
-		else NSLog(@"refreshDatabase locked...");
+		@catch (NSException * e)
+		{
+			NSLog( @"refreshDatabase exception");
+			NSLog( @"%@", [e description]);
+			[AppController printStackTrace: e];
+		}
 	}
 	else
 	{
@@ -10997,9 +10992,15 @@ static BOOL needToRezoom;
 		}
 		else
 		{
-			NSManagedObject	*object = [self.albumArray  objectAtIndex: rowIndex];
+			NSArray *albumsArray = self.albumArray;
 			
-			return [object valueForKey:@"name"];
+			if( rowIndex >= 0 && rowIndex < albumsArray.count)
+			{
+				NSManagedObject	*object = [albumsArray  objectAtIndex: rowIndex];
+				return [object valueForKey:@"name"];
+			}
+			else
+				return NSLocalizedString( @"n/a", nil);
 		}
 	}
 	else if ([aTableView isEqual:bonjourServicesList])
