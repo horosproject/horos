@@ -965,7 +965,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	
 	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"User Administration: %@", @"Web Portal, admin, user edition, title (%@ is user.name)"), luser? [luser valueForKey:@"name"] : originalName] forKey:@"PageTitle"];
 	if (luser)
-		[response.tokens setObject:[WebPortalProxy createWithObject:luser transformer:[WebPortalUserTransformer create]] forKey:@"User"];
+		[response.tokens setObject:[WebPortalProxy createWithObject:luser transformer:[WebPortalUserTransformer create]] forKey:@"EditedUser"];
 	else if (userRecycleParams) [response.tokens setObject:self.parameters forKey:@"User"];
 	
 	response.templateString = [self.portal stringForPath:@"admin/user.html"];

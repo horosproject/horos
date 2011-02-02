@@ -41,7 +41,7 @@
 	window.onload = onload;
 	
 	function confirmDelete() {
-		return confirm("Do you really want to delete the user named \"%X:User.name%\"?");
+		return confirm("Do you really want to delete the user named \"%X:EditedUser.name%\"?");
 	}
 	
 	function daysInMonth(year, month) {
@@ -126,67 +126,67 @@
 	
 </script>
 
-%[IF:User%
 <div id="content">
 	%INCLUDE:/errors.pvt.html%
 	%INCLUDE:/messages.pvt.html%
 
-	<form method="POST" action="?" class="basic form" id="userEditionForm">
-		<input type="hidden" name="originalName" value="%X:User.originalName%" />
+	%[IF:EditedUser%
+	<form method="POST" action="" class="basic form" id="userEditionForm">
+		<input type="hidden" name="originalName" value="%X:EditedUser.originalName%" />
 		<table class="wide form">
-			<tr><td><label for="name">Name:</label></td><td><input type="text" name="name" id="name" value="%X:User.name%" /></td></tr>
-			<tr><td><label for="password">Password:</label></td><td><input type="password" name="password" id="password" value="%X:User.password%" /></td></tr>
-			<tr><td><label for="email">Email:</label></td><td><input type="text" name="email" id="email" value="%X:User.email%" /></td></tr>
-			<tr><td><label for="phone">Phone:</label></td><td><input type="text" name="phone" id="phone" value="%X:User.phone%" /></td></tr>
-			<tr><td><label for="address">Address:</label></td><td><input type="text" name="address" id="address" value="%X:User.address%" /></td></tr>
+			<tr><td><label for="name">Name:</label></td><td><input type="text" name="name" id="name" value="%X:EditedUser.name%" /></td></tr>
+			<tr><td><label for="password">Password:</label></td><td><input type="password" name="password" id="password" value="%X:EditedUser.password%" /></td></tr>
+			<tr><td><label for="email">Email:</label></td><td><input type="text" name="email" id="email" value="%X:EditedUser.email%" /></td></tr>
+			<tr><td><label for="phone">Phone:</label></td><td><input type="text" name="phone" id="phone" value="%X:EditedUser.phone%" /></td></tr>
+			<tr><td><label for="address">Address:</label></td><td><input type="text" name="address" id="address" value="%X:EditedUser.address%" /></td></tr>
 			<tr><td colspan="2" style="text-align:left">
 			</td></tr>
 		</table>
 		<table class="separated wide">
 			<tr><td>
 				<label for="studyPredicate">Filter (study table level):</label><br/>
-				<textarea name="studyPredicate" id="studyPredicate">%X:User.studyPredicate%</textarea>
+				<textarea name="studyPredicate" id="studyPredicate">%X:EditedUser.studyPredicate%</textarea>
 			</td></tr>
 		</table>
 		<table class="separated wide eq">
 			<tr>
 				<td>
-					<label><input type="checkbox" name="autoDelete" onchange="adjustForm(this)"%[IF:User.autoDelete% checked="checked"%]IF:User.autoDelete%/>Delete this user after:</label>
+					<label><input type="checkbox" name="autoDelete" onchange="adjustForm(this)"%[IF:EditedUser.autoDelete% checked="checked"%]IF:EditedUser.autoDelete%/>Delete this user after:</label>
 					<select name="deletionDate_month" onChange="adjustDates(this)">
-						%[FOREACH:User.deletionDate.Months:Month%
+						%[FOREACH:EditedUser.deletionDate.Months:Month%
 						<option value="%X:Month.value%"%[IF:Month.selected% selected="selected"%]IF:Month.selected%%[IF:Month.disabled% disabled="disabled"%]IF:Month.disabled%>%X:Month.name%</option>
-						%]FOREACH:User.deletionDate.Months:Month%
+						%]FOREACH:EditedUser.deletionDate.Months:Month%
 					</select>
 					<select name="deletionDate_day">
-						%[FOREACH:User.deletionDate.Days:Day%
+						%[FOREACH:EditedUser.deletionDate.Days:Day%
 						<option value="%X:Day.value%"%[IF:Day.selected% selected="selected"%]IF:Day.selected%%[IF:Day.disabled% disabled="disabled"%]IF:Day.disabled%>%X:Day.name%</option>
-						%]FOREACH:User.deletionDate.Days:Day%
+						%]FOREACH:EditedUser.deletionDate.Days:Day%
 					</select>
 					<select name="deletionDate_year" onChange="adjustDates(this)">
-						%[FOREACH:User.deletionDate.NextYears:Year%
+						%[FOREACH:EditedUser.deletionDate.NextYears:Year%
 						<option value="%X:Year.value%"%[IF:Year.selected% selected="selected"%]IF:Year.selected%%[IF:Year.disabled% disabled="disabled"%]IF:Year.disabled%>%X:Year.name%</option>
-						%]FOREACH:User.deletionDate.NextYears:Year%
+						%]FOREACH:EditedUser.deletionDate.NextYears:Year%
 					</select>
 					<script language="JavaScript">
 						adjustDates(document.getElementById('userEditionForm').deletionDate_day);
 					</script>
 				</td>
-				<td><label><input type="checkbox" name="downloadZIP" onchange="adjustForm(this)"%[IF:User.downloadZIP% checked="checked"%]IF:User.downloadZIP%/>Authorized to download DICOM ZIP files</label></td>
+				<td><label><input type="checkbox" name="downloadZIP" onchange="adjustForm(this)"%[IF:EditedUser.downloadZIP% checked="checked"%]IF:EditedUser.downloadZIP%/>Authorized to download DICOM ZIP files</label></td>
 			</tr>
 			<tr>
-				<td><label><input type="checkbox" name="emailNotification" onchange="adjustForm(this)"%[IF:User.emailNotification% checked="checked"%]IF:User.emailNotification% %[IF:Prefs.webServerNotificationEmails%disabled="disabled"%]IF:Prefs.webServerNotificationEmails%/>Automatic Notification Emails</label></td>
-				<td style="padding-left:20px"><label><input type="checkbox" name="encryptedZIP" onchange="adjustForm(this)"%[IF:User.encryptedZIP% checked="checked"%]IF:User.encryptedZIP%/>Encrypt ZIP files with user password</label></td>
+				<td><label><input type="checkbox" name="emailNotification" onchange="adjustForm(this)"%[IF:EditedUser.emailNotification% checked="checked"%]IF:EditedUser.emailNotification% %[IF:Prefs.webServerNotificationEmails%disabled="disabled"%]IF:Prefs.webServerNotificationEmails%/>Automatic Notification Emails</label></td>
+				<td style="padding-left:20px"><label><input type="checkbox" name="encryptedZIP" onchange="adjustForm(this)"%[IF:EditedUser.encryptedZIP% checked="checked"%]IF:EditedUser.encryptedZIP%/>Encrypt ZIP files with user password</label></td>
 			</tr>
 			<tr>
-				<td><label><input type="checkbox" name="uploadDICOM" onchange="adjustForm(this)"%[IF:User.uploadDICOM% checked="checked"%]IF:User.uploadDICOM%/>Authorized to upload DICOM files</label></td>
-				<td><label><input type="checkbox" name="sendDICOMtoSelfIP" onchange="adjustForm(this)"%[IF:User.sendDICOMtoSelfIP% checked="checked"%]IF:User.sendDICOMtoSelfIP%/>Authorized to transfer DICOM files to itself</label></td>
+				<td><label><input type="checkbox" name="uploadDICOM" onchange="adjustForm(this)"%[IF:EditedUser.uploadDICOM% checked="checked"%]IF:EditedUser.uploadDICOM%/>Authorized to upload DICOM files</label></td>
+				<td><label><input type="checkbox" name="sendDICOMtoSelfIP" onchange="adjustForm(this)"%[IF:EditedUser.sendDICOMtoSelfIP% checked="checked"%]IF:EditedUser.sendDICOMtoSelfIP%/>Authorized to transfer DICOM files to itself</label></td>
 			</tr>
 			<tr>
-				<td style="padding-left:20px"><label><input type="checkbox" name="uploadDICOMAddToSpecificStudies" onchange="adjustForm(this)"%[IF:User.uploadDICOMAddToSpecificStudies% checked="checked"%]IF:User.uploadDICOMAddToSpecificStudies%/>Add uploaded files to specific studies</label></td>
-				<td style="padding-left:20px"><label><input type="checkbox" name="sendDICOMtoAnyNodes" onchange="adjustForm(this)"%[IF:User.sendDICOMtoAnyNodes% checked="checked"%]IF:User.sendDICOMtoAnyNodes%/>Authorized to transfer DICOM files to any node</label></td>
+				<td style="padding-left:20px"><label><input type="checkbox" name="uploadDICOMAddToSpecificStudies" onchange="adjustForm(this)"%[IF:EditedUser.uploadDICOMAddToSpecificStudies% checked="checked"%]IF:EditedUser.uploadDICOMAddToSpecificStudies%/>Add uploaded files to specific studies</label></td>
+				<td style="padding-left:20px"><label><input type="checkbox" name="sendDICOMtoAnyNodes" onchange="adjustForm(this)"%[IF:EditedUser.sendDICOMtoAnyNodes% checked="checked"%]IF:EditedUser.sendDICOMtoAnyNodes%/>Authorized to transfer DICOM files to any node</label></td>
 			</tr>
 			<tr>
-				<td><label><input type="checkbox" name="shareStudyWithUser" onchange="adjustForm(this)"%[IF:User.shareStudyWithUser% checked="checked"%]IF:User.shareStudyWithUser%/>Authorized to share a study with another user</label></td>
+				<td><label><input type="checkbox" name="shareStudyWithUser" onchange="adjustForm(this)"%[IF:EditedUser.shareStudyWithUser% checked="checked"%]IF:EditedUser.shareStudyWithUser%/>Authorized to share a study with another user</label></td>
 				<td></td>
 			</tr>
 			<script language="JavaScript">
@@ -197,9 +197,9 @@
 			<tr><td>
 				<label for="studies">Specific studies:</label><br/>
 				<select multiple="multiple" name="studies" onchange="selectedStudiesChanged(this.form)">
-					%[FOREACH:User.studies:Study%
-					<option value="%X:Study.objectID.URIRepresentation%">%X:Study.study.name%: %X:Study.study.studyName%, %X:Study.study.date%</option>
-					%]FOREACH:User.studies:Study%
+					%[FOREACH:EditedUser.studies:Study%
+					<option value="%X:Study.webUID%">%X:Study.study.name%: %X:Study.study.studyName%, %X:Study.study.date%</option>
+					%]FOREACH:EditedUser.studies:Study%
 				</select>
 				<button type="button" name="removeSelectedStudiesButton" onClick="removeSelectedStudies(this.form)">Remove Selected Studies</button>
 				<input type="hidden" name="remainingStudies" value="" />
@@ -212,7 +212,7 @@
 			<button type="submit" name="action" value="save"  onClick="return willSubmit(this.form)">Save Changes</button><button type="reset" onClick="return revertToSaved(this.form)">Revert to Saved</button><button type="submit" name="action" value="delete" onClick="return confirmDelete()">Delete User</button>
 		</div>
 	</form>
+	%]IF:EditedUser%
 </div>
-%]IF:User%
 	
 %INCLUDE:/footer.pvt.html%
