@@ -2500,7 +2500,9 @@ static NSConditionLock *threadLock = nil;
 		album.predicateString = @"(ANY series.comment != '' AND ANY series.comment != NIL) OR (comment != '' AND comment != NIL)";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
-
+	
+	[[self managedObjectContext] save: nil];
+	
 	[self refreshAlbums];
 }
 
@@ -2550,6 +2552,7 @@ static NSConditionLock *threadLock = nil;
 - (NSManagedObjectContext *) managedObjectContextIndependentContext:(BOOL) independentContext path: (NSString *) path
 {
     NSError *error = nil;
+	NSManagedObjectContext *moc = nil;
 	
 	if( path == nil)
 		return nil;
@@ -2557,59 +2560,64 @@ static NSConditionLock *threadLock = nil;
     if( managedObjectContext && independentContext == NO && [path isEqualToString: currentDatabasePath] == YES)
 		return managedObjectContext;
 	
-	NSPersistentStoreCoordinator *psc = [persistentStoreCoordinatorDictionary objectForKey: path];
-	
-	if( psc)
+	@synchronized( self)
 	{
-		if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
-		{
-			NSLog( @"-------- WARNING: persistentStore exists, but not the associated file : persistentStore will be reseted to a new one.");
-			psc = nil;
-		}
-	}
-	
-	if( psc == nil)
-	{
-		psc = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel] autorelease];
-		[persistentStoreCoordinatorDictionary setObject: psc forKey: path];
-	}
-	
-    NSManagedObjectContext *moc = [[[NSManagedObjectContext alloc] init] autorelease];
-    [moc setPersistentStoreCoordinator: psc];
-	[moc setUndoManager: nil];
-	
-    NSURL *url = [NSURL fileURLWithPath: path];
-	
-	BOOL newDB = NO;
-	if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
-		newDB = YES;
-	
-	NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, nil];
-	
-	if( [psc persistentStoreForURL: url] == nil)
-	{
-		if (![psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:options error:&error])
-		{
-			NSLog(@"********** managedObjectContext FAILED: %@", error);
-			error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
-			
-			moc = nil;
-		}
-		else
-		{
-			if( newDB)
-				NSLog( @"New SQL DB file created: %@", path);
-		}
-	}
-
-	if( [moc save: &error] == NO)	// This line is very important, if there is NO database.sql file
-		NSLog( @"**** managedObjectContextIndependentContext save error: %@", error);
+		NSPersistentStoreCoordinator *psc = [persistentStoreCoordinatorDictionary objectForKey: path];
 		
-	if( managedObjectContext == nil && [path isEqualToString: currentDatabasePath] == YES && independentContext == NO)
-		managedObjectContext = [moc retain];
-	
-	if( newDB)
-		[self defaultAlbums: self];
+		if( psc)
+		{
+			if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
+			{
+				NSLog( @"-------- WARNING: persistentStore exists, but not the associated file : persistentStore will be reseted to a new one.");
+				psc = nil;
+			}
+		}
+		
+		if( psc == nil)
+		{
+			psc = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel] autorelease];
+			[persistentStoreCoordinatorDictionary setObject: psc forKey: path];
+		}
+		
+		moc = [[[NSManagedObjectContext alloc] init] autorelease];
+		[moc setPersistentStoreCoordinator: psc];
+		[moc setUndoManager: nil];
+		
+		NSURL *url = [NSURL fileURLWithPath: path];
+		
+		BOOL newDB = NO;
+		if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
+			newDB = YES;
+		
+		NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, nil];
+		
+		if( [psc persistentStoreForURL: url] == nil)
+		{
+			if (![psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:options error:&error])
+			{
+				NSLog(@"********** managedObjectContext FAILED: %@", error);
+				error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
+				
+				moc = nil;
+			}
+			else
+			{
+				if( newDB)
+					NSLog( @"New SQL DB file created: %@", path);
+			}
+		}
+
+		if( [moc save: &error] == NO)	// This line is very important, if there is NO database.sql file
+			NSLog( @"**** managedObjectContextIndependentContext save error: %@", error);
+			
+		if( managedObjectContext == nil && [path isEqualToString: currentDatabasePath] == YES && independentContext == NO)
+			managedObjectContext = [moc retain];
+		
+		if( newDB)
+		{
+			[self defaultAlbums: self];
+		}
+	}
 	
     return moc;
 }
