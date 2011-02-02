@@ -46,12 +46,6 @@
 {
 	[[NSUserDefaults standardUserDefaults] setBool: v forKey: @"useDCMTKForJP2K"];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"])
-	{
-		// Jasper not available with DCMTK
-		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseOpenJpegForJPEG2000"];
-	}
-	
 	[self willChangeValueForKey: @"JP2KWriter"];
 	[self didChangeValueForKey: @"JP2KWriter"];
 	
@@ -72,18 +66,6 @@
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseKDUForJPEG2000"];
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseOpenJpegForJPEG2000"];
 	}
-	
-//	if( val == 2) // Jasper
-//	{
-//		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseKDUForJPEG2000"];
-//		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseOpenJpegForJPEG2000"];
-//		
-//		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"])
-//		{
-//			// Jasper not available with DCMTK
-//			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"useDCMTKForJP2K"];
-//		}
-//	}
 	
 	[self willChangeValueForKey: @"JP2KWriter"];
 	[self didChangeValueForKey: @"JP2KWriter"];
