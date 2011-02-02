@@ -14237,8 +14237,20 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	@try
 	{
+		// ----------
+		
+		BOOL hideListenerError_copy = [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"];
+		
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"hideListenerError"];
+		[[NSFileManager defaultManager] createFileAtPath: @"/tmp/kill_all_storescu" contents: [NSData data] attributes: nil];
+		
 		for( NSInteger x = 0, row; x < [[ThreadsManager defaultManager] threadsCount]; x++)  
 			[[[ThreadsManager defaultManager] objectInThreadsAtIndex: x] cancel];
+		
+		unlink( "/tmp/kill_all_storescu");
+		[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"hideListenerError"];
+		
+		// ----------
 		
 		NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + 240;
 		while( ti - [NSDate timeIntervalSinceReferenceDate] > 0 && [[ThreadsManager defaultManager] threadsCount] > 0)
@@ -14372,8 +14384,6 @@ static NSArray*	openSubSeriesArray = nil;
 		{
 			if( r == NSAlertDefaultReturn)
 				return NO;
-			
-			[[AppController sharedAppController] killAllStoreSCU: self];
 		}
 	}
 	
