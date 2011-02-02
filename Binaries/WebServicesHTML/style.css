@@ -253,6 +253,10 @@ a.back:before {
 	background-position: center center;
 }
 
+.error {
+	color: red;
+}
+
 /* Auth */
 
 #userbox {

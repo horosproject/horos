@@ -53,7 +53,6 @@
 
 +(NSString*)FormatParams:(NSDictionary*)dict;
 +(NSDictionary*)ExtractParams:(NSString*)paramsString;
-+(NSArray*)MakeArray:(id)obj;
 
 -(BOOL)requestIsIOS;
 -(BOOL)requestIsMacOS;

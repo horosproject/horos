@@ -825,7 +825,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 		[response.tokens addMessage:NSLocalizedString(@"Personal information updated successfully!", nil)];
 	}
 	
-	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"User account for: %@", @"Web portal, account, title format (%@ is user.name)"), user.name] forKey:@"PageTitle"];
+	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"Account information for: %@", @"Web portal, account, title format (%@ is user.name)"), user.name] forKey:@"PageTitle"];
 	response.templateString = [self.portal stringForPath:@"account.html"];
 }
 

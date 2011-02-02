@@ -78,6 +78,7 @@ static NSString* NotNil(NSString *s) {
 
 -(BOOL)isAuthenticated;
 -(void)replyToHTTPRequest;
+-(BOOL)onSocketWillConnect:(AsyncSocket*)sock;
 
 @end
 
@@ -896,6 +897,11 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 #pragma mark Session, custom authentication
 
+-(BOOL)onSocketWillConnect:(AsyncSocket *)sock {
+	[self supportsPOST:nil withSize:0];
+	return [super onSocketWillConnect:sock];
+}
+
 -(void)replyToHTTPRequest {
 	self.response = [[[WebPortalResponse alloc] initWithWebPortalConnection:self] autorelease];
 	
@@ -1016,9 +1022,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	CFHTTPMessageRef resp = CFHTTPMessageCreateResponse(kCFAllocatorDefault, status, NULL, kCFHTTPVersion1_1);
 	
+	NSString* title = [NSString stringWithFormat:@"HTTP error %d", status];
 	NSData* bodyData = response.data;
-	if (!bodyData.length)
-		bodyData = [[NSString stringWithFormat:@"HTTP error %d", status] dataUsingEncoding:NSUTF8StringEncoding];
+	bodyData = [[NSString stringWithFormat:@"<html><head><title>%@</title></head><body><h1>%@</h1>%@</body></html>", title, title, bodyData? [[[NSString alloc] initWithData:bodyData encoding:NSUTF8StringEncoding] autorelease] : @""] dataUsingEncoding:NSUTF8StringEncoding];
 	
 	CFHTTPMessageSetHeaderFieldValue(resp, CFSTR("Content-Length"), (CFStringRef)[NSString stringWithFormat:@"%d", bodyData.length]);
 	CFHTTPMessageSetBody(resp, (CFDataRef)bodyData);

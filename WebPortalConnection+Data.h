@@ -17,6 +17,8 @@
 
 @interface WebPortalConnection (Data)
 
++(NSArray*)MakeArray:(id)obj;
+
 -(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)imagesArray isiPhone:(BOOL)isiPhone;
 
 -(void)processLoginHtml;
