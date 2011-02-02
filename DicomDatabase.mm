@@ -16,6 +16,9 @@
 #import "NSString+N2.h"
 
 
+#import "BrowserController.h"
+
+
 @interface DicomDatabase ()
 
 @property(readwrite, retain) NSManagedObjectContext* managedObjectContext;
@@ -27,48 +30,24 @@
 
 @synthesize managedObjectContext;
 
-+(NSManagedObjectModel*)managedObjectModel {
++(DicomDatabase*)defaultDatabase {
+	static DicomDatabase* database = NULL;
+	@synchronized(self) {
+		if (!database) // TODO: the next line MUST CHANGE and BrowserController MUST DISAPPEAR
+			database = [[self alloc] initWithPath:[[BrowserController currentBrowser] documentsDirectory] context:[[BrowserController currentBrowser] defaultManagerObjectContext]];
+	}
+	return database;
+}
+
+-(NSManagedObjectModel*)managedObjectModel {
 	static NSManagedObjectModel* managedObjectModel = NULL;
-	
 	if (!managedObjectModel)
 		managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:@"OsiriXDB_DataModel.momd"]]];
-    
     return managedObjectModel;
 }
 
--(id)initWithContext:(NSManagedObjectContext*)context {
-	self = [super init];
-	self.managedObjectContext = context;
-	return self;
-}
-
--(void)dealloc {
-	self.managedObjectContext = NULL;
-	[super dealloc];
-}
-
--(void)save:(NSError**)err {
-	[managedObjectContext lock];
-	@try {
-		NSError* perr = NULL;
-		NSError** rerr = err? err : &perr;
-		[managedObjectContext save:rerr];
-		if (!err && perr) NSLog(@"Error: [DicomDatabase save:] %@", perr.description);
-	} @catch(NSException* e) {
-		if (!err)
-			NSLog(@"Exception: [DicomDatabase save:] %@", e.description);
-		else *err = [NSError errorWithDomain:@"Exception" code:-1 userInfo:[NSDictionary dictionaryWithObject:e forKey:@"Exception"]];
-	} @finally {
-		[managedObjectContext unlock];
-	}
-}
-
--(NSEntityDescription*)entityForName:(NSString*)name {
-	return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
-}
-
--(NSManagedObject*)objectWithID:(NSString*)theId {
-	return [managedObjectContext objectWithID:[managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:theId]]];
+-(NSString*)sqlFilePath {
+	return [self.basePath stringByAppendingPathComponent:@"Database.sql"];
 }
 
 +(NSArray*)albumsInContext:(NSManagedObjectContext*)context {
@@ -79,9 +58,9 @@
 }
 
 -(NSArray*)albums {
-	[managedObjectContext lock];
+	[self.managedObjectContext lock];
 	@try {
-		NSArray* albums = [DicomDatabase albumsInContext:managedObjectContext];
+		NSArray* albums = [DicomDatabase albumsInContext:self.managedObjectContext];
 		
 		NSSortDescriptor* sd = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
 
@@ -89,7 +68,7 @@
 	} @catch (NSException* e) {
 		NSLog(@"Exception: [DicomDatabase albums] %@", e);
 	} @finally {
-		[managedObjectContext unlock];
+		[self.managedObjectContext unlock];
 	}
 	
 	return NULL;

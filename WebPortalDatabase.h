@@ -12,25 +12,14 @@
  PURPOSE.
  =========================================================================*/
 
-#import <Cocoa/Cocoa.h>
+#import "N2ManagedDatabase.h"
 
 
 @class WebPortalUser;
 
 
-@interface WebPortalDatabase : NSObject {
-    NSManagedObjectContext* managedObjectContext;
+@interface WebPortalDatabase : N2ManagedDatabase {
 }
-
-+(NSManagedObjectModel*)managedObjectModel;
-
-@property(readonly,retain) NSManagedObjectContext* managedObjectContext;
-
--(id)initWithContext:(NSManagedObjectContext*)context;
-
--(void)save:(NSError**)err;
--(NSEntityDescription*)entityForName:(NSString*)name;
--(NSManagedObject*)objectWithID:(NSString*)theId;
 
 -(WebPortalUser*)userWithName:(NSString*)name;
 -(WebPortalUser*)newUser;

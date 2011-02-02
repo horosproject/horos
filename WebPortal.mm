@@ -205,7 +205,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 +(WebPortal*)defaultWebPortal {
 	static WebPortal* defaultWebPortal = NULL;
 	if (!defaultWebPortal)
-		defaultWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath dicomDatabase:[[[DicomDatabase alloc] initWithContext:[[BrowserController currentBrowser] localManagedObjectContext]] autorelease]]; // TODO: should not point to BrowserController
+		defaultWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath dicomDatabase:[DicomDatabase defaultDatabase]];
 	
 	return defaultWebPortal;
 }

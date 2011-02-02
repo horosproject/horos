@@ -11,12 +11,12 @@
 
 @interface N2ManagedDatabase : NSObject {
 	NSString* basePath;
-	NSManagedObjectContext* context;
+	NSManagedObjectContext* managedObjectContext;
 	@private
 		NSRecursiveLock* writeLock;
 }
 
-@property(readonly,retain) NSManagedObjectContext* context;
+@property(readonly,retain) NSManagedObjectContext* managedObjectContext;
 @property(readonly,retain) NSString* basePath;
 
 // locking actually locks the context
@@ -28,15 +28,17 @@
 -(BOOL)tryWriteLock;
 -(void)writeUnlock;
 
--(NSManagedObjectModel*)model;
+-(NSManagedObjectModel*)managedObjectModel;
 -(NSMutableDictionary*)persistentStoreCoordinatorsDictionary;
 -(NSString*)sqlFilePath;
 
 -(id)initWithPath:(NSString*)path;
+-(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c; // TODO: this will one day get __deprecated
 
 -(NSManagedObjectContext*)independentContext;
 
 -(NSEntityDescription*)entityForName:(NSString*)name;
+-(NSManagedObject*)objectWithID:(NSString*)theId;
 
 -(void)save:(NSError**)err;
 

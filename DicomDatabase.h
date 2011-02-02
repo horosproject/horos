@@ -12,25 +12,16 @@
  PURPOSE.
  =========================================================================*/
 
-#import <Cocoa/Cocoa.h>
+#import "N2ManagedDatabase.h"
 
 /*
  This class currently only does 1/1000 of what it is planned to do later.
  This will be a BrowserController's backbone.
  */
-@interface DicomDatabase : NSObject {
-	NSManagedObjectContext* managedObjectContext;
+@interface DicomDatabase : N2ManagedDatabase {
 }
 
-+(NSManagedObjectModel*)managedObjectModel;
-
-@property(readonly,retain) NSManagedObjectContext* managedObjectContext;
-
--(id)initWithContext:(NSManagedObjectContext*)context;
-
--(void)save:(NSError**)err;
--(NSEntityDescription*)entityForName:(NSString*)name;
--(NSManagedObject*)objectWithID:(NSString*)theId;
++(DicomDatabase*)defaultDatabase;
 
 -(NSArray*)albums;
 

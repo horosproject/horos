@@ -5262,7 +5262,7 @@ static NSConditionLock *threadLock = nil;
 
 -(NSManagedObjectModel*)userManagedObjectModel { // deprecated
 #ifndef OSIRIX_LIGHT
-	return [WebPortalDatabase managedObjectModel];
+	return [[[WebPortal defaultWebPortal] database] managedObjectModel];
 #else
 	return NULL;
 #endif
