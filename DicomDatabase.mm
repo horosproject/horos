@@ -21,14 +21,14 @@
 
 @interface DicomDatabase ()
 
-@property(readwrite, retain) NSManagedObjectContext* managedObjectContext;
+//@property(readwrite, retain) NSManagedObjectContext* managedObjectContext;
 
 @end
 
 
 @implementation DicomDatabase
 
-@synthesize managedObjectContext;
+//@synthesize managedObjectContext;
 
 +(DicomDatabase*)defaultDatabase {
 	static DicomDatabase* database = NULL;

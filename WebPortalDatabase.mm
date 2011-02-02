@@ -18,14 +18,14 @@
 
 @interface WebPortalDatabase ()
 
-@property(readwrite, retain) NSManagedObjectContext* managedObjectContext;
+//@property(readwrite, retain) NSManagedObjectContext* managedObjectContext;
 
 @end
 
 
 @implementation WebPortalDatabase
 
-@synthesize managedObjectContext;
+//@synthesize managedObjectContext;
 
 -(NSManagedObjectModel*)managedObjectModel {
 	static NSManagedObjectModel* model = NULL;
