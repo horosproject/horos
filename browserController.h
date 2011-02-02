@@ -468,7 +468,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) matrixInit:(long) noOfImages;
 - (IBAction) albumButtons: (id)sender;
 - (NSArray*) albumArray;
-- (void) refreshSmartAlbums;
 - (void) refreshAlbums;
 - (void) waitForRunningProcesses;
 - (void) checkResponder;

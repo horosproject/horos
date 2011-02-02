@@ -1640,6 +1640,7 @@ static NSConditionLock *threadLock = nil;
 		[self outlineViewSelectionDidChange: nil];
 	}
 	
+	[self refreshAlbums];
 	[self reloadViewers: cReload];
 	[self rebuildViewers: cRebuild];
 }
@@ -4672,7 +4673,7 @@ static NSConditionLock *threadLock = nil;
 	if( managedObjectContext == nil) return;
 	if( [NSDate timeIntervalSinceReferenceDate] - gLastActivity < 60*10) return;
 	
-	[self refreshSmartAlbums];
+	[self refreshAlbums];
 	
 	// Log cleaning
 	
@@ -5993,11 +5994,6 @@ static NSConditionLock *threadLock = nil;
 	[self performSelector: @selector( computeNumberOfStudiesForAlbums) withObject: nil afterDelay: 3];
 }
 
-- (void)refreshSmartAlbums
-{
-	[NSThread detachNewThreadSelector: @selector( computeNumberOfStudiesForAlbums) toTarget:self withObject:nil];
-}
-
 - (void)refreshAlbums
 {
 	[NSThread detachNewThreadSelector: @selector( computeNumberOfStudiesForAlbums) toTarget:self withObject:nil];
@@ -6031,7 +6027,6 @@ static NSConditionLock *threadLock = nil;
 	{
 		//For filters depending on time....
 		[self refreshAlbums];
-		
 		[databaseOutline reloadData];
 	}
 	
@@ -13698,7 +13693,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSRunLoop currentRunLoop] addTimer: IncomingTimer forMode: NSDefaultRunLoopMode];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
-			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 20 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];	//63.33
+			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 5*60 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
 		
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 3*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
