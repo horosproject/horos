@@ -6764,6 +6764,9 @@ return YES;
 				
 				NSPoint subtractionOffset = [[imageView curDCM] subPixOffset];
 				[self offsetMatrixSetting:([self threeTestsFivePosibilities: (int)subtractionOffset.y] * 5) + [self threeTestsFivePosibilities: (int)subtractionOffset.x]];
+				
+				[subCtrlSum setFloatValue: 1];
+				[subCtrlPercent setFloatValue: 1];
 			}
 			@catch ( NSException *e)
 			{
@@ -7726,6 +7729,8 @@ return YES;
 			[subCtrlOnOff setEnabled: YES];
 		}
 		
+		[self subSumSlider: nil];
+		
 		[imageView setIndex: [imageView curImage]]; //refresh viewer only
 	}
 	else
@@ -8020,8 +8025,7 @@ return YES;
 				case 36: [imageView setWLWW:cwl	:cww+5];		break;
 			}
 			
-			long i;				
-			for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
+			for(int i = 0; i < [[imageView dcmPixList] count]; i ++)
 			{
 				[[[imageView dcmPixList] objectAtIndex:i]	setSubSlidersPercent:	[subCtrlPercent floatValue]];
 //															gamma:					[subCtrlGamma floatValue] 
@@ -8043,15 +8047,14 @@ return YES;
 		case 33: [subCtrlSum setFloatValue:[subCtrlSum floatValue]+1];	break;  //Sum + (max 10)
 	}
 	[self setFusionMode: 3];
-	long x, i;
 	
 	[imageView setFusion:-1 :[subCtrlSum intValue]];
 	
-	for ( x = 0; x < maxMovieIndex; x++)
+	for( int x = 0; x < maxMovieIndex; x++)
 	{
 		if( x != curMovieIndex) // [imageView setFusion] already did it for current serie!
 		{
-			for ( i = 0; i < [pixList[ x] count]; i ++)
+			for( int i = 0; i < [pixList[ x] count]; i ++)
 			{
 				[[pixList[ x] objectAtIndex:i] setFusion:-1 :[subCtrlSum intValue] :-1];
 			}
@@ -8059,6 +8062,13 @@ return YES;
 	}
 	
 	[stacksFusion setIntValue:[subCtrlSum intValue]];
+	[sliderFusion setIntValue:[subCtrlSum intValue]];
+	
+	if( [subCtrlSum intValue] <= 1)
+	{
+		[activatedFusion setState: NSOffState];
+		[sliderFusion setEnabled:NO];
+	}
 	
 	[[NSUserDefaults standardUserDefaults] setInteger:[subCtrlSum intValue] forKey:@"stackThickness"];
 	
@@ -10192,15 +10202,13 @@ short				matrix[25];
 
 - (void) sliderFusionAction:(id) sender
 {
-	long x, i;
-	
 	[imageView setFusion:-1 :[sender intValue]];
 	
-	for ( x = 0; x < maxMovieIndex; x++)
+	for( int x = 0; x < maxMovieIndex; x++)
 	{
 		if( x != curMovieIndex) // [imageView setFusion] already did it for current serie!
 		{
-			for ( i = 0; i < [pixList[ x] count]; i ++)
+			for( int i = 0; i < [pixList[ x] count]; i ++)
 			{
 				[[pixList[ x] objectAtIndex:i] setFusion:-1 :[sender intValue] :-1];
 			}
