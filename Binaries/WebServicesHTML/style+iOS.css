@@ -1,0 +1,22 @@
+/* iOS in general */
+@media only screen and (max-device-width: 1024px), only screen and (max-device-width: 480px), only screen and (-webkit-min-device-pixel-ratio: 2) {
+	
+}
+
+/* iPad */
+@media only screen and (max-device-width: 1024px) {
+}
+
+/* iPhone and iPod Touch (320x480) */
+@media only screen and (max-device-width: 480px) {
+}
+
+/* iPhone 4 (Retina) */
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+}
+
+@media (orientation:landscape) {
+}
+
+@media (orientation:portrait) {
+}
