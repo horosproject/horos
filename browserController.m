@@ -5568,7 +5568,7 @@ static NSConditionLock *threadLock = nil;
 		
 		if( [albumArray count] > albumTable.selectedRow)
 		{
-			NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
+			NSManagedObject	*album = [albumArray objectAtIndex: albumTable.selectedRow];
 			NSString		*albumName = [album valueForKey:@"name"];
 			
 			if( [[album valueForKey:@"smartAlbum"] boolValue] == YES)
@@ -6015,9 +6015,11 @@ static NSConditionLock *threadLock = nil;
 	if( DatabaseIsEdited) return;
 	if( [databaseOutline editedRow] != -1) return;
 	
-	if( albumTable.selectedRow >= [self.albumArray count]) return;
+	NSArray *albumArray = self.albumArray;
 	
-	if( [[[self.albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"smartAlbum"] boolValue] == YES)
+	if( albumTable.selectedRow >= [albumArray count]) return;
+	
+	if( [[[albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"smartAlbum"] boolValue] == YES)
 	{
 		@try
 		{
@@ -7159,9 +7161,11 @@ static NSConditionLock *threadLock = nil;
 	[context retain];
 	[context lock];
 	
+	NSArray *albumArray = self.albumArray;
+	
 	if( albumTable.selectedRow > 0 && matrixThumbnails == NO)
 	{
-		NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
+		NSManagedObject	*album = [albumArray objectAtIndex: albumTable.selectedRow];
 		
 		if( [[album valueForKey:@"smartAlbum"] boolValue] == NO)
 			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove images", nil), [NSString stringWithFormat: NSLocalizedString(@"Do you want to only remove the selected images from the current album or delete them from the database? (%@)", nil), level], NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Remove from current album",nil));
@@ -7182,7 +7186,7 @@ static NSConditionLock *threadLock = nil;
 		if( [databaseOutline selectedRow] >= 0)
 		{
 			NSMutableArray *studiesToRemove = [NSMutableArray array];
-			NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
+			NSManagedObject	*album = [albumArray objectAtIndex: albumTable.selectedRow];
 			
 			for( NSInteger x = 0; x < [selectedRows count] ; x++)
 			{
