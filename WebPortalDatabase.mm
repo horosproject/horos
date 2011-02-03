@@ -16,16 +16,7 @@
 #import "WebPortalUser.h"
 
 
-@interface WebPortalDatabase ()
-
-//@property(readwrite, retain) NSManagedObjectContext* managedObjectContext;
-
-@end
-
-
 @implementation WebPortalDatabase
-
-//@synthesize managedObjectContext;
 
 -(NSManagedObjectModel*)managedObjectModel {
 	static NSManagedObjectModel* model = NULL;

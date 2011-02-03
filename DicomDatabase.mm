@@ -19,16 +19,7 @@
 #import "BrowserController.h"
 
 
-@interface DicomDatabase ()
-
-//@property(readwrite, retain) NSManagedObjectContext* managedObjectContext;
-
-@end
-
-
 @implementation DicomDatabase
-
-//@synthesize managedObjectContext;
 
 +(DicomDatabase*)defaultDatabase {
 	static DicomDatabase* database = NULL;
