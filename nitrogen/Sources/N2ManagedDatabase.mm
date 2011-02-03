@@ -61,7 +61,7 @@
 	// this line is very important, if there is no sql file
 	[moc save:NULL];
 	
-	NSLog( @"******* DO NOT CALL THIS FUNCTION - NOT FINISHED / BUGGED : %@", __PRETTY_FUNCTION__);
+	NSLog( @"******* DO NOT CALL THIS FUNCTION - NOT FINISHED / BUGGED : %s", __PRETTY_FUNCTION__);
 	
     return [moc autorelease];
 }
