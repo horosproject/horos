@@ -87,14 +87,14 @@
 @end
 
 
-@interface ArrayTransformer : WebPortalProxyObjectTransformer
+/*@interface ArrayTransformer : WebPortalProxyObjectTransformer
 +(id)create;
 @end
 
 
 @interface SetTransformer : WebPortalProxyObjectTransformer
 +(id)create;
-@end
+@end*/
 
 
 @interface DateTransformer : WebPortalProxyObjectTransformer

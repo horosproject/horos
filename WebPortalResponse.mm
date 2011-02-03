@@ -145,10 +145,10 @@
 		return [self object:[WebPortalProxy createWithObject:o transformer:[StringTransformer create]] valueForKeyPath:keyPath context:context];
 	if ([o isKindOfClass:NSDate.class])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[DateTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass:NSArray.class])
-		return [self object:[WebPortalProxy createWithObject:o transformer:[ArrayTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass:NSSet.class])
-		return [self object:[WebPortalProxy createWithObject:o transformer:[SetTransformer create]] valueForKeyPath:keyPath context:context];
+//	if ([o isKindOfClass:NSArray.class])
+//		return [self object:[WebPortalProxy createWithObject:o transformer:[ArrayTransformer create]] valueForKeyPath:keyPath context:context];
+//	if ([o isKindOfClass:NSSet.class])
+//		return [self object:[WebPortalProxy createWithObject:o transformer:[SetTransformer create]] valueForKeyPath:keyPath context:context];
 	if ([o isKindOfClass:WebPortalUser.class])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[WebPortalUserTransformer create]] valueForKeyPath:keyPath context:context];
 	if ([o isKindOfClass:DicomStudy.class])
@@ -170,7 +170,11 @@
 		id value = NULL;
 		if ([o isKindOfClass:WebPortalProxy.class])
 			value = [o valueForKey:part0 context:context];
-		else value = [o valueForKey:part0];
+		else {
+			if ([o isKindOfClass:NSArray.class] || [o isKindOfClass:NSSet.class])
+				part0 = [@"@" stringByAppendingString:part0];
+			value = [o valueForKey:part0];
+		}
 		if (parts.count > 1)
 			return [self object:value valueForKeyPath:[[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@"."] context:context];
 		return value;
@@ -580,26 +584,16 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 @end
 
 
-@implementation ArrayTransformer
+/*@implementation ArrayTransformer
 
 +(id)create {
 	return [[[self alloc] init] autorelease];
 }
 
 -(id)valueForKey:(NSString*)key object:(NSArray*)object context:(WebPortalConnection*)wpc {
-	if ([key isEqual:@"count"])
-		return [NSNumber numberWithUnsignedInt:object.count];
-	
-	if ([key isEqual:@"areSelected"]) {
-		NSLog(@"sel2: %@", [wpc.parameters objectForKey:@"selected"]);
-		return [NSNumber numberWithBool:NO];
-		
-		/*		for (NSString* selectedID in [parameters objectForKey:@"selected"])
-		 {
-		 if ([[series valueForKey:@"seriesInstanceUID"] isEqualToString:[selectedID stringByReplacingOccurrencesOfString:@"+" withString:@" "]])
-		 checked = @"checked";
-		 }*/
-	}
+//	if ([key isEqual:@"count"])
+//		NSLog();
+	//	return [NSNumber numberWithUnsignedInt:object.count];
 	
 	return [super valueForKey:key object:object context:wpc];
 }
@@ -614,13 +608,13 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 }
 
 -(id)valueForKey:(NSString*)key object:(NSSet*)object context:(WebPortalConnection*)wpc {
-	if ([key isEqual:@"count"])
-		return [NSNumber numberWithUnsignedInt:object.count];
+	//if ([key isEqual:@"count"])
+	//	return [NSNumber numberWithUnsignedInt:object.count];
 	
 	return [super valueForKey:key object:object context:wpc];
 }
 
-@end
+@end*/
 
 
 @implementation DateTransformer
