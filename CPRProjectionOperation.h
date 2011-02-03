@@ -26,7 +26,7 @@ typedef NSInteger CPRProjectionMode;
 
 @class CPRVolumeData;
 
-// give this operation a volumeData at the start, when the operation is finish, if everything went well, generated volume will be the projection through the Z (depth) direction
+// give this operation a volumeData at the start, when the operation is finished, if everything went well, generated volume will be the projection through the Z (depth) direction
 
 @interface CPRProjectionOperation : NSOperation {
     CPRVolumeData *_volumeData;

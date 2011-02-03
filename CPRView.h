@@ -102,7 +102,7 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 @property (nonatomic, readwrite, copy) CPRDisplayInfo *displayInfo;
 @property (nonatomic, readwrite, assign) CPRViewClippingRangeMode clippingRangeMode;
 
-@property (nonatomic, readwrite, assign) CPRPlane orangePlane;
+@property (nonatomic, readwrite, assign) CPRPlane orangePlane; // set these to CPRPlaneInvalid to keep the plane from appearing
 @property (nonatomic, readwrite, assign) CPRPlane purplePlane;
 @property (nonatomic, readwrite, assign) CPRPlane bluePlane;
 
