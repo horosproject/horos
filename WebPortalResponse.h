@@ -62,6 +62,7 @@
 
 @interface WebPortalProxyObjectTransformer : NSObject
 
++(id)create;
 -(id)valueForKey:(NSString*)k object:(NSObject*)o context:(id)context;
 
 @end

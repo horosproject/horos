@@ -8,6 +8,7 @@
 	%INCLUDE:/messages.pvt.html%
 
 	<div>
+		%[IF:Studies.count%
 		<div class="title">Studies</div>
 		<div>
 			<div class="smaller right gray">
@@ -54,6 +55,9 @@
 				%]FOREACH:Studies:Study%
 			</table>
 		</div>
+		%ELSE:Studies.count%
+		This list is empty.
+		%]IF:Studies.count%
 	</div>
 
 </div>

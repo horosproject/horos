@@ -43,13 +43,9 @@
 		<div class="timeFrameStudyList"><a href="studyList?browse=6hours">Last 6 hours</a></div>
 		<div class="timeFrameStudyList"><a href="studyList?browse=today">Today</a></div>
 		<div class="peopleStudyList"><a href="studyList?browse=all">Study List</a></div>
-		
-		%[IF:Albums.count%
-			<div class="title">Albums</div>
-			%[FOREACH:Albums:Album%
+		%[FOREACH:Albums:Album%
 			<div class="%[IF:Album.smartAlbum%SmartAlbum%ELSE:Album.smartAlbum%Album%]IF:Album.smartAlbum%"><a href="studyList?album=%U:Album.name%">%X:Album.name%</a></div>
-			%]FOREACH:Albums:Album%
-		%]IF:Albums.count%
+		%]FOREACH:Albums:Album%
 	</div>
 	%]IF:Studies.count%
 	

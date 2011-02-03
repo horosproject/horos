@@ -141,15 +141,24 @@
 		keyPath = [[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@"."];
 	}*/
 
-	if ([o isKindOfClass:[NSString class]])
+	if ([o isKindOfClass:NSString.class])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[StringTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass:[NSDate class]])
+	if ([o isKindOfClass:NSDate.class])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[DateTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass:[NSArray class]])
+	if ([o isKindOfClass:NSArray.class])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[ArrayTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass:[NSSet class]])
+	if ([o isKindOfClass:NSSet.class])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[SetTransformer create]] valueForKeyPath:keyPath context:context];
+	if ([o isKindOfClass:WebPortalUser.class])
+		return [self object:[WebPortalProxy createWithObject:o transformer:[WebPortalUserTransformer create]] valueForKeyPath:keyPath context:context];
+	if ([o isKindOfClass:DicomStudy.class])
+		return [self object:[WebPortalProxy createWithObject:o transformer:[DicomStudyTransformer create]] valueForKeyPath:keyPath context:context];
+	if ([o isKindOfClass:DicomSeries.class])
+		return [self object:[WebPortalProxy createWithObject:o transformer:[DicomSeriesTransformer create]] valueForKeyPath:keyPath context:context];
 	
+	if ([o isKindOfClass:NSManagedObject.class])
+		return [self object:[WebPortalProxy createWithObject:o transformer:[WebPortalProxyObjectTransformer create]] valueForKeyPath:keyPath context:context];
+
 	/*@try {
 		id value = [o valueForKeyPath:keyPath];
 		if (value)
@@ -160,7 +169,7 @@
 	@try {
 		id value = NULL;
 		if ([o isKindOfClass:WebPortalProxy.class])
-			value = [o valueForKey:part0 context:wpc];
+			value = [o valueForKey:part0 context:context];
 		else value = [o valueForKey:part0];
 		if (parts.count > 1)
 			return [self object:value valueForKeyPath:[[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@"."] context:context];
@@ -429,6 +438,10 @@
 
 
 @implementation WebPortalProxyObjectTransformer : NSObject
+
++(id)create {
+	return [[[self alloc] init] autorelease];
+}
 
 -(id)valueForKey:(NSString*)key object:(NSObject*)o context:(WebPortalConnection*)wpc {
 	if ([key isEqual:@"webUID"])

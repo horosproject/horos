@@ -4,6 +4,9 @@
 </div>
 
 <div id="content">
+	%INCLUDE:/errors.pvt.html%
+	%INCLUDE:/messages.pvt.html%
+
 	<div class="loading center">
 	%[IF:Series.images.count<2%
 		<img src="/image.jpg?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" style="max-width:100%" />
