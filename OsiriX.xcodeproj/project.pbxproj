@@ -4447,8 +4447,6 @@
 		CE39BFA406BC5DAE006D6824 /* Scripting_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */; };
 		CE3DDDAF0D8AC94C00AE9588 /* QueryOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3DDDAD0D8AC94C00AE9588 /* QueryOutlineView.h */; };
 		CE3DDDB00D8AC94C00AE9588 /* QueryOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3DDDAE0D8AC94C00AE9588 /* QueryOutlineView.m */; };
-		CE3E696107AFB6DE00541E20 /* CurvedMPR.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3E695B07AFB6DE00541E20 /* CurvedMPR.h */; };
-		CE3E696207AFB6DE00541E20 /* CurvedMPR.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3E695C07AFB6DE00541E20 /* CurvedMPR.m */; };
 		CE3F99430C84724B00CB38F1 /* Survey.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E20C84724B00CB38F1 /* Survey.xib */; };
 		CE3F99440C84724B00CB38F1 /* SmartAlbum.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */; };
 		CE3F99450C84724B00CB38F1 /* ROIVolumeManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E60C84724B00CB38F1 /* ROIVolumeManager.xib */; };
@@ -6961,7 +6959,6 @@
 		CEC7073C10A5C844008935EA /* DCMCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = BF00C95906F3F43900715191 /* DCMCursor.m */; };
 		CEC7073E10A5C844008935EA /* DCMCalendarScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECB4B40072EF9F800C2CFC4 /* DCMCalendarScript.m */; };
 		CEC7073F10A5C844008935EA /* iPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA20534073A810100F0DAB7 /* iPhoto.m */; };
-		CEC7074210A5C844008935EA /* CurvedMPR.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3E695C07AFB6DE00541E20 /* CurvedMPR.m */; };
 		CEC7074310A5C844008935EA /* ROIDefaultsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDE5B5C07F206B5003034B6 /* ROIDefaultsWindow.m */; };
 		CEC7074410A5C844008935EA /* Scheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9E7D60811B67D00412C8A /* Scheduler.m */; };
 		CEC7074510A5C844008935EA /* StaticScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9E7E60811B6AD00412C8A /* StaticScheduler.m */; };
@@ -7270,7 +7267,6 @@
 		CEC7FCC910A5C844008935EA /* DCMCursor.h in Headers */ = {isa = PBXBuildFile; fileRef = BF00C95806F3F43900715191 /* DCMCursor.h */; };
 		CEC7FCCB10A5C844008935EA /* DCMCalendarScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECB4B3F072EF9F800C2CFC4 /* DCMCalendarScript.h */; };
 		CEC7FCCC10A5C844008935EA /* iPhoto.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA20533073A810100F0DAB7 /* iPhoto.h */; };
-		CEC7FCF310A5C844008935EA /* CurvedMPR.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3E695B07AFB6DE00541E20 /* CurvedMPR.h */; };
 		CEC7FCF410A5C844008935EA /* ROIDefaultsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDE5B5D07F206B5003034B6 /* ROIDefaultsWindow.h */; };
 		CEC7FCF510A5C844008935EA /* Schedulable.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF9E7CA0811B64D00412C8A /* Schedulable.h */; };
 		CEC7FCF610A5C844008935EA /* Scheduler.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF9E7D00811B66500412C8A /* Scheduler.h */; };
@@ -11799,8 +11795,6 @@
 		CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scripting_Additions.m; sourceTree = "<group>"; };
 		CE3DDDAD0D8AC94C00AE9588 /* QueryOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryOutlineView.h; sourceTree = "<group>"; };
 		CE3DDDAE0D8AC94C00AE9588 /* QueryOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryOutlineView.m; sourceTree = "<group>"; };
-		CE3E695B07AFB6DE00541E20 /* CurvedMPR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurvedMPR.h; sourceTree = "<group>"; };
-		CE3E695C07AFB6DE00541E20 /* CurvedMPR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CurvedMPR.m; sourceTree = "<group>"; };
 		CE3F98E30C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Survey.xib; sourceTree = "<group>"; };
 		CE3F98E50C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SmartAlbum.xib; sourceTree = "<group>"; };
 		CE3F98E70C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIVolumeManager.xib; sourceTree = "<group>"; };
@@ -12344,7 +12338,6 @@
 				ABD9E69C05B49D6C0077115D /* Database */,
 				AB8B8BDC05603E3A00CA4134 /* XML */,
 				CE3E19E80875710E007FFD6F /* ITK */,
-				CE3E695707AFB6A800541E20 /* Curved MPR */,
 				AB2C25060677863100A08910 /* Plugins */,
 				AB154F8A0627414000BD57AF /* SR 3D */,
 				84ADF45B115B61D200FE18B2 /* StereoVision */,
@@ -16969,15 +16962,6 @@
 			name = ITK;
 			sourceTree = "<group>";
 		};
-		CE3E695707AFB6A800541E20 /* Curved MPR */ = {
-			isa = PBXGroup;
-			children = (
-				CE3E695B07AFB6DE00541E20 /* CurvedMPR.h */,
-				CE3E695C07AFB6DE00541E20 /* CurvedMPR.m */,
-			);
-			name = "Curved MPR";
-			sourceTree = "<group>";
-		};
 		CE4B5CD110E5F91F00C11948 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -17394,7 +17378,6 @@
 				CEA20537073A810100F0DAB7 /* iPhoto.h in Headers */,
 				7EB4AAE7079494CB007AD271 /* QueryArrayController.h in Headers */,
 				7E54307707A05ED100500ABB /* BurnerWindowController.h in Headers */,
-				CE3E696107AFB6DE00541E20 /* CurvedMPR.h in Headers */,
 				CEDE5B6307F206B5003034B6 /* ROIDefaultsWindow.h in Headers */,
 				CEF9E7CB0811B64D00412C8A /* Schedulable.h in Headers */,
 				CEF9E7D10811B66500412C8A /* Scheduler.h in Headers */,
@@ -19893,7 +19876,6 @@
 				CEC7FCC910A5C844008935EA /* DCMCursor.h in Headers */,
 				CEC7FCCB10A5C844008935EA /* DCMCalendarScript.h in Headers */,
 				CEC7FCCC10A5C844008935EA /* iPhoto.h in Headers */,
-				CEC7FCF310A5C844008935EA /* CurvedMPR.h in Headers */,
 				CEC7FCF410A5C844008935EA /* ROIDefaultsWindow.h in Headers */,
 				CEC7FCF510A5C844008935EA /* Schedulable.h in Headers */,
 				CEC7FCF610A5C844008935EA /* Scheduler.h in Headers */,
@@ -23592,7 +23574,6 @@
 				CEA20538073A810100F0DAB7 /* iPhoto.m in Sources */,
 				7EB4AAE8079494CB007AD271 /* QueryArrayController.mm in Sources */,
 				7E54307807A05ED400500ABB /* BurnerWindowController.m in Sources */,
-				CE3E696207AFB6DE00541E20 /* CurvedMPR.m in Sources */,
 				CEDE5B6207F206B5003034B6 /* ROIDefaultsWindow.m in Sources */,
 				CEF9E7D70811B67D00412C8A /* Scheduler.m in Sources */,
 				CEF9E7E70811B6AD00412C8A /* StaticScheduler.m in Sources */,
@@ -25046,7 +25027,6 @@
 				CEC7073C10A5C844008935EA /* DCMCursor.m in Sources */,
 				CEC7073E10A5C844008935EA /* DCMCalendarScript.m in Sources */,
 				CEC7073F10A5C844008935EA /* iPhoto.m in Sources */,
-				CEC7074210A5C844008935EA /* CurvedMPR.m in Sources */,
 				CEC7074310A5C844008935EA /* ROIDefaultsWindow.m in Sources */,
 				CEC7074410A5C844008935EA /* Scheduler.m in Sources */,
 				CEC7074510A5C844008935EA /* StaticScheduler.m in Sources */,

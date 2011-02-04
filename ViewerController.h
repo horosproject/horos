@@ -27,7 +27,7 @@
 @class StudyView;
 @class SeriesView;
 @class ImageView;
-@class CurvedMPR;
+//@class CurvedMPR;
 @class DICOMExport;
 @class KeyObjectPopupController;
 @class VRController;
@@ -169,15 +169,15 @@ enum
 	IBOutlet NSMatrix		*InOutROI, *AllROIsRadio, *newValueMatrix;
 	IBOutlet NSButton		*checkMaxValue, *checkMinValue, *setROI4DSeries;
 
-	IBOutlet NSWindow       *curvedMPRWindow;
-	IBOutlet NSTextField	*curvedMPRtext;
-	IBOutlet NSSlider		*curvedMPRslid;
-	IBOutlet NSButton		*curvedMPRper;
-	IBOutlet NSSlider		*curvedMPRsize;
-	IBOutlet NSTextField	*curvedMPRsizeText;
-	IBOutlet NSSlider		*curvedMPRinterval;
-	IBOutlet NSTextField	*curvedMPRintervalText;
-	IBOutlet NSMatrix		*curvedMPRaxis;
+//	IBOutlet NSWindow       *curvedMPRWindow;
+//	IBOutlet NSTextField	*curvedMPRtext;
+//	IBOutlet NSSlider		*curvedMPRslid;
+//	IBOutlet NSButton		*curvedMPRper;
+//	IBOutlet NSSlider		*curvedMPRsize;
+//	IBOutlet NSTextField	*curvedMPRsizeText;
+//	IBOutlet NSSlider		*curvedMPRinterval;
+//	IBOutlet NSTextField	*curvedMPRintervalText;
+//	IBOutlet NSMatrix		*curvedMPRaxis;
 	
 	IBOutlet NSWindow       *blendingTypeWindow;
 	IBOutlet NSButton		*blendingTypeMultiply, *blendingTypeSubtract;
@@ -270,7 +270,7 @@ enum
 	
 	ThickSlabController		*thickSlab;
 	
-	CurvedMPR				*curvedController;
+//	CurvedMPR				*curvedController;
 	
 	DICOMExport				*exportDCM;
 	
@@ -704,9 +704,6 @@ enum
 /** Action to open the OrthogonalMPRViewer */
 - (IBAction) orthogonalMPRViewer:(id) sender;
 
-/** Action to open the CurvedMPRViewer */
-- (IBAction) CurvedMPR:(id) sender;
-
 - (void) showCurrentThumbnail:(id) sender;
 
 #ifndef OSIRIX_LIGHT
@@ -748,10 +745,10 @@ enum
 - (IBAction) setStatus:(id) sender;
 - (IBAction) endSetComments:(id) sender;
 - (void) setMovieIndex: (short) i;
-- (void) setCurvedController: (CurvedMPR*) cmpr;
-- (CurvedMPR*) curvedController;
-- (IBAction) setCurvedMPRslider:(id) sender;
-- (IBAction) endCurvedMPR:(id) sender;
+//- (void) setCurvedController: (CurvedMPR*) cmpr;
+//- (CurvedMPR*) curvedController;
+//- (IBAction) setCurvedMPRslider:(id) sender;
+//- (IBAction) endCurvedMPR:(id) sender;
 - (IBAction) resetImage:(id) sender;
 + (NSArray*) defaultROINames;
 + (void) setDefaultROINames: (NSArray*) names;

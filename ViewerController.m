@@ -6273,7 +6273,7 @@ return YES;
 	
 	[ROINamesArray release];
 	
-	[curvedController release];
+//	[curvedController release];
 	
 	[roiLock release];
 	
@@ -14380,12 +14380,13 @@ int i,j,l;
 		
 		float fValue;
 		
-		if(  curvedController == nil && [vC curvedController] == nil)
+//		if(  curvedController == nil && [vC curvedController] == nil)
 		{
 			#define SENSIBILITY 0.05
 			if( fabs( vectorsA[ 0] - vectorsB[ 0]) < SENSIBILITY && fabs( vectorsA[ 1] - vectorsB[ 1]) < SENSIBILITY && fabs( vectorsA[ 2] - vectorsB[ 2]) < SENSIBILITY &&
-				fabs( vectorsA[ 3] - vectorsB[ 3]) < SENSIBILITY && fabs( vectorsA[ 4] - vectorsB[ 4]) < SENSIBILITY && fabs( vectorsA[ 5] - vectorsB[ 5]) < SENSIBILITY &&
-				curvedController == nil)
+				fabs( vectorsA[ 3] - vectorsB[ 3]) < SENSIBILITY && fabs( vectorsA[ 4] - vectorsB[ 4]) < SENSIBILITY && fabs( vectorsA[ 5] - vectorsB[ 5]) < SENSIBILITY)
+//				&&
+//				curvedController == nil)
 			{
 			//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
 				
@@ -14413,8 +14414,8 @@ int i,j,l;
 		}
 		
 		if(		fabs( vectorsA[ 0] - vectorsB[ 0]) < SENSIBILITY && fabs( vectorsA[ 1] - vectorsB[ 1]) < SENSIBILITY && fabs( vectorsA[ 2] - vectorsB[ 2]) < SENSIBILITY &&
-				fabs( vectorsA[ 3] - vectorsB[ 3]) < SENSIBILITY && fabs( vectorsA[ 4] - vectorsB[ 4]) < SENSIBILITY && fabs( vectorsA[ 5] - vectorsB[ 5]) < SENSIBILITY &&
-				curvedController == nil)
+				fabs( vectorsA[ 3] - vectorsB[ 3]) < SENSIBILITY && fabs( vectorsA[ 4] - vectorsB[ 4]) < SENSIBILITY && fabs( vectorsA[ 5] - vectorsB[ 5]) < SENSIBILITY)
+//			&& curvedController == nil)
 		{
 			//if( [self isEverythingLoaded])
 			{
@@ -18576,186 +18577,186 @@ int i,j,l;
 }
 #endif
 
--(CurvedMPR*) curvedController
-{
-	return curvedController;
-}
-
-- (void) setCurvedController: (CurvedMPR*) cmpr
-{
-	if( cmpr != curvedController)
-	{
-		[curvedController release];
-		curvedController = [cmpr retain];
-	}
-}
-
--(IBAction) setCurvedMPRslider:(id) sender
-{
-	long i;
-	
-	i = [sender intValue];
-	
-	switch( [sender tag])
-	{
-		case 0:		
-			i /= 2;
-			i *= 2;
-			i++;
-			[curvedMPRtext setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d images, %2.2f mm", nil), i, i * [[imageView curDCM] pixelSpacingX]]];
-		break;
-		
-		case 1:		
-			i /= 2;
-			i *= 2;
-			[curvedMPRintervalText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), i, i * [[imageView curDCM] pixelSpacingX]]];
-		break;
-		
-		case 2:		
-			i /= 4;
-			i *= 4;
-			[curvedMPRsizeText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), i, i * [[imageView curDCM] pixelSpacingX]]];
-		break;
-	}
-}
-
--(IBAction) endCurvedMPR:(id) sender
-{
-	[curvedMPRWindow orderOut:sender];
-    
-    [NSApp endSheet:curvedMPRWindow returnCode:[sender tag]];
-	
-	if( [sender tag] == 1)
-	{
-		long	i;
-		ROI		*selectedRoi = nil;
-	
-		// Find the first selected
-		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
-		{
-			long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
-			
-			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
-			{
-				selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
-				
-				if( [selectedRoi type] == tOPolygon || [selectedRoi type] == tCPolygon || [selectedRoi type] == tPencil || [selectedRoi type] == tMesure)
-				{
-				
-				}
-				else selectedRoi = nil;
-			}
-		}
-		
-		if( selectedRoi)
-		{
-			if( [curvedMPRper state] == NSOnState)
-				[[[CurvedMPR alloc] initWithObjectsPer:pixList[0] :fileList[0] :volumeData[0] :selectedRoi :self :[curvedMPRinterval intValue] :[curvedMPRsize intValue]] autorelease];
-			
-			[[[CurvedMPR alloc] initWithObjects:pixList[0] :fileList[0] :volumeData[0] :selectedRoi :self :[curvedMPRslid intValue] forAxial:[[curvedMPRaxis cellWithTag: 0] state] forCoronal:[[curvedMPRaxis cellWithTag: 1] state] forSagittal:[[curvedMPRaxis cellWithTag: 2] state]] autorelease];
-		}
-	}
-}
-
--(IBAction) CurvedMPR:(id) sender
-{
-	[self checkEverythingLoaded];
-	[self clear8bitRepresentations];
-	
-	if( [self isDataVolumicIn4D: YES] == NO)
-	{
-		NSRunAlertPanel(NSLocalizedString(@"MPR", nil), NSLocalizedString(@"MPR requires volumic data.", nil), nil, nil, nil);
-		return;
-	}
-	
-	[self squareDataSet: self];			// CurvedMPR works better if pixel are squares !
-	
-	if( [self computeInterval] == 0 ||
-		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
-		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
-		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
-	{
-		[self SetThicknessInterval:sender];
-	}
-	else
-	{
-		[self displayAWarningIfNonTrueVolumicData];
-		[self displayWarningIfGantryTitled];
-		
-		long	i;
-		ROI		*selectedRoi = nil;
-	
-		// Find the first selected
-		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
-		{
-			long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
-			
-			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
-			{
-				selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
-				
-				[selectedRoi setROIMode: ROI_selected];
-				
-				if( [selectedRoi type] == tOPolygon || [selectedRoi type] == tCPolygon || [selectedRoi type] == tPencil || [selectedRoi type] == tMesure)
-				{
-				
-				}
-				else selectedRoi = nil;
-			}
-		}
-
-		// if no ROI is selected and there is only one -> we know that is the one the user wants to use
-		if( selectedRoi == nil && [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]==1)
-		{
-			selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: 0];
-			[selectedRoi setROIMode: ROI_selected];
-		}
-		
-		if( selectedRoi == nil)
-		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Curved-MPR Error", nil), NSLocalizedString(@"Select a Polygon ROI to compute a Curved MPR.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
-		}
-		else
-		{
-			[curvedMPRslid setIntValue:1];
-			[curvedMPRtext setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d images, %2.2f mm", nil), [curvedMPRslid intValue], [[imageView curDCM] pixelSpacingX]]];
-			
-			[curvedMPRinterval setIntValue:4];
-			[curvedMPRintervalText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), [curvedMPRinterval intValue], [curvedMPRinterval intValue]*[[imageView curDCM] pixelSpacingX]]];
-			
-			[curvedMPRsize setIntValue:48];
-			[curvedMPRsizeText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), [curvedMPRsize intValue], [curvedMPRsize intValue]*[[imageView curDCM] pixelSpacingX]]];
-
-			int oldStateForCellWithTag[3];
-			oldStateForCellWithTag[1] = [[curvedMPRaxis cellWithTag:1] state];
-			oldStateForCellWithTag[2] = [[curvedMPRaxis cellWithTag:2] state];
-			[[curvedMPRaxis cellWithTag:1] setState:NSOffState];
-			[[curvedMPRaxis cellWithTag:2] setState:NSOffState];
-			[[curvedMPRaxis cellWithTag:1] setEnabled:NO];
-			[[curvedMPRaxis cellWithTag:2] setEnabled:NO];
-			
-			NSArray *zPosArray = [selectedRoi zPositions];
-			
-			if( [zPosArray count])
-			{
-				int zPos = [[zPosArray objectAtIndex:0] intValue];
-				for(i=1; i < [zPosArray count]; i++)
-				{
-					if(zPos != [[zPosArray objectAtIndex:i] intValue])
-					{
-						[[curvedMPRaxis cellWithTag:1] setEnabled:YES];
-						[[curvedMPRaxis cellWithTag:2] setEnabled:YES];
-						[[curvedMPRaxis cellWithTag:1] setState:oldStateForCellWithTag[1]];
-						[[curvedMPRaxis cellWithTag:2] setState:oldStateForCellWithTag[2]];
-						i = [zPosArray count];
-					}
-				}
-			}
-			
-			[NSApp beginSheet: curvedMPRWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-		}
-	}
-}
+//-(CurvedMPR*) curvedController
+//{
+//	return curvedController;
+//}
+//
+//- (void) setCurvedController: (CurvedMPR*) cmpr
+//{
+//	if( cmpr != curvedController)
+//	{
+//		[curvedController release];
+//		curvedController = [cmpr retain];
+//	}
+//}
+//
+//-(IBAction) setCurvedMPRslider:(id) sender
+//{
+//	long i;
+//	
+//	i = [sender intValue];
+//	
+//	switch( [sender tag])
+//	{
+//		case 0:		
+//			i /= 2;
+//			i *= 2;
+//			i++;
+//			[curvedMPRtext setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d images, %2.2f mm", nil), i, i * [[imageView curDCM] pixelSpacingX]]];
+//		break;
+//		
+//		case 1:		
+//			i /= 2;
+//			i *= 2;
+//			[curvedMPRintervalText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), i, i * [[imageView curDCM] pixelSpacingX]]];
+//		break;
+//		
+//		case 2:		
+//			i /= 4;
+//			i *= 4;
+//			[curvedMPRsizeText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), i, i * [[imageView curDCM] pixelSpacingX]]];
+//		break;
+//	}
+//}
+//
+//-(IBAction) endCurvedMPR:(id) sender
+//{
+//	[curvedMPRWindow orderOut:sender];
+//    
+//    [NSApp endSheet:curvedMPRWindow returnCode:[sender tag]];
+//	
+//	if( [sender tag] == 1)
+//	{
+//		long	i;
+//		ROI		*selectedRoi = nil;
+//	
+//		// Find the first selected
+//		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
+//		{
+//			long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
+//			
+//			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+//			{
+//				selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
+//				
+//				if( [selectedRoi type] == tOPolygon || [selectedRoi type] == tCPolygon || [selectedRoi type] == tPencil || [selectedRoi type] == tMesure)
+//				{
+//				
+//				}
+//				else selectedRoi = nil;
+//			}
+//		}
+//		
+//		if( selectedRoi)
+//		{
+//			if( [curvedMPRper state] == NSOnState)
+//				[[[CurvedMPR alloc] initWithObjectsPer:pixList[0] :fileList[0] :volumeData[0] :selectedRoi :self :[curvedMPRinterval intValue] :[curvedMPRsize intValue]] autorelease];
+//			
+//			[[[CurvedMPR alloc] initWithObjects:pixList[0] :fileList[0] :volumeData[0] :selectedRoi :self :[curvedMPRslid intValue] forAxial:[[curvedMPRaxis cellWithTag: 0] state] forCoronal:[[curvedMPRaxis cellWithTag: 1] state] forSagittal:[[curvedMPRaxis cellWithTag: 2] state]] autorelease];
+//		}
+//	}
+//}
+//
+//-(IBAction) CurvedMPR:(id) sender
+//{
+//	[self checkEverythingLoaded];
+//	[self clear8bitRepresentations];
+//	
+//	if( [self isDataVolumicIn4D: YES] == NO)
+//	{
+//		NSRunAlertPanel(NSLocalizedString(@"MPR", nil), NSLocalizedString(@"MPR requires volumic data.", nil), nil, nil, nil);
+//		return;
+//	}
+//	
+//	[self squareDataSet: self];			// CurvedMPR works better if pixel are squares !
+//	
+//	if( [self computeInterval] == 0 ||
+//		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
+//		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
+//		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
+//	{
+//		[self SetThicknessInterval:sender];
+//	}
+//	else
+//	{
+//		[self displayAWarningIfNonTrueVolumicData];
+//		[self displayWarningIfGantryTitled];
+//		
+//		long	i;
+//		ROI		*selectedRoi = nil;
+//	
+//		// Find the first selected
+//		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
+//		{
+//			long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
+//			
+//			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+//			{
+//				selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
+//				
+//				[selectedRoi setROIMode: ROI_selected];
+//				
+//				if( [selectedRoi type] == tOPolygon || [selectedRoi type] == tCPolygon || [selectedRoi type] == tPencil || [selectedRoi type] == tMesure)
+//				{
+//				
+//				}
+//				else selectedRoi = nil;
+//			}
+//		}
+//
+//		// if no ROI is selected and there is only one -> we know that is the one the user wants to use
+//		if( selectedRoi == nil && [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]==1)
+//		{
+//			selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: 0];
+//			[selectedRoi setROIMode: ROI_selected];
+//		}
+//		
+//		if( selectedRoi == nil)
+//		{
+//			NSRunCriticalAlertPanel(NSLocalizedString(@"Curved-MPR Error", nil), NSLocalizedString(@"Select a Polygon ROI to compute a Curved MPR.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
+//		}
+//		else
+//		{
+//			[curvedMPRslid setIntValue:1];
+//			[curvedMPRtext setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d images, %2.2f mm", nil), [curvedMPRslid intValue], [[imageView curDCM] pixelSpacingX]]];
+//			
+//			[curvedMPRinterval setIntValue:4];
+//			[curvedMPRintervalText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), [curvedMPRinterval intValue], [curvedMPRinterval intValue]*[[imageView curDCM] pixelSpacingX]]];
+//			
+//			[curvedMPRsize setIntValue:48];
+//			[curvedMPRsizeText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), [curvedMPRsize intValue], [curvedMPRsize intValue]*[[imageView curDCM] pixelSpacingX]]];
+//
+//			int oldStateForCellWithTag[3];
+//			oldStateForCellWithTag[1] = [[curvedMPRaxis cellWithTag:1] state];
+//			oldStateForCellWithTag[2] = [[curvedMPRaxis cellWithTag:2] state];
+//			[[curvedMPRaxis cellWithTag:1] setState:NSOffState];
+//			[[curvedMPRaxis cellWithTag:2] setState:NSOffState];
+//			[[curvedMPRaxis cellWithTag:1] setEnabled:NO];
+//			[[curvedMPRaxis cellWithTag:2] setEnabled:NO];
+//			
+//			NSArray *zPosArray = [selectedRoi zPositions];
+//			
+//			if( [zPosArray count])
+//			{
+//				int zPos = [[zPosArray objectAtIndex:0] intValue];
+//				for(i=1; i < [zPosArray count]; i++)
+//				{
+//					if(zPos != [[zPosArray objectAtIndex:i] intValue])
+//					{
+//						[[curvedMPRaxis cellWithTag:1] setEnabled:YES];
+//						[[curvedMPRaxis cellWithTag:2] setEnabled:YES];
+//						[[curvedMPRaxis cellWithTag:1] setState:oldStateForCellWithTag[1]];
+//						[[curvedMPRaxis cellWithTag:2] setState:oldStateForCellWithTag[2]];
+//						i = [zPosArray count];
+//					}
+//				}
+//			}
+//			
+//			[NSApp beginSheet: curvedMPRWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+//		}
+//	}
+//}
 
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer
 {
