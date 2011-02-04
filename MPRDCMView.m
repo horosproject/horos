@@ -1070,7 +1070,7 @@ static BOOL frameZoomed = NO;
 		mouseLocation.x *= curDCM.pixelSpacingX;
 		mouseLocation.y *= curDCM.pixelSpacingY;
 		
-		float f = scaleValue * curDCM.pixelSpacingX / LOD;
+		float f = curDCM.pixelSpacingX / LOD; //scaleValue * 
 		
 		if( mouseLocation.x > r.x - BS * f && mouseLocation.x < r.x + BS* f && mouseLocation.y > r.y - BS* f && mouseLocation.y < r.y + BS* f)
 		{

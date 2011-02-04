@@ -870,7 +870,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			glEnd();
 		}
 	}
-	    
+	
     glColor3f ([windowController.curvedPathColor redComponent], [windowController.curvedPathColor greenComponent], [windowController.curvedPathColor blueComponent]);
 	glLineWidth(2.0);
 	[self drawCurvedPathInGL];
@@ -1167,7 +1167,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		mouseLocation.x *= curDCM.pixelSpacingX;
 		mouseLocation.y *= curDCM.pixelSpacingY;
 		
-		float f = scaleValue * curDCM.pixelSpacingX / LOD;
+		float f = curDCM.pixelSpacingX / LOD;	//scaleValue * 
 		
 		if( mouseLocation.x > r.x - BS * f && mouseLocation.x < r.x + BS* f && mouseLocation.y > r.y - BS* f && mouseLocation.y < r.y + BS* f)
 		{
@@ -1438,26 +1438,31 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			
 			if([self is2DTool: tool])
 			{
-				[super mouseDown: theEvent];
-				[windowController propagateWLWW: self];
-				
-				for( ROI *r in curRoiList)
+				if( tool != tCurvedROI)
 				{
-					int mode;
+					[super mouseDown: theEvent];
+					[windowController propagateWLWW: self];
 					
-					if( [r type] == t2DPoint && r.parentROI)
+					for( ROI *r in curRoiList)
 					{
-						mode = [r ROImode];
-						if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+						int mode;
+						
+						if( [r type] == t2DPoint && r.parentROI)
 						{
-							[[windowController viewer] deleteROI: r.parentROI];
-							r.parentROI = nil;
+							mode = [r ROImode];
+							if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+							{
+								[[windowController viewer] deleteROI: r.parentROI];
+								r.parentROI = nil;
+							}
 						}
 					}
 				}
-				
-				if( tool == tCurvedROI)
+				else // tool == tCurvedROI
 				{
+					[super mouseDown: theEvent];
+					[self deleteMouseDownTimer];
+					
 				    NSPoint mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];
 					
 					if( windowController.curvedPathCreationMode == NO && curvedPath.nodes.count == 0)
@@ -1493,11 +1498,16 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 							displayInfo.mouseCursorHidden = YES;
 							displayInfo.mouseCursorPosition = 0;
 							[self sendDidEditDisplayInfo];
+							
+							[cursor release];
+							cursor = [[NSCursor closedHandCursor]retain];
+							[cursor set];
 						}
 						else if (draggedToken != CPRCurvedPathControlTokenNone)
 						{
 							[self sendWillEditCurvedPath];
 						}
+						
 						if (draggedToken != CPRCurvedPathControlTokenNone)
 						{
 							return;
@@ -1680,23 +1690,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 - (void) mouseDragged:(NSEvent *)theEvent
 {
 	[self restoreCamera];
-	
-    if (draggedToken != CPRCurvedPathControlTokenNone) {
-        NSPoint mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];
-   
-        [curvedPath moveControlToken:draggedToken toPoint:mouseLocation transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])];
-		[self sendDidUpdateCurvedPath];
-
-        if ([CPRCurvedPath controlTokenIsNode:draggedToken]) {
-			[self sendWillEditDisplayInfo];
-			displayInfo.draggedPosition = [curvedPath relativePositionForControlToken:draggedToken];
-			[self sendDidEditDisplayInfo];
-        }
-		
-		
-        [self setNeedsDisplay:YES];
-        return;
-    }
     
 	if( rotateLines)
 	{
@@ -1730,8 +1723,29 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		
 		if([self is2DTool:tool])
 		{
-			[super mouseDragged: theEvent];
-			[windowController propagateWLWW: self];
+			if (draggedToken != CPRCurvedPathControlTokenNone)
+			{
+				NSPoint mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];
+				
+				[curvedPath moveControlToken:draggedToken toPoint:mouseLocation transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])];
+				[self sendDidUpdateCurvedPath];
+				
+				if ([CPRCurvedPath controlTokenIsNode:draggedToken])
+				{
+					[self sendWillEditDisplayInfo];
+					displayInfo.draggedPosition = [curvedPath relativePositionForControlToken:draggedToken];
+					[self sendDidEditDisplayInfo];
+				}
+				
+				[super mouseDragged: theEvent];
+				
+				[self setNeedsDisplay:YES];
+			}
+			else
+			{
+				[super mouseDragged: theEvent];
+				[windowController propagateWLWW: self];
+			}
 		}
 		else
 		{
@@ -1791,6 +1805,79 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	{
 		[super mouseMoved: theEvent];
 		
+		long tool = [self getTool: theEvent];
+		
+		if( tool == tCurvedROI)
+		{
+			[cursor release];
+			cursor = [[NSCursor crosshairCursor] retain];
+			
+			relativePositionOnCurve = [curvedPath relativePositionForPoint:viewPoint transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])
+														   distanceToPoint:&distanceToCurve];
+			curveToken = [curvedPath controlTokenNearPoint:viewPoint transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])];
+			
+			needToModifyCurve = NO;
+			
+			if ([CPRCurvedPath controlTokenIsNode:curveToken]) {
+				if (displayInfo.hoverNodeHidden == YES || displayInfo.hoverNodeIndex != [CPRCurvedPath nodeIndexForToken:curveToken]) {
+					needToModifyCurve = YES;
+				}
+			} else {
+				if (displayInfo.hoverNodeHidden == NO) {
+					needToModifyCurve = YES;
+				}
+			}
+			
+			if (distanceToCurve < CPRMPRDCMViewCurveMouseTrackingDistance)
+			{
+				needToModifyCurve = YES;
+			}
+			else
+			{
+				if (displayInfo.mouseCursorHidden == NO) {
+					needToModifyCurve = YES;
+				}
+			}
+			
+			if (needToModifyCurve) {
+				[self sendWillEditDisplayInfo];
+			}
+			
+			if ([CPRCurvedPath controlTokenIsNode:curveToken])
+			{
+				if( windowController.curvedPathCreationMode == NO)
+				{
+					[cursor release];
+					if( [theEvent type] == NSLeftMouseDragged)
+						cursor = [[NSCursor closedHandCursor]retain];
+					else
+						cursor = [[NSCursor openHandCursor]retain];
+				}
+				
+				displayInfo.hoverNodeHidden = NO;
+				displayInfo.hoverNodeIndex = [CPRCurvedPath nodeIndexForToken:curveToken];
+			}
+			else
+			{
+				displayInfo.hoverNodeHidden = YES;
+				displayInfo.hoverNodeIndex = 0;
+			}
+			
+			if (distanceToCurve < CPRMPRDCMViewCurveMouseTrackingDistance) {
+				displayInfo.mouseCursorHidden = NO;
+				displayInfo.mouseCursorPosition = relativePositionOnCurve;
+			} else {
+				displayInfo.mouseCursorHidden = YES;
+				displayInfo.mouseCursorPosition = 0;
+			}
+			
+			if (needToModifyCurve)
+			{
+				[self sendDidEditDisplayInfo];
+				[self setNeedsDisplay:YES];
+			}
+		}
+        
 		int mouseOnLines = [self mouseOnLines:viewPoint];
 		if( mouseOnLines==2)
 		{
@@ -1805,56 +1892,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		{
 			[cursor set];
 		}
-        
-        relativePositionOnCurve = [curvedPath relativePositionForPoint:viewPoint transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])
-                                                       distanceToPoint:&distanceToCurve];
-        curveToken = [curvedPath controlTokenNearPoint:viewPoint transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])];
-        
-        needToModifyCurve = NO;
-        
-        if ([CPRCurvedPath controlTokenIsNode:curveToken]) {
-            if (displayInfo.hoverNodeHidden == YES || displayInfo.hoverNodeIndex != [CPRCurvedPath nodeIndexForToken:curveToken]) {
-                needToModifyCurve = YES;
-            }
-        } else {
-            if (displayInfo.hoverNodeHidden == NO) {
-                needToModifyCurve = YES;
-            }
-        }
-        
-        if (distanceToCurve < CPRMPRDCMViewCurveMouseTrackingDistance) {
-            needToModifyCurve = YES;
-        } else {
-            if (displayInfo.mouseCursorHidden == NO) {
-                needToModifyCurve = YES;
-            }
-        }
-        
-        if (needToModifyCurve) {
-			[self sendWillEditDisplayInfo];
-        }
-        
-        if ([CPRCurvedPath controlTokenIsNode:curveToken]) {
-            displayInfo.hoverNodeHidden = NO;
-            displayInfo.hoverNodeIndex = [CPRCurvedPath nodeIndexForToken:curveToken];
-        } else {
-            displayInfo.hoverNodeHidden = YES;
-            displayInfo.hoverNodeIndex = 0;
-        }
-        
-        if (distanceToCurve < CPRMPRDCMViewCurveMouseTrackingDistance) {
-            displayInfo.mouseCursorHidden = NO;
-            displayInfo.mouseCursorPosition = relativePositionOnCurve;
-        } else {
-            displayInfo.mouseCursorHidden = YES;
-            displayInfo.mouseCursorPosition = 0;
-        }
-        
-        if (needToModifyCurve) {
-			[self sendDidEditDisplayInfo];
-            [self setNeedsDisplay:YES];
-        }
-        
+		
 		[self updateMousePosition: theEvent];
 	}
 	else
