@@ -59,8 +59,9 @@ enum
 	tRepulsor,					//  23
 	tLayerROI,					//	24
 	tROISelector,				//	25
-	tAxis,						//	26 //JJCP
-	tDynAngle					//	27 //JJCP
+	tAxis,						//	26 
+	tDynAngle,					//	27
+	tCurvedROI					//	28
 };
 
 

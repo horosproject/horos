@@ -115,6 +115,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		case tRepulsor:
 		case tLayerROI:
 		case tROISelector:
+		case tCurvedROI:
 			return YES;
             break;
 	}
@@ -924,17 +925,39 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 {
     unichar c = [[theEvent characters] characterAtIndex:0];
     
+	long tool = [self getTool: theEvent];
+	
 	if( c ==  ' ' || c == 27) // 27 : escape
 	{
 		[windowController keyDown:theEvent];
 	}
-	else if ([CPRCurvedPath controlTokenIsNode:draggedToken] && (c == NSDeleteCharacter || c == NSDeleteFunctionKey) ) {
-		[self sendWillEditCurvedPath];
-        [curvedPath removeNodeAtIndex:[CPRCurvedPath nodeIndexForToken:draggedToken]];
-		[self sendDidUpdateCurvedPath];
-		[self sendDidEditCurvedPath];
-		draggedToken = CPRCurvedPathControlTokenNone;
-		[self setNeedsDisplay:YES];
+	else if( tool == tCurvedROI && (c == NSDeleteCharacter || c == NSDeleteFunctionKey))
+	{
+		if ([CPRCurvedPath controlTokenIsNode:draggedToken])
+		{
+			[self sendWillEditCurvedPath];
+			[curvedPath removeNodeAtIndex:[CPRCurvedPath nodeIndexForToken:draggedToken]];
+			[self sendDidUpdateCurvedPath];
+			[self sendDidEditCurvedPath];
+			draggedToken = CPRCurvedPathControlTokenNone;
+			[self setNeedsDisplay:YES];
+		}
+		else // Delete the entire curve?
+		{
+			if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete the Curve", nil),
+											 NSLocalizedString(@"Are you sure you want to delete the entire curve?", nil),
+											 NSLocalizedString(@"OK",nil),
+											 NSLocalizedString(@"Cancel",nil),
+											 nil) == NSAlertDefaultReturn)
+			{
+				[self sendWillEditCurvedPath];
+				while( curvedPath.nodes.count > 0)
+					[curvedPath removeNodeAtIndex: 0];
+				[self sendDidUpdateCurvedPath];
+				[self sendDidEditCurvedPath];
+				[self setNeedsDisplay:YES];
+			}
+		}
 	}
 	else
 	{
@@ -1316,49 +1339,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	{
 		clickCount = 1;
 	}
-    
-    NSPoint mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];
-    if (windowController.curvedPathCreationMode)
-    {
-        if( clickCount == 2) {
-            windowController.curvedPathCreationMode = NO;
-            return;
-        } else {
-			[self sendWillEditCurvedPath];
-            [curvedPath addNode:mouseLocation transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])];
-			[self sendDidUpdateCurvedPath];
-			[self sendDidEditCurvedPath];
-            [self setNeedsDisplay:YES];
-            return;
-        }
-    } else {
-        draggedToken = [curvedPath controlTokenNearPoint:mouseLocation transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])];
-        if ([CPRCurvedPath controlTokenIsNode:draggedToken]) {
-			[self sendWillEditCurvedPath];
-			[self sendWillEditDisplayInfo];
-            displayInfo.draggedPositionHidden = NO;
-            displayInfo.draggedPosition = [curvedPath relativePositionForControlToken:draggedToken];
-            displayInfo.mouseCursorHidden = YES;
-            displayInfo.mouseCursorPosition = 0;
-			[self sendDidEditDisplayInfo];
-        } else if (draggedToken != CPRCurvedPathControlTokenNone) {
-			[self sendWillEditCurvedPath];
-		}
-        if (draggedToken != CPRCurvedPathControlTokenNone) {
-            return;
-        }
-        
-        relativePositionOnCurve = [curvedPath relativePositionForPoint:mouseLocation transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])
-                                                       distanceToPoint:&distanceToCurve];
-        
-        if (distanceToCurve < 5) {
-			[self sendWillEditCurvedPath];
-            [curvedPath insertNodeAtRelativePosition:relativePositionOnCurve];
-			[self sendDidEditCurvedPath];
-			return;
-        }
-
-    }
 	
 	if( clickCount == 2)
 	{
@@ -1474,6 +1454,66 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 							r.parentROI = nil;
 						}
 					}
+				}
+				
+				if( tool == tCurvedROI)
+				{
+				    NSPoint mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];
+					
+					if( windowController.curvedPathCreationMode == NO && curvedPath.nodes.count == 0)
+						windowController.curvedPathCreationMode = YES;
+					
+					if (windowController.curvedPathCreationMode)
+					{
+						draggedToken = [curvedPath controlTokenNearPoint:mouseLocation transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])];
+						
+						if( draggedToken >= 0 && [CPRCurvedPath nodeIndexForToken: draggedToken] > 1) // Two clicks on the last point
+						{
+							windowController.curvedPathCreationMode = NO;
+							draggedToken = CPRCurvedPathControlTokenNone;
+						}
+						else
+						{
+							[self sendWillEditCurvedPath];
+							[curvedPath addNode:mouseLocation transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])];
+							[self sendDidUpdateCurvedPath];
+							[self sendDidEditCurvedPath];
+							[self setNeedsDisplay:YES];
+						}
+					}
+					else
+					{
+						draggedToken = [curvedPath controlTokenNearPoint:mouseLocation transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])];
+						if ([CPRCurvedPath controlTokenIsNode:draggedToken])
+						{
+							[self sendWillEditCurvedPath];
+							[self sendWillEditDisplayInfo];
+							displayInfo.draggedPositionHidden = NO;
+							displayInfo.draggedPosition = [curvedPath relativePositionForControlToken:draggedToken];
+							displayInfo.mouseCursorHidden = YES;
+							displayInfo.mouseCursorPosition = 0;
+							[self sendDidEditDisplayInfo];
+						}
+						else if (draggedToken != CPRCurvedPathControlTokenNone)
+						{
+							[self sendWillEditCurvedPath];
+						}
+						if (draggedToken != CPRCurvedPathControlTokenNone)
+						{
+							return;
+						}
+						
+						relativePositionOnCurve = [curvedPath relativePositionForPoint:mouseLocation transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])
+																	   distanceToPoint:&distanceToCurve];
+						
+						if (distanceToCurve < 5) {
+							[self sendWillEditCurvedPath];
+							[curvedPath insertNodeAtRelativePosition:relativePositionOnCurve];
+							[self sendDidEditCurvedPath];
+							return;
+						}
+						
+					}	
 				}
 			}
 			else
