@@ -1348,6 +1348,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		{
 			[[self windowController] roiGetInfo: self];
 		}
+		else if( tool == tCurvedROI)
+		{
+			
+		}
 		else
 		{
 			if( frameZoomed == NO)
