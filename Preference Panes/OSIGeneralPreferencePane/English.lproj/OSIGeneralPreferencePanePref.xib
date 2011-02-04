@@ -804,7 +804,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<object class="NSButtonCell" id="664064233">
 													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Kakadu SDK - Ultra-Fast, High Quality (recommended)</string>
+													<string key="NSContents">Kakadu SDK - Fast (recommended)</string>
 													<reference key="NSSupport" ref="257743695"/>
 													<reference key="NSControlView" ref="895965936"/>
 													<int key="NSTag">1</int>
@@ -819,7 +819,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<object class="NSButtonCell" id="794643842">
 													<int key="NSCellFlags">-2080244224</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">OpenJPEG SDK - Fast, High Quality</string>
+													<string key="NSContents">OpenJPEG SDK - Slow</string>
 													<reference key="NSSupport" ref="257743695"/>
 													<reference key="NSControlView" ref="895965936"/>
 													<int key="NSButtonFlags">1211912703</int>
@@ -987,7 +987,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSMatrix" id="378058235">
 											<reference key="NSNextResponder" ref="511037251"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{172, 44}, {338, 38}}</string>
+											<string key="NSFrame">{{172, 44}, {480, 38}}</string>
 											<reference key="NSSuperview" ref="511037251"/>
 											<bool key="NSEnabled">YES</bool>
 											<int key="NSNumRows">2</int>
@@ -995,9 +995,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSMutableArray" key="NSCells">
 												<bool key="EncodedWithXMLCoder">YES</bool>
 												<object class="NSButtonCell" id="981358127">
-													<int key="NSCellFlags">-2080244224</int>
+													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">DCMTK - Faster</string>
+													<string key="NSContents">DCMTK - Fast (recommended)</string>
 													<reference key="NSSupport" ref="257743695"/>
 													<reference key="NSControlView" ref="378058235"/>
 													<int key="NSTag">1</int>
@@ -1010,9 +1010,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 													<int key="NSPeriodicInterval">25</int>
 												</object>
 												<object class="NSButtonCell" id="1013525647">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">-2080244224</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">DCM Framework (not recommended)</string>
+													<string key="NSContents">DCM Framework - Slow</string>
 													<reference key="NSSupport" ref="257743695"/>
 													<reference key="NSControlView" ref="378058235"/>
 													<int key="NSButtonFlags">1211912703</int>
@@ -1115,7 +1115,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 													<int key="NSPeriodicInterval">75</int>
 												</object>
 											</object>
-											<string key="NSCellSize">{338, 18}</string>
+											<string key="NSCellSize">{480, 18}</string>
 											<string key="NSIntercellSpacing">{4, 2}</string>
 											<int key="NSMatrixFlags">1151868928</int>
 											<string key="NSCellClass">NSActionCell</string>
@@ -1171,7 +1171,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<int key="NSPeriodicDelay">400</int>
 												<int key="NSPeriodicInterval">75</int>
 											</object>
-											<reference key="NSSelectedCell" ref="981358127"/>
+											<int key="NSSelectedRow">1</int>
+											<reference key="NSSelectedCell" ref="1013525647"/>
 											<reference key="NSBackgroundColor" ref="270201559"/>
 											<reference key="NSCellBackgroundColor" ref="386309632"/>
 											<reference key="NSFont" ref="257743695"/>
