@@ -78,10 +78,27 @@ extern int CLUTBARS, ANNOTATIONS;
     [super dealloc];
 }
 
+- (void)mouseDraggedZoom:(NSEvent *)event
+{
+	[super mouseDraggedZoom: event];
+	[[self windowController] propagateOriginRotationAndZoomToTransverseViews: self];
+}
+
+- (void)mouseDraggedTranslate:(NSEvent *)event
+{
+	[super mouseDraggedTranslate: event];
+	[[self windowController] propagateOriginRotationAndZoomToTransverseViews: self];
+}
+
+- (void)mouseDraggedRotate:(NSEvent *)event
+{
+	[super mouseDraggedRotate: event];
+	[[self windowController] propagateOriginRotationAndZoomToTransverseViews: self];
+}
+
 - (void)mouseDraggedWindowLevel:(NSEvent *)event
 {
 	[super mouseDraggedWindowLevel: event];
-	
 	[[self windowController] propagateWLWW: self];
 }
 
