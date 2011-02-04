@@ -23,6 +23,7 @@
 #import "CPRMPRDCMView.h"
 #import "CPRGeometry.h"
 #import "CPRBezierCoreAdditions.h"
+#import "CPRController.h"
 
 @interface _CPRViewPlaneRun : NSObject
 {
@@ -178,6 +179,13 @@
 	_mousePlanePointsInPix = nil;
 	
     [super dealloc];
+}
+
+- (void)mouseDraggedWindowLevel:(NSEvent *)event
+{
+	[super mouseDraggedWindowLevel: event];
+	
+	[[self windowController] propagateWLWW: self];
 }
 
 - (void)setDrawAllNodes:(BOOL)drawAllNodes

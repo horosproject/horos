@@ -200,7 +200,7 @@ typedef NSInteger CPRExportRotationSpan;
 - (IBAction)setTool:(id)sender;
 - (void) setToolIndex: (int) toolIndex;
 - (float) getClippingRangeThicknessInMm;
-- (void) propagateWLWW:(CPRMPRDCMView*) sender;
+- (void) propagateWLWW:(DCMView*) sender;
 - (void)bringToFrontROI:(ROI*) roi;
 - (id) prepareObjectForUndo:(NSString*) string;
 - (void)createWLWWMenuItems;

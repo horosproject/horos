@@ -580,7 +580,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 }
 
-- (void) propagateWLWW:(CPRMPRDCMView*) sender
+- (void) propagateWLWW:(DCMView*) sender
 {
 	[mprView1 setWLWW: [sender curWL] :[sender curWW]];
 	[mprView2 setWLWW: [sender curWL] :[sender curWW]];

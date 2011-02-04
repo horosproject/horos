@@ -55,7 +55,7 @@
 static		float						deg2rad = 3.14159265358979/180.0; 
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
-static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
+			int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO, avoidSetWLWWRentry = NO;
 static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = nil;
 static		NSRecursiveLock				*drawLock = nil;
@@ -7988,7 +7988,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
 	NSRect savedDrawingFrameRect;
-	long clutBars = CLUTBARS, annotations	= ANNOTATIONS;
+	long clutBars = CLUTBARS, annotations = ANNOTATIONS;
 	BOOL frontMost = NO, is2DViewer = [self is2DViewer];
 	
 	#ifndef OSIRIX_LIGHT

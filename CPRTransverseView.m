@@ -23,6 +23,9 @@
 #import "CPRBezierCoreAdditions.h"
 #import "DCMPix.h"
 #import "CPRMPRDCMView.h"
+#import "CPRController.h"
+
+extern int CLUTBARS, ANNOTATIONS;
 
 @interface CPRTransverseView ()
 
@@ -73,6 +76,13 @@
     _lastRequest = nil;
     
     [super dealloc];
+}
+
+- (void)mouseDraggedWindowLevel:(NSEvent *)event
+{
+	[super mouseDraggedWindowLevel: event];
+	
+	[[self windowController] propagateWLWW: self];
 }
 
 - (void)setVolumeData:(CPRVolumeData *)volumeData
@@ -148,6 +158,19 @@
         [_delegate CPRViewDidEditCurvedPath:self];
     }
     [self _setNeedsNewRequest];
+}
+
+- (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
+{
+	long clutBars = CLUTBARS, annotations = ANNOTATIONS;
+	
+	CLUTBARS = barHide;
+	ANNOTATIONS = annotNone;
+	
+	[super drawRect: aRect withContext: ctx];
+	
+	CLUTBARS = clutBars;
+	ANNOTATIONS = annotations;
 }
 
 - (void)subDrawRect:(NSRect)rect
