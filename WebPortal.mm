@@ -13,6 +13,7 @@
  =========================================================================*/
 
 #import "WebPortal.h"
+#import "WebPortal+Email+Log.h"
 #import "WebPortalDatabase.h"
 #import "WebPortalSession.h"
 #import "WebPortalConnection.h"
@@ -24,13 +25,13 @@
 #import "DDData.h"
 #import "DicomDatabase.h"
 
-#import "BrowserController.h" // TODO: REMOVE with badness
 
 @interface WebPortalServer ()
 
 @property(readwrite, assign) WebPortal* portal;
 
 @end
+
 
 @implementation WebPortalServer
 
@@ -99,7 +100,6 @@
 	[super connectionDidDie:notification];
 }
 
-
 @end
 
 
@@ -112,9 +112,6 @@
 @property(readwrite) BOOL isAcceptingConnections;
 
 @end
-
-
-NSString* const WebPortalEnabledContext = @"";
 
 
 @implementation WebPortal
@@ -138,7 +135,8 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	// last because this starts the listener
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 
-	//	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey options:NULL context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 }
 
 +(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
@@ -192,6 +190,15 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 			
 		if ([keyPath isEqual:valuesKeyPath(OsirixWadoServiceEnabledDefaultsKey)])
 			webPortal.wadoEnabled = NSUserDefaults.wadoServiceEnabled;
+		else
+		
+		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalNotificationsIntervalDefaultsKey)])
+			webPortal.notificationsInterval = NSUserDefaults.webPortalNotificationsInterval;
+		else
+			
+		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalNotificationsEnabledDefaultsKey)])
+			webPortal.notificationsEnabled = NSUserDefaults.webPortalNotificationsEnabled;
+					
 	}
 	
 	//NSTimer* t = [[NSTimer scheduledTimerWithTimeInterval:60 * [[NSUserDefaults standardUserDefaults] integerForKey: @"notificationsEmailsInterval"] target: self selector: @selector( webServerEmailNotifications:) userInfo: nil repeats: YES] retain];
@@ -219,6 +226,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 @synthesize address;
 @synthesize dirsToScanForFiles;
 @synthesize authenticationRequired;
+@synthesize notificationsEnabled, notificationsInterval;
 
 @synthesize passwordRestoreAllowed;
 @synthesize wadoEnabled;
@@ -237,6 +245,8 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	self.cache = [NSMutableDictionary dictionary];
 	self.locks = [NSMutableDictionary dictionary];
 	
+	self.notificationsInterval = 60;
+	
 	return self;
 }
 
@@ -251,6 +261,8 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 
 -(void)dealloc {
 	[self invalidate];
+	
+	self.notificationsEnabled = NO;
 	
 	self.database = NULL;
 	self.dicomDatabase = NULL;
@@ -434,6 +446,18 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	return html;
 }
 
+
+-(NSString*)URL {
+	return [self URLForAddress:NULL];
+}
+
+-(NSString*)URLForAddress:(NSString*)add {
+	if (!add)
+		add = self.address;
+	NSString* protocol = self.usesSSL? @"https" : @"http";
+	return [NSString stringWithFormat: @"%@://%@:%d", protocol, add, self.portNumber];
+}
+
 #pragma mark Sessions
 
 -(id)sessionForId:(NSString*)sid {
@@ -483,16 +507,34 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	return session;
 }
 
+#pragma mark Notifications
 
--(NSString*)URL {
-	return [self URLForAddress:NULL];
+-(void)setNotificationsEnabled:(BOOL)flag {
+	if (self.notificationsEnabled != flag) {
+		if (!flag) {
+			[notificationsTimer invalidate];
+			notificationsTimer = nil;
+		} else {
+			notificationsTimer = [NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES];
+		}
+	}
 }
 
--(NSString*)URLForAddress:(NSString*)add {
-	if (!add)
-		add = self.address;
-	NSString* protocol = self.usesSSL? @"https" : @"http";
-	return [NSString stringWithFormat: @"%@://%@:%d", protocol, add, self.portNumber];
+-(void)setNotificationsInterval:(NSInteger)value {
+	if (self.notificationsInterval != value) {
+		notificationsInterval = value;
+		if (self.notificationsEnabled) {
+			NSDate* fireDate = notificationsTimer.fireDate;
+			[notificationsTimer invalidate];
+			notificationsTimer = [[[NSTimer alloc] initWithFireDate:fireDate? fireDate : [NSDate dateWithTimeIntervalSinceNow:self.notificationsInterval/2] interval:self.notificationsInterval target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES] autorelease];
+			[[NSRunLoop currentRunLoop] addTimer:notificationsTimer forMode:NSDefaultRunLoopMode];
+		}
+	}
+}
+
+-(void)notificationsTimerCallback:(NSTimer*)timer {
+	if (self.isAcceptingConnections)
+		[self emailNotifications];
 }
 
 @end

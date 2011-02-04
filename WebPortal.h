@@ -36,6 +36,11 @@
 	BOOL wadoEnabled;
 	BOOL weasisEnabled;
 	BOOL flashEnabled;
+	
+	BOOL notificationsEnabled;
+	NSInteger notificationsInterval;
+	NSTimer* notificationsTimer;
+	
 	NSMutableDictionary* cache;
 	NSMutableDictionary* locks;
 	NSMutableArray *runLoops, *runLoopsLoad, *httpThreads;
@@ -69,6 +74,9 @@
 @property BOOL wadoEnabled;
 @property BOOL weasisEnabled;
 @property BOOL flashEnabled;
+
+@property BOOL notificationsEnabled;
+@property NSInteger notificationsInterval;
 
 -(id)initWithDatabase:(WebPortalDatabase*)database dicomDatabase:(DicomDatabase*)dd;
 -(id)initWithDatabaseAtPath:(NSString*)sqlFilePath dicomDatabase:(DicomDatabase*)dd;

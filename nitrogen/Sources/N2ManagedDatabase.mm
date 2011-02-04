@@ -36,10 +36,14 @@
     NSManagedObjectContext* moc = [[NSManagedObjectContext alloc] init];
 	moc.undoManager = NULL;
 	
-	moc.persistentStoreCoordinator = [self.persistentStoreCoordinatorsDictionary objectForKey:sqlFilePath];
-	if (!moc.persistentStoreCoordinator) {
-		moc.persistentStoreCoordinator = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel] autorelease];
-		[self.persistentStoreCoordinatorsDictionary setObject:moc.persistentStoreCoordinator forKey:sqlFilePath];
+	@synchronized (self) {
+		moc.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
+		if (!moc.persistentStoreCoordinator)
+			moc.persistentStoreCoordinator = [self.persistentStoreCoordinatorsDictionary objectForKey:sqlFilePath];
+		if (!moc.persistentStoreCoordinator) {
+			moc.persistentStoreCoordinator = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel] autorelease];
+			[self.persistentStoreCoordinatorsDictionary setObject:moc.persistentStoreCoordinator forKey:sqlFilePath];
+		}
 	}
 	
     NSURL* url = [NSURL fileURLWithPath:sqlFilePath];

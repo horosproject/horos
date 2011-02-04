@@ -218,7 +218,7 @@ static volatile BOOL waitForRunningProcess = NO;
 
 @class DCMTKStudyQueryNode;
 
-@synthesize checkIncomingLock, CDpassword, DateTimeFormat, passwordForExportEncryption;
+@synthesize checkIncomingLock, CDpassword, passwordForExportEncryption;
 @synthesize DateOfBirthFormat,TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
 @synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
@@ -5598,13 +5598,13 @@ static NSConditionLock *threadLock = nil;
 		{
 			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\") AND date <= CAST(%lf, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate], [timeIntervalEnd timeIntervalSinceReferenceDate]];
 			
-			description = [description stringByAppendingFormat: NSLocalizedString(@" / Time Interval: from: %@ to: %@", nil),[DateTimeFormat stringFromDate: timeIntervalStart],  [DateTimeFormat stringFromDate: timeIntervalEnd] ];
+			description = [description stringByAppendingFormat: NSLocalizedString(@" / Time Interval: from: %@ to: %@", nil),[[NSUserDefaults dateTimeFormatter] stringFromDate: timeIntervalStart],  [[NSUserDefaults dateTimeFormatter] stringFromDate: timeIntervalEnd] ];
 		}
 		else
 		{
 			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate]];
 			
-			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [DateTimeFormat stringFromDate: timeIntervalStart]];
+			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [[NSUserDefaults dateTimeFormatter] stringFromDate: timeIntervalStart]];
 		}
 		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, nil]];
 		filtered = YES;
@@ -13768,17 +13768,17 @@ static NSArray*	openSubSeriesArray = nil;
 	[DateTimeWithSecondsFormat setDateStyle: NSDateFormatterShortStyle];
 	[DateTimeWithSecondsFormat setTimeStyle: NSDateFormatterMediumStyle];
 	
-	[DateTimeFormat release];
-	DateTimeFormat = [[NSDateFormatter alloc] init];
-	[DateTimeFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat2"]];
+//	[DateTimeFormat release];
+//	DateTimeFormat = [[NSDateFormatter alloc] init];
+//	[DateTimeFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat2"]];
 	
 	[DateOfBirthFormat release];
 	DateOfBirthFormat = [[NSDateFormatter alloc] init];
 	[DateOfBirthFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
 	
-	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter: DateTimeFormat];
-	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter: DateTimeFormat];
-	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter: DateTimeFormat];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter:[NSUserDefaults dateTimeFormatter]];
+	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter: [NSUserDefaults dateTimeFormatter]];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter: [NSUserDefaults dateTimeFormatter]];
 	
 	[[[databaseOutline tableColumnWithIdentifier: @"dateOfBirth"] dataCell] setFormatter: DateOfBirthFormat];
 	[[[databaseOutline tableColumnWithIdentifier: @"reportURL"] dataCell] setFormatter: DateOfBirthFormat];
@@ -13830,13 +13830,19 @@ static NSArray*	openSubSeriesArray = nil;
 	return s;
 }
 
+#pragma deprecated
+-(NSDateFormatter*)DateTimeFormat {
+	return [NSUserDefaults dateTimeFormatter];
+}
+
+#pragma deprecated
 + (NSString*) DateTimeFormat:(NSDate*) d
 {
 	NSString *s = nil;
 	
-	@synchronized( [[BrowserController currentBrowser] DateTimeFormat])
+	@synchronized([NSUserDefaults dateTimeFormatter])
 	{
-		s = [[[BrowserController currentBrowser] DateTimeFormat] stringFromDate: d];
+		s = [[NSUserDefaults dateTimeFormatter] stringFromDate: d];
 	}
 	return s;
 }

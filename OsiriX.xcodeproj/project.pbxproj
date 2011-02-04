@@ -289,6 +289,10 @@
 		59E8352812F9ABAC006B930A /* N2ManagedDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E8352612F9ABAC006B930A /* N2ManagedDatabase.mm */; };
 		59E8352912F9ABAC006B930A /* N2ManagedDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E8352512F9ABAC006B930A /* N2ManagedDatabase.h */; };
 		59E8352A12F9ABAC006B930A /* N2ManagedDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E8352612F9ABAC006B930A /* N2ManagedDatabase.mm */; };
+		59E83A1312FC6556006B930A /* NSManagedObject+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E83A1112FC6556006B930A /* NSManagedObject+N2.h */; };
+		59E83A1412FC6556006B930A /* NSManagedObject+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */; };
+		59E83A1512FC6556006B930A /* NSManagedObject+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E83A1112FC6556006B930A /* NSManagedObject+N2.h */; };
+		59E83A1612FC6556006B930A /* NSManagedObject+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */; };
 		59EBF40B12B8B90100809C61 /* WebPortal+Databases.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBF40912B8B90100809C61 /* WebPortal+Databases.h */; };
 		59EBF40C12B8B90100809C61 /* WebPortal+Databases.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */; };
 		59EBFDDC12BA5A1B00809C61 /* WebPortal+Email+Log.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */; };
@@ -8437,6 +8441,8 @@
 		59E52B3612C109B80094E668 /* DicomDatabase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomDatabase.mm; sourceTree = "<group>"; };
 		59E8352512F9ABAC006B930A /* N2ManagedDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ManagedDatabase.h; path = nitrogen/Sources/N2ManagedDatabase.h; sourceTree = "<group>"; };
 		59E8352612F9ABAC006B930A /* N2ManagedDatabase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ManagedDatabase.mm; path = nitrogen/Sources/N2ManagedDatabase.mm; sourceTree = "<group>"; };
+		59E83A1112FC6556006B930A /* NSManagedObject+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSManagedObject+N2.h"; path = "nitrogen/Sources/NSManagedObject+N2.h"; sourceTree = "<group>"; };
+		59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSManagedObject+N2.mm"; path = "nitrogen/Sources/NSManagedObject+N2.mm"; sourceTree = "<group>"; };
 		59EBF40912B8B90100809C61 /* WebPortal+Databases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebPortal+Databases.h"; sourceTree = "<group>"; };
 		59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortal+Databases.mm"; sourceTree = "<group>"; };
 		59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebPortal+Email+Log.h"; sourceTree = "<group>"; };
@@ -13373,6 +13379,8 @@
 		AB10FAFD1129338A009EB238 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
+				59E83A1112FC6556006B930A /* NSManagedObject+N2.h */,
+				59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */,
 				59DC28B411C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.h */,
 				59DC28B511C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.mm */,
 				592D333512F2C71A00C7C002 /* NSException+N2.h */,
@@ -19705,6 +19713,7 @@
 				CE90551312F5B64300263AB6 /* CPRVolumeData.h in Headers */,
 				84A9D49612F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */,
 				59E8352712F9ABAC006B930A /* N2ManagedDatabase.h in Headers */,
+				59E83A1312FC6556006B930A /* NSManagedObject+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21899,6 +21908,7 @@
 				592D333912F2C71A00C7C002 /* NSException+N2.h in Headers */,
 				84A9D49912F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */,
 				59E8352912F9ABAC006B930A /* N2ManagedDatabase.h in Headers */,
+				59E83A1512FC6556006B930A /* NSManagedObject+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22086,7 +22096,6 @@
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -24365,6 +24374,7 @@
 				CE90551212F5B64300263AB6 /* CPRView.m in Sources */,
 				CE90551412F5B64300263AB6 /* CPRVolumeData.m in Sources */,
 				59E8352812F9ABAC006B930A /* N2ManagedDatabase.mm in Sources */,
+				59E83A1412FC6556006B930A /* NSManagedObject+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25593,6 +25603,7 @@
 				599115F112D7224A00924B5C /* browserController.m in Sources */,
 				592D333A12F2C71A00C7C002 /* NSException+N2.mm in Sources */,
 				59E8352A12F9ABAC006B930A /* N2ManagedDatabase.mm in Sources */,
+				59E83A1612FC6556006B930A /* NSManagedObject+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -21,23 +21,23 @@
 
 #pragma mark General
 
-NSString* const OsirixDateFormatDefaultsKey = @"DBDateFormat2";
+NSString* const OsirixDateTimeFormatDefaultsKey = @"DBDateFormat2";
 
-+(NSString*)dateFormat {
-	NSString* r = [NSUserDefaultsController.sharedUserDefaultsController stringForKey:OsirixDateFormatDefaultsKey];
++(NSString*)dateTimeFormat {
+	NSString* r = [NSUserDefaultsController.sharedUserDefaultsController stringForKey:OsirixDateTimeFormatDefaultsKey];
 	if (!r) r = [[[[NSDateFormatter alloc] init] autorelease] dateFormat];
 	return r;
 }
 
-+(NSDateFormatter*)dateFormatter {
-	static NSDateFormatter* dateFormatter = NULL;
-	if (!dateFormatter)
-		dateFormatter = [[NSDateFormatter alloc] init];
++(NSDateFormatter*)dateTimeFormatter {
+	static NSDateFormatter* formatter = NULL;
+	if (!formatter)
+		formatter = [[NSDateFormatter alloc] init];
 	
-	if (![dateFormatter.dateFormat isEqual:self.dateFormat])
-		dateFormatter.dateFormat = self.dateFormat;
+	if (![formatter.dateFormat isEqual:self.dateTimeFormat])
+		formatter.dateFormat = self.dateTimeFormat;
 	
-	return dateFormatter;
+	return formatter;
 }
 
 #pragma mark Bonjour Sharing
@@ -127,6 +127,11 @@ NSString* const OsirixWebPortalPrefersFlashDefaultsKey = @"WebServerPrefersFlash
 NSString* const OsirixWebPortalPrefersCustomWebPagesKey = @"customWebPages";
 +(BOOL)webPortalPrefersCustomWebPages {
 	return [NSUserDefaultsController.sharedUserDefaultsController boolForKey:OsirixWebPortalPrefersCustomWebPagesKey];
+}
+
+NSString* const OsirixWebPortalNotificationsEnabledDefaultsKey = @"notificationsEmails";
++(BOOL)webPortalNotificationsEnabled {
+	return [NSUserDefaultsController.sharedUserDefaultsController boolForKey:OsirixWebPortalNotificationsEnabledDefaultsKey];
 }
 
 NSString* const OsirixWebPortalNotificationsIntervalDefaultsKey = @"notificationsEmailsInterval";

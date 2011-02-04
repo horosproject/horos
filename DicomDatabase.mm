@@ -49,20 +49,9 @@
 }
 
 -(NSArray*)albums {
-	[self.managedObjectContext lock];
-	@try {
-		NSArray* albums = [DicomDatabase albumsInContext:self.managedObjectContext];
-		
-		NSSortDescriptor* sd = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
-
-		return [albums sortedArrayUsingDescriptors:[NSArray arrayWithObject: sd]];
-	} @catch (NSException* e) {
-		NSLog(@"Exception: [DicomDatabase albums] %@", e);
-	} @finally {
-		[self.managedObjectContext unlock];
-	}
-	
-	return NULL;
+	NSArray* albums = [DicomDatabase albumsInContext:self.managedObjectContext];
+	NSSortDescriptor* sd = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
+	return [albums sortedArrayUsingDescriptors:[NSArray arrayWithObject: sd]];
 }
 
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string {

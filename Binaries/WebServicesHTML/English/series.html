@@ -1,6 +1,6 @@
 %INCLUDE:header.pvt.html%
 <div id="subheader">
-	<a class="back" href="study?id=%U:Series.study.studyInstanceUID%&%Info.getParameters(id=,studyID=)%">%BackLinkLabel%</a>
+	<a class="back" href="study?xid=%U:Series.study.XID%&%Info.getParameters(xid=)%">%BackLinkLabel%</a>
 </div>
 
 <div id="content">
@@ -9,22 +9,22 @@
 
 	<div class="loading center">
 	%[IF:Series.images.count<2%
-		<img src="/image.jpg?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" style="max-width:100%" />
+		<img src="/image.jpg?xid=%U:Series.XID%" style="max-width:100%" />
 	%ELSE:Series.images.count<2%
 		%[IF:Info.proposeFlash%
 			<object width="%X:Series.width%" height="%X:Series.height%" id="flash" name="Flash">
-				<param name="movie" value="/movie.swf?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" />
+				<param name="movie" value="/movie.swf?xid=%U:Series.XID%" />
 				<param name="allowscriptaccess" value="always" />
 				<param name="wmode" value="transparent" />
-				<embed src="/movie.swf?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" width="%X:Series.width%" height="%X:Series.height%" wmode="transparent" allowScriptAccess="always" />
+				<embed src="/movie.swf?xid=%U:Series.XID%" width="%X:Series.width%" height="%X:Series.height%" wmode="transparent" allowScriptAccess="always" />
 			</object>
 			<div class="smaller">Viewing this series requires <a href="http://get.adobe.com/flashplayer/">Adobe Flash Player</a></div>
 		%ELSE:Info.proposeFlash%
 			<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="%X:Series.width%" height="%X:Series.height%" codebase="http://www.apple.com/qtactivex/qtplugin.cab">
-				<param name="src" value="/image.jpg?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%&previewForMovie=true" />
-				<param name="href" value="/movie.mov?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" />
+				<param name="src" value="/image.jpg?xid=%U:Series.XID%&previewForMovie=true" />
+				<param name="href" value="/movie.mov?xid=%U:Series.XID%" />
 				<param name="type" value="video/quicktime" />
-				<embed src="/image.jpg?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%&previewForMovie=true" type="video/quicktime" href="/movie.mov?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%" width="%X:Series.width%" height="%X:Series.height%" target="myself" />
+				<embed src="/image.jpg?xid=%U:Series.XID%&previewForMovie=true" type="video/quicktime" href="/movie.mov?xid=%U:Series.XID%" width="%X:Series.width%" height="%X:Series.height%" target="myself" />
 			</object>
 			<div class="smaller">Viewing this series requires <a href="http://www.apple.com/quicktime/">Apple Quicktime</a></div>
 		%]IF:Info.proposeFlash%

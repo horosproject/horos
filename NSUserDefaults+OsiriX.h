@@ -20,8 +20,8 @@
 
 #pragma mark General
 
-extern NSString* const OsirixDateFormatDefaultsKey;
-+(NSDateFormatter*)dateFormatter;
+extern NSString* const OsirixDateTimeFormatDefaultsKey;
++(NSDateFormatter*)dateTimeFormatter;
 
 #pragma mark Bonjour Sharing
 
@@ -65,6 +65,9 @@ extern NSString* const OsirixWebPortalPrefersFlashDefaultsKey;
 
 extern NSString* const OsirixWebPortalPrefersCustomWebPagesKey;
 +(BOOL)webPortalPrefersCustomWebPages;
+
+extern NSString* const OsirixWebPortalNotificationsEnabledDefaultsKey;
++(BOOL)webPortalNotificationsEnabled;
 
 extern NSString* const OsirixWebPortalNotificationsIntervalDefaultsKey;
 +(NSInteger)webPortalNotificationsInterval;

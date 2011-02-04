@@ -24,13 +24,14 @@
 #import "DicomDatabase.h"
 #import "AppController.h"
 
-#import "BrowserController.h" // TODO: REMOVEEEE
-
 
 @implementation WebPortal (EmailLog)
 
 -(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate message:(NSString*)message replyTo:(NSString*)replyto customText:(NSString*)customText webServerAddress:(NSString*)webServerAddress
 {
+	if (!self.notificationsEnabled)
+		return NO;
+	
 	if (!webServerAddress)
 		webServerAddress = WebPortal.defaultWebPortal.address;
 	NSString* webServerURL = [self URLForAddress:webServerAddress];
@@ -64,7 +65,7 @@
 			
 			for (DicomStudy* s in filteredStudies)
 			{
-				[urls appendFormat: @"%@ - %@ (%@)\r", s.modality, s.studyName, [BrowserController DateTimeFormat:s.date]]; 
+				[urls appendFormat: @"%@ - %@ (%@)\r", s.modality, s.studyName, [NSUserDefaults.dateTimeFormatter stringFromDate:s.date]]; 
 				[urls appendFormat: @"%@ : %@/study?id=%@&browse=all\r\r", NSLocalizedString( @"Click here", nil), webServerURL, s.studyInstanceUID]; 
 			}
 			
@@ -114,7 +115,7 @@
 		return;
 	}
 	
-	if ([[[BrowserController currentBrowser] managedObjectContext] tryLock])
+	if ([self.dicomDatabase tryLock])
 	{
 		[WebPortal.defaultWebPortal.database.managedObjectContext lock];
 		
@@ -165,7 +166,7 @@
 				dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 				[dbRequest setEntity: [dicomDatabase entityForName:@"Study"]];
 				[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-				NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:NULL];
+				NSArray *studies = [dicomDatabase.managedObjectContext executeFetchRequest:dbRequest error:NULL];
 				
 				if ([studies count] > 0)
 				{
@@ -208,7 +209,7 @@
 			}
 		}
 		[WebPortal.defaultWebPortal.database.managedObjectContext unlock];
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		[dicomDatabase.managedObjectContext unlock];
 	}
 	
 	[[NSUserDefaults standardUserDefaults] setValue: newCheckString forKey: @"lastNotificationsDate"];

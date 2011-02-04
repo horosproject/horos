@@ -1,6 +1,6 @@
 %INCLUDE:header.pvt.html%
 <div id="subheader">
-	<a class="back" href="studyList?%Info.getParameters(id=)%">%BackLinkLabel%</a>
+	<a class="back" href="studyList?%Info.getParameters(xid=)%">%BackLinkLabel%</a>
 </div>
 
 <script type="text/javascript" language="javascript">
@@ -75,7 +75,7 @@ function onSubmitForm(form) {
 				</tr>
 				<tr>
 					<td>Description:</td>
-					<td>%X:Study.name%</td>
+					<td>%X:Study.studyName%</td>
 				</tr>
 				%[IF:Study.comment%
 				<tr>
@@ -98,7 +98,7 @@ function onSubmitForm(form) {
 				%[IF:Study.reportURL&&!Info.isIOS%
 				<tr>
 					<td>Report:</td>
-					<td><a href="report.%U:Study.reportExtension%?id=%U:Study.studyInstanceUID%" class="report">Download Report</a></td>
+					<td><a href="report.%U:Study.reportExtension%?xid=%U:Study.XID%" class="report">Download Report</a></td>
 				</tr>
 				%]IF:Study.reportURL&&!Info.isIOS%
 				%]IF:Study.reportIsLink%
@@ -112,16 +112,16 @@ function onSubmitForm(form) {
 					<tr class="li%X:Series_Index2%">				
 						%[IF:Info.proposeDicomSend||Info.proposeWeasis%
 						<td class="narrow fat">
-							<input type="checkbox" class="checkbox" name="selected" value="%X:Series.webUID%" onchange="checkboxChanged(this.form)" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
+							<input type="checkbox" class="checkbox" name="selected" value="%X:Series.XID%" onchange="checkboxChanged(this.form)" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
 						</td>
 						%]IF:Info.proposeDicomSend||Info.proposeWeasis%
 						<td class="narrow middle center">
-							<a class="series" href="series%Series.seriesExtension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%&%Info.getParameters(id=)%">
-								<img src="/thumbnail?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%" />
+							<a class="series" href="series%Series.seriesExtension%?xid=%U:Series.XID%&%Info.getParameters(xid=)%">
+								<img src="/thumbnail?xid=%U:Series.XID%" />
 							</a>
 						</td>
 						<td class="fat">
-							<a class="series" href="series%Series.seriesExtension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%&%Info.getParameters(id=)%">
+							<a class="series" href="series%Series.seriesExtension%?xid=%U:Series.XID%&%Info.getParameters(xid=)%">
 								<span class="bigger">%X:Series.name%</span>
 								<span class="gray">
 									%[IF:Series.stateText%
@@ -142,13 +142,13 @@ function onSubmitForm(form) {
 		
 						<td class="narrow middle">
 							%[IF:Info.proposeZipDownload%
-							<a href="%U:Study.name% - %U:Series.name%.%zipextension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Study.studyInstanceUID%"><img src="images/download.png"/></a>
+							<a href="%U:Study.name% - %U:Series.name%.%zipextension%?xid=%U:Series.XID%"><img src="images/download.png"/></a>
 							%]IF:Info.proposeZipDownload%
 						</td>
 	
 						%[IF:Info.proposeWeasis%
 						<td class="narrow middle">
-								<a href="/weasis.jnlp?SeriesInstanceUID=%U:Series.seriesInstanceUID%"><img src="images/weasis.png"/></a>
+								<a href="/weasis.jnlp?xid=%U:Series.XID%"><img src="images/weasis.png"/></a>
 						</td>
 						%]IF:Info.proposeWeasis%
 					</tr>
@@ -188,7 +188,7 @@ function onSubmitForm(form) {
 					<td>
 						<select name="shareStudyDestination">
 							%[FOREACH:ShareDestinations:Dest%
-							<option value="%X:Dest.webUID%">%X:Dest.name%</option>
+							<option value="%X:Dest.XID%">%X:Dest.name%</option>
 							%]FOREACH:ShareDestinations:Dest%
 						</select>
 					</td>
@@ -220,7 +220,7 @@ function onSubmitForm(form) {
 					<td>
 						<select name="dicomDestination" id="dicomDestination">
 							%[FOREACH:DicomDestinations:Dest%
-							<option value="%X:Dest.address%:%X:Dest.port%:%X:Dest.aeTitle%:%X:Dest.syntax%">%X:Dest.description%</option>
+							<option value="%U:Dest.address%:%U:Dest.port%:%U:Dest.aeTitle%:%U:Dest.syntax%">%X:Dest.description%</option>
 							%]FOREACH:DicomDestinations:Dest%
 						</select>
 						<button type="submit" name="dicomSend" value="dicomSend" onclick="document.submitting='Send'">Send</button>

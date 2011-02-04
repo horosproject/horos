@@ -74,7 +74,7 @@ static NSString* NotNil(NSString *s) {
 	return s? s : @"";
 }
 
-@interface HTTPConnection () // make compiler aware of these hidden methods' existance
+@interface HTTPConnection (Private) // make compiler aware of these hidden methods' existance
 
 -(BOOL)isAuthenticated;
 -(void)replyToHTTPRequest;
@@ -408,9 +408,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 +(NSString*)FormatParams:(NSDictionary*)dict {
 	NSMutableString* str = [NSMutableString string];
-	for (NSString* key in dict)
-		[str appendFormat:@"%@%@=%@", str.length?@"&":@"", [key urlEncodedString], [[dict objectForKey:key] urlEncodedString]];
-	return str;
+	for (NSString* key in dict) {
+		NSString* value = [dict objectForKey:key];
+		if ([value isKindOfClass:NSArray.class])
+			for (NSString* v2 in (NSArray*)value)
+				[str appendFormat:@"%@%@=%@", str.length?@"&":@"", [key urlEncodedString], [v2 urlEncodedString]];
+		else [str appendFormat:@"%@%@=%@", str.length?@"&":@"", [key urlEncodedString], [value urlEncodedString]];
+	} return str;
 }
 
 +(NSDictionary*)ExtractParams:(NSString*)paramsString {
@@ -425,6 +429,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		NSArray* paramArray = [param componentsSeparatedByString:@"="];
 		
 		NSString* paramName = [[[paramArray objectAtIndex:0] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		if (!paramName.length)
+			continue;
+		
 		NSString* paramValue = paramArray.count > 1? [[[paramArray objectAtIndex:1] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] : (NSString*)[NSNull null];
 		
 		NSMutableArray* prevVal = [params objectForKey:paramName];

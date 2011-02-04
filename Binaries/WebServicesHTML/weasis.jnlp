@@ -29,6 +29,6 @@
 		<property name="com.apple.macos.useScreenMenuBar" value="true"/>
 	</resources>
 	<application-desc main-class="org.weasis.launcher.WebstartLauncher">
-		<argument>$dicom:get -w %X:Info.baseUrl%/weasis.xml?%[IF:User%username=%U:User.name%&token=%U:X:Info.newToken%&%]IF:User%%Info.getParameters%</argument>
+		<argument>$dicom:get -w %X:Info.baseUrl%/weasis.xml?%[IF:User%username=%U:User.name%&token=%U:X:Info.newToken%&%]IF:User%%Info.allParameters%</argument>
 	</application-desc>
 </jnlp>
