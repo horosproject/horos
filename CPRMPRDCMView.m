@@ -1505,6 +1505,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 						}
 						else if (draggedToken != CPRCurvedPathControlTokenNone)
 						{
+							[cursor release];
+							cursor = [[NSCursor closedHandCursor]retain];
+							[cursor set];
+							
 							[self sendWillEditCurvedPath];
 						}
 						
@@ -1856,6 +1860,14 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				
 				displayInfo.hoverNodeHidden = NO;
 				displayInfo.hoverNodeIndex = [CPRCurvedPath nodeIndexForToken:curveToken];
+			}
+			else if (curveToken != CPRCurvedPathControlTokenNone)
+			{
+				[cursor release];
+				if( [theEvent type] == NSLeftMouseDragged)
+					cursor = [[NSCursor closedHandCursor]retain];
+				else
+					cursor = [[NSCursor openHandCursor]retain];
 			}
 			else
 			{
