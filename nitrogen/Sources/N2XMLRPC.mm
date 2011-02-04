@@ -130,12 +130,20 @@
 			return [N2XMLRPC FormatElement:o];
 		} break;
 		case 'i': {
-			NSInteger i; [invocation getReturnValue:&i];
+			int i; [invocation getReturnValue:&i];
 			return [NSString stringWithFormat:@"<int>%d</int>", i];
 		} break;
+		case 'l': {
+			long l; [invocation getReturnValue:&l];
+			return [NSString stringWithFormat:@"<int>%ld</int>", l];
+		} break;
 		case 'f': {
-			CGFloat f; [invocation getReturnValue:&f];
+			float f; [invocation getReturnValue:&f];
 			return [NSString stringWithFormat:@"<double>%f</double>", f];
+		} break;
+		case 'd': {
+			double d; [invocation getReturnValue:&d];
+			return [NSString stringWithFormat:@"<double>%f</double>", d];
 		} break;
 	}
 	

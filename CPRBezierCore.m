@@ -49,8 +49,9 @@ typedef struct CPRBezierCoreIterator CPRBezierCoreIterator;
 
 struct CPRBezierCoreRandomAccessor {
     volatile int32_t retainCount __attribute__ ((aligned (4)));
-    CPRBezierCoreRef bezierCore;
+    CPRMutableBezierCoreRef bezierCore;
     CPRBezierCoreElementRef *elementArray;
+	char mutableBezierCore; // boolean
 };
 typedef struct CPRBezierCoreRandomAccessor CPRBezierCoreRandomAccessor;
 
@@ -262,6 +263,15 @@ void CPRBezierCoreAddSegment(CPRMutableBezierCoreRef bezierCore, CPRBezierCoreSe
     bezierCore->elementCount++;
     
 //    CPRBezierCoreCheckDebug(bezierCore);
+}
+
+void CPRBezierCoreSetVectorsForSegementAtIndex(CPRMutableBezierCoreRef bezierCore, CFIndex index, CPRVector control1, CPRVector control2, CPRVector endpoint)
+{
+	CPRBezierCoreRandomAccessorRef bezierCoreRandomAccessor;
+	
+	bezierCoreRandomAccessor = CPRBezierCoreRandomAccessorCreateWithMutableBezierCore(bezierCore);
+	CPRBezierCoreRandomAccessorSetVectorsForSegementAtIndex(bezierCoreRandomAccessor, index, control1, control2, endpoint);
+	CPRBezierCoreRandomAccessorRelease(bezierCoreRandomAccessor);
 }
 
 void CPRBezierCoreSubdivide(CPRMutableBezierCoreRef bezierCore, CGFloat maxSegementLength)
@@ -697,7 +707,7 @@ CPRBezierCoreRandomAccessorRef CPRBezierCoreRandomAccessorCreateWithBezierCore(C
     bezierCoreRandomAccessor = malloc(sizeof(CPRBezierCoreRandomAccessor));
     memset(bezierCoreRandomAccessor, 0, sizeof(CPRBezierCoreRandomAccessor));
     
-    bezierCoreRandomAccessor->bezierCore = CPRBezierCoreRetain(bezierCore);
+    bezierCoreRandomAccessor->bezierCore = CPRBezierCoreRetain(bezierCore); // this does the casting to mutable for us
     if (bezierCore->elementCount) {
         bezierCoreRandomAccessor->elementArray = malloc(sizeof(CPRBezierCoreElementRef) * bezierCore->elementCount);
         
@@ -715,6 +725,14 @@ CPRBezierCoreRandomAccessorRef CPRBezierCoreRandomAccessorCreateWithBezierCore(C
     return bezierCoreRandomAccessor;
 }
 
+CPRBezierCoreRandomAccessorRef CPRBezierCoreRandomAccessorCreateWithMutableBezierCore(CPRMutableBezierCoreRef bezierCore)
+{
+	CPRBezierCoreRandomAccessor *bezierCoreRandomAccessor;
+	
+	bezierCoreRandomAccessor = (CPRBezierCoreRandomAccessor *)CPRBezierCoreRandomAccessorCreateWithBezierCore(bezierCore);
+	bezierCoreRandomAccessor->mutableBezierCore = true;
+	return bezierCoreRandomAccessor;
+}
 
 CPRBezierCoreRandomAccessorRef CPRBezierCoreRandomAccessorRetain(CPRBezierCoreRandomAccessorRef bezierCoreRandomAccessor)
 {
@@ -765,6 +783,44 @@ CPRBezierCoreSegmentType CPRBezierCoreRandomAccessorGetSegmentAtIndex(CPRBezierC
     }
     
     return element->segmentType;
+}
+
+void CPRBezierCoreRandomAccessorSetVectorsForSegementAtIndex(CPRBezierCoreRandomAccessorRef bezierCoreRandomAccessor, CFIndex index, CPRVector control1, CPRVector control2, CPRVector endpoint)
+{
+    CPRBezierCoreElementRef element;
+	
+	assert (bezierCoreRandomAccessor->mutableBezierCore);
+    assert (index < bezierCoreRandomAccessor->bezierCore->elementCount);
+	
+	element = bezierCoreRandomAccessor->elementArray[index];
+	switch (element->segmentType) {
+		case CPRMoveToBezierCoreSegmentType: // ouch figure out if there is a closepath later on, and update it too
+			element->endpoint = endpoint;
+			element = element->next;
+			while (element) {
+				if (element->segmentType == CPRCloseBezierCoreSegmentType) {
+					element->endpoint = endpoint;
+					break;
+				} else if (element->segmentType == CPRMoveToBezierCoreSegmentType) {
+					break;
+				}
+				element = element->next;
+			}
+			break;
+		case CPRLineToBezierCoreSegmentType:
+			element->endpoint = endpoint;
+			break;
+		case CPRCurveToBezierCoreSegmentType:
+			element->control1 = control1;
+			element->control2 = control2;
+			element->endpoint = endpoint;
+			break;
+		case CPRCloseBezierCoreSegmentType:
+			break;
+		default:
+			assert(0);
+			break;
+	}
 }
 
 CFIndex CPRBezierCoreRandomAccessorSegmentCount(CPRBezierCoreRandomAccessorRef bezierCoreRandomAccessor)
@@ -927,7 +983,7 @@ static CPRVector _CPRBezierCoreLastMoveTo(CPRBezierCoreRef bezierCore)
 	element = bezierCore->lastElement;
 	
 	while (element) {
-		if (element->segmentType == CPRCloseBezierCoreSegmentType) {
+		if (element->segmentType == CPRMoveToBezierCoreSegmentType) {
 			lastMoveTo = element->endpoint;
 			break;
 		}

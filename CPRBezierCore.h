@@ -51,6 +51,7 @@ CPRBezierCoreRef CPRBezierCoreCreateCopy(CPRBezierCoreRef bezierCore);
 CPRMutableBezierCoreRef CPRBezierCoreCreateMutableCopy(CPRBezierCoreRef bezierCore);
 
 void CPRBezierCoreAddSegment(CPRMutableBezierCoreRef bezierCore, CPRBezierCoreSegmentType segmentType, CPRVector control1, CPRVector control2, CPRVector endpoint);
+void CPRBezierCoreSetVectorsForSegementAtIndex(CPRMutableBezierCoreRef bezierCore, CFIndex index, CPRVector control1, CPRVector control2, CPRVector endpoint);
 void CPRBezierCoreFlatten(CPRMutableBezierCoreRef bezierCore, CGFloat flatness);
 void CPRBezierCoreSubdivide(CPRMutableBezierCoreRef bezierCore, CGFloat maxSegementLength);
 void CPRBezierCoreApplyTransform(CPRMutableBezierCoreRef bezierCore, CPRAffineTransform3D transform);
@@ -91,10 +92,12 @@ CFIndex CPRBezierCoreIteratorSegmentCount(CPRBezierCoreIteratorRef bezierCoreIte
 /* Caches pointers to each element of the linked list so iterating is O(n) not O(n^2) */
 
 CPRBezierCoreRandomAccessorRef CPRBezierCoreRandomAccessorCreateWithBezierCore(CPRBezierCoreRef bezierCore);
+CPRBezierCoreRandomAccessorRef CPRBezierCoreRandomAccessorCreateWithMutableBezierCore(CPRMutableBezierCoreRef bezierCore);
 CPRBezierCoreRandomAccessorRef CPRBezierCoreRandomAccessorRetain(CPRBezierCoreRandomAccessorRef bezierCoreRandomAccessor);
 void CPRBezierCoreRandomAccessorRelease(CPRBezierCoreRandomAccessorRef bezierCoreRandomAccessor);
 
 CPRBezierCoreSegmentType CPRBezierCoreRandomAccessorGetSegmentAtIndex(CPRBezierCoreRandomAccessorRef bezierCoreRandomAccessor, CFIndex index, CPRVectorPointer control1, CPRVectorPointer control2, CPRVectorPointer endpoint);
+void CPRBezierCoreRandomAccessorSetVectorsForSegementAtIndex(CPRBezierCoreRandomAccessorRef bezierCoreRandomAccessor, CFIndex index, CPRVector control1, CPRVector control2, CPRVector endpoint); // the random accessor must have been created with the mutable beziercore
 CFIndex CPRBezierCoreRandomAccessorSegmentCount(CPRBezierCoreRandomAccessorRef bezierCoreRandomAccessor);
 
 CG_EXTERN_C_END

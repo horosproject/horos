@@ -97,18 +97,27 @@
     CPRVectorArray vectorArray;
     NSInteger i;
     
-    assert([nodes count] >= 2);
-    
     if ( (self = [super init]) ) {
-        vectorArray = malloc(sizeof(CPRVector) * [nodes count]);
-        
-        for (i = 0; i < [nodes count]; i++) {
-            vectorArray[i] = [[nodes objectAtIndex:i] CPRVectorValue];
-        }
-        
-        _bezierCore = CPRBezierCoreCreateMutableCurveWithNodes(vectorArray, [nodes count]);
-        
-        free(vectorArray);
+		if ([nodes count] >= 2) {
+			vectorArray = malloc(sizeof(CPRVector) * [nodes count]);
+			
+			for (i = 0; i < [nodes count]; i++) {
+				vectorArray[i] = [[nodes objectAtIndex:i] CPRVectorValue];
+			}
+			
+			_bezierCore = CPRBezierCoreCreateMutableCurveWithNodes(vectorArray, [nodes count]);
+			
+			free(vectorArray);
+		} else if ([nodes count] == 0) {
+			_bezierCore = CPRBezierCoreCreateMutable();
+		} else {
+			_bezierCore = CPRBezierCoreCreateMutable();
+			CPRBezierCoreAddSegment(_bezierCore, CPRMoveToBezierCoreSegmentType, CPRVectorZero, CPRVectorZero, [[nodes objectAtIndex:0] CPRVectorValue]);
+			if ([nodes count] > 1) {
+				CPRBezierCoreAddSegment(_bezierCore, CPRLineToBezierCoreSegmentType, CPRVectorZero, CPRVectorZero, [[nodes objectAtIndex:1] CPRVectorValue]);
+			}
+		}
+
         
         if (_bezierCore == NULL) {
             [self release];
@@ -323,7 +332,7 @@
     
     @synchronized (self) {
         if (_bezierCoreRandomAccessor == NULL) {
-            _bezierCoreRandomAccessor = CPRBezierCoreRandomAccessorCreateWithBezierCore(_bezierCore);
+            _bezierCoreRandomAccessor = CPRBezierCoreRandomAccessorCreateWithMutableBezierCore(_bezierCore);
         }
     }
     
@@ -522,6 +531,12 @@
     CPRBezierCoreRandomAccessorRelease(_bezierCoreRandomAccessor);
     _bezierCoreRandomAccessor = NULL;
 	_length = 0.0;
+}
+
+- (void)setVectorsForElementAtIndex:(NSInteger)index control1:(CPRVector)control1 control2:(CPRVector)control2 endpoint:(CPRVector)endpoint
+{
+	[self elementAtIndex:index]; // just to make sure that the _bezierCoreRandomAccessor has been initialized
+	CPRBezierCoreRandomAccessorSetVectorsForSegementAtIndex(_bezierCoreRandomAccessor, index, control1, control2, endpoint);
 }
 
 @end

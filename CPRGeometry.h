@@ -15,14 +15,13 @@
 #ifndef _CPRGEOMETRY_H_
 #define _CPRGEOMETRY_H_
 
-#include <ApplicationServices/ApplicationServices.h>
 #include <QuartzCore/CATransform3D.h>
 
 #ifdef __OBJC__
 #import <Foundation/NSValue.h>
 #endif
 
-CG_EXTERN_C_BEGIN
+CF_EXTERN_C_BEGIN
  
 struct CPRVector {
     CGFloat x;
@@ -156,7 +155,7 @@ CFIndex findRealQuadraticRoots(CGFloat a, CGFloat b, CGFloat c, CGFloat *root1, 
  // returns the real numbered roots of ax^3+bx^2+cx+d
 CFIndex findRealCubicRoots(CGFloat a, CGFloat b, CGFloat c, CGFloat d, CGFloat *root1, CGFloat *root2, CGFloat *root3); // returns the number of roots set 
 
-CG_EXTERN_C_END
+CF_EXTERN_C_END
 
 /** NSValue support. **/
  

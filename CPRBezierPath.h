@@ -15,6 +15,8 @@
 #import "CPRGeometry.h"
 #import "CPRBezierCore.h"
 
+// CPRBezierDefaultFlatness and CPRBezierDefaultSubdivideSegmentLength are defined in CPRBezierCore.h
+
 @class NSBezierPath;
 
 enum _CPRBezierPathElement {
@@ -90,6 +92,7 @@ typedef NSInteger CPRBezierPathElement;
 - (void)subdivide:(CGFloat)maxSegmentLength;
 - (void)applyAffineTransform:(CPRAffineTransform3D)transform;
 - (void)appendBezierPath:(CPRBezierPath *)bezierPath connectPaths:(BOOL)connectPaths;
+- (void)setVectorsForElementAtIndex:(NSInteger)index control1:(CPRVector)control1 control2:(CPRVector)control2 endpoint:(CPRVector)endpoint;
 
 @end
 
