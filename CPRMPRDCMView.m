@@ -1350,7 +1350,27 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		}
 		else if( tool == tCurvedROI)
 		{
-			
+			if( windowController.curvedPathCreationMode)
+			{
+				windowController.curvedPathCreationMode = NO;
+				draggedToken = CPRCurvedPathControlTokenNone;
+			}
+			else
+			{
+				if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete the Curve", nil),
+												 NSLocalizedString(@"Are you sure you want to delete the entire curve?", nil),
+												 NSLocalizedString(@"OK",nil),
+												 NSLocalizedString(@"Cancel",nil),
+												 nil) == NSAlertDefaultReturn)
+				{
+					[self sendWillEditCurvedPath];
+					while( curvedPath.nodes.count > 0)
+						[curvedPath removeNodeAtIndex: 0];
+					[self sendDidUpdateCurvedPath];
+					[self sendDidEditCurvedPath];
+					[self setNeedsDisplay:YES];
+				}
+			}
 		}
 		else
 		{
