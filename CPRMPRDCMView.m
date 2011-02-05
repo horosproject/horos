@@ -1287,9 +1287,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	windowController.lowLOD = NO;
 	
-	windowController.mprView1.LOD *= 0.9;
-	windowController.mprView2.LOD *= 0.9;
-	windowController.mprView3.LOD *= 0.9;
+//	windowController.mprView1.LOD *= 0.9;
+//	windowController.mprView2.LOD *= 0.9;
+//	windowController.mprView3.LOD *= 0.9;
 	
 	[self restoreCamera];
 	
@@ -1581,11 +1581,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
 	
 	windowController.lowLOD = NO;
-	
-//	windowController.mprView1.LOD *= 0.9;
-//	windowController.mprView2.LOD *= 0.9;
-//	windowController.mprView3.LOD *= 0.9;
-	
+		
 	[self restoreCamera];
 	
 	if( rotateLines || moveCenter)
@@ -1607,6 +1603,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		rotateLines = NO;
 		moveCenter = NO;
         
+		windowController.mprView1.LOD *= 0.9;
+		windowController.mprView2.LOD *= 0.9;
+		windowController.mprView3.LOD *= 0.9;
+		
 		[self restoreCamera];
 		[self updateViewMPR];
 		
@@ -1648,6 +1648,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				windowController.mprView2.camera.forceUpdate = YES;
 				windowController.mprView3.camera.forceUpdate = YES;
 			}
+			
+			windowController.mprView1.LOD *= 0.9;
+			windowController.mprView2.LOD *= 0.9;
+			windowController.mprView3.LOD *= 0.9;
 			
 			if( [vrView _tool] == tRotate)
 				[self updateViewMPR: NO];
@@ -2016,51 +2020,20 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 - (void)setCrossCenter:(NSPoint)crossCenter
 {
-	[self magicTrick];
-
-	moveCenter = YES; // updateViewMPR looks at this....
-
-    [self restoreCamera];
-	
-	windowController.lowLOD = YES;
-	
-    [vrView setWindowCenter:crossCenter];
-	
-    [self updateViewMPR];
-	
-    [self restoreCamera];
-	
-	windowController.lowLOD = YES;
-	
-    [vrView setWindowCenter:crossCenter];
-	
-    [self updateViewMPR];
-	
-	windowController.lowLOD = NO;
-	
-	windowController.mprView1.LOD *= 0.9;
-	windowController.mprView2.LOD *= 0.9;
-	windowController.mprView3.LOD *= 0.9;
-	
 	[self restoreCamera];
+	
+	[vrView setWindowCenter:crossCenter];
+		
+	windowController.mprView1.camera.forceUpdate = YES;
+	windowController.mprView2.camera.forceUpdate = YES;
+	windowController.mprView3.camera.forceUpdate = YES;
+	
+	[self updateViewMPR];
 	
 	camera.windowCenterX = 0;
 	camera.windowCenterY = 0;
-	camera.forceUpdate = YES;
-		
-	if( vrView.lowResLODFactor > 1)
-	{
-		windowController.mprView1.camera.forceUpdate = YES;
-		windowController.mprView2.camera.forceUpdate = YES;
-		windowController.mprView3.camera.forceUpdate = YES;
-	}
-		
-	moveCenter = NO;
-        
-	[self restoreCamera];
-	[self updateViewMPR];
-//	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
-
+	
+	[windowController delayedFullLODRendering: self];
 }
 
 - (void)drawCurvedPathInGL
