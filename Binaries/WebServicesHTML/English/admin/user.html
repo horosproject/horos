@@ -198,7 +198,7 @@
 				<label for="studies">Specific studies:</label><br/>
 				<select multiple="multiple" name="studies" onchange="selectedStudiesChanged(this.form)">
 					%[FOREACH:EditedUser.studies:Study%
-					<option value="%X:Study.webUID%">%X:Study.study.name%: %X:Study.study.studyName%, %X:Study.study.date%</option>
+					<option value="%X:Study.XID%">%X:Study.study.name%: %X:Study.study.studyName%, %X:Study.study.date%</option>
 					%]FOREACH:EditedUser.studies:Study%
 				</select>
 				<button type="button" name="removeSelectedStudiesButton" onClick="removeSelectedStudies(this.form)">Remove Selected Studies</button>

@@ -616,7 +616,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	}
 	
 	if ([[parameters objectForKey:@"shareStudy"] isEqual:@"shareStudy"] && study) {
-		WebPortalUser* destUser = (WebPortalUser*)[self.portal.database objectWithID:[parameters objectForKey:@"shareStudyDestination"]];
+		WebPortalUser* destUser = [self objectWithXID:[parameters objectForKey:@"shareStudyDestination"] ofClass:WebPortalUser.class];
 		if ([destUser isKindOfClass:WebPortalUser.class]) {
 			// add study to specific study list for this user
 			if (![[destUser.studies.allObjects valueForKey:@"study"] containsObject:study]) {
@@ -956,19 +956,19 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 					webUser.deletionDate = [NSCalendarDate dateWithYear:[[parameters objectForKey:@"deletionDate_year"] integerValue] month:[[parameters objectForKey:@"deletionDate_month"] integerValue]+1 day:[[parameters objectForKey:@"deletionDate_day"] integerValue] hour:0 minute:0 second:0 timeZone:NULL];
 				
 				NSMutableArray* remainingStudies = [NSMutableArray array];
-				for (NSString* studyObjectID in [[self.parameters objectForKey:@"remainingStudies"] componentsSeparatedByString:@","]) {
-					studyObjectID = [studyObjectID.stringByTrimmingStartAndEnd stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+				for (NSString* studyXid in [[self.parameters objectForKey:@"remainingStudies"] componentsSeparatedByString:@","]) {
+					studyXid = [studyXid.stringByTrimmingStartAndEnd stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 					
 					WebPortalStudy* wpStudy = NULL;
 					// this is Mac OS X 10.6 SnowLeopard only // wpStudy = [webUser.managedObjectContext existingObjectWithID:[webUser.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:studyObjectID]] error:NULL];
 					for (WebPortalStudy* iwpStudy in webUser.studies)
-						if ([iwpStudy.objectID.URIRepresentation.absoluteString isEqual:studyObjectID]) {
+						if ([iwpStudy.XID isEqual:studyXid]) {
 							wpStudy = iwpStudy;
 							break;
 						}
 					
 					if (wpStudy) [remainingStudies addObject:wpStudy];
-					else NSLog(@"Warning: Web Portal user %@ is referencing a study with CoreData ID %@, which doesn't exist", self.user.name, studyObjectID);
+					else NSLog(@"Warning: Web Portal user %@ is referencing a study with CoreData ID %@, which doesn't exist", self.user.name, studyXid);
 				}
 				for (WebPortalStudy* iwpStudy in webUser.studies.allObjects)
 					if (![remainingStudies containsObject:iwpStudy])
