@@ -1287,9 +1287,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	windowController.lowLOD = NO;
 	
-//	windowController.mprView1.LOD *= 0.9;
-//	windowController.mprView2.LOD *= 0.9;
-//	windowController.mprView3.LOD *= 0.9;
+	windowController.mprView1.LOD *= 0.9;
+	windowController.mprView2.LOD *= 0.9;
+	windowController.mprView3.LOD *= 0.9;
 	
 	[self restoreCamera];
 	
