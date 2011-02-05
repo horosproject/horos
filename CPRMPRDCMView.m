@@ -293,6 +293,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	[self updateViewMPR: YES];
 }
 
+- (void) setLOD: (float) l
+{
+	LOD = l;
+}
+
 - (void) updateViewMPR:(BOOL) computeCrossReferenceLines
 {
 	long h, w;
@@ -871,10 +876,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		}
 	}
 	
-    glColor3f ([windowController.curvedPathColor redComponent], [windowController.curvedPathColor greenComponent], [windowController.curvedPathColor blueComponent]);
-	glLineWidth(2.0);
 	[self drawCurvedPathInGL];
-    glLineWidth(1.0);
 	
 	NSString *planeName;
 	for (planeName in [displayInfo planesWithMouseVectors]) {
@@ -1580,9 +1582,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	windowController.lowLOD = NO;
 	
-	windowController.mprView1.LOD *= 0.9;
-	windowController.mprView2.LOD *= 0.9;
-	windowController.mprView3.LOD *= 0.9;
+//	windowController.mprView1.LOD *= 0.9;
+//	windowController.mprView2.LOD *= 0.9;
+//	windowController.mprView3.LOD *= 0.9;
 	
 	[self restoreCamera];
 	
@@ -2063,6 +2065,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 - (void)drawCurvedPathInGL
 {
+	if( curvedPath.nodes.count == 0)
+		return;
+	
 	CPRAffineTransform3D transform;
 	CPRBezierPath *bezierPath;
     CPRMutableBezierPath *transformedBezierPath; // transformed path to be used to draw control points
@@ -2080,11 +2085,20 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     NSInteger i;
     BOOL above;
     CGLContextObj cgl_ctx;
-	
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
 	transform = CPRAffineTransform3DConcat(CPRAffineTransform3DInvert([self pixToDicomTransform]), [self pixToSubDrawRectTransform]);
     
+	// Just a single point
+	if( curvedPath.nodes.count == 1)
+	{
+        cursorVector = CPRVectorApplyTransform([[curvedPath.nodes objectAtIndex: 0] CPRVectorValue], transform);
+		glColor4d(1.0, 0.0, 0.0, 1.0);
+        [self drawCircleAtPoint:NSPointFromCPRVector(cursorVector)];
+		
+		return;
+	}
+	
 	bezierPath = curvedPath.bezierPath;
     flattenedBezierPath = [bezierPath mutableCopy];
 	//    [flattenedBezierPath subdivide:CPRBezierDefaultSubdivideSegmentLength];
@@ -2100,8 +2114,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     transformedBezierPath = [bezierPath mutableCopy];
     [transformedBezierPath applyAffineTransform:transform];
     [flattenedBezierPath flatten:CPRBezierDefaultFlatness];
-    
-    glColor4d(0.0, 1.0, 0.0, 1.0);
+	
+	float pathRed = [windowController.curvedPathColor redComponent];
+	float pathGreen = [windowController.curvedPathColor greenComponent];
+	float pathBlue = [windowController.curvedPathColor blueComponent];
+	
+    glColor4d( pathRed, pathGreen, pathBlue, 1.0);
     above = YES;
     
     glLineWidth(2.0);
@@ -2120,9 +2138,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			
             above = !above;
             if (above) {
-                glColor4d(0.0, 1.0, 0.0, 1.0);
+                glColor4d( pathRed, pathGreen, pathBlue, 1.0);
             } else {
-                glColor4d(0.0, .35, 0.0, 0.5);
+                glColor4d( pathRed, pathGreen, pathBlue, 0.3);
             }
             
             if (i > 0) {

@@ -149,14 +149,11 @@ static float deg2rad = 3.14159265358979/180.0;
 		
         curvedPath = [[CPRCurvedPath alloc] init];
         displayInfo = [[CPRDisplayInfo alloc] init];
-        curvedPathCreationMode = YES;
+        
         [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], @"CPRColorR",
                                                                                                            [NSNumber numberWithFloat:1], @"CPRColorG",
                                                                                                            [NSNumber numberWithFloat:0], @"CPRColorB", nil]];
-        curvedPathColor = [[NSColor colorWithDeviceRed:[[NSUserDefaults standardUserDefaults] floatForKey: @"CPRColorR"]
-                                                 green:[[NSUserDefaults standardUserDefaults] floatForKey: @"CPRColorG"]
-                                                  blue:[[NSUserDefaults standardUserDefaults] floatForKey: @"CPRColorB"]
-                                                 alpha:1] retain];
+		self.curvedPathCreationMode = YES;
         cprView.volumeData = [[[CPRVolumeData alloc] initWithWithPixList:pix volume:volume] autorelease];
         mprView1.delegate = self;
         mprView2.delegate = self;
@@ -3222,6 +3219,26 @@ static float deg2rad = 3.14159265358979/180.0;
 }
 
 #pragma mark CPR
+
+- (void) setCurvedPathCreationMode: (BOOL) m
+{
+	curvedPathCreationMode = m;
+	
+	[curvedPathColor release];
+	
+	if( curvedPathCreationMode)
+		curvedPathColor = [NSColor colorWithDeviceRed: 1.0
+                                                 green: 0.1
+                                                  blue: 0
+                                                 alpha:1];
+	else
+		curvedPathColor = [NSColor colorWithDeviceRed:[[NSUserDefaults standardUserDefaults] floatForKey: @"CPRColorR"]
+                                                 green:[[NSUserDefaults standardUserDefaults] floatForKey: @"CPRColorG"]
+                                                  blue:[[NSUserDefaults standardUserDefaults] floatForKey: @"CPRColorB"]
+                                                 alpha:1];
+												 
+	[curvedPathColor retain];
+}
 
 - (void)setCurvedPath:(CPRCurvedPath *)newCurvedPath
 {
