@@ -3594,7 +3594,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	viewCrossCenter = CPRVectorApplyTransform(crossCenter, CPRAffineTransform3DInvert(CPRAffineTransform3DConcat([mprView3 viewToPixTransform], [mprView3 pixToDicomTransform])));
     [mprView3 setCrossCenter:NSPointFromCPRVector(viewCrossCenter)];
 	
-	[windowController delayedFullLODRendering: self];
+	[self delayedFullLODRendering: self];
 }
 
 @end
