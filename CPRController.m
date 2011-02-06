@@ -3584,15 +3584,17 @@ static float deg2rad = 3.14159265358979/180.0;
 //	[newView3Camera release];
 //		
 	CPRVector viewCrossCenter;
-//    Camera *view;
 	
     viewCrossCenter = CPRVectorApplyTransform(crossCenter, CPRAffineTransform3DInvert(CPRAffineTransform3DConcat([mprView1 viewToPixTransform], [mprView1 pixToDicomTransform])));
     [mprView1 setCrossCenter:NSPointFromCPRVector(viewCrossCenter)];
-//	viewCrossCenter = CPRVectorApplyTransform(crossCenter, CPRAffineTransform3DInvert(CPRAffineTransform3DConcat([mprView2 viewToPixTransform], [mprView2 pixToDicomTransform])));
-//    [mprView2 setCrossCenter:NSPointFromCPRVector(viewCrossCenter)];
-//    
-//    viewCrossCenter = CPRVectorApplyTransform(crossCenter, CPRAffineTransform3DInvert(CPRAffineTransform3DConcat([mprView3 viewToPixTransform], [mprView3 pixToDicomTransform])));
-//    [mprView3 setCrossCenter:NSPointFromCPRVector(viewCrossCenter)];
+	
+	viewCrossCenter = CPRVectorApplyTransform(crossCenter, CPRAffineTransform3DInvert(CPRAffineTransform3DConcat([mprView2 viewToPixTransform], [mprView2 pixToDicomTransform])));
+    [mprView2 setCrossCenter:NSPointFromCPRVector(viewCrossCenter)];
+	
+	viewCrossCenter = CPRVectorApplyTransform(crossCenter, CPRAffineTransform3DInvert(CPRAffineTransform3DConcat([mprView3 viewToPixTransform], [mprView3 pixToDicomTransform])));
+    [mprView3 setCrossCenter:NSPointFromCPRVector(viewCrossCenter)];
+	
+	[windowController delayedFullLODRendering: self];
 }
 
 @end

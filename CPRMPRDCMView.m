@@ -2023,7 +2023,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	[self restoreCamera];
 	
 	[vrView setWindowCenter:crossCenter];
-		
+	
 	windowController.mprView1.camera.forceUpdate = YES;
 	windowController.mprView2.camera.forceUpdate = YES;
 	windowController.mprView3.camera.forceUpdate = YES;
@@ -2032,8 +2032,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	camera.windowCenterX = 0;
 	camera.windowCenterY = 0;
-	
-	[windowController delayedFullLODRendering: self];
 }
 
 - (void)drawCurvedPathInGL
