@@ -375,20 +375,23 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	if( sender)
 	{
-		[[self window] makeFirstResponder: sender];
+		if( [[self window] firstResponder] != sender)
+			[[self window] makeFirstResponder: sender];
 		[sender restoreCamera];
 		[sender updateViewMPR];
 	}
 	else
 	{
 		CPRMPRDCMView *selectedView = [self selectedView];
-		[[self window] makeFirstResponder: selectedView];
+		if( [[self window] firstResponder] != selectedView)
+			[[self window] makeFirstResponder: selectedView];
 		[selectedView restoreCamera];
 		[selectedView updateViewMPR];
 	}
 	
 	if( view)
-		[[self window] makeFirstResponder: view];
+		if( [[self window] firstResponder] != view)
+			[[self window] makeFirstResponder: view];
 	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
@@ -2968,20 +2971,22 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)toogleAxisVisibility:(id) sender;
 {
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
 	{
-		if( mprView1 != [self selectedView]) mprView1.displayCrossLines = !mprView1.displayCrossLines;
-		if( mprView2 != [self selectedView]) mprView2.displayCrossLines = !mprView2.displayCrossLines;
-		if( mprView3 != [self selectedView]) mprView3.displayCrossLines = !mprView3.displayCrossLines;
+		[self selectedView].displayCrossLines = ![self selectedView].displayCrossLines;
 	}
 	else
 	{
-		[self selectedView].displayCrossLines = ![self selectedView].displayCrossLines;
+		mprView1.displayCrossLines = !mprView1.displayCrossLines;
+		mprView2.displayCrossLines = !mprView2.displayCrossLines;
+		mprView3.displayCrossLines = !mprView3.displayCrossLines;
+		cprView.displayCrossLines = !cprView.displayCrossLines;
 	}
 	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
+	[cprView setNeedsDisplay: YES];
 	
 	[self updateToolbarItems];
 }
@@ -2996,6 +3001,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
+	[cprView setNeedsDisplay: YES];
 	
 	[self updateToolbarItems];
 }
@@ -3546,43 +3552,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)CPRView:(id)CPRMPRDCMView setCrossCenter:(CPRVector)crossCenter
 {
-//	CPRVector position;
-//	CPRVector focalPoint;
-//	CPRVector newPosition;
-//	CPRVector newFocalPoint;
-//	Camera *newView1Camera;
-//	Camera *newView2Camera;
-//	Camera *newView3Camera;
-//	
-//	newPosition = crossCenter;
-//	newView1Camera = [mprView1.camera copy];
-//	newView2Camera = [mprView2.camera copy];
-//	newView3Camera = [mprView3.camera copy];
-//	
-//	position = [mprView1.camera.position CPRVectorValue];
-//	focalPoint = [mprView1.camera.focalPoint CPRVectorValue];
-//	newFocalPoint = CPRVectorAdd(newPosition, CPRVectorSubtract(position, focalPoint));
-//	mprView1.camera.position = [Point3D pointWithCPRVector:newPosition];
-//	mprView1.camera.focalPoint = [Point3D pointWithCPRVector:newFocalPoint];
-//	
-//	position = [mprView2.camera.position CPRVectorValue];
-//	focalPoint = [mprView2.camera.focalPoint CPRVectorValue];
-//	newFocalPoint = CPRVectorAdd(newPosition, CPRVectorSubtract(position, focalPoint));
-//	mprView2.camera.position = [Point3D pointWithCPRVector:newPosition];
-//	mprView2.camera.focalPoint = [Point3D pointWithCPRVector:newFocalPoint];
-//	
-//	position = [mprView3.camera.position CPRVectorValue];
-//	focalPoint = [mprView3.camera.focalPoint CPRVectorValue];
-//	newFocalPoint = CPRVectorAdd(newPosition, CPRVectorSubtract(position, focalPoint));
-//	mprView3.camera.position = [Point3D pointWithCPRVector:newPosition];
-//	mprView3.camera.focalPoint = [Point3D pointWithCPRVector:newFocalPoint];
-//	
-//	[self updateViewsAccordingToFrame: nil];
-//	
-//	[newView1Camera release];
-//	[newView2Camera release];
-//	[newView3Camera release];
-//		
+
 	CPRVector viewCrossCenter;
 	
     viewCrossCenter = CPRVectorApplyTransform(crossCenter, CPRAffineTransform3DInvert(CPRAffineTransform3DConcat([mprView1 viewToPixTransform], [mprView1 pixToDicomTransform])));
@@ -3594,7 +3564,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	viewCrossCenter = CPRVectorApplyTransform(crossCenter, CPRAffineTransform3DInvert(CPRAffineTransform3DConcat([mprView3 viewToPixTransform], [mprView3 pixToDicomTransform])));
     [mprView3 setCrossCenter:NSPointFromCPRVector(viewCrossCenter)];
 	
-	[self delayedFullLODRendering: self];
+	[self delayedFullLODRendering: mprView1];
 }
 
 @end

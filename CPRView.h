@@ -93,6 +93,8 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
     BOOL _drawAllNodes;
     
     BOOL _needsNewRequest;
+	
+	BOOL displayCrossLines;
 }
 
 @property (nonatomic, readwrite, assign) id<CPRViewDelegate> delegate;
@@ -116,5 +118,7 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 
 @property (nonatomic, readonly, retain) CPRVolumeData *curvedVolumeData; // the volume data that was generated
 @property (nonatomic, readonly, assign) CGFloat generatedHeight; // height of the image that is generated in mm. kinda hack sends CPRViewDidChangeGeneratedHeight to the delegate when this value changes
+
+@property (nonatomic) BOOL displayCrossLines;
 
 @end

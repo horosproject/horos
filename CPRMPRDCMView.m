@@ -1120,6 +1120,16 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 #pragma mark-
 #pragma mark Mouse Events	
 
+//- (BOOL)acceptsFirstResponder
+//{
+//	return NO;
+//}
+
+-(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
+{
+	return YES;
+}
+
 #define BS 10.
 
 - (float) angleBetween:(NSPoint) mouseLocation center:(NSPoint) center
@@ -1322,9 +1332,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 {
     CGFloat relativePositionOnCurve;
     CGFloat distanceToCurve;
-
+	
 	if( [[self window] firstResponder] != self)
+	{
 		[[self window] makeFirstResponder: self];
+		return;
+	}
 	
 	dontCheckRoiChange = YES;
 	
@@ -1359,18 +1372,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			}
 			else
 			{
-				if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete the Curve", nil),
-												 NSLocalizedString(@"Are you sure you want to delete the entire curve?", nil),
-												 NSLocalizedString(@"OK",nil),
-												 NSLocalizedString(@"Cancel",nil),
-												 nil) == NSAlertDefaultReturn)
+				NSPoint mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];
+				CPRCurvedPathControlToken token = [curvedPath controlTokenNearPoint:mouseLocation transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])];
+				if ([CPRCurvedPath controlTokenIsNode:token])
 				{
-					[self sendWillEditCurvedPath];
-					while( curvedPath.nodes.count > 0)
-						[curvedPath removeNodeAtIndex: 0];
-					[self sendDidUpdateCurvedPath];
-					[self sendDidEditCurvedPath];
-					[self setNeedsDisplay:YES];
+					[windowController CPRView:self setCrossCenter:[[curvedPath.nodes objectAtIndex: [CPRCurvedPath nodeIndexForToken: token]] CPRVectorValue]];
 				}
 			}
 		}
@@ -1489,7 +1495,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 					[super mouseDown: theEvent];
 					[self deleteMouseDownTimer];
 					
-				    NSPoint mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];
+					NSPoint mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];
 					
 					if( windowController.curvedPathCreationMode == NO && curvedPath.nodes.count == 0)
 						windowController.curvedPathCreationMode = YES;
@@ -1498,10 +1504,24 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 					{
 						draggedToken = [curvedPath controlTokenNearPoint:mouseLocation transform:CPRAffineTransform3DConcat([self viewToPixTransform], [self pixToDicomTransform])];
 						
-						if( draggedToken >= 0 && [CPRCurvedPath nodeIndexForToken: draggedToken] > 1) // Two clicks on the last point
+//						if( draggedToken != CPRCurvedPathControlTokenNone && [CPRCurvedPath nodeIndexForToken: draggedToken] > 1) // Two clicks on the last point to close the curved and stop edition
+//						{
+//							windowController.curvedPathCreationMode = NO;
+//							draggedToken = CPRCurvedPathControlTokenNone;
+//						}
+						if ([CPRCurvedPath controlTokenIsNode:draggedToken])
 						{
-							windowController.curvedPathCreationMode = NO;
-							draggedToken = CPRCurvedPathControlTokenNone;
+							[self sendWillEditCurvedPath];
+							[self sendWillEditDisplayInfo];
+							displayInfo.draggedPositionHidden = NO;
+							displayInfo.draggedPosition = [curvedPath relativePositionForControlToken:draggedToken];
+							displayInfo.mouseCursorHidden = YES;
+							displayInfo.mouseCursorPosition = 0;
+							[self sendDidEditDisplayInfo];
+							
+							[cursor release];
+							cursor = [[NSCursor closedHandCursor]retain];
+							[cursor set];
 						}
 						else
 						{
@@ -1510,6 +1530,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 							[self sendDidUpdateCurvedPath];
 							[self sendDidEditCurvedPath];
 							[self setNeedsDisplay:YES];
+							
+							[windowController CPRView:self setCrossCenter:[[curvedPath.nodes lastObject] CPRVectorValue]];
 						}
 					}
 					else
@@ -1660,7 +1682,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		}
 	}
 	
-	if (draggedToken != CPRCurvedPathControlTokenNone) {
+	if (draggedToken != CPRCurvedPathControlTokenNone)
+	{
+		[windowController CPRView:self setCrossCenter:[[curvedPath.nodes objectAtIndex: [CPRCurvedPath nodeIndexForToken: draggedToken]] CPRVectorValue]];
+		
 		draggedToken = CPRCurvedPathControlTokenNone;
 		[self sendDidEditCurvedPath];
 	}
@@ -2024,14 +2049,18 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	[vrView setWindowCenter:crossCenter];
 	
-	windowController.mprView1.camera.forceUpdate = YES;
-	windowController.mprView2.camera.forceUpdate = YES;
-	windowController.mprView3.camera.forceUpdate = YES;
+	dontUseAutoLOD = YES;
+	LOD = 40;
 	
 	[self updateViewMPR];
 	
 	camera.windowCenterX = 0;
 	camera.windowCenterY = 0;
+	
+	[windowController updateViewsAccordingToFrame: self];
+	
+	dontUseAutoLOD = NO;
+	LOD = windowController.LOD;
 }
 
 - (void)drawCurvedPathInGL

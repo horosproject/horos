@@ -138,6 +138,13 @@
 @synthesize purplePlaneColor = _purplePlaneColor;
 @synthesize bluePlaneColor = _bluePlaneColor;
 @synthesize mousePlanePointsInPix = _mousePlanePointsInPix;
+@synthesize displayCrossLines;
+
+- (void) setDisplayCrossLines: (BOOL) b
+{
+	displayCrossLines = b;
+	[[self windowController] updateToolbarItems];
+}
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -146,6 +153,7 @@
 		_purplePlaneColor = [[NSColor purpleColor] retain];
 		_bluePlaneColor = [[NSColor blueColor] retain];
 		_mousePlanePointsInPix = [[NSMutableDictionary alloc] init];
+		displayCrossLines = YES;
     }
     return self;
 }
@@ -403,38 +411,41 @@
 	
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
     
-	glLineWidth(2.0);
-	// draw planes
-	glColor4f ([_orangePlaneColor redComponent], [_orangePlaneColor greenComponent], [_orangePlaneColor blueComponent], [_orangePlaneColor alphaComponent]);
-	[self _drawPlaneRuns:[self _orangePlaneRuns]];
-	[self _drawVerticalLines:[self _orangeVerticalLines]];
-	glLineWidth(1.0);
-	[self _drawPlaneRuns:[self _orangeTopPlaneRuns]];
-	[self _drawPlaneRuns:[self _orangeBottomPlaneRuns]];
-	[self _drawVerticalLines:[self _orangeTopVerticalLines]];
-	[self _drawVerticalLines:[self _orangeBottomVerticalLines]];
-	
-	glLineWidth(2.0);
-	// draw planes
-	glColor4f ([_purplePlaneColor redComponent], [_purplePlaneColor greenComponent], [_purplePlaneColor blueComponent], [_purplePlaneColor alphaComponent]);
-	[self _drawPlaneRuns:[self _purplePlaneRuns]];
-	[self _drawVerticalLines:[self _purpleVerticalLines]];
-	glLineWidth(1.0);
-	[self _drawPlaneRuns:[self _purpleTopPlaneRuns]];
-	[self _drawPlaneRuns:[self _purpleBottomPlaneRuns]];
-	[self _drawVerticalLines:[self _purpleTopVerticalLines]];
-	[self _drawVerticalLines:[self _purpleBottomVerticalLines]];
-	
-	glLineWidth(2.0);
-	// draw planes
-	glColor4f ([_bluePlaneColor redComponent], [_bluePlaneColor greenComponent], [_bluePlaneColor blueComponent], [_bluePlaneColor alphaComponent]);
-	[self _drawPlaneRuns:[self _bluePlaneRuns]];
-	[self _drawVerticalLines:[self _blueVerticalLines]];
-	glLineWidth(1.0);
-	[self _drawPlaneRuns:[self _blueTopPlaneRuns]];
-	[self _drawPlaneRuns:[self _blueBottomPlaneRuns]];
-	[self _drawVerticalLines:[self _blueTopVerticalLines]];
-	[self _drawVerticalLines:[self _blueBottomVerticalLines]];
+	if( displayCrossLines)
+	{
+		glLineWidth(2.0);
+		// draw planes
+		glColor4f ([_orangePlaneColor redComponent], [_orangePlaneColor greenComponent], [_orangePlaneColor blueComponent], [_orangePlaneColor alphaComponent]);
+		[self _drawPlaneRuns:[self _orangePlaneRuns]];
+		[self _drawVerticalLines:[self _orangeVerticalLines]];
+		glLineWidth(1.0);
+		[self _drawPlaneRuns:[self _orangeTopPlaneRuns]];
+		[self _drawPlaneRuns:[self _orangeBottomPlaneRuns]];
+		[self _drawVerticalLines:[self _orangeTopVerticalLines]];
+		[self _drawVerticalLines:[self _orangeBottomVerticalLines]];
+		
+		glLineWidth(2.0);
+		// draw planes
+		glColor4f ([_purplePlaneColor redComponent], [_purplePlaneColor greenComponent], [_purplePlaneColor blueComponent], [_purplePlaneColor alphaComponent]);
+		[self _drawPlaneRuns:[self _purplePlaneRuns]];
+		[self _drawVerticalLines:[self _purpleVerticalLines]];
+		glLineWidth(1.0);
+		[self _drawPlaneRuns:[self _purpleTopPlaneRuns]];
+		[self _drawPlaneRuns:[self _purpleBottomPlaneRuns]];
+		[self _drawVerticalLines:[self _purpleTopVerticalLines]];
+		[self _drawVerticalLines:[self _purpleBottomVerticalLines]];
+		
+		glLineWidth(2.0);
+		// draw planes
+		glColor4f ([_bluePlaneColor redComponent], [_bluePlaneColor greenComponent], [_bluePlaneColor blueComponent], [_bluePlaneColor alphaComponent]);
+		[self _drawPlaneRuns:[self _bluePlaneRuns]];
+		[self _drawVerticalLines:[self _blueVerticalLines]];
+		glLineWidth(1.0);
+		[self _drawPlaneRuns:[self _blueTopPlaneRuns]];
+		[self _drawPlaneRuns:[self _blueBottomPlaneRuns]];
+		[self _drawVerticalLines:[self _blueTopVerticalLines]];
+		[self _drawVerticalLines:[self _blueBottomVerticalLines]];
+	}
 	
 	lineStart = CPRVectorMake(0, (CGFloat)curDCM.pheight/2.0, 0);
     lineEnd = CPRVectorMake(curDCM.pwidth, (CGFloat)curDCM.pheight/2.0, 0);
