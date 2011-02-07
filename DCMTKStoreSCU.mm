@@ -595,7 +595,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 	#endif
 	{
 		#ifndef OSIRIX_LIGHT
-		NSLog(@"SEND - Compress JPEG: %s - ");
+		NSLog(@"SEND - Compress DCMTK JPEG: %s", fname);
 		
 		DcmDataset *dataset = fileformat.getDataset();
 		DcmItem *metaInfo = fileformat.getMetaInfo();
