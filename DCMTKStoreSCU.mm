@@ -1084,6 +1084,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	switch (_transferSyntax)
 	{
+		default:
 		case SendExplicitLittleEndian:
 			opt_networkTransferSyntax = EXS_LittleEndianExplicit;
 			break;
