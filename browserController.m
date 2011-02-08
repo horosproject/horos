@@ -9099,16 +9099,23 @@ static BOOL withReset = NO;
 
 - (DCMPix*) getDCMPixFromViewerIfAvailable: (NSString*) pathToFind
 {
+	DCMPix *returnPix = nil;
+	
 	//Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
 	for( ViewerController *v in [ViewerController get2DViewers])
 	{
-		for( int i = 0 ; i < [[v fileList] count]; i++)
+		// We need to temporarly retain all these objects, because this function is called on a separated thread (matrixLoadIcons)
+		NSArray *vFileList = [[v fileList] retain];
+		NSArray *vPixList = [[v pixList] retain];
+		NSData *volumeData = [[v volumeData] retain];
+		
+		for( int i = 0 ; i < [vFileList count]; i++)
 		{
-			NSString *path = [[[v fileList] objectAtIndex: i] valueForKey:@"completePath"];
+			NSString *path = [[vFileList objectAtIndex: i] valueForKey:@"completePath"];
 			
 			if( [path isEqualToString: pathToFind])
 			{
-				DCMPix *dcmPix = [[[v pixList] objectAtIndex: i] copy];
+				DCMPix *dcmPix = [[vPixList objectAtIndex: i] copy];
 				if( dcmPix)
 				{
 					float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
@@ -9118,15 +9125,20 @@ static BOOL withReset = NO;
 						[dcmPix setfImage: fImage];
 						[dcmPix freefImageWhenDone: YES];
 						
-						return [dcmPix autorelease];
+						returnPix = [dcmPix autorelease];
 					}
 					else
 						[dcmPix release];
 				}
 			}
 		}
+		
+		[volumeData retain];
+		[vFileList retain];
+		[vPixList retain];
 	}
-	return nil;
+	
+	return returnPix;
 }
 
 - (void) previewSliderAction:(id) sender
@@ -14257,11 +14269,6 @@ static NSArray*	openSubSeriesArray = nil;
 		for( NSInteger x = 0, row; x < [[ThreadsManager defaultManager] threadsCount]; x++)  
 			[[[ThreadsManager defaultManager] objectInThreadsAtIndex: x] cancel];
 		
-		unlink( "/tmp/kill_all_storescu");
-		[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"hideListenerError"];
-		
-		// ----------
-		
 		NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + 240;
 		while( ti - [NSDate timeIntervalSinceReferenceDate] > 0 && [[ThreadsManager defaultManager] threadsCount] > 0)
 		{
@@ -14270,6 +14277,12 @@ static NSArray*	openSubSeriesArray = nil;
 			if( wait && [[wait window] isVisible] == NO)
 				[wait showWindow:self];
 		}
+		
+		unlink( "/tmp/kill_all_storescu");
+		[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"hideListenerError"];
+		
+		// ----------
+		
 		
 		[BrowserController tryLock: checkIncomingLock during: 120];
 		[BrowserController tryLock: managedObjectContext during: 120];
@@ -14760,10 +14773,16 @@ static NSArray*	openSubSeriesArray = nil;
 		NSLog(@"delete Queue start: %d objects", [copyArray count]);
 		
 		int f = 0;
+		NSString *lastFolder = nil;
 		for( NSString *file in copyArray)
 		{
 			unlink( [file UTF8String]);		// <- this is faster
-			[folders addObject: [file stringByDeletingLastPathComponent]];
+			
+			if( [lastFolder isEqualToString: [file stringByDeletingLastPathComponent]] == NO)
+			{
+				[folders addObject: [file stringByDeletingLastPathComponent]];
+				lastFolder = [file stringByDeletingLastPathComponent];
+			}
 			
 			[NSThread currentThread].progress = (float) f++ / (float) [copyArray count];
 			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [copyArray count]-f];

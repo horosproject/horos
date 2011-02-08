@@ -1327,7 +1327,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	// CLEANUP
 	
-	[NSThread sleepForTimeInterval: 60];
+	for( int i = 0; i < 60; i++)
+	{
+		[NSThread sleepForTimeInterval: 1];
+		
+		if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
+			break;
+	}
 	
 	/* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
 	/* call is the counterpart of ASC_requestAssociation(...) which was called above. */

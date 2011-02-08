@@ -18,6 +18,8 @@
 #import "Notifications.h"
 #import "SeriesView.h"
 
+extern BOOL FULL32BITPIPELINE;
+
 @interface AYNSImageToDicom (private)
 - (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer toDestinationPath: (NSString *) destPath asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations;
 - (struct rawData) _convertRGBToGrayscale: (NSImage *) image;
@@ -220,6 +222,8 @@
 	if( previousRows != 1 || previousColumns != 1)
 		[currentViewer setImageRows: 1 columns: 1];
 	
+	BOOL copyFULL32BITPIPELINE = FULL32BITPIPELINE;
+	
 	for(NSNumber *imageIndex in fileList)
 	{
 		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
@@ -269,6 +273,8 @@
 		
 		[pool release];
 	}
+	
+	FULL32BITPIPELINE = copyFULL32BITPIPELINE;
 	
 	/////// ****************
 	
