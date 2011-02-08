@@ -7279,6 +7279,11 @@ static NSConditionLock *threadLock = nil;
 	databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 	
 	[self refreshMatrix: self];
+	
+#ifndef OSIRIX_LIGHT
+	[[QueryController currentQueryController] executeRefresh: self];
+	[[QueryController currentAutoQueryController] executeRefresh: self];
+#endif
 }
 
 - (void)buildColumnsMenu

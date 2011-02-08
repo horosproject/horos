@@ -121,5 +121,5 @@
 - (void) displayAndRetrieveQueryResults;
 - (void) autoQueryThread;
 - (void) autoQueryTimerFunction:(NSTimer*) t;
-
+- (void) executeRefresh: (id) sender;
 @end
