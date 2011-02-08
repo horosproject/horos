@@ -1532,6 +1532,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 							[self setNeedsDisplay:YES];
 							
 							[windowController CPRView:self setCrossCenter:[[curvedPath.nodes lastObject] CPRVectorValue]];
+							
+//							CPRVector v = [curvedPath.bezierPath vectorAtRelativePosition: 1];
 						}
 					}
 					else
@@ -2056,8 +2058,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	camera.windowCenterX = 0;
 	camera.windowCenterY = 0;
-	
-	[windowController updateViewsAccordingToFrame: self];
 	
 	dontUseAutoLOD = NO;
 	LOD = windowController.LOD;

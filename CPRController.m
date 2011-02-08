@@ -955,7 +955,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		if( im)
 		{
-			NSButtonCell *cell = [toolsMatrix cellAtRow:0 column:6];
+			NSButtonCell *cell = [toolsMatrix cellAtRow:0 column:7];
 			[cell setTag: roitype];
 			[cell setImage: im];
 			
@@ -3552,7 +3552,6 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)CPRView:(id)CPRMPRDCMView setCrossCenter:(CPRVector)crossCenter
 {
-
 	CPRVector viewCrossCenter;
 	
     viewCrossCenter = CPRVectorApplyTransform(crossCenter, CPRAffineTransform3DInvert(CPRAffineTransform3DConcat([mprView1 viewToPixTransform], [mprView1 pixToDicomTransform])));
@@ -3564,7 +3563,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	viewCrossCenter = CPRVectorApplyTransform(crossCenter, CPRAffineTransform3DInvert(CPRAffineTransform3DConcat([mprView3 viewToPixTransform], [mprView3 pixToDicomTransform])));
     [mprView3 setCrossCenter:NSPointFromCPRVector(viewCrossCenter)];
 	
-	[self delayedFullLODRendering: mprView1];
+	[self delayedFullLODRendering: CPRMPRDCMView];
 }
 
 @end
