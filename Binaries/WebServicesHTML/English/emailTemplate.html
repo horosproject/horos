@@ -1,0 +1,21 @@
+Dear %X:Destination.name%,<br/>
+<br/>
+You are registered on the OsiriX Web Portal at <a href="%WebServerURL%">%WebServerURL%</a>.<br/>
+<br/>
+
+%[IF:customText.length%
+%X:customText%<br/><br/>
+%]IF:customText.length%
+
+New radiology exam(s) are available on your account. Click on the following URLs to log in and review them:<br/>
+%URLsList%
+
+<br/>
+Your username (%Destination.name%) and password are required to log on the web server.<br/>
+<br/>
+These studies can be downloaded as DICOM files, and directly reviewed on the OsiriX software, available for free at this address: <a href="http://www.osirix-viewer.com">http://www.osirix-viewer.com</a><br/>
+<br/>
+Sincerely,<br/>
+Your OsiriX Web Portal administrator
+
+

@@ -537,6 +537,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 
 -(void)setNotificationsEnabled:(BOOL)flag {
 	if (self.notificationsEnabled != flag) {
+		notificationsEnabled = flag;
 		if (!flag) {
 			[notificationsTimer invalidate];
 			notificationsTimer = nil;

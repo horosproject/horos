@@ -998,7 +998,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	if (user) [response.tokens setObject:[WebPortalProxy createWithObject:user transformer:[WebPortalUserTransformer create]] forKey:@"User"];	
 	[response.tokens setObject:session forKey:@"Session"];
 	
-	NSLog(@"User: %X (Cookies: %@)", user, cookies);
+//	NSLog(@"User: %X (Cookies: %@)", user, cookies);
 	
 	[super replyToHTTPRequest];
 	

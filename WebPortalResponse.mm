@@ -75,7 +75,7 @@
 -(NSData*)data {
 	if (!data && templateString) {
 		NSMutableString* ts = self.templateString.mutableCopy;
-		[self mutableString:ts evaluateTokensWithDictionary:self.tokens context:wpc];
+		[WebPortalResponse mutableString:ts evaluateTokensWithDictionary:self.tokens context:wpc];
 		[self setDataWithString:ts];
 		[ts release];
 	}
@@ -135,7 +135,7 @@
 	[string replaceOccurrencesOfString:end withString:@"" options:NSLiteralSearch range:string.range];
 }*/
 
--(id)object:(id)o valueForKeyPath:(NSString*)keyPath context:(id)context {
++(id)object:(id)o valueForKeyPath:(NSString*)keyPath context:(id)context {
 	NSArray* parts = [keyPath componentsSeparatedByString:@"."];
 	NSString* part0 = [parts objectAtIndex:0];
 	
@@ -188,7 +188,7 @@
 	return NULL;
 }
 
--(NSString*)evaluateToken:(NSString*)tokenStr withDictionary:(NSDictionary*)dict context:(id)context mustReevaluate:(BOOL*)mustReevaluate {
++(NSString*)evaluateToken:(NSString*)tokenStr withDictionary:(NSDictionary*)dict context:(id)context mustReevaluate:(BOOL*)mustReevaluate {
 	// # separates the actual token from extra chars that can be used as comments or as marker for otherwise equal tokens
 	NSArray* tokenStrParts = [tokenStr componentsSeparatedByString:@"#"];
 	NSString* token = [tokenStrParts objectAtIndex:0];
@@ -330,7 +330,7 @@
 	}
 	
 	// or is it just a value?
-	NSObject* o = [self object:dict valueForKeyPath:token  context:context];
+	NSObject* o = [self object:dict valueForKeyPath:token context:context];
 	if (o) {
 		if ([o isKindOfClass:[NSString class]])
 			return (NSString*)o;
@@ -342,7 +342,7 @@
 	return @"";
 }
 
--(void)mutableString:(NSMutableString*)string evaluateTokensWithDictionary:(NSDictionary*)localtokens context:(id)context {
++(void)mutableString:(NSMutableString*)string evaluateTokensWithDictionary:(NSDictionary*)localtokens context:(id)context {
 	NSRange range = string.range, occ;
 	
 	// scan for tokens
@@ -628,13 +628,11 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 }
 
 -(id)valueForKey:(NSString*)key object:(NSDate*)object context:(WebPortalConnection*)wpc {
-	if ([key isEqual:@"Format"]) {
+	if ([key isEqual:@"DateTime"]) {
 		return [NSUserDefaults.dateTimeFormatter stringFromDate:object];
 	}
 	
-	if ([key isEqual:@"FormatDOB"]) {
-		NSDateFormatter* format = [[[NSDateFormatter alloc] init] autorelease];
-		format.dateFormat = [NSUserDefaults.standardUserDefaults stringForKey:@"DBDateOfBirthFormat2"];
+	if ([key isEqual:@"Date"]) {
 		return [NSUserDefaults.dateFormatter stringFromDate:object];
 	}
 	

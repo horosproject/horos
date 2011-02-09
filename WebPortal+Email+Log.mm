@@ -15,6 +15,7 @@
 #import "WebPortal+Email+Log.h"
 #import "WebPortal+Databases.h"
 #import "WebPortalDatabase.h"
+#import "WebPortalResponse.h"
 #import "NSUserDefaults+OsiriX.h"
 #import "NSString+N2.h"
 #import "NSMutableString+N2.h"
@@ -23,13 +24,14 @@
 #import "CSMailMailClient.h"
 #import "DicomDatabase.h"
 #import "AppController.h"
+#import "NSManagedObject+N2.h"
 
 // TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
 
 
 @implementation WebPortal (EmailLog)
 
--(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate message:(NSString*)message replyTo:(NSString*)replyto customText:(NSString*)customText webServerURL:(NSString*)webServerURL
+-(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate message:(NSString*)message replyTo:(NSString*)replyto customText:(NSString*)customText
 {
 	if (!self.notificationsEnabled)
 		return NO;
@@ -39,59 +41,47 @@
 		fromEmailAddress = @"";
 	
 	for (WebPortalUser* user in users) {
-		NSMutableAttributedString *emailMessage = nil;
+		NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
 		
-		if (message == nil)
-			emailMessage = [[[NSMutableAttributedString alloc] initWithData:[self dataForPath:@"emailTemplate.txt"] options:NULL documentAttributes:nil error:NULL] autorelease];
-		else
-			emailMessage = [[[NSMutableAttributedString alloc] initWithString: message] autorelease];
+		if (customText) [tokens setObject:customText forKey:@"customText"];
+		[tokens setObject:user forKey:@"Destination"];
+		[tokens setObject:self.URL forKey:@"WebServerURL"];
 		
-		if (emailMessage)
-		{
-			if (customText == nil) customText = @"";
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%customText%" withString:N2NonNullString([customText stringByAppendingString:@"\r\r"])];
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%Username%" withString:N2NonNullString(user.name)];
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%WebServerAddress%" withString:webServerURL];
-			
-			NSMutableString *urls = [NSMutableString string];
-			
-			if ([filteredStudies count] > 1 && predicate != nil)
-			{
-				[urls appendString: NSLocalizedString( @"To view this entire list, including patients names:\r", nil)]; 
-				[urls appendFormat: @"%@ : %@/studyList?%@\r\r\r\r", NSLocalizedString( @"Click here", nil), webServerURL, predicate]; 
-			}
-			
-			for (DicomStudy* s in filteredStudies)
-			{
-				[urls appendFormat: @"%@ - %@ (%@)\r", s.modality, s.studyName, [NSUserDefaults.dateTimeFormatter stringFromDate:s.date]]; 
-				[urls appendFormat: @"%@ : %@/study?id=%@&browse=all\r\r", NSLocalizedString( @"Click here", nil), webServerURL, s.studyInstanceUID]; 
-			}
-			
-			[[emailMessage mutableString] replaceOccurrencesOfString: @"%URLsList%" withString:N2NonNullString(urls)];
-			
-			NSString *emailAddress = user.email;
-			
-			NSString *emailSubject = nil;
-			if (replyto)
-				emailSubject = [NSString stringWithFormat: NSLocalizedString( @"A new radiology exam is available for you, from %@", nil), replyto];
-			else
-				emailSubject = NSLocalizedString( @"A new radiology exam is available for you !", nil);
-			
-			[[CSMailMailClient mailClient] deliverMessage: emailMessage headers: [NSDictionary dictionaryWithObjectsAndKeys: emailAddress, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", replyto, @"ReplyTo", nil]];
-			
-			for ( NSManagedObject *s in filteredStudies)
-			{
-				[self updateLogEntryForStudy: s withMessage: @"notification email" forUser:user.name ip:nil];
-			}
+		NSMutableString* urls = [NSMutableString string];
+		
+		if ([filteredStudies count] > 1 && predicate != nil) {
+			[urls appendString: NSLocalizedString( @"<br/>To view this entire list, including patients names:<br/>", nil)]; 
+			NSString* url = [NSString stringWithFormat:@"%@/studyList?%@", self.URL, predicate];
+			[urls appendFormat: @"%@: <a href=\"%@\">%@</a><br/>", NSLocalizedString(@"Click here", nil), url, url]; 
 		}
-		else NSLog( @"********* warning : CANNOT send notifications emails, because emailTemplate.txt == nil");
+		
+		for (DicomStudy* s in filteredStudies) {
+			[urls appendFormat: @"<br/>%@ - %@ (%@)<br/>", s.modality, s.studyName, [NSUserDefaults.dateTimeFormatter stringFromDate:s.date]]; 
+			NSString* url = [NSString stringWithFormat:@"%@/study?xid=%@", self.URL, s.XID];
+			[urls appendFormat: @"%@: <a href=\"%@\">%@</a><br/>", NSLocalizedString(@"Click here", nil), url, url]; 
+		}
+		
+		[tokens setObject:urls forKey:@"URLsList"];
+		
+		NSMutableString* ts = [[[self stringForPath:@"emailTemplate.html"] mutableCopy] autorelease];
+		[WebPortalResponse mutableString:ts evaluateTokensWithDictionary:tokens context:NULL];
+		
+		NSString *emailSubject = NSLocalizedString(@"A new radiology exam is available for you", nil);
+		if (replyto)
+			emailSubject = [NSString stringWithFormat:NSLocalizedString(@"A new radiology exam is available for you, from %@", nil), replyto];
+		
+		NSMutableDictionary* messageHeaders = [NSMutableDictionary dictionary];
+		[messageHeaders setObject:user.email forKey:@"To"];
+		[messageHeaders setObject:fromEmailAddress forKey:@"Sender"];
+		[messageHeaders setObject:emailSubject forKey:@"Subject"];
+		if (replyto) [messageHeaders setObject:replyto forKey:@"ReplyTo"];
+		[[CSMailMailClient mailClient] deliverMessage:[[[NSAttributedString alloc] initWithHTML:[ts dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL] autorelease] headers:messageHeaders];
+		
+		for (NSManagedObject* s in filteredStudies)
+			[self updateLogEntryForStudy:s withMessage: @"notification email" forUser:user.name ip:nil];
 	}
 	
 	return YES; // succeeded
-}
-
--(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate message:(NSString*)message replyTo:(NSString*)replyto customText:(NSString*)customText {
-	return [self sendNotificationsEmailsTo:users aboutStudies:filteredStudies predicate:predicate message:message replyTo:replyto customText:customText webServerURL:NULL];
 }
 
 - (void) emailNotifications
