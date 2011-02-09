@@ -42,7 +42,15 @@
 	if (self.formatter) {
 		id obj = NULL;
 		
-		self.formatIsOk = self.stringValue.length? [self.formatter getObjectValue:&obj forString:self.stringValue errorDescription:NULL] : YES;
+		// ok if filled and respects format
+		// also ok if NOT filled and placeholder string defined
+		if (self.stringValue.length)
+			self.formatIsOk = [self.formatter getObjectValue:&obj forString:self.stringValue errorDescription:NULL];
+		else {
+			if ([[self cell] placeholderString])
+				self.formatIsOk = YES;
+			else self.formatIsOk = NO;
+		}
 		
 	/*	if (invalidContentBackgroundColor) {
 			[self setBackgroundColor: self.formatIsOk? [NSColor whiteColor] : invalidContentBackgroundColor ];
