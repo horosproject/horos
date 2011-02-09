@@ -678,7 +678,7 @@
             if (CPRVectorDistance(CPRVectorMakeFromNSPoint(viewPoint),
                                   CPRVectorApplyTransform(CPRVectorMake((CGFloat)curDCM.pwidth*relativePosition, (CGFloat)curDCM.pheight/2.0, 0), CPRAffineTransform3DInvert([self viewToPixTransform]))) < 10.0) {
                 if ([_delegate respondsToSelector:@selector(CPRView:setCrossCenter:)]) {
-                    [_delegate CPRView:self setCrossCenter:[[_curvedPath.nodes objectAtIndex:i] CPRVectorValue]];
+                    [_delegate CPRView: [[self windowController] mprView1] setCrossCenter:[[_curvedPath.nodes objectAtIndex:i] CPRVectorValue]];
                 }
                 clickedNode = YES;
                 break;

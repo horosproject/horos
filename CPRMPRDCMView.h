@@ -104,7 +104,7 @@
 - (void)CPRViewDidEditDisplayInfo:(id)CPRMPRDCMView;
 
 - (void)CPRViewDidChangeGeneratedHeight:(id)CPRMPRDCMView;
-- (void)CPRView:(id)CPRMPRDCMView setCrossCenter:(CPRVector)crossCenter;
+- (void)CPRView:(CPRMPRDCMView*)CPRMPRDCMView setCrossCenter:(CPRVector)crossCenter;
 
 @end
 

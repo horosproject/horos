@@ -1531,9 +1531,45 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 							[self sendDidEditCurvedPath];
 							[self setNeedsDisplay:YES];
 							
+							// Center the views to the last point
 							[windowController CPRView:self setCrossCenter:[[curvedPath.nodes lastObject] CPRVectorValue]];
 							
-//							CPRVector v = [curvedPath.bezierPath vectorAtRelativePosition: 1];
+//							// Orient the planes to the last point
+//							CPRVector normal;
+//							CPRVector tangent;
+//							CPRVector cross;
+//							
+//							tangent = [curvedPath.bezierPath tangentAtRelativePosition: 1.0];
+//							normal = [curvedPath.bezierPath normalAtRelativePosition: 1.0 initialNormal:curvedPath.initialNormal];
+//							
+//							cross = CPRVectorNormalize(CPRVectorCrossProduct(normal, tangent));
+//							
+//							NSLog( @"%2.2f %2.2f %2.2f", cross.x, cross.y, cross.z);
+//							NSLog( @"%2.2f %2.2f %2.2f", tangent.x, tangent.y, tangent.z);
+//							NSLog( @"%2.2f %2.2f %2.2f", normal.x, normal.y, normal.z);
+//							
+//							self.camera.viewUp = [Point3D pointWithX: cross.x y: cross.y z: cross.z];
+							
+							
+							
+							
+							
+							
+//							mprView1.angleMPR = 0;
+//							mprView2.angleMPR = 0;
+//							mprView3.angleMPR = 0;
+//							
+//							[mprView1 updateViewMPR];
+//							
+//							mprView2.camera.viewUp = [Point3D pointWithX:0 y:-1 z:0];
+//							
+//							[[self window] makeFirstResponder: mprView3];
+//							mprView3.camera.viewUp = [Point3D pointWithX:0 y:0 z:1];
+//							mprView3.camera.rollAngle = 0;
+//							mprView3.angleMPR = 0;
+//							mprView3.camera.parallelScale /= 2.;
+//							[mprView3 restoreCamera];
+//							[mprView3 updateViewMPR];
 						}
 					}
 					else
@@ -2058,6 +2094,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	camera.windowCenterX = 0;
 	camera.windowCenterY = 0;
+	
+	[windowController delayedFullLODRendering: self];
 	
 	dontUseAutoLOD = NO;
 	LOD = windowController.LOD;

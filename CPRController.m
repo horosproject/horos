@@ -32,7 +32,7 @@
 #import "CPRGeneratorRequest.h"
 #import "CPRGenerator.h"
 #import "CPRUnsignedInt16ImageRep.h"
-
+#import "CPRMPRDCMView.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -3550,7 +3550,7 @@ static float deg2rad = 3.14159265358979/180.0;
     bottomTransverseView.sectionWidth = cprView.generatedHeight;
 }
 
-- (void)CPRView:(id)CPRMPRDCMView setCrossCenter:(CPRVector)crossCenter
+- (void)CPRView:(CPRMPRDCMView*) CPRMPRDCMView setCrossCenter:(CPRVector)crossCenter
 {
 	CPRVector viewCrossCenter;
 	
@@ -3562,6 +3562,34 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	viewCrossCenter = CPRVectorApplyTransform(crossCenter, CPRAffineTransform3DInvert(CPRAffineTransform3DConcat([mprView3 viewToPixTransform], [mprView3 pixToDicomTransform])));
     [mprView3 setCrossCenter:NSPointFromCPRVector(viewCrossCenter)];
+
+	
+	
+	if( [curvedPath.nodes count] > 1 && curvedPathCreationMode)
+	{
+		// Orient the planes to the last point
+		CPRVector normal;
+		CPRVector tangent;
+		CPRVector cross;
+		
+		tangent = [curvedPath.bezierPath tangentAtRelativePosition: 1];
+		normal = [curvedPath.bezierPath normalAtRelativePosition: 1 initialNormal:curvedPath.initialNormal];
+		
+		cross = CPRVectorNormalize(CPRVectorCrossProduct(normal, tangent));
+		
+		NSLog( @"%2.2f %2.2f %2.2f", cross.x, cross.y, cross.z);
+		NSLog( @"%2.2f %2.2f %2.2f", tangent.x, tangent.y, tangent.z);
+		NSLog( @"%2.2f %2.2f %2.2f", normal.x, normal.y, normal.z);
+		
+		mprView1.camera.rollAngle = 0;
+		mprView1.angleMPR = 0;
+		mprView2.camera.rollAngle = 0;
+		mprView2.angleMPR = 0;
+		mprView3.camera.rollAngle = 0;
+		mprView3.angleMPR = 0;
+
+		CPRMPRDCMView.camera.viewUp = [Point3D pointWithX: cross.x y: cross.y z: cross.z];
+	}
 	
 	[self delayedFullLODRendering: CPRMPRDCMView];
 }
