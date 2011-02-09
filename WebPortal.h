@@ -91,8 +91,9 @@
 -(WebPortalSession*)sessionForId:(NSString*)sid;
 -(WebPortalSession*)sessionForUsername:(NSString*)username token:(NSString*)token;
 
+-(NSString*)addressWithPortUnlessDefault;
 -(NSString*)URL;
--(NSString*)URLForAddress:(NSString*)address;
+//-(NSString*)URLForAddress:(NSString*)address;
 
 @end
 

@@ -161,15 +161,12 @@ static NSString* NotNil(NSString *s) {
 }
 
 -(NSString*)portalAddress {
-	NSString* webPortalAddress = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Host") autorelease];
-	if (webPortalAddress)
-		webPortalAddress = [[webPortalAddress componentsSeparatedByString:@":"] objectAtIndex:0];
-	else webPortalAddress = self.portal.address;
-	return webPortalAddress;
+	NSString* requestedHost = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Host") autorelease];
+	return requestedHost? requestedHost : self.portal.addressWithPortUnlessDefault;
 }
 
 -(NSString*)portalURL {
-	return [self.portal URLForAddress:self.portalAddress];
+	return [NSString stringWithFormat:@"%@://%@", self.portal.usesSSL? @"https" : @"http", self.portalAddress];
 }
 
 NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int)

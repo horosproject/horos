@@ -446,17 +446,40 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	return html;
 }
 
+-(NSString*)addressWithPortUnlessDefault {
+	NSString* add = self.address;
+	if (![add contains:@":"]) {
+		BOOL isDefaultPort = NO;
+		if (!self.usesSSL && self.portNumber == 80) isDefaultPort = YES;
+		if (self.usesSSL && self.portNumber == 443) isDefaultPort = YES;
+		if (!isDefaultPort)
+			add = [add stringByAppendingFormat:@":%d", self.portNumber];
+	}
+	
+	return add;
+}
 
 -(NSString*)URL {
-	return [self URLForAddress:NULL];
+	return [NSString stringWithFormat: @"%@://%@", self.usesSSL? @"https" : @"http", self.addressWithPortUnlessDefault];
 }
 
--(NSString*)URLForAddress:(NSString*)add {
+/*-(NSString*)URLForAddress:(NSString*)add {
 	if (!add)
 		add = self.address;
+	
 	NSString* protocol = self.usesSSL? @"https" : @"http";
-	return [NSString stringWithFormat: @"%@://%@:%d", protocol, add, self.portNumber];
-}
+	
+	if (![add contains:@":"]) {
+		BOOL isDefaultPort = NO;
+		if (!self.usesSSL && self.portNumber == 80) isDefaultPort = YES;
+		if (self.usesSSL && self.portNumber == 443) isDefaultPort = YES;
+		
+		if (!isDefaultPort)
+			add = [add stringByAppendingFormat:@"%d", self.portNumber];
+	}
+	
+	return [NSString stringWithFormat: @"%@://%@", protocol, add];
+}*/
 
 #pragma mark Sessions
 
