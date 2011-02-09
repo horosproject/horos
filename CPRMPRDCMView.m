@@ -1708,6 +1708,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		draggedToken = CPRCurvedPathControlTokenNone;
 		[self sendDidEditCurvedPath];
 	}
+	
     if (displayInfo.draggedPositionHidden == NO) {
         relativePositionOnCurve = [curvedPath relativePositionForPoint:viewPoint transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])
                                                        distanceToPoint:&distanceToCurve];
@@ -1923,14 +1924,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			
 			if ([CPRCurvedPath controlTokenIsNode:curveToken])
 			{
-				if( windowController.curvedPathCreationMode == NO)
-				{
-					[cursor release];
-					if( [theEvent type] == NSLeftMouseDragged)
-						cursor = [[NSCursor closedHandCursor]retain];
-					else
-						cursor = [[NSCursor openHandCursor]retain];
-				}
+				[cursor release];
+				if( [theEvent type] == NSLeftMouseDragged)
+					cursor = [[NSCursor closedHandCursor]retain];
+				else
+					cursor = [[NSCursor openHandCursor]retain];
 				
 				displayInfo.hoverNodeHidden = NO;
 				displayInfo.hoverNodeIndex = [CPRCurvedPath nodeIndexForToken:curveToken];

@@ -165,7 +165,7 @@ extern int CLUTBARS, ANNOTATIONS;
 {
 	if( [theEvent modifierFlags] & NSCommandKeyMask)
 	{
-		CGFloat transverseSectionSpacing = MIN(MAX(_curvedPath.transverseSectionSpacing + [theEvent deltaY] * .004, 0.0), 300); 
+		CGFloat transverseSectionSpacing = MIN(MAX(_curvedPath.transverseSectionSpacing + [theEvent deltaY] * .4, 0.0), 300); 
 		
 		if ([_delegate respondsToSelector:@selector(CPRViewWillEditCurvedPath:)])
 			[_delegate CPRViewWillEditCurvedPath:self];
@@ -181,7 +181,7 @@ extern int CLUTBARS, ANNOTATIONS;
 	{
 		CGFloat transverseSectionPosition;
 		
-		transverseSectionPosition = MIN(MAX(_curvedPath.transverseSectionPosition + [theEvent deltaY], 0.0), 1.0); 
+		transverseSectionPosition = MIN(MAX(_curvedPath.transverseSectionPosition + [theEvent deltaY] * .002, 0.0), 1.0); 
 		
 		if ([_delegate respondsToSelector:@selector(CPRViewWillEditCurvedPath:)]) {
 			[_delegate CPRViewWillEditCurvedPath:self];

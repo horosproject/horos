@@ -757,7 +757,7 @@
 	// Scroll/Move transverse lines
 	if( [theEvent modifierFlags] & NSAlternateKeyMask)
 	{
-		CGFloat transverseSectionPosition = MIN(MAX(_curvedPath.transverseSectionPosition + [theEvent deltaY], 0.0), 1.0); 
+		CGFloat transverseSectionPosition = MIN(MAX(_curvedPath.transverseSectionPosition + [theEvent deltaY] * .002, 0.0), 1.0); 
 		
 		[self _sendWillEditCurvedPath];
 		_curvedPath.transverseSectionPosition = transverseSectionPosition;
@@ -770,7 +770,7 @@
 	// Scroll/Move transverse lines
 	else if( [theEvent modifierFlags] & NSCommandKeyMask)
 	{
-		CGFloat transverseSectionSpacing = MIN(MAX(_curvedPath.transverseSectionSpacing + [theEvent deltaY] * .004, 0.0), 300); 
+		CGFloat transverseSectionSpacing = MIN(MAX(_curvedPath.transverseSectionSpacing + [theEvent deltaY] * .4, 0.0), 300); 
 		
 		[self _sendWillEditCurvedPath];
 		_curvedPath.transverseSectionSpacing = transverseSectionSpacing;
@@ -826,7 +826,13 @@
         newPix = [[DCMPix alloc] initWithData:(float *)[self.curvedVolumeData floatBytes] + (i*self.curvedVolumeData.pixelsWide*self.curvedVolumeData.pixelsHigh) :32 
                                              :self.curvedVolumeData.pixelsWide :self.curvedVolumeData.pixelsHigh :self.curvedVolumeData.pixelSpacingX :self.curvedVolumeData.pixelSpacingY
                                              :0.0 :0.0 :0.0 :NO];
-        [pixArray addObject:newPix];
+        
+		[newPix setImageObj: [[[self windowController] originalPix] imageObj]];
+		[newPix setSrcFile: [[[self windowController] originalPix] srcFile]];
+		[newPix setAnnotationsDictionary: [[[self windowController] originalPix] annotationsDictionary]];
+		
+		
+		[pixArray addObject:newPix];
         [newPix release];
     }
 
