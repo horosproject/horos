@@ -163,18 +163,35 @@ extern int CLUTBARS, ANNOTATIONS;
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
-    CGFloat transverseSectionPosition;
-    
-    transverseSectionPosition = MIN(MAX(_curvedPath.transverseSectionPosition + [theEvent deltaY] * .004, 0.0), 1.0); 
-    
-    if ([_delegate respondsToSelector:@selector(CPRViewWillEditCurvedPath:)]) {
-        [_delegate CPRViewWillEditCurvedPath:self];
-    }
-    _curvedPath.transverseSectionPosition = transverseSectionPosition;
-    if ([_delegate respondsToSelector:@selector(CPRViewDidEditCurvedPath:)])  {
-        [_delegate CPRViewDidEditCurvedPath:self];
-    }
-    [self _setNeedsNewRequest];
+	if( [theEvent modifierFlags] & NSCommandKeyMask)
+	{
+		CGFloat transverseSectionSpacing = MIN(MAX(_curvedPath.transverseSectionSpacing + [theEvent deltaY] * .004, 0.0), 300); 
+		
+		if ([_delegate respondsToSelector:@selector(CPRViewWillEditCurvedPath:)])
+			[_delegate CPRViewWillEditCurvedPath:self];
+		
+		_curvedPath.transverseSectionSpacing = transverseSectionSpacing;
+		
+		if ([_delegate respondsToSelector:@selector(CPRViewDidEditCurvedPath:)])
+			[_delegate CPRViewDidEditCurvedPath:self];
+		
+		[self _setNeedsNewRequest];
+	}
+	else
+	{
+		CGFloat transverseSectionPosition;
+		
+		transverseSectionPosition = MIN(MAX(_curvedPath.transverseSectionPosition + [theEvent deltaY], 0.0), 1.0); 
+		
+		if ([_delegate respondsToSelector:@selector(CPRViewWillEditCurvedPath:)]) {
+			[_delegate CPRViewWillEditCurvedPath:self];
+		}
+		_curvedPath.transverseSectionPosition = transverseSectionPosition;
+		if ([_delegate respondsToSelector:@selector(CPRViewDidEditCurvedPath:)])  {
+			[_delegate CPRViewDidEditCurvedPath:self];
+		}
+		[self _setNeedsNewRequest];
+	}
 }
 
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx

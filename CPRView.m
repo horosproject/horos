@@ -512,18 +512,21 @@
     glVertex2f(lineEnd.x, lineEnd.y);
     glEnd();
 	
-	// draw the point on the plane lines
-	for (planeName in _mousePlanePointsInPix) {
-		planeColor = [self valueForKey:[NSString stringWithFormat:@"%@PlaneColor", planeName]];
-		glColor4f ([planeColor redComponent], [planeColor greenComponent], [planeColor blueComponent], [planeColor alphaComponent]);
-		glEnable(GL_POINT_SMOOTH);
-		glPointSize(8);
-		cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue], pixToSubDrawRectTransform);
-		glBegin(GL_POINTS);
-		glVertex2f(cursorVector.x, cursorVector.y);
-		glEnd();		
+	if( [[self windowController] displayMousePosition] == YES)
+	{
+		// draw the point on the plane lines
+		for (planeName in _mousePlanePointsInPix) {
+			planeColor = [self valueForKey:[NSString stringWithFormat:@"%@PlaneColor", planeName]];
+			glColor4f ([planeColor redComponent], [planeColor greenComponent], [planeColor blueComponent], [planeColor alphaComponent]);
+			glEnable(GL_POINT_SMOOTH);
+			glPointSize(8);
+			cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue], pixToSubDrawRectTransform);
+			glBegin(GL_POINTS);
+			glVertex2f(cursorVector.x, cursorVector.y);
+			glEnd();	
+		}
 	}
-	    
+	
     if (_drawAllNodes) {
         for (i = 0; i < [_curvedPath.nodes count]; i++) {
             relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
@@ -650,12 +653,11 @@
     CGFloat pixWidth;
     CGFloat relativePosition;
     NSInteger i;
-    BOOL clickedNode;
     
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
     pixWidth = curDCM.pwidth;
-    clickedNode = NO;
+    _clickedNode = NO;
     
     if (pixWidth == 0.0) {
         [super mouseDown:event];
@@ -680,11 +682,11 @@
                 if ([_delegate respondsToSelector:@selector(CPRView:setCrossCenter:)]) {
                     [_delegate CPRView: [[self windowController] mprView1] setCrossCenter:[[_curvedPath.nodes objectAtIndex:i] N3VectorValue]];
                 }
-                clickedNode = YES;
+                _clickedNode = YES;
                 break;
             }
         }
-        if (clickedNode == NO) {
+        if (_clickedNode == NO) {
             [super mouseDown:event];
         }
     }
@@ -697,6 +699,9 @@
     CGFloat relativePosition;
     CGFloat pixWidth;
     
+	if( _clickedNode)
+		return;
+	
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
     pixWidth = curDCM.pwidth;
@@ -749,18 +754,46 @@
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
-    N3Vector initialNormal;
-    CGFloat angle;
-    
-    angle = [theEvent deltaY] * (M_PI/180);
-    
-    initialNormal = _curvedPath.initialNormal;
-    initialNormal = N3VectorApplyTransform(initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [_curvedPath.bezierPath tangentAtStart]));
+	// Scroll/Move transverse lines
+	if( [theEvent modifierFlags] & NSAlternateKeyMask)
+	{
+		CGFloat transverseSectionPosition = MIN(MAX(_curvedPath.transverseSectionPosition + [theEvent deltaY], 0.0), 1.0); 
+		
+		[self _sendWillEditCurvedPath];
+		_curvedPath.transverseSectionPosition = transverseSectionPosition;
+		[self _sendDidEditCurvedPath];
+		
+		[self _setNeedsNewRequest];
+		[self setNeedsDisplay: YES];
+	}
+	
+	// Scroll/Move transverse lines
+	else if( [theEvent modifierFlags] & NSCommandKeyMask)
+	{
+		CGFloat transverseSectionSpacing = MIN(MAX(_curvedPath.transverseSectionSpacing + [theEvent deltaY] * .004, 0.0), 300); 
+		
+		[self _sendWillEditCurvedPath];
+		_curvedPath.transverseSectionSpacing = transverseSectionSpacing;
+		[self _sendDidEditCurvedPath];
+		
+		[self _setNeedsNewRequest];
+		[self setNeedsDisplay: YES];
+	}
+	else
+	{
+		N3Vector initialNormal;
+		CGFloat angle;
+		
+		angle = [theEvent deltaY] * (M_PI/180);
+		
+		initialNormal = _curvedPath.initialNormal;
+		initialNormal = N3VectorApplyTransform(initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [_curvedPath.bezierPath tangentAtStart]));
 
-	[self _sendWillEditCurvedPath];
-    _curvedPath.initialNormal = initialNormal;
-	[self _sendDidEditCurvedPath];
-    [self _setNeedsNewRequest];
+		[self _sendWillEditCurvedPath];
+		_curvedPath.initialNormal = initialNormal;
+		[self _sendDidEditCurvedPath];
+		[self _setNeedsNewRequest];
+	}
 }
 
 - (void)generator:(CPRGenerator *)generator didGenerateVolume:(CPRVolumeData *)volume request:(CPRGeneratorRequest *)request

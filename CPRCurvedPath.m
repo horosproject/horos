@@ -290,29 +290,28 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     N3Vector transverseSectionVector;
     N3BezierPath *flattenedBezierPath;
     
-    flattenedBezierPath = [_bezierPath bezierPathByFlattening:N3BezierDefaultFlatness];
-    
-    // center
-    transverseSectionVector = N3VectorApplyTransform([flattenedBezierPath vectorAtRelativePosition:_transverseSectionPosition], N3AffineTransformInvert(transform));
-    transverseSectionVector.z = 0;
-    if (N3VectorDistance(N3VectorMakeFromNSPoint(point), transverseSectionVector) <= 4.0) {
-        return CPRCurvedPathControlTokenTransverseSection;
-    }
 
-    // left
-    transverseSectionVector = N3VectorApplyTransform([flattenedBezierPath vectorAtRelativePosition:self.leftTransverseSectionPosition], N3AffineTransformInvert(transform));
-    transverseSectionVector.z = 0;
-    if (N3VectorDistance(N3VectorMakeFromNSPoint(point), transverseSectionVector) <= 8.0) {
-        return CPRCurvedPathControlTokenTransverseSpacing;
-    }
-    
-    //right
-    transverseSectionVector = N3VectorApplyTransform([flattenedBezierPath vectorAtRelativePosition:self.rightTransverseSectionPosition], N3AffineTransformInvert(transform));
-    transverseSectionVector.z = 0;
-    if (N3VectorDistance(N3VectorMakeFromNSPoint(point), transverseSectionVector) <= 8.0) {
-        return CPRCurvedPathControlTokenTransverseSpacing;
-    }
-    
+//    flattenedBezierPath = [_bezierPath bezierPathByFlattening:N3BezierDefaultFlatness];
+//    
+//    // center
+//    transverseSectionVector = N3VectorApplyTransform([flattenedBezierPath vectorAtRelativePosition:_transverseSectionPosition], N3AffineTransformInvert(transform));
+//    transverseSectionVector.z = 0;
+//    if (N3VectorDistance(N3VectorMakeFromNSPoint(point), transverseSectionVector) <= 4.0) {
+//        return CPRCurvedPathControlTokenTransverseSection;
+//    }
+//
+//    // left
+//    transverseSectionVector = N3VectorApplyTransform([flattenedBezierPath vectorAtRelativePosition:self.leftTransverseSectionPosition], N3AffineTransformInvert(transform));
+//    transverseSectionVector.z = 0;
+//    if (N3VectorDistance(N3VectorMakeFromNSPoint(point), transverseSectionVector) <= 8.0) {
+//        return CPRCurvedPathControlTokenTransverseSpacing;
+//    }
+//    //right
+//    transverseSectionVector = N3VectorApplyTransform([flattenedBezierPath vectorAtRelativePosition:self.rightTransverseSectionPosition], N3AffineTransformInvert(transform));
+//    transverseSectionVector.z = 0;
+//    if (N3VectorDistance(N3VectorMakeFromNSPoint(point), transverseSectionVector) <= 8.0) {
+//        return CPRCurvedPathControlTokenTransverseSpacing;
+//    }
     
     for (i = 0; i < [_nodes count]; i++) {
         nodeVector = [[_nodes objectAtIndex:i] N3VectorValue];

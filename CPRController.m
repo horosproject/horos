@@ -3423,6 +3423,7 @@ static float deg2rad = 3.14159265358979/180.0;
 - (void)CPRViewWillEditCurvedPath:(id)CPRMPRDCMView
 {
 	assert([[self _delegateCurveViewDebugging] containsObject:[NSValue valueWithPointer:CPRMPRDCMView]] == NO);
+	
 	[[self _delegateCurveViewDebugging] addObject:[NSValue valueWithPointer:CPRMPRDCMView]];
 	
 	
@@ -3443,8 +3444,6 @@ static float deg2rad = 3.14159265358979/180.0;
 - (void)CPRViewDidUpdateCurvedPath:(id)CPRMPRDCMView
 {
 	assert([[self _delegateCurveViewDebugging] containsObject:[NSValue valueWithPointer:CPRMPRDCMView]] == YES);
-
-	
 	
 	self.curvedPath = [CPRMPRDCMView curvedPath];
 	
@@ -3562,34 +3561,32 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	viewCrossCenter = N3VectorApplyTransform(crossCenter, N3AffineTransformInvert(N3AffineTransformConcat([mprView3 viewToPixTransform], [mprView3 pixToDicomTransform])));
     [mprView3 setCrossCenter:NSPointFromN3Vector(viewCrossCenter)];
-
 	
-	
-	if( [curvedPath.nodes count] > 1 && curvedPathCreationMode)
-	{
-		// Orient the planes to the last point
-		N3Vector normal;
-		N3Vector tangent;
-		N3Vector cross;
-		
-		tangent = [curvedPath.bezierPath tangentAtRelativePosition: 1];
-		normal = [curvedPath.bezierPath normalAtRelativePosition: 1 initialNormal:curvedPath.initialNormal];
-		
-		cross = N3VectorNormalize(N3VectorCrossProduct(normal, tangent));
-		
-		NSLog( @"%2.2f %2.2f %2.2f", cross.x, cross.y, cross.z);
-		NSLog( @"%2.2f %2.2f %2.2f", tangent.x, tangent.y, tangent.z);
-		NSLog( @"%2.2f %2.2f %2.2f", normal.x, normal.y, normal.z);
-		
-		mprView1.camera.rollAngle = 0;
-		mprView1.angleMPR = 0;
-		mprView2.camera.rollAngle = 0;
-		mprView2.angleMPR = 0;
-		mprView3.camera.rollAngle = 0;
-		mprView3.angleMPR = 0;
-
-		CPRMPRDCMView.camera.viewUp = [Point3D pointWithX: cross.x y: cross.y z: cross.z];
-	}
+//	if( [curvedPath.nodes count] > 1 && curvedPathCreationMode)
+//	{
+//		// Orient the planes to the last point
+//		CPRVector normal;
+//		CPRVector tangent;
+//		CPRVector cross;
+//		
+//		tangent = [curvedPath.bezierPath tangentAtRelativePosition: 1];
+//		normal = [curvedPath.bezierPath normalAtRelativePosition: 1 initialNormal:curvedPath.initialNormal];
+//		
+//		cross = CPRVectorNormalize(CPRVectorCrossProduct(normal, tangent));
+//		
+//		NSLog( @"%2.2f %2.2f %2.2f", cross.x, cross.y, cross.z);
+//		NSLog( @"%2.2f %2.2f %2.2f", tangent.x, tangent.y, tangent.z);
+//		NSLog( @"%2.2f %2.2f %2.2f", normal.x, normal.y, normal.z);
+//		
+//		mprView1.camera.rollAngle = 0;
+//		mprView1.angleMPR = 0;
+//		mprView2.camera.rollAngle = 0;
+//		mprView2.angleMPR = 0;
+//		mprView3.camera.rollAngle = 0;
+//		mprView3.angleMPR = 0;
+//
+//		CPRMPRDCMView.camera.viewUp = [Point3D pointWithX: cross.x y: cross.y z: cross.z];
+//	}
 	
 	[self delayedFullLODRendering: CPRMPRDCMView];
 }

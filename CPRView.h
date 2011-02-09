@@ -85,6 +85,7 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
     
     BOOL _draggingTransverse;
     BOOL _draggingTransverseSpacing;
+	BOOL _clickedNode;
 	NSMutableDictionary *_mousePlanePointsInPix; // Stored as an NSValue so we can invalidate it and nill it out. The display info stores on what
 	//	plane and where in 3D the mouse position green dot is, but we want to cache where whis gree dot should be drawn in this view.
 	
