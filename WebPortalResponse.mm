@@ -26,6 +26,7 @@
 #import "DCMAbstractSyntaxUID.h"
 #import "NSManagedObject+N2.h"
 #import "N2Operators.h"
+#import "NSUserDefaults+OsiriX.h"
 
 
 @implementation WebPortalResponse
@@ -628,15 +629,13 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 
 -(id)valueForKey:(NSString*)key object:(NSDate*)object context:(WebPortalConnection*)wpc {
 	if ([key isEqual:@"Format"]) {
-		NSDateFormatter* format = [[[NSDateFormatter alloc] init] autorelease];
-		format.dateFormat = [NSUserDefaults.standardUserDefaults stringForKey:@"DBDateFormat2"];
-		return [format stringFromDate:object];
+		return [NSUserDefaults.dateTimeFormatter stringFromDate:object];
 	}
 	
 	if ([key isEqual:@"FormatDOB"]) {
 		NSDateFormatter* format = [[[NSDateFormatter alloc] init] autorelease];
 		format.dateFormat = [NSUserDefaults.standardUserDefaults stringForKey:@"DBDateOfBirthFormat2"];
-		return [format stringFromDate:object];
+		return [NSUserDefaults.dateFormatter stringFromDate:object];
 	}
 	
 	if ([key isEqual:@"Months"]) {

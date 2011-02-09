@@ -24,6 +24,8 @@
 #import "DicomDatabase.h"
 #import "AppController.h"
 
+// TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
+
 
 @implementation WebPortal (EmailLog)
 
@@ -136,7 +138,7 @@
 				{
 					NSLog( @"----- Temporary User reached the EOL (end-of-life) : %@", user.name);
 					
-					[self updateLogEntryForStudy:nil withMessage: @"temporary user deleted" forUser:user.name ip:NSUserDefaults.webPortalAddress];
+					[self updateLogEntryForStudy:nil withMessage: @"temporary user deleted" forUser:user.name ip:nil];
 					
 					toBeSaved = YES;
 					[WebPortal.defaultWebPortal.database.managedObjectContext deleteObject: user];
@@ -153,7 +155,7 @@
 		
 		// CHECK dateAdded
 		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"notificationsEmails"] == YES)
+		if (self.notificationsEnabled)
 		{
 			@try
 			{

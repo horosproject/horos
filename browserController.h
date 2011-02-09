@@ -49,7 +49,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 //	NSPersistentStoreCoordinator	*userPersistentStoreCoordinator;
 	NSMutableDictionary				*persistentStoreCoordinatorDictionary;
 	
-	NSDateFormatter			*DateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
+	NSDateFormatter			*TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
 	
 	NSRect					visibleScreenRect[ 40];
 	NSString				*currentDatabasePath;
@@ -246,7 +246,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @property(readonly) NSManagedObjectContext *bonjourManagedObjectContext;
 
-@property(readonly) NSDateFormatter *DateTimeFormat __deprecated, *DateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
+@property(readonly) NSDateFormatter *DateTimeFormat __deprecated, *DateOfBirthFormat __deprecated, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
 @property(readonly) NSRecursiveLock *checkIncomingLock;
 @property(readonly) NSArray *matrixViewArray;
 @property(readonly) NSMatrix *oMatrix;
@@ -565,7 +565,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 + (NSString*) DateTimeWithSecondsFormat:(NSDate*) t;
 + (NSString*) TimeWithSecondsFormat:(NSDate*) t;
-+ (NSString*) DateOfBirthFormat:(NSDate*) d;
++ (NSString*) DateOfBirthFormat:(NSDate*) d __deprecated;
 + (NSString*) DateTimeFormat:(NSDate*) d __deprecated;
 + (NSString*) TimeFormat:(NSDate*) t;
 

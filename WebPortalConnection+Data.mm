@@ -48,6 +48,7 @@
 #import "BrowserController.h" // TODO: remove when badness solved
 #import "BrowserControllerDCMTKCategory.h" // TODO: remove when badness solved
 
+// TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
 
 
 static NSTimeInterval StartOfDay(NSCalendarDate* day) {

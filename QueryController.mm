@@ -32,6 +32,7 @@
 #import "NSThread+N2.h"
 #import "PieChartImage.h"
 #import "OpenGLScreenReader.h"
+#import "NSUserDefaults+OsiriX.h"
 
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
@@ -2987,11 +2988,8 @@ extern "C"
 		[searchCell setSearchMenuTemplate:cellMenu];
 	}
 	
-	NSDateFormatter *dateFomat = [[[NSDateFormatter alloc]  init] autorelease];
-	[dateFomat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
-	
-	[[[outlineView tableColumnWithIdentifier: @"birthdate"] dataCell] setFormatter: dateFomat];
-	[[[outlineView tableColumnWithIdentifier: @"date"] dataCell] setFormatter: dateFomat];
+	[[[outlineView tableColumnWithIdentifier: @"birthdate"] dataCell] setFormatter:[NSUserDefaults dateFormatter]];
+	[[[outlineView tableColumnWithIdentifier: @"date"] dataCell] setFormatter:[NSUserDefaults dateFormatter]];
 	
 	[sourcesTable setDoubleAction: @selector( selectUniqueSource:)];
 	

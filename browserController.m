@@ -219,7 +219,7 @@ static volatile BOOL waitForRunningProcess = NO;
 @class DCMTKStudyQueryNode;
 
 @synthesize checkIncomingLock, CDpassword, passwordForExportEncryption;
-@synthesize DateOfBirthFormat,TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
+@synthesize TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
 @synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
 @synthesize isCurrentDatabaseBonjour, bonjourDownloading, bonjourSourcesBox;
@@ -13789,16 +13789,16 @@ static NSArray*	openSubSeriesArray = nil;
 //	DateTimeFormat = [[NSDateFormatter alloc] init];
 //	[DateTimeFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat2"]];
 	
-	[DateOfBirthFormat release];
-	DateOfBirthFormat = [[NSDateFormatter alloc] init];
-	[DateOfBirthFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
+//	[DateOfBirthFormat release];
+//	DateOfBirthFormat = [[NSDateFormatter alloc] init];
+//	[DateOfBirthFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
 	
 	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter:[NSUserDefaults dateTimeFormatter]];
-	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter: [NSUserDefaults dateTimeFormatter]];
-	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter: [NSUserDefaults dateTimeFormatter]];
+	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter:[NSUserDefaults dateTimeFormatter]];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter:[NSUserDefaults dateTimeFormatter]];
 	
-	[[[databaseOutline tableColumnWithIdentifier: @"dateOfBirth"] dataCell] setFormatter: DateOfBirthFormat];
-	[[[databaseOutline tableColumnWithIdentifier: @"reportURL"] dataCell] setFormatter: DateOfBirthFormat];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateOfBirth"] dataCell] setFormatter:[NSUserDefaults dateFormatter]];
+	[[[databaseOutline tableColumnWithIdentifier: @"reportURL"] dataCell] setFormatter:[NSUserDefaults dateFormatter]];
 }
 
 + (NSString*) DateTimeWithSecondsFormat:(NSDate*) t
@@ -13836,32 +13836,24 @@ static NSArray*	openSubSeriesArray = nil;
 	return s;
 }
 
-+ (NSString*) DateOfBirthFormat:(NSDate*) d
-{
-	NSString *s = nil;
-	
-	@synchronized( [[BrowserController currentBrowser] DateOfBirthFormat])
-	{
-		s = [[[BrowserController currentBrowser] DateOfBirthFormat] stringFromDate: d];
-	}
-	return s;
+#pragma deprecated
+- (NSDateFormatter*)DateOfBirthFormat {
+	return  [NSUserDefaults dateFormatter];
 }
 
 #pragma deprecated
--(NSDateFormatter*)DateTimeFormat {
++ (NSString*)DateOfBirthFormat:(NSDate*)d {
+	return  [[NSUserDefaults dateFormatter] stringFromDate:d];
+}
+
+#pragma deprecated
+- (NSDateFormatter*)DateTimeFormat {
 	return [NSUserDefaults dateTimeFormatter];
 }
 
 #pragma deprecated
-+ (NSString*) DateTimeFormat:(NSDate*) d
-{
-	NSString *s = nil;
-	
-	@synchronized([NSUserDefaults dateTimeFormatter])
-	{
-		s = [[NSUserDefaults dateTimeFormatter] stringFromDate: d];
-	}
-	return s;
++ (NSString*)DateTimeFormat:(NSDate*)d {
+	return [[NSUserDefaults dateTimeFormatter] stringFromDate:d];
 }
 
 - (void) createDBContextualMenu // DATABASE contextual menu

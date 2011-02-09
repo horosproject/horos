@@ -66,6 +66,10 @@
 
 #define INCOMINGPATH @"/INCOMING.noindex/"
 
+
+// TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
+
+
 static NSMutableDictionary *movieLock = nil;
 static NSMutableDictionary *wadoJPEGCache = nil;
 static NSMutableDictionary *thumbnailCache = nil;

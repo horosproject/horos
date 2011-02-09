@@ -40,6 +40,26 @@ NSString* const OsirixDateTimeFormatDefaultsKey = @"DBDateFormat2";
 	return formatter;
 }
 
+NSString* const OsirixDateFormatDefaultsKey = @"DBDateOfBirthFormat2";
+
++(NSString*)dateFormat {
+	NSString* r = [NSUserDefaultsController.sharedUserDefaultsController stringForKey:OsirixDateFormatDefaultsKey];
+	if (!r) r = [[[[NSDateFormatter alloc] init] autorelease] dateFormat];
+	return r;
+}
+
++(NSDateFormatter*)dateFormatter {
+	static NSDateFormatter* formatter = NULL;
+	if (!formatter)
+		formatter = [[NSDateFormatter alloc] init];
+	
+	if (![formatter.dateFormat isEqual:self.dateFormat])
+		formatter.dateFormat = self.dateFormat;
+	
+	return formatter;
+}
+
+
 #pragma mark Bonjour Sharing
 
 NSString* const OsirixBonjourSharingIsActiveDefaultsKey = @"bonjourSharing";

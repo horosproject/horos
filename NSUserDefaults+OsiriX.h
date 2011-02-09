@@ -23,6 +23,9 @@
 extern NSString* const OsirixDateTimeFormatDefaultsKey;
 +(NSDateFormatter*)dateTimeFormatter;
 
+extern NSString* const OsirixDateFormatDefaultsKey;
++(NSDateFormatter*)dateFormatter;
+
 #pragma mark Bonjour Sharing
 
 extern NSString* const OsirixBonjourSharingIsActiveDefaultsKey;
