@@ -162,6 +162,8 @@ static NSString* NotNil(NSString *s) {
 
 -(NSString*)portalAddress {
 	NSString* requestedHost = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Host") autorelease];
+	if (!self.portal.usesSSL && [requestedHost hasSuffix:@":80"]) requestedHost = [requestedHost substringWithRange:NSMakeRange(0,requestedHost.length-3)];
+	if (self.portal.usesSSL && [requestedHost hasSuffix:@":443"]) requestedHost = [requestedHost substringWithRange:NSMakeRange(0,requestedHost.length-4)];
 	return requestedHost? requestedHost : self.portal.addressWithPortUnlessDefault;
 }
 

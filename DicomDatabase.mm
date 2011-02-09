@@ -37,6 +37,12 @@
     return managedObjectModel;
 }
 
+-(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
+	NSLog(@"******* DO NOT CALL THIS FUNCTION - NOT FINISHED / BUGGED : %s", __PRETTY_FUNCTION__); // TODO: once BrowserController / DicomDatabase doubles are solved, REMOVE THIS METHOD as it is defined in N2ManagedDatabase
+	[NSException raise:NSGenericException format:@"DicomDatabase NOT READY for complete usage (contextAtPath:)"];
+	return nil;
+}
+
 -(NSString*)sqlFilePath {
 	return [self.basePath stringByAppendingPathComponent:@"Database.sql"];
 }

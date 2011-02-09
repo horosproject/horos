@@ -27,14 +27,10 @@
 
 @implementation WebPortal (EmailLog)
 
--(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate message:(NSString*)message replyTo:(NSString*)replyto customText:(NSString*)customText webServerAddress:(NSString*)webServerAddress
+-(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate message:(NSString*)message replyTo:(NSString*)replyto customText:(NSString*)customText webServerURL:(NSString*)webServerURL
 {
 	if (!self.notificationsEnabled)
 		return NO;
-	
-	if (!webServerAddress)
-		webServerAddress = WebPortal.defaultWebPortal.address;
-	NSString* webServerURL = [self URLForAddress:webServerAddress];
 	
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
 	if (fromEmailAddress == nil)
@@ -83,7 +79,7 @@
 			
 			for ( NSManagedObject *s in filteredStudies)
 			{
-				[self updateLogEntryForStudy: s withMessage: @"notification email" forUser:user.name ip:webServerAddress];
+				[self updateLogEntryForStudy: s withMessage: @"notification email" forUser:user.name ip:nil];
 			}
 		}
 		else NSLog( @"********* warning : CANNOT send notifications emails, because emailTemplate.txt == nil");
@@ -93,7 +89,7 @@
 }
 
 -(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate message:(NSString*)message replyTo:(NSString*)replyto customText:(NSString*)customText {
-	return [self sendNotificationsEmailsTo:users aboutStudies:filteredStudies predicate:predicate message:message replyTo:replyto customText:customText webServerAddress:NULL];
+	return [self sendNotificationsEmailsTo:users aboutStudies:filteredStudies predicate:predicate message:message replyTo:replyto customText:customText webServerURL:NULL];
 }
 
 - (void) emailNotifications
