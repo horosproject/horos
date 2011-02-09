@@ -2266,7 +2266,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     
 	//    glColor4d(0.0, 1.0, 1.0, 1.0); // draw the control points
 	//    for (i = 0; i < [transformedBezierPath elementCount]; i++) {
-	//        if ([transformedBezierPath elementAtIndex:i control1:&control1 control2:&control2 endpoint:&vector] == CPRCurveToBezierPathElement) {
+	//        if ([transformedBezierPath elementAtIndex:i control1:&control1 control2:&control2 endpoint:&vector] == N3CurveToBezierPathElement) {
 	//            [self drawCircleAtPoint:NSMakePoint(control1.x, control1.y)];
 	//            [self drawCircleAtPoint:NSMakePoint(control2.x, control2.y)];
 	//        }

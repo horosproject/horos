@@ -44,7 +44,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vec
     assert (numVectors >= 2);
     
     if (numVectors == 2) {
-        N3BezierCoreAddSegment(newBezierCore, CPRMoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, vectors[0]);
+        N3BezierCoreAddSegment(newBezierCore, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, vectors[0]);
         N3BezierCoreAddSegment(newBezierCore, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, vectors[1]);
         return newBezierCore;
     }
@@ -240,7 +240,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vec
 	// bi = ((ai+1 - ai) / hi) - (hi/3) (ci+1 + 2 ci)
     
     lastEndpoint = N3VectorMake(px[1], py[1], pz[1]);
-    N3BezierCoreAddSegment(newBezierCore, CPRMoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, lastEndpoint);
+    N3BezierCoreAddSegment(newBezierCore, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, lastEndpoint);
     
 	// for each interval
 	for (i=1; i<nb-2; i++)
@@ -277,7 +277,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vec
         control1.z = lastEndpoint.z + ((bbz*h[i]) / 3.0);
         control2.z = endpoint.z - (((bbz + 2.0*ccz*h[i] + 3.0*ddz*h[i]*h[i]) * h[i]) / 3.0);
         
-        N3BezierCoreAddSegment(newBezierCore, CPRCurveToBezierCoreSegmentType, control1, control2, endpoint);
+        N3BezierCoreAddSegment(newBezierCore, N3CurveToBezierCoreSegmentType, control1, control2, endpoint);
         lastEndpoint = endpoint;
     }//endfor each interval
     
@@ -335,7 +335,7 @@ N3Vector N3BezierCoreTangentAtStart(N3BezierCoreRef bezierCore)
     
     N3BezierCoreGetSegmentAtIndex(bezierCore, 0, NULL, NULL, &moveTo);
     
-    if (N3BezierCoreGetSegmentAtIndex(bezierCore, 1, &control1, NULL, &endPoint) == CPRCurveToBezierCoreSegmentType) {
+    if (N3BezierCoreGetSegmentAtIndex(bezierCore, 1, &control1, NULL, &endPoint) == N3CurveToBezierCoreSegmentType) {
         return N3VectorNormalize(N3VectorSubtract(endPoint, control1));
     } else {
         return N3VectorNormalize(N3VectorSubtract(endPoint, moveTo));
@@ -354,7 +354,7 @@ N3Vector N3BezierCoreTangentAtEnd(N3BezierCoreRef bezierCore)
         return N3VectorZero;
     }    
     
-    if (N3BezierCoreGetSegmentAtIndex(bezierCore, segmentCount - 1, NULL, &control2, &endPoint) == CPRCurveToBezierCoreSegmentType) {
+    if (N3BezierCoreGetSegmentAtIndex(bezierCore, segmentCount - 1, NULL, &control2, &endPoint) == N3CurveToBezierCoreSegmentType) {
         return N3VectorNormalize(N3VectorSubtract(endPoint, control2));
     } else {
         N3BezierCoreGetSegmentAtIndex(bezierCore, segmentCount - 2, NULL, NULL, &prevEndPoint);
@@ -410,7 +410,7 @@ CGFloat N3BezierCoreRelativePositionClosestToVector(N3BezierCoreRef bezierCore, 
         
         projectedDistance = N3VectorDotProduct(translatedVector, segmentDirection);
         
-		if (segmentType != CPRMoveToBezierCoreSegmentType) {
+		if (segmentType != N3MoveToBezierCoreSegmentType) {
 			if (projectedDistance >= 0 && projectedDistance <= segmentLength) {
 				tempDistance = N3VectorLength(N3VectorSubtract(translatedVector, N3VectorScalarMultiply(segmentDirection, projectedDistance)));
 				if (tempDistance < bestDistance) {
@@ -496,7 +496,7 @@ CGFloat N3BezierCoreRelativePositionClosestToLine(N3BezierCoreRef bezierCore, N3
         
         segmentLength = N3VectorDistance(start, end);
         
-        if (segmentLength > 0.0 && segmentType != CPRMoveToBezierCoreSegmentType) {
+        if (segmentLength > 0.0 && segmentType != N3MoveToBezierCoreSegmentType) {
             segment = N3LineMakeFromPoints(start, end);
             tempDistance = N3LineClosestPoints(segment, line, &closestPoint, NULL);
             
@@ -789,7 +789,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutline(N3BezierCoreRef bezierCo
     memcpy(side, vectors, numVectors * sizeof(N3Vector));
     N3VectorAddVectors(side, scaledNormals, numVectors);
     
-    N3BezierCoreAddSegment(outlineBezier, CPRMoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[0]);
+    N3BezierCoreAddSegment(outlineBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[0]);
     for (i = 1; i < numVectors; i++) {
         N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[i]);
     }
@@ -801,7 +801,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutline(N3BezierCoreRef bezierCo
     memcpy(side, vectors, numVectors * sizeof(N3Vector));
     N3VectorAddVectors(side, scaledNormals, numVectors);
 
-    N3BezierCoreAddSegment(outlineBezier, CPRMoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[0]);
+    N3BezierCoreAddSegment(outlineBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[0]);
     for (i = 1; i < numVectors; i++) {
         N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[i]);
     }
@@ -876,7 +876,7 @@ CFIndex N3BezierCoreSegmentLengths(N3BezierCoreRef bezierCore, CGFloat *lengths,
 		segmentType = N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, &control1, &control2, &endpoint);
 		
 		segmentBezierCore = N3BezierCoreCreateMutable();
-		N3BezierCoreAddSegment(segmentBezierCore, CPRMoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, prevEndpoint);
+		N3BezierCoreAddSegment(segmentBezierCore, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, prevEndpoint);
 		N3BezierCoreAddSegment(segmentBezierCore, segmentType, control1, control2, endpoint);
 		
 		flatenedSegmentBezierCore = N3BezierCoreCreateFlattenedMutableCopy(segmentBezierCore, flatness);
@@ -921,7 +921,7 @@ CFIndex N3BezierCoreCountIntersectionsWithPlane(N3BezierCoreRef bezierCore, N3Pl
 	
 	while (!N3BezierCoreIteratorIsAtEnd(bezierCoreIterator)) {
 		segmentType = N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, NULL, NULL, &endpoint);
-		if (segmentType != CPRMoveToBezierCoreSegmentType && N3PlaneIsBetweenVectors(plane, endpoint, prevEndpoint)) {
+		if (segmentType != N3MoveToBezierCoreSegmentType && N3PlaneIsBetweenVectors(plane, endpoint, prevEndpoint)) {
 			count++;
 		}
 		prevEndpoint = endpoint;
@@ -967,7 +967,7 @@ CFIndex N3BezierCoreIntersectionsWithPlane(N3BezierCoreRef bezierCore, N3Plane p
 	while (!N3BezierCoreIteratorIsAtEnd(bezierCoreIterator) && count < numVectors) {
 		segmentType = N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, NULL, NULL, &endpoint);
 		if (N3PlaneIsBetweenVectors(plane, endpoint, prevEndpoint)) {
-			if (segmentType != CPRMoveToBezierCoreSegmentType) {
+			if (segmentType != N3MoveToBezierCoreSegmentType) {
 				intersection = N3LineIntersectionWithPlane(N3LineMakeFromPoints(prevEndpoint, endpoint), plane);
 				if (intersections) {
 					intersections[count] = intersection;
@@ -1007,15 +1007,15 @@ CFDictionaryRef N3BezierCoreCreateDictionaryRepresentation(N3BezierCoreRef bezie
 		control2Dict = N3VectorCreateDictionaryRepresentation(control2);
 		endpointDict = N3VectorCreateDictionaryRepresentation(endpoint);
 		switch (segmentType) {
-			case CPRMoveToBezierCoreSegmentType:
+			case N3MoveToBezierCoreSegmentType:
 				segmentDictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"moveTo", @"segmentType", (id)endpointDict, @"endpoint", nil];
 				break;
 			case N3LineToBezierCoreSegmentType:
 				segmentDictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"lineTo", @"segmentType", (id)endpointDict, @"endpoint", nil];
 				break;
-			case CPRCloseBezierCoreSegmentType:
+			case N3CloseBezierCoreSegmentType:
 				segmentDictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"close", @"segmentType", (id)endpointDict, @"endpoint", nil];
-			case CPRCurveToBezierCoreSegmentType:
+			case N3CurveToBezierCoreSegmentType:
 				segmentDictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"curveTo", @"segmentType", (id)control1Dict, @"control1",
 									 (id)control2Dict, @"control2", (id)endpointDict, @"endpoint", nil];
 				break;
@@ -1058,7 +1058,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableWithDictionaryRepresentation(CFD
 		if ([[segmentDictionary objectForKey:@"segmentType"] isEqualToString:@"moveTo"]) {
 			endpoint = N3VectorZero;
 			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[segmentDictionary objectForKey:@"endpoint"], &endpoint);
-			N3BezierCoreAddSegment(mutableBezierCore, CPRMoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, endpoint);
+			N3BezierCoreAddSegment(mutableBezierCore, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, endpoint);
 		} else if ([[segmentDictionary objectForKey:@"segmentType"] isEqualToString:@"lineTo"]) {
 			endpoint = N3VectorZero;
 			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[segmentDictionary objectForKey:@"endpoint"], &endpoint);
@@ -1066,7 +1066,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableWithDictionaryRepresentation(CFD
 		} else if ([[segmentDictionary objectForKey:@"segmentType"] isEqualToString:@"close"]) {
 			endpoint = N3VectorZero;
 			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[segmentDictionary objectForKey:@"endpoint"], &endpoint);
-			N3BezierCoreAddSegment(mutableBezierCore, CPRCloseBezierCoreSegmentType, N3VectorZero, N3VectorZero, endpoint);
+			N3BezierCoreAddSegment(mutableBezierCore, N3CloseBezierCoreSegmentType, N3VectorZero, N3VectorZero, endpoint);
 		} else if ([[segmentDictionary objectForKey:@"segmentType"] isEqualToString:@"curveTo"]) {
 			control1 = N3VectorZero;
 			control2 = N3VectorZero;
@@ -1074,7 +1074,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableWithDictionaryRepresentation(CFD
 			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[segmentDictionary objectForKey:@"control1"], &control1);
 			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[segmentDictionary objectForKey:@"control2"], &control2);
 			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[segmentDictionary objectForKey:@"endpoint"], &endpoint);
-			N3BezierCoreAddSegment(mutableBezierCore, CPRCurveToBezierCoreSegmentType, control1, control2, endpoint);
+			N3BezierCoreAddSegment(mutableBezierCore, N3CurveToBezierCoreSegmentType, control1, control2, endpoint);
 		} else {
 			assert(0);
 		}

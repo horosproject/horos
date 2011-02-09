@@ -12,14 +12,14 @@
  PURPOSE.
  =========================================================================*/
 
-#ifndef _CPRBEZIERCORE_ADDITIONS_H_
-#define _CPRBEZIERCORE_ADDITIONS_H_
+#ifndef _N3BEZIERCORE_ADDITIONS_H_
+#define _N3BEZIERCORE_ADDITIONS_H_
 
 #include "N3BezierCore.h"
 
 // N3BezierCore functions that don't need any access to the actual implementation details of the N3BezierCore
 
-CG_EXTERN_C_BEGIN
+CF_EXTERN_C_BEGIN
 
 N3BezierCoreRef N3BezierCoreCreateCurveWithNodes(N3VectorArray vectors, CFIndex numVectors);
 N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vectors, CFIndex numVectors);
@@ -50,6 +50,6 @@ CFDictionaryRef N3BezierCoreCreateDictionaryRepresentation(N3BezierCoreRef bezie
 N3BezierCoreRef N3BezierCoreCreateWithDictionaryRepresentation(CFDictionaryRef dict);
 N3MutableBezierCoreRef N3BezierCoreCreateMutableWithDictionaryRepresentation(CFDictionaryRef dict);
 
-CG_EXTERN_C_END
+CF_EXTERN_C_END
 
-#endif // _CPRBEZIERCORE_ADDITIONS_H_
+#endif // _N3BEZIERCORE_ADDITIONS_H_

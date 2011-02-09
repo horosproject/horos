@@ -20,10 +20,10 @@
 @class NSBezierPath;
 
 enum _N3BezierPathElement {
-    CPRMoveToBezierPathElement,
+    N3MoveToBezierPathElement,
     N3LineToBezierPathElement,
-    CPRCurveToBezierPathElement,
-	CPRCloseBezierPathElement
+    N3CurveToBezierPathElement,
+	N3CloseBezierPathElement
 };
 typedef NSInteger N3BezierPathElement;
 

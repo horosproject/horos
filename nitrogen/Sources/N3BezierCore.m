@@ -157,7 +157,7 @@ bool N3BezierCoreHasCurve(N3BezierCoreRef bezierCore)
     element = bezierCore->elementList->next;
     
     while (element) {
-        if (element->segmentType == CPRCurveToBezierCoreSegmentType) {
+        if (element->segmentType == N3CurveToBezierCoreSegmentType) {
             return true;
         }
         element = element->next;
@@ -230,25 +230,25 @@ void N3BezierCoreAddSegment(N3MutableBezierCoreRef bezierCore, N3BezierCoreSegme
     N3BezierCoreElementRef element;
     
     // if this is the first element, make sure it is a moveto
-    assert((bezierCore->elementCount == 0 && segmentType != CPRMoveToBezierCoreSegmentType) == false);
+    assert((bezierCore->elementCount == 0 && segmentType != N3MoveToBezierCoreSegmentType) == false);
 	
 	// if the previous element was a close, make sure the next element is a moveTo
-	assert(bezierCore->elementCount == 0 || bezierCore->lastElement->segmentType != CPRCloseBezierCoreSegmentType || segmentType == CPRMoveToBezierCoreSegmentType);
+	assert(bezierCore->elementCount == 0 || bezierCore->lastElement->segmentType != N3CloseBezierCoreSegmentType || segmentType == N3MoveToBezierCoreSegmentType);
 	    
     element = malloc(sizeof(N3BezierCoreElement));
     memset(element, 0, sizeof(N3BezierCoreElement));
     
     element->segmentType = segmentType;
 	element->previous = bezierCore->lastElement;
-	if (segmentType == CPRMoveToBezierCoreSegmentType) {
+	if (segmentType == N3MoveToBezierCoreSegmentType) {
 		element->endpoint = endpoint;
 	} else if (segmentType == N3LineToBezierCoreSegmentType) {
 		element->endpoint = endpoint;
-	} else if (segmentType == CPRCurveToBezierCoreSegmentType) {
+	} else if (segmentType == N3CurveToBezierCoreSegmentType) {
 		element->control1 = control1;
 		element->control2 = control2;
 		element->endpoint = endpoint;
-	} else if (segmentType == CPRCloseBezierCoreSegmentType) {
+	} else if (segmentType == N3CloseBezierCoreSegmentType) {
 		element->endpoint = _N3BezierCoreLastMoveTo(bezierCore);
 	}
 	
@@ -324,7 +324,7 @@ void N3BezierCoreFlatten(N3MutableBezierCoreRef bezierCore, CGFloat flatness)
             _N3BezierCoreElementDivide(element);
             bezierCore->elementCount++;
         } else {
-            if (element->segmentType == CPRCurveToBezierCoreSegmentType) {
+            if (element->segmentType == N3CurveToBezierCoreSegmentType) {
                 element->segmentType = N3LineToBezierCoreSegmentType;
                 element->control1 = N3VectorZero;
                 element->control2 = N3VectorZero;
@@ -347,7 +347,7 @@ void N3BezierCoreApplyTransform(N3MutableBezierCoreRef bezierCore, N3AffineTrans
     while (element) {
         element->endpoint = N3VectorApplyTransform(element->endpoint, transform);
 		
-		if (element->segmentType == CPRCurveToBezierCoreSegmentType) {
+		if (element->segmentType == N3CurveToBezierCoreSegmentType) {
 			element->control1 = N3VectorApplyTransform(element->control1, transform);
 			element->control2 = N3VectorApplyTransform(element->control2, transform);
 		}
@@ -367,7 +367,7 @@ void N3BezierCoreAppendBezierCore(N3MutableBezierCoreRef bezierCore, N3BezierCor
     if (element != NULL && connectPaths) {
         element = element->next; // remove the first moveto
 		
-		if (bezierCore->lastElement->segmentType == CPRCloseBezierCoreSegmentType) { // remove the last close if it is there
+		if (bezierCore->lastElement->segmentType == N3CloseBezierCoreSegmentType) { // remove the last close if it is there
 			bezierCore->lastElement->previous->next = NULL;
 			lastElement = bezierCore->lastElement;
 			bezierCore->lastElement = bezierCore->lastElement->previous;
@@ -448,7 +448,7 @@ CFIndex N3BezierCoreSubpathCount(N3BezierCoreRef bezierCore)
 	subpathCount = 0;
 	element = bezierCore->elementList;
 	while (element) {
-		if (element->segmentType == CPRMoveToBezierCoreSegmentType) {
+		if (element->segmentType == N3MoveToBezierCoreSegmentType) {
 			subpathCount++;
 		}
 		element = element->next;
@@ -473,12 +473,12 @@ CGFloat N3BezierCoreLength(N3BezierCoreRef bezierCore)
     length = 0.0;
     
     while (element) {
-        if (element->segmentType == CPRCurveToBezierCoreSegmentType) {
+        if (element->segmentType == N3CurveToBezierCoreSegmentType) {
             flattenedBezierCore = N3BezierCoreCreateFlattenedCopy(bezierCore, N3BezierDefaultFlatness);
             length = N3BezierCoreLength(flattenedBezierCore);
             N3BezierCoreRelease(flattenedBezierCore);
             return length;
-        } else if (element->segmentType == N3LineToBezierCoreSegmentType || element->segmentType == CPRCloseBezierCoreSegmentType) {
+        } else if (element->segmentType == N3LineToBezierCoreSegmentType || element->segmentType == N3CloseBezierCoreSegmentType) {
             length += N3VectorDistance(lastPoint, element->endpoint);
         }
         
@@ -552,7 +552,7 @@ void N3BezierCoreCheckDebug(N3BezierCoreRef bezierCore)
         element = bezierCore->elementList;
         elementCount = 1;
         assert(element->previous == NULL);
-        assert(element->segmentType == CPRMoveToBezierCoreSegmentType);
+        assert(element->segmentType == N3MoveToBezierCoreSegmentType);
 		lastMoveTo = element->endpoint;
         
         while (element->next) {
@@ -561,15 +561,15 @@ void N3BezierCoreCheckDebug(N3BezierCoreRef bezierCore)
             element = element->next;
             assert(element->previous == prevElement);
             switch (element->segmentType) {
-                case CPRMoveToBezierCoreSegmentType:
+                case N3MoveToBezierCoreSegmentType:
 					lastMoveTo = element->endpoint;
 					needsMoveTo = false;
 					break;
                 case N3LineToBezierCoreSegmentType:
-                case CPRCurveToBezierCoreSegmentType:
+                case N3CurveToBezierCoreSegmentType:
 					assert(needsMoveTo == false);
 					break;
-                case CPRCloseBezierCoreSegmentType:
+                case N3CloseBezierCoreSegmentType:
 					assert(needsMoveTo == false);
 					assert(N3VectorEqualToVector(element->endpoint, lastMoveTo));
 					needsMoveTo = true;
@@ -636,7 +636,7 @@ N3BezierCoreSegmentType N3BezierCoreIteratorGetNextSegment(N3BezierCoreIteratorR
         if (endpoint) {
             *endpoint = N3VectorZero;
         }        
-        return CPREndBezierCoreSegmentType;
+        return N3EndBezierCoreSegmentType;
     }
         
     if (control1) {
@@ -765,7 +765,7 @@ N3BezierCoreSegmentType N3BezierCoreRandomAccessorGetSegmentAtIndex(N3BezierCore
     N3BezierCoreElementRef element;
     
     if (index == bezierCoreRandomAccessor->bezierCore->elementCount) {
-        return CPREndBezierCoreSegmentType;
+        return N3EndBezierCoreSegmentType;
     }
 
     assert (index <= bezierCoreRandomAccessor->bezierCore->elementCount);
@@ -794,14 +794,14 @@ void N3BezierCoreRandomAccessorSetVectorsForSegementAtIndex(N3BezierCoreRandomAc
 	
 	element = bezierCoreRandomAccessor->elementArray[index];
 	switch (element->segmentType) {
-		case CPRMoveToBezierCoreSegmentType: // ouch figure out if there is a closepath later on, and update it too
+		case N3MoveToBezierCoreSegmentType: // ouch figure out if there is a closepath later on, and update it too
 			element->endpoint = endpoint;
 			element = element->next;
 			while (element) {
-				if (element->segmentType == CPRCloseBezierCoreSegmentType) {
+				if (element->segmentType == N3CloseBezierCoreSegmentType) {
 					element->endpoint = endpoint;
 					break;
-				} else if (element->segmentType == CPRMoveToBezierCoreSegmentType) {
+				} else if (element->segmentType == N3MoveToBezierCoreSegmentType) {
 					break;
 				}
 				element = element->next;
@@ -810,12 +810,12 @@ void N3BezierCoreRandomAccessorSetVectorsForSegementAtIndex(N3BezierCoreRandomAc
 		case N3LineToBezierCoreSegmentType:
 			element->endpoint = endpoint;
 			break;
-		case CPRCurveToBezierCoreSegmentType:
+		case N3CurveToBezierCoreSegmentType:
 			element->control1 = control1;
 			element->control2 = control2;
 			element->endpoint = endpoint;
 			break;
-		case CPRCloseBezierCoreSegmentType:
+		case N3CloseBezierCoreSegmentType:
 			break;
 		default:
 			assert(0);
@@ -836,16 +836,16 @@ static CGFloat _N3BezierCoreElementLength(N3BezierCoreElementRef element) // onl
 {
     CGFloat distance;
     
-    assert(element->segmentType == CPRMoveToBezierCoreSegmentType || element->previous);
+    assert(element->segmentType == N3MoveToBezierCoreSegmentType || element->previous);
 
     distance = 0.0;
 	
 	switch (element->segmentType) {
 		case N3LineToBezierCoreSegmentType:
-		case CPRCloseBezierCoreSegmentType:
+		case N3CloseBezierCoreSegmentType:
 			distance = N3VectorDistance(element->endpoint, element->previous->endpoint);
 			break;
-		case CPRCurveToBezierCoreSegmentType:
+		case N3CurveToBezierCoreSegmentType:
 			distance = N3VectorDistance(element->previous->endpoint, element->control1);
 			distance += N3VectorDistance(element->control1, element->control2);
 			distance += N3VectorDistance(element->control2, element->endpoint);			
@@ -872,7 +872,7 @@ static CGFloat _N3BezierCoreElementFlatness(N3BezierCoreElementRef element)
     N3Vector vectorToControl2;
     CGFloat control2ScalarProjection;
     
-    if (element->segmentType != CPRCurveToBezierCoreSegmentType) {
+    if (element->segmentType != N3CurveToBezierCoreSegmentType) {
         return 0.0;
     }
     
@@ -916,8 +916,8 @@ static void _N3BezierCoreElementDivide(N3BezierCoreElementRef element)
     N3Vector r1;
     N3Vector b;
     
-	assert(element->segmentType != CPRMoveToBezierCoreSegmentType); // it doesn't make any sense to divide a moveTo
-    assert(element->segmentType == CPRCurveToBezierCoreSegmentType || element->segmentType == N3LineToBezierCoreSegmentType);
+	assert(element->segmentType != N3MoveToBezierCoreSegmentType); // it doesn't make any sense to divide a moveTo
+    assert(element->segmentType == N3CurveToBezierCoreSegmentType || element->segmentType == N3LineToBezierCoreSegmentType);
     assert(element->previous); // there better be a previous so that the starting position is set.
     
     newElement = malloc(sizeof(N3BezierCoreElement));
@@ -935,11 +935,11 @@ static void _N3BezierCoreElementDivide(N3BezierCoreElementRef element)
     
     if (element->segmentType == N3LineToBezierCoreSegmentType) {
         element->endpoint = N3VectorScalarMultiply(N3VectorAdd(element->previous->endpoint, newElement->endpoint), 0.5);
-    } else if (element->segmentType == CPRCloseBezierCoreSegmentType) {
+    } else if (element->segmentType == N3CloseBezierCoreSegmentType) {
         element->endpoint = N3VectorScalarMultiply(N3VectorAdd(element->previous->endpoint, newElement->endpoint), 0.5);
 		element->segmentType = N3LineToBezierCoreSegmentType;
-		newElement->segmentType = CPRCloseBezierCoreSegmentType;
-    } else if (element->segmentType == CPRCurveToBezierCoreSegmentType) {
+		newElement->segmentType = N3CloseBezierCoreSegmentType;
+    } else if (element->segmentType == N3CurveToBezierCoreSegmentType) {
         q0 = N3VectorScalarMultiply(N3VectorAdd(element->previous->endpoint, element->control1), 0.5);
         q1 = N3VectorScalarMultiply(N3VectorAdd(element->control1, element->control2), 0.5);
         q2 = N3VectorScalarMultiply(N3VectorAdd(element->control2, element->endpoint), 0.5);
@@ -965,7 +965,7 @@ static bool _N3BezierCoreElementEqualToElement(N3BezierCoreElementRef element1, 
         return false;
     }
     
-    if (element1->segmentType == CPRCurveToBezierCoreSegmentType) {
+    if (element1->segmentType == N3CurveToBezierCoreSegmentType) {
         return N3VectorEqualToVector(element1->endpoint, element2->endpoint) &&
                 N3VectorEqualToVector(element1->control1, element2->control1) &&
                 N3VectorEqualToVector(element1->control2, element2->control2);
@@ -983,7 +983,7 @@ static N3Vector _N3BezierCoreLastMoveTo(N3BezierCoreRef bezierCore)
 	element = bezierCore->lastElement;
 	
 	while (element) {
-		if (element->segmentType == CPRMoveToBezierCoreSegmentType) {
+		if (element->segmentType == N3MoveToBezierCoreSegmentType) {
 			lastMoveTo = element->endpoint;
 			break;
 		}

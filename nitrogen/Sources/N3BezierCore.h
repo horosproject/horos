@@ -12,8 +12,8 @@
  PURPOSE.
  =========================================================================*/
 
-#ifndef _CPRBEZIERCORE_H_
-#define _CPRBEZIERCORE_H_
+#ifndef _N3BEZIERCORE_H_
+#define _N3BEZIERCORE_H_
 
 #include <ApplicationServices/ApplicationServices.h>
 
@@ -21,14 +21,14 @@
 
 /* look in N3BezierCoreAdditions.h for additional functions that could be of interest */
 
-CG_EXTERN_C_BEGIN
+CF_EXTERN_C_BEGIN
 
 enum N3BezierCoreSegmentType {
-    CPRMoveToBezierCoreSegmentType,
+    N3MoveToBezierCoreSegmentType,
     N3LineToBezierCoreSegmentType,
-    CPRCurveToBezierCoreSegmentType,
-    CPRCloseBezierCoreSegmentType,
-    CPREndBezierCoreSegmentType = 0xFFFFFFFF
+    N3CurveToBezierCoreSegmentType,
+    N3CloseBezierCoreSegmentType,
+    N3EndBezierCoreSegmentType = 0xFFFFFFFF
 };
 typedef enum N3BezierCoreSegmentType N3BezierCoreSegmentType;
 
@@ -100,6 +100,6 @@ N3BezierCoreSegmentType N3BezierCoreRandomAccessorGetSegmentAtIndex(N3BezierCore
 void N3BezierCoreRandomAccessorSetVectorsForSegementAtIndex(N3BezierCoreRandomAccessorRef bezierCoreRandomAccessor, CFIndex index, N3Vector control1, N3Vector control2, N3Vector endpoint); // the random accessor must have been created with the mutable beziercore
 CFIndex N3BezierCoreRandomAccessorSegmentCount(N3BezierCoreRandomAccessorRef bezierCoreRandomAccessor);
 
-CG_EXTERN_C_END
+CF_EXTERN_C_END
 
-#endif	/* _CPRBEZIERCORE_H_ */
+#endif	/* _N3BEZIERCORE_H_ */
