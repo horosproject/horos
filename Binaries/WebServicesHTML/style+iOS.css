@@ -14,6 +14,11 @@
 		font-size: 10pt;
 	}
 	
+	#userbox {
+		position: relative;
+		top: -8px;
+	}
+	
 	#userbox .text {
 		display: none;
 	}

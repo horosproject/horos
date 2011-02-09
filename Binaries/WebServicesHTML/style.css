@@ -272,10 +272,9 @@ a.back:before {
 #userbox {
 	margin: 0;
 	padding: 0;
-	/*position: absolute;*/
+	position: relative;
+	top: -4px;
 	float: right;
-	right: 10px;
-	top: 8px;
 	font-family: "Lucida Grande", Helvetica;
 	font-size: 11px;
 }
