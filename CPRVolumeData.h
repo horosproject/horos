@@ -59,9 +59,11 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
 @property (readonly) CGFloat pixelSpacingY;
 @property (readonly) CGFloat pixelSpacingZ;
 
-@property (readonly) N3AffineTransform volumeTransform;
+@property (readonly) N3AffineTransform volumeTransform; // volumeTransform is the transform from Dicom (patient) space to pixel data
 
 - (const float *)floatBytes;
+
+- (void)getFloatData:(void *)buffer range:(NSRange)range;
 
 - (CPRUnsignedInt16ImageRep *)unsignedInt16ImageRepForSliceAtIndex:(NSUInteger)z;
 

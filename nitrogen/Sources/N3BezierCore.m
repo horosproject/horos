@@ -917,7 +917,7 @@ static void _N3BezierCoreElementDivide(N3BezierCoreElementRef element)
     N3Vector b;
     
 	assert(element->segmentType != N3MoveToBezierCoreSegmentType); // it doesn't make any sense to divide a moveTo
-    assert(element->segmentType == N3CurveToBezierCoreSegmentType || element->segmentType == N3LineToBezierCoreSegmentType);
+    assert(element->segmentType == N3CurveToBezierCoreSegmentType || element->segmentType == N3LineToBezierCoreSegmentType || element->segmentType == N3CloseBezierCoreSegmentType);
     assert(element->previous); // there better be a previous so that the starting position is set.
     
     newElement = malloc(sizeof(N3BezierCoreElement));

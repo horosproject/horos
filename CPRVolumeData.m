@@ -111,6 +111,11 @@
     return _floatBytes;
 }
 
+- (void)getFloatData:(void *)buffer range:(NSRange)range
+{
+	memcpy(buffer, _floatBytes + range.location, range.length * sizeof(float));
+}
+
 - (CPRUnsignedInt16ImageRep *)unsignedInt16ImageRepForSliceAtIndex:(NSUInteger)z
 {
     CPRUnsignedInt16ImageRep *imageRep;

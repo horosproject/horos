@@ -100,7 +100,7 @@ bool N3LineIntersectsPlane(N3Line line, N3Plane plane);
 N3Vector N3LineIntersectionWithPlane(N3Line line, N3Plane plane);
 N3Vector N3LinePointClosestToVector(N3Line line, N3Vector vector);
 N3Line N3LineApplyTransform(N3Line line, N3AffineTransform transform);
-CGFloat N3LineClosestPoints(N3Line line1, N3Line line2, N3VectorPointer line1PointPtr, N3VectorPointer line2PointPtr); // given two lines, find points on each line that are the closest to each other, note that the line the goes through these two points will be normal to both lines
+CGFloat N3LineClosestPoints(N3Line line1, N3Line line2, N3VectorPointer line1PointPtr, N3VectorPointer line2PointPtr); // given two lines, find points on each line that are the closest to each other. Returns the distance between these two points. Note that the line that goes through these two points will be normal to both lines
 
 N3Plane N3PlaneMake(N3Vector point, N3Vector normal);
 bool N3PlaneEqualToPlane(N3Plane plane1, N3Plane plane2);

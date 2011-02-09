@@ -437,33 +437,53 @@
     return [collapsedBezierPath autorelease];
 }
 
-- (NSArray*)intersectionsWithPlane:(N3Plane)plane // returns NSNumbers of the relativePositions of the intersections with the plane.
+- (NSArray*)intersectionsWithPlane:(N3Plane)plane; // returns NSValues containing N3Vectors of the intersections.
+{
+    return [self intersectionsWithPlane:plane relativePositions:NULL];
+}
+
+- (NSArray*)intersectionsWithPlane:(N3Plane)plane relativePositions:(NSArray **)returnedRelativePositions;
 {
 	N3MutableBezierPath *flattenedPath;
 	N3BezierCoreRef bezierCore;
 	NSInteger intersectionCount;
 	NSInteger i;
 	NSMutableArray *intersectionArray;
+	NSMutableArray *relativePositionArray;
 	CGFloat *relativePositions;
+	N3Vector *intersections;
 	
-	flattenedPath = [self mutableCopy];
-	[flattenedPath subdivide:N3BezierDefaultSubdivideSegmentLength];
-	[flattenedPath flatten:N3BezierDefaultFlatness];
-	
-	bezierCore = [flattenedPath N3BezierCore];
+    if (N3BezierCoreHasCurve(_bezierCore)) {
+        flattenedPath = [self mutableCopy];
+        [flattenedPath subdivide:N3BezierDefaultSubdivideSegmentLength];
+        [flattenedPath flatten:N3BezierDefaultFlatness];
+        
+        bezierCore = N3BezierCoreRetain([flattenedPath N3BezierCore]);
+        [flattenedPath release];
+    } else {
+        bezierCore = N3BezierCoreRetain(_bezierCore);
+    }
+
 	intersectionCount = N3BezierCoreCountIntersectionsWithPlane(bezierCore, plane);
+	intersections = malloc(intersectionCount * sizeof(N3Vector));
 	relativePositions = malloc(intersectionCount * sizeof(CGFloat));
 	
-	intersectionCount = N3BezierCoreIntersectionsWithPlane(bezierCore, plane, NULL, relativePositions, intersectionCount);
+	intersectionCount = N3BezierCoreIntersectionsWithPlane(bezierCore, plane, intersections, relativePositions, intersectionCount);
 	
 	intersectionArray = [NSMutableArray arrayWithCapacity:intersectionCount];
+	relativePositionArray = [NSMutableArray arrayWithCapacity:intersectionCount];
 	for (i = 0; i < intersectionCount; i++) {
-		[intersectionArray addObject:[NSNumber numberWithDouble:relativePositions[i]]];
+		[intersectionArray addObject:[NSValue valueWithN3Vector:intersections[i]]];
+		[relativePositionArray addObject:[NSNumber numberWithDouble:relativePositions[i]]];
 	}
 	
 	free(relativePositions);
-	[flattenedPath release];
-	
+	free(intersections);
+    N3BezierCoreRelease(bezierCore);
+    
+    if (returnedRelativePositions) {
+        *returnedRelativePositions = relativePositionArray;
+    }
 	return intersectionArray;
 }
 
