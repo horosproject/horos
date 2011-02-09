@@ -73,9 +73,9 @@
 	[super dealloc];
 }
 
-- (void)setMouseVector:(CPRVector)vector forPlane:(NSString *)planeName
+- (void)setMouseVector:(N3Vector)vector forPlane:(NSString *)planeName
 {
-	[_planeIntersectionMouseCoordinates setObject:[NSValue valueWithCPRVector:vector] forKey:planeName];
+	[_planeIntersectionMouseCoordinates setObject:[NSValue valueWithN3Vector:vector] forKey:planeName];
 }
 
 - (void)clearMouseVectorForPlaneName:(NSString *)planeName
@@ -93,9 +93,9 @@
 	return [_planeIntersectionMouseCoordinates allKeys];
 }
 
-- (CPRVector)mouseVectorForPlane:(NSString *)planeName
+- (N3Vector)mouseVectorForPlane:(NSString *)planeName
 {
-	return [[_planeIntersectionMouseCoordinates objectForKey:planeName] CPRVectorValue];
+	return [[_planeIntersectionMouseCoordinates objectForKey:planeName] N3VectorValue];
 }
 
 

@@ -70,7 +70,7 @@ typedef NSInteger CPRExportRotationSpan;
     
     CPRCurvedPath *curvedPath;
     CPRDisplayInfo *displayInfo;
-    CPRVector baseNormal; // this value will depend on which view gets clicked first, it will be used as the basis for deciding what normal to use for what angle
+    N3Vector baseNormal; // this value will depend on which view gets clicked first, it will be used as the basis for deciding what normal to use for what angle
     NSColor *curvedPathColor;
     BOOL curvedPathCreationMode;
 	

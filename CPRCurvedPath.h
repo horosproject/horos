@@ -12,9 +12,9 @@
  PURPOSE.
  =========================================================================*/
 
-#import "CPRGeometry.h"
+#import "N3Geometry.h"
 
-@class CPRMutableBezierPath;
+@class N3MutableBezierPath;
 @class CPRVolumeData;
 @class DICOMExport;
 
@@ -30,11 +30,11 @@ extern const int32_t CPRCurvedPathControlTokenNone;
 
 @interface CPRCurvedPath : NSObject <NSCopying, NSCoding>
 {
-    CPRMutableBezierPath *_bezierPath;
+    N3MutableBezierPath *_bezierPath;
     NSMutableArray *_nodes;
     NSMutableArray *_nodeRelativePositions; // NSNumbers with a cache of the nodes' relative positions;
     
-    CPRVector _initialNormal;
+    N3Vector _initialNormal;
     CGFloat _thickness;
     CGFloat _transverseSectionSpacing;
     CGFloat _transverseSectionPosition;
@@ -45,27 +45,27 @@ extern const int32_t CPRCurvedPathControlTokenNone;
 
 - (id)init;
 
-- (void)addNode:(NSPoint)point transform:(CPRAffineTransform3D)transform; // adds the point to z = 0 in the arbitrary coordinate space
+- (void)addNode:(NSPoint)point transform:(N3AffineTransform)transform; // adds the point to z = 0 in the arbitrary coordinate space
 - (void)insertNodeAtRelativePosition:(CGFloat)relativePosition;
 - (void)removeNodeAtIndex:(NSInteger)index;
 
-- (void)moveControlToken:(CPRCurvedPathControlToken)token toPoint:(NSPoint)point transform:(CPRAffineTransform3D)transform; // resets Z by default
+- (void)moveControlToken:(CPRCurvedPathControlToken)token toPoint:(NSPoint)point transform:(N3AffineTransform)transform; // resets Z by default
 
-- (CPRCurvedPathControlToken)controlTokenNearPoint:(NSPoint)point transform:(CPRAffineTransform3D)transform;
+- (CPRCurvedPathControlToken)controlTokenNearPoint:(NSPoint)point transform:(N3AffineTransform)transform;
 
-- (CGFloat)relativePositionForPoint:(NSPoint)point transform:(CPRAffineTransform3D)transform;
-- (CGFloat)relativePositionForPoint:(NSPoint)point transform:(CPRAffineTransform3D)transform distanceToPoint:(CGFloat *)distance; // returns the distance the coordinate space of point (screen coordinates)
+- (CGFloat)relativePositionForPoint:(NSPoint)point transform:(N3AffineTransform)transform;
+- (CGFloat)relativePositionForPoint:(NSPoint)point transform:(N3AffineTransform)transform distanceToPoint:(CGFloat *)distance; // returns the distance the coordinate space of point (screen coordinates)
 - (CGFloat)relativePositionForControlToken:(CPRCurvedPathControlToken)token;
 - (CGFloat)relativePositionForNodeAtIndex:(NSUInteger)nodeIndex;
 
-@property (nonatomic, readonly, retain) CPRMutableBezierPath *bezierPath;
+@property (nonatomic, readonly, retain) N3MutableBezierPath *bezierPath;
 @property (nonatomic, readwrite, assign) CGFloat thickness;
-@property (nonatomic, readwrite, assign) CPRVector initialNormal;
+@property (nonatomic, readwrite, assign) N3Vector initialNormal;
 @property (nonatomic, readwrite, assign) CGFloat transverseSectionSpacing; // in mm
 @property (nonatomic, readwrite, assign) CGFloat transverseSectionPosition; // as a relative position [0, 1] pass -1 if you don't want the trasvers section to appear
 @property (nonatomic, readonly, assign) CGFloat leftTransverseSectionPosition;
 @property (nonatomic, readonly, assign) CGFloat rightTransverseSectionPosition;
-@property (readonly, copy) NSArray* nodes; // CPRVectors stored in NSValues
+@property (readonly, copy) NSArray* nodes; // N3Vectors stored in NSValues
 
 
 @end

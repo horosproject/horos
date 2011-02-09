@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import "CPRGeometry.h"
+#import "N3Geometry.h"
 
 // this class is used to separate display only related data from the real data in an MVC sense
 
@@ -37,10 +37,10 @@
 @property (nonatomic, readwrite, assign, getter=isMouseCursorHidden) BOOL mouseCursorHidden;
 @property (nonatomic, readwrite, assign) CGFloat mouseCursorPosition;
 
-- (void)setMouseVector:(CPRVector)vector forPlane:(NSString *)planeName;
+- (void)setMouseVector:(N3Vector)vector forPlane:(NSString *)planeName;
 - (void)clearMouseVectorForPlaneName:(NSString *)planeName;
 - (void)clearAllMouseVectors;
 - (NSArray *)planesWithMouseVectors;
-- (CPRVector)mouseVectorForPlane:(NSString *)planeName;
+- (N3Vector)mouseVectorForPlane:(NSString *)planeName;
 
 @end

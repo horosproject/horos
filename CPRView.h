@@ -40,9 +40,9 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
     
     CPRCurvedPath *_curvedPath;
     CPRDisplayInfo *_displayInfo;
-    CPRPlane _orangePlane;
-    CPRPlane _purplePlane;
-    CPRPlane _bluePlane;
+    N3Plane _orangePlane;
+    N3Plane _purplePlane;
+    N3Plane _bluePlane;
 	
 	CGFloat _orangeSlabThickness;
 	CGFloat _purpleSlabThickness;
@@ -104,9 +104,9 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 @property (nonatomic, readwrite, copy) CPRDisplayInfo *displayInfo;
 @property (nonatomic, readwrite, assign) CPRViewClippingRangeMode clippingRangeMode;
 
-@property (nonatomic, readwrite, assign) CPRPlane orangePlane; // set these to CPRPlaneInvalid to keep the plane from appearing
-@property (nonatomic, readwrite, assign) CPRPlane purplePlane;
-@property (nonatomic, readwrite, assign) CPRPlane bluePlane;
+@property (nonatomic, readwrite, assign) N3Plane orangePlane; // set these to N3PlaneInvalid to keep the plane from appearing
+@property (nonatomic, readwrite, assign) N3Plane purplePlane;
+@property (nonatomic, readwrite, assign) N3Plane bluePlane;
 
 @property (nonatomic, readwrite, assign) CGFloat orangeSlabThickness;
 @property (nonatomic, readwrite, assign) CGFloat purpleSlabThickness;

@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import "CPRGeneratorRequest.h"
-#import "CPRBezierPath.h"
+#import "N3BezierPath.h"
 #import "CPRStraightenedOperation.h"
 
 @implementation CPRGeneratorRequest
@@ -111,7 +111,7 @@
         straightenedGeneratorRequest = (CPRStraightenedGeneratorRequest *)object;
         if ([super isEqual:object] &&
             [_bezierPath isEqualToBezierPath:straightenedGeneratorRequest.bezierPath] &&
-            CPRVectorEqualToVector(_initialNormal, straightenedGeneratorRequest.initialNormal) &&
+            N3VectorEqualToVector(_initialNormal, straightenedGeneratorRequest.initialNormal) &&
             _projectionMode == straightenedGeneratorRequest.projectionMode &&
             _vertical == straightenedGeneratorRequest.vertical &&
             _bezierStartPosition == straightenedGeneratorRequest.bezierStartPosition &&
@@ -125,7 +125,7 @@
 
 - (NSUInteger)hash // a not that great hash function....
 {
-    return [super hash] ^ [_bezierPath hash] ^ (NSUInteger)CPRVectorLength(_initialNormal) ^ (NSUInteger)_projectionMode ^ (NSUInteger)_vertical ^ *((NSUInteger *)&_bezierStartPosition) ^ *((NSUInteger *)&_bezierEndPosition) ^ *((NSUInteger *)&_middlePosition);
+    return [super hash] ^ [_bezierPath hash] ^ (NSUInteger)N3VectorLength(_initialNormal) ^ (NSUInteger)_projectionMode ^ (NSUInteger)_vertical ^ *((NSUInteger *)&_bezierStartPosition) ^ *((NSUInteger *)&_bezierEndPosition) ^ *((NSUInteger *)&_middlePosition);
 }
 
 

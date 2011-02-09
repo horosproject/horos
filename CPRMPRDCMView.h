@@ -16,7 +16,7 @@
 
 #import "DCMView.h"
 #import "VRController.h"
-#import "CPRGeometry.h"
+#import "N3Geometry.h"
 #import "CPRCurvedPath.h"
 
 @class CPRController;
@@ -85,8 +85,8 @@
 
 - (void)setCrossCenter:(NSPoint)crossCenter;
 
-- (CPRAffineTransform3D)pixToDicomTransform; // converts points in the DCMPix's coordinate space ("Slice Coordinates") into the DICOM space (patient space with mm units)
-- (CPRPlane)plane;
+- (N3AffineTransform)pixToDicomTransform; // converts points in the DCMPix's coordinate space ("Slice Coordinates") into the DICOM space (patient space with mm units)
+- (N3Plane)plane;
 - (NSString *)planeName;
 - (NSColor *)colorForPlaneName:(NSString *)planeName;
 
@@ -104,15 +104,15 @@
 - (void)CPRViewDidEditDisplayInfo:(id)CPRMPRDCMView;
 
 - (void)CPRViewDidChangeGeneratedHeight:(id)CPRMPRDCMView;
-- (void)CPRView:(CPRMPRDCMView*)CPRMPRDCMView setCrossCenter:(CPRVector)crossCenter;
+- (void)CPRView:(CPRMPRDCMView*)CPRMPRDCMView setCrossCenter:(N3Vector)crossCenter;
 
 @end
 
 
 @interface DCMView (CPRAdditions) 
 
-- (CPRAffineTransform3D)viewToPixTransform; // converts coordinates in the NSView's space to coordinates on a DCMPix object in "Slice Coordinates"
-- (CPRAffineTransform3D)pixToSubDrawRectTransform; // converst points in DCMPix "Slice Coordinates" to coordinates that need to be passed to GL in subDrawRect
+- (N3AffineTransform)viewToPixTransform; // converts coordinates in the NSView's space to coordinates on a DCMPix object in "Slice Coordinates"
+- (N3AffineTransform)pixToSubDrawRectTransform; // converst points in DCMPix "Slice Coordinates" to coordinates that need to be passed to GL in subDrawRect
 
 
 @end

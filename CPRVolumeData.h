@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import "CPRGeometry.h"
+#import "N3Geometry.h"
 
 @class CPRUnsignedInt16ImageRep;
 
@@ -28,7 +28,7 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
     
     NSUInteger pixelsWideTimesPixelsHigh; // just in the interest of not calculating this a million times...
     
-    CPRAffineTransform3D volumeTransform;
+    N3AffineTransform volumeTransform;
 } CPRVolumeDataInlineBuffer;
 
 // Interface to the data
@@ -39,14 +39,14 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
     NSUInteger _pixelsHigh;
     NSUInteger _pixelsDeep;
     
-    CPRAffineTransform3D _volumeTransform; // volumeTransform is the transform from Dicom (patient) space to pixel data
+    N3AffineTransform _volumeTransform; // volumeTransform is the transform from Dicom (patient) space to pixel data
     
     BOOL _freeWhenDone;
 }
 
 
 - (id)initWithFloatBytesNoCopy:(const float *)floatBytes pixelsWide:(NSUInteger)pixelsWide pixelsHigh:(NSUInteger)pixelsHigh pixelsDeep:(NSUInteger)pixelsDeep
-               volumeTransform:(CPRAffineTransform3D)volumeTransform freeWhenDone:(BOOL)freeWhenDone; // volumeTransform is the transform from Dicom (patient) space to pixel data
+               volumeTransform:(N3AffineTransform)volumeTransform freeWhenDone:(BOOL)freeWhenDone; // volumeTransform is the transform from Dicom (patient) space to pixel data
 
 @property (readonly) NSUInteger pixelsWide;
 @property (readonly) NSUInteger pixelsHigh;
@@ -59,20 +59,20 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
 @property (readonly) CGFloat pixelSpacingY;
 @property (readonly) CGFloat pixelSpacingZ;
 
-@property (readonly) CPRAffineTransform3D volumeTransform;
+@property (readonly) N3AffineTransform volumeTransform;
 
 - (const float *)floatBytes;
 
 - (CPRUnsignedInt16ImageRep *)unsignedInt16ImageRepForSliceAtIndex:(NSUInteger)z;
 
 - (float)floatAtPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z;
-- (float)linearInterpolatedFloatAtDicomVector:(CPRVector)vector; // these are slower, use the inline buffer if you care about speed
+- (float)linearInterpolatedFloatAtDicomVector:(N3Vector)vector; // these are slower, use the inline buffer if you care about speed
 
 - (void)getInlineBuffer:(CPRVolumeDataInlineBuffer *)inlineBuffer; 
 
 // not done yet, will crash if given vectors that are outside of the volume
 - (NSUInteger)tempBufferSizeForNumVectors:(NSUInteger)numVectors;
-- (void)linearInterpolateVolumeVectors:(CPRVectorArray)volumeVectors outputValues:(float *)outputValues numVectors:(NSUInteger)numVectors tempBuffer:(void *)tempBuffer;
+- (void)linearInterpolateVolumeVectors:(N3VectorArray)volumeVectors outputValues:(float *)outputValues numVectors:(NSUInteger)numVectors tempBuffer:(void *)tempBuffer;
 // end not done
 @end
 
@@ -136,13 +136,13 @@ CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(CPRVolume
     return returnValue;
 }
 
-CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtDicomVector(CPRVolumeDataInlineBuffer *inlineBuffer, CPRVector vector) // coordinate in mm dicom space
+CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtDicomVector(CPRVolumeDataInlineBuffer *inlineBuffer, N3Vector vector) // coordinate in mm dicom space
 {
-    vector = CPRVectorApplyTransform(vector, inlineBuffer->volumeTransform);
+    vector = N3VectorApplyTransform(vector, inlineBuffer->volumeTransform);
     return CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(inlineBuffer, vector.x, vector.y, vector.z);
 }
 
-CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeVector(CPRVolumeDataInlineBuffer *inlineBuffer, CPRVector vector)
+CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeVector(CPRVolumeDataInlineBuffer *inlineBuffer, N3Vector vector)
 {
     return CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(inlineBuffer, vector.x, vector.y, vector.z);
 }

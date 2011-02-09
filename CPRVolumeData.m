@@ -30,7 +30,7 @@
 @synthesize volumeTransform = _volumeTransform;
 
 - (id)initWithFloatBytesNoCopy:(const float *)floatBytes pixelsWide:(NSUInteger)pixelsWide pixelsHigh:(NSUInteger)pixelsHigh pixelsDeep:(NSUInteger)pixelsDeep
-               volumeTransform:(CPRAffineTransform3D)volumeTransform freeWhenDone:(BOOL)freeWhenDone; // volumeTransform is the transform from Dicom (patient) space to pixel data
+               volumeTransform:(N3AffineTransform)volumeTransform freeWhenDone:(BOOL)freeWhenDone; // volumeTransform is the transform from Dicom (patient) space to pixel data
 {
     if ( (self = [super init]) ) {
         if (floatBytes == NULL) {
@@ -59,22 +59,22 @@
 
 - (BOOL)isRectilinear
 {
-    return CPRAffineTransform3DIsRectilinear(_volumeTransform);
+    return N3AffineTransformIsRectilinear(_volumeTransform);
 }
 
 - (CGFloat)minPixelSpacing
 {
-    CPRVector zero;
+    N3Vector zero;
     CGFloat spacing;
     
     if (self.rectilinear) {
         return MIN(MIN(self.pixelSpacingX, self.pixelSpacingY), self.pixelSpacingZ);
     } else {
-        zero = CPRVectorApplyTransform(CPRVectorZero, _volumeTransform);
+        zero = N3VectorApplyTransform(N3VectorZero, _volumeTransform);
         
-        spacing = CPRVectorDistance(zero, CPRVectorApplyTransform(CPRVectorMake(1.0, 0.0, 0.0), _volumeTransform));
-        spacing = MAX(spacing, CPRVectorDistance(zero, CPRVectorApplyTransform(CPRVectorMake(0.0, 1.0, 0.0), _volumeTransform)));
-        spacing = MAX(spacing, CPRVectorDistance(zero, CPRVectorApplyTransform(CPRVectorMake(0.0, 0.0, 1.0), _volumeTransform)));
+        spacing = N3VectorDistance(zero, N3VectorApplyTransform(N3VectorMake(1.0, 0.0, 0.0), _volumeTransform));
+        spacing = MAX(spacing, N3VectorDistance(zero, N3VectorApplyTransform(N3VectorMake(0.0, 1.0, 0.0), _volumeTransform)));
+        spacing = MAX(spacing, N3VectorDistance(zero, N3VectorApplyTransform(N3VectorMake(0.0, 0.0, 1.0), _volumeTransform)));
         return 1.0/spacing;
     }
 }
@@ -149,7 +149,7 @@
     return CPRVolumeDataGetFloatAtPixelCoordinate(&inlineBuffer, x, y, z);
 }
 
-- (float)linearInterpolatedFloatAtDicomVector:(CPRVector)vector
+- (float)linearInterpolatedFloatAtDicomVector:(N3Vector)vector
 {
     CPRVolumeDataInlineBuffer inlineBuffer;
     [self getInlineBuffer:&inlineBuffer];
@@ -162,7 +162,7 @@
 }
 
 // not done yet, will crash if given vectors that are outside of the volume
-- (void)linearInterpolateVolumeVectors:(CPRVectorArray)volumeVectors outputValues:(float *)outputValues numVectors:(NSUInteger)numVectors tempBuffer:(void *)tempBuffer
+- (void)linearInterpolateVolumeVectors:(N3VectorArray)volumeVectors outputValues:(float *)outputValues numVectors:(NSUInteger)numVectors tempBuffer:(void *)tempBuffer
 {
     float *interpolateBuffer = (float *)tempBuffer;
     
@@ -304,7 +304,7 @@
 {
     DCMPix *firstPix;
     float sliceThickness;
-    CPRAffineTransform3D pixToDicomTransform;
+    N3AffineTransform pixToDicomTransform;
     double spacingX;
     double spacingY;
     double spacingZ;
@@ -325,7 +325,7 @@
     spacingY = firstPix.pixelSpacingY;
     spacingZ = sliceThickness;
     
-    pixToDicomTransform = CPRAffineTransform3DIdentity;
+    pixToDicomTransform = N3AffineTransformIdentity;
     pixToDicomTransform.m41 = firstPix.originX;
     pixToDicomTransform.m42 = firstPix.originY;
     pixToDicomTransform.m43 = firstPix.originZ;
@@ -340,7 +340,7 @@
     pixToDicomTransform.m33 = orientation[8]*spacingZ;
     
     self = [self initWithFloatBytesNoCopy:(const float *)[volume bytes] pixelsWide:[firstPix pwidth] pixelsHigh:[firstPix pheight] pixelsDeep:[pixList count]
-                            volumeTransform:CPRAffineTransform3DInvert(pixToDicomTransform) freeWhenDone:NO];
+                            volumeTransform:N3AffineTransformInvert(pixToDicomTransform) freeWhenDone:NO];
     return self;
 }
 

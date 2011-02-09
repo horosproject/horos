@@ -13,8 +13,8 @@
  =========================================================================*/
 
 #import "CPRCurvedPath.h"
-#import "CPRBezierPath.h"
-#import "CPRBezierCoreAdditions.h"
+#import "N3BezierPath.h"
+#import "N3BezierCoreAdditions.h"
 #include <OpenGL/CGLMacro.h>
 
 static const CGFloat _CPRCurvedPathNodeSpacingThreshold = 1e-10;
@@ -49,7 +49,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 @interface CPRCurvedPath ()
 
 @property (nonatomic, readwrite, retain) NSMutableArray *nodeRelativePositions;
-@property (nonatomic, readwrite, retain) CPRMutableBezierPath *bezierPath;
+@property (nonatomic, readwrite, retain) N3MutableBezierPath *bezierPath;
 - (id)_initWithCurvedPath:(CPRCurvedPath *)curvedPath;
 - (void)_resetNodeRelativePositions;
 
@@ -78,7 +78,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 - (id)init
 {
     if ( (self = [super init]) ) {
-        _bezierPath = [[CPRMutableBezierPath alloc] init];
+        _bezierPath = [[N3MutableBezierPath alloc] init];
         _nodes = [[NSMutableArray alloc] init];
         _nodeRelativePositions = [[NSMutableArray alloc] init];
         _transverseSectionPosition = 0.5;
@@ -92,23 +92,23 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 	NSArray *nodesAsDictionaries;
 	NSDictionary *nodeDictionary;
 	NSMutableArray *nodes;
-	CPRVector node;
+	N3Vector node;
 	
 	if ( (self = [super init]) ) {
 		nodes = [[NSMutableArray alloc] init];
 		nodesAsDictionaries = [decoder decodeObjectForKey:@"nodesAsDictionaries"];
 		for (nodeDictionary in nodesAsDictionaries) {
-			node = CPRVectorZero;
-			CPRVectorMakeWithDictionaryRepresentation((CFDictionaryRef)nodeDictionary, &node);
-			[nodes addObject:[NSValue valueWithCPRVector:node]];
+			node = N3VectorZero;
+			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)nodeDictionary, &node);
+			[nodes addObject:[NSValue valueWithN3Vector:node]];
 		}
 		
 		_bezierPath = [[decoder decodeObjectForKey:@"bezierPath"] retain];
 		_nodes = nodes;
 		_nodeRelativePositions = [[decoder decodeObjectForKey:@"nodeRelativePositions"] retain];
 		
-		_initialNormal = CPRVectorZero;
-		CPRVectorMakeWithDictionaryRepresentation((CFDictionaryRef)[decoder decodeObjectForKey:@"initialNormalDictionary"], &_initialNormal);
+		_initialNormal = N3VectorZero;
+		N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[decoder decodeObjectForKey:@"initialNormalDictionary"], &_initialNormal);
 		_thickness = [decoder decodeDoubleForKey:@"thickness"];
 		_transverseSectionSpacing = [decoder decodeDoubleForKey:@"transverseSectionSpacing"];
 		_transverseSectionPosition = [decoder decodeDoubleForKey:@"transverseSectionPosition"];
@@ -147,7 +147,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     return [[CPRCurvedPath allocWithZone:zone] _initWithCurvedPath:self];
 }
 
-- (void)setBezierPath:(CPRMutableBezierPath *)bezierPath
+- (void)setBezierPath:(N3MutableBezierPath *)bezierPath
 {
     if ([_bezierPath isEqualToBezierPath:bezierPath] == NO) {
         [_bezierPath release];
@@ -163,43 +163,43 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 	
 	nodeVectorsAsDictionaries = [NSMutableArray array];
 	for (value in _nodes) {
-		[nodeVectorsAsDictionaries addObject:[(NSDictionary *)CPRVectorCreateDictionaryRepresentation([value CPRVectorValue]) autorelease]];
+		[nodeVectorsAsDictionaries addObject:[(NSDictionary *)N3VectorCreateDictionaryRepresentation([value N3VectorValue]) autorelease]];
 	}
 	
 	[encoder encodeObject:_bezierPath forKey:@"bezierPath"];
 	[encoder encodeObject:nodeVectorsAsDictionaries forKey:@"nodesAsDictionaries"];
 	[encoder encodeObject:_nodeRelativePositions forKey:@"nodeRelativePositions"];
 	
-	[encoder encodeObject:[(NSDictionary *)CPRVectorCreateDictionaryRepresentation(_initialNormal) autorelease] forKey:@"initialNormalDictionary"];
+	[encoder encodeObject:[(NSDictionary *)N3VectorCreateDictionaryRepresentation(_initialNormal) autorelease] forKey:@"initialNormalDictionary"];
 	[encoder encodeDouble:_thickness forKey:@"thickness"];
 	[encoder encodeDouble:_transverseSectionSpacing forKey:@"transverseSectionSpacing"];
 	[encoder encodeDouble:_transverseSectionPosition forKey:@"transverseSectionPosition"];
 }
 
-- (void)addNode:(NSPoint)point transform:(CPRAffineTransform3D)transform // adds the point to z = 0 in the arbitrary coordinate space
+- (void)addNode:(NSPoint)point transform:(N3AffineTransform)transform // adds the point to z = 0 in the arbitrary coordinate space
 {
-    CPRVector node;
+    N3Vector node;
     
-    node = CPRVectorMake(point.x, point.y, 0);
-    node = CPRVectorApplyTransform(node, transform);
+    node = N3VectorMake(point.x, point.y, 0);
+    node = N3VectorApplyTransform(node, transform);
     
-    if ([_nodes count] && CPRVectorDistance([[_nodes lastObject] CPRVectorValue], node) < _CPRCurvedPathNodeSpacingThreshold) {
+    if ([_nodes count] && N3VectorDistance([[_nodes lastObject] N3VectorValue], node) < _CPRCurvedPathNodeSpacingThreshold) {
         NSLog(@"Warning, CPRCurvedPath trying to add a node too close to the last node");
         return; // don't bother adding the point if it is already the last point
     }
     
-    [_nodes addObject:[NSValue valueWithCPRVector:node]];
+    [_nodes addObject:[NSValue valueWithN3Vector:node]];
     
     if ([_nodes count] >= 2) {
-        self.bezierPath = [[[CPRMutableBezierPath alloc] initWithNodeArray:_nodes] autorelease];
+        self.bezierPath = [[[N3MutableBezierPath alloc] initWithNodeArray:_nodes] autorelease];
     } else {
-        self.bezierPath = [[[CPRMutableBezierPath alloc] init] autorelease];
+        self.bezierPath = [[[N3MutableBezierPath alloc] init] autorelease];
     }
 }
 
 - (void)insertNodeAtRelativePosition:(CGFloat)relativePosition
 {
-    CPRVector vectorAtRelativePosition;
+    N3Vector vectorAtRelativePosition;
     NSInteger insertIndex;
     
     if ([_nodes count] < 2) {
@@ -219,18 +219,18 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     
     vectorAtRelativePosition = [_bezierPath vectorAtRelativePosition:relativePosition];
     
-    if (insertIndex > 0 && CPRVectorDistance([[_nodes objectAtIndex:insertIndex-1] CPRVectorValue], vectorAtRelativePosition) < _CPRCurvedPathNodeSpacingThreshold) {
+    if (insertIndex > 0 && N3VectorDistance([[_nodes objectAtIndex:insertIndex-1] N3VectorValue], vectorAtRelativePosition) < _CPRCurvedPathNodeSpacingThreshold) {
         NSLog(@"Warning, CPRCurvedPath trying to insert a node too close the the previous node");
         return;
     }
-    if (insertIndex <= [_nodes count]-1 && CPRVectorDistance([[_nodes objectAtIndex:insertIndex] CPRVectorValue], vectorAtRelativePosition) < _CPRCurvedPathNodeSpacingThreshold) {
+    if (insertIndex <= [_nodes count]-1 && N3VectorDistance([[_nodes objectAtIndex:insertIndex] N3VectorValue], vectorAtRelativePosition) < _CPRCurvedPathNodeSpacingThreshold) {
         NSLog(@"Warning, CPRCurvedPath trying to insert a node too close the the next node");
         return;
     }
             
-    [_nodes insertObject:[NSValue valueWithCPRVector:vectorAtRelativePosition] atIndex:insertIndex];
+    [_nodes insertObject:[NSValue valueWithN3Vector:vectorAtRelativePosition] atIndex:insertIndex];
     
-    self.bezierPath = [[[CPRMutableBezierPath alloc] initWithNodeArray:_nodes] autorelease];
+    self.bezierPath = [[[N3MutableBezierPath alloc] initWithNodeArray:_nodes] autorelease];
 }
 
 - (void)removeNodeAtIndex:(NSInteger)index
@@ -240,38 +240,38 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 	[_nodes removeObjectAtIndex:index];
 	
     if ([_nodes count] >= 2) {
-        self.bezierPath = [[[CPRMutableBezierPath alloc] initWithNodeArray:_nodes] autorelease];
+        self.bezierPath = [[[N3MutableBezierPath alloc] initWithNodeArray:_nodes] autorelease];
     } else {
-        self.bezierPath = [[[CPRMutableBezierPath alloc] init] autorelease];
+        self.bezierPath = [[[N3MutableBezierPath alloc] init] autorelease];
     }
 }
 
-- (void)moveControlToken:(CPRCurvedPathControlToken)token toPoint:(NSPoint)point transform:(CPRAffineTransform3D)transform // resets Z by default
+- (void)moveControlToken:(CPRCurvedPathControlToken)token toPoint:(NSPoint)point transform:(N3AffineTransform)transform // resets Z by default
 {
-    CPRVector node;
+    N3Vector node;
     NSUInteger element;
     CGFloat relativePosition;
     
-    node = CPRVectorMake(point.x, point.y, 0);
-    node = CPRVectorApplyTransform(node, transform);
+    node = N3VectorMake(point.x, point.y, 0);
+    node = N3VectorApplyTransform(node, transform);
 
     if (_isElementControlToken(token)) {
         element = _elementForControlToken(token);
-        if ([_nodes count] > element - 1 && CPRVectorDistance([[_nodes objectAtIndex:element - 1] CPRVectorValue], node) < _CPRCurvedPathNodeSpacingThreshold) {
+        if ([_nodes count] > element - 1 && N3VectorDistance([[_nodes objectAtIndex:element - 1] N3VectorValue], node) < _CPRCurvedPathNodeSpacingThreshold) {
             NSLog(@"Warning, CPRCurvedPath trying to move a node too close the the previous node");
             return; //refuse to move a node right on top the the previous node
         }
-        if ([_nodes count] > element + 1 && CPRVectorDistance([[_nodes objectAtIndex:element + 1] CPRVectorValue], node) < _CPRCurvedPathNodeSpacingThreshold) {
+        if ([_nodes count] > element + 1 && N3VectorDistance([[_nodes objectAtIndex:element + 1] N3VectorValue], node) < _CPRCurvedPathNodeSpacingThreshold) {
             NSLog(@"Warning, CPRCurvedPath trying to move a node too close the the next node]");
             return; //refuse to move a node right on top the the next node
         }
             
-        [_nodes replaceObjectAtIndex:element withObject:[NSValue valueWithCPRVector:node]];
+        [_nodes replaceObjectAtIndex:element withObject:[NSValue valueWithN3Vector:node]];
         
         if ([_nodes count] >= 2) {
-            self.bezierPath = [[[CPRMutableBezierPath alloc] initWithNodeArray:_nodes] autorelease];
+            self.bezierPath = [[[N3MutableBezierPath alloc] initWithNodeArray:_nodes] autorelease];
         } else {
-            self.bezierPath = [[[CPRMutableBezierPath alloc] init] autorelease];
+            self.bezierPath = [[[N3MutableBezierPath alloc] init] autorelease];
         }
     } else if (token == CPRCurvedPathControlTokenTransverseSection) {
         _transverseSectionPosition = [self relativePositionForPoint:point transform:transform];
@@ -281,79 +281,79 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     }
 }
 
-- (CPRCurvedPathControlToken)controlTokenNearPoint:(NSPoint)point transform:(CPRAffineTransform3D)transform;
+- (CPRCurvedPathControlToken)controlTokenNearPoint:(NSPoint)point transform:(N3AffineTransform)transform;
 {
     NSValue *value;
     NSUInteger i;
-    CPRVector pointVector;
-    CPRVector nodeVector;
-    CPRVector transverseSectionVector;
-    CPRBezierPath *flattenedBezierPath;
+    N3Vector pointVector;
+    N3Vector nodeVector;
+    N3Vector transverseSectionVector;
+    N3BezierPath *flattenedBezierPath;
     
-    flattenedBezierPath = [_bezierPath bezierPathByFlattening:CPRBezierDefaultFlatness];
+    flattenedBezierPath = [_bezierPath bezierPathByFlattening:N3BezierDefaultFlatness];
     
     // center
-    transverseSectionVector = CPRVectorApplyTransform([flattenedBezierPath vectorAtRelativePosition:_transverseSectionPosition], CPRAffineTransform3DInvert(transform));
+    transverseSectionVector = N3VectorApplyTransform([flattenedBezierPath vectorAtRelativePosition:_transverseSectionPosition], N3AffineTransformInvert(transform));
     transverseSectionVector.z = 0;
-    if (CPRVectorDistance(CPRVectorMakeFromNSPoint(point), transverseSectionVector) <= 4.0) {
+    if (N3VectorDistance(N3VectorMakeFromNSPoint(point), transverseSectionVector) <= 4.0) {
         return CPRCurvedPathControlTokenTransverseSection;
     }
 
     // left
-    transverseSectionVector = CPRVectorApplyTransform([flattenedBezierPath vectorAtRelativePosition:self.leftTransverseSectionPosition], CPRAffineTransform3DInvert(transform));
+    transverseSectionVector = N3VectorApplyTransform([flattenedBezierPath vectorAtRelativePosition:self.leftTransverseSectionPosition], N3AffineTransformInvert(transform));
     transverseSectionVector.z = 0;
-    if (CPRVectorDistance(CPRVectorMakeFromNSPoint(point), transverseSectionVector) <= 8.0) {
+    if (N3VectorDistance(N3VectorMakeFromNSPoint(point), transverseSectionVector) <= 8.0) {
         return CPRCurvedPathControlTokenTransverseSpacing;
     }
     
     //right
-    transverseSectionVector = CPRVectorApplyTransform([flattenedBezierPath vectorAtRelativePosition:self.rightTransverseSectionPosition], CPRAffineTransform3DInvert(transform));
+    transverseSectionVector = N3VectorApplyTransform([flattenedBezierPath vectorAtRelativePosition:self.rightTransverseSectionPosition], N3AffineTransformInvert(transform));
     transverseSectionVector.z = 0;
-    if (CPRVectorDistance(CPRVectorMakeFromNSPoint(point), transverseSectionVector) <= 8.0) {
+    if (N3VectorDistance(N3VectorMakeFromNSPoint(point), transverseSectionVector) <= 8.0) {
         return CPRCurvedPathControlTokenTransverseSpacing;
     }
     
     
     for (i = 0; i < [_nodes count]; i++) {
-        nodeVector = [[_nodes objectAtIndex:i] CPRVectorValue];
-        nodeVector = CPRVectorApplyTransform(nodeVector, CPRAffineTransform3DInvert(transform));
+        nodeVector = [[_nodes objectAtIndex:i] N3VectorValue];
+        nodeVector = N3VectorApplyTransform(nodeVector, N3AffineTransformInvert(transform));
         nodeVector.z = 0.0;
         
-        if (CPRVectorDistance(CPRVectorMakeFromNSPoint(point), nodeVector) <= 5.0) {
+        if (N3VectorDistance(N3VectorMakeFromNSPoint(point), nodeVector) <= 5.0) {
             return _controlTokenForElement(i);
         }
     }
     return CPRCurvedPathControlTokenNone;
 }
 
-- (CGFloat)relativePositionForPoint:(NSPoint)point transform:(CPRAffineTransform3D)transform
+- (CGFloat)relativePositionForPoint:(NSPoint)point transform:(N3AffineTransform)transform
 {
-    CPRLine clickRay;
-    clickRay = CPRLineApplyTransform(CPRLineMake(CPRVectorMakeFromNSPoint(point), CPRVectorMake(0, 0, 1)), transform);
+    N3Line clickRay;
+    clickRay = N3LineApplyTransform(N3LineMake(N3VectorMakeFromNSPoint(point), N3VectorMake(0, 0, 1)), transform);
     return [_bezierPath relalativePositionClosestToLine:clickRay];                        
 }
 
-- (CGFloat)relativePositionForPoint:(NSPoint)point transform:(CPRAffineTransform3D)transform distanceToPoint:(CGFloat *)distance // returns the distance the coordinate space of point (screen coordinates)
+- (CGFloat)relativePositionForPoint:(NSPoint)point transform:(N3AffineTransform)transform distanceToPoint:(CGFloat *)distance // returns the distance the coordinate space of point (screen coordinates)
 {
-    CPRLine clickRay;
-    CPRVector closestVector;
-    CPRVector closestLineVector;
+    N3Line clickRay;
+    N3Vector closestVector;
+    N3Vector closestLineVector;
     CGFloat relativePosition;
-    CPRAffineTransform3D inverseTransform;
+    N3AffineTransform inverseTransform;
     
-    clickRay = CPRLineApplyTransform(CPRLineMake(CPRVectorMakeFromNSPoint(point), CPRVectorMake(0, 0, 1)), transform);
-    inverseTransform = CPRAffineTransform3DInvert(transform);
+    clickRay = N3LineApplyTransform(N3LineMake(N3VectorMakeFromNSPoint(point), N3VectorMake(0, 0, 1)), transform);
+    inverseTransform = N3AffineTransformInvert(transform);
     
     relativePosition = [_bezierPath relalativePositionClosestToLine:clickRay closestVector:&closestVector];
-    closestLineVector = CPRLinePointClosestToVector(clickRay, closestVector);
+    closestLineVector = N3LinePointClosestToVector(clickRay, closestVector);
     
-    closestVector = CPRVectorApplyTransform(closestVector, inverseTransform);
+    closestVector = N3VectorApplyTransform(closestVector, inverseTransform);
     closestVector.z = 0.0;
-    closestLineVector = CPRVectorApplyTransform(closestLineVector, inverseTransform);
+    closestLineVector = N3VectorApplyTransform(closestLineVector, inverseTransform);
     closestLineVector.z = 0.0;
     
     if (distance) {
-        *distance = CPRVectorDistance(closestVector, closestLineVector);
+        *distance = N3VectorDistance(closestVector, closestLineVector);
     }
     
     return relativePosition;

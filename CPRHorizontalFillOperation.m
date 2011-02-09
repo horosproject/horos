@@ -14,7 +14,7 @@
 
 #import "CPRHorizontalFillOperation.h"
 #import "CPRVolumeData.h"
-#import "CPRGeometry.h"
+#import "N3Geometry.h"
 
 @interface CPRHorizontalFillOperation ()
 
@@ -34,17 +34,17 @@
 @synthesize normals = _normals;
 @synthesize linearInterpolating = _linearInterpolating;
 
-- (id)initWithVolumeData:(CPRVolumeData *)volumeData floatBytes:(float *)floatBytes width:(NSUInteger)width height:(NSUInteger)height vectors:(CPRVectorArray)vectors normals:(CPRVectorArray)normals
+- (id)initWithVolumeData:(CPRVolumeData *)volumeData floatBytes:(float *)floatBytes width:(NSUInteger)width height:(NSUInteger)height vectors:(N3VectorArray)vectors normals:(N3VectorArray)normals
 {
     if ( (self = [super init])) {
         _volumeData = [volumeData retain];
         _floatBytes = floatBytes;
         _width = width;
         _height = height;
-        _vectors = malloc(width * sizeof(CPRVector));
-        memcpy(_vectors, vectors, width * sizeof(CPRVector));
-        _normals = malloc(width * sizeof(CPRVector));
-        memcpy(_normals, normals, width * sizeof(CPRVector));
+        _vectors = malloc(width * sizeof(N3Vector));
+        memcpy(_vectors, vectors, width * sizeof(N3Vector));
+        _normals = malloc(width * sizeof(N3Vector));
+        memcpy(_normals, normals, width * sizeof(N3Vector));
         _linearInterpolating = YES;
     }
     return self;
@@ -95,20 +95,20 @@
 {
     NSUInteger x;
     NSUInteger y;
-    CPRAffineTransform3D vectorTransform;
-    CPRVectorArray volumeVectors;
-    CPRVectorArray volumeNormals;
+    N3AffineTransform vectorTransform;
+    N3VectorArray volumeVectors;
+    N3VectorArray volumeNormals;
     CPRVolumeDataInlineBuffer inlineBuffer;
     
-    volumeVectors = malloc(_width * sizeof(CPRVector));
-    memcpy(volumeVectors, _vectors, _width * sizeof(CPRVector));
-    CPRVectorApplyTransformToVectors(_volumeData.volumeTransform, volumeVectors, _width);
+    volumeVectors = malloc(_width * sizeof(N3Vector));
+    memcpy(volumeVectors, _vectors, _width * sizeof(N3Vector));
+    N3VectorApplyTransformToVectors(_volumeData.volumeTransform, volumeVectors, _width);
     
-    volumeNormals = malloc(_width * sizeof(CPRVector));
-    memcpy(volumeNormals, _normals, _width * sizeof(CPRVector));
+    volumeNormals = malloc(_width * sizeof(N3Vector));
+    memcpy(volumeNormals, _normals, _width * sizeof(N3Vector));
     vectorTransform = _volumeData.volumeTransform;
     vectorTransform.m41 = vectorTransform.m42 = vectorTransform.m43 = 0.0;
-    CPRVectorApplyTransformToVectors(vectorTransform, volumeNormals, _width);
+    N3VectorApplyTransformToVectors(vectorTransform, volumeNormals, _width);
     
     [_volumeData getInlineBuffer:&inlineBuffer];
     for (y = 0; y < _height; y++) {
@@ -120,7 +120,7 @@
             _floatBytes[y*_width + x] = CPRVolumeDataLinearInterpolatedFloatAtVolumeVector(&inlineBuffer, volumeVectors[x]);
         }
         
-        CPRVectorAddVectors(volumeVectors, volumeNormals, _width);
+        N3VectorAddVectors(volumeVectors, volumeNormals, _width);
     }
     
     free(volumeVectors);

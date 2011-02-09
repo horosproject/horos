@@ -13,13 +13,13 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import "CPRGeometry.h"
+#import "N3Geometry.h"
 #import "CPRProjectionOperation.h"
 
 // a class to encapsulate all the different parameters required to generate a CPR Image
 // still working on how to engineer this, it this version sticks, this will be broken up into two files
 
-@class CPRBezierPath;
+@class N3BezierPath;
 
 @interface CPRGeneratorRequest : NSObject  <NSCopying> {
     NSUInteger _pixelsWide;
@@ -49,8 +49,8 @@
 
 @interface CPRStraightenedGeneratorRequest : CPRGeneratorRequest
 {
-    CPRBezierPath *_bezierPath;
-    CPRVector _initialNormal;
+    N3BezierPath *_bezierPath;
+    N3Vector _initialNormal;
     
     CPRProjectionMode _projectionMode;
     BOOL _vertical;
@@ -61,8 +61,8 @@
     CGFloat _middlePosition;
 }
 
-@property (nonatomic, readwrite, retain) CPRBezierPath *bezierPath;
-@property (nonatomic, readwrite, assign) CPRVector initialNormal; // the down direction on the left/top of the output CPR, this vector must be normal to the initial tangent of the curve
+@property (nonatomic, readwrite, retain) N3BezierPath *bezierPath;
+@property (nonatomic, readwrite, assign) N3Vector initialNormal; // the down direction on the left/top of the output CPR, this vector must be normal to the initial tangent of the curve
 
 @property (nonatomic, readwrite, assign) CPRProjectionMode projectionMode;
 

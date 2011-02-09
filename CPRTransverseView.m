@@ -13,14 +13,14 @@
 =========================================================================*/
 
 
-#import "CPRGeometry.h"
+#import "N3Geometry.h"
 #import "CPRTransverseView.h"
 #import "CPRCurvedPath.h"
-#import "CPRBezierPath.h"
+#import "N3BezierPath.h"
 #import "CPRVolumeData.h"
 #import "CPRGeneratorRequest.h"
-#import "CPRBezierCore.h"
-#import "CPRBezierCoreAdditions.h"
+#import "N3BezierCore.h"
+#import "N3BezierCoreAdditions.h"
 #import "DCMPix.h"
 #import "CPRMPRDCMView.h"
 #import "CPRController.h"
@@ -34,7 +34,7 @@ extern int CLUTBARS, ANNOTATIONS;
 
 - (CGFloat)_relativeSegmentPosition;
 
-- (CPRBezierPath*)_requestBezierAndInitialNormal:(CPRVectorPointer)initialNormal;
+- (N3BezierPath*)_requestBezierAndInitialNormal:(N3VectorPointer)initialNormal;
 
 - (void)_setNeedsNewRequest;
 - (void)_sendNewRequestIfNeeded;
@@ -192,10 +192,10 @@ extern int CLUTBARS, ANNOTATIONS;
 
 - (void)subDrawRect:(NSRect)rect
 {
-    CPRVector lineStart;
-    CPRVector lineEnd;
-    CPRVector cursorVector;
-    CPRAffineTransform3D pixToSubDrawRectTransform;
+    N3Vector lineStart;
+    N3Vector lineEnd;
+    N3Vector cursorVector;
+    N3AffineTransform pixToSubDrawRectTransform;
     CGFloat pixelsPerMm;
     CGLContextObj cgl_ctx;
     
@@ -205,8 +205,8 @@ extern int CLUTBARS, ANNOTATIONS;
     pixelsPerMm = (CGFloat)curDCM.pwidth/_sectionWidth;
     
     glColor4d(0.0, 1.0, 0.0, 1.0);
-    lineStart = CPRVectorApplyTransform(CPRVectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
-    lineEnd = CPRVectorApplyTransform(CPRVectorMake((CGFloat)curDCM.pwidth/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+    lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
+    lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
     glLineWidth(1.0);
     glBegin(GL_LINE_STRIP);
     glVertex2f(lineStart.x, lineStart.y);
@@ -216,12 +216,12 @@ extern int CLUTBARS, ANNOTATIONS;
     if (_curvedPath.thickness > 2.0) {
         glLineWidth(1.0);
         glBegin(GL_LINES);
-        lineStart = CPRVectorApplyTransform(CPRVectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
-        lineEnd = CPRVectorApplyTransform(CPRVectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+        lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
+        lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
         glVertex2f(lineStart.x, lineStart.y);
         glVertex2f(lineEnd.x, lineEnd.y);
-        lineStart = CPRVectorApplyTransform(CPRVectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
-        lineEnd = CPRVectorApplyTransform(CPRVectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+        lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
+        lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
         glVertex2f(lineStart.x, lineStart.y);
         glVertex2f(lineEnd.x, lineEnd.y);
         glEnd();
@@ -268,7 +268,7 @@ extern int CLUTBARS, ANNOTATIONS;
 - (void)_sendNewRequest
 {
     CPRStraightenedGeneratorRequest *request;
-    CPRVector initialNormal;
+    N3Vector initialNormal;
     
     if ([_curvedPath.bezierPath elementCount] >= 2) {
         request = [[CPRStraightenedGeneratorRequest alloc] init];
@@ -313,23 +313,23 @@ extern int CLUTBARS, ANNOTATIONS;
     return 0;
 }
 
-- (CPRBezierPath*)_requestBezierAndInitialNormal:(CPRVectorPointer)initialNormal
+- (N3BezierPath*)_requestBezierAndInitialNormal:(N3VectorPointer)initialNormal
 {
-    CPRMutableBezierPath *bezierPath;
-    CPRVector vector;
-    CPRVector normal;
-    CPRVector tangent;
-    CPRVector cross;
+    N3MutableBezierPath *bezierPath;
+    N3Vector vector;
+    N3Vector normal;
+    N3Vector tangent;
+    N3Vector cross;
     
     vector = [_curvedPath.bezierPath vectorAtRelativePosition:[self _relativeSegmentPosition]];
     tangent = [_curvedPath.bezierPath tangentAtRelativePosition:[self _relativeSegmentPosition]];
     normal = [_curvedPath.bezierPath normalAtRelativePosition:[self _relativeSegmentPosition] initialNormal:_curvedPath.initialNormal];
     
-    cross = CPRVectorNormalize(CPRVectorCrossProduct(normal, tangent));
+    cross = N3VectorNormalize(N3VectorCrossProduct(normal, tangent));
     
-    bezierPath = [CPRMutableBezierPath bezierPath];
-    [bezierPath moveToVector:CPRVectorAdd(vector, CPRVectorScalarMultiply(cross, _sectionWidth / 2))]; 
-    [bezierPath lineToVector:CPRVectorAdd(vector, CPRVectorScalarMultiply(cross, -_sectionWidth / 2))]; 
+    bezierPath = [N3MutableBezierPath bezierPath];
+    [bezierPath moveToVector:N3VectorAdd(vector, N3VectorScalarMultiply(cross, _sectionWidth / 2))]; 
+    [bezierPath lineToVector:N3VectorAdd(vector, N3VectorScalarMultiply(cross, -_sectionWidth / 2))]; 
     
     if (initialNormal) {
         *initialNormal = normal;

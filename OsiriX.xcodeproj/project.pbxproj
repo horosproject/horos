@@ -82,6 +82,14 @@
 		183C865C08563F3A000E6A68 /* VRFlyThruAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 183C864808563F3A000E6A68 /* VRFlyThruAdapter.h */; };
 		183C865D08563F3A000E6A68 /* VRFlyThruAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C864908563F3A000E6A68 /* VRFlyThruAdapter.m */; };
 		32E422150C97301600E193CA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
+		4F8A1A851302C72300A022D9 /* N3BezierCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F8A1A7D1302C72300A022D9 /* N3BezierCore.h */; };
+		4F8A1A861302C72300A022D9 /* N3BezierCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A1A7E1302C72300A022D9 /* N3BezierCore.m */; };
+		4F8A1A871302C72300A022D9 /* N3BezierCoreAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F8A1A7F1302C72300A022D9 /* N3BezierCoreAdditions.h */; };
+		4F8A1A881302C72300A022D9 /* N3BezierCoreAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A1A801302C72300A022D9 /* N3BezierCoreAdditions.m */; };
+		4F8A1A891302C72300A022D9 /* N3BezierPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F8A1A811302C72300A022D9 /* N3BezierPath.h */; };
+		4F8A1A8A1302C72300A022D9 /* N3BezierPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A1A821302C72300A022D9 /* N3BezierPath.m */; };
+		4F8A1A8B1302C72300A022D9 /* N3Geometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F8A1A831302C72300A022D9 /* N3Geometry.h */; };
+		4F8A1A8C1302C72300A022D9 /* N3Geometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A1A841302C72300A022D9 /* N3Geometry.m */; };
 		590A3DCD12A92920004581C2 /* WebPortalDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 590A3DCB12A92920004581C2 /* WebPortalDatabase.h */; };
 		590A3DCE12A92920004581C2 /* WebPortalDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 590A3DCC12A92920004581C2 /* WebPortalDatabase.mm */; };
 		590BB22012A002FA009E9758 /* WebPortalStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = 590BB21E12A002FA009E9758 /* WebPortalStudy.h */; };
@@ -5047,12 +5055,6 @@
 		CE8D05CE0FD851F400165DDE /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CE8D062A0FD8731B00165DDE /* libDCM StaticLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */; };
 		CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
-		CE9054EF12F5B64300263AB6 /* CPRBezierCore.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054C912F5B64200263AB6 /* CPRBezierCore.h */; };
-		CE9054F012F5B64300263AB6 /* CPRBezierCore.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054CA12F5B64200263AB6 /* CPRBezierCore.m */; };
-		CE9054F112F5B64300263AB6 /* CPRBezierCoreAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054CB12F5B64200263AB6 /* CPRBezierCoreAdditions.h */; };
-		CE9054F212F5B64300263AB6 /* CPRBezierCoreAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054CC12F5B64200263AB6 /* CPRBezierCoreAdditions.m */; };
-		CE9054F312F5B64300263AB6 /* CPRBezierPath.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054CD12F5B64200263AB6 /* CPRBezierPath.h */; };
-		CE9054F412F5B64300263AB6 /* CPRBezierPath.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054CE12F5B64200263AB6 /* CPRBezierPath.m */; };
 		CE9054F512F5B64300263AB6 /* CPRClusterView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054CF12F5B64200263AB6 /* CPRClusterView.h */; };
 		CE9054F612F5B64300263AB6 /* CPRClusterView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054D012F5B64200263AB6 /* CPRClusterView.m */; };
 		CE9054F712F5B64300263AB6 /* CPRController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054D112F5B64200263AB6 /* CPRController.h */; };
@@ -5067,8 +5069,6 @@
 		CE90550012F5B64300263AB6 /* CPRGeneratorOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054DA12F5B64200263AB6 /* CPRGeneratorOperation.m */; };
 		CE90550112F5B64300263AB6 /* CPRGeneratorRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054DB12F5B64200263AB6 /* CPRGeneratorRequest.h */; };
 		CE90550212F5B64300263AB6 /* CPRGeneratorRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054DC12F5B64200263AB6 /* CPRGeneratorRequest.m */; };
-		CE90550312F5B64300263AB6 /* CPRGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054DD12F5B64200263AB6 /* CPRGeometry.h */; };
-		CE90550412F5B64300263AB6 /* CPRGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054DE12F5B64200263AB6 /* CPRGeometry.m */; };
 		CE90550512F5B64300263AB6 /* CPRHorizontalFillOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054DF12F5B64200263AB6 /* CPRHorizontalFillOperation.h */; };
 		CE90550612F5B64300263AB6 /* CPRHorizontalFillOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054E012F5B64200263AB6 /* CPRHorizontalFillOperation.m */; };
 		CE90550712F5B64300263AB6 /* CPRMPRDCMView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054E112F5B64200263AB6 /* CPRMPRDCMView.h */; };
@@ -8305,6 +8305,14 @@
 		4A16D0970965E15300F82EC4 /* Unit Testing (Cocoa)-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Unit Testing (Cocoa)-Info.plist"; path = "UnitTesting/Unit Testing (Cocoa)-Info.plist"; sourceTree = "<group>"; };
 		4A16D0A20965E21800F82EC4 /* UnitTestingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnitTestingBase.h; path = UnitTesting/UnitTestingBase.h; sourceTree = "<group>"; };
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
+		4F8A1A7D1302C72300A022D9 /* N3BezierCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N3BezierCore.h; path = nitrogen/Sources/N3BezierCore.h; sourceTree = "<group>"; };
+		4F8A1A7E1302C72300A022D9 /* N3BezierCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N3BezierCore.m; path = nitrogen/Sources/N3BezierCore.m; sourceTree = "<group>"; };
+		4F8A1A7F1302C72300A022D9 /* N3BezierCoreAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N3BezierCoreAdditions.h; path = nitrogen/Sources/N3BezierCoreAdditions.h; sourceTree = "<group>"; };
+		4F8A1A801302C72300A022D9 /* N3BezierCoreAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N3BezierCoreAdditions.m; path = nitrogen/Sources/N3BezierCoreAdditions.m; sourceTree = "<group>"; };
+		4F8A1A811302C72300A022D9 /* N3BezierPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N3BezierPath.h; path = nitrogen/Sources/N3BezierPath.h; sourceTree = "<group>"; };
+		4F8A1A821302C72300A022D9 /* N3BezierPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N3BezierPath.m; path = nitrogen/Sources/N3BezierPath.m; sourceTree = "<group>"; };
+		4F8A1A831302C72300A022D9 /* N3Geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N3Geometry.h; path = nitrogen/Sources/N3Geometry.h; sourceTree = "<group>"; };
+		4F8A1A841302C72300A022D9 /* N3Geometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N3Geometry.m; path = nitrogen/Sources/N3Geometry.m; sourceTree = "<group>"; };
 		590A3DCB12A92920004581C2 /* WebPortalDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalDatabase.h; sourceTree = "<group>"; };
 		590A3DCC12A92920004581C2 /* WebPortalDatabase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalDatabase.mm; sourceTree = "<group>"; };
 		590BB21E12A002FA009E9758 /* WebPortalStudy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalStudy.h; sourceTree = "<group>"; };
@@ -11926,12 +11934,6 @@
 		CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = DICOMPrint; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE8CDAF112B3C88D00268E4F /* DatabaseIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DatabaseIcon.tif; sourceTree = "<group>"; };
 		CE8D057D0FD8505000165DDE /* OsiriX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CE9054C912F5B64200263AB6 /* CPRBezierCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRBezierCore.h; sourceTree = "<group>"; };
-		CE9054CA12F5B64200263AB6 /* CPRBezierCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRBezierCore.m; sourceTree = "<group>"; };
-		CE9054CB12F5B64200263AB6 /* CPRBezierCoreAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRBezierCoreAdditions.h; sourceTree = "<group>"; };
-		CE9054CC12F5B64200263AB6 /* CPRBezierCoreAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRBezierCoreAdditions.m; sourceTree = "<group>"; };
-		CE9054CD12F5B64200263AB6 /* CPRBezierPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRBezierPath.h; sourceTree = "<group>"; };
-		CE9054CE12F5B64200263AB6 /* CPRBezierPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRBezierPath.m; sourceTree = "<group>"; };
 		CE9054CF12F5B64200263AB6 /* CPRClusterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRClusterView.h; sourceTree = "<group>"; };
 		CE9054D012F5B64200263AB6 /* CPRClusterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRClusterView.m; sourceTree = "<group>"; };
 		CE9054D112F5B64200263AB6 /* CPRController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRController.h; sourceTree = "<group>"; };
@@ -11946,8 +11948,6 @@
 		CE9054DA12F5B64200263AB6 /* CPRGeneratorOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRGeneratorOperation.m; sourceTree = "<group>"; };
 		CE9054DB12F5B64200263AB6 /* CPRGeneratorRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRGeneratorRequest.h; sourceTree = "<group>"; };
 		CE9054DC12F5B64200263AB6 /* CPRGeneratorRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRGeneratorRequest.m; sourceTree = "<group>"; };
-		CE9054DD12F5B64200263AB6 /* CPRGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRGeometry.h; sourceTree = "<group>"; };
-		CE9054DE12F5B64200263AB6 /* CPRGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRGeometry.m; sourceTree = "<group>"; };
 		CE9054DF12F5B64200263AB6 /* CPRHorizontalFillOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRHorizontalFillOperation.h; sourceTree = "<group>"; };
 		CE9054E012F5B64200263AB6 /* CPRHorizontalFillOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRHorizontalFillOperation.m; sourceTree = "<group>"; };
 		CE9054E112F5B64200263AB6 /* CPRMPRDCMView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRMPRDCMView.h; sourceTree = "<group>"; };
@@ -12673,6 +12673,21 @@
 			name = Dependencies;
 			sourceTree = "<group>";
 		};
+		4F8A1A791302C6E100A022D9 /* 3DGeometry */ = {
+			isa = PBXGroup;
+			children = (
+				4F8A1A7D1302C72300A022D9 /* N3BezierCore.h */,
+				4F8A1A7E1302C72300A022D9 /* N3BezierCore.m */,
+				4F8A1A7F1302C72300A022D9 /* N3BezierCoreAdditions.h */,
+				4F8A1A801302C72300A022D9 /* N3BezierCoreAdditions.m */,
+				4F8A1A811302C72300A022D9 /* N3BezierPath.h */,
+				4F8A1A821302C72300A022D9 /* N3BezierPath.m */,
+				4F8A1A831302C72300A022D9 /* N3Geometry.h */,
+				4F8A1A841302C72300A022D9 /* N3Geometry.m */,
+			);
+			name = 3DGeometry;
+			sourceTree = "<group>";
+		};
 		590A3DCF12A9293C004581C2 /* Web Portal */ = {
 			isa = PBXGroup;
 			children = (
@@ -13276,6 +13291,7 @@
 				59E5235F12BF5E3E0094E668 /* N2Task.mm */,
 				59E8352512F9ABAC006B930A /* N2ManagedDatabase.h */,
 				59E8352612F9ABAC006B930A /* N2ManagedDatabase.mm */,
+				4F8A1A791302C6E100A022D9 /* 3DGeometry */,
 				AB10FB1C1129338A009EB238 /* 3rd Party */,
 				AB10FAFD1129338A009EB238 /* Extras */,
 				AB10FAF81129338A009EB238 /* Stuff */,
@@ -17064,12 +17080,6 @@
 		CE90547412F5B5D700263AB6 /* CPR */ = {
 			isa = PBXGroup;
 			children = (
-				CE9054C912F5B64200263AB6 /* CPRBezierCore.h */,
-				CE9054CA12F5B64200263AB6 /* CPRBezierCore.m */,
-				CE9054CB12F5B64200263AB6 /* CPRBezierCoreAdditions.h */,
-				CE9054CC12F5B64200263AB6 /* CPRBezierCoreAdditions.m */,
-				CE9054CD12F5B64200263AB6 /* CPRBezierPath.h */,
-				CE9054CE12F5B64200263AB6 /* CPRBezierPath.m */,
 				CE9054CF12F5B64200263AB6 /* CPRClusterView.h */,
 				CE9054D012F5B64200263AB6 /* CPRClusterView.m */,
 				CE9054D112F5B64200263AB6 /* CPRController.h */,
@@ -17084,8 +17094,6 @@
 				CE9054DA12F5B64200263AB6 /* CPRGeneratorOperation.m */,
 				CE9054DB12F5B64200263AB6 /* CPRGeneratorRequest.h */,
 				CE9054DC12F5B64200263AB6 /* CPRGeneratorRequest.m */,
-				CE9054DD12F5B64200263AB6 /* CPRGeometry.h */,
-				CE9054DE12F5B64200263AB6 /* CPRGeometry.m */,
 				CE9054DF12F5B64200263AB6 /* CPRHorizontalFillOperation.h */,
 				CE9054E012F5B64200263AB6 /* CPRHorizontalFillOperation.m */,
 				CE9054E112F5B64200263AB6 /* CPRMPRDCMView.h */,
@@ -19692,9 +19700,6 @@
 				59E52B3712C109B80094E668 /* DicomDatabase.h in Headers */,
 				5969033D12DDE30800379E41 /* WebPortalConnection+Data.h in Headers */,
 				5969034512DDE5EA00379E41 /* WebPortalResponse.h in Headers */,
-				CE9054EF12F5B64300263AB6 /* CPRBezierCore.h in Headers */,
-				CE9054F112F5B64300263AB6 /* CPRBezierCoreAdditions.h in Headers */,
-				CE9054F312F5B64300263AB6 /* CPRBezierPath.h in Headers */,
 				CE9054F512F5B64300263AB6 /* CPRClusterView.h in Headers */,
 				CE9054F712F5B64300263AB6 /* CPRController.h in Headers */,
 				CE9054F912F5B64300263AB6 /* CPRCurvedPath.h in Headers */,
@@ -19702,7 +19707,6 @@
 				CE9054FD12F5B64300263AB6 /* CPRGenerator.h in Headers */,
 				CE9054FF12F5B64300263AB6 /* CPRGeneratorOperation.h in Headers */,
 				CE90550112F5B64300263AB6 /* CPRGeneratorRequest.h in Headers */,
-				CE90550312F5B64300263AB6 /* CPRGeometry.h in Headers */,
 				CE90550512F5B64300263AB6 /* CPRHorizontalFillOperation.h in Headers */,
 				CE90550712F5B64300263AB6 /* CPRMPRDCMView.h in Headers */,
 				CE90550912F5B64300263AB6 /* CPRProjectionOperation.h in Headers */,
@@ -19714,6 +19718,10 @@
 				84A9D49612F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */,
 				59E8352712F9ABAC006B930A /* N2ManagedDatabase.h in Headers */,
 				59E83A1312FC6556006B930A /* NSManagedObject+N2.h in Headers */,
+				4F8A1A851302C72300A022D9 /* N3BezierCore.h in Headers */,
+				4F8A1A871302C72300A022D9 /* N3BezierCoreAdditions.h in Headers */,
+				4F8A1A891302C72300A022D9 /* N3BezierPath.h in Headers */,
+				4F8A1A8B1302C72300A022D9 /* N3Geometry.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22096,6 +22104,7 @@
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -24354,9 +24363,6 @@
 				599115F012D7224A00924B5C /* browserController.m in Sources */,
 				5969033E12DDE30800379E41 /* WebPortalConnection+Data.mm in Sources */,
 				5969034612DDE5EA00379E41 /* WebPortalResponse.mm in Sources */,
-				CE9054F012F5B64300263AB6 /* CPRBezierCore.m in Sources */,
-				CE9054F212F5B64300263AB6 /* CPRBezierCoreAdditions.m in Sources */,
-				CE9054F412F5B64300263AB6 /* CPRBezierPath.m in Sources */,
 				CE9054F612F5B64300263AB6 /* CPRClusterView.m in Sources */,
 				CE9054F812F5B64300263AB6 /* CPRController.m in Sources */,
 				CE9054FA12F5B64300263AB6 /* CPRCurvedPath.m in Sources */,
@@ -24364,7 +24370,6 @@
 				CE9054FE12F5B64300263AB6 /* CPRGenerator.m in Sources */,
 				CE90550012F5B64300263AB6 /* CPRGeneratorOperation.m in Sources */,
 				CE90550212F5B64300263AB6 /* CPRGeneratorRequest.m in Sources */,
-				CE90550412F5B64300263AB6 /* CPRGeometry.m in Sources */,
 				CE90550612F5B64300263AB6 /* CPRHorizontalFillOperation.m in Sources */,
 				CE90550812F5B64300263AB6 /* CPRMPRDCMView.m in Sources */,
 				CE90550A12F5B64300263AB6 /* CPRProjectionOperation.m in Sources */,
@@ -24375,6 +24380,10 @@
 				CE90551412F5B64300263AB6 /* CPRVolumeData.m in Sources */,
 				59E8352812F9ABAC006B930A /* N2ManagedDatabase.mm in Sources */,
 				59E83A1412FC6556006B930A /* NSManagedObject+N2.mm in Sources */,
+				4F8A1A861302C72300A022D9 /* N3BezierCore.m in Sources */,
+				4F8A1A881302C72300A022D9 /* N3BezierCoreAdditions.m in Sources */,
+				4F8A1A8A1302C72300A022D9 /* N3BezierPath.m in Sources */,
+				4F8A1A8C1302C72300A022D9 /* N3Geometry.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
