@@ -25,6 +25,9 @@
 #import "N3BezierCoreAdditions.h"
 #import "CPRController.h"
 
+extern BOOL frameZoomed;
+extern int splitPosition[ 2];
+
 @interface _CPRViewPlaneRun : NSObject
 {
     NSRange _range;
@@ -686,8 +689,45 @@
                 break;
             }
         }
-        if (_clickedNode == NO) {
-            [super mouseDown:event];
+        if (_clickedNode == NO)
+		{
+			int clickCount = 1;
+			
+			@try
+			{
+				if( [event type] ==	NSLeftMouseDown || [event type] ==	NSRightMouseDown || [event type] ==	NSLeftMouseUp || [event type] == NSRightMouseUp)
+					clickCount = [event clickCount];
+			}
+			@catch (NSException * e)
+			{
+				clickCount = 1;
+			}
+			
+			if( clickCount == 2)
+			{
+				CPRController *windowController = [self windowController];
+				
+				if( frameZoomed == NO)
+				{
+					splitPosition[0] = [[windowController mprView1] frame].origin.x + [[windowController mprView1] frame].size.width;	// vert
+					splitPosition[1] = [[windowController mprView1] frame].origin.y + [[windowController mprView1] frame].size.height;	// hori12
+					splitPosition[2] = [[windowController mprView3] frame].origin.y + [[windowController mprView3] frame].size.height;	// horiz2
+					
+					frameZoomed = YES;
+					
+					[windowController.verticalSplit setPosition: [windowController.verticalSplit minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+					[windowController.horizontalSplit1 setPosition: [windowController.horizontalSplit1 minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+					[windowController.horizontalSplit2 setPosition: [windowController.horizontalSplit2 minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+				}
+				else
+				{
+					frameZoomed = NO;
+					[windowController.verticalSplit setPosition: splitPosition[ 0] ofDividerAtIndex: 0];
+					[windowController.horizontalSplit1 setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
+					[windowController.horizontalSplit2 setPosition: splitPosition[ 2] ofDividerAtIndex: 0];
+				}
+			}
+			else [super mouseDown:event];
         }
     }
 }

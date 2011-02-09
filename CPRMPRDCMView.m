@@ -52,8 +52,8 @@ static BOOL arePlanesParallel( float *Pn1, float *Pn2)
 
 #define VIEW_COLOR_LABEL_SIZE 25
 
-static int splitPosition[3];
-static BOOL frameZoomed = NO;
+	int splitPosition[3];
+	BOOL frameZoomed = NO;
 
 static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
@@ -665,6 +665,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 - (void) subDrawRect: (NSRect) r
 {
 	if( [stringID isEqualToString: @"export"])
+		return;
+	
+	if( r.size.height < 10 || r.size.width < 10)
 		return;
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -2106,6 +2109,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     
 	transform = N3AffineTransformConcat(N3AffineTransformInvert([self pixToDicomTransform]), [self pixToSubDrawRectTransform]);
 
+	if( N3AffineTransformIsAffine(transform) == NO)
+		return;
+	
 	bezierPath = curvedPath.bezierPath;
     flattenedBezierPath = [[bezierPath mutableCopy] autorelease];
 	//    [flattenedBezierPath subdivide:N3BezierDefaultSubdivideSegmentLength];

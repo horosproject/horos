@@ -44,8 +44,8 @@ BOOL arePlanesParallel( float *Pn1, float *Pn2)
 
 #define VIEW_COLOR_LABEL_SIZE 25
 
-static int splitPosition[ 2];
-static BOOL frameZoomed = NO;
+static	int splitPosition[ 2];
+static	BOOL frameZoomed = NO;
 
 @implementation MPRDCMView
 
