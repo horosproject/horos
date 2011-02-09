@@ -454,6 +454,9 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 		if (self.usesSSL && self.portNumber == 443) isDefaultPort = YES;
 		if (!isDefaultPort)
 			add = [add stringByAppendingFormat:@":%d", self.portNumber];
+	} else {
+		if (!self.usesSSL && [add hasSuffix:@":80"]) add = [add substringWithRange:NSMakeRange(0,add.length-3)];
+		if (self.usesSSL && [add hasSuffix:@":443"]) add = [add substringWithRange:NSMakeRange(0,add.length-4)];
 	}
 	
 	return add;
