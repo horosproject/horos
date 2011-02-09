@@ -19,7 +19,8 @@
 
 +(NSArray*)MakeArray:(id)obj;
 
--(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)imagesArray isiPhone:(BOOL)isiPhone;
+-(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)imagesArray;
+-(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)imagesArray minSize:(NSSize)minSize maxSize:(NSSize)maxSize;
 
 -(void)processLoginHtml;
 -(void)processIndexHtml;

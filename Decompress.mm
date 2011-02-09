@@ -647,10 +647,14 @@ int main(int argc, const char *argv[])
 		{
 			NSError *error = nil;
 			
-			NSString *inFile = [NSString stringWithUTF8String: argv[ fileListFirstItemIndex]];
+			NSString *inFile = [NSString stringWithUTF8String: argv[fileListFirstItemIndex++]];
 			NSString *outFile = path;
 			
-			QTMovie *aMovie = [QTMovie movieWithFile: inFile error:nil];
+			QTMovie *aMovie = [QTMovie movieWithFile: inFile error:&error];
+			
+			NSValue* v = [aMovie attributeForKey:QTMovieCurrentSizeAttribute];
+			NSLog(@"AOEUUSTH %@", v);
+			
 			
 			if (aMovie && error == nil)
 			{
@@ -661,9 +665,17 @@ int main(int argc, const char *argv[])
 				
 				[aMovie setAttribute:QTMovieApertureModeClean forKey:QTMovieApertureModeAttribute];
 				
+				long exportType = 'M4VP';
+				if (argc >= fileListFirstItemIndex) {
+					if (!strcmp(argv[fileListFirstItemIndex], "iPad"))
+						exportType = 'M4VH';
+					if (!strcmp(argv[fileListFirstItemIndex], "iPod"))
+						exportType = 'M4V ';
+				}
+				
 				NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 												   [NSNumber numberWithBool:YES], QTMovieExport,
-												   [NSNumber numberWithLong:'M4VP'], QTMovieExportType, nil];
+												   [NSNumber numberWithLong:exportType], QTMovieExportType, nil]; // 'M4VP'
 				
 				BOOL status = [aMovie writeToFile:outFile withAttributes:dictionary];
 				

@@ -7,10 +7,10 @@
 	<link rel="stylesheet" type="text/css" href="/style.css" />
 	<link rel="stylesheet" type="text/css" href="/style+iOS.css" />
 </head>
-<body onorientationchange="updateOrientation()">
-	%[IF:User%
-	<div id="userbox"><form method="POST" action="/"><div><span name="text">Logged in as <a href="/account">%X:User.name%</a></span><button type="submit" name="logout" value="logout">Logout</button></div></form></div>
-	%]IF:User%
+<body>
 	<div id="header">
+		%[IF:User%
+		<div id="userbox"><form method="POST" action="/"><div><span class="text">Logged in as <a href="/account">%X:User.name%</a></span><button type="submit" name="logout" value="logout">Logout</button></div></form></div>
+		%]IF:User%
 		%PageTitle%
 	</div>

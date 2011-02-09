@@ -54,8 +54,12 @@
 +(NSString*)FormatParams:(NSDictionary*)dict;
 +(NSDictionary*)ExtractParams:(NSString*)paramsString;
 
+-(BOOL)requestIsIPhone;
+-(BOOL)requestIsIPad;
+-(BOOL)requestIsIPod;
 -(BOOL)requestIsIOS;
 -(BOOL)requestIsMacOS;
+
 -(NSString*)portalAddress;
 -(NSString*)portalURL;
 -(NSString*)dicomCStorePortString;

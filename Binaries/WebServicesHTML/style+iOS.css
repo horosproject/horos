@@ -2,21 +2,61 @@
 @media only screen and (max-device-width: 1024px), only screen and (max-device-width: 480px), only screen and (-webkit-min-device-pixel-ratio: 2) {
 	
 }
+	
+/* all iPhone and iPod Touch */
+@media only screen and (max-device-width: 480px), only screen and (-webkit-min-device-pixel-ratio: 2) {
+	
+	body {
+		font-size: 10pt;
+	}
+
+	#subheader {
+		font-size: 10pt;
+	}
+	
+	#userbox .text {
+		display: none;
+	}
+	
+	.details {
+		display: none;
+	}
+	
+}
+
+@media only screen and (max-device-width: 480px) and (orientation:portrait), only screen and (-webkit-min-device-pixel-ratio: 2) and (orientation:portrait) {
+	
+	#content > div > div {
+		margin: 2px 0 2px 0;
+	}
+	
+	#content > div > .title {
+		margin: 20px 0 10px 0;
+	}
+		
+}
+
+
 
 /* iPad */
 @media only screen and (max-device-width: 1024px) {
+
 }
 
 /* iPhone and iPod Touch (320x480) */
 @media only screen and (max-device-width: 480px) {
+
 }
 
 /* iPhone 4 (Retina) */
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
+	
 }
 
 @media (orientation:landscape) {
+
 }
 
 @media (orientation:portrait) {
+
 }

@@ -42,6 +42,7 @@
 #import "CSMailMailClient.h"
 #import "NSObject+SBJSON.h"
 #import "NSManagedObject+N2.h"
+#import "N2Operators.h"
 
 
 #import "BrowserController.h" // TODO: remove when badness solved
@@ -269,65 +270,44 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 			NULL];
 }
 
--(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)imagesArray isiPhone:(BOOL)isiPhone {
+-(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)images {
+	[self getWidth:width height:height fromImagesArray:images minSize:NSMakeSize(256) maxSize:NSMakeSize(1024)]; // was 400/800
+}
+
+-(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)imagesArray minSize:(NSSize)minSize maxSize:(NSSize)maxSize {
 	*width = 0;
 	*height = 0;
 	
-	for ( NSNumber *im in [imagesArray valueForKey: @"width"])
-		if ([im intValue] > *width) *width = [im intValue];
+	for (NSNumber* im in [imagesArray valueForKey: @"width"])
+		if (im.intValue > *width) *width = im.intValue;
+	for (NSNumber* im in [imagesArray valueForKey: @"height"])
+		if (im.intValue > *height) *height = im.intValue;
 	
-	for ( NSNumber *im in [imagesArray valueForKey: @"height"])
-		if ([im intValue] > *height) *height = [im intValue];
-	
-	int maxWidth, maxHeight;
-	int minWidth, minHeight;
-	
-	const int minResolution = 400;
-	const int maxResolution = 800;
-
-	minWidth = minResolution;
-	minHeight = minResolution;
-	
-	if (isiPhone)
-	{
-		maxWidth = 300; // for the poster frame of the movie to fit in the iphone screen (vertically) // TODO: this made sense before Retina displays and iPads and NEEDS to be reconsidered
-		maxHeight = 310;
-	}
-	else
-	{
-		maxWidth = maxResolution;
-		maxHeight = maxResolution;
+	if (*width > maxSize.width) {
+		*height *= maxSize.width / *width;
+		*width = maxSize.width;
 	}
 	
-	if (*width > maxWidth)
-	{
-		*height = *height * (float)maxWidth / (float) *width;
-		*width = maxWidth;
+	if (*height > maxSize.height) {
+		*width *= maxSize.height / *height;
+		*height = maxSize.height;
 	}
 	
-	if (*height > maxHeight)
-	{
-		*width = *width * (float)maxHeight / (float) *height;
-		*height = maxHeight;
+	if (*width < minSize.width) {
+		*height *= minSize.width / *width;
+		*width = minSize.width;
 	}
 	
-	if (*width < minWidth)
-	{
-		*height = *height * (float)minWidth / (float) *width;
-		*width = minWidth;
-	}
-	
-	if (*height < minHeight)
-	{
-		*width = *width * (float)minHeight / (float) *height;
-		*height = minHeight;
+	if (*height < minSize.height) {
+		*width *= minSize.height / *height;
+		*height = minSize.height;
 	}
 }
 
 const NSString* const GenerateMovieOutFileParamKey = @"outFile";
 const NSString* const GenerateMovieFileNameParamKey = @"fileName";
 const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
-const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
+//const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 
 -(void)generateMovie:(NSMutableDictionary*)dict
 {
@@ -336,7 +316,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	NSString* outFile = [dict objectForKey:GenerateMovieOutFileParamKey];
 	NSString* fileName = [dict objectForKey:GenerateMovieFileNameParamKey];
 	NSArray* dicomImageArray = [dict objectForKey:GenerateMovieDicomImagesParamKey];
-	BOOL isiPhone = [[dict objectForKey:GenerateMovieIsIOSParamKey] boolValue];
+	//BOOL isiPhone = [[dict objectForKey:GenerateMovieIsIOSParamKey] boolValue];
 	
 	NSMutableArray *imagesArray = [NSMutableArray array];
 	
@@ -353,7 +333,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 		{
 			NSMutableArray *pixs = [NSMutableArray arrayWithCapacity: [dicomImageArray count]];
 			
-			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			[self.portal.dicomDatabase lock];
 			
 			for (DicomImage *im in dicomImageArray)
 			{
@@ -391,7 +371,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 				}
 			}
 			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			[self.portal.dicomDatabase unlock];
 			
 			CGFloat width, height;
 			
@@ -400,8 +380,9 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 				width = [[dict objectForKey: @"columns"] intValue];
 				height = [[dict objectForKey: @"rows"] intValue];
 			}
-			else 
-				[self getWidth: &width height:&height fromImagesArray: dicomImageArray isiPhone: isiPhone];
+			else {
+				[self getWidth: &width height:&height fromImagesArray: dicomImageArray /* isiPhone:.. */];
+			}
 			
 			for (DCMPix *dcmPix in pixs)
 			{
@@ -435,7 +416,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 			
 			NSTask *theTask = [[[NSTask alloc] init] autorelease];
 			
-			if (isiPhone)
+			if (self.requestIsIOS)
 			{
 				@try
 				{
@@ -454,7 +435,10 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 				
 				@try
 				{
-					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovieiPhone", fileName, nil]];
+					NSString* type = @"iPhone";
+					if (self.requestIsIPad) type = @"iPad";
+					if (self.requestIsIPod) type = @"iPod";
+					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovieiPhone", fileName, type, nil]];
 					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 					[theTask launch];
 					
@@ -501,7 +485,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 
 
 
--(NSData*)produceMovieForSeries:(DicomSeries*)series isiPhone:(BOOL)isiPhone fileURL:(NSString*)fileURL {
+-(NSData*)produceMovieForSeries:(DicomSeries*)series fileURL:(NSString*)fileURL {
 	NSString* path = @"/tmp/osirixwebservices";
 	[NSFileManager.defaultManager confirmDirectoryAtPath:path];
 	
@@ -515,7 +499,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	
 	NSString *outFile;
 	
-	if (isiPhone)
+	if (self.requestIsIOS)
 		outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
 	else
 		outFile = fileName;
@@ -542,13 +526,13 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 				NSLog( @"%@", [e description]);
 			}
 			
-			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
+			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: /*[NSNumber numberWithBool: isiPhone], @"isiPhone", */fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
 			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];	
+			[self.portal.dicomDatabase unlock];	
 			
 			[self generateMovie: dict];
 			
-			[[[BrowserController currentBrowser] managedObjectContext] lock];	
+			[self.portal.dicomDatabase lock];	
 
 			
 			data = [NSData dataWithContentsOfFile: outFile];
@@ -574,7 +558,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 //		[self supportsPOST:NULL withSize:0];
 	
 	NSMutableArray* albums = [NSMutableArray array];
-	for (NSArray* album in [[BrowserController currentBrowser] albumArray]) // TODO: badness here
+	for (NSArray* album in self.portal.dicomDatabase.albums) // TODO: badness here
 		if (![[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", nil)])
 			[albums addObject:album];
 	[response.tokens setObject:albums forKey:@"Albums"];
@@ -644,8 +628,6 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	
 	[self.portal.dicomDatabase.managedObjectContext lock];
 	@try {
-		[response.tokens setObject:self.requestIsMacOS?@"osirixzip":@"zip" forKey:@"zipextension"];
-		
 		NSString* browse = [parameters objectForKey:@"browse"];
 		NSString* search = [parameters objectForKey:@"search"];
 		NSString* album = [parameters objectForKey:@"album"];
@@ -731,6 +713,8 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	[response.tokens setObject:[NSString stringWithFormat:@"%@ - %@", series.study.name, series.study.studyName] forKey:@"BackLinkLabel"];
 	
 	response.templateString = [self.portal stringForPath:@"series.html"];
+	
+	NSLog(@"Series data will be: %@", [[[NSString alloc] initWithData:response.data encoding:NSUTF8StringEncoding] autorelease]);
 }
 
 
@@ -1297,7 +1281,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 					else
 						outFile = fileName;
 					
-					NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: self.requestIsIOS], GenerateMovieIsIOSParamKey, /*fileURL, @"fileURL",*/ fileName, GenerateMovieFileNameParamKey, outFile, GenerateMovieOutFileParamKey, parameters, @"parameters", dicomImageArray, GenerateMovieDicomImagesParamKey, [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: columns], @"columns", nil];
+					NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: /*[NSNumber numberWithBool: self.requestIsIOS], GenerateMovieIsIOSParamKey,*/ /*fileURL, @"fileURL",*/ fileName, GenerateMovieFileNameParamKey, outFile, GenerateMovieOutFileParamKey, parameters, @"parameters", dicomImageArray, GenerateMovieDicomImagesParamKey, [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: columns], @"columns", nil];
 					
 					[self.portal.dicomDatabase.managedObjectContext unlock];
 					[self generateMovie:dict];
@@ -1755,40 +1739,10 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	
 	NSImage* image = [dcmPix image];
 	
-	float width = image.size.width;
-	float height = image.size.height;
-	
-/*	int maxWidth = maxResolution, maxHeight = maxResolution;
-	int minWidth = minResolution, minHeight = minResolution;
-	
-	BOOL resize = NO;
-	
-	if (width>maxWidth) {
-		height =  height * maxWidth / width;
-		width = maxWidth;
-		resize = YES;
-	}
-	
-	if (height>maxHeight) {
-		width = width * maxHeight / height;
-		height = maxHeight;
-		resize = YES;
-	}
-	
-	if (width < minWidth) {
-		height = height * (float)minWidth / width;
-		width = minWidth;
-		resize = YES;
-	}
-	
-	if (height < minHeight) {
-		width = width * (float)minHeight / height;
-		height = minHeight;
-		resize = YES;
-	}
-	
-	if (resize)
-		image = [image imageByScalingProportionallyToSize:NSMakeSize(width, height)];*/
+	NSSize size = image.size;
+	[self getWidth:&size.width height:&size.height fromImagesArray:[NSArray arrayWithObject:dicomImage]];
+	if (size != image.size)
+		image = [image imageByScalingProportionallyToSize:size];
 	
 	if ([parameters objectForKey:@"previewForMovie"]) {
 		[image lockFocus];
@@ -1817,7 +1771,7 @@ const NSString* const GenerateMovieIsIOSParamKey = @"isiPhone";
 	if (!series)
 		return;
 	
-	response.data = [self produceMovieForSeries:series isiPhone:self.requestIsIOS fileURL:requestedPath];
+	response.data = [self produceMovieForSeries:series fileURL:requestedPath];
 	
 	//if (data == nil || [data length] == 0)
 	//	NSLog( @"****** movie data == nil");

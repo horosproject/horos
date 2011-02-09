@@ -25,6 +25,7 @@
 #import "BrowserController.h"
 #import "DCMAbstractSyntaxUID.h"
 #import "NSManagedObject+N2.h"
+#import "N2Operators.h"
 
 
 @implementation WebPortalResponse
@@ -476,7 +477,7 @@
 	if ([key isEqual:@"isIOS"])
 		return [NSNumber numberWithBool:wpc.requestIsIOS];
 	if ([key isEqual:@"isMacOS"])
-		return [NSNumber numberWithBool:wpc.requestIsIOS];
+		return [NSNumber numberWithBool:wpc.requestIsMacOS];
 	if ([key isEqual:@"proposeWeasis"])
 		return [NSNumber numberWithBool: wpc.portal.weasisEnabled && !wpc.requestIsIOS ];
 	if ([key isEqual:@"proposeFlash"])
@@ -741,9 +742,19 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 	if ([key isEqual:@"width"] || [key isEqual:@"height"]) {
 		if (size.height == -1) {
 			NSArray* images = [series.images allObjects];
-			[wpc getWidth:&size.width height:&size.height fromImagesArray:images isiPhone:wpc.requestIsIOS];
-			if (images.count > 1)
-				size.height += 15; // controller height
+			
+			if (images.count > 1) {
+				if (wpc.requestIsIPhone)
+					[wpc getWidth:&size.width height:&size.height fromImagesArray:images minSize:NSMakeSize(256) maxSize:NSMakeSize(290)];
+				else {
+					[wpc getWidth:&size.width height:&size.height fromImagesArray:images];
+					if (!wpc.requestIsIOS)
+						size.height += 15; // controller height (quicktime, flash)
+				}
+			} else {
+				[wpc getWidth:&size.width height:&size.height fromImagesArray:images];
+			}
+
 		}
 		if ([key isEqual:@"width"])
 			return [NSNumber numberWithInt:size.width];

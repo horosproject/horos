@@ -18,7 +18,9 @@ body > * {
 
 #header {
 	padding-top: 15px;
+	padding-bottom: 3px;
 	margin-bottom: 1px;
+	line-height: 90%;
 	font-size: 20px;
 	font-weight: bold;
 	border-bottom: thin solid #555555;
@@ -32,6 +34,8 @@ body > * {
 #subheader {
 	margin: 0px 0 0 0;
 	padding: 0 0 0 2px;
+	line-height: 85%;
+	font-size: 11pt;
 }
 
 #content {
@@ -112,6 +116,10 @@ table {
 	width: 100%;
 }
 
+.maxwide {
+	max-width: 100%;
+}
+
 .gray {
 	color: #555555;
 }
@@ -122,6 +130,7 @@ table {
 
 .form > tbody > tr > td[colspan=2] {
 	text-align: left;
+	white-space: normal;
 	padding-right: 0;
 }
 
@@ -129,6 +138,7 @@ table {
 	text-align: right;
 	padding-right: 3px;
 	color: #555555;
+	white-space: nowrap;
 }
 
 form {
@@ -206,7 +216,7 @@ table.fat td:last-child {
 
 a.back:before {
 	content: url(images/chevron_left.png);
-	vertical-align: -30%;
+	vertical-align: -40%;
 	margin-right: 3px;
 	padding: 0;
 }
@@ -262,7 +272,8 @@ a.back:before {
 #userbox {
 	margin: 0;
 	padding: 0;
-	position: absolute;
+	/*position: absolute;*/
+	float: right;
 	right: 10px;
 	top: 8px;
 	font-family: "Lucida Grande", Helvetica;
@@ -273,7 +284,7 @@ a.back:before {
 	display: inline;
 }
 
-#userbox span[name=text] {
+#userbox .text {
 	margin: 0 7px 0 0;
 	padding-right: 7px;
 	border-right: 1px solid #dddddd;
@@ -334,300 +345,3 @@ a.back:before {
 	height: 36px;
 	padding: 3px 0 0 0
 }
-
-/* Albums 
-
-/* File Upload */
-
-
-/* Current user infos *//*
-#userAccountLabel
-{
-	float:right;
-	font-size:10pt;
-	padding:5px;
-	background-color:#eeEEee;
-	border:thin dotted #ddDDdd;
-}
-
-#userAccountLabel:hover
-{
-	background-color:#fdfed6;
-/*	border:thin solid #fad51b; *
-}
-
-#CurrentlyLoggedLabel
-{
-	color:#666666;
-}
-
-#UserNameLabel
-{
-	text-align:center;
-	margin:5px;
-}
-
-#UserEmailLabel
-{
-	color:#666666;
-	text-align:right;
-	font-style: italic;
-}
-
-#UserPhoneLabel
-{
-	display:block;
-	color:#666666;
-	text-align:right;
-	font-style: italic;
-}*/
-
-/* Study List 
-
-.studyList
-{
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 30px;
-	width:80%;	
-	border: 1px solid #999999;
-	border-collapse: collapse;
-}
-
-.studyListItem0
-{
-	padding: 10px;
-	line-height:12pt;
-	margin-bottom: 0px;
-	padding-left: 10px;
-	background-color: #fefefe;
-	vertical-align:top;
-}
-
-.studyListItem0 td
-{
-	padding:10px;	
-}
-
-.studyListItem0:hover
-{
-	background-color: #fdfed6;
-}
-
-.studyListItem1
-{
-	padding: 10px;
-	line-height:12pt;
-	margin-bottom: 1px;
-	background-color: #ffFFff;
-	vertical-align:top;
-}
-
-.studyListItem1 td
-{
-	padding:10px;	
-}
-
-.studyListItem1:hover
-{
-	background-color: #fdfed6;
-}
-
-a.studyListItem:hover
-{
-	text-decoration:none;
-}
-
-.StudyListItemName
-{
-	color: black;
-}
-
-.StudyListItemDate
-{
-	display:block;
-	color: #666666;
-	font-size:10pt;
-}
-
-.StudyListItemState
-{
-	color: #666666;
-	font-size: 10pt;
-	font-style: italic;
-}
-
-div.StudyListItemDetails
-{
-	margin-left:20px;
-	margin-right:10px;
-}
-
-.StudyListItemDetailItem
-{
-	display:inline;
-	color: #666666;
-	font-size:10pt;
-}
-
-.StudyListItemComment
-{
-	color: #666666;
-	font-size: 10pt;
-	font-style: italic;
-}
-
-.StudyListItemLabel
-{
-	font-size:10pt;
-}
-
-/* Series List 
-
-.StudyInformation
-{
-	margin-left:10%;
-	width:80%;
-	padding:1px;
-	font-size:11pt;
-}
-
-.StudyInformation td
-{
-}
-
-.StudyInformationLabel
-{
-	vertical-align:top;
-	color: #666666;
-	padding-right: 10px;
-	width:100px;
-}
-
-
-.thumbnail
-{
-	vertical-align: middle;
-	width:50px;
-	border:0px;
-}
-
-.SeriesName
-{
-	margin-left:10px;
-}
-
-#imageList
-{
-	width: 100%;
-	border-collapse: collapse;
-}
-
-.image0
-{
-	padding: 10px;
-	line-height:12pt;
-	margin-bottom: 1px;
-	background-color: #eeEEee;
-	padding:5px;
-}
-
-.image0:hover
-{
-	background-color: #fdfed6;
-}
-
-.image0 td
-{
-	padding:5px;
-}
-
-.image1
-{
-	padding: 10px;
-	line-height:12pt;
-	margin-bottom: 1px;
-	background-color: #ffFFff;
-	padding:5px;
-}
-
-.image1:hover
-{
-	background-color: #fdfed6;
-}
-
-.image1 td
-{
-	padding:5px;
-}
-
-.tdThumbnail
-{
-	width:50px;
-}
-
-.tdCheckbox
-{
-	width:20px;
-}
-
-#CheckAll
-{
-	padding-top:20px;
-	font-size:10pt;
-}
-
-.SeriesImageNumber
-{
-	display:block;
-	color: #666666;
-	font-size:10pt;
-	margin-left:10px;
-}
-
-
-
-.tdSeriesImageNumber
-{
-	display:block;
-}
-
-.small
-{
-	font-size:10pt;
-}
-
-a.series:hover
-{
-	text-decoration:none;
-}
-
-a.report
-{
-	background:url(images/mail-attachment24.png) no-repeat left center;
-	padding-left:24px;
-	padding-top:2px;
-}
-
-/* Study Sharing 
-#userDestination
-{
-	margin-top:10px;
-	margin-bottom:10px;
-}
-
-#shareStudy
-{
-	margin-top:10px;
-	margin-bottom:10px;
-}
-
-#shareStudyMessage
-{
-	width: 600px;
-	height: 120px;
-	margin-top:10px;
-	margin-bottom:10px;
-}
-
-*/

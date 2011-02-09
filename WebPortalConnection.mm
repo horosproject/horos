@@ -97,14 +97,29 @@ static NSString* NotNil(NSString *s) {
 @synthesize user;
 @synthesize parameters, GETParams;
 
+-(BOOL)requestIsIPhone {
+	NSString* userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
+	return [userAgent contains:@"iPhone"];
+}
+
+-(BOOL)requestIsIPad {
+	NSString* userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
+	return [userAgent contains:@"iPad"];	
+}
+
+-(BOOL)requestIsIPod {
+	NSString* userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
+	return [userAgent contains:@"iPod"];	
+}
+
 -(BOOL)requestIsIOS {
 	NSString* userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
-	return [userAgent contains:@"iPhone"] || [userAgent contains:@"iPad"];	
+	return [userAgent contains:@"like Mac OS X"];	
 }
 
 -(BOOL)requestIsMacOS {
 	NSString* userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
-	return [userAgent contains:@"Mac OS"];	
+	return [userAgent contains:@"Mac OS X"];	
 }
 
 -(id)initWithAsyncSocket:(AsyncSocket*)newSocket forServer:(HTTPServer*)myServer {
@@ -912,6 +927,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 -(void)replyToHTTPRequest {
 	self.response = [[[WebPortalResponse alloc] initWithWebPortalConnection:self] autorelease];
 	
+//	NSDictionary* headers = [(id)CFHTTPMessageCopyAllHeaderFields(request) autorelease];
+//	NSLog(@"HEADERS: %@", headers);
+	
 	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
 
 //	NSLog(@"--- Cookies: %@", [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease]);
@@ -942,6 +960,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		self.session = [self.portal newSession];
 	[response setSessionId:session.sid];
 	
+	if ([session objectForKey:SessionUsernameKey])
+		self.user = [self.portal.database userWithName:[session objectForKey:SessionUsernameKey]];
+	
 	if ([method isEqualToString:@"POST"] && multipartData.count == 1) // POST auth ?
 	{
 		NSData* data = multipartData.lastObject;
@@ -965,7 +986,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		
 		if ([params objectForKey:@"logout"]) {
 			[session setObject:NULL forKey:SessionUsernameKey];
-			[user release]; user = NULL;
+			self.user = NULL;
 		}
 	}
 	
@@ -974,9 +995,12 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	if (user) [response.tokens setObject:[WebPortalProxy createWithObject:user transformer:[WebPortalUserTransformer create]] forKey:@"User"];	
 	[response.tokens setObject:session forKey:@"Session"];
 	
+	NSLog(@"User: %X (Cookies: %@)", user, cookies);
+	
 	[super replyToHTTPRequest];
 	
 	self.response = NULL;
+	self.user = NULL;
 	self.session = NULL;
 }
 

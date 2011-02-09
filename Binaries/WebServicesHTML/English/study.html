@@ -98,7 +98,7 @@ function onSubmitForm(form) {
 				%[IF:Study.reportURL&&!Info.isIOS%
 				<tr>
 					<td>Report:</td>
-					<td><a href="report.%U:Study.reportExtension%?xid=%U:Study.XID%" class="report">Download Report</a></td>
+					<td><a href="report.%U:Study.reportExtension%?xid=%Study.XID%" class="report">Download Report</a></td>
 				</tr>
 				%]IF:Study.reportURL&&!Info.isIOS%
 				%]IF:Study.reportIsLink%
@@ -112,25 +112,25 @@ function onSubmitForm(form) {
 					<tr class="li%X:Series_Index2%">				
 						%[IF:Info.proposeDicomSend||Info.proposeWeasis%
 						<td class="narrow fat">
-							<input type="checkbox" class="checkbox" name="selected" value="%X:Series.XID%" onchange="checkboxChanged(this.form)" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
+							<input type="checkbox" class="checkbox" name="selected" value="%Series.XID%" onchange="checkboxChanged(this.form)" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
 						</td>
 						%]IF:Info.proposeDicomSend||Info.proposeWeasis%
 						<td class="narrow middle center">
-							<a class="series" href="series%Series.seriesExtension%?xid=%U:Series.XID%&%Info.getParameters(xid=)%">
-								<img src="/thumbnail?xid=%U:Series.XID%" />
+							<a class="series" href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%">
+								<img src="/thumbnail?xid=%Series.XID%" />
 							</a>
 						</td>
 						<td class="fat">
-							<a class="series" href="series%Series.seriesExtension%?xid=%U:Series.XID%&%Info.getParameters(xid=)%">
+							<a class="series" href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%">
 								<span class="bigger">%X:Series.name%</span>
 								<span class="gray">
 									%[IF:Series.stateText%
 										%X:Series.stateText%,
 									%]IF:Series.stateText%
 									%[IF:Series.noFiles<2%
-										1 image
+										1 image
 									%ELSE:Series.noFiles<2%
-										%Series.noFiles% images
+										%Series.noFiles% images
 									%]IF:Series.noFiles<2%
 								</span>
 								%[IF:Series.comment%
@@ -142,13 +142,13 @@ function onSubmitForm(form) {
 		
 						<td class="narrow middle">
 							%[IF:Info.proposeZipDownload%
-							<a href="%U:Study.name% - %U:Series.name%.%zipextension%?xid=%U:Series.XID%"><img src="images/download.png"/></a>
+							<a href="%U:Study.name% - %U:Series.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?xid=%Series.XID%"><img src="images/download.png"/></a>
 							%]IF:Info.proposeZipDownload%
 						</td>
 	
 						%[IF:Info.proposeWeasis%
 						<td class="narrow middle">
-								<a href="/weasis.jnlp?xid=%U:Series.XID%"><img src="images/weasis.png"/></a>
+								<a href="/weasis.jnlp?xid=%Series.XID%"><img src="images/weasis.png"/></a>
 						</td>
 						%]IF:Info.proposeWeasis%
 					</tr>
@@ -188,7 +188,7 @@ function onSubmitForm(form) {
 					<td>
 						<select name="shareStudyDestination">
 							%[FOREACH:ShareDestinations:Dest%
-							<option value="%X:Dest.XID%">%X:Dest.name%</option>
+							<option value="%Dest.XID%">%X:Dest.name%</option>
 							%]FOREACH:ShareDestinations:Dest%
 						</select>
 					</td>
