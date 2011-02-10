@@ -43,6 +43,8 @@ typedef NSInteger CPRTransverseViewSection;
     CPRStraightenedGeneratorRequest *_lastRequest;
     BOOL _needsNewRequest;
 	
+	BOOL displayCrossLines;
+	
 	CGFloat _renderingScale;
 	
 	float previousScale;
@@ -54,5 +56,5 @@ typedef NSInteger CPRTransverseViewSection;
 @property (nonatomic, readwrite, assign) CGFloat sectionWidth; // the width to be displayed in mm
 @property (nonatomic, readwrite, retain) CPRVolumeData *volumeData;
 @property (nonatomic, readwrite, assign) CGFloat renderingScale;
-
+@property (nonatomic, readwrite, assign) BOOL displayCrossLines;
 @end

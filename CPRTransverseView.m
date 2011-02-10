@@ -53,12 +53,19 @@ extern int CLUTBARS, ANNOTATIONS;
 @synthesize volumeData = _volumeData;
 @synthesize lastRequest = _lastRequest;
 @synthesize generatedVolumeData = _generatedVolumeData;
+@synthesize displayCrossLines;
 
+- (void) setDisplayCrossLines: (BOOL) b
+{
+	displayCrossLines = b;
+	[[self windowController] updateToolbarItems];
+}
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
 		_renderingScale = 1;
+		displayCrossLines = YES;
     }
 	
     return self;
@@ -259,7 +266,7 @@ extern int CLUTBARS, ANNOTATIONS;
 	long clutBars = CLUTBARS, annotations = ANNOTATIONS;
 	
 	CLUTBARS = barHide;
-	ANNOTATIONS = annotNone;
+	ANNOTATIONS = annotGraphics;
 	
 	[super drawRect: aRect withContext: ctx];
 	
@@ -276,33 +283,37 @@ extern int CLUTBARS, ANNOTATIONS;
     CGFloat pixelsPerMm;
     CGLContextObj cgl_ctx;
     
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    
-    
-    pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
-    pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
-    
-    glColor4d(0.0, 1.0, 0.0, 1.0);
-    lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
-    lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
-    glLineWidth(1.0);
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(lineStart.x, lineStart.y);
-    glVertex2f(lineEnd.x, lineEnd.y);
-    glEnd();
-    
-    if (_curvedPath.thickness > 2.0) {
-        glLineWidth(1.0);
-        glBegin(GL_LINES);
-        lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
-        lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
-        glVertex2f(lineStart.x, lineStart.y);
-        glVertex2f(lineEnd.x, lineEnd.y);
-        lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
-        lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
-        glVertex2f(lineStart.x, lineStart.y);
-        glVertex2f(lineEnd.x, lineEnd.y);
-        glEnd();
-    }
+	if( displayCrossLines)
+	{
+		cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    
+		
+		pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
+		pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
+		
+		glColor4d(0.0, 1.0, 0.0, 1.0);
+		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
+		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+		glLineWidth(1.0);
+		glBegin(GL_LINE_STRIP);
+		glVertex2f(lineStart.x, lineStart.y);
+		glVertex2f(lineEnd.x, lineEnd.y);
+		glEnd();
+		
+		if (_curvedPath.thickness > 2.0)
+		{
+			glLineWidth(1.0);
+			glBegin(GL_LINES);
+			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
+			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+			glVertex2f(lineStart.x, lineStart.y);
+			glVertex2f(lineEnd.x, lineEnd.y);
+			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
+			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+			glVertex2f(lineStart.x, lineStart.y);
+			glVertex2f(lineEnd.x, lineEnd.y);
+			glEnd();
+		}
+	}
 }
 
 

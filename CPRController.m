@@ -591,10 +591,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	[middleTransverseView setOrigin: [sender origin]];
 	[bottomTransverseView setOrigin: [sender origin]];
 	
-//	topTransverseView.renderingScale = sender.renderingScale;
-//	middleTransverseView.renderingScale = sender.renderingScale;
-//	bottomTransverseView.renderingScale = sender.renderingScale;
-	
 	[topTransverseView setScaleValue: [sender scaleValue]];
 	[middleTransverseView setScaleValue: [sender scaleValue]];
 	[bottomTransverseView setScaleValue: [sender scaleValue]];
@@ -968,7 +964,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			[cell setTag: roitype];
 			[cell setImage: im];
 			
-			[toolsMatrix selectCellAtRow:0 column:6];
+			[toolsMatrix selectCellAtRow:0 column:7];
 		}
 	}
 }
@@ -3038,12 +3034,18 @@ static float deg2rad = 3.14159265358979/180.0;
 		mprView2.displayCrossLines = !mprView2.displayCrossLines;
 		mprView3.displayCrossLines = !mprView3.displayCrossLines;
 		cprView.displayCrossLines = !cprView.displayCrossLines;
+		topTransverseView.displayCrossLines = !topTransverseView.displayCrossLines;
+		middleTransverseView.displayCrossLines = !middleTransverseView.displayCrossLines;
+		bottomTransverseView.displayCrossLines = !bottomTransverseView.displayCrossLines;
 	}
 	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
 	[cprView setNeedsDisplay: YES];
+	[topTransverseView setNeedsDisplay: YES];
+	[middleTransverseView setNeedsDisplay: YES];
+	[bottomTransverseView setNeedsDisplay: YES];
 	
 	[self updateToolbarItems];
 }
