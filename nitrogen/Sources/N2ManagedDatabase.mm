@@ -27,6 +27,8 @@
 }
 
 -(NSMutableDictionary*)persistentStoreCoordinatorsDictionary {
+	NSLog( @"This is how bizarre???");
+	exit(0);
 	return NULL;
 }
 
