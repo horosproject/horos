@@ -37,13 +37,6 @@
     return managedObjectModel;
 }
 
--(NSMutableDictionary*)persistentStoreCoordinatorsDictionary {
-	static NSMutableDictionary* dict = NULL;
-	if (!dict)
-		dict = [[NSMutableDictionary alloc] initWithCapacity:4];
-	return dict;
-}
-
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
 	NSLog(@"******* DO NOT CALL THIS FUNCTION - NOT FINISHED / BUGGED : %s", __PRETTY_FUNCTION__); // TODO: once BrowserController / DicomDatabase doubles are solved, REMOVE THIS METHOD as it is defined in N2ManagedDatabase
 	[NSException raise:NSGenericException format:@"DicomDatabase NOT READY for complete usage (contextAtPath:)"];
