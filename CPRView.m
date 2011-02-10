@@ -848,21 +848,27 @@ extern int splitPosition[ 2];
     lastDate = [[NSDate date] retain];
     
     
-    float wl;
-    float ww;
+    float wl, ww;
     NSUInteger i;
     NSMutableArray *pixArray;
     DCMPix *newPix;
-    
+	
     [self _updateGeneratedHeight];
         
     [self getWLWW:&wl :&ww];
-    [[self.curvedVolumeData retain] autorelease]; // make sure this is around long enough so that it doesn't disapear under the old DCMPix
+	
+	NSPoint previousOrigin = [self origin];
+	float previousScale = [self scaleValue];
+	float previousRotation = [self rotation];
+	int previousHeight = [curDCM pheight], previousWidth = [curDCM pwidth];
+	
+	[[self.curvedVolumeData retain] autorelease]; // make sure this is around long enough so that it doesn't disapear under the old DCMPix
     self.curvedVolumeData = volume;
     
     pixArray = [[NSMutableArray alloc] init];
     
-    for (i = 0; i < self.curvedVolumeData.pixelsDeep; i++) {
+    for (i = 0; i < self.curvedVolumeData.pixelsDeep; i++)
+	{
         newPix = [[DCMPix alloc] initWithData:(float *)[self.curvedVolumeData floatBytes] + (i*self.curvedVolumeData.pixelsWide*self.curvedVolumeData.pixelsHigh) :32 
                                              :self.curvedVolumeData.pixelsWide :self.curvedVolumeData.pixelsHigh :self.curvedVolumeData.pixelSpacingX :self.curvedVolumeData.pixelSpacingY
                                              :0.0 :0.0 :0.0 :NO];
@@ -875,11 +881,11 @@ extern int splitPosition[ 2];
 		[pixArray addObject:newPix];
         [newPix release];
     }
-
+	
     for( i = 0; i < [pixArray count]; i++)
     {
         [[pixArray objectAtIndex: i] setArrayPix:pixArray :i];
-    }
+	}
     
     [self setPixels:pixArray files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
     
@@ -887,6 +893,14 @@ extern int splitPosition[ 2];
     [self setFusion:[[self class] _fusionModeForCPRViewClippingRangeMode:_clippingRangeMode] :self.curvedVolumeData.pixelsDeep];
     
     [pixArray release];
+	
+	if( previousWidth == [curDCM pwidth] && previousHeight == [curDCM pheight])
+	{
+		[self setOrigin:previousOrigin];
+		[self setScaleValue: previousScale];
+		[self setRotation: previousRotation];
+	}
+	
 	[self _clearAllPlanes];
     [self setNeedsDisplay:YES];
 }

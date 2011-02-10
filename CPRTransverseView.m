@@ -45,6 +45,7 @@ extern int CLUTBARS, ANNOTATIONS;
 
 @implementation CPRTransverseView
 
+@synthesize renderingScale = _renderingScale;
 @synthesize delegate = _delegate;
 @synthesize curvedPath = _curvedPath;
 @synthesize sectionType = _sectionType;
@@ -57,7 +58,9 @@ extern int CLUTBARS, ANNOTATIONS;
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+		_renderingScale = 1;
     }
+	
     return self;
 }
 
@@ -80,8 +83,52 @@ extern int CLUTBARS, ANNOTATIONS;
 
 - (void)mouseDraggedZoom:(NSEvent *)event
 {
+	BOOL copyMouseClickZoomCentered = [[NSUserDefaults standardUserDefaults] boolForKey: @"MouseClickZoomCentered"];
+	
+	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"MouseClickZoomCentered"];
+	
 	[super mouseDraggedZoom: event];
+	
+	[[NSUserDefaults standardUserDefaults] setBool: copyMouseClickZoomCentered forKey: @"MouseClickZoomCentered"];
+	
 	[[self windowController] propagateOriginRotationAndZoomToTransverseViews: self];
+}
+
+- (void) rightMouseDown:(NSEvent *)event
+{
+	previousScale = [self scaleValue];
+	[super rightMouseDown: event];
+}
+
+- (void) mouseDown:(NSEvent *)event
+{
+	previousScale = [self scaleValue];
+	[super mouseDown: event];
+}
+
+- (void) applyNewScaleValue
+{
+	if( [self scaleValue] != previousScale)
+	{
+		self.renderingScale /= previousScale / [self scaleValue];
+		
+		if ([_delegate respondsToSelector:@selector(CPRTransverseViewDidChangeRenderingScale:)])
+			[_delegate CPRTransverseViewDidChangeRenderingScale:self];
+		
+		[self _setNeedsNewRequest];
+	}
+}
+
+- (void) rightMouseUp:(NSEvent *)event
+{
+	[super rightMouseUp: event];
+	[self applyNewScaleValue];
+}
+
+- (void)mouseUp:(NSEvent *)event
+{
+	[super mouseUp: event];
+	[self applyNewScaleValue];
 }
 
 - (void)mouseDraggedTranslate:(NSEvent *)event
@@ -129,9 +176,22 @@ extern int CLUTBARS, ANNOTATIONS;
 }
 
 
+- (void) setRenderingScale:(CGFloat)renderingScale
+{
+    if (_renderingScale != renderingScale)
+	{
+//		_sectionWidth = _sectionWidth; / (renderingScale/_renderingScale);
+		
+		_renderingScale = renderingScale;
+		
+		[self _setNeedsNewRequest];
+    }
+}
+
 - (void)setSectionWidth:(CGFloat)sectionWidth
 {
-    if (_sectionWidth != sectionWidth) {
+    if (_sectionWidth != sectionWidth)
+	{
         _sectionWidth = sectionWidth;
         [self _setNeedsNewRequest];
     }
@@ -219,7 +279,7 @@ extern int CLUTBARS, ANNOTATIONS;
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    
     
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
-    pixelsPerMm = (CGFloat)curDCM.pwidth/_sectionWidth;
+    pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
     
     glColor4d(0.0, 1.0, 0.0, 1.0);
     lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
@@ -248,7 +308,6 @@ extern int CLUTBARS, ANNOTATIONS;
 
 - (void)generator:(CPRGenerator *)generator didGenerateVolume:(CPRVolumeData *)volume request:(CPRGeneratorRequest *)request
 {
-    NSLog(@"didGenerateVolume");
     float wl;
     float ww;
     NSUInteger i;
@@ -256,6 +315,9 @@ extern int CLUTBARS, ANNOTATIONS;
     DCMPix *newPix;
         
     [self getWLWW:&wl :&ww];
+	
+	float previousScale = [self scaleValue];
+	
     [[self.generatedVolumeData retain] autorelease]; // make sure this is around long enough so that it doesn't disapear under the old DCMPix
     self.generatedVolumeData = volume;
     
@@ -278,6 +340,8 @@ extern int CLUTBARS, ANNOTATIONS;
     
     [self setWLWW:wl :ww];
     
+//	[self setScaleValue: previousScale];
+	
     [pixArray release];
     [self setNeedsDisplay:YES];
 }
@@ -345,8 +409,8 @@ extern int CLUTBARS, ANNOTATIONS;
     cross = N3VectorNormalize(N3VectorCrossProduct(normal, tangent));
     
     bezierPath = [N3MutableBezierPath bezierPath];
-    [bezierPath moveToVector:N3VectorAdd(vector, N3VectorScalarMultiply(cross, _sectionWidth / 2))]; 
-    [bezierPath lineToVector:N3VectorAdd(vector, N3VectorScalarMultiply(cross, -_sectionWidth / 2))]; 
+    [bezierPath moveToVector:N3VectorAdd(vector, N3VectorScalarMultiply(cross, _sectionWidth / _renderingScale / 2))]; 
+    [bezierPath lineToVector:N3VectorAdd(vector, N3VectorScalarMultiply(cross, -_sectionWidth / _renderingScale / 2))]; 
     
     if (initialNormal) {
         *initialNormal = normal;

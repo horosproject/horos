@@ -21,6 +21,7 @@
 
 @class CPRController;
 @class CPRDisplayInfo;
+@class CPRTransverseView;
 
 @protocol CPRViewDelegate;
 
@@ -105,6 +106,7 @@
 
 - (void)CPRViewDidChangeGeneratedHeight:(id)CPRMPRDCMView;
 - (void)CPRView:(CPRMPRDCMView*)CPRMPRDCMView setCrossCenter:(N3Vector)crossCenter;
+- (void)CPRTransverseViewDidChangeRenderingScale:(CPRTransverseView*)CPRTransverseView;
 
 @end
 

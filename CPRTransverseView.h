@@ -42,6 +42,10 @@ typedef NSInteger CPRTransverseViewSection;
     CPRGenerator *_generator;
     CPRStraightenedGeneratorRequest *_lastRequest;
     BOOL _needsNewRequest;
+	
+	CGFloat _renderingScale;
+	
+	float previousScale;
 }
 
 @property (nonatomic, readwrite, assign) id<CPRViewDelegate> delegate;
@@ -49,5 +53,6 @@ typedef NSInteger CPRTransverseViewSection;
 @property (nonatomic, readwrite, assign) CPRTransverseViewSection sectionType;
 @property (nonatomic, readwrite, assign) CGFloat sectionWidth; // the width to be displayed in mm
 @property (nonatomic, readwrite, retain) CPRVolumeData *volumeData;
+@property (nonatomic, readwrite, assign) CGFloat renderingScale;
 
 @end

@@ -539,6 +539,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setCurrentTool:toolIndex];
 	[mprView2 setCurrentTool:toolIndex];
 	[mprView3 setCurrentTool:toolIndex];
+	[cprView setCurrentTool:toolIndex];
+	[topTransverseView setCurrentTool:toolIndex];
+	[middleTransverseView setCurrentTool:toolIndex];
+	[bottomTransverseView setCurrentTool:toolIndex];
+	
 	[mprView1.vrView setCurrentTool:toolIndex];
 	[mprView2.vrView setCurrentTool:toolIndex];
 	[mprView3.vrView setCurrentTool:toolIndex];
@@ -580,11 +585,15 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 }
 
-- (void) propagateOriginRotationAndZoomToTransverseViews: (DCMView*) sender
+- (void) propagateOriginRotationAndZoomToTransverseViews: (CPRTransverseView*) sender
 {
 	[topTransverseView setOrigin: [sender origin]];
 	[middleTransverseView setOrigin: [sender origin]];
 	[bottomTransverseView setOrigin: [sender origin]];
+	
+//	topTransverseView.renderingScale = sender.renderingScale;
+//	middleTransverseView.renderingScale = sender.renderingScale;
+//	bottomTransverseView.renderingScale = sender.renderingScale;
 	
 	[topTransverseView setScaleValue: [sender scaleValue]];
 	[middleTransverseView setScaleValue: [sender scaleValue]];
@@ -1434,6 +1443,16 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView1 setIndex:[mprView1 curImage]];
 		[mprView2 setIndex:[mprView2 curImage]];
 		[mprView3 setIndex:[mprView3 curImage]];
+		
+		[cprView setCLUT: nil :nil :nil];
+		[topTransverseView setCLUT: nil :nil :nil];
+		[middleTransverseView setCLUT: nil :nil :nil];
+		[bottomTransverseView setCLUT: nil :nil :nil];
+		
+		[cprView setIndex:[cprView curImage]];
+		[topTransverseView setIndex:[topTransverseView curImage]];
+		[middleTransverseView setIndex:[middleTransverseView curImage]];
+		[bottomTransverseView setIndex:[bottomTransverseView curImage]];
 	}
 	
 	if([str isEqualToString:NSLocalizedString(@"No CLUT", nil)])
@@ -1463,6 +1482,16 @@ static float deg2rad = 3.14159265358979/180.0;
 			[mprView1 setIndex:[mprView1 curImage]];
 			[mprView2 setIndex:[mprView2 curImage]];
 			[mprView3 setIndex:[mprView3 curImage]];
+			
+			[cprView setCLUT: nil :nil :nil];
+			[topTransverseView setCLUT: nil :nil :nil];
+			[middleTransverseView setCLUT: nil :nil :nil];
+			[bottomTransverseView setCLUT: nil :nil :nil];
+			
+			[cprView setIndex:[cprView curImage]];
+			[topTransverseView setIndex:[topTransverseView curImage]];
+			[middleTransverseView setIndex:[middleTransverseView curImage]];
+			[bottomTransverseView setIndex:[bottomTransverseView curImage]];
 			
 			if( str != curCLUTMenu)
 			{
@@ -1525,9 +1554,19 @@ static float deg2rad = 3.14159265358979/180.0;
 				[mprView2 setCLUT:red :green: blue];
 				[mprView3 setCLUT:red :green: blue];
 				
+				[cprView setCLUT:red :green: blue];
+				[topTransverseView setCLUT:red :green: blue];
+				[middleTransverseView setCLUT:red :green: blue];
+				[bottomTransverseView setCLUT:red :green: blue];
+				
 				[mprView1 setIndex:[mprView1 curImage]];
 				[mprView2 setIndex:[mprView2 curImage]];
 				[mprView3 setIndex:[mprView3 curImage]];
+				
+				[cprView setIndex:[cprView curImage]];
+				[topTransverseView setIndex:[topTransverseView curImage]];
+				[middleTransverseView setIndex:[middleTransverseView curImage]];
+				[bottomTransverseView setIndex:[bottomTransverseView curImage]];
 				
 				if( str != curCLUTMenu)
 				{
@@ -1676,6 +1715,15 @@ static float deg2rad = 3.14159265358979/180.0;
 		[mprView2 setIndex:[mprView2 curImage]];
 		[mprView3 setIndex:[mprView3 curImage]];
 		
+		[[cprView curDCM] setTransferFunction:nil];
+		[[topTransverseView curDCM] setTransferFunction:nil];
+		[[middleTransverseView curDCM] setTransferFunction:nil];
+		[[bottomTransverseView curDCM] setTransferFunction:nil];
+		
+		[cprView setIndex:[cprView curImage]];
+		[topTransverseView setIndex:[topTransverseView curImage]];
+		[middleTransverseView setIndex:[middleTransverseView curImage]];
+		[bottomTransverseView setIndex:[bottomTransverseView curImage]];
 	}
 	else
 	{
@@ -1701,12 +1749,21 @@ static float deg2rad = 3.14159265358979/180.0;
 			[[mprView1 pix] setTransferFunction: table];
 			[[mprView2 pix] setTransferFunction: table];
 			[[mprView3 pix] setTransferFunction: table];
+			
+			[[cprView curDCM] setTransferFunction: table];
+			[[topTransverseView curDCM] setTransferFunction: table];
+			[[middleTransverseView curDCM] setTransferFunction: table];
+			[[bottomTransverseView curDCM] setTransferFunction: table];
 		}
 		
 		[mprView1 setIndex:[mprView1 curImage]];
 		[mprView2 setIndex:[mprView2 curImage]];
 		[mprView3 setIndex:[mprView3 curImage]];
 		
+		[cprView setIndex:[cprView curImage]];
+		[topTransverseView setIndex:[topTransverseView curImage]];
+		[middleTransverseView setIndex:[middleTransverseView curImage]];
+		[bottomTransverseView setIndex:[bottomTransverseView curImage]];
 	}
 }
 
@@ -3547,6 +3604,13 @@ static float deg2rad = 3.14159265358979/180.0;
     topTransverseView.sectionWidth = cprView.generatedHeight;
     middleTransverseView.sectionWidth = cprView.generatedHeight;
     bottomTransverseView.sectionWidth = cprView.generatedHeight;
+}
+
+- (void)CPRTransverseViewDidChangeRenderingScale:(CPRTransverseView*)CPRTransverseView
+{
+    topTransverseView.renderingScale = CPRTransverseView.renderingScale;
+    middleTransverseView.renderingScale = CPRTransverseView.renderingScale;
+    bottomTransverseView.renderingScale = CPRTransverseView.renderingScale;
 }
 
 - (void)CPRView:(CPRMPRDCMView*) CPRMPRDCMView setCrossCenter:(N3Vector)crossCenter

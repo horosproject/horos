@@ -181,7 +181,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
             
             numVectors = N3BezierCoreGetVectorInfo(flattenedBezierCore, spacing, 0, self.request.initialNormal, vectors, tangents, normals, pixelsWide);
 
-            while (numVectors < pixelsWide) { // make sure that the full array is filled and that there is not a vector that did not get filled due to roundoff error
+            while (numVectors < pixelsWide && numVectors > 0) { // make sure that the full array is filled and that there is not a vector that did not get filled due to roundoff error
                 vectors[numVectors] = vectors[numVectors - 1];
                 tangents[numVectors] = tangents[numVectors - 1];
                 normals[numVectors] = normals[numVectors - 1];
