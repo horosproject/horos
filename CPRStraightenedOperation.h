@@ -25,6 +25,8 @@
     BOOL _operationExecuting;
     BOOL _operationFinished;
     BOOL _operationFailed;
+    
+    CGFloat _sampleSpacing;
 }
 
 - (id)initWithRequest:(CPRStraightenedGeneratorRequest *)request volumeData:(CPRVolumeData *)volumeData;

@@ -107,7 +107,6 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
 {
     NSAutoreleasePool *pool;
     CGFloat bezierLength;
-    CGFloat spacing;
     CGFloat fillDistance;
     CGFloat slabDistance;
     NSInteger numVectors;
@@ -143,7 +142,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
             pixelsDeep = [self _pixelsDeep];
             
             numVectors = pixelsWide;
-            spacing = bezierLength / (CGFloat)pixelsWide;
+            _sampleSpacing = bezierLength / (CGFloat)pixelsWide;
             
             _floatBytes = malloc(sizeof(float) * pixelsWide * pixelsHigh * pixelsDeep);
             vectors = malloc(sizeof(N3Vector) * pixelsWide);
@@ -179,17 +178,27 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                 return;
             }
             
-            numVectors = N3BezierCoreGetVectorInfo(flattenedBezierCore, spacing, 0, self.request.initialNormal, vectors, tangents, normals, pixelsWide);
-
-            while (numVectors < pixelsWide && numVectors > 0) { // make sure that the full array is filled and that there is not a vector that did not get filled due to roundoff error
-                vectors[numVectors] = vectors[numVectors - 1];
-                tangents[numVectors] = tangents[numVectors - 1];
-                normals[numVectors] = normals[numVectors - 1];
-                numVectors++;
+            numVectors = N3BezierCoreGetVectorInfo(flattenedBezierCore, _sampleSpacing, 0, self.request.initialNormal, vectors, tangents, normals, pixelsWide);
+            
+            if (numVectors > 0) {
+                while (numVectors < pixelsWide) { // make sure that the full array is filled and that there is not a vector that did not get filled due to roundoff error
+                    vectors[numVectors] = vectors[numVectors - 1];
+                    tangents[numVectors] = tangents[numVectors - 1];
+                    normals[numVectors] = normals[numVectors - 1];
+                    numVectors++;
+                }
+            } else { // there are no vectors at all to copy from, so just zero out everthing
+                while (numVectors < pixelsWide) { // make sure that the full array is filled and that there is not a vector that did not get filled due to roundoff error
+                    vectors[numVectors] = N3VectorZero;
+                    tangents[numVectors] = N3VectorZero;
+                    normals[numVectors] = N3VectorZero;
+                    numVectors++;
+                }
             }
+
                     
             memcpy(fillNormals, normals, sizeof(N3Vector) * pixelsWide);
-            N3VectorScalarMultiplyVectors(spacing, fillNormals, pixelsWide);
+            N3VectorScalarMultiplyVectors(_sampleSpacing, fillNormals, pixelsWide);
             
             memcpy(inSlabNormals, normals, sizeof(N3Vector) * pixelsWide);
             N3VectorCrossProductWithVectors(inSlabNormals, tangents, pixelsWide);
@@ -273,6 +282,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
 {
     NSOperation *operation;
     CPRVolumeData *generatedVolume;
+    N3AffineTransform volumeTransform;
     CPRProjectionOperation *projectionOperation;
     int32_t oustandingFillOperationCount;
     
@@ -286,8 +296,9 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                 [self autorelease]; // to balance the retain when we observe operations
                 oustandingFillOperationCount = OSAtomicDecrement32Barrier(&_oustandingFillOperationCount);
                 if (oustandingFillOperationCount == 0) { // done with the fill operations, now do the projection
+                    volumeTransform = N3AffineTransformMakeScale(1.0/_sampleSpacing, 1.0/_sampleSpacing, 1.0/[self _slabSampleDistance]);
                     generatedVolume = [[CPRVolumeData alloc] initWithFloatBytesNoCopy:_floatBytes pixelsWide:self.request.pixelsWide pixelsHigh:self.request.pixelsHigh pixelsDeep:[self _pixelsDeep]
-                                                                      volumeTransform:N3AffineTransformIdentity freeWhenDone:YES];
+                                                                      volumeTransform:volumeTransform freeWhenDone:YES];
                     _floatBytes = NULL;
                     projectionOperation = [[CPRProjectionOperation alloc] init];
                     projectionOperation.volumeData = generatedVolume;
