@@ -24,6 +24,8 @@
 #import "N3Geometry.h"
 #import "N3BezierCoreAdditions.h"
 #import "CPRController.h"
+#import "ROI.h"
+#import "Notifications.h"
 
 extern BOOL frameZoomed;
 extern int splitPosition[ 2];
@@ -384,6 +386,13 @@ extern int splitPosition[ 2];
     return _generatedHeight;
 }
 
+- (void) drawRect:(NSRect)rect
+{
+	[self adjustROIsForCPRView];
+	
+	[super drawRect: rect];
+}
+
 - (void)subDrawRect:(NSRect)rect
 {
     N3Vector lineStart;
@@ -458,10 +467,12 @@ extern int splitPosition[ 2];
     
 	glLineWidth(2.0);
     glBegin(GL_LINES);
-    glColor4d(0.0, 1.0, 0.0, 1.0);
+    glColor4d(0.0, 1.0, 0.0, 0.2);
     glVertex2d(lineStart.x, lineStart.y);
     glVertex2d(lineEnd.x, lineEnd.y);
     glEnd();
+	
+	glColor4d(0.0, 1.0, 0.0, 0.8);
     
     if (_displayInfo.mouseCursorHidden == NO) {
         cursorVector = N3VectorMake(curDCM.pwidth * _displayInfo.mouseCursorPosition, (CGFloat)curDCM.pheight/2.0, 0);
@@ -649,6 +660,56 @@ extern int splitPosition[ 2];
     [super mouseMoved:theEvent];
 }
 
+- (void) adjustROIsForCPRView
+{
+	for( int i = 0; i < curRoiList.count; i++ )
+	{
+		ROI *r = [curRoiList objectAtIndex:i];
+		if( r.type != tMesure)
+		{
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
+			[curRoiList removeObjectAtIndex:i];
+			i--;
+		}
+	}
+	
+	for( ROI *c in curRoiList)
+	{
+		if( c.type == tMesure)
+		{
+			NSMutableArray *points = c.points;
+			
+			NSPoint A = [[points objectAtIndex: 0] point];
+			NSPoint B = [[points objectAtIndex: 1] point];
+			
+			if( fabs( A.x - B.x) > 4 || fabs( A.y - B.y) > 4)
+			{
+				if( fabs( A.x - B.x) > fabs( A.y - B.y) || A.y == [curDCM pheight] / 2)
+				{
+					// Horizontal length -> centered in y, and horizontal
+					
+					A.y = [curDCM pheight] / 2;
+					B.y = [curDCM pheight] / 2;
+					
+					[[points objectAtIndex: 0] setPoint: A];
+					[[points objectAtIndex: 1] setPoint: B];
+				}
+				else
+				{
+					// Vectical length -> vertical
+					
+					A.x = B.x;
+					
+					[[points objectAtIndex: 0] setPoint: A];
+					[[points objectAtIndex: 1] setPoint: B];
+				}
+			}
+		}
+	}
+	
+	[self setNeedsDisplay: YES];
+}
+
 - (void)mouseDown:(NSEvent *)event
 {
     NSPoint viewPoint;
@@ -727,7 +788,13 @@ extern int splitPosition[ 2];
 					[windowController.horizontalSplit2 setPosition: splitPosition[ 2] ofDividerAtIndex: 0];
 				}
 			}
-			else [super mouseDown:event];
+			else
+			{
+				if( [self roiTool: currentTool])
+					currentTool = tMesure;
+				
+				[super mouseDown:event];
+			}
         }
     }
 }
@@ -776,7 +843,6 @@ extern int splitPosition[ 2];
 
         [super mouseDragged:event];
     }
-
 }
 
 - (void)mouseUp:(NSEvent *)event

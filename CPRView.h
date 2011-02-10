@@ -122,4 +122,6 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 
 @property (nonatomic) BOOL displayCrossLines;
 
+- (void) adjustROIsForCPRView;
+
 @end

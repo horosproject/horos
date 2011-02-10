@@ -7837,7 +7837,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	@synchronized (self)
 	{
-		
 		[self drawRect: [self frame] withContext: [self openGLContext]];
 	}
 }
