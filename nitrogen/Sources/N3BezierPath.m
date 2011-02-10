@@ -201,6 +201,11 @@
     return N3BezierCoreSegmentCount(_bezierCore);
 }
 
+- (NSString *)description
+{
+	return [(NSString *)N3BezierCoreCopyDescription(_bezierCore) autorelease];
+}
+
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
 	[encoder encodeObject:[self dictionaryRepresentation] forKey:@"bezierPathDictionaryRepresentation"];

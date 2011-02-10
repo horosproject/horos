@@ -46,9 +46,6 @@ CFIndex N3BezierCoreSegmentLengths(N3BezierCoreRef bezierCore, CGFloat *lengths,
 CFIndex N3BezierCoreCountIntersectionsWithPlane(N3BezierCoreRef bezierCore, N3Plane plane);
 CFIndex N3BezierCoreIntersectionsWithPlane(N3BezierCoreRef bezierCore, N3Plane plane, N3VectorArray intersections, CGFloat *relativePositions, CFIndex numVectors);
 
-CFDictionaryRef N3BezierCoreCreateDictionaryRepresentation(N3BezierCoreRef bezierCore);
-N3BezierCoreRef N3BezierCoreCreateWithDictionaryRepresentation(CFDictionaryRef dict);
-N3MutableBezierCoreRef N3BezierCoreCreateMutableWithDictionaryRepresentation(CFDictionaryRef dict);
 
 CF_EXTERN_C_END
 

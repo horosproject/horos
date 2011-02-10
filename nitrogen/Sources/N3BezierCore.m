@@ -15,6 +15,43 @@
 #include "N3BezierCore.h"
 #include <libkern/OSAtomic.h>
 
+static const void *_N3BezierCoreRetainCallback(CFAllocatorRef allocator, const void *value)
+{
+	return N3BezierCoreRetain((N3BezierCoreRef)value);
+}
+
+static void _N3BezierCoreReleaseCallback(CFAllocatorRef allocator, const void *value)
+{
+	N3BezierCoreRelease((N3BezierCoreRef)value);
+}
+
+static CFStringRef _N3BezierCoreCopyDescriptionCallBack(const void *value)
+{
+	return N3BezierCoreCopyDescription((N3BezierCoreRef)value);
+}
+
+static Boolean _N3BezierCoreEqualCallBack(const void *value1, const void *value2)
+{
+	return N3BezierCoreEqualToBezierCore((N3BezierCoreRef)value1, (N3BezierCoreRef)value2);
+}
+
+const CFArrayCallBacks kN3BezierCoreArrayCallBacks = {
+	0,
+	_N3BezierCoreRetainCallback,
+	_N3BezierCoreReleaseCallback,
+	_N3BezierCoreCopyDescriptionCallBack,
+	_N3BezierCoreEqualCallBack
+};
+
+const CFDictionaryValueCallBacks kN3BezierCoreDictionaryValueCallBacks = {
+	0,
+	_N3BezierCoreRetainCallback,
+	_N3BezierCoreReleaseCallback,
+	_N3BezierCoreCopyDescriptionCallBack,
+	_N3BezierCoreEqualCallBack
+};
+
+
 const CGFloat N3BezierDefaultFlatness = 0.1;
 const CGFloat N3BezierDefaultSubdivideSegmentLength = 3;
 
@@ -166,6 +203,17 @@ bool N3BezierCoreHasCurve(N3BezierCoreRef bezierCore)
     return false;
 }
 
+CFStringRef N3BezierCoreCopyDescription(N3BezierCoreRef bezierCore)
+{
+	CFDictionaryRef dictionaryRep;
+	CFStringRef description;
+	
+	dictionaryRep = N3BezierCoreCreateDictionaryRepresentation(bezierCore);
+	description = (CFStringRef)[[(NSDictionary *)dictionaryRep description] retain];
+	CFRelease(dictionaryRep);
+	return description;
+}
+
 N3BezierCoreRef N3BezierCoreCreateCopy(N3BezierCoreRef bezierCore)
 {
     return N3BezierCoreCreateMutableCopy(bezierCore);
@@ -224,6 +272,107 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCopy(N3BezierCoreRef bezierCore)
     N3BezierCoreCheckDebug(bezierCore);
     return newBezierCore;
 }
+
+CFDictionaryRef N3BezierCoreCreateDictionaryRepresentation(N3BezierCoreRef bezierCore)
+{
+	NSMutableArray *segments;
+	NSDictionary *segmentDictionary;
+	N3Vector control1;
+	N3Vector control2;
+	N3Vector endpoint;
+	CFDictionaryRef control1Dict;
+	CFDictionaryRef control2Dict;
+	CFDictionaryRef endpointDict;
+	N3BezierCoreSegmentType segmentType;
+	N3BezierCoreIteratorRef bezierCoreIterator;
+	
+	segments = [NSMutableArray array];
+	bezierCoreIterator = N3BezierCoreIteratorCreateWithBezierCore(bezierCore);
+	
+	while (N3BezierCoreIteratorIsAtEnd(bezierCoreIterator) == NO) {
+		segmentType = N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, &control1, &control2, &endpoint);
+		control1Dict = N3VectorCreateDictionaryRepresentation(control1);
+		control2Dict = N3VectorCreateDictionaryRepresentation(control2);
+		endpointDict = N3VectorCreateDictionaryRepresentation(endpoint);
+		switch (segmentType) {
+			case N3MoveToBezierCoreSegmentType:
+				segmentDictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"moveTo", @"segmentType", (id)endpointDict, @"endpoint", nil];
+				break;
+			case N3LineToBezierCoreSegmentType:
+				segmentDictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"lineTo", @"segmentType", (id)endpointDict, @"endpoint", nil];
+				break;
+			case N3CloseBezierCoreSegmentType:
+				segmentDictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"close", @"segmentType", (id)endpointDict, @"endpoint", nil];
+			case N3CurveToBezierCoreSegmentType:
+				segmentDictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"curveTo", @"segmentType", (id)control1Dict, @"control1",
+									 (id)control2Dict, @"control2", (id)endpointDict, @"endpoint", nil];
+				break;
+			default:
+				assert(0);
+				break;
+		}
+		CFRelease(control1Dict);
+		CFRelease(control2Dict);
+		CFRelease(endpointDict);
+		[segments addObject:segmentDictionary];
+	}
+	N3BezierCoreIteratorRelease(bezierCoreIterator);
+	return (CFDictionaryRef)[[NSDictionary alloc] initWithObjectsAndKeys:segments, @"segments", nil];
+}
+
+N3BezierCoreRef N3BezierCoreCreateWithDictionaryRepresentation(CFDictionaryRef dict)
+{
+	return N3BezierCoreCreateMutableWithDictionaryRepresentation(dict);
+}
+
+// we could make this a bit more robust against passing in junk
+N3MutableBezierCoreRef N3BezierCoreCreateMutableWithDictionaryRepresentation(CFDictionaryRef dict)
+{
+	NSArray *segments;
+	NSDictionary *segmentDictionary;
+	N3MutableBezierCoreRef mutableBezierCore;
+	N3Vector control1;
+	N3Vector control2;
+	N3Vector endpoint;
+	
+	segments = [(NSDictionary*)dict objectForKey:@"segments"];
+	if (segments == nil) {
+		return NULL;
+	}
+	
+	mutableBezierCore = N3BezierCoreCreateMutable();
+	
+	for (segmentDictionary in segments) {
+		if ([[segmentDictionary objectForKey:@"segmentType"] isEqualToString:@"moveTo"]) {
+			endpoint = N3VectorZero;
+			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[segmentDictionary objectForKey:@"endpoint"], &endpoint);
+			N3BezierCoreAddSegment(mutableBezierCore, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, endpoint);
+		} else if ([[segmentDictionary objectForKey:@"segmentType"] isEqualToString:@"lineTo"]) {
+			endpoint = N3VectorZero;
+			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[segmentDictionary objectForKey:@"endpoint"], &endpoint);
+			N3BezierCoreAddSegment(mutableBezierCore, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, endpoint);
+		} else if ([[segmentDictionary objectForKey:@"segmentType"] isEqualToString:@"close"]) {
+			endpoint = N3VectorZero;
+			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[segmentDictionary objectForKey:@"endpoint"], &endpoint);
+			N3BezierCoreAddSegment(mutableBezierCore, N3CloseBezierCoreSegmentType, N3VectorZero, N3VectorZero, endpoint);
+		} else if ([[segmentDictionary objectForKey:@"segmentType"] isEqualToString:@"curveTo"]) {
+			control1 = N3VectorZero;
+			control2 = N3VectorZero;
+			endpoint = N3VectorZero;
+			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[segmentDictionary objectForKey:@"control1"], &control1);
+			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[segmentDictionary objectForKey:@"control2"], &control2);
+			N3VectorMakeWithDictionaryRepresentation((CFDictionaryRef)[segmentDictionary objectForKey:@"endpoint"], &endpoint);
+			N3BezierCoreAddSegment(mutableBezierCore, N3CurveToBezierCoreSegmentType, control1, control2, endpoint);
+		} else {
+			assert(0);
+		}
+	}
+	
+	N3BezierCoreCheckDebug(mutableBezierCore);
+	
+	return mutableBezierCore;
+}
+
 
 void N3BezierCoreAddSegment(N3MutableBezierCoreRef bezierCore, N3BezierCoreSegmentType segmentType, N3Vector control1, N3Vector control2, N3Vector endpoint)
 {

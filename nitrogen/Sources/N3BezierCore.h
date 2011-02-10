@@ -32,6 +32,9 @@ enum N3BezierCoreSegmentType {
 };
 typedef enum N3BezierCoreSegmentType N3BezierCoreSegmentType;
 
+extern const CFDictionaryValueCallBacks kN3BezierCoreDictionaryValueCallBacks;
+extern const CFArrayCallBacks kN3BezierCoreArrayCallBacks;
+
 extern const CGFloat N3BezierDefaultFlatness;
 extern const CGFloat N3BezierDefaultSubdivideSegmentLength;
 
@@ -45,10 +48,15 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutable();
 void *N3BezierCoreRetain(N3BezierCoreRef bezierCore);
 void N3BezierCoreRelease(N3BezierCoreRef bezierCore);
 bool N3BezierCoreEqualToBezierCore(N3BezierCoreRef bezierCore1, N3BezierCoreRef bezierCore2);
+CFStringRef N3BezierCoreCopyDescription(N3BezierCoreRef bezierCore);
 bool N3BezierCoreHasCurve(N3BezierCoreRef bezierCore);
 
 N3BezierCoreRef N3BezierCoreCreateCopy(N3BezierCoreRef bezierCore);
 N3MutableBezierCoreRef N3BezierCoreCreateMutableCopy(N3BezierCoreRef bezierCore);
+
+CFDictionaryRef N3BezierCoreCreateDictionaryRepresentation(N3BezierCoreRef bezierCore);
+N3BezierCoreRef N3BezierCoreCreateWithDictionaryRepresentation(CFDictionaryRef dict);
+N3MutableBezierCoreRef N3BezierCoreCreateMutableWithDictionaryRepresentation(CFDictionaryRef dict);
 
 void N3BezierCoreAddSegment(N3MutableBezierCoreRef bezierCore, N3BezierCoreSegmentType segmentType, N3Vector control1, N3Vector control2, N3Vector endpoint);
 void N3BezierCoreSetVectorsForSegementAtIndex(N3MutableBezierCoreRef bezierCore, CFIndex index, N3Vector control1, N3Vector control2, N3Vector endpoint);

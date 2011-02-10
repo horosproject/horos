@@ -15,6 +15,7 @@
 #import "CPRVolumeData.h"
 #import "DCMPix.h"
 #import "CPRUnsignedInt16ImageRep.h"
+#include <libkern/OSAtomic.h>
 
 @interface CPRVolumeData ()
 
@@ -38,6 +39,7 @@
         } else {
             _floatBytes = floatBytes;
         }
+        _isValid = YES;
         _pixelsWide = pixelsWide;
         _pixelsHigh = pixelsHigh;
         _pixelsDeep = pixelsDeep;
@@ -106,14 +108,43 @@
     }
 }
 
+- (BOOL)isDataValid
+{
+    return _isValid;
+}
+
+- (void)invalidateData; // this is to be called by objects who own own the floatBytes that were given to the receiver right before freeing the data
+{                       // this may lock temporarily if other threads are accessing the data, after this returns, all calls to access data will fail gracefully
+    struct timespec rqtp = {0, 100};
+    struct timespec rmtp;
+    
+    _isValid = NO;
+    OSMemoryBarrier(); // make sure that the _isValid was set
+    while (_readerCount > 0) { // spin until we no know that any readers that were reading before the _isValid was set would have exited
+        nanosleep(&rqtp, &rmtp);
+    }
+    
+    // now we know that everything is ok and it is safe to return and have the caller free the data;
+    _floatBytes = NULL;
+    return;
+}
+
 -(const float *)floatBytes
 {
     return _floatBytes;
 }
 
-- (void)getFloatData:(void *)buffer range:(NSRange)range
+- (BOOL)getFloatData:(void *)buffer range:(NSRange)range
 {
-	memcpy(buffer, _floatBytes + range.location, range.length * sizeof(float));
+    OSAtomicIncrement32Barrier(&_readerCount);
+    if (_isValid) {
+        memcpy(buffer, _floatBytes + range.location, range.length * sizeof(float));
+        OSAtomicDecrement32(&_readerCount);
+        return YES;
+    } else {
+        OSAtomicDecrement32(&_readerCount);
+        return NO;
+    }
 }
 
 - (CPRUnsignedInt16ImageRep *)unsignedInt16ImageRepForSliceAtIndex:(NSUInteger)z
@@ -123,42 +154,63 @@
     vImage_Buffer floatBuffer;
     vImage_Buffer unsignedInt16Buffer;
     
-    imageRep = [[CPRUnsignedInt16ImageRep alloc] initWithData:NULL pixelsWide:_pixelsWide pixelsHigh:_pixelsHigh];
-    imageRep.pixelSpacingX = [self pixelSpacingX];
-    imageRep.pixelSpacingY = [self pixelSpacingY];
-    imageRep.sliceThickness = [self pixelSpacingZ];
-    
-    unsignedInt16Data = [imageRep unsignedInt16Data];
-    
-    floatBuffer.data = (void *)_floatBytes + (_pixelsWide * _pixelsHigh * sizeof(float) * z);
-    floatBuffer.height = _pixelsHigh;
-    floatBuffer.width = _pixelsWide;
-    floatBuffer.rowBytes = sizeof(float) * _pixelsWide;
-    
-    unsignedInt16Buffer.data = unsignedInt16Data;
-    unsignedInt16Buffer.height = _pixelsHigh;
-    unsignedInt16Buffer.width = _pixelsWide;
-    unsignedInt16Buffer.rowBytes = sizeof(uint16_t) * _pixelsWide;
-    
-    vImageConvert_FTo16U(&floatBuffer, &unsignedInt16Buffer, -1024, 1, 0);
-    imageRep.slope = 1;
-    imageRep.offset = -1024;
-    
-    return [imageRep autorelease];
+    OSAtomicIncrement32Barrier(&_readerCount);
+    if (_isValid) {
+        imageRep = [[CPRUnsignedInt16ImageRep alloc] initWithData:NULL pixelsWide:_pixelsWide pixelsHigh:_pixelsHigh];
+        imageRep.pixelSpacingX = [self pixelSpacingX];
+        imageRep.pixelSpacingY = [self pixelSpacingY];
+        imageRep.sliceThickness = [self pixelSpacingZ];
+        
+        unsignedInt16Data = [imageRep unsignedInt16Data];
+        
+        floatBuffer.data = (void *)_floatBytes + (_pixelsWide * _pixelsHigh * sizeof(float) * z);
+        floatBuffer.height = _pixelsHigh;
+        floatBuffer.width = _pixelsWide;
+        floatBuffer.rowBytes = sizeof(float) * _pixelsWide;
+        
+        unsignedInt16Buffer.data = unsignedInt16Data;
+        unsignedInt16Buffer.height = _pixelsHigh;
+        unsignedInt16Buffer.width = _pixelsWide;
+        unsignedInt16Buffer.rowBytes = sizeof(uint16_t) * _pixelsWide;
+        
+        vImageConvert_FTo16U(&floatBuffer, &unsignedInt16Buffer, -1024, 1, 0);
+        imageRep.slope = 1;
+        imageRep.offset = -1024;
+        
+        OSAtomicDecrement32(&_readerCount);
+        return [imageRep autorelease];
+    } else {
+        OSAtomicDecrement32(&_readerCount);
+        return nil;
+    }    
 }
 
-- (float)floatAtPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z
+- (BOOL)getFloat:(float *)floatPtr AtPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z
 {
     CPRVolumeDataInlineBuffer inlineBuffer;
-    [self getInlineBuffer:&inlineBuffer];
-    return CPRVolumeDataGetFloatAtPixelCoordinate(&inlineBuffer, x, y, z);
+    
+    if ([self aquireInlineBuffer:&inlineBuffer]) {
+        *floatPtr = CPRVolumeDataGetFloatAtPixelCoordinate(&inlineBuffer, x, y, z);
+        [self releaseInlineBuffer:&inlineBuffer];
+        return YES;
+    } else {
+        [self releaseInlineBuffer:&inlineBuffer];
+        return NO;
+    }
 }
 
-- (float)linearInterpolatedFloatAtDicomVector:(N3Vector)vector
+- (BOOL)getLinearInterpolatedFloat:(float *)floatPtr atDicomVector:(N3Vector)vector
 {
     CPRVolumeDataInlineBuffer inlineBuffer;
-    [self getInlineBuffer:&inlineBuffer];
-    return CPRVolumeDataLinearInterpolatedFloatAtDicomVector(&inlineBuffer, vector);
+
+    if ([self aquireInlineBuffer:&inlineBuffer]) {
+        *floatPtr = CPRVolumeDataLinearInterpolatedFloatAtDicomVector(&inlineBuffer, vector);
+        [self releaseInlineBuffer:&inlineBuffer];
+        return YES;
+    } else {
+        [self releaseInlineBuffer:&inlineBuffer];
+        return NO;
+    }        
 }
 
 - (NSUInteger)tempBufferSizeForNumVectors:(NSUInteger)numVectors
@@ -287,17 +339,31 @@
     vDSP_vadd(outputValues, 1, scrap, 1, outputValues, 1, numVectors);
 }
 
+        
 
-- (void)getInlineBuffer:(CPRVolumeDataInlineBuffer *)inlineBuffer
+- (BOOL)aquireInlineBuffer:(CPRVolumeDataInlineBuffer *)inlineBuffer
 {
     memset(inlineBuffer, 0, sizeof(CPRVolumeDataInlineBuffer));
-    inlineBuffer->floatBytes = _floatBytes;
-    inlineBuffer->pixelsWide = _pixelsWide;
-    inlineBuffer->pixelsHigh = _pixelsHigh;
-    inlineBuffer->pixelsDeep = _pixelsDeep;
-    inlineBuffer->pixelsWideTimesPixelsHigh = _pixelsWide*_pixelsHigh;
-    inlineBuffer->volumeTransform = _volumeTransform;
+    
+    OSAtomicIncrement32Barrier(&_readerCount);
+    if (_isValid) {
+        inlineBuffer->floatBytes = _floatBytes;
+        inlineBuffer->pixelsWide = _pixelsWide;
+        inlineBuffer->pixelsHigh = _pixelsHigh;
+        inlineBuffer->pixelsDeep = _pixelsDeep;
+        inlineBuffer->pixelsWideTimesPixelsHigh = _pixelsWide*_pixelsHigh;
+        inlineBuffer->volumeTransform = _volumeTransform;
+        return YES;
+    } else {
+        return NO;
+    }
 }
+
+- (void)releaseInlineBuffer:(CPRVolumeDataInlineBuffer *)inlineBuffer
+{
+    OSAtomicDecrement32(&_readerCount);
+}
+
 
 @end
 

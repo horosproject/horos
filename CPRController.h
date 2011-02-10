@@ -47,6 +47,7 @@ typedef NSInteger CPRExportRotationSpan;
 @class CPRCurvedPath;
 @class CPRDisplayInfo;
 @class CPRTransverseView;
+@class CPRVolumeData;
 
 @interface CPRController : Window3DController <CPRViewDelegate>
 {
@@ -68,6 +69,7 @@ typedef NSInteger CPRExportRotationSpan;
     IBOutlet NSView *tbStraightenedCPRAngle;
     double straightenedCPRAngle; // this is in degrees, the CPRView uses radians
     
+    CPRVolumeData *cprVolumeData;
     CPRCurvedPath *curvedPath;
     CPRDisplayInfo *displayInfo;
     N3Vector baseNormal; // this value will depend on which view gets clicked first, it will be used as the basis for deciding what normal to use for what angle

@@ -110,7 +110,7 @@
     vectorTransform.m41 = vectorTransform.m42 = vectorTransform.m43 = 0.0;
     N3VectorApplyTransformToVectors(vectorTransform, volumeNormals, _width);
     
-    [_volumeData getInlineBuffer:&inlineBuffer];
+    [_volumeData aquireInlineBuffer:&inlineBuffer];
     for (y = 0; y < _height; y++) {
         if ([self isCancelled]) {
             break;
@@ -122,6 +122,7 @@
         
         N3VectorAddVectors(volumeVectors, volumeNormals, _width);
     }
+    [_volumeData releaseInlineBuffer:&inlineBuffer];
     
     free(volumeVectors);
     free(volumeNormals);

@@ -154,7 +154,8 @@ static float deg2rad = 3.14159265358979/180.0;
                                                                                                            [NSNumber numberWithFloat:1], @"CPRColorG",
                                                                                                            [NSNumber numberWithFloat:0], @"CPRColorB", nil]];
 		self.curvedPathCreationMode = YES;
-        cprView.volumeData = [[[CPRVolumeData alloc] initWithWithPixList:pix volume:volume] autorelease];
+        cprVolumeData = [[CPRVolumeData alloc] initWithWithPixList:pix volume:volume];
+        cprView.volumeData = cprVolumeData;
         mprView1.delegate = self;
         mprView2.delegate = self;
         mprView3.delegate = self;
@@ -468,6 +469,9 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) dealloc
 {
+    [cprVolumeData invalidateData];
+    [cprVolumeData release];
+    
 	[mprView1 removeObserver:self forKeyPath:@"plane"];
 	[mprView2 removeObserver:self forKeyPath:@"plane"];
 	[mprView3 removeObserver:self forKeyPath:@"plane"];
