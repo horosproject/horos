@@ -4466,9 +4466,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							if( displayCMOrPixels)
 							{
 								if ( lMm < .1)
-									sprintf (line2, "L: %0.1f %cm", lMm * 10000.0, 0xb5);
+									sprintf (line2, "%0.1f %cm", lMm * 10000.0, 0xb5);
 								else
-									sprintf (line2, "L: %0.3f cm", lMm);
+									sprintf (line2, "%0.2f cm", lMm);
 							}
 							else
 							{

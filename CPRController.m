@@ -2582,12 +2582,15 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		representations = [im representations];
 		
-		bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+		if( representations.count)
+		{
+			bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 		
-		[bitmapData writeToFile:[panel filename] atomically:YES];
+			[bitmapData writeToFile:[panel filename] atomically:YES];
 		
-		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
+			NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
+		}
 	}
 }
 

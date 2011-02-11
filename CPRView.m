@@ -968,9 +968,17 @@ extern int splitPosition[ 2];
 		[self setOrigin:previousOrigin];
 		[self setScaleValue: previousScale];
 		[self setRotation: previousRotation];
-		
-		[[self curRoiList] addObjectsFromArray: [NSUnarchiver unarchiveObjectWithData: previousROIs]];
 	}
+	
+	NSArray *roiArray = [NSUnarchiver unarchiveObjectWithData: previousROIs];
+	for( ROI *r in roiArray)
+	{
+		r.pix = curDCM;
+		[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY) :NO :NO];
+		[r setRoiFont: labelFontListGL :labelFontListGLSize :self];
+	}
+	
+	[[self curRoiList] addObjectsFromArray: roiArray];
 	
 	[self _clearAllPlanes];
     [self setNeedsDisplay:YES];

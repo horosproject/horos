@@ -25,6 +25,7 @@
 #import "CPRMPRDCMView.h"
 #import "CPRController.h"
 #import "ROI.h"
+#import "Notifications.h"
 
 extern int CLUTBARS, ANNOTATIONS;
 
@@ -272,7 +273,14 @@ extern int CLUTBARS, ANNOTATIONS;
 	for( int i = 0; i < curRoiList.count; i++ )
 	{
 		ROI *r = [curRoiList objectAtIndex:i];
-		r.displayCMOrPixels = YES; // We don't want the value in pixels
+		if( r.type != tMesure)
+		{
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
+			[curRoiList removeObjectAtIndex:i];
+			i--;
+		}
+		else
+			r.displayCMOrPixels = YES; // We don't want the value in pixels
 	}
 	
 	[super drawRect: aRect withContext: ctx];
