@@ -132,6 +132,7 @@ enum
 	NSTimeInterval	groupID;		// timestamp of a ROI group. Grouped ROI will be selected/deleted together.
 	
 	BOOL			displayTextualData;
+	BOOL			displayCMOrPixels;
 	
 	BOOL			locked;
 	BOOL			selectable;
@@ -145,7 +146,7 @@ enum
 @property(readonly) unsigned char *textureBuffer;
 @property float opacity;
 @property int originalIndexForAlias;
-@property BOOL locked, selectable, isAliased;
+@property BOOL locked, selectable, isAliased, displayCMOrPixels;
 @property(retain) NSString *name, *comments;
 @property(readonly) long type;
 @property(setter=setROIMode:) long ROImode;
@@ -233,6 +234,9 @@ enum
 
 /** Set resolution and origin associated to the ROI */
 - (void) setOriginAndSpacing :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin :(BOOL) sendNotification;
+
+/** Set resolution and origin associated to the ROI */
+- (void) setOriginAndSpacing :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin :(BOOL) sendNotification :(BOOL) inImageCheck;
 
 /** Compute the roiArea in cm2 */
 - (float) roiArea;

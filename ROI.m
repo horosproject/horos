@@ -279,7 +279,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 @synthesize zPositions;
 @synthesize clickInTextBox;
 @synthesize rect;
-@synthesize pix;
+@synthesize pix, displayCMOrPixels;
 @synthesize curView;
 @synthesize mousePosMeasure;
 @synthesize rgbcolor = color;
@@ -1078,6 +1078,11 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (void) setOriginAndSpacing :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin :(BOOL) sendNotification
 {
+	[self setOriginAndSpacing :ipixelSpacingx :ipixelSpacingy :iimageOrigin :sendNotification :YES];
+}
+
+- (void) setOriginAndSpacing :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin :(BOOL) sendNotification :(BOOL) inImageCheck
+{
 	BOOL	change = NO;
 	
 	if( ipixelSpacingx == 0) return;
@@ -1166,7 +1171,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			
 			[self roiMove:offset :sendNotification];
 			
-			if( pix)
+			if( pix && inImageCheck)
 			{
 				BOOL inImage = NO;
 				NSRect imRect = NSMakeRect( 0, 0, pix.pwidth, pix.pheight);
@@ -4458,10 +4463,20 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						{
 							float lPix, lMm = [self MesureLength: &lPix];
 							
-							if ( lMm < .1)
-								sprintf (line2, "Length: %0.1f %cm (%0.3f pix)", lMm * 10000.0, 0xb5, lPix);
+							if( displayCMOrPixels)
+							{
+								if ( lMm < .1)
+									sprintf (line2, "L: %0.1f %cm", lMm * 10000.0, 0xb5);
+								else
+									sprintf (line2, "L: %0.3f cm", lMm);
+							}
 							else
-								sprintf (line2, "Length: %0.3f cm (%0.3f pix)", lMm, lPix);
+							{
+								if ( lMm < .1)
+									sprintf (line2, "Length: %0.1f %cm (%0.3f pix)", lMm * 10000.0, 0xb5, lPix);
+								else
+									sprintf (line2, "Length: %0.3f cm (%0.3f pix)", lMm, lPix);
+							}
 						}
 						else
 							sprintf (line2, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);

@@ -24,6 +24,7 @@
 #import "DCMPix.h"
 #import "CPRMPRDCMView.h"
 #import "CPRController.h"
+#import "ROI.h"
 
 extern int CLUTBARS, ANNOTATIONS;
 
@@ -268,6 +269,12 @@ extern int CLUTBARS, ANNOTATIONS;
 	CLUTBARS = barHide;
 	ANNOTATIONS = annotGraphics;
 	
+	for( int i = 0; i < curRoiList.count; i++ )
+	{
+		ROI *r = [curRoiList objectAtIndex:i];
+		r.displayCMOrPixels = YES; // We don't want the value in pixels
+	}
+	
 	[super drawRect: aRect withContext: ctx];
 	
 	CLUTBARS = clutBars;
@@ -319,30 +326,33 @@ extern int CLUTBARS, ANNOTATIONS;
 
 - (void)generator:(CPRGenerator *)generator didGenerateVolume:(CPRVolumeData *)volume request:(CPRGeneratorRequest *)request
 {
-    float wl;
-    float ww;
-    NSUInteger i;
-    NSMutableArray *pixArray;
-    DCMPix *newPix;
-        
+    float wl, ww;
+	
     [self getWLWW:&wl :&ww];
 	
-	float previousScale = [self scaleValue];
+	NSData *previousROIs = [NSArchiver archivedDataWithRootObject: [self curRoiList]];
 	
     [[self.generatedVolumeData retain] autorelease]; // make sure this is around long enough so that it doesn't disapear under the old DCMPix
     self.generatedVolumeData = volume;
     
-    pixArray = [[NSMutableArray alloc] init];
+    NSMutableArray *pixArray = [[NSMutableArray alloc] init];
     
-    for (i = 0; i < self.generatedVolumeData.pixelsDeep; i++) {
-        newPix = [[DCMPix alloc] initWithData:(float *)[self.generatedVolumeData floatBytes] + (i*self.generatedVolumeData.pixelsWide*self.generatedVolumeData.pixelsHigh) :32 
+    for( int i = 0; i < self.generatedVolumeData.pixelsDeep; i++)
+	{
+        DCMPix *newPix = [[DCMPix alloc] initWithData:(float *)[self.generatedVolumeData floatBytes] + (i*self.generatedVolumeData.pixelsWide*self.generatedVolumeData.pixelsHigh) :32 
                                              :self.generatedVolumeData.pixelsWide :self.generatedVolumeData.pixelsHigh :self.generatedVolumeData.pixelSpacingX :self.generatedVolumeData.pixelSpacingY
-                                             :0.0 :0.0 :0.0 :NO];
+                                             :-self.generatedVolumeData.pixelSpacingX*self.generatedVolumeData.pixelsWide/2.
+											 :-self.generatedVolumeData.pixelSpacingY*self.generatedVolumeData.pixelsHigh/2.
+											 :0
+											 :NO];
+		float c[ 6] = {1, 0, 0, 0, 1, 0};
+		[newPix setOrientation: c];
+		
         [pixArray addObject:newPix];
         [newPix release];
     }
     
-    for( i = 0; i < [pixArray count]; i++)
+    for( int i = 0; i < [pixArray count]; i++)
     {
         [[pixArray objectAtIndex: i] setArrayPix:pixArray :i];
     }
@@ -351,7 +361,15 @@ extern int CLUTBARS, ANNOTATIONS;
     
     [self setWLWW:wl :ww];
     
-//	[self setScaleValue: previousScale];
+	NSArray *roiArray = [NSUnarchiver unarchiveObjectWithData: previousROIs];
+	for( ROI *r in roiArray)
+	{
+		r.pix = curDCM;
+		[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY) :NO :NO];
+		[r setRoiFont: labelFontListGL :labelFontListGLSize :self];
+	}
+	
+	[[self curRoiList] addObjectsFromArray: roiArray];
 	
     [pixArray release];
     [self setNeedsDisplay:YES];

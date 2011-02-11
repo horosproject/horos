@@ -671,6 +671,8 @@ extern int splitPosition[ 2];
 			[curRoiList removeObjectAtIndex:i];
 			i--;
 		}
+		else
+			r.displayCMOrPixels = YES; // We don't want the value in pixels
 	}
 	
 	for( ROI *c in curRoiList)
@@ -927,6 +929,7 @@ extern int splitPosition[ 2];
 	float previousScale = [self scaleValue];
 	float previousRotation = [self rotation];
 	int previousHeight = [curDCM pheight], previousWidth = [curDCM pwidth];
+	NSData *previousROIs = [NSArchiver archivedDataWithRootObject: [self curRoiList]];
 	
 	[[self.curvedVolumeData retain] autorelease]; // make sure this is around long enough so that it doesn't disapear under the old DCMPix
     self.curvedVolumeData = volume;
@@ -965,6 +968,8 @@ extern int splitPosition[ 2];
 		[self setOrigin:previousOrigin];
 		[self setScaleValue: previousScale];
 		[self setRotation: previousRotation];
+		
+		[[self curRoiList] addObjectsFromArray: [NSUnarchiver unarchiveObjectWithData: previousROIs]];
 	}
 	
 	[self _clearAllPlanes];
