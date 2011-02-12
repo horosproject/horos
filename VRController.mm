@@ -2190,7 +2190,7 @@ return YES;
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
-	if( [panel runModalForDirectory:nil file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file: NSLocalizedString( @"3D VR Image", nil)] == NSFileHandlingPanelOKButton)
 	{
 		NSArray *representations;
 		NSData *bitmapData;
@@ -2234,7 +2234,7 @@ return YES;
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"tif"];
 	
-	if( [panel runModalForDirectory:nil file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file: NSLocalizedString( @"3D VR Image", nil)] == NSFileHandlingPanelOKButton)
 	{
 		[[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
 		

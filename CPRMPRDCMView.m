@@ -666,7 +666,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 {
 	if( [stringID isEqualToString: @"export"])
 		return;
-	
+		
 	if( r.size.height < 10 || r.size.width < 10)
 		return;
 	

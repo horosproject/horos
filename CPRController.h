@@ -198,6 +198,7 @@ typedef NSInteger CPRExportRotationSpan;
 - (id)initWithDCMPixList:(NSMutableArray*)pix filesList:(NSMutableArray*)files volumeData:(NSData*)volume viewerController:(ViewerController*)viewer fusedViewerController:(ViewerController*)fusedViewer;
 - (DCMPix*) emptyPix: (DCMPix*) originalPix width: (long) w height: (long) h;
 - (CPRMPRDCMView*) selectedView;
+- (id) selectedViewOnlyMPRView: (BOOL) onlyMPRView;
 - (void) computeCrossReferenceLines:(CPRMPRDCMView*) sender;
 - (IBAction)setTool:(id)sender;
 - (void) setToolIndex: (int) toolIndex;

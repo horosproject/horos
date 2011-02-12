@@ -2395,7 +2395,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
-	if( [panel runModalForDirectory:nil file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file: NSLocalizedString( @"MPR Image", nil)] == NSFileHandlingPanelOKButton)
 	{
 		NSImage *im = [[self selectedView] nsimage:NO];
 		

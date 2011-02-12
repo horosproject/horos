@@ -2086,7 +2086,12 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (CPRMPRDCMView*) selectedView
 {
-	CPRMPRDCMView *v = nil;
+	return [self selectedViewOnlyMPRView: YES];
+}
+
+- (id) selectedViewOnlyMPRView: (BOOL) onlyMPRView
+{
+	id v = nil;
 	
 	if( [[self window] firstResponder] == mprView1)
 		v = mprView1;
@@ -2094,8 +2099,19 @@ static float deg2rad = 3.14159265358979/180.0;
 		v = mprView2;
 	if( [[self window] firstResponder] == mprView3)
 		v = mprView3;
+	if( onlyMPRView && [[self window] firstResponder] == cprView)
+		v = cprView;
 	
-	if( v == nil) v = mprView3;
+	if( onlyMPRView)
+	{
+		if( v == nil)
+			v = mprView3;
+	}
+	else
+	{
+		if( v == nil)
+			v = cprView;
+	}
 	
 	return v;
 }
@@ -2149,20 +2165,46 @@ static float deg2rad = 3.14159265358979/180.0;
         exportWidth = NSWidth([cprView bounds]);
         exportHeight = NSHeight([cprView bounds]);
 		
+		int resizeImage = 0;
+		
 		switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
 		{
 			case 1: 
                 exportWidth = exportHeight = 512;
+				resizeImage = 512;
                 break;
 			case 2:
                 exportWidth = exportHeight = 768;
+				resizeImage = 768;
                 break;
+		}
+		
+		NSMutableArray *views = nil, *viewsRect = nil;
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllCPRViews"])
+		{
+			views = [NSMutableArray array];
+			viewsRect = [NSMutableArray array];
+			
+			[views addObject: cprView];
+			[views addObject: topTransverseView];
+			[views addObject: middleTransverseView];
+			[views addObject: bottomTransverseView];
+			
+			for( id v in views)
+			{
+				NSRect bounds = [v bounds];
+				NSPoint or = [v convertPoint: bounds.origin toView: nil];
+				bounds.origin = [[self window] convertBaseToScreen: or];
+				[viewsRect addObject: [NSValue valueWithRect: bounds]];
+			}
 		}
 		
 		// CURRENT image only
 		if( self.exportSequenceType == CPRCurrentOnlyExportSequenceType)
 		{
-			if( self.exportImageFormat == CPR16BitExportImageFormat) {            
+			if( self.exportImageFormat == CPR16BitExportImageFormat)
+			{
                 request = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
                 request.pixelsWide = exportWidth;
                 request.pixelsHigh = exportHeight;
@@ -2178,17 +2220,21 @@ static float deg2rad = 3.14159265358979/180.0;
                     
                     [dicomExport setOffset:[imageRep offset]];
                     [dicomExport setSigned:NO];
-                                        
+					
                     [dicomExport setDefaultWWWL:windowWidth :windowLevel];
-                    [dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
+                    //[dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]]; We cannot export theses values ! There are only correct for strict Y and X
                     f = [dicomExport writeDCMFile: nil];
-                    if( f == nil) {
+                    if( f == nil)
+					{
                         NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
                     }
                     [producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
-                }
-                            
-            }
+				}
+			}
+			else // CPR8BitRGBExportImageFormat
+			{
+				[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect]];
+			}
 		}
 		else if (self.exportSequenceType == CPRSeriesExportSequenceType) // A 3D rotation or batch sequence
 		{
@@ -2232,7 +2278,7 @@ static float deg2rad = 3.14159265358979/180.0;
                             [dicomExport setSigned:NO];
                             
                             [dicomExport setDefaultWWWL:windowWidth :windowLevel];
-                            [dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
+//                            [dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]]; We cannot export theses values ! There are only correct for strict Y and X
                             f = [dicomExport writeDCMFile: nil];
                             if( f == nil) {
                                 NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
@@ -2243,21 +2289,34 @@ static float deg2rad = 3.14159265358979/180.0;
                     }
                     
                 }
+				else // CPR8BitRGBExportImageFormat
+				{
+					[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect]];
+				}
 			}
-			else if(self.exportSeriesType == CPRSlabExportSeriesType) {
-                if (self.exportImageFormat == CPR16BitExportImageFormat) {                    
+			else if(self.exportSeriesType == CPRSlabExportSeriesType)
+			{
+                if (self.exportImageFormat == CPR16BitExportImageFormat)
+				{                    
                     request = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
                     request.pixelsWide = exportWidth;
                     request.pixelsHigh = exportHeight;
-                    if (self.exportSequenceNumberOfFrames > 1) {
-                        if (self.exportSlabThinknessSameAsSlabThickness) {
+                    if (self.exportSequenceNumberOfFrames > 1)
+					{
+                        if (self.exportSlabThinknessSameAsSlabThickness)
+						{
                             request.slabWidth = [self getClippingRangeThicknessInMm];
-                        } else {
+                        }
+						else
+						{
                             request.slabWidth = exportSlabThickness;
                         }
-                        if (self.exportSliceIntervalSameAsVolumeSliceInterval) {
+                        if (self.exportSliceIntervalSameAsVolumeSliceInterval)
+						{
                             request.slabSampleDistance = [cprView.volumeData minPixelSpacing];
-                        } else {
+                        }
+						else
+						{
                             request.slabSampleDistance = self.exportSliceInterval;
                         }
                     }
@@ -2266,10 +2325,14 @@ static float deg2rad = 3.14159265358979/180.0;
                     
                     curvedVolumeData = [CPRGenerator synchronousRequestVolume:request volumeData:cprView.volumeData];
                     if(curvedVolumeData) {
-                        for( int i = 0; i < self.exportSequenceNumberOfFrames; i++) {
-                            if (self.exportReverseSliceOrder == NO) {
+                        for( int i = 0; i < self.exportSequenceNumberOfFrames; i++)
+						{
+                            if (self.exportReverseSliceOrder == NO)
+							{
                                 imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex:i];
-                            } else {
+                            } 
+							else
+							{
                                 imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex:self.exportSequenceNumberOfFrames - i - 1];
                             }
                             dataPtr = (unsigned char *)[imageRep unsignedInt16Data];
@@ -2280,9 +2343,10 @@ static float deg2rad = 3.14159265358979/180.0;
                             [dicomExport setSigned:NO];
                             
                             [dicomExport setDefaultWWWL:windowWidth :windowLevel];
-                            [dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
+//                            [dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]]; We cannot export theses values ! There are only correct for strict Y and X
                             f = [dicomExport writeDCMFile: nil];
-                            if( f == nil) {
+                            if( f == nil)
+							{
                                 NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
                                 break;
                             }
@@ -2290,6 +2354,10 @@ static float deg2rad = 3.14159265358979/180.0;
                         }
                     }
                 }
+				else // CPR8BitRGBExportImageFormat
+				{
+					[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect]];
+				}
 			}
 			
 //			[progress close];
@@ -2297,8 +2365,10 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
             
 		
-		if( quicktimeExportMode == NO) {
-			if( [producedFiles count]) {
+		if( quicktimeExportMode == NO)
+		{
+			if( [producedFiles count])
+			{
 				NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
 													 toContext: [[BrowserController currentBrowser] managedObjectContext]
 													toDatabase: [BrowserController currentBrowser]
@@ -2311,7 +2381,8 @@ static float deg2rad = 3.14159265358979/180.0;
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
 					[[BrowserController currentBrowser] selectServer: objects];
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"]) {
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportMarkThemAsKeyImages"])
+				{
 					for( DicomImage *im in objects)
 						[im setValue: [NSNumber numberWithBool: YES] forKey: @"isKeyImage"];
 				}
@@ -2573,9 +2644,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
-	if( [panel runModalForDirectory:nil file:@"3D VR Image"] == NSFileHandlingPanelOKButton)
+	if( [panel runModalForDirectory:nil file: NSLocalizedString( @"Curved MPR Image", nil)] == NSFileHandlingPanelOKButton)
 	{
-		NSImage *im = [[self selectedView] nsimage:NO];
+		NSImage *im = [[self selectedViewOnlyMPRView: NO] nsimage:NO];
 		
 		NSArray *representations;
 		NSData *bitmapData;

@@ -565,6 +565,23 @@ extern int splitPosition[ 2];
     
 	glLineWidth(1.0);
 	
+	// Red Square
+	if( [[self window] firstResponder] == self && [stringID isEqualToString: @"export"] == NO)
+	{
+		glColor4d(1.0, 0, 0.0, 1.0);
+		
+		float heighthalf = self.frame.size.height/2;
+		float widthhalf = self.frame.size.width/2;
+		
+		glLineWidth(8.0);
+		glBegin(GL_LINE_LOOP);
+        glVertex2f(  -widthhalf, -heighthalf);
+        glVertex2f(  -widthhalf, heighthalf);
+        glVertex2f(  widthhalf, heighthalf);
+        glVertex2f(  widthhalf, -heighthalf);
+		glEnd();
+	}
+	
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_POINT_SMOOTH);
