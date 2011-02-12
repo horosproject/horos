@@ -13355,7 +13355,12 @@ static NSArray*	openSubSeriesArray = nil;
 	if( bonjourDownloading) return;
 	
 	[animationSlider setIntValue: subFrom-1];
+	
+	BOOL copyDontUpdatePreviewPane = dontUpdatePreviewPane;
+	
+	dontUpdatePreviewPane = NO;
 	[self previewSliderAction: nil];
+	dontUpdatePreviewPane = copyDontUpdatePreviewPane;
 	
 	[self checkMemory: self];
 }
@@ -13368,7 +13373,13 @@ static NSArray*	openSubSeriesArray = nil;
 	if( bonjourDownloading) return;
 	
 	[animationSlider setIntValue: subTo-1];
+	
+	
+	BOOL copyDontUpdatePreviewPane = dontUpdatePreviewPane;
+	
+	dontUpdatePreviewPane = NO;
 	[self previewSliderAction: nil];
+	dontUpdatePreviewPane = copyDontUpdatePreviewPane;
 	
 	[self checkMemory: self];
 }
@@ -13386,7 +13397,11 @@ static NSArray*	openSubSeriesArray = nil;
 	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subMax"];
 	
 	[self setValue:[NSNumber numberWithInt:1] forKey:@"subFrom"];
-	[self setValue:[NSNumber numberWithInt:2] forKey:@"subInterval"];
+	
+	if([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+		[self setValue:[NSNumber numberWithInt:1] forKey:@"subInterval"];
+	else
+		[self setValue:[NSNumber numberWithInt:2] forKey:@"subInterval"];
 	
 	[NSApp beginSheet: subSeriesWindow
 	   modalForWindow: [NSApp mainWindow]
