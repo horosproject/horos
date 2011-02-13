@@ -931,19 +931,15 @@ extern int splitPosition[ 2];
         lastDate = [[NSDate date] retain];
     }
     
-    NSLog(@"didGenerateVolume time sinc last date %f", -[lastDate timeIntervalSinceNow]);
+//    NSLog(@"didGenerateVolume time sinc last date %f", -[lastDate timeIntervalSinceNow]);
     [lastDate release];
     lastDate = [[NSDate date] retain];
     
-    
-    float wl, ww;
     NSUInteger i;
     NSMutableArray *pixArray;
     DCMPix *newPix;
 	
     [self _updateGeneratedHeight];
-        
-    [self getWLWW:&wl :&ww];
 	
 	NSPoint previousOrigin = [self origin];
 	float previousScale = [self scaleValue];
@@ -978,7 +974,9 @@ extern int splitPosition[ 2];
     
     [self setPixels:pixArray files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
     
-    [self setWLWW:wl :ww];
+    //[self setWLWW:wl :ww];
+	[[self windowController] propagateWLWW: [[self windowController] mprView1]];
+	
     [self setFusion:[[self class] _fusionModeForCPRViewClippingRangeMode:_clippingRangeMode] :self.curvedVolumeData.pixelsDeep];
     
     [pixArray release];
@@ -1075,7 +1073,8 @@ extern int splitPosition[ 2];
 {
     CPRStraightenedGeneratorRequest *request;
     
-    if ([_curvedPath.bezierPath elementCount] >= 2) {
+    if ([_curvedPath.bezierPath elementCount] >= 3)
+	{
         request = [[CPRStraightenedGeneratorRequest alloc] init];
         
         request.pixelsWide = [self bounds].size.width;
@@ -1098,6 +1097,11 @@ extern int splitPosition[ 2];
         
         [request release];
     }
+	else
+	{
+		[self setPixels: nil files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+	}
+	
     _needsNewRequest = NO;
 }
 

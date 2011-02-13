@@ -12,8 +12,9 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="414"/>
+			<integer value="668"/>
 			<integer value="697"/>
+			<integer value="414"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2229,7 +2230,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<bool key="NSTransparent">NO</bool>
 			</object>
 			<object class="NSBox" id="322188120">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">14</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2285,9 +2286,9 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 									</object>
 									<int key="NSPeriodicDelay">400</int>
 									<int key="NSPeriodicInterval">75</int>
-									<object class="NSMenuItem" key="NSMenuItem" id="507893419">
+									<object class="NSMenuItem" key="NSMenuItem" id="267840367">
 										<reference key="NSMenu" ref="332785461"/>
-										<string key="NSTitle">Mean</string>
+										<string key="NSTitle">MIP - Max Intensity Projection</string>
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
@@ -2295,7 +2296,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 										<reference key="NSOnImage" ref="13291313"/>
 										<reference key="NSMixedImage" ref="23159118"/>
 										<string key="NSAction">_popUpItemAction:</string>
-										<int key="NSTag">3</int>
+										<int key="NSTag">1</int>
 										<reference key="NSTarget" ref="175922870"/>
 									</object>
 									<bool key="NSMenuItemRespectAlignment">YES</bool>
@@ -2305,18 +2306,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 										</object>
 										<object class="NSMutableArray" key="NSMenuItems">
 											<bool key="EncodedWithXMLCoder">YES</bool>
-											<object class="NSMenuItem" id="267840367">
-												<reference key="NSMenu" ref="332785461"/>
-												<string key="NSTitle">MIP - Max Intensity Projection</string>
-												<string key="NSKeyEquiv"/>
-												<int key="NSKeyEquivModMask">1048576</int>
-												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="13291313"/>
-												<reference key="NSMixedImage" ref="23159118"/>
-												<string key="NSAction">_popUpItemAction:</string>
-												<int key="NSTag">1</int>
-												<reference key="NSTarget" ref="175922870"/>
-											</object>
+											<reference ref="267840367"/>
 											<object class="NSMenuItem" id="930552064">
 												<reference key="NSMenu" ref="332785461"/>
 												<string key="NSTitle">minIP - Min Intensity Projection</string>
@@ -2329,21 +2319,20 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 												<int key="NSTag">2</int>
 												<reference key="NSTarget" ref="175922870"/>
 											</object>
-											<reference ref="507893419"/>
-											<object class="NSMenuItem" id="86194378">
+											<object class="NSMenuItem" id="507893419">
 												<reference key="NSMenu" ref="332785461"/>
-												<string key="NSTitle">Volume Rendering </string>
+												<string key="NSTitle">Mean</string>
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
 												<reference key="NSOnImage" ref="13291313"/>
 												<reference key="NSMixedImage" ref="23159118"/>
 												<string key="NSAction">_popUpItemAction:</string>
+												<int key="NSTag">3</int>
 												<reference key="NSTarget" ref="175922870"/>
 											</object>
 										</object>
 									</object>
-									<int key="NSSelectedIndex">2</int>
 									<int key="NSPreferredEdge">3</int>
 									<bool key="NSUsesItemFromMenu">YES</bool>
 									<bool key="NSAltersState">YES</bool>
@@ -2434,6 +2423,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					</object>
 				</object>
 				<string key="NSFrameSize">{177, 40}</string>
+				<reference key="NSSuperview"/>
 				<string key="NSOffsets">{0, 0}</string>
 				<object class="NSTextFieldCell" key="NSTitleCell">
 					<int key="NSCellFlags">67239424</int>
@@ -3224,10 +3214,6 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<bool key="NSTransparent">NO</bool>
 			</object>
 			<object class="NSUserDefaultsController" id="46445117">
-				<object class="NSMutableArray" key="NSDeclaredKeys">
-					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>exportDCMIncludeAllCPRViews</string>
-				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSCustomView" id="507665343">
@@ -9124,7 +9110,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="507893419"/>
-							<reference ref="86194378"/>
 							<reference ref="267840367"/>
 							<reference ref="930552064"/>
 						</object>
@@ -9133,11 +9118,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBObjectRecord">
 						<int key="objectID">669</int>
 						<reference key="object" ref="507893419"/>
-						<reference key="parent" ref="332785461"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">670</int>
-						<reference key="object" ref="86194378"/>
 						<reference key="parent" ref="332785461"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -10962,8 +10942,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>668.ImportedFromIB2</string>
 					<string>669.IBPluginDependency</string>
 					<string>669.ImportedFromIB2</string>
-					<string>670.IBPluginDependency</string>
-					<string>670.ImportedFromIB2</string>
 					<string>671.IBPluginDependency</string>
 					<string>671.ImportedFromIB2</string>
 					<string>672.IBEditorWindowLastContentRect</string>
@@ -11615,9 +11593,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{601, 780}, {197, 63}}</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<integer value="1"/>
+					<string>{{601, 796}, {194, 48}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

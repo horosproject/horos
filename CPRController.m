@@ -520,7 +520,6 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (BOOL) is2DViewer
 {
-    NSLog(@"is2DViewer");
 	return NO;
 }
 
@@ -2099,7 +2098,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		v = mprView2;
 	if( [[self window] firstResponder] == mprView3)
 		v = mprView3;
-	if( onlyMPRView && [[self window] firstResponder] == cprView)
+	if( onlyMPRView == NO && [[self window] firstResponder] == cprView)
 		v = cprView;
 	
 	if( onlyMPRView)
@@ -2914,15 +2913,16 @@ static float deg2rad = 3.14159265358979/180.0;
 {
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
     
-	if ([itemIdent isEqualToString: @"tbLOD"])
-	{
-		[toolbarItem setLabel: NSLocalizedString(@"LOD",nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString( @"LOD",nil)];
-		
-		[toolbarItem setView: tbLOD];
-		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbLOD frame]), NSHeight([tbLOD frame]))];
-    }
-    else if ([itemIdent isEqualToString: @"tbStraightenedCPRAngle"])
+//	if ([itemIdent isEqualToString: @"tbLOD"])
+//	{
+//		[toolbarItem setLabel: NSLocalizedString(@"LOD",nil)];
+//		[toolbarItem setPaletteLabel:NSLocalizedString( @"LOD",nil)];
+//		
+//		[toolbarItem setView: tbLOD];
+//		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbLOD frame]), NSHeight([tbLOD frame]))];
+//    }
+//    else
+	if ([itemIdent isEqualToString: @"tbStraightenedCPRAngle"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Curved MPR Angle",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Curved MPR Angle",nil)];
@@ -3072,7 +3072,8 @@ static float deg2rad = 3.14159265358979/180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.tif", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.tif", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+	//@"tbLOD"
 }
 
 - (void)updateToolbarItems;

@@ -4482,7 +4482,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							sprintf (line2, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
 						
 						// If there is another line, compute cobb's angle
-						if( curView && displayCobbAngle)
+						if( curView && displayCobbAngle && displayCMOrPixels == NO)
 						{
 							NSArray *roiList = curView.curRoiList;
 							

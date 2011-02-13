@@ -352,10 +352,6 @@ extern int CLUTBARS, ANNOTATIONS;
 
 - (void)generator:(CPRGenerator *)generator didGenerateVolume:(CPRVolumeData *)volume request:(CPRGeneratorRequest *)request
 {
-    float wl, ww;
-	
-    [self getWLWW:&wl :&ww];
-	
 	NSData *previousROIs = [NSArchiver archivedDataWithRootObject: [self curRoiList]];
 	
     [[self.generatedVolumeData retain] autorelease]; // make sure this is around long enough so that it doesn't disapear under the old DCMPix
@@ -385,7 +381,7 @@ extern int CLUTBARS, ANNOTATIONS;
     
     [self setPixels:pixArray files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
     
-    [self setWLWW:wl :ww];
+    [[self windowController] propagateWLWW: [[self windowController] mprView1]];
     
 	NSArray *roiArray = [NSUnarchiver unarchiveObjectWithData: previousROIs];
 	for( ROI *r in roiArray)
@@ -406,7 +402,8 @@ extern int CLUTBARS, ANNOTATIONS;
     CPRStraightenedGeneratorRequest *request;
     N3Vector initialNormal;
     
-    if ([_curvedPath.bezierPath elementCount] >= 2) {
+    if ([_curvedPath.bezierPath elementCount] >= 3)
+	{
         request = [[CPRStraightenedGeneratorRequest alloc] init];
         
         request.pixelsWide = [self bounds].size.width;
@@ -427,6 +424,11 @@ extern int CLUTBARS, ANNOTATIONS;
         
         [request release];
     }
+	else
+	{
+		[self setPixels: nil files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+	}
+	
     _needsNewRequest = NO;
 }
 

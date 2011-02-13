@@ -340,6 +340,9 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     CGFloat relativePosition;
     N3AffineTransform inverseTransform;
     
+	if( N3AffineTransformIsAffine( transform) == NO)
+		return 0;
+	
     clickRay = N3LineApplyTransform(N3LineMake(N3VectorMakeFromNSPoint(point), N3VectorMake(0, 0, 1)), transform);
     inverseTransform = N3AffineTransformInvert(transform);
     
