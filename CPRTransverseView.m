@@ -268,7 +268,9 @@ extern int CLUTBARS, ANNOTATIONS;
 	long clutBars = CLUTBARS, annotations = ANNOTATIONS;
 	
 	CLUTBARS = barHide;
-	ANNOTATIONS = annotGraphics;
+	
+	if( ANNOTATIONS > annotGraphics)
+		ANNOTATIONS = annotGraphics;
 	
 	for( int i = 0; i < curRoiList.count; i++ )
 	{
@@ -329,7 +331,7 @@ extern int CLUTBARS, ANNOTATIONS;
 	}
 	
 	// Red Square
-	if( [[self window] firstResponder] == self && [stringID isEqualToString: @"export"] == NO)
+	if( [[self window] firstResponder] == self && stringID == nil)
 	{
 		glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 		glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale

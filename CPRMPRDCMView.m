@@ -770,7 +770,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	[self colorForView: viewID];
 	
 	// Red Square
-	if( [[self window] firstResponder] == self)
+	if( [[self window] firstResponder] == self && stringID == nil)
 	{
 		glLineWidth(8.0);
 		glBegin(GL_LINE_LOOP);

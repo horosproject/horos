@@ -10182,7 +10182,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 	if( stringID == nil && originalSize == NO)
 	{
-		if( [ViewerController numberOf2DViewer] > 1 || _imageColumns != 1 || _imageRows != 1 || [self isKeyImage] == YES)
+//		if( [ViewerController numberOf2DViewer] > 1 || _imageColumns != 1 || _imageRows != 1 || [self isKeyImage] == YES)
 		{
 			if( [self is2DViewer] && (_imageColumns != 1 || _imageRows != 1))
 			{

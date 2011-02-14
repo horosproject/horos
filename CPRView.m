@@ -566,7 +566,7 @@ extern int splitPosition[ 2];
 	glLineWidth(1.0);
 	
 	// Red Square
-	if( [[self window] firstResponder] == self && [stringID isEqualToString: @"export"] == NO)
+	if( [[self window] firstResponder] == self && stringID == nil)
 	{
 		glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 		glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
@@ -1004,6 +1004,11 @@ extern int splitPosition[ 2];
 
 - (void)generator:(CPRGenerator *)generator didAbandonRequest:(CPRGeneratorRequest *)request
 {
+}
+
+- (void) waitUntilAllOperationsAreFinished
+{
+	[_generator waitUntilAllOperationsAreFinished];
 }
 
 + (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRViewClippingRangeMode)clippingRangeMode

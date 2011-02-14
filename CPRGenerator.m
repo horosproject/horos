@@ -79,6 +79,12 @@
     [super dealloc];
 }
 
+- (void) waitUntilAllOperationsAreFinished
+{
+	[_generatorQueue waitUntilAllOperationsAreFinished];
+	[self _didFinishOperation];
+}
+
 - (void)requestVolume:(CPRGeneratorRequest *)request
 {
     CPRGeneratorOperation *operation;
