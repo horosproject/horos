@@ -2255,13 +2255,9 @@ static float deg2rad = 3.14159265358979/180.0;
 				for( int i = 0; i < self.exportNumberOfRotationFrames; i++)
 				{
 					if (self.exportRotationSpan == CPR180ExportRotationSpan)
-					{
 						angle = ((CGFloat)i/(CGFloat)self.exportNumberOfRotationFrames) * M_PI;
-					}
 					else
-					{
 						angle = ((CGFloat)i/(CGFloat)self.exportNumberOfRotationFrames) * 2.0*M_PI;
-					}
 					
 					if( self.exportImageFormat == CPR16BitExportImageFormat)
 					{
@@ -2297,11 +2293,6 @@ static float deg2rad = 3.14159265358979/180.0;
 						[self CPRViewDidEditCurvedPath: mprView1];
 						
 						[cprView waitUntilAllOperationsAreFinished];
-						
-						[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow: 0.1]];
-						
-						[cprView setNeedsDisplay: YES];
-						[cprView display];
 						
 						[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect]];
 					}
