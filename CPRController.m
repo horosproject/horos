@@ -2293,11 +2293,12 @@ static float deg2rad = 3.14159265358979/180.0;
 					else // CPR8BitRGBExportImageFormat
 					{
 						[self CPRViewWillEditCurvedPath: mprView1];
-						
 						mprView1.curvedPath.initialNormal = N3VectorApplyTransform( initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [curvedPath.bezierPath tangentAtStart]));
 						[self CPRViewDidEditCurvedPath: mprView1];
-						[cprView _sendNewRequest];
+						
 						[cprView waitUntilAllOperationsAreFinished];
+						
+						[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow: 0.1]];
 						
 						[cprView setNeedsDisplay: YES];
 						[cprView display];
