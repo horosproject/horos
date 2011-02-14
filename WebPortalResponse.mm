@@ -324,8 +324,21 @@
 	}
 	
 	if ([part0 isEqual:@"XMLENC"] || [part0 isEqual:@"X"]) {
-		token = [[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@":"];
+		NSUInteger from = 1;
+		
+		NSString* part1 = NULL;
+		if (parts.count >= 3)
+			part1 = [parts objectAtIndex:1];
+		
+		if ([part1 isEqualToString:@"ZWS"])
+			++from;
+		
+		token = [[parts subarrayWithRange:NSMakeRange(from,parts.count-from)] componentsJoinedByString:@":"];
 		NSString* evaldToken = [self evaluateToken:token withDictionary:dict context:context mustReevaluate:mustReevaluate];
+		
+		if ([part1 isEqualToString:@"ZWS"])
+			evaldToken = [[evaldToken componentsWithLength:1] componentsJoinedByString:[NSString stringWithFormat:@"%C",0x200b]];
+		
 		return [evaldToken xmlEscapedString];
 	}
 	

@@ -17262,7 +17262,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							}
 						}
 						
-						[[WebPortal defaultWebPortal] sendNotificationsEmailsTo: destinationUsers aboutStudies: [self databaseSelection] predicate: nil message: nil replyTo: nil customText: self.customTextNotificationEmail];
+						[[WebPortal defaultWebPortal] sendNotificationsEmailsTo: destinationUsers aboutStudies: [self databaseSelection] predicate: nil replyTo: nil customText: self.customTextNotificationEmail];
 					}
 				}
 				@catch( NSException *e)

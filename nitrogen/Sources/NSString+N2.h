@@ -43,6 +43,8 @@ extern NSString* N2NonNullString(NSString* s);
 -(NSString*)resolvedPathString;
 -(NSString*)stringByComposingPathWithString:(NSString*)rel;
 
+-(NSArray*)componentsWithLength:(NSUInteger)len;
+
 @end
 
 @interface NSAttributedString (N2)

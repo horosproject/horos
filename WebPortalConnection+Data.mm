@@ -338,17 +338,17 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			for (DicomImage *im in dicomImageArray)
 			{
-				DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [im valueForKey:@"completePathResolved"] :0 :1 :nil :[[im valueForKey:@"frameID"] intValue] :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+				DCMPix* dcmPix = [[DCMPix alloc]
+								  initWithPath:im.completePathResolved :0 :1 :nil :im.frameID.intValue :im.series.id.intValue isBonjour:NO imageObj:im];
 				
 				if (dcmPix)
 				{
 					float curWW = 0;
 					float curWL = 0;
 					
-					if ([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
-					{
-						curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-						curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+					if (im.series.windowWidth) {
+						curWW = im.series.windowWidth.floatValue;
+						curWL = im.series.windowLevel.floatValue;
 					}
 					
 					if (curWW != 0)
@@ -403,7 +403,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] attributes: nil];
 			
 			int inc = 0;
-			for ( NSImage *img in imagesArray)
+			for (NSImage* img in imagesArray)
 			{
 				NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 				//[[img TIFFRepresentation] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
@@ -614,7 +614,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			}
 			
 			// Send the email
-			[self.portal sendNotificationsEmailsTo:[NSArray arrayWithObject:destUser] aboutStudies:[NSArray arrayWithObject:study] predicate:NULL message:[N2NonNullString([parameters objectForKey:@"message"]) stringByAppendingFormat: @"\r\r\r%@\r\r%%URLsList%%", NSLocalizedString( @"To view this study, click on the following link:", nil)] replyTo:user.email customText:nil];
+			[self.portal sendNotificationsEmailsTo:[NSArray arrayWithObject:destUser] aboutStudies:[NSArray arrayWithObject:study] predicate:NULL replyTo:user.email customText:[parameters objectForKey:@"message"]];
 			[self.portal updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", destUser.name] forUser:user.name ip:asyncSocket.connectedHost];
 			
 			[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUser.name]];

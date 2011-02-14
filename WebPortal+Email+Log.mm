@@ -31,7 +31,7 @@
 
 @implementation WebPortal (EmailLog)
 
--(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate message:(NSString*)message replyTo:(NSString*)replyto customText:(NSString*)customText
+-(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate replyTo:(NSString*)replyto customText:(NSString*)customText
 {
 	if (!self.notificationsEnabled)
 		return NO;
@@ -185,7 +185,7 @@
 							
 							if ([filteredStudies count] > 0)
 							{
-								[self sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] message: nil replyTo: nil customText: nil];
+								[self sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] replyTo: nil customText: nil];
 							}
 						}
 					}

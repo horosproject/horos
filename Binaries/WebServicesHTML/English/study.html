@@ -1,6 +1,6 @@
 %INCLUDE:header.pvt.html%
 <div id="subheader">
-	<a class="back" href="studyList?%Info.getParameters(xid=)%">%BackLinkLabel%</a>
+	<a class="back" href="studyList?%Info.getParameters(xid=)%">%X:ZWS:BackLinkLabel%</a>
 </div>
 
 <script type="text/javascript" language="javascript">
@@ -109,20 +109,20 @@ function onSubmitForm(form) {
 		<div>
 			<table class="wide fat">
 				%[FOREACH:Series:Series%
-					<tr class="li%X:Series_Index2%">				
+					<tr class="li%X:Series_Index2%">
 						%[IF:Info.proposeDicomSend||Info.proposeWeasis%
 						<td class="narrow fat">
 							<input type="checkbox" class="checkbox" name="selected" value="%Series.XID%" onchange="checkboxChanged(this.form)" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
 						</td>
 						%]IF:Info.proposeDicomSend||Info.proposeWeasis%
 						<td class="narrow middle center">
-							<a class="series" href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%">
+							<a href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%">
 								<img src="/thumbnail?xid=%Series.XID%" />
 							</a>
 						</td>
 						<td class="fat">
-							<a class="series" href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%">
-								<span class="bigger">%X:Series.name%</span>
+							<a href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%">
+								<span class="bigger">%X:ZWS:Series.name%</span>
 								<span class="gray">
 									%[IF:Series.stateText%
 										%X:Series.stateText%,

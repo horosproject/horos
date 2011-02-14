@@ -20,7 +20,6 @@ body > * {
 	padding-top: 15px;
 	padding-bottom: 3px;
 	margin-bottom: 1px;
-	line-height: 90%;
 	font-size: 20px;
 	font-weight: bold;
 	border-bottom: thin solid #555555;
@@ -110,6 +109,10 @@ table {
 
 .right {
 	text-align: right;
+}
+	
+.compressed {
+	line-height: 95%;
 }
 
 .wide {

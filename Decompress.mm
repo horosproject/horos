@@ -653,8 +653,6 @@ int main(int argc, const char *argv[])
 			QTMovie *aMovie = [QTMovie movieWithFile: inFile error:&error];
 			
 			NSValue* v = [aMovie attributeForKey:QTMovieCurrentSizeAttribute];
-			NSLog(@"AOEUUSTH %@", v);
-			
 			
 			if (aMovie && error == nil)
 			{
