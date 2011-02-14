@@ -714,8 +714,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	[response.tokens setObject:[NSString stringWithFormat:@"%@ - %@", series.study.name, series.study.studyName] forKey:@"BackLinkLabel"];
 	
 	response.templateString = [self.portal stringForPath:@"series.html"];
-	
-	NSLog(@"Series data will be: %@", [[[NSString alloc] initWithData:response.data encoding:NSUTF8StringEncoding] autorelease]);
 }
 
 
