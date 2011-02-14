@@ -433,553 +433,566 @@ extern NSManagedObjectContext *staticContext;
 	const char *sType = NULL;
 	const char *scs = NULL;
 	
-	NS_DURING 
-	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
-	
-	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL)
+	@try
 	{
-		[specificCharacterSet release];
+		dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 		
-		NSArray	*c = nil;
-		
-		@try
+		if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL)
 		{
-			c = [[NSString stringWithCString: scs] componentsSeparatedByString:@"\\"];
-		
-			if( [c count] > 0)
-				specificCharacterSet = [[c objectAtIndex: 0] retain];
-			else
-				specificCharacterSet = [[NSString alloc] initWithCString: scs];
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
-		
-		encoding = [NSString encodingForDICOMCharacterSet: specificCharacterSet];
-	}
-	else
-	{
-		[specificCharacterSet release];
-		specificCharacterSet = [[NSString alloc] initWithString:@"ISO_IR 100"];
-		encoding = NSISOLatin1StringEncoding;
-	}
-	
-	if (strcmp(sType, "STUDY") == 0) 
-		compoundPredicate = [NSPredicate predicateWithFormat:@"hasDICOM == %d", YES];
-	else if (strcmp(sType, "SERIES") == 0)
-		compoundPredicate = [NSPredicate predicateWithFormat:@"study.hasDICOM == %d", YES];
-	else if (strcmp(sType, "IMAGE") == 0)
-		compoundPredicate = [NSPredicate predicateWithFormat:@"series.study.hasDICOM == %d", YES];
-	
-	NSString *dcmstartTime = nil;
-	NSString *dcmendTime = nil;
-	NSString *dcmstartDate = nil;
-	NSString *dcmendDate = nil;
-	
-	int elemCount = (int)(dataset->card());
-    for (int elemIndex=0; elemIndex<elemCount; elemIndex++)
-	{
-		NSPredicate *predicate = nil;
-		DcmElement* dcelem = dataset->getElement(elemIndex);
-		DcmTagKey key = dcelem->getTag().getXTag();
-		
-		if (strcmp(sType, "STUDY") == 0)
-		{
-			if (key == DCM_PatientsName)
+			[specificCharacterSet release];
+			
+			NSArray	*c = nil;
+			
+			@try
 			{
-				char *pn;
-				if (dcelem->getString(pn).good() && pn != NULL)
-				{
-					NSString *patientNameString = [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet];
-					
-					patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @", " withString:@" "];
-					patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @"," withString:@" "];
-					patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @"^ " withString:@" "];
-					patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @"^" withString:@" "];
-					
-					predicate = [self predicateWithString: patientNameString forField: @"name"];
-				}
-			}
-			else if (key == DCM_PatientID)
-			{
-				char *pid;
-				if (dcelem->getString(pid).good() && pid != NULL)
-					predicate = [self predicateWithString: [NSString stringWithCString:pid  DICOMEncoding:nil] forField: @"patientID"];
-			}
-			else if (key == DCM_AccessionNumber)
-			{
-				char *pid;
-				if (dcelem->getString(pid).good() && pid != NULL)
-					predicate = [self predicateWithString: [NSString stringWithCString:pid  DICOMEncoding:nil] forField: @"accessionNumber"];
-			}
-			else if (key == DCM_StudyInstanceUID)
-			{
-				char *suid;
-				if (dcelem->getString(suid).good() && suid != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [NSString stringWithCString:suid  DICOMEncoding:nil]];
-			}
-			else if (key == DCM_StudyID)
-			{
-				char *sid;
-				if (dcelem->getString(sid).good() && sid != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithCString:sid  DICOMEncoding:nil]];
-			}
-			else if (key ==  DCM_StudyDescription)
-			{
-				char *sd;
-				if (dcelem->getString(sd).good() && sd != NULL)
-					predicate = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"studyName"];
-			}
-			else if (key ==  DCM_ImageComments || key ==  DCM_StudyComments)
-			{
-				char *sd;
-				if (dcelem->getString(sd).good() && sd != NULL)
-				{
-					NSPredicate *p1 = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"comment"];
-					NSPredicate *p2 = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"series.comment" any: YES];
-					
-					predicate = [NSCompoundPredicate orPredicateWithSubpredicates: [NSArray arrayWithObjects: p1, p2, nil]];
-				}
-			}
-			else if (key == DCM_InstitutionName)
-			{
-				char *inn;
-				if (dcelem->getString(inn).good() && inn != NULL)
-					predicate = [self predicateWithString: [NSString stringWithCString:inn  DICOMEncoding:specificCharacterSet] forField: @"institutionName"];
-			}
-			else if (key == DCM_ReferringPhysiciansName)
-			{
-				char *rpn;
-				if (dcelem->getString(rpn).good() && rpn != NULL)
-					predicate = [self predicateWithString: [NSString stringWithCString:rpn  DICOMEncoding:specificCharacterSet] forField: @"referringPhysician"];
-			}
-			else if (key ==  DCM_PerformingPhysiciansName)
-			{
-				char *ppn;
-				if (dcelem->getString(ppn).good() && ppn != NULL)
-					predicate = [self predicateWithString: [NSString stringWithCString:ppn  DICOMEncoding:specificCharacterSet] forField: @"performingPhysician"];
-			}
-			else if (key ==  DCM_ModalitiesInStudy)
-			{
-				char *mis;
-				if (dcelem->getString(mis).good() && mis != NULL)
-				{
-					predicate = [NSPredicate predicateWithFormat:@"(ANY series.modality IN %@)", [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"]];
-				}
-			}
-			else if (key ==  DCM_Modality)
-			{
-				char *mis;
-				if (dcelem->getString(mis).good() && mis != NULL)
-				{
-					predicate = [NSPredicate predicateWithFormat:@"(ANY series.modality IN %@)", [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"]];
-				}
-			}
-			else if (key == DCM_PatientsBirthDate)
-			{
-				char *aDate;
-				DCMCalendarDate *value = nil;
-				if (dcelem->getString(aDate).good() && aDate != NULL) {
-					NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
-					value = [DCMCalendarDate dicomDate:dateString];
-				}
-				if (!value) {
-					predicate = nil;
-				}
+				c = [[NSString stringWithCString: scs] componentsSeparatedByString:@"\\"];
+			
+				if( [c count] > 0)
+					specificCharacterSet = [[c objectAtIndex: 0] retain];
 				else
-				{
-					predicate = [NSPredicate predicateWithFormat:@"(dateOfBirth >= CAST(%lf, \"NSDate\")) AND (dateOfBirth < CAST(%lf, \"NSDate\"))", [self startOfDay:value], [self endOfDay:value]];
-				}
+					specificCharacterSet = [[NSString alloc] initWithCString: scs];
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 			}
 			
-			else if (key == DCM_StudyDate)
-			{
-				char *aDate;
-				DCMCalendarDate *value = nil;
-				if (dcelem->getString(aDate).good() && aDate != NULL)
-				{
-					NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
-					value = [DCMCalendarDate dicomDate:dateString];
-				}
-				
-				if (!value)
-				{
-					predicate = nil;
-				}
-				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
-				{
-					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
-					
-					dcmendDate = queryString;
-
-				}
-				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
-				{
-					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
-					
-					dcmstartDate = queryString;
-				}
-				else if ([(DCMCalendarDate *)value isQuery])
-				{
-					NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
-					if ([values count] == 2)
-					{
-						dcmstartDate = [values objectAtIndex:0];
-						dcmendDate = [values objectAtIndex:1];
-					}
-					else
-						predicate = nil;
-				}
-				else{
-					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\") AND date < CAST(%lf, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
-				}
-			}
-			else if (key == DCM_StudyTime)
-			{
-				char *aDate;
-				DCMCalendarDate *value = nil;
-				if (dcelem->getString(aDate).good() && aDate != NULL)
-				{
-					NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
-					value = [DCMCalendarDate dicomTime:dateString];
-				}
-  
-				if (!value)
-				{
-					predicate = nil;
-				}
-				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
-				{
-					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
-					
-					dcmendTime = queryString;
-				}
-				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
-				{
-					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
-					
-					dcmstartTime = queryString;
-				}
-				else if ([(DCMCalendarDate *)value isQuery])
-				{
-					NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
-					if ([values count] == 2)
-					{
-						dcmstartTime = [values objectAtIndex:0];
-						dcmendTime = [values objectAtIndex:1];
-					}
-					else
-						predicate = nil;
-				}
-				else
-				{
-					predicate = [NSPredicate predicateWithFormat:@"dicomTime == %@", [value dateAsNumber]];
-				}
-			}
-			else
-				predicate = nil;
-		}
-		else if (strcmp(sType, "SERIES") == 0)
-		{
-			if (key == DCM_StudyInstanceUID)
-			{
-				char *string;
-				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
-			}
-			else if (key == DCM_SeriesInstanceUID)
-			{
-				char *string;
-				if (dcelem->getString(string).good() && string != NULL)
-				{
-					NSString *u = [NSString stringWithCString:string  DICOMEncoding:nil];
-					NSArray *uids = [u componentsSeparatedByString:@"\\"];
-					NSArray *predicateArray = [NSArray array];
-					
-					int x;
-					for(x = 0; x < [uids count]; x++)
-					{
-						NSString *curString = [uids objectAtIndex: x];
-						
-						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", curString]];
-					}
-					
-					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
-				}
-			} 
-			else if (key == DCM_SeriesDescription)
-			{
-				char *string;
-				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [self predicateWithString:[NSString stringWithCString:string  DICOMEncoding:specificCharacterSet] forField:@"name"];
-			}
-			else if (key == DCM_SeriesNumber)
-			{
-				char *string;
-				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
-			}
-			else if (key ==  DCM_Modality)
-			{
-				char *mis;
-				if (dcelem->getString(mis).good() && mis != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"study.modality == %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
-			}
-			
-			else if (key == DCM_SeriesDate)
-			{
-				char *aDate;
-				DCMCalendarDate *value = nil;
-				if (dcelem->getString(aDate).good() && aDate != NULL)
-				{
-					NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
-					value = [DCMCalendarDate dicomDate:dateString];
-				}
-  
-				if (!value)
-				{
-					predicate = nil;
-				}
-				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
-				{
-					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
-					
-					dcmendDate = queryString;
-					
-//					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];
-//					predicate = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")", [self endOfDay:query]];
-
-				}
-				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
-				{
-					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];		
-					
-					dcmstartDate = queryString;
-					
-//					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
-//					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(%lf, \"NSDate\")",[self startOfDay:query]];
-				}
-				else if ([(DCMCalendarDate *)value isQuery])
-				{
-					NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
-					if ([values count] == 2)
-					{
-						dcmstartDate = [values objectAtIndex:0];
-						dcmendDate = [values objectAtIndex:1];
-						
-//						DCMCalendarDate *startDate = [DCMCalendarDate dicomDate:[values objectAtIndex:0]];
-//						DCMCalendarDate *endDate = [DCMCalendarDate dicomDate:[values objectAtIndex:1]];
-//
-//						//need two predicates for range
-//						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\")", [self startOfDay:startDate]];
-//						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")",[self endOfDay:endDate]];
-//						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
-					}
-					else
-						predicate = nil;
-				}
-				else
-				{
-					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\") AND date < CAST(%lf, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
-				}
-			}
-			else if (key == DCM_SeriesTime)
-			{
-				char *aDate;
-				DCMCalendarDate *value = nil;
-				if (dcelem->getString(aDate).good() && aDate != NULL)
-				{
-					NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
-					value = [DCMCalendarDate dicomTime:dateString];
-				}
-  
-				if (!value)
-				{
-					predicate = nil;
-				}
-				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
-				{
-					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];	
-					dcmendTime = queryString;
-					
-//					NSNumber *query = [NSNumber numberWithInt:[queryString intValue]];			
-//					predicate = [NSPredicate predicateWithFormat:@"dicomTime <= %@",query];
-				}
-				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
-				{
-					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
-					dcmstartTime = queryString;
-					
-//					NSNumber *query = [NSNumber numberWithInt:[queryString intValue]];			
-//					predicate = [NSPredicate predicateWithFormat:@"dicomTime >= %@",query];
-				}
-				else if ([(DCMCalendarDate *)value isQuery])
-				{
-					NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
-					if ([values count] == 2)
-					{
-						dcmstartTime = [values objectAtIndex:0];
-						dcmendTime = [values objectAtIndex:1];
-						
-//						NSNumber *startDate = [NSNumber numberWithInt:[[values objectAtIndex:0] intValue]];
-//						NSNumber *endDate = [NSNumber numberWithInt:[[values objectAtIndex:1] intValue]];
-//
-//						//need two predicates for range
-//						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"dicomTime >= %@",startDate];
-//						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"dicomTime <= %@",endDate];
-//						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
-					}
-					else
-						predicate = nil;
-				}
-
-				else
-				{
-					predicate = [NSPredicate predicateWithFormat:@"dicomTime == %@", [value dateAsNumber]];
-				}
-			}
-			else
-			{
-				predicate = nil;
-			}
-		}
-		else if (strcmp(sType, "IMAGE") == 0)
-		{
-			if (key == DCM_StudyInstanceUID)
-			{
-				char *string;
-				if (dcelem->getString(string).good() && string != NULL)
-				{
-					predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
-				
-					if( seriesLevelPredicate == nil)
-						seriesLevelPredicate = predicate;
-					else
-						seriesLevelPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, seriesLevelPredicate, nil]];
-						
-					*SLPredicate = seriesLevelPredicate;
-					
-					predicate = nil;
-				}
-			}
-			else if (key == DCM_SeriesInstanceUID)
-			{
-				char *string;
-				if (dcelem->getString(string).good() && string != NULL)
-				{
-					predicate = [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
-					
-					if( seriesLevelPredicate == nil)
-						seriesLevelPredicate = predicate;
-					else
-						seriesLevelPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: seriesLevelPredicate, predicate, nil]];
-					
-					*SLPredicate = seriesLevelPredicate;
-					
-					predicate = nil;
-				}
-			} 
-			else if (key == DCM_SOPInstanceUID)
-			{
-				char *string = nil;
-				
-				if (dcelem->getString(string).good() && string != NULL)
-				{
-					NSArray *uids = [[NSString stringWithCString:string  DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
-					NSArray *predicateArray = [NSArray array];
-					
-					for(int x = 0; x < [uids count]; x++)
-					{
-						NSPredicate	*p = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: [uids objectAtIndex: x]]] customSelector: @selector( isEqualToSopInstanceUID:)];
-						predicateArray = [predicateArray arrayByAddingObject: p];
-					}
-					
-					predicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
-					*csopPredicate = [NSCompoundPredicate orPredicateWithSubpredicates: predicateArray];
-				}
-			}
-			else if (key == DCM_InstanceNumber)
-			{
-				char *string;
-				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"instanceNumber == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
-			}
-			else if (key == DCM_NumberOfFrames)
-			{
-				char *string;
-				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"numberOfFrames == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
-			}
+			encoding = [NSString encodingForDICOMCharacterSet: specificCharacterSet];
 		}
 		else
 		{
-			NSLog( @"OsiriX supports ONLY STUDY, SERIES, IMAGE levels ! Current level: %s", sType);
+			[specificCharacterSet release];
+			specificCharacterSet = [[NSString alloc] initWithString:@"ISO_IR 100"];
+			encoding = NSISOLatin1StringEncoding;
 		}
 		
-		if (predicate)
-			compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: compoundPredicate, predicate, nil]];
-	}
-	
-	{
-		NSPredicate *predicate = nil;
+		NSString *dcmstartTime = nil;
+		NSString *dcmendTime = nil;
+		NSString *dcmstartDate = nil;
+		NSString *dcmendDate = nil;
 		
-		NSTimeInterval startDate = nil;
-		NSTimeInterval endDate = nil;
-		
-		if( dcmstartDate)
+		int elemCount = (int)(dataset->card());
+		for (int elemIndex=0; elemIndex<elemCount; elemIndex++)
 		{
-			if( dcmstartTime)
-			{
-				DCMCalendarDate *time = [DCMCalendarDate dicomTime: dcmstartTime];
-				startDate = [[[DCMCalendarDate dicomDate: dcmstartDate] dateByAddingYears: 0 months: 0 days: 0 hours: [time hourOfDay] minutes: [time minuteOfHour] seconds: [time secondOfMinute]] timeIntervalSinceReferenceDate];
-			}
-			else startDate = [self startOfDay: [DCMCalendarDate dicomDate: dcmstartDate]];
-		}
-		
-		if( dcmendDate)
-		{
-			if( dcmendTime)
-			{
-				DCMCalendarDate *time = [DCMCalendarDate dicomTime: dcmendTime];
-				endDate = [[[DCMCalendarDate dicomDate: dcmendDate] dateByAddingYears: 0 months: 0 days: 0 hours: [time hourOfDay] minutes: [time minuteOfHour] seconds: [time secondOfMinute]] timeIntervalSinceReferenceDate];
-			}
-			else endDate = [self endOfDay: [DCMCalendarDate dicomDate: dcmendDate]];
-		}
-		
-		if( startDate && endDate)
-		{
-			//need two predicates for range
+			NSPredicate *predicate = nil;
+			DcmElement* dcelem = dataset->getElement(elemIndex);
+			DcmTagKey key = dcelem->getTag().getXTag();
 			
-			NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\")", startDate];
-			NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")", endDate];
-			predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
-		}
-		else if( startDate)
-		{		
-			predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(%lf, \"NSDate\")", startDate];
-		}
-		else if( endDate)
-		{
-			predicate = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")", endDate];
+			if (strcmp(sType, "STUDY") == 0)
+			{
+				if (key == DCM_PatientsName)
+				{
+					char *pn;
+					if (dcelem->getString(pn).good() && pn != NULL)
+					{
+						NSString *patientNameString = [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet];
+						
+						patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @", " withString:@" "];
+						patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @"," withString:@" "];
+						patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @"^ " withString:@" "];
+						patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @"^" withString:@" "];
+						
+						predicate = [self predicateWithString: patientNameString forField: @"name"];
+					}
+				}
+				else if (key == DCM_PatientID)
+				{
+					char *pid;
+					if (dcelem->getString(pid).good() && pid != NULL)
+						predicate = [self predicateWithString: [NSString stringWithCString:pid  DICOMEncoding:nil] forField: @"patientID"];
+				}
+				else if (key == DCM_AccessionNumber)
+				{
+					char *pid;
+					if (dcelem->getString(pid).good() && pid != NULL)
+						predicate = [self predicateWithString: [NSString stringWithCString:pid  DICOMEncoding:nil] forField: @"accessionNumber"];
+				}
+				else if (key == DCM_StudyInstanceUID)
+				{
+					char *suid;
+					if (dcelem->getString(suid).good() && suid != NULL)
+						predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [NSString stringWithCString:suid  DICOMEncoding:nil]];
+				}
+				else if (key == DCM_StudyID)
+				{
+					char *sid;
+					if (dcelem->getString(sid).good() && sid != NULL)
+						predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithCString:sid  DICOMEncoding:nil]];
+				}
+				else if (key ==  DCM_StudyDescription)
+				{
+					char *sd;
+					if (dcelem->getString(sd).good() && sd != NULL)
+						predicate = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"studyName"];
+				}
+				else if (key ==  DCM_ImageComments || key ==  DCM_StudyComments)
+				{
+					char *sd;
+					if (dcelem->getString(sd).good() && sd != NULL)
+					{
+						NSPredicate *p1 = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"comment"];
+						NSPredicate *p2 = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"series.comment" any: YES];
+						
+						predicate = [NSCompoundPredicate orPredicateWithSubpredicates: [NSArray arrayWithObjects: p1, p2, nil]];
+					}
+				}
+				else if (key == DCM_InstitutionName)
+				{
+					char *inn;
+					if (dcelem->getString(inn).good() && inn != NULL)
+						predicate = [self predicateWithString: [NSString stringWithCString:inn  DICOMEncoding:specificCharacterSet] forField: @"institutionName"];
+				}
+				else if (key == DCM_ReferringPhysiciansName)
+				{
+					char *rpn;
+					if (dcelem->getString(rpn).good() && rpn != NULL)
+						predicate = [self predicateWithString: [NSString stringWithCString:rpn  DICOMEncoding:specificCharacterSet] forField: @"referringPhysician"];
+				}
+				else if (key ==  DCM_PerformingPhysiciansName)
+				{
+					char *ppn;
+					if (dcelem->getString(ppn).good() && ppn != NULL)
+						predicate = [self predicateWithString: [NSString stringWithCString:ppn  DICOMEncoding:specificCharacterSet] forField: @"performingPhysician"];
+				}
+				else if (key ==  DCM_ModalitiesInStudy)
+				{
+					char *mis;
+					if (dcelem->getString(mis).good() && mis != NULL)
+					{
+						predicate = [NSPredicate predicateWithFormat:@"(ANY series.modality IN %@)", [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"]];
+					}
+				}
+				else if (key ==  DCM_Modality)
+				{
+					char *mis;
+					if (dcelem->getString(mis).good() && mis != NULL)
+					{
+						predicate = [NSPredicate predicateWithFormat:@"(ANY series.modality IN %@)", [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"]];
+					}
+				}
+				else if (key == DCM_PatientsBirthDate)
+				{
+					char *aDate;
+					DCMCalendarDate *value = nil;
+					if (dcelem->getString(aDate).good() && aDate != NULL) {
+						NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
+						value = [DCMCalendarDate dicomDate:dateString];
+					}
+					if (!value) {
+						predicate = nil;
+					}
+					else
+					{
+						predicate = [NSPredicate predicateWithFormat:@"(dateOfBirth >= CAST(%lf, \"NSDate\")) AND (dateOfBirth < CAST(%lf, \"NSDate\"))", [self startOfDay:value], [self endOfDay:value]];
+					}
+				}
+				
+				else if (key == DCM_StudyDate)
+				{
+					char *aDate;
+					DCMCalendarDate *value = nil;
+					if (dcelem->getString(aDate).good() && aDate != NULL)
+					{
+						NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
+						value = [DCMCalendarDate dicomDate:dateString];
+					}
+					
+					if (!value)
+					{
+						predicate = nil;
+					}
+					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
+					{
+						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
+						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
+						
+						dcmendDate = queryString;
+
+					}
+					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
+					{
+						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
+						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
+						
+						dcmstartDate = queryString;
+					}
+					else if ([(DCMCalendarDate *)value isQuery])
+					{
+						NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
+						if ([values count] == 2)
+						{
+							dcmstartDate = [values objectAtIndex:0];
+							dcmendDate = [values objectAtIndex:1];
+						}
+						else
+							predicate = nil;
+					}
+					else{
+						predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\") AND date < CAST(%lf, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
+					}
+				}
+				else if (key == DCM_StudyTime)
+				{
+					char *aDate;
+					DCMCalendarDate *value = nil;
+					if (dcelem->getString(aDate).good() && aDate != NULL)
+					{
+						NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
+						value = [DCMCalendarDate dicomTime:dateString];
+					}
+	  
+					if (!value)
+					{
+						predicate = nil;
+					}
+					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
+					{
+						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
+						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
+						
+						dcmendTime = queryString;
+					}
+					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
+					{
+						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
+						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
+						
+						dcmstartTime = queryString;
+					}
+					else if ([(DCMCalendarDate *)value isQuery])
+					{
+						NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
+						if ([values count] == 2)
+						{
+							dcmstartTime = [values objectAtIndex:0];
+							dcmendTime = [values objectAtIndex:1];
+						}
+						else
+							predicate = nil;
+					}
+					else
+					{
+						predicate = [NSPredicate predicateWithFormat:@"dicomTime == %@", [value dateAsNumber]];
+					}
+				}
+				else
+					predicate = nil;
+			}
+			else if (strcmp(sType, "SERIES") == 0)
+			{
+				if (key == DCM_StudyInstanceUID)
+				{
+					char *string;
+					if (dcelem->getString(string).good() && string != NULL)
+						predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+				}
+				else if (key == DCM_SeriesInstanceUID)
+				{
+					char *string;
+					if (dcelem->getString(string).good() && string != NULL)
+					{
+						NSString *u = [NSString stringWithCString:string  DICOMEncoding:nil];
+						NSArray *uids = [u componentsSeparatedByString:@"\\"];
+						NSArray *predicateArray = [NSArray array];
+						
+						int x;
+						for(x = 0; x < [uids count]; x++)
+						{
+							NSString *curString = [uids objectAtIndex: x];
+							
+							predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", curString]];
+						}
+						
+						predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
+					}
+				} 
+				else if (key == DCM_SeriesDescription)
+				{
+					char *string;
+					if (dcelem->getString(string).good() && string != NULL)
+						predicate = [self predicateWithString:[NSString stringWithCString:string  DICOMEncoding:specificCharacterSet] forField:@"name"];
+				}
+				else if (key == DCM_SeriesNumber)
+				{
+					char *string;
+					if (dcelem->getString(string).good() && string != NULL)
+						predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
+				}
+				else if (key ==  DCM_Modality)
+				{
+					char *mis;
+					if (dcelem->getString(mis).good() && mis != NULL)
+						predicate = [NSPredicate predicateWithFormat:@"study.modality == %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
+				}
+				
+				else if (key == DCM_SeriesDate)
+				{
+					char *aDate;
+					DCMCalendarDate *value = nil;
+					if (dcelem->getString(aDate).good() && aDate != NULL)
+					{
+						NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
+						value = [DCMCalendarDate dicomDate:dateString];
+					}
+	  
+					if (!value)
+					{
+						predicate = nil;
+					}
+					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
+					{
+						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
+						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
+						
+						dcmendDate = queryString;
+						
+	//					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];
+	//					predicate = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")", [self endOfDay:query]];
+
+					}
+					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
+					{
+						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
+						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];		
+						
+						dcmstartDate = queryString;
+						
+	//					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
+	//					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(%lf, \"NSDate\")",[self startOfDay:query]];
+					}
+					else if ([(DCMCalendarDate *)value isQuery])
+					{
+						NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
+						if ([values count] == 2)
+						{
+							dcmstartDate = [values objectAtIndex:0];
+							dcmendDate = [values objectAtIndex:1];
+							
+	//						DCMCalendarDate *startDate = [DCMCalendarDate dicomDate:[values objectAtIndex:0]];
+	//						DCMCalendarDate *endDate = [DCMCalendarDate dicomDate:[values objectAtIndex:1]];
+	//
+	//						//need two predicates for range
+	//						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\")", [self startOfDay:startDate]];
+	//						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")",[self endOfDay:endDate]];
+	//						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
+						}
+						else
+							predicate = nil;
+					}
+					else
+					{
+						predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\") AND date < CAST(%lf, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
+					}
+				}
+				else if (key == DCM_SeriesTime)
+				{
+					char *aDate;
+					DCMCalendarDate *value = nil;
+					if (dcelem->getString(aDate).good() && aDate != NULL)
+					{
+						NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
+						value = [DCMCalendarDate dicomTime:dateString];
+					}
+	  
+					if (!value)
+					{
+						predicate = nil;
+					}
+					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
+					{
+						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
+						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];	
+						dcmendTime = queryString;
+						
+	//					NSNumber *query = [NSNumber numberWithInt:[queryString intValue]];			
+	//					predicate = [NSPredicate predicateWithFormat:@"dicomTime <= %@",query];
+					}
+					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
+					{
+						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
+						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
+						dcmstartTime = queryString;
+						
+	//					NSNumber *query = [NSNumber numberWithInt:[queryString intValue]];			
+	//					predicate = [NSPredicate predicateWithFormat:@"dicomTime >= %@",query];
+					}
+					else if ([(DCMCalendarDate *)value isQuery])
+					{
+						NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
+						if ([values count] == 2)
+						{
+							dcmstartTime = [values objectAtIndex:0];
+							dcmendTime = [values objectAtIndex:1];
+							
+	//						NSNumber *startDate = [NSNumber numberWithInt:[[values objectAtIndex:0] intValue]];
+	//						NSNumber *endDate = [NSNumber numberWithInt:[[values objectAtIndex:1] intValue]];
+	//
+	//						//need two predicates for range
+	//						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"dicomTime >= %@",startDate];
+	//						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"dicomTime <= %@",endDate];
+	//						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
+						}
+						else
+							predicate = nil;
+					}
+
+					else
+					{
+						predicate = [NSPredicate predicateWithFormat:@"dicomTime == %@", [value dateAsNumber]];
+					}
+				}
+				else
+				{
+					predicate = nil;
+				}
+			}
+			else if (strcmp(sType, "IMAGE") == 0)
+			{
+				if (key == DCM_StudyInstanceUID)
+				{
+					char *string;
+					if (dcelem->getString(string).good() && string != NULL)
+					{
+						predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+					
+						if( seriesLevelPredicate == nil)
+							seriesLevelPredicate = predicate;
+						else
+							seriesLevelPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, seriesLevelPredicate, nil]];
+							
+						*SLPredicate = seriesLevelPredicate;
+						
+						predicate = nil;
+					}
+				}
+				else if (key == DCM_SeriesInstanceUID)
+				{
+					char *string;
+					if (dcelem->getString(string).good() && string != NULL)
+					{
+						predicate = [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+						
+						if( seriesLevelPredicate == nil)
+							seriesLevelPredicate = predicate;
+						else
+							seriesLevelPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: seriesLevelPredicate, predicate, nil]];
+						
+						*SLPredicate = seriesLevelPredicate;
+						
+						predicate = nil;
+					}
+				} 
+				else if (key == DCM_SOPInstanceUID)
+				{
+					char *string = nil;
+					
+					if (dcelem->getString(string).good() && string != NULL)
+					{
+						NSArray *uids = [[NSString stringWithCString:string  DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
+						NSArray *predicateArray = [NSArray array];
+						
+						for(int x = 0; x < [uids count]; x++)
+						{
+							NSPredicate	*p = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: [uids objectAtIndex: x]]] customSelector: @selector( isEqualToSopInstanceUID:)];
+							predicateArray = [predicateArray arrayByAddingObject: p];
+						}
+						
+						predicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
+						*csopPredicate = [NSCompoundPredicate orPredicateWithSubpredicates: predicateArray];
+					}
+				}
+				else if (key == DCM_InstanceNumber)
+				{
+					char *string;
+					if (dcelem->getString(string).good() && string != NULL)
+						predicate = [NSPredicate predicateWithFormat:@"instanceNumber == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
+				}
+				else if (key == DCM_NumberOfFrames)
+				{
+					char *string;
+					if (dcelem->getString(string).good() && string != NULL)
+						predicate = [NSPredicate predicateWithFormat:@"numberOfFrames == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
+				}
+			}
+			else
+			{
+				NSLog( @"OsiriX supports ONLY STUDY, SERIES, IMAGE levels ! Current level: %s", sType);
+			}
+			
+			if (predicate)
+			{
+				if( compoundPredicate == nil) compoundPredicate = predicate;
+				else compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: compoundPredicate, predicate, nil]];
+			}
 		}
 		
-		if (predicate)
-			compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
+		{
+			NSPredicate *predicate = nil;
+			
+			if (strcmp(sType, "STUDY") == 0) 
+				predicate = [NSPredicate predicateWithFormat:@"hasDICOM == %d", YES];
+			else if (strcmp(sType, "SERIES") == 0)
+				predicate = [NSPredicate predicateWithFormat:@"study.hasDICOM == %d", YES];
+			else if (strcmp(sType, "IMAGE") == 0)
+				predicate = [NSPredicate predicateWithFormat:@"series.study.hasDICOM == %d", YES];
+			
+			if (predicate)
+				compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: compoundPredicate, predicate, nil]];
+		}
+		
+		{
+			NSPredicate *predicate = nil;
+			
+			NSTimeInterval startDate = nil;
+			NSTimeInterval endDate = nil;
+			
+			if( dcmstartDate)
+			{
+				if( dcmstartTime)
+				{
+					DCMCalendarDate *time = [DCMCalendarDate dicomTime: dcmstartTime];
+					startDate = [[[DCMCalendarDate dicomDate: dcmstartDate] dateByAddingYears: 0 months: 0 days: 0 hours: [time hourOfDay] minutes: [time minuteOfHour] seconds: [time secondOfMinute]] timeIntervalSinceReferenceDate];
+				}
+				else startDate = [self startOfDay: [DCMCalendarDate dicomDate: dcmstartDate]];
+			}
+			
+			if( dcmendDate)
+			{
+				if( dcmendTime)
+				{
+					DCMCalendarDate *time = [DCMCalendarDate dicomTime: dcmendTime];
+					endDate = [[[DCMCalendarDate dicomDate: dcmendDate] dateByAddingYears: 0 months: 0 days: 0 hours: [time hourOfDay] minutes: [time minuteOfHour] seconds: [time secondOfMinute]] timeIntervalSinceReferenceDate];
+				}
+				else endDate = [self endOfDay: [DCMCalendarDate dicomDate: dcmendDate]];
+			}
+			
+			if( startDate && endDate)
+			{
+				//need two predicates for range
+				
+				NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\")", startDate];
+				NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")", endDate];
+				predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
+			}
+			else if( startDate)
+			{		
+				predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(%lf, \"NSDate\")", startDate];
+			}
+			else if( endDate)
+			{
+				predicate = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")", endDate];
+			}
+			
+			if (predicate)
+				compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
+		}
 	}
 	
-	NS_HANDLER
-		NSLog(@"Exception getting predicate: %@ for dataset\n", [localException description]);
+	@catch ( NSException *e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		dataset->print(COUT);
-	NS_ENDHANDLER
+	}
 	
 	return compoundPredicate;
 }
