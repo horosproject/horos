@@ -82,6 +82,9 @@
 - (void) waitUntilAllOperationsAreFinished
 {
 	[_generatorQueue waitUntilAllOperationsAreFinished];
+	
+	while( [_observedOperations count] > 0)
+		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow: 0.01]];
 }
 
 - (void)requestVolume:(CPRGeneratorRequest *)request

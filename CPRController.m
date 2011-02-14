@@ -2293,6 +2293,9 @@ static float deg2rad = 3.14159265358979/180.0;
 						[self CPRViewDidEditCurvedPath: mprView1];
 						
 						[cprView waitUntilAllOperationsAreFinished];
+						[topTransverseView waitUntilAllOperationsAreFinished];
+						[middleTransverseView waitUntilAllOperationsAreFinished];
+						[bottomTransverseView waitUntilAllOperationsAreFinished];
 						
 						[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect]];
 					}

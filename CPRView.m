@@ -1008,8 +1008,8 @@ extern int splitPosition[ 2];
 
 - (void) waitUntilAllOperationsAreFinished
 {
+	[self _sendNewRequestIfNeeded];
 	[_generator waitUntilAllOperationsAreFinished];
-	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow: 0.1]];
 }
 
 + (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRViewClippingRangeMode)clippingRangeMode

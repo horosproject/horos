@@ -399,6 +399,12 @@ extern int CLUTBARS, ANNOTATIONS;
     [self setNeedsDisplay:YES];
 }
 
+- (void) waitUntilAllOperationsAreFinished
+{
+	[self _sendNewRequestIfNeeded];
+	[_generator waitUntilAllOperationsAreFinished];
+}
+
 - (void)_sendNewRequest
 {
     CPRStraightenedGeneratorRequest *request;
