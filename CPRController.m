@@ -53,13 +53,10 @@ static float deg2rad = 3.14159265358979/180.0;
 
 @implementation CPRController
 
-@synthesize dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
-@synthesize dcmmN, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName;
+@synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit1, horizontalSplit2, verticalSplit, lowLOD;
-@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable, dcmBatchReverse;
+@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, blendingModeAvailable;
 @synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle;
-@synthesize dcmExportSlabThickness, dcmSameExportSlabThinknessAsThickSlab;
-@synthesize dcmNumberOfRotationFrames;
 
 // export related synthesize
 @synthesize exportSeriesName;
@@ -287,9 +284,9 @@ static float deg2rad = 3.14159265358979/180.0;
 		[shadingCheck setTarget:self];
 		
 //		self.dcmNumberOfFrames = 50;
-		self.dcmRotationDirection = 0;
-		self.dcmRotation = 360;
-		self.dcmSeriesName = @"CPR";
+//		self.dcmRotationDirection = 0;
+//		self.dcmRotation = 360;
+//		self.dcmSeriesName = @"CPR";
         
         self.exportSeriesName = @"CPR";;
         self.exportSequenceType = CPRCurrentOnlyExportSequenceType;
@@ -485,7 +482,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mousePosition release];
 	[wlwwMenuItems release];
 	[toolbar release];
-	[dcmSeriesName release];
 	
 	[colorAxis1 release];
 	[colorAxis2 release];
@@ -2022,6 +2018,10 @@ static float deg2rad = 3.14159265358979/180.0;
             [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];        
         }
     }
+	
+	[mprView1 setNeedsDisplay: YES];
+	[mprView2 setNeedsDisplay: YES];
+	[mprView3 setNeedsDisplay: YES];
 }
 
 - (void)setExportSliceInterval:(CGFloat)newExportSliceInterval
@@ -2064,34 +2064,32 @@ static float deg2rad = 3.14159265358979/180.0;
     }
 }
 
-
-
-- (void) setDcmBatchReverse: (BOOL) v
-{
-	dcmBatchReverse = v;
-	
-	[self willChangeValueForKey: @"dcmFromString"];
-	[self didChangeValueForKey: @"dcmFromString"];
-	
-	[self willChangeValueForKey: @"dcmToString"];
-	[self didChangeValueForKey: @"dcmToString"];
-	
-	[mprView1 setNeedsDisplay: YES];
-	[mprView2 setNeedsDisplay: YES];
-	[mprView3 setNeedsDisplay: YES];
-}
-
-- (NSString*) getDcmFromString
-{
-	if( dcmBatchReverse) return NSLocalizedString(@"To:", nil);
-	else return NSLocalizedString(@"From:", nil);
-}
-
-- (NSString*) getDcmToString
-{
-	if( dcmBatchReverse) return NSLocalizedString(@"From:", nil);
-	else return NSLocalizedString(@"To:", nil);
-}
+//- (void) setDcmBatchReverse: (BOOL) v
+//{
+//	dcmBatchReverse = v;
+//	
+//	[self willChangeValueForKey: @"dcmFromString"];
+//	[self didChangeValueForKey: @"dcmFromString"];
+//	
+//	[self willChangeValueForKey: @"dcmToString"];
+//	[self didChangeValueForKey: @"dcmToString"];
+//	
+//	[mprView1 setNeedsDisplay: YES];
+//	[mprView2 setNeedsDisplay: YES];
+//	[mprView3 setNeedsDisplay: YES];
+//}
+//
+//- (NSString*) getDcmFromString
+//{
+//	if( dcmBatchReverse) return NSLocalizedString(@"To:", nil);
+//	else return NSLocalizedString(@"From:", nil);
+//}
+//
+//- (NSString*) getDcmToString
+//{
+//	if( dcmBatchReverse) return NSLocalizedString(@"From:", nil);
+//	else return NSLocalizedString(@"To:", nil);
+//}
 
 - (CPRMPRDCMView*) selectedView
 {
@@ -2444,6 +2442,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[qtFileArray release];
 	qtFileArray = nil;
 	quicktimeExportMode = NO;
+	self.exportSlabThickness = 0;
 }
 
 -(NSImage*) imageForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max
@@ -2592,83 +2591,83 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 }
 
-- (void) setDcmSeriesMode: (int) f
-{
-	dcmSeriesMode = f;
-	
-//	[self displayFromToSlices];
-}
-
-- (void) setDcmMode: (int) f
-{
-	dcmMode = f;
-	
-//	[self displayFromToSlices];
-}
-
-- (void) setDcmInterval:(float) f
-{    
-	dcmInterval = f;
-	
-	if( previousDcmInterval)
-	{
-		self.dcmTo =  round(( (float) dcmTo * previousDcmInterval) /  dcmInterval);
-		self.dcmFrom = round(( (float) dcmFrom * previousDcmInterval) / dcmInterval);
-	}
-	
-	previousDcmInterval = f;
-	
-//	[self displayFromToSlices];
-}
-
-- (void)setDcmSameExportSlabThinknessAsThickSlab:(BOOL)newDcmSameExportSlabThinknessAsThickSlab
-{
-    if (dcmSameExportSlabThinknessAsThickSlab != newDcmSameExportSlabThinknessAsThickSlab) {
-        dcmSameExportSlabThinknessAsThickSlab = newDcmSameExportSlabThinknessAsThickSlab;
-        
-        if (dcmSameExportSlabThinknessAsThickSlab) {
-            self.dcmExportSlabThickness = [self getClippingRangeThicknessInMm];
-        }
-    }
-}
-
-- (void) setDcmRotation:(int) v
-{
-	dcmRotation = v;
-//	[self displayFromToSlices];
-}
-
-- (void) setDcmRotationDirection:(int) v
-{
-	dcmRotationDirection = v;
-//	[self displayFromToSlices];
-}
-
-- (void) setDcmNumberOfFrames:(int) v
-{
-	dcmNumberOfFrames = v;
-//	[self displayFromToSlices];
-}
-
-- (void) setDcmTo:(int) f
-{
-	dcmTo = f;
-//	[self displayFromToSlices];
-}
-
-- (void) setDcmFrom:(int) f
-{
-	dcmFrom = f;
-//	[self displayFromToSlices];
-}
-
-- (void) setDcmSameIntervalAndThickness: (BOOL) f
-{
-	dcmSameIntervalAndThickness = f;
-	
-	if( dcmSameIntervalAndThickness)
-		self.dcmInterval = [curExportView.vrView getClippingRangeThicknessInMm];
-}
+//- (void) setDcmSeriesMode: (int) f
+//{
+//	dcmSeriesMode = f;
+//	
+////	[self displayFromToSlices];
+//}
+//
+//- (void) setDcmMode: (int) f
+//{
+//	dcmMode = f;
+//	
+////	[self displayFromToSlices];
+//}
+//
+//- (void) setDcmInterval:(float) f
+//{    
+//	dcmInterval = f;
+//	
+//	if( previousDcmInterval)
+//	{
+//		self.dcmTo =  round(( (float) dcmTo * previousDcmInterval) /  dcmInterval);
+//		self.dcmFrom = round(( (float) dcmFrom * previousDcmInterval) / dcmInterval);
+//	}
+//	
+//	previousDcmInterval = f;
+//	
+////	[self displayFromToSlices];
+//}
+//
+//- (void)setDcmSameExportSlabThinknessAsThickSlab:(BOOL)newDcmSameExportSlabThinknessAsThickSlab
+//{
+//    if (dcmSameExportSlabThinknessAsThickSlab != newDcmSameExportSlabThinknessAsThickSlab) {
+//        dcmSameExportSlabThinknessAsThickSlab = newDcmSameExportSlabThinknessAsThickSlab;
+//        
+//        if (dcmSameExportSlabThinknessAsThickSlab) {
+//            self.exportSlabThickness = [self getClippingRangeThicknessInMm];
+//        }
+//    }
+//}
+//
+//- (void) setDcmRotation:(int) v
+//{
+//	dcmRotation = v;
+////	[self displayFromToSlices];
+//}
+//
+//- (void) setDcmRotationDirection:(int) v
+//{
+//	dcmRotationDirection = v;
+////	[self displayFromToSlices];
+//}
+//
+//- (void) setDcmNumberOfFrames:(int) v
+//{
+//	dcmNumberOfFrames = v;
+////	[self displayFromToSlices];
+//}
+//
+//- (void) setDcmTo:(int) f
+//{
+//	dcmTo = f;
+////	[self displayFromToSlices];
+//}
+//
+//- (void) setDcmFrom:(int) f
+//{
+//	dcmFrom = f;
+////	[self displayFromToSlices];
+//}
+//
+//- (void) setDcmSameIntervalAndThickness: (BOOL) f
+//{
+//	dcmSameIntervalAndThickness = f;
+//	
+//	if( dcmSameIntervalAndThickness)
+//		self.dcmInterval = [curExportView.vrView getClippingRangeThicknessInMm];
+//}
 
 -(void) sendMail:(id) sender
 {
@@ -2742,33 +2741,33 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 }
 
-- (int)dcmBatchNumberOfFrames
-{
-    CGFloat slabWidth;
-    CGFloat sliceInterval;
-    if (self.dcmMode < 2) { // export current only, or 4D
-        return 1;
-    } else if (self.dcmMode == 2) { // export a series
-        if (self.dcmSeriesMode == 0) { // a rotation
-            return dcmNumberOfRotationFrames;
-        } else if (self.dcmSeriesMode == 1) {
-            if (self.dcmSameExportSlabThinknessAsThickSlab) {
-                slabWidth = [self getClippingRangeThicknessInMm];
-            } else {
-                slabWidth = dcmExportSlabThickness;
-            }
-            
-            if (self.dcmSameIntervalAndThickness) {
-                sliceInterval = [cprView.volumeData minPixelSpacing];
-            } else {
-                sliceInterval = dcmInterval;
-            }
-            
-            return slabWidth / sliceInterval;
-        }
-    }
-    return 0;
-}
+//- (int)dcmBatchNumberOfFrames
+//{
+//    CGFloat slabWidth;
+//    CGFloat sliceInterval;
+//    if (self.dcmMode < 2) { // export current only, or 4D
+//        return 1;
+//    } else if (self.dcmMode == 2) { // export a series
+//        if (self.dcmSeriesMode == 0) { // a rotation
+//            return dcmNumberOfRotationFrames;
+//        } else if (self.dcmSeriesMode == 1) {
+//            if (self.dcmSameExportSlabThinknessAsThickSlab) {
+//                slabWidth = [self getClippingRangeThicknessInMm];
+//            } else {
+//                slabWidth = exportSlabThickness;
+//            }
+//            
+//            if (self.dcmSameIntervalAndThickness) {
+//                sliceInterval = [cprView.volumeData minPixelSpacing];
+//            } else {
+//                sliceInterval = dcmInterval;
+//            }
+//            
+//            return slabWidth / sliceInterval;
+//        }
+//    }
+//    return 0;
+//}
 
 #pragma mark NSWindow Notifications action
 
@@ -3540,7 +3539,7 @@ static float deg2rad = 3.14159265358979/180.0;
         [dicomExport setModalityAsSource:YES];
 		
 		[dicomExport setSourceFile:[[pixList[0] lastObject] sourceFile]];
-		[dicomExport setSeriesDescription:self.dcmSeriesName];
+		[dicomExport setSeriesDescription:self.exportSeriesName];
 		
 		[dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:width height:height];
 		

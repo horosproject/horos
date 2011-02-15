@@ -690,23 +690,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesA thickness: thickness];
-					
-					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
-						[self drawExportLines: crossLinesA];
-					
-					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
-						[self drawRotationLines: crossLinesA];
 				}
 				glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
 				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesB thickness: thickness];
-					
-					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
-						[self drawExportLines: crossLinesB];
-					
-					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
-						[self drawRotationLines: crossLinesB];
 				}
                 break;
                 
@@ -715,24 +703,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesA thickness: thickness];
-					
-					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
-						[self drawExportLines: crossLinesA];
-					
-					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
-						[self drawRotationLines: crossLinesA];
 				}
 				
 				glColor4f ([windowController.colorAxis3 redComponent], [windowController.colorAxis3 greenComponent], [windowController.colorAxis3 blueComponent], [windowController.colorAxis3 alphaComponent]);
 				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesB thickness: thickness];
-					
-					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
-						[self drawExportLines: crossLinesB];
-					
-					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
-						[self drawRotationLines: crossLinesB];
 				}
                 break;
                 
@@ -741,24 +717,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				if( crossLinesA[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesA thickness: thickness];
-					
-					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
-						[self drawExportLines: crossLinesA];
-					
-					if( viewExport == 0 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
-						[self drawRotationLines: crossLinesA];
 				}
 				
 				glColor4f ([windowController.colorAxis2 redComponent], [windowController.colorAxis2 greenComponent], [windowController.colorAxis2 blueComponent], [windowController.colorAxis2 alphaComponent]);
 				if( crossLinesB[ 0][ 0] != HUGE_VALF)
 				{
 					[self drawLine: crossLinesB thickness: thickness];
-					
-					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 0)
-						[self drawExportLines: crossLinesB];
-					
-					if( viewExport == 1 && windowController.dcmMode == 0 && windowController.dcmSeriesMode == 1) // Rotation
-						[self drawRotationLines: crossLinesB];
 				}
                 break;
 		}
@@ -2206,7 +2170,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     glEnd();
     
     // draw the thick slab outline
-    if ([bezierPath elementCount] >= 2 && curvedPath.thickness > 2.0 && length > 3.0) {
+    if ([bezierPath elementCount] >= 2 && curvedPath.thickness > 2.0 && length > 3.0)
+	{
         glLineWidth(1.0);
         outlinePath = [[bezierPath outlineBezierPathAtDistance:curvedPath.thickness / 2.0 initialNormal:N3VectorCrossProduct(curvedPath.initialNormal, [flattenedBezierPath tangentAtStart]) spacing:1.0] mutableCopy];
         [outlinePath applyAffineTransform:transform];
@@ -2226,6 +2191,28 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         [outlinePath release];
         outlinePath = nil;
     }
+	
+	if( [[self windowController] exportSlabThickness] > 0)
+	{
+		glLineWidth(1.0);
+        outlinePath = [[bezierPath outlineBezierPathAtDistance: [[self windowController] exportSlabThickness] / 2.0 initialNormal:N3VectorCrossProduct(curvedPath.initialNormal, [flattenedBezierPath tangentAtStart]) spacing:1.0] mutableCopy];
+        [outlinePath applyAffineTransform:transform];
+        glColor4d(0.0, 1.0, 0.0, 1.0); 
+        glBegin(GL_LINE_STRIP);
+        for (i = 0; i < [outlinePath elementCount]; i++) {
+            if ([outlinePath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector] == N3LineToBezierPathElement) {
+                glVertex2d(vector.x, vector.y);
+            } else {
+                glEnd();
+                glBegin(GL_LINE_STRIP);
+                glVertex2d(vector.x, vector.y);
+            }
+			
+        }
+        glEnd();
+        [outlinePath release];
+        outlinePath = nil;
+	}
 	
     
 	//    glColor4d(1.0, 0.0, 1.0, 1.0); // draw the normal lines

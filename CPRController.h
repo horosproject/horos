@@ -110,13 +110,7 @@ typedef NSInteger CPRExportRotationSpan;
 	IBOutlet NSWindow *dcmWindow;
 	IBOutlet NSWindow *quicktimeWindow;
 	IBOutlet NSView *dcmSeriesView;
-	int dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmFormat;
-    int dcmNumberOfRotationFrames;
-	float dcmInterval, previousDcmInterval;
-	BOOL dcmSameIntervalAndThickness, dcmBatchReverse;
-    float dcmExportSlabThickness;
-    BOOL dcmSameExportSlabThinknessAsThickSlab;
-	NSString *dcmSeriesName;
+	
 	CPRMPRDCMView *curExportView;
 	BOOL quicktimeExportMode;
 	NSMutableArray *qtFileArray;
@@ -157,19 +151,14 @@ typedef NSInteger CPRExportRotationSpan;
 	NSMutableArray *_delegateDisplayInfoDebugging;
 }
 
-@property float clippingRangeThickness, dcmInterval, blendingPercentage;
-@property int dcmmN, clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmQuality;
-@property (readonly) int dcmNumberOfFrames;
-@property (readonly) int dcmNumberOfRotationFrames;
-@property int dcmFormat, curMovieIndex, maxMovieIndex, blendingMode;
+@property float clippingRangeThickness, blendingPercentage;
+@property int clippingRangeMode, mouseViewID;
+@property int curMovieIndex, maxMovieIndex, blendingMode;
 @property (retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;
-@property (retain) NSString *dcmSeriesName;
 @property (readonly) DCMPix *originalPix;
 @property float LOD, movieRate;
-@property BOOL lowLOD, dcmSameIntervalAndThickness, displayMousePosition, blendingModeAvailable, dcmBatchReverse;
-@property float dcmExportSlabThickness;
-@property BOOL dcmSameExportSlabThinknessAsThickSlab;
+@property BOOL lowLOD, displayMousePosition, blendingModeAvailable;
 @property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 @property (readonly) CPRMPRDCMView *mprView1, *mprView2, *mprView3;
 @property (readonly) NSSplitView *horizontalSplit1, *horizontalSplit2, *verticalSplit;
