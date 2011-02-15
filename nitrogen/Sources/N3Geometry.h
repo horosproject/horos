@@ -70,6 +70,8 @@ N3Vector N3VectorAdd(N3Vector vector1, N3Vector vector2);
 N3Vector N3VectorSubtract(N3Vector vector1, N3Vector vector2);
 N3Vector N3VectorScalarMultiply(N3Vector vector1, CGFloat scalar);
 
+N3Vector N3VectorANormalVector(N3Vector vector); // returns a vector that is normal to the given vector
+
 CGFloat N3VectorDistance(N3Vector vector1, N3Vector vector2);
 
 CGFloat N3VectorDotProduct(N3Vector vector1, N3Vector vector2);

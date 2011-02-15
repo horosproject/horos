@@ -39,7 +39,7 @@
 
 - (void)requestVolume:(CPRGeneratorRequest *)request;
 
-- (void) waitUntilAllOperationsAreFinished;
+- (void)runMainRunLoopUntilAllRequestsAreFinished;
 
 - (CGFloat)frameRate;
 

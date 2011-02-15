@@ -1006,10 +1006,10 @@ extern int splitPosition[ 2];
 {
 }
 
-- (void) waitUntilAllOperationsAreFinished
+- (void) runMainRunLoopUntilAllRequestsAreFinished
 {
 	[self _sendNewRequestIfNeeded];
-	[_generator waitUntilAllOperationsAreFinished];
+	[_generator runMainRunLoopUntilAllRequestsAreFinished];
 }
 
 + (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRViewClippingRangeMode)clippingRangeMode
@@ -1097,8 +1097,16 @@ extern int splitPosition[ 2];
         request.middlePosition = 0;
         
         if ([_lastRequest isEqual:request] == NO) {
-            [_generator requestVolume:request];
-            self.lastRequest = request;
+			if (request.slabWidth < 2) {
+				CPRVolumeData *curvedVolume;
+				curvedVolume = [CPRGenerator synchronousRequestVolume:request volumeData:_generator.volumeData];
+				
+				[_generator runMainRunLoopUntilAllRequestsAreFinished];
+				[self generator:nil didGenerateVolume:curvedVolume request:request];
+			} else {
+				[_generator requestVolume:request];
+			}
+			self.lastRequest = request;
         }
         
         [request release];
@@ -1114,7 +1122,11 @@ extern int splitPosition[ 2];
 - (void)_setNeedsNewRequest
 {
     _needsNewRequest = YES;
-    [self performSelector:@selector(_sendNewRequestIfNeeded) withObject:nil afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+	[self _sendNewRequestIfNeeded];
+//	if (_needsNewRequest == NO) {
+//		[self performSelector:@selector(_sendNewRequestIfNeeded) withObject:nil afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+//	}
+//    _needsNewRequest = YES;
 }
 
 - (void)_sendNewRequestIfNeeded

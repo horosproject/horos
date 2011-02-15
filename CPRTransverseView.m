@@ -399,10 +399,10 @@ extern int CLUTBARS, ANNOTATIONS;
     [self setNeedsDisplay:YES];
 }
 
-- (void) waitUntilAllOperationsAreFinished
+- (void)runMainRunLoopUntilAllRequestsAreFinished
 {
 	[self _sendNewRequestIfNeeded];
-	[_generator waitUntilAllOperationsAreFinished];
+	[_generator runMainRunLoopUntilAllRequestsAreFinished];
 }
 
 - (void)_sendNewRequest
@@ -426,8 +426,16 @@ extern int CLUTBARS, ANNOTATIONS;
         request.middlePosition = 0;
         
         if ([_lastRequest isEqual:request] == NO) {
-            [_generator requestVolume:request];
-            self.lastRequest = request;
+			if (_curvedPath.thickness < 2) { // check the curved path thickness because if the curvedPath thickness is large there are probably large async requests  going on, and the synchronous request will probably take a long time
+				CPRVolumeData *curvedVolume;
+				curvedVolume = [CPRGenerator synchronousRequestVolume:request volumeData:_generator.volumeData];
+				
+				[_generator runMainRunLoopUntilAllRequestsAreFinished];
+				[self generator:nil didGenerateVolume:curvedVolume request:request];
+			} else {
+				[_generator requestVolume:request];
+			}
+			self.lastRequest = request;
         }
         
         [request release];
@@ -485,8 +493,13 @@ extern int CLUTBARS, ANNOTATIONS;
             
 - (void)_setNeedsNewRequest
 {
-    _needsNewRequest = YES;
-    [self performSelector:@selector(_sendNewRequestIfNeeded) withObject:nil afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+	_needsNewRequest = YES;
+	[self _sendNewRequestIfNeeded];
+
+//	if (_needsNewRequest == NO) {
+//		[self performSelector:@selector(_sendNewRequestIfNeeded) withObject:nil afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+//	}
+//    _needsNewRequest = YES;
 }
 
 - (void)_sendNewRequestIfNeeded

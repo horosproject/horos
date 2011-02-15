@@ -23,7 +23,7 @@
 #import "CPRProjectionOperation.h"
 #include <libkern/OSAtomic.h>
 
-static const NSUInteger FILL_HEIGHT = 80;
+static const NSUInteger FILL_HEIGHT = 40;
 static NSOperationQueue *_straightenedOperationFillQueue = nil;
 
 @interface CPRStraightenedOperation ()
@@ -337,6 +337,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
     @synchronized (self) {
         if (_straightenedOperationFillQueue == nil) {
             _straightenedOperationFillQueue = [[NSOperationQueue alloc] init];
+			[_straightenedOperationFillQueue setMaxConcurrentOperationCount:[[NSProcessInfo processInfo] processorCount]];
         }
     }
     

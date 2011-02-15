@@ -58,6 +58,6 @@ typedef NSInteger CPRTransverseViewSection;
 @property (nonatomic, readwrite, assign) CGFloat renderingScale;
 @property (nonatomic, readwrite, assign) BOOL displayCrossLines;
 
-- (void) waitUntilAllOperationsAreFinished;
+- (void)runMainRunLoopUntilAllRequestsAreFinished;
 
 @end

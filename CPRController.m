@@ -2308,10 +2308,10 @@ static float deg2rad = 3.14159265358979/180.0;
 						mprView1.curvedPath.initialNormal = N3VectorApplyTransform( initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [curvedPath.bezierPath tangentAtStart]));
 						[self CPRViewDidEditCurvedPath: mprView1];
 						
-						[cprView waitUntilAllOperationsAreFinished];
-						[topTransverseView waitUntilAllOperationsAreFinished];
-						[middleTransverseView waitUntilAllOperationsAreFinished];
-						[bottomTransverseView waitUntilAllOperationsAreFinished];
+						[cprView runMainRunLoopUntilAllRequestsAreFinished];
+						[topTransverseView runMainRunLoopUntilAllRequestsAreFinished];
+						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
+						[bottomTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 						
 						[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect]];
 					}

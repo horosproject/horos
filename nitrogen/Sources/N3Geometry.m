@@ -81,6 +81,38 @@ N3Vector N3VectorScalarMultiply(N3Vector vector, CGFloat scalar)
     return newVector;    
 }
 
+N3Vector N3VectorANormalVector(N3Vector vector) // returns a vector that is normal to the given vector
+{
+	N3Vector normal1;
+	N3Vector normal2;
+	N3Vector normal3;
+	CGFloat length1;
+	CGFloat length2;
+	CGFloat length3;
+	
+	normal1 = N3VectorMake(-vector.y, vector.x, 0.0);
+	normal2 = N3VectorMake(-vector.z, 0.0, vector.x);
+	normal3 = N3VectorMake(0.0, -vector.z, vector.y);
+	
+	length1 = N3VectorLength(normal1);
+	length2 = N3VectorLength(normal2);
+	length3 = N3VectorLength(normal3);
+	
+	if (length1 > length2) {
+		if (length1 > length3) {
+			return N3VectorNormalize(normal1);
+		} else {
+			return N3VectorNormalize(normal3);
+		}
+	} else {
+		if (length2 > length3) {
+			return N3VectorNormalize(normal2);
+		} else {
+			return N3VectorNormalize(normal3);
+		}
+	}
+}
+
 CGFloat N3VectorDistance(N3Vector vector1, N3Vector vector2)
 {
     return N3VectorLength(N3VectorSubtract(vector1, vector2));

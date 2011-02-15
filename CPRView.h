@@ -123,6 +123,6 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 @property (nonatomic) BOOL displayCrossLines;
 
 - (void) adjustROIsForCPRView;
-- (void) waitUntilAllOperationsAreFinished;
+- (void) runMainRunLoopUntilAllRequestsAreFinished;
 
 @end
