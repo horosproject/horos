@@ -483,8 +483,13 @@ bool N3PlaneIsValid(N3Plane plane)
 N3Plane N3PlaneApplyTransform(N3Plane plane, N3AffineTransform transform)
 {
     N3Plane newPlane;
+	N3AffineTransform normalTransform;
+	
     newPlane.point = N3VectorApplyTransform(plane.point, transform);
-    newPlane.normal = N3VectorNormalize(N3VectorApplyTransformToDirectionalVector(plane.normal, transform));
+	normalTransform = transform;
+	normalTransform.m41 = 0.0; normalTransform.m42 = 0.0; normalTransform.m43 = 0.0;
+	
+    newPlane.normal = N3VectorNormalize(N3VectorApplyTransform(plane.normal, N3AffineTransformTranspose(N3AffineTransformInvert(normalTransform))));
     assert(N3PlaneIsValid(newPlane));
     return newPlane;    
 }
@@ -535,6 +540,17 @@ bool N3AffineTransformIsRectilinear(N3AffineTransform t) // this is not the righ
             t.m21 == 0.0 &&                 t.m23 == 0.0 && t.m24 == 0.0 &&
             t.m31 == 0.0 && t.m32 == 0.0 &&                 t.m34 == 0.0 &&
                                                             t.m44 == 1.0);
+}
+
+N3AffineTransform N3AffineTransformTranspose(N3AffineTransform t)
+{
+	N3AffineTransform transpose;
+
+	transpose.m11 = t.m11; transpose.m12 = t.m21; transpose.m13 = t.m31; transpose.m14 = t.m41; 
+	transpose.m21 = t.m12; transpose.m22 = t.m22; transpose.m23 = t.m32; transpose.m24 = t.m42; 
+	transpose.m31 = t.m13; transpose.m32 = t.m23; transpose.m33 = t.m33; transpose.m34 = t.m43; 
+	transpose.m41 = t.m14; transpose.m42 = t.m24; transpose.m43 = t.m34; transpose.m44 = t.m44;
+	return transpose;
 }
 
 NSString *NSStringFromN3AffineTransform(N3AffineTransform transform)

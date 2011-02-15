@@ -123,8 +123,8 @@ CG_INLINE N3Vector N3VectorMakeFromNSPoint(NSPoint point) {return N3VectorMake(p
 extern const N3AffineTransform N3AffineTransformIdentity;
 
 bool N3AffineTransformIsRectilinear(N3AffineTransform t); // this is not the right term, but what is a transform that only includes scale and translation called?
-                                                 
-                                        
+N3AffineTransform N3AffineTransformTranspose(N3AffineTransform t);
+
 CG_INLINE bool N3AffineTransformIsIdentity(N3AffineTransform t) {return CATransform3DIsIdentity(t);}
 CG_INLINE bool N3AffineTransformIsAffine(N3AffineTransform t) {return (t.m14 == 0.0 && t.m24 == 0.0 && t.m34 == 0.0 && t.m44 == 1.0);}
 CG_INLINE bool N3AffineTransformEqualToTransform(N3AffineTransform a, N3AffineTransform b) {return CATransform3DEqualToTransform(a, b);}

@@ -116,7 +116,9 @@
 - (void)invalidateData; // this is to be called by objects who own own the floatBytes that were given to the receiver right before freeing the data
 {                       // this may lock temporarily if other threads are accessing the data, after this returns, all calls to access data will fail gracefully
     struct timespec rqtp = {0, 100};
-    struct timespec rmtp;
+    struct timespec rmtp = {0, 0};
+    
+    assert(_freeWhenDone == NO); // you can't invalidate the data if it is owned by the CPRVolumeData 
     
     _isValid = NO;
     OSMemoryBarrier(); // make sure that the _isValid was set
