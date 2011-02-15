@@ -9114,33 +9114,40 @@ static BOOL withReset = NO;
 		NSArray *vPixList = [[v pixList] retain];
 		NSData *volumeData = [[v volumeData] retain];
 		
-		for( int i = 0 ; i < [vFileList count]; i++)
+		@try
 		{
-			NSString *path = [[vFileList objectAtIndex: i] valueForKey:@"completePath"];
-			
-			if( [path isEqualToString: pathToFind])
+			for( int i = 0 ; i < [vFileList count]; i++)
 			{
-				DCMPix *dcmPix = [[vPixList objectAtIndex: i] copy];
-				if( dcmPix)
+				NSString *path = [[vFileList objectAtIndex: i] valueForKey:@"completePath"];
+				
+				if( [path isEqualToString: pathToFind])
 				{
-					float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
-					if( fImage)
+					DCMPix *dcmPix = [[vPixList objectAtIndex: i] copy];
+					if( dcmPix)
 					{
-						memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
-						[dcmPix setfImage: fImage];
-						[dcmPix freefImageWhenDone: YES];
-						
-						returnPix = [dcmPix autorelease];
+						float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+						if( fImage)
+						{
+							memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+							[dcmPix setfImage: fImage];
+							[dcmPix freefImageWhenDone: YES];
+							
+							returnPix = [dcmPix autorelease];
+						}
+						else
+							[dcmPix release];
 					}
-					else
-						[dcmPix release];
 				}
 			}
 		}
-		
-		[volumeData retain];
-		[vFileList retain];
-		[vPixList retain];
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			[AppController printStackTrace: e];
+		}
+		[volumeData release];
+		[vFileList release];
+		[vPixList release];
 	}
 	
 	return returnPix;
