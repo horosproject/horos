@@ -56,7 +56,7 @@ static NSOperationQueue *_synchronousRequestQueue = nil;
     CPRVolumeData *generatedVolume;
     
     operation = [[[request operationClass] alloc] initWithRequest:request volumeData:volumeData];
-    operationQueue = [[self class] _synchronousRequestQueue];
+    operationQueue = [self _synchronousRequestQueue];
     [operationQueue addOperation:operation];
     [operationQueue waitUntilAllOperationsAreFinished];
     generatedVolume = [[operation.generatedVolume retain] autorelease];
@@ -113,7 +113,7 @@ static NSOperationQueue *_synchronousRequestQueue = nil;
 	assert([NSThread isMainThread]);
 
     for (operation in _observedOperations) {
-        if ([operation isExecuting] == NO) {
+        if ([operation isExecuting] == NO && [operation isFinished] == NO) {
             [operation cancel];
         }
     }
