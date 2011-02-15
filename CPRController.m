@@ -2176,16 +2176,19 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		int resizeImage = 0;
 		
-		switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
+		if( self.exportImageFormat == CPR16BitExportImageFormat)
 		{
-			case 1: 
-                exportWidth = exportHeight = 512;
-				resizeImage = 512;
-                break;
-			case 2:
-                exportWidth = exportHeight = 768;
-				resizeImage = 768;
-                break;
+			switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
+			{
+				case 1: 
+					exportWidth = exportHeight = 512;
+					resizeImage = 512;
+					break;
+				case 2:
+					exportWidth = exportHeight = 768;
+					resizeImage = 768;
+					break;
+			}
 		}
 		
 		NSMutableArray *views = nil, *viewsRect = nil;
@@ -2584,6 +2587,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		if( self.exportSeriesType == CPRSlabExportSeriesType)
 			self.exportSeriesType = CPRRotationExportSeriesType;
+		
+		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey:@"EXPORTMATRIXFOR3D"];
 	}
 }
 
