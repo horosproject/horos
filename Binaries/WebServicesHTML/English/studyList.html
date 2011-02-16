@@ -25,7 +25,7 @@
 								<span class="bigger compressed">%X:ZWS:Study.name%</span> <span class="gray details">%X:Study.modality%, %X:Study.imageSeries.count% series%[IF:Study.patientID%, %X:Study.patientID%%]IF:Study.patientID%%[IF:Study.accessionNumber%, %X:Study.accessionNumber%%]IF:Study.accessionNumber%</span>
 								<div class="gray indent compressed">
 									%X:ZWS:Study.studyName%
-									%[IF:Study.comment%<div class="italic indent">%X:IB:Study.comment%</div>%]IF:Study.comment%
+									%[IF:Study.comment%<div class="italic indent">%X:ZWS:Study.comment%</div>%]IF:Study.comment%
 								</div>
 							</a>
 						</td>

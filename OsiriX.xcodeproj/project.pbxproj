@@ -90,6 +90,7 @@
 		4F8A1A8A1302C72300A022D9 /* N3BezierPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A1A821302C72300A022D9 /* N3BezierPath.m */; };
 		4F8A1A8B1302C72300A022D9 /* N3Geometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F8A1A831302C72300A022D9 /* N3Geometry.h */; };
 		4F8A1A8C1302C72300A022D9 /* N3Geometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A1A841302C72300A022D9 /* N3Geometry.m */; };
+		5909DF94130C3D1900788195 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592D333612F2C71A00C7C002 /* NSException+N2.mm */; };
 		590A3DCD12A92920004581C2 /* WebPortalDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 590A3DCB12A92920004581C2 /* WebPortalDatabase.h */; };
 		590A3DCE12A92920004581C2 /* WebPortalDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 590A3DCC12A92920004581C2 /* WebPortalDatabase.mm */; };
 		590BB22012A002FA009E9758 /* WebPortalStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = 590BB21E12A002FA009E9758 /* WebPortalStudy.h */; };
@@ -22104,7 +22105,6 @@
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -24384,6 +24384,7 @@
 				4F8A1A881302C72300A022D9 /* N3BezierCoreAdditions.m in Sources */,
 				4F8A1A8A1302C72300A022D9 /* N3BezierPath.m in Sources */,
 				4F8A1A8C1302C72300A022D9 /* N3Geometry.m in Sources */,
+				5909DF94130C3D1900788195 /* NSException+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

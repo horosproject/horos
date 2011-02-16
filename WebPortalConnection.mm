@@ -251,9 +251,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	if ([path hasPrefix: @"/wado"]
 	|| [path hasPrefix: @"/images/"]
 	|| [path isEqual: @"/"]
-	|| [path isEqual: @"/style.css"]
-	|| [path hasSuffix:@".js"]
-	|| [path isEqualToString: @"/iPhoneStyle.css"]
+	|| [path hasSuffix: @".js"]
+	|| [path hasSuffix: @".css"]
 	|| [path hasPrefix: @"/password_forgotten"]
 	|| [path hasPrefix: @"/index"]
 	|| [path hasPrefix:@"/weasis/"]
@@ -489,7 +488,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	// find the name of the requested file
 	// SECURITY: we cannot allow the client to read any file on the hard disk (outside the shared dir), so no ".." 
-	requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@".." withString:@""];
+	requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"../" withString:@""];
 	
 //	NSString* userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
 //	BOOL isIOS [userAgent contains:@"iPhone"] || [userAgent contains:@"iPad"];	

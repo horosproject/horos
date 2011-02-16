@@ -399,8 +399,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		if ([[NSFileManager defaultManager] fileExistsAtPath:userPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:userPath attributes:nil];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:sysPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:sysPath attributes:nil];
 		
-		NSArray *paths = [NSArray arrayWithObjects:appPath, userPath, sysPath, nil];
-		NSString *path;
+		NSArray* paths = [NSArray arrayWithObjects:appPath, userPath, sysPath, nil];
 		
 		[plugins release];
 		[pluginsDict release];
@@ -424,7 +423,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		
 		NSLog( @"|||||||||||||||||| Plugins loading START ||||||||||||||||||");
 		#ifndef OSIRIX_LIGHT
-		for ( path in paths )
+		for (NSString* path in paths)
 		{
 			NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
 			NSString *name;

@@ -745,9 +745,9 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		return NULL;
 	}
 	
-	if ([key isEqual:@"noFiles"]) {
+	/*if ([key isEqual:@"noFiles"]) {
 		return [NSNumber numberWithInt:[[series performSelector:@selector(noFiles)] intValue]];
-	}
+	}*/
 
 	if ([key isEqual:@"width"] || [key isEqual:@"height"]) {
 		if (size.height == -1) {
