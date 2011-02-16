@@ -66,7 +66,7 @@ static float deg2rad = 3.14159265358979/180.0;
 @synthesize exportNumberOfRotationFrames;
 @synthesize exportRotationSpan;
 @synthesize exportReverseSliceOrder;
-@synthesize exportSlabThinknessSameAsSlabThickness;
+//@synthesize exportSlabThinknessSameAsSlabThickness;
 @synthesize exportSlabThickness;
 @synthesize exportSliceIntervalSameAsVolumeSliceInterval;
 @synthesize exportSliceInterval;
@@ -1960,11 +1960,11 @@ static float deg2rad = 3.14159265358979/180.0;
         if (self.exportSeriesType == CPRRotationExportSeriesType) { // a rotation
             return MAX(1, exportNumberOfRotationFrames);
         } else if (self.exportSeriesType == CPRSlabExportSeriesType) {
-            if (self.exportSlabThinknessSameAsSlabThickness) {
-                slabWidth = [self getClippingRangeThicknessInMm];
-            } else {
+//            if (self.exportSlabThinknessSameAsSlabThickness) {
+//                slabWidth = [self getClippingRangeThicknessInMm];
+//            } else {
                 slabWidth = exportSlabThickness;
-            }
+//            }
             
             if (self.exportSliceIntervalSameAsVolumeSliceInterval) {
                 sliceInterval = [cprView.volumeData minPixelSpacing];
@@ -2006,17 +2006,17 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)setExportSlabThickness:(CGFloat)newExportSlabThickness
 {
-    BOOL isSame;
+//    BOOL isSame;
     
-    isSame = self.exportSlabThinknessSameAsSlabThickness;
+//    isSame = self.exportSlabThinknessSameAsSlabThickness;
     if (exportSlabThickness != newExportSlabThickness) {
-        if (!isSame) {
+//        if (!isSame) {
             [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
-        }
+//        }
         exportSlabThickness = newExportSlabThickness;
-        if (!isSame) {
+//        if (!isSame) {
             [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];        
-        }
+//        }
     }
 	
 	[mprView1 setNeedsDisplay: YES];
@@ -2040,17 +2040,17 @@ static float deg2rad = 3.14159265358979/180.0;
     }
 }
 
-- (void)setExportSlabThinknessSameAsSlabThickness:(BOOL)newExportSlabThinknessSameAsSlabThickness
-{
-    if (exportSlabThinknessSameAsSlabThickness != newExportSlabThinknessSameAsSlabThickness) {
-        [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
-        exportSlabThinknessSameAsSlabThickness = newExportSlabThinknessSameAsSlabThickness;
-        if (exportSlabThinknessSameAsSlabThickness) {
-            self.exportSlabThickness = [self getClippingRangeThicknessInMm];
-        }
-        [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];        
-    }
-}
+//- (void)setExportSlabThinknessSameAsSlabThickness:(BOOL)newExportSlabThinknessSameAsSlabThickness
+//{
+//    if (exportSlabThinknessSameAsSlabThickness != newExportSlabThinknessSameAsSlabThickness) {
+//        [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
+//        exportSlabThinknessSameAsSlabThickness = newExportSlabThinknessSameAsSlabThickness;
+//        if (exportSlabThinknessSameAsSlabThickness) {
+//            self.exportSlabThickness = [self getClippingRangeThicknessInMm];
+//        }
+//        [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];        
+//    }
+//}
 
 - (void)setExportSliceIntervalSameAsVolumeSliceInterval:(BOOL)newExportSliceIntervalSameAsVolumeSliceInterval
 {
@@ -2243,7 +2243,16 @@ static float deg2rad = 3.14159265358979/180.0;
 			}
 			else // CPR8BitRGBExportImageFormat
 			{
+				float pX = [[cprView curDCM] pixelSpacingX], pY = [[cprView curDCM] pixelSpacingY];
+				
+				// We cannot export theses values ! They are only correct for strict Y and X
+				[[cprView curDCM] setPixelSpacingX: 0];
+				[[cprView curDCM] setPixelSpacingY: 0];
+				
 				[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect]];
+				
+				[[cprView curDCM] setPixelSpacingX: pX];
+				[[cprView curDCM] setPixelSpacingY: pY];
 			}
 		}
 		else if (self.exportSequenceType == CPRSeriesExportSequenceType) // A 3D rotation or batch sequence
@@ -2313,7 +2322,16 @@ static float deg2rad = 3.14159265358979/180.0;
 						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 						[bottomTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 						
+						float pX = [[cprView curDCM] pixelSpacingX], pY = [[cprView curDCM] pixelSpacingY];
+						
+						// We cannot export theses values ! They are only correct for strict Y and X
+						[[cprView curDCM] setPixelSpacingX: 0];
+						[[cprView curDCM] setPixelSpacingY: 0];
+						
 						[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect]];
+						
+						[[cprView curDCM] setPixelSpacingX: pX];
+						[[cprView curDCM] setPixelSpacingY: pY];
 					}
 					
 					[pool release];
@@ -2333,9 +2351,9 @@ static float deg2rad = 3.14159265358979/180.0;
 				request.pixelsHigh = exportHeight;
 				if (self.exportSequenceNumberOfFrames > 1)
 				{
-					if (self.exportSlabThinknessSameAsSlabThickness)
-						request.slabWidth = [self getClippingRangeThicknessInMm];
-					else
+//					if (self.exportSlabThinknessSameAsSlabThickness)
+//						request.slabWidth = [self getClippingRangeThicknessInMm];
+//					else
 						request.slabWidth = exportSlabThickness;
 					
 					if (self.exportSliceIntervalSameAsVolumeSliceInterval)
@@ -2346,13 +2364,13 @@ static float deg2rad = 3.14159265358979/180.0;
 				request.bezierPath = curvedPath.bezierPath;
 				request.initialNormal = curvedPath.initialNormal;    
 				
+				Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating series", nil)];
+				[progress showWindow: self];
+				[[progress progress] setMaxValue: self.exportNumberOfRotationFrames];
+				
 				curvedVolumeData = [CPRGenerator synchronousRequestVolume:request volumeData:cprView.volumeData];
 				if(curvedVolumeData)
 				{
-					Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating series", nil)];
-					[progress showWindow: self];
-					[[progress progress] setMaxValue: self.exportNumberOfRotationFrames];
-
 					for( int i = 0; i < self.exportSequenceNumberOfFrames; i++)
 					{
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -2388,10 +2406,9 @@ static float deg2rad = 3.14159265358979/180.0;
 						if( [progress aborted])
 							break;
                     }
-					
-					[progress close];
-					[progress release];
                 }
+				[progress close];
+				[progress release];
 			}
 		}
 		
@@ -2469,12 +2486,12 @@ static float deg2rad = 3.14159265358979/180.0;
     
 	if( clippingRangeThickness <= 3)
 	{
-		self.exportSlabThinknessSameAsSlabThickness = NO;
+//		self.exportSlabThinknessSameAsSlabThickness = NO;
         self.exportSliceIntervalSameAsVolumeSliceInterval = NO;
 	}
 	else
     {
-		self.exportSlabThinknessSameAsSlabThickness = YES;
+//		self.exportSlabThinknessSameAsSlabThickness = YES;
         self.exportSliceIntervalSameAsVolumeSliceInterval = YES;
     }
 	
