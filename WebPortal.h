@@ -84,6 +84,8 @@
 -(void)startAcceptingConnections;
 -(void)stopAcceptingConnections;
 
+- (NSThread*) threadForRunLoopRef: (CFRunLoopRef) runloopref;
+
 -(NSData*)dataForPath:(NSString*)rel;
 -(NSString*)stringForPath:(NSString*)file;
 

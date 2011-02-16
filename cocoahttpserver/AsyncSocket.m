@@ -923,6 +923,11 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 #pragma mark Run Loop
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+- (CFRunLoopRef) runLoopRef
+{
+	return theRunLoop;
+}
+
 - (void)runLoopAddSource:(CFRunLoopSourceRef)source
 {
 	for (NSString *runLoopMode in theRunLoopModes)

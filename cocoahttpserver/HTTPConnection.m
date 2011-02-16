@@ -7,6 +7,7 @@
 #import "DDRange.h"
 #import "DDData.h"
 #import "HTTPAsyncFileResponse.h"
+#import "WebPortal.h"
 
 
 // Define chunk size used to read in data for responses
@@ -1544,6 +1545,34 @@ static NSMutableArray *recentNonces;
 #pragma mark AsyncSocket Delegate Methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+- (void) startTLSThread
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSArray *certificates = [self sslIdentityAndCertificates];
+	
+	if([certificates count] > 0)
+	{
+		// All connections are assumed to be secure. Only secure connections are allowed on this server.
+		NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithCapacity:3];
+		
+		// Configure this connection as the server
+		[settings setObject:[NSNumber numberWithBool:YES]
+					 forKey:(NSString *)kCFStreamSSLIsServer];
+		
+		[settings setObject:certificates
+					 forKey:(NSString *)kCFStreamSSLCertificates];
+		
+		// Configure this connection to use the highest possible SSL level
+		[settings setObject:(NSString *)kCFStreamSocketSecurityLevelNegotiatedSSL
+					 forKey:(NSString *)kCFStreamSSLLevel];
+		
+		[asyncSocket startTLS:settings];
+	}
+	
+	[pool release];
+}
+
 /**
  * This method is called immediately prior to opening up the stream.
  * This is the time to manually configure the stream if necessary.
@@ -1555,26 +1584,28 @@ static NSMutableArray *recentNonces;
 		// We are configured to be an HTTPS server.
 		// That is, we secure via SSL/TLS the connection prior to any communication.
 		
-		NSArray *certificates = [self sslIdentityAndCertificates];
+		[self performSelector: @selector( startTLSThread) onThread: [[WebPortal defaultWebPortal] threadForRunLoopRef: [sock runLoopRef]]  withObject: nil waitUntilDone: YES];
 		
-		if([certificates count] > 0)
-		{
-			// All connections are assumed to be secure. Only secure connections are allowed on this server.
-			NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithCapacity:3];
-			
-			// Configure this connection as the server
-			[settings setObject:[NSNumber numberWithBool:YES]
-						 forKey:(NSString *)kCFStreamSSLIsServer];
-			
-			[settings setObject:certificates
-						 forKey:(NSString *)kCFStreamSSLCertificates];
-			
-			// Configure this connection to use the highest possible SSL level
-			[settings setObject:(NSString *)kCFStreamSocketSecurityLevelNegotiatedSSL
-						 forKey:(NSString *)kCFStreamSSLLevel];
-			
-			[asyncSocket startTLS:settings];
-		}
+//		NSArray *certificates = [self sslIdentityAndCertificates];
+//		
+//		if([certificates count] > 0)
+//		{
+//			// All connections are assumed to be secure. Only secure connections are allowed on this server.
+//			NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithCapacity:3];
+//			
+//			// Configure this connection as the server
+//			[settings setObject:[NSNumber numberWithBool:YES]
+//						 forKey:(NSString *)kCFStreamSSLIsServer];
+//			
+//			[settings setObject:certificates
+//						 forKey:(NSString *)kCFStreamSSLCertificates];
+//			
+//			// Configure this connection to use the highest possible SSL level
+//			[settings setObject:(NSString *)kCFStreamSocketSecurityLevelNegotiatedSSL
+//						 forKey:(NSString *)kCFStreamSSLLevel];
+//			
+//			[asyncSocket startTLS:settings];
+//		}
 	}
 	return YES;
 }

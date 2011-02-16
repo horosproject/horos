@@ -922,7 +922,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 #pragma mark Session, custom authentication
 
--(BOOL)onSocketWillConnect:(AsyncSocket *)sock {
+-(BOOL)onSocketWillConnect:(AsyncSocket *)sock
+{
 	[self supportsPOST:nil withSize:0];
 	return [super onSocketWillConnect:sock];
 }

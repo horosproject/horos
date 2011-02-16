@@ -634,6 +634,7 @@ typedef enum AsyncSocketError AsyncSocketError;
  * 
  * Note: NSRunLoopCommonModes is defined in 10.5. For previous versions one can use kCFRunLoopCommonModes.
 **/
+- (CFRunLoopRef) runLoopRef;
 - (BOOL)setRunLoopModes:(NSArray *)runLoopModes;
 - (BOOL)addRunLoopMode:(NSString *)runLoopMode;
 - (BOOL)removeRunLoopMode:(NSString *)runLoopMode;
