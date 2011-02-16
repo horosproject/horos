@@ -33,7 +33,10 @@
 // You can use methods such as performSelectorOnThread to accomplish this.
 // Failure to comply with these thread-safety rules may result in errors.
 // You can enable this option to help diagnose where you are incorrectly accessing your socket.
+
+#ifndef NDEBUG
 #define DEBUG_THREAD_SAFETY 1
+#endif
 // 
 // If you constantly need to access your socket from multiple threads
 // then you may consider using GCDAsyncSocket instead, which is thread-safe.

@@ -326,9 +326,17 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	}
 }
 
-- (void) startThread
-{
+// This is the main thread for the socket connections, then, the connections are distributed in our thread pool
+- (void) startServerThread
+{	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	// Start threads
+	uint i;
+	for(i = 0; i < THREAD_POOL_SIZE; i++)
+	{
+		[NSThread detachNewThreadSelector:@selector(connectionsThread:) toTarget: self withObject: [NSNumber numberWithUnsignedInt:i]];
+	}
 	
 	NSError* err = NULL;
 	if (![server start: &err])
@@ -375,22 +383,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 			server.documentRoot = [NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]];
 			
 			
-			[NSThread detachNewThreadSelector: @selector( startThread) toTarget: self withObject: nil];
-			
-//			NSError* err = NULL;
-//			if (![server start: &err])
-//			{
-//				NSLog(@"Exception: [WebPortal startAcceptingConnectionsThread:] %@", err);
-//				[AppController.sharedAppController performSelectorOnMainThread:@selector(displayError:) withObject:NSLocalizedString(@"Cannot start Web Server. TCP/IP port is probably already used by another process.", NULL) waitUntilDone:YES];
-//				return;
-//			}
-			
-			// Start threads
-			uint i;
-			for(i = 0; i < THREAD_POOL_SIZE; i++)
-			{
-				[NSThread detachNewThreadSelector:@selector(connectionsThread:) toTarget: self withObject: [NSNumber numberWithUnsignedInt:i]];
-			}
+			[NSThread detachNewThreadSelector: @selector( startServerThread) toTarget: self withObject: nil];
 		} @catch (NSException * e) {
 			NSLog(@"Exception: [WebPortal startAcceptingConnections] %@", e);
 		}

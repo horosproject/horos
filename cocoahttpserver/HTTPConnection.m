@@ -1585,27 +1585,6 @@ static NSMutableArray *recentNonces;
 		// That is, we secure via SSL/TLS the connection prior to any communication.
 		
 		[self performSelector: @selector( startTLSThread) onThread: [[WebPortal defaultWebPortal] threadForRunLoopRef: [sock runLoopRef]]  withObject: nil waitUntilDone: YES];
-		
-//		NSArray *certificates = [self sslIdentityAndCertificates];
-//		
-//		if([certificates count] > 0)
-//		{
-//			// All connections are assumed to be secure. Only secure connections are allowed on this server.
-//			NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithCapacity:3];
-//			
-//			// Configure this connection as the server
-//			[settings setObject:[NSNumber numberWithBool:YES]
-//						 forKey:(NSString *)kCFStreamSSLIsServer];
-//			
-//			[settings setObject:certificates
-//						 forKey:(NSString *)kCFStreamSSLCertificates];
-//			
-//			// Configure this connection to use the highest possible SSL level
-//			[settings setObject:(NSString *)kCFStreamSocketSecurityLevelNegotiatedSSL
-//						 forKey:(NSString *)kCFStreamSSLLevel];
-//			
-//			[asyncSocket startTLS:settings];
-//		}
 	}
 	return YES;
 }
