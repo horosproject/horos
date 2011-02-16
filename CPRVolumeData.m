@@ -113,8 +113,8 @@
     return _isValid;
 }
 
-- (void)invalidateData; // this is to be called by objects who own own the floatBytes that were given to the receiver right before freeing the data
-{                       // this may lock temporarily if other threads are accessing the data, after this returns, all calls to access data will fail gracefully
+- (void)invalidateData; // this is to be called right before freeing the data by objects who own the floatBytes that were given to the receiver
+{                       // this may lock temporarily if other threads are accessing the data, after this returns, it is ok to free floatBytes and all calls to access data will fail gracefully
     struct timespec rqtp = {0, 100};
     struct timespec rmtp = {0, 0};
     
@@ -129,11 +129,6 @@
     // now we know that everything is ok and it is safe to return and have the caller free the data;
     _floatBytes = NULL;
     return;
-}
-
--(const float *)floatBytes
-{
-    return _floatBytes;
 }
 
 - (BOOL)getFloatData:(void *)buffer range:(NSRange)range
@@ -187,7 +182,7 @@
     }    
 }
 
-- (BOOL)getFloat:(float *)floatPtr AtPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z
+- (BOOL)getFloat:(float *)floatPtr atPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z
 {
     CPRVolumeDataInlineBuffer inlineBuffer;
     

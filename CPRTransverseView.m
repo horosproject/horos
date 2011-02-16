@@ -355,7 +355,9 @@ extern int CLUTBARS, ANNOTATIONS;
 - (void)generator:(CPRGenerator *)generator didGenerateVolume:(CPRVolumeData *)volume request:(CPRGeneratorRequest *)request
 {
 	NSData *previousROIs = [NSArchiver archivedDataWithRootObject: [self curRoiList]];
-	
+	CPRVolumeDataInlineBuffer inlineBuffer;
+	DCMPix *newPix;
+
     [[self.generatedVolumeData retain] autorelease]; // make sure this is around long enough so that it doesn't disapear under the old DCMPix
     self.generatedVolumeData = volume;
     
@@ -363,12 +365,20 @@ extern int CLUTBARS, ANNOTATIONS;
     
     for( int i = 0; i < self.generatedVolumeData.pixelsDeep; i++)
 	{
-        DCMPix *newPix = [[DCMPix alloc] initWithData:(float *)[self.generatedVolumeData floatBytes] + (i*self.generatedVolumeData.pixelsWide*self.generatedVolumeData.pixelsHigh) :32 
-                                             :self.generatedVolumeData.pixelsWide :self.generatedVolumeData.pixelsHigh :self.generatedVolumeData.pixelSpacingX :self.generatedVolumeData.pixelSpacingY
-                                             :-self.generatedVolumeData.pixelSpacingX*self.generatedVolumeData.pixelsWide/2.
-											 :-self.generatedVolumeData.pixelSpacingY*self.generatedVolumeData.pixelsHigh/2.
-											 :0
-											 :NO];
+		if ([self.generatedVolumeData aquireInlineBuffer:&inlineBuffer]) {
+			newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.generatedVolumeData.pixelsWide*self.generatedVolumeData.pixelsHigh) :32 
+												 :self.generatedVolumeData.pixelsWide :self.generatedVolumeData.pixelsHigh :self.generatedVolumeData.pixelSpacingX :self.generatedVolumeData.pixelSpacingY
+												 :-self.generatedVolumeData.pixelSpacingX*self.generatedVolumeData.pixelsWide/2.
+												 :-self.generatedVolumeData.pixelSpacingY*self.generatedVolumeData.pixelsHigh/2.
+												 :0
+												 :NO];
+		} else {
+			assert(0);
+			newPix = [[DCMPix alloc] init];
+		}
+
+		[self.generatedVolumeData releaseInlineBuffer:&inlineBuffer];
+
 		float c[ 6] = {1, 0, 0, 0, 1, 0};
 		[newPix setOrientation: c];
 		

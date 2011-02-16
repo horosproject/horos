@@ -677,8 +677,10 @@ N3BezierCoreSegmentType N3BezierCoreGetSegmentAtIndex(N3BezierCoreRef bezierCore
 #pragma mark -
 #pragma mark DEBUG
 
+
 void N3BezierCoreCheckDebug(N3BezierCoreRef bezierCore)
 {
+#ifndef NDEBUG
     // the first segment must be a moveto
     // the member lastElement should really point to the last element
     // the number of elements in the list should really be elementCount
@@ -732,7 +734,9 @@ void N3BezierCoreCheckDebug(N3BezierCoreRef bezierCore)
         assert(bezierCore->elementCount == elementCount);
         assert(bezierCore->lastElement == element);
     }
+#endif
 }
+
 
 #pragma mark -
 #pragma mark N3BezierCoreIterator

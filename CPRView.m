@@ -938,7 +938,8 @@ extern int splitPosition[ 2];
     NSUInteger i;
     NSMutableArray *pixArray;
     DCMPix *newPix;
-	
+	CPRVolumeDataInlineBuffer inlineBuffer;
+
     [self _updateGeneratedHeight];
 	
 	NSPoint previousOrigin = [self origin];
@@ -954,10 +955,16 @@ extern int splitPosition[ 2];
     
     for (i = 0; i < self.curvedVolumeData.pixelsDeep; i++)
 	{
-        newPix = [[DCMPix alloc] initWithData:(float *)[self.curvedVolumeData floatBytes] + (i*self.curvedVolumeData.pixelsWide*self.curvedVolumeData.pixelsHigh) :32 
-                                             :self.curvedVolumeData.pixelsWide :self.curvedVolumeData.pixelsHigh :self.curvedVolumeData.pixelSpacingX :self.curvedVolumeData.pixelSpacingY
-                                             :0.0 :0.0 :0.0 :NO];
-        
+		if ([self.curvedVolumeData aquireInlineBuffer:&inlineBuffer]) {
+			newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.curvedVolumeData.pixelsWide*self.curvedVolumeData.pixelsHigh) :32 
+												 :self.curvedVolumeData.pixelsWide :self.curvedVolumeData.pixelsHigh :self.curvedVolumeData.pixelSpacingX :self.curvedVolumeData.pixelSpacingY
+												 :0.0 :0.0 :0.0 :NO];
+		} else {
+			assert(0);
+			newPix = [[DCMView alloc] init];
+		}
+		[self.curvedVolumeData releaseInlineBuffer:&inlineBuffer];
+
 		[newPix setImageObj: [[[self windowController] originalPix] imageObj]];
 		[newPix setSrcFile: [[[self windowController] originalPix] srcFile]];
 		[newPix setAnnotationsDictionary: [[[self windowController] originalPix] annotationsDictionary]];

@@ -65,18 +65,17 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
 @property (readonly) N3AffineTransform volumeTransform; // volumeTransform is the transform from Dicom (patient) space to pixel data
 
 - (BOOL)isDataValid;
-- (void)invalidateData; // this is to be called by objects who own own the floatBytes that were given to the receiver right before freeing the data
-						// this may lock temporarily if other threads are accessing the data, after this returns, all calls to access data will fail gracefully
+- (void)invalidateData; // this is to be called right before freeing the data by objects who own the floatBytes that were given to the receiver
+						// this may lock temporarily if other threads are accessing the data, after this returns, it is ok to free floatBytes and all calls to access data will fail gracefully
+						// (except inlineBuffer based calls, check the return value of aquireInlineBuffer: to make sure it is ok to call the inline functions) 
                         // if the data is not owned by the CPRVolumeData, make sure to call invalidateData before freeing the data, even before releasing,
                         // in case other objects have retained the receiver
-
-- (const float *)floatBytes;
 
 - (BOOL)getFloatData:(void *)buffer range:(NSRange)range; // returns YES if the data was sucessfully filled
 
 - (CPRUnsignedInt16ImageRep *)unsignedInt16ImageRepForSliceAtIndex:(NSUInteger)z;
 
-- (BOOL)getFloat:(float *)floatPtr AtPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z; // returns YES if the float was sucessfully gotten
+- (BOOL)getFloat:(float *)floatPtr atPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z; // returns YES if the float was sucessfully gotten
 - (BOOL)getLinearInterpolatedFloat:(float *)floatPtr atDicomVector:(N3Vector)vector; // these are slower, use the inline buffer if you care about speed
 
 - (BOOL)aquireInlineBuffer:(CPRVolumeDataInlineBuffer *)inlineBuffer; // make sure to pair this with a releaseInlineBuffer (even if it returns NO), returns YES if the data is valid. The data will be locked and remain valid until releaseInlineBuffer: is called
@@ -95,6 +94,10 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
 
 @end
 
+CF_INLINE const float* CPRVolumeDataFloatBytes(CPRVolumeDataInlineBuffer *inlineBuffer)
+{
+	return inlineBuffer->floatBytes;
+}
 
 CF_INLINE float CPRVolumeDataGetFloatAtPixelCoordinate(CPRVolumeDataInlineBuffer *inlineBuffer, NSUInteger x, NSUInteger y, NSUInteger z)
 {
@@ -104,7 +107,6 @@ CF_INLINE float CPRVolumeDataGetFloatAtPixelCoordinate(CPRVolumeDataInlineBuffer
         return 0;
     }
 }
-
 
 CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(CPRVolumeDataInlineBuffer *inlineBuffer, CGFloat x, CGFloat y, CGFloat z) // coordinate in the pixel space
 {
@@ -162,8 +164,6 @@ CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeVector(CPRVolumeData
 {
     return CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(inlineBuffer, vector.x, vector.y, vector.z);
 }
-
-
 
 CF_EXTERN_C_END
 
