@@ -216,7 +216,8 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                     
                     horizontalFillOperation = [[CPRHorizontalFillOperation alloc] initWithVolumeData:_volumeData floatBytes:_floatBytes + (y*pixelsWide) + (z*pixelsWide*pixelsHigh) width:pixelsWide height:MIN(FILL_HEIGHT, pixelsHigh - y)
                                                                                              vectors:fillVectors normals:fillNormals];
-                    [fillOperations addObject:horizontalFillOperation];
+                    [horizontalFillOperation setQueuePriority:[self queuePriority]];
+					[fillOperations addObject:horizontalFillOperation];
                     [horizontalFillOperation addObserver:self forKeyPath:@"isFinished" options:0 context:&self->_fillOperations];
                     [self retain]; // so we don't get release while the operation is going
                     [horizontalFillOperation release];
@@ -234,21 +235,13 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
             }
             
             _oustandingFillOperationCount = [fillOperations count];
-            
-//            if ([fillOperations count] > 2) {
-				fillQueue = [[self class] _fillQueue];
-                for (horizontalFillOperation in fillOperations) {
-                    [fillQueue addOperation:horizontalFillOperation];
-                }
-//            } else {
-//                for (horizontalFillOperation in fillOperations) {
-//                    [horizontalFillOperation start];
-//                }
-//                
-//            }
-//
-            
-            free(vectors);
+            			
+			fillQueue = [[self class] _fillQueue];
+			for (horizontalFillOperation in fillOperations) {
+				[fillQueue addOperation:horizontalFillOperation];
+			}
+			
+			free(vectors);
             free(fillVectors);
             free(fillNormals);
             free(tangents);
@@ -301,6 +294,8 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                                                                       volumeTransform:volumeTransform freeWhenDone:YES];
                     _floatBytes = NULL;
                     projectionOperation = [[CPRProjectionOperation alloc] init];
+					[projectionOperation setQueuePriority:[self queuePriority]];
+					
                     projectionOperation.volumeData = generatedVolume;
                     projectionOperation.projectionMode = self.request.projectionMode;
 					if ([self isCancelled]) {
@@ -309,7 +304,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                     					
                     [generatedVolume release];
                     [projectionOperation addObserver:self forKeyPath:@"isFinished" options:0 context:&self->_fillOperations];
-                    [self retain]; // so we don't get release while the operation is going
+                    [self retain]; // so we don't get released while the operation is going
                     _projectionOperation = projectionOperation;
                     [[[self class] _fillQueue] addOperation:projectionOperation];
                 } else if (oustandingFillOperationCount == -1) {

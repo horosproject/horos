@@ -36,7 +36,7 @@ extern int CLUTBARS, ANNOTATIONS;
 
 - (CGFloat)_relativeSegmentPosition;
 
-- (N3BezierPath*)_requestBezierAndInitialNormal:(N3VectorPointer)initialNormal;
+- (N3BezierPath*)_bezierAndInitialNormalForRequest:(N3VectorPointer)initialNormal;
 
 - (void)_setNeedsNewRequest;
 - (void)_sendNewRequestIfNeeded;
@@ -420,7 +420,7 @@ extern int CLUTBARS, ANNOTATIONS;
 	[_generator runMainRunLoopUntilAllRequestsAreFinished];
 }
 
-- (void)_sendNewRequest
+- (void)_sendNewRequest // since we don't generate these asynchronously anymore, should we really have all this _sendNewRequest business?
 {
     CPRStraightenedGeneratorRequest *request;
     N3Vector initialNormal;
@@ -433,7 +433,7 @@ extern int CLUTBARS, ANNOTATIONS;
         request.pixelsHigh = [self bounds].size.height;
         request.slabWidth = 0;
         request.slabSampleDistance = 0;
-        request.bezierPath = [self _requestBezierAndInitialNormal:&initialNormal];
+        request.bezierPath = [self _bezierAndInitialNormalForRequest:&initialNormal];
         request.initialNormal = initialNormal;
         request.vertical = NO;
         request.bezierStartPosition = 0;
@@ -441,15 +441,11 @@ extern int CLUTBARS, ANNOTATIONS;
         request.middlePosition = 0;
         
         if ([_lastRequest isEqual:request] == NO) {
-			if (_curvedPath.thickness < 2) { // check the curved path thickness because if the curvedPath thickness is large there are probably large async requests  going on, and the synchronous request will probably take a long time
-				CPRVolumeData *curvedVolume;
-				curvedVolume = [CPRGenerator synchronousRequestVolume:request volumeData:_generator.volumeData];
-				
-				[_generator runMainRunLoopUntilAllRequestsAreFinished];
-				[self generator:nil didGenerateVolume:curvedVolume request:request];
-			} else {
-				[_generator requestVolume:request];
-			}
+			CPRVolumeData *curvedVolume;
+			curvedVolume = [CPRGenerator synchronousRequestVolume:request volumeData:_generator.volumeData];
+			
+			[_generator runMainRunLoopUntilAllRequestsAreFinished];
+			[self generator:nil didGenerateVolume:curvedVolume request:request];
 			self.lastRequest = request;
         }
         
@@ -482,7 +478,7 @@ extern int CLUTBARS, ANNOTATIONS;
     return 0;
 }
 
-- (N3BezierPath*)_requestBezierAndInitialNormal:(N3VectorPointer)initialNormal
+- (N3BezierPath*)_bezierAndInitialNormalForRequest:(N3VectorPointer)initialNormal
 {
     N3MutableBezierPath *bezierPath;
     N3Vector vector;
