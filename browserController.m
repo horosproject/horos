@@ -6048,7 +6048,32 @@ static NSConditionLock *threadLock = nil;
 	#endif
 }
 
-- (NSArray*)childrenArray: (NSManagedObject*)item onlyImages: (BOOL)onlyImages
+- (NSArray*) sortDescriptorsForImages
+{
+	int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
+
+	NSSortDescriptor *sortInstance = nil, *sortLocation = nil, *sortDate = nil;
+
+	sortDate = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO] autorelease];
+	sortInstance = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease];
+	sortLocation = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO] autorelease];
+
+	NSArray *sortDescriptors = nil;
+
+	if( sortSeriesBySliceLocation == 0)
+		sortDescriptors = [NSArray arrayWithObjects: sortInstance, sortLocation, nil];
+	else
+	{
+		if( sortSeriesBySliceLocation == 2 || sortSeriesBySliceLocation == -2)
+			sortDescriptors = [NSArray arrayWithObjects: sortDate, sortLocation, sortInstance, nil];
+		else
+			sortDescriptors = [NSArray arrayWithObjects: sortLocation, sortInstance, nil];
+	}
+	
+	return sortDescriptors;
+}
+
+- (NSArray*) childrenArray: (NSManagedObject*)item onlyImages: (BOOL)onlyImages
 {
 	if( [item isFault] || [item isDeleted])
 	{
@@ -6064,21 +6089,7 @@ static NSConditionLock *threadLock = nil;
 		
 		@try
 		{
-			int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
-			
-			NSSortDescriptor *sortInstance = nil, *sortLocation = nil;
-			
-			sortInstance = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease];
-			sortLocation = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO] autorelease];
-			
-			NSArray *sortDescriptors = nil;
-			
-			if( sortSeriesBySliceLocation == 0)
-				sortDescriptors = [NSArray arrayWithObjects: sortInstance, sortLocation, nil];
-			else
-				sortDescriptors = [NSArray arrayWithObjects: sortLocation, sortInstance, nil];
-			
-			sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
+			sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: [self sortDescriptorsForImages]];
 		}
 		
 		@catch (NSException * e)
@@ -12163,23 +12174,10 @@ static BOOL needToRezoom;
 					
 						if( p1 && p2 && [ViewerController computeIntervalForDCMPix: p1 And: p2] < 0)
 						{
-							int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
+							a = [a sortedArrayUsingDescriptors: [self sortDescriptorsForImages]];
 							
-							NSSortDescriptor *sortInstance, *sortLocation;
-							
-							sortInstance = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: NO] autorelease];
-							sortLocation = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? NO : YES] autorelease];
-							
-							if( sortInstance && sortLocation)
-							{
-								if( sortSeriesBySliceLocation == 0)
-									a = [a sortedArrayUsingDescriptors: [NSArray arrayWithObjects: sortInstance, sortLocation, nil]];
-								else
-									a = [a sortedArrayUsingDescriptors: [NSArray arrayWithObjects: sortLocation, sortInstance, nil]];
-								
-								preFlippedData = YES;
-								flipped = YES;
-							}
+							preFlippedData = YES;
+							flipped = YES;
 						}
 						
 						[p1 release];
@@ -13318,6 +13316,8 @@ static NSArray*	openSubSeriesArray = nil;
 			if( i % interval == 0) [imagesArray addObject: image];
 		}
 		
+		[imagesArray sortUsingDescriptors: [self sortDescriptorsForImages]];
+		
 		if( [imagesArray count] > 0)
 			[newArray addObject: imagesArray];
 	}
@@ -13395,6 +13395,8 @@ static NSArray*	openSubSeriesArray = nil;
 {
 	[[waitOpeningWindow window] orderOut: self];
 	
+	int copySortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
+	
 	openSubSeriesArray = [toOpenArray retain];
 	
 	if( [[NSApp mainWindow] level] > NSModalPanelWindowLevel){ NSBeep(); return nil;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
@@ -13426,16 +13428,16 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[[waitOpeningWindow window] orderBack: self];
 	
+	NSArray *returnedArray = nil;
+	
 	if( result == NSRunStoppedResponse)
-	{
-		[openSubSeriesArray release];
-		
-		return [self produceNewArray: toOpenArray];
-	}
+		returnedArray = [self produceNewArray: toOpenArray];
 	
 	[openSubSeriesArray release];
 	
-	return nil;
+	[[NSUserDefaults standardUserDefaults] setInteger: copySortSeriesBySliceLocation forKey: @"sortSeriesBySliceLocation"];
+	
+	return returnedArray;
 }
 
 
