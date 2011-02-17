@@ -585,6 +585,13 @@ N3AffineTransform N3AffineTransformTranspose(N3AffineTransform t)
 	return transpose;
 }
 
+CGFloat N3AffineTransformDeterminant(N3AffineTransform t)
+{
+	assert(N3AffineTransformIsAffine(t));
+	
+	return t.m11*t.m22*t.m33 + t.m21*t.m32*t.m13 + t.m31*t.m12*t.m23 - t.m11*t.m32*t.m23 - t.m21*t.m12*t.m33 - t.m31*t.m22*t.m13;
+}
+
 NSString *NSStringFromN3AffineTransform(N3AffineTransform transform)
 {
     return [NSString stringWithFormat:@"{{%8.2f, %8.2f, %8.2f, %8.2f}\n {%8.2f, %8.2f, %8.2f, %8.2f}\n {%8.2f, %8.2f, %8.2f, %8.2f}\n {%8.2f, %8.2f, %8.2f, %8.2f}}",
