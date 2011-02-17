@@ -386,25 +386,27 @@ extern int CLUTBARS, ANNOTATIONS;
         [newPix release];
     }
     
-    for( int i = 0; i < [pixArray count]; i++)
-    {
-        [[pixArray objectAtIndex: i] setArrayPix:pixArray :i];
-    }
-    
-    [self setPixels:pixArray files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
-    
-    [[self windowController] propagateWLWW: [[self windowController] mprView1]];
-    
-	NSArray *roiArray = [NSUnarchiver unarchiveObjectWithData: previousROIs];
-	for( ROI *r in roiArray)
+	if( pixArray.count)
 	{
-		r.pix = curDCM;
-		[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY) :NO :NO];
-		[r setRoiFont: labelFontListGL :labelFontListGLSize :self];
+		for( int i = 0; i < [pixArray count]; i++)
+		{
+			[[pixArray objectAtIndex: i] setArrayPix:pixArray :i];
+		}
+		
+		[self setPixels:pixArray files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+		
+		[[self windowController] propagateWLWW: [[self windowController] mprView1]];
+		
+		NSArray *roiArray = [NSUnarchiver unarchiveObjectWithData: previousROIs];
+		for( ROI *r in roiArray)
+		{
+			r.pix = curDCM;
+			[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY) :NO :NO];
+			[r setRoiFont: labelFontListGL :labelFontListGLSize :self];
+		}
+		
+		[[self curRoiList] addObjectsFromArray: roiArray];
 	}
-	
-	[[self curRoiList] addObjectsFromArray: roiArray];
-	
     [pixArray release];
     [self setNeedsDisplay:YES];
 }

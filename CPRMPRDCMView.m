@@ -300,6 +300,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 - (void) updateViewMPR:(BOOL) computeCrossReferenceLines
 {
+	if( [self frame].size.width <= 0)
+		return;
+	
+	if( [self frame].size.height <= 0)
+		return;
+	
 	long h, w;
 	float previousWW, previousWL;
 	BOOL isRGB;
@@ -2071,6 +2077,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     CGLContextObj cgl_ctx;
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
+	if( isnan( curDCM.pixelSpacingX) || isnan( curDCM.pixelSpacingY) || curDCM.pixelSpacingX <= 0 || curDCM.pixelSpacingY <= 0 || curDCM.pixelSpacingX > 1000 || curDCM.pixelSpacingY > 1000)
+	{
+		return;
+	}
+	
 	transform = N3AffineTransformConcat(N3AffineTransformInvert([self pixToDicomTransform]), [self pixToSubDrawRectTransform]);
 
 	if( N3AffineTransformIsAffine(transform) == NO)
@@ -2335,6 +2346,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     pixToDicomTransform.m32 = orientation[7];
     pixToDicomTransform.m33 = orientation[8];
     
+	#ifndef NDEBUG
+	if( isnan( pix.pixelSpacingX) || isnan( pix.pixelSpacingY) || pix.pixelSpacingX <= 0 || pix.pixelSpacingY <= 0 || pix.pixelSpacingX > 1000 || pix.pixelSpacingY > 1000)
+		NSLog( @"******* CPR pixel spacing incorrect for pixToSubDrawRectTransform");
+	#endif
+	
     return pixToDicomTransform;
 }
 
@@ -2420,6 +2436,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 {
     N3AffineTransform pixToSubDrawRectTransform;
     
+	#ifndef NDEBUG
+	if( isnan( curDCM.pixelSpacingX) || isnan( curDCM.pixelSpacingY) || curDCM.pixelSpacingX <= 0 || curDCM.pixelSpacingY <= 0 || curDCM.pixelSpacingX > 1000 || curDCM.pixelSpacingY > 1000)
+		NSLog( @"******* CPR pixel spacing incorrect for pixToSubDrawRectTransform");
+	#endif
+	
     pixToSubDrawRectTransform = N3AffineTransformIdentity;
     //    pixToSubDrawRectTransform = N3AffineTransformConcat(pixToSubDrawRectTransform, N3AffineTransformMakeScale(1.0/curDCM.pixelSpacingX, 1.0/curDCM.pixelSpacingY, 1));
     pixToSubDrawRectTransform = N3AffineTransformConcat(pixToSubDrawRectTransform, N3AffineTransformMakeTranslation(curDCM.pwidth * -0.5, curDCM.pheight * -0.5, 0));

@@ -248,6 +248,12 @@ static	BOOL frameZoomed = NO;
 
 - (void) updateViewMPR:(BOOL) computeCrossReferenceLines
 {
+	if( [self frame].size.width <= 0)
+		return;
+	
+	if( [self frame].size.height <= 0)
+		return;
+	
 	long h, w;
 	float previousWW, previousWL;
 	BOOL isRGB;
