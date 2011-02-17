@@ -354,6 +354,9 @@ extern int CLUTBARS, ANNOTATIONS;
 
 - (void)generator:(CPRGenerator *)generator didGenerateVolume:(CPRVolumeData *)volume request:(CPRGeneratorRequest *)request
 {
+	if( [self windowController] == nil)
+		return;
+	
 	NSData *previousROIs = [NSArchiver archivedDataWithRootObject: [self curRoiList]];
 	CPRVolumeDataInlineBuffer inlineBuffer;
 	DCMPix *newPix;

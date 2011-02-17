@@ -926,14 +926,16 @@ extern int splitPosition[ 2];
 
 - (void)generator:(CPRGenerator *)generator didGenerateVolume:(CPRVolumeData *)volume request:(CPRGeneratorRequest *)request
 {
-    static NSDate *lastDate = nil;
-    if (lastDate == nil) {
-        lastDate = [[NSDate date] retain];
-    }
-    
-//    NSLog(@"didGenerateVolume time sinc last date %f", -[lastDate timeIntervalSinceNow]);
-    [lastDate release];
-    lastDate = [[NSDate date] retain];
+	if( [self windowController] == nil)
+		return;
+		
+//    static NSDate *lastDate = nil;
+//    if (lastDate == nil) {
+//        lastDate = [[NSDate date] retain];
+//    }
+//    
+//    [lastDate release];
+//    lastDate = [[NSDate date] retain];
     
     NSUInteger i;
     NSMutableArray *pixArray;
