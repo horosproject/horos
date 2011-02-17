@@ -11090,8 +11090,10 @@ static BOOL needToRezoom;
 		[aCell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 		
 		if( [[aTableColumn identifier] isEqualToString:@"Source"])
-		{ 
-			if ([[[self.albumArray objectAtIndex:rowIndex] valueForKey:@"smartAlbum"] boolValue])
+		{
+			NSArray *albumArray = self.albumArray;
+			
+			if ( albumArray.count > rowIndex && [[[albumArray objectAtIndex: rowIndex] valueForKey:@"smartAlbum"] boolValue])
 			{
 				if (isCurrentDatabaseBonjour)
 				{
