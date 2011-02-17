@@ -439,7 +439,7 @@ static NSConditionLock *threadLock = nil;
 			
 			fileExist = [[NSFileManager defaultManager] fileExistsAtPath: dstPath];
 			
-			if( fileExist == YES && firstExist == YES)
+			if( fileExist == YES && firstExist == YES && DATABASEINDEX == 0)
 			{
 				firstExist = NO;
 				[BrowserController computeDATABASEINDEXforDatabase: OUTpath];
@@ -3598,6 +3598,7 @@ static NSConditionLock *threadLock = nil;
 	[managedObjectContext reset];
 	[managedObjectContext release];
 	managedObjectContext = nil;
+	DATABASEINDEX = 0;
 	
 	[self setFixedDocumentsDirectory];
 	[self managedObjectContext];
@@ -13505,6 +13506,10 @@ static NSArray*	openSubSeriesArray = nil;
 
 + (void) computeDATABASEINDEXforDatabase:(NSString*) path
 {
+	#ifndef NDEBUG
+	NSLog( @"----- computeDATABASEINDEXforDatabase");
+	#endif
+	
 	@try
 	{
 		long v = 0;
@@ -13636,8 +13641,6 @@ static NSArray*	openSubSeriesArray = nil;
 		decompressThreadRunning = [[NSRecursiveLock alloc] init];
 		processorsLock = [[NSConditionLock alloc] initWithCondition: 1];
 		decompressArray = [[NSMutableArray alloc] initWithCapacity: 0];
-		
-		DATABASEINDEX = 0;
 		
 		DatabaseIsEdited = NO;
 		
