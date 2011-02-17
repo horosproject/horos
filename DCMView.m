@@ -8541,11 +8541,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						else
 						{
 							glBegin(GL_LINES);
-								glVertex2f( scaleValue*(tempPoint3D[ 0]-LINELENGTH/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
-								glVertex2f( scaleValue*(tempPoint3D[ 0]+LINELENGTH/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
-								
-								glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]-LINELENGTH/curDCM.pixelSpacingY));
-								glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]+LINELENGTH/curDCM.pixelSpacingY));
+							
+							float crossx = tempPoint3D[0], crossy = tempPoint3D[1];
+							
+							glVertex2f( scaleValue * (crossx - LINELENGTH/curDCM.pixelSpacingX), scaleValue*(crossy));
+							glVertex2f( scaleValue * (crossx - 5/curDCM.pixelSpacingX), scaleValue*(crossy));
+							glVertex2f( scaleValue * (crossx + LINELENGTH/curDCM.pixelSpacingX), scaleValue*(crossy));
+							glVertex2f( scaleValue * (crossx + 5/curDCM.pixelSpacingX), scaleValue*(crossy));
+							
+							glVertex2f( scaleValue * (crossx), scaleValue*(crossy-LINELENGTH/curDCM.pixelSpacingX));
+							glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5/curDCM.pixelSpacingX));
+							glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5/curDCM.pixelSpacingX));
+							glVertex2f( scaleValue * (crossx), scaleValue*(crossy+LINELENGTH/curDCM.pixelSpacingX));
+							
 							glEnd();
 						}
 						glLineWidth(1.0);
