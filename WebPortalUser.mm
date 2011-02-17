@@ -89,6 +89,9 @@ static PSGenerator *generator = nil;
 	
 	if( [self primitiveValueForKey: @"dateAdded"] == nil)
 		[self setPrimitiveValue: [NSDate date] forKey: @"dateAdded"];
+
+	if( [self primitiveValueForKey: @"studyPredicate"] == nil)
+		[self setPrimitiveValue: @"(YES == NO)" forKey: @"studyPredicate"];
 	
 	[self generatePassword];
 
