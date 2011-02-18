@@ -400,6 +400,7 @@ extern "C"
 	[presets setValue: [searchFieldComments stringValue] forKey: @"searchFieldComments"];
 	
 	[presets setValue: [NSNumber numberWithInt: [dateFilterMatrix selectedTag]] forKey: @"dateFilterMatrix"];
+	[presets setValue: [NSNumber numberWithInt: [birthdateFilterMatrix selectedTag]] forKey: @"birthdateFilterMatrix"];
 	
 	NSMutableString *cellsString = [NSMutableString string];
 	for( NSCell *cell in [modalityFilterMatrix cells])
@@ -477,6 +478,7 @@ extern "C"
 	[searchFieldStudyDescription setStringValue: @""];
 	[searchFieldComments setStringValue: @""];
 	[dateFilterMatrix selectCellWithTag: 0];
+	[birthdateFilterMatrix selectCellWithTag: 0];
 	[modalityFilterMatrix deselectAllCells];
 	[PatientModeMatrix selectTabViewItemAtIndex: 0];
 	
@@ -562,6 +564,7 @@ extern "C"
 		[searchFieldComments setStringValue: [presets valueForKey: @"searchFieldComments"]];
 	
 	[dateFilterMatrix selectCellWithTag: [[presets valueForKey: @"dateFilterMatrix"] intValue]];
+	[birthdateFilterMatrix selectCellWithTag: [[presets valueForKey: @"birthdateFilterMatrix"] intValue]];
 	
 	[modalityFilterMatrix deselectAllCells];
 	
@@ -1594,7 +1597,15 @@ extern "C"
 					}
 					else if( currentQueryKey == PatientBirthDate)
 					{
-						[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+						if( [birthdateFilterMatrix selectedTag] == 0)
+							[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+						
+						if( [birthdateFilterMatrix selectedTag] == -1)
+							[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"-%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+						
+						if( [birthdateFilterMatrix selectedTag] == 1)
+							[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d-" timeZone:nil locale:nil] forDescription:currentQueryKey];
+						
 						queryItem = YES;
 					}
 					else if( currentQueryKey == PatientID)

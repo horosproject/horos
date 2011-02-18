@@ -150,6 +150,8 @@
 		[rootNode setShowErrorMessage: showError];
 		[rootNode queryWithValues:filterArray];
 		
+		NSLog( @"Query values: %@", filterArray);
+		
 		[queries release];
 		queries = [[rootNode children] retain];
 	}

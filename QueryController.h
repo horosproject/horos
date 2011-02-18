@@ -36,6 +36,7 @@
 	IBOutlet	NSWindow					*presetWindow;
 	IBOutlet	NSTextField					*presetName;
 	
+	IBOutlet	NSMatrix					*birthdateFilterMatrix;
 	IBOutlet	NSMatrix					*dateFilterMatrix;
 	IBOutlet	NSMatrix					*modalityFilterMatrix;
 	IBOutlet	NSTabView					*PatientModeMatrix;
