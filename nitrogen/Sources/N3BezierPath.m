@@ -206,6 +206,26 @@
 	return [(NSString *)N3BezierCoreCopyDescription(_bezierCore) autorelease];
 }
 
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len
+{
+	N3Vector endpoint;
+    NSValue *endpointValue;
+	
+    if(state->state == 0) {
+        state->mutationsPtr = (unsigned long *)self;
+    }
+    
+    if (state->state >= [self elementCount]) {
+        return 0;
+    }
+    
+    [self elementAtIndex:state->state control1:NULL control2:NULL endpoint:&endpoint];
+    endpointValue = [NSValue valueWithN3Vector:endpoint];
+    state->itemsPtr = &endpointValue;
+    state->state++;
+    return 1;
+}
+
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
 	[encoder encodeObject:[self dictionaryRepresentation] forKey:@"bezierPathDictionaryRepresentation"];
