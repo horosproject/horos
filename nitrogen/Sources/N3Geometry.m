@@ -501,7 +501,7 @@ bool N3PlaneEqualToPlane(N3Plane plane1, N3Plane plane2)
 
 bool N3PlaneIsCoincidentToPlane(N3Plane plane1, N3Plane plane2)
 {
-    if (N3VectorLength(N3VectorCrossProduct(plane1.normal, plane2.normal)) < _N3GeometrySmallNumber) {
+    if (N3VectorLength(N3VectorCrossProduct(plane1.normal, plane2.normal)) > _N3GeometrySmallNumber) {
         return false;
     }
     return N3VectorIsOnPlane(plane1.point, plane2);
