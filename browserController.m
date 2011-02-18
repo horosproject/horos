@@ -5921,9 +5921,12 @@ static NSConditionLock *threadLock = nil;
 	[albumTable reloadData];
 }
 
-- (void) computeNumberOfStudiesForAlbums
+- (void) computeNumberOfStudiesForAlbums: (NSManagedObjectContext*) context
 {	
 	if( computeNumberOfStudiesForAlbums)
+		return;
+		
+	if( context == nil)
 		return;
 	
 	computeNumberOfStudiesForAlbums = YES;
@@ -5936,8 +5939,6 @@ static NSConditionLock *threadLock = nil;
 		{
 			NSMutableArray *NoOfStudies = [NSMutableArray array];
 			
-			NSManagedObjectContext *context = [self managedObjectContextIndependentContext: YES];
-
 			// Find all studies
 			NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 			[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
@@ -6008,16 +6009,14 @@ static NSConditionLock *threadLock = nil;
 
 - (void)delayedRefreshAlbums
 {
-	[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( computeNumberOfStudiesForAlbums) object: nil];
-	[self performSelector: @selector( computeNumberOfStudiesForAlbums) withObject: nil afterDelay: 3];
+	[self performSelector: @selector( computeNumberOfStudiesForAlbums:) withObject: [self managedObjectContextIndependentContext: YES] afterDelay: 3];
 }
 
 - (void)refreshAlbums
 {
 	if( computeNumberOfStudiesForAlbums == NO && displayEmptyDatabase == NO && [[self window] isVisible] == YES)
 	{
-		[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( computeNumberOfStudiesForAlbums) object: nil];
-		[NSThread detachNewThreadSelector: @selector( computeNumberOfStudiesForAlbums) toTarget:self withObject:nil];
+		[NSThread detachNewThreadSelector: @selector( computeNumberOfStudiesForAlbums:) toTarget:self withObject: [self managedObjectContextIndependentContext: YES]];
 	}
 }
 
