@@ -207,6 +207,7 @@ static NSArray*	statesArray = nil;
 
 static NSNumberFormatter* decimalNumberFormatter = NULL;
 static volatile BOOL waitForRunningProcess = NO;
+static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 
 +(void)initialize {
 	decimalNumberFormatter = [[NSNumberFormatter alloc] init];
@@ -5915,13 +5916,23 @@ static NSConditionLock *threadLock = nil;
 	[self checkBonjourUpToDate: sender];
 }
 
-- (void) computeNumberOfStudiesForAlbums
+- (void) reloadAlbumTableData
 {
+	[albumTable reloadData];
+}
+
+- (void) computeNumberOfStudiesForAlbums
+{	
+	if( computeNumberOfStudiesForAlbums)
+		return;
+	
+	computeNumberOfStudiesForAlbums = YES;
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	if( displayEmptyDatabase == NO && [[self window] isVisible] == YES)
+	@try
 	{
-		@try
+		if( displayEmptyDatabase == NO)
 		{
 			NSMutableArray *NoOfStudies = [NSMutableArray array];
 			
@@ -5974,27 +5985,25 @@ static NSConditionLock *threadLock = nil;
 					[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]]];
 			}
 			
-			if( albumNoOfStudiesCache == nil)
-				albumNoOfStudiesCache = [[NSMutableArray array] retain];
-			
 			@synchronized( albumNoOfStudiesCache)
 			{
 				[albumNoOfStudiesCache removeAllObjects];
 				[albumNoOfStudiesCache addObjectsFromArray: NoOfStudies];
 			}
 			
-			[albumTable performSelectorOnMainThread: @selector( reloadData) withObject: nil waitUntilDone: NO];
+			[self performSelectorOnMainThread: @selector( reloadAlbumTableData) withObject: nil waitUntilDone: YES];
 		}
-		@catch (NSException * e)
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
+		else
+			[self performSelectorOnMainThread: @selector( delayedRefreshAlbums) withObject: nil waitUntilDone: YES];
 	}
-	else
+	@catch (NSException * e)
 	{
-		[self performSelectorOnMainThread: @selector( delayedRefreshAlbums) withObject: nil waitUntilDone: NO];
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
+	
 	[pool release];
+	
+	computeNumberOfStudiesForAlbums = NO;
 }
 
 - (void)delayedRefreshAlbums
@@ -6005,7 +6014,11 @@ static NSConditionLock *threadLock = nil;
 
 - (void)refreshAlbums
 {
-	[NSThread detachNewThreadSelector: @selector( computeNumberOfStudiesForAlbums) toTarget:self withObject:nil];
+	if( computeNumberOfStudiesForAlbums == NO && displayEmptyDatabase == NO && [[self window] isVisible] == YES)
+	{
+		[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( computeNumberOfStudiesForAlbums) object: nil];
+		[NSThread detachNewThreadSelector: @selector( computeNumberOfStudiesForAlbums) toTarget:self withObject:nil];
+	}
 }
 
 - (void)refreshDatabase: (id)sender
@@ -13623,6 +13636,7 @@ static NSArray*	openSubSeriesArray = nil;
 			NSRunCriticalAlertPanel(NSLocalizedString(@"Protected Mode", nil), NSLocalizedString(@"OsiriX is now running in Protected Mode (shift + option keys at startup): no images are displayed, allowing you to delete crashing or corrupted images/studies.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		}
 		
+		albumNoOfStudiesCache = [[NSMutableArray alloc] init];
 		newFilesConditionLock = [[NSConditionLock alloc] initWithCondition: 0];
 		viewersListToRebuild = [[NSMutableArray alloc] initWithCapacity: 0];
 		viewersListToReload = [[NSMutableArray alloc] initWithCapacity: 0];
@@ -13751,7 +13765,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSRunLoop currentRunLoop] addTimer: IncomingTimer forMode: NSDefaultRunLoopMode];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
-			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 5*60 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
+			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 5*60 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain]; //
 		
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 3*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
@@ -13788,8 +13802,6 @@ static NSArray*	openSubSeriesArray = nil;
 //		[[NSTimer scheduledTimerWithTimeInterval: 5 target:self selector:@selector(autoTest:) userInfo:self repeats:NO] retain];
 		
 		displayEmptyDatabase = NO;
-		
-		[self refreshAlbums];
 	}
 	return self;
 }
@@ -19573,6 +19585,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
 	[self flagsChanged: 0L];
+	
+	if( albumNoOfStudiesCache.count == 0)
+		[self refreshAlbums];
 }
 
 - (void) flagsChanged:(NSEvent *)event
