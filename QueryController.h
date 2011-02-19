@@ -41,6 +41,7 @@
 	IBOutlet	NSMatrix					*modalityFilterMatrix;
 	IBOutlet	NSTabView					*PatientModeMatrix;
 	IBOutlet	NSDatePicker				*fromDate, *toDate, *searchBirth;
+	IBOutlet	NSTextField					*yearOldBirth;
     IBOutlet	NSPopUpButton				*sendToPopup;
 	
 	int										autoQueryRemainingSecs;
@@ -97,6 +98,7 @@
 - (IBAction) retrieveAndViewClick: (id) sender;
 - (IBAction) retrieveAndView: (id) sender;
 - (IBAction) view:(id) sender;
+- (IBAction) setBirthDate:(id) sender;
 - (NSArray*) queryPatientID:(NSString*) ID;
 - (void) query:(id)sender;
 - (void) retrieve:(id)sender;

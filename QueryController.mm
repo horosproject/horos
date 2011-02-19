@@ -2457,6 +2457,33 @@ extern "C"
 	}
 }
 
+- (IBAction) setBirthDate:(id) sender
+{
+	NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[searchBirth dateValue] timeIntervalSinceReferenceDate]];
+	NSCalendarDate *dateOfBirth = [NSCalendarDate date];
+	NSString *yearOld = nil;
+	NSInteger years, months, days;
+	
+	[dateOfBirth years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
+	
+	if( years < 2)
+	{
+		if( years < 1)
+		{
+			if( months < 1)
+			{
+				if( days < 0) yearOld = @"";
+				else yearOld = [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
+			}
+			else yearOld = [NSString stringWithFormat: NSLocalizedString( @"%d m", @"m = month"), months];
+		}
+		else yearOld = [NSString stringWithFormat: NSLocalizedString( @"%d y %d m", @"y = year, m = month"),years, months];
+	}
+	else yearOld = [NSString stringWithFormat: NSLocalizedString( @"%d y", @"y = year"), years];
+		
+	[yearOldBirth setStringValue: yearOld];
+}
+
 - (void) performRetrieve:(NSArray*) array
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -3034,6 +3061,8 @@ extern "C"
 		
 		NSLog( @"--- autoretrieving is not authorized - see locations preferences");
 	}
+	
+	[self setBirthDate: nil];
 }
 
 //******
