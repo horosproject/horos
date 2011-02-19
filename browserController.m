@@ -5935,22 +5935,17 @@ static NSConditionLock *threadLock = nil;
 	[albumTable reloadData];
 }
 
-- (void) computeNumberOfStudiesForAlbums: (NSManagedObjectContext*) context
-{	
-	if( computeNumberOfStudiesForAlbums)
-		return;
-		
-	if( context == nil)
-		return;
-	
-	computeNumberOfStudiesForAlbums = YES;
-	
+- (void) computeNumberOfStudiesForAlbums
+{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	@try
 	{
-		if( displayEmptyDatabase == NO)
+		if( displayEmptyDatabase == NO && computeNumberOfStudiesForAlbums == NO)
 		{
+			computeNumberOfStudiesForAlbums = YES;
+			
+			NSManagedObjectContext *context = [self managedObjectContextIndependentContext: YES];
 			NSMutableArray *NoOfStudies = [NSMutableArray array];
 			
 			// Find all studies
@@ -6007,6 +6002,8 @@ static NSConditionLock *threadLock = nil;
 			}
 			
 			[self performSelectorOnMainThread: @selector( reloadAlbumTableData) withObject: nil waitUntilDone: YES];
+			
+			computeNumberOfStudiesForAlbums = NO;
 		}
 		else
 			[self performSelectorOnMainThread: @selector( delayedRefreshAlbums) withObject: nil waitUntilDone: YES];
@@ -6017,20 +6014,19 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	[pool release];
-	
-	computeNumberOfStudiesForAlbums = NO;
 }
 
 - (void)delayedRefreshAlbums
 {
-	[self performSelector: @selector( computeNumberOfStudiesForAlbums:) withObject: [self managedObjectContextIndependentContext: YES] afterDelay: 3];
+	[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( computeNumberOfStudiesForAlbums) object: nil];
+	[self performSelector: @selector( computeNumberOfStudiesForAlbums) withObject: nil afterDelay: 5];
 }
 
 - (void)refreshAlbums
 {
-	if( computeNumberOfStudiesForAlbums == NO && displayEmptyDatabase == NO && [[self window] isVisible] == YES)
+	if( displayEmptyDatabase == NO && [[self window] isVisible] == YES)
 	{
-		[NSThread detachNewThreadSelector: @selector( computeNumberOfStudiesForAlbums:) toTarget:self withObject: [self managedObjectContextIndependentContext: YES]];
+		[NSThread detachNewThreadSelector: @selector( computeNumberOfStudiesForAlbums) toTarget:self withObject: nil];
 	}
 }
 
@@ -11056,7 +11052,7 @@ static BOOL needToRezoom;
 					return @"#";
 				}
 				else
-					return [albumNoOfStudiesCache objectAtIndex: rowIndex];
+					return [[[albumNoOfStudiesCache objectAtIndex: rowIndex] copy] autorelease];
 			}
 		}
 		else
@@ -13538,6 +13534,8 @@ static NSArray*	openSubSeriesArray = nil;
 	NSLog( @"----- computeDATABASEINDEXforDatabase");
 	#endif
 	
+	NSString *sqlPath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent: DATAFILEPATH];
+	
 	long long v = 0;
 	
 	@synchronized( [BrowserController currentBrowser])
@@ -13547,24 +13545,27 @@ static NSArray*	openSubSeriesArray = nil;
 			if( [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: nil])
 				path = [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: nil];
 			
-			// Delete empty directory <- This is too slow for NAS systems
-			for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
+			if( [[[BrowserController currentBrowser].databaseIndexDictionary objectForKey: sqlPath] longLongValue] == 0)
 			{
-				NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: [path stringByAppendingPathComponent: f] traverseLink:YES];
-				
-				if ( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
+				// Delete empty directory <- This is too slow for NAS systems
+				for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
 				{
-					if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
+					NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: [path stringByAppendingPathComponent: f] traverseLink:YES];
+					
+					if ( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
 					{
-						int numberOfValidFiles = 0;
-						for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [path stringByAppendingPathComponent: f] error: nil])
+						if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
 						{
-							if( [[s stringByDeletingPathExtension] integerValue] > 0)
-								numberOfValidFiles++;
+							int numberOfValidFiles = 0;
+							for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [path stringByAppendingPathComponent: f] error: nil])
+							{
+								if( [[s stringByDeletingPathExtension] integerValue] > 0)
+									numberOfValidFiles++;
+							}
+							
+							if( numberOfValidFiles == 0)
+								[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingPathComponent: f] handler: nil];
 						}
-						
-						if( numberOfValidFiles == 0)
-							[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingPathComponent: f] handler: nil];
 					}
 				}
 			}
@@ -13592,10 +13593,9 @@ static NSArray*	openSubSeriesArray = nil;
 				}
 			}
 			
-			NSString *sqlPath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent: DATAFILEPATH];
-			[[BrowserController currentBrowser].databaseIndexDictionary setObject: [NSNumber numberWithLongLong: v] forKey: sqlPath]; 
+			[[BrowserController currentBrowser].databaseIndexDictionary setObject: [NSNumber numberWithLongLong: v] forKey: sqlPath];
 			
-			NSLog( @"DATABASEINDEX: %d", v);
+			NSLog( @"DATABASEINDEX: %lld for %@", v, sqlPath);
 		}
 		@catch (NSException * e)
 		{
