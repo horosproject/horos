@@ -71,290 +71,6 @@ extern NSManagedObjectContext *staticContext;
 	return [[OsiriXSCPDataHandler alloc] init];
 }
 
-//- (NSPredicate *)predicateForObject:(DCMObject *)object
-//{
-//	NSPredicate *compoundPredicate = [NSPredicate predicateWithValue:YES];
-//	NSEnumerator *enumerator = [[object attributes] keyEnumerator];
-//	NSString *searchType = [object attributeValueWithName:@"Query/RetrieveLevel"];
-//	
-//	//should be STUDY, SERIES OR IMAGE
-//	
-//	NSString *key;
-//	while (key = [enumerator nextObject])
-//	{
-//		id value;
-//		//NSExpression *expression;
-//		NSPredicate *predicate;
-//		DCMAttribute *attr = [[object attributes] objectForKey:key];
-//		if ([searchType isEqualToString:@"STUDY"])
-//		{
-//			// check for dicom
-//			compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:[NSPredicate predicateWithFormat:@"hasDICOM == %d", YES], compoundPredicate, nil]];
-//			//compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObject: compoundPredicate, nil]];
-//			if ([[[attr attrTag] name] isEqualToString:@"PatientsName"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", value];
-//			}
-//			else if ([[[attr attrTag] name] isEqualToString:@"PatientID"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"patientID LIKE[cd] %@", value];
-//			}
-//			else if ([[[attr attrTag] name] isEqualToString:@"AccessionNumber"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"accessionNumber LIKE[cd] %@", value];
-//			}
-//			else if ([[[attr attrTag] name] isEqualToString:@"StudyInstanceUID"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", value];
-//			}
-//			else if ([[[attr attrTag] name] isEqualToString:@"StudyID"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"id == %@", value];
-//			}
-//			else if ([[[attr attrTag] name] isEqualToString:@"StudyDescription"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"studyName LIKE[cd] %@", value];
-//			}
-//			else if ([[[attr attrTag] name] isEqualToString:@"InstitutionName"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"institutionName LIKE[cd] %@", value];
-//			}
-//			else if ([[[attr attrTag] name] isEqualToString:@"ReferringPhysiciansName"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"referringPhysician LIKE[cd] %@", value];
-//			}
-//			else if ([[[attr attrTag] name] isEqualToString:@"PerformingPhysiciansName"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"performingPhysician LIKE[cd] %@", value];
-//			}
-//			else if ([[[attr attrTag] name] isEqualToString:@"PatientsBirthDate"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"dateOfBirth >= CAST(%lf, \"NSDate\") AND dateOfBirth <= CAST(%lf, \"NSDate\")", [self startOfDay:value], [self endOfDay:value]];
-//			}
-//			else if ([[[attr attrTag] name] isEqualToString:@"StudyDate"])
-//			{
-//				value = [attr value];
-//				if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
-//				{
-//					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-//					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];	
-//					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
-//					/*			
-//					subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\") AND date <= CAST(%lf, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate], [timeIntervalEnd timeIntervalSinceReferenceDate]];
-//					*/
-//					predicate = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")", [self endOfDay:query]];
-//
-//				}
-//				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
-//				{
-//					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-//					NSString *queryString = [[[attr value] queryString] stringByTrimmingCharactersInSet:set];		
-//					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
-//					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(%lf, \"NSDate\")",[self startOfDay:query]];
-//				}
-//				else if ([(DCMCalendarDate *)value isQuery])
-//				{
-//					value = [attr value];
-//					NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
-//					if ([values count] == 2)
-//					{
-//						DCMCalendarDate *startDate = [DCMCalendarDate dicomDate:[values objectAtIndex:0]];
-//						DCMCalendarDate *endDate = [DCMCalendarDate dicomDate:[values objectAtIndex:1]];
-//						//NSLog(@"startDate: %@", [startDate description]);
-//						//NSLog(@"endDate :%@", [endDate description]);
-//						//need two predicates for range
-//						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\")", [self startOfDay:startDate]];
-//						
-//						//expression = [NSExpression expressionForConstantValue:(NSDate *)endDate];
-//						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")",[self endOfDay:endDate]];
-//						
-//						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
-//					}
-//					else
-//						predicate = nil;
-//				}
-//				else
-//				{
-//					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\") AND date < CAST(%lf, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
-//				}
-//			}
-//			
-//			else if ([[[attr attrTag] name] isEqualToString:@"StudyTime"])
-//			{
-//				value = [attr value];
-//				if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
-//				{
-//					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-//					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];	
-//					NSNumber *query = [NSNumber numberWithInt:[queryString intValue]];			
-//					predicate = [NSPredicate predicateWithFormat:@"dicomTime <= %@",query];
-//				}
-//				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
-//				{
-//					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-//					NSString *queryString = [[[attr value] queryString] stringByTrimmingCharactersInSet:set];		
-//					NSNumber *query = [NSNumber numberWithInt:[queryString intValue]];			
-//					predicate = [NSPredicate predicateWithFormat:@"dicomTime >= %@",query];
-//				}
-//				else if ([(DCMCalendarDate *)value isQuery])
-//				{
-//					value = [attr value];
-//					NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
-//					if ([values count] == 2)
-//					{
-//						NSNumber *startDate = [NSNumber numberWithInt:[[values objectAtIndex:0] intValue]];
-//						NSNumber *endDate = [NSNumber numberWithInt:[[values objectAtIndex:1] intValue]];
-//						
-//						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"dicomTime >= %@",startDate];
-//						
-//						//expression = [NSExpression expressionForConstantValue:(NSDate *)endDate];
-//						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"dicomTime <= %@",endDate];
-//						
-//						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
-//					}
-//					else
-//						predicate = nil;
-//				}
-//				else
-//				{
-//					predicate = [NSPredicate predicateWithFormat:@"dicomTime == %@", [value dateAsNumber]];
-//				}
-//			}
-//			else
-//				predicate = nil;
-//				
-//			if (predicate)
-//				compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
-//		}
-//		else if ([searchType isEqualToString:@"SERIES"])
-//		{
-//			if ([[[attr attrTag] name] isEqualToString:@"StudyInstanceUID"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", value];
-//			}
-//			else if ([[[attr attrTag] name] isEqualToString:@"SeriesInstanceUID"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", value];
-//			} 
-//			else if ([[[attr attrTag] name] isEqualToString:@"SeriesDescription"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", value];
-//			}
-//			else if ([[[attr attrTag] name] isEqualToString:@"SeriesNumber"])
-//			{
-//				value = [attr value];
-//				predicate = [NSPredicate predicateWithFormat:@"id == %@", value];
-//			} 
-//			else if ([[[attr attrTag] name] isEqualToString:@"SeriesDate"])
-//			{
-//				value = [attr value];
-//				if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
-//				{
-//					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-//					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];	
-//					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
-//					//id newValue = [DCMCalendarDate dicomDate:query];
-//					predicate = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")", [self endOfDay:query]];
-//
-//				}
-//				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
-//				{
-//					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-//					NSString *queryString = [[[attr value] queryString] stringByTrimmingCharactersInSet:set];		
-//					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
-//					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(%lf, \"NSDate\")",[self startOfDay:query]];
-//				}
-//				else if ([(DCMCalendarDate *)value isQuery])
-//				{
-//					value = [attr value];
-//					NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
-//					if ([values count] == 2)
-//					{
-//						DCMCalendarDate *startDate = [DCMCalendarDate dicomDate:[values objectAtIndex:0]];
-//						DCMCalendarDate *endDate = [DCMCalendarDate dicomDate:[values objectAtIndex:1]];
-//						
-//						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\")", [self startOfDay:startDate]];
-//						
-//						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")",[self endOfDay:endDate]];
-//						
-//						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
-//					}
-//					else
-//						predicate = nil;
-//				}
-//				else{
-//					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\") AND date < CAST(%lf, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
-//				}
-//			}
-//			
-//			else if ([[[attr attrTag] name] isEqualToString:@"SeriesTime"])
-//			{
-//				value = [attr value];
-//				if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
-//				{
-//					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-//					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];	
-//					NSNumber *query = [NSNumber numberWithInt:[queryString intValue]];			
-//					predicate = [NSPredicate predicateWithFormat:@"dicomTime <= %@",query];
-//				}
-//				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
-//				{
-//					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
-//					NSString *queryString = [[[attr value] queryString] stringByTrimmingCharactersInSet:set];		
-//					NSNumber *query = [NSNumber numberWithInt:[queryString intValue]];			
-//					predicate = [NSPredicate predicateWithFormat:@"dicomTime >= %@",query];
-//				}
-//				else if ([(DCMCalendarDate *)value isQuery])
-//				{
-//					value = [attr value];
-//					NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
-//					if ([values count] == 2){
-//						NSNumber *startDate = [NSNumber numberWithInt:[[values objectAtIndex:0] intValue]];
-//						NSNumber *endDate = [NSNumber numberWithInt:[[values objectAtIndex:1] intValue]];
-//
-//						//need two predicates for range
-//						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"dicomTime >= %@",startDate];
-//						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"dicomTime <= %@",endDate];
-//						
-//						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
-//					}
-//					else
-//						predicate = nil;
-//				}
-//				else
-//				{
-//					predicate = [NSPredicate predicateWithFormat:@"dicomTime == %@", [value dateAsNumber]];
-//				}
-//			}
-//			else
-//				predicate = nil;
-//				
-//			if (predicate)
-//				compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
-//
-//		}
-//		else if ([searchType isEqualToString:@"IMAGE"])
-//		{
-//			
-//		}
-//	}
-//	
-//	return compoundPredicate;
-//}
-
 -(NSTimeInterval) endOfDay:(NSCalendarDate *)day
 {
 	NSCalendarDate *start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone: nil];
@@ -574,16 +290,46 @@ extern NSManagedObjectContext *staticContext;
 				{
 					char *aDate;
 					DCMCalendarDate *value = nil;
-					if (dcelem->getString(aDate).good() && aDate != NULL) {
+					if (dcelem->getString(aDate).good() && aDate != NULL)
+					{
 						NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
 						value = [DCMCalendarDate dicomDate:dateString];
 					}
-					if (!value) {
+					
+					if (!value)
+					{
 						predicate = nil;
 					}
 					else
 					{
-						predicate = [NSPredicate predicateWithFormat:@"(dateOfBirth >= CAST(%lf, \"NSDate\")) AND (dateOfBirth < CAST(%lf, \"NSDate\"))", [self startOfDay:value], [self endOfDay:value]];
+						if( [value isQuery] && [[value queryString] hasPrefix:@"-"]) // Before
+						{
+							value = [DCMCalendarDate dicomDate: [[value queryString] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"-"]]];
+							
+							predicate = [NSPredicate predicateWithFormat:@"(dateOfBirth < CAST(%lf, \"NSDate\"))", [self endOfDay: value]];
+						}
+						else if( [value isQuery] && [[value queryString] hasSuffix:@"-"]) // After
+						{
+							value = [DCMCalendarDate dicomDate: [[value queryString] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"-"]]];
+							
+							predicate = [NSPredicate predicateWithFormat:@"(dateOfBirth >= CAST(%lf, \"NSDate\"))", [self startOfDay: value]];
+						}
+						else if( [value isQuery])
+						{
+							NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
+							
+							if( values.count == 2)
+							{
+								DCMCalendarDate *start = [DCMCalendarDate dicomDate: [values objectAtIndex: 0]];
+								DCMCalendarDate *end = [DCMCalendarDate dicomDate: [values objectAtIndex: 1]];
+								
+								predicate = [NSPredicate predicateWithFormat:@"(dateOfBirth >= CAST(%lf, \"NSDate\")) AND (dateOfBirth < CAST(%lf, \"NSDate\"))", [self startOfDay: start], [self endOfDay: end]];
+							}
+							else
+								predicate = nil;
+						}
+						else
+							predicate = [NSPredicate predicateWithFormat:@"(dateOfBirth >= CAST(%lf, \"NSDate\")) AND (dateOfBirth < CAST(%lf, \"NSDate\"))", [self startOfDay: value], [self endOfDay: value]];
 					}
 				}
 				
@@ -601,7 +347,7 @@ extern NSManagedObjectContext *staticContext;
 					{
 						predicate = nil;
 					}
-					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
+					else if ([value isQuery] && [[value queryString] hasPrefix:@"-"])
 					{
 						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
 						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
@@ -609,14 +355,14 @@ extern NSManagedObjectContext *staticContext;
 						dcmendDate = queryString;
 
 					}
-					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
+					else if ([value isQuery] && [[value queryString] hasSuffix:@"-"])
 					{
 						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
 						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
 						
 						dcmstartDate = queryString;
 					}
-					else if ([(DCMCalendarDate *)value isQuery])
+					else if ([value isQuery])
 					{
 						NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
 						if ([values count] == 2)
@@ -627,7 +373,8 @@ extern NSManagedObjectContext *staticContext;
 						else
 							predicate = nil;
 					}
-					else{
+					else
+					{
 						predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\") AND date < CAST(%lf, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
 					}
 				}
@@ -645,21 +392,21 @@ extern NSManagedObjectContext *staticContext;
 					{
 						predicate = nil;
 					}
-					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
+					else if ([value isQuery] && [[value queryString] hasPrefix:@"-"])
 					{
 						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
 						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
 						
 						dcmendTime = queryString;
 					}
-					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
+					else if ([value isQuery] && [[value queryString] hasSuffix:@"-"])
 					{
 						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
 						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
 						
 						dcmstartTime = queryString;
 					}
-					else if ([(DCMCalendarDate *)value isQuery])
+					else if ([value isQuery])
 					{
 						NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
 						if ([values count] == 2)
@@ -739,42 +486,28 @@ extern NSManagedObjectContext *staticContext;
 					{
 						predicate = nil;
 					}
-					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
+					else if ([value isQuery] && [[value queryString] hasPrefix:@"-"])
 					{
 						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
 						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
 						
 						dcmendDate = queryString;
-						
-	//					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];
-	//					predicate = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")", [self endOfDay:query]];
 
 					}
-					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
+					else if ([value isQuery] && [[value queryString] hasSuffix:@"-"])
 					{
 						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
 						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];		
 						
 						dcmstartDate = queryString;
-						
-	//					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
-	//					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(%lf, \"NSDate\")",[self startOfDay:query]];
 					}
-					else if ([(DCMCalendarDate *)value isQuery])
+					else if ([value isQuery])
 					{
 						NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
 						if ([values count] == 2)
 						{
 							dcmstartDate = [values objectAtIndex:0];
 							dcmendDate = [values objectAtIndex:1];
-							
-	//						DCMCalendarDate *startDate = [DCMCalendarDate dicomDate:[values objectAtIndex:0]];
-	//						DCMCalendarDate *endDate = [DCMCalendarDate dicomDate:[values objectAtIndex:1]];
-	//
-	//						//need two predicates for range
-	//						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\")", [self startOfDay:startDate]];
-	//						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")",[self endOfDay:endDate]];
-	//						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
 						}
 						else
 							predicate = nil;
@@ -798,39 +531,25 @@ extern NSManagedObjectContext *staticContext;
 					{
 						predicate = nil;
 					}
-					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasPrefix:@"-"])
+					else if ([value isQuery] && [[value queryString] hasPrefix:@"-"])
 					{
 						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
 						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];	
 						dcmendTime = queryString;
-						
-	//					NSNumber *query = [NSNumber numberWithInt:[queryString intValue]];			
-	//					predicate = [NSPredicate predicateWithFormat:@"dicomTime <= %@",query];
 					}
-					else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"])
+					else if ([value isQuery] && [[value queryString] hasSuffix:@"-"])
 					{
 						NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
 						NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];
 						dcmstartTime = queryString;
-						
-	//					NSNumber *query = [NSNumber numberWithInt:[queryString intValue]];			
-	//					predicate = [NSPredicate predicateWithFormat:@"dicomTime >= %@",query];
 					}
-					else if ([(DCMCalendarDate *)value isQuery])
+					else if ([value isQuery])
 					{
 						NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
 						if ([values count] == 2)
 						{
 							dcmstartTime = [values objectAtIndex:0];
 							dcmendTime = [values objectAtIndex:1];
-							
-	//						NSNumber *startDate = [NSNumber numberWithInt:[[values objectAtIndex:0] intValue]];
-	//						NSNumber *endDate = [NSNumber numberWithInt:[[values objectAtIndex:1] intValue]];
-	//
-	//						//need two predicates for range
-	//						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"dicomTime >= %@",startDate];
-	//						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"dicomTime <= %@",endDate];
-	//						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
 						}
 						else
 							predicate = nil;

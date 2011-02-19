@@ -48,6 +48,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
     NSManagedObjectContext			*managedObjectContext;//, *userManagedObjectContext;
 //	NSPersistentStoreCoordinator	*userPersistentStoreCoordinator;
 	NSMutableDictionary				*persistentStoreCoordinatorDictionary;
+	NSMutableDictionary				*databaseIndexDictionary;
 	
 	NSDateFormatter			*TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
 	
@@ -275,7 +276,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property NSTimeInterval databaseLastModification;
 @property(readonly) NSMutableArray *viewersListToReload, *viewersListToRebuild;
 @property(readonly) NSConditionLock* newFilesConditionLock;
-
+@property(readonly) NSMutableDictionary *databaseIndexDictionary;
 @property(readonly) PluginManagerController *pluginManagerController;
 
 + (int) compressionForModality: (NSString*) mod quality:(int*) quality resolution: (int) resolution;
@@ -286,7 +287,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (BOOL) isHardDiskFull;
 + (NSData*) produceJPEGThumbnail:(NSImage*) image;
 + (int) DefaultFolderSizeForDB;
-+ (void) computeDATABASEINDEXforDatabase:(NSString*) path;
++ (long) computeDATABASEINDEXforDatabase:(NSString*) path;
 + (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password;
 + (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password deleteSource: (BOOL) deleteSource;
 + (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password deleteSource: (BOOL) deleteSource showGUI: (BOOL) showGUI;
