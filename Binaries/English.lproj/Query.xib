@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="663"/>
+			<integer value="660"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1618,7 +1618,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 										<characters key="NS.bytes">1</characters>
 									</object>
 									<object class="NSView" key="NSView" id="480360764">
-										<nil key="NSNextResponder"/>
+										<reference key="NSNextResponder" ref="1066080745"/>
 										<int key="NSvFlags">256</int>
 										<object class="NSMutableArray" key="NSSubviews">
 											<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1692,6 +1692,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 											</object>
 										</object>
 										<string key="NSFrame">{{10, 19}, {482, 36}}</string>
+										<reference key="NSSuperview" ref="1066080745"/>
 									</object>
 									<string key="NSLabel">Name</string>
 									<reference key="NSColor" ref="789164403"/>
@@ -1864,7 +1865,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 										<characters key="NS.bytes">2</characters>
 									</object>
 									<object class="NSView" key="NSView" id="538660984">
-										<reference key="NSNextResponder" ref="1066080745"/>
+										<nil key="NSNextResponder"/>
 										<int key="NSvFlags">256</int>
 										<object class="NSMutableArray" key="NSSubviews">
 											<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2037,7 +2038,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 										</object>
 										<string key="NSFrame">{{10, 19}, {482, 36}}</string>
-										<reference key="NSSuperview" ref="1066080745"/>
 										<reference key="NSNextKeyView" ref="489602805"/>
 									</object>
 									<string key="NSLabel">Birthdate</string>
@@ -2357,7 +2357,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<reference key="NSTabView" ref="1066080745"/>
 								</object>
 							</object>
-							<reference key="NSSelectedTabViewItem" ref="124712712"/>
+							<reference key="NSSelectedTabViewItem" ref="466310370"/>
 							<object class="NSFont" key="NSFont" id="22">
 								<string key="NSName">LucidaGrande</string>
 								<double key="NSSize">9</double>
@@ -2368,7 +2368,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<bool key="NSDrawsBackground">YES</bool>
 							<object class="NSMutableArray" key="NSSubviews">
 								<bool key="EncodedWithXMLCoder">YES</bool>
-								<reference ref="538660984"/>
+								<reference ref="480360764"/>
 							</object>
 						</object>
 						<object class="NSTextField" id="162008091">
