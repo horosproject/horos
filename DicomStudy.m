@@ -996,7 +996,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				if( months < 1)
 				{
-					if( days < 0) yearOld = @"";
+					if( days < 0) return @"";
 					else return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
 				}
 				else return [NSString stringWithFormat: NSLocalizedString( @"%d m", @"m = month"), months];
@@ -1025,7 +1025,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				if( months < 1)
 				{
-					if( days < 0) yearOld = @"";
+					if( days < 0) return @"";
 					else return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
 				}
 				else return [NSString stringWithFormat: NSLocalizedString( @"%d m", @"m = month"), months];
