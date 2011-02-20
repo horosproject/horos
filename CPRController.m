@@ -851,7 +851,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 	else if(c == 27) // 27 : escape
 	{
-		if(FullScreenOn) [self fullScreenMenu:self];
+		if( FullScreenOn)
+			[self fullScreenMenu:self];
+		else
+			[super keyDown: theEvent];
 	}
 	else [super keyDown: theEvent];
 }

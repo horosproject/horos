@@ -899,18 +899,65 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		[super setCurrentTool: i];
 }
 
+- (void) stopCurvedPathCreationMode
+{
+	windowController.curvedPathCreationMode = NO;
+	draggedToken = CPRCurvedPathControlTokenNone;
+	
+	if( curvedPath.nodes.count <= 2)
+	{
+		// Delete this curve
+		[self sendWillEditCurvedPath];
+		while( curvedPath.nodes.count > 0)
+			[curvedPath removeNodeAtIndex: 0];
+		[self sendDidUpdateCurvedPath];
+		[self sendDidEditCurvedPath];
+		[self setNeedsDisplay:YES];	
+	}
+}
+
+- (void) deleteCurrentCurvedPath
+{
+	if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete the Curve", nil),
+												 NSLocalizedString(@"Are you sure you want to delete the entire curve?", nil),
+												 NSLocalizedString(@"OK",nil),
+												 NSLocalizedString(@"Cancel",nil),
+												 nil) == NSAlertDefaultReturn)
+	{
+		[self sendWillEditCurvedPath];
+		while( curvedPath.nodes.count > 0)
+			[curvedPath removeNodeAtIndex: 0];
+		[self sendDidUpdateCurvedPath];
+		[self sendDidEditCurvedPath];
+		[self setNeedsDisplay:YES];
+	}
+}
+
 - (void)keyDown:(NSEvent *)theEvent
 {
     unichar c = [[theEvent characters] characterAtIndex:0];
     
 	long tool = [self getTool: theEvent];
 	
-	if( c ==  ' ' || c == 27) // 27 : escape
+	if(( c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSNewlineCharacter) && tool == tCurvedROI)
 	{
-		[windowController keyDown:theEvent];
+		if( windowController.curvedPathCreationMode)
+			[self stopCurvedPathCreationMode];
+	}
+	else if( c ==  ' ' || c == 27) // 27 : escape
+	{
+		if( c == 27 && tool == tCurvedROI)
+		{
+			if( windowController.curvedPathCreationMode)
+				[self stopCurvedPathCreationMode];
+			else
+				[self deleteCurrentCurvedPath];
+		}
+		else [windowController keyDown:theEvent];
 	}
 	else if( tool == tCurvedROI && (c == NSDeleteCharacter || c == NSDeleteFunctionKey))
 	{
+		// Delete node
 		if ([CPRCurvedPath controlTokenIsNode:draggedToken])
 		{
 			[self sendWillEditCurvedPath];
@@ -922,19 +969,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		}
 		else // Delete the entire curve?
 		{
-			if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete the Curve", nil),
-											 NSLocalizedString(@"Are you sure you want to delete the entire curve?", nil),
-											 NSLocalizedString(@"OK",nil),
-											 NSLocalizedString(@"Cancel",nil),
-											 nil) == NSAlertDefaultReturn)
-			{
-				[self sendWillEditCurvedPath];
-				while( curvedPath.nodes.count > 0)
-					[curvedPath removeNodeAtIndex: 0];
-				[self sendDidUpdateCurvedPath];
-				[self sendDidEditCurvedPath];
-				[self setNeedsDisplay:YES];
-			}
+			[self deleteCurrentCurvedPath];
 		}
 	}
 	else
@@ -1342,21 +1377,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		else if( tool == tCurvedROI)
 		{
 			if( windowController.curvedPathCreationMode)
-			{
-				windowController.curvedPathCreationMode = NO;
-				draggedToken = CPRCurvedPathControlTokenNone;
-				
-				if( curvedPath.nodes.count <= 1)
-				{
-					// Delete this curve
-					[self sendWillEditCurvedPath];
-					while( curvedPath.nodes.count > 0)
-						[curvedPath removeNodeAtIndex: 0];
-					[self sendDidUpdateCurvedPath];
-					[self sendDidEditCurvedPath];
-					[self setNeedsDisplay:YES];	
-				}
-			}
+				[self stopCurvedPathCreationMode];
 			else
 			{
 				NSPoint mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];

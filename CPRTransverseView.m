@@ -90,6 +90,35 @@ extern int CLUTBARS, ANNOTATIONS;
     [super dealloc];
 }
 
+- (void) applyNewScaleValue
+{
+	if( [self scaleValue] != previousScale)
+	{
+		self.renderingScale /= previousScale / [self scaleValue];
+		
+		if ([_delegate respondsToSelector:@selector(CPRTransverseViewDidChangeRenderingScale:)])
+			[_delegate CPRTransverseViewDidChangeRenderingScale:self];
+		
+		[self _setNeedsNewRequest];
+	}
+}
+
+-(void) magnifyWithEvent:(NSEvent *)anEvent
+{
+	previousScale = [self scaleValue];
+	
+	[super magnifyWithEvent: anEvent];
+	[[self windowController] propagateOriginRotationAndZoomToTransverseViews: self];
+	
+	[self applyNewScaleValue];
+}
+
+-(void) rotateWithEvent:(NSEvent *)anEvent
+{
+	[super rotateWithEvent: anEvent];
+	[[self windowController] propagateOriginRotationAndZoomToTransverseViews: self];
+}
+
 - (void)mouseDraggedZoom:(NSEvent *)event
 {
 	BOOL copyMouseClickZoomCentered = [[NSUserDefaults standardUserDefaults] boolForKey: @"MouseClickZoomCentered"];
@@ -113,19 +142,6 @@ extern int CLUTBARS, ANNOTATIONS;
 {
 	previousScale = [self scaleValue];
 	[super mouseDown: event];
-}
-
-- (void) applyNewScaleValue
-{
-	if( [self scaleValue] != previousScale)
-	{
-		self.renderingScale /= previousScale / [self scaleValue];
-		
-		if ([_delegate respondsToSelector:@selector(CPRTransverseViewDidChangeRenderingScale:)])
-			[_delegate CPRTransverseViewDidChangeRenderingScale:self];
-		
-		[self _setNeedsNewRequest];
-	}
 }
 
 - (void) rightMouseUp:(NSEvent *)event
@@ -397,6 +413,7 @@ extern int CLUTBARS, ANNOTATIONS;
 		}
 		
 		[self setPixels:pixArray files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+		[self setScaleValueCentered: 1];
 		
 		[[self windowController] propagateWLWW: [[self windowController] mprView1]];
 		
@@ -428,10 +445,9 @@ extern int CLUTBARS, ANNOTATIONS;
     if ([_curvedPath.bezierPath elementCount] >= 3)
 	{
         request = [[CPRStraightenedGeneratorRequest alloc] init];
-        
-        request.pixelsWide = [self bounds].size.width;
-        request.pixelsHigh = [self bounds].size.height;
-        request.slabWidth = 0;
+		request.pixelsWide = [self bounds].size.width*1.4; // * 1.4 : to full the view area, if the matrix is rotated
+		request.pixelsHigh = [self bounds].size.height*1.4;
+		request.slabWidth = 0;
         request.slabSampleDistance = 0;
         request.bezierPath = [self _bezierAndInitialNormalForRequest:&initialNormal];
         request.initialNormal = initialNormal;

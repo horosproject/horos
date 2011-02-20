@@ -449,6 +449,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (OrthogonalMPRController*) controller;
 - (void) roiChange:(NSNotification*)note;
 - (void) roiSelected:(NSNotification*) note;
+- (void) magnifyWithEvent:(NSEvent *)anEvent;
+- (void) rotateWithEvent:(NSEvent *)anEvent;
 - (void) setStartWLWW;
 - (void) stopROIEditing;
 - (void) computeMagnifyLens:(NSPoint) p;
