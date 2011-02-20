@@ -7253,7 +7253,9 @@ static NSConditionLock *threadLock = nil;
 		@try
 		{
 			[self saveDatabase: currentDatabasePath];
-			[self refreshDatabase: self];
+			
+			[self outlineViewRefresh];
+			[self refreshAlbums];
 		}
 		@catch( NSException *ne)
 		{
