@@ -17,7 +17,7 @@
 #include <math.h>
 #include <Accelerate/Accelerate.h>
 
-#define _N3GeometrySmallNumber (CGFLOAT_MIN * 1E5)
+static const CGFloat _N3GeometrySmallNumber = (CGFLOAT_MIN * 1E5);
 
 const N3Vector N3VectorZero = {0.0, 0.0, 0.0};
 const N3AffineTransform N3AffineTransformIdentity = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0};
@@ -329,6 +329,11 @@ CGFloat N3VectorDistanceToLine(N3Vector vector, N3Line line)
     return N3VectorLength(N3VectorSubtract(translatedPoint, N3VectorProject(translatedPoint, line.vector)));
 }
 
+CGFloat N3VectorDistanceToPlane(N3Vector vector, N3Plane plane)
+{
+    return ABS(N3VectorDotProduct(N3VectorSubtract(vector, plane.point), N3VectorNormalize(plane.normal)));
+}
+
 N3Line N3LineMake(N3Vector point, N3Vector vector)
 {
     N3Line line;
@@ -533,9 +538,9 @@ N3Vector N3PlanePointClosestToVector(N3Plane plane, N3Vector vector)
     return N3VectorAdd(vector, N3VectorScalarMultiply(planeNormal, N3VectorDotProduct(planeNormal, N3VectorSubtract(plane.point, vector))));
 }
 
-bool N3PlaneInterectsPlane(N3Plane plane1, N3Plane plane2)
+bool N3PlaneIsParallelToPlane(N3Plane plane1, N3Plane plane2)
 {
-    return N3VectorLength(N3VectorCrossProduct(plane1.normal, plane2.normal)) >= _N3GeometrySmallNumber;
+    return N3VectorLength(N3VectorCrossProduct(plane1.normal, plane2.normal)) <= _N3GeometrySmallNumber;
 }
 
 bool N3PlaneIsBetweenVectors(N3Plane plane, N3Vector vector1, N3Vector vector2)
@@ -677,7 +682,6 @@ bool N3VectorMakeWithDictionaryRepresentation(CFDictionaryRef dict, N3Vector *ve
 	CFNumberRef x;
 	CFNumberRef y;
 	CFNumberRef z;
-	CFNumberType numberType;
 	N3Vector tempVector;
 	
 	if (dict == NULL) {
@@ -694,19 +698,13 @@ bool N3VectorMakeWithDictionaryRepresentation(CFDictionaryRef dict, N3Vector *ve
 		return false;
 	}
 	
-#if CGFLOAT_IS_DOUBLE
-	numberType = kCFNumberDoubleType;
-#else
-	numberType = kCFNumberFloatType;
-#endif
-	
-	if (CFNumberGetValue(x, numberType, &(tempVector.x)) == false) {
+	if (CFNumberGetValue(x, kCFNumberCGFloatType, &(tempVector.x)) == false) {
 		return false;
 	}
-	if (CFNumberGetValue(y, numberType, &(tempVector.y)) == false) {
+	if (CFNumberGetValue(y, kCFNumberCGFloatType, &(tempVector.y)) == false) {
 		return false;
 	}
-	if (CFNumberGetValue(z, numberType, &(tempVector.z)) == false) {
+	if (CFNumberGetValue(z, kCFNumberCGFloatType, &(tempVector.z)) == false) {
 		return false;
 	}
 	
@@ -905,6 +903,22 @@ CFIndex findRealCubicRoots(CGFloat a, CGFloat b, CGFloat c, CGFloat d, CGFloat *
     
     *root1 = (A+B)-b_3;
     return 1;
+}
+
+void N3AffineTransformGetOpenGLMatrixd(N3AffineTransform transform, double *d) // d better be 16 elements long
+{
+    d[0] =  transform.m11; d[1] =  transform.m12; d[2] =  transform.m13; d[3] =  transform.m14; 
+    d[4] =  transform.m21; d[5] =  transform.m22; d[6] =  transform.m23; d[7] =  transform.m24; 
+    d[8] =  transform.m31; d[9] =  transform.m32; d[10] = transform.m33; d[11] = transform.m34; 
+    d[12] = transform.m41; d[13] = transform.m42; d[14] = transform.m43; d[15] = transform.m44; 
+}
+
+void N3AffineTransformGetOpenGLMatrixf(N3AffineTransform transform, float *f) // f better be 16 elements long
+{
+    f[0] =  transform.m11; f[1] =  transform.m12; f[2] =  transform.m13; f[3] =  transform.m14; 
+    f[4] =  transform.m21; f[5] =  transform.m22; f[6] =  transform.m23; f[7] =  transform.m24; 
+    f[8] =  transform.m31; f[9] =  transform.m32; f[10] = transform.m33; f[11] = transform.m34; 
+    f[12] = transform.m41; f[13] = transform.m42; f[14] = transform.m43; f[15] = transform.m44;     
 }
 
 @implementation NSValue (N3GeometryAdditions)

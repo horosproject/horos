@@ -45,17 +45,26 @@
         _pixelsDeep = pixelsDeep;
         _volumeTransform = volumeTransform;
         _freeWhenDone = freeWhenDone;
+        _childSubvolumes = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
 - (void)dealloc
 {
+    CPRVolumeData *childVolume;
+    
     if (_freeWhenDone) {
+        for (childVolume in [_childSubvolumes allValues]) {
+            [childVolume invalidateData];
+        }
+        
         free((void *)_floatBytes);
         _floatBytes = NULL;
     }
     
+    [_childSubvolumes release];
+    _childSubvolumes = nil;
     [super dealloc];
 }
 
@@ -117,29 +126,42 @@
 {                       // this may lock temporarily if other threads are accessing the data, after this returns, it is ok to free floatBytes and all calls to access data will fail gracefully
     struct timespec rqtp = {0, 100};
     struct timespec rmtp = {0, 0};
+    CPRVolumeData *childVolume;
     
     assert(_freeWhenDone == NO); // you can't invalidate the data if it is owned by the CPRVolumeData 
-    
+        
     _isValid = NO;
     OSMemoryBarrier(); // make sure that the _isValid was set
     while (_readerCount > 0) { // spin until we no know that any readers that were reading before the _isValid was set would have exited
         nanosleep(&rqtp, &rmtp);
     }
     
+    @synchronized(_childSubvolumes) {
+        for (childVolume in [_childSubvolumes allValues]) {
+            [childVolume invalidateData];
+        }
+    }    
+    
     // now we know that everything is ok and it is safe to return and have the caller free the data;
     _floatBytes = NULL;
     return;
 }
 
-- (BOOL)getFloatData:(void *)buffer range:(NSRange)range
+- (BOOL)getFloatData:(float *)buffer range:(NSRange)range
 {
+    if (_isValid == NO) {
+        memset(buffer, 0, sizeof(float) * range.length);
+        return NO;
+    }
+    
     OSAtomicIncrement32Barrier(&_readerCount);
     if (_isValid) {
         memcpy(buffer, _floatBytes + range.location, range.length * sizeof(float));
-        OSAtomicDecrement32(&_readerCount);
+        OSAtomicDecrement32Barrier(&_readerCount);
         return YES;
     } else {
-        OSAtomicDecrement32(&_readerCount);
+        OSAtomicDecrement32Barrier(&_readerCount);
+        memset(buffer, 0, sizeof(float) * range.length);
         return NO;
     }
 }
@@ -150,6 +172,10 @@
     uint16_t *unsignedInt16Data;
     vImage_Buffer floatBuffer;
     vImage_Buffer unsignedInt16Buffer;
+    
+    if (_isValid == NO) {
+        return nil;
+    }    
     
     OSAtomicIncrement32Barrier(&_readerCount);
     if (_isValid) {
@@ -174,17 +200,49 @@
         imageRep.slope = 1;
         imageRep.offset = -1024;
         
-        OSAtomicDecrement32(&_readerCount);
+        OSAtomicDecrement32Barrier(&_readerCount);
         return [imageRep autorelease];
     } else {
-        OSAtomicDecrement32(&_readerCount);
+        OSAtomicDecrement32Barrier(&_readerCount);
         return nil;
     }    
+}
+
+- (CPRVolumeData *)volumeDataForSliceAtIndex:(NSUInteger)z
+{
+    CPRVolumeData *childVolume;
+    CPRVolumeData *existingVolume;
+    N3AffineTransform childVolumeTransform;
+    
+    childVolumeTransform = N3AffineTransformConcat(_volumeTransform, N3AffineTransformMakeTranslation(0, 0, -z));
+    childVolume = [[CPRVolumeData alloc] initWithFloatBytesNoCopy:_floatBytes + (_pixelsWide*_pixelsHigh*z) pixelsWide:_pixelsWide pixelsHigh:_pixelsHigh pixelsDeep:1
+                                                  volumeTransform:childVolumeTransform freeWhenDone:NO];
+    
+    OSAtomicIncrement32Barrier(&_readerCount);
+    if ([self isDataValid] == NO) {
+        [childVolume invalidateData];
+    }
+    @synchronized(_childSubvolumes) {
+        existingVolume = [_childSubvolumes objectForKey:[NSNumber numberWithInteger:z]];
+        if (existingVolume) {
+            [childVolume release];
+            childVolume = [existingVolume retain];
+        } else {
+            [_childSubvolumes setObject:childVolume forKey:[NSNumber numberWithInteger:z]];
+        }
+    }
+    OSAtomicDecrement32Barrier(&_readerCount);
+    
+    return [childVolume autorelease];
 }
 
 - (BOOL)getFloat:(float *)floatPtr atPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z
 {
     CPRVolumeDataInlineBuffer inlineBuffer;
+    
+    if (_isValid == NO) {
+        return NO;
+    }    
     
     if ([self aquireInlineBuffer:&inlineBuffer]) {
         *floatPtr = CPRVolumeDataGetFloatAtPixelCoordinate(&inlineBuffer, x, y, z);
@@ -192,6 +250,7 @@
         return YES;
     } else {
         [self releaseInlineBuffer:&inlineBuffer];
+        *floatPtr = 0.0;
         return NO;
     }
 }
@@ -200,12 +259,17 @@
 {
     CPRVolumeDataInlineBuffer inlineBuffer;
 
+    if (_isValid == NO) {
+        return NO;
+    }    
+    
     if ([self aquireInlineBuffer:&inlineBuffer]) {
         *floatPtr = CPRVolumeDataLinearInterpolatedFloatAtDicomVector(&inlineBuffer, vector);
         [self releaseInlineBuffer:&inlineBuffer];
         return YES;
     } else {
         [self releaseInlineBuffer:&inlineBuffer];
+        *floatPtr = 0.0;
         return NO;
     }        
 }
@@ -342,6 +406,10 @@
 {
     memset(inlineBuffer, 0, sizeof(CPRVolumeDataInlineBuffer));
     
+    if (_isValid == NO) {
+        return NO;
+    }
+    
     OSAtomicIncrement32Barrier(&_readerCount);
     if (_isValid) {
         inlineBuffer->floatBytes = _floatBytes;
@@ -352,19 +420,21 @@
         inlineBuffer->volumeTransform = _volumeTransform;
         return YES;
     } else {
+        OSAtomicDecrement32Barrier(&_readerCount);
         return NO;
     }
 }
 
 - (void)releaseInlineBuffer:(CPRVolumeDataInlineBuffer *)inlineBuffer
 {
-    OSAtomicDecrement32(&_readerCount);
+    if (inlineBuffer->floatBytes != NULL) {
+        OSAtomicDecrement32Barrier(&_readerCount);
+    }
+    memset(inlineBuffer, 0, sizeof(CPRVolumeDataInlineBuffer));
 }
 
 
 @end
-
-
 
 @implementation CPRVolumeData (DCMPixAndVolume)
 
