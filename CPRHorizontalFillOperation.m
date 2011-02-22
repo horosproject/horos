@@ -122,7 +122,10 @@
 			
 			N3VectorAddVectors(volumeVectors, volumeNormals, _width);
 		}
-	}
+	} else {
+        memset(_floatBytes, 0, _height * _width * sizeof(float));
+    }
+
     [_volumeData releaseInlineBuffer:&inlineBuffer];
     
     free(volumeVectors);

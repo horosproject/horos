@@ -90,6 +90,21 @@ extern int CLUTBARS, ANNOTATIONS;
     [super dealloc];
 }
 
+- (void)drawRect:(NSRect)r
+{
+    _processingRequest = YES;
+	[self _sendNewRequestIfNeeded];
+    _processingRequest = NO;
+    [super drawRect:r];
+}
+
+- (void)setNeedsDisplay:(BOOL)flag
+{
+    if (_processingRequest == NO) {
+        [super setNeedsDisplay:flag];
+    }
+}
+
 - (void) applyNewScaleValue
 {
 	if( [self scaleValue] != previousScale)
@@ -497,14 +512,19 @@ extern int CLUTBARS, ANNOTATIONS;
 - (N3BezierPath*)_bezierAndInitialNormalForRequest:(N3VectorPointer)initialNormal
 {
     N3MutableBezierPath *bezierPath;
+    N3MutableBezierPath *subdividedAndFlattenedBezierPath;
     N3Vector vector;
     N3Vector normal;
     N3Vector tangent;
     N3Vector cross;
     
-    vector = [_curvedPath.bezierPath vectorAtRelativePosition:[self _relativeSegmentPosition]];
-    tangent = [_curvedPath.bezierPath tangentAtRelativePosition:[self _relativeSegmentPosition]];
-    normal = [_curvedPath.bezierPath normalAtRelativePosition:[self _relativeSegmentPosition] initialNormal:_curvedPath.initialNormal];
+    subdividedAndFlattenedBezierPath = [_curvedPath.bezierPath mutableCopy];
+    [subdividedAndFlattenedBezierPath subdivide:N3BezierDefaultSubdivideSegmentLength];
+    [subdividedAndFlattenedBezierPath flatten:N3BezierDefaultFlatness];
+    vector = [subdividedAndFlattenedBezierPath vectorAtRelativePosition:[self _relativeSegmentPosition]];
+    tangent = [subdividedAndFlattenedBezierPath tangentAtRelativePosition:[self _relativeSegmentPosition]];
+    normal = [subdividedAndFlattenedBezierPath normalAtRelativePosition:[self _relativeSegmentPosition] initialNormal:_curvedPath.initialNormal];
+    [subdividedAndFlattenedBezierPath release];
     
     cross = N3VectorNormalize(N3VectorCrossProduct(normal, tangent));
     
@@ -521,7 +541,7 @@ extern int CLUTBARS, ANNOTATIONS;
 - (void)_setNeedsNewRequest
 {
 	_needsNewRequest = YES;
-	[self _sendNewRequestIfNeeded];
+    [self setNeedsDisplay:YES];
 
 //	if (_needsNewRequest == NO) {
 //		[self performSelector:@selector(_sendNewRequestIfNeeded) withObject:nil afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];

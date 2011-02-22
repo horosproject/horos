@@ -41,6 +41,7 @@ typedef NSInteger CPRTransverseViewSection;
     
     CPRGenerator *_generator;
     CPRStraightenedGeneratorRequest *_lastRequest;
+    BOOL _processingRequest;
     BOOL _needsNewRequest;
 	
 	BOOL displayCrossLines;
