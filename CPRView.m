@@ -143,6 +143,7 @@ extern int splitPosition[ 2];
 @synthesize purplePlaneColor = _purplePlaneColor;
 @synthesize bluePlaneColor = _bluePlaneColor;
 @synthesize mousePlanePointsInPix = _mousePlanePointsInPix;
+@synthesize displayTransverseLines;
 @synthesize displayCrossLines = _displayCrossLines;
 
 - (void)setDisplayCrossLines:(BOOL)displayCrossLines
@@ -166,6 +167,7 @@ extern int splitPosition[ 2];
 		_bluePlaneColor = [[NSColor blueColor] retain];
 		_mousePlanePointsInPix = [[NSMutableDictionary alloc] init];
 		_displayCrossLines = YES;
+		displayTransverseLines = YES;
     }
     return self;
 }
@@ -489,7 +491,8 @@ extern int splitPosition[ 2];
 	
 	glColor4d(0.0, 1.0, 0.0, 0.8);
     
-    if (_displayInfo.mouseCursorHidden == NO) {
+    if (_displayInfo.mouseCursorHidden == NO)
+	{
         cursorVector = N3VectorMake(curDCM.pwidth * _displayInfo.mouseCursorPosition, (CGFloat)curDCM.pheight/2.0, 0);
         cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
         
@@ -501,7 +504,8 @@ extern int splitPosition[ 2];
         glEnd();
     }
     
-    if (_displayInfo.draggedPositionHidden == NO) {
+    if (_displayInfo.draggedPositionHidden == NO)
+	{
         glColor4d(1.0, 0.0, 0.0, 1.0);
         draggedPosition = _displayInfo.draggedPosition;
         lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*draggedPosition, 0, 0), pixToSubDrawRectTransform);
@@ -513,38 +517,42 @@ extern int splitPosition[ 2];
         glEnd();
 	}
     
-    // draw the transverse section lines
-    glColor4d(1.0, 1.0, 0.0, 1.0);
-    transverseSectionPosition = _curvedPath.transverseSectionPosition;
-    lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
-    lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
-    glLineWidth(2.0);
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(lineStart.x, lineStart.y);
-    glVertex2f(lineEnd.x, lineEnd.y);
-    glEnd();
-    
-    leftTransverseSectionPosition = _curvedPath.leftTransverseSectionPosition;
-    lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
-    lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
-    glLineWidth(1.0);
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(lineStart.x, lineStart.y);
-    glVertex2f(lineEnd.x, lineEnd.y);
-    glEnd();
-    
-    rightTransverseSectionPosition = _curvedPath.rightTransverseSectionPosition;
-    lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
-    lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(lineStart.x, lineStart.y);
-    glVertex2f(lineEnd.x, lineEnd.y);
-    glEnd();
+	if( displayTransverseLines)
+	{
+		// draw the transverse section lines
+		glColor4d(1.0, 1.0, 0.0, 1.0);
+		transverseSectionPosition = _curvedPath.transverseSectionPosition;
+		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
+		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
+		glLineWidth(2.0);
+		glBegin(GL_LINE_STRIP);
+		glVertex2f(lineStart.x, lineStart.y);
+		glVertex2f(lineEnd.x, lineEnd.y);
+		glEnd();
+		
+		leftTransverseSectionPosition = _curvedPath.leftTransverseSectionPosition;
+		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
+		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
+		glLineWidth(1.0);
+		glBegin(GL_LINE_STRIP);
+		glVertex2f(lineStart.x, lineStart.y);
+		glVertex2f(lineEnd.x, lineEnd.y);
+		glEnd();
+		
+		rightTransverseSectionPosition = _curvedPath.rightTransverseSectionPosition;
+		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
+		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
+		glBegin(GL_LINE_STRIP);
+		glVertex2f(lineStart.x, lineStart.y);
+		glVertex2f(lineEnd.x, lineEnd.y);
+		glEnd();
+	}
 	
 	if( [[self windowController] displayMousePosition] == YES)
 	{
 		// draw the point on the plane lines
-		for (planeName in _mousePlanePointsInPix) {
+		for (planeName in _mousePlanePointsInPix) 
+		{
 			planeColor = [self valueForKey:[NSString stringWithFormat:@"%@PlaneColor", planeName]];
 			glColor4f ([planeColor redComponent], [planeColor greenComponent], [planeColor blueComponent], [planeColor alphaComponent]);
 			glEnable(GL_POINT_SMOOTH);
@@ -556,13 +564,16 @@ extern int splitPosition[ 2];
 		}
 	}
 	
-    if (_drawAllNodes) {
-        for (i = 0; i < [_curvedPath.nodes count]; i++) {
+    if (_drawAllNodes)
+	{
+        for (i = 0; i < [_curvedPath.nodes count]; i++)
+		{
             relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
             cursorVector = N3VectorMake(curDCM.pwidth * relativePosition, (CGFloat)curDCM.pheight/2.0, 0);
             cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
             
-            if (_displayInfo.hoverNodeHidden == NO && _displayInfo.hoverNodeIndex == i) {
+            if (_displayInfo.hoverNodeHidden == NO && _displayInfo.hoverNodeIndex == i)
+			{
                 glColor4d(1.0, 0.5, 0.0, 1.0);
             } else {
                 glColor4d(1.0, 0.0, 0.0, 1.0);
@@ -997,6 +1008,7 @@ extern int splitPosition[ 2];
 			[[pixArray objectAtIndex: i] setArrayPix:pixArray :i];
 		
 		[self setPixels:pixArray files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+		[self setScaleValueCentered: 1];
 		
 		//[self setWLWW:wl :ww];
 		[[self windowController] propagateWLWW: [[self windowController] mprView1]];
@@ -1107,8 +1119,8 @@ extern int splitPosition[ 2];
 	{
         request = [[CPRStraightenedGeneratorRequest alloc] init];
         
-        request.pixelsWide = [self bounds].size.width;
-        request.pixelsHigh = [self bounds].size.height;
+        request.pixelsWide = [self bounds].size.width*1.2;
+        request.pixelsHigh = [self bounds].size.height*1.2;
 		request.slabWidth = _curvedPath.thickness;
 
         request.slabSampleDistance = 0;

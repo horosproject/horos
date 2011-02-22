@@ -32,13 +32,11 @@ static NSHost *currentHost = nil;
 
 +(NSHost*) currentHost
 {
-	#ifdef OSIRIX_VIEWER
-	return [DCMNetServiceDelegate currentHost];
-	#else
-	if( currentHost == nil)
-		currentHost = [[NSHost currentHost] retain];
-	#endif
-	
+	@synchronized( NSApp)
+	{
+		if( currentHost == nil)
+			currentHost = [[NSHost currentHost] retain];
+	}
 	return currentHost;
 }
 

@@ -29,7 +29,6 @@ enum
 	NSNetService *publisher;
 }
 + (NSString*) gethostnameAndPort: (int*) port forService:(NSNetService*) sender;
-+ (NSHost*) currentHost;
 + (NSArray *) DICOMServersList;
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR;
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR cached:(BOOL) cached;

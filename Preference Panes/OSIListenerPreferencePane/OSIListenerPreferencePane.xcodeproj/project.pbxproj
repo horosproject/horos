@@ -184,6 +184,7 @@
 			isa = PBXProject;
 			buildConfigurationList = CE3E1F5408758851007FFD6F /* Build configuration list for PBXProject "OSIListenerPreferencePane" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,

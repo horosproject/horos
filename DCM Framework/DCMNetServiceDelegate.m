@@ -23,10 +23,8 @@
 #include <unistd.h>
 
 static DCMNetServiceDelegate *_netServiceDelegate = nil;
-static NSHost *currentHost = nil;
 static BOOL bugFixedForDNSResolve = NO;
 static NSMutableArray *cachedServersArray = nil;
-static NSLock *currentHostLock = nil;
 
 @implementation DCMNetServiceDelegate
 
@@ -36,20 +34,6 @@ static NSLock *currentHostLock = nil;
 		_netServiceDelegate = [[DCMNetServiceDelegate alloc] init];
 	
 	return _netServiceDelegate;
-}
-
-+(NSHost*) currentHost
-{
-	if( currentHostLock == nil) currentHostLock = [[NSLock alloc] init];
-	[currentHostLock lock];
-	if( currentHost == nil)
-	{
-		NSLog( @"<><><><><><><> [NSHost currentHost]");
-		currentHost = [[NSHost currentHost] retain];
-	}
-	[currentHostLock unlock];
-	
-	return currentHost;
 }
 
 - (void) setPublisher: (NSNetService*) p

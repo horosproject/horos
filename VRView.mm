@@ -2736,19 +2736,25 @@ public:
 	ROI3DData->SetPoints( pts);		pts->Delete();
 }
 
+-(void) magnifyWithEvent:(NSEvent *)anEvent
+{
+	
+}
+
+-(void) rotateWithEvent:(NSEvent *)anEvent
+{
+	
+}
+
 - (void)mouseDragged:(NSEvent *)theEvent
 {
-	//snVRView = self;
-	
-	//NSLog(@"Mouse dragged!!");
-	
 	_hasChanged = YES;
 
 	if (_dragInProgress == NO && ([theEvent deltaX] != 0 || [theEvent deltaY] != 0))
 	{
 		[self deleteMouseDownTimer];
 	}
-		
+	
 	if (_dragInProgress == YES) return;
 
 	[drawLock lock];
@@ -3022,17 +3028,17 @@ public:
 				}
 				break;
 				
-				case tRotate:
-					shiftDown = 0;
-					controlDown = 1;
-					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
-					[self computeOrientationText];
-					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
-					break;
+			case tRotate:
+				shiftDown = 0;
+				controlDown = 1;
+				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+				[self computeOrientationText];
+				[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
+			break;
 				
-				case t3DRotate:
-				case tCamera3D:
+			case t3DRotate:
+			case tCamera3D:
 				{
 					if( _tool == tCamera3D || clipRangeActivated == YES)
 					{
@@ -3060,17 +3066,18 @@ public:
 						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 					}
 				}
-				break;
-				case tTranslate:
+			break;
+			case tTranslate:
 					shiftDown = 1;
 					controlDown = 0;
 					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);					
 					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
-					break;
-				case tZoom:
-					[self rightMouseDragged:theEvent];
-					break;
+			break;
+			
+			case tZoom:
+				[self rightMouseDragged:theEvent];
+			break;
 				
 			default:
 				break;

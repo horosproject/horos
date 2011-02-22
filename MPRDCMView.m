@@ -619,6 +619,8 @@ static	BOOL frameZoomed = NO;
 	if( [stringID isEqualToString: @"export"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllViews"] == NO)
 		return;
 	
+	rotation = 0;
+	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -1481,6 +1483,14 @@ static	BOOL frameZoomed = NO;
 	[self updateViewMPR];
 	[self updateMousePosition: event];
 	windowController.lowLOD = NO;
+}
+
+-(void) magnifyWithEvent:(NSEvent *)anEvent
+{
+}
+
+-(void) rotateWithEvent:(NSEvent *)anEvent
+{
 }
 
 - (void) mouseDragged:(NSEvent *)theEvent

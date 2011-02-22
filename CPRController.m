@@ -2162,7 +2162,7 @@ static float deg2rad = 3.14159265358979/180.0;
     NSString *f = nil;
     	
 	if( [sender tag])
-	{		
+	{
 		NSMutableArray *producedFiles = [NSMutableArray array];
 		
         dicomExport = [[[DICOMExport alloc] init] autorelease];
@@ -2176,6 +2176,19 @@ static float deg2rad = 3.14159265358979/180.0;
         exportHeight = NSHeight([cprView bounds]);
 		
 		int resizeImage = 0;
+		
+		BOOL copyDisplayCrossLines = cprView.displayCrossLines;
+		BOOL copyMouseCursorHidden = cprView.displayInfo.mouseCursorHidden;
+		BOOL copyDraggedPositionHidden = cprView.displayInfo.draggedPositionHidden;
+		BOOL copyDisplayMousePosition = self.displayMousePosition;
+		
+		cprView.displayInfo.draggedPositionHidden = YES;
+		cprView.displayInfo.mouseCursorHidden = YES;
+		cprView.displayCrossLines = NO;
+		self.displayMousePosition = NO;
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportDCMIncludeAllCPRViews"] == NO)
+			cprView.displayTransverseLines = NO;
 		
 		if( self.exportImageFormat == CPR16BitExportImageFormat)
 		{
@@ -2277,6 +2290,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				
 				Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating series", nil)];
 				[progress showWindow: self];
+				[progress setCancel: YES];
 				[[progress progress] setMaxValue: self.exportNumberOfRotationFrames];
 				
 				for( int i = 0; i < self.exportNumberOfRotationFrames; i++)
@@ -2369,6 +2383,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				
 				Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating series", nil)];
 				[progress showWindow: self];
+				[progress setCancel: YES];
 				[[progress progress] setMaxValue: self.exportNumberOfRotationFrames];
 				
 				curvedVolumeData = [CPRGenerator synchronousRequestVolume:request volumeData:cprView.volumeData];
@@ -2438,6 +2453,13 @@ static float deg2rad = 3.14159265358979/180.0;
 				}
 			}
 		}
+		
+		cprView.displayCrossLines = copyDisplayCrossLines;
+		cprView.displayInfo.mouseCursorHidden = copyMouseCursorHidden;
+		cprView.displayInfo.draggedPositionHidden = copyDraggedPositionHidden;
+		self.displayMousePosition = copyDisplayMousePosition;
+		cprView.displayTransverseLines = YES;
+			
     }
 //		else
 //		{

@@ -26,19 +26,19 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-char *GetPrivateIP()
-{
-	struct			hostent *h;
-	char			hostname[100];
-	gethostname(hostname, 99);
-	if ((h=gethostbyname(hostname)) == NULL)
-	{
-        perror("Error: ");
-        return (char*)"(Error locating Private IP Address)";
-    }
-	
-    return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
-}
+//char *GetPrivateIP()
+//{
+//	struct			hostent *h;
+//	char			hostname[100];
+//	gethostname(hostname, 99);
+//	if ((h=gethostbyname(hostname)) == NULL)
+//	{
+//        perror("Error: ");
+//        return (char*)"(Error locating Private IP Address)";
+//    }
+//	
+//    return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
+//}
 
 @implementation OSIListenerPreferencePanePref
 
