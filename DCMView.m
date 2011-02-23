@@ -3676,7 +3676,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	float location[ 3];
 	
 	[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
-
+	
 	DCMPix	*thickDCM;
 
 	if( curDCM.stack > 1)
@@ -3698,11 +3698,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[instructions setObject: [NSNumber numberWithFloat:[[dcmPixList objectAtIndex:curImage] sliceLocation]] forKey: @"Location"];
 
 	if( [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"])
-	[instructions setObject: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"];
+		[instructions setObject: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"];
 
 	if( curDCM)
-	[instructions setObject: curDCM forKey: @"DCMPix"];
-
+		[instructions setObject: curDCM forKey: @"DCMPix"];
+	
 	[instructions setObject: [NSNumber numberWithFloat: syncRelativeDiff] forKey: @"offsetsync"];
 	[instructions setObject: [NSNumber numberWithFloat: location[0]] forKey: @"point3DX"];
 	[instructions setObject: [NSNumber numberWithFloat: location[1]] forKey: @"point3DY"];
@@ -6561,54 +6561,58 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							if( (sliceVector[0] == 0 && sliceVector[1] == 0 && sliceVector[2] == 0) || syncSeriesIndex != -1)  // Planes are parallel !
 							{
-								BOOL	noSlicePosition, everythingLoaded = YES;
+								BOOL	noSlicePosition = NO, everythingLoaded = YES;
 								float   firstSliceLocation;
-								int		index, i;
+								int		index = -1, i;
 								float   smallestdiff = -1, fdiff, slicePosition;
 								
-								noSlicePosition = NO;
-								
-								everythingLoaded = [[dcmPixList objectAtIndex: 0] isLoaded];
-								
-								if( everythingLoaded)
-									firstSliceLocation = [[dcmPixList objectAtIndex: 0] sliceLocation];
+								if( [[self windowController] isEverythingLoaded] && [[otherView windowController] isEverythingLoaded] && (syncSeriesIndex == -1 || [otherView syncSeriesIndex] == -1))
+								{
+									float otherOrigin[ 3];
+									
+									[oPix origin: otherOrigin];
+									index = [self findPlaneForPoint: otherOrigin localPoint: nil distanceWithPlane: &smallestdiff];
+								}
 								else
+								{
 									firstSliceLocation = [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
 								
-								for( i = 0; i < [dcmFilesList count]; i++)
-								{
-									everythingLoaded = [[dcmPixList objectAtIndex: i] isLoaded];
-									if( everythingLoaded)
-										slicePosition = [[dcmPixList objectAtIndex: i] sliceLocation];
-									else
-										slicePosition = [[[dcmFilesList objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
-									
-									fdiff = slicePosition - loc;
-									
-									if( registeredViewer == NO)
+									for( i = 0; i < [dcmFilesList count]; i++)
 									{
-										if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] == NO || syncSeriesIndex != -1)
-										{						
-											if( [otherView syncSeriesIndex] != -1)
-											{
-												slicePosition -= [[dcmPixList objectAtIndex: syncSeriesIndex] sliceLocation];
-												
-												fdiff = slicePosition - (loc - [[[otherView dcmPixList] objectAtIndex: [otherView syncSeriesIndex]] sliceLocation]);
+										everythingLoaded = [[dcmPixList objectAtIndex: i] isLoaded];
+										if( everythingLoaded)
+											slicePosition = [[dcmPixList objectAtIndex: i] sliceLocation];
+										else
+											slicePosition = [[[dcmFilesList objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
+										
+										fdiff = slicePosition - loc;
+										
+										if( registeredViewer == NO)
+										{
+											// Manual sync
+											if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] == NO || syncSeriesIndex != -1)
+											{						
+												if( [otherView syncSeriesIndex] != -1)
+												{
+													slicePosition -= [[dcmPixList objectAtIndex: syncSeriesIndex] sliceLocation];
+													
+													fdiff = slicePosition - (loc - [[[otherView dcmPixList] objectAtIndex: [otherView syncSeriesIndex]] sliceLocation]);
+												}
+												else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] ) noSlicePosition = YES;
 											}
-											else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] ) noSlicePosition = YES;
 										}
-									}
-									
-									if( fdiff < 0) fdiff = -fdiff;
-									
-									if( fdiff < smallestdiff || smallestdiff == -1)
-									{
-										smallestdiff = fdiff;
-										index = i;
+										
+										if( fdiff < 0) fdiff = -fdiff;
+										
+										if( fdiff < smallestdiff || smallestdiff == -1)
+										{
+											smallestdiff = fdiff;
+											index = i;
+										}
 									}
 								}
 								
-								if( noSlicePosition == NO)
+								if( noSlicePosition == NO && index >= 0)
 								{
 									curImage = index;
 									
@@ -7219,6 +7223,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (int) findPlaneAndPoint:(float*) pt :(float*) location
 {
+	return [self findPlaneForPoint: pt localPoint: location distanceWithPlane: nil];
+}
+
+- (int) findPlaneForPoint:(float*) pt localPoint:(float*) location distanceWithPlane: (float*) distanceResult
+{
 	int		ii = -1;
 	float	vectors[ 9], orig[ 3], locationTemp[ 3];
 	float	distance = 999999, tempDistance;
@@ -7235,9 +7244,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( tempDistance < distance)
 		{
-			location[ 0] = locationTemp[ 0];
-			location[ 1] = locationTemp[ 1];
-			location[ 2] = locationTemp[ 2];
+			if( location)
+			{
+				location[ 0] = locationTemp[ 0];
+				location[ 1] = locationTemp[ 1];
+				location[ 2] = locationTemp[ 2];
+			}
+			
 			distance = tempDistance;
 			ii = i;
 		}
@@ -7247,6 +7260,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		if( distance > curDCM.sliceThickness * 2) ii = -1;
 	}
+	
+	if( distanceResult)
+		*distanceResult = distance;
 	
 	return ii;
 }

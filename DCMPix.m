@@ -5803,14 +5803,17 @@ END_CREATE_ROIS:
 		orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 		orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
 		
+		float centerPix[ 3];
+		[self convertPixX: width/2 pixY: height/2 toDICOMCoords: centerPix];
+		
 		if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-			sliceLocation = originX;
+			sliceLocation = centerPix[ 0];
 		
 		if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-			sliceLocation = originY;
+			sliceLocation = centerPix[ 1];
 		
 		if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-			sliceLocation = originZ;
+			sliceLocation = centerPix[ 2];
 		
 		
 	#pragma mark READ PIXEL DATA		
@@ -7912,14 +7915,17 @@ END_CREATE_ROIS:
 				orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 				orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
 				
+				float centerPix[ 3];
+				[self convertPixX: width/2 pixY: height/2 toDICOMCoords: centerPix];
+				
 				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-					sliceLocation = originX;
+					sliceLocation = centerPix[ 0];
 				
 				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-					sliceLocation = originY;
+					sliceLocation = centerPix[ 1];
 				
 				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-					sliceLocation = originZ;
+					sliceLocation = centerPix[ 2];
 				
 		#pragma mark read pixel data
 				
