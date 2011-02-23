@@ -105,7 +105,7 @@ NSString* const OsirixWebPortalEnabledDefaultsKey = @"httpWebServer";
 
 NSString* const OsirixWebPortalAddressDefaultsKey = @"webServerAddress";
 +(NSString*)webPortalAddress {
-	NSString* r = [NSUserDefaultsController.sharedUserDefaultsController stringForKey:OsirixBonjourSharingNameDefaultsKey];
+	NSString* r = [NSUserDefaultsController.sharedUserDefaultsController stringForKey:OsirixWebPortalAddressDefaultsKey];
 	if (!r.length) r = self.defaultWebPortalAddress;
 	return r;
 }

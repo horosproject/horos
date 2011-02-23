@@ -21,7 +21,7 @@
 -(id)objectForKey:(id)key ofClass:(Class)cl {
 	id obj = [self objectForKey:key];
 	if (obj && ![obj isKindOfClass:cl])
-		[NSException raise:NSGenericException format:@"%s expected, actually %@", [[NSClassDescription classDescriptionForClass:cl] description], [obj className]];\
+		[NSException raise:NSGenericException format:@"%s expected, actually %@", [[NSClassDescription classDescriptionForClass:cl] description], [obj className]];
 	return obj;
 }
 
