@@ -1236,7 +1236,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					else // Explicit VR Little Endian
 						ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 					
+					#ifdef OSIRIX_LIGHT
+					response.data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
+					#else
 					response.data = [[BrowserController currentBrowser] getDICOMFile:[[images lastObject] valueForKey: @"completePath"] inSyntax: ts.transferSyntax quality: imageQuality];
+					#endif
 				}
 				//err = NO;
 			}
@@ -1607,6 +1611,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 }
 
 -(void)processSeriesPdf {
+	#ifndef OSIRIX_LIGHT
 	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass:DicomSeries.class];
 	if (!series)
 		return;
@@ -1642,6 +1647,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		
 		response.data = [NSData dataWithContentsOfFile:pdfpath];
 	}
+	#endif
 }
 
 

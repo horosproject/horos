@@ -3184,10 +3184,20 @@ static BOOL initialized = NO;
 		[[[BrowserController currentBrowser] window] orderOut: self];
 
 #ifdef OSIRIX_LIGHT
-	int button = NSRunAlertPanel( NSLocalizedString( @"OsiriX Lite", nil), NSLocalizedString( @"This is the Lite version of OsiriX: many functions are not available. You can download the full version of OsiriX on the Internet.", nil), NSLocalizedString( @"Continue", nil), NSLocalizedString( @"Download", nil), nil);
+	@try
+	{
+		int button = NSRunAlertPanel( NSLocalizedString( @"OsiriX Lite", nil), NSLocalizedString( @"This is the Lite version of OsiriX: many functions are not available. You can download the full version of OsiriX on the Internet.", nil), NSLocalizedString( @"Continue", nil), NSLocalizedString( @"Download", nil), nil);
 	
-	if (NSCancelButton == button)
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+		if (NSCancelButton == button)
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		[AppController printStackTrace: e];
+		exit( 0);
+	}
+	
 #endif
 	
 	
@@ -4995,11 +5005,7 @@ static BOOL initialized = NO;
 #pragma mark -
 
 -(WebPortal*)defaultWebPortal {
-#ifndef OSIRIX_LIGHT
 	return [WebPortal defaultWebPortal];
-#else
-	return NULL;
-#endif
 }
 
 @end

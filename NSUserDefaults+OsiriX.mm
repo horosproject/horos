@@ -100,7 +100,11 @@ NSString* const OsirixBonjourSharingPasswordDefaultsKey = @"bonjourPassword";
 
 NSString* const OsirixWebPortalEnabledDefaultsKey = @"httpWebServer";
 +(BOOL)webPortalEnabled {
+	#ifdef OSIRIX_LIGHT
+	return NO;
+	#else
 	return [NSUserDefaultsController.sharedUserDefaultsController boolForKey:OsirixWebPortalEnabledDefaultsKey];
+	#endif
 }
 
 NSString* const OsirixWebPortalAddressDefaultsKey = @"webServerAddress";

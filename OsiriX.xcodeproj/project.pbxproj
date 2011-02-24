@@ -5010,6 +5010,65 @@
 		CE6692DB0AF545F90073D923 /* printView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6692D90AF545F90073D923 /* printView.m */; };
 		CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
 		CE66BDC812303EC700BE2799 /* libPapyrusToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEED77DD1230393A00258D00 /* libPapyrusToolkit.a */; };
+		CE6915011316AC8500EE7317 /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
+		CE6915021316AC8600EE7317 /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
+		CE69151B1316AD9800EE7317 /* WebPortalDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 590A3DCB12A92920004581C2 /* WebPortalDatabase.h */; };
+		CE69151C1316AD9900EE7317 /* WebPortalDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 590A3DCC12A92920004581C2 /* WebPortalDatabase.mm */; };
+		CE6915471316AF7A00EE7317 /* AsyncSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721A410D8D745001A833F /* AsyncSocket.h */; };
+		CE6915481316AF7A00EE7317 /* AsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721A510D8D745001A833F /* AsyncSocket.m */; };
+		CE6915491316AF7A00EE7317 /* DDData.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721A610D8D745001A833F /* DDData.h */; };
+		CE69154A1316AF7A00EE7317 /* DDData.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721A710D8D745001A833F /* DDData.m */; };
+		CE69154B1316AF7A00EE7317 /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 841722AE10D90595001A833F /* DDKeychain.h */; };
+		CE69154C1316AF7A00EE7317 /* DDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 841722AF10D90595001A833F /* DDKeychain.m */; };
+		CE69154D1316AF7A00EE7317 /* DDNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721A810D8D745001A833F /* DDNumber.h */; };
+		CE69154E1316AF7B00EE7317 /* DDNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721A910D8D745001A833F /* DDNumber.m */; };
+		CE69154F1316AF7B00EE7317 /* DDRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721AA10D8D745001A833F /* DDRange.h */; };
+		CE6915501316AF7B00EE7317 /* DDRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721AB10D8D745001A833F /* DDRange.m */; };
+		CE6915511316AF7B00EE7317 /* HTTPAsyncFileResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721AC10D8D745001A833F /* HTTPAsyncFileResponse.h */; };
+		CE6915521316AF7B00EE7317 /* HTTPAsyncFileResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721AD10D8D745001A833F /* HTTPAsyncFileResponse.m */; };
+		CE6915531316AF7B00EE7317 /* HTTPAuthenticationRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721AE10D8D745001A833F /* HTTPAuthenticationRequest.h */; };
+		CE6915541316AF7B00EE7317 /* HTTPAuthenticationRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721AF10D8D745001A833F /* HTTPAuthenticationRequest.m */; };
+		CE6915551316AF7B00EE7317 /* HTTPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B010D8D745001A833F /* HTTPConnection.h */; };
+		CE6915561316AF7B00EE7317 /* HTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B110D8D745001A833F /* HTTPConnection.m */; };
+		CE6915571316AF7B00EE7317 /* HTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B210D8D745001A833F /* HTTPResponse.h */; };
+		CE6915581316AF7B00EE7317 /* HTTPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B310D8D745001A833F /* HTTPResponse.m */; };
+		CE6915591316AF7B00EE7317 /* HTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B410D8D745001A833F /* HTTPServer.h */; };
+		CE69155A1316AF7B00EE7317 /* HTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B510D8D745001A833F /* HTTPServer.m */; };
+		CE69155B1316AF7B00EE7317 /* SSCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B610D8D745001A833F /* SSCrypto.h */; };
+		CE69155C1316AF7B00EE7317 /* SSCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B710D8D745001A833F /* SSCrypto.m */; };
+		CE69155D1316AF7B00EE7317 /* JSON.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4A111182C480086A15A /* JSON.h */; };
+		CE69155E1316AF7B00EE7317 /* NSObject+SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4A211182C480086A15A /* NSObject+SBJSON.h */; };
+		CE69155F1316AF7B00EE7317 /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4A311182C480086A15A /* NSObject+SBJSON.m */; };
+		CE6915601316AF7B00EE7317 /* NSString+SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4A411182C480086A15A /* NSString+SBJSON.h */; };
+		CE6915611316AF7B00EE7317 /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4A511182C480086A15A /* NSString+SBJSON.m */; };
+		CE6915621316AF7B00EE7317 /* SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4A611182C480086A15A /* SBJSON.h */; };
+		CE6915631316AF7B00EE7317 /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4A711182C480086A15A /* SBJSON.m */; };
+		CE6915641316AF7B00EE7317 /* SBJsonBase.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4A811182C480086A15A /* SBJsonBase.h */; };
+		CE6915651316AF7B00EE7317 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4A911182C480086A15A /* SBJsonBase.m */; };
+		CE6915661316AF7B00EE7317 /* SBJsonParser.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4AA11182C480086A15A /* SBJsonParser.h */; };
+		CE6915671316AF7B00EE7317 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4AB11182C480086A15A /* SBJsonParser.m */; };
+		CE6915681316AF7B00EE7317 /* SBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4AC11182C480086A15A /* SBJsonWriter.h */; };
+		CE6915691316AF7B00EE7317 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4AD11182C480086A15A /* SBJsonWriter.m */; };
+		CE69156A1316AF7B00EE7317 /* CSMailMailClient.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2119C710E4C25300F9C50C /* CSMailMailClient.h */; };
+		CE69156B1316AF7B00EE7317 /* CSMailMailClient.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2119C810E4C25300F9C50C /* CSMailMailClient.m */; };
+		CE69156C1316AF7B00EE7317 /* WebPortal.h in Headers */ = {isa = PBXBuildFile; fileRef = 597BB90912A7D3C000D0A172 /* WebPortal.h */; };
+		CE69156D1316AF7B00EE7317 /* WebPortal.mm in Sources */ = {isa = PBXBuildFile; fileRef = 597BB90A12A7D3C000D0A172 /* WebPortal.mm */; };
+		CE69156E1316AF7B00EE7317 /* WebPortal+Databases.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBF40912B8B90100809C61 /* WebPortal+Databases.h */; };
+		CE69156F1316AF7B00EE7317 /* WebPortal+Databases.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */; };
+		CE6915701316AF7B00EE7317 /* WebPortal+Email+Log.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */; };
+		CE6915711316AF7B00EE7317 /* WebPortal+Email+Log.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */; };
+		CE6915721316AF7B00EE7317 /* WebPortalSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526E8312816FDC0016F6C0 /* WebPortalSession.h */; };
+		CE6915731316AF7B00EE7317 /* WebPortalSession.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526E8412816FDC0016F6C0 /* WebPortalSession.mm */; };
+		CE6915741316AF7B00EE7317 /* WebPortalConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526F6A1281AFCA0016F6C0 /* WebPortalConnection.h */; };
+		CE6915751316AF7B00EE7317 /* WebPortalConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526F6B1281AFCA0016F6C0 /* WebPortalConnection.mm */; };
+		CE6915761316AF7B00EE7317 /* WebPortalConnection+Data.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969033912DDE30800379E41 /* WebPortalConnection+Data.h */; };
+		CE6915771316AF7B00EE7317 /* WebPortalConnection+Data.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */; };
+		CE6915781316AF7B00EE7317 /* WebPortalResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969034312DDE5EA00379E41 /* WebPortalResponse.h */; };
+		CE6915791316AF7B00EE7317 /* WebPortalResponse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969034412DDE5EA00379E41 /* WebPortalResponse.mm */; };
+		CE69157A1316AF8100EE7317 /* WebPortalUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526F3A1281ADC10016F6C0 /* WebPortalUser.h */; };
+		CE69157B1316AF8100EE7317 /* WebPortalUser.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526F3B1281ADC10016F6C0 /* WebPortalUser.mm */; };
+		CE69157C1316AF8100EE7317 /* WebPortalStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = 590BB21E12A002FA009E9758 /* WebPortalStudy.h */; };
+		CE69157D1316AF8100EE7317 /* WebPortalStudy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 590BB21F12A002FA009E9758 /* WebPortalStudy.mm */; };
 		CE6B2E2008DAFC6500872E84 /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };
 		CE6C77ED09739B3100F951C2 /* Rotate3DCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */; };
 		CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
@@ -21918,6 +21977,36 @@
 				84A9D49912F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */,
 				59E8352912F9ABAC006B930A /* N2ManagedDatabase.h in Headers */,
 				59E83A1512FC6556006B930A /* NSManagedObject+N2.h in Headers */,
+				CE6915011316AC8500EE7317 /* PluginManagerController.h in Headers */,
+				CE69151B1316AD9800EE7317 /* WebPortalDatabase.h in Headers */,
+				CE6915471316AF7A00EE7317 /* AsyncSocket.h in Headers */,
+				CE6915491316AF7A00EE7317 /* DDData.h in Headers */,
+				CE69154B1316AF7A00EE7317 /* DDKeychain.h in Headers */,
+				CE69154D1316AF7A00EE7317 /* DDNumber.h in Headers */,
+				CE69154F1316AF7B00EE7317 /* DDRange.h in Headers */,
+				CE6915511316AF7B00EE7317 /* HTTPAsyncFileResponse.h in Headers */,
+				CE6915531316AF7B00EE7317 /* HTTPAuthenticationRequest.h in Headers */,
+				CE6915551316AF7B00EE7317 /* HTTPConnection.h in Headers */,
+				CE6915571316AF7B00EE7317 /* HTTPResponse.h in Headers */,
+				CE6915591316AF7B00EE7317 /* HTTPServer.h in Headers */,
+				CE69155B1316AF7B00EE7317 /* SSCrypto.h in Headers */,
+				CE69155D1316AF7B00EE7317 /* JSON.h in Headers */,
+				CE69155E1316AF7B00EE7317 /* NSObject+SBJSON.h in Headers */,
+				CE6915601316AF7B00EE7317 /* NSString+SBJSON.h in Headers */,
+				CE6915621316AF7B00EE7317 /* SBJSON.h in Headers */,
+				CE6915641316AF7B00EE7317 /* SBJsonBase.h in Headers */,
+				CE6915661316AF7B00EE7317 /* SBJsonParser.h in Headers */,
+				CE6915681316AF7B00EE7317 /* SBJsonWriter.h in Headers */,
+				CE69156A1316AF7B00EE7317 /* CSMailMailClient.h in Headers */,
+				CE69156C1316AF7B00EE7317 /* WebPortal.h in Headers */,
+				CE69156E1316AF7B00EE7317 /* WebPortal+Databases.h in Headers */,
+				CE6915701316AF7B00EE7317 /* WebPortal+Email+Log.h in Headers */,
+				CE6915721316AF7B00EE7317 /* WebPortalSession.h in Headers */,
+				CE6915741316AF7B00EE7317 /* WebPortalConnection.h in Headers */,
+				CE6915761316AF7B00EE7317 /* WebPortalConnection+Data.h in Headers */,
+				CE6915781316AF7B00EE7317 /* WebPortalResponse.h in Headers */,
+				CE69157A1316AF8100EE7317 /* WebPortalUser.h in Headers */,
+				CE69157C1316AF8100EE7317 /* WebPortalStudy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25615,6 +25704,35 @@
 				592D333A12F2C71A00C7C002 /* NSException+N2.mm in Sources */,
 				59E8352A12F9ABAC006B930A /* N2ManagedDatabase.mm in Sources */,
 				59E83A1612FC6556006B930A /* NSManagedObject+N2.mm in Sources */,
+				CE6915021316AC8600EE7317 /* PluginManagerController.m in Sources */,
+				CE69151C1316AD9900EE7317 /* WebPortalDatabase.mm in Sources */,
+				CE6915481316AF7A00EE7317 /* AsyncSocket.m in Sources */,
+				CE69154A1316AF7A00EE7317 /* DDData.m in Sources */,
+				CE69154C1316AF7A00EE7317 /* DDKeychain.m in Sources */,
+				CE69154E1316AF7B00EE7317 /* DDNumber.m in Sources */,
+				CE6915501316AF7B00EE7317 /* DDRange.m in Sources */,
+				CE6915521316AF7B00EE7317 /* HTTPAsyncFileResponse.m in Sources */,
+				CE6915541316AF7B00EE7317 /* HTTPAuthenticationRequest.m in Sources */,
+				CE6915561316AF7B00EE7317 /* HTTPConnection.m in Sources */,
+				CE6915581316AF7B00EE7317 /* HTTPResponse.m in Sources */,
+				CE69155A1316AF7B00EE7317 /* HTTPServer.m in Sources */,
+				CE69155C1316AF7B00EE7317 /* SSCrypto.m in Sources */,
+				CE69155F1316AF7B00EE7317 /* NSObject+SBJSON.m in Sources */,
+				CE6915611316AF7B00EE7317 /* NSString+SBJSON.m in Sources */,
+				CE6915631316AF7B00EE7317 /* SBJSON.m in Sources */,
+				CE6915651316AF7B00EE7317 /* SBJsonBase.m in Sources */,
+				CE6915671316AF7B00EE7317 /* SBJsonParser.m in Sources */,
+				CE6915691316AF7B00EE7317 /* SBJsonWriter.m in Sources */,
+				CE69156B1316AF7B00EE7317 /* CSMailMailClient.m in Sources */,
+				CE69156D1316AF7B00EE7317 /* WebPortal.mm in Sources */,
+				CE69156F1316AF7B00EE7317 /* WebPortal+Databases.mm in Sources */,
+				CE6915711316AF7B00EE7317 /* WebPortal+Email+Log.mm in Sources */,
+				CE6915731316AF7B00EE7317 /* WebPortalSession.mm in Sources */,
+				CE6915751316AF7B00EE7317 /* WebPortalConnection.mm in Sources */,
+				CE6915771316AF7B00EE7317 /* WebPortalConnection+Data.mm in Sources */,
+				CE6915791316AF7B00EE7317 /* WebPortalResponse.mm in Sources */,
+				CE69157B1316AF8100EE7317 /* WebPortalUser.mm in Sources */,
+				CE69157D1316AF8100EE7317 /* WebPortalStudy.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26730,10 +26848,7 @@
 		CE5314AD0C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
+				ARCHS = i386;
 				BUILD_VARIANTS = normal;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = "";
