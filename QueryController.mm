@@ -3207,7 +3207,7 @@ extern "C"
 		
 		if( autoQuery == NO)
 		{
-			[dateFilterMatrix selectCellWithTag: 1]; // Today
+			[dateFilterMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"QRLastDateFilterValue"]];
 			[self setDateQuery: dateFilterMatrix];
 			
 			currentQueryController = self;
@@ -3364,6 +3364,8 @@ extern "C"
 - (void)windowWillClose:(NSNotification *)notification
 {
 	[[self window] setAcceptsMouseMovedEvents: NO];
+	
+	[[NSUserDefaults standardUserDefaults] setInteger: [dateFilterMatrix selectedTag] forKey: @"QRLastDateFilterValue"];
 	
 	[[NSUserDefaults standardUserDefaults] setObject: sourcesArray forKey: queryArrayPrefs];
 	
