@@ -20917,9 +20917,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				s = [NSString stringWithFormat:@"%@", _searchString];
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [s length] > 0) 
-					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (ANY series.modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s, s];
+					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (ANY series.modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s, s, s, s, s];
 				else
-					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (ANY series.modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s];
+					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (ANY series.modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s, s, s, s];
 			break;
 			
 			case 0:			// Patient Name
