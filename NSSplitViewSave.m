@@ -86,7 +86,7 @@ static float a,b,c,d,e,f,g,h;
 		
 		NSScanner* scanner = [NSScanner scannerWithString: string];
 		
-		if( [[self subviews] count] > 1)
+		if( [[self subviews] count] > 2)
 		{
 			float aa,bb,cc,dd,ee,ff,gg,hh, ii, jj, kk, ll;
 			
