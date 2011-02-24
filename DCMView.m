@@ -6568,10 +6568,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								
 								if( [[self windowController] isEverythingLoaded] && [[otherView windowController] isEverythingLoaded] && (syncSeriesIndex == -1 || [otherView syncSeriesIndex] == -1))
 								{
-									float otherOrigin[ 3];
+									float centerPix[ 3];
+									[oPix convertPixX: oPix.pwidth/2 pixY: oPix.pheight/2 toDICOMCoords: centerPix];
 									
-									[oPix origin: otherOrigin];
-									index = [self findPlaneForPoint: otherOrigin localPoint: nil distanceWithPlane: &smallestdiff];
+									index = [self findPlaneForPoint: centerPix localPoint: nil distanceWithPlane: &smallestdiff];
 								}
 								else
 								{
@@ -6598,7 +6598,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 													
 													fdiff = slicePosition - (loc - [[[otherView dcmPixList] objectAtIndex: [otherView syncSeriesIndex]] sliceLocation]);
 												}
-												else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] ) noSlicePosition = YES;
+												else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"]) noSlicePosition = YES;
 											}
 										}
 										

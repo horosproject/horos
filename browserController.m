@@ -12201,7 +12201,8 @@ static BOOL needToRezoom;
 					
 						if( p1 && p2 && [ViewerController computeIntervalForDCMPix: p1 And: p2] < 0)
 						{
-							a = [a sortedArrayUsingDescriptors: [self sortDescriptorsForImages]];
+							//Inverse the array
+							a = [[a reverseObjectEnumerator] allObjects];	//[a sortedArrayUsingDescriptors: [self sortDescriptorsForImages]];
 							
 							preFlippedData = YES;
 							flipped = YES;
