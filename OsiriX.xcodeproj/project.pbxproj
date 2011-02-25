@@ -318,10 +318,10 @@
 		59F5F4ED11F485CC0047A90D /* BrowserController+Activity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F4EB11F485CC0047A90D /* BrowserController+Activity.mm */; };
 		59F5F4EE11F485CC0047A90D /* BrowserController+Activity.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */; };
 		59F5F4EF11F485CC0047A90D /* BrowserController+Activity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F4EB11F485CC0047A90D /* BrowserController+Activity.mm */; };
-		59FB64391230EE4100EBA136 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64341230EE4100EBA136 /* libfreetype.a */; };
-		59FB643A1230EE4100EBA136 /* libgif.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64351230EE4100EBA136 /* libgif.a */; };
-		59FB643B1230EE4100EBA136 /* libming.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64361230EE4100EBA136 /* libming.a */; };
-		59FB643C1230EE4100EBA136 /* libpng12.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64371230EE4100EBA136 /* libpng12.a */; };
+		59FB64391230EE4100EBA136 /* libfreetypeOsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64341230EE4100EBA136 /* libfreetypeOsiriX.a */; };
+		59FB643A1230EE4100EBA136 /* libgifOsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64351230EE4100EBA136 /* libgifOsiriX.a */; };
+		59FB643B1230EE4100EBA136 /* libmingOsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64361230EE4100EBA136 /* libmingOsiriX.a */; };
+		59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64371230EE4100EBA136 /* libpng12OsiriX.a */; };
 		59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
 		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
@@ -8521,10 +8521,10 @@
 		59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageButtonCell.mm; path = nitrogen/Sources/N2ImageButtonCell.mm; sourceTree = "<group>"; };
 		59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BrowserController+Activity.h"; sourceTree = "<group>"; };
 		59F5F4EB11F485CC0047A90D /* BrowserController+Activity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "BrowserController+Activity.mm"; sourceTree = "<group>"; };
-		59FB64341230EE4100EBA136 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = Binaries/Ming/libfreetype.a; sourceTree = "<group>"; };
-		59FB64351230EE4100EBA136 /* libgif.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgif.a; path = Binaries/Ming/libgif.a; sourceTree = "<group>"; };
-		59FB64361230EE4100EBA136 /* libming.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libming.a; path = Binaries/Ming/libming.a; sourceTree = "<group>"; };
-		59FB64371230EE4100EBA136 /* libpng12.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng12.a; path = Binaries/Ming/libpng12.a; sourceTree = "<group>"; };
+		59FB64341230EE4100EBA136 /* libfreetypeOsiriX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetypeOsiriX.a; path = Binaries/Ming/libfreetypeOsiriX.a; sourceTree = "<group>"; };
+		59FB64351230EE4100EBA136 /* libgifOsiriX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgifOsiriX.a; path = Binaries/Ming/libgifOsiriX.a; sourceTree = "<group>"; };
+		59FB64361230EE4100EBA136 /* libmingOsiriX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmingOsiriX.a; path = Binaries/Ming/libmingOsiriX.a; sourceTree = "<group>"; };
+		59FB64371230EE4100EBA136 /* libpng12OsiriX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng12OsiriX.a; path = Binaries/Ming/libpng12OsiriX.a; sourceTree = "<group>"; };
 		59FB64771231101B00EBA136 /* mingpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mingpp.h; path = Binaries/Ming/mingpp.h; sourceTree = "<group>"; };
 		59FB647D1231106000EBA136 /* ming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ming.h; path = Binaries/Ming/ming.h; sourceTree = "<group>"; };
 		59FB652912312D8900EBA136 /* weasis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = weasis; path = Binaries/weasis; sourceTree = "<group>"; };
@@ -12317,10 +12317,10 @@
 				CE30BB1D10D97E8A009E297C /* QTKit.framework in Frameworks */,
 				84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */,
 				CEED780812303C8E00258D00 /* libPapyrusToolkit.a in Frameworks */,
-				59FB64391230EE4100EBA136 /* libfreetype.a in Frameworks */,
-				59FB643A1230EE4100EBA136 /* libgif.a in Frameworks */,
-				59FB643B1230EE4100EBA136 /* libming.a in Frameworks */,
-				59FB643C1230EE4100EBA136 /* libpng12.a in Frameworks */,
+				59FB64391230EE4100EBA136 /* libfreetypeOsiriX.a in Frameworks */,
+				59FB643A1230EE4100EBA136 /* libgifOsiriX.a in Frameworks */,
+				59FB643B1230EE4100EBA136 /* libmingOsiriX.a in Frameworks */,
+				59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */,
 				84A9D49012F7F8EB00DA1F99 /* libkdu_v64R.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -12965,10 +12965,10 @@
 		59FB64331230EE2F00EBA136 /* Ming */ = {
 			isa = PBXGroup;
 			children = (
-				59FB64341230EE4100EBA136 /* libfreetype.a */,
-				59FB64351230EE4100EBA136 /* libgif.a */,
-				59FB64361230EE4100EBA136 /* libming.a */,
-				59FB64371230EE4100EBA136 /* libpng12.a */,
+				59FB64341230EE4100EBA136 /* libfreetypeOsiriX.a */,
+				59FB64351230EE4100EBA136 /* libgifOsiriX.a */,
+				59FB64361230EE4100EBA136 /* libmingOsiriX.a */,
+				59FB64371230EE4100EBA136 /* libpng12OsiriX.a */,
 				59FB647D1231106000EBA136 /* ming.h */,
 				59FB64771231101B00EBA136 /* mingpp.h */,
 			);
