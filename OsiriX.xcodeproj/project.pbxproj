@@ -5092,10 +5092,8 @@
 		CE79D9890FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
 		CE79D98A0FD84C350043DD73 /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; };
 		CE79D98B0FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
-		CE7BBFD50C82DCA5000AD12F /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
-		CE7BBFD60C82DCA5000AD12F /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiff.a */; };
-		CE7BBFDB0C82DCA5000AD12F /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
-		CE7BBFDC0C82DCA5000AD12F /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiff.a */; };
+		CE7BBFD60C82DCA5000AD12F /* libtiffOsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiffOsiriX.a */; };
+		CE7BBFDC0C82DCA5000AD12F /* libtiffOsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiffOsiriX.a */; };
 		CE7C7E950CF2201F0028A7F2 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */; };
 		CE7E5D4506AC8DDC0058C3AA /* Anonymizer.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */; };
 		CE81E2A50FDA9F00000D3D96 /* OsiriX.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE8D057D0FD8505000165DDE /* OsiriX.framework */; };
@@ -5234,7 +5232,6 @@
 		CEBA5FE011B244EA005F3A0E /* SpectroIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */; };
 		CEBA5FE111B244EA005F3A0E /* SpectroIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */; };
 		CEBA709D10C70039003A6186 /* GetPrimaryMACAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */; };
-		CEBBE1820C82F33900247888 /* libtiff.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
 		CEBD8AC70875B233000E42D6 /* OSICDPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */; };
 		CEBD8AC90875B233000E42D6 /* OSIGeneralPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */; };
 		CEBD8ACA0875B233000E42D6 /* OSIHangingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A8B0875B233000E42D6 /* OSIHangingPreferencePane.prefPane */; };
@@ -8327,7 +8324,6 @@
 				CE81E2A50FDA9F00000D3D96 /* OsiriX.framework in CopyFiles */,
 				CE438F4D0CB621EC006AAFD9 /* Growl.framework in CopyFiles */,
 				CE438F420CB621DF006AAFD9 /* DotMacKit.framework in CopyFiles */,
-				CEBBE1820C82F33900247888 /* libtiff.dylib in CopyFiles */,
 				CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in CopyFiles */,
 				84F453570FC3DF5400D29666 /* ILCrashReporter.framework in CopyFiles */,
 				CE9A04450C7DBC060007809F /* libdcmprintscu.dylib in CopyFiles */,
@@ -11980,8 +11976,7 @@
 		CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMAbstractSyntaxUID.h; sourceTree = "<group>"; };
 		CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMAbstractSyntaxUID.m; sourceTree = "<group>"; };
 		CE7A0F1A0AED55E700540017 /* ShellMainClass.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ShellMainClass.mm; sourceTree = "<group>"; };
-		CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libtiff.dylib; sourceTree = "<group>"; };
-		CE7BBFD40C82DCA5000AD12F /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtiff.a; sourceTree = "<group>"; };
+		CE7BBFD40C82DCA5000AD12F /* libtiffOsiriX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtiffOsiriX.a; sourceTree = "<group>"; };
 		CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Anonymizer.icns; sourceTree = "<group>"; };
 		CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLRPCMethods.h; sourceTree = "<group>"; };
 		CE882AC50C889B6500D4F982 /* XMLRPCMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLRPCMethods.m; sourceTree = "<group>"; };
@@ -12240,8 +12235,7 @@
 				BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */,
 				BFBF3AA409B681F500545F5E /* libz.dylib in Frameworks */,
 				CE586CC40C74B75D00DB7D5A /* libdcmprintscu.dylib in Frameworks */,
-				CE7BBFD50C82DCA5000AD12F /* libtiff.dylib in Frameworks */,
-				CE7BBFD60C82DCA5000AD12F /* libtiff.a in Frameworks */,
+				CE7BBFD60C82DCA5000AD12F /* libtiffOsiriX.a in Frameworks */,
 				ABD00CB90D37B468006B914E /* Growl.framework in Frameworks */,
 				CE24491C0DA42A7600B8D506 /* libvtkGenericFiltering.a in Frameworks */,
 				CE24491D0DA42A7600B8D506 /* libvtkCommon.a in Frameworks */,
@@ -12310,8 +12304,7 @@
 				AB724FF00ADE6ECB00A212A0 /* QuickTime.framework in Frameworks */,
 				AB724FF10ADE6ECB00A212A0 /* IOKit.framework in Frameworks */,
 				AB724FF20ADE6ECB00A212A0 /* libz.dylib in Frameworks */,
-				CE7BBFDB0C82DCA5000AD12F /* libtiff.dylib in Frameworks */,
-				CE7BBFDC0C82DCA5000AD12F /* libtiff.a in Frameworks */,
+				CE7BBFDC0C82DCA5000AD12F /* libtiffOsiriX.a in Frameworks */,
 				CE8D062A0FD8731B00165DDE /* libDCM StaticLibrary.a in Frameworks */,
 				CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */,
 				CE30BB1D10D97E8A009E297C /* QTKit.framework in Frameworks */,
@@ -14188,8 +14181,7 @@
 		ABDE6E0806398E3400F0C5DD /* LibTiff */ = {
 			isa = PBXGroup;
 			children = (
-				CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */,
-				CE7BBFD40C82DCA5000AD12F /* libtiff.a */,
+				CE7BBFD40C82DCA5000AD12F /* libtiffOsiriX.a */,
 				ABDE6E0B06398E3400F0C5DD /* port.h */,
 				ABDE6E0C06398E3400F0C5DD /* t4.h */,
 				ABDE6E0D06398E3400F0C5DD /* tif_dir.h */,
