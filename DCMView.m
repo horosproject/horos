@@ -6612,9 +6612,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 									}
 								}
 								
-								if( noSlicePosition == NO && index >= 0)
+								if( noSlicePosition == NO)
 								{
-									curImage = index;
+									if( index >= 0)
+										curImage = index;
 									
 									if( [dcmPixList count] > 1)
 									{
