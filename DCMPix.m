@@ -7982,21 +7982,6 @@ END_CREATE_ROIS:
 							}
 						}
 					}
-					else if( SOPClassUID != nil && [DCMAbstractSyntaxUID isNonImageStorage: SOPClassUID]) // non-image
-					{
-						if( fExternalOwnedImage)
-							fImage = fExternalOwnedImage;
-						else
-							fImage = malloc( 128 * 128 * 4);
-						
-						height = 128;
-						width = 128;
-						oImage = nil;
-						isRGB = NO;
-						
-						for( int i = 0; i < 128*128; i++)
-							fImage[ i ] = i%2;
-					} 
 					else if( SOPClassUID != nil && [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
 					{
 #ifdef OSIRIX_VIEWER
@@ -8062,6 +8047,21 @@ END_CREATE_ROIS:
 		returnValue = YES;
 	#endif
 
+					}
+					else if( SOPClassUID != nil && [DCMAbstractSyntaxUID isNonImageStorage: SOPClassUID]) // non-image
+					{
+						if( fExternalOwnedImage)
+							fImage = fExternalOwnedImage;
+						else
+							fImage = malloc( 128 * 128 * 4);
+						
+						height = 128;
+						width = 128;
+						oImage = nil;
+						isRGB = NO;
+						
+						for( int i = 0; i < 128*128; i++)
+							fImage[ i ] = i%2;
 					}
 					else
 					{

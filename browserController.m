@@ -11044,6 +11044,8 @@ static BOOL needToRezoom;
 		
 		if([[aTableColumn identifier] isEqualToString:@"no"])
 		{
+			NSString *noOfStudies = nil;
+			
 			@synchronized( albumNoOfStudiesCache)
 			{
 				if( albumNoOfStudiesCache == nil || rowIndex >= [albumNoOfStudiesCache count] || [[albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES)
@@ -11051,11 +11053,13 @@ static BOOL needToRezoom;
 					[self refreshAlbums];
 					
 					// It will be computed in a separate thread, and then displayed later.
-					return @"#";
+					noOfStudies = @"#";
 				}
 				else
-					return [[[albumNoOfStudiesCache objectAtIndex: rowIndex] copy] autorelease];
+					noOfStudies = [[[albumNoOfStudiesCache objectAtIndex: rowIndex] copy] autorelease];
 			}
+			
+			return noOfStudies;
 		}
 		else
 		{
