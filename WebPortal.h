@@ -45,6 +45,7 @@
 	NSMutableDictionary* locks;
 	NSMutableArray *runLoops, *runLoopsLoad, *httpThreads;
 	WebPortalServer *server;
+	NSThread *serverThread;
 }
 
 // called from AppController

@@ -307,8 +307,9 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 
 -(void)restartIfRunning {
 	if (isAcceptingConnections) {
-		[self stopAcceptingConnections];
-		[self startAcceptingConnections];
+		NSLog( @"----- cannot restart web server -> you have to restart OsiriX");
+//		[self stopAcceptingConnections];
+//		[self startAcceptingConnections];
 	}
 }
 
@@ -355,6 +356,10 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 		@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
 	}
 	
+	[server stop];
+	
+	NSLog(@"[WebPortal startServerThread:] finishing");
+	
 	[pool release];
 }
 
@@ -382,8 +387,13 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 			server.port = self.portNumber;
 			server.documentRoot = [NSURL fileURLWithPath:[@"~/Sites" stringByExpandingTildeInPath]];
 			
+			if( serverThread)
+				[serverThread release];
+				
+			serverThread = [[NSThread alloc] initWithTarget: self selector: @selector( startServerThread) object: nil];
 			
-			[NSThread detachNewThreadSelector: @selector( startServerThread) toTarget: self withObject: nil];
+			[serverThread start];
+			
 		} @catch (NSException * e) {
 			NSLog(@"Exception: [WebPortal startAcceptingConnections] %@", e);
 		}
@@ -414,18 +424,21 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 }
 
 -(void)stopAcceptingConnections {
-	if (isAcceptingConnections) {
-		isAcceptingConnections = NO;
-		@try 
-		{
-			[server stop];
-			for( NSThread *thread in httpThreads)
-				[thread cancel];
-			
-		} @catch (NSException* e) {
-			NSLog(@"Exception: [WebPortal stopAcceptingConnections] %@", e);
-		}
-	}
+//	if (isAcceptingConnections) {
+//		isAcceptingConnections = NO;
+//		@try 
+//		{
+//			[serverThread cancel];
+//			[NSThread sleepForTimeInterval: 5];
+//			
+//			for( NSThread *thread in httpThreads)
+//				[thread cancel];
+//			
+//		} @catch (NSException* e) {
+//			NSLog(@"Exception: [WebPortal stopAcceptingConnections] %@", e);
+//		}
+//	}
+	NSLog( @"----- cannot stop web server -> you have to restart OsiriX");
 }
 
 -(NSData*)dataForPath:(NSString*)file {
