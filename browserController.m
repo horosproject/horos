@@ -3681,8 +3681,6 @@ static NSConditionLock *threadLock = nil;
 	
 	[[LogManager currentLogManager] resetLogs];
 	
-	[AppController createDBFoldersIfNecessary];
-	
 	[managedObjectContext unlock];
 	
 	[[LogManager currentLogManager] resetLogs];

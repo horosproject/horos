@@ -2630,46 +2630,6 @@ static NSDate *lastWarningDate = nil;
 	return returnValue;
 }
 
-+ (void) createDBFoldersIfNecessary
-{
-//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseRAMDisk"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
-//	{
-//		if( [[NSFileManager defaultManager] fileExistsAtPath: @"/Volumes/OsiriX-RAM-disk"] == NO)
-//		{
-//			NSTask *ramDiskTask = [[[NSTask alloc] init] autorelease];
-//			
-//			[ramDiskTask setLaunchPath: @"/bin/sh"];
-//			[ramDiskTask setArguments: [NSArray arrayWithObject: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/ramDiskScript.txt"]]];
-//			[ramDiskTask launch];
-//			[ramDiskTask waitUntilExit];
-//		}
-//		
-//		// Create symbolic links for TEMP.noindex, DECOMPRESSION.noindex, and INCOMING.noindex
-//		[[NSFileManager defaultManager] removeItemAtPath: [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent: @"/TEMP.noindex"] error: nil];
-//		[[NSFileManager defaultManager] removeItemAtPath: [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent: @"/DECOMPRESSION.noindex"] error: nil];
-//		[[NSFileManager defaultManager] removeItemAtPath: [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent: @"/INCOMING.noindex"] error: nil];
-//		
-//		[[NSFileManager defaultManager] removeItemAtPath: @"/Volumes/OsiriX-RAM-disk/TEMP.noindex" error: nil];
-//		[[NSFileManager defaultManager] removeItemAtPath: @"/Volumes/OsiriX-RAM-disk/DECOMPRESSION.noindex" error: nil];
-//		[[NSFileManager defaultManager] removeItemAtPath: @"/Volumes/OsiriX-RAM-disk/INCOMING.noindex" error: nil];
-//		
-//		[[NSFileManager defaultManager] createDirectoryAtPath: @"/Volumes/OsiriX-RAM-disk/TEMP.noindex" attributes: nil];
-//		[[NSFileManager defaultManager] createDirectoryAtPath: @"/Volumes/OsiriX-RAM-disk/DECOMPRESSION.noindex" attributes: nil];
-//		[[NSFileManager defaultManager] createDirectoryAtPath: @"/Volumes/OsiriX-RAM-disk/INCOMING.noindex" attributes: nil];
-//		
-//		[[NSFileManager defaultManager] createSymbolicLinkAtPath: [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent: @"/TEMP.noindex"] withDestinationPath: @"/Volumes/OsiriX-RAM-disk/TEMP.noindex" error: nil];
-//		[[NSFileManager defaultManager] createSymbolicLinkAtPath: [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent: @"/DECOMPRESSION.noindex"] withDestinationPath: @"/Volumes/OsiriX-RAM-disk/DECOMPRESSION.noindex" error: nil];
-//		[[NSFileManager defaultManager] createSymbolicLinkAtPath: [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent: @"/INCOMING.noindex"] withDestinationPath: @"/Volumes/OsiriX-RAM-disk/INCOMING.noindex" error: nil];
-//	}
-//	else
-	{
-		// DELETE & CREATE THE TEMP.noindex DIRECTORY...
-		NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP.noindex/"];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: nil];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
-	}
-}
-
 static BOOL initialized = NO;
 + (void) initialize
 {
@@ -2916,13 +2876,6 @@ static BOOL initialized = NO;
 				
 				NSString *reportsDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/REPORTS/"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportsDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:reportsDirectory attributes:nil];
-				
-//				NSString *roisDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ROIs"];
-//				BOOL isDir = YES;
-//				if ([[NSFileManager defaultManager] fileExistsAtPath:roisDirectory isDirectory: &isDir] == YES && isDir == NO) [[NSFileManager defaultManager] removeFileAtPath: roisDirectory handler: nil];
-//				if ([[NSFileManager defaultManager] fileExistsAtPath:roisDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:roisDirectory attributes:nil];
-				
-				[AppController createDBFoldersIfNecessary];
 				
 				NSString *dumpDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DUMP/"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:dumpDirectory attributes:nil];
