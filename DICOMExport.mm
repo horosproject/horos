@@ -679,7 +679,7 @@
 					delete dataset->remove( DCM_MediaStorageSOPClassUID);
 					delete dataset->remove( DCM_MediaStorageSOPInstanceUID);
 					
-					char buf[70];
+					char buf[ 128];
 					dcmGenerateUniqueIdentifier( buf);
 					dataset->putAndInsertString( DCM_SOPInstanceUID, buf);
 					metaInfo->putAndInsertString( DCM_MediaStorageSOPInstanceUID, buf);

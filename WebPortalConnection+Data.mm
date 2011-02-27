@@ -247,7 +247,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 - (void)sendImagesToDicomNodeThread:(NSDictionary*)todo;
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	[session.sendLock lock];
+	
 	@try {
 		[[[[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
 										  calledAET:[todo objectForKey:@"AETitle"] 
@@ -260,7 +260,6 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	} @catch (NSException* e) {
 		NSLog(@"Error: [WebServiceConnection sendImagesToDicomNodeThread:] %@", e);
 	} @finally {
-		[session.sendLock unlock];
 		[pool release];
 	}
 }
@@ -658,8 +657,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 											  [asyncSocket connectedHost], @"address",
 											  self.dicomCStorePortString, @"port",
 											  @"This Computer", @"aeTitle",
-											  self.requestIsIOS? @"5" : @"0", @"syntax",
-											  self.requestIsIOS? @"This Computer" : [NSString stringWithFormat:@"This Computer [%@:%@]", [asyncSocket connectedHost], self.dicomCStorePortString], @"description",
+											  @"1", @"syntax", // 1 == JPEG2000 Lossless
+											  self.requestIsIOS? @"This Device" : [NSString stringWithFormat:@"This Computer [%@:%@]", [asyncSocket connectedHost], self.dicomCStorePortString], @"description",
 											  NULL]];
 			if (!user || user.sendDICOMtoAnyNodes.boolValue)
 				for (NSDictionary* node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
