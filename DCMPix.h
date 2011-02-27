@@ -64,7 +64,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 //	planar configuration
 	long				fPlanarConf;
-    double               pixelSpacingX, pixelSpacingY, pixelRatio;
+    double				pixelSpacingX, pixelSpacingY, pixelRatio;
+	BOOL				pixelSpacingFromUltrasoundRegions;
 
 //	photointerpretation
 	BOOL				isRGB;
