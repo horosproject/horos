@@ -3784,6 +3784,8 @@ static NSConditionLock *threadLock = nil;
 	
 	for( int i = 0; i < [filesInput count];)
 	{
+		NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
+		
 		@try
 		{
 			NSMutableArray *copiedFiles = [NSMutableArray array];
@@ -3957,6 +3959,8 @@ static NSConditionLock *threadLock = nil;
 			NSLog( @"copyFilesThread exception: %@", e);
 			[AppController printStackTrace: e];
 		}
+		
+		[pool2 release];
 	}
 	
 	[autoroutingInProgress unlock];
