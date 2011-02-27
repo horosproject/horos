@@ -44,25 +44,25 @@
 
 -(NSInteger)integerForKey:(NSString*)key {
 	NSNumber* obj = [self valueForValuesKey:key];
-	if (![obj isKindOfClass:[NSNumber class]]) return 0;
+	if (![obj respondsToSelector:@selector(integerValue)]) return 0;
 	return [obj integerValue];
 }
 
 -(float)floatForKey:(NSString*)key {
 	NSNumber* obj = [self valueForValuesKey:key];
-	if (![obj isKindOfClass:[NSNumber class]]) return 0;
+	if (![obj respondsToSelector:@selector(floatValue)]) return 0;
 	return [obj floatValue];
 }
 
 -(double)doubleForKey:(NSString*)key {
 	NSNumber* obj = [self valueForValuesKey:key];
-	if (![obj isKindOfClass:[NSNumber class]]) return 0;
+	if (![obj respondsToSelector:@selector(doubleValue)]) return 0;
 	return [obj doubleValue];
 }
 
 -(BOOL)boolForKey:(NSString*)key {
 	NSNumber* obj = [self valueForValuesKey:key];
-	if (![obj isKindOfClass:[NSNumber class]]) return NO;
+	if (![obj respondsToSelector:@selector(boolValue)]) return NO;
 	return [obj boolValue];
 }
 
