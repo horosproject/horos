@@ -654,11 +654,20 @@
 					}
 					else
 					{
+						delete dataset->remove( DCM_WindowWidth);
+						delete dataset->remove( DCM_WindowCenter);
+						
 						if( spp != 3)
 						{
 							dataset->putAndInsertString( DCM_RescaleIntercept, "0");
 							dataset->putAndInsertString( DCM_RescaleSlope, "1");
 							dataset->putAndInsertString( DCM_RescaleType, "US");
+						}
+						else
+						{
+							delete dataset->remove( DCM_RescaleIntercept);
+							delete dataset->remove( DCM_RescaleSlope);
+							delete dataset->remove( DCM_WindowCenterWidthExplanation);
 						}
 						
 						dataset->putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(Uint8 *, OFconst_cast(void *, (void*) data)), height*width*spp);
