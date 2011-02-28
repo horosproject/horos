@@ -4133,14 +4133,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				NSRect centeredRect = rect;
 				NSRect unrotatedRect = rect;
 				
-				centeredRect.origin.y -= offsety;
-				centeredRect.origin.x -= offsetx;
+				centeredRect.origin.y -= offsety + [curView origin].y/scaleValue;
+				centeredRect.origin.x -= offsetx - [curView origin].x/scaleValue;
 				
 				unrotatedRect.origin.x = centeredRect.origin.x*cos( -curView.rotation*deg2rad) + centeredRect.origin.y*sin( -curView.rotation*deg2rad);
 				unrotatedRect.origin.y = -centeredRect.origin.x*sin( -curView.rotation*deg2rad) + centeredRect.origin.y*cos( -curView.rotation*deg2rad);
 				
-				unrotatedRect.origin.y += offsety;
-				unrotatedRect.origin.x += offsetx;
+				unrotatedRect.origin.y += offsety + [curView origin].y/scaleValue;
+				unrotatedRect.origin.x += offsetx - [curView origin].x/scaleValue;
 				
 				if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 				{
@@ -4157,7 +4157,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glLineWidth(1.0);
 				
 				NSPoint tPt = NSMakePoint( unrotatedRect.origin.x, unrotatedRect.origin.y);
-				tPt.x = (tPt.x - offsetx)*scaleValue  - unrotatedRect.size.width/2;		tPt.y = (tPt.y - offsety)*scaleValue - unrotatedRect.size.height/2;
+				tPt.x = (tPt.x - offsetx)*scaleValue - unrotatedRect.size.width/2;
+				tPt.y = (tPt.y - offsety)*scaleValue - unrotatedRect.size.height/2;
 				
 				glEnable (GL_TEXTURE_RECTANGLE_EXT);
 				
