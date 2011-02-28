@@ -438,7 +438,7 @@ N3Line N3LineApplyTransform(N3Line line, N3AffineTransform transform)
     return newLine;
 }
 
-CGFloat N3LineClosestPoints(N3Line line1, N3Line line2, N3VectorPointer line1PointPtr, N3VectorPointer line2PointPtr) // given two lines, find points on each line that are the closest to each other, note that the line the goes through these two points will be normal to both lines
+CGFloat N3LineClosestPoints(N3Line line1, N3Line line2, N3VectorPointer line1PointPtr, N3VectorPointer line2PointPtr) // given two lines, find points on each line that are the closest to each other, note that the line that goes through these two points will be normal to both lines
 { 
     N3Vector p13, p43, p21, p1, p3, pa, pb;
     CGFloat d1343, d4321, d1321, d4343, d2121;

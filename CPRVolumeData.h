@@ -59,7 +59,7 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
 
 @property (readonly, getter=isRectilinear) BOOL rectilinear;
 
-@property (readonly) CGFloat minPixelSpacing; // the smallet pixel spacing in any direction;
+@property (readonly) CGFloat minPixelSpacing; // the smallest pixel spacing in any direction;
 @property (readonly) CGFloat pixelSpacingX;
 @property (readonly) CGFloat pixelSpacingY;
 @property (readonly) CGFloat pixelSpacingZ;
