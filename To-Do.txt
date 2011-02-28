@@ -25,6 +25,7 @@
 - Web Server: A link for keyimages: jpeg or movie, depending on number of images < 20
 - Web Server: Include previous study for specific patients
 - Web Server: Burn option if the CD/DVD is installed
+- Web Server: add temporary user email for admins
 
 - CPR: export transverse series, at fixed interval
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR

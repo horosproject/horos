@@ -4126,6 +4126,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			{
 				glPushMatrix();
 				
+				float ratio = 1;
+				
+				if( pixelSpacingX != 0 && pixelSpacingY != 0)
+					ratio = pixelSpacingX / pixelSpacingY;
+				
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f /([curView xFlipped] ? -([curView drawingFrameRect].size.width) : [curView drawingFrameRect].size.width), -2.0f / ([curView yFlipped] ? -([curView drawingFrameRect].size.height) : [curView drawingFrameRect].size.height), 1.0f); // scale to port per pixel scale
 				glTranslatef( [curView origin].x, -[curView origin].y, 0.0f);
@@ -4133,13 +4138,15 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				NSRect centeredRect = rect;
 				NSRect unrotatedRect = rect;
 				
-				centeredRect.origin.y -= offsety + [curView origin].y/scaleValue;
+				centeredRect.origin.y -= offsety + [curView origin].y*ratio/scaleValue;
 				centeredRect.origin.x -= offsetx - [curView origin].x/scaleValue;
 				
-				unrotatedRect.origin.x = centeredRect.origin.x*cos( -curView.rotation*deg2rad) + centeredRect.origin.y*sin( -curView.rotation*deg2rad);
-				unrotatedRect.origin.y = -centeredRect.origin.x*sin( -curView.rotation*deg2rad) + centeredRect.origin.y*cos( -curView.rotation*deg2rad);
+				unrotatedRect.origin.x = centeredRect.origin.x*cos( -curView.rotation*deg2rad) + centeredRect.origin.y*sin( -curView.rotation*deg2rad)/ratio;
+				unrotatedRect.origin.y = -centeredRect.origin.x*sin( -curView.rotation*deg2rad) + centeredRect.origin.y*cos( -curView.rotation*deg2rad)/ratio;
 				
-				unrotatedRect.origin.y += offsety + [curView origin].y/scaleValue;
+				unrotatedRect.origin.y *= ratio;
+				
+				unrotatedRect.origin.y += offsety + [curView origin].y*ratio/scaleValue;
 				unrotatedRect.origin.x += offsetx - [curView origin].x/scaleValue;
 				
 				if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
@@ -4158,7 +4165,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				NSPoint tPt = NSMakePoint( unrotatedRect.origin.x, unrotatedRect.origin.y);
 				tPt.x = (tPt.x - offsetx)*scaleValue - unrotatedRect.size.width/2;
-				tPt.y = (tPt.y - offsety)*scaleValue - unrotatedRect.size.height/2;
+				tPt.y = (tPt.y - offsety)/ratio*scaleValue - unrotatedRect.size.height/2;
 				
 				glEnable (GL_TEXTURE_RECTANGLE_EXT);
 				
@@ -4172,11 +4179,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				[stringTex setFlippedX: [curView xFlipped] Y:[curView yFlipped]];
 				
 				glColor4f (0, 0, 0, opacity);
-				[stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+ 1.0) ratio: 1.0];
+				[stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+ 1.0) ratio: 1];
 					
 				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 				
-				[stringTex drawAtPoint:tPt ratio: 1.0];
+				[stringTex drawAtPoint:tPt ratio: 1];
 					
 				glDisable (GL_TEXTURE_RECTANGLE_EXT);
 				
