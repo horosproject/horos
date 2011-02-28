@@ -220,7 +220,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[subtractedOriginalView setScaleValue: fValue * [subtractedOriginalView pixelSpacing]];
 	[subtractedOriginalView setRotation: [sender rotation]];
 	[subtractedOriginalView setOrigin: [sender origin]];
-	[subtractedOriginalView setOriginOffset: [sender originOffset]];
 	
 	NSPoint		pt;
 	
@@ -233,7 +232,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 	pt.y = [subtractedXReslicedView originOffset].y;
 	pt.x = [sender originOffset].x;
-	[subtractedXReslicedView setOriginOffset: pt];
 	
 	// Y - Views
 	[subtractedYReslicedView setScaleValue: fValue * [subtractedYReslicedView pixelSpacing]];
@@ -244,7 +242,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 	pt.y = [subtractedYReslicedView originOffset].y;
 	pt.x = -[sender originOffset].y;
-	[subtractedYReslicedView setOriginOffset: pt];
 	
 	[subtractedOriginalView setNeedsDisplay:YES];
 }
@@ -260,7 +257,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[subtractedXReslicedView setScaleValue: fValue * [subtractedXReslicedView pixelSpacing]];
 	[subtractedXReslicedView setRotation: [sender rotation]];
 	[subtractedXReslicedView setOrigin: [sender origin]];
-	[subtractedXReslicedView setOriginOffset: [sender originOffset]];
 	
 	NSPoint		pt;
 	
@@ -273,7 +269,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 	pt.y = [subtractedOriginalView originOffset].y;
 	pt.x = [sender originOffset].x;
-	[subtractedOriginalView setOriginOffset: pt];
 
 	// Y - Views
 	[subtractedYReslicedView setScaleValue: fValue * [subtractedYReslicedView pixelSpacing]];
@@ -284,7 +279,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 	pt.x = [subtractedYReslicedView originOffset].x;
 	pt.y = [sender originOffset].y;
-	[subtractedYReslicedView setOriginOffset: pt];
 	
 	[subtractedXReslicedView setNeedsDisplay:YES];
 }
@@ -300,7 +294,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[subtractedYReslicedView setScaleValue: fValue * [subtractedYReslicedView pixelSpacing]];
 	[subtractedYReslicedView setRotation: [sender rotation]];
 	[subtractedYReslicedView setOrigin: [sender origin]];
-	[subtractedYReslicedView setOriginOffset: [sender originOffset]];
 	
 	NSPoint		pt;
 	
@@ -313,7 +306,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 	pt.x = [subtractedOriginalView originOffset].x;
 	pt.y = -[sender originOffset].x;
-	[subtractedOriginalView setOriginOffset: pt];
 
 	// Y - Views
 	[subtractedXReslicedView setScaleValue: fValue * [subtractedXReslicedView pixelSpacing]];
@@ -324,7 +316,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 	pt.x = [subtractedXReslicedView originOffset].x;
 	pt.y = [sender originOffset].y;
-	[subtractedXReslicedView setOriginOffset: pt];
 	
 	[subtractedYReslicedView setNeedsDisplay:YES];
 }
@@ -522,7 +513,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[subtractedOriginalView setScaleValue: fValue * [subtractedOriginalView pixelSpacing]];
 	[subtractedOriginalView setRotation: [[controller originalView] rotation]];
 	[subtractedOriginalView setOrigin: [[controller originalView] origin]];
-	[subtractedOriginalView setOriginOffset: [[controller originalView] originOffset]];
 
 	//[axialPixList release];
 //	[newAxialPix release];
@@ -633,7 +623,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[subtractedXReslicedView setScaleValue: fValue * [subtractedXReslicedView pixelSpacing]];
 	[subtractedXReslicedView setRotation: [[controller xReslicedView] rotation]];
 	[subtractedXReslicedView setOrigin: [[controller xReslicedView] origin]];
-	[subtractedXReslicedView setOriginOffset: [[controller xReslicedView] originOffset]];
 		
 	//[coronalPixList release];
 //	[newCoronalPix release];
@@ -745,7 +734,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[subtractedYReslicedView setScaleValue: fValue * [subtractedYReslicedView pixelSpacing]];
 	[subtractedYReslicedView setRotation: [[controller yReslicedView] rotation]];
 	[subtractedYReslicedView setOrigin: [[controller yReslicedView] origin]];
-	[subtractedYReslicedView setOriginOffset: [[controller yReslicedView] originOffset]];
 
 	//[sagitalPixList release];
 //	[newSagitalPix release];

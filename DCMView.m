@@ -1229,7 +1229,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		blendingView.rotation = rotation;
 		[blendingView setOrigin: origin];
-		[blendingView setOriginOffset: originOffset];
 	}
 }
 
@@ -10686,13 +10685,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	[self updateTilingViews];
-	
-	[self setNeedsDisplay:YES];
-}
-
--(void) setOriginOffset:(NSPoint) x
-{
-	originOffset = x;
 	
 	[self setNeedsDisplay:YES];
 }

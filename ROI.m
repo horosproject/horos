@@ -4124,8 +4124,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			case tText:
 			{
-				glRotatef( -curView.rotation, 0.0f, 0.0f, 1.0f);
+				glPushMatrix();
 				
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f /([curView xFlipped] ? -([curView drawingFrameRect].size.width) : [curView drawingFrameRect].size.width), -2.0f / ([curView yFlipped] ? -([curView drawingFrameRect].size.height) : [curView drawingFrameRect].size.height), 1.0f); // scale to port per pixel scale
+				glTranslatef( [curView origin].x, -[curView origin].y, 0.0f);
+
 				NSRect centeredRect = rect;
 				NSRect unrotatedRect = rect;
 				
@@ -4167,23 +4171,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				[stringTex setFlippedX: [curView xFlipped] Y:[curView yFlipped]];
 				
 				glColor4f (0, 0, 0, opacity);
-				if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-					[stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+ (1.0*pixelSpacingX / pixelSpacingY)) ratio: pixelSpacingX / pixelSpacingY];
-				else
-					[stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+ 1.0) ratio: 1.0];
+				[stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+ 1.0) ratio: 1.0];
 					
 				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 				
-				if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-					[stringTex drawAtPoint:tPt ratio: pixelSpacingX / pixelSpacingY];
-				else
-					[stringTex drawAtPoint:tPt ratio: 1.0];
+				[stringTex drawAtPoint:tPt ratio: 1.0];
 					
 				glDisable (GL_TEXTURE_RECTANGLE_EXT);
 				
 				glColor3f (1.0f, 1.0f, 1.0f);
 				
-				glRotatef( curView.rotation, 0.0f, 0.0f, 1.0f);
+//				glRotatef( curView.rotation, 0.0f, 0.0f, 1.0f);
+				
+				glPopMatrix();
 			}
 			break;
 			

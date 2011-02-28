@@ -403,7 +403,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (NSPoint) rotatePoint:(NSPoint) a;
 - (void) setOrigin:(NSPoint) x;
 - (void) setOriginX:(float) x Y:(float) y;
-- (void) setOriginOffset:(NSPoint) x;
 - (void) scaleToFit;
 - (float) scaleToFitForDCMPix: (DCMPix*) d;
 - (void) setBlendingFactor:(float) f;
