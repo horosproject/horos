@@ -592,7 +592,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			if (selectedImages.count) {
 				[self sendImages:selectedImages toDicomNode:dicomDestination];
-				[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Dicom send to node %@ initiated.", @"Web Portal, study, dicom send, success"), [dicomDestination objectForKey:@"AETitle"]]];
+				[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Dicom send to node %@ initiated.", @"Web Portal, study, dicom send, success"), [[dicomDestination objectForKey:@"AETitle"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 			} else
 				[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")]];
 		} else

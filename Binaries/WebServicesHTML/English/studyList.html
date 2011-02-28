@@ -14,8 +14,7 @@
 			<div class="smaller right gray">
 				Sorted by:
 				<a %[IF:Session.StudiesSortKey=="name"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="name"% href="?%Info.getParameters(sortKey=name)%">name</a>,
-				<a %[IF:Session.StudiesSortKey=="date"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="date"% href="?%Info.getParameters(sortKey=date)%">date</a>,
-				<a %[IF:Session.StudiesSortKey=="accessionNumber"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="accessionNumber"% href="?%Info.getParameters(sortKey=accessionNumber)%">accession number</a>
+				<a %[IF:Session.StudiesSortKey=="date"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="date"% href="?%Info.getParameters(sortKey=date)%">date</a>
 			</div>
 			<table class="wide separated fat">
 				%[FOREACH:Studies:Study%
