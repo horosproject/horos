@@ -4154,10 +4154,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glColor3f (0.5f, 0.5f, 1.0f);
 					glPointSize( 2.0 * 3);
 					glBegin( GL_POINTS);
-					glVertex2f(  (unrotatedRect.origin.x - offsetx)*scaleValue - unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)*scaleValue - unrotatedRect.size.height/2);
-					glVertex2f(  (unrotatedRect.origin.x - offsetx)*scaleValue - unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)*scaleValue + unrotatedRect.size.height/2);
-					glVertex2f(  (unrotatedRect.origin.x- offsetx)*scaleValue + unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)*scaleValue + unrotatedRect.size.height/2);
-					glVertex2f(  (unrotatedRect.origin.x - offsetx)*scaleValue + unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)*scaleValue - unrotatedRect.size.height/2);
+					glVertex2f(  (unrotatedRect.origin.x - offsetx)*scaleValue - unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)/ratio*scaleValue - unrotatedRect.size.height/2/ratio);
+					glVertex2f(  (unrotatedRect.origin.x - offsetx)*scaleValue - unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)/ratio*scaleValue + unrotatedRect.size.height/2/ratio);
+					glVertex2f(  (unrotatedRect.origin.x- offsetx)*scaleValue + unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)/ratio*scaleValue + unrotatedRect.size.height/2/ratio);
+					glVertex2f(  (unrotatedRect.origin.x - offsetx)*scaleValue + unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)/ratio*scaleValue - unrotatedRect.size.height/2/ratio);
 					glEnd();
 				}
 				
@@ -4165,12 +4165,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				NSPoint tPt = NSMakePoint( unrotatedRect.origin.x, unrotatedRect.origin.y);
 				tPt.x = (tPt.x - offsetx)*scaleValue - unrotatedRect.size.width/2;
-				tPt.y = (tPt.y - offsety)/ratio*scaleValue - unrotatedRect.size.height/2;
+				tPt.y = (tPt.y - offsety)/ratio*scaleValue - unrotatedRect.size.height/2/ratio;
 				
 				glEnable (GL_TEXTURE_RECTANGLE_EXT);
 				
 				glEnable(GL_BLEND);
-	//			if( opacity > 0.5) opacity = 1.0;
 				if( opacity == 1.0) glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 				else glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				
@@ -4188,8 +4187,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glDisable (GL_TEXTURE_RECTANGLE_EXT);
 				
 				glColor3f (1.0f, 1.0f, 1.0f);
-				
-//				glRotatef( curView.rotation, 0.0f, 0.0f, 1.0f);
 				
 				glPopMatrix();
 			}
