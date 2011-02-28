@@ -15,6 +15,7 @@
 #import "CPRCurvedPath.h"
 #import "N3BezierPath.h"
 #import "N3BezierCoreAdditions.h"
+#import "CPRGeneratorRequest.h"
 #include <OpenGL/CGLMacro.h>
 
 static const CGFloat _CPRCurvedPathNodeSpacingThreshold = 1e-10;
@@ -381,6 +382,66 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 - (CGFloat)relativePositionForNodeAtIndex:(NSUInteger)nodeIndex
 {
     return (CGFloat)[[_nodeRelativePositions objectAtIndex:nodeIndex] doubleValue];
+}
+
+- (NSArray *)transverseSliceRequestsForSpacing:(CGFloat)spacing outputWidth:(NSUInteger)width outputHeight:(NSUInteger)height mmWide:(CGFloat)mmWide
+{
+    NSMutableArray *requests;
+    CGFloat curveLength;
+    NSInteger requestCount;
+    NSInteger i;
+    N3Vector cross;
+    N3VectorArray normals;
+    N3VectorArray vectors;
+    N3VectorArray tangents;
+    N3MutableBezierPath *bezierPath;
+    CPRStraightenedGeneratorRequest *request;
+    
+    requests = [NSMutableArray array];
+    
+    curveLength = [_bezierPath length];
+    requestCount = curveLength/spacing;
+    
+    if (requestCount < 2) {
+        return requests;
+    }
+    
+    normals = malloc(requestCount * sizeof(N3Vector));
+    memset(normals, 0, requestCount * sizeof(N3Vector));
+    
+    vectors = malloc(requestCount * sizeof(N3Vector));
+    memset(vectors, 0, requestCount * sizeof(N3Vector));
+    
+    tangents = malloc(requestCount * sizeof(N3Vector));
+    memset(tangents, 0, requestCount * sizeof(N3Vector));
+    
+    requestCount = N3BezierCoreGetVectorInfo([_bezierPath N3BezierCore], spacing, 0, _initialNormal, vectors, tangents, normals, requestCount);
+    
+    for (i = 0; i < requestCount; i++) {
+        request = [[CPRStraightenedGeneratorRequest alloc] init];
+        request.pixelsWide = width;
+		request.pixelsHigh = height;
+		request.slabWidth = 0;
+        request.slabSampleDistance = 0;
+        request.initialNormal = normals[i];
+        
+        cross = N3VectorNormalize(N3VectorCrossProduct(normals[i], tangents[i]));
+        
+        bezierPath = [[N3MutableBezierPath alloc] init];
+        [bezierPath moveToVector:N3VectorAdd(vectors[i], N3VectorScalarMultiply(cross, (CGFloat)mmWide / 2.0))]; 
+        [bezierPath lineToVector:N3VectorAdd(vectors[i], N3VectorScalarMultiply(cross, (CGFloat)mmWide / -2.0))]; 
+        request.bezierPath = bezierPath;
+        [bezierPath release];
+        
+        [requests addObject:request];
+        [request release];
+    }
+    
+    free(normals);
+    free(vectors);
+    free(tangents);
+    
+    return requests;
 }
 
 - (CGFloat)leftTransverseSectionPosition

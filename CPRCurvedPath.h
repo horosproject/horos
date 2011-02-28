@@ -54,9 +54,11 @@ extern const int32_t CPRCurvedPathControlTokenNone;
 - (CPRCurvedPathControlToken)controlTokenNearPoint:(NSPoint)point transform:(N3AffineTransform)transform;
 
 - (CGFloat)relativePositionForPoint:(NSPoint)point transform:(N3AffineTransform)transform;
-- (CGFloat)relativePositionForPoint:(NSPoint)point transform:(N3AffineTransform)transform distanceToPoint:(CGFloat *)distance; // returns the distance the coordinate space of point (screen coordinates)
+- (CGFloat)relativePositionForPoint:(NSPoint)point transform:(N3AffineTransform)transform distanceToPoint:(CGFloat *)distance; // returns the distance in the coordinate space of point (screen coordinates)
 - (CGFloat)relativePositionForControlToken:(CPRCurvedPathControlToken)token;
 - (CGFloat)relativePositionForNodeAtIndex:(NSUInteger)nodeIndex;
+
+- (NSArray *)transverseSliceRequestsForSpacing:(CGFloat)spacing outputWidth:(NSUInteger)width outputHeight:(NSUInteger)height mmWide:(CGFloat)mmWide; // mmWide is the how wide in patient coordinates the transverse slice should be
 
 @property (nonatomic, readonly, retain) N3MutableBezierPath *bezierPath;
 @property (nonatomic, readwrite, assign) CGFloat thickness;
