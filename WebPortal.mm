@@ -349,11 +349,14 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	
 	while (!NSThread.currentThread.isCancelled)
 	{
+		NSAutoreleasePool *runloopPool = [[NSAutoreleasePool alloc] init];
 		@try
 		{
 			[NSRunLoop.currentRunLoop runMode: NSDefaultRunLoopMode beforeDate:NSDate.distantFuture];
 		}
 		@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
+		
+		[runloopPool release];
 	}
 	
 	[server stop];
@@ -413,8 +416,14 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 		
 		isAcceptingConnections = YES;
 		[NSRunLoop.currentRunLoop addTimer:[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector(ignore:) userInfo:NULL repeats:NO] forMode: NSDefaultRunLoopMode];
-		while (!NSThread.currentThread.isCancelled && [NSRunLoop.currentRunLoop runMode: NSDefaultRunLoopMode beforeDate:NSDate.distantFuture]);
-		
+		while (!NSThread.currentThread.isCancelled)
+		{
+			NSAutoreleasePool *runloopPool = [[NSAutoreleasePool alloc] init];
+			
+			[NSRunLoop.currentRunLoop runMode: NSDefaultRunLoopMode beforeDate:NSDate.distantFuture];
+			
+			[runloopPool release];
+		}
 		NSLog(@"[WebPortal connectionsThread:] finishing");
 	} @catch (NSException* e) {
 		NSLog(@"Warning: [WebPortal connetionsThread] %@", e);

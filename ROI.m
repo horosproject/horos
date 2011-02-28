@@ -4124,23 +4124,36 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			case tText:
 			{
+				glRotatef( -curView.rotation, 0.0f, 0.0f, 1.0f);
+				
+				NSRect centeredRect = rect;
+				NSRect unrotatedRect = rect;
+				
+				centeredRect.origin.y -= offsety;
+				centeredRect.origin.x -= offsetx;
+				
+				unrotatedRect.origin.x = centeredRect.origin.x*cos( -curView.rotation*deg2rad) + centeredRect.origin.y*sin( -curView.rotation*deg2rad);
+				unrotatedRect.origin.y = -centeredRect.origin.x*sin( -curView.rotation*deg2rad) + centeredRect.origin.y*cos( -curView.rotation*deg2rad);
+				
+				unrotatedRect.origin.y += offsety;
+				unrotatedRect.origin.x += offsetx;
+				
 				if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 				{
 					glColor3f (0.5f, 0.5f, 1.0f);
 					glPointSize( 2.0 * 3);
 					glBegin( GL_POINTS);
-					glVertex2f(  (rect.origin.x - offsetx)*scaleValue - rect.size.width/2, (rect.origin.y - offsety)*scaleValue - rect.size.height/2);
-					glVertex2f(  (rect.origin.x - offsetx)*scaleValue - rect.size.width/2, (rect.origin.y - offsety)*scaleValue + rect.size.height/2);
-					glVertex2f(  (rect.origin.x- offsetx)*scaleValue + rect.size.width/2, (rect.origin.y - offsety)*scaleValue + rect.size.height/2);
-					glVertex2f(  (rect.origin.x - offsetx)*scaleValue + rect.size.width/2, (rect.origin.y - offsety)*scaleValue - rect.size.height/2);
+					glVertex2f(  (unrotatedRect.origin.x - offsetx)*scaleValue - unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)*scaleValue - unrotatedRect.size.height/2);
+					glVertex2f(  (unrotatedRect.origin.x - offsetx)*scaleValue - unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)*scaleValue + unrotatedRect.size.height/2);
+					glVertex2f(  (unrotatedRect.origin.x- offsetx)*scaleValue + unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)*scaleValue + unrotatedRect.size.height/2);
+					glVertex2f(  (unrotatedRect.origin.x - offsetx)*scaleValue + unrotatedRect.size.width/2, (unrotatedRect.origin.y - offsety)*scaleValue - unrotatedRect.size.height/2);
 					glEnd();
 				}
 				
 				glLineWidth(1.0);
 				
-				NSPoint tPt = self.lowerRightPoint;
-				tPt.x = (tPt.x - offsetx)*scaleValue  - rect.size.width/2;		tPt.y = (tPt.y - offsety)*scaleValue - rect.size.height/2;
-				
+				NSPoint tPt = NSMakePoint( unrotatedRect.origin.x, unrotatedRect.origin.y);
+				tPt.x = (tPt.x - offsetx)*scaleValue  - unrotatedRect.size.width/2;		tPt.y = (tPt.y - offsety)*scaleValue - unrotatedRect.size.height/2;
 				
 				glEnable (GL_TEXTURE_RECTANGLE_EXT);
 				
@@ -4169,6 +4182,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glDisable (GL_TEXTURE_RECTANGLE_EXT);
 				
 				glColor3f (1.0f, 1.0f, 1.0f);
+				
+				glRotatef( curView.rotation, 0.0f, 0.0f, 1.0f);
 			}
 			break;
 			
