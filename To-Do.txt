@@ -20,7 +20,6 @@
 
 - DICOM Listener TLS? -> different syntax transfer settings
 - Export Transverse views
-- First time load -> drawer
 
 - Web Server: A list of JPEG, instead of a quicktime movie, if number of images < 20
 - Web Server: A link for keyimages: jpeg or movie, depending on number of images < 20

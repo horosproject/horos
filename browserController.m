@@ -14056,6 +14056,9 @@ static NSArray*	openSubSeriesArray = nil;
 		[thumbnailsScrollView setDrawsBackground:NO];
 		[[thumbnailsScrollView contentView] setDrawsBackground:NO];
 		
+		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"NSWindow Frame DBWindow"] == nil) // No position for the window -> fullscreen
+			[[self window] zoom: self];
+		
 		//	[self splitViewDidResizeSubviews:nil];
 		[self.window setFrameAutosaveName:@"DBWindow"];
 		

@@ -12,6 +12,7 @@
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<integer value="12367"/>
+			<integer value="885"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3607,7 +3608,7 @@
 			<object class="NSWindowTemplate" id="307923769">
 				<int key="NSWindowStyleMask">271</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{36, 4}, {1132, 808}}</string>
+				<string key="NSWindowRect">{{397, 191}, {1132, 808}}</string>
 				<int key="NSWTFlags">1618477056</int>
 				<string key="NSWindowTitle">Local DICOM Database</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -3617,7 +3618,7 @@
 				<string key="NSWindowContentMaxSize">{9000, 9000}</string>
 				<string key="NSWindowContentMinSize">{600, 600}</string>
 				<object class="NSView" key="NSWindowView" id="1039447468">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSProgressIndicator" id="24598103">
@@ -4557,6 +4558,7 @@
 									<reference key="NSHScroller" ref="435897027"/>
 									<reference key="NSContentView" ref="613998968"/>
 									<reference key="NSHeaderClipView" ref="903567248"/>
+									<reference key="NSCornerView" ref="1005257844"/>
 									<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 								</object>
 								<object class="NSSplitView" id="766578884">
@@ -4842,8 +4844,7 @@
 																<int key="NSPeriodicDelay">200</int>
 																<int key="NSPeriodicInterval">25</int>
 															</object>
-															<int key="NSSelectedRow">-1</int>
-															<int key="NSSelectedCol">-1</int>
+															<reference key="NSSelectedCell" ref="595784327"/>
 															<reference key="NSBackgroundColor" ref="999148946"/>
 															<reference key="NSCellBackgroundColor" ref="762861948"/>
 														</object>
@@ -5176,8 +5177,9 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{1132, 808}</string>
+					<reference key="NSSuperview"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{600, 622}</string>
 				<string key="NSMaxSize">{9000, 9022}</string>
 				<string key="NSFrameAutosaveName">DICOMDatabase</string>
@@ -5190,7 +5192,7 @@
 			</object>
 			<object class="NSDrawer" id="568435825">
 				<nil key="NSNextResponder"/>
-				<string key="NSContentSize">{170, 200}</string>
+				<string key="NSContentSize">{250, 200}</string>
 				<string key="NSMinContentSize">{170, 50}</string>
 				<string key="NSMaxContentSize">{300, 1800}</string>
 				<int key="NSPreferredEdge">0</int>
@@ -22876,6 +22878,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="160.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="160.ImportedFromIB2"/>
 				<string key="1606.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<object class="NSAffineTransform" key="1606.IBViewBoundsToFrameTransform">
+					<bytes key="NSTransformStruct">P4AAAL+AAABAQAAAxEkAAA</bytes>
+				</object>
 				<integer value="1" key="1606.ImportedFromIB2"/>
 				<string key="163.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="163.ImportedFromIB2"/>
@@ -22952,9 +22957,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="849.editorWindowContentRectSynchronizationRect">{{706, 407}, {337, 613}}</string>
 				<string key="854.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="854.ImportedFromIB2"/>
-				<string key="885.IBEditorWindowLastContentRect">{{148, 108}, {1132, 808}}</string>
+				<string key="885.IBEditorWindowLastContentRect">{{196, 191}, {1132, 808}}</string>
 				<string key="885.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="885.IBWindowTemplateEditedContentRect">{{148, 108}, {1132, 808}}</string>
+				<string key="885.IBWindowTemplateEditedContentRect">{{196, 191}, {1132, 808}}</string>
 				<integer value="1" key="885.ImportedFromIB2"/>
 				<string key="885.editorWindowContentRectSynchronizationRect">{{1, 48}, {1132, 808}}</string>
 				<integer value="1" key="885.windowTemplate.hasMaxSize"/>
