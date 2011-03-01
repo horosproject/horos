@@ -117,7 +117,7 @@
 		if (user)
 			studiesArray = [self arrayByAddingSpecificStudiesForUser:user predicate:NULL toArray:studiesArray];
 		
-		if (user.canAccessPatientsOtherStudies) {
+		if (user.canAccessPatientsOtherStudies.boolValue) {
 			NSFetchRequest* req = [[NSFetchRequest alloc] init];
 			req.entity = [self.dicomDatabase entityForName:@"Study"];
 			req.predicate = [NSPredicate predicateWithFormat:@"patientID IN %@", [studiesArray valueForKey:@"patientID"]];
