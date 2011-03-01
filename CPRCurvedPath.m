@@ -394,12 +394,17 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     N3VectorArray normals;
     N3VectorArray vectors;
     N3VectorArray tangents;
+    N3MutableBezierPath *flattenedPath;
     N3MutableBezierPath *bezierPath;
     CPRStraightenedGeneratorRequest *request;
     
     requests = [NSMutableArray array];
     
-    curveLength = [_bezierPath length];
+    flattenedPath = [_bezierPath mutableCopy];
+    [flattenedPath subdivide:N3BezierDefaultSubdivideSegmentLength];
+    [flattenedPath flatten:N3BezierDefaultFlatness];
+    
+    curveLength = [flattenedPath length];
     requestCount = curveLength/spacing;
     
     if (requestCount < 2) {
@@ -415,7 +420,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     tangents = malloc(requestCount * sizeof(N3Vector));
     memset(tangents, 0, requestCount * sizeof(N3Vector));
     
-    requestCount = N3BezierCoreGetVectorInfo([_bezierPath N3BezierCore], spacing, 0, _initialNormal, vectors, tangents, normals, requestCount);
+    requestCount = N3BezierCoreGetVectorInfo([flattenedPath N3BezierCore], spacing, 0, _initialNormal, vectors, tangents, normals, requestCount);
     
     for (i = 0; i < requestCount; i++) {
         request = [[CPRStraightenedGeneratorRequest alloc] init];
@@ -440,6 +445,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     free(normals);
     free(vectors);
     free(tangents);
+    [flattenedPath release];
     
     return requests;
 }
