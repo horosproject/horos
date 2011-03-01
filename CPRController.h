@@ -32,7 +32,8 @@ typedef NSInteger CPRExportSequenceType;
 
 enum _CPRExportSeriesType {
     CPRRotationExportSeriesType = 0,
-    CPRSlabExportSeriesType = 1
+    CPRSlabExportSeriesType = 1,
+	CPRTransverseViewsExportSeriesType = 2
 };
 typedef NSInteger CPRExportSeriesType;
 

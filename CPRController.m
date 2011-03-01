@@ -1957,19 +1957,26 @@ static float deg2rad = 3.14159265358979/180.0;
 {
     CGFloat slabWidth;
     CGFloat sliceInterval;
-    if (self.exportSequenceType == CPRCurrentOnlyExportSequenceType) { // export current only, or 4D
+    if (self.exportSequenceType == CPRCurrentOnlyExportSequenceType)
+	{ // export current only, or 4D
         return 1;
-    } else if (self.exportSequenceType == CPRSeriesExportSequenceType) { // export a series
-        if (self.exportSeriesType == CPRRotationExportSeriesType) { // a rotation
+    }
+	else if (self.exportSequenceType == CPRSeriesExportSequenceType)
+	{ // export a series
+        if (self.exportSeriesType == CPRRotationExportSeriesType)
+		{ // a rotation
             return MAX(1, exportNumberOfRotationFrames);
-        } else if (self.exportSeriesType == CPRSlabExportSeriesType) {
+        }
+		else if (self.exportSeriesType == CPRSlabExportSeriesType)
+		{
 //            if (self.exportSlabThinknessSameAsSlabThickness) {
 //                slabWidth = [self getClippingRangeThicknessInMm];
 //            } else {
                 slabWidth = exportSlabThickness;
 //            }
             
-            if (self.exportSliceIntervalSameAsVolumeSliceInterval) {
+            if (self.exportSliceIntervalSameAsVolumeSliceInterval)
+			{
                 sliceInterval = [cprView.volumeData minPixelSpacing];
             } else {
                 sliceInterval = exportSliceInterval;
@@ -1977,7 +1984,12 @@ static float deg2rad = 3.14159265358979/180.0;
             
             return MAX(1, ceil(slabWidth / sliceInterval));
         }
+		else if (self.exportSequenceType == CPRSeriesExportSequenceType)
+		{
+			return 1;
+		}
     }
+	
     assert(0);
     
     return 0;
@@ -1996,7 +2008,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)setExportSeriesType:(CPRExportSeriesType)newExportSeriesType
 {
-    assert(newExportSeriesType == CPRRotationExportSeriesType || newExportSeriesType == CPRSlabExportSeriesType);
+    assert(newExportSeriesType == CPRRotationExportSeriesType || newExportSeriesType == CPRSlabExportSeriesType || newExportSeriesType == CPRTransverseViewsExportSeriesType);
     if (exportSeriesType != newExportSeriesType)
 	{
         [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
@@ -2305,7 +2317,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					if( self.exportImageFormat == CPR16BitExportImageFormat)
 					{
 						request.initialNormal = N3VectorApplyTransform(curvedPath.initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [curvedPath.bezierPath tangentAtStart]));
-							
+						
 						curvedVolumeData = [CPRGenerator synchronousRequestVolume:request volumeData:cprView.volumeData];
 						if(curvedVolumeData)
 						{
@@ -2424,6 +2436,52 @@ static float deg2rad = 3.14159265358979/180.0;
 						if( [progress aborted])
 							break;
                     }
+                }
+				[progress close];
+				[progress release];
+			}
+			else if( self.exportSeriesType == CPRTransverseViewsExportSeriesType)
+			{
+				Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating series", nil)];
+				[progress showWindow: self];
+				[progress setCancel: YES];
+				[[progress progress] setMaxValue: self.exportNumberOfRotationFrames];
+				
+				NSArray *requests = [curvedPath transverseSliceRequestsForSpacing: 1 outputWidth: exportWidth outputHeight: exportHeight mmWide: 50];
+				
+				for( CPRStraightenedGeneratorRequest *r in requests)
+				{
+					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+					
+					curvedVolumeData = [CPRGenerator synchronousRequestVolume: r volumeData:cprView.volumeData];
+					if(curvedVolumeData)
+					{
+						imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex: 0];
+						
+						dataPtr = (unsigned char *)[imageRep unsignedInt16Data];
+						
+						[dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:exportWidth height:exportHeight];
+						
+						[dicomExport setOffset:[imageRep offset]];
+						[dicomExport setSigned:NO];
+						
+						[dicomExport setDefaultWWWL:windowWidth :windowLevel];
+						[dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
+						
+						f = [dicomExport writeDCMFile: nil];
+						if( f == nil)
+						{
+							NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+							break;
+						}
+						[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
+					}
+						
+					[pool release];
+						
+					[progress incrementBy: 1];
+					if( [progress aborted])
+						break;
                 }
 				[progress close];
 				[progress release];
