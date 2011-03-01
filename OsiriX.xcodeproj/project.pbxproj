@@ -641,6 +641,7 @@
 		84B5EA4311A2BC0900193FDB /* dsr2html in Resources */ = {isa = PBXBuildFile; fileRef = 84B5EA4211A2BC0900193FDB /* dsr2html */; };
 		84B996A112FC0669005A4356 /* curvedROI.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84B996A012FC0669005A4356 /* curvedROI.tif */; };
 		84B996A212FC0669005A4356 /* curvedROI.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84B996A012FC0669005A4356 /* curvedROI.tif */; };
+		84BF81AC131CDCE3000714C8 /* libtiffOsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiffOsiriX.a */; };
 		84C4510B10033B8100138F70 /* OSIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C450F51003384000138F70 /* OSIWindow.m */; };
 		84C4510C10033B8200138F70 /* OSIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C450F41003384000138F70 /* OSIWindow.h */; };
 		84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */ = {isa = PBXBuildFile; fileRef = 84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */; };
@@ -5092,7 +5093,6 @@
 		CE79D9890FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
 		CE79D98A0FD84C350043DD73 /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; };
 		CE79D98B0FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
-		CE7BBFD60C82DCA5000AD12F /* libtiffOsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiffOsiriX.a */; };
 		CE7BBFDC0C82DCA5000AD12F /* libtiffOsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiffOsiriX.a */; };
 		CE7C7E950CF2201F0028A7F2 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */; };
 		CE7E5D4506AC8DDC0058C3AA /* Anonymizer.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */; };
@@ -5227,7 +5227,6 @@
 		CEBA301A0EEDB54900D920B4 /* libvtkftgl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449030DA42A7600B8D506 /* libvtkftgl.a */; };
 		CEBA301C0EEDB56900D920B4 /* libvtkIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2449110DA42A7600B8D506 /* libvtkIO.a */; };
 		CEBA30200EEDB5F200D920B4 /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2448FE0DA42A7600B8D506 /* libvtksys.a */; };
-		CEBA30220EEDB62300D920B4 /* libvtktiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE24490E0DA42A7600B8D506 /* libvtktiff.a */; };
 		CEBA30240EEDB71D00D920B4 /* libvtkWidgets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2448FF0DA42A7600B8D506 /* libvtkWidgets.a */; };
 		CEBA5FE011B244EA005F3A0E /* SpectroIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */; };
 		CEBA5FE111B244EA005F3A0E /* SpectroIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */; };
@@ -12235,7 +12234,6 @@
 				BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */,
 				BFBF3AA409B681F500545F5E /* libz.dylib in Frameworks */,
 				CE586CC40C74B75D00DB7D5A /* libdcmprintscu.dylib in Frameworks */,
-				CE7BBFD60C82DCA5000AD12F /* libtiffOsiriX.a in Frameworks */,
 				ABD00CB90D37B468006B914E /* Growl.framework in Frameworks */,
 				CE24491C0DA42A7600B8D506 /* libvtkGenericFiltering.a in Frameworks */,
 				CE24491D0DA42A7600B8D506 /* libvtkCommon.a in Frameworks */,
@@ -12276,7 +12274,6 @@
 				CEBA301A0EEDB54900D920B4 /* libvtkftgl.a in Frameworks */,
 				CEBA301C0EEDB56900D920B4 /* libvtkIO.a in Frameworks */,
 				CEBA30200EEDB5F200D920B4 /* libvtksys.a in Frameworks */,
-				CEBA30220EEDB62300D920B4 /* libvtktiff.a in Frameworks */,
 				CEBA30240EEDB71D00D920B4 /* libvtkWidgets.a in Frameworks */,
 				AB0E6B130FAF4BF600A5C046 /* libvtkpng.a in Frameworks */,
 				AB0E6B140FAF4BF600A5C046 /* libvtkzlib.a in Frameworks */,
@@ -12292,6 +12289,7 @@
 				841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */,
 				CEED780C12303CB800258D00 /* libPapyrusToolkit.a in Frameworks */,
 				84A9D48C12F7F8EA00DA1F99 /* libkdu_v64R.a in Frameworks */,
+				84BF81AC131CDCE3000714C8 /* libtiffOsiriX.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26504,6 +26502,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -26816,6 +26815,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -27123,6 +27123,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
