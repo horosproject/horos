@@ -945,7 +945,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	
 	NSArray* cookies = [[(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease] componentsSeparatedByString:@"; "];
-NSLog(@"\tCookies: %@", cookies);
+//NSLog(@"\tCookies: %@", cookies);
 	for (NSString* cookie in cookies) {
 		// cookie = [cookie stringByTrimmingStartAndEnd];
 		NSArray* cookieBits = [cookie componentsSeparatedByString:@"="];
@@ -966,10 +966,6 @@ NSLog(@"\tCookies: %@", cookies);
 				self.session = [self.portal sessionForUsername:username token:token];
 		}
 	}
-	
-	//if (!session)
-	//	self.session = [self.portal newSession];
-	//[response setSessionId:session.sid];
 	
 	if ([method isEqualToString:@"POST"] && multipartData.count == 1) // POST auth ?
 	{
@@ -1008,7 +1004,7 @@ NSLog(@"\tCookies: %@", cookies);
 	
 	[super replyToHTTPRequest];
 
-	NSLog(@"User: %X (R: %@)", user, response.httpHeaders);
+//NSLog(@"User: %X (R: %@)", user, response.httpHeaders);
 	
 	self.response = NULL;
 	self.user = NULL;

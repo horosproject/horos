@@ -22,6 +22,7 @@
 
 @property (nonatomic, retain) NSString * address;
 @property (nonatomic, retain) NSNumber * autoDelete;
+@property (nonatomic, retain) NSNumber * canAccessPatientsOtherStudies;
 @property (nonatomic, retain) NSDate * creationDate;
 @property (nonatomic, retain) NSDate * deletionDate;
 @property (nonatomic, retain) NSNumber * downloadZIP;

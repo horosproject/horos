@@ -17,12 +17,14 @@
 - Display images in real 'actual size', according to monitor resolution and size (2D Viewer contextual menu)
 - Zoom centered around mouse position (2D Viewer Preferences)
 - WADO Retrieve: OsiriX will only download the UID that are not available locally (faster, and spare bandwidth)
+- Web Server: Include previous study for specific patients
+- Web Server: key images for studies (unsorted)
 
 - DICOM Listener TLS? -> different syntax transfer settings
 - CPR doc
 
 - Web Server: A list of JPEG, instead of a quicktime movie, if number of images < 20
-- Web Server: Include previous study for specific patients
+
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: add temporary user email for admins
 

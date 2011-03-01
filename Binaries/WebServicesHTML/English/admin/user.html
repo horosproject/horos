@@ -187,7 +187,7 @@
 			</tr>
 			<tr>
 				<td><label><input type="checkbox" name="shareStudyWithUser" onchange="adjustForm(this)"%[IF:EditedUser.shareStudyWithUser% checked="checked"%]IF:EditedUser.shareStudyWithUser%/>Authorized to share a study with another user</label></td>
-				<td></td>
+				<td><label><input type="checkbox" name="canAccessPatientsOtherStudies" onchange="adjustForm(this)"%[IF:EditedUser.canAccessPatientsOtherStudies% checked="checked"%]IF:EditedUser.canAccessPatientsOtherStudies%/>Authorized to access all studies of already visible patients</label></td>
 			</tr>
 			<script language="JavaScript">
 				adjustForm(document.getElementById('userEditionForm'));

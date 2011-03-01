@@ -85,6 +85,8 @@
 					[self.database.managedObjectContext deleteObject:study];
 				}
 			}
+		
+		
 	}
 	@catch (NSException * e)
 	{
@@ -94,6 +96,7 @@
 	for (id study in array)
 		if (![specificArray containsObject:study])
 			[specificArray addObject:study];
+	
 	return specificArray;
 }
 
@@ -114,6 +117,14 @@
 		if (user)
 			studiesArray = [self arrayByAddingSpecificStudiesForUser:user predicate:NULL toArray:studiesArray];
 		
+		if (user.canAccessPatientsOtherStudies) {
+			NSFetchRequest* req = [[NSFetchRequest alloc] init];
+			req.entity = [self.dicomDatabase entityForName:@"Study"];
+			req.predicate = [NSPredicate predicateWithFormat:@"patientID IN %@", [studiesArray valueForKey:@"patientID"]];
+			studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+			[req release];
+		}
+			
 		if (predicate) studiesArray = [studiesArray filteredArrayUsingPredicate:predicate];
 		
 		if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
@@ -171,6 +182,8 @@
 	{
 		NSLog(@"*********** seriesForPredicate exception: %@", e.description);
 	}
+	
+	
 	
 	
 	[self.dicomDatabase.managedObjectContext unlock];

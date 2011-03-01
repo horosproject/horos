@@ -26,6 +26,7 @@ static PSGenerator *generator = nil;
 
 @dynamic address;
 @dynamic autoDelete;
+@dynamic canAccessPatientsOtherStudies;
 @dynamic creationDate;
 @dynamic deletionDate;
 @dynamic downloadZIP;
