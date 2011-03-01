@@ -642,6 +642,7 @@
 		84B996A112FC0669005A4356 /* curvedROI.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84B996A012FC0669005A4356 /* curvedROI.tif */; };
 		84B996A212FC0669005A4356 /* curvedROI.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84B996A012FC0669005A4356 /* curvedROI.tif */; };
 		84BF81AC131CDCE3000714C8 /* libtiffOsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiffOsiriX.a */; };
+		84BF81C9131CE7F3000714C8 /* libvtktiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE24490E0DA42A7600B8D506 /* libvtktiff.a */; };
 		84C4510B10033B8100138F70 /* OSIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C450F51003384000138F70 /* OSIWindow.m */; };
 		84C4510C10033B8200138F70 /* OSIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C450F41003384000138F70 /* OSIWindow.h */; };
 		84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */ = {isa = PBXBuildFile; fileRef = 84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */; };
@@ -12290,6 +12291,7 @@
 				CEED780C12303CB800258D00 /* libPapyrusToolkit.a in Frameworks */,
 				84A9D48C12F7F8EA00DA1F99 /* libkdu_v64R.a in Frameworks */,
 				84BF81AC131CDCE3000714C8 /* libtiffOsiriX.a in Frameworks */,
+				84BF81C9131CE7F3000714C8 /* libvtktiff.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
