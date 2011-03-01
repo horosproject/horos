@@ -643,6 +643,8 @@
 		84B996A212FC0669005A4356 /* curvedROI.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84B996A012FC0669005A4356 /* curvedROI.tif */; };
 		84BF81AC131CDCE3000714C8 /* libtiffOsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiffOsiriX.a */; };
 		84BF81C9131CE7F3000714C8 /* libvtktiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE24490E0DA42A7600B8D506 /* libvtktiff.a */; };
+		84BF81E5131CEAA1000714C8 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BF81E4131CEAA1000714C8 /* libtiff.dylib */; };
+		84BF81E9131CEAB9000714C8 /* libtiff.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 84BF81E4131CEAA1000714C8 /* libtiff.dylib */; };
 		84C4510B10033B8100138F70 /* OSIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C450F51003384000138F70 /* OSIWindow.m */; };
 		84C4510C10033B8200138F70 /* OSIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C450F41003384000138F70 /* OSIWindow.h */; };
 		84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */ = {isa = PBXBuildFile; fileRef = 84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */; };
@@ -8327,6 +8329,7 @@
 				CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in CopyFiles */,
 				84F453570FC3DF5400D29666 /* ILCrashReporter.framework in CopyFiles */,
 				CE9A04450C7DBC060007809F /* libdcmprintscu.dylib in CopyFiles */,
+				84BF81E9131CEAB9000714C8 /* libtiff.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8704,6 +8707,7 @@
 		84ADF471115B622D00FE18B2 /* Window3DController+StereoVision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Window3DController+StereoVision.m"; sourceTree = "<group>"; };
 		84B5EA4211A2BC0900193FDB /* dsr2html */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dsr2html; sourceTree = "<group>"; };
 		84B996A012FC0669005A4356 /* curvedROI.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = curvedROI.tif; sourceTree = "<group>"; };
+		84BF81E4131CEAA1000714C8 /* libtiff.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libtiff.dylib; sourceTree = "<group>"; };
 		84C450F41003384000138F70 /* OSIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWindow.h; sourceTree = "<group>"; };
 		84C450F51003384000138F70 /* OSIWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIWindow.m; sourceTree = "<group>"; };
 		84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.4.mom; sourceTree = "<group>"; };
@@ -12292,6 +12296,7 @@
 				84A9D48C12F7F8EA00DA1F99 /* libkdu_v64R.a in Frameworks */,
 				84BF81AC131CDCE3000714C8 /* libtiffOsiriX.a in Frameworks */,
 				84BF81C9131CE7F3000714C8 /* libvtktiff.a in Frameworks */,
+				84BF81E5131CEAA1000714C8 /* libtiff.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14182,6 +14187,7 @@
 			isa = PBXGroup;
 			children = (
 				CE7BBFD40C82DCA5000AD12F /* libtiffOsiriX.a */,
+				84BF81E4131CEAA1000714C8 /* libtiff.dylib */,
 				ABDE6E0B06398E3400F0C5DD /* port.h */,
 				ABDE6E0C06398E3400F0C5DD /* t4.h */,
 				ABDE6E0D06398E3400F0C5DD /* tif_dir.h */,
