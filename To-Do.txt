@@ -30,7 +30,6 @@
 - CPR: export transverse series, at fixed interval
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR
 - Two Steps DICOM Editing
-- Dont rotate tText
 - Tool to create a new series from key images of a study
 - Tomographie rotational angio
 - Echo/US : map zone
