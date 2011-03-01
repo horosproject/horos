@@ -24,9 +24,9 @@
 - CPR doc
 
 - Web Server: A list of JPEG, instead of a quicktime movie, if number of images < 20
-
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: add temporary user email for admins
+- Web Server: test email notifications
 
 - CPR: export transverse series, at fixed interval
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR
