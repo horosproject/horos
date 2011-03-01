@@ -14,8 +14,10 @@
 
 #import "N3Geometry.h"
 #import "N3BezierCore.h"
+#import "N3BezierCoreAdditions.h"
 
 // N3BezierDefaultFlatness and N3BezierDefaultSubdivideSegmentLength are defined in N3BezierCore.h
+// N3BezierNodeStyle is defined in N3BezierCoreAdditions.h
 
 @class NSBezierPath;
 
@@ -38,7 +40,7 @@ typedef NSInteger N3BezierPathElement;
 - (id)initWithBezierPath:(N3BezierPath *)bezierPath;
 - (id)initWithDictionaryRepresentation:(NSDictionary *)dict;
 - (id)initWithN3BezierCore:(N3BezierCoreRef)bezierCore;
-- (id)initWithNodeArray:(NSArray *)nodes; // array of N3Vectors in NSValues;
+- (id)initWithNodeArray:(NSArray *)nodes style:(N3BezierNodeStyle)style; // array of N3Vectors in NSValues;
 
 + (id)bezierPath;
 + (id)bezierPathWithBezierPath:(N3BezierPath *)bezierPath;

@@ -21,8 +21,14 @@
 
 CF_EXTERN_C_BEGIN
 
-N3BezierCoreRef N3BezierCoreCreateCurveWithNodes(N3VectorArray vectors, CFIndex numVectors);
-N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vectors, CFIndex numVectors);
+enum N3BezierNodeStyle {
+    N3BezierNodeOpenEndsStyle, // the direction of the end segements point out. this is the style used by the CPR View
+    N3BezierNodeEndsMeetStyle, // the direction of the end segements point to each other. this is the style that mimics what open ROIs do
+};
+typedef enum N3BezierNodeStyle N3BezierNodeStyle;
+
+N3BezierCoreRef N3BezierCoreCreateCurveWithNodes(N3VectorArray vectors, CFIndex numVectors, N3BezierNodeStyle style);
+N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vectors, CFIndex numVectors, N3BezierNodeStyle style);
 
 N3Vector N3BezierCoreVectorAtStart(N3BezierCoreRef bezierCore);
 N3Vector N3BezierCoreVectorAtEnd(N3BezierCoreRef bezierCore);

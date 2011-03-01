@@ -624,21 +624,14 @@ CFDictionaryRef N3VectorCreateDictionaryRepresentation(N3Vector vector)
 	CFDictionaryRef dict;
 	CFStringRef keys[3];
 	CFNumberRef numbers[3];
-	CFNumberType numberType;
 	
-	keys[0] = (CFStringRef)@"x";
-	keys[1] = (CFStringRef)@"y";
-	keys[2] = (CFStringRef)@"z";
+	keys[0] = CFSTR("x");
+	keys[1] = CFSTR("y");
+	keys[2] = CFSTR("z");
 	
-#if CGFLOAT_IS_DOUBLE
-	numberType = kCFNumberDoubleType;
-#else
-	numberType = kCFNumberFloatType;
-#endif
-	
-	numbers[0] = CFNumberCreate(kCFAllocatorDefault, numberType, &(vector.x));
-	numbers[1] = CFNumberCreate(kCFAllocatorDefault, numberType, &(vector.y));
-	numbers[2] = CFNumberCreate(kCFAllocatorDefault, numberType, &(vector.z));
+	numbers[0] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(vector.x));
+	numbers[1] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(vector.y));
+	numbers[2] = CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &(vector.z));
 	
 	dict = CFDictionaryCreate(kCFAllocatorDefault, (const void **)keys, (const void **)numbers, 3, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 	
@@ -688,9 +681,9 @@ bool N3VectorMakeWithDictionaryRepresentation(CFDictionaryRef dict, N3Vector *ve
 		return false;
 	}
 	
-	x = CFDictionaryGetValue(dict, @"x");
-	y = CFDictionaryGetValue(dict, @"y");
-	z = CFDictionaryGetValue(dict, @"z");
+	x = CFDictionaryGetValue(dict, CFSTR("x"));
+	y = CFDictionaryGetValue(dict, CFSTR("y"));
+	z = CFDictionaryGetValue(dict, CFSTR("z"));
 	
 	if (x == NULL || CFGetTypeID(x) != CFNumberGetTypeID() ||
 		y == NULL || CFGetTypeID(y) != CFNumberGetTypeID() ||

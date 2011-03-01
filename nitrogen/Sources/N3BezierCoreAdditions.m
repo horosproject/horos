@@ -15,12 +15,12 @@
 #import "N3BezierCoreAdditions.h"
 
 
-N3BezierCoreRef N3BezierCoreCreateCurveWithNodes(N3VectorArray vectors, CFIndex numVectors)
+N3BezierCoreRef N3BezierCoreCreateCurveWithNodes(N3VectorArray vectors, CFIndex numVectors, N3BezierNodeStyle style)
 {
-    return N3BezierCoreCreateMutableCurveWithNodes(vectors, numVectors);
+    return N3BezierCoreCreateMutableCurveWithNodes(vectors, numVectors, style);
 }
 
-N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vectors, CFIndex numVectors)
+N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vectors, CFIndex numVectors, N3BezierNodeStyle style)
 {
 	N3Vector p1, p2;
 	long long  i, j;
@@ -122,15 +122,28 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vec
     
 	// as a spline starts and ends with a line one adds two points
 	// in order to have continuity in starting point
-	for (i=0; i<numVectors; i++)
-	{
-		px[i+1] = vectors[i].x;// * fZoom / 100;
-		py[i+1] = vectors[i].y;// * fZoom / 100;
-		pz[i+1] = vectors[i].z;// * fZoom / 100;
-	}
-	px[0] = 2.0*px[1] - px[2]; px[nb-1] = 2.0*px[nb-2] - px[nb-3];
-	py[0] = 2.0*py[1] - py[2]; py[nb-1] = 2.0*py[nb-2] - py[nb-3];
-	pz[0] = 2.0*pz[1] - pz[2]; pz[nb-1] = 2.0*pz[nb-2] - pz[nb-3];
+    if (style == N3BezierNodeOpenEndsStyle) {
+        for (i=0; i<numVectors; i++)
+        {
+            px[i+1] = vectors[i].x;// * fZoom / 100;
+            py[i+1] = vectors[i].y;// * fZoom / 100;
+            pz[i+1] = vectors[i].z;// * fZoom / 100;
+        }
+        px[0] = 2.0*px[1] - px[2]; px[nb-1] = 2.0*px[nb-2] - px[nb-3];
+        py[0] = 2.0*py[1] - py[2]; py[nb-1] = 2.0*py[nb-2] - py[nb-3];
+        pz[0] = 2.0*pz[1] - pz[2]; pz[nb-1] = 2.0*pz[nb-2] - pz[nb-3];
+    } else { // N3BezierNodeEndsMeetStyle
+        for (i=0; i<numVectors; i++)
+        {
+            px[i+1] = vectors[i].x;// * fZoom / 100;
+            py[i+1] = vectors[i].y;// * fZoom / 100;
+            pz[i+1] = vectors[i].z;// * fZoom / 100;
+        }
+        px[0] = px[nb-3]; px[nb-1] = px[2];
+        py[0] = py[nb-3]; py[nb-1] = py[2];
+        pz[0] = pz[nb-3]; pz[nb-1] = pz[2];
+    }
+
     
 	// check all points are separate, if not do not smooth
 	// this happens when the zoom factor is too small

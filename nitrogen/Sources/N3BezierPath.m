@@ -92,7 +92,7 @@
     return self;
 }
 
-- (id)initWithNodeArray:(NSArray *)nodes // array of N3Vectors in NSValues;
+- (id)initWithNodeArray:(NSArray *)nodes style:(N3BezierNodeStyle)style // array of N3Vectors in NSValues;
 {
     N3VectorArray vectorArray;
     NSInteger i;
@@ -105,7 +105,7 @@
 				vectorArray[i] = [[nodes objectAtIndex:i] N3VectorValue];
 			}
 			
-			_bezierCore = N3BezierCoreCreateMutableCurveWithNodes(vectorArray, [nodes count]);
+			_bezierCore = N3BezierCoreCreateMutableCurveWithNodes(vectorArray, [nodes count], style);
 			
 			free(vectorArray);
 		} else if ([nodes count] == 0) {
