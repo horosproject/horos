@@ -17,7 +17,7 @@
 #import "NSData+N2.h"
 
 
-NSString* const SessionCookieName = @"SID";
+NSString* const SessionCookieName = @"OSID";
 
 @implementation WebPortalSession
 

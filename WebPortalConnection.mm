@@ -101,6 +101,13 @@ static NSString* NotNil(NSString *s) {
 @synthesize user;
 @synthesize parameters, GETParams;
 
+-(WebPortalSession*)session {
+	if (!session)
+		self.session = [self.portal newSession];
+	[self.response setSessionId:session.sid];
+	return session;
+}
+
 -(BOOL)requestIsIPhone {
 	NSString* userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
 	return [userAgent contains:@"iPhone"];
@@ -219,8 +226,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 }
 
 -(NSString*)dicomCStorePortString {
-	NSNumber* n = [session objectForKey:SessionDicomCStorePortKey];
-	if (!n) [session setObject: n = [NSNumber numberWithInt:[self guessDicomCStorePort]] forKey:SessionDicomCStorePortKey];
+	NSNumber* n = [self.session objectForKey:SessionDicomCStorePortKey];
+	if (!n) [self.session setObject: n = [NSNumber numberWithInt:[self guessDicomCStorePort]] forKey:SessionDicomCStorePortKey];
 	return [n stringValue];
 }
 
@@ -468,7 +475,6 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 - (NSObject<HTTPResponse>*)httpResponseForMethod:(NSString*)method URI:(NSString*)path
 {
 	NSString* url = [[(id)CFHTTPMessageCopyRequestURL(request) autorelease] description];
-	DLog(@"HTTP %@ %@", method, url);
 	
 	// parse the URL to find the parameters (if any)
 	NSArray *urlComponenents = [url componentsSeparatedByString:@"?"];
@@ -930,14 +936,16 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 -(void)replyToHTTPRequest {
 	self.response = [[[WebPortalResponse alloc] initWithWebPortalConnection:self] autorelease];
 	
+	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
+	NSString* url = [[(id)CFHTTPMessageCopyRequestURL(request) autorelease] description];
+	DLog(@"HTTP %@ %@", method, url);
+	
 //	NSDictionary* headers = [(id)CFHTTPMessageCopyAllHeaderFields(request) autorelease];
 //	NSLog(@"HEADERS: %@", headers);
 	
-	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
-
-//	NSLog(@"--- Cookies: %@", [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease]);
 	
-	NSArray* cookies = [[(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease] componentsSeparatedByString:@";"];
+	NSArray* cookies = [[(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease] componentsSeparatedByString:@"; "];
+NSLog(@"\tCookies: %@", cookies);
 	for (NSString* cookie in cookies) {
 		// cookie = [cookie stringByTrimmingStartAndEnd];
 		NSArray* cookieBits = [cookie componentsSeparatedByString:@"="];
@@ -959,12 +967,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		}
 	}
 	
-	if (!session)
-		self.session = [self.portal newSession];
-	[response setSessionId:session.sid];
-	
-	if ([session objectForKey:SessionUsernameKey])
-		self.user = [self.portal.database userWithName:[session objectForKey:SessionUsernameKey]];
+	//if (!session)
+	//	self.session = [self.portal newSession];
+	//[response setSessionId:session.sid];
 	
 	if ([method isEqualToString:@"POST"] && multipartData.count == 1) // POST auth ?
 	{
@@ -977,30 +982,33 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			NSString* password = [params objectForKey:@"password"];
 			NSString* sha1 = [params objectForKey:@"sha1"];
 			if (username.length && password.length && [password isEqual:[self passwordForUser:username]])
-				[session setObject:username forKey:SessionUsernameKey];
+				[self.session setObject:username forKey:SessionUsernameKey];
 			else if (username.length && sha1.length) {
-				NSString* sha1internal = [[[[[self passwordForUser:username] stringByAppendingString:NotNil(session.challenge)] dataUsingEncoding:NSUTF8StringEncoding] sha1Digest] hex];
+				NSString* sha1internal = [[[[[self passwordForUser:username] stringByAppendingString:NotNil(self.session.challenge)] dataUsingEncoding:NSUTF8StringEncoding] sha1Digest] hex];
 				if ([sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame) {
-					[session setObject:username forKey:SessionUsernameKey];
-					[session deleteChallenge];
+					[self.session setObject:username forKey:SessionUsernameKey];
+					[self.session deleteChallenge];
 				}
 			}
 		}
 		
 		if ([params objectForKey:@"logout"]) {
-			[session setObject:NULL forKey:SessionUsernameKey];
+			[self.session setObject:NULL forKey:SessionUsernameKey];
 			self.user = NULL;
 		}
 	}
 	
+	if (session && [session objectForKey:SessionUsernameKey])
+		self.user = [self.portal.database userWithName:[session objectForKey:SessionUsernameKey]];
+	
 	[response.tokens setObject:NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title") forKey:@"PageTitle"]; // the default title
 	[response.tokens setObject:[WebPortalProxy createWithObject:self transformer:[InfoTransformer create]] forKey:@"Info"];
 	if (user) [response.tokens setObject:[WebPortalProxy createWithObject:user transformer:[WebPortalUserTransformer create]] forKey:@"User"];	
-	[response.tokens setObject:session forKey:@"Session"];
-	
-//	NSLog(@"User: %X (Cookies: %@)", user, cookies);
+	if (session) [response.tokens setObject:session forKey:@"Session"];
 	
 	[super replyToHTTPRequest];
+
+	NSLog(@"User: %X (R: %@)", user, response.httpHeaders);
 	
 	self.response = NULL;
 	self.user = NULL;
@@ -1043,6 +1051,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	// Status Code 401 - Unauthorized
 	CFHTTPMessageRef resp = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 401, NULL, kCFHTTPVersion1_1);
 	CFHTTPMessageSetHeaderFieldValue(resp, CFSTR("Content-Length"), (CFStringRef)[NSString stringWithFormat:@"%d", bodyData.length]);
+	for (NSString* key in response.httpHeaders)
+		CFHTTPMessageSetHeaderFieldValue(resp, (CFStringRef)key, (CFStringRef)[response.httpHeaders objectForKey:key]);
 	CFHTTPMessageSetBody(resp, (CFDataRef)bodyData);
 	
 	[asyncSocket writeData:[self preprocessErrorResponse:resp] withTimeout:WRITE_ERROR_TIMEOUT tag:HTTP_RESPONSE];

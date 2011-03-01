@@ -211,7 +211,10 @@
 		
 		NSMutableDictionary* idict = [[dict mutableCopy] autorelease];
 		NSInteger c = 0;
-		for (id i in [self object:dict valueForKeyPath:arrayName context:context]) {
+		id array = [self object:dict valueForKeyPath:arrayName context:context];
+		if ([array isKindOfClass:NSSet.class])
+			array = [array allObjects];
+		for (id i in array) {
 			[idict setObject:i forKey:iName];
 			[idict setObject:[NSNumber numberWithInteger:c] forKey:[NSString stringWithFormat:@"%@_Index", iName]];
 			[idict setObject:[NSNumber numberWithInteger:c%2] forKey:[NSString stringWithFormat:@"%@_Index2", iName]];

@@ -7,8 +7,22 @@ You are registered on the OsiriX Web Portal at <a href="%WebServerURL%">%WebServ
 %X:customText%<br/><br/>
 %]IF:customText.length%
 
-New radiology exam(s) are available on your account. Click on the following URLs to log in and review them:<br/>
-%URLsList%
+%[IF:Studies.count>1%
+New radiology exams are available on your account. Click on the following URLs to log in and review them:
+%ELSE:Studies.count>1%
+A new radiology exam is available on your account. Click on the following URL to log in and review it: 
+%]IF:Studies.count>1%
+<ul>
+	%[FOREACH:Studies:Study%
+	<li>
+		<a href="%WebServerURL%/study?xid=%Study.XID%">%X:Study.date.DateTime% - %X:Study.studyName% (%X:Study.modality%)</a><br/>
+		Link: <a href="%WebServerURL%/study?xid=%Study.XID%">%WebServerURL%/study?xid=%Study.XID%</a>
+	</li>
+	%]FOREACH:Studies:Study%
+</ul>
+%[IF:Studies.count>1%
+To view this entire list, including patients names, <a href="%WebServerURL%/studyList?%predicate%">click here</a>.
+%]IF:Studies.count>1%
 
 <br/>
 Your username (%Destination.name%) and password are required to log on the web server.<br/>
@@ -16,6 +30,6 @@ Your username (%Destination.name%) and password are required to log on the web s
 These studies can be downloaded as DICOM files, and directly reviewed on the OsiriX software, available for free at this address: <a href="http://www.osirix-viewer.com">http://www.osirix-viewer.com</a><br/>
 <br/>
 Sincerely,<br/>
-Your OsiriX Web Portal administrator
+Your OsiriX Web Portal Administrator
 
 

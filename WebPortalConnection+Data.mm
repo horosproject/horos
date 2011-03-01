@@ -43,6 +43,7 @@
 #import "NSObject+SBJSON.h"
 #import "NSManagedObject+N2.h"
 #import "N2Operators.h"
+#import "NSImage+OsiriX.h"
 
 
 #import "BrowserController.h" // TODO: remove when badness solved
@@ -204,11 +205,11 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	
 	if ([parameters objectForKey:@"sortKey"])
 		if ([[[self.portal.dicomDatabase entityForName:@"Study"] attributesByName] objectForKey:[parameters objectForKey:@"sortKey"]])
-			[session setObject:[parameters objectForKey:@"sortKey"] forKey:@"StudiesSortKey"];
-	if (![session objectForKey:@"StudiesSortKey"])
-		[session setObject:@"name" forKey:@"StudiesSortKey"];
+			[self.session setObject:[parameters objectForKey:@"sortKey"] forKey:@"StudiesSortKey"];
+	if (![self.session objectForKey:@"StudiesSortKey"])
+		[self.session setObject:@"name" forKey:@"StudiesSortKey"];
 	
-	return [self.portal studiesForUser:user predicate:browsePredicate sortBy:[session objectForKey:@"StudiesSortKey"]];
+	return [self.portal studiesForUser:user predicate:browsePredicate sortBy:[self.session objectForKey:@"StudiesSortKey"]];
 }
 
 
@@ -1596,17 +1597,22 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	// create it
 	
-	DicomSeries* series = [self objectWithXID:xid ofClass:DicomSeries.class];
-	
-	if (!series)
+	id object = [self objectWithXID:xid ofClass:Nil];
+	if (!object)
 		return;
 	
-	NSBitmapImageRep* imageRep = [NSBitmapImageRep imageRepWithData:series.thumbnail];
-	NSDictionary* imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
-	response.data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
+	if ([object isKindOfClass:DicomSeries.class]) {
+		NSBitmapImageRep* imageRep = [NSBitmapImageRep imageRepWithData:[object thumbnail]];
+		NSDictionary* imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
+		response.data = data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
+	} else if ([object isKindOfClass:DicomImage.class]) {
+		NSBitmapImageRep* imageRep = [NSBitmapImageRep imageRepWithData:[[(DicomImage*)object thumbnail] JPEGRepresentationWithQuality:0.3]];
+		NSDictionary* imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
+		response.data = data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
+	}
 	
-	if (response.data.length)
-		[self.thumbnailsCache setObject:response.data forKey:xid];
+	if (data)
+		[self.thumbnailsCache setObject:data forKey:xid];
 }
 
 -(void)processSeriesPdf {
@@ -1707,11 +1713,18 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 }
 
 -(void)processImage {
-	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass:DicomSeries.class];
-	if (!series)
+	id object = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass:Nil];
+	if (!object)
 		return;
 	
-	NSArray* images = [series.images allObjects];
+	NSArray* images = nil;
+	
+	if ([object isKindOfClass:DicomSeries.class]) {
+		images = [[object images] allObjects];
+	} else if ([object isKindOfClass:DicomImage.class]) {
+		images = [NSArray arrayWithObject:object];
+	}
+	
 	DicomImage* dicomImage = images.count == 1 ? [images lastObject] : [images objectAtIndex:images.count/2];
 	
 	DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:dicomImage.completePathResolved :0 :1 :nil :dicomImage.numberOfFrames.intValue/2 :dicomImage.series.id.intValue isBonjour:NO imageObj:dicomImage] autorelease];

@@ -46,27 +46,13 @@
 		if (customText) [tokens setObject:customText forKey:@"customText"];
 		[tokens setObject:user forKey:@"Destination"];
 		[tokens setObject:self.URL forKey:@"WebServerURL"];
-		
-		NSMutableString* urls = [NSMutableString string];
-		
-		if ([filteredStudies count] > 1 && predicate != nil) {
-			[urls appendString: NSLocalizedString( @"<br/>To view this entire list, including patients names:<br/>", nil)]; 
-			NSString* url = [NSString stringWithFormat:@"%@/studyList?%@", self.URL, predicate];
-			[urls appendFormat: @"%@: <a href=\"%@\">%@</a><br/>", NSLocalizedString(@"Click here", nil), url, url]; 
-		}
-		
-		for (DicomStudy* s in filteredStudies) {
-			[urls appendFormat: @"<br/>%@ - %@ (%@)<br/>", s.modality, s.studyName, [NSUserDefaults.dateTimeFormatter stringFromDate:s.date]]; 
-			NSString* url = [NSString stringWithFormat:@"%@/study?xid=%@", self.URL, s.XID];
-			[urls appendFormat: @"%@: <a href=\"%@\">%@</a><br/>", NSLocalizedString(@"Click here", nil), url, url]; 
-		}
-		
-		[tokens setObject:urls forKey:@"URLsList"];
+		[tokens setObject:filteredStudies forKey:@"Studies"];
+		if (predicate) [tokens setObject:predicate forKey:@"predicate"];
 		
 		NSMutableString* ts = [[[self stringForPath:@"emailTemplate.html"] mutableCopy] autorelease];
 		[WebPortalResponse mutableString:ts evaluateTokensWithDictionary:tokens context:NULL];
 		
-		NSString *emailSubject = NSLocalizedString(@"A new radiology exam is available for you", nil);
+		NSString* emailSubject = NSLocalizedString(@"A new radiology exam is available for you", nil);
 		if (replyto)
 			emailSubject = [NSString stringWithFormat:NSLocalizedString(@"A new radiology exam is available for you, from %@", nil), replyto];
 		
@@ -75,7 +61,8 @@
 		[messageHeaders setObject:fromEmailAddress forKey:@"Sender"];
 		[messageHeaders setObject:emailSubject forKey:@"Subject"];
 		if (replyto) [messageHeaders setObject:replyto forKey:@"ReplyTo"];
-		[[CSMailMailClient mailClient] deliverMessage:[[[NSAttributedString alloc] initWithHTML:[ts dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL] autorelease] headers:messageHeaders];
+		NSAttributedString* m = [[[NSAttributedString alloc] initWithHTML:[ts dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL] autorelease];
+		[[CSMailMailClient mailClient] deliverMessage:m headers:messageHeaders];
 		
 		for (NSManagedObject* s in filteredStudies)
 			[self updateLogEntryForStudy:s withMessage: @"notification email" forUser:user.name ip:nil];

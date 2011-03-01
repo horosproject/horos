@@ -38,6 +38,14 @@ function onSubmitForm(form) {
 	return true;
 }
 
+function keyImageClick(ixid, sxid) {
+	var div = document.createElement("div");
+	div.id = "overlay";
+	div.onclick = function() { document.body.removeChild(this); };
+	div.innerHTML = "<div><div><a href=\"/series?xid="+sxid+"\"><img src=\"/image.jpg?xid="+ixid+"\" /></a><div class=\"smaller\">Close</div></div></div>";
+	document.body.appendChild(div);
+}
+
 </script>
 
 <form id="form" method="post" onsubmit="return onSubmitForm(this);">
@@ -104,6 +112,15 @@ function onSubmitForm(form) {
 				%]IF:Study.reportIsLink%
 			</table>
 		</div>
+		
+		%[IF:Study.keyImages.count%
+		<div class="separated title">Key Images</div>
+		<div>
+			%[FOREACH:Study.keyImages:Image%
+			<a href="/image?xid=%Image.XID%" onclick="keyImageClick('%Image.XID%', '%Image.series.XID%'); return false;"><img src="/thumbnail?xid=%Image.XID%" /></a>
+			%]FOREACH:Study.keyImages:Image%
+		</div>
+		%]IF:Study.keyImages.count%
 
 		<div class="separated title">Series</div>
 		<div>
