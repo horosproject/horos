@@ -28,7 +28,6 @@
 - Web Server: add temporary user email for admins
 - Web Server: test email notifications
 - Web Server: flash poor performances with large series?
-- Web Server: cache system for seriesForUser and studiesForUser : very slow with large DB containing thousands series/studies
 
 - CPR: export transverse series, at fixed interval
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR

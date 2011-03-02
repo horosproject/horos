@@ -108,6 +108,7 @@
 	NSArray* studiesArray = nil;
 	
 	[self.dicomDatabase.managedObjectContext lock];
+	
 	@try {
 		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
@@ -147,6 +148,24 @@
 	
 	[self.dicomDatabase.managedObjectContext lock];
 	
+	if( [seriesForUsersCache objectForKey: user.name])
+	{
+		if( [[[seriesForUsersCache objectForKey: user.name] objectForKey: @"timeStamp"] timeIntervalSinceNow] > -60) // 60 secs
+		{
+			NSMutableArray *returnedArray = [NSMutableArray arrayWithCapacity: [[[seriesForUsersCache objectForKey: user.name] objectForKey: @"seriesArray"] count]];
+			
+			for( NSManagedObject *o in [[seriesForUsersCache objectForKey: user.name] objectForKey: @"seriesArray"])
+			{
+				if( [o isFault] == NO)
+					[returnedArray addObject: o];
+			}
+			
+			[self.dicomDatabase.managedObjectContext unlock];
+			
+			return returnedArray;
+		}
+	}
+	
 	if (user.studyPredicate.length) // First, take all the available studies for this user, and then get the series : SECURITY : we want to be sure that he cannot access to unauthorized images
 	{
 		@try
@@ -183,8 +202,7 @@
 		NSLog(@"*********** seriesForPredicate exception: %@", e.description);
 	}
 	
-	
-	
+	[seriesForUsersCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: seriesArray, @"seriesArray", [NSDate date], @"timeStamp", nil] forKey: user.name];
 	
 	[self.dicomDatabase.managedObjectContext unlock];
 	

@@ -213,28 +213,6 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	return [self.portal studiesForUser:user predicate:browsePredicate sortBy:[self.session objectForKey:@"StudiesSortKey"]];
 }
 
-
-/*-(id)series_requestedSeries:(BOOL)returnArray {
-	NSPredicate* browsePredicate = nil;
-	
-	if ([parameters objectForKey:@"id"]) {
-		if ([parameters objectForKey:@"studyID"])
-			browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", [parameters objectForKey:@"studyID"], [parameters objectForKey:@"id"]];
-		else browsePredicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [parameters objectForKey:@"id"]];
-	} else
-		if ([parameters objectForKey:@"studyID"])
-			browsePredicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [parameters objectForKey:@"studyID"]];
-	
-	NSArray* series = [self.portal seriesForUser:user predicate:browsePredicate];
-	if (returnArray)
-		return series;
-	
-	if (series.count)
-		return series.lastObject;
-	
-	return NULL;
-}*/
-
 -(void)sendImages:(NSArray*)images toDicomNode:(NSDictionary*)dicomNodeDescription {
 	[self.portal updateLogEntryForStudy: [[images lastObject] valueForKeyPath: @"series.study"] withMessage: [NSString stringWithFormat: @"DICOM Send to: %@", [dicomNodeDescription objectForKey:@"Address"]] forUser:user.name ip:asyncSocket.connectedHost];
 	

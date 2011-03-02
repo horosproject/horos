@@ -46,6 +46,8 @@
 	NSMutableArray *runLoops, *runLoopsLoad, *httpThreads;
 	WebPortalServer *server;
 	NSThread *serverThread;
+	
+	NSMutableDictionary *seriesForUsersCache;
 }
 
 // called from AppController

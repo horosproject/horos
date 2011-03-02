@@ -247,6 +247,8 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	
 	self.notificationsInterval = 60;
 	
+	seriesForUsersCache = [[NSMutableDictionary alloc] init];
+	
 	return self;
 }
 
@@ -301,6 +303,8 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	
 	self.address = NULL;
 	self.dirsToScanForFiles = NULL;
+	
+	[seriesForUsersCache release];
 	
 	[super dealloc];
 }
