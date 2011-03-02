@@ -38,7 +38,7 @@ function onSubmitForm(form) {
 	return true;
 }
 
-function keyImageClick(ixid, sxid) {
+function imageClick(ixid, sxid) {
 	var div = document.createElement("div");
 	div.id = "overlay";
 	div.onclick = function() { document.body.removeChild(this); };
@@ -117,7 +117,7 @@ function keyImageClick(ixid, sxid) {
 		<div class="separated title">Key Images</div>
 		<div>
 			%[FOREACH:Study.keyImages:Image%
-			<a href="/image?xid=%Image.XID%" onclick="keyImageClick('%Image.XID%', '%Image.series.XID%'); return false;"><img src="/thumbnail?xid=%Image.XID%" /></a>
+			<a href="/image?xid=%Image.XID%" onclick="imageClick('%Image.XID%', '%Image.series.XID%'); return false;"><img src="/thumbnail?xid=%Image.XID%" /></a>
 			%]FOREACH:Study.keyImages:Image%
 		</div>
 		%]IF:Study.keyImages.count%

@@ -1,42 +1,67 @@
 %INCLUDE:header.pvt.html%
 <div id="subheader">
-	<a class="back" href="study?xid=%Series.study.XID%&%Info.getParameters(xid=)%">%X:ZWS:BackLinkLabel%</a>
+	<a class="back" href="study?xid=%Series.study.XID%&%Info.getParameters(xid=,frames=)%">%X:ZWS:BackLinkLabel%</a>
 </div>
+
+<script type="text/javascript">
+
+function imageClick(ixid, sxid, i) {
+	var div = document.createElement("div");
+	div.id = "overlay";
+	div.style.zIndex = 101;
+	div.onclick = function() { document.body.removeChild(document.getElementById('overlay')); };
+	%[IF:Info.proposeFlash%
+	var cmd = "document.getElementById('series_SWF').GotoFrame("+i+")";
+	%ELSE:Info.proposeFlash%
+	document.getElementById('series_AQT').Stop();
+	var cmd = "document.getElementById('series_AQT').Stop(); document.getElementById('series_AQT').Rewind(); if ("+i+") document.getElementById('series_AQT').Step("+(i)+")";
+	%]IF:Info.proposeFlash%
+	div.innerHTML = "<div><div><a href=\"#movie\" onclick=\""+cmd+"; return true;\"><img src=\"/image.jpg?xid="+ixid+"\" /></a><div class=\"smaller\">Close</div></div></div>";
+	document.body.appendChild(div);
+}
+
+</script>
 
 <div id="content">
 	%INCLUDE:/errors.pvt.html%
 	%INCLUDE:/messages.pvt.html%
 
-	<div class="loading center">
-	%[IF:Series.images.count<2%
-		<img src="/image.jpg?xid=%Series.XID%" class="maxwide" />
-	%ELSE:Series.images.count<2%
-		%[IF:Info.proposeFlash%
-			<object width="%X:Series.width%" height="%X:Series.height%" id="flash" name="Flash">
-				<param name="movie" value="/movie.swf?xid=%Series.XID%" />
-				<param name="allowscriptaccess" value="always" />
-				<param name="wmode" value="transparent" />
-				<embed src="/movie.swf?xid=%Series.XID%" width="%X:Series.width%" height="%X:Series.height%" wmode="transparent" allowScriptAccess="always" />
-			</object>
-			<div class="smaller">Viewing this series requires <a href="http://get.adobe.com/flashplayer/">Adobe Flash Player</a></div>
-		%ELSE:Info.proposeFlash%
-			<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="%X:Series.width%" height="%X:Series.height%" codebase="http://www.apple.com/qtactivex/qtplugin.cab">
-				<param name="src" value="/image.jpg?xid=%Series.XID%&previewForMovie=true" />
-				<param name="href" value="/movie.mov?xid=%Series.XID%" />
-				<param name="type" value="video/quicktime" />
-				<embed src="/image.jpg?xid=%Series.XID%%[IF:!Info.isIOS%&previewForMovie=true%]IF:!Info.isIOS%" type="video/quicktime" href="/movie.mov?xid=%Series.XID%" width="%X:Series.width%" height="%X:Series.height%" target="myself" />
-			</object>
-			%[IF:!Info.isIOS%<div class="smaller">Viewing this series requires <a href="http://www.apple.com/quicktime/">Apple Quicktime</a></div>%]IF:!Info.isIOS%
-		%]IF:Info.proposeFlash%
-	%]IF:Series.images.count<2%
+	<div class="center">
+		<div class="smaller">
+			%[IF:Series.images.count<=10||Request.frames%
+				%[FOREACH:Series.sortedImages:Image%
+				<a href="/image?xid=%Image.XID%" onclick="imageClick('%Image.XID%', '%Image.series.XID%', %Image_Index%); return false;"><img src="/thumbnail?xid=%Image.XID%" /></a>
+				%]FOREACH:Series.sortedImages:Image%
+			%ELSE:Series.images.count<=10||Request.frames%
+				<a href="?%Info.getParameters%&frames=yes">Show Frames</a>
+			%]IF:Series.images.count<=10||Request.frames%
+		</div>
+		<div class="separated loading">
+			%[IF:Series.images.count<2%
+				<img src="/image.jpg?xid=%Series.XID%" class="maxwide" />
+			%ELSE:Series.images.count<2%
+				<a name="movie">
+					%[IF:Info.proposeFlash%
+						<object width="%X:Series.width%" height="%X:Series.height%">
+							<param name="movie" value="/movie.swf?xid=%Series.XID%" />
+							<param name="allowscriptaccess" value="always" />
+							<param name="wmode" value="transparent" />
+							<embed src="/movie.swf?xid=%Series.XID%" width="%X:Series.width%" height="%X:Series.height%" wmode="transparent" allowScriptAccess="always" id="series_SWF" />
+						</object>
+						<div class="smaller">Viewing this series requires <a href="http://get.adobe.com/flashplayer/">Adobe Flash Player</a></div>
+					%ELSE:Info.proposeFlash%
+						<object style="z-index:100" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="%X:Series.width%" height="%X:Series.height%" codebase="http://www.apple.com/qtactivex/qtplugin.cab">
+							<param name="src" value="/image.jpg?xid=%Series.XID%&previewForMovie=true" />
+							<param name="href" value="/movie.mov?xid=%Series.XID%" />
+							<param name="type" value="video/quicktime" />
+							<embed style="z-index:100" src="/image.jpg?xid=%Series.XID%%[IF:!Info.isIOS%&previewForMovie=true%]IF:!Info.isIOS%" id="series_AQT" EnableJavaScript="true" type="video/quicktime" href="/movie.mov?xid=%Series.XID%" width="%X:Series.width%" height="%X:Series.height%" target="myself" swLiveConnect="true" />
+						</object>
+						%[IF:!Info.isIOS%<div class="smaller">Viewing this series requires <a href="http://www.apple.com/quicktime/">Apple Quicktime</a></div>%]IF:!Info.isIOS%
+					%]IF:Info.proposeFlash%
+				</a>
+			%]IF:Series.images.count<2%
+		</div>
 	</div>
-	
-	<!--
-	Please keep this for testing purposes...
-	<div style="margin-top:20px;">
-	<a href="/movie.%MovieExtension%?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%"><img class="image" src="/image.jpg?id=%U:Series.seriesInstanceUID%&studyID=%U:Series.study.studyInstanceUID%&previewForMovie=true" /></a>
-	</div>
-	-->
 </div>
 
 %INCLUDE:footer.pvt.html%

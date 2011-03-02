@@ -12875,16 +12875,16 @@
 		59526F3F1281AE0B0016F6C0 /* Dicom */ = {
 			isa = PBXGroup;
 			children = (
-				CEE1922C08636FA100DED1F0 /* DicomImage.m */,
 				CEE1922D08636FA100DED1F0 /* DicomImage.h */,
-				CE9DD280086B35050058DD2A /* DicomStudy.m */,
+				CEE1922C08636FA100DED1F0 /* DicomImage.m */,
 				CE9DD281086B35050058DD2A /* DicomStudy.h */,
-				CE9DD283086B35050058DD2A /* DicomSeries.m */,
+				CE9DD280086B35050058DD2A /* DicomStudy.m */,
 				CE9DD282086B35050058DD2A /* DicomSeries.h */,
-				59E379D7116B295B00E84FE3 /* DicomAlbum.m */,
+				CE9DD283086B35050058DD2A /* DicomSeries.m */,
 				59E379D6116B295B00E84FE3 /* DicomAlbum.h */,
-				BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */,
+				59E379D7116B295B00E84FE3 /* DicomAlbum.m */,
 				BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */,
+				BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */,
 			);
 			name = Dicom;
 			sourceTree = "<group>";
