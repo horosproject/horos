@@ -27,6 +27,8 @@
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: add temporary user email for admins
 - Web Server: test email notifications
+- Web Server: logs hostname?
+- Web Server: flash poor performances with large series?
 
 - CPR: export transverse series, at fixed interval
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR

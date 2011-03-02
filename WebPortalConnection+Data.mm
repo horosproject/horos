@@ -57,7 +57,8 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	return start.timeIntervalSinceReferenceDate;
 }
 
-
+static volatile int DCMPixLoadingThreads = 0;
+static NSRecursiveLock *DCMPixLoadingLock = nil;
 
 @implementation WebPortalConnection (Data)
 
@@ -272,7 +273,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 }
 
 -(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)images {
-	[self getWidth:width height:height fromImagesArray:images minSize:NSMakeSize(256) maxSize:NSMakeSize(1024)]; // was 400/800
+	[self getWidth:width height:height fromImagesArray:images minSize:NSMakeSize(400) maxSize:NSMakeSize(1024)]; // was 400/800
 }
 
 -(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)imagesArray minSize:(NSSize)minSize maxSize:(NSSize)maxSize {
@@ -305,6 +306,91 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	}
 }
 
+- (void) movieDCMPixLoad: (NSDictionary*) dict
+{
+	[dict retain];
+	
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	
+	NSArray *dicomImageArray = [dict valueForKey: @"DicomImageArray"];
+	
+	int location = [[dict valueForKey: @"location"] unsignedIntValue];
+	int length = [[dict valueForKey: @"length"] unsignedIntValue];
+	int width = [[dict valueForKey: @"width"] floatValue];
+	int height = [[dict valueForKey: @"height"] floatValue];
+	NSString *outFile = [dict valueForKey: @"outFile"];
+	NSString *fileName = [dict valueForKey: @"fileName"];
+	
+	for( int x = location ; x < location+length; x++)
+	{
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
+		DicomImage *im = [dicomImageArray objectAtIndex: x];
+		
+		@try 
+		{
+			DCMPix* dcmPix = [[DCMPix alloc] initWithPath:im.completePathResolved :0 :1 :nil :im.frameID.intValue :im.series.id.intValue isBonjour:NO imageObj:im];
+			
+			if (dcmPix)
+			{
+				float curWW = 0;
+				float curWL = 0;
+				
+				if (im.series.windowWidth)
+				{
+					curWW = im.series.windowWidth.floatValue;
+					curWL = im.series.windowLevel.floatValue;
+				}
+				
+				if (curWW != 0)
+					[dcmPix checkImageAvailble:curWW :curWL];
+				else
+					[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+			}
+			else
+			{
+				NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
+				
+				float *imPtr = (float*)malloc( width * height * sizeof(float));
+				for ( int i = 0 ;  i < width * height; i++)
+					imPtr[ i] = i;
+				
+				dcmPix = [[DCMPix alloc] initWithData: imPtr :32 :width :height :0 :0 :0 :0 :0];
+			}
+			
+			NSImage *newImage;
+			
+			if ([dcmPix pwidth] != width || [dcmPix pheight] != height)
+				newImage = [[dcmPix image] imageByScalingProportionallyToSize: NSMakeSize( width, height)];
+			else
+				newImage = [dcmPix image];
+			
+			if ([outFile hasSuffix:@"swf"])
+				[[[NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:NULL] writeToFile:[[fileName stringByAppendingString:@" dir"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%6.6d.jpg", x]] atomically:YES];
+			else
+				[[newImage TIFFRepresentationUsingCompression: NSTIFFCompressionLZW factor: 1.0] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", x]] atomically: YES];
+			
+			[dcmPix release];
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
+		[pool release];
+	}
+	
+	[pool release];
+	
+	[dict release];
+	
+	@synchronized( self)
+	{
+		DCMPixLoadingThreads--;
+	}
+}
+
 const NSString* const GenerateMovieOutFileParamKey = @"outFile";
 const NSString* const GenerateMovieFileNameParamKey = @"fileName";
 const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
@@ -332,47 +418,18 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	{
 		if (![[NSFileManager defaultManager] fileExistsAtPath: outFile] || ([[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0))
 		{
-			NSMutableArray *pixs = [NSMutableArray arrayWithCapacity: [dicomImageArray count]];
+			int noOfThreads = MPProcessors();
+			
+			NSRange range = NSMakeRange( 0, 1+ ([dicomImageArray count] / noOfThreads));
+						
+			if( DCMPixLoadingLock == nil)
+				DCMPixLoadingLock = [[NSRecursiveLock alloc] init];
+			
+			[DCMPixLoadingLock lock];
 			
 			[self.portal.dicomDatabase lock];
 			
-			for (DicomImage *im in dicomImageArray)
-			{
-				DCMPix* dcmPix = [[DCMPix alloc]
-								  initWithPath:im.completePathResolved :0 :1 :nil :im.frameID.intValue :im.series.id.intValue isBonjour:NO imageObj:im];
-				
-				if (dcmPix)
-				{
-					float curWW = 0;
-					float curWL = 0;
-					
-					if (im.series.windowWidth) {
-						curWW = im.series.windowWidth.floatValue;
-						curWL = im.series.windowLevel.floatValue;
-					}
-					
-					if (curWW != 0)
-						[dcmPix checkImageAvailble:curWW :curWL];
-					else
-						[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
-					
-					[pixs addObject: dcmPix];
-					[dcmPix release];
-				}
-				else
-				{
-					NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
-					float *imPtr = (float*)malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof(float));
-					for ( int i = 0 ;  i < [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue]; i++)
-						imPtr[ i] = i;
-					
-					dcmPix = [[DCMPix alloc] initWithData: imPtr :32 :[[im valueForKey: @"width"] intValue] :[[im valueForKey: @"height"] intValue] :0 :0 :0 :0 :0];
-					[pixs addObject: dcmPix];
-					[dcmPix release];
-				}
-			}
-			
-			[self.portal.dicomDatabase unlock];
+			NSLog( @"generateMovie: start dcmpix reading");
 			
 			CGFloat width, height;
 			
@@ -381,41 +438,55 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				width = [[dict objectForKey: @"columns"] intValue];
 				height = [[dict objectForKey: @"rows"] intValue];
 			}
-			else {
+			else
 				[self getWidth: &width height:&height fromImagesArray: dicomImageArray /* isiPhone:.. */];
-			}
-			
-			for (DCMPix *dcmPix in pixs)
-			{
-				NSImage *im = [dcmPix image];
-				
-				NSImage *newImage;
-				
-				if ([dcmPix pwidth] != width || [dcmPix pheight] != height)
-					newImage = [im imageByScalingProportionallyToSize: NSMakeSize( width, height)];
-				else
-					newImage = im;
-				
-				[imagesArray addObject: newImage];
-			}
 			
 			[[NSFileManager defaultManager] removeItemAtPath: [fileName stringByAppendingString: @" dir"] error: nil];
 			[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] attributes: nil];
-			
-			int inc = 0;
-			for (NSImage* img in imagesArray)
+
+			@try 
 			{
-				NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-				//[[img TIFFRepresentation] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
-				if ([outFile hasSuffix:@"swf"])
-					[[[NSBitmapImageRep imageRepWithData:[img TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:NULL] writeToFile:[[fileName stringByAppendingString:@" dir"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%6.6d.jpg", inc]] atomically:YES];
-				else
-					[[img TIFFRepresentationUsingCompression: NSTIFFCompressionLZW factor: 1.0] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", inc]] atomically: YES];
-				inc++;
-				[pool release];
+				DCMPixLoadingThreads = 0;
+				for( int i = 0 ; i < noOfThreads; i++)
+				{
+					if( range.length > 0)
+					{
+						@synchronized( self)
+						{
+							DCMPixLoadingThreads++;
+						}
+						[NSThread detachNewThreadSelector: @selector( movieDCMPixLoad:)
+												 toTarget: self
+											   withObject: [NSDictionary dictionaryWithObjectsAndKeys:
+															[NSNumber numberWithUnsignedInt: range.location], @"location",
+															[NSNumber numberWithUnsignedInt: range.length], @"length",
+															[NSNumber numberWithFloat: width], @"width",
+															[NSNumber numberWithFloat: height], @"height",
+															outFile, @"outFile",
+															fileName, @"fileName",
+															dicomImageArray, @"DicomImageArray", nil]];
+					}
+					
+					range.location += range.length;
+					if( range.location + range.length > [dicomImageArray count])
+						range.length = [dicomImageArray count] - range.location;
+				}
+				
+				while( DCMPixLoadingThreads > 0)
+					[NSThread sleepForTimeInterval: 0.1];
+			}
+			@catch (NSException * e) 
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 			}
 			
+			[self.portal.dicomDatabase unlock];
+			
+			[DCMPixLoadingLock unlock];
+						
 			NSTask *theTask = [[[NSTask alloc] init] autorelease];
+			
+			NSLog( @"generateMovie: start writeMovie process");
 			
 			if (self.requestIsIOS)
 			{
@@ -465,6 +536,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					NSLog( @"***** writeMovie exception : %@", e);
 				}
 			}
+			
+			NSLog( @"generateMovie: end");
 		}
 	}
 	@catch (NSException *e)
