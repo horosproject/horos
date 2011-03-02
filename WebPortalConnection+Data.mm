@@ -1165,6 +1165,16 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	return dict;
 }
 
+#define WadoSOPInstanceUIDCacheSize 5000
+
+-(NSMutableDictionary*)wadoSOPInstanceUIDCache {
+	const NSString* const WadoSOPInstanceUIDCacheKey = @"WADO SOPInstanceUID Cache";
+	NSMutableDictionary* dict = [self.portal.cache objectForKey:WadoSOPInstanceUIDCacheKey];
+	if (!dict || ![dict isKindOfClass:NSMutableDictionary.class])
+		[self.portal.cache setObject: dict = [NSMutableDictionary dictionaryWithCapacity:WadoSOPInstanceUIDCacheSize] forKey:WadoSOPInstanceUIDCacheKey];
+	return dict;
+}
+
 // wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX
 // 127.0.0.1:3333/wado?requestType=WADO&frameNumber=1&studyUID=2.16.840.1.113669.632.20.1211.10000591592&seriesUID=1.3.6.1.4.1.19291.2.1.2.2867252960399100001&objectUID=1.3.6.1.4.1.19291.2.1.3.2867252960616100004
 -(void)processWado {
@@ -1218,12 +1228,21 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		NSArray *images = nil;
 		
 		if (self.wadoCache.count > WadoCacheSize)
-			[self.wadoCache removeAllObjects]; // TODO: not actually a good way to limit the cache
+			[self.wadoCache removeAllObjects];
+		
+		if( self.wadoSOPInstanceUIDCache.count > WadoSOPInstanceUIDCacheSize)
+			[self.wadoSOPInstanceUIDCache removeAllObjects];
+		
+		NSString *cachedPathForSOPInstanceUID = nil;
 		
 		if (contentType.length == 0 || [contentType isEqualToString:@"image/jpeg"] || [contentType isEqualToString:@"image/png"] || [contentType isEqualToString:@"image/gif"] || [contentType isEqualToString:@"image/jp2"])
 			imageCache = [self.wadoCache objectForKey:[objectUID stringByAppendingFormat:@"%d", frameNumber]];
 		
-		if (!imageCache) {
+		else if( [contentType isEqualToString: @"application/dicom"])
+			cachedPathForSOPInstanceUID = [self.wadoSOPInstanceUIDCache objectForKey: objectUID];
+		
+		if (!imageCache && !cachedPathForSOPInstanceUID)
+		{
 			if (studyUID)
 				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
 			else
@@ -1246,6 +1265,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			for ( id series in allSeries)
 				allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
 			
+			//We will cache all the paths for these sopInstanceUIDs
+			for( DicomImage *image in allImages)
+				[self.wadoSOPInstanceUIDCache setObject: image.completePath forKey: image.sopInstanceUID];
+			
 			NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
 			NSPredicate *N2NonNullStringPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
 			
@@ -1263,15 +1286,17 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			{
 				[self.portal updateLogEntryForStudy: [studies lastObject] withMessage:@"WADO Send" forUser:self.user.name ip:self.asyncSocket.connectedHost];
 			}
+			
+			cachedPathForSOPInstanceUID = [[images lastObject] valueForKey: @"completePath"];
 		}
 		
-		if ([images count] || imageCache != nil)
+		if ([images count] || imageCache != nil || cachedPathForSOPInstanceUID != nil)
 		{
 			if ([contentType isEqualToString: @"application/dicom"])
 			{
-				if ([useOrig isEqualToString: @"true"] || [useOrig isEqualToString: @"1"] || [useOrig isEqualToString: @"yes"])
+				if ([useOrig isEqualToString: @"true"] || [useOrig isEqualToString: @"1"] || [useOrig isEqualToString: @"yes"] || transferSyntax == nil)
 				{
-					response.data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
+					response.data = [NSData dataWithContentsOfFile: cachedPathForSOPInstanceUID];
 				}
 				else
 				{
@@ -1289,9 +1314,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 						ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 					
 					#ifdef OSIRIX_LIGHT
-					response.data = [NSData dataWithContentsOfFile: [[images lastObject] valueForKey: @"completePath"]];
+					response.data = [NSData dataWithContentsOfFile: cachedPathForSOPInstanceUID];
 					#else
-					response.data = [[BrowserController currentBrowser] getDICOMFile:[[images lastObject] valueForKey: @"completePath"] inSyntax: ts.transferSyntax quality: imageQuality];
+					response.data = [[BrowserController currentBrowser] getDICOMFile:cachedPathForSOPInstanceUID inSyntax: ts.transferSyntax quality: imageQuality];
 					#endif
 				}
 				//err = NO;
