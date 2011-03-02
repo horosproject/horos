@@ -120,13 +120,12 @@ typedef NSInteger CPRExportRotationSpan;
     CPRExportImageFormat exportImageFormat;
     CPRExportSequenceType exportSequenceType;
     CPRExportSeriesType exportSeriesType;
-    NSInteger exportNumberOfRotationFrames;
     CPRExportRotationSpan exportRotationSpan;
     BOOL exportReverseSliceOrder;
-//    BOOL exportSlabThinknessSameAsSlabThickness;
+	NSInteger exportNumberOfRotationFrames;
     CGFloat exportSlabThickness;
     BOOL exportSliceIntervalSameAsVolumeSliceInterval;
-    CGFloat exportSliceInterval;
+    CGFloat exportSliceInterval, exportTransverseSliceInterval;
     
 	int dcmmN;
 	
@@ -174,13 +173,12 @@ typedef NSInteger CPRExportRotationSpan;
 @property (nonatomic) CPRExportImageFormat exportImageFormat;
 @property (nonatomic) CPRExportSequenceType exportSequenceType;
 @property (nonatomic) CPRExportSeriesType exportSeriesType;
-@property (nonatomic) NSInteger exportNumberOfRotationFrames;
 @property (nonatomic) CPRExportRotationSpan exportRotationSpan;
 @property (nonatomic) BOOL exportReverseSliceOrder;
-//@property (nonatomic) BOOL exportSlabThinknessSameAsSlabThickness;
+@property (nonatomic) NSInteger exportNumberOfRotationFrames;
 @property (nonatomic) CGFloat exportSlabThickness;
 @property (nonatomic) BOOL exportSliceIntervalSameAsVolumeSliceInterval;
-@property (nonatomic) CGFloat exportSliceInterval;
+@property (nonatomic) CGFloat exportSliceInterval, exportTransverseSliceInterval;
 @property (nonatomic, readonly) NSInteger exportSequenceNumberOfFrames;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation;

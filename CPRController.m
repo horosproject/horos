@@ -63,13 +63,12 @@ static float deg2rad = 3.14159265358979/180.0;
 @synthesize exportImageFormat;
 @synthesize exportSequenceType;
 @synthesize exportSeriesType;
-@synthesize exportNumberOfRotationFrames;
 @synthesize exportRotationSpan;
 @synthesize exportReverseSliceOrder;
 //@synthesize exportSlabThinknessSameAsSlabThickness;
-@synthesize exportSlabThickness;
+@synthesize exportSlabThickness, exportNumberOfRotationFrames;
 @synthesize exportSliceIntervalSameAsVolumeSliceInterval;
-@synthesize exportSliceInterval;
+@synthesize exportSliceInterval, exportTransverseSliceInterval;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -291,7 +290,6 @@ static float deg2rad = 3.14159265358979/180.0;
         self.exportSeriesName = @"CPR";;
         self.exportSequenceType = CPRCurrentOnlyExportSequenceType;
         self.exportSeriesType = CPRRotationExportSeriesType;
-        self.exportNumberOfRotationFrames = 50;
         self.exportRotationSpan = CPR180ExportRotationSpan;
         self.exportReverseSliceOrder = NO;
         
@@ -1965,7 +1963,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	{ // export a series
         if (self.exportSeriesType == CPRRotationExportSeriesType)
 		{ // a rotation
-            return MAX(1, exportNumberOfRotationFrames);
+            return MAX(1, self.exportNumberOfRotationFrames);
         }
 		else if (self.exportSeriesType == CPRSlabExportSeriesType)
 		{
@@ -1986,7 +1984,7 @@ static float deg2rad = 3.14159265358979/180.0;
         }
 		else if (self.exportSequenceType == CPRSeriesExportSequenceType)
 		{
-			return 1;
+			return curvedPath.bezierPath.length / self.exportTransverseSliceInterval;
 		}
     }
 	
@@ -2006,6 +2004,16 @@ static float deg2rad = 3.14159265358979/180.0;
     }
 }
 
+- (void)setExportNumberOfRotationFrames:(NSInteger)newExportNumberOfRotationFrames
+{
+	if( exportNumberOfRotationFrames != newExportNumberOfRotationFrames)
+	{
+		[self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
+		exportNumberOfRotationFrames = newExportNumberOfRotationFrames;
+		[self didChangeValueForKey:@"exportSequenceNumberOfFrames"];
+	}
+}
+
 - (void)setExportSeriesType:(CPRExportSeriesType)newExportSeriesType
 {
     assert(newExportSeriesType == CPRRotationExportSeriesType || newExportSeriesType == CPRSlabExportSeriesType || newExportSeriesType == CPRTransverseViewsExportSeriesType);
@@ -2013,8 +2021,16 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
         [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
         exportSeriesType = newExportSeriesType;
+		
 		if( exportSeriesType == CPRSlabExportSeriesType)
-			[self setExportImageFormat: CPR16BitExportImageFormat];
+			self.exportImageFormat = CPR16BitExportImageFormat;
+		
+		if( exportSeriesType == CPRTransverseViewsExportSeriesType)
+			self.exportImageFormat = CPR16BitExportImageFormat;
+		
+		if( exportSeriesType != CPRSlabExportSeriesType)
+			self.exportSlabThickness = 0;
+		
         [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];        
     }
 }
@@ -2032,6 +2048,8 @@ static float deg2rad = 3.14159265358979/180.0;
 //        if (!isSame) {
             [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];        
 //        }
+		
+		self.exportSeriesType = CPRSlabExportSeriesType;
     }
 	
 	[mprView1 setNeedsDisplay: YES];
@@ -2052,6 +2070,22 @@ static float deg2rad = 3.14159265358979/180.0;
         if (!isSame) {
             [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];        
         }
+		
+		self.exportSeriesType = CPRSlabExportSeriesType;
+    }
+}
+
+- (void)setExportTransverseSliceInterval:(CGFloat)newExportSliceInterval
+{
+    BOOL isSame;
+    
+    if (exportTransverseSliceInterval != newExportSliceInterval)
+	{
+		[self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
+		
+        exportTransverseSliceInterval = newExportSliceInterval;
+		
+		[self didChangeValueForKey:@"exportSequenceNumberOfFrames"];
     }
 }
 
@@ -2069,12 +2103,16 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)setExportSliceIntervalSameAsVolumeSliceInterval:(BOOL)newExportSliceIntervalSameAsVolumeSliceInterval
 {
-    if (exportSliceIntervalSameAsVolumeSliceInterval != newExportSliceIntervalSameAsVolumeSliceInterval) {
+    if (exportSliceIntervalSameAsVolumeSliceInterval != newExportSliceIntervalSameAsVolumeSliceInterval)
+	{
         [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
         exportSliceIntervalSameAsVolumeSliceInterval = newExportSliceIntervalSameAsVolumeSliceInterval;
         if (exportSliceIntervalSameAsVolumeSliceInterval) {
             self.exportSliceInterval = [cprView.volumeData minPixelSpacing];
         }
+		
+		self.exportSeriesType = CPRSlabExportSeriesType;
+		
         [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];      
     }
 }
@@ -2184,8 +2222,14 @@ static float deg2rad = 3.14159265358979/180.0;
         [dicomExport setModalityAsSource:YES];
         [dicomExport setSourceFile:[[pixList[0] lastObject] sourceFile]];
         
-        exportWidth = NSWidth([cprView bounds]);
+		exportWidth = NSWidth([cprView bounds]);
         exportHeight = NSHeight([cprView bounds]);
+		
+		if( self.exportSeriesType == CPRTransverseViewsExportSeriesType && self.exportSequenceType != CPRCurrentOnlyExportSequenceType)
+		{
+			exportWidth = NSWidth([middleTransverseView bounds]);
+			exportHeight = NSHeight([middleTransverseView bounds]);
+		}
 		
 		int resizeImage = 0;
 		
@@ -2303,16 +2347,16 @@ static float deg2rad = 3.14159265358979/180.0;
 				Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating series", nil)];
 				[progress showWindow: self];
 				[progress setCancel: YES];
-				[[progress progress] setMaxValue: self.exportNumberOfRotationFrames];
+				[[progress progress] setMaxValue: self.exportSequenceNumberOfFrames];
 				
-				for( int i = 0; i < self.exportNumberOfRotationFrames; i++)
+				for( int i = 0; i < self.exportSequenceNumberOfFrames; i++)
 				{
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					
 					if (self.exportRotationSpan == CPR180ExportRotationSpan)
-						angle = ((CGFloat)i/(CGFloat)self.exportNumberOfRotationFrames) * M_PI;
+						angle = ((CGFloat)i/(CGFloat)self.exportSequenceNumberOfFrames) * M_PI;
 					else
-						angle = ((CGFloat)i/(CGFloat)self.exportNumberOfRotationFrames) * 2.0*M_PI;
+						angle = ((CGFloat)i/(CGFloat)self.exportSequenceNumberOfFrames) * 2.0*M_PI;
 					
 					if( self.exportImageFormat == CPR16BitExportImageFormat)
 					{
@@ -2396,7 +2440,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating series", nil)];
 				[progress showWindow: self];
 				[progress setCancel: YES];
-				[[progress progress] setMaxValue: self.exportNumberOfRotationFrames];
+				[[progress progress] setMaxValue: self.exportSequenceNumberOfFrames];
 				
 				curvedVolumeData = [CPRGenerator synchronousRequestVolume:request volumeData:cprView.volumeData];
 				if(curvedVolumeData)
@@ -2445,9 +2489,9 @@ static float deg2rad = 3.14159265358979/180.0;
 				Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating series", nil)];
 				[progress showWindow: self];
 				[progress setCancel: YES];
-				[[progress progress] setMaxValue: self.exportNumberOfRotationFrames];
+				[[progress progress] setMaxValue: self.exportSequenceNumberOfFrames];
 				
-				NSArray *requests = [curvedPath transverseSliceRequestsForSpacing: 1 outputWidth: exportWidth outputHeight: exportHeight mmWide: 50];
+				NSArray *requests = [curvedPath transverseSliceRequestsForSpacing: self.exportTransverseSliceInterval outputWidth: exportWidth outputHeight: exportHeight mmWide: [[middleTransverseView curDCM] pwidth] * [[middleTransverseView curDCM] pixelSpacingX]];
 				
 				for( CPRStraightenedGeneratorRequest *r in requests)
 				{
@@ -2566,7 +2610,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	
     self.exportSlabThickness = [self getClippingRangeThicknessInMm];
     self.exportSliceInterval = [cprView.volumeData minPixelSpacing];
-    
+    self.exportTransverseSliceInterval = [curvedPath transverseSectionSpacing];
+	self.exportNumberOfRotationFrames = 50;
+	
 	if( clippingRangeThickness <= 3)
 	{
 //		self.exportSlabThinknessSameAsSlabThickness = NO;
@@ -2685,6 +2731,9 @@ static float deg2rad = 3.14159265358979/180.0;
 	if( exportImageFormat == CPR8BitRGBExportImageFormat)
 	{
 		if( self.exportSeriesType == CPRSlabExportSeriesType)
+			self.exportSeriesType = CPRRotationExportSeriesType;
+		
+		if( self.exportSeriesType == CPRTransverseViewsExportSeriesType)
 			self.exportSeriesType = CPRRotationExportSeriesType;
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey:@"EXPORTMATRIXFOR3D"];
