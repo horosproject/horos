@@ -517,8 +517,11 @@ extern int splitPosition[ 2];
         glEnd();
 	}
     
-	float exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
+	float exportTransverseSliceInterval = 0;
 	
+	if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
+	   exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
+	   
 	if( exportTransverseSliceInterval > 0)
 	{
 		glColor4d(1.0, 1.0, 0.0, 1.0);
@@ -528,11 +531,15 @@ extern int splitPosition[ 2];
 		[flattenedPath flatten:N3BezierDefaultFlatness];
 		
 		float curveLength = [flattenedPath length];
-		int noOfFrames = ceil( curveLength / exportTransverseSliceInterval);
+		int noOfFrames = ( curveLength / exportTransverseSliceInterval);
+		noOfFrames++;
+		
+		float startingDistance = curveLength - (noOfFrames-1) * exportTransverseSliceInterval;
+		startingDistance /= 2;
 		
 		for( int i = 0; i < noOfFrames; i++)
 		{
-			transverseSectionPosition = ((float) i * exportTransverseSliceInterval) / (float) _curvedPath.bezierPath.length;
+			transverseSectionPosition = (startingDistance + ((float) i * exportTransverseSliceInterval)) / (float) _curvedPath.bezierPath.length;
 			lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
 			lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
 			glLineWidth(2.0);

@@ -1982,14 +1982,15 @@ static float deg2rad = 3.14159265358979/180.0;
             
             return MAX(1, ceil(slabWidth / sliceInterval));
         }
-		else if (self.exportSequenceType == CPRSeriesExportSequenceType)
+		else if (self.exportSeriesType == CPRTransverseViewsExportSeriesType)
 		{
 			N3MutableBezierPath *flattenedPath = [[curvedPath.bezierPath mutableCopy] autorelease];
 			[flattenedPath subdivide:N3BezierDefaultSubdivideSegmentLength];
 			[flattenedPath flatten:N3BezierDefaultFlatness];
 			
 			float curveLength = [flattenedPath length];
-			int requestCount = ceil( curveLength / self.exportTransverseSliceInterval);
+			int requestCount = ( curveLength / self.exportTransverseSliceInterval);
+			requestCount++;
 			
 			return requestCount;
 		}
@@ -2008,6 +2009,8 @@ static float deg2rad = 3.14159265358979/180.0;
         [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
         exportSequenceType = newExportSequenceType;
         [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];
+		
+		[cprView setNeedsDisplay: YES];
     }
 }
 
@@ -2038,7 +2041,9 @@ static float deg2rad = 3.14159265358979/180.0;
 		if( exportSeriesType != CPRSlabExportSeriesType)
 			self.exportSlabThickness = 0;
 		
-        [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];        
+        [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];
+		
+		[cprView setNeedsDisplay: YES];
     }
 }
 

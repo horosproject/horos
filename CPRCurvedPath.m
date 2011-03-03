@@ -405,8 +405,9 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     [flattenedPath flatten:N3BezierDefaultFlatness];
     
     curveLength = [flattenedPath length];
-    requestCount = ceil( curveLength/spacing);
-    
+    requestCount = curveLength/spacing;
+    requestCount++;
+	
     if (requestCount < 2) {
         return requests;
     }
@@ -420,7 +421,10 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     tangents = malloc(requestCount * sizeof(N3Vector));
     memset(tangents, 0, requestCount * sizeof(N3Vector));
     
-    requestCount = N3BezierCoreGetVectorInfo([flattenedPath N3BezierCore], spacing, 0, _initialNormal, vectors, tangents, normals, requestCount);
+	float startingDistance = curveLength - (requestCount-1) * spacing;
+	startingDistance /= 2;
+	
+    requestCount = N3BezierCoreGetVectorInfo([flattenedPath N3BezierCore], spacing, startingDistance, _initialNormal, vectors, tangents, normals, requestCount);
     
     for (i = 0; i < requestCount; i++) {
         request = [[CPRStraightenedGeneratorRequest alloc] init];
