@@ -2596,7 +2596,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	qtFileArray = nil;
 	quicktimeExportMode = NO;
 	self.exportSlabThickness = 0;
-	 self.exportTransverseSliceInterval = 0;
+	self.exportTransverseSliceInterval = 0;
 }
 
 -(NSImage*) imageForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max
