@@ -14333,7 +14333,10 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		BOOL hideListenerError_copy = [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"];
 		
+		[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"copyHideListenerError"];
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"hideListenerError"];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+		
 		[[NSFileManager defaultManager] createFileAtPath: @"/tmp/kill_all_storescu" contents: [NSData data] attributes: nil];
 		
 		for( NSInteger x = 0, row; x < [[ThreadsManager defaultManager] threadsCount]; x++)  
@@ -14350,7 +14353,8 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		unlink( "/tmp/kill_all_storescu");
 		[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"hideListenerError"];
-		
+		[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"copyHideListenerError"];
+		[[NSUserDefaults standardUserDefaults] synchronize];
 		// ----------
 		
 		

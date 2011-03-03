@@ -2325,7 +2325,9 @@ static NSDate *lastWarningDate = nil;
 	
 	BOOL hideListenerError_copy = [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"];
 	
+	[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"copyHideListenerError"];
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"hideListenerError"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 	
 	[[NSFileManager defaultManager] createFileAtPath: @"/tmp/kill_all_storescu" contents: [NSData data] attributes: nil];
 	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 3]];
@@ -2336,6 +2338,8 @@ static NSDate *lastWarningDate = nil;
 	unlink( "/tmp/kill_all_storescu");
 	
 	[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"hideListenerError"];
+	[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"copyHideListenerError"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void) waitUnlockFileWithPID: (NSNumber*) nspid
@@ -2743,6 +2747,9 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"is12bitPluginAvailable"];
 //				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"DONTCOPYWLWWSETTINGS"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ROITEXTNAMEONLY"];
+				
+				if( [[NSUserDefaults standardUserDefaults] objectForKey: @"copyHideListenerError"])
+					[[NSUserDefaults standardUserDefaults] setBool: [[NSUserDefaults standardUserDefaults] boolForKey: @"copyHideListenerError"] forKey: @"hideListenerError"];
 				
 				pluginManager = [[PluginManager alloc] init];
 				
