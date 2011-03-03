@@ -672,21 +672,28 @@
 
 - (void)addDICOMDIRUsingDCMTK
 {
-	NSString *burnFolder = [self folderToBurn];
-	
-	NSTask              *theTask;
-	//NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-W", @"-Nxc", @"*", nil];
-	NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", burnFolder,  nil];
-	
-	theTask = [[NSTask alloc] init];
-	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
-	[theTask setCurrentDirectoryPath:[self folderToBurn]];
-	[theTask setArguments:theArguments];		
-
-	[theTask launch];
-	[theTask waitUntilExit];
-	[theTask release];
+	if( [AppController hasMacOSXSnowLeopard] == NO)
+	{
+		NSRunCriticalAlertPanel( NSLocalizedString( @"DICOMDIR", nil), NSLocalizedString( @"DICOMDIR creation requires MacOS 10.6 or higher. DICOMDIR file will NOT be generated.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+	}
+	else
+	{
+		NSString *burnFolder = [self folderToBurn];
+		
+		NSTask              *theTask;
+		//NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-W", @"-Nxc", @"*", nil];
+		NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", burnFolder,  nil];
+		
+		theTask = [[NSTask alloc] init];
+		[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
+		[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
+		[theTask setCurrentDirectoryPath:[self folderToBurn]];
+		[theTask setArguments:theArguments];		
+		
+		[theTask launch];
+		[theTask waitUntilExit];
+		[theTask release];
+	}
 }
 
 - (void) produceHtml:(NSString*) burnFolder

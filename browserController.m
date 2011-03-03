@@ -17886,22 +17886,29 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: [tempPath stringByAppendingPathComponent:@"DICOMDIR"]] == NO)
 				{
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					
-					NSTask *theTask;
-					NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", tempPath,  nil];
-					
-					theTask = [[NSTask alloc] init];
-					[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
-					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
-					[theTask setCurrentDirectoryPath:tempPath];
-					[theTask setArguments:theArguments];		
-					
-					[theTask launch];
-					[theTask waitUntilExit];
-					[theTask release];
-					
-					[pool release];
+					if( [AppController hasMacOSXSnowLeopard] == NO)
+					{
+						NSRunCriticalAlertPanel( NSLocalizedString( @"DICOMDIR", nil), NSLocalizedString( @"DICOMDIR creation requires MacOS 10.6 or higher. DICOMDIR file will NOT be generated.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+					}
+					else
+					{
+						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+						
+						NSTask *theTask;
+						NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", tempPath,  nil];
+						
+						theTask = [[NSTask alloc] init];
+						[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
+						[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
+						[theTask setCurrentDirectoryPath:tempPath];
+						[theTask setArguments:theArguments];		
+						
+						[theTask launch];
+						[theTask waitUntilExit];
+						[theTask release];
+						
+						[pool release];
+					}
 				}
 			}
 		}
