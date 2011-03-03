@@ -405,7 +405,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     [flattenedPath flatten:N3BezierDefaultFlatness];
     
     curveLength = [flattenedPath length];
-    requestCount = curveLength/spacing;
+    requestCount = ceil( curveLength/spacing);
     
     if (requestCount < 2) {
         return requests;

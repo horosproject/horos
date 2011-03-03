@@ -1984,7 +1984,14 @@ static float deg2rad = 3.14159265358979/180.0;
         }
 		else if (self.exportSequenceType == CPRSeriesExportSequenceType)
 		{
-			return curvedPath.bezierPath.length / self.exportTransverseSliceInterval;
+			N3MutableBezierPath *flattenedPath = [[curvedPath.bezierPath mutableCopy] autorelease];
+			[flattenedPath subdivide:N3BezierDefaultSubdivideSegmentLength];
+			[flattenedPath flatten:N3BezierDefaultFlatness];
+			
+			float curveLength = [flattenedPath length];
+			int requestCount = ceil( curveLength / self.exportTransverseSliceInterval);
+			
+			return requestCount;
 		}
     }
 	
@@ -2084,6 +2091,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		[self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
 		
         exportTransverseSliceInterval = newExportSliceInterval;
+		
+		[cprView setNeedsDisplay: YES];
 		
 		[self didChangeValueForKey:@"exportSequenceNumberOfFrames"];
     }
@@ -2587,6 +2596,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	qtFileArray = nil;
 	quicktimeExportMode = NO;
 	self.exportSlabThickness = 0;
+	 self.exportTransverseSliceInterval = 0;
 }
 
 -(NSImage*) imageForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max

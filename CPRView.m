@@ -517,7 +517,32 @@ extern int splitPosition[ 2];
         glEnd();
 	}
     
-	if( displayTransverseLines)
+	float exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
+	
+	if( exportTransverseSliceInterval > 0)
+	{
+		glColor4d(1.0, 1.0, 0.0, 1.0);
+		
+		N3MutableBezierPath *flattenedPath = [[_curvedPath.bezierPath mutableCopy] autorelease];
+		[flattenedPath subdivide:N3BezierDefaultSubdivideSegmentLength];
+		[flattenedPath flatten:N3BezierDefaultFlatness];
+		
+		float curveLength = [flattenedPath length];
+		int noOfFrames = ceil( curveLength / exportTransverseSliceInterval);
+		
+		for( int i = 0; i < noOfFrames; i++)
+		{
+			transverseSectionPosition = ((float) i * exportTransverseSliceInterval) / (float) _curvedPath.bezierPath.length;
+			lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
+			lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
+			glLineWidth(2.0);
+			glBegin(GL_LINE_STRIP);
+			glVertex2f(lineStart.x, lineStart.y);
+			glVertex2f(lineEnd.x, lineEnd.y);
+			glEnd();
+		}
+	}
+	else if( displayTransverseLines)
 	{
 		// draw the transverse section lines
 		glColor4d(1.0, 1.0, 0.0, 1.0);
