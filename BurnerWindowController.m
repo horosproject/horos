@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
+#import "AppController.h"
 #import "WaitRendering.h"
 #import "BurnerWindowController.h"
 #import <OsiriX/DCM.h>
