@@ -25,7 +25,6 @@
 - DICOM Listener TLS? -> different syntax transfer settings
 - CPR doc
 - CPR Transverse export: preview, orientation & origin for plane
-- I defined a 2x2 series tiling for MG studies. With 3.9b4 MG are opened with a 1x1 tiling....
 - Test memory leaks ROI, Web Server
 
 - Web Server: Burn option if the CD/DVD is installed
