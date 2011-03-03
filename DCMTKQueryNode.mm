@@ -741,7 +741,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //				}
 //			}
 //			
-//			NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
+//			NSString *path = [[BrowserController currentBrowser] INCOMINGPATH];
 //			
 //			@synchronized( self)
 //			{
@@ -803,11 +803,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		
-		NSString *path = [NSString stringWithFormat:@"%s/INCOMING.noindex/", [[BrowserController currentBrowser] cfixedIncomingDirectory]];
+		NSString *path = [[BrowserController currentBrowser] INCOMINGPATH];
 		
 		NSString *key = [NSString stringWithFormat:@"%ld", connection];
 		NSMutableData *d = [WADODownloadDictionary objectForKey: key];
-		[d writeToFile: [path stringByAppendingFormat: @"WADO-%d-%ld.dcm", WADOThreads, self] atomically: YES];
+		[d writeToFile: [path stringByAppendingPathComponent: [NSString stringWithFormat:@"WADO-%d-%ld.dcm", WADOThreads, self]] atomically: YES];
 		[d setLength: 0]; // Free the memory immediately
 		[WADODownloadDictionary removeObjectForKey: key];
 		

@@ -1763,8 +1763,6 @@ static NSDate *lastWarningDate = nil;
 }
 #endif
 
-#define INCOMINGPATH @"/INCOMING.noindex/"
-
 - (void) startDICOMBonjour:(NSTimer*) t
 {
 	NSLog( @"startDICOMBonjour");
@@ -1871,7 +1869,7 @@ static NSDate *lastWarningDate = nil;
 		}
 		
 		//make sure that there exist a receiver folder at @"folder" path
-		NSString *path = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
+		NSString *path = [[BrowserController currentBrowser] INCOMINGPATH];
 		
 		[AppController createNoIndexDirectoryIfNecessary: path];
 		
@@ -1893,7 +1891,7 @@ static NSDate *lastWarningDate = nil;
 		dcmtkQRSCPTLS = nil;
 		
 		//make sure that there exist a receiver folder at @"folder" path
-		NSString *path = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
+		NSString *path = [[BrowserController currentBrowser] INCOMINGPATH];
 		[AppController createNoIndexDirectoryIfNecessary: path];	
 		
 		if( [STORESCPTLS tryLock])

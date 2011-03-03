@@ -97,7 +97,6 @@
 #define DATABASEVERSION @"2.5"
 #define DATABASEPATH @"/DATABASE.noindex/"
 #define DECOMPRESSIONPATH @"/DECOMPRESSION.noindex/"
-#define INCOMINGPATH @"/INCOMING.noindex/"
 #define TOBEINDEXED @"/TOBEINDEXED.noindex/"
 #define ERRPATH @"/NOT READABLE/"
 #define DATABASEFPATH @"/DATABASE.noindex"
@@ -1746,7 +1745,7 @@ static NSConditionLock *threadLock = nil;
 										if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
 										{
 											if( [[itemPath pathExtension] isEqualToString: @"zip"] || [[itemPath pathExtension] isEqualToString: @"osirixzip"])
-												[self askForZIPPassword: itemPath destination: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
+												[self askForZIPPassword: itemPath destination: [self INCOMINGPATH]];
 											
 											else if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
 												[self addDICOMDIR: itemPath : filesArray];
@@ -1771,7 +1770,7 @@ static NSConditionLock *threadLock = nil;
 					{
 						if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
 						{
-							NSString *unzipPath = [[[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH] stringByAppendingPathComponent: @"unzip_folder"];
+							NSString *unzipPath = [[self INCOMINGPATH] stringByAppendingPathComponent: @"unzip_folder"];
 							
 							[[NSFileManager defaultManager] removeItemAtPath: unzipPath error: nil];
 							[[NSFileManager defaultManager] createDirectoryAtPath: unzipPath attributes: nil];
@@ -3661,7 +3660,7 @@ static NSConditionLock *threadLock = nil;
 		[[NSFileManager defaultManager] removeFileAtPath:pathTemp handler: nil];
 	
 	[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingPathComponent: DATABASEPATH]];
-	[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingPathComponent: INCOMINGPATH]];
+	[AppController createNoIndexDirectoryIfNecessary: [self INCOMINGPATH]];
 	
 	[self setDBWindowTitle];
 	
@@ -4307,7 +4306,7 @@ static NSConditionLock *threadLock = nil;
 	// SCAN THE DATABASE FOLDER, TO BE SURE WE HAVE EVERYTHING!
 	
 	NSString	*aPath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEPATH];
-	NSString	*incomingPath = [[self documentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+	NSString	*incomingPath = [self INCOMINGPATH];
 	long		totalFiles = 0;
 	
 	[AppController createNoIndexDirectoryIfNecessary: aPath];
@@ -7138,7 +7137,7 @@ static NSConditionLock *threadLock = nil;
 								if( [dirContent count] == 0) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
 								if( [dirContent count] == 1)
 								{
-									if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
+									if( [[[dirContent objectAtIndex: 0] uppercaseString] hasSuffix:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
 								}
 							}
 						}
@@ -11679,12 +11678,14 @@ static BOOL needToRezoom;
 				
 				if( succeed == NO || OnlyDICOM == NO)
 				{
+					NSString *rootPath = [self INCOMINGPATH];
+					
 					for( NSManagedObject *img in imagesArray)
 					{
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 						
 						filePath = [self getLocalDCMPath: img :100];
-						destPath = [[[self documentsDirectory] stringByAppendingPathComponent:INCOMINGPATH] stringByAppendingPathComponent: [filePath lastPathComponent]];
+						destPath = [rootPath stringByAppendingPathComponent: [filePath lastPathComponent]];
 						
 						// The files are moved to the INCOMING folder : they will be automatically added when switching back to local database!
 						
@@ -15346,7 +15347,7 @@ static NSArray*	openSubSeriesArray = nil;
 								if( [[itemPath lastPathComponent] isEqualToString:@"DICOMDIR"] == YES || [[itemPath lastPathComponent] isEqualToString:@"DICOMDIR."] == YES)
 									addFile = NO;
 								
-								if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"] == YES)
+								if( [[[itemPath lastPathComponent] uppercaseString] hasSuffix:@".DS_STORE"] == YES)
 									addFile = NO;
 								
 								if( [[itemPath lastPathComponent] length] > 0 && [[itemPath lastPathComponent] characterAtIndex: 0] == '.')
@@ -15548,14 +15549,13 @@ static NSArray*	openSubSeriesArray = nil;
 - (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path
 {
 	NSString *folder = path;
+	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path])
 	{
 		if (![self isAliasPath:path])
 			[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-		//we have an alias
 		else
 		{ 
-			//NSLog(@"INCOMING alias");
 			folder = [self pathResolved: path];
 		}
 	}
@@ -15566,12 +15566,18 @@ static NSArray*	openSubSeriesArray = nil;
 	else
 	{	
 		NSDictionary *attrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
+		
 		if (![[attrs objectForKey:NSFileType] isEqualToString:NSFileTypeDirectory]) 
-			[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];				
+			[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];		
+		
 		attrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO];
+		
 		//get absolute path if link
-		if ([[attrs objectForKey:NSFileType] isEqualToString:NSFileTypeSymbolicLink]) 
-			folder= [[NSFileManager defaultManager] pathContentOfSymbolicLinkAtPath:path];
+		if( [[attrs objectForKey:NSFileType] isEqualToString:NSFileTypeSymbolicLink]) 
+			folder = [[NSFileManager defaultManager] pathContentOfSymbolicLinkAtPath:path];
+		
+		if( [self pathResolved: path]) 
+			folder = [self pathResolved: path];
 	}
 	return folder;
 }
@@ -15675,7 +15681,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSString *INpath = [[self localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+	NSString *INpath = [self folderPathResolvingAliasAndSymLink: [[self localDocumentsDirectory] stringByAppendingPathComponent: @"/INCOMING.noindex/"]];
 	
 	[self decompressDICOMList: array to: INpath];
 	
@@ -15716,7 +15722,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSString *INpath = [[self localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+	NSString *INpath = [self folderPathResolvingAliasAndSymLink: [[self localDocumentsDirectory] stringByAppendingPathComponent: @"/INCOMING.noindex/"]];
 	
 	[self compressDICOMWithJPEG: array to: INpath];
 	
@@ -16033,7 +16039,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		@try
 		{
 			NSString *dbFolder = [self localDocumentsDirectory];
-			NSString *INpath = [dbFolder stringByAppendingPathComponent:INCOMINGPATH];
+			NSString *INpath = [self INCOMINGPATH];
 			NSString *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH];
 			NSString *OUTpath = [dbFolder stringByAppendingPathComponent:DATABASEPATH];
 			NSString *DECOMPRESSIONpath = [dbFolder stringByAppendingPathComponent:DECOMPRESSIONPATH];
@@ -16045,7 +16051,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if( bonjourDownloading == NO)
 			{
 				//need to resolve aliases and symbolic links
-				INpath = [self folderPathResolvingAliasAndSymLink:INpath];
 				OUTpath = [self folderPathResolvingAliasAndSymLink:OUTpath];
 				ERRpath = [self folderPathResolvingAliasAndSymLink:ERRpath];
 				DECOMPRESSIONpath = [self folderPathResolvingAliasAndSymLink:DECOMPRESSIONpath];
@@ -16068,7 +16073,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					NSString *originalPath = srcPath;
 					NSString *lastPathComponent = [srcPath lastPathComponent];
 					
-					if ([[lastPathComponent uppercaseString] isEqualToString:@".DS_STORE"])
+					if ([[lastPathComponent uppercaseString] hasSuffix:@".DS_STORE"])
 						continue;
 					
 					if ( [lastPathComponent length] > 0 && [lastPathComponent characterAtIndex: 0] == '.')
@@ -16112,7 +16117,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 							if( [dirContent count] == 0 && !isAlias) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
 							if( [dirContent count] == 1)
 							{
-								if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+								if( [[[dirContent objectAtIndex: 0] uppercaseString] hasSuffix:@".DS_STORE"])
+									[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
 							}
 						}
 						else if( fattrs != nil && [[fattrs objectForKey:NSFileBusy] boolValue] == NO && [[fattrs objectForKey:NSFileSize] longLongValue] > 0)
@@ -16404,7 +16410,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( [BrowserController isHardDiskFull])
 	{
 		// Kill the incoming directory
-		[[NSFileManager defaultManager] removeItemAtPath: [[self localDocumentsDirectory] stringByAppendingPathComponent: INCOMINGPATH] error: nil];
+		[[NSFileManager defaultManager] removeItemAtPath: [self INCOMINGPATH] error: nil];
 		
 		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"WARNING", nil) description: NSLocalizedString(@"Hard Disk is Full ! Cannot accept more files.", nil) name:@"newfiles"];
 	}
@@ -18471,7 +18477,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( [filesArray count])
 	{
-		NSString *incomingFolder = [[self documentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+		NSString *incomingFolder = [self INCOMINGPATH];
 		
 		for( NSString *path in filesArray)
 		{
@@ -19086,7 +19092,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[attr addFrame:subdata];
 					[dcmObject setAttribute:attr];
 					
-					NSString	*tempFilename = [[self documentsDirectory] stringByAppendingPathComponent: [NSString stringWithFormat:@"%@%d.dcm", INCOMINGPATH, i]];
+					NSString *tempFilename = [[self INCOMINGPATH] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d.dcm", i]];
 					[dcmObject writeToFile:tempFilename withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 				} 
 			}
@@ -20742,6 +20748,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"addNewIncomingFilesToDefaultDBOnly"])
 	{
 		NSString *defaultPath = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
+		
 		strcpy( cfixedIncomingDirectory, [defaultPath UTF8String]);
 	}
 	else strcpy( cfixedIncomingDirectory, [fixedDocumentsDirectory UTF8String]);
@@ -20755,7 +20762,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	r = [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: [NSString stringWithFormat:@"%s/%s", cfixedIncomingDirectory, "INCOMING.noindex"] error: nil];
 	if( r == nil)
+	{
 		r = [NSString stringWithFormat:@"%s/%s", cfixedIncomingDirectory, "INCOMING.noindex"];
+		r = [self folderPathResolvingAliasAndSymLink: r];
+	}
 	strcpy( cfixedIncomingNoIndexDirectory, [r UTF8String]);
 	
 	return fixedDocumentsDirectory;
@@ -20790,6 +20800,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (char *) cfixedIncomingNoIndexDirectory
 { return cfixedIncomingNoIndexDirectory; }
+
+- (NSString*) INCOMINGPATH
+{
+	return [self folderPathResolvingAliasAndSymLink: [[self documentsDirectory] stringByAppendingPathComponent: @"/INCOMING.noindex/"]];
+}
 
 + (NSString *) defaultDocumentsDirectory
 {

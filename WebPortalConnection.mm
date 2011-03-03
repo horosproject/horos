@@ -64,8 +64,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define INCOMINGPATH @"/INCOMING.noindex/"
-
 
 // TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
 
@@ -654,7 +652,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 {
 	int inc = 1;
 	NSString *file;
-	NSString *root = [[[BrowserController currentBrowser] localDocumentsDirectory] stringByAppendingPathComponent:INCOMINGPATH];
+	NSString *root = [[BrowserController currentBrowser] INCOMINGPATH];
 	NSMutableArray *filesArray = [NSMutableArray array];
 	
 	if ([[POSTfilename pathExtension] isEqualToString: @"zip"] || [[POSTfilename pathExtension] isEqualToString: @"osirixzip"])
