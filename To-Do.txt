@@ -20,11 +20,13 @@
 - Web Server: Include previous study for specific patients
 - Web Server: key images for studies (unsorted)
 - Web Server: A list of JPEG, instead of a quicktime movie, if number of images < 20
+- This is the last version to support MacOS 10.5, please upgrade to 10.6 or 10.7 !
 
 - DICOM Listener TLS? -> different syntax transfer settings
 - CPR doc
 - CPR Transverse export: preview, orientation & origin for plane
 - I defined a 2x2 series tiling for MG studies. With 3.9b4 MG are opened with a 1x1 tiling....
+- lock dcmmkdir if not 10.6
 
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: add temporary user email for admins
