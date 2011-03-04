@@ -2524,7 +2524,19 @@ static float deg2rad = 3.14159265358979/180.0;
 						[dicomExport setSigned:NO];
 						
 						[dicomExport setDefaultWWWL:windowWidth :windowLevel];
+						
 						[dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
+						
+						
+						
+//						N3AffineTransform *volumeTransform = [curvedVolumeData volumeTransform];
+//						
+//						float cosinesMatrix[ 9];
+//						float planeOrigin[ 3];
+//						
+//						[dicomExport setOrientation: cosinesMatrix];
+//						[dicomExport setPosition: planeOrigin];
+						
 						
 						f = [dicomExport writeDCMFile: nil];
 						if( f == nil)
