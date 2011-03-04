@@ -2152,61 +2152,26 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     glColor4d( pathRed, pathGreen, pathBlue, 1.0);
     above = YES;
     
+    [flattenedBezierPath addEndpointsAtIntersectionsWithPlane:N3PlaneMake(N3VectorMake(0, 0, 1.0), N3VectorMake(0, 0, 1))];
+    [flattenedBezierPath addEndpointsAtIntersectionsWithPlane:N3PlaneMake(N3VectorMake(0, 0, 0.5), N3VectorMake(0, 0, 1))];
+    [flattenedBezierPath addEndpointsAtIntersectionsWithPlane:N3PlaneMake(N3VectorMake(0, 0, -0.5), N3VectorMake(0, 0, 1))];
+    [flattenedBezierPath addEndpointsAtIntersectionsWithPlane:N3PlaneMake(N3VectorMake(0, 0, -1.0), N3VectorMake(0, 0, 1))];
+    
     glLineWidth(2.0);
     glBegin(GL_LINE_STRIP);
     for (i = 0; i < [flattenedBezierPath elementCount]; i++) { // draw the line segments
         [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
         
 		
-		if( fabs( vector.z) <= 0.5)
-		{
+        if(ABS(vector.z) <= 0.5) {
 			glColor4d( pathRed, pathGreen, pathBlue, 1.0);
-		} else {
+		} else if(ABS(vector.z) >= 1.0){
 			glColor4d( pathRed, pathGreen, pathBlue, 0.2);
-		}
-		
-		if( vector.z <= 0.000001 != above)
-		{
-            if (i > 0) {
-                [flattenedBezierPath elementAtIndex:i-1 control1:NULL control2:NULL endpoint:&prevVector];
-                
-                x = vector.z/(vector.z-prevVector.z);
-                middleVector = N3VectorAdd(N3VectorScalarMultiply(prevVector, x), N3VectorScalarMultiply(vector, 1.0-x));
-                glVertex2d(middleVector.x, middleVector.y);
-            }
-			
-            above = !above;
-           
-			
-            
-            if (i > 0) {
-                glVertex2d(middleVector.x, middleVector.y);
-            }
+		} else {
+            glColor4d( pathRed, pathGreen, pathBlue, ABS(vector.z)*-1.6 + 1.8);
         }
-		
-		
-//        if (vector.z <= 0.000001 != above)
-//		{
-//            if (i > 0) {
-//                [flattenedBezierPath elementAtIndex:i-1 control1:NULL control2:NULL endpoint:&prevVector];
-//                
-//                x = vector.z/(vector.z-prevVector.z);
-//                middleVector = CPRVectorAdd(CPRVectorScalarMultiply(prevVector, x), CPRVectorScalarMultiply(vector, 1.0-x));
-//                glVertex2d(middleVector.x, middleVector.y);
-//            }
-//			
-//            above = !above;
-//            if (above) {
-//                glColor4d( pathRed, pathGreen, pathBlue, 1.0);
-//            } else {
-//                glColor4d( pathRed, pathGreen, pathBlue, 0.3);
-//            }
-//            
-//            if (i > 0) {
-//                glVertex2d(middleVector.x, middleVector.y);
-//            }
-//        }
-        
+
+		        
         glVertex2d(vector.x, vector.y);
     }
     glEnd();

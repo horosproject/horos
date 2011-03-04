@@ -1159,10 +1159,7 @@ extern int splitPosition[ 2];
         request.bezierPath = _curvedPath.bezierPath;
         request.initialNormal = _curvedPath.initialNormal;
         request.projectionMode = _clippingRangeMode;
-        request.vertical = NO;
-        request.bezierStartPosition = 0;
-        request.bezierEndPosition = 1;
-        request.middlePosition = 0;
+//        request.vertical = NO;
         
         if ([_lastRequest isEqual:request] == NO) {
 			if (request.slabWidth < 2) {

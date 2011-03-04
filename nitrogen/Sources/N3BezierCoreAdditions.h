@@ -52,6 +52,7 @@ CFIndex N3BezierCoreSegmentLengths(N3BezierCoreRef bezierCore, CGFloat *lengths,
 CFIndex N3BezierCoreCountIntersectionsWithPlane(N3BezierCoreRef bezierCore, N3Plane plane);
 CFIndex N3BezierCoreIntersectionsWithPlane(N3BezierCoreRef bezierCore, N3Plane plane, N3VectorArray intersections, CGFloat *relativePositions, CFIndex numVectors);
 
+N3MutableBezierCoreRef N3BezierCoreCreateMutableWithEndpointsAtPlaneIntersections(N3BezierCoreRef bezierCore, N3Plane plane); // creates a N3BezierCore that is sure to have an endpoint every time the bezier core intersects the plane. If the input bezier is not already flattened, this routine will flatten it first
 
 CF_EXTERN_C_END
 

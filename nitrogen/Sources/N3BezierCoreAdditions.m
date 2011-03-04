@@ -999,8 +999,49 @@ CFIndex N3BezierCoreIntersectionsWithPlane(N3BezierCoreRef bezierCore, N3Plane p
 }
 
 
+N3MutableBezierCoreRef N3BezierCoreCreateMutableWithEndpointsAtPlaneIntersections(N3BezierCoreRef bezierCore, N3Plane plane)
+{
+    N3BezierCoreRef flattenedBezierCore;
+	N3BezierCoreIteratorRef bezierCoreIterator;
+    N3MutableBezierCoreRef newBezierCore;
+	N3BezierCoreSegmentType segmentType;
+    N3Vector endpoint;
+    N3Vector prevEndpoint;
+	N3Vector segment;
+	N3Vector intersection;
+    
+    if (N3BezierCoreSegmentCount(bezierCore) < 2) {
+        return N3BezierCoreCreateMutableCopy(bezierCore);
+    }
+    
+    if (N3BezierCoreHasCurve(bezierCore)) {
+        flattenedBezierCore = N3BezierCoreCreateMutableCopy(bezierCore);
+        N3BezierCoreFlatten((N3MutableBezierCoreRef)flattenedBezierCore, N3BezierDefaultFlatness);
+    } else {
+        flattenedBezierCore = N3BezierCoreRetain(bezierCore); 
+    }
+    bezierCoreIterator = N3BezierCoreIteratorCreateWithBezierCore(flattenedBezierCore);
+    N3BezierCoreRelease(flattenedBezierCore);
+    flattenedBezierCore = NULL;
+    newBezierCore = N3BezierCoreCreateMutable();
+    
+    N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, NULL, NULL, &prevEndpoint);
+    N3BezierCoreAddSegment(newBezierCore, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, prevEndpoint);
 
-
+    while (!N3BezierCoreIteratorIsAtEnd(bezierCoreIterator)) {
+		segmentType = N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, NULL, NULL, &endpoint);
+		if (segmentType != N3MoveToBezierCoreSegmentType && N3PlaneIsBetweenVectors(plane, endpoint, prevEndpoint)) {
+            intersection = N3LineIntersectionWithPlane(N3LineMakeFromPoints(prevEndpoint, endpoint), plane);
+            N3BezierCoreAddSegment(newBezierCore, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, intersection);
+		}
+        
+        N3BezierCoreAddSegment(newBezierCore, segmentType, N3VectorZero, N3VectorZero, endpoint);
+		prevEndpoint = endpoint;
+	}
+    
+    N3BezierCoreIteratorRelease(bezierCoreIterator);
+    return newBezierCore;
+}
 
 
 

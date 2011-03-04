@@ -72,12 +72,7 @@
 @synthesize initialNormal = _initialNormal;
 
 @synthesize projectionMode = _projectionMode;
-@synthesize vertical = _vertical;
-
-@synthesize bezierStartPosition = _bezierStartPosition;
-@synthesize bezierEndPosition = _bezierEndPosition;
-
-@synthesize middlePosition = _middlePosition;
+// @synthesize vertical = _vertical;
 
 - (id)init
 {
@@ -95,11 +90,7 @@
     copy.bezierPath = _bezierPath;
     copy.initialNormal = _initialNormal;
     copy.projectionMode = _projectionMode;
-    copy.vertical = _vertical;
-    copy.bezierStartPosition = _bezierStartPosition;
-    copy.bezierEndPosition = _bezierEndPosition;
-    copy.middlePosition = _middlePosition;
-    
+//    copy.vertical = _vertical;
     return copy;
 }
 
@@ -112,11 +103,8 @@
         if ([super isEqual:object] &&
             [_bezierPath isEqualToBezierPath:straightenedGeneratorRequest.bezierPath] &&
             N3VectorEqualToVector(_initialNormal, straightenedGeneratorRequest.initialNormal) &&
-            _projectionMode == straightenedGeneratorRequest.projectionMode &&
-            _vertical == straightenedGeneratorRequest.vertical &&
-            _bezierStartPosition == straightenedGeneratorRequest.bezierStartPosition &&
-            _bezierEndPosition == straightenedGeneratorRequest.bezierEndPosition &&
-            _middlePosition == straightenedGeneratorRequest.middlePosition) {
+            _projectionMode == straightenedGeneratorRequest.projectionMode /*&&*/ 
+            /* _vertical == straightenedGeneratorRequest.vertical */) {
             return YES;
         }
     }
@@ -125,7 +113,7 @@
 
 - (NSUInteger)hash // a not that great hash function....
 {
-    return [super hash] ^ [_bezierPath hash] ^ (NSUInteger)N3VectorLength(_initialNormal) ^ (NSUInteger)_projectionMode ^ (NSUInteger)_vertical ^ *((NSUInteger *)&_bezierStartPosition) ^ *((NSUInteger *)&_bezierEndPosition) ^ *((NSUInteger *)&_middlePosition);
+    return [super hash] ^ [_bezierPath hash] ^ (NSUInteger)N3VectorLength(_initialNormal) ^ (NSUInteger)_projectionMode /* ^ (NSUInteger)_vertical */;
 }
 
 

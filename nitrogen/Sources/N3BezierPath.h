@@ -52,6 +52,7 @@ typedef NSInteger N3BezierPathElement;
 - (N3BezierPath *)bezierPathBySubdividing:(CGFloat)maxSegmentLength;
 - (N3BezierPath *)bezierPathByApplyingTransform:(N3AffineTransform)transform;
 - (N3BezierPath *)bezierPathByAppendingBezierPath:(N3BezierPath *)bezierPath connectPaths:(BOOL)connectPaths;
+- (N3BezierPath *)bezierPathByAddingEndpointsAtIntersectionsWithPlane:(N3Plane)plane; // will  flatten the path if it is not already flattened
 - (N3BezierPath *)outlineBezierPathAtDistance:(CGFloat)distance initialNormal:(N3Vector)initalNormal spacing:(CGFloat)spacing;
 
 - (NSInteger)elementCount;
@@ -95,6 +96,7 @@ typedef NSInteger N3BezierPathElement;
 - (void)subdivide:(CGFloat)maxSegmentLength;
 - (void)applyAffineTransform:(N3AffineTransform)transform;
 - (void)appendBezierPath:(N3BezierPath *)bezierPath connectPaths:(BOOL)connectPaths;
+- (void)addEndpointsAtIntersectionsWithPlane:(N3Plane)plane; // will  flatten the path if it is not already flattened
 - (void)setVectorsForElementAtIndex:(NSInteger)index control1:(N3Vector)control1 control2:(N3Vector)control2 endpoint:(N3Vector)endpoint;
 
 @end

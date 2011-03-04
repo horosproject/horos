@@ -255,6 +255,14 @@
     return newBezierPath;
 }
 
+- (N3BezierPath *)bezierPathByAddingEndpointsAtIntersectionsWithPlane:(N3Plane)plane // will flatten the path if it is not already flattened
+{
+    N3MutableBezierPath *newBezierPath;
+    newBezierPath = [[self mutableCopy] autorelease];
+    [newBezierPath addEndpointsAtIntersectionsWithPlane:plane];
+    return newBezierPath;
+}    
+
 - (N3BezierPath *)bezierPathByAppendingBezierPath:(N3BezierPath *)bezierPath connectPaths:(BOOL)connectPaths;
 {
     N3MutableBezierPath *newBezierPath;
@@ -569,6 +577,16 @@
 {
     [self _clearRandomAccessor];
     N3BezierCoreAppendBezierCore(_bezierCore, [bezierPath N3BezierCore], connectPaths);
+}
+
+- (void)addEndpointsAtIntersectionsWithPlane:(N3Plane)plane // will  flatten the path if it is not already flattened
+{
+    N3MutableBezierCoreRef newBezierCore;
+    
+    [self _clearRandomAccessor];
+    newBezierCore = N3BezierCoreCreateMutableWithEndpointsAtPlaneIntersections(_bezierCore, plane);
+    N3BezierCoreRelease(_bezierCore);
+    _bezierCore = newBezierCore;
 }
 
 - (void)_clearRandomAccessor

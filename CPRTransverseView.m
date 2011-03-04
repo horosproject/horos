@@ -466,10 +466,7 @@ extern int CLUTBARS, ANNOTATIONS;
         request.slabSampleDistance = 0;
         request.bezierPath = [self _bezierAndInitialNormalForRequest:&initialNormal];
         request.initialNormal = initialNormal;
-        request.vertical = NO;
-        request.bezierStartPosition = 0;
-        request.bezierEndPosition = 1;
-        request.middlePosition = 0;
+//        request.vertical = NO;
         
         if ([_lastRequest isEqual:request] == NO) {
 			CPRVolumeData *curvedVolume;

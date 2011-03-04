@@ -53,12 +53,7 @@
     N3Vector _initialNormal;
     
     CPRProjectionMode _projectionMode;
-    BOOL _vertical;
-    
-    CGFloat _bezierStartPosition;
-    CGFloat _bezierEndPosition;
-    
-    CGFloat _middlePosition;
+//    BOOL _vertical; // it would be cool to implement this one day
 }
 
 @property (nonatomic, readwrite, retain) N3BezierPath *bezierPath;
@@ -67,12 +62,7 @@
 @property (nonatomic, readwrite, assign) CPRProjectionMode projectionMode;
 
 // these are not yet implemented, depending on how we want to implement panning and zooming of the curved MPR, they could be useful 
-@property (nonatomic, readwrite, assign) BOOL vertical; // the straightened bezier is horizantal across the screen, or vertical
-
-@property (nonatomic, readwrite, assign) CGFloat bezierStartPosition; // these values are in [0, 1] they correspond to where on the bezier the image starts
-@property (nonatomic, readwrite, assign) CGFloat bezierEndPosition;
-
-@property (nonatomic, readwrite, assign) CGFloat middlePosition; // horrible name, change me later... value corresponding to where the middle of the straighten segment will be on the generated image [-1, -1] corresond to values that are on the image 
+// @property (nonatomic, readwrite, assign) BOOL vertical; // the straightened bezier is horizantal across the screen, or vertical it would be cool to implement this one day
 
 - (BOOL)isEqual:(id)object;
 
