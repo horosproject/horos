@@ -26,6 +26,7 @@
 #import "CPRController.h"
 #import "ROI.h"
 #import "Notifications.h"
+#import "StringTexture.h"
 
 extern int CLUTBARS, ANNOTATIONS;
 
@@ -87,6 +88,9 @@ extern int CLUTBARS, ANNOTATIONS;
     [_lastRequest release];
     _lastRequest = nil;
     
+	[stanStringAttrib release];
+	[stringTex release];
+	
     [super dealloc];
 }
 
@@ -380,6 +384,45 @@ extern int CLUTBARS, ANNOTATIONS;
         glVertex2f(  widthhalf, -heighthalf);
 		glEnd();
 	}
+	
+	if( stanStringAttrib == nil)
+	{
+		stanStringAttrib = [[NSMutableDictionary dictionary] retain];
+		[stanStringAttrib setObject:[NSFont fontWithName:@"Helvetica" size: 12.0] forKey:NSFontAttributeName];
+		[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
+	}
+	
+	if( stringTex == nil)
+	{
+		NSString *textValue = nil;
+		switch( _sectionType)
+		{
+			case CPRTransverseViewCenterSectionType: textValue = @"B"; break;
+			case CPRTransverseViewLeftSectionType: textValue = @"A"; break;
+			case CPRTransverseViewRightSectionType: textValue = @"C"; break;
+		}
+		
+		stringTex = [[StringTexture alloc] initWithString: textValue
+										   withAttributes: stanStringAttrib
+											withTextColor: [NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+											 withBoxColor: [NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+										  withBorderColor: [NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+		[stringTex setAntiAliasing: YES];
+	}
+	
+	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+	glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
+
+	glEnable (GL_TEXTURE_RECTANGLE_EXT);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	
+	NSPoint anchor = NSMakePoint( drawingFrameRect.size.width / -2.0f, drawingFrameRect.size.height /-2.0f);
+	
+	glColor4f (0, 0, 0, 1);	[stringTex drawAtPoint:NSMakePoint( anchor.x+1, anchor.y+1) ratio: 1];
+	glColor4f (1, 1, 0, 1);	[stringTex drawAtPoint:NSMakePoint( anchor.x, anchor.y) ratio: 1];
+	
+	glDisable (GL_TEXTURE_RECTANGLE_EXT);
 }
 
 

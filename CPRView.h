@@ -30,6 +30,7 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 @class CPRCurvedPath;
 @class CPRDisplayInfo;
 @class CPRStraightenedGeneratorRequest;
+@class StringTexture;
 
 @interface CPRView : DCMView <CPRGeneratorDelegate>
 {
@@ -98,6 +99,9 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 	
 	BOOL _displayCrossLines;
 	BOOL displayTransverseLines;
+	
+	NSMutableDictionary *stanStringAttrib;
+	StringTexture *stringTex;
 }
 
 @property (nonatomic, readwrite, assign) id<CPRViewDelegate> delegate;

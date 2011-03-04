@@ -28,6 +28,7 @@ typedef NSInteger CPRTransverseViewSection;
 @class CPRCurvedPath;
 @class CPRVolumeData;
 @class CPRStraightenedGeneratorRequest;
+@class StringTexture;
 
 @interface CPRTransverseView : DCMView <CPRGeneratorDelegate> {
     id<CPRViewDelegate> _delegate;
@@ -49,6 +50,9 @@ typedef NSInteger CPRTransverseViewSection;
 	CGFloat _renderingScale;
 	
 	float previousScale;
+	
+	NSMutableDictionary *stanStringAttrib;
+	StringTexture *stringTex;
 }
 
 @property (nonatomic, readwrite, assign) id<CPRViewDelegate> delegate;

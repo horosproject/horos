@@ -26,9 +26,10 @@
 #import "CPRController.h"
 #import "ROI.h"
 #import "Notifications.h"
+#import "StringTexture.h"
 
 extern BOOL frameZoomed;
-extern int splitPosition[ 2];
+extern int splitPosition[ 3];
 
 @interface _CPRViewPlaneRun : NSObject
 {
@@ -199,6 +200,9 @@ extern int splitPosition[ 2];
     
 	[_mousePlanePointsInPix release];
 	_mousePlanePointsInPix = nil;
+	
+	[stanStringAttrib release];
+	[stringTex release];
 	
     [super dealloc];
 }
@@ -551,33 +555,73 @@ extern int splitPosition[ 2];
 	}
 	else if( displayTransverseLines)
 	{
+		N3Vector lineAStart, lineAEnd, lineBStart, lineBEnd, lineCStart, lineCEnd;
+		
 		// draw the transverse section lines
 		glColor4d(1.0, 1.0, 0.0, 1.0);
 		transverseSectionPosition = _curvedPath.transverseSectionPosition;
-		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
-		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
+		lineBStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
+		lineBEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
 		glLineWidth(2.0);
 		glBegin(GL_LINE_STRIP);
-		glVertex2f(lineStart.x, lineStart.y);
-		glVertex2f(lineEnd.x, lineEnd.y);
+		glVertex2f(lineBStart.x, lineBStart.y);
+		glVertex2f(lineBEnd.x, lineBEnd.y);
 		glEnd();
-		
+				
 		leftTransverseSectionPosition = _curvedPath.leftTransverseSectionPosition;
-		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
-		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
+		lineAStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
+		lineAEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
 		glLineWidth(1.0);
 		glBegin(GL_LINE_STRIP);
-		glVertex2f(lineStart.x, lineStart.y);
-		glVertex2f(lineEnd.x, lineEnd.y);
+		glVertex2f(lineAStart.x, lineAStart.y);
+		glVertex2f(lineAEnd.x, lineAEnd.y);
 		glEnd();
 		
 		rightTransverseSectionPosition = _curvedPath.rightTransverseSectionPosition;
-		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
-		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
+		lineCStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
+		lineCEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
 		glBegin(GL_LINE_STRIP);
-		glVertex2f(lineStart.x, lineStart.y);
-		glVertex2f(lineEnd.x, lineEnd.y);
+		glVertex2f(lineCStart.x, lineCStart.y);
+		glVertex2f(lineCEnd.x, lineCEnd.y);
 		glEnd();
+		
+		// --- Text
+		if( stanStringAttrib == nil)
+		{
+			stanStringAttrib = [[NSMutableDictionary dictionary] retain];
+			[stanStringAttrib setObject:[NSFont fontWithName:@"Helvetica" size: 12.0] forKey:NSFontAttributeName];
+			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
+		}
+		
+		if( stringTex == nil)
+		{
+			stringTex = [[StringTexture alloc] initWithString: @"A"
+														  withAttributes:stanStringAttrib
+														   withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+															withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+														 withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+			[stringTex setAntiAliasing: YES];
+		}
+		
+		glEnable (GL_TEXTURE_RECTANGLE_EXT);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		
+		float quarter = -(lineAStart.y - lineAEnd.y)/3.;
+		
+		[stringTex setString: @"A" withAttributes:stanStringAttrib];
+		glColor4f (0, 0, 0, 1);	[stringTex drawAtPoint:NSMakePoint(lineAStart.x+1 - [stringTex frameSize].width, quarter+lineAStart.y+1) ratio: 1];
+		glColor4f (1, 1, 0, 1);	[stringTex drawAtPoint:NSMakePoint(lineAStart.x - [stringTex frameSize].width, quarter+lineAStart.y) ratio: 1];
+		
+		[stringTex setString: @"B" withAttributes:stanStringAttrib];
+		glColor4f (0, 0, 0, 1);	[stringTex drawAtPoint:NSMakePoint(lineBStart.x+1 - [stringTex frameSize].width/2., quarter+lineBStart.y+1) ratio: 1];
+		glColor4f (1, 1, 0, 1);	[stringTex drawAtPoint:NSMakePoint(lineBStart.x - [stringTex frameSize].width/2., quarter+lineBStart.y) ratio: 1];
+		
+		[stringTex setString: @"C" withAttributes:stanStringAttrib];
+		glColor4f (0, 0, 0, 1);	[stringTex drawAtPoint:NSMakePoint(lineCStart.x+1, quarter+lineCStart.y+1) ratio: 1];
+		glColor4f (1, 1, 0, 1);	[stringTex drawAtPoint:NSMakePoint(lineCStart.x, quarter+lineCStart.y) ratio: 1];
+		
+		glDisable (GL_TEXTURE_RECTANGLE_EXT);
 	}
 	
 	if( [[self windowController] displayMousePosition] == YES)
