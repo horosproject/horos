@@ -2104,7 +2104,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     CGFloat spacing;
     CGFloat x;
     NSInteger i;
-    BOOL above;
     CGLContextObj cgl_ctx;
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
@@ -2149,9 +2148,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	float pathGreen = [windowController.curvedPathColor greenComponent];
 	float pathBlue = [windowController.curvedPathColor blueComponent];
 	
-    glColor4d( pathRed, pathGreen, pathBlue, 1.0);
-    above = YES;
-    
     [flattenedBezierPath addEndpointsAtIntersectionsWithPlane:N3PlaneMake(N3VectorMake(0, 0, 1.0), N3VectorMake(0, 0, 1))];
     [flattenedBezierPath addEndpointsAtIntersectionsWithPlane:N3PlaneMake(N3VectorMake(0, 0, 0.5), N3VectorMake(0, 0, 1))];
     [flattenedBezierPath addEndpointsAtIntersectionsWithPlane:N3PlaneMake(N3VectorMake(0, 0, -0.5), N3VectorMake(0, 0, 1))];
@@ -2162,7 +2158,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     for (i = 0; i < [flattenedBezierPath elementCount]; i++) { // draw the line segments
         [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
         
-		
         if(ABS(vector.z) <= 0.5) {
 			glColor4d( pathRed, pathGreen, pathBlue, 1.0);
 		} else if(ABS(vector.z) >= 1.0){
@@ -2170,7 +2165,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		} else {
             glColor4d( pathRed, pathGreen, pathBlue, ABS(vector.z)*-1.6 + 1.8);
         }
-
 		        
         glVertex2d(vector.x, vector.y);
     }
