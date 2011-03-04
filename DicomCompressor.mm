@@ -13,7 +13,7 @@
  =========================================================================*/
 
 #import "DicomCompressor.h"
-#import <OsiriX Headers/NSFileManager+N2.h>
+#import "NSFileManager+N2.h"
 #include <algorithm>
 
 

@@ -15,8 +15,8 @@
 #import "BrowserController+Activity.h"
 #import "ThreadsManager.h"
 #import "ThreadCell.h"
-#import <OsiriX Headers/NSImage+N2.h>
-#import <OsiriX Headers/N2Operators.h>
+#import "NSImage+N2.h"
+#import "N2Operators.h"
 #import <mach/mach_port.h>
 #import <IOKit/IOKitLib.h>
 #import <IOKit/storage/IOBlockStorageDriver.h>

@@ -15,8 +15,8 @@
 #import "ThreadCell.h"
 #import "ThreadsManager.h"
 #import "BrowserController.h"
-#import <OsiriX Headers/NSString+N2.h>
-#import <OsiriX Headers/NSThread+N2.h>
+#import "NSString+N2.h"
+#import "NSThread+N2.h"
 
 
 @implementation ThreadCell
