@@ -24,8 +24,6 @@
 
 - DICOM Listener TLS? -> different syntax transfer settings
 - CPR doc
-- CPR Transverse export: orientation & origin for plane
-- Test memory leaks ROI, Web Server
 
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: add temporary user email for admins
@@ -33,7 +31,6 @@
 - Web Server: flash poor performances with large series?
 - Web Server: add uploaded file to list of specific studies
 
-- CPR: export transverse series, at fixed interval
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR
 - Two Steps DICOM Editing
 - Tool to create a new series from key images of a study
