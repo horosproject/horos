@@ -693,6 +693,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	NSString *previousPatientUID = nil;
 	NSString *previousStudyInstanceUID = nil;
 	
+	[self fillSessionAndUserVariables];
+	
 	// We want to find this file after db insert: get studyInstanceUID, patientUID and instanceSOPUID
 	for ( NSString *oFile in filesArray)
 	{
@@ -846,42 +848,53 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 					
 					@try
 					{
-						NSArray* postInfoComponents = [postInfo componentsSeparatedByString:@"; filename="];
-						postInfoComponents = [[postInfoComponents lastObject] componentsSeparatedByString:@"\""];
-						postInfoComponents = [[postInfoComponents objectAtIndex:1] componentsSeparatedByString:@"\\"];
+						NSRange filenameRange = [postInfo rangeOfString: @"filename"];
+						NSString *extension = nil;
 						
-						NSString *extension = [[postInfoComponents lastObject] pathExtension];
-						
-						NSString* root = @"/tmp/";
-						
-						int inc = 1;
-						
-						do
+						if( filenameRange.location != NSNotFound)
 						{
-							POSTfilename = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebPortal Upload %d", inc++]] stringByAppendingPathExtension: extension];
+							NSString *filename = [postInfo substringFromIndex: filenameRange.location + filenameRange.length];
+							
+							NSArray *components = [filename componentsSeparatedByString: @"\""];
+							
+							if( components.count == 3)
+								extension = [[components objectAtIndex: 1] pathExtension];
+							
+							NSString* root = @"/tmp/";
+							
+							int inc = 1;
+							
+							do
+							{
+								POSTfilename = [[root stringByAppendingPathComponent: [NSString stringWithFormat: @"WebPortal Upload %d", inc++]] stringByAppendingPathExtension: extension];
+							}
+							while( [[NSFileManager defaultManager] fileExistsAtPath: POSTfilename]);
+							
+							[POSTfilename retain];
+							
+							NSRange fileDataRange = {dataStartIndex, [postDataChunk length] - dataStartIndex};
+							
+							BOOL eof = [self checkEOF: postDataChunk range: &fileDataRange];
+							
+							[[NSFileManager defaultManager] createFileAtPath:POSTfilename contents: [postDataChunk subdataWithRange:fileDataRange] attributes:nil];
+							NSFileHandle *file = [[NSFileHandle fileHandleForUpdatingAtPath:POSTfilename] retain];
+							
+							if (file)
+							{
+								[file seekToEndOfFile];
+								[multipartData addObject:file];
+							}
+							else NSLog( @"***** Failed to create file - processDataChunk : %@", POSTfilename);
+							
+							if (eof)
+							{
+								// Finished in one short? No multiparts finally...
+								[self closeFileHandleAndClean];
+								[self supportsPOST: nil withSize: 0];
+							}
+							
+							[file release];
 						}
-						while( [[NSFileManager defaultManager] fileExistsAtPath: POSTfilename]);
-						
-						[POSTfilename retain];
-						
-						NSRange fileDataRange = {dataStartIndex, [postDataChunk length] - dataStartIndex};
-						
-						BOOL eof = [self checkEOF: postDataChunk range: &fileDataRange];
-						
-						[[NSFileManager defaultManager] createFileAtPath:POSTfilename contents: [postDataChunk subdataWithRange:fileDataRange] attributes:nil];
-						NSFileHandle *file = [[NSFileHandle fileHandleForUpdatingAtPath:POSTfilename] retain];
-						
-						if (file)
-						{
-							[file seekToEndOfFile];
-							[multipartData addObject:file];
-						}
-						else NSLog( @"***** Failed to create file - processDataChunk : %@", POSTfilename);
-						
-						if (eof)
-							[self closeFileHandleAndClean];
-						
-						[file release];
 					}
 					@catch (NSException *e)
 					{
@@ -919,7 +932,10 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		}
 		
 		if (eof)
+		{
 			[self closeFileHandleAndClean];
+			[self supportsPOST: nil withSize: 0];
+		}
 	}
 }
 
@@ -931,9 +947,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	return [super onSocketWillConnect:sock];
 }
 
--(void)replyToHTTPRequest {
-	self.response = [[[WebPortalResponse alloc] initWithWebPortalConnection:self] autorelease];
-	
+- (void) fillSessionAndUserVariables
+{
 	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
 	NSString* url = [[(id)CFHTTPMessageCopyRequestURL(request) autorelease] description];
 	DLog(@"HTTP %@ %@", method, url);
@@ -994,6 +1009,12 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	if (session && [session objectForKey:SessionUsernameKey])
 		self.user = [self.portal.database userWithName:[session objectForKey:SessionUsernameKey]];
+}
+
+-(void)replyToHTTPRequest {
+	self.response = [[[WebPortalResponse alloc] initWithWebPortalConnection:self] autorelease];
+	
+	[self fillSessionAndUserVariables];
 	
 	[response.tokens setObject:NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title") forKey:@"PageTitle"]; // the default title
 	[response.tokens setObject:[WebPortalProxy createWithObject:self transformer:[InfoTransformer create]] forKey:@"Info"];
