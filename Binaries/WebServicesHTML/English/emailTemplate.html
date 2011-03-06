@@ -15,7 +15,7 @@ A new radiology exam is available on your account. Click on the following URL to
 <ul>
 	%[FOREACH:Studies:Study%
 	<li>
-		<a href="%WebServerURL%/study?xid=%Study.XID%">%X:Study.date.DateTime% - %X:Study.studyName% (%X:Study.modality%)</a><br/>
+		<a href="%WebServerURL%/study?xid=%Study.XID%">%X:Study.date.DateTime% - %X:Study.studyName% (%X:Study.modality%)</a> - 
 		Link: <a href="%WebServerURL%/study?xid=%Study.XID%">%WebServerURL%/study?xid=%Study.XID%</a>
 	</li>
 	%]FOREACH:Studies:Study%
@@ -27,7 +27,6 @@ To view this entire list, including patients names, <a href="%WebServerURL%/stud
 <br/>
 Your username (%Destination.name%) and password are required to log on the web server.<br/>
 <br/>
-These studies can be downloaded as DICOM files, and directly reviewed on the OsiriX software, available for free at this address: <a href="http://www.osirix-viewer.com">http://www.osirix-viewer.com</a><br/>
 <br/>
 Sincerely,<br/>
 Your OsiriX Web Portal Administrator

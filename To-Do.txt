@@ -27,7 +27,6 @@
 
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: add temporary user email for admins
-- Web Server: test email notifications
 - Web Server: flash poor performances with large series?
 
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR
