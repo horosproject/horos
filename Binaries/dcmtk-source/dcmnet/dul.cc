@@ -1821,7 +1821,8 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
        ((int) from.sa_data[4]) & 0xff,
        ((int) from.sa_data[5]) & 0xff);
 
-    if (! dcmDisableGethostbyaddr.get()) remote = gethostbyaddr(&from.sa_data[2], 4, 2);
+//    if (! dcmDisableGethostbyaddr.get()) remote = gethostbyaddr(&from.sa_data[2], 4, 2);
+
     if (remote == NULL)
     {
         // reverse DNS lookup disabled or host not found, use numerical address

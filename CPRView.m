@@ -589,7 +589,7 @@ extern int splitPosition[ 3];
 		if( stanStringAttrib == nil)
 		{
 			stanStringAttrib = [[NSMutableDictionary dictionary] retain];
-			[stanStringAttrib setObject:[NSFont fontWithName:@"Helvetica" size: 12.0] forKey:NSFontAttributeName];
+			[stanStringAttrib setObject:[NSFont fontWithName:@"Helvetica" size: 14.0] forKey:NSFontAttributeName];
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 		}
 		
