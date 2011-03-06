@@ -388,6 +388,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers;
 - (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM size:(int) size;
 - (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM size:(int) size  views: (NSArray*) views viewsRect: (NSArray*) viewsRect;
+- (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM size:(int) size  views: (NSArray*) views viewsRect: (NSArray*) viewsRect exportSpacingAndOrigin: (BOOL) exportSpacingAndOrigin;
 - (NSImage*) exportNSImageCurrentImageWithSize:(int) size;
 - (void) setIndex:(short) index;
 - (void) setIndexWithReset:(short) index :(BOOL)sizeToFit;

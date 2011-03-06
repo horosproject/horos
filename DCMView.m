@@ -10027,6 +10027,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM size:(int) size  views: (NSArray*) views viewsRect: (NSArray*) viewsRect
 {
+	return [self exportDCMCurrentImage: exportDCM size: size views: views viewsRect: viewsRect exportSpacingAndOrigin: YES];
+}
+
+- (NSDictionary*) exportDCMCurrentImage: (DICOMExport*) exportDCM size:(int) size  views: (NSArray*) views viewsRect: (NSArray*) viewsRect exportSpacingAndOrigin: (BOOL) exportSpacingAndOrigin
+{
 	NSString *f = nil;
 	float o[ 9], imOrigin[ 3], imSpacing[ 2];
 	long width, height, spp, bpp;
@@ -10171,8 +10176,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[exportDCM setSlicePosition: location];
 		[self orientationCorrectedToView: o];
 		[exportDCM setOrientation: o];
-		[exportDCM setPosition: imOrigin];
-		[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
+		
+		if( exportSpacingAndOrigin)
+		{
+			[exportDCM setPosition: imOrigin];
+			[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
+		}
 		[exportDCM setPixelData: data samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
 		[exportDCM setModalityAsSource: NO];
 		

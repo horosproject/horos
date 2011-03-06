@@ -2329,16 +2329,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			}
 			else // CPR8BitRGBExportImageFormat
 			{
-				float pX = [[cprView curDCM] pixelSpacingX], pY = [[cprView curDCM] pixelSpacingY];
-				
-				// We cannot export theses values ! They are only correct for strict Y and X
-				[[cprView curDCM] setPixelSpacingX: 0];
-				[[cprView curDCM] setPixelSpacingY: 0];
-				
-				[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect]];
-				
-				[[cprView curDCM] setPixelSpacingX: pX];
-				[[cprView curDCM] setPixelSpacingY: pY];
+				[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: NO]];
 			}
 		}
 		else if (self.exportSequenceType == CPRSeriesExportSequenceType) // A 3D rotation or batch sequence
@@ -2409,16 +2400,7 @@ static float deg2rad = 3.14159265358979/180.0;
 						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 						[bottomTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 						
-						float pX = [[cprView curDCM] pixelSpacingX], pY = [[cprView curDCM] pixelSpacingY];
-						
-						// We cannot export theses values ! They are only correct for strict Y and X
-						[[cprView curDCM] setPixelSpacingX: 0];
-						[[cprView curDCM] setPixelSpacingY: 0];
-						
-						[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect]];
-						
-						[[cprView curDCM] setPixelSpacingX: pX];
-						[[cprView curDCM] setPixelSpacingY: pY];
+						[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: NO]];
 					}
 					
 					[pool release];
