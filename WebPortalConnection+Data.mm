@@ -607,7 +607,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 -(void)processMainHtml {
 //	if (!user || user.uploadDICOM.boolValue)
-//		[self supportsPOST:NULL withSize:0];
+//		[self resetPOST];
 	
 	NSMutableArray* albums = [NSMutableArray array];
 	for (NSArray* album in self.portal.dicomDatabase.albums) // TODO: badness here

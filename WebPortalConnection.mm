@@ -607,7 +607,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	return [super supportsMethod:method atPath:relativePath];
 }
 
-- (BOOL)supportsPOST:(NSString *)path withSize:(UInt64)contentLength
+- (void) resetPOST
 {
 	dataStartIndex = 0;
 	[multipartData release];
@@ -620,7 +620,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	[POSTfilename release];
 	POSTfilename = nil;
 	
-	return YES;
+	return;
 }
 
 - (BOOL) checkEOF:(NSData*) postDataChunk range: (NSRange*) r
@@ -813,7 +813,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	if (!postHeaderOK)
 	{
 		if (multipartData == nil)
-			[self supportsPOST: nil withSize: 0];
+			[self resetPOST];
 		
 		UInt16 separatorBytes = 0x0A0D;
 		NSData* separatorData = [NSData dataWithBytes:&separatorBytes length:2];
@@ -857,7 +857,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 							
 							NSArray *components = [filename componentsSeparatedByString: @"\""];
 							
-							if( components.count == 3)
+							if( components.count >= 3)
 								extension = [[components objectAtIndex: 1] pathExtension];
 							
 							NSString* root = @"/tmp/";
@@ -890,7 +890,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 							{
 								// Finished in one short? No multiparts finally...
 								[self closeFileHandleAndClean];
-								[self supportsPOST: nil withSize: 0];
+								[self resetPOST];
 							}
 							
 							[file release];
@@ -934,7 +934,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		if (eof)
 		{
 			[self closeFileHandleAndClean];
-			[self supportsPOST: nil withSize: 0];
+			[self resetPOST];
 		}
 	}
 }
@@ -943,7 +943,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 -(BOOL)onSocketWillConnect:(AsyncSocket *)sock
 {
-	[self supportsPOST:nil withSize:0];
+	[self resetPOST];
+	
 	return [super onSocketWillConnect:sock];
 }
 
