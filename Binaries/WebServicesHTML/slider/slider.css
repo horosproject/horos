@@ -1,0 +1,151 @@
+/*
+
+   Slider CSS, style as you please.
+
+   Note: The png images used for this demo were originally located at http://www.schillmania.com/
+
+   Remove the -moz & -khtml styles if you want the css to validate.
+   
+   Change the image paths to suit you installation.
+
+*/
+
+/* Styles for the horizontal slider */
+.fd-slider
+        {
+        position:relative;
+        width:100%;
+        height:20px;
+        text-align:center;
+        border:0 none;
+        text-decoration:none;
+        display:block;
+        -moz-user-select:none;
+        -khtml-user-select:none
+        cursor:pointer;
+        }
+.fd-slider-inner
+        {
+        position:relative;
+        display:block;
+        z-index:1;
+        height:18px;
+        text-align:left;
+        background:#fcfcfc;
+        border:1px solid #ccc;
+        }
+.fd-slider-bar
+        {
+        position:absolute;
+        display:block;
+        z-index:2;
+        height:2px;
+        border:1px solid #bbb;
+        border-bottom:1px solid #aaa;
+        border-right:1px solid #aaa;
+        background:#ddd;
+        margin:0;
+        overflow:hidden;
+        line-height:4px;
+        }
+/* Styles for the vertical slider */
+.fd-slider-vertical
+        {
+        position:relative;
+        border:0 none;
+        text-decoration:none;
+        display:block;
+        width:20px;
+        height:100%;
+        text-align:center;
+        -moz-user-select:none;
+        -khtml-user-select:none
+        cursor:pointer;
+        cursor:hand;
+        }
+.fd-slider-vertical .fd-slider-inner
+        {
+        display:block;
+        width:18px;
+        height:100%;
+        text-align:left;
+        background:#fcfcfc;
+        border:1px solid #ccc;
+        }
+.fd-slider-vertical .fd-slider-bar
+        {
+        display:block;
+        width:2px;
+        border:1px solid #bbb;
+        border-bottom:1px solid #aaa;
+        border-right:1px solid #aaa;
+        background:#ddd;
+        margin:0;
+        padding:0;
+        overflow:hidden;
+        line-height:2px;
+        }
+.fd-slider-vertical .fd-slider-handle
+        {
+        cursor:N-resize;
+        }
+/* :focus styles for browsers that support them (FF/Moz) and a .focused for IE */
+/*.fd-slider:focus .fd-slider-inner,
+.fd-slider-vertical:focus .fd-slider-inner,   */
+.focused .fd-slider-inner
+        {
+        background:#eee !important;
+        border:1px solid #aaa !important;
+        }
+/* black handle, no glow */
+.fd-slider-handle
+        {
+        position:absolute;
+        display:block;
+        padding:0;
+        border:0 none;
+        margin:0;
+        z-index:3;
+        top:0;
+        left:0;
+        width:20px;
+        height:20px;
+        outline:0px none;
+        background:transparent url(./slider-disabled.png) no-repeat 0px 0px;
+        cursor:W-resize;
+        -moz-user-select:none;
+        -moz-user-focus:none;
+        -moz-outline:0px none;
+        
+        }
+.fd-slider-handle:focus
+        {
+        outline:0px none;
+        border:0 none;
+        -moz-user-focus:normal;
+        }
+button.fd-slider-handle:focus::-moz-focus-inner { border-color: transparent; }
+
+/* black handle, glow */
+.fd-slider-hover .fd-slider-handle
+        {
+        background:transparent url(./slider-disabled-1.png) no-repeat 0px 0px;
+        }
+/* blue handle, no glow */
+.focused .fd-slider-handle
+        {
+        background:transparent url(./slider.png) no-repeat 0px 0px;
+        }
+/* blue handle glow */
+.focused.fd-slider-hover .fd-slider-handle
+        {
+        background:transparent url(./slider-1.png) no-repeat 0px 0px;
+        }
+body.W-resize-s *
+        {
+        cursor:W-resize !important;
+        }
+body.N-resize-s *
+        {
+        cursor:N-resize !important;
+        }
