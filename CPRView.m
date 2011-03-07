@@ -795,8 +795,20 @@ extern int splitPosition[ 3];
         
 		[self _sendDidEditDisplayInfo];
     }
-    
-    [super mouseMoved:theEvent];
+	
+	if( curDCM.pwidth != 0 && (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.transverseSectionPosition)*curDCM.pwidth < 5.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.leftTransverseSectionPosition)*curDCM.pwidth < 10.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.rightTransverseSectionPosition)*curDCM.pwidth < 10.0))
+	{
+		if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown)
+			[[NSCursor closedHandCursor] set];
+		else
+			[[NSCursor openHandCursor] set];
+    }
+    else
+	{
+		[cursor set];
+		
+		[super mouseMoved:theEvent];
+	}
 }
 
 - (void) adjustROIsForCPRView
@@ -869,17 +881,22 @@ extern int splitPosition[ 3];
         return;
     }
         
-    if (ABS((pixVector.x/pixWidth) - _curvedPath.transverseSectionPosition)*pixWidth < 5.0) {
+    if (ABS((pixVector.x/pixWidth) - _curvedPath.transverseSectionPosition)*pixWidth < 5.0)
+	{
 		[self _sendWillEditCurvedPath];
         _draggingTransverse = YES;
-    } else if (ABS((pixVector.x/pixWidth) - _curvedPath.leftTransverseSectionPosition)*pixWidth < 10.0) {
+		[self mouseMoved: event];
+    }
+	else if((ABS((pixVector.x/pixWidth) - _curvedPath.leftTransverseSectionPosition)*pixWidth < 10.0) ||  (ABS((pixVector.x/pixWidth) - _curvedPath.rightTransverseSectionPosition)*pixWidth < 10.0))
+	{
 		[self _sendWillEditCurvedPath];
         _draggingTransverseSpacing = YES;
-    } else if (ABS((pixVector.x/pixWidth) - _curvedPath.rightTransverseSectionPosition)*pixWidth < 10.0) {
-		[self _sendWillEditCurvedPath];
-        _draggingTransverseSpacing = YES;
-    } else {
-        for (i = 0; i < [_curvedPath.nodes count]; i++) {
+		[self mouseMoved: event];
+    }
+	else
+	{
+        for (i = 0; i < [_curvedPath.nodes count]; i++)
+		{
             relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
             
             if (N3VectorDistance(N3VectorMakeFromNSPoint(viewPoint),
@@ -959,6 +976,8 @@ extern int splitPosition[ 3];
         return;
     }
     
+	
+	
     if (_draggingTransverse) {
         relativePosition = pixVector.x/pixWidth;
         _curvedPath.transverseSectionPosition = MAX(MIN(relativePosition, 1.0), 0.0);
@@ -969,6 +988,7 @@ extern int splitPosition[ 3];
 		[self _sendDidEditDisplayInfo];
 
 		[self setNeedsDisplay:YES];
+		[self mouseMoved: event];
     } else if (_draggingTransverseSpacing) {
         _curvedPath.transverseSectionSpacing = ABS(pixVector.x/pixWidth-_curvedPath.transverseSectionPosition)*[_curvedPath.bezierPath length];
 		[self _sendDidUpdateCurvedPath];
@@ -977,6 +997,7 @@ extern int splitPosition[ 3];
         _displayInfo.mouseCursorPosition = pixVector.x/pixWidth;
 		[self _sendDidEditDisplayInfo];
         [self setNeedsDisplay:YES];
+		[self mouseMoved: event];
     } else {
 		[self _sendWillEditDisplayInfo];
         _displayInfo.mouseCursorPosition = pixVector.x/pixWidth;

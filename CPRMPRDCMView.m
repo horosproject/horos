@@ -1929,7 +1929,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			if ([CPRCurvedPath controlTokenIsNode:curveToken])
 			{
 				[cursor release];
-				if( [theEvent type] == NSLeftMouseDragged)
+				if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown)
 					cursor = [[NSCursor closedHandCursor]retain];
 				else
 					cursor = [[NSCursor openHandCursor]retain];
@@ -1940,7 +1940,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			else if (curveToken != CPRCurvedPathControlTokenNone)
 			{
 				[cursor release];
-				if( [theEvent type] == NSLeftMouseDragged)
+				if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown)
 					cursor = [[NSCursor closedHandCursor]retain];
 				else
 					cursor = [[NSCursor openHandCursor]retain];
@@ -1969,7 +1969,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		int mouseOnLines = [self mouseOnLines:viewPoint];
 		if( mouseOnLines==2)
 		{
-			if( [theEvent type] == NSLeftMouseDragged) [[NSCursor closedHandCursor] set];
+			if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown) [[NSCursor closedHandCursor] set];
 			else [[NSCursor openHandCursor] set];
 		}
 		else if( mouseOnLines==1)
