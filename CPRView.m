@@ -819,7 +819,7 @@ extern int splitPosition[ 3];
 	for( int i = 0; i < curRoiList.count; i++ )
 	{
 		ROI *r = [curRoiList objectAtIndex:i];
-		if( r.type != tMesure)
+		if( r.type != tMesure && r.type != tText && r.type != tArrow)
 		{
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
 			[curRoiList removeObjectAtIndex:i];
@@ -929,7 +929,13 @@ extern int splitPosition[ 3];
 			{
 				CPRController *windowController = [self windowController];
 				
-				if( frameZoomed == NO)
+				long tool = [self getTool: event];
+				
+				if( tool == tText)
+				{
+					[[self windowController] roiGetInfo: self];
+				}
+				else if( frameZoomed == NO)
 				{
 					splitPosition[0] = [[windowController mprView1] frame].origin.x + [[windowController mprView1] frame].size.width;	// vert
 					splitPosition[1] = [[windowController mprView1] frame].origin.y + [[windowController mprView1] frame].size.height;	// hori12
@@ -952,7 +958,10 @@ extern int splitPosition[ 3];
 			else
 			{
 				if( [self roiTool: currentTool])
-					currentTool = tMesure;
+				{
+					if( currentTool != tText && currentTool != tArrow)
+						currentTool = tMesure;
+				}
 				
 				[super mouseDown:event];
 			}

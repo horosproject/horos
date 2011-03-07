@@ -892,7 +892,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (IBAction) roiGetInfo:(id) sender
 {
-	CPRMPRDCMView *s = [self selectedView];
+	CPRMPRDCMView *s = [self selectedViewOnlyMPRView : NO];
 	
 	for( ROI *r in [s curRoiList])
 	{
@@ -979,7 +979,7 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	[self addToUndoQueue: @"roi"];
 	
-	CPRMPRDCMView *s = [self selectedView];
+	CPRMPRDCMView *s = [self selectedViewOnlyMPRView: NO];
 	
 	[s stopROIEditingForce: YES];
 	
