@@ -722,6 +722,7 @@ SecPolicySearchCreate:
 			}
 			
 			CFRelease(certArray);
+			certArray = NULL;
 		}
 	}
 }
