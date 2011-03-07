@@ -866,6 +866,7 @@ void createSwfMovie(NSArray* inputFiles, NSString* path) {
 		
 		displayItem[i] = swf->add(shape);
 		displayItem[i]->moveTo(0,0);
+		displayItem[i]->scaleTo(0);
 	}
 	
 	// controller
@@ -898,8 +899,7 @@ void createSwfMovie(NSArray* inputFiles, NSString* path) {
 		rightBarDI->scaleTo(ControllerNavigationRect.size.width/(inputFiles.count-1)*(inputFiles.count-1-i),1);
 		rightBarDI->moveTo(ControllerNavigationRect.origin.x+ControllerNavigationRect.size.width, ControllerNavigationRect.origin.y);
 		
-		
-		for (int d = 0; d < inputFiles.count; ++d)
+		for (int d = MAX(0,i-1); d < MIN(inputFiles.count,i+1); ++d)
 			if (d == i)
 				displayItem[d]->scaleTo(1);
 			else displayItem[d]->scaleTo(0);

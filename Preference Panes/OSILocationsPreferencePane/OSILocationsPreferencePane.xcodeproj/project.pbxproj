@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		59BDF4C61180A0CD007F1F2C /* OsiriX Headers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59BDF4C51180A0CD007F1F2C /* OsiriX Headers.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		59BDF4C61180A0CD007F1F2C /* OsiriXAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59BDF4C51180A0CD007F1F2C /* OsiriXAPI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7EC5847707298EDC00429FC7 /* ServerTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EC5847507298EDC00429FC7 /* ServerTableView.h */; };
 		7EC5847807298EDC00429FC7 /* ServerTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EC5847607298EDC00429FC7 /* ServerTableView.m */; };
 		8D202CEA0486D31800D8A456 /* OSILocationsPreferencePane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32DBCFA20370C41700C91783 /* OSILocationsPreferencePane_Prefix.pch */; };
@@ -30,7 +30,7 @@
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCFA20370C41700C91783 /* OSILocationsPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSILocationsPreferencePane_Prefix.pch; sourceTree = "<group>"; };
-		59BDF4C51180A0CD007F1F2C /* OsiriX Headers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "OsiriX Headers.framework"; path = "../../build/Development/OsiriX Headers.framework"; sourceTree = SOURCE_ROOT; };
+		59BDF4C51180A0CD007F1F2C /* OsiriXAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OsiriXAPI.framework; path = ../../build/Development/OsiriXAPI.framework; sourceTree = SOURCE_ROOT; };
 		7EC5847507298EDC00429FC7 /* ServerTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerTableView.h; sourceTree = "<group>"; };
 		7EC5847607298EDC00429FC7 /* ServerTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerTableView.m; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -56,7 +56,7 @@
 				ABEBD15A106B963D009CE1FF /* Security.framework in Frameworks */,
 				A96539D410D9038A000788B2 /* OpenGL.framework in Frameworks */,
 				A997B16910E0C45E004C5BB1 /* SecurityInterface.framework in Frameworks */,
-				59BDF4C61180A0CD007F1F2C /* OsiriX Headers.framework in Frameworks */,
+				59BDF4C61180A0CD007F1F2C /* OsiriXAPI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,7 +78,7 @@
 		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				59BDF4C51180A0CD007F1F2C /* OsiriX Headers.framework */,
+				59BDF4C51180A0CD007F1F2C /* OsiriXAPI.framework */,
 				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
 				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,
 			);

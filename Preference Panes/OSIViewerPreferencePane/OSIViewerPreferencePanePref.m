@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import "OSIViewerPreferencePanePref.h"
-#import <OsiriX Headers/AppController.h>
+#import <OsiriXAPI/AppController.h>
 
 @implementation OSIViewerPreferencePanePref
 

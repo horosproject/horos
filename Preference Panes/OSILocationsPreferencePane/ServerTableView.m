@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import "ServerTableView.h"
-#import <OsiriX Headers/DNDArrayController.h>
+#import <OsiriXAPI/DNDArrayController.h>
 #import "OSILocationsPreferencePanePref.h"
 
 @implementation ServerTableView

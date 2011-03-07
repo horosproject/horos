@@ -13,11 +13,11 @@
 =========================================================================*/
 
 #import "OSIDatabasePreferencePanePref.h"
-#import <OsiriX Headers/PluginManager.h>
-#import <OsiriX Headers/BrowserController.h>
-#import <OsiriX Headers/PreferencesWindowController+DCMTK.h>
+#import <OsiriXAPI/PluginManager.h>
+#import <OsiriXAPI/BrowserController.h>
+#import <OsiriXAPI/PreferencesWindowController+DCMTK.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
-#import <OsiriX Headers/BrowserControllerDCMTKCategory.h>
+#import <OsiriXAPI/BrowserControllerDCMTKCategory.h>
 
 @implementation OSIDatabasePreferencePanePref
 

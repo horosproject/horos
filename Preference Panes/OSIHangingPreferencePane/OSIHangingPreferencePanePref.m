@@ -14,7 +14,7 @@
 
 
 #import "OSIHangingPreferencePanePref.h"
-#import <OsiriX Headers/NSPreferencePane+OsiriX.h>
+#import <OsiriXAPI/NSPreferencePane+OsiriX.h>
 
 
 @implementation OSIHangingPreferencePanePref

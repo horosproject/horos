@@ -15,11 +15,11 @@
 #import <PreferencePanes/PreferencePanes.h>
 #import <SecurityInterface/SFChooseIdentityPanel.h>
 #import <SecurityInterface/SFCertificateView.h>
-#import <OsiriX Headers/DNDArrayController.h>
+#import <OsiriXAPI/DNDArrayController.h>
 #import <WebKit/WebKit.h>
 
 #if defined(OSIRIX)
-#import <OsiriX Headers/DICOMTLS.h>
+#import <OsiriXAPI/DICOMTLS.h>
 #endif
 
 @interface OSILocationsPreferencePanePref : NSPreferencePane 
