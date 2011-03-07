@@ -24,6 +24,9 @@
 
 - DICOM Listener TLS? -> different syntax transfer settings
 - CPR doc
+- CPR : ROI color of length
+- CPR : ROI text
+- CPR : cmd + backspace
 
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: add temporary user email for admins
