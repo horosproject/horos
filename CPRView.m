@@ -202,7 +202,9 @@ extern int splitPosition[ 3];
 	_mousePlanePointsInPix = nil;
 	
 	[stanStringAttrib release];
-	[stringTex release];
+	[stringTexA release];
+	[stringTexB release];
+	[stringTexC release];
 	
     [super dealloc];
 }
@@ -593,14 +595,32 @@ extern int splitPosition[ 3];
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 		}
 		
-		if( stringTex == nil)
+		if( stringTexA == nil)
 		{
-			stringTex = [[StringTexture alloc] initWithString: @"A"
+			stringTexA = [[StringTexture alloc] initWithString: @"A"
 														  withAttributes:stanStringAttrib
 														   withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
 															withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
 														 withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
-			[stringTex setAntiAliasing: YES];
+			[stringTexA setAntiAliasing: YES];
+		}
+		if( stringTexB == nil)
+		{
+			stringTexB = [[StringTexture alloc] initWithString: @"B"
+														  withAttributes:stanStringAttrib
+														   withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+															withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+														 withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+			[stringTexB setAntiAliasing: YES];
+		}
+		if( stringTexC == nil)
+		{
+			stringTexC = [[StringTexture alloc] initWithString: @"C"
+														  withAttributes:stanStringAttrib
+														   withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+															withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+														 withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+			[stringTexC setAntiAliasing: YES];
 		}
 		
 		glEnable (GL_TEXTURE_RECTANGLE_EXT);
@@ -609,17 +629,14 @@ extern int splitPosition[ 3];
 		
 		float quarter = -(lineAStart.y - lineAEnd.y)/3.;
 		
-		[stringTex setString: @"A" withAttributes:stanStringAttrib];
-		glColor4f (0, 0, 0, 1);	[stringTex drawAtPoint:NSMakePoint(lineAStart.x+1 - [stringTex frameSize].width, quarter+lineAStart.y+1) ratio: 1];
-		glColor4f (1, 1, 0, 1);	[stringTex drawAtPoint:NSMakePoint(lineAStart.x - [stringTex frameSize].width, quarter+lineAStart.y) ratio: 1];
+		glColor4f (0, 0, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(lineAStart.x+1 - [stringTexA frameSize].width, quarter+lineAStart.y+1) ratio: 1];
+		glColor4f (1, 1, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(lineAStart.x - [stringTexA frameSize].width, quarter+lineAStart.y) ratio: 1];
 		
-		[stringTex setString: @"B" withAttributes:stanStringAttrib];
-		glColor4f (0, 0, 0, 1);	[stringTex drawAtPoint:NSMakePoint(lineBStart.x+1 - [stringTex frameSize].width/2., quarter+lineBStart.y+1) ratio: 1];
-		glColor4f (1, 1, 0, 1);	[stringTex drawAtPoint:NSMakePoint(lineBStart.x - [stringTex frameSize].width/2., quarter+lineBStart.y) ratio: 1];
+		glColor4f (0, 0, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(lineBStart.x+1 - [stringTexB frameSize].width/2., quarter+lineBStart.y+1) ratio: 1];
+		glColor4f (1, 1, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(lineBStart.x - [stringTexB frameSize].width/2., quarter+lineBStart.y) ratio: 1];
 		
-		[stringTex setString: @"C" withAttributes:stanStringAttrib];
-		glColor4f (0, 0, 0, 1);	[stringTex drawAtPoint:NSMakePoint(lineCStart.x+1, quarter+lineCStart.y+1) ratio: 1];
-		glColor4f (1, 1, 0, 1);	[stringTex drawAtPoint:NSMakePoint(lineCStart.x, quarter+lineCStart.y) ratio: 1];
+		glColor4f (0, 0, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(lineCStart.x+1, quarter+lineCStart.y+1) ratio: 1];
+		glColor4f (1, 1, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(lineCStart.x, quarter+lineCStart.y) ratio: 1];
 		
 		glDisable (GL_TEXTURE_RECTANGLE_EXT);
 	}

@@ -101,7 +101,7 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 	BOOL displayTransverseLines;
 	
 	NSMutableDictionary *stanStringAttrib;
-	StringTexture *stringTex;
+	StringTexture *stringTexA, *stringTexB, *stringTexC;
 }
 
 @property (nonatomic, readwrite, assign) id<CPRViewDelegate> delegate;
