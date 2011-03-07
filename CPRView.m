@@ -403,13 +403,16 @@ extern int splitPosition[ 3];
 
 - (void) drawRect:(NSRect)rect
 {
-    _processingRequest = YES;
-	[self _sendNewRequestIfNeeded];
-    _processingRequest = NO;    
-    
-	[self adjustROIsForCPRView];
-	
-	[super drawRect: rect];
+	if( rect.size.width > 10)
+	{
+		_processingRequest = YES;
+		[self _sendNewRequestIfNeeded];
+		_processingRequest = NO;    
+		
+		[self adjustROIsForCPRView];
+		
+		[super drawRect: rect];
+	}
 }
 
 - (void)setNeedsDisplay:(BOOL)flag

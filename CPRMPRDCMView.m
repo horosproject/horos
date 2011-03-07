@@ -161,6 +161,14 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	camera = [[vrView cameraWithThumbnail: NO] retain];
 }
 
+- (void) drawRect:(NSRect)rect
+{
+	if( rect.size.width > 10)
+	{
+		[super drawRect: rect];
+	}
+}
+
 - (void) setFrame:(NSRect)frameRect
 {
 	if( NSEqualRects( frameRect, [self frame]) == NO)
