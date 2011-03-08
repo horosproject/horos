@@ -1233,7 +1233,12 @@ static	BOOL frameZoomed = NO;
 	{
 		mouseDownTool = [self getTool: theEvent];
 		
-		if( mouseDownTool == tText)
+		NSPoint tempPt = [self convertPoint: [theEvent locationInWindow] fromView: nil];
+		tempPt = [self ConvertFromNSView2GL:tempPt];
+		
+		long tool = [self getTool: theEvent];
+		
+		if( [self roiTool: mouseDownTool] && [self clickInROI: tempPt])
 		{
 			[[self windowController] roiGetInfo: self];
 		}

@@ -927,11 +927,14 @@ extern int splitPosition[ 3];
 			
 			if( clickCount == 2)
 			{
+				NSPoint tempPt = [self convertPoint: [event locationInWindow] fromView: nil];
+				tempPt = [self ConvertFromNSView2GL:tempPt];
+				
 				CPRController *windowController = [self windowController];
 				
 				long tool = [self getTool: event];
 				
-				if( tool == tText)
+				if( [self roiTool: tool] && [self clickInROI: tempPt])
 				{
 					[[self windowController] roiGetInfo: self];
 				}
