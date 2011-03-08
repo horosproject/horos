@@ -17241,46 +17241,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						}
 						else
 						{
-							NSManagedObject *user = [NSEntityDescription insertNewObjectForEntityForName: @"User" inManagedObjectContext: self.userManagedObjectContext];
-							
-							//Find a unique name
-							do
-							{
-								[user setValue: name forKey: @"name"];
-								
-								name = [name stringByAppendingString: @"1"];
-								
-							}while( [user validateForInsert: nil] == NO);
-							
-							name = [user valueForKey: @"name"];
-							
-							[user setValue: temporaryNotificationEmail forKey: @"email"];
-							[user setValue: [NSNumber numberWithBool: YES] forKey: @"autoDelete"];
-							
-							[[WebPortal defaultWebPortal] updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User Created" forUser: [user valueForKey: @"name"] ip: nil];
-							
-							// Send a separate email with user name and password
-							
-							NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
-							
-							if( fromEmailAddress == nil)
-								fromEmailAddress = @"";
-							
-							NSString *emailSubject = NSLocalizedString( @"Your username and password for accessing your account on the OsiriX Web Portal.", nil);
-							NSMutableString *emailMessage = [NSMutableString stringWithString: @""];
-							
-							[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
-							[emailMessage appendString: name];
-							[emailMessage appendString: @"\r\r"];
-							[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
-							[emailMessage appendString: [user valueForKey: @"password"]];
-							[emailMessage appendString: @"\r\r"];
-							[emailMessage appendFormat: NSLocalizedString( @"This account is a temporary account. It will be automatically deleted in %d days.", nil), [[NSUserDefaults standardUserDefaults] integerForKey: @"temporaryUserDuration"]];
-							
-							[[WebPortal defaultWebPortal] updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User name & password sent by email" forUser: [user valueForKey: @"name"] ip: nil];
-							
-							[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: temporaryNotificationEmail, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
-						
+							NSManagedObject *user = [[WebPortal defaultWebPortal] newUserWithEmail:temporaryNotificationEmail];
 							destinationUsers = [destinationUsers arrayByAddingObject: user];
 						}
 					}
