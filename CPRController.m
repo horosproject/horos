@@ -3360,7 +3360,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	self.displayMousePosition = !self.displayMousePosition;
 	
 	if( self.displayMousePosition && ![self selectedView].displayCrossLines)
-		[self selectedView].displayCrossLines = YES;
+		[self toogleAxisVisibility: sender];
 	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
