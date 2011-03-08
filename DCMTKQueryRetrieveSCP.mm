@@ -572,7 +572,7 @@ DcmQueryRetrieveConfig config;
 	if( _abort)
 		NSLog( @"---- store-SCP aborted");
 	
-	if( tLayer)
+	if( localSCP)
 		delete localSCP;
 	
 	localSCP = NULL;
