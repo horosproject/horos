@@ -802,7 +802,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="173006295">
 											<reference key="NSNextResponder" ref="1011292588"/>
 											<int key="NSvFlags">258</int>
-											<string key="NSFrame">{{348, 11}, {347, 18}}</string>
+											<string key="NSFrame">{{349, 11}, {347, 18}}</string>
 											<reference key="NSSuperview" ref="1011292588"/>
 											<int key="NSTag">-1</int>
 											<bool key="NSEnabled">YES</bool>
@@ -1606,7 +1606,7 @@ ZW1wdHkgbGlzdC4</string>
 											<object class="NSButtonCell" key="NSCell" id="997327227">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">131072</int>
-												<string key="NSContents">Authorized to edit users through the Web interface</string>
+												<string key="NSContents">Authorized to edit users through the Web interface (admin account)</string>
 												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="587296925"/>
 												<int key="NSButtonFlags">1211912703</int>
