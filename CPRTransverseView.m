@@ -32,12 +32,10 @@ extern int CLUTBARS, ANNOTATIONS;
 
 @interface CPRTransverseView ()
 
-@property (nonatomic, readwrite, retain) CPRStraightenedGeneratorRequest *lastRequest;
+@property (nonatomic, readwrite, retain) CPRObliqueSliceGeneratorRequest *lastRequest;
 @property (nonatomic, readwrite, retain) CPRVolumeData *generatedVolumeData;
 
 - (CGFloat)_relativeSegmentPosition;
-
-- (N3BezierPath*)_bezierAndInitialNormalForRequest:(N3VectorPointer)initialNormal;
 
 - (void)_setNeedsNewRequest;
 - (void)_sendNewRequestIfNeeded;
@@ -497,20 +495,32 @@ extern int CLUTBARS, ANNOTATIONS;
 
 - (void)_sendNewRequest // since we don't generate these asynchronously anymore, should we really have all this _sendNewRequest business?
 {
-    CPRStraightenedGeneratorRequest *request;
-    N3Vector initialNormal;
+    CPRObliqueSliceGeneratorRequest *request;
+    N3MutableBezierPath *subdividedAndFlattenedBezierPath;
+    N3Vector vector;
+    N3Vector normal;
+    N3Vector tangent;
+    N3Vector cross;
+    CGFloat mmPerPixel;
     
     if ([_curvedPath.bezierPath elementCount] >= 3)
 	{
-        request = [[CPRStraightenedGeneratorRequest alloc] init];
-		request.pixelsWide = [self bounds].size.width*1.4; // * 1.4 : to full the view area, if the matrix is rotated
-		request.pixelsHigh = [self bounds].size.height*1.4;
-		request.slabWidth = 0;
-        request.slabSampleDistance = 0;
-        request.bezierPath = [self _bezierAndInitialNormalForRequest:&initialNormal];
-        request.initialNormal = initialNormal;
-//        request.vertical = NO;
+        subdividedAndFlattenedBezierPath = [_curvedPath.bezierPath mutableCopy];
+        [subdividedAndFlattenedBezierPath subdivide:N3BezierDefaultSubdivideSegmentLength];
+        [subdividedAndFlattenedBezierPath flatten:N3BezierDefaultFlatness];
+        vector = [subdividedAndFlattenedBezierPath vectorAtRelativePosition:[self _relativeSegmentPosition]];
+        tangent = [subdividedAndFlattenedBezierPath tangentAtRelativePosition:[self _relativeSegmentPosition]];
+        normal = [subdividedAndFlattenedBezierPath normalAtRelativePosition:[self _relativeSegmentPosition] initialNormal:_curvedPath.initialNormal];
+        [subdividedAndFlattenedBezierPath release];
         
+        cross = N3VectorNormalize(N3VectorCrossProduct(tangent, normal));
+
+        // * 1.4 : to full the view area, if the matrix is rotated
+        mmPerPixel = (_sectionWidth / _renderingScale)/([self bounds].size.width*1.4);
+        
+        request = [[CPRObliqueSliceGeneratorRequest alloc] initWithCenter:vector pixelsWide:[self bounds].size.width*1.4 pixelsHigh:[self bounds].size.height*1.4
+                                                               xBasis:N3VectorScalarMultiply(cross, mmPerPixel) yBasis:N3VectorScalarMultiply(normal, mmPerPixel)];
+		
         if ([_lastRequest isEqual:request] == NO) {
 			CPRVolumeData *curvedVolume;
 			curvedVolume = [CPRGenerator synchronousRequestVolume:request volumeData:_generator.volumeData];
@@ -547,35 +557,6 @@ extern int CLUTBARS, ANNOTATIONS;
             break;
     }
     return 0;
-}
-
-- (N3BezierPath*)_bezierAndInitialNormalForRequest:(N3VectorPointer)initialNormal
-{
-    N3MutableBezierPath *bezierPath;
-    N3MutableBezierPath *subdividedAndFlattenedBezierPath;
-    N3Vector vector;
-    N3Vector normal;
-    N3Vector tangent;
-    N3Vector cross;
-    
-    subdividedAndFlattenedBezierPath = [_curvedPath.bezierPath mutableCopy];
-    [subdividedAndFlattenedBezierPath subdivide:N3BezierDefaultSubdivideSegmentLength];
-    [subdividedAndFlattenedBezierPath flatten:N3BezierDefaultFlatness];
-    vector = [subdividedAndFlattenedBezierPath vectorAtRelativePosition:[self _relativeSegmentPosition]];
-    tangent = [subdividedAndFlattenedBezierPath tangentAtRelativePosition:[self _relativeSegmentPosition]];
-    normal = [subdividedAndFlattenedBezierPath normalAtRelativePosition:[self _relativeSegmentPosition] initialNormal:_curvedPath.initialNormal];
-    [subdividedAndFlattenedBezierPath release];
-    
-    cross = N3VectorNormalize(N3VectorCrossProduct(normal, tangent));
-    
-    bezierPath = [N3MutableBezierPath bezierPath];
-    [bezierPath moveToVector:N3VectorAdd(vector, N3VectorScalarMultiply(cross, _sectionWidth / _renderingScale / 2))]; 
-    [bezierPath lineToVector:N3VectorAdd(vector, N3VectorScalarMultiply(cross, -_sectionWidth / _renderingScale / 2))]; 
-    
-    if (initialNormal) {
-        *initialNormal = normal;
-    }
-    return bezierPath;
 }
             
 - (void)_setNeedsNewRequest

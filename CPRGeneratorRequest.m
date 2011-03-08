@@ -15,6 +15,7 @@
 #import "CPRGeneratorRequest.h"
 #import "N3BezierPath.h"
 #import "CPRStraightenedOperation.h"
+#import "CPRObliqueSliceOperation.h"
 
 @implementation CPRGeneratorRequest
 
@@ -130,3 +131,246 @@
 }
 
 @end
+
+
+@implementation CPRObliqueSliceGeneratorRequest : CPRGeneratorRequest
+
+@synthesize origin = _origin;
+@synthesize directionX = _directionX;
+@synthesize directionY = _directionY;
+@synthesize pixelSpacingX = _pixelSpacingX;
+@synthesize pixelSpacingY = _pixelSpacingY;
+@synthesize projectionMode = _projectionMode;
+
+
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key
+{
+    NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
+    
+    if ([key isEqualToString:@"origin"] ||
+        [key isEqualToString:@"directionX"] ||
+        [key isEqualToString:@"directionY"] ||
+        [key isEqualToString:@"pixelSpacingX"] ||
+        [key isEqualToString:@"pixelSpacingY"]) {
+        return [keyPaths setByAddingObjectsFromSet:[NSSet setWithObject:@"sliceToDicomTransform"]];
+    } else if ([key isEqualToString:@"sliceToDicomTransform"]) {
+        return [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:@"origin", @"directionX", @"directionY", @"pixelSpacingX", @"pixelSpacingY", nil]];
+    } else {
+        return keyPaths;
+    }
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    CPRObliqueSliceGeneratorRequest *copy;
+    
+    copy = [super copyWithZone:zone];
+    copy.origin = _origin;
+    copy.directionX = _directionX;
+    copy.directionY = _directionY;
+    copy.pixelSpacingX = _pixelSpacingX;
+    copy.pixelSpacingY = _pixelSpacingY;
+    copy.projectionMode = _projectionMode;
+
+    return copy;
+}
+
+- (id)init
+{
+    if ( (self = [super init]) ) {
+        _projectionMode = CPRProjectionModeNone;
+    }
+    return self;
+}
+
+- (id)initWithCenter:(N3Vector)center pixelsWide:(NSUInteger)pixelsWide pixelsHigh:(NSUInteger)pixelsHigh xBasis:(N3Vector)xBasis yBasis:(N3Vector)yBasis
+{
+    if ( (self = [super init]) ) {
+        self.pixelsWide = pixelsWide;
+        self.pixelsHigh = pixelsHigh;
+        
+        _directionX = N3VectorNormalize(xBasis);
+        _pixelSpacingX = N3VectorLength(xBasis);
+
+        _directionY = N3VectorNormalize(yBasis);
+        _pixelSpacingY = N3VectorLength(yBasis);
+
+        _origin = N3VectorAdd(N3VectorAdd(center, N3VectorScalarMultiply(xBasis, (CGFloat)pixelsWide/-2.0)), N3VectorScalarMultiply(yBasis, (CGFloat)pixelsHigh/-2.0));
+        
+        _projectionMode = CPRProjectionModeNone;
+    }
+    return self;
+}
+
+- (BOOL)isEqual:(id)object
+{
+    CPRObliqueSliceGeneratorRequest *obliqueSliceGeneratorRequest;
+    
+    if ([object isKindOfClass:[CPRObliqueSliceGeneratorRequest class]]) {
+        obliqueSliceGeneratorRequest = (CPRObliqueSliceGeneratorRequest *)object;
+        if ([super isEqual:object] &&
+            N3VectorEqualToVector(_origin, obliqueSliceGeneratorRequest.origin) &&
+            N3VectorEqualToVector(_directionX, obliqueSliceGeneratorRequest.directionX) &&
+            N3VectorEqualToVector(_directionY, obliqueSliceGeneratorRequest.directionY) &&
+            _pixelSpacingX == obliqueSliceGeneratorRequest.pixelSpacingX &&
+            _pixelSpacingY == obliqueSliceGeneratorRequest.pixelSpacingY &&
+            _projectionMode == obliqueSliceGeneratorRequest.projectionMode) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (Class)operationClass
+{
+    return [CPRObliqueSliceOperation class];
+}
+
+- (void)setDirectionX:(N3Vector)direction
+{
+    _directionX = N3VectorNormalize(direction);
+}
+
+- (void)setDirectionY:(N3Vector)direction
+{
+    _directionY = N3VectorNormalize(direction);
+}
+
+- (void)setSliceToDicomTransform:(N3AffineTransform)sliceToDicomTransform
+{
+    _directionX = N3VectorMake(sliceToDicomTransform.m11, sliceToDicomTransform.m12, sliceToDicomTransform.m13);
+    _pixelSpacingX = N3VectorLength(_directionX);
+    _directionX = N3VectorNormalize(_directionX);
+    
+    _directionY = N3VectorMake(sliceToDicomTransform.m21, sliceToDicomTransform.m32, sliceToDicomTransform.m43);
+    _pixelSpacingY = N3VectorLength(_directionY);
+    _directionY = N3VectorNormalize(_directionY);
+    
+    _origin = N3VectorMake(sliceToDicomTransform.m41, sliceToDicomTransform.m42, sliceToDicomTransform.m43);
+}
+
+- (N3AffineTransform)sliceToDicomTransform
+{
+    N3AffineTransform sliceToDicomTransform;
+    CGFloat pixelSpacingZ;
+    N3Vector crossVector;
+
+    sliceToDicomTransform = N3AffineTransformIdentity;
+    crossVector = N3VectorNormalize(N3VectorCrossProduct(_directionX, _directionY));
+    pixelSpacingZ = (_pixelSpacingX + _pixelSpacingY) / 2.0; // totally bogus, but there is no right value, and this should give something that is reasonable
+    
+    sliceToDicomTransform.m11 = _directionX.x * _pixelSpacingX;
+    sliceToDicomTransform.m12 = _directionX.y * _pixelSpacingX;
+    sliceToDicomTransform.m13 = _directionX.z * _pixelSpacingX;
+    
+    sliceToDicomTransform.m21 = _directionY.x * _pixelSpacingY;
+    sliceToDicomTransform.m22 = _directionY.y * _pixelSpacingY;
+    sliceToDicomTransform.m23 = _directionY.z * _pixelSpacingY;
+    
+    sliceToDicomTransform.m31 = crossVector.x * pixelSpacingZ;
+    sliceToDicomTransform.m32 = crossVector.y * pixelSpacingZ;
+    sliceToDicomTransform.m33 = crossVector.z * pixelSpacingZ;
+    
+    sliceToDicomTransform.m41 = _origin.x;
+    sliceToDicomTransform.m42 = _origin.y;
+    sliceToDicomTransform.m43 = _origin.z;
+    
+    return sliceToDicomTransform;
+}
+
+
+@end
+
+@implementation CPRObliqueSliceGeneratorRequest (DCMPixAndVolume)
+
+- (void)setOrientation:(float[6])orientation
+{
+    double doubleOrientation[6];
+    NSInteger i;
+    
+    for (i = 0; i < 6; i++) {
+        doubleOrientation[i] = orientation[i];
+    }
+    
+    [self setOrientationDouble:doubleOrientation];
+}
+
+- (void)setOrientationDouble:(double[6])orientation
+{
+    _directionX = N3VectorNormalize(N3VectorMake(orientation[0], orientation[1], orientation[2]));
+    _directionY = N3VectorNormalize(N3VectorMake(orientation[3], orientation[4], orientation[5]));
+}
+
+- (void)getOrientation:(float[6])orientation
+{
+    double doubleOrientation[6];
+    NSInteger i;
+    
+    [self getOrientationDouble:doubleOrientation];
+    
+    for (i = 0; i < 6; i++) {
+        orientation[i] = doubleOrientation[i];
+    }
+}
+
+- (void)getOrientationDouble:(double[6])orientation
+{
+    orientation[0] = _directionX.x; orientation[1] = _directionX.y; orientation[2] = _directionX.z;
+    orientation[3] = _directionY.x; orientation[4] = _directionY.y; orientation[5] = _directionY.z; 
+}
+
+- (void)setOriginX:(double)origin
+{
+    _origin.x = origin;
+}
+
+- (double)originX
+{
+    return _origin.x;
+}
+
+- (void)setOriginY:(double)origin
+{
+    _origin.y = origin;
+}
+
+- (double)originY
+{
+    return _origin.y;
+}
+
+- (void)setOriginZ:(double)origin
+{
+    _origin.z = origin;
+}
+
+- (double)originZ
+{
+    return _origin.z;
+}
+
+- (void)setSpacingX:(double)spacing
+{
+    _pixelSpacingX = spacing;
+}
+
+- (double)spacingX
+{
+    return _pixelSpacingX;
+}
+
+- (void)setSpacingY:(double)spacing
+{
+    _pixelSpacingY = spacing;
+}
+
+- (double)spacingY
+{
+    return _pixelSpacingY;
+}
+
+
+@end
+
+
+

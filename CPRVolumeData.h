@@ -96,6 +96,13 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
 
 - (id) initWithWithPixList:(NSArray *)pixList volume:(NSData *)volume;
 
+- (void)getOrientation:(float[6])orientation;
+- (void)getOrientationDouble:(double[6])orientation;
+
+@property (readonly) float originX;
+@property (readonly) float originY;
+@property (readonly) float originZ;
+
 @end
 
 CF_INLINE const float* CPRVolumeDataFloatBytes(CPRVolumeDataInlineBuffer *inlineBuffer)

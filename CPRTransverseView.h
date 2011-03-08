@@ -27,7 +27,7 @@ typedef NSInteger CPRTransverseViewSection;
 
 @class CPRCurvedPath;
 @class CPRVolumeData;
-@class CPRStraightenedGeneratorRequest;
+@class CPRObliqueSliceGeneratorRequest;
 @class StringTexture;
 
 @interface CPRTransverseView : DCMView <CPRGeneratorDelegate> {
@@ -41,7 +41,7 @@ typedef NSInteger CPRTransverseViewSection;
     CPRVolumeData *_generatedVolumeData;
     
     CPRGenerator *_generator;
-    CPRStraightenedGeneratorRequest *_lastRequest;
+    CPRObliqueSliceGeneratorRequest *_lastRequest;
     BOOL _processingRequest;
     BOOL _needsNewRequest;
 	

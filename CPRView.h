@@ -53,7 +53,7 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 	NSColor *_purplePlaneColor;
 	NSColor *_bluePlaneColor;
     
-	// these are for the center lines - I'm considering throwing all these into a dictionary and using KVC
+	// these are for the plane lines - I'm considering throwing all these into a dictionary and using KVC
     NSArray *_orangeVericalLines; // array of indexes where vertical lines need to be drawn
     NSArray *_orangePlaneRuns; // array of plane runs;
 	NSArray *_purpleVericalLines;
@@ -87,8 +87,8 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
     BOOL _draggingTransverse;
     BOOL _draggingTransverseSpacing;
 	BOOL _clickedNode;
-	NSMutableDictionary *_mousePlanePointsInPix; // Stored as an NSValue so we can invalidate it and nill it out. The display info stores on what
-	//	plane and where in 3D the mouse position green dot is, but we want to cache where whis gree dot should be drawn in this view.
+	NSMutableDictionary *_mousePlanePointsInPix; // The display info stores on what
+	//	plane and where in 3D the mouse position dots are, but we want to cache where the dots should be drawn in this view.
 	
 	NSInteger _editingCurvedPathCount;
     

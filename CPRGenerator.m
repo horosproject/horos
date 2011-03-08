@@ -119,7 +119,7 @@ static NSOperationQueue *_synchronousRequestQueue = nil;
         }
     }
     
-    operation = [[[request operationClass] alloc] initWithRequest:request volumeData:_volumeData];
+    operation = [[[request operationClass] alloc] initWithRequest:[[request copy] autorelease] volumeData:_volumeData];
 	[operation setQueuePriority:NSOperationQueuePriorityLow];
     [self retain]; // so that the generator can't disappear while the operation is running
     [operation addObserver:self forKeyPath:@"isFinished" options:0 context:&self->_generatorQueue];

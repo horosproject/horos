@@ -2489,7 +2489,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				
 				NSArray *requests = [curvedPath transverseSliceRequestsForSpacing: self.exportTransverseSliceInterval outputWidth: exportWidth outputHeight: exportHeight mmWide: [[middleTransverseView curDCM] pwidth] * [[middleTransverseView curDCM] pixelSpacingX]];
 				
-				for( CPRStraightenedGeneratorRequest *r in requests)
+				for( CPRObliqueSliceGeneratorRequest *r in requests)
 				{
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					
@@ -2510,6 +2510,20 @@ static float deg2rad = 3.14159265358979/180.0;
 						[dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
 						
 						
+                        float orientation[6];
+                        float origin[3];
+                        
+                        [r getOrientation:orientation];
+                        origin[0] = [r originX];
+                        origin[1] = [r originY];
+                        origin[2] = [r originZ];
+//                        [curvedVolumeData getOrientation:orientation];
+//                        origin[0] = [curvedVolumeData originX];
+//                        origin[1] = [curvedVolumeData originY];
+//                        origin[2] = [curvedVolumeData originZ];
+                        
+                        [dicomExport setOrientation:orientation];
+                        [dicomExport setPosition:origin];
 						
 //						N3AffineTransform *volumeTransform = [curvedVolumeData volumeTransform];
 //						

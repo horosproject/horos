@@ -47,8 +47,9 @@
 
 
 @protocol CPRGeneratorDelegate <NSObject>
-@optional
+@required
 - (void)generator:(CPRGenerator *)generator didGenerateVolume:(CPRVolumeData *)volume request:(CPRGeneratorRequest *)request;
+@optional
 - (void)generator:(CPRGenerator *)generator didAbandonRequest:(CPRGeneratorRequest *)request;
 @end
 

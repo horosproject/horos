@@ -482,6 +482,60 @@
     return self;
 }
 
+- (void)getOrientation:(float[6])orientation
+{
+    double doubleOrientation[6];
+    NSInteger i;
+    
+    [self getOrientationDouble:doubleOrientation];
+    
+    for (i = 0; i < 6; i++) {
+        orientation[i] = doubleOrientation[i];
+    }
+}
+
+- (void)getOrientationDouble:(double[6])orientation
+{
+    N3AffineTransform pixelToDicomTransform;
+    N3Vector xBasis;
+    N3Vector yBasis;
+    
+    pixelToDicomTransform = N3AffineTransformInvert(_volumeTransform);
+    
+    xBasis = N3VectorNormalize(N3VectorMake(_volumeTransform.m11, _volumeTransform.m12, _volumeTransform.m13));
+    yBasis = N3VectorNormalize(N3VectorMake(_volumeTransform.m21, _volumeTransform.m22, _volumeTransform.m23));
+    
+    orientation[0] = xBasis.x; orientation[1] = xBasis.y; orientation[2] = xBasis.z;
+    orientation[3] = yBasis.x; orientation[4] = yBasis.y; orientation[5] = yBasis.z; 
+}
+
+- (float)originX
+{
+    N3AffineTransform pixelToDicomTransform;
+    
+    pixelToDicomTransform = N3AffineTransformInvert(_volumeTransform);
+    
+    return pixelToDicomTransform.m41;
+}
+
+- (float)originY
+{
+    N3AffineTransform pixelToDicomTransform;
+    
+    pixelToDicomTransform = N3AffineTransformInvert(_volumeTransform);
+    
+    return pixelToDicomTransform.m42;
+}
+
+- (float)originZ
+{
+    N3AffineTransform pixelToDicomTransform;
+    
+    pixelToDicomTransform = N3AffineTransformInvert(_volumeTransform);
+    
+    return pixelToDicomTransform.m43;
+}
+
 @end
 
 

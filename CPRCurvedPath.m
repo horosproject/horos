@@ -388,6 +388,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 {
     NSMutableArray *requests;
     CGFloat curveLength;
+    CGFloat mmPerPixel;
     NSInteger requestCount;
     NSInteger i;
     N3Vector cross;
@@ -395,8 +396,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     N3VectorArray vectors;
     N3VectorArray tangents;
     N3MutableBezierPath *flattenedPath;
-    N3MutableBezierPath *bezierPath;
-    CPRStraightenedGeneratorRequest *request;
+    CPRObliqueSliceGeneratorRequest *request;
     
     requests = [NSMutableArray array];
     
@@ -426,21 +426,14 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 	
     requestCount = N3BezierCoreGetVectorInfo([flattenedPath N3BezierCore], spacing, startingDistance, _initialNormal, vectors, tangents, normals, requestCount);
     
+    mmPerPixel = mmWide / (CGFloat)width;
+    
     for (i = 0; i < requestCount; i++) {
-        request = [[CPRStraightenedGeneratorRequest alloc] init];
-        request.pixelsWide = width;
-		request.pixelsHigh = height;
-		request.slabWidth = 0;
-        request.slabSampleDistance = 0;
-        request.initialNormal = normals[i];
+        cross = N3VectorNormalize(N3VectorCrossProduct(tangents[i], normals[i]));
         
-        cross = N3VectorNormalize(N3VectorCrossProduct(normals[i], tangents[i]));
-        
-        bezierPath = [[N3MutableBezierPath alloc] init];
-        [bezierPath moveToVector:N3VectorAdd(vectors[i], N3VectorScalarMultiply(cross, (CGFloat)mmWide / 2.0))]; 
-        [bezierPath lineToVector:N3VectorAdd(vectors[i], N3VectorScalarMultiply(cross, (CGFloat)mmWide / -2.0))]; 
-        request.bezierPath = bezierPath;
-        [bezierPath release];
+        request = [[CPRObliqueSliceGeneratorRequest alloc] initWithCenter:vectors[i] pixelsWide:width pixelsHigh:height
+                                                                   xBasis:N3VectorScalarMultiply(cross, mmPerPixel)
+                                                                   yBasis:N3VectorScalarMultiply(normals[i], mmPerPixel)];
         
         [requests addObject:request];
         [request release];

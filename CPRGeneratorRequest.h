@@ -61,11 +61,55 @@
 
 @property (nonatomic, readwrite, assign) CPRProjectionMode projectionMode;
 
-// these are not yet implemented, depending on how we want to implement panning and zooming of the curved MPR, they could be useful 
 // @property (nonatomic, readwrite, assign) BOOL vertical; // the straightened bezier is horizantal across the screen, or vertical it would be cool to implement this one day
 
 - (BOOL)isEqual:(id)object;
 
 @end
+
+@interface CPRObliqueSliceGeneratorRequest : CPRGeneratorRequest
+{
+    N3Vector _origin;
+    N3Vector _directionX;
+    N3Vector _directionY;
+    
+    CGFloat _pixelSpacingX;
+    CGFloat _pixelSpacingY;
+    
+    CPRProjectionMode _projectionMode;
+}
+
+- (id)init;
+- (id)initWithCenter:(N3Vector)center pixelsWide:(NSUInteger)pixelsWide pixelsHigh:(NSUInteger)pixelsHigh xBasis:(N3Vector)xBasis yBasis:(N3Vector)yBasis; // the length of the vectors will be considered to be the pixel spacing
+
+@property (nonatomic, readwrite, assign) N3Vector origin;
+@property (nonatomic, readwrite, assign) N3Vector directionX;
+@property (nonatomic, readwrite, assign) N3Vector directionY;
+@property (nonatomic, readwrite, assign) CGFloat pixelSpacingX; // mm/pixel
+@property (nonatomic, readwrite, assign) CGFloat pixelSpacingY;
+
+@property (nonatomic, readwrite, assign) CPRProjectionMode projectionMode;
+
+@property (nonatomic, readwrite, assign) N3AffineTransform sliceToDicomTransform;
+
+@end
+
+@interface CPRObliqueSliceGeneratorRequest (DCMPixAndVolume) // KVO code is not yet implemented for this category
+
+- (void)setOrientation:(float[6])orientation;
+- (void)setOrientationDouble:(double[6])orientation;
+- (void)getOrientation:(float[6])orientation;
+- (void)getOrientationDouble:(double[6])orientation;
+
+@property (nonatomic, readwrite, assign) double originX;
+@property (nonatomic, readwrite, assign) double originY;
+@property (nonatomic, readwrite, assign) double originZ;
+
+@property (nonatomic, readwrite, assign) double spacingX;
+@property (nonatomic, readwrite, assign) double spacingY;
+
+@end
+
+
 
 

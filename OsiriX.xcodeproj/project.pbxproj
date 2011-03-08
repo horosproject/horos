@@ -82,6 +82,8 @@
 		183C865C08563F3A000E6A68 /* VRFlyThruAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 183C864808563F3A000E6A68 /* VRFlyThruAdapter.h */; };
 		183C865D08563F3A000E6A68 /* VRFlyThruAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C864908563F3A000E6A68 /* VRFlyThruAdapter.m */; };
 		32E422150C97301600E193CA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
+		4F2446B11320F1B500D55426 /* CPRObliqueSliceOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F2446AF1320F1B500D55426 /* CPRObliqueSliceOperation.h */; };
+		4F2446B21320F1B500D55426 /* CPRObliqueSliceOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F2446B01320F1B500D55426 /* CPRObliqueSliceOperation.m */; };
 		4F8A1A851302C72300A022D9 /* N3BezierCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F8A1A7D1302C72300A022D9 /* N3BezierCore.h */; };
 		4F8A1A861302C72300A022D9 /* N3BezierCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A1A7E1302C72300A022D9 /* N3BezierCore.m */; };
 		4F8A1A871302C72300A022D9 /* N3BezierCoreAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F8A1A7F1302C72300A022D9 /* N3BezierCoreAdditions.h */; };
@@ -8367,6 +8369,8 @@
 		4A16D0970965E15300F82EC4 /* Unit Testing (Cocoa)-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Unit Testing (Cocoa)-Info.plist"; path = "UnitTesting/Unit Testing (Cocoa)-Info.plist"; sourceTree = "<group>"; };
 		4A16D0A20965E21800F82EC4 /* UnitTestingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnitTestingBase.h; path = UnitTesting/UnitTestingBase.h; sourceTree = "<group>"; };
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
+		4F2446AF1320F1B500D55426 /* CPRObliqueSliceOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRObliqueSliceOperation.h; sourceTree = "<group>"; };
+		4F2446B01320F1B500D55426 /* CPRObliqueSliceOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRObliqueSliceOperation.m; sourceTree = "<group>"; };
 		4F8A1A7D1302C72300A022D9 /* N3BezierCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N3BezierCore.h; path = nitrogen/Sources/N3BezierCore.h; sourceTree = "<group>"; };
 		4F8A1A7E1302C72300A022D9 /* N3BezierCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N3BezierCore.m; path = nitrogen/Sources/N3BezierCore.m; sourceTree = "<group>"; };
 		4F8A1A7F1302C72300A022D9 /* N3BezierCoreAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N3BezierCoreAdditions.h; path = nitrogen/Sources/N3BezierCoreAdditions.h; sourceTree = "<group>"; };
@@ -17164,6 +17168,8 @@
 				CE9054E412F5B64200263AB6 /* CPRProjectionOperation.m */,
 				CE9054E512F5B64200263AB6 /* CPRStraightenedOperation.h */,
 				CE9054E612F5B64200263AB6 /* CPRStraightenedOperation.m */,
+				4F2446AF1320F1B500D55426 /* CPRObliqueSliceOperation.h */,
+				4F2446B01320F1B500D55426 /* CPRObliqueSliceOperation.m */,
 				CE9054E712F5B64200263AB6 /* CPRTransverseView.h */,
 				CE9054E812F5B64200263AB6 /* CPRTransverseView.m */,
 				CE9054E912F5B64200263AB6 /* CPRUnsignedInt16ImageRep.h */,
@@ -19784,6 +19790,7 @@
 				4F8A1A871302C72300A022D9 /* N3BezierCoreAdditions.h in Headers */,
 				4F8A1A891302C72300A022D9 /* N3BezierPath.h in Headers */,
 				4F8A1A8B1302C72300A022D9 /* N3Geometry.h in Headers */,
+				4F2446B11320F1B500D55426 /* CPRObliqueSliceOperation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24493,6 +24500,7 @@
 				4F8A1A8C1302C72300A022D9 /* N3Geometry.m in Sources */,
 				5909DF94130C3D1900788195 /* NSException+N2.mm in Sources */,
 				59DD2406131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel in Sources */,
+				4F2446B21320F1B500D55426 /* CPRObliqueSliceOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
