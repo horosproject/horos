@@ -314,6 +314,10 @@ NSString* N2NonNullString(NSString* s) {
 	return r;
 }
 
+-(BOOL)isEmail { // from DHValidation
+    return [[NSPredicate predicateWithFormat:@"SELF MATCHES %@", @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"] evaluateWithObject:self];
+}
+
 @end
 
 @implementation NSAttributedString (N2)

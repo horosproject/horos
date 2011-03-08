@@ -37,6 +37,33 @@
     return managedObjectModel;
 }
 
+const NSString* const DicomDatabaseImageEntityName = @"Image";
+const NSString* const DicomDatabaseSeriesEntityName = @"Series";
+const NSString* const DicomDatabaseStudyEntityName = @"Study";
+const NSString* const DicomDatabaseAlbumEntityName = @"Album";
+const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
+
+-(NSEntityDescription*)imageEntity {
+	return [self entityForName:DicomDatabaseImageEntityName];
+}
+
+-(NSEntityDescription*)seriesEntity {
+	return [self entityForName:DicomDatabaseSeriesEntityName];
+}
+
+-(NSEntityDescription*)studyEntity {
+	return [self entityForName:DicomDatabaseStudyEntityName];
+}
+
+-(NSEntityDescription*)albumEntity {
+	return [self entityForName:DicomDatabaseAlbumEntityName];
+}
+
+-(NSEntityDescription*)logEntryEntity {
+	return [self entityForName:DicomDatabaseLogEntryEntityName];
+}
+
+
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
 	NSLog(@"******* DO NOT CALL THIS FUNCTION - NOT FINISHED / BUGGED : %s", __PRETTY_FUNCTION__); // TODO: once BrowserController / DicomDatabase doubles are solved, REMOVE THIS METHOD as it is defined in N2ManagedDatabase
 	[NSException raise:NSGenericException format:@"DicomDatabase NOT READY for complete usage (contextAtPath:)"];
@@ -49,7 +76,7 @@
 
 +(NSArray*)albumsInContext:(NSManagedObjectContext*)context {
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-	req.entity = [NSEntityDescription entityForName:@"Album" inManagedObjectContext:context];
+	req.entity = [NSEntityDescription entityForName:DicomDatabaseAlbumEntityName inManagedObjectContext:context];
 	req.predicate = [NSPredicate predicateWithValue:YES];
 	return [context executeFetchRequest:req error:NULL];	
 }

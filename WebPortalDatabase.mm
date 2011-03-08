@@ -14,6 +14,7 @@
 
 #import "WebPortalDatabase.h"
 #import "WebPortalUser.h"
+#import "NSString+N2.h"
 
 
 @implementation WebPortalDatabase
@@ -25,18 +26,30 @@
     return model;
 }
 
+const NSString* const WebPortalDatabaseUserEntityName = @"User";
+const NSString* const WebPortalDatabaseStudyEntityName = @"Study";
+
+-(NSEntityDescription*)userEntity {
+	return [self entityForName:WebPortalDatabaseUserEntityName];
+}
+
+-(NSEntityDescription*)studyEntity {
+	return [self entityForName:WebPortalDatabaseStudyEntityName];
+}
+
+-(NSArray*)usersWithPredicate:(NSPredicate*)p {
+	return [self objectsForEntity:self.userEntity predicate:p];
+}
+
 -(WebPortalUser*)userWithName:(NSString*)name {
-	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-	req.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.managedObjectContext];
-	req.predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
-	NSArray* res = [managedObjectContext executeFetchRequest:req error:NULL];
+	NSArray* res = [self usersWithPredicate:[NSPredicate predicateWithFormat:@"name == %@", name]];
 	if (res.count)
 		return [res objectAtIndex:0];
 	return NULL;
 }
 
 -(WebPortalUser*)newUser {
-	return [NSEntityDescription insertNewObjectForEntityForName:@"User" inManagedObjectContext:self.managedObjectContext];
+	return [NSEntityDescription insertNewObjectForEntityForName:WebPortalDatabaseUserEntityName inManagedObjectContext:self.managedObjectContext];
 }
 
 @end

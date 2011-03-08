@@ -17256,7 +17256,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 							
 							[user setValue: temporaryNotificationEmail forKey: @"email"];
 							[user setValue: [NSNumber numberWithBool: YES] forKey: @"autoDelete"];
-							[user setValue: @"NO == YES" forKey: @"studyPredicate"];
 							
 							[[WebPortal defaultWebPortal] updateLogEntryForStudy: [[self databaseSelection] lastObject] withMessage: @"Temporary User Created" forUser: [user valueForKey: @"name"] ip: nil];
 							

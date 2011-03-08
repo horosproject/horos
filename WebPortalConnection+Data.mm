@@ -652,7 +652,17 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	}
 	
 	if ([[parameters objectForKey:@"shareStudy"] isEqual:@"shareStudy"] && study) {
-		WebPortalUser* destUser = [self objectWithXID:[parameters objectForKey:@"shareStudyDestination"] ofClass:WebPortalUser.class];
+		NSString* shareStudyDestination = [parameters objectForKey:@"shareStudyDestination"];
+		WebPortalUser* destUser = NULL;
+		
+		if ([shareStudyDestination isEqual:@"NEW"])
+			@try {
+				destUser = [self.portal newUserWithEmail:[parameters objectForKey:@"shareDestinationCreateTempEmail"]];
+			} @catch (NSException* e) {
+				[self.response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't create temporary user: %@", nil), e.reason]];
+			}
+		else destUser = [self objectWithXID:shareStudyDestination ofClass:WebPortalUser.class];
+		
 		if ([destUser isKindOfClass:WebPortalUser.class]) {
 			// add study to specific study list for this user
 			if (![[destUser.studies.allObjects valueForKey:@"study"] containsObject:study]) {

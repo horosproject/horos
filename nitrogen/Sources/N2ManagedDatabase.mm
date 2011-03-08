@@ -132,6 +132,13 @@
 	return [self.managedObjectContext objectWithID:[self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:theId]]];
 }
 
+-(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p {
+	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+	req.entity = e;
+	req.predicate = p;
+	return [managedObjectContext executeFetchRequest:req error:NULL];
+}
+
 -(void)save:(NSError**)err {
 	NSError* perr = NULL;
 	NSError** rerr = err? err : &perr;

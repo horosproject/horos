@@ -1,4 +1,6 @@
-<jnlp spec="1.5+" codebase="%X:Info.baseUrl%/weasis/" version="V3.0.2">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc//DTD JNLP Descriptor 6.0//EN" "http://java.sun.com/dtd/JNLP-6.0.dtd">
+<jnlp spec="1.5+" version="1.0.7" codebase="%X:Info.baseUrl%/weasis/" href="">
 	<information>
 		<title>Weasis</title>
 		<vendor>H&#244;pitaux Universitaires de Gen&#232;ve (HUG)</vendor>
@@ -10,6 +12,7 @@
 		<icon href="%X:Info.baseUrl%/weasis/images/logo-button.png" kind="default"/>
 		<icon href="%X:Info.baseUrl%/weasis/images/about.png" kind="splash"/>
 		<shortcut online="false">
+			<desktop/>
 			<menu submenu="Weasis"/>
 		</shortcut>
 	</information>
@@ -17,16 +20,25 @@
 		<all-permissions/>
 	</security>
 	<resources>
-		<j2se initial-heap-size="134217728" max-heap-size="536870912" href="http://java.sun.com/products/autodl/j2se" version="1.6.0_18"/>
-		<j2se initial-heap-size="134217728" max-heap-size="536870912" href="http://java.sun.com/products/autodl/j2se" version="1.6+"/>
-		<j2se initial-heap-size="134217728" max-heap-size="536870912" version="1.6+"/>
-		<jar href="%X:Info.baseUrl%/weasis/weasis-launcher.jar" download="eager" main="true"/>
-		<jar href="%X:Info.baseUrl%/weasis/felix.jar" download="eager" main="false"/>
-		<property name="felix.config.properties" value="%X:Info.baseUrl%/weasis/conf/config.properties"/>
-		<property name="weasis.codebase.url" value="%X:Info.baseUrl%/weasis"/>
-		<property name="gosh.args" value="-sc telnetd -p 17179 start"/>
-		<property name="java.ext.dirs" value=""/>
-		<property name="apple.laf.useScreenMenuBar" value="true"/>
+		<!--  Requires Java SE 6 update 10 release for jnlp extension without codebase (substance.jnlp) -->
+		<j2se version="1.6.0_10+" href="http://java.sun.com/products/autodl/j2se" initial-heap-size="128m" max-heap-size="512m" />
+		<j2se version="1.6.0_10+" initial-heap-size="128m" max-heap-size="512m" />
+		<!-- Weasis launcher -->
+		<jar href="%X:Info.baseUrl%/weasis/weasis-launcher.jar" main="true"/>
+		<!-- OSGI Felix framework -->
+		<jar href="%X:Info.baseUrl%/weasis/felix.jar" />
+		<!-- Optional library (Substance Look and feel, only since version 1.0.8). Requires the new Java Plug-in introduced in the Java SE 6 update 10 release.For previous JRE 6, substance.jnlp needs a static codebase URL -->
+		<extension href="%X:Info.baseUrl%/weasis/substance.jnlp"/>
+		<!-- Required parameter. Define the location of config.properties (the OSGI configuration and the list of plug-ins to install/start) -->
+		<property name="felix.config.properties" value="%X:Info.baseUrl%/weasis/conf/config.properties" />
+		<!-- Required parameter. Define the code base of Weasis for the JNLP -->
+		<property name="weasis.codebase.url" value="%X:Info.baseUrl%/weasis" />
+		<!-- Required parameter. Start OSGI console on the port 17179 -->
+		<property name="gosh.args" value="-sc telnetd -p 17179 start" />
+		<!-- Optional parameter. Allows to have the Weasis menu bar in the top bar on Mac OS X (works only with the native Aqua look and feel) -->
+		<property name="apple.laf.useScreenMenuBar" value="true" />
+		<!-- Optional parameter. Allows to get plug-ins translations -->
+		<property name="weasis.i18n" value="%X:Info.baseUrl%/weasis-i18n" />
 	</resources>
 	<application-desc main-class="org.weasis.launcher.WebstartLauncher">
 		<argument>$dicom:get -w %X:Info.baseUrl%/weasis.xml?%[IF:User%username=%U:User.name%&token=%U:X:Info.newToken%&%]IF:User%%Info.allParameters%</argument>

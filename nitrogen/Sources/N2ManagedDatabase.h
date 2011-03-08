@@ -39,6 +39,7 @@
 
 -(NSEntityDescription*)entityForName:(NSString*)name;
 -(NSManagedObject*)objectWithID:(NSString*)theId;
+-(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p;
 
 -(void)save:(NSError**)err;
 

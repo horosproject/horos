@@ -45,6 +45,8 @@ extern NSString* N2NonNullString(NSString* s);
 
 -(NSArray*)componentsWithLength:(NSUInteger)len;
 
+-(BOOL)isEmail;
+
 @end
 
 @interface NSAttributedString (N2)

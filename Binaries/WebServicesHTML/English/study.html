@@ -46,6 +46,10 @@ function imageClick(ixid, sxid) {
 	document.body.appendChild(div);
 }
 
+function shareDestinationChange(select) {
+	document.getElementById('shareDestinationCreateTemp').style.display = select.options[select.selectedIndex].value == 'NEW'? 'inline' : 'none';
+}
+
 </script>
 
 <form id="form" method="post" onsubmit="return onSubmitForm(this);">
@@ -203,11 +207,17 @@ function imageClick(ixid, sxid) {
 				<tr>
 					<td>User:</td>
 					<td>
-						<select name="shareStudyDestination">
+						<select name="shareStudyDestination" onchange="shareDestinationChange(this)">
 							%[FOREACH:ShareDestinations:Dest%
 							<option value="%Dest.XID%">%X:Dest.name%</option>
 							%]FOREACH:ShareDestinations:Dest%
+							%[IF:User.isAdmin%
+							<option value="NEW">Create a Temporary User</option>
+							%]IF:User.isAdmin%
 						</select>
+						<span id="shareDestinationCreateTemp" style="display: none;">
+							<label>with email: <input type="text" name="shareDestinationCreateTempEmail" style="width: 200px;" /></label> (this user will last %Defaults.temporaryUserDuration% days)
+						</span>
 					</td>
 				</tr>
 				<tr>

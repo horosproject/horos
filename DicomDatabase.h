@@ -23,6 +23,18 @@
 
 +(DicomDatabase*)defaultDatabase;
 
+extern const NSString* const DicomDatabaseImageEntityName;
+extern const NSString* const DicomDatabaseSeriesEntityName;
+extern const NSString* const DicomDatabaseStudyEntityName;
+extern const NSString* const DicomDatabaseAlbumEntityName;
+extern const NSString* const DicomDatabaseLogEntryEntityName;
+
+-(NSEntityDescription*)imageEntity;
+-(NSEntityDescription*)seriesEntity;
+-(NSEntityDescription*)studyEntity;
+-(NSEntityDescription*)albumEntity;
+-(NSEntityDescription*)logEntryEntity;
+
 -(NSArray*)albums;
 
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string;

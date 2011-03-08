@@ -21,6 +21,14 @@
 @interface WebPortalDatabase : N2ManagedDatabase {
 }
 
+extern const NSString* const WebPortalDatabaseUserEntityName;
+extern const NSString* const WebPortalDatabaseStudyEntityName;
+
+-(NSEntityDescription*)userEntity;
+-(NSEntityDescription*)studyEntity;
+
+-(NSArray*)usersWithPredicate:(NSPredicate*)p;
+
 -(WebPortalUser*)userWithName:(NSString*)name;
 -(WebPortalUser*)newUser;
 
