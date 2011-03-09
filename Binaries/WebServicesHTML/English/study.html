@@ -200,7 +200,7 @@ function shareDestinationChange(select) {
 			</table>
 		</div>
 	
-		%[IF:Info.proposeShare&&ShareDestinations.count%
+		%[IF:Info.proposeShare&&ShareDestinations.count||User.isAdmin%
 		<div class="title separated">Share</div>
 		<div>
 			<table class="basic wide form">
@@ -236,7 +236,7 @@ function shareDestinationChange(select) {
 				</tr>
 			</table>
 		</div>
-		%]IF:Info.proposeShare&&ShareDestinations.count%
+		%]IF:Info.proposeShare&&ShareDestinations.count||User.isAdmin%
 	
 		%[IF:Info.proposeDicomSend%
 		<div class="title separated">DICOM Transfer</div>
