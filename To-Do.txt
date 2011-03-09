@@ -23,10 +23,8 @@
 - Web Server: add temporary user email for admins
 - This is the last version to support MacOS 10.5, please upgrade to 10.6 or 10.7 !
 
-- DICOM Listener TLS? -> different syntax transfer settings
-							-> tested at Gran*** on early 3.9 beta, unsuccessfully..
+- DICOM Listener TLS? -> different syntax transfer settings(tested at Gran*** on early 3.9 beta, unsuccessfully..)
 - CPR doc
-- series-js and slider: either use or remove before 3.9 release
 
 - Web Server: Burn option if the CD/DVD is installed
 
