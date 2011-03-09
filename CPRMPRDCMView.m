@@ -2129,6 +2129,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	if( N3AffineTransformIsAffine(transform) == NO) // Is this usefull? Bug in 64-bit
 	{
 		NSLog( @"%@", NSStringFromN3AffineTransform( transform));
+		NSLog( @"m41 = %g", transform.m41);
+		NSLog( @"m42 = %g", transform.m42);
+		NSLog( @"m43 = %g", transform.m43);
+		NSLog( @"m44 = %g", transform.m44);
 		return;
 	}
 	

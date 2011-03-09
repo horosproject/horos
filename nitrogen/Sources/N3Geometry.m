@@ -603,7 +603,6 @@ N3AffineTransform N3AffineTransformInvert(N3AffineTransform t)
     N3AffineTransform inverse;
     
     isAffine = N3AffineTransformIsAffine(t);
-    
     inverse = CATransform3DInvert(t);
     
     if (isAffine) { // in some cases CATransform3DInvert returns a matrix that does not have exactly these values even if the input matrix did have these values
@@ -613,6 +612,23 @@ N3AffineTransform N3AffineTransformInvert(N3AffineTransform t)
         inverse.m44 == 1.0;
     }
     return inverse;
+}
+
+N3AffineTransform N3AffineTransformConcat(N3AffineTransform a, N3AffineTransform b)
+{
+    BOOL affine;
+    N3AffineTransform concat;
+    
+    affine = N3AffineTransformIsAffine(a) && N3AffineTransformIsAffine(b);
+    concat = CATransform3DConcat(a, b);
+    
+    if (affine) { // in some cases CATransform3DConcat returns a matrix that does not have exactly these values even if the input matrix did have these values
+        concat.m14 == 0.0;
+        concat.m24 == 0.0;
+        concat.m34 == 0.0;
+        concat.m44 == 1.0;
+    }
+    return concat;
 }
 
 NSString *NSStringFromN3AffineTransform(N3AffineTransform transform)
