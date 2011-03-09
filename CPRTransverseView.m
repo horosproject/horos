@@ -27,6 +27,7 @@
 #import "ROI.h"
 #import "Notifications.h"
 #import "StringTexture.h"
+#import "CPRGenerator.h"
 
 extern int CLUTBARS, ANNOTATIONS;
 
@@ -74,9 +75,6 @@ extern int CLUTBARS, ANNOTATIONS;
 
 - (void)dealloc
 {
-    _generator.delegate = nil;
-    [_generator release];
-    _generator = nil;
     [_volumeData release];
     _volumeData = nil;
     [_generatedVolumeData release];
@@ -194,12 +192,8 @@ extern int CLUTBARS, ANNOTATIONS;
 - (void)setVolumeData:(CPRVolumeData *)volumeData
 {
     if (volumeData != _volumeData) {
-        _generator.delegate = nil;
-        [_generator release];
         [_volumeData release];
         _volumeData = [volumeData retain];
-        _generator = [[CPRGenerator alloc] initWithVolumeData:_volumeData];
-        _generator.delegate = self;
         [self _setNeedsNewRequest];
     }
 }
@@ -423,7 +417,7 @@ extern int CLUTBARS, ANNOTATIONS;
 	glDisable (GL_TEXTURE_RECTANGLE_EXT);
 }
 
-
+// in case we want to go back to using an async-generator for some reason, we will keep this function around like this
 - (void)generator:(CPRGenerator *)generator didGenerateVolume:(CPRVolumeData *)volume request:(CPRGeneratorRequest *)request
 {
 	if( [self windowController] == nil)
@@ -432,7 +426,7 @@ extern int CLUTBARS, ANNOTATIONS;
 	NSData *previousROIs = [NSArchiver archivedDataWithRootObject: [self curRoiList]];
 	CPRVolumeDataInlineBuffer inlineBuffer;
 	DCMPix *newPix;
-
+    
     [[self.generatedVolumeData retain] autorelease]; // make sure this is around long enough so that it doesn't disapear under the old DCMPix
     self.generatedVolumeData = volume;
     
@@ -443,9 +437,9 @@ extern int CLUTBARS, ANNOTATIONS;
 		if ([self.generatedVolumeData aquireInlineBuffer:&inlineBuffer]) {
 			newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.generatedVolumeData.pixelsWide*self.generatedVolumeData.pixelsHigh) :32 
 												 :self.generatedVolumeData.pixelsWide :self.generatedVolumeData.pixelsHigh :self.generatedVolumeData.pixelSpacingX :self.generatedVolumeData.pixelSpacingY
-												 :-self.generatedVolumeData.pixelSpacingX*self.generatedVolumeData.pixelsWide/2.
-												 :-self.generatedVolumeData.pixelSpacingY*self.generatedVolumeData.pixelsHigh/2.
-												 :0
+												 :self.generatedVolumeData.originX
+												 :self.generatedVolumeData.originY
+												 :self.generatedVolumeData.originZ
 												 :NO];
 		} else {
 			assert(0);
@@ -454,8 +448,9 @@ extern int CLUTBARS, ANNOTATIONS;
 
 		[self.generatedVolumeData releaseInlineBuffer:&inlineBuffer];
 
-		float c[ 6] = {1, 0, 0, 0, 1, 0};
-		[newPix setOrientation: c];
+		float orientation[ 6];
+        [self.generatedVolumeData getOrientation:orientation];
+        [newPix setOrientation:orientation];
 		
         [pixArray addObject:newPix];
         [newPix release];
@@ -485,12 +480,6 @@ extern int CLUTBARS, ANNOTATIONS;
 	}
     [pixArray release];
     [self setNeedsDisplay:YES];
-}
-
-- (void)runMainRunLoopUntilAllRequestsAreFinished
-{
-	[self _sendNewRequestIfNeeded];
-	[_generator runMainRunLoopUntilAllRequestsAreFinished];
 }
 
 - (void)_sendNewRequest // since we don't generate these asynchronously anymore, should we really have all this _sendNewRequest business?
@@ -523,10 +512,8 @@ extern int CLUTBARS, ANNOTATIONS;
 		
         if ([_lastRequest isEqual:request] == NO) {
 			CPRVolumeData *curvedVolume;
-			curvedVolume = [CPRGenerator synchronousRequestVolume:request volumeData:_generator.volumeData];
-			
-			[_generator runMainRunLoopUntilAllRequestsAreFinished];
-			[self generator:nil didGenerateVolume:curvedVolume request:request];
+			curvedVolume = [CPRGenerator synchronousRequestVolume:request volumeData:_volumeData];
+            [self generator:nil didGenerateVolume:curvedVolume request:request];
 			self.lastRequest = request;
         }
         

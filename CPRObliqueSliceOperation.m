@@ -28,6 +28,7 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
 + (NSOperationQueue *) _fillQueue;
 - (CGFloat)_slabSampleDistance;
 - (NSUInteger)_pixelsDeep;
+- (N3AffineTransform)_generatedVolumeTransform;
 
 @end
 
@@ -251,8 +252,7 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
                 [self autorelease]; // to balance the retain when we observe operations
                 oustandingFillOperationCount = OSAtomicDecrement32Barrier(&_oustandingFillOperationCount);
                 if (oustandingFillOperationCount == 0) { // done with the fill operations, now do the projection
-                    volumeTransform = N3AffineTransformMakeScale(1.0/self.request.pixelSpacingX, 1.0/self.request.pixelSpacingY, 1.0/((self.request.pixelSpacingX + self.request.pixelSpacingY)/2.0));
-//                    volumeTransform = N3AffineTransformInvert([self.request sliceToDicomTransform]);
+                    volumeTransform = [self _generatedVolumeTransform];
                     generatedVolume = [[CPRVolumeData alloc] initWithFloatBytesNoCopy:_floatBytes pixelsWide:self.request.pixelsWide pixelsHigh:self.request.pixelsHigh pixelsDeep:[self _pixelsDeep]
                                                                       volumeTransform:volumeTransform freeWhenDone:YES];
                     _floatBytes = NULL;
@@ -315,6 +315,38 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
 {
     CGFloat slabSampleDistance;
     return MAX(self.request.slabWidth / [self _slabSampleDistance], 0) + 1;
+}
+
+- (N3AffineTransform)_generatedVolumeTransform
+{
+    N3AffineTransform volumeTransform;
+    N3Vector leftDirection;
+    N3Vector downDirection;
+    N3Vector inSlabNormal;
+    N3Vector volumeOrigin;
+    
+    leftDirection = N3VectorScalarMultiply(N3VectorNormalize(self.request.directionX), self.request.pixelSpacingX);
+    downDirection = N3VectorScalarMultiply(N3VectorNormalize(self.request.directionY), self.request.pixelSpacingY);
+    inSlabNormal = N3VectorScalarMultiply(N3VectorNormalize(N3VectorCrossProduct(leftDirection, downDirection)), [self _slabSampleDistance]);
+    
+    volumeOrigin = N3VectorAdd(self.request.origin, N3VectorScalarMultiply(inSlabNormal, (CGFloat)([self _pixelsDeep] - 1)/-2.0));
+    
+    volumeTransform = N3AffineTransformIdentity;
+    volumeTransform.m41 = volumeOrigin.x;
+    volumeTransform.m42 = volumeOrigin.y;
+    volumeTransform.m43 = volumeOrigin.z;
+    volumeTransform.m11 = leftDirection.x;
+    volumeTransform.m12 = leftDirection.y;
+    volumeTransform.m13 = leftDirection.z;
+    volumeTransform.m21 = downDirection.x;
+    volumeTransform.m22 = downDirection.y;
+    volumeTransform.m23 = downDirection.z;
+    volumeTransform.m31 = inSlabNormal.x;
+    volumeTransform.m32 = inSlabNormal.y;
+    volumeTransform.m33 = inSlabNormal.z;
+    
+    volumeTransform = N3AffineTransformInvert(volumeTransform);
+    return volumeTransform;
 }
 
 @end

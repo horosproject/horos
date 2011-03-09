@@ -25,6 +25,7 @@
 @synthesize pixelSpacingX = _pixelSpacingX;
 @synthesize pixelSpacingY = _pixelSpacingY;
 @synthesize sliceThickness = _sliceThickness;
+@synthesize imageToDicomTransform = _imageToDicomTransform;
 
 - (id)initWithData:(uint16_t *)data pixelsWide:(NSUInteger)pixelsWide pixelsHigh:(NSUInteger)pixelsHigh
 {
@@ -45,6 +46,7 @@
         [self setSize:NSMakeSize(pixelsWide, pixelsHigh)];
         _offset = 0;
         _slope = 1;
+        _imageToDicomTransform = N3AffineTransformIdentity;
     }
     
     return self;
@@ -71,3 +73,49 @@
 }
 
 @end
+
+
+@implementation CPRUnsignedInt16ImageRep (DCMPixAndVolume)
+
+- (void)getOrientation:(float[6])orientation
+{
+    double doubleOrientation[6];
+    NSInteger i;
+    
+    [self getOrientationDouble:doubleOrientation];
+    
+    for (i = 0; i < 6; i++) {
+        orientation[i] = doubleOrientation[i];
+    }
+}
+
+- (void)getOrientationDouble:(double[6])orientation
+{
+    N3Vector xBasis;
+    N3Vector yBasis;
+        
+    xBasis = N3VectorNormalize(N3VectorMake(_imageToDicomTransform.m11, _imageToDicomTransform.m12, _imageToDicomTransform.m13));
+    yBasis = N3VectorNormalize(N3VectorMake(_imageToDicomTransform.m21, _imageToDicomTransform.m22, _imageToDicomTransform.m23));
+    
+    orientation[0] = xBasis.x; orientation[1] = xBasis.y; orientation[2] = xBasis.z;
+    orientation[3] = yBasis.x; orientation[4] = yBasis.y; orientation[5] = yBasis.z; 
+}
+
+- (float)originX
+{
+    return _imageToDicomTransform.m41;
+}
+
+- (float)originY
+{    
+    return _imageToDicomTransform.m42;
+}
+
+- (float)originZ
+{
+    return _imageToDicomTransform.m43;
+}
+
+@end
+
+

@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-
+#import "N3Geometry.h"
 
 @interface CPRUnsignedInt16ImageRep : NSImageRep {
     uint16_t *_unsignedInt16Data;
@@ -26,6 +26,8 @@
     CGFloat _pixelSpacingX;
     CGFloat _pixelSpacingY;
     CGFloat _sliceThickness;
+    
+    N3AffineTransform _imageToDicomTransform;
     
     BOOL _freeWhenDone;
 }
@@ -43,4 +45,19 @@
 @property (nonatomic, readwrite, assign) CGFloat pixelSpacingY;
 @property (nonatomic, readwrite, assign) CGFloat sliceThickness;
 
+@property (nonatomic, readwrite, assign) N3AffineTransform imageToDicomTransform;
+
 @end
+
+@interface CPRUnsignedInt16ImageRep (DCMPixAndVolume)
+
+- (void)getOrientation:(float[6])orientation;
+- (void)getOrientationDouble:(double[6])orientation;
+
+@property (readonly) float originX;
+@property (readonly) float originY;
+@property (readonly) float originZ;
+
+@end
+
+

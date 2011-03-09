@@ -208,8 +208,8 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
             
             for (z = 0; z < pixelsDeep; z++) {
                 for (y = 0; y < pixelsHigh; y += FILL_HEIGHT) {
-                    fillDistance = (CGFloat)y - (CGFloat)pixelsHigh/2.0; // the distance to go out from the centerline
-                    slabDistance = (CGFloat)z - (CGFloat)pixelsDeep/2.0; // the distance to go out from the centerline
+                    fillDistance = (CGFloat)y - (CGFloat)(pixelsHigh - 1)/2.0; // the distance to go out from the centerline
+                    slabDistance = (CGFloat)z - (CGFloat)(pixelsDeep - 1)/2.0; // the distance to go out from the centerline
                     for (i = 0; i < pixelsWide; i++) {
                         fillVectors[i] = N3VectorAdd(N3VectorAdd(vectors[i], N3VectorScalarMultiply(fillNormals[i], fillDistance)), N3VectorScalarMultiply(inSlabNormals[i], slabDistance));
                     }

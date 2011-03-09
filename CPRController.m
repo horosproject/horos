@@ -2196,6 +2196,8 @@ static float deg2rad = 3.14159265358979/180.0;
     NSUInteger exportHeight;
     float windowWidth;
     float windowLevel;
+    float orientation[6];
+    float origin[3];
     CPRStraightenedGeneratorRequest *request;
     CPRVolumeData *curvedVolumeData;
     CPRUnsignedInt16ImageRep *imageRep;
@@ -2406,9 +2408,10 @@ static float deg2rad = 3.14159265358979/180.0;
 						[self CPRViewDidEditCurvedPath: mprView1];
 						
 						[cprView runMainRunLoopUntilAllRequestsAreFinished];
-						[topTransverseView runMainRunLoopUntilAllRequestsAreFinished];
-						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
-						[bottomTransverseView runMainRunLoopUntilAllRequestsAreFinished];
+                        // transverse view use synchronous generators, so this is no longer needed
+//						[topTransverseView runMainRunLoopUntilAllRequestsAreFinished];
+//						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
+//						[bottomTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 						
 						[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: NO]];
 					}
@@ -2513,24 +2516,17 @@ static float deg2rad = 3.14159265358979/180.0;
 						[dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:exportWidth height:exportHeight];
 						
 						[dicomExport setOffset:[imageRep offset]];
+						[dicomExport setSlope:[imageRep slope]];
 						[dicomExport setSigned:NO];
 						
 						[dicomExport setDefaultWWWL:windowWidth :windowLevel];
 						
 						[dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
 						
-						
-                        float orientation[6];
-                        float origin[3];
-                        
-                        [r getOrientation:orientation];
-                        origin[0] = [r originX];
-                        origin[1] = [r originY];
-                        origin[2] = [r originZ];
-//                        [curvedVolumeData getOrientation:orientation];
-//                        origin[0] = [curvedVolumeData originX];
-//                        origin[1] = [curvedVolumeData originY];
-//                        origin[2] = [curvedVolumeData originZ];
+                        [imageRep getOrientation:orientation];
+                        origin[0] = [imageRep originX];
+                        origin[1] = [imageRep originY];
+                        origin[2] = [imageRep originZ];
                         
                         [dicomExport setOrientation:orientation];
                         [dicomExport setPosition:origin];

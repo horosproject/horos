@@ -14,7 +14,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import "DCMView.h"
-#import "CPRGenerator.h"
 #import "CPRMPRDCMView.h"
  
 // horrible name! rename me!
@@ -30,7 +29,7 @@ typedef NSInteger CPRTransverseViewSection;
 @class CPRObliqueSliceGeneratorRequest;
 @class StringTexture;
 
-@interface CPRTransverseView : DCMView <CPRGeneratorDelegate> {
+@interface CPRTransverseView : DCMView {
     id<CPRViewDelegate> _delegate;
 
     CPRCurvedPath *_curvedPath;
@@ -40,7 +39,6 @@ typedef NSInteger CPRTransverseViewSection;
     CPRVolumeData *_volumeData;
     CPRVolumeData *_generatedVolumeData;
     
-    CPRGenerator *_generator;
     CPRObliqueSliceGeneratorRequest *_lastRequest;
     BOOL _processingRequest;
     BOOL _needsNewRequest;
@@ -62,7 +60,5 @@ typedef NSInteger CPRTransverseViewSection;
 @property (nonatomic, readwrite, retain) CPRVolumeData *volumeData;
 @property (nonatomic, readwrite, assign) CGFloat renderingScale;
 @property (nonatomic, readwrite, assign) BOOL displayCrossLines;
-
-- (void)runMainRunLoopUntilAllRequestsAreFinished;
 
 @end
