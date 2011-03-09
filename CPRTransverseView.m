@@ -414,6 +414,14 @@ extern int CLUTBARS, ANNOTATIONS;
 	glColor4f (0, 0, 0, 1);	[stringTex drawAtPoint:NSMakePoint( anchor.x+1, anchor.y+1) ratio: 1];
 	glColor4f (1, 1, 0, 1);	[stringTex drawAtPoint:NSMakePoint( anchor.x, anchor.y) ratio: 1];
 	
+	if( ANNOTATIONS != annotNone)
+	{
+		glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+		glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+		glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+		
+		[self drawOrientation: drawingFrameRect];
+	}
 	glDisable (GL_TEXTURE_RECTANGLE_EXT);
 }
 
