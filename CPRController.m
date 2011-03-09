@@ -496,6 +496,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	
     [curvedPath release];
     [curvedPathColor release];
+    [displayInfo release];
     mprView1.delegate = nil;
     mprView2.delegate = nil;
     mprView3.delegate = nil;   
