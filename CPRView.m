@@ -752,7 +752,7 @@ extern int splitPosition[ 3];
 	
 	viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     
-	if( NSPointInRect( viewPoint, [self frame]) == NO)
+	if( NSPointInRect( viewPoint, [self bounds]) == NO)
 		return;
 	
 	pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);

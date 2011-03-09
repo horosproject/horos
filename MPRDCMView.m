@@ -1587,7 +1587,7 @@ static	BOOL frameZoomed = NO;
 	
 	if( view == self)
 	{
-		if( NSPointInRect( [self convertPoint: [theEvent locationInWindow] fromView:nil], [self frame]) == NO)
+		if( NSPointInRect( [self convertPoint: [theEvent locationInWindow] fromView: nil], [self bounds]) == NO)
 			return;
 		
 		[super mouseMoved: theEvent];

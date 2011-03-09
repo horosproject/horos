@@ -1895,7 +1895,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     	
 	if( view == self)
 	{
-		if( NSPointInRect( viewPoint, [self frame]) == NO)
+		if( NSPointInRect( viewPoint, [self bounds]) == NO)
 			return;
 		
 		[super mouseMoved: theEvent];
