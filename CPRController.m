@@ -2234,7 +2234,7 @@ static float deg2rad = 3.14159265358979/180.0;
         [dicomExport setSeriesDescription:self.exportSeriesName]; 
         [dicomExport setSeriesNumber:9983]; 
         
-		if( self.exportImageFormat == CPR16BitExportImageFormat)
+		if( self.exportImageFormat == CPR8BitRGBExportImageFormat)
 			[dicomExport setModalityAsSource: NO];
 		else
 			[dicomExport setModalityAsSource: YES];
@@ -2344,7 +2344,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			[dicomExport setSeriesNumber:8930 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
             [dicomExport setSourceFile:[[pixList[0] lastObject] sourceFile]];
 			
-			if( self.exportImageFormat == CPR16BitExportImageFormat)
+			if( self.exportImageFormat == CPR8BitRGBExportImageFormat)
 				[dicomExport setModalityAsSource: NO];
 			else
 				[dicomExport setModalityAsSource: YES];
