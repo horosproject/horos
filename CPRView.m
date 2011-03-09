@@ -257,6 +257,33 @@ extern int splitPosition[ 3];
     }
 }
 
+- (void)setOrangePlaneColor:(NSColor *)color
+{
+    if ([_orangePlaneColor isEqualToColor:color] == NO) {
+        [_orangePlaneColor release];
+        _orangePlaneColor = [color retain];
+        [self setNeedsDisplay:YES];
+    }
+}
+
+- (void)setPurplePlaneColor:(NSColor *)color
+{
+    if ([_purplePlaneColor isEqualToColor:color] == NO) {
+        [_purplePlaneColor release];
+        _purplePlaneColor = [color retain];
+        [self setNeedsDisplay:YES];
+    }
+}
+
+- (void)setBluePlaneColor:(NSColor *)color
+{
+    if ([_bluePlaneColor isEqualToColor:color] == NO) {
+        [_bluePlaneColor release];
+        _bluePlaneColor = [color retain];
+        [self setNeedsDisplay:YES];
+    }
+}
+
 - (void)setOrangePlane:(N3Plane)orangePlane;
 {
 	if (N3PlaneEqualToPlane(orangePlane, _orangePlane) == NO) {

@@ -3574,6 +3574,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setNeedsDisplay:YES];
 	[mprView2 setNeedsDisplay:YES];
 	[mprView3 setNeedsDisplay:YES];
+    [cprView setOrangePlaneColor:colorAxis1];
 	
 	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis1 redComponent] forKey:@"MPR_AXIS_1_RED"];
 	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis1 greenComponent] forKey:@"MPR_AXIS_1_GREEN"];
@@ -3588,6 +3589,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setNeedsDisplay:YES];
 	[mprView2 setNeedsDisplay:YES];
 	[mprView3 setNeedsDisplay:YES];
+    [cprView setPurplePlaneColor:colorAxis2];
 	
 	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis2 redComponent] forKey:@"MPR_AXIS_2_RED"];
 	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis2 greenComponent] forKey:@"MPR_AXIS_2_GREEN"];
@@ -3602,6 +3604,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[mprView1 setNeedsDisplay:YES];
 	[mprView2 setNeedsDisplay:YES];
 	[mprView3 setNeedsDisplay:YES];
+    [cprView setBluePlaneColor:colorAxis3];
 	
 	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis3 redComponent] forKey:@"MPR_AXIS_3_RED"];
 	[[NSUserDefaults standardUserDefaults] setFloat:[colorAxis3 greenComponent] forKey:@"MPR_AXIS_3_GREEN"];
