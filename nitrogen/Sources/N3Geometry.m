@@ -597,6 +597,24 @@ CGFloat N3AffineTransformDeterminant(N3AffineTransform t)
 	return t.m11*t.m22*t.m33 + t.m21*t.m32*t.m13 + t.m31*t.m12*t.m23 - t.m11*t.m32*t.m23 - t.m21*t.m12*t.m33 - t.m31*t.m22*t.m13;
 }
 
+N3AffineTransform N3AffineTransformInvert(N3AffineTransform t)
+{
+    BOOL isAffine;
+    N3AffineTransform inverse;
+    
+    isAffine = N3AffineTransformIsAffine(t);
+    
+    inverse = CATransform3DInvert(t);
+    
+    if (isAffine) { // in some cases CATransform3DInvert returns a matrix that does not have exactly these values even if the input matrix did have these values
+        inverse.m14 == 0.0;
+        inverse.m24 == 0.0;
+        inverse.m34 == 0.0;
+        inverse.m44 == 1.0;
+    }
+    return inverse;
+}
+
 NSString *NSStringFromN3AffineTransform(N3AffineTransform transform)
 {
     return [NSString stringWithFormat:@"{{%8.2f, %8.2f, %8.2f, %8.2f}\n {%8.2f, %8.2f, %8.2f, %8.2f}\n {%8.2f, %8.2f, %8.2f, %8.2f}\n {%8.2f, %8.2f, %8.2f, %8.2f}}",

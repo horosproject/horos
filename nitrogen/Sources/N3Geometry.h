@@ -130,6 +130,7 @@ extern const N3AffineTransform N3AffineTransformIdentity;
 bool N3AffineTransformIsRectilinear(N3AffineTransform t); // this is not the right term, but what is a transform that only includes scale and translation called?
 N3AffineTransform N3AffineTransformTranspose(N3AffineTransform t);
 CGFloat N3AffineTransformDeterminant(N3AffineTransform t);
+N3AffineTransform N3AffineTransformInvert (N3AffineTransform t);
 
 CG_INLINE bool N3AffineTransformIsIdentity(N3AffineTransform t) {return CATransform3DIsIdentity(t);}
 CG_INLINE bool N3AffineTransformIsAffine(N3AffineTransform t) {return (t.m14 == 0.0 && t.m24 == 0.0 && t.m34 == 0.0 && t.m44 == 1.0);}
@@ -144,7 +145,6 @@ CG_INLINE N3AffineTransform N3AffineTransformScale (N3AffineTransform t, CGFloat
 CG_INLINE N3AffineTransform N3AffineTransformRotate (N3AffineTransform t, CGFloat angle, CGFloat x, CGFloat y, CGFloat z) {return CATransform3DRotate(t, angle, x, y, z);}
 CG_INLINE N3AffineTransform N3AffineTransformRotateAroundVector (N3AffineTransform t, CGFloat angle, N3Vector vector) {return CATransform3DRotate(t, angle, vector.x, vector.y, vector.z);}
 CG_INLINE N3AffineTransform N3AffineTransformConcat (N3AffineTransform a, CATransform3D b) {return CATransform3DConcat(a, b);}
-CG_INLINE N3AffineTransform N3AffineTransformInvert (N3AffineTransform t) {return CATransform3DInvert(t);}
 
 CFDictionaryRef N3VectorCreateDictionaryRepresentation(N3Vector vector);
 CFDictionaryRef N3LineCreateDictionaryRepresentation(N3Line line);
