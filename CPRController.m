@@ -2233,7 +2233,12 @@ static float deg2rad = 3.14159265358979/180.0;
         		
         [dicomExport setSeriesDescription:self.exportSeriesName]; 
         [dicomExport setSeriesNumber:9983]; 
-        [dicomExport setModalityAsSource:YES];
+        
+		if( self.exportImageFormat == CPR16BitExportImageFormat)
+			[dicomExport setModalityAsSource: NO];
+		else
+			[dicomExport setModalityAsSource: YES];
+		
         [dicomExport setSourceFile:[[pixList[0] lastObject] sourceFile]];
         
 		exportWidth = NSWidth([cprView bounds]);
@@ -2338,6 +2343,11 @@ static float deg2rad = 3.14159265358979/180.0;
 			[dicomExport setSeriesDescription: self.exportSeriesName];
 			[dicomExport setSeriesNumber:8930 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
             [dicomExport setSourceFile:[[pixList[0] lastObject] sourceFile]];
+			
+			if( self.exportImageFormat == CPR16BitExportImageFormat)
+				[dicomExport setModalityAsSource: NO];
+			else
+				[dicomExport setModalityAsSource: YES];
 			
 			if( self.exportSeriesType == CPRRotationExportSeriesType) // 3D rotation
 			{

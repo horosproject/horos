@@ -749,9 +749,13 @@ extern int splitPosition[ 3];
     BOOL didChangeHover;
 	NSString *planeName;
 	N3Vector vector;
-
-    viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
+	
+	viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    
+	if( NSPointInRect( viewPoint, [self frame]) == NO)
+		return;
+	
+	pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
     
     if (NSPointInRect(viewPoint, self.bounds) && curDCM.pwidth > 0) {
 		[self _sendWillEditDisplayInfo];
@@ -799,14 +803,20 @@ extern int splitPosition[ 3];
 		[self _sendDidEditDisplayInfo];
     }
 	
-	if( curDCM.pwidth != 0 && (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.transverseSectionPosition)*curDCM.pwidth < 5.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.leftTransverseSectionPosition)*curDCM.pwidth < 10.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.rightTransverseSectionPosition)*curDCM.pwidth < 10.0))
+	float exportTransverseSliceInterval = 0;
+	
+	if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
+		exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
+	
+	
+	if( curDCM.pwidth != 0 && exportTransverseSliceInterval == 0 && displayTransverseLines && ((ABS((pixVector.x/curDCM.pwidth) - _curvedPath.transverseSectionPosition)*curDCM.pwidth < 5.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.leftTransverseSectionPosition)*curDCM.pwidth < 10.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.rightTransverseSectionPosition)*curDCM.pwidth < 10.0)))
 	{
 		if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown)
 			[[NSCursor closedHandCursor] set];
 		else
 			[[NSCursor openHandCursor] set];
-    }
-    else
+	}
+	else
 	{
 		[cursor set];
 		
@@ -883,14 +893,19 @@ extern int splitPosition[ 3];
         [super mouseDown:event];
         return;
     }
-        
-    if (ABS((pixVector.x/pixWidth) - _curvedPath.transverseSectionPosition)*pixWidth < 5.0)
+	
+	float exportTransverseSliceInterval = 0;
+	
+	if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
+		exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
+	
+    if( exportTransverseSliceInterval == 0 && displayTransverseLines && (ABS((pixVector.x/pixWidth) - _curvedPath.transverseSectionPosition)*pixWidth < 5.0))
 	{
 		[self _sendWillEditCurvedPath];
         _draggingTransverse = YES;
 		[self mouseMoved: event];
     }
-	else if((ABS((pixVector.x/pixWidth) - _curvedPath.leftTransverseSectionPosition)*pixWidth < 10.0) ||  (ABS((pixVector.x/pixWidth) - _curvedPath.rightTransverseSectionPosition)*pixWidth < 10.0))
+	else if( exportTransverseSliceInterval == 0 && displayTransverseLines && ((ABS((pixVector.x/pixWidth) - _curvedPath.leftTransverseSectionPosition)*pixWidth < 10.0) ||  (ABS((pixVector.x/pixWidth) - _curvedPath.rightTransverseSectionPosition)*pixWidth < 10.0)))
 	{
 		[self _sendWillEditCurvedPath];
         _draggingTransverseSpacing = YES;

@@ -1587,9 +1587,12 @@ static	BOOL frameZoomed = NO;
 	
 	if( view == self)
 	{
+		if( NSPointInRect( [self convertPoint: [theEvent locationInWindow] fromView:nil], [self frame]) == NO)
+			return;
+		
 		[super mouseMoved: theEvent];
 		
-		int mouseOnLines = [self mouseOnLines: [self convertPoint:[theEvent locationInWindow] fromView:nil]];
+		int mouseOnLines = [self mouseOnLines: [self convertPoint: [theEvent locationInWindow] fromView:nil]];
 		if( mouseOnLines==2)
 		{
 			if( [theEvent type] == NSLeftMouseDragged) [[NSCursor closedHandCursor] set];

@@ -1890,10 +1890,14 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		return;
     
 	NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];
+	
 	viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    
+    	
 	if( view == self)
 	{
+		if( NSPointInRect( viewPoint, [self frame]) == NO)
+			return;
+		
 		[super mouseMoved: theEvent];
 		
 		long tool = [self getTool: theEvent];
