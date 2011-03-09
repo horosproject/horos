@@ -257,7 +257,7 @@
 
     sliceToDicomTransform = N3AffineTransformIdentity;
     crossVector = N3VectorNormalize(N3VectorCrossProduct(_directionX, _directionY));
-    pixelSpacingZ = 1; // totally bogus, but there is no right value, and this should give something that is reasonable
+    pixelSpacingZ = 1.0; // totally bogus, but there is no right value, and this should give something that is reasonable
     
     sliceToDicomTransform.m11 = _directionX.x * _pixelSpacingX;
     sliceToDicomTransform.m12 = _directionX.y * _pixelSpacingX;

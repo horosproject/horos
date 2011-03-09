@@ -20,7 +20,7 @@
 #include <libkern/OSAtomic.h>
 
 
-static const NSUInteger FILL_HEIGHT = 1000;
+static const NSUInteger FILL_HEIGHT = 40;
 static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
 
 @interface CPRObliqueSliceOperation ()
