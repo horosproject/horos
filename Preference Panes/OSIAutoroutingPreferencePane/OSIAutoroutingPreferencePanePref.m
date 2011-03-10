@@ -14,8 +14,8 @@
 
 #import <OsiriX/DCMObject.h>
 #import "OSIAutoroutingPreferencePanePref.h"
-#import <OsiriX Headers/NSPreferencePane+OsiriX.h>
-#import <OsiriX Headers/AppController.h>
+#import <OsiriXAPI/NSPreferencePane+OsiriX.h>
+#import <OsiriXAPI/AppController.h>
 
 @implementation OSIAutoroutingPreferencePanePref
 

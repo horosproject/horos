@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		59482F36118AD9CA00D7E606 /* OsiriX Headers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59482F35118AD9CA00D7E606 /* OsiriX Headers.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		59482F36118AD9CA00D7E606 /* OsiriXAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59482F35118AD9CA00D7E606 /* OsiriXAPI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
@@ -42,7 +42,7 @@
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		59482F35118AD9CA00D7E606 /* OsiriX Headers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "OsiriX Headers.framework"; path = "../../build/Development/OsiriX Headers.framework"; sourceTree = SOURCE_ROOT; };
+		59482F35118AD9CA00D7E606 /* OsiriXAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OsiriXAPI.framework; path = ../../build/Development/OsiriXAPI.framework; sourceTree = SOURCE_ROOT; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A90117090C563E84004928BF /* OSICustomImageAnnotations.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSICustomImageAnnotations.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9BBD9820C563B2B0067F5D1 /* OSICustomImageAnnotations.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSICustomImageAnnotations.h; sourceTree = "<group>"; };
@@ -82,7 +82,7 @@
 				CE729C53097075C30064790F /* IOKit.framework in Frameworks */,
 				AB80A66E0A19C8EC00FED357 /* Security.framework in Frameworks */,
 				A9FDDD0D0C843D1600E24423 /* QuartzCore.framework in Frameworks */,
-				59482F36118AD9CA00D7E606 /* OsiriX Headers.framework in Frameworks */,
+				59482F36118AD9CA00D7E606 /* OsiriXAPI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,7 +104,7 @@
 		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				59482F35118AD9CA00D7E606 /* OsiriX Headers.framework */,
+				59482F35118AD9CA00D7E606 /* OsiriXAPI.framework */,
 				A9FDDD0C0C843D1600E24423 /* QuartzCore.framework */,
 				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
 				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,

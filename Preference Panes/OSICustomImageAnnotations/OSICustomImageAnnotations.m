@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import "OSICustomImageAnnotations.h"
-#import <OsiriX Headers/NSPreferencePane+OsiriX.h>
+#import <OsiriXAPI/NSPreferencePane+OsiriX.h>
 
 NSComparisonResult  compareViewTags(id firstView, id secondView, void * context);
 NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)

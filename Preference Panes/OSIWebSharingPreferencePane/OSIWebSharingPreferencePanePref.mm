@@ -16,14 +16,14 @@
 #import <SecurityInterface/SFCertificateView.h>
 
 #import "OSIWebSharingPreferencePanePref.h"
-#import <OsiriX Headers/DefaultsOsiriX.h>
-#import <OsiriX Headers/NSUserDefaults+OsiriX.h>
-#import <OsiriX Headers/BrowserController.h>
-#import <OsiriX Headers/AppController.h>
-#import <OsiriX Headers/NSFileManager+N2.h>
-#import <OsiriX Headers/WebPortal.h>
-#import <OsiriX Headers/WebPortalDatabase.h>
-#import <OsiriX Headers/DicomDatabase.h>
+#import <OsiriXAPI/DefaultsOsiriX.h>
+#import <OsiriXAPI/NSUserDefaults+OsiriX.h>
+#import <OsiriXAPI/BrowserController.h>
+#import <OsiriXAPI/AppController.h>
+#import <OsiriXAPI/NSFileManager+N2.h>
+#import <OsiriXAPI/WebPortal.h>
+#import <OsiriXAPI/WebPortalDatabase.h>
+#import <OsiriXAPI/DicomDatabase.h>
 
 #import "DDKeychain.h"
 
@@ -192,6 +192,18 @@
 
 - (IBAction) copyMissingCustomizedFiles: (id) sender {
 	[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"WebServicesHTML"] toPath:@"~/Library/Application Support/OsiriX/WebServicesHTML" byReplacingExisting:NO error:NULL];
+}
+
+- (IBAction) editUsers: (id) sender {
+	[NSApp beginSheet:usersPanel modalForWindow:self.mainView.window modalDelegate:self didEndSelector:@selector(editUsersSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+}
+
+-(IBAction)exitEditUsers:(NSButton*)sender {
+	[NSApp endSheet:usersPanel];
+}
+
+- (void)editUsersSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+	[sheet orderOut:NULL];
 }
 
 @end
