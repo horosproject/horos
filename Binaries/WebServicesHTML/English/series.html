@@ -14,11 +14,11 @@
 				<img src="/image.jpg?xid=%Image.XID%" class="maxwide" /> 
 				%]FOREACH:Series.sortedImages:Image%
 			%ELSE:Request.frames%
-				<a href="?%Info.getParameters%&frames=yes">Show All Frames</a>
 				<div class="separated loading center">
 					%[IF:Series.images.count<2%
 						<img src="/image.jpg?xid=%Series.XID%" class="maxwide" />
 					%ELSE:Series.images.count<2%
+						<a href="?%Info.getParameters%&frames=yes">Show All Frames</a><br/>
 						%[IF:Info.proposeFlash%
 							<object width="%X:Series.width%" height="%X:Series.height%">
 								<param name="movie" value="/movie.swf?xid=%Series.XID%" />

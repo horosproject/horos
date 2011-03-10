@@ -27,6 +27,10 @@ function checkboxChanged(form) {
 	
 	form.CheckAll.disabled = allChecked;
 	form.UncheckAll.disabled = allUnchecked;
+	
+	if (document.getElementsByClassName)
+		for (var e in document.getElementsByClassName('if_selection'))
+			e.disabled = allUnchecked;
 }
 
 function onSubmitForm(form) {
@@ -192,7 +196,7 @@ function shareDestinationChange(select) {
 					%]IF:Info.proposeZipDownload%
 					%[IF:Info.proposeWeasis%
 					<td class="narrow middle">
-						<input type="image" src="images/weasis.png" alt="Open selected series in Weasis" onclick="document.submitting='Weasis'" />
+						<input type="image" src="images/weasis.png" alt="Open selected series in Weasis" onclick="document.submitting='Weasis'" class="if_selection" />
 					</td>
 					%]IF:Info.proposeWeasis%
 				</tr>
@@ -250,7 +254,7 @@ function shareDestinationChange(select) {
 							<option value="%U:Dest.address%:%U:Dest.port%:%U:Dest.aeTitle%:%U:Dest.syntax%">%X:Dest.description%</option>
 							%]FOREACH:DicomDestinations:Dest%
 						</select>
-						<button type="submit" name="dicomSend" value="dicomSend" onclick="document.submitting='Send'">Send</button>
+						<button type="submit" name="dicomSend" value="dicomSend" onclick="document.submitting='Send'" class="if_selection">Send</button>
 					</td>
 				</tr>
 			</table>
