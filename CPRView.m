@@ -530,7 +530,7 @@ extern int splitPosition[ 3];
 	
 	glColor4d(0.0, 1.0, 0.0, 0.8);
     
-    if (_displayInfo.mouseCursorHidden == NO)
+    if ( [[self windowController] displayMousePosition] == YES && _displayInfo.mouseCursorHidden == NO)
 	{
         cursorVector = N3VectorMake(curDCM.pwidth * _displayInfo.mouseCursorPosition, (CGFloat)curDCM.pheight/2.0, 0);
         cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
