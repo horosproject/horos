@@ -28,7 +28,7 @@
 		<!-- OSGI Felix framework -->
 		<jar href="%X:Info.baseUrl%/weasis/felix.jar" />
 		<!-- Optional library (Substance Look and feel, only since version 1.0.8). Requires the new Java Plug-in introduced in the Java SE 6 update 10 release.For previous JRE 6, substance.jnlp needs a static codebase URL -->
-		<!--extension href="%X:Info.baseUrl%/weasis/substance.jnlp"/ -->
+		<extension href="%X:Info.baseUrl%/weasis/substance.jnlp"/>
 		<!-- Required parameter. Define the location of config.properties (the OSGI configuration and the list of plug-ins to install/start) -->
 		<property name="felix.config.properties" value="%X:Info.baseUrl%/weasis/conf/config.properties" />
 		<!-- Required parameter. Define the code base of Weasis for the JNLP -->

@@ -242,5 +242,8 @@ extern "C"
 #pragma mark -
 -(WebPortal*)defaultWebPortal;
 
+#ifndef OSIRIX_LIGHT
+-(NSString*)weasisBasePath;
+#endif
 @end
 

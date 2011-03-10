@@ -54,6 +54,7 @@
 #import "NSMutableDictionary+N2.h"
 #import "DicomAlbum.h"
 #import "N2Alignment.h"
+#import "AppController.h"
 
 #import "JSON.h"
 
@@ -506,7 +507,11 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	if ([requestedPath hasPrefix:@"/weasis/"])
 	{
-		response.data = [NSData dataWithContentsOfFile:[[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"weasis"] stringByAppendingPathComponent:requestedPath]];
+		#ifndef OSIRIX_LIGHT
+		response.data = [NSData dataWithContentsOfFile:[[[AppController sharedAppController] weasisBasePath] stringByAppendingPathComponent:requestedPath]];
+		#else
+		response.statusCode = 404;
+		#endif
 	}
 	else if ([requestedPath rangeOfString:@".pvt."].length) {
 		response.statusCode = 404;

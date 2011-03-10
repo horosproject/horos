@@ -285,6 +285,22 @@
 		59DC290F11C617A300DAD5B4 /* DicomCompressor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC290D11C617A300DAD5B4 /* DicomCompressor.mm */; };
 		59DD2406131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59DD2405131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel */; };
 		59DD2407131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59DD2405131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel */; };
+		59E15614132915A800531E5A /* CSMailMailClient.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2119C710E4C25300F9C50C /* CSMailMailClient.h */; };
+		59E15615132915A800531E5A /* CSMailMailClient.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2119C810E4C25300F9C50C /* CSMailMailClient.m */; };
+		59E15616132915A800531E5A /* WebPortal.h in Headers */ = {isa = PBXBuildFile; fileRef = 597BB90912A7D3C000D0A172 /* WebPortal.h */; };
+		59E15617132915A800531E5A /* WebPortal.mm in Sources */ = {isa = PBXBuildFile; fileRef = 597BB90A12A7D3C000D0A172 /* WebPortal.mm */; };
+		59E15618132915A800531E5A /* WebPortal+Databases.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBF40912B8B90100809C61 /* WebPortal+Databases.h */; };
+		59E15619132915A800531E5A /* WebPortal+Databases.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */; };
+		59E1561A132915A800531E5A /* WebPortal+Email+Log.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */; };
+		59E1561B132915A800531E5A /* WebPortal+Email+Log.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */; };
+		59E1561C132915A800531E5A /* WebPortalSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526E8312816FDC0016F6C0 /* WebPortalSession.h */; };
+		59E1561D132915A800531E5A /* WebPortalSession.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526E8412816FDC0016F6C0 /* WebPortalSession.mm */; };
+		59E1561E132915A800531E5A /* WebPortalConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526F6A1281AFCA0016F6C0 /* WebPortalConnection.h */; };
+		59E1561F132915A800531E5A /* WebPortalConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526F6B1281AFCA0016F6C0 /* WebPortalConnection.mm */; };
+		59E15620132915A800531E5A /* WebPortalConnection+Data.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969033912DDE30800379E41 /* WebPortalConnection+Data.h */; };
+		59E15621132915A800531E5A /* WebPortalConnection+Data.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */; };
+		59E15622132915A800531E5A /* WebPortalResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969034312DDE5EA00379E41 /* WebPortalResponse.h */; };
+		59E15623132915A800531E5A /* WebPortalResponse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969034412DDE5EA00379E41 /* WebPortalResponse.mm */; };
 		59E379CF116B293A00E84FE3 /* NSImage+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */; };
 		59E379D0116B293A00E84FE3 /* NSImage+OsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E379CE116B293A00E84FE3 /* NSImage+OsiriX.m */; };
 		59E379D1116B294200E84FE3 /* NSImage+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */; };
@@ -5057,22 +5073,6 @@
 		CE6915671316AF7B00EE7317 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4AB11182C480086A15A /* SBJsonParser.m */; };
 		CE6915681316AF7B00EE7317 /* SBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4AC11182C480086A15A /* SBJsonWriter.h */; };
 		CE6915691316AF7B00EE7317 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4AD11182C480086A15A /* SBJsonWriter.m */; };
-		CE69156A1316AF7B00EE7317 /* CSMailMailClient.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2119C710E4C25300F9C50C /* CSMailMailClient.h */; };
-		CE69156B1316AF7B00EE7317 /* CSMailMailClient.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2119C810E4C25300F9C50C /* CSMailMailClient.m */; };
-		CE69156C1316AF7B00EE7317 /* WebPortal.h in Headers */ = {isa = PBXBuildFile; fileRef = 597BB90912A7D3C000D0A172 /* WebPortal.h */; };
-		CE69156D1316AF7B00EE7317 /* WebPortal.mm in Sources */ = {isa = PBXBuildFile; fileRef = 597BB90A12A7D3C000D0A172 /* WebPortal.mm */; };
-		CE69156E1316AF7B00EE7317 /* WebPortal+Databases.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBF40912B8B90100809C61 /* WebPortal+Databases.h */; };
-		CE69156F1316AF7B00EE7317 /* WebPortal+Databases.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */; };
-		CE6915701316AF7B00EE7317 /* WebPortal+Email+Log.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */; };
-		CE6915711316AF7B00EE7317 /* WebPortal+Email+Log.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */; };
-		CE6915721316AF7B00EE7317 /* WebPortalSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526E8312816FDC0016F6C0 /* WebPortalSession.h */; };
-		CE6915731316AF7B00EE7317 /* WebPortalSession.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526E8412816FDC0016F6C0 /* WebPortalSession.mm */; };
-		CE6915741316AF7B00EE7317 /* WebPortalConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526F6A1281AFCA0016F6C0 /* WebPortalConnection.h */; };
-		CE6915751316AF7B00EE7317 /* WebPortalConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526F6B1281AFCA0016F6C0 /* WebPortalConnection.mm */; };
-		CE6915761316AF7B00EE7317 /* WebPortalConnection+Data.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969033912DDE30800379E41 /* WebPortalConnection+Data.h */; };
-		CE6915771316AF7B00EE7317 /* WebPortalConnection+Data.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */; };
-		CE6915781316AF7B00EE7317 /* WebPortalResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969034312DDE5EA00379E41 /* WebPortalResponse.h */; };
-		CE6915791316AF7B00EE7317 /* WebPortalResponse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969034412DDE5EA00379E41 /* WebPortalResponse.mm */; };
 		CE69157A1316AF8100EE7317 /* WebPortalUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526F3A1281ADC10016F6C0 /* WebPortalUser.h */; };
 		CE69157B1316AF8100EE7317 /* WebPortalUser.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526F3B1281ADC10016F6C0 /* WebPortalUser.mm */; };
 		CE69157C1316AF8100EE7317 /* WebPortalStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = 590BB21E12A002FA009E9758 /* WebPortalStudy.h */; };
@@ -22006,16 +22006,16 @@
 				CE6915641316AF7B00EE7317 /* SBJsonBase.h in Headers */,
 				CE6915661316AF7B00EE7317 /* SBJsonParser.h in Headers */,
 				CE6915681316AF7B00EE7317 /* SBJsonWriter.h in Headers */,
-				CE69156A1316AF7B00EE7317 /* CSMailMailClient.h in Headers */,
-				CE69156C1316AF7B00EE7317 /* WebPortal.h in Headers */,
-				CE69156E1316AF7B00EE7317 /* WebPortal+Databases.h in Headers */,
-				CE6915701316AF7B00EE7317 /* WebPortal+Email+Log.h in Headers */,
-				CE6915721316AF7B00EE7317 /* WebPortalSession.h in Headers */,
-				CE6915741316AF7B00EE7317 /* WebPortalConnection.h in Headers */,
-				CE6915761316AF7B00EE7317 /* WebPortalConnection+Data.h in Headers */,
-				CE6915781316AF7B00EE7317 /* WebPortalResponse.h in Headers */,
 				CE69157A1316AF8100EE7317 /* WebPortalUser.h in Headers */,
 				CE69157C1316AF8100EE7317 /* WebPortalStudy.h in Headers */,
+				59E15614132915A800531E5A /* CSMailMailClient.h in Headers */,
+				59E15616132915A800531E5A /* WebPortal.h in Headers */,
+				59E15618132915A800531E5A /* WebPortal+Databases.h in Headers */,
+				59E1561A132915A800531E5A /* WebPortal+Email+Log.h in Headers */,
+				59E1561C132915A800531E5A /* WebPortalSession.h in Headers */,
+				59E1561E132915A800531E5A /* WebPortalConnection.h in Headers */,
+				59E15620132915A800531E5A /* WebPortalConnection+Data.h in Headers */,
+				59E15622132915A800531E5A /* WebPortalResponse.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25749,17 +25749,17 @@
 				CE6915651316AF7B00EE7317 /* SBJsonBase.m in Sources */,
 				CE6915671316AF7B00EE7317 /* SBJsonParser.m in Sources */,
 				CE6915691316AF7B00EE7317 /* SBJsonWriter.m in Sources */,
-				CE69156B1316AF7B00EE7317 /* CSMailMailClient.m in Sources */,
-				CE69156D1316AF7B00EE7317 /* WebPortal.mm in Sources */,
-				CE69156F1316AF7B00EE7317 /* WebPortal+Databases.mm in Sources */,
-				CE6915711316AF7B00EE7317 /* WebPortal+Email+Log.mm in Sources */,
-				CE6915731316AF7B00EE7317 /* WebPortalSession.mm in Sources */,
-				CE6915751316AF7B00EE7317 /* WebPortalConnection.mm in Sources */,
-				CE6915771316AF7B00EE7317 /* WebPortalConnection+Data.mm in Sources */,
-				CE6915791316AF7B00EE7317 /* WebPortalResponse.mm in Sources */,
 				CE69157B1316AF8100EE7317 /* WebPortalUser.mm in Sources */,
 				CE69157D1316AF8100EE7317 /* WebPortalStudy.mm in Sources */,
 				59DD2407131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel in Sources */,
+				59E15615132915A800531E5A /* CSMailMailClient.m in Sources */,
+				59E15617132915A800531E5A /* WebPortal.mm in Sources */,
+				59E15619132915A800531E5A /* WebPortal+Databases.mm in Sources */,
+				59E1561B132915A800531E5A /* WebPortal+Email+Log.mm in Sources */,
+				59E1561D132915A800531E5A /* WebPortalSession.mm in Sources */,
+				59E1561F132915A800531E5A /* WebPortalConnection.mm in Sources */,
+				59E15621132915A800531E5A /* WebPortalConnection+Data.mm in Sources */,
+				59E15623132915A800531E5A /* WebPortalResponse.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

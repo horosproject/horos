@@ -875,7 +875,7 @@
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnWeasis"])
 		{
-			NSString* weasisPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"weasis"];
+			NSString* weasisPath = [[AppController sharedAppController] weasisBasePath];
 			for (NSString* subpath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:weasisPath error:NULL])
 				[[NSFileManager defaultManager] copyItemAtPath:[weasisPath stringByAppendingPathComponent:subpath] toPath:[burnFolder stringByAppendingPathComponent:subpath] error:NULL];
 		}

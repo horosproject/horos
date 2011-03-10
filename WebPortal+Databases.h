@@ -31,3 +31,4 @@
 -(NSArray*)seriesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate;
 
 @end
+

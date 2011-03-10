@@ -4966,4 +4966,12 @@ static BOOL initialized = NO;
 	return [WebPortal defaultWebPortal];
 }
 
+#ifndef OSIRIX_LIGHT
+
+-(NSString*)weasisBasePath {
+	return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"weasis"];
+}
+
+#endif
+
 @end
