@@ -43,7 +43,7 @@
 	
 	for (NSInteger i = 0; i < numberOfComponents-1; ++i)
 		if (c1components[i] != c2components[i]) {
-			NSLog(@"component %d not equal in [%@] and [%@]", i, [c1 description], [c2 description]);
+//			NSLog(@"component %d not equal in [%@] and [%@]", i, [c1 description], [c2 description]);
 			return NO;
 		}
 	
