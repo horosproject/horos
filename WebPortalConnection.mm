@@ -506,7 +506,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	if ([requestedPath hasPrefix:@"/weasis/"])
 	{
-		response.data = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:requestedPath]];
+		response.data = [NSData dataWithContentsOfFile:[[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"weasis"] stringByAppendingPathComponent:requestedPath]];
 	}
 	else if ([requestedPath rangeOfString:@".pvt."].length) {
 		response.statusCode = 404;
