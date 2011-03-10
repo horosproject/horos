@@ -11,8 +11,8 @@
 			<string key="NS.object.0">823</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
+			<integer value="1144"/>
 			<integer value="1057"/>
-			<integer value="1136"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -806,9 +806,6 @@
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="896066363">
-				<array class="NSMutableArray" key="NSDeclaredKeys">
-					<string>passwordWebServer</string>
-				</array>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSArrayController" id="596395762">
@@ -1136,7 +1133,7 @@
 										<object class="NSButton" id="269566575">
 											<reference key="NSNextResponder" ref="914571674"/>
 											<int key="NSvFlags">289</int>
-											<string key="NSFrame">{{424, 8}, {96, 32}}</string>
+											<string key="NSFrame">{{442, -5}, {96, 32}}</string>
 											<reference key="NSSuperview" ref="914571674"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="515620723">
@@ -4975,7 +4972,7 @@ ZW1wdHkgbGlzdC4</string>
 				<string key="1136.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1137.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSAffineTransform" key="1137.IBViewBoundsToFrameTransform">
-					<bytes key="NSTransformStruct">P4AAAL+AAABD1oAAwigAAA</bytes>
+					<bytes key="NSTransformStruct">P4AAAL+AAABD1AAAwhgAAA</bytes>
 				</object>
 				<string key="1138.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1142.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
