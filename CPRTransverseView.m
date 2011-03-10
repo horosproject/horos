@@ -402,10 +402,10 @@ extern int CLUTBARS, ANNOTATIONS;
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
     pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
+    pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
 
 	if( displayCrossLines)
 	{
-		pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
 		
 		glColor4d(1.0, 1.0, 0.0, 1.0);
 		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
