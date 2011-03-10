@@ -171,6 +171,16 @@ extern int CLUTBARS, ANNOTATIONS;
 	[self applyNewScaleValue];
 }
 
+- (void)mouseMoved:(NSEvent *)theEvent
+{
+	NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];
+	
+	if( view == self)
+		[super mouseMoved:theEvent];
+	else
+		[view mouseMoved:theEvent];
+}
+
 - (void)mouseDraggedTranslate:(NSEvent *)event
 {
 	[super mouseDraggedTranslate: event];

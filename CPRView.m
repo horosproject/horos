@@ -27,6 +27,7 @@
 #import "ROI.h"
 #import "Notifications.h"
 #import "StringTexture.h"
+#import "NSColor+N2.h"
 
 extern BOOL frameZoomed;
 extern int splitPosition[ 3];
@@ -765,89 +766,98 @@ extern int splitPosition[ 3];
 
 - (void)mouseMoved:(NSEvent *)theEvent
 {
-    NSPoint viewPoint;
-	NSPoint planePoint;
-    N3Vector pixVector;
-    N3Line line;
-    NSInteger i;
-    BOOL overNode;
-    NSInteger hoverNodeIndex;
-    CGFloat relativePosition;
-    BOOL didChangeHover;
-	NSString *planeName;
-	N3Vector vector;
+	NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];
 	
-	viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    
-	if( NSPointInRect( viewPoint, [self bounds]) == NO)
-		return;
-	
-	pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
-    
-    if (NSPointInRect(viewPoint, self.bounds) && curDCM.pwidth > 0) {
-		[self _sendWillEditDisplayInfo];
-        _displayInfo.mouseCursorPosition = MIN(MAX(pixVector.x/(CGFloat)curDCM.pwidth, 0.0), 1.0);
-        [self setNeedsDisplay:YES];
-    
-		[self _updateMousePlanePointsForViewPoint:viewPoint];  // this will modify _mousePlanePointsInPix and _displayInfo
-		
-        line = N3LineMake(N3VectorMake(0, (CGFloat)curDCM.pheight / 2.0, 0), N3VectorMake(1, 0, 0));
-        line = N3LineApplyTransform(line, N3AffineTransformInvert([self viewToPixTransform]));
-        
-        if (N3VectorDistanceToLine(N3VectorMakeFromNSPoint(viewPoint), line) < 20.0) {
-            self.drawAllNodes = YES;
-        } else {
-            self.drawAllNodes = NO;
-        }
-        
-        overNode = NO;
-        hoverNodeIndex = 0;
-        if (self.drawAllNodes) {
-            for (i = 0; i < [_curvedPath.nodes count]; i++) {
-                relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
-                
-                if (N3VectorDistance(N3VectorMakeFromNSPoint(viewPoint),
-                                      N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*relativePosition, (CGFloat)curDCM.pheight/2.0, 0), N3AffineTransformInvert([self viewToPixTransform]))) < 10.0) {
-                    overNode = YES;
-                    hoverNodeIndex = i;
-                    break;
-                }
-            }
-            
-            if (overNode) {
-                if (_displayInfo.hoverNodeHidden == YES || _displayInfo.hoverNodeIndex != hoverNodeIndex) {
-                    _displayInfo.hoverNodeHidden = NO;
-                    _displayInfo.hoverNodeIndex = hoverNodeIndex;
-                }
-            } else {
-                if (_displayInfo.hoverNodeHidden == NO) {
-                    _displayInfo.hoverNodeHidden = YES;
-                    _displayInfo.hoverNodeIndex = 0;
-                }
-            }
-        }
-        
-		[self _sendDidEditDisplayInfo];
-    }
-	
-	float exportTransverseSliceInterval = 0;
-	
-	if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
-		exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
-	
-	
-	if( curDCM.pwidth != 0 && exportTransverseSliceInterval == 0 && displayTransverseLines && ((ABS((pixVector.x/curDCM.pwidth) - _curvedPath.transverseSectionPosition)*curDCM.pwidth < 5.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.leftTransverseSectionPosition)*curDCM.pwidth < 10.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.rightTransverseSectionPosition)*curDCM.pwidth < 10.0)))
+	if( view == self)
 	{
-		if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown)
-			[[NSCursor closedHandCursor] set];
+		NSPoint viewPoint;
+		NSPoint planePoint;
+		N3Vector pixVector;
+		N3Line line;
+		NSInteger i;
+		BOOL overNode;
+		NSInteger hoverNodeIndex;
+		CGFloat relativePosition;
+		BOOL didChangeHover;
+		NSString *planeName;
+		N3Vector vector;
+		
+		viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+		
+		if( NSPointInRect( viewPoint, [self bounds]) == NO)
+			return;
+		
+		pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
+		
+		if (NSPointInRect(viewPoint, self.bounds) && curDCM.pwidth > 0) {
+			[self _sendWillEditDisplayInfo];
+			_displayInfo.mouseCursorPosition = MIN(MAX(pixVector.x/(CGFloat)curDCM.pwidth, 0.0), 1.0);
+			[self setNeedsDisplay:YES];
+		
+			[self _updateMousePlanePointsForViewPoint:viewPoint];  // this will modify _mousePlanePointsInPix and _displayInfo
+			
+			line = N3LineMake(N3VectorMake(0, (CGFloat)curDCM.pheight / 2.0, 0), N3VectorMake(1, 0, 0));
+			line = N3LineApplyTransform(line, N3AffineTransformInvert([self viewToPixTransform]));
+			
+			if (N3VectorDistanceToLine(N3VectorMakeFromNSPoint(viewPoint), line) < 20.0) {
+				self.drawAllNodes = YES;
+			} else {
+				self.drawAllNodes = NO;
+			}
+			
+			overNode = NO;
+			hoverNodeIndex = 0;
+			if (self.drawAllNodes) {
+				for (i = 0; i < [_curvedPath.nodes count]; i++) {
+					relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
+					
+					if (N3VectorDistance(N3VectorMakeFromNSPoint(viewPoint),
+										  N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*relativePosition, (CGFloat)curDCM.pheight/2.0, 0), N3AffineTransformInvert([self viewToPixTransform]))) < 10.0) {
+						overNode = YES;
+						hoverNodeIndex = i;
+						break;
+					}
+				}
+				
+				if (overNode) {
+					if (_displayInfo.hoverNodeHidden == YES || _displayInfo.hoverNodeIndex != hoverNodeIndex) {
+						_displayInfo.hoverNodeHidden = NO;
+						_displayInfo.hoverNodeIndex = hoverNodeIndex;
+					}
+				} else {
+					if (_displayInfo.hoverNodeHidden == NO) {
+						_displayInfo.hoverNodeHidden = YES;
+						_displayInfo.hoverNodeIndex = 0;
+					}
+				}
+			}
+			
+			[self _sendDidEditDisplayInfo];
+		}
+		
+		float exportTransverseSliceInterval = 0;
+		
+		if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
+			exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
+		
+		
+		if( curDCM.pwidth != 0 && exportTransverseSliceInterval == 0 && displayTransverseLines && ((ABS((pixVector.x/curDCM.pwidth) - _curvedPath.transverseSectionPosition)*curDCM.pwidth < 5.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.leftTransverseSectionPosition)*curDCM.pwidth < 10.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.rightTransverseSectionPosition)*curDCM.pwidth < 10.0)))
+		{
+			if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown)
+				[[NSCursor closedHandCursor] set];
+			else
+				[[NSCursor openHandCursor] set];
+		}
 		else
-			[[NSCursor openHandCursor] set];
+		{
+			[cursor set];
+			
+			[super mouseMoved:theEvent];
+		}
 	}
 	else
 	{
-		[cursor set];
-		
-		[super mouseMoved:theEvent];
+		[view mouseMoved:theEvent];
 	}
 }
 

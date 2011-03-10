@@ -2959,6 +2959,8 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [notification object] == [self window])
 	{
+		[[self window] setAcceptsMouseMovedEvents: NO];
+		
 		windowWillClose = YES;
 		
 		[[NSUserDefaults standardUserDefaults] setBool: self.displayMousePosition forKey: @"MPRDisplayMousePosition"];
