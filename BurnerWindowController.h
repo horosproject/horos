@@ -43,7 +43,7 @@
 	IBOutlet NSWindow *passwordWindow;
 	
 	BOOL buttonsDisabled;
-	BOOL burnSuppFolder, burnOsiriX, burnHtml;
+	BOOL burnSuppFolder, burnOsiriX, burnHtml, burnWeasis;
 }
 
 @property BOOL buttonsDisabled;

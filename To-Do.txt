@@ -22,10 +22,16 @@
 - Web Server: A list of JPEG, instead of a quicktime movie, if number of images < 20
 - Web Server: add temporary user email for admins
 - This is the last version to support MacOS 10.5, please upgrade to 10.6 or 10.7 !
+- Option to burn Weasis in CDs, with launchers for MacOSX, Linux and Windows (Java 6 is required for all systems)
 
 - DICOM Listener TLS? -> different syntax transfer settings(tested at Gran*** on early 3.9 beta, unsuccessfully..)
 - CPR doc
 - CPR : N3AffineTransformIsAffine bug
+- Weasis: we should wait for 2 fixes before 3.9 release (the current status works, but isn't optimal)
+---> The weasis-portable package should contain the complete weasis-web package for the Web Portal (it's currently missith a JNLP and 2 images)
+---> Weasis currently loads a complete directory before updating its index, and as OsiriX CDs/DVDs put all DICOM files in the same directory, the current behavior is to read all DICOM files for tags and only after that update the index
+------> Nicolas knows about this and should provide a working binary before march 18th
+- Once we have the complete Weasis package, our JNLP template should have the extension line uncommented
 
 - Web Server: Burn option if the CD/DVD is installed
 

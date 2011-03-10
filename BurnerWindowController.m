@@ -90,6 +90,7 @@
 	burnSuppFolder = [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"];
 	burnOsiriX = [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"];
 	burnHtml = [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnHtml"];
+	burnWeasis = [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnWeasis"];;
 }
 
 - (void) restoreDefaultsSettings
@@ -97,6 +98,7 @@
 	[[NSUserDefaults standardUserDefaults] setBool: burnSuppFolder forKey:@"BurnSupplementaryFolder"];
 	[[NSUserDefaults standardUserDefaults] setBool: burnOsiriX forKey:@"BurnOsirixApplication"];
 	[[NSUserDefaults standardUserDefaults] setBool: burnHtml forKey:@"BurnHtml"];
+	[[NSUserDefaults standardUserDefaults] setBool: burnWeasis forKey:@"BurnWeasis"];
 }
 
 -(id) initWithFiles:(NSArray *)theFiles
@@ -780,7 +782,7 @@
 	NSString *file;
 	NSString *burnFolder = [self folderToBurn];
 	NSString *dicomdirPath = [NSString stringWithFormat:@"%@/DICOMDIR",burnFolder];
-	NSString *subFolder = [NSString stringWithFormat:@"%@/IMAGES",burnFolder];
+	NSString *subFolder = [NSString stringWithFormat:@"%@/DICOM",burnFolder];
 	NSFileManager *manager = [NSFileManager defaultManager];
 	int i = 0;
 
@@ -869,6 +871,16 @@
 		[self addDICOMDIRUsingDCMTK];
 		
 		// Both these supplementary burn data are optional and controlled from a preference panel [DDP]
+		
+		
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnWeasis"])
+		{
+			NSString* weasisPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"weasis"];
+			for (NSString* subpath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:weasisPath error:NULL])
+				[[NSFileManager defaultManager] copyItemAtPath:[weasisPath stringByAppendingPathComponent:subpath] toPath:[burnFolder stringByAppendingPathComponent:subpath] error:NULL];
+		}
+			
+		
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
 		{
@@ -1056,9 +1068,14 @@
 		size += [fattrs fileSize]/1024;
 	}
 	
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnWeasis"])
+	{
+		size += 17 * 1024; // About 17MB
+	}
+	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
 	{
-		size += 15 * 1024; // About 15MB
+		size += 8 * 1024; // About 8MB
 	}
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"])
