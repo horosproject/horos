@@ -163,6 +163,9 @@ static float deg2rad = 3.14159265358979/180.0;
         mprView1.displayInfo = displayInfo;
         mprView2.displayInfo = displayInfo;
         mprView3.displayInfo = displayInfo;
+        topTransverseView.displayInfo = displayInfo;
+        middleTransverseView.displayInfo = displayInfo;
+        bottomTransverseView.displayInfo = displayInfo;
 		cprView.displayInfo = displayInfo;
         topTransverseView.delegate = self;
         topTransverseView.curvedPath = curvedPath;
@@ -2256,12 +2259,9 @@ static float deg2rad = 3.14159265358979/180.0;
 		int resizeImage = 0;
 		
 		BOOL copyDisplayCrossLines = cprView.displayCrossLines;
-		BOOL copyMouseCursorHidden = cprView.displayInfo.mouseCursorHidden;
-		BOOL copyDraggedPositionHidden = cprView.displayInfo.draggedPositionHidden;
 		BOOL copyDisplayMousePosition = self.displayMousePosition;
 		
-		cprView.displayInfo.draggedPositionHidden = YES;
-		cprView.displayInfo.mouseCursorHidden = YES;
+		cprView.displayInfo = [[[CPRDisplayInfo alloc] init] autorelease];;
 		cprView.displayCrossLines = NO;
 		self.displayMousePosition = NO;
 		
@@ -2586,8 +2586,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		}
 		
 		cprView.displayCrossLines = copyDisplayCrossLines;
-		cprView.displayInfo.mouseCursorHidden = copyMouseCursorHidden;
-		cprView.displayInfo.draggedPositionHidden = copyDraggedPositionHidden;
+        cprView.displayInfo = displayInfo;
 		self.displayMousePosition = copyDisplayMousePosition;
 		cprView.displayTransverseLines = YES;
 			
@@ -3926,6 +3925,15 @@ static float deg2rad = 3.14159265358979/180.0;
     }
     if (mprView3 != CPRMPRDCMView) {
         mprView3.displayInfo = displayInfo;
+    }
+    if (topTransverseView != CPRMPRDCMView) {
+        topTransverseView.displayInfo = displayInfo;
+    }
+    if (middleTransverseView != CPRMPRDCMView) {
+        middleTransverseView.displayInfo = displayInfo;
+    }
+    if (bottomTransverseView != CPRMPRDCMView) {
+        bottomTransverseView.displayInfo = displayInfo;
     }
     if (cprView != CPRMPRDCMView) {
         cprView.displayInfo = displayInfo;

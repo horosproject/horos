@@ -14,6 +14,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "N3Geometry.h"
+#import "CPRTransverseView.h"
 
 // this class is used to separate display only related data from the real data in an MVC sense
 
@@ -26,6 +27,9 @@
     BOOL _mouseCursorHidden;
     CGFloat _mouseCursorPosition;
 	
+    CPRTransverseViewSection _mouseTransverseSection; 
+    CGFloat _mouseTransverseSectionDistance;
+    
 	// to handle tracking the mouse on intersections of the plane and the CPR
 	NSMutableDictionary *_planeIntersectionMouseCoordinates; 
 }
@@ -36,6 +40,10 @@
 @property (nonatomic, readwrite, assign) NSInteger hoverNodeIndex;
 @property (nonatomic, readwrite, assign, getter=isMouseCursorHidden) BOOL mouseCursorHidden;
 @property (nonatomic, readwrite, assign) CGFloat mouseCursorPosition;
+@property (nonatomic, readwrite, assign) CPRTransverseViewSection mouseTransverseSection;
+@property (nonatomic, readwrite, assign) CGFloat mouseTransverseSectionDistance;
+
+
 
 - (void)setMouseVector:(N3Vector)vector forPlane:(NSString *)planeName;
 - (void)clearMouseVectorForPlaneName:(NSString *)planeName;

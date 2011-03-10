@@ -18,13 +18,15 @@
  
 // horrible name! rename me!
 enum _CPRTransverseViewSectionType { 
-    CPRTransverseViewCenterSectionType,
+    CPRTransverseViewNoneSectionType = -1,
+    CPRTransverseViewCenterSectionType = 0,
     CPRTransverseViewLeftSectionType,
     CPRTransverseViewRightSectionType
 };
 typedef NSInteger CPRTransverseViewSection;
 
 @class CPRCurvedPath;
+@class CPRDisplayInfo;
 @class CPRVolumeData;
 @class CPRObliqueSliceGeneratorRequest;
 @class StringTexture;
@@ -33,6 +35,7 @@ typedef NSInteger CPRTransverseViewSection;
     id<CPRViewDelegate> _delegate;
 
     CPRCurvedPath *_curvedPath;
+    CPRDisplayInfo *_displayInfo;
     CPRTransverseViewSection _sectionType;
     CGFloat _sectionWidth;
     
@@ -55,6 +58,7 @@ typedef NSInteger CPRTransverseViewSection;
 
 @property (nonatomic, readwrite, assign) id<CPRViewDelegate> delegate;
 @property (nonatomic, readwrite, copy) CPRCurvedPath* curvedPath;
+@property (nonatomic, readwrite, copy) CPRDisplayInfo *displayInfo;
 @property (nonatomic, readwrite, assign) CPRTransverseViewSection sectionType;
 @property (nonatomic, readwrite, assign) CGFloat sectionWidth; // the width to be displayed in mm
 @property (nonatomic, readwrite, retain) CPRVolumeData *volumeData;

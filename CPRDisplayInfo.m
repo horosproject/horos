@@ -30,6 +30,8 @@
 @synthesize hoverNodeIndex = _hoverNodeIndex;
 @synthesize mouseCursorHidden = _mouseCursorHidden;
 @synthesize mouseCursorPosition = _mouseCursorPosition;
+@synthesize mouseTransverseSection = _mouseTransverseSection;
+@synthesize mouseTransverseSectionDistance = _mouseTransverseSectionDistance;
 @synthesize planeIntersectionMouseCoordinates = _planeIntersectionMouseCoordinates;
 
 - (id)init
@@ -38,6 +40,7 @@
 		_mouseCursorHidden = YES;
         _draggedPositionHidden = YES;
         _hoverNodeHidden = YES;
+        _mouseTransverseSection = CPRTransverseViewNoneSectionType;
 		_planeIntersectionMouseCoordinates = [[NSMutableDictionary alloc] init];
 	}
 	return self;
@@ -52,6 +55,8 @@
         _hoverNodeIndex = displayInfo.hoverNodeIndex;
         _mouseCursorHidden = displayInfo.mouseCursorHidden;
         _mouseCursorPosition = displayInfo.mouseCursorPosition;
+        _mouseTransverseSection = displayInfo.mouseTransverseSection;
+        _mouseTransverseSectionDistance = displayInfo.mouseTransverseSectionDistance;
 		_planeIntersectionMouseCoordinates = [displayInfo.planeIntersectionMouseCoordinates mutableCopy];
 	}
 	return self;

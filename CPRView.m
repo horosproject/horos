@@ -260,7 +260,7 @@ extern int splitPosition[ 3];
 
 - (void)setOrangePlaneColor:(NSColor *)color
 {
-    if ([_orangePlaneColor isEqualToColor:color] == NO) {
+    if (_orangePlaneColor != color) {
         [_orangePlaneColor release];
         _orangePlaneColor = [color retain];
         [self setNeedsDisplay:YES];
@@ -269,7 +269,7 @@ extern int splitPosition[ 3];
 
 - (void)setPurplePlaneColor:(NSColor *)color
 {
-    if ([_purplePlaneColor isEqualToColor:color] == NO) {
+    if (_purplePlaneColor != color) {
         [_purplePlaneColor release];
         _purplePlaneColor = [color retain];
         [self setNeedsDisplay:YES];
@@ -278,7 +278,7 @@ extern int splitPosition[ 3];
 
 - (void)setBluePlaneColor:(NSColor *)color
 {
-    if ([_bluePlaneColor isEqualToColor:color] == NO) {
+    if (_bluePlaneColor != color) {
         [_bluePlaneColor release];
         _bluePlaneColor = [color retain];
         [self setNeedsDisplay:YES];
@@ -462,6 +462,7 @@ extern int splitPosition[ 3];
     CGFloat transverseSectionPosition;
     CGFloat leftTransverseSectionPosition;
     CGFloat rightTransverseSectionPosition;
+    CGFloat pixelsPerMm;
 	NSColor *planeColor;
     NSInteger i;
 	NSArray *planeRuns;
@@ -479,7 +480,8 @@ extern int splitPosition[ 3];
 	glPointSize( 12);
 	
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
-    
+    pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
+
     glLineWidth(2.0);
     // draw planes
     glColor4f ([_orangePlaneColor redComponent], [_orangePlaneColor greenComponent], [_orangePlaneColor blueComponent], [_orangePlaneColor alphaComponent]);
@@ -686,7 +688,34 @@ extern int splitPosition[ 3];
 			glVertex2f(cursorVector.x, cursorVector.y);
 			glEnd();	
 		}
-	}
+        
+        if (_displayInfo.mouseTransverseSection != CPRTransverseViewNoneSectionType) {
+            switch (_displayInfo.mouseTransverseSection) {
+                case CPRTransverseViewLeftSectionType:
+                    relativePosition = _curvedPath.leftTransverseSectionPosition;
+                    break;
+                case CPRTransverseViewCenterSectionType:
+                    relativePosition = _curvedPath.transverseSectionPosition;
+                    break;
+                case CPRTransverseViewRightSectionType:
+                    relativePosition = _curvedPath.rightTransverseSectionPosition;
+                    break;
+                default:
+                    relativePosition = 0;
+                    break;
+            }
+            
+            cursorVector = N3VectorMake((CGFloat)curDCM.pwidth*relativePosition, ((CGFloat)curDCM.pheight/2.0)+(_displayInfo.mouseTransverseSectionDistance*pixelsPerMm), 0);
+            cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
+            
+            glColor4d(1.0, 1.0, 0.0, 1.0);
+            glEnable(GL_POINT_SMOOTH);
+            glPointSize(8);
+            glBegin(GL_POINTS);
+            glVertex2f(cursorVector.x, cursorVector.y);
+            glEnd();
+        }
+    }
 	
     if (_drawAllNodes)
 	{
@@ -754,6 +783,8 @@ extern int splitPosition[ 3];
 	[self _sendWillEditDisplayInfo];
     _displayInfo.mouseCursorHidden = YES;
 	[_displayInfo clearAllMouseVectors];
+    _displayInfo.mouseTransverseSection = CPRTransverseViewNoneSectionType;
+    _displayInfo.mouseTransverseSectionDistance = 0;
 	[self _sendDidEditDisplayInfo];
     [_mousePlanePointsInPix removeAllObjects];
 	
@@ -778,6 +809,8 @@ extern int splitPosition[ 3];
 		BOOL overNode;
 		NSInteger hoverNodeIndex;
 		CGFloat relativePosition;
+        CGFloat distance;
+        CGFloat minDistance;
 		BOOL didChangeHover;
 		NSString *planeName;
 		N3Vector vector;
@@ -796,6 +829,29 @@ extern int splitPosition[ 3];
 		
 			[self _updateMousePlanePointsForViewPoint:viewPoint];  // this will modify _mousePlanePointsInPix and _displayInfo
 			
+            // test to see if the mouse is near a trasverse line
+            _displayInfo.mouseTransverseSection = CPRTransverseViewNoneSectionType;
+            _displayInfo.mouseTransverseSectionDistance = 0.0;
+            if (displayTransverseLines) {
+                distance = ABS(pixVector.x - _curvedPath.leftTransverseSectionPosition*(CGFloat)curDCM.pwidth);
+                minDistance = distance;
+                if (distance < 20.0) {
+                    _displayInfo.mouseTransverseSection = CPRTransverseViewLeftSectionType;
+                    _displayInfo.mouseTransverseSectionDistance = (pixVector.y - ((CGFloat)curDCM.pheight/2.0))*([_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth);
+                }
+                distance = ABS(pixVector.x - _curvedPath.rightTransverseSectionPosition*(CGFloat)curDCM.pwidth);
+                if (distance < 20.0 && distance < minDistance) {
+                    _displayInfo.mouseTransverseSection = CPRTransverseViewRightSectionType;
+                    _displayInfo.mouseTransverseSectionDistance = (pixVector.y - ((CGFloat)curDCM.pheight/2.0))*([_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth);
+                    minDistance = distance;
+                }
+                distance = ABS(pixVector.x - _curvedPath.transverseSectionPosition*(CGFloat)curDCM.pwidth);
+                if (distance < 20.0 && distance < minDistance) {
+                    _displayInfo.mouseTransverseSection = CPRTransverseViewCenterSectionType;
+                    _displayInfo.mouseTransverseSectionDistance = (pixVector.y - ((CGFloat)curDCM.pheight/2.0))*([_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth);
+                }
+            }            
+            
 			line = N3LineMake(N3VectorMake(0, (CGFloat)curDCM.pheight / 2.0, 0), N3VectorMake(1, 0, 0));
 			line = N3LineApplyTransform(line, N3AffineTransformInvert([self viewToPixTransform]));
 			

@@ -28,6 +28,7 @@
 #import "Notifications.h"
 #import "StringTexture.h"
 #import "CPRGenerator.h"
+#import "CPRDisplayInfo.h"
 
 extern int CLUTBARS, ANNOTATIONS;
 
@@ -50,6 +51,7 @@ extern int CLUTBARS, ANNOTATIONS;
 @synthesize renderingScale = _renderingScale;
 @synthesize delegate = _delegate;
 @synthesize curvedPath = _curvedPath;
+@synthesize displayInfo = _displayInfo;
 @synthesize sectionType = _sectionType;
 @synthesize sectionWidth = _sectionWidth;
 @synthesize volumeData = _volumeData;
@@ -81,6 +83,8 @@ extern int CLUTBARS, ANNOTATIONS;
     _generatedVolumeData = nil;
     [_curvedPath release];
     _curvedPath = nil;
+    [_displayInfo release];
+    _displayInfo = nil;
     [_lastRequest release];
     _lastRequest = nil;
     
@@ -88,6 +92,18 @@ extern int CLUTBARS, ANNOTATIONS;
 	[stringTex release];
 	
     [super dealloc];
+}
+
+- (void)setDisplayInfo:(CPRDisplayInfo *)displayInfo
+{
+    if (displayInfo != _displayInfo) {
+        if (displayInfo.mouseTransverseSection != _displayInfo.mouseTransverseSection ||
+            displayInfo.mouseTransverseSectionDistance != _displayInfo.mouseTransverseSectionDistance) {
+            [self setNeedsDisplay:YES];
+        }
+        [_displayInfo release];
+        _displayInfo = [displayInfo retain];
+    }
 }
 
 - (void)drawRect:(NSRect)r
@@ -174,11 +190,59 @@ extern int CLUTBARS, ANNOTATIONS;
 - (void)mouseMoved:(NSEvent *)theEvent
 {
 	NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];
-	
-	if( view == self)
+    NSPoint viewPoint;
+    N3Vector pixVector;
+    N3Line line;
+	CPRTransverseViewSection newMouseTransverseSectionType;
+    CGFloat newMouseTransverseSectionDistance;
+    CGFloat pixelsPerMm;
+    
+	if( view == self) {
+		viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
+        pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
+    
+        line = N3LineMake(N3VectorMake((CGFloat)curDCM.pwidth / 2.0, 0, 0), N3VectorMake(0, 1, 0));
+        line = N3LineApplyTransform(line, N3AffineTransformInvert([self viewToPixTransform]));
+        
+        if (N3VectorDistanceToLine(N3VectorMakeFromNSPoint(viewPoint), line) < 20.0) {
+            newMouseTransverseSectionType = _sectionType;
+            newMouseTransverseSectionDistance = (pixVector.y - (CGFloat)curDCM.pheight/2.0) / pixelsPerMm;
+        } else {
+            newMouseTransverseSectionType = CPRTransverseViewNoneSectionType;
+            newMouseTransverseSectionDistance = 0;
+        }
+        
+        if (_displayInfo.mouseTransverseSection != newMouseTransverseSectionType ||
+            _displayInfo.mouseTransverseSectionDistance != newMouseTransverseSectionDistance) {
+            if ([_delegate respondsToSelector:@selector(CPRViewWillEditDisplayInfo:)]) {
+                [_delegate CPRViewWillEditDisplayInfo:self];
+            }
+            _displayInfo.mouseTransverseSection = newMouseTransverseSectionType;
+            _displayInfo.mouseTransverseSectionDistance = newMouseTransverseSectionDistance;
+            if ([_delegate respondsToSelector:@selector(CPRViewDidEditDisplayInfo:)]) {
+                [_delegate CPRViewDidEditDisplayInfo:self];
+            }            
+        }
+            
 		[super mouseMoved:theEvent];
-	else
+	} else
 		[view mouseMoved:theEvent];
+}
+
+- (void)mouseExited:(NSEvent *)theEvent
+{
+    if ([_delegate respondsToSelector:@selector(CPRViewWillEditDisplayInfo:)]) {
+        [_delegate CPRViewWillEditDisplayInfo:self];
+    }
+    _displayInfo.mouseTransverseSection = CPRTransverseViewNoneSectionType;
+    _displayInfo.mouseTransverseSectionDistance = 0;
+    if ([_delegate respondsToSelector:@selector(CPRViewDidEditDisplayInfo:)]) {
+        [_delegate CPRViewDidEditDisplayInfo:self];
+    }            
+    [self setNeedsDisplay:YES];
+    
+    [super mouseExited:theEvent];
 }
 
 - (void)mouseDraggedTranslate:(NSEvent *)event
@@ -337,12 +401,13 @@ extern int CLUTBARS, ANNOTATIONS;
     CGFloat pixelsPerMm;
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
+    pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
+
 	if( displayCrossLines)
 	{
 		pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
-		pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
 		
-		glColor4d(0.0, 1.0, 0.0, 1.0);
+		glColor4d(1.0, 1.0, 0.0, 1.0);
 		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
 		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
 		glLineWidth(1.0);
@@ -366,6 +431,18 @@ extern int CLUTBARS, ANNOTATIONS;
 			glEnd();
 		}
 	}
+    
+    if( [[self windowController] displayMousePosition] == YES && _displayInfo.mouseTransverseSection == _sectionType) {
+        cursorVector = N3VectorMake(((CGFloat)curDCM.pwidth)/2.0, ((CGFloat)curDCM.pheight/2.0)+(_displayInfo.mouseTransverseSectionDistance*pixelsPerMm), 0);
+        cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
+        
+        glColor4d(1.0, 1.0, 0.0, 1.0);
+        glEnable(GL_POINT_SMOOTH);
+        glPointSize(8);
+        glBegin(GL_POINTS);
+        glVertex2f(cursorVector.x, cursorVector.y);
+        glEnd();
+    }
 	
 	// Red Square
 	if( [[self window] firstResponder] == self && stringID == nil)
