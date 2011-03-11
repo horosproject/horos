@@ -9303,12 +9303,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( i == 0)
 			{
-				imSpacing[ 0] = iimSpacing[ 0];
-				imSpacing[ 1] = iimSpacing[ 1];
+				if( imSpacing)
+				{
+					imSpacing[ 0] = iimSpacing[ 0];
+					imSpacing[ 1] = iimSpacing[ 1];
+				}
 				
-				imOrigin[ 0] = 0;
-				imOrigin[ 1] = 0;
-				imOrigin[ 2] = 0;
+				if( imOrigin)
+				{
+					imOrigin[ 0] = 0;
+					imOrigin[ 1] = 0;
+					imOrigin[ 2] = 0;
+				}
 				
 				*spp = ispp;
 				*bpp = ibpp;
