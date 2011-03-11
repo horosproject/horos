@@ -11,8 +11,7 @@
 			<string key="NS.object.0">823</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="1136"/>
-			<integer value="12"/>
+			<integer value="1135"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -34,7 +33,7 @@
 			<object class="NSWindowTemplate" id="689525341">
 				<int key="NSWindowStyleMask">7</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{313, 1094}, {623, 405}}</string>
+				<string key="NSWindowRect">{{14, 745}, {623, 405}}</string>
 				<int key="NSWTFlags">7864320</int>
 				<string key="NSWindowTitle">&lt;&lt; do not localize &gt;&gt;</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -44,7 +43,7 @@
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{623, 405}</string>
 				<object class="NSView" key="NSWindowView" id="738391672">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="845086746">
@@ -799,9 +798,8 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{623, 405}</string>
-					<reference key="NSSuperview"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{623, 427}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
@@ -862,7 +860,7 @@
 			<object class="NSWindowTemplate" id="827031966">
 				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{230, -96}, {740, 546}}</string>
+				<string key="NSWindowRect">{{43, 604}, {740, 546}}</string>
 				<int key="NSWTFlags">1685585920</int>
 				<string key="NSWindowTitle">Users</string>
 				<string key="NSWindowClass">NSPanel</string>
@@ -1072,7 +1070,6 @@
 													</array>
 													<string key="NSFrame">{{1, 17}, {141, 445}}</string>
 													<reference key="NSSuperview" ref="237439465"/>
-													<reference key="NSNextKeyView" ref="745744074"/>
 													<reference key="NSDocView" ref="745744074"/>
 													<reference key="NSBGColor" ref="539855889"/>
 													<int key="NScvFlags">4</int>
@@ -1104,7 +1101,6 @@
 													</array>
 													<string key="NSFrame">{{1, 0}, {141, 17}}</string>
 													<reference key="NSSuperview" ref="237439465"/>
-													<reference key="NSNextKeyView" ref="898290723"/>
 													<reference key="NSDocView" ref="898290723"/>
 													<reference key="NSBGColor" ref="539855889"/>
 													<int key="NScvFlags">4</int>
@@ -1113,7 +1109,6 @@
 											</array>
 											<string key="NSFrame">{{20, 20}, {143, 463}}</string>
 											<reference key="NSSuperview" ref="303908632"/>
-											<reference key="NSNextKeyView" ref="308111666"/>
 											<int key="NSsFlags">530</int>
 											<reference key="NSVScroller" ref="877757841"/>
 											<reference key="NSHScroller" ref="835839488"/>
@@ -1245,7 +1240,6 @@
 													</array>
 													<string key="NSFrame">{{1, 1}, {297, 70}}</string>
 													<reference key="NSSuperview" ref="59211869"/>
-													<reference key="NSNextKeyView" ref="682966488"/>
 													<reference key="NSDocView" ref="682966488"/>
 													<reference key="NSBGColor" ref="539855889"/>
 													<int key="NScvFlags">4</int>
@@ -1274,7 +1268,6 @@
 											</array>
 											<string key="NSFrame">{{249, 209}, {299, 72}}</string>
 											<reference key="NSSuperview" ref="914571674"/>
-											<reference key="NSNextKeyView" ref="288306470"/>
 											<int key="NSsFlags">530</int>
 											<reference key="NSVScroller" ref="432493073"/>
 											<reference key="NSHScroller" ref="329326799"/>
@@ -4964,9 +4957,9 @@ ZW1wdHkgbGlzdC4</string>
 					<bytes key="NSTransformStruct">P4AAAL+AAABD5YAAwpoAAA</bytes>
 				</object>
 				<string key="1133.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="1135.IBEditorWindowLastContentRect">{{329, 555}, {740, 546}}</string>
+				<string key="1135.IBEditorWindowLastContentRect">{{43, 604}, {740, 546}}</string>
 				<string key="1135.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="1135.IBWindowTemplateEditedContentRect">{{329, 555}, {740, 546}}</string>
+				<string key="1135.IBWindowTemplateEditedContentRect">{{43, 604}, {740, 546}}</string>
 				<boolean value="NO" key="1135.NSWindowTemplate.visibleAtLaunch"/>
 				<boolean value="YES" key="1135.windowTemplate.hasMinSize"/>
 				<string key="1135.windowTemplate.minSize">{740, 540}</string>
