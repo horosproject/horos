@@ -71,62 +71,6 @@ extern int splitPosition[ 3];
 
 @end
 
-static void planeSetter(id self, SEL _cmd, N3Plane plane)
-{
-    NSString *key;
-    NSString *selectorName;
-    
-    selectorName = NSStringFromSelector(_cmd);
-    key = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
-    key = [key substringToIndex:[key length] - 1];
-    [self setValue:[NSValue valueWithN3Plane:plane] forKey:key];
-}
-
-static N3Plane planeGetter(id self, SEL _cmd)
-{
-    NSString *selectorName;
-    
-    selectorName = NSStringFromSelector(_cmd);
-    return [[self valueForKey:selectorName] N3PlaneValue];
-}
-
-static void slabThicknessSetter(id self, SEL _cmd, CGFloat thickness)
-{
-    NSString *key;
-    NSString *selectorName;
-    
-    selectorName = NSStringFromSelector(_cmd);
-    key = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
-    key = [key substringToIndex:[key length] - 1];
-    [self setValue:[NSNumber numberWithDouble:thickness] forKey:key];    
-}
-
-static CGFloat slabThicknessGetter(id self, SEL _cmd)
-{
-    NSString *selectorName;
-    
-    selectorName = NSStringFromSelector(_cmd);
-    return [[self valueForKey:selectorName] doubleValue];
-}
-
-static void planeColorSetter(id self, SEL _cmd, NSColor *color)
-{
-    NSString *key;
-    NSString *selectorName;
-    
-    selectorName = NSStringFromSelector(_cmd);
-    key = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
-    key = [key substringToIndex:[key length] - 1];
-    [self setValue:color forKey:key];
-}
-
-static NSColor* planeColorGetter(id self, SEL _cmd)
-{
-    NSString *selectorName;
-    
-    selectorName = NSStringFromSelector(_cmd);
-    return [self valueForKey:selectorName];
-}
 
 @interface CPRView ()
 
@@ -160,7 +104,12 @@ static NSColor* planeColorGetter(id self, SEL _cmd)
 - (NSArray *)_runsForPlane:(N3Plane)plane verticalLineIndexes:(NSArray **)verticalLinesHandle;
 - (void)_buildVerticalLinesAndPlaneRunsForPlaneFullName:(NSString *)planeFullName;
 - (void)_clearAllPlanes;
-
+- (void)_planeSetter:(N3Plane)plane;
+- (N3Plane)_planeGetter;
+- (void)_slabThicknessSetter:(CGFloat)thickness;
+- (CGFloat)_slabThicknessGetter;
+- (void)_planeColorSetter:(NSColor *)color;
+- (NSColor *)_planeColorGetter;
 
 @end
 
@@ -191,29 +140,33 @@ static NSColor* planeColorGetter(id self, SEL _cmd)
 + (BOOL)resolveInstanceMethod:(SEL)selector
 {
     NSString *methodName;
+    IMP imp;
+    const char* typeEncoding;
+    SEL proxySelector;
     
     methodName = NSStringFromSelector(selector);
+    proxySelector = NULL;
     
     if ([methodName hasSuffix:@"Plane"]) {
-        class_addMethod([self class], selector, (IMP) planeGetter, [[NSString stringWithFormat:@"%s%s%s", @encode(N3Plane), @encode(id), @encode(SEL)] UTF8String]);
-        return YES;
+        proxySelector = @selector(_planeGetter);
     } else if ([methodName hasSuffix:@"SlabThickness"]) {
-        class_addMethod([self class], selector, (IMP) slabThicknessGetter, [[NSString stringWithFormat:@"%s%s%s", @encode(CGFloat), @encode(id), @encode(SEL)] UTF8String]);
-        return YES;
+        proxySelector = @selector(_slabThicknessGetter);
     } else if ([methodName hasSuffix:@"PlaneColor"]) {
-        class_addMethod([self class], selector, (IMP) planeColorGetter, [[NSString stringWithFormat:@"%s%s%s", @encode(NSColor*), @encode(id), @encode(SEL)] UTF8String]);
-        return YES;
+        proxySelector = @selector(_planeColorGetter);
     } else if ([methodName hasPrefix:@"set"]) {
         if ([methodName hasSuffix:@"Plane:"]) {
-            class_addMethod([self class], selector, (IMP) planeSetter, [[NSString stringWithFormat:@"%s%s%s%s", @encode(void), @encode(id), @encode(SEL), @encode(N3Plane)] UTF8String]);
-            return YES;
+            proxySelector = @selector(_planeSetter:);
         } else if ([methodName hasSuffix:@"SlabThickness:"]) {
-            class_addMethod([self class], selector, (IMP) slabThicknessSetter, [[NSString stringWithFormat:@"%s%s%s%s", @encode(void), @encode(id), @encode(SEL), @encode(CGFloat)] UTF8String]);
-            return YES;
+            proxySelector = @selector(_slabThicknessSetter:);
         } else if ([methodName hasSuffix:@"PlaneColor:"]) {
-            class_addMethod([self class], selector, (IMP) planeColorSetter, [[NSString stringWithFormat:@"%s%s%s%s", @encode(void), @encode(id), @encode(SEL), @encode(NSColor*)] UTF8String]);
-            return YES;
+            proxySelector = @selector(_planeColorSetter:);
         }
+    }
+    
+    if (proxySelector) {
+        imp = class_getMethodImplementation([self class], proxySelector);
+        typeEncoding = method_getTypeEncoding(class_getInstanceMethod([self class], proxySelector));
+        return class_addMethod([self class], selector, imp, typeEncoding);
     }
     
     return [super resolveInstanceMethod:selector];
@@ -286,47 +239,13 @@ static NSColor* planeColorGetter(id self, SEL _cmd)
     [super dealloc];
 }
 
-- (void)setValue:(id)value forKey:(NSString *)key
-{
-    NSString *planeName;
-    
-    if ([key hasSuffix:@"Plane"]) {
-        planeName = [key substringToIndex:[key length] - 5];
-        assert(strcmp([value objCType], @encode(N3Plane)) == 0);
-        [_verticalLines removeObjectForKey:planeName];
-        [_planeRuns removeObjectForKey:planeName];
-        [_planes setValue:value forKey:planeName];
-        [self setNeedsDisplay:YES];
-    } else if ([key hasSuffix:@"SlabThickness"]) {
-        planeName = [key substringToIndex:[key length] - 13];
-        [_verticalLines removeObjectForKey:planeName];
-        [_planeRuns removeObjectForKey:planeName];
-        [_slabThicknesses setValue:value forKey:planeName];
-        [self setNeedsDisplay:YES];
-    } else if ([key hasSuffix:@"PlaneColor"]) {
-        planeName = [key substringToIndex:[key length] - 10];
-        [_planeColors setValue:value forKey:planeName];
-        [self setNeedsDisplay:YES];
-    } else {
-        [super setValue:value forKey:key];
-    }
-}
-
-
 - (id)valueForKey:(NSString *)key
 {
-    NSString *planeName;
-    NSString *planeFullName;
-    N3Plane plane;
+    NSString *planeFullName; // full plane name may include Top or Bottom before the plane name
     NSArray *planeRuns;
     NSArray *vertialLines;
-    CGFloat *slabThickness;
     
-    if ([key hasSuffix:@"Plane"]) {
-        planeName = [key substringToIndex:[key length] - 5];
-        
-        return [_planes valueForKey:planeName];
-    } else if ([key hasSuffix:@"VerticalLines"]) {
+    if ([key hasSuffix:@"VerticalLines"]) {
         planeFullName = [key substringToIndex:[key length] - 13];
         if ([_verticalLines valueForKey:planeFullName] == nil) {
             [self _buildVerticalLinesAndPlaneRunsForPlaneFullName:planeFullName];
@@ -338,15 +257,6 @@ static NSColor* planeColorGetter(id self, SEL _cmd)
             [self _buildVerticalLinesAndPlaneRunsForPlaneFullName:planeFullName];
         }
         return [_planeRuns valueForKey:planeFullName];
-    } else if ([key hasSuffix:@"SlabThickness"]) {
-        planeName = [key substringToIndex:[key length] - 13];
-        return [_slabThicknesses valueForKey:planeName];
-    } else if ([key hasSuffix:@"PlaneColor"]) {
-        planeName = [key substringToIndex:[key length] - 10];
-        if ([_planeColors valueForKey:planeName] == nil) {
-            [_planeColors setValue:[NSColor colorWithDeviceRed:1 green:1 blue:1 alpha:1] forKey:planeName];
-        }
-        return [_planeColors valueForKey:planeName];
     } else {
         return [super valueForKey:key];
     }
@@ -1740,6 +1650,83 @@ static NSColor* planeColorGetter(id self, SEL _cmd)
     [_planeRuns removeAllObjects];
 }
 
+- (void)_planeSetter:(N3Plane)plane
+{
+    NSString *selectorName;
+    NSString *planeName;
+    
+    selectorName = NSStringFromSelector(_cmd);
+    planeName = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
+    planeName = [planeName substringToIndex:[planeName length] - 6];
+    [_verticalLines removeObjectForKey:planeName];
+    [_planeRuns removeObjectForKey:planeName];
+    [_planes setValue:[NSValue valueWithN3Plane:plane] forKey:planeName];
+    [self setNeedsDisplay:YES];
+}
+
+- (N3Plane)_planeGetter
+{
+    NSString *selectorName;
+    NSString *planeName;
+
+    selectorName = NSStringFromSelector(_cmd);
+    planeName = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
+    planeName = [planeName substringToIndex:[planeName length] - 5];    
+    return [[_planes valueForKey:planeName] N3PlaneValue];
+}
+
+- (void)_slabThicknessSetter:(CGFloat)thickness
+{
+    NSString *selectorName;
+    NSString *planeName;
+
+    selectorName = NSStringFromSelector(_cmd);
+    planeName = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
+    planeName = [planeName substringToIndex:[planeName length] - 14];
+    [_verticalLines removeObjectForKey:planeName];
+    [_planeRuns removeObjectForKey:planeName];
+    [_slabThicknesses setValue:[NSNumber numberWithDouble:thickness] forKey:planeName];    
+    [self setNeedsDisplay:YES];
+}
+
+- (CGFloat)_slabThicknessGetter
+{
+    NSString *selectorName;
+    NSString *planeName;
+    
+    selectorName = NSStringFromSelector(_cmd);
+    planeName = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
+    planeName = [planeName substringToIndex:[planeName length] - 13];    
+    return [[_slabThicknesses valueForKey:planeName] doubleValue];
+}
+
+- (void)_planeColorSetter:(NSColor *)color
+{
+    NSString *selectorName;
+    NSString *planeName;
+    
+    selectorName = NSStringFromSelector(_cmd);
+    planeName = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
+    planeName = [planeName substringToIndex:[planeName length] - 11];
+    [_planeColors setValue:color forKey:planeName];
+    [self setNeedsDisplay:YES];
+}
+
+- (NSColor *)_planeColorGetter
+{
+    NSString *selectorName;
+    NSString *planeName;
+    
+    selectorName = NSStringFromSelector(_cmd);
+    planeName = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
+    planeName = [planeName substringToIndex:[planeName length] - 10];  
+    if ([_planeColors valueForKey:planeName] == nil) {
+        [_planeColors setValue:[NSColor colorWithDeviceRed:1 green:1 blue:1 alpha:1] forKey:planeName];
+    }
+    return [_planeColors valueForKey:planeName];
+}
+
+
 @end
 
 @implementation N3BezierPath (CPRViewPlaneRunAdditions)
@@ -1762,6 +1749,7 @@ static NSColor* planeColorGetter(id self, SEL _cmd)
 	self = mutableBezierPath;
 	return self;
 }
+
 
 
 @end
