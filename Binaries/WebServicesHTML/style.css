@@ -373,6 +373,10 @@ div#overlay > div > div {
 	cursor: pointer;
 }
 
+.disabled[onclick] {
+	cursor: default;
+}
+
 div#overlay img {
 	background-image: url(images/loading.gif);
 	background-repeat: no-repeat;

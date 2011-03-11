@@ -28,9 +28,16 @@ function checkboxChanged(form) {
 	form.CheckAll.disabled = allChecked;
 	form.UncheckAll.disabled = allUnchecked;
 	
-	if (document.getElementsByClassName)
-		for (var e in document.getElementsByClassName('if_selection'))
-			e.disabled = allUnchecked;
+	var ifs = getElementsByClass('if_selection');
+	for (var i = 0; i < ifs.length; ++i) {
+		ifs[i].disabled = allUnchecked;
+		if (ifs[i].classList) {
+			if (ifs[i].disabled && !ifs[i].classList.contains('disabled'))
+				ifs[i].classList.add('disabled');
+			if (!ifs[i].disabled && ifs[i].classList.contains('disabled'))
+				ifs[i].classList.remove('disabled');
+		}
+	}
 }
 
 function onSubmitForm(form) {
@@ -185,9 +192,6 @@ function shareDestinationChange(select) {
 					%[IF:Series.count>1%
 						<button type="button" name="CheckAll" onclick="checkAll(this.form)">Check All</button>
 						<button type="button" name="UncheckAll" onclick="uncheckAll(this.form)">Uncheck All</button>
-						<script type="text/javascript" language="javascript">
-							checkboxChanged(document.getElementById('form'));
-						</script>
 					%]IF:Series.count>1%
 					</td>
 					%[IF:Info.proposeZipDownload%
@@ -264,5 +268,9 @@ function shareDestinationChange(select) {
 	
 </div>
 </form>
+
+<script type="text/javascript" language="javascript">
+	checkboxChanged(document.getElementById('form'));
+</script>
 
 %INCLUDE:footer.pvt.html%
