@@ -9325,10 +9325,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 			else
 			{
-				if( fabs( imSpacing[ 0] - iimSpacing[ 0]) > 0.005 || fabs( imSpacing[ 1] - iimSpacing[ 1]) > 0.005)
+				if( imSpacing)
 				{
-					imSpacing[ 0] = 0;
-					imSpacing[ 1] = 0;
+					if( fabs( imSpacing[ 0] - iimSpacing[ 0]) > 0.005 || fabs( imSpacing[ 1] - iimSpacing[ 1]) > 0.005)
+					{
+						imSpacing[ 0] = 0;
+						imSpacing[ 1] = 0;
+					}
 				}
 			}
 

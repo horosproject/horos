@@ -11,8 +11,8 @@
 			<string key="NS.object.0">823</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="12"/>
 			<integer value="1136"/>
+			<integer value="12"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -4986,11 +4986,11 @@ ZW1wdHkgbGlzdC4</string>
 				<object class="NSAffineTransform" key="1144.IBViewBoundsToFrameTransform">
 					<bytes key="NSTransformStruct">AUMmAAAAAAAAA</bytes>
 				</object>
-				<string key="12.IBEditorWindowLastContentRect">{{683, 516}, {623, 405}}</string>
+				<string key="12.IBEditorWindowLastContentRect">{{14, 745}, {623, 405}}</string>
 				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="0" key="12.IBViewEditorWindowController.showingBoundsRectangles"/>
 				<integer value="0" key="12.IBViewEditorWindowController.showingLayoutRectangles"/>
-				<string key="12.IBWindowTemplateEditedContentRect">{{683, 516}, {623, 405}}</string>
+				<string key="12.IBWindowTemplateEditedContentRect">{{14, 745}, {623, 405}}</string>
 				<integer value="1" key="12.ImportedFromIB2"/>
 				<string key="12.editorWindowContentRectSynchronizationRect">{{770, 336}, {725, 672}}</string>
 				<integer value="0" key="12.windowTemplate.hasMaxSize"/>
