@@ -3661,6 +3661,8 @@ static NSConditionLock *threadLock = nil;
 	
 	[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingPathComponent: DATABASEPATH]];
 	[AppController createNoIndexDirectoryIfNecessary: [self INCOMINGPATH]];
+	[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/"]];
+	[AppController createNoIndexDirectoryIfNecessary: [[self localDocumentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/"]];
 	
 	[self setDBWindowTitle];
 	
