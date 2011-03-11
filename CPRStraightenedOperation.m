@@ -344,7 +344,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
     if (self.request.slabSampleDistance != 0.0) {
         return self.request.slabSampleDistance;
     } else {
-        return self.volumeData.minPixelSpacing;
+        return self.volumeData.minPixelSpacing; // this should be /2.0 to hit nyquist spacing, but it is too slow, and with this implementation to memory intensive
     }
 }
 

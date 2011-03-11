@@ -147,12 +147,14 @@ extern int splitPosition[ 3];
     methodName = NSStringFromSelector(selector);
     proxySelector = NULL;
     
-    if ([methodName hasSuffix:@"Plane"]) {
-        proxySelector = @selector(_planeGetter);
-    } else if ([methodName hasSuffix:@"SlabThickness"]) {
-        proxySelector = @selector(_slabThicknessGetter);
-    } else if ([methodName hasSuffix:@"PlaneColor"]) {
-        proxySelector = @selector(_planeColorGetter);
+    if ([methodName hasPrefix:@"get"] == NO && [methodName hasPrefix:@"set"] == NO) {
+        if ([methodName hasSuffix:@"Plane"]) {
+            proxySelector = @selector(_planeGetter);
+        } else if ([methodName hasSuffix:@"SlabThickness"]) {
+            proxySelector = @selector(_slabThicknessGetter);
+        } else if ([methodName hasSuffix:@"PlaneColor"]) {
+            proxySelector = @selector(_planeColorGetter);
+        }
     } else if ([methodName hasPrefix:@"set"]) {
         if ([methodName hasSuffix:@"Plane:"]) {
             proxySelector = @selector(_planeSetter:);
@@ -1670,8 +1672,7 @@ extern int splitPosition[ 3];
     NSString *planeName;
 
     selectorName = NSStringFromSelector(_cmd);
-    planeName = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
-    planeName = [planeName substringToIndex:[planeName length] - 5];    
+    planeName = [selectorName substringToIndex:[selectorName length] - 5];    
     return [[_planes valueForKey:planeName] N3PlaneValue];
 }
 
@@ -1695,8 +1696,7 @@ extern int splitPosition[ 3];
     NSString *planeName;
     
     selectorName = NSStringFromSelector(_cmd);
-    planeName = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
-    planeName = [planeName substringToIndex:[planeName length] - 13];    
+    planeName = [selectorName substringToIndex:[selectorName length] - 13];    
     return [[_slabThicknesses valueForKey:planeName] doubleValue];
 }
 
@@ -1718,8 +1718,7 @@ extern int splitPosition[ 3];
     NSString *planeName;
     
     selectorName = NSStringFromSelector(_cmd);
-    planeName = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
-    planeName = [planeName substringToIndex:[planeName length] - 10];  
+    planeName = [selectorName substringToIndex:[selectorName length] - 10];  
     if ([_planeColors valueForKey:planeName] == nil) {
         [_planeColors setValue:[NSColor colorWithDeviceRed:1 green:1 blue:1 alpha:1] forKey:planeName];
     }
