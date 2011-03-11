@@ -41,41 +41,47 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
     
     CPRCurvedPath *_curvedPath;
     CPRDisplayInfo *_displayInfo;
-    N3Plane _orangePlane;
-    N3Plane _purplePlane;
-    N3Plane _bluePlane;
+//    N3Plane _orangePlane;
+//    N3Plane _purplePlane;
+//    N3Plane _bluePlane;
 	
-	CGFloat _orangeSlabThickness;
-	CGFloat _purpleSlabThickness;
-	CGFloat _blueSlabThickness;
+    NSMutableDictionary *_planes;
+    NSMutableDictionary *_slabThicknesses;
+    NSMutableDictionary *_verticalLines;
+    NSMutableDictionary *_planeRuns;
+    NSMutableDictionary *_planeColors;
+    
+//	CGFloat _orangeSlabThickness;
+//	CGFloat _purpleSlabThickness;
+//	CGFloat _blueSlabThickness;
 	
-	NSColor *_orangePlaneColor;
-	NSColor *_purplePlaneColor;
-	NSColor *_bluePlaneColor;
+//	NSColor *_orangePlaneColor;
+//	NSColor *_purplePlaneColor;
+//	NSColor *_bluePlaneColor;
     
 	// these are for the plane lines - I'm considering throwing all these into a dictionary and using KVC
-    NSArray *_orangeVericalLines; // array of indexes where vertical lines need to be drawn
-    NSArray *_orangePlaneRuns; // array of plane runs;
-	NSArray *_purpleVericalLines;
-    NSArray *_purplePlaneRuns;
-    NSArray *_blueVericalLines;
-    NSArray *_bluePlaneRuns;
+//    NSArray *_orangeVericalLines; // array of indexes where vertical lines need to be drawn
+//    NSArray *_orangePlaneRuns; // array of plane runs;
+//	NSArray *_purpleVericalLines;
+//    NSArray *_purplePlaneRuns;
+//    NSArray *_blueVericalLines;
+//    NSArray *_bluePlaneRuns;
 	
 	// top lines
-	NSArray *_orangeTopVericalLines; // array of indexes where vertical lines need to be drawn
-    NSArray *_orangeTopPlaneRuns; // array of plane runs;
-	NSArray *_purpleTopVericalLines;
-    NSArray *_purpleTopPlaneRuns;
-    NSArray *_blueTopVericalLines;
-    NSArray *_blueTopPlaneRuns;
+//	NSArray *_orangeTopVericalLines; // array of indexes where vertical lines need to be drawn
+//    NSArray *_orangeTopPlaneRuns; // array of plane runs;
+//	NSArray *_purpleTopVericalLines;
+//    NSArray *_purpleTopPlaneRuns;
+//    NSArray *_blueTopVericalLines;
+//    NSArray *_blueTopPlaneRuns;
 	
 	// bottom lines
-	NSArray *_orangeBottomVericalLines; // array of indexes where vertical lines need to be drawn
-    NSArray *_orangeBottomPlaneRuns; // array of plane runs;
-	NSArray *_purpleBottomVericalLines;
-    NSArray *_purpleBottomPlaneRuns;
-    NSArray *_blueBottomVericalLines;
-    NSArray *_blueBottomPlaneRuns;
+//	NSArray *_orangeBottomVericalLines; // array of indexes where vertical lines need to be drawn
+//    NSArray *_orangeBottomPlaneRuns; // array of plane runs;
+//	NSArray *_purpleBottomVericalLines;
+//    NSArray *_purpleBottomPlaneRuns;
+//    NSArray *_blueBottomVericalLines;
+//    NSArray *_blueBottomPlaneRuns;
 	
     CPRViewClippingRangeMode _clippingRangeMode;
     

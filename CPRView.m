@@ -28,6 +28,7 @@
 #import "Notifications.h"
 #import "StringTexture.h"
 #import "NSColor+N2.h"
+#import <objc/runtime.h>
 
 extern BOOL frameZoomed;
 extern int splitPosition[ 3];
@@ -70,6 +71,62 @@ extern int splitPosition[ 3];
 
 @end
 
+static void planeSetter(id self, SEL _cmd, N3Plane plane)
+{
+    NSString *key;
+    NSString *selectorName;
+    
+    selectorName = NSStringFromSelector(_cmd);
+    key = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
+    key = [key substringToIndex:[key length] - 1];
+    [self setValue:[NSValue valueWithN3Plane:plane] forKey:key];
+}
+
+static N3Plane planeGetter(id self, SEL _cmd)
+{
+    NSString *selectorName;
+    
+    selectorName = NSStringFromSelector(_cmd);
+    return [[self valueForKey:selectorName] N3PlaneValue];
+}
+
+static void slabThicknessSetter(id self, SEL _cmd, CGFloat thickness)
+{
+    NSString *key;
+    NSString *selectorName;
+    
+    selectorName = NSStringFromSelector(_cmd);
+    key = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
+    key = [key substringToIndex:[key length] - 1];
+    [self setValue:[NSNumber numberWithDouble:thickness] forKey:key];    
+}
+
+static CGFloat slabThicknessGetter(id self, SEL _cmd)
+{
+    NSString *selectorName;
+    
+    selectorName = NSStringFromSelector(_cmd);
+    return [[self valueForKey:selectorName] doubleValue];
+}
+
+static void planeColorSetter(id self, SEL _cmd, NSColor *color)
+{
+    NSString *key;
+    NSString *selectorName;
+    
+    selectorName = NSStringFromSelector(_cmd);
+    key = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
+    key = [key substringToIndex:[key length] - 1];
+    [self setValue:color forKey:key];
+}
+
+static NSColor* planeColorGetter(id self, SEL _cmd)
+{
+    NSString *selectorName;
+    
+    selectorName = NSStringFromSelector(_cmd);
+    return [self valueForKey:selectorName];
+}
 
 @interface CPRView ()
 
@@ -101,24 +158,7 @@ extern int splitPosition[ 3];
 
 - (void)_drawPlaneRuns:(NSArray*)planeRuns;
 - (NSArray *)_runsForPlane:(N3Plane)plane verticalLineIndexes:(NSArray **)verticalLinesHandle;
-- (NSArray *)_orangePlaneRuns;
-- (NSArray *)_purplePlaneRuns;
-- (NSArray *)_bluePlaneRuns;
-- (NSArray *)_orangeTopPlaneRuns;
-- (NSArray *)_purpleTopPlaneRuns;
-- (NSArray *)_blueTopPlaneRuns;
-- (NSArray *)_orangeBottomPlaneRuns;
-- (NSArray *)_purpleBottomPlaneRuns;
-- (NSArray *)_blueBottomPlaneRuns;
-- (NSArray *)_orangeVerticalLines;
-- (NSArray *)_purpleVerticalLines;
-- (NSArray *)_blueVerticalLines;
-- (NSArray *)_orangeTopVerticalLines;
-- (NSArray *)_purpleTopVerticalLines;
-- (NSArray *)_blueTopVerticalLines;
-- (NSArray *)_orangeBottomVerticalLines;
-- (NSArray *)_purpleBottomVerticalLines;
-- (NSArray *)_blueBottomVerticalLines;
+- (void)_buildVerticalLinesAndPlaneRunsForPlaneFullName:(NSString *)planeFullName;
 - (void)_clearAllPlanes;
 
 
@@ -135,18 +175,49 @@ extern int splitPosition[ 3];
 @synthesize clippingRangeMode = _clippingRangeMode;
 @synthesize lastRequest = _lastRequest;
 @synthesize drawAllNodes = _drawAllNodes;
-@synthesize orangePlane = _orangePlane;
-@synthesize purplePlane = _purplePlane;
-@synthesize bluePlane = _bluePlane;
-@synthesize orangeSlabThickness = _orangeSlabThickness;
-@synthesize purpleSlabThickness = _purpleSlabThickness;
-@synthesize blueSlabThickness = _blueSlabThickness;
-@synthesize orangePlaneColor = _orangePlaneColor;
-@synthesize purplePlaneColor = _purplePlaneColor;
-@synthesize bluePlaneColor = _bluePlaneColor;
+@dynamic orangePlane;
+@dynamic purplePlane;
+@dynamic bluePlane;
+@dynamic orangeSlabThickness;
+@dynamic purpleSlabThickness;
+@dynamic blueSlabThickness;
+@dynamic orangePlaneColor;
+@dynamic purplePlaneColor;
+@dynamic bluePlaneColor;
 @synthesize mousePlanePointsInPix = _mousePlanePointsInPix;
 @synthesize displayTransverseLines;
 @synthesize displayCrossLines = _displayCrossLines;
+
++ (BOOL)resolveInstanceMethod:(SEL)selector
+{
+    NSString *methodName;
+    
+    methodName = NSStringFromSelector(selector);
+    
+    if ([methodName hasSuffix:@"Plane"]) {
+        class_addMethod([self class], selector, (IMP) planeGetter, [[NSString stringWithFormat:@"%s%s%s", @encode(N3Plane), @encode(id), @encode(SEL)] UTF8String]);
+        return YES;
+    } else if ([methodName hasSuffix:@"SlabThickness"]) {
+        class_addMethod([self class], selector, (IMP) slabThicknessGetter, [[NSString stringWithFormat:@"%s%s%s", @encode(CGFloat), @encode(id), @encode(SEL)] UTF8String]);
+        return YES;
+    } else if ([methodName hasSuffix:@"PlaneColor"]) {
+        class_addMethod([self class], selector, (IMP) planeColorGetter, [[NSString stringWithFormat:@"%s%s%s", @encode(NSColor*), @encode(id), @encode(SEL)] UTF8String]);
+        return YES;
+    } else if ([methodName hasPrefix:@"set"]) {
+        if ([methodName hasSuffix:@"Plane:"]) {
+            class_addMethod([self class], selector, (IMP) planeSetter, [[NSString stringWithFormat:@"%s%s%s%s", @encode(void), @encode(id), @encode(SEL), @encode(N3Plane)] UTF8String]);
+            return YES;
+        } else if ([methodName hasSuffix:@"SlabThickness:"]) {
+            class_addMethod([self class], selector, (IMP) slabThicknessSetter, [[NSString stringWithFormat:@"%s%s%s%s", @encode(void), @encode(id), @encode(SEL), @encode(CGFloat)] UTF8String]);
+            return YES;
+        } else if ([methodName hasSuffix:@"PlaneColor:"]) {
+            class_addMethod([self class], selector, (IMP) planeColorSetter, [[NSString stringWithFormat:@"%s%s%s%s", @encode(void), @encode(id), @encode(SEL), @encode(NSColor*)] UTF8String]);
+            return YES;
+        }
+    }
+    
+    return [super resolveInstanceMethod:selector];
+}
 
 - (void)setDisplayCrossLines:(BOOL)displayCrossLines
 {
@@ -164,9 +235,11 @@ extern int splitPosition[ 3];
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-		_orangePlaneColor = [[NSColor orangeColor] retain];
-		_purplePlaneColor = [[NSColor purpleColor] retain];
-		_bluePlaneColor = [[NSColor blueColor] retain];
+        _planes = [[NSMutableDictionary alloc] init];
+        _slabThicknesses = [[NSMutableDictionary alloc] init];
+        _verticalLines = [[NSMutableDictionary alloc] init];
+        _planeRuns = [[NSMutableDictionary alloc] init];
+        _planeColors = [[NSMutableDictionary alloc] init];
 		_mousePlanePointsInPix = [[NSMutableDictionary alloc] init];
 		_displayCrossLines = YES;
 		displayTransverseLines = YES;
@@ -189,16 +262,19 @@ extern int splitPosition[ 3];
     _displayInfo = nil;
     [_lastRequest release];
     _lastRequest = nil;
+    [_planes release];
+    _planes = nil;
+    [_slabThicknesses release];
+    _slabThicknesses = nil;
+    [_verticalLines release];
+    _verticalLines = nil;
+    [_planeRuns release];
+    _planeRuns = nil;
+    [_planeColors release];
+    _planeColors = nil;
 
 	[self _clearAllPlanes];
 	
-	[_orangePlaneColor release];
-	_orangePlaneColor = nil;
-	[_purplePlaneColor release];
-	_purplePlaneColor = nil;
-	[_bluePlaneColor release];
-	_bluePlaneColor = nil;
-    
 	[_mousePlanePointsInPix release];
 	_mousePlanePointsInPix = nil;
 	
@@ -208,6 +284,72 @@ extern int splitPosition[ 3];
 	[stringTexC release];
 	
     [super dealloc];
+}
+
+- (void)setValue:(id)value forKey:(NSString *)key
+{
+    NSString *planeName;
+    
+    if ([key hasSuffix:@"Plane"]) {
+        planeName = [key substringToIndex:[key length] - 5];
+        assert(strcmp([value objCType], @encode(N3Plane)) == 0);
+        [_verticalLines removeObjectForKey:planeName];
+        [_planeRuns removeObjectForKey:planeName];
+        [_planes setValue:value forKey:planeName];
+        [self setNeedsDisplay:YES];
+    } else if ([key hasSuffix:@"SlabThickness"]) {
+        planeName = [key substringToIndex:[key length] - 13];
+        [_verticalLines removeObjectForKey:planeName];
+        [_planeRuns removeObjectForKey:planeName];
+        [_slabThicknesses setValue:value forKey:planeName];
+        [self setNeedsDisplay:YES];
+    } else if ([key hasSuffix:@"PlaneColor"]) {
+        planeName = [key substringToIndex:[key length] - 10];
+        [_planeColors setValue:value forKey:planeName];
+        [self setNeedsDisplay:YES];
+    } else {
+        [super setValue:value forKey:key];
+    }
+}
+
+
+- (id)valueForKey:(NSString *)key
+{
+    NSString *planeName;
+    NSString *planeFullName;
+    N3Plane plane;
+    NSArray *planeRuns;
+    NSArray *vertialLines;
+    CGFloat *slabThickness;
+    
+    if ([key hasSuffix:@"Plane"]) {
+        planeName = [key substringToIndex:[key length] - 5];
+        
+        return [_planes valueForKey:planeName];
+    } else if ([key hasSuffix:@"VerticalLines"]) {
+        planeFullName = [key substringToIndex:[key length] - 13];
+        if ([_verticalLines valueForKey:planeFullName] == nil) {
+            [self _buildVerticalLinesAndPlaneRunsForPlaneFullName:planeFullName];
+        }
+        return [_verticalLines objectForKey:planeFullName];    
+    } else if ([key hasSuffix:@"PlaneRuns"]) {
+        planeFullName = [key substringToIndex:[key length] - 9];
+        if ([_planeRuns valueForKey:planeFullName] == nil) {
+            [self _buildVerticalLinesAndPlaneRunsForPlaneFullName:planeFullName];
+        }
+        return [_planeRuns valueForKey:planeFullName];
+    } else if ([key hasSuffix:@"SlabThickness"]) {
+        planeName = [key substringToIndex:[key length] - 13];
+        return [_slabThicknesses valueForKey:planeName];
+    } else if ([key hasSuffix:@"PlaneColor"]) {
+        planeName = [key substringToIndex:[key length] - 10];
+        if ([_planeColors valueForKey:planeName] == nil) {
+            [_planeColors setValue:[NSColor colorWithDeviceRed:1 green:1 blue:1 alpha:1] forKey:planeName];
+        }
+        return [_planeColors valueForKey:planeName];
+    } else {
+        return [super valueForKey:key];
+    }
 }
 
 - (void)mouseDraggedWindowLevel:(NSEvent *)event
@@ -256,144 +398,6 @@ extern int splitPosition[ 3];
         _displayInfo = [dispalyInfo copy];
         [self setNeedsDisplay:YES];
     }
-}
-
-- (void)setOrangePlaneColor:(NSColor *)color
-{
-    if (_orangePlaneColor != color) {
-        [_orangePlaneColor release];
-        _orangePlaneColor = [color retain];
-        [self setNeedsDisplay:YES];
-    }
-}
-
-- (void)setPurplePlaneColor:(NSColor *)color
-{
-    if (_purplePlaneColor != color) {
-        [_purplePlaneColor release];
-        _purplePlaneColor = [color retain];
-        [self setNeedsDisplay:YES];
-    }
-}
-
-- (void)setBluePlaneColor:(NSColor *)color
-{
-    if (_bluePlaneColor != color) {
-        [_bluePlaneColor release];
-        _bluePlaneColor = [color retain];
-        [self setNeedsDisplay:YES];
-    }
-}
-
-- (void)setOrangePlane:(N3Plane)orangePlane;
-{
-	if (N3PlaneEqualToPlane(orangePlane, _orangePlane) == NO) {
-		_orangePlane = orangePlane;
-		[_orangeVericalLines release];
-		_orangeVericalLines = nil;
-		[_orangePlaneRuns release];
-		_orangePlaneRuns = nil;
-		
-		[_orangeTopVericalLines release];
-		_orangeTopVericalLines = nil;
-		[_orangeTopPlaneRuns release];
-		_orangeTopPlaneRuns = nil;
-		
-		[_orangeBottomVericalLines release];
-		_orangeBottomVericalLines = nil;
-		[_orangeBottomPlaneRuns release];
-		_orangeBottomPlaneRuns = nil;
-		[self setNeedsDisplay:YES];
-	}
-}
-
-- (void)setPurplePlane:(N3Plane)purplePlane;
-{
-	if (N3PlaneEqualToPlane(purplePlane, _purplePlane) == NO) {
-		_purplePlane = purplePlane;
-		[_purpleVericalLines release];
-		_purpleVericalLines = nil;
-		[_purplePlaneRuns release];
-		_purplePlaneRuns = nil;
-		
-		[_purpleTopVericalLines release];
-		_purpleTopVericalLines = nil;
-		[_purpleTopPlaneRuns release];
-		_purpleTopPlaneRuns = nil;
-		
-		[_purpleBottomVericalLines release];
-		_purpleBottomVericalLines = nil;
-		[_purpleBottomPlaneRuns release];
-		_purpleBottomPlaneRuns = nil;
-		[self setNeedsDisplay:YES];
-	}
-}
-
-- (void)setBluePlane:(N3Plane)bluePlane;
-{
-	if (N3PlaneEqualToPlane(bluePlane, _bluePlane) == NO) {
-		_bluePlane = bluePlane;
-		[_blueVericalLines release];
-		_blueVericalLines = nil;
-		[_bluePlaneRuns release];
-		_bluePlaneRuns = nil;
-
-		[_blueTopVericalLines release];
-		_blueTopVericalLines = nil;
-		[_blueTopPlaneRuns release];
-		_blueTopPlaneRuns = nil;
-
-		[_blueBottomVericalLines release];
-		_blueBottomVericalLines = nil;
-		[_blueBottomPlaneRuns release];
-		_blueBottomPlaneRuns = nil;
-		[self setNeedsDisplay:YES];
-	}
-}
-
-- (void)setOrangeSlabThickness:(CGFloat)slabThickness
-{
-	if (slabThickness != _orangeSlabThickness) {
-		_orangeSlabThickness = slabThickness;
-		[_orangeTopVericalLines release];
-		_orangeTopVericalLines = nil;
-		[_orangeTopPlaneRuns release];
-		_orangeTopPlaneRuns = nil;
-		[_orangeBottomVericalLines release];
-		_orangeBottomVericalLines = nil;
-		[_orangeBottomPlaneRuns release];
-		_orangeBottomPlaneRuns = nil;
-	}
-}
-
-- (void)setPurpleSlabThickness:(CGFloat)slabThickness
-{
-	if (slabThickness != _purpleSlabThickness) {
-		_purpleSlabThickness = slabThickness;
-		[_purpleTopVericalLines release];
-		_purpleTopVericalLines = nil;
-		[_purpleTopPlaneRuns release];
-		_purpleTopPlaneRuns = nil;
-		[_purpleBottomVericalLines release];
-		_purpleBottomVericalLines = nil;
-		[_purpleBottomPlaneRuns release];
-		_purpleBottomPlaneRuns = nil;
-	}
-}
-
-- (void)setBlueSlabThickness:(CGFloat)slabThickness
-{
-	if (slabThickness != _blueSlabThickness) {
-		_blueSlabThickness = slabThickness;
-		[_blueTopVericalLines release];
-		_blueTopVericalLines = nil;
-		[_blueTopPlaneRuns release];
-		_blueTopPlaneRuns = nil;
-		[_blueBottomVericalLines release];
-		_blueBottomVericalLines = nil;
-		[_blueBottomPlaneRuns release];
-		_blueBottomPlaneRuns = nil;
-	}
 }
 
 - (void)setClippingRangeMode:(CPRViewClippingRangeMode)mode
@@ -482,38 +486,23 @@ extern int splitPosition[ 3];
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
     pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
 
-    glLineWidth(2.0);
-    // draw planes
-    glColor4f ([_orangePlaneColor redComponent], [_orangePlaneColor greenComponent], [_orangePlaneColor blueComponent], [_orangePlaneColor alphaComponent]);
-    [self _drawPlaneRuns:[self _orangePlaneRuns]];
-    [self _drawVerticalLines:[self _orangeVerticalLines]];
-    glLineWidth(1.0);
-    [self _drawPlaneRuns:[self _orangeTopPlaneRuns]];
-    [self _drawPlaneRuns:[self _orangeBottomPlaneRuns]];
-    [self _drawVerticalLines:[self _orangeTopVerticalLines]];
-    [self _drawVerticalLines:[self _orangeBottomVerticalLines]];
-    
-    glLineWidth(2.0);
-    // draw planes
-    glColor4f ([_purplePlaneColor redComponent], [_purplePlaneColor greenComponent], [_purplePlaneColor blueComponent], [_purplePlaneColor alphaComponent]);
-    [self _drawPlaneRuns:[self _purplePlaneRuns]];
-    [self _drawVerticalLines:[self _purpleVerticalLines]];
-    glLineWidth(1.0);
-    [self _drawPlaneRuns:[self _purpleTopPlaneRuns]];
-    [self _drawPlaneRuns:[self _purpleBottomPlaneRuns]];
-    [self _drawVerticalLines:[self _purpleTopVerticalLines]];
-    [self _drawVerticalLines:[self _purpleBottomVerticalLines]];
-    
-    glLineWidth(2.0);
-    // draw planes
-    glColor4f ([_bluePlaneColor redComponent], [_bluePlaneColor greenComponent], [_bluePlaneColor blueComponent], [_bluePlaneColor alphaComponent]);
-    [self _drawPlaneRuns:[self _bluePlaneRuns]];
-    [self _drawVerticalLines:[self _blueVerticalLines]];
-    glLineWidth(1.0);
-    [self _drawPlaneRuns:[self _blueTopPlaneRuns]];
-    [self _drawPlaneRuns:[self _blueBottomPlaneRuns]];
-    [self _drawVerticalLines:[self _blueTopVerticalLines]];
-    [self _drawVerticalLines:[self _blueBottomVerticalLines]];
+    if (_displayCrossLines) {
+        for (planeName in _planes) {
+            planeColor = [self valueForKey:[planeName stringByAppendingString:@"PlaneColor"]];
+            
+            glLineWidth(2.0);
+            // draw planes
+            glColor4f ([planeColor redComponent], [planeColor greenComponent], [planeColor blueComponent], [planeColor alphaComponent]);
+            [self _drawPlaneRuns:[self valueForKey:[planeName stringByAppendingString:@"PlaneRuns"]]];
+            [self _drawVerticalLines:[self valueForKey:[planeName stringByAppendingString:@"VerticalLines"]]];
+
+            glLineWidth(1.0);
+            [self _drawPlaneRuns:[self valueForKey:[planeName stringByAppendingString:@"TopPlaneRuns"]]];
+            [self _drawPlaneRuns:[self valueForKey:[planeName stringByAppendingString:@"BottomPlaneRuns"]]];
+            [self _drawVerticalLines:[self valueForKey:[planeName stringByAppendingString:@"TopVerticalLines"]]];
+            [self _drawVerticalLines:[self valueForKey:[planeName stringByAppendingString:@"BottomVerticalLines"]]];
+        }
+    }
 	
 	lineStart = N3VectorMake(0, (CGFloat)curDCM.pheight/2.0, 0);
     lineEnd = N3VectorMake(curDCM.pwidth, (CGFloat)curDCM.pheight/2.0, 0);
@@ -1592,6 +1581,9 @@ extern int splitPosition[ 3];
 	N3Vector lineVolumeVector;
 	N3Vector runPixVector;
 	N3Vector runVolumeVector;
+    NSString *planeName;
+    NSArray *verticalLines;
+    NSArray *planeRuns;
 	
 	linePixVector = N3VectorZero;
 	lineVolumeVector = N3VectorZero;
@@ -1601,41 +1593,21 @@ extern int splitPosition[ 3];
 	[_displayInfo clearAllMouseVectors];
 	[_mousePlanePointsInPix removeAllObjects];
 	
-	lineDistance = [self _distanceToPoint:point onVerticalLines:[self _orangeVerticalLines] pixVector:&linePixVector volumeVector:&lineVolumeVector];
-	runDistance = [self _distanceToPoint:point onPlaneRuns:[self _orangePlaneRuns] pixVector:&runPixVector volumeVector:&runVolumeVector];
-	if (MIN(lineDistance, runDistance) < 30) {
-		if (lineDistance < runDistance) {
-			[_mousePlanePointsInPix setObject:[NSValue valueWithN3Vector:linePixVector] forKey:@"orange"];
-			[_displayInfo setMouseVector:lineVolumeVector forPlane:@"orange"];
-		} else {
-			[_mousePlanePointsInPix setObject:[NSValue valueWithN3Vector:runPixVector] forKey:@"orange"];
-			[_displayInfo setMouseVector:runVolumeVector forPlane:@"orange"];
-		}
-	}
-	
-	lineDistance = [self _distanceToPoint:point onVerticalLines:[self _purpleVerticalLines] pixVector:&linePixVector volumeVector:&lineVolumeVector];
-	runDistance = [self _distanceToPoint:point onPlaneRuns:[self _purplePlaneRuns] pixVector:&runPixVector volumeVector:&runVolumeVector];
-	if (MIN(lineDistance, runDistance) < 30) {
-		if (lineDistance < runDistance) {
-			[_mousePlanePointsInPix setObject:[NSValue valueWithN3Vector:linePixVector] forKey:@"purple"];
-			[_displayInfo setMouseVector:lineVolumeVector forPlane:@"purple"];
-		} else {
-			[_mousePlanePointsInPix setObject:[NSValue valueWithN3Vector:runPixVector] forKey:@"purple"];
-			[_displayInfo setMouseVector:runVolumeVector forPlane:@"purple"];
-		}
-	}
-	
-	lineDistance = [self _distanceToPoint:point onVerticalLines:[self _blueVerticalLines] pixVector:&linePixVector volumeVector:&lineVolumeVector];
-	runDistance = [self _distanceToPoint:point onPlaneRuns:[self _bluePlaneRuns] pixVector:&runPixVector volumeVector:&runVolumeVector];
-	if (MIN(lineDistance, runDistance) < 30) {
-		if (lineDistance < runDistance) {
-			[_mousePlanePointsInPix setObject:[NSValue valueWithN3Vector:linePixVector] forKey:@"blue"];
-			[_displayInfo setMouseVector:lineVolumeVector forPlane:@"blue"];
-		} else {
-			[_mousePlanePointsInPix setObject:[NSValue valueWithN3Vector:runPixVector] forKey:@"blue"];
-			[_displayInfo setMouseVector:runVolumeVector forPlane:@"blue"];
-		}
-	}
+    for (planeName in _planes) {
+        verticalLines = [self valueForKey:[planeName stringByAppendingString:@"VerticalLines"]];
+        planeRuns = [self valueForKey:[planeName stringByAppendingString:@"PlaneRuns"]];
+        lineDistance = [self _distanceToPoint:point onVerticalLines:verticalLines pixVector:&linePixVector volumeVector:&lineVolumeVector];
+        runDistance = [self _distanceToPoint:point onPlaneRuns:planeRuns pixVector:&runPixVector volumeVector:&runVolumeVector];
+        if (MIN(lineDistance, runDistance) < 30) {
+            if (lineDistance < runDistance) {
+                [_mousePlanePointsInPix setObject:[NSValue valueWithN3Vector:linePixVector] forKey:planeName];
+                [_displayInfo setMouseVector:lineVolumeVector forPlane:planeName];
+            } else {
+                [_mousePlanePointsInPix setObject:[NSValue valueWithN3Vector:runPixVector] forKey:planeName];
+                [_displayInfo setMouseVector:runVolumeVector forPlane:planeName];
+            }
+        }
+    }        
 }
 
 // point and distance are in view coordinates, vector is in patient coordinates closestPoint is in pixCoordinates
@@ -1727,285 +1699,46 @@ extern int splitPosition[ 3];
 	return minDistance;
 }
 
-- (NSArray *)_orangePlaneRuns
+- (void)_buildVerticalLinesAndPlaneRunsForPlaneFullName:(NSString *)planeFullName
 {
-	if (_orangePlaneRuns == nil && N3PlaneIsValid(_orangePlane) && _displayCrossLines) {
-		[_orangeVericalLines release];
-		_orangePlaneRuns = [self _runsForPlane:_orangePlane verticalLineIndexes:&_orangeVericalLines];
-		[_orangeVericalLines retain];
-		[_orangePlaneRuns retain];
-	}
-	return _orangePlaneRuns;
-}
-
-- (NSArray *)_purplePlaneRuns
-{
-	if (_purplePlaneRuns == nil && N3PlaneIsValid(_purplePlane) && _displayCrossLines) {
-		[_purpleVericalLines release];
-		_purplePlaneRuns = [self _runsForPlane:_purplePlane verticalLineIndexes:&_purpleVericalLines];
-		[_purpleVericalLines retain];
-		[_purplePlaneRuns retain];
-	}
-	return _purplePlaneRuns;
-}
-
-- (NSArray *)_bluePlaneRuns
-{
-	if (_bluePlaneRuns == nil && N3PlaneIsValid(_bluePlane) && _displayCrossLines) {
-		[_blueVericalLines release];
-		_bluePlaneRuns = [self _runsForPlane:_bluePlane verticalLineIndexes:&_blueVericalLines];
-		[_blueVericalLines retain];
-		[_bluePlaneRuns retain];
-	}
-	return _bluePlaneRuns;
-}
-
-- (NSArray *)_orangeTopPlaneRuns
-{
-	N3Plane plane;
-	if (_orangeTopPlaneRuns == nil && N3PlaneIsValid(_orangePlane) && _orangeSlabThickness != 0.0 && _displayCrossLines) {
-		[_orangeTopVericalLines release];
-		plane.normal = N3VectorNormalize(_orangePlane.normal);
-		plane.point = N3VectorAdd(_orangePlane.point, N3VectorScalarMultiply(plane.normal, _orangeSlabThickness/2.0));
-		_orangeTopPlaneRuns = [self _runsForPlane:plane verticalLineIndexes:&_orangeTopVericalLines];
-		[_orangeTopVericalLines retain];
-		[_orangeTopPlaneRuns retain];
-	}
-	return _orangeTopPlaneRuns;	
-}
-
-- (NSArray *)_purpleTopPlaneRuns
-{
-	N3Plane plane;
-	if (_purpleTopPlaneRuns == nil && N3PlaneIsValid(_purplePlane) && _purpleSlabThickness != 0.0 && _displayCrossLines) {
-		[_purpleTopVericalLines release];
-		plane.normal = N3VectorNormalize(_purplePlane.normal);
-		plane.point = N3VectorAdd(_purplePlane.point, N3VectorScalarMultiply(plane.normal, _purpleSlabThickness/2.0));
-		_purpleTopPlaneRuns = [self _runsForPlane:plane verticalLineIndexes:&_purpleTopVericalLines];
-		[_purpleTopVericalLines retain];
-		[_purpleTopPlaneRuns retain];
-	}
-	return _purpleTopPlaneRuns;	
-}
-
-- (NSArray *)_blueTopPlaneRuns
-{
-	N3Plane plane;
-	if (_blueTopPlaneRuns == nil && N3PlaneIsValid(_bluePlane) && _blueSlabThickness != 0.0 && _displayCrossLines) {
-		[_blueTopVericalLines release];
-		plane.normal = N3VectorNormalize(_bluePlane.normal);
-		plane.point = N3VectorAdd(_bluePlane.point, N3VectorScalarMultiply(plane.normal, _blueSlabThickness/2.0));
-		_blueTopPlaneRuns = [self _runsForPlane:plane verticalLineIndexes:&_blueTopVericalLines];
-		[_blueTopVericalLines retain];
-		[_blueTopPlaneRuns retain];
-	}
-	return _blueTopPlaneRuns;	
-}
-
-- (NSArray *)_orangeBottomPlaneRuns
-{
-	N3Plane plane;
-	if (_orangeBottomPlaneRuns == nil && N3PlaneIsValid(_orangePlane) && _orangeSlabThickness != 0.0 && _displayCrossLines) {
-		[_orangeBottomVericalLines release];
-		plane.normal = N3VectorNormalize(_orangePlane.normal);
-		plane.point = N3VectorAdd(_orangePlane.point, N3VectorScalarMultiply(plane.normal, -_orangeSlabThickness/2.0));
-		_orangeBottomPlaneRuns = [self _runsForPlane:plane verticalLineIndexes:&_orangeBottomVericalLines];
-		[_orangeBottomVericalLines retain];
-		[_orangeBottomPlaneRuns retain];
-	}
-	return _orangeBottomPlaneRuns;	
-}
-
-- (NSArray *)_purpleBottomPlaneRuns
-{
-	N3Plane plane;
-	if (_purpleBottomPlaneRuns == nil && N3PlaneIsValid(_purplePlane) && _purpleSlabThickness != 0.0 && _displayCrossLines) {
-		[_purpleBottomVericalLines release];
-		plane.normal = N3VectorNormalize(_purplePlane.normal);
-		plane.point = N3VectorAdd(_purplePlane.point, N3VectorScalarMultiply(plane.normal, -_purpleSlabThickness/2.0));
-		_purpleBottomPlaneRuns = [self _runsForPlane:plane verticalLineIndexes:&_purpleBottomVericalLines];
-		[_purpleBottomVericalLines retain];
-		[_purpleBottomPlaneRuns retain];
-	}
-	return _purpleBottomPlaneRuns;	
-}
-
-- (NSArray *)_blueBottomPlaneRuns
-{
-	N3Plane plane;
-	if (_blueBottomPlaneRuns == nil && N3PlaneIsValid(_bluePlane) && _blueSlabThickness != 0.0 && _displayCrossLines) {
-		[_blueBottomVericalLines release];
-		plane.normal = N3VectorNormalize(_bluePlane.normal);
-		plane.point = N3VectorAdd(_bluePlane.point, N3VectorScalarMultiply(plane.normal, -_blueSlabThickness/2.0));
-		_blueBottomPlaneRuns = [self _runsForPlane:plane verticalLineIndexes:&_blueBottomVericalLines];
-		[_blueBottomVericalLines retain];
-		[_blueBottomPlaneRuns retain];
-	}
-	return _blueBottomPlaneRuns;	
-}
-
-- (NSArray *)_orangeVerticalLines
-{
-	if (_orangeVericalLines == nil && N3PlaneIsValid(_orangePlane) && _displayCrossLines) {
-		[_orangePlaneRuns release];
-		_orangePlaneRuns = [self _runsForPlane:_orangePlane verticalLineIndexes:&_orangeVericalLines];
-		[_orangeVericalLines retain];
-		[_orangePlaneRuns retain];		
-	}
-	return _orangeVericalLines;
-}
-
-- (NSArray *)_purpleVerticalLines
-{
-	if (_purpleVericalLines == nil && N3PlaneIsValid(_purplePlane) && _displayCrossLines) {
-		[_purplePlaneRuns release];
-		_purplePlaneRuns = [self _runsForPlane:_purplePlane verticalLineIndexes:&_purpleVericalLines];
-		[_purpleVericalLines retain];
-		[_purplePlaneRuns retain];		
-	}
-	return _purpleVericalLines;
-}
-
-- (NSArray *)_blueVerticalLines
-{
-	if (_blueVericalLines == nil && N3PlaneIsValid(_bluePlane) && _displayCrossLines) {
-		[_bluePlaneRuns release];
-		_bluePlaneRuns = [self _runsForPlane:_bluePlane verticalLineIndexes:&_blueVericalLines];
-		[_blueVericalLines retain];
-		[_bluePlaneRuns retain];		
-	}
-	return _blueVericalLines;
-}
-
-- (NSArray *)_orangeTopVerticalLines
-{
-	N3Plane plane;
-	if (_orangeTopVericalLines == nil && N3PlaneIsValid(_orangePlane) && _orangeSlabThickness != 0.0 && _displayCrossLines) {
-		[_orangeTopPlaneRuns release];
-		plane.normal = N3VectorNormalize(_orangePlane.normal);
-		plane.point = N3VectorAdd(_orangePlane.point, N3VectorScalarMultiply(plane.normal, _orangeSlabThickness/2.0));
-		_orangeTopPlaneRuns = [self _runsForPlane:plane verticalLineIndexes:&_orangeTopVericalLines];
-		[_orangeTopVericalLines retain];
-		[_orangeTopPlaneRuns retain];		
-	}
-	return _orangeTopVericalLines;
-}
-
-- (NSArray *)_purpleTopVerticalLines
-{
-	N3Plane plane;
-	if (_purpleTopVericalLines == nil && N3PlaneIsValid(_purplePlane) && _purpleSlabThickness != 0.0 && _displayCrossLines) {
-		[_purpleTopPlaneRuns release];
-		plane.normal = N3VectorNormalize(_purplePlane.normal);
-		plane.point = N3VectorAdd(_purplePlane.point, N3VectorScalarMultiply(plane.normal, _purpleSlabThickness/2.0));
-		_purpleTopPlaneRuns = [self _runsForPlane:plane verticalLineIndexes:&_purpleTopVericalLines];
-		[_purpleTopVericalLines retain];
-		[_purpleTopPlaneRuns retain];		
-	}
-	return _purpleTopVericalLines;
-}
-
-- (NSArray *)_blueTopVerticalLines
-{
-	N3Plane plane;
-	if (_blueTopVericalLines == nil && N3PlaneIsValid(_bluePlane) && _blueSlabThickness != 0.0 && _displayCrossLines) {
-		[_blueTopPlaneRuns release];
-		plane.normal = N3VectorNormalize(_bluePlane.normal);
-		plane.point = N3VectorAdd(_bluePlane.point, N3VectorScalarMultiply(plane.normal, _blueSlabThickness/2.0));
-		_blueTopPlaneRuns = [self _runsForPlane:plane verticalLineIndexes:&_blueTopVericalLines];
-		[_blueTopVericalLines retain];
-		[_blueTopPlaneRuns retain];		
-	}
-	return _blueTopVericalLines;
-}
-
-- (NSArray *)_orangeBottomVerticalLines
-{
-	N3Plane plane;
-	if (_orangeBottomVericalLines == nil && N3PlaneIsValid(_orangePlane) && _orangeSlabThickness != 0.0 && _displayCrossLines) {
-		[_orangeBottomPlaneRuns release];
-		plane.normal = N3VectorNormalize(_orangePlane.normal);
-		plane.point = N3VectorAdd(_orangePlane.point, N3VectorScalarMultiply(plane.normal, _orangeSlabThickness/2.0));
-		_orangeBottomPlaneRuns = [self _runsForPlane:plane verticalLineIndexes:&_orangeBottomVericalLines];
-		[_orangeBottomVericalLines retain];
-		[_orangeBottomPlaneRuns retain];		
-	}
-	return _orangeBottomVericalLines;
-}
-
-- (NSArray *)_purpleBottomVerticalLines
-{
-	N3Plane plane;
-	if (_purpleBottomVericalLines == nil && N3PlaneIsValid(_purplePlane) && _purpleSlabThickness != 0.0 && _displayCrossLines) {
-		[_purpleBottomPlaneRuns release];
-		plane.normal = N3VectorNormalize(_purplePlane.normal);
-		plane.point = N3VectorAdd(_purplePlane.point, N3VectorScalarMultiply(plane.normal, _purpleSlabThickness/2.0));
-		_purpleBottomPlaneRuns = [self _runsForPlane:plane verticalLineIndexes:&_purpleBottomVericalLines];
-		[_purpleBottomVericalLines retain];
-		[_purpleBottomPlaneRuns retain];		
-	}
-	return _purpleBottomVericalLines;
-}
-
-- (NSArray *)_blueBottomVerticalLines
-{
-	N3Plane plane;
-	if (_blueBottomVericalLines == nil && N3PlaneIsValid(_bluePlane) && _blueSlabThickness != 0.0 && _displayCrossLines) {
-		[_blueBottomPlaneRuns release];
-		plane.normal = N3VectorNormalize(_bluePlane.normal);
-		plane.point = N3VectorAdd(_bluePlane.point, N3VectorScalarMultiply(plane.normal, _blueSlabThickness/2.0));
-		_blueBottomPlaneRuns = [self _runsForPlane:plane verticalLineIndexes:&_blueBottomVericalLines];
-		[_blueBottomVericalLines retain];
-		[_blueBottomPlaneRuns retain];		
-	}
-	return _blueBottomVericalLines;
+    NSString *planeName;
+    N3Plane plane;
+    CGFloat slabThickness;
+    NSArray *planeRuns;
+    NSArray *vertialLines;
+    
+    if ([planeFullName hasSuffix:@"Top"]) {
+        planeName = [planeFullName substringToIndex:[planeFullName length] - 3];
+        slabThickness = [[self valueForKey:[planeName stringByAppendingString:@"SlabThickness"]] doubleValue];
+        if (slabThickness == 0) {
+            return;
+        }
+    } else if ([planeFullName hasSuffix:@"Bottom"]) {
+        planeName = [planeFullName substringToIndex:[planeFullName length] - 6];
+        slabThickness = -[[self valueForKey:[planeName stringByAppendingString:@"SlabThickness"]] doubleValue];
+        if (slabThickness == 0) {
+            return;
+        }        
+    } else {
+        planeName = planeFullName;
+        slabThickness = 0;
+    }
+    
+    plane = [[self valueForKey:[planeName stringByAppendingString:@"Plane"]] N3PlaneValue];
+    if (N3PlaneIsValid(plane)) {
+        plane.normal = N3VectorNormalize(plane.normal);
+        plane.point = N3VectorAdd(plane.point, N3VectorScalarMultiply(plane.normal, slabThickness/2.0));
+        planeRuns = [self _runsForPlane:plane verticalLineIndexes:&vertialLines];
+        [_verticalLines setValue:vertialLines forKey:planeFullName];
+        [_planeRuns setValue:planeRuns forKey:planeFullName];
+    }
 }
 
 - (void)_clearAllPlanes
 {
-	[_orangeVericalLines release];
-	_orangeVericalLines = nil;
-	[_orangePlaneRuns release];
-	_orangePlaneRuns = nil;
-	[_purpleVericalLines release];
-	_purpleVericalLines = nil;
-	[_purplePlaneRuns release];
-	_purplePlaneRuns = nil;
-	[_blueVericalLines release];
-	_blueVericalLines = nil;
-	[_bluePlaneRuns release];
-	_bluePlaneRuns = nil;
-	
-	[_orangeTopVericalLines release];
-    _orangeTopVericalLines = nil;
-    [_orangeTopPlaneRuns release];
-    _orangeTopPlaneRuns = nil;
-    [_purpleTopVericalLines release];
-    _purpleTopVericalLines = nil;
-    [_purpleTopPlaneRuns release];
-    _purpleTopPlaneRuns = nil;
-    [_blueTopVericalLines release];
-    _blueTopVericalLines = nil;
-    [_blueTopPlaneRuns release];
-    _blueTopPlaneRuns = nil;
-	
-	[_orangeBottomVericalLines release];
-    _orangeBottomVericalLines = nil;
-    [_orangeBottomPlaneRuns release];
-    _orangeBottomPlaneRuns = nil;
-    [_purpleBottomVericalLines release];
-    _purpleBottomVericalLines = nil;
-    [_purpleBottomPlaneRuns release];
-    _purpleBottomPlaneRuns = nil;
-    [_blueBottomVericalLines release];
-    _blueBottomVericalLines = nil;
-    [_blueBottomPlaneRuns release];
-    _blueBottomPlaneRuns = nil;
-	
+    [_verticalLines removeAllObjects];
+    [_planeRuns removeAllObjects];
 }
-
-
-
 
 @end
 
