@@ -20,6 +20,7 @@
 @interface DiscBurningOptions : NSObject <NSCopying> {
 	BOOL anonymize;
 	NSArray* anonymizationTags;
+	BOOL includeWeasis;
 	BOOL includeOsirixLite;
 	BOOL includeHTMLQT;
 	BOOL includeReports;
@@ -46,6 +47,7 @@ extern NSString* const DiscBurningOptionsZipEncryptPasswordArchivingKey;*/
 
 @property BOOL anonymize;
 @property(retain) NSArray* anonymizationTags;
+@property BOOL includeWeasis;
 @property BOOL includeOsirixLite;
 @property BOOL includeHTMLQT;
 @property BOOL includeReports;

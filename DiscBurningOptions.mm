@@ -20,6 +20,7 @@
 
 @synthesize anonymize;
 @synthesize anonymizationTags;
+@synthesize includeWeasis;
 @synthesize includeOsirixLite;
 @synthesize includeHTMLQT;
 @synthesize includeReports;
@@ -36,6 +37,7 @@
 	if( copy == nil) return nil;
 	copy.anonymize = self.anonymize;
 	copy.anonymizationTags = [self.anonymizationTags copyWithZone:zone];
+	copy.includeWeasis = self.includeWeasis;
 	copy.includeOsirixLite = self.includeOsirixLite;
 	copy.includeHTMLQT = self.includeHTMLQT;
 	copy.includeReports = self.includeReports;
@@ -59,6 +61,7 @@
 
 static NSString* const DiscBurningOptionsAnonymizeArchivingKey = @"anonymize";
 static NSString* const DiscBurningOptionsAnonymizationTagsArchivingKey = @"anonymizationTags";
+static NSString* const DiscBurningOptionsIncludeWeasisArchivingKey = @"includeWeasis";
 static NSString* const DiscBurningOptionsIncludeOsirixLiteArchivingKey = @"includeOsirixLite";
 static NSString* const DiscBurningOptionsIncludeHTMLQTArchivingKey = @"includeHTMLQT";
 static NSString* const DiscBurningOptionsIncludeReportsArchivingKey = @"includeReports";
@@ -73,6 +76,7 @@ static NSString* const DiscBurningOptionsZipEncryptPasswordArchivingKey = @"zipE
 -(void)encodeWithCoder:(NSCoder*)encoder {
 	[encoder encodeBool:self.anonymize forKey:DiscBurningOptionsAnonymizeArchivingKey];
 	[encoder encodeObject:self.anonymizationTags forKey:DiscBurningOptionsAnonymizationTagsArchivingKey];
+	[encoder encodeBool:self.includeWeasis forKey:DiscBurningOptionsIncludeWeasisArchivingKey];
 	[encoder encodeBool:self.includeOsirixLite forKey:DiscBurningOptionsIncludeOsirixLiteArchivingKey];
 	[encoder encodeBool:self.includeHTMLQT forKey:DiscBurningOptionsIncludeHTMLQTArchivingKey];
 	[encoder encodeBool:self.includeReports forKey:DiscBurningOptionsIncludeReportsArchivingKey];
@@ -89,6 +93,7 @@ static NSString* const DiscBurningOptionsZipEncryptPasswordArchivingKey = @"zipE
 	self = [super init];
 	self.anonymize = [decoder decodeBoolForKey:DiscBurningOptionsAnonymizeArchivingKey];
 	self.anonymizationTags = [decoder decodeObjectForKey:DiscBurningOptionsAnonymizationTagsArchivingKey];
+	self.includeWeasis = [decoder decodeBoolForKey:DiscBurningOptionsIncludeWeasisArchivingKey];
 	self.includeOsirixLite = [decoder decodeBoolForKey:DiscBurningOptionsIncludeOsirixLiteArchivingKey];
 	self.includeHTMLQT = [decoder decodeBoolForKey:DiscBurningOptionsIncludeHTMLQTArchivingKey];
 	self.includeReports = [decoder decodeBoolForKey:DiscBurningOptionsIncludeReportsArchivingKey];
