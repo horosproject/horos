@@ -577,7 +577,7 @@ extern int splitPosition[ 3];
 	{
 		if ([self.generatedVolumeData aquireInlineBuffer:&inlineBuffer])
 		{
-			CPRUnsignedInt16ImageRep *imageRep = [self.generatedVolumeData unsignedInt16ImageRepForSliceAtIndex: 0];
+//			CPRUnsignedInt16ImageRep *imageRep = [self.generatedVolumeData unsignedInt16ImageRepForSliceAtIndex: 0];
 		
 			newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.generatedVolumeData.pixelsWide*self.generatedVolumeData.pixelsHigh) :32 
 												 :self.generatedVolumeData.pixelsWide :self.generatedVolumeData.pixelsHigh :self.generatedVolumeData.pixelSpacingX :self.generatedVolumeData.pixelSpacingY
