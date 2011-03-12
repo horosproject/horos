@@ -426,10 +426,18 @@ extern int splitPosition[ 3];
 	if( ANNOTATIONS > annotGraphics)
 		ANNOTATIONS = annotGraphics;
 	
-	for( ROI *r in curRoiList)
+	for( int i = 0; i < curRoiList.count; i++ )
 	{
+		ROI *r = [curRoiList objectAtIndex:i];
+		
 		r.displayCMOrPixels = YES; // We don't want the value in pixels
 		r.imageOrigin = NSMakePoint( curDCM.originX, curDCM.originY);
+		
+		if( r.type == t3Dpoint || r.type == t2DPoint)
+		{
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
+			[curRoiList removeObjectAtIndex: i];
+		}
 	}
 	
 	[super drawRect: aRect withContext: ctx];
@@ -581,7 +589,7 @@ extern int splitPosition[ 3];
 												 :self.generatedVolumeData.pixelsWide :self.generatedVolumeData.pixelsHigh :self.generatedVolumeData.pixelSpacingX :self.generatedVolumeData.pixelSpacingY
 												 : -self.generatedVolumeData.pixelSpacingX*self.generatedVolumeData.pixelsWide/2.
 												 : -self.generatedVolumeData.pixelSpacingY*self.generatedVolumeData.pixelsHigh/2.
-												 :0
+												 : 0
 												 :NO];
 		}
 		else
