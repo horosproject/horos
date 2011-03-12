@@ -426,10 +426,10 @@ extern int splitPosition[ 3];
 	if( ANNOTATIONS > annotGraphics)
 		ANNOTATIONS = annotGraphics;
 	
-	for( int i = 0; i < curRoiList.count; i++ )
+	for( ROI *r in curRoiList)
 	{
-		ROI *r = [curRoiList objectAtIndex:i];
 		r.displayCMOrPixels = YES; // We don't want the value in pixels
+		r.imageOrigin = NSMakePoint( curDCM.originX, curDCM.originY);
 	}
 	
 	[super drawRect: aRect withContext: ctx];
@@ -577,15 +577,15 @@ extern int splitPosition[ 3];
 	{
 		if ([self.generatedVolumeData aquireInlineBuffer:&inlineBuffer])
 		{
-//			CPRUnsignedInt16ImageRep *imageRep = [self.generatedVolumeData unsignedInt16ImageRepForSliceAtIndex: 0];
-		
 			newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.generatedVolumeData.pixelsWide*self.generatedVolumeData.pixelsHigh) :32 
 												 :self.generatedVolumeData.pixelsWide :self.generatedVolumeData.pixelsHigh :self.generatedVolumeData.pixelSpacingX :self.generatedVolumeData.pixelSpacingY
-												 :self.generatedVolumeData.originX
-												 :self.generatedVolumeData.originY
-												 :self.generatedVolumeData.originZ
+												 : -self.generatedVolumeData.pixelSpacingX*self.generatedVolumeData.pixelsWide/2.
+												 : -self.generatedVolumeData.pixelSpacingY*self.generatedVolumeData.pixelsHigh/2.
+												 :0
 												 :NO];
-		} else {
+		}
+		else
+		{
 			assert(0);
 			newPix = [[DCMPix alloc] init];
 		}
