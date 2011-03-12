@@ -7500,13 +7500,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		for (k=0; k<[keys count]; k++)
 		{
-			NSArray *annotations = [annotationsDictionary objectForKey:[keys objectAtIndex:k]];
-			xRaster = [[xRasterInit objectForKey:[keys objectAtIndex:k]] intValue];
-			yRaster = [[yRasterInit objectForKey:[keys objectAtIndex:k]] intValue];
-			increment = [[yRasterIncrement objectForKey:[keys objectAtIndex:k]] intValue];
+			NSString *key = [keys objectAtIndex:k];
+			
+			NSArray *annotations = [annotationsDictionary objectForKey:key];
+			xRaster = [[xRasterInit objectForKey:key] intValue];
+			yRaster = [[yRasterInit objectForKey:key] intValue];
+			increment = [[yRasterIncrement objectForKey:key] intValue];
 			
 			NSEnumerator *enumerator;
-			if([[keys objectAtIndex:k] hasPrefix:@"Lower"])
+			if([key hasPrefix:@"Lower"])
 				enumerator = [annotations reverseObjectEnumerator];
 			else
 				enumerator = [annotations objectEnumerator];
@@ -7514,7 +7516,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			BOOL useStringTexture;
 						
-			if([[keys objectAtIndex:k] hasPrefix:@"Lower"])
+			if([key hasPrefix:@"Lower"])
 				enumerator = [annotations reverseObjectEnumerator];
 			else
 				enumerator = [annotations objectEnumerator];
@@ -7716,7 +7718,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 								[NSNumber numberWithFloat: yRaster], @"yRaster",
 								[NSNumber numberWithFloat: xRaster], @"xRaster",
-								[NSNumber numberWithInt: [[align objectForKey:[keys objectAtIndex:k]] intValue]], @"alignment",
+								[NSNumber numberWithInt: [[align objectForKey:key] intValue]], @"alignment",
 													  nil];
 							
 							
@@ -7792,22 +7794,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 					if(![tempString isEqualToString:@""])
 					{	
-						[self DrawNSStringGL:tempString :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
+						[self DrawNSStringGL:tempString :fontList :xRaster :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
 						yRaster += increment;
 					}
 					if(![tempString2 isEqualToString:@""])
 					{
-						[self DrawNSStringGL:tempString2 :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
+						[self DrawNSStringGL:tempString2 :fontList :xRaster :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
 						yRaster += increment;
 					}
 					if(![tempString3 isEqualToString:@""])
 					{
-						[self DrawNSStringGL:tempString3 :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
+						[self DrawNSStringGL:tempString3 :fontList :xRaster :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
 						yRaster += increment;
 					}
 					if(![tempString4 isEqualToString:@""])
 					{
-						[self DrawNSStringGL:tempString4 :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
+						[self DrawNSStringGL:tempString4 :fontList :xRaster :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
 						yRaster += increment;
 					}
 				}

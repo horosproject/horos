@@ -2179,6 +2179,12 @@ static float deg2rad = 3.14159265358979/180.0;
 		v = mprView3;
 	if( onlyMPRView == NO && [[self window] firstResponder] == cprView)
 		v = cprView;
+	if( onlyMPRView == NO && [[self window] firstResponder] == topTransverseView)
+		v = topTransverseView;
+	if( onlyMPRView == NO && [[self window] firstResponder] == middleTransverseView)
+		v = middleTransverseView;
+	if( onlyMPRView == NO && [[self window] firstResponder] == bottomTransverseView)
+		v = bottomTransverseView;
 	
 	if( onlyMPRView)
 	{
@@ -2531,15 +2537,6 @@ static float deg2rad = 3.14159265358979/180.0;
                         
                         [dicomExport setOrientation:orientation];
                         [dicomExport setPosition:origin];
-						
-//						N3AffineTransform *volumeTransform = [curvedVolumeData volumeTransform];
-//						
-//						float cosinesMatrix[ 9];
-//						float planeOrigin[ 3];
-//						
-//						[dicomExport setOrientation: cosinesMatrix];
-//						[dicomExport setPosition: planeOrigin];
-						
 						
 						f = [dicomExport writeDCMFile: nil];
 						if( f == nil)

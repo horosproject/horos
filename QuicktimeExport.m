@@ -487,6 +487,9 @@
 			mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
 			[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 			
+			if( [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"] == 0)
+				[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
+			
 			long long timeValue = 600 / [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"];
 			long timeScale = 600;
 			

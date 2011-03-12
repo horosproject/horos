@@ -345,6 +345,29 @@ extern int splitPosition[ 3];
     return _generatedHeight;
 }
 
+- (void) drawTextualData:(NSRect) size :(long) annotations
+{
+	if( displayTransverseLines)
+	{
+		float length = curDCM.pixelSpacingX * curDCM.pwidth;
+	
+		NSMutableArray *topLeft = [curDCM.annotationsDictionary objectForKey: @"TopLeft"];
+		
+		length *= 0.1; // We want cm
+		
+		[topLeft addObject: [NSArray arrayWithObject: [NSString stringWithFormat: NSLocalizedString( @"A-B : %2.2f cm", nil), length*fabs( _curvedPath.transverseSectionPosition - _curvedPath.leftTransverseSectionPosition)]]];
+		[topLeft addObject: [NSArray arrayWithObject: [NSString stringWithFormat: NSLocalizedString( @"B-C : %2.2f cm", nil), length*fabs( _curvedPath.transverseSectionPosition - _curvedPath.rightTransverseSectionPosition)]]];
+		[topLeft addObject: [NSArray arrayWithObject: [NSString stringWithFormat: NSLocalizedString( @"A-C : %2.2f cm", nil), length*fabs( _curvedPath.leftTransverseSectionPosition - _curvedPath.rightTransverseSectionPosition)]]];
+		
+		[super drawTextualData: size :annotations];
+		
+		[topLeft removeLastObject];
+		[topLeft removeLastObject];
+		[topLeft removeLastObject];
+	}
+	else [super drawTextualData: size :annotations];
+}
+
 - (void) drawRect:(NSRect)rect
 {
 	if( rect.size.width > 10)
@@ -1000,9 +1023,8 @@ extern int splitPosition[ 3];
         return;
     }
     
-	
-	
-    if (_draggingTransverse) {
+    if (_draggingTransverse)
+	{
         relativePosition = pixVector.x/pixWidth;
         _curvedPath.transverseSectionPosition = MAX(MIN(relativePosition, 1.0), 0.0);
 		[self _sendDidUpdateCurvedPath];
@@ -1013,7 +1035,9 @@ extern int splitPosition[ 3];
 
 		[self setNeedsDisplay:YES];
 		[self mouseMoved: event];
-    } else if (_draggingTransverseSpacing) {
+    }
+	else if (_draggingTransverseSpacing)
+	{
         _curvedPath.transverseSectionSpacing = ABS(pixVector.x/pixWidth-_curvedPath.transverseSectionPosition)*[_curvedPath.bezierPath length];
 		[self _sendDidUpdateCurvedPath];
 
@@ -1022,7 +1046,9 @@ extern int splitPosition[ 3];
 		[self _sendDidEditDisplayInfo];
         [self setNeedsDisplay:YES];
 		[self mouseMoved: event];
-    } else {
+    }
+	else
+	{
 		[self _sendWillEditDisplayInfo];
         _displayInfo.mouseCursorPosition = pixVector.x/pixWidth;
 		[self _sendDidEditDisplayInfo];

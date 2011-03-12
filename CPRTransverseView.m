@@ -31,6 +31,8 @@
 #import "CPRDisplayInfo.h"
 
 extern int CLUTBARS, ANNOTATIONS;
+extern BOOL frameZoomed;
+extern int splitPosition[ 3];
 
 @interface CPRTransverseView ()
 
@@ -172,7 +174,53 @@ extern int CLUTBARS, ANNOTATIONS;
 - (void) mouseDown:(NSEvent *)event
 {
 	previousScale = [self scaleValue];
-	[super mouseDown: event];
+	
+	int clickCount = 1;
+			
+	@try
+	{
+		if( [event type] ==	NSLeftMouseDown || [event type] ==	NSRightMouseDown || [event type] ==	NSLeftMouseUp || [event type] == NSRightMouseUp)
+			clickCount = [event clickCount];
+	}
+	@catch (NSException * e)
+	{
+		clickCount = 1;
+	}
+	
+	if( clickCount == 2)
+	{
+		NSPoint tempPt = [self convertPoint: [event locationInWindow] fromView: nil];
+		tempPt = [self ConvertFromNSView2GL:tempPt];
+		
+		CPRController *windowController = [self windowController];
+		
+		long tool = [self getTool: event];
+		
+		if( [self roiTool: tool] && [self clickInROI: tempPt])
+		{
+			[[self windowController] roiGetInfo: self];
+		}
+		else if( frameZoomed == NO)
+		{
+			splitPosition[0] = [[windowController mprView1] frame].origin.x + [[windowController mprView1] frame].size.width;	// vert
+			splitPosition[1] = [[windowController mprView1] frame].origin.y + [[windowController mprView1] frame].size.height;	// hori12
+			splitPosition[2] = [[windowController mprView3] frame].origin.y + [[windowController mprView3] frame].size.height;	// horiz2
+			
+			frameZoomed = YES;
+			
+			[windowController.verticalSplit setPosition: [windowController.verticalSplit minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+			[windowController.horizontalSplit1 setPosition: [windowController.horizontalSplit1 minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+			[windowController.horizontalSplit2 setPosition: [windowController.horizontalSplit2 minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+		}
+		else
+		{
+			frameZoomed = NO;
+			[windowController.verticalSplit setPosition: splitPosition[ 0] ofDividerAtIndex: 0];
+			[windowController.horizontalSplit1 setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
+			[windowController.horizontalSplit2 setPosition: splitPosition[ 2] ofDividerAtIndex: 0];
+		}
+	}
+	else [super mouseDown: event];
 }
 
 - (void) rightMouseUp:(NSEvent *)event
@@ -197,34 +245,39 @@ extern int CLUTBARS, ANNOTATIONS;
     CGFloat newMouseTransverseSectionDistance;
     CGFloat pixelsPerMm;
     
-	if( view == self) {
+	if( view == self)
+	{
 		viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
-        pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
-    
-        line = N3LineMake(N3VectorMake((CGFloat)curDCM.pwidth / 2.0, 0, 0), N3VectorMake(0, 1, 0));
-        line = N3LineApplyTransform(line, N3AffineTransformInvert([self viewToPixTransform]));
-        
-        if (N3VectorDistanceToLine(N3VectorMakeFromNSPoint(viewPoint), line) < 20.0) {
-            newMouseTransverseSectionType = _sectionType;
-            newMouseTransverseSectionDistance = (pixVector.y - (CGFloat)curDCM.pheight/2.0) / pixelsPerMm;
-        } else {
-            newMouseTransverseSectionType = CPRTransverseViewNoneSectionType;
-            newMouseTransverseSectionDistance = 0;
-        }
-        
-        if (_displayInfo.mouseTransverseSection != newMouseTransverseSectionType ||
-            _displayInfo.mouseTransverseSectionDistance != newMouseTransverseSectionDistance) {
-            if ([_delegate respondsToSelector:@selector(CPRViewWillEditDisplayInfo:)]) {
-                [_delegate CPRViewWillEditDisplayInfo:self];
-            }
-            _displayInfo.mouseTransverseSection = newMouseTransverseSectionType;
-            _displayInfo.mouseTransverseSectionDistance = newMouseTransverseSectionDistance;
-            if ([_delegate respondsToSelector:@selector(CPRViewDidEditDisplayInfo:)]) {
-                [_delegate CPRViewDidEditDisplayInfo:self];
-            }            
-        }
-            
+		
+		if (NSPointInRect(viewPoint, self.bounds) && curDCM.pwidth > 0)
+		{
+			pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
+			pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
+		
+			line = N3LineMake(N3VectorMake((CGFloat)curDCM.pwidth / 2.0, 0, 0), N3VectorMake(0, 1, 0));
+			line = N3LineApplyTransform(line, N3AffineTransformInvert([self viewToPixTransform]));
+			
+			if (N3VectorDistanceToLine(N3VectorMakeFromNSPoint(viewPoint), line) < 20.0) {
+				newMouseTransverseSectionType = _sectionType;
+				newMouseTransverseSectionDistance = (pixVector.y - (CGFloat)curDCM.pheight/2.0) / pixelsPerMm;
+			} else {
+				newMouseTransverseSectionType = CPRTransverseViewNoneSectionType;
+				newMouseTransverseSectionDistance = 0;
+			}
+			
+			if (_displayInfo.mouseTransverseSection != newMouseTransverseSectionType ||
+				_displayInfo.mouseTransverseSectionDistance != newMouseTransverseSectionDistance) {
+				if ([_delegate respondsToSelector:@selector(CPRViewWillEditDisplayInfo:)]) {
+					[_delegate CPRViewWillEditDisplayInfo:self];
+				}
+				_displayInfo.mouseTransverseSection = newMouseTransverseSectionType;
+				_displayInfo.mouseTransverseSectionDistance = newMouseTransverseSectionDistance;
+				if ([_delegate respondsToSelector:@selector(CPRViewDidEditDisplayInfo:)]) {
+					[_delegate CPRViewDidEditDisplayInfo:self];
+				}            
+			}
+		}
+		
 		[super mouseMoved:theEvent];
 	} else
 		[view mouseMoved:theEvent];
@@ -376,14 +429,7 @@ extern int CLUTBARS, ANNOTATIONS;
 	for( int i = 0; i < curRoiList.count; i++ )
 	{
 		ROI *r = [curRoiList objectAtIndex:i];
-		if( r.type != tMesure)
-		{
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
-			[curRoiList removeObjectAtIndex:i];
-			i--;
-		}
-		else
-			r.displayCMOrPixels = YES; // We don't want the value in pixels
+		r.displayCMOrPixels = YES; // We don't want the value in pixels
 	}
 	
 	[super drawRect: aRect withContext: ctx];
@@ -529,7 +575,10 @@ extern int CLUTBARS, ANNOTATIONS;
     
     for( int i = 0; i < self.generatedVolumeData.pixelsDeep; i++)
 	{
-		if ([self.generatedVolumeData aquireInlineBuffer:&inlineBuffer]) {
+		if ([self.generatedVolumeData aquireInlineBuffer:&inlineBuffer])
+		{
+			CPRUnsignedInt16ImageRep *imageRep = [self.generatedVolumeData unsignedInt16ImageRepForSliceAtIndex: 0];
+		
 			newPix = [[DCMPix alloc] initWithData:(float *)CPRVolumeDataFloatBytes(&inlineBuffer) + (i*self.generatedVolumeData.pixelsWide*self.generatedVolumeData.pixelsHigh) :32 
 												 :self.generatedVolumeData.pixelsWide :self.generatedVolumeData.pixelsHigh :self.generatedVolumeData.pixelSpacingX :self.generatedVolumeData.pixelSpacingY
 												 :self.generatedVolumeData.originX
@@ -554,9 +603,7 @@ extern int CLUTBARS, ANNOTATIONS;
 	if( pixArray.count)
 	{
 		for( int i = 0; i < [pixArray count]; i++)
-		{
 			[[pixArray objectAtIndex: i] setArrayPix:pixArray :i];
-		}
 		
 		[self setPixels:pixArray files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
 		[self setScaleValueCentered: 1];
