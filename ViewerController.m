@@ -17829,11 +17829,11 @@ int i,j,l;
 		{
 			if( [imageView flippedData])
 			{
-				if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"Only ONE ROI per image, please! (im: %d)", nil), pixList[curMovieIndex] -x];
+				if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"Only ONE ROI per image supported! (im: %d)", nil), [pixList[curMovieIndex] count] -x];
 			}
 			else
 			{
-				if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"Only ONE ROI per image, please! (im: %d)", nil), x+1];
+				if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"Only ONE ROI per image supported! (im: %d)", nil), x+1];
 			}
 			return 0;
 		}
@@ -18052,7 +18052,7 @@ int i,j,l;
 	
 	if( globalCount == 1)
 	{
-		if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"If found only ONE ROI : not enable to compute a volume!", nil), x+1];
+		if( error) *error = NSLocalizedString(@"I found only ONE ROI : not enable to compute a volume!", nil)];
 		return 0;
 	}
 	
