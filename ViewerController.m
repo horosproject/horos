@@ -18052,7 +18052,7 @@ int i,j,l;
 	
 	if( globalCount == 1)
 	{
-		if( error) *error = NSLocalizedString(@"I found only ONE ROI : not enable to compute a volume!", nil)];
+		if( error) *error = NSLocalizedString(@"I found only ONE ROI : not enable to compute a volume!", nil);
 		return 0;
 	}
 	
