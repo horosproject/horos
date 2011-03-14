@@ -148,51 +148,6 @@
 				<textarea name="studyPredicate" id="studyPredicate">%X:EditedUser.studyPredicate%</textarea>
 			</td></tr>
 		</table>
-		<table class="separated wide eq">
-			<tr>
-				<td>
-					<label><input type="checkbox" name="autoDelete" onchange="adjustForm(this)"%[IF:EditedUser.autoDelete% checked="checked"%]IF:EditedUser.autoDelete%/>Delete this user after:</label>
-					<select name="deletionDate_month" onChange="adjustDates(this)">
-						%[FOREACH:EditedUser.deletionDate.Months:Month%
-						<option value="%X:Month.value%"%[IF:Month.selected% selected="selected"%]IF:Month.selected%%[IF:Month.disabled% disabled="disabled"%]IF:Month.disabled%>%X:Month.name%</option>
-						%]FOREACH:EditedUser.deletionDate.Months:Month%
-					</select>
-					<select name="deletionDate_day">
-						%[FOREACH:EditedUser.deletionDate.Days:Day%
-						<option value="%X:Day.value%"%[IF:Day.selected% selected="selected"%]IF:Day.selected%%[IF:Day.disabled% disabled="disabled"%]IF:Day.disabled%>%X:Day.name%</option>
-						%]FOREACH:EditedUser.deletionDate.Days:Day%
-					</select>
-					<select name="deletionDate_year" onChange="adjustDates(this)">
-						%[FOREACH:EditedUser.deletionDate.NextYears:Year%
-						<option value="%X:Year.value%"%[IF:Year.selected% selected="selected"%]IF:Year.selected%%[IF:Year.disabled% disabled="disabled"%]IF:Year.disabled%>%X:Year.name%</option>
-						%]FOREACH:EditedUser.deletionDate.NextYears:Year%
-					</select>
-					<script language="JavaScript">
-						adjustDates(document.getElementById('userEditionForm').deletionDate_day);
-					</script>
-				</td>
-				<td><label><input type="checkbox" name="downloadZIP" onchange="adjustForm(this)"%[IF:EditedUser.downloadZIP% checked="checked"%]IF:EditedUser.downloadZIP%/>Authorized to download DICOM ZIP files</label></td>
-			</tr>
-			<tr>
-				<td><label><input type="checkbox" name="emailNotification" onchange="adjustForm(this)"%[IF:EditedUser.emailNotification% checked="checked"%]IF:EditedUser.emailNotification% %[IF:Prefs.webServerNotificationEmails%disabled="disabled"%]IF:Prefs.webServerNotificationEmails%/>Automatic Notification Emails</label></td>
-				<td style="padding-left:20px"><label><input type="checkbox" name="encryptedZIP" onchange="adjustForm(this)"%[IF:EditedUser.encryptedZIP% checked="checked"%]IF:EditedUser.encryptedZIP%/>Encrypt ZIP files with user password</label></td>
-			</tr>
-			<tr>
-				<td><label><input type="checkbox" name="uploadDICOM" onchange="adjustForm(this)"%[IF:EditedUser.uploadDICOM% checked="checked"%]IF:EditedUser.uploadDICOM%/>Authorized to upload DICOM files</label></td>
-				<td><label><input type="checkbox" name="sendDICOMtoSelfIP" onchange="adjustForm(this)"%[IF:EditedUser.sendDICOMtoSelfIP% checked="checked"%]IF:EditedUser.sendDICOMtoSelfIP%/>Authorized to transfer DICOM files to itself</label></td>
-			</tr>
-			<tr>
-				<td style="padding-left:20px"><label><input type="checkbox" name="uploadDICOMAddToSpecificStudies" onchange="adjustForm(this)"%[IF:EditedUser.uploadDICOMAddToSpecificStudies% checked="checked"%]IF:EditedUser.uploadDICOMAddToSpecificStudies%/>Add uploaded files to specific studies</label></td>
-				<td style="padding-left:20px"><label><input type="checkbox" name="sendDICOMtoAnyNodes" onchange="adjustForm(this)"%[IF:EditedUser.sendDICOMtoAnyNodes% checked="checked"%]IF:EditedUser.sendDICOMtoAnyNodes%/>Authorized to transfer DICOM files to any node</label></td>
-			</tr>
-			<tr>
-				<td><label><input type="checkbox" name="shareStudyWithUser" onchange="adjustForm(this)"%[IF:EditedUser.shareStudyWithUser% checked="checked"%]IF:EditedUser.shareStudyWithUser%/>Authorized to share a study with another user</label></td>
-				<td><label><input type="checkbox" name="canAccessPatientsOtherStudies" onchange="adjustForm(this)"%[IF:EditedUser.canAccessPatientsOtherStudies% checked="checked"%]IF:EditedUser.canAccessPatientsOtherStudies%/>Authorized to access all studies of already visible patients</label></td>
-			</tr>
-			<script language="JavaScript">
-				adjustForm(document.getElementById('userEditionForm'));
-			</script>
-		</table>
 		<table class="separated wide">
 			<tr><td>
 				<label for="studies">Specific studies:</label><br/>
@@ -207,6 +162,42 @@
 				selectedStudiesChanged(document.getElementById('userEditionForm'))
 			</script>
 			</td></tr>
+		</table>
+		<table class="separated wide eq">
+			<tr><td><label><input type="checkbox" name="canAccessPatientsOtherStudies" onchange="adjustForm(this)"%[IF:EditedUser.canAccessPatientsOtherStudies% checked="checked"%]IF:EditedUser.canAccessPatientsOtherStudies%/>Authorized to access all studies of already visible patients</label></td></tr>
+			<tr><td><label><input type="checkbox" name="canSeeAlbums" onchange="adjustForm(this)"%[IF:EditedUser.canSeeAlbums% checked="checked"%]IF:EditedUser.canSeeAlbums%/>Authorized to navigate albums</label></td></tr>
+			<tr><td><label><input type="checkbox" name="shareStudyWithUser" onchange="adjustForm(this)"%[IF:EditedUser.shareStudyWithUser% checked="checked"%]IF:EditedUser.shareStudyWithUser%/>Authorized to share a study with another user</label></td></tr>
+			<tr><td><label><input type="checkbox" name="downloadZIP" onchange="adjustForm(this)"%[IF:EditedUser.downloadZIP% checked="checked"%]IF:EditedUser.downloadZIP%/>Authorized to download DICOM ZIP files</label></td></tr>
+			<tr><td style="padding-left:20px"><label><input type="checkbox" name="encryptedZIP" onchange="adjustForm(this)"%[IF:EditedUser.encryptedZIP% checked="checked"%]IF:EditedUser.encryptedZIP%/>Encrypt ZIP files with user password</label></td></tr>
+			<tr><td><label><input type="checkbox" name="uploadDICOM" onchange="adjustForm(this)"%[IF:EditedUser.uploadDICOM% checked="checked"%]IF:EditedUser.uploadDICOM%/>Authorized to upload DICOM files</label></td></tr>
+			<tr><td style="padding-left:20px"><label><input type="checkbox" name="uploadDICOMAddToSpecificStudies" onchange="adjustForm(this)"%[IF:EditedUser.uploadDICOMAddToSpecificStudies% checked="checked"%]IF:EditedUser.uploadDICOMAddToSpecificStudies%/>Add uploaded files to specific studies</label></td></tr>
+			<tr><td><label><input type="checkbox" name="sendDICOMtoSelfIP" onchange="adjustForm(this)"%[IF:EditedUser.sendDICOMtoSelfIP% checked="checked"%]IF:EditedUser.sendDICOMtoSelfIP%/>Authorized to transfer DICOM files to itself</label></td></tr>
+			<tr><td style="padding-left:20px"><label><input type="checkbox" name="sendDICOMtoAnyNodes" onchange="adjustForm(this)"%[IF:EditedUser.sendDICOMtoAnyNodes% checked="checked"%]IF:EditedUser.sendDICOMtoAnyNodes%/>Authorized to transfer DICOM files to any node</label></td></tr>
+			<tr><td><label><input type="checkbox" name="emailNotification" onchange="adjustForm(this)"%[IF:EditedUser.emailNotification% checked="checked"%]IF:EditedUser.emailNotification% %[IF:Prefs.webServerNotificationEmails%disabled="disabled"%]IF:Prefs.webServerNotificationEmails%/>Automatic Notification Emails</label></td><tr>
+			<tr><td>
+				<label><input type="checkbox" name="autoDelete" onchange="adjustForm(this)"%[IF:EditedUser.autoDelete% checked="checked"%]IF:EditedUser.autoDelete%/>Delete this user after:</label>
+				<select name="deletionDate_month" onChange="adjustDates(this)">
+					%[FOREACH:EditedUser.deletionDate.Months:Month%
+					<option value="%X:Month.value%"%[IF:Month.selected% selected="selected"%]IF:Month.selected%%[IF:Month.disabled% disabled="disabled"%]IF:Month.disabled%>%X:Month.name%</option>
+					%]FOREACH:EditedUser.deletionDate.Months:Month%
+				</select>
+				<select name="deletionDate_day">
+					%[FOREACH:EditedUser.deletionDate.Days:Day%
+					<option value="%X:Day.value%"%[IF:Day.selected% selected="selected"%]IF:Day.selected%%[IF:Day.disabled% disabled="disabled"%]IF:Day.disabled%>%X:Day.name%</option>
+					%]FOREACH:EditedUser.deletionDate.Days:Day%
+				</select>
+				<select name="deletionDate_year" onChange="adjustDates(this)">
+					%[FOREACH:EditedUser.deletionDate.NextYears:Year%
+					<option value="%X:Year.value%"%[IF:Year.selected% selected="selected"%]IF:Year.selected%%[IF:Year.disabled% disabled="disabled"%]IF:Year.disabled%>%X:Year.name%</option>
+					%]FOREACH:EditedUser.deletionDate.NextYears:Year%
+				</select>
+				<script language="JavaScript">
+					adjustDates(document.getElementById('userEditionForm').deletionDate_day);
+				</script>
+			</td></tr>
+			<script language="JavaScript">
+				adjustForm(document.getElementById('userEditionForm'));
+			</script>
 		</table>
 		<div class="separated">
 			<button type="submit" name="action" value="save"  onClick="return willSubmit(this.form)">Save Changes</button><button type="reset" onClick="return revertToSaved(this.form)">Revert to Saved</button><button type="submit" name="action" value="delete" onClick="return confirmDelete()">Delete User</button>

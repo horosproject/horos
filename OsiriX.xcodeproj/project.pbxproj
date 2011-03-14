@@ -101,6 +101,8 @@
 		5912DCD9118EF447007F7D40 /* N2FlippedView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5912DCD7118EF447007F7D40 /* N2FlippedView.mm */; };
 		5912DCDA118EF447007F7D40 /* N2FlippedView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5912DCD6118EF447007F7D40 /* N2FlippedView.h */; };
 		5912DCDB118EF447007F7D40 /* N2FlippedView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5912DCD7118EF447007F7D40 /* N2FlippedView.mm */; };
+		59263546132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */; };
+		59263547132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */; };
 		592681AB11CF4A5E00CFA81F /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
 		592681BF11CF4FB700CFA81F /* NSUserDefaultsController+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997899011B7B48E002DB107 /* NSUserDefaultsController+N2.h */; };
 		5926822411CF60BD00CFA81F /* ThreadModalForWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5926822111CF60BD00CFA81F /* ThreadModalForWindow.xib */; };
@@ -8385,6 +8387,8 @@
 		590BB21F12A002FA009E9758 /* WebPortalStudy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalStudy.mm; sourceTree = "<group>"; };
 		5912DCD6118EF447007F7D40 /* N2FlippedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2FlippedView.h; path = nitrogen/Sources/N2FlippedView.h; sourceTree = "<group>"; };
 		5912DCD7118EF447007F7D40 /* N2FlippedView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2FlippedView.mm; path = nitrogen/Sources/N2FlippedView.mm; sourceTree = "<group>"; };
+		59263540132E476B0055E3AB /* WebPortalDB 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 4.xcdatamodel"; sourceTree = "<group>"; };
+		59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcmappingmodel; name = "WebPortalDB 3-4.xcmappingmodel"; path = "Binaries/WebPortalDB Mapping Models/WebPortalDB 3-4.xcmappingmodel"; sourceTree = "<group>"; };
 		5926822211CF60BD00CFA81F /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ThreadModalForWindow.xib; sourceTree = "<group>"; };
 		5926823E11CF62DA00CFA81F /* ThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadCell.h; sourceTree = "<group>"; };
 		5926823F11CF62DA00CFA81F /* ThreadCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThreadCell.mm; sourceTree = "<group>"; };
@@ -12964,6 +12968,7 @@
 				59526F301281ACA90016F6C0 /* WebPortalDB.xcdatamodeld */,
 				59526F7C1281B1AA0016F6C0 /* WebPortalDB 1-2.xcmappingmodel */,
 				59DD2405131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel */,
+				59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */,
 			);
 			name = "Web Portal";
 			sourceTree = "<group>";
@@ -24501,6 +24506,7 @@
 				5909DF94130C3D1900788195 /* NSException+N2.mm in Sources */,
 				59DD2406131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel in Sources */,
 				4F2446B21320F1B500D55426 /* CPRObliqueSliceOperation.m in Sources */,
+				59263546132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25760,6 +25766,7 @@
 				59E1561F132915A800531E5A /* WebPortalConnection.mm in Sources */,
 				59E15621132915A800531E5A /* WebPortalConnection+Data.mm in Sources */,
 				59E15623132915A800531E5A /* WebPortalResponse.mm in Sources */,
+				59263547132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27907,8 +27914,9 @@
 				59526F311281ACA90016F6C0 /* WebPortalDB 1.xcdatamodel */,
 				59526F321281ACA90016F6C0 /* WebPortalDB 2.xcdatamodel */,
 				59DD2400131D474F00A24DCD /* WebPortalDB 3.xcdatamodel */,
+				59263540132E476B0055E3AB /* WebPortalDB 4.xcdatamodel */,
 			);
-			currentVersion = 59DD2400131D474F00A24DCD /* WebPortalDB 3.xcdatamodel */;
+			currentVersion = 59263540132E476B0055E3AB /* WebPortalDB 4.xcdatamodel */;
 			path = WebPortalDB.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
