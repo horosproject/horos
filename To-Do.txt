@@ -24,7 +24,10 @@
 - This is the last version to support MacOS 10.5, please upgrade to 10.6 or 10.7 !
 - Option to burn Weasis in CDs, with launchers for MacOSX, Linux and Windows (Java 6 is required for all systems)
 
-- DICOM Listener TLS? -> different syntax transfer settings (tested at Gran*** on early 3.9 beta, unsuccessfully..)
+- DICOM Listener TLS: 
+	- If both listener are activated and different AETitle: preferences: prefer TLS AEtitle for C-FIND SCU, C-STORE SCU, C-GET SCU
+	- in TLS settings: display transfer syntax (identical to the other listener).
+	
 - CPR doc
 - CPR : N3AffineTransformIsAffine bug
 
