@@ -2172,7 +2172,7 @@ static NSConditionLock *threadLock = nil;
 	
 	NSLog( @" Autorouting: %@ - %d objects", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], [samePatientArray count]);
 		
-	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [NSUserDefaults defaultAETitle] 
 																  calledAET: [server objectForKey:@"AETitle"] 
 																   hostname: [server objectForKey:@"Address"] 
 																	   port: [[server objectForKey:@"Port"] intValue] 
@@ -11274,7 +11274,7 @@ static BOOL needToRezoom;
 	
 	[autoroutingInProgress lock];
 	
-	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [NSUserDefaults defaultAETitle] 
 															  calledAET: [todo objectForKey:@"AETitle"] 
 															   hostname: [todo objectForKey:@"Address"] 
 																   port: [[todo objectForKey:@"Port"] intValue] 

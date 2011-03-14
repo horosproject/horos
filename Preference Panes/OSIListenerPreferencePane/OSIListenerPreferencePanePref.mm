@@ -49,6 +49,7 @@
 @synthesize TLSDHParameterFileURL;
 @synthesize TLSUseSameAETITLE;
 @synthesize TLSStoreSCPAETITLE;
+@synthesize TLSStoreSCPAETITLEIsDefaultAET;
 
 - (NSManagedObjectContext*) managedObjectContext
 {
@@ -180,6 +181,8 @@
 	self.TLSUseSameAETITLE = [[[NSUserDefaults standardUserDefaults] valueForKey:@"TLSUseSameAETITLE"] boolValue];
 	self.TLSStoreSCPAETITLE = [[NSUserDefaults standardUserDefaults] valueForKey:@"TLSStoreSCPAETITLE"];
 	
+	[self updateTLSStoreSCPAETITLEIsDefaultAETButton];
+	
 	if( [self.TLSStoreSCPAETITLE length] <= 0)
 	{
 		self.TLSUseSameAETITLE = YES;
@@ -218,7 +221,8 @@
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:self.TLSCertificateVerification] forKey:@"TLSStoreSCPCertificateVerification"];
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:self.TLSUseSameAETITLE] forKey:@"TLSUseSameAETITLE"];
 		[[NSUserDefaults standardUserDefaults] setObject:self.TLSStoreSCPAETITLE forKey:@"TLSStoreSCPAETITLE"];
-	
+		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:self.TLSStoreSCPAETITLEIsDefaultAET] forKey:@"TLSStoreSCPAETITLEIsDefaultAET"];
+		
 		NSRunAlertPanel( NSLocalizedString( @"DICOM Listener", nil), NSLocalizedString( @"Restart OsiriX to apply these changes.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 	}
 }
@@ -312,7 +316,29 @@
 	{
 		aet = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
 		self.TLSStoreSCPAETITLE = aet;
+		[self updateTLSStoreSCPAETITLEIsDefaultAETButton];
 	}
+}
+
+- (IBAction)activateDICOMTLSListenerAction:(id)sender;
+{
+	[self updateTLSStoreSCPAETITLEIsDefaultAETButton];
+}
+
+- (void)updateTLSStoreSCPAETITLEIsDefaultAETButton;
+{
+	// default state
+	[TLSStoreSCPAETITLEIsDefaultAETButton setEnabled:NO];
+	[TLSStoreSCPAETITLEIsDefaultAETButton setState:NSOffState];
+	
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCP"]
+		&& [[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"]
+		&& ![[TLSAETitleTextField stringValue] isEqualToString:[[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]])
+	{
+		[TLSStoreSCPAETITLEIsDefaultAETButton setEnabled:YES];
+		NSInteger state = ([[NSUserDefaults standardUserDefaults] boolForKey:@"TLSStoreSCPAETITLEIsDefaultAET"]) ? NSOnState : NSOffState;
+		[TLSStoreSCPAETITLEIsDefaultAETButton setState:state];
+	}	
 }
 
 #pragma mark NSControl Delegate Methods
@@ -320,25 +346,36 @@
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification
 {
 	NSTextField *textField = [aNotification object];
+	if (textField == TLSPortTextField)
+	{
+		NSString *submittedPortString = [textField stringValue];
+		NSString *portString = [[NSUserDefaults standardUserDefaults] objectForKey:@"AEPORT"];
+		int submittedPort = [submittedPortString intValue];
+		int port = [portString intValue];
+		
+		if(submittedPort == port)
+		{		
+			int newPort = submittedPort;
+			if(submittedPort+1<131072) newPort = submittedPort+1;
+			else if(submittedPort-1>1) newPort = submittedPort-1;
+			
+			NSString *newStr = [NSString stringWithFormat:@"%d", newPort];
+			
+			[textField setStringValue:newStr];
+			[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:newPort] forKey:@"TLSStoreSCPAEPORT"];
+			
+			NSString *msg = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle( @"The port %d is already use by the standard DICOM Listener. The port %d was automatically chosen instead.", nil, [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil), submittedPort, newPort];
+			NSRunAlertPanel(NSLocalizedStringFromTableInBundle(@"Port already in use", nil, [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil),  msg, NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil), nil, nil);
+		}
+	}
+}
 
-	NSString *submittedPortString = [textField stringValue];
-	NSString *portString = [[NSUserDefaults standardUserDefaults] objectForKey:@"AEPORT"];
-	int submittedPort = [submittedPortString intValue];
-	int port = [portString intValue];
-	
-	if(submittedPort == port)
-	{		
-		int newPort = submittedPort;
-		if(submittedPort+1<131072) newPort = submittedPort+1;
-		else if(submittedPort-1>1) newPort = submittedPort-1;
-		
-		NSString *newStr = [NSString stringWithFormat:@"%d", newPort];
-		
-		[textField setStringValue:newStr];
-		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:newPort] forKey:@"TLSStoreSCPAEPORT"];
-		
-		NSString *msg = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle( @"The port %d is already use by the standard DICOM Listener. The port %d was automatically chosen instead.", nil, [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil), submittedPort, newPort];
-		NSRunAlertPanel(NSLocalizedStringFromTableInBundle(@"Port already in use", nil, [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil),  msg, NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSIListenerPreferencePanePref class]], nil), nil, nil);
+- (void)controlTextDidChange:(NSNotification *)aNotification
+{
+	NSTextField *textField = [aNotification object];
+	if (textField == TLSAETitleTextField)
+	{
+		[self updateTLSStoreSCPAETITLEIsDefaultAETButton];
 	}
 }
 

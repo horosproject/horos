@@ -173,6 +173,34 @@ NSString* const OsirixWebPortalUsersCanRestorePasswordDefaultsKey = @"restorePas
 	return [NSUserDefaultsController.sharedUserDefaultsController boolForKey:OsirixWebPortalUsersCanRestorePasswordDefaultsKey];
 }
 
+// MARK: DICOM Communications
 
++ (NSString*)defaultAETitle;
+{
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
+	{
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCP"]
+			&& ![[NSUserDefaults standardUserDefaults] boolForKey:@"TLSStoreSCPAETITLEIsDefaultAET"])
+		{
+			return [[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"];
+		}
+		return [[NSUserDefaults standardUserDefaults] stringForKey:@"TLSStoreSCPAETITLE"];
+	}
+	return [[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"];
+}
+
++ (int)defaultAEPort;
+{
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
+	{
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCP"]
+			&& ![[NSUserDefaults standardUserDefaults] boolForKey:@"TLSStoreSCPAETITLEIsDefaultAET"])
+		{
+			return [[[NSUserDefaults standardUserDefaults] stringForKey:@"AEPORT"] intValue];
+		}
+		return [[[NSUserDefaults standardUserDefaults] stringForKey:@"TLSStoreSCPAEPORT"] intValue];
+	}
+	return [[[NSUserDefaults standardUserDefaults] stringForKey:@"AEPORT"] intValue];
+}
 
 @end

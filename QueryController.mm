@@ -72,7 +72,7 @@ extern "C"
 	@try
 	{
 		// aServer = [[QueryController currentQueryController] TLSAskPrivateKeyPasswordForServer:aServer];
-		qm = [[[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"] distantServer: aServer] autorelease];
+		qm = [[[QueryArrayController alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] distantServer:aServer] autorelease];
 		
 		NSString *filterValue = [an stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
@@ -110,7 +110,7 @@ extern "C"
 	@try
 	{
 		// aServer = [[QueryController currentQueryController] TLSAskPrivateKeyPasswordForServer:aServer];
-		qm = [[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"] distantServer: aServer];
+		qm = [[QueryArrayController alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] distantServer:aServer];
 		
 		NSString *filterValue = [an stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
@@ -197,7 +197,7 @@ extern "C"
 		[args addObject: address];
 		[args addObject: [NSString stringWithFormat:@"%d", [port intValue]]];
 		[args addObject: @"-aet"]; // set my calling AE title
-		[args addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]];
+		[args addObject: [NSUserDefaults defaultAETitle]]; 
 		[args addObject: @"-aec"]; // set called AE title of peer
 		[args addObject: aet];
 		[args addObject: @"-to"]; // timeout for connection requests
@@ -1448,7 +1448,7 @@ extern "C"
 				
 				hostname = [aServer objectForKey:@"Address"];
 				
-				QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"] distantServer: aServer];
+				QueryArrayController *qm = [[QueryArrayController alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] distantServer:aServer];
 				
 				[qm addFilter:filterValue forDescription: PatientID];
 				
@@ -1517,7 +1517,7 @@ extern "C"
 					[queryManager release];
 					queryManager = nil;
 
-					queryManager = [[QueryArrayController alloc] initWithCallingAET: [[NSUserDefaults standardUserDefaults] objectForKey: @"AETITLE"] distantServer: aServer];
+					queryManager = [[QueryArrayController alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] distantServer:aServer];
 					// add filters as needed
 					
 					if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
@@ -3147,7 +3147,7 @@ extern "C"
 		serversArray = [[[DCMNetServiceDelegate DICOMServersList] mutableCopy] autorelease];
 		
 		NSString *ip = [NSString stringWithCString:GetPrivateIP()];
-		[sendToPopup addItemWithTitle: [NSString stringWithFormat: NSLocalizedString( @"This Computer - %@/%@:%@", nil), [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], ip, [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]]];
+		[sendToPopup addItemWithTitle: [NSString stringWithFormat: NSLocalizedString( @"This Computer - %@/%@:%d", nil), [NSUserDefaults defaultAETitle], ip, [NSUserDefaults defaultAEPort]]];
 
 		[[sendToPopup menu] addItem: [NSMenuItem separatorItem]];
 		

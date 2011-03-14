@@ -38,11 +38,16 @@
 	
 	BOOL TLSUseSameAETITLE;
 	NSString *TLSStoreSCPAETITLE;
+	IBOutlet NSButton *TLSStoreSCPAETITLEIsDefaultAETButton;
+	BOOL TLSStoreSCPAETITLEIsDefaultAET;
+	
+	IBOutlet NSTextField *TLSAETitleTextField;
+	IBOutlet NSTextField *TLSPortTextField;
 }
 
 @property (retain) NSString *TLSAuthenticationCertificate, *TLSStoreSCPAETITLE;
 @property (retain) NSArray *TLSSupportedCipherSuite;
-@property BOOL TLSUseDHParameterFileURL, TLSUseSameAETITLE;
+@property BOOL TLSUseDHParameterFileURL, TLSUseSameAETITLE, TLSStoreSCPAETITLEIsDefaultAET;
 @property (retain) NSURL *TLSDHParameterFileURL;
 #if defined(OSIRIX)
 @property TLSCertificateVerificationType TLSCertificateVerification;
@@ -61,6 +66,8 @@
 - (IBAction)viewTLSCertificate:(id)sender;
 - (void)getTLSCertificate;
 - (IBAction)useSameAETitleForTLSListener:(id)sender;
+- (IBAction)activateDICOMTLSListenerAction:(id)sender;
+- (void)updateTLSStoreSCPAETITLEIsDefaultAETButton;
 - (IBAction)selectAllSuites:(id)sender;
 - (IBAction)deselectAllSuites:(id)sender;
 

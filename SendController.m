@@ -26,6 +26,7 @@
 #import "DicomStudy.h"
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
+#import "NSUserDefaults+OsiriX.h"
 
 static volatile int sendControllerObjects = 0;
 
@@ -328,7 +329,7 @@ static volatile int sendControllerObjects = 0;
 	NSString *hostname = [[self server] objectForKey:@"Address"];
 	NSString *destPort = [[self server] objectForKey:@"Port"];
 	
-	storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+	storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] 
 			calledAET:calledAET 
 			hostname:hostname 
 			port:[destPort intValue] 

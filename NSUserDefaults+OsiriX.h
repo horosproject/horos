@@ -81,5 +81,9 @@ extern NSString* const OsirixWebPortalRequiresAuthenticationDefaultsKey;
 extern NSString* const OsirixWebPortalUsersCanRestorePasswordDefaultsKey;
 +(BOOL)webPortalUsersCanRestorePassword;
 
+// MARK: DICOM Communications
+
++ (NSString*)defaultAETitle;
++ (int)defaultAEPort;
 
 @end

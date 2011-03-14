@@ -229,7 +229,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	
 	@try {
-		[[[[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+		[[[[DCMTKStoreSCU alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] 
 										  calledAET:[todo objectForKey:@"AETitle"] 
 										   hostname:[todo objectForKey:@"Address"] 
 											   port:[[todo objectForKey:@"Port"] intValue] 

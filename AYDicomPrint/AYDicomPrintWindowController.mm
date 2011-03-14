@@ -21,6 +21,7 @@
 #import "Notifications.h"
 #import "OSIWindow.h"
 #import "ThreadsManager.h"
+#import "NSUserDefaults+OsiriX.h"
 
 #define VERSIONNUMBERSTRING	@"v1.00.000"
 #define ECHOTIMEOUT 5
@@ -382,7 +383,7 @@
 	NSXMLElement *association = [NSXMLElement elementWithName: @"association"];
 	[association addAttribute: [NSXMLNode attributeWithName: @"host" stringValue: [dict valueForKey: @"host"]]];
 	[association addAttribute: [NSXMLNode attributeWithName: @"port" stringValue: [dict valueForKey: @"port"]]];
-	NSString *aeTitle = [[NSUserDefaults standardUserDefaults] valueForKey: @"AETITLE"];
+	NSString *aeTitle = [NSUserDefaults defaultAETitle];
 	if (!aeTitle)
 		aeTitle = [NSString stringWithString: @"OSIRIX_DICOM_PRINT"];
 	[association addAttribute: [NSXMLNode attributeWithName: @"aetitle_sender" stringValue: aeTitle]];
