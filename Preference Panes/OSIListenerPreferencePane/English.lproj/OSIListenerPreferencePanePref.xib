@@ -1760,7 +1760,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<object class="NSWindowTemplate" id="590408922">
 				<int key="NSWindowStyleMask">1</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{178, 393}, {413, 498}}</string>
+				<string key="NSWindowRect">{{178, 371}, {413, 520}}</string>
 				<int key="NSWTFlags">611844096</int>
 				<string key="NSWindowTitle">Window</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -1817,7 +1817,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSButton" id="452299316">
 							<reference key="NSNextResponder" ref="717135893"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{18, 462}, {201, 18}}</string>
+							<string key="NSFrame">{{18, 484}, {201, 18}}</string>
 							<reference key="NSSuperview" ref="717135893"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="131992427">
@@ -1891,7 +1891,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSTextField" id="200416598">
 											<reference key="NSNextResponder" ref="952608214"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{15, 38}, {76, 14}}</string>
+											<string key="NSFrame">{{15, 60}, {76, 14}}</string>
 											<reference key="NSSuperview" ref="952608214"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="247444713">
@@ -1923,7 +1923,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSTextField" id="785187444">
 											<reference key="NSNextResponder" ref="952608214"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{15, 79}, {76, 14}}</string>
+											<string key="NSFrame">{{15, 101}, {76, 14}}</string>
 											<reference key="NSSuperview" ref="952608214"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="605390414">
@@ -1939,7 +1939,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSTextField" id="97678359">
 											<reference key="NSNextResponder" ref="952608214"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{96, 78}, {165, 16}}</string>
+											<string key="NSFrame">{{96, 100}, {165, 16}}</string>
 											<reference key="NSSuperview" ref="952608214"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="458432725">
@@ -1956,7 +1956,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSTextField" id="1005489986">
 											<reference key="NSNextResponder" ref="952608214"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{96, 37}, {165, 16}}</string>
+											<string key="NSFrame">{{96, 59}, {165, 16}}</string>
 											<reference key="NSSuperview" ref="952608214"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="722041666">
@@ -2009,7 +2009,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="266940798">
 											<reference key="NSNextResponder" ref="952608214"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{265, 78}, {96, 18}}</string>
+											<string key="NSFrame">{{265, 100}, {96, 18}}</string>
 											<reference key="NSSuperview" ref="952608214"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="102118262">
@@ -2031,7 +2031,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSTextField" id="82787629">
 											<reference key="NSNextResponder" ref="952608214"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{266, 39}, {86, 11}}</string>
+											<string key="NSFrame">{{266, 61}, {86, 11}}</string>
 											<reference key="NSSuperview" ref="952608214"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="315615015">
@@ -2047,7 +2047,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="174422697">
 											<reference key="NSNextResponder" ref="952608214"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{80, 58}, {281, 18}}</string>
+											<string key="NSFrame">{{80, 80}, {281, 18}}</string>
 											<reference key="NSSuperview" ref="952608214"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="637442388">
@@ -2066,12 +2066,44 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<int key="NSPeriodicInterval">25</int>
 											</object>
 										</object>
+										<object class="NSTextField" id="465347787">
+											<reference key="NSNextResponder" ref="952608214"/>
+											<int key="NSvFlags">268</int>
+											<string key="NSFrame">{{15, 37}, {76, 14}}</string>
+											<reference key="NSSuperview" ref="952608214"/>
+											<bool key="NSEnabled">YES</bool>
+											<object class="NSTextFieldCell" key="NSCell" id="476268797">
+												<int key="NSCellFlags">68288064</int>
+												<int key="NSCellFlags2">71435264</int>
+												<string key="NSContents">Syntax:</string>
+												<reference key="NSSupport" ref="26"/>
+												<reference key="NSControlView" ref="465347787"/>
+												<reference key="NSBackgroundColor" ref="319257802"/>
+												<reference key="NSTextColor" ref="894631480"/>
+											</object>
+										</object>
+										<object class="NSTextField" id="258786817">
+											<reference key="NSNextResponder" ref="952608214"/>
+											<int key="NSvFlags">268</int>
+											<string key="NSFrame">{{93, 37}, {269, 14}}</string>
+											<reference key="NSSuperview" ref="952608214"/>
+											<bool key="NSEnabled">YES</bool>
+											<object class="NSTextFieldCell" key="NSCell" id="205946966">
+												<int key="NSCellFlags">68288064</int>
+												<int key="NSCellFlags2">4326400</int>
+												<string key="NSContents">Preferred Syntax</string>
+												<reference key="NSSupport" ref="26"/>
+												<reference key="NSControlView" ref="258786817"/>
+												<reference key="NSBackgroundColor" ref="319257802"/>
+												<reference key="NSTextColor" ref="894631480"/>
+											</object>
+										</object>
 									</array>
-									<string key="NSFrame">{{1, 1}, {377, 104}}</string>
+									<string key="NSFrame">{{1, 1}, {377, 126}}</string>
 									<reference key="NSSuperview" ref="948212626"/>
 								</object>
 							</array>
-							<string key="NSFrame">{{17, 336}, {379, 120}}</string>
+							<string key="NSFrame">{{17, 336}, {379, 142}}</string>
 							<reference key="NSSuperview" ref="717135893"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
@@ -2521,7 +2553,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<bool key="NSTransparent">NO</bool>
 						</object>
 					</array>
-					<string key="NSFrameSize">{413, 498}</string>
+					<string key="NSFrameSize">{413, 520}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
@@ -3658,6 +3690,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<int key="connectionID">1021</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">preferredSyntaxPopUpButton</string>
+						<reference key="source" ref="649897355"/>
+						<reference key="destination" ref="77748350"/>
+					</object>
+					<int key="connectionID">1022</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">TLSPreferredSyntaxTextField</string>
+						<reference key="source" ref="649897355"/>
+						<reference key="destination" ref="258786817"/>
+					</object>
+					<int key="connectionID">1027</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -3785,12 +3833,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="785187444"/>
 							<reference ref="266940798"/>
 							<reference ref="174422697"/>
-							<reference ref="934170035"/>
-							<reference ref="507655545"/>
 							<reference ref="200416598"/>
-							<reference ref="393165985"/>
 							<reference ref="1005489986"/>
 							<reference ref="82787629"/>
+							<reference ref="465347787"/>
+							<reference ref="934170035"/>
+							<reference ref="507655545"/>
+							<reference ref="393165985"/>
+							<reference ref="258786817"/>
 						</array>
 						<reference key="parent" ref="717135893"/>
 					</object>
@@ -4991,6 +5041,32 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="637442388"/>
 						<reference key="parent" ref="174422697"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1023</int>
+						<reference key="object" ref="465347787"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="476268797"/>
+						</array>
+						<reference key="parent" ref="948212626"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1024</int>
+						<reference key="object" ref="476268797"/>
+						<reference key="parent" ref="465347787"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1025</int>
+						<reference key="object" ref="258786817"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="205946966"/>
+						</array>
+						<reference key="parent" ref="948212626"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1026</int>
+						<reference key="object" ref="205946966"/>
+						<reference key="parent" ref="258786817"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -5004,6 +5080,16 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="1013.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="102.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="102.ImportedFromIB2"/>
+				<string key="1023.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<object class="NSAffineTransform" key="1023.IBViewBoundsToFrameTransform">
+					<bytes key="NSTransformStruct">P4AAAL+AAABBcAAAwpAAAA</bytes>
+				</object>
+				<string key="1024.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1025.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<object class="NSAffineTransform" key="1025.IBViewBoundsToFrameTransform">
+					<bytes key="NSTransformStruct">P4AAAL+AAABCugAAwkQAAA</bytes>
+				</object>
+				<string key="1026.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="106.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="106.ImportedFromIB2"/>
 				<string key="114.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -5115,7 +5201,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="361.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="379.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="380.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="381.IBEditorWindowLastContentRect">{{725, 521}, {313, 183}}</string>
+				<string key="381.IBEditorWindowLastContentRect">{{124, 660}, {307, 159}}</string>
 				<string key="381.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="385.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="385.ImportedFromIB2"/>
@@ -5152,9 +5238,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<integer value="1" key="6.ImportedFromIB2"/>
 				<string key="724.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="725.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="726.IBEditorWindowLastContentRect">{{630, 460}, {413, 498}}</string>
+				<string key="726.IBEditorWindowLastContentRect">{{630, 438}, {413, 520}}</string>
 				<string key="726.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="726.IBWindowTemplateEditedContentRect">{{630, 460}, {413, 498}}</string>
+				<string key="726.IBWindowTemplateEditedContentRect">{{630, 438}, {413, 520}}</string>
 				<boolean value="NO" key="726.NSWindowTemplate.visibleAtLaunch"/>
 				<boolean value="NO" key="726.windowTemplate.hasMaxSize"/>
 				<boolean value="NO" key="726.windowTemplate.hasMinSize"/>
@@ -5163,32 +5249,32 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="727.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="728.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSAffineTransform" key="728.IBViewBoundsToFrameTransform">
-					<bytes key="NSTransformStruct">AUGIAABCoAAAA</bytes>
+					<bytes key="NSTransformStruct">AUGIAABCpAAAA</bytes>
 				</object>
 				<string key="729.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSAffineTransform" key="729.IBViewBoundsToFrameTransform">
-					<bytes key="NSTransformStruct">P4AAAL+AAABDTQAAwoQAAA</bytes>
+					<bytes key="NSTransformStruct">P4AAAL+AAABDTQAAwogAAA</bytes>
 				</object>
 				<integer value="1" key="729.ImportedFromIB2"/>
 				<string key="730.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSAffineTransform" key="730.IBViewBoundsToFrameTransform">
-					<bytes key="NSTransformStruct">P4AAAL+AAABDlwAAwoQAAA</bytes>
+					<bytes key="NSTransformStruct">P4AAAL+AAABDlwAAwogAAA</bytes>
 				</object>
 				<integer value="1" key="730.ImportedFromIB2"/>
 				<string key="731.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSAffineTransform" key="731.IBViewBoundsToFrameTransform">
-					<bytes key="NSTransformStruct">AUGIAABDKAAAA</bytes>
+					<bytes key="NSTransformStruct">AUGIAABDKgAAA</bytes>
 				</object>
 				<string key="732.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="734.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="735.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="736.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSAffineTransform" key="736.IBViewBoundsToFrameTransform">
-					<bytes key="NSTransformStruct">P4AAAL+AAABDlQAAwiQAAA</bytes>
+					<bytes key="NSTransformStruct">P4AAAL+AAABDlQAAwhgAAA</bytes>
 				</object>
 				<string key="737.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSAffineTransform" key="737.IBViewBoundsToFrameTransform">
-					<bytes key="NSTransformStruct">P4AAAL+AAABCwAAAwiQAAA</bytes>
+					<bytes key="NSTransformStruct">P4AAAL+AAABCwAAAwhgAAA</bytes>
 				</object>
 				<string key="742.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="743.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -5226,7 +5312,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="771.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="772.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSAffineTransform" key="772.IBViewBoundsToFrameTransform">
-					<bytes key="NSTransformStruct">P4AAAL+AAABBcAAAwiAAAA</bytes>
+					<bytes key="NSTransformStruct">P4AAAL+AAABBcAAAwhQAAA</bytes>
 				</object>
 				<string key="773.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="774.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -5335,7 +5421,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1021</int>
+			<int key="maxID">1027</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -5433,10 +5519,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="TLSCertificateButton">NSButton</string>
 						<string key="TLSChooseCertificateButton">NSButton</string>
 						<string key="TLSPortTextField">NSTextField</string>
+						<string key="TLSPreferredSyntaxTextField">NSTextField</string>
 						<string key="TLSSettingsWindow">NSWindow</string>
 						<string key="TLSStoreSCPAETITLEIsDefaultAETButton">NSButton</string>
 						<string key="ipField">NSTextField</string>
 						<string key="nameField">NSTextField</string>
+						<string key="preferredSyntaxPopUpButton">NSPopUpButton</string>
 						<string key="sharingNameField">NSTextField</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -5456,6 +5544,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">TLSPortTextField</string>
 							<string key="candidateClassName">NSTextField</string>
 						</object>
+						<object class="IBToOneOutletInfo" key="TLSPreferredSyntaxTextField">
+							<string key="name">TLSPreferredSyntaxTextField</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="TLSSettingsWindow">
 							<string key="name">TLSSettingsWindow</string>
 							<string key="candidateClassName">NSWindow</string>
@@ -5471,6 +5563,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="IBToOneOutletInfo" key="nameField">
 							<string key="name">nameField</string>
 							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="preferredSyntaxPopUpButton">
+							<string key="name">preferredSyntaxPopUpButton</string>
+							<string key="candidateClassName">NSPopUpButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="sharingNameField">
 							<string key="name">sharingNameField</string>

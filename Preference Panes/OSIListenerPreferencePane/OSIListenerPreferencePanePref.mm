@@ -183,6 +183,8 @@
 	
 	[self updateTLSStoreSCPAETITLEIsDefaultAETButton];
 	
+	[TLSPreferredSyntaxTextField setStringValue:[[preferredSyntaxPopUpButton selectedItem] title]];
+	
 	if( [self.TLSStoreSCPAETITLE length] <= 0)
 	{
 		self.TLSUseSameAETITLE = YES;

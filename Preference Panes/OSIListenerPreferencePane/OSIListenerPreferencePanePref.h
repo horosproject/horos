@@ -25,6 +25,8 @@
 	
 	IBOutlet NSTextField* sharingNameField;	
 	
+	IBOutlet NSPopUpButton *preferredSyntaxPopUpButton;	
+	
 	IBOutlet NSWindow *TLSSettingsWindow;
 	NSString *TLSAuthenticationCertificate;
 	IBOutlet NSButton *TLSChooseCertificateButton, *TLSCertificateButton;
@@ -43,6 +45,7 @@
 	
 	IBOutlet NSTextField *TLSAETitleTextField;
 	IBOutlet NSTextField *TLSPortTextField;
+	IBOutlet NSTextField *TLSPreferredSyntaxTextField;
 }
 
 @property (retain) NSString *TLSAuthenticationCertificate, *TLSStoreSCPAETITLE;
