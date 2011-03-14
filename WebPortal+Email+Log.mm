@@ -79,6 +79,9 @@
 		return;
 	}
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"] == NO)
+		return;
+	
 	// Lets check if new studies are available for each users! and if temporary users reached the end of their life.....
 	
 	NSDate *lastCheckDate = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastNotificationsDate"]];
