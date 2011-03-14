@@ -3657,7 +3657,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 		else hide = YES;
 	}
 	
+	NSMutableArray *scaleValues = [NSMutableArray array];
+	for( DCMView * v in [seriesView imageViews])
+		[scaleValues addObject: [NSNumber numberWithFloat: v.scaleValue]];
+	
 	[self setMatrixVisible: !hide];
+	
+	int i = 0;
+	for( DCMView * v in [seriesView imageViews])
+	{
+		[v displayIfNeeded];
+		v.scaleValue = [[scaleValues objectAtIndex: i++] floatValue];
+	}
 }
 
 - (NSScrollView*) previewMatrixScrollView
