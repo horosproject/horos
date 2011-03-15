@@ -16593,6 +16593,55 @@ int i,j,l;
 }
 
 #ifndef OSIRIX_LIGHT
+-(IBAction) exportAllImages:(NSString*) seriesName
+{
+	NSMutableArray *producedFiles = [NSMutableArray array];
+	
+	if (exportDCM == nil) exportDCM = [[DICOMExport alloc] init];
+	[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
+	[exportDCM setSeriesDescription: seriesName];
+	
+	NSLog( @"export start");
+	
+	NSString *savedSeriesName = [dcmSeriesName stringValue];
+	
+	[dcmSeriesName setStringValue: seriesName];
+	
+	for( int i = 0 ; i < [pixList[ curMovieIndex] count]; i ++)
+	{
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
+		if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] -1 -i];
+		else [imageView setIndex:i];
+		
+		[imageView sendSyncMessage: 0];
+		
+		NSDictionary* s = [self exportDICOMFileInt: 1 withName: [dcmSeriesName stringValue] allViewers: NO];
+		if( s) [producedFiles addObject: s];
+		
+		[pool release];
+	}
+	
+	NSLog( @"export end");
+
+	if( [producedFiles count])
+	{
+		NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
+											 toContext: [[BrowserController currentBrowser] managedObjectContext]
+											toDatabase: [BrowserController currentBrowser]
+											 onlyDICOM: YES 
+									  notifyAddedFiles: YES
+								   parseExistingObject: YES
+											  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
+									 generatedByOsiriX: YES];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
+			[[BrowserController currentBrowser] selectServer: objects];
+	}
+	
+	[dcmSeriesName setStringValue: savedSeriesName];
+}
+
 -(IBAction) endExportDICOMFileSettings:(id) sender
 {
 	int i, curImage;

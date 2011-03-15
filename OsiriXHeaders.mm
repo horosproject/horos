@@ -14,9 +14,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface DummyClass : NSObject
+@interface Dummy2Class : NSObject
 @end
-@implementation DummyClass
+@implementation Dummy2Class
 
 - (id)init
 {

@@ -5709,7 +5709,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	else sortDescriptors = [databaseOutline sortDescriptors];
 	
-	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0 && [outlineViewArray count] < 300)
+	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0)
 	{
 		@try
 		{
@@ -13277,6 +13277,22 @@ static BOOL needToRezoom;
 	{
 		NSRunInformationalAlertPanel(NSLocalizedString(@"ROIs Images", nil), NSLocalizedString(@"No images containing ROIs are found in this selection.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 	}
+	
+#ifndef OSIRIX_LIGHT
+	BOOL escKey = CGEventSourceKeyState( kCGEventSourceStateCombinedSessionState, 53);
+	
+	if( escKey) //Open the images, and export them
+	{
+		if( [[ViewerController getDisplayed2DViewers] count])
+		{
+			ViewerController *v = [[ViewerController getDisplayed2DViewers] objectAtIndex: 0];
+			
+			[v exportAllImages: @"ROIs images"];
+			
+			[[v window] close];
+		}
+	}
+#endif
 }
 
 - (void) viewerDICOMKeyImages:(id) sender
@@ -13296,6 +13312,22 @@ static BOOL needToRezoom;
 		[NSApp sendAction: @selector(tileWindows:) to:nil from: self];
 	else
 		[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
+	
+#ifndef OSIRIX_LIGHT
+	BOOL escKey = CGEventSourceKeyState( kCGEventSourceStateCombinedSessionState, 53);
+	
+	if( escKey) //Open the images, and export them
+	{
+		if( [[ViewerController getDisplayed2DViewers] count])
+		{
+			ViewerController *v = [[ViewerController getDisplayed2DViewers] objectAtIndex: 0];
+			
+			[v exportAllImages: @"Key images"];
+			
+			[[v window] close];
+		}
+	}
+#endif
 }
 
 - (void) MovieViewerDICOM:(id) sender
@@ -20281,6 +20313,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[NSApp sendAction: @selector(tileWindows:) to:nil from: self];
 		else
 			[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
+		
+#ifndef OSIRIX_LIGHT
+		BOOL escKey = CGEventSourceKeyState( kCGEventSourceStateCombinedSessionState, 53);
+		
+		if( escKey) //Open the images, and export them
+		{
+			if( [[ViewerController getDisplayed2DViewers] count])
+			{
+				ViewerController *v = [[ViewerController getDisplayed2DViewers] objectAtIndex: 0];
+				
+				[v exportAllImages: @"Key And ROIs images"];
+				
+				[[v window] close];
+			}
+		}
+#endif
 	}
 	else
 	{

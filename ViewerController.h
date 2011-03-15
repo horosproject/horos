@@ -754,6 +754,7 @@ enum
 + (void) setDefaultROINames: (NSArray*) names;
 #ifndef OSIRIX_LIGHT
 - (IBAction) endExportDICOMFileSettings:(id) sender;
+- (IBAction) exportAllImages:(NSString*) seriesName;
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error;
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs error:(NSString**) error;
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs generatedROIs:(NSMutableArray*) generatedROIs computeData:(NSMutableDictionary*) data error:(NSString**) error;
