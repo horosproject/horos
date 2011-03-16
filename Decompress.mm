@@ -652,8 +652,6 @@ int main(int argc, const char *argv[])
 			
 			QTMovie *aMovie = [QTMovie movieWithFile: inFile error:&error];
 			
-			NSValue* v = [aMovie attributeForKey:QTMovieCurrentSizeAttribute];
-			
 			if (aMovie && error == nil)
 			{
 				if (NO == [aMovie attributeForKey:QTMovieHasApertureModeDimensionsAttribute])
@@ -672,8 +670,9 @@ int main(int argc, const char *argv[])
 				}
 				
 				NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-												   [NSNumber numberWithBool:YES], QTMovieExport,
-												   [NSNumber numberWithLong:exportType], QTMovieExportType, nil]; // 'M4VP'
+												   [NSNumber numberWithBool: YES], QTMovieExport,
+												   [NSNumber numberWithBool: YES] ,QTMovieFlatten,
+												   [NSNumber numberWithLong: exportType], QTMovieExportType, nil]; // 'M4VP'
 				
 				BOOL status = [aMovie writeToFile:outFile withAttributes:dictionary];
 				

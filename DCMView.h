@@ -281,6 +281,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	float LENSRATIO;
 	BOOL cursorhidden;
 	int avoidRecursiveSync;
+	BOOL avoidMouseMovedRecursive;
 	BOOL avoidChangeWLWWRecursive;
 	BOOL TextureComputed32bitPipeline;
 	
