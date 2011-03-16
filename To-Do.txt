@@ -24,6 +24,8 @@
 - Option to burn Weasis in CDs, with launchers for MacOSX, Linux and Windows (Java 6 is required for all systems)
 - This is the last version to support MacOS 10.5, please upgrade to 10.6 or 10.7 !
 
+More osirix URL -> match XML-RPC
+
 - Web Server: Burn option if the CD/DVD is installed
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR
 - Two Steps DICOM Editing

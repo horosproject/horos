@@ -54,7 +54,7 @@
 				}
 				else if ([obj count] > 1)
 					NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
-					}
+			}
 			
 			array = mutableArray;
 		}

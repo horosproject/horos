@@ -2122,6 +2122,8 @@ static NSDate *lastWarningDate = nil;
 	return;
 }
 
+// Manage osirix URL : osirix://
+
 - (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
 	NSString *str = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];

@@ -1770,12 +1770,16 @@ static NSConditionLock *threadLock = nil;
 					{
 						if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
 						{
-							NSString *unzipPath = [[self INCOMINGPATH] stringByAppendingPathComponent: @"unzip_folder"];
+							NSString *unzipPath = [@"/tmp" stringByAppendingPathComponent: @"unzip_folder"];
 							
 							[[NSFileManager defaultManager] removeItemAtPath: unzipPath error: nil];
 							[[NSFileManager defaultManager] createDirectoryAtPath: unzipPath attributes: nil];
 							
 							[self askForZIPPassword: filename destination: unzipPath];
+							
+							static int uniqueZipFolder = 1;
+							NSString *uniqueFolder = [NSString stringWithFormat: @"unzip_folder_%d", uniqueZipFolder++];
+							[[NSFileManager defaultManager] moveItemAtPath: unzipPath toPath: [[self INCOMINGPATH] stringByAppendingPathComponent: uniqueFolder] error: nil];
 						}
 						else if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
 							[self addDICOMDIR: filename :filesArray];
@@ -16108,7 +16112,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 					NSString *lastPathComponent = [srcPath lastPathComponent];
 					
 					if ([[lastPathComponent uppercaseString] hasSuffix:@".DS_STORE"])
+					{
+						[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
 						continue;
+					}
+					
+					if ([[lastPathComponent uppercaseString] hasSuffix:@"__MACOSX"])
+					{
+						[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+						continue;
+					}
 					
 					if ( [lastPathComponent length] > 0 && [lastPathComponent characterAtIndex: 0] == '.')
 					{
