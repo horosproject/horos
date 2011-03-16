@@ -1745,8 +1745,18 @@ static NSConditionLock *threadLock = nil;
 										if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
 										{
 											if( [[itemPath pathExtension] isEqualToString: @"zip"] || [[itemPath pathExtension] isEqualToString: @"osirixzip"])
-												[self askForZIPPassword: itemPath destination: [self INCOMINGPATH]];
-											
+											{
+												NSString *unzipPath = [@"/tmp" stringByAppendingPathComponent: @"unzip_folder"];
+												
+												[[NSFileManager defaultManager] removeItemAtPath: unzipPath error: nil];
+												[[NSFileManager defaultManager] createDirectoryAtPath: unzipPath attributes: nil];
+												
+												[self askForZIPPassword: itemPath destination: unzipPath];
+												
+												static int uniqueZipFolder = 1;
+												NSString *uniqueFolder = [NSString stringWithFormat: @"unzip_folder_A%d", uniqueZipFolder++];
+												[[NSFileManager defaultManager] moveItemAtPath: unzipPath toPath: [[self INCOMINGPATH] stringByAppendingPathComponent: uniqueFolder] error: nil];
+											}
 											else if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
 												[self addDICOMDIR: itemPath : filesArray];
 											
@@ -1778,7 +1788,7 @@ static NSConditionLock *threadLock = nil;
 							[self askForZIPPassword: filename destination: unzipPath];
 							
 							static int uniqueZipFolder = 1;
-							NSString *uniqueFolder = [NSString stringWithFormat: @"unzip_folder_%d", uniqueZipFolder++];
+							NSString *uniqueFolder = [NSString stringWithFormat: @"unzip_folder_B%d", uniqueZipFolder++];
 							[[NSFileManager defaultManager] moveItemAtPath: unzipPath toPath: [[self INCOMINGPATH] stringByAppendingPathComponent: uniqueFolder] error: nil];
 						}
 						else if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES || [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."] == YES)
