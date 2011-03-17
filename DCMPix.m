@@ -8525,7 +8525,6 @@ END_CREATE_ROIS:
 							
 							if( oData && gDisplayDICOMOverlays && fImage)
 							{
-								int y, x;
 								float maxValue = 0;
 								
 								if( inverseVal)

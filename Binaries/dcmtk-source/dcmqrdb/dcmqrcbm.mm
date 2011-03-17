@@ -32,12 +32,12 @@
  */
 
 #include <Cocoa/Cocoa.h>
-#include"DCMNetServiceDelegate.h"
+#include"OsiriX/DCMNetServiceDelegate.h"
 #import "SendController.h"
 #import "browserController.h"
-#import "DCMObject.h"
-#import "DCM.h"
-#import "DCMTransferSyntax.h"
+#import "OsiriX/DCMObject.h"
+#import "OsiriX/DCM.h"
+#import "OsiriX/DCMTransferSyntax.h"
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmqrcbm.h"

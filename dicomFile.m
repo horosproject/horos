@@ -208,7 +208,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	int	i, from, len = strlen( str), index;
 	NSMutableString	*result = [NSMutableString string];
 	BOOL separators = NO;
-	BOOL twoCharsEncoding = NO;
+//	BOOL twoCharsEncoding = NO;
 	
 	for( i = 0, from = 0, index = 0; i < len; i++)
 	{
