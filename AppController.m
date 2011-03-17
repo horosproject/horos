@@ -2136,122 +2136,137 @@ static NSDate *lastWarningDate = nil;
 		// parse the URL to find the parameters (if any)
 		NSArray *urlComponents = [content componentsSeparatedByString: @"?"];
 		NSString *parameterString = @"";
-		if([urlComponents count] == 2) parameterString = [urlComponents lastObject];
-		
-		NSMutableDictionary *urlParameters = [NSMutableDictionary dictionary];
-		if(![parameterString isEqualToString: @""])
+		if([urlComponents count] == 2)
 		{
-			NSArray *paramArray = [parameterString componentsSeparatedByString: @"&"];
-			NSMutableArray *selected = [NSMutableArray array];
-			for(NSString *param in paramArray)
-			{
-				NSArray *p = [param componentsSeparatedByString: @"="];
-				if([[p objectAtIndex:0] isEqualToString: @"selected"])
-				{
-					[selected addObject:[p lastObject]];
-				}
-				else if([p count]==2)
-					[urlParameters setObject:[p lastObject] forKey:[p objectAtIndex:0]];
-			}
-			
-			if([selected count])
-				[urlParameters setObject:selected forKey: @"selected"];
-		}
+			parameterString = [[urlComponents lastObject] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
 		
-		if( [urlParameters objectForKey: @"image"])
-		{
-			NSArray *components = [[urlParameters objectForKey: @"image"] componentsSeparatedByString:@"+"];
-			
-			if( [components count] == 2)
+			NSMutableDictionary *urlParameters = [NSMutableDictionary dictionary];
+			if(![parameterString isEqualToString: @""])
 			{
-				NSString *sopclassuid = [components objectAtIndex: 0];
-				NSString *sopinstanceuid = [components objectAtIndex: 1];
-				int frame = [[urlParameters objectForKey: @"frames"] intValue];
+				NSArray *paramArray = [parameterString componentsSeparatedByString: @"&"];
 				
-				BOOL succeeded = NO;
-				
-				//First try to find it in the selected study
-				if( succeeded == NO)
+				for(NSString *param in paramArray)
 				{
-					NSMutableArray *allImages = [NSMutableArray array];
-					[[BrowserController currentBrowser] filesForDatabaseOutlineSelection: allImages];
+					NSRange separatorRange = [param rangeOfString: @"="];
 					
-					NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-					
-					[context lock];
-					
-					@try
+					if( separatorRange.location != NSNotFound)
 					{
-						NSPredicate	*request = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopinstanceuid]] customSelector: @selector( isEqualToSopInstanceUID:)];
-						
-						NSArray *imagesArray = [allImages filteredArrayUsingPredicate: request];
-						
-						if( [imagesArray count])
+						@try
 						{
-							[[BrowserController currentBrowser] displayStudy: [[imagesArray lastObject] valueForKeyPath: @"series.study"] object: [imagesArray lastObject] command: @"Open"];
-							succeeded = YES;
+							[urlParameters setObject: [param substringFromIndex: separatorRange.location+1] forKey: [param substringToIndex: separatorRange.location]];
+						}
+						@catch (NSException * e)
+						{
+							NSLog( @"**** exception in getUrl: %@", param);
 						}
 					}
-					@catch (NSException * e)
-					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-					}
-					
-					[context unlock];
 				}
-				//Second option, try to find the uid in the ENTIRE db....
 				
-				if( succeeded == NO)
+				if( [urlParameters objectForKey: @"methodName"]) // XML-RPC message
 				{
-					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-					[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Series"]];
-					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"seriesSOPClassUID == %@", sopclassuid]];
+					NSMutableDictionary *paramDict = [NSMutableDictionary dictionaryWithDictionary: urlParameters];
 					
-					NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+					[paramDict removeObjectForKey: @"methodName"];
 					
-					[context lock];
+					[XMLRPCServer processXMLRPCMessage: [urlParameters objectForKey: @"methodName"] httpServerMessage: nil HTTPServerRequest: nil version: nil paramDict: paramDict encoding: @"UTF-8"];
+				}
+				
+				if( [urlParameters objectForKey: @"image"])
+				{
+					NSArray *components = [[urlParameters objectForKey: @"image"] componentsSeparatedByString:@"+"];
 					
-					WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString( @"Locating the image in the database...", nil)];
-					[wait showWindow: self];
-					[wait setCancel: YES];
-					[wait start];
-					
-					@try
+					if( [components count] == 2)
 					{
-						NSError	*error = nil;
-						NSArray *allSeries = [[context executeFetchRequest: dbRequest error: &error] valueForKey: @"images"];
+						NSString *sopclassuid = [components objectAtIndex: 0];
+						NSString *sopinstanceuid = [components objectAtIndex: 1];
+						int frame = [[urlParameters objectForKey: @"frames"] intValue];
 						
-						NSMutableArray *allImages = [NSMutableArray array];
-						for( NSSet *s in allSeries)
-							[allImages addObjectsFromArray: [s allObjects]];
+						BOOL succeeded = NO;
 						
-						NSData *searchedUID = [DicomImage sopInstanceUIDEncodeString: sopinstanceuid];
-						DicomImage *searchUIDImage = nil;
-						
-						for( DicomImage *i in allImages)
+						//First try to find it in the selected study
+						if( succeeded == NO)
 						{
-							if( [[i valueForKey: @"compressedSopInstanceUID"] isEqualToSopInstanceUID: searchedUID])
-								searchUIDImage = i;
+							NSMutableArray *allImages = [NSMutableArray array];
+							[[BrowserController currentBrowser] filesForDatabaseOutlineSelection: allImages];
 							
-							if( searchUIDImage)
-								break;
+							NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 							
-							if( [wait run] == NO)
-								break;
+							[context lock];
+							
+							@try
+							{
+								NSPredicate	*request = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopinstanceuid]] customSelector: @selector( isEqualToSopInstanceUID:)];
+								
+								NSArray *imagesArray = [allImages filteredArrayUsingPredicate: request];
+								
+								if( [imagesArray count])
+								{
+									[[BrowserController currentBrowser] displayStudy: [[imagesArray lastObject] valueForKeyPath: @"series.study"] object: [imagesArray lastObject] command: @"Open"];
+									succeeded = YES;
+								}
+							}
+							@catch (NSException * e)
+							{
+								NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+							}
+							
+							[context unlock];
 						}
+						//Second option, try to find the uid in the ENTIRE db....
 						
-						if( searchUIDImage)
-							[[BrowserController currentBrowser] displayStudy: [searchUIDImage valueForKeyPath: @"series.study"] object: searchUIDImage command: @"Open"];
+						if( succeeded == NO)
+						{
+							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+							[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Series"]];
+							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"seriesSOPClassUID == %@", sopclassuid]];
+							
+							NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+							
+							[context lock];
+							
+							WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString( @"Locating the image in the database...", nil)];
+							[wait showWindow: self];
+							[wait setCancel: YES];
+							[wait start];
+							
+							@try
+							{
+								NSError	*error = nil;
+								NSArray *allSeries = [[context executeFetchRequest: dbRequest error: &error] valueForKey: @"images"];
+								
+								NSMutableArray *allImages = [NSMutableArray array];
+								for( NSSet *s in allSeries)
+									[allImages addObjectsFromArray: [s allObjects]];
+								
+								NSData *searchedUID = [DicomImage sopInstanceUIDEncodeString: sopinstanceuid];
+								DicomImage *searchUIDImage = nil;
+								
+								for( DicomImage *i in allImages)
+								{
+									if( [[i valueForKey: @"compressedSopInstanceUID"] isEqualToSopInstanceUID: searchedUID])
+										searchUIDImage = i;
+									
+									if( searchUIDImage)
+										break;
+									
+									if( [wait run] == NO)
+										break;
+								}
+								
+								if( searchUIDImage)
+									[[BrowserController currentBrowser] displayStudy: [searchUIDImage valueForKeyPath: @"series.study"] object: searchUIDImage command: @"Open"];
+							}
+							@catch (NSException * e)
+							{
+								NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+							}
+							[wait end];
+							[wait close];
+							[wait release];
+							
+							[context unlock];
+						}
 					}
-					@catch (NSException * e)
-					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-					}
-					[wait end];
-					[wait close];
-					[wait release];
-					
-					[context unlock];
 				}
 			}
 		}
