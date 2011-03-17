@@ -3669,6 +3669,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[v displayIfNeeded];
 		v.scaleValue = [[scaleValues objectAtIndex: i++] floatValue];
 	}
+	
+	[self propagateSettings];
 }
 
 - (NSScrollView*) previewMatrixScrollView
