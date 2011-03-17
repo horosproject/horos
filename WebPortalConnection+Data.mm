@@ -244,10 +244,18 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	}
 }
 
--(NSArray*)seriesSortDescriptors { // TODO: update&return session series sort keys
-	return [NSArray arrayWithObjects:
-			[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease],
-			NULL];
+-(NSArray*)seriesSortDescriptors
+{
+	// Sort series with "id" & date
+	NSSortDescriptor * sortid = [[[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)] autorelease];
+	NSSortDescriptor * sortdate = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES] autorelease];
+	NSArray * sortDescriptors = nil;
+	
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
+	else if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
+	else sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
+
+	return sortDescriptors;
 }
 
 -(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)images {
