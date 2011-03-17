@@ -773,6 +773,19 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //	}
 //}
 
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+	NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+	
+	if( [httpResponse statusCode] >= 300)
+	{
+		NSLog( @"***** WADO http status code error: %d", [httpResponse statusCode]);
+		NSLog( @"***** WADO URL : %@", connection);
+		
+		[WADODownloadDictionary removeObjectForKey: [NSString stringWithFormat:@"%ld", connection]];
+	}	
+}
+
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
 	if( connection)
