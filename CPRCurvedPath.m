@@ -408,8 +408,10 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     requestCount = curveLength/spacing;
     requestCount++;
 	
-    if (requestCount < 2) {
-        return requests;
+    if (requestCount < 2)
+	{
+		[flattenedPath release];
+		return requests;
     }
     
     normals = malloc(requestCount * sizeof(N3Vector));

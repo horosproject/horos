@@ -746,7 +746,7 @@
 
 - (void)prepareDatabaseFields;
 {
-	NSManagedObjectModel *currentModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"OsiriXDB_DataModel.mom"]]];
+	NSManagedObjectModel *currentModel = [[[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"OsiriXDB_DataModel.mom"]]] autorelease];
 	
 	NSMutableDictionary *studyAttributes = [NSMutableDictionary dictionaryWithDictionary:[[[currentModel entitiesByName] objectForKey:@"Study"] attributesByName]];
 	[studyAttributes removeObjectForKey:@"windowsState"];	

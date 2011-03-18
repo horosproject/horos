@@ -128,8 +128,8 @@ void DJEncoder2KLossLess::createDerivationDescription(
   OFString& derivationDescription) const
 {
   DJ_RPLossy defaultRP;
-  const DJ_RPLossy *rp = toRepParam ? (const DJ_RPLossy *)toRepParam : &defaultRP ;
-  char buf[64];
+//  const DJ_RPLossy *rp = toRepParam ? (const DJ_RPLossy *)toRepParam : &defaultRP ;
+//  char buf[64];
  
   derivationDescription =  "LossLess compression with JPEG 2K";
   derivationDescription += ", compression ratio ";

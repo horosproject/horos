@@ -241,7 +241,7 @@ static opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 
 void DJCompressJP2K::findMinMax( int &_min, int &_max, char *bytes, long length, OFBool isSigned, int rows, int columns, int bitsAllocated)
 {
-	int i = 0;
+//	int i = 0;
 	float max,  min;
 	
 	if (bitsAllocated <= 8) 
@@ -420,7 +420,7 @@ OFCondition DJCompressJP2K::encode(
 	{
 //		printf( "JP2K KDU-DCMTK-Encode ");
 		
-		int precision = bitsstored;
+//		int precision = bitsstored;
 		int rate = 0;
 		
 		switch( quality)

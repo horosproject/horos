@@ -244,6 +244,8 @@ ftp://medical.nema.org/medical/dicom/2008/08_18pu.pdf
 - Localizations strings : genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h -macRoman
 - Localizations strings Preferences
 - Check if OsiriX Lite works...
+- Check up-to-date zip packages in Binaries folder
+- Test DB migration from previous version
 - OsiriX Lite Upload
 - QuickLook
 - Update plugins

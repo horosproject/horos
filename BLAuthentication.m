@@ -190,7 +190,7 @@
 - (int)getPID:(NSString *)forProcess {
 	FILE* outpipe = NULL;
 	NSMutableData* outputData = [NSMutableData data];
-	NSMutableData* tempData = [[NSMutableData alloc] initWithLength:512];
+	
 	NSString *commandOutput = nil;
 	NSString *scannerOutput = nil;
 	NSString *popenArgs = [[NSString alloc] initWithFormat:@"/bin/ps -axwwopid,command | grep \"%@\"",forProcess];
@@ -208,6 +208,8 @@
         NSBeep();
         return 0;
     }
+	
+	NSMutableData* tempData = [[NSMutableData alloc] initWithLength:512];
 	
 	do {
         [tempData setLength:512];

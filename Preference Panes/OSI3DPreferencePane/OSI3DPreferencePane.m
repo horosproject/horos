@@ -53,6 +53,9 @@
 			return vramStorage;
 	}
 	
+	if( typeCode)
+		CFRelease( typeCode);
+	
 	return 0;
 }
 

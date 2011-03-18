@@ -332,6 +332,13 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 	}
 }
 
+- (void) dealloc
+{
+	[defaultROINames release];
+	
+	[super dealloc];
+}
+
 - (id)init {
 	if (self = [super init])
 	{
