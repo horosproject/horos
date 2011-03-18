@@ -10752,7 +10752,8 @@ short				matrix[25];
 
 + (void) setDefaultROINames: (NSArray*) rn
 {
-	DefaultROINames = rn;
+	[DefaultROINames release];
+	DefaultROINames = [rn retain];
 }
 
 - (void) loadROI:(long) mIndex

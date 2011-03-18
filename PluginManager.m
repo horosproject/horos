@@ -337,7 +337,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 	{
 		// Set DefaultROINames *before* initializing plugins (which may change these)
 		
-		NSMutableArray *defaultROINames = [[NSMutableArray alloc] initWithCapacity:0];
+		NSMutableArray *defaultROINames = [NSMutableArray array];
 		
 		[defaultROINames addObject:@"ROI 1"];
 		[defaultROINames addObject:@"ROI 2"];
