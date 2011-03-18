@@ -1010,18 +1010,18 @@ static NSDate *lastWarningDate = nil;
 	if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingPathExtension]])
 		[[NSFileManager defaultManager] removeFileAtPath: [path stringByDeletingPathExtension] handler: nil];
 	
-	if( newFolder)
-	{
-		NSDictionary *d = [[NSFileManager defaultManager] attributesOfItemAtPath:path error: nil];
-	
-		if( d && [[d objectForKey: NSFileExtensionHidden] boolValue] == NO)
-		{
-			NSMutableDictionary *m = [NSMutableDictionary dictionaryWithDictionary: d];
-		
-			[m setObject: [NSNumber numberWithBool: YES] forKey:NSFileExtensionHidden];
-			[[NSFileManager defaultManager] changeFileAttributes: m atPath: path];
-		}
-	}
+//	if( newFolder)
+//	{
+//		NSDictionary *d = [[NSFileManager defaultManager] attributesOfItemAtPath:path error: nil];
+//	
+//		if( d && [[d objectForKey: NSFileExtensionHidden] boolValue] == NO)
+//		{
+//			NSMutableDictionary *m = [NSMutableDictionary dictionaryWithDictionary: d];
+//		
+//			[m setObject: [NSNumber numberWithBool: YES] forKey:NSFileExtensionHidden];
+//			[[NSFileManager defaultManager] changeFileAttributes: m atPath: path];
+//		}
+//	}
 }
 
 + (void) pause
@@ -2455,11 +2455,17 @@ static NSDate *lastWarningDate = nil;
 	
 	[AppController cleanOsiriXSubProcesses];
 	
-	// DELETE THE TEMP.noindex DIRECTORY...
+	// DELETE the content of TEMP.noindex directory...
 	NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP.noindex/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: nil];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: tempDirectory])
+	{
+		for( NSString *file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: tempDirectory error: nil])
+			[[NSFileManager defaultManager] removeFileAtPath: [tempDirectory stringByAppendingPathComponent: file] handler: nil];
+	}
+	
 	tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: nil];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
+		[[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: nil];
 	
 	// DELETE THE DUMP DIRECTORY...
 	NSString *dumpDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DUMP/"];

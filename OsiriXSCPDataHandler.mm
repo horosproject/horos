@@ -1451,7 +1451,7 @@ extern NSManagedObjectContext *staticContext;
 			FILE * pFile;
 			char dir[ 1024], newdir[1024];
 			unsigned int random = (unsigned int)time(NULL);
-			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP.noindex/move_log_", random);
+			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "move_log_", random);
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
@@ -1483,7 +1483,7 @@ extern NSManagedObjectContext *staticContext;
 			FILE * pFile;
 			char dir[ 1024], newdir[1024];
 			unsigned int random = (unsigned int)time(NULL);
-			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP.noindex/move_log_", random);
+			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "move_log_", random);
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
@@ -1760,7 +1760,7 @@ extern NSManagedObjectContext *staticContext;
 		FILE * pFile;
 		char dir[ 1024], newdir[1024];
 		unsigned int random = (unsigned int)time(NULL);
-		sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP.noindex/move_log_", random);
+		sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "move_log_", random);
 		pFile = fopen (dir,"w+");
 		if( pFile)
 		{
