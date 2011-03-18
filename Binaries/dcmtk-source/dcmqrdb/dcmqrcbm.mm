@@ -481,7 +481,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
         printf("Move SCP Response %d [status: %s]\n", responseCount,
 	    DU_cmoveStatusString(dbStatus.status()));
     }
-    if (options_.verbose_ > 1) {
+    if (options_.verbose_) {
         DIMSE_printCMoveRSP(stdout, response);
         if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL)) {
             printf("Move SCP Response Identifiers:\n");

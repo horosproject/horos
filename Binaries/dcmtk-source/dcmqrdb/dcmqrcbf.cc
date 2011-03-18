@@ -98,7 +98,7 @@ void DcmQueryRetrieveFindContext::callbackHandler(
         printf("Find SCP Response %d [status: %s]\n", responseCount,
 	    DU_cfindStatusString(dbStatus.status()));
     }
-    if (options_.verbose_ > 1) {
+    if (options_.verbose_) {
         DIMSE_printCFindRSP(stdout, response);
         if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL)) {
             printf("Find SCP Response Identifiers:\n");
