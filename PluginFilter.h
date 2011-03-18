@@ -67,9 +67,9 @@
 /** Stub is to be subclassed by report filters */
 - (id)reportDateForStudy: (NSManagedObject*)study;
 /** Stub is to be subclassed by report filters */
-- (void)deleteReportForStudy: (NSManagedObject*)study;
+- (BOOL)deleteReportForStudy: (NSManagedObject*)study;
 /** Stub is to be subclassed by report filters */
-- (void)createReportForStudy: (NSManagedObject*)study;
+- (BOOL)createReportForStudy: (NSManagedObject*)study;
 
 /** PRIVATE FUNCTIONS - DON'T SUBCLASS OR MODIFY */
 - (long) prepareFilter:(ViewerController*) vC;

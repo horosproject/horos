@@ -14593,8 +14593,6 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (IBAction) unlockStudies: (id) sender
 {
-	NSMutableArray *objects = [NSMutableArray array];
-	
 	NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 	
 	for( NSInteger x = 0, row; x < selectedRows.count; x++)
@@ -14613,8 +14611,6 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (IBAction) lockStudies: (id) sender
 {
-	NSMutableArray *objects = [NSMutableArray array];
-	
 	NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 	
 	for( NSInteger x = 0, row; x < selectedRows.count; x++)

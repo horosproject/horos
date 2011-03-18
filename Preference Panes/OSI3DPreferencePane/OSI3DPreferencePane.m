@@ -48,6 +48,10 @@
 		long vramStorage = 0;
 		// Convert this to a useable number
 		CFNumberGetValue(typeCode, kCFNumberSInt32Type, &vramStorage);
+		
+		CFRelease( typeCode);
+		typeCode = nil;
+		
 		// If we get something other than 0, we'll use it
 		if(vramStorage > 0)
 			return vramStorage;
