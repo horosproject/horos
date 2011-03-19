@@ -18,6 +18,7 @@
 {
 	IBOutlet NSWindow *compressionSettingsWindow;
 	NSArray *compressionSettingsCopy, *compressionSettingsLowResCopy;
+	IBOutlet NSWindow *mainWindow;
 }
 
 - (IBAction) editCompressionSettings:(id) sender;

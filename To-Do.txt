@@ -245,7 +245,7 @@ ftp://medical.nema.org/medical/dicom/2008/08_18pu.pdf
 - X Localizations strings Preferences
 - X Check if OsiriX Lite works...
 - X Check up-to-date zip packages in Binaries folder
-- Test DB migration from previous version
+- X Test DB migration from previous version
 - X OsiriX Lite Upload
 - X QuickLook
 - X Update plugins
@@ -259,4 +259,3 @@ ftp://medical.nema.org/medical/dicom/2008/08_18pu.pdf
 
 MacAppStore:
 - dSYM files (directly edit proj file)
-- 

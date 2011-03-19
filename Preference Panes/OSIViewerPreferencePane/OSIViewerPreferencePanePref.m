@@ -17,6 +17,21 @@
 
 @implementation OSIViewerPreferencePanePref
 
+- (id) initWithBundle:(NSBundle *)bundle
+{
+	if( self = [super init])
+	{
+		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSIViewerPreferencePanePref" bundle: nil];
+		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		
+		[self setMainView: [mainWindow contentView]];
+		[self mainViewDidLoad];
+	}
+	
+	return self;
+}
+
+
 - (void) enableControls: (BOOL) val
 {
 //	if( val == YES)

@@ -22,6 +22,7 @@
 	
 	IBOutlet NSMatrix						*CLUTMode, *WindowingModeMatrix;
 	IBOutlet NSTextField					*minimumValueText;
+	IBOutlet NSWindow						*mainWindow;
 }
 
 - (void) mainViewDidLoad;

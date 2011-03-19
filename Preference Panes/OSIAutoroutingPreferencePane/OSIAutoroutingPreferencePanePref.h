@@ -33,6 +33,8 @@
 	NSMutableArray						*routesArray;
 	NSArray								*serversArray;
 	int filterType;
+	
+	IBOutlet NSWindow *mainWindow;
 }
 
 @property int filterType;

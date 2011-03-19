@@ -43,6 +43,7 @@
 	IBOutlet NSButton		*freeSpace;
 	IBOutlet NSMatrix		*freeSpaceType;
 	IBOutlet NSPopUpButton	*freeSpaceSize;
+	IBOutlet NSWindow *mainWindow;
 }
 
 - (void) mainViewDidLoad;

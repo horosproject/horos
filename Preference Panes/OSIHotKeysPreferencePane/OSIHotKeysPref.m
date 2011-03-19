@@ -18,6 +18,20 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 
 @implementation OSIHotKeysPref
 
+- (id) initWithBundle:(NSBundle *)bundle
+{
+	if( self = [super init])
+	{
+		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSIHotKeysPref" bundle: nil];
+		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		
+		[self setMainView: [mainWindow contentView]];
+		[self mainViewDidLoad];
+	}
+	
+	return self;
+}
+
 + (OSIHotKeysPref*) currentKeysPref
 {
 	return currentKeysPref;

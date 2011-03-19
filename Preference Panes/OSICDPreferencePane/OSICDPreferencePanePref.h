@@ -16,6 +16,7 @@
 
 @interface OSICDPreferencePanePref : NSPreferencePane 
 {
+	IBOutlet NSWindow *mainWindow;
 }
 
 - (IBAction)chooseSupplementaryBurnPath:(id)sender;

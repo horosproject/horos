@@ -19,6 +19,8 @@
 //	IBOutlet NSSlider						*bestRenderingSlider, *max3DTextureSlider, *max3DTextureSliderShading;
 //	IBOutlet NSTextField					*bestRenderingString, *max3DTextureString, *max3DTextureStringShading;
 //	IBOutlet NSTextField					*recommandations;
+
+	IBOutlet NSWindow *mainWindow;
 }
 
 - (void) mainViewDidLoad;

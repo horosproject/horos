@@ -44,6 +44,7 @@
 	IBOutlet NSButton *addCustomDICOMFieldButton, *addDICOMFieldButton, *addDatabaseFieldButton, *addSpecialFieldButton;
 	IBOutlet NSPopUpButton *DICOMFieldsPopUpButton, *databaseFieldsPopUpButton, *specialFieldsPopUpButton;
 	IBOutlet NSBox *contentBox;
+	IBOutlet NSWindow *mainWindow;
 }
 
 - (IBAction)addAnnotation:(id)sender;

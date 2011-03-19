@@ -14,9 +14,7 @@
 
 #import <PreferencePanes/PreferencePanes.h>
 
-#if defined(OSIRIX)
 #import <OsiriXAPI/DICOMTLS.h>
-#endif
 
 @interface OSIListenerPreferencePanePref : NSPreferencePane 
 {
@@ -34,9 +32,7 @@
 	BOOL TLSUseDHParameterFileURL;
 	NSURL *TLSDHParameterFileURL;
 	
-	#if defined(OSIRIX)
 	TLSCertificateVerificationType	TLSCertificateVerification;
-	#endif
 	
 	BOOL TLSUseSameAETITLE;
 	NSString *TLSStoreSCPAETITLE;
@@ -46,15 +42,15 @@
 	IBOutlet NSTextField *TLSAETitleTextField;
 	IBOutlet NSTextField *TLSPortTextField;
 	IBOutlet NSTextField *TLSPreferredSyntaxTextField;
+	
+	IBOutlet NSWindow *mainWindow;
 }
 
 @property (retain) NSString *TLSAuthenticationCertificate, *TLSStoreSCPAETITLE;
 @property (retain) NSArray *TLSSupportedCipherSuite;
 @property BOOL TLSUseDHParameterFileURL, TLSUseSameAETITLE, TLSStoreSCPAETITLEIsDefaultAET;
 @property (retain) NSURL *TLSDHParameterFileURL;
-#if defined(OSIRIX)
 @property TLSCertificateVerificationType TLSCertificateVerification;
-#endif
 
 - (void) mainViewDidLoad;
 

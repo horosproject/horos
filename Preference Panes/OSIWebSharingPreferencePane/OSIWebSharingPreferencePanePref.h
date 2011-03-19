@@ -25,6 +25,8 @@
 	IBOutlet NSTextField* portTextField;
 	
 	IBOutlet NSPanel* usersPanel;
+	
+	IBOutlet NSWindow* mainWindow;
 }
 @property (retain) NSString *TLSAuthenticationCertificate;
 

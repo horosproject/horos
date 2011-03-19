@@ -30,6 +30,8 @@
 											*toolbarPanelMatrix;
 											
 	IBOutlet NSTextField					*iPhotoAlbumName;
+	
+	IBOutlet NSWindow						*mainWindow;
 }
 
 -(AppController*)appController;

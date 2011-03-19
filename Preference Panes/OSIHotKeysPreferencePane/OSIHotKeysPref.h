@@ -20,6 +20,7 @@
 	NSArray *_actions;
 	IBOutlet NSTextFieldCell *keyTextFieldCell;
 	IBOutlet HotKeyArrayController *arrayController;
+	IBOutlet NSWindow *mainWindow;
 }
 
 + (OSIHotKeysPref*) currentKeysPref;

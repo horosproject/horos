@@ -36,7 +36,22 @@
 
 @synthesize TLSAuthenticationCertificate;
 
--(void)awakeFromNib {
+- (id) initWithBundle:(NSBundle *)bundle
+{
+	if( self = [super init])
+	{
+		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSIWebSharingPreferencePanePref" bundle: nil];
+		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		
+		[self setMainView: [mainWindow contentView]];
+		[self mainViewDidLoad];
+	}
+	
+	return self;
+}
+
+-(void)awakeFromNib
+{
 	[addressTextField.cell setPlaceholderString:NSUserDefaults.defaultWebPortalAddress];
 	[portTextField.cell setPlaceholderString:[NSNumber numberWithInteger:NSUserDefaults.webPortalPortNumber].stringValue];
 }

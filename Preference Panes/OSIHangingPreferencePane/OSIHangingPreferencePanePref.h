@@ -20,7 +20,8 @@
 	IBOutlet NSTableView *hangingProtocolTableView;
 	IBOutlet NSButton *newHangingProtocolButton;
 	NSString *modalityForHangingProtocols;
-	IBOutlet NSArrayController		*bodyRegionController;
+	IBOutlet NSArrayController *bodyRegionController;
+	IBOutlet NSWindow *mainWindow;
 }
 
 - (void) mainViewDidLoad;

@@ -21,6 +21,20 @@
 
 @implementation OSIDatabasePreferencePanePref
 
+- (id) initWithBundle:(NSBundle *)bundle
+{
+	if( self = [super init])
+	{
+		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSIDatabasePreferencePanePref" bundle: nil];
+		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		
+		[self setMainView: [mainWindow contentView]];
+		[self mainViewDidLoad];
+	}
+	
+	return self;
+}
+
 - (NSArray*) ListOfMediaSOPClassUID
 {
 	NSMutableArray *l = [NSMutableArray array];
