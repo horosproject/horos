@@ -240,15 +240,15 @@ ftp://medical.nema.org/medical/dicom/2008/08_18pu.pdf
 - Concernant le viewer, y a-t-il un support de la fusion d'image? Avec l'installation prochaine du SPECT-CT, la fusion d'image sera nécessaire pour l'interprétation des images. Sinon, ces examens devront être lus et interprétés uniquement sur la station Philips livrée avec le SPECT-CT. La même question se reposera si on installe un PET-CT dans l'avenir.
 
 // Release
-- Bundle Version
-- Localizations strings : genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h -macRoman
-- Localizations strings Preferences
-- Check if OsiriX Lite works...
-- Check up-to-date zip packages in Binaries folder
+- X Bundle Version
+- X Localizations strings : genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h -macRoman
+- X Localizations strings Preferences
+- X Check if OsiriX Lite works...
+- X Check up-to-date zip packages in Binaries folder
 - Test DB migration from previous version
-- OsiriX Lite Upload
-- QuickLook
-- Update plugins
+- X OsiriX Lite Upload
+- X QuickLook
+- X Update plugins
 - For international version, manually resign
 - codesign -vvv /Applications/OsiriX.app
 - 64bitExtension : upload osirix-viewer.com

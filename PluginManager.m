@@ -435,7 +435,12 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 					if( [pluginsNames valueForKey: [[name lastPathComponent] stringByDeletingPathExtension]])
 					{
 						NSLog( @"***** Multiple plugins: %@", [name lastPathComponent]);
-						NSRunAlertPanel( NSLocalizedString(@"Plugins", nil),  NSLocalizedString(@"Warning! Multiple instances of the same plugin have been found. Only one instance will be loaded. Check the Plugin Manager (Plugins menu) for multiple identical plugins.", nil), nil, nil, nil);
+						
+						NSString *message = NSLocalizedString(@"Warning! Multiple instances of the same plugin have been found. Only one instance will be loaded. Check the Plugin Manager (Plugins menu) for multiple identical plugins.", nil);
+						
+						message = [message stringByAppendingFormat:@"\r\r%@", [name lastPathComponent]];
+						
+						NSRunAlertPanel( NSLocalizedString(@"Plugins", nil), message , nil, nil, nil);
 					}
 					else
 					{

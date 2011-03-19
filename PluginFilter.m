@@ -137,11 +137,11 @@
 }
 
 - (BOOL)deleteReportForStudy: (NSManagedObject*)study {
-	return;
+	return NO;
 }
 
 - (BOOL)createReportForStudy: (NSManagedObject*)study {
-	return;
+	return NO;
 }
 
 @end
