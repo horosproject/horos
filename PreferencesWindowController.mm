@@ -73,9 +73,17 @@
 -(NSPreferencePane*)pane {
 	if (!_pane)
 	{
-		if( NSClassFromString( self.resourceName))
+		Class builtinPrefPaneClass = NSClassFromString( self.resourceName);
+	
+		if( builtinPrefPaneClass)
 		{
-			self.pane = [[[NSClassFromString( self.resourceName) alloc] initWithBundle: nil] autorelease];
+			if( [builtinPrefPaneClass isSubclassOfClass: [NSPreferencePane class]] == NO)
+				builtinPrefPaneClass = nil;
+		}
+	
+		if( builtinPrefPaneClass)
+		{
+			self.pane = [[[builtinPrefPaneClass alloc] initWithBundle: nil] autorelease];
 		}
 		else
 		{
@@ -115,8 +123,17 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	return self;
 }
 
--(void)addPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image toGroupWithName:(NSString*)groupName {
-	if (![parentBundle pathForResource:resourceName ofType:@"prefPane"] && !NSClassFromString( resourceName)) {
+-(void)addPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image toGroupWithName:(NSString*)groupName
+{
+	Class builtinPrefPaneClass = NSClassFromString( resourceName);
+	
+	if( builtinPrefPaneClass)
+	{
+		if( [builtinPrefPaneClass isSubclassOfClass: [NSPreferencePane class]] == NO)
+			builtinPrefPaneClass = nil;
+	}
+	
+	if (![parentBundle pathForResource:resourceName ofType:@"prefPane"] && !builtinPrefPaneClass) {
 		#ifndef OSIRIX_LIGHT
 		NSLog(@"Warning: preferences pane %@ not added because resource %@ not found in %@", title, resourceName, [parentBundle resourcePath]);
 		#endif
