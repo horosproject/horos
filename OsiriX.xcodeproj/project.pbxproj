@@ -273,22 +273,6 @@
 		59DC290F11C617A300DAD5B4 /* DicomCompressor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC290D11C617A300DAD5B4 /* DicomCompressor.mm */; };
 		59DD2406131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59DD2405131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel */; };
 		59DD2407131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59DD2405131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel */; };
-		59E15614132915A800531E5A /* CSMailMailClient.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2119C710E4C25300F9C50C /* CSMailMailClient.h */; };
-		59E15615132915A800531E5A /* CSMailMailClient.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2119C810E4C25300F9C50C /* CSMailMailClient.m */; };
-		59E15616132915A800531E5A /* WebPortal.h in Headers */ = {isa = PBXBuildFile; fileRef = 597BB90912A7D3C000D0A172 /* WebPortal.h */; };
-		59E15617132915A800531E5A /* WebPortal.mm in Sources */ = {isa = PBXBuildFile; fileRef = 597BB90A12A7D3C000D0A172 /* WebPortal.mm */; };
-		59E15618132915A800531E5A /* WebPortal+Databases.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBF40912B8B90100809C61 /* WebPortal+Databases.h */; };
-		59E15619132915A800531E5A /* WebPortal+Databases.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */; };
-		59E1561A132915A800531E5A /* WebPortal+Email+Log.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */; };
-		59E1561B132915A800531E5A /* WebPortal+Email+Log.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */; };
-		59E1561C132915A800531E5A /* WebPortalSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526E8312816FDC0016F6C0 /* WebPortalSession.h */; };
-		59E1561D132915A800531E5A /* WebPortalSession.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526E8412816FDC0016F6C0 /* WebPortalSession.mm */; };
-		59E1561E132915A800531E5A /* WebPortalConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526F6A1281AFCA0016F6C0 /* WebPortalConnection.h */; };
-		59E1561F132915A800531E5A /* WebPortalConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526F6B1281AFCA0016F6C0 /* WebPortalConnection.mm */; };
-		59E15620132915A800531E5A /* WebPortalConnection+Data.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969033912DDE30800379E41 /* WebPortalConnection+Data.h */; };
-		59E15621132915A800531E5A /* WebPortalConnection+Data.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */; };
-		59E15622132915A800531E5A /* WebPortalResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969034312DDE5EA00379E41 /* WebPortalResponse.h */; };
-		59E15623132915A800531E5A /* WebPortalResponse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969034412DDE5EA00379E41 /* WebPortalResponse.mm */; };
 		59E379CF116B293A00E84FE3 /* NSImage+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */; };
 		59E379D0116B293A00E84FE3 /* NSImage+OsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E379CE116B293A00E84FE3 /* NSImage+OsiriX.m */; };
 		59E379D1116B294200E84FE3 /* NSImage+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */; };
@@ -5019,45 +5003,6 @@
 		CE6915021316AC8600EE7317 /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
 		CE69151B1316AD9800EE7317 /* WebPortalDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 590A3DCB12A92920004581C2 /* WebPortalDatabase.h */; };
 		CE69151C1316AD9900EE7317 /* WebPortalDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 590A3DCC12A92920004581C2 /* WebPortalDatabase.mm */; };
-		CE6915471316AF7A00EE7317 /* AsyncSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721A410D8D745001A833F /* AsyncSocket.h */; };
-		CE6915481316AF7A00EE7317 /* AsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721A510D8D745001A833F /* AsyncSocket.m */; };
-		CE6915491316AF7A00EE7317 /* DDData.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721A610D8D745001A833F /* DDData.h */; };
-		CE69154A1316AF7A00EE7317 /* DDData.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721A710D8D745001A833F /* DDData.m */; };
-		CE69154B1316AF7A00EE7317 /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 841722AE10D90595001A833F /* DDKeychain.h */; };
-		CE69154C1316AF7A00EE7317 /* DDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 841722AF10D90595001A833F /* DDKeychain.m */; };
-		CE69154D1316AF7A00EE7317 /* DDNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721A810D8D745001A833F /* DDNumber.h */; };
-		CE69154E1316AF7B00EE7317 /* DDNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721A910D8D745001A833F /* DDNumber.m */; };
-		CE69154F1316AF7B00EE7317 /* DDRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721AA10D8D745001A833F /* DDRange.h */; };
-		CE6915501316AF7B00EE7317 /* DDRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721AB10D8D745001A833F /* DDRange.m */; };
-		CE6915511316AF7B00EE7317 /* HTTPAsyncFileResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721AC10D8D745001A833F /* HTTPAsyncFileResponse.h */; };
-		CE6915521316AF7B00EE7317 /* HTTPAsyncFileResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721AD10D8D745001A833F /* HTTPAsyncFileResponse.m */; };
-		CE6915531316AF7B00EE7317 /* HTTPAuthenticationRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721AE10D8D745001A833F /* HTTPAuthenticationRequest.h */; };
-		CE6915541316AF7B00EE7317 /* HTTPAuthenticationRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721AF10D8D745001A833F /* HTTPAuthenticationRequest.m */; };
-		CE6915551316AF7B00EE7317 /* HTTPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B010D8D745001A833F /* HTTPConnection.h */; };
-		CE6915561316AF7B00EE7317 /* HTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B110D8D745001A833F /* HTTPConnection.m */; };
-		CE6915571316AF7B00EE7317 /* HTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B210D8D745001A833F /* HTTPResponse.h */; };
-		CE6915581316AF7B00EE7317 /* HTTPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B310D8D745001A833F /* HTTPResponse.m */; };
-		CE6915591316AF7B00EE7317 /* HTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B410D8D745001A833F /* HTTPServer.h */; };
-		CE69155A1316AF7B00EE7317 /* HTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B510D8D745001A833F /* HTTPServer.m */; };
-		CE69155B1316AF7B00EE7317 /* SSCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B610D8D745001A833F /* SSCrypto.h */; };
-		CE69155C1316AF7B00EE7317 /* SSCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B710D8D745001A833F /* SSCrypto.m */; };
-		CE69155D1316AF7B00EE7317 /* JSON.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4A111182C480086A15A /* JSON.h */; };
-		CE69155E1316AF7B00EE7317 /* NSObject+SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4A211182C480086A15A /* NSObject+SBJSON.h */; };
-		CE69155F1316AF7B00EE7317 /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4A311182C480086A15A /* NSObject+SBJSON.m */; };
-		CE6915601316AF7B00EE7317 /* NSString+SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4A411182C480086A15A /* NSString+SBJSON.h */; };
-		CE6915611316AF7B00EE7317 /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4A511182C480086A15A /* NSString+SBJSON.m */; };
-		CE6915621316AF7B00EE7317 /* SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4A611182C480086A15A /* SBJSON.h */; };
-		CE6915631316AF7B00EE7317 /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4A711182C480086A15A /* SBJSON.m */; };
-		CE6915641316AF7B00EE7317 /* SBJsonBase.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4A811182C480086A15A /* SBJsonBase.h */; };
-		CE6915651316AF7B00EE7317 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4A911182C480086A15A /* SBJsonBase.m */; };
-		CE6915661316AF7B00EE7317 /* SBJsonParser.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4AA11182C480086A15A /* SBJsonParser.h */; };
-		CE6915671316AF7B00EE7317 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4AB11182C480086A15A /* SBJsonParser.m */; };
-		CE6915681316AF7B00EE7317 /* SBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E0E4AC11182C480086A15A /* SBJsonWriter.h */; };
-		CE6915691316AF7B00EE7317 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E0E4AD11182C480086A15A /* SBJsonWriter.m */; };
-		CE69157A1316AF8100EE7317 /* WebPortalUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 59526F3A1281ADC10016F6C0 /* WebPortalUser.h */; };
-		CE69157B1316AF8100EE7317 /* WebPortalUser.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59526F3B1281ADC10016F6C0 /* WebPortalUser.mm */; };
-		CE69157C1316AF8100EE7317 /* WebPortalStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = 590BB21E12A002FA009E9758 /* WebPortalStudy.h */; };
-		CE69157D1316AF8100EE7317 /* WebPortalStudy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 590BB21F12A002FA009E9758 /* WebPortalStudy.mm */; };
 		CE6B2E2008DAFC6500872E84 /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };
 		CE6C77ED09739B3100F951C2 /* Rotate3DCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */; };
 		CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
@@ -5212,9 +5157,6 @@
 		CEB9898E133500D30083F3FD /* OSIWebSharingPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB9898A133500D30083F3FD /* OSIWebSharingPreferencePanePref.xib */; };
 		CEB9898F133500D30083F3FD /* OSIWebSharingPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB9898C133500D30083F3FD /* OSIWebSharingPreferencePanePref.h */; };
 		CEB98990133500D30083F3FD /* OSIWebSharingPreferencePanePref.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEB9898D133500D30083F3FD /* OSIWebSharingPreferencePanePref.mm */; };
-		CEB98991133500D30083F3FD /* OSIWebSharingPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB9898A133500D30083F3FD /* OSIWebSharingPreferencePanePref.xib */; };
-		CEB98992133500D30083F3FD /* OSIWebSharingPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB9898C133500D30083F3FD /* OSIWebSharingPreferencePanePref.h */; };
-		CEB98993133500D30083F3FD /* OSIWebSharingPreferencePanePref.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEB9898D133500D30083F3FD /* OSIWebSharingPreferencePanePref.mm */; };
 		CEB98A02133507AC0083F3FD /* OSIViewerPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB989FE133507AC0083F3FD /* OSIViewerPreferencePanePref.xib */; };
 		CEB98A03133507AC0083F3FD /* OSIViewerPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98A00133507AC0083F3FD /* OSIViewerPreferencePanePref.h */; };
 		CEB98A04133507AC0083F3FD /* OSIViewerPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98A01133507AC0083F3FD /* OSIViewerPreferencePanePref.m */; };
@@ -5336,17 +5278,9 @@
 		CEB98C6D1335086B0083F3FD /* OSIAutoroutingPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C681335086B0083F3FD /* OSIAutoroutingPreferencePanePref.m */; };
 		CEB98C6E1335086B0083F3FD /* RoutesTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98C691335086B0083F3FD /* RoutesTableView.h */; };
 		CEB98C6F1335086B0083F3FD /* RoutesTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C6A1335086B0083F3FD /* RoutesTableView.m */; };
-		CEB98C701335086B0083F3FD /* OSIAutoroutingPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB98C651335086B0083F3FD /* OSIAutoroutingPreferencePanePref.xib */; };
-		CEB98C711335086B0083F3FD /* OSIAutoroutingPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98C671335086B0083F3FD /* OSIAutoroutingPreferencePanePref.h */; };
-		CEB98C721335086B0083F3FD /* OSIAutoroutingPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C681335086B0083F3FD /* OSIAutoroutingPreferencePanePref.m */; };
-		CEB98C731335086B0083F3FD /* RoutesTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98C691335086B0083F3FD /* RoutesTableView.h */; };
-		CEB98C741335086B0083F3FD /* RoutesTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C6A1335086B0083F3FD /* RoutesTableView.m */; };
 		CEB98C791335087D0083F3FD /* OSI3DPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB98C751335087D0083F3FD /* OSI3DPreferencePanePref.xib */; };
 		CEB98C7A1335087D0083F3FD /* OSI3DPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98C771335087D0083F3FD /* OSI3DPreferencePane.h */; };
 		CEB98C7B1335087D0083F3FD /* OSI3DPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C781335087D0083F3FD /* OSI3DPreferencePane.m */; };
-		CEB98C7C1335087D0083F3FD /* OSI3DPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB98C751335087D0083F3FD /* OSI3DPreferencePanePref.xib */; };
-		CEB98C7D1335087D0083F3FD /* OSI3DPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98C771335087D0083F3FD /* OSI3DPreferencePane.h */; };
-		CEB98C7E1335087D0083F3FD /* OSI3DPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C781335087D0083F3FD /* OSI3DPreferencePane.m */; };
 		CEB98C831335088C0083F3FD /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98C7F1335088C0083F3FD /* AYDicomPrintPref.h */; };
 		CEB98C841335088C0083F3FD /* AYDicomPrintPref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C801335088C0083F3FD /* AYDicomPrintPref.m */; };
 		CEB98C851335088C0083F3FD /* AYDicomPrintPref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB98C811335088C0083F3FD /* AYDicomPrintPref.xib */; };
@@ -22271,35 +22205,6 @@
 				59E83A1512FC6556006B930A /* NSManagedObject+N2.h in Headers */,
 				CE6915011316AC8500EE7317 /* PluginManagerController.h in Headers */,
 				CE69151B1316AD9800EE7317 /* WebPortalDatabase.h in Headers */,
-				CE6915471316AF7A00EE7317 /* AsyncSocket.h in Headers */,
-				CE6915491316AF7A00EE7317 /* DDData.h in Headers */,
-				CE69154B1316AF7A00EE7317 /* DDKeychain.h in Headers */,
-				CE69154D1316AF7A00EE7317 /* DDNumber.h in Headers */,
-				CE69154F1316AF7B00EE7317 /* DDRange.h in Headers */,
-				CE6915511316AF7B00EE7317 /* HTTPAsyncFileResponse.h in Headers */,
-				CE6915531316AF7B00EE7317 /* HTTPAuthenticationRequest.h in Headers */,
-				CE6915551316AF7B00EE7317 /* HTTPConnection.h in Headers */,
-				CE6915571316AF7B00EE7317 /* HTTPResponse.h in Headers */,
-				CE6915591316AF7B00EE7317 /* HTTPServer.h in Headers */,
-				CE69155B1316AF7B00EE7317 /* SSCrypto.h in Headers */,
-				CE69155D1316AF7B00EE7317 /* JSON.h in Headers */,
-				CE69155E1316AF7B00EE7317 /* NSObject+SBJSON.h in Headers */,
-				CE6915601316AF7B00EE7317 /* NSString+SBJSON.h in Headers */,
-				CE6915621316AF7B00EE7317 /* SBJSON.h in Headers */,
-				CE6915641316AF7B00EE7317 /* SBJsonBase.h in Headers */,
-				CE6915661316AF7B00EE7317 /* SBJsonParser.h in Headers */,
-				CE6915681316AF7B00EE7317 /* SBJsonWriter.h in Headers */,
-				CE69157A1316AF8100EE7317 /* WebPortalUser.h in Headers */,
-				CE69157C1316AF8100EE7317 /* WebPortalStudy.h in Headers */,
-				59E15614132915A800531E5A /* CSMailMailClient.h in Headers */,
-				59E15616132915A800531E5A /* WebPortal.h in Headers */,
-				59E15618132915A800531E5A /* WebPortal+Databases.h in Headers */,
-				59E1561A132915A800531E5A /* WebPortal+Email+Log.h in Headers */,
-				59E1561C132915A800531E5A /* WebPortalSession.h in Headers */,
-				59E1561E132915A800531E5A /* WebPortalConnection.h in Headers */,
-				59E15620132915A800531E5A /* WebPortalConnection+Data.h in Headers */,
-				59E15622132915A800531E5A /* WebPortalResponse.h in Headers */,
-				CEB98992133500D30083F3FD /* OSIWebSharingPreferencePanePref.h in Headers */,
 				CEB98A06133507AC0083F3FD /* OSIViewerPreferencePanePref.h in Headers */,
 				CEB98A10133507BB0083F3FD /* OSIPETPreferencePane.h in Headers */,
 				CEB98BCF133508040083F3FD /* HotKeyArrayController.h in Headers */,
@@ -22322,9 +22227,6 @@
 				CEB98C561335084F0083F3FD /* OSICustomImageAnnotations.h in Headers */,
 				CEB98C581335084F0083F3FD /* RWTokenField.h in Headers */,
 				CEB98C631335085D0083F3FD /* OSICDPreferencePanePref.h in Headers */,
-				CEB98C711335086B0083F3FD /* OSIAutoroutingPreferencePanePref.h in Headers */,
-				CEB98C731335086B0083F3FD /* RoutesTableView.h in Headers */,
-				CEB98C7D1335087D0083F3FD /* OSI3DPreferencePane.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23510,7 +23412,6 @@
 				CE72D7C41263702500874EF6 /* Pause.icns in Resources */,
 				CE8CDAF312B3C88D00268E4F /* DatabaseIcon.tif in Resources */,
 				84B996A212FC0669005A4356 /* curvedROI.tif in Resources */,
-				CEB98991133500D30083F3FD /* OSIWebSharingPreferencePanePref.xib in Resources */,
 				CEB98A05133507AC0083F3FD /* OSIViewerPreferencePanePref.xib in Resources */,
 				CEB98A0F133507BB0083F3FD /* OSIPETPreferencePanePref.xib in Resources */,
 				CEB98BCE133508040083F3FD /* OSIHotKeysPref.xib in Resources */,
@@ -23521,8 +23422,6 @@
 				CEB98C4F1335084F0083F3FD /* OSICustomImageAnnotations.xib in Resources */,
 				CEB98C5A1335084F0083F3FD /* Security.tiff in Resources */,
 				CEB98C621335085D0083F3FD /* OSICDPreferencePanePref.xib in Resources */,
-				CEB98C701335086B0083F3FD /* OSIAutoroutingPreferencePanePref.xib in Resources */,
-				CEB98C7C1335087D0083F3FD /* OSI3DPreferencePanePref.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26080,36 +25979,8 @@
 				59E83A1612FC6556006B930A /* NSManagedObject+N2.mm in Sources */,
 				CE6915021316AC8600EE7317 /* PluginManagerController.m in Sources */,
 				CE69151C1316AD9900EE7317 /* WebPortalDatabase.mm in Sources */,
-				CE6915481316AF7A00EE7317 /* AsyncSocket.m in Sources */,
-				CE69154A1316AF7A00EE7317 /* DDData.m in Sources */,
-				CE69154C1316AF7A00EE7317 /* DDKeychain.m in Sources */,
-				CE69154E1316AF7B00EE7317 /* DDNumber.m in Sources */,
-				CE6915501316AF7B00EE7317 /* DDRange.m in Sources */,
-				CE6915521316AF7B00EE7317 /* HTTPAsyncFileResponse.m in Sources */,
-				CE6915541316AF7B00EE7317 /* HTTPAuthenticationRequest.m in Sources */,
-				CE6915561316AF7B00EE7317 /* HTTPConnection.m in Sources */,
-				CE6915581316AF7B00EE7317 /* HTTPResponse.m in Sources */,
-				CE69155A1316AF7B00EE7317 /* HTTPServer.m in Sources */,
-				CE69155C1316AF7B00EE7317 /* SSCrypto.m in Sources */,
-				CE69155F1316AF7B00EE7317 /* NSObject+SBJSON.m in Sources */,
-				CE6915611316AF7B00EE7317 /* NSString+SBJSON.m in Sources */,
-				CE6915631316AF7B00EE7317 /* SBJSON.m in Sources */,
-				CE6915651316AF7B00EE7317 /* SBJsonBase.m in Sources */,
-				CE6915671316AF7B00EE7317 /* SBJsonParser.m in Sources */,
-				CE6915691316AF7B00EE7317 /* SBJsonWriter.m in Sources */,
-				CE69157B1316AF8100EE7317 /* WebPortalUser.mm in Sources */,
-				CE69157D1316AF8100EE7317 /* WebPortalStudy.mm in Sources */,
 				59DD2407131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel in Sources */,
-				59E15615132915A800531E5A /* CSMailMailClient.m in Sources */,
-				59E15617132915A800531E5A /* WebPortal.mm in Sources */,
-				59E15619132915A800531E5A /* WebPortal+Databases.mm in Sources */,
-				59E1561B132915A800531E5A /* WebPortal+Email+Log.mm in Sources */,
-				59E1561D132915A800531E5A /* WebPortalSession.mm in Sources */,
-				59E1561F132915A800531E5A /* WebPortalConnection.mm in Sources */,
-				59E15621132915A800531E5A /* WebPortalConnection+Data.mm in Sources */,
-				59E15623132915A800531E5A /* WebPortalResponse.mm in Sources */,
 				59263547132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */,
-				CEB98993133500D30083F3FD /* OSIWebSharingPreferencePanePref.mm in Sources */,
 				CEB98A07133507AC0083F3FD /* OSIViewerPreferencePanePref.m in Sources */,
 				CEB98A11133507BB0083F3FD /* OSIPETPreferencePane.m in Sources */,
 				CEB98BD0133508040083F3FD /* HotKeyArrayController.m in Sources */,
@@ -26132,9 +26003,6 @@
 				CEB98C571335084F0083F3FD /* OSICustomImageAnnotations.m in Sources */,
 				CEB98C591335084F0083F3FD /* RWTokenField.m in Sources */,
 				CEB98C641335085D0083F3FD /* OSICDPreferencePanePref.m in Sources */,
-				CEB98C721335086B0083F3FD /* OSIAutoroutingPreferencePanePref.m in Sources */,
-				CEB98C741335086B0083F3FD /* RoutesTableView.m in Sources */,
-				CEB98C7E1335087D0083F3FD /* OSI3DPreferencePane.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

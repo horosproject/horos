@@ -11,8 +11,8 @@
 			<string key="NS.object.0">823</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="12367"/>
 			<integer value="885"/>
+			<integer value="12367"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -14875,22 +14875,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<int key="connectionID">14186</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">managedObjectContext: defaultWebPortal.database.managedObjectContext</string>
-						<reference key="source" ref="560190660"/>
-						<reference key="destination" ref="61136146"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="560190660"/>
-							<reference key="NSDestination" ref="61136146"/>
-							<string key="NSLabel">managedObjectContext: defaultWebPortal.database.managedObjectContext</string>
-							<string key="NSBinding">managedObjectContext</string>
-							<string key="NSKeyPath">defaultWebPortal.database.managedObjectContext</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">14188</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">cprViewer:</string>
 						<reference key="source" ref="298258082"/>
@@ -14937,6 +14921,26 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="destination" ref="593011016"/>
 					</object>
 					<int key="connectionID">14220</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">managedObjectContext: defaultWebPortalManagedObjectContext</string>
+						<reference key="source" ref="560190660"/>
+						<reference key="destination" ref="61136146"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="560190660"/>
+							<reference key="NSDestination" ref="61136146"/>
+							<string key="NSLabel">managedObjectContext: defaultWebPortalManagedObjectContext</string>
+							<string key="NSBinding">managedObjectContext</string>
+							<string key="NSKeyPath">defaultWebPortalManagedObjectContext</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSRaisesForNotApplicableKeys</string>
+								<boolean value="NO" key="NS.object.0"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">14230</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -22987,7 +22991,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">14225</int>
+			<int key="maxID">14230</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -28453,6 +28457,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="endoscopyViewer:">id</string>
 						<string key="export2PACS:">id</string>
 						<string key="export2iPhoto:">id</string>
+						<string key="exportAllImages:">NSString</string>
 						<string key="exportDICOMAllViewers:">id</string>
 						<string key="exportDICOMSlider:">id</string>
 						<string key="exportJPEG:">id</string>
@@ -28733,6 +28738,10 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBActionInfo" key="export2iPhoto:">
 							<string key="name">export2iPhoto:</string>
 							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="exportAllImages:">
+							<string key="name">exportAllImages:</string>
+							<string key="candidateClassName">NSString</string>
 						</object>
 						<object class="IBActionInfo" key="exportDICOMAllViewers:">
 							<string key="name">exportDICOMAllViewers:</string>

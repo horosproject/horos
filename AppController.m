@@ -4985,8 +4985,29 @@ static BOOL initialized = NO;
 
 #pragma mark -
 
+- (NSManagedObjectContext*) defaultWebPortalManagedObjectContext
+{
+	#ifndef OSIRIX_LIGHT
+	return [[[WebPortal defaultWebPortal] database] managedObjectContext];
+	#else
+	static NSManagedObjectContext *fakeContext = nil;
+	if( fakeContext == nil)
+	{
+		fakeContext  = [[NSManagedObjectContext alloc] init];
+		NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/WebPortalDB.momd"]]];
+		NSPersistentStoreCoordinator *psc = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model] autorelease];
+		[fakeContext setPersistentStoreCoordinator: psc];
+	}
+	return fakeContext;
+	#endif
+}
+
 -(WebPortal*)defaultWebPortal {
+	#ifndef OSIRIX_LIGHT
 	return [WebPortal defaultWebPortal];
+	#else
+	return nil;
+	#endif
 }
 
 #ifndef OSIRIX_LIGHT
