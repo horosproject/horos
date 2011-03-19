@@ -241,7 +241,8 @@ ftp://medical.nema.org/medical/dicom/2008/08_18pu.pdf
 
 // Release
 - X Bundle Version
-- X Localizations strings : genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h -macRoman
+- X Localizations strings:
+genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h Preference\ Panes/OSIWebSharingPreferencePane/*.* Preference\ Panes/OSIViewerPreferencePane/*.* Preference\ Panes/OSIPETPreferencePane/*.* Preference\ Panes/OSILocationsPreferencePane/*.* Preference\ Panes/OSIListenerPreferencePane/*.* Preference\ Panes/OSIHotKeysPreferencePane/*.* Preference\ Panes/OSIHangingPreferencePane/*.* Preference\ Panes/OSIGeneralPreferencePane/*.* Preference\ Panes/OSIDatabasePreferencePane/*.* Preference\ Panes/OSICustomImageAnnotations/*.* Preference\ Panes/OSICDPreferencePane/*.* Preference\ Panes/OSIAutoroutingPreferencePane/*.* Preference\ Panes/OSI3DPreferencePane/*.* Preference\ Panes/AYDicomPrintPreferencePane/*.* -macRoman
 - X Localizations strings Preferences
 - X Check if OsiriX Lite works...
 - X Check up-to-date zip packages in Binaries folder
