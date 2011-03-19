@@ -12,7 +12,11 @@
      PURPOSE.
 =========================================================================*/
 
-#ifdef __OBJC__
-	#import <Foundation/Foundation.h>
-    #import <AppKit/AppKit.h>
-#endif
+#import <Cocoa/Cocoa.h>
+
+
+@interface RoutesTableView : NSTableView {
+
+}
+
+@end
