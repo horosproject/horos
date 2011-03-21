@@ -21,6 +21,8 @@
 
 
 #ifdef __cplusplus
+
+#ifdef OSIRIX_VIEWER
 #include "osconfig.h"
 #include "dcfilefo.h"
 #include "dcdeftag.h"
@@ -31,6 +33,9 @@
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "dcuid.h"       /* for dcmtk version name */
+#else
+typedef char* DcmFileFormat;
+#endif
 
 #else
 typedef char* DcmFileFormat;
