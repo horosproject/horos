@@ -8095,13 +8095,6 @@
 			remoteGlobalIDString = 59BDEC2C117C92B2007F1F2C;
 			remoteInfo = "OsiriX Launcher";
 		};
-		A9FF849F0C5F187800D50C95 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A9FF849B0C5F187800D50C95 /* OSICustomImageAnnotations.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A90117090C563E84004928BF;
-			remoteInfo = OSICustomImageAnnotations;
-		};
 		AB0F3A411046BFB9004129DD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -8109,103 +8102,12 @@
 			remoteGlobalIDString = AB0F3A2B1046BD2B004129DD;
 			remoteInfo = "OsiriX Headers";
 		};
-		AB381B060ABE9F9A00239326 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = OSIAutoroutingPreferencePane;
-		};
 		AB72503B0ADE6F7000A212A0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = AB724F300ADE6ECB00A212A0;
 			remoteInfo = Decompress;
-		};
-		ABC398F509F527C4000A6508 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = OSI3DPreferencePane;
-		};
-		ABC398FF09F527D7000A6508 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = ABC398FA09F527D7000A6508 /* OSIPETPreferencePane.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = OSIPETPreferencePane;
-		};
-		ABD908E20AF211BB00E47345 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = ABD908DB0AF211BB00E47345 /* AYDicomPrint.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = AYDicomPrint;
-		};
-		BF2EEC390B1F82F4007E9088 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BF2EEC300B1F82F4007E9088 /* OSIHotKeysPreferencePane.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = OSIHotKeys;
-		};
-		CE4B5CD410E5F92000C11948 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CE4B5CD010E5F91F00C11948 /* OSIWebSharingPreferencePane.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = OSIWebSharingPreferencePane;
-		};
-		CE4E42F808758A1800D0AFDB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CE4E42DE08758A1700D0AFDB /* OSILocationsPreferencePane.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = OSILocationsPreferencePane;
-		};
-		CE4E42FC08758A1800D0AFDB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CE4E42E108758A1700D0AFDB /* OSIViewerPreferencePane.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = OSIViewerPreferencePane;
-		};
-		CE4E430008758A1800D0AFDB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CE4E42E408758A1700D0AFDB /* OSIDatabasePreferencePane.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = OSIDatabasePreferencePane;
-		};
-		CE4E430408758A1800D0AFDB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CE4E42E708758A1700D0AFDB /* OSIHangingPreferencePane.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = OSIHangingPreferencePane;
-		};
-		CE4E430808758A1800D0AFDB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CE4E42EA08758A1700D0AFDB /* OSICDPreferencePane.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = OSICDPreferencePane;
-		};
-		CE4E430C08758A1800D0AFDB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CE4E42ED08758A1700D0AFDB /* OSIGeneralPreferencePane.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = OSIGeneralPreferencePane;
-		};
-		CE4E431008758A1800D0AFDB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CE4E42F008758A1700D0AFDB /* OSIListenerPreferencePane.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456;
-			remoteInfo = OSIListenerPreferencePane;
 		};
 		CE8DF1250B470DC50035C230 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -8840,7 +8742,6 @@
 		A9F8A4160B5F6460002CC763 /* CLUTOpacityView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CLUTOpacityView.h; sourceTree = "<group>"; };
 		A9F8A4170B5F6460002CC763 /* CLUTOpacityView.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = CLUTOpacityView.mm; sourceTree = "<group>"; };
 		A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = orthogonalReslice.tif; sourceTree = "<group>"; };
-		A9FF849B0C5F187800D50C95 /* OSICustomImageAnnotations.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSICustomImageAnnotations.xcodeproj; path = "Preference Panes/OSICustomImageAnnotations/OSICustomImageAnnotations.xcodeproj"; sourceTree = "<group>"; };
 		AB0128620635991400A74AA1 /* QuicktimeExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuicktimeExport.h; sourceTree = "<group>"; };
 		AB0128630635991400A74AA1 /* QuicktimeExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuicktimeExport.m; sourceTree = "<group>"; };
 		AB06EDEF05635642006AFFB9 /* dicomFile.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = dicomFile.m; sourceTree = "<group>"; };
@@ -8983,7 +8884,6 @@
 		AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackFill.tif; sourceTree = "<group>"; };
 		AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackLeft.tif; sourceTree = "<group>"; };
 		AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackRight.tif; sourceTree = "<group>"; };
-		AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIAutoroutingPreferencePane.xcodeproj; path = "Preference Panes/OSIAutoroutingPreferencePane/OSIAutoroutingPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		AB38FC99057A9B050041FEBB /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		AB3C6A8E057ADCA60001052D /* NSFont_OpenGL.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NSFont_OpenGL.h; path = NSFont_OpenGL/NSFont_OpenGL.h; sourceTree = "<group>"; };
 		AB3C6A8F057ADCA60001052D /* NSFont_OpenGL.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSFont_OpenGL.m; path = NSFont_OpenGL/NSFont_OpenGL.m; sourceTree = "<group>"; };
@@ -9146,8 +9046,6 @@
 		ABBDAEB906407CF90016210A /* VRMakeObject.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = VRMakeObject.m; sourceTree = "<group>"; };
 		ABBDAEBC06407D080016210A /* VRMakeObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRMakeObject.h; sourceTree = "<group>"; };
 		ABBFDA3F063480490011BD0A /* Deployment-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "Deployment-Info.plist"; sourceTree = "<group>"; };
-		ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSI3DPreferencePane.xcodeproj; path = "Preference Panes/OSI3DPreferencePane/OSI3DPreferencePane.xcodeproj"; sourceTree = "<group>"; };
-		ABC398FA09F527D7000A6508 /* OSIPETPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIPETPreferencePane.xcodeproj; path = "Preference Panes/OSIPETPreferencePane/OSIPETPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		ABC3E5500B330A58006704E3 /* DNDArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DNDArrayController.m; sourceTree = "<group>"; };
 		ABC3E5510B330A58006704E3 /* DNDArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DNDArrayController.h; sourceTree = "<group>"; };
 		ABC3E5580B330A68006704E3 /* sourcesTableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = sourcesTableView.m; sourceTree = "<group>"; };
@@ -9173,7 +9071,6 @@
 		ABD7BC50063F00A900E24B0E /* GEcolor.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = GEcolor.plist; sourceTree = "<group>"; };
 		ABD7BC51063F00A900E24B0E /* GrayRainbow.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = GrayRainbow.plist; sourceTree = "<group>"; };
 		ABD7BC52063F00A900E24B0E /* HotIron.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = HotIron.plist; sourceTree = "<group>"; };
-		ABD908DB0AF211BB00E47345 /* AYDicomPrint.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AYDicomPrint.xcodeproj; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrint.xcodeproj"; sourceTree = "<group>"; };
 		ABDC3C720670FF440042069D /* ToolBarNSWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ToolBarNSWindow.m; sourceTree = "<group>"; };
 		ABDC3C730670FF440042069D /* ToolBarNSWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ToolBarNSWindow.h; sourceTree = "<group>"; };
 		ABDE6E0B06398E3400F0C5DD /* port.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = port.h; sourceTree = "<group>"; };
@@ -9244,7 +9141,6 @@
 		BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomFileDCMTKCategory.mm; sourceTree = "<group>"; };
 		BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomImageDCMTKCategory.h; sourceTree = "<group>"; };
 		BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomImageDCMTKCategory.mm; sourceTree = "<group>"; };
-		BF2EEC300B1F82F4007E9088 /* OSIHotKeysPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIHotKeysPreferencePane.xcodeproj; path = "Preference Panes/OSIHotKeysPreferencePane/OSIHotKeysPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = vtkPowerCrustSurfaceReconstruction.cxx; sourceTree = "<group>"; };
 		BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vtkPowerCrustSurfaceReconstruction.h; sourceTree = "<group>"; };
 		BF3485760951270C00B05AD2 /* SendController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendController.h; sourceTree = "<group>"; };
@@ -11865,7 +11761,6 @@
 		CE49E2C50760B93500444203 /* Empty.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Empty.tif; path = Binaries/Icons/Empty.tif; sourceTree = SOURCE_ROOT; };
 		CE4A922B06DBF255006DAAF7 /* ITKSegmentation3D.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ITKSegmentation3D.mm; sourceTree = "<group>"; };
 		CE4A922C06DBF255006DAAF7 /* ITKSegmentation3D.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ITKSegmentation3D.h; sourceTree = "<group>"; };
-		CE4B5CD010E5F91F00C11948 /* OSIWebSharingPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIWebSharingPreferencePane.xcodeproj; path = "Preference Panes/OSIWebSharingPreferencePane/OSIWebSharingPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		CE4B5CFB10E5F9DE00C11948 /* Safari.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Safari.tif; sourceTree = "<group>"; };
 		CE4CD8D80890DAC700CF4FE4 /* Realised2.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Realised2.tif; path = DatabaseStates/Realised2.tif; sourceTree = "<group>"; };
 		CE4CD8D90890DAC700CF4FE4 /* Realised4.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Realised4.tif; path = DatabaseStates/Realised4.tif; sourceTree = "<group>"; };
@@ -11873,13 +11768,6 @@
 		CE4CD8DB0890DAC700CF4FE4 /* Receiving.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Receiving.tif; path = DatabaseStates/Receiving.tif; sourceTree = "<group>"; };
 		CE4CD8DC0890DAC700CF4FE4 /* Realised1.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Realised1.tif; path = DatabaseStates/Realised1.tif; sourceTree = "<group>"; };
 		CE4E00BE0830B72F008DAFAE /* Revert.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Revert.tif; sourceTree = "<group>"; };
-		CE4E42DE08758A1700D0AFDB /* OSILocationsPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSILocationsPreferencePane.xcodeproj; path = "Preference Panes/OSILocationsPreferencePane/OSILocationsPreferencePane.xcodeproj"; sourceTree = "<group>"; };
-		CE4E42E108758A1700D0AFDB /* OSIViewerPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIViewerPreferencePane.xcodeproj; path = "Preference Panes/OSIViewerPreferencePane/OSIViewerPreferencePane.xcodeproj"; sourceTree = "<group>"; };
-		CE4E42E408758A1700D0AFDB /* OSIDatabasePreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIDatabasePreferencePane.xcodeproj; path = "Preference Panes/OSIDatabasePreferencePane/OSIDatabasePreferencePane.xcodeproj"; sourceTree = "<group>"; };
-		CE4E42E708758A1700D0AFDB /* OSIHangingPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIHangingPreferencePane.xcodeproj; path = "Preference Panes/OSIHangingPreferencePane/OSIHangingPreferencePane.xcodeproj"; sourceTree = "<group>"; };
-		CE4E42EA08758A1700D0AFDB /* OSICDPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSICDPreferencePane.xcodeproj; path = "Preference Panes/OSICDPreferencePane/OSICDPreferencePane.xcodeproj"; sourceTree = "<group>"; };
-		CE4E42ED08758A1700D0AFDB /* OSIGeneralPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIGeneralPreferencePane.xcodeproj; path = "Preference Panes/OSIGeneralPreferencePane/OSIGeneralPreferencePane.xcodeproj"; sourceTree = "<group>"; };
-		CE4E42F008758A1700D0AFDB /* OSIListenerPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIListenerPreferencePane.xcodeproj; path = "Preference Panes/OSIListenerPreferencePane/OSIListenerPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		CE51BAF711E2289C006D180E /* OsiriXDB_DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = OsiriXDB_DataModel.xcdatamodel; sourceTree = "<group>"; };
 		CE522648077C48D900EED851 /* Sync.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Sync.tif; sourceTree = "<group>"; };
 		CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NrrdIO.h; path = ITK180/Utilities/NrrdIO/NrrdIO.h; sourceTree = "<group>"; };
@@ -12728,21 +12616,7 @@
 		4A2F58D9078D119600C514A2 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
-				CE4B5CD010E5F91F00C11948 /* OSIWebSharingPreferencePane.xcodeproj */,
 				CEA048460C76E2A600B4CA0A /* DICOMQuickLook.xcodeproj */,
-				A9FF849B0C5F187800D50C95 /* OSICustomImageAnnotations.xcodeproj */,
-				BF2EEC300B1F82F4007E9088 /* OSIHotKeysPreferencePane.xcodeproj */,
-				ABD908DB0AF211BB00E47345 /* AYDicomPrint.xcodeproj */,
-				ABC398FA09F527D7000A6508 /* OSIPETPreferencePane.xcodeproj */,
-				ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */,
-				CE4E42DE08758A1700D0AFDB /* OSILocationsPreferencePane.xcodeproj */,
-				CE4E42E108758A1700D0AFDB /* OSIViewerPreferencePane.xcodeproj */,
-				CE4E42E408758A1700D0AFDB /* OSIDatabasePreferencePane.xcodeproj */,
-				CE4E42E708758A1700D0AFDB /* OSIHangingPreferencePane.xcodeproj */,
-				CE4E42EA08758A1700D0AFDB /* OSICDPreferencePane.xcodeproj */,
-				CE4E42ED08758A1700D0AFDB /* OSIGeneralPreferencePane.xcodeproj */,
-				CE4E42F008758A1700D0AFDB /* OSIListenerPreferencePane.xcodeproj */,
-				AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */,
 			);
 			name = Dependencies;
 			sourceTree = "<group>";
@@ -13329,14 +13203,6 @@
 			name = "PET-CT";
 			sourceTree = "<group>";
 		};
-		A9FF849C0C5F187800D50C95 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A9FF84A00C5F187800D50C95 /* OSICustomImageAnnotations.prefPane */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		AB0DF7370FD79F9200A7C57E /* dcmpstat */ = {
 			isa = PBXGroup;
 			children = (
@@ -13607,14 +13473,6 @@
 			);
 			name = iLifeControls;
 			path = Binaries/iLifeControls;
-			sourceTree = "<group>";
-		};
-		AB381B030ABE9F9A00239326 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				AB381B070ABE9F9A00239326 /* OSIAutoroutingPreferencePane.prefPane */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		AB6AC6650624AC5C00AFC7AF /* VR/MIP 3D */ = {
@@ -14119,30 +13977,6 @@
 			path = Binaries/Icons;
 			sourceTree = "<group>";
 		};
-		ABC398F109F527C4000A6508 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				ABC398F609F527C4000A6508 /* OSI3DPreferencePane.prefPane */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		ABC398FB09F527D7000A6508 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				ABC3990009F527D7000A6508 /* OSIPETPreferencePane.prefPane */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		ABD908DC0AF211BB00E47345 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				ABD908E30AF211BB00E47345 /* AYDicomPrint.prefPane */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		ABD9E69C05B49D6C0077115D /* Database */ = {
 			isa = PBXGroup;
 			children = (
@@ -14262,14 +14096,6 @@
 			);
 			name = Papyrus;
 			sourceTree = SOURCE_ROOT;
-		};
-		BF2EEC310B1F82F4007E9088 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				BF2EEC3A0B1F82F4007E9088 /* OSIHotKeys.prefPane */,
-			);
-			name = Products;
-			sourceTree = "<group>";
 		};
 		BF348573095126B700B05AD2 /* Sending */ = {
 			isa = PBXGroup;
@@ -17063,70 +16889,6 @@
 				AB64A2D70C4E0F61000E0981 /* HornRegistration.h */,
 			);
 			name = ITK;
-			sourceTree = "<group>";
-		};
-		CE4B5CD110E5F91F00C11948 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CE4B5CD510E5F92000C11948 /* OSIWebSharingPreferencePane.prefPane */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		CE4E42DF08758A1700D0AFDB /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CE4E42F908758A1800D0AFDB /* OSILocationsPreferencePane.prefPane */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		CE4E42E208758A1700D0AFDB /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CE4E42FD08758A1800D0AFDB /* OSIViewerPreferencePane.prefPane */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		CE4E42E508758A1700D0AFDB /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CE4E430108758A1800D0AFDB /* OSIDatabasePreferencePane.prefPane */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		CE4E42E808758A1700D0AFDB /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CE4E430508758A1800D0AFDB /* OSIHangingPreferencePane.prefPane */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		CE4E42EB08758A1700D0AFDB /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CE4E430908758A1800D0AFDB /* OSICDPreferencePane.prefPane */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		CE4E42EE08758A1700D0AFDB /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CE4E430D08758A1800D0AFDB /* OSIGeneralPreferencePane.prefPane */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		CE4E42F108758A1700D0AFDB /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CE4E431108758A1800D0AFDB /* OSIListenerPreferencePane.prefPane */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		CE7A0D670AED557500540017 /* 32-bit Shell */ = {
@@ -22438,64 +22200,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = ABD908DC0AF211BB00E47345 /* Products */;
-					ProjectRef = ABD908DB0AF211BB00E47345 /* AYDicomPrint.xcodeproj */;
-				},
-				{
 					ProductGroup = CEA048470C76E2A600B4CA0A /* Products */;
 					ProjectRef = CEA048460C76E2A600B4CA0A /* DICOMQuickLook.xcodeproj */;
-				},
-				{
-					ProductGroup = ABC398F109F527C4000A6508 /* Products */;
-					ProjectRef = ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */;
-				},
-				{
-					ProductGroup = AB381B030ABE9F9A00239326 /* Products */;
-					ProjectRef = AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */;
-				},
-				{
-					ProductGroup = CE4E42EB08758A1700D0AFDB /* Products */;
-					ProjectRef = CE4E42EA08758A1700D0AFDB /* OSICDPreferencePane.xcodeproj */;
-				},
-				{
-					ProductGroup = A9FF849C0C5F187800D50C95 /* Products */;
-					ProjectRef = A9FF849B0C5F187800D50C95 /* OSICustomImageAnnotations.xcodeproj */;
-				},
-				{
-					ProductGroup = CE4E42E508758A1700D0AFDB /* Products */;
-					ProjectRef = CE4E42E408758A1700D0AFDB /* OSIDatabasePreferencePane.xcodeproj */;
-				},
-				{
-					ProductGroup = CE4E42EE08758A1700D0AFDB /* Products */;
-					ProjectRef = CE4E42ED08758A1700D0AFDB /* OSIGeneralPreferencePane.xcodeproj */;
-				},
-				{
-					ProductGroup = CE4E42E808758A1700D0AFDB /* Products */;
-					ProjectRef = CE4E42E708758A1700D0AFDB /* OSIHangingPreferencePane.xcodeproj */;
-				},
-				{
-					ProductGroup = BF2EEC310B1F82F4007E9088 /* Products */;
-					ProjectRef = BF2EEC300B1F82F4007E9088 /* OSIHotKeysPreferencePane.xcodeproj */;
-				},
-				{
-					ProductGroup = CE4E42F108758A1700D0AFDB /* Products */;
-					ProjectRef = CE4E42F008758A1700D0AFDB /* OSIListenerPreferencePane.xcodeproj */;
-				},
-				{
-					ProductGroup = CE4E42DF08758A1700D0AFDB /* Products */;
-					ProjectRef = CE4E42DE08758A1700D0AFDB /* OSILocationsPreferencePane.xcodeproj */;
-				},
-				{
-					ProductGroup = ABC398FB09F527D7000A6508 /* Products */;
-					ProjectRef = ABC398FA09F527D7000A6508 /* OSIPETPreferencePane.xcodeproj */;
-				},
-				{
-					ProductGroup = CE4E42E208758A1700D0AFDB /* Products */;
-					ProjectRef = CE4E42E108758A1700D0AFDB /* OSIViewerPreferencePane.xcodeproj */;
-				},
-				{
-					ProductGroup = CE4B5CD110E5F91F00C11948 /* Products */;
-					ProjectRef = CE4B5CD010E5F91F00C11948 /* OSIWebSharingPreferencePane.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -22517,104 +22223,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		A9FF84A00C5F187800D50C95 /* OSICustomImageAnnotations.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSICustomImageAnnotations.prefPane;
-			remoteRef = A9FF849F0C5F187800D50C95 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AB381B070ABE9F9A00239326 /* OSIAutoroutingPreferencePane.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSIAutoroutingPreferencePane.prefPane;
-			remoteRef = AB381B060ABE9F9A00239326 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		ABC398F609F527C4000A6508 /* OSI3DPreferencePane.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSI3DPreferencePane.prefPane;
-			remoteRef = ABC398F509F527C4000A6508 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		ABC3990009F527D7000A6508 /* OSIPETPreferencePane.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSIPETPreferencePane.prefPane;
-			remoteRef = ABC398FF09F527D7000A6508 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		ABD908E30AF211BB00E47345 /* AYDicomPrint.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = AYDicomPrint.prefPane;
-			remoteRef = ABD908E20AF211BB00E47345 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		BF2EEC3A0B1F82F4007E9088 /* OSIHotKeys.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSIHotKeys.prefPane;
-			remoteRef = BF2EEC390B1F82F4007E9088 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		CE4B5CD510E5F92000C11948 /* OSIWebSharingPreferencePane.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSIWebSharingPreferencePane.prefPane;
-			remoteRef = CE4B5CD410E5F92000C11948 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		CE4E42F908758A1800D0AFDB /* OSILocationsPreferencePane.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSILocationsPreferencePane.prefPane;
-			remoteRef = CE4E42F808758A1800D0AFDB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		CE4E42FD08758A1800D0AFDB /* OSIViewerPreferencePane.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSIViewerPreferencePane.prefPane;
-			remoteRef = CE4E42FC08758A1800D0AFDB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		CE4E430108758A1800D0AFDB /* OSIDatabasePreferencePane.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSIDatabasePreferencePane.prefPane;
-			remoteRef = CE4E430008758A1800D0AFDB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		CE4E430508758A1800D0AFDB /* OSIHangingPreferencePane.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSIHangingPreferencePane.prefPane;
-			remoteRef = CE4E430408758A1800D0AFDB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		CE4E430908758A1800D0AFDB /* OSICDPreferencePane.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSICDPreferencePane.prefPane;
-			remoteRef = CE4E430808758A1800D0AFDB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		CE4E430D08758A1800D0AFDB /* OSIGeneralPreferencePane.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSIGeneralPreferencePane.prefPane;
-			remoteRef = CE4E430C08758A1800D0AFDB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		CE4E431108758A1800D0AFDB /* OSIListenerPreferencePane.prefPane */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OSIListenerPreferencePane.prefPane;
-			remoteRef = CE4E431008758A1800D0AFDB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		CEA0484E0C76E2A600B4CA0A /* DICOMQuickLook.qlgenerator */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
