@@ -27,6 +27,8 @@
 	IBOutlet NSPanel* usersPanel;
 	
 	IBOutlet NSWindow* mainWindow;
+	
+	IBOutlet NSTableView* usersTable;
 }
 @property (retain) NSString *TLSAuthenticationCertificate;
 
