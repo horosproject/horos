@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
+#import "N2DirectoryEnumerator.h"
 
 
 @interface NSFileManager (N2)
@@ -26,5 +27,7 @@
 -(NSUInteger)sizeAtPath:(NSString*)path;
 -(NSUInteger)sizeAtFSRef:(FSRef*)theFileRef;
 -(BOOL)copyItemAtPath:(NSString*)srcPath toPath:(NSString*)dstPath byReplacingExisting:(BOOL)replace error:(NSError**)err;
-	
+
+-(N2DirectoryEnumerator*)enumeratorAtPath:(NSString*)path limitTo:(NSInteger)maxNumberOfFiles;
+
 @end

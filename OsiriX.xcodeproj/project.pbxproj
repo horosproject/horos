@@ -225,6 +225,10 @@
 		5997899B11B7B4BD002DB107 /* NSFileManager+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899911B7B4BD002DB107 /* NSFileManager+N2.mm */; };
 		59A31D5111BF9371001D4844 /* N2TextField.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A31D4F11BF9371001D4844 /* N2TextField.h */; };
 		59A31D5211BF9371001D4844 /* N2TextField.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A31D5011BF9371001D4844 /* N2TextField.mm */; };
+		59B696641337C957009356ED /* N2DirectoryEnumerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 59B696621337C957009356ED /* N2DirectoryEnumerator.h */; };
+		59B696651337C957009356ED /* N2DirectoryEnumerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59B696631337C957009356ED /* N2DirectoryEnumerator.mm */; };
+		59B696661337C957009356ED /* N2DirectoryEnumerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 59B696621337C957009356ED /* N2DirectoryEnumerator.h */; };
+		59B696671337C957009356ED /* N2DirectoryEnumerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59B696631337C957009356ED /* N2DirectoryEnumerator.mm */; };
 		59BDEC44117C9366007F1F2C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDEC43117C9366007F1F2C /* main.mm */; };
 		59BDED7D117CA4F6007F1F2C /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6495063587B200D9531F /* Osirix.icns */; };
 		59BDEDAD117CA83D007F1F2C /* sirsa.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DC609B6828800545F5E /* sirsa.cc */; };
@@ -8325,6 +8329,8 @@
 		5997899911B7B4BD002DB107 /* NSFileManager+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSFileManager+N2.mm"; path = "nitrogen/Sources/NSFileManager+N2.mm"; sourceTree = "<group>"; };
 		59A31D4F11BF9371001D4844 /* N2TextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2TextField.h; path = nitrogen/Sources/N2TextField.h; sourceTree = "<group>"; };
 		59A31D5011BF9371001D4844 /* N2TextField.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2TextField.mm; path = nitrogen/Sources/N2TextField.mm; sourceTree = "<group>"; };
+		59B696621337C957009356ED /* N2DirectoryEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2DirectoryEnumerator.h; path = nitrogen/Sources/N2DirectoryEnumerator.h; sourceTree = "<group>"; };
+		59B696631337C957009356ED /* N2DirectoryEnumerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2DirectoryEnumerator.mm; path = nitrogen/Sources/N2DirectoryEnumerator.mm; sourceTree = "<group>"; };
 		59BDEC2D117C92B2007F1F2C /* OsiriX Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OsiriX Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		59BDEC43117C9366007F1F2C /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = "OsiriX Launcher/main.mm"; sourceTree = "<group>"; };
 		59BDEF3F117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaultsController+OsiriX.h"; sourceTree = "<group>"; };
@@ -13331,6 +13337,8 @@
 				AB10FAFA1129338A009EB238 /* N2Pair.mm */,
 				AB10FAFB1129338A009EB238 /* N2SingletonObject.h */,
 				AB10FAFC1129338A009EB238 /* N2SingletonObject.mm */,
+				59B696621337C957009356ED /* N2DirectoryEnumerator.h */,
+				59B696631337C957009356ED /* N2DirectoryEnumerator.mm */,
 			);
 			name = Stuff;
 			sourceTree = "<group>";
@@ -19770,6 +19778,7 @@
 				CEB98C6E1335086B0083F3FD /* RoutesTableView.h in Headers */,
 				CEB98C7A1335087D0083F3FD /* OSI3DPreferencePane.h in Headers */,
 				CEB98C831335088C0083F3FD /* AYDicomPrintPref.h in Headers */,
+				59B696641337C957009356ED /* N2DirectoryEnumerator.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21989,6 +21998,7 @@
 				CEB98C561335084F0083F3FD /* OSICustomImageAnnotations.h in Headers */,
 				CEB98C581335084F0083F3FD /* RWTokenField.h in Headers */,
 				CEB98C631335085D0083F3FD /* OSICDPreferencePanePref.h in Headers */,
+				59B696661337C957009356ED /* N2DirectoryEnumerator.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24356,6 +24366,7 @@
 				CEB98C6F1335086B0083F3FD /* RoutesTableView.m in Sources */,
 				CEB98C7B1335087D0083F3FD /* OSI3DPreferencePane.m in Sources */,
 				CEB98C841335088C0083F3FD /* AYDicomPrintPref.m in Sources */,
+				59B696651337C957009356ED /* N2DirectoryEnumerator.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25611,6 +25622,7 @@
 				CEB98C571335084F0083F3FD /* OSICustomImageAnnotations.m in Sources */,
 				CEB98C591335084F0083F3FD /* RWTokenField.m in Sources */,
 				CEB98C641335085D0083F3FD /* OSICDPreferencePanePref.m in Sources */,
+				59B696671337C957009356ED /* N2DirectoryEnumerator.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

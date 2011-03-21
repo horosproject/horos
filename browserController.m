@@ -80,6 +80,7 @@
 #import "BrowserController+Activity.h"
 #import "NSError+OsiriX.h"
 #import "NSImage+N2.h"
+#import "NSFileManager+N2.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -16105,11 +16106,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				NSString *pathname;
 				
-				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:INpath];
-				
 				int maxNumberOfFiles = [[NSUserDefaults standardUserDefaults] integerForKey: @"maxNumberOfFilesForCheckIncoming"];
 				if( maxNumberOfFiles < 100) maxNumberOfFiles = 100;
 				if( maxNumberOfFiles > 10000) maxNumberOfFiles = 10000;
+
+				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:INpath limitTo:-1];
 				
 				while( (pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles)
 				{
