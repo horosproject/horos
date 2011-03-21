@@ -134,8 +134,7 @@ N3AffineTransform N3AffineTransformInvert (N3AffineTransform t);
 N3AffineTransform N3AffineTransformConcat (N3AffineTransform a, N3AffineTransform b);
 
 CG_INLINE bool N3AffineTransformIsIdentity(N3AffineTransform t) {return CATransform3DIsIdentity(t);}
-CG_INLINE bool N3AffineTransformIsAffine(N3AffineTransform t) {return ((float)t.m14 == 0.0 && (float)t.m24 == 0.0 && (float)t.m34 == 0.0 && (float)t.m44 == 1.0);}
-//CG_INLINE bool N3AffineTransformIsAffine(N3AffineTransform t) {return (t.m14 == 0.0 && t.m24 == 0.0 && t.m34 == 0.0 && t.m44 == 1.0);}
+CG_INLINE bool N3AffineTransformIsAffine(N3AffineTransform t) {return (t.m14 == 0.0 && t.m24 == 0.0 && t.m34 == 0.0 && t.m44 == 1.0);}
 CG_INLINE bool N3AffineTransformEqualToTransform(N3AffineTransform a, N3AffineTransform b) {return CATransform3DEqualToTransform(a, b);}
 CG_INLINE N3AffineTransform N3AffineTransformMakeTranslation(CGFloat tx, CGFloat ty, CGFloat tz) {return CATransform3DMakeTranslation(tx, ty, tz);}
 CG_INLINE N3AffineTransform N3AffineTransformMakeTranslationWithVector(N3Vector vector) {return CATransform3DMakeTranslation(vector.x, vector.y, vector.z);}
