@@ -39,6 +39,8 @@
 
 -(void)dealloc {
 	[currpath release];
+	while (DIRs.count)
+		[self popDIR];
 	[DIRs release];
 	[basepath release];
 	[super dealloc];
