@@ -29,6 +29,10 @@ osirix://?methodName=DBWindowFind&request=(name CONTAINS[cd] 'HelmutLaMoumoute')
 - This is the last version to support MacOS 10.5, please upgrade to 10.6 or 10.7 !
 
 - Web Server: Burn option if the CD/DVD is installed
+- Web Server: every user's specific studies list in Albums
+- Web Server: create albums and add studies to albums (admin)
+- Web Server: when user X uploads files, put "Uploaded by X" in comments
+- Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR
 - Two Steps DICOM Editing
 - Tool to create a new series from key images of a study
