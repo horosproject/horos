@@ -243,8 +243,14 @@ end_size_y:
 		float width  = imageSize.width;
 		float height = imageSize.height;
 		
+		if( width <= 0 || height <= 0)
+			NSLog( @"***** imageByScalingProportionallyToSize : width == 0 || height == 0");
+		
 		float targetWidth  = targetSize.width;
 		float targetHeight = targetSize.height;
+		
+		if( targetWidth <= 0 || targetHeight <= 0)
+			NSLog( @"***** imageByScalingProportionallyToSize : targetWidth == 0 || targetHeight == 0");
 		
 		float scaleFactor  = 0.0;
 		float scaledWidth  = targetWidth;
