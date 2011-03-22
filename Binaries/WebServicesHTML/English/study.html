@@ -215,7 +215,7 @@ function shareDestinationChange(select) {
 				<tr>
 					<td>User:</td>
 					<td>
-						<select name="shareStudyDestination" onchange="shareDestinationChange(this)">
+						<select name="shareStudyDestination" id="shareStudyDestination" onchange="shareDestinationChange(this)">
 							%[FOREACH:ShareDestinations:Dest%
 							<option value="%Dest.XID%">%X:Dest.name%</option>
 							%]FOREACH:ShareDestinations:Dest%
@@ -226,6 +226,9 @@ function shareDestinationChange(select) {
 						<span id="shareDestinationCreateTemp" style="display: none;">
 							<label>with email: <input type="text" name="shareDestinationCreateTempEmail" style="width: 200px;" /></label> (this user will last %Defaults.temporaryUserDuration% days)
 						</span>
+						<script type="text/javascript" language="javascript">
+							shareDestinationChange(document.getElementById('shareStudyDestination'));
+						</script>
 					</td>
 				</tr>
 				<tr>
