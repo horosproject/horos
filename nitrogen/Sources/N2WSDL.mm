@@ -51,7 +51,7 @@
 	for (NSXMLElement* type in [wsdl objectsForXQuery:@"/wsdl:definitions/wsdl:types/*" error:&error])
 		NSLog(@"%@", [type XMLString]);
 	
-	[wssdl release];
+	[wsdl release];
 	
 	return self;
 }
