@@ -27,6 +27,8 @@
 		592CFD3012128E8700176E39 /* N2XMLRPCWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD2E12128E8700176E39 /* N2XMLRPCWebServiceClient.mm */; };
 		592CFD331212CA7D00176E39 /* N2WSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD311212CA7D00176E39 /* N2WSDL.h */; };
 		592CFD341212CA7D00176E39 /* N2WSDL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD321212CA7D00176E39 /* N2WSDL.mm */; };
+		592FD7FC13390188008BADC7 /* N2DirectoryEnumerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 592FD7FA13390188008BADC7 /* N2DirectoryEnumerator.h */; };
+		592FD7FD13390188008BADC7 /* N2DirectoryEnumerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592FD7FB13390188008BADC7 /* N2DirectoryEnumerator.mm */; };
 		595B87EC1116DC870026B899 /* N2UserDefaultsTest.h in Headers */ = {isa = PBXBuildFile; fileRef = 595B87EA1116DC870026B899 /* N2UserDefaultsTest.h */; };
 		595B88261116E1550026B899 /* N2UserDefaultsTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 595B87EB1116DC870026B899 /* N2UserDefaultsTest.mm */; };
 		596EB3CC118ABA6E00880192 /* NSWindow+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3CA118ABA6E00880192 /* NSWindow+N2.h */; };
@@ -189,6 +191,8 @@
 		592CFD2E12128E8700176E39 /* N2XMLRPCWebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2XMLRPCWebServiceClient.mm; sourceTree = "<group>"; };
 		592CFD311212CA7D00176E39 /* N2WSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2WSDL.h; sourceTree = "<group>"; };
 		592CFD321212CA7D00176E39 /* N2WSDL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2WSDL.mm; sourceTree = "<group>"; };
+		592FD7FA13390188008BADC7 /* N2DirectoryEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2DirectoryEnumerator.h; sourceTree = "<group>"; };
+		592FD7FB13390188008BADC7 /* N2DirectoryEnumerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2DirectoryEnumerator.mm; sourceTree = "<group>"; };
 		595B87EA1116DC870026B899 /* N2UserDefaultsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2UserDefaultsTest.h; path = "Unit Tests/N2UserDefaultsTest.h"; sourceTree = SOURCE_ROOT; };
 		595B87EB1116DC870026B899 /* N2UserDefaultsTest.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2UserDefaultsTest.mm; path = "Unit Tests/N2UserDefaultsTest.mm"; sourceTree = SOURCE_ROOT; };
 		596EB3CA118ABA6E00880192 /* NSWindow+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWindow+N2.h"; sourceTree = "<group>"; };
@@ -510,6 +514,8 @@
 				5915D5EE1099D8CC0024F610 /* N2Shell.h */,
 				5915D5EF1099D8CC0024F610 /* N2Shell.mm */,
 				59E924D0110F277B0006FFFB /* N2UserDefaults.h */,
+				592FD7FA13390188008BADC7 /* N2DirectoryEnumerator.h */,
+				592FD7FB13390188008BADC7 /* N2DirectoryEnumerator.mm */,
 				59E924D1110F277B0006FFFB /* N2UserDefaults.mm */,
 				5997857011B67701002DB107 /* N2HexadecimalNumberFormatter.h */,
 				5997857111B67701002DB107 /* N2HexadecimalNumberFormatter.mm */,
@@ -762,6 +768,7 @@
 				592CFD331212CA7D00176E39 /* N2WSDL.h in Headers */,
 				59ECEA7F12AE36A7003231BF /* NSMutableString+N2.h in Headers */,
 				59E5235112BF5DC30094E668 /* N2Task.h in Headers */,
+				592FD7FC13390188008BADC7 /* N2DirectoryEnumerator.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -978,6 +985,7 @@
 				592CFD341212CA7D00176E39 /* N2WSDL.mm in Sources */,
 				59ECEA8012AE36A7003231BF /* NSMutableString+N2.mm in Sources */,
 				59E5235212BF5DC30094E668 /* N2Task.mm in Sources */,
+				592FD7FD13390188008BADC7 /* N2DirectoryEnumerator.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
