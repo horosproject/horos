@@ -21,7 +21,7 @@
 
 -(id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
 	self = [super initWithContentRect:contentRect styleMask:windowStyle backing:bufferingType defer:deferCreation];
-	[self setContentView:[[N2View alloc] initWithFrame:[[self contentView] frame]]];
+	[self setContentView:[[N2View alloc] initWithFrame:[[self contentView] frame]]]; // TODO Memory leak???
 	return self;
 }
 

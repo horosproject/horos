@@ -68,7 +68,7 @@
 		}
 	}
 	
-	return parts;
+	return [parts autorelease];
 }
 
 +(NSURL*)URLWithParts:(N2URLParts*)parts {

@@ -35,7 +35,8 @@
 			[bitmap setColor:c atX:x y:y];
 		}
 	
-	[bitmap draw]; [bitmap release];
+	[bitmap draw];
+	[bitmap release];
 	[highlightedImage unlockFocus];
 	
 	return [highlightedImage autorelease];	
