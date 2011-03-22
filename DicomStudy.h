@@ -23,6 +23,7 @@
 	BOOL isHidden;
 	NSNumber *dicomTime;
 	NSNumber *cachedRawNoFiles;
+	NSString *cachedModalites;
 }
 
 @property(nonatomic, retain) NSString* accessionNumber;

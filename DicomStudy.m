@@ -616,6 +616,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSString*) modalities
 {
+	if( cachedModalites)
+		return cachedModalites;
+	
 	NSString *m = nil;
 	
 	[[self managedObjectContext] lock];
@@ -661,7 +664,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 	}
-		
+	
+	[cachedModalites release];
+	cachedModalites = [m retain];
+	
 	[[self managedObjectContext] unlock];
 	
 	return m;
@@ -671,6 +677,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
 	[dicomTime release];
 	[cachedRawNoFiles release];
+	[cachedModalites release];
 	
 	[super dealloc];
 }
@@ -1044,6 +1051,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
 	[cachedRawNoFiles release];
 	cachedRawNoFiles = nil;
+	
+	[cachedModalites release];
+	cachedModalites = nil;
 	
 	[self willChangeValueForKey: @"numberOfImages"];
 	[self setPrimitiveValue: n forKey:@"numberOfImages"];
