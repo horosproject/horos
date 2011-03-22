@@ -98,7 +98,7 @@
 	const NSString* const chaddrPrefix = @"chaddr = ";
 	for (NSString* line in lines) {
 		if ([line hasPrefix:chaddrPrefix]) {
-			NSMutableArray* pieces = [[[line substringFromIndex:[chaddrPrefix length]] componentsSeparatedByString:@":"] mutableCopy];
+			NSMutableArray* pieces = [[[[line substringFromIndex:[chaddrPrefix length]] componentsSeparatedByString:@":"] mutableCopy] autorelease];
 			for (NSUInteger i = 0; i < [pieces count]; ++i)
 				if ([[pieces objectAtIndex:i] length] < 2)
 					[pieces replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"0%@", [pieces objectAtIndex:i]]];

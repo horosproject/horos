@@ -93,7 +93,7 @@ NSString* N2NonNullString(NSString* s) {
 											@"%2A", @"*",
 										NULL] retain];
 	
-	NSMutableString* temp = [self mutableCopy];
+	NSMutableString* temp = [[self mutableCopy] autorelease];
 	for (NSString* k in chars)
 		[temp replaceOccurrencesOfString:k withString:[chars objectForKey:k] options:NSLiteralSearch range:temp.range];
 	return [NSString stringWithString: temp];
@@ -108,7 +108,7 @@ NSString* N2NonNullString(NSString* s) {
 										 @"&quot;", @"\"",
 										 NULL] retain];
 	
-	NSMutableString* temp = self.mutableCopy;
+	NSMutableString* temp = [self.mutableCopy autorelease];
 	// apmp first!!
 	if (!unescape)
 		[temp replaceOccurrencesOfString:@"&" withString:@"&amp;"];
