@@ -21,7 +21,7 @@
 					<tr class="li%Study_Index2%">	
 						<td class="">
 							<a href="study?%Info.getParameters(sortKey=)%&xid=%Study.XID%">
-								<span class="bigger compressed">%X:ZWS:Study.name%</span> <span class="gray details">%X:Study.modality%, %X:Study.imageSeries.count% series%[IF:Study.patientID%, %X:Study.patientID%%]IF:Study.patientID%%[IF:Study.accessionNumber%, %X:Study.accessionNumber%%]IF:Study.accessionNumber%</span>
+								<span class="bigger compressed">%X:ZWS:Study.name%</span> <span class="gray details">%X:Study.modalities%, %X:Study.imageSeries.count% series%[IF:Study.patientID%, %X:Study.patientID%%]IF:Study.patientID%%[IF:Study.accessionNumber%, %X:Study.accessionNumber%%]IF:Study.accessionNumber%</span>
 								<div class="gray indent compressed">
 									%X:ZWS:Study.studyName%
 									%[IF:Study.comment%<div class="italic indent">%X:ZWS:Study.comment%</div>%]IF:Study.comment%
