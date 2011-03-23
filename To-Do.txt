@@ -28,6 +28,7 @@ osirix://?methodName=DisplayStudy&PatientID=107166&StudyInstanceUID=73738.7361
 osirix://?methodName=DBWindowFind&request=(name CONTAINS[cd] 'HelmutLaMoumoute')&table=Study&execute=Open
 - This is the last version to support MacOS 10.5, please upgrade to 10.6 or 10.7 !
 
+- Web Server: link from Study / Patient Name -> Search Patient Name
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
