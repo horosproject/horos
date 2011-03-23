@@ -1047,6 +1047,24 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
+- (void) setModality:(NSString *) s
+{
+	if( [s isEqualToString:@"SC"] ||
+		[s isEqualToString:@"PR"] ||
+		[s isEqualToString:@"SR"] ||
+		[s isEqualToString:@"RTSTRUCT"] ||
+		[s isEqualToString:@"RT"] ||
+		[s isEqualToString:@"KO"])
+	{
+		if( self.modality.length > 0)
+			return; //We are not insterested in these 'technical' modalities, we prefer true modalities like CT, MR, ...
+	}
+		   
+	[self willChangeValueForKey: @"modality"];
+	[self setPrimitiveValue: s forKey:@"modality"];
+	[self didChangeValueForKey: @"modality"];
+}
+
 - (void) setNumberOfImages:(NSNumber *) n
 {
 	[cachedRawNoFiles release];
