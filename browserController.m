@@ -7605,13 +7605,13 @@ static NSConditionLock *threadLock = nil;
 	
 	@try
 	{
-		returnVal = [self intOutlineView: outlineView objectValueForTableColumn: tableColumn byItem: item];
+		if( [item isFault] == NO)
+			returnVal = [self intOutlineView: outlineView objectValueForTableColumn: tableColumn byItem: item];
 	}
 	
 	@catch (NSException * e)
 	{
 		NSLog( @"%@", [e description]);
-		[AppController printStackTrace: e];
 	}
 
 	[managedObjectContext unlock];
@@ -7673,6 +7673,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void)outlineView: (NSOutlineView *)outlineView willDisplayCell: (id)cell forTableColumn: (NSTableColumn *)tableColumn item: (id)item
 {
+	if( [item isFault])
+		return;
+	
 	[cell setHighlighted: NO];
 	
 	if( [cell isKindOfClass: [ImageAndTextCell class]])
@@ -18547,6 +18550,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		managedObjectContext = nil;
 		
 		[self managedObjectContext];
+		
+		[self outlineViewRefresh];
+		[self refreshMatrix: self];
 		
 		return;
 	}
