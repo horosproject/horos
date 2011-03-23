@@ -286,10 +286,8 @@ end_size_y:
 			
 			[sourceImage lockFocus];
 			
-			NSBitmapImageRep* rep = [[[NSBitmapImageRep alloc] initWithFocusedViewRect: NSMakeRect(0, 0, size.width, size.height)] autorelease];
-			CIImage *bitmap = [[[CIImage alloc] initWithBitmapImageRep: rep] autorelease];
-			
-			[sourceImage unlockFocus];
+			NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] initWithFocusedViewRect: NSMakeRect(0, 0, size.width, size.height)];
+			CIImage *bitmap = [[CIImage alloc] initWithBitmapImageRep: rep];
 			
 			CIFilter *scaleTransformFilter = [CIFilter filterWithName:@"CILanczosScaleTransform"];
 			
@@ -327,6 +325,11 @@ end_size_y:
 					[newImage unlockFocus];
 				}
 			}
+			
+			[sourceImage unlockFocus];
+			
+			[rep release];
+			[bitmap release];
 		}
 		//		else
 		//

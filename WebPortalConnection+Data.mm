@@ -347,7 +347,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 			
 			NSImage *newImage;
 			
-			if ([dcmPix pwidth] != width || [dcmPix pheight] != height)
+			if( ([dcmPix pwidth] != width || [dcmPix pheight] != height) && [dcmPix pheight] > 0 && [dcmPix pwidth] > 0 && width > 0 && height > 0)
 				newImage = [[dcmPix image] imageByScalingProportionallyToSize: NSMakeSize( width, height)];
 			else
 				newImage = [dcmPix image];
