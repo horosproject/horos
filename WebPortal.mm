@@ -249,6 +249,8 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	
 	seriesForUsersCache = [[NSMutableDictionary alloc] init];
 	
+	preferredLocalizations = [[[NSBundle mainBundle] preferredLocalizations] copy];
+	
 	return self;
 }
 
@@ -305,6 +307,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	self.dirsToScanForFiles = NULL;
 	
 	[seriesForUsersCache release];
+	[preferredLocalizations release];
 	
 	[super dealloc];
 }
@@ -471,7 +474,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 		
 		// path exists, look for a localized subdir first, otherwise in the dir itself
 		
-		for (NSString* lang in [[[NSBundle mainBundle] preferredLocalizations] arrayByAddingObject:DefaultLanguage]) {
+		for (NSString* lang in [preferredLocalizations arrayByAddingObject:DefaultLanguage]) {
 			NSString* langPath = [path stringByAppendingPathComponent:lang];
 			if ([[NSFileManager defaultManager] fileExistsAtPath:[langPath resolvedPathString] isDirectory:&isDirectory] && isDirectory) {
 				[dirsToScanForFile insertObject:langPath atIndex:i];

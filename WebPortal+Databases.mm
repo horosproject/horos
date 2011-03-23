@@ -113,12 +113,18 @@
 		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
 		req.predicate = [DicomDatabase predicateForSmartAlbumFilter:user.studyPredicate];
+		
+		BOOL allStudies = nil;
+		if( user.studyPredicate.length == 0)
+			allStudies = YES;
+		
 		studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
 		
-		if (user)
+		if (user && allStudies == NO)
 			studiesArray = [self arrayByAddingSpecificStudiesForUser:user predicate:NULL toArray:studiesArray];
 		
-		if (user.canAccessPatientsOtherStudies.boolValue) {
+		if (user.canAccessPatientsOtherStudies.boolValue && allStudies == NO)
+		{
 			NSFetchRequest* req = [[NSFetchRequest alloc] init];
 			req.entity = [self.dicomDatabase entityForName:@"Study"];
 			req.predicate = [NSPredicate predicateWithFormat:@"patientID IN %@", [studiesArray valueForKey:@"patientID"]];

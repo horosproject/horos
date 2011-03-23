@@ -41,6 +41,7 @@
 	NSInteger notificationsInterval;
 	NSTimer* notificationsTimer;
 	
+	NSArray *preferredLocalizations;
 	NSMutableDictionary* cache;
 	NSMutableDictionary* locks;
 	NSMutableArray *runLoops, *runLoopsLoad, *httpThreads;
