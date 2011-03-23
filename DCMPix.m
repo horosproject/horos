@@ -6306,6 +6306,9 @@ END_CREATE_ROIS:
 
 + (void) purgeCachedDictionaries
 {
+	if( [NSThread isMainThread] == NO)
+		NSLog( @"--- purgeCachedDictionaries [NSThread isMainThread] == NO");
+	
 	if( purgeCacheLock == nil)
 		purgeCacheLock = [[NSConditionLock alloc] initWithCondition: 0];
 	
