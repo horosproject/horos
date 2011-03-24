@@ -260,7 +260,7 @@ genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m
 - X 64bitExtension : upload osirix-viewer.com
 - X 64bitExtension : Kagi Blurb AND in products list for CD/DVD backup AND in pixmeo MySQL DB web site
 - X Update Downloads.html
-- Update versionLeopard.html xml
+- X Update versionLeopard.xml
 
 MacAppStore:
 - dSYM files (directly edit proj file)
