@@ -294,7 +294,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (void) encryptFiles: (NSArray*) srcFiles inZIPFile: (NSString*) destFile password: (NSString*) password;
 - (IBAction) createDatabaseFolder:(id) sender;
 - (void) openDatabasePath: (NSString*) path;
-- (NSArray*)albums;
+- (NSArray*) albums;
 + (NSArray*) albumsInContext:(NSManagedObjectContext*)context;
 - (BOOL) shouldTerminate: (id) sender;
 - (void) databaseOpenStudy: (NSManagedObject*) item;

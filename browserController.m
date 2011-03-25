@@ -120,6 +120,8 @@ static int DefaultFolderSizeForDB = 0;
 static NSTimeInterval lastHardDiskCheck = 0;
 static unsigned long long lastFreeSpace = 0;
 static NSTimeInterval lastFreeSpaceLogTime = 0;
+static NSArray *cachedAlbumsArray = nil;
+static NSManagedObjectContext *cachedAlbumsManagedObjectContext = nil;
 
 extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
@@ -277,7 +279,10 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 }
 
 + (NSArray*) albumsInContext:(NSManagedObjectContext*)context
-{
+{	
+	if( cachedAlbumsArray && cachedAlbumsManagedObjectContext == context && cachedAlbumsManagedObjectContext != nil)
+		return cachedAlbumsArray;
+	
 	NSArray *albumsArray = nil;
 	
 	[context lock];
@@ -298,6 +303,10 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 	
 	NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
 	albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, nil]];
+	
+	[cachedAlbumsArray release];
+	cachedAlbumsArray = [albumsArray retain];
+	cachedAlbumsManagedObjectContext = context;
 	
 	return albumsArray;
 }
@@ -1339,6 +1348,8 @@ static NSConditionLock *threadLock = nil;
 										{
 											album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
 											[album setValue:@"other" forKey:@"name"];
+											
+											cachedAlbumsManagedObjectContext = nil;
 										}
 									}
 									
@@ -5544,6 +5555,8 @@ static NSConditionLock *threadLock = nil;
 
 - (NSString*) outlineViewRefresh		// This function creates the 'root' array for the outlineView
 {
+	cachedAlbumsManagedObjectContext = nil;
+	
 	if( databaseOutline == nil) return nil;
 	if( loadingIsOver == NO) return nil;
 	
@@ -5957,6 +5970,8 @@ static NSConditionLock *threadLock = nil;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+	cachedAlbumsManagedObjectContext = nil;
+	
 	@try
 	{
 		if( displayEmptyDatabase == NO && computeNumberOfStudiesForAlbums == NO)
@@ -6042,6 +6057,8 @@ static NSConditionLock *threadLock = nil;
 
 - (void)refreshAlbums
 {
+	cachedAlbumsManagedObjectContext = nil;
+	
 	if( displayEmptyDatabase == NO && [[self window] isVisible] == YES)
 	{
 		[NSThread detachNewThreadSelector: @selector( computeNumberOfStudiesForAlbums) toTarget:self withObject: nil];
@@ -6514,6 +6531,8 @@ static NSConditionLock *threadLock = nil;
 
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
 {
+	cachedAlbumsManagedObjectContext = nil;
+	
 	if( loadingIsOver == NO) return;
 	
 	[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
@@ -11004,6 +11023,8 @@ static BOOL needToRezoom;
 						}
 						
 						[album setValue:name forKey:@"name"];
+						
+						cachedAlbumsManagedObjectContext = nil;
 						
 						[self saveDatabase: currentDatabasePath];
 						
