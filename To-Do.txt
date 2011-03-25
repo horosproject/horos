@@ -258,7 +258,7 @@ genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m
 - For international version, manually resign
 - X codesign -vvv /Applications/OsiriX.app
 - X 64bitExtension : upload osirix-viewer.com
-- X 64bitExtension : Kagi Blurb AND in products list for CD/DVD backup AND in pixmeo MySQL DB web site
+- X 64bitExtension : Kagi Blurb AND in products list for CD/DVD backup AND in pixmeo MySQL DB (Constants, Products) web site
 - X Update Downloads.html
 - X Update versionLeopard.xml
 

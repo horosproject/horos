@@ -216,6 +216,7 @@
 }
 
 -(IBAction)exitEditUsers:(NSButton*)sender {
+	[usersPanel makeFirstResponder: nil];
 	[NSApp endSheet:usersPanel];
 }
 
