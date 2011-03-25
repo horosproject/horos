@@ -279,36 +279,41 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 }
 
 + (NSArray*) albumsInContext:(NSManagedObjectContext*)context
-{	
-	if( cachedAlbumsArray && cachedAlbumsManagedObjectContext == context && cachedAlbumsManagedObjectContext != nil)
-		return cachedAlbumsArray;
-	
-	NSArray *albumsArray = nil;
-	
-	[context lock];
-	
-	@try
+{
+	@synchronized( [BrowserController currentBrowser])
 	{
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-	
-		albumsArray = [context executeFetchRequest:dbRequest error: NULL];
+		if( cachedAlbumsArray && cachedAlbumsManagedObjectContext == context && cachedAlbumsManagedObjectContext != nil)
+			return [[cachedAlbumsArray copy] autorelease];
+		
+		NSArray *albumsArray = nil;
+		
+		[context lock];
+		
+		@try
+		{
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+		
+			albumsArray = [context executeFetchRequest:dbRequest error: NULL];
+		}
+		@catch( NSException *e)
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		[context unlock];
+		
+		NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
+		albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, nil]];
+		
+		[cachedAlbumsArray release];
+		cachedAlbumsArray = [albumsArray retain];
+		cachedAlbumsManagedObjectContext = context;
+		
+		return [[albumsArray copy] autorelease];
 	}
-	@catch( NSException *e)
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
-	[context unlock];
 	
-	NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
-	albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, nil]];
-	
-	[cachedAlbumsArray release];
-	cachedAlbumsArray = [albumsArray retain];
-	cachedAlbumsManagedObjectContext = context;
-	
-	return albumsArray;
+	return nil;
 }
 
 -(NSArray*)albums
