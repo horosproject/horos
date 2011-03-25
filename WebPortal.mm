@@ -467,7 +467,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 		NSString* path = [dirsToScanForFile objectAtIndex:i];
 		
 		// path not on disk, ignore
-		if (![[NSFileManager defaultManager] fileExistsAtPath:[path resolvedPathString] isDirectory:&isDirectory] || !isDirectory) {
+		if (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory:&isDirectory] || !isDirectory) {
 			[dirsToScanForFile removeObjectAtIndex:i];
 			--i; continue;
 		}
@@ -476,7 +476,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 		
 		for (NSString* lang in [preferredLocalizations arrayByAddingObject:DefaultLanguage]) {
 			NSString* langPath = [path stringByAppendingPathComponent:lang];
-			if ([[NSFileManager defaultManager] fileExistsAtPath:[langPath resolvedPathString] isDirectory:&isDirectory] && isDirectory) {
+			if ([[NSFileManager defaultManager] fileExistsAtPath: langPath isDirectory:&isDirectory] && isDirectory) {
 				[dirsToScanForFile insertObject:langPath atIndex:i];
 				++i; break;
 			}
@@ -486,7 +486,7 @@ static const NSString* const DefaultWebPortalDatabasePath = @"~/Library/Applicat
 	for (NSString* dirToScanForFile in dirsToScanForFile) {
 		NSString* path = [dirToScanForFile stringByAppendingPathComponent:file];
 		@try {
-			NSData* data = [NSData dataWithContentsOfFile:[path resolvedPathString]];
+			NSData* data = [NSData dataWithContentsOfFile: path];
 			if (data) return data;
 		} @catch (NSException* e) {
 			// do nothing, just try next

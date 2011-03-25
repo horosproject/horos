@@ -40,7 +40,7 @@ extern NSString* N2NonNullString(NSString* s);
 
 -(NSRange)range;
 
--(NSString*)resolvedPathString;
+//-(NSString*)resolvedPathString;
 -(NSString*)stringByComposingPathWithString:(NSString*)rel;
 
 -(NSArray*)componentsWithLength:(NSUInteger)len;

@@ -179,10 +179,10 @@
 		srcPath = [pair objectAtIndex:0];
 		dstPath = [pair objectAtIndex:1];
 		
-		NSString* srcPathRes = [srcPath resolvedPathString];
-		NSString* dstPathRes = [dstPath resolvedPathString];
+		NSString* srcPathRes = srcPath;	//[srcPath resolvedPathString];
+		NSString* dstPathRes = dstPath;	//[dstPath resolvedPathString];
 		if (!dstPathRes)
-			dstPathRes = [[[dstPath stringByDeletingLastPathComponent] resolvedPathString] stringByAppendingPathComponent:[dstPath lastPathComponent]];
+			dstPathRes = [[dstPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:[dstPath lastPathComponent]];
 		
 		/*BOOL srcPathIsDir, srcPathExists = [self fileExistsAtPath:srcPathRes isDirectory:&srcPathIsDir]*/;
 		BOOL dstPathIsDir, dstPathExists = [self fileExistsAtPath:dstPathRes isDirectory:&dstPathIsDir];
