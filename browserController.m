@@ -306,9 +306,12 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 		NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
 		albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, nil]];
 		
-		[cachedAlbumsArray release];
-		cachedAlbumsArray = [albumsArray retain];
-		cachedAlbumsManagedObjectContext = context;
+		if( context == [[BrowserController currentBrowser] managedObjectContext])
+		{
+			[cachedAlbumsArray release];
+			cachedAlbumsArray = [albumsArray retain];
+			cachedAlbumsManagedObjectContext = context;
+		}
 		
 		return [[albumsArray copy] autorelease];
 	}
@@ -3643,6 +3646,7 @@ static NSConditionLock *threadLock = nil;
 	
 	while( computeNumberOfStudiesForAlbums)
 		[NSThread sleepForTimeInterval: 0.1];
+	
 	@synchronized( albumNoOfStudiesCache)
 	{
 		[albumNoOfStudiesCache removeAllObjects];
@@ -6039,12 +6043,12 @@ static NSConditionLock *threadLock = nil;
 				[albumNoOfStudiesCache addObjectsFromArray: NoOfStudies];
 			}
 			
-			[self performSelectorOnMainThread: @selector( reloadAlbumTableData) withObject: nil waitUntilDone: YES];
+			[self performSelectorOnMainThread: @selector( reloadAlbumTableData) withObject: nil waitUntilDone: NO];
 			
 			computeNumberOfStudiesForAlbums = NO;
 		}
 		else
-			[self performSelectorOnMainThread: @selector( delayedRefreshAlbums) withObject: nil waitUntilDone: YES];
+			[self performSelectorOnMainThread: @selector( delayedRefreshAlbums) withObject: nil waitUntilDone: NO];
 	}
 	@catch (NSException * e)
 	{
