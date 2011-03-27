@@ -5193,7 +5193,11 @@ END_CREATE_ROIS:
 		bitsAllocated = 8;
 	
 	if ([dcmObject attributeValueWithName:@"RescaleIntercept"]) offset = [[dcmObject attributeValueWithName:@"RescaleIntercept"] floatValue];
-	if ([dcmObject attributeValueWithName:@"RescaleSlope"]) slope = [[dcmObject attributeValueWithName:@"RescaleSlope"] floatValue]; 
+	if ([dcmObject attributeValueWithName:@"RescaleSlope"])
+	{
+		slope = [[dcmObject attributeValueWithName:@"RescaleSlope"] floatValue]; 
+		if( slope == 0) slope = 1.0;
+	}
 	
 	// image size
 	if( [dcmObject attributeValueWithName:@"Rows"])
@@ -6740,6 +6744,9 @@ END_CREATE_ROIS:
 		// get the last slope
 		for ( int j = 1; j < pos; j++) tmpVal3++;
 		slope = atof( tmpVal3->a);
+		
+		if( slope == 0)
+			slope = 1.0;
 	}
 	
 	val = Papy3GetElement (theGroupP, papBitsAllocatedGr, &nbVal, &elemType);

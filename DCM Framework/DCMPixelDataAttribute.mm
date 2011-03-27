@@ -3868,9 +3868,12 @@ NS_ENDHANDLER
     //rescale Slope
 	if ([_dcmObject attributeValueWithName:@"RescaleSlope" ] != nil) 
 		rescaleSlope = [[_dcmObject attributeValueWithName:@"RescaleSlope" ] floatValue];
-        
 	else 
 		rescaleSlope = 1.0;
+		
+	if( rescaleSlope == 0)
+		rescaleSlope = 1.0;
+	
 		// color 
 	NSString *pi = [_dcmObject attributeValueWithName:@"PhotometricInterpretation"]; 
 	if ([pi isEqualToString:@"RGB"] || ([pi hasPrefix:@"YBR"] || [pi isEqualToString:@"PALETTE"]) ) {

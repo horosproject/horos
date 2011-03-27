@@ -1655,6 +1655,7 @@ static NSConditionLock *threadLock = nil;
 	if( state == 1)
 	{
 		[self outlineViewRefresh];
+		[self refreshAlbums];
 	}
 	else
 	{
@@ -1663,7 +1664,6 @@ static NSConditionLock *threadLock = nil;
 		[self outlineViewSelectionDidChange: nil];
 	}
 	
-	[self refreshAlbums];
 	[self reloadViewers: cReload];
 	[self rebuildViewers: cRebuild];
 }
@@ -8753,7 +8753,6 @@ static NSConditionLock *threadLock = nil;
 						value = [(NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value, NULL)  autorelease];
 						[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, value];
 					}
-					
 				}
 				
 				@catch (NSException * e)
