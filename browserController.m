@@ -2534,13 +2534,36 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Cases with comments", nil);
-		album.predicateString = @"(ANY series.comment != '' AND ANY series.comment != NIL) OR (comment != '' AND comment != NIL)";
+		album.predicateString = @"(comment != '' AND comment != NIL)";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 	
 	[[self managedObjectContext] save: nil];
 	
 	[self refreshAlbums];
+}
+
+- (void) removeTooComplexCommentsAlbum
+{
+	NSManagedObjectContext	*context = self.managedObjectContext;
+		
+	[context lock];
+	
+	@try 
+	{
+		for( NSManagedObject *album in self.albumArray)
+		{
+			if( [[album valueForKey: @"predicateString"] isEqualToString: @"(ANY series.comment != '' AND ANY series.comment != NIL) OR (comment != '' AND comment != NIL)"])
+				[album setValue: @"(comment != '' AND comment != NIL)" forKey: @"predicateString"];
+		}
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		[AppController printStackTrace: e];
+	}
+	
+	[context unlock];
 }
 
 // ------------------
@@ -2653,9 +2676,9 @@ static NSConditionLock *threadLock = nil;
 			managedObjectContext = [moc retain];
 		
 		if( newDB)
-		{
 			[self defaultAlbums: self];
-		}
+			
+		[self removeTooComplexCommentsAlbum];
 	}
 	
     return moc;

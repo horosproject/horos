@@ -904,7 +904,12 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 								
 					CFStringRef versionString = nil;
 					if(bundleInfoDict != NULL)
+					{
 						versionString = CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleVersion"));
+					
+						if(versionString == nil)
+							versionString = CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleShortVersionString"));
+					}
 					
 					NSString *pluginVersion;
 					if(versionString != NULL)
@@ -975,7 +980,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 				NSString *currVersion = [installedPlugin objectForKey:@"version"];
 				NSString *onlineVersion = [onlinePlugin objectForKey:@"version"];
 				
-				if(currVersion && onlineVersion)
+				if(currVersion && onlineVersion && [currVersion length] > 0 && [currVersion length] > 0)
 				{
 					if( [currVersion isEqualToString:onlineVersion] == NO && [PluginManager compareVersion: currVersion withVersion: onlineVersion] < 0)
 					{
