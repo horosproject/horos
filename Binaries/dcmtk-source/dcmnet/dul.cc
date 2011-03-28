@@ -2184,9 +2184,15 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
 static void
 destroyAssociationKey(PRIVATE_ASSOCIATIONKEY ** key)
 {
-    if (*key && (*key)->connection) delete (*key)->connection;
-    free(*key);
-    *key = NULL;
+	if( key == nil)
+		return;
+		
+    if (*key && (*key)->connection)
+	{
+		delete (*key)->connection;
+		free(*key);
+    }
+	*key = NULL;
 }
 
 

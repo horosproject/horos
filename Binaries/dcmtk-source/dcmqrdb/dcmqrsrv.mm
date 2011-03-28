@@ -368,6 +368,12 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
     DIC_AE              peerAETitle;
     DIC_AE              myAETitle;
 	
+	if( assoc == nil)
+	{
+		cond = DUL_PEERABORTEDASSOCIATION;
+		return cond;
+	}
+	
     ASC_getPresentationAddresses(assoc->params, peerHostName, NULL);
     ASC_getAPTitles(assoc->params, peerAETitle, myAETitle, NULL);
 	
@@ -375,12 +381,19 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
     cond = dispatch(assoc, correctUIDPadding);
 	
  /* clean up on association termination */
-    if (cond == DUL_PEERREQUESTEDRELEASE) {
+    if (cond == DUL_PEERREQUESTEDRELEASE)
+	{
         if (options_.verbose_)
             printf("Association Release\n");
-        cond = ASC_acknowledgeRelease(assoc);
-        ASC_dropSCPAssociation(assoc);
-    } else if (cond == DUL_PEERABORTEDASSOCIATION) {
+		
+		if( assoc)
+		{
+			cond = ASC_acknowledgeRelease(assoc);
+			ASC_dropSCPAssociation(assoc);
+		}
+	}
+	else if (cond == DUL_PEERABORTEDASSOCIATION)
+	{
         if (options_.verbose_)
             printf("Association Aborted\n");
     }
