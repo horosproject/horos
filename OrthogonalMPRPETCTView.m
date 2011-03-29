@@ -20,6 +20,14 @@
 
 @implementation OrthogonalMPRPETCTView
 
+- (void) drawTextualData:(NSRect) size annotationsLevel:(long) annotations fullText: (BOOL) fullText onlyOrientation: (BOOL) onlyOrientation
+{
+	if( isKeyView == NO)
+		[super drawTextualData: size annotationsLevel: annotations fullText: NO onlyOrientation: YES];
+	else
+		[super drawTextualData: size annotationsLevel: annotations fullText: NO onlyOrientation: NO];
+}
+
 - (void) dealloc
 {
 	[super dealloc];

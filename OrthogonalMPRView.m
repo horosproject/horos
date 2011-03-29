@@ -386,16 +386,12 @@ extern int ANNOTATIONS;
 	return crossPositionY;
 }
 
-- (void) drawRect:(NSRect)aRect
+- (void) drawTextualData:(NSRect) size annotationsLevel:(long) annotations fullText: (BOOL) fullText onlyOrientation: (BOOL) onlyOrientation
 {
-	int copyANNOTATIONS = ANNOTATIONS;
-	
-	if( isKeyView == NO && [[self windowController] FullScreenON] == FALSE)
-		ANNOTATIONS = annotGraphics;
-	
-	[super drawRect: aRect];
-	
-	ANNOTATIONS = copyANNOTATIONS;
+	if( isKeyView == NO)
+		[super drawTextualData: size annotationsLevel: annotations fullText: NO onlyOrientation: YES];
+	else
+		[super drawTextualData: size annotationsLevel: annotations fullText: NO onlyOrientation: NO];
 }
 
 - (void) subDrawRect:(NSRect)aRect

@@ -7246,7 +7246,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (void) drawTextualData:(NSRect) size :(long) annotations
+- (void) drawTextualData:(NSRect) size annotationsLevel:(long) annotations fullText: (BOOL) fullText onlyOrientation: (BOOL) onlyOrientation
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
@@ -7301,17 +7301,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		NSMutableString *tempString, *tempString2, *tempString3, *tempString4;
 		long yRaster = 1, xRaster;
-		BOOL fullText = YES;
 		
-		if( stringID)
+		if( onlyOrientation)
 		{
-			fullText = NO;
-			
-			if( isKeyView == NO)
-			{
-				[self drawOrientation:size];
-				return;
-			}
+			[self drawOrientation:size];
+			return;
 		}
 		
 		int colorBoxSize = 0;
@@ -7451,12 +7445,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					tempString4 = [NSMutableString stringWithString:@""];
 					for (j=0; j<[annot count]; j++)
 					{
-						if([[annot objectAtIndex:j] isEqualToString:@"Image Size"])
+						if([[annot objectAtIndex:j] isEqualToString:@"Image Size"] && fullText)
 						{
 							[tempString appendFormat: NSLocalizedString( @"Image size: %ld x %ld", nil), (long) curDCM.pwidth, (long) curDCM.pheight];
 							useStringTexture = YES;
 						}
-						else if([[annot objectAtIndex:j] isEqualToString:@"View Size"])
+						else if([[annot objectAtIndex:j] isEqualToString:@"View Size"] && fullText)
 						{
 							[tempString appendFormat: NSLocalizedString( @"View size: %ld x %ld", nil), (long) size.size.width, (long) size.size.height];
 							useStringTexture = YES;
@@ -7749,8 +7743,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		yRaster = size.size.height-2;
 		xRaster = size.size.width-2 -colorBoxSize;
-		[self DrawNSStringGL: @"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
+		if( fullText)
+			[self DrawNSStringGL: @"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
 	}
+}
+
+- (void) drawTextualData:(NSRect) size :(long) annotations
+{
+	[self drawTextualData: size annotationsLevel: annotations fullText: YES onlyOrientation: NO];
 }
 
 #pragma mark-
