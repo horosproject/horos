@@ -1573,6 +1573,7 @@ static NSConditionLock *threadLock = nil;
 		
 		[dockLabel release]; dockLabel = nil;
 		[growlString release]; growlString = nil;
+		[growlStringNewStudy release]; growlStringNewStudy = nil;
 	}
 	
 	[DicomFile setFilesAreFromCDMedia: NO];
