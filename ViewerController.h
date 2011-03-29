@@ -608,7 +608,7 @@ enum
 - (void) loadSeries:(NSNumber*) t;
 - (void) offFullScreen;
 - (float) frame4DRate;
-- (long) maxMovieIndex;
+- (short) maxMovieIndex;
 - (NSSlider*) moviePosSlider;
 - (NSSlider*) sliderFusion;
 - (IBAction) convMatrixAction:(id)sender;

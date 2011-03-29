@@ -2031,8 +2031,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[self loadTextures];
 		[self setNeedsDisplay:YES];
 		
-		if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-
 		[yearOld release];
 		
 		
@@ -2800,8 +2798,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( [self is2DViewer] == YES)
 			[[self windowController] propagateSettings];
-		
-		if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
     }
 }
 
@@ -4466,91 +4462,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
         short inc;
         
-		if( [stringID isEqualToString:@"OrthogonalMPRVIEW"] )
-		{
-			[[self controller] saveCrossPositions];
-			float change;
-			
-			if( fabs( [theEvent deltaY]) > fabs( deltaX) && [theEvent deltaY] != 0)
-			{
-				
-				if( [theEvent modifierFlags]  & NSCommandKeyMask)
-				{
-					if( blendingView)
-					{
-						float change = [theEvent deltaY] / -0.2f;
-						blendingFactor += change;
-					
-						[self setBlendingFactor: blendingFactor];
-					}
-				}
-				else if( [theEvent modifierFlags]  & NSAlternateKeyMask)
-				{
-					// 4D Direction scroll - Cardiac CT eg	
-					float change = [theEvent deltaY] / -2.5f;
-					
-					if( change > 0)
-					{
-						change = ceil( change);
-						if( change < 1) change = 1;
-						
-						change += [[self windowController] curMovieIndex];
-						while( change >= [[self windowController] maxMovieIndex]) change -= [[self windowController] maxMovieIndex];
-					}
-					else
-					{
-						change = floor( change);
-						if( change > -1) change = -1;
-						
-						change += [[self windowController] curMovieIndex];
-						while( change < 0) change += [[self windowController] maxMovieIndex];
-					}
-					
-					[[self windowController] setMovieIndex: change];
-				}
-				else
-				{
-					change = reverseScrollWheel * [theEvent deltaY];
-					if( change > 0)
-					{
-						change = ceil( change);
-						if( change < 1) change = 1;
-					}
-					else
-					{
-						change = floor( change);
-						if( change > -1) change = -1;		
-					}
-					
-					if ( [self isKindOfClass: [OrthogonalMPRView class]] )
-					{
-						[(OrthogonalMPRView*)self scrollTool: 0 : (long)change];
-					}
-				}
-			}
-			else if( deltaX != 0)
-			{
-				change = reverseScrollWheel * deltaX;
-				if( change >= 0)
-				{
-					change = ceil( change);
-					if( change < 1) change = 1;
-				}
-				else
-				{
-					change = floor( change);
-					if( change > -1) change = -1;		
-				}
-				
-				if ( [self isKindOfClass: [OrthogonalMPRView class]] )
-				{
-					[(OrthogonalMPRView*)self scrollTool: 0 : (long)change];
-				}
-			}
-			
-			[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
-		}
-		else if( [stringID isEqualToString:@"previewDatabase"])
+		if( [stringID isEqualToString:@"previewDatabase"])
 		{
 			[super scrollWheel: theEvent];
 		}
@@ -4657,8 +4569,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( [self is2DViewer] == YES)
 					[[self windowController] propagateSettings];
 				
-				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-				
 				[self setNeedsDisplay:YES];
 			}
 			
@@ -4726,8 +4636,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( [self is2DViewer] == YES)
 				[[self windowController] propagateSettings];
-			
-			if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 			
 			[self setNeedsDisplay:YES];
 		}
@@ -4974,8 +4882,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( [self is2DViewer] == YES)
 				[[self windowController] propagateSettings];
-			
-			if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 		}
 		@catch (NSException * e) 
 		{
@@ -5342,7 +5248,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	NSPoint current = [self currentPointInView:event];
 	// Not blending
-	//if( !([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != nil)))
+	//if( !(blendingView != nil))
 	{
 		float WWAdapter = startWW / 80.00;
 
@@ -7397,7 +7303,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		long yRaster = 1, xRaster;
 		BOOL fullText = YES;
 		
-		if( stringID && [stringID isEqualToString:@"OrthogonalMPRVIEW"] == YES)
+		if( stringID)
 		{
 			fullText = NO;
 			
@@ -7671,7 +7577,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							useStringTexture = NO;
 							
-							if( stringID == nil || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+							if( stringID == nil)
 							{
 								if( mouseXPos != 0 || mouseYPos != 0)
 								{
@@ -8352,7 +8258,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 				//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST : BORDER AROUND THE IMAGE
 				
-				if(( [ViewerController numberOf2DViewer] > 1 && is2DViewer == YES && stringID == nil) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+				if( [ViewerController numberOf2DViewer] > 1 && is2DViewer == YES && stringID == nil)
 				{
 					// draw line around key View
 					
@@ -9069,8 +8975,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						[[self windowController] propagateSettings];
 				}
 				
-				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-				
 				previousViewSize = rect.size;
 			}
 		}
@@ -9127,8 +9031,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					if( [[self window] isMainWindow])
 						[[self windowController] propagateSettings];
 				}
-				
-				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 			}
 			else previousViewSize = rect.size;
 		}
@@ -11801,8 +11703,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [[self window] isMainWindow])
 			[[self windowController] propagateSettings];
 	}
-	
-	if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 }
 
 - (IBAction)scaleToFit:(id)sender
@@ -11816,8 +11716,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [[self window] isMainWindow])
 			[[self windowController] propagateSettings];
 	}
-	
-	if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 }
 
 //Database links

@@ -2545,10 +2545,6 @@ static NSConditionLock *threadLock = nil;
 
 - (void) removeTooComplexCommentsAlbum
 {
-	NSManagedObjectContext	*context = self.managedObjectContext;
-		
-	[context lock];
-	
 	@try 
 	{
 		for( NSManagedObject *album in self.albumArray)
@@ -2562,8 +2558,6 @@ static NSConditionLock *threadLock = nil;
 		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		[AppController printStackTrace: e];
 	}
-	
-	[context unlock];
 }
 
 // ------------------
@@ -2677,8 +2671,9 @@ static NSConditionLock *threadLock = nil;
 		
 		if( newDB)
 			[self defaultAlbums: self];
-			
-		[self removeTooComplexCommentsAlbum];
+		
+		if( managedObjectContext && independentContext == NO && [path isEqualToString: currentDatabasePath] == YES && [NSThread isMainThread])
+		   [self removeTooComplexCommentsAlbum];
 	}
 	
     return moc;
@@ -6084,7 +6079,7 @@ static NSConditionLock *threadLock = nil;
 - (void)delayedRefreshAlbums
 {
 	[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( computeNumberOfStudiesForAlbums) object: nil];
-	[self performSelector: @selector( computeNumberOfStudiesForAlbums) withObject: nil afterDelay: 5];
+	[self performSelector: @selector( computeNumberOfStudiesForAlbums) withObject: nil afterDelay: 20];
 }
 
 - (void)refreshAlbums

@@ -1374,6 +1374,12 @@ return YES;
 		[views addObject: [controller xReslicedView]];
 		[views addObject: [controller yReslicedView]];
 		
+		for( int i = views.count-1; i >= 0; i--)
+		{
+			if( NSEqualRects( [[views objectAtIndex: i] visibleRect], NSZeroRect) == NO)
+				[views removeObjectAtIndex: i];
+		}
+		
 		for( id v in views)
 		{
 			NSRect bounds = [v bounds];
@@ -1388,7 +1394,7 @@ return YES;
 												 bpp: &bpp
 									   screenCapture: YES
 										  force8bits: YES
-									 removeGraphical: NO
+									 removeGraphical: YES
 										squarePixels: YES
 											allTiles: NO
 								  allowSmartCropping: YES

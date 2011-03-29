@@ -2301,6 +2301,12 @@ static float deg2rad = 3.14159265358979/180.0;
 			[views addObject: middleTransverseView];
 			[views addObject: bottomTransverseView];
 			
+			for( int i = views.count-1; i >= 0; i--)
+			{
+				if( NSEqualRects( [[views objectAtIndex: i] visibleRect], NSZeroRect) == NO)
+					[views removeObjectAtIndex: i];
+			}
+			
 			for( id v in views)
 			{
 				NSRect bounds = [v bounds];

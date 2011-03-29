@@ -7217,7 +7217,7 @@ return YES;
     return [pixList[curMovieIndex] count];
 }
 
--(long) maxMovieIndex { return maxMovieIndex;}
+-(short) maxMovieIndex { return maxMovieIndex;}
 
 
 - (void) CloseViewerNotification: (NSNotification*) note

@@ -430,6 +430,16 @@ static BOOL protectedReentryWindowDidResize = NO;
 #pragma mark-
 #pragma mark Misc
 
+- (short) orthogonalOrientation
+{
+	return 0;
+}
+
+- (BOOL) isEverythingLoaded
+{
+	return YES;
+}
+
 - (void) updateAutoAdjustPrinting: (id) sender
 {
 

@@ -486,6 +486,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) roiLoadFromFilesArray: (NSArray*) filenames;
 - (id)windowController;
 - (BOOL)is2DViewer;
+- (IBAction)scaleToFit:(id)sender;
+- (IBAction)actualSize:(id)sender;
 - (void) drawOrientation:(NSRect) size;
 - (void) setCOPYSETTINGSINSERIESdirectly: (BOOL) b;
 -(BOOL)actionForHotKey:(NSString *)hotKey;
