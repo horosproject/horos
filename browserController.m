@@ -516,6 +516,11 @@ static NSConditionLock *threadLock = nil;
 	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Incoming Files", nil) description: message name: @"newfiles"];
 }
 
+- (void) setGrowlMessageNewStudy:(NSString*) message
+{
+	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"New Study", nil) description: message name: @"newstudy"];
+}
+
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
 {
 	return [self addFilesToDatabase: newFilesArray onlyDICOM:NO produceAddedFiles :YES];
@@ -1406,6 +1411,7 @@ static NSConditionLock *threadLock = nil;
 		
 		NSString *dockLabel = nil;
 		NSString *growlString = nil;
+		NSString *growlStringNewStudy = nil;
 		
 		@try
 		{
@@ -1441,14 +1447,16 @@ static NSConditionLock *threadLock = nil;
 					[AppController printStackTrace: ne];
 				}
 				
-				if( [addedImagesArray count] > 0 && generatedByOsiriX == NO)
+				if( [addedImagesArray count] > 0)// && generatedByOsiriX == NO)
 				{
 					dockLabel = [NSString stringWithFormat:@"%d", [addedImagesArray count]];
 					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];
+					growlStringNewStudy = [NSString stringWithFormat: NSLocalizedString(@"%@\r%@", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
 				}
 				
 				[dockLabel retain];
 				[growlString retain];
+				[growlStringNewStudy retain];
 				
 				if( isBonjour == NO)
 					[browserController executeAutorouting: addedImagesArray rules: nil manually: NO generatedByOsiriX: generatedByOsiriX];
@@ -1529,6 +1537,12 @@ static NSConditionLock *threadLock = nil;
 			
 			if( growlString)
 				[browserController performSelectorOnMainThread:@selector( setGrowlMessage:) withObject: growlString waitUntilDone:NO];
+			
+			if( newStudy)
+			{
+				if( growlStringNewStudy)
+					[browserController performSelectorOnMainThread:@selector( setGrowlMessageNewStudy:) withObject: growlStringNewStudy waitUntilDone:NO];
+			}
 			
 			if([NSThread isMainThread])
 				[browserController newFilesGUIUpdate: browserController];

@@ -2998,7 +2998,7 @@ static BOOL initialized = NO;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return nil;
 	
     NSArray *notifications;
-    notifications = [NSArray arrayWithObjects: @"newfiles", @"delete", @"result", @"autorouting", @"autoquery", @"send", nil];
+    notifications = [NSArray arrayWithObjects: @"newstudy", @"newfiles", @"delete", @"result", @"autorouting", @"autoquery", @"send", nil];
 
     NSDictionary *dict = nil;
 	
