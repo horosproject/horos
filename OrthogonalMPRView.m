@@ -349,7 +349,7 @@ extern int ANNOTATIONS;
 
 - (void) getWLWW:(float*) wl :(float*) ww
 {
-	if( curDCM == nil) NSLog(@"curDCM nil");
+	if( curDCM == nil) NSLog(@"OrthogonalMPRView getWLWW : curDCM nil");
 	else
 	{
 		if(wl) *wl = [curDCM wl];

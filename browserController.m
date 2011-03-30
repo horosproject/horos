@@ -858,6 +858,8 @@ static NSConditionLock *threadLock = nil;
 	}
 	else
 	{
+		NSDate *defaultDate = [NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil];
+		
 		addedImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
 		completeImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
 		modifiedStudiesArray = [NSMutableArray array];
@@ -1039,12 +1041,12 @@ static NSConditionLock *threadLock = nil;
 								[study setValue: [curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
 						}
 						
-						if( [curDict objectForKey: @"studyDate"])
+						if( [curDict objectForKey: @"studyDate"] && [[curDict objectForKey: @"studyDate"] isEqualToDate: defaultDate] == NO)
 						{
-							if( [study valueForKey: @"date"] == 0L || [[study valueForKey: @"date"] timeIntervalSinceDate: [curDict objectForKey: @"studyDate"]] >= 0)
+							if( [study valueForKey: @"date"] == 0L || [[study valueForKey: @"date"] isEqualToDate: defaultDate] || [[study valueForKey: @"date"] timeIntervalSinceDate: [curDict objectForKey: @"studyDate"]] >= 0)
 								[study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
 						}
-							
+						
 						curStudyID = [curDict objectForKey: @"studyID"];
 						curPatientUID = [curDict objectForKey: @"patientUID"];
 						
