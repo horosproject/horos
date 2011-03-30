@@ -2303,7 +2303,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			
 			for( int i = views.count-1; i >= 0; i--)
 			{
-				if( NSEqualRects( [[views objectAtIndex: i] visibleRect], NSZeroRect) == NO)
+				if( NSEqualRects( [[views objectAtIndex: i] visibleRect], NSZeroRect))
 					[views removeObjectAtIndex: i];
 			}
 			

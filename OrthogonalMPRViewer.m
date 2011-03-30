@@ -1376,7 +1376,7 @@ return YES;
 		
 		for( int i = views.count-1; i >= 0; i--)
 		{
-			if( NSEqualRects( [[views objectAtIndex: i] visibleRect], NSZeroRect) == NO)
+			if( NSEqualRects( [[views objectAtIndex: i] visibleRect], NSZeroRect))
 				[views removeObjectAtIndex: i];
 		}
 		
