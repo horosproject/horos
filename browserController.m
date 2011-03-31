@@ -12460,7 +12460,12 @@ static BOOL needToRezoom;
 						[volumeData release];
 					}
 					
-					[[NSUserDefaults standardUserDefaults] setBool: copyCOPYSETTINGS forKey:@"COPYSETTINGS"];
+					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"])
+					{
+						// @"COPYSETTINGS" was activated in a sub function, keep it activated: for example, when fusion is activated during opening
+					}
+					else [[NSUserDefaults standardUserDefaults] setBool: copyCOPYSETTINGS forKey:@"COPYSETTINGS"];
+					
 					[DCMView setSyncro: copySyncro];
 					
 					[viewerPix[0] release];
