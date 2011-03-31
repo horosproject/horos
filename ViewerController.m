@@ -17299,6 +17299,41 @@ int i,j,l;
 		[NSApp endSheet:imageExportWindow returnCode:[sender tag]];
 	}
 	
+	int numberOfExportedImages = 0;
+	for( int i = 0, fileIndex = 1; i < [pixList[ curMovieIndex] count]; i++)
+	{
+		BOOL export = YES;
+		int index;
+		
+		if( [imageView flippedData])
+			index = [pixList[curMovieIndex] count] -i -1;
+		else
+			index = i;
+		
+		if( [[imageSelection selectedCell] tag] == 1)	// All images
+		{
+			export = YES;
+		}
+		
+		if( [[imageSelection selectedCell] tag] == 2)	// Keyimages only
+		{
+			NSManagedObject	*image;
+			
+			image = [[self fileList] objectAtIndex: index];
+			
+			export = [[image valueForKey:@"isKeyImage"] boolValue];
+		}
+		
+		if( [[imageSelection selectedCell] tag] == 0)	// Current image only
+		{
+			if( index == [imageView curImage]) export = YES;
+			else export = NO;
+		}
+		
+		if( export)
+			numberOfExportedImages++;
+	}
+	
 	NSSavePanel     *panel = [NSSavePanel savePanel];
 	long			i;
 	NSWorkspace		*ws = [NSWorkspace sharedWorkspace];
@@ -17316,7 +17351,12 @@ int i,j,l;
 		
 		if( [[imageFormat selectedCell] tag] != 2 && [[imageFormat selectedCell] tag] != 3)		//Mail or iPhoto
 		{
-			if( [panel runModalForDirectory:nil file:[[fileList[ curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.name"]] != NSFileHandlingPanelOKButton)
+			NSString *defaultExportName = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.name"];
+			
+			if( numberOfExportedImages > 1)
+				defaultExportName = [defaultExportName stringByAppendingPathExtension: [NSString stringWithFormat:@"%4.4d", 1]];
+			
+			if( [panel runModalForDirectory:nil file: defaultExportName] != NSFileHandlingPanelOKButton)
 				pathOK = NO;
 		}
 		
@@ -17391,7 +17431,12 @@ int i,j,l;
 					{
 						if( [[imageFormat selectedCell] tag] == 0)
 						{
-							NSString *jpegFile = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", fileIndex++]];
+							NSString *jpegFile;
+							
+							if( numberOfExportedImages > 1)
+								jpegFile = [[[[panel filename] stringByDeletingPathExtension] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", fileIndex++]];
+							else
+								jpegFile = [panel filename];
 							
 							bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 							[bitmapData writeToFile: jpegFile atomically:YES];
@@ -17406,7 +17451,16 @@ int i,j,l;
 							[JPEGExif addExif: [NSURL fileURLWithPath: jpegFile] properties: exifDict format:@"jpeg"];
 						}
 						else
-							[[im TIFFRepresentation] writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.tif", fileIndex++]] atomically:NO];
+						{
+							NSString *tiffFile;
+						
+							if( numberOfExportedImages > 1)
+								tiffFile = [[[[panel filename] stringByDeletingPathExtension] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.tif", fileIndex++]];
+							else
+								tiffFile = [panel filename];
+							
+							[[im TIFFRepresentation] writeToFile: tiffFile atomically:NO];
+						}
 					}
 				}
 			}
@@ -17496,11 +17550,16 @@ int i,j,l;
 			{
 				NSString	*filePath;
 				
-				if( [[imageFormat selectedCell] tag] == 0)
-					filePath = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", 1]];
+				if( numberOfExportedImages > 1)
+				{
+					if( [[imageFormat selectedCell] tag] == 0)
+						filePath = [[[[panel filename] stringByDeletingPathExtension] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", 1]];
+					else
+						filePath = [[[[panel filename] stringByDeletingPathExtension] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.tif", 1]];
+				}
 				else
-					filePath = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.tif", 1]];
-					
+					filePath = [panel filename];
+				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: filePath] == NO && filePath != nil)
 					NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 				
