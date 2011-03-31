@@ -1162,7 +1162,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 #ifdef HAVE_FORK
     int                 pid;
 #endif
-    T_ASC_Association  *assoc;
+    T_ASC_Association  *assoc = nil;
     char                buf[BUFSIZ];
     int timeout;
     OFBool go_cleanup = OFFalse;

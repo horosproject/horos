@@ -341,6 +341,26 @@
 	return [self writeDCMFile: dstPath withExportDCM: nil];
 }
 
+- (void) removeAllFieldsOfGroup: (Uint16) groupNumber dataset: (DcmItem *) dset
+{
+	DcmStack stack;
+	DcmObject *dobj = NULL;
+	DcmTagKey tag;
+	OFCondition status = dset->nextObject(stack, OFTrue);
+	
+	while (status.good())
+	{
+		dobj = stack.top();
+		tag = dobj->getTag();
+		if (tag.getGroup() == groupNumber)
+		{
+			stack.pop();
+			delete ((DcmItem *)(stack.top()))->remove(dobj);
+		}
+		status = dset->nextObject(stack, OFTrue);
+	}
+}
+
 - (NSString*) writeDCMFile: (NSString*) dstPath withExportDCM:(DCMExportPlugin*) dcmExport
 {
 	if( spp != 1 && spp != 3)
@@ -553,6 +573,8 @@
 					DcmItem *dataset = dcmtkFileFormat->getDataset();
 					DcmMetaInfo *metaInfo = dcmtkFileFormat->getMetaInfo();
 					
+					[self removeAllFieldsOfGroup: 0x0028 dataset: dataset];
+					
 					if( exportSeriesUID)
 						dataset->putAndInsertString( DCM_SeriesInstanceUID, [exportSeriesUID UTF8String]);
 					
@@ -580,7 +602,6 @@
 					dataset->putAndInsertString( DCM_BitsStored, [[NSString stringWithFormat: @"%d", bitsAllocated] UTF8String]);
 					
 					delete dataset->remove( DCM_ImagerPixelSpacing);
-					delete dataset->remove( DCM_PixelSpacing);
 					
 					if( spacingX != 0 && spacingY != 0)
 						dataset->putAndInsertString( DCM_PixelSpacing, [[NSString stringWithFormat: @"%f\\%f", spacingY, spacingX] UTF8String]);
