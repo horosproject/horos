@@ -109,7 +109,7 @@ NSString* N2NonNullString(NSString* s) {
 										 NULL] retain];
 	
 	NSMutableString* temp = [self.mutableCopy autorelease];
-	// apmp first!!
+	// amp first!!
 	if (!unescape)
 		[temp replaceOccurrencesOfString:@"&" withString:@"&amp;"];
 	else [temp replaceOccurrencesOfString:@"&amp;" withString:@"&"];

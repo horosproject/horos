@@ -179,8 +179,8 @@
 		srcPath = [pair objectAtIndex:0];
 		dstPath = [pair objectAtIndex:1];
 		
-		NSString* srcPathRes = srcPath;	//[srcPath resolvedPathString];
-		NSString* dstPathRes = dstPath;	//[dstPath resolvedPathString];
+		NSString* srcPathRes = [srcPath stringByExpandingTildeInPath];	//[srcPath resolvedPathString];
+		NSString* dstPathRes = [dstPath stringByExpandingTildeInPath];	//[dstPath resolvedPathString];
 		if (!dstPathRes)
 			dstPathRes = [[dstPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:[dstPath lastPathComponent]];
 		
