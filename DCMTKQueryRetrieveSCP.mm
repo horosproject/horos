@@ -553,9 +553,6 @@ DcmQueryRetrieveConfig config;
 				{
 					if( _abort == NO)
 						cond = localSCP->waitForAssociation(options.net_);
-					
-					if( _abort == NO)
-						localSCP->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
 				}
 				catch(...)
 				{

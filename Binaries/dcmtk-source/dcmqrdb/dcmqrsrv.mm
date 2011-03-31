@@ -1371,6 +1371,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					{
 						/* don't spawn a sub-process to handle the association */
 						cond = handleAssociation(assoc, options_.correctUIDPadding_);
+						assoc = nil;
 					}
 					@catch( NSException *e)
 					{
@@ -1514,26 +1515,24 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 		[p release];
 #endif
     }
-
-//    // cleanup code: this code is now done in dcmqrptb.cc
-//     OFCondition oldcond = cond;    /* store condition flag for later use */
-//    if (!singleProcess && (cond != ASC_SHUTDOWNAPPLICATION))
-//    {
-//        /* the child will handle the association, we can drop it */
-//        cond = ASC_dropAssociation(assoc);
-//        if (cond.bad())
-//        {
-//            DcmQueryRetrieveOptions::errmsg("Cannot Drop Association:");
-//            DimseCondition::dump(cond);
-//        }
-//        cond = ASC_destroyAssociation(&assoc);
-//        if (cond.bad())
-//        {
-//            DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
-//            DimseCondition::dump(cond);
-//        }
-//    }
-//   if (oldcond == ASC_SHUTDOWNAPPLICATION) cond = oldcond; /* abort flag is reported to top-level wait loop */
+	
+	if( go_cleanup)
+	{
+		cond = ASC_dropAssociation(assoc);
+		if (cond.bad())
+		{
+			//DcmQueryRetrieveOptions::errmsg("Cannot Drop Association:");
+			DimseCondition::dump(cond);
+		}
+		
+		cond = ASC_destroyAssociation(&assoc);
+		if (cond.bad())
+		{
+			//DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
+			DimseCondition::dump(cond);
+		}
+	}
+	
     return cond;
 }
 
