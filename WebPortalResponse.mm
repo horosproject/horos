@@ -18,6 +18,7 @@
 #import "WebPortalSession.h"
 #import "WebPortalDatabase.h"
 #import "WebPortal.h"
+#import "WebPortal+Databases.h"
 #import "NSString+N2.h"
 #import "AppController.h"
 #import "DicomStudy.h"
@@ -703,6 +704,25 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 	
 	if ([key isEqual:@"reportIsLink"]) {
 		return [NSNumber numberWithBool: [study.reportURL hasPrefix:@"http://"] || [study.reportURL hasPrefix:@"https://"] ];
+	}
+	
+	if ([key isEqual:@"otherStudiesForThisPatient"])
+	{
+		NSArray *otherStudies = nil;
+		
+		@try
+		{
+			otherStudies = [wpc.portal studiesForUser: wpc.user predicate: [NSPredicate predicateWithFormat: @"(patientID == %@) AND (studyInstanceUID != %@)", study.patientID, study.studyInstanceUID] sortBy: @"date"];
+		}
+		@catch (NSException * e)
+		{
+			NSLog(@"[WebPortalRosponse object:valueForKeyPath:context] %@", e);
+		}
+		
+		if( otherStudies.count == 0)
+			otherStudies = nil;
+		
+		return otherStudies;
 	}
 	
 	if ([key isEqual:@"reportExtension"]) {
