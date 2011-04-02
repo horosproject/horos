@@ -2973,8 +2973,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	if( [self is2DViewer] == YES)
 	{
+		NSUInteger modifiers = [event modifierFlags];
 		BOOL update = NO;
-		if (([event modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask)) == (NSCommandKeyMask | NSShiftKeyMask))
+		
+		if ((modifiers & (NSCommandKeyMask | NSShiftKeyMask)) == (NSCommandKeyMask | NSShiftKeyMask))
 		{
 			if (suppress_labels == NO) update = YES;
 			suppress_labels = YES;
@@ -2989,11 +2991,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		BOOL cLarge = showDescriptionInLarge;
 		showDescriptionInLarge = NO;
-		if( [event modifierFlags] & NSControlKeyMask)
+		if( modifiers & NSControlKeyMask)
 		{
-			if([event modifierFlags] & NSCommandKeyMask) {}
-			else if([event modifierFlags] & NSShiftKeyMask) {}
-			else if([event modifierFlags] & NSAlternateKeyMask) {}
+			if(modifiers & NSCommandKeyMask) {}
+			else if(modifiers & NSShiftKeyMask) {}
+			else if(modifiers & NSAlternateKeyMask) {}
 			else
 				showDescriptionInLarge = YES;
 		}
@@ -3002,6 +3004,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			[self switchShowDescriptionInLarge];
 		}
+		
+//		if( (modifiers & NSControlKeyMask) && (modifiers & NSAlternateKeyMask) && (modifiers & NSCommandKeyMask))
+//		{
+//			for( ViewerController *v in [ViewerController get2DViewers])
+//			{
+//				for( DCMView *view in [v imageViews])
+//					[view setNeedsDisplay: YES];
+//			}
+//		}
 	}
 	
 	BOOL roiHit = NO;
@@ -8415,27 +8426,51 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					if( DISPLAYCROSSREFERENCELINES)
 					{
-						if( sliceFromTo[ 0][ 0] != HUGE_VALF)
+//						NSUInteger modifiers = [NSEvent modifierFlags];
+//						if( (modifiers & NSControlKeyMask) && (modifiers & NSAlternateKeyMask) && (modifiers & NSCommandKeyMask)) // Display all references lines for all images
+//						{ 
+//							for( DCMPix *o in [[ViewerController frontMostDisplayed2DViewer] pixList])
+//							{
+//								[self computeSlice: o :curDCM];
+//								
+//								if( sliceFromTo[ 0][ 0] != HUGE_VALF)
+//								{
+//									glColor3f (0.0f, 0.6f, 0.0f);
+//									glLineWidth(2.0);
+//									[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
+//									
+//									if( sliceFromTo2[ 0][ 0] != HUGE_VALF)
+//									{
+//										glLineWidth(2.0);
+//										[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
+//									}
+//								}
+//							}
+//						}
+//						else
 						{
-							if( sliceFromToS[ 0][ 0] != HUGE_VALF)
+							if( sliceFromTo[ 0][ 0] != HUGE_VALF)
 							{
-								glColor3f (1.0f, 0.6f, 0.0f);
+								if( sliceFromToS[ 0][ 0] != HUGE_VALF)
+								{
+									glColor3f (1.0f, 0.6f, 0.0f);
+									
+									glLineWidth(2.0);
+									[self drawCrossLines: sliceFromToS ctx: cgl_ctx perpendicular: NO];
+									
+									glLineWidth(2.0);
+									[self drawCrossLines: sliceFromToE ctx: cgl_ctx perpendicular: NO];
+								}
 								
+								glColor3f (0.0f, 0.6f, 0.0f);
 								glLineWidth(2.0);
-								[self drawCrossLines: sliceFromToS ctx: cgl_ctx perpendicular: NO];
+								[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
 								
-								glLineWidth(2.0);
-								[self drawCrossLines: sliceFromToE ctx: cgl_ctx perpendicular: NO];
-							}
-							
-							glColor3f (0.0f, 0.6f, 0.0f);
-							glLineWidth(2.0);
-							[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
-							
-							if( sliceFromTo2[ 0][ 0] != HUGE_VALF)
-							{
-								glLineWidth(2.0);
-								[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
+								if( sliceFromTo2[ 0][ 0] != HUGE_VALF)
+								{
+									glLineWidth(2.0);
+									[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
+								}
 							}
 						}
 					}

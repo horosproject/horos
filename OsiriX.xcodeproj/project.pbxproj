@@ -3782,7 +3782,6 @@
 		CE35675C0EED998F005A823F /* vtkOpenGLScalarsToColorsPainter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3561180EED998C005A823F /* vtkOpenGLScalarsToColorsPainter.h */; };
 		CE35675D0EED998F005A823F /* vtkOpenGLStateCache.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3561190EED998C005A823F /* vtkOpenGLStateCache.h */; };
 		CE35675E0EED998F005A823F /* vtkOpenGLTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35611A0EED998C005A823F /* vtkOpenGLTexture.h */; };
-		CE35675F0EED998F005A823F /* vtkOpenGLVolumeProVP1000Mapper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35611B0EED998C005A823F /* vtkOpenGLVolumeProVP1000Mapper.h */; };
 		CE3567600EED998F005A823F /* vtkOpenGLVolumeTextureMapper2D.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35611C0EED998C005A823F /* vtkOpenGLVolumeTextureMapper2D.h */; };
 		CE3567610EED998F005A823F /* vtkOpenGLVolumeTextureMapper3D.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35611D0EED998C005A823F /* vtkOpenGLVolumeTextureMapper3D.h */; };
 		CE3567620EED998F005A823F /* vtkOrderedTriangulator.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35611E0EED998C005A823F /* vtkOrderedTriangulator.h */; };
@@ -4330,9 +4329,7 @@
 		CE3569800EED998F005A823F /* vtkVolume16Reader.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35633C0EED998E005A823F /* vtkVolume16Reader.h */; };
 		CE3569810EED998F005A823F /* vtkVolumeCollection.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35633D0EED998E005A823F /* vtkVolumeCollection.h */; };
 		CE3569820EED998F005A823F /* vtkVolumeMapper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35633E0EED998E005A823F /* vtkVolumeMapper.h */; };
-		CE3569830EED998F005A823F /* vtkVolumeProMapper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35633F0EED998E005A823F /* vtkVolumeProMapper.h */; };
 		CE3569840EED998F005A823F /* vtkVolumeProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3563400EED998E005A823F /* vtkVolumeProperty.h */; };
-		CE3569850EED998F005A823F /* vtkVolumeProVP1000Mapper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3563410EED998E005A823F /* vtkVolumeProVP1000Mapper.h */; };
 		CE3569860EED998F005A823F /* vtkVolumeRayCastCompositeFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3563420EED998E005A823F /* vtkVolumeRayCastCompositeFunction.h */; };
 		CE3569870EED998F005A823F /* vtkVolumeRayCastFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3563430EED998E005A823F /* vtkVolumeRayCastFunction.h */; };
 		CE3569880EED998F005A823F /* vtkVolumeRayCastIsosurfaceFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3563440EED998E005A823F /* vtkVolumeRayCastIsosurfaceFunction.h */; };
@@ -6016,7 +6013,6 @@
 		CEC702B510A5C844008935EA /* vtkOpenGLScalarsToColorsPainter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3561180EED998C005A823F /* vtkOpenGLScalarsToColorsPainter.h */; };
 		CEC702B610A5C844008935EA /* vtkOpenGLStateCache.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3561190EED998C005A823F /* vtkOpenGLStateCache.h */; };
 		CEC702B710A5C844008935EA /* vtkOpenGLTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35611A0EED998C005A823F /* vtkOpenGLTexture.h */; };
-		CEC702B810A5C844008935EA /* vtkOpenGLVolumeProVP1000Mapper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35611B0EED998C005A823F /* vtkOpenGLVolumeProVP1000Mapper.h */; };
 		CEC702B910A5C844008935EA /* vtkOpenGLVolumeTextureMapper2D.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35611C0EED998C005A823F /* vtkOpenGLVolumeTextureMapper2D.h */; };
 		CEC702BA10A5C844008935EA /* vtkOpenGLVolumeTextureMapper3D.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35611D0EED998C005A823F /* vtkOpenGLVolumeTextureMapper3D.h */; };
 		CEC702BB10A5C844008935EA /* vtkOrderedTriangulator.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35611E0EED998C005A823F /* vtkOrderedTriangulator.h */; };
@@ -6564,9 +6560,7 @@
 		CEC704D910A5C844008935EA /* vtkVolume16Reader.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35633C0EED998E005A823F /* vtkVolume16Reader.h */; };
 		CEC704DA10A5C844008935EA /* vtkVolumeCollection.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35633D0EED998E005A823F /* vtkVolumeCollection.h */; };
 		CEC704DB10A5C844008935EA /* vtkVolumeMapper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35633E0EED998E005A823F /* vtkVolumeMapper.h */; };
-		CEC704DC10A5C844008935EA /* vtkVolumeProMapper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE35633F0EED998E005A823F /* vtkVolumeProMapper.h */; };
 		CEC704DD10A5C844008935EA /* vtkVolumeProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3563400EED998E005A823F /* vtkVolumeProperty.h */; };
-		CEC704DE10A5C844008935EA /* vtkVolumeProVP1000Mapper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3563410EED998E005A823F /* vtkVolumeProVP1000Mapper.h */; };
 		CEC704DF10A5C844008935EA /* vtkVolumeRayCastCompositeFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3563420EED998E005A823F /* vtkVolumeRayCastCompositeFunction.h */; };
 		CEC704E010A5C844008935EA /* vtkVolumeRayCastFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3563430EED998E005A823F /* vtkVolumeRayCastFunction.h */; };
 		CEC704E110A5C844008935EA /* vtkVolumeRayCastIsosurfaceFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3563440EED998E005A823F /* vtkVolumeRayCastIsosurfaceFunction.h */; };
@@ -11048,7 +11042,6 @@
 		CE3561180EED998C005A823F /* vtkOpenGLScalarsToColorsPainter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkOpenGLScalarsToColorsPainter.h; sourceTree = "<group>"; };
 		CE3561190EED998C005A823F /* vtkOpenGLStateCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkOpenGLStateCache.h; sourceTree = "<group>"; };
 		CE35611A0EED998C005A823F /* vtkOpenGLTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkOpenGLTexture.h; sourceTree = "<group>"; };
-		CE35611B0EED998C005A823F /* vtkOpenGLVolumeProVP1000Mapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkOpenGLVolumeProVP1000Mapper.h; sourceTree = "<group>"; };
 		CE35611C0EED998C005A823F /* vtkOpenGLVolumeTextureMapper2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkOpenGLVolumeTextureMapper2D.h; sourceTree = "<group>"; };
 		CE35611D0EED998C005A823F /* vtkOpenGLVolumeTextureMapper3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkOpenGLVolumeTextureMapper3D.h; sourceTree = "<group>"; };
 		CE35611E0EED998C005A823F /* vtkOrderedTriangulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkOrderedTriangulator.h; sourceTree = "<group>"; };
@@ -11596,9 +11589,7 @@
 		CE35633C0EED998E005A823F /* vtkVolume16Reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkVolume16Reader.h; sourceTree = "<group>"; };
 		CE35633D0EED998E005A823F /* vtkVolumeCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkVolumeCollection.h; sourceTree = "<group>"; };
 		CE35633E0EED998E005A823F /* vtkVolumeMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkVolumeMapper.h; sourceTree = "<group>"; };
-		CE35633F0EED998E005A823F /* vtkVolumeProMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkVolumeProMapper.h; sourceTree = "<group>"; };
 		CE3563400EED998E005A823F /* vtkVolumeProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkVolumeProperty.h; sourceTree = "<group>"; };
-		CE3563410EED998E005A823F /* vtkVolumeProVP1000Mapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkVolumeProVP1000Mapper.h; sourceTree = "<group>"; };
 		CE3563420EED998E005A823F /* vtkVolumeRayCastCompositeFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkVolumeRayCastCompositeFunction.h; sourceTree = "<group>"; };
 		CE3563430EED998E005A823F /* vtkVolumeRayCastFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkVolumeRayCastFunction.h; sourceTree = "<group>"; };
 		CE3563440EED998E005A823F /* vtkVolumeRayCastIsosurfaceFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkVolumeRayCastIsosurfaceFunction.h; sourceTree = "<group>"; };
@@ -16202,7 +16193,6 @@
 				CE3561180EED998C005A823F /* vtkOpenGLScalarsToColorsPainter.h */,
 				CE3561190EED998C005A823F /* vtkOpenGLStateCache.h */,
 				CE35611A0EED998C005A823F /* vtkOpenGLTexture.h */,
-				CE35611B0EED998C005A823F /* vtkOpenGLVolumeProVP1000Mapper.h */,
 				CE35611C0EED998C005A823F /* vtkOpenGLVolumeTextureMapper2D.h */,
 				CE35611D0EED998C005A823F /* vtkOpenGLVolumeTextureMapper3D.h */,
 				CE35611E0EED998C005A823F /* vtkOrderedTriangulator.h */,
@@ -16750,9 +16740,7 @@
 				CE35633C0EED998E005A823F /* vtkVolume16Reader.h */,
 				CE35633D0EED998E005A823F /* vtkVolumeCollection.h */,
 				CE35633E0EED998E005A823F /* vtkVolumeMapper.h */,
-				CE35633F0EED998E005A823F /* vtkVolumeProMapper.h */,
 				CE3563400EED998E005A823F /* vtkVolumeProperty.h */,
-				CE3563410EED998E005A823F /* vtkVolumeProVP1000Mapper.h */,
 				CE3563420EED998E005A823F /* vtkVolumeRayCastCompositeFunction.h */,
 				CE3563430EED998E005A823F /* vtkVolumeRayCastFunction.h */,
 				CE3563440EED998E005A823F /* vtkVolumeRayCastIsosurfaceFunction.h */,
@@ -18876,7 +18864,6 @@
 				CE35675C0EED998F005A823F /* vtkOpenGLScalarsToColorsPainter.h in Headers */,
 				CE35675D0EED998F005A823F /* vtkOpenGLStateCache.h in Headers */,
 				CE35675E0EED998F005A823F /* vtkOpenGLTexture.h in Headers */,
-				CE35675F0EED998F005A823F /* vtkOpenGLVolumeProVP1000Mapper.h in Headers */,
 				CE3567600EED998F005A823F /* vtkOpenGLVolumeTextureMapper2D.h in Headers */,
 				CE3567610EED998F005A823F /* vtkOpenGLVolumeTextureMapper3D.h in Headers */,
 				CE3567620EED998F005A823F /* vtkOrderedTriangulator.h in Headers */,
@@ -19424,9 +19411,7 @@
 				CE3569800EED998F005A823F /* vtkVolume16Reader.h in Headers */,
 				CE3569810EED998F005A823F /* vtkVolumeCollection.h in Headers */,
 				CE3569820EED998F005A823F /* vtkVolumeMapper.h in Headers */,
-				CE3569830EED998F005A823F /* vtkVolumeProMapper.h in Headers */,
 				CE3569840EED998F005A823F /* vtkVolumeProperty.h in Headers */,
-				CE3569850EED998F005A823F /* vtkVolumeProVP1000Mapper.h in Headers */,
 				CE3569860EED998F005A823F /* vtkVolumeRayCastCompositeFunction.h in Headers */,
 				CE3569870EED998F005A823F /* vtkVolumeRayCastFunction.h in Headers */,
 				CE3569880EED998F005A823F /* vtkVolumeRayCastIsosurfaceFunction.h in Headers */,
@@ -21151,7 +21136,6 @@
 				CEC702B510A5C844008935EA /* vtkOpenGLScalarsToColorsPainter.h in Headers */,
 				CEC702B610A5C844008935EA /* vtkOpenGLStateCache.h in Headers */,
 				CEC702B710A5C844008935EA /* vtkOpenGLTexture.h in Headers */,
-				CEC702B810A5C844008935EA /* vtkOpenGLVolumeProVP1000Mapper.h in Headers */,
 				CEC702B910A5C844008935EA /* vtkOpenGLVolumeTextureMapper2D.h in Headers */,
 				CEC702BA10A5C844008935EA /* vtkOpenGLVolumeTextureMapper3D.h in Headers */,
 				CEC702BB10A5C844008935EA /* vtkOrderedTriangulator.h in Headers */,
@@ -21699,9 +21683,7 @@
 				CEC704D910A5C844008935EA /* vtkVolume16Reader.h in Headers */,
 				CEC704DA10A5C844008935EA /* vtkVolumeCollection.h in Headers */,
 				CEC704DB10A5C844008935EA /* vtkVolumeMapper.h in Headers */,
-				CEC704DC10A5C844008935EA /* vtkVolumeProMapper.h in Headers */,
 				CEC704DD10A5C844008935EA /* vtkVolumeProperty.h in Headers */,
-				CEC704DE10A5C844008935EA /* vtkVolumeProVP1000Mapper.h in Headers */,
 				CEC704DF10A5C844008935EA /* vtkVolumeRayCastCompositeFunction.h in Headers */,
 				CEC704E010A5C844008935EA /* vtkVolumeRayCastFunction.h in Headers */,
 				CEC704E110A5C844008935EA /* vtkVolumeRayCastIsosurfaceFunction.h in Headers */,
