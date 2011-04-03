@@ -208,7 +208,7 @@
 }
 
 - (IBAction) copyMissingCustomizedFiles: (id) sender {
-	[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"WebServicesHTML"] toPath:@"~/Library/Application Support/OsiriX/WebServicesHTML" byReplacingExisting:NO error:NULL];
+	[[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"WebServicesHTML"] toPath: [@"~/Library/Application Support/OsiriX/WebServicesHTML" stringByExpandingTildeInPath] byReplacingExisting:NO error:NULL];
 }
 
 - (IBAction) editUsers: (id) sender {
