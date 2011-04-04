@@ -19042,10 +19042,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			int pixelType = [(NSCell *)[rdPixelTypeMatrix selectedCell] tag];
 			
-			int spp;
-			int highBit = 7;
-			int bitsAllocated = 8;
-			float numberBytes;
+			NSUInteger spp;
+			NSUInteger highBit = 7;
+			NSUInteger bitsAllocated = 8;
+			NSUInteger numberBytes;
 			BOOL isSigned = YES;
 			BOOL isLittleEndian = YES;
 			NSString *photometricInterpretation = @"MONOCHROME2";
@@ -19086,13 +19086,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 				default:	spp = 1;
 					numberBytes = 2;
 			}
-			int subDataLength = spp  * numberBytes * [rows intValue] * [columns intValue];	
 			
-			if ([data length] >= subDataLength * [slices intValue]  + [offset intValue])
-			{					
-				int i;
-				int s = [slices intValue];
-				//tmpObject for StudyUID andd SeriesUID				
+			NSUInteger subDataLength = spp  * numberBytes * [rows unsignedIntegerValue] * [columns unsignedIntegerValue];	
+			
+			if ([data length] >= subDataLength * [slices unsignedIntegerValue]  + [offset unsignedIntegerValue])
+			{
+				NSUInteger s = [slices unsignedIntegerValue];
+				
+				//tmpObject for StudyUID andd SeriesUID	
+						
 				DCMObject *tmpObject = [DCMObject secondaryCaptureObjectWithBitDepth:numberBytes * 8  samplesPerPixel:spp numberOfFrames:1];
 				NSString *studyUID = [tmpObject attributeValueWithName:@"StudyInstanceUID"];
 				NSString *seriesUID = [tmpObject attributeValueWithName:@"SeriesInstanceUID"];
@@ -19100,7 +19102,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				DCMCalendarDate *studyDate = [DCMCalendarDate date];
 				DCMCalendarDate *seriesDate = [DCMCalendarDate date];
 				[[NSUserDefaults standardUserDefaults] setInteger:(++studyID) forKey:@"SCStudyID"];
-				for (i = 0; i < s; i++)
+				for(NSUInteger i = 0; i < s; i++)
 				{
 					DCMObject *dcmObject = [DCMObject secondaryCaptureObjectWithBitDepth:numberBytes * 8  samplesPerPixel:spp numberOfFrames:1];
 					DCMCalendarDate *aquisitionDate = [DCMCalendarDate date];
@@ -19147,7 +19149,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if (numberBytes < 2)
 						vr = @"OB";
 					
-					NSRange range = NSMakeRange([offset intValue] + subDataLength * i, subDataLength);
+					NSRange range = NSMakeRange([offset unsignedIntegerValue] + subDataLength * i, subDataLength);
+					
 					NSMutableData *subdata = [NSMutableData dataWithData:[data subdataWithRange:range]];
 					
 					DCMTransferSyntax *ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
@@ -19156,14 +19159,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 						if( isSigned == NO)
 						{
 							unsigned short *ptr = (unsigned short*) [subdata mutableBytes];
-							int l = subDataLength/2;
+							NSUInteger l = subDataLength/2;
 							while( l-- > 0)
 								ptr[ l] = EndianU16_BtoL( ptr[ l]);
 						}
 						else
 						{
 							short *ptr = ( short*) [subdata mutableBytes];
-							int l = subDataLength/2;
+							NSUInteger l = subDataLength/2;
 							while( l-- > 0)
 								ptr[ l] = EndianS16_BtoL( ptr[ l]);
 						}
