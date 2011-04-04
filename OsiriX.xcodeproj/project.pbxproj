@@ -26325,7 +26325,6 @@
 					"$(SRCROOT)/Binaries/Jasper",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_LDFLAGS = (
@@ -26424,7 +26423,6 @@
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
 					"\"$(SRCROOT)/ITK180/bin\"",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
@@ -26622,7 +26620,6 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Ming\"",
-					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_LDFLAGS = (
@@ -26740,7 +26737,6 @@
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
 					"\"$(SRCROOT)/ITK180/bin\"",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
@@ -26807,7 +26803,6 @@
 					"$(SRCROOT)/Binaries/Jasper",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_LDFLAGS = (
@@ -26915,7 +26910,6 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Ming\"",
-					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_LDFLAGS = (
@@ -27051,7 +27045,6 @@
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
 					"\"$(SRCROOT)/ITK180/bin\"",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
@@ -27122,7 +27115,6 @@
 					"$(SRCROOT)/Binaries/Jasper",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_LDFLAGS = (
@@ -27210,7 +27202,6 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Ming\"",
-					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_LDFLAGS = (
@@ -27368,7 +27359,6 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
-					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
@@ -27438,7 +27428,6 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
-					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
@@ -27509,7 +27498,6 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/Jasper\"",
-					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
