@@ -860,7 +860,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		}
 	}
 	
-	[response.tokens setObject:NSLocalizedString(@"Forgetten Password", @"Web portal, password forgotten, title") forKey:@"PageTitle"];
+	[response.tokens setObject:NSLocalizedString(@"Forgotten Password", @"Web portal, password forgotten, title") forKey:@"PageTitle"];
 	response.templateString = [self.portal stringForPath:@"password_forgotten.html"];
 }
 
@@ -949,7 +949,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		originalName = [parameters objectForKey:@"originalName"];
 		NSManagedObject* tempUser = [self.portal.database userWithName:originalName];
 		if (!tempUser)
-			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't delete user <b>%@</b> because it doesn't exists.", @"Web Portal, admin, user edition, delete error (%@ is user.name)"), originalName]];
+			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't delete user <b>%@</b> because he doesn't exist.", @"Web Portal, admin, user edition, delete error (%@ is user.name)"), originalName]];
 		else {
 			[self.portal.database.managedObjectContext deleteObject:tempUser];
 			[tempUser.managedObjectContext save:NULL];
@@ -961,7 +961,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		originalName = [parameters objectForKey:@"originalName"];
 		WebPortalUser* webUser = [self.portal.database userWithName:originalName];
 		if (!webUser) {
-			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't save changes for user <b>%@</b> because it doesn't exists.", @"Web Portal, admin, user edition, save error (%@ is user.name)"), originalName]];
+			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't save changes for user <b>%@</b> because he doesn't exist.", @"Web Portal, admin, user edition, save error (%@ is user.name)"), originalName]];
 			userRecycleParams = YES;
 		} else {
 			// NSLog(@"SAVE params: %@", parameters.description);
