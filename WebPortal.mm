@@ -116,9 +116,10 @@
 
 @implementation WebPortal
 
-static const NSString* const DefaultWebPortalDatabasePath = [[@"~/Library/Application Support/OsiriX/WebUsers.sql" stringByExpandingTildeInPath] retain];
+static const NSString* DefaultWebPortalDatabasePath = nil;
 
 +(void)initialize {
+	DefaultWebPortalDatabasePath = [[NSString alloc] initWithString: [@"~/Library/Application Support/OsiriX/WebUsers.sql" stringByExpandingTildeInPath]];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWadoServiceEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
 }
 

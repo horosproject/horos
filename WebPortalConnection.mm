@@ -248,7 +248,6 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	if (users.count)
 		self.user = users.lastObject;
-	else [self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Unsuccessful login attempt with invalid user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
 	
 	return self.user.password;
 }
@@ -1000,10 +999,21 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 				[self.session setObject:username forKey:SessionUsernameKey];
 			else if (username.length && sha1.length) {
 				NSString* sha1internal = [[[[[self passwordForUser:username] stringByAppendingString:NotNil(self.session.challenge)] dataUsingEncoding:NSUTF8StringEncoding] sha1Digest] hex];
-				if ([sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame) {
-					[self.session setObject:username forKey:SessionUsernameKey];
-					[self.session deleteChallenge];
+				
+				if( sha1internal)
+				{
+					if ([sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame)
+					{
+						[self.session setObject:username forKey:SessionUsernameKey];
+						[self.session deleteChallenge];
+						
+						[self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Successful login for user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
+					}
+					else
+						[self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Unsuccessful login attempt with invalid password for user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
 				}
+				else
+					[self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Unsuccessful login attempt with invalid user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
 			}
 		}
 		
