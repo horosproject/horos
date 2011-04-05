@@ -73,7 +73,7 @@ function shareDestinationChange(select) {
 		<div>
 			<table class="form">
 				<tr>
-					<td>Patient's name:</td>
+					<td>Patient's&nbsp;name:</td>
 					<td>%X:Study.name%</td>
 				</tr>
 				<tr>
@@ -127,7 +127,7 @@ function shareDestinationChange(select) {
 				%]IF:Study.reportIsLink%
 				%[IF:Study.otherStudiesForThisPatient%
 				<tr>
-					<td>Other Studies for this patient:</td>
+					<td>Other&nbsp;Studies&nbsp;for&nbsp;this&nbsp;patient:</td>
 				</tr>
 				%[FOREACH:Study.otherStudiesForThisPatient:Study%
 					<td>%Study.date.DateTime.Spanned%:</td>
