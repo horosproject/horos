@@ -67,6 +67,14 @@
 	//normalizationFactor = 1.0;
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
+	glPushMatrix();
+	
+	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+	glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
+	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+	glTranslatef( origin.x, -origin.y, 0.0f);
+	glScalef( 1.f, curDCM.pixelRatio, 1.f);
+	
 	// antialiasing
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable(GL_BLEND);
@@ -144,6 +152,8 @@
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_POINT_SMOOTH);
 	glDisable(GL_BLEND);
+	
+	glPopMatrix();
 }
 
 - (BOOL) mouseOnFocal:(NSEvent *)theEvent

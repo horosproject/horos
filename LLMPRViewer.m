@@ -230,18 +230,12 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	pt.x = [sender origin].x;
 	[subtractedXReslicedView setOrigin: pt];
 
-	pt.y = [subtractedXReslicedView originOffset].y;
-	pt.x = [sender originOffset].x;
-	
 	// Y - Views
 	[subtractedYReslicedView setScaleValue: fValue * [subtractedYReslicedView pixelSpacing]];
 	
 	pt.y = [subtractedYReslicedView origin].y;
 	pt.x = -[sender origin].y;
 	[subtractedYReslicedView setOrigin: pt];
-
-	pt.y = [subtractedYReslicedView originOffset].y;
-	pt.x = -[sender originOffset].y;
 	
 	[subtractedOriginalView setNeedsDisplay:YES];
 }
@@ -267,9 +261,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	pt.x = [sender origin].x;
 	[subtractedOriginalView setOrigin: pt];
 
-	pt.y = [subtractedOriginalView originOffset].y;
-	pt.x = [sender originOffset].x;
-
 	// Y - Views
 	[subtractedYReslicedView setScaleValue: fValue * [subtractedYReslicedView pixelSpacing]];
 	
@@ -277,9 +268,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	pt.y = [sender origin].y;
 	[subtractedYReslicedView setOrigin: pt];
 
-	pt.x = [subtractedYReslicedView originOffset].x;
-	pt.y = [sender originOffset].y;
-	
 	[subtractedXReslicedView setNeedsDisplay:YES];
 }
 
@@ -304,9 +292,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	pt.y = -[sender origin].x;
 	[subtractedOriginalView setOrigin: pt];
 
-	pt.x = [subtractedOriginalView originOffset].x;
-	pt.y = -[sender originOffset].x;
-
 	// Y - Views
 	[subtractedXReslicedView setScaleValue: fValue * [subtractedXReslicedView pixelSpacing]];
 	
@@ -314,9 +299,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	pt.y = [sender origin].y;
 	[subtractedXReslicedView setOrigin: pt];
 
-	pt.x = [subtractedXReslicedView originOffset].x;
-	pt.y = [sender originOffset].y;
-	
 	[subtractedYReslicedView setNeedsDisplay:YES];
 }
 

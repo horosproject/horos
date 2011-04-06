@@ -56,7 +56,7 @@
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glLineWidth(1.0);
 
-	glTranslatef( -origin.x - originOffset.x, 0.0f, 0.0f);
+	glTranslatef( -origin.x, 0.0f, 0.0f);
 
 	glBegin(GL_LINES);
 		glVertex2f(-halfViewFrameWidth, positions[0]);
@@ -69,7 +69,7 @@
 	[self drawArrowButtonAtPosition: positions[1]];
 	[self drawArrowButtonAtPosition: positions[2]];
 
-	glTranslatef(origin.x + originOffset.x, 0.0f, 0.0f);
+	glTranslatef(origin.x, 0.0f, 0.0f);
 	
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
@@ -152,7 +152,7 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 	float radius = ArrowButtonRightSide - centerX + 2.0;
 	float diameter = 2.0 * radius;
 	
-	NSRect rectForArrowButton = NSMakeRect(centerX-radius-origin.x-originOffset.x, centerY-radius*[curDCM pixelSpacingX]/[curDCM pixelSpacingY], diameter, diameter*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
+	NSRect rectForArrowButton = NSMakeRect(centerX-radius-origin.x, centerY-radius*[curDCM pixelSpacingX]/[curDCM pixelSpacingY], diameter, diameter*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
 	return rectForArrowButton;
 }
 
@@ -163,7 +163,7 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 	NSRect viewFrame = [self frame];
 	float halfHeight = 5;
 	
-	NSRect rectForArrowButton = NSMakeRect(-viewFrame.size.width/2.0-origin.x-originOffset.x, positions[index]-halfHeight*[curDCM pixelSpacingX]/[curDCM pixelSpacingY], viewFrame.size.width, halfHeight*2.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
+	NSRect rectForArrowButton = NSMakeRect(-viewFrame.size.width/2.0-origin.x, positions[index]-halfHeight*[curDCM pixelSpacingX]/[curDCM pixelSpacingY], viewFrame.size.width, halfHeight*2.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
 	return rectForArrowButton;
 }
 
