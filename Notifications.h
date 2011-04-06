@@ -83,6 +83,8 @@ extern NSString* const KFSplitViewDidExpandSubviewNotification;
 extern NSString* const BLAuthenticatedNotification;
 extern NSString* const BLDeauthenticatedNotification;
 
+extern NSString* const OsirixActiveLocalDatabaseDidChangeNotification;
+
 /**
  * OsirixPopulatedContextualMenuNotification
  * object: NSMenu*

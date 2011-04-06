@@ -10,14 +10,16 @@
 
 
 @interface N2ManagedDatabase : NSObject {
-	NSString* basePath;
-	NSManagedObjectContext* managedObjectContext;
+	@protected
+		NSString* basePath;
+		NSManagedObjectContext* managedObjectContext;
 	@private
 		NSRecursiveLock* writeLock;
 }
 
-@property(readonly,retain) NSManagedObjectContext* managedObjectContext;
 @property(readonly,retain) NSString* basePath;
+@property(readonly) NSManagedObjectModel* managedObjectModel;
+@property(readonly,retain) NSManagedObjectContext* managedObjectContext;
 
 // locking actually locks the context
 -(void)lock;
@@ -30,16 +32,20 @@
 
 -(NSManagedObjectModel*)managedObjectModel;
 -(NSMutableDictionary*)persistentStoreCoordinatorsDictionary;
+-(BOOL)migratePersistentStoresAutomatically; // default implementation returns YES
 -(NSString*)sqlFilePath;
 
 -(id)initWithPath:(NSString*)path;
--(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c; // TODO: this will one day get __deprecated
+-(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c;
+-(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath; // you may want to override this
 
+-(NSManagedObjectContext*)independentContext:(BOOL)independent;
 -(NSManagedObjectContext*)independentContext;
 
 -(NSEntityDescription*)entityForName:(NSString*)name;
 -(NSManagedObject*)objectWithID:(NSString*)theId;
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p;
+-(id)newObjectForEntity:(NSEntityDescription*)entity;
 
 -(void)save:(NSError**)err;
 

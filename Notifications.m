@@ -82,4 +82,7 @@ NSString* const KFSplitViewDidCollapseSubviewNotification = @"KFSplitViewDidColl
 NSString* const KFSplitViewDidExpandSubviewNotification = @"KFSplitViewDidExpandSubviewNotification";
 NSString* const BLAuthenticatedNotification = @"BLAuthenticatedNotification";
 NSString* const BLDeauthenticatedNotification = @"BLDeauthenticatedNotification";
+
+NSString* const OsirixActiveLocalDatabaseDidChangeNotification = @"OsirixActiveLocalDatabaseDidChangeNotification";
+
 NSString* const OsirixPopulatedContextualMenuNotification = @"OsirixPopulatedContextualMenuNotification";

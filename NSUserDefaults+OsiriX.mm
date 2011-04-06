@@ -19,6 +19,12 @@
 
 @implementation NSUserDefaults (OsiriX)
 
++(void)load {
+	[self.standardUserDefaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:
+												 
+												 NULL]];
+}
+
 #pragma mark General
 
 NSString* const OsirixDateTimeFormatDefaultsKey = @"DBDateFormat2";

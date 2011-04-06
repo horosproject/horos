@@ -136,7 +136,7 @@ extern "C"
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
 
-+ (void) createNoIndexDirectoryIfNecessary:(NSString*) path;
++ (void) createNoIndexDirectoryIfNecessary:(NSString*) path __deprecated;
 + (void) displayImportantNotice:(id) sender;
 + (AppController*) sharedAppController; /**< Return the shared AppController instance */
 + (void)checkForPagesTemplate; /**< Check for Pages report template */

@@ -5983,17 +5983,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (void) initFont
-{
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
-	fontListGL = glGenLists (150);
-	fontGL = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]] retain];
-	if( fontGL == nil) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
-	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :0];
-	stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
-}
-
 - (id)initWithFrameInt:(NSRect)frameRect
 {	
 	if( PETredTable == nil)
@@ -6147,8 +6136,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	fontColor = nil;
-	
-	[self initFont];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: self];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
@@ -11244,7 +11231,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
-	glDeleteLists (labelFontListGL, 150);
+	if( labelFontListGL)
+		glDeleteLists (labelFontListGL, 150);
+	
 	labelFontListGL = glGenLists (150);
 	
 	[labelFont release];
@@ -11264,7 +11253,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
-	glDeleteLists (fontListGL, 150);
+	if( fontListGL)
+		glDeleteLists (fontListGL, 150);
 	fontListGL = glGenLists (150);
 	
 	[fontGL release];

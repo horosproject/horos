@@ -134,10 +134,10 @@
 			
 		if (predicate) studiesArray = [studiesArray filteredArrayUsingPredicate:predicate];
 		
-		if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
+		if ([sortValue length] && [sortValue rangeOfString: @"date"].location == NSNotFound)
 			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
 		else
-			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: NO] autorelease]]];
+			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: NO] autorelease]]];
 	
 	} @catch(NSException* e) {
 		NSLog(@"Error: [WebPortal studiesForUser:predicate:sortBy:] %@", e);

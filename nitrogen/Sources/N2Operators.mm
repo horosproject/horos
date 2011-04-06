@@ -32,6 +32,8 @@ CGFloat NSLimit(const CGFloat v, const CGFloat min, const CGFloat max) {
 	return v;
 }
 
+const NSNumber* const N2Yes = [[NSNumber alloc] initWithBool:YES];
+const NSNumber* const N2No = [[NSNumber alloc] initWithBool:NO];
 
 /// NSSize
 

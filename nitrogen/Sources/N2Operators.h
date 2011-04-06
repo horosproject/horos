@@ -19,6 +19,9 @@ extern NSString* N2LinesDontInterceptException;
 CGFloat NSSign(const CGFloat f);
 CGFloat NSLimit(const CGFloat v, const CGFloat min, const CGFloat max);
 
+extern const NSNumber* const N2Yes;
+extern const NSNumber* const N2No;
+
 #pragma mark NSSize
 
 namespace n2 {

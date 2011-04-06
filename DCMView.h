@@ -346,7 +346,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 + (void)setSyncro:(short) s;
 - (BOOL) softwareInterpolation;
 - (void) applyImageTransformation;
-- (void) initFont;
 - (void) gClickCountSetReset;
 - (int) findPlaneAndPoint:(float*) pt :(float*) location;
 - (int) findPlaneForPoint:(float*) pt localPoint:(float*) location distanceWithPlane: (float*) distanceResult;

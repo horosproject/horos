@@ -990,38 +990,8 @@ static NSDate *lastWarningDate = nil;
 	return YES;                   
 }
 
-+ (void) createNoIndexDirectoryIfNecessary:(NSString*) path
-{
-	BOOL newFolder = NO;
-	
-	if( ![[NSFileManager defaultManager] fileExistsAtPath: path] && [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingPathExtension]])
-	{
-		[[NSFileManager defaultManager] movePath:[path stringByDeletingPathExtension] toPath:path handler: nil];
-		newFolder = YES;
-	}
-	
-	if( ![[NSFileManager defaultManager] fileExistsAtPath: path])
-	{
-		if( [[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories: NO attributes: nil error: nil] == NO)
-			NSLog( @"******* failed to create directory: %@", path);
-		newFolder = YES;
-	}
-	
-	if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingPathExtension]])
-		[[NSFileManager defaultManager] removeFileAtPath: [path stringByDeletingPathExtension] handler: nil];
-	
-//	if( newFolder)
-//	{
-//		NSDictionary *d = [[NSFileManager defaultManager] attributesOfItemAtPath:path error: nil];
-//	
-//		if( d && [[d objectForKey: NSFileExtensionHidden] boolValue] == NO)
-//		{
-//			NSMutableDictionary *m = [NSMutableDictionary dictionaryWithDictionary: d];
-//		
-//			[m setObject: [NSNumber numberWithBool: YES] forKey:NSFileExtensionHidden];
-//			[[NSFileManager defaultManager] changeFileAttributes: m atPath: path];
-//		}
-//	}
++ (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // deprecated
+	[[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath:path];
 }
 
 + (void) pause

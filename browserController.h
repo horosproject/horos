@@ -16,6 +16,8 @@
 #import <Cocoa/Cocoa.h>
 #include <Accelerate/Accelerate.h>
 
+@class DicomDatabase;
+
 @class MPR2DController,NSCFDate, DicomStudy;
 @class BurnerWindowController,ViewerController;
 @class BonjourPublisher,BonjourBrowser;
@@ -44,18 +46,19 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @interface BrowserController : NSWindowController   //NSObject
 {
-	NSManagedObjectModel			*managedObjectModel;//, *userManagedObjectModel;
-    NSManagedObjectContext			*managedObjectContext;//, *userManagedObjectContext;
+//	NSManagedObjectModel			*managedObjectModel;//, *userManagedObjectModel;
+//    NSManagedObjectContext			*managedObjectContext;//, *userManagedObjectContext;
 //	NSPersistentStoreCoordinator	*userPersistentStoreCoordinator;
-	NSMutableDictionary				*persistentStoreCoordinatorDictionary;
+//	NSMutableDictionary				*persistentStoreCoordinatorDictionary;
+	DicomDatabase*					database;
 	NSMutableDictionary				*databaseIndexDictionary;
 	
 	NSDateFormatter			*TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
 	
 	NSRect					visibleScreenRect[ 40];
-	NSString				*currentDatabasePath;
-	BOOL					isCurrentDatabaseBonjour;
-	NSManagedObjectContext	*bonjourManagedObjectContext;
+//	NSString				*currentDatabasePath;
+//	BOOL					isCurrentDatabaseBonjour;
+//	NSManagedObjectContext	*bonjourManagedObjectContext;
 	NSString				*transferSyntax;
     NSArray                 *dirArray;
     NSToolbar               *toolbar;
@@ -178,11 +181,11 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSPredicate						*_fetchPredicate, *_filterPredicate;
 	NSString						*_filterPredicateDescription;
 	
-	NSString						*fixedDocumentsDirectory, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption;
+	NSString						/**fixedDocumentsDirectory,*/ *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption;
 	
-	char							cfixedDocumentsDirectory[ 4096], cfixedIncomingDirectory[ 4096], cfixedTempNoIndexDirectory[ 4096], cfixedIncomingNoIndexDirectory[ 4096];
+//	char							cfixedDocumentsDirectory[ 4096], cfixedIncomingDirectory[ 4096], cfixedTempNoIndexDirectory[ 4096], cfixedIncomingNoIndexDirectory[ 4096];
 	
-	NSTimeInterval					databaseLastModification, lastCheckForDirectory;
+	NSTimeInterval					databaseLastModification;
 	NSUInteger						previousFlags;
 //	StructuredReportController		*structuredReportController;
 	
@@ -245,7 +248,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSObject* activityObserver;
 }
 
-@property(readonly) NSManagedObjectContext *bonjourManagedObjectContext;
+@property(retain) DicomDatabase* database;
 
 @property(readonly) NSDateFormatter *DateTimeFormat __deprecated, *DateOfBirthFormat __deprecated, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
 @property(readonly) NSRecursiveLock *checkIncomingLock;
@@ -255,7 +258,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) BOOL is2DViewer, isCurrentDatabaseBonjour;
 @property(readonly) MyOutlineView *databaseOutline;
 @property(readonly) NSTableView *albumTable;
-@property(readonly) NSString *currentDatabasePath, *localDatabasePath, *documentsDirectory, *fixedDocumentsDirectory;
+@property(readonly) NSString *currentDatabasePath __deprecated, *localDatabasePath __deprecated, *documentsDirectory __deprecated, *fixedDocumentsDirectory __deprecated;
 
 @property(readonly) NSTableView* AtableView;
 //@property(readonly) NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
@@ -264,7 +267,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property volatile BOOL bonjourDownloading;
 @property(readonly) NSBox *bonjourSourcesBox;
 @property(readonly) BonjourBrowser *bonjourBrowser;
-@property(readonly) char *cfixedDocumentsDirectory, *cfixedIncomingDirectory, *cfixedTempNoIndexDirectory, *cfixedIncomingNoIndexDirectory;
+@property(readonly) char *cfixedDocumentsDirectory __deprecated, *cfixedIncomingDirectory __deprecated, *cfixedTempNoIndexDirectory __deprecated, *cfixedIncomingNoIndexDirectory __deprecated;
 
 @property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail;
 @property(retain) NSPredicate *fetchPredicate, *testPredicate;
@@ -294,8 +297,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (void) encryptFiles: (NSArray*) srcFiles inZIPFile: (NSString*) destFile password: (NSString*) password;
 - (IBAction) createDatabaseFolder:(id) sender;
 - (void) openDatabasePath: (NSString*) path;
-- (NSArray*) albums;
-+ (NSArray*) albumsInContext:(NSManagedObjectContext*)context;
+- (NSArray*) albums __deprecated;
++ (NSArray*) albumsInContext:(NSManagedObjectContext*)context __deprecated;
 - (BOOL) shouldTerminate: (id) sender;
 - (void) databaseOpenStudy: (NSManagedObject*) item;
 - (IBAction) databaseDoublePressed:(id)sender;
@@ -311,22 +314,22 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) emptyDeleteQueueThread;
 - (void) emptyDeleteQueue:(id) sender;
 - (void) addFileToDeleteQueue:(NSString*) file;
-- (NSString*) getNewFileDatabasePath: (NSString*) extension;
-- (NSString*) getNewFileDatabasePath: (NSString*) extension dbFolder: (NSString*) dbFolder;
-- (NSManagedObjectModel *) managedObjectModel;
+- (NSString*) getNewFileDatabasePath: (NSString*) extension __deprecated;
+- (NSString*) getNewFileDatabasePath: (NSString*) extension dbFolder: (NSString*) dbFolder __deprecated;
+- (NSManagedObjectModel *) managedObjectModel __deprecated;
 
-- (NSManagedObjectContext *) localManagedObjectContext;
-- (NSManagedObjectContext *) localManagedObjectContextIndependentContext: (BOOL) independentContext;
+- (NSManagedObjectContext *) localManagedObjectContext __deprecated;
+- (NSManagedObjectContext *) localManagedObjectContextIndependentContext: (BOOL) independentContext __deprecated;
 
-- (NSManagedObjectContext *) managedObjectContext;
-- (NSManagedObjectContext *) managedObjectContextIndependentContext:(BOOL) independentContext;
-- (NSManagedObjectContext *) managedObjectContextIndependentContext:(BOOL) independentContext path: (NSString *) path;
+- (NSManagedObjectContext *) managedObjectContext __deprecated;
+- (NSManagedObjectContext *) managedObjectContextIndependentContext:(BOOL) independentContext __deprecated;
+- (NSManagedObjectContext *) managedObjectContextIndependentContext:(BOOL) independentContext path: (NSString *) path __deprecated;
 
-- (NSManagedObjectContext *) defaultManagerObjectContext;
-- (NSManagedObjectContext *) defaultManagerObjectContextIndependentContext: (BOOL) independentContext;
+- (NSManagedObjectContext *) defaultManagerObjectContext __deprecated;
+- (NSManagedObjectContext *) defaultManagerObjectContextIndependentContext: (BOOL) independentContext __deprecated;
 
-- (BOOL) isBonjour: (NSManagedObjectContext*) c;
-- (NSString *) localDocumentsDirectory;
+- (BOOL) isBonjour: (NSManagedObjectContext*) c __deprecated;
+- (NSString *) localDocumentsDirectory __deprecated;
 - (NSArray*) childrenArray: (NSManagedObject*) item;
 - (NSArray*) childrenArray: (NSManagedObject*) item onlyImages:(BOOL) onlyImages;
 - (NSArray*) imagesArray: (NSManagedObject*) item;
@@ -345,9 +348,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand extendingSelection: (BOOL) extendingSelection;
 - (void) selectServer: (NSArray*) files;
 - (void) loadDICOMFromiPod;
-- (long) saveDatabase;
-- (long) saveDatabase:(NSString*) path;
-- (long) saveDatabase: (NSString*)path context: (NSManagedObjectContext*) context;
+- (long) saveDatabase __deprecated;
+- (long) saveDatabase:(NSString*) path __deprecated;
+- (long) saveDatabase: (NSString*)path context: (NSManagedObjectContext*) context __deprecated;
 - (void) addDICOMDIR:(NSString*) dicomdir :(NSMutableArray*) files;
 - (void) copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput options: (NSDictionary*) options;
 - (ViewerController*) loadSeries :(NSManagedObject *)curFile :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages;
@@ -485,6 +488,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) removeMountedImages: (NSString*) sNewDrive;
 
 //bonjour
+-(NSManagedObjectContext*)bonjourManagedObjectContext __deprecated;
 - (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key;
 //- (void) setServiceName:(NSString*) title;
 //- (NSString*) serviceName;
@@ -513,9 +517,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 //DB plugins
 - (void)executeFilterDB:(id)sender;
 
-+ (NSString*) defaultDocumentsDirectory;
-- (NSString *)documentsDirectoryFor:(int) mode url:(NSString*) url;
-- (NSString *)setFixedDocumentsDirectory;
++ (NSString*) defaultDocumentsDirectory  __deprecated;
+- (NSString *)documentsDirectoryFor:(int) mode url:(NSString*) url  __deprecated;
+- (NSString *)setFixedDocumentsDirectory  __deprecated;
 - (IBAction)showLogWindow: (id)sender;
 - (void) resetLogWindowController;
 

@@ -12,6 +12,7 @@
  PURPOSE.
  =========================================================================*/
 
+#import "DicomDatabase.h"
 #import "SRAnnotation.h"
 #import <DiscRecording/DRDevice.h>
 #import "DCMView.h"
@@ -93,16 +94,6 @@
 #import "WebPortal+Email+Log.h"
 #import "WebPortalDatabase.h"
 
-#define DEFAULTUSERDATABASEPATH @"~/Library/Application Support/OsiriX/WebUsers.sql"
-//#define USERDATABASEVERSION @"1.0"
-#define DATABASEVERSION @"2.5"
-#define DATABASEPATH @"/DATABASE.noindex/"
-#define DECOMPRESSIONPATH @"/DECOMPRESSION.noindex/"
-#define TOBEINDEXED @"/TOBEINDEXED.noindex/"
-#define ERRPATH @"/NOT READABLE/"
-#define DATABASEFPATH @"/DATABASE.noindex"
-#define DATAFILEPATH @"/Database.sql"
-
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
 #include <IOKit/IOKitLib.h>
@@ -116,7 +107,7 @@ static BOOL loadingIsOver = NO, isAutoCleanDatabaseRunning = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
 static int DicomDirScanDepth = 0;
-static int DefaultFolderSizeForDB = 0;
+//static int DefaultFolderSizeForDB = 0;
 static NSTimeInterval lastHardDiskCheck = 0;
 static unsigned long long lastFreeSpace = 0;
 static NSTimeInterval lastFreeSpaceLogTime = 0;
@@ -220,12 +211,15 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 
 @class DCMTKStudyQueryNode;
 
+@synthesize database;
 @synthesize checkIncomingLock, CDpassword, passwordForExportEncryption, databaseIndexDictionary;
 @synthesize TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
-@synthesize COLUMN, databaseOutline, albumTable, currentDatabasePath;
-@synthesize isCurrentDatabaseBonjour, bonjourDownloading, bonjourSourcesBox;
-@synthesize bonjourBrowser, pathToEncryptedFile, bonjourManagedObjectContext;
+@synthesize COLUMN, databaseOutline, albumTable;
+//@synthesize currentDatabasePath;
+//@synthesize isCurrentDatabaseBonjour, bonjourDownloading
+@synthesize bonjourSourcesBox;
+@synthesize bonjourBrowser, pathToEncryptedFile;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;//, userManagedObjectContext, userManagedObjectModel;
@@ -413,68 +407,15 @@ static NSConditionLock *threadLock = nil;
 #pragma mark-
 #pragma mark Add DICOM Database functions
 
-- (NSString*)getNewFileDatabasePath: (NSString*)extension
-{
-	return [self getNewFileDatabasePath: extension dbFolder: self.documentsDirectory];
+- (NSString*)getNewFileDatabasePath:(NSString*)extension { // deprecated
+	return [database uniquePathForNewDataFileWithExtension:extension];
 }
 
-- (NSString*)getNewFileDatabasePath: (NSString*)extension dbFolder: (NSString*)dbFolder
-{
-	NSString *dstPath = nil;
-	
-	// This function can be called in multiple threads -> we want to be sure to have a UNIQUE file path
-	@synchronized( self)
-	{
-		NSString *OUTpath = [dbFolder stringByAppendingPathComponent:DATABASEPATH], *subFolder;
-		
-		if( [extension length] == 0)
-			extension = [NSString stringWithString:@"dcm"];
-			
-		if( [extension length] > 4 || [extension length] < 3)
-		{
-			NSLog( @" **** WARNING : strange extension : %@ - It will be replaced by dcm.", extension);
-			extension = [NSString stringWithString:@"dcm"]; 
-		}
-		
-		if( [NSDate timeIntervalSinceReferenceDate] - lastCheckForDirectory > 3) // 3 secs
-		{
-			lastCheckForDirectory = [NSDate timeIntervalSinceReferenceDate];
-			[AppController createNoIndexDirectoryIfNecessary: OUTpath];
-		}
-		
-		BOOL fileExist = NO, firstExist = YES;
-		long long databaseIndex = [[databaseIndexDictionary objectForKey: [dbFolder stringByAppendingPathComponent: DATABASEPATH]] longLongValue] + 1;
-		long long defaultFolderSizeDB = [BrowserController DefaultFolderSizeForDB];
-		
-		do
-		{
-			long long subFolderInt = [BrowserController DefaultFolderSizeForDB] * ((databaseIndex / defaultFolderSizeDB) +1);
-			subFolder = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%lld", subFolderInt]];
-			
-			if( ![[NSFileManager defaultManager] fileExistsAtPath:subFolder])
-				[[NSFileManager defaultManager] createDirectoryAtPath:subFolder attributes:nil];
-			
-			dstPath = [subFolder stringByAppendingPathComponent: [NSString stringWithFormat:@"%lld.%@", databaseIndex, extension]];
-			
-			fileExist = [[NSFileManager defaultManager] fileExistsAtPath: dstPath];
-			
-			if( fileExist == YES && firstExist == YES)
-			{
-				firstExist = NO;
-				databaseIndex = [BrowserController computeDATABASEINDEXforDatabase: OUTpath] + 1;
-			}
-			else
-				databaseIndex++;
-		}
-		while( fileExist == YES);
-		
-		[databaseIndexDictionary setObject: [NSNumber numberWithLongLong: databaseIndex] forKey: [dbFolder stringByAppendingPathComponent: DATABASEPATH]];
-	}
-	
-	return dstPath;
+- (NSString*)getNewFileDatabasePath:(NSString*)extension dbFolder:(NSString*)dbFolder { // deprecated
+	return [[DicomDatabase localDatabaseAtPath:dbFolder] uniquePathForNewDataFileWithExtension:extension];
 }
 
-- (void) reloadViewers: (NSMutableArray*) vl
+- (void)reloadViewers:(NSMutableArray*)vl
 {
 	// Reload series if needed
 	for( ViewerController *vc in vl)
@@ -681,9 +622,13 @@ static NSConditionLock *threadLock = nil;
 
 +(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX mountedVolume: (BOOL) mountedVolume
 {
+	DicomDatabase* db = NULL;
+	// TODO: assign db from context, from dbFolder
+	//[DicomDatabase localDatabaseAtPath:dbFolder];
+	
 	NSDate *today = [NSDate date];
 	NSError *error = nil;
-	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [dbFolder stringByAppendingPathComponent:ERRPATH], *newFile, *dbDirectory = [dbFolder stringByAppendingPathComponent:DATABASEFPATH], *reportsDirectory = [dbFolder stringByAppendingPathComponent:@"/REPORTS/"], *tempDirectory = [dbFolder stringByAppendingPathComponent:@"/TEMP.noindex/"];
+	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [db errorsDirPath], *newFile, *dbDirectory = [db dataDirPath], *reportsDirectory = [db reportsDirPath], *tempDirectory = [db tempDirPath];
 	NSInteger index;
 	Wait *splash = nil;
 	NSManagedObjectModel *model = context.persistentStoreCoordinator.managedObjectModel;
@@ -2486,214 +2431,52 @@ static NSConditionLock *threadLock = nil;
 	return databaseLastModification;
 }
 
-- (NSManagedObjectModel *)managedObjectModel
-{
-    if (managedObjectModel) return managedObjectModel;
-	
-    managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.momd"]]];
-    
-    return managedObjectModel;
+- (NSManagedObjectModel*)managedObjectModel { // deprecated
+    return self.database.managedObjectModel;
 }
 
-- (void) defaultAlbums: (id) sender
-{
-	// Add default albums
-	DicomAlbum *album = nil;
-	NSArray *albumsArray = [self albumArray];
-	
-	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Just Added", nil)] == NSNotFound)
-	{
-		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-		album.name = NSLocalizedString( @"Just Added", nil);
-		album.predicateString = @"(dateAdded >= CAST($LASTHOUR, 'NSDate'))";
-		album.smartAlbum = [NSNumber numberWithBool: YES];
-	}
-
-	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Today MR", nil)] == NSNotFound)
-	{
-		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-		album.name = NSLocalizedString( @"Today MR", nil);
-		album.predicateString = @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($TODAY, 'NSDate'))";
-		album.smartAlbum = [NSNumber numberWithBool: YES];
-	}
-
-	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Today CT", nil)] == NSNotFound)
-	{
-		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-		album.name = NSLocalizedString( @"Today CT", nil);
-		album.predicateString = @"(ANY series.modality CONTAINS[cd] 'CT') AND (date >= CAST($TODAY, 'NSDate'))";
-		album.smartAlbum = [NSNumber numberWithBool: YES];
-	}
-
-	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Yesterday MR", nil)] == NSNotFound)
-	{
-		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-		album.name = NSLocalizedString( @"Yesterday MR", nil);
-		album.predicateString = @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
-		album.smartAlbum = [NSNumber numberWithBool: YES];
-	}
-
-	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Yesterday CT", nil)] == NSNotFound)
-	{
-		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-		album.name = NSLocalizedString( @"Yesterday CT", nil);
-		album.predicateString = @"(ANY series.modality CONTAINS[cd] 'CT') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
-		album.smartAlbum = [NSNumber numberWithBool: YES];
-	}
-
-	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Interesting Cases", nil)] == NSNotFound)
-	{
-		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-		album.name = NSLocalizedString( @"Interesting Cases", nil);
-	}
-	
-	if( [[albumsArray valueForKey:@"name"] indexOfObject: NSLocalizedString( @"Cases with comments", nil)] == NSNotFound)
-	{
-		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
-		album.name = NSLocalizedString( @"Cases with comments", nil);
-		album.predicateString = @"(comment != '' AND comment != NIL)";
-		album.smartAlbum = [NSNumber numberWithBool: YES];
-	}
-	
-	[[self managedObjectContext] save: nil];
-	
-	[self refreshAlbums];
-}
-
-- (void) removeTooComplexCommentsAlbum
-{
-	@try 
-	{
-		for( NSManagedObject *album in self.albumArray)
-		{
-			if( [[album valueForKey: @"predicateString"] isEqualToString: @"(ANY series.comment != '' AND ANY series.comment != NIL) OR (comment != '' AND comment != NIL)"])
-				[album setValue: @"(comment != '' AND comment != NIL)" forKey: @"predicateString"];
-		}
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
-	}
+- (void)defaultAlbums:(id)sender {
+	[self.database addDefaultAlbums];
 }
 
 // ------------------
 
-- (NSManagedObjectContext *) localManagedObjectContextIndependentContext: (BOOL) independentContext
-{
-	if (isCurrentDatabaseBonjour || [[self localDocumentsDirectory] isEqualToString: [self documentsDirectory]] == NO)
-	{
-		return [self defaultManagerObjectContextIndependentContext: independentContext];
-	}
-	else
-	{
-		return [self managedObjectContext];
-	}
+- (NSManagedObjectContext*)localManagedObjectContextIndependentContext:(BOOL)independentContext { // deprecated
+	return [[DicomDatabase activeLocalDatabase] independentContext:independentContext];
 }
 
-- (NSManagedObjectContext *) localManagedObjectContext
-{
-	return [self localManagedObjectContextIndependentContext: NO];
+- (NSManagedObjectContext*)localManagedObjectContext { // deprecated
+	return [self localManagedObjectContextIndependentContext:NO];
 }
 
 // ------------------
 
-- (NSManagedObjectContext *) defaultManagerObjectContext
-{
-	return [self defaultManagerObjectContextIndependentContext: NO];
+- (NSManagedObjectContext*)defaultManagerObjectContext { // deprecated
+	return [self defaultManagerObjectContextIndependentContext:NO];
 }
 
-- (NSManagedObjectContext *) defaultManagerObjectContextIndependentContext: (BOOL) independentContext
-{
-	return [self managedObjectContextIndependentContext: independentContext path: [self localDatabasePath]];
+- (NSManagedObjectContext*)defaultManagerObjectContextIndependentContext:(BOOL)independentContext { // deprecated
+	return [[DicomDatabase defaultDatabase] independentContext:independentContext];
 }
 
 // ------------------
 
-- (NSManagedObjectContext *) managedObjectContext
-{
-	return [self managedObjectContextIndependentContext: NO path: currentDatabasePath];
+- (NSManagedObjectContext*)managedObjectContext { // deprecated
+	return [self managedObjectContextIndependentContext:NO];
 }
 
-- (NSManagedObjectContext *) managedObjectContextIndependentContext:(BOOL) independentContext
-{
-	return [self managedObjectContextIndependentContext: independentContext path: currentDatabasePath]; 
+- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext { // deprecated
+	return [self managedObjectContextIndependentContext:independentContext path:database.basePath]; 
 }
 
-- (NSManagedObjectContext *) managedObjectContextIndependentContext:(BOOL) independentContext path: (NSString *) path
-{
-    NSError *error = nil;
-	NSManagedObjectContext *moc = nil;
-	
-	if( path == nil)
+- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext path:(NSString*)path { // deprecated
+	if (!path)
 		return nil;
 	
-    if( managedObjectContext && independentContext == NO && [path isEqualToString: currentDatabasePath] == YES)
-		return managedObjectContext;
-	
-	@synchronized( self)
-	{
-		NSPersistentStoreCoordinator *psc = [persistentStoreCoordinatorDictionary objectForKey: path];
-		
-		if( psc)
-		{
-			if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
-			{
-				NSLog( @"-------- WARNING: persistentStore exists, but not the associated file : persistentStore will be reseted to a new one.");
-				psc = nil;
-			}
-		}
-		
-		if( psc == nil)
-		{
-			psc = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel] autorelease];
-			[persistentStoreCoordinatorDictionary setObject: psc forKey: path];
-			
-			[databaseIndexDictionary setObject: [NSNumber numberWithLongLong: 0] forKey: path];
-		}
-		
-		moc = [[[NSManagedObjectContext alloc] init] autorelease];
-		[moc setPersistentStoreCoordinator: psc];
-		[moc setUndoManager: nil];
-		
-		NSURL *url = [NSURL fileURLWithPath: path];
-		
-		BOOL newDB = NO;
-		if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
-			newDB = YES;
-		
-		NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, nil];
-		
-		if( [psc persistentStoreForURL: url] == nil)
-		{
-			if (![psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:options error:&error])
-			{
-				NSLog(@"********** managedObjectContext FAILED: %@", error);
-				error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
-				
-				moc = nil;
-			}
-			else
-			{
-				if( newDB)
-					NSLog( @"New SQL DB file created: %@", path);
-			}
-		}
+    if (database.managedObjectContext && [path isEqualToString:database.basePath] == YES)
+		return [database independentContext:independentContext];
 
-		if( [moc save: &error] == NO)	// This line is very important, if there is NO database.sql file
-			NSLog( @"**** managedObjectContextIndependentContext save error: %@", error);
-			
-		if( managedObjectContext == nil && [path isEqualToString: currentDatabasePath] == YES && independentContext == NO)
-			managedObjectContext = [moc retain];
-		
-		if( newDB)
-			[self defaultAlbums: self];
-		
-		if( managedObjectContext && independentContext == NO && [path isEqualToString: currentDatabasePath] == YES && [NSThread isMainThread])
-		   [self removeTooComplexCommentsAlbum];
-	}
-	
-    return moc;
+	return [[DicomDatabase localDatabaseAtPath:path] managedObjectContext];
 }
 
 // ------------------
@@ -2807,6 +2590,15 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
+-(void)setDatabase:(DicomDatabase*)db {
+	if (database != db) {
+		[self willChangeValueForKey:@"database"];
+		[database release];
+		database = [db retain];
+		[self didChangeValueForKey:@"database"];
+	}
+}
+
 -(void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour
 {
 	[self openDatabaseIn: a Bonjour: isBonjour refresh: NO];
@@ -2821,7 +2613,7 @@ static NSConditionLock *threadLock = nil;
 	NSString *albumName = nil, *selectedItem = nil;
 	int timeInt;
 	
-	if( refresh)
+	if (refresh)
 	{
 		NSArray *albumArray = self.albumArray;
 		if( [albumArray count] > albumTable.selectedRow && albumTable.selectedRow >= 0)
@@ -19042,10 +18834,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			int pixelType = [(NSCell *)[rdPixelTypeMatrix selectedCell] tag];
 			
-			int spp;
-			int highBit = 7;
-			int bitsAllocated = 8;
-			float numberBytes;
+			NSUInteger spp;
+			NSUInteger highBit = 7;
+			NSUInteger bitsAllocated = 8;
+			NSUInteger numberBytes;
 			BOOL isSigned = YES;
 			BOOL isLittleEndian = YES;
 			NSString *photometricInterpretation = @"MONOCHROME2";
@@ -19086,13 +18878,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 				default:	spp = 1;
 					numberBytes = 2;
 			}
-			int subDataLength = spp  * numberBytes * [rows intValue] * [columns intValue];	
 			
-			if ([data length] >= subDataLength * [slices intValue]  + [offset intValue])
-			{					
-				int i;
-				int s = [slices intValue];
-				//tmpObject for StudyUID andd SeriesUID				
+			NSUInteger subDataLength = spp  * numberBytes * [rows unsignedIntegerValue] * [columns unsignedIntegerValue];	
+			
+			if ([data length] >= subDataLength * [slices unsignedIntegerValue]  + [offset unsignedIntegerValue])
+			{
+				NSUInteger s = [slices unsignedIntegerValue];
+				
+				//tmpObject for StudyUID andd SeriesUID	
+						
 				DCMObject *tmpObject = [DCMObject secondaryCaptureObjectWithBitDepth:numberBytes * 8  samplesPerPixel:spp numberOfFrames:1];
 				NSString *studyUID = [tmpObject attributeValueWithName:@"StudyInstanceUID"];
 				NSString *seriesUID = [tmpObject attributeValueWithName:@"SeriesInstanceUID"];
@@ -19100,7 +18894,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				DCMCalendarDate *studyDate = [DCMCalendarDate date];
 				DCMCalendarDate *seriesDate = [DCMCalendarDate date];
 				[[NSUserDefaults standardUserDefaults] setInteger:(++studyID) forKey:@"SCStudyID"];
-				for (i = 0; i < s; i++)
+				for(NSUInteger i = 0; i < s; i++)
 				{
 					DCMObject *dcmObject = [DCMObject secondaryCaptureObjectWithBitDepth:numberBytes * 8  samplesPerPixel:spp numberOfFrames:1];
 					DCMCalendarDate *aquisitionDate = [DCMCalendarDate date];
@@ -19147,7 +18941,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if (numberBytes < 2)
 						vr = @"OB";
 					
-					NSRange range = NSMakeRange([offset intValue] + subDataLength * i, subDataLength);
+					NSRange range = NSMakeRange([offset unsignedIntegerValue] + subDataLength * i, subDataLength);
+					
 					NSMutableData *subdata = [NSMutableData dataWithData:[data subdataWithRange:range]];
 					
 					DCMTransferSyntax *ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
@@ -19156,14 +18951,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 						if( isSigned == NO)
 						{
 							unsigned short *ptr = (unsigned short*) [subdata mutableBytes];
-							int l = subDataLength/2;
+							NSUInteger l = subDataLength/2;
 							while( l-- > 0)
 								ptr[ l] = EndianU16_BtoL( ptr[ l]);
 						}
 						else
 						{
 							short *ptr = ( short*) [subdata mutableBytes];
-							int l = subDataLength/2;
+							NSUInteger l = subDataLength/2;
 							while( l-- > 0)
 								ptr[ l] = EndianS16_BtoL( ptr[ l]);
 						}
