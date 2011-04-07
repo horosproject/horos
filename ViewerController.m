@@ -5834,250 +5834,269 @@ return YES;
 	
 	[self checkEverythingLoaded];
 	
-	for( int x = 0 ; x < maxMovieIndex ; x++)
+	isDataVolumicIn4DLevel++;
+	
+	@try
 	{
-		if( check4D == YES || x == curMovieIndex)
+		for( int x = 0 ; x < maxMovieIndex ; x++)
 		{
-			if( [pixList[ x] count] > 4)
+			if( check4D == YES || x == curMovieIndex)
 			{
-				float orientation[ 9];
-				
-				[[pixList[ x] objectAtIndex: 1] orientation: orientation];
-				
-				int pw = [[[fileList[ x] objectAtIndex: 0] valueForKey:@"width"] intValue];
-				int ph = [[[fileList[ x] objectAtIndex: 0] valueForKey:@"height"] intValue];
-				
-				for( int j = 0 ; j < [pixList[ x] count]; j++)
+				if( [pixList[ x] count] > 4)
 				{
-					if( pw != [[[fileList[ x] objectAtIndex: j] valueForKey:@"width"] intValue])
-						volumicData = NO;
+					float orientation[ 9];
 					
-					if( ph != [[[fileList[ x] objectAtIndex: j] valueForKey:@"height"] intValue])
-						volumicData = NO;
+					[[pixList[ x] objectAtIndex: 1] orientation: orientation];
 					
-					if( volumicData)
+					int pw = [[[fileList[ x] objectAtIndex: 0] valueForKey:@"width"] intValue];
+					int ph = [[[fileList[ x] objectAtIndex: 0] valueForKey:@"height"] intValue];
+					
+					for( int j = 0 ; j < [pixList[ x] count]; j++)
 					{
-						float o[ 9];
-						[[pixList[ x] objectAtIndex: j] orientation: o];
-						for( int k = 0 ; k < 9; k++)
+						if( pw != [[[fileList[ x] objectAtIndex: j] valueForKey:@"width"] intValue])
+							volumicData = NO;
+						
+						if( ph != [[[fileList[ x] objectAtIndex: j] valueForKey:@"height"] intValue])
+							volumicData = NO;
+						
+						if( volumicData)
 						{
-							#define SENSIBILITY 0.05
-							
-							if( fabs( o[ k] - orientation[ k]) > SENSIBILITY)
+							float o[ 9];
+							[[pixList[ x] objectAtIndex: j] orientation: o];
+							for( int k = 0 ; k < 9; k++)
 							{
-								volumicData = NO;
+								#define SENSIBILITY 0.05
 								
-								if( j == 0)
-									firstImage = YES;
-							
-								if( j == [pixList[ x] count] -1)
-									lastImage = YES;
+								if( fabs( o[ k] - orientation[ k]) > SENSIBILITY)
+								{
+									volumicData = NO;
+									
+									if( j == 0)
+										firstImage = YES;
+								
+									if( j == [pixList[ x] count] -1)
+										lastImage = YES;
+								}
 							}
 						}
 					}
 				}
-			}
-			else volumicData = NO;
-		}
-	}
-	
-	if( volumicData == NO && (firstImage == YES || lastImage == YES))
-	{
-		if( firstImage)
-		{
-			for( int x = 0 ; x < maxMovieIndex ; x++)
-			{
-				if( check4D == YES || x == curMovieIndex)
-				{
-					// Correct origin
-					float originA[ 3];
-					[[pixList[ x] objectAtIndex: 2] origin: originA];
-					float originB[ 3];
-					[[pixList[ x] objectAtIndex: 1] origin: originB];
-					
-					DCMPix *pix = [pixList[ x] objectAtIndex: 0];
-					
-					float savedOrigin[ 3];
-					[pix origin: savedOrigin];
-					
-					originB[ 0] -= originA[ 0] - originB[ 0];
-					originB[ 1] -= originA[ 1] - originB[ 1];
-					originB[ 2] -= originA[ 2] - originB[ 2];
-					
-					[pix setOrigin: originB];
-					
-					// Correct orientation
-					float orientation[ 9];
-					[[pixList[ x] objectAtIndex: 1] orientation: orientation];
-					
-					float savedOrientation[ 9];
-					[pix orientation: savedOrientation];
-					
-					[pix setOrientation: orientation];
-					
-					BOOL r = [self isDataVolumicIn4D: check4D checkEverythingLoaded: c tryToCorrect: NO];
-					
-					if( r && tryToCorrect)
-					{
-						if( [pix isRGB] == NO)
-						{
-							// Set this image to maxValueOfSeries, to find the true minValueOfSeries
-							float m = [pix maxValueOfSeries];
-							float *ptr = [pix fImage];
-							int z = [pix pwidth]*[pix pheight];
-							while( z-- > 0)
-								*ptr++ = m;
-							
-							[pix computePixMinPixMax];
-							
-							// Then recompute minValueOfSeries
-							for( DCMPix *p in pixList[ x])
-								p.minValueOfSeries = 0;
-							for( DCMPix *p in pixList[ x])
-								[p minValueOfSeries];
-							
-							m = [pix minValueOfSeries];
-							ptr = [pix fImage];
-							z = [pix pwidth]*[pix pheight];
-							while( z-- > 0)
-								*ptr++ = m;
-							
-							// Then recompute maxValueOfSeries
-							for( DCMPix *p in pixList[ x])
-								p.maxValueOfSeries = 0;
-							
-							for( DCMPix *p in pixList[ x])
-								[p maxValueOfSeries];
-							
-							[pix kill8bitsImage];
-							[self refresh];
-							[imageView setNeedsDisplay: YES];
-						}
-						else
-						{
-							unsigned char *ptr = (unsigned char*) [pix fImage];
-							int z = [pix pwidth]*[pix pheight]*4;
-							while( z-- > 0)
-								*ptr++ = 0;
-							
-							[pix kill8bitsImage];
-							[self refresh];
-							[imageView setNeedsDisplay: YES];
-						}
-						
-						DCMPix *otherPix = [pixList[ x] objectAtIndex: 2];
-						[pix setPixelSpacingX: [otherPix pixelSpacingX]];
-						[pix setPixelSpacingY: [otherPix pixelSpacingY]];
-					}
-					else
-					{
-						[pix setOrigin: savedOrigin];
-						[pix setOrientation: savedOrientation];
-					}
-					
-					return r;
-				}
+				else volumicData = NO;
 			}
 		}
 		
-		if( lastImage)
+		if( volumicData == NO && (firstImage == YES || lastImage == YES))
 		{
-			for( int x = 0 ; x < maxMovieIndex ; x++)
+			if( firstImage)
 			{
-				if( check4D == YES || x == curMovieIndex)
+				for( int x = 0 ; x < maxMovieIndex ; x++)
 				{
-					// Correct origin
-					float originA[ 3];
-					[[pixList[ x] objectAtIndex: [pixList[ x] count]-2] origin: originA];
-					float originB[ 3];
-					[[pixList[ x] objectAtIndex: [pixList[ x] count]-3] origin: originB];
-					
-					DCMPix *pix = [pixList[ x] lastObject];
-					
-					float savedOrigin[ 3];
-					[pix origin: savedOrigin];
-					
-					originA[ 0] += originA[ 0] - originB[ 0];
-					originA[ 1] += originA[ 1] - originB[ 1];
-					originA[ 2] += originA[ 2] - originB[ 2];
-					
-					[pix setOrigin: originA];
-					
-					// Correct orientation
-					float orientation[ 9];
-					[[pixList[ x] objectAtIndex: 1] orientation: orientation];
-					
-					float savedOrientation[ 9];
-					[pix orientation: savedOrientation];
-					
-					[pix setOrientation: orientation];
-					
-					BOOL r = [self isDataVolumicIn4D: check4D checkEverythingLoaded: c tryToCorrect: NO];
-					
-					if( r && tryToCorrect)
+					if( check4D == YES || x == curMovieIndex)
 					{
-						if( [pix isRGB] == NO)
+						// Correct origin
+						float originA[ 3];
+						[[pixList[ x] objectAtIndex: 2] origin: originA];
+						float originB[ 3];
+						[[pixList[ x] objectAtIndex: 1] origin: originB];
+						
+						DCMPix *pix = [pixList[ x] objectAtIndex: 0];
+						
+						float savedOrigin[ 3];
+						[pix origin: savedOrigin];
+						
+						originB[ 0] -= originA[ 0] - originB[ 0];
+						originB[ 1] -= originA[ 1] - originB[ 1];
+						originB[ 2] -= originA[ 2] - originB[ 2];
+						
+						[pix setOrigin: originB];
+						
+						// Correct orientation
+						float orientation[ 9];
+						[[pixList[ x] objectAtIndex: 1] orientation: orientation];
+						
+						float savedOrientation[ 9];
+						[pix orientation: savedOrientation];
+						
+						[pix setOrientation: orientation];
+						
+						BOOL r = NO;
+						
+						if( isDataVolumicIn4DLevel < 4)
+							r = [self isDataVolumicIn4D: check4D checkEverythingLoaded: c tryToCorrect: NO];
+						
+						if( r && tryToCorrect)
 						{
-							// Set this image to maxValueOfSeries, to find the true minValueOfSeries
-							float m = [pix maxValueOfSeries];
-							float *ptr = [pix fImage];
-							int z = [pix pwidth]*[pix pheight];
-							while( z-- > 0)
-								*ptr++ = m;
+							if( [pix isRGB] == NO)
+							{
+								// Set this image to maxValueOfSeries, to find the true minValueOfSeries
+								float m = [pix maxValueOfSeries];
+								float *ptr = [pix fImage];
+								int z = [pix pwidth]*[pix pheight];
+								while( z-- > 0)
+									*ptr++ = m;
+								
+								[pix computePixMinPixMax];
+								
+								// Then recompute minValueOfSeries
+								for( DCMPix *p in pixList[ x])
+									p.minValueOfSeries = 0;
+								for( DCMPix *p in pixList[ x])
+									[p minValueOfSeries];
+								
+								m = [pix minValueOfSeries];
+								ptr = [pix fImage];
+								z = [pix pwidth]*[pix pheight];
+								while( z-- > 0)
+									*ptr++ = m;
+								
+								// Then recompute maxValueOfSeries
+								for( DCMPix *p in pixList[ x])
+									p.maxValueOfSeries = 0;
+								
+								for( DCMPix *p in pixList[ x])
+									[p maxValueOfSeries];
+								
+								[pix kill8bitsImage];
+								[self refresh];
+								[imageView setNeedsDisplay: YES];
+							}
+							else
+							{
+								unsigned char *ptr = (unsigned char*) [pix fImage];
+								int z = [pix pwidth]*[pix pheight]*4;
+								while( z-- > 0)
+									*ptr++ = 0;
+								
+								[pix kill8bitsImage];
+								[self refresh];
+								[imageView setNeedsDisplay: YES];
+							}
 							
-							[pix computePixMinPixMax];
-							
-							// Then recompute minValueOfSeries
-							for( DCMPix *p in pixList[ x])
-								p.minValueOfSeries = 0;
-							for( DCMPix *p in pixList[ x])
-								[p minValueOfSeries];
-							
-							m = [pix minValueOfSeries];
-							ptr = [pix fImage];
-							z = [pix pwidth]*[pix pheight];
-							while( z-- > 0)
-								*ptr++ = m;
-							
-							// Then recompute maxValueOfSeries
-							for( DCMPix *p in pixList[ x])
-								p.maxValueOfSeries = 0;
-							
-							for( DCMPix *p in pixList[ x])
-								[p maxValueOfSeries];
-							
-							[pix kill8bitsImage];
-							[self refresh];
-							[imageView setNeedsDisplay: YES];
+							DCMPix *otherPix = [pixList[ x] objectAtIndex: 2];
+							[pix setPixelSpacingX: [otherPix pixelSpacingX]];
+							[pix setPixelSpacingY: [otherPix pixelSpacingY]];
 						}
 						else
 						{
-							unsigned char *ptr = (unsigned char*) [pix fImage];
-							int z = [pix pwidth]*[pix pheight]*4;
-							while( z-- > 0)
-								*ptr++ = 0;
-							
-							[pix kill8bitsImage];
-							[self refresh];
-							[imageView setNeedsDisplay: YES];
+							[pix setOrigin: savedOrigin];
+							[pix setOrientation: savedOrientation];
 						}
 						
-						DCMPix *otherPix = [pixList[ x] objectAtIndex: [pixList[ x] count]-3];
-						[pix setPixelSpacingX: [otherPix pixelSpacingX]];
-						[pix setPixelSpacingY: [otherPix pixelSpacingY]];
+						isDataVolumicIn4DLevel--;
+						return r;
 					}
-					else
+				}
+			}
+			
+			if( lastImage)
+			{
+				for( int x = 0 ; x < maxMovieIndex ; x++)
+				{
+					if( check4D == YES || x == curMovieIndex)
 					{
-						[pix setOrigin: savedOrigin];
-						[pix setOrientation: savedOrientation];
+						// Correct origin
+						float originA[ 3];
+						[[pixList[ x] objectAtIndex: [pixList[ x] count]-2] origin: originA];
+						float originB[ 3];
+						[[pixList[ x] objectAtIndex: [pixList[ x] count]-3] origin: originB];
+						
+						DCMPix *pix = [pixList[ x] lastObject];
+						
+						float savedOrigin[ 3];
+						[pix origin: savedOrigin];
+						
+						originA[ 0] += originA[ 0] - originB[ 0];
+						originA[ 1] += originA[ 1] - originB[ 1];
+						originA[ 2] += originA[ 2] - originB[ 2];
+						
+						[pix setOrigin: originA];
+						
+						// Correct orientation
+						float orientation[ 9];
+						[[pixList[ x] objectAtIndex: 1] orientation: orientation];
+						
+						float savedOrientation[ 9];
+						[pix orientation: savedOrientation];
+						
+						[pix setOrientation: orientation];
+						
+						BOOL r = NO;
+						if( isDataVolumicIn4DLevel < 4)
+							r = [self isDataVolumicIn4D: check4D checkEverythingLoaded: c tryToCorrect: NO];
+						
+						if( r && tryToCorrect)
+						{
+							if( [pix isRGB] == NO)
+							{
+								// Set this image to maxValueOfSeries, to find the true minValueOfSeries
+								float m = [pix maxValueOfSeries];
+								float *ptr = [pix fImage];
+								int z = [pix pwidth]*[pix pheight];
+								while( z-- > 0)
+									*ptr++ = m;
+								
+								[pix computePixMinPixMax];
+								
+								// Then recompute minValueOfSeries
+								for( DCMPix *p in pixList[ x])
+									p.minValueOfSeries = 0;
+								for( DCMPix *p in pixList[ x])
+									[p minValueOfSeries];
+								
+								m = [pix minValueOfSeries];
+								ptr = [pix fImage];
+								z = [pix pwidth]*[pix pheight];
+								while( z-- > 0)
+									*ptr++ = m;
+								
+								// Then recompute maxValueOfSeries
+								for( DCMPix *p in pixList[ x])
+									p.maxValueOfSeries = 0;
+								
+								for( DCMPix *p in pixList[ x])
+									[p maxValueOfSeries];
+								
+								[pix kill8bitsImage];
+								[self refresh];
+								[imageView setNeedsDisplay: YES];
+							}
+							else
+							{
+								unsigned char *ptr = (unsigned char*) [pix fImage];
+								int z = [pix pwidth]*[pix pheight]*4;
+								while( z-- > 0)
+									*ptr++ = 0;
+								
+								[pix kill8bitsImage];
+								[self refresh];
+								[imageView setNeedsDisplay: YES];
+							}
+							
+							DCMPix *otherPix = [pixList[ x] objectAtIndex: [pixList[ x] count]-3];
+							[pix setPixelSpacingX: [otherPix pixelSpacingX]];
+							[pix setPixelSpacingY: [otherPix pixelSpacingY]];
+						}
+						else
+						{
+							[pix setOrigin: savedOrigin];
+							[pix setOrientation: savedOrientation];
+						}
+						
+						isDataVolumicIn4DLevel--;
+						return r;
 					}
-					
-					return r;
 				}
 			}
 		}
 	}
-	
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		#ifdef OSIRIX_VIEWER
+		[AppController printStackTrace: e];
+		#endif
+	}
+	isDataVolumicIn4DLevel--;
 	return volumicData;
 }
 
