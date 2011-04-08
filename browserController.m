@@ -116,7 +116,7 @@ static NSTimeInterval lastFreeSpaceLogTime = 0;
 //static NSManagedObjectContext *cachedAlbumsManagedObjectContext = nil;
 
 extern int delayedTileWindows;
-extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
+extern BOOL NEEDTOREBUILD;//, COMPLETEREBUILD;
 
 #pragma deprecated(asciiString)
 NSString* asciiString(NSString* str)
@@ -163,6 +163,7 @@ void restartSTORESCP()
 
 - (int) findDBPath:(NSString*) path dbFolder:(NSString*) DBFolderLocation;
 - (void)setDBWindowTitle;
+-(void)reduceCoreDataFootPrint;
 
 @end
 
@@ -1737,7 +1738,7 @@ static NSConditionLock *threadLock = nil;
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		matrixThumbnails = YES;
-		NSLog( @"copyToDBFolder from matrix");
+		NSLog( @"applyRoutingRule from matrix");
 	}
 	
 	NSMutableArray *objects = [NSMutableArray array];
@@ -2528,10 +2529,20 @@ static NSConditionLock *threadLock = nil;
 			timeInt = timeIntervalType;
 		}*/
 		
+		[database release]; database = nil;
 		if ([database isLocal])
 			[database save:nil];
 		
-		[database release]; database = nil;
+		[DCMPix purgeCachedDictionaries];
+		[DCMView purgeStringTextureCache];
+		
+		[outlineViewArray release];
+		outlineViewArray = nil;
+		
+		[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
+		[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
+		[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
+		
 		
 		
 		@try {
@@ -2681,6 +2692,12 @@ static NSConditionLock *threadLock = nil;
 				[self setDBWindowTitle];
 				
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixServerArrayChangedNotification object:nil];
+				
+				[databaseOutline reloadData];
+				[albumTable reloadData];
+				
+				
+				
 				
 				[self outlineViewRefresh];
 				[self refreshMatrix: self];
@@ -3383,17 +3400,19 @@ static NSConditionLock *threadLock = nil;
 	else return -1;
 }
 
-- (BOOL)isBonjour:(NSManagedObjectContext*)c { // __deprecated
+-(BOOL)isBonjour:(NSManagedObjectContext*)c { // __deprecated
 	return ![[DicomDatabase databaseForContext:c] isLocal];
 }
 
-- (void)loadDatabase:(NSString*)path { // __deprecated
-	NSLog(@"%s IS NOT AVAILABLE ANYMORE, please use setDatabase", __PRETTY_FUNCTION__);
+-(void)loadDatabase:(NSString*)path { // __deprecated
+	[self setDatabase:[DicomDatabase databaseAtPath:path]];
 }
 
-
--(long) saveDatabase: (NSString*)path context: (NSManagedObjectContext*) context
-{
+-(long)saveDatabase:(NSString*)path context:(NSManagedObjectContext*)context { // __deprecated
+	NSError* err = nil;
+	[[DicomDatabase databaseForContext:context] save:&err];
+	return [err code];
+	/*
 	long retError = 0;
 	
 	if( [[AppController sharedAppController] isSessionInactive])
@@ -3431,17 +3450,17 @@ static NSConditionLock *threadLock = nil;
 		[context unlock];
 	}
 	
-	return retError;
+	return retError;*/
 }
 
--(long) saveDatabase
-{
-	return [self saveDatabase: nil context: self.managedObjectContext];
+// TODO: #pragma we know saveDatabase:context: is deprecated
+-(long)saveDatabase { // __deprecated
+	return [self saveDatabase:nil context:self.managedObjectContext];
 }
 
--(long) saveDatabase: (NSString*)path
-{
-	return [self saveDatabase: path context: self.managedObjectContext];
+// TODO: #pragma we know saveDatabase:context: is deprecated
+-(long)saveDatabase:(NSString*)path { // __deprecated
+	return [self saveDatabase:path context:self.managedObjectContext];
 }
 
 - (void) selectThisStudy: (id)study
@@ -3659,7 +3678,7 @@ static NSConditionLock *threadLock = nil;
 {
 	BOOL matrixThumbnails = NO;
 	
-	if (isCurrentDatabaseBonjour) return;
+	if (![database isLocal]) return;
 	
 	[self checkResponder];
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
@@ -3682,7 +3701,7 @@ static NSConditionLock *threadLock = nil;
 	[[splash progress] setMaxValue:[objects count]];
 	[splash setCancel: YES];
 		
-	[managedObjectContext lock];
+	[database lock];
 	
 	[files removeDuplicatedStringsInSyncWithThisArray: objects];
 	
@@ -3729,15 +3748,16 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSLog( @"******** copy to DB exception: %@", e);
 		[AppController printStackTrace: e];
+	} @finally {
+		[database unlock];
 	}
-	[managedObjectContext unlock];
 	[splash close];
 	[splash release];
 }
 
 - (void) copyFilesIntoDatabaseIfNeeded: (NSMutableArray*) filesInput options: (NSDictionary*) options
 {
-	if( isCurrentDatabaseBonjour) return;
+	if (![database isLocal]) return;
 	if( [filesInput count] == 0) return;
 	
 	BOOL COPYDATABASE = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"];
@@ -3750,7 +3770,7 @@ static NSConditionLock *threadLock = nil;
 		COPYDATABASEMODE = [[options objectForKey: @"COPYDATABASEMODE"] integerValue];
 	
 	NSMutableArray *newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
-	NSString *INpath = [[self documentsDirectory] stringByAppendingPathComponent: DATABASEFPATH];
+	NSString *INpath = [database dataDirPath];
 	
 	for( NSString *file in filesInput)
 	{
@@ -3820,7 +3840,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( copyFiles)
 	{
-		NSString *OUTpath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEPATH];
+		NSString *OUTpath = [database dataDirPath];
 		
 		[AppController createNoIndexDirectoryIfNecessary: OUTpath];
 		
@@ -3927,31 +3947,27 @@ static NSConditionLock *threadLock = nil;
 	
 	[self waitForRunningProcesses];
 	
-	if( [sender tag])
-	{
-		switch( [rebuildType selectedTag])
-		{
+	if ([sender tag]) {
+		switch ([rebuildType selectedTag]) {
 			case 0:
-				COMPLETEREBUILD = YES;
+				[database rebuild:YES];
 				break;
 				
 			case 1:
-				COMPLETEREBUILD = NO;
+				[database rebuild:NO];
 				break;
 		}
-		
-		[self ReBuildDatabase: self];
 	}
 }
 
-- (IBAction) ReBuildDatabase:(id) sender {
-	
+- (IBAction) ReBuildDatabase:(id) sender { // __deprecated
+	[database rebuild];
 }
 
 
 - (IBAction) ReBuildDatabaseSheet: (id)sender
 {
-	if (isCurrentDatabaseBonjour)
+	if (![database isLocal])
 	{
 		NSRunInformationalAlertPanel(NSLocalizedString(@"Database Cleaning", nil), NSLocalizedString(@"Cannot rebuild a distant database.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 		return;
@@ -3971,7 +3987,7 @@ static NSConditionLock *threadLock = nil;
 	[autoroutingInProgress unlock];
 	
 	long totalFiles = 0;
-	NSString	*aPath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEPATH];
+	NSString	*aPath = [database dataDirPath];
 	NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
 	for(NSString *name in dirContent)
 	{
@@ -4012,80 +4028,31 @@ static NSConditionLock *threadLock = nil;
 		  contextInfo: nil];
 }
 
-- (void) dumpSQLFile
-{
-	WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Dumping SQL Index file...", nil)];
-	[splash showWindow:self];
-	
-	@try
-	{
-		NSTask *theTask;
-		
-		theTask = [[NSTask alloc] init];
-		[theTask setLaunchPath: @"/usr/bin/sqlite3"];
-		
-		NSString *repairedDBFile = [[currentDatabasePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"Repaired.txt"];
-		[[NSFileManager defaultManager] removeItemAtPath: repairedDBFile error: nil];
-		[[NSFileManager defaultManager] createFileAtPath: repairedDBFile contents: [NSData data] attributes: nil];
-		[theTask setStandardOutput: [NSFileHandle fileHandleForWritingAtPath: repairedDBFile]];
-		[theTask setCurrentDirectoryPath: [currentDatabasePath stringByDeletingLastPathComponent]];
-		[theTask setArguments: [NSArray arrayWithObjects:@"Database.sql", @".dump", nil]];		
-		
-		[theTask launch];
-		[theTask waitUntilExit];
-		
-		if( [theTask terminationStatus] == 0)
-		{
-			[theTask release];
-			
-			theTask = [[NSTask alloc] init];
-			[theTask setLaunchPath: @"/usr/bin/sqlite3"];
-			
-			NSString *repairedDBFinalFile = [[currentDatabasePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"RepairedFinal.sql"];
-			[[NSFileManager defaultManager] removeItemAtPath: repairedDBFinalFile error: nil];
-			
-			[theTask setStandardInput: [NSFileHandle fileHandleForReadingAtPath: repairedDBFile]];
-			[theTask setCurrentDirectoryPath: [currentDatabasePath stringByDeletingLastPathComponent]];
-			[theTask setArguments: [NSArray arrayWithObjects: @"RepairedFinal.sql", nil]];		
-			
-			[theTask launch];
-			[theTask waitUntilExit];
-			
-			if( [theTask terminationStatus] == 0)
-			{
-				NSInteger tag = 0;
-				
-				[[NSWorkspace sharedWorkspace] performFileOperation: NSWorkspaceRecycleOperation source: [currentDatabasePath stringByDeletingLastPathComponent] destination: nil files:[NSArray arrayWithObject: [currentDatabasePath lastPathComponent]] tag:&tag];
-				
-				[[NSFileManager defaultManager] moveItemAtPath: repairedDBFinalFile toPath: currentDatabasePath error: nil];
-			}
-			[theTask release];
-		}
-		else
-			[theTask release];
-			
-		[[NSFileManager defaultManager] removeItemAtPath: repairedDBFile error: nil];
-	}
-	
-	@catch (NSException * e)
-	{
-		NSLog( @"***** dumpSQLFile exception: %@", e);
-		[AppController printStackTrace: e];
-	}
-	
-	[splash close];
-	[splash release];
+/*
+- (void)dumpSQLFile { // __deprecated
+	[database dumpSqlFile];
 }
+*/
 
-- (IBAction) rebuildSQLFile:(id) sender
-{
-	if (isCurrentDatabaseBonjour) return;
-
-	if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Rebuild SQL Index File", nil),
-											 NSLocalizedString(@"Are you sure you want to rebuild SQL Index File? It can take several minutes.", nil),
-											 NSLocalizedString(@"OK",nil),
-											 NSLocalizedString(@"Cancel",nil),
-											 nil) == NSAlertDefaultReturn)
+- (IBAction)rebuildSQLFile:(id)sender {
+	if (![database isLocal])
+		return;
+		
+	if (NSRunInformationalAlertPanel(NSLocalizedString(@"Rebuild SQL Index File", nil),
+									 NSLocalizedString(@"Are you sure you want to rebuild SQL Index File? It can take several minutes.", nil),
+									 NSLocalizedString(@"OK",nil),
+									 NSLocalizedString(@"Cancel",nil),
+									 nil) == NSAlertDefaultReturn)
+	{
+		DicomDatabase* db = [database retain];
+		[self setDatabase:nil];
+		
+		[db rebuildSqlFile];
+		
+		[self setDatabase:[db autorelease]];
+	}
+	
+	/*
 	{
 		[[AppController sharedAppController] closeAllViewers: self];
 		
@@ -4116,11 +4083,14 @@ static NSConditionLock *threadLock = nil;
 		
 		[checkIncomingLock unlock];
 	}
+	*/
 }
 
 - (void) reduceCoreDataFootPrint
 {
-	if( [managedObjectContext tryLock])
+	NSLog(@"In %s", __PRETTY_FUNCTION__);
+
+	//	if( [managedObjectContext tryLock])
 	{
 		@try 
 		{
@@ -4132,47 +4102,26 @@ static NSConditionLock *threadLock = nil;
 			[self resetLogWindowController];
 			[[LogManager currentLogManager] resetLogs];
 			
-			
+/*			
 			displayEmptyDatabase = YES;
 			[self outlineViewRefresh];
 			[self refreshMatrix: self];
+*/		
 			
-			NSError *error = nil;
-			[managedObjectContext save: &error];
 			
-			if( error == nil)
-				[managedObjectContext reset];
+			DicomDatabase* db = [database retain];
+			[self setDatabase:nil];
 			
-			[DCMPix purgeCachedDictionaries];
-			[DCMView purgeStringTextureCache];
+			[db reduceCoreDataFootPrint];
 			
-			[outlineViewArray release];
-			outlineViewArray = nil;
-
-			[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
-			[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
-			[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
-			
-			displayEmptyDatabase = NO;
-			
-			[databaseOutline reloadData];
-			[albumTable reloadData];
-			
-			[self outlineViewRefresh];
-			[self refreshMatrix: self];
+			[self setDatabase:[db autorelease]];
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			#ifdef OSIRIX_VIEWER
-			[AppController printStackTrace: e];
-			#endif
+			N2LogExceptionWithStackTrace(e);
 		}
-		
-		[managedObjectContext unlock];
 	}
 	
-	NSLog( @"----- reduce memory footprint for CoreData");
 }
 
 - (void) autoCleanDatabaseDate: (id)sender

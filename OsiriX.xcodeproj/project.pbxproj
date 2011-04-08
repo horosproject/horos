@@ -310,8 +310,8 @@
 		59EBF40C12B8B90100809C61 /* WebPortal+Databases.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */; };
 		59EBFDDC12BA5A1B00809C61 /* WebPortal+Email+Log.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */; };
 		59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */; };
-		59EBFEA412BB500C00809C61 /* BrowserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFEA212BB500C00809C61 /* BrowserController.h */; };
-		59EBFEA612BB500C00809C61 /* BrowserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFEA212BB500C00809C61 /* BrowserController.h */; };
+		59EBFEA412BB500C00809C61 /* browserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFEA212BB500C00809C61 /* browserController.h */; };
+		59EBFEA612BB500C00809C61 /* browserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFEA212BB500C00809C61 /* browserController.h */; };
 		59F1A4C8104BA5BE009E3215 /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */; };
 		59F1A515104BA8AE009E3215 /* OsiriXAPI.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* OsiriXAPI.framework */; };
 		59F5F3F911F476030047A90D /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F3F711F476030047A90D /* N2ImageButtonCell.h */; };
@@ -8383,7 +8383,7 @@
 		59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortal+Databases.mm"; sourceTree = "<group>"; };
 		59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebPortal+Email+Log.h"; sourceTree = "<group>"; };
 		59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortal+Email+Log.mm"; sourceTree = "<group>"; };
-		59EBFEA212BB500C00809C61 /* BrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserController.h; sourceTree = "<group>"; };
+		59EBFEA212BB500C00809C61 /* browserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = browserController.h; sourceTree = "<group>"; };
 		59F1A4C7104BA5BE009E3215 /* OsiriXHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXHeaders.mm; sourceTree = "<group>"; };
 		59F5F3F711F476030047A90D /* N2ImageButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ImageButtonCell.h; path = nitrogen/Sources/N2ImageButtonCell.h; sourceTree = "<group>"; };
 		59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageButtonCell.mm; path = nitrogen/Sources/N2ImageButtonCell.mm; sourceTree = "<group>"; };
@@ -14006,7 +14006,7 @@
 				AB142DFD05600D76008461A0 /* AppController.m */,
 				BF18A85709E0BF00005DEFB6 /* AppControllerDCMTKCategory.h */,
 				BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */,
-				59EBFEA212BB500C00809C61 /* BrowserController.h */,
+				59EBFEA212BB500C00809C61 /* browserController.h */,
 				599115EF12D7224A00924B5C /* browserController.m */,
 				BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */,
 				BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */,
@@ -19722,7 +19722,7 @@
 				590A3DCD12A92920004581C2 /* WebPortalDatabase.h in Headers */,
 				59EBF40B12B8B90100809C61 /* WebPortal+Databases.h in Headers */,
 				59EBFDDC12BA5A1B00809C61 /* WebPortal+Email+Log.h in Headers */,
-				59EBFEA412BB500C00809C61 /* BrowserController.h in Headers */,
+				59EBFEA412BB500C00809C61 /* browserController.h in Headers */,
 				59E52B3712C109B80094E668 /* DicomDatabase.h in Headers */,
 				5969033D12DDE30800379E41 /* WebPortalConnection+Data.h in Headers */,
 				5969034512DDE5EA00379E41 /* WebPortalResponse.h in Headers */,
@@ -21968,7 +21968,7 @@
 				847BE3FB128BF0E200A87E98 /* tgt.h in Headers */,
 				592BA51F12966ABD00179C27 /* NSError+OsiriX.h in Headers */,
 				597BB93312A7E0F200D0A172 /* NSUserDefaults+OsiriX.h in Headers */,
-				59EBFEA612BB500C00809C61 /* BrowserController.h in Headers */,
+				59EBFEA612BB500C00809C61 /* browserController.h in Headers */,
 				59E52B3912C109B80094E668 /* DicomDatabase.h in Headers */,
 				592D333912F2C71A00C7C002 /* NSException+N2.h in Headers */,
 				84A9D49912F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */,

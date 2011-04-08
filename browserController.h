@@ -413,7 +413,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour refresh: (BOOL) refresh __deprecated;
 - (void) browserPrepareForClose;
 - (IBAction) endReBuildDatabase:(id) sender;
-- (IBAction) ReBuildDatabase:(id) sender;
+- (IBAction) ReBuildDatabase:(id) sender __deprecated;
 - (IBAction) ReBuildDatabaseSheet: (id)sender;
 - (void) previewSliderAction:(id) sender;
 - (void) addHelpMenu;

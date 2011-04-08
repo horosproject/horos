@@ -68,8 +68,8 @@ extern "C"
 {
 #endif
 	NSRect screenFrame();
-	NSString * documentsDirectoryFor( int mode, NSString *url);
-	NSString * documentsDirectory();
+	NSString * documentsDirectoryFor( int mode, NSString *url) __deprecated;
+	NSString * documentsDirectory() __deprecated;
 #ifdef __cplusplus
 }
 #endif

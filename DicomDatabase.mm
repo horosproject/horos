@@ -36,44 +36,31 @@
 -(void)modifyDefaultAlbums;
 -(void)recomputePatientUIDs;
 -(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion;
--(void)rebuild;
--(void)rebuild:(BOOL)complete;
 -(void)checkReportsConsistencyWithDICOMSR;
 
 @end
 
 @implementation DicomDatabase
 
-+(NSString*)databaseBasePathForMode:(int)mode path:(NSString*)url {
-	char s[4096];
-	FSRef ref;
-	NSString* path = nil;
-	
++(NSString*)databaseBasePathForMode:(int)mode path:(NSString*)path {
 	switch (mode) {
-		case 0: {
+		case 0:
 			path = [NSFileManager.defaultManager findSystemFolderOfType:kDocumentsFolderType forDomain:kOnAppropriateDisk];
-		} break;
-			
-		case 1: {
-			path = url;
-		} break;
+			break;
+		case 1:
+			break;
+		default:
+			path = nil;
+			break;
 	}
 	
 	path = [path stringByAppendingPathComponent:@"OsiriX Data"];
-	[NSFileManager.defaultManager confirmDirectoryAtPath:path];
-
-	
-	NSString *dir = nil;
-	dir = [path stringByAppendingPathComponent:@"/REPORTS/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
-		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
-	
-	//	dir = [path stringByAppendingPathComponent:@"/ROIs/"];
-	//	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
-	//		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
-	
-	if( path == 0L)
-		NSLog( @"**** documentsDirectoryFor is NIL");
+	if (!path)
+		N2LogError(@"nil path");
+	else {
+		[NSFileManager.defaultManager confirmDirectoryAtPath:path];
+		[NSFileManager.defaultManager confirmDirectoryAtPath:[path stringByAppendingPathComponent:@"REPORTS"]];
+	}
 	
 	return path;
 }
@@ -81,7 +68,7 @@
 +(NSString*)defaultDatabaseBasePath {
 	NSString* path = nil;
 	@try {
-		path = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey:@"DATABASELOCATIONURL"]);
+		path = [self databaseBasePathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
 		if (!path || ![[NSFileManager defaultManager] fileExistsAtPath:path]) {	// STILL NOT AVAILABLE?? Use the default folder.. and reset this strange URL..
 			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
 			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
@@ -173,7 +160,7 @@ static DicomDatabase* activeLocalDatabase = nil;
     return managedObjectModel;
 }
 
--(id)initWithPath:(NSString*)p {
+-(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c { // reminder: context may be nil (assigned in -[N2ManagedDatabase initWithPath:] after calling this method)
 	if ([p hasSuffix:@".sql"])
 		p = [p stringByDeletingLastPathComponent];
 	
@@ -184,7 +171,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	if (!dataBasePath) dataBasePath = p;
 	[dataBasePath retain];
 	
-	self = [super initWithPath:p];
+	self = [super initWithPath:p context:c];
 	[DicomDatabase knowAbout:self];
 	
 	[NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil];
@@ -249,7 +236,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 		[NSUserDefaults.standardUserDefaults setObject:CurrentDatabaseVersion forKey:@"DATABASEVERSION"];
 		[CurrentDatabaseVersion writeToFile:self.modelVersionFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
 	} @catch (NSException* e) {
-		N2LogException(e);
+		N2LogExceptionWithStackTrace(e);
 	} @finally {
 		[self unlock];
 	}
@@ -515,9 +502,9 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion {
 	NSString* oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_Previous_DataModel%@.mom", databaseModelVersion];
-	if ([databaseModelVersion isEqualToString:CurrentDatabaseVersion]) oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_DataModel.mom"]; // TODO: Why? Same version...
+	if ([databaseModelVersion isEqualToString:CurrentDatabaseVersion]) oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_DataModel.mom"]; // same version 
 	
-	if (![NSFileManager.defaultManager fileExistsAtPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:oldModelFilename]]){
+	if (![NSFileManager.defaultManager fileExistsAtPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:oldModelFilename]]) {
 		int r = NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot understand the model of current saved database... The database index will be deleted and reconstructed (no images are lost).", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Quit", nil), nil);
 		if (r == NSAlertAlternateReturn) {
 			[NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil]; // to avoid the crash message during next startup
@@ -1162,6 +1149,83 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 #endif
 }
 
+-(void)dumpSqlFile {
+	//WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Dumping SQL Index file...", nil)]; // TODO: status
+	//[splash showWindow:self];
+	
+	@try {
+		NSString* repairedDBFile = [self.basePath stringByAppendingPathComponent:@"Repaired.txt"];
+		
+		[NSFileManager.defaultManager removeItemAtPath:repairedDBFile error:nil];
+		[NSFileManager.defaultManager createFileAtPath:repairedDBFile contents:[NSData data] attributes:nil];
+		
+		NSTask* theTask = [[NSTask alloc] init];
+		[theTask setLaunchPath: @"/usr/bin/sqlite3"];
+		[theTask setStandardOutput:[NSFileHandle fileHandleForWritingAtPath:repairedDBFile]];
+		[theTask setCurrentDirectoryPath:self.basePath.stringByDeletingLastPathComponent];
+		[theTask setArguments:[NSArray arrayWithObjects:@"Database.sql", @".dump", nil]];
+		
+		[theTask launch];
+		[theTask waitUntilExit];
+		int dumpStatus = [theTask terminationStatus];
+		[theTask release];
+		
+		if (dumpStatus == 0) {
+			NSString* repairedDBFinalFile = [self.basePath stringByAppendingPathComponent: @"RepairedFinal.sql"];
+			[NSFileManager.defaultManager removeItemAtPath:repairedDBFinalFile error:nil];
 
+			theTask = [[NSTask alloc] init];
+			[theTask setLaunchPath:@"/usr/bin/sqlite3"];
+			[theTask setStandardInput:[NSFileHandle fileHandleForReadingAtPath:repairedDBFile]];
+			[theTask setCurrentDirectoryPath:self.basePath.stringByDeletingLastPathComponent];
+			[theTask setArguments:[NSArray arrayWithObjects: @"RepairedFinal.sql", nil]];		
+			
+			[theTask launch];
+			[theTask waitUntilExit];
+			
+			if ([theTask terminationStatus] == 0) {
+				NSInteger tag = 0;
+				[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:self.sqlFilePath.stringByDeletingLastPathComponent destination:nil files:[NSArray arrayWithObject:self.sqlFilePath.lastPathComponent] tag:&tag];
+				[NSFileManager.defaultManager moveItemAtPath:repairedDBFinalFile toPath:self.sqlFilePath error:nil];
+			}
+			
+			[theTask release];
+		}
+	
+		[[NSFileManager defaultManager] removeItemAtPath: repairedDBFile error: nil];
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	}
+	
+//	[splash close];
+//	[splash release];
+}
+
+-(void)rebuildSqlFile {
+//	[checkIncomingLock lock];
+	
+	[self save:NULL];
+	[self dumpSqlFile];
+	[self upgradeSqlFileFromModelVersion:CurrentDatabaseVersion];
+	[self checkReportsConsistencyWithDICOMSR];
+	
+//	[checkIncomingLock unlock];
+}
+
+-(void)reduceCoreDataFootPrint {
+	NSLog(@"In %s", __PRETTY_FUNCTION__);
+	
+	if ([self tryLock])
+		@try {
+			NSError *err = nil;
+			[self save:&err];
+			if (!err)
+				[managedObjectContext reset];
+		} @catch (NSException* e) {
+			N2LogExceptionWithStackTrace(e);
+		} @finally {
+			[self unlock];
+		}
+}
 
 @end
