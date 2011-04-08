@@ -284,39 +284,39 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 	{
 		if( cachedAlbumsArray && cachedAlbumsManagedObjectContext == context && cachedAlbumsManagedObjectContext != nil)
 			return [[cachedAlbumsArray copy] autorelease];
-		
-		NSArray *albumsArray = nil;
-		
-		[context lock];
-		
-		@try
-		{
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		
-			albumsArray = [context executeFetchRequest:dbRequest error: NULL];
-		}
-		@catch( NSException *e)
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
-		[context unlock];
-		
-		NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
-		albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, nil]];
-		
-		if( context == [[BrowserController currentBrowser] managedObjectContext])
+	}
+	
+	NSArray *albumsArray = nil;
+	
+	[context lock];
+	@try
+	{
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	
+		albumsArray = [context executeFetchRequest:dbRequest error: NULL];
+	}
+	@catch( NSException *e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	[context unlock];
+	
+	NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
+	albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, nil]];
+	
+	if( context == [[BrowserController currentBrowser] managedObjectContext])
+	{
+		@synchronized( [BrowserController currentBrowser])
 		{
 			[cachedAlbumsArray release];
 			cachedAlbumsArray = [albumsArray retain];
 			cachedAlbumsManagedObjectContext = context;
 		}
-		
-		return [[albumsArray copy] autorelease];
 	}
 	
-	return nil;
+	return [[albumsArray copy] autorelease];
 }
 
 -(NSArray*)albums
@@ -1364,7 +1364,10 @@ static NSConditionLock *threadLock = nil;
 											album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
 											[album setValue:@"other" forKey:@"name"];
 											
-											cachedAlbumsManagedObjectContext = nil;
+											@synchronized( [BrowserController currentBrowser])
+											{
+												cachedAlbumsManagedObjectContext = nil;
+											}
 										}
 									}
 									
@@ -5599,7 +5602,10 @@ static NSConditionLock *threadLock = nil;
 
 - (NSString*) outlineViewRefresh		// This function creates the 'root' array for the outlineView
 {
-	cachedAlbumsManagedObjectContext = nil;
+	@synchronized( [BrowserController currentBrowser])
+	{
+		cachedAlbumsManagedObjectContext = nil;
+	}
 	
 	if( databaseOutline == nil) return nil;
 	if( loadingIsOver == NO) return nil;
@@ -6014,7 +6020,10 @@ static NSConditionLock *threadLock = nil;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	cachedAlbumsManagedObjectContext = nil;
+	@synchronized( [BrowserController currentBrowser])
+	{
+		cachedAlbumsManagedObjectContext = nil;
+	}
 	
 	@try
 	{
@@ -6101,7 +6110,10 @@ static NSConditionLock *threadLock = nil;
 
 - (void)refreshAlbums
 {
-	cachedAlbumsManagedObjectContext = nil;
+	@synchronized( [BrowserController currentBrowser])
+	{
+		cachedAlbumsManagedObjectContext = nil;
+	}
 	
 	if( displayEmptyDatabase == NO && [[self window] isVisible] == YES)
 	{
@@ -6575,7 +6587,10 @@ static NSConditionLock *threadLock = nil;
 
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
 {
-	cachedAlbumsManagedObjectContext = nil;
+	@synchronized( [BrowserController currentBrowser])
+	{
+		cachedAlbumsManagedObjectContext = nil;
+	}
 	
 	if( loadingIsOver == NO) return;
 	
@@ -11067,7 +11082,10 @@ static BOOL needToRezoom;
 						
 						[album setValue:name forKey:@"name"];
 						
-						cachedAlbumsManagedObjectContext = nil;
+						@synchronized( [BrowserController currentBrowser])
+						{
+							cachedAlbumsManagedObjectContext = nil;
+						}
 						
 						[self saveDatabase: currentDatabasePath];
 						
