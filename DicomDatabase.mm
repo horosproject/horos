@@ -44,8 +44,54 @@
 
 @implementation DicomDatabase
 
-+(NSString*)defaultDatabaseBasePath {
++(NSString*)databaseBasePathForMode:(int)mode path:(NSString*)url {
+	char s[4096];
+	FSRef ref;
+	NSString* path = nil;
 	
+	switch (mode) {
+		case 0: {
+			path = [NSFileManager.defaultManager findSystemFolderOfType:kDocumentsFolderType forDomain:kOnAppropriateDisk];
+		} break;
+			
+		case 1: {
+			path = url;
+		} break;
+	}
+	
+	path = [path stringByAppendingPathComponent:@"OsiriX Data"];
+	[NSFileManager.defaultManager confirmDirectoryAtPath:path];
+
+	
+	NSString *dir = nil;
+	dir = [path stringByAppendingPathComponent:@"/REPORTS/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
+		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
+	
+	//	dir = [path stringByAppendingPathComponent:@"/ROIs/"];
+	//	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
+	//		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
+	
+	if( path == 0L)
+		NSLog( @"**** documentsDirectoryFor is NIL");
+	
+	return path;
+}
+
++(NSString*)defaultDatabaseBasePath {
+	NSString* path = nil;
+	@try {
+		path = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey:@"DATABASELOCATIONURL"]);
+		if (!path || ![[NSFileManager defaultManager] fileExistsAtPath:path]) {	// STILL NOT AVAILABLE?? Use the default folder.. and reset this strange URL..
+			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
+			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
+			path = [self databaseBasePathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
+		}
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	}
+	
+	return path;
 }
 
 #pragma Factory
@@ -55,29 +101,53 @@ static DicomDatabase* defaultDatabase = nil;
 +(DicomDatabase*)defaultDatabase {
 	@synchronized(self) {
 		if (!defaultDatabase)
-			defaultDatabase = [[self localDatabaseAtPath:[self defaultDatabaseBasePath]] retain];
+			defaultDatabase = [[self databaseAtPath:[self defaultDatabaseBasePath]] retain];
 	}
 	
 	return defaultDatabase;
 }
 
-static NSMutableDictionary* localDatabasesDictionary = nil;
+static NSMutableDictionary* databasesDictionary = nil;
 
-+(DicomDatabase*)localDatabaseAtPath:(NSString*)path {
-	DicomDatabase* database = nil;
-	
++(void)knowAbout:(DicomDatabase*)db {
 	@synchronized(self) {
-		if (!localDatabasesDictionary)
-			localDatabasesDictionary = [[NSMutableDictionary alloc] init];
-		
-		database = [localDatabasesDictionary objectForKey:path];
-		if (database) return database;
-		
-		database = [[[self alloc] initWithPath:path] autorelease];
-		[localDatabasesDictionary setObject:database forKey:path];
+		if (!databasesDictionary)
+			databasesDictionary = [[NSMutableDictionary alloc] init];
 	}
 	
-	return database;
+	if (db)
+		@synchronized(databasesDictionary) {
+			if (![[databasesDictionary allValues] containsObject:db])
+				[databasesDictionary setObject:db forKey:db.basePath];
+		}
+}
+
++(DicomDatabase*)databaseAtPath:(NSString*)path {
+	@synchronized(databasesDictionary) {
+		DicomDatabase* database = [databasesDictionary objectForKey:path];
+		if (database) return database;
+		return [[[self alloc] initWithPath:path] autorelease];
+	}
+	
+	return nil;
+}
+
++(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c { // hopefully one day this will be __deprecated
+	if (databasesDictionary)
+		@synchronized(databasesDictionary) {
+			// is it the MOC of a listed database?
+			for (DicomDatabase* dbi in [databasesDictionary allValues])
+				if (dbi.managedObjectContext == c)
+					return dbi;
+			// is it an independent MOC of a listed database?
+			for (DicomDatabase* dbi in [databasesDictionary allValues])
+				if (dbi.managedObjectContext.persistentStoreCoordinator == c.persistentStoreCoordinator) {
+					// we must return a valid DicomDatabase with the right context
+					return [[DicomDatabase alloc] initWithPath:dbi.basePath context:c];
+				}
+		}
+	[NSException raise:NSGenericException format:@"Unidentified database context"];
+	return nil;
 }
 
 static DicomDatabase* activeLocalDatabase = nil;
@@ -92,10 +162,6 @@ static DicomDatabase* activeLocalDatabase = nil;
 		activeLocalDatabase = [ldb retain];
 		[NSNotificationCenter.defaultCenter postNotificationName:OsirixActiveLocalDatabaseDidChangeNotification object:nil];
 	}
-}
-
-+(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c {
-	// TODO: this
 }
 
 #pragma mark Instance
@@ -119,6 +185,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[dataBasePath retain];
 	
 	self = [super initWithPath:p];
+	[DicomDatabase knowAbout:self];
+	
 	[NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil];
 	
 	dataFileIndex = [[N2MutableUInteger alloc] initWithValue:0];
@@ -138,6 +206,10 @@ static DicomDatabase* activeLocalDatabase = nil;
 
 -(BOOL)isLocal {
 	return YES;
+}
+
+-(NSString*)name {
+	return [NSString stringWithFormat:NSLocalizedString(@"Local Database (%@)", nil), self.basePath];
 }
 
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {

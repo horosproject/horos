@@ -25,13 +25,17 @@
 	NSString* dataBasePath;
 }
 
++(NSString*)defaultDatabaseBasePath;
++(NSString*)databaseBasePathForMode:(int)mode path:(NSString*)path;
+
 +(DicomDatabase*)defaultDatabase;
-+(DicomDatabase*)localDatabaseAtPath:(NSString*)path;
++(DicomDatabase*)databaseAtPath:(NSString*)path;
++(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c; // hopefully one day this will be __deprecated
 +(DicomDatabase*)activeLocalDatabase;
-+(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c;
 +(void)setActiveLocalDatabase:(DicomDatabase*)ldb;
 
 -(BOOL)isLocal;
+-(NSString*)name;
 
 extern const NSString* const DicomDatabaseImageEntityName;
 extern const NSString* const DicomDatabaseSeriesEntityName;

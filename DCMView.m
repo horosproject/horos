@@ -477,7 +477,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 @synthesize theMatrix = matrix;
 @synthesize suppressLabels = suppress_labels;
 @synthesize scaleValue, rotation;
-@synthesize origin, originOffset;
+@synthesize origin;
 @synthesize curDCM;
 @synthesize dcmExportPlugin;
 @synthesize mouseXPos, mouseYPos;
@@ -3887,7 +3887,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			resizeTotal = 1;
 			
 			originStart = origin;
-			originOffsetStart = originOffset;
 			
 			mesureB = mesureA = [self convertPoint:eventLocation fromView: nil];
 			mesureB.y = mesureA.y = size.size.height - mesureA.y ;
@@ -4573,9 +4572,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				[self setScaleValue:sScaleValue + deltaX * scaleValue / 10];
 				[self setOriginX: ((origin.x * scaleValue) / sScaleValue) Y: ((origin.y * scaleValue) / sScaleValue)];
-				
-				originOffset.x = ((originOffset.x * scaleValue) / sScaleValue);
-				originOffset.y = ((originOffset.y * scaleValue) / sScaleValue);
 				
 				if( [self is2DViewer] == YES)
 					[[self windowController] propagateSettings];
@@ -5993,7 +5989,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	syncSeriesIndex = -1;
 	mouseXPos = mouseYPos = 0;
 	pixelMouseValue = 0;
-	originOffset.x = originOffset.y = 0;
 	curDCM = nil;
 	curRoiList = nil;
 	blendingMode = 0;
@@ -6866,8 +6861,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     a.y = yy;
     a.x = xx;
 
-    a.x -= (origin.x + originOffset.x);
-    a.y += (origin.y + originOffset.y);
+    a.x -= (origin.x);
+    a.y += (origin.y);
 
 	a.x += curDCM.pwidth/2.;
 	a.y += curDCM.pheight/ 2.;
@@ -6894,8 +6889,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		a.x -= curDCM.pwidth * 0.5f;
 	}
 	
-	a.y -= (origin.y + originOffset.y)/scaleValue;
-	a.x += (origin.x + originOffset.x)/scaleValue;
+	a.y -= (origin.y)/scaleValue;
+	a.x += (origin.x)/scaleValue;
 
     float xx = a.x*cos(-rotation*deg2rad) + a.y*sin(-rotation*deg2rad);
     float yy = -a.x*sin(-rotation*deg2rad) + a.y*cos(-rotation*deg2rad);
@@ -6973,8 +6968,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     a.y = yy;
     a.x = xx;
 
-    a.x -= (origin.x + originOffset.x)/scaleValue;
-    a.y += (origin.y + originOffset.y)/scaleValue;
+    a.x -= (origin.x)/scaleValue;
+    a.y += (origin.y)/scaleValue;
     
 	if( curDCM)
 	{
@@ -6999,7 +6994,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	glScalef (2.0f /(xFlipped ? -(size.size.width) : size.size.width), -2.0f / (yFlipped ? -(size.size.height) : size.size.height), 1.0f); // scale to port per pixel scale
 	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-	glTranslatef( origin.x - offset.x + originOffset.x, -origin.y - offset.y - originOffset.y, 0.0f);
+	glTranslatef( origin.x - offset.x , -origin.y - offset.y, 0.0f);
 
 	if( curDCM.pixelRatio != 1.0) glScalef( 1.f, curDCM.pixelRatio, 1.f);
 	
@@ -7763,7 +7758,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f);
 	glRotatef (rotation, 0.0f, 0.0f, 1.0f);
-	glTranslatef( origin.x + originOffset.x, -origin.y - originOffset.y, 0.0f);
+	glTranslatef( origin.x, -origin.y, 0.0f);
 	glScalef( 1.f, curDCM.pixelRatio, 1.f);
 }
 
@@ -8314,7 +8309,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				
 				glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-				glTranslatef( origin.x + originOffset.x, -origin.y - originOffset.y, 0.0f);
+				glTranslatef( origin.x, -origin.y, 0.0f);
 				glScalef( 1.f, curDCM.pixelRatio, 1.f);
 				
 				// Draw ROIs
@@ -9044,9 +9039,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				origin.x *= yChanged;
 				origin.y *= yChanged;
-				
-				originOffset.x *= yChanged;
-				originOffset.y *= yChanged;
 				
 				if( is2DViewer == YES)
 				{
@@ -10325,9 +10317,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( scaleValue)
 		{
 			[self setOriginX:((origin.x * x) / scaleValue) Y:((origin.y * x) / scaleValue)];
-			
-			originOffset.x = ((originOffset.x * x) / scaleValue);
-			originOffset.y = ((originOffset.y * x) / scaleValue);
 		}
 		
 		scaleValue = x;

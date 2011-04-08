@@ -368,78 +368,12 @@ int GetAllPIDsForProcessName(const char* ProcessName,
     }
 }
 
-NSString * documentsDirectoryFor( int mode, NSString *url)
-{
-	char s[ 4096];
-	FSRef ref;
-	NSString *path = nil;
-	
-	switch( mode)
-	{
-		case 0:
-			if( FSFindFolder (kOnAppropriateDisk, kDocumentsFolderType, kCreateFolder, &ref) == noErr )
-			{
-				BOOL		isDir = YES;
-				
-				FSRefMakePath(&ref, (UInt8 *)s, sizeof(s));
-				
-				path = [[NSString stringWithUTF8String:s] stringByAppendingPathComponent:@"/OsiriX Data"];
-				
-				if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-			}
-		break;
-			
-		case 1:
-		{
-			BOOL		isDir = YES;
-			
-			path = [url stringByAppendingPathComponent:@"/OsiriX Data"];
-			
-			if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir]) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-		}
-		break;
-	}
-	
-	NSString *dir = nil;
-	dir = [path stringByAppendingPathComponent:@"/REPORTS/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
-		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
-	
-//	dir = [path stringByAppendingPathComponent:@"/ROIs/"];
-//	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
-//		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
-	
-	if( path == 0L)
-		NSLog( @"**** documentsDirectoryFor is NIL");
-	
-	return path;
+NSString* documentsDirectoryFor(int mode, NSString *url) { // __deprecated
+	return [DicomDatabase databaseBasePathForMode:mode path:url];
 }
 
-NSString * documentsDirectory()
-{
-	NSString *path = nil;
-	
-	@try
-	{
-		path = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
-	
-		if( [[NSFileManager defaultManager] fileExistsAtPath:path] == NO || path == 0L)	// STILL NOT AVAILABLE??
-		{   // Use the default folder.. and reset this strange URL..
-			
-			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
-			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
-			
-			return documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
-		}
-	}
-	
-	@catch (NSException *e)
-	{
-		NSLog( @"**** exception documentsDirectory: %@", e);
-	}
-	
-	return path;
+NSString* documentsDirectory() { // __deprecated
+	return [DicomDatabase defaultDatabaseBasePath];
 }
 
 static volatile BOOL converting = NO;

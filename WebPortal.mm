@@ -441,8 +441,8 @@ static const NSString* DefaultWebPortalDatabasePath = nil;
 }
 
 -(void)stopAcceptingConnections {
-//	if (isAcceptingConnections) {
-//		isAcceptingConnections = NO;
+	if (isAcceptingConnections) {
+		isAcceptingConnections = NO;
 //		@try 
 //		{
 //			[serverThread cancel];
@@ -454,8 +454,9 @@ static const NSString* DefaultWebPortalDatabasePath = nil;
 //		} @catch (NSException* e) {
 //			NSLog(@"Exception: [WebPortal stopAcceptingConnections] %@", e);
 //		}
-//	}
-	NSLog( @"----- cannot stop web server -> you have to restart OsiriX");
+		NSLog( @"----- cannot stop web server -> you have to restart OsiriX");
+	}
+	
 }
 
 -(NSData*)dataForPath:(NSString*)file {

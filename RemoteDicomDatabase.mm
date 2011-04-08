@@ -15,6 +15,10 @@
 	return NO;
 }
 
+-(NSString*)name {
+	return [NSString stringWithFormat:NSLocalizedString(@"Remote Database (%@)", nil), self.basePath.lastPathComponent];
+}
+
 -(void)rebuild:(BOOL)complete {
 	// do nothing
 }

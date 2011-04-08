@@ -142,7 +142,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	BOOL			mouseDragging;
 	BOOL			suppress_labels; // keep from drawing the labels when command+shift is pressed
 
-    NSPoint         start, originStart, originOffsetStart, previous;
+    NSPoint         start, originStart, previous;
 	
     float			startWW, curWW, startMin, startMax;
     float			startWL, curWL;
@@ -158,7 +158,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	double			resizeTotal;
     float           scaleValue, startScaleValue;
     float           rotation, rotationStart;
-    NSPoint			origin, originOffset;
+    NSPoint			origin;
 	short			crossMove;
     
     NSMatrix        *matrix;
@@ -312,7 +312,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property(retain) NSMatrix *theMatrix;
 @property(readonly) BOOL suppressLabels;
 @property float scaleValue, rotation;
-@property NSPoint origin, originOffset;
+@property NSPoint origin;
 @property(readonly) double pixelSpacing, pixelSpacingX, pixelSpacingY;
 @property(readonly) DCMPix *curDCM;
 @property(retain) DCMExportPlugin *dcmExportPlugin;

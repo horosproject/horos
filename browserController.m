@@ -82,6 +82,7 @@
 #import "NSError+OsiriX.h"
 #import "NSImage+N2.h"
 #import "NSFileManager+N2.h"
+#import "N2Debug.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -381,7 +382,7 @@ static NSConditionLock *threadLock = nil;
 }
 
 - (NSString*)getNewFileDatabasePath:(NSString*)extension dbFolder:(NSString*)dbFolder { // __deprecated
-	return [[DicomDatabase localDatabaseAtPath:dbFolder] uniquePathForNewDataFileWithExtension:extension];
+	return [[DicomDatabase databaseAtPath:dbFolder] uniquePathForNewDataFileWithExtension:extension];
 }
 
 - (void)reloadViewers:(NSMutableArray*)vl
@@ -1210,7 +1211,10 @@ static NSConditionLock *threadLock = nil;
 											album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
 											[album setValue:@"other" forKey:@"name"];
 											
-											//cachedAlbumsManagedObjectContext = nil;
+											//@synchronized( [BrowserController currentBrowser])
+//											{
+//												cachedAlbumsManagedObjectContext = nil;
+//											}
 										}
 									}
 									
@@ -2374,10 +2378,10 @@ static NSConditionLock *threadLock = nil;
 	if (!path)
 		return nil;
 	
-    if (database.managedObjectContext && [path isEqualToString:database.basePath] == YES)
+    if ([path isEqualToString:database.basePath])
 		return [database independentContext:independentContext];
 
-	return [[DicomDatabase localDatabaseAtPath:path] managedObjectContext];
+	return [[DicomDatabase databaseAtPath:path] managedObjectContext];
 }
 
 // ------------------
@@ -2501,7 +2505,7 @@ static NSConditionLock *threadLock = nil;
 		NSThread* thread = [NSThread currentThread];
 		NSString* originalThreadName = [thread name];
 		[thread setName:NSLocalizedString(@"Loading Database...", nil)];
-		[[ThreadsManager defaultManager] addThreadAndStart:thread];
+		//[[ThreadsManager defaultManager] addThreadAndStart:thread];
 		
 		WaitRendering* wait = [[WaitRendering alloc] init:NSLocalizedString(@"Opening OsiriX database...", nil)]; // TODO: threadModalForWindow also on MainThread...
 		[wait showWindow:self];
@@ -2540,6 +2544,8 @@ static NSConditionLock *threadLock = nil;
 			[self refreshMatrix:self];
 			
 			database = [db retain];
+			if ([db isLocal])
+				[DicomDatabase setActiveLocalDatabase:db];
 			
 			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 			
@@ -2747,7 +2753,7 @@ static NSConditionLock *threadLock = nil;
 			}*/
 			
 		} @catch (NSException* e) {
-			N2LogExceptionWithStack(e);
+			N2LogExceptionWithStackTrace(e);
 		}
 		
 		[wait close];
@@ -2783,7 +2789,7 @@ static NSConditionLock *threadLock = nil;
 }
 
 - (IBAction)createDatabase: (id)sender { // deprecated
-	N2LogDeprecatedAPI();
+	N2LogDeprecatedCall();
 	/*if( isCurrentDatabaseBonjour)
 	{
 		NSRunInformationalAlertPanel( NSLocalizedString(@"Database", nil), NSLocalizedString(@"Cannot create a SQL Index file for a distant database.", nil), NSLocalizedString(@"OK",nil), nil, nil);
@@ -3230,11 +3236,13 @@ static NSConditionLock *threadLock = nil;
 	self.searchString = @"";
 }
 
-- (void)setDBWindowTitle
-{
+- (void)setDBWindowTitle {
+	[self.window setTitle:[database name]];
+	/*
 	if (isCurrentDatabaseBonjour) [self.window setTitle: [NSString stringWithFormat: NSLocalizedString(@"Bonjour Database (%@)", nil), [currentDatabasePath lastPathComponent]]];
 	else [self.window setTitle: [NSString stringWithFormat:NSLocalizedString(@"Local Database (%@)", nil), currentDatabasePath]];
-	[self.window setRepresentedFilename: currentDatabasePath];
+	*/
+	 [self.window setRepresentedFilename:database.basePath];
 }
 
 - (NSString*)getDatabaseFolderFor: (NSString*)path { // __deprecated
@@ -3375,12 +3383,8 @@ static NSConditionLock *threadLock = nil;
 	else return -1;
 }
 
-- (BOOL) isBonjour:(NSManagedObjectContext *)c
-{
-	if( c == bonjourManagedObjectContext)
-		return YES;
-	else
-		return NO;
+- (BOOL)isBonjour:(NSManagedObjectContext*)c { // __deprecated
+	return ![[DicomDatabase databaseForContext:c] isLocal];
 }
 
 - (void)loadDatabase:(NSString*)path { // __deprecated
@@ -5009,7 +5013,10 @@ static NSConditionLock *threadLock = nil;
 
 - (NSString*) outlineViewRefresh		// This function creates the 'root' array for the outlineView
 {
-	cachedAlbumsManagedObjectContext = nil;
+	@synchronized( [BrowserController currentBrowser])
+	{
+		cachedAlbumsManagedObjectContext = nil;
+	}
 	
 	if( databaseOutline == nil) return nil;
 	if( loadingIsOver == NO) return nil;
@@ -5424,7 +5431,10 @@ static NSConditionLock *threadLock = nil;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	cachedAlbumsManagedObjectContext = nil;
+	@synchronized( [BrowserController currentBrowser])
+	{
+		cachedAlbumsManagedObjectContext = nil;
+	}
 	
 	@try
 	{
@@ -5511,7 +5521,10 @@ static NSConditionLock *threadLock = nil;
 
 - (void)refreshAlbums
 {
-	cachedAlbumsManagedObjectContext = nil;
+	@synchronized( [BrowserController currentBrowser])
+	{
+		cachedAlbumsManagedObjectContext = nil;
+	}
 	
 	if( displayEmptyDatabase == NO && [[self window] isVisible] == YES)
 	{
@@ -5985,7 +5998,10 @@ static NSConditionLock *threadLock = nil;
 
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
 {
-	cachedAlbumsManagedObjectContext = nil;
+	@synchronized( [BrowserController currentBrowser])
+	{
+		cachedAlbumsManagedObjectContext = nil;
+	}
 	
 	if( loadingIsOver == NO) return;
 	
@@ -10477,7 +10493,10 @@ static BOOL needToRezoom;
 						
 						[album setValue:name forKey:@"name"];
 						
-						cachedAlbumsManagedObjectContext = nil;
+						@synchronized( [BrowserController currentBrowser])
+						{
+							cachedAlbumsManagedObjectContext = nil;
+						}
 						
 						[self saveDatabase: currentDatabasePath];
 						
@@ -19926,7 +19945,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[bonjourServicesList reloadData];
 }
 
-- (void)resetToLocalDatabase 
+- (void)resetToLocalDatabase
 {
 	[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 	[self bonjourServiceClicked: bonjourServicesList];
@@ -19940,10 +19959,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[self resetToLocalDatabase];
 }
 
-- (void)openDatabasePath: (NSString*)path
-{
+- (void)openDatabasePath: (NSString*)path { // __deprecated
+	@try {
+		DicomDatabase* db = [DicomDatabase localDatabaseAtPath:path];
+		[self setDatabase:db];
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+		NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot read this file/folder.", nil), nil, nil, nil);
+		[self resetToLocalDatabase]; // TODO: is this necessary?
+	}
+	
+	/*
 	BOOL isDirectory;
-		
+
 	if( DICOMDIRCDMODE)
 	{
 		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
@@ -19978,6 +20006,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot read this file/folder.", nil), nil, nil, nil);
 		[self resetToLocalDatabase];
 	}
+	*/
 }
 
 - (IBAction)bonjourServiceClickedProceed: (id)sender
@@ -20031,7 +20060,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				if( [path isEqualToString: @"aborted"]) NSLog( @"Transfer aborted");
 				else NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot connect to the database.", nil), nil, nil, nil);
 				
-				[[BrowserController currentBrowser] resetToLocalDatabase];
+				[self resetToLocalDatabase];
 			}
 			else
 			{

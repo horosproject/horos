@@ -296,7 +296,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password deleteSource: (BOOL) deleteSource showGUI: (BOOL) showGUI;
 + (void) encryptFiles: (NSArray*) srcFiles inZIPFile: (NSString*) destFile password: (NSString*) password;
 - (IBAction) createDatabaseFolder:(id) sender;
-- (void) openDatabasePath: (NSString*) path;
+- (void) openDatabasePath: (NSString*) path __deprecated;
 - (NSArray*) albums __deprecated;
 + (NSArray*) albumsInContext:(NSManagedObjectContext*)context __deprecated;
 - (BOOL) shouldTerminate: (id) sender;

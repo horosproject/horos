@@ -335,6 +335,8 @@ enum
 	
 	NSCalendarDate			*injectionDateTime;
 	IBOutlet NSWindow		*injectionTimeWindow;
+	
+	int						isDataVolumicIn4DLevel;
 }
 @property(retain) NSCalendarDate *injectionDateTime;
 @property(readonly) short currentOrientationTool;
