@@ -5698,7 +5698,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		avoidSetWLWWRentry = NO;
 	}
 	
-	if( [self is2DViewer] )
+	if( [self is2DViewer])
 	{
 		if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
 		{
@@ -5759,38 +5759,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     [self loadTextures];
     [self setNeedsDisplay:YES];
 	
-	if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+	if( [self is2DViewer])
 	{
-		//set value for Series Object Presentation State
-		if( curDCM.SUVConverted == NO)
+		if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
 		{
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-			
-			// Image Level
-			if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+			//set value for Series Object Presentation State
+			if( curDCM.SUVConverted == NO)
 			{
-				[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-				[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-			}
-			else
-			{
-				[[self imageObj] setValue: nil forKey:@"windowWidth"];
-				[[self imageObj] setValue: nil forKey:@"windowLevel"];
-			}
-		}
-		else
-		{
-			if( [self is2DViewer] == YES)
-			{
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 				
 				// Image Level
 				if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
 				{
-					[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-					[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+					[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+					[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 				}
 				else
 				{
@@ -5798,8 +5781,28 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					[[self imageObj] setValue: nil forKey:@"windowLevel"];
 				}
 			}
+			else
+			{
+				if( [self is2DViewer] == YES)
+				{
+					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+					
+					// Image Level
+					if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex:0] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+					{
+						[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+						[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+					}
+					else
+					{
+						[[self imageObj] setValue: nil forKey:@"windowWidth"];
+						[[self imageObj] setValue: nil forKey:@"windowLevel"];
+					}
+				}
+			}
+			[[[BrowserController currentBrowser] managedObjectContext] unlock];
 		}
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	}
 }
 
@@ -11823,11 +11826,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		float ww = 0, wl = 0;
 		
-		if( [image valueForKey:@"windowWidth"]) ww = [[image valueForKey:@"windowWidth"] floatValue];
-		else if( !onlyImage && [series valueForKey:@"windowWidth"]) ww = [[series valueForKey:@"windowWidth"] floatValue];
-		
-		if( [image valueForKey:@"windowLevel"]) wl = [[image valueForKey:@"windowLevel"] floatValue];
-		else if( !onlyImage && [series valueForKey:@"windowLevel"]) wl= [[series valueForKey:@"windowLevel"] floatValue];
+		if( [self is2DViewer])
+		{
+			if( [image valueForKey:@"windowWidth"]) ww = [[image valueForKey:@"windowWidth"] floatValue];
+			else if( !onlyImage && [series valueForKey:@"windowWidth"]) ww = [[series valueForKey:@"windowWidth"] floatValue];
+			
+			if( [image valueForKey:@"windowLevel"]) wl = [[image valueForKey:@"windowLevel"] floatValue];
+			else if( !onlyImage && [series valueForKey:@"windowLevel"]) wl= [[series valueForKey:@"windowLevel"] floatValue];
+		}
+		else
+		{
+			ww = curWW;
+			wl = curWL;
+		}
+
 		
 		if( ww == 0)
 		{
