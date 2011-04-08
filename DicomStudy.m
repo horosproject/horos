@@ -20,6 +20,7 @@
 #import <OsiriX/DCM.h>
 #import "MutableArrayCategory.h"
 #import "SRAnnotation.h"
+#import "DicomDatabase.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DCMPix.h"
@@ -264,7 +265,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			[self setPrimitiveValue: [rootDict valueForKey: @"stateText"] forKey: @"stateText"];
 			
-			NSArray *albums = [BrowserController albumsInContext: [self managedObjectContext]];
+			NSArray *albums = [[DicomDatabase databaseForContext:[self managedObjectContext]] albums];
 			
 			for( NSString *name in [rootDict valueForKey: @"albums"])
 			{
@@ -755,7 +756,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) setComment: (NSString*) c
 {
-	if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
+	if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[DicomDatabase databaseForContext:[self managedObjectContext]] isLocal])
 	{
 		if( c == nil)
 			c = @"";

@@ -95,17 +95,17 @@
 	[self.managedObjectContext unlock];
 }
 
--(void)writeLock {
-	[writeLock lock];
-}
-
--(BOOL)tryWriteLock {
-	return [writeLock tryLock];
-}
-
--(void)writeUnlock {
-	[writeLock unlock];
-}
+//-(void)writeLock {
+//	[writeLock lock];
+//}
+//
+//-(BOOL)tryWriteLock {
+//	return [writeLock tryLock];
+//}
+//
+//-(void)writeUnlock {
+//	[writeLock unlock];
+//}
 
 -(NSString*)sqlFilePath {
 	return self.basePath;

@@ -15,7 +15,7 @@
 
 @property NSUInteger value;
 
--(id)initWithValue:(NSUInteger*)v;
+-(id)initWithValue:(NSUInteger)v;
 
 -(void)increment;
 

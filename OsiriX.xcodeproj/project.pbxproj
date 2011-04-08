@@ -27380,10 +27380,7 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-Wno-deprecated",
-				);
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,

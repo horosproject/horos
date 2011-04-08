@@ -203,15 +203,45 @@
 	return success;
 }
 
+-(NSString*)destinationOfAliasAtPath:(NSString*)inPath {
+	CFStringRef resolvedPath = nil;
+	CFURLRef url = CFURLCreateWithFileSystemPath(NULL /*allocator*/, (CFStringRef)inPath, kCFURLPOSIXPathStyle, NO /*isDirectory*/);
+	if (url != NULL) {
+		FSRef fsRef;
+		if (CFURLGetFSRef(url, &fsRef))
+		{
+			Boolean targetIsFolder, wasAliased;
+			if (FSResolveAliasFile (&fsRef, true /*resolveAliasChains*/, &targetIsFolder, &wasAliased) == noErr && wasAliased)
+			{
+				CFURLRef resolvedurl = CFURLCreateFromFSRef(NULL /*allocator*/, &fsRef);
+				if (resolvedurl != NULL)
+				{
+					resolvedPath = CFURLCopyFileSystemPath(resolvedurl, kCFURLPOSIXPathStyle);
+					CFRelease(resolvedurl);
+				}
+			}
+		}
+		CFRelease(url);
+	}
+	return [(NSString *)resolvedPath autorelease];	
+}
+
+-(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path {
+	if (![self fileExistsAtPath:path]) {
+		NSString* temp = [self destinationOfAliasAtPath:path];
+		if (temp) return temp;
+		return path;
+	}
+	
+	NSDictionary* attrs = [self attributesOfItemAtPath:path error:NULL];
+	if ([[attrs objectForKey:NSFileType] isEqualToString:NSFileTypeSymbolicLink])
+		return [self destinationOfSymbolicLinkAtPath:path error:NULL];
+	
+	return path;
+}
+
 -(NSDirectoryEnumerator*)enumeratorAtPath:(NSString*)path limitTo:(NSInteger)maxNumberOfFiles {
 	return [[[N2DirectoryEnumerator alloc] initWithPath:path maxNumberOfFiles:maxNumberOfFiles] autorelease];
 }
-
-
-
-
-
-
-
 
 @end

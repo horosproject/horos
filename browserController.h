@@ -173,7 +173,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSRecursiveLock					*checkIncomingLock, *checkBonjourUpToDateThreadLock;
 	NSPredicate						*testPredicate;
 	
-    BOOL							showAllImages, DatabaseIsEdited, isNetworkLogsActive, displayEmptyDatabase;
+    BOOL							showAllImages, DatabaseIsEdited, isNetworkLogsActive;//, displayEmptyDatabase;
 	NSConditionLock					*queueLock;
 	
 	IBOutlet NSScrollView			*thumbnailsScrollView;
@@ -290,7 +290,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (BOOL) isHardDiskFull;
 + (NSData*) produceJPEGThumbnail:(NSImage*) image;
 + (int) DefaultFolderSizeForDB;
-+ (long) computeDATABASEINDEXforDatabase:(NSString*) path;
++ (long) computeDATABASEINDEXforDatabase:(NSString*) path __deprecated;
 + (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password;
 + (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password deleteSource: (BOOL) deleteSource;
 + (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password deleteSource: (BOOL) deleteSource showGUI: (BOOL) showGUI;
@@ -339,7 +339,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) setNetworkLogs;
 - (BOOL) isNetworkLogsActive;
 - (void) ReadDicomCDRom:(id) sender;
-- (NSString*) INCOMINGPATH;
+- (NSString*) INCOMINGPATH __deprecated;
 - (IBAction) matrixDoublePressed:(id)sender;
 - (void) addURLToDatabaseEnd:(id) sender;
 - (void) addURLToDatabase:(id) sender;
@@ -370,7 +370,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) showDatabase:(id)sender;
 - (NSInteger) displayStudy: (DicomStudy*) study object:(NSManagedObject*) element command:(NSString*) execute;
 - (IBAction) matrixPressed:(id)sender;
-- (void) loadDatabase:(NSString*) path;
+- (void) loadDatabase:(NSString*) path __deprecated;
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer;
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer tileWindows: (BOOL) tileWindows;
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted;
@@ -384,8 +384,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) setupToolbar;
 - (void) addAlbumsFile: (NSString*) file;
 - (void) sendFilesToCurrentBonjourDB: (NSArray*) files;
-- (NSString*) getDatabaseFolderFor: (NSString*) path;
-- (NSString*) getDatabaseIndexFileFor: (NSString*) path;
+- (NSString*) getDatabaseFolderFor: (NSString*) path __deprecated;
+- (NSString*) getDatabaseIndexFileFor: (NSString*) path __deprecated;
 - (IBAction) copyToDBFolder: (id) sender;
 - (void) setCurrentBonjourService:(int) index;
 - (IBAction)customize:(id)sender;
@@ -407,10 +407,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) customIntervalNow:(id) sender;
 - (IBAction) saveDBListAs:(id) sender;
 - (IBAction) openDatabase:(id) sender;
-- (IBAction) createDatabase:(id) sender;
-- (void) checkReportsDICOMSRConsistency;
-- (void) openDatabaseIn:(NSString*) a Bonjour:(BOOL) isBonjour;
-- (void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour refresh: (BOOL) refresh;
+- (IBAction) createDatabase:(id) sender __deprecated; // this seems to be unused
+- (void) checkReportsDICOMSRConsistency __deprecated;
+- (void) openDatabaseIn:(NSString*) a Bonjour:(BOOL) isBonjour __deprecated;
+- (void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour refresh: (BOOL) refresh __deprecated;
 - (void) browserPrepareForClose;
 - (IBAction) endReBuildDatabase:(id) sender;
 - (IBAction) ReBuildDatabase:(id) sender;
@@ -519,11 +519,11 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 + (NSString*) defaultDocumentsDirectory  __deprecated;
 - (NSString *)documentsDirectoryFor:(int) mode url:(NSString*) url  __deprecated;
-- (NSString *)setFixedDocumentsDirectory  __deprecated;
+// - (NSString *)setFixedDocumentsDirectory  __deprecated; // this is commented out but still available, so it causes compilation errors
 - (IBAction)showLogWindow: (id)sender;
 - (void) resetLogWindowController;
 
-- (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path;
+- (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path __deprecated;
 
 - (void)setFilterPredicate:(NSPredicate *)predicate description:(NSString*) desc;
 - (NSPredicate *)createFilterPredicate;

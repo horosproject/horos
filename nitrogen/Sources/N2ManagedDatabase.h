@@ -26,9 +26,9 @@
 -(BOOL)tryLock;
 -(void)unlock;
 // write locking uses writeLock member
--(void)writeLock;
--(BOOL)tryWriteLock;
--(void)writeUnlock;
+//-(void)writeLock;
+//-(BOOL)tryWriteLock;
+//-(void)writeUnlock;
 
 -(NSManagedObjectModel*)managedObjectModel;
 -(NSMutableDictionary*)persistentStoreCoordinatorsDictionary;

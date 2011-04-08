@@ -25,6 +25,7 @@
 #import "XMLController.h"
 #import "XMLControllerDCMTKCategory.h"
 #include <zlib.h>
+#import "DicomDatabase.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DCMPix.h"
@@ -215,7 +216,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	#ifdef OSIRIX_VIEWER
 	NSString *d;
 	
-	if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
+	if (![[DicomDatabase databaseForContext:[self managedObjectContext]] isLocal])
 		d = [DicomImage dbPathForManagedContext: [self managedObjectContext]];
 	else
 		d = [[DicomImage dbPathForManagedContext: [self managedObjectContext]] stringByAppendingPathComponent:ROIDATABASE];
@@ -832,7 +833,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 -(NSString*) completePathWithDownload:(BOOL) download
 {
 	BrowserController *cB = [BrowserController currentBrowser];
-	BOOL isBonjour = [cB  isBonjour: [self managedObjectContext]];
+	BOOL isBonjour = ![[DicomDatabase databaseForContext:[self managedObjectContext]] isLocal];
 	
 	if( completePathCache)
 	{

@@ -172,7 +172,7 @@ static int validFilePathDepth = 0;
 			
 			if( i-start-1 > 0)
 			{
-				file = [dirpath stringByAppendingString:[NSString stringWithCString: &(buffer[start+1]) length:i-start-1]];
+				file = [dirpath stringByAppendingString:[[NSString alloc] initWithBytes:&(buffer[start+1]) length:i-start-1 encoding:NSUTF8StringEncoding]];
 				
 				NSString *ext = [file pathExtension];
 				

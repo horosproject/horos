@@ -1747,7 +1747,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[node addAttribute:[NSXMLNode attributeWithName:@"vr" stringValue:@""]];
 				[node addAttribute:[NSXMLNode attributeWithName:@"attributeTag" stringValue:@""]];
 				
-				NSXMLElement *childNode = [[[NSXMLElement alloc] initWithName:@"value" stringValue:[NSString stringWithCString:ext->edata]] autorelease];
+				NSXMLElement *childNode = [[[NSXMLElement alloc] initWithName:@"value" stringValue:[NSString stringWithCString:ext->edata encoding:NSUTF8StringEncoding]] autorelease];
 				[childNode addAttribute:[NSXMLNode attributeWithName:@"number" stringValue:@"0"]];
 				[node addChild:childNode];
 				

@@ -107,12 +107,12 @@ static BOOL loadingIsOver = NO, isAutoCleanDatabaseRunning = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
 static int DicomDirScanDepth = 0;
-//static int DefaultFolderSizeForDB = 0;
+static int DefaultFolderSizeForDB = 0; // TODO: change
 static NSTimeInterval lastHardDiskCheck = 0;
 static unsigned long long lastFreeSpace = 0;
 static NSTimeInterval lastFreeSpaceLogTime = 0;
-static NSArray *cachedAlbumsArray = nil;
-static NSManagedObjectContext *cachedAlbumsManagedObjectContext = nil;
+//static NSArray *cachedAlbumsArray = nil;
+//static NSManagedObjectContext *cachedAlbumsManagedObjectContext = nil;
 
 extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
@@ -155,6 +155,13 @@ void restartSTORESCP()
 	
 	return outString;
 }
+
+@end
+
+@interface BrowserController ()
+
+- (int) findDBPath:(NSString*) path dbFolder:(NSString*) DBFolderLocation;
+- (void)setDBWindowTitle;
 
 @end
 
@@ -272,50 +279,12 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 	return DefaultFolderSizeForDB;
 }
 
-+ (NSArray*) albumsInContext:(NSManagedObjectContext*)context
-{
-	@synchronized( [BrowserController currentBrowser])
-	{
-		if( cachedAlbumsArray && cachedAlbumsManagedObjectContext == context && cachedAlbumsManagedObjectContext != nil)
-			return [[cachedAlbumsArray copy] autorelease];
-		
-		NSArray *albumsArray = nil;
-		
-		[context lock];
-		
-		@try
-		{
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		
-			albumsArray = [context executeFetchRequest:dbRequest error: NULL];
-		}
-		@catch( NSException *e)
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
-		[context unlock];
-		
-		NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
-		albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, nil]];
-		
-		if( context == [[BrowserController currentBrowser] managedObjectContext])
-		{
-			[cachedAlbumsArray release];
-			cachedAlbumsArray = [albumsArray retain];
-			cachedAlbumsManagedObjectContext = context;
-		}
-		
-		return [[albumsArray copy] autorelease];
-	}
-	
-	return nil;
++ (NSArray*) albumsInContext:(NSManagedObjectContext*)context { // __deprecated
+	return [DicomDatabase albumsInContext:context];
 }
 
--(NSArray*)albums
-{
-	return [BrowserController albumsInContext: [self managedObjectContext]];
+-(NSArray*)albums { // __deprecated
+	return [database albums];
 }
 
 static NSConditionLock *threadLock = nil;
@@ -407,11 +376,11 @@ static NSConditionLock *threadLock = nil;
 #pragma mark-
 #pragma mark Add DICOM Database functions
 
-- (NSString*)getNewFileDatabasePath:(NSString*)extension { // deprecated
+- (NSString*)getNewFileDatabasePath:(NSString*)extension { // __deprecated
 	return [database uniquePathForNewDataFileWithExtension:extension];
 }
 
-- (NSString*)getNewFileDatabasePath:(NSString*)extension dbFolder:(NSString*)dbFolder { // deprecated
+- (NSString*)getNewFileDatabasePath:(NSString*)extension dbFolder:(NSString*)dbFolder { // __deprecated
 	return [[DicomDatabase localDatabaseAtPath:dbFolder] uniquePathForNewDataFileWithExtension:extension];
 }
 
@@ -536,77 +505,9 @@ static NSConditionLock *threadLock = nil;
 	return destPath;
 }
 
-- (void) checkForExistingReport: (NSManagedObject*) study dbFolder: (NSString*) dbFolder
-{
-	#ifndef OSIRIX_LIGHT
-	@try
-	{
-		// Is there a report?
-		NSString	*basePath = [NSString stringWithFormat: @"%@/REPORTS/", dbFolder];
-		NSString	*reportPath = nil;
-		
-		if( reportPath == nil)
-		{
-			reportPath = [basePath stringByAppendingFormat:@"%@.pages",[Reports getUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-		
-		if( reportPath == nil)
-		{
-			reportPath = [basePath stringByAppendingFormat:@"%@.odt",[Reports getUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-		
-		if( reportPath == nil)
-		{
-			reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-		
-		if( reportPath == nil)
-		{
-			reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-		
-		if( reportPath == nil)
-		{
-			reportPath = [basePath stringByAppendingFormat:@"%@.pages",[Reports getOldUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-		
-		if( reportPath == nil)
-		{
-			reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getOldUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-		
-		if( reportPath == nil)
-		{
-			reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getOldUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-	}
-	@catch ( NSException *e)
-	{
-		NSLog( @"***** checkForExistingReport exception: %@", e);
-		[AppController printStackTrace: e];
-	}
-	#endif
+#pragma deprecated (checkForExistingReport:dbFolder:)
+- (void) checkForExistingReport: (NSManagedObject*) study dbFolder: (NSString*) dbFolder {
+	[[DicomDatabase databaseForContext:[study managedObjectContext]] checkForExistingReportForStudy:study];
 }
 
 #pragma mark-
@@ -1309,7 +1210,7 @@ static NSConditionLock *threadLock = nil;
 											album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
 											[album setValue:@"other" forKey:@"name"];
 											
-											cachedAlbumsManagedObjectContext = nil;
+											//cachedAlbumsManagedObjectContext = nil;
 										}
 									}
 									
@@ -2431,7 +2332,7 @@ static NSConditionLock *threadLock = nil;
 	return databaseLastModification;
 }
 
-- (NSManagedObjectModel*)managedObjectModel { // deprecated
+- (NSManagedObjectModel*)managedObjectModel { // __deprecated
     return self.database.managedObjectModel;
 }
 
@@ -2441,35 +2342,35 @@ static NSConditionLock *threadLock = nil;
 
 // ------------------
 
-- (NSManagedObjectContext*)localManagedObjectContextIndependentContext:(BOOL)independentContext { // deprecated
+- (NSManagedObjectContext*)localManagedObjectContextIndependentContext:(BOOL)independentContext { // __deprecated
 	return [[DicomDatabase activeLocalDatabase] independentContext:independentContext];
 }
 
-- (NSManagedObjectContext*)localManagedObjectContext { // deprecated
+- (NSManagedObjectContext*)localManagedObjectContext { // __deprecated
 	return [self localManagedObjectContextIndependentContext:NO];
 }
 
 // ------------------
 
-- (NSManagedObjectContext*)defaultManagerObjectContext { // deprecated
+- (NSManagedObjectContext*)defaultManagerObjectContext { // __deprecated
 	return [self defaultManagerObjectContextIndependentContext:NO];
 }
 
-- (NSManagedObjectContext*)defaultManagerObjectContextIndependentContext:(BOOL)independentContext { // deprecated
+- (NSManagedObjectContext*)defaultManagerObjectContextIndependentContext:(BOOL)independentContext { // __deprecated
 	return [[DicomDatabase defaultDatabase] independentContext:independentContext];
 }
 
 // ------------------
 
-- (NSManagedObjectContext*)managedObjectContext { // deprecated
+- (NSManagedObjectContext*)managedObjectContext { // __deprecated
 	return [self managedObjectContextIndependentContext:NO];
 }
 
-- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext { // deprecated
+- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext { // __deprecated
 	return [self managedObjectContextIndependentContext:independentContext path:database.basePath]; 
 }
 
-- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext path:(NSString*)path { // deprecated
+- (NSManagedObjectContext*)managedObjectContextIndependentContext:(BOOL)independentContext path:(NSString*)path { // __deprecated
 	if (!path)
 		return nil;
 	
@@ -2591,131 +2492,299 @@ static NSConditionLock *threadLock = nil;
 }
 
 -(void)setDatabase:(DicomDatabase*)db {
+	[self waitForRunningProcesses];
+	[reportFilesToCheck removeAllObjects];
+
 	if (database != db) {
 		[self willChangeValueForKey:@"database"];
-		[database release];
-		database = [db retain];
+		
+		NSThread* thread = [NSThread currentThread];
+		NSString* originalThreadName = [thread name];
+		[thread setName:NSLocalizedString(@"Loading Database...", nil)];
+		[[ThreadsManager defaultManager] addThreadAndStart:thread];
+		
+		WaitRendering* wait = [[WaitRendering alloc] init:NSLocalizedString(@"Opening OsiriX database...", nil)]; // TODO: threadModalForWindow also on MainThread...
+		[wait showWindow:self];
+		
+		/*if (refresh) { // TODO: here
+			NSArray *albumArray = self.albumArray;
+			if( [albumArray count] > albumTable.selectedRow && albumTable.selectedRow >= 0)
+				albumName = [[[[albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"name"] copy] autorelease];
+			
+			if( [databaseOutline selectedRow] >= 0)
+			{
+				if( [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"type"] isEqualToString: @"Study"])
+					selectedItem = [[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"studyInstanceUID"];
+				
+				if( [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"type"] isEqualToString: @"Series"])
+					selectedItem = [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"study"] valueForKey: @"studyInstanceUID"];
+				
+				selectedItem = [[selectedItem copy] autorelease];
+			}
+			timeInt = timeIntervalType;
+		}*/
+		
+		if ([database isLocal])
+			[database save:nil];
+		
+		[database release]; database = nil;
+		
+		
+		@try {
+			[[LogManager currentLogManager] checkLogs: nil];
+			[self resetLogWindowController];
+			
+			[[AppController sharedAppController] closeAllViewers: self];
+			
+			[self outlineViewRefresh];
+			[self refreshMatrix:self];
+			
+			database = [db retain];
+			
+			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
+			
+			NSString	*DBVersion;//, *DBFolderLocation, *curPath = [self.documentsDirectory stringByDeletingLastPathComponent];
+			
+//			DBVersion = [NSString stringWithContentsOfFile:[database modelVersionFilePath]];
+			//DBFolderLocation = [NSString stringWithContentsOfFile:[database.basePath stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
+//			
+//			if (isCurrentDatabaseBonjour)
+//			{
+//				[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+//				[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+//				
+//				DBFolderLocation = [self.documentsDirectory stringByDeletingLastPathComponent];
+//			}
+//			
+//			if( DBFolderLocation == nil)
+//				DBFolderLocation = curPath;
+//			
+//			BOOL isDirectory;
+//			if( [[NSFileManager defaultManager] fileExistsAtPath: DBFolderLocation isDirectory: &isDirectory])
+//			{
+//				if( isDirectory == NO)
+//					DBFolderLocation = curPath;
+//			}
+//			else DBFolderLocation = curPath;
+//			
+//			if( [DBFolderLocation isEqualToString: curPath] == NO)
+//			{
+//				NSLog( @"Update DATABASELOCATIONURL to :%@ from %@", DBFolderLocation, curPath);
+//				[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"DATABASELOCATION"];
+//				[[NSUserDefaults standardUserDefaults] setObject: DBFolderLocation forKey: @"DATABASELOCATIONURL"];
+//			}
+			
+//			if (!isCurrentDatabaseBonjour)
+//			{
+//				if( [self.documentsDirectory isEqualToString: [path stringByDeletingLastPathComponent]] == NO)
+//					[[self.documentsDirectory stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES encoding : NSUTF8StringEncoding error: nil];
+//				else
+//					[[NSFileManager defaultManager] removeFileAtPath: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] handler: nil];
+				
+				// is this DB on the sources list?
+//				long i = [self findDBPath:[database sqlFilePath] dbFolder:[database dataDirPath]];
+//				if( i == -1)
+//				{
+//					NSLog( @"DB Not found -> we add it");
+//					
+//					NSArray	*dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
+//					
+//					if( dbArray == nil) dbArray = [NSArray array];
+//					
+//					if( [[database.sqlFilePath lastPathComponent] isEqualToString: @"Database.sql"])	// We will add the folder, since it is the default sql file for a DB folder
+//					{
+//						NSString	*name = [[NSFileManager defaultManager] displayNameAtPath: database.basePath];
+//						
+//						dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: database.basePath, @"Path", [name stringByAppendingString:@" DB"], @"Description", nil]];			
+//					}
+//					else
+//					{
+//						dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: database.basePath, @"Path", [[[database.basePath lastPathComponent] stringByDeletingPathExtension] stringByAppendingString:@" DB"], @"Description", nil]];
+//					}
+//					
+//					if( DICOMDIRCDMODE == NO)
+//						[[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: @"localDatabasePaths"];
+//					
+//					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixServerArrayChangedNotification object:nil];
+//					
+//					// Select it
+//					i = [self findDBPath:[database sqlFilePath] dbFolder:[database dataDirPath]];
+//				}
+				
+			//	if// (i != [bonjourServicesList selectedRow])
+//				{
+//					if( i == -1 && DICOMDIRCDMODE != YES) NSLog( @"**** NOT FOUND??? WHY? we added it... no?");
+//					dontLoadSelectionSource = YES;
+//					[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
+//					dontLoadSelectionSource = NO;
+//				}
+//			}
+			
+			//if (DICOMDIRCDMODE)
+//				DBVersion = nil;
+//			else if (DBVersion == nil) 
+//				DBVersion = [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"];
+			
+//			NSLog(@"Opening DB: %@ Version: %@ DB Folder: %@", path, DBVersion, DBFolderLocation);
+			
+//			if( DBVersion && [DBVersion isEqualToString: DATABASEVERSION] == NO)
+//			{
+//				[self updateDatabaseModel: path :DBVersion];
+//				
+//				[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"recomputePatientUID"];
+//			}
+			
+//			if( managedObjectContext)
+//			{
+//				[self resetLogWindowController];
+//				[[LogManager currentLogManager] resetLogs];
+//			}
+			
+//			[managedObjectContext lock];
+//			[managedObjectContext unlock];
+//			[managedObjectContext reset];
+//			[managedObjectContext release];
+//			managedObjectContext = nil;
+			
+//			while( computeNumberOfStudiesForAlbums)
+//				[NSThread sleepForTimeInterval: 0.1];
+			
+//			@synchronized(albumNoOfStudiesCache) {
+//				[albumNoOfStudiesCache removeAllObjects];
+//			}
+			
+			//[self setFixedDocumentsDirectory];
+			[[database managedObjectContext] lock];
+			@try {
+				
+//				if( NEEDTOREBUILD)
+//					[self ReBuildDatabase:self];
+//				else
+//					[self outlineViewRefresh];
+				
+			//	NSString *pathTemp = [[self documentsDirectory] stringByAppendingString:@"/Loading"];
+//				
+//				if ([[NSFileManager defaultManager] fileExistsAtPath:pathTemp])
+//					[[NSFileManager defaultManager] removeFileAtPath:pathTemp handler: nil];
+				
+//				[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingPathComponent: DATABASEPATH]];
+//				[AppController createNoIndexDirectoryIfNecessary: [self INCOMINGPATH]];
+//				[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/"]];
+//				[AppController createNoIndexDirectoryIfNecessary: [[self localDocumentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/"]];
+				
+				[self setDBWindowTitle];
+				
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixServerArrayChangedNotification object:nil];
+				
+				[self outlineViewRefresh];
+				[self refreshMatrix: self];
+				[self refreshAlbums];
+				
+	#ifndef OSIRIX_LIGHT
+				if( [QueryController currentQueryController])
+					[[QueryController currentQueryController] refresh: self];
+				else if( [QueryController currentAutoQueryController])
+					[[QueryController currentAutoQueryController] refresh: self];
+	#endif
+				
+			} @catch (NSException* e) {
+				N2LogExceptionWithStackTrace(e);
+			} @finally {
+				[[database managedObjectContext] unlock];
+			}
+			
+			[[LogManager currentLogManager] resetLogs];
+				
+			//	NSData *str = [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"];
+			//	
+			//	NSManagedObjectContext	*context = self. managedObjectContext;
+			//	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			//	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Image"]];
+			//		
+			//	[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+			//	
+			//	[context lock];
+			//	
+			//	NSError *error = nil;
+			//	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+			//	if( [studiesArray count])
+			//	{
+			//		NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: str] customSelector: @selector( isEqualToSopInstanceUID:)];
+			//		
+			//		studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
+			//		
+			//		NSData *d = [[studiesArray lastObject] valueForKey: @"compressedSopInstanceUID"];
+			//		
+			//		NSLog( @"%@", sopInstanceUIDDecode( [d bytes], [d length]));
+			//	}
+			//
+			//	[context unlock];
+			
+			/*if (refresh) {  // TODO: here
+				if( albumName)
+				{
+					for( NSManagedObject *a in self.albumArray)
+					{
+						if( [[a valueForKey: @"name"] isEqualToString: albumName])
+							[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject: a]] byExtendingSelection: NO];
+					}
+				}
+				
+				timeIntervalType = timeInt;
+				[timeIntervalPopup selectItemWithTag: 0];
+				
+				[self setSearchString: nil];
+				
+				for( NSManagedObject *obj in outlineViewArray)
+				{
+					if( [[obj valueForKey: @"studyInstanceUID"] isEqualToString: selectedItem])
+						[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: obj]] byExtendingSelection: NO];
+				}
+				
+				[self refreshMatrix: self];
+				
+				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+			}*/
+			
+		} @catch (NSException* e) {
+			N2LogExceptionWithStack(e);
+		}
+		
+		[wait close];
+		[wait release];
+		
+		[[ThreadsManager defaultManager] removeThread:thread];
+		[thread setName:originalThreadName];
+		
 		[self didChangeValueForKey:@"database"];
 	}
 }
 
--(void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour
-{
-	[self openDatabaseIn: a Bonjour: isBonjour refresh: NO];
+-(void)openDatabaseIn:(NSString*)a Bonjour:(BOOL)isBonjour { // __deprecated
+	[self openDatabaseIn:a Bonjour:isBonjour refresh:NO];
 }
 
--(void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour refresh: (BOOL) refresh
-{
-	[self waitForRunningProcesses];
-	
-	[reportFilesToCheck removeAllObjects];
-	
-	NSString *albumName = nil, *selectedItem = nil;
-	int timeInt;
-	
-	if (refresh)
-	{
-		NSArray *albumArray = self.albumArray;
-		if( [albumArray count] > albumTable.selectedRow && albumTable.selectedRow >= 0)
-			albumName = [[[[albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"name"] copy] autorelease];
-		
-		if( [databaseOutline selectedRow] >= 0)
-		{
-			if( [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"type"] isEqualToString: @"Study"])
-				selectedItem = [[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"studyInstanceUID"];
-				
-			if( [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"type"] isEqualToString: @"Series"])
-				selectedItem = [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"study"] valueForKey: @"studyInstanceUID"];
-				
-			selectedItem = [[selectedItem copy] autorelease];
-		}
-		timeInt = timeIntervalType;
-	}
-	
-	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening OsiriX database...", nil)];
-	[wait showWindow:self];
-	
-	@try
-	{
-		if (!isCurrentDatabaseBonjour)
-			[self saveDatabase:currentDatabasePath];
-		
-		[currentDatabasePath release];
-		currentDatabasePath = [a retain];
-		isCurrentDatabaseBonjour = isBonjour;
-		
-		if( isCurrentDatabaseBonjour)
-		{
-			@synchronized( self)
-			{
-				// Remove the file from persistent store if needed -> we artifically modified the file (download)
-				if( [persistentStoreCoordinatorDictionary objectForKey: currentDatabasePath])
-				{
-					[persistentStoreCoordinatorDictionary removeObjectForKey: currentDatabasePath];
-					[databaseIndexDictionary removeObjectForKey: currentDatabasePath];
-				}
-			}
-		}
-		
-		[self loadDatabase: currentDatabasePath];
-		
-		if (refresh)
-		{
-			if( albumName)
-			{
-				for( NSManagedObject *a in self.albumArray)
-				{
-					if( [[a valueForKey: @"name"] isEqualToString: albumName])
-						[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject: a]] byExtendingSelection: NO];
-				}
-			}
-			
-			timeIntervalType = timeInt;
-			[timeIntervalPopup selectItemWithTag: 0];
-			
-			[self setSearchString: nil];
-			
-			for( NSManagedObject *obj in outlineViewArray)
-			{
-				if( [[obj valueForKey: @"studyInstanceUID"] isEqualToString: selectedItem])
-					[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: obj]] byExtendingSelection: NO];
-			}
-			
-			[self refreshMatrix: self];
-			
-			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-		}
-	}
-	@catch (NSException * e)
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
-	}
-	[wait close];
-	[wait release];
+-(void)openDatabaseIn:(NSString*)a Bonjour:(BOOL)isBonjour refresh:(BOOL)refresh { // __deprecated
+	NSLog(@"%s IS NOT AVAILABLE ANYMORE, please use setDatabase", __PRETTY_FUNCTION__);
 }
 
-- (void)openDatabaseInBonjour: (NSString*)path
-{ 
-	[self openDatabaseIn: path Bonjour: YES refresh: YES];
+#pragma deprecated (openDatabaseInBonjour:)
+-(void)openDatabaseInBonjour:(NSString*)path { // deprecated 
+	[self openDatabaseIn:path Bonjour:YES refresh:YES];
 }
 
-- (IBAction)openDatabase: (id)sender
-{
-	NSOpenPanel		*oPanel		= [NSOpenPanel openPanel];
-	
-	if ([oPanel runModalForDirectory:[self documentsDirectory] file:nil types:[NSArray arrayWithObject:@"sql"]] == NSFileHandlingPanelOKButton)
-	{
-		if( [currentDatabasePath isEqualToString: [oPanel filename]] == NO && [oPanel filename] != nil)
-		{
+-(IBAction)openDatabase:(id)sender {
+	NSOpenPanel* oPanel	= [NSOpenPanel openPanel];
+	if ([oPanel runModalForDirectory:database.sqlFilePath file:nil types:[NSArray arrayWithObject:@"sql"]] == NSFileHandlingPanelOKButton) {
+		if ([oPanel filename] && ![database.sqlFilePath isEqualToString:[oPanel filename]]) {
 			[self openDatabaseIn: [oPanel filename] Bonjour:NO];
 		}
 	}
 }
 
-- (IBAction)createDatabase: (id)sender
-{
-	if( isCurrentDatabaseBonjour)
+- (IBAction)createDatabase: (id)sender { // deprecated
+	N2LogDeprecatedAPI();
+	/*if( isCurrentDatabaseBonjour)
 	{
 		NSRunInformationalAlertPanel( NSLocalizedString(@"Database", nil), NSLocalizedString(@"Cannot create a SQL Index file for a distant database.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 		return;
@@ -2739,7 +2808,7 @@ static NSConditionLock *threadLock = nil;
 			[self loadDatabase: currentDatabasePath];
 			[self saveDatabase: currentDatabasePath];
 		}
-	}
+	}*/
 }
 
 -(IBAction) createDatabaseFolder:(id) sender
@@ -2774,7 +2843,7 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (void) updateDatabaseModel: (NSString*) path :(NSString*) DBVersion
+/*- (void) updateDatabaseModel: (NSString*) path :(NSString*) DBVersion
 {
 	NSString *model = [NSString stringWithFormat:@"/OsiriXDB_Previous_DataModel%@.mom", DBVersion];
 	
@@ -3150,45 +3219,7 @@ static NSConditionLock *threadLock = nil;
 		NEEDTOREBUILD = YES;
 		COMPLETEREBUILD = YES;
 	}
-}
-
-- (void) recomputePatientUIDs
-{
-	NSLog( @"recomputePatientUIDs");
-	
-	// Find all studies
-	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-	NSManagedObjectContext *context = self.managedObjectContext;
-	
-	[context lock];
-	NSError *error = nil;
-	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-	
-	for( NSManagedObject *study in studiesArray)
-	{
-		@try
-		{
-			NSManagedObject *o = [[[[study valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
-			DicomFile	*dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
-			
-			if( dcm)
-			{
-				if( [dcm elementForKey:@"patientUID"])
-					[study setValue: [dcm elementForKey:@"patientUID"] forKey:@"patientUID"];
-			}
-			
-			[dcm release];
-		}
-		@catch ( NSException *e)
-		{
-			NSLog( @"recomputePatientUIDs exception : %@", e);
-			[AppController printStackTrace: e];
-		}
-	}
-	[context unlock];
-}
+}*/
 
 - (void)showEntireDatabase
 {
@@ -3206,8 +3237,7 @@ static NSConditionLock *threadLock = nil;
 	[self.window setRepresentedFilename: currentDatabasePath];
 }
 
-- (NSString*)getDatabaseFolderFor: (NSString*)path
-{
+- (NSString*)getDatabaseFolderFor: (NSString*)path { // __deprecated
 	BOOL isDirectory;
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
@@ -3245,8 +3275,7 @@ static NSConditionLock *threadLock = nil;
 	return nil;
 }
 
-- (NSString*)getDatabaseIndexFileFor: (NSString*)path
-{
+- (NSString*)getDatabaseIndexFileFor: (NSString*)path {  // __deprecated
 	BOOL isDirectory;
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
@@ -3354,225 +3383,10 @@ static NSConditionLock *threadLock = nil;
 		return NO;
 }
 
-- (void) loadDatabase:(NSString*) path
-{
-	[self waitForRunningProcesses];
-	
-	[[LogManager currentLogManager] checkLogs: nil];
-	[self resetLogWindowController];
-	
-	[[AppController sharedAppController] closeAllViewers: self];
-	
-	displayEmptyDatabase = YES;
-	[self outlineViewRefresh];
-	[self refreshMatrix: self];
-	
-	[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
-	
-	NSString	*DBVersion, *DBFolderLocation, *curPath = [self.documentsDirectory stringByDeletingLastPathComponent];
-	
-	DBVersion = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_VERSION"]];
-	DBFolderLocation = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
-	
-	if (isCurrentDatabaseBonjour)
-	{
-		[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
-		[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
-		
-		DBFolderLocation = [self.documentsDirectory stringByDeletingLastPathComponent];
-	}
-	
-	if( DBFolderLocation == nil)
-		DBFolderLocation = curPath;
-	
-	BOOL isDirectory;
-	if( [[NSFileManager defaultManager] fileExistsAtPath: DBFolderLocation isDirectory: &isDirectory])
-	{
-		if( isDirectory == NO)
-			DBFolderLocation = curPath;
-	}
-	else DBFolderLocation = curPath;
-	
-	if( [DBFolderLocation isEqualToString: curPath] == NO)
-	{
-		NSLog( @"Update DATABASELOCATIONURL to :%@ from %@", DBFolderLocation, curPath);
-		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"DATABASELOCATION"];
-		[[NSUserDefaults standardUserDefaults] setObject: DBFolderLocation forKey: @"DATABASELOCATIONURL"];
-	}
-	
-	if (!isCurrentDatabaseBonjour)
-	{
-		if( [self.documentsDirectory isEqualToString: [path stringByDeletingLastPathComponent]] == NO)
-			[[self.documentsDirectory stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES encoding : NSUTF8StringEncoding error: nil];
-		else
-			[[NSFileManager defaultManager] removeFileAtPath: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] handler: nil];
-			
-		long i = [self findDBPath: path dbFolder: DBFolderLocation];
-		if( i == -1)
-		{
-			NSLog( @"DB Not found -> we add it");
-			
-			NSArray	*dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
-			
-			if( dbArray == nil) dbArray = [NSArray array];
-			
-			if( [[path lastPathComponent] isEqualToString: @"Database.sql"])	// We will add the folder, since it is the default sql file for a DB folder
-			{
-				NSString	*name = [[NSFileManager defaultManager] displayNameAtPath: DBFolderLocation];
-				
-				dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: DBFolderLocation, @"Path", [name stringByAppendingString:@" DB"], @"Description", nil]];			
-			}
-			else
-			{
-				dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: path, @"Path", [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingString:@" DB"], @"Description", nil]];
-			}
-			
-			if( DICOMDIRCDMODE == NO)
-				[[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: @"localDatabasePaths"];
-	
-			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixServerArrayChangedNotification object:nil];
-			
-			// Select it
-			i = [self findDBPath: path dbFolder: DBFolderLocation];
-		}
-		
-		if( i != [bonjourServicesList selectedRow])
-		{
-			if( i == -1 && DICOMDIRCDMODE != YES) NSLog( @"**** NOT FOUND??? WHY? we added it... no?");
-			dontLoadSelectionSource = YES;
-			[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
-			dontLoadSelectionSource = NO;
-		}
-	}
-	
-	if( DICOMDIRCDMODE)
-		DBVersion = nil;
-	else if( DBVersion == nil) 
-		DBVersion = [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"];
-	
-	NSLog(@"Opening DB: %@ Version: %@ DB Folder: %@", path, DBVersion, DBFolderLocation);
-	
-	if( DBVersion && [DBVersion isEqualToString: DATABASEVERSION] == NO)
-	{
-		[self updateDatabaseModel: path :DBVersion];
-		
-		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"recomputePatientUID"];
-	}
-	
-	if( managedObjectContext)
-	{
-		[self resetLogWindowController];
-		[[LogManager currentLogManager] resetLogs];
-	}
-	
-	[managedObjectContext lock];
-	[managedObjectContext unlock];
-	[managedObjectContext reset];
-	[managedObjectContext release];
-	managedObjectContext = nil;
-	
-	while( computeNumberOfStudiesForAlbums)
-		[NSThread sleepForTimeInterval: 0.1];
-	
-	@synchronized( albumNoOfStudiesCache)
-	{
-		[albumNoOfStudiesCache removeAllObjects];
-	}
-	
-	[self setFixedDocumentsDirectory];
-	[self managedObjectContext];
-	[managedObjectContext lock];
-	
-	[managedObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
-	
-	if( isCurrentDatabaseBonjour)
-		bonjourManagedObjectContext = managedObjectContext;
-	else
-		bonjourManagedObjectContext = nil;
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"recomputePatientUID"])
-	{
-		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"recomputePatientUID"];
-		
-		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Recompute Patient UIDs", nil)];
-		[wait showWindow:self];
-		
-		@try
-		{
-			[self recomputePatientUIDs];
-		}
-		@catch (NSException *ne)
-		{
-			NSLog( @"recomputePatientUIDs exception: %@ %@", [ne name], [ne reason]);
-			[AppController printStackTrace: ne];
-		}
-		
-		[wait close];
-		[wait release];
-	}
-	
-	if( NEEDTOREBUILD)
-		[self ReBuildDatabase:self];
-	else
-		[self outlineViewRefresh];
-	
-	NSString *pathTemp = [[self documentsDirectory] stringByAppendingString:@"/Loading"];
-	
-	if ([[NSFileManager defaultManager] fileExistsAtPath:pathTemp])
-		[[NSFileManager defaultManager] removeFileAtPath:pathTemp handler: nil];
-	
-	[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingPathComponent: DATABASEPATH]];
-	[AppController createNoIndexDirectoryIfNecessary: [self INCOMINGPATH]];
-	[AppController createNoIndexDirectoryIfNecessary: [[self documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/"]];
-	[AppController createNoIndexDirectoryIfNecessary: [[self localDocumentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/"]];
-	
-	[self setDBWindowTitle];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixServerArrayChangedNotification object:nil];
-	
-	displayEmptyDatabase = NO;
-	[self outlineViewRefresh];
-	[self refreshMatrix: self];
-	[self refreshAlbums];
-	
-	#ifndef OSIRIX_LIGHT
-	if( [QueryController currentQueryController])
-		[[QueryController currentQueryController] refresh: self];
-	else if( [QueryController currentAutoQueryController])
-		[[QueryController currentAutoQueryController] refresh: self];
-	#endif
-	
-	[[LogManager currentLogManager] resetLogs];
-	
-	[managedObjectContext unlock];
-	
-	[[LogManager currentLogManager] resetLogs];
-	
-//	NSData *str = [DicomImage sopInstanceUIDEncodeString: @"1.2.826.0.1.3680043.2.1143.8797283371159.20060125163148762.58"];
-//	
-//	NSManagedObjectContext	*context = self. managedObjectContext;
-//	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-//	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Image"]];
-//		
-//	[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-//	
-//	[context lock];
-//	
-//	NSError *error = nil;
-//	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-//	if( [studiesArray count])
-//	{
-//		NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: str] customSelector: @selector( isEqualToSopInstanceUID:)];
-//		
-//		studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
-//		
-//		NSData *d = [[studiesArray lastObject] valueForKey: @"compressedSopInstanceUID"];
-//		
-//		NSLog( @"%@", sopInstanceUIDDecode( [d bytes], [d length]));
-//	}
-//
-//	[context unlock];
+- (void)loadDatabase:(NSString*)path { // __deprecated
+	NSLog(@"%s IS NOT AVAILABLE ANYMORE, please use setDatabase", __PRETTY_FUNCTION__);
 }
+
 
 -(long) saveDatabase: (NSString*)path context: (NSManagedObjectContext*) context
 {
@@ -4126,206 +3940,10 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (IBAction) ReBuildDatabase:(id) sender
-{	
-	if (isCurrentDatabaseBonjour) return;
+- (IBAction) ReBuildDatabase:(id) sender {
 	
-	[self waitForRunningProcesses];
-	
-	[[AppController sharedAppController] closeAllViewers: self];
-	
-	if( COMPLETEREBUILD)	// Delete the database file
-	{
-		if ([[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath])
-		{
-			[[NSFileManager defaultManager] removeFileAtPath: [currentDatabasePath stringByAppendingString:@" - old"] handler: nil];
-			[[NSFileManager defaultManager] movePath: currentDatabasePath toPath: [currentDatabasePath stringByAppendingString:@" - old"] handler: nil];
-		}
-	}
-	else
-	{
-		[self saveDatabase:currentDatabasePath];
-	}
-	
-	displayEmptyDatabase = YES;
-	[self outlineViewRefresh];
-	[self refreshMatrix: self];
-	
-	[checkIncomingLock lock];
-	
-	[managedObjectContext lock];
-	[managedObjectContext unlock];
-	[managedObjectContext release];
-	managedObjectContext = nil;
-	
-	[databaseOutline reloadData];
-	
-	NSMutableArray *filesArray;
-	
-	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Step 1: Checking files...", nil)];
-	[wait showWindow:self];
-	
-	filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
-	
-	// SCAN THE DATABASE FOLDER, TO BE SURE WE HAVE EVERYTHING!
-	
-	NSString	*aPath = [[self documentsDirectory] stringByAppendingPathComponent:DATABASEPATH];
-	NSString	*incomingPath = [self INCOMINGPATH];
-	long		totalFiles = 0;
-	
-	[AppController createNoIndexDirectoryIfNecessary: aPath];
-	
-	// In the DATABASE FOLDER, we have only folders! Move all files that are wrongly there to the INCOMING folder.... and then scan these folders containing the DICOM files
-	
-	NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
-	for( NSString *dir in dirContent)
-	{
-		NSString * itemPath = [aPath stringByAppendingPathComponent: dir];
-		id fileType = [[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey:NSFileType];
-		if ([fileType isEqual:NSFileTypeRegular])
-		{
-			[[NSFileManager defaultManager] movePath:itemPath toPath:[incomingPath stringByAppendingPathComponent: [itemPath lastPathComponent]] handler: nil];
-		}
-		else totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey: NSFileReferenceCount] intValue];
-	}
-	
-	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
-	
-	NSLog( @"Start Rebuild");
-	
-	for( NSString *name in dirContent)
-	{
-		NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
-		
-		NSString	*curDir = [aPath stringByAppendingPathComponent: name];
-		NSArray		*subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: name]];
-		
-		for( NSString *subName in subDir)
-		{
-			if( [subName characterAtIndex: 0] != '.')
-				[filesArray addObject: [curDir stringByAppendingPathComponent: subName]];
-		}
-				
-		[pool release];
-	}
-	
-	[wait close];
-	[wait release];
-	wait = nil;
-	
-	// ** DICOM ROI SR FOLDER
-	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath: [[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"]];
-	for( NSString *name in dirContent)
-	{
-		if( [name characterAtIndex: 0] != '.')
-		{
-			[filesArray addObject: [[[self documentsDirectory] stringByAppendingPathComponent:@"ROIs"] stringByAppendingPathComponent: name]];
-		}
-	}
-	
-	NSManagedObjectContext *context = self.managedObjectContext;
-	NSManagedObjectModel *model = self.managedObjectModel;
-	
-	[context retain];
-	[context lock];
-	
-	@try
-	{
-		// ** Finish the rebuild
-		[[self addFilesToDatabase: filesArray onlyDICOM:NO produceAddedFiles:NO] valueForKey:@"completePath"];
-		
-		NSLog( @"End Rebuild");
-		
-		[filesArray release];
-		
-		Wait  *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Step 3: Cleaning Database...", nil)];
-		
-		[splash showWindow:self];
-		
-		NSFetchRequest	*dbRequest;
-		NSError			*error = nil;
-		
-		if( COMPLETEREBUILD == NO)
-		{
-			// FIND ALL images, and REMOVE non-available images
-			
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-			error = nil;
-			NSArray *imagesArray = [context executeFetchRequest:dbRequest error:&error];
-			
-			[[splash progress] setMaxValue:[imagesArray count]/50];
-			
-			// Find unavailable files
-			int counter = 0;
-			for( NSManagedObject *aFile in imagesArray)
-			{
-				
-				FILE *fp = fopen( [[aFile valueForKey:@"completePath"] UTF8String], "r");
-				if( fp)
-				{
-					fclose( fp);
-				}
-				else
-					[context deleteObject: aFile];
-				
-				if( counter++ % 50 == 0) [splash incrementBy:1];
-			}
-		}
-		
-		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		error = nil;
-		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-		NSString	*basePath = [NSString stringWithFormat: @"%@/REPORTS/", [self documentsDirectory]];
-		
-		if ([studiesArray count] > 0)
-		{
-			for( NSManagedObject *study in studiesArray)
-			{
-				BOOL deleted = NO;
-				
-				[self checkForExistingReport: study dbFolder: [self documentsDirectory]];
-				
-				if( [[study valueForKey:@"series"] count] == 0)
-				{
-					deleted = YES;
-					[context deleteObject: study];
-				}
-				
-				if( [[study valueForKey:@"noFiles"] intValue] == 0)
-				{
-					if( deleted == NO) [context deleteObject: study];
-				}
-			}
-		}
-		
-		[self saveDatabase: currentDatabasePath];
-		
-		[splash close];
-		[splash release];
-		
-		displayEmptyDatabase = NO;
-		
-		[self checkReportsDICOMSRConsistency];
-		
-		[self outlineViewRefresh];
-		
-		[checkIncomingLock unlock];
-	}
-	@catch( NSException *e)
-	{
-		NSLog( @"ReBuildDatabase exception: %@", e);
-		[AppController printStackTrace: e];
-	}
-	[context unlock];
-	[context release];
-	
-	COMPLETEREBUILD = NO;
-	NEEDTOREBUILD = NO;
 }
+
 
 - (IBAction) ReBuildDatabaseSheet: (id)sender
 {
@@ -5134,14 +4752,14 @@ static NSConditionLock *threadLock = nil;
 #pragma mark-
 #pragma mark Web Portal Database // deprecated, use WebPortal.defaultWebPortal
 
--(long)saveUserDatabase { // deprecated
+-(long)saveUserDatabase { // __deprecated
 #ifndef OSIRIX_LIGHT
 	[[[WebPortal defaultWebPortal] database] save:NULL];
 #endif
 	return 0;
 }
 
--(NSManagedObjectModel*)userManagedObjectModel { // deprecated
+-(NSManagedObjectModel*)userManagedObjectModel { // __deprecated
 #ifndef OSIRIX_LIGHT
 	return [[[WebPortal defaultWebPortal] database] managedObjectModel];
 #else
@@ -5149,7 +4767,7 @@ static NSConditionLock *threadLock = nil;
 #endif
 }
 
--(NSManagedObjectContext*)userManagedObjectContext { // deprecated
+-(NSManagedObjectContext*)userManagedObjectContext { // __deprecated
 #ifndef OSIRIX_LIGHT
 	return [[[WebPortal defaultWebPortal] database] managedObjectContext];
 #else
@@ -5157,7 +4775,7 @@ static NSConditionLock *threadLock = nil;
 #endif
 }
 
--(WebPortalUser*)userWithName:(NSString*)name { // deprecated
+-(WebPortalUser*)userWithName:(NSString*)name { // __deprecated
 #ifndef OSIRIX_LIGHT
 	return [[[WebPortal defaultWebPortal] database] userWithName:name];
 #else
@@ -13451,82 +13069,8 @@ static NSArray*	openSubSeriesArray = nil;
 //	}
 //}
 
-+ (long) computeDATABASEINDEXforDatabase:(NSString*) path
-{
-	#ifndef NDEBUG
-	NSLog( @"----- computeDATABASEINDEXforDatabase");
-	#endif
-	
-	NSString *sqlPath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent: DATAFILEPATH];
-	
-	long long v = 0;
-	
-	@synchronized( [BrowserController currentBrowser])
-	{
-		@try
-		{
-			if( [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: nil])
-				path = [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: nil];
-			
-			if( [[[BrowserController currentBrowser].databaseIndexDictionary objectForKey: sqlPath] longLongValue] == 0)
-			{
-				// Delete empty directory <- This is too slow for NAS systems
-				for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
-				{
-					NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: [path stringByAppendingPathComponent: f] traverseLink:YES];
-					
-					if ( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
-					{
-						if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
-						{
-							int numberOfValidFiles = 0;
-							for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [path stringByAppendingPathComponent: f] error: nil])
-							{
-								if( [[s stringByDeletingPathExtension] integerValue] > 0)
-									numberOfValidFiles++;
-							}
-							
-							if( numberOfValidFiles == 0)
-								[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingPathComponent: f] handler: nil];
-						}
-					}
-				}
-			}
-			
-			/// SCAN
-			for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error: nil])
-			{
-				long c = [f integerValue];
-				if( c > v)
-					v = c;
-			}
-			
-			if( v > 0)
-			{
-				NSArray *paths = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [path stringByAppendingPathComponent: [NSString stringWithFormat: @"%d", v]] error: nil];
-				
-				v -= [BrowserController DefaultFolderSizeForDB];
-				if( v < 0) v = 0;
-				
-				for( NSString *s in paths)
-				{
-					long c = [[s stringByDeletingPathExtension] integerValue];
-					if( c > v)
-						v = c;
-				}
-			}
-			
-			[[BrowserController currentBrowser].databaseIndexDictionary setObject: [NSNumber numberWithLongLong: v] forKey: sqlPath];
-			
-			NSLog( @"DATABASEINDEX: %lld for %@", v, sqlPath);
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"**** computeDATABASEINDEXforDatabase: %@", e);
-			[AppController printStackTrace: e];
-		}
-	}
-	return v;
++ (long) computeDATABASEINDEXforDatabase:(NSString*)path { // __deprecated
+	return [[DicomDatabase localDatabaseAtPath:path] computeDataFileIndex];
 }
 
 - (id)initWithWindow: (NSWindow *)window
@@ -13820,23 +13364,19 @@ static NSArray*	openSubSeriesArray = nil;
 	return s;
 }
 
-#pragma deprecated
-- (NSDateFormatter*)DateOfBirthFormat {
+- (NSDateFormatter*)DateOfBirthFormat { // __deprecated
 	return  [NSUserDefaults dateFormatter];
 }
 
-#pragma deprecated
-+ (NSString*)DateOfBirthFormat:(NSDate*)d {
++ (NSString*)DateOfBirthFormat:(NSDate*)d { // __deprecated
 	return  [[NSUserDefaults dateFormatter] stringFromDate:d];
 }
 
-#pragma deprecated
-- (NSDateFormatter*)DateTimeFormat {
+- (NSDateFormatter*)DateTimeFormat { // __deprecated
 	return [NSUserDefaults dateTimeFormatter];
 }
 
-#pragma deprecated
-+ (NSString*)DateTimeFormat:(NSDate*)d {
++ (NSString*)DateTimeFormat:(NSDate*)d { // __deprecated
 	return [[NSUserDefaults dateTimeFormatter] stringFromDate:d];
 }
 
@@ -14122,11 +13662,8 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	@catch( NSException *ne)
 	{
-		NSLog(@"AwakeFromNib exception: %@", [ne description]);
-		NSString *path = [[self documentsDirectory] stringByAppendingPathComponent:@"/Loading"];
-		[path writeToFile:path atomically:NO encoding : NSUTF8StringEncoding error: nil];
-		
-		[AppController printStackTrace: ne];
+		N2LogExceptionWithStackTrace(ne);
+		[path writeToFile:database.loadingFilePath atomically:NO encoding : NSUTF8StringEncoding error: nil];
 		
 		NSString *message = [NSString stringWithFormat: NSLocalizedString(@"A problem occured during start-up of OsiriX:\r\r%@\r\r%@",nil), [ne description], [AppController printStackTrace: ne]];
 		
@@ -15419,53 +14956,32 @@ static NSArray*	openSubSeriesArray = nil;
 	#endif
 }
 
-- (NSString*) pathResolved:(NSString*) inPath
-{
-	CFStringRef resolvedPath = nil;
-	CFURLRef	url = CFURLCreateWithFileSystemPath(NULL /*allocator*/, (CFStringRef)inPath, kCFURLPOSIXPathStyle, NO /*isDirectory*/);
-	if (url != NULL)
-	{
-		FSRef fsRef;
-		if (CFURLGetFSRef(url, &fsRef))
-		{
-			Boolean targetIsFolder, wasAliased;
-			if (FSResolveAliasFile (&fsRef, true /*resolveAliasChains*/, &targetIsFolder, &wasAliased) == noErr && wasAliased)
-			{
-				CFURLRef resolvedurl = CFURLCreateFromFSRef(NULL /*allocator*/, &fsRef);
-				if (resolvedurl != NULL)
-				{
-					resolvedPath = CFURLCopyFileSystemPath(resolvedurl, kCFURLPOSIXPathStyle);
-					CFRelease(resolvedurl);
-				}
-			}
-		}
-		CFRelease(url);
-	}
-	return [(NSString *)resolvedPath autorelease];
+#pragma deprecated (pathResolved:)
+- (NSString*) pathResolved:(NSString*) inPath {
+	return [[NSFileManager defaultManager] destinationOfAliasAtPath:inPath];
 }
 
-- (BOOL) isAliasPath:(NSString *)inPath
-{
-	return [self pathResolved:inPath] != nil;
+#pragma deprecated (isAliasPath:)
+- (BOOL) isAliasPath:(NSString *)inPath {
+	return [[NSFileManager defaultManager] destinationOfAliasAtPath:inPath] != nil;
 }
 
-- (NSString*) resolveAliasPath:(NSString*) inPath
-{
-	NSString *resolved = [self pathResolved:inPath];
+#pragma deprecated (resolveAliasPath:)
+- (NSString*) resolveAliasPath:(NSString*)inPath {
+	NSString* resolved = [[NSFileManager defaultManager] destinationOfAliasAtPath:inPath];
 	return resolved ? resolved : inPath;
 }
 
-- (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path
-{
+- (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path { // __deprecated
 	NSString *folder = path;
 	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path])
-	{
-		if (![self isAliasPath:path])
+	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+		NSString* temp = [self pathResolved:path];
+		if (!temp)
 			[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 		else
 		{ 
-			folder = [self pathResolved: path];
+			folder = temp;
 		}
 	}
 	/* 
@@ -19053,34 +18569,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 //	}
 //}
 
-- (void) checkReportsDICOMSRConsistency
-{
-	if( isCurrentDatabaseBonjour == NO)
-	{
-		// Find all studies with reportURL
-		[self.managedObjectContext lock];
-		
-		@try 
-		{
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"reportURL != NIL"];
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			dbRequest.entity = [self.managedObjectModel.entitiesByName objectForKey:@"Study"];
-			dbRequest.predicate = predicate;
-			
-			NSError	*error = nil;
-			NSArray *studiesArray = [self.managedObjectContext executeFetchRequest:dbRequest error:&error];
-			
-			for( DicomStudy *s in studiesArray)
-				[s archiveReportAsDICOMSR];
-		}
-		@catch (NSException * e) 
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[AppController printStackTrace: e];
-		}
-		
-		[self.managedObjectContext unlock];
-	}
+- (void) checkReportsDICOMSRConsistency { // __deprecated
+	[database checkReportsConsistencyWithDICOMSR];
 }
 
 - (void) syncReportsIfNecessary
@@ -20633,8 +20123,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return isNetworkLogsActive;
 }
 
-- (NSString *)setFixedDocumentsDirectory
-{
+#pragma deprecated (setFixedDocumentsDirectory)
+- (NSString *)setFixedDocumentsDirectory { // __deprecated
+	NSLog(@"%s IS NOT AVAILABLE ANYMORE, moved to DicomDatabase.. This message should never appear!", __PRETTY_FUNCTION__);
+	return nil;
+	/*
 	[fixedDocumentsDirectory release];
 	fixedDocumentsDirectory = [[self documentsDirectory] retain];
 	
@@ -20669,7 +20162,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	strcpy( cfixedIncomingNoIndexDirectory, [r UTF8String]);
 	
-	return fixedDocumentsDirectory;
+	return fixedDocumentsDirectory;*/
 }
 
 - (NSString *) localDocumentsDirectory
@@ -20684,9 +20177,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return p;
 }
 
-- (NSString *) fixedDocumentsDirectory
-{
-	if( fixedDocumentsDirectory == nil) [self setFixedDocumentsDirectory];
+- (NSString *) fixedDocumentsDirectory { // deprecated
+	if (fixedDocumentsDirectory == nil) [self setFixedDocumentsDirectory];
 	return fixedDocumentsDirectory;
 }
 
@@ -20702,9 +20194,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (char *) cfixedIncomingNoIndexDirectory
 { return cfixedIncomingNoIndexDirectory; }
 
-- (NSString*) INCOMINGPATH
-{
-	return [self folderPathResolvingAliasAndSymLink: [[self documentsDirectory] stringByAppendingPathComponent: @"/INCOMING.noindex/"]];
+- (NSString*)INCOMINGPATH { // __deprecated
+	return [database incomingDirPath];
 }
 
 + (NSString *) defaultDocumentsDirectory
@@ -20713,10 +20204,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return dir;
 }
 
-- (NSString *) documentsDirectory
-{
-	NSString *dir = documentsDirectory();
-	return dir;
+- (NSString*)documentsDirectory { // __deprecated
+	return [database basePath];
 }
 
 - (NSString *) documentsDirectoryFor:(int) mode url:(NSString*) url

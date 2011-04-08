@@ -46,6 +46,10 @@ NSString* const OsirixDateTimeFormatDefaultsKey = @"DBDateFormat2";
 	return formatter;
 }
 
++(NSString*)formatDateTime:(NSDate*)date {
+	return [self.dateTimeFormatter stringFromDate:date];
+}
+
 NSString* const OsirixDateFormatDefaultsKey = @"DBDateOfBirthFormat2";
 
 +(NSString*)dateFormat {
@@ -65,6 +69,9 @@ NSString* const OsirixDateFormatDefaultsKey = @"DBDateOfBirthFormat2";
 	return formatter;
 }
 
++(NSString*)formatDate:(NSDate*)date {
+	return [self.dateFormatter stringFromDate:date];
+}
 
 #pragma mark Bonjour Sharing
 

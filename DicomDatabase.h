@@ -22,12 +22,16 @@
  */
 @interface DicomDatabase : N2ManagedDatabase {
 	N2MutableUInteger* dataFileIndex;
+	NSString* dataBasePath;
 }
 
 +(DicomDatabase*)defaultDatabase;
 +(DicomDatabase*)localDatabaseAtPath:(NSString*)path;
 +(DicomDatabase*)activeLocalDatabase;
++(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c;
 +(void)setActiveLocalDatabase:(DicomDatabase*)ldb;
+
+-(BOOL)isLocal;
 
 extern const NSString* const DicomDatabaseImageEntityName;
 extern const NSString* const DicomDatabaseSeriesEntityName;
@@ -41,17 +45,26 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(NSEntityDescription*)logEntryEntity;
 
 -(NSString*)dataDirPath;
+-(NSString*)incomingDirPath;
 -(NSString*)errorsDirPath;
 -(NSString*)decompressionDirPath;
 -(NSString*)toBeIndexedDirPath;
 -(NSString*)errorsDirPath;
 -(NSString*)reportsDirPath;
 -(NSString*)tempDirPath;
+-(NSString*)pagesDirPath;
+-(NSString*)modelVersionFilePath;  // this should become private
+-(NSString*)loadingFilePath; // this should become private
 
+-(NSUInteger)computeDataFileIndex; // this method should be private, but is declared because called from deprecated api
 -(NSString*)uniquePathForNewDataFileWithExtension:(NSString*)ext;
 
 -(void)addDefaultAlbums;
 -(NSArray*)albums;
++(NSArray*)albumsInContext:(NSManagedObjectContext*)context;
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string;
+
+-(void)rebuild:(BOOL)complete;
+-(void)checkForExistingReportForStudy:(NSManagedObject*)study; // this method should be private, but is declared because called from deprecated api
 
 @end

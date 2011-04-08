@@ -92,6 +92,7 @@
 #import "MPRController.h"
 #import "CPRController.h"
 #import "Notifications.h"
+#import "DicomDatabase.h"
 
 int delayedTileWindows = NO;
 
@@ -2304,7 +2305,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
 			{
 				if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
-					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
+					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [NSUserDefaults formatDate:bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
 				else
 					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
 			}	
@@ -3791,8 +3792,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
 	
-	NSManagedObjectModel	*model = [[BrowserController currentBrowser] managedObjectModel];
-	NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
+	NSManagedObjectModel	*model = [[[BrowserController currentBrowser] database] managedObjectModel];
+	NSManagedObjectContext	*context = [[[BrowserController currentBrowser] database] managedObjectContext];
 	NSPredicate				*predicate;
 	NSFetchRequest			*dbRequest;
 	NSError					*error = nil;
@@ -3912,7 +3913,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				NSString *patName = @"";
 				
 				if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
-					patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [BrowserController DateOfBirthFormat: [curStudy valueForKey:@"dateOfBirth"]]];
+					patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
 				
 				if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull) patName = @"";
 				
@@ -3958,7 +3959,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 						int count = [[curSeries valueForKey:@"noFiles"] intValue];
 						if( count == 1)
 						{
-							[[[BrowserController currentBrowser] managedObjectContext] lock];
+							[[[[BrowserController currentBrowser] database] managedObjectContext] lock];
 							
 							@try 
 							{
@@ -3975,7 +3976,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 								NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 							}
 							
-							[[[BrowserController currentBrowser] managedObjectContext] unlock];
+							[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 						}
 						else if (count == 0)
 						{
@@ -6422,7 +6423,7 @@ return YES;
 			[self finalizeSeriesViewing];
 			
 			
-			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			[[[[BrowserController currentBrowser] database] managedObjectContext] lock];
 			
 			@try
 			{
@@ -6788,7 +6789,7 @@ return YES;
 				[[self window] close];
 			}
 			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixViewerDidChangeNotification object: self userInfo: nil];
 			
@@ -10763,7 +10764,7 @@ short				matrix[25];
 	DicomStudy *study = [[fileList[0] objectAtIndex:0] valueForKeyPath: @"series.study"];
 	NSArray *roisArray = [[[study roiSRSeries] valueForKey: @"images"] allObjects];
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	[[[[BrowserController currentBrowser] database] managedObjectContext] lock];
 	
 	@try
 	{
@@ -10834,7 +10835,7 @@ short				matrix[25];
 	{
 		NSLog( @"*** load ROI exception: %@", e);
 	}
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 }
 
 + (BOOL) areROIsArraysIdentical: (NSArray*) copy with: (NSArray*) roisArray
@@ -10869,7 +10870,7 @@ short				matrix[25];
 	
 	if( [[fileList[ mIndex] lastObject] isKindOfClass:[NSManagedObject class]])
 	{
-		[[[BrowserController currentBrowser] managedObjectContext] lock];
+		[[[[BrowserController currentBrowser] database] managedObjectContext] lock];
 		
 		@try
 		{
@@ -10889,13 +10890,13 @@ short				matrix[25];
 							BOOL forceArchive = NO;
 							NSString *str = [study roiPathForImage: image inArray: roisArray];
 							
-							if( str == nil)
-								str = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+							if (str == nil)
+								str = [[[BrowserController currentBrowser] database] uniquePathForNewDataFileWithExtension:@"dcm"];
 							
 							else if( [[NSFileManager defaultManager] fileExistsAtPath: str] && [str isEqualToString: [image SRPath]]) // Old ROIs folder -> move it to DATABASE.index file
 							{
 								[[NSFileManager defaultManager] removeItemAtPath: [image SRPath] error: nil];
-								str = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+								str = [[[BrowserController currentBrowser] database] uniquePathForNewDataFileWithExtension: @"dcm"];
 								forceArchive = YES;
 							}
 							
@@ -10948,19 +10949,19 @@ short				matrix[25];
 			}
 			
 			[BrowserController addFiles: allDICOMSR
-							  toContext: [[BrowserController currentBrowser] managedObjectContext]
+							  toContext: [[[BrowserController currentBrowser] database] managedObjectContext]
 							 toDatabase: [BrowserController currentBrowser]
 							  onlyDICOM: YES 
 					   notifyAddedFiles: YES
 					parseExistingObject: YES
-							   dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
+							   dbFolder: [[[BrowserController currentBrowser] database] dataDirPath]
 					  generatedByOsiriX: YES];
 		}
 		@catch ( NSException *e)
 		{
 			NSLog( @"****** saveROI exception : %@");
 		}
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 	}
 }
 
@@ -17072,7 +17073,7 @@ int i,j,l;
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	
 	//check if the folder PAGES exists in OsiriX document folder
-	NSString *pathToPAGES = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/PAGES/"];
+	NSString *pathToPAGES = [[[BrowserController currentBrowser] database] pagesDirPath];
 	if (!([fileManager fileExistsAtPath:pathToPAGES]))
 	[fileManager createDirectoryAtPath:pathToPAGES attributes:nil];
 
@@ -17083,7 +17084,7 @@ int i,j,l;
 	if (!([[sender title] isEqualToString: @"SCAN"]))
 	{
 		//create pathToTemplate
-		NSString *pathToTemplate = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/PAGES/"];
+		NSString *pathToTemplate = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"PAGES"];
 		pathToTemplate = [pathToTemplate stringByAppendingPathComponent:[sender title]];
 		pathToTemplate = [pathToTemplate stringByAppendingPathExtension:@"template"];	
 		
@@ -17362,8 +17363,8 @@ int i,j,l;
 		
 		if( pathOK == YES)
 		{
-			[[NSFileManager defaultManager] removeFileAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/"] handler:nil];
-			[[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/"] attributes:nil];
+			[[NSFileManager defaultManager] removeItemAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"] error:nil];
+			[[NSFileManager defaultManager] createDirectoryAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"] withIntermediateDirectories:YES attributes:nil error:nil];
 		
 			int fileIndex;
 			
@@ -17414,7 +17415,7 @@ int i,j,l;
 					{
 						bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-						NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/%4.4d.jpg", fileIndex++];
+						NSString *jpegFile = [[[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%4.4d.jpg", fileIndex++]];
 						
 						[bitmapData writeToFile: jpegFile atomically:YES];
 						
@@ -17465,7 +17466,7 @@ int i,j,l;
 				}
 			}
 			
-			NSString *root = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/"];
+			NSString *root = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"];
 			
 			if( [[imageFormat selectedCell] tag] == 2) // iPhoto
 			{
@@ -17505,7 +17506,7 @@ int i,j,l;
 				NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
 				
 				int f = 0;
-				NSString *root = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/"];
+				NSString *root = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"];
 				NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
 				for( int x = 0; x < [files count] ; x++)
 				{
@@ -19045,7 +19046,7 @@ int i,j,l;
 				[imageView getWLWW:&iwl :&iww];
 				[viewer setWLWW:iwl :iww];
 				
-				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[viewer window] title], [BrowserController DateTimeFormat: [[fileList[0] objectAtIndex:0]  valueForKeyPath:@"series.study.date"]], [[self window] title]]];
+				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[viewer window] title], [NSUserDefaults formatDateTime: [[fileList[0] objectAtIndex:0]  valueForKeyPath:@"series.study.date"]], [[self window] title]]];
 			}
 		}
 	}
@@ -19509,7 +19510,7 @@ int i,j,l;
 		
 		[imageView setNeedsDisplay:YES];
 		
-		[[BrowserController currentBrowser] saveDatabase: nil];
+		[[[BrowserController currentBrowser] database] save:nil];
 	}
 }
 
@@ -19647,7 +19648,7 @@ int i,j,l;
 	
 	[self buildMatrixPreview: NO];
 	[imageView setNeedsDisplay:YES];
-	[[BrowserController currentBrowser] saveDatabase: nil];
+	[[[BrowserController currentBrowser] database] save:nil];
 	
 	[self adjustKeyImage];
 }
@@ -19678,7 +19679,7 @@ int i,j,l;
 	
 	[self buildMatrixPreview: NO];
 	[imageView setNeedsDisplay:YES];
-	[[BrowserController currentBrowser] saveDatabase: nil];
+	[[[BrowserController currentBrowser] database] save:nil];
 	
 	[self adjustKeyImage];
 }
@@ -19709,7 +19710,7 @@ int i,j,l;
 	
 	[self buildMatrixPreview: NO];
 	[imageView setNeedsDisplay:YES];
-	[[BrowserController currentBrowser] saveDatabase: nil];
+	[[[BrowserController currentBrowser] database] save:nil];
 	
 	[self adjustKeyImage];
 }

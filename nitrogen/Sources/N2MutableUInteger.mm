@@ -13,7 +13,7 @@
 
 @synthesize value;
 
--(id)initWithValue:(NSUInteger*)v {
+-(id)initWithValue:(NSUInteger)v {
 	self = [super init];
 	value = v;
 	return self;

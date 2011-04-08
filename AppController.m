@@ -55,6 +55,7 @@
 #import "DicomImage.h"
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
+#import "DicomDatabase.h"
 
 #include <OpenGL/OpenGL.h>
 
@@ -990,7 +991,7 @@ static NSDate *lastWarningDate = nil;
 	return YES;                   
 }
 
-+ (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // deprecated
++ (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // __deprecated
 	[[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath:path];
 }
 
@@ -1084,7 +1085,7 @@ static NSDate *lastWarningDate = nil;
 
 - (NSString*) privateIP
 {
-	return [NSString stringWithCString: GetPrivateIP()];
+	return [NSString stringWithCString:GetPrivateIP() encoding:NSUTF8StringEncoding];
 }
 
 - (IBAction)cancelModal:(id)sender
@@ -1151,9 +1152,9 @@ static NSDate *lastWarningDate = nil;
 	{
 		if( threadStateChanged == NO)
 		{
-			if( [[NSFileManager defaultManager] fileExistsAtPath: path] && [(NSString*) [NSString stringWithContentsOfFile: path] length] > 0)
+			if( [[NSFileManager defaultManager] fileExistsAtPath: path] && [[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil] length] > 0)
 			{
-				[NSThread currentThread].status = [[NSThread currentThread].status stringByAppendingFormat: NSLocalizedString( @" Service: %@", nil), [NSString stringWithContentsOfFile: path]];
+				[NSThread currentThread].status = [[NSThread currentThread].status stringByAppendingFormat: NSLocalizedString( @" Service: %@", nil), [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil]];
 				[NSThread sleepForTimeInterval: 1];
 				threadStateChanged = YES;
 			}
@@ -1739,7 +1740,7 @@ static NSDate *lastWarningDate = nil;
 
 	BonjourDICOMService = [[NSNetService alloc] initWithDomain:@"" type:@"_dicom._tcp." name: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
 	
-	NSString* description = [NSUserDefaultsController BonjourSharingName];
+	NSString* description = [NSUserDefaults bonjourSharingName];
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	
 	if( description && [description length] > 0)
@@ -1841,7 +1842,7 @@ static NSDate *lastWarningDate = nil;
 		//make sure that there exist a receiver folder at @"folder" path
 		NSString *path = [[BrowserController currentBrowser] INCOMINGPATH];
 		
-		[AppController createNoIndexDirectoryIfNecessary: path];
+		[[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath:path];
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"])
 		{
@@ -1862,7 +1863,7 @@ static NSDate *lastWarningDate = nil;
 		
 		//make sure that there exist a receiver folder at @"folder" path
 		NSString *path = [[BrowserController currentBrowser] INCOMINGPATH];
-		[AppController createNoIndexDirectoryIfNecessary: path];	
+		[[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath: path];	
 		
 		if( [STORESCPTLS tryLock])
 		{
@@ -2159,7 +2160,7 @@ static NSDate *lastWarningDate = nil;
 							NSMutableArray *allImages = [NSMutableArray array];
 							[[BrowserController currentBrowser] filesForDatabaseOutlineSelection: allImages];
 							
-							NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+							NSManagedObjectContext *context = [[[BrowserController currentBrowser] database] managedObjectContext];
 							
 							[context lock];
 							
@@ -2187,10 +2188,10 @@ static NSDate *lastWarningDate = nil;
 						if( succeeded == NO)
 						{
 							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-							[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Series"]];
+							[dbRequest setEntity: [[[[[BrowserController currentBrowser] database] managedObjectModel] entitiesByName] objectForKey: @"Series"]];
 							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"seriesSOPClassUID == %@", sopclassuid]];
 							
-							NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+							NSManagedObjectContext *context = [[[BrowserController currentBrowser] database] managedObjectContext];
 							
 							[context lock];
 							
@@ -2367,10 +2368,10 @@ static NSDate *lastWarningDate = nil;
 	
 	unlink( dir);
 	
-	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
+	if ([[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
 	{
-		NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message"];
-		[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/error_message" handler: nil];
+		NSString *str = [NSString stringWithContentsOfFile:@"/tmp/error_message" encoding:NSUTF8StringEncoding error:nil];
+		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/error_message" error: nil];
 		
 		if( str && [str length] > 0)
 			[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
@@ -2851,7 +2852,7 @@ static BOOL initialized = NO;
 				}
 				
 				// CREATE A TEMPORATY FILE DURING STARTUP
-				NSString *path = [documentsDirectory() stringByAppendingPathComponent:@"/Loading"];
+				NSString *path = [documentsDirectory() stringByAppendingPathComponent:@"Loading"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 				{
 					int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", nil), NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", nil), NSLocalizedString(@"Continue normally",nil), NSLocalizedString(@"Protected Mode",nil), NSLocalizedString(@"Rebuild Database",nil));
@@ -3023,7 +3024,7 @@ static BOOL initialized = NO;
 {
     if ([[notification name] isEqualToString:  NSWorkspaceSessionDidResignActiveNotification])
     {
-		[[BrowserController currentBrowser] saveDatabase: [[BrowserController currentBrowser] currentDatabasePath]];
+		[[[BrowserController currentBrowser] database] save:nil];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActive"])
 		{
@@ -3044,7 +3045,7 @@ static BOOL initialized = NO;
 		{
 			NSLog( @"----- OsiriX : session activation: START DICOM LISTENER FOR THIS SESSION");
 			
-			[[BrowserController currentBrowser] loadDatabase: [[BrowserController currentBrowser] currentDatabasePath]];
+			// [[BrowserController currentBrowser] loadDatabase: [[BrowserController currentBrowser] currentDatabasePath]]; // TODO: hmm
 			
 			[self restartSTORESCP];
 		}

@@ -11,6 +11,12 @@
 
 @implementation RemoteDicomDatabase
 
+-(BOOL)isLocal {
+	return NO;
+}
 
+-(void)rebuild:(BOOL)complete {
+	// do nothing
+}
 
 @end
