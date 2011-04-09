@@ -108,6 +108,8 @@
 		[xReslicedView setCurrentTool:tCross];
 		[yReslicedView setCurrentTool:tCross];
 		
+		viewerController = vC;
+		
 		viewer = newViewer;
 		[originalView  setMenu:[self contextualMenu]];
 		[xReslicedView setMenu:[self contextualMenu]];
@@ -532,6 +534,8 @@
 
 - (void) setWLWW:(float) iwl :(float) iww
 {
+	[viewerController setWL: iwl WW: iww];
+	
 	[originalView adjustWLWW: iwl : iww];
 	[xReslicedView adjustWLWW: iwl : iww];
 	[yReslicedView adjustWLWW: iwl : iww];

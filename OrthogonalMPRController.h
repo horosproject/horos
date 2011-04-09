@@ -35,6 +35,8 @@
 	short						thickSlabMode, thickSlab;
 	
 	NSData						*transferFunction;
+	
+	ViewerController			*viewerController;
 }
 
 @property long orientationVector;
