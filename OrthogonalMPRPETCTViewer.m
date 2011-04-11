@@ -355,6 +355,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 {
 	if ([sender isEqual: CTController])
 	{
+		[viewer setWL: iwl WW: iww];
+		
 		[CTController superSetWLWW: iwl : iww];
 		[PETCTController superSetWLWW: iwl : iww];
 
@@ -363,6 +365,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	}
 	else if ([sender isEqual: PETController])
 	{
+		[blendingViewerController setWL: iwl WW: iww];
+		
 		[PETController superSetWLWW: iwl : iww];
 		
 		[[PETCTController originalView] loadTextures];

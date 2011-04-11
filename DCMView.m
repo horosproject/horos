@@ -10118,10 +10118,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[self getThickSlabThickness:&thickness location:&location];
 		[exportDCM setSliceThickness: thickness];
 		[exportDCM setSlicePosition: location];
-		[self orientationCorrectedToView: o];
-		[exportDCM setOrientation: o];
 		
-		if( exportSpacingAndOrigin)
+		if( [views count] <= 1)
+		{
+			[self orientationCorrectedToView: o];
+			[exportDCM setOrientation: o];
+		}
+		
+		if( exportSpacingAndOrigin && (imSpacing[ 0] != 0 || imSpacing[ 1] != 0 || imOrigin[ 0] != 0 || imOrigin[ 0] != 1 || imOrigin[ 0] != 2))
 		{
 			[exportDCM setPosition: imOrigin];
 			[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];

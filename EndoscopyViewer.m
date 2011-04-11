@@ -1141,10 +1141,6 @@ return YES;
 			[exportDCM setSeriesDescription: [exportDCMSeriesName stringValue]];
 			[exportDCM setSeriesNumber:5500];
 			[exportDCM setPixelData: dataPtr samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
-			[[vrController view] getOrientation: o];
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportOrientationIn3DExport"])
-				[exportDCM setOrientation: o];
 			
 			NSString *f = [exportDCM writeDCMFile: nil];
 			if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
@@ -1161,7 +1157,7 @@ return YES;
 		if ([currentFocusedView isEqualTo:[vrController view]])
 		{
 			// 3D view
-			[producedFiles addObject: [(VRView*)currentFocusedView exportDCMCurrentImage]];
+			[producedFiles addObject: [(VRView*)currentFocusedView exportDCMCurrentImageIn16bit: NO]];
 		}
 		else
 		{

@@ -68,9 +68,11 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 +(NSArray*)albumsInContext:(NSManagedObjectContext*)context;
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string;
 
+// some of these methods should be private, but is declared because called from deprecated api
 -(void)rebuild;
 -(void)rebuild:(BOOL)complete;
--(void)checkForExistingReportForStudy:(NSManagedObject*)study; // this method should be private, but is declared because called from deprecated api
+-(void)checkForExistingReportForStudy:(NSManagedObject*)study;
 -(void)rebuildSqlFile;
+-(void)reduceCoreDataFootPrint;
 
 @end

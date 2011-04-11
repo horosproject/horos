@@ -5303,6 +5303,8 @@
 		CEBA5FE011B244EA005F3A0E /* SpectroIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */; };
 		CEBA5FE111B244EA005F3A0E /* SpectroIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */; };
 		CEBA709D10C70039003A6186 /* GetPrimaryMACAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */; };
+		CEBCDAE61350466E0065BC08 /* OpenNetworkSysPrefs.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CEB98BAD133507F50083F3FD /* OpenNetworkSysPrefs.scpt */; };
+		CEBCDAE71350466E0065BC08 /* OpenSharingSysPrefs.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CEB98BAE133507F50083F3FD /* OpenSharingSysPrefs.scpt */; };
 		CEBD8E5F0B675A75008FD772 /* Propagate.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8E5B0B675A75008FD772 /* Propagate.tif */; };
 		CEBD8EF80B6761CC008FD772 /* PropagateOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8EF40B6761CC008FD772 /* PropagateOn.tif */; };
 		CEBEAD3110A6F27600E4C7C9 /* znzlib.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA790C06BEB200CD2976 /* znzlib.h */; };
@@ -22268,6 +22270,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEBCDAE61350466E0065BC08 /* OpenNetworkSysPrefs.scpt in Resources */,
+				CEBCDAE71350466E0065BC08 /* OpenSharingSysPrefs.scpt in Resources */,
 				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,
 				ABBB63A70635874E00D9531F /* dcmdump in Resources */,
 				ABBB63A80635874E00D9531F /* dicom.dic in Resources */,

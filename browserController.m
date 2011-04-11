@@ -4101,13 +4101,12 @@ static NSConditionLock *threadLock = nil;
 			[[LogManager currentLogManager] checkLogs: nil];
 			[self resetLogWindowController];
 			[[LogManager currentLogManager] resetLogs];
-			
-/*			
+
+			/*			
 			displayEmptyDatabase = YES;
 			[self outlineViewRefresh];
 			[self refreshMatrix: self];
-*/		
-			
+			*/	
 			
 			DicomDatabase* db = [database retain];
 			[self setDatabase:nil];
