@@ -23,4 +23,8 @@
 	// do nothing
 }
 
+-(void)autoClean {
+	// do nothing
+}
+
 @end

@@ -34,6 +34,8 @@
 +(DicomDatabase*)activeLocalDatabase;
 +(void)setActiveLocalDatabase:(DicomDatabase*)ldb;
 
+@property(readonly) NSString* dataBasePath;
+
 -(BOOL)isLocal;
 -(NSString*)name;
 
@@ -72,6 +74,7 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(void)rebuild;
 -(void)rebuild:(BOOL)complete;
 -(void)checkForExistingReportForStudy:(NSManagedObject*)study;
+-(void)checkReportsConsistencyWithDICOMSR;
 -(void)rebuildSqlFile;
 -(void)reduceCoreDataFootPrint;
 

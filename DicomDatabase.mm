@@ -23,7 +23,7 @@
 #import "DicomImage.h"
 #import "DicomStudy.h"
 #import "DicomFile.h"
-
+#import "Reports.h"
 
 #import "BrowserController.h"
 
@@ -36,7 +36,6 @@
 -(void)modifyDefaultAlbums;
 -(void)recomputePatientUIDs;
 -(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion;
--(void)checkReportsConsistencyWithDICOMSR;
 
 @end
 
@@ -152,6 +151,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 }
 
 #pragma mark Instance
+
+@synthesize dataBasePath;
 
 -(NSManagedObjectModel*)managedObjectModel {
 	static NSManagedObjectModel* managedObjectModel = NULL;
@@ -854,7 +855,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 					study.patientUID = [dcm elementForKey:@"patientUID"];
 				[dcm release];
 			} @catch (NSException* e) {
-				N2LogExceptionWithStackTrace(e, @"this is thu %@ %@ %@ %@ format", e, e ,e ,e);
+				N2LogExceptionWithStackTrace(e);
 			}
 		}
 	} @catch (NSException* e) {
@@ -1143,8 +1144,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	}
 	@catch ( NSException *e)
 	{
-		NSLog( @"***** checkForExistingReport exception: %@", e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 #endif
 }

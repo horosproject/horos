@@ -30,11 +30,12 @@ extern NSString* RectString(NSRect r);
 #define DLog(args...) { if ([N2Debug isActive]) NSLog(args); }
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+	
 extern void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, NSString* format, ...);
 extern void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf);
-#ifdef __cplusplus // we can overload functions in .mm source files
-extern void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf, NSString* format, ...);
-#endif
 
 #define N2LogError(...) _N2LogErrorImpl(__PRETTY_FUNCTION__, __FILE__, __LINE__, __VA_ARGS__)
 #define N2LogDeprecatedCall(...) _N2LogErrorImpl(__PRETTY_FUNCTION__, __FILE__, __LINE__, @"deprecated API usage")
@@ -42,3 +43,7 @@ extern void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf, N
 #define N2LogExceptionWithStackTrace(e, ...) _N2LogExceptionImpl(e, YES, __PRETTY_FUNCTION__, ## __VA_ARGS__)
 
 extern void N2LogStackTrace(NSString* format, ...);
+
+#ifdef __cplusplus
+}
+#endif

@@ -87,6 +87,7 @@
 		5912DCD9118EF447007F7D40 /* N2FlippedView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5912DCD7118EF447007F7D40 /* N2FlippedView.mm */; };
 		5912DCDA118EF447007F7D40 /* N2FlippedView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5912DCD6118EF447007F7D40 /* N2FlippedView.h */; };
 		5912DCDB118EF447007F7D40 /* N2FlippedView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5912DCD7118EF447007F7D40 /* N2FlippedView.mm */; };
+		5919216813534E7700484ECB /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
 		59263546132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */; };
 		59263547132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */; };
 		592681AB11CF4A5E00CFA81F /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
@@ -251,7 +252,6 @@
 		59BDF128117EFA41007F1F2C /* PreferencesView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDF126117EFA41007F1F2C /* PreferencesView.mm */; };
 		59BDF129117EFA41007F1F2C /* PreferencesView.h in Headers */ = {isa = PBXBuildFile; fileRef = 59BDF125117EFA41007F1F2C /* PreferencesView.h */; };
 		59BDF12A117EFA41007F1F2C /* PreferencesView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDF126117EFA41007F1F2C /* PreferencesView.mm */; };
-		59BDF63111818DC7007F1F2C /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
 		59BDF8541181DDAF007F1F2C /* NSImage+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FB031129338A009EB238 /* NSImage+N2.mm */; };
 		59BDF8561181DDC1007F1F2C /* NSColor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FB091129338A009EB238 /* NSColor+N2.mm */; };
 		59BDF8571181DDD6007F1F2C /* N2Operators.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA211293378009EB238 /* N2Operators.mm */; };
@@ -25503,7 +25503,6 @@
 				59BDF115117EE6A1007F1F2C /* PreferencesWindowController.mm in Sources */,
 				59BDF121117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm in Sources */,
 				59BDF12A117EFA41007F1F2C /* PreferencesView.mm in Sources */,
-				59BDF63111818DC7007F1F2C /* N2Debug.mm in Sources */,
 				59BDF8541181DDAF007F1F2C /* NSImage+N2.mm in Sources */,
 				59BDF8561181DDC1007F1F2C /* NSColor+N2.mm in Sources */,
 				59BDF8571181DDD6007F1F2C /* N2Operators.mm in Sources */,
@@ -25633,6 +25632,7 @@
 				59B696671337C957009356ED /* N2DirectoryEnumerator.mm in Sources */,
 				59DA65001349C1F5000085C1 /* RemoteDicomDatabase.mm in Sources */,
 				59DA6598134B10D0000085C1 /* N2MutableUInteger.mm in Sources */,
+				5919216813534E7700484ECB /* N2Debug.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

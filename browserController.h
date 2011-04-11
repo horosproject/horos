@@ -93,7 +93,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSMutableArray			*albumNoOfStudiesCache;
 	
-    volatile BOOL			bonjourDownloading;
+ //   volatile BOOL			bonjourDownloading;
 	
 	NSArray							*outlineViewArray, *originalOutlineViewArray;
 	NSArray							*matrixViewArray;
@@ -264,10 +264,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 //@property(readonly) NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
 //@property(readonly) NSTextField* AstatusLabel;
 
-@property volatile BOOL bonjourDownloading;
+//@property volatile BOOL bonjourDownloading;
 @property(readonly) NSBox *bonjourSourcesBox;
 @property(readonly) BonjourBrowser *bonjourBrowser;
-@property(readonly) char *cfixedDocumentsDirectory __deprecated, *cfixedIncomingDirectory __deprecated, *cfixedTempNoIndexDirectory __deprecated, *cfixedIncomingNoIndexDirectory __deprecated;
+@property(readonly) const char *cfixedDocumentsDirectory __deprecated, *cfixedIncomingDirectory __deprecated, *cfixedTempNoIndexDirectory __deprecated, *cfixedIncomingNoIndexDirectory __deprecated;
 
 @property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail;
 @property(retain) NSPredicate *fetchPredicate, *testPredicate;
