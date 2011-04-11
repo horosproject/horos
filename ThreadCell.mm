@@ -93,7 +93,7 @@
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
 	if (obj == self.thread)
 		if ([keyPath isEqual:NSThreadStatusKey]) {
-			[self.view setNeedsDisplayInRect:[self statusFrame]];
+			[self.view setNeedsDisplayInRect: [self.view rectOfRow:[self.manager.threads indexOfObject:self.thread]]];
 			return;
 		} else if ([keyPath isEqual:NSThreadProgressKey]) {
 			[self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
