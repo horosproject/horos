@@ -1,3 +1,6 @@
+- Encoding not fouind: ISO-IR 100
+- DICOMToNSString encodingForDICOMCharacterSet NSLog crash
+
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
