@@ -53,7 +53,7 @@
 extern "C"
 {
 	void (*signal(int signum, void (*sighandler)(int)))(int);
-
+	
 	void silent_exit_on_sig(int sig_num)
 	{
 		printf ("\rSignal %d received in OsiriX child process - will quit silently.\r", sig_num);
