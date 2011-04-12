@@ -62,6 +62,7 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(NSString*)tempDirPath;
 -(NSString*)dumpDirPath;
 -(NSString*)pagesDirPath;
+-(NSString*)htmlTemplatesDirPath;
 -(NSString*)modelVersionFilePath;  // this should become private
 -(NSString*)loadingFilePath; // this should become private
 

@@ -372,7 +372,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"ROIs"]];
 }
 
--(NSString*)htmlTemplatesDir {
+-(NSString*)htmlTemplatesDirPath {
 	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"ROIs"]];
 }
 
@@ -1290,7 +1290,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(void)checkForHtmlTemplates {
 	// directory
-	NSString *htmlTemplatesDirectory = [self htmlTemplatesDirectory];
+	NSString *htmlTemplatesDirectory = [self htmlTemplatesDirPath];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory attributes:nil];
 	

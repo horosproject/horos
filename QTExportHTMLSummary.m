@@ -74,9 +74,9 @@
 {
 	DicomDatabase* database = [[BrowserController currentBrowser] database];
 	[database checkForHtmlTemplates];
-	patientsListTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDir] stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"]] retain];
-	examsListTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDir] stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"]] retain];
-	seriesTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDir] stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"]] retain];
+	patientsListTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDirPath] stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"]] retain];
+	examsListTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDirPath] stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"]] retain];
+	seriesTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDirPath] stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"]] retain];
 }
 
 - (NSString*)fillPatientsListTemplates;
