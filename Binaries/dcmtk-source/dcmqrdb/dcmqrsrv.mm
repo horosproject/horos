@@ -56,7 +56,7 @@ extern "C"
 
 	void silent_exit_on_sig(int sig_num)
 	{
-		printf ("\nSignal %d received",sig_num);
+		printf ("\rSignal %d received in OsiriX child process - will quit silently.\r", sig_num);
 		_Exit(3);
 	}
 }
