@@ -2382,7 +2382,7 @@ static NSConditionLock *threadLock = nil;
     if ([path isEqualToString:database.basePath])
 		return [database independentContext:independentContext];
 
-	return [[DicomDatabase databaseAtPath:path] managedObjectContext];
+	return [[DicomDatabase databaseAtPath:path] independentContext:independentContext];
 }
 
 // ------------------

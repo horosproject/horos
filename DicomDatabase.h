@@ -21,12 +21,13 @@
  This will be a BrowserController's backbone.
  */
 @interface DicomDatabase : N2ManagedDatabase {
-	N2MutableUInteger* dataFileIndex;
-	NSString* dataBasePath;
+	N2MutableUInteger* _dataFileIndex;
+	NSString* _basePath;
+	NSString* _dataBasePath;
 }
 
-+(NSString*)defaultDatabaseBasePath;
-+(NSString*)databaseBasePathForMode:(int)mode path:(NSString*)path;
++(NSString*)defaultBasePath;
++(NSString*)basePathForMode:(int)mode path:(NSString*)path;
 
 +(DicomDatabase*)defaultDatabase;
 +(DicomDatabase*)databaseAtPath:(NSString*)path;
@@ -34,7 +35,8 @@
 +(DicomDatabase*)activeLocalDatabase;
 +(void)setActiveLocalDatabase:(DicomDatabase*)ldb;
 
-@property(readonly) NSString* dataBasePath;
+@property(readonly,retain) NSString* basePath;
+@property(readonly,retain) NSString* dataBasePath;
 
 -(BOOL)isLocal;
 -(NSString*)name;

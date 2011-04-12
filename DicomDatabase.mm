@@ -33,6 +33,11 @@
 
 @interface DicomDatabase ()
 
+@property(readwrite,retain) NSString* basePath;
+@property(readwrite,retain) NSString* dataBasePath;
+@property(readwrite,retain) N2MutableUInteger* dataFileIndex;
+
++(NSString*)sqlFilePathForBasePath:(NSString*)basePath;
 -(void)modifyDefaultAlbums;
 -(void)recomputePatientUIDs;
 -(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion;
@@ -41,7 +46,15 @@
 
 @implementation DicomDatabase
 
-+(NSString*)databaseBasePathForMode:(int)mode path:(NSString*)path {
+static const NSString* const SqlFileName = @"Database.sql";
+
++(NSString*)basePathForPath:(NSString*)path {
+	if ([path hasSuffix:[SqlFileName pathExtension]])
+		path = [path stringByDeletingLastPathComponent];
+	return path;
+}
+
++(NSString*)basePathForMode:(int)mode path:(NSString*)path {
 	switch (mode) {
 		case 0:
 			path = [NSFileManager.defaultManager findSystemFolderOfType:kDocumentsFolderType forDomain:kOnAppropriateDisk];
@@ -58,20 +71,20 @@
 		N2LogError(@"nil path");
 	else {
 		[NSFileManager.defaultManager confirmDirectoryAtPath:path];
-		[NSFileManager.defaultManager confirmDirectoryAtPath:[path stringByAppendingPathComponent:@"REPORTS"]];
+		[NSFileManager.defaultManager confirmDirectoryAtPath:[path stringByAppendingPathComponent:@"REPORTS"]]; // TODO: why? not here...
 	}
 	
 	return path;
 }
 
-+(NSString*)defaultDatabaseBasePath {
++(NSString*)defaultBasePath {
 	NSString* path = nil;
 	@try {
-		path = [self databaseBasePathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
+		path = [self basePathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
 		if (!path || ![[NSFileManager defaultManager] fileExistsAtPath:path]) {	// STILL NOT AVAILABLE?? Use the default folder.. and reset this strange URL..
 			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
 			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
-			path = [self databaseBasePathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
+			path = [self basePathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
 		}
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
@@ -87,7 +100,7 @@ static DicomDatabase* defaultDatabase = nil;
 +(DicomDatabase*)defaultDatabase {
 	@synchronized(self) {
 		if (!defaultDatabase)
-			defaultDatabase = [[self databaseAtPath:[self defaultDatabaseBasePath]] retain];
+			defaultDatabase = [[self databaseAtPath:[self defaultBasePath]] retain];
 	}
 	
 	return defaultDatabase;
@@ -109,10 +122,12 @@ static NSMutableDictionary* databasesDictionary = nil;
 }
 
 +(DicomDatabase*)databaseAtPath:(NSString*)path {
+	path = [self basePathForPath:path];
+	
 	@synchronized(databasesDictionary) {
 		DicomDatabase* database = [databasesDictionary objectForKey:path];
 		if (database) return database;
-		return [[[self alloc] initWithPath:path] autorelease];
+		return [[[self alloc] initWithPath:[self sqlFilePathForBasePath:path]] autorelease];
 	}
 	
 	return nil;
@@ -152,7 +167,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 
 #pragma mark Instance
 
-@synthesize dataBasePath;
+@synthesize basePath = _basePath, dataBasePath = _dataBasePath, dataFileIndex = _dataFileIndex;
 
 -(NSManagedObjectModel*)managedObjectModel {
 	static NSManagedObjectModel* managedObjectModel = NULL;
@@ -162,33 +177,45 @@ static DicomDatabase* activeLocalDatabase = nil;
 }
 
 -(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c { // reminder: context may be nil (assigned in -[N2ManagedDatabase initWithPath:] after calling this method)
-	if ([p hasSuffix:@".sql"])
-		p = [p stringByDeletingLastPathComponent];
-	
+	p = [DicomDatabase basePathForPath:p];
 	p = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:p];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:p];
 	
-	dataBasePath = [NSString stringWithContentsOfFile:[p stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
-	if (!dataBasePath) dataBasePath = p;
-	[dataBasePath retain];
+	NSString* sqlFilePath = [DicomDatabase sqlFilePathForBasePath:p];
+	BOOL isNewFile = ![NSFileManager.defaultManager fileExistsAtPath:sqlFilePath];
 	
-	self = [super initWithPath:p context:c];
+	// init and register
+	
+	self = [super initWithPath:sqlFilePath context:c];
+	
+	self.basePath = p;
+	_dataBasePath = [NSString stringWithContentsOfFile:[p stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
+	if (!_dataBasePath) _dataBasePath = p;
+	[_dataBasePath retain];
+	
 	[DicomDatabase knowAbout:self];
+	
+	// post-init
 	
 	[NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil];
 	
-	dataFileIndex = [[N2MutableUInteger alloc] initWithValue:0];
+	_dataFileIndex = [[N2MutableUInteger alloc] initWithValue:0];
 	
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.dataDirPath];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.incomingDirPath];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
 	
-	return p;
+	if (isNewFile)
+		[self addDefaultAlbums];
+	[self modifyDefaultAlbums];	
+	
+	return self;
 }
 
 -(void)dealloc {
-	[dataFileIndex release]; dataFileIndex = nil;
-	[dataBasePath release]; dataBasePath = nil;
+	self.dataFileIndex = nil;
+	self.dataBasePath = nil;
+	self.basePath = nil;
 	[super dealloc];
 }
 
@@ -201,8 +228,6 @@ static DicomDatabase* activeLocalDatabase = nil;
 }
 
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
-	BOOL isNewFile = ![NSFileManager.defaultManager fileExistsAtPath:sqlFilePath];
-	
 	// custom migration
 	
 	NSString* modelVersion = [NSString stringWithContentsOfFile:self.modelVersionFilePath encoding:NSUTF8StringEncoding error:nil];
@@ -213,13 +238,10 @@ static DicomDatabase* activeLocalDatabase = nil;
 			[self recomputePatientUIDs]; // if upgradeSqlFileFromModelVersion returns NO, the database was rebuilt so no need to recompute IDs
 	}
 	
+	// super + spec
+	
 	NSManagedObjectContext* context = [super contextAtPath:sqlFilePath];
-	
 	[context setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
-	
-	if (isNewFile)
-		[self addDefaultAlbums];
-	[self modifyDefaultAlbums];
 	
 	return context;
 }
@@ -275,40 +297,48 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	return nil;
 }*/
 
++(NSString*)sqlFilePathForBasePath:(NSString*)basePath {
+	return [basePath stringByAppendingPathComponent:SqlFileName];
+}
+
 -(NSString*)sqlFilePath {
-	return [self.basePath stringByAppendingPathComponent:@"Database.sql"];
+	return [DicomDatabase sqlFilePathForBasePath:self.basePath];
 }
 
 -(NSString*)dataDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[dataBasePath stringByAppendingPathComponent:@"DATABASE.noindex"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"DATABASE.noindex"]];
 }
 
 -(NSString*)incomingDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[dataBasePath stringByAppendingPathComponent:@"INCOMING.noindex"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"INCOMING.noindex"]];
 }
 
 -(NSString*)decompressionDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[dataBasePath stringByAppendingPathComponent:@"DECOMPRESSION.noindex"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"DECOMPRESSION.noindex"]];
 }
 
 -(NSString*)toBeIndexedDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[dataBasePath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"]];
 }
 
 -(NSString*)tempDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[dataBasePath stringByAppendingPathComponent:@"TEMP.noindex"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"TEMP.noindex"]];
 }
 
 -(NSString*)errorsDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[dataBasePath stringByAppendingPathComponent:@"NOT READABLE"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"NOT READABLE"]];
 }
 
 -(NSString*)reportsDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[dataBasePath stringByAppendingPathComponent:@"REPORTS"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"REPORTS"]];
 }
 
 -(NSString*)pagesDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[dataBasePath stringByAppendingPathComponent:@"PAGES"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"PAGES"]];
+}
+
+-(NSString*)roisDirPath {
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"ROIs"]];
 }
 
 -(NSString*)modelVersionFilePath {
@@ -320,11 +350,11 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 }
 
 -(NSUInteger)computeDataFileIndex {
-	DLog(@"In -[DicomDatabase computeDataFileIndex] for %@ initially %lld", self.sqlFilePath, dataFileIndex.value);
+	DLog(@"In -[DicomDatabase computeDataFileIndex] for %@ initially %lld", self.sqlFilePath, _dataFileIndex.value);
 	
-	@synchronized(dataFileIndex) {
+	@synchronized(_dataFileIndex) {
 		@try {
-			NSString* path = [self dataDirPath];
+			NSString* path = self.dataDirPath;
 			NSString* temp = [NSFileManager.defaultManager destinationOfSymbolicLinkAtPath:path error:nil];
 			if (temp) path = temp;
 
@@ -345,37 +375,36 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 						[NSFileManager.defaultManager removeItemAtPath:fpath error:nil];
 					else {
 						NSUInteger fi = [f integerValue];
-						if (fi > dataFileIndex.value)
-							dataFileIndex.value = fi;
+						if (fi > _dataFileIndex.value)
+							_dataFileIndex.value = fi;
 					}
 				}
 			}
 			
 			// scan directories
 			
-			if (dataFileIndex.value > 0) {
-				NSInteger t = dataFileIndex.value;
+			if (_dataFileIndex.value > 0) {
+				NSInteger t = _dataFileIndex.value;
 				t -= [BrowserController DefaultFolderSizeForDB];
 				if (t < 0) t = 0;
 				
-				NSArray* paths = [NSFileManager.defaultManager contentsOfDirectoryAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", dataFileIndex.value]] error:nil];
+				NSArray* paths = [NSFileManager.defaultManager contentsOfDirectoryAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", _dataFileIndex.value]] error:nil];
 				for (NSString* s in paths) {
 					long si = [[s stringByDeletingPathExtension] integerValue];
 					if (si > t)
 						t = si;
 				}
 				
-				dataFileIndex.value = t+1;
+				_dataFileIndex.value = t+1;
 			}
 			
-			DLog(@"   -[DicomDatabase computeDataFileIndex] for %@ computed %lld", self.sqlFilePath, dataFileIndex.value);
+			DLog(@"   -[DicomDatabase computeDataFileIndex] for %@ computed %lld", self.sqlFilePath, _dataFileIndex.value);
 		} @catch (NSException* e) {
-			NSLog(@"Exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[e printStackTrace];
+			N2LogExceptionWithStackTrace(e);
 		}
 	}
 	
-	return dataFileIndex.value;
+	return _dataFileIndex.value;
 }
 
 -(NSString*)uniquePathForNewDataFileWithExtension:(NSString*)ext {
@@ -387,27 +416,27 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		ext = @"dcm"; 
 	}
 
-	@synchronized(dataFileIndex) {
+	@synchronized(_dataFileIndex) {
 		NSString* dataDirPath = self.dataDirPath;
 		[NSFileManager.defaultManager confirmNoIndexDirectoryAtPath:dataDirPath]; // TODO: old impl only did this every 3 secs..
 		
-		[dataFileIndex increment];
+		[_dataFileIndex increment];
 		long long defaultFolderSizeForDB = [BrowserController DefaultFolderSizeForDB]; // TODO: hmm..
 		
 		BOOL fileExists = NO, firstExists = YES;
 		do {
-			long long subFolderInt = defaultFolderSizeForDB*(dataFileIndex.value/defaultFolderSizeForDB+1);
+			long long subFolderInt = defaultFolderSizeForDB*(_dataFileIndex.value/defaultFolderSizeForDB+1);
 			NSString* subFolderPath = [dataDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld", subFolderInt]];
 			[NSFileManager.defaultManager confirmDirectoryAtPath:subFolderPath];
 			
-			path = [subFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld.%@", dataFileIndex.value, ext]];
+			path = [subFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld.%@", _dataFileIndex.value, ext]];
 			fileExists = [NSFileManager.defaultManager fileExistsAtPath:path];
 			
 			if (fileExists)
 				if (firstExists) {
 					firstExists = NO;
 					[self computeDataFileIndex];
-				} else [dataFileIndex increment];
+				} else [_dataFileIndex increment];
 		} while (fileExists);
 	}
 
@@ -420,7 +449,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = [NSEntityDescription entityForName:DicomDatabaseAlbumEntityName inManagedObjectContext:context];
 	req.predicate = [NSPredicate predicateWithValue:YES];
-	return [context executeFetchRequest:req error:NULL];	
+	return [context executeFetchRequest:req error:NULL];
 }
 
 -(NSArray*)albums { // TODO: cache!
@@ -882,7 +911,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			[NSFileManager.defaultManager removeItemAtPath:[self.sqlFilePath stringByAppendingString:@" - old"] error:NULL];
 			[NSFileManager.defaultManager moveItemAtPath:self.sqlFilePath toPath:[self.sqlFilePath stringByAppendingString:@" - old"] error:NULL];
 		}
-	} else [managedObjectContext save:NULL];
+	} else [self save:NULL];
 	
 //	displayEmptyDatabase = YES;
 //	[self outlineViewRefresh];
@@ -890,10 +919,10 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	
 	[self lock];
 	
-	[managedObjectContext lock];
-	[managedObjectContext unlock];
-	[managedObjectContext release];
-	managedObjectContext = nil;
+//	[managedObjectContext lock];
+//	[managedObjectContext unlock];
+//	[managedObjectContext release];
+//	managedObjectContext = nil;
 	
 //	[databaseOutline reloadData];
 	
@@ -943,14 +972,10 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	}
 	
 	// ** DICOM ROI SR FOLDER
-	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath: [dataBasePath stringByAppendingPathComponent:@"ROIs"]];
-	for( NSString *name in dirContent)
-	{
-		if( [name characterAtIndex: 0] != '.')
-		{
-			[filesArray addObject: [[dataBasePath stringByAppendingPathComponent:@"ROIs"] stringByAppendingPathComponent: name]];
-		}
-	}
+	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:self.roisDirPath];
+	for (NSString *name in dirContent)
+		if ([name characterAtIndex:0] != '.')
+			[filesArray addObject: [self.roisDirPath stringByAppendingPathComponent: name]];
 	
 	NSManagedObjectContext *context = self.managedObjectContext;
 	NSManagedObjectModel *model = self.managedObjectModel;
@@ -1005,8 +1030,8 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 		error = nil;
-		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-		NSString	*basePath = [NSString stringWithFormat: @"%@/REPORTS/", dataBasePath];
+		NSArray* studiesArray = [context executeFetchRequest:dbRequest error:&error];
+		NSString* basePath = self.reportsDirPath;
 		
 		if ([studiesArray count] > 0)
 		{
@@ -1163,7 +1188,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		[theTask setLaunchPath: @"/usr/bin/sqlite3"];
 		[theTask setStandardOutput:[NSFileHandle fileHandleForWritingAtPath:repairedDBFile]];
 		[theTask setCurrentDirectoryPath:self.basePath.stringByDeletingLastPathComponent];
-		[theTask setArguments:[NSArray arrayWithObjects:@"Database.sql", @".dump", nil]];
+		[theTask setArguments:[NSArray arrayWithObjects:SqlFileName, @".dump", nil]];
 		
 		[theTask launch];
 		[theTask waitUntilExit];
@@ -1220,7 +1245,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			NSError *err = nil;
 			[self save:&err];
 			if (!err)
-				[managedObjectContext reset];
+				[self.managedObjectContext reset];
 		} @catch (NSException* e) {
 			N2LogExceptionWithStackTrace(e);
 		} @finally {

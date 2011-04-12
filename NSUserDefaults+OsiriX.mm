@@ -20,9 +20,11 @@
 @implementation NSUserDefaults (OsiriX)
 
 +(void)load {
-	[self.standardUserDefaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:
-												 
-												 NULL]];
+	NSDictionary* d = [[NSDictionary alloc] initWithObjectsAndKeys:
+					   
+					   NULL];
+	[self.standardUserDefaults registerDefaults:d];
+	[d release];
 }
 
 #pragma mark General

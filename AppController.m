@@ -369,11 +369,11 @@ int GetAllPIDsForProcessName(const char* ProcessName,
 }
 
 NSString* documentsDirectoryFor(int mode, NSString *url) { // __deprecated
-	return [DicomDatabase databaseBasePathForMode:mode path:url];
+	return [DicomDatabase basePathForMode:mode path:url];
 }
 
 NSString* documentsDirectory() { // __deprecated
-	return [DicomDatabase defaultDatabaseBasePath];
+	return [DicomDatabase defaultBasePath];
 }
 
 static volatile BOOL converting = NO;

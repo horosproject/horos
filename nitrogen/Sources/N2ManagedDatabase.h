@@ -11,13 +11,13 @@
 
 @interface N2ManagedDatabase : NSObject {
 	@protected
-		NSString* basePath;
-		NSManagedObjectContext* managedObjectContext;
-	@private
-		NSRecursiveLock* writeLock;
+		NSString* _sqlFilePath;
+		NSManagedObjectContext* _managedObjectContext;
+//	@private
+//		NSRecursiveLock* writeLock;
 }
 
-@property(readonly,retain) NSString* basePath;
+@property(readonly,retain) NSString* sqlFilePath;
 @property(readonly) NSManagedObjectModel* managedObjectModel;
 @property(readonly,retain) NSManagedObjectContext* managedObjectContext;
 
@@ -33,10 +33,9 @@
 -(NSManagedObjectModel*)managedObjectModel;
 -(NSMutableDictionary*)persistentStoreCoordinatorsDictionary;
 -(BOOL)migratePersistentStoresAutomatically; // default implementation returns YES
--(NSString*)sqlFilePath;
 
--(id)initWithPath:(NSString*)path;
--(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c;
+-(id)initWithPath:(NSString*)sqlFilePath;
+-(id)initWithPath:(NSString*)sqlFilePath context:(NSManagedObjectContext*)c;
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath; // you may want to override this
 
 -(NSManagedObjectContext*)independentContext:(BOOL)independent;

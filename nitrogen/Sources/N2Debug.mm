@@ -47,9 +47,7 @@ void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, NSStr
 void _N2LogExceptionVImpl(NSException* e, BOOL logStack, const char* pf, NSString* format, va_list args) {
 	NSString* message = format? [[[NSString alloc] initWithFormat:format arguments:args] autorelease] : e.name;
 	@synchronized(NSApp) {
-		NSLog(@"%@ (in %s): %@", message, pf, e);
-		if (logStack)
-			[e printStackTrace];
+		NSLog(@"%@ (in %s): %@%@", message, pf, e, logStack? [NSString stringWithFormat:@"\n%@", e.stackTrace] : @"");
 	}
 }
 	
