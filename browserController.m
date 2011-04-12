@@ -18573,6 +18573,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	WaitRendering *wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Receiving files from iDisk", nil)]];
+	[wait setCancel: YES];
 	[wait showWindow:self];
 	
 	NSTask *theTask = [[NSTask alloc] init];
@@ -18580,7 +18581,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[theTask setArguments: [NSArray arrayWithObjects: @"getFilesFromiDisk", [NSString stringWithFormat:@"%d", delete], nil]];
 	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
 	[theTask launch];
-	[theTask waitUntilExit];
+	
+	[wait start];
+	
+	while( [theTask isRunning] && [wait run])
+		[NSThread sleepForTimeInterval: 0.1];
+	
+	if( [wait run])
+		[theTask waitUntilExit];
+	else
+		[theTask interrupt];
+	
+	[wait end];
+	
 	[theTask release];
 	
 	NSArray	*filesArray = [NSArray arrayWithContentsOfFile: @"/tmp/files2load"];
@@ -18705,11 +18718,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					WaitRendering *wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Sending zip file (%d MB) to iDisk", nil), fileSize]];
 					[wait showWindow:self];
+					[wait setCancel: YES];
 					
 					[theTask setArguments: [NSArray arrayWithObjects: @"sendFilesToiDisk", @"/tmp/files2send", nil]];
 					[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
 					[theTask launch];
-					[theTask waitUntilExit];
+					
+					[wait start];
+					
+					while( [theTask isRunning] && [wait run])
+						[NSThread sleepForTimeInterval: 0.1];
+					
+					if( [wait run])
+						[theTask waitUntilExit];
+					else
+						[theTask interrupt];
+					
+					[wait end];
+					
 					[theTask release];
 					
 					[wait close];

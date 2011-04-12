@@ -29,7 +29,7 @@
 	
 	BOOL						aborted;
 	volatile BOOL				stop;
-	BOOL						cancel;
+	BOOL						supportCancel;
 	NSModalSession				session;
 	
 	id							cancelDelegate;

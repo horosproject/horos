@@ -130,23 +130,14 @@ int executeProcess(int argc, char *argv[])
 		NSString	*what = [NSString stringWithUTF8String:argv[ 1]];
 		NSString	*path = [NSString stringWithUTF8String:argv[ 2]];
 		
-		if( [what isEqualToString:@"DNSResolve"])
-		{
-			NSLog( @"NSNetServiceBrowser *browser = [[NSNetServiceBrowser alloc] init]");
-			
-			NSNetServiceBrowser *browser = [[NSNetServiceBrowser alloc] init];
-			
-			[browser setDelegate: mainClass];
-			[browser searchForServicesOfType:@"_osirixdb._tcp." inDomain:@""];
-			
-			[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow: 1]];
-			
-			[mainClass writeServices: path];
-		}
-		
 		if( [what isEqualToString:@"OSAScript"])
 		{
+			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
+			
 			[mainClass runScript: [NSString stringWithContentsOfFile: path encoding: NSISOLatin1StringEncoding error: nil]];
+			
+			[wait close];
+			[wait release];
 		}
 		
 		if( [what isEqualToString:@"getFilesFromiDisk"])
@@ -175,11 +166,8 @@ int executeProcess(int argc, char *argv[])
 				{
 					NSLog( @"mySession");
 					
-					WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Receiving files from iDisk...", nil)];
 					@try
 					{
-						[wait setCancel: YES];
-						
 						// Find the DICOM folder
 						if( ![mySession fileExistsAtPath: DICOMpath]) success = [mySession createDirectoryAtPath: DICOMpath attributes:nil];
 						
@@ -193,10 +181,7 @@ int executeProcess(int argc, char *argv[])
 							
 							NSLog( @"%@", [filesArray description]);
 							
-							[wait showWindow: nil];
-							[wait run];
-							
-							for( long i = 0; i < [filesArray count] && [wait aborted] == NO; i++ )
+							for( long i = 0; i < [filesArray count]; i++ )
 							{
 								dstPath = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d.%@", i, [[filesArray objectAtIndex: i] pathExtension]]];
 								
@@ -213,8 +198,6 @@ int executeProcess(int argc, char *argv[])
 					{
 						NSLog( @"***** exception shell main class: &@", e);
 					}
-					[wait close];
-					[wait release];
 				}
 				else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?", nil), NSLocalizedString(@"Unable to contact dotMac service.", nil), NSLocalizedString(@"OK",nil),nil, nil);
 			}
@@ -247,14 +230,8 @@ int executeProcess(int argc, char *argv[])
 					// Find the DICOM folder
 					if( ![mySession fileExistsAtPath: DICOMpath]) [mySession createDirectoryAtPath: DICOMpath attributes:nil];
 					
-					WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Sending zip file to iDisk...", nil)];
 					@try
 					{
-						[wait setCancel: YES];
-						
-						[wait showWindow: nil];
-						[wait run];
-						
 						NSString *dstPath, *srcPath = files2Copy;
 						
 						dstPath = [DICOMpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
@@ -265,10 +242,13 @@ int executeProcess(int argc, char *argv[])
 						if( ![mySession fileExistsAtPath: dstPath]) [mySession copyPath: srcPath toPath: dstPath handler:nil];
 						else
 						{
-							if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString( @"A file already exists: %@. Should I replace it?", nil), [srcPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+							if( NSRunInformationalAlertPanel( NSLocalizedString(@"iDisk Export", nil), [NSString stringWithFormat: NSLocalizedString( @"A file already exists: %@. Should I replace it?", nil), [srcPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
 							{
 								[mySession removeFileAtPath: dstPath handler:nil];
-								[mySession copyPath: srcPath toPath: dstPath handler:nil];
+								BOOL success = [mySession copyPath: srcPath toPath: dstPath handler:nil];
+								
+								if( success == NO)
+									NSRunInformationalAlertPanel( NSLocalizedString(@"iDisk Export", nil), NSLocalizedString(@"iDisk Upload failed.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 							}
 						}
 					}
@@ -276,8 +256,6 @@ int executeProcess(int argc, char *argv[])
 					{
 						NSLog( @"***** exception shell main class: &@", e);
 					}
-					[wait close];
-					[wait release];
 				}
 				else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?",@"iDisk?"), NSLocalizedString(@"Unable to contact dotMac service.",@"Unable to contact dotMac service."), NSLocalizedString(@"OK",nil),nil, nil);
 			}
@@ -286,6 +264,8 @@ int executeProcess(int argc, char *argv[])
 		
 		if( [what isEqualToString:@"getFrame"])
 		{
+			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
+			
 			int frameNo = [[NSString stringWithUTF8String:argv[ 3]] intValue];
 			
 			QTMovie *movie = [[QTMovie alloc] initWithFile:path error: nil];
@@ -310,10 +290,15 @@ int executeProcess(int argc, char *argv[])
 				
 				[movie release];
 			}
+			
+			[wait close];
+			[wait release];
 		}
 		
 		if( [what isEqualToString:@"generateQTVR"] && argv[ 3])
 		{
+			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
+			
 			// argv[ 3] = frameNo
 			
 			int frameNo = [[NSString stringWithUTF8String:argv[ 3]] intValue];
@@ -327,10 +312,15 @@ int executeProcess(int argc, char *argv[])
 			FSMakeFSSpec(spec.vRefNum, spec.parID, "\ptempMovie", &newspec);
 			
 			VRObject_MakeObjectMovie( &spec, &newspec, frameNo);
+			
+			[wait close];
+			[wait release];
 		}
 		
 		if( [what isEqualToString:@"getExportSettings"] && argv[ 3] && argv[ 4] && argv[ 5])
 		{
+			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
+			
 			[NSRunLoop currentRunLoop];
 			
 			QTMovie *aMovie = [[QTMovie alloc] initWithFile:path error: nil];
@@ -399,6 +389,9 @@ int executeProcess(int argc, char *argv[])
 				}
 				[aMovie release];
 			}
+			
+			[wait close];
+			[wait release];
 		}
 	}
 	
@@ -411,67 +404,78 @@ int executeProcess(int argc, char *argv[])
 
 @implementation ShellMainClass
 
+- (IBAction) abort:(id) sender
+{
+	// Required for WaitRendering use
+}
+
 - (void)runScript:(NSString *)txt
 {
-ComponentInstance myComponent = OpenDefaultComponent(kOSAComponentType, kOSAGenericScriptingComponentSubtype);
+	ComponentInstance myComponent = OpenDefaultComponent(kOSAComponentType, kOSAGenericScriptingComponentSubtype);
 
-NSData *scriptChars = [txt dataUsingEncoding: NSUTF8StringEncoding];
-AEDesc source, resultText;
-OSAID scriptId, resultId;
-OSErr ok;
+	NSData *scriptChars = [txt dataUsingEncoding: NSUTF8StringEncoding];
+	AEDesc source, resultText;
+	OSAID scriptId, resultId;
+	OSErr ok;
 
-// Convert the source string into an AEDesc of string type.
-ok = AECreateDesc(typeChar, [scriptChars bytes], [scriptChars length], &source);
-CHECK;
+	// Convert the source string into an AEDesc of string type.
+	ok = AECreateDesc(typeChar, [scriptChars bytes], [scriptChars length], &source);
+	CHECK;
 
-// Compile the source into a script.
-scriptId = kOSANullScript;
-ok = OSACompile(myComponent, &source, kOSAModeNull, &scriptId);
-AEDisposeDesc(&source);
-CHECK;
+	// Compile the source into a script.
+	scriptId = kOSANullScript;
+	ok = OSACompile(myComponent, &source, kOSAModeNull, &scriptId);
+	AEDisposeDesc(&source);
+	CHECK;
 
 
-// Execute the script, using defaults for everything.
-resultId = 0;
-ok = OSAExecute(myComponent, scriptId, kOSANullScript, kOSAModeNull, &resultId);
-CHECK;
+	// Execute the script, using defaults for everything.
+	resultId = 0;
+	ok = OSAExecute(myComponent, scriptId, kOSANullScript, kOSAModeNull, &resultId);
+	CHECK;
 
-if (ok == errOSAScriptError) {
-AEDesc ernum, erstr;
-id ernumobj, erstrobj;
+	if (ok == errOSAScriptError)
+	{
+		AEDesc ernum, erstr;
+		id ernumobj, erstrobj;
 
-// Extract the error number and error message from our scripting component.
-ok = OSAScriptError(myComponent, kOSAErrorNumber, typeSInt16, &ernum);
-CHECK;
-ok = OSAScriptError(myComponent, kOSAErrorMessage, typeChar, &erstr);
-CHECK;
+		// Extract the error number and error message from our scripting component.
+		ok = OSAScriptError(myComponent, kOSAErrorNumber, typeSInt16, &ernum);
+		CHECK;
+		ok = OSAScriptError(myComponent, kOSAErrorMessage, typeChar, &erstr);
+		CHECK;
 
-// Convert them to ObjC types.
-ernumobj = aedesc_to_id(&ernum);
-AEDisposeDesc(&ernum);
-erstrobj = aedesc_to_id(&erstr);
-AEDisposeDesc(&erstr);
+		// Convert them to ObjC types.
+		ernumobj = aedesc_to_id(&ernum);
+		AEDisposeDesc(&ernum);
+		erstrobj = aedesc_to_id(&erstr);
+		AEDisposeDesc(&erstr);
 
-txt = [NSString stringWithFormat:@"Error, number=%@, message=%@", ernumobj, erstrobj];
-} else {
-// If no error, extract the result, and convert it to a string for display
+		txt = [NSString stringWithFormat:@"Error, number=%@, message=%@", ernumobj, erstrobj];
+	}
+	else
+	{
+		// If no error, extract the result, and convert it to a string for display
 
-if (resultId != 0) { // apple doesn't mention that this can be 0?
-ok = OSADisplay(myComponent, resultId, typeChar, kOSAModeNull, &resultText);
-CHECK;
+		if (resultId != 0)
+		{ // apple doesn't mention that this can be 0?
+			ok = OSADisplay(myComponent, resultId, typeChar, kOSAModeNull, &resultText);
+			CHECK;
+			
+			//NSLog(@"result thingy type = \"%c%c%c%c\"", ((char *)&(resultText.descriptorType))[0], ((char *)&(resultText.descriptorType))[1], ((char *)&(resultText.descriptorType))[2], ((char *)&(resultText.descriptorType))[3]);
+			
+			txt = aedesc_to_id(&resultText);
+			AEDisposeDesc(&resultText);
+		}
+		else
+		{
+			txt = @"[no value returned]";
+		}
+		OSADispose(myComponent, resultId);
+	}
 
-//NSLog(@"result thingy type = \"%c%c%c%c\"", ((char *)&(resultText.descriptorType))[0], ((char *)&(resultText.descriptorType))[1], ((char *)&(resultText.descriptorType))[2], ((char *)&(resultText.descriptorType))[3]);
-
-txt = aedesc_to_id(&resultText);
-AEDisposeDesc(&resultText);
-} else {
-txt = @"[no value returned]";
-}
-OSADispose(myComponent, resultId);
-}
-
-ok = OSADispose(myComponent, scriptId);
-CHECK;
+	ok = OSADispose(myComponent, scriptId);
+	CHECK;
 }
 
 - (void) writeServices:(NSString*) path
@@ -560,12 +564,8 @@ CHECK;
 
 	NSArray *arguments = [[NSProcessInfo processInfo] arguments];
 
-	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
 	@try
 	{
-		[wait showWindow:self];
-		[wait run];
-		
 		NSLog( @"**** 32-bit shell started");
 		
 		NSLog( @"%@", [arguments description]);
@@ -597,8 +597,6 @@ CHECK;
 	{
 		NSLog( @"***** exception shell main class: &@", e);
 	}
-	[wait close];
-	[wait release];
 	
 	exit( 0);
 }
