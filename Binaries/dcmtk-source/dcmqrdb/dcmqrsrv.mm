@@ -1500,8 +1500,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 								{
 									/* child process, handle the association */
 									cond = handleAssociation(assoc, options_.correctUIDPadding_);
-									
-									*((char*) 0L) = 32;
 								}
 								catch(...)
 								{
