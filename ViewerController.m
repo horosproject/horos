@@ -93,6 +93,7 @@
 #import "CPRController.h"
 #import "Notifications.h"
 #import "DicomDatabase.h"
+#import "N2Debug.h"
 
 int delayedTileWindows = NO;
 
@@ -10889,7 +10890,8 @@ short				matrix[25];
 	
 	if( [[fileList[ mIndex] lastObject] isKindOfClass:[NSManagedObject class]])
 	{
-		[[[[BrowserController currentBrowser] database] managedObjectContext] lock];
+		DicomDatabase* database = [DicomDatabase databaseForContext:[[fileList[mIndex] lastObject] managedObjectContext]];
+		[database lock];
 		
 		@try
 		{
@@ -10910,12 +10912,12 @@ short				matrix[25];
 							NSString *str = [study roiPathForImage: image inArray: roisArray];
 							
 							if (str == nil)
-								str = [[[BrowserController currentBrowser] database] uniquePathForNewDataFileWithExtension:@"dcm"];
+								str = [database uniquePathForNewDataFileWithExtension:@"dcm"];
 							
 							else if( [[NSFileManager defaultManager] fileExistsAtPath: str] && [str isEqualToString: [image SRPath]]) // Old ROIs folder -> move it to DATABASE.index file
 							{
 								[[NSFileManager defaultManager] removeItemAtPath: [image SRPath] error: nil];
-								str = [[[BrowserController currentBrowser] database] uniquePathForNewDataFileWithExtension: @"dcm"];
+								str = [database uniquePathForNewDataFileWithExtension: @"dcm"];
 								forceArchive = YES;
 							}
 							
@@ -10978,9 +10980,11 @@ short				matrix[25];
 		}
 		@catch ( NSException *e)
 		{
-			NSLog( @"****** saveROI exception : %@");
+			N2LogExceptionWithStackTrace(e);
+		} 
+		@finally {
+			[database unlock];
 		}
-		[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 	}
 }
 

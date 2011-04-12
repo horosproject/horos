@@ -49,10 +49,13 @@
 @implementation DicomDatabase
 
 static const NSString* const SqlFileName = @"Database.sql";
+static const NSString* const OsirixDataDirName = @"OsiriX Data";
 
 +(NSString*)basePathForPath:(NSString*)path {
 	if ([path hasSuffix:[SqlFileName pathExtension]])
 		path = [path stringByDeletingLastPathComponent];
+	if (![[path lastPathComponent] isEqualToString:OsirixDataDirName]) 
+		path = [path stringByAppendingPathComponent:OsirixDataDirName];
 	return path;
 }
 
