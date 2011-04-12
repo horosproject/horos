@@ -27,10 +27,8 @@
 
 @interface ShellMainClass : NSApplication
 {
-	NSMutableArray	*services;
 }
 
-- (void) writeServices:(NSString*) path;
 - (void) runScript:(NSString *)txt;
 
 @end
@@ -319,8 +317,6 @@ int executeProcess(int argc, char *argv[])
 		
 		if( [what isEqualToString:@"getExportSettings"] && argv[ 3] && argv[ 4] && argv[ 5])
 		{
-			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
-			
 			[NSRunLoop currentRunLoop];
 			
 			QTMovie *aMovie = [[QTMovie alloc] initWithFile:path error: nil];
@@ -389,9 +385,6 @@ int executeProcess(int argc, char *argv[])
 				}
 				[aMovie release];
 			}
-			
-			[wait close];
-			[wait release];
 		}
 	}
 	
@@ -478,75 +471,6 @@ int executeProcess(int argc, char *argv[])
 	CHECK;
 }
 
-- (void) writeServices:(NSString*) path
-{
-	[services writeToFile: path atomically: YES];
-}
-
-- (void) netServiceDidResolveAddress:(NSNetService *)sender
-{
-	NSLog( @"netServiceDidResolveAddress");
-	
-   if ([[sender addresses] count] > 0)
-   {
-        NSData * address;
-        struct sockaddr * socketAddress;
-        NSString * ipAddressString = nil;
-        NSString * portString = nil;
-        char buffer[256];
-        int index;
-
-        // Iterate through addresses until we find an IPv4 address
-        for (index = 0; index < [[sender addresses] count]; index++) {
-            address = [[sender addresses] objectAtIndex:index];
-            socketAddress = (struct sockaddr *)[address bytes];
-
-            if (socketAddress->sa_family == AF_INET) break;
-        }
-
-        // Be sure to include <netinet/in.h> and <arpa/inet.h> or else you'll get compile errors.
-
-        if (socketAddress) {
-            switch(socketAddress->sa_family) {
-                case AF_INET:
-                    if (inet_ntop(AF_INET, &((struct sockaddr_in *)socketAddress)->sin_addr, buffer, sizeof(buffer))) {
-                        ipAddressString = [NSString stringWithUTF8String:buffer];
-                        portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)socketAddress)->sin_port)];
-                    }
-                    
-                    // Cancel the resolve now that we have an IPv4 address.
-                    [sender stop];
-
-                    break;
-                case AF_INET6:
-                    // OsiriX server doesn't support IPv6
-                    return;
-            }
-        }
-		
-		NSMutableDictionary	*serviceDict = [NSMutableDictionary dictionary];
-		
-		[serviceDict setValue: [sender hostName] forKey:@"HostName"];
-		[serviceDict setValue: [sender name] forKey:@"Name"];
-		[serviceDict setValue: ipAddressString forKey:@"Address"];
-		[serviceDict setValue: portString forKey:@"OsiriXPort"];
-		
-		[services addObject: serviceDict];
-	}
-	
-	[sender release];
-}
-
-// This object is the delegate of its NSNetServiceBrowser object.
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
-{
-	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: aNetService, @"service", @"bonjour", @"type", nil];
-	
-	[aNetService retain];
-	[aNetService setDelegate:self];
-	[aNetService resolveWithTimeout: 1];
-}
-
 - (id) init
 {
 	self = [super init];
@@ -560,8 +484,6 @@ int executeProcess(int argc, char *argv[])
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-	services = [[NSMutableArray array] retain];
-
 	NSArray *arguments = [[NSProcessInfo processInfo] arguments];
 
 	@try
