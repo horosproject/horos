@@ -20,7 +20,6 @@
 #ifdef __OBJC__
 #import <Foundation/NSValue.h>
 @class NSString;
-#import "Point3D.h"
 #endif
 
 CF_EXTERN_C_BEGIN
@@ -192,23 +191,9 @@ NSString *NSStringFromN3Plane(N3Plane plane);
 
 @end
 
-@interface Point3D (N3GeometryAdditions)
-
-+ (id)pointWithN3Vector:(N3Vector)vector;
-- (id)initWithN3Vector:(N3Vector)vector;
-- (N3Vector)N3VectorValue;
-
-@end
 
 
 #endif /* __OBJC__ */
-
-#if defined(__cplusplus)
-
-class vtkMatrix4x4;
-N3AffineTransform N3AffineTransformMakeFromVTKMatrix4x4(vtkMatrix4x4 *matrix);
-
-#endif /* __cplusplus */
 
 #endif	/* _N3GEOMETRY_H_ */
 

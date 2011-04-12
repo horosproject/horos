@@ -60,6 +60,7 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(NSString*)errorsDirPath;
 -(NSString*)reportsDirPath;
 -(NSString*)tempDirPath;
+-(NSString*)dumpDirPath;
 -(NSString*)pagesDirPath;
 -(NSString*)modelVersionFilePath;  // this should become private
 -(NSString*)loadingFilePath; // this should become private
@@ -79,5 +80,6 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(void)checkReportsConsistencyWithDICOMSR;
 -(void)rebuildSqlFile;
 -(void)reduceCoreDataFootPrint;
+-(void)checkForHtmlTemplates;
 
 @end

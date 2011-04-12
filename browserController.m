@@ -6121,8 +6121,9 @@ static NSConditionLock *threadLock = nil;
 			if( [[destSeries valueForKey:@"type"] isEqualToString: @"Series"] == NO) destSeries = [destSeries valueForKey:@"Series"];
 			
 			NSLog(@"MERGING SERIES: %@", destSeries);
+			DicomStudy *study = [destSeries valueForKey:@"study"];
 			
-			for( NSManagedObject	*series in seriesArray)
+			for( NSManagedObject *series in seriesArray)
 			{
 				if( series != destSeries)
 				{
@@ -6139,11 +6140,16 @@ static NSConditionLock *threadLock = nil;
 			}
 			
 			[destSeries setValue:[NSNumber numberWithInt:0] forKey:@"numberOfImages"];
+			
+			[database save:NULL];
+			
+			[self outlineViewRefresh];
+			
+			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: study]] byExtendingSelection: NO];
+			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+			
+			[self refreshMatrix: self];
 		}
-		
-		[database save:NULL];
-		
-		[self refreshMatrix: self];
 		
 		[context unlock];
 		[context release];

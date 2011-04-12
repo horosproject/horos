@@ -24,6 +24,8 @@
 #import "DicomStudy.h"
 #import "DicomFile.h"
 #import "Reports.h"
+#import "AppController.h"
+
 
 #import "BrowserController.h"
 
@@ -189,7 +191,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	self = [super initWithPath:sqlFilePath context:c];
 	
 	self.basePath = p;
-	_dataBasePath = [NSString stringWithContentsOfFile:[p stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
+	_dataBasePath = [NSString stringWithContentsOfFile:[p stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] encoding:NSUTF8StringEncoding error:NULL];
 	if (!_dataBasePath) _dataBasePath = p;
 	[_dataBasePath retain];
 	
@@ -201,9 +203,34 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	_dataFileIndex = [[N2MutableUInteger alloc] initWithValue:0];
 	
+	// create dirs if necessary
+	
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.dataDirPath];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.incomingDirPath];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
+	[NSFileManager.defaultManager confirmDirectoryAtPath:self.reportsDirPath];
+	[NSFileManager.defaultManager confirmDirectoryAtPath:self.dumpDirPath];
+	
+	// if a TOBEINDEXED dir exists, move it into INCOMING so we will import the data
+	
+	if ([NSFileManager.defaultManager fileExistsAtPath:self.toBeIndexedDirPath])
+		[NSFileManager.defaultManager moveItemAtPath:self.toBeIndexedDirPath toPath:[self.incomingDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"] error:NULL];
+	
+	// report templates
+	
+	for (NSString* rfn in [NSArray arrayWithObjects: @"ReportTemplate.doc", @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
+		NSString* rfp = [self.basePath stringByAppendingPathComponent:rfn];
+		if (![NSFileManager.defaultManager fileExistsAtPath:rfp])
+			[NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfn] toPath:rfp error:NULL];
+	}
+	
+	NSString* pagesTemplatesDirPath = [self.basePath stringByAppendingPathComponent:@"PAGES TEMPLATES"];
+	if (![NSFileManager.defaultManager fileExistsAtPath:pagesTemplatesDirPath])
+		[NSFileManager.defaultManager createSymbolicLinkAtPath:pagesTemplatesDirPath withDestinationPath:[AppController checkForPagesTemplate] error:NULL];
+	
+	[self checkForHtmlTemplates];
+	
+	// ...
 	
 	if (isNewFile)
 		[self addDefaultAlbums];
@@ -325,6 +352,10 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"TEMP.noindex"]];
 }
 
+-(NSString*)dumpDirPath {
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"DUMP"]];
+}
+
 -(NSString*)errorsDirPath {
 	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"NOT READABLE"]];
 }
@@ -338,6 +369,10 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 }
 
 -(NSString*)roisDirPath {
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"ROIs"]];
+}
+
+-(NSString*)htmlTemplatesDir {
 	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"ROIs"]];
 }
 
@@ -1251,6 +1286,42 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		} @finally {
 			[self unlock];
 		}
+}
+
+-(void)checkForHtmlTemplates {
+	// directory
+	NSString *htmlTemplatesDirectory = [self htmlTemplatesDirectory];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
+		[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory attributes:nil];
+	
+	// HTML templates
+	NSString *templateFile;
+	
+	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
+	NSLog( @"%@", templateFile);
+	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:nil];
+	
+	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
+	NSLog( @"%@", templateFile);
+	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:nil];
+	
+	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"];
+	NSLog( @"%@", templateFile);
+	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportSeriesTemplate.html"] toPath:templateFile handler:nil];
+	
+	// HTML-extra directory
+	NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingPathComponent:@"html-extra/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
+		[[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory attributes:nil];
+	
+	// CSS file
+	NSString *cssFile = [htmlExtraDirectory stringByAppendingPathComponent:@"style.css"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStyle.css"] toPath:cssFile handler:nil];
+	
 }
 
 @end

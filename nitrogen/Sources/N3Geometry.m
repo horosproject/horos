@@ -1005,33 +1005,6 @@ void N3AffineTransformGetOpenGLMatrixf(N3AffineTransform transform, float *f) //
 
 @end
 
-@implementation Point3D (N3GeometryAdditions)
-
-+ (id)pointWithN3Vector:(N3Vector)vector
-{
-	return [[[Point3D alloc] initWithN3Vector:vector] autorelease];
-}
-
-- (id)initWithN3Vector:(N3Vector)vector
-{
-	if ( (self = [super init]) ) {
-		self.x = vector.x;
-		self.y = vector.y;
-		self.z = vector.z;
-	}
-	return self;
-}
-
-- (N3Vector)N3VectorValue
-{
-	N3Vector vector;
-	vector.x = self.x;
-	vector.y = self.y;
-	vector.z = self.z;
-	return vector;
-}
-
-@end
 
 
 

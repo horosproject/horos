@@ -156,15 +156,13 @@
 
 -(void)save:(NSError**)err {
 	NSError* perr = NULL;
-	NSError** rerr = err? err : &perr;
+	if (!err) err = &perr;
 	[self lock];
 	@try {
-		[self.managedObjectContext save:rerr];
-		if (!err && perr) NSLog(@"Error: [N2ManagedDatabase save:] %@", perr.description);
+		[self.managedObjectContext save:err];
 	} @catch(NSException* e) {
-		if (!err)
-			NSLog(@"Exception: [N2ManagedDatabase save:] %@", e.description);
-		else *err = [NSError errorWithDomain:@"Exception" code:-1 userInfo:[NSDictionary dictionaryWithObject:e forKey:@"Exception"]];
+		if (!*err)
+			*err = [NSError errorWithDomain:@"Exception" code:-1 userInfo:[NSDictionary dictionaryWithObject:e forKey:@"Exception"]];
 	} @finally {
 		[self unlock];
 	}

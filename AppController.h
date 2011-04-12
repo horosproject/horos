@@ -139,17 +139,17 @@ extern "C"
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path __deprecated;
 + (void) displayImportantNotice:(id) sender;
 + (AppController*) sharedAppController; /**< Return the shared AppController instance */
-+ (void)checkForPagesTemplate; /**< Check for Pages report template */
++ (NSString*)checkForPagesTemplate; /**< Check for Pages report template */
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
 + (void) pause;
 + (void) resetToolbars;
-+ (NSString*) printStackTrace: (NSException*) e;
++ (NSString*) printStackTrace: (NSException*) e;// TODO: __deprecated;
 + (int) numberOfSubOsiriXProcesses;
 + (BOOL) isKDUEngineAvailable;
 
 #pragma mark-
 #pragma mark HTML Templates
-+ (void)checkForHTMLTemplates;
++ (void)checkForHTMLTemplates __deprecated;
 
 
 #pragma mark-

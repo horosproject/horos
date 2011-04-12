@@ -5761,7 +5761,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [self is2DViewer])
 	{
-		if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+		if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
 		{
 			//set value for Series Object Presentation State
 			if( curDCM.SUVConverted == NO)
@@ -5801,7 +5801,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 			}
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 		}
 	}
 }

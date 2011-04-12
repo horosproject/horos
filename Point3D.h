@@ -15,7 +15,7 @@
 
 
 #import <Cocoa/Cocoa.h>
-
+#import "N3Geometry.h"
 
 /** \brief  Represents a 3D Point
 *
@@ -49,5 +49,13 @@
 
 -(NSMutableDictionary*) exportToXML;
 -(id) initWithDictionary: (NSDictionary*)xml;
+
+@end
+
+@interface Point3D (N3GeometryAdditions)
+
++ (id)pointWithN3Vector:(N3Vector)vector;
+- (id)initWithN3Vector:(N3Vector)vector;
+- (N3Vector)N3VectorValue;
 
 @end
