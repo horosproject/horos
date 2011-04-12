@@ -35,11 +35,13 @@
 
 -(IBAction)cancelAction:(id)source;
 
+-(void)invalidate;
+
 @end
 
 
 @interface NSThread (ModalForWindow)
 
--(void)startModalForWindow:(NSWindow*)window;
+-(ThreadModalForWindowController*)startModalForWindow:(NSWindow*)window; // returns nil if not called on main thread
 
 @end;

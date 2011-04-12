@@ -18,6 +18,9 @@
 #import "NSThread+N2.h"
 
 
+static NSString* const ThreadIsCurrentlyModal = @"ThreadIsCurrentlyModal";
+
+
 @implementation ThreadModalForWindowController
 
 @synthesize thread = _thread;
@@ -75,10 +78,15 @@
 	[super observeValueForKeyPath:keyPath ofObject:obj change:change context:context];
 }
 
--(void)threadWillExitNotification:(NSNotification*)notification {
+-(void)invalidate {
 	[NSApp endSheet:self.window];
+	[[_thread threadDictionary] removeObjectForKey:ThreadIsCurrentlyModal];
 	[self close];
 	[self autorelease];
+}
+
+-(void)threadWillExitNotification:(NSNotification*)notification {
+	[self invalidate];
 }
 
 -(void)cancelAction:(id)source {
@@ -89,10 +97,14 @@
 
 @implementation NSThread (ModalForWindow)
 
--(void)startModalForWindow:(NSWindow*)window {
-	if ([NSThread isMainThread])
-		[[ThreadModalForWindowController alloc] initWithThread:self window:window];
-	else [self performSelectorOnMainThread:@selector(startModalForWindow:) withObject:window waitUntilDone:NO];
+-(ThreadModalForWindowController*)startModalForWindow:(NSWindow*)window {
+	if ([[self threadDictionary] objectForKey:ThreadIsCurrentlyModal])
+		return nil;
+	[[self threadDictionary] setObject:[NSNumber numberWithBool:YES] forKey:ThreadIsCurrentlyModal];
+	if ([NSThread isMainThread]) {
+		return [[ThreadModalForWindowController alloc] initWithThread:self window:window];
+	} else [self performSelectorOnMainThread:@selector(startModalForWindow:) withObject:window waitUntilDone:NO];
+	return nil;
 }
 
 @end

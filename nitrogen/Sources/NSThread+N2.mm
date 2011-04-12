@@ -115,11 +115,24 @@ NSString* const NSThreadIsCancelledKey = @"isCancelled";
 
 NSString* const NSThreadStatusKey = @"status";
 
+-(NSMutableArray*)statusArray {
+	NSMutableArray* a = nil;
+	
+	@synchronized (self.threadDictionary) {
+		a = [self.threadDictionary objectForKey:NSThreadStatusKey];
+		if (!a) {
+			a = [NSMutableArray array];
+			[self.threadDictionary setObject:a forKey:NSThreadStatusKey];
+		}
+	}
+	
+	return a;
+}
+
 -(NSString*)status
 {
 	if( self.isFinished)
 		return nil;
-	
 	if( self.isCancelled)
 		return nil;
 	
@@ -127,7 +140,8 @@ NSString* const NSThreadStatusKey = @"status";
 	
 	@synchronized (self.threadDictionary)
 	{
-		s = [[[self.threadDictionary objectForKey:NSThreadStatusKey] copy] autorelease];
+		if (self.statusArray.count)
+			s = [[self.statusArray.lastObject copy] autorelease];
 	}
 	
 	return s;
@@ -137,7 +151,6 @@ NSString* const NSThreadStatusKey = @"status";
 {
 	if( self.isFinished)
 		return;
-	
 	if( self.isCancelled)
 		return;
 	
@@ -147,11 +160,39 @@ NSString* const NSThreadStatusKey = @"status";
 	
 	@synchronized (self.threadDictionary)
 	{
-		if( status == nil) [self.threadDictionary removeObjectForKey: NSThreadStatusKey];
-		else [self.threadDictionary setObject: [[status copy] autorelease] forKey:NSThreadStatusKey];
+		if (self.statusArray.count) {
+			if (status == nil) status = @"";
+			[self.statusArray replaceObjectAtIndex:self.statusArray.count-1 withObject:[[status copy] autorelease]];
+		} else [self pushStatus:status];
 	}
 	
 	[self didChangeValueForKey:NSThreadStatusKey];
+}
+
+-(void)pushStatus:(NSString*)status {
+	if( self.isFinished)
+		return;
+	if( self.isCancelled)
+		return;
+	
+	@synchronized (self.threadDictionary)
+	{
+		if (!status) status = @"";
+		[self.statusArray addObject:[[status copy] autorelease]];
+	}
+}
+
+-(void)popStatus {
+	if( self.isFinished)
+		return;
+	if( self.isCancelled)
+		return;
+
+	@synchronized (self.threadDictionary)
+	{
+		if (self.statusArray.count)
+			[self.statusArray removeLastObject];
+	}
 }
 
 NSString* const NSThreadSubthreadsArrayKey = @"subthreads";

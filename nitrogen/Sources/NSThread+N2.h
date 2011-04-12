@@ -14,7 +14,7 @@
 
 
 #import <Cocoa/Cocoa.h>
-
+#import "ThreadModalForWindowController.h"
 
 @interface NSThread (N2)
 
@@ -33,6 +33,8 @@ extern NSString* const NSThreadIsCancelledKey;
 extern NSString* const NSThreadStatusKey;
 -(NSString*)status;
 -(void)setStatus:(NSString*)status;
+-(void)pushStatus:(NSString*)status;
+-(void)popStatus;
 
 extern NSString* const NSThreadProgressKey;
 -(CGFloat)progress;

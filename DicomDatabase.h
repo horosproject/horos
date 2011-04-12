@@ -71,7 +71,7 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 
 -(void)addDefaultAlbums;
 -(NSArray*)albums;
-+(NSArray*)albumsInContext:(NSManagedObjectContext*)context;
++(NSArray*)albumsInContext:(NSManagedObjectContext*)context; // this method should be private, but is declared because called from deprecated api
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string;
 
 // some of these methods should be private, but is declared because called from deprecated api

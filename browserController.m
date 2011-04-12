@@ -83,6 +83,7 @@
 #import "NSImage+N2.h"
 #import "NSFileManager+N2.h"
 #import "N2Debug.h"
+#import "NSThread+N2.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -2504,12 +2505,8 @@ static NSConditionLock *threadLock = nil;
 		[self willChangeValueForKey:@"database"];
 		
 		NSThread* thread = [NSThread currentThread];
-		NSString* originalThreadName = [thread name];
-		[thread setName:NSLocalizedString(@"Loading Database...", nil)];
-		//[[ThreadsManager defaultManager] addThreadAndStart:thread];
-		
-		WaitRendering* wait = [[WaitRendering alloc] init:NSLocalizedString(@"Opening OsiriX database...", nil)]; // TODO: threadModalForWindow also on MainThread...
-		[wait showWindow:self];
+		[thread pushStatus:NSLocalizedString(@"Loading database...", nil)];
+		ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
 		
 		/*if (refresh) { // TODO: here
 			NSArray *albumArray = self.albumArray;
@@ -2774,11 +2771,8 @@ static NSConditionLock *threadLock = nil;
 			N2LogExceptionWithStackTrace(e);
 		}
 		
-		[wait close];
-		[wait release];
-		
-		[[ThreadsManager defaultManager] removeThread:thread];
-		[thread setName:originalThreadName];
+		[tmc invalidate];
+		[thread popStatus];
 		
 		[self didChangeValueForKey:@"database"];
 	}
@@ -2789,7 +2783,7 @@ static NSConditionLock *threadLock = nil;
 }
 
 -(void)openDatabaseIn:(NSString*)a Bonjour:(BOOL)isBonjour refresh:(BOOL)refresh { // __deprecated
-	NSLog(@"%s IS NOT AVAILABLE ANYMORE, please use setDatabase", __PRETTY_FUNCTION__);
+	[self setDatabase:[RemoteDicomDatabase databaseForPath:a]];
 }
 
 #pragma deprecated (openDatabaseInBonjour:)
@@ -19926,13 +19920,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 
 - (void)openDatabasePath: (NSString*)path { // __deprecated
+	NSThread* thread = [NSThread currentThread];
+	[thread setName:NSLocalizedString(@"Opening database...", nil)];
+	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+	
 	@try {
-		[self setDatabase:[DicomDatabase databaseAtPath:path]];
+		DicomDatabase* db = [DicomDatabase databaseAtPath:path];
+		[self setDatabase:db];
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 		NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot read this file/folder.", nil), nil, nil, nil);
 		[self resetToLocalDatabase]; // TODO: is this necessary?
 	}
+	
+	[tmc invalidate];
 	
 	/*
 	BOOL isDirectory;
@@ -19989,7 +19990,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	*/
 	dontLoadSelectionSource = YES;
 	
-	[database save:NULL];
+//	[database save:NULL];
 	
     int index = [bonjourServicesList selectedRow]-1;
 	
