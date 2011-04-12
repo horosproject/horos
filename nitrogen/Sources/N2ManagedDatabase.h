@@ -36,7 +36,7 @@
 
 -(id)initWithPath:(NSString*)sqlFilePath;
 -(id)initWithPath:(NSString*)sqlFilePath context:(NSManagedObjectContext*)c;
--(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath; // you may want to override this
+-(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath; // THIS METHOD IS PROTECTED, you may want to override this, but NEVER CALL IT FROM OUTSIDE
 
 -(NSManagedObjectContext*)independentContext:(BOOL)independent;
 -(NSManagedObjectContext*)independentContext;
