@@ -573,7 +573,9 @@
 		}
 		
 		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:nil];
-		return fileName;
+		
+		if( aborted == NO)
+			return fileName;
 	}
 	
 	return nil;
