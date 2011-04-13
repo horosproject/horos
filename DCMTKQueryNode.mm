@@ -805,7 +805,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 		[WADODownloadDictionary removeObjectForKey: [NSString stringWithFormat:@"%ld", connection]];
 		[connection release];
-		@synchronized( self) { WADOThreads--; }
+		OSAtomicDecrement32Barrier( &WADOThreads);
 	}
 }
 
@@ -826,7 +826,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		[connection release];
 		
-		@synchronized( self) { WADOThreads--; }
+		OSAtomicDecrement32Barrier( &WADOThreads);
 		
 		[pool release];
 	}
@@ -953,17 +953,17 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		WADOThreads = [urlToDownload count];
 		for( NSURL *url in urlToDownload)
 		{
+			while( WADOThreads > 100) //Dont download more than 100 images at the same time
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.3]];
+			
 			NSURLConnection *downloadConnection = [[NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestUseProtocolCachePolicy timeoutInterval: timeout] delegate: self] retain];
 			
 			[WADODownloadDictionary setObject: [NSMutableData data] forKey: [NSString stringWithFormat:@"%ld", downloadConnection]];
 			
-			while( WADOThreads > 100) //Dont download more than 100 images at the same time
-				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.3]];
-			
 			[downloadConnection start];
 			
 			if( downloadConnection == nil)
-				@synchronized( self) {WADOThreads--;}
+				OSAtomicDecrement32Barrier( &WADOThreads);
 		}
 		
 		while( WADOThreads > 0)
