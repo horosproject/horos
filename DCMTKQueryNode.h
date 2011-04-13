@@ -50,7 +50,6 @@
 	NSManagedObject *_logEntry;
 	BOOL showErrorMessage;
 	volatile int WADOThreads;
-	NSRecursiveLock *WADODownloadLock;
 	OFCondition globalCondition;
 	NSMutableDictionary *WADODownloadDictionary;
 }

@@ -957,7 +957,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			WADOMaximumConcurrentDownloads = 10;
 		
 		float timeout = [[NSUserDefaults standardUserDefaults] floatForKey: @"WADOTimeout"];
-		if( timeout < 60) timeout = 60;
+		if( timeout < 240) timeout = 240;
 		
 		NSLog( @"------ WADO parameters: timeout:%2.2f [secs] / WADOMaximumConcurrentDownloads:%d [URLRequests]", timeout, WADOMaximumConcurrentDownloads);
 		
