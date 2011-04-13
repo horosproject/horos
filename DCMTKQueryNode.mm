@@ -29,6 +29,8 @@
 #import "DicomSeries.h"
 #import "MutableArrayCategory.h"
 
+#include <libkern/OSAtomic.h>
+
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
@@ -804,6 +806,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	if( connection)
 	{
 		[WADODownloadDictionary removeObjectForKey: [NSString stringWithFormat:@"%ld", connection]];
+		
+		NSLog(@"***** WADO Retrieve error: %@", error);
+		
 		[connection release];
 		OSAtomicDecrement32Barrier( &WADOThreads);
 	}
@@ -947,14 +952,21 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		WADODownloadDictionary = [NSMutableDictionary dictionary];
 		
+		int WADOMaximumConcurrentDownloads = [[NSUserDefaults standardUserDefaults] integerForKey: @"WADOMaximumConcurrentDownloads"];
+		if( WADOMaximumConcurrentDownloads < 10)
+			WADOMaximumConcurrentDownloads = 10;
+		
 		float timeout = [[NSUserDefaults standardUserDefaults] floatForKey: @"WADOTimeout"];
-		if( timeout < 120) timeout = 120;
+		if( timeout < 60) timeout = 60;
+		
+		NSLog( @"------ WADO parameters: timeout:%2.2f [secs] / WADOMaximumConcurrentDownloads:%d [URLRequests]", timeout, WADOMaximumConcurrentDownloads);
 		
 		WADOThreads = [urlToDownload count];
+		
 		for( NSURL *url in urlToDownload)
 		{
-			while( WADOThreads > 100) //Dont download more than 100 images at the same time
-				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.3]];
+			while( [WADODownloadDictionary count] > WADOMaximumConcurrentDownloads) //Dont download more than XXX images at the same time
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
 			
 			NSURLConnection *downloadConnection = [[NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestUseProtocolCachePolicy timeoutInterval: timeout] delegate: self] retain];
 			
@@ -967,8 +979,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		}
 		
 		while( WADOThreads > 0)
-			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.5]];
-		
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
 		
 		if( [[WADODownloadDictionary allKeys] count] > 0)
 			NSLog( @"**** [[WADODownloadDictionary allKeys] count] > 0");
