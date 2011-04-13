@@ -947,12 +947,18 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		WADODownloadDictionary = [NSMutableDictionary dictionary];
 		
+		float timeout = [[NSUserDefaults standardUserDefaults] floatForKey: @"WADOTimeout"];
+		if( timeout < 120) timeout = 120;
+		
 		WADOThreads = [urlToDownload count];
 		for( NSURL *url in urlToDownload)
 		{
-			NSURLConnection *downloadConnection = [[NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url] delegate: self] retain];
+			NSURLConnection *downloadConnection = [[NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestUseProtocolCachePolicy timeoutInterval: timeout] delegate: self] retain];
 			
 			[WADODownloadDictionary setObject: [NSMutableData data] forKey: [NSString stringWithFormat:@"%ld", downloadConnection]];
+			
+			while( WADOThreads > 100) //Dont download more than 100 images at the same time
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.3]];
 			
 			[downloadConnection start];
 			
