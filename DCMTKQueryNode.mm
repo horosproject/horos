@@ -782,6 +782,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		NSLog( @"***** WADO http status code error: %d", [httpResponse statusCode]);
 		NSLog( @"***** WADO URL : %@", connection);
 		
+		if( firstWadoErrorDisplayed == NO)
+		{
+			firstWadoErrorDisplayed = YES;
+			[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"WADO http status code error: %d", [httpResponse statusCode]], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+		}
+		
 		[WADODownloadDictionary removeObjectForKey: [NSString stringWithFormat:@"%ld", connection]];
 	}	
 }
@@ -843,6 +849,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
 {
+	if( [self isMemberOfClass:[DCMTKSeriesQueryNode class]])
+		NSLog( @"------ WADO download : starting... %@ %@", [study name], [study patientID]);
+	else
+		NSLog( @"------ WADO download : starting... %@ %@", [self name], [self patientID]);
+	
 	NSString *protocol = [[_extraParameters valueForKey: @"WADOhttps"] intValue] ? @"https" : @"http";
 	
 	NSString *wadoSubUrl = [_extraParameters valueForKey: @"WADOUrl"];
