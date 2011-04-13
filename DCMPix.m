@@ -9078,9 +9078,9 @@ END_CREATE_ROIS:
 						{
 							case 2:
 							{
-								unsigned char   *bufPtr;
-								short			*ptr;
-								long			loop;
+								unsigned char *bufPtr;
+								short *ptr;
+								long loop;
 								
 								bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(height * width);
 								ptr = oImage;
@@ -9098,8 +9098,8 @@ END_CREATE_ROIS:
 								memcpy( oImage, [fileData bytes] + frameNo*(height * width * 2), height * width * 2);
 								if( swapByteOrder)
 								{
-									long			loop;
-									short			*ptr = oImage;
+									long loop;
+									short *ptr = oImage;
 									
 									loop = height * width;
 									while( loop-- > 0)
@@ -9112,9 +9112,9 @@ END_CREATE_ROIS:
 								
 							case 8:
 								{
-									unsigned int   *bufPtr;
-									short			*ptr;
-									long			loop;
+									unsigned int *bufPtr;
+									short *ptr;
+									long loop;
 									
 									bufPtr = (unsigned int*) [fileData bytes];
 									bufPtr += frameNo * (height * width);
@@ -9128,7 +9128,7 @@ END_CREATE_ROIS:
 										else *ptr++ = *bufPtr++;
 									}
 								}
-							break; 
+							break;
 								
 							case 16:
 								if( fExternalOwnedImage)
@@ -9148,20 +9148,76 @@ END_CREATE_ROIS:
 								
 								free(oImage);
 								oImage = nil;
-							break; 
+							break;
+							
+							case 64: // double
+								if( fExternalOwnedImage)
+									fImage = fExternalOwnedImage;
+								else
+									fImage = malloc( (width+1) * (height+1) * sizeof(float) + 100);
 								
-							case 128:
-								//								fi.fileType = FileInfo.RGB_PLANAR; 		// DT_RGB
-								//								bitsallocated = 24;
+								if( [fileData length] < height * width * sizeof(float))
+									NSLog( @"****** [fileData length] < height * width * sizeof(float)");
+								
+								if( fImage)
+								{
+									double *bufPtr = (double*) [fileData bytes];
+									bufPtr += frameNo * (height * width);
+									float *ptr = fImage;
+									
+									long loop = height * width;
+									while( loop-- > 0)
+									{
+										if( swapByteOrder)  *ptr++ = Endian64_Swap( *bufPtr++);
+										else *ptr++ = *bufPtr++;
+										
+									}
+								}
+								else NSLog( @"*** Not enough memory - malloc failed");
+								
+								free(oImage);
+								oImage = nil;
+							break;
+							
+							case 128: //128 - RGB24
 								NSLog(@"unsupported... please send me this file");
-							break; 
+							break;
+							
+							case 256: //256 - int8
+							{
+								char *bufPtr;
+								short *ptr;
+								long loop;
+								
+								bufPtr = (char*) [fileData bytes]+ frameNo*(height * width);
+								ptr = oImage;
+								
+								loop = height * width;
+								while( loop-- > 0)
+								{
+									*ptr++ = *bufPtr++;
+								}
+							}
+							break;
+							
+							case 512: //512 - uint16
+								NSLog(@"unsupported... please send me this file");
+							break;
+							
+							case 768: //768 - uint32
+								NSLog(@"unsupported... please send me this file");
+							break;
+							
+							case 1792: //1792 - complex128
+								NSLog(@"unsupported... please send me this file");
+							break;
 						}
 						
 						[fileData release];
 						
 						// CONVERSION TO FLOAT
 						
-						if( datatype != 16)
+						if( oImage != nil && datatype != 16 && datatype != 64)
 						{
 							vImage_Buffer src16, dstf;
 							
