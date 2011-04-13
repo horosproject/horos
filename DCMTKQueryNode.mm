@@ -73,7 +73,6 @@ static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #endif
 
 static int inc = 0;
-static BOOL firstWadoErrorDisplayed = NO;
 static NSException* queryException = nil;
 static int debugLevel = 0;
 static int wadoUnique = 0;	//wadoUniqueThreadID = 0;
@@ -434,7 +433,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[_numberImages release];
 	[_specificCharacterSet release];
 	[_logEntry release];
-	[WADODownloadLock release];
 	
 	[super dealloc];
 }
@@ -809,6 +807,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		NSLog(@"***** WADO Retrieve error: %@", error);
 		
+		if( firstWadoErrorDisplayed == NO)
+		{
+			firstWadoErrorDisplayed = YES;
+			[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@", [error localizedDescription]], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+		}
+		
 		[connection release];
 		OSAtomicDecrement32Barrier( &WADOThreads);
 	}
@@ -963,6 +967,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		WADOThreads = [urlToDownload count];
 		
+		BOOL aborted = NO;
 		for( NSURL *url in urlToDownload)
 		{
 			while( [WADODownloadDictionary count] > WADOMaximumConcurrentDownloads) //Dont download more than XXX images at the same time
@@ -976,59 +981,32 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			
 			if( downloadConnection == nil)
 				OSAtomicDecrement32Barrier( &WADOThreads);
+			
+			if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
+			{
+				aborted = YES;
+				break;
+			}
 		}
 		
-		while( WADOThreads > 0)
-			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
-		
-		if( [[WADODownloadDictionary allKeys] count] > 0)
-			NSLog( @"**** [[WADODownloadDictionary allKeys] count] > 0");
+		if( aborted == NO)
+		{
+			while( WADOThreads > 0)
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+			
+			if( [[WADODownloadDictionary allKeys] count] > 0)
+				NSLog( @"**** [[WADODownloadDictionary allKeys] count] > 0");
+		}
 		
 		[WADODownloadDictionary removeAllObjects];
 		WADODownloadDictionary = nil;
 		
 		[pool release];
 		
-//		#define NumberOfWADOThreads 2
-//		NSRange range = NSMakeRange( 0, 1+ ([urlToDownload count] / NumberOfWADOThreads));
-//		
-//		if( WADODownloadLock == nil)
-//			WADODownloadLock = [[NSRecursiveLock alloc] init];
-//		
-//		[WADODownloadLock lock];
-//		
-//		
-//		@try 
-//		{
-//			WADOThreads = 0;
-//			for( int i = 0 ; i < NumberOfWADOThreads; i++)
-//			{
-//				if( range.length > 0)
-//				{
-//					@synchronized( self)
-//					{
-//						WADOThreads++;
-//					}
-//					[NSThread detachNewThreadSelector: @selector( WADODownload:) toTarget: self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [urlToDownload subarrayWithRange: range], @"URLs", [NSThread currentThread], @"mainThread", nil]];
-//				}
-//				
-//				range.location += range.length;
-//				if( range.location + range.length > [urlToDownload count])
-//					range.length = [urlToDownload count] - range.location;
-//			}
-//			
-//			while( WADOThreads > 0)
-//				[NSThread sleepForTimeInterval: 0.1];
-//		}
-//		@catch (NSException * e) 
-//		{
-//			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-//			[AppController printStackTrace: e];
-//		}
-//		
-//		[WADODownloadLock unlock];
-		
-		NSLog( @"------ WADO downloading : %d files - finished", [urlToDownload count]);
+		if( aborted)
+			NSLog( @"------ WADO downloading ABORTED");
+		else
+			NSLog( @"------ WADO downloading : %d files - finished", [urlToDownload count]);
 	}
 }
 

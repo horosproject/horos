@@ -48,7 +48,7 @@
 	NSNumber *_numberImages;
 	NSString *_specificCharacterSet;
 	NSManagedObject *_logEntry;
-	BOOL showErrorMessage;
+	BOOL showErrorMessage, firstWadoErrorDisplayed;
 	volatile int WADOThreads;
 	OFCondition globalCondition;
 	NSMutableDictionary *WADODownloadDictionary;
