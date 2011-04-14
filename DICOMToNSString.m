@@ -38,7 +38,8 @@
 	characterSet = [characterSet stringByReplacingOccurrencesOfString:@"-" withString:@" "];
 	characterSet = [characterSet stringByReplacingOccurrencesOfString:@"_" withString:@" "];
 	
-	if	   ( [characterSet isEqualToString:@"ISO IR 100"]) encoding = NSISOLatin1StringEncoding; 	
+	if	   ( [characterSet isEqualToString:@"ISO IR 100"]) encoding = NSISOLatin1StringEncoding;
+	else if( [characterSet isEqualToString:@"ISO 2022 IR 100"]) encoding = NSISOLatin1StringEncoding;
 	else if( [characterSet isEqualToString:@"ISO IR 127"]) encoding = -2147483130;	//[characterSet numberFromLocalizedStringEncodingName :@"Arabic (ISO 8859-6)"];
 	else if( [characterSet isEqualToString:@"ISO IR 101"]) encoding = NSISOLatin2StringEncoding;
 	else if( [characterSet isEqualToString:@"ISO IR 109"]) encoding = -2147483133;	//[characterSet numberFromLocalizedStringEncodingName :@"Western (ISO Latin 3)"];
