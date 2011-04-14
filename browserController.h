@@ -80,7 +80,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
     DCMPix                  *curPreviewPix;
     
-    NSTimer                 *timer, *IncomingTimer, *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer, *bonjourTimer, *deleteQueueTimer, *autoroutingQueueTimer;
+    NSTimer                 *timer, /**IncomingTimer,*/ *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer, *bonjourTimer, *deleteQueueTimer, *autoroutingQueueTimer;
 	long					loadPreviewIndex, previousNoOfFiles;
 	NSManagedObject			*previousItem;
     
@@ -170,7 +170,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSView					*exportAccessoryView;
 	IBOutlet NSMatrix				*compressionMatrix, *folderTree;
 	
-	NSRecursiveLock					*checkIncomingLock, *checkBonjourUpToDateThreadLock;
+	NSRecursiveLock					/**checkIncomingLock,*/ *checkBonjourUpToDateThreadLock;
 	NSPredicate						*testPredicate;
 	
     BOOL							showAllImages, DatabaseIsEdited, isNetworkLogsActive;//, displayEmptyDatabase;
@@ -197,8 +197,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSMutableDictionary				*autoroutingPreviousStudies;
 	
 	NSConditionLock					*processorsLock;
-	NSRecursiveLock					*decompressArrayLock, *decompressThreadRunning;
-	NSMutableArray					*decompressArray;
+//	NSRecursiveLock					*decompressArrayLock, *decompressThreadRunning;
+//	NSMutableArray					*decompressArray;
 	
 	NSMutableString					*pressedKeys;
 	
@@ -215,7 +215,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSConditionLock					*newFilesConditionLock;
 	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
 	
-	volatile BOOL					newFilesInIncoming;
+//	volatile BOOL					newFilesInIncoming;
 	NSImage							*notFoundImage, *standardOsiriXIcon, *downloadingOsiriXIcon, *currentIcon;
 	
 	BOOL							ROIsAndKeyImagesButtonAvailable;
@@ -226,7 +226,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	BOOL							avoidRecursive, openSubSeriesFlag;
 	
 	IBOutlet PluginManagerController *pluginManagerController;
-	NSTimeInterval					lastCheckIncoming;
+//	NSTimeInterval					lastCheckIncoming;
 	
 	WaitRendering					*waitOpeningWindow;
 //	Wait							*waitCompressionWindow;
@@ -251,7 +251,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(retain) DicomDatabase* database;
 
 @property(readonly) NSDateFormatter *DateTimeFormat __deprecated, *DateOfBirthFormat __deprecated, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
-@property(readonly) NSRecursiveLock *checkIncomingLock;
+/*@property(readonly) NSRecursiveLock *checkIncomingLock;*/
 @property(readonly) NSArray *matrixViewArray;
 @property(readonly) NSMatrix *oMatrix;
 @property(readonly) long COLUMN, currentBonjourService;
@@ -428,21 +428,21 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually;
 - (void) executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually generatedByOsiriX: (BOOL) generatedByOsiriX;
 - (void) addFiles: (NSArray*) files withRule:(NSDictionary*) routingRule;
-- (void) resetListenerTimer;
+- (void) resetListenerTimer __deprecated;
 - (IBAction) albumTableDoublePressed: (id)sender;
 - (IBAction) smartAlbumHelpButton:(id) sender;
 - (IBAction) regenerateAutoComments:(id) sender;
 - (DCMPix *)previewPix:(int)i;
-- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray;
-- (void) addFilesAndFolderToDatabase:(NSArray*) filenames;
-- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles;
-- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject;
-- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder;
-- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  safeRebuild:(BOOL) safeRebuild produceAddedFiles:(BOOL) produceAddedFiles;
-+(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder;
-+(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder;
-+(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder generatedByOsiriX:(BOOL)generatedByOsiriX;
-+(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX mountedVolume: (BOOL) mountedVolume;
+- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray __deprecated;
+- (void) addFilesAndFolderToDatabase:(NSArray*) filenames __deprecated;
+- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles __deprecated;
+- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject __deprecated;
+- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder __deprecated;
+- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  safeRebuild:(BOOL) safeRebuild produceAddedFiles:(BOOL) produceAddedFiles __deprecated;
++(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder __deprecated;
++(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder __deprecated;
++(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder generatedByOsiriX:(BOOL)generatedByOsiriX __deprecated;
++(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX mountedVolume: (BOOL) mountedVolume __deprecated;
 - (void) createDBContextualMenu;
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination;
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination showGUI: (BOOL) showGUI;
@@ -503,9 +503,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) resetToLocalDatabase;
 - (void) switchToDefaultDBIfNeeded;
 - (void) createContextualMenu;
-- (void) checkIncomingThread:(id) sender;
-- (void) checkIncoming:(id) sender;
-- (void) checkIncomingNow:(id) sender;
+- (void) checkIncomingThread:(id) sender __deprecated;
+- (void) checkIncoming:(id) sender __deprecated;
+- (void) checkIncomingNow:(id) sender __deprecated;
 - (NSArray*) openSubSeries: (NSArray*) toOpenArray;
 - (IBAction) checkMemory:(id) sender;
 - (IBAction) buildAllThumbnails:(id) sender;
@@ -546,11 +546,11 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 
 #ifndef OSIRIX_LIGHT
-- (void) decompressDICOMJPEG: (NSArray*) array;
+- (void) decompressDICOMJPEG: (NSArray*) array __deprecated;
 //- (void) decompressWaitIncrementation: (NSNumber*) n;
-- (void) compressDICOMJPEG:(NSArray*) array;
-- (void) decompressThread: (NSNumber*) typeOfWork;
-- (void) decompressArrayOfFiles: (NSArray*) array work:(NSNumber*) work;
+- (void) compressDICOMJPEG:(NSArray*) array __deprecated;
+//- (void) decompressThread: (NSNumber*) typeOfWork __deprecated;
+- (void) decompressArrayOfFiles: (NSArray*) array work:(NSNumber*) work __deprecated;
 - (IBAction) compressSelectedFiles:(id) sender;
 - (IBAction) decompressSelectedFiles:(id) sender;
 - (void) importReport:(NSString*) path UID: (NSString*) uid;

@@ -33,8 +33,8 @@ extern NSString* RectString(NSRect r);
 #ifdef __cplusplus
 extern "C" {
 #endif
-	
-extern void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, NSString* format, ...);
+
+extern void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, id arg, ...);
 extern void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf);
 
 #define N2LogError(...) _N2LogErrorImpl(__PRETTY_FUNCTION__, __FILE__, __LINE__, __VA_ARGS__)

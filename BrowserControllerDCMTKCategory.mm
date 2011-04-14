@@ -20,6 +20,7 @@
 #import "AppController.h"
 #import "DCMPix.h"
 #import "WaitRendering.h"
+#import "DicomDatabase+DCMTK.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -39,8 +40,6 @@
 #include "dcuid.h"
 #include "dcdict.h"
 #include "dcdeftag.h"
-
-#define CHUNK_SUBPROCESS 500
 
 extern NSRecursiveLock *PapyrusLock;
 
@@ -174,67 +173,17 @@ extern NSRecursiveLock *PapyrusLock;
 	return nil;
 }
 
-- (BOOL) needToCompressFile: (NSString*) path
-{
-	DcmFileFormat fileformat;
-	OFCondition cond = fileformat.loadFile( [path UTF8String]);
-	if( cond.good())
-	{
-		DcmDataset *dataset = fileformat.getDataset();
-		DcmItem *metaInfo = fileformat.getMetaInfo();
-		DcmXfer original_xfer(dataset->getOriginalXfer());
-		if (original_xfer.isEncapsulated())
-		{
-			return NO;
-		}
-		else
-		{
-			const char *string = NULL;
-			NSString *modality = @"OT";
-			if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
-				modality = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
-			
-			NSString *SOPClassUID = @"";
-			if (dataset->findAndGetString(DCM_SOPClassUID, string, OFFalse).good() && string != NULL)
-				SOPClassUID = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
-			
-			// See Decompress.mm for these exceptions
-			if( [DCMAbstractSyntaxUID isImageStorage: SOPClassUID] == YES && [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]] == NO && [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] == NO)
-			{
-				int resolution = 0;
-				unsigned short rows = 0;
-				if (dataset->findAndGetUint16( DCM_Rows, rows, OFFalse).good())
-				{
-					if( resolution == 0 || resolution > rows)
-						resolution = rows;
-				}
-				unsigned short columns = 0;
-				if (dataset->findAndGetUint16( DCM_Columns, columns, OFFalse).good())
-				{
-					if( resolution == 0 || resolution > columns)
-						resolution = columns;
-				}
-				
-				int quality, compression = [BrowserController compressionForModality: modality quality: &quality resolution: resolution];
-				
-				if( compression == compression_none)
-					return NO;
-				
-				return YES;
-			}
-		}
-	}
-	
-	return NO;
+- (BOOL) needToCompressFile: (NSString*) path { // __deprecated
+	return [DicomDatabase fileNeedsDecompression:path];
 }
 
-- (BOOL)compressDICOMWithJPEG:(NSArray *) paths
-{
-	return [self compressDICOMWithJPEG: paths to: nil];
+
+- (BOOL)compressDICOMWithJPEG:(NSArray *) paths { // __deprecated
+	return [database compressFilesAtPaths:paths];
 }
 
-- (BOOL)compressDICOMWithJPEG:(NSArray *) paths to:(NSString*) dest
-{
+- (BOOL)compressDICOMWithJPEG:(NSArray *) paths to:(NSString*) dest { // __deprecated
+	return [database compressFilesAtPaths:paths intoDirAtPath:dest];
 //	@synchronized( [BrowserController currentBrowser])
 //	{
 //		for( NSString *path in paths)
@@ -337,53 +286,13 @@ extern NSRecursiveLock *PapyrusLock;
 //	}
 //	NSLog( @"** END");
 	
-	if( dest == nil)
-		dest = @"sameAsDestination";
 	
-	
-	int total = [paths count];
-	
-	for( int i = 0; i < total;)
-	{
-		int no;
-		
-		if( i + CHUNK_SUBPROCESS >= total) no = total - i; 
-		else no = CHUNK_SUBPROCESS;
-		
-		NSRange range = NSMakeRange( i, no);
-		
-		id *objs = (id*) malloc( no * sizeof( id));
-		if( objs)
-		{
-			[paths getObjects: objs range: range];
-			
-			NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
-			
-			NSTask *theTask = [[NSTask alloc] init];
-			@try
-			{
-				[theTask setArguments: [[NSArray arrayWithObjects: dest, @"compress", nil] arrayByAddingObjectsFromArray: subArray]];
-				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-				[theTask launch];
-				while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-			}
-			@catch ( NSException *e)
-			{
-				NSLog( @"***** compressDICOMWithJPEG exception : %@", e);
-			}
-			[theTask release];
-			
-			free( objs);
-		}
-		
-		i += no;
-	}
-	
-	return YES;
 }
 
-- (BOOL)decompressDICOMList:(NSArray *) files to:(NSString*) dest
+- (BOOL)decompressDICOMList:(NSArray *) files to:(NSString*) dest // __deprecated
 {
+	return [database decompressFilesAtPaths:files intoDirAtPath:dest];
+
 //	OFCondition cond;
 //	
 //	for( NSString *file in files)
@@ -436,52 +345,7 @@ extern NSRecursiveLock *PapyrusLock;
 //	
 //	return YES;
 	
-	if( dest == nil)
-		dest = @"sameAsDestination";
 	
-	int total = [files count];
-	
-	for( int i = 0; i < total;)
-	{
-		int no;
-		
-		if( i + CHUNK_SUBPROCESS >= total) no = total - i; 
-		else no = CHUNK_SUBPROCESS;
-		
-		NSRange range = NSMakeRange( i, no);
-		
-		id *objs = (id*) malloc( no * sizeof( id));
-		if( objs)
-		{
-			[files getObjects: objs range: range];
-			
-			NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
-			
-			NSTask *theTask = [[NSTask alloc] init];
-			
-			@try
-			{
-				NSArray *parameters = [[NSArray arrayWithObjects: dest, @"decompressList", nil] arrayByAddingObjectsFromArray: subArray];
-				
-				[theTask setArguments: parameters];
-				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-				[theTask launch];
-				
-				while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-			}
-			@catch ( NSException *e)
-			{
-				NSLog( @"***** decompressDICOMList exception : %@", e);
-			}
-			[theTask release];
-			
-			free( objs);
-		}
-		
-		i += no;
-	}
-	
-	return YES;
 }
 
 - (BOOL) testFiles: (NSArray*) files;

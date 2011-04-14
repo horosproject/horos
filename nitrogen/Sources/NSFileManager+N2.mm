@@ -227,16 +227,28 @@
 }
 
 -(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path {
+	return [self destinationOfAliasOrSymlinkAtPath:path resolved:NULL];
+}
+
+-(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path resolved:(BOOL*)r {
 	if (![self fileExistsAtPath:path]) {
 		NSString* temp = [self destinationOfAliasAtPath:path];
-		if (temp) return temp;
+		if (temp) {
+			if (r) *r = YES;
+			return temp;
+		}
+		
+		if (r) *r = NO;
 		return path;
 	}
 	
 	NSDictionary* attrs = [self attributesOfItemAtPath:path error:NULL];
-	if ([[attrs objectForKey:NSFileType] isEqualToString:NSFileTypeSymbolicLink])
+	if ([[attrs objectForKey:NSFileType] isEqualToString:NSFileTypeSymbolicLink]) {
+		if (r) *r = YES;
 		return [self destinationOfSymbolicLinkAtPath:path error:NULL];
+	}
 	
+	if (r) *r = NO;
 	return path;
 }
 

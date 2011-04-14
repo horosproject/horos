@@ -369,11 +369,11 @@ int GetAllPIDsForProcessName(const char* ProcessName,
 }
 
 NSString* documentsDirectoryFor(int mode, NSString *url) { // __deprecated
-	return [DicomDatabase basePathForMode:mode path:url];
+	return [DicomDatabase baseDirPathForMode:mode path:url];
 }
 
 NSString* documentsDirectory() { // __deprecated
-	return [DicomDatabase defaultBasePath];
+	return [DicomDatabase defaultBaseDirPath];
 }
 
 static volatile BOOL converting = NO;
@@ -708,11 +708,10 @@ static NSDate *lastWarningDate = nil;
 
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive;
 
-- (void) pause
-{
-	[[[BrowserController currentBrowser] checkIncomingLock] lock];
+- (void) pause { // __deprecated
+	[[[BrowserController currentBrowser] database] lock]; // was checkIncomingLock
 	sleep( 2);
-	[[[BrowserController currentBrowser] checkIncomingLock] unlock];
+	[[[BrowserController currentBrowser] database] unlock]; // was checkIncomingLock
 }
 
 // Plugins installation
@@ -2781,7 +2780,7 @@ static BOOL initialized = NO;
 				
 				// CREATE A TEMPORATY FILE DURING STARTUP
 				
-				NSString* path = [[DicomDatabase defaultBasePath] stringByAppendingPathComponent:@"Loading"];
+				NSString* path = [[DicomDatabase defaultBaseDirPath] stringByAppendingPathComponent:@"Loading"];
 				
 				if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 				{

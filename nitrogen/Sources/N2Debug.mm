@@ -36,10 +36,16 @@ NSString* RectString(NSRect r) {
 
 extern "C" {
 
-void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, NSString* format, ...) {
+void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, id arg, ...) {
 	va_list args;
-	va_start(args, format);
-	NSString* message = [[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+	va_start(args, arg);
+	
+	NSString* message = @"no details";
+	if ([arg isKindOfClass:NSString.class])
+		message = [[[NSString alloc] initWithFormat:arg arguments:args] autorelease];
+	if ([arg isKindOfClass:NSError.class])
+		message = [(NSError*)arg description];
+	
 	va_end(args);
 	NSLog(@"Error (in %s): %@ (%s:%d)", pf, message, fileName, lineNumber);
 }

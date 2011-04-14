@@ -55,22 +55,22 @@
 			if (!moc.persistentStoreCoordinator) {
 				moc.persistentStoreCoordinator = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel] autorelease];
 				[self.persistentStoreCoordinatorsDictionary setObject:moc.persistentStoreCoordinator forKey:sqlFilePath];
-			}
 		
-			NSURL* url = [NSURL fileURLWithPath:sqlFilePath];
-			NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:[self migratePersistentStoresAutomatically]], NSMigratePersistentStoresAutomaticallyOption, NULL]; // [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, NULL];
-			NSError* err = NULL;
-			if (![moc.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:NULL URL:url options:options error:&err]) {
-				NSLog(@"Error: [N2ManagedDatabase contextAtPath:] %@", err);
-				NSRunCriticalAlertPanel(NSLocalizedString(@"Database Error", NULL), err.localizedDescription, NSLocalizedString(@"OK", NULL), NULL, NULL);
-				
-				// error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
-				
-				// delete the old file...
-				[NSFileManager.defaultManager removeItemAtPath:sqlFilePath error:NULL];
-				// [NSFileManager.defaultManager removeItemAtPath: [defaultPortalUsersDatabasePath.stringByExpandingTildeInPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"WebUsers.vers"] error:NULL];
-				
-				[moc.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:NULL URL:url options:options error:NULL];
+				NSURL* url = [NSURL fileURLWithPath:sqlFilePath];
+				NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:[self migratePersistentStoresAutomatically]], NSMigratePersistentStoresAutomaticallyOption, NULL]; // [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, NULL];
+				NSError* err = NULL;
+				if (![moc.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:NULL URL:url options:options error:&err]) {
+					NSLog(@"Error: [N2ManagedDatabase contextAtPath:] %@", err);
+					NSRunCriticalAlertPanel(NSLocalizedString(@"Database Error", NULL), err.localizedDescription, NSLocalizedString(@"OK", NULL), NULL, NULL);
+					
+					// error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
+					
+					// delete the old file...
+					[NSFileManager.defaultManager removeItemAtPath:sqlFilePath error:NULL];
+					// [NSFileManager.defaultManager removeItemAtPath: [defaultPortalUsersDatabasePath.stringByExpandingTildeInPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"WebUsers.vers"] error:NULL];
+					
+					[moc.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:NULL URL:url options:options error:NULL];
+				}
 			}
 			
 			// this line is very important, if there is no sql file
@@ -111,18 +111,24 @@
 -(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c {
 	self = [super init];
 //	writeLock = [[NSRecursiveLock alloc] init];
+	
 	self.sqlFilePath = p;
+	
+	if (!c)
+		c = [self contextAtPath:p];
 	self.managedObjectContext = c;
+	
 	return self;
 }
 
 -(id)initWithPath:(NSString*)p {
-	return [self initWithPath:p context:[self contextAtPath:p]];
+	return [self initWithPath:p context:nil];
 }
 
 -(void)dealloc {
-	self.managedObjectContext = NULL;
-	self.sqlFilePath = NULL;
+//	[self.managedObjectContext reset];
+	self.managedObjectContext = nil;
+	self.sqlFilePath = nil;
 //	[writeLock release];
 	[super dealloc];
 }

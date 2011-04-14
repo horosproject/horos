@@ -22,24 +22,32 @@
  */
 @interface DicomDatabase : N2ManagedDatabase {
 	N2MutableUInteger* _dataFileIndex;
-	NSString* _basePath;
-	NSString* _dataBasePath;
+	NSString* _baseDirPath;
+	NSString* _dataBaseDirPath;
+	NSString* _name;
+	NSRecursiveLock* _processFilesLock;
+	NSTimer* _importFilesFromIncomingDirTimer;
+	NSRecursiveLock* _importFilesFromIncomingDirLock;
+	BOOL _isFileSystemFreeSizeLimitReached;
+	NSTimeInterval _timeOfLastIsFileSystemFreeSizeLimitReachedVerification;
 }
 
-+(NSString*)defaultBasePath;
-+(NSString*)basePathForMode:(int)mode path:(NSString*)path;
++(NSString*)defaultBaseDirPath;
++(NSString*)baseDirPathForMode:(int)mode path:(NSString*)path;
 
++(NSArray*)allDatabases;
 +(DicomDatabase*)defaultDatabase;
 +(DicomDatabase*)databaseAtPath:(NSString*)path;
++(DicomDatabase*)databaseAtPath:(NSString*)path name:(NSString*)name;
 +(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c; // hopefully one day this will be __deprecated
 +(DicomDatabase*)activeLocalDatabase;
 +(void)setActiveLocalDatabase:(DicomDatabase*)ldb;
 
-@property(readonly,retain) NSString* basePath;
-@property(readonly,retain) NSString* dataBasePath;
+@property(readonly,retain) NSString* baseDirPath;
+@property(readonly,retain) NSString* dataBaseDirPath;
+@property(readwrite,retain) NSString* name;
 
 -(BOOL)isLocal;
--(NSString*)name;
 
 extern const NSString* const DicomDatabaseImageEntityName;
 extern const NSString* const DicomDatabaseSeriesEntityName;
@@ -73,6 +81,23 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(NSArray*)albums;
 +(NSArray*)albumsInContext:(NSManagedObjectContext*)context; // this method should be private, but is declared because called from deprecated api
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string;
+
+-(BOOL)compressFilesAtPaths:(NSArray*)paths;
+-(BOOL)compressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir;
+-(BOOL)decompressFilesAtPaths:(NSArray*)paths;
+-(BOOL)decompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir;
+-(void)initiateCompressFilesAtPaths:(NSArray*)paths;
+-(void)initiateCompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir;
+-(void)initiateDecompressFilesAtPaths:(NSArray*)paths;
+-(void)initiateDecompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir;
+
+-(NSArray*)addFilesAtPaths:(NSArray*)paths;
+-(NSArray*)addFilesAtPaths:(NSArray*)paths dicomOnly:(BOOL)dicomOnly postNotifications:(BOOL)pastNotifications rereadExistingItems:(BOOL)rereadExistingItems;	
+
+-(BOOL)isFileSystemFreeSizeLimitReached;
+-(void)importFilesFromIncomingDir; // this method should be private, but is declared because called from deprecated api
+-(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting;
+-(void)syncImportFilesFromIncomingDirTimerWithUserDefaults; // called from deprecated API
 
 // some of these methods should be private, but is declared because called from deprecated api
 -(void)rebuild;

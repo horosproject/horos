@@ -23,4 +23,8 @@
 	++value;
 }
 
+-(void)decrement {
+	--value;
+}
+
 @end

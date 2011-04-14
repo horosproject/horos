@@ -141,7 +141,7 @@ extern "C"
 + (AppController*) sharedAppController; /**< Return the shared AppController instance */
 + (NSString*)checkForPagesTemplate; /**< Check for Pages report template */
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
-+ (void) pause;
++ (void) pause __deprecated;
 + (void) resetToolbars;
 + (NSString*) printStackTrace: (NSException*) e;// TODO: __deprecated;
 + (int) numberOfSubOsiriXProcesses;

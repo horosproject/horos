@@ -23,9 +23,9 @@
 #ifndef OSIRIX_LIGHT
 - (NSData*) getDICOMFile:(NSString*) file inSyntax:(NSString*) syntax quality: (int) quality;
 - (BOOL) testFiles: (NSArray*) files;
-- (BOOL) needToCompressFile: (NSString*) path;
-- (BOOL) compressDICOMWithJPEG:(NSArray *) paths;
-- (BOOL) compressDICOMWithJPEG:(NSArray *) paths to:(NSString*) dest;
-- (BOOL) decompressDICOMList:(NSArray *) files to:(NSString*) dest;
+- (BOOL) needToCompressFile: (NSString*) path __deprecated;
+- (BOOL) compressDICOMWithJPEG:(NSArray *) paths __deprecated;
+- (BOOL) compressDICOMWithJPEG:(NSArray *) paths to:(NSString*) dest __deprecated;
+- (BOOL) decompressDICOMList:(NSArray *) files to:(NSString*) dest __deprecated;
 #endif
 @end

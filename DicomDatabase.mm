@@ -23,11 +23,16 @@
 #import "DicomImage.h"
 #import "DicomStudy.h"
 #import "DicomFile.h"
+#import "DicomFileDCMTKCategory.h"
 #import "Reports.h"
+#import "ThreadsManager.h"
 #import "AppController.h"
-
-
-#import "BrowserController.h"
+#import "NSDictionary+N2.h"
+#import "BrowserControllerDCMTKCategory.h"
+#import "PluginManager.h"
+#import "NSThread+N2.h"
+#import "NSArray+N2.h"
+#import "DicomDatabase+DCMTK.h"
 
 
 #define CurrentDatabaseVersion @"2.5"
@@ -35,8 +40,8 @@
 
 @interface DicomDatabase ()
 
-@property(readwrite,retain) NSString* basePath;
-@property(readwrite,retain) NSString* dataBasePath;
+@property(readwrite,retain) NSString* baseDirPath;
+@property(readwrite,retain) NSString* dataBaseDirPath;
 @property(readwrite,retain) N2MutableUInteger* dataFileIndex;
 
 +(NSString*)sqlFilePathForBasePath:(NSString*)basePath;
@@ -51,7 +56,7 @@
 static const NSString* const SqlFileName = @"Database.sql";
 static const NSString* const OsirixDataDirName = @"OsiriX Data";
 
-+(NSString*)basePathForPath:(NSString*)path {
++(NSString*)baseDirPathForPath:(NSString*)path {
 	if ([path hasSuffix:[SqlFileName pathExtension]])
 		path = [path stringByDeletingLastPathComponent];
 	if (![[path lastPathComponent] isEqualToString:OsirixDataDirName]) 
@@ -59,7 +64,7 @@ static const NSString* const OsirixDataDirName = @"OsiriX Data";
 	return path;
 }
 
-+(NSString*)basePathForMode:(int)mode path:(NSString*)path {
++(NSString*)baseDirPathForMode:(int)mode path:(NSString*)path {
 	switch (mode) {
 		case 0:
 			path = [NSFileManager.defaultManager findSystemFolderOfType:kDocumentsFolderType forDomain:kOnAppropriateDisk];
@@ -82,14 +87,14 @@ static const NSString* const OsirixDataDirName = @"OsiriX Data";
 	return path;
 }
 
-+(NSString*)defaultBasePath {
++(NSString*)defaultBaseDirPath {
 	NSString* path = nil;
 	@try {
-		path = [self basePathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
+		path = [self baseDirPathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
 		if (!path || ![[NSFileManager defaultManager] fileExistsAtPath:path]) {	// STILL NOT AVAILABLE?? Use the default folder.. and reset this strange URL..
 			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
 			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
-			path = [self basePathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
+			path = [self baseDirPathForMode:[[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
 		}
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
@@ -105,13 +110,21 @@ static DicomDatabase* defaultDatabase = nil;
 +(DicomDatabase*)defaultDatabase {
 	@synchronized(self) {
 		if (!defaultDatabase)
-			defaultDatabase = [[self databaseAtPath:[self defaultBasePath]] retain];
+			defaultDatabase = [[self databaseAtPath:[self defaultBaseDirPath] name:NSLocalizedString(@"Default DB", nil)] retain];
 	}
 	
 	return defaultDatabase;
 }
 
 static NSMutableDictionary* databasesDictionary = nil;
+
++(NSArray*)allDatabases {
+	@synchronized(databasesDictionary) {
+		return [databasesDictionary allValues];
+	}
+	
+	return nil;
+}
 
 +(void)knowAbout:(DicomDatabase*)db {
 	@synchronized(self) {
@@ -122,17 +135,50 @@ static NSMutableDictionary* databasesDictionary = nil;
 	if (db)
 		@synchronized(databasesDictionary) {
 			if (![[databasesDictionary allValues] containsObject:db])
-				[databasesDictionary setObject:db forKey:db.basePath];
+				[databasesDictionary setObject:db forKey:db.baseDirPath];
 		}
 }
 
+-(void)release { // TODO: remove logs..
+	NSInteger prc;
+	@synchronized(self) {
+		prc = self.retainCount;
+		if (prc <= 2)
+			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, self.managedObjectContext.retainCount);
+		[super release];
+	}
+	
+	NSInteger rc = prc-1;
+	if (rc == 1)
+		NSLog(@"\tself.rc = %d, managedObjectContext.rc = %d ", self.retainCount, self.managedObjectContext.retainCount);
+	if (rc == 0)
+		NSLog(@"\tself.rc = 0, zombies arising..?");
+	
+	if (rc == 1) {
+		NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", self.managedObjectContext.registeredObjects.count);
+		if (self.managedObjectContext.retainCount - self.managedObjectContext.registeredObjects.count == 1) {
+			NSLog(@"\t\tThe context seems to be retained only by the database and by its registered objects.. We can release the database!");
+			@synchronized(databasesDictionary) {
+				[databasesDictionary removeObjectForKey:[databasesDictionary keyForObject:self]];
+			}
+		}
+	}
+}
+
+
 +(DicomDatabase*)databaseAtPath:(NSString*)path {
-	path = [self basePathForPath:path];
+	return [self databaseAtPath:path name:nil];
+}
+
++(DicomDatabase*)databaseAtPath:(NSString*)path name:(NSString*)name {
+	path = [self baseDirPathForPath:path];
 	
 	@synchronized(databasesDictionary) {
 		DicomDatabase* database = [databasesDictionary objectForKey:path];
 		if (database) return database;
-		return [[[self alloc] initWithPath:[self sqlFilePathForBasePath:path]] autorelease];
+		database = [[[self alloc] initWithPath:[self sqlFilePathForBasePath:path]] autorelease];
+		database.name = name;
+		return database;
 	}
 	
 	return nil;
@@ -148,8 +194,10 @@ static NSMutableDictionary* databasesDictionary = nil;
 			// is it an independent MOC of a listed database?
 			for (DicomDatabase* dbi in [databasesDictionary allValues])
 				if (dbi.managedObjectContext.persistentStoreCoordinator == c.persistentStoreCoordinator) {
-					// we must return a valid DicomDatabase with the right context
-					return [[DicomDatabase alloc] initWithPath:dbi.basePath context:c];
+					// we must return a valid DicomDatabase with the specified context
+					DicomDatabase* db = [[DicomDatabase alloc] initWithPath:dbi.baseDirPath context:c];
+					db.name = dbi.name;
+					return db;
 				}
 		}
 	[NSException raise:NSGenericException format:@"Unidentified database context"];
@@ -172,7 +220,11 @@ static DicomDatabase* activeLocalDatabase = nil;
 
 #pragma mark Instance
 
-@synthesize basePath = _basePath, dataBasePath = _dataBasePath, dataFileIndex = _dataFileIndex;
+@synthesize baseDirPath = _baseDirPath, dataBaseDirPath = _dataBaseDirPath, dataFileIndex = _dataFileIndex, name = _name;
+
+-(NSString*)description {
+	return [NSString stringWithFormat:@"<%@ 0x%08x> \"%@\"", self.className, self, self.name];
+}
 
 -(NSManagedObjectModel*)managedObjectModel {
 	static NSManagedObjectModel* managedObjectModel = NULL;
@@ -182,7 +234,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 }
 
 -(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c { // reminder: context may be nil (assigned in -[N2ManagedDatabase initWithPath:] after calling this method)
-	p = [DicomDatabase basePathForPath:p];
+	p = [DicomDatabase baseDirPathForPath:p];
 	p = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:p];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:p];
 	
@@ -193,10 +245,10 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	self = [super initWithPath:sqlFilePath context:c];
 	
-	self.basePath = p;
-	_dataBasePath = [NSString stringWithContentsOfFile:[p stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] encoding:NSUTF8StringEncoding error:NULL];
-	if (!_dataBasePath) _dataBasePath = p;
-	[_dataBasePath retain];
+	self.baseDirPath = p;
+	_dataBaseDirPath = [NSString stringWithContentsOfFile:[p stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] encoding:NSUTF8StringEncoding error:NULL];
+	if (!_dataBaseDirPath) _dataBaseDirPath = p;
+	[_dataBaseDirPath retain];
 	
 	[DicomDatabase knowAbout:self];
 	
@@ -205,6 +257,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil];
 	
 	_dataFileIndex = [[N2MutableUInteger alloc] initWithValue:0];
+	_processFilesLock = [[NSRecursiveLock alloc] init];
+	_importFilesFromIncomingDirLock = [[NSRecursiveLock alloc] init];
 	
 	// create dirs if necessary
 	
@@ -222,12 +276,12 @@ static DicomDatabase* activeLocalDatabase = nil;
 	// report templates
 	
 	for (NSString* rfn in [NSArray arrayWithObjects: @"ReportTemplate.doc", @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
-		NSString* rfp = [self.basePath stringByAppendingPathComponent:rfn];
+		NSString* rfp = [self.baseDirPath stringByAppendingPathComponent:rfn];
 		if (![NSFileManager.defaultManager fileExistsAtPath:rfp])
 			[NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfn] toPath:rfp error:NULL];
 	}
 	
-	NSString* pagesTemplatesDirPath = [self.basePath stringByAppendingPathComponent:@"PAGES TEMPLATES"];
+	NSString* pagesTemplatesDirPath = [self.baseDirPath stringByAppendingPathComponent:@"PAGES TEMPLATES"];
 	if (![NSFileManager.defaultManager fileExistsAtPath:pagesTemplatesDirPath])
 		[NSFileManager.defaultManager createSymbolicLinkAtPath:pagesTemplatesDirPath withDestinationPath:[AppController checkForPagesTemplate] error:NULL];
 	
@@ -237,15 +291,30 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	if (isNewFile)
 		[self addDefaultAlbums];
-	[self modifyDefaultAlbums];	
+	[self modifyDefaultAlbums];
+	
+	// TODO: autoclean if settings say so
+	
+	[self syncImportFilesFromIncomingDirTimerWithUserDefaults];
 	
 	return self;
 }
 
 -(void)dealloc {
+	if (_importFilesFromIncomingDirTimer) {
+		[_importFilesFromIncomingDirTimer invalidate];
+		[_importFilesFromIncomingDirTimer release];
+	}
+	
+	[_importFilesFromIncomingDirLock lock]; // if currently importing, wait until finished
+	[_importFilesFromIncomingDirLock autorelease];
+	[_processFilesLock lock];
+	[_processFilesLock autorelease];
+	
 	self.dataFileIndex = nil;
-	self.dataBasePath = nil;
-	self.basePath = nil;
+	self.dataBaseDirPath = nil;
+	self.baseDirPath = nil;
+	
 	[super dealloc];
 }
 
@@ -254,7 +323,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 }
 
 -(NSString*)name {
-	return [NSString stringWithFormat:NSLocalizedString(@"Local Database (%@)", nil), self.basePath];
+	return _name? _name : [NSString stringWithFormat:NSLocalizedString(@"Local Database (%@)", nil), self.baseDirPath];
 }
 
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
@@ -332,59 +401,59 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 }
 
 -(NSString*)sqlFilePath {
-	return [DicomDatabase sqlFilePathForBasePath:self.basePath];
+	return [DicomDatabase sqlFilePathForBasePath:self.baseDirPath];
 }
 
 -(NSString*)dataDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"DATABASE.noindex"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"DATABASE.noindex"]];
 }
 
 -(NSString*)incomingDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"INCOMING.noindex"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"INCOMING.noindex"]];
 }
 
 -(NSString*)decompressionDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"DECOMPRESSION.noindex"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"DECOMPRESSION.noindex"]];
 }
 
 -(NSString*)toBeIndexedDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"]];
 }
 
 -(NSString*)tempDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"TEMP.noindex"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"TEMP.noindex"]];
 }
 
 -(NSString*)dumpDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"DUMP"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"DUMP"]];
 }
 
 -(NSString*)errorsDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"NOT READABLE"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"NOT READABLE"]];
 }
 
 -(NSString*)reportsDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"REPORTS"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"REPORTS"]];
 }
 
 -(NSString*)pagesDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"PAGES"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"PAGES"]];
 }
 
 -(NSString*)roisDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"ROIs"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"ROIs"]];
 }
 
 -(NSString*)htmlTemplatesDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBasePath stringByAppendingPathComponent:@"ROIs"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"ROIs"]];
 }
 
 -(NSString*)modelVersionFilePath {
-	return [self.basePath stringByAppendingPathComponent:@"DB_VERSION"];
+	return [self.baseDirPath stringByAppendingPathComponent:@"DB_VERSION"];
 }
 
 -(NSString*)loadingFilePath {
-	return [self.basePath stringByAppendingPathComponent:@"Loading"];
+	return [self.baseDirPath stringByAppendingPathComponent:@"Loading"];
 }
 
 -(NSUInteger)computeDataFileIndex {
@@ -484,6 +553,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 #pragma mark Albums
 
 +(NSArray*)albumsInContext:(NSManagedObjectContext*)context {
+	if (!context) return [NSArray array];
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = [NSEntityDescription entityForName:DicomDatabaseAlbumEntityName inManagedObjectContext:context];
 	req.predicate = [NSPredicate predicateWithValue:YES];
@@ -566,6 +636,468 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	}
 }
 
+#pragma mark Lifecycle
+
+-(BOOL)isFileSystemFreeSizeLimitReached {
+	NSTimeInterval currentTime = NSDate.timeIntervalSinceReferenceDate;
+	if (currentTime-_timeOfLastIsFileSystemFreeSizeLimitReachedVerification > 20) {
+		// refresh _isFileSystemFreeSizeLimitReached
+		NSDictionary* dataBasePathAttrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
+		NSNumber* dataBasePathFreeSize = [dataBasePathAttrs objectForKey:NSFileSystemFreeSize];
+		if (dataBasePathFreeSize) {
+			unsigned long long freeBytes = [dataBasePathFreeSize unsignedLongLongValue], freeMegaBytes = freeBytes/1024/1024;
+			
+			_isFileSystemFreeSizeLimitReached = freeMegaBytes < 300; // 300 MB is the lower limit
+			_timeOfLastIsFileSystemFreeSizeLimitReachedVerification = currentTime;
+			
+			if (_isFileSystemFreeSizeLimitReached)
+				NSLog(@"Warning: the volume used to store data for %@ is full, incoming files will be deleted and DICOM transferts will be rejected", self.name);			
+		} else return YES;
+	}
+
+	return _isFileSystemFreeSizeLimitReached;
+}
+
+
+
+//- (void)listenerAnonymizeFiles: (NSArray*)files
+//{
+//#ifndef OSIRIX_LIGHT
+//	NSArray* array = [NSArray arrayWithObjects: [DCMAttributeTag tagWithName:@"PatientsName"], @"**anonymized**", nil];
+//	NSMutableArray* tags = [NSMutableArray array];
+//	
+//	[tags addObject:array];
+//	
+//	for( NSString *file in files)
+//	{
+//		NSString *destPath = [file stringByAppendingString:@"temp"];
+//		
+//		@try
+//		{
+//			[DCMObject anonymizeContentsOfFile: file  tags:tags  writingToFile:destPath];
+//		}
+//		@catch (NSException * e)
+//		{
+//			NSLog( @"**** listenerAnonymizeFiles : %@", e);
+//			[AppController printStackTrace: e];
+//		}
+//		
+//		[[NSFileManager defaultManager] removeFileAtPath: file handler: nil];
+//		[[NSFileManager defaultManager] movePath:destPath toPath: file handler: nil];
+//	}
+//#endif
+//}
+
+enum { Compress, Decompress };
+
+-(BOOL)compressFilesAtPaths:(NSArray*)paths {
+	return [DicomDatabase compressDicomFilesAtPaths:paths];
+}
+
+-(BOOL)compressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir {
+	return [DicomDatabase compressDicomFilesAtPaths:paths intoDirAtPath:destDir];
+}
+
+-(BOOL)decompressFilesAtPaths:(NSArray*)paths {
+	return [DicomDatabase decompressDicomFilesAtPaths:paths];
+}
+
+-(BOOL)decompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir {
+	return [DicomDatabase decompressDicomFilesAtPaths:paths intoDirAtPath:destDir];
+}
+
+-(void)processFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir mode:(int)mode {
+	NSThread* thread = [NSThread currentThread];
+//	[thread pushLevel];
+	thread.name = [NSString stringWithFormat:NSLocalizedString(mode == Compress? @"Compressing %d DICOM files..." : @"Decompressing %d DICOM files...", nil), paths.count];
+	thread.status = NSLocalizedString(@"Waiting for similar threads to complete...", nil);
+
+	[_processFilesLock lock];
+	@try {
+		thread.status = NSLocalizedString(@"Processing...", nil);
+		
+		size_t nTasks = MPProcessors();
+		size_t chunkSize = paths.count/nTasks;
+		if (chunkSize < 20) chunkSize = 20;
+		
+		NSArray* chunks = [paths splitArrayIntoArraysOfMinSize:chunkSize maxArrays:nTasks];
+		
+		#pragma omp parallel for
+		for (int i = 0; i < chunks.count; ++i) {
+			NSArray* chunk = [chunks objectAtIndex:i];
+			if (mode == Compress)
+				[DicomDatabase compressDicomFilesAtPaths:chunk intoDirAtPath:destDir];
+			else [DicomDatabase decompressDicomFilesAtPaths:chunk intoDirAtPath:destDir];
+		}
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	} @finally {
+		[_processFilesLock unlock];
+//		[thread popLevel];
+	}
+}
+
+-(void)threadBridgeForProcessFilesAtPaths:(NSDictionary*)params {
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	@try {
+		[self processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	} @finally {
+		[pool release];
+	}
+}
+
+-(void)initiateProcessFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir mode:(int)mode {
+	[self performSelectorInBackground:@selector(threadBridgeForProcessFilesAtPaths:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:
+																								 paths, @":",
+																								 [NSNumber numberWithInt:mode], @"mode:",
+																								 destDir, @"intoDirAtPath:", // destDir can be nil
+																								 nil]];
+}
+
+-(void)initiateCompressFilesAtPaths:(NSArray*)paths {
+	[self initiateProcessFilesAtPaths:paths intoDirAtPath:nil mode:Compress];
+}
+
+-(void)initiateCompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir {
+	[self initiateProcessFilesAtPaths:paths intoDirAtPath:destDir mode:Compress];
+}
+
+-(void)initiateDecompressFilesAtPaths:(NSArray*)paths {
+	[self initiateProcessFilesAtPaths:paths intoDirAtPath:nil mode:Decompress];
+}
+
+-(void)initiateDecompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir {
+	[self initiateProcessFilesAtPaths:paths intoDirAtPath:destDir mode:Decompress];
+}
+
+-(NSArray*)addFilesAtPaths:(NSArray*)paths {
+	return [self addFilesAtPaths:paths dicomOnly:NO postNotifications:YES rereadExistingItems:NO];
+}
+
+-(NSArray*)addFilesAtPaths:(NSArray*)paths dicomOnly:(BOOL)dicomOnly postNotifications:(BOOL)pastNotifications rereadExistingItems:(BOOL)rereadExistingItems {
+	
+	
+	sroegdkoerkgxdoescrdsicnde;
+	
+}
+
+-(void)importFilesFromIncomingDir {
+	NSMutableArray* compressedPathArray = [NSMutableArray array];
+	NSThread* thread = NSThread.currentThread;
+	BOOL listenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
+	
+	[_importFilesFromIncomingDirLock lock];
+	@try {
+		if ([self isFileSystemFreeSizeLimitReached]) {
+			// TODO: autoclean and recheck..
+			return;
+		}
+		
+		NSMutableArray *filesArray = [NSMutableArray array];
+#ifdef OSIRIX_LIGHT
+		listenerCompressionSettings = 0;
+#endif
+		
+		BOOL twoStepsIndexing = [[NSUserDefaults standardUserDefaults] boolForKey:@"twoStepsIndexing"];
+		NSMutableArray* twoStepsIndexingArrayFrom = [NSMutableArray array];
+		NSMutableArray* twoStepsIndexingArrayTo = [NSMutableArray array];
+		
+		{
+			[AppController createNoIndexDirectoryIfNecessary:self.dataDirPath];
+			
+			int maxNumberOfFiles = [[NSUserDefaults standardUserDefaults] integerForKey:@"maxNumberOfFilesForCheckIncoming"];
+			if (maxNumberOfFiles < 100) maxNumberOfFiles = 100;
+			if (maxNumberOfFiles > 30000) maxNumberOfFiles = 30000;
+			
+			NSString *pathname;
+			NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath limitTo:-1]; // For next release...
+			// NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath];
+			
+			while( (pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles)
+			{
+				NSString *srcPath = [self.incomingDirPath stringByAppendingPathComponent:pathname];
+				NSString *originalPath = srcPath;
+				NSString *lastPathComponent = [srcPath lastPathComponent];
+				
+				if ([[lastPathComponent uppercaseString] hasSuffix:@".DS_STORE"])
+				{
+					[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+					continue;
+				}
+				
+				if ([[lastPathComponent uppercaseString] hasSuffix:@"__MACOSX"])
+				{
+					[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+					continue;
+				}
+				
+				if ( [lastPathComponent length] > 0 && [lastPathComponent characterAtIndex: 0] == '.')
+				{
+					NSDictionary *atr = [enumer fileAttributes];// [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
+					if( [atr fileModificationDate] && [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
+					{
+						[NSThread sleepForTimeInterval: 0.1]; //We want to be 100% sure...
+						
+						atr = [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
+						if( [atr fileModificationDate] && [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
+						{
+							NSLog( @"old files with '.' -> delete it : %@", srcPath);
+							if( srcPath)
+								[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+						}
+					}
+					continue;
+				}
+				
+				BOOL isAlias = NO;
+				srcPath = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:srcPath resolved:&isAlias];
+				
+				// Is it a real file? Is it writable (transfer done)?
+				//					if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES)	<- Problems with CD : read-only files, but valid files
+				{
+					NSDictionary *fattrs = [enumer fileAttributes];	//[[NSFileManager defaultManager] fileAttributesAtPath:srcPath traverseLink: YES];
+					
+					//						// http://www.noodlesoft.com/blog/2007/03/07/mystery-bug-heisenbergs-uncertainty-principle/
+					//						[fattrs allKeys];
+					
+					//						NSLog( @"%@", [fattrs objectForKey:NSFileBusy]);
+					
+					if( [[fattrs objectForKey:NSFileType] isEqualToString: NSFileTypeDirectory] == YES)
+					{
+						NSArray		*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath: srcPath];
+						
+						//Is this directory empty?? If yes, delete it!
+						//if alias assume nested folders should stay
+						if( [dirContent count] == 0 && !isAlias) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+						if( [dirContent count] == 1)
+						{
+							if( [[[dirContent objectAtIndex: 0] uppercaseString] hasSuffix:@".DS_STORE"])
+								[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+						}
+					}
+					else if( fattrs != nil && [[fattrs objectForKey:NSFileBusy] boolValue] == NO && [[fattrs objectForKey:NSFileSize] longLongValue] > 0)
+					{
+						if( [[srcPath pathExtension] isEqualToString: @"zip"] || [[srcPath pathExtension] isEqualToString: @"osirixzip"])
+						{
+							NSString *compressedPath = [self.decompressionDirPath stringByAppendingPathComponent: lastPathComponent];
+							[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
+							[compressedPathArray addObject: compressedPath];
+						}
+						else
+						{
+							BOOL isDicomFile, isJPEGCompressed, isImage;
+							NSString *dstPath = [self.dataDirPath stringByAppendingPathComponent: lastPathComponent];
+							
+							isDicomFile = [DicomFile isDICOMFile:srcPath compressed: &isJPEGCompressed image: &isImage];
+							
+							if( isDicomFile == YES ||
+							   (([DicomFile isFVTiffFile:srcPath] ||
+								 [DicomFile isTiffFile:srcPath] ||
+								 [DicomFile isNRRDFile:srcPath])
+								&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
+							{
+								if (isDicomFile && isImage) {
+									if ((isJPEGCompressed == YES && listenerCompressionSettings == 1) || (isJPEGCompressed == NO && listenerCompressionSettings == 2
+#ifndef OSIRIX_LIGHT
+																										  && [DicomDatabase fileNeedsDecompression: srcPath]
+#else	
+#endif
+									)) {
+										NSString *compressedPath = [self.decompressionDirPath stringByAppendingPathComponent: lastPathComponent];
+										
+										[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
+										
+										[compressedPathArray addObject: compressedPath];
+										
+										continue;
+									}
+									
+									dstPath = [self uniquePathForNewDataFileWithExtension:@"dcm"];
+								} else dstPath = [self uniquePathForNewDataFileWithExtension:[[srcPath pathExtension] lowercaseString]];
+								
+								BOOL result;
+								
+								if( isAlias)
+								{
+									if( twoStepsIndexing)
+									{
+										NSString *stepsPath = [self.toBeIndexedDirPath stringByAppendingPathComponent: [dstPath lastPathComponent]];
+										
+										result = [[NSFileManager defaultManager] copyPath:srcPath toPath: stepsPath handler:nil];
+										[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+										
+										if( result)
+										{
+											[twoStepsIndexingArrayFrom addObject: stepsPath];
+											[twoStepsIndexingArrayTo addObject: dstPath];
+										}
+									}
+									else
+									{
+										result = [[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
+										[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+									}
+								}
+								else
+								{
+									if( twoStepsIndexing)
+									{
+										NSString *stepsPath = [self.toBeIndexedDirPath stringByAppendingPathComponent: [dstPath lastPathComponent]];
+										
+										result = [[NSFileManager defaultManager] movePath:srcPath toPath: stepsPath handler:nil];
+										
+										if( result)
+										{
+											[twoStepsIndexingArrayFrom addObject: stepsPath];
+											[twoStepsIndexingArrayTo addObject: dstPath];
+										}
+									}
+									else
+										result = [[NSFileManager defaultManager] movePath:srcPath toPath: dstPath handler:nil];
+								}
+								
+								if( result == YES)
+									[filesArray addObject:dstPath];
+							}
+							else // DELETE or MOVE THIS UNKNOWN FILE ?
+							{
+								if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DELETEFILELISTENER"])
+									[[NSFileManager defaultManager] removeItemAtPath:srcPath error:NULL];
+								else {
+									if (![NSFileManager.defaultManager moveItemAtPath:srcPath toPath:[self.errorsDirPath stringByAppendingPathComponent:lastPathComponent] error:NULL])
+										[NSFileManager.defaultManager removeFileAtPath:srcPath handler:nil];
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			if( twoStepsIndexing == YES && [twoStepsIndexingArrayFrom count] > 0)
+			{
+//				[database unlock];
+				
+				for( int i = 0 ; i < [twoStepsIndexingArrayFrom count] ; i++)
+				{
+					[[NSFileManager defaultManager] removeItemAtPath: [twoStepsIndexingArrayTo objectAtIndex: i]  error: nil];
+					[[NSFileManager defaultManager] moveItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i] toPath: [twoStepsIndexingArrayTo objectAtIndex: i] error: nil];
+					[[NSFileManager defaultManager] removeItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i]  error: nil];
+				}
+				
+//				[database lock];
+			}
+			
+			if ( [filesArray count] > 0)
+			{
+//				if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"ANONYMIZELISTENER"] == YES)
+//					[self listenerAnonymizeFiles: filesArray];
+				
+				for (id filter in [PluginManager preProcessPlugins])
+					@try {
+						[filter processFiles: filesArray];
+					} @catch (NSException* e) {
+						N2LogExceptionWithStackTrace(e);
+					}
+				
+				NSArray* addedFiles = [[self addFilesAtPaths:filesArray] valueForKey:@"completePath"];
+				
+				if (!addedFiles) // Add failed.... Keep these files: move them back to the INCOMING folder and try again later....
+				{
+					NSString *dstPath;
+					int x = 0;
+					
+					NSLog(@"Move the files back to the incoming folder...");
+					
+					for( NSString *file in filesArray)
+					{
+						do
+						{
+							dstPath = [self.incomingDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", x]];
+							x++;
+						}
+						while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
+						
+						[[NSFileManager defaultManager] movePath: file toPath: dstPath handler: nil];
+					}
+				}
+			}
+		}
+		
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	} @finally {
+		[_importFilesFromIncomingDirLock unlock];
+	}
+	
+#ifndef OSIRIX_LIGHT
+	if ([compressedPathArray count] > 0)  {// there are files to compress/decompress in the decompression dir
+		thread.name = [NSString stringWithFormat:NSLocalizedString(@"Decompressing %d files", nil), compressedPathArray.count];
+		thread.status = NSLocalizedString(@"Waiting for other decompressions to complete...", nil);
+		
+		if (listenerCompressionSettings == 1 || listenerCompressionSettings == 0) // decompress, listenerCompressionSettings == 0 for zip support!
+			[self decompressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
+		else if (listenerCompressionSettings == 2)	// compress
+			[self compressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
+	}
+#endif
+}
+
+-(void)importFilesFromIncomingDirThread:(id)obj {
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	@try {
+		NSThread* thread = [NSThread currentThread];
+		thread.name = NSLocalizedString(@"Adding incoming files", nil);
+		[ThreadsManager.defaultManager addThreadAndStart:thread];
+		[self importFilesFromIncomingDir];
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	} @finally {
+		[pool release];
+	}
+}
+
+-(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting {
+	if ([[AppController sharedAppController] isSessionInactive])
+		return;
+	
+	if ([_importFilesFromIncomingDirLock tryLock])
+		@try {
+			[NSThread detachNewThreadSelector:@selector(importFilesFromIncomingDirThread:) toTarget:self withObject:nil];
+		} @catch (NSException* e) {
+			N2LogExceptionWithStackTrace(e);
+		} @finally {
+			[_importFilesFromIncomingDirLock unlock];
+		}
+	else NSLog(@"Warning: couldn't initiate import of incoming files");
+	
+//	// TODO: HARD DISK CHECK
+//	if( [BrowserController isHardDiskFull])
+//	{
+//		// Kill the incoming directory
+//		[[NSFileManager defaultManager] removeItemAtPath: [self INCOMINGPATH] error: nil];
+//		
+//		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"WARNING", nil) description: NSLocalizedString(@"Hard Disk is Full ! Cannot accept more files.", nil) name:@"newfiles"];
+//	}	
+}
+
+-(void)importFilesFromIncomingDirTimerCallback:(NSTimer*)timer {
+	[self initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+}
+
+-(void)syncImportFilesFromIncomingDirTimerWithUserDefaults {
+	[_importFilesFromIncomingDirTimer invalidate];
+	[_importFilesFromIncomingDirTimer release];
+	
+	if (self.isLocal) {
+		_importFilesFromIncomingDirTimer = [[NSTimer timerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(importFilesFromIncomingDirTimerCallback:) userInfo:nil repeats:YES] retain];
+		[[NSRunLoop currentRunLoop] addTimer:_importFilesFromIncomingDirTimer forMode:NSModalPanelRunLoopMode];
+		[[NSRunLoop currentRunLoop] addTimer:_importFilesFromIncomingDirTimer forMode:NSDefaultRunLoopMode];
+	} else
+		_importFilesFromIncomingDirTimer = nil;
+}
+
 #pragma mark Other
 
 -(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion {
@@ -603,13 +1135,13 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		[newContext setPersistentStoreCoordinator:newPersistentStoreCoordinator];
 		[newContext setUndoManager: nil];
 		
-		[NSFileManager.defaultManager removeItemAtPath:[self.basePath stringByAppendingPathComponent:@"Database3.sql"] error:nil];
-		[NSFileManager.defaultManager removeItemAtPath:[self.basePath stringByAppendingPathComponent:@"Database3.sql-journal"] error:nil];
+		[NSFileManager.defaultManager removeItemAtPath:[self.baseDirPath stringByAppendingPathComponent:@"Database3.sql"] error:nil];
+		[NSFileManager.defaultManager removeItemAtPath:[self.baseDirPath stringByAppendingPathComponent:@"Database3.sql-journal"] error:nil];
 		
 		if (![oldPersistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath:self.sqlFilePath] options:nil error:&err])
 			N2LogError(err.description);
 		
-		if (![newPersistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath:[self.basePath stringByAppendingPathComponent:@"Database3.sql"]] options:nil error:&err])
+		if (![newPersistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath:[self.baseDirPath stringByAppendingPathComponent:@"Database3.sql"]] options:nil error:&err])
 			N2LogError(err.description);
 		
 		NSManagedObject *newStudyTable, *newSeriesTable, *newImageTable, *newAlbumTable;
@@ -866,9 +1398,9 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		[newContext save:NULL];
 		
-		[[NSFileManager defaultManager] removeItemAtPath: [[self basePath] stringByAppendingPathComponent:@"Database-Old-PreviousVersion.sql"] error:nil];
-		[[NSFileManager defaultManager] moveItemAtPath:self.sqlFilePath toPath:[[self basePath] stringByAppendingPathComponent:@"Database-Old-PreviousVersion.sql"] error:NULL];
-		[[NSFileManager defaultManager] moveItemAtPath:[[self basePath] stringByAppendingPathComponent:@"Database3.sql"] toPath:self.sqlFilePath error:NULL];
+		[[NSFileManager defaultManager] removeItemAtPath: [self.baseDirPath stringByAppendingPathComponent:@"Database-Old-PreviousVersion.sql"] error:nil];
+		[[NSFileManager defaultManager] moveItemAtPath:self.sqlFilePath toPath:[self.baseDirPath stringByAppendingPathComponent:@"Database-Old-PreviousVersion.sql"] error:NULL];
+		[[NSFileManager defaultManager] moveItemAtPath:[self.baseDirPath stringByAppendingPathComponent:@"Database3.sql"] toPath:self.sqlFilePath error:NULL];
 		
 		[studies release];					studies = nil;
 		[newAlbums release];			newAlbums = nil;
@@ -1022,7 +1554,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	@try
 	{
 		// ** Finish the rebuild
-		[[[BrowserController currentBrowser] addFilesToDatabase: filesArray onlyDICOM:NO produceAddedFiles:NO] valueForKey:@"completePath"]; // TODO: AAAARGH
+		[[BrowserController addFiles:filesArray toContext:self.managedObjectContext onlyDICOM:NO notifyAddedFiles:NO parseExistingObject:NO dbFolder:self.baseDirPath] valueForKey:@"completePath"]; // TODO: AAAARGH
 		
 		NSLog( @"End Rebuild");
 		
@@ -1217,7 +1749,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	//[splash showWindow:self];
 	
 	@try {
-		NSString* repairedDBFile = [self.basePath stringByAppendingPathComponent:@"Repaired.txt"];
+		NSString* repairedDBFile = [self.baseDirPath stringByAppendingPathComponent:@"Repaired.txt"];
 		
 		[NSFileManager.defaultManager removeItemAtPath:repairedDBFile error:nil];
 		[NSFileManager.defaultManager createFileAtPath:repairedDBFile contents:[NSData data] attributes:nil];
@@ -1225,7 +1757,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		NSTask* theTask = [[NSTask alloc] init];
 		[theTask setLaunchPath: @"/usr/bin/sqlite3"];
 		[theTask setStandardOutput:[NSFileHandle fileHandleForWritingAtPath:repairedDBFile]];
-		[theTask setCurrentDirectoryPath:self.basePath.stringByDeletingLastPathComponent];
+		[theTask setCurrentDirectoryPath:self.baseDirPath.stringByDeletingLastPathComponent];
 		[theTask setArguments:[NSArray arrayWithObjects:SqlFileName, @".dump", nil]];
 		
 		[theTask launch];
@@ -1234,13 +1766,13 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		[theTask release];
 		
 		if (dumpStatus == 0) {
-			NSString* repairedDBFinalFile = [self.basePath stringByAppendingPathComponent: @"RepairedFinal.sql"];
+			NSString* repairedDBFinalFile = [self.baseDirPath stringByAppendingPathComponent: @"RepairedFinal.sql"];
 			[NSFileManager.defaultManager removeItemAtPath:repairedDBFinalFile error:nil];
 
 			theTask = [[NSTask alloc] init];
 			[theTask setLaunchPath:@"/usr/bin/sqlite3"];
 			[theTask setStandardInput:[NSFileHandle fileHandleForReadingAtPath:repairedDBFile]];
-			[theTask setCurrentDirectoryPath:self.basePath.stringByDeletingLastPathComponent];
+			[theTask setCurrentDirectoryPath:self.baseDirPath.stringByDeletingLastPathComponent];
 			[theTask setArguments:[NSArray arrayWithObjects: @"RepairedFinal.sql", nil]];		
 			
 			[theTask launch];
