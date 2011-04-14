@@ -125,7 +125,7 @@ function shareDestinationChange(select) {
 				</tr>
 				%]IF:Study.reportURL&&!Info.isIOS%
 				%]IF:Study.reportIsLink%
-				%[IF:Study.otherStudiesForThisPatient%
+				%[IF:Study.otherStudiesForThisPatient.count%
 				<tr>
 					<td>Other&nbsp;Studies&nbsp;for&nbsp;this&nbsp;patient:</td>
 				</tr>
@@ -140,7 +140,7 @@ function shareDestinationChange(select) {
 					</a></td>
 				</tr>
 				%]FOREACH:Study.otherStudiesForThisPatient:Study%
-				%]IF:Study.otherStudiesForThisPatient%
+				%]IF:Study.otherStudiesForThisPatient.count%
 			</table>
 		</div>
 		

@@ -719,9 +719,6 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 			NSLog(@"[WebPortalRosponse object:valueForKeyPath:context] %@", e);
 		}
 		
-		if( otherStudies.count == 0)
-			otherStudies = nil;
-		
 		return otherStudies;
 	}
 	

@@ -25,7 +25,8 @@
 	NSMutableArray *specificArray = [NSMutableArray array];
 	BOOL truePredicate = NO;
 	
-	if (!predicate) {
+	if (!predicate)
+	{
 		predicate = [NSPredicate predicateWithValue: YES];
 		truePredicate = YES;
 	}
@@ -34,59 +35,37 @@
 	{
 		NSArray* userStudies = user.studies.allObjects;
 		
-		if (truePredicate == NO) {
-			NSArray* allUserStudies = userStudies;
-			NSArray* userStudies = [allUserStudies filteredArrayUsingPredicate:predicate];
-			
-			NSMutableArray* excludedStudies = [NSMutableArray arrayWithArray: allUserStudies];
-			[excludedStudies removeObjectsInArray: userStudies];
-			
-			NSMutableArray* mutableArray = [NSMutableArray arrayWithArray: array];
-			
-			// First remove all user studies from array, we will re-add them after, if necessary
-			for ( NSManagedObject *study in excludedStudies)
-			{
-				NSArray *obj = [mutableArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", [study valueForKey: @"patientUID"], [study valueForKey: @"studyInstanceUID"]]];
-				
-				if ([obj count] == 1)
-				{
-					[mutableArray removeObject: [obj lastObject]];
-				}
-				else if ([obj count] > 1)
-					NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
-			}
-			
-			array = mutableArray;
-		}
-			
-		// Find all studies of the DB
+		if( userStudies.count == 0)
+			return array;
+		
+		// Find studies
 		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
-		req.predicate = [NSPredicate predicateWithValue:YES];
+		req.predicate = predicate;
 		NSArray* studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
 		
-		if (!userStudies)
-			[specificArray addObjectsFromArray:studiesArray];
-		else
-			for (WebPortalStudy* study in userStudies) {
-				NSArray *obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", study.patientUID, study.studyInstanceUID]];
-				
-				if ([obj count] == 1)
+		for (WebPortalStudy* study in userStudies)
+		{
+			NSArray *obj = nil;
+			
+			if (user.canAccessPatientsOtherStudies.boolValue) obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@", study.patientUID]];
+			else obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", study.patientUID, study.studyInstanceUID]];
+			
+			if ([obj count] >= 1)
+			{
+				for( id o in obj)
 				{
-					if ([array containsObject: [obj lastObject]] == NO && [specificArray containsObject: [obj lastObject]] == NO)
-						[specificArray addObject: [obj lastObject]];
-				}
-				else if ([obj count] > 1)
-					NSLog( @"********** warning multiple studies with same instanceUID and patientUID : %@", obj);
-				else if (truePredicate && [obj count] == 0)
-				{
-					// It means this study doesnt exist in the entire DB -> remove it from this user list
-					NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
-					[self.database.managedObjectContext deleteObject:study];
+					if ([array containsObject: o] == NO && [specificArray containsObject: o] == NO)
+						[specificArray addObject: o];
 				}
 			}
-		
-		
+			else if (truePredicate && [obj count] == 0)
+			{
+				// It means this study doesnt exist in the entire DB -> remove it from this user list
+				NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
+				[self.database.managedObjectContext deleteObject:study];
+			}
+		}
 	}
 	@catch (NSException * e)
 	{
@@ -109,36 +88,64 @@
 	
 	[self.dicomDatabase.managedObjectContext lock];
 	
-	@try {
+	@try
+	{
 		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
-		req.predicate = [DicomDatabase predicateForSmartAlbumFilter:user.studyPredicate];
 		
-		BOOL allStudies = nil;
+		BOOL allStudies = NO;
 		if( user.studyPredicate.length == 0)
 			allStudies = YES;
 		
-		studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
-		
-		if (user && allStudies == NO)
-			studiesArray = [self arrayByAddingSpecificStudiesForUser:user predicate:NULL toArray:studiesArray];
-		
-		if (user.canAccessPatientsOtherStudies.boolValue && allStudies == NO)
+		if( allStudies == NO)
 		{
-			NSFetchRequest* req = [[NSFetchRequest alloc] init];
-			req.entity = [self.dicomDatabase entityForName:@"Study"];
-			req.predicate = [NSPredicate predicateWithFormat:@"patientID IN %@", [studiesArray valueForKey:@"patientID"]];
-			studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
-			[req release];
-		}
+			if( predicate)
+				req.predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects:	[DicomDatabase predicateForSmartAlbumFilter:user.studyPredicate],
+																												predicate,
+																												nil]];
+			else
+				req.predicate = [DicomDatabase predicateForSmartAlbumFilter:user.studyPredicate];
 			
-		if (predicate) studiesArray = [studiesArray filteredArrayUsingPredicate:predicate];
-		
-		if ([sortValue length] && [sortValue rangeOfString: @"date"].location == NSNotFound)
-			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
+			
+			studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+			
+			if (user)
+				studiesArray = [self arrayByAddingSpecificStudiesForUser:user predicate: predicate toArray:studiesArray];
+			
+			if (user.canAccessPatientsOtherStudies.boolValue)
+			{
+				NSFetchRequest* req = [[NSFetchRequest alloc] init];
+				req.entity = [self.dicomDatabase entityForName:@"Study"];
+				req.predicate = [NSPredicate predicateWithFormat:@"patientID IN %@", [studiesArray valueForKey:@"patientID"]];
+				
+				int previousStudiesArrayCount = studiesArray.count;
+				
+				studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+				
+				if( predicate && studiesArray.count != previousStudiesArrayCount)
+					studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
+				
+				[req release];
+			}
+		}
 		else
-			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: NO] autorelease]]];
-	
+		{
+			if( predicate == nil)
+				predicate = [NSPredicate predicateWithValue: YES];
+			
+			req.predicate = predicate;
+			
+			studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+		}
+		
+		if( [sortValue length])
+		{
+			if( [sortValue rangeOfString: @"date"].location == NSNotFound)
+				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
+			else
+				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: NO] autorelease]]];
+		}
+		
 	} @catch(NSException* e) {
 		NSLog(@"Error: [WebPortal studiesForUser:predicate:sortBy:] %@", e);
 	} @finally {
