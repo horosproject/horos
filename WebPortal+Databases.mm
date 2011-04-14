@@ -157,85 +157,85 @@
 	return studiesArray;
 }
 
--(NSArray*)seriesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate {
-	NSArray *seriesArray = nil;
-	NSArray *studiesArray = nil;
-	
-	[self.dicomDatabase.managedObjectContext lock];
-	
-	if( [seriesForUsersCache objectForKey: user.name])
-	{
-		if( [[[seriesForUsersCache objectForKey: user.name] objectForKey: @"timeStamp"] timeIntervalSinceNow] > -60) // 60 secs
-		{
-			NSMutableArray *returnedArray = [NSMutableArray arrayWithCapacity: [[[seriesForUsersCache objectForKey: user.name] objectForKey: @"seriesArray"] count]];
-			
-			for( NSManagedObject *o in [[seriesForUsersCache objectForKey: user.name] objectForKey: @"seriesArray"])
-			{
-				if( [o isFault] == NO)
-					[returnedArray addObject: o];
-			}
-			
-			[self.dicomDatabase.managedObjectContext unlock];
-			
-			return returnedArray;
-		}
-	}
-	
-	if (user.studyPredicate.length) // First, take all the available studies for this user, and then get the series : SECURITY : we want to be sure that he cannot access to unauthorized images
-	{
-		@try
-		{
-			NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-			req.entity = [self.dicomDatabase entityForName:@"Study"];
-			req.predicate = [DicomDatabase predicateForSmartAlbumFilter:user.studyPredicate];
-			
-			studiesArray = [self arrayByAddingSpecificStudiesForUser:user predicate:NULL toArray:[self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL]];
-			studiesArray = [studiesArray valueForKey: @"patientUID"];
-		}
-		
-		@catch(NSException *e)
-		{
-			NSLog(@"************ seriesForPredicate exception: %@", e.description);
-		}
-	}
-	
-	@try
-	{
-		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-		req.entity = [self.dicomDatabase entityForName:@"Series"];
-		
-		if (studiesArray)
-			predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, [NSPredicate predicateWithFormat: @"study.patientUID IN %@", studiesArray], nil]];
-			
-		req.predicate = predicate;
-		
-		seriesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
-	}
-	
-	@catch(NSException *e)
-	{
-		NSLog(@"*********** seriesForPredicate exception: %@", e.description);
-	}
-	
-	[seriesForUsersCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: seriesArray, @"seriesArray", [NSDate date], @"timeStamp", nil] forKey: user.name];
-	
-	[self.dicomDatabase.managedObjectContext unlock];
-	
-	/*if ([seriesArray count] > 1)
-	{
-		NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
-		NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
-		NSArray * sortDescriptors;
-		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
-		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
-		[sortid release];
-		[sortdate release];
-		
-		seriesArray = [seriesArray sortedArrayUsingDescriptors: sortDescriptors];
-	}*/
-	
-	return seriesArray;
-}
+//-(NSArray*)seriesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate {
+//	NSArray *seriesArray = nil;
+//	NSArray *studiesArray = nil;
+//	
+//	[self.dicomDatabase.managedObjectContext lock];
+//	
+//	if( [seriesForUsersCache objectForKey: user.name])
+//	{
+//		if( [[[seriesForUsersCache objectForKey: user.name] objectForKey: @"timeStamp"] timeIntervalSinceNow] > -60) // 60 secs
+//		{
+//			NSMutableArray *returnedArray = [NSMutableArray arrayWithCapacity: [[[seriesForUsersCache objectForKey: user.name] objectForKey: @"seriesArray"] count]];
+//			
+//			for( NSManagedObject *o in [[seriesForUsersCache objectForKey: user.name] objectForKey: @"seriesArray"])
+//			{
+//				if( [o isFault] == NO)
+//					[returnedArray addObject: o];
+//			}
+//			
+//			[self.dicomDatabase.managedObjectContext unlock];
+//			
+//			return returnedArray;
+//		}
+//	}
+//	
+//	if (user.studyPredicate.length) // First, take all the available studies for this user, and then get the series : SECURITY : we want to be sure that he cannot access to unauthorized images
+//	{
+//		@try
+//		{
+//			NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+//			req.entity = [self.dicomDatabase entityForName:@"Study"];
+//			req.predicate = [DicomDatabase predicateForSmartAlbumFilter:user.studyPredicate];
+//			
+//			studiesArray = [self arrayByAddingSpecificStudiesForUser:user predicate:NULL toArray:[self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL]];
+//			studiesArray = [studiesArray valueForKey: @"patientUID"];
+//		}
+//		
+//		@catch(NSException *e)
+//		{
+//			NSLog(@"************ seriesForPredicate exception: %@", e.description);
+//		}
+//	}
+//	
+//	@try
+//	{
+//		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+//		req.entity = [self.dicomDatabase entityForName:@"Series"];
+//		
+//		if (studiesArray)
+//			predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, [NSPredicate predicateWithFormat: @"study.patientUID IN %@", studiesArray], nil]];
+//			
+//		req.predicate = predicate;
+//		
+//		seriesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+//	}
+//	
+//	@catch(NSException *e)
+//	{
+//		NSLog(@"*********** seriesForPredicate exception: %@", e.description);
+//	}
+//	
+//	[seriesForUsersCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: seriesArray, @"seriesArray", [NSDate date], @"timeStamp", nil] forKey: user.name];
+//	
+//	[self.dicomDatabase.managedObjectContext unlock];
+//	
+//	/*if ([seriesArray count] > 1)
+//	{
+//		NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
+//		NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
+//		NSArray * sortDescriptors;
+//		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
+//		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
+//		[sortid release];
+//		[sortdate release];
+//		
+//		seriesArray = [seriesArray sortedArrayUsingDescriptors: sortDescriptors];
+//	}*/
+//	
+//	return seriesArray;
+//}
 
 -(NSArray*)studiesForUser:(WebPortalUser*)user album:(NSString*)albumName {
 	return [self studiesForUser:user album:albumName sortBy:nil];

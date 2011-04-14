@@ -248,8 +248,6 @@ static const NSString* DefaultWebPortalDatabasePath = nil;
 	
 	self.notificationsInterval = 60;
 	
-	seriesForUsersCache = [[NSMutableDictionary alloc] init];
-	
 	preferredLocalizations = [[[NSBundle mainBundle] preferredLocalizations] copy];
 	
 	return self;
@@ -307,7 +305,6 @@ static const NSString* DefaultWebPortalDatabasePath = nil;
 	self.address = NULL;
 	self.dirsToScanForFiles = NULL;
 	
-	[seriesForUsersCache release];
 	[preferredLocalizations release];
 	
 	[super dealloc];

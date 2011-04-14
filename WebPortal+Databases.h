@@ -28,7 +28,7 @@
 -(NSArray*)studiesForUser:(WebPortalUser*)user album:(NSString*)albumName;
 -(NSArray*)studiesForUser:(WebPortalUser*)user album:(NSString*)albumName sortBy:(NSString*)sortValue;
 
--(NSArray*)seriesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate;
+//-(NSArray*)seriesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate;
 
 @end
 

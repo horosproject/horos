@@ -48,7 +48,7 @@
 	WebPortalServer *server;
 	NSThread *serverThread;
 	
-	NSMutableDictionary *seriesForUsersCache;
+//	NSMutableDictionary *seriesForUsersCache;
 }
 
 // called from AppController
