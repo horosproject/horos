@@ -708,11 +708,21 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 	
 	if ([key isEqual:@"otherStudiesForThisPatient"])
 	{
-		NSArray *otherStudies = nil;
+		NSMutableArray *otherStudies = nil;
 		
 		@try
 		{
-			otherStudies = [wpc.portal studiesForUser: wpc.user predicate: [NSPredicate predicateWithFormat: @"(patientID == %@) AND (studyInstanceUID != %@)", study.patientID, study.studyInstanceUID] sortBy: @"date"];
+			otherStudies = [[[wpc.portal studiesForUser: wpc.user predicate: [NSPredicate predicateWithFormat: @"(patientID == %@)", study.patientID] sortBy: @"date"] mutableCopy] autorelease];
+			
+			// Important> keep these two separates steps !
+			for( DicomStudy *s in otherStudies)
+			{
+				if( [s.studyInstanceUID isEqualToString: study.studyInstanceUID])
+				{
+					[otherStudies removeObject: s];
+					break;
+				}
+			}
 		}
 		@catch (NSException * e)
 		{
