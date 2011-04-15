@@ -12,7 +12,7 @@
 @implementation NSArray (N2)
 
 -(NSArray*)splitArrayIntoArraysOfMinSize:(NSUInteger)minSize maxArrays:(NSUInteger)maxArrays {
-	NSUInteger count = self.count, size = MAX(minSize, round(float(count)/maxArrays));
+	NSUInteger count = self.count, size = maxArrays? MAX(minSize, round(float(count)/maxArrays)) : minSize;
 	
 	NSMutableArray* chunks = [NSMutableArray array];
 	

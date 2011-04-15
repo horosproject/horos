@@ -150,10 +150,14 @@
 }
 
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p {
+	return [self objectsForEntity:e predicate:p error:NULL];
+}
+
+-(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p error:(NSError**)err {
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = e;
 	req.predicate = p;
-	return [self.managedObjectContext executeFetchRequest:req error:NULL];
+	return [self.managedObjectContext executeFetchRequest:req error:err];
 }
 
 -(id)newObjectForEntity:(NSEntityDescription*)entity {

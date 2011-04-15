@@ -30,6 +30,7 @@
 	NSRecursiveLock* _importFilesFromIncomingDirLock;
 	BOOL _isFileSystemFreeSizeLimitReached;
 	NSTimeInterval _timeOfLastIsFileSystemFreeSizeLimitReachedVerification;
+	NSTimeInterval _timeOfLastModification;
 }
 
 +(NSString*)defaultBaseDirPath;
@@ -46,9 +47,11 @@
 @property(readonly,retain) NSString* baseDirPath;
 @property(readonly,retain) NSString* dataBaseDirPath;
 @property(readwrite,retain) NSString* name;
+@property(readwrite) NSTimeInterval timeOfLastModification;
 
 -(BOOL)isLocal;
 
+#pragma mark Entities
 extern const NSString* const DicomDatabaseImageEntityName;
 extern const NSString* const DicomDatabaseSeriesEntityName;
 extern const NSString* const DicomDatabaseStudyEntityName;
@@ -60,6 +63,7 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(NSEntityDescription*)albumEntity;
 -(NSEntityDescription*)logEntryEntity;
 
+#pragma mark Paths
 -(NSString*)dataDirPath;
 -(NSString*)incomingDirPath;
 -(NSString*)errorsDirPath;
@@ -77,11 +81,26 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(NSUInteger)computeDataFileIndex; // this method should be private, but is declared because called from deprecated api
 -(NSString*)uniquePathForNewDataFileWithExtension:(NSString*)ext;
 
+#pragma mark Albums
 -(void)addDefaultAlbums;
 -(NSArray*)albums;
 +(NSArray*)albumsInContext:(NSManagedObjectContext*)context; // this method should be private, but is declared because called from deprecated api
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string;
 
+#pragma mark Add files
+-(NSArray*)addFilesAtPaths:(NSArray*)paths;
+-(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications;	
+-(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems;	
+-(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX;	
+-(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX mountedVolume:(BOOL)mountedVolume;
+
+#pragma mark Incoming
+-(BOOL)isFileSystemFreeSizeLimitReached;
+-(void)importFilesFromIncomingDir; // this method should be private, but is declared because called from deprecated api
+-(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting;
+-(void)syncImportFilesFromIncomingDirTimerWithUserDefaults; // called from deprecated API
+
+#pragma mark Compress/decompress
 -(BOOL)compressFilesAtPaths:(NSArray*)paths;
 -(BOOL)compressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir;
 -(BOOL)decompressFilesAtPaths:(NSArray*)paths;
@@ -91,14 +110,10 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(void)initiateDecompressFilesAtPaths:(NSArray*)paths;
 -(void)initiateDecompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir;
 
--(NSArray*)addFilesAtPaths:(NSArray*)paths;
--(NSArray*)addFilesAtPaths:(NSArray*)paths dicomOnly:(BOOL)dicomOnly postNotifications:(BOOL)pastNotifications rereadExistingItems:(BOOL)rereadExistingItems;	
+#pragma mark Auto routing
+-(void)applyAutoRoutingRules:(NSArray*)autoroutingRules toImages:(NSArray*)images;
 
--(BOOL)isFileSystemFreeSizeLimitReached;
--(void)importFilesFromIncomingDir; // this method should be private, but is declared because called from deprecated api
--(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting;
--(void)syncImportFilesFromIncomingDirTimerWithUserDefaults; // called from deprecated API
-
+#pragma mark Other
 // some of these methods should be private, but is declared because called from deprecated api
 -(void)rebuild;
 -(void)rebuild:(BOOL)complete;
@@ -107,5 +122,6 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(void)rebuildSqlFile;
 -(void)reduceCoreDataFootPrint;
 -(void)checkForHtmlTemplates;
++ (NSString*) extractReportSR: (NSString*) dicomSR contentDate: (NSDate*) date;
 
 @end

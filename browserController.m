@@ -234,7 +234,7 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;//, userManagedObjectContext, userManagedObjectModel;
-@synthesize viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
+@synthesize viewersListToReload, viewersListToRebuild;//, newFilesConditionLock; //, databaseLastModification;
 @synthesize AtableView/*, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel*/;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
@@ -435,78 +435,24 @@ static NSConditionLock *threadLock = nil;
 	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"New Study", nil) description: message name: @"newstudy"];
 }
 
--(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
-{
-	return [self addFilesToDatabase: newFilesArray onlyDICOM:NO produceAddedFiles :YES];
+#pragma deprecated (addFilesToDatabase:)
+-(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray { // __deprecated
+	return [database addFilesAtPaths:newFilesArray];
 }
 
--(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
-{
-	return [self addFilesToDatabase: newFilesArray onlyDICOM:onlyDICOM produceAddedFiles :YES];
+#pragma deprecated (addFilesToDatabase::)
+-(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray :(BOOL)onlyDICOM { // __deprecated
+	return [database addFilesAtPaths:newFilesArray postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
 }
 
--(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles
-{
-	return [self addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject: NO];
+#pragma deprecated (addFilesToDatabase:onlyDICOM:produceAddedFiles:)
+-(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles { // __deprecated
+	return [database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:NO];
 }
 
--(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject
-{
-	NSManagedObjectContext	*context = self.managedObjectContext;
-	
-	return [self addFilesToDatabase: newFilesArray onlyDICOM: onlyDICOM  produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context: context dbFolder: [self documentsDirectory]];
-}
-
-+ (NSString*) extractReportSR: (NSString*) dicomSR contentDate: (NSDate*) date
-{
-	NSString *destPath = nil;
-	NSString *uidName = [SRAnnotation getReportFilenameFromSR: dicomSR];
-	if( [uidName length] > 0)
-	{
-		NSString *zipFile = [@"/tmp/" stringByAppendingPathComponent: uidName];
-		
-		// Extract the CONTENT to the REPORTS folder
-		SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dicomSR] autorelease];
-		[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
-		
-		// Check for http/https !
-		if( [[r reportURL] length] > 8 && ([[r reportURL] hasPrefix: @"http://"] || [[r reportURL] hasPrefix: @"https://"]))
-			destPath = [[[r reportURL] copy] autorelease];
-		else
-		{
-			if( [[r dataEncapsulated] length] > 0)
-			{
-				[[r dataEncapsulated] writeToFile: zipFile atomically: YES];
-				
-				[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
-				[BrowserController unzipFile: zipFile withPassword: nil destination: @"/tmp/zippedFile/" showGUI: NO];
-				[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
-				
-				for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp/zippedFile/" error: nil])
-				{
-					if( [f hasPrefix: @"."] == NO)
-					{
-						if( destPath)
-							NSLog( @"*** multiple files in Report decompression ?");
-						
-						destPath = [@"/tmp/" stringByAppendingPathComponent: f];
-						if( destPath)
-						{
-							[[NSFileManager defaultManager] removeItemAtPath: destPath error: nil];
-							[[NSFileManager defaultManager] moveItemAtPath: [@"/tmp/zippedFile/" stringByAppendingPathComponent: f] toPath: destPath error: nil];
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
-	
-	if( destPath)
-		[[NSFileManager defaultManager] setAttributes: [NSDictionary dictionaryWithObjectsAndKeys: date, NSFileModificationDate, nil] ofItemAtPath: destPath error: nil];
-	
-	return destPath;
+#pragma deprecated (addFilesToDatabase:onlyDICOM:produceAddedFiles:parseExistingObject:)
+-(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject { // __deprecated
+	return [database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
 }
 
 #pragma deprecated (checkForExistingReport:dbFolder:)
@@ -515,1027 +461,73 @@ static NSConditionLock *threadLock = nil;
 }
 
 #pragma mark-
+
+#pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder { // __deprecated
 	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && browserController) db = [browserController database];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
-	
-	[db addFilesAtPaths:newFilesArray dicomOnly:onlyDICOM postNotifications:notifyAddedFiles rereadExistingItems:parseExistingObject];
-	
-	return [BrowserController addFiles: newFilesArray toContext: context toDatabase: browserController onlyDICOM: onlyDICOM  notifyAddedFiles: notifyAddedFiles parseExistingObject: parseExistingObject dbFolder:  dbFolder generatedByOsiriX: NO mountedVolume: NO];
+	if (!db) N2LogError(@"couldn't identify database");
+	return [db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
 }
 
-+(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX
-{
-	return [BrowserController addFiles: newFilesArray toContext: context toDatabase: browserController onlyDICOM: onlyDICOM  notifyAddedFiles: notifyAddedFiles parseExistingObject: parseExistingObject dbFolder:  dbFolder generatedByOsiriX:  generatedByOsiriX mountedVolume: NO];
-}
-
-+(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX mountedVolume: (BOOL) mountedVolume
-{
-	DicomDatabase* db = nil;
-	if (!db && context) db = [DicomDatabase databaseForContext:context];
+#pragma deprecated
++(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder generatedByOsiriX:(BOOL)generatedByOsiriX { // __deprecated
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
+	if (!db && browserController) db = [browserController database];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
-	
-	// TODO: assign db from context, from dbFolder
-	//[DicomDatabase localDatabaseAtPath:dbFolder];
-	
-	NSDate *today = [NSDate date];
-	NSError *error = nil;
-	NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil, *ERRpath = [db errorsDirPath], *newFile, *dbDirectory = [db dataDirPath], *reportsDirectory = [db reportsDirPath], *tempDirectory = [db tempDirPath];
-	NSInteger index;
-	Wait *splash = nil;
-	NSManagedObjectModel *model = context.persistentStoreCoordinator.managedObjectModel;
-	NSMutableArray *addedImagesArray = nil, *completeImagesArray = nil, *addedSeries = [NSMutableArray array], *modifiedStudiesArray = nil;
-	BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"], COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"], newStudy = NO, newObject = NO, isCDMedia = NO, addFailed = NO;
-	NSMutableArray *vlToRebuild = [NSMutableArray array], *vlToReload = [NSMutableArray array], *dicomFilesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
-	int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeries"], combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
-	BOOL isBonjour = [browserController isBonjour: context];
-	NSMutableArray *bonjourFilesToSend = nil;
-	
-	if( isBonjour)
-		bonjourFilesToSend = [NSMutableArray array];
-	
-	if ([[NSFileManager defaultManager] fileExistsAtPath: dbDirectory] == NO)
-		[[NSFileManager defaultManager] createDirectoryAtPath: dbDirectory attributes:nil];
-	
-	if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirectory] == NO)
-		[[NSFileManager defaultManager] createDirectoryAtPath: reportsDirectory attributes:nil];
-	
-	if( [newFilesArray count] == 0) return [NSMutableArray array];
-	
-//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
-	
-//#define RANDOMFILES
-#ifdef RANDOMFILES
-	NSMutableArray	*randomArray = [NSMutableArray array];
-	for( int i = 0; i < 50000; i++)
-	{
-		[randomArray addObject:@"yahoo/google/osirix/microsoft"];
-	}
-	newFilesArray = randomArray;
-#endif
-	
-	if( [NSThread isMainThread])
-	{
-		isCDMedia = [BrowserController isItCD: [newFilesArray objectAtIndex: 0]];
-		
-		[DicomFile setFilesAreFromCDMedia: isCDMedia];
-		
-		if([NSThread isMainThread] && ([newFilesArray count] > 50 || isCDMedia == YES) && generatedByOsiriX == NO)
-		{
-			splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString(@"Adding %@ file(s)...", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[newFilesArray count]]]]];
-			[splash showWindow: browserController];
-			
-			if( isCDMedia) [[splash progress] setMaxValue:[newFilesArray count]];
-			else [[splash progress] setMaxValue:[newFilesArray count]/30];
-			
-			[splash setCancel: YES];
-		}
-	}
-	
-	int ii = 0;
-	for (newFile in newFilesArray)
-	{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		
-		@try
-		{
-			DicomFile *curFile = nil;
-			NSMutableDictionary	*curDict = nil;
-			
-			@try
-			{
-				#ifdef RANDOMFILES
-					curFile = [[DicomFile alloc] initRandom];
-				#else
-					curFile = [[DicomFile alloc] init: newFile];
-				#endif
-			}
-			@catch (NSException * e)
-			{
-				NSLog( @"*** exception [[DicomFile alloc] init: newFile] : %@", e);
-				[AppController printStackTrace: e];
-			}
-			
-			if( curFile)
-			{
-				curDict = [curFile dicomElements];
-				
-				if( onlyDICOM)
-				{
-					if( [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == NO)
-						curDict = nil;
-				}
-				
-				if( curDict)
-				{
-					[dicomFilesArray addObject: curDict];
-				}
-				else
-				{
-					// This file was not readable -> If it is located in the DATABASE folder, we have to delete it or to move it to the 'NOT READABLE' folder
-					if( dbDirectory && [newFile hasPrefix: dbDirectory])
-					{
-						NSLog(@"**** Unreadable file: %@", newFile);
-						
-						if ( DELETEFILELISTENER)
-						{
-							[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
-						}
-						else
-						{
-							NSLog(@"**** This file in the DATABASE folder: move it to the unreadable folder");
-							
-							if( [[NSFileManager defaultManager] movePath: newFile toPath:[ERRpath stringByAppendingPathComponent: [newFile lastPathComponent]]  handler:nil] == NO)
-								[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
-						}
-					}
-				}
-			
-				[curFile release];
-			}
-			
-			if( splash)
-			{
-				if( isCDMedia)
-				{
-					ii++;
-					[splash incrementBy:1];
-				}
-				else
-				{
-					if( (ii++) % 30 == 0)
-						[splash incrementBy:1];
-				}
-			}
-		}
-		
-		@catch (NSException * e)
-		{
-			NSLog( @"**** addFilesToDatabase exception : DicomFile alloc : %@", e);
-			[AppController printStackTrace: e];
-		}
-		
-		[pool release];
-		
-		if( [splash aborted]) break;
-	}
-	
-	[context retain];
-	[context lock];
-	
-	// Find all current studies
-	
-	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[model entitiesByName] objectForKey: @"Study"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-	error = nil;
-	NSMutableArray *studiesArray = nil;
-	
-	@try
-	{
-		studiesArray = [[context executeFetchRequest:dbRequest error:&error] mutableCopy];
-	}
-	@catch( NSException *ne)
-	{
-		NSLog( @"AddFilesToDatabase executeFetchRequest exception: %@", [ne description]);
-		NSLog( @"executeFetchRequest failed for studiesArray.");
-		error = [NSError errorWithDomain:OsirixErrorDomain code:1 userInfo:NULL];
-		[AppController printStackTrace: ne];
-	}
-	
-	if (error)
-	{
-		NSLog( @"addFilesToDatabase ERROR: %@", [error localizedDescription]);
-		
-		[context unlock];
-		[context release];
-		
-		//All these files were NOT saved..... due to an error. Move them back to the INCOMING folder.
-		addFailed = YES;
-	}
-	else
-	{
-		NSDate *defaultDate = [NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil];
-		
-		addedImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
-		completeImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
-		modifiedStudiesArray = [NSMutableArray array];
-		
-		DicomStudy *study = nil;
-		DicomSeries *seriesTable = nil;
-		DicomImage *image = nil;
-		NSMutableArray *studiesArrayStudyInstanceUID = [[studiesArray valueForKey:@"studyInstanceUID"] mutableCopy];
-		
-		// Add the new files
-		for (NSMutableDictionary *curDict in dicomFilesArray)
-		{
-			@try
-			{
-				newFile = [curDict objectForKey:@"filePath"];
-				
-				BOOL DICOMSR = NO;
-				BOOL inParseExistingObject = parseExistingObject;
-				
-				NSString *SOPClassUID = [curDict objectForKey:@"SOPClassUID"];
-				
-				if( [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID])
-				{
-					// Check if it is an OsiriX Annotations SR
-					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Annotations SR"])
-					{
-						[curDict setValue: @"OsiriX Annotations SR" forKey: @"seriesID"];
-						inParseExistingObject = YES;
-						DICOMSR = YES;
-					}
-					
-					// Check if it is an OsiriX ROI SR
-					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX ROI SR"])
-					{
-						[curDict setValue: @"OsiriX ROI SR" forKey: @"seriesID"];
-						
-						inParseExistingObject = YES;
-						DICOMSR = YES;
-					}
-					
-					// Check if it is an OsiriX Report SR
-					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
-					{
-						[curDict setValue: @"OsiriX Report SR" forKey: @"seriesID"];
-						
-						inParseExistingObject = YES;
-						DICOMSR = YES;
-					}
-				}
-				
-				if( SOPClassUID != nil 
-				   && [DCMAbstractSyntaxUID isImageStorage: SOPClassUID] == NO 
-				   && [DCMAbstractSyntaxUID isRadiotherapy: SOPClassUID] == NO
-				   && [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] == NO
-				   && [DCMAbstractSyntaxUID isKeyObjectDocument: SOPClassUID] == NO
-				   && [DCMAbstractSyntaxUID isPresentationState: SOPClassUID] == NO
-				   && [DCMAbstractSyntaxUID isSupportedPrivateClasses: SOPClassUID] == NO)
-				{
-					NSLog(@"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
-					curDict = nil;
-				}
-				
-				if( [curDict objectForKey:@"SOPClassUID"] == nil && [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == YES)
-				{
-					NSLog(@"no DICOM SOP CLASS -> Reject the file: %@", newFile);
-					curDict = nil;
-				}
-				
-				if( curDict != nil)
-				{
-					if( [[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: curPatientUID] == NSOrderedSame)
-					{
-						if( [[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
-							[study setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
-					}
-					else
-					{
-						/*******************************************/
-						/*********** Find study object *************/
-						// match: StudyInstanceUID and patientUID (see patientUID function in dicomFile.m, based on patientName, patientID and patientBirthDate)
-						study = nil;
-						curSerieID = nil;
-						
-						index = [studiesArrayStudyInstanceUID indexOfObject:[curDict objectForKey: @"studyID"]];
-						
-						if( index != NSNotFound)
-						{
-							if( [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) // We do this double check only for DICOM files.
-							{
-								study = [studiesArray objectAtIndex: index];
-							}
-							else
-							{
-								if( [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]] == NSOrderedSame)
-									study = [studiesArray objectAtIndex: index];
-								else
-								{
-									NSLog( @"-*-*-*-*-* same studyUID (%@), but not same patientUID (%@ versus %@)", [curDict objectForKey: @"studyID"], [curDict objectForKey: @"patientUID"], [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
-									
-									NSString *curUID = [curDict objectForKey: @"studyID"];
-									for( int i = 0 ; i < [studiesArrayStudyInstanceUID count]; i++)
-									{
-										NSString *uid = [studiesArrayStudyInstanceUID objectAtIndex: i];
-										
-										if( [uid isEqualToString: curUID])
-										{
-											if( [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: i] valueForKey: @"patientUID"]] == NSOrderedSame)
-												study = [studiesArray objectAtIndex: i];
-										}
-									}
-								}
-							}
-						}
-						
-						if( study == nil)
-						{
-							// Fields
-							study = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: context];
-							
-							newObject = YES;
-							newStudy = YES;
-							
-							[study setValue:today forKey:@"dateAdded"];
-							
-							[studiesArray addObject: study];
-							[studiesArrayStudyInstanceUID addObject: [curDict objectForKey: @"studyID"]];
-							
-							curSerieID = nil;
-						}
-						else
-						{
-							newObject = NO;
-						}
-						
-						if( newObject || inParseExistingObject)
-						{
-							[study setValue:[curDict objectForKey: @"studyID"] forKey:@"studyInstanceUID"];
-							[study setValue:[curDict objectForKey: @"accessionNumber"] forKey:@"accessionNumber"];
-							[study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
-							[study setValue:[curDict objectForKey: @"patientBirthDate"] forKey:@"dateOfBirth"];
-							[study setValue:[curDict objectForKey: @"patientSex"] forKey:@"patientSex"];
-							[study setValue:[curDict objectForKey: @"patientID"] forKey:@"patientID"];
-							[study setValue:[curDict objectForKey: @"patientName"] forKey:@"name"];
-							[study setValue:[curDict objectForKey: @"patientUID"] forKey:@"patientUID"];
-							[study setValue:[curDict objectForKey: @"studyNumber"] forKey:@"id"];
-							
-							if( [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] && inParseExistingObject)
-							{
-								if( [(NSString*)[curDict objectForKey: @"studyDescription"] length])
-									[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
-								if( [(NSString*)[curDict objectForKey: @"referringPhysiciansName"] length])
-									[study setValue:[curDict objectForKey: @"referringPhysiciansName"] forKey:@"referringPhysician"];
-								if( [(NSString*)[curDict objectForKey: @"performingPhysiciansName"] length])
-									[study setValue:[curDict objectForKey: @"performingPhysiciansName"] forKey:@"performingPhysician"];
-								if( [(NSString*)[curDict objectForKey: @"institutionName"] length])
-									[study setValue:[curDict objectForKey: @"institutionName"] forKey:@"institutionName"];
-							}
-							else
-							{
-								[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
-								[study setValue:[curDict objectForKey: @"referringPhysiciansName"] forKey:@"referringPhysician"];
-								[study setValue:[curDict objectForKey: @"performingPhysiciansName"] forKey:@"performingPhysician"];
-								[study setValue:[curDict objectForKey: @"institutionName"] forKey:@"institutionName"];
-							}
-							
-							//need to know if is DICOM so only DICOM is queried for Q/R
-							if ([curDict objectForKey: @"hasDICOM"])
-								[study setValue:[curDict objectForKey: @"hasDICOM"] forKey:@"hasDICOM"];
-							
-							if( newObject)
-								[browserController checkForExistingReport:study dbFolder:dbFolder];
-						}
-						else
-						{
-							if( [[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
-								[study setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
-								
-							if( [study valueForKey: @"studyName"] == nil || [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] || [[study valueForKey: @"studyName"] isEqualToString: @""])
-								[study setValue: [curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
-						}
-						
-						if( [curDict objectForKey: @"studyDate"] && [[curDict objectForKey: @"studyDate"] isEqualToDate: defaultDate] == NO)
-						{
-							if( [study valueForKey: @"date"] == 0L || [[study valueForKey: @"date"] isEqualToDate: defaultDate] || [[study valueForKey: @"date"] timeIntervalSinceDate: [curDict objectForKey: @"studyDate"]] >= 0)
-								[study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
-						}
-						
-						curStudyID = [curDict objectForKey: @"studyID"];
-						curPatientUID = [curDict objectForKey: @"patientUID"];
-						
-						[modifiedStudiesArray addObject: study];
-					}
-					
-					int NoOfSeries = [[curDict objectForKey: @"numberOfSeries"] intValue];
-					for( int i = 0; i < NoOfSeries; i++)
-					{
-						NSString* SeriesNum = i ? [NSString stringWithFormat:@"%d",i] : @"";
-						
-						if( [[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] isEqualToString: curSerieID])
-						{
-						}
-						else
-						{
-							/********************************************/
-							/*********** Find series object *************/
-							
-							NSArray *seriesArray = [[study valueForKey:@"series"] allObjects];
-							
-							index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]];
-							if( index == NSNotFound)
-							{
-								// Fields
-								seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext: context];
-								[seriesTable setValue:today forKey:@"dateAdded"];
-								
-								newObject = YES;
-							}
-							else
-							{
-								seriesTable = [seriesArray objectAtIndex: index];
-								newObject = NO;
-							}
-							
-							if( newObject || inParseExistingObject)
-							{
-								if( [curDict objectForKey: @"seriesDICOMUID"]) [seriesTable setValue:[curDict objectForKey: @"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
-								if( [curDict objectForKey: @"SOPClassUID"]) [seriesTable setValue:[curDict objectForKey: @"SOPClassUID"] forKey:@"seriesSOPClassUID"];
-								[seriesTable setValue:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] forKey:@"seriesInstanceUID"];
-								[seriesTable setValue:[curDict objectForKey: [@"seriesDescription" stringByAppendingString:SeriesNum]] forKey:@"name"];
-								[seriesTable setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
-								[seriesTable setValue:[curDict objectForKey: [@"seriesNumber" stringByAppendingString:SeriesNum]] forKey:@"id"];
-								[seriesTable setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
-								[seriesTable setValue:[curDict objectForKey: @"protocolName"] forKey:@"seriesDescription"];
-								
-								// Relations
-								[seriesTable setValue:study forKey:@"study"];
-								// If a study has an SC or other non primary image  series. May need to change modality to true modality
-								if (([[study valueForKey:@"modality"] isEqualToString:@"OT"]  || [[study valueForKey:@"modality"] isEqualToString:@"SC"])
-									&& !([[curDict objectForKey: @"modality"] isEqualToString:@"OT"] || [[curDict objectForKey: @"modality"] isEqualToString:@"SC"]))
-									[study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
-							}
-							
-							curSerieID = [curDict objectForKey: @"seriesID"];
-						}
-						
-						/*******************************************/
-						/*********** Find image object *************/
-						
-						BOOL local = NO;
-						
-						if( dbDirectory && [newFile hasPrefix: dbDirectory])
-							local = YES;
-						
-						NSArray	*imagesArray = [[seriesTable valueForKey:@"images"] allObjects];
-						int numberOfFrames = [[curDict objectForKey: @"numberOfFrames"] intValue];
-						if( numberOfFrames == 0) numberOfFrames = 1;
-							
-						for( int f = 0 ; f < numberOfFrames; f++)
-						{
-							index = imagesArray.count? [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]]] : NSNotFound;
-							
-							if( index != NSNotFound)
-							{
-								image = [imagesArray objectAtIndex: index];
-								
-								// Does this image contain a valid image path? If not replace it, with the new one
-								if( [[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder]] == YES && inParseExistingObject == NO)
-								{
-									[addedImagesArray addObject: image];
-									
-									if( local)	// Delete this file, it's already in the DB folder
-									{
-										if( [[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
-											[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
-									}
-									
-									newObject = NO;
-								}
-								else
-								{
-									newObject = YES;
-									[image clearCompletePathCache];
-									
-									NSString *imPath = [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder];
-									
-									if( [[image valueForKey:@"inDatabaseFolder"] boolValue] && [imPath isEqualToString: newFile] == NO)
-									{
-										if( [[NSFileManager defaultManager] fileExistsAtPath: imPath])
-											[[NSFileManager defaultManager] removeFileAtPath: imPath handler:nil];
-									}
-								}
-							}
-							else
-							{
-								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext: context];
-								
-								newObject = YES;
-							}
-							
-							[completeImagesArray addObject: image];
-							
-							if( newObject || inParseExistingObject)
-							{
-								if( DICOMSR == NO)
-									[seriesTable setValue:today forKey:@"dateAdded"];
-								
-								[image setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
-								
-								if( numberOfFrames > 1)
-								{
-									[image setValue: [NSNumber numberWithInt: f] forKey:@"frameID"];
-									
-									NSString *Modality = [study valueForKey: @"modality"];
-									if( combineProjectionSeries && combineProjectionSeriesMode == 0 && ([Modality isEqualToString:@"MG"] || [Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
-									{
-										// *******Combine all CR and DR Modality series in a study into one series
-										long imageInstance = [[curDict objectForKey: [ @"imageID" stringByAppendingString: SeriesNum]] intValue];
-										imageInstance *= 10000;
-										imageInstance += f;
-										[image setValue: [NSNumber numberWithLong: imageInstance] forKey:@"instanceNumber"];
-									}
-									else [image setValue: [NSNumber numberWithInt: f] forKey:@"instanceNumber"];
-								}
-								else
-									[image setValue: [curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] forKey:@"instanceNumber"];
-									
-								if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
-								else [image setValue:newFile forKey:@"path"];
-								
-								[image setValue:[NSNumber numberWithBool: local] forKey:@"inDatabaseFolder"];
-								
-								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
-								
-								[image setValue:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]] forKey:@"sopInstanceUID"];
-								[image setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
-								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
-								[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
-								
-								[image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
-								[image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
-								[image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
-								[image setValue:[NSNumber numberWithBool: mountedVolume] forKey:@"mountedVolume"];
-								if( mountedVolume)
-									[seriesTable setValue:[NSNumber numberWithBool:mountedVolume] forKey:@"mountedVolume"];
-								[image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
-								
-								if( generatedByOsiriX)
-									[image setValue: [NSNumber numberWithBool: generatedByOsiriX] forKey: @"generatedByOsiriX"];
-								else
-									[image setValue: 0L forKey: @"generatedByOsiriX"];
-								
-								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-								[seriesTable setValue: nil forKey:@"thumbnail"];
-								
-								if( DICOMSR && [curDict objectForKey: @"numberOfROIs"] && [curDict objectForKey: @"referencedSOPInstanceUID"]) // OsiriX ROI SR
-								{
-									NSString *s = [curDict objectForKey: @"referencedSOPInstanceUID"];
-									[image setValue: s forKey:@"comment"];
-									[image setValue: [curDict objectForKey: @"numberOfROIs"] forKey:@"scale"];
-								}
-								
-								// Relations
-								[image setValue:seriesTable forKey:@"series"];
-								
-								if( isBonjour)
-								{
-									if( local)
-									{
-										NSString *bonjourPath = [BonjourBrowser uniqueLocalPath: image];
-										[[NSFileManager defaultManager] removeItemAtPath: bonjourPath error: nil];
-										[[NSFileManager defaultManager] moveItemAtPath: newFile toPath: bonjourPath error: nil];
-										[bonjourFilesToSend addObject: bonjourPath];
-									}
-									else
-										[bonjourFilesToSend addObject: newFile];
-										
-									NSLog( @"------ AddFiles to a shared Bonjour DB: %@", [newFile lastPathComponent]);
-								}
-								
-								if( DICOMSR == NO)
-								{
-									if( COMMENTSAUTOFILL)
-									{
-										if([curDict objectForKey: @"commentsAutoFill"])
-										{
-											[seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
-											[study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
-										}
-									}
-									
-									if( generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"seriesComments"] length] > 0)
-										[seriesTable setPrimitiveValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
-									
-									if( generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"studyComments"] length] > 0)
-										[study setPrimitiveValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
-									
-									if( generatedByOsiriX == NO && [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
-										[study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
-									
-									if( generatedByOsiriX == NO && [curDict objectForKey: @"keyFrames"])
-									{
-										@try
-										{
-											for( NSString *k in [curDict objectForKey: @"keyFrames"])
-											{
-												if( [k intValue] == f) // corresponding frame
-												{
-													[image setPrimitiveValue: [NSNumber numberWithBool: YES] forKey: @"storedIsKeyImage"];
-													break;
-												}
-											}
-										}
-										@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
-									}
-								}
-								
-								if( DICOMSR && [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
-								{
-									BOOL reportUpToDate = NO;
-									NSString *p = [study reportURL];
-									
-									if( p && [[NSFileManager defaultManager] fileExistsAtPath: p])
-									{
-										NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath: p error: nil];
-										if( [[curDict objectForKey: @"studyDate"] isEqualToDate: [fattrs objectForKey: NSFileModificationDate]])
-											reportUpToDate = YES;
-									}
-									
-									if( reportUpToDate == NO)
-									{
-										NSString *reportURL = nil; // <- For an empty DICOM SR File
-										
-										DicomImage *reportSR = [study reportImage];
-										
-										if( reportSR == image) // Because we can have multiple reports -> only the most recent one is valid
-										{
-											NSString *reportURL = nil, *reportPath = [BrowserController extractReportSR: newFile contentDate: [curDict objectForKey: @"studyDate"]];
-											
-											if( reportPath)
-											{
-												if( [reportPath length] > 8 && ([reportPath hasPrefix: @"http://"] || [reportPath hasPrefix: @"https://"]))
-												{
-													reportURL = reportPath;
-												}
-												else // It's a file!
-												{
-													NSString *reportFilePath = nil;
-													
-													if( isBonjour)
-														reportFilePath = [tempDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]];
-													else
-														reportFilePath = [reportsDirectory stringByAppendingPathComponent: [reportPath lastPathComponent]];
-													
-													[[NSFileManager defaultManager] removeItemAtPath: reportFilePath error: nil];
-													[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: reportFilePath error: nil];
-													
-													reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportPath lastPathComponent]];
-												}
-												
-												NSLog( @"--- DICOM SR -> Report : %@", [curDict valueForKey: @"patientName"]);
-											}
-											
-											if( [reportURL length] > 0)
-												[study setPrimitiveValue: reportURL forKey: @"reportURL"];
-											else
-												[study setPrimitiveValue: 0L forKey: @"reportURL"];
-										}
-									}
-								}
-								
-								[addedImagesArray addObject: image];
-								
-								if(seriesTable && [addedSeries containsObject: seriesTable] == NO)
-									[addedSeries addObject: seriesTable];
-								
-								if( DICOMSR == NO && [curDict valueForKey:@"album"] !=nil)
-								{
-									NSArray* albumArray = [BrowserController albumsInContext: context];
-									
-									DicomAlbum* album = NULL;
-									for (album in albumArray)
-									{
-										if ([album.name isEqualToString:[curDict valueForKey:@"album"]])
-											break;
-									}
-									
-									if (album == nil)
-									{
-										//NSString *name = [curDict valueForKey:@"album"];
-										//album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-										//[album setValue:name forKey:@"name"];
-										
-										for (album in albumArray)
-										{
-											if ([album.name isEqualToString:@"other"])
-												break;
-										}
-										
-										if (album == nil)
-										{
-											album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-											[album setValue:@"other" forKey:@"name"];
-											
-											//@synchronized( [BrowserController currentBrowser])
-//											{
-//												cachedAlbumsManagedObjectContext = nil;
-//											}
-										}
-									}
-									
-									// add the file to the album
-									if ( [[album valueForKey:@"smartAlbum"] boolValue] == NO)
-									{
-										NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];	
-										[studies addObject: [image valueForKeyPath:@"series.study"]];
-										[[image valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
-									}
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					// This file was not readable -> If it is located in the DATABASE folder, we have to delete it or to move it to the 'NOT READABLE' folder
-					if( dbDirectory && [newFile hasPrefix: dbDirectory])
-					{
-						NSLog(@"**** Unreadable file: %@", newFile);
-						
-						if ( DELETEFILELISTENER)
-						{
-							[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
-						}
-						else
-						{
-							if( [[NSFileManager defaultManager] movePath: newFile toPath:[ERRpath stringByAppendingPathComponent: [newFile lastPathComponent]]  handler:nil] == NO)
-								[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
-						}
-					}
-				}
-			}
-				
-			@catch( NSException *ne)
-			{
-				NSLog(@"AddFilesToDatabase DicomFile exception: %@", [ne description]);
-				NSLog(@"Parser failed for this file: %@", newFile);
-				[AppController printStackTrace: ne];
-			}
-		}
-		
-		[studiesArrayStudyInstanceUID release];
-		[studiesArray release];
-		
-		NSString *dockLabel = nil;
-		NSString *growlString = nil;
-		NSString *growlStringNewStudy = nil;
-		
-		@try
-		{
-			// Compute no of images in studies/series
-			for( NSManagedObject *study in modifiedStudiesArray) [study valueForKey:@"noFiles"];
-			
-			// Reapply annotations from DICOMSR file
-			for( DicomStudy *study in modifiedStudiesArray) [study reapplyAnnotationsFromDICOMSR];
-			
-			if( isBonjour && [bonjourFilesToSend count] > 0)
-			{
-				if( generatedByOsiriX)
-					[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourGeneratedByOsiriXDB:) toTarget: browserController withObject: bonjourFilesToSend];
-				else 
-					[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourDB:) toTarget: browserController withObject: bonjourFilesToSend];
-			}
-			
-			if( notifyAddedFiles)
-			{
-				NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-				
-				@try
-				{
-					NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
-					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:nil userInfo:userInfo];
-					
-					userInfo = [NSDictionary dictionaryWithObject:completeImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
-					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBCompleteNotification object:nil userInfo:userInfo];
-				}
-				@catch( NSException *ne)
-				{
-					NSLog( @"******* OsirixAddToDBNotification: %@", [ne description]);
-					[AppController printStackTrace: ne];
-				}
-				
-				if( [addedImagesArray count] > 0)// && generatedByOsiriX == NO)
-				{
-					dockLabel = [NSString stringWithFormat:@"%d", [addedImagesArray count]];
-					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];
-					growlStringNewStudy = [NSString stringWithFormat: NSLocalizedString(@"%@\r%@", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
-				}
-				
-				[dockLabel retain];
-				[growlString retain];
-				[growlStringNewStudy retain];
-				
-				if( isBonjour == NO)
-					[browserController executeAutorouting: addedImagesArray rules: nil manually: NO generatedByOsiriX: generatedByOsiriX];
-				
-				[p release];
-			}
-		}
-		@catch( NSException *ne)
-		{
-			NSLog(@"******* Compute no of images in studies/series: %@", [ne description]);
-			[AppController printStackTrace: ne];
-		}
-		
-		[splash close];
-		[splash release];
-		splash = nil;
-		
-		@try
-		{
-			[browserController autoCleanDatabaseFreeSpace: browserController];
-			
-			NSError *error = nil;
-			[context save: &error];
-			
-			if( error)
-			{
-				NSLog( @"***** error saving DB: %@", [[error userInfo] description]);
-				NSLog( @"***** saveDatabase ERROR: %@", [error localizedDescription]);
-				
-				addFailed = YES;
-			}
-			
-			if( addFailed == NO)
-			{
-				NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
-				
-				for( NSManagedObject *seriesTable in addedSeries)
-				{
-					NSString *curPatientID = [seriesTable valueForKeyPath:@"study.patientID"];
-					
-					for( ViewerController *vc in viewersList)
-					{
-						if( [[vc fileList] count])
-						{
-							NSManagedObject	*firstObject = [[vc fileList] objectAtIndex: 0];
-							
-							// For each new image in a pre-existing study, check if a viewer is already opened -> refresh the preview list
-							
-							if( curPatientID == nil || [curPatientID isEqualToString: [firstObject valueForKeyPath:@"series.study.patientID"]])
-							{
-								if( [vlToRebuild containsObject: vc] == NO)
-									[vlToRebuild addObject: vc];
-							}
-							
-							if( seriesTable == [firstObject valueForKey:@"series"])
-							{
-								if( [vlToReload containsObject: vc] == NO)
-									[vlToReload addObject: vc];
-							}
-						}
-					}
-				}
-			}
-		}
-		@catch( NSException *ne)
-		{
-			NSLog(@"******* vlToReload vlToRebuild: %@", [ne description]);
-			[AppController printStackTrace: ne];
-		}
-		
-		[context unlock];
-		[context release];
-		
-		if( addFailed == NO)
-		{
-			if( dockLabel)
-				[browserController performSelectorOnMainThread:@selector( setDockLabel:) withObject: dockLabel waitUntilDone:NO];
-			
-			if( growlString)
-				[browserController performSelectorOnMainThread:@selector( setGrowlMessage:) withObject: growlString waitUntilDone:NO];
-			
-			if( newStudy)
-			{
-				if( growlStringNewStudy)
-					[browserController performSelectorOnMainThread:@selector( setGrowlMessageNewStudy:) withObject: growlStringNewStudy waitUntilDone:NO];
-			}
-			
-			if([NSThread isMainThread])
-				[browserController newFilesGUIUpdate: browserController];
-				
-			[browserController.newFilesConditionLock lock];
-			
-			int prevCondition = [browserController.newFilesConditionLock condition];
-			
-			for( ViewerController *a in vlToReload)
-			{
-				if( [browserController.viewersListToReload containsObject: a] == NO)
-					[browserController.viewersListToReload addObject: a];
-			}
-			for( ViewerController *a in vlToRebuild)
-			{
-				if( [browserController.viewersListToRebuild containsObject: a] == NO)
-					[browserController.viewersListToRebuild addObject: a];
-			}
-			
-			if( newStudy || prevCondition == 1) [browserController.newFilesConditionLock unlockWithCondition: 1];
-			else [browserController.newFilesConditionLock unlockWithCondition: 2];
-			
-			if([NSThread isMainThread])
-				[browserController newFilesGUIUpdate: browserController];
-			
-			browserController.databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
-		}
-		
-		[dockLabel release]; dockLabel = nil;
-		[growlString release]; growlString = nil;
-		[growlStringNewStudy release]; growlStringNewStudy = nil;
-	}
-	
-	[DicomFile setFilesAreFromCDMedia: NO];
-	
-	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dicomsr_osirix" handler: nil];
-	
-	if( addFailed)
-	{
-		NSLog(@"adding failed....");
-		
-		return nil;
-	}
-	
-	return addedImagesArray;
+	if (!db) N2LogError(@"couldn't identify database");
+	return [db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject generatedByOsiriX:generatedByOsiriX];
 }
+
+#pragma deprecated
++(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX mountedVolume: (BOOL) mountedVolume { // __deprecated
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
+	if (!db && browserController) db = [browserController database];
+	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
+	if (!db) N2LogError(@"couldn't identify database");
+	return [db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject generatedByOsiriX:generatedByOsiriX mountedVolume:mountedVolume];
+}
+
+#pragma deprecated
++(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder { // __deprecated
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
+	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
+	if (!db) N2LogError(@"couldn't identify database");
+	return [db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
+}
+
+#pragma deprecated
+-(NSArray*)subAddFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM produceAddedFiles:(BOOL)produceAddedFiles parseExistingObject:(BOOL)parseExistingObject context:(NSManagedObjectContext*)context dbFolder:(NSString*)dbFolder { // __deprecated
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
+	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
+	if (!db) db = database;
+	return [db addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
+}
+
+#pragma deprecated
+-(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM safeRebuild:(BOOL)safeRebuild produceAddedFiles:(BOOL)produceAddedFiles { // __deprecated // notice: the "safeRebuild" seemed to be already ignored before the DicomDatabase transition
+    return [database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:NO];
+}
+
+#pragma deprecated
+-(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM produceAddedFiles:(BOOL)produceAddedFiles parseExistingObject:(BOOL)parseExistingObject context:(NSManagedObjectContext*)context dbFolder:(NSString*)dbFolder { // __deprecated
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
+	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
+	if (!db) db = database;
+    return [database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
+}
+
 #pragma mark-
 
-+(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder
+- (void) newFilesGUIUpdateRun: (int) dummy viewersListToReload: (NSMutableArray*) cReload viewersListToRebuild: (NSMutableArray*) cRebuild
 {
-	return [BrowserController addFiles:newFilesArray toContext:context toDatabase:([[[self currentBrowser] database] managedObjectContext] == context? [self currentBrowser] : nil) onlyDICOM:onlyDICOM  notifyAddedFiles:notifyAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
-}
-
-- (NSArray*) subAddFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
-{
-	return [BrowserController addFiles:newFilesArray toContext:context toDatabase: [BrowserController currentBrowser] onlyDICOM:onlyDICOM  notifyAddedFiles:produceAddedFiles parseExistingObject:parseExistingObject dbFolder:dbFolder];
-}
-
-- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  safeRebuild:(BOOL) safeRebuild produceAddedFiles:(BOOL) produceAddedFiles
-{
-    return [self addFilesToDatabase:newFilesArray onlyDICOM:onlyDICOM  produceAddedFiles:produceAddedFiles];
-}
-
-- (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
-{
-	#define CHUNK 100000
-	
-	if( [newFilesArray count] < CHUNK)
-	{
-		return [self subAddFilesToDatabase: newFilesArray onlyDICOM: onlyDICOM  produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context:  context dbFolder: dbFolder];
-	}
-	else
-	{
-		int total = [newFilesArray count];
-		NSMutableArray *result = [NSMutableArray arrayWithCapacity: total];
-		
-		Wait *splash = nil;
-		
-		if( [NSThread isMainThread])
-		{
-			splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString( @"Adding %@ file(s)...", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt: total]]]];
-			[splash showWindow: self];
-			
-			[[splash progress] setMaxValue: total / CHUNK];
-			[splash setCancel: YES];
-		}
-		
-		for( int i = 0; i < total;)
-		{
-			int no;
-			
-			if( i + CHUNK >= total) no = total - i; 
-			else no = CHUNK;
-			
-			NSRange range = NSMakeRange( i, no);
-			
-			id *objs = (id*) malloc( no * sizeof( id));
-			if( objs)
-			{
-				[newFilesArray getObjects: objs range: range];
-				
-				NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
-				
-				[result addObjectsFromArray: [self subAddFilesToDatabase: subArray onlyDICOM: onlyDICOM produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context:  context dbFolder: dbFolder]];
-				
-				free( objs);
-			}
-			
-			[splash incrementBy:1];
-			if( [splash aborted]) break;
-			
-			i += no;
-		}
-		
-		[splash close];
-		[splash release];
-		splash = nil;
-		
-		return result;
-	}
-}
-
-- (void) newFilesGUIUpdateRun: (int) state viewersListToReload: (NSMutableArray*) cReload viewersListToRebuild: (NSMutableArray*) cRebuild
-{
-	if( state == 1)
+//	if( state == 1)
 	{
 		[self outlineViewRefresh];
 		[self refreshAlbums];
 	}
-	else
+//	else
 	{
 		[databaseOutline reloadData];
 		[albumTable reloadData];
@@ -1556,7 +548,7 @@ static NSConditionLock *threadLock = nil;
 	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess)
 		return;
 	
-	if( [newFilesConditionLock tryLockWhenCondition: 1] || [newFilesConditionLock tryLockWhenCondition: 2])
+//	if( [newFilesConditionLock tryLockWhenCondition: 1] || [newFilesConditionLock tryLockWhenCondition: 2])
 	{
 		NSMutableArray *cReload = [NSMutableArray arrayWithArray: viewersListToReload], *vReload = [NSMutableArray arrayWithCapacity: 20];
 		
@@ -1580,23 +572,23 @@ static NSConditionLock *threadLock = nil;
 			}
 		}
 		
-		int condition = [newFilesConditionLock condition];
+//		int condition = [newFilesConditionLock condition];
 		
-		if( [viewersListToRebuild count] || [viewersListToReload count]) [newFilesConditionLock unlockWithCondition: condition];
-		else [newFilesConditionLock unlockWithCondition: 0];
+//		if( [viewersListToRebuild count] || [viewersListToReload count]) [newFilesConditionLock unlockWithCondition: condition];
+//		else [newFilesConditionLock unlockWithCondition: 0];
 		
-		[self newFilesGUIUpdateRun: condition viewersListToReload: vReload viewersListToRebuild: vRebuild];
+		[self newFilesGUIUpdateRun:0 viewersListToReload: vReload viewersListToRebuild: vRebuild];
 	}
 }
 
 - (void) CloseViewerNotification: (NSNotification*) note
 {
-	[newFilesConditionLock lock];
+//	[newFilesConditionLock lock];
 	
 	[viewersListToReload removeObject: [note object]];
 	[viewersListToRebuild removeObject: [note object]];
 	
-	[newFilesConditionLock unlock];
+//	[newFilesConditionLock unlock];
 }
 
 - (void) addFilesAndFolderToDatabase:(NSArray*) filenames
@@ -1803,261 +795,13 @@ static NSConditionLock *threadLock = nil;
 	[autoroutingQueue unlock];
 }
 
-- (void) executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually
-{
+-(void)executeAutorouting:(NSArray*)newImages rules:(NSArray*)autoroutingRules manually:(BOOL)manually { // __deprecated
 	[self executeAutorouting: newImages rules: autoroutingRules manually: manually generatedByOsiriX: NO];
 }
 
-- (void) executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually generatedByOsiriX: (BOOL) generatedByOsiriX
-{
-	#ifndef OSIRIX_LIGHT
-	WaitRendering *splash = nil;
-	
-	if( autoroutingRules == nil)
-		autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
-	
-	if( manually)
-	{	
-		splash = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing Routing for Selection...", nil)];
-		[splash showWindow:self];
-	}
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"] == YES || manually == YES)
-	{
-		for( NSDictionary *routingRule in autoroutingRules)
-		{
-			if( [routingRule valueForKey:@"activated"] == nil || [[routingRule valueForKey:@"activated"] boolValue] == YES || manually == YES)
-			{
-				NSManagedObjectContext *context = self.managedObjectContext;
-				
-				[context retain];
-				[context lock];
-				
-				NSPredicate	*predicate = nil;
-				NSArray	*result = nil;
-				
-				@try
-				{
-					if( [[routingRule objectForKey: @"filterType"] intValue] == 0)
-						predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
-					else // GeneratedByOsiriX filterType
-					{
-						if( generatedByOsiriX)
-							predicate = [NSPredicate predicateWithValue: YES];
-						else
-						{
-							if( manually)
-							{
-								NSMutableArray *studies = [NSMutableArray arrayWithArray: [newImages valueForKeyPath: @"series.study"]];
-								[studies removeDuplicatedObjects];
-								for( DicomStudy *study in studies)
-								{
-									[study archiveAnnotationsAsDICOMSR];
-									[study archiveReportAsDICOMSR];
-									
-									for( DicomImage *im in [[[study roiSRSeries] valueForKey: @"images"] allObjects])
-										[im setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
-										
-									for( DicomImage *im in [[[study reportSRSeries] valueForKey: @"images"] allObjects])
-										[im setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
-									
-									[[study annotationsSRImage] setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
-								}
-								
-								predicate = [NSPredicate predicateWithFormat: @"generatedByOsiriX == YES"];
-							}
-							else
-								predicate = [NSPredicate predicateWithValue: NO];
-						}
-					}
-					
-					if( predicate)
-						result = [newImages filteredArrayUsingPredicate: predicate];
-					
-					if( [result count])
-					{
-						if( [[routingRule valueForKey:@"previousStudies"] intValue] > 0 && [[routingRule objectForKey: @"filterType"] intValue] == 0)
-						{
-							NSMutableDictionary *patients = [NSMutableDictionary dictionary];
-							
-							// for each study
-							for( id im in result)
-							{
-								if( [patients objectForKey: [im valueForKeyPath:@"series.study.patientUID"]] == nil)
-									[patients setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.patientUID"]];
-							}
-							
-							for( NSString *patientUID in [patients allKeys])
-							{
-								NSLog( @"%@", patientUID);
-								
-								id study = [patients objectForKey: patientUID];
-								
-								NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientUID == %@)", patientUID];
-								NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-								dbRequest.entity = [self.managedObjectModel.entitiesByName objectForKey:@"Study"];
-								dbRequest.predicate = predicate;
-								
-								NSError	*error = nil;
-								NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-								
-								if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
-								{
-									NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
-									NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-									[sort release];
-									NSMutableArray* s = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
-									// remove original study from array
-									[s removeObject: study];
-									
-									studiesArray = [NSArray arrayWithArray: s];
-									
-									// did we already send these studies ? If no, send them !
-									
-									if( autoroutingPreviousStudies == nil) autoroutingPreviousStudies = [[NSMutableDictionary dictionary] retain];
-									
-									int previousNumber = [[routingRule valueForKey:@"previousStudies"] intValue];
-									
-									for( id s in studiesArray)
-									{
-										NSString *key = [NSString stringWithFormat:@"%@ -> %@", [s valueForKey: @"studyInstanceUID"], [routingRule objectForKey:@"server"]];
-										NSDate *when = [autoroutingPreviousStudies objectForKey: key];
-										
-										BOOL found = YES;
-										
-										if( [[routingRule valueForKey: @"previousModality"] boolValue])
-										{
-											if( [s valueForKey:@"modality"] && [study valueForKey:@"modality"])
-											{
-												if( [[study valueForKey:@"modality"] rangeOfString: [s valueForKey:@"modality"]].location == NSNotFound) found = NO;
-											}
-											else found = NO;
-										}
-										
-										if( [[routingRule valueForKey: @"previousDescription"] boolValue])
-										{
-											if( [s valueForKey:@"studyName"] && [study valueForKey:@"studyName"])
-											{
-												if( [[study valueForKey:@"studyName"] rangeOfString: [s valueForKey:@"studyName"]].location == NSNotFound) found = NO;
-											}
-											else found = NO;
-										}
-										
-										if( found && previousNumber > 0)
-										{
-											previousNumber--;
-											
-											// If we sent it more than 3 hours ago, re-send it
-											if( when == nil || [when timeIntervalSinceNow] < -60*60*3)
-											{
-												[autoroutingPreviousStudies setObject: [NSDate date] forKey: key];
-												
-												for( NSManagedObject *series in [[s valueForKey:@"series"] allObjects])
-													result = [result arrayByAddingObjectsFromArray: [[series valueForKey:@"images"] allObjects]];
-											}
-										}
-									}
-								}
-							}
-						}
-						
-						if( [[routingRule valueForKey:@"cfindTest"] boolValue] && [[routingRule objectForKey: @"filterType"] intValue] == 0)
-						{
-							NSMutableDictionary *studies = [NSMutableDictionary dictionary];
-							
-							for( id im in result)
-							{
-								if( [studies objectForKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]] == nil)
-									[studies setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]];
-							}
-							
-							for( NSString *studyUID in [studies allKeys])
-							{
-								NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-								
-								NSString		*serverName = [routingRule objectForKey:@"server"];
-								NSDictionary	*server = nil;
-								
-								for ( NSDictionary *aServer in serversArray)
-								{
-									if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
-									{
-										server = aServer;
-										break;
-									}
-								}
-								
-								if( server)
-								{
-									NSArray *s = [QueryController queryStudyInstanceUID: studyUID server: server showErrors: NO];
-									
-									if( [s count])
-									{
-										if( [s count] > 1)
-											NSLog( @"Uh? multiple studies with same StudyInstanceUID on the distal node....");
-										
-										DCMTKStudyQueryNode* studyNode = [s lastObject];
-										
-										if( [[studyNode valueForKey:@"numberImages"] intValue] >= [[[studies objectForKey: studyUID] valueForKey: @"noFiles"] intValue])
-										{
-											// remove them, there are already there ! *probably*
-											
-											NSLog( @"Already available on the distant node : we will not send it.");
-											
-											NSMutableArray *r = [NSMutableArray arrayWithArray: result];
-											
-											for( int i = 0 ; i < [r count] ; i++)
-											{
-												if( [[[r objectAtIndex: i] valueForKeyPath: @"series.study.studyInstanceUID"] isEqualToString: studyUID])
-												{
-													[r removeObjectAtIndex: i];
-													i--;
-												}
-											}
-											
-											result = r;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-				
-				@catch( NSException *ne)
-				{
-					result = nil;
-					NSLog( @"Error in autorouting filter :");
-					NSLog( @"%@", [ne name]);
-					NSLog( @"%@", [ne reason]);
-					[AppController printStackTrace: ne];
-				}
-				
-				if( [result count])
-					[self addFiles: result withRule: routingRule];
-					
-				[context unlock];
-				[context release];
-			}
-		}
-		
-		// Do some cleaning
-		
-		if( autoroutingPreviousStudies)
-		{
-			for( NSString *key in [autoroutingPreviousStudies allKeys])
-			{
-				if( [[autoroutingPreviousStudies objectForKey: key] timeIntervalSinceNow] < -60*60*3)
-				{
-					[autoroutingPreviousStudies removeObjectForKey: key];
-				}
-			}
-		}
-	}
-	
-	[splash close];
-	[splash release];
-	#endif
+-(void)executeAutorouting:(NSArray*)newImages rules:(NSArray*)autoroutingRules manually:(BOOL)manually generatedByOsiriX:(BOOL)generatedByOsiriX { // __deprecated // notice: thu generatedByOsiriX is supposed to be specified in all DicomImage instances, so I decided to ignore it when trasitioning to DicomDatabase
+	if (manually || [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
+		[database applyAutoRoutingRules:autoroutingRules toImages:newImages];
 }
 
 - (void)showErrorMessage: (NSDictionary*)dict
@@ -2340,11 +1084,12 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (NSTimeInterval) databaseLastModification
-{
-	if( databaseLastModification == 0) databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
-	
-	return databaseLastModification;
+- (NSTimeInterval) databaseLastModification { // __deprecated
+	return database.timeOfLastModification;
+}
+
+-(void)setDatabaseLastModification:(NSTimeInterval)t {
+	database.timeOfLastModification = t;
 }
 
 - (NSManagedObjectModel*)managedObjectModel { // __deprecated
@@ -4630,8 +3375,8 @@ static NSConditionLock *threadLock = nil;
 					NSLog(@"------------------- Limit Reached - Finishing autoCleanDatabaseFreeSpace");
 					
 					// This will do a outlineViewRefresh
-					if( [newFilesConditionLock tryLock])
-						[newFilesConditionLock unlockWithCondition: 1];
+//					if( [newFilesConditionLock tryLock])
+//						[newFilesConditionLock unlockWithCondition: 1];
 				}
 			}
 		}
@@ -6742,7 +5487,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[animationCheck setState: animState];
 	
-	databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
+	self.databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 	
 	[self refreshMatrix: self];
 	
@@ -13065,7 +11810,7 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 		
 		albumNoOfStudiesCache = [[NSMutableArray alloc] init];
-		newFilesConditionLock = [[NSConditionLock alloc] initWithCondition: 0];
+//		newFilesConditionLock = [[NSConditionLock alloc] initWithCondition: 0];
 		viewersListToRebuild = [[NSMutableArray alloc] initWithCapacity: 0];
 		viewersListToReload = [[NSMutableArray alloc] initWithCapacity: 0];
 	//	persistentStoreCoordinatorDictionary = [[NSMutableDictionary alloc] initWithCapacity: 0];
@@ -18065,7 +16810,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 									[[NSFileManager defaultManager] removeItemAtPath: [reportSR valueForKey: @"completePath"] error: nil];
 							}
 							
-							NSString *reportPath = [BrowserController extractReportSR: [reportSR completePathResolved] contentDate: [reportSR valueForKey: @"date"]];
+							NSString *reportPath = [DicomDatabase extractReportSR: [reportSR completePathResolved] contentDate: [reportSR valueForKey: @"date"]];
 							
 							if( reportPath)
 							{

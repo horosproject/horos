@@ -185,7 +185,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 //	char							cfixedDocumentsDirectory[ 4096], cfixedIncomingDirectory[ 4096], cfixedTempNoIndexDirectory[ 4096], cfixedIncomingNoIndexDirectory[ 4096];
 	
-	NSTimeInterval					databaseLastModification;
+//	NSTimeInterval					databaseLastModification;
 	NSUInteger						previousFlags;
 //	StructuredReportController		*structuredReportController;
 	
@@ -194,7 +194,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSMutableArray					*autoroutingQueueArray;
 	NSLock							*autoroutingQueue, *autoroutingInProgress;
-	NSMutableDictionary				*autoroutingPreviousStudies;
+//	NSMutableDictionary				*autoroutingPreviousStudies;
 	
 	NSConditionLock					*processorsLock;
 //	NSRecursiveLock					*decompressArrayLock, *decompressThreadRunning;
@@ -212,7 +212,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSArrayController		*notificationEmailArrayController;
 	NSString						*temporaryNotificationEmail, *customTextNotificationEmail;
 	
-	NSConditionLock					*newFilesConditionLock;
+//	NSConditionLock					*newFilesConditionLock;
 	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
 	
 //	volatile BOOL					newFilesInIncoming;
@@ -276,9 +276,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @property BOOL rtstructProgressBar;
 @property float rtstructProgressPercent;
-@property NSTimeInterval databaseLastModification;
+@property NSTimeInterval databaseLastModification __deprecated;
 @property(readonly) NSMutableArray *viewersListToReload, *viewersListToRebuild;
-@property(readonly) NSConditionLock* newFilesConditionLock;
+//@property(readonly) NSConditionLock* newFilesConditionLock;
 @property(readonly) NSMutableDictionary *databaseIndexDictionary;
 @property(readonly) PluginManagerController *pluginManagerController;
 
@@ -425,8 +425,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects;
 - (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages;
 - (void)setToolbarReportIconForItem: (NSToolbarItem *)item;
-- (void) executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually;
-- (void) executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually generatedByOsiriX: (BOOL) generatedByOsiriX;
+- (void)executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually __deprecated;
+- (void)executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually generatedByOsiriX: (BOOL) generatedByOsiriX __deprecated;
 - (void) addFiles: (NSArray*) files withRule:(NSDictionary*) routingRule;
 - (void) resetListenerTimer __deprecated;
 - (IBAction) albumTableDoublePressed: (id)sender;
