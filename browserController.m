@@ -14601,6 +14601,16 @@ static NSArray*	openSubSeriesArray = nil;
 {
 	[self saveDatabase: currentDatabasePath];
 	
+	for( NSWindow *win in [NSApp windows])
+	{
+		if( [[win windowController] isKindOfClass:[BurnerWindowController class]])
+		{
+			NSRunInformationalAlertPanel( NSLocalizedString(@"Burn", nil), NSLocalizedString(@"A burn session is opened. Close it before quitting.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			[win makeKeyAndOrderFront:self];
+			return NO;
+		}
+	}
+	
 	if( newFilesInIncoming || [[ThreadsManager defaultManager] threadsCount] > 0)
 	{
 		if( NSDrawerClosedState == [albumDrawer state])
