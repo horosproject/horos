@@ -515,8 +515,13 @@ static NSConditionLock *threadLock = nil;
 }
 
 #pragma mark-
-+(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder
-{
++(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder { // __deprecated
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
+	if (!db && browserController) db = [browserController database];
+	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
+	
+	[db addFilesAtPaths:newFilesArray dicomOnly:onlyDICOM postNotifications:notifyAddedFiles rereadExistingItems:parseExistingObject];
+	
 	return [BrowserController addFiles: newFilesArray toContext: context toDatabase: browserController onlyDICOM: onlyDICOM  notifyAddedFiles: notifyAddedFiles parseExistingObject: parseExistingObject dbFolder:  dbFolder generatedByOsiriX: NO mountedVolume: NO];
 }
 
@@ -4104,7 +4109,7 @@ static NSConditionLock *threadLock = nil;
 			
 			DicomDatabase* db = [database retain];
 			[self setDatabase:nil];
-			
+
 			[db reduceCoreDataFootPrint];
 			
 			[self setDatabase:[db autorelease]];
@@ -4113,6 +4118,9 @@ static NSConditionLock *threadLock = nil;
 		{
 			N2LogExceptionWithStackTrace(e);
 		}
+		
+		[DCMPix purgeCachedDictionaries];
+		[DCMView purgeStringTextureCache];
 	}
 	
 }
