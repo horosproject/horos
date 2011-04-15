@@ -17,7 +17,7 @@
 #include <Accelerate/Accelerate.h>
 
 @class MPR2DController,NSCFDate, DicomStudy;
-@class BurnerWindowController,ViewerController;
+@class ViewerController;
 @class BonjourPublisher,BonjourBrowser;
 @class AnonymizerWindowController,QueryController;
 @class LogWindowController,PreviewView;
@@ -72,7 +72,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSMutableDictionary		*activeReceives;
 	NSMutableArray			*receiveLog;
 	
-	BurnerWindowController		*burnerWindowController;
 	LogWindowController			*logWindowController;
 	
     DCMPix                  *curPreviewPix;
@@ -455,10 +454,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 -(void) previewPerformAnimation:(id) sender;
 -(void) matrixDisplayIcons:(id) sender;
 //- (void)reloadSendLog:(id)sender;
-
-
-- (void) setBurnerWindowControllerToNIL;
-- (BOOL) checkBurner;
 
 - (NSArray*) KeyImages: (id) sender;
 - (NSArray*) ROIImages: (id) sender;

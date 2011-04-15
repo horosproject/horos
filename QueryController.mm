@@ -3233,15 +3233,20 @@ extern "C"
 
 - (void)dealloc
 {
+	if( avoidQueryControllerDeallocReentry) // This can happen with the cancelPreviousPerformRequestsWithTarget calls
+		return;
+	
+	avoidQueryControllerDeallocReentry = YES;
+	
+	NSLog( @"dealloc QueryController");
+	
 	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector( executeRefresh:) object:nil];
+	[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys];
 	
 	[autoQueryLock lock];
 	[autoQueryLock unlock];
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: queryArrayPrefs];
-
-	NSLog( @"dealloc QueryController");
-	[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys];
 	[pressedKeys release];
 	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
 	[queryManager release];
@@ -3258,10 +3263,13 @@ extern "C"
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
 	[queryArrayPrefs release];
-		
-	[super dealloc];
 	
 	[autoQueryLock release];
+	
+	avoidQueryControllerDeallocReentry = NO;
+	
+	[super dealloc];
+	
 	currentQueryController = nil;
 }
 

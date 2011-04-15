@@ -66,7 +66,7 @@
 	
 	QueryArrayController					*queryManager;
 	
-	BOOL									autoQuery, queryButtonPressed, performingCFind;
+	BOOL									autoQuery, queryButtonPressed, performingCFind, avoidQueryControllerDeallocReentry;
 	
 	NSInteger								autoRefreshQueryResults;
 	NSRecursiveLock							*autoQueryLock;

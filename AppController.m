@@ -2317,11 +2317,6 @@ static NSDate *lastWarningDate = nil;
 	}
 }
 
-- (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender
-{
-	return [[BrowserController currentBrowser] checkBurner];
-}
-
 - (BOOL) applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode

@@ -12219,8 +12219,7 @@ static BOOL needToRezoom;
 		
 		if( subSampling != 1)
 		{
-			NSArray	*winList = [NSApp windows];
-			for( NSWindow *win in winList)
+			for( NSWindow *win in [NSApp windows])
 			{
 				if( [win isMiniaturized])
 				{
@@ -18297,46 +18296,29 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void) setBurnerWindowControllerToNIL
-{
-	burnerWindowController = nil;
-}
-
-- (BOOL) checkBurner
-{
-	if( burnerWindowController)
-	{
-		[[burnerWindowController window] makeKeyAndOrderFront: self];
-		
-		return NO;
-	}
-	
-	return YES;
-}
-
 #ifndef OSIRIX_LIGHT
 - (void)burnDICOM: (id)sender
 {
-	if( burnerWindowController == nil)
+	for( NSWindow *win in [NSApp windows])
 	{
-		NSMutableArray *managedObjects = [NSMutableArray array];
-		NSMutableArray *filesToBurn;
-		//Burn additional Files. Not just images. Add SRs
-		[self checkResponder];
-		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
-		else filesToBurn = [self filesForDatabaseOutlineSelection: managedObjects onlyImages:NO];
-		
-		burnerWindowController = [[BurnerWindowController alloc] initWithFiles:filesToBurn managedObjects:managedObjects];
-	//	[NSApp beginSheet:burnerWindowController.window modalForWindow:self.window modalDelegate:NULL didEndSelector:NULL contextInfo:NULL];
-		
-		[burnerWindowController showWindow:self];
+		if( [[win windowController] isKindOfClass:[BurnerWindowController class]])
+		{
+			NSRunInformationalAlertPanel( NSLocalizedString(@"Burn", nil), NSLocalizedString(@"A burn session is already opened. Close it to burn a new study.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			[win makeKeyAndOrderFront:self];
+			return;
+		}
 	}
-	else
-	{
-		NSRunInformationalAlertPanel( NSLocalizedString(@"Burn", nil), NSLocalizedString(@"A burn session is already opened. Close it to burn a new study.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		
-		[[burnerWindowController window] makeKeyAndOrderFront:self];
-	}
+	
+	NSMutableArray *managedObjects = [NSMutableArray array];
+	NSMutableArray *filesToBurn;
+	//Burn additional Files. Not just images. Add SRs
+	[self checkResponder];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
+	else filesToBurn = [self filesForDatabaseOutlineSelection: managedObjects onlyImages:NO];
+	
+	BurnerWindowController *burnerWindowController = [[BurnerWindowController alloc] initWithFiles:filesToBurn managedObjects:managedObjects];
+	
+	[burnerWindowController showWindow:self];
 }
 #endif
 
