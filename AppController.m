@@ -2491,8 +2491,10 @@ static NSDate *lastWarningDate = nil;
 {
 	if( [[BrowserController currentBrowser] shouldTerminate: sender] == NO) return;
 	
+	#ifndef OSIRIX_LIGHT
 	[dcmtkQRSCP abort];
 	[dcmtkQRSCPTLS abort];
+	#endif
 	
 	[NSThread sleepForTimeInterval: 1];
 	

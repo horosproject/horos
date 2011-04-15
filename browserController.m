@@ -4142,6 +4142,9 @@ static NSConditionLock *threadLock = nil;
 	if( [options objectForKey: @"COPYDATABASEMODE"])
 		COPYDATABASEMODE = [[options objectForKey: @"COPYDATABASEMODE"] integerValue];
 	
+	if( DICOMDIRCDMODE)
+		COPYDATABASE = NO;
+	
 	NSMutableArray *newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
 	NSString *INpath = [[self documentsDirectory] stringByAppendingPathComponent: DATABASEFPATH];
 	
@@ -13890,15 +13893,9 @@ static NSArray*	openSubSeriesArray = nil;
 			
 			[self loadDatabase: currentDatabasePath];
 			
-			BOOL COPYDATABASE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASE"];
-	
-			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"COPYDATABASE"];
-			
 			NSMutableArray *filesArray = [NSMutableArray array];
 			[self addDICOMDIR:dicomdir: filesArray];
 			[self addFilesAndFolderToDatabase: filesArray];
-			
-			[[NSUserDefaults standardUserDefaults] setBool: COPYDATABASE forKey: @"COPYDATABASE"];
 		}
 		else  if ([[NSFileManager defaultManager] fileExistsAtPath: dicomdirPath])
 		{
@@ -14601,6 +14598,7 @@ static NSArray*	openSubSeriesArray = nil;
 {
 	[self saveDatabase: currentDatabasePath];
 	
+	#ifndef OSIRIX_LIGHT
 	for( NSWindow *win in [NSApp windows])
 	{
 		if( [[win windowController] isKindOfClass:[BurnerWindowController class]])
@@ -14610,6 +14608,7 @@ static NSArray*	openSubSeriesArray = nil;
 			return NO;
 		}
 	}
+	#endif
 	
 	if( newFilesInIncoming || [[ThreadsManager defaultManager] threadsCount] > 0)
 	{
