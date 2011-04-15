@@ -48,7 +48,21 @@
 
 #import "dcmqrdbq.h";
 
+#include <signal.h>
+
+extern "C"
+{
+	void (*signal(int signum, void (*sighandler)(int)))(int);
+	
+	void silent_exit_on_sig(int sig_num)
+	{
+		printf ("\rSignal %d received in OsiriX child process - will quit silently.\r", sig_num);
+		_Exit(3);
+	}
+}
+
 NSManagedObjectContext *staticContext = nil;
+
 
 static char *last(char *p, int c)
 {
@@ -1467,6 +1481,17 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						else
 						{
 							lockFile();
+							
+							// We are not interested to see crash report for the child process.
+							// It can safely and silently crash (can occur with network broken pipe)
+							
+							signal(SIGINT , silent_exit_on_sig);
+							signal(SIGABRT , silent_exit_on_sig);
+							signal(SIGILL , silent_exit_on_sig);
+							signal(SIGFPE , silent_exit_on_sig);
+							signal(SIGSEGV, silent_exit_on_sig);
+							signal(SIGTERM , silent_exit_on_sig);
+							signal(SIGBUS , silent_exit_on_sig);
 							
 							// Child
 							@try

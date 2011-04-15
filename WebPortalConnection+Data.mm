@@ -92,13 +92,23 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	
 	// ensure that the user is allowed to access this object
 	
-	if (user) {
+	if (user)
+	{
 		if ([o isKindOfClass:DicomStudy.class])
-			if (![[self.portal studiesForUser:user predicate:nil] containsObject:o])
+		{
+			DicomStudy *s = (DicomStudy*) o;
+			
+			if( [[self.portal studiesForUser:user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", s.patientUID, s.studyInstanceUID]] count] == 0)
 				return nil;
+		}
+		
 		if ([o isKindOfClass:DicomSeries.class])
-			if (![[self.portal seriesForUser:user predicate:nil] containsObject:o])
+		{
+			DicomSeries *s = (DicomSeries*) o;
+			
+			if( [[self.portal studiesForUser:user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", s.study.patientUID, s.study.studyInstanceUID]] count] == 0)
 				return nil;
+		}
 	}
 	
 	return o;
@@ -752,7 +762,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			NSArray* users = [[self.portal.database.managedObjectContext executeFetchRequest:req error:NULL] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]];
 			
 			for (WebPortalUser* u in users)
-				if (u != self.user && ![[self.portal studiesForUser:u predicate:NULL] containsObject:study])
+				if (u != self.user)
 					[shareDestinations addObject:[WebPortalProxy createWithObject:u transformer:[WebPortalUserTransformer create]]];
 		}
 		[response.tokens setObject:shareDestinations forKey:@"ShareDestinations"];

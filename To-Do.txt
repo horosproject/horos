@@ -218,19 +218,18 @@ ftp://medical.nema.org/medical/dicom/2008/08_18pu.pdf
 - X Bundle Version
 - X Localizations strings:
 genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h Preference\ Panes/OSIWebSharingPreferencePane/*.* Preference\ Panes/OSIViewerPreferencePane/*.* Preference\ Panes/OSIPETPreferencePane/*.* Preference\ Panes/OSILocationsPreferencePane/*.* Preference\ Panes/OSIListenerPreferencePane/*.* Preference\ Panes/OSIHotKeysPreferencePane/*.* Preference\ Panes/OSIHangingPreferencePane/*.* Preference\ Panes/OSIGeneralPreferencePane/*.* Preference\ Panes/OSIDatabasePreferencePane/*.* Preference\ Panes/OSICustomImageAnnotations/*.* Preference\ Panes/OSICDPreferencePane/*.* Preference\ Panes/OSIAutoroutingPreferencePane/*.* Preference\ Panes/OSI3DPreferencePane/*.* Preference\ Panes/AYDicomPrintPreferencePane/*.* -macRoman
-- X Localizations strings Preferences
 - X Check if OsiriX Lite works...
-- X Check up-to-date zip packages in Binaries folder
-- X Test DB migration from previous version
-- X OsiriX Lite Upload
+- Check up-to-date zip packages in Binaries folder
+- Test DB migration from previous version
+- OsiriX Lite Upload
 - X QuickLook
 - X Update plugins
 - For international version, manually resign
-- X codesign -vvv /Applications/OsiriX.app
-- X 64bitExtension : upload osirix-viewer.com
-- X 64bitExtension : Kagi Blurb AND in products list for CD/DVD backup AND in pixmeo MySQL DB (Constants, Products) web site
-- X Update Downloads.html
-- X Update versionLeopard.xml
+- codesign -vvv /Applications/OsiriX.app
+- 64bitExtension : upload osirix-viewer.com
+- 64bitExtension : Kagi Blurb AND in products list for CD/DVD backup AND in pixmeo MySQL DB (Constants, Products) web site
+- Update Downloads.html
+- Update versionLeopard.xml
 
 MacAppStore:
 - dSYM files (directly edit proj file)

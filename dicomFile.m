@@ -1618,9 +1618,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		([[NSFileManager defaultManager] fileExistsAtPath:[[filePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)) ||
 		( [extension isEqualToString:@"nii"] == YES))
 	{
-		fileType = [[NSString stringWithString:@"NIfTI"] retain];
-		
 		NIfTI = (nifti_1_header *) nifti_read_header([filePath UTF8String], nil, 0);
+		
+		if( NIfTI == nil)
+			return -1;
+		
+		fileType = [[NSString stringWithString:@"NIfTI"] retain];
 		
 		if( (NIfTI->magic[0] == 'n')                           &&
 			(NIfTI->magic[1] == 'i' || NIfTI->magic[1] == '+')   &&
