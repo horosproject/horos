@@ -1660,8 +1660,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 + (void) purgeStringTextureCache
 {
-	for( NSMutableDictionary *s in globalStringTextureCache)
-		[s removeAllObjects];
+	@synchronized( globalStringTextureCache)
+	{
+		for( NSMutableDictionary *s in globalStringTextureCache)
+			[s removeAllObjects];
+	}
 }
 
 - (void)DrawNSStringGL:(NSString*)str :(GLuint)fontL :(long)x :(long)y align:(DCMViewTextAlign)align useStringTexture:(BOOL)stringTex;
@@ -1673,8 +1676,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( stringTextureCache == nil)
 		{
 			stringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
+			
 			if( globalStringTextureCache == nil) globalStringTextureCache = [[NSMutableArray alloc] init];
-			[globalStringTextureCache addObject: stringTextureCache];
+			
+			@synchronized( globalStringTextureCache)
+			{
+				[globalStringTextureCache addObject: stringTextureCache];
+			}
 		}
 		
 		if( iChatStringTextureCache == nil) iChatStringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
@@ -2208,7 +2216,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[yearOld release];
 	
 	[cursor release];
-	[globalStringTextureCache removeObject: stringTextureCache];
+	
+	@synchronized( globalStringTextureCache)
+	{
+		[globalStringTextureCache removeObject: stringTextureCache];
+	}
 	[stringTextureCache release];
 	[iChatStringTextureCache release];
 	
@@ -11261,7 +11273,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :0];
 	stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
 	
-	[globalStringTextureCache removeObject: stringTextureCache];
+	@synchronized( globalStringTextureCache)
+	{
+		[globalStringTextureCache removeObject: stringTextureCache];
+	}
 	[stringTextureCache release];
 	stringTextureCache = nil;
 	

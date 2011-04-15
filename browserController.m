@@ -4721,7 +4721,6 @@ static NSConditionLock *threadLock = nil;
 			[self resetLogWindowController];
 			[[LogManager currentLogManager] resetLogs];
 			
-			
 			displayEmptyDatabase = YES;
 			[self outlineViewRefresh];
 			[self refreshMatrix: self];
@@ -4731,9 +4730,6 @@ static NSConditionLock *threadLock = nil;
 			
 			if( error == nil)
 				[managedObjectContext reset];
-			
-			[DCMPix purgeCachedDictionaries];
-			[DCMView purgeStringTextureCache];
 			
 			[outlineViewArray release];
 			outlineViewArray = nil;
@@ -4759,6 +4755,9 @@ static NSConditionLock *threadLock = nil;
 		}
 		
 		[managedObjectContext unlock];
+		
+		[DCMPix purgeCachedDictionaries];
+		[DCMView purgeStringTextureCache];
 	}
 	
 	NSLog( @"----- reduce memory footprint for CoreData");
