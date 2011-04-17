@@ -149,15 +149,15 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 - (void)willSelect
 {
 	NSLog(@"OSICustomImageAnnotations willSelect");
-
-	NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedStringFromTableInBundle(@"Default", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), @"CR", @"CT", @"DX", @"ES", @"MG", @"MR", @"NM", @"OT",@"PT",@"RF",@"SC",@"US",@"XA", nil];
 	
-	[modalitiesPopUpButton removeAllItems];
-
-	int i;
-	for (i=0; i<[modalities count]; i++)
+	if( [modalitiesPopUpButton numberOfItems] < 5)
 	{
-		[modalitiesPopUpButton addItemWithTitle:[modalities objectAtIndex:i]];
+		NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedStringFromTableInBundle(@"Default", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), @"CR", @"CT", @"DX", @"ES", @"MG", @"MR", @"NM", @"OT",@"PT",@"RF",@"SC",@"US",@"XA", nil];
+		
+		[modalitiesPopUpButton removeAllItems];
+
+		for (id item in modalities)
+			[modalitiesPopUpButton addItemWithTitle: item];
 	}
 	
 	if( layoutController == nil)
@@ -199,7 +199,6 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 //	layoutController = nil;
 
 	[DICOMFieldsPopUpButton removeAllItems];
-
 }
 
 - (IBAction)addAnnotation:(id)sender;
