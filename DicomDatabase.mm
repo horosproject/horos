@@ -154,7 +154,7 @@ static NSMutableDictionary* databasesDictionary = nil;
 	NSInteger prc;
 	@synchronized(self) {
 		prc = self.retainCount;
-//		if (prc <= 2)
+		if (prc <= 2)
 			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, self.managedObjectContext.retainCount); 
 		[super release];
 	}
