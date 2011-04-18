@@ -22,26 +22,27 @@ extern NSString* const NSThreadUniqueIdKey;
 -(NSString*)uniqueId;
 -(void)setUniqueId:(NSString*)uniqueId;
 
-extern NSString* const NSThreadSupportsCancelKey;
--(BOOL)supportsCancel;
--(void)setSupportsCancel:(BOOL)supportsCancel;
-
 extern NSString* const NSThreadIsCancelledKey;
 //-(BOOL)isCancelled;
 -(void)setIsCancelled:(BOOL)isCancelled;
 
+-(void)enterOperation;
+-(void)enterOperationWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen;
+-(void)exitOperation;
+-(void)enterSubthreadWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen __deprecated;
+-(void)exitSubthread __deprecated;
+
+extern NSString* const NSThreadSupportsCancelKey;
+-(BOOL)supportsCancel;
+-(void)setSupportsCancel:(BOOL)supportsCancel;
+
 extern NSString* const NSThreadStatusKey;
 -(NSString*)status;
 -(void)setStatus:(NSString*)status;
--(void)pushStatus:(NSString*)status;
--(void)popStatus;
 
 extern NSString* const NSThreadProgressKey;
 -(CGFloat)progress;
 -(void)setProgress:(CGFloat)progress;
-
--(void)enterSubthreadWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen;
--(void)exitSubthread;
 
 extern NSString* const NSThreadSubthreadsAwareProgressKey;
 -(CGFloat)subthreadsAwareProgress;

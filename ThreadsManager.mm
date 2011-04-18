@@ -66,7 +66,10 @@
 		[[self mutableArrayValueForKey:@"threads"] addObject:thread];
 		
 		if (![thread isMainThread] && ![thread isExecuting])
-			[thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
+			@try {
+				[thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
+			} @catch (NSException* e) { // ignore
+			}
 		
 		[thread release]; // This is not a memory leak - See Below
 	}

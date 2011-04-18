@@ -529,9 +529,9 @@ static NSConditionLock *threadLock = nil;
 	}
 //	else
 	{
-		[databaseOutline reloadData];
-		[albumTable reloadData];
-		[self outlineViewSelectionDidChange: nil];
+//		[databaseOutline reloadData];
+//		[albumTable reloadData];
+//		[self outlineViewSelectionDidChange: nil];
 	}
 	
 	[self reloadViewers: cReload];
@@ -1259,7 +1259,8 @@ static NSConditionLock *threadLock = nil;
 		[self willChangeValueForKey:@"database"];
 		
 		NSThread* thread = [NSThread currentThread];
-		[thread pushStatus:NSLocalizedString(@"Loading database...", nil)];
+		[thread enterOperation];
+		[thread setStatus:NSLocalizedString(@"Loading database...", nil)];
 		ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
 		
 //		if (refresh) { // TODO: here
@@ -1526,7 +1527,7 @@ static NSConditionLock *threadLock = nil;
 		}
 		
 		[tmc invalidate];
-		[thread popStatus];
+		[thread exitOperation];
 		
 		[self didChangeValueForKey:@"database"];
 	}
@@ -11934,7 +11935,7 @@ static NSArray*	openSubSeriesArray = nil;
 		loadPreviewIndex = 0;
 		matrixDisplayIcons = [[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(matrixDisplayIcons:) userInfo:self repeats:YES] retain];
 		
-		[[NSTimer scheduledTimerWithTimeInterval: 1.0 target:self selector:@selector(newFilesGUIUpdate:) userInfo:self repeats:YES] retain];
+		[[NSTimer scheduledTimerWithTimeInterval: 1.0 target:self selector:@selector(newFilesGUIUpdate:) userInfo:self repeats:YES] retain]; // TODO: hmmm
 		
 		/* notifications from workspace */
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeMount:) name:NSWorkspaceDidMountNotification object:nil];
@@ -12465,13 +12466,13 @@ static NSArray*	openSubSeriesArray = nil;
 			[[[ThreadsManager defaultManager] objectInThreadsAtIndex: x] cancel];
 		
 		NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + 240;
-		while( ti - [NSDate timeIntervalSinceReferenceDate] > 0 && [[ThreadsManager defaultManager] threadsCount] > 0)
-		{
-			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
-			
-			if( wait && [[wait window] isVisible] == NO)
-				[wait showWindow:self];
-		}
+//		while( ti - [NSDate timeIntervalSinceReferenceDate] > 0 && [[ThreadsManager defaultManager] threadsCount] > 0)
+//		{
+//			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+//			
+//			if( wait && [[wait window] isVisible] == NO)
+//				[wait showWindow:self];
+//		}
 		
 		unlink( "/tmp/kill_all_storescu");
 		[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"hideListenerError"];
