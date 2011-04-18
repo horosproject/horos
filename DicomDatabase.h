@@ -26,7 +26,6 @@
 	NSString* _dataBaseDirPath;
 	NSString* _name;
 	NSRecursiveLock* _processFilesLock;
-	NSTimer* _importFilesFromIncomingDirTimer;
 	NSRecursiveLock* _importFilesFromIncomingDirLock;
 	BOOL _isFileSystemFreeSizeLimitReached;
 	NSTimeInterval _timeOfLastIsFileSystemFreeSizeLimitReachedVerification;
@@ -44,8 +43,8 @@
 +(DicomDatabase*)activeLocalDatabase;
 +(void)setActiveLocalDatabase:(DicomDatabase*)ldb;
 
-@property(readonly,retain) NSString* baseDirPath;
-@property(readonly,retain) NSString* dataBaseDirPath;
+@property(readonly,retain) NSString* baseDirPath; // OsiriX Data
+@property(readonly,retain) NSString* dataBaseDirPath; // depends on the content of the file at baseDirPath/DBFOLDER_LOCATION
 @property(readwrite,retain) NSString* name;
 @property(readwrite) NSTimeInterval timeOfLastModification;
 
@@ -64,6 +63,11 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(NSEntityDescription*)logEntryEntity;
 
 #pragma mark Paths
+// these paths are inside baseDirPath
+-(NSString*)sqlFilePath; // this is already defined in N2ManagedDatabase
+-(NSString*)modelVersionFilePath; // this should become private
+-(NSString*)loadingFilePath; // this should become private
+// these paths are inside dataBaseDirPath
 -(NSString*)dataDirPath;
 -(NSString*)incomingDirPath;
 -(NSString*)errorsDirPath;
@@ -75,8 +79,6 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(NSString*)dumpDirPath;
 -(NSString*)pagesDirPath;
 -(NSString*)htmlTemplatesDirPath;
--(NSString*)modelVersionFilePath;  // this should become private
--(NSString*)loadingFilePath; // this should become private
 
 -(NSUInteger)computeDataFileIndex; // this method should be private, but is declared because called from deprecated api
 -(NSString*)uniquePathForNewDataFileWithExtension:(NSString*)ext;
@@ -98,7 +100,7 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(BOOL)isFileSystemFreeSizeLimitReached;
 -(void)importFilesFromIncomingDir; // this method should be private, but is declared because called from deprecated api
 -(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting;
--(void)syncImportFilesFromIncomingDirTimerWithUserDefaults; // called from deprecated API
++(void)syncImportFilesFromIncomingDirTimerWithUserDefaults; // called from deprecated API
 
 #pragma mark Compress/decompress
 -(BOOL)compressFilesAtPaths:(NSArray*)paths;
@@ -122,6 +124,5 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(void)rebuildSqlFile;
 -(void)reduceCoreDataFootPrint;
 -(void)checkForHtmlTemplates;
-+ (NSString*) extractReportSR: (NSString*) dicomSR contentDate: (NSDate*) date;
 
 @end

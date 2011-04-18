@@ -13,6 +13,7 @@
  =========================================================================*/
 
 #import "DicomDatabase.h"
+#import "DicomDatabase+DCMTK.h"
 #import "RemoteDicomDatabase.h"
 #import "SRAnnotation.h"
 #import <DiscRecording/DRDevice.h>
@@ -524,14 +525,14 @@ static NSConditionLock *threadLock = nil;
 {
 //	if( state == 1)
 	{
-		[self outlineViewRefresh];
-		[self refreshAlbums];
+//		[self outlineViewRefresh];
+//		[self refreshAlbums];
 	}
 //	else
 	{
-//		[databaseOutline reloadData];
-//		[albumTable reloadData];
-//		[self outlineViewSelectionDidChange: nil];
+		[databaseOutline reloadData];
+		[albumTable reloadData];
+		[self outlineViewSelectionDidChange: nil];
 	}
 	
 	[self reloadViewers: cReload];
@@ -11935,7 +11936,7 @@ static NSArray*	openSubSeriesArray = nil;
 		loadPreviewIndex = 0;
 		matrixDisplayIcons = [[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(matrixDisplayIcons:) userInfo:self repeats:YES] retain];
 		
-		[[NSTimer scheduledTimerWithTimeInterval: 1.0 target:self selector:@selector(newFilesGUIUpdate:) userInfo:self repeats:YES] retain]; // TODO: hmmm
+//		[[NSTimer scheduledTimerWithTimeInterval: 1.0 target:self selector:@selector(newFilesGUIUpdate:) userInfo:self repeats:YES] retain]; // TODO: hmmm
 		
 		/* notifications from workspace */
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeMount:) name:NSWorkspaceDidMountNotification object:nil];
@@ -12940,7 +12941,7 @@ static NSArray*	openSubSeriesArray = nil;
 #pragma mark DICOM Network & Files functions
 
 - (void) resetListenerTimer { // __deprecated
-	[[DicomDatabase activeLocalDatabase] syncImportFilesFromIncomingDirTimerWithUserDefaults];
+	[DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
 }
 
 - (void) emptyDeleteQueueThread

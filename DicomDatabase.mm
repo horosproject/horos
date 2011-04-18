@@ -35,7 +35,6 @@
 #import "DicomDatabase+DCMTK.h"
 #import "NSError+OsiriX.h"
 #import "DCMAbstractSyntaxUID.h"
-#import "SRAnnotation.h"
 #import "QueryController.h"
 #import "DCMTKStudyQueryNode.h"
 
@@ -52,7 +51,6 @@
 -(void)modifyDefaultAlbums;
 -(void)recomputePatientUIDs;
 -(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion;
-+(NSString*)extractReportSR:(NSString*)dicomSR contentDate:(NSDate*)date;
 
 @end
 
@@ -133,7 +131,7 @@ static NSMutableDictionary* databasesDictionary = nil;
 
 +(NSArray*)allDatabases {
 	@synchronized(databasesDictionary) {
-		return [databasesDictionary allValues];
+		return [[[databasesDictionary allValues] copy] autorelease];
 	}
 	
 	return nil;
@@ -156,8 +154,8 @@ static NSMutableDictionary* databasesDictionary = nil;
 	NSInteger prc;
 	@synchronized(self) {
 		prc = self.retainCount;
-		if (prc <= 2)
-			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, self.managedObjectContext.retainCount);
+//		if (prc <= 2)
+			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, self.managedObjectContext.retainCount); 
 		[super release];
 	}
 	
@@ -178,6 +176,10 @@ static NSMutableDictionary* databasesDictionary = nil;
 	}
 }
 
+//-(id)retain {
+//	NSLog(@"%@ - [DicomDatabase retain] self.rc = %d, managedObjectContext.rc = %d ", self.name, self.retainCount, self.managedObjectContext.retainCount); 
+//	return [super retain];
+//}
 
 +(DicomDatabase*)databaseAtPath:(NSString*)path {
 	return [self databaseAtPath:path name:nil];
@@ -308,17 +310,12 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	// TODO: autoclean if settings say so
 	
-	[self syncImportFilesFromIncomingDirTimerWithUserDefaults];
+	[DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
 	
 	return self;
 }
 
 -(void)dealloc {
-	if (_importFilesFromIncomingDirTimer) {
-		[_importFilesFromIncomingDirTimer invalidate];
-		[_importFilesFromIncomingDirTimer release];
-	}
-	
 	[_importFilesFromIncomingDirLock lock]; // if currently importing, wait until finished
 	[_importFilesFromIncomingDirLock autorelease];
 	[_processFilesLock lock];
@@ -458,7 +455,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 }
 
 -(NSString*)htmlTemplatesDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"ROIs"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"HTML TEMPLATES"]];
 }
 
 -(NSString*)modelVersionFilePath {
@@ -1941,58 +1938,6 @@ enum { Compress, Decompress };
 	return retArray;
 }
 
-+ (NSString*) extractReportSR: (NSString*) dicomSR contentDate: (NSDate*) date
-{
-	NSString *destPath = nil;
-	NSString *uidName = [SRAnnotation getReportFilenameFromSR: dicomSR];
-	if( [uidName length] > 0)
-	{
-		NSString *zipFile = [@"/tmp/" stringByAppendingPathComponent: uidName];
-		
-		// Extract the CONTENT to the REPORTS folder
-		SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dicomSR] autorelease];
-		[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
-		
-		// Check for http/https !
-		if( [[r reportURL] length] > 8 && ([[r reportURL] hasPrefix: @"http://"] || [[r reportURL] hasPrefix: @"https://"]))
-			destPath = [[[r reportURL] copy] autorelease];
-		else
-		{
-			if( [[r dataEncapsulated] length] > 0)
-			{
-				[[r dataEncapsulated] writeToFile: zipFile atomically: YES];
-				
-				[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
-				[BrowserController unzipFile: zipFile withPassword: nil destination: @"/tmp/zippedFile/" showGUI: NO];
-				[[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
-				
-				for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp/zippedFile/" error: nil])
-				{
-					if( [f hasPrefix: @"."] == NO)
-					{
-						if( destPath)
-							NSLog( @"*** multiple files in Report decompression ?");
-						
-						destPath = [@"/tmp/" stringByAppendingPathComponent: f];
-						if( destPath)
-						{
-							[[NSFileManager defaultManager] removeItemAtPath: destPath error: nil];
-							[[NSFileManager defaultManager] moveItemAtPath: [@"/tmp/zippedFile/" stringByAppendingPathComponent: f] toPath: destPath error: nil];
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
-	
-	if( destPath)
-		[[NSFileManager defaultManager] setAttributes: [NSDictionary dictionaryWithObjectsAndKeys: date, NSFileModificationDate, nil] ofItemAtPath: destPath error: nil];
-	
-	return destPath;
-}
-
 -(void)importFilesFromIncomingDir {
 	NSMutableArray* compressedPathArray = [NSMutableArray array];
 	NSThread* thread = NSThread.currentThread;
@@ -2269,12 +2214,12 @@ enum { Compress, Decompress };
 }
 
 -(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting {
-	if ([[AppController sharedAppController] isSessionInactive])
-		return;
+	//if ([[AppController sharedAppController] isSessionInactive])
+	//	return;
 	
 	if ([_importFilesFromIncomingDirLock tryLock])
 		@try {
-			[NSThread detachNewThreadSelector:@selector(importFilesFromIncomingDirThread:) toTarget:self withObject:nil];
+			[self performSelectorInBackground:@selector(importFilesFromIncomingDirThread:) withObject:nil]; // TODO: NSOperationQueues pls
 		} @catch (NSException* e) {
 			N2LogExceptionWithStackTrace(e);
 		} @finally {
@@ -2292,20 +2237,27 @@ enum { Compress, Decompress };
 //	}	
 }
 
--(void)importFilesFromIncomingDirTimerCallback:(NSTimer*)timer {
-	[self initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
++(void)importFilesFromIncomingDirTimerCallback:(NSTimer*)timer {
+	for (DicomDatabase* dbi in [self allDatabases])
+		if (dbi.isLocal)
+			[dbi initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 }
 
--(void)syncImportFilesFromIncomingDirTimerWithUserDefaults {
-	[_importFilesFromIncomingDirTimer invalidate];
-	[_importFilesFromIncomingDirTimer release];
++(void)syncImportFilesFromIncomingDirTimerWithUserDefaults {
+	static NSTimer* importFilesFromIncomingDirTimer = nil;
 	
-	if (self.isLocal) {
-		_importFilesFromIncomingDirTimer = [[NSTimer timerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(importFilesFromIncomingDirTimerCallback:) userInfo:nil repeats:YES] retain];
-		[[NSRunLoop currentRunLoop] addTimer:_importFilesFromIncomingDirTimer forMode:NSModalPanelRunLoopMode];
-		[[NSRunLoop currentRunLoop] addTimer:_importFilesFromIncomingDirTimer forMode:NSDefaultRunLoopMode];
-	} else
-		_importFilesFromIncomingDirTimer = nil;
+	NSInteger newInterval = [[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"];
+	if (importFilesFromIncomingDirTimer.timeInterval == newInterval)
+		return;
+	
+	[importFilesFromIncomingDirTimer invalidate];
+	[importFilesFromIncomingDirTimer release];
+	importFilesFromIncomingDirTimer = nil;
+	if (newInterval) {
+		importFilesFromIncomingDirTimer = [[NSTimer timerWithTimeInterval:newInterval target:self selector:@selector(importFilesFromIncomingDirTimerCallback:) userInfo:nil repeats:YES] retain];
+		[[NSRunLoop currentRunLoop] addTimer:importFilesFromIncomingDirTimer forMode:NSModalPanelRunLoopMode];
+		[[NSRunLoop currentRunLoop] addTimer:importFilesFromIncomingDirTimer forMode:NSDefaultRunLoopMode];
+	}
 }
 
 #pragma mark Other
