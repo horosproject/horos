@@ -687,7 +687,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		
 		for ( NSString *file in [[NSFileManager defaultManager] subpathsOfDirectoryAtPath: rootDir error: nil])
 		{
-			if ([file hasSuffix: @".DS_Store"] == NO && [[file lastPathComponent] isEqualToString: @"DICOMDIR"] == NO && [file hasPrefix: @"__MACOSX"] == NO && [[NSFileManager defaultManager] fileExistsAtPath: [rootDir stringByAppendingPathComponent: file] isDirectory: &isDirectory] && isDirectory == NO)
+			if ([file hasSuffix: @".DS_Store"] == NO && [[file lastPathComponent] isEqualToString: @"DICOMDIR"] == NO && [[file lastPathComponent] hasPrefix: @"__MACOSX"] == NO && [[NSFileManager defaultManager] fileExistsAtPath: [rootDir stringByAppendingPathComponent: file] isDirectory: &isDirectory] && isDirectory == NO)
 				[filesArray addObject: [rootDir stringByAppendingPathComponent: file]];
 		}
 	}
