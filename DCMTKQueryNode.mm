@@ -989,7 +989,15 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		for( NSURL *url in urlToDownload)
 		{
 			while( [WADODownloadDictionary count] > WADOMaximumConcurrentDownloads) //Dont download more than XXX images at the same time
+			{
 				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+				
+				if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
+				{
+					aborted = YES;
+					break;
+				}
+			}
 			
 			NSURLConnection *downloadConnection = [[NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestReloadIgnoringLocalCacheData timeoutInterval: timeout] delegate: self] retain];
 			
@@ -1022,7 +1030,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				}
 			}
 			
-			if( [[WADODownloadDictionary allKeys] count] > 0)
+			if( aborted == NO && [[WADODownloadDictionary allKeys] count] > 0)
 				NSLog( @"**** [[WADODownloadDictionary allKeys] count] > 0");
 		}
 		
