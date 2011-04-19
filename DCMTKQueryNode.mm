@@ -985,6 +985,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		NSMutableArray *connectionsArray = [NSMutableArray array];
 		
+		NSTimeInterval retrieveStartingDate = [NSDate timeIntervalSinceReferenceDate];
+		
 		BOOL aborted = NO;
 		for( NSURL *url in urlToDownload)
 		{
@@ -992,7 +994,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			{
 				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
 				
-				if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
+				if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] || [NSDate timeIntervalSinceReferenceDate] - retrieveStartingDate > timeout)
 				{
 					aborted = YES;
 					break;
@@ -1010,7 +1012,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			if( downloadConnection == nil)
 				OSAtomicDecrement32Barrier( &WADOThreads);
 			
-			if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
+			if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] || [NSDate timeIntervalSinceReferenceDate] - retrieveStartingDate > timeout)
 			{
 				aborted = YES;
 				break;
@@ -1023,7 +1025,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			{
 				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
 				
-				if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
+				if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"]  || [NSDate timeIntervalSinceReferenceDate] - retrieveStartingDate > timeout)
 				{
 					aborted = YES;
 					break;
