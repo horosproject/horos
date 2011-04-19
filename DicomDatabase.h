@@ -30,6 +30,7 @@
 	BOOL _isFileSystemFreeSizeLimitReached;
 	NSTimeInterval _timeOfLastIsFileSystemFreeSizeLimitReachedVerification;
 	NSTimeInterval _timeOfLastModification;
+	char baseDirPathC[4096], incomingDirPathC[4096], tempDirPathC[4096]; // these paths are used from the DICOM listener
 }
 
 +(NSString*)defaultBaseDirPath;
@@ -79,6 +80,10 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(NSString*)dumpDirPath;
 -(NSString*)pagesDirPath;
 -(NSString*)htmlTemplatesDirPath;
+// these paths are used from the DICOM listener
+-(const char*)baseDirPathC;
+-(const char*)incomingDirPathC;
+-(const char*)tempDirPathC;
 
 -(NSUInteger)computeDataFileIndex; // this method should be private, but is declared because called from deprecated api
 -(NSString*)uniquePathForNewDataFileWithExtension:(NSString*)ext;

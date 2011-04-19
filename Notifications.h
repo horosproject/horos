@@ -43,6 +43,7 @@ extern NSString* const OsirixStudyAnnotationsChangedNotification;
 extern NSString* const OsirixGLFontChangeNotification;
 extern NSString* const OsirixAddToDBNotification;
 extern const NSString* const OsirixAddToDBNotificationImagesArray;
+extern const NSString* const OsirixAddToDBNotificationDicomDatabase;
 extern NSString* const OsirixAddToDBCompleteNotification;
 extern const NSString* const OsirixAddToDBCompleteNotificationImagesArray;
 extern NSString* const OsirixNewStudySelectedNotification;

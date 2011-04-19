@@ -282,6 +282,9 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.reportsDirPath];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.dumpDirPath];
+	strncpy(baseDirPathC, self.baseDirPath.fileSystemRepresentation, 4096);
+	strncpy(incomingDirPathC, self.incomingDirPath.fileSystemRepresentation, 4096);
+	strncpy(tempDirPathC, self.tempDirPath.fileSystemRepresentation, 4096);
 	
 	// if a TOBEINDEXED dir exists, move it into INCOMING so we will import the data
 	
@@ -466,8 +469,20 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	return [self.baseDirPath stringByAppendingPathComponent:@"Loading"];
 }
 
+-(const char*)baseDirPathC {
+	return baseDirPathC;
+}
+
+-(const char*)incomingDirPathC {
+	return incomingDirPathC;
+}
+
+-(const char*)tempDirPathC {
+	return tempDirPathC;
+}
+
 -(NSUInteger)computeDataFileIndex {
-	DLog(@"In -[DicomDatabase computeDataFileIndex] for %@ initially %lld", self.sqlFilePath, _dataFileIndex.value);
+	DLog(@"In -[DicomDatabase computeDataFileIndex] for %@ initially %ld", self.sqlFilePath, _dataFileIndex.value);
 	
 	@synchronized(_dataFileIndex) {
 		@try {
@@ -515,7 +530,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				_dataFileIndex.value = t+1;
 			}
 			
-			DLog(@"   -[DicomDatabase computeDataFileIndex] for %@ computed %lld", self.sqlFilePath, _dataFileIndex.value);
+			DLog(@"   -[DicomDatabase computeDataFileIndex] for %@ computed %ld", self.sqlFilePath, _dataFileIndex.value);
 		} @catch (NSException* e) {
 			N2LogExceptionWithStackTrace(e);
 		}
@@ -546,7 +561,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			NSString* subFolderPath = [dataDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld", subFolderInt]];
 			[NSFileManager.defaultManager confirmDirectoryAtPath:subFolderPath];
 			
-			path = [subFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld.%@", _dataFileIndex.value, ext]];
+			path = [subFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld.%@", (long long)_dataFileIndex.value, ext]];
 			fileExists = [NSFileManager.defaultManager fileExistsAtPath:path];
 			
 			if (fileExists)
@@ -1787,10 +1802,10 @@ enum { Compress, Decompress };
 					
 					@try {
 						NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
-						[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:nil userInfo:userInfo];
+						[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:self userInfo:userInfo];
 						
 						userInfo = [NSDictionary dictionaryWithObject:completeImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
-						[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBCompleteNotification object:nil userInfo:userInfo];
+						[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo:userInfo];
 					} @catch (NSException* e) {
 						N2LogExceptionWithStackTrace(e);
 					}
@@ -1940,7 +1955,7 @@ enum { Compress, Decompress };
 
 -(void)importFilesFromIncomingDir {
 	NSMutableArray* compressedPathArray = [NSMutableArray array];
-	NSThread* thread = NSThread.currentThread;
+	NSThread* thread = [NSThread currentThread];
 	BOOL listenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
 	
 	[_importFilesFromIncomingDirLock lock];

@@ -521,14 +521,14 @@ static NSConditionLock *threadLock = nil;
 
 #pragma mark-
 
-- (void) newFilesGUIUpdateRun: (int) dummy viewersListToReload: (NSMutableArray*) cReload viewersListToRebuild: (NSMutableArray*) cRebuild
+- (void)newFilesGUIUpdateRun:(int)state viewersListToReload:(NSMutableArray*)cReload viewersListToRebuild:(NSMutableArray*)cRebuild
 {
-//	if( state == 1)
+	if( state == 1)
 	{
-//		[self outlineViewRefresh];
-//		[self refreshAlbums];
+		[self outlineViewRefresh];
+		[self refreshAlbums];
 	}
-//	else
+	else
 	{
 		[databaseOutline reloadData];
 		[albumTable reloadData];
@@ -1252,6 +1252,12 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
+-(void)observeDatabaseAddNotification:(NSNotification*)notification {
+	if (![NSThread isMainThread])
+		[self performSelectorOnMainThread:@selector(observeDatabaseAddNotification:) withObject:notification waitUntilDone:NO];
+	else [self newFilesGUIUpdateRun:1 viewersListToReload:nil viewersListToRebuild:nil];
+}
+
 -(void)setDatabase:(DicomDatabase*)db {
 	[self waitForRunningProcesses];
 	[reportFilesToCheck removeAllObjects];
@@ -1263,6 +1269,8 @@ static NSConditionLock *threadLock = nil;
 		[thread enterOperation];
 		[thread setStatus:NSLocalizedString(@"Loading database...", nil)];
 		ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+		
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:database];
 		
 //		if (refresh) { // TODO: here
 //			NSArray *albumArray = self.albumArray;
@@ -1296,8 +1304,6 @@ static NSConditionLock *threadLock = nil;
 		[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
 		[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
 		
-		
-		
 		@try {
 			[[LogManager currentLogManager] checkLogs: nil];
 			[self resetLogWindowController];
@@ -1310,6 +1316,8 @@ static NSConditionLock *threadLock = nil;
 			database = [db retain];
 			if ([db isLocal])
 				[DicomDatabase setActiveLocalDatabase:db];
+			
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseAddNotification:) name:OsirixAddToDBNotification object:database];
 			
 			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 			
@@ -7968,8 +7976,7 @@ static BOOL withReset = NO;
 	}
 }
 
-+ (NSData*)produceJPEGThumbnail: (NSImage*)image
-{
++(NSData*)produceJPEGThumbnail:(NSImage*)image {
 	return [image JPEGRepresentationWithQuality:0.3];
 }
 
@@ -18240,16 +18247,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 
 - (const char *) cfixedDocumentsDirectory // __deprecated
-{ return [[[DicomDatabase activeLocalDatabase] baseDirPath] UTF8String]; }
+{ return [[DicomDatabase activeLocalDatabase] baseDirPathC]; }
 
 - (const char *) cfixedIncomingDirectory // __deprecated
-{ return [[[DicomDatabase activeLocalDatabase] incomingDirPath] UTF8String]; }
+{ return [[DicomDatabase activeLocalDatabase] incomingDirPathC]; }
 
 - (const char *) cfixedTempNoIndexDirectory // __deprecated
-{ return [[[DicomDatabase activeLocalDatabase] tempDirPath] UTF8String]; }
+{ return [[DicomDatabase activeLocalDatabase] tempDirPathC]; }
 
 - (const char *) cfixedIncomingNoIndexDirectory // __deprecated
-{ return [[[DicomDatabase activeLocalDatabase] incomingDirPath] UTF8String]; }
+{ return [[DicomDatabase activeLocalDatabase] incomingDirPathC]; }
 
 - (NSString*)INCOMINGPATH { // __deprecated
 	return [[DicomDatabase activeLocalDatabase] incomingDirPath];

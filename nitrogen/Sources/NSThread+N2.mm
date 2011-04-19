@@ -182,7 +182,14 @@ NSString* const NSThreadStatusKey = @"status";
 		return nil;
 	
 	@synchronized (self.threadDictionary) {
-		return [[[self.currentOperationDictionary objectForKey:NSThreadStatusKey] copy] autorelease];
+		for (int i = self.stackArray.count-1; i >= 0; --i) {
+			NSDictionary* d = [self.stackArray objectAtIndex:i];
+			NSString* status = [d objectForKey:NSThreadStatusKey];
+			if (status)
+				return [[status copy] autorelease];
+		}
+		
+		return nil;
 	}
 	
 	return nil;
