@@ -8722,7 +8722,6 @@ static NSConditionLock *threadLock = nil;
 	[self checkIncoming: self];
 	// We cannot call checkIncomingNow, because we currently have the lock for context, and IF a separate checkIncoming thread has started, he is currently waiting for the context lock, and we will wait for the checkIncomingLock...
 	
-	
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey: table]];
 	[dbRequest setPredicate: [NSPredicate predicateWithFormat: request]];
@@ -16491,45 +16490,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		currentIcon = image;
 		[[NSApplication sharedApplication] setApplicationIconImage: image];
-	}
-}
-
-- (void) checkIncomingNow: (id) sender
-{
-	if( DatabaseIsEdited == YES && [[self window] isKeyWindow] == YES) return;
-	if( managedObjectContext == nil) return;
-	if( [NSDate timeIntervalSinceReferenceDate] - lastCheckIncoming < 0.4) return;
-	if( DICOMDIRCDMODE) return;
-	
-	[checkIncomingLock lock];
-	if( [managedObjectContext tryLock])
-	{
-		[self checkIncomingThread: self];
-		[NSThread sleepForTimeInterval: 1];
-		
-		// Do we have a compression/decompression process? re-checkincoming to include these compression/decompression images
-		[self checkIncomingThread: self];
-		[NSThread sleepForTimeInterval: 1];
-		
-		[self checkIncomingThread: self];
-		
-		[managedObjectContext unlock];
-		[checkIncomingLock unlock];
-	}
-	else
-	{
-		[checkIncomingLock unlock];
-		
-		[self checkIncoming: self];
-		[NSThread sleepForTimeInterval: 1];
-		
-		// Do we have a compression/decompression process? re-checkincoming to include these compression/decompression images
-		[self checkIncoming: self];
-		[NSThread sleepForTimeInterval: 1];
-		
-		[self checkIncoming: self];
-		
-		NSLog( @"*** We will not checkIncomingNow, because we can find ourself in a locked in loop....");
 	}
 }
 
