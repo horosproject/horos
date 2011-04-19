@@ -1009,18 +1009,27 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			}
 		}
 		
+		if( aborted == NO)
+		{
+			while( WADOThreads > 0)
+			{
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+				
+				if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
+				{
+					aborted = YES;
+					break;
+				}
+			}
+			
+			if( [[WADODownloadDictionary allKeys] count] > 0)
+				NSLog( @"**** [[WADODownloadDictionary allKeys] count] > 0");
+		}
+		
 		if( aborted)
 		{
 			for( NSURLConnection *connection in connectionsArray)
 				[connection cancel];
-		}
-		else
-		{
-			while( WADOThreads > 0)
-				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
-			
-			if( [[WADODownloadDictionary allKeys] count] > 0)
-				NSLog( @"**** [[WADODownloadDictionary allKeys] count] > 0");
 		}
 		
 		[WADODownloadDictionary removeAllObjects];
