@@ -824,6 +824,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 }
 
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
+{
+	//We dont want to store the images in the cache! Caches/com.rossetantoine.osirix/Cache.db
+	return nil;
+}
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
@@ -978,17 +983,21 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		WADOThreads = [urlToDownload count];
 		
+		NSMutableArray *connectionsArray = [NSMutableArray array];
+		
 		BOOL aborted = NO;
 		for( NSURL *url in urlToDownload)
 		{
 			while( [WADODownloadDictionary count] > WADOMaximumConcurrentDownloads) //Dont download more than XXX images at the same time
 				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
 			
-			NSURLConnection *downloadConnection = [[NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestUseProtocolCachePolicy timeoutInterval: timeout] delegate: self] retain];
+			NSURLConnection *downloadConnection = [[NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestReloadIgnoringLocalCacheData timeoutInterval: timeout] delegate: self] retain];
 			
 			[WADODownloadDictionary setObject: [NSMutableData data] forKey: [NSString stringWithFormat:@"%ld", downloadConnection]];
 			
 			[downloadConnection start];
+			
+			[connectionsArray addObject: downloadConnection];
 			
 			if( downloadConnection == nil)
 				OSAtomicDecrement32Barrier( &WADOThreads);
@@ -1000,7 +1009,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			}
 		}
 		
-		if( aborted == NO)
+		if( aborted)
+		{
+			for( NSURLConnection *connection in connectionsArray)
+				[connection cancel];
+		}
+		else
 		{
 			while( WADOThreads > 0)
 				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
