@@ -1000,6 +1000,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 					break;
 				}
 			}
+			retrieveStartingDate = [NSDate timeIntervalSinceReferenceDate];
 			
 			NSURLConnection *downloadConnection = [[NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestReloadIgnoringLocalCacheData timeoutInterval: timeout] delegate: self] retain];
 			

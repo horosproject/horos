@@ -70,6 +70,8 @@
 	
 	NSInteger								autoRefreshQueryResults;
 	NSRecursiveLock							*autoQueryLock;
+	
+	NSInteger								numberOfRunningRetrieve;
 }
 
 @property (readonly) NSRecursiveLock *autoQueryLock;

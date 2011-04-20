@@ -1994,6 +1994,12 @@ extern "C"
 		goto returnFromThread;
 	}
 	
+	if( numberOfRunningRetrieve > 5)
+	{
+		NSLog( @"**** numberOfRunningRetrieve > 5... wait for next autoretrieve.");
+		goto returnFromThread;
+	}
+	
 	[autoQueryLock lock];
 	
 	// Start to retrieve the first 10 studies...
@@ -2496,6 +2502,11 @@ extern "C"
 	
 	NSMutableArray *moveArray = [NSMutableArray array];
 	
+	@synchronized( self)
+	{
+		numberOfRunningRetrieve++;
+	}
+	
 	[array retain];
 	
 	@try
@@ -2653,6 +2664,11 @@ extern "C"
 	}
 	
 	[array release];
+	
+	@synchronized( self)
+	{
+		numberOfRunningRetrieve--;
+	}
 	
 	[pool release];
 }
