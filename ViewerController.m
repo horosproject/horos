@@ -6320,7 +6320,8 @@ return YES;
 	[curWLWWMenu release];
 	[processorsLock release];
 	[retainedToolbarItems release];
-	
+	[editedRadiopharmaceuticalStartTime release];
+	[editedAcquisitionTime release];
 	[subLoadingThread release];
 	[toolbar release];
 	[injectionDateTime release];
@@ -13807,6 +13808,18 @@ int i,j,l;
 	
 	if( injectionDateTime != nil)
 	{
+		if( [sender tag] == 0)
+		{
+			[editedRadiopharmaceuticalStartTime release];
+			editedRadiopharmaceuticalStartTime = [injectionDateTime copy];
+		}
+		
+		if( [sender tag] == 1)
+		{
+			[editedAcquisitionTime release];
+			editedAcquisitionTime = [injectionDateTime copy];
+		}
+		
 		for( int y = 0; y < maxMovieIndex; y++)
 		{
 			for( DCMPix *p in pixList[y])
@@ -13918,13 +13931,29 @@ int i,j,l;
 		BOOL savedDefault = [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"];
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ConvertPETtoSUVautomatically"];
 		
-		if( [[imageView curDCM] SUVConverted]) [self revertSeries:self];
+		if( [[imageView curDCM] SUVConverted])
+		{
+			[self revertSeries:self];
+			
+			for( y = 0; y < maxMovieIndex; y++)
+			{
+				for( DCMPix *p in pixList[ y])
+				{
+					if( editedAcquisitionTime)
+						p.acquisitionTime = editedAcquisitionTime;
+					
+					if( editedRadiopharmaceuticalStartTime)
+						p.radiopharmaceuticalStartTime = editedRadiopharmaceuticalStartTime;
+				}
+			}
+		}
 		
 		[[NSUserDefaults standardUserDefaults] setBool:savedDefault forKey:@"ConvertPETtoSUVautomatically"];
 		
 		for( y = 0; y < maxMovieIndex; y++)
 		{
-			for( x = 0; x < [pixList[y] count]; x++) [[pixList[y] objectAtIndex: x] setDisplaySUVValue: NO];
+			for( DCMPix *p in pixList[ y])
+				[p setDisplaySUVValue: NO];
 		}
 		
 		if( [[suvForm cellAtIndex: 0] floatValue] > 0)
@@ -14036,6 +14065,12 @@ int i,j,l;
 			[[suvForm cellAtIndex: 4] setObjectValue: [[imageView curDCM] acquisitionTime]];
 		
 		[[suvForm cellAtIndex: 5] setStringValue: [NSString stringWithFormat:@"%2.2f", [[imageView curDCM] halflife] / 60.]];
+		
+		[editedRadiopharmaceuticalStartTime release];
+		editedRadiopharmaceuticalStartTime = nil;
+		
+		[editedAcquisitionTime release];
+		editedAcquisitionTime = nil;
 		
 		[NSApp beginSheet: displaySUVWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 	}
