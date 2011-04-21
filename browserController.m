@@ -5134,12 +5134,12 @@ static NSConditionLock *threadLock = nil;
 			
 			isAutoCleanDatabaseRunning = YES;
 			
-			int freeMemoryRequested = [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue];
+			unsigned long long freeMemoryRequested = [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] longLongValue];
 			
 			if( sender == 0L)	// Received by the NSTimer : have a larger amount of free memory !
 				freeMemoryRequested = (float) freeMemoryRequested * 1.3;
 			
-			if( (int) free < freeMemoryRequested)
+			if( free < freeMemoryRequested)
 			{
 				NSLog(@"------------------- Limit Reached - Starting autoCleanDatabaseFreeSpace");
 				
@@ -5288,10 +5288,10 @@ static NSConditionLock *threadLock = nil;
 						fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: currentDatabasePath];
 						
 						free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
-						free /= 1024;
-						free /= 1024;
+						free /= thousand;
+						free /= thousand;
 					}
-					while( (long) free < freeMemoryRequested && [unlockedStudies count] > 2);
+					while( free < freeMemoryRequested && [unlockedStudies count] > 2);
 				}
 				@catch ( NSException *e)
 				{
