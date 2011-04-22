@@ -3492,7 +3492,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		Modality = [[NSString alloc] initWithString:extension];
 		date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
 		
-
 		if ([decoder seriesDescription])
 			serie = [[decoder seriesDescription] retain];
 		else

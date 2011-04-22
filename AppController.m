@@ -2168,7 +2168,7 @@ static NSDate *lastWarningDate = nil;
 					
 					[paramDict removeObjectForKey: @"methodName"];
 					
-					[XMLRPCServer processXMLRPCMessage: [urlParameters objectForKey: @"methodName"] httpServerMessage: nil HTTPServerRequest: nil version: nil paramDict: paramDict encoding: @"UTF-8"];
+					[XMLRPCServer processXMLRPCMessage: [urlParameters objectForKey: @"methodName"] httpServerMessage: nil HTTPServerRequest: nil version: (NSString*) kCFHTTPVersion1_0 paramDict: paramDict encoding: @"UTF-8"];
 				}
 				
 				if( [urlParameters objectForKey: @"image"])

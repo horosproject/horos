@@ -129,6 +129,9 @@ static NSTimeInterval lastConnection = 0;
 
 - (void) processXMLRPCMessage: (NSString*) selName httpServerMessage: (NSMutableDictionary*) httpServerMessage HTTPServerRequest: (HTTPServerRequest*) mess version:(NSString*) vers paramDict: (NSDictionary*) paramDict encoding: (NSString*) encoding
 {
+	if( vers == nil)
+		vers = [NSString stringWithString: (NSString*) kCFHTTPVersion1_1];
+
 #pragma mark KillOsiriX			
 	if ( [selName isEqual:@"KillOsiriX"])
 		[[AppController sharedAppController] terminate: self];
@@ -152,7 +155,7 @@ static NSTimeInterval lastConnection = 0;
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
-			if (2 != [paramDict count])
+			if (2 != [paramDict count] && 1 != [paramDict count])
 			{
 				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 				[mess setResponse:response];
@@ -169,13 +172,20 @@ static NSTimeInterval lastConnection = 0;
 			{
 				if ([selName isEqual:@"DisplayStudy"])
 				{
-					//ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"patientID =='%@' AND id == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
-					ret = [NSNumber numberWithInt:[[BrowserController currentBrowser] findObject:[NSString stringWithFormat: @"patientID =='%@' AND studyInstanceUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyInstanceUID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
+					if( [[paramDict valueForKey:@"PatientID"] length] > 0 && [[paramDict valueForKey:@"StudyInstanceUID"] length] > 0)
+						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser] findObject:[NSString stringWithFormat: @"patientID =='%@' AND studyInstanceUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyInstanceUID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
+					else if( [[paramDict valueForKey:@"PatientID"] length] > 0)
+						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser] findObject:[NSString stringWithFormat: @"patientID == '%@'", [paramDict valueForKey:@"PatientID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
+					else if( [[paramDict valueForKey:@"StudyInstanceUID"] length] > 0)
+						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser] findObject:[NSString stringWithFormat: @"studyInstanceUID == '%@'", [paramDict valueForKey:@"StudyInstanceUID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
 				}
 				
 				if ([selName isEqual:@"DisplaySeries"])
 				{
-					ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"study.patientID =='%@' AND seriesDICOMUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"SeriesInstanceUID"]] table: @"Series" execute: @"Open" elements: &listOfElements]];
+					if( [[paramDict valueForKey:@"PatientID"] length] > 0 && [[paramDict valueForKey:@"SeriesInstanceUID"] length] > 0)
+						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"study.patientID =='%@' AND seriesDICOMUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"SeriesInstanceUID"]] table: @"Series" execute: @"Open" elements: &listOfElements]];
+					else if( [[paramDict valueForKey:@"SeriesInstanceUID"] length] > 0)
+						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"seriesDICOMUID == '%@'", [paramDict valueForKey:@"SeriesInstanceUID"]] table: @"Series" execute: @"Open" elements: &listOfElements]];
 				}
 			}
 			@catch (NSException *e)
