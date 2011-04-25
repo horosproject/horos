@@ -69,6 +69,8 @@ for i in `ls *.*`; do mv "$i" "$i"ppc; done
 
 for i in `ls *.a`; do lipo -create "$i" "$i"ppc -output "$i"final; done
 
+for i in `ls`; do ibtool "$i" --compile "$i"; done
+
 VTK MODIFICATIONS : 
 
 Optimizations:
@@ -225,6 +227,7 @@ genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m
 - OsiriX Lite Upload
 - X QuickLook
 - X Update plugins
+- For international version, compile nib files (for i in `ls`; do ibtool "$i" --compile "$i"; done)
 - For international version, manually resign
 - codesign -vvv /Applications/OsiriX.app
 - 64bitExtension : upload osirix-viewer.com
