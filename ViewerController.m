@@ -17467,7 +17467,13 @@ int i,j,l;
 					
 					if( [[imageFormat selectedCell] tag] == 2 || [[imageFormat selectedCell] tag] == 3)		//Mail or iPhoto
 					{
-						bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+//						if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportImageInGrayColorSpace"] && ) // 8-bit
+//						{
+//							NSBitmapImageRep *grayRepresentation = [NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]];
+//							bitmapData = [[grayRepresentation bitmapImageRepByConvertingToColorSpace: [NSColorSpace genericGrayColorSpace] renderingIntent: NSColorRenderingIntentDefault] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+//						}
+//						else
+							bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
 						NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/%4.4d.jpg", fileIndex++];
 						
@@ -17493,7 +17499,14 @@ int i,j,l;
 							else
 								jpegFile = [panel filename];
 							
-							bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+//							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportImageInGrayColorSpace"]) // 8-bit
+//							{
+//								NSBitmapImageRep *grayRepresentation = [NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]];
+//								bitmapData = [[grayRepresentation bitmapImageRepByConvertingToColorSpace: [NSColorSpace genericGrayColorSpace] renderingIntent: NSColorRenderingIntentDefault] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+//							}
+//							else
+								bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+							
 							[bitmapData writeToFile: jpegFile atomically:YES];
 							
 							NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
@@ -17514,7 +17527,13 @@ int i,j,l;
 							else
 								tiffFile = [panel filename];
 							
-							[[im TIFFRepresentation] writeToFile: tiffFile atomically:NO];
+//							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportImageInGrayColorSpace"]) // 8-bit
+//							{
+//								NSBitmapImageRep *grayRepresentation = [NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]];
+//								[[[grayRepresentation bitmapImageRepByConvertingToColorSpace: [NSColorSpace genericGrayColorSpace] renderingIntent: NSColorRenderingIntentDefault] TIFFRepresentation] writeToFile: tiffFile atomically:NO];
+//							}
+//							else
+								[[im TIFFRepresentation] writeToFile: tiffFile atomically:NO];
 						}
 					}
 				}
