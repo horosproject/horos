@@ -17,6 +17,7 @@
 #import "BrowserController.h"
 #import "NSString+N2.h"
 #import "NSThread+N2.h"
+#import "N2Operators.h"
 
 
 @implementation ThreadCell
@@ -148,10 +149,16 @@
 	[NSGraphicsContext restoreGraphicsState];
 }
 
-static NSPoint operator+(const NSPoint& p, const NSSize& s)
-{ return NSMakePoint(p.x+s.width, p.y+s.height); }
-
 -(void)drawWithFrame:(NSRect)frame inView:(NSView*)view {
+	{
+		[NSGraphicsContext saveGraphicsState];
+		
+		[[NSColor colorWithCalibratedRed:1 green:0 blue:0 alpha:0.25] setFill];
+		[NSBezierPath fillRect:frame];
+		
+		[NSGraphicsContext restoreGraphicsState];
+	}
+	
 	if ([self.thread isFinished]) return;
 	
 	[self drawInteriorWithFrame:frame inView:view];

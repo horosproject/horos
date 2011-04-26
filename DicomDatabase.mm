@@ -1958,6 +1958,8 @@ enum { Compress, Decompress };
 	NSThread* thread = [NSThread currentThread];
 	BOOL listenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
 	
+	[thread enterOperation];
+	
 	[_importFilesFromIncomingDirLock lock];
 	@try {
 		if ([self isFileSystemFreeSizeLimitReached]) {
@@ -1974,223 +1976,224 @@ enum { Compress, Decompress };
 		NSMutableArray* twoStepsIndexingArrayFrom = [NSMutableArray array];
 		NSMutableArray* twoStepsIndexingArrayTo = [NSMutableArray array];
 		
+		[AppController createNoIndexDirectoryIfNecessary:self.dataDirPath];
+		
+		int maxNumberOfFiles = [[NSUserDefaults standardUserDefaults] integerForKey:@"maxNumberOfFilesForCheckIncoming"];
+		if (maxNumberOfFiles < 100) maxNumberOfFiles = 100;
+		if (maxNumberOfFiles > 30000) maxNumberOfFiles = 30000;
+		
+		NSString *pathname;
+		NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath limitTo:-1]; // For next release...
+		// NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath];
+		
+		while( (pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles)
 		{
-			[AppController createNoIndexDirectoryIfNecessary:self.dataDirPath];
+			NSString *srcPath = [self.incomingDirPath stringByAppendingPathComponent:pathname];
+			NSString *originalPath = srcPath;
+			NSString *lastPathComponent = [srcPath lastPathComponent];
 			
-			int maxNumberOfFiles = [[NSUserDefaults standardUserDefaults] integerForKey:@"maxNumberOfFilesForCheckIncoming"];
-			if (maxNumberOfFiles < 100) maxNumberOfFiles = 100;
-			if (maxNumberOfFiles > 30000) maxNumberOfFiles = 30000;
-			
-			NSString *pathname;
-			NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath limitTo:-1]; // For next release...
-			// NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath];
-			
-			while( (pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles)
+			if ([[lastPathComponent uppercaseString] hasSuffix:@".DS_STORE"])
 			{
-				NSString *srcPath = [self.incomingDirPath stringByAppendingPathComponent:pathname];
-				NSString *originalPath = srcPath;
-				NSString *lastPathComponent = [srcPath lastPathComponent];
-				
-				if ([[lastPathComponent uppercaseString] hasSuffix:@".DS_STORE"])
+				[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+				continue;
+			}
+			
+			if ([[lastPathComponent uppercaseString] hasSuffix:@"__MACOSX"])
+			{
+				[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+				continue;
+			}
+			
+			if (![ThreadsManager.defaultManager.threads containsObject:thread])
+				[ThreadsManager.defaultManager addThreadAndStart:thread];
+			
+			if ( [lastPathComponent length] > 0 && [lastPathComponent characterAtIndex: 0] == '.')
+			{
+				NSDictionary *atr = [enumer fileAttributes];// [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
+				if( [atr fileModificationDate] && [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
 				{
-					[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
-					continue;
-				}
-				
-				if ([[lastPathComponent uppercaseString] hasSuffix:@"__MACOSX"])
-				{
-					[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
-					continue;
-				}
-				
-				if ( [lastPathComponent length] > 0 && [lastPathComponent characterAtIndex: 0] == '.')
-				{
-					NSDictionary *atr = [enumer fileAttributes];// [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
+					[NSThread sleepForTimeInterval: 0.1]; //We want to be 100% sure...
+					
+					atr = [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
 					if( [atr fileModificationDate] && [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
 					{
-						[NSThread sleepForTimeInterval: 0.1]; //We want to be 100% sure...
-						
-						atr = [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
-						if( [atr fileModificationDate] && [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
-						{
-							NSLog( @"old files with '.' -> delete it : %@", srcPath);
-							if( srcPath)
-								[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
-						}
+						NSLog( @"old files with '.' -> delete it : %@", srcPath);
+						if( srcPath)
+							[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
 					}
-					continue;
 				}
+				continue;
+			}
+			
+			BOOL isAlias = NO;
+			srcPath = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:srcPath resolved:&isAlias];
+			
+			// Is it a real file? Is it writable (transfer done)?
+			//					if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES)	<- Problems with CD : read-only files, but valid files
+			{
+				NSDictionary *fattrs = [enumer fileAttributes];	//[[NSFileManager defaultManager] fileAttributesAtPath:srcPath traverseLink: YES];
 				
-				BOOL isAlias = NO;
-				srcPath = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:srcPath resolved:&isAlias];
+				//						// http://www.noodlesoft.com/blog/2007/03/07/mystery-bug-heisenbergs-uncertainty-principle/
+				//						[fattrs allKeys];
 				
-				// Is it a real file? Is it writable (transfer done)?
-				//					if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES)	<- Problems with CD : read-only files, but valid files
+				//						NSLog( @"%@", [fattrs objectForKey:NSFileBusy]);
+				
+				if( [[fattrs objectForKey:NSFileType] isEqualToString: NSFileTypeDirectory] == YES)
 				{
-					NSDictionary *fattrs = [enumer fileAttributes];	//[[NSFileManager defaultManager] fileAttributesAtPath:srcPath traverseLink: YES];
+					NSArray		*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath: srcPath];
 					
-					//						// http://www.noodlesoft.com/blog/2007/03/07/mystery-bug-heisenbergs-uncertainty-principle/
-					//						[fattrs allKeys];
-					
-					//						NSLog( @"%@", [fattrs objectForKey:NSFileBusy]);
-					
-					if( [[fattrs objectForKey:NSFileType] isEqualToString: NSFileTypeDirectory] == YES)
+					//Is this directory empty?? If yes, delete it!
+					//if alias assume nested folders should stay
+					if( [dirContent count] == 0 && !isAlias) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+					if( [dirContent count] == 1)
 					{
-						NSArray		*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath: srcPath];
-						
-						//Is this directory empty?? If yes, delete it!
-						//if alias assume nested folders should stay
-						if( [dirContent count] == 0 && !isAlias) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
-						if( [dirContent count] == 1)
-						{
-							if( [[[dirContent objectAtIndex: 0] uppercaseString] hasSuffix:@".DS_STORE"])
-								[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
-						}
+						if( [[[dirContent objectAtIndex: 0] uppercaseString] hasSuffix:@".DS_STORE"])
+							[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
 					}
-					else if( fattrs != nil && [[fattrs objectForKey:NSFileBusy] boolValue] == NO && [[fattrs objectForKey:NSFileSize] longLongValue] > 0)
+				}
+				else if( fattrs != nil && [[fattrs objectForKey:NSFileBusy] boolValue] == NO && [[fattrs objectForKey:NSFileSize] longLongValue] > 0)
+				{
+					if( [[srcPath pathExtension] isEqualToString: @"zip"] || [[srcPath pathExtension] isEqualToString: @"osirixzip"])
 					{
-						if( [[srcPath pathExtension] isEqualToString: @"zip"] || [[srcPath pathExtension] isEqualToString: @"osirixzip"])
+						NSString *compressedPath = [self.decompressionDirPath stringByAppendingPathComponent: lastPathComponent];
+						[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
+						[compressedPathArray addObject: compressedPath];
+					}
+					else
+					{
+						BOOL isDicomFile, isJPEGCompressed, isImage;
+						NSString *dstPath = [self.dataDirPath stringByAppendingPathComponent: lastPathComponent];
+						
+						isDicomFile = [DicomFile isDICOMFile:srcPath compressed: &isJPEGCompressed image: &isImage];
+						
+						if( isDicomFile == YES ||
+						   (([DicomFile isFVTiffFile:srcPath] ||
+							 [DicomFile isTiffFile:srcPath] ||
+							 [DicomFile isNRRDFile:srcPath])
+							&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
 						{
-							NSString *compressedPath = [self.decompressionDirPath stringByAppendingPathComponent: lastPathComponent];
-							[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
-							[compressedPathArray addObject: compressedPath];
-						}
-						else
-						{
-							BOOL isDicomFile, isJPEGCompressed, isImage;
-							NSString *dstPath = [self.dataDirPath stringByAppendingPathComponent: lastPathComponent];
-							
-							isDicomFile = [DicomFile isDICOMFile:srcPath compressed: &isJPEGCompressed image: &isImage];
-							
-							if( isDicomFile == YES ||
-							   (([DicomFile isFVTiffFile:srcPath] ||
-								 [DicomFile isTiffFile:srcPath] ||
-								 [DicomFile isNRRDFile:srcPath])
-								&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
-							{
-								if (isDicomFile && isImage) {
-									if ((isJPEGCompressed == YES && listenerCompressionSettings == 1) || (isJPEGCompressed == NO && listenerCompressionSettings == 2
+							if (isDicomFile && isImage) {
+								if ((isJPEGCompressed == YES && listenerCompressionSettings == 1) || (isJPEGCompressed == NO && listenerCompressionSettings == 2
 #ifndef OSIRIX_LIGHT
-																										  && [DicomDatabase fileNeedsDecompression: srcPath]
+																									  && [DicomDatabase fileNeedsDecompression: srcPath]
 #else	
 #endif
-									)) {
-										NSString *compressedPath = [self.decompressionDirPath stringByAppendingPathComponent: lastPathComponent];
-										
-										[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
-										
-										[compressedPathArray addObject: compressedPath];
-										
-										continue;
-									}
+								)) {
+									NSString *compressedPath = [self.decompressionDirPath stringByAppendingPathComponent: lastPathComponent];
 									
-									dstPath = [self uniquePathForNewDataFileWithExtension:@"dcm"];
-								} else dstPath = [self uniquePathForNewDataFileWithExtension:[[srcPath pathExtension] lowercaseString]];
+									[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
+									
+									[compressedPathArray addObject: compressedPath];
+									
+									continue;
+								}
 								
-								BOOL result;
-								
-								if( isAlias)
+								dstPath = [self uniquePathForNewDataFileWithExtension:@"dcm"];
+							} else dstPath = [self uniquePathForNewDataFileWithExtension:[[srcPath pathExtension] lowercaseString]];
+							
+							BOOL result;
+							
+							if( isAlias)
+							{
+								if( twoStepsIndexing)
 								{
-									if( twoStepsIndexing)
+									NSString *stepsPath = [self.toBeIndexedDirPath stringByAppendingPathComponent: [dstPath lastPathComponent]];
+									
+									result = [[NSFileManager defaultManager] copyPath:srcPath toPath: stepsPath handler:nil];
+									[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+									
+									if( result)
 									{
-										NSString *stepsPath = [self.toBeIndexedDirPath stringByAppendingPathComponent: [dstPath lastPathComponent]];
-										
-										result = [[NSFileManager defaultManager] copyPath:srcPath toPath: stepsPath handler:nil];
-										[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
-										
-										if( result)
-										{
-											[twoStepsIndexingArrayFrom addObject: stepsPath];
-											[twoStepsIndexingArrayTo addObject: dstPath];
-										}
-									}
-									else
-									{
-										result = [[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
-										[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+										[twoStepsIndexingArrayFrom addObject: stepsPath];
+										[twoStepsIndexingArrayTo addObject: dstPath];
 									}
 								}
 								else
 								{
-									if( twoStepsIndexing)
-									{
-										NSString *stepsPath = [self.toBeIndexedDirPath stringByAppendingPathComponent: [dstPath lastPathComponent]];
-										
-										result = [[NSFileManager defaultManager] movePath:srcPath toPath: stepsPath handler:nil];
-										
-										if( result)
-										{
-											[twoStepsIndexingArrayFrom addObject: stepsPath];
-											[twoStepsIndexingArrayTo addObject: dstPath];
-										}
-									}
-									else
-										result = [[NSFileManager defaultManager] movePath:srcPath toPath: dstPath handler:nil];
+									result = [[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
+									[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
 								}
-								
-								if( result == YES)
-									[filesArray addObject:dstPath];
 							}
-							else // DELETE or MOVE THIS UNKNOWN FILE ?
+							else
 							{
-								if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DELETEFILELISTENER"])
-									[[NSFileManager defaultManager] removeItemAtPath:srcPath error:NULL];
-								else {
-									if (![NSFileManager.defaultManager moveItemAtPath:srcPath toPath:[self.errorsDirPath stringByAppendingPathComponent:lastPathComponent] error:NULL])
-										[NSFileManager.defaultManager removeFileAtPath:srcPath handler:nil];
+								if( twoStepsIndexing)
+								{
+									NSString *stepsPath = [self.toBeIndexedDirPath stringByAppendingPathComponent: [dstPath lastPathComponent]];
+									
+									result = [[NSFileManager defaultManager] movePath:srcPath toPath: stepsPath handler:nil];
+									
+									if( result)
+									{
+										[twoStepsIndexingArrayFrom addObject: stepsPath];
+										[twoStepsIndexingArrayTo addObject: dstPath];
+									}
 								}
+								else
+									result = [[NSFileManager defaultManager] movePath:srcPath toPath: dstPath handler:nil];
+							}
+							
+							if( result == YES)
+								[filesArray addObject:dstPath];
+						}
+						else // DELETE or MOVE THIS UNKNOWN FILE ?
+						{
+							if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DELETEFILELISTENER"])
+								[[NSFileManager defaultManager] removeItemAtPath:srcPath error:NULL];
+							else {
+								if (![NSFileManager.defaultManager moveItemAtPath:srcPath toPath:[self.errorsDirPath stringByAppendingPathComponent:lastPathComponent] error:NULL])
+									[NSFileManager.defaultManager removeFileAtPath:srcPath handler:nil];
 							}
 						}
 					}
 				}
 			}
-			
-			if( twoStepsIndexing == YES && [twoStepsIndexingArrayFrom count] > 0)
-			{
+		}
+		
+		if( twoStepsIndexing == YES && [twoStepsIndexingArrayFrom count] > 0)
+		{
 //				[database unlock];
-				
-				for( int i = 0 ; i < [twoStepsIndexingArrayFrom count] ; i++)
-				{
-					[[NSFileManager defaultManager] removeItemAtPath: [twoStepsIndexingArrayTo objectAtIndex: i]  error: nil];
-					[[NSFileManager defaultManager] moveItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i] toPath: [twoStepsIndexingArrayTo objectAtIndex: i] error: nil];
-					[[NSFileManager defaultManager] removeItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i]  error: nil];
-				}
-				
-//				[database lock];
+			
+			for( int i = 0 ; i < [twoStepsIndexingArrayFrom count] ; i++)
+			{
+				[[NSFileManager defaultManager] removeItemAtPath: [twoStepsIndexingArrayTo objectAtIndex: i]  error: nil];
+				[[NSFileManager defaultManager] moveItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i] toPath: [twoStepsIndexingArrayTo objectAtIndex: i] error: nil];
+				[[NSFileManager defaultManager] removeItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i]  error: nil];
 			}
 			
-			if ( [filesArray count] > 0)
-			{
+//				[database lock];
+		}
+		
+		if ( [filesArray count] > 0)
+		{
 //				if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"ANONYMIZELISTENER"] == YES)
 //					[self listenerAnonymizeFiles: filesArray];
+			
+			for (id filter in [PluginManager preProcessPlugins])
+				@try {
+					[filter processFiles: filesArray];
+				} @catch (NSException* e) {
+					N2LogExceptionWithStackTrace(e);
+				}
+			
+			NSArray* addedFiles = [[self addFilesAtPaths:filesArray] valueForKey:@"completePath"];
+			
+			if (!addedFiles) // Add failed.... Keep these files: move them back to the INCOMING folder and try again later....
+			{
+				NSString *dstPath;
+				int x = 0;
 				
-				for (id filter in [PluginManager preProcessPlugins])
-					@try {
-						[filter processFiles: filesArray];
-					} @catch (NSException* e) {
-						N2LogExceptionWithStackTrace(e);
-					}
+				NSLog(@"Move the files back to the incoming folder...");
 				
-				NSArray* addedFiles = [[self addFilesAtPaths:filesArray] valueForKey:@"completePath"];
-				
-				if (!addedFiles) // Add failed.... Keep these files: move them back to the INCOMING folder and try again later....
+				for( NSString *file in filesArray)
 				{
-					NSString *dstPath;
-					int x = 0;
-					
-					NSLog(@"Move the files back to the incoming folder...");
-					
-					for( NSString *file in filesArray)
+					do
 					{
-						do
-						{
-							dstPath = [self.incomingDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", x]];
-							x++;
-						}
-						while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
-						
-						[[NSFileManager defaultManager] movePath: file toPath: dstPath handler: nil];
+						dstPath = [self.incomingDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", x]];
+						x++;
 					}
+					while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
+					
+					[[NSFileManager defaultManager] movePath: file toPath: dstPath handler: nil];
 				}
 			}
 		}
@@ -2212,14 +2215,15 @@ enum { Compress, Decompress };
 			[self compressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
 	}
 #endif
+	
+	[thread exitOperation];
 }
 
 -(void)importFilesFromIncomingDirThread:(id)obj {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	@try {
 		NSThread* thread = [NSThread currentThread];
-		thread.name = NSLocalizedString(@"Adding incoming files", nil);
-		[ThreadsManager.defaultManager addThreadAndStart:thread];
+		thread.name = NSLocalizedString(@"Adding incoming files...", nil);
 		[self importFilesFromIncomingDir];
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
