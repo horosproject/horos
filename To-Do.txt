@@ -1,6 +1,8 @@
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
+- DICOM ECG
+- Activate 8-bit TIFF, JPEG, export // Add PNG
 - DB Autocleaning: limit number of studies/images
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
 - Every web portal user's specific studies list in Albums
@@ -67,6 +69,8 @@ for i in `ls -a | grep plugin`; do tempfile="`basename "$i" .plugin`.osirixplugi
 for i in `ls *.*`; do mv "$i" "$i"ppc; done
 
 for i in `ls *.a`; do lipo -create "$i" "$i"ppc -output "$i"final; done
+
+for i in `ls`; do ibtool "$i" --compile "$i"; done
 
 VTK MODIFICATIONS : 
 
@@ -224,6 +228,7 @@ genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m
 - OsiriX Lite Upload
 - X QuickLook
 - X Update plugins
+- For international version, compile nib files (for i in `ls`; do ibtool "$i" --compile "$i"; done)
 - For international version, manually resign
 - codesign -vvv /Applications/OsiriX.app
 - 64bitExtension : upload osirix-viewer.com

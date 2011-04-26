@@ -12105,6 +12105,8 @@ END_CREATE_ROIS:
 	
 	if ( acquisitionTime == nil || radiopharmaceuticalStartTime == nil) return;
 	
+	if( isRGB) return;
+	
 	hasSUV = YES;
 }
 

@@ -2528,6 +2528,9 @@ static NSConditionLock *threadLock = nil;
 	if( [options objectForKey: @"COPYDATABASEMODE"])
 		COPYDATABASEMODE = [[options objectForKey: @"COPYDATABASEMODE"] integerValue];
 	
+//	if( DICOMDIRCDMODE)
+//		COPYDATABASE = NO;
+	
 	NSMutableArray *newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
 	NSString *INpath = [database dataDirPath];
 	
@@ -3374,11 +3377,8 @@ static NSConditionLock *threadLock = nil;
 							free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
 							free /= 1024;
 							free /= 1024;
-						}
-						while( (long) free < freeMemoryRequested && [unlockedStudies count] > 2);
-					}
-					@catch ( NSException *e)
-					{
+						} while( (long) free < freeMemoryRequested && [unlockedStudies count] > 2);
+					} @catch ( NSException *e) {
 						N2LogExceptionWithStackTrace(e);
 					}
 					
@@ -6803,7 +6803,6 @@ static NSConditionLock *threadLock = nil;
 	
 	[self checkIncoming: self];
 	// We cannot call checkIncomingNow, because we currently have the lock for context, and IF a separate checkIncoming thread has started, he is currently waiting for the context lock, and we will wait for the checkIncomingLock...
-	
 	
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey: table]];
@@ -10303,8 +10302,7 @@ static BOOL needToRezoom;
 		
 		if( subSampling != 1)
 		{
-			NSArray	*winList = [NSApp windows];
-			for( NSWindow *win in winList)
+			for( NSWindow *win in [NSApp windows])
 			{
 				if( [win isMiniaturized])
 				{
@@ -11884,17 +11882,11 @@ static NSArray*	openSubSeriesArray = nil;
 //			currentDatabasePath = [[NSString stringWithString: @"/tmp/OsiriXTemporaryDatabase"] retain];
 //			[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: nil];
 //			
-//			[self loadDatabase: currentDatabaseDirPath];
-//			
-//			BOOL COPYDATABASE = [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASE"];
-//	
-//			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"COPYDATABASE"];
+//			[self loadDatabase: currentDatabasePath];
 //			
 //			NSMutableArray *filesArray = [NSMutableArray array];
 //			[self addDICOMDIR:dicomdir: filesArray];
 //			[self addFilesAndFolderToDatabase: filesArray];
-//			
-//			[[NSUserDefaults standardUserDefaults] setBool: COPYDATABASE forKey: @"COPYDATABASE"];
 //		}
 //		else  if ([[NSFileManager defaultManager] fileExistsAtPath: dicomdirPath])
 //		{
@@ -11904,18 +11896,19 @@ static NSArray*	openSubSeriesArray = nil;
 //			currentDatabasePath = [[NSString stringWithString: @"/tmp/OsiriXTemporaryDatabase"] retain];
 //			[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: nil];
 //			
-//			[self loadDatabase: currentDatabaseDirPath];
+//			[self loadDatabase: currentDatabasePath];
 //			
 //			NSMutableArray *filesArray = [NSMutableArray array];
 //			[self addDICOMDIR: [NSString stringWithContentsOfFile: dicomdirPath] :filesArray];
 //			[self addFilesAndFolderToDatabase: filesArray];
 //		}
 //		else 
-//			[self loadDatabase: currentDatabaseDirPath];
+//			[self loadDatabase: currentDatabasePath];
 //		
 //		[self setFixedDocumentsDirectory];
+//		[self setNetworkLogs];
 		
-//		NSString *str = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
+		// NSString *str = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
 		
 //		shouldDie = NO;
 //		bonjourDownloading = NO;
@@ -13601,7 +13594,35 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	return NO;
 }
-
+	
+- (void)listenerAnonymizeFiles: (NSArray*)files
+{
+	#ifndef OSIRIX_LIGHT
+	NSArray				*array = [NSArray arrayWithObjects: [DCMAttributeTag tagWithName:@"PatientsName"], @"**anonymized**", [DCMAttributeTag tagWithName:@"PatientID"], @"00000",nil];
+	NSMutableArray		*tags = [NSMutableArray array];
+	
+	[tags addObject:array];
+	
+	for( NSString *file in files)
+	{
+		NSString *destPath = [file stringByAppendingString:@"temp"];
+		
+		@try
+		{
+			[DCMObject anonymizeContentsOfFile: file  tags:tags  writingToFile:destPath];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"**** listenerAnonymizeFiles : %@", e);
+			[AppController printStackTrace: e];
+		}
+		
+		[[NSFileManager defaultManager] removeFileAtPath: file handler: nil];
+		[[NSFileManager defaultManager] movePath:destPath toPath: file handler: nil];
+	}
+#endif
+}
+	
 #pragma deprecated (pathResolved:)
 - (NSString*) pathResolved:(NSString*) inPath {
 	return [[NSFileManager defaultManager] destinationOfAliasAtPath:inPath];
@@ -15609,46 +15630,29 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void) setBurnerWindowControllerToNIL
-{
-	burnerWindowController = nil;
-}
-
-- (BOOL) checkBurner
-{
-	if( burnerWindowController)
-	{
-		[[burnerWindowController window] makeKeyAndOrderFront: self];
-		
-		return NO;
-	}
-	
-	return YES;
-}
-
 #ifndef OSIRIX_LIGHT
 - (void)burnDICOM: (id)sender
 {
-	if( burnerWindowController == nil)
+	for( NSWindow *win in [NSApp windows])
 	{
-		NSMutableArray *managedObjects = [NSMutableArray array];
-		NSMutableArray *filesToBurn;
-		//Burn additional Files. Not just images. Add SRs
-		[self checkResponder];
-		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
-		else filesToBurn = [self filesForDatabaseOutlineSelection: managedObjects onlyImages:NO];
-		
-		burnerWindowController = [[BurnerWindowController alloc] initWithFiles:filesToBurn managedObjects:managedObjects];
-	//	[NSApp beginSheet:burnerWindowController.window modalForWindow:self.window modalDelegate:NULL didEndSelector:NULL contextInfo:NULL];
-		
-		[burnerWindowController showWindow:self];
+		if( [[win windowController] isKindOfClass:[BurnerWindowController class]])
+		{
+			NSRunInformationalAlertPanel( NSLocalizedString(@"Burn", nil), NSLocalizedString(@"A burn session is already opened. Close it to burn a new study.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			[win makeKeyAndOrderFront:self];
+			return;
+		}
 	}
-	else
-	{
-		NSRunInformationalAlertPanel( NSLocalizedString(@"Burn", nil), NSLocalizedString(@"A burn session is already opened. Close it to burn a new study.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		
-		[[burnerWindowController window] makeKeyAndOrderFront:self];
-	}
+	
+	NSMutableArray *managedObjects = [NSMutableArray array];
+	NSMutableArray *filesToBurn;
+	//Burn additional Files. Not just images. Add SRs
+	[self checkResponder];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
+	else filesToBurn = [self filesForDatabaseOutlineSelection: managedObjects onlyImages:NO];
+	
+	BurnerWindowController *burnerWindowController = [[BurnerWindowController alloc] initWithFiles:filesToBurn managedObjects:managedObjects];
+	
+	[burnerWindowController showWindow:self];
 }
 #endif
 

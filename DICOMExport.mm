@@ -584,7 +584,7 @@
 					if( exportSeriesNumber != -1)
 						dataset->putAndInsertString( DCM_SeriesNumber, [[NSString stringWithFormat: @"%d", exportSeriesNumber] UTF8String]);
 					
-					if( modalityAsSource == NO)
+					if( modalityAsSource == NO || spp == 3)
 						dataset->putAndInsertString( DCM_Modality, "SC");
 					
 					dataset->putAndInsertString( DCM_ManufacturersModelName, "OsiriX");

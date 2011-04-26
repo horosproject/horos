@@ -179,8 +179,6 @@
 	windowWillClose = YES;
 	
 	runBurnAnimation = NO;
-
-	[[BrowserController currentBrowser] setBurnerWindowControllerToNIL];
 		
 	[anonymizedFiles release];
 	[filesToBurn release];

@@ -216,6 +216,9 @@ enum
 	IBOutlet NSForm			*suvForm;
 	IBOutlet NSMatrix		*suvConversion;
 	
+	NSCalendarDate			*editedRadiopharmaceuticalStartTime, *editedAcquisitionTime;
+	NSCalendarDate			*injectionDateTime;
+	
 	IBOutlet NSWindow       *addOpacityWindow;
 	IBOutlet NSTextField    *OpacityName;
 	IBOutlet OpacityTransferView  *OpacityView;
@@ -333,7 +336,6 @@ enum
 	IBOutlet NSMatrix		*display12bitToolbarItemMatrix;
 	NSTimer					*t12BitTimer;
 	
-	NSCalendarDate			*injectionDateTime;
 	IBOutlet NSWindow		*injectionTimeWindow;
 	
 	int						isDataVolumicIn4DLevel;

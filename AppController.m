@@ -2070,7 +2070,7 @@ static NSDate *lastWarningDate = nil;
 					
 					[paramDict removeObjectForKey: @"methodName"];
 					
-					[XMLRPCServer processXMLRPCMessage: [urlParameters objectForKey: @"methodName"] httpServerMessage: nil HTTPServerRequest: nil version: nil paramDict: paramDict encoding: @"UTF-8"];
+					[XMLRPCServer processXMLRPCMessage: [urlParameters objectForKey: @"methodName"] httpServerMessage: nil HTTPServerRequest: nil version: (NSString*) kCFHTTPVersion1_0 paramDict: paramDict encoding: @"UTF-8"];
 				}
 				
 				if( [urlParameters objectForKey: @"image"])
@@ -2217,11 +2217,6 @@ static NSDate *lastWarningDate = nil;
 			[[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
 		}
 	}
-}
-
-- (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender
-{
-	return [[BrowserController currentBrowser] checkBurner];
 }
 
 - (BOOL) applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
@@ -2394,8 +2389,10 @@ static NSDate *lastWarningDate = nil;
 {
 	if( [[BrowserController currentBrowser] shouldTerminate: sender] == NO) return;
 	
+	#ifndef OSIRIX_LIGHT
 	[dcmtkQRSCP abort];
 	[dcmtkQRSCPTLS abort];
+	#endif
 	
 	[NSThread sleepForTimeInterval: 1];
 	

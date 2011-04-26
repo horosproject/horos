@@ -805,7 +805,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"1" forKey: @"ShowErrorMessagesForAutorouting"];
 	[defaultValues setObject: @"0" forKey: @"STILLMOVIEMODE"];
 	[defaultValues setObject: @"1" forKey: @"SAMESTUDY"];
-	[defaultValues setObject: @"1" forKey: @"recomputePatientUID"];
+	[defaultValues setObject: @"0" forKey: @"recomputePatientUID"];
 	[defaultValues setObject: @"1" forKey: @"ReserveScreenForDB"];
 	[defaultValues setObject: @"1" forKey: @"notificationsEmailsInterval"];
 	NSDateFormatter	*dateFormat = [[[NSDateFormatter alloc] init] autorelease];
@@ -822,7 +822,11 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"40" forKey:@"DICOMTimeout"];
 	[defaultValues setObject:@"1" forKey:@"NSWindowsSetFrameAnimate"];
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONTYPE"];
+	#ifndef OSIRIX_LIGHT
 	[defaultValues setObject: @"1" forKey: @"COPYDATABASE"];
+	#else
+	[defaultValues setObject: @"0" forKey: @"COPYDATABASE"];
+	#endif
 	[defaultValues setObject: @"0" forKey: @"SUVCONVERSION"];
 	[defaultValues setObject: @"0" forKey: @"AUTOCLEANINGCOMMENTS"];
 	[defaultValues setObject: @"" forKey: @"AUTOCLEANINGCOMMENTSTEXT"];
@@ -842,7 +846,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"SOFTWAREINTERPOLATION"];
 	[defaultValues setObject:@"0" forKey:@"DATABASEINDEX"];
 	[defaultValues setObject: @"2" forKey: @"ANNOTATIONS"];
-	[defaultValues setObject: @"3" forKey :@"CLUTBARS"];
+	[defaultValues setObject: @"0" forKey :@"CLUTBARS"];
 	[defaultValues setObject: @"60" forKey: @"temporaryUserDuration"];
 	[defaultValues setObject:@"3" forKey:@"COPYDATABASEMODE"];
 	[defaultValues setObject:@"7" forKey:@"LOGCLEANINGDAYS"];

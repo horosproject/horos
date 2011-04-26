@@ -85,7 +85,12 @@
 	return [self studiesForUser:user predicate:predicate sortBy:NULL];
 }
 
--(NSArray*)studiesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue {
+-(NSArray*)studiesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue
+{
+	return [self studiesForUser: user predicate: predicate sortBy: sortValue fetchLimit: 0];
+}
+
+-(NSArray*)studiesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit {
 	NSArray* studiesArray = nil;
 	
 	[self.dicomDatabase.managedObjectContext lock];
@@ -94,6 +99,9 @@
 	{
 		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
+		
+		if( fetchLimit)
+			[req setFetchLimit: fetchLimit];
 		
 		BOOL allStudies = NO;
 		if( user.studyPredicate.length == 0)
