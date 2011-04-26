@@ -343,6 +343,9 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 					[dcmPix checkImageAvailble:curWW :curWL];
 				else
 					[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+				
+				if( x== 0 && [dcmPix cineRate])
+					[[NSUserDefaults standardUserDefaults] setInteger: [dcmPix cineRate] forKey: @"quicktimeExportRateValue"];
 			}
 			else
 			{
@@ -439,7 +442,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			[[NSFileManager defaultManager] removeItemAtPath: [fileName stringByAppendingString: @" dir"] error: nil];
 			[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] attributes: nil];
-
+			
+			[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
+			
 			@try 
 			{
 				DCMPixLoadingThreads = 0;
@@ -488,7 +493,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			{
 				@try
 				{
-					[theTask setArguments: [NSArray arrayWithObjects: fileName, @"writeMovie", [fileName stringByAppendingString: @" dir"], nil]];
+					[theTask setArguments: [NSArray arrayWithObjects: fileName, @"writeMovie", [fileName stringByAppendingString: @" dir"], [[NSUserDefaults standardUserDefaults] stringForKey: @"quicktimeExportRateValue"], nil]];
 					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 					[theTask launch];
 					
@@ -521,7 +526,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			{
 				@try
 				{
-					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovie", [outFile stringByAppendingString: @" dir"], nil]];
+					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovie", [outFile stringByAppendingString: @" dir"], [[NSUserDefaults standardUserDefaults] stringForKey: @"quicktimeExportRateValue"], nil]];
 					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 					[theTask launch];
 					

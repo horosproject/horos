@@ -16596,7 +16596,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 		
-		long long timeValue = 60;
+		if( [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"] <= 0)
+			[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
+		
+		long long rateValue = [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"];
+		long long timeValue = 600 / rateValue;
 		long timeScale = 600;
 		
 		QTTime curTime = QTMakeTime(timeValue, timeScale);
@@ -16688,6 +16692,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		int uniqueSeriesID = 0;
 		BOOL first = YES;
+		BOOL cineRateSet = NO;
+		
+		[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
 		
 		for( DicomImage *curImage in dicomFiles2Export)
 		{
@@ -16912,58 +16919,56 @@ static volatile int numberOfThreadsForJPEG = 0;
 			else
 			#endif
 			{
-//				int frames = [[curImage valueForKey:@"numberOfFrames"] intValue];
-//				
-//				if( [curImage valueForKey:@"frameID"]) // Is is a multi-
-//					frames = 1;
-//				
-				for (int x = 0; x < 1; x++) // Starting with OsiriX 3.7 multi frames images are treated as single object
+				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+				
+				@try
 				{
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+					int frame = 0;
 					
-					@try
+					if( [curImage valueForKey:@"frameID"])
+						frame = [[curImage valueForKey:@"frameID"] intValue];
+					
+					DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:browser.isCurrentDatabaseBonjour imageObj:curImage];
+					
+					if( dcmPix)
 					{
-						int frame = x;
+						float curWW = 0;
+						float curWL = 0;
 						
-						if( [curImage valueForKey:@"frameID"])
-							frame = [[curImage valueForKey:@"frameID"] intValue];
-						
-						DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:browser.isCurrentDatabaseBonjour imageObj:curImage];
-						
-						if( dcmPix)
+						if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
 						{
-							float curWW = 0;
-							float curWL = 0;
-							
-							if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
-							{
-								curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-								curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
-							}
-							
-							if( curWW != 0 && curWW !=curWL)
-								[dcmPix checkImageAvailble :curWW :curWL];
-							else
-								[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
-
-							NSImage *im = [dcmPix image];
-							
-							if( im)
-							{
-								[imagesArray addObject: im];
-								[imagesArrayObjects addObject: curImage];
-							}
-							
-							[dcmPix release];
+							curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+							curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
 						}
+						
+						if( curWW != 0 && curWW !=curWL)
+							[dcmPix checkImageAvailble :curWW :curWL];
+						else
+							[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+
+						NSImage *im = [dcmPix image];
+						
+						if( im)
+						{
+							[imagesArray addObject: im];
+							[imagesArrayObjects addObject: curImage];
+							
+							if( cineRateSet == NO && [dcmPix cineRate])
+							{
+								cineRateSet == YES;
+								[[NSUserDefaults standardUserDefaults] setInteger: [dcmPix cineRate] forKey:@"quicktimeExportRateValue"];
+							}
+						}
+						
+						[dcmPix release];
 					}
-					@catch( NSException *e)
-					{
-						NSLog( @"*** exportQuicktimeInt Loop: %@", e);
-						[AppController printStackTrace: e];
-					}
-					[pool release];
 				}
+				@catch( NSException *e)
+				{
+					NSLog( @"*** exportQuicktimeInt Loop: %@", e);
+					[AppController printStackTrace: e];
+				}
+				[pool release];
 			}
 			
 			[splash incrementBy:1];
