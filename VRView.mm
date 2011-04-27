@@ -1813,7 +1813,8 @@ public:
 {
 	if( [self window] && [self window] == [notification object])
 	{
-		[[self window] setAcceptsMouseMovedEvents: NO];
+		if( [[[self window] windowController] isKindOfClass:[VRController class]])
+			[[self window] setAcceptsMouseMovedEvents: NO];
 		
 		[startAutoRotate invalidate];
 		[startAutoRotate release];
@@ -5732,7 +5733,8 @@ public:
 	short   error = 0;
 	long	i;
     
-	[[self window] setAcceptsMouseMovedEvents: YES];
+	if( [[[self window] windowController] isKindOfClass:[VRController class]])
+		[[self window] setAcceptsMouseMovedEvents: YES];
 	
     [pix retain];
     pixList = pix;
