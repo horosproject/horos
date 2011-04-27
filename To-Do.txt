@@ -2,6 +2,7 @@
 - Web Server: create albums and add studies to albums (admin)
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
 - DICOM ECG
+- Add preference for SUV computation: which Time to use (Acquisition Time, Series Time, Content Time, É)
 - Activate 8-bit TIFF, JPEG, export // Add PNG
 - DB Autocleaning: limit number of studies/images
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
