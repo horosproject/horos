@@ -158,11 +158,11 @@ function shareDestinationChange(select) {
 			<table class="wide fat">
 				%[FOREACH:Series:Series%
 					<tr class="li%X:Series_Index2%">
-						%[IF:Info.proposeDicomSend||Info.proposeWeasis%
+						%[IF:Info.proposeDicomSend||Info.proposeWeasis||Info.proposeWADORetrieve%
 						<td class="narrow fat">
 							<input type="checkbox" class="checkbox" name="selected" value="%Series.XID%" onchange="checkboxChanged(this.form)" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
 						</td>
-						%]IF:Info.proposeDicomSend||Info.proposeWeasis%
+						%]IF:Info.proposeDicomSend||Info.proposeWeasis||Info.proposeWADORetrieve%
 						<td class="narrow middle center">
 							<a href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%">
 								<img src="/thumbnail?xid=%Series.XID%" />
@@ -187,7 +187,15 @@ function shareDestinationChange(select) {
 								</span>
 							</a>
 						</td>
-		
+						
+						%[IF:Info.isMacOS%
+						<td class="narrow middle">
+							%[IF:Info.proposeWADORetrieve%
+							<a href="osirix://?methodName=DownloadURL&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%&seriesUID=%U:Series.seriesDICOMUID%'"><img src="images/osirix.png"/></a>
+							%]IF:Info.proposeWADORetrieve%
+						</td>
+						%]IF:Info.isMacOS%
+						
 						<td class="narrow middle">
 							%[IF:Info.proposeZipDownload%
 							<a href="%U:Study.name% - %U:Series.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?xid=%Series.XID%"><img src="images/download.png"/></a>

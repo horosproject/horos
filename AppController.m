@@ -2133,8 +2133,28 @@ static NSDate *lastWarningDate = nil;
 	{
 		NSString *content = [url resourceSpecifier];
 		
+		BOOL betweenQuotation = NO;
+		
+		NSMutableString *parsedContent = [NSMutableString string];
+		for( int i = 0 ; i < content.length; i++)
+		{
+			if( [content characterAtIndex: i] == '\'')
+				betweenQuotation = !betweenQuotation;
+				
+			if( [content characterAtIndex: i] == '?' && betweenQuotation)
+				[parsedContent appendString: @"__question__"];
+			else
+				[parsedContent appendFormat: @"%c", [content characterAtIndex: i]];
+		}
+		
 		// parse the URL to find the parameters (if any)
-		NSArray *urlComponents = [content componentsSeparatedByString: @"?"];
+		
+		NSArray *urlComponents = [NSArray array];
+		for( NSString *s in [parsedContent componentsSeparatedByString: @"?"])
+		{
+			urlComponents = [urlComponents arrayByAddingObject: [s stringByReplacingOccurrencesOfString:@"__question__" withString:@"?"]];
+		}
+		
 		NSString *parameterString = @"";
 		if([urlComponents count] == 2)
 		{
@@ -2143,7 +2163,23 @@ static NSDate *lastWarningDate = nil;
 			NSMutableDictionary *urlParameters = [NSMutableDictionary dictionary];
 			if(![parameterString isEqualToString: @""])
 			{
-				NSArray *paramArray = [parameterString componentsSeparatedByString: @"&"];
+				NSMutableString *parsedParameterString = [NSMutableString string];
+				for( int i = 0 ; i < parameterString.length; i++)
+				{
+					if( [parameterString characterAtIndex: i] == '\'')
+						betweenQuotation = !betweenQuotation;
+						
+					if( [parameterString characterAtIndex: i] == '&' && betweenQuotation)
+						[parsedParameterString appendString: @"__and__"];
+					else
+						[parsedParameterString appendFormat: @"%c", [parameterString characterAtIndex: i]];
+				}
+				
+				NSArray *paramArray = [NSArray array];
+				for( NSString *s in [parsedParameterString componentsSeparatedByString: @"&"])
+				{
+					paramArray = [paramArray arrayByAddingObject: [s stringByReplacingOccurrencesOfString:@"__and__" withString:@"&"]];
+				}
 				
 				for(NSString *param in paramArray)
 				{
@@ -2153,7 +2189,7 @@ static NSDate *lastWarningDate = nil;
 					{
 						@try
 						{
-							[urlParameters setObject: [param substringFromIndex: separatorRange.location+1] forKey: [param substringToIndex: separatorRange.location]];
+							[urlParameters setObject: [[param substringFromIndex: separatorRange.location+1] stringByReplacingOccurrencesOfString:@"'" withString:@""] forKey: [param substringToIndex: separatorRange.location]];
 						}
 						@catch (NSException * e)
 						{

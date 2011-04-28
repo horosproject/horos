@@ -520,6 +520,18 @@
 	if ([key isEqual:@"proposeWADORetrieve"]) {
 		return [NSNumber numberWithBool: [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"] && (!wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue))]; 
 	}
+	if ([key isEqual:@"WADOBaseURL"])
+	{
+		NSString *protocol = [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"] ? @"https" : @"http";
+		NSString *wadoSubUrl = @"wado"; // See Web Server Preferences
+		
+		if( [wadoSubUrl hasPrefix: @"/"])
+			wadoSubUrl = [wadoSubUrl substringFromIndex: 1];
+		
+		NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@", protocol, NSUserDefaults.webPortalAddress, NSUserDefaults.webPortalPortNumber, wadoSubUrl];
+		
+		return baseURL; 
+	}
 	if ([key isEqual:@"proposeZipDownload"])
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.downloadZIP.boolValue) && !wpc.requestIsIOS ];
 	

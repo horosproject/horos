@@ -1263,8 +1263,67 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSString* seriesUID = [parameters objectForKey:@"seriesUID"];
 	NSString* objectUID = [parameters objectForKey:@"objectUID"];
 	
-	if (objectUID == nil)
-		NSLog(@"***** WADO with objectUID == nil -> wado will fail");
+	if (objectUID == nil && (seriesUID.length > 0 || studyUID.length > 0)) // This is a 'special case', not officially supported by DICOM standard : we take all the series or study objects -> zip them -> send them
+	{
+		NSFetchRequest* dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		dbRequest.entity = [self.portal.dicomDatabase entityForName:@"Study"];
+		
+		if (studyUID)
+			[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
+		else
+			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+		
+		NSArray *studies = [self.portal.dicomDatabase.managedObjectContext executeFetchRequest:dbRequest error:NULL];
+		
+		if ([studies count] == 0)
+			NSLog( @"****** WADO Server : study not found");
+		
+		if ([studies count] > 1)
+			NSLog( @"****** WADO Server : more than 1 study with same uid");
+		
+		NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
+		
+		if (seriesUID)
+			allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
+		
+		NSArray *allImages = [NSArray array];
+		for ( id series in allSeries)
+			allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
+		
+		if( allImages.count > 0)
+		{
+			// Zip them
+			
+			NSString *srcFolder = @"/tmp";
+			NSString *destFile = @"/tmp";
+			
+			srcFolder = [srcFolder stringByAppendingPathComponent: [[[allImages lastObject] valueForKeyPath:@"series.study.name"] filenameString]];
+			destFile = [destFile stringByAppendingPathComponent: [[[allImages lastObject] valueForKeyPath:@"series.study.name"] filenameString]];
+			destFile = [destFile stringByAppendingPathExtension:@"osirixzip"];
+			
+			if (srcFolder)
+				[NSFileManager.defaultManager removeItemAtPath:srcFolder error:nil];
+			if (destFile)
+				[NSFileManager.defaultManager removeItemAtPath:destFile error:nil];
+			
+			[NSFileManager.defaultManager confirmDirectoryAtPath:srcFolder];
+			
+			[self.portal.dicomDatabase.managedObjectContext unlock];
+			[BrowserController encryptFiles: [allImages valueForKey:@"completePath"] inZIPFile:destFile password: user.encryptedZIP.boolValue? user.password : NULL ];
+			[self.portal.dicomDatabase.managedObjectContext lock];
+
+			self.response.data = [NSData dataWithContentsOfFile:destFile];
+			self.response.statusCode = 0;
+			[self.response setMimeType: @"application/osirixzip"];
+			
+			if (srcFolder)
+				[NSFileManager.defaultManager removeItemAtPath:srcFolder error:nil];
+			if (destFile)
+				[NSFileManager.defaultManager removeItemAtPath:destFile error:nil];
+				
+			return;
+		}
+	}
 	
 	NSString* contentType = [[[[parameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
 	int rows = [[parameters objectForKey:@"rows"] intValue];
