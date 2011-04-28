@@ -674,6 +674,42 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: cannot identify node.", @"Web Portal, study, dicom send, error")]];
 	}
 	
+	if ([[parameters objectForKey:@"WADOURLsRetrieve"] isEqual:@"WADOURLsRetrieve"] && study && [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"])
+	{
+		NSMutableArray* selectedImages = [NSMutableArray array];
+		for (DicomSeries* s in selectedSeries)
+			[selectedImages addObjectsFromArray:s.sortedImages];
+		
+		if (selectedImages.count)
+		{
+			NSString *protocol = [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"] ? @"https" : @"http";
+			NSString *wadoSubUrl = @"wado"; // See Web Server Preferences
+			
+			if( [wadoSubUrl hasPrefix: @"/"])
+				wadoSubUrl = [wadoSubUrl substringFromIndex: 1];
+			
+			NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@?requestType=WADO", protocol, NSUserDefaults.webPortalAddress, NSUserDefaults.webPortalPortNumber, wadoSubUrl];
+			
+			NSMutableString *WADOURLs = [NSMutableString string];
+			
+			@try
+			{
+				for( DicomImage *image in selectedImages)
+					[WADOURLs appendString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@\r", image.series.study.studyInstanceUID, image.series.seriesDICOMUID, image.sopInstanceUID, @"&useOrig=true"]];
+			}
+			@catch (NSException * e) {
+				NSLog( @"***** exception in WADOURLsRetrieve - %s: %@", __PRETTY_FUNCTION__, e);
+			}
+			
+			response.data = [WADOURLs dataUsingEncoding: NSUTF8StringEncoding];
+			[response setMimeType:@"application/dcmURLs"];
+			[response.httpHeaders setObject: [NSString stringWithFormat:@"attachment; filename=%@.dcmURLs", [[selectedSeries lastObject] valueForKeyPath: @"study.name"]] forKey: @"Content-Disposition"];
+			return;
+		}
+		else
+			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"WADO URL Retrieve failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")]];
+	}
+	
 	if ([[parameters objectForKey:@"shareStudy"] isEqual:@"shareStudy"] && study) {
 		NSString* shareStudyDestination = [parameters objectForKey:@"shareStudyDestination"];
 		WebPortalUser* destUser = NULL;

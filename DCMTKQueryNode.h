@@ -32,7 +32,6 @@
 /** \brief Base class for query nodes */
 @interface DCMTKQueryNode : DCMTKServiceClassUser
 {
-	volatile int32_t WADOThreads __attribute__ ((aligned (4)));
 	NSMutableArray *_children;
 	NSString *_uid;
 	NSString *_theDescription;
@@ -51,7 +50,6 @@
 	NSManagedObject *_logEntry;
 	BOOL showErrorMessage, firstWadoErrorDisplayed;
 	OFCondition globalCondition;
-	NSMutableDictionary *WADODownloadDictionary;
 }
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset

@@ -646,6 +646,10 @@
 		84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */ = {isa = PBXBuildFile; fileRef = 84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */; };
 		84CD254C11ECB49A004669D6 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE51BAF711E2289C006D180E /* OsiriXDB_DataModel.xcdatamodel */; };
 		84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
+		84E191FB1369966A008DCFC8 /* WADODownload.h in Headers */ = {isa = PBXBuildFile; fileRef = 84E191F91369966A008DCFC8 /* WADODownload.h */; };
+		84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
+		84E1924713699BBB008DCFC8 /* WADODownload.h in Headers */ = {isa = PBXBuildFile; fileRef = 84E191F91369966A008DCFC8 /* WADODownload.h */; };
+		84E1924813699BBB008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
 		84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -8570,6 +8574,8 @@
 		84C450F41003384000138F70 /* OSIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWindow.h; sourceTree = "<group>"; };
 		84C450F51003384000138F70 /* OSIWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIWindow.m; sourceTree = "<group>"; };
 		84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.4.mom; sourceTree = "<group>"; };
+		84E191F91369966A008DCFC8 /* WADODownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WADODownload.h; sourceTree = "<group>"; };
+		84E191FA1369966A008DCFC8 /* WADODownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WADODownload.m; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
 		A90202BB0B980CD60001A00B /* PluginManagerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManagerController.m; sourceTree = "<group>"; };
 		A9044D370BBAA29200F36689 /* ROISelector.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROISelector.tif; sourceTree = "<group>"; };
@@ -13724,6 +13730,8 @@
 				BF432BEC09E31C0F00AC322E /* DCMTKImageQueryNode.mm */,
 				BF90551C09EB4985009C30D1 /* MoveManager.h */,
 				BF90551D09EB4985009C30D1 /* MoveManager.m */,
+				84E191F91369966A008DCFC8 /* WADODownload.h */,
+				84E191FA1369966A008DCFC8 /* WADODownload.m */,
 			);
 			name = Query;
 			sourceTree = "<group>";
@@ -19766,6 +19774,7 @@
 				CEB98C7A1335087D0083F3FD /* OSI3DPreferencePane.h in Headers */,
 				CEB98C831335088C0083F3FD /* AYDicomPrintPref.h in Headers */,
 				59B696641337C957009356ED /* N2DirectoryEnumerator.h in Headers */,
+				84E191FB1369966A008DCFC8 /* WADODownload.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21983,6 +21992,7 @@
 				CEB98C581335084F0083F3FD /* RWTokenField.h in Headers */,
 				CEB98C631335085D0083F3FD /* OSICDPreferencePanePref.h in Headers */,
 				59B696661337C957009356ED /* N2DirectoryEnumerator.h in Headers */,
+				84E1924713699BBB008DCFC8 /* WADODownload.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24353,6 +24363,7 @@
 				CEB98C7B1335087D0083F3FD /* OSI3DPreferencePane.m in Sources */,
 				CEB98C841335088C0083F3FD /* AYDicomPrintPref.m in Sources */,
 				59B696651337C957009356ED /* N2DirectoryEnumerator.mm in Sources */,
+				84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25609,6 +25620,7 @@
 				CEB98C591335084F0083F3FD /* RWTokenField.m in Sources */,
 				CEB98C641335085D0083F3FD /* OSICDPreferencePanePref.m in Sources */,
 				59B696671337C957009356ED /* N2DirectoryEnumerator.mm in Sources */,
+				84E1924813699BBB008DCFC8 /* WADODownload.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -11,8 +11,9 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>dcm</string>
 				<string>osirixzip</string>
+				<string>dcm</string>
+				<string>dcmURLs</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>dcm.icns</string>
@@ -21,6 +22,7 @@
 				<string>application/dicom</string>
 				<string>application/zip</string>
 				<string>application/osirixzip</string>
+				<string>application/dcmURLs</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>DICOM Image</string>
@@ -32,6 +34,7 @@
 				<string>disk</string>
 				<string>zip</string>
 				<string>osirixzip</string>
+				<string>dcmURLs</string>
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>

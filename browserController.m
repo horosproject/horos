@@ -81,6 +81,7 @@
 #import "NSError+OsiriX.h"
 #import "NSImage+N2.h"
 #import "NSFileManager+N2.h"
+#import "WADODownload.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -1741,6 +1742,34 @@ static NSConditionLock *threadLock = nil;
 	[newFilesConditionLock unlock];
 }
 
+- (void) asyncWADODownload:(NSString*) filename
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSMutableArray *urlToDownloads = [NSMutableArray array];
+	
+	@try
+	{
+		for( NSString *url in [[NSString stringWithContentsOfFile: filename] componentsSeparatedByString: @"\r"])
+		{
+			if( url.length)
+				[urlToDownloads addObject: [NSURL URLWithString: url]];
+		}
+	}
+	@catch ( NSException *e) {
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	WADODownload *downloader = [[WADODownload alloc] init];
+	
+	[downloader WADODownload: urlToDownloads];
+	
+	[downloader release];
+	
+	[[NSFileManager defaultManager] removeItemAtPath: filename error: nil];
+	
+	[pool release];
+}
+
 - (void) addFilesAndFolderToDatabase:(NSArray*) filenames
 {
     NSFileManager       *defaultManager = [NSFileManager defaultManager];
@@ -1784,7 +1813,15 @@ static NSConditionLock *threadLock = nil;
 										
 										if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
 										{
-											if( [[itemPath pathExtension] isEqualToString: @"zip"] || [[itemPath pathExtension] isEqualToString: @"osirixzip"])
+											if( [[itemPath pathExtension] isEqualToString: @"dcmURLs"])
+											{
+												NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( asyncWADODownload:) object: filename] autorelease];
+												t.name = NSLocalizedString( @"WADO Retrieve...", nil);
+												t.supportsCancel = YES;
+												t.status = [itemPath lastPathComponent];
+												[[ThreadsManager defaultManager] addThreadAndStart: t];
+											}
+											else if( [[itemPath pathExtension] isEqualToString: @"zip"] || [[itemPath pathExtension] isEqualToString: @"osirixzip"])
 											{
 												NSString *unzipPath = [@"/tmp" stringByAppendingPathComponent: @"unzip_folder"];
 												
@@ -1818,7 +1855,15 @@ static NSConditionLock *threadLock = nil;
 					}
 					else    // A file
 					{
-						if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
+						if( [[filename pathExtension] isEqualToString: @"dcmURLs"])
+						{
+							NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( asyncWADODownload:) object: filename] autorelease];
+							t.name = NSLocalizedString( @"WADO Retrieve...", nil);
+							t.supportsCancel = YES;
+							t.status = [filename lastPathComponent];
+							[[ThreadsManager defaultManager] addThreadAndStart: t];
+						}
+						else if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
 						{
 							NSString *unzipPath = [@"/tmp" stringByAppendingPathComponent: @"unzip_folder"];
 							

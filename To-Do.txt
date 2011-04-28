@@ -2,7 +2,6 @@
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
-- Web Server: WADO retrieve option (http://0.0.0.0:8080/wadoList?.dcmURLs)
 - DICOM ECG
 - Activate 8-bit TIFF, JPEG, export // Add PNG
 - DB Autocleaning: limit number of studies/images
