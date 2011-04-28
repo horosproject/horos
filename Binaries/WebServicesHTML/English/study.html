@@ -282,6 +282,8 @@ function shareDestinationChange(select) {
 				</tr>
 			</table>
 		</div>
+		%]IF:Info.proposeDicomSend%
+		%[IF:Info.proposeWADORetrieve%
 		<div class="title separated">WADO URLs Retrieve</div>
 		<div>
 			<table class="form">
@@ -292,7 +294,7 @@ function shareDestinationChange(select) {
 				</tr>
 			</table>
 		</div>
-		%]IF:Info.proposeDicomSend%
+		%]IF:Info.proposeWADORetrieve%
 	</div>
 	
 </div>

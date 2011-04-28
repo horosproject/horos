@@ -515,7 +515,10 @@
 	if ([key isEqual:@"proposeDicomUpload"])
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM.boolValue) && !wpc.requestIsIOS ];
 	if ([key isEqual:@"proposeDicomSend"]) {
-		return [NSNumber numberWithBool: !wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue /* TODO: && destinations.count */)]; 
+		return [NSNumber numberWithBool: !wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue)]; 
+	}
+	if ([key isEqual:@"proposeWADORetrieve"]) {
+		return [NSNumber numberWithBool: [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"] && (!wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue))]; 
 	}
 	if ([key isEqual:@"proposeZipDownload"])
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.downloadZIP.boolValue) && !wpc.requestIsIOS ];
