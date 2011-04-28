@@ -121,7 +121,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	NSString* albumReq = [parameters objectForKey:@"album"];
 	if (albumReq.length) {
 		*title = [NSString stringWithFormat:NSLocalizedString(@"Album: %@", @"Web portal, study list, title format (%@ is album name)"), albumReq];
-		return [self.portal studiesForUser:user album:albumReq sortBy:[parameters objectForKey:@"order"]];
+		return [self.portal studiesForUser:user album:albumReq sortBy:[parameters objectForKey:@"sortKey"]];
 	}
 	
 	NSString* browseReq = [parameters objectForKey:@"browse"];

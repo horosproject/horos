@@ -21,6 +21,9 @@
 #import "DCMNetServiceDelegate.h"
 #import "Notifications.h"
 #import "N2Debug.h"
+#import "NSThread+N2.h"
+#import "WADODownload.h"
+#import "ThreadsManager.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -127,6 +130,19 @@ static NSTimeInterval lastConnection = 0;
 	return paramDict;
 }
 
+- (void) asyncWADODownload:(NSString*) url
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	WADODownload *downloader = [[WADODownload alloc] init];
+	
+	[downloader WADODownload: [NSArray arrayWithObject: [NSURL URLWithString: url]]];
+	
+	[downloader release];
+	
+	[pool release];
+}
+
 - (void) processXMLRPCMessage: (NSString*) selName httpServerMessage: (NSMutableDictionary*) httpServerMessage HTTPServerRequest: (HTTPServerRequest*) mess version:(NSString*) vers paramDict: (NSDictionary*) paramDict encoding: (NSString*) encoding
 {
 	if( vers == nil)
@@ -135,6 +151,59 @@ static NSTimeInterval lastConnection = 0;
 #pragma mark KillOsiriX			
 	if ( [selName isEqual:@"KillOsiriX"])
 		[[AppController sharedAppController] terminate: self];
+
+#pragma mark DownloadURL
+	// ********************************************
+	// Method: DownloadURL
+	//
+	// Parameters:
+	// URL: any URLs that return a file compatible with OsiriX, including .dcm, .zip, .osirixzip, ...
+	//
+	// Example: {URL: "http://127.0.0.1:3333/wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX"}
+	// Response: {error: "0"}
+	
+	if ([selName isEqual:@"DownloadURL"])
+	{
+		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+		{
+			if(1 != [paramDict count])
+			{
+				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
+				[mess setResponse:response];
+				CFRelease(response);
+				return;
+			}
+			// *****
+			//DLog(@"\tParamDict: %@", paramDict);
+			
+			NSString *listOfElements = nil;
+			NSNumber *ret = nil;
+			
+			@try
+			{
+				if( [[paramDict valueForKey:@"URL"] length])
+				{
+					NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( asyncWADODownload:) object: [paramDict valueForKey:@"URL"]] autorelease];
+					t.name = NSLocalizedString( @"WADO Retrieve...", nil);
+					t.supportsCancel = YES;
+					t.status = [paramDict valueForKey:@"URL"];
+					[[ThreadsManager defaultManager] addThreadAndStart: t];
+				}
+			}
+			@catch (NSException *e)
+			{
+				NSLog( @"****** XML-RPC Exception: %@", e);
+			}
+			
+			// *****
+			NSString *xml = @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>0</value></member></struct></value></param></params></methodResponse>";		// Simple answer, no errors
+			NSError *error = nil;
+			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+		}
+	}
+	
 	
 #pragma mark DisplayStudy
 	

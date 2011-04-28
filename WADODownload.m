@@ -20,6 +20,19 @@
 
 @synthesize _abortAssociation;
 
+- (void) errorMessage:(NSArray*) msg
+{
+	if( showErrorMessage)
+	{
+		NSString *alertSuppress = @"hideListenerError";
+		
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
+			NSRunCriticalAlertPanel( [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2], nil, nil) ;
+		else
+			NSLog( @"*** listener error (not displayed - hideListenerError): %@ %@ %@", [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2]);
+	}
+}
+
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
 	NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
