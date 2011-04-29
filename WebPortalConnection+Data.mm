@@ -1600,6 +1600,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 						[imageCache setObject:self.response.data forKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
 					}
 					
+					if( contentType)
+						[self.response setMimeType: contentType];
+					
 					// Alessandro: I'm not sure here, from Joris' code it seems WADO must always return HTTP 200, eventually with length 0..
 					self.response.data;
 					self.response.statusCode = 0;

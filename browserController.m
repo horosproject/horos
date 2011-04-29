@@ -10025,6 +10025,8 @@ static BOOL withReset = NO;
 					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 					[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
 					[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
+					[dbRequest setFetchLimit: 60];
+					
 					NSError	*error = nil;
 					NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
 					

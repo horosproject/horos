@@ -49,7 +49,7 @@
 		}
 		
 		[WADODownloadDictionary removeObjectForKey: [NSString stringWithFormat:@"%ld", connection]];
-	}	
+	}
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
@@ -100,7 +100,17 @@
 		
 		NSString *key = [NSString stringWithFormat:@"%ld", connection];
 		NSMutableData *d = [WADODownloadDictionary objectForKey: key];
-		[d writeToFile: [path stringByAppendingPathComponent: [NSString stringWithFormat:@"WADO-%d-%ld.dcm", WADOThreads, self]] atomically: YES];
+		
+		NSString *extension = @"dcm";
+		
+		if( [d length] > 2)
+		{
+			if( [[NSString stringWithCString: [d bytes] length: 2] isEqualToString: @"PK"])
+				extension = @"osirixzip";
+		}
+		
+		[d writeToFile: [path stringByAppendingPathComponent: [[NSString stringWithFormat:@"WADO-%d-%ld", WADOThreads, self] stringByAppendingPathExtension: extension]] atomically: YES];
+		
 		[d setLength: 0]; // Free the memory immediately
 		[WADODownloadDictionary removeObjectForKey: key];
 		
