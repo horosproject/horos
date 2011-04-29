@@ -14,6 +14,8 @@
 
 #import "N2ManagedDatabase.h"
 
+extern const NSString* const CurrentDatabaseVersion;
+
 @class N2MutableUInteger;
 
 /*
@@ -32,6 +34,8 @@
 	NSTimeInterval _timeOfLastModification;
 	char baseDirPathC[4096], incomingDirPathC[4096], tempDirPathC[4096]; // these paths are used from the DICOM listener
 }
+
++(void)initializeDicomDatabaseClass;
 
 +(NSString*)defaultBaseDirPath;
 +(NSString*)baseDirPathForMode:(int)mode path:(NSString*)path;

@@ -28,6 +28,10 @@ extern NSString* const OsirixDateFormatDefaultsKey;
 +(NSDateFormatter*)dateFormatter;
 +(NSString*)formatDate:(NSDate*)date;
 
+extern NSString* const OsirixCanActivateDefaultDatabaseOnlyDefaultsKey;
++(BOOL)canActivateOnlyDefaultDatabase;
++(BOOL)canActivateAnyLocalDatabase;
+
 #pragma mark Bonjour Sharing
 
 extern NSString* const OsirixBonjourSharingIsActiveDefaultsKey;

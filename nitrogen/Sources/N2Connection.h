@@ -29,29 +29,38 @@ enum N2ConnectionStatus {
 	NSInputStream* _inputStream;
 	NSOutputStream* _outputStream;
 	NSMutableData *_inputBuffer, *_outputBuffer;
-	NSTimer* _lifecycle;
-	BOOL _hasBytesAvailable, _hasSpaceAvailable, _handleConnectionClose;
-	NSUInteger _handleOpenCompleted;
+	//BOOL _hasBytesAvailable, _hasSpaceAvailable, _handleConnectionClose;
+	NSUInteger _handleOpenCompleted, _maximumReadSizePerEvent;
 	N2ConnectionStatus _status;
 }
 
 @property(readonly) NSString* address;
 @property N2ConnectionStatus status;
+@property NSUInteger maximumReadSizePerEvent;
+
++(NSData*)sendSynchronousRequest:(NSData*)request toHost:(NSHost*)host port:(NSInteger)port;
++(void)sendSynchronousRequest:(NSData*)request toHost:(NSHost*)host port:(NSInteger)port dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context; // -(NSInteger)dummyDataHandler:(NSData*)data context:(void*)context
 
 -(id)initWithAddress:(NSString*)address port:(NSInteger)port;
 -(id)initWithAddress:(NSString*)address port:(NSInteger)port is:(NSInputStream*)is os:(NSOutputStream*)os;
 
--(void)open;
 -(void)reconnect;
 -(void)close;
--(void)invalidate;
+-(void)open; // declared for overloading only
+// -(void)invalidate; // TODO: why?
 
 -(void)reconnectToAddress:(NSString*)address port:(NSInteger)port;
 
--(void)lifecycle;
 -(void)writeData:(NSData*)data;
--(void)handleData:(NSMutableData*)data;
+-(void)handleData:(NSMutableData*)data; // overload on subclasses
+-(NSInteger)availableSize;
+-(NSData*)readData:(NSInteger)size;
+-(NSInteger)readData:(NSInteger)size toBuffer:(void*)buffer;
+
+-(void)connectionFinishedSendingData; // overload on subclasses
 
 //+(BOOL)host:(NSString*)host1 isEqualToHost:(NSString*)host2;
 
 @end
+
+

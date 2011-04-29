@@ -37,8 +37,11 @@
 #import "DCMAbstractSyntaxUID.h"
 #import "QueryController.h"
 #import "DCMTKStudyQueryNode.h"
+CF_EXTERN_C_BEGIN
+#import "NSUserDefaults+OsiriX.h"
+CF_EXTERN_C_END
 
-#define CurrentDatabaseVersion @"2.5"
+const NSString* const CurrentDatabaseVersion = @"2.5";
 
 
 @interface DicomDatabase ()
@@ -55,6 +58,19 @@
 @end
 
 @implementation DicomDatabase
+
++(void)initializeDicomDatabaseClass {
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:DicomDatabase.class];
+}
+
++(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
+	if (context == DicomDatabase.class) {
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixCanActivateDefaultDatabaseOnlyDefaultsKey)]) {
+			if ([NSUserDefaults canActivateOnlyDefaultDatabase])
+				[self setActiveLocalDatabase:self.defaultDatabase];
+		}
+	}
+}
 
 static const NSString* const SqlFileName = @"Database.sql";
 static const NSString* const OsirixDataDirName = @"OsiriX Data";
@@ -155,19 +171,25 @@ static NSMutableDictionary* databasesDictionary = nil;
 	@synchronized(self) {
 		prc = self.retainCount;
 		if (prc <= 2)
-			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, self.managedObjectContext.retainCount); 
+			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, _managedObjectContext.retainCount); 
 		[super release];
 	}
 	
 	NSInteger rc = prc-1;
 	if (rc == 1)
-		NSLog(@"\tself.rc = %d, managedObjectContext.rc = %d ", self.retainCount, self.managedObjectContext.retainCount);
+		NSLog(@"\tself.rc = %d, managedObjectContext.rc = %d ", self.retainCount, _managedObjectContext.retainCount);
 	if (rc == 0)
 		NSLog(@"\tself.rc = 0, zombies arising..?");
 	
 	if (rc == 1) {
-		NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", self.managedObjectContext.registeredObjects.count);
-		if (self.managedObjectContext.retainCount - self.managedObjectContext.registeredObjects.count == 1) {
+		NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", _managedObjectContext.registeredObjects.count);
+
+		
+		//[managedObjectContext invalidate];
+		
+		
+			
+		if (_managedObjectContext.retainCount /*- self.managedObjectContext.registeredObjects.count*/ == 1) {
 			NSLog(@"\t\tThe context seems to be retained only by the database and by its registered objects.. We can release the database!");
 			@synchronized(databasesDictionary) {
 				[databasesDictionary removeObjectForKey:[databasesDictionary keyForObject:self]];
@@ -226,6 +248,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 }
 
 +(void)setActiveLocalDatabase:(DicomDatabase*)ldb {
+	if (!ldb.isLocal)
+		return;
 	if (ldb != self.activeLocalDatabase) {
 		[activeLocalDatabase release];
 		activeLocalDatabase = [ldb retain];
@@ -271,7 +295,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	[NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil];
 	
-	_dataFileIndex = [[N2MutableUInteger alloc] initWithValue:0];
+	_dataFileIndex = [[N2MutableUInteger alloc] initWithUInteger:0];
 	_processFilesLock = [[NSRecursiveLock alloc] init];
 	_importFilesFromIncomingDirLock = [[NSRecursiveLock alloc] init];
 	
@@ -319,10 +343,19 @@ static DicomDatabase* activeLocalDatabase = nil;
 }
 
 -(void)dealloc {
-	[_importFilesFromIncomingDirLock lock]; // if currently importing, wait until finished
-	[_importFilesFromIncomingDirLock autorelease];
-	[_processFilesLock lock];
-	[_processFilesLock autorelease];
+	NSRecursiveLock* temp;
+	
+	temp = _importFilesFromIncomingDirLock;
+	[temp lock]; // if currently importing, wait until finished
+	_importFilesFromIncomingDirLock = nil;
+	[temp unlock];
+	[temp release];
+	
+	temp = _processFilesLock;
+	[temp lock]; // if currently importing, wait until finished
+	_processFilesLock = nil;
+	[temp unlock];
+	[temp release];
 	
 	self.dataFileIndex = nil;
 	self.dataBaseDirPath = nil;
@@ -458,7 +491,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 }
 
 -(NSString*)htmlTemplatesDirPath {
-	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"HTML TEMPLATES"]];
+	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"HTML_TEMPLATES"]];
 }
 
 -(NSString*)modelVersionFilePath {
@@ -507,8 +540,8 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 						[NSFileManager.defaultManager removeItemAtPath:fpath error:nil];
 					else {
 						NSUInteger fi = [f integerValue];
-						if (fi > _dataFileIndex.value)
-							_dataFileIndex.value = fi;
+						if (fi > _dataFileIndex.unsignedIntegerValue)
+							_dataFileIndex.unsignedIntegerValue = fi;
 					}
 				}
 			}
@@ -516,7 +549,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			// scan directories
 			
 			if (_dataFileIndex.value > 0) {
-				NSInteger t = _dataFileIndex.value;
+				NSInteger t = _dataFileIndex.unsignedIntegerValue;
 				t -= [BrowserController DefaultFolderSizeForDB];
 				if (t < 0) t = 0;
 				
@@ -527,7 +560,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 						t = si;
 				}
 				
-				_dataFileIndex.value = t+1;
+				_dataFileIndex.unsignedIntegerValue = t+1;
 			}
 			
 			DLog(@"   -[DicomDatabase computeDataFileIndex] for %@ computed %ld", self.sqlFilePath, _dataFileIndex.value);
@@ -536,7 +569,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		}
 	}
 	
-	return _dataFileIndex.value;
+	return _dataFileIndex.unsignedIntegerValue;
 }
 
 -(NSString*)uniquePathForNewDataFileWithExtension:(NSString*)ext {
@@ -557,7 +590,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		BOOL fileExists = NO, firstExists = YES;
 		do {
-			long long subFolderInt = defaultFolderSizeForDB*(_dataFileIndex.value/defaultFolderSizeForDB+1);
+			long long subFolderInt = defaultFolderSizeForDB*(_dataFileIndex.unsignedIntegerValue/defaultFolderSizeForDB+1);
 			NSString* subFolderPath = [dataDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld", subFolderInt]];
 			[NSFileManager.defaultManager confirmDirectoryAtPath:subFolderPath];
 			
@@ -1959,6 +1992,9 @@ enum { Compress, Decompress };
 	BOOL listenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
 	
 	[thread enterOperation];
+	thread.status = NSLocalizedString(@"Listing files...", nil);
+	
+	[NSFileManager.defaultManager confirmNoIndexDirectoryAtPath:self.decompressionDirPath];
 	
 	[_importFilesFromIncomingDirLock lock];
 	@try {
@@ -2163,18 +2199,22 @@ enum { Compress, Decompress };
 //				[database lock];
 		}
 		
-		if ( [filesArray count] > 0)
+		if ([filesArray count] > 0)
 		{
 //				if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"ANONYMIZELISTENER"] == YES)
 //					[self listenerAnonymizeFiles: filesArray];
 			
-			for (id filter in [PluginManager preProcessPlugins])
-				@try {
-					[filter processFiles: filesArray];
-				} @catch (NSException* e) {
-					N2LogExceptionWithStackTrace(e);
-				}
+			if ([[PluginManager preProcessPlugins] count]) {
+				thread.status = [NSString stringWithFormat:NSLocalizedString(@"Preprocessing %d files with %d plugins...", nil), filesArray.count, [[PluginManager preProcessPlugins] count]];
+				for (id filter in [PluginManager preProcessPlugins])
+					@try {
+						[filter processFiles: filesArray];
+					} @catch (NSException* e) {
+						N2LogExceptionWithStackTrace(e);
+					}
+			}
 			
+			thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %d files...", nil), filesArray.count];
 			NSArray* addedFiles = [[self addFilesAtPaths:filesArray] valueForKey:@"completePath"];
 			
 			if (!addedFiles) // Add failed.... Keep these files: move them back to the INCOMING folder and try again later....
@@ -2206,8 +2246,7 @@ enum { Compress, Decompress };
 	
 #ifndef OSIRIX_LIGHT
 	if ([compressedPathArray count] > 0)  {// there are files to compress/decompress in the decompression dir
-		thread.name = [NSString stringWithFormat:NSLocalizedString(@"Decompressing %d files", nil), compressedPathArray.count];
-		thread.status = NSLocalizedString(@"Waiting for other decompressions to complete...", nil);
+		thread.status = [NSString stringWithFormat:NSLocalizedString(@"Decompressing %d files...", nil), compressedPathArray.count];
 		
 		if (listenerCompressionSettings == 1 || listenerCompressionSettings == 0) // decompress, listenerCompressionSettings == 0 for zip support!
 			[self decompressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];

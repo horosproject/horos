@@ -123,7 +123,8 @@ static const NSString* DefaultWebPortalDatabasePath = nil;
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWadoServiceEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
 }
 
-+(void)applicationWillFinishLaunching { // called from AppController
+#ifndef OSIRIX_LIGHT
++(void)initializeWebPortalClass { // called from AppController
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalPortNumberDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalAddressDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalUsesSSLDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
@@ -139,6 +140,7 @@ static const NSString* DefaultWebPortalDatabasePath = nil;
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey options:NULL context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 }
+#endif
 
 +(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
 	if (!context) {
@@ -205,7 +207,7 @@ static const NSString* DefaultWebPortalDatabasePath = nil;
 	//NSTimer* t = [[NSTimer scheduledTimerWithTimeInterval:60 * [[NSUserDefaults standardUserDefaults] integerForKey: @"notificationsEmailsInterval"] target: self selector: @selector( webServerEmailNotifications:) userInfo: nil repeats: YES] retain];
 }
 
-+(void)applicationWillTerminate {
++(void)finalizeWebPortalClass {
 	//	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey];
 	[self.defaultWebPortal release];
 }

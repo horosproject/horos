@@ -44,6 +44,7 @@
 #import "NSUserDefaultsController+OsiriX.h"
 #import <N2Debug.h>
 #import "NSFileManager+N2.h"
+#import <objc/runtime.h>
 #ifndef OSIRIX_LIGHT
 #import <ILCrashReporter/ILCrashReporter.h>
 #endif
@@ -1277,7 +1278,7 @@ static NSDate *lastWarningDate = nil;
 			restartListener = YES;
 	}
 	else NSLog( @"*** isKindOfClass NSString");
-	if ([[previousDefaults valueForKey: @"addNewIncomingFilesToDefaultDBOnly"] intValue] !=	[defaults integerForKey: @"addNewIncomingFilesToDefaultDBOnly"])
+	if ([[previousDefaults valueForKey: OsirixCanActivateDefaultDatabaseOnlyDefaultsKey] intValue] !=	[defaults integerForKey: OsirixCanActivateDefaultDatabaseOnlyDefaultsKey])
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"STORESCP"] intValue] != [defaults integerForKey: @"STORESCP"])
 		restartListener = YES;
@@ -2326,7 +2327,7 @@ static NSDate *lastWarningDate = nil;
 	[[BrowserController currentBrowser] browserPrepareForClose];
 
 #ifndef OSIRIX_LIGHT
-	[WebPortal applicationWillTerminate];
+	[WebPortal finalizeWebPortalClass];
 #endif
 
 	[ROI saveDefaultSettings];
@@ -3185,14 +3186,16 @@ static BOOL initialized = NO;
 	
 	[NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector( checkForRestartStoreSCPOrder:) userInfo: nil repeats: YES];
 	
+	[DicomDatabase initializeDicomDatabaseClass];
+	[BrowserController initializeBrowserControllerClass];
 	#ifndef OSIRIX_LIGHT
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
-	{
+	[WebPortal initializeWebPortalClass];
+	#endif
+	
+	#ifndef OSIRIX_LIGHT
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"]) {
 		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCMethods alloc] init];
 	}
-	
-	[WebPortal applicationWillFinishLaunching];
-	
 	#endif
 	
 	#if __LP64__

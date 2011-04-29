@@ -138,8 +138,6 @@
 		59DC28E211C6164F00DAD5B4 /* N2CSV.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E011C6164F00DAD5B4 /* N2CSV.mm */; };
 		59DC28E511C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28E311C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h */; };
 		59DC28E611C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E411C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm */; };
-		59DC28E911C6168100DAD5B4 /* NSThread+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28E711C6168100DAD5B4 /* NSThread+N2.h */; };
-		59DC28EA11C6168100DAD5B4 /* NSThread+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E811C6168100DAD5B4 /* NSThread+N2.mm */; };
 		59E5235112BF5DC30094E668 /* N2Task.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E5234F12BF5DC30094E668 /* N2Task.h */; };
 		59E5235212BF5DC30094E668 /* N2Task.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E5235012BF5DC30094E668 /* N2Task.mm */; };
 		59E6DD11105E3DBD002C8245 /* NSColor+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E6DD0F105E3DBD002C8245 /* NSColor+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -154,6 +152,10 @@
 		59E924D3110F277B0006FFFB /* N2UserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E924D1110F277B0006FFFB /* N2UserDefaults.mm */; };
 		59ECEA7F12AE36A7003231BF /* NSMutableString+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59ECEA7D12AE36A7003231BF /* NSMutableString+N2.h */; };
 		59ECEA8012AE36A7003231BF /* NSMutableString+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59ECEA7E12AE36A7003231BF /* NSMutableString+N2.mm */; };
+		59EE49071369AC7E0002A7F8 /* NSThread+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EE49051369AC7E0002A7F8 /* NSThread+N2.h */; };
+		59EE49081369AC7E0002A7F8 /* NSThread+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EE49061369AC7E0002A7F8 /* NSThread+N2.mm */; };
+		59EE490F1369ACB00002A7F8 /* NSException+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EE490D1369ACB00002A7F8 /* NSException+N2.h */; };
+		59EE49101369ACB00002A7F8 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EE490E1369ACB00002A7F8 /* NSException+N2.mm */; };
 		59F5F4B111F4822E0047A90D /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F4AF11F4822E0047A90D /* N2ImageButtonCell.h */; };
 		59F5F4B211F4822E0047A90D /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F4B011F4822E0047A90D /* N2ImageButtonCell.mm */; };
 		59F5F88D11F5D9A10047A90D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59F5F88C11F5D9A10047A90D /* QuartzCore.framework */; };
@@ -304,8 +306,6 @@
 		59DC28E011C6164F00DAD5B4 /* N2CSV.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2CSV.mm; sourceTree = "<group>"; };
 		59DC28E311C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAppleEventDescriptor+N2.h"; sourceTree = "<group>"; };
 		59DC28E411C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSAppleEventDescriptor+N2.mm"; sourceTree = "<group>"; };
-		59DC28E711C6168100DAD5B4 /* NSThread+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSThread+N2.h"; sourceTree = "<group>"; };
-		59DC28E811C6168100DAD5B4 /* NSThread+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSThread+N2.mm"; sourceTree = "<group>"; };
 		59E5234F12BF5DC30094E668 /* N2Task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2Task.h; sourceTree = "<group>"; };
 		59E5235012BF5DC30094E668 /* N2Task.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2Task.mm; sourceTree = "<group>"; };
 		59E6DD0F105E3DBD002C8245 /* NSColor+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+N2.h"; sourceTree = "<group>"; };
@@ -320,6 +320,10 @@
 		59E924D1110F277B0006FFFB /* N2UserDefaults.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2UserDefaults.mm; sourceTree = "<group>"; };
 		59ECEA7D12AE36A7003231BF /* NSMutableString+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableString+N2.h"; sourceTree = "<group>"; };
 		59ECEA7E12AE36A7003231BF /* NSMutableString+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSMutableString+N2.mm"; sourceTree = "<group>"; };
+		59EE49051369AC7E0002A7F8 /* NSThread+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSThread+N2.h"; sourceTree = "<group>"; };
+		59EE49061369AC7E0002A7F8 /* NSThread+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSThread+N2.mm"; sourceTree = "<group>"; };
+		59EE490D1369ACB00002A7F8 /* NSException+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+N2.h"; sourceTree = "<group>"; };
+		59EE490E1369ACB00002A7F8 /* NSException+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSException+N2.mm"; sourceTree = "<group>"; };
 		59F5F4AF11F4822E0047A90D /* N2ImageButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2ImageButtonCell.h; sourceTree = "<group>"; };
 		59F5F4B011F4822E0047A90D /* N2ImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2ImageButtonCell.mm; sourceTree = "<group>"; };
 		59F5F88C11F5D9A10047A90D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
@@ -583,8 +587,10 @@
 		59A63364104287DE003F4069 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
-				59DC28E711C6168100DAD5B4 /* NSThread+N2.h */,
-				59DC28E811C6168100DAD5B4 /* NSThread+N2.mm */,
+				59EE490D1369ACB00002A7F8 /* NSException+N2.h */,
+				59EE490E1369ACB00002A7F8 /* NSException+N2.mm */,
+				59EE49051369AC7E0002A7F8 /* NSThread+N2.h */,
+				59EE49061369AC7E0002A7F8 /* NSThread+N2.mm */,
 				59DC28E311C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h */,
 				59DC28E411C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm */,
 				59DC28DB11C6164000DAD5B4 /* NSXMLNode+N2.h */,
@@ -759,7 +765,6 @@
 				59DC28DD11C6164000DAD5B4 /* NSXMLNode+N2.h in Headers */,
 				59DC28E111C6164F00DAD5B4 /* N2CSV.h in Headers */,
 				59DC28E511C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h in Headers */,
-				59DC28E911C6168100DAD5B4 /* NSThread+N2.h in Headers */,
 				59F5F4B111F4822E0047A90D /* N2ImageButtonCell.h in Headers */,
 				592CFD0C1212898800176E39 /* N2WebServiceClient.h in Headers */,
 				592CFD1912128D3300176E39 /* N2RedundantWebServiceClient.h in Headers */,
@@ -769,6 +774,8 @@
 				59ECEA7F12AE36A7003231BF /* NSMutableString+N2.h in Headers */,
 				59E5235112BF5DC30094E668 /* N2Task.h in Headers */,
 				592FD7FC13390188008BADC7 /* N2DirectoryEnumerator.h in Headers */,
+				59EE49071369AC7E0002A7F8 /* NSThread+N2.h in Headers */,
+				59EE490F1369ACB00002A7F8 /* NSException+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -976,7 +983,6 @@
 				59DC28DE11C6164000DAD5B4 /* NSXMLNode+N2.mm in Sources */,
 				59DC28E211C6164F00DAD5B4 /* N2CSV.mm in Sources */,
 				59DC28E611C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm in Sources */,
-				59DC28EA11C6168100DAD5B4 /* NSThread+N2.mm in Sources */,
 				59F5F4B211F4822E0047A90D /* N2ImageButtonCell.mm in Sources */,
 				592CFD0D1212898800176E39 /* N2WebServiceClient.mm in Sources */,
 				592CFD1A12128D3300176E39 /* N2RedundantWebServiceClient.mm in Sources */,
@@ -986,6 +992,8 @@
 				59ECEA8012AE36A7003231BF /* NSMutableString+N2.mm in Sources */,
 				59E5235212BF5DC30094E668 /* N2Task.mm in Sources */,
 				592FD7FD13390188008BADC7 /* N2DirectoryEnumerator.mm in Sources */,
+				59EE49081369AC7E0002A7F8 /* NSThread+N2.mm in Sources */,
+				59EE49101369ACB00002A7F8 /* NSException+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

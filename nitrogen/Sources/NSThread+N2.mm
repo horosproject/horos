@@ -271,4 +271,46 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 	return -1;
 }
 
+NSString* const NSThreadProgressDetailsKey = @"progressDetails";
+
+-(NSString*)progressDetails {
+	if (self.isFinished)
+		return nil;
+	if (self.isCancelled)
+		return nil;
+	
+	@synchronized (self.threadDictionary) {
+		for (int i = self.stackArray.count-1; i >= 0; --i) {
+			NSDictionary* d = [self.stackArray objectAtIndex:i];
+			NSString* progressDetails = [d objectForKey:NSThreadProgressDetailsKey];
+			if (progressDetails)
+				return [[progressDetails copy] autorelease];
+		}
+		
+		return nil;
+	}
+	
+	return nil;
+}
+
+-(void)setProgressDetails:(NSString*)progressDetails {
+	if (self.isFinished)
+		return;
+	if (self.isCancelled)
+		return;
+	
+	@synchronized (self.threadDictionary) {
+		NSString* previousProgressDetails = self.status;
+		if (previousProgressDetails == progressDetails || [progressDetails isEqualToString:previousProgressDetails])
+			return;
+		
+		[self willChangeValueForKey:NSThreadProgressDetailsKey];
+		if (progressDetails)
+			[self.currentOperationDictionary setObject:[[progressDetails copy] autorelease] forKey:NSThreadProgressDetailsKey];
+		else [self.currentOperationDictionary removeObjectForKey:NSThreadProgressDetailsKey];
+		[self didChangeValueForKey:NSThreadProgressDetailsKey];
+	}
+	
+}
+
 @end

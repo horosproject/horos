@@ -169,7 +169,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSView					*exportAccessoryView;
 	IBOutlet NSMatrix				*compressionMatrix, *folderTree;
 	
-	NSRecursiveLock					/**checkIncomingLock,*/ *checkBonjourUpToDateThreadLock;
+//	NSRecursiveLock					/**checkIncomingLock,*/ *checkBonjourUpToDateThreadLock;
 	NSPredicate						*testPredicate;
 	
     BOOL							showAllImages, DatabaseIsEdited, isNetworkLogsActive;//, displayEmptyDatabase;
@@ -280,6 +280,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 //@property(readonly) NSConditionLock* newFilesConditionLock;
 @property(readonly) NSMutableDictionary *databaseIndexDictionary;
 @property(readonly) PluginManagerController *pluginManagerController;
+
++(void)initializeBrowserControllerClass;
 
 + (int) compressionForModality: (NSString*) mod quality:(int*) quality resolution: (int) resolution;
 + (BrowserController*) currentBrowser;

@@ -55,7 +55,7 @@
 			if (!moc.persistentStoreCoordinator) {
 				moc.persistentStoreCoordinator = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel] autorelease];
 				[self.persistentStoreCoordinatorsDictionary setObject:moc.persistentStoreCoordinator forKey:sqlFilePath];
-		
+				
 				NSURL* url = [NSURL fileURLWithPath:sqlFilePath];
 				NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:[self migratePersistentStoresAutomatically]], NSMigratePersistentStoresAutomaticallyOption, NULL]; // [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, NULL];
 				NSError* err = NULL;

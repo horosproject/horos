@@ -22,6 +22,7 @@
 	NSButton* _cancelButton;
 	NSTextField* _titleField;
 	NSTextField* _statusField;
+	NSTextField* _progressDetailsField;
 }
 
 @property(retain, readonly) NSThread* thread;
@@ -30,6 +31,7 @@
 @property(retain) IBOutlet NSButton* cancelButton;
 @property(retain) IBOutlet NSTextField* titleField;
 @property(retain) IBOutlet NSTextField* statusField;
+@property(retain) IBOutlet NSTextField* progressDetailsField;
 
 -(id)initWithThread:(NSThread*)thread window:(NSWindow*)window;
 

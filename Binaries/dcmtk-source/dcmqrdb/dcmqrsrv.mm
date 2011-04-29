@@ -1447,7 +1447,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						{
 							// Display a thread in the ThreadsManager for this pid
 							NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector( waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
-							t.name = NSLocalizedString( @"DICOM services...", nil);
+							t.name = NSLocalizedString( @"DICOM Services...", nil);
 							if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
 								t.status = [NSString stringWithFormat: NSLocalizedString( @"Address: %s", nil), assoc->params->DULparams.callingPresentationAddress];
 							[[ThreadsManager defaultManager] addThreadAndStart: t];

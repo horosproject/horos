@@ -10,10 +10,16 @@
 
 
 @interface RemoteDicomDatabase : DicomDatabase {
+	NSString* _sqlFileName;
 	NSString* _address;
+	NSInteger _port;
+	NSHost* _host;
+	NSRecursiveLock* _updateLock;
 }
 
 @property(readonly,retain) NSString* address;
+@property(readonly) NSInteger port;
+@property(readonly,retain) NSHost* host;
 
 +(DicomDatabase*)databaseForAddress:(NSString*)path;
 +(DicomDatabase*)databaseForAddress:(NSString*)path name:(NSString*)name;

@@ -52,8 +52,8 @@
 }
 
 // called from AppController
-+(void)applicationWillFinishLaunching;
-+(void)applicationWillTerminate;
++(void)initializeWebPortalClass;
++(void)finalizeWebPortalClass;
 
 +(WebPortal*)defaultWebPortal;
 

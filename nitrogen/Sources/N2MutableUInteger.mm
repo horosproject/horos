@@ -11,20 +11,26 @@
 
 @implementation N2MutableUInteger
 
-@synthesize value;
+@synthesize unsignedIntegerValue = _value;
 
--(id)initWithValue:(NSUInteger)v {
-	self = [super init];
-	value = v;
++(id)mutableUIntegerWithUInteger:(NSUInteger)value {
+	return [[[[self class] alloc] initWithUInteger:value] autorelease];
+}
+
+-(id)initWithUInteger:(NSUInteger)value {
+	if ((self = [super init])) {
+		_value = value;
+	}
+	
 	return self;
 }
 
 -(void)increment {
-	++value;
+	++_value;
 }
 
 -(void)decrement {
-	--value;
+	--_value;
 }
 
 @end

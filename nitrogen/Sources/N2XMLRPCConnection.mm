@@ -193,9 +193,8 @@
 	CFRelease(response);
 }
 
--(void)lifecycle {
-	[super lifecycle];
-	if (_waitingToClose && _hasSpaceAvailable)
+-(void)connectionFinishedSendingData {
+	if (_waitingToClose)
 		[self close];
 }
 

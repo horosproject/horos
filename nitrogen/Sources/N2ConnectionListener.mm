@@ -204,7 +204,7 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 	N2Connection* connection = [notification object];
 	switch ([connection status]) {
 		case N2ConnectionStatusClosed:
-			[connection invalidate];
+			[connection close];
 			[_clients removeObject:connection];
 			break;
 	}

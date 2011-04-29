@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10J567</string>
-		<string key="IBDocument.InterfaceBuilderVersion">823</string>
+		<string key="IBDocument.SystemVersion">10J869</string>
+		<string key="IBDocument.InterfaceBuilderVersion">851</string>
 		<string key="IBDocument.AppKitVersion">1038.35</string>
-		<string key="IBDocument.HIToolboxVersion">462.00</string>
+		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">823</string>
+			<string key="NS.object.0">851</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<integer value="732"/>
@@ -1246,7 +1246,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSButtonCell" key="NSCell" id="545640080">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">131072</int>
-												<string key="NSContents">Incoming and outcoming files are always linked to the default database (see path in DB Preferences)</string>
+												<string key="NSContents">Incoming and outgoing files are always linked to the default database (see path in DB Preferences)</string>
 												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="255321613"/>
 												<int key="NSButtonFlags">1211912703</int>

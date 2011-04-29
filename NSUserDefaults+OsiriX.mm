@@ -75,6 +75,16 @@ NSString* const OsirixDateFormatDefaultsKey = @"DBDateOfBirthFormat2";
 	return [self.dateFormatter stringFromDate:date];
 }
 
+NSString* const OsirixCanActivateDefaultDatabaseOnlyDefaultsKey = @"addNewIncomingFilesToDefaultDBOnly";
+
++(BOOL)canActivateOnlyDefaultDatabase {
+	return [self.standardUserDefaults boolForKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey];
+}
+
++(BOOL)canActivateAnyLocalDatabase {
+	return !self.canActivateOnlyDefaultDatabase;
+}
+
 #pragma mark Bonjour Sharing
 
 NSString* const OsirixBonjourSharingIsActiveDefaultsKey = @"bonjourSharing";

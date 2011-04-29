@@ -10,12 +10,14 @@
 
 
 @interface N2MutableUInteger : NSObject {
-	NSUInteger value;
+	NSUInteger _value;
 }
 
-@property NSUInteger value;
++(id)mutableUIntegerWithUInteger:(NSUInteger)value;
 
--(id)initWithValue:(NSUInteger)v;
+@property NSUInteger unsignedIntegerValue;
+
+-(id)initWithUInteger:(NSUInteger)value;
 
 -(void)increment;
 

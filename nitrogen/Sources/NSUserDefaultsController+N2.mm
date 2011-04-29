@@ -111,7 +111,7 @@
 @end
 
 NSString* valuesKeyPath(NSString* key) {
-	return [NSString stringWithFormat:@"values.%@", key];
+	return [@"values." stringByAppendingString:key];
 }
 
 @implementation NSObject (N2ValuesBinding)

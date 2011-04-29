@@ -21,6 +21,7 @@
 #import "AppController.h"
 #import "BrowserController.h"
 #import "SRAnnotation.h"
+#import "NSThread+N2.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -111,15 +112,18 @@
 	if (dest == nil)
 		dest = @"sameAsDestination";
 	
-	
 	int total = [paths count];
+	NSThread* thread = [NSThread currentThread];
+	[thread enterOperation];
 	
 	for( int i = 0; i < total;)
 	{
 		int no;
-		
 		if( i + CHUNK_SUBPROCESS >= total) no = total - i; 
 		else no = CHUNK_SUBPROCESS;
+		
+		if (i || i+no<total)
+			thread.progress = 1.0*i/total;
 		
 		NSRange range = NSMakeRange( i, no);
 		
@@ -150,6 +154,7 @@
 		i += no;
 	}
 	
+	[thread exitOperation];
 	return YES;
 	
 //	@synchronized( [BrowserController currentBrowser])
@@ -260,13 +265,17 @@
 		dest = @"sameAsDestination";
 	
 	int total = [files count];
+	NSThread* thread = [NSThread currentThread];
+	[thread enterOperation];
 	
 	for( int i = 0; i < total;)
 	{
 		int no;
-		
 		if( i + CHUNK_SUBPROCESS >= total) no = total - i; 
 		else no = CHUNK_SUBPROCESS;
+		
+		if (i || i+no<total)
+			thread.progress = 1.0*i/total;
 		
 		NSRange range = NSMakeRange( i, no);
 		
@@ -301,6 +310,7 @@
 		i += no;
 	}
 	
+	[thread exitOperation];
 	return YES;
 	
 //	OFCondition cond;
