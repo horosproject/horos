@@ -23,7 +23,7 @@
 	BOOL showErrorMessage, firstWadoErrorDisplayed, _abortAssociation;
 }
 
-@property BOOL _abortAssociation;
+@property BOOL _abortAssociation, showErrorMessage;
 
 - (void) WADODownload: (NSArray*) urlToDownload;
 

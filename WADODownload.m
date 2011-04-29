@@ -18,7 +18,7 @@
 
 @implementation WADODownload
 
-@synthesize _abortAssociation;
+@synthesize _abortAssociation, showErrorMessage;
 
 - (void) errorMessage:(NSArray*) msg
 {
@@ -88,6 +88,15 @@
 {
 	//We dont want to store the images in the cache! Caches/com.rossetantoine.osirix/Cache.db
 	return nil;
+}
+
+- (id) init
+{
+	[super init];
+	
+	showErrorMessage = YES;
+	
+	return self;
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection

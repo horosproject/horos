@@ -188,13 +188,13 @@ function shareDestinationChange(select) {
 							</a>
 						</td>
 						
-						%[IF:Info.isMacOS%
+						%[IF:Info.isMacOS||Info.isIOS%
 						%[IF:Info.proposeWADORetrieve%
 						<td class="narrow middle">
 							<a href="osirix://?methodName=DownloadURL&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%&seriesUID=%U:Series.seriesDICOMUID%'"><img src="images/osirix.png"/></a>
 						</td>
 						%]IF:Info.proposeWADORetrieve%
-						%]IF:Info.isMacOS%
+						%]IF:Info.isMacOS||Info.isIOS%
 						<td class="narrow middle">
 							%[IF:Info.proposeZipDownload%
 							<a href="%U:Study.name% - %U:Series.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?xid=%Series.XID%"><img src="images/download.png"/></a>

@@ -885,6 +885,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	WADODownload *downloader = [[WADODownload alloc] init];
 	
+	downloader.showErrorMessage = showErrorMessage;
+	
 	[downloader WADODownload: urlToDownload];
 	
 	[downloader release];
