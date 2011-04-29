@@ -189,13 +189,12 @@ function shareDestinationChange(select) {
 						</td>
 						
 						%[IF:Info.isMacOS%
+						%[IF:Info.proposeWADORetrieve%
 						<td class="narrow middle">
-							%[IF:Info.proposeWADORetrieve%
 							<a href="osirix://?methodName=DownloadURL&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%&seriesUID=%U:Series.seriesDICOMUID%'"><img src="images/osirix.png"/></a>
-							%]IF:Info.proposeWADORetrieve%
 						</td>
+						%]IF:Info.proposeWADORetrieve%
 						%]IF:Info.isMacOS%
-						
 						<td class="narrow middle">
 							%[IF:Info.proposeZipDownload%
 							<a href="%U:Study.name% - %U:Series.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?xid=%Series.XID%"><img src="images/download.png"/></a>
@@ -222,6 +221,13 @@ function shareDestinationChange(select) {
 					<td>
 					</td>
 					%]IF:Info.proposeZipDownload%
+					%[IF:Info.isMacOS%
+					%[IF:Info.proposeWADORetrieve%
+					<td class="narrow middle">
+						<a href="osirix://?methodName=DownloadURL&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%'"><img src="images/osirix.png"/></a>
+					</td>
+					%]IF:Info.proposeWADORetrieve%
+					%]IF:Info.isMacOS%
 					%[IF:Info.proposeWeasis%
 					<td class="narrow middle">
 						<input type="image" src="images/weasis.png" alt="Open selected series in Weasis" onclick="document.submitting='Weasis'" class="if_selection" />
@@ -291,18 +297,6 @@ function shareDestinationChange(select) {
 			</table>
 		</div>
 		%]IF:Info.proposeDicomSend%
-		%[IF:Info.proposeWADORetrieve%
-		<div class="title separated">WADO URLs Retrieve</div>
-		<div>
-			<table class="form">
-				<tr>
-					<td>
-						<button type="submit" name="WADOURLsRetrieve" value="WADOURLsRetrieve" onclick="document.submitting='WADOURLsRetrieve'" class="if_selection">Retrieve</button>
-					</td>
-				</tr>
-			</table>
-		</div>
-		%]IF:Info.proposeWADORetrieve%
 	</div>
 	
 </div>

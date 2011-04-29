@@ -42,7 +42,15 @@
 							<div>%X:Study.stateText%</div>
 							%]IF:Study.stateText%						
 						</td>
-					
+						
+						%[IF:Info.isMacOS%
+						%[IF:Info.proposeWADORetrieve%
+						<td class="narrow middle">
+							<a href="osirix://?methodName=DownloadURL&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%'"><img src="images/osirix.png"/></a>
+						</td>
+						%]IF:Info.proposeWADORetrieve%
+						%]IF:Info.isMacOS%
+						
 						%[IF:Info.proposeZipDownload%
 						<td class="narrow middle">
 							<a href="%U:Study.name% - %U:Study.studyName%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?xid=%Study.XID%"><img src="images/download.png"/></a>
