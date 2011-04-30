@@ -8245,10 +8245,10 @@ static NSConditionLock *threadLock = nil;
 			
 			for( NSDictionary *dict in viewers)
 			{
-				NSString	*studyUID = [dict valueForKey:@"studyInstanceUID"];
-				NSString	*seriesUID = [dict valueForKey:@"seriesInstanceUID"];
+				NSString *studyUID = [dict valueForKey:@"studyInstanceUID"];
+				NSString *seriesUID = [dict valueForKey:@"seriesInstanceUID"];
 				
-				NSArray		*series4D = [seriesUID componentsSeparatedByString:@"\\**\\"];
+				NSArray	 *series4D = [seriesUID componentsSeparatedByString:@"\\**\\"];
 				// Find the corresponding study & 4D series
 				
 				@try

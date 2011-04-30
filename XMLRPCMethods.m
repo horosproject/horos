@@ -24,6 +24,8 @@
 #import "NSThread+N2.h"
 #import "WADODownload.h"
 #import "ThreadsManager.h"
+#import "DicomSeries.h"
+#import "DicomStudy.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -130,15 +132,99 @@ static NSTimeInterval lastConnection = 0;
 	return paramDict;
 }
 
-- (void) asyncWADODownload:(NSString*) url
+- (void) showStudy: (NSDictionary*) dict
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	if( [dict valueForKey: @"series"])
+		[[BrowserController currentBrowser] displayStudy: [dict valueForKey: @"study"] object: [dict valueForKey: @"series"] command: @"Open"];
+	else
+		[[BrowserController currentBrowser] displayStudy: [dict valueForKey: @"study"] object: [dict valueForKey: @"study"] command: @"Open"];
+	
+	[pool release];
+}
+
+- (void) asyncWADODownload:(NSDictionary*) paramDict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSString *url = [paramDict valueForKey:@"URL"];
 	
 	WADODownload *downloader = [[WADODownload alloc] init];
 	
 	[downloader WADODownload: [NSArray arrayWithObject: [NSURL URLWithString: url]]];
 	
 	[downloader release];
+	
+	if( [[paramDict valueForKey:@"Display"] boolValue])
+	{
+		NSString *studyUID = nil;
+		NSString *seriesUID = nil;
+		
+		for( NSString *s in [[[url componentsSeparatedByString: @"?"] lastObject] componentsSeparatedByString: @"&"])
+		{
+			NSRange separatorRange = [s rangeOfString: @"="];
+			
+			if( [[s substringToIndex: separatorRange.location] isEqualToString: @"studyUID"])
+				studyUID = [s substringFromIndex: separatorRange.location+1];
+				
+			if( [[s substringToIndex: separatorRange.location] isEqualToString: @"seriesUID"])
+				seriesUID = [s substringFromIndex: separatorRange.location+1];
+		}
+		
+		if( studyUID)
+		{
+			BOOL found = NO;
+			NSTimeInterval started = [NSDate timeIntervalSinceReferenceDate];
+			
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
+			
+			if( studyUID && seriesUID)
+				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@ AND ANY series.seriesDICOMUID == %@", studyUID, seriesUID]];
+			else
+				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
+			
+			DicomStudy *study = nil;
+			DicomSeries *series = nil;
+			
+			while( found == NO && [NSDate timeIntervalSinceReferenceDate] - started < 300)
+			{
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0]];
+				
+				NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+				
+				[context lock];
+				
+				@try
+				{
+					NSError *error = nil;
+					NSArray *array = [context executeFetchRequest:dbRequest error:&error];
+					
+					if( [[[array lastObject] valueForKey:@"studyInstanceUID"] isEqualToString: studyUID])
+					{
+						study = [array lastObject];
+						
+						if( seriesUID)
+						{
+							for( DicomSeries *s in [study.series allObjects])
+							{
+								if( [s.seriesDICOMUID isEqualToString: seriesUID])
+									series = s;
+							}
+						}
+						found = YES;
+					}
+				}
+				@catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+				
+				[context unlock];
+			}
+			
+			if( found)
+				[self performSelectorOnMainThread: @selector( showStudy:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: study, @"study", series, @"series", nil] waitUntilDone: NO];
+		}
+	}
 	
 	[pool release];
 }
@@ -158,6 +244,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Parameters:
 	// URL: any URLs that return a file compatible with OsiriX, including .dcm, .zip, .osirixzip, ...
+	// Display: display the images at the end of the download? (Optional parameter)
 	//
 	// Example: {URL: "http://127.0.0.1:3333/wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX"}
 	// Response: {error: "0"}
@@ -166,7 +253,7 @@ static NSTimeInterval lastConnection = 0;
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
-			if(1 != [paramDict count])
+			if(1 != [paramDict count] && 2 != [paramDict count])
 			{
 				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
 				[mess setResponse:response];
@@ -183,7 +270,7 @@ static NSTimeInterval lastConnection = 0;
 			{
 				if( [[paramDict valueForKey:@"URL"] length])
 				{
-					NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( asyncWADODownload:) object: [paramDict valueForKey:@"URL"]] autorelease];
+					NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( asyncWADODownload:) object: paramDict] autorelease];
 					t.name = NSLocalizedString( @"WADO Retrieve...", nil);
 					t.supportsCancel = YES;
 					t.status = [paramDict valueForKey:@"URL"];
