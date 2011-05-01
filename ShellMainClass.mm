@@ -16,7 +16,10 @@
 #import <QTKit/QTKit.h>
 #import "Wait.h"
 #import "WaitRendering.h"
+
+#ifndef MACAPPSTORE
 #import "DotMacKit/DotMacKit.h"
+#endif
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -77,6 +80,7 @@ static id aedesc_to_id(AEDesc *desc)
 	return [NSString stringWithFormat:@"[unconverted AEDesc, type=\"%c%c%c%c\"]", ((char *)&(desc->descriptorType))[0], ((char *)&(desc->descriptorType))[1], ((char *)&(desc->descriptorType))[2], ((char *)&(desc->descriptorType))[3]];
 }
 
+#ifndef MACAPPSTORE
 void scaniDiskDir( DMiDiskSession* mySession, NSString* path, NSArray* dir, NSMutableArray* files)
 {
 	for( NSString *currentPath in dir )
@@ -99,7 +103,7 @@ void scaniDiskDir( DMiDiskSession* mySession, NSString* path, NSArray* dir, NSMu
 		else NSLog( @"File is missing??");
 	}
 }
-
+#endif
 
 int main(int argc, const char *argv[])
 {
@@ -138,6 +142,7 @@ int executeProcess(int argc, char *argv[])
 			[wait release];
 		}
 		
+		#ifndef MACAPPSTORE
 		if( [what isEqualToString:@"getFilesFromiDisk"])
 		{
 			BOOL deleteFolder = [[NSString stringWithUTF8String:argv[ 2]] intValue];
@@ -259,6 +264,7 @@ int executeProcess(int argc, char *argv[])
 			}
 			else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?",@"iDisk?"), NSLocalizedString(@"No iDisk is currently defined in your system.",@"No iDisk is currently defined in your system."), NSLocalizedString(@"OK",nil),nil, nil);
 		}
+		#endif
 		
 		if( [what isEqualToString:@"getFrame"])
 		{

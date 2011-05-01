@@ -45,7 +45,9 @@
 #import <N2Debug.h>
 #import "NSFileManager+N2.h"
 #ifndef OSIRIX_LIGHT
+#ifndef MACAPPSTORE
 #import <ILCrashReporter/ILCrashReporter.h>
+#endif
 #endif
 #import "PluginManagerController.h"
 #import "OSIWindowController.h"
@@ -3013,7 +3015,7 @@ static BOOL initialized = NO;
 - (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name
 {
 #ifndef OSIRIX_LIGHT
-	
+#ifndef MACAPPSTORE
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return;
 	
 	[GrowlApplicationBridge notifyWithTitle: title
@@ -3023,6 +3025,7 @@ static BOOL initialized = NO;
 							priority: 0
 							isSticky: NO
 							clickContext: nil];
+#endif
 #endif
 }
 
@@ -3036,11 +3039,12 @@ static BOOL initialized = NO;
     NSDictionary *dict = nil;
 	
 #ifndef OSIRIX_LIGHT
+#ifndef MACAPPSTORE
     dict = [NSDictionary dictionaryWithObjectsAndKeys:
                              notifications, GROWL_NOTIFICATIONS_ALL,
                          notifications, GROWL_NOTIFICATIONS_DEFAULT, nil];
 #endif
-	
+#endif
     return (dict);
 }
 
@@ -3330,7 +3334,7 @@ static BOOL initialized = NO;
 	}
 	
 	#ifndef OSIRIX_LIGHT
-	
+	#ifndef MACAPPSTORE
 	@try
 	{
 		[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"crash@osirix-viewer.com"];
@@ -3339,6 +3343,7 @@ static BOOL initialized = NO;
 	{
 		NSLog( @"**** Exception ILCrashReporter: %@", e);
 	}
+	#endif
 	#endif
 	
 	[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
@@ -3374,6 +3379,7 @@ static BOOL initialized = NO;
 	#endif
 	
 	#ifndef OSIRIX_LIGHT
+	#ifndef MACAPPSTORE
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"doNotUseGrowl"] == NO)
 	{
 		[GrowlApplicationBridge setGrowlDelegate:self];
@@ -3404,6 +3410,7 @@ static BOOL initialized = NO;
 			}
 		}
 	}
+	#endif
 	#endif
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -3704,6 +3711,7 @@ static BOOL initialized = NO;
 }
 
 #ifndef OSIRIX_LIGHT
+#ifndef MACAPPSTORE
 - (IBAction) checkForUpdates: (id) sender
 {
 	NSURL *url;
@@ -3751,6 +3759,7 @@ static BOOL initialized = NO;
 	
 	[pool release];
 }
+#endif
 #endif
 
 - (void) URL: (NSURL*) sender resourceDidFailLoadingWithReason: (NSString*) reason
