@@ -1305,9 +1305,9 @@ static NSConditionLock *threadLock = nil;
 //			timeInt = timeIntervalType;
 //		}
 		
-		[database release]; database = nil;
 		if ([database isLocal])
 			[database save:nil];
+		[database release]; database = nil;
 		
 		[DCMPix purgeCachedDictionaries];
 		[DCMView purgeStringTextureCache];
@@ -3693,9 +3693,9 @@ static NSConditionLock *threadLock = nil;
 //	}
 //}
 
-- (void) refreshBonjourSource: (id) sender
-{
-	[self checkBonjourUpToDate: sender];
+-(void)refreshBonjourSource: (id) sender {
+	if ([database isKindOfClass:RemoteDicomDatabase.class])
+		[(RemoteDicomDatabase*)database initiateUpdate];
 }
 
 - (void) reloadAlbumTableData
@@ -11532,7 +11532,7 @@ static NSArray*	openSubSeriesArray = nil;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
 			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 5*60 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain]; //
 		
-		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
+//		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 15*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain]; // 10
 		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 30 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain]; // 35

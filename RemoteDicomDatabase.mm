@@ -14,6 +14,7 @@
 #import "ThreadsManager.h"
 #import "BrowserController.h" // TODO: awwww
 #import "N2MutableUInteger.h"
+#import "Notifications.h"
 
 @interface RemoteDicomDatabase ()
 
@@ -27,18 +28,30 @@
 
 @implementation RemoteDicomDatabase
 
++(void)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port {
+	NSArray* addressParts = [address componentsSeparatedByString:@":"];
+	*host = [NSHost hostWithName:[addressParts objectAtIndex:0]];
+	if (addressParts.count > 1)
+		*port = [[addressParts objectAtIndex:1] integerValue];
+	else *port = 8780;
+}
+
 +(DicomDatabase*)databaseForAddress:(NSString*)path {
 	return [self databaseForAddress:path name:nil];
 }
 
 +(DicomDatabase*)databaseForAddress:(NSString*)address name:(NSString*)name {
+	NSHost* host;
+	NSInteger port;
+	[self address:address toHost:&host port:&port];
+	
 	NSArray* dbs = [DicomDatabase allDatabases];
 	for (DicomDatabase* db in dbs)
 		if ([db isKindOfClass:RemoteDicomDatabase.class])
-			if ([[(RemoteDicomDatabase*)db address] isEqual:address])
+			if ([[(RemoteDicomDatabase*)db host] isEqualToHost:host] && [(RemoteDicomDatabase*)db port] == port)
 				return db;
 	
-	DicomDatabase* db = [[self alloc] initWithAddress:address];
+	DicomDatabase* db = [[[self alloc] initWithHost:host port:port] autorelease];
 	if (name) db.name = name;
 	
 	return db;
@@ -48,18 +61,27 @@
 
 @synthesize address = _address, port = _port, host = _host;
 
+-(BOOL)isVolatile {
+	return YES;
+}
+
 -(id)initWithAddress:(NSString*)address {
+	NSHost* host;
+	NSInteger port;
+	[RemoteDicomDatabase address:address toHost:&host port:&port];
+	return [self initWithHost:host port:port];
+}
+
+-(id)initWithHost:(NSHost*)host port:(NSInteger)port {
 	NSString* path = [NSFileManager.defaultManager tmpFilePathInTmp];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:path];
 	
 	self = [super initWithPath:path];
 	_updateLock = [[NSRecursiveLock alloc] init];
 	
-	NSArray* addressParts = [address componentsSeparatedByString:@":"];
-	self.address = [addressParts objectAtIndex:0];
-	if (addressParts.count > 1)
-		self.port = [[addressParts objectAtIndex:1] integerValue];
-	self.host = [NSHost hostWithName:self.address];
+	self.host = host;
+	self.address = host.address;
+	self.port = port;
 	
 	[self update];
 	
@@ -214,7 +236,13 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 		
 		thread.status = NSLocalizedString(@"Opening index...", nil);
 		NSManagedObjectContext* context = [self contextAtPath:path];
-		
+
+		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+		req.entity = self.imageEntity;
+		req.predicate = [NSPredicate predicateWithValue:YES];
+		NSArray* images = [self.managedObjectContext executeFetchRequest:req error:NULL];
+		NSLog(@"images: %d", images.count);
+
 		[_sqlFileName release];
 		_sqlFileName = [[path lastPathComponent] retain];
 		[_sqlFilePath autorelease];
@@ -222,9 +250,7 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 		[_managedObjectContext autorelease];
 		_managedObjectContext = [context retain];
 		
-		
-		
-		
+		//[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBNotification object:self];
 		
 		
 		
@@ -284,12 +310,14 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 
 
 
+
+
 -(void)save:(NSError **)err {
 	NSLog(@"Notice: trying to -[RemoteDicomDatabase save], ignored");
 }
 
 -(NSString*)name {
-	return _name? _name : [NSString stringWithFormat:NSLocalizedString(@"OsiriX database at %@", nil), self.address];
+	return _name? _name : [NSString stringWithFormat:NSLocalizedString(@"OsiriX database at %@", nil), self.host.name];
 }
 
 -(void)rebuild:(BOOL)complete { // do nothing

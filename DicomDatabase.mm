@@ -272,6 +272,13 @@ static DicomDatabase* activeLocalDatabase = nil;
     return managedObjectModel;
 }
 
+-(NSMutableDictionary*)persistentStoreCoordinatorsDictionary {
+	static NSMutableDictionary* dict = NULL;
+	if (!dict)
+		dict = [[NSMutableDictionary alloc] initWithCapacity:4];
+	return dict;
+}
+
 -(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c { // reminder: context may be nil (assigned in -[N2ManagedDatabase initWithPath:] after calling this method)
 	p = [DicomDatabase baseDirPathForPath:p];
 	p = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:p];
@@ -309,6 +316,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 	strncpy(baseDirPathC, self.baseDirPath.fileSystemRepresentation, 4096);
 	strncpy(incomingDirPathC, self.incomingDirPath.fileSystemRepresentation, 4096);
 	strncpy(tempDirPathC, self.tempDirPath.fileSystemRepresentation, 4096);
+	
+	[self computeDataFileIndex];
 	
 	// if a TOBEINDEXED dir exists, move it into INCOMING so we will import the data
 	
@@ -515,13 +524,11 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 }
 
 -(NSUInteger)computeDataFileIndex {
-	DLog(@"In -[DicomDatabase computeDataFileIndex] for %@ initially %ld", self.sqlFilePath, _dataFileIndex.value);
+	DLog(@"In -[DicomDatabase computeDataFileIndex] for %@ initially %ld", self.sqlFilePath, _dataFileIndex.unsignedIntegerValue);
 	
 	@synchronized(_dataFileIndex) {
 		@try {
 			NSString* path = self.dataDirPath;
-			NSString* temp = [NSFileManager.defaultManager destinationOfSymbolicLinkAtPath:path error:nil];
-			if (temp) path = temp;
 
 			// delete empty dirs and scan for files with number names // TODO: this is too slow for NAS systems
 			for (NSString* f in [NSFileManager.defaultManager contentsOfDirectoryAtPath:path error:nil]) {
@@ -529,7 +536,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				NSDictionary* fattr = [NSFileManager.defaultManager fileAttributesAtPath:fpath traverseLink:YES];
 				
 				// check if this folder is empty, and delete it if necessary
-				if ([[fattr objectForKey:NSFileType] isEqualToString:NSFileTypeDirectory] && [[fattr objectForKey:NSFileReferenceCount] intValue] < 4) {
+				if ([[fattr objectForKey:NSFileType] isEqualToString:NSFileTypeDirectory]) {
 					int numberOfValidFiles = 0;
 					
 					for (NSString* s in [NSFileManager.defaultManager contentsOfDirectoryAtPath:fpath error:nil])
@@ -548,22 +555,22 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			
 			// scan directories
 			
-			if (_dataFileIndex.value > 0) {
+			if (_dataFileIndex.unsignedIntegerValue > 0) {
 				NSInteger t = _dataFileIndex.unsignedIntegerValue;
 				t -= [BrowserController DefaultFolderSizeForDB];
 				if (t < 0) t = 0;
 				
-				NSArray* paths = [NSFileManager.defaultManager contentsOfDirectoryAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", _dataFileIndex.value]] error:nil];
+				NSArray* paths = [NSFileManager.defaultManager contentsOfDirectoryAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", _dataFileIndex.unsignedIntegerValue]] error:nil];
 				for (NSString* s in paths) {
 					long si = [[s stringByDeletingPathExtension] integerValue];
 					if (si > t)
 						t = si;
 				}
 				
-				_dataFileIndex.unsignedIntegerValue = t+1;
+				_dataFileIndex.unsignedIntegerValue = t;
 			}
 			
-			DLog(@"   -[DicomDatabase computeDataFileIndex] for %@ computed %ld", self.sqlFilePath, _dataFileIndex.value);
+			DLog(@"   -[DicomDatabase computeDataFileIndex] for %@ computed %ld", self.sqlFilePath, _dataFileIndex.unsignedIntegerValue);
 		} @catch (NSException* e) {
 			N2LogExceptionWithStackTrace(e);
 		}
@@ -594,7 +601,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			NSString* subFolderPath = [dataDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld", subFolderInt]];
 			[NSFileManager.defaultManager confirmDirectoryAtPath:subFolderPath];
 			
-			path = [subFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld.%@", (long long)_dataFileIndex.value, ext]];
+			path = [subFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld.%@", (long long)_dataFileIndex.unsignedIntegerValue, ext]];
 			fileExists = [NSFileManager.defaultManager fileExistsAtPath:path];
 			
 			if (fileExists)

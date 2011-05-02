@@ -47,6 +47,7 @@
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p error:(NSError**)err;
 -(id)newObjectForEntity:(NSEntityDescription*)entity;
 
+-(BOOL)isVolatile;
 -(void)save:(NSError**)err;
 
 

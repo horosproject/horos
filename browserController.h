@@ -79,7 +79,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
     DCMPix                  *curPreviewPix;
     
-    NSTimer                 *timer, /**IncomingTimer,*/ *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer, *bonjourTimer, *deleteQueueTimer, *autoroutingQueueTimer;
+    NSTimer                 *timer, /**IncomingTimer,*/ *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer/*, *bonjourTimer*/, *deleteQueueTimer, *autoroutingQueueTimer;
 	long					loadPreviewIndex, previousNoOfFiles;
 	NSManagedObject			*previousItem;
     

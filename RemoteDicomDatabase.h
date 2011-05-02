@@ -25,5 +25,8 @@
 +(DicomDatabase*)databaseForAddress:(NSString*)path name:(NSString*)name;
 
 -(id)initWithAddress:(NSString*)address;
+-(id)initWithHost:(NSHost*)host port:(NSInteger)port;
+
+-(NSThread*)initiateUpdate;
 
 @end
