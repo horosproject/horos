@@ -26309,10 +26309,7 @@
 		7E76BEC1085757B60073649A /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					x86_64,
-				);
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;

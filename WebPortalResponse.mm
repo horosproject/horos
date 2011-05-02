@@ -528,7 +528,7 @@
 		if( [wadoSubUrl hasPrefix: @"/"])
 			wadoSubUrl = [wadoSubUrl substringFromIndex: 1];
 		
-		NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@", protocol, NSUserDefaults.webPortalAddress, NSUserDefaults.webPortalPortNumber, wadoSubUrl];
+		NSString *baseURL = [NSString stringWithFormat: @"%@/%@", wpc.portalURL, wadoSubUrl];
 		
 		return baseURL; 
 	}

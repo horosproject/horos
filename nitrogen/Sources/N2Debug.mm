@@ -13,8 +13,8 @@
  =========================================================================*/
 
 
-#import <N2Debug.h>
-#import <NSException+N2.h>
+#import "N2Debug.h"
+#import "NSException+N2.h"
 
 @implementation N2Debug
 

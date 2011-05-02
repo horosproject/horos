@@ -688,7 +688,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			if( [wadoSubUrl hasPrefix: @"/"])
 				wadoSubUrl = [wadoSubUrl substringFromIndex: 1];
 			
-			NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@?requestType=WADO", protocol, NSUserDefaults.webPortalAddress, NSUserDefaults.webPortalPortNumber, wadoSubUrl];
+			NSString *baseURL = [NSString stringWithFormat: @"%@/%@?requestType=WADO", self.portalURL, wadoSubUrl];
 			
 			NSMutableString *WADOURLs = [NSMutableString string];
 			
