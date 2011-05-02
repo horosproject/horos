@@ -79,7 +79,6 @@
 			[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@", [error localizedDescription]], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 		}
 		
-		[connection release];
 		OSAtomicDecrement32Barrier( &WADOThreads);
 	}
 }
@@ -122,8 +121,6 @@
 		
 		[d setLength: 0]; // Free the memory immediately
 		[WADODownloadDictionary removeObjectForKey: key];
-		
-		[connection release];
 		
 		OSAtomicDecrement32Barrier( &WADOThreads);
 		
@@ -175,7 +172,7 @@
 			}
 			retrieveStartingDate = [NSDate timeIntervalSinceReferenceDate];
 			
-			NSURLConnection *downloadConnection = [[NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestReloadIgnoringLocalCacheData timeoutInterval: timeout] delegate: self] retain];
+			NSURLConnection *downloadConnection = [NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestReloadIgnoringLocalCacheData timeoutInterval: timeout] delegate: self];
 			
 			[WADODownloadDictionary setObject: [NSMutableData data] forKey: [NSString stringWithFormat:@"%ld", downloadConnection]];
 			
