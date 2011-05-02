@@ -1043,8 +1043,82 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableWithEndpointsAtPlaneIntersection
     return newBezierCore;
 }
 
+N3Plane N3BezierCoreLeastSquaresPlane(N3BezierCoreRef bezierCore)
+{
+    N3BezierCoreRef flattenedBezierCore;
+	N3BezierCoreIteratorRef bezierCoreIterator;
+    N3VectorArray endpoints;
+    N3Plane plane;
+    CFIndex segmentCount;
+    CFIndex i;
 
+    if (N3BezierCoreHasCurve(bezierCore)) {
+        flattenedBezierCore = N3BezierCoreCreateMutableCopy(bezierCore);
+        N3BezierCoreFlatten((N3MutableBezierCoreRef)flattenedBezierCore, N3BezierDefaultFlatness);
+    } else {
+        flattenedBezierCore = N3BezierCoreRetain(bezierCore); 
+    }
+    
+    segmentCount = N3BezierCoreSegmentCount(flattenedBezierCore);
+    endpoints = malloc(segmentCount * sizeof(N3Vector));
+    bezierCoreIterator = N3BezierCoreIteratorCreateWithBezierCore(flattenedBezierCore);
+    N3BezierCoreRelease(flattenedBezierCore);
+    flattenedBezierCore = NULL;
+    
+    for (i = 0; !N3BezierCoreIteratorIsAtEnd(bezierCoreIterator); i++) {
+        N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, NULL, NULL, &endpoints[i]);
+    }
+    
+    N3BezierCoreIteratorRelease(bezierCoreIterator);
+    
+    plane = N3PlaneLeastSquaresPlaneFromPoints(endpoints, segmentCount);
+    
+    free(endpoints);
+    return plane;
+}
 
+CGFloat N3BezierCoreMeanDistanceToPlane(N3BezierCoreRef bezierCore, N3Plane plane)
+{
+    N3BezierCoreRef flattenedBezierCore;
+	N3BezierCoreIteratorRef bezierCoreIterator;
+    N3Vector endpoint;
+    CGFloat totalDistance;
+    CFIndex segmentCount;
+    
+    if (N3BezierCoreHasCurve(bezierCore)) {
+        flattenedBezierCore = N3BezierCoreCreateMutableCopy(bezierCore);
+        N3BezierCoreFlatten((N3MutableBezierCoreRef)flattenedBezierCore, N3BezierDefaultFlatness);
+    } else {
+        flattenedBezierCore = N3BezierCoreRetain(bezierCore); 
+    }
+    
+    endpoint = N3VectorZero;
+    segmentCount = N3BezierCoreSegmentCount(flattenedBezierCore);
+    bezierCoreIterator = N3BezierCoreIteratorCreateWithBezierCore(flattenedBezierCore);
+    N3BezierCoreRelease(flattenedBezierCore);
+    flattenedBezierCore = NULL;
+    
+    while (!N3BezierCoreIteratorIsAtEnd(bezierCoreIterator)) {
+        N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, NULL, NULL, &endpoint);
+        totalDistance += N3VectorDistanceToPlane(endpoint, plane);
+    }
+    
+    N3BezierCoreIteratorRelease(bezierCoreIterator);
+    
+    return totalDistance / (CGFloat)segmentCount;
+}
+
+bool N3BezierCoreIsPlanar(N3BezierCoreRef bezierCore)
+{
+    N3Plane plane;
+    CGFloat meanDistance;
+    
+    plane = N3BezierCoreLeastSquaresPlane(bezierCore);
+    meanDistance = N3BezierCoreMeanDistanceToPlane(bezierCore, plane);
+    
+    NSLog(@"meanDistance = %f, compare to %f", meanDistance, (CGFLOAT_MIN * 1E10));
+    return meanDistance < 1.0;
+}
 
 
 

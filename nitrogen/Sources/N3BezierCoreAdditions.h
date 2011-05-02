@@ -54,6 +54,10 @@ CFIndex N3BezierCoreIntersectionsWithPlane(N3BezierCoreRef bezierCore, N3Plane p
 
 N3MutableBezierCoreRef N3BezierCoreCreateMutableWithEndpointsAtPlaneIntersections(N3BezierCoreRef bezierCore, N3Plane plane); // creates a N3BezierCore that is sure to have an endpoint every time the bezier core intersects the plane. If the input bezier is not already flattened, this routine will flatten it first
 
+N3Plane N3BezierCoreLeastSquaresPlane(N3BezierCoreRef bezierCore);
+CGFloat N3BezierCoreMeanDistanceToPlane(N3BezierCoreRef bezierCore, N3Plane plane);
+bool N3BezierCoreIsPlanar(N3BezierCoreRef bezierCore);
+
 CF_EXTERN_C_END
 
 #endif // _N3BEZIERCORE_ADDITIONS_H_

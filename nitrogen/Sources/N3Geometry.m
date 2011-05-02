@@ -517,6 +517,25 @@ bool N3PlaneIsValid(N3Plane plane)
     return N3VectorLength(plane.normal) > _N3GeometrySmallNumber;
 }
 
+N3Plane N3PlaneLeastSquaresPlaneFromPoints(N3VectorArray vectors, CFIndex numVectors) // BOGUS TODO not written yet, will give a plane, but it won't be the least squares plane
+{
+    N3Plane plane;
+    
+    if (numVectors <= 3) {
+        return N3PlaneInvalid;
+    }
+    
+    plane.point = vectors[0];
+    plane.normal = N3VectorNormalize(N3VectorCrossProduct(N3VectorSubtract(vectors[1], vectors[0]), N3VectorSubtract(vectors[2], vectors[0])));
+    
+    if (N3VectorIsZero(plane.normal)) {
+        return N3PlaneInvalid;
+    } else {
+        return plane;
+    }
+}
+
+
 N3Plane N3PlaneApplyTransform(N3Plane plane, N3AffineTransform transform)
 {
     N3Plane newPlane;

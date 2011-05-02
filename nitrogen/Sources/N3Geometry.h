@@ -114,6 +114,7 @@ N3Vector N3PlanePointClosestToVector(N3Plane plane, N3Vector vector);
 bool N3PlaneIsParallelToPlane(N3Plane plane1, N3Plane plane2);
 bool N3PlaneIsBetweenVectors(N3Plane plane, N3Vector vector1, N3Vector vector2);
 N3Line N3PlaneIntersectionWithPlane(N3Plane plane1, N3Plane plane2);
+N3Plane N3PlaneLeastSquaresPlaneFromPoints(N3VectorArray vectors, CFIndex numVectors); // BOGUS TODO not written yet, will give a plane, but it won't be the least squares plane
 N3Plane N3PlaneApplyTransform(N3Plane plane, N3AffineTransform transform);
 
 void N3VectorScalarMultiplyVectors(CGFloat scalar, N3VectorArray vectors, CFIndex numVectors);

@@ -351,6 +351,11 @@
     return N3BezierCoreNormalAtEndWithInitialNormal(_bezierCore, initialNormal);
 }
 
+- (BOOL)isPlanar
+{
+    return N3BezierCoreIsPlanar(_bezierCore);
+}
+
 - (N3BezierPathElement)elementAtIndex:(NSInteger)index
 {
     return [self elementAtIndex:index control1:NULL control2:NULL endpoint:NULL];
