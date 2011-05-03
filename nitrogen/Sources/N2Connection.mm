@@ -218,25 +218,19 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 
 -(void)handleData:(NSMutableData*)data {
 //	[data setLength:0];
-	
-	
-	
-	
 }
 
 -(void)trySendingDataNow {
-	if ([_outputBuffer length]) {
-		NSUInteger length = [_outputBuffer length];
-		if (length) {
-			NSUInteger sentLength = [_outputStream write:(uint8_t*)[_outputBuffer bytes] maxLength:length];
-			if (sentLength != -1) {
-//				DLog(@"%@ Sent %d bytes", self, sentLength);
-				[_outputBuffer replaceBytesInRange:NSMakeRange(0,sentLength) withBytes:nil length:0];
-				if (!_outputBuffer.length)
-					[self connectionFinishedSendingData];
-			} else
-				DLog(@"%@ send error: %@", self, [_outputStream streamError]);
-		}
+	NSUInteger length = [_outputBuffer length];
+	if (length) {
+		NSUInteger sentLength = [_outputStream write:(uint8_t*)[_outputBuffer bytes] maxLength:length];
+		if (sentLength != -1) {
+				DLog(@"%@ Sent %d bytes", self, sentLength);
+			[_outputBuffer replaceBytesInRange:NSMakeRange(0,sentLength) withBytes:nil length:0];
+			if (!_outputBuffer.length)
+				[self connectionFinishedSendingData];
+		} else
+			DLog(@"%@ send error: %@", self, [_outputStream streamError]);
 	}
 }
 
@@ -250,8 +244,10 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 #endif
 	
 	if (event == NSStreamEventOpenCompleted)
-		if (++_handleOpenCompleted == 2)
+		if (++_handleOpenCompleted == 2) {
 			[self setStatus:N2ConnectionStatusOk];
+//			[self trySendingDataNow];
+		}
 	
 	if (stream == _inputStream && event == NSStreamEventHasBytesAvailable) {
 		DLog(@"%@ has bytes available", self);
@@ -264,7 +260,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 			unsigned int length = [_inputStream read:buffer maxLength:maxLength];
 			
 			if (length > 0) {
-//				DLog(@"%@ Read %d Bytes", self, length);
+				DLog(@"%@ Read %d Bytes", self, length);
 //				std::cerr << [[NSString stringWithFormat:@"%@ Read %d Bytes", self, length] UTF8String] << ": ";
 //				for (int i = 0; i < length; ++i)
 //					std::cerr << (int)buffer[i] << " ";

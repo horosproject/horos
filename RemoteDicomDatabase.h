@@ -10,6 +10,7 @@
 
 
 @interface RemoteDicomDatabase : DicomDatabase {
+	NSString* _baseBaseDirPath;
 	NSString* _sqlFileName;
 	NSString* _address;
 	NSInteger _port;

@@ -171,25 +171,25 @@ static NSMutableDictionary* databasesDictionary = nil;
 	@synchronized(self) {
 		prc = self.retainCount;
 		if (prc <= 2)
-			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, _managedObjectContext.retainCount); 
+			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, self.managedObjectContext.retainCount); 
 		[super release];
 	}
 	
 	NSInteger rc = prc-1;
 	if (rc == 1)
-		NSLog(@"\tself.rc = %d, managedObjectContext.rc = %d ", self.retainCount, _managedObjectContext.retainCount);
+		NSLog(@"\tself.rc = %d, managedObjectContext.rc = %d ", self.retainCount, self.managedObjectContext.retainCount);
 	if (rc == 0)
 		NSLog(@"\tself.rc = 0, zombies arising..?");
 	
 	if (rc == 1) {
-		NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", _managedObjectContext.registeredObjects.count);
+		NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", self.managedObjectContext.registeredObjects.count);
 
 		
 		//[managedObjectContext invalidate];
 		
 		
 			
-		if (_managedObjectContext.retainCount /*- self.managedObjectContext.registeredObjects.count*/ == 1) {
+		if (self.managedObjectContext.retainCount /*- self.managedObjectContext.registeredObjects.count*/ == 1) {
 			NSLog(@"\t\tThe context seems to be retained only by the database and by its registered objects.. We can release the database!");
 			@synchronized(databasesDictionary) {
 				[databasesDictionary removeObjectForKey:[databasesDictionary keyForObject:self]];
@@ -272,12 +272,12 @@ static DicomDatabase* activeLocalDatabase = nil;
     return managedObjectModel;
 }
 
--(NSMutableDictionary*)persistentStoreCoordinatorsDictionary {
+/*-(NSMutableDictionary*)persistentStoreCoordinatorsDictionary {
 	static NSMutableDictionary* dict = NULL;
 	if (!dict)
 		dict = [[NSMutableDictionary alloc] initWithCapacity:4];
 	return dict;
-}
+}*/
 
 -(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c { // reminder: context may be nil (assigned in -[N2ManagedDatabase initWithPath:] after calling this method)
 	p = [DicomDatabase baseDirPathForPath:p];
@@ -313,9 +313,9 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.reportsDirPath];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.dumpDirPath];
-	strncpy(baseDirPathC, self.baseDirPath.fileSystemRepresentation, 4096);
-	strncpy(incomingDirPathC, self.incomingDirPath.fileSystemRepresentation, 4096);
-	strncpy(tempDirPathC, self.tempDirPath.fileSystemRepresentation, 4096);
+	strncpy(baseDirPathC, self.baseDirPath.fileSystemRepresentation, sizeof(baseDirPathC));
+	strncpy(incomingDirPathC, self.incomingDirPath.fileSystemRepresentation, sizeof(incomingDirPathC));
+	strncpy(tempDirPathC, self.tempDirPath.fileSystemRepresentation, sizeof(tempDirPathC));
 	
 	[self computeDataFileIndex];
 	

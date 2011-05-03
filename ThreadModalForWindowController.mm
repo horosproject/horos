@@ -61,11 +61,15 @@
 	[_thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
 }
 
--(void)sheetDidEnd:(NSWindow*)sheet returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {
+-(void)sheetDidEndOnMainThread:(NSWindow*)sheet {
 //	[[_thread threadDictionary] removeObjectForKey:ThreadIsCurrentlyModal];
 	[sheet orderOut:self];
 	[NSApp endSheet:sheet];
 	[self release];
+}
+
+-(void)sheetDidEnd:(NSWindow*)sheet returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {
+	[self performSelectorOnMainThread:@selector(sheetDidEndOnMainThread:) withObject:sheet waitUntilDone:NO];
 }
 
 -(void)dealloc {

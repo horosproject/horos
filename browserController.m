@@ -1274,6 +1274,8 @@ static NSConditionLock *threadLock = nil;
 }
 
 -(void)setDatabase:(DicomDatabase*)db {
+	[[db retain] autorelease]; // avoid multithreaded release
+	
 	[self waitForRunningProcesses];
 	[reportFilesToCheck removeAllObjects];
 
@@ -17662,15 +17664,25 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[bonjourServicesList selectRowIndexes:[NSIndexSet indexSetWithIndex:i] byExtendingSelection:NO];
 }
 
--(void)setDatabaseRemoteDatabaseThread:(NSArray*)io {
+-(void)setDatabaseThread:(NSArray*)io {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	@try {
-		NSString* address = [io objectAtIndex:0];
-		NSInteger port = [[io objectAtIndex:1] intValue];
-		NSString* name = io.count > 2? [io objectAtIndex:2] : nil;
+		NSString* type = [io objectAtIndex:0];
+		DicomDatabase* db = nil;
 		
-		NSString* ap = [NSString stringWithFormat:@"%@:%d", address, port];
-		DicomDatabase* db = [RemoteDicomDatabase databaseForAddress:ap name:name];
+		if ([type isEqualToString:@"Local"]) {
+			NSString* path = [io objectAtIndex:1];
+			NSString* name = io.count > 2? [io objectAtIndex:2] : nil;
+			db = [DicomDatabase databaseAtPath:path name:name];
+		}
+		
+		if ([type isEqualToString:@"Remote"]) {
+			NSString* address = [io objectAtIndex:1];
+			NSInteger port = [[io objectAtIndex:2] intValue];
+			NSString* name = io.count > 3? [io objectAtIndex:3] : nil;
+			NSString* ap = [NSString stringWithFormat:@"%@:%d", address, port];
+			db = [RemoteDicomDatabase databaseForAddress:ap name:name];
+		}
 		
 		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:db waitUntilDone:NO];
 	} @catch (NSException* e) {
@@ -17681,10 +17693,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
--(NSThread*)initiateSetDatabaseRemoteDatabaseWithAddress:(NSString*)address port:(NSInteger)port name:(NSString*)name {
-	NSArray* io = [NSMutableArray arrayWithObjects: address, [NSNumber numberWithInteger:port], name, nil];
+-(NSThread*)initiateSetDatabaseAtPath:(NSString*)path name:(NSString*)name {
+	NSArray* io = [NSMutableArray arrayWithObjects: @"Local", path, name, nil];
 	
-	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseRemoteDatabaseThread:) object:io];
+	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io];
+	thread.name = NSLocalizedString(@"Loading remote OsiriX database...", nil);
+	thread.supportsCancel = YES;
+	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+	[thread start];
+	
+	return [thread autorelease];
+}
+
+-(NSThread*)initiateSetRemoteDatabaseWithAddress:(NSString*)address port:(NSInteger)port name:(NSString*)name {
+	NSArray* io = [NSMutableArray arrayWithObjects: @"Remote", address, [NSNumber numberWithInteger:port], name, nil];
+	
+	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io];
 	thread.name = NSLocalizedString(@"Loading remote OsiriX database...", nil);
 	thread.supportsCancel = YES;
 	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
@@ -17726,6 +17750,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		// LOCAL PATH - DATABASE
 		else if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])
 		{
+			[self initiateSetDatabaseAtPath:[object valueForKey:@"Path"] name:[object valueForKey:@"Description"]];
 			[self setDatabase:[DicomDatabase databaseAtPath:[object valueForKey:@"Path"] name:[object valueForKey:@"Description"]]];
 		}
 		else	// NETWORK - DATABASE - bonjour / fixedIP
@@ -17733,7 +17758,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			int port = [[object valueForKey:@"OsiriXPort"] intValue];
 			if (!port) port = 8780;
 			
-			[self initiateSetDatabaseRemoteDatabaseWithAddress:[object valueForKey:@"Address"] port:port name:[object valueForKey:@"Description"]];
+			[self initiateSetRemoteDatabaseWithAddress:[object valueForKey:@"Address"] port:port name:[object valueForKey:@"Description"]];
 			
 //			displayEmptyDatabase = YES;
 //			[self outlineViewRefresh];

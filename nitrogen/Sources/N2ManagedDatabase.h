@@ -12,14 +12,14 @@
 @interface N2ManagedDatabase : NSObject {
 	@protected
 		NSString* _sqlFilePath;
-		NSManagedObjectContext* _managedObjectContext;
-//	@private
+	@private
+	NSManagedObjectContext* _managedObjectContext;
 //		NSRecursiveLock* writeLock;
 }
 
 @property(readonly,retain) NSString* sqlFilePath;
 @property(readonly) NSManagedObjectModel* managedObjectModel;
-@property(readonly,retain) NSManagedObjectContext* managedObjectContext;
+@property(readwrite,retain) NSManagedObjectContext* managedObjectContext; // only change this value if you know what you're doing
 
 // locking actually locks the context
 -(void)lock;
@@ -31,7 +31,7 @@
 //-(void)writeUnlock;
 
 -(NSManagedObjectModel*)managedObjectModel;
--(NSMutableDictionary*)persistentStoreCoordinatorsDictionary;
+//-(NSMutableDictionary*)persistentStoreCoordinatorsDictionary;
 -(BOOL)migratePersistentStoresAutomatically; // default implementation returns YES
 
 -(id)initWithPath:(NSString*)sqlFilePath;

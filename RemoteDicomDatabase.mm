@@ -77,13 +77,19 @@
 	[NSFileManager.defaultManager confirmDirectoryAtPath:path];
 	
 	self = [super initWithPath:path];
+	_baseBaseDirPath = [path retain];
 	_updateLock = [[NSRecursiveLock alloc] init];
 	
 	self.host = host;
 	self.address = host.address;
 	self.port = port;
 	
-	[self update];
+	@try {
+		[self update];
+	} @catch (...) {
+		[self release]; self = nil;
+		@throw;
+	}
 	
 	return self;
 }
@@ -100,12 +106,11 @@
 	self.address = nil;
 	self.host = nil;
 	
-	NSError* err = nil;
-	if (![NSFileManager.defaultManager removeItemAtPath:self.baseDirPath error:&err])
-		N2LogError(err);
-	else if (err) N2LogError(err);
+	NSString* baseBaseDirPath = [_baseBaseDirPath autorelease];
 	
 	[super dealloc];
+	
+	[NSFileManager.defaultManager removeItemAtPath:baseBaseDirPath error:NULL];
 }
 
 -(BOOL)isLocal {
@@ -165,22 +170,22 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 	DLog(@"RDD version: %@", version);
 
 	// TODO: password check is client-only, do it on the server side!
-//	BOOL isPasswordProtected = [self fetchIsPasswordProtected];
-//	if (isPasswordProtected) DLog(@"RDD is password protected", version);
-//	NSString* password = nil;
-//	if (isPasswordProtected) {
-//		password = [[BrowserController currentBrowser] askPassword]; // TODO: awww
-//		BOOL isRightPassword = [self fetchIsRightPassword:password];
-//		if (!isRightPassword)
-//			[NSException raise:NSInvalidArgumentException format:NSLocalizedString(@"Wrong password for remote database.", nil)];
-//		else DLog(@"RDD password ok");
-//	}
+	BOOL isPasswordProtected = [self fetchIsPasswordProtected];
+	if (isPasswordProtected) DLog(@"RDD is password protected", version);
+	NSString* password = nil;
+	if (isPasswordProtected) {
+		password = [[BrowserController currentBrowser] askPassword]; // TODO: awww
+		BOOL isRightPassword = [self fetchIsRightPassword:password];
+		if (!isRightPassword)
+			[NSException raise:NSInvalidArgumentException format:NSLocalizedString(@"Wrong password for remote database.", nil)];
+		else DLog(@"RDD password ok");
+	}
 	
 	NSUInteger databaseIndexSize = [self fetchDatabaseIndexSize];
 	DLog(@"RDD index size is %d", databaseIndexSize);
 	
-	thread.status = NSLocalizedString(@"Transferring database index...", nil);
 	[thread enterOperation];
+	thread.status = NSLocalizedString(@"Transferring database index...", nil);
 	
 	NSString* path = [NSFileManager.defaultManager tmpFilePathInDir:self.baseDirPath];
 	NSOutputStream* fileStream = [NSOutputStream outputStreamToFileAtPath:path append:NO];
@@ -247,8 +252,7 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 		_sqlFileName = [[path lastPathComponent] retain];
 		[_sqlFilePath autorelease];
 		_sqlFilePath = [path retain];
-		[_managedObjectContext autorelease];
-		_managedObjectContext = [context retain];
+		self.managedObjectContext = context;
 		
 		//[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBNotification object:self];
 		
