@@ -2734,7 +2734,7 @@ static NSConditionLock *threadLock = nil;
 		if( managedObjectContext == nil && [path isEqualToString: currentDatabasePath] == YES && independentContext == NO)
 			managedObjectContext = [moc retain];
 		
-		if( newDB)
+		if( newDB && moc)
 			[self defaultAlbums: self];
 		
 		if( managedObjectContext && independentContext == NO && [path isEqualToString: currentDatabasePath] == YES && [NSThread isMainThread])
