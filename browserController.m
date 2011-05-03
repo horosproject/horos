@@ -2717,7 +2717,9 @@ static NSConditionLock *threadLock = nil;
 			if (![psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:options error:&error])
 			{
 				NSLog(@"********** managedObjectContext FAILED: %@", error);
-				error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
+				
+				if( independentContext == NO && [path isEqualToString: currentDatabasePath] == YES && [NSThread isMainThread])
+					NSRunCriticalAlertPanel( NSLocalizedString( @"Database Error", nil), [NSString stringWithFormat: NSLocalizedString( @"Failed to create or open database index file: %@", nil), [error localizedDescription]], NSLocalizedString( @"OK", nil), nil, nil);
 				
 				moc = nil;
 			}
@@ -2727,10 +2729,15 @@ static NSConditionLock *threadLock = nil;
 					NSLog( @"New SQL DB file created: %@", path);
 			}
 		}
-
-		if( [moc save: &error] == NO)	// This line is very important, if there is NO database.sql file
+		
+		if( moc && [moc save: &error] == NO)	// This line is very important, if there is NO database.sql file
+		{
 			NSLog( @"**** managedObjectContextIndependentContext save error: %@", error);
 			
+			if( independentContext == NO && [path isEqualToString: currentDatabasePath] == YES && [NSThread isMainThread])
+				NSRunCriticalAlertPanel( NSLocalizedString( @"Database Error", nil), [NSString stringWithFormat: NSLocalizedString( @"Failed to save database index file: %@", nil), [error localizedDescription]], NSLocalizedString( @"OK", nil), nil, nil);
+		}
+		
 		if( managedObjectContext == nil && [path isEqualToString: currentDatabasePath] == YES && independentContext == NO)
 			managedObjectContext = [moc retain];
 		
