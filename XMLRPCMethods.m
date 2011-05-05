@@ -21,6 +21,11 @@
 #import "DCMNetServiceDelegate.h"
 #import "Notifications.h"
 #import "N2Debug.h"
+#import "NSThread+N2.h"
+#import "WADODownload.h"
+#import "ThreadsManager.h"
+#import "DicomSeries.h"
+#import "DicomStudy.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -127,14 +132,167 @@ static NSTimeInterval lastConnection = 0;
 	return paramDict;
 }
 
+- (void) showStudy: (NSDictionary*) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	if( [dict valueForKey: @"series"])
+		[[BrowserController currentBrowser] displayStudy: [dict valueForKey: @"study"] object: [dict valueForKey: @"series"] command: @"Open"];
+	else
+		[[BrowserController currentBrowser] displayStudy: [dict valueForKey: @"study"] object: [dict valueForKey: @"study"] command: @"Open"];
+	
+	[pool release];
+}
+
+- (void) asyncWADODownload:(NSDictionary*) paramDict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSString *url = [paramDict valueForKey:@"URL"];
+	
+	WADODownload *downloader = [[WADODownload alloc] init];
+	
+	[downloader WADODownload: [NSArray arrayWithObject: [NSURL URLWithString: url]]];
+	
+	[downloader release];
+	
+	if( [[paramDict valueForKey:@"Display"] boolValue])
+	{
+		NSString *studyUID = nil;
+		NSString *seriesUID = nil;
+		
+		for( NSString *s in [[[url componentsSeparatedByString: @"?"] lastObject] componentsSeparatedByString: @"&"])
+		{
+			NSRange separatorRange = [s rangeOfString: @"="];
+			
+			if( [[s substringToIndex: separatorRange.location] isEqualToString: @"studyUID"])
+				studyUID = [s substringFromIndex: separatorRange.location+1];
+				
+			if( [[s substringToIndex: separatorRange.location] isEqualToString: @"seriesUID"])
+				seriesUID = [s substringFromIndex: separatorRange.location+1];
+		}
+		
+		if( studyUID)
+		{
+			BOOL found = NO;
+			NSTimeInterval started = [NSDate timeIntervalSinceReferenceDate];
+			
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
+			
+			if( studyUID && seriesUID)
+				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@ AND ANY series.seriesDICOMUID == %@", studyUID, seriesUID]];
+			else
+				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
+			
+			DicomStudy *study = nil;
+			DicomSeries *series = nil;
+			
+			while( found == NO && [NSDate timeIntervalSinceReferenceDate] - started < 300)
+			{
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0]];
+				
+				NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+				
+				[context lock];
+				
+				@try
+				{
+					NSError *error = nil;
+					NSArray *array = [context executeFetchRequest:dbRequest error:&error];
+					
+					if( [[[array lastObject] valueForKey:@"studyInstanceUID"] isEqualToString: studyUID])
+					{
+						study = [array lastObject];
+						
+						if( seriesUID)
+						{
+							for( DicomSeries *s in [study.series allObjects])
+							{
+								if( [s.seriesDICOMUID isEqualToString: seriesUID])
+									series = s;
+							}
+						}
+						found = YES;
+					}
+				}
+				@catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+				
+				[context unlock];
+			}
+			
+			if( found)
+				[self performSelectorOnMainThread: @selector( showStudy:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: study, @"study", series, @"series", nil] waitUntilDone: NO];
+		}
+	}
+	
+	[pool release];
+}
+
 - (void) processXMLRPCMessage: (NSString*) selName httpServerMessage: (NSMutableDictionary*) httpServerMessage HTTPServerRequest: (HTTPServerRequest*) mess version:(NSString*) vers paramDict: (NSDictionary*) paramDict encoding: (NSString*) encoding
 {
 	if( vers == nil)
 		vers = [NSString stringWithString: (NSString*) kCFHTTPVersion1_1];
-
+	
+	selName = [selName lowercaseString];
+	
 #pragma mark KillOsiriX			
-	if ( [selName isEqual:@"KillOsiriX"])
+	if ( [selName isEqualToString:@"killosirix"])
 		[[AppController sharedAppController] terminate: self];
+
+#pragma mark DownloadURL
+	// ********************************************
+	// Method: DownloadURL
+	//
+	// Parameters:
+	// URL: any URLs that return a file compatible with OsiriX, including .dcm, .zip, .osirixzip, ...
+	// Display: display the images at the end of the download? (Optional parameter)
+	//
+	// Example: {URL: "http://127.0.0.1:3333/wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX"}
+	// Response: {error: "0"}
+	
+	if ([selName isEqualToString:@"downloadurl"])
+	{
+		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+		{
+			if(1 != [paramDict count] && 2 != [paramDict count])
+			{
+				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
+				[mess setResponse:response];
+				CFRelease(response);
+				return;
+			}
+			// *****
+			//DLog(@"\tParamDict: %@", paramDict);
+			
+			NSString *listOfElements = nil;
+			NSNumber *ret = nil;
+			
+			@try
+			{
+				if( [[paramDict valueForKey:@"URL"] length])
+				{
+					NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( asyncWADODownload:) object: paramDict] autorelease];
+					t.name = NSLocalizedString( @"WADO Retrieve...", nil);
+					t.supportsCancel = YES;
+					t.status = [paramDict valueForKey:@"URL"];
+					[[ThreadsManager defaultManager] addThreadAndStart: t];
+				}
+			}
+			@catch (NSException *e)
+			{
+				NSLog( @"****** XML-RPC Exception: %@", e);
+			}
+			
+			// *****
+			NSString *xml = @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>0</value></member></struct></value></param></params></methodResponse>";		// Simple answer, no errors
+			NSError *error = nil;
+			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+		}
+	}
+	
 	
 #pragma mark DisplayStudy
 	
@@ -151,7 +309,7 @@ static NSTimeInterval lastConnection = 0;
 	// Example: {PatientID: "1100697", SeriesInstanceUID: "1.3.12.2.1107.5.1.4.54693.30000007120706534864000001110"}
 	// Response: {error: "0", elements: array of elements corresponding to the request}
 	
-	if ([selName isEqual:@"DisplayStudy"] || [selName isEqual:@"DisplaySeries"])
+	if ([selName isEqualToString:@"displaystudy"] || [selName isEqualToString:@"displayseries"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
@@ -170,7 +328,7 @@ static NSTimeInterval lastConnection = 0;
 			
 			@try
 			{
-				if ([selName isEqual:@"DisplayStudy"])
+				if ([selName isEqualToString:@"displaystudy"])
 				{
 					if( [[paramDict valueForKey:@"PatientID"] length] > 0 && [[paramDict valueForKey:@"StudyInstanceUID"] length] > 0)
 						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser] findObject:[NSString stringWithFormat: @"patientID =='%@' AND studyInstanceUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyInstanceUID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
@@ -180,7 +338,7 @@ static NSTimeInterval lastConnection = 0;
 						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser] findObject:[NSString stringWithFormat: @"studyInstanceUID == '%@'", [paramDict valueForKey:@"StudyInstanceUID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
 				}
 				
-				if ([selName isEqual:@"DisplaySeries"])
+				if ([selName isEqualToString:@"displayseries"])
 				{
 					if( [[paramDict valueForKey:@"PatientID"] length] > 0 && [[paramDict valueForKey:@"SeriesInstanceUID"] length] > 0)
 						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"study.patientID =='%@' AND seriesDICOMUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"SeriesInstanceUID"]] table: @"Series" execute: @"Open" elements: &listOfElements]];
@@ -224,7 +382,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0", elements: array of elements corresponding to the request}
 	
-	if ([selName isEqual:@"DBWindowFind"])
+	if ([selName isEqualToString:@"dbwindowfind"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
@@ -271,7 +429,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0"}
 	
-	if ([selName isEqual:@"SwitchToDefaultDBIfNeeded"])
+	if ([selName isEqualToString:@"switchtodefaultdbifneeded"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
@@ -303,7 +461,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0"}
 	
-	if ([selName isEqual:@"OpenDB"])
+	if ([selName isEqualToString:@"opendb"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
@@ -344,7 +502,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0"}
 	
-	if ([selName isEqual:@"SelectAlbum"])
+	if ([selName isEqualToString:@"selectalbum"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
@@ -702,7 +860,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0"}
 	
-	if ([selName isEqual:@"DisplayStudyListByPatientName"])
+	if ([selName isEqualToString:@"displaystudylistbypatientname"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
@@ -741,7 +899,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0"}
 	
-	if ([selName isEqual:@"DisplayStudyListByPatientId"])
+	if ([selName isEqualToString:@"displaystudylistbypatientid"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{

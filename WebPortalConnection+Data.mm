@@ -121,7 +121,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	NSString* albumReq = [parameters objectForKey:@"album"];
 	if (albumReq.length) {
 		*title = [NSString stringWithFormat:NSLocalizedString(@"Album: %@", @"Web portal, study list, title format (%@ is album name)"), albumReq];
-		return [self.portal studiesForUser:user album:albumReq sortBy:[parameters objectForKey:@"order"]];
+		return [self.portal studiesForUser:user album:albumReq sortBy:[parameters objectForKey:@"sortKey"]];
 	}
 	
 	NSString* browseReq = [parameters objectForKey:@"browse"];
@@ -343,6 +343,9 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 					[dcmPix checkImageAvailble:curWW :curWL];
 				else
 					[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+				
+				if( x== 0 && [dcmPix cineRate])
+					[[NSUserDefaults standardUserDefaults] setInteger: [dcmPix cineRate] forKey: @"quicktimeExportRateValue"];
 			}
 			else
 			{
@@ -439,7 +442,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			[[NSFileManager defaultManager] removeItemAtPath: [fileName stringByAppendingString: @" dir"] error: nil];
 			[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] attributes: nil];
-
+			
+			[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
+			
 			@try 
 			{
 				DCMPixLoadingThreads = 0;
@@ -488,7 +493,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			{
 				@try
 				{
-					[theTask setArguments: [NSArray arrayWithObjects: fileName, @"writeMovie", [fileName stringByAppendingString: @" dir"], nil]];
+					[theTask setArguments: [NSArray arrayWithObjects: fileName, @"writeMovie", [fileName stringByAppendingString: @" dir"], [[NSUserDefaults standardUserDefaults] stringForKey: @"quicktimeExportRateValue"], nil]];
 					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 					[theTask launch];
 					
@@ -521,7 +526,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			{
 				@try
 				{
-					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovie", [outFile stringByAppendingString: @" dir"], nil]];
+					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovie", [outFile stringByAppendingString: @" dir"], [[NSUserDefaults standardUserDefaults] stringForKey: @"quicktimeExportRateValue"], nil]];
 					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 					[theTask launch];
 					
@@ -667,6 +672,42 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")]];
 		} else
 			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: cannot identify node.", @"Web Portal, study, dicom send, error")]];
+	}
+	
+	if ([[parameters objectForKey:@"WADOURLsRetrieve"] isEqual:@"WADOURLsRetrieve"] && study && [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"])
+	{
+		NSMutableArray* selectedImages = [NSMutableArray array];
+		for (DicomSeries* s in selectedSeries)
+			[selectedImages addObjectsFromArray:s.sortedImages];
+		
+		if (selectedImages.count)
+		{
+			NSString *protocol = [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"] ? @"https" : @"http";
+			NSString *wadoSubUrl = @"wado"; // See Web Server Preferences
+			
+			if( [wadoSubUrl hasPrefix: @"/"])
+				wadoSubUrl = [wadoSubUrl substringFromIndex: 1];
+			
+			NSString *baseURL = [NSString stringWithFormat: @"%@/%@?requestType=WADO", self.portalURL, wadoSubUrl];
+			
+			NSMutableString *WADOURLs = [NSMutableString string];
+			
+			@try
+			{
+				for( DicomImage *image in selectedImages)
+					[WADOURLs appendString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@\r", image.series.study.studyInstanceUID, image.series.seriesDICOMUID, image.sopInstanceUID, @"&useOrig=true"]];
+			}
+			@catch (NSException * e) {
+				NSLog( @"***** exception in WADOURLsRetrieve - %s: %@", __PRETTY_FUNCTION__, e);
+			}
+			
+			response.data = [WADOURLs dataUsingEncoding: NSUTF8StringEncoding];
+			[response setMimeType:@"application/dcmURLs"];
+			[response.httpHeaders setObject: [NSString stringWithFormat:@"attachment; filename=%@.dcmURLs", [[selectedSeries lastObject] valueForKeyPath: @"study.name"]] forKey: @"Content-Disposition"];
+			return;
+		}
+		else
+			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"WADO URL Retrieve failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")]];
 	}
 	
 	if ([[parameters objectForKey:@"shareStudy"] isEqual:@"shareStudy"] && study) {
@@ -1222,8 +1263,67 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSString* seriesUID = [parameters objectForKey:@"seriesUID"];
 	NSString* objectUID = [parameters objectForKey:@"objectUID"];
 	
-	if (objectUID == nil)
-		NSLog(@"***** WADO with objectUID == nil -> wado will fail");
+	if (objectUID == nil && (seriesUID.length > 0 || studyUID.length > 0)) // This is a 'special case', not officially supported by DICOM standard : we take all the series or study objects -> zip them -> send them
+	{
+		NSFetchRequest* dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		dbRequest.entity = [self.portal.dicomDatabase entityForName:@"Study"];
+		
+		if (studyUID)
+			[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
+		else
+			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+		
+		NSArray *studies = [self.portal.dicomDatabase.managedObjectContext executeFetchRequest:dbRequest error:NULL];
+		
+		if ([studies count] == 0)
+			NSLog( @"****** WADO Server : study not found");
+		
+		if ([studies count] > 1)
+			NSLog( @"****** WADO Server : more than 1 study with same uid");
+		
+		NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
+		
+		if (seriesUID)
+			allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
+		
+		NSArray *allImages = [NSArray array];
+		for ( id series in allSeries)
+			allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
+		
+		if( allImages.count > 0)
+		{
+			// Zip them
+			
+			NSString *srcFolder = @"/tmp";
+			NSString *destFile = @"/tmp";
+			
+			srcFolder = [srcFolder stringByAppendingPathComponent: [[[allImages lastObject] valueForKeyPath:@"series.study.name"] filenameString]];
+			destFile = [destFile stringByAppendingPathComponent: [[[allImages lastObject] valueForKeyPath:@"series.study.name"] filenameString]];
+			destFile = [destFile stringByAppendingPathExtension:@"osirixzip"];
+			
+			if (srcFolder)
+				[NSFileManager.defaultManager removeItemAtPath:srcFolder error:nil];
+			if (destFile)
+				[NSFileManager.defaultManager removeItemAtPath:destFile error:nil];
+			
+			[NSFileManager.defaultManager confirmDirectoryAtPath:srcFolder];
+			
+			[self.portal.dicomDatabase.managedObjectContext unlock];
+			[BrowserController encryptFiles: [allImages valueForKey:@"completePath"] inZIPFile:destFile password: user.encryptedZIP.boolValue? user.password : NULL ];
+			[self.portal.dicomDatabase.managedObjectContext lock];
+
+			self.response.data = [NSData dataWithContentsOfFile:destFile];
+			self.response.statusCode = 0;
+			[self.response setMimeType: @"application/osirixzip"];
+			
+			if (srcFolder)
+				[NSFileManager.defaultManager removeItemAtPath:srcFolder error:nil];
+			if (destFile)
+				[NSFileManager.defaultManager removeItemAtPath:destFile error:nil];
+				
+			return;
+		}
+	}
 	
 	NSString* contentType = [[[[parameters objectForKey:@"contentType"] lowercaseString] componentsSeparatedByString: @","] objectAtIndex: 0];
 	int rows = [[parameters objectForKey:@"rows"] intValue];
@@ -1499,6 +1599,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 						
 						[imageCache setObject:self.response.data forKey: [NSString stringWithFormat: @"%@ %f %f %d %d %d", contentType, curWW, curWL, columns, rows, frameNumber]];
 					}
+					
+					if( contentType)
+						[self.response setMimeType: contentType];
 					
 					// Alessandro: I'm not sure here, from Joris' code it seems WADO must always return HTTP 200, eventually with length 0..
 					self.response.data;

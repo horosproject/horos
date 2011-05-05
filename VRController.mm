@@ -3746,8 +3746,6 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 {
 	if( [notification object] == presetsPanel)
 	{
-		[[self window] setAcceptsMouseMovedEvents: NO];
-		
 		[presetsInfoPanel close];
 		if(needToMovePresetsPanelToUserDefinedPosition)
 		{

@@ -515,7 +515,22 @@
 	if ([key isEqual:@"proposeDicomUpload"])
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM.boolValue) && !wpc.requestIsIOS ];
 	if ([key isEqual:@"proposeDicomSend"]) {
-		return [NSNumber numberWithBool: !wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue /* TODO: && destinations.count */)]; 
+		return [NSNumber numberWithBool: !wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue)]; 
+	}
+	if ([key isEqual:@"proposeWADORetrieve"]) {
+		return [NSNumber numberWithBool: [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"] && (!wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue))]; 
+	}
+	if ([key isEqual:@"WADOBaseURL"])
+	{
+		NSString *protocol = [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"] ? @"https" : @"http";
+		NSString *wadoSubUrl = @"wado"; // See Web Server Preferences
+		
+		if( [wadoSubUrl hasPrefix: @"/"])
+			wadoSubUrl = [wadoSubUrl substringFromIndex: 1];
+		
+		NSString *baseURL = [NSString stringWithFormat: @"%@/%@", wpc.portalURL, wadoSubUrl];
+		
+		return baseURL; 
 	}
 	if ([key isEqual:@"proposeZipDownload"])
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.downloadZIP.boolValue) && !wpc.requestIsIOS ];

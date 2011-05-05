@@ -19,6 +19,7 @@
 #import "DCMView.h"
 #import "DCMPix.h"
 #import "altivecFunctions.h"
+#import "DICOMToNSString.h"
 
 @implementation DICOMExport
 
@@ -568,6 +569,10 @@
 				
 				if( succeed)
 				{
+					NSStringEncoding encoding[ 10];
+					for( int i = 0; i < 10; i++) encoding[ i] = 0;
+					encoding[ 0] = NSISOLatin1StringEncoding;
+					
 					dcmtkFileFormat->loadAllDataIntoMemory();
 					
 					DcmItem *dataset = dcmtkFileFormat->getDataset();
@@ -575,11 +580,24 @@
 					
 					[self removeAllFieldsOfGroup: 0x0028 dataset: dataset];
 					
+					if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
+					{
+						NSArray	*c = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
+						
+						if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+						
+						if( [c count] < 10)
+						{
+							for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+							for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+						}
+					}
+					
 					if( exportSeriesUID)
 						dataset->putAndInsertString( DCM_SeriesInstanceUID, [exportSeriesUID UTF8String]);
 					
 					if( exportSeriesDescription)
-						dataset->putAndInsertString( DCM_SeriesDescription, [exportSeriesDescription UTF8String]);
+						dataset->putAndInsertString( DCM_SeriesDescription, [exportSeriesDescription cStringUsingEncoding: encoding[ 0]]);
 					
 					if( exportSeriesNumber != -1)
 						dataset->putAndInsertString( DCM_SeriesNumber, [[NSString stringWithFormat: @"%d", exportSeriesNumber] UTF8String]);

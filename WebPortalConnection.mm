@@ -586,7 +586,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			if ([requestedPath isEqualToString:@"/admin/user"])
 				[self processAdminUserHtml];
 			else
-			response.data = [self.portal dataForPath:requestedPath];
+				response.data = [self.portal dataForPath:requestedPath];
 			
 			if (!response.data.length && !response.statusCode)
 				response.statusCode = 404;

@@ -603,6 +603,20 @@ int main(int argc, const char *argv[])
 		{
 			if( ![path hasSuffix:@".swf"])
 			{
+				NSString *root = [NSString stringWithUTF8String: argv[fileListFirstItemIndex++]];
+				
+				long rateValue = 10;
+				
+				if( fileListFirstItemIndex <= argc)
+				{
+					rateValue = [[NSString stringWithUTF8String:argv[ fileListFirstItemIndex]] integerValue];
+					
+					if( rateValue <= 0)
+						rateValue = 10;
+					
+					fileListFirstItemIndex++;
+				}
+				
 				QTMovie *mMovie = nil;
 				
 				[[QTMovie movie] writeToFile: [path stringByAppendingString:@"temp"] withAttributes: nil];
@@ -610,14 +624,12 @@ int main(int argc, const char *argv[])
 				
 				[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 				
-				long long timeValue = 60;
+				long long timeValue = 600 / rateValue;
 				long timeScale = 600;
 				
 				QTTime curTime = QTMakeTime(timeValue, timeScale);
 				
 				NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObjectsAndKeys: @"jpeg", QTAddImageCodecType, [NSNumber numberWithInt: codecNormalQuality], QTAddImageCodecQuality, nil];
-				
-				NSString *root = [NSString stringWithUTF8String: argv[fileListFirstItemIndex]];
 				
 				for( NSString *img in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil])
 				{
@@ -636,7 +648,7 @@ int main(int argc, const char *argv[])
 			}
 			else
 			{ // SWF!!
-				NSString* inputDir = [NSString stringWithUTF8String:argv[fileListFirstItemIndex]];
+				NSString* inputDir = [NSString stringWithUTF8String:argv[fileListFirstItemIndex++]];
 				NSArray* inputFiles = [inputDir stringsByAppendingPaths:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:inputDir error:NULL]];
 				createSwfMovie(inputFiles, path);
 			}
@@ -662,11 +674,14 @@ int main(int argc, const char *argv[])
 				[aMovie setAttribute:QTMovieApertureModeClean forKey:QTMovieApertureModeAttribute];
 				
 				long exportType = 'M4VP';
-				if (argc >= fileListFirstItemIndex) {
+				if (fileListFirstItemIndex <= argc)
+				{
 					if (!strcmp(argv[fileListFirstItemIndex], "iPad"))
 						exportType = 'M4VH';
 					if (!strcmp(argv[fileListFirstItemIndex], "iPod"))
 						exportType = 'M4V ';
+					
+					fileListFirstItemIndex++;
 				}
 				
 				NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:

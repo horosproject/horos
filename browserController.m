@@ -88,6 +88,7 @@
 #import "NSThread+N2.h"
 #import "ThreadModalForWindowController.h"
 #import "NSUserDefaults+OsiriX.h"
+#import "WADODownload.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -607,6 +608,34 @@ static NSConditionLock *threadLock = nil;
 //	[newFilesConditionLock unlock];
 }
 
+- (void) asyncWADODownload:(NSString*) filename
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSMutableArray *urlToDownloads = [NSMutableArray array];
+	
+	@try
+	{
+		for( NSString *url in [[NSString stringWithContentsOfFile: filename] componentsSeparatedByString: @"\r"])
+		{
+			if( url.length)
+				[urlToDownloads addObject: [NSURL URLWithString: url]];
+		}
+	}
+	@catch ( NSException *e) {
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	WADODownload *downloader = [[WADODownload alloc] init];
+	
+	[downloader WADODownload: urlToDownloads];
+	
+	[downloader release];
+	
+	[[NSFileManager defaultManager] removeItemAtPath: filename error: nil];
+	
+	[pool release];
+}
+
 - (void) addFilesAndFolderToDatabase:(NSArray*) filenames
 {
     NSFileManager       *defaultManager = [NSFileManager defaultManager];
@@ -650,7 +679,15 @@ static NSConditionLock *threadLock = nil;
 										
 										if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
 										{
-											if( [[itemPath pathExtension] isEqualToString: @"zip"] || [[itemPath pathExtension] isEqualToString: @"osirixzip"])
+											if( [[itemPath pathExtension] isEqualToString: @"dcmURLs"])
+											{
+												NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( asyncWADODownload:) object: filename] autorelease];
+												t.name = NSLocalizedString( @"WADO Retrieve...", nil);
+												t.supportsCancel = YES;
+												t.status = [itemPath lastPathComponent];
+												[[ThreadsManager defaultManager] addThreadAndStart: t];
+											}
+											else if( [[itemPath pathExtension] isEqualToString: @"zip"] || [[itemPath pathExtension] isEqualToString: @"osirixzip"])
 											{
 												NSString *unzipPath = [@"/tmp" stringByAppendingPathComponent: @"unzip_folder"];
 												
@@ -684,7 +721,15 @@ static NSConditionLock *threadLock = nil;
 					}
 					else    // A file
 					{
-						if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
+						if( [[filename pathExtension] isEqualToString: @"dcmURLs"])
+						{
+							NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( asyncWADODownload:) object: filename] autorelease];
+							t.name = NSLocalizedString( @"WADO Retrieve...", nil);
+							t.supportsCancel = YES;
+							t.status = [filename lastPathComponent];
+							[[ThreadsManager defaultManager] addThreadAndStart: t];
+						}
+						else if( [[filename pathExtension] isEqualToString: @"zip"] || [[filename pathExtension] isEqualToString: @"osirixzip"])
 						{
 							NSString *unzipPath = [@"/tmp" stringByAppendingPathComponent: @"unzip_folder"];
 							
@@ -5894,10 +5939,10 @@ static NSConditionLock *threadLock = nil;
 			
 			for( NSDictionary *dict in viewers)
 			{
-				NSString	*studyUID = [dict valueForKey:@"studyInstanceUID"];
-				NSString	*seriesUID = [dict valueForKey:@"seriesInstanceUID"];
+				NSString *studyUID = [dict valueForKey:@"studyInstanceUID"];
+				NSString *seriesUID = [dict valueForKey:@"seriesInstanceUID"];
 				
-				NSArray		*series4D = [seriesUID componentsSeparatedByString:@"\\**\\"];
+				NSArray	 *series4D = [seriesUID componentsSeparatedByString:@"\\**\\"];
 				// Find the corresponding study & 4D series
 				
 				@try
@@ -7673,6 +7718,8 @@ static BOOL withReset = NO;
 					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 					[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
 					[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
+					[dbRequest setFetchLimit: 60];
+					
 					NSError	*error = nil;
 					NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
 					
@@ -12089,8 +12136,8 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"hideListenerError"];
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"copyHideListenerError"];
 		[[NSUserDefaults standardUserDefaults] synchronize];
-		// ----------
 		
+		// ----------
 		
 //		[BrowserController tryLock:checkIncomingLock during: 120];
 		[BrowserController tryLock:_database during: 120];
@@ -13571,7 +13618,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 		
-		long long timeValue = 60;
+		if( [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"] <= 0)
+			[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
+		
+		long long rateValue = [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"];
+		long long timeValue = 600 / rateValue;
 		long timeScale = 600;
 		
 		QTTime curTime = QTMakeTime(timeValue, timeScale);
@@ -13663,6 +13714,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		int uniqueSeriesID = 0;
 		BOOL first = YES;
+		BOOL cineRateSet = NO;
+		
+		[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
 		
 		for( DicomImage *curImage in dicomFiles2Export)
 		{
@@ -13887,58 +13941,56 @@ static volatile int numberOfThreadsForJPEG = 0;
 			else
 			#endif
 			{
-//				int frames = [[curImage valueForKey:@"numberOfFrames"] intValue];
-//				
-//				if( [curImage valueForKey:@"frameID"]) // Is is a multi-
-//					frames = 1;
-//				
-				for (int x = 0; x < 1; x++) // Starting with OsiriX 3.7 multi frames images are treated as single object
+				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+				
+				@try
 				{
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+					int frame = 0;
 					
-					@try
+					if( [curImage valueForKey:@"frameID"])
+						frame = [[curImage valueForKey:@"frameID"] intValue];
+					
+					DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:browser.isCurrentDatabaseBonjour imageObj:curImage];
+					
+					if( dcmPix)
 					{
-						int frame = x;
+						float curWW = 0;
+						float curWL = 0;
 						
-						if( [curImage valueForKey:@"frameID"])
-							frame = [[curImage valueForKey:@"frameID"] intValue];
-						
-						DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:browser.isCurrentDatabaseBonjour imageObj:curImage];
-						
-						if( dcmPix)
+						if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
 						{
-							float curWW = 0;
-							float curWL = 0;
-							
-							if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
-							{
-								curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-								curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
-							}
-							
-							if( curWW != 0 && curWW !=curWL)
-								[dcmPix checkImageAvailble :curWW :curWL];
-							else
-								[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
-
-							NSImage *im = [dcmPix image];
-							
-							if( im)
-							{
-								[imagesArray addObject: im];
-								[imagesArrayObjects addObject: curImage];
-							}
-							
-							[dcmPix release];
+							curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+							curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
 						}
+						
+						if( curWW != 0 && curWW !=curWL)
+							[dcmPix checkImageAvailble :curWW :curWL];
+						else
+							[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+
+						NSImage *im = [dcmPix image];
+						
+						if( im)
+						{
+							[imagesArray addObject: im];
+							[imagesArrayObjects addObject: curImage];
+							
+							if( cineRateSet == NO && [dcmPix cineRate])
+							{
+								cineRateSet == YES;
+								[[NSUserDefaults standardUserDefaults] setInteger: [dcmPix cineRate] forKey:@"quicktimeExportRateValue"];
+							}
+						}
+						
+						[dcmPix release];
 					}
-					@catch( NSException *e)
-					{
-						NSLog( @"*** exportQuicktimeInt Loop: %@", e);
-						[AppController printStackTrace: e];
-					}
-					[pool release];
 				}
+				@catch( NSException *e)
+				{
+					NSLog( @"*** exportQuicktimeInt Loop: %@", e);
+					[AppController printStackTrace: e];
+				}
+				[pool release];
 			}
 			
 			[splash incrementBy:1];

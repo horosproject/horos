@@ -27,7 +27,9 @@
 
 #ifdef OSIRIX_VIEWER
 #ifndef OSIRIX_LIGHT
+#ifndef MACAPPSTORE
 #import <Growl/Growl.h>
+#endif
 #endif
 #endif
 
@@ -84,7 +86,7 @@ extern "C"
 *
 */
 
-#if defined(OSIRIX_VIEWER) && !defined(OSIRIX_LIGHT)
+#if defined(OSIRIX_VIEWER) && !defined(OSIRIX_LIGHT) && !defined(MACAPPSTORE)
 #else
 @protocol GrowlApplicationBridgeDelegate
 @end
@@ -168,7 +170,9 @@ extern "C"
 - (IBAction) about:(id)sender; /**< Display the about window */
 - (IBAction) showPreferencePanel:(id)sender; /**< Show Preferences window */
 #ifndef OSIRIX_LIGHT
+#ifndef MACAPPSTORE
 - (IBAction) checkForUpdates:(id) sender;  /**< Check for update */
+#endif
 - (IBAction) autoQueryRefresh:(id)sender;
 #endif
 //===============WINDOW========================

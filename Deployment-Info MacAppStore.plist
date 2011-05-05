@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.medical</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDocumentTypes</key>
@@ -157,17 +155,17 @@
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
-	<string>OsiriX</string>
-	<key>CFBundleName</key>
-	<string>OsiriX</string>
+	<string>OsiriX App</string>
 	<key>CFBundleGetInfoString</key>
 	<string>OsiriX v.3.9.1</string>
 	<key>CFBundleIconFile</key>
 	<string>Osirix.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.rossetantoine.osirix</string>
+	<string>com.pixmeo.osirix</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>OsiriX</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -190,7 +188,9 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>8473M</string>
+	<string>3.9.1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.medical</string>
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
 	<key>LSRequiresNativeExecution</key>
@@ -204,7 +204,7 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>SVNRevision</key>
-	<string>$Rev$ $Date$</string>
+	<string>$Rev: 8474 $ $Date: 2011-04-30 08:57:13 +0200 (Sam, 30 avr 2011) $</string>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>

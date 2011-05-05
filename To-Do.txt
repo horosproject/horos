@@ -1,9 +1,12 @@
+- Check SUV dates on localized versions
+
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
+- Web Server: add Bonjour Service, add Locations parameter, display in Sources
 - DICOM ECG
 - Activate 8-bit TIFF, JPEG, export // Add PNG
-- DB Autocleaning: limit number of studies/images
+- DB Autocleaning: limit number of # studies/images, % of HD space
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
 - Every web portal user's specific studies list in Albums
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR

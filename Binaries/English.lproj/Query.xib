@@ -2,17 +2,17 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10J567</string>
+		<string key="IBDocument.SystemVersion">10J869</string>
 		<string key="IBDocument.InterfaceBuilderVersion">823</string>
 		<string key="IBDocument.AppKitVersion">1038.35</string>
-		<string key="IBDocument.HIToolboxVersion">462.00</string>
+		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">823</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="660"/>
+			<integer value="145"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1017,14 +1017,13 @@
 												<object class="NSButtonCell" id="784330481">
 													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">131072</int>
-													<string key="NSContents">Radio</string>
+													<string key="NSContents">VL</string>
 													<reference key="NSSupport" ref="26"/>
 													<reference key="NSControlView" ref="557816121"/>
-													<int key="NSButtonFlags">1211945471</int>
-													<int key="NSButtonFlags2">0</int>
-													<object class="NSButtonImageSource" key="NSAlternateImage" id="895803195">
-														<string key="NSImageName">NSRadioButton</string>
-													</object>
+													<int key="NSButtonFlags">1211912703</int>
+													<int key="NSButtonFlags2">2</int>
+													<reference key="NSNormalImage" ref="954808096"/>
+													<reference key="NSAlternateImage" ref="820230698"/>
 													<string key="NSAlternateContents"/>
 													<int key="NSPeriodicDelay">400</int>
 													<int key="NSPeriodicInterval">75</int>
@@ -1032,12 +1031,13 @@
 												<object class="NSButtonCell" id="379700158">
 													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">131072</int>
-													<string key="NSContents">Radio</string>
+													<string key="NSContents">XC</string>
 													<reference key="NSSupport" ref="26"/>
 													<reference key="NSControlView" ref="557816121"/>
-													<int key="NSButtonFlags">1211945471</int>
-													<int key="NSButtonFlags2">0</int>
-													<reference key="NSAlternateImage" ref="895803195"/>
+													<int key="NSButtonFlags">1211912703</int>
+													<int key="NSButtonFlags2">2</int>
+													<reference key="NSNormalImage" ref="954808096"/>
+													<reference key="NSAlternateImage" ref="820230698"/>
 													<string key="NSAlternateContents"/>
 													<int key="NSPeriodicDelay">400</int>
 													<int key="NSPeriodicInterval">75</int>
@@ -1100,7 +1100,9 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 														<bytes key="NSWhite">MCAwAA</bytes>
 													</object>
 												</object>
-												<reference key="NSAlternateImage" ref="895803195"/>
+												<object class="NSButtonImageSource" key="NSAlternateImage" id="895803195">
+													<string key="NSImageName">NSRadioButton</string>
+												</object>
 												<string key="NSAlternateContents"/>
 												<int key="NSPeriodicDelay">400</int>
 												<int key="NSPeriodicInterval">75</int>
