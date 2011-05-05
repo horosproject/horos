@@ -14548,8 +14548,8 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"hideListenerError"];
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"copyHideListenerError"];
 		[[NSUserDefaults standardUserDefaults] synchronize];
-		// ----------
 		
+		// ----------
 		
 		[BrowserController tryLock: checkIncomingLock during: 120];
 		[BrowserController tryLock: managedObjectContext during: 120];
