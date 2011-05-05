@@ -38,6 +38,7 @@ extern const NSString* const CurrentDatabaseVersion;
 +(void)initializeDicomDatabaseClass;
 
 +(NSString*)defaultBaseDirPath;
++(NSString*)baseDirPathForPath:(NSString*)path;
 +(NSString*)baseDirPathForMode:(int)mode path:(NSString*)path;
 
 +(NSArray*)allDatabases;

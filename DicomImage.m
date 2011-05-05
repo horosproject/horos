@@ -26,6 +26,7 @@
 #import "XMLControllerDCMTKCategory.h"
 #include <zlib.h>
 #import "DicomDatabase.h"
+#import "RemoteDicomDatabase.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DCMPix.h"
@@ -830,16 +831,15 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return [[[sc URLForPersistentStore: [stores lastObject]] path] stringByDeletingLastPathComponent];
 }
 
--(NSString*) completePathWithDownload:(BOOL) download
-{
-	BrowserController *cB = [BrowserController currentBrowser];
-	BOOL isBonjour = ![[DicomDatabase databaseForContext:[self managedObjectContext]] isLocal];
+-(NSString*) completePathWithDownload:(BOOL)download {
+	DicomDatabase* db = [DicomDatabase databaseForContext:self.managedObjectContext];
+	
 	
 	if( completePathCache)
 	{
 		if( download == NO)
 			return completePathCache;
-		else if( isBonjour == NO)
+		else if ([db isLocal])
 			return completePathCache;
 	}
 	
@@ -848,12 +848,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	{
 		NSString *path = [self valueForKey:@"path"];
 		
-		if( isBonjour)
+		if(![db isLocal])
 		{
 			if( download)
-				completePathCache = [[[BonjourBrowser currentBrowser] getDICOMFile: [cB currentBonjourService] forObject: self noOfImages: 1] retain];
-			else
-				completePathCache = [[BonjourBrowser uniqueLocalPath: self] retain];
+				completePathCache = [[(RemoteDicomDatabase*)db fetchDataForImage:self maxFiles:1] retain];
+			else completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
 			
 			return completePathCache;
 		}

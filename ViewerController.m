@@ -6993,7 +6993,7 @@ return YES;
 	
 	for( int i = from; i < to; i++)
 	{
-		if( loadingPauseDelay)
+		/*if( loadingPauseDelay)
 		{
 			NSLog(@"loadingPause is starting...");
 			
@@ -7001,7 +7001,7 @@ return YES;
 				[NSThread sleepForTimeInterval: 0.1];
 			
 			NSLog(@"loadingPause is over...");
-		}
+		}*/
 		
 		if( stopThreadLoadImage == NO)
 		{

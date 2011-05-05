@@ -179,15 +179,15 @@ extern NSRecursiveLock *PapyrusLock;
 
 
 -(BOOL)compressDICOMWithJPEG:(NSArray*)paths { // __deprecated
-	return [database compressFilesAtPaths:paths];
+	return [_database compressFilesAtPaths:paths];
 }
 
 -(BOOL)compressDICOMWithJPEG:(NSArray*)paths to:(NSString*)dest { // __deprecated
-	return [database compressFilesAtPaths:paths intoDirAtPath:dest];
+	return [_database compressFilesAtPaths:paths intoDirAtPath:dest];
 }
 
 -(BOOL)decompressDICOMList:(NSArray*)files to:(NSString*)dest { // __deprecated
-	return [database decompressFilesAtPaths:files intoDirAtPath:dest];
+	return [_database decompressFilesAtPaths:files intoDirAtPath:dest];
 }
 
 - (BOOL) testFiles: (NSArray*) files;

@@ -15,6 +15,13 @@
 #import "BrowserController.h" // TODO: awwww
 #import "N2MutableUInteger.h"
 #import "Notifications.h"
+#import "DicomImage.h"
+#import "DicomStudy.h"
+#import "DicomSeries.h"
+#import "DicomAlbum.h"
+#import "DicomFile.h"
+#import "NSManagedObject+N2.h"
+#import "DCMTKStoreSCU.h"
 
 @interface RemoteDicomDatabase ()
 
@@ -61,6 +68,10 @@
 
 @synthesize address = _address, port = _port, host = _host;
 
+-(NSString*)name {
+	return _name? _name : [NSString stringWithFormat:NSLocalizedString(@"OsiriX database at %@", nil), self.host.name];
+}
+
 -(BOOL)isVolatile {
 	return YES;
 }
@@ -101,7 +112,7 @@
 	[temp lock]; // if currently importing, wait until finished
 	_updateLock = nil;
 	[temp unlock];
-	[temp release];	
+	[temp release];
 	
 	self.address = nil;
 	self.host = nil;
@@ -123,7 +134,33 @@
 	else return [super sqlFilePath];
 }
 
+
+-(NSString*)localPathForImage:(DicomImage*)image {
+	NSString* name = nil;
+	
+	if (image.numberOfFrames.intValue > 1)
+		name = [NSString stringWithFormat:@"%@.%@", image.XID, [image extension]];
+	else name = [NSString stringWithFormat:@"%@-%d.%@", image.XID, image.instanceNumber.intValue, [image extension]];
+	
+	return [self.tempDirPath stringByAppendingPathComponent:[DicomFile NSreplaceBadCharacter:name]];
+}
+
+#pragma mark Communication
+
++(void)_data:(NSMutableData*)data appendInt:(unsigned int)i {
+	unsigned int big = NSSwapHostIntToBig(i);
+	[data appendBytes:&big length:4];
+}
+
++(void)_data:(NSMutableData*)data appendStringUTF8:(NSString*)str {
+	const char* cstr = str.UTF8String;
+	unsigned int cstrlen = cstr? strlen(cstr)+1 : 0;
+	[RemoteDicomDatabase _data:data appendInt:cstrlen];
+	if (cstr) [data appendBytes:cstr length:cstrlen];
+}
+
 const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to the remote host. Is database sharing activated on the distant computer?";
+const NSString* const InvalidResponseExceptionMessage = @"Invalid response data from remote host.";
 
 -(NSString*)fetchDatabaseVersion {
 	NSMutableData* request = [NSMutableData dataWithBytes:"DBVER" length:6];
@@ -136,26 +173,25 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 	NSMutableData* request = [NSMutableData dataWithBytes:"ISPWD" length:6];
 	NSData* response = [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
-	return NSSwapBigIntToHost(*((int*)[response bytes]))? YES : NO;
+	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:NSLocalizedString(InvalidResponseExceptionMessage, nil)];
+	return NSSwapBigIntToHost(*((int*)response.bytes))? YES : NO;
 }
 
 -(BOOL)fetchIsRightPassword:(NSString*)password {
 	NSMutableData* request = [NSMutableData dataWithBytes:"PASWD" length:6];
-	const char* passwordC = [password UTF8String];
-	size_t passwordCLength = strlen(passwordC)+1;
-	unsigned int passwordCLengthBig = NSSwapHostIntToBig(passwordCLength);
-	[request appendBytes:&passwordCLengthBig length:4];
-	[request appendBytes:passwordC length:passwordCLength];
+	[RemoteDicomDatabase _data:request appendStringUTF8:password];
 	NSData* response = [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
-	return NSSwapBigIntToHost(*((int*)[response bytes]))? YES : NO;
+	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:NSLocalizedString(InvalidResponseExceptionMessage, nil)];
+	return NSSwapBigIntToHost(*((int*)response.bytes))? YES : NO;
 }
 
 -(unsigned int)fetchDatabaseIndexSize {
 	NSMutableData* request = [NSMutableData dataWithBytes:"DBSIZ" length:6];
 	NSData* response = [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
-	return NSSwapBigIntToHost(*((int*)[response bytes]));
+	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:NSLocalizedString(InvalidResponseExceptionMessage, nil)];
+	return NSSwapBigIntToHost(*((int*)response.bytes));
 }
 
 -(NSString*)fetchDatabaseIndex {
@@ -169,7 +205,6 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 	
 	DLog(@"RDD version: %@", version);
 
-	// TODO: password check is client-only, do it on the server side!
 	BOOL isPasswordProtected = [self fetchIsPasswordProtected];
 	if (isPasswordProtected) DLog(@"RDD is password protected", version);
 	NSString* password = nil;
@@ -193,7 +228,7 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 	
 	NSData* request = [NSMutableData dataWithBytes:"DATAB" length:6];
 	NSArray* context = [NSArray arrayWithObjects: thread, [NSNumber numberWithUnsignedInteger:databaseIndexSize], fileStream, [N2MutableUInteger mutableUIntegerWithUInteger:0], nil];
-	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port dataHandlerTarget:self selector:@selector(fetchDatabaseIndexHandleData:context:) context:context];
+	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port dataHandlerTarget:self selector:@selector(_handleData_fetchDatabaseIndex:context:) context:context];
 	
 	[fileStream close];
 	[thread exitOperation];
@@ -206,7 +241,7 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 	return path;
 }
 
--(NSInteger)fetchDatabaseIndexHandleData:(NSData*)data context:(NSArray*)context {
+-(NSInteger)_handleData_fetchDatabaseIndex:(NSData*)data context:(NSArray*)context {
 	NSThread* thread = [context objectAtIndex:0];
 	NSInteger databaseIndexSize = [[context objectAtIndex:1] unsignedIntegerValue];
 	NSOutputStream* fileStream = [context objectAtIndex:2];
@@ -228,6 +263,26 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 	return data.length;
 }
 
+-(NSTimeInterval)fetchDatabaseTimestamp {
+	NSMutableData* request = [NSMutableData dataWithBytes:"VERSI" length:6];
+	NSData* response = [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	if (response.length != sizeof(NSSwappedDouble)) [NSException raise:NSInternalInconsistencyException format:NSLocalizedString(InvalidResponseExceptionMessage, nil)];
+	return NSSwapBigDoubleToHost(*((NSSwappedDouble*)response.bytes));
+}
+
++(NSDictionary*)fetchDicomDestinationInfoForHost:(NSHost*)host port:(NSInteger)port {
+	if (!port) port = 8780;
+	NSMutableData* request = [NSMutableData dataWithBytes:"GETDI" length:6];
+	NSData* response = [N2Connection sendSynchronousRequest:request toHost:host port:port];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	return [NSUnarchiver unarchiveObjectWithData:response];
+}
+
+-(NSDictionary*)fetchDicomDestinationInfo {
+	return [RemoteDicomDatabase fetchDicomDestinationInfoForHost:self.host port:self.port];
+}
+
 -(void)update {
 	NSThread* thread = [NSThread currentThread];
 	
@@ -239,14 +294,10 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 		if (!path)
 			[NSException raise:NSGenericException format:@"Cancelled."];
 		
+		_timestamp = [self fetchDatabaseTimestamp];
+		
 		thread.status = NSLocalizedString(@"Opening index...", nil);
 		NSManagedObjectContext* context = [self contextAtPath:path];
-
-		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-		req.entity = self.imageEntity;
-		req.predicate = [NSPredicate predicateWithValue:YES];
-		NSArray* images = [self.managedObjectContext executeFetchRequest:req error:NULL];
-		NSLog(@"images: %d", images.count);
 
 		[_sqlFileName release];
 		_sqlFileName = [[path lastPathComponent] retain];
@@ -272,7 +323,6 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 		[thread exitOperation];
 	}
 }
-
 
 -(void)updateThread:(id)obj {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -305,23 +355,278 @@ const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to t
 	return nil;
 }
 
-
-
-
-
-
-
-
-
-
-
-
--(void)save:(NSError **)err {
-	NSLog(@"Notice: trying to -[RemoteDicomDatabase save], ignored");
+-(BOOL)needsUpdate {
+	NSTimeInterval timestamp = [self fetchDatabaseTimestamp];
+	return timestamp != _timestamp;
 }
 
--(NSString*)name {
-	return _name? _name : [NSString stringWithFormat:NSLocalizedString(@"OsiriX database at %@", nil), self.host.name];
+-(NSString*)fetchFileModificationDate:(NSString*)path { // ------------------------------------ this seems to be unused
+	NSMutableData* request = [NSMutableData dataWithBytes:"MFILE" length:6];
+	NSData* pathData = [path dataUsingEncoding:NSUnicodeStringEncoding];
+	[RemoteDicomDatabase _data:request appendInt:pathData.length];
+	[request appendData:pathData];
+	NSData* response = [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	return [[[NSString alloc] initWithData:response encoding:NSUnicodeStringEncoding] autorelease];
+}
+
+-(void)object:(NSManagedObject*)object setValue:(id)value forKey:(NSString*)key {
+	NSMutableData* request = [NSMutableData dataWithBytes:"SETVA" length:6];
+	[RemoteDicomDatabase _data:request appendStringUTF8:object.objectID.URIRepresentation.absoluteString];
+	[RemoteDicomDatabase _data:request appendStringUTF8: [value isKindOfClass:NSNumber.class]? [value stringValue] : value];
+	[RemoteDicomDatabase _data:request appendStringUTF8:key];
+	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	_timestamp = [self fetchDatabaseTimestamp];
+}
+
+enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActionAdd, RemoteDicomDatabaseStudiesAlbumActionRemove };
+
+-(void)_studies:(NSArray*)dicomStudies album:(DicomAlbum*)dicomAlbum action:(RemoteDicomDatabaseStudiesAlbumAction)action {
+	const char* command = nil;
+	if (action == RemoteDicomDatabaseStudiesAlbumActionAdd) command = "ADDAL";
+	if (action == RemoteDicomDatabaseStudiesAlbumActionRemove) command = "REMAL";
+	if (!command) [NSException raise:NSInvalidArgumentException format:@"Invalid action."];
+	
+	NSMutableArray* studiesIds = [NSMutableArray array];
+	for (DicomStudy* dicomStudy in dicomStudies)
+		[studiesIds addObject:dicomStudy.objectID.URIRepresentation.absoluteString];
+	NSString* albumId = dicomAlbum.objectID.URIRepresentation.absoluteString;
+	
+	NSDictionary* params = [NSDictionary dictionaryWithObjectsAndKeys: studiesIds, @"albumStudies", albumId, @"albumUID", nil];
+	
+	NSMutableData* request = [NSMutableData dataWithBytes:command length:6];
+	[RemoteDicomDatabase _data:request appendStringUTF8:params.description];
+	
+	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	
+	_timestamp = [self fetchDatabaseTimestamp];
+}
+
+-(void)addStudies:(NSArray*)dicomStudies toAlbum:(DicomAlbum*)dicomAlbum {
+	[self _studies:dicomStudies album:dicomAlbum action:RemoteDicomDatabaseStudiesAlbumActionAdd];
+}
+
+-(void)removeStudies:(NSArray*)dicomStudies fromAlbum:(DicomAlbum*)dicomAlbum {
+	[self _studies:dicomStudies album:dicomAlbum action:RemoteDicomDatabaseStudiesAlbumActionRemove];
+}
+
+-(void)uploadFilesAtPaths:(NSArray*)paths {
+	return [self uploadFilesAtPaths:paths generatedByOsiriX:NO];
+}
+
+-(void)uploadFilesAtPaths:(NSArray*)paths generatedByOsiriX:(BOOL)generatedByOsiriX {
+	for (NSString* path in paths)
+		if (![NSFileManager.defaultManager fileExistsAtPath:path])
+			[NSException raise:NSInvalidArgumentException format:@"File not available."];
+	
+	NSMutableData* request = [NSMutableData dataWithBytes: generatedByOsiriX? "SENDG" : "SENDD" length:6];
+	[RemoteDicomDatabase _data:request appendInt:paths.count];
+	
+	for (NSString* path in paths) {
+		NSData* fileData = [[NSData alloc] initWithContentsOfFile:path];
+		[RemoteDicomDatabase _data:request appendInt:fileData.length];
+		[request appendData:fileData];
+		[fileData release];
+	}
+	
+	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+}
+
+-(NSString*)fetchDataForImage:(DicomImage*)image maxFiles:(NSInteger)maxFiles { // maxFiles is veeery indicative
+	NSString* localPath = [self localPathForImage:image];
+	
+	if ([NSFileManager.defaultManager fileExistsAtPath:localPath])
+		return localPath;
+	
+	NSMutableArray* localPaths = [NSMutableArray array];
+	NSMutableArray* remotePaths = [NSMutableArray array];
+	
+	NSArray* images = [image.series.images.allObjects sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease]]]; // TODO: sort after preferences
+	NSInteger size = 0, i = [images indexOfObject:image];
+	
+	NSMutableArray* currentFetchXIDs = [NSMutableArray array];
+	
+	while (i < images.count) {
+		DicomImage* iImage = [images objectAtIndex:i++];
+		NSString* iLocalPath = [self localPathForImage:iImage];
+		
+		if ([NSFileManager.defaultManager fileExistsAtPath:iLocalPath])
+			continue;
+		
+		[localPaths addObject:iLocalPath];
+		[remotePaths addObject:iImage.path];
+		
+		size += iImage.width.intValue*iImage.height.intValue*2*iImage.numberOfFrames.intValue;
+		
+		if ([iImage.path.pathExtension isEqualToString:@"zip"]) { // it is a ZIP
+			NSLog(@"BONJOUR ZIP");
+			NSString* iPathXml = [iImage.path.stringByDeletingPathExtension stringByAppendingPathExtension:@"xml"];
+			if(![NSFileManager.defaultManager fileExistsAtPath:iPathXml]) {
+				// it has an XML descriptor with it
+				NSLog(@"BONJOUR XML");
+				[localPaths addObject:[iLocalPath.stringByDeletingPathExtension stringByAppendingPathExtension:@"xml"]];
+				[remotePaths addObject:iPathXml];
+			}
+		}
+		
+		if (size >= maxFiles*512*512*2)
+			break;
+	}
+	
+	if (!localPaths.count)
+		return nil;
+	
+	// DLog(@"RDD requesting images: %@", localPaths.description);
+	
+	NSMutableData* request = [NSMutableData dataWithBytes:"DICOM" length:6];
+	
+	[RemoteDicomDatabase _data:request appendInt:localPaths.count];
+	for (NSString* remotePath in remotePaths)
+		[RemoteDicomDatabase _data:request appendStringUTF8:remotePath];
+	for (NSString* localPath in localPaths)
+		[RemoteDicomDatabase _data:request appendStringUTF8:localPath];
+	
+	NSMutableArray* context = [NSMutableArray arrayWithObjects: [N2MutableUInteger mutableUIntegerWithUInteger:0], nil];
+
+	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port dataHandlerTarget:self selector:@selector(_handleData_fetchDataForImage:context:) context:context];
+
+	if ([NSFileManager.defaultManager fileExistsAtPath:localPath])
+		return localPath;
+	return nil;
+}
+
+-(NSInteger)_handleData_fetchDataForImage:(NSData*)data context:(NSMutableArray*)context {
+	N2MutableUInteger* state = [context objectAtIndex:0];
+	int readSize = 0;
+	
+	// context[0] state
+	// context[1] number of files in response
+	// context[2] size of file
+	// context[3] temporary file path
+	// context[4] output stream to temporary file
+	// context[5] total size written te tomporary file
+	// context[6] size of filename
+	
+	while (data.length > readSize) {
+		// DLog(@"_handleData_fetchDataForImage state %d", state.unsignedIntegerValue);
+		switch (state.unsignedIntegerValue) {
+			case 0: { // expecting number of files in response
+				if (data.length-readSize >= 4) {
+					unsigned int big;
+					[data getBytes:&big range:NSMakeRange(readSize, 4)];
+					unsigned int n = NSSwapBigIntToHost(big);
+					[context addObject:[NSNumber numberWithUnsignedInt:n]]; // [1]
+					//DLog(@"RDD receiving %d files", n);
+					readSize += 4;
+					state.unsignedIntegerValue = 1;
+				} else return readSize;
+			} break;
+			case 1: { // expecting size of next file
+				if (data.length-readSize >= 4) {
+					unsigned int big;
+					[data getBytes:&big range:NSMakeRange(readSize, 4)];
+					unsigned int l = NSSwapBigIntToHost(big);
+					[context addObject:[NSNumber numberWithUnsignedInt:l]]; // [2]
+					//DLog(@"RDD next file is %d bytes", l);
+					
+					NSString* path = [NSFileManager.defaultManager tmpFilePathInDir:self.tempDirPath];
+					[context addObject:path]; // [3]
+					NSOutputStream* stream = [NSOutputStream outputStreamToFileAtPath:path append:NO];
+					[stream open];
+					[context addObject:stream]; // [4]
+					[context addObject:[N2MutableUInteger mutableUIntegerWithUInteger:0]]; // [5]
+					
+					readSize += 4;
+					state.unsignedIntegerValue = 2;
+				} else return readSize;
+			} break;
+			case 2: { // expecting file data, its length is in context
+				unsigned int l = [[context objectAtIndex:2] unsignedIntValue];
+				NSOutputStream* stream = [context objectAtIndex:4];
+				N2MutableUInteger* streamSize = [context objectAtIndex:5];
+				unsigned int ll = MIN(data.length-readSize, l-streamSize.unsignedIntegerValue);
+				while (ll > 0) {
+					NSInteger w = [stream write:(const uint8_t*)data.bytes+readSize maxLength:ll];
+					if (w > 0) {
+						ll -= w;
+						readSize += w;
+						streamSize.unsignedIntegerValue = streamSize.unsignedIntegerValue+w;
+					} else [NSException raise:NSGenericException format:stream.streamError.localizedDescription];
+				}
+				
+				if (streamSize.unsignedIntegerValue >= l)
+					state.unsignedIntegerValue = 3;
+			} break;
+			case 3: { // expecting length of name of received file
+				if (data.length-readSize >= 4) {
+					unsigned int big;
+					[data getBytes:&big range:NSMakeRange(readSize, 4)];
+					unsigned int l = NSSwapBigIntToHost(big);
+					[context addObject:[NSNumber numberWithUnsignedInt:l]]; // [6]
+					//DLog(@"RDD next path is %d bytes", l);
+					readSize += 4;
+					state.unsignedIntegerValue = 4;
+				} else return readSize;
+			} break;
+			case 4: {
+				unsigned int pathSize = [[context objectAtIndex:6] unsignedIntValue];
+				if (data.length-readSize >= pathSize) {
+					NSString* path = [NSString stringWithUTF8String:(char*)data.bytes+readSize];
+					readSize += pathSize;
+					//DLog(@"RDD path is %@", path);
+					[context removeLastObject]; // rm [6]
+					[context removeLastObject]; // rm [5]
+					[[context objectAtIndex:4] close];
+					[context removeLastObject]; // rm [4]
+					
+					if ([NSFileManager.defaultManager fileExistsAtPath:path]) {
+						NSLog(@"db 0x%08x Notice: strange, we seem to have redownloaded a remote image (%@)", self, path);
+						[NSFileManager.defaultManager removeItemAtPath:path error:NULL];
+					}
+					
+					[NSFileManager.defaultManager moveItemAtPath:[context objectAtIndex:3] toPath:path error:NULL];
+					
+					[context removeLastObject]; // rm [3]
+					[context removeLastObject]; // rm [2]
+					state.unsignedIntegerValue = 1;
+				} else return readSize;
+			} break;
+		}
+	}
+	
+	return readSize;
+}
+
+-(NSData*)sendMessage:(NSDictionary*)message { // ------------------------------------ this seems to be unused
+	NSMutableData* request = [NSMutableData dataWithBytes:"NEWMS" length:6];
+
+	NSData* data = [NSPropertyListSerialization dataFromPropertyList:message format:kCFPropertyListBinaryFormat_v1_0 errorDescription:nil];
+	[RemoteDicomDatabase _data:request appendInt:data.length];
+	[request appendData:data];
+	
+	return [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+}
+
+-(void)storeScuImages:(NSArray*)dicomImages toDestinationAETitle:(NSString*)aet address:(NSString*)address port:(NSInteger)port transferSyntax:(int)exsTransferSyntax {
+	NSMutableData* request = [NSMutableData dataWithBytes:"DCMSE" length:6];
+	
+	[RemoteDicomDatabase _data:request appendStringUTF8:aet];
+	[RemoteDicomDatabase _data:request appendStringUTF8:address];
+	[RemoteDicomDatabase _data:request appendStringUTF8:[[NSNumber numberWithInt:port] stringValue]];
+	[RemoteDicomDatabase _data:request appendStringUTF8:[[NSNumber numberWithInt:[DCMTKStoreSCU sendSyntaxForListenerSyntax:exsTransferSyntax]] stringValue]];
+	
+	[RemoteDicomDatabase _data:request appendInt:dicomImages.count];
+	for (DicomImage* dicomImage in dicomImages)
+		[RemoteDicomDatabase _data:request appendStringUTF8:dicomImage.path];
+	
+	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+}
+
+#pragma mark Special
+
+
+-(void)save:(NSError**)err {
+	// NSLog(@"Notice: trying to -[RemoteDicomDatabase save], ignored");
 }
 
 -(void)rebuild:(BOOL)complete { // do nothing

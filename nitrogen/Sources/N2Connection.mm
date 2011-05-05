@@ -186,7 +186,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 		return;
 	
 	NSString* N2ConnectionStatusName[] = {@"N2ConnectionStatusClosed", @"N2ConnectionStatusConnecting", @"N2ConnectionStatusOpening", @"N2ConnectionStatusOk"};
-	DLog(@"%@ setting status: %@", self, N2ConnectionStatusName[status]);
+	// DLog(@"%@ setting status: %@", self, N2ConnectionStatusName[status]);
 	
 	_status = status;
 	
@@ -225,7 +225,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	if (length) {
 		NSUInteger sentLength = [_outputStream write:(uint8_t*)[_outputBuffer bytes] maxLength:length];
 		if (sentLength != -1) {
-				DLog(@"%@ Sent %d bytes", self, sentLength);
+			// DLog(@"%@ Sent %d bytes", self, sentLength);
 			[_outputBuffer replaceBytesInRange:NSMakeRange(0,sentLength) withBytes:nil length:0];
 			if (!_outputBuffer.length)
 				[self connectionFinishedSendingData];
@@ -240,7 +240,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 -(void)stream:(NSStream*)stream handleEvent:(NSStreamEvent)event {
 #ifdef DEBUG
 	NSString* NSEventName[] = {@"NSStreamEventNone", @"NSStreamEventOpenCompleted", @"NSStreamEventHasBytesAvailable", @"NSStreamEventHasSpaceAvailable", @"NSStreamEventErrorOccurred", @"NSStreamEventEndEncountered"};
-	NSLog(@"%@ stream:%@ handleEvent:%@", self, stream, NSEventName[(int)log2(event)+1]);
+	//NSLog(@"%@ stream:%@ handleEvent:%@", self, stream, NSEventName[(int)log2(event)+1]);
 #endif
 	
 	if (event == NSStreamEventOpenCompleted)
@@ -250,7 +250,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 		}
 	
 	if (stream == _inputStream && event == NSStreamEventHasBytesAvailable) {
-		DLog(@"%@ has bytes available", self);
+		// DLog(@"%@ has bytes available", self);
 		NSUInteger readSizeForThisEvent = 0;
 		while (!_maximumReadSizePerEvent || readSizeForThisEvent < _maximumReadSizePerEvent) {
 			NSUInteger maxLength = 2048;
@@ -260,7 +260,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 			unsigned int length = [_inputStream read:buffer maxLength:maxLength];
 			
 			if (length > 0) {
-				DLog(@"%@ Read %d Bytes", self, length);
+				// DLog(@"%@ Read %d Bytes", self, length);
 //				std::cerr << [[NSString stringWithFormat:@"%@ Read %d Bytes", self, length] UTF8String] << ": ";
 //				for (int i = 0; i < length; ++i)
 //					std::cerr << (int)buffer[i] << " ";

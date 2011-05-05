@@ -50,7 +50,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 //    NSManagedObjectContext			*managedObjectContext;//, *userManagedObjectContext;
 //	NSPersistentStoreCoordinator	*userPersistentStoreCoordinator;
 //	NSMutableDictionary				*persistentStoreCoordinatorDictionary;
-	DicomDatabase*					database;
+	DicomDatabase*					_database;
 	NSMutableDictionary				*databaseIndexDictionary;
 	
 	NSDateFormatter			*TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
@@ -486,7 +486,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 //bonjour
 -(NSManagedObjectContext*)bonjourManagedObjectContext __deprecated;
-- (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key;
+- (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key __deprecated;
 //- (void) setServiceName:(NSString*) title;
 //- (NSString*) serviceName;
 //- (IBAction)toggleBonjourSharing:(id) sender;
