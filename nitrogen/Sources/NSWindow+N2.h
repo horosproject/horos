@@ -23,3 +23,9 @@
 -(CGFloat)toolbarHeight;
 
 @end
+
+@interface NSWindow (N2ActuallyHiddenInCocoa)
+
+-(void)setMovable:(BOOL)flag;
+
+@end

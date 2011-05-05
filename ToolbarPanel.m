@@ -16,6 +16,7 @@
 #import "ToolBarNSWindow.h"
 #import "ViewerController.h"
 #import "AppController.h"
+#import "NSWindow+N2.h"
 
 extern BOOL USETOOLBARPANEL;
 
@@ -192,6 +193,7 @@ static int increment = 0;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WindowDidMoveNotification:) name:NSWindowDidMoveNotification object:0];
 	
 	[super windowDidLoad];
+	[self.window setMovable:NO];
 	
 	emptyToolbar = [[NSToolbar alloc] initWithIdentifier: [NSString stringWithFormat:@"nstoolbar osirix %d", increment++]];
 	[emptyToolbar setDelegate: self];
