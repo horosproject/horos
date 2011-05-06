@@ -1,4 +1,4 @@
-- Check SUV dates on localized versions
+- Pediatrics button QR
 
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
