@@ -917,7 +917,8 @@ static NSConditionLock *threadLock = nil;
 				   && [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] == NO
 				   && [DCMAbstractSyntaxUID isKeyObjectDocument: SOPClassUID] == NO
 				   && [DCMAbstractSyntaxUID isPresentationState: SOPClassUID] == NO
-				   && [DCMAbstractSyntaxUID isSupportedPrivateClasses: SOPClassUID] == NO)
+				   && [DCMAbstractSyntaxUID isSupportedPrivateClasses: SOPClassUID] == NO
+				   && [DCMAbstractSyntaxUID isWaveform: SOPClassUID] == NO)
 				{
 					NSLog(@"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
 					curDict = nil;

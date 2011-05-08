@@ -387,17 +387,21 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		NSString	*userPath = [NSHomeDirectory() stringByAppendingPathComponent:appSupport];
 		NSString	*sysPath = [@"/" stringByAppendingPathComponent:appSupport];
 		
+		#ifndef MACAPPSTORE
 		if ([[NSFileManager defaultManager] fileExistsAtPath:appPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:appPath attributes:nil];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:userPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:userPath attributes:nil];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:sysPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:sysPath attributes:nil];
+		#endif
 		
 		appSupport = [appSupport stringByAppendingPathComponent :@"Plugins/"];
 		
 		userPath = [NSHomeDirectory() stringByAppendingPathComponent:appSupport];
 		sysPath = [@"/" stringByAppendingPathComponent:appSupport];
 		
+		#ifndef MACAPPSTORE
 		if ([[NSFileManager defaultManager] fileExistsAtPath:userPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:userPath attributes:nil];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:sysPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:sysPath attributes:nil];
+		#endif
 		
 		NSArray* paths = [NSArray arrayWithObjects:appPath, userPath, sysPath, nil];
 		

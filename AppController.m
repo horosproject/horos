@@ -374,13 +374,20 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 	char s[ 4096];
 	FSRef ref;
 	NSString *path = nil;
+	BOOL isDirectory = NO;
 	
 	switch( mode)
 	{
 		case 0:
+			#ifdef MACAPPSTORE
+			path = [@"~/Library/Application Support/OsiriX/OsiriX Data/" stringByExpandingTildeInPath];
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] == NO || isDirectory == NO)
+				[[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories: YES attributes: nil error: nil];
+			#else
 			if( FSFindFolder (kOnAppropriateDisk, kDocumentsFolderType, kCreateFolder, &ref) == noErr )
 			{
-				BOOL		isDir = YES;
+				BOOL isDir = YES;
 				
 				FSRefMakePath(&ref, (UInt8 *)s, sizeof(s));
 				
@@ -389,6 +396,7 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 				if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 			}
+			#endif
 		break;
 			
 		case 1:
@@ -2810,6 +2818,15 @@ static BOOL initialized = NO;
 				pluginManager = [[PluginManager alloc] init];
 				
 				
+				#ifdef MACAPPSTORE
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"];
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AUTHENTICATION"];
+				[[NSUserDefaults standardUserDefaults] setObject:@"(~/Library/Application Support/OsiriX/)" forKey:@"DefaultDatabasePath"];
+				#else
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"MACAPPSTORE"];
+				[[NSUserDefaults standardUserDefaults] setObject:@"(Current User Documents folder)" forKey:@"DefaultDatabasePath"];
+				#endif
+				
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset
 				NSMutableArray *shadingArray = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"shadingsPresets"] mutableCopy] autorelease];
@@ -3191,11 +3208,13 @@ static BOOL initialized = NO;
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"checkForUpdatesPlugins"];
 	}
 	
+	#ifndef MACAPPSTORE
 	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
 		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:pluginManager withObject:pluginManager];
 	
 	[NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget:self withObject: self];
+	#endif
 	#endif
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
@@ -4830,6 +4849,7 @@ static BOOL initialized = NO;
 
 + (void)checkForPagesTemplate;
 {
+	#ifdef MACAPPSTORE
 	// Pages template directory
 	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
 	int i;
@@ -4867,6 +4887,7 @@ static BOOL initialized = NO;
 	NSString *templateDirectoryInOsiriXData = [NSString pathWithComponents:templateDirectoryInOsiriXDataPathArray];
 	if(![[NSFileManager defaultManager] fileExistsAtPath:templateDirectoryInOsiriXData])
 		[[NSFileManager defaultManager] createSymbolicLinkAtPath:templateDirectoryInOsiriXData pathContent:templateDirectory];
+	#endif
 }
 
 #pragma mark-
