@@ -250,6 +250,7 @@ extern NSString* O2AlbumDragType;
 }
 
 @property(retain) DicomDatabase* database;
+@property(readonly) NSArrayController* sources;
 
 @property(readonly) NSDateFormatter *DateTimeFormat __deprecated, *DateOfBirthFormat __deprecated, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
 /*@property(readonly) NSRecursiveLock *checkIncomingLock;*/

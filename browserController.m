@@ -240,6 +240,8 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 @class DCMTKStudyQueryNode;
 
 @synthesize database = _database;
+@synthesize sources = _sourcesArrayController;
+
 @synthesize /*checkIncomingLock, */CDpassword, passwordForExportEncryption, databaseIndexDictionary;
 @synthesize TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;

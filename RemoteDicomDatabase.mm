@@ -48,6 +48,33 @@
 	return *host;
 }
 
++(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port aet:(NSString**)aet {
+	NSArray* addressParts = [address componentsSeparatedByString:@"@"];
+	if (addressParts.count > 1) {
+		if (aet) *aet = [addressParts objectAtIndex:0];
+		address = [addressParts objectAtIndex:1];
+	} else *aet = nil;
+	
+	NSHost* h = nil;
+	if (!host) host = &h;
+	addressParts = [address componentsSeparatedByString:@":"];
+	*host = [NSHost hostWithName:[addressParts objectAtIndex:0]];
+	if (port)
+		if (addressParts.count > 1)
+			*port = [[addressParts objectAtIndex:1] integerValue];
+		else *port = 11112;
+	return *host;
+}
+
++(NSString*)addressWithHost:(NSHost*)host port:(NSInteger)port aet:(NSString*)aet {
+	return [self addressWithHostname:host.address port:port aet:aet];
+}
+
++(NSString*)addressWithHostname:(NSString*)host port:(NSInteger)port aet:(NSString*)aet {
+	return [NSString stringWithFormat:@"%@@%@:%d", aet, host, port];
+}
+
+
 +(DicomDatabase*)databaseForAddress:(NSString*)path {
 	return [self databaseForAddress:path name:nil];
 }

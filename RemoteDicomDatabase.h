@@ -26,6 +26,9 @@
 @property(readonly,retain) NSHost* host;
 
 +(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port;
++(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port aet:(NSString**)aet;
++(NSString*)addressWithHost:(NSHost*)host port:(NSInteger)port aet:(NSString*)aet;
++(NSString*)addressWithHostname:(NSString*)host port:(NSInteger)port aet:(NSString*)aet;
 
 +(DicomDatabase*)databaseForAddress:(NSString*)path;
 +(DicomDatabase*)databaseForAddress:(NSString*)path name:(NSString*)name;
