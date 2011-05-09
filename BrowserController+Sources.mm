@@ -15,6 +15,9 @@
 #import "DicomImage.h"
 #import "MutableArrayCategory.h"
 #import "NSUserDefaultsController+N2.h"
+#import "N2Debug.h"
+#import "NSThread+N2.h"
+#import "ThreadModalForWindowController.h"
 
 
 @interface BrowserSourcesDelegate : NSObject/*<NSTableViewDelegate,NSTableViewDataSource>*/ {
@@ -63,7 +66,7 @@
 }
 
 -(int)rowForSource:(BrowserSource*)source {
-	for (NSInteger i = 1; i < [[_sourcesArrayController arrangedObjects] count]; ++i)
+	for (NSInteger i = 0; i < [[_sourcesArrayController arrangedObjects] count]; ++i)
 		if ([[_sourcesArrayController.arrangedObjects objectAtIndex:i] isEqualToSource:source])
 			return i;
 	return -1;
@@ -82,8 +85,86 @@
 	else NSLog(@"Warning: couldn't find database in sources (%@)", database);
 }
 
+-(void)selectCurrentDatabaseSource {
+	NSInteger i = [self rowForDatabase:_database];
+	if (i != [_sourcesTableView selectedRow])
+		[_sourcesTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:i] byExtendingSelection:NO];
+}
+
+-(void)setDatabaseThread:(NSArray*)io {
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	@try {
+		NSString* type = [io objectAtIndex:0];
+		DicomDatabase* db = nil;
+		
+		
+		if ([type isEqualToString:@"Local"]) {
+			NSString* path = [io objectAtIndex:1];
+			NSString* name = io.count > 2? [io objectAtIndex:2] : nil;
+			db = [DicomDatabase databaseAtPath:path name:name];
+		}
+		
+		if ([type isEqualToString:@"Remote"]) {
+			NSString* address = [io objectAtIndex:1];
+			NSInteger port = [[io objectAtIndex:2] intValue];
+			NSString* name = io.count > 3? [io objectAtIndex:3] : nil;
+			NSString* ap = [NSString stringWithFormat:@"%@:%d", address, port];
+			db = [RemoteDicomDatabase databaseForAddress:ap name:name];
+		}
+		
+		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:db waitUntilDone:NO];
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+		[self performSelectorOnMainThread:@selector(selectCurrentDatabaseSource) withObject:nil waitUntilDone:NO];
+	} @finally {
+		[pool release];
+	}
+}
+
+-(NSThread*)initiateSetDatabaseAtPath:(NSString*)path name:(NSString*)name {
+	NSArray* io = [NSMutableArray arrayWithObjects: @"Local", path, name, nil];
+	
+	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io];
+	thread.name = NSLocalizedString(@"Loading OsiriX database...", nil);
+	thread.supportsCancel = YES;
+	thread.status = NSLocalizedString(@"Reading data...", nil);
+	
+	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+	[thread start];
+	
+	return [thread autorelease];
+}
+
+-(NSThread*)initiateSetRemoteDatabaseWithAddress:(NSString*)address port:(NSInteger)port name:(NSString*)name {
+	NSArray* io = [NSMutableArray arrayWithObjects: @"Remote", address, [NSNumber numberWithInteger:port], name, nil];
+	
+	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io];
+	thread.name = NSLocalizedString(@"Loading remote OsiriX database...", nil);
+	thread.supportsCancel = YES;
+	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+	[thread start];
+	
+	return [thread autorelease];
+}
+
 -(void)setDatabaseFromSource:(BrowserSource*)source {
-	[self setDatabase:[source database]]; // TODO: thread etc
+	DicomDatabase* db = [source database];
+	
+	if (!db) {
+		switch (source.type) {
+			case BrowserSourceTypeLocal: {
+				[self initiateSetDatabaseAtPath:source.location name:source.description];
+			} break;
+			case BrowserSourceTypeRemote: {
+				NSHost* host; NSInteger port; [RemoteDicomDatabase address:source.location toHost:&host port:&port];
+				[self initiateSetRemoteDatabaseWithAddress:host.address port:port name:source.description];
+			} break;
+			default:
+				[self selectCurrentDatabaseSource]; // TODO: oaeiuiouioei
+		}
+	}
+	
+	[self setDatabase:db]; // TODO: thread etc
 }
 
 -(BOOL)copyImages:(NSArray*)dicomImages toSource:(BrowserSource*)destination {
@@ -465,14 +546,16 @@ static void* const DicomBrowserSourcesContext = @"DicomBrowserSourcesContext";
 
 
 -(NSDragOperation)tableView:(NSTableView*)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation {
-	if (row == [_browser rowForDatabase:_browser.database])
-		return NO;
+	NSInteger selectedDatabaseIndex = [_browser rowForDatabase:_browser.database];
+	if (row == selectedDatabaseIndex)
+		return NSDragOperationNone;
 	
-	BOOL accept = NO;
-	if (row <= [_browser sourcesCount])
-		accept = YES;
+	if (row >= _browser.sourcesCount && _browser.database != DicomDatabase.defaultDatabase) {
+		[tableView setDropRow:[_browser rowForDatabase:DicomDatabase.defaultDatabase] dropOperation:NSTableViewDropOn];
+		return NSTableViewDropAbove;
+	}
 	
-	if (accept) {
+	if (row < [_browser sourcesCount]) {
 		[tableView setDropRow:row dropOperation:NSTableViewDropOn];
 		return NSTableViewDropAbove;
 	}

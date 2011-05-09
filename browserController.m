@@ -17159,67 +17159,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return -1;
 }
 
--(void)selectCurrentDatabaseSource {
-	NSInteger i = [self indexOfDatabase:_database];
-	if (i != [_sourcesTableView selectedRow])
-		[_sourcesTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:i] byExtendingSelection:NO];
-}
 
--(void)setDatabaseThread:(NSArray*)io {
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	@try {
-		NSString* type = [io objectAtIndex:0];
-		DicomDatabase* db = nil;
-		
-		
-		if ([type isEqualToString:@"Local"]) {
-			NSString* path = [io objectAtIndex:1];
-			NSString* name = io.count > 2? [io objectAtIndex:2] : nil;
-			db = [DicomDatabase databaseAtPath:path name:name];
-		}
-		
-		if ([type isEqualToString:@"Remote"]) {
-			NSString* address = [io objectAtIndex:1];
-			NSInteger port = [[io objectAtIndex:2] intValue];
-			NSString* name = io.count > 3? [io objectAtIndex:3] : nil;
-			NSString* ap = [NSString stringWithFormat:@"%@:%d", address, port];
-			db = [RemoteDicomDatabase databaseForAddress:ap name:name];
-		}
-		
-		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:db waitUntilDone:NO];
-	} @catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-		[self performSelectorOnMainThread:@selector(selectCurrentDatabaseSource) withObject:nil waitUntilDone:NO];
-	} @finally {
-		[pool release];
-	}
-}
-
--(NSThread*)initiateSetDatabaseAtPath:(NSString*)path name:(NSString*)name {
-	NSArray* io = [NSMutableArray arrayWithObjects: @"Local", path, name, nil];
-	
-	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io];
-	thread.name = NSLocalizedString(@"Loading OsiriX database...", nil);
-	thread.supportsCancel = YES;
-	thread.status = NSLocalizedString(@"Reading data...", nil);
-	
-	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
-	[thread start];
-	
-	return [thread autorelease];
-}
-
--(NSThread*)initiateSetRemoteDatabaseWithAddress:(NSString*)address port:(NSInteger)port name:(NSString*)name {
-	NSArray* io = [NSMutableArray arrayWithObjects: @"Remote", address, [NSNumber numberWithInteger:port], name, nil];
-	
-	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io];
-	thread.name = NSLocalizedString(@"Loading remote OsiriX database...", nil);
-	thread.supportsCancel = YES;
-	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
-	[thread start];
-	
-	return [thread autorelease];
-}
 
 - (IBAction)bonjourServiceClickedProceed: (id)sender
 {
@@ -17251,7 +17191,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[_sourcesTableView selectRowIndexes: [NSIndexSet indexSetWithIndex: previousBonjourIndex+1] byExtendingSelection:NO];
 		}
 		// LOCAL PATH - DATABASE
-		else if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])
+		/*else if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])
 		{
 			[self initiateSetDatabaseAtPath:[object valueForKey:@"Path"] name:[object valueForKey:@"Description"]];
 			[self setDatabase:[DicomDatabase databaseAtPath:[object valueForKey:@"Path"] name:[object valueForKey:@"Description"]]];
@@ -17285,7 +17225,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 //				[self openDatabaseIn: path Bonjour: YES];
 //				displayEmptyDatabase = NO;
 //			}
-		}
+		}*/
 	}
 	else // LOCAL DEFAULT DATABASE
 	{

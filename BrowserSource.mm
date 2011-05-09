@@ -66,11 +66,11 @@
 	if (self.type != other.type)
 		return NO;
 	
-	if (self.dictionary == other.dictionary)
+	if (self.dictionary && self.dictionary == other.dictionary)
 		return YES;
 	
 	if (self.type == BrowserSourceTypeLocal) {
-		if ([self.location isEqualToString:other.location])
+		if ([[DicomDatabase baseDirPathForPath:self.location] isEqualToString:[DicomDatabase baseDirPathForPath:other.location]])
 			return YES;
 	} else
 	if (self.type == BrowserSourceTypeRemote) {
@@ -89,8 +89,8 @@
 	return NO;
 }
 
--(DicomDatabase*)database {
-	return nil; // TODO: ANTHENUDSULHU LCH 
+-(DicomDatabase*)database { // for subclassers
+	return nil;
 }
 
 -(void)willDisplayCell:(ImageAndTextCell*)cell {
