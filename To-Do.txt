@@ -1,10 +1,9 @@
-- Check SUV dates on localized versions
-
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
 - Web Server: add Bonjour Service, add Locations parameter, display in Sources
 - DICOM ECG
+- Pediatric QR age button
 - Activate 8-bit TIFF, JPEG, export // Add PNG
 - DB Autocleaning: limit number of # studies/images, % of HD space
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
@@ -41,16 +40,6 @@
 - Add DB toolbar to QR window
 - Key Series
 - For the existing `find next key image' and `find previous key image' function, the function is limited to a particular series and the search will stop at the first/last key image within a series. I would like to suggest the find option can proceed to the first key image of next series or the last key image of previous series towards the first and last key image of a particular series, probably within the same study but may also extend to different studies of the same patient. 
-
-QA
-- BugZilla (sourceforge?)
-- EggPlant
-- Sikuli (http://sikuli.org/)
-- UnitTesting (assert functions) (http://developer.apple.com/tools/unittest.html - SenTestingKit.framework, OCMock.framework)
-- Regression tests
-- ILCrashReporter
-- Doxygen
-- SVN - Version
 
 Cours
 - Basics:

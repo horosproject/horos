@@ -998,4 +998,23 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return [result stringByAppendingFormat:@"\rdicomTime: %@\rsopInstanceUID: %@", [self dicomTime], [self sopInstanceUID]];
 }
 
++(NSMutableArray*)dicomImagesInObjects:(NSArray*)objects {
+	NSMutableArray* dicomImages = [NSMutableArray array];
+	
+	for (NSManagedObject* object in objects) {
+		if ([[object valueForKey:@"type"] isEqualToString:@"Study"])
+			for( NSManagedObject *curSerie in [object valueForKey:@"series"])
+				[dicomImages addObjectsFromArray: [[curSerie valueForKey:@"images"] allObjects]];
+		
+		if ([[object valueForKey:@"type"] isEqualToString:@"Series"])
+			[dicomImages addObjectsFromArray: [[object valueForKey:@"images"] allObjects]];
+		
+		if ([[object valueForKey:@"type"] isEqualToString:@"Image"])
+			[dicomImages addObject:object];
+	}
+
+	return dicomImages;
+}
+
+
 @end

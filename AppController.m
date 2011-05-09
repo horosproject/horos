@@ -2709,6 +2709,15 @@ static BOOL initialized = NO;
 				pluginManager = [[PluginManager alloc] init];
 				
 				
+				#ifdef MACAPPSTORE
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"];
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AUTHENTICATION"];
+				[[NSUserDefaults standardUserDefaults] setObject:@"(~/Library/Application Support/OsiriX/)" forKey:@"DefaultDatabasePath"];
+				#else
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"MACAPPSTORE"];
+				[[NSUserDefaults standardUserDefaults] setObject:@"(Current User Documents folder)" forKey:@"DefaultDatabasePath"];
+				#endif
+				
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset
 				NSMutableArray *shadingArray = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"shadingsPresets"] mutableCopy] autorelease];
@@ -3062,11 +3071,13 @@ static BOOL initialized = NO;
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"checkForUpdatesPlugins"];
 	}
 	
+	#ifndef MACAPPSTORE
 	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
 		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:pluginManager withObject:pluginManager];
 	
 	[NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget:self withObject: self];
+	#endif
 	#endif
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
@@ -4671,10 +4682,11 @@ static BOOL initialized = NO;
 
 + (NSString*)checkForPagesTemplate;
 {
+	NSString *templateDirectory = nil;
+	#ifdef MACAPPSTORE
 	// Pages template directory
 	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
 	int i;
-	NSString *templateDirectory = nil;
 	for(i=0; i<[templateDirectoryPathArray count]; i++)
 	{
 		templateDirectory = [NSString pathWithComponents:[templateDirectoryPathArray subarrayWithRange:NSMakeRange(0,i+1)]];
@@ -4701,6 +4713,7 @@ static BOOL initialized = NO;
 		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriX Report.template"] toPath:[templateDirectory stringByAppendingPathComponent:@"/OsiriX Basic Report.template"] handler:nil];
 	}
 	
+#endif
 	return templateDirectory;
 }
 

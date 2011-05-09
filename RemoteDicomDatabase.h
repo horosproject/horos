@@ -17,12 +17,15 @@
 	NSInteger _port;
 	NSHost* _host;
 	NSRecursiveLock* _updateLock;
+	NSTimer* _updateTimer;
 	NSTimeInterval _timestamp;
 }
 
 @property(readonly,retain) NSString* address;
 @property(readonly) NSInteger port;
 @property(readonly,retain) NSHost* host;
+
++(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port;
 
 +(DicomDatabase*)databaseForAddress:(NSString*)path;
 +(DicomDatabase*)databaseForAddress:(NSString*)path name:(NSString*)name;

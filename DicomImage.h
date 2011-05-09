@@ -98,5 +98,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 - (NSNumber*) height;
 - (NSNumber*) width;
 
++(NSMutableArray*)dicomImagesInObjects:(NSArray*)objects;
+
 @end
 

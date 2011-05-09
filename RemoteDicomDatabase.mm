@@ -22,6 +22,7 @@
 #import "DicomFile.h"
 #import "NSManagedObject+N2.h"
 #import "DCMTKStoreSCU.h"
+#import "ViewerController.h"
 
 @interface RemoteDicomDatabase ()
 
@@ -35,12 +36,16 @@
 
 @implementation RemoteDicomDatabase
 
-+(void)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port {
++(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port {
+	NSHost* h = nil;
+	if (!host) host = &h;
 	NSArray* addressParts = [address componentsSeparatedByString:@":"];
 	*host = [NSHost hostWithName:[addressParts objectAtIndex:0]];
-	if (addressParts.count > 1)
-		*port = [[addressParts objectAtIndex:1] integerValue];
-	else *port = 8780;
+	if (port)
+		if (addressParts.count > 1)
+			*port = [[addressParts objectAtIndex:1] integerValue];
+		else *port = 8780;
+	return *host;
 }
 
 +(DicomDatabase*)databaseForAddress:(NSString*)path {
@@ -102,10 +107,16 @@
 		@throw;
 	}
 	
+	_updateTimer = [NSTimer timerWithTimeInterval:10 target:RemoteDicomDatabase.class selector:@selector(_updateTimerCallbackClass:) userInfo:[NSValue valueWithPointer:self] repeats:YES];
+	[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSModalPanelRunLoopMode];
+	[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSDefaultRunLoopMode];
+	
 	return self;
 }
 
 -(void)dealloc {
+	[_updateTimer invalidate];
+	
 	NSRecursiveLock* temp;
 	
 	temp = _updateLock;
@@ -128,12 +139,21 @@
 	return NO;
 }
 
+-(void)_updateTimerCallback {
+	[self initiateUpdate];
+}
+
++(void)_updateTimerCallbackClass:(NSTimer*)timer {
+	NSValue* rddp = timer.userInfo;
+	RemoteDicomDatabase* rdd = (RemoteDicomDatabase*)rddp.pointerValue;
+	[rdd _updateTimerCallback];
+}
+
 -(NSString*)sqlFilePath {
 	if (_sqlFileName)
 		return [self.baseDirPath stringByAppendingPathComponent:_sqlFileName];
 	else return [super sqlFilePath];
 }
-
 
 -(NSString*)localPathForImage:(DicomImage*)image {
 	NSString* name = nil;
@@ -298,20 +318,19 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 		
 		thread.status = NSLocalizedString(@"Opening index...", nil);
 		NSManagedObjectContext* context = [self contextAtPath:path];
-
+		
+		// CHANGE!! we want to DIFF ;) or is it too slow?
+		
+		for (ViewerController* vc in [ViewerController getDisplayed2DViewers])
+			[vc.window orderOut:self];
+		
 		[_sqlFileName release];
 		_sqlFileName = [[path lastPathComponent] retain];
 		[_sqlFilePath autorelease];
 		_sqlFilePath = [path retain];
 		self.managedObjectContext = context;
 		
-		//[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBNotification object:self];
-		
-		
-		
-//		for ([ViewerController getDisplayed2DViewers] count]) {
-//			
-//		}
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:self];
 		
 		
 		
@@ -340,6 +359,9 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 
 -(NSThread*)initiateUpdate {
 //	if( DatabaseIsEdited) return;
+	
+	if ([[ViewerController getDisplayed2DViewers] count])
+		return nil;
 	
 	if ([_updateLock tryLock])
 		@try {
@@ -624,9 +646,10 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 
 #pragma mark Special
 
+-(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting { // don't
+}
 
--(void)save:(NSError**)err {
-	// NSLog(@"Notice: trying to -[RemoteDicomDatabase save], ignored");
+-(void)save:(NSError**)err { // don't
 }
 
 -(void)rebuild:(BOOL)complete { // do nothing

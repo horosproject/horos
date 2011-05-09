@@ -89,6 +89,7 @@
 #import "ThreadModalForWindowController.h"
 #import "NSUserDefaults+OsiriX.h"
 #import "WADODownload.h"
+#import "NSManagedObject+N2.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -109,7 +110,7 @@
 #include <IOKit/storage/IODVDMedia.h>
 
 static BrowserController *browserWindow = nil;
-static NSString *albumDragType = @"Osirix Album drag";
+NSString* O2AlbumDragType = @"Osirix Album drag";
 static BOOL loadingIsOver = NO, isAutoCleanDatabaseRunning = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
@@ -167,7 +168,6 @@ void restartSTORESCP()
 
 @interface BrowserController ()
 
-- (int) findDBPath:(NSString*) path dbFolder:(NSString*) DBFolderLocation;
 - (void)setDBWindowTitle;
 -(void)reduceCoreDataFootPrint;
 
@@ -1318,6 +1318,10 @@ static NSConditionLock *threadLock = nil;
 	else [self newFilesGUIUpdateRun:1 viewersListToReload:nil viewersListToRebuild:nil];
 }
 
+-(void)resetToLocalDatabase {
+	[self setDatabase:[DicomDatabase activeLocalDatabase]];
+}
+
 -(void)setDatabase:(DicomDatabase*)db {
 	[[db retain] autorelease]; // avoid multithreaded release
 	
@@ -1451,11 +1455,11 @@ static NSConditionLock *threadLock = nil;
 //					i = [self findDBPath:[database sqlFilePath] dbFolder:[database dataDirPath]];
 //				}
 				
-			//	if// (i != [bonjourServicesList selectedRow])
+			//	if// (i != [_sourcesTableView selectedRow])
 //				{
 //					if( i == -1 && DICOMDIRCDMODE != YES) NSLog( @"**** NOT FOUND??? WHY? we added it... no?");
 //					dontLoadSelectionSource = YES;
-//					[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
+//					[_sourcesTableView selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
 //					dontLoadSelectionSource = NO;
 //				}
 //			}
@@ -1767,85 +1771,6 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	return nil;
-}
-
-- (int) findDBPath:(NSString*) path dbFolder:(NSString*) DBFolderLocation
-{
-	// Is this DB location available in the Source table? If not, add it
-	BOOL found = NO;
-	int i = 0;
-	
-	// First, is it the default DB ?
-	NSString *defaultPath = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
-	
-	if( [[defaultPath stringByAppendingPathComponent:@"Database.sql"] isEqualToString: path])
-	{
-		found = YES;
-		i = 0;
-		NSLog( @"default DB");
-	}
-	
-	// Second, is it the selected DB ?
-	if( found == NO && [bonjourServicesList selectedRow] > 0)
-	{
-		NSString	*cPath = [[[bonjourBrowser services] objectAtIndex: [bonjourServicesList selectedRow]-1] valueForKey:@"Path"];
-		
-		BOOL isDirectory;
-		
-		if( [[NSFileManager defaultManager] fileExistsAtPath:cPath isDirectory: &isDirectory])
-		{
-			if( isDirectory) cPath = [[cPath stringByAppendingPathComponent: @"OsiriX Data"] stringByAppendingPathComponent: @"Database.sql"];
-		}
-		
-		if( [cPath isEqualToString: path])
-		{
-			NSLog( @"selected DB");
-			
-			found = YES;
-			i = [bonjourServicesList selectedRow];
-		}
-	}
-	
-	// Third, is it available in the list ?
-	if( found == NO)
-	{
-		for( NSDictionary *service in [bonjourBrowser services])
-		{
-			NSString	*type = [service valueForKey:@"type"];
-			
-			if( [type isEqualToString:@"localPath"])
-			{
-				NSString	*cPath = [service valueForKey:@"Path"];
-				
-				if( [[[cPath pathExtension] lowercaseString] isEqualToString:@"sql"])
-				{
-					if( [path isEqualToString: cPath])
-					{
-						found = YES;
-						i = [[bonjourBrowser services] indexOfObject: service] + 1;
-						break;
-					}
-				}
-				else
-				{
-					if ([[DicomDatabase baseDirPathForPath:cPath] isEqualToString:[DicomDatabase baseDirPathForPath:path]] || [[DicomDatabase baseDirPathForPath:cPath] isEqualToString:[DicomDatabase baseDirPathForPath:DBFolderLocation]]) {
-						found = YES;
-						i = [[bonjourBrowser services] indexOfObject: service] + 1;
-						break;
-					} else
-					if( [cPath isEqualToString: DBFolderLocation] && [[path lastPathComponent] isEqualToString:@"Database.sql"])
-					{
-						found = YES;
-						i = [[bonjourBrowser services] indexOfObject: service] + 1;
-						break;
-					}
-				}
-			}
-		}
-	}
-	
-	if( found)	return i;
-	else return -1;
 }
 
 -(BOOL)isBonjour:(NSManagedObjectContext*)c { // __deprecated
@@ -3414,9 +3339,9 @@ static NSConditionLock *threadLock = nil;
 //	if( displayEmptyDatabase) // TODO: shu
 //		predicate = [NSPredicate predicateWithValue:NO];
 	
-	if (![_database isLocal] && [bonjourServicesList selectedRow] > 0)
+	if (![_database isLocal] && [_sourcesTableView selectedRow] > 0)
 	{
-		int rowIndex = [bonjourServicesList selectedRow];
+		int rowIndex = [_sourcesTableView selectedRow];
 		
 		NSDictionary *dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
 		
@@ -3710,7 +3635,7 @@ static NSConditionLock *threadLock = nil;
 ////	if( bonjourDownloading) return;
 //	if( DatabaseIsEdited) return;
 //	if( database == nil) return;
-//	if( [bonjourServicesList selectedRow] == -1) return;
+//	if( [_sourcesTableView selectedRow] == -1) return;
 //	
 //	if (![database isLocal])
 //	{
@@ -3720,7 +3645,7 @@ static NSConditionLock *threadLock = nil;
 //		
 //		if( doit)
 //		{
-//			if( [bonjourBrowser isBonjourDatabaseUpToDate: [bonjourServicesList selectedRow]-1] == NO)
+//			if( [bonjourBrowser isBonjourDatabaseUpToDate: [_sourcesTableView selectedRow]-1] == NO)
 //			{
 //				[self syncReportsIfNecessary];
 //				
@@ -5695,22 +5620,24 @@ static NSConditionLock *threadLock = nil;
 
 - (BOOL)outlineView:(NSOutlineView *)olv writeItems:(NSArray*)pbItems toPasteboard:(NSPasteboard*)pboard
 {
-	[pboard declareTypes: [NSArray arrayWithObjects: albumDragType, NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType, nil] owner:self];
+	[pboard declareTypes: [NSArray arrayWithObjects: @"BrowserController.database.context.XIDs", O2AlbumDragType, NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType, nil] owner:self];
 	
-	[pboard setPropertyList:nil forType:albumDragType];
+	[pboard setPropertyList:nil forType:O2AlbumDragType];
 	
     [pboard setPropertyList:[NSArray arrayWithObject:@"dcm"] forType:NSFilesPromisePboardType];
 	
-	[draggedItems release];
-	draggedItems = [pbItems retain];
+	[pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[pbItems valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:@"BrowserController.database.context.XIDs"];
+	
+//	[draggedItems release];
+//	draggedItems = [pbItems retain];
 	return YES;
 }
 
-- (void) setDraggedItems:(NSArray*) pbItems
+/*- (void) setDraggedItems:(NSArray*) pbItems
 {
 	[draggedItems release];
 	draggedItems = [pbItems retain];
-}
+}*/
 
 - (void)outlineViewItemWillCollapse:(NSNotification *)notification
 {
@@ -8861,7 +8788,7 @@ static BOOL needToRezoom;
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 #pragma mark-
-#pragma mark Albums/Bonjour TableView functions
+#pragma mark Albums TableView functions
 
 //NSTableView delegate and datasource
 - (NSInteger)numberOfRowsInTableView: (NSTableView *)aTableView
@@ -8870,17 +8797,6 @@ static BOOL needToRezoom;
 	{
 		//if( displayEmptyDatabase) return 0;
 		return [self.albumArray count];
-	}
-	else if ([aTableView isEqual:bonjourServicesList])
-	{
-		if (bonjourBrowser!=nil)
-		{
-			return [[bonjourBrowser services] count]+1;
-		}
-		else
-		{
-			return 1;
-		}
 	}
 	return 0;
 }
@@ -8921,25 +8837,6 @@ static BOOL needToRezoom;
 			}
 			else
 				return NSLocalizedString( @"n/a", nil);
-		}
-	}
-	else if ([aTableView isEqual:bonjourServicesList])
-	{
-		if([[aTableColumn identifier] isEqualToString:@"Source"])
-		{
-			if (bonjourBrowser!=nil)
-			{
-				NSDictionary *dict = nil;
-				if( rowIndex > 0) dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
-				
-				if( rowIndex == 0) return NSLocalizedString(@"Local Default Database", nil);
-				else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) return [[dict valueForKey:@"service"] name];
-				else return [dict valueForKey:@"Description"];
-			}
-			else
-			{
-				return NSLocalizedString(@"Local Default Database", nil);
-			}
 		}
 	}
 	
@@ -8991,122 +8888,6 @@ static BOOL needToRezoom;
 				{
 					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_album.tif"]];
 				}
-			}
-		}
-	}
-	
-	if ([aTableView isEqual:bonjourServicesList])
-	{
-		NSFont *txtFont;
-		
-		if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 11];
-		else txtFont = [NSFont systemFontOfSize:11];
-		
-		[aCell setFont:txtFont];
-		[aCell setLineBreakMode: NSLineBreakByTruncatingMiddle];
-		
-		
-		NSDictionary *dict = nil;
-		if( rowIndex > 0) dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
-		
-		if (rowIndex == 0)
-		{
-			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"osirix16x16.tif"]];
-		}
-		else if( [[dict valueForKey:@"type"] isEqualToString: @"bonjour"])
-		{
-			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"bonjour.tif"]];
-			
-			if( [aCell isHighlighted])
-			{
-				NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
-				[[menu addItemWithTitle: NSLocalizedString( @"Refresh", nil) action: @selector( refreshBonjourSource:) keyEquivalent: @""] setTarget: self];
-				[aCell setMenu: menu];
-			}
-			else
-				[aCell setMenu: nil];
-		}
-		else
-		{
-			NSString	*type = [dict valueForKey:@"type"];
-			NSString	*path = [dict valueForKey:@"Path"];
-			
-			if( [type isEqualToString:@"dicomDestination"])
-			{
-				if( [dict valueForKey: @"icon"] && [NSImage imageNamed: [dict valueForKey: @"icon"]])
-					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed: [dict valueForKey: @"icon"]]];
-				else
-					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"DICOMDestination.tif"]];
-			}
-			
-			if( [type isEqualToString:@"fixedIP"])
-			{
-				[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"FixedIP.tif"]];
-			
-				if( [aCell isHighlighted])
-				{
-					NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
-					[menu addItemWithTitle: NSLocalizedString( @"Refresh", nil) action: @selector( refreshBonjourSource:) keyEquivalent: @""];
-					[aCell setMenu: menu];
-				}
-				else
-					[aCell setMenu: nil];
-			}
-			
-			if( [type isEqualToString:@"localPath"])
-			{
-				BOOL isDirectory;
-				
-				if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
-				{
-					if( isDirectory)
-					{
-						NSString *iPodControlPath = [path stringByAppendingPathComponent:@"iPod_Control"];
-						BOOL isItAnIpod = [[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath];
-						
-						// Root?
-						BOOL isThereAnOsiriXDataAtTheRoot = NO;
-						
-						if( mountedVolumes == nil)
-							mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
-						
-						for( NSString *vol in mountedVolumes)
-						{
-							if( [vol isEqualToString: path]) isThereAnOsiriXDataAtTheRoot = YES;
-						}
-						
-						BOOL removableMedia = NO;
-						NSArray* removableVolumes = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
-						for( NSString *vol in removableVolumes)
-						{
-							if( [vol isEqualToString: path]) removableMedia = YES;
-						}
-						
-						// iPod? or root?
-						
-						if (isItAnIpod || isThereAnOsiriXDataAtTheRoot)
-						{
-							NSImage	*im = [[NSWorkspace sharedWorkspace] iconForFile: path];
-							[im setSize: NSMakeSize( 16, 16)];
-							[(ImageAndTextCell*) aCell setImage: im];
-							if( isItAnIpod || removableMedia)
-							{
-								[(ImageAndTextCell*) aCell setLastImage: [NSImage imageNamed:@"iPodEjectOff.tif"]];
-								[(ImageAndTextCell*) aCell setLastImageAlternate: [NSImage imageNamed:@"iPodEjectOn.tif"]]; 
-							}
-						}
-						else if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"] isDirectory: &isDirectory])
-						{
-							[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"FolderIcon.tif"]];
-						}
-						else
-							[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"away.tif"]];
-					}
-					else
-						[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"FileIcon.tif"]];
-				}
-				else
-					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"away.tif"]];
 			}
 		}
 	}
@@ -9280,13 +9061,19 @@ static BOOL needToRezoom;
 		//can't add to smart Album
 		if ([[[albumArray objectAtIndex:row] valueForKey:@"smartAlbum"] boolValue]) return NO;
 		
-		DicomAlbum *album = [albumArray objectAtIndex: row];
+		DicomAlbum* album = [albumArray objectAtIndex: row];
 		
-		if( draggedItems)
+		NSPasteboard* pb = [info draggingPasteboard];
+		NSArray* xids = [pb propertyListForType:@"BrowserController.database.context.XIDs"];
+		NSMutableArray* items = [NSMutableArray array];
+		for (NSString* xid in xids)
+			[items addObject:[_database objectWithID:[NSManagedObject UidForXid:xid]]];
+		
+		if (items)
 		{
 			NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
 			
-			for( NSManagedObject *object in draggedItems)
+			for( NSManagedObject *object in items)
 			{
 				if( [[object valueForKey:@"type"] isEqualToString:@"Study"])
 				{
@@ -9318,7 +9105,7 @@ static BOOL needToRezoom;
 				// Do it remotely
 				NSMutableArray *studiesToAdd = [NSMutableArray array];
 				
-				for( NSManagedObject *object in draggedItems)
+				for( NSManagedObject *object in items)
 				{
 					if( [[object valueForKey:@"type"] isEqualToString:@"Study"])
 						[studiesToAdd addObject: object];
@@ -9332,281 +9119,6 @@ static BOOL needToRezoom;
 				
 				[(RemoteDicomDatabase*)_database addStudies:studiesToAdd toAlbum:album];
 			}
-		}
-		
-		return YES;
-	}
-	
-	if ([tableView isEqual:bonjourServicesList])
-	{
-		if(draggedItems)
-		{
-			NSString *filePath, *destPath;
-			NSMutableArray *imagesArray = [NSMutableArray array];
-			
-			for( NSManagedObject *object in draggedItems)
-			{
-				if( [[object valueForKey:@"type"] isEqualToString:@"Study"])
-				{
-					for( NSManagedObject *curSerie in [object valueForKey:@"series"])
-					{
-						[imagesArray addObjectsFromArray: [[curSerie valueForKey:@"images"] allObjects]];
-					}
-				}
-				
-				if( [[object valueForKey:@"type"] isEqualToString:@"Series"])
-					[imagesArray addObjectsFromArray: [[object valueForKey:@"images"] allObjects]];
-				
-				if( [[object valueForKey:@"type"] isEqualToString:@"Image"])
-					[imagesArray addObject: object];
-			}
-			
-			// remove duplicated paths
-			{
-				NSMutableArray *paths = [NSMutableArray arrayWithArray: [imagesArray valueForKey: @"path"]];
-				[paths removeDuplicatedStringsInSyncWithThisArray: imagesArray];
-			}
-			
-			// DESTINATION IS A LOCAL PATH
-			
-			NSDictionary *object = nil;
-			
-			if( row > 0)
-				object = [NSDictionary dictionaryWithDictionary: [[bonjourBrowser services] objectAtIndex: row-1]];
-			
-			if( [[object valueForKey: @"type"] isEqualToString:@"dicomDestination"])
-			{
-				NSArray * r = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly: NO];
-				
-				for( int i = 0 ; i < [r count]; i++)
-				{
-					NSDictionary *c = [r objectAtIndex: i];
-					
-					if( [[c objectForKey:@"Description"] isEqualToString: [object objectForKey:@"Description"]] &&
-						[[c objectForKey:@"Address"] isEqualToString: [object objectForKey:@"Address"]] &&
-						[[c objectForKey:@"Port"] intValue] == [[object objectForKey:@"Port"] intValue])
-							[[NSUserDefaults standardUserDefaults] setInteger: i forKey:@"lastSendServer"];
-				}
-				
-				[self selectServer: imagesArray];
-			}
-			else if( [[object valueForKey: @"type"] isEqualToString:@"localPath"] || (row == 0 && [_database isLocal]))
-			{
-				NSString	*dbFolder = nil;
-				NSString	*sqlFile = nil;
-				
-				if( row == 0)
-				{
-					dbFolder = [[self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]] stringByDeletingLastPathComponent];
-					sqlFile = [[dbFolder stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"Database.sql"];
-				}
-				else
-				{
-					dbFolder = [self getDatabaseFolderFor: [object valueForKey: @"Path"]];
-					sqlFile = [self getDatabaseIndexFileFor: [object valueForKey: @"Path"]];				
-				}
-				
-				if( sqlFile && dbFolder)
-				{
-					// LOCAL PATH - DATABASE
-					@try
-					{
-						NSLog( @"-----------------------------");
-						NSLog( @"Destination is a 'local' path");
-						
-						
-						Wait *splash = nil;
-						
-						if (![_database isLocal])
-							splash = [[Wait alloc] initWithString:NSLocalizedString(@"Downloading files...", nil)];
-						
-						[splash showWindow:self];
-						[[splash progress] setMaxValue:[imagesArray count]];
-						
-						NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
-						for( NSManagedObject *img in imagesArray)
-						{
-							NSString	*sendPath = [self getLocalDCMPath: img :10];
-							[packArray addObject: sendPath];
-							
-							[splash incrementBy:1];
-						}
-						
-						[splash close];
-						[splash release];
-						
-						
-						NSLog( @"DB Folder: %@", dbFolder);
-						NSLog( @"SQL File: %@", sqlFile);
-						NSLog( @"Current documentsDirectory: %@", self.documentsDirectory);
-						
-						NSPersistentStoreCoordinator *sc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel];
-						NSManagedObjectContext *sqlContext = [[NSManagedObjectContext alloc] init];
-						
-						[sqlContext setPersistentStoreCoordinator: sc];
-						[sqlContext setUndoManager: nil];
-						
-						NSError	*error = nil;
-						NSArray *copiedObjects = nil;
-						
-						NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, nil];	//[NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
-						
-						if( [sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options: options error:&error] == nil)
-							NSLog( @"****** tableView acceptDrop addPersistentStoreWithType error: %@", error);
-						
-						if( [dbFolder isEqualToString: [self.documentsDirectory stringByDeletingLastPathComponent]] && [_database isLocal])	// same database folder - we don't need to copy the files
-						{
-							NSLog( @"Destination DB Folder is identical to Current DB Folder");
-							
-							copiedObjects = [self addFilesToDatabase: packArray onlyDICOM:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
-						}
-						else
-						{
-							NSMutableArray	*dstFiles = [NSMutableArray array];
-							NSLog( @"Destination DB Folder is NOT identical to Current DB Folder");
-							
-							NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: packArray, @"packArray", dbFolder, @"dbFolder", sqlContext, @"sqlContext", nil];
-							
-							NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyToDB:) object: dict] autorelease];
-							t.name = NSLocalizedString( @"Copying files to another DB...", nil);
-							t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [packArray count]];
-							t.supportsCancel = YES;
-							t.progress = 0;
-							[[ThreadsManager defaultManager] addThreadAndStart: t];
-						}
-						
-						error = nil;
-						[sqlContext save: &error];
-						
-						[sc release];
-						[sqlContext release];
-					}
-					
-					@catch (NSException * e)
-					{
-						NSLog( @"%@", [e description]);
-						NSLog( @"Exception LOCAL PATH - DATABASE - tableView *******");
-						[AppController printStackTrace: e];
-					}
-				}
-				else NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil),  NSLocalizedString(@"Destination Database / Index file is not available.", nil), NSLocalizedString(@"OK",nil), nil, nil);
-				
-				NSLog( @"-----------------------------");
-			}
-			else if (![_database isLocal])  // Copying FROM Distant to local OR distant
-			{ NSLog(@"TODO: THIS THIIIIIIISSSSSS"); /*
-				Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying from OsiriX database...", nil)];
-				BOOL OnlyDICOM = YES;
-				BOOL succeed = NO;
-				
-				[splash showWindow:self];
-				[[splash progress] setMaxValue:[imagesArray count]];
-				
-				for( NSManagedObject *img in imagesArray)
-				{
-					if( [[img valueForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) OnlyDICOM = NO;
-				}
-				
-				if( OnlyDICOM && [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
-				{
-					// We will use the DICOM-Store-SCP
-					NSMutableDictionary* destination = [[[[bonjourBrowser services] objectAtIndex:row-1] mutableCopy] autorelease];
-					if (row == 0)
-						[destination addEntriesFromDictionary:[RemoteDicomDatabase fetchDicomDestinationInfoForHost:[NSHost hostWithAddress:] port:[]]];
-					else {
-						
-					}
-					
-					[(RemoteDicomDatabase*)_database storeScuImages:imagesArray toDestinationAETitle:<#(NSString *)aet#> address:<#(NSString *)address#> port:<#(NSInteger)port#> transferSyntax:<#(int)transferSyntax#>];
-					for (int i = 0; i < [imagesArray count]; i++) [splash incrementBy:1];
-				}
-				else NSLog( @"Not Only DICOM !");
-				
-				if( succeed == NO || OnlyDICOM == NO)
-				{
-					NSString *rootPath = [self INCOMINGPATH];
-					
-					for( NSManagedObject *img in imagesArray)
-					{
-						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-						
-						filePath = [self getLocalDCMPath: img :100];
-						destPath = [rootPath stringByAppendingPathComponent: [filePath lastPathComponent]];
-						
-						// The files are moved to the INCOMING folder : they will be automatically added when switching back to local database!
-						
-						[[NSFileManager defaultManager] copyPath:filePath toPath:destPath handler:nil];
-						
-						[splash incrementBy:1];
-						
-						[pool release];
-					}
-				}
-				else [[splash progress] setDoubleValue: [imagesArray count]];
-				
-				[splash close];
-				[splash release];*/
-			}
-			else if( [bonjourServicesList selectedRow] != row && row > 0 && object != nil)	 // Copying From Local to distant
-			{ NSLog(@"TODO: THHIIIIIIIIISSSSSSSSSS"); /*
-				BOOL OnlyDICOM = YES;
-				
-				NSDictionary *dcmNode = object;
-				
-				if( OnlyDICOM == NO)
-					NSLog( @"Not Only DICOM !");
-				
-				if( [dcmNode valueForKey:@"Port"] == nil && OnlyDICOM)
-				{
-					NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
-					[dict addEntriesFromDictionary: [bonjourBrowser getDICOMDestinationInfo: row-1]];
-					[[bonjourBrowser services] replaceObjectAtIndex: row-1 withObject: dict];
-					
-					dcmNode = dict;
-				}
-				
-				if( [dcmNode valueForKey:@"Port"] && OnlyDICOM)
-				{
-					[SendController sendFiles: imagesArray toNode: dcmNode usingSyntax: [[dcmNode valueForKey: @"TransferSyntax"] intValue]];
-				}
-				else
-				{
-					Wait *splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
-					[splash showWindow:self];
-					[[splash progress] setMaxValue:[imagesArray count]];
-					
-					for( int i = 0; i < [imagesArray count];)
-					{
-						NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-						NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
-						
-						for( int x = 0; x < 10; x++)
-						{
-							if( i <  [imagesArray count])
-							{
-								NSString *sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
-								
-								[packArray addObject: sendPath];
-								
-								[splash incrementBy:1];
-							}
-							i++;
-						}
-						
-						if( [bonjourBrowser sendDICOMFile: row-1 paths: packArray] == NO)
-						{
-							NSRunAlertPanel( NSLocalizedString(@"Network Error", nil), NSLocalizedString(@"Failed to send the files to this node.", nil), nil, nil, nil);
-							i = [imagesArray count];
-						}
-						
-						[pool release];
-					}
-					
-					[splash close];
-					[splash release];
-				}
-			*/}
-			else return NO;
 		}
 		
 		return YES;
@@ -9628,60 +9140,10 @@ static BOOL needToRezoom;
 		return NSTableViewDropAbove;
 	}
 	
-	if ([tableView isEqual:bonjourServicesList])
-	{
-		BOOL accept = NO;
-		
-		if( row <= [[bonjourBrowser services] count])
-		{
-			if( [bonjourServicesList selectedRow] != row) accept = YES;
-			
-			if( accept)
-			{
-				[bonjourServicesList setDropRow:row dropOperation:NSTableViewDropOn];
-				return NSTableViewDropAbove;
-			}
-		}
-	}
-	
 	return NSDragOperationNone;
 }
 
-- (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation
-{
-	if( [tv isEqual: bonjourServicesList])
-	{
-		if( row > 0)
-		{
-			NSDictionary	*dcmNode = [[bonjourBrowser services] objectAtIndex: row-1];
-			
-			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"localPath"])
-			{
-				if( [[[dcmNode valueForKey:@"Path"] pathExtension] isEqualToString:@"sql"]) return [dcmNode valueForKey:@"Path"];
-				else return [[dcmNode valueForKey:@"Path"] stringByAppendingPathComponent:@"OsiriX Data/"];
-			}
-			
-			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"dicomDestination"])
-			{
-				return [NSString stringWithFormat:@"%@ - %@:%@",[dcmNode objectForKey:@"AETitle"], [dcmNode objectForKey:@"Address"], [dcmNode objectForKey:@"Port"]];
-			}
-			
-			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"fixedIP"])
-			{
-				return [dcmNode valueForKey:@"Address"];
-			}
-			
-			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"bonjour"])
-			{
-				return [dcmNode valueForKey:@"Address"];
-			}
-		}
-		else
-		{
-			return  [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
-		}
-	}
-	
+- (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation {
 	return nil;
 }
 
@@ -9693,14 +9155,6 @@ static BOOL needToRezoom;
 		[self setSearchString: nil];
 		
 		[self refreshAlbums];
-	}
-	
-	if( [[aNotification object] isEqual: bonjourServicesList])
-	{
-		if( dontLoadSelectionSource == NO)
-		{
-			[self bonjourServiceClicked: bonjourServicesList];
-		}
 	}
 }
 
@@ -11508,7 +10962,6 @@ static NSArray*	openSubSeriesArray = nil;
 		_fetchPredicate = nil;
 		
 		matrixViewArray = nil;
-		draggedItems = nil;
 		
 		previousNoOfFiles = 0;
 		previousItem = nil;
@@ -11846,7 +11299,7 @@ static NSArray*	openSubSeriesArray = nil;
 		//	[self splitViewDidResizeSubviews:nil];
 		[self.window setFrameAutosaveName:@"DBWindow"];
 		
-		[bonjourServicesList setDelegate: self];
+		[self awakeSources];
 		[albumDrawer setDelegate:self];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(drawerFrameDidChange:) name:NSViewFrameDidChangeNotification object:albumDrawer.contentView];
 		[oMatrix setDelegate:self];
@@ -11885,7 +11338,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[cell setEditable:YES];
 		[[albumTable tableColumnWithIdentifier:@"Source"] setDataCell:cell];
 		[albumTable setDelegate:self];
-		[albumTable registerForDraggedTypes:[NSArray arrayWithObject:albumDragType]];
+		[albumTable registerForDraggedTypes:[NSArray arrayWithObject:O2AlbumDragType]];
 		[albumTable setDoubleAction:@selector(albumTableDoublePressed:)];
 		
 		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
@@ -11957,12 +11410,6 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:bonjourPublisher];
 		
-		[cell setEditable:NO];
-		[[bonjourServicesList tableColumnWithIdentifier:@"Source"] setDataCell:cell];
-		
-		[bonjourServicesList registerForDraggedTypes:[NSArray arrayWithObject:albumDragType]];
-		
-		[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 		
 		[splitViewVert restoreDefault:@"SPLITVERT2"];
 		[splitViewHorz restoreDefault:@"SPLITHORZ2"];
@@ -12069,6 +11516,7 @@ static NSArray*	openSubSeriesArray = nil;
 -(void)dealloc {
 	[self deallocActivity];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey];
+	[self deallocSources];
 	[super dealloc];
 }
 
@@ -15417,7 +14865,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) unmountPath:(NSString*) path
 {
-	[bonjourServicesList display];
+	[_sourcesTableView display];
 	
 	int attempts = 0;
 	BOOL success = NO;
@@ -15437,8 +14885,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[path release];
 	
-	[bonjourServicesList display];
-	[bonjourServicesList setNeedsDisplay];
+	[_sourcesTableView display];
+	[_sourcesTableView setNeedsDisplay];
 	
 	if( attempts == 5)
 	{
@@ -15448,7 +14896,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)AlternateButtonPressed: (NSNotification*)n
 {
-	int i = [bonjourServicesList selectedRow];
+	int i = [_sourcesTableView selectedRow];
 	if( i > 0)
 	{
 		NSString *path = [[[[bonjourBrowser services] objectAtIndex: i-1] valueForKey:@"Path"] retain];
@@ -15856,7 +15304,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if ([[NSFileManager defaultManager] fileExistsAtPath: [sNewDrive stringByAppendingPathComponent:@"iPod_Control"]])
 	{
 		// Is it currently selected? -> switch back to default DB path
-		int row = [bonjourServicesList selectedRow];
+		int row = [_sourcesTableView selectedRow];
 		if( row > 0)
 		{
 			if( [[[[bonjourBrowser services] objectAtIndex: row-1] valueForKey:@"Path"] isEqualToString: sNewDrive])
@@ -17620,18 +17068,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return @"";
 }
 
-- (long) currentBonjourService
-{
-	return [bonjourServicesList selectedRow] - 1;
-}
-
-- (void)setCurrentBonjourService: (int)index
-{
-	dontLoadSelectionSource = YES;
-	[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: index+1] byExtendingSelection: NO];
-	dontLoadSelectionSource = NO;
-}
-
 - (NSString*)getLocalDCMPath: (NSManagedObject*)obj : (long)no
 {
 	if (![_database isLocal]) return [(RemoteDicomDatabase*)_database fetchDataForImage:(DicomImage*)obj maxFiles:no];
@@ -17640,13 +17076,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)displayBonjourServices
 {
-	[bonjourServicesList reloadData];
-}
-
-- (void)resetToLocalDatabase
-{
-	[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
-	[self bonjourServiceClicked: bonjourServicesList];
+	[_sourcesTableView reloadData];
 }
 
 - (void) switchToDefaultDBIfNeeded
@@ -17729,8 +17159,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 -(void)selectCurrentDatabaseSource {
 	NSInteger i = [self indexOfDatabase:_database];
-	if (i != [bonjourServicesList selectedRow])
-		[bonjourServicesList selectRowIndexes:[NSIndexSet indexSetWithIndex:i] byExtendingSelection:NO];
+	if (i != [_sourcesTableView selectedRow])
+		[_sourcesTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:i] byExtendingSelection:NO];
 }
 
 -(void)setDatabaseThread:(NSArray*)io {
@@ -17791,22 +17221,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction)bonjourServiceClickedProceed: (id)sender
 {
-	if( [bonjourServicesList selectedRow] == -1) return;
+	if( [_sourcesTableView selectedRow] == -1) return;
 	
 //	if( DICOMDIRCDMODE)
 //	{
 //		dontLoadSelectionSource = YES;
-//		[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
+//		[_sourcesTableView selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
 //		dontLoadSelectionSource = NO;
 //		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 //		return;
 //	}
 	
-	dontLoadSelectionSource = YES;
 	
 //	[database save:NULL];
 	
-    int index = [bonjourServicesList selectedRow]-1;
+    int index = [_sourcesTableView selectedRow]-1;
 	
 	if( index >= 0)
 	{
@@ -17817,7 +17246,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			NSRunAlertPanel( NSLocalizedString(@"DICOM Destination", nil), NSLocalizedString(@"It is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil), nil, nil, nil);
 			
-			[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: previousBonjourIndex+1] byExtendingSelection:NO];
+			[_sourcesTableView selectRowIndexes: [NSIndexSet indexSetWithIndex: previousBonjourIndex+1] byExtendingSelection:NO];
 		}
 		// LOCAL PATH - DATABASE
 		else if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])
@@ -17865,9 +17294,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	
-	previousBonjourIndex = [bonjourServicesList selectedRow]-1;
+	previousBonjourIndex = [_sourcesTableView selectedRow]-1;
 	
-	dontLoadSelectionSource = NO;
 }
 
 - (IBAction)bonjourServiceClicked:(id)sender {	

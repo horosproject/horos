@@ -269,6 +269,14 @@
 		59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */; };
 		59C512C21189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */; };
 		59C512C31189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */; };
+		59C57BF91374131D00E3C90B /* BrowserController+Sources.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C57BF71374131D00E3C90B /* BrowserController+Sources.h */; };
+		59C57BFA1374131D00E3C90B /* BrowserController+Sources.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C57BF81374131D00E3C90B /* BrowserController+Sources.mm */; };
+		59C57BFB1374131D00E3C90B /* BrowserController+Sources.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C57BF71374131D00E3C90B /* BrowserController+Sources.h */; };
+		59C57BFC1374131D00E3C90B /* BrowserController+Sources.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C57BF81374131D00E3C90B /* BrowserController+Sources.mm */; };
+		59C57BFF1374146F00E3C90B /* BrowserSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C57BFD1374146F00E3C90B /* BrowserSource.h */; };
+		59C57C001374146F00E3C90B /* BrowserSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 59C57BFE1374146F00E3C90B /* BrowserSource.m */; };
+		59C57C011374146F00E3C90B /* BrowserSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C57BFD1374146F00E3C90B /* BrowserSource.h */; };
+		59C57C021374146F00E3C90B /* BrowserSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 59C57BFE1374146F00E3C90B /* BrowserSource.m */; };
 		59D9471D125333640095680D /* SWFInit.as in Resources */ = {isa = PBXBuildFile; fileRef = 59D9471C125333640095680D /* SWFInit.as */; };
 		59DA64FD1349C1F5000085C1 /* RemoteDicomDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DA64FB1349C1F5000085C1 /* RemoteDicomDatabase.h */; };
 		59DA64FE1349C1F5000085C1 /* RemoteDicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DA64FC1349C1F5000085C1 /* RemoteDicomDatabase.mm */; };
@@ -8364,6 +8372,10 @@
 		59BDF126117EFA41007F1F2C /* PreferencesView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferencesView.mm; sourceTree = "<group>"; };
 		59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SFAuthorizationView+OsiriX.h"; sourceTree = "<group>"; };
 		59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "SFAuthorizationView+OsiriX.mm"; sourceTree = "<group>"; };
+		59C57BF71374131D00E3C90B /* BrowserController+Sources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BrowserController+Sources.h"; sourceTree = "<group>"; };
+		59C57BF81374131D00E3C90B /* BrowserController+Sources.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "BrowserController+Sources.mm"; sourceTree = "<group>"; };
+		59C57BFD1374146F00E3C90B /* BrowserSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserSource.h; sourceTree = "<group>"; };
+		59C57BFE1374146F00E3C90B /* BrowserSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserSource.m; sourceTree = "<group>"; };
 		59D9471C125333640095680D /* SWFInit.as */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SWFInit.as; path = Binaries/SWFInit.as; sourceTree = "<group>"; };
 		59DA64FB1349C1F5000085C1 /* RemoteDicomDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteDicomDatabase.h; sourceTree = "<group>"; };
 		59DA64FC1349C1F5000085C1 /* RemoteDicomDatabase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RemoteDicomDatabase.mm; sourceTree = "<group>"; };
@@ -14032,6 +14044,10 @@
 				BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */,
 				59EBFEA212BB500C00809C61 /* browserController.h */,
 				599115EF12D7224A00924B5C /* browserController.m */,
+				59C57BF71374131D00E3C90B /* BrowserController+Sources.h */,
+				59C57BF81374131D00E3C90B /* BrowserController+Sources.mm */,
+				59C57BFD1374146F00E3C90B /* BrowserSource.h */,
+				59C57BFE1374146F00E3C90B /* BrowserSource.m */,
 				BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */,
 				BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */,
 				ABC47B570C031397001CEA21 /* BrowserMatrix.h */,
@@ -19811,6 +19827,8 @@
 				5909F4311357507B00BAE081 /* DicomDatabase+DCMTK.h in Headers */,
 				5909F53113576A1600BAE081 /* NSArray+N2.h in Headers */,
 				84E191FB1369966A008DCFC8 /* WADODownload.h in Headers */,
+				59C57BFB1374131D00E3C90B /* BrowserController+Sources.h in Headers */,
+				59C57C011374146F00E3C90B /* BrowserSource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22033,6 +22051,8 @@
 				5909F42F1357507B00BAE081 /* DicomDatabase+DCMTK.h in Headers */,
 				5909F52F13576A1600BAE081 /* NSArray+N2.h in Headers */,
 				84E1924713699BBB008DCFC8 /* WADODownload.h in Headers */,
+				59C57BF91374131D00E3C90B /* BrowserController+Sources.h in Headers */,
+				59C57BFF1374146F00E3C90B /* BrowserSource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24408,6 +24428,8 @@
 				5909F4321357507B00BAE081 /* DicomDatabase+DCMTK.mm in Sources */,
 				5909F53213576A1600BAE081 /* NSArray+N2.mm in Sources */,
 				84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */,
+				59C57BFC1374131D00E3C90B /* BrowserController+Sources.mm in Sources */,
+				59C57C021374146F00E3C90B /* BrowserSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25669,6 +25691,8 @@
 				5909F4301357507B00BAE081 /* DicomDatabase+DCMTK.mm in Sources */,
 				5909F53013576A1600BAE081 /* NSArray+N2.mm in Sources */,
 				84E1924813699BBB008DCFC8 /* WADODownload.m in Sources */,
+				59C57BFA1374131D00E3C90B /* BrowserController+Sources.mm in Sources */,
+				59C57C001374146F00E3C90B /* BrowserSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

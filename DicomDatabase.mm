@@ -1318,7 +1318,8 @@ enum { Compress, Decompress };
 					   && [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] == NO
 					   && [DCMAbstractSyntaxUID isKeyObjectDocument: SOPClassUID] == NO
 					   && [DCMAbstractSyntaxUID isPresentationState: SOPClassUID] == NO
-					   && [DCMAbstractSyntaxUID isSupportedPrivateClasses: SOPClassUID] == NO)
+					   && [DCMAbstractSyntaxUID isSupportedPrivateClasses: SOPClassUID] == NO
+					   && [DCMAbstractSyntaxUID isWaveform: SOPClassUID] == NO)
 					{
 						NSLog(@"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
 						curDict = nil;
@@ -2320,8 +2321,8 @@ enum { Compress, Decompress };
 	importFilesFromIncomingDirTimer = nil;
 	if (newInterval) {
 		importFilesFromIncomingDirTimer = [[NSTimer timerWithTimeInterval:newInterval target:self selector:@selector(importFilesFromIncomingDirTimerCallback:) userInfo:nil repeats:YES] retain];
-		[[NSRunLoop currentRunLoop] addTimer:importFilesFromIncomingDirTimer forMode:NSModalPanelRunLoopMode];
-		[[NSRunLoop currentRunLoop] addTimer:importFilesFromIncomingDirTimer forMode:NSDefaultRunLoopMode];
+		[[NSRunLoop mainRunLoop] addTimer:importFilesFromIncomingDirTimer forMode:NSModalPanelRunLoopMode];
+		[[NSRunLoop mainRunLoop] addTimer:importFilesFromIncomingDirTimer forMode:NSDefaultRunLoopMode];
 	}
 }
 

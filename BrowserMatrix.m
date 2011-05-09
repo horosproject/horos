@@ -142,16 +142,14 @@ static NSString *albumDragType = @"Osirix Album drag";
 		
 		NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
 		
-		[pboard declareTypes:[NSArray arrayWithObjects:  albumDragType, NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType, nil]  owner:self];
+		[pboard declareTypes:[NSArray arrayWithObjects: @"BrowserController.database.context.XIDs", albumDragType, NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType, nil]  owner:self];
 		[pboard setPropertyList:nil forType:albumDragType];
 		[pboard setPropertyList:[NSArray arrayWithObject:@"dcm"] forType:NSFilesPromisePboardType];
-		
-		NSMutableArray	*objects = [NSMutableArray array];
+
+		NSMutableArray* objects = [NSMutableArray array];
 		for( i = 0; i < [cells count]; i++)
-		{
-			[objects addObject: [[[BrowserController currentBrowser] matrixViewArray] objectAtIndex: [[cells objectAtIndex: i] tag]]];
-		}
-		[[BrowserController currentBrowser] setDraggedItems: objects];
+			[objects addObject:[[[BrowserController currentBrowser] matrixViewArray] objectAtIndex:[[cells objectAtIndex: i] tag]]];
+		[pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[objects valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:@"BrowserController.database.context.XIDs"];
 		
 		[self dragImage:thumbnail
 				at:local_point

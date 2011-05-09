@@ -33,6 +33,8 @@ enum simpleSearchType {PatientNameSearch, PatientIDSearch};
 enum queueStatus{QueueHasData, QueueEmpty};
 enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
+extern NSString* O2AlbumDragType;
+
 @interface NSString (BrowserController)
 -(NSMutableString*)filenameString;
 @end
@@ -67,8 +69,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSMutableDictionary		*reportFilesToCheck;
 	
     NSMutableArray          *previewPix, *previewPixThumbnails;
-	
-	NSMutableArray			*draggedItems;
 		
 	NSMutableDictionary		*activeSends;
 	NSMutableArray			*sendLog;
@@ -88,7 +88,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
     long                    COLUMN;
 	IBOutlet NSSplitView	*splitViewHorz, *splitViewVert, *splitAlbums;
     
-	BOOL					setDCMDone, dontLoadSelectionSource, dontUpdatePreviewPane;
+	BOOL					setDCMDone, dontUpdatePreviewPane;
 	
 	NSMutableArray			*albumNoOfStudiesCache;
 	
@@ -108,7 +108,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	IBOutlet NSBox					*bonjourSourcesBox;
 	
-	IBOutlet NSTableView			*bonjourServicesList;
+	IBOutlet NSArrayController*		_sourcesArrayController;
+	IBOutlet NSTableView*			_sourcesTableView;
+	id								_sourcesHelper;
 	BonjourPublisher				*bonjourPublisher;
 	BonjourBrowser					*bonjourBrowser;
 	
@@ -253,7 +255,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 /*@property(readonly) NSRecursiveLock *checkIncomingLock;*/
 @property(readonly) NSArray *matrixViewArray;
 @property(readonly) NSMatrix *oMatrix;
-@property(readonly) long COLUMN, currentBonjourService;
+@property(readonly) long COLUMN /*currentBonjourService*/;
 @property(readonly) BOOL is2DViewer, isCurrentDatabaseBonjour;
 @property(readonly) MyOutlineView *databaseOutline;
 @property(readonly) NSTableView *albumTable;
@@ -388,7 +390,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSString*) getDatabaseFolderFor: (NSString*) path __deprecated;
 - (NSString*) getDatabaseIndexFileFor: (NSString*) path __deprecated;
 - (IBAction) copyToDBFolder: (id) sender;
-- (void) setCurrentBonjourService:(int) index;
 - (IBAction)customize:(id)sender;
 - (IBAction)showhide:(id)sender;
 - (IBAction) selectAll3DSeries:(id) sender;
@@ -402,7 +403,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction)addSmartAlbum: (id)sender;
 - (IBAction)search: (id)sender;
 - (IBAction)setSearchType: (id)sender;
-- (void) setDraggedItems:(NSArray*) pbItems;
+//- (void) setDraggedItems:(NSArray*) pbItems;
 - (IBAction)setTimeIntervalType: (id)sender;
 - (IBAction) endCustomInterval:(id) sender;
 - (IBAction) customIntervalNow:(id) sender;
@@ -599,3 +600,5 @@ OsirixAddToDBNotification posted when files are added to the DB
 
 
 @end
+
+#import "BrowserController+Sources.h"
