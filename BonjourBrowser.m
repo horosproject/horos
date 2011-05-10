@@ -56,10 +56,10 @@ static BonjourBrowser *currentBrowser = nil;
 		interfaceOsiriX = bC;
 		publisher = bPub;
 		
-		[browser setDelegate:self];
+		//[browser setDelegate:self];
 		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"] == NO)
-			[browser searchForServicesOfType:@"_osirixdb._tcp." inDomain:@""];
+		//if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"] == NO)
+		//	[browser searchForServicesOfType:@"_osirixdb._tcp." inDomain:@""];
 		
 //		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		
@@ -328,86 +328,6 @@ static BonjourBrowser *currentBrowser = nil;
 }
 
 // This object is the delegate of its NSNetServiceBrowser object.
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
-{
-	// remove my own sharing service
-	if( aNetService == [publisher netService] || [[aNetService name] isEqualToString: [NSUserDefaultsController BonjourSharingName]] == YES)
-	{
-		
-	}
-	else
-	{
-		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: aNetService, @"service", @"bonjour", @"type", nil];
-		
-		[services addObject:dict];
-		
-		// Resolve the address and port for this NSNetService
-		
-		[aNetService setDelegate:self];
-		[aNetService resolveWithTimeout: 5];
-	}
-	
-	// update interface
-    if( !moreComing)
-	{
-		int i = [[BrowserController currentBrowser] currentBonjourService];
-	
-		NSDictionary	*selectedDict = nil;
-		if( i >= 0) 
-			selectedDict = [[services objectAtIndex: i] retain];
-		
-		[self arrangeServices];
-		[interfaceOsiriX displayBonjourServices];
-		
-		if( selectedDict)
-		{
-			NSInteger index = [services indexOfObject: selectedDict];
-			
-			if( index == NSNotFound)
-				[[BrowserController currentBrowser] resetToLocalDatabase];
-			else
-				[[BrowserController currentBrowser] setCurrentBonjourService: index];
-			
-			[selectedDict release];
-		}
-	}
-}
-
-- (void)netServiceBrowser:(NSNetServiceBrowser*)aNetServiceBrowser didRemoveService:(NSNetService*)aNetService moreComing:(BOOL)moreComing 
-{
-    // This case is slightly more complicated. We need to find the object in the list and remove it.
-    NSEnumerator * enumerator = [services objectEnumerator];
-    NSNetService * currentNetService;
-	
-    while( currentNetService = [enumerator nextObject])
-	{
-        if( [[currentNetService valueForKey: @"service"] isEqual: aNetService])
-		{
-			NSLog(@"TODO: THIS!!! e-irhesidhieieh if db is alive, kill kill kill it NOW");
-			
-			if( [interfaceOsiriX currentBonjourService] >= 0)
-			{
-				if( [services objectAtIndex: [interfaceOsiriX currentBonjourService]] == currentNetService)
-					[interfaceOsiriX resetToLocalDatabase];
-			}
-			
-			// deleting service from list
-			NSInteger index = [services indexOfObject: currentNetService];
-			if( index != NSNotFound)
-			{
-//				NSLog( @"didRemove retainCout: %d", [currentNetService retainCount]);
-				[services removeObjectAtIndex: index];
-			}
-            break;
-        }
-    }
-	
-    if( !moreComing)
-	{
-		[self arrangeServices];
-		[interfaceOsiriX displayBonjourServices];
-	}
-}
 
 
 

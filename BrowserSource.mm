@@ -14,7 +14,6 @@
 @interface BrowserSource ()
 
 @property(readwrite) NSInteger type;
-@property(readwrite,retain) NSString* location;
 @property(readwrite,retain) NSString* description;
 @property(readwrite,retain) NSDictionary* dictionary;
 

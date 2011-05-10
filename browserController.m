@@ -11648,6 +11648,8 @@ static NSArray*	openSubSeriesArray = nil;
 
 	[_database save:NULL];
 	
+	self.database = nil;
+	
 	[self removeAllMounted];
 	
 //	newFilesInIncoming = NO;

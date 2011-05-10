@@ -27,7 +27,7 @@ enum { BrowserSourceTypeDefault, BrowserSourceTypeLocal, BrowserSourceTypeRemote
 +(id)browserSourceForDicomNodeAtAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 
 @property(readonly) NSInteger type;
-@property(readonly,retain) NSString* location;
+@property(readwrite,retain) NSString* location;
 @property(readonly,retain) NSString* description;
 @property(readonly,retain) NSDictionary* dictionary;
 
