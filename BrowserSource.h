@@ -28,8 +28,8 @@ enum { BrowserSourceTypeDefault, BrowserSourceTypeLocal, BrowserSourceTypeRemote
 
 @property(readonly) NSInteger type;
 @property(readwrite,retain) NSString* location;
-@property(readonly,retain) NSString* description;
-@property(readonly,retain) NSDictionary* dictionary;
+@property(readwrite,retain) NSString* description;
+@property(readwrite,retain) NSDictionary* dictionary;
 
 -(BOOL)isEqualToSource:(BrowserSource*)other;
 -(NSComparisonResult)compare:(BrowserSource*)other;

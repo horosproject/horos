@@ -75,22 +75,29 @@
 }
 
 
-+(DicomDatabase*)databaseForAddress:(NSString*)path {
-	return [self databaseForAddress:path name:nil];
++(RemoteDicomDatabase*)databaseForAddress:(NSString*)address {
+	return [self databaseForAddress:address name:nil];
 }
 
-+(DicomDatabase*)databaseForAddress:(NSString*)address name:(NSString*)name {
++(RemoteDicomDatabase*)databaseForAddress:(NSString*)address name:(NSString*)name {
+	return [self databaseForAddress:address name:nil update:YES];
+}
+
++(RemoteDicomDatabase*)databaseForAddress:(NSString*)address name:(NSString*)name update:(BOOL)flagUpdate {
 	NSHost* host;
 	NSInteger port;
 	[self address:address toHost:&host port:&port];
 	
 	NSArray* dbs = [DicomDatabase allDatabases];
-	for (DicomDatabase* db in dbs)
+	for (RemoteDicomDatabase* db in dbs)
 		if ([db isKindOfClass:RemoteDicomDatabase.class])
-			if ([[(RemoteDicomDatabase*)db host] isEqualToHost:host] && [(RemoteDicomDatabase*)db port] == port)
+			if ([[(RemoteDicomDatabase*)db host] isEqualToHost:host] && [(RemoteDicomDatabase*)db port] == port) {
+				if (flagUpdate)
+					[db update];
 				return db;
+			}
 	
-	DicomDatabase* db = [[[self alloc] initWithHost:host port:port] autorelease];
+	RemoteDicomDatabase* db = [[[self alloc] initWithHost:host port:port update:flagUpdate] autorelease];
 	if (name) db.name = name;
 	
 	return db;
@@ -112,10 +119,10 @@
 	NSHost* host;
 	NSInteger port;
 	[RemoteDicomDatabase address:address toHost:&host port:&port];
-	return [self initWithHost:host port:port];
+	return [self initWithHost:host port:port update:YES];
 }
 
--(id)initWithHost:(NSHost*)host port:(NSInteger)port {
+-(id)initWithHost:(NSHost*)host port:(NSInteger)port update:(BOOL)flagUpdate {
 	NSString* path = [NSFileManager.defaultManager tmpFilePathInTmp];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:path];
 	
@@ -127,16 +134,13 @@
 	self.address = host.address;
 	self.port = port;
 	
-	@try {
-		[self update];
-	} @catch (...) {
-		[self release]; self = nil;
-		@throw;
-	}
-	
-	_updateTimer = [NSTimer timerWithTimeInterval:10 target:RemoteDicomDatabase.class selector:@selector(_updateTimerCallbackClass:) userInfo:[NSValue valueWithPointer:self] repeats:YES];
-	[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSModalPanelRunLoopMode];
-	[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSDefaultRunLoopMode];
+	if (flagUpdate)
+		@try {
+			[self update];
+		} @catch (...) {
+			[self release]; self = nil;
+			@throw;
+		}
 	
 	return self;
 }
@@ -333,6 +337,12 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 -(void)update {
 	NSThread* thread = [NSThread currentThread];
 	
+	if (!_updateTimer) {
+		_updateTimer = [NSTimer timerWithTimeInterval:10 target:RemoteDicomDatabase.class selector:@selector(_updateTimerCallbackClass:) userInfo:[NSValue valueWithPointer:self] repeats:YES];
+		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSModalPanelRunLoopMode];
+		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSDefaultRunLoopMode];
+	}
+	
 	[thread enterOperation];
 	[_updateLock lock];
 	@try {
@@ -464,21 +474,41 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 }
 
 -(void)uploadFilesAtPaths:(NSArray*)paths generatedByOsiriX:(BOOL)generatedByOsiriX {
+	NSThread* thread = [NSThread currentThread];
+	[thread enterOperation];
+
 	for (NSString* path in paths)
 		if (![NSFileManager.defaultManager fileExistsAtPath:path])
 			[NSException raise:NSInvalidArgumentException format:@"File not available."];
 	
 	NSMutableData* request = [NSMutableData dataWithBytes: generatedByOsiriX? "SENDG" : "SENDD" length:6];
 	[RemoteDicomDatabase _data:request appendInt:paths.count];
+	NSMutableArray* filesInRequest = [NSMutableArray array];
 	
-	for (NSString* path in paths) {
+	for (NSInteger i = 0; i < paths.count; ++i) {
+		NSString* path = [paths objectAtIndex:i];
+		thread.progress = 1.0*(i-filesInRequest.count/2)/paths.count;
+		
+		[filesInRequest addObject:path];
 		NSData* fileData = [[NSData alloc] initWithContentsOfFile:path];
 		[RemoteDicomDatabase _data:request appendInt:fileData.length];
 		[request appendData:fileData];
 		[fileData release];
+		
+		if (request.length > 32*1024*1024 || (path == paths.lastObject && filesInRequest.count)) { // 
+			NSMutableData* count = [NSMutableData data];
+			[RemoteDicomDatabase _data:count appendInt:filesInRequest.count];
+			[request replaceBytesInRange:NSMakeRange(6,count.length) withBytes:count.bytes length:count.length];
+			
+			[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+			
+			[request setLength:6+count.length];
+			[filesInRequest removeAllObjects];
+		}
 	}
 	
-	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	[thread exitOperation];
+
 }
 
 -(NSString*)fetchDataForImage:(DicomImage*)image maxFiles:(NSInteger)maxFiles { // maxFiles is veeery indicative
@@ -657,16 +687,21 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 }
 
 -(void)storeScuImages:(NSArray*)dicomImages toDestinationAETitle:(NSString*)aet address:(NSString*)address port:(NSInteger)port transferSyntax:(int)exsTransferSyntax {
-	NSMutableData* request = [NSMutableData dataWithBytes:"DCMSE" length:6];
+	NSMutableArray* imagePaths = [NSMutableArray array];
+	for (DicomImage* image in dicomImages)
+		if (![imagePaths containsObject:image.completePath])
+			[imagePaths addObject:image.completePath];
 	
+	NSMutableData* request = [NSMutableData dataWithBytes:"DCMSE" length:6];
+
 	[RemoteDicomDatabase _data:request appendStringUTF8:aet];
 	[RemoteDicomDatabase _data:request appendStringUTF8:address];
 	[RemoteDicomDatabase _data:request appendStringUTF8:[[NSNumber numberWithInt:port] stringValue]];
 	[RemoteDicomDatabase _data:request appendStringUTF8:[[NSNumber numberWithInt:[DCMTKStoreSCU sendSyntaxForListenerSyntax:exsTransferSyntax]] stringValue]];
 	
-	[RemoteDicomDatabase _data:request appendInt:dicomImages.count];
-	for (DicomImage* dicomImage in dicomImages)
-		[RemoteDicomDatabase _data:request appendStringUTF8:dicomImage.path];
+	[RemoteDicomDatabase _data:request appendInt:imagePaths.count];
+	for (NSString* path in imagePaths)
+		[RemoteDicomDatabase _data:request appendStringUTF8:path];
 	
 	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
 }

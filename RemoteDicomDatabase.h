@@ -30,11 +30,12 @@
 +(NSString*)addressWithHost:(NSHost*)host port:(NSInteger)port aet:(NSString*)aet;
 +(NSString*)addressWithHostname:(NSString*)host port:(NSInteger)port aet:(NSString*)aet;
 
-+(DicomDatabase*)databaseForAddress:(NSString*)path;
-+(DicomDatabase*)databaseForAddress:(NSString*)path name:(NSString*)name;
++(RemoteDicomDatabase*)databaseForAddress:(NSString*)path;
++(RemoteDicomDatabase*)databaseForAddress:(NSString*)path name:(NSString*)name;
++(RemoteDicomDatabase*)databaseForAddress:(NSString*)address name:(NSString*)name update:(BOOL)flagUpdate;
 
 -(id)initWithAddress:(NSString*)address;
--(id)initWithHost:(NSHost*)host port:(NSInteger)port;
+-(id)initWithHost:(NSHost*)host port:(NSInteger)port update:(BOOL)flagUpdate;
 
 -(NSThread*)initiateUpdate;
 

@@ -20,6 +20,9 @@
 #import "N2Operators.h"
 #import "ThreadModalForWindowController.h"
 #import "BonjourPublisher.h"
+#import "DicomFile.h"
+#import "ThreadsManager.h"
+#import "DCMNetServiceDelegate.h"
 #import <netinet/in.h>
 #import <arpa/inet.h>
 
@@ -190,7 +193,92 @@
 		}
 }
 
--(BOOL)copyImages:(NSArray*)dicomImages toSource:(BrowserSource*)destination {
+-(void)copyImagesToLocalBrowserSourceThread:(NSArray*)io {
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	NSThread* thread = [NSThread currentThread];
+	NSArray* dicomImages = [io objectAtIndex:0];
+	BrowserSource* destination = [io objectAtIndex:1];
+	
+	NSMutableArray* imagePaths = [NSMutableArray array];
+	for (DicomImage* image in dicomImages)
+		if (![imagePaths containsObject:image.completePath])
+			[imagePaths addObject:image.completePath];
+	
+	thread.status = NSLocalizedString(@"Opening database...", nil);
+	DicomDatabase* db = [DicomDatabase databaseAtPath:destination.location];
+	
+	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %d files...", nil), imagePaths.count];
+	NSMutableArray* dstPaths = [NSMutableArray array];
+	for (NSInteger i = 0; i < imagePaths.count; ++i) {
+		thread.progress = 1.0*i/imagePaths.count;
+		NSString* srcPath = [imagePaths objectAtIndex:i];
+		
+		NSString* ext = [DicomFile isDICOMFile:srcPath]? @"dcm" : srcPath.pathExtension;
+		NSString* dstPath = [db uniquePathForNewDataFileWithExtension:ext];
+		
+		if ([NSFileManager.defaultManager copyItemAtPath:srcPath toPath:dstPath error:nil])
+			[dstPaths addObject:dstPath];
+	}
+	
+	thread.status = NSLocalizedString(@"Indexing files...", nil);
+	thread.progress = -1;
+	[db addFilesAtPaths:dstPaths];
+	
+	[pool release];
+}
+
+-(void)copyImagesToRemoteBrowserSourceThread:(NSArray*)io {
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	NSThread* thread = [NSThread currentThread];
+	NSArray* dicomImages = [io objectAtIndex:0];
+	BrowserSource* destination = [io objectAtIndex:1];
+	
+	NSMutableArray* imagePaths = [NSMutableArray array];
+	for (DicomImage* image in dicomImages)
+		if (![imagePaths containsObject:image.completePath])
+			[imagePaths addObject:image.completePath];
+	
+	thread.status = NSLocalizedString(@"Opening database...", nil);
+	RemoteDicomDatabase* db = [RemoteDicomDatabase databaseForAddress:destination.location name:destination.description update:NO];
+	
+	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Sending %d files...", nil), imagePaths.count];
+	[db uploadFilesAtPaths:imagePaths];
+	
+	[pool release];
+}
+
+-(BOOL)initiateCopyImages:(NSArray*)dicomImages toSource:(BrowserSource*)destination {
+	switch (destination.type) {
+		case BrowserSourceTypeLocal: { // local OsiriX to local OsiriX
+			NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, NULL]] autorelease];
+			thread.name = NSLocalizedString(@"Copying images...", nil);
+			[[ThreadsManager defaultManager] addThreadAndStart:thread];
+			return YES;
+		} break;
+		case BrowserSourceTypeRemote: { // local OsiriX to remote OsiriX
+			NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, NULL]] autorelease];
+			thread.name = NSLocalizedString(@"Sending images...", nil);
+			[[ThreadsManager defaultManager] addThreadAndStart:thread];
+			return YES;
+		} break;
+		case BrowserSourceTypeDicom: { // local OsiriX to remote DICOM
+			NSArray* r = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
+			for (int i = 0; i < r.count; ++i)
+				if ([[r objectAtIndex:i] isEqual:destination.dictionary])
+					[NSUserDefaults.standardUserDefaults setInteger:i forKey:@"lastSendServer"];
+			[self selectServer:dicomImages];
+			return YES;
+//			[_database storeScuImages:dicomImages toDestinationAETitle:(NSString*)aet address:(NSString*)address port:(NSInteger)port transferSyntax:(int)exsTransferSyntax];
+		} break;
+	}
+	
+	return NO;
+	/*
+	
+	
+	[_database copyImages:dicomImages toSource:destination];
+	
+	
 	if (_database.isLocal) switch (destination.type) {
 		case BrowserSourceTypeLocal: { // local OsiriX to local OsiriX
 			
@@ -215,246 +303,246 @@
 	
 	return NO;
 	
-	/*
+	
 	 
 	 NSDictionary *object = nil;
-	 
-	 if( row > 0)
-	 object = [NSDictionary dictionaryWithDictionary: [[bonjourBrowser services] objectAtIndex: row-1]];
-	 
-	 if( [[object valueForKey: @"type"] isEqualToString:@"dicomDestination"]) // destination remote DICOM node
-	 {
-	 NSArray * r = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly: NO];
-	 
-	 for( int i = 0 ; i < [r count]; i++)
-	 {
-	 NSDictionary *c = [r objectAtIndex: i];
-	 
-	 if( [[c objectForKey:@"Description"] isEqualToString: [object objectForKey:@"Description"]] &&
-	 [[c objectForKey:@"Address"] isEqualToString: [object objectForKey:@"Address"]] &&
-	 [[c objectForKey:@"Port"] intValue] == [[object objectForKey:@"Port"] intValue])
-	 [[NSUserDefaults standardUserDefaults] setInteger: i forKey:@"lastSendServer"];
-	 }
-	 
-	 [self selectServer: imagesArray];
-	 }
-	 else if( [[object valueForKey: @"type"] isEqualToString:@"localPath"] || (row == 0 && [_database isLocal])) // destination local
-	 {
-	 NSString	*dbFolder = nil;
-	 NSString	*sqlFile = nil;
-	 
-	 if( row == 0)
-	 {
-	 dbFolder = [[self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]] stringByDeletingLastPathComponent];
-	 sqlFile = [[dbFolder stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"Database.sql"];
-	 }
-	 else
-	 {
-	 dbFolder = [self getDatabaseFolderFor: [object valueForKey: @"Path"]];
-	 sqlFile = [self getDatabaseIndexFileFor: [object valueForKey: @"Path"]];				
-	 }
-	 
-	 if( sqlFile && dbFolder)
-	 {
-	 // LOCAL PATH - DATABASE
-	 @try
-	 {
-	 NSLog( @"-----------------------------");
-	 NSLog( @"Destination is a 'local' path");
-	 
-	 
-	 Wait *splash = nil;
-	 
-	 if (![_database isLocal])
-	 splash = [[Wait alloc] initWithString:NSLocalizedString(@"Downloading files...", nil)];
-	 
-	 [splash showWindow:self];
-	 [[splash progress] setMaxValue:[imagesArray count]];
-	 
-	 NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
-	 for( NSManagedObject *img in imagesArray)
-	 {
-	 NSString	*sendPath = [self getLocalDCMPath: img :10];
-	 [packArray addObject: sendPath];
-	 
-	 [splash incrementBy:1];
-	 }
-	 
-	 [splash close];
-	 [splash release];
-	 
-	 
-	 NSLog( @"DB Folder: %@", dbFolder);
-	 NSLog( @"SQL File: %@", sqlFile);
-	 NSLog( @"Current documentsDirectory: %@", self.documentsDirectory);
-	 
-	 NSPersistentStoreCoordinator *sc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel];
-	 NSManagedObjectContext *sqlContext = [[NSManagedObjectContext alloc] init];
-	 
-	 [sqlContext setPersistentStoreCoordinator: sc];
-	 [sqlContext setUndoManager: nil];
-	 
-	 NSError	*error = nil;
-	 NSArray *copiedObjects = nil;
-	 
-	 NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, nil];	//[NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
-	 
-	 if( [sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options: options error:&error] == nil)
-	 NSLog( @"****** tableView acceptDrop addPersistentStoreWithType error: %@", error);
-	 
-	 if( [dbFolder isEqualToString: [self.documentsDirectory stringByDeletingLastPathComponent]] && [_database isLocal])	// same database folder - we don't need to copy the files
-	 {
-	 NSLog( @"Destination DB Folder is identical to Current DB Folder");
-	 
-	 copiedObjects = [self addFilesToDatabase: packArray onlyDICOM:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
-	 }
-	 else
-	 {
-	 NSMutableArray	*dstFiles = [NSMutableArray array];
-	 NSLog( @"Destination DB Folder is NOT identical to Current DB Folder");
-	 
-	 NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: packArray, @"packArray", dbFolder, @"dbFolder", sqlContext, @"sqlContext", nil];
-	 
-	 NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyToDB:) object: dict] autorelease];
-	 t.name = NSLocalizedString( @"Copying files to another DB...", nil);
-	 t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [packArray count]];
-	 t.supportsCancel = YES;
-	 t.progress = 0;
-	 [[ThreadsManager defaultManager] addThreadAndStart: t];
-	 }
-	 
-	 error = nil;
-	 [sqlContext save: &error];
-	 
-	 [sc release];
-	 [sqlContext release];
-	 }
-	 
-	 @catch (NSException * e)
-	 {
-	 NSLog( @"%@", [e description]);
-	 NSLog( @"Exception LOCAL PATH - DATABASE - tableView *******");
-	 [AppController printStackTrace: e];
-	 }
-	 }
-	 else NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil),  NSLocalizedString(@"Destination Database / Index file is not available.", nil), NSLocalizedString(@"OK",nil), nil, nil);
-	 
-	 NSLog( @"-----------------------------");
-	 }
-	 else if (![_database isLocal]) // copying from (remote) to (local|distant)
-	 { 
-	 if (!row || [object objectForKey:<#(id)aKey#>])
-	 
-	 [_database ];
-	 
-	 BOOL OnlyDICOM = YES;
-	 BOOL succeed = NO;
-	 
-	 [splash showWindow:self];
-	 [[splash progress] setMaxValue:[imagesArray count]];
-	 
-	 for( NSManagedObject *img in imagesArray)
-	 {
-	 if( [[img valueForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) OnlyDICOM = NO;
-	 }
-	 
-	 if( OnlyDICOM && [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
-	 {
-	 // We will use the DICOM-Store-SCP
-	 NSMutableDictionary* destination = [[[[bonjourBrowser services] objectAtIndex:row-1] mutableCopy] autorelease];
-	 if (row == 0)
-	 [destination addEntriesFromDictionary:[RemoteDicomDatabase fetchDicomDestinationInfoForHost:[NSHost hostWithAddress:] port:[]]];
-	 else {
-	 
-	 }
-	 
-	 [(RemoteDicomDatabase*)_database storeScuImages:imagesArray toDestinationAETitle:<#(NSString *)aet#> address:<#(NSString *)address#> port:<#(NSInteger)port#> transferSyntax:<#(int)transferSyntax#>];
-	 for (int i = 0; i < [imagesArray count]; i++) [splash incrementBy:1];
-	 }
-	 else NSLog( @"Not Only DICOM !");
-	 
-	 if( succeed == NO || OnlyDICOM == NO)
-	 {
-	 NSString *rootPath = [self INCOMINGPATH];
-	 
-	 for( NSManagedObject *img in imagesArray)
-	 {
-	 NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	 
-	 filePath = [self getLocalDCMPath: img :100];
-	 destPath = [rootPath stringByAppendingPathComponent: [filePath lastPathComponent]];
-	 
-	 // The files are moved to the INCOMING folder : they will be automatically added when switching back to local database!
-	 
-	 [[NSFileManager defaultManager] copyPath:filePath toPath:destPath handler:nil];
-	 
-	 [splash incrementBy:1];
-	 
-	 [pool release];
-	 }
-	 }
-	 
-	 }
-	 else if( [_sourcesTableView selectedRow] != row && row > 0 && object != nil)	 // Copying From Local to distant
-	 { NSLog(@"TODO: THHIIIIIIIIISSSSSSSSSS"); /*
-	 BOOL OnlyDICOM = YES;
-	 
-	 NSDictionary *dcmNode = object;
-	 
-	 if( OnlyDICOM == NO)
-	 NSLog( @"Not Only DICOM !");
-	 
-	 if( [dcmNode valueForKey:@"Port"] == nil && OnlyDICOM)
-	 {
-	 NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
-	 [dict addEntriesFromDictionary: [bonjourBrowser getDICOMDestinationInfo: row-1]];
-	 [[bonjourBrowser services] replaceObjectAtIndex: row-1 withObject: dict];
-	 
-	 dcmNode = dict;
-	 }
-	 
-	 if( [dcmNode valueForKey:@"Port"] && OnlyDICOM)
-	 {
-	 [SendController sendFiles: imagesArray toNode: dcmNode usingSyntax: [[dcmNode valueForKey: @"TransferSyntax"] intValue]];
-	 }
-	 else
-	 {
-	 Wait *splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
-	 [splash showWindow:self];
-	 [[splash progress] setMaxValue:[imagesArray count]];
-	 
-	 for( int i = 0; i < [imagesArray count];)
-	 {
-	 NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-	 NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
-	 
-	 for( int x = 0; x < 10; x++)
-	 {
-	 if( i <  [imagesArray count])
-	 {
-	 NSString *sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
-	 
-	 [packArray addObject: sendPath];
-	 
-	 [splash incrementBy:1];
-	 }
-	 i++;
-	 }
-	 
-	 if( [bonjourBrowser sendDICOMFile: row-1 paths: packArray] == NO)
-	 {
-	 NSRunAlertPanel( NSLocalizedString(@"Network Error", nil), NSLocalizedString(@"Failed to send the files to this node.", nil), nil, nil, nil);
-	 i = [imagesArray count];
-	 }
-	 
-	 [pool release];
-	 }
-	 
-	 [splash close];
-	 [splash release];
-	 }
-	 }
-	 else return NO;*/
+	
+	if( row > 0)
+		object = [NSDictionary dictionaryWithDictionary: [[bonjourBrowser services] objectAtIndex: row-1]];
+	
+	if( [[object valueForKey: @"type"] isEqualToString:@"dicomDestination"]) // destination remote DICOM node
+	{
+		NSArray * r = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly: NO];
+		
+		for( int i = 0 ; i < [r count]; i++)
+		{
+			NSDictionary *c = [r objectAtIndex: i];
+			
+			if( [[c objectForKey:@"Description"] isEqualToString: [object objectForKey:@"Description"]] &&
+			   [[c objectForKey:@"Address"] isEqualToString: [object objectForKey:@"Address"]] &&
+			   [[c objectForKey:@"Port"] intValue] == [[object objectForKey:@"Port"] intValue])
+				[[NSUserDefaults standardUserDefaults] setInteger: i forKey:@"lastSendServer"];
+		}
+		
+		[self selectServer: imagesArray];
+	}
+	else if( [[object valueForKey: @"type"] isEqualToString:@"localPath"] || (row == 0 && [_database isLocal])) // destination local
+	{
+		NSString	*dbFolder = nil;
+		NSString	*sqlFile = nil;
+		
+		if( row == 0)
+		{
+			dbFolder = [[self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]] stringByDeletingLastPathComponent];
+			sqlFile = [[dbFolder stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"Database.sql"];
+		}
+		else
+		{
+			dbFolder = [self getDatabaseFolderFor: [object valueForKey: @"Path"]];
+			sqlFile = [self getDatabaseIndexFileFor: [object valueForKey: @"Path"]];				
+		}
+		
+		if( sqlFile && dbFolder)
+		{
+			// LOCAL PATH - DATABASE
+			@try
+			{
+				NSLog( @"-----------------------------");
+				NSLog( @"Destination is a 'local' path");
+				
+				
+				Wait *splash = nil;
+				
+				if (![_database isLocal])
+					splash = [[Wait alloc] initWithString:NSLocalizedString(@"Downloading files...", nil)];
+				
+				[splash showWindow:self];
+				[[splash progress] setMaxValue:[imagesArray count]];
+				
+				NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
+				for( NSManagedObject *img in imagesArray)
+				{
+					NSString	*sendPath = [self getLocalDCMPath: img :10];
+					[packArray addObject: sendPath];
+					
+					[splash incrementBy:1];
+				}
+				
+				[splash close];
+				[splash release];
+				
+				
+				NSLog( @"DB Folder: %@", dbFolder);
+				NSLog( @"SQL File: %@", sqlFile);
+				NSLog( @"Current documentsDirectory: %@", self.documentsDirectory);
+				
+				NSPersistentStoreCoordinator *sc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel];
+				NSManagedObjectContext *sqlContext = [[NSManagedObjectContext alloc] init];
+				
+				[sqlContext setPersistentStoreCoordinator: sc];
+				[sqlContext setUndoManager: nil];
+				
+				NSError	*error = nil;
+				NSArray *copiedObjects = nil;
+				
+				NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, nil];	//[NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+				
+				if( [sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options: options error:&error] == nil)
+					NSLog( @"****** tableView acceptDrop addPersistentStoreWithType error: %@", error);
+				
+				if( [dbFolder isEqualToString: [self.documentsDirectory stringByDeletingLastPathComponent]] && [_database isLocal])	// same database folder - we don't need to copy the files
+				{
+					NSLog( @"Destination DB Folder is identical to Current DB Folder");
+					
+					copiedObjects = [self addFilesToDatabase: packArray onlyDICOM:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+				}
+				else
+				{
+					NSMutableArray	*dstFiles = [NSMutableArray array];
+					NSLog( @"Destination DB Folder is NOT identical to Current DB Folder");
+					
+					NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: packArray, @"packArray", dbFolder, @"dbFolder", sqlContext, @"sqlContext", nil];
+					
+					NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( copyToDB:) object: dict] autorelease];
+					t.name = NSLocalizedString( @"Copying files to another DB...", nil);
+					t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [packArray count]];
+					t.supportsCancel = YES;
+					t.progress = 0;
+					[[ThreadsManager defaultManager] addThreadAndStart: t];
+				}
+				
+				error = nil;
+				[sqlContext save: &error];
+				
+				[sc release];
+				[sqlContext release];
+			}
+			
+			@catch (NSException * e)
+			{
+				NSLog( @"%@", [e description]);
+				NSLog( @"Exception LOCAL PATH - DATABASE - tableView *******");
+				[AppController printStackTrace: e];
+			}
+		}
+		else NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil),  NSLocalizedString(@"Destination Database / Index file is not available.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+		
+		NSLog( @"-----------------------------");
+	}
+	else if (![_database isLocal]) // copying from (remote) to (local|distant)
+	{ 
+		if (!row || [object objectForKey:<#(id)aKey#>])
+			
+			[_database ];
+		
+		BOOL OnlyDICOM = YES;
+		BOOL succeed = NO;
+		
+		[splash showWindow:self];
+		[[splash progress] setMaxValue:[imagesArray count]];
+		
+		for( NSManagedObject *img in imagesArray)
+		{
+			if( [[img valueForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) OnlyDICOM = NO;
+		}
+		
+		if( OnlyDICOM && [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
+		{
+			// We will use the DICOM-Store-SCP
+			NSMutableDictionary* destination = [[[[bonjourBrowser services] objectAtIndex:row-1] mutableCopy] autorelease];
+			if (row == 0)
+				[destination addEntriesFromDictionary:[RemoteDicomDatabase fetchDicomDestinationInfoForHost:[NSHost hostWithAddress:] port:[]]];
+			else {
+				
+			}
+			
+			[(RemoteDicomDatabase*)_database storeScuImages:imagesArray toDestinationAETitle:<#(NSString *)aet#> address:<#(NSString *)address#> port:<#(NSInteger)port#> transferSyntax:<#(int)transferSyntax#>];
+			for (int i = 0; i < [imagesArray count]; i++) [splash incrementBy:1];
+		}
+		else NSLog( @"Not Only DICOM !");
+		
+		if( succeed == NO || OnlyDICOM == NO)
+		{
+			NSString *rootPath = [self INCOMINGPATH];
+			
+			for( NSManagedObject *img in imagesArray)
+			{
+				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+				
+				filePath = [self getLocalDCMPath: img :100];
+				destPath = [rootPath stringByAppendingPathComponent: [filePath lastPathComponent]];
+				
+				// The files are moved to the INCOMING folder : they will be automatically added when switching back to local database!
+				
+				[[NSFileManager defaultManager] copyPath:filePath toPath:destPath handler:nil];
+				
+				[splash incrementBy:1];
+				
+				[pool release];
+			}
+		}
+		
+	}
+	else if( [_sourcesTableView selectedRow] != row && row > 0 && object != nil)	 // Copying From Local to distant
+	{ NSLog(@"TODO: THHIIIIIIIIISSSSSSSSSS"); 
+		BOOL OnlyDICOM = YES;
+		
+		NSDictionary *dcmNode = object;
+		
+		if( OnlyDICOM == NO)
+			NSLog( @"Not Only DICOM !");
+		
+		if( [dcmNode valueForKey:@"Port"] == nil && OnlyDICOM)
+		{
+			NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
+			[dict addEntriesFromDictionary: [bonjourBrowser getDICOMDestinationInfo: row-1]];
+			[[bonjourBrowser services] replaceObjectAtIndex: row-1 withObject: dict];
+			
+			dcmNode = dict;
+		}
+		
+		if( [dcmNode valueForKey:@"Port"] && OnlyDICOM)
+		{
+			[SendController sendFiles: imagesArray toNode: dcmNode usingSyntax: [[dcmNode valueForKey: @"TransferSyntax"] intValue]];
+		}
+		else
+		{
+			Wait *splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
+			[splash showWindow:self];
+			[[splash progress] setMaxValue:[imagesArray count]];
+			
+			for( int i = 0; i < [imagesArray count];)
+			{
+				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+				NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
+				
+				for( int x = 0; x < 10; x++)
+				{
+					if( i <  [imagesArray count])
+					{
+						NSString *sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
+						
+						[packArray addObject: sendPath];
+						
+						[splash incrementBy:1];
+					}
+					i++;
+				}
+				
+				if( [bonjourBrowser sendDICOMFile: row-1 paths: packArray] == NO)
+				{
+					NSRunAlertPanel( NSLocalizedString(@"Network Error", nil), NSLocalizedString(@"Failed to send the files to this node.", nil), nil, nil, nil);
+					i = [imagesArray count];
+				}
+				
+				[pool release];
+			}
+			
+			[splash close];
+			[splash release];
+		}
+	}
+	else return NO;*/
 }
 
 -(long)currentBonjourService { // __deprecated
@@ -523,8 +611,13 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 		// add new items
 		for (NSDictionary* d in a) {
 			NSString* dpath = [d valueForKey:@"Path"];
-			if (![[_browser.sources.arrangedObjects valueForKey:@"location"] containsObject:dpath])
+			NSUInteger i = [[_browser.sources.arrangedObjects valueForKey:@"location"] indexOfObject:dpath];
+			if (i == NSNotFound)
 				[_browser.sources addObject:[BrowserSource browserSourceForLocalPath:dpath description:[d objectForKey:@"Description"] dictionary:d]];
+			else {
+				[[_browser sourceAtRow:i] setDescription:[d objectForKey:@"Description"]];
+				[[_browser sourceAtRow:i] setDictionary:d];
+			}
 		}
 	}
 	
@@ -540,27 +633,49 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 		// add new items
 		for (NSDictionary* d in a) {
 			NSString* dadd = [d valueForKey:@"Address"];
-			if (![[_browser.sources.arrangedObjects valueForKey:@"location"] containsObject:dadd])
+			NSUInteger i = [[_browser.sources.arrangedObjects valueForKey:@"location"] indexOfObject:dadd];
+			if (i == NSNotFound)
 				[_browser.sources addObject:[BrowserSource browserSourceForAddress:dadd description:[d objectForKey:@"Description"] dictionary:d]];
+			else {
+				[[_browser sourceAtRow:i] setDescription:[d objectForKey:@"Description"]];
+				[[_browser sourceAtRow:i] setDictionary:d];
+			}
 		}
 	}
 	
 	if (context == DicomBrowserSourcesContext) {
 		NSArray* a = [NSUserDefaults.standardUserDefaults objectForKey:@"SERVERS"];
+		NSMutableDictionary* aa = [NSMutableDictionary dictionary];
+		for (NSDictionary* ai in a)
+			[aa setObject:ai forKey:[RemoteDicomDatabase addressWithHostname:[ai objectForKey:@"Address"] port:[[ai objectForKey:@"Port"] integerValue] aet:[ai objectForKey:@"AETitle"]]];
 		// remove old items
 		for (NSInteger i = [[_browser.sources arrangedObjects] count]-1; i >= 0; --i) {
 			BrowserSource* is = [_browser.sources.arrangedObjects objectAtIndex:i];
-			if (is.type == BrowserSourceTypeDicom)
-				if (![[a valueForKey:@"Address"] containsObject:is.location])
+			if (is.type == BrowserSourceTypeDicom) {
+				if (![[aa allKeys] containsObject:is.location])
 					[_browser.sources removeObjectAtArrangedObjectIndex:i];
+			}
 		}
 		// add new items
-		for (NSDictionary* d in a) {
-			NSString* dadd = [d valueForKey:@"Address"];
-			
-			if (![[_browser.sources.arrangedObjects valueForKey:@"location"] containsObject:dadd])
-				[_browser.sources addObject:[BrowserSource browserSourceForDicomNodeAtAddress:dadd description:[d objectForKey:@"Description"] dictionary:d]];
+		for (NSString* aai in aa) {
+			NSUInteger i = [[_browser.sources.arrangedObjects valueForKey:@"location"] indexOfObject:aai];
+			if (i == NSNotFound)
+				[_browser.sources addObject:[BrowserSource browserSourceForDicomNodeAtAddress:aai description:[[aa objectForKey:aai] objectForKey:@"Description"] dictionary:[aa objectForKey:aai]]];
+			else {
+				[[_browser sourceAtRow:i] setDescription:[[aa objectForKey:aai] objectForKey:@"Description"]];
+				[[_browser sourceAtRow:i] setDictionary:[aa objectForKey:aai]];
+			}
 		}
+	}
+	
+	if (context == SearchBonjourNodesContext) {
+		if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
+			for (BrowserSource* bs in [_bonjourSources allValues])
+				[_browser.sources removeObject:bs];
+		else
+			for (BrowserSource* bs in [_bonjourSources allValues])
+				if (bs.location)
+					[_browser.sources addObject:bs];
 	}
 	
 	// showhide bonjour sources
@@ -607,7 +722,7 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 		return;
 	}
 	
-	//	if (![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
+	if (![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
 		if (source.location)
 			[_browser.sources addObject:source];
 }
@@ -635,7 +750,7 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 	
 	NSLog(@"Remote database gone: %@", service);
 	
-//	if (![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
+	if (![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
 		[_browser.sources removeObject:source];
 	
 	[_bonjourSources removeObjectForKey:[NSValue valueWithPointer:service]];
@@ -678,7 +793,10 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 
 -(BOOL)tableView:(NSTableView*)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation {
 	NSPasteboard* pb = [info draggingPasteboard];
-	NSArray* xids = [pb propertyListForType:@"BrowserController.database.context.XIDs"];
+	NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:@"BrowserController.database.context.XIDs"] 
+													 mutabilityOption:NSPropertyListImmutable 
+															   format:NULL 
+													 errorDescription:NULL];
 	NSMutableArray* items = [NSMutableArray array];
 	for (NSString* xid in xids)
 		[items addObject:[_browser.database objectWithID:[NSManagedObject UidForXid:xid]]];
@@ -687,7 +805,7 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 	NSMutableArray* dicomImages = [DicomImage dicomImagesInObjects:items];
 	[[NSMutableArray arrayWithArray:[dicomImages valueForKey:@"path"]] removeDuplicatedStringsInSyncWithThisArray:dicomImages]; // remove duplicated paths
 	
-	return [_browser copyImages:dicomImages toSource:[_browser sourceAtRow:row]];
+	return [_browser initiateCopyImages:dicomImages toSource:[_browser sourceAtRow:row]];
 }
 
 -(void)tableViewSelectionDidChange:(NSNotification*)notification {
