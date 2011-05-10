@@ -2819,11 +2819,11 @@ static BOOL initialized = NO;
 				
 				
 				#ifdef MACAPPSTORE
-				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"];
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AUTHENTICATION"];
 				[[NSUserDefaults standardUserDefaults] setObject:@"(~/Library/Application Support/OsiriX/)" forKey:@"DefaultDatabasePath"];
 				#else
-				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"MACAPPSTORE"];
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
 				[[NSUserDefaults standardUserDefaults] setObject:@"(Current User Documents folder)" forKey:@"DefaultDatabasePath"];
 				#endif
 				
@@ -4849,7 +4849,7 @@ static BOOL initialized = NO;
 
 + (void)checkForPagesTemplate;
 {
-	#ifdef MACAPPSTORE
+	#ifndef MACAPPSTORE
 	// Pages template directory
 	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
 	int i;
