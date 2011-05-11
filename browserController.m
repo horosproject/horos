@@ -1384,6 +1384,7 @@ static NSConditionLock *threadLock = nil;
 			_database = [db retain];
 			if ([db isLocal] && [NSUserDefaults canActivateAnyLocalDatabase])
 				[DicomDatabase setActiveLocalDatabase:db];
+			[self selectCurrentDatabaseSource];
 			
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseAddNotification:) name:OsirixAddToDBNotification object:_database];
 			
@@ -11570,8 +11571,8 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[[NSFileManager defaultManager] createFileAtPath: @"/tmp/kill_all_storescu" contents: [NSData data] attributes: nil];
 		
-		for( NSInteger x = 0, row; x < [[ThreadsManager defaultManager] threadsCount]; x++)  
-			[[[ThreadsManager defaultManager] objectInThreadsAtIndex: x] cancel];
+//		for( NSInteger x = 0, row; x < [[ThreadsManager defaultManager] threadsCount]; x++)  
+//			[[[ThreadsManager defaultManager] objectInThreadsAtIndex: x] cancel];
 		
 		NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + 240;
 //		while( ti - [NSDate timeIntervalSinceReferenceDate] > 0 && [[ThreadsManager defaultManager] threadsCount] > 0)

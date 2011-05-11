@@ -337,12 +337,6 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 -(void)update {
 	NSThread* thread = [NSThread currentThread];
 	
-	if (!_updateTimer) {
-		_updateTimer = [NSTimer timerWithTimeInterval:10 target:RemoteDicomDatabase.class selector:@selector(_updateTimerCallbackClass:) userInfo:[NSValue valueWithPointer:self] repeats:YES];
-		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSModalPanelRunLoopMode];
-		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSDefaultRunLoopMode];
-	}
-	
 	[thread enterOperation];
 	[_updateLock lock];
 	@try {
@@ -369,15 +363,18 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:self];
 		
-		
-		
-		
 	} @catch (NSException* e) {
 		@throw;
 	} @finally {
 		[_updateLock unlock];
 		[thread exitOperation];
 	}
+	
+	if (!_updateTimer) {
+		_updateTimer = [NSTimer timerWithTimeInterval:10 target:RemoteDicomDatabase.class selector:@selector(_updateTimerCallbackClass:) userInfo:[NSValue valueWithPointer:self] repeats:YES];
+		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSModalPanelRunLoopMode];
+		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSDefaultRunLoopMode];
+	}	
 }
 
 -(void)updateThread:(id)obj {
@@ -476,38 +473,41 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 -(void)uploadFilesAtPaths:(NSArray*)paths generatedByOsiriX:(BOOL)generatedByOsiriX {
 	NSThread* thread = [NSThread currentThread];
 	[thread enterOperation];
-
-	for (NSString* path in paths)
-		if (![NSFileManager.defaultManager fileExistsAtPath:path])
-			[NSException raise:NSInvalidArgumentException format:@"File not available."];
-	
-	NSMutableData* request = [NSMutableData dataWithBytes: generatedByOsiriX? "SENDG" : "SENDD" length:6];
-	[RemoteDicomDatabase _data:request appendInt:paths.count];
-	NSMutableArray* filesInRequest = [NSMutableArray array];
-	
-	for (NSInteger i = 0; i < paths.count; ++i) {
-		NSString* path = [paths objectAtIndex:i];
-		thread.progress = 1.0*(i-filesInRequest.count/2)/paths.count;
+	@try {
+		for (NSString* path in paths)
+			if (![NSFileManager.defaultManager fileExistsAtPath:path])
+				[NSException raise:NSInvalidArgumentException format:@"File not available."];
 		
-		[filesInRequest addObject:path];
-		NSData* fileData = [[NSData alloc] initWithContentsOfFile:path];
-		[RemoteDicomDatabase _data:request appendInt:fileData.length];
-		[request appendData:fileData];
-		[fileData release];
+		NSMutableData* request = [NSMutableData dataWithBytes: generatedByOsiriX? "SENDG" : "SENDD" length:6];
+		[RemoteDicomDatabase _data:request appendInt:paths.count];
+		NSMutableArray* filesInRequest = [NSMutableArray array];
 		
-		if (request.length > 32*1024*1024 || (path == paths.lastObject && filesInRequest.count)) { // 
-			NSMutableData* count = [NSMutableData data];
-			[RemoteDicomDatabase _data:count appendInt:filesInRequest.count];
-			[request replaceBytesInRange:NSMakeRange(6,count.length) withBytes:count.bytes length:count.length];
+		for (NSInteger i = 0; i < paths.count; ++i) {
+			NSString* path = [paths objectAtIndex:i];
+			thread.progress = 1.0*(i-filesInRequest.count/2)/paths.count;
 			
-			[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+			[filesInRequest addObject:path];
+			NSData* fileData = [[NSData alloc] initWithContentsOfFile:path];
+			[RemoteDicomDatabase _data:request appendInt:fileData.length];
+			[request appendData:fileData];
+			[fileData release];
 			
-			[request setLength:6+count.length];
-			[filesInRequest removeAllObjects];
+			if (request.length > 32*1024*1024 || (path == paths.lastObject && filesInRequest.count)) { // we split the send in smaller chunks to avoid allocation problems
+				NSMutableData* count = [NSMutableData data];
+				[RemoteDicomDatabase _data:count appendInt:filesInRequest.count];
+				[request replaceBytesInRange:NSMakeRange(6,count.length) withBytes:count.bytes length:count.length];
+				
+				[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+				
+				[request setLength:6+count.length];
+				[filesInRequest removeAllObjects];
+			}
 		}
+	} @catch (...) {
+		@throw;
+	} @finally {
+		[thread exitOperation];
 	}
-	
-	[thread exitOperation];
 
 }
 

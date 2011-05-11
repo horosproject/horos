@@ -22,14 +22,17 @@
 #import "BonjourPublisher.h"
 #import "DicomFile.h"
 #import "ThreadsManager.h"
+#import "NSDictionary+N2.h"
 #import "DCMNetServiceDelegate.h"
+#import "AppController.h"
 #import <netinet/in.h>
 #import <arpa/inet.h>
 
 
 @interface BrowserSourcesHelper : NSObject/*<NSTableViewDelegate,NSTableViewDataSource>*/ {
 	BrowserController* _browser;
-	NSNetServiceBrowser* _nsb;
+	NSNetServiceBrowser* _nsbOsirix;
+	NSNetServiceBrowser* _nsbDicom;
 	NSMutableDictionary* _bonjourSources;
 }
 
@@ -45,6 +48,8 @@
 }
 
 @property(retain) NSNetService* service;
+
+-(NSInteger)port;
 
 @end
 
@@ -94,7 +99,7 @@
 -(BrowserSource*)sourceForDatabase:(DicomDatabase*)database {
 	if (database.isLocal)
 		return [BrowserSource browserSourceForLocalPath:database.baseDirPath];
-	else return [BrowserSource browserSourceForAddress:[NSString stringWithFormat:@"%@:%d", [(RemoteDicomDatabase*)database host], [(RemoteDicomDatabase*)database port]] description:nil dictionary:nil];	
+	else return [BrowserSource browserSourceForAddress:[NSString stringWithFormat:@"%@:%d", [(RemoteDicomDatabase*)database address], [(RemoteDicomDatabase*)database port]] description:nil dictionary:nil];	
 }
 
 -(int)rowForDatabase:(DicomDatabase*)database {
@@ -137,12 +142,20 @@
 		
 		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:db waitUntilDone:NO];
 	} @catch (NSException* e) {
-		if (![e.description isEqualToString:@"Cancelled."])
-			N2LogExceptionWithStackTrace(e);
 		[self performSelectorOnMainThread:@selector(selectCurrentDatabaseSource) withObject:nil waitUntilDone:NO];
+		if (![e.description isEqualToString:@"Cancelled."]) {
+			N2LogExceptionWithStackTrace(e);
+			[self performSelectorOnMainThread:@selector(complain:) withObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:0.1], NSLocalizedString(@"Error", nil), e.description, NULL] waitUntilDone:NO];
+		}
 	} @finally {
 		[pool release];
 	}
+}
+
+-(void)complain:(NSArray*)why {
+	if ([[why objectAtIndex:0] isKindOfClass:NSNumber.class])
+		[self performSelector:@selector(complain:) withObject:[why subarrayWithRange:NSMakeRange(1, why.count-1)] afterDelay:[[why objectAtIndex:0] floatValue]];
+	else NSBeginAlertSheet([why objectAtIndex:0], nil, nil, nil, self.window, NSApp, @selector(endSheet:), nil, nil, [why objectAtIndex:1]);
 }
 
 -(NSThread*)initiateSetDatabaseAtPath:(NSString*)path name:(NSString*)name {
@@ -188,8 +201,10 @@
 				NSHost* host; NSInteger port; [RemoteDicomDatabase address:source.location toHost:&host port:&port];
 				[self initiateSetRemoteDatabaseWithAddress:host.address port:port name:source.description];
 			} break;
-			default:
-				[self selectCurrentDatabaseSource]; // TODO: oaeiuiouioei
+			default: {
+				NSBeginAlertSheet(NSLocalizedString(@"DICOM Destination", nil), nil, nil, nil, self.window, NSApp, @selector(endSheet:), nil, nil, NSLocalizedString(@"It is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil));
+				[self selectCurrentDatabaseSource];
+			} break;
 		}
 }
 
@@ -250,13 +265,13 @@
 -(BOOL)initiateCopyImages:(NSArray*)dicomImages toSource:(BrowserSource*)destination {
 	switch (destination.type) {
 		case BrowserSourceTypeLocal: { // local OsiriX to local OsiriX
-			NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, NULL]] autorelease];
+			NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
 			thread.name = NSLocalizedString(@"Copying images...", nil);
 			[[ThreadsManager defaultManager] addThreadAndStart:thread];
 			return YES;
 		} break;
 		case BrowserSourceTypeRemote: { // local OsiriX to remote OsiriX
-			NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, NULL]] autorelease];
+			NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
 			thread.name = NSLocalizedString(@"Sending images...", nil);
 			[[ThreadsManager defaultManager] addThreadAndStart:thread];
 			return YES;
@@ -576,18 +591,22 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 		[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:@"SERVERS" options:NSKeyValueObservingOptionInitial context:DicomBrowserSourcesContext];
 		_bonjourSources = [[NSMutableDictionary alloc] init];
 		[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:@"DoNotSearchForBonjourServices" options:NSKeyValueObservingOptionInitial context:SearchBonjourNodesContext];
-		_nsb = [[NSNetServiceBrowser alloc] init];
-		[_nsb setDelegate:self];
-		[_nsb searchForServicesOfType:@"_osirixdb._tcp." inDomain:@""];
+		_nsbOsirix = [[NSNetServiceBrowser alloc] init];
+		[_nsbOsirix setDelegate:self];
+		[_nsbOsirix searchForServicesOfType:@"_osirixdb._tcp." inDomain:@""];
+		_nsbDicom = [[NSNetServiceBrowser alloc] init];
+		[_nsbDicom setDelegate:self];
+		[_nsbDicom searchForServicesOfType:@"_dicom._tcp." inDomain:@""];
 	}
 	
 	return self;
 }
 
 -(void)dealloc {
-	[_nsb release]; _nsb = nil;
+	[_nsbDicom release]; _nsbDicom = nil;
+	[_nsbOsirix release]; _nsbOsirix = nil;
 	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"DoNotSearchForBonjourServices"];
-	[_bonjourSources dealloc];
+	[_bonjourSources release];
 	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"SERVERS"];
 	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"OSIRIXSERVERS"];
 	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"localDatabasePaths"];
@@ -671,15 +690,17 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 	if (context == SearchBonjourNodesContext) {
 		if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
 			for (BrowserSource* bs in [_bonjourSources allValues])
-				[_browser.sources removeObject:bs];
+				if (bs.type == BrowserSourceTypeRemote)
+					[_browser.sources removeObject:bs];
 		else
 			for (BrowserSource* bs in [_bonjourSources allValues])
-				if (bs.location)
+				if (bs.type == BrowserSourceTypeRemote && bs.location)
 					[_browser.sources addObject:bs];
 	}
 	
 	// showhide bonjour sources
 }
+
 
 -(void)netServiceDidResolveAddress:(NSNetService*)service {
 	BrowserSource* source = [_bonjourSources objectForKey:[NSValue valueWithPointer:service]];
@@ -706,25 +727,21 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 		}
 	}
 	
-	NSArray* selfAddresses = NSHost.currentHost.addresses;
-	BOOL isMe = NO;
 	for (NSArray* address in addresses) {
 		// NSLog(@"\t%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]);
 		if (!source.location)
-			source.location = [[address objectAtIndex:0] stringByAppendingFormat:@":%@", [address objectAtIndex:1]];
-		if (!isMe && [selfAddresses containsObject:[address objectAtIndex:0]] && [[address objectAtIndex:1] integerValue] == [BonjourPublisher.currentPublisher OsiriXDBCurrentPort])
-			isMe = YES;
-	}
+			if (source.type == BrowserSourceTypeRemote)
+				source.location = [[address objectAtIndex:0] stringByAppendingFormat:@":%@", [address objectAtIndex:1]];
+			else source.location = [service.name stringByAppendingFormat:@"@%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]];
+	}	
 	
-	if (isMe) {
-		// NSLog(@"\t\tIt's me!");
-		[_bonjourSources removeObjectForKey:[NSValue valueWithPointer:service]];
-		return;
-	}
-	
-	if (![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
-		if (source.location)
+	if (source.location) {
+		NSLog(@"Adding %@", source.location);
+		if (source.type == BrowserSourceTypeRemote && ![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
 			[_browser.sources addObject:source];
+		if (source.type == BrowserSourceTypeDicom && [NSUserDefaults.standardUserDefaults boolForKey:@"searchDICOMBonjour"])
+			[_browser.sources addObject:source];
+	}
 }
 
 -(void)netService:(NSNetService*)service didNotResolve:(NSDictionary*)errorDict {
@@ -732,10 +749,20 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 }
 
 -(void)netServiceBrowser:(NSNetServiceBrowser*)nsb didFindService:(NSNetService*)service moreComing:(BOOL)moreComing {
-	// NSLog(@"Remote OsiriX database detected: %@", service);
-	NSNetService* me = [[BonjourPublisher currentPublisher] netService];
+	if (nsb == _nsbOsirix)
+		if ([service isEqual:[[BonjourPublisher currentPublisher] netService]])
+			return; // it's me
+	if (nsb == _nsbDicom)
+		if ([service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]])
+			return; // it's me
 	
-	BonjourBrowserSource* source = [BonjourBrowserSource browserSourceForAddress:nil description:service.name dictionary:nil];
+	NSLog(@"Bonjour service found: %@", service);
+	
+	BonjourBrowserSource* source;
+	if (nsb == _nsbOsirix)
+		source = [BonjourBrowserSource browserSourceForAddress:nil description:service.name dictionary:nil];
+	else source = [BonjourBrowserSource browserSourceForDicomNodeAtAddress:nil description:service.name dictionary:nil];
+	
 	source.service = service;
 	[_bonjourSources setObject:source forKey:[NSValue valueWithPointer:service]];
 	
@@ -745,17 +772,31 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 }
 
 -(void)netServiceBrowser:(NSNetServiceBrowser*)nsb didRemoveService:(NSNetService*)service moreComing:(BOOL)moreComing {
-	BrowserSource* source = [_bonjourSources objectForKey:[NSValue valueWithPointer:service]];
-	if (!source) return;
+	if (nsb == _nsbOsirix)
+		if ([service isEqual:[[BonjourPublisher currentPublisher] netService]])
+			return; // it's me
+	if (nsb == _nsbDicom)
+		if ([service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]])
+			return; // it's me
 	
-	NSLog(@"Remote database gone: %@", service);
+	NSLog(@"Bonjour service gone: %@", service);
 	
-	if (![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
-		[_browser.sources removeObject:source];
+	BonjourBrowserSource* bs = nil;
+	for (BonjourBrowserSource* bsi in [_bonjourSources allValues])
+		if ([bsi.service isEqual:service])
+			bs = bsi;
+	if (!bs)
+		return;
 	
-	[_bonjourSources removeObjectForKey:[NSValue valueWithPointer:service]];
+	if (bs.type == BrowserSourceTypeRemote && ![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
+		[_browser.sources removeObject:bs];
+	if (bs.type == BrowserSourceTypeDicom && [NSUserDefaults.standardUserDefaults boolForKey:@"searchDICOMBonjour"])
+		[_browser.sources removeObject:bs];
 	
-	NSLog(@"TODO: THIS!!! e-irhesidhieieh if db is alive, kill kill kill it NOW");
+	if ([[_browser sourceForDatabase:_browser.database] isEqualToSource:bs])
+		[_browser setDatabase:DicomDatabase.defaultDatabase];
+	
+	[_bonjourSources removeObjectForKey:[_bonjourSources keyForObject:bs]];
 }
 
 -(NSString*)tableView:(NSTableView*)tableView toolTipForCell:(NSCell*)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn*)tc row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation {
@@ -856,6 +897,12 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 	[image unlockFocus];
 	
 	cell.image = image;
+}
+
+-(NSInteger)port {
+	NSInteger port;
+	[RemoteDicomDatabase address:self.location toHost:NULL port:&port];
+	return port;
 }
 
 @end

@@ -709,7 +709,7 @@ static NSDate *lastWarningDate = nil;
 
 @implementation AppController
 
-@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive;
+@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService;
 
 - (void) pause { // __deprecated
 	[[[BrowserController currentBrowser] database] lock]; // was checkIncomingLock

@@ -129,6 +129,7 @@ extern "C"
 
 @property BOOL checkAllWindowsAreVisibleIsOff, isSessionInactive;
 @property (readonly) NSMenu *filtersMenu, *windowsTilingMenuRows, *windowsTilingMenuColumns;
+@property(readonly) NSNetService* dicomBonjourPublisher;
 
 + (BOOL) isFDACleared;
 + (BOOL) willExecutePlugin;
