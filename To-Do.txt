@@ -2,6 +2,7 @@
 - Web Server: create albums and add studies to albums (admin)
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
 - Web Server: add Bonjour Service, add Locations parameter, display in Sources
+- CPR : support all measurements if in same plane
 - DICOM ECG
 - Pediatric QR age button
 - Activate 8-bit TIFF, JPEG, export // Add PNG
