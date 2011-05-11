@@ -27,6 +27,8 @@
 
 +(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port;
 +(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port aet:(NSString**)aet;
++(NSString*)address:(NSString*)address toAddress:(NSString**)host port:(NSInteger*)port;
++(NSString*)address:(NSString*)address toAddress:(NSString**)host port:(NSInteger*)port aet:(NSString**)aet;
 +(NSString*)addressWithHost:(NSHost*)host port:(NSInteger)port aet:(NSString*)aet;
 +(NSString*)addressWithHostname:(NSString*)host port:(NSInteger)port aet:(NSString*)aet;
 

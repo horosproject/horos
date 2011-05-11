@@ -150,7 +150,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 }
 
 -(void)dealloc {
-	DLog(@"[N2Connection dealloc]");
+//	DLog(@"[N2Connection dealloc]");
 	[self close];
 	[_inputBuffer release];
 	[_outputBuffer release];

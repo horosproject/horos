@@ -36,11 +36,11 @@
 
 @implementation RemoteDicomDatabase
 
-+(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port {
-	NSHost* h = nil;
++(NSString*)address:(NSString*)address toAddress:(NSString**)host port:(NSInteger*)port {
+	NSString* h = nil;
 	if (!host) host = &h;
 	NSArray* addressParts = [address componentsSeparatedByString:@":"];
-	*host = [NSHost hostWithName:[addressParts objectAtIndex:0]];
+	*host = [addressParts objectAtIndex:0];
 	if (port)
 		if (addressParts.count > 1)
 			*port = [[addressParts objectAtIndex:1] integerValue];
@@ -48,21 +48,37 @@
 	return *host;
 }
 
-+(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port aet:(NSString**)aet {
++(NSString*)address:(NSString*)address toAddress:(NSString**)host port:(NSInteger*)port aet:(NSString**)aet {
 	NSArray* addressParts = [address componentsSeparatedByString:@"@"];
 	if (addressParts.count > 1) {
 		if (aet) *aet = [addressParts objectAtIndex:0];
 		address = [addressParts objectAtIndex:1];
 	} else *aet = nil;
 	
-	NSHost* h = nil;
+	NSString* h = nil;
 	if (!host) host = &h;
 	addressParts = [address componentsSeparatedByString:@":"];
-	*host = [NSHost hostWithName:[addressParts objectAtIndex:0]];
+	*host = [addressParts objectAtIndex:0];
 	if (port)
 		if (addressParts.count > 1)
 			*port = [[addressParts objectAtIndex:1] integerValue];
 		else *port = 11112;
+	return *host;
+}
+
++(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port {
+	NSString* h = [self address:address toAddress:NULL port:port];
+	NSHost* r;
+	if (!host) host = &r;
+	*host = [NSHost hostWithAddress:h];
+	return *host;
+}
+
++(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port aet:(NSString**)aet {
+	NSString* h = [self address:address toAddress:NULL port:port aet:aet];
+	NSHost* r;
+	if (!host) host = &r;
+	*host = [NSHost hostWithAddress:h];
 	return *host;
 }
 
@@ -254,7 +270,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 	if (![version isEqualToString:CurrentDatabaseVersion])
 		[NSException raise:NSDestinationInvalidException format:NSLocalizedString(@"Invalid remote database model %@. When sharing databases, make sure both ends are running the same version of OsiriX", nil), version];
 	
-	DLog(@"RDD version: %@", version);
+//	DLog(@"RDD version: %@", version);
 
 	BOOL isPasswordProtected = [self fetchIsPasswordProtected];
 	if (isPasswordProtected) DLog(@"RDD is password protected", version);
@@ -268,7 +284,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 	}
 	
 	NSUInteger databaseIndexSize = [self fetchDatabaseIndexSize];
-	DLog(@"RDD index size is %d", databaseIndexSize);
+//	DLog(@"RDD index size is %d", databaseIndexSize);
 	
 	[thread enterOperation];
 	thread.status = NSLocalizedString(@"Transferring database index...", nil);
@@ -538,11 +554,11 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 		size += iImage.width.intValue*iImage.height.intValue*2*iImage.numberOfFrames.intValue;
 		
 		if ([iImage.path.pathExtension isEqualToString:@"zip"]) { // it is a ZIP
-			NSLog(@"BONJOUR ZIP");
+//			NSLog(@"BONJOUR ZIP");
 			NSString* iPathXml = [iImage.path.stringByDeletingPathExtension stringByAppendingPathExtension:@"xml"];
 			if(![NSFileManager.defaultManager fileExistsAtPath:iPathXml]) {
 				// it has an XML descriptor with it
-				NSLog(@"BONJOUR XML");
+//				NSLog(@"BONJOUR XML");
 				[localPaths addObject:[iLocalPath.stringByDeletingPathExtension stringByAppendingPathExtension:@"xml"]];
 				[remotePaths addObject:iPathXml];
 			}
@@ -659,7 +675,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 					[context removeLastObject]; // rm [4]
 					
 					if ([NSFileManager.defaultManager fileExistsAtPath:path]) {
-						NSLog(@"db 0x%08x Notice: strange, we seem to have redownloaded a remote image (%@)", self, path);
+						NSLog(@"Notice: strange, we seem to have redownloaded a remote image (%@)", path);
 						[NSFileManager.defaultManager removeItemAtPath:path error:NULL];
 					}
 					
@@ -689,8 +705,8 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 -(void)storeScuImages:(NSArray*)dicomImages toDestinationAETitle:(NSString*)aet address:(NSString*)address port:(NSInteger)port transferSyntax:(int)exsTransferSyntax {
 	NSMutableArray* imagePaths = [NSMutableArray array];
 	for (DicomImage* image in dicomImages)
-		if (![imagePaths containsObject:image.completePath])
-			[imagePaths addObject:image.completePath];
+		if (![imagePaths containsObject:image.path])
+			[imagePaths addObject:image.path];
 	
 	NSMutableData* request = [NSMutableData dataWithBytes:"DCMSE" length:6];
 

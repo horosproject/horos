@@ -237,6 +237,22 @@ extern const char *GetPrivateIP();
 	dbPublished = activated;
 }
 
++(NSDictionary*)dictionaryFromXTRecordData:(NSData*)data {
+	NSMutableDictionary* d = [NSMutableDictionary dictionary];
+	NSDictionary* dict = [NSNetService dictionaryFromTXTRecordData:data];
+	
+	for (NSString* key in dict) {
+		NSData* data = [dict objectForKey:key];
+		if ([key isEqualToString:@"AETitle"])
+			[d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
+		else if ([key isEqualToString:@"port"])
+			[d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
+		else [d setObject:data forKey:key];
+	}
+	
+	return d;
+}
+
 //- (NSData *)dataByZippingLocalPath:(NSString *)_path
 //{
 //  NSFileHandle  *nullHandle  = nil;

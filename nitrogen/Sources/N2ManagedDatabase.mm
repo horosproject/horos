@@ -31,7 +31,7 @@
 @synthesize database = _database;
 
 -(void)dealloc {
-	NSLog(@"---------- DEL %@", self);
+//	NSLog(@"---------- DEL %@", self);
 	self.database = nil;
 	[super dealloc];
 	[NSNotificationCenter.defaultCenter removeObserver:self]; // Apple bug? It seems the managedObjectContext gets notified by the persistentStore, and the notifications are still sent after the context's dealloc..
@@ -79,7 +79,7 @@
 	sqlFilePath = sqlFilePath.stringByExpandingTildeInPath;
 	
     N2ManagedObjectContext* moc = [[[N2ManagedObjectContext alloc] init] autorelease];
-	NSLog(@"---------- NEW %@ at %@", moc, sqlFilePath);
+//	NSLog(@"---------- NEW %@ at %@", moc, sqlFilePath);
 	moc.undoManager = nil;
 	moc.database = self;
 	

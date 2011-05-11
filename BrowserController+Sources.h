@@ -17,6 +17,7 @@
 
 -(BrowserSource*)sourceAtRow:(int)row;
 -(int)rowForDatabase:(DicomDatabase*)database;
+-(void)selectCurrentDatabaseSource;
 
 -(long)currentBonjourService __deprecated;
 -(void)setCurrentBonjourService:(int)index __deprecated;
