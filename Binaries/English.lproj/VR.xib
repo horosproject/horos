@@ -2,19 +2,19 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10J869</string>
+		<string key="IBDocument.SystemVersion">10J567</string>
 		<string key="IBDocument.InterfaceBuilderVersion">823</string>
 		<string key="IBDocument.AppKitVersion">1038.35</string>
-		<string key="IBDocument.HIToolboxVersion">461.00</string>
+		<string key="IBDocument.HIToolboxVersion">462.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">823</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="2314"/>
 			<integer value="2419"/>
 			<integer value="243"/>
 			<integer value="145"/>
+			<integer value="2314"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -60,7 +60,7 @@
 						<object class="NSTextField" id="45156686">
 							<reference key="NSNextResponder" ref="283617184"/>
 							<int key="NSvFlags">266</int>
-							<string key="NSFrame">{{4, 358}, {489, 17}}</string>
+							<string key="NSFrame">{{4, 359}, {489, 17}}</string>
 							<reference key="NSSuperview" ref="283617184"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="545552068">
@@ -4919,9 +4919,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<nil key="NSDelegate"/>
 			</object>
 			<object class="NSCustomView" id="359000330">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<string key="NSFrameSize">{135, 65}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<string key="NSClassName">CLUTOpacityView</string>
 				<string key="NSExtension">NSView</string>
 			</object>
@@ -5313,7 +5315,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										</object>
 										<string key="decimalSeparator">.</string>
 										<integer value="1000" key="formatterBehavior"/>
-										<string key="groupingSeparator">'</string>
+										<string key="groupingSeparator">,</string>
 										<string key="negativeFormat"/>
 										<string key="positiveFormat">0.00</string>
 										<dictionary key="textAttributesForNegativeValues" id="430074797"/>
@@ -5342,7 +5344,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<reference key="NS.max" ref="141947224"/>
 									<nil key="NS.rounding"/>
 									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">'</string>
+									<string key="NS.thousand">,</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -5375,7 +5377,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										</object>
 										<string key="decimalSeparator">.</string>
 										<integer value="1000" key="formatterBehavior"/>
-										<string key="groupingSeparator">'</string>
+										<string key="groupingSeparator">,</string>
 										<string key="negativeFormat"/>
 										<string key="positiveFormat">0.00</string>
 										<boolean value="NO" key="usesGroupingSeparator"/>
@@ -5396,7 +5398,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<reference key="NS.max" ref="141947224"/>
 									<nil key="NS.rounding"/>
 									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">'</string>
+									<string key="NS.thousand">,</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -5429,7 +5431,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										</object>
 										<string key="decimalSeparator">.</string>
 										<integer value="1000" key="formatterBehavior"/>
-										<string key="groupingSeparator">'</string>
+										<string key="groupingSeparator">,</string>
 										<string key="negativeFormat"/>
 										<string key="positiveFormat">0.00</string>
 										<boolean value="NO" key="usesGroupingSeparator"/>
@@ -5450,7 +5452,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<reference key="NS.max" ref="141947224"/>
 									<nil key="NS.rounding"/>
 									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">'</string>
+									<string key="NS.thousand">,</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -5480,7 +5482,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										</object>
 										<string key="decimalSeparator">.</string>
 										<integer value="1000" key="formatterBehavior"/>
-										<string key="groupingSeparator">'</string>
+										<string key="groupingSeparator">,</string>
 										<string key="negativeFormat"/>
 										<string key="positiveFormat">0.00</string>
 										<boolean value="NO" key="usesGroupingSeparator"/>
@@ -5501,7 +5503,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<reference key="NS.max" ref="141947224"/>
 									<nil key="NS.rounding"/>
 									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">'</string>
+									<string key="NS.thousand">,</string>
 									<bool key="NS.hasthousands">NO</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -14509,6 +14511,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<integer value="1" key="1019.ImportedFromIB2"/>
 				<string key="1026.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="1026.ImportedFromIB2"/>
+				<string key="1029.IBEditorWindowLastContentRect">{{329, 919}, {135, 65}}</string>
 				<string key="1029.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="1029.ImportedFromIB2"/>
 				<string key="1042.IBEditorWindowLastContentRect">{{0, 717}, {328, 202}}</string>
@@ -14669,9 +14672,9 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<integer value="1" key="1432.ImportedFromIB2"/>
 				<string key="1434.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="1434.ImportedFromIB2"/>
-				<string key="144.IBEditorWindowLastContentRect">{{0, 515}, {498, 379}}</string>
+				<string key="144.IBEditorWindowLastContentRect">{{329, 515}, {498, 379}}</string>
 				<string key="144.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="144.IBWindowTemplateEditedContentRect">{{0, 515}, {498, 379}}</string>
+				<string key="144.IBWindowTemplateEditedContentRect">{{329, 515}, {498, 379}}</string>
 				<integer value="1" key="144.ImportedFromIB2"/>
 				<integer value="0" key="144.windowTemplate.hasMaxSize"/>
 				<integer value="1" key="144.windowTemplate.hasMinSize"/>
@@ -15049,7 +15052,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<string key="2308.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2309.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2310.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="2314.IBEditorWindowLastContentRect">{{0, 952}, {58, 37}}</string>
+				<string key="2314.IBEditorWindowLastContentRect">{{329, 952}, {58, 37}}</string>
 				<string key="2314.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="2314.ImportedFromIB2"/>
 				<string key="2315.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -15122,15 +15125,15 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<boolean value="YES" key="2388.IBNumberFormatterLocalizesFormatMetadataKey"/>
 				<string key="2388.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2389.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="239.IBEditorWindowLastContentRect">{{42, 970}, {305, 36}}</string>
+				<string key="239.IBEditorWindowLastContentRect">{{329, 970}, {305, 36}}</string>
 				<string key="239.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="239.ImportedFromIB2"/>
 				<string key="2390.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2391.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2392.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="2418.IBEditorWindowLastContentRect">{{972, 1242}, {315, 107}}</string>
+				<string key="2418.IBEditorWindowLastContentRect">{{1365, 899}, {315, 107}}</string>
 				<string key="2418.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="2418.IBWindowTemplateEditedContentRect">{{972, 1242}, {315, 107}}</string>
+				<string key="2418.IBWindowTemplateEditedContentRect">{{1365, 899}, {315, 107}}</string>
 				<integer value="1" key="2418.ImportedFromIB2"/>
 				<integer value="0" key="2418.windowTemplate.hasMaxSize"/>
 				<integer value="1" key="2418.windowTemplate.hasMinSize"/>
@@ -15922,7 +15925,6 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<string key="buildAllThumbnails:">id</string>
 						<string key="burnDICOM:">id</string>
 						<string key="checkIncoming:">id</string>
-						<string key="checkIncomingNow:">id</string>
 						<string key="checkIncomingThread:">id</string>
 						<string key="checkMemory:">id</string>
 						<string key="compressSelectedFiles:">id</string>
@@ -16040,10 +16042,6 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						</object>
 						<object class="IBActionInfo" key="checkIncoming:">
 							<string key="name">checkIncoming:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="checkIncomingNow:">
-							<string key="name">checkIncomingNow:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="checkIncomingThread:">
