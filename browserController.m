@@ -9729,9 +9729,13 @@ static BOOL withReset = NO;
 				else
 					[cell setMenu: contextual];
 				
-				NSString	*name = [curFile valueForKey:@"name"];
+				NSString *name = [curFile valueForKey:@"name"];
 				
-				if( name.length > 15) name = [name substringToIndex: 15];
+				if( name.length > 18)
+				{
+					[cell setFont:[NSFont systemFontOfSize: 8]];
+					name = [name stringByTruncatingToLength: 36]; // 2 lines
+				}
 				
 				if ( [modality hasPrefix: @"RT"])
 				{

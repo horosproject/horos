@@ -24,6 +24,29 @@ NSString* N2NonNullString(NSString* s) {
 
 @implementation NSString (N2)
 
+- (NSString *)stringByTruncatingToLength:(NSInteger)theWidth
+{
+	NSInteger stringLength = [self length];
+	NSInteger stringMiddle = (theWidth - 3) / 2;
+	
+	NSMutableString *retString = [NSMutableString string];
+
+	if (stringLength > theWidth) 
+	{
+		for (NSInteger i = 0; i <= stringMiddle; i++) 
+			[retString appendString:[self substringWithRange:NSMakeRange(i, 1)]];
+		
+		[retString appendString:@"..."];
+
+		for (NSInteger i = (stringLength - stringMiddle); i < stringLength; i++) 
+			[retString appendString:[self substringWithRange:NSMakeRange(i, 1)]];
+
+		return retString;
+	}
+
+	else return self;
+}
+
 -(NSString*)markedString {
 	NSString* str = [self stringByReplacingOccurrencesOfString:@"\n" withString:@"\\n"];
 	str = [str stringByReplacingOccurrencesOfString:@"\r" withString:@"\\r"];
