@@ -932,10 +932,19 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					[response.tokens addError:err.localizedDescription];
 				else {
 					// We can update the user password
-					user.password = password;
-					[self.portal.database save:NULL];
-					[response.tokens addMessage:NSLocalizedString(@"Password updated successfully!", nil)];
-					[self.portal updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"] forUser:self.user.name ip:asyncSocket.connectedHost];
+					
+//					if( [previouspassword isEqualToString: @"public"] && [self.user.name isEqualToString:@"public"])
+//					{
+//						// public / public demo account not editable
+//						[response.tokens addMessage:NSLocalizedString(@"Public account not editable!", nil)];
+//					}
+//					else
+					{
+						user.password = password;
+						[self.portal.database save:NULL];
+						[response.tokens addMessage:NSLocalizedString(@"Password updated successfully!", nil)];
+						[self.portal updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"] forUser:self.user.name ip:asyncSocket.connectedHost];
+					}
 				}
 			}
 			else
