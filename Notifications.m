@@ -45,6 +45,7 @@ NSString* const OsirixAddToDBNotification = @"OsirixAddToDBNotification";
 const NSString* const OsirixAddToDBNotificationImagesArray = @"OsiriXAddToDBArray";
 NSString* const OsirixAddToDBCompleteNotification = @"OsirixAddToDBCompleteNotification";
 const NSString* const OsirixAddToDBCompleteNotificationImagesArray = @"OsiriXAddToDBArray";
+NSString* const OsirixDatabaseObjectsMayFaultNotification = @"OsirixDatabaseObjectsMayFaultNotification";
 NSString* const OsirixNewStudySelectedNotification = @"NewStudySelectedNotification";
 NSString* const OsirixDidLoadNewObjectNotification = @"OsiriX Did Load New Object";
 NSString* const OsirixRTStructNotification = @"RTSTRUCTNotification";

@@ -45,5 +45,6 @@
 @interface NSThread (ModalForWindow)
 
 -(ThreadModalForWindowController*)startModalForWindow:(NSWindow*)window; // returns nil if not called on main thread
+-(ThreadModalForWindowController*)modalForWindowController;
 
 @end;

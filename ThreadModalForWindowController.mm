@@ -19,7 +19,7 @@
 #import "N2Debug.h"
 
 
-//static NSString* const ThreadIsCurrentlyModal = @"ThreadIsCurrentlyModal";
+NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowController";
 
 
 @implementation ThreadModalForWindowController
@@ -37,6 +37,7 @@
 	
 	_docWindow = [docWindow retain];
 	_thread = [thread retain];
+	[thread.threadDictionary setObject:self forKey:NSThreadModalForWindowControllerKey];
 	[[_thread threadDictionary] retain];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExitNotification:) name:NSThreadWillExitNotification object:_thread];
 
@@ -56,7 +57,7 @@
     [self.statusField bind:@"value" toObject:self.thread withKeyPath:NSThreadStatusKey options:NULL];
     [self.progressDetailsField bind:@"value" toObject:self.thread withKeyPath:NSThreadProgressDetailsKey options:NULL];
     [self.cancelButton bind:@"enabled" toObject:self.thread withKeyPath:NSThreadSupportsCancelKey options:NULL];
-//	[self.cancelButton bind:@"enabled2" toObject:self.thread withKeyPath:NSThreadIsCancelledKey options:NULL];
+	[self.cancelButton bind:@"enabled2" toObject:self.thread withKeyPath:NSThreadIsCancelledKey options:NULL];
 	
 	[_thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
 }
@@ -99,6 +100,7 @@
 -(void)invalidate {
 	DLog(@"[ThreadModalForWindowController invalidate]");
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:_thread];
+	[self.thread.threadDictionary removeObjectForKey:NSThreadModalForWindowControllerKey];
 	[NSApp endSheet:self.window];
 }
 
@@ -122,6 +124,10 @@
 		return [[[ThreadModalForWindowController alloc] initWithThread:self window:window] autorelease];
 	} else [self performSelectorOnMainThread:@selector(startModalForWindow:) withObject:window waitUntilDone:NO];
 	return nil;
+}
+
+-(ThreadModalForWindowController*)modalForWindowController {
+	return [self.threadDictionary objectForKey:NSThreadModalForWindowControllerKey];
 }
 
 @end

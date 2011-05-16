@@ -1104,9 +1104,9 @@ enum { Compress, Decompress };
 		NSInteger index;
 		NSManagedObjectModel* model = self.managedObjectModel;
 		NSMutableArray *addedImagesArray = nil, *completeImagesArray = nil, *addedSeries = [NSMutableArray array], *modifiedStudiesArray = nil;
-		BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"], COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"], newStudy = NO, newObject = NO, isCDMedia = NO, addFailed = NO;
+		BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"], COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"], newStudy = NO, newObject = NO, addFailed = NO;
 		NSMutableArray *vlToRebuild = [NSMutableArray array], *vlToReload = [NSMutableArray array], *dicomFilesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
-		int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeries"], combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
+		int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey:@"combineProjectionSeries"], combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
 		
 		if ([[NSFileManager defaultManager] fileExistsAtPath: dataDirPath] == NO)
 			[[NSFileManager defaultManager] createDirectoryAtPath: dataDirPath attributes:nil];
@@ -1118,59 +1118,37 @@ enum { Compress, Decompress };
 		
 		//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
 		
-		//#define RANDOMFILES
+//#define RANDOMFILES
 #ifdef RANDOMFILES
-		NSMutableArray	*randomArray = [NSMutableArray array];
+		NSMutableArray* randomArray = [NSMutableArray array];
 		for( int i = 0; i < 50000; i++)
-		{
 			[randomArray addObject:@"yahoo/google/osirix/microsoft"];
-		}
 		newFilesArray = randomArray;
 #endif
 		
-		if( [NSThread isMainThread])
-		{
-			isCDMedia = [BrowserController isItCD: [newFilesArray objectAtIndex: 0]];
-			
-			[DicomFile setFilesAreFromCDMedia: isCDMedia];
-			
-//			if([NSThread isMainThread] && ([newFilesArray count] > 50 || isCDMedia == YES) && generatedByOsiriX == NO)
-//			{
-//				splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString(@"Adding %@ file(s)...", nil), [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[newFilesArray count]]]]];
-//				[splash showWindow: browserController];
-				
-//				if( isCDMedia) [[splash progress] setMaxValue:[newFilesArray count]];
-//				else [[splash progress] setMaxValue:[newFilesArray count]/30];
-				
-//				[splash setCancel: YES];
-//			}
-		}
+		BOOL isCDMedia = [BrowserController isItCD:[newFilesArray objectAtIndex:0]];
+		[DicomFile setFilesAreFromCDMedia:isCDMedia];
 		
-		int ii = 0;
-		for (newFile in newFilesArray)
-		{
-			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		for (NSInteger i = 0; i < newFilesArray.count; ++i) {
+			thread.progress = 0.66*i/newFilesArray.count;
 			
-			@try
-			{
+			NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+			@try {
+				NSString* newFile = [newFilesArray objectAtIndex:i];
 				DicomFile *curFile = nil;
 				NSMutableDictionary	*curDict = nil;
 				
-				@try
-				{
+				@try {
 #ifdef RANDOMFILES
 					curFile = [[DicomFile alloc] initRandom];
 #else
-					curFile = [[DicomFile alloc] init: newFile];
+					curFile = [[DicomFile alloc] init:newFile];
 #endif
-				}
-				@catch (NSException * e)
-				{
-					NSLog( @"*** exception [[DicomFile alloc] init: newFile] : %@", e);
-					[AppController printStackTrace: e];
+				} @catch (NSException * e) {
+					N2LogExceptionWithStackTrace(e);
 				}
 				
-				if( curFile)
+				if (curFile)
 				{
 					curDict = [curFile dicomElements];
 					
@@ -1207,59 +1185,23 @@ enum { Compress, Decompress };
 					
 					[curFile release];
 				}
-				
-//				if( splash)
-//				{
-//					if( isCDMedia)
-//					{
-//						ii++;
-//						[splash incrementBy:1];
-//					}
-//					else
-//					{
-//						if( (ii++) % 30 == 0)
-//							[splash incrementBy:1];
-//					}
-//				}
+			} @catch (NSException* e) {
+				N2LogExceptionWithStackTrace(e);
+			} @finally {
+				[pool release];
 			}
 			
-			@catch (NSException * e)
-			{
-				NSLog( @"**** addFilesToDatabase exception : DicomFile alloc : %@", e);
-				[AppController printStackTrace: e];
-			}
-			
-			[pool release];
-			
-			if ([thread isCancelled]) break;
+			if (thread.isCancelled)
+				break;
 		}
 		
 		
 		// Find all current studies
 		
-		[self.managedObjectContext retain];
-		[self.managedObjectContext lock];
-		
-		NSMutableArray *studiesArray = nil;
+		[self lock];
 		@try {
-			studiesArray = [[self objectsForEntity:self.studyEntity predicate:[NSPredicate predicateWithValue:YES] error:&error] mutableCopy];
-		} @catch (NSException* e) {
-			N2LogExceptionWithStackTrace(e);
-			if (!error) error = [NSError errorWithDomain:OsirixErrorDomain code:1 userInfo:NULL];
-		}
-		
-		if (error)
-		{
-			NSLog( @"addFilesToDatabase ERROR: %@", [error localizedDescription]);
-			
-			[self.managedObjectContext unlock];
-			[self.managedObjectContext release];
-			
-			//All these files were NOT saved..... due to an error. Move them back to the INCOMING folder.
-			addFailed = YES;
-		}
-		else
-		{
+			NSMutableArray* studiesArray = [[self objectsForEntity:self.studyEntity] mutableCopy];
+
 			NSDate *defaultDate = [NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil];
 			
 			addedImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
@@ -1272,10 +1214,11 @@ enum { Compress, Decompress };
 			NSMutableArray *studiesArrayStudyInstanceUID = [[studiesArray valueForKey:@"studyInstanceUID"] mutableCopy];
 			
 			// Add the new files
-			for (NSMutableDictionary *curDict in dicomFilesArray)
-			{
-				@try
-				{
+			for (NSInteger i = 0; i < dicomFilesArray.count; ++i) {
+				thread.progress = 0.66+0.34*i/newFilesArray.count;
+
+				@try {
+					NSMutableDictionary *curDict = [dicomFilesArray objectAtIndex:i]; 
 					newFile = [curDict objectForKey:@"filePath"];
 					
 					BOOL DICOMSR = NO;
@@ -1927,9 +1870,6 @@ enum { Compress, Decompress };
 				[AppController printStackTrace: ne];
 			}
 			
-			[self.managedObjectContext unlock];
-			[self.managedObjectContext release];
-			
 			if( addFailed == NO) {
 				// TODO: lots of things in this block
 				
@@ -1975,6 +1915,10 @@ enum { Compress, Decompress };
 			[dockLabel release]; dockLabel = nil;
 			[growlString release]; growlString = nil;
 			[growlStringNewStudy release]; growlStringNewStudy = nil;
+		} @catch (NSException* e) {
+			N2LogExceptionWithStackTrace(e);
+		} @finally {
+			[self unlock];
 		}
 		
 		[DicomFile setFilesAreFromCDMedia: NO];
@@ -2327,6 +2271,10 @@ enum { Compress, Decompress };
 }
 
 #pragma mark Other
+
+-(BOOL)rebuildAllowed {
+	return YES;
+}
 
 -(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion {
 	NSString* oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_Previous_DataModel%@.mom", databaseModelVersion];
@@ -2697,6 +2645,7 @@ enum { Compress, Decompress };
 }
 
 -(void)rebuild:(BOOL)complete {
+	NSThread* thread = [NSThread currentThread];
 	
 //	if (isCurrentDatabaseBonjour) return;
 	
@@ -2704,87 +2653,91 @@ enum { Compress, Decompress };
 	
 	//[[AppController sharedAppController] closeAllViewers: self];
 	
+	[NSNotificationCenter.defaultCenter postNotificationName:OsirixDatabaseObjectsMayFaultNotification object:self userInfo:nil];
+	
 	if (complete) {	// Delete the database file
+		self.managedObjectContext = nil;
 		if ([NSFileManager.defaultManager fileExistsAtPath:self.sqlFilePath]) {
 			[NSFileManager.defaultManager removeItemAtPath:[self.sqlFilePath stringByAppendingString:@" - old"] error:NULL];
 			[NSFileManager.defaultManager moveItemAtPath:self.sqlFilePath toPath:[self.sqlFilePath stringByAppendingString:@" - old"] error:NULL];
 		}
+		self.managedObjectContext = [self contextAtPath:self.sqlFilePath];
 	} else [self save:NULL];
 	
-//	displayEmptyDatabase = YES;
-//	[self outlineViewRefresh];
-//	[self refreshMatrix: self];
+	//	displayEmptyDatabase = YES;
+	//	[self outlineViewRefresh];
+	//	[self refreshMatrix: self];
 	
 	[self lock];
-	
-//	[managedObjectContext lock];
-//	[managedObjectContext unlock];
-//	[managedObjectContext release];
-//	managedObjectContext = nil;
-	
-//	[databaseOutline reloadData];
-	
-//	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Step 1: Checking files...", nil)];
-//	[wait showWindow:self];
-	
-	NSMutableArray *filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
-	
-	// SCAN THE DATABASE FOLDER, TO BE SURE WE HAVE EVERYTHING!
-	
-	NSString	*aPath = [self dataDirPath];
-	NSString	*incomingPath = [self incomingDirPath];
-	long		totalFiles = 0;
-	
-	// In the DATABASE FOLDER, we have only folders! Move all files that are wrongly there to the INCOMING folder.... and then scan these folders containing the DICOM files
-	
-	NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
-	for( NSString *dir in dirContent)
-	{
-		NSString * itemPath = [aPath stringByAppendingPathComponent: dir];
-		id fileType = [[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey:NSFileType];
-		if ([fileType isEqual:NSFileTypeRegular])
-		{
-			[[NSFileManager defaultManager] movePath:itemPath toPath:[incomingPath stringByAppendingPathComponent: [itemPath lastPathComponent]] handler: nil];
-		}
-		else totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey: NSFileReferenceCount] intValue];
-	}
-	
-	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
-	
-	NSLog( @"Start Rebuild");
-	
-	for( NSString *name in dirContent)
-	{
-		NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
-		
-		NSString	*curDir = [aPath stringByAppendingPathComponent: name];
-		NSArray		*subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: name]];
-		
-		for( NSString *subName in subDir)
-		{
-			if( [subName characterAtIndex: 0] != '.')
-				[filesArray addObject: [curDir stringByAppendingPathComponent: subName]];
-		}
-		
-		[pool release];
-	}
-	
-	// ** DICOM ROI SR FOLDER
-	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:self.roisDirPath];
-	for (NSString *name in dirContent)
-		if ([name characterAtIndex:0] != '.')
-			[filesArray addObject: [self.roisDirPath stringByAppendingPathComponent: name]];
-	
-	NSManagedObjectContext *context = self.managedObjectContext;
-	NSManagedObjectModel *model = self.managedObjectModel;
-	
-	[self.managedObjectContext lock];
 	@try
 	{
-		// ** Finish the rebuild
-		[[BrowserController addFiles:filesArray toContext:self.managedObjectContext onlyDICOM:NO notifyAddedFiles:NO parseExistingObject:NO dbFolder:self.baseDirPath] valueForKey:@"completePath"]; // TODO: AAAARGH
 		
-		NSLog( @"End Rebuild");
+	//	[managedObjectContext lock];
+	//	[managedObjectContext unlock];
+	//	[managedObjectContext release];
+	//	managedObjectContext = nil;
+		
+	//	[databaseOutline reloadData];
+		
+	//	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Step 1: Checking files...", nil)];
+	//	[wait showWindow:self];
+		
+		thread.status = NSLocalizedString(@"Scanning database directory...", nil);
+		
+		NSMutableArray *filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
+		
+		// SCAN THE DATABASE FOLDER, TO BE SURE WE HAVE EVERYTHING!
+		
+		NSString	*aPath = [self dataDirPath];
+		NSString	*incomingPath = [self incomingDirPath];
+		long		totalFiles = 0;
+		
+		// In the DATABASE FOLDER, we have only folders! Move all files that are wrongly there to the INCOMING folder.... and then scan these folders containing the DICOM files
+		
+		NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+		for( NSString *dir in dirContent)
+		{
+			NSString * itemPath = [aPath stringByAppendingPathComponent: dir];
+			id fileType = [[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey:NSFileType];
+			if ([fileType isEqual:NSFileTypeRegular])
+			{
+				[[NSFileManager defaultManager] movePath:itemPath toPath:[incomingPath stringByAppendingPathComponent: [itemPath lastPathComponent]] handler: nil];
+			}
+			else totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey: NSFileReferenceCount] intValue];
+		}
+		
+		dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+		
+		NSLog( @"Start Rebuild");
+		
+		for( NSString *name in dirContent)
+		{
+			NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
+			
+			NSString	*curDir = [aPath stringByAppendingPathComponent: name];
+			NSArray		*subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: name]];
+			
+			for( NSString *subName in subDir)
+			{
+				if( [subName characterAtIndex: 0] != '.')
+					[filesArray addObject: [curDir stringByAppendingPathComponent: subName]];
+			}
+			
+			[pool release];
+		}
+		
+		// ** DICOM ROI SR FOLDER
+		dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:self.roisDirPath];
+		for (NSString *name in dirContent)
+			if ([name characterAtIndex:0] != '.')
+				[filesArray addObject: [self.roisDirPath stringByAppendingPathComponent: name]];
+	
+	
+		// ** Finish the rebuild
+		thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %d files...", nil), filesArray.count];
+		[self addFilesAtPaths:filesArray postNotifications:NO];
+		
+		NSLog(@"End Rebuild");
 		
 		[filesArray release];
 		
@@ -2795,60 +2748,23 @@ enum { Compress, Decompress };
 		NSFetchRequest	*dbRequest;
 		NSError			*error = nil;
 		
-		if( !complete == NO)
-		{
-			// FIND ALL images, and REMOVE non-available images
+		if (!complete) {
+			thread.status = NSLocalizedString(@"Checking for missing files...", nil);
 			
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-			error = nil;
-			NSArray *imagesArray = [context executeFetchRequest:dbRequest error:&error];
-			
-		//	[[splash progress] setMaxValue:[imagesArray count]/50];
-			
-			// Find unavailable files
-			int counter = 0;
-			for( NSManagedObject *aFile in imagesArray)
-			{
-				
-				FILE *fp = fopen( [[aFile valueForKey:@"completePath"] UTF8String], "r");
-				if( fp)
-				{
+			// remove non-available images
+			for (DicomImage* aFile in [self objectsForEntity:self.imageEntity]) {
+				FILE* fp = fopen(aFile.completePath.UTF8String, "r");
+				if (fp)
 					fclose( fp);
-				}
-				else
-					[context deleteObject: aFile];
-				
-				counter++;//if( counter++ % 50 == 0) [splash incrementBy:1];
+				else [self.managedObjectContext deleteObject:aFile];
 			}
-		}
-		
-		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		error = nil;
-		NSArray* studiesArray = [context executeFetchRequest:dbRequest error:&error];
-		NSString* basePath = self.reportsDirPath;
-		
-		if ([studiesArray count] > 0)
-		{
-			for( NSManagedObject *study in studiesArray)
-			{
-				BOOL deleted = NO;
-				
+			
+			// remove empty studies
+			thread.status = NSLocalizedString(@"Checking for empty studies...", nil);
+			for (DicomStudy* study in [self objectsForEntity:self.studyEntity]) {
 				[self checkForExistingReportForStudy:study];
-				
-				if( [[study valueForKey:@"series"] count] == 0)
-				{
-					deleted = YES;
-					[context deleteObject: study];
-				}
-				
-				if( [[study valueForKey:@"noFiles"] intValue] == 0)
-				{
-					if( deleted == NO) [context deleteObject: study];
-				}
+				if (study.series.count == 0 || study.noFiles.intValue == 0)
+					[self.managedObjectContext deleteObject: study];
 			}
 		}
 		
@@ -2859,6 +2775,7 @@ enum { Compress, Decompress };
 		
 	//	displayEmptyDatabase = NO;
 		
+		thread.status = NSLocalizedString(@"Checking reports consistency...", nil);
 		[self checkReportsConsistencyWithDICOMSR];
 		
 //		[self outlineViewRefresh];
@@ -2867,12 +2784,8 @@ enum { Compress, Decompress };
 	{
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
-		[self.managedObjectContext unlock];
+		[self unlock];
 	}
-	[context unlock];
-	[context release];
-	
-	
 }
 
 -(void)checkReportsConsistencyWithDICOMSR {

@@ -51,6 +51,7 @@
 	_cancelButton.action = @selector(cancelThreadAction:);
 
 	self.thread = thread;
+	[thread.threadDictionary retain];
 
 //	NSLog(@"cell created!");
 	
@@ -65,6 +66,7 @@
 	[self.cancelButton removeFromSuperview];
 	[_cancelButton release];
 	
+	[self.thread.threadDictionary release];
 	self.thread = nil;
 	
 	[_view release];
@@ -150,7 +152,7 @@
 }
 
 -(void)drawWithFrame:(NSRect)frame inView:(NSView*)view {
-	{
+	{ // for debug
 		[NSGraphicsContext saveGraphicsState];
 		
 		[[NSColor colorWithCalibratedRed:1 green:0 blue:0 alpha:0.25] setFill];

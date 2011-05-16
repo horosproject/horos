@@ -23,6 +23,7 @@ extern NSString* N2NonNullString(NSString* s);
 
 +(NSString*)sizeString:(unsigned long long)size;
 +(NSString*)timeString:(NSTimeInterval)time;
++(NSString*)timeString:(NSTimeInterval)time maxUnits:(NSInteger)maxUnits;
 +(NSString*)dateString:(NSTimeInterval)date;
 -(NSString*)stringByTrimmingStartAndEnd;
 

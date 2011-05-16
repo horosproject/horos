@@ -146,16 +146,16 @@
 		[self performSelectorOnMainThread:@selector(selectCurrentDatabaseSource) withObject:nil waitUntilDone:NO];
 		if (![e.description isEqualToString:@"Cancelled."]) {
 			N2LogExceptionWithStackTrace(e);
-			[self performSelectorOnMainThread:@selector(complain:) withObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:0.1], NSLocalizedString(@"Error", nil), e.description, NULL] waitUntilDone:NO];
+			[self performSelectorOnMainThread:@selector(_complain:) withObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:0.1], NSLocalizedString(@"Error", nil), e.description, NULL] waitUntilDone:NO];
 		}
 	} @finally {
 		[pool release];
 	}
 }
 
--(void)complain:(NSArray*)why {
+-(void)_complain:(NSArray*)why { // if 1st obj in array is a number then execute this after the delay specified by that number, with the rest of the array
 	if ([[why objectAtIndex:0] isKindOfClass:NSNumber.class])
-		[self performSelector:@selector(complain:) withObject:[why subarrayWithRange:NSMakeRange(1, why.count-1)] afterDelay:[[why objectAtIndex:0] floatValue]];
+		[self performSelector:@selector(_complain:) withObject:[why subarrayWithRange:NSMakeRange(1, why.count-1)] afterDelay:[[why objectAtIndex:0] floatValue]];
 	else NSBeginAlertSheet([why objectAtIndex:0], nil, nil, nil, self.window, NSApp, @selector(endSheet:), nil, nil, [why objectAtIndex:1]);
 }
 
@@ -199,8 +199,8 @@
 				[self initiateSetDatabaseAtPath:source.location name:source.description];
 			} break;
 			case BrowserSourceTypeRemote: {
-				NSHost* host; NSInteger port; [RemoteDicomDatabase address:source.location toHost:&host port:&port];
-				[self initiateSetRemoteDatabaseWithAddress:host.address port:port name:source.description];
+				NSString* host; NSInteger port; [RemoteDicomDatabase address:source.location toAddress:&host port:&port];
+				[self initiateSetRemoteDatabaseWithAddress:host port:port name:source.description];
 			} break;
 			default: {
 				NSBeginAlertSheet(NSLocalizedString(@"DICOM Destination", nil), nil, nil, nil, self.window, NSApp, @selector(endSheet:), nil, nil, NSLocalizedString(@"It is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil));
@@ -231,6 +231,7 @@ static void* const LocalBrowserSourcesContext = @"LocalBrowserSourcesContext";
 static void* const RemoteBrowserSourcesContext = @"RemoteBrowserSourcesContext";
 static void* const DicomBrowserSourcesContext = @"DicomBrowserSourcesContext";
 static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
+static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(id)initWithBrowser:(BrowserController*)browser {
 	if ((self = [super init])) {
@@ -239,6 +240,7 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 		[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:@"OSIRIXSERVERS" options:NSKeyValueObservingOptionInitial context:RemoteBrowserSourcesContext];
 		[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:@"SERVERS" options:NSKeyValueObservingOptionInitial context:DicomBrowserSourcesContext];
 		_bonjourSources = [[NSMutableDictionary alloc] init];
+		[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:@"searchDICOMBonjour" options:NSKeyValueObservingOptionInitial context:SearchDicomNodesContext];
 		[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:@"DoNotSearchForBonjourServices" options:NSKeyValueObservingOptionInitial context:SearchBonjourNodesContext];
 		_nsbOsirix = [[NSNetServiceBrowser alloc] init];
 		[_nsbOsirix setDelegate:self];
@@ -255,6 +257,7 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 	[_nsbDicom release]; _nsbDicom = nil;
 	[_nsbOsirix release]; _nsbOsirix = nil;
 	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"DoNotSearchForBonjourServices"];
+	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"searchDICOMBonjour"];
 	[_bonjourSources release];
 	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"SERVERS"];
 	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"OSIRIXSERVERS"];
@@ -279,6 +282,8 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 		// add new items
 		for (NSDictionary* d in a) {
 			NSString* dpath = [d valueForKey:@"Path"];
+			if ([[DicomDatabase baseDirPathForPath:dpath] isEqualToString:DicomDatabase.defaultDatabase.baseDirPath])
+				continue;
 			NSUInteger i = [[_browser.sources.arrangedObjects valueForKey:@"location"] indexOfObject:dpath];
 			if (i == NSNotFound)
 				[_browser.sources addObject:[BrowserSource browserSourceForLocalPath:dpath description:[d objectForKey:@"Description"] dictionary:d]];
@@ -337,14 +342,27 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 	}
 	
 	if (context == SearchBonjourNodesContext) {
-		if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
+		if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"]) {
 			for (BrowserSource* bs in [_bonjourSources allValues])
 				if (bs.type == BrowserSourceTypeRemote)
 					[_browser.sources removeObject:bs];
-		else
+		} else {
 			for (BrowserSource* bs in [_bonjourSources allValues])
 				if (bs.type == BrowserSourceTypeRemote && bs.location)
 					[_browser.sources addObject:bs];
+		}
+	}
+	
+	if (context == SearchDicomNodesContext) {
+		if (![NSUserDefaults.standardUserDefaults boolForKey:@"searchDICOMBonjour"]) {
+			for (BrowserSource* bs in [_bonjourSources allValues])
+				if (bs.type == BrowserSourceTypeDicom)
+					[_browser.sources removeObject:bs];
+		} else {
+			for (BrowserSource* bs in [_bonjourSources allValues])
+				if (bs.type == BrowserSourceTypeDicom && bs.location)
+					[_browser.sources addObject:bs];
+		}
 	}
 	
 	// showhide bonjour sources
@@ -389,7 +407,7 @@ static void* const SearchBonjourNodesContext = @"SearchBonjourNodesContext";
 	else source.dictionary = [DCMNetServiceDelegate DICOMNodeInfoFromTXTRecordData:service.TXTRecordData];
 		
 	if (source.location) {
-		NSLog(@"Adding %@", source.location);
+//		NSLog(@"Adding %@", source.location);
 		if (source.type == BrowserSourceTypeRemote && ![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
 			[_browser.sources addObject:source];
 		if (source.type == BrowserSourceTypeDicom && [NSUserDefaults.standardUserDefaults boolForKey:@"searchDICOMBonjour"])

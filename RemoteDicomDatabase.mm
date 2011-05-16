@@ -67,19 +67,19 @@
 }
 
 +(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port {
-	NSString* h = [self address:address toAddress:NULL port:port];
-	NSHost* r;
-	if (!host) host = &r;
-	*host = [NSHost hostWithAddress:h];
-	return *host;
+	address = [self address:address toAddress:NULL port:port];
+	NSHost* rhost = [NSHost hostWithAddress:address];
+	if (!rhost) rhost = [NSHost hostWithName:address];
+	if (host) *host = rhost;
+	return rhost;
 }
 
 +(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port aet:(NSString**)aet {
-	NSString* h = [self address:address toAddress:NULL port:port aet:aet];
-	NSHost* r;
-	if (!host) host = &r;
-	*host = [NSHost hostWithAddress:h];
-	return *host;
+	address = [self address:address toAddress:NULL port:port aet:aet];
+	NSHost* rhost = [NSHost hostWithAddress:address];
+	if (!rhost) rhost = [NSHost hostWithName:address];
+	if (host) *host = rhost;
+	return rhost;
 }
 
 +(NSString*)addressWithHost:(NSHost*)host port:(NSInteger)port aet:(NSString*)aet {
@@ -268,19 +268,19 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 	NSString* version = [self fetchDatabaseVersion];
 	
 	if (![version isEqualToString:CurrentDatabaseVersion])
-		[NSException raise:NSDestinationInvalidException format:NSLocalizedString(@"Invalid remote database model %@. When sharing databases, make sure both ends are running the same version of OsiriX", nil), version];
+		[NSException raise:NSDestinationInvalidException format:NSLocalizedString(@"Invalid remote database model %@. When sharing databases, make sure both ends are running the same version of OsiriX.", nil), version];
 	
 //	DLog(@"RDD version: %@", version);
 
 	BOOL isPasswordProtected = [self fetchIsPasswordProtected];
-	if (isPasswordProtected) DLog(@"RDD is password protected", version);
+	// if (isPasswordProtected) DLog(@"RDD is password protected", version);
 	NSString* password = nil;
 	if (isPasswordProtected) {
 		password = [[BrowserController currentBrowser] askPassword]; // TODO: awww
 		BOOL isRightPassword = [self fetchIsRightPassword:password];
 		if (!isRightPassword)
 			[NSException raise:NSInvalidArgumentException format:NSLocalizedString(@"Wrong password for remote database.", nil)];
-		else DLog(@"RDD password ok");
+		// else DLog(@"RDD password ok");
 	}
 	
 	NSUInteger databaseIndexSize = [self fetchDatabaseIndexSize];
@@ -723,6 +723,10 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 }
 
 #pragma mark Special
+
+-(BOOL)rebuildAllowed {
+	return NO;
+}
 
 -(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting { // don't
 }

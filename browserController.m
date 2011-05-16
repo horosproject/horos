@@ -1320,59 +1320,65 @@ static NSConditionLock *threadLock = nil;
 	else [self newFilesGUIUpdateRun:1 viewersListToReload:nil viewersListToRebuild:nil];
 }
 
+-(void)observeDatabaseObjectsMayFaultNotification:(NSNotification*)notification {
+	NSLog(@"ToDo: [BrowserController observeDatabaseObjectsMayFaultNotification:]");
+}
+
 -(void)resetToLocalDatabase {
 	[self setDatabase:[DicomDatabase activeLocalDatabase]];
+}
+
++(BOOL)automaticallyNotifiesObserversForKey:(NSString*)key {
+	if ([key isEqual:@"database"])
+		return NO;
+	return [super automaticallyNotifiesObserversForKey:key];
 }
 
 -(void)setDatabase:(DicomDatabase*)db {
 	[[db retain] autorelease]; // avoid multithreaded release
 	
-	[self waitForRunningProcesses];
-	[reportFilesToCheck removeAllObjects];
-
 	if (_database != db) {
-		[self willChangeValueForKey:@"database"];
-		
-		NSThread* thread = [NSThread currentThread];
-		[thread enterOperation];
-//		[thread setStatus:NSLocalizedString(@"Loading database...", nil)];
-//		ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
-		
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:_database];
-		
-//		if (refresh) { // TODO: here
-//			NSArray *albumArray = self.albumArray;
-//			if( [albumArray count] > albumTable.selectedRow && albumTable.selectedRow >= 0)
-//				albumName = [[[[albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"name"] copy] autorelease];
-//			
-//			if( [databaseOutline selectedRow] >= 0)
-//			{
-//				if( [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"type"] isEqualToString: @"Study"])
-//					selectedItem = [[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"studyInstanceUID"];
-//				
-//				if( [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"type"] isEqualToString: @"Series"])
-//					selectedItem = [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"study"] valueForKey: @"studyInstanceUID"];
-//				
-//				selectedItem = [[selectedItem copy] autorelease];
-//			}
-//			timeInt = timeIntervalType;
-//		}
-		
-		if ([_database isLocal])
-			[_database save:nil];
-		[_database release]; _database = nil;
-		
-		[DCMPix purgeCachedDictionaries];
-		[DCMView purgeStringTextureCache];
-		
-		[outlineViewArray release];
-		outlineViewArray = nil;
-		
-		[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
-		[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
-		[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
-		
 		@try {
+			[self willChangeValueForKey:@"database"];
+			
+			[self waitForRunningProcesses];
+			[reportFilesToCheck removeAllObjects];
+
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:_database];
+			
+	//		if (refresh) { // TODO: here
+	//			NSArray *albumArray = self.albumArray;
+	//			if( [albumArray count] > albumTable.selectedRow && albumTable.selectedRow >= 0)
+	//				albumName = [[[[albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"name"] copy] autorelease];
+	//			
+	//			if( [databaseOutline selectedRow] >= 0)
+	//			{
+	//				if( [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"type"] isEqualToString: @"Study"])
+	//					selectedItem = [[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"studyInstanceUID"];
+	//				
+	//				if( [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"type"] isEqualToString: @"Series"])
+	//					selectedItem = [[[databaseOutline itemAtRow:[databaseOutline selectedRow]] valueForKey: @"study"] valueForKey: @"studyInstanceUID"];
+	//				
+	//				selectedItem = [[selectedItem copy] autorelease];
+	//			}
+	//			timeInt = timeIntervalType;
+	//		}
+			
+			[_database save:nil];
+	//		[self willChangeValueForKey:@"database"];
+			[_database release]; _database = nil;
+	//		[self didChangeValueForKey:@"database"];
+			
+			[DCMPix purgeCachedDictionaries];
+			[DCMView purgeStringTextureCache];
+			
+			[outlineViewArray release];
+			outlineViewArray = nil;
+			
+			[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
+			[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
+			[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
+			
 			[[LogManager currentLogManager] checkLogs: nil];
 			[self resetLogWindowController];
 			
@@ -1381,13 +1387,17 @@ static NSConditionLock *threadLock = nil;
 			[self outlineViewRefresh];
 			[self refreshMatrix:self];
 			
+//			[self willChangeValueForKey:@"database"];
 			_database = [db retain];
+//			[self didChangeValueForKey:@"database"];
 			if ([db isLocal] && [NSUserDefaults canActivateAnyLocalDatabase])
 				[DicomDatabase setActiveLocalDatabase:db];
 			[self selectCurrentDatabaseSource];
-			
+
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseAddNotification:) name:OsirixAddToDBNotification object:_database];
-			
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseObjectsMayFaultNotification:) name:OsirixDatabaseObjectsMayFaultNotification object:_database];
+
+		
 			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 			
 			NSString	*DBVersion;//, *DBFolderLocation, *curPath = [self.documentsDirectory stringByDeletingLastPathComponent];
@@ -1599,15 +1609,11 @@ static NSConditionLock *threadLock = nil;
 //				
 //				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 //			}*/
-			
-		} @catch (NSException* e) {
-			N2LogExceptionWithStackTrace(e);
+		} @catch (...) {
+			@throw;
+		} @finally {
+			[self didChangeValueForKey:@"database"];
 		}
-		
-		//[tmc invalidate];
-		[thread exitOperation];
-		
-		[self didChangeValueForKey:@"database"];
 	}
 }
 
@@ -2319,6 +2325,35 @@ static NSConditionLock *threadLock = nil;
 	return;
 }
 
+-(void)rebuildDatabaseThread:(NSArray*)io {
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	@try {
+		DicomDatabase* database = [io objectAtIndex:0];
+		BOOL complete = [[io objectAtIndex:1] boolValue];
+		[database rebuild:complete];
+		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:database waitUntilDone:NO];
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	} @finally {
+		[pool release];
+	}
+}
+
+-(NSThread*)initiateRebuildDatabase:(BOOL)complete {
+	DicomDatabase* database = [[self.database retain] autorelease];
+	[self setDatabase:nil];
+	
+	NSArray* io = [NSMutableArray arrayWithObjects: database, [NSNumber numberWithBool:complete], nil];
+	
+	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(rebuildDatabaseThread:) object:io];
+	thread.name = NSLocalizedString(@"Rebuilding database...", nil);
+	
+	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+	[thread start];
+	
+	return [thread autorelease];
+}
+
 - (IBAction) endReBuildDatabase:(id) sender
 {
 	[NSApp endSheet: rebuildWindow];
@@ -2329,28 +2364,24 @@ static NSConditionLock *threadLock = nil;
 	if ([sender tag]) {
 		switch ([rebuildType selectedTag]) {
 			case 0:
-				[_database rebuild:YES];
+				[self initiateRebuildDatabase:YES];
 				break;
 				
 			case 1:
-				[_database rebuild:NO];
+				[self initiateRebuildDatabase:NO];
 				break;
 		}
 	}
 }
 
-- (IBAction) ReBuildDatabase:(id) sender { // __deprecated
-	[_database rebuild];
+-(IBAction)ReBuildDatabase:(id)sender { // __deprecated
+	[self initiateRebuildDatabase:NO];
 }
-
 
 - (IBAction) ReBuildDatabaseSheet: (id)sender
 {
-	if (![_database isLocal])
-	{
-		NSRunInformationalAlertPanel(NSLocalizedString(@"Database Cleaning", nil), NSLocalizedString(@"Cannot rebuild a distant database.", nil), NSLocalizedString(@"OK",nil), nil, nil);
-		return;
-	}
+	if (![_database rebuildAllowed])
+		[NSException raise:NSGenericException format:@"Current database rebuild not allowed, this shouldn't be executed."];
 	
 	// Wait if there is something in the delete queue
 	[self emptyDeleteQueueNow: self];
@@ -2378,25 +2409,22 @@ static NSConditionLock *threadLock = nil;
 	
 	long durationFor1000;
 	
-	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER3"] == 0)
-	{
+	NSRect frame = [rebuildWindow frame];
+	BOOL warningWasHidden = [warning isHidden];
+	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER3"] == 0) {
 		durationFor1000 = 18;
-		[warning setHidden: NO];
-	}
-	else
-	{
+		[warning setHidden:NO];
+		frame.size.height = 333;
+		[rebuildWindow setContentSize:frame.size];
+	} else {
 		durationFor1000 = 9;
-		[warning setHidden: YES];
+		[warning setHidden:YES];
+		frame.size.height = 333-[warning bounds].size.height-8;
+		[rebuildWindow setContentSize:frame.size];
 	}
 	
 	long totalSeconds = totalFiles * durationFor1000 / 1000;
-	long hours = (totalSeconds / 3600);
-	long minutes = ((totalSeconds / 60) - hours*60);
-	
-	if( minutes < 1) minutes = 1;
-	
-	if( hours) [estimatedTime setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%i hour(s), %i minutes", nil), hours, minutes]];
-	else [estimatedTime setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%i minutes", nil), minutes]];
+	[estimatedTime setStringValue:[NSString timeString:totalSeconds maxUnits:2]];
 	
 	[[AppController sharedAppController] closeAllViewers: self];
 	
@@ -2407,59 +2435,20 @@ static NSConditionLock *threadLock = nil;
 		  contextInfo: nil];
 }
 
-//- (void)dumpSQLFile { // __deprecated
-//	[database dumpSqlFile];
-//}
-
-- (IBAction)rebuildSQLFile:(id)sender {
-	if (![_database isLocal])
-		return;
-		
-	if (NSRunInformationalAlertPanel(NSLocalizedString(@"Rebuild SQL Index File", nil),
-									 NSLocalizedString(@"Are you sure you want to rebuild SQL Index File? It can take several minutes.", nil),
-									 NSLocalizedString(@"OK",nil),
-									 NSLocalizedString(@"Cancel",nil),
-									 nil) == NSAlertDefaultReturn)
-	{
-		DicomDatabase* db = [_database retain];
+-(void)_rebuildSqlSheetDidEnd:(NSWindow*)sheet returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {
+	[NSApp endSheet:sheet];
+	if (returnCode == NSAlertDefaultReturn) {
+		DicomDatabase* database = [_database retain];
 		[self setDatabase:nil];
-		
-		[db rebuildSqlFile];
-		
-		[self setDatabase:[db autorelease]];
+		[database rebuildSqlFile];
+		[self setDatabase:[database autorelease]];
 	}
-	
-	
-//	{
-//		[[AppController sharedAppController] closeAllViewers: self];
-//		
-//		[checkIncomingLock lock];
-//		
-//		displayEmptyDatabase = YES;
-//		[self outlineViewRefresh];
-//		[self refreshMatrix: self];
-//		
-//		[database lock];
-//		[database unlock];
-//		[managedObjectContext release];
-//		managedObjectContext = nil;
-//		
-//		[database save:NULL];
-//		
-//		[[self window] display];
-//		
-//		[self dumpSQLFile];
-//		
-// 		[self updateDatabaseModel: currentDatabasePath :DATABASEVERSION];
-//		
-//		[self loadDatabase: currentDatabaseDirPath];
-//		
-//		[self checkReportsDICOMSRConsistency];
-//		
-//		[[self window] display];
-//		
-//		[checkIncomingLock unlock];
-//	}
+}
+
+-(IBAction)rebuildSQLFile:(id)sender {
+	if (![_database rebuildAllowed])
+		[NSException raise:NSGenericException format:@"Current database rebuild not allowed, this shouldn't be executed."];
+	NSBeginInformationalAlertSheet(nil, nil, NSLocalizedString(@"Cancel", nil), nil, self.window, self, @selector(_rebuildSqlSheetDidEnd:returnCode:contextInfo:), nil, nil, NSLocalizedString(@"Are you sure you want to rebuild this database's SQL index? This operation can take several minutes.", nil));
 }
 
 - (void) reduceCoreDataFootPrint
@@ -3685,42 +3674,34 @@ static NSConditionLock *threadLock = nil;
 
 - (void) computeNumberOfStudiesForAlbums
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool* pool = nil;
+	if (![NSThread isMainThread])
+		pool = [[NSAutoreleasePool alloc] init];
 	
 //	@synchronized( [BrowserController currentBrowser])
 //	{
 //		cachedAlbumsManagedObjectContext = nil;
 //	}
 	
-	@try
-	{
-		if(/* displayEmptyDatabase == NO &&-*/ computeNumberOfStudiesForAlbums == NO)
-		{
+	DicomDatabase* database = [self.database retain];
+	if (database) @try {
+		if(/* displayEmptyDatabase == NO &&-*/ computeNumberOfStudiesForAlbums == NO) {
 			computeNumberOfStudiesForAlbums = YES;
 			
-			NSManagedObjectContext *context = [self managedObjectContextIndependentContext: YES];
-			NSMutableArray *NoOfStudies = [NSMutableArray array];
-			
-			// Find all studies
-			NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-			
+//			NSManagedObjectContext* context = [database independentContext];
+			NSMutableArray* NoOfStudies = [NSMutableArray array];
 			NSError *error = nil;
+			
 			NSArray *studiesArray = nil;
-			@try 
-			{
-				studiesArray = [context executeFetchRequest:dbRequest error:&error];
-			}
-			@catch (NSException * e) 
-			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-				[AppController printStackTrace: e];
+			@try {
+				studiesArray = [database objectsForEntity:database.studyEntity];
+			} @catch (NSException* e) {
+				N2LogExceptionWithStackTrace(e);
 			}
 			
-			[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+			[NoOfStudies addObject: [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]];
 			
-			NSArray *albums = [BrowserController albumsInContext: context];
+			NSArray *albums = [database albums];
 			
 			for( int rowIndex = 0 ; rowIndex < [albums count]; rowIndex++)
 			{
@@ -3728,24 +3709,15 @@ static NSConditionLock *threadLock = nil;
 				
 				if( [[object valueForKey:@"smartAlbum"] boolValue] == YES)
 				{
-					@try
-					{
-						error = nil;
-						[dbRequest setPredicate: [self smartAlbumPredicate: object]];
-						
-						NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-						
-						[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
-					}
-					
-					@catch( NSException *e)
-					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-						[AppController printStackTrace: e];
+					@try {
+						NSArray *studiesArray = [database objectsForEntity:database.studyEntity predicate:[self smartAlbumPredicate:object]];
+						[NoOfStudies addObject: [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]];
+					} @catch( NSException *e) {
+						N2LogExceptionWithStackTrace(e);
 					}
 				}
 				else
-					[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]]];
+					[NoOfStudies addObject: [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]];
 			}
 			
 			@synchronized( albumNoOfStudiesCache)
@@ -3754,24 +3726,24 @@ static NSConditionLock *threadLock = nil;
 				[albumNoOfStudiesCache addObjectsFromArray: NoOfStudies];
 			}
 			
-			[self performSelectorOnMainThread: @selector( reloadAlbumTableData) withObject: nil waitUntilDone: NO];
+			[self performSelectorOnMainThread: @selector(reloadAlbumTableData) withObject: nil waitUntilDone: NO];
 			
 			computeNumberOfStudiesForAlbums = NO;
 		}
 		else
-			[self performSelectorOnMainThread: @selector( delayedRefreshAlbums) withObject: nil waitUntilDone: NO];
+			[self performSelectorOnMainThread: @selector(delayedRefreshAlbums) withObject: nil waitUntilDone: NO];
 	}
 	@catch (NSException * e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
+		[database release];
 		[pool release];
 	}
 }
 
-- (void)delayedRefreshAlbums
-{
-	[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( computeNumberOfStudiesForAlbums) object: nil];
-	[self performSelector: @selector( computeNumberOfStudiesForAlbums) withObject: nil afterDelay: 20];
+- (void)delayedRefreshAlbums {
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(computeNumberOfStudiesForAlbums) object:nil];
+	[self performSelector:@selector(computeNumberOfStudiesForAlbums) withObject:nil afterDelay:20];
 }
 
 - (void)refreshAlbums
@@ -4254,6 +4226,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
 {
+	NSLog(@"outlineViewSelectionDidChange");
 	
 //	@synchronized( [BrowserController currentBrowser])
 //	{
@@ -7742,64 +7715,46 @@ static BOOL withReset = NO;
 	[context unlock];
 }
 
-- (IBAction)rebuildThumbnails: (id)sender
-{
-	NSInteger				row;
-	NSManagedObjectContext	*context = self.managedObjectContext;
-	
-	[context lock];
-	
-	@try 
-	{
-		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
-	
-		if( [databaseOutline selectedRow] >= 0)
-		{
-			for( NSInteger x = 0; x < selectedRows.count; x++)
-			{
-				if( x == 0) row = selectedRows.firstIndex;
-				else row = [selectedRows indexGreaterThanIndex: row];
+-(IBAction)rebuildThumbnails:(id)sender {
+	[_database lock];
+	@try {
+		NSIndexSet* selectedRows = [databaseOutline selectedRowIndexes];
+		NSInteger row;
+		
+		if ([databaseOutline selectedRow] >= 0)
+			for (NSInteger x = 0; x < selectedRows.count; x++) {
+				if (x == 0) row = selectedRows.firstIndex;
+				else row = [selectedRows indexGreaterThanIndex:row];
 				
-				NSManagedObject	*object = [databaseOutline itemAtRow: row];
+				NSManagedObject* object = [databaseOutline itemAtRow:row];
 				
-				if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
-				{
-					[[self childrenArray: object] setValue:nil forKey:@"thumbnail"];
-				}
-				
-				if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
-				{
+				if ([[object valueForKey:@"type"] isEqualToString:@"Study"])
+					[[self childrenArray:object] setValue:nil forKey:@"thumbnail"];
+				if ([[object valueForKey:@"type"] isEqualToString:@"Series"])
 					[object setValue:nil forKey:@"thumbnail"];
-				}
 			}
-		}
 		
 		[_database save:NULL];
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	} @finally {
+		[_database unlock];
 	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
-	}
-	
-	[context unlock];
 	
 	[self refreshMatrix: self];
 }
 
 - (void)matrixLoadIcons: (NSDictionary*)dict
 {
-	NSAutoreleasePool               *pool = [[NSAutoreleasePool alloc] init];
-	long							subGroupCount = 1, position = 0;
-	NSArray							*files = [dict valueForKey: @"files"];
-	NSArray							*filesPaths = [dict valueForKey: @"filesPaths"];
-	NSMutableArray					*ipreviewPixThumbnails = [dict valueForKey: @"previewPixThumbnails"];
-	NSMutableArray					*ipreviewPix = [dict valueForKey: @"previewPix"];
-	
-	@try
-	{
-		for( int i = 0; i < filesPaths.count; i++)
-		{
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	@try {
+		long			subGroupCount = 1, position = 0;
+		NSArray			*files = [dict valueForKey: @"files"];
+		NSArray			*filesPaths = [dict valueForKey: @"filesPaths"];
+		NSMutableArray	*ipreviewPixThumbnails = [dict valueForKey: @"previewPixThumbnails"];
+		NSMutableArray	*ipreviewPix = [dict valueForKey: @"previewPix"];
+
+		for (int i = 0; i < filesPaths.count; i++) {
 			NSImage		*thumbnail = nil;
 			
 			thumbnail = [ipreviewPixThumbnails objectAtIndex: i];
@@ -7852,14 +7807,12 @@ static BOOL withReset = NO;
 		if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
 			[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:nil waitUntilDone: NO];
 	}
-	
-	@catch( NSException *ne)
-	{
-		NSLog(@"matrixLoadIcons exception: %@", ne.description);
-		[AppController printStackTrace: ne];
+	@catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
 	}
-	
-    [pool release];
+	@finally {
+		[pool release];
+	}
 }
 
 - (CGFloat)splitView: (NSSplitView *)sender constrainSplitPosition: (CGFloat)proposedPosition ofSubviewAt: (NSInteger)offset
@@ -9067,7 +9020,7 @@ static BOOL needToRezoom;
 		DicomAlbum* album = [albumArray objectAtIndex: row];
 		
 		NSPasteboard* pb = [info draggingPasteboard];
-		NSArray* xids = [pb propertyListForType:@"BrowserController.database.context.XIDs"];
+		NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:@"BrowserController.database.context.XIDs"] mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
 		NSMutableArray* items = [NSMutableArray array];
 		for (NSString* xid in xids)
 			[items addObject:[_database objectWithID:[NSManagedObject UidForXid:xid]]];
@@ -17045,11 +16998,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 #pragma mark-
 #pragma mark Bonjour
 
-- (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key { // __deprecated
+- (void)setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key { // __deprecated
 	[(RemoteDicomDatabase*)_database object:obj setValue:value forKey:key];
 }
 
-- (NSString*) askPassword
+-(NSString*)askPassword
 {
 	[password setStringValue:@""];
 	

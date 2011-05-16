@@ -123,7 +123,6 @@
 	NSString* dstAET = nil;
 	NSInteger dstPort = 0;
 	NSInteger dstSyntax = 0;
-	NSLog(@"dictionaryyyyyyy %@", destination.dictionary);
 	if (destination.type == BrowserSourceTypeRemote) {
 		[RemoteDicomDatabase address:destination.location toAddress:&dstAddress port:NULL];
 		dstPort = [[destination.dictionary objectForKey:@"port"] integerValue];

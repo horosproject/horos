@@ -126,6 +126,7 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(void)applyAutoRoutingRules:(NSArray*)autoroutingRules toImages:(NSArray*)images;
 
 #pragma mark Other
+-(BOOL)rebuildAllowed;
 // some of these methods should be private, but is declared because called from deprecated api
 -(void)rebuild;
 -(void)rebuild:(BOOL)complete;

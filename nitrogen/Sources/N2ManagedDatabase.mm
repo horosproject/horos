@@ -201,6 +201,10 @@
 	return [self.managedObjectContext objectWithID:[self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:theId]]];
 }
 
+-(NSArray*)objectsForEntity:(NSEntityDescription*)e {
+	return [self objectsForEntity:e predicate:nil error:NULL];
+}
+
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p {
 	return [self objectsForEntity:e predicate:p error:NULL];
 }
@@ -208,7 +212,7 @@
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p error:(NSError**)err {
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = e;
-	req.predicate = p;
+	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
 	return [self.managedObjectContext executeFetchRequest:req error:err];
 }
 
