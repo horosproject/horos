@@ -1344,7 +1344,8 @@ static NSConditionLock *threadLock = nil;
 			[self waitForRunningProcesses];
 			[reportFilesToCheck removeAllObjects];
 
-			[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:_database];
+			if (_database)
+				[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:_database];
 			
 	//		if (refresh) { // TODO: here
 	//			NSArray *albumArray = self.albumArray;

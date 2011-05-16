@@ -1,0 +1,6 @@
+- Autorouting
+- Dock icon badge (on add files)
+- Album cache
+- MacAppStore (check)
+
+

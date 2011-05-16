@@ -2647,13 +2647,12 @@ enum { Compress, Decompress };
 -(void)rebuild:(BOOL)complete {
 	NSThread* thread = [NSThread currentThread];
 	
-//	if (isCurrentDatabaseBonjour) return;
-	
 //	[self waitForRunningProcesses];
 	
-	//[[AppController sharedAppController] closeAllViewers: self];
-	
 	[NSNotificationCenter.defaultCenter postNotificationName:OsirixDatabaseObjectsMayFaultNotification object:self userInfo:nil];
+	//[[AppController sharedAppController] closeAllViewers: self];
+
+	[_importFilesFromIncomingDirLock lock];
 	
 	if (complete) {	// Delete the database file
 		self.managedObjectContext = nil;
@@ -2664,24 +2663,8 @@ enum { Compress, Decompress };
 		self.managedObjectContext = [self contextAtPath:self.sqlFilePath];
 	} else [self save:NULL];
 	
-	//	displayEmptyDatabase = YES;
-	//	[self outlineViewRefresh];
-	//	[self refreshMatrix: self];
-	
 	[self lock];
-	@try
-	{
-		
-	//	[managedObjectContext lock];
-	//	[managedObjectContext unlock];
-	//	[managedObjectContext release];
-	//	managedObjectContext = nil;
-		
-	//	[databaseOutline reloadData];
-		
-	//	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Step 1: Checking files...", nil)];
-	//	[wait showWindow:self];
-		
+	@try {
 		thread.status = NSLocalizedString(@"Scanning database directory...", nil);
 		
 		NSMutableArray *filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
@@ -2741,10 +2724,6 @@ enum { Compress, Decompress };
 		
 		[filesArray release];
 		
-	//	Wait  *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Step 3: Cleaning Database...", nil)];
-		
-	//	[splash showWindow:self];
-		
 		NSFetchRequest	*dbRequest;
 		NSError			*error = nil;
 		
@@ -2770,20 +2749,12 @@ enum { Compress, Decompress };
 		
 		[self save:NULL];
 		
-	//	[splash close];
-	//	[splash release];
-		
-	//	displayEmptyDatabase = NO;
-		
 		thread.status = NSLocalizedString(@"Checking reports consistency...", nil);
 		[self checkReportsConsistencyWithDICOMSR];
-		
-//		[self outlineViewRefresh];
-	}
-	@catch( NSException *e)
-	{
+	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
+		[_importFilesFromIncomingDirLock unlock];
 		[self unlock];
 	}
 }
@@ -2792,8 +2763,7 @@ enum { Compress, Decompress };
 	// Find all studies with reportURL
 	[self.managedObjectContext lock];
 	
-	@try 
-	{
+	@try {
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"reportURL != NIL"];
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 		dbRequest.entity = [self.managedObjectModel.entitiesByName objectForKey:@"Study"];
@@ -2804,8 +2774,7 @@ enum { Compress, Decompress };
 		
 		for (DicomStudy *s in studiesArray)
 			[s archiveReportAsDICOMSR];
-	}
-	@catch (NSException* e) {
+	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
 		[self.managedObjectContext unlock];
@@ -2814,8 +2783,7 @@ enum { Compress, Decompress };
 
 - (void)checkForExistingReportForStudy:(NSManagedObject*)study {
 #ifndef OSIRIX_LIGHT
-	@try
-	{
+	@try {
 		// Is there a report?
 		NSString	*reportsBasePath = self.reportsDirPath;
 		NSString	*reportPath = nil;
@@ -2938,14 +2906,14 @@ enum { Compress, Decompress };
 }
 
 -(void)rebuildSqlFile {
-//	[checkIncomingLock lock];
+	[_importFilesFromIncomingDirLock lock];
 	
 	[self save:NULL];
 	[self dumpSqlFile];
 	[self upgradeSqlFileFromModelVersion:CurrentDatabaseVersion];
 	[self checkReportsConsistencyWithDICOMSR];
 	
-//	[checkIncomingLock unlock];
+	[_importFilesFromIncomingDirLock unlock];
 }
 
 -(void)reduceCoreDataFootPrint {
