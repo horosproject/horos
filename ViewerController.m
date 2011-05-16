@@ -94,6 +94,7 @@
 #import "Notifications.h"
 #import "DicomDatabase.h"
 #import "N2Debug.h"
+#import "NSString+N2.h"
 
 int delayedTileWindows = NO;
 
@@ -3892,7 +3893,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[cell setBordered: YES];
 				
 				NSString	*name = [curStudy valueForKey:@"studyName"];
-				if( [name length] > 15) name = [name substringToIndex: 15];
+//				if( [name length] > 15) name = [name substringToIndex: 15];
+				
+				name = [name stringByTruncatingToLength: 36];
 				
 				NSString *stateText;
 				if( [[curStudy valueForKey:@"stateText"] intValue]) stateText = [[BrowserController statesArray] objectAtIndex: [[curStudy valueForKey:@"stateText"] intValue]];
@@ -3953,8 +3956,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 						[cell setButtonType:NSMomentaryPushInButton];
 						[cell setEnabled:YES];
 						
-						NSString	*name = [curSeries valueForKey:@"name"];
-						if( [name length] > 15) name = [name substringToIndex: 15];
+						NSString *name = [curSeries valueForKey:@"name"];
+						if( [name length] > 18)
+						{
+							[cell setFont:[NSFont boldSystemFontOfSize:7.5]];
+							name = [name stringByTruncatingToLength: 36];
+						}
 						
 						NSString	*type = nil;
 						int count = [[curSeries valueForKey:@"noFiles"] intValue];

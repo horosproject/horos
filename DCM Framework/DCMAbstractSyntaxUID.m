@@ -65,8 +65,13 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *MultiframeTrueColorSecondaryCaptureImageStorage = @"1.2.840.10008.5.1.4.1.1.7.4";
 	/***/
 	static NSString *XrayAngiographicImageStorage = @"1.2.840.10008.5.1.4.1.1.12.1";
+	static NSString *EnhancedXAImageStorage = @"1.2.840.10008.5.1.4.1.1.12.1.1";
 	/***/
 	static NSString *XrayRadioFlouroscopicImageStorage = @"1.2.840.10008.5.1.4.1.1.12.2";
+	static NSString *EnhancedXRFImageStorage = @"1.2.840.10008.5.1.4.1.1.12.2.1";
+	/***/
+	static NSString *XRay3DAngiographicImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.1";
+	static NSString *XRay3DCraniofacialImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.2";
 	/***/
 	static NSString *XrayAngiographicBiplaneImageStorage = @"1.2.840.10008.5.1.4.1.1.12.3";
 	/***/
@@ -426,6 +431,10 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			OphthalmicPhotography8BitImageStorage,
 			OphthalmicPhotography16BitImageStorage,
 			FujiPrivateCR,
+			EnhancedXAImageStorage,
+			EnhancedXRFImageStorage,
+			XRay3DAngiographicImageStorage,
+			XRay3DCraniofacialImageStorage,
 			nil];
 		
 		@try 

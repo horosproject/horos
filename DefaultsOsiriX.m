@@ -902,6 +902,12 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"exportOrientationIn3DExport"];
 	[defaultValues setObject:@"240" forKey:@"WADOTimeout"];
 	[defaultValues setObject:@"50" forKey:@"WADOMaximumConcurrentDownloads"];
+
+	#ifdef MACAPPSTORE
+	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
+	#else
+	[defaultValues setObject:@"0" forKey:@"MACAPPSTORE"];
+	#endif
 	
 	[defaultValues setObject: [NSArray arrayWithObjects: [DCMAbstractSyntaxUID MRSpectroscopyStorage], nil] forKey:@"additionalDisplayedStorageSOPClassUIDArray"];
 	

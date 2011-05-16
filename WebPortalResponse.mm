@@ -518,7 +518,7 @@
 		return [NSNumber numberWithBool: !wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue)]; 
 	}
 	if ([key isEqual:@"proposeWADORetrieve"]) {
-		return [NSNumber numberWithBool: [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"] && (!wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue))]; 
+		return [NSNumber numberWithBool: [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"] && (!wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue))]; 
 	}
 	if ([key isEqual:@"WADOBaseURL"])
 	{

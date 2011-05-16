@@ -1547,14 +1547,25 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 						}
 						else
 						{
+                            N3AffineTransform viewToDicomTransform = N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform]);
+                            N3Vector newCrossCenter = N3VectorApplyTransform(N3VectorMakeFromNSPoint(mouseLocation), viewToDicomTransform);
+                            
 							[self sendWillEditCurvedPath];
-							[curvedPath addNode:mouseLocation transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])];
+                            
+                            // if the shift key is down, place the point at the same level as the previous point
+                            if ([curvedPath.nodes count] > 0 && [theEvent modifierFlags] & NSShiftKeyMask) {
+                                N3Vector lastPoint = [[curvedPath.nodes lastObject] N3VectorValue];
+                                viewToDicomTransform = N3AffineTransformConcat(N3AffineTransformMakeTranslation(0, 0,
+                                                             N3VectorApplyTransform(lastPoint, N3AffineTransformInvert(viewToDicomTransform)).z), viewToDicomTransform);
+                            }
+                            
+							[curvedPath addNode:mouseLocation transform:viewToDicomTransform];
 							[self sendDidUpdateCurvedPath];
 							[self sendDidEditCurvedPath];
 							[self setNeedsDisplay:YES];
 							
 							// Center the views to the last point
-							[windowController CPRView:self setCrossCenter:[[curvedPath.nodes lastObject] N3VectorValue]];
+							[windowController CPRView:self setCrossCenter:newCrossCenter];
 						}
 					}
 					else

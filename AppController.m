@@ -2094,7 +2094,7 @@ static NSDate *lastWarningDate = nil;
 					{
 						@try
 						{
-							[urlParameters setObject: [[param substringFromIndex: separatorRange.location+1] stringByReplacingOccurrencesOfString:@"'" withString:@""] forKey: [param substringToIndex: separatorRange.location]];
+							[urlParameters setObject: [[param substringFromIndex: separatorRange.location+1] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString: @"'\""]] forKey: [param substringToIndex: separatorRange.location]];
 						}
 						@catch (NSException * e)
 						{
@@ -2710,11 +2710,11 @@ static BOOL initialized = NO;
 				
 				
 				#ifdef MACAPPSTORE
-				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"];
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AUTHENTICATION"];
 				[[NSUserDefaults standardUserDefaults] setObject:@"(~/Library/Application Support/OsiriX/)" forKey:@"DefaultDatabasePath"];
 				#else
-				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"MACAPPSTORE"];
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
 				[[NSUserDefaults standardUserDefaults] setObject:@"(Current User Documents folder)" forKey:@"DefaultDatabasePath"];
 				#endif
 				
@@ -4683,7 +4683,7 @@ static BOOL initialized = NO;
 + (NSString*)checkForPagesTemplate;
 {
 	NSString *templateDirectory = nil;
-	#ifdef MACAPPSTORE
+	#ifndef MACAPPSTORE
 	// Pages template directory
 	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
 	int i;

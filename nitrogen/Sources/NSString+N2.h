@@ -20,7 +20,7 @@ extern NSString* N2NonNullString(NSString* s);
 @interface NSString (N2)
 
 -(NSString*)markedString;
-
+-(NSString *)stringByTruncatingToLength:(NSInteger)theWidth;
 +(NSString*)sizeString:(unsigned long long)size;
 +(NSString*)timeString:(NSTimeInterval)time;
 +(NSString*)timeString:(NSTimeInterval)time maxUnits:(NSInteger)maxUnits;
