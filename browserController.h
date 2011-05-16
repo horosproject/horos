@@ -156,7 +156,6 @@ extern NSString* O2AlbumDragType;
 	NSToolbarItem					*toolbarSearchItem;
 	int								searchType;
 	
-	IBOutlet NSWindow				*mainWindow;
 	IBOutlet NSMenu					*imageTileMenu;
 	IBOutlet NSWindow				*urlWindow, *CDpasswordWindow, *ZIPpasswordWindow;
 	IBOutlet NSTextField			*urlString;

@@ -57,7 +57,7 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
     [self.statusField bind:@"value" toObject:self.thread withKeyPath:NSThreadStatusKey options:NULL];
     [self.progressDetailsField bind:@"value" toObject:self.thread withKeyPath:NSThreadProgressDetailsKey options:NULL];
     [self.cancelButton bind:@"enabled" toObject:self.thread withKeyPath:NSThreadSupportsCancelKey options:NULL];
-	[self.cancelButton bind:@"enabled2" toObject:self.thread withKeyPath:NSThreadIsCancelledKey options:NULL];
+	[self.cancelButton bind:@"enabled2" toObject:self.thread withKeyPath:NSThreadIsCancelledKey options:[NSDictionary dictionaryWithObject:NSNegateBooleanTransformerName forKey:NSValueTransformerNameBindingOption]];
 	
 	[_thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
 }

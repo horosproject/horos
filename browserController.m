@@ -11015,7 +11015,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(willVolumeUnmount:) name:NSWorkspaceWillUnmountNotification object:nil];
 		
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
+		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:OsirixReportModeChangedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:nil];
@@ -11728,12 +11728,6 @@ static NSArray*	openSubSeriesArray = nil;
     }
 }
 
-- (void)mainWindowHasChanged:(NSNotification *)note
-{
-	[mainWindow release];
-	mainWindow = [[note object] retain];
-}
-
 - (IBAction) unlockStudies: (id) sender
 {
 	NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
@@ -11809,7 +11803,7 @@ static NSArray*	openSubSeriesArray = nil;
 
 	if( menuItem.menu == imageTileMenu)
 	{
-		return [mainWindow.windowController isKindOfClass:[ViewerController class]];
+		return [[[NSApp mainWindow] windowController] isKindOfClass:[ViewerController class]];
 	}
 	else if( [menuItem action] == @selector( unifyStudies:))
 	{
