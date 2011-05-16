@@ -4885,8 +4885,9 @@ static NSConditionLock *threadLock = nil;
 					if( [managedObjectContext tryLock])
 					{
 						gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
-						[self reduceCoreDataFootPrint];
 						[managedObjectContext unlock];
+						
+						[self reduceCoreDataFootPrint];
 					}
 				}
 			}
