@@ -1553,7 +1553,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 							[self sendWillEditCurvedPath];
                             
                             // if the shift key is down, place the point at the same level as the previous point
-                            if ([curvedPath.nodes count] > 0 && [theEvent modifierFlags] & NSShiftKeyMask) {
+                            if ([curvedPath.nodes count] > 0 && [theEvent modifierFlags] & NSControlKeyMask)
+							{
                                 N3Vector lastPoint = [[curvedPath.nodes lastObject] N3VectorValue];
                                 viewToDicomTransform = N3AffineTransformConcat(N3AffineTransformMakeTranslation(0, 0,
                                                              N3VectorApplyTransform(lastPoint, N3AffineTransformInvert(viewToDicomTransform)).z), viewToDicomTransform);
