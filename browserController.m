@@ -4811,9 +4811,6 @@ static NSConditionLock *threadLock = nil;
 		}
 		
 		[managedObjectContext unlock];
-		
-		[DCMPix purgeCachedDictionaries];
-		[DCMView purgeStringTextureCache];
 	}
 	
 	NSLog( @"----- reduce memory footprint for CoreData");
@@ -4885,15 +4882,17 @@ static NSConditionLock *threadLock = nil;
 					if( [managedObjectContext tryLock])
 					{
 						gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
-						[managedObjectContext unlock];
-						
 						[self reduceCoreDataFootPrint];
+						[managedObjectContext unlock];
 					}
 				}
 			}
 			
 			[checkIncomingLock unlock];
 		}
+		
+		[DCMPix purgeCachedDictionaries];
+		[DCMView purgeStringTextureCache];
 	}
 	
 	// Build thumbnails
