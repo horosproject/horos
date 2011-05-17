@@ -2858,7 +2858,7 @@ enum { Compress, Decompress };
 	//[splash showWindow:self];
 	
 	@try {
-		NSString* repairedDBFile = [self.baseDirPath stringByAppendingPathComponent:@"Repaired.txt"];
+		NSString* repairedDBFile = [self.sqlFilePath stringByAppendingPathExtension:@"dump"];
 		
 		[NSFileManager.defaultManager removeItemAtPath:repairedDBFile error:nil];
 		[NSFileManager.defaultManager createFileAtPath:repairedDBFile contents:[NSData data] attributes:nil];
@@ -2866,8 +2866,7 @@ enum { Compress, Decompress };
 		NSTask* theTask = [[NSTask alloc] init];
 		[theTask setLaunchPath: @"/usr/bin/sqlite3"];
 		[theTask setStandardOutput:[NSFileHandle fileHandleForWritingAtPath:repairedDBFile]];
-		[theTask setCurrentDirectoryPath:self.baseDirPath.stringByDeletingLastPathComponent];
-		[theTask setArguments:[NSArray arrayWithObjects:SqlFileName, @".dump", nil]];
+		[theTask setArguments:[NSArray arrayWithObjects: self.sqlFilePath, @".dump", nil]];
 		
 		[theTask launch];
 		[theTask waitUntilExit];
@@ -2875,14 +2874,13 @@ enum { Compress, Decompress };
 		[theTask release];
 		
 		if (dumpStatus == 0) {
-			NSString* repairedDBFinalFile = [self.baseDirPath stringByAppendingPathComponent: @"RepairedFinal.sql"];
+			NSString* repairedDBFinalFile = [repairedDBFile stringByAppendingPathExtension: @"sql"];
 			[NSFileManager.defaultManager removeItemAtPath:repairedDBFinalFile error:nil];
-
+			
 			theTask = [[NSTask alloc] init];
 			[theTask setLaunchPath:@"/usr/bin/sqlite3"];
 			[theTask setStandardInput:[NSFileHandle fileHandleForReadingAtPath:repairedDBFile]];
-			[theTask setCurrentDirectoryPath:self.baseDirPath.stringByDeletingLastPathComponent];
-			[theTask setArguments:[NSArray arrayWithObjects: @"RepairedFinal.sql", nil]];		
+			[theTask setArguments:[NSArray arrayWithObjects: repairedDBFinalFile, nil]];		
 			
 			[theTask launch];
 			[theTask waitUntilExit];
@@ -2909,8 +2907,13 @@ enum { Compress, Decompress };
 	[_importFilesFromIncomingDirLock lock];
 	
 	[self save:NULL];
+	self.managedObjectContext = nil;
+	
 	[self dumpSqlFile];
 	[self upgradeSqlFileFromModelVersion:CurrentDatabaseVersion];
+	
+	self.managedObjectContext = [self contextAtPath:self.sqlFilePath];
+	
 	[self checkReportsConsistencyWithDICOMSR];
 	
 	[_importFilesFromIncomingDirLock unlock];
@@ -2934,7 +2937,7 @@ enum { Compress, Decompress };
 
 -(void)checkForHtmlTemplates {
 	// directory
-	NSString *htmlTemplatesDirectory = [self htmlTemplatesDirPath];
+	NSString* htmlTemplatesDirectory = [self htmlTemplatesDirPath];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory attributes:nil];
 	

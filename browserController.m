@@ -4227,7 +4227,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
 {
-	NSLog(@"outlineViewSelectionDidChange");
+//	NSLog(@"outlineViewSelectionDidChange");
 	
 //	@synchronized( [BrowserController currentBrowser])
 //	{
@@ -5395,6 +5395,29 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+}
+
+
+
+-(NSString*)outlineView:(NSOutlineView*)outlineView toolTipForCell:(NSCell*)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn*)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
+	if ([item isFault])
+		return nil;
+	
+	if ([[tableColumn identifier] isEqualToString:@"name"]) {
+		NSDate* now = [NSDate date];
+		NSDate* today0 = [NSDate dateWithTimeIntervalSinceReferenceDate:floor([now timeIntervalSinceReferenceDate]/(60*60*24))*(60*60*24)];
+		NSDate* acqDate = [item valueForKey:@"date"];
+		NSTimeInterval acqInterval = [now timeIntervalSinceDate:acqDate];
+		NSTimeInterval addInterval = [now timeIntervalSinceDate:[item valueForKey:@"dateAdded"]];
+		
+		if (acqInterval <= 60*10) return NSLocalizedString(@"Acquired within the last 10 minutes", nil);
+		else if (acqInterval <= 60*60) return NSLocalizedString(@"Acquired within the last hour", nil);
+		else if (acqInterval <= 4*60*60) return NSLocalizedString(@"Acquired within the last 4 hours", nil); 
+		else if ([acqDate timeIntervalSinceDate:today0] >= 0) return NSLocalizedString(@"Acquired today", nil); // today
+		else if (addInterval <= 60) return NSLocalizedString(@"Added within the last 60 seconds", nil);
+	}
+	
+	return nil;
 }
 
 - (void)outlineView: (NSOutlineView *)outlineView willDisplayCell: (id)cell forTableColumn: (NSTableColumn *)tableColumn item: (id)item
