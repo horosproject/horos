@@ -1097,6 +1097,7 @@ CGFloat N3BezierCoreMeanDistanceToPlane(N3BezierCoreRef bezierCore, N3Plane plan
     bezierCoreIterator = N3BezierCoreIteratorCreateWithBezierCore(flattenedBezierCore);
     N3BezierCoreRelease(flattenedBezierCore);
     flattenedBezierCore = NULL;
+    totalDistance = 0;
     
     while (!N3BezierCoreIteratorIsAtEnd(bezierCoreIterator)) {
         N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, NULL, NULL, &endpoint);
