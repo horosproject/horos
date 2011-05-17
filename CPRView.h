@@ -102,5 +102,6 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 
 - (void) adjustROIsForCPRView;
 - (void) runMainRunLoopUntilAllRequestsAreFinished;
+- (BOOL) planarDeformations;
 
 @end
