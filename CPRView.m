@@ -379,6 +379,9 @@ extern int splitPosition[ 3];
 		[self adjustROIsForCPRView];
 		
 		[super drawRect: rect];
+		
+//		if( [self.curvedPath.bezierPath isPlanar])
+//			NSLog( @"**");
 	}
 }
 
