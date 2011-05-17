@@ -1117,7 +1117,6 @@ bool N3BezierCoreIsPlanar(N3BezierCoreRef bezierCore)
     plane = N3BezierCoreLeastSquaresPlane(bezierCore);
     meanDistance = N3BezierCoreMeanDistanceToPlane(bezierCore, plane);
     
-    NSLog(@"meanDistance = %f, compare to %f", meanDistance, (CGFLOAT_MIN * 1E10));
     return meanDistance < 1.0;
 }
 
