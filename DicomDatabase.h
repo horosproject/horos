@@ -33,6 +33,9 @@ extern const NSString* const CurrentDatabaseVersion;
 	NSTimeInterval _timeOfLastIsFileSystemFreeSizeLimitReachedVerification;
 	NSTimeInterval _timeOfLastModification;
 	char baseDirPathC[4096], incomingDirPathC[4096], tempDirPathC[4096]; // these paths are used from the DICOM listener
+	// +Routing
+	NSMutableArray* _routingSendQueues;
+	NSRecursiveLock* _routingLock;
 }
 
 +(void)initializeDicomDatabaseClass;
@@ -121,9 +124,6 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(void)initiateCompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir;
 -(void)initiateDecompressFilesAtPaths:(NSArray*)paths;
 -(void)initiateDecompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir;
-
-#pragma mark Auto routing
--(void)applyAutoRoutingRules:(NSArray*)autoroutingRules toImages:(NSArray*)images;
 
 #pragma mark Other
 -(BOOL)rebuildAllowed;

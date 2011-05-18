@@ -188,6 +188,10 @@
 		596EB3F7118ABBB000880192 /* NSWindow+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3F5118ABBB000880192 /* NSWindow+N2.mm */; };
 		596EB3F8118ABBB000880192 /* NSWindow+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3F4118ABBB000880192 /* NSWindow+N2.h */; };
 		596EB3F9118ABBB000880192 /* NSWindow+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3F5118ABBB000880192 /* NSWindow+N2.mm */; };
+		596F42D21383AF3800A3FC33 /* DicomDatabase+Routing.h in Headers */ = {isa = PBXBuildFile; fileRef = 596F42D01383AF3800A3FC33 /* DicomDatabase+Routing.h */; };
+		596F42D31383AF3800A3FC33 /* DicomDatabase+Routing.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596F42D11383AF3800A3FC33 /* DicomDatabase+Routing.mm */; };
+		596F42D41383AF3800A3FC33 /* DicomDatabase+Routing.h in Headers */ = {isa = PBXBuildFile; fileRef = 596F42D01383AF3800A3FC33 /* DicomDatabase+Routing.h */; };
+		596F42D51383AF3800A3FC33 /* DicomDatabase+Routing.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596F42D11383AF3800A3FC33 /* DicomDatabase+Routing.mm */; };
 		597BB90B12A7D3C000D0A172 /* WebPortal.h in Headers */ = {isa = PBXBuildFile; fileRef = 597BB90912A7D3C000D0A172 /* WebPortal.h */; };
 		597BB90C12A7D3C000D0A172 /* WebPortal.mm in Sources */ = {isa = PBXBuildFile; fileRef = 597BB90A12A7D3C000D0A172 /* WebPortal.mm */; };
 		597BB93112A7E0F200D0A172 /* NSUserDefaults+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 597BB92F12A7E0F200D0A172 /* NSUserDefaults+OsiriX.h */; };
@@ -8322,6 +8326,8 @@
 		596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSPreferencePane+OsiriX.mm"; sourceTree = "<group>"; };
 		596EB3F4118ABBB000880192 /* NSWindow+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSWindow+N2.h"; path = "nitrogen/Sources/NSWindow+N2.h"; sourceTree = "<group>"; };
 		596EB3F5118ABBB000880192 /* NSWindow+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSWindow+N2.mm"; path = "nitrogen/Sources/NSWindow+N2.mm"; sourceTree = "<group>"; };
+		596F42D01383AF3800A3FC33 /* DicomDatabase+Routing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DicomDatabase+Routing.h"; sourceTree = "<group>"; };
+		596F42D11383AF3800A3FC33 /* DicomDatabase+Routing.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "DicomDatabase+Routing.mm"; sourceTree = "<group>"; };
 		597BB90912A7D3C000D0A172 /* WebPortal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortal.h; sourceTree = "<group>"; };
 		597BB90A12A7D3C000D0A172 /* WebPortal.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortal.mm; sourceTree = "<group>"; };
 		597BB92F12A7E0F200D0A172 /* NSUserDefaults+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+OsiriX.h"; sourceTree = "<group>"; };
@@ -17032,6 +17038,8 @@
 			children = (
 				59E52B3512C109B80094E668 /* DicomDatabase.h */,
 				59E52B3612C109B80094E668 /* DicomDatabase.mm */,
+				596F42D01383AF3800A3FC33 /* DicomDatabase+Routing.h */,
+				596F42D11383AF3800A3FC33 /* DicomDatabase+Routing.mm */,
 				5909F42D1357507B00BAE081 /* DicomDatabase+DCMTK.h */,
 				5909F42E1357507B00BAE081 /* DicomDatabase+DCMTK.mm */,
 				59526F3F1281AE0B0016F6C0 /* Dicom */,
@@ -19842,6 +19850,7 @@
 				59C57BFB1374131D00E3C90B /* BrowserController+Sources.h in Headers */,
 				59C57C011374146F00E3C90B /* BrowserSource.h in Headers */,
 				599A074E137ACAFC008FD834 /* BrowserController+Sources+Copy.h in Headers */,
+				596F42D21383AF3800A3FC33 /* DicomDatabase+Routing.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22067,6 +22076,7 @@
 				59C57BF91374131D00E3C90B /* BrowserController+Sources.h in Headers */,
 				59C57BFF1374146F00E3C90B /* BrowserSource.h in Headers */,
 				599A0750137ACAFC008FD834 /* BrowserController+Sources+Copy.h in Headers */,
+				596F42D41383AF3800A3FC33 /* DicomDatabase+Routing.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24447,6 +24457,7 @@
 				59C57BFC1374131D00E3C90B /* BrowserController+Sources.mm in Sources */,
 				59C57C021374146F00E3C90B /* BrowserSource.mm in Sources */,
 				599A074F137ACAFC008FD834 /* BrowserController+Sources+Copy.mm in Sources */,
+				596F42D31383AF3800A3FC33 /* DicomDatabase+Routing.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25711,6 +25722,7 @@
 				59C57BFA1374131D00E3C90B /* BrowserController+Sources.mm in Sources */,
 				59C57C001374146F00E3C90B /* BrowserSource.mm in Sources */,
 				599A0751137ACAFC008FD834 /* BrowserController+Sources+Copy.mm in Sources */,
+				596F42D51383AF3800A3FC33 /* DicomDatabase+Routing.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

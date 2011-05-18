@@ -59,6 +59,7 @@
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
 #import "DicomDatabase.h"
+#import "N2MutableUInteger.h"
 
 #include <OpenGL/OpenGL.h>
 
@@ -93,8 +94,10 @@ NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil, *STORESCPTLS = nil;			// 
 NSMutableArray			*accumulateAnimationsArray = nil;
 BOOL					accumulateAnimations = NO;
 
+AppController* OsiriX = nil;
+
 extern int delayedTileWindows;
-extern NSString* getMacAddress( void);
+extern NSString* getMacAddress(void);
 
 enum	{kSuccess = 0,
         kCouldNotFindRequestedProcess = -1, 
@@ -2451,7 +2454,7 @@ static NSDate *lastWarningDate = nil;
 - (id)init
 {
 	self = [super init];
-	appController = self;
+	OsiriX = appController = self;
 	
 	if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])
 		[N2Debug setActive:YES];
@@ -2592,7 +2595,6 @@ static NSDate *lastWarningDate = nil;
 static BOOL initialized = NO;
 + (void) initialize
 {
-
 //	int test = NSSwapHostIntToBig( 19191919);
 //	unsigned char *ptr = (unsigned char*) &test;
 //	long result;
@@ -4907,5 +4909,46 @@ static BOOL initialized = NO;
 }
 
 #endif
+
+static NSMutableDictionary* _receivingDict = nil;
+
+-(void)_receivingIconUpdate {
+	if (!_receivingDict.count)
+		[NSApp setApplicationIconImage:[NSImage imageNamed:@"Osirix.icns"]];
+	else [NSApp setApplicationIconImage:[NSImage imageNamed:@"OsirixDownload.icns"]];
+}
+
+-(void)_receivingIconSet:(BOOL)flag {
+	@synchronized (self) {
+		if (!_receivingDict)
+			_receivingDict = [[NSMutableDictionary alloc] init];
+		
+		NSThread* thread = [NSThread currentThread];
+		NSValue* threadValue = [NSValue valueWithPointer:thread];
+		N2MutableUInteger* setCount = [_receivingDict objectForKey:threadValue];
+		
+		if (flag) {
+			if (!setCount)
+				[_receivingDict setObject: setCount = [N2MutableUInteger mutableUIntegerWithUInteger:1] forKey:threadValue];
+			else [setCount increment];
+		} else {
+			if (setCount) {
+				[setCount decrement];
+				if (!setCount.unsignedIntegerValue)
+					[_receivingDict removeObjectForKey:threadValue];
+			}
+		}
+		
+		[self performSelectorOnMainThread:@selector(_receivingIconUpdate) withObject:nil waitUntilDone:NO];
+	}
+}
+
+-(void)setReceivingIcon {
+	[self _receivingIconSet:YES];
+}
+
+-(void)unsetReceivingIcon {
+	[self _receivingIconSet:NO];
+}
 
 @end

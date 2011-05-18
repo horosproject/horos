@@ -11343,11 +11343,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[self sendSyncMessage: 0];
 	
-	if( [self is2DViewer])
+	/*if( [self is2DViewer])
 	{
-		[[self windowController] adjustSlider];
+		[[self windowController] adjustSlider]; HERE HERE
 		[[self windowController] propagateSettings];
-	}
+	}*/
 	
 	[self computeColor];
 	

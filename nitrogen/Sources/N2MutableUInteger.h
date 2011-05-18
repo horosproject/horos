@@ -20,5 +20,6 @@
 -(id)initWithUInteger:(NSUInteger)value;
 
 -(void)increment;
+-(void)decrement;
 
 @end

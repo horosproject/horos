@@ -92,6 +92,10 @@ extern "C"
 @end
 #endif
 
+@class AppController;
+
+extern AppController* OsiriX;
+
 @interface AppController : NSObject	<GrowlApplicationBridgeDelegate>
 {
 	IBOutlet BrowserController		*browserController;
@@ -250,5 +254,9 @@ extern "C"
 #ifndef OSIRIX_LIGHT
 -(NSString*)weasisBasePath;
 #endif
+
+-(void)setReceivingIcon;
+-(void)unsetReceivingIcon;
+
 @end
 

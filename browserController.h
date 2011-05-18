@@ -79,7 +79,7 @@ extern NSString* O2AlbumDragType;
 	
     DCMPix                  *curPreviewPix;
     
-    NSTimer                 *timer, /**IncomingTimer,*/ *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer/*, *bonjourTimer*/, *deleteQueueTimer, *autoroutingQueueTimer;
+    NSTimer                 *timer, /**IncomingTimer,*/ *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer/*, *bonjourTimer*/, *deleteQueueTimer;
 	long					loadPreviewIndex, previousNoOfFiles;
 	NSManagedObject			*previousItem;
     
@@ -192,10 +192,6 @@ extern NSString* O2AlbumDragType;
 	NSMutableArray					*deleteQueueArray;
 	NSRecursiveLock					*deleteQueue, *deleteInProgress;
 	
-	NSMutableArray					*autoroutingQueueArray;
-	NSLock							*autoroutingQueue, *autoroutingInProgress;
-//	NSMutableDictionary				*autoroutingPreviousStudies;
-	
 	NSConditionLock					*processorsLock;
 //	NSRecursiveLock					*decompressArrayLock, *decompressThreadRunning;
 //	NSMutableArray					*decompressArray;
@@ -216,7 +212,7 @@ extern NSString* O2AlbumDragType;
 	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
 	
 //	volatile BOOL					newFilesInIncoming;
-	NSImage							*notFoundImage, *standardOsiriXIcon, *downloadingOsiriXIcon, *currentIcon;
+	NSImage							*notFoundImage;
 	
 	BOOL							ROIsAndKeyImagesButtonAvailable;
 	
@@ -307,7 +303,6 @@ extern NSString* O2AlbumDragType;
 - (IBAction) databaseDoublePressed:(id)sender;
 - (void) setDBDate;
 - (void) emptyDeleteQueueNow: (id) sender;
-- (void) setDockIcon;
 - (void)drawerToggle: (id)sender;
 - (void) showEntireDatabase;
 - (void) subSelectFilesAndFoldersToAdd: (NSArray*) filenames;
@@ -430,7 +425,7 @@ extern NSString* O2AlbumDragType;
 - (void)setToolbarReportIconForItem: (NSToolbarItem *)item;
 - (void)executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually __deprecated;
 - (void)executeAutorouting: (NSArray *)newImages rules: (NSArray*) autoroutingRules manually: (BOOL) manually generatedByOsiriX: (BOOL) generatedByOsiriX __deprecated;
-- (void) addFiles: (NSArray*) files withRule:(NSDictionary*) routingRule;
+- (void) addFiles: (NSArray*) files withRule:(NSDictionary*) routingRule __deprecated;
 - (void) resetListenerTimer __deprecated;
 - (IBAction) albumTableDoublePressed: (id)sender;
 - (IBAction) smartAlbumHelpButton:(id) sender;
@@ -578,7 +573,7 @@ extern NSString* O2AlbumDragType;
 
 - (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements;
 
-- (void) executeSend :(NSArray*) samePatientArray server:(NSDictionary*) server dictionary:(NSDictionary*) dict;
+// - (void) executeSend :(NSArray*) samePatientArray server:(NSDictionary*) server dictionary:(NSDictionary*) dict __deprecated;
 
 - (void)writeMovie:(NSArray*)imagesArray name:(NSString*)fileName;
 - (void) buildThumbnail:(NSManagedObject*) series;

@@ -30,7 +30,7 @@
 }
 
 -(void)decrement {
-	--_value;
+	if (_value) --_value;
 }
 
 @end

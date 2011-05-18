@@ -13,6 +13,7 @@
  =========================================================================*/
 
 #import "DicomDatabase.h"
+#import "DicomDatabase+Routing.h"
 #import "NSString+N2.h"
 #import "Notifications.h"
 #import "DicomAlbum.h"
@@ -344,6 +345,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 		[self addDefaultAlbums];
 	[self modifyDefaultAlbums];
 	
+	[self initRouting];
+	
 	// TODO: autoclean if settings say so
 	
 	[DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
@@ -352,6 +355,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 }
 
 -(void)dealloc {
+	[self deallocRouting];
+
 	NSRecursiveLock* temp;
 	
 	temp = _importFilesFromIncomingDirLock;
@@ -837,233 +842,6 @@ enum { Compress, Decompress };
 	[self initiateProcessFilesAtPaths:paths intoDirAtPath:destDir mode:Decompress];
 }
 
--(void)applyAutoRoutingRules:(NSArray*)autoroutingRules toImages:(NSArray*)newImages {
-#ifndef OSIRIX_LIGHT
-	if (!autoroutingRules)
-		autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey:@"AUTOROUTINGDICTIONARY"];
-	
-	for (NSDictionary* routingRule in autoroutingRules)
-		if (![routingRule valueForKey:@"activated"] || [[routingRule valueForKey:@"activated"] boolValue]) {
-			NSManagedObjectContext *context = self.managedObjectContext;
-			
-			[context retain];
-			[context lock];
-			
-			NSPredicate	*predicate = nil;
-			NSArray	*result = nil;
-			
-			@try {
-				if ([[routingRule objectForKey:@"filterType"] intValue] == 0)
-					predicate = [DicomDatabase predicateForSmartAlbumFilter:[routingRule objectForKey:@"filter"]];
-				else { // GeneratedByOsiriX filterType
-					/*if (generatedByOsiriX)
-						predicate = [NSPredicate predicateWithValue: YES];
-					else
-					{
-						if( manually)
-						{
-							NSMutableArray *studies = [NSMutableArray arrayWithArray: [newImages valueForKeyPath: @"series.study"]];
-							[studies removeDuplicatedObjects];
-							for( DicomStudy *study in studies)
-							{
-								[study archiveAnnotationsAsDICOMSR];
-								[study archiveReportAsDICOMSR];
-								
-								for( DicomImage *im in [[[study roiSRSeries] valueForKey: @"images"] allObjects])
-									[im setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
-								
-								for( DicomImage *im in [[[study reportSRSeries] valueForKey: @"images"] allObjects])
-									[im setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
-								
-								[[study annotationsSRImage] setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
-							}
-							*/
-							predicate = [NSPredicate predicateWithFormat:@"generatedByOsiriX == YES"];
-						/*}
-						else
-							predicate = [NSPredicate predicateWithValue: NO];
-					}*/
-				}
-				
-				if (predicate)
-					result = [newImages filteredArrayUsingPredicate:predicate];
-				
-				if (result.count) {
-					if ([[routingRule valueForKey:@"previousStudies"] intValue] > 0 && [[routingRule objectForKey: @"filterType"] intValue] == 0)
-					{
-						NSMutableDictionary *patients = [NSMutableDictionary dictionary];
-						
-						// for each study
-						for( id im in result)
-						{
-							if( [patients objectForKey: [im valueForKeyPath:@"series.study.patientUID"]] == nil)
-								[patients setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.patientUID"]];
-						}
-						
-						for( NSString *patientUID in [patients allKeys])
-						{
-							NSLog( @"%@", patientUID);
-							
-							id study = [patients objectForKey: patientUID];
-							
-							NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientUID == %@)", patientUID];
-							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-							dbRequest.entity = [self.managedObjectModel.entitiesByName objectForKey:@"Study"];
-							dbRequest.predicate = predicate;
-							
-							NSError	*error = nil;
-							NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-							
-							if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
-							{
-								NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
-								NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-								[sort release];
-								NSMutableArray* s = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
-								// remove original study from array
-								[s removeObject: study];
-								
-								studiesArray = [NSArray arrayWithArray: s];
-								
-								// did we already send these studies ? If no, send them !
-								
-//								if (autoroutingPreviousStudies == nil) autoroutingPreviousStudies = [[NSMutableDictionary dictionary] retain];
-								
-								int previousNumber = [[routingRule valueForKey:@"previousStudies"] intValue];
-								
-								for( id s in studiesArray)
-								{
-									NSString *key = [NSString stringWithFormat:@"%@ -> %@", [s valueForKey: @"studyInstanceUID"], [routingRule objectForKey:@"server"]];
-//									NSDate *when = [autoroutingPreviousStudies objectForKey: key];
-									
-									BOOL found = YES;
-									
-									if( [[routingRule valueForKey: @"previousModality"] boolValue])
-									{
-										if( [s valueForKey:@"modality"] && [study valueForKey:@"modality"])
-										{
-											if( [[study valueForKey:@"modality"] rangeOfString: [s valueForKey:@"modality"]].location == NSNotFound) found = NO;
-										}
-										else found = NO;
-									}
-									
-									if( [[routingRule valueForKey: @"previousDescription"] boolValue])
-									{
-										if( [s valueForKey:@"studyName"] && [study valueForKey:@"studyName"])
-										{
-											if( [[study valueForKey:@"studyName"] rangeOfString: [s valueForKey:@"studyName"]].location == NSNotFound) found = NO;
-										}
-										else found = NO;
-									}
-									
-									if( found && previousNumber > 0)
-									{
-										previousNumber--;
-										
-										// If we sent it more than 3 hours ago, re-send it
-										//if( when == nil || [when timeIntervalSinceNow] < -60*60*3*/)
-										{
-//											[autoroutingPreviousStudies setObject: [NSDate date] forKey: key];
-											
-											//for( NSManagedObject *series in [[s valueForKey:@"series"] allObjects])
-											//	result = [result arrayByAddingObjectsFromArray: [[series valueForKey:@"images"] allObjects]];
-										}
-									}
-								}
-							}
-						}
-					}
-					
-					if( [[routingRule valueForKey:@"cfindTest"] boolValue] && [[routingRule objectForKey: @"filterType"] intValue] == 0)
-					{
-						NSMutableDictionary *studies = [NSMutableDictionary dictionary];
-						
-						for( id im in result)
-						{
-							if( [studies objectForKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]] == nil)
-								[studies setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]];
-						}
-						
-						for( NSString *studyUID in [studies allKeys])
-						{
-							NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-							
-							NSString		*serverName = [routingRule objectForKey:@"server"];
-							NSDictionary	*server = nil;
-							
-							for ( NSDictionary *aServer in serversArray)
-							{
-								if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
-								{
-									server = aServer;
-									break;
-								}
-							}
-							
-							if( server)
-							{
-								NSArray *s = [QueryController queryStudyInstanceUID: studyUID server: server showErrors: NO];
-								
-								if( [s count])
-								{
-									if( [s count] > 1)
-										NSLog( @"Uh? multiple studies with same StudyInstanceUID on the distal node....");
-									
-									DCMTKStudyQueryNode* studyNode = [s lastObject];
-									
-									if( [[studyNode valueForKey:@"numberImages"] intValue] >= [[[studies objectForKey: studyUID] valueForKey: @"noFiles"] intValue])
-									{
-										// remove them, there are already there ! *probably*
-										
-										NSLog( @"Already available on the distant node : we will not send it.");
-										
-										NSMutableArray *r = [NSMutableArray arrayWithArray: result];
-										
-										for( int i = 0 ; i < [r count] ; i++)
-										{
-											if( [[[r objectAtIndex: i] valueForKeyPath: @"series.study.studyInstanceUID"] isEqualToString: studyUID])
-											{
-												[r removeObjectAtIndex: i];
-												i--;
-											}
-										}
-										
-										result = r;
-									}
-								}
-							}
-						}
-					}
-				}
-			} @catch (NSException* e) {
-				N2LogExceptionWithStackTrace(e);
-				result = nil;
-			}
-			
-//			if ([result count])
-//				[self addFiles:result withRule:routingRule]; // TODO: do the SEND
-			
-			[context unlock];
-			[context release];
-		}
-	
-	// Do some cleaning
-	
-/*	if( autoroutingPreviousStudies)
-	{
-		for( NSString *key in [autoroutingPreviousStudies allKeys])
-		{
-			if( [[autoroutingPreviousStudies objectForKey: key] timeIntervalSinceNow] < -60*60*3)
-			{
-				[autoroutingPreviousStudies removeObjectForKey: key];
-			}
-		}
-	}
-	
-	[splash close];
-	[splash release];*/
-#endif	
-}
 
 -(void)autoClean {
 	
@@ -1806,7 +1584,7 @@ enum { Compress, Decompress };
 					[growlStringNewStudy retain];
 					
 					if (self.isLocal)
-						[self applyAutoRoutingRules:nil toImages:addedImagesArray];
+						[self applyRoutingRules:nil toImages:addedImagesArray];
 					
 					[p release];
 				}
@@ -1973,6 +1751,8 @@ enum { Compress, Decompress };
 		NSString *pathname;
 		NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath limitTo:-1]; // For next release...
 		// NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath];
+		
+		[OsiriX setReceivingIcon];
 		
 		while( (pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles)
 		{
@@ -2207,6 +1987,8 @@ enum { Compress, Decompress };
 	}
 #endif
 	
+	[OsiriX unsetReceivingIcon];
+
 	[thread exitOperation];
 }
 

@@ -13,6 +13,7 @@
  =========================================================================*/
 
 #import "DicomDatabase.h"
+#import "DicomDatabase+Routing.h"
 #import "DicomDatabase+DCMTK.h"
 #import "RemoteDicomDatabase.h"
 #import "SRAnnotation.h"
@@ -824,240 +825,17 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (void) addFiles: (NSArray*) images withRule:(NSDictionary*) routingRule
-{
-	if( autoroutingQueueArray == nil) autoroutingQueueArray = [[NSMutableArray array] retain];
-	if( autoroutingQueue == nil) autoroutingQueue = [[NSLock alloc] init];
-	if( autoroutingInProgress == nil) autoroutingInProgress = [[NSLock alloc] init];
-	
-	[autoroutingQueue lock];
-	
-	//Are these images already in the queue, with same routingRule
-	NSMutableArray *mutableImages = [NSMutableArray arrayWithArray: images];
-	for( NSDictionary *order in autoroutingQueueArray)
-	{
-		if( [routingRule isEqualToDictionary: [order valueForKey: @"routingRule"]])
-		{
-			NSMutableArray *filesFromOrder = [[order valueForKey: @"objects"] valueForKey: @"completePath"];
-			
-			// Are the files already in queue for same filter?
-			for( DicomImage *image in images)
-			{
-				if( [filesFromOrder containsObject: [image valueForKey: @"completePath"]])
-					[mutableImages removeObject: image];
-			}
-			
-			[[order valueForKey: @"objects"] addObjectsFromArray: mutableImages];
-			[mutableImages removeAllObjects];
-		}
-	}
-	
-	if( [mutableImages count])
-		[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: mutableImages, @"objects", [routingRule objectForKey:@"server"], @"server", routingRule, @"routingRule", [routingRule valueForKey:@"failureRetry"], @"failureRetry", nil]];
-	
-	[autoroutingQueue unlock];
+- (void)addFiles:(NSArray*)images withRule:(NSDictionary*)routingRule { // __deprecated
+	[_database addImages:images toSendQueueForRoutingRule:routingRule];
 }
 
 -(void)executeAutorouting:(NSArray*)newImages rules:(NSArray*)autoroutingRules manually:(BOOL)manually { // __deprecated
 	[self executeAutorouting: newImages rules: autoroutingRules manually: manually generatedByOsiriX: NO];
 }
 
--(void)executeAutorouting:(NSArray*)newImages rules:(NSArray*)autoroutingRules manually:(BOOL)manually generatedByOsiriX:(BOOL)generatedByOsiriX { // __deprecated // notice: thu generatedByOsiriX is supposed to be specified in all DicomImage instances, so I decided to ignore it when trasitioning to DicomDatabase
+-(void)executeAutorouting:(NSArray*)newImages rules:(NSArray*)autoroutingRules manually:(BOOL)manually generatedByOsiriX:(BOOL)generatedByOsiriX { // __deprecated // notice: the generatedByOsiriX is supposed to be specified in all DicomImage instances, so I decided to ignore it when trasitioning to DicomDatabase
 	if (manually || [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
-		[_database applyAutoRoutingRules:autoroutingRules toImages:newImages];
-}
-
-- (void)showErrorMessage: (NSDictionary*)dict
-{
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ShowErrorMessagesForAutorouting"] == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) return;
-	
-	NSException	*ne = [dict objectForKey: @"exception"];
-	NSDictionary *server = [dict objectForKey:@"server"];
-	
-	NSString	*message = [NSString stringWithFormat:@"%@\r\r%@\r%@\r\rServer:%@-%@:%@", NSLocalizedString( @"Autorouting DICOM StoreSCU operation failed.\rI will try again in 30 secs.", nil), [ne name], [ne reason], [server objectForKey:@"AETitle"], [server objectForKey:@"Address"], [server objectForKey:@"Port"]];
-	
-	NSAlert* alert = [[NSAlert new] autorelease];
-	[alert setMessageText: NSLocalizedString(@"Autorouting Error",nil)];
-	[alert setInformativeText: message];
-	[alert setShowsSuppressionButton:YES];
-	[alert runModal];
-	if ([[alert suppressionButton] state] == NSOnState)
-		[[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"ShowErrorMessagesForAutorouting"];
-}
-
-- (void) executeSend: (NSArray*) samePatientArray server:(NSDictionary*) server dictionary: (NSDictionary*) dict
-{
-	if( [samePatientArray count] == 0) return;
-	
-	NSLog( @" Autorouting: %@ - %d objects", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], [samePatientArray count]);
-		
-	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [NSUserDefaults defaultAETitle] 
-																  calledAET: [server objectForKey:@"AETitle"] 
-																   hostname: [server objectForKey:@"Address"] 
-																	   port: [[server objectForKey:@"Port"] intValue] 
-																filesToSend: [samePatientArray valueForKey: @"completePath"]
-															 transferSyntax: [[server objectForKey:@"TransferSyntax"] intValue] 
-																compression: 1.0
-															extraParameters: nil];
-		
-	@try
-	{
-		[storeSCU run:self];
-	}
-		
-	@catch (NSException *ne)
-	{
-		NSLog( @"Autorouting FAILED : %@", ne);
-			
-		[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", server, @"server", nil] waitUntilDone: NO];
-		
-		[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"Sending failed. Will re-try later...", nil)];
-		[NSThread sleepForTimeInterval: 4];
-		
-		// We will try again later...
-		
-		if( [[dict valueForKey: @"failureRetry"] intValue] > 0)
-		{
-			[autoroutingQueue lock];
-			
-			NSLog( @"Autorouting failure count: %d", [[dict valueForKey: @"failureRetry"] intValue]);
-			
-			[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: samePatientArray, @"objects", [server objectForKey:@"Description"], @"server", dict, @"routingRule", [NSNumber numberWithInt: [[dict valueForKey:@"failureRetry"] intValue]-1], @"failureRetry", nil]];
-			[autoroutingQueue unlock];
-		}
-	}
-		
-	[storeSCU release];
-	storeSCU = nil;
-}
-
-- (void) processAutorouting
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-	
-	[autoroutingInProgress lock];
-	
-	[autoroutingQueue lock];
-	NSArray	*copyArray = [NSArray arrayWithArray: autoroutingQueueArray];
-	[autoroutingQueueArray removeAllObjects];
-	[autoroutingQueue unlock];
-	
-	if( [copyArray count])
-	{
-		NSLog( @"______________________________________________");
-		NSLog( @" Autorouting Queue START: %d objects", [copyArray count]);
-		for ( NSDictionary *copy in copyArray)
-		{
-			NSArray			*objectsToSend = [copy objectForKey:@"objects"];
-			NSString		*serverName = [copy objectForKey:@"server"];
-			NSDictionary	*server = nil;
-			
-			for ( NSDictionary *aServer in serversArray)
-			{
-				if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
-				{
-					NSLog( @" Autorouting destination: %@ - %@", [aServer objectForKey: @"Description"], [aServer objectForKey: @"Address"]);
-					server = aServer;
-					break;
-				}
-			}
-			
-			if( server)
-			{
-				@try
-				{
-					NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientID" ascending:YES] autorelease];
-					NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
-					
-					objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
-					
-					NSString			*previousPatientUID = nil;
-					NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
-					
-					for( NSManagedObject *objectToSend in objectsToSend)
-					{
-						@try
-						{
-							if( [[NSFileManager defaultManager] fileExistsAtPath: [objectToSend valueForKey: @"completePath"]]) // Dont try to send files that are not available
-							{
-								if( previousPatientUID && [previousPatientUID isEqualToString: [objectToSend valueForKeyPath:@"series.study.patientID"]])
-								{
-									[samePatientArray addObject: objectToSend];
-								}
-								else
-								{
-									// Send the collected files from the same patient
-									
-									if( [samePatientArray count]) [self executeSend: samePatientArray server: server dictionary: copy];
-									
-									// Reset
-									[samePatientArray removeAllObjects];
-									[samePatientArray addObject: objectToSend];
-									
-									previousPatientUID = [objectToSend valueForKeyPath:@"series.study.patientID"];
-								}
-							}
-						}
-						@catch( NSException *ne)
-						{
-							NSLog( @"----- Autorouting Prepare exception: %@", ne);
-						}
-					}
-					
-					if( [samePatientArray count])
-						[self executeSend: samePatientArray server: server dictionary: copy];
-				}
-					
-				@catch( NSException *ne)
-				{
-					NSLog( @"----- Autorouting exception: %@", ne);
-				}
-			}
-			else
-			{
-				NSLog(@" Server not found for autorouting: %@", serverName);
-				NSException *ne = [NSException exceptionWithName: NSLocalizedString(@"Unknown destination server. Add it to the Locations list - see Preferences.", nil) reason: [NSString stringWithFormat:@"Destination: %@", serverName] userInfo:nil];
-				
-				[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", [NSDictionary dictionary], @"server", nil] waitUntilDone: NO];
-			}
-			
-			if( [NSThread currentThread].isCancelled)
-				break;
-		}
-		NSLog( @"______________________________________________");
-	}
-		
-	[autoroutingInProgress unlock];
-	[pool release];
-}
-
-- (void) emptyAutoroutingQueue:(id) sender
-{
-	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess) return;
-	
-	if( autoroutingQueueArray != nil && autoroutingQueue != nil)
-	{
-		if( [autoroutingQueueArray count] > 0)
-		{
-			if( [autoroutingInProgress tryLock])
-			{
-				[autoroutingInProgress unlock];
-				
-				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( processAutorouting) object: nil] autorelease];
-				t.name = NSLocalizedString( @"Autorouting...", nil);
-				t.supportsCancel = YES;
-				
-				int objects = 0;
-				for( NSArray *o in [autoroutingQueueArray valueForKey: @"objects"])
-					objects += [o count];
-				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d rule(s) - %d file(s)", nil), [autoroutingQueueArray count], objects];
-				
-				[[ThreadsManager defaultManager] addThreadAndStart: t];
-			}
-		}
-	}
+		[_database applyRoutingRules:autoroutingRules toImages:newImages];
 }
 
 #pragma mark-
@@ -1858,7 +1636,7 @@ static NSConditionLock *threadLock = nil;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	[autoroutingInProgress lock];
+//	[autoroutingInProgress lock];
 	
 	BOOL first = YES, studySelected = NO, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
 	NSArray *filesInput = [dict objectForKey: @"filesInput"];
@@ -2046,7 +1824,7 @@ static NSConditionLock *threadLock = nil;
 		[pool2 release];
 	}
 	
-	[autoroutingInProgress unlock];
+//	[autoroutingInProgress unlock];
 	
 	if( [[dict objectForKey: @"ejectCDDVD"] boolValue] == YES && [[dict objectForKey: @"copyFiles"] boolValue] == YES)
 	{
@@ -2355,7 +2133,7 @@ static NSConditionLock *threadLock = nil;
 	return [thread autorelease];
 }
 
-- (IBAction) endReBuildDatabase:(id) sender
+- (IBAction)endReBuildDatabase:(id)sender
 {
 	[NSApp endSheet: rebuildWindow];
 	[rebuildWindow orderOut: self];
@@ -2389,13 +2167,13 @@ static NSConditionLock *threadLock = nil;
 	//
 	
 	// Wait if there is something in the autorouting queue
-	[autoroutingInProgress lock];
-	[autoroutingInProgress unlock];
+//	[autoroutingInProgress lock];
+//	[autoroutingInProgress unlock];
 	
-	[self emptyAutoroutingQueue:self];
+//	[self emptyAutoroutingQueue:self];
 	
-	[autoroutingInProgress lock];
-	[autoroutingInProgress unlock];
+//	[autoroutingInProgress lock];
+//	[autoroutingInProgress unlock];
 	
 	long totalFiles = 0;
 	NSString	*aPath = [_database dataDirPath];
@@ -2436,14 +2214,37 @@ static NSConditionLock *threadLock = nil;
 		  contextInfo: nil];
 }
 
+-(void)rebuildSqlThread:(DicomDatabase*)database {
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	@try {
+		[database rebuildSqlFile];
+		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:database waitUntilDone:NO];
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	} @finally {
+		[pool release];
+	}
+}
+
+-(NSThread*)initiateRebuildSql {
+	DicomDatabase* database = [[self.database retain] autorelease];
+	[self setDatabase:nil];
+	
+	NSArray* io = [NSMutableArray arrayWithObjects: database, nil];
+	
+	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(rebuildSqlThread:) object:database];
+	thread.name = NSLocalizedString(@"Rebuilding database index...", nil);
+	
+	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+	[thread start];
+	
+	return [thread autorelease];
+}
+
 -(void)_rebuildSqlSheetDidEnd:(NSWindow*)sheet returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {
 	[NSApp endSheet:sheet];
-	if (returnCode == NSAlertDefaultReturn) {
-		DicomDatabase* database = [_database retain];
-		[self setDatabase:nil];
-		[database rebuildSqlFile];
-		[self setDatabase:[database autorelease]];
-	}
+	if (returnCode == NSAlertDefaultReturn)
+		[self initiateRebuildSql];
 }
 
 -(IBAction)rebuildSQLFile:(id)sender {
@@ -2458,7 +2259,7 @@ static NSConditionLock *threadLock = nil;
 
 	//	if( [managedObjectContext tryLock])
 	{
-		@try 
+		@try
 		{
 			[[AppController sharedAppController] closeAllViewers: self];
 			
@@ -7125,8 +6926,6 @@ static BOOL withReset = NO;
 	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess)
 		return;
 	
-	[self setDockIcon];
-	
     // Wait loading all images !!!
 	if( _database == nil) return;
 //	if( bonjourDownloading) return;
@@ -8883,8 +8682,6 @@ static BOOL needToRezoom;
 	
 	NSLog( @"sendDICOMFilesToOsiriXNode started");
 	
-	[autoroutingInProgress lock];
-	
 	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [NSUserDefaults defaultAETitle] 
 															  calledAET: [todo objectForKey:@"AETitle"] 
 															   hostname: [todo objectForKey:@"Address"] 
@@ -8909,8 +8706,6 @@ static BOOL needToRezoom;
 	
 	[storeSCU release];
 	storeSCU = nil;
-	
-	[autoroutingInProgress unlock];
 	
 	NSLog( @"sendDICOMFilesToOsiriXNode ended");
 	
@@ -10918,9 +10713,6 @@ static NSArray*	openSubSeriesArray = nil;
 	//	persistentStoreCoordinatorDictionary = [[NSMutableDictionary alloc] initWithCapacity: 0];
 		databaseIndexDictionary = [[NSMutableDictionary alloc] initWithCapacity: 0];
 		
-		downloadingOsiriXIcon = [[NSImage imageNamed:@"OsirixDownload.icns"] retain];
-		standardOsiriXIcon = [[NSImage imageNamed:@"Osirix.icns"] retain];
-		
 		notFoundImage = [[NSImage imageNamed:@"FileNotFound.tif"] retain];
 		
 		reportFilesToCheck = [[NSMutableDictionary dictionary] retain];
@@ -11024,7 +10816,7 @@ static NSArray*	openSubSeriesArray = nil;
 //		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 15*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain]; // 10
-		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 30 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain]; // 35
+//		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 30 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain]; // 35
 		
 		
 		loadPreviewIndex = 0;
@@ -11260,9 +11052,6 @@ static NSArray*	openSubSeriesArray = nil;
 //	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
 //	[waitCompressionWindow setCancel:YES];
 		
-	if( autoroutingQueueArray == nil) autoroutingQueueArray = [[NSMutableArray array] retain];
-	if( autoroutingQueue == nil) autoroutingQueue = [[NSLock alloc] init];
-	if( autoroutingInProgress == nil) autoroutingInProgress = [[NSLock alloc] init];
 	
 	[wait showWindow:self];
 	
@@ -11589,11 +11378,11 @@ static NSArray*	openSubSeriesArray = nil;
 		[self emptyDeleteQueueThread];
 		
 		[BrowserController tryLock: deleteInProgress during: 600];
-		[BrowserController tryLock: autoroutingInProgress during: 120];
+	//	[BrowserController tryLock: autoroutingInProgress during: 120];
 		
-		[self emptyAutoroutingQueue:self];
+	//	[self emptyAutoroutingQueue:self];
 		
-		[BrowserController tryLock: autoroutingInProgress during: 120];
+	//	[BrowserController tryLock: autoroutingInProgress during: 120];
 		
 		[self syncReportsIfNecessary];
 		
@@ -11635,7 +11424,6 @@ static NSArray*	openSubSeriesArray = nil;
 	[self removeAllMounted];
 	
 //	newFilesInIncoming = NO;
-	[self setDockIcon];
 	
     [splitViewVert saveDefault:@"SPLITVERT2"];
     [splitViewHorz saveDefault:@"SPLITHORZ2"];
@@ -12955,24 +12743,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)checkIncomingThread: (id)sender { // __deprecated
 	[[DicomDatabase activeLocalDatabase] importFilesFromIncomingDir];
-}
-
-- (void)setDockIcon
-{
-	NSImage	*image = nil;
-	
-	//if( newFilesInIncoming) image = downloadingOsiriXIcon;
-	//else
-	{
-		image = standardOsiriXIcon;
-		[[[NSApplication sharedApplication] dockTile] setBadgeLabel:@""];
-	}
-	
-	if( currentIcon != image)
-	{
-		currentIcon = image;
-		[[NSApplication sharedApplication] setApplicationIconImage: image];
-	}
 }
 
 - (void) checkIncomingNow: (id) sender { // __deprecated
