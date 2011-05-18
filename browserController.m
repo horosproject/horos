@@ -5820,7 +5820,7 @@ static NSConditionLock *threadLock = nil;
 		NSLog(@"OutlineRefresh exception: %@", [ne description]);
 		[AppController printStackTrace: ne];
 		
-		[request setPredicate: [NSPredicate predicateWithValue:YES]];
+		[request setPredicate: [NSPredicate predicateWithValue: NO]];
 		outlineViewArray = [context executeFetchRequest:request error:&error];
 		
 		exception = [ne description];
