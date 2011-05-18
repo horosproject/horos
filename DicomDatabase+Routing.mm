@@ -14,6 +14,7 @@
 #import "NSUserDefaults+OsiriX.h"
 #import "NSThread+N2.h"
 #import "DCMTKStudyQueryNode.h"
+#import "ThreadsManager.h"
 
 
 @interface DicomDatabase ()
@@ -73,7 +74,7 @@
 	
 	for (NSDictionary* routingRule in autoroutingRules)
 		if (![routingRule valueForKey:@"activated"] || [[routingRule valueForKey:@"activated"] boolValue]) {
-			[self.managedObjectContext lock];
+//			[self.managedObjectContext lock];
 			
 			NSPredicate	*predicate = nil;
 			NSArray	*result = nil;
@@ -351,7 +352,7 @@
 															filesToSend: [samePatientArray valueForKey: @"completePath"]
 														 transferSyntax: [[server objectForKey:@"TransferSyntax"] intValue] 
 															compression: 1.0
-														extraParameters: nil];
+														extraParameters: [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"threadStatus"]];
 	
 	@try {
 		[storeSCU run:self];
@@ -381,6 +382,9 @@
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	[_routingLock lock];
 	@try {
+		NSThread* thread = [NSThread currentThread];
+		thread.name = NSLocalizedString(@"Autorouting...", nil);
+		
 		NSArray* serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey:@"SERVERS"];
 		
 		NSArray* routingSendQueues = nil;
@@ -392,11 +396,26 @@
 		if (routingSendQueues.count) {
 			NSLog(@"______________________________________________");
 			NSLog(@" Autorouting Queue START: %d objects", routingSendQueues.count);
+			[ThreadsManager.defaultManager addThreadAndStart:thread];
 			
+			NSInteger total = 0;
+			for (NSDictionary *copy in routingSendQueues)
+				for (NSDictionary* aServer in serversArray)
+					if ([[aServer objectForKey:@"Description"] isEqualToString:[copy objectForKey:@"server"]]) {
+						total += [[copy objectForKey:@"objects"] count];
+						break;
+					}
+			
+			NSInteger sent = 0;
 			for (NSDictionary *copy in routingSendQueues) {
 				NSArray* objectsToSend = [copy objectForKey:@"objects"];
+
+				[thread enterOperationWithRange:1.0*sent/total :1.0*objectsToSend.count/total];
+				sent += objectsToSend.count;
 	
 				NSString* serverName = [copy objectForKey:@"server"];
+				thread.status = [NSString stringWithFormat:NSLocalizedString(@"Forwarding %d %@ to %@", nil), objectsToSend.count, (objectsToSend.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)), serverName];
+				
 				NSDictionary* server = nil;
 				for (NSDictionary* aServer in serversArray)
 					if ([[aServer objectForKey:@"Description"] isEqualToString:serverName]) {
@@ -453,6 +472,8 @@
 				} else {
 					N2LogError(@"Server not found for autorouting: %@", serverName);
 				}
+				
+				[thread exitOperation];
 				
 				if (NSThread.currentThread.isCancelled)
 					break;

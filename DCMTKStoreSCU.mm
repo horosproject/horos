@@ -926,6 +926,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 {
 	if (self = [super init])
 	{
+		_threadStatus = YES;
+		if ([extraParameters objectForKey:@"threadStatus"])
+			_threadStatus = [[extraParameters objectForKey:@"threadStatus"] boolValue];
+		
 		_callingAET = [myAET retain];
 		_calledAET = [theirAET retain];
 		_port = port;
@@ -1567,7 +1571,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			
 			if( [[userInfo objectForKey: @"SendTotal"] floatValue] >= 1)
 			{
-				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue]];
+				if (_threadStatus) [NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue]];
 				[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
 			}
 		}
@@ -1761,7 +1765,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		
 		if( [[userInfo objectForKey: @"SendTotal"] floatValue] >= 1)
 		{
-			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue]];		
+			if (_threadStatus) [NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue]];		
 			[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
 		}
 //		[self sendStatusNotification: userInfo];
