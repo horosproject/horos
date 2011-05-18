@@ -88,6 +88,51 @@ extern NSRecursiveLock *PapyrusLock;
 	return success;
 }
 
++ (NSString*) getDicomField: (NSString*) field forFile: (NSString*) path
+{
+	if( field.length <= 0)
+		return nil;
+	
+	NSString *returnedValue = nil;
+	DcmTagKey dcmkey(0xffff,0xffff);
+    const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
+    const DcmDictEntry *dicent = globalDataDict.findEntry( [field UTF8String]);
+	
+    //successfull lookup in dictionary -> translate to tag and return
+    if (dicent)
+        dcmkey = dicent->getKey();
+	dcmDataDict.unlock();
+	
+	if( dcmkey.getGroup() != 0xffff && dcmkey.getElement() != 0xffff)
+	{
+		DcmFileFormat fileformat;
+		
+		[PapyrusLock lock];
+		
+		OFCondition status = fileformat.loadFile( [path UTF8String],  EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
+		
+		[PapyrusLock unlock];
+		
+		if (status.good())
+		{
+			NSStringEncoding encoding[ 10];
+			const char *string = NULL;
+			
+			for( int i = 0; i < 10; i++) encoding[ i] = 0;
+			encoding[ 0] = NSISOLatin1StringEncoding;
+			
+			DcmDataset *dataset = fileformat.getDataset();
+			
+			if (dataset->findAndGetString( dcmkey, string, OFFalse).good() && string != NULL)
+			{
+				returnedValue = [NSString stringWithCString:string encoding: encoding[ 0]];
+			}
+		}
+	}
+	
+	return returnedValue;
+}
+
 -(short) getNRRDFile
 {
 	#ifdef OSIRIX_VIEWER

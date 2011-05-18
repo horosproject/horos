@@ -73,6 +73,20 @@
 {
 }
 
+- (id) valueForUndefinedKey:(NSString *)key
+{
+	NSArray* files = [self sortedImages];
+	if( files.count)
+	{
+		DicomImage* image = [files objectAtIndex:[files count]/2];
+		
+		id value = [DicomFile getDicomField: key forFile: image.completePath];
+		if( value)
+			return value;
+	}
+	return [super valueForUndefinedKey: key];
+}
+
 - (void) dcmodifyThread: (NSDictionary*) dict
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

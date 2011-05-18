@@ -2352,7 +2352,9 @@ static float deg2rad = 3.14159265358979/180.0;
 			}
 			else // CPR8BitRGBExportImageFormat
 			{
-				[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: NO]];
+				BOOL exportSpacingAndOrigin = ![cprView planarDeformations];
+				
+				[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: exportSpacingAndOrigin]];
 			}
 		}
 		else if (self.exportSequenceType == CPRSeriesExportSequenceType) // A 3D rotation or batch sequence
@@ -2407,9 +2409,6 @@ static float deg2rad = 3.14159265358979/180.0;
 							[dicomExport setSigned:NO];
 							
 							[dicomExport setDefaultWWWL:windowWidth :windowLevel];
-							
-							if( [cprView planarDeformations] == NO)
-								[dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
 							
 							f = [dicomExport writeDCMFile: nil];
 							if( f == nil)

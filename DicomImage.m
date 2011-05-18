@@ -699,13 +699,17 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 #pragma mark-
 
-- (void)setValue:(id)value forUndefinedKey:(NSString *)key
+- (void) setValue:(id)value forUndefinedKey:(NSString *)key
 {
 }
 
-- (id)valueForUndefinedKey:(NSString *)key
+- (id) valueForUndefinedKey:(NSString *)key
 {
-	return nil;
+	id value = [DicomFile getDicomField: key forFile: [self completePath]];
+
+	if( value) return value;
+	
+	return [super valueForUndefinedKey: key];
 }
 
 - (void) setDate:(NSDate*) date

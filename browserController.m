@@ -6119,17 +6119,26 @@ static NSConditionLock *threadLock = nil;
 					@try
 					{
 						error = nil;
-						[dbRequest setPredicate: [self smartAlbumPredicate: object]];
+						NSPredicate *predicate = [self smartAlbumPredicate: object];
 						
-						NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-						
-						[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+						if( predicate)
+						{
+							[dbRequest setPredicate: predicate];
+							
+							NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+							
+							[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+						}
+						else
+							[NoOfStudies addObject: @"err"];
+
 					}
 					
 					@catch( NSException *e)
 					{
 						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 						[AppController printStackTrace: e];
+						[NoOfStudies addObject: @"err"];
 					}
 				}
 				else
