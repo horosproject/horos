@@ -920,14 +920,20 @@ static NSConditionLock *threadLock = nil;
 				   && [DCMAbstractSyntaxUID isSupportedPrivateClasses: SOPClassUID] == NO
 				   && [DCMAbstractSyntaxUID isWaveform: SOPClassUID] == NO)
 				{
-					NSLog(@"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
-					curDict = nil;
+					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"acceptUnsupportedSOPClassUID"] == NO)
+					{
+						NSLog( @"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
+						curDict = nil;
+					}
 				}
 				
 				if( [curDict objectForKey:@"SOPClassUID"] == nil && [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == YES)
 				{
-					NSLog(@"no DICOM SOP CLASS -> Reject the file: %@", newFile);
-					curDict = nil;
+					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"acceptDICOMFilesWithoutSOPClassUID"] == NO)
+					{
+						NSLog( @"no DICOM SOP CLASS -> Reject the file: %@", newFile);
+						curDict = nil;
+					}
 				}
 				
 				if( curDict != nil)
