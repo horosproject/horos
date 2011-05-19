@@ -13,7 +13,6 @@
  =========================================================================*/
 
 #import "DicomDatabase.h"
-#import "DicomDatabase+Routing.h"
 #import "NSString+N2.h"
 #import "Notifications.h"
 #import "DicomAlbum.h"
@@ -346,8 +345,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[self modifyDefaultAlbums];
 	
 	[self initRouting];
-	
-	// TODO: autoclean if settings say so
+	[self initClean];
 	
 	[DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
 	
@@ -355,6 +353,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 }
 
 -(void)dealloc {
+	[self deallocClean];
 	[self deallocRouting];
 
 	NSRecursiveLock* temp;
@@ -706,6 +705,10 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	}
 }
 
+-(void)refreshAlbumsCache {
+	// TODO: serseursurhesihi
+}
+
 #pragma mark Lifecycle
 
 -(BOOL)isFileSystemFreeSizeLimitReached {
@@ -843,9 +846,7 @@ enum { Compress, Decompress };
 }
 
 
--(void)autoClean {
-	
-}
+
 
 -(NSArray*)addFilesAtPaths:(NSArray*)paths {
 	return [self addFilesAtPaths:paths postNotifications:YES];
@@ -1597,7 +1598,7 @@ enum { Compress, Decompress };
 			
 			@try
 			{
-				[self autoClean];
+				[self cleanForFreeSpace];
 				
 				NSError *error = nil;
 				[self.managedObjectContext save: &error];
@@ -1657,32 +1658,16 @@ enum { Compress, Decompress };
 //				if( growlString)
 //					[browserController performSelectorOnMainThread:@selector( setGrowlMessage:) withObject: growlString waitUntilDone:NO];
 				
-//				if( newStudy)
-//				{
+//				if( newStudy) {
 //					if( growlStringNewStudy)
 //						[browserController performSelectorOnMainThread:@selector( setGrowlMessageNewStudy:) withObject: growlStringNewStudy waitUntilDone:NO];
 //				}
-				
-//				if([NSThread isMainThread])
-//					[browserController newFilesGUIUpdate: browserController];
-				
-//				[browserController.newFilesConditionLock lock];
-				
-//				int prevCondition = [browserController.newFilesConditionLock condition];
 				
 //				for( ViewerController *a in vlToReload)
 //				{
 //					if( [browserController.viewersListToReload containsObject: a] == NO)
 //						[browserController.viewersListToReload addObject: a];
 //				}
-//				for( ViewerController *a in vlToRebuild)
-//				{
-//					if( [browserController.viewersListToRebuild containsObject: a] == NO)
-//						[browserController.viewersListToRebuild addObject: a];
-//				}
-				
-//				if( newStudy || prevCondition == 1) [browserController.newFilesConditionLock unlockWithCondition: 1];
-//				else [browserController.newFilesConditionLock unlockWithCondition: 2];
 				
 //				if([NSThread isMainThread])
 //					[browserController newFilesGUIUpdate: browserController];

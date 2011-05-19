@@ -286,7 +286,7 @@ extern NSString* O2AlbumDragType;
 + (NSMutableString*) replaceNotAdmitted: (NSString*)name;
 + (NSArray*) statesArray;
 + (void) updateActivity;
-+ (BOOL) isHardDiskFull;
++ (BOOL) isHardDiskFull __deprecated;
 + (NSData*) produceJPEGThumbnail:(NSImage*) image;
 + (int) DefaultFolderSizeForDB;
 + (long) computeDATABASEINDEXforDatabase:(NSString*) path __deprecated;
@@ -473,8 +473,8 @@ extern NSString* O2AlbumDragType;
 
 - (NSArray*) imagesPathArray: (NSManagedObject*) item;
 
-- (void) autoCleanDatabaseFreeSpace:(id) sender;
-- (void) autoCleanDatabaseDate:(id) sender;
+- (void) autoCleanDatabaseFreeSpace:(id) sender __deprecated;
+- (void) autoCleanDatabaseDate:(id) sender __deprecated;
 
 - (void) refreshDatabase:(id) sender;
 - (void) syncReportsIfNecessary;

@@ -16,7 +16,7 @@
 
 -(void)addImages:(NSArray*)_dicomImages toSendQueueForRoutingRule:(NSDictionary*)routingRule;
 -(void)applyRoutingRules:(NSArray*)routingRules toImages:(NSArray*)images;
-
-
+-(void)initiateRoutingUnlessAlreadyRouting;
+-(void)routing;
 
 @end

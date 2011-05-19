@@ -96,6 +96,7 @@
 			BOOL isDir;
 			if (![NSFileManager.defaultManager fileExistsAtPath:self.location isDirectory:&isDir]) {
 				cell.image = [NSImage imageNamed:@"away.tif"];
+				cell.textColor = [NSColor grayColor];
 				break;
 			}
 			
@@ -105,6 +106,7 @@
 			}
 			
 			BOOL isIPod = [NSFileManager.defaultManager fileExistsAtPath:[self.location stringByAppendingPathComponent:@"iPod_Control"]];
+			NSLog(@"mountedRemovableMedia %@", [[NSWorkspace sharedWorkspace] mountedRemovableMedia]);
 			BOOL atRemovableMediaRoot = [[[NSWorkspace sharedWorkspace] mountedRemovableMedia] containsObject:self.location];
 			if (isIPod || atRemovableMediaRoot) {
 				cell.lastImage = [NSImage imageNamed:@"iPodEjectOff.tif"];
@@ -118,9 +120,7 @@
 			
 			NSImage* im = [[NSWorkspace sharedWorkspace] iconForFile:self.location];
 			[im setSize:NSMakeSize(15,15)];
-			
-			if (im) cell.image = im;
-			else cell.image = [NSImage imageNamed:@"FolderIcon.tif"];
+			cell.image = im;
 		} break;
 		case BrowserSourceTypeRemote: {
 			cell.image = [NSImage imageNamed:@"FixedIP.tif"];

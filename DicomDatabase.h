@@ -14,6 +14,7 @@
 
 #import "N2ManagedDatabase.h"
 
+
 extern const NSString* const CurrentDatabaseVersion;
 
 @class N2MutableUInteger;
@@ -36,6 +37,8 @@ extern const NSString* const CurrentDatabaseVersion;
 	// +Routing
 	NSMutableArray* _routingSendQueues;
 	NSRecursiveLock* _routingLock;
+	// +Clean
+	NSRecursiveLock* _cleanLock;
 }
 
 +(void)initializeDicomDatabaseClass;
@@ -101,6 +104,7 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(NSArray*)albums;
 +(NSArray*)albumsInContext:(NSManagedObjectContext*)context; // this method should be private, but is declared because called from deprecated api
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string;
+-(void)refreshAlbumsCache;
 
 #pragma mark Add files
 -(NSArray*)addFilesAtPaths:(NSArray*)paths;
@@ -137,3 +141,7 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(void)checkForHtmlTemplates;
 
 @end
+
+#import "DicomDatabase+Routing.h"
+#import "DicomDatabase+Clean.h"
+

@@ -116,7 +116,11 @@
 
 -(void)selectCurrentDatabaseSource {
 	NSInteger i = [self rowForDatabase:_database];
-	if (i != [_sourcesTableView selectedRow])
+	if (i == -1) {
+		NSDictionary* source = [NSDictionary dictionaryWithObjectsAndKeys: [_database.baseDirPath stringByDeletingLastPathComponent], @"Path", [_database.baseDirPath.stringByDeletingLastPathComponent.lastPathComponent stringByAppendingString:@" DB"], @"Description", nil];
+		[NSUserDefaults.standardUserDefaults setObject:[[NSUserDefaults.standardUserDefaults objectForKey:@"localDatabasePaths"] arrayByAddingObject:source] forKey:@"localDatabasePaths"];
+		i = [self rowForDatabase:_database];
+	} if (i != [_sourcesTableView selectedRow])
 		[_sourcesTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:i] byExtendingSelection:NO];
 }
 

@@ -19,17 +19,16 @@
 
 @interface DicomDatabase ()
 
-+(void)syncRoutingTimer;
++(void)_syncRoutingTimer;
 
 @end
-
 
 @implementation DicomDatabase (Routing)
 
 -(void)initRouting {
 	_routingSendQueues = [[NSMutableArray alloc] init];
 	_routingLock = [[NSRecursiveLock alloc] init];
-	[DicomDatabase syncRoutingTimer];
+	[DicomDatabase _syncRoutingTimer];
 }
 
 -(void)deallocRouting {
@@ -42,6 +41,213 @@
 	[temp release];
 	
 	[_routingSendQueues release]; _routingSendQueues = nil;
+}
+
++(void)_syncRoutingTimer {
+	static NSTimer* routingTimer = nil;
+	
+	if (routingTimer)
+		return;
+	
+	routingTimer = [[NSTimer timerWithTimeInterval:30 target:self selector:@selector(_routingTimerCallback:) userInfo:nil repeats:YES] retain];
+	[[NSRunLoop mainRunLoop] addTimer:routingTimer forMode:NSModalPanelRunLoopMode];
+	[[NSRunLoop mainRunLoop] addTimer:routingTimer forMode:NSDefaultRunLoopMode];
+}
+
++(void)_routingTimerCallback:(NSTimer*)timer {
+	for (DicomDatabase* dbi in [self allDatabases])
+		if (dbi.isLocal)
+			[dbi initiateRoutingUnlessAlreadyRouting];
+}
+
+-(void)initiateRoutingUnlessAlreadyRouting {
+	if ([_routingLock tryLock])
+		@try {
+			[self performSelectorInBackground:@selector(_routingThread) withObject:nil];
+		} @catch (NSException* e) {
+			N2LogExceptionWithStackTrace(e);
+		} @finally {
+			[_routingLock unlock];
+		}
+	else NSLog(@"Warning: couldn't initiate routing");
+}
+
+-(void)_routingErrorMessage:(NSDictionary*)dict {
+	if (![NSUserDefaults.standardUserDefaults boolForKey:@"ShowErrorMessagesForAutorouting"] || [NSUserDefaults.standardUserDefaults boolForKey: @"hideListenerError"]) return;
+	
+	NSException	*ne = [dict objectForKey: @"exception"];
+	NSDictionary *server = [dict objectForKey:@"server"];
+	
+	NSString	*message = [NSString stringWithFormat:@"%@\r\r%@\r%@\r\rServer:%@-%@:%@", NSLocalizedString(@"Autorouting DICOM StoreSCU operation failed.\rI will try again in 30 secs.", nil), [ne name], [ne reason], [server objectForKey:@"AETitle"], [server objectForKey:@"Address"], [server objectForKey:@"Port"]];
+	
+	NSAlert* alert = [[NSAlert new] autorelease];
+	[alert setMessageText: NSLocalizedString(@"Autorouting Error",nil)];
+	[alert setInformativeText: message];
+	[alert setShowsSuppressionButton:YES];
+	[alert runModal];
+	if ([[alert suppressionButton] state] == NSOnState)
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"ShowErrorMessagesForAutorouting"];
+}
+
+-(void)_routingExecuteSend:(NSArray*)samePatientArray server:(NSDictionary*)server dictionary:(NSDictionary*)dict {
+	if (!samePatientArray.count)
+		return;
+	
+	NSLog( @" Autorouting: %@ - %d objects", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], [samePatientArray count]);
+	
+	DCMTKStoreSCU* storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET: [NSUserDefaults defaultAETitle] 
+															  calledAET: [server objectForKey:@"AETitle"] 
+															   hostname: [server objectForKey:@"Address"] 
+																   port: [[server objectForKey:@"Port"] intValue] 
+															filesToSend: [samePatientArray valueForKey: @"completePath"]
+														 transferSyntax: [[server objectForKey:@"TransferSyntax"] intValue] 
+															compression: 1.0
+														extraParameters: [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"threadStatus"]];
+	
+	@try {
+		[storeSCU run:self];
+	} @catch (NSException *ne) {
+		NSLog( @"Autorouting FAILED : %@", ne);
+		
+		[self performSelectorOnMainThread:@selector(_routingErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", server, @"server", nil] waitUntilDone: NO];
+		
+		NSThread.currentThread.status = NSLocalizedString( @"Sending failed. Will re-try later...", nil);
+		[NSThread sleepForTimeInterval: 4];
+		
+		// We will try again later...
+		
+		if ([[dict valueForKey: @"failureRetry"] intValue] > 0) {
+			NSLog( @"Autorouting failure count: %d", [[dict valueForKey: @"failureRetry"] intValue]);
+			@synchronized (_routingSendQueues) {
+				[_routingSendQueues addObject: [NSDictionary dictionaryWithObjectsAndKeys: samePatientArray, @"objects", [server objectForKey:@"Description"], @"server", dict, @"routingRule", [NSNumber numberWithInt: [[dict valueForKey:@"failureRetry"] intValue]-1], @"failureRetry", nil]];
+			}
+		}
+	}
+	
+	[storeSCU release];
+	storeSCU = nil;
+}
+
+-(void)_routingThread {
+	NSAutoreleasePool* pool = [NSAutoreleasePool new];
+	@try {
+		NSThread* thread = [NSThread currentThread];
+		thread.name = NSLocalizedString(@"Routing...", nil);
+		[self routing];
+	} @catch (NSException * e) {
+		N2LogExceptionWithStackTrace(e);
+	} @finally {
+		[pool release];
+	}
+}
+
+-(void)routing {
+	[_routingLock lock];
+	@try {
+		NSThread* thread = [NSThread currentThread];
+		
+		NSArray* serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey:@"SERVERS"];
+		
+		NSArray* routingSendQueues = nil;
+		@synchronized (_routingSendQueues) {
+			routingSendQueues = [NSArray arrayWithArray:_routingSendQueues];
+			[_routingSendQueues removeAllObjects];
+		}
+		
+		if (routingSendQueues.count) {
+			NSLog(@"______________________________________________");
+			NSLog(@" Autorouting Queue START: %d objects", routingSendQueues.count);
+			[ThreadsManager.defaultManager addThreadAndStart:thread];
+			
+			NSInteger total = 0;
+			for (NSDictionary *copy in routingSendQueues)
+				for (NSDictionary* aServer in serversArray)
+					if ([[aServer objectForKey:@"Description"] isEqualToString:[copy objectForKey:@"server"]]) {
+						total += [[copy objectForKey:@"objects"] count];
+						break;
+					}
+			
+			NSInteger sent = 0;
+			for (NSDictionary *copy in routingSendQueues) {
+				NSArray* objectsToSend = [copy objectForKey:@"objects"];
+				
+				[thread enterOperationWithRange:1.0*sent/total:1.0*objectsToSend.count/total];
+				sent += objectsToSend.count;
+				
+				NSString* serverName = [copy objectForKey:@"server"];
+				thread.status = [NSString stringWithFormat:NSLocalizedString(@"Forwarding %d %@ to %@", nil), objectsToSend.count, (objectsToSend.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)), serverName];
+				
+				NSDictionary* server = nil;
+				for (NSDictionary* aServer in serversArray)
+					if ([[aServer objectForKey:@"Description"] isEqualToString:serverName]) {
+						NSLog(@" Autorouting destination: %@ - %@", [aServer objectForKey:@"Description"], [aServer objectForKey:@"Address"]);
+						server = aServer;
+						break;
+					}
+				
+				if (server) {
+					@try {
+						NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientID" ascending:YES] autorelease];
+						NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
+						
+						objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
+						
+						NSString			*previousPatientUID = nil;
+						NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
+						
+						for( NSManagedObject *objectToSend in objectsToSend)
+						{
+							@try
+							{
+								if( [[NSFileManager defaultManager] fileExistsAtPath: [objectToSend valueForKey: @"completePath"]]) // Dont try to send files that are not available
+								{
+									if( previousPatientUID && [previousPatientUID isEqualToString: [objectToSend valueForKeyPath:@"series.study.patientID"]])
+									{
+										[samePatientArray addObject: objectToSend];
+									}
+									else
+									{
+										// Send the collected files from the same patient
+										
+										if( [samePatientArray count]) [self _routingExecuteSend: samePatientArray server: server dictionary: copy];
+										
+										// Reset
+										[samePatientArray removeAllObjects];
+										[samePatientArray addObject: objectToSend];
+										
+										previousPatientUID = [objectToSend valueForKeyPath:@"series.study.patientID"];
+									}
+								}
+							}
+							@catch( NSException *ne)
+							{
+								NSLog( @"----- Autorouting Prepare exception: %@", ne);
+							}
+						}
+						
+						if (samePatientArray.count)
+							[self _routingExecuteSend:samePatientArray server:server dictionary:copy];
+					} @catch (NSException* e) {
+						N2LogExceptionWithStackTrace(e);
+					}
+				} else {
+					N2LogError(@"Server not found for autorouting: %@", serverName);
+				}
+				
+				[thread exitOperation];
+				
+				if (NSThread.currentThread.isCancelled)
+					break;
+			}
+			
+			NSLog(@"______________________________________________");
+		}
+		
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	} @finally {
+		[_routingLock unlock];
+	}
 }
 
 -(void)addImages:(NSArray*)_dicomImages toSendQueueForRoutingRule:(NSDictionary*)routingRule {
@@ -74,7 +280,7 @@
 	
 	for (NSDictionary* routingRule in autoroutingRules)
 		if (![routingRule valueForKey:@"activated"] || [[routingRule valueForKey:@"activated"] boolValue]) {
-//			[self.managedObjectContext lock];
+			//			[self.managedObjectContext lock];
 			
 			NSPredicate	*predicate = nil;
 			NSArray	*result = nil;
@@ -287,208 +493,7 @@
 	 [splash close];
 	 [splash release];*/
 #endif	
+	
 }
-
--(void)initiateRoutingUnlessAlreadyRouting {
-	if ([_routingLock tryLock])
-		@try {
-			[self performSelectorInBackground:@selector(routingThread) withObject:nil];
-		} @catch (NSException* e) {
-			N2LogExceptionWithStackTrace(e);
-		} @finally {
-			[_routingLock unlock];
-		}
-	else NSLog(@"Warning: couldn't initiate routing");
-}
-
-+(void)routingTimerCallback:(NSTimer*)timer {
-	for (DicomDatabase* dbi in [self allDatabases])
-		if (dbi.isLocal)
-			[dbi initiateRoutingUnlessAlreadyRouting];
-}
-
-+(void)syncRoutingTimer {
-	static NSTimer* routingTimer = nil;
-	
-	if (routingTimer)
-		return;
-	
-	routingTimer = [[NSTimer timerWithTimeInterval:30 target:self selector:@selector(routingTimerCallback:) userInfo:nil repeats:YES] retain];
-	[[NSRunLoop mainRunLoop] addTimer:routingTimer forMode:NSModalPanelRunLoopMode];
-	[[NSRunLoop mainRunLoop] addTimer:routingTimer forMode:NSDefaultRunLoopMode];
-}
-
-
-
-
-/*
--(void)showErrorMessage:(NSDictionary*)dict {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ShowErrorMessagesForAutorouting"] == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) return;
-	
-	NSException	*ne = [dict objectForKey: @"exception"];
-	NSDictionary *server = [dict objectForKey:@"server"];
-	
-	NSString	*message = [NSString stringWithFormat:@"%@\r\r%@\r%@\r\rServer:%@-%@:%@", NSLocalizedString( @"Autorouting DICOM StoreSCU operation failed.\rI will try again in 30 secs.", nil), [ne name], [ne reason], [server objectForKey:@"AETitle"], [server objectForKey:@"Address"], [server objectForKey:@"Port"]];
-	
-	NSAlert* alert = [[NSAlert new] autorelease];
-	[alert setMessageText: NSLocalizedString(@"Autorouting Error",nil)];
-	[alert setInformativeText: message];
-	[alert setShowsSuppressionButton:YES];
-	[alert runModal];
-	if ([[alert suppressionButton] state] == NSOnState)
-		[[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"ShowErrorMessagesForAutorouting"];
-}*/
-
--(void)_executeSend:(NSArray*)samePatientArray server:(NSDictionary*)server dictionary:(NSDictionary*)dict {
-	if (!samePatientArray.count)
-		return;
-	
-	NSLog( @" Autorouting: %@ - %d objects", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], [samePatientArray count]);
-	
-	DCMTKStoreSCU* storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET: [NSUserDefaults defaultAETitle] 
-															  calledAET: [server objectForKey:@"AETitle"] 
-															   hostname: [server objectForKey:@"Address"] 
-																   port: [[server objectForKey:@"Port"] intValue] 
-															filesToSend: [samePatientArray valueForKey: @"completePath"]
-														 transferSyntax: [[server objectForKey:@"TransferSyntax"] intValue] 
-															compression: 1.0
-														extraParameters: [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"threadStatus"]];
-	
-	@try {
-		[storeSCU run:self];
-	} @catch (NSException *ne) {
-		NSLog( @"Autorouting FAILED : %@", ne);
-		
-		[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", server, @"server", nil] waitUntilDone: NO];
-		
-		NSThread.currentThread.status = NSLocalizedString( @"Sending failed. Will re-try later...", nil);
-		[NSThread sleepForTimeInterval: 4];
-		
-		// We will try again later...
-		
-		if ([[dict valueForKey: @"failureRetry"] intValue] > 0) {
-			NSLog( @"Autorouting failure count: %d", [[dict valueForKey: @"failureRetry"] intValue]);
-			@synchronized (_routingSendQueues) {
-				[_routingSendQueues addObject: [NSDictionary dictionaryWithObjectsAndKeys: samePatientArray, @"objects", [server objectForKey:@"Description"], @"server", dict, @"routingRule", [NSNumber numberWithInt: [[dict valueForKey:@"failureRetry"] intValue]-1], @"failureRetry", nil]];
-			}
-		}
-	}
-	
-	[storeSCU release];
-	storeSCU = nil;
-}
-
--(void)routingThread {
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	[_routingLock lock];
-	@try {
-		NSThread* thread = [NSThread currentThread];
-		thread.name = NSLocalizedString(@"Autorouting...", nil);
-		
-		NSArray* serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey:@"SERVERS"];
-		
-		NSArray* routingSendQueues = nil;
-		@synchronized (_routingSendQueues) {
-			routingSendQueues = [NSArray arrayWithArray:_routingSendQueues];
-			[_routingSendQueues removeAllObjects];
-		}
-			
-		if (routingSendQueues.count) {
-			NSLog(@"______________________________________________");
-			NSLog(@" Autorouting Queue START: %d objects", routingSendQueues.count);
-			[ThreadsManager.defaultManager addThreadAndStart:thread];
-			
-			NSInteger total = 0;
-			for (NSDictionary *copy in routingSendQueues)
-				for (NSDictionary* aServer in serversArray)
-					if ([[aServer objectForKey:@"Description"] isEqualToString:[copy objectForKey:@"server"]]) {
-						total += [[copy objectForKey:@"objects"] count];
-						break;
-					}
-			
-			NSInteger sent = 0;
-			for (NSDictionary *copy in routingSendQueues) {
-				NSArray* objectsToSend = [copy objectForKey:@"objects"];
-
-				[thread enterOperationWithRange:1.0*sent/total :1.0*objectsToSend.count/total];
-				sent += objectsToSend.count;
-	
-				NSString* serverName = [copy objectForKey:@"server"];
-				thread.status = [NSString stringWithFormat:NSLocalizedString(@"Forwarding %d %@ to %@", nil), objectsToSend.count, (objectsToSend.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)), serverName];
-				
-				NSDictionary* server = nil;
-				for (NSDictionary* aServer in serversArray)
-					if ([[aServer objectForKey:@"Description"] isEqualToString:serverName]) {
-						NSLog(@" Autorouting destination: %@ - %@", [aServer objectForKey:@"Description"], [aServer objectForKey:@"Address"]);
-						server = aServer;
-						break;
-					}
-				
-				if (server) {
-					@try {
-						NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientID" ascending:YES] autorelease];
-						NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
-						
-						objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
-						
-						NSString			*previousPatientUID = nil;
-						NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
-						
-						for( NSManagedObject *objectToSend in objectsToSend)
-						{
-							@try
-							{
-								if( [[NSFileManager defaultManager] fileExistsAtPath: [objectToSend valueForKey: @"completePath"]]) // Dont try to send files that are not available
-								{
-									if( previousPatientUID && [previousPatientUID isEqualToString: [objectToSend valueForKeyPath:@"series.study.patientID"]])
-									{
-										[samePatientArray addObject: objectToSend];
-									}
-									else
-									{
-										// Send the collected files from the same patient
-										
-										if( [samePatientArray count]) [self _executeSend: samePatientArray server: server dictionary: copy];
-										
-										// Reset
-										[samePatientArray removeAllObjects];
-										[samePatientArray addObject: objectToSend];
-										
-										previousPatientUID = [objectToSend valueForKeyPath:@"series.study.patientID"];
-									}
-								}
-							}
-							@catch( NSException *ne)
-							{
-								NSLog( @"----- Autorouting Prepare exception: %@", ne);
-							}
-						}
-						
-						if (samePatientArray.count)
-							[self _executeSend:samePatientArray server:server dictionary:copy];
-					} @catch (NSException* e) {
-						N2LogExceptionWithStackTrace(e);
-					}
-				} else {
-					N2LogError(@"Server not found for autorouting: %@", serverName);
-				}
-				
-				[thread exitOperation];
-				
-				if (NSThread.currentThread.isCancelled)
-					break;
-			}
-			
-			NSLog(@"______________________________________________");
-		}
-	
-	} @catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	} @finally {
-		[_routingLock unlock];
-		[pool release];
-	}
-}
-
 
 @end

@@ -150,7 +150,7 @@ extern AppController* OsiriX;
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
 + (void) pause __deprecated;
 + (void) resetToolbars;
-+ (NSString*) printStackTrace: (NSException*) e;// TODO: __deprecated;
++ (NSString*)printStackTrace:(NSException*)e __deprecated; // use -[NSException printStackTrace] form NSException+N2
 + (int) numberOfSubOsiriXProcesses;
 + (BOOL) isKDUEngineAvailable;
 

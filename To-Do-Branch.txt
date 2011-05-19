@@ -1,6 +1,13 @@
-- Autorouting
-- Dock icon badge (on add files)
 - Album cache
 - MacAppStore (check)
-- AutoClean
 
+--- tester ˆ fond:
+----- database switch
+----- quit pendant
+------- chargement
+------- autoclean
+------- addfiles
+------- autorouting
+----- bonjour
+
+- WarningsWindowController

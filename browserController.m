@@ -112,7 +112,7 @@
 
 static BrowserController *browserWindow = nil;
 NSString* O2AlbumDragType = @"Osirix Album drag";
-static BOOL loadingIsOver = NO, isAutoCleanDatabaseRunning = NO;
+static BOOL loadingIsOver = NO;//, isAutoCleanDatabaseRunning = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
 static int DicomDirScanDepth = 0;
@@ -220,7 +220,7 @@ static NSString*	ViewersToolbarItemIdentifier	= @"windows.tif";
 static NSString*	WebServerSingleNotification	= @"Safari.tif";
 static NSString*	AddStudiesToUserItemIdentifier	= @"NSUserAccounts";
 
-static NSTimeInterval gLastActivity = 0, gLastCoreDataReset = 0;
+static NSTimeInterval gLastActivity = 0;//, gLastCoreDataReset = 0;
 //static BOOL DICOMDIRCDMODE = NO;
 static BOOL dontShowOpenSubSeries = NO;
 
@@ -2291,550 +2291,16 @@ static NSConditionLock *threadLock = nil;
 	
 }
 
-- (void) autoCleanDatabaseDate: (id)sender
-{
-	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
-	
-	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess) return;
-	if (![_database isLocal]) return;
-	if( [NSDate timeIntervalSinceReferenceDate] - gLastActivity < 60*10) return;
-	
-	[self refreshAlbums];
-	
-	// Log cleaning
-	
-	if( [_database tryLock])
-	@try {
-		NSError					*error = nil;
-		NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
-		NSArray					*logArray;
-		NSDate					*producedDate = [[NSDate date] addTimeInterval: -[defaults integerForKey:@"LOGCLEANINGDAYS"]*60*60*24];
-		NSManagedObjectContext	*context = self.managedObjectContext;
-		NSPredicate				*predicate = [NSPredicate predicateWithFormat: @"startTime <= CAST(%lf, \"NSDate\")", [producedDate timeIntervalSinceReferenceDate]];
-		
-		[request setEntity: [self.managedObjectModel.entitiesByName objectForKey:@"LogEntry"]];
-		[request setPredicate: predicate];
-		
-		[context retain];
-		error = nil;
-		@try
-		{
-			logArray = [context executeFetchRequest:request error:&error];
-			
-			if( error)
-				NSLog( @"%@", error);
-			
-			for( id log in logArray)
-				[context deleteObject: log];
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"autoCleanDatabaseDate exception");
-			NSLog( @"%@", [e description]);
-			[AppController printStackTrace: e];
-		}
-		
-		[context release];
-		
-	} @catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	} @finally {
-		[_database unlock];
-	}
-	
-	// reduce memory footprint for CoreData - ONLY FOR SERVER MODE
-	if( gLastCoreDataReset == 0)
-		gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
-	
-	if( [NSDate timeIntervalSinceReferenceDate] - gLastCoreDataReset > 60*60)
-		if ([_database tryLock])
-			@try {
-				if(/* newFilesInIncoming == NO && */[SendController sendControllerObjects] == 0 && [[ThreadsManager defaultManager] threadsCount] == 0 && [AppController numberOfSubOsiriXProcesses] == 0)
-					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) {
-						gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
-						[self reduceCoreDataFootPrint];
-					}
-			}
-			@catch (NSException* e) {
-				N2LogExceptionWithStackTrace(e);
-			}
-			@finally {
-				[_database unlock];
-			}
-	
-	// Build thumbnails
-	
-	[self buildAllThumbnails: self];
-	
-	if( [defaults boolForKey:@"AUTOCLEANINGDATE"])
-	{
-		if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"] == YES || [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"] == YES)
-		{
-			if( [_database tryLock])
-			@try {
-				NSError				*error = nil;
-				NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
-				NSPredicate			*predicate = [NSPredicate predicateWithValue:YES];
-				NSArray				*studiesArray;
-				NSDate				*now = [NSDate date];
-				NSDate				*producedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"] intValue]*60*60*24];
-				NSDate				*openedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEOPENEDDAYS"] intValue]*60*60*24];
-				NSMutableArray		*toBeRemoved = [NSMutableArray array];
-				NSManagedObjectContext *context = self.managedObjectContext;
-				BOOL				dontDeleteStudiesWithComments = [[NSUserDefaults standardUserDefaults] boolForKey: @"dontDeleteStudiesWithComments"];
-				
-				request.entity = [self.managedObjectModel.entitiesByName objectForKey:@"Study"];
-				request.predicate = predicate;
-				
-				[context retain];
-				
-				@try
-				{
-					studiesArray = [context executeFetchRequest:request error:&error];
-					
-					NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
-					studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
-					
-					for( int i = 0; i < [studiesArray count]; i++)
-					{
-						NSString	*patientID = [[studiesArray objectAtIndex: i] valueForKey:@"patientID"];
-						NSDate		*studyDate = [[studiesArray objectAtIndex: i] valueForKey:@"date"];
-						NSDate		*openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
-						
-						if( openedStudyDate == nil) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
-						
-						int to, from = i;
-						
-						while( i < [studiesArray count]-1 && [patientID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
-						{
-							i++;
-							studyDate = [studyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"date"]];
-							if( [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]) openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]];
-							else openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"]];
-						}
-						to = i;
-						
-						BOOL dateProduced = YES, dateOpened = YES;
-						
-						if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"])
-							dateProduced = [producedDate compare: studyDate] == NSOrderedDescending;
-						
-						if( [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"])
-						{
-							if( openedStudyDate == nil) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
-							
-							dateOpened = [openedDate compare: openedStudyDate] == NSOrderedDescending;
-						}
-						
-						if(  dateProduced == YES && dateOpened == YES)
-						{
-							for( int x = from; x <= to; x++)
-							{
-								if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO && [[[studiesArray objectAtIndex: x] valueForKey:@"lockedStudy"] boolValue] == NO)
-								{
-									if( dontDeleteStudiesWithComments)
-									{
-										DicomStudy *dy = [studiesArray objectAtIndex: x];
-										
-										NSString *str = @"";
-										
-										if( [dy valueForKey: @"comment"])
-											str = [str stringByAppendingString: [dy valueForKey: @"comment"]];
-										if( [dy valueForKey: @"comment2"])
-											str = [str stringByAppendingString: [dy valueForKey: @"comment2"]];
-										if( [dy valueForKey: @"comment3"])
-											str = [str stringByAppendingString: [dy valueForKey: @"comment3"]];
-										if( [dy valueForKey: @"comment4"])
-											str = [str stringByAppendingString: [dy valueForKey: @"comment4"]];
-										
-										
-										if( str == nil || [str isEqualToString: @""])
-											[toBeRemoved addObject: [studiesArray objectAtIndex: x]];
-									}
-									else
-										[toBeRemoved addObject: [studiesArray objectAtIndex: x]];
-								}
-							}
-						}
-					}
-					
-					for ( int i = 0; i < [toBeRemoved count]; i++) // Check if studies are in an album or added this week.  If so don't autoclean that study from the database (DDP: 051108).
-					{
-						if ( [[[toBeRemoved objectAtIndex: i] valueForKey: @"albums"] count] > 0 ||
-							[[[toBeRemoved objectAtIndex: i] valueForKey: @"dateAdded"] timeIntervalSinceNow] > -60*60*7*24.0)  // within 7 days
-						{
-							[toBeRemoved removeObjectAtIndex: i];
-							i--;
-						}
-					}
-					
-					if( [defaults boolForKey: @"AUTOCLEANINGCOMMENTS"])
-					{
-						for ( int i = 0; i < [toBeRemoved count]; i++)
-						{
-							NSString *comment = [[toBeRemoved objectAtIndex: i] valueForKey: @"comment"];
-							
-							if( comment == nil) comment = @"";
-							
-							if ([comment rangeOfString:[defaults stringForKey: @"AUTOCLEANINGCOMMENTSTEXT"] options:NSCaseInsensitiveSearch].location == NSNotFound)
-							{
-								if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 0)
-								{
-									[toBeRemoved removeObjectAtIndex: i];
-									i--;
-								}
-							}
-							else
-							{
-								if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 1)
-								{
-									[toBeRemoved removeObjectAtIndex: i];
-									i--;
-								}
-							}
-						}
-					}
-				}
-				@catch (NSException * e)
-				{
-					NSLog( @"autoCleanDatabaseDate");
-					NSLog( @"%@", [e description]);
-					[AppController printStackTrace: e];
-				}
-				
-				if( [toBeRemoved count] > 0)
-				{
-					NSLog(@"Will delete: %d studies", [toBeRemoved count]);
-					
-					Wait *wait = [[Wait alloc] initWithString: NSLocalizedString(@"Database Auto-Cleaning...", nil)];
-					[wait showWindow:self];
-					[wait setCancel: YES];
-					[[wait progress] setMaxValue:[toBeRemoved count]];
-					
-					@try
-					{
-						if( [defaults boolForKey: @"AUTOCLEANINGDELETEORIGINAL"])
-						{
-							NSMutableArray	*nonLocalImagesPath = [NSMutableArray array];
-							
-							for ( NSManagedObject *curObj in toBeRemoved)
-							{
-								
-								if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
-								{
-									NSArray	*seriesArray = [self childrenArray: curObj];
-									
-									for( NSManagedObject *series in seriesArray)
-									{
-										NSArray		*imagesArray = [self imagesArray: series];
-										
-										[nonLocalImagesPath addObjectsFromArray: [[imagesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"]];
-									}
-								}
-								else NSLog( @"Uh? Autocleaning, object strange...");
-							}
-							
-							for ( NSString *path in nonLocalImagesPath)
-							{
-								[[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
-								
-								if( [[path pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
-								{
-									[[NSFileManager defaultManager] removeFileAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-								}
-							}
-						}
-						
-						for( id obj in toBeRemoved)
-						{
-							[context deleteObject: obj];
-							
-							[wait incrementBy:1];
-							if( [wait aborted]) break;
-						}
-						
-						[_database save:NULL];
-						
-						[self outlineViewRefresh];
-					}
-					@catch (NSException * e)
-					{
-						NSLog( @"autoCleanDatabaseDate");
-						NSLog( @"%@", [e description]);
-						[AppController printStackTrace: e];
-					}
-					[wait close];
-					[wait release];
-				}
-				
-				[context release];
-				
-			} @catch (NSException* e) {
-				N2LogExceptionWithStackTrace(e);
-			} @finally {
-				[_database unlock];
-			}
-		}
-	}
-	
-	[self autoCleanDatabaseFreeSpace: 0L];
+- (void) autoCleanDatabaseDate: (id)sender { // __deprecated
+	[_database cleanOldStuff];
 }
 
 + (BOOL) isHardDiskFull { // __deprecated
 	return [[DicomDatabase activeLocalDatabase] isFileSystemFreeSizeLimitReached];
 }
 
-- (void) autoCleanDatabaseFreeSpaceThread: (id)sender
-{
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	
-	if (![_database isLocal])
-		return;
-	
-	if( isAutoCleanDatabaseRunning)
-		return;
-	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	@try {
-		if( [defaults boolForKey:@"AUTOCLEANINGSPACE"])
-		{
-			if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"] == NO && [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"] == NO)
-			{
-				NSLog( @"***** WARNING - AUTOCLEANINGSPACE : no options specified !");
-			}
-			else
-			{
-				NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:_database.dataBaseDirPath];
-				
-				unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
-				unsigned long long thousand = 1024;
-				
-				if( [fsattrs objectForKey:NSFileSystemFreeSize] == nil)
-				{
-					NSLog( @"*** autoCleanDatabaseFreeSpace [fsattrs objectForKey:NSFileSystemFreeSize] == nil ?? : %@", _database.dataBaseDirPath);
-					[pool release];
-					
-					return;
-				}
-				
-				free /= thousand;
-				free /= thousand;
-				
-				if( lastFreeSpace != free && ([NSDate timeIntervalSinceReferenceDate] - lastFreeSpaceLogTime) > 60*10)
-				{
-					lastFreeSpace = free;
-					lastFreeSpaceLogTime = [NSDate timeIntervalSinceReferenceDate];
-					
-					NSLog(@"HD Free Space: %d MB", (long) free);
-				}
-				
-				isAutoCleanDatabaseRunning = YES;
-				
-				int freeMemoryRequested = [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue];
-				
-				if( sender == 0L)	// Received by the NSTimer : have a larger amount of free memory !
-					freeMemoryRequested = (float) freeMemoryRequested * 1.3;
-				
-				if( (int) free < freeMemoryRequested)
-				{
-					NSLog(@"------------------- Limit Reached - Starting autoCleanDatabaseFreeSpace");
-					
-					NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
-					NSArray					*studiesArray = nil;
-					NSMutableArray			*unlockedStudies = nil;
-					BOOL					dontDeleteStudiesWithComments = [[NSUserDefaults standardUserDefaults] boolForKey: @"dontDeleteStudiesWithComments"];
-					
-					@try
-					{
-						[request setEntity: [self.managedObjectModel.entitiesByName objectForKey:@"Study"]];
-						[request setPredicate: [NSPredicate predicateWithValue: YES]];
-						
-						do
-						{
-							NSTimeInterval producedInterval = 0;
-							NSTimeInterval openedInterval = 0;
-							NSManagedObject *oldestStudy = nil, *oldestOpenedStudy = nil;
-							
-							[_database lock];
-							
-							@try
-							{
-								NSError *error = nil;
-								studiesArray = [self.managedObjectContext executeFetchRequest:request error:&error];
-								
-								NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
-								studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
-								
-								unlockedStudies = [NSMutableArray arrayWithArray: studiesArray];
-								
-								for( int i = 0; i < [unlockedStudies count]; i++)
-								{
-									if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"lockedStudy"] boolValue] == YES)
-									{
-										[unlockedStudies removeObjectAtIndex: i];
-										i--;
-									}
-									else if( dontDeleteStudiesWithComments)
-									{
-										DicomStudy *dy = [unlockedStudies objectAtIndex: i];
-											
-										NSString *str = @"";
-										
-										if( [dy valueForKey: @"comment"])
-											str = [str stringByAppendingString: [dy valueForKey: @"comment"]];
-										if( [dy valueForKey: @"comment2"])
-											str = [str stringByAppendingString: [dy valueForKey: @"comment2"]];
-										if( [dy valueForKey: @"comment3"])
-											str = [str stringByAppendingString: [dy valueForKey: @"comment3"]];
-										if( [dy valueForKey: @"comment4"])
-											str = [str stringByAppendingString: [dy valueForKey: @"comment4"]];
-										
-										if( str != nil && [str isEqualToString:@""] == NO)
-										{
-											[unlockedStudies removeObjectAtIndex: i];
-											i--;
-										}
-									}
-								}
-								
-								if( [unlockedStudies count] > 2)
-								{
-									for( long i = 0; i < [unlockedStudies count]; i++)
-									{
-										NSString	*patientID = [[unlockedStudies objectAtIndex: i] valueForKey:@"patientID"];
-										long		to;
-										
-										if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
-										{
-											if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
-											{
-												oldestStudy = [unlockedStudies objectAtIndex: i];
-												producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
-											}
-										}
-										
-										NSDate *openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
-										if( openedDate == nil) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
-										
-										if( [openedDate timeIntervalSinceNow] < openedInterval)
-										{
-											oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
-											openedInterval = [openedDate timeIntervalSinceNow];
-										}
-										
-										while( i < [unlockedStudies count]-1 && [patientID isEqualToString:[[unlockedStudies objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
-										{
-											i++;
-											if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
-											{
-												if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
-												{
-													oldestStudy = [unlockedStudies objectAtIndex: i];
-													producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
-												}
-											}
-											
-											openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
-											if( openedDate == nil) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
-											
-											if( [openedDate timeIntervalSinceNow] < openedInterval)
-											{
-												oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
-												openedInterval = [openedDate timeIntervalSinceNow];
-											}
-										}
-										to = i;
-									}
-								}
-								
-								if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"])
-								{
-									if( oldestStudy)
-									{
-										NSLog( @"delete oldestStudy: %@", [oldestStudy valueForKey:@"patientUID"]);
-										[self.managedObjectContext deleteObject: oldestStudy];
-									}
-								}
-								
-								if ( [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"])
-								{
-									if( oldestOpenedStudy)
-									{
-										NSLog( @"delete oldestOpenedStudy: %@", [oldestOpenedStudy valueForKey:@"patientUID"]);
-										[self.managedObjectContext deleteObject: oldestOpenedStudy];
-									}
-								}
-								
-								[_database save:NULL];
-								
-							}
-							@catch ( NSException *e)
-							{
-								NSLog( @"autoCleanDatabaseFreeSpace exception 2");
-								NSLog( @"%@", [e description]);
-								[AppController printStackTrace: e];
-							} @finally {
-								[_database unlock];
-							}
-						
-							
-							[self emptyDeleteQueueNow: self];
-							
-							fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:_database.dataBaseDirPath];
-							
-							free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
-							free /= 1024;
-							free /= 1024;
-						} while( (long) free < freeMemoryRequested && [unlockedStudies count] > 2);
-					} @catch ( NSException *e) {
-						N2LogExceptionWithStackTrace(e);
-					}
-					
-					NSLog(@"------------------- Limit Reached - Finishing autoCleanDatabaseFreeSpace");
-					
-					// This will do a outlineViewRefresh
-//					if( [newFilesConditionLock tryLock])
-//						[newFilesConditionLock unlockWithCondition: 1];
-				}
-			}
-		}
-		
-		{
-			NSDictionary	*fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:_database.dataBaseDirPath];
-			
-			if( [fsattrs objectForKey:NSFileSystemFreeSize])
-			{
-				unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
-				unsigned long long thousand = 1024;
-				
-				free /= thousand;
-				free /= thousand;
-				
-				if( free < 300)
-				{
-					[self performSelectorOnMainThread: @selector( autoCleanDatabaseFreeSpaceWarning:) withObject: nil waitUntilDone: NO];
-				}
-			}
-		}
-		
-		isAutoCleanDatabaseRunning = NO;
-	} @catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	} @finally {
-		[pool release];
-	}
-}
-
-- (void) autoCleanDatabaseFreeSpaceWarning: (id)sender
-{
-	NSRunCriticalAlertPanel( NSLocalizedString(@"Warning", nil),  NSLocalizedString(@"Hard disk is FULL !!!! Major risks of failure !!\r\rClean your database! ", nil), NSLocalizedString(@"OK",nil), nil, nil);
-}
-
-- (void) autoCleanDatabaseFreeSpace: (id)sender
-{
-	NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoCleanDatabaseFreeSpaceThread:) object: sender] autorelease];
-	t.name = NSLocalizedString( @"Auto Cleaning Database...", nil);
-	[[ThreadsManager defaultManager] addThreadAndStart: t];
+- (void) autoCleanDatabaseFreeSpace: (id)sender { // __deprecated
+	[_database initiateCleanUnlessAlreadyCleaning];
 }
 
 #pragma mark-
@@ -5103,6 +4569,8 @@ static NSConditionLock *threadLock = nil;
 				name = [item valueForKey:@"name"];
 			
 			//return [NSString stringWithFormat:@"%@ (%d series)", name, [[item valueForKey:@"series"] count]];
+			if ([item isFault])
+				return nil;
 			return [NSString stringWithFormat: NSLocalizedString( @"%@ (%d series)", @"patient name, number of series: for example, helmut la moumoute (4 series)"), name, [[item valueForKey:@"imageSeries"] count]];
 		}
 	}
@@ -10814,7 +10282,7 @@ static NSArray*	openSubSeriesArray = nil;
 			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 5*60 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain]; //
 		
 //		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
-		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 15*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
+//		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 15*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain]; // 10
 //		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 30 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain]; // 35
 		
@@ -12362,11 +11830,11 @@ static NSArray*	openSubSeriesArray = nil;
 						
 					}
 					
-					[self autoCleanDatabaseFreeSpace: self];
+					[_database cleanForFreeSpace];
 					
 					[self copyFilesIntoDatabaseIfNeeded: filesArray options: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: YES], @"addToAlbum", [NSNumber numberWithBool: YES], @"async", [NSNumber numberWithBool: YES], @"selectStudy", [NSNumber numberWithBool: YES], @"onlyDICOM", [NSNumber numberWithBool: YES], @"ejectCDDVD", [NSNumber numberWithBool: YES], @"mountedVolume", nil]];
 					
-					[self autoCleanDatabaseFreeSpace: self];
+					[_database cleanForFreeSpace];
 				}
 			}
 			@catch (NSException * e)
