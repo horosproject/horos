@@ -703,6 +703,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 {
 }
 
+- (NSString*) name
+{
+	return nil;
+}
+
 - (id) valueForUndefinedKey:(NSString *)key
 {
 	id value = [DicomFile getDicomField: key forFile: [self completePath]];
