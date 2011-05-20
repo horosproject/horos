@@ -28,14 +28,18 @@ static BOOL _active = NO;
 	_active = active;
 }
 
-NSString* RectString(NSRect r) {
-	return [NSString stringWithFormat:@"[%f,%f,%f,%f]", r.origin.x, r.origin.y, r.size.width, r.size.height];
-}
-
 @end
 
 extern "C" {
 
+NSString* RectString(NSRect r) {
+	return [NSString stringWithFormat:@"[%f,%f,%f,%f]", r.origin.x, r.origin.y, r.size.width, r.size.height];
+}
+
+NSString* PointString(NSPoint p) {
+	return [NSString stringWithFormat:@"[%f,%f]", p.x, p.y];
+}
+	
 void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, id arg, ...) {
 	va_list args;
 	va_start(args, arg);

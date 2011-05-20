@@ -115,6 +115,11 @@
 }
 
 -(void)selectCurrentDatabaseSource {
+	if (!_database) {
+		[_sourcesTableView selectRowIndexes:[NSIndexSet indexSet] byExtendingSelection:NO];
+		return;
+	}
+	
 	NSInteger i = [self rowForDatabase:_database];
 	if (i == -1) {
 		NSDictionary* source = [NSDictionary dictionaryWithObjectsAndKeys: [_database.baseDirPath stringByDeletingLastPathComponent], @"Path", [_database.baseDirPath.stringByDeletingLastPathComponent.lastPathComponent stringByAppendingString:@" DB"], @"Description", nil];
@@ -130,9 +135,15 @@
 		NSString* type = [io objectAtIndex:0];
 		DicomDatabase* db = nil;
 		
-		
 		if ([type isEqualToString:@"Local"]) {
 			NSString* path = [io objectAtIndex:1];
+			if (![NSFileManager.defaultManager fileExistsAtPath:path]) {
+				NSString* message = NSLocalizedString(@"The selected database's data was not found on your computer.", nil);
+				if ([path hasPrefix:@"/Volumes/"])
+					  message = [message stringByAppendingFormat:@" %@", NSLocalizedString(@"If it is stored on an external drive? If so, please make sure the device in connected and on.", nil)];
+				[NSException raise:NSGenericException format:message];
+			}
+			
 			NSString* name = io.count > 2? [io objectAtIndex:2] : nil;
 			db = [DicomDatabase databaseAtPath:path name:name];
 		}
@@ -213,6 +224,10 @@
 		}
 }
 
+-(void)redrawSources {
+	[_sourcesTableView setNeedsDisplay:YES];
+}
+
 -(long)currentBonjourService { // __deprecated
 	return [_sourcesTableView selectedRow]-1;
 }
@@ -252,12 +267,16 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		_nsbDicom = [[NSNetServiceBrowser alloc] init];
 		[_nsbDicom setDelegate:self];
 		[_nsbDicom searchForServicesOfType:@"_dicom._tcp." inDomain:@""];
+		[NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(_sourcesObserveVolumeMountUnmountNotification:) name:NSWorkspaceDidMountNotification object:nil];
+		[NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(_sourcesObserveVolumeMountUnmountNotification:) name:NSWorkspaceDidUnmountNotification object:nil];
 	}
 	
 	return self;
 }
 
 -(void)dealloc {
+	[NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self name:NSWorkspaceDidMountNotification object:nil];
+	[NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self name:NSWorkspaceDidUnmountNotification object:nil];
 	[_nsbDicom release]; _nsbDicom = nil;
 	[_nsbOsirix release]; _nsbOsirix = nil;
 	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"DoNotSearchForBonjourServices"];
@@ -372,7 +391,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	// showhide bonjour sources
 }
 
-
 -(void)netServiceDidResolveAddress:(NSNetService*)service {
 	BrowserSource* source = [_bonjourSources objectForKey:[NSValue valueWithPointer:service]];
 	if (!source) return;
@@ -474,6 +492,22 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[_bonjourSources removeObjectForKey:[_bonjourSources keyForObject:bs]];
 }
 
+-(void)_sourcesObserveVolumeMountUnmountNotification:(NSNotification*)notification {
+	NSString* path = [notification.userInfo objectForKey:@"NSDevicePath"];
+
+//	for (BrowserSource* bs in _browser.sources)
+//		if (bs.type == BrowserSourceTypeLocal && [bs.location hasPrefix:root]) {
+//			NSButton* button = [[[NSButton alloc] initWithFrame:NSMakeRect(0, 0, 16, 16)] autorelease];
+//			button.image = [NSImage imageNamed:@"iPodEjectOff.tif"];
+//			button.alternateImage = [NSImage imageNamed:@"iPodEjectOn.tif"];
+//			button.gradientType = NSGradientNone;
+//			button.bezelStyle = 0;
+//			bs.extraView = button;
+//		}
+
+	[_browser redrawSources];
+}
+
 -(NSString*)tableView:(NSTableView*)tableView toolTipForCell:(NSCell*)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn*)tc row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation {
 	BrowserSource* bs = [_browser sourceAtRow:row];
 	return bs.location;
@@ -484,6 +518,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	cell.lastImage = nil;
 	cell.lastImageAlternate = nil;
 	cell.font = [NSFont systemFontOfSize:11];
+	cell.textColor = NSColor.blackColor;
 	BrowserSource* bs = [_browser sourceAtRow:row];
 	[bs willDisplayCell:cell];
 }

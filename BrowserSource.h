@@ -18,6 +18,7 @@ enum { BrowserSourceTypeDefault, BrowserSourceTypeLocal, BrowserSourceTypeRemote
 	NSString* _location;
 	NSString* _description;
 	NSDictionary* _dictionary;
+//	NSView* _extraView;
 }
 
 +(id)browserSourceForLocalPath:(NSString*)path;
@@ -27,9 +28,10 @@ enum { BrowserSourceTypeDefault, BrowserSourceTypeLocal, BrowserSourceTypeRemote
 +(id)browserSourceForDicomNodeAtAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 
 @property(readonly) NSInteger type;
-@property(readwrite,retain) NSString* location;
-@property(readwrite,retain) NSString* description;
-@property(readwrite,retain) NSDictionary* dictionary;
+@property(retain) NSString* location;
+@property(retain) NSString* description;
+@property(retain) NSDictionary* dictionary;
+//@property(retain) NSView* extraView;
 
 -(BOOL)isEqualToSource:(BrowserSource*)other;
 -(NSComparisonResult)compare:(BrowserSource*)other;

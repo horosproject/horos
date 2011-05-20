@@ -19,17 +19,17 @@
 
 @interface ImageAndTextCell : NSTextFieldCell {
 @private
-    NSImage	*image, *lastImage, *lastImageAlternate;
-	BOOL clickedInLastImage;
+    NSImage	*_myImage, *_lastImage, *_lastImageAlternate;
+	BOOL _trackingLastImage, _trackingLastImageMouseIsOnLastImage;
+	NSRect _trackingLastImageBounds;
+	id _lastImageActionTarget;
+	SEL _lastImageActionSelector;
 }
 
-- (void)setImage:(NSImage *)anImage;
-- (void)setLastImage:(NSImage *)anImage;
-- (void)setLastImageAlternate:(NSImage *)anImage;
-- (NSImage *)image;
+//@property(retain) NSImage* image;
+@property(retain) NSImage* lastImage;
+@property(retain) NSImage* lastImageAlternate;
 
-- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;
-- (NSSize)cellSize;
-- (BOOL) clickedInLastImage;
+-(void)setLastImageActionTarget:(id)target selector:(SEL)selector;
 
 @end

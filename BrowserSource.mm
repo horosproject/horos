@@ -19,7 +19,7 @@
 
 @implementation BrowserSource
 
-@synthesize type = _type, location = _location, description = _description, dictionary = _dictionary;
+@synthesize type = _type, location = _location, description = _description, dictionary = _dictionary;//, extraView = _extraView;
 
 +(id)browserSourceForLocalPath:(NSString*)path {
 	return [[self class] browserSourceForLocalPath:path description:nil dictionary:nil];
@@ -96,7 +96,7 @@
 			BOOL isDir;
 			if (![NSFileManager.defaultManager fileExistsAtPath:self.location isDirectory:&isDir]) {
 				cell.image = [NSImage imageNamed:@"away.tif"];
-				cell.textColor = [NSColor grayColor];
+				cell.textColor = NSColor.grayColor;
 				break;
 			}
 			
@@ -106,7 +106,7 @@
 			}
 			
 			BOOL isIPod = [NSFileManager.defaultManager fileExistsAtPath:[self.location stringByAppendingPathComponent:@"iPod_Control"]];
-			NSLog(@"mountedRemovableMedia %@", [[NSWorkspace sharedWorkspace] mountedRemovableMedia]);
+		//	NSLog(@"mountedRemovableMedia %@", [[NSWorkspace sharedWorkspace] mountedRemovableMedia]);
 			BOOL atRemovableMediaRoot = [[[NSWorkspace sharedWorkspace] mountedRemovableMedia] containsObject:self.location];
 			if (isIPod || atRemovableMediaRoot) {
 				cell.lastImage = [NSImage imageNamed:@"iPodEjectOff.tif"];
@@ -119,7 +119,7 @@
 				path = [path stringByDeletingLastPathComponent];
 			
 			NSImage* im = [[NSWorkspace sharedWorkspace] iconForFile:self.location];
-			[im setSize:NSMakeSize(15,15)];
+			[im setSize:NSMakeSize(16,16)];
 			cell.image = im;
 		} break;
 		case BrowserSourceTypeRemote: {

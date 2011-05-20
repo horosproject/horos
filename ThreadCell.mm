@@ -118,6 +118,7 @@
 	[self.thread setIsCancelled:YES];
 }
 
+
 -(void)drawInteriorWithFrame:(NSRect)frame inView:(NSView*)view {
 	if ([self.thread isFinished]) return;
 	

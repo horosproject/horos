@@ -20,8 +20,6 @@
 +(BOOL)isActive;
 +(void)setActive:(BOOL)active;
 
-extern NSString* RectString(NSRect r);
-
 @end
 
 #ifdef DEBUG
@@ -33,6 +31,9 @@ extern NSString* RectString(NSRect r);
 #ifdef __cplusplus
 extern "C" {
 #endif
+	
+extern NSString* RectString(NSRect r);
+extern NSString* PointString(NSPoint p);
 
 extern void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, id arg, ...);
 extern void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf);
