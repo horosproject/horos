@@ -46,9 +46,6 @@
 
 -(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate replyTo:(NSString*)replyto customText:(NSString*)customText
 {
-	if (!self.notificationsEnabled)
-		return NO;
-	
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
 	if (fromEmailAddress == nil)
 		fromEmailAddress = @"";
