@@ -6664,121 +6664,127 @@ static NSConditionLock *threadLock = nil;
 	
 	if( loadingIsOver == NO) return;
 	
-	[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
-	[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
-	[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
-	
-	NSIndexSet *index = [databaseOutline selectedRowIndexes];
-	NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"])
+	@try
 	{
-		if( previousItem)
-			[databaseOutline setNeedsDisplay: YES];
-	}
-	
-	if( item)
-	{
-		/**********
-		 post notification of new selected item. Can be used by plugins to update RIS connection
-		 **********/
-		NSManagedObject *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
+		[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
+		[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
+		[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
 		
-		NSDictionary *userInfo = nil;
-		if( studySelected)
+		NSIndexSet *index = [databaseOutline selectedRowIndexes];
+		NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"])
 		{
-			userInfo = [NSDictionary dictionaryWithObject:studySelected forKey: @"Selected Study"];
-			[[NSNotificationCenter defaultCenter] postNotificationName:OsirixNewStudySelectedNotification object:self userInfo:(NSDictionary *)userInfo];
+			if( previousItem)
+				[databaseOutline setNeedsDisplay: YES];
 		}
 		
-		BOOL refreshMatrix = YES;
-		long nowFiles = [[item valueForKey:@"noFiles"] intValue];
-		
-		if( previousItem == item)
+		if( item)
 		{
-			if( nowFiles == previousNoOfFiles)
-				refreshMatrix = NO;
-		}
-		else 
-			DatabaseIsEdited = NO;
-		
-		previousNoOfFiles = nowFiles;
-		
-		if( refreshMatrix)
-		{
-			[[self managedObjectContext] lock];
+			/**********
+			 post notification of new selected item. Can be used by plugins to update RIS connection
+			 **********/
+			NSManagedObject *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
 			
-			[animationSlider setEnabled:NO];
-			[animationSlider setMaxValue:0];
-			[animationSlider setNumberOfTickMarks:1];
-			[animationSlider setIntValue:0];
-			
-			[matrixViewArray release];
-			
-			if ([[item valueForKey:@"type"] isEqualToString:@"Series"] && 
-				[[[item valueForKey:@"images"] allObjects] count] == 1 && 
-				[[[[[item valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1)
-				matrixViewArray = [[NSArray arrayWithObject:item] retain];
-			else
-				matrixViewArray = [[self childrenArray: item] retain];
-			
-			long cellId = 0;
-			
-			if( previousItem == item) cellId = [[oMatrix selectedCell] tag];
-			else [oMatrix selectCellWithTag: 0];
-			
-			[self matrixInit: matrixViewArray.count];
-			
-			BOOL imageLevel = NO;
-			NSArray	*files = [self imagesArray: item preferredObject:oFirstForFirst];
-			if( [files count] > 1)
+			NSDictionary *userInfo = nil;
+			if( studySelected)
 			{
-				if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
+				userInfo = [NSDictionary dictionaryWithObject:studySelected forKey: @"Selected Study"];
+				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixNewStudySelectedNotification object:self userInfo:(NSDictionary *)userInfo];
 			}
 			
-			if( imageLevel == NO)
-			{
-				for( NSManagedObject *obj in files)
-				{
-					NSImage *thumbnail = [[[NSImage alloc] initWithData: [obj valueForKeyPath:@"series.thumbnail"]] autorelease];
-//					NSImage *thumbnail = decompressJPEG2000( [[obj valueForKeyPath:@"series.thumbnail"] bytes], [[obj valueForKeyPath:@"series.thumbnail"] length]);
-					if( thumbnail == nil) thumbnail = notFoundImage;
-					
-					[previewPixThumbnails addObject: thumbnail];
-				}
-			}
-			else
-			{
-				for( unsigned int i = 0; i < [files count];i++) [previewPixThumbnails addObject: notFoundImage];
-			}
-			
-			[[self managedObjectContext] unlock];
-			
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: files, @"files", [files valueForKey:@"completePath"], @"filesPaths",[NSNumber numberWithBool: imageLevel], @"imageLevel", previewPixThumbnails, @"previewPixThumbnails", previewPix, @"previewPix", nil];
-			[NSThread detachNewThreadSelector: @selector( matrixLoadIcons:) toTarget: self withObject: dict];
+			BOOL refreshMatrix = YES;
+			long nowFiles = [[item valueForKey:@"noFiles"] intValue];
 			
 			if( previousItem == item)
-				[oMatrix selectCellWithTag: cellId];
+			{
+				if( nowFiles == previousNoOfFiles)
+					refreshMatrix = NO;
+			}
+			else 
+				DatabaseIsEdited = NO;
+			
+			previousNoOfFiles = nowFiles;
+			
+			if( refreshMatrix)
+			{
+				[[self managedObjectContext] lock];
+				
+				[animationSlider setEnabled:NO];
+				[animationSlider setMaxValue:0];
+				[animationSlider setNumberOfTickMarks:1];
+				[animationSlider setIntValue:0];
+				
+				[matrixViewArray release];
+				
+				if ([[item valueForKey:@"type"] isEqualToString:@"Series"] && 
+					[[[item valueForKey:@"images"] allObjects] count] == 1 && 
+					[[[[[item valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1)
+					matrixViewArray = [[NSArray arrayWithObject:item] retain];
+				else
+					matrixViewArray = [[self childrenArray: item] retain];
+				
+				long cellId = 0;
+				
+				if( previousItem == item) cellId = [[oMatrix selectedCell] tag];
+				else [oMatrix selectCellWithTag: 0];
+				
+				[self matrixInit: matrixViewArray.count];
+				
+				BOOL imageLevel = NO;
+				NSArray	*files = [self imagesArray: item preferredObject:oFirstForFirst];
+				if( [files count] > 1)
+				{
+					if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
+				}
+				
+				if( imageLevel == NO)
+				{
+					for( NSManagedObject *obj in files)
+					{
+						NSImage *thumbnail = [[[NSImage alloc] initWithData: [obj valueForKeyPath:@"series.thumbnail"]] autorelease];
+	//					NSImage *thumbnail = decompressJPEG2000( [[obj valueForKeyPath:@"series.thumbnail"] bytes], [[obj valueForKeyPath:@"series.thumbnail"] length]);
+						if( thumbnail == nil) thumbnail = notFoundImage;
+						
+						[previewPixThumbnails addObject: thumbnail];
+					}
+				}
+				else
+				{
+					for( unsigned int i = 0; i < [files count];i++) [previewPixThumbnails addObject: notFoundImage];
+				}
+				
+				[[self managedObjectContext] unlock];
+				
+				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: files, @"files", [files valueForKey:@"completePath"], @"filesPaths",[NSNumber numberWithBool: imageLevel], @"imageLevel", previewPixThumbnails, @"previewPixThumbnails", previewPix, @"previewPix", nil];
+				[NSThread detachNewThreadSelector: @selector( matrixLoadIcons:) toTarget: self withObject: dict];
+				
+				if( previousItem == item)
+					[oMatrix selectCellWithTag: cellId];
+			}
+			
+			if( previousItem != item)
+			{
+				[previousItem release];
+				previousItem = [item retain];
+			}
+			
+			[self resetROIsAndKeysButton];
 		}
-		
-		if( previousItem != item)
+		else
 		{
+			[oMatrix selectCellWithTag: 0];
+			[self matrixInit: 0];
+			
 			[previousItem release];
-			previousItem = [item retain];
+			previousItem = nil;
+			
+			ROIsAndKeyImagesButtonAvailable = NO;
 		}
 		
-		[self resetROIsAndKeysButton];
 	}
-	else
-	{
-		[oMatrix selectCellWithTag: 0];
-		[self matrixInit: 0];
-		
-		[previousItem release];
-		previousItem = nil;
-		
-		ROIsAndKeyImagesButtonAvailable = NO;
-	}
+	@catch (NSException * e)
+	{ NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
 }
 
 - (void) refreshMatrix:(id) sender
