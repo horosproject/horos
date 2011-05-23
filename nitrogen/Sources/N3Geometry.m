@@ -398,7 +398,6 @@ bool N3LineIntersectsPlane(N3Line line, N3Plane plane)
 
 N3Vector N3LineIntersectionWithPlane(N3Line line, N3Plane plane)
 {
-	CGFloat u;
 	CGFloat numerator;
 	CGFloat denominator;
     N3Vector planeNormal;

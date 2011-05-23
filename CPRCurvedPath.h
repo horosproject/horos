@@ -19,7 +19,7 @@
 @class DICOMExport;
 
 // all points in the CurvedPath live in patient space
-// in order to avoid confusion about what coordinate space things are in all methods take points in an arbitrary coordinate
+// in order to avoid confusion about what coordinate space things are in, all methods take points in an arbitrary coordinate
 // space and take the transform from that space to the patient space
 
 typedef uint32_t CPRCurvedPathControlToken;
@@ -34,7 +34,8 @@ extern const int32_t CPRCurvedPathControlTokenNone;
     NSMutableArray *_nodes;
     NSMutableArray *_nodeRelativePositions; // NSNumbers with a cache of the nodes' relative positions;
     
-    N3Vector _initialNormal;
+    N3Vector _baseDirection;
+    CGFloat _angle;
     CGFloat _thickness;
     CGFloat _transverseSectionSpacing;
     CGFloat _transverseSectionPosition;
@@ -62,6 +63,8 @@ extern const int32_t CPRCurvedPathControlTokenNone;
 
 @property (nonatomic, readonly, retain) N3MutableBezierPath *bezierPath;
 @property (nonatomic, readwrite, assign) CGFloat thickness;
+@property (nonatomic, readwrite, assign) N3Vector baseDirection; // a base direction from which to define things such as the initial normal
+@property (nonatomic, readwrite, assign) CGFloat angle;
 @property (nonatomic, readwrite, assign) N3Vector initialNormal;
 @property (nonatomic, readwrite, assign) CGFloat transverseSectionSpacing; // in mm
 @property (nonatomic, readwrite, assign) CGFloat transverseSectionPosition; // as a relative position [0, 1] pass -1 if you don't want the trasvers section to appear
