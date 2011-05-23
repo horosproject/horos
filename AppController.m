@@ -380,32 +380,38 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 	{
 		case 0:
 			#ifdef MACAPPSTORE
-			path = [@"~/Library/Application Support/OsiriX/OsiriX Data/" stringByExpandingTildeInPath];
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] == NO || isDirectory == NO)
-				[[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories: YES attributes: nil error: nil];
-			#else
 			if( FSFindFolder (kOnAppropriateDisk, kDocumentsFolderType, kCreateFolder, &ref) == noErr )
 			{
-				BOOL isDir = YES;
-				
 				FSRefMakePath(&ref, (UInt8 *)s, sizeof(s));
 				
 				path = [[NSString stringWithUTF8String:s] stringByAppendingPathComponent:@"/OsiriX Data"];
 				
-				if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+				if (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] || isDirectory == NO)
+				{
+					path = [@"~/Library/Application Support/OsiriX/OsiriX Data/" stringByExpandingTildeInPath];
+				
+					if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] == NO || isDirectory == NO)
+						[[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories: YES attributes: nil error: nil];
+				}
+			}
+			#else
+			if( FSFindFolder (kOnAppropriateDisk, kDocumentsFolderType, kCreateFolder, &ref) == noErr )
+			{
+				FSRefMakePath(&ref, (UInt8 *)s, sizeof(s));
+				
+				path = [[NSString stringWithUTF8String:s] stringByAppendingPathComponent:@"/OsiriX Data"];
+				
+				if (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] || isDirectory == NO)
+					[[NSFileManager defaultManager] createDirectoryAtPath: path attributes:nil];
 			}
 			#endif
 		break;
 			
 		case 1:
 		{
-			BOOL		isDir = YES;
-			
 			path = [url stringByAppendingPathComponent:@"/OsiriX Data"];
 			
-			if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir]) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+			if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory: &isDirectory]) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 		}
 		break;
 	}
@@ -3388,7 +3394,9 @@ static BOOL initialized = NO;
 	#if __LP64__
 	appStartingDate = [[[NSDate date] description] retain];
 	checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 8486];
-	checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] builtInPlugInsPath] stringByAppendingPathComponent: @"sn64"]] retain];
+	checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] builtInPlugInsPath] stringByAppendingPathComponent: @".sn64"]] retain];
+	if( checkSN64String == nil)
+		checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] builtInPlugInsPath] stringByAppendingPathComponent: @"sn64"]] retain];
 	
 	NSNetServiceBrowser *checkSN64Browser = [[NSNetServiceBrowser alloc] init];
 	[checkSN64Browser setDelegate:self];
