@@ -368,6 +368,14 @@ extern int splitPosition[ 3];
 	else [super drawTextualData: size :annotations];
 }
 
+- (BOOL) planarDeformations
+{
+	if( [self.curvedPath.bezierPath isPlanar] && ([[self windowController] straightenedCPRAngle] >= 358 || [[self windowController] straightenedCPRAngle] <= 2))
+		return NO;
+	else
+		return YES;
+}
+
 - (void) drawRect:(NSRect)rect
 {
 	if( rect.size.width > 10)
@@ -843,51 +851,59 @@ extern int splitPosition[ 3];
 
 - (void) adjustROIsForCPRView
 {
-	for( int i = 0; i < curRoiList.count; i++ )
+	if( [self planarDeformations])
 	{
-		ROI *r = [curRoiList objectAtIndex:i];
-		if( r.type != tMesure && r.type != tText && r.type != tArrow)
+		for( int i = 0; i < curRoiList.count; i++ )
 		{
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
-			[curRoiList removeObjectAtIndex:i];
-			i--;
-		}
-		else
-			r.displayCMOrPixels = YES; // We don't want the value in pixels
-	}
-	
-	for( ROI *c in curRoiList)
-	{
-		if( c.type == tMesure)
-		{
-			NSMutableArray *points = c.points;
-			
-			NSPoint A = [[points objectAtIndex: 0] point];
-			NSPoint B = [[points objectAtIndex: 1] point];
-			
-			if( fabs( A.x - B.x) > 4 || fabs( A.y - B.y) > 4)
+			ROI *r = [curRoiList objectAtIndex:i];
+			if( r.type != tMesure && r.type != tText && r.type != tArrow)
 			{
-				if( fabs( A.x - B.x) > fabs( A.y - B.y) || A.y == [curDCM pheight] / 2)
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
+				[curRoiList removeObjectAtIndex:i];
+				i--;
+			}
+			else
+				r.displayCMOrPixels = YES; // We don't want the value in pixels
+		}
+		
+		for( ROI *c in curRoiList)
+		{
+			if( c.type == tMesure)
+			{
+				NSMutableArray *points = c.points;
+				
+				NSPoint A = [[points objectAtIndex: 0] point];
+				NSPoint B = [[points objectAtIndex: 1] point];
+				
+				if( fabs( A.x - B.x) > 4 || fabs( A.y - B.y) > 4)
 				{
-					// Horizontal length -> centered in y, and horizontal
-					
-					A.y = [curDCM pheight] / 2;
-					B.y = [curDCM pheight] / 2;
-					
-					[[points objectAtIndex: 0] setPoint: A];
-					[[points objectAtIndex: 1] setPoint: B];
-				}
-				else
-				{
-					// Vectical length -> vertical
-					
-					A.x = B.x;
-					
-					[[points objectAtIndex: 0] setPoint: A];
-					[[points objectAtIndex: 1] setPoint: B];
+					if( fabs( A.x - B.x) > fabs( A.y - B.y) || A.y == [curDCM pheight] / 2)
+					{
+						// Horizontal length -> centered in y, and horizontal
+						
+						A.y = [curDCM pheight] / 2;
+						B.y = [curDCM pheight] / 2;
+						
+						[[points objectAtIndex: 0] setPoint: A];
+						[[points objectAtIndex: 1] setPoint: B];
+					}
+					else
+					{
+						// Vectical length -> vertical
+						
+						A.x = B.x;
+						
+						[[points objectAtIndex: 0] setPoint: A];
+						[[points objectAtIndex: 1] setPoint: B];
+					}
 				}
 			}
 		}
+	}
+	else
+	{
+		for( ROI *r in curRoiList)
+			r.displayCMOrPixels = YES;
 	}
 	
 	[self setNeedsDisplay: YES];

@@ -984,6 +984,19 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return dicomTime;
 }
 
+- (id) valueForUndefinedKey:(NSString *)key
+{
+	NSSet *paths = [self paths];
+	
+	if( [paths count])
+	{
+		id value = [DicomFile getDicomField: key forFile: [[paths anyObject] completePath]];
+		if (value)
+			return value;
+	}
+	
+	return [super valueForUndefinedKey: key];
+}
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 

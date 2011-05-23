@@ -9,6 +9,7 @@
 #import "BrowserSource.h"
 #import "ImageAndTextCell.h"
 #import "RemoteDicomDatabase.h"
+#import "NSImage+N2.h"
 #import <stdlib.h>
 
 @interface BrowserSource ()
@@ -119,7 +120,7 @@
 				path = [path stringByDeletingLastPathComponent];
 			
 			NSImage* im = [[NSWorkspace sharedWorkspace] iconForFile:self.location];
-			[im setSize:NSMakeSize(16,16)];
+			im.size = [im sizeByScalingProportionallyToSize:NSMakeSize(16,16)];
 			cell.image = im;
 		} break;
 		case BrowserSourceTypeRemote: {

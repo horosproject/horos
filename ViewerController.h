@@ -38,6 +38,7 @@
 @class MPRController;
 @class CPRController;
 @class ViewerController;
+@class DicomDatabase;
 
 
 @interface NSObject(OsiriXPluginDraggingDestination)
@@ -63,6 +64,7 @@ enum
 
 @interface ViewerController : OSIWindowController  <Schedulable>
 {
+	DicomDatabase* database = 
 	NSLock	*ThreadLoadImageLock;
 	NSLock	*roiLock;
 	NSConditionLock *subLoadingThread, *flipDataThread;

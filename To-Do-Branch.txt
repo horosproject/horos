@@ -1,4 +1,3 @@
-- Album cache
 - MacAppStore (check)
 
 --- tester ˆ fond:
@@ -11,3 +10,4 @@
 ----- bonjour
 
 - WarningsWindowController
+- BrowserController+Albums

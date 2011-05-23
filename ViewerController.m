@@ -6118,6 +6118,9 @@ return YES;
 {
 //	*(long*)0 = 0xDEADBEEF; // ILCrashReporter test -- DO NOT ACTIVATE THIS LINE 
 	
+	DicomImage* dicomImage = [d objectAtIndex:0];
+	self.database = [DicomDatabase databaseForContext:dicomImage.managedObjectContext];
+	
 	[self setMagnetic: YES];
 	
 	if( [d count] == 0) d = nil;

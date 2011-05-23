@@ -35,7 +35,11 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 	BOOL magneticWindowActivated;
 	BOOL windowIsMovedByTheUserO;
 	NSRect savedWindowsFrameO;
+	
+	DicomDatabase* _database;
 }
+
+@property(assign) DicomDatabase* database;
 
 + (BOOL) dontWindowDidChangeScreen;
 + (void) setDontEnterWindowDidChangeScreen:(BOOL) a;

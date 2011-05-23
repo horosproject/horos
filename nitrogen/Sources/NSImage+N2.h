@@ -24,6 +24,7 @@
 -(NSImage*)shadowImage;
 -(NSImage*)imageWithHue:(CGFloat)hue;
 
+-(NSSize)sizeByScalingProportionallyToSize:(NSSize)targetSize;
 -(NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
 
 @end

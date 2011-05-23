@@ -705,7 +705,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	}
 }
 
--(void)refreshAlbumsCache {
+-(void)resetAlbumsCache {
 	// TODO: serseursurhesihi
 }
 

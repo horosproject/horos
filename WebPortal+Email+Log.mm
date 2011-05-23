@@ -31,11 +31,21 @@
 
 @implementation WebPortal (EmailLog)
 
+- (void) sendEmailOnMainThread: (NSDictionary*) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSString *ts = [dict objectForKey: @"template"];
+	NSDictionary *messageHeaders = [dict objectForKey: @"headers"];
+	
+	NSAttributedString* m = [[[NSAttributedString alloc] initWithHTML:[ts dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL] autorelease]; // This function is NOT thread safe !
+	[[CSMailMailClient mailClient] deliverMessage:m headers:messageHeaders];
+
+	[pool release];
+}
+
 -(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate replyTo:(NSString*)replyto customText:(NSString*)customText
 {
-	if (!self.notificationsEnabled)
-		return NO;
-	
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
 	if (fromEmailAddress == nil)
 		fromEmailAddress = @"";
@@ -61,8 +71,9 @@
 		[messageHeaders setObject:fromEmailAddress forKey:@"Sender"];
 		[messageHeaders setObject:emailSubject forKey:@"Subject"];
 		if (replyto) [messageHeaders setObject:replyto forKey:@"ReplyTo"];
-		NSAttributedString* m = [[[NSAttributedString alloc] initWithHTML:[ts dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL] autorelease];
-		[[CSMailMailClient mailClient] deliverMessage:m headers:messageHeaders];
+		
+		// NSAttributedString initWithHTML is NOT thread-safe
+		[self performSelectorOnMainThread: @selector( sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ts, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
 		
 		for (NSManagedObject* s in filteredStudies)
 			[self updateLogEntryForStudy:s withMessage: @"notification email" forUser:user.name ip:nil];
