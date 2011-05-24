@@ -693,10 +693,9 @@ static NSConditionLock *threadLock = nil;
 				}
 			}
 		}
-		@catch ( NSException *e)
+		@catch (NSException* e)
 		{
-			NSLog( @"********* addFilesAndFolderToDatabase exception : %@", e);
-			[AppController printStackTrace: e];
+			N2LogExceptionWithStackTrace(e);
 		}
 	}
 	

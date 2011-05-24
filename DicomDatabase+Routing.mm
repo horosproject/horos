@@ -150,7 +150,7 @@
 		
 		NSArray* routingSendQueues = nil;
 		@synchronized (_routingSendQueues) {
-			routingSendQueues = [NSArray arrayWithArray:_routingSendQueues];
+			routingSendQueues = [[_routingSendQueues copy] autorelease];
 			[_routingSendQueues removeAllObjects];
 		}
 		

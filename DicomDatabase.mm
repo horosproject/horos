@@ -779,10 +779,22 @@ enum { Compress, Decompress };
 	return [DicomDatabase decompressDicomFilesAtPaths:paths intoDirAtPath:destDir];
 }
 
+-(void)_processFilesAtPaths_processChunk:(NSArray*)io {
+	NSArray* chunk = [io objectAtIndex:0];
+	NSString* destDir = [io objectAtIndex:1];
+	int mode = [[io objectAtIndex:2] intValue];
+	
+	if (mode == Compress)
+		[DicomDatabase compressDicomFilesAtPaths:chunk intoDirAtPath:destDir];
+	else [DicomDatabase decompressDicomFilesAtPaths:chunk intoDirAtPath:destDir];
+}
+
 -(void)processFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir mode:(int)mode {
+	NSString* nameFormat = mode == Compress ? NSLocalizedString(@"Compressing %d DICOM files...", nil) : NSLocalizedString(@"Decompressing %d DICOM files...", nil);
+	
 	NSThread* thread = [NSThread currentThread];
 //	[thread pushLevel];
-	thread.name = [NSString stringWithFormat:NSLocalizedString(mode == Compress? @"Compressing %d DICOM files..." : @"Decompressing %d DICOM files...", nil), paths.count];
+	thread.name = [NSString stringWithFormat:nameFormat, paths.count];
 	thread.status = NSLocalizedString(@"Waiting for similar threads to complete...", nil);
 
 	[_processFilesLock lock];
@@ -795,13 +807,11 @@ enum { Compress, Decompress };
 		
 		NSArray* chunks = [paths splitArrayIntoArraysOfMinSize:chunkSize maxArrays:nTasks];
 		
-		#pragma omp parallel for
-		for (int i = 0; i < chunks.count; ++i) {
-			NSArray* chunk = [chunks objectAtIndex:i];
-			if (mode == Compress)
-				[DicomDatabase compressDicomFilesAtPaths:chunk intoDirAtPath:destDir];
-			else [DicomDatabase decompressDicomFilesAtPaths:chunk intoDirAtPath:destDir];
-		}
+		NSOperationQueue* queue = [NSOperationQueue new];
+		for (NSArray* chunk in chunks)
+			[queue addOperation:[[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(_processFilesAtPaths_processChunk:) object:[NSArray arrayWithObjects: chunk, destDir, [NSNumber numberWithInt:mode], nil]] autorelease]];
+		[queue waitUntilAllOperationsAreFinished];
+		[queue release];
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {

@@ -46,23 +46,33 @@
 #pragma mark Interface
 
 -(NSArray*)threads {
-	return _threadsController.arrangedObjects;
+	@synchronized (_threadsController) {
+		return _threadsController.arrangedObjects;
+	} return nil;
 }
 
 -(NSUInteger)threadsCount {
-	return [_threadsController.arrangedObjects count];
+	@synchronized (_threadsController) {
+		return [_threadsController.arrangedObjects count];
+	} return nil;
 }
 
 -(NSThread*)threadAtIndex:(NSUInteger)index {
-	return [_threadsController.arrangedObjects objectAtIndex:index];
+	@synchronized (_threadsController) {
+		return [_threadsController.arrangedObjects objectAtIndex:index];
+	} return nil;
 }
 
 -(void)subAddThread:(NSThread*)thread
 {
+	@synchronized (_threadsController) {
 	@synchronized (thread)
 	{
 		if (![NSThread isMainThread])
 			NSLog( @"***** NSThread we should NOT be here");
+		
+		if ([_threadsController.arrangedObjects containsObject:thread])
+			return;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
 		[_threadsController addObject:thread];
@@ -75,45 +85,53 @@
 		
 		[thread release]; // This is not a memory leak - See Below
 	}
+	}
 }
 
 -(void)addThreadAndStart:(NSThread*)thread
 {
+	@synchronized (_threadsController) {
 	@synchronized (thread)
 	{
 		[thread retain]; // This is not a memory leak - release will happen in subAddThread:
 		
 		if (![NSThread isMainThread])
 			[self performSelectorOnMainThread:@selector(subAddThread:) withObject:thread waitUntilDone: NO];
-		else if (![_threadsController.arrangedObjects containsObject:thread])
-			[self subAddThread:thread];
+		else [self subAddThread:thread];
+	}
 	}
 }
 
 -(void) subRemoveThread:(NSThread*)thread
 {
-	if (![NSThread isMainThread])
-		NSLog( @"***** NSThread we should NOT be here");
-	
+	@synchronized (_threadsController) {
 	@synchronized (thread)
 	{
+		if (![NSThread isMainThread])
+			NSLog( @"***** NSThread we should NOT be here");
+
+		if (![_threadsController.arrangedObjects containsObject:thread])
+			return;
+		
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
 		[_threadsController removeObject:thread];
+		
+		[thread release]; // This is not a memory leak - See Below
 	}
-	
-	[thread release]; // This is not a memory leak - See Below
+	}
 }
 
 -(void)removeThread:(NSThread*)thread
 {
+	@synchronized (_threadsController) {
 	@synchronized (thread)
 	{
 		[thread retain]; // This is not a memory leak - release will happen in subRemoveThread:
 		
 		if (![NSThread isMainThread])
 			[self performSelectorOnMainThread:@selector(subRemoveThread:) withObject:thread waitUntilDone:NO];
-		else if ([_threadsController.arrangedObjects containsObject:thread])
-			[self subRemoveThread:thread];
+		else [self subRemoveThread:thread];
+	}
 	}
 }
 
