@@ -9323,45 +9323,51 @@ static BOOL withReset = NO;
 	//Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
 	for( ViewerController *v in [ViewerController get2DViewers])
 	{
-		// We need to temporarly retain all these objects, because this function is called on a separated thread (matrixLoadIcons)
-		NSArray *vFileList = [[v fileList] retain];
-		NSArray *vPixList = [[v pixList] retain];
-		NSData *volumeData = [[v volumeData] retain];
-		
-		@try
+		if( ![v windowWillClose])
 		{
-			for( int i = 0 ; i < [vFileList count]; i++)
+			@synchronized( [v imageView])
 			{
-				NSString *path = [[vFileList objectAtIndex: i] valueForKey:@"completePath"];
+				// We need to temporarly retain all these objects, because this function is called on a separated thread (matrixLoadIcons)
+				NSArray *vFileList = [[v fileList] retain];
+				NSArray *vPixList = [[v pixList] retain];
+				NSData *volumeData = [[v volumeData] retain];
 				
-				if( [path isEqualToString: pathToFind])
+				@try
 				{
-					DCMPix *dcmPix = [[vPixList objectAtIndex: i] copy];
-					if( dcmPix)
+					for( int i = 0 ; i < [vFileList count]; i++)
 					{
-						float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
-						if( fImage)
+						NSString *path = [[vFileList objectAtIndex: i] valueForKey:@"completePath"];
+						
+						if( [path isEqualToString: pathToFind])
 						{
-							memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
-							[dcmPix setfImage: fImage];
-							[dcmPix freefImageWhenDone: YES];
-							
-							returnPix = [dcmPix autorelease];
+							DCMPix *dcmPix = [[vPixList objectAtIndex: i] copy];
+							if( dcmPix)
+							{
+								float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+								if( fImage)
+								{
+									memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+									[dcmPix setfImage: fImage];
+									[dcmPix freefImageWhenDone: YES];
+									
+									returnPix = [dcmPix autorelease];
+								}
+								else
+									[dcmPix release];
+							}
 						}
-						else
-							[dcmPix release];
 					}
 				}
+				@catch (NSException * e) 
+				{
+					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+					[AppController printStackTrace: e];
+				}
+				[volumeData release];
+				[vFileList release];
+				[vPixList release];
 			}
 		}
-		@catch (NSException * e) 
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[AppController printStackTrace: e];
-		}
-		[volumeData release];
-		[vFileList release];
-		[vPixList release];
 	}
 	
 	return returnPix;

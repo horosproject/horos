@@ -40,7 +40,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	NSArray				*pixArray;
     NSManagedObject		*imageObj;	/**< Core data object for image */
 	float				*fImage /**< float buffer of image Data */, *fExternalOwnedImage;  /**< float buffer of image Data - provided by another source, not owned by this object, not release by this object */
-    char                *wImage; /**< ? */
 	
 //DICOM TAGS
 
