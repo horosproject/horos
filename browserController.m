@@ -9743,7 +9743,7 @@ static BOOL withReset = NO;
 				NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
 				[cell setTransparent:NO];
 				[cell setEnabled:YES];
-				
+				[cell setLineBreakMode: NSLineBreakByCharWrapping];
 				[cell setFont:[NSFont systemFontOfSize:9]];
 				[cell setImagePosition: NSImageBelow];
 				[cell setAction: @selector(matrixPressed:)];
@@ -9760,7 +9760,7 @@ static BOOL withReset = NO;
 				
 				if( name.length > 18)
 				{
-					[cell setFont:[NSFont systemFontOfSize: 8]];
+					[cell setFont:[NSFont systemFontOfSize: 8.5]];
 					name = [name stringByTruncatingToLength: 36]; // 2 lines
 				}
 				
@@ -13671,11 +13671,7 @@ static NSArray*	openSubSeriesArray = nil;
 	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subMax"];
 	
 	[self setValue:[NSNumber numberWithInt:1] forKey:@"subFrom"];
-	
-	if([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
-		[self setValue:[NSNumber numberWithInt:1] forKey:@"subInterval"];
-	else
-		[self setValue:[NSNumber numberWithInt:2] forKey:@"subInterval"];
+	[self setValue:[NSNumber numberWithInt:1] forKey:@"subInterval"];
 	
 	[NSApp beginSheet: subSeriesWindow
 	   modalForWindow: [NSApp mainWindow]

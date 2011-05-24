@@ -3889,11 +3889,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[cell setAction: @selector(matrixPreviewSwitchHidden:)];
 				[cell setTarget: self];
 				[cell setBordered: YES];
+				[cell setLineBreakMode: NSLineBreakByCharWrapping];
 				
 				NSString	*name = [curStudy valueForKey:@"studyName"];
 //				if( [name length] > 15) name = [name substringToIndex: 15];
 				
-				name = [name stringByTruncatingToLength: 36];
+				name = [name stringByTruncatingToLength: 34];
 				
 				NSString *stateText;
 				if( [[curStudy valueForKey:@"stateText"] intValue]) stateText = [[BrowserController statesArray] objectAtIndex: [[curStudy valueForKey:@"stateText"] intValue]];
@@ -3934,20 +3935,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 					{
 						NSManagedObject	*curSeries = [series objectAtIndex:i];
 						
-						int keyImagesNumber = 0;
-		//				NSArray	*keyImagesArray = [[[curSeries valueForKey:@"images"] allObjects] valueForKey:@"isKeyImage"];		<- This is too slow......
-		//				for( z = 0; z < [keyImagesArray count]; z++)
-		//				{
-		//					if( [[keyImagesArray objectAtIndex: z] boolValue]) keyImagesNumber++;
-		//				}
-						
 						NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
 						
 						[cell setTransparent: NO];
 						[cell setBezelStyle: NSShadowlessSquareBezelStyle];
 						[cell setRepresentedObject: curSeries];
-						if( keyImagesNumber) [cell setFont:[NSFont boldSystemFontOfSize:8.5]];
-						else [cell setFont:[NSFont systemFontOfSize:8.5]];
+						[cell setFont:[NSFont systemFontOfSize:8.5]];
 						[cell setImagePosition: NSImageBelow];
 						[cell setAction: @selector(matrixPreviewPressed:)];
 						[cell setTarget: self];
@@ -3957,8 +3950,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 						NSString *name = [curSeries valueForKey:@"name"];
 						if( [name length] > 18)
 						{
-							[cell setFont:[NSFont boldSystemFontOfSize:7.5]];
-							name = [name stringByTruncatingToLength: 36];
+							[cell setFont:[NSFont boldSystemFontOfSize: 7.8]];
+							name = [name stringByTruncatingToLength: 34];
 						}
 						
 						NSString	*type = nil;
@@ -4000,9 +3993,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 						}
 						else type = NSLocalizedString( @"Images", nil);
 						
-						
-						if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
-						else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];
+						[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];
 						
 						[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", nil), [curSeries valueForKey:@"id"]] forCell:cell];
 						
