@@ -9328,8 +9328,8 @@ static BOOL withReset = NO;
 			@synchronized( [v imageView])
 			{
 				// We need to temporarly retain all these objects, because this function is called on a separated thread (matrixLoadIcons)
-				NSArray *vFileList = [[v fileList] retain];
-				NSArray *vPixList = [[v pixList] retain];
+				NSArray *vFileList = [[v fileList] copy];
+				NSArray *vPixList = [[v pixList] copy];
 				NSData *volumeData = [[v volumeData] retain];
 				
 				@try
@@ -9343,14 +9343,21 @@ static BOOL withReset = NO;
 							DCMPix *dcmPix = [[vPixList objectAtIndex: i] copy];
 							if( dcmPix)
 							{
-								float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+								float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float)*1.5);
 								if( fImage)
 								{
-									memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
-									[dcmPix setfImage: fImage];
-									[dcmPix freefImageWhenDone: YES];
+									free( fImage);
+									fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+									if( fImage)
+									{
+										memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+										[dcmPix setfImage: fImage];
+										[dcmPix freefImageWhenDone: YES];
 									
-									returnPix = [dcmPix autorelease];
+										returnPix = [dcmPix autorelease];
+									}
+									else
+										[dcmPix release];
 								}
 								else
 									[dcmPix release];
