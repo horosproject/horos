@@ -2361,8 +2361,8 @@ static NSDate *lastWarningDate = nil;
 	
 	[self closeAllViewers: self];
 	
-	for( NSThread *t in [[ThreadsManager defaultManager] threads])
-		[t setIsCancelled: YES];
+	for (NSThread* t in [[ThreadsManager defaultManager] threads])
+		[t cancel];
 	
 	
 	[[BrowserController currentBrowser] browserPrepareForClose];

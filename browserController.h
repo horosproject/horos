@@ -209,7 +209,7 @@ extern NSString* O2AlbumDragType;
 	NSString						*temporaryNotificationEmail, *customTextNotificationEmail;
 	
 //	NSConditionLock					*newFilesConditionLock;
-	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
+//	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
 	
 //	volatile BOOL					newFilesInIncoming;
 	NSImage							*notFoundImage;
@@ -236,12 +236,11 @@ extern NSString* O2AlbumDragType;
 	
 	NSArray							*mountedVolumes;
 	
-	IBOutlet NSTableView* AtableView;
+	IBOutlet NSTableView* _activityTableView;//AtableView;
 //	IBOutlet NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
 //	IBOutlet NSTextField* AstatusLabel;
-	NSMutableArray* _activityCells;
-	NSThread* AupdateStatsThread;
-	NSObject* activityObserver;
+//	NSThread* AupdateStatsThread;
+	id _activityHelper;
 }
 
 @property(retain) DicomDatabase* database;
@@ -257,7 +256,7 @@ extern NSString* O2AlbumDragType;
 @property(readonly) NSTableView *albumTable;
 @property(readonly) NSString *currentDatabasePath __deprecated, *localDatabasePath __deprecated, *documentsDirectory __deprecated, *fixedDocumentsDirectory __deprecated;
 
-@property(readonly) NSTableView* AtableView;
+//@property(readonly) NSTableView* AtableView;
 //@property(readonly) NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
 //@property(readonly) NSTextField* AstatusLabel;
 
@@ -274,7 +273,7 @@ extern NSString* O2AlbumDragType;
 @property BOOL rtstructProgressBar;
 @property float rtstructProgressPercent;
 @property NSTimeInterval databaseLastModification __deprecated;
-@property(readonly) NSMutableArray *viewersListToReload, *viewersListToRebuild;
+//@property(readonly) NSMutableArray *viewersListToReload, *viewersListToRebuild;
 //@property(readonly) NSConditionLock* newFilesConditionLock;
 @property(readonly) NSMutableDictionary *databaseIndexDictionary;
 @property(readonly) PluginManagerController *pluginManagerController;
@@ -534,9 +533,9 @@ extern NSString* O2AlbumDragType;
 - (NSArray *)databaseSelection;
 
 
-- (void) newFilesGUIUpdateRun:(int) state;
-- (void) newFilesGUIUpdateRun: (int) state viewersListToReload: (NSMutableArray*) cReload viewersListToRebuild: (NSMutableArray*) cRebuild;
-- (void) newFilesGUIUpdate:(id) sender;
+//- (void) newFilesGUIUpdateRun:(int) state __deprecated;
+//- (void) newFilesGUIUpdateRun: (int) state viewersListToReload: (NSMutableArray*) cReload viewersListToRebuild: (NSMutableArray*) cRebuild  __deprecated;
+//- (void) newFilesGUIUpdate:(id) sender __deprecated;
 
 - (void) refreshMatrix:(id) sender;
 - (void)updateReportToolbarIcon:(NSNotification *)note;

@@ -6188,6 +6188,32 @@ return YES;
 	return self;
 }
 
+-(void)refreshDatabase:(NSArray*)newImages {
+	if ([[self imageView] mouseDragging]) {
+		[self performSelector:@selector(refreshDatabase:) withObject:newImages afterDelay:0.01];
+		return;
+	}
+	
+	BOOL rebuild = NO, reload = NO;
+	DicomImage* firstObject = [fileList[curMovieIndex] count]? [fileList[curMovieIndex] objectAtIndex:0] : nil;
+	for (DicomImage* dicomImage in newImages) {
+		if (dicomImage.series == firstObject.series)
+			reload = YES;
+		else if (!firstObject || [dicomImage.series.study.patientID isEqualToString:firstObject.series.study.patientID])
+			rebuild = YES;
+	}
+	
+	if (rebuild)
+		[self buildMatrixPreview: NO];
+	if (reload) {
+		BrowserController* bc = [BrowserController currentBrowser];
+		[bc openViewerFromImages:[NSArray arrayWithObject:[bc childrenArray:firstObject.series]] movie:NO viewer:self keyImagesOnly:NO tryToFlipData:YES];
+	}
+	
+	
+	[super refreshDatabase:newImages];
+}
+
 - (NSNumber*) KeyImageCounter
 {
 	int total = 0;

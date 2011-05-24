@@ -32,6 +32,7 @@
 #import "NSThread+N2.h"
 #import "PieChartImage.h"
 #import "OpenGLScreenReader.h"
+#import "Notifications.h"
 #import "NSUserDefaults+OsiriX.h"
 
 static NSString *PatientName = @"PatientsName";
@@ -3194,6 +3195,8 @@ extern "C"
 			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Query & Retrieve",nil),NSLocalizedString( @"No DICOM locations available. See Preferences to add DICOM locations.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 		}
 		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseAddNotification:) name:OsirixAddToDBNotification object:nil];
+		
 		queryFilters = nil;
 		dateQueryFilter = nil;
 		timeQueryFilter = nil;
@@ -3253,7 +3256,9 @@ extern "C"
 		return;
 	
 	avoidQueryControllerDeallocReentry = YES;
-	
+
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixAddToDBNotification object:nil];
+
 	NSLog( @"dealloc QueryController");
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector( executeRefresh:) object:nil];
@@ -3488,6 +3493,10 @@ extern "C"
 			[self querySelectedStudy: self];
 		break;
 	}
+}
+
+-(void)observeDatabaseAddNotification:(NSNotification*)notification {
+	[self refresh:self];
 }
 
 @end

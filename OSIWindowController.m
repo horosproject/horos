@@ -19,6 +19,7 @@
 #import "AppController.h"
 #import "ViewerController.h"
 #import "BrowserController.h"
+#import "Notifications.h"
 #import <Carbon/Carbon.h>
 
 static	BOOL dontEnterMagneticFunctions = NO;
@@ -36,8 +37,8 @@ static BOOL protectedReentryWindowDidResize = NO;
 -(void)setDatabase:(DicomDatabase*)database {
 	if (database != _database) {
 		if (_database) {
-			[NSNotificationCenter.defaultCenter removeObserver:self name:OsirixAddToDBNotification object:_database];
-			[NSNotificationCenter.defaultCenter removeObserver:self name:OsirixDatabaseObjectsMayFaultNotification object:_database];
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixAddToDBNotification object:_database];
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixDatabaseObjectsMayFaultNotification object:_database];
 		}
 		
 		_database = database;
@@ -49,8 +50,11 @@ static BOOL protectedReentryWindowDidResize = NO;
 	}
 }
 
+-(void)refreshDatabase:(NSArray*)newImages {
+}
+
 -(void)observeDatabaseAddNotification:(NSNotification*)notification {
-	[self refreshDatabase];
+	[self refreshDatabase:[[notification userInfo] objectForKey:OsirixAddToDBCompleteNotificationImagesArray]];
 }
 
 -(void)observeDatabaseObjectsMayFaultNotification:(NSNotification*)notification {
@@ -302,8 +306,10 @@ static BOOL protectedReentryWindowDidResize = NO;
 {
 	if( magneticWindowActivated)
 	{
-		if( windowIsMovedByTheUserO == YES && dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrameO) == NO)
+		if(/*!Button() && */windowIsMovedByTheUserO == YES && dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrameO) == NO)
 		{
+			NSLog(@"windowDidMove:");
+			
 			if( Button() == 0) windowIsMovedByTheUserO = NO;
 			
 			NSEnumerator	*e;

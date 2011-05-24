@@ -34,9 +34,6 @@
 	_view = [view retain];
 	_manager = [manager retain];
 	
-	BrowserController* threadsBController = (id)view.delegate;
-	//[self setTextColor:threadsBController.AstatusLabel.textColor];
-	
 	_progressIndicator = [[NSProgressIndicator alloc] initWithFrame:NSZeroRect];
 	[_progressIndicator setUsesThreadedAnimation:YES];
 	[_progressIndicator setMinValue:0];
@@ -69,7 +66,7 @@
 	[self.thread.threadDictionary release];
 	self.thread = nil;
 	
-	[_view release];
+//	[_view release];
 	[_manager release];
 	
 	[super dealloc];
@@ -137,17 +134,6 @@
 	[textAttributes setObject:[NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:NSMiniControlSize]] forKey:NSFontAttributeName];
 	[self.thread.status drawWithRect:statusFrame options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes];
 	
-	NSRect cancelFrame = NSMakeRect(frame.origin.x+frame.size.width-15-5, frame.origin.y+5, 15, 15);
-	if (![self.cancelButton superview])
-		[view addSubview:self.cancelButton];
-	if (!NSEqualRects(self.cancelButton.frame, cancelFrame)) [self.cancelButton setFrame:cancelFrame];
-	
-	NSRect progressFrame = NSMakeRect(frame.origin.x+1, frame.origin.y+26, frame.size.width-2, frame.size.height-28);
-	if (![self.progressIndicator superview]) {
-		[view addSubview:self.progressIndicator];
-//		[self.progressIndicator startAnimation:self];
-	}
-	if (!NSEqualRects(self.progressIndicator.frame, progressFrame)) [self.progressIndicator setFrame:progressFrame];
 	
 	[NSGraphicsContext restoreGraphicsState];
 }

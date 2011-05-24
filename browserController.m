@@ -254,8 +254,8 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;//, userManagedObjectContext, userManagedObjectModel;
-@synthesize viewersListToReload, viewersListToRebuild;//, newFilesConditionLock; //, databaseLastModification;
-@synthesize AtableView/*, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel*/;
+//@synthesize viewersListToReload, viewersListToRebuild;//, newFilesConditionLock; //, databaseLastModification;
+//@synthesize AtableView/*, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel*/;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
 {
@@ -540,75 +540,13 @@ static NSConditionLock *threadLock = nil;
 
 #pragma mark-
 
-- (void)newFilesGUIUpdateRun:(int)state viewersListToReload:(NSMutableArray*)cReload viewersListToRebuild:(NSMutableArray*)cRebuild
-{
-	if( state == 1)
-	{
-		[self outlineViewRefresh];
-		[self refreshAlbums];
-	}
-	else
-	{
-		[databaseOutline reloadData];
-		[albumTable reloadData];
-		[self outlineViewSelectionDidChange: nil];
-	}
-	
-	[self reloadViewers: cReload];
-	[self rebuildViewers: cRebuild];
+- (void)newFilesGUIUpdateRun:(int)state viewersListToReload:(NSMutableArray*)cReload viewersListToRebuild:(NSMutableArray*)cRebuild { // __deprecated
 }
 
-- (void) newFilesGUIUpdateRun:(int) state
-{
-	return [self newFilesGUIUpdateRun: state viewersListToReload: viewersListToReload viewersListToRebuild: viewersListToRebuild];
+- (void) newFilesGUIUpdateRun:(int) state { // __deprecated
 }
 
-- (void) newFilesGUIUpdate:(id) sender
-{
-	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess)
-		return;
-	
-//	if( [newFilesConditionLock tryLockWhenCondition: 1] || [newFilesConditionLock tryLockWhenCondition: 2])
-	{
-		NSMutableArray *cReload = [NSMutableArray arrayWithArray: viewersListToReload], *vReload = [NSMutableArray arrayWithCapacity: 20];
-		
-		for( ViewerController *v in cReload)
-		{
-			if( [[v imageView] mouseDragging] == NO && [v postprocessed] == NO)
-			{
-				[viewersListToReload removeObject: v];
-				[vReload addObject: v];
-			}
-		}
-		
-		NSMutableArray *cRebuild = [NSMutableArray arrayWithArray: viewersListToRebuild], *vRebuild = [NSMutableArray arrayWithCapacity: 20];
-		
-		for( ViewerController *v in cRebuild)
-		{
-			if( [[v imageView] mouseDragging] == NO)
-			{
-				[viewersListToRebuild removeObject: v];
-				[vRebuild addObject: v];
-			}
-		}
-		
-//		int condition = [newFilesConditionLock condition];
-		
-//		if( [viewersListToRebuild count] || [viewersListToReload count]) [newFilesConditionLock unlockWithCondition: condition];
-//		else [newFilesConditionLock unlockWithCondition: 0];
-		
-		[self newFilesGUIUpdateRun:0 viewersListToReload: vReload viewersListToRebuild: vRebuild];
-	}
-}
-
-- (void) CloseViewerNotification: (NSNotification*) note
-{
-//	[newFilesConditionLock lock];
-	
-	[viewersListToReload removeObject: [note object]];
-	[viewersListToRebuild removeObject: [note object]];
-	
-//	[newFilesConditionLock unlock];
+- (void) newFilesGUIUpdate:(id) sender { // __deprecated
 }
 
 - (void) asyncWADODownload:(NSString*) filename
@@ -10181,8 +10119,8 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		albumNoOfStudiesCache = [[NSMutableArray alloc] init];
 //		newFilesConditionLock = [[NSConditionLock alloc] initWithCondition: 0];
-		viewersListToRebuild = [[NSMutableArray alloc] initWithCapacity: 0];
-		viewersListToReload = [[NSMutableArray alloc] initWithCapacity: 0];
+//		viewersListToRebuild = [[NSMutableArray alloc] initWithCapacity: 0];
+//		viewersListToReload = [[NSMutableArray alloc] initWithCapacity: 0];
 	//	persistentStoreCoordinatorDictionary = [[NSMutableDictionary alloc] initWithCapacity: 0];
 		databaseIndexDictionary = [[NSMutableDictionary alloc] initWithCapacity: 0];
 		
@@ -10311,7 +10249,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:OsirixRTStructNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AlternateButtonPressed:) name:OsirixAlternateButtonPressedNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
 				
 //		[[NSNotificationCenter defaultCenter] addObserver: self
 //												selector: @selector(listChangedTest:)

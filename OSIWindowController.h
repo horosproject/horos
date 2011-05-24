@@ -19,6 +19,7 @@
 */
 
 #import <Cocoa/Cocoa.h>
+@class DicomDatabase;
 
 
 enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtraction, BlendingMultiplication, BlendingRed, BlendingGreen, BlendingBlue, Blending2DRegistration, Blending3DRegistration, BlendingLL};
@@ -40,6 +41,7 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 }
 
 @property(assign) DicomDatabase* database;
+-(void)refreshDatabase:(NSArray*)newImages;
 
 + (BOOL) dontWindowDidChangeScreen;
 + (void) setDontEnterWindowDidChangeScreen:(BOOL) a;

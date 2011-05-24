@@ -55,7 +55,6 @@
 @end
 
 
-
 @implementation BrowserController (Sources)
 
 -(void)awakeSources {
