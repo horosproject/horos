@@ -218,6 +218,7 @@ genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m
 - X Check if OsiriX Lite works...
 - Check up-to-date zip packages in Binaries folder
 - Check weasis permissions: everyone: read only
+- Localization: check if smart album editor is correctly displayed
 - Test DB migration from previous version
 - OsiriX Lite Upload
 - X QuickLook

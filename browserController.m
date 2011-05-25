@@ -5897,7 +5897,7 @@ static NSConditionLock *threadLock = nil;
 		}
 		@catch( NSException *ne)
 		{
-			NSLog(@"OutlineRefresh exception: %@", [ne description]);
+			NSLog( @"********** OutlineRefresh exception: %@", [ne description]);
 			[AppController printStackTrace: ne];
 		}
 	}
@@ -5924,10 +5924,19 @@ static NSConditionLock *threadLock = nil;
 	
 	[databaseOutline reloadData];
 	
-	for( id obj in outlineViewArray)
+	@try
 	{
-		if( [[obj valueForKey:@"expanded"] boolValue]) [databaseOutline expandItem: obj];
+		for( id obj in outlineViewArray)
+		{
+			if( [[obj valueForKey:@"expanded"] boolValue]) [databaseOutline expandItem: obj];
+		}
 	}
+	@catch( NSException *ne)
+	{
+		NSLog( @"********** OutlineRefresh exception: %@", [ne description]);
+		[AppController printStackTrace: ne];
+	}
+	
 	
 	if( [previousObjects count] > 0)
 	{
@@ -9343,21 +9352,14 @@ static BOOL withReset = NO;
 							DCMPix *dcmPix = [[vPixList objectAtIndex: i] copy];
 							if( dcmPix)
 							{
-								float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float)*1.5);
+								float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
 								if( fImage)
 								{
-									free( fImage);
-									fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
-									if( fImage)
-									{
-										memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
-										[dcmPix setfImage: fImage];
-										[dcmPix freefImageWhenDone: YES];
-									
-										returnPix = [dcmPix autorelease];
-									}
-									else
-										[dcmPix release];
+									memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+									[dcmPix setfImage: fImage];
+									[dcmPix freefImageWhenDone: YES];
+								
+									returnPix = [dcmPix autorelease];
 								}
 								else
 									[dcmPix release];
@@ -10219,67 +10221,70 @@ static BOOL withReset = NO;
 	NSMutableArray					*ipreviewPixThumbnails = [dict valueForKey: @"previewPixThumbnails"];
 	NSMutableArray					*ipreviewPix = [dict valueForKey: @"previewPix"];
 	
-	@try
+	@synchronized( imageView)
 	{
-		for( int i = 0; i < filesPaths.count; i++)
+		@try
 		{
-			NSImage		*thumbnail = nil;
-			
-			thumbnail = [ipreviewPixThumbnails objectAtIndex: i];
-			
-			int frame = 0;
-			if( [[[files objectAtIndex: i] valueForKey: @"numberOfFrames"] intValue] > 1) frame = [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue]/2;
-			
-			if( [[files objectAtIndex: i] valueForKey: @"frameID"]) frame = [[[files objectAtIndex: i] valueForKey:@"frameID"] intValue];
-			
-			DCMPix *dcmPix = [[self getDCMPixFromViewerIfAvailable: [filesPaths objectAtIndex:i]] retain];
-			
-			if( dcmPix == nil)
-				dcmPix = [[DCMPix alloc] initWithPath: [filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
-			
-			if( dcmPix)
+			for( int i = 0; i < filesPaths.count; i++)
 			{
-				if( thumbnail == notFoundImage)
+				NSImage		*thumbnail = nil;
+				
+				thumbnail = [ipreviewPixThumbnails objectAtIndex: i];
+				
+				int frame = 0;
+				if( [[[files objectAtIndex: i] valueForKey: @"numberOfFrames"] intValue] > 1) frame = [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue]/2;
+				
+				if( [[files objectAtIndex: i] valueForKey: @"frameID"]) frame = [[[files objectAtIndex: i] valueForKey:@"frameID"] intValue];
+				
+				DCMPix *dcmPix = [[self getDCMPixFromViewerIfAvailable: [filesPaths objectAtIndex:i]] retain];
+				
+				if( dcmPix == nil)
+					dcmPix = [[DCMPix alloc] initWithPath: [filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
+				
+				if( dcmPix)
 				{
-					if( [DCMAbstractSyntaxUID isStructuredReport: [[files objectAtIndex: i] valueForKeyPath: @"series.seriesSOPClassUID"]])
+					if( thumbnail == notFoundImage)
 					{
-						[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: [NSImage imageNamed: @"pdf.tif"]];
+						if( [DCMAbstractSyntaxUID isStructuredReport: [[files objectAtIndex: i] valueForKeyPath: @"series.seriesSOPClassUID"]])
+						{
+							[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: [NSImage imageNamed: @"pdf.tif"]];
+						}
+						else
+						{
+							[dcmPix revert: NO];	// <- Kill the raw data
+							thumbnail = [dcmPix generateThumbnailImageWithWW: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowLevel"] floatValue]];
+							[dcmPix revert: NO];	// <- Kill the raw data
+							
+							if( thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
+							
+							[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
+						}
 					}
-					else
-					{
-						[dcmPix revert: NO];	// <- Kill the raw data
-						thumbnail = [dcmPix generateThumbnailImageWithWW: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowLevel"] floatValue]];
-						[dcmPix revert: NO];	// <- Kill the raw data
-						
-						if( thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
-						
-						[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
-					}
+					
+					[ipreviewPix addObject: dcmPix];
+					[dcmPix release];
+					
+					if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
+						i = [filesPaths count];
 				}
-				
-				[ipreviewPix addObject: dcmPix];
-				[dcmPix release];
-				
-				if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
-					i = [filesPaths count];
+				else
+				{
+					dcmPix = [[DCMPix alloc] myinitEmpty];
+					[ipreviewPix addObject: dcmPix];
+					[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: notFoundImage];
+					[dcmPix release];
+				}
 			}
-			else
-			{
-				dcmPix = [[DCMPix alloc] myinitEmpty];
-				[ipreviewPix addObject: dcmPix];
-				[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: notFoundImage];
-				[dcmPix release];
-			}
+			
+			if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
+				[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:nil waitUntilDone: NO];
 		}
 		
-		if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
-			[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:nil waitUntilDone: NO];
-	}
-	
-	@catch( NSException *ne)
-	{
-		NSLog(@"matrixLoadIcons exception: %@", ne.description);
-		[AppController printStackTrace: ne];
+		@catch( NSException *ne)
+		{
+			NSLog(@"matrixLoadIcons exception: %@", ne.description);
+			[AppController printStackTrace: ne];
+		}
 	}
 	
     [pool release];
