@@ -6323,13 +6323,16 @@ return YES;
 	[subLoadingThread release];
 	[toolbar release];
 	[injectionDateTime release];
-    [super dealloc];
 	
 //	[[AppController sharedAppController] tileWindows: nil];	<- We cannot do this, because:
 //	This is very important, or if we have a queue of closing windows, it will crash....
 	
 	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-		[v buildMatrixPreview: NO];
+	{
+		if( v != self) [v buildMatrixPreview: NO];
+	}
+	
+	[super dealloc];
 	
 	NSLog(@"ViewController dealloc");
 }
