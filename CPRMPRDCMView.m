@@ -2363,7 +2363,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	//            [self drawCircleAtPoint:NSMakePoint(control2.x, control2.y)];
 	//        }
 	//    }
-    [self _debugDrawDebugPoints];
+//    [self _debugDrawDebugPoints];
 }
 
 - (void)drawCircleAtPoint:(NSPoint)point pointSize:(CGFloat)pointSize
