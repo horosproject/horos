@@ -16,6 +16,7 @@
 
 
 extern const NSString* const CurrentDatabaseVersion;
+extern const NSString* const OsirixDataDirName;
 
 @class N2MutableUInteger;
 

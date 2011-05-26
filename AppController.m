@@ -3432,6 +3432,7 @@ static BOOL initialized = NO;
 		NSLog( @"/*\\ /*\\ KDU Engine AVAILABLE /*\\ /*\\");
 	else
 		NSLog( @"KDU Engine NOT available");
+	
 }
 
 - (IBAction) updateViews:(id) sender
@@ -4710,7 +4711,7 @@ static BOOL initialized = NO;
 	}
 	
 	// Pages template
-	NSString *reportFile = [templateDirectory stringByAppendingPathComponent:@"/OsiriX Basic Report.template"];
+	NSString *reportFile = [templateDirectory stringByAppendingPathComponent:@"OsiriX Basic Report.template"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO) {
 		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriX Report.template"] toPath:[templateDirectory stringByAppendingPathComponent:@"/OsiriX Basic Report.template"] handler:nil];
 	}

@@ -228,13 +228,13 @@ extern NSString* O2AlbumDragType;
 //	Wait							*waitCompressionWindow;
 	BOOL							waitCompressionAbort;
 	
-	BOOL							checkForMountedFiles;
+//	BOOL							checkForMountedFiles;
 	
 	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionSelectedFiles;
 	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionCorrespondingObjects;
 	NSIndexSet						*cachedFilesForDatabaseOutlineSelectionIndex;
 	
-	NSArray							*mountedVolumes;
+//	NSArray							*mountedVolumes;
 	
 	IBOutlet NSTableView* _activityTableView;//AtableView;
 //	IBOutlet NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
@@ -335,7 +335,7 @@ extern NSString* O2AlbumDragType;
 - (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject onlyImages:(BOOL) onlyImages;
 - (void) setNetworkLogs;
 - (BOOL) isNetworkLogsActive;
-- (void) ReadDicomCDRom:(id) sender;
+- (void) ReadDicomCDRom:(id) sender __deprecated;
 - (NSString*) INCOMINGPATH __deprecated;
 - (IBAction) matrixDoublePressed:(id)sender;
 - (void) addURLToDatabaseEnd:(id) sender;
@@ -344,7 +344,7 @@ extern NSString* O2AlbumDragType;
 - (BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand;
 - (BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand extendingSelection: (BOOL) extendingSelection;
 - (void) selectServer: (NSArray*) files;
-- (void) loadDICOMFromiPod;
+//- (void) loadDICOMFromiPod __deprecated;
 - (long) saveDatabase __deprecated;
 - (long) saveDatabase:(NSString*) path __deprecated;
 - (long) saveDatabase: (NSString*)path context: (NSManagedObjectContext*) context __deprecated;
@@ -477,8 +477,9 @@ extern NSString* O2AlbumDragType;
 
 - (void) refreshDatabase:(id) sender;
 - (void) syncReportsIfNecessary;
-- (void) removeAllMounted;
-- (void) removeMountedImages: (NSString*) sNewDrive;
+
+//- (void) removeAllMounted __deprecated;
+//- (void) removeMountedImages: (NSString*) sNewDrive __deprecated;
 
 //bonjour
 -(NSManagedObjectContext*)bonjourManagedObjectContext __deprecated;

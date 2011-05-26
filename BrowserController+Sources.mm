@@ -15,6 +15,7 @@
 #import "NSManagedObject+N2.h"
 #import "DicomImage.h"
 #import "MutableArrayCategory.h"
+#import "NSImage+N2.h"
 #import "NSUserDefaultsController+N2.h"
 #import "N2Debug.h"
 #import "NSThread+N2.h"
@@ -24,11 +25,19 @@
 #import "DicomFile.h"
 #import "ThreadsManager.h"
 #import "NSDictionary+N2.h"
+#import "NSFileManager+N2.h"
 #import "DCMNetServiceDelegate.h"
 #import "AppController.h"
 #import <netinet/in.h>
 #import <arpa/inet.h>
+#import "DicomDatabase+Scan.h"
 
+/*
+#include <IOKit/IOKitLib.h>
+#include <IOKit/IOMessage.h>
+#include <IOKit/IOCFPlugIn.h>
+#include <IOKit/usb/IOUSBLib.h>
+*/
 
 @interface BrowserSourcesHelper : NSObject/*<NSTableViewDelegate,NSTableViewDataSource>*/ {
 	BrowserController* _browser;
@@ -38,6 +47,7 @@
 }
 
 -(id)initWithBrowser:(BrowserController*)browser;
+-(void)_analyzeVolumeAtPath:(NSString*)path;
 
 @end
 
@@ -53,6 +63,18 @@
 -(NSInteger)port;
 
 @end
+
+@interface MountedBrowserSource : BrowserSource {
+	NSString* _devicePath;
+	DicomDatabase* _database;
+}
+
+@property(retain) NSString* devicePath;
+
++(id)browserSourceForDevicePath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary;
+
+@end
+
 
 
 @implementation BrowserController (Sources)
@@ -266,8 +288,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		_nsbDicom = [[NSNetServiceBrowser alloc] init];
 		[_nsbDicom setDelegate:self];
 		[_nsbDicom searchForServicesOfType:@"_dicom._tcp." inDomain:@""];
-		[NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(_sourcesObserveVolumeMountUnmountNotification:) name:NSWorkspaceDidMountNotification object:nil];
-		[NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(_sourcesObserveVolumeMountUnmountNotification:) name:NSWorkspaceDidUnmountNotification object:nil];
+		// mounted devices
+		[NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidMountNotification object:nil];
+		[NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidUnmountNotification object:nil];
+		[NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(_observeVolumeWillUnmountNotification:) name:NSWorkspaceWillUnmountNotification object:nil];
+		for (NSString* path in [NSWorkspace.sharedWorkspace mountedRemovableMedia])
+			[self _analyzeVolumeAtPath:path];
 	}
 	
 	return self;
@@ -276,6 +302,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(void)dealloc {
 	[NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self name:NSWorkspaceDidMountNotification object:nil];
 	[NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self name:NSWorkspaceDidUnmountNotification object:nil];
+	[NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self name:NSWorkspaceWillUnmountNotification object:nil];
 	[_nsbDicom release]; _nsbDicom = nil;
 	[_nsbOsirix release]; _nsbOsirix = nil;
 	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"DoNotSearchForBonjourServices"];
@@ -491,9 +518,67 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[_bonjourSources removeObjectForKey:[_bonjourSources keyForObject:bs]];
 }
 
--(void)_sourcesObserveVolumeMountUnmountNotification:(NSNotification*)notification {
-	NSString* path = [notification.userInfo objectForKey:@"NSDevicePath"];
+-(void)_analyzeVolumeAtPath:(NSString*)path {
+	BOOL used = NO;
+	for (BrowserSource* ibs in _browser.sources.arrangedObjects)
+		if (ibs.type == BrowserSourceTypeLocal && [ibs.location hasPrefix:path])
+			return; // device is somehow already listed as a source
+	
+	@try {
+		[_browser.sources addObject:[MountedBrowserSource browserSourceForDevicePath:path description:path.lastPathComponent dictionary:nil]];
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	}
+		
+	/*OSStatus err;
+	 kern_return_t kr;
+	 
+	 FSRef ref;
+	 err = FSPathMakeRef((const UInt8*)[path fileSystemRepresentation], &ref, nil);
+	 if (err != noErr) return;
+	 FSCatalogInfo catInfo;
+	 err = FSGetCatalogInfo(&ref, kFSCatInfoVolume, &catInfo, nil, nil, nil);
+	 if (err != noErr) return;
+	 
+	 GetVolParmsInfoBuffer gvpib;
+	 HParamBlockRec hpbr;
+	 hpbr.ioParam.ioNamePtr = NULL;
+	 hpbr.ioParam.ioVRefNum = catInfo.volume;
+	 hpbr.ioParam.ioBuffer = (Ptr)&gvpib;
+	 hpbr.ioParam.ioReqCount = sizeof(gvpib);
+	 err = PBHGetVolParmsSync(&hpbr);
+	 if (err != noErr) return;
+	 
+	 NSString* bsdName = [NSString stringWithCString:(char*)gvpib.vMDeviceID];
+	 NSLog(@"we are mounting %@ ||| %@", path, bsdName);
+	 
+	 CFDictionaryRef matchingDict = IOBSDNameMatching(kIOMasterPortDefault, 0, (const char*)gvpib.vMDeviceID);
+	 io_iterator_t ioIterator = nil;
+	 kr = IOServiceGetMatchingServices(kIOMasterPortDefault, matchingDict, &ioIterator);
+	 if (kr != kIOReturnSuccess) return;
+	 
+	 io_service_t ioService;
+	 while (ioService = IOIteratorNext(ioIterator)) {
+	 CFTypeRef data = IORegistryEntrySearchCFProperty(ioService, kIOServicePlane, CFSTR("BSD Name"), kCFAllocatorDefault, kIORegistryIterateRecursively);
+	 NSLog(@"\t%@", data);
+	 io_name_t ioName;
+	 IORegistryEntryGetName(ioService, ioName);
+	 NSLog(@"\t\t%s", ioName);
+	 
+	 CFRelease(data);
+	 IOObjectRelease(ioService);
+	 }
+	 
+	 IOObjectRelease(ioIterator);*/
+}
 
+-(void)_observeVolumeNotification:(NSNotification*)notification {
+	[_browser redrawSources];
+	
+	if ([notification.name isEqualToString:NSWorkspaceDidMountNotification]) {
+		[self _analyzeVolumeAtPath:[notification.userInfo objectForKey:@"NSDevicePath"]];
+	}
+	
 //	for (BrowserSource* bs in _browser.sources)
 //		if (bs.type == BrowserSourceTypeLocal && [bs.location hasPrefix:root]) {
 //			NSButton* button = [[[NSButton alloc] initWithFrame:NSMakeRect(0, 0, 16, 16)] autorelease];
@@ -503,12 +588,30 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 //			button.bezelStyle = 0;
 //			bs.extraView = button;
 //		}
+			
+}
 
-	[_browser redrawSources];
+
+-(void)_observeVolumeWillUnmountNotification:(NSNotification*)notification {
+	NSString* path = [notification.userInfo objectForKey:@"NSDevicePath"];
+	
+	MountedBrowserSource* mbs = nil;
+	for (MountedBrowserSource* ibs in _browser.sources.arrangedObjects)
+		if ([ibs isKindOfClass:MountedBrowserSource.class] && [ibs.devicePath isEqualToString:path]) {
+			mbs = ibs;
+			break;
+		}
+	if (mbs) {
+		if ([[_browser sourceForDatabase:_browser.database] isEqualToSource:mbs])
+			[_browser setDatabase:DicomDatabase.defaultDatabase];
+		[_browser.sources removeObject:mbs];
+	}
 }
 
 -(NSString*)tableView:(NSTableView*)tableView toolTipForCell:(NSCell*)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn*)tc row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation {
 	BrowserSource* bs = [_browser sourceAtRow:row];
+	NSString* tip = [bs toolTip];
+	if (tip) return tip;
 	return bs.location;
 }
 
@@ -614,4 +717,85 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	return port;
 }
 
+-(BOOL)isRemovable {
+	return YES;
+}
+
 @end
+
+@implementation MountedBrowserSource
+
+@synthesize devicePath = _devicePath;
+
+-(void)initiateVolumeScan {
+	_database = [[DicomDatabase databaseAtPath:self.location] retain];
+	[self performSelectorInBackground:@selector(volumeScanThread) withObject:nil];
+}
+
+-(void)volumeScanThread {
+	NSAutoreleasePool* pool = [NSAutoreleasePool new];
+	@try {
+		NSThread* thread = [NSThread currentThread];
+		thread.name = NSLocalizedString(@"Scanning disc...", nil);
+		[ThreadsManager.defaultManager addThreadAndStart:thread];
+		[_database scanAtPath:self.devicePath];
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	} @finally {
+		[pool release];
+	}
+}
+
+-(DicomDatabase*)database {
+	return _database;
+}
+
++(id)browserSourceForDevicePath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary {
+	BOOL scan = YES;
+	NSString* path = [NSFileManager.defaultManager tmpFilePathInTmp];
+	
+	// does it contain an OsiriX Data folder?
+	BOOL isDir;
+	if ([NSFileManager.defaultManager fileExistsAtPath:[path stringByAppendingPathComponent:OsirixDataDirName] isDirectory:&isDir] && isDir) {
+		path = devicePath;
+		scan = NO;
+	}
+	
+	MountedBrowserSource* bs = [self browserSourceForLocalPath:path description:description dictionary:dictionary];
+	bs.devicePath = devicePath;
+	[NSFileManager.defaultManager createDirectoryAtPath:path attributes:nil];
+	
+	if (scan) {
+		// is there a DICOMDIR file?
+		[bs initiateVolumeScan];
+	}
+	
+	return bs;
+}
+
+-(void)dealloc {
+	[_database release];
+	self.devicePath = nil;
+	[super dealloc];
+}
+
+-(void)willDisplayCell:(ImageAndTextCell*)cell {
+	[super willDisplayCell:cell];
+	
+	NSImage* im = [NSWorkspace.sharedWorkspace iconForFile:self.devicePath];
+	im.size = [im sizeByScalingProportionallyToSize: cell.image? cell.image.size : NSMakeSize(16,16) ];
+	if (im) cell.image = im;
+}
+
+-(BOOL)isRemovable {
+	return YES;
+}
+
+-(NSString*)toolTip {
+	return self.devicePath;
+}
+
+@end
+
+
+

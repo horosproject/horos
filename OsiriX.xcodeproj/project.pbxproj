@@ -279,6 +279,10 @@
 		59BDF8571181DDD6007F1F2C /* N2Operators.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA211293378009EB238 /* N2Operators.mm */; };
 		59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E088A80FF0AB9400452F19 /* Notifications.m */; };
 		59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E088A70FF0AB9400452F19 /* Notifications.h */; };
+		59C33D90138CFCE700FDF823 /* DicomDatabase+Scan.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C33D8E138CFCE700FDF823 /* DicomDatabase+Scan.h */; };
+		59C33D91138CFCE700FDF823 /* DicomDatabase+Scan.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C33D8F138CFCE700FDF823 /* DicomDatabase+Scan.mm */; };
+		59C33D92138CFCE700FDF823 /* DicomDatabase+Scan.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C33D8E138CFCE700FDF823 /* DicomDatabase+Scan.h */; };
+		59C33D93138CFCE700FDF823 /* DicomDatabase+Scan.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C33D8F138CFCE700FDF823 /* DicomDatabase+Scan.mm */; };
 		59C512C01189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */; };
 		59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */; };
 		59C512C21189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */; };
@@ -8389,6 +8393,8 @@
 		59BDF11D117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "PreferencesWindowController+DCMTK.mm"; sourceTree = "<group>"; };
 		59BDF125117EFA41007F1F2C /* PreferencesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesView.h; sourceTree = "<group>"; };
 		59BDF126117EFA41007F1F2C /* PreferencesView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferencesView.mm; sourceTree = "<group>"; };
+		59C33D8E138CFCE700FDF823 /* DicomDatabase+Scan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DicomDatabase+Scan.h"; sourceTree = "<group>"; };
+		59C33D8F138CFCE700FDF823 /* DicomDatabase+Scan.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "DicomDatabase+Scan.mm"; sourceTree = "<group>"; };
 		59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SFAuthorizationView+OsiriX.h"; sourceTree = "<group>"; };
 		59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "SFAuthorizationView+OsiriX.mm"; sourceTree = "<group>"; };
 		59C57BF71374131D00E3C90B /* BrowserController+Sources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BrowserController+Sources.h"; sourceTree = "<group>"; };
@@ -17046,6 +17052,8 @@
 				59B1BAE21385157C00424116 /* DicomDatabase+Clean.mm */,
 				5909F42D1357507B00BAE081 /* DicomDatabase+DCMTK.h */,
 				5909F42E1357507B00BAE081 /* DicomDatabase+DCMTK.mm */,
+				59C33D8E138CFCE700FDF823 /* DicomDatabase+Scan.h */,
+				59C33D8F138CFCE700FDF823 /* DicomDatabase+Scan.mm */,
 				59526F3F1281AE0B0016F6C0 /* Dicom */,
 				590A3DCB12A92920004581C2 /* WebPortalDatabase.h */,
 				590A3DCC12A92920004581C2 /* WebPortalDatabase.mm */,
@@ -19856,6 +19864,7 @@
 				599A074E137ACAFC008FD834 /* BrowserController+Sources+Copy.h in Headers */,
 				596F42D21383AF3800A3FC33 /* DicomDatabase+Routing.h in Headers */,
 				59B1BAE31385157C00424116 /* DicomDatabase+Clean.h in Headers */,
+				59C33D92138CFCE700FDF823 /* DicomDatabase+Scan.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22083,6 +22092,7 @@
 				599A0750137ACAFC008FD834 /* BrowserController+Sources+Copy.h in Headers */,
 				596F42D41383AF3800A3FC33 /* DicomDatabase+Routing.h in Headers */,
 				59B1BAE51385157C00424116 /* DicomDatabase+Clean.h in Headers */,
+				59C33D90138CFCE700FDF823 /* DicomDatabase+Scan.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24463,6 +24473,7 @@
 				599A074F137ACAFC008FD834 /* BrowserController+Sources+Copy.mm in Sources */,
 				596F42D31383AF3800A3FC33 /* DicomDatabase+Routing.mm in Sources */,
 				59B1BAE41385157C00424116 /* DicomDatabase+Clean.mm in Sources */,
+				59C33D93138CFCE700FDF823 /* DicomDatabase+Scan.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25729,6 +25740,7 @@
 				599A0751137ACAFC008FD834 /* BrowserController+Sources+Copy.mm in Sources */,
 				596F42D51383AF3800A3FC33 /* DicomDatabase+Routing.mm in Sources */,
 				59B1BAE61385157C00424116 /* DicomDatabase+Clean.mm in Sources */,
+				59C33D91138CFCE700FDF823 /* DicomDatabase+Scan.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

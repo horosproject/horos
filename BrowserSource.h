@@ -22,7 +22,6 @@ enum { BrowserSourceTypeDefault, BrowserSourceTypeLocal, BrowserSourceTypeRemote
 }
 
 +(id)browserSourceForLocalPath:(NSString*)path;
-+(id)browserSourceForLocalPath:(NSString*)path;
 +(id)browserSourceForLocalPath:(NSString*)path description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 +(id)browserSourceForAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 +(id)browserSourceForDicomNodeAtAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary;
@@ -39,5 +38,8 @@ enum { BrowserSourceTypeDefault, BrowserSourceTypeLocal, BrowserSourceTypeRemote
 -(DicomDatabase*)database;
 
 -(void)willDisplayCell:(ImageAndTextCell*)cell;
+
+-(BOOL)isRemovable;
+-(NSString*)toolTip;
 
 @end

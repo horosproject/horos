@@ -137,5 +137,12 @@
 	return [self.description caseInsensitiveCompare:other.description];
 }
 
+-(BOOL)isRemovable {
+	return NO;
+}
+
+-(NSString*)toolTip {
+	return nil;
+}
 
 @end

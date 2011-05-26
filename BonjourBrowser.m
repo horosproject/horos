@@ -215,7 +215,7 @@ static BonjourBrowser *currentBrowser = nil;
 	
 	[self buildFixedIPList];
 	[self buildLocalPathsList];
-	[[BrowserController currentBrowser] loadDICOMFromiPod];
+	//[[BrowserController currentBrowser] loadDICOMFromiPod];
 	[self buildDICOMDestinationsList];
 	[self arrangeServices];
 	

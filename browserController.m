@@ -10235,9 +10235,9 @@ static NSArray*	openSubSeriesArray = nil;
 //		[[NSTimer scheduledTimerWithTimeInterval: 1.0 target:self selector:@selector(newFilesGUIUpdate:) userInfo:self repeats:YES] retain]; // TODO: hmmm
 		
 		/* notifications from workspace */
-		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeMount:) name:NSWorkspaceDidMountNotification object:nil];
-		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeUnmount:) name:NSWorkspaceDidUnmountNotification object:nil];
-		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(willVolumeUnmount:) name:NSWorkspaceWillUnmountNotification object:nil];
+//		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeMount:) name:NSWorkspaceDidMountNotification object:nil];
+//		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeUnmount:) name:NSWorkspaceDidUnmountNotification object:nil];
+//		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(willVolumeUnmount:) name:NSWorkspaceWillUnmountNotification object:nil];
 		
 		
 		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
@@ -10617,7 +10617,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[LogManager currentLogManager];
 		
 		// SCAN FOR AN IPOD!
-		[self loadDICOMFromiPod];
+		//[self loadDICOMFromiPod]; now we do this in AppController+Mount
 	}
 	
 	@catch( NSException *ne)
@@ -10674,8 +10674,8 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
 	#endif
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"])
-		[self ReadDicomCDRom: nil];
+//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"])
+//		[self ReadDicomCDRom: nil];
 	
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
@@ -10831,7 +10831,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	self.database = nil;
 	
-	[self removeAllMounted];
+//	[self removeAllMounted];
 	
 //	newFilesInIncoming = NO;
 	
@@ -14067,7 +14067,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void)loadDICOMFromiPod
+/*- (void)loadDICOMFromiPod
 {
 	if( mountedVolumes == nil)
 		mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
@@ -14139,7 +14139,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 		}
 	}
-}
+}*/
 
 #ifndef OSIRIX_LIGHT
 - (void)loadDICOMFromiDisk: (id)sender
@@ -14419,6 +14419,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 #endif
 
+
+
+/*
+
 -(void)volumeMount: (NSNotification *)notification
 {
 	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess)
@@ -14624,6 +14628,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[self displayBonjourServices];
 }
+
+*/
+
+
+
+
 
 - (void)storeSCPComplete: (id)sender
 {
