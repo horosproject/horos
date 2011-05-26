@@ -380,7 +380,7 @@ void N3BezierCoreAddSegment(N3MutableBezierCoreRef bezierCore, N3BezierCoreSegme
     N3BezierCoreElementRef element;
     
     // if this is the first element, make sure it is a moveto
-    assert((bezierCore->elementCount == 0 && segmentType != N3MoveToBezierCoreSegmentType) == false);
+    assert(bezierCore->elementCount != 0 || segmentType == N3MoveToBezierCoreSegmentType);
 	
 	// if the previous element was a close, make sure the next element is a moveTo
 	assert(bezierCore->elementCount == 0 || bezierCore->lastElement->segmentType != N3CloseBezierCoreSegmentType || segmentType == N3MoveToBezierCoreSegmentType);
@@ -411,8 +411,6 @@ void N3BezierCoreAddSegment(N3MutableBezierCoreRef bezierCore, N3BezierCoreSegme
     }
     
     bezierCore->elementCount++;
-    
-//    N3BezierCoreCheckDebug(bezierCore);
 }
 
 void N3BezierCoreSetVectorsForSegementAtIndex(N3MutableBezierCoreRef bezierCore, CFIndex index, N3Vector control1, N3Vector control2, N3Vector endpoint)
