@@ -988,7 +988,7 @@ enum { Compress, Decompress };
 		// Find all current studies
 		
 		[self lock];
-		@try {
+		@try { ICI CICICIRCH NCUHCUIHNCIHNUCHNCIHNIHICNIHNICHNICHNICHINCHINCHINCHINCIHNCIHCNIHNICHNCIHINHNICHNCIHNCIHNCIHNICHNIHCNIHNCIHNICHIHNCIHNCIHNICHINCHINCIH
 			NSMutableArray* studiesArray = [[self objectsForEntity:self.studyEntity] mutableCopy];
 
 			NSDate *defaultDate = [NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil];
