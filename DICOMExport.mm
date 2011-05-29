@@ -656,7 +656,7 @@
 						dataset->putAndInsertString( DCM_RescaleIntercept, "0");
 						dataset->putAndInsertString( DCM_RescaleSlope, "1");
 						
-						if( strcmp( modality, "CT") == 0)
+						if( modality && strcmp( modality, "CT") == 0)
 							dataset->putAndInsertString( DCM_RescaleType, "HU");
 						else
 							dataset->putAndInsertString( DCM_RescaleType, "US");
@@ -678,7 +678,7 @@
 						
 						dataset->putAndInsertString( DCM_RescaleSlope, [[NSString stringWithFormat: @"%f", slope] UTF8String]);
 						
-						if( strcmp( modality, "CT") == 0)
+						if( modality && strcmp( modality, "CT") == 0)
 							dataset->putAndInsertString( DCM_RescaleType, "HU");
 						else
 							dataset->putAndInsertString( DCM_RescaleType, "US");

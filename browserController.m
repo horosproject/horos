@@ -12103,11 +12103,11 @@ static BOOL needToRezoom;
 			}
 			
 			memBlock *= sizeof(float);
-			memBlock += 2L * 1024L * 1024L;
+			memBlock += 4L * 1024L * 1024L;
 			
 			#if __LP64__
 			#else
-			unsigned long long max4GB = 4 * 1024;
+			unsigned long long max4GB = 3.5 * 1024;
 			
 			max4GB *= 1024 * 1024;
 			
@@ -12119,7 +12119,7 @@ static BOOL needToRezoom;
 			#endif
 			
 			if( memBlock > 0)
-				testPtr[ x] = malloc( memBlock);
+				testPtr[ x] = malloc( memBlock * 1.5); // * 1.5 for 3D post-processing viewers
 			else
 				testPtr[ x] = nil;
 				

@@ -5901,7 +5901,8 @@ END_CREATE_ROIS:
 			if( [pixData length] > 0)
 			{
 				oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
-				[pixData getBytes:oImage];
+				if( oImage)
+					[pixData getBytes:oImage];
 			}
 			
 			if( oImage == nil) //there was no data for this frame -> create empty image
@@ -8133,12 +8134,14 @@ END_CREATE_ROIS:
 									NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
 									goImageSize[ fileNb] = height * width * 8; // *8 in case of a 16-bit RGB encoding....
 									oImage = malloc( goImageSize[ fileNb]);
-									
-									long yo = 0;
-									for( i = 0 ; i < height * width * 4; i++)
+									if( oImage)
 									{
-										oImage[ i] = yo++;
-										if( yo>= width) yo = 0;
+										int yo = 0;
+										for( i = 0 ; i < height * width * 4; i++)
+										{
+											oImage[ i] = yo++;
+											if( yo>= width) yo = 0;
+										}
 									}
 								}
 								
@@ -8438,10 +8441,14 @@ END_CREATE_ROIS:
 							if( fExternalOwnedImage)
 							{
 								fImage = fExternalOwnedImage;
-								memcpy( fImage, oImage, width*height*sizeof(float));
-								free(oImage);
+								if( oImage)
+								{
+									memcpy( fImage, oImage, width*height*sizeof(float));
+									free(oImage);
+								}
 							}
 							else fImage = (float*) oImage;
+							
 							oImage = nil;
 							
 							if( oData && gDisplayDICOMOverlays)
@@ -10680,41 +10687,45 @@ END_CREATE_ROIS:
 	
 	long			i;
 	float			*dstPtr = malloc( height * width * 4);
-	unsigned char   *srcPtr = (unsigned char*) [self fImage];
 	
-	// Set this image as the Red Composant
-	switch( mode)
+	if( dstPtr)
 	{
-		case 0: // RED
-			i = height * width;
-			while( i-- > 0) dstPtr[ i] = srcPtr[ i*4 + 1];
-			break;
-			
-			case 1: // GREEN
-			i = height * width;
-			while( i-- > 0) dstPtr[ i] = srcPtr[ i*4 + 2];
-			break;
-			
-			case 2: // BLUE
-			i = height * width;
-			while( i-- > 0) dstPtr[ i] = srcPtr[ i*4 + 3];
-			break;
-			
-			case 3: // RGB
-			i = height * width;
-			while( i-- > 0) dstPtr[ i] = ((float) srcPtr[ i*4 + 1] + (float) srcPtr[ i*4 + 2] + (float) srcPtr[ i*4 + 3]) / 3.;
-			break;
+		unsigned char   *srcPtr = (unsigned char*) [self fImage];
+		
+		// Set this image as the Red Composant
+		switch( mode)
+		{
+			case 0: // RED
+				i = height * width;
+				while( i-- > 0) dstPtr[ i] = srcPtr[ i*4 + 1];
+				break;
+				
+				case 1: // GREEN
+				i = height * width;
+				while( i-- > 0) dstPtr[ i] = srcPtr[ i*4 + 2];
+				break;
+				
+				case 2: // BLUE
+				i = height * width;
+				while( i-- > 0) dstPtr[ i] = srcPtr[ i*4 + 3];
+				break;
+				
+				case 3: // RGB
+				i = height * width;
+				while( i-- > 0) dstPtr[ i] = ((float) srcPtr[ i*4 + 1] + (float) srcPtr[ i*4 + 2] + (float) srcPtr[ i*4 + 3]) / 3.;
+				break;
+		}
+		
+		[self setBaseAddr: malloc( [self pwidth] * [self pheight])];
+		
+		[self setRGB: NO];
+		
+		memcpy( fImage, dstPtr, height * width * 4);
+		
+		[self changeWLWW:wl :ww];
+		
+		free( dstPtr);
 	}
-	
-	[self setBaseAddr: malloc( [self pwidth] * [self pheight])];
-	
-	[self setRGB: NO];
-	
-	memcpy( fImage, dstPtr, height * width * 4);
-	
-	[self changeWLWW:wl :ww];
-	
-	free( dstPtr);
 }
 
 
