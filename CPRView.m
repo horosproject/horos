@@ -1703,7 +1703,12 @@ extern int splitPosition[ 3];
     planeName = [selectorName stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:[[selectorName substringWithRange:NSMakeRange(3, 1)] lowercaseString]];
     planeName = [planeName substringToIndex:[planeName length] - 6];
     [_verticalLines removeObjectForKey:planeName];
+    [_verticalLines removeObjectForKey:[planeName stringByAppendingString:@"Top"]];
+    [_verticalLines removeObjectForKey:[planeName stringByAppendingString:@"Bottom"]];
     [_planeRuns removeObjectForKey:planeName];
+    [_planeRuns removeObjectForKey:[planeName stringByAppendingString:@"Top"]];
+    [_planeRuns removeObjectForKey:[planeName stringByAppendingString:@"Bottom"]];
+
     [_planes setValue:[NSValue valueWithN3Plane:plane] forKey:planeName];
     [self setNeedsDisplay:YES];
 }
