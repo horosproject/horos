@@ -16,6 +16,8 @@
 #import "SearchSubview.h"
 #import "QueryFilter.h"
 
+#define SUBVIEWHEIGHT 50
+
 @implementation SmartWindowController
 
 - (id)init
@@ -35,11 +37,9 @@
 	[super dealloc];
 }
 
-
 - (void)windowDidLoad
 {
 	firstTime = YES;
-	[self addSubview:nil];
 	[albumNameField setStringValue:NSLocalizedString(@"Smart Album", nil)];
 	[super windowDidLoad];
 	
@@ -47,13 +47,15 @@
 	
 	[[NSRunLoop currentRunLoop] addTimer: sqlQueryTimer forMode:NSDefaultRunLoopMode];
 	[[NSRunLoop currentRunLoop] addTimer: sqlQueryTimer forMode:NSModalPanelRunLoopMode];
+	
+	startingWindowHeight = [[self window] frame].size.height - 22;
 }
 
 - (void)addSubview:(id)sender
 {
 	//setup subview
-	float subViewHeight = 50.0;
-	SearchSubview *subview = [[[SearchSubview alloc] initWithFrame:NSMakeRect(0.0,0.0,507.0,subViewHeight)] autorelease];
+	float subViewHeight = SUBVIEWHEIGHT;
+	SearchSubview *subview = [[[SearchSubview alloc] initWithFrame:NSMakeRect(0.0,0.0,[filterBox frame].size.width, subViewHeight)] autorelease];
 	[filterBox addSubview:subview];	
 	[subviews  addObject:subview];
 	[[subview addButton] setTarget:self];
@@ -85,18 +87,15 @@
 
 - (void)drawSubviews
 {
-	float subViewHeight = 50.0;
-	float windowHeight = 156.0;
-	//displays wrong when sheet first displayed
-	if (!firstTime)
-		windowHeight -= 22.0;
-		//resize Autoresizing not working.  Need to manually seet window height and origin.
+	float subViewHeight = SUBVIEWHEIGHT;
+	float windowHeight = startingWindowHeight;
+	
 	int count = [subviews  count];
 	NSRect windowFrame = [[self window] frame];
 	float oldWindowHeight = windowFrame.size.height;
 	float newWindowHeight = windowHeight  + subViewHeight * count;
 	float y = windowFrame.origin.y - (newWindowHeight - oldWindowHeight);
-	//NSLog(@"old height %f  new Height  %f count %d", oldWindowHeight, newWindowHeight, count);
+	
 	NSEnumerator *enumerator = [subviews reverseObjectEnumerator];
 	id view;
 	int i = 0;
@@ -104,14 +103,12 @@
 	{
 		NSRect viewFrame = [view frame];
 		[view setFrame:NSMakeRect(viewFrame.origin.x, subViewHeight * i++, viewFrame.size.width, viewFrame.size.height)];
-		
 	}
 	
 	[[self window] setFrame: NSMakeRect(windowFrame.origin.x, y, windowFrame.size.width, newWindowHeight) display:YES];
-
+	
 	[self updateRemoveButtons];
 	firstTime = NO;
-	
 }
 
 - (void)updateRemoveButtons

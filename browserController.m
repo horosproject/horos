@@ -10817,6 +10817,8 @@ static BOOL withReset = NO;
 	   didEndSelector: nil
 		  contextInfo: nil];
 	
+	[smartWindowController addSubview: nil];
+	
     int result = [NSApp runModalForWindow:sheet];
 	[sheet makeFirstResponder: nil];
 	
