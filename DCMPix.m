@@ -6116,10 +6116,30 @@ END_CREATE_ROIS:
 					
 					if( dstf.data)
 					{
-						if( fIsSigned > 0)
-							vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
+						if( bitsAllocated == 16 && [pixData length] < height*width*2)
+						{
+							NSLog( @"************* [pixData length] < height * width");
+							
+							if( [pixData length] == height*width) // 8 bits??
+							{
+								NSLog( @"************* [[pixData length] == height*width : 8 bits? but declared as 16 bits...");
+								
+								unsigned long x = height * width;
+								float *tDestF = (float*) dstf.data;
+								unsigned char *oChar = (unsigned char*) oImage;
+								while( x-- > 0)
+									*tDestF++ = *oChar++;
+							}
+							else
+								memset( dstf.data, 0, width*height*sizeof(float));
+						}
 						else
-							vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
+						{
+							if( fIsSigned > 0)
+								vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
+							else
+								vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
+						}
 						
 						if( inverseVal)
 						{
