@@ -271,6 +271,14 @@
     return newBezierPath;
 }
 
+- (N3BezierPath *)bezierPathByProjectingToPlane:(N3Plane)plane;
+{
+    N3MutableBezierPath *newBezierPath;
+    newBezierPath = [[self mutableCopy] autorelease];
+    [newBezierPath projectToPlane:plane];
+    return newBezierPath;
+}
+
 - (N3BezierPath *)outlineBezierPathAtDistance:(CGFloat)distance initialNormal:(N3Vector)initalNormal spacing:(CGFloat)spacing;
 {
     N3BezierPath *outlinePath;
@@ -445,17 +453,17 @@
     }    
 }
 
-- (CGFloat)relalativePositionClosestToVector:(N3Vector)vector
+- (CGFloat)relativePositionClosestToVector:(N3Vector)vector
 {
     return N3BezierCoreRelativePositionClosestToVector(_bezierCore, vector, NULL, NULL);
 }
 
-- (CGFloat)relalativePositionClosestToLine:(N3Line)line;
+- (CGFloat)relativePositionClosestToLine:(N3Line)line;
 {
     return N3BezierCoreRelativePositionClosestToLine(_bezierCore, line, NULL, NULL);
 }
 
-- (CGFloat)relalativePositionClosestToLine:(N3Line)line closestVector:(N3VectorPointer)vectorPointer;
+- (CGFloat)relativePositionClosestToLine:(N3Line)line closestVector:(N3VectorPointer)vectorPointer;
 {
     return N3BezierCoreRelativePositionClosestToLine(_bezierCore, line, vectorPointer, NULL);
 }
@@ -578,6 +586,16 @@
     N3BezierCoreApplyTransform(_bezierCore, transform);
 }
 
+- (void)projectToPlane:(N3Plane)plane
+{
+    N3MutableBezierCoreRef newBezierCore;
+    
+    [self _clearRandomAccessor];
+    newBezierCore = N3BezierCoreCreateMutableCopyProjectedToPlane(_bezierCore, plane);
+    N3BezierCoreRelease(_bezierCore);
+    _bezierCore = newBezierCore;
+}
+
 - (void)appendBezierPath:(N3BezierPath *)bezierPath connectPaths:(BOOL)connectPaths
 {
     [self _clearRandomAccessor];
@@ -589,7 +607,7 @@
     N3MutableBezierCoreRef newBezierCore;
     
     [self _clearRandomAccessor];
-    newBezierCore = N3BezierCoreCreateMutableWithEndpointsAtPlaneIntersections(_bezierCore, plane);
+    newBezierCore = N3BezierCoreCreateMutableCopyWithEndpointsAtPlaneIntersections(_bezierCore, plane);
     N3BezierCoreRelease(_bezierCore);
     _bezierCore = newBezierCore;
 }

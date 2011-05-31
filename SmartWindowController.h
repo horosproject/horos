@@ -30,6 +30,7 @@
 	BOOL						firstTime;
 	NSTimer						*sqlQueryTimer;
 	NSString					*previousSqlString;
+	float						startingWindowHeight;
 }
 
 - (IBAction)editSqlString:(id) sender;

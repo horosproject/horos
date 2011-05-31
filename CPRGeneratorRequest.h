@@ -67,6 +67,26 @@
 
 @end
 
+@interface CPRStretchedGeneratorRequest : CPRGeneratorRequest
+{
+    N3BezierPath *_bezierPath;
+    
+    N3Vector _projectionNormal; 
+    N3Vector _midHeightPoint; // this point in the volume will be half way up the volume
+    
+    CPRProjectionMode _projectionMode;
+}
+
+@property (nonatomic, readwrite, retain) N3BezierPath *bezierPath;
+@property (nonatomic, readwrite, assign) N3Vector projectionNormal;
+@property (nonatomic, readwrite, assign) N3Vector midHeightPoint;
+@property (nonatomic, readwrite, assign) CPRProjectionMode projectionMode;
+
+- (BOOL)isEqual:(id)object;
+
+@end
+
+
 @interface CPRObliqueSliceGeneratorRequest : CPRGeneratorRequest
 {
     N3Vector _origin;
@@ -109,6 +129,8 @@
 @property (nonatomic, readwrite, assign) double spacingY;
 
 @end
+
+
 
 
 

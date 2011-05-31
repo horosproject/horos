@@ -2108,6 +2108,58 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	LOD = windowController.LOD;
 }
 
+- (void)_debugDrawDebugPoints
+{
+    // first off find the points like the operation would and draw a point at each of the nodes
+    N3Vector vectors[40];
+    N3Vector normals[40];
+    NSInteger numVectors = 40;
+    N3Vector directionVector;
+    N3Vector projectionDirection;
+    N3Vector baseNormal;
+    N3BezierPath *flattenedBezierPath;
+    N3BezierPath *projectedBezierPath;
+    CGFloat projectedLength;
+    CGFloat sampleSpacing;
+    NSInteger i;
+    N3AffineTransform transform;
+    CGLContextObj cgl_ctx;
+    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+
+    if ([curvedPath.bezierPath elementCount] < 3) {
+        return;
+    }
+    
+    transform = N3AffineTransformConcat(N3AffineTransformInvert([self pixToDicomTransform]), [self pixToSubDrawRectTransform]);
+    
+    directionVector = N3VectorNormalize(N3VectorSubtract([curvedPath.bezierPath vectorAtEnd], [curvedPath.bezierPath vectorAtStart]));
+    baseNormal = N3VectorNormalize(N3VectorCrossProduct(curvedPath.baseDirection, directionVector));
+    projectionDirection = N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(curvedPath.angle, directionVector));
+
+    flattenedBezierPath = [curvedPath.bezierPath bezierPathByFlattening:N3BezierDefaultFlatness];
+    projectedBezierPath = [flattenedBezierPath bezierPathByProjectingToPlane:N3PlaneMake(N3VectorZero, projectionDirection)];
+    
+    projectedLength = [projectedBezierPath length];
+    sampleSpacing = projectedLength / numVectors;
+    
+    numVectors = N3BezierCoreGetProjectedVectorInfo([flattenedBezierPath N3BezierCore], sampleSpacing, 0, projectionDirection, vectors, NULL, normals, NULL, numVectors);
+
+    for (i = 0; i < numVectors; i++) {
+        normals[i] = N3VectorApplyTransform(N3VectorAdd(vectors[i], N3VectorScalarMultiply(normals[i], 10)), transform);
+        vectors[i] = N3VectorApplyTransform(vectors[i], transform);
+        
+		glColor4d(1.0, 1.0, 1.0, 1.0);
+        [self drawCircleAtPoint:NSPointFromN3Vector(vectors[i])];
+        
+		glColor4d(1.0, 0.0, 1.0, 1.0);
+        glBegin(GL_LINES);
+        glVertex2f(vectors[i].x, vectors[i].y);
+        glVertex2f(normals[i].x, normals[i].y);
+        glEnd();    
+    }
+    
+}
+
 - (void)drawCurvedPathInGL
 {
 	if( curvedPath.nodes.count == 0)
@@ -2311,6 +2363,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	//            [self drawCircleAtPoint:NSMakePoint(control2.x, control2.y)];
 	//        }
 	//    }
+//    [self _debugDrawDebugPoints];
 }
 
 - (void)drawCircleAtPoint:(NSPoint)point pointSize:(CGFloat)pointSize

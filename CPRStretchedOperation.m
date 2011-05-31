@@ -1,18 +1,18 @@
 /*=========================================================================
-  Program:   OsiriX
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
-  Copyright (c) OsiriX Team
-  All rights reserved.
-  Distributed under GNU - LGPL
-  
-  See http://www.osirix-viewer.com/copyright.html for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.
-=========================================================================*/
-
-#import "CPRStraightenedOperation.h"
+#import "CPRStretchedOperation.h"
 #import "CPRGeneratorRequest.h"
 #import "N3Geometry.h"
 #import "N3BezierCore.h"
@@ -24,9 +24,9 @@
 #include <libkern/OSAtomic.h>
 
 static const NSUInteger FILL_HEIGHT = 40;
-static NSOperationQueue *_straightenedOperationFillQueue = nil;
+static NSOperationQueue *_stretchedOperationFillQueue = nil;
 
-@interface CPRStraightenedOperation ()
+@interface CPRStretchedOperation ()
 
 + (NSOperationQueue *) _fillQueue;
 - (CGFloat)_slabSampleDistance;
@@ -34,12 +34,11 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
 
 @end
 
-
-@implementation CPRStraightenedOperation
+@implementation CPRStretchedOperation
 
 @dynamic request;
 
-- (id)initWithRequest:(CPRStraightenedGeneratorRequest *)request volumeData:(CPRVolumeData *)volumeData
+- (id)initWithRequest:(CPRStretchedGeneratorRequest *)request volumeData:(CPRVolumeData *)volumeData
 {
     if ( (self = [super initWithRequest:request volumeData:volumeData]) ) {
         _fillOperations = [[NSMutableSet alloc] init];
@@ -107,6 +106,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
 {
     NSAutoreleasePool *pool;
     CGFloat bezierLength;
+    CGFloat projectedBezierLength;
     CGFloat fillDistance;
     CGFloat slabDistance;
     NSInteger numVectors;
@@ -116,6 +116,8 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
     NSInteger pixelsWide;
     NSInteger pixelsHigh;
     NSInteger pixelsDeep;
+    N3Vector projectionNormal;
+    N3Vector midHeightPoint;
     N3VectorArray vectors;
     N3VectorArray fillVectors;
     N3VectorArray fillNormals;
@@ -123,12 +125,13 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
     N3VectorArray tangents;
     N3VectorArray inSlabNormals;
     N3MutableBezierCoreRef flattenedBezierCore;
+    N3MutableBezierCoreRef projectedBezierCore;
     CPRHorizontalFillOperation *horizontalFillOperation;
     NSMutableSet *fillOperations;
 	NSOperationQueue *fillQueue;
     
     pool = nil;
-        
+    
     @try {
         pool = [[NSAutoreleasePool alloc] init];
         
@@ -140,9 +143,12 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
             pixelsWide = self.request.pixelsWide;
             pixelsHigh = self.request.pixelsHigh;
             pixelsDeep = [self _pixelsDeep];
-            
+            projectionNormal = self.request.projectionNormal;
+            midHeightPoint = self.request.midHeightPoint;
+            projectedBezierCore = N3BezierCoreCreateMutableCopyProjectedToPlane(flattenedBezierCore, N3PlaneMake(N3VectorZero, projectionNormal));
+            projectedBezierLength = N3BezierCoreLength(projectedBezierCore);
             numVectors = pixelsWide;
-            _sampleSpacing = bezierLength / (CGFloat)pixelsWide;
+            _sampleSpacing = projectedBezierLength / (CGFloat)pixelsWide;
             
             _floatBytes = malloc(sizeof(float) * pixelsWide * pixelsHigh * pixelsDeep);
             vectors = malloc(sizeof(N3Vector) * pixelsWide);
@@ -174,11 +180,12 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                 [self didChangeValueForKey:@"didFail"];
                 
                 N3BezierCoreRelease(flattenedBezierCore);
+                N3BezierCoreRelease(projectedBezierCore);
                 [pool release];
                 return;
             }
             
-            numVectors = N3BezierCoreGetVectorInfo(flattenedBezierCore, _sampleSpacing, 0, self.request.initialNormal, vectors, tangents, normals, pixelsWide);
+            numVectors = N3BezierCoreGetProjectedVectorInfo(flattenedBezierCore, _sampleSpacing, 0, self.request.projectionNormal, vectors, tangents, normals, NULL, pixelsWide);
             
             if (numVectors > 0) {
                 while (numVectors < pixelsWide) { // make sure that the full array is filled and that there is not a vector that did not get filled due to roundoff error
@@ -195,8 +202,16 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                     numVectors++;
                 }
             }
-
-                    
+            
+            N3Plane topPlane;
+            topPlane = N3PlaneMake(N3VectorAdd(N3VectorScalarMultiply(N3VectorNormalize(projectionNormal), _sampleSpacing*pixelsHigh*.5), midHeightPoint), projectionNormal);
+            for (i = 0; i < numVectors; i++) { // this implementation is a bit of a hack, just put the values that the straightened CPR would want, and use code copied from straightened CPR
+                vectors[i] = N3LineIntersectionWithPlane(N3LineMake(vectors[i], projectionNormal), N3PlaneMake(midHeightPoint, projectionNormal));
+//                vectors[i] = N3LineIntersectionWithPlane(N3LineMake(vectors[i], projectionNormal), topPlane);
+                tangents[i] = N3VectorNormalize(N3VectorCrossProduct(normals[i], projectionNormal));
+                normals[i] = N3VectorNormalize(projectionNormal);
+            }
+            
             memcpy(fillNormals, normals, sizeof(N3Vector) * pixelsWide);
             N3VectorScalarMultiplyVectors(_sampleSpacing, fillNormals, pixelsWide);
             
@@ -219,7 +234,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                     [horizontalFillOperation setQueuePriority:[self queuePriority]];
 					[fillOperations addObject:horizontalFillOperation];
                     [horizontalFillOperation addObserver:self forKeyPath:@"isFinished" options:0 context:&self->_fillOperations];
-                    [self retain]; // so we don't get release while the operation is going
+                    [self retain]; // so we don't get released while the operation is going
                     [horizontalFillOperation release];
                 }
             }
@@ -235,7 +250,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
             }
             
             _outstandingFillOperationCount = [fillOperations count];
-            			
+            
 			fillQueue = [[self class] _fillQueue];
 			for (horizontalFillOperation in fillOperations) {
 				[fillQueue addOperation:horizontalFillOperation];
@@ -248,6 +263,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
             free(normals);
             free(inSlabNormals);
             N3BezierCoreRelease(flattenedBezierCore);
+            N3BezierCoreRelease(projectedBezierCore);
         } else {
             [self willChangeValueForKey:@"isFinished"];
             [self willChangeValueForKey:@"isExecuting"];
@@ -301,7 +317,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
 					if ([self isCancelled]) {
 						[projectionOperation cancel];
 					}
-                    					
+                    
                     [generatedVolume release];
                     [projectionOperation addObserver:self forKeyPath:@"isFinished" options:0 context:&self->_fillOperations];
                     [self retain]; // so we don't get released while the operation is going
@@ -311,7 +327,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                     assert([operation isKindOfClass:[CPRProjectionOperation class]]);
                     projectionOperation = (CPRProjectionOperation *)operation;
                     self.generatedVolume = projectionOperation.generatedVolume;
-
+                    
                     [self willChangeValueForKey:@"isFinished"];
                     [self willChangeValueForKey:@"isExecuting"];
                     _operationExecuting = NO;
@@ -319,7 +335,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                     [self didChangeValueForKey:@"isExecuting"];
                     [self didChangeValueForKey:@"isFinished"];
                 }
-
+                
             }
         }
     } else {
@@ -330,13 +346,13 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
 + (NSOperationQueue *)_fillQueue
 {
     @synchronized (self) {
-        if (_straightenedOperationFillQueue == nil) {
-            _straightenedOperationFillQueue = [[NSOperationQueue alloc] init];
-			[_straightenedOperationFillQueue setMaxConcurrentOperationCount:[[NSProcessInfo processInfo] processorCount]];
+        if (_stretchedOperationFillQueue == nil) {
+            _stretchedOperationFillQueue = [[NSOperationQueue alloc] init];
+			[_stretchedOperationFillQueue setMaxConcurrentOperationCount:[[NSProcessInfo processInfo] processorCount]];
         }
     }
     
-    return _straightenedOperationFillQueue;
+    return _stretchedOperationFillQueue;
 }
 
 - (CGFloat)_slabSampleDistance
@@ -355,7 +371,17 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
 }
 
 
+
 @end
+
+
+
+
+
+
+
+
+
 
 
 

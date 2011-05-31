@@ -3891,11 +3891,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[cell setAction: @selector(matrixPreviewSwitchHidden:)];
 				[cell setTarget: self];
 				[cell setBordered: YES];
+				[cell setLineBreakMode: NSLineBreakByCharWrapping];
 				
 				NSString	*name = [curStudy valueForKey:@"studyName"];
 //				if( [name length] > 15) name = [name substringToIndex: 15];
 				
-				name = [name stringByTruncatingToLength: 36];
+				name = [name stringByTruncatingToLength: 34];
 				
 				NSString *stateText;
 				if( [[curStudy valueForKey:@"stateText"] intValue]) stateText = [[BrowserController statesArray] objectAtIndex: [[curStudy valueForKey:@"stateText"] intValue]];
@@ -3936,20 +3937,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 					{
 						NSManagedObject	*curSeries = [series objectAtIndex:i];
 						
-						int keyImagesNumber = 0;
-		//				NSArray	*keyImagesArray = [[[curSeries valueForKey:@"images"] allObjects] valueForKey:@"isKeyImage"];		<- This is too slow......
-		//				for( z = 0; z < [keyImagesArray count]; z++)
-		//				{
-		//					if( [[keyImagesArray objectAtIndex: z] boolValue]) keyImagesNumber++;
-		//				}
-						
 						NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
 						
 						[cell setTransparent: NO];
 						[cell setBezelStyle: NSShadowlessSquareBezelStyle];
 						[cell setRepresentedObject: curSeries];
-						if( keyImagesNumber) [cell setFont:[NSFont boldSystemFontOfSize:8.5]];
-						else [cell setFont:[NSFont systemFontOfSize:8.5]];
+						[cell setFont:[NSFont systemFontOfSize:8.5]];
 						[cell setImagePosition: NSImageBelow];
 						[cell setAction: @selector(matrixPreviewPressed:)];
 						[cell setTarget: self];
@@ -3959,8 +3952,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 						NSString *name = [curSeries valueForKey:@"name"];
 						if( [name length] > 18)
 						{
-							[cell setFont:[NSFont boldSystemFontOfSize:7.5]];
-							name = [name stringByTruncatingToLength: 36];
+							[cell setFont:[NSFont boldSystemFontOfSize: 7.8]];
+							name = [name stringByTruncatingToLength: 34];
 						}
 						
 						NSString	*type = nil;
@@ -4002,9 +3995,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 						}
 						else type = NSLocalizedString( @"Images", nil);
 						
-						
-						if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
-						else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];
+						[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];
 						
 						[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", nil), [curSeries valueForKey:@"id"]] forCell:cell];
 						
@@ -6363,13 +6354,16 @@ return YES;
 	[subLoadingThread release];
 	[toolbar release];
 	[injectionDateTime release];
-    [super dealloc];
 	
 //	[[AppController sharedAppController] tileWindows: nil];	<- We cannot do this, because:
 //	This is very important, or if we have a queue of closing windows, it will crash....
 	
 	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-		[v buildMatrixPreview: NO];
+	{
+		if( v != self) [v buildMatrixPreview: NO];
+	}
+	
+	[super dealloc];
 	
 	NSLog(@"ViewController dealloc");
 }
@@ -6405,445 +6399,460 @@ return YES;
 	int			previousCurImage = [imageView curImage];
 	BOOL		wasFlipped = [imageView flippedData];
 	
-	@try 
+	@synchronized( self)
 	{
-		nonVolumicDataWarningDisplayed = YES;
-		
-		if( previousColumns != 1 || previousRows != 1)
+		@try 
 		{
-			[imageView release];
-			imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
-			[imageView becomeFirstResponder];
-		}
-		
-	//	if( previousColumns != 1 || previousRows != 1)
-	//		[self setImageRows: 1 columns: 1];
-
-		[imageView mouseUp: [[NSApplication sharedApplication] currentEvent]];
-		
-		if( pixList)
-		{
-			[self selectFirstTilingView];
-			[imageView updateTilingViews];
-		
-			[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
-			previousLocation = [[imageView curDCM] sliceLocation];
-		}
-		else
-		{
-			for( int i = 0; i < 9 ; i++) previousOrientation[ i] = 0;
-			previousLocation = 0;
-		}
-		// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
-		
-		long minWindows = 1;
-		if( [self FullScreenON]) minWindows++;
-		
-		if( newViewerWindow == NO && [[[AppController sharedAppController] FindRelatedViewers:pixList[0]] count] > minWindows)
-		{
-			NSBeep();
-			NSLog( @"changeImageData not possible with other post-processing windows opened");
-		}
-		else
-		{
-			// *****************
+			nonVolumicDataWarningDisplayed = YES;
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixViewerWillChangeNotification object: self userInfo: nil];
-			
-			[self ActivateBlending: nil];
-			[self clear8bitRepresentations];
-			
-			[self setFusionMode: 0];
-			
-			[imageView setIndex: 0];
-
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCloseViewerNotification object: self userInfo: nil];
-			
-			windowWillClose = YES;
-			[imageView setDrawing: NO];
-
-			[self setUpdateTilingViewsValue: YES];
-
-			if( [subCtrlOnOff state]) [imageView setWLWW: 0 :0];
-			[self checkView: subCtrlView :NO];
-			
-			if( currentOrientationTool != originalOrientation)
+			if( previousColumns != 1 || previousRows != 1)
 			{
-				[imageView setXFlipped: NO];
-				[imageView setYFlipped: NO];
-				[imageView setRotation: 0];
+				[imageView release];
+				imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
+				[imageView becomeFirstResponder];
 			}
 			
-			[orientationMatrix setEnabled: NO];
+		//	if( previousColumns != 1 || previousRows != 1)
+		//		[self setImageRows: 1 columns: 1];
 
-			// Release previous data
-			[self finalizeSeriesViewing];
+			[imageView mouseUp: [[NSApplication sharedApplication] currentEvent]];
+			
+			if( pixList)
+			{
+				[self selectFirstTilingView];
+				[imageView updateTilingViews];
+			
+				[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
+				previousLocation = [[imageView curDCM] sliceLocation];
+			}
+			else
+			{
+				for( int i = 0; i < 9 ; i++) previousOrientation[ i] = 0;
+				previousLocation = 0;
+			}
+			// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
+			
+			long minWindows = 1;
+			if( [self FullScreenON]) minWindows++;
 			
 			
 			[[[[BrowserController currentBrowser] database] managedObjectContext] lock];
 			
-			@try
+			if( newViewerWindow == NO && [[[AppController sharedAppController] FindRelatedViewers:pixList[0]] count] > minWindows)
 			{
-				long index2compare;
+				NSBeep();
+				NSLog( @"changeImageData not possible with other post-processing windows opened");
+			}
+			else
+			{
+				// *****************
 				
-				if( [imageView flippedData]) index2compare = [fileList[ 0] count]-1;
-				else index2compare = 0;
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixViewerWillChangeNotification object: self userInfo: nil];
 				
-				if( index2compare >= 0 && [d count] > 0 && [fileList[ 0] count] > 0 && [fileList[ 0] objectAtIndex: index2compare] == [d objectAtIndex: 0])
+				[self ActivateBlending: nil];
+				[self clear8bitRepresentations];
+				
+				[self setFusionMode: 0];
+				
+				[imageView setIndex: 0];
+
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCloseViewerNotification object: self userInfo: nil];
+				
+				windowWillClose = YES;
+				[imageView setDrawing: NO];
+
+				[self setUpdateTilingViewsValue: YES];
+
+				if( [subCtrlOnOff state]) [imageView setWLWW: 0 :0];
+				[self checkView: subCtrlView :NO];
+				
+				if( currentOrientationTool != originalOrientation)
 				{
-					NSLog( @"same series");
-					if( [d count] >= [fileList[ 0] count])
-					{
-						sameSeries = YES;
-						if( [imageView flippedData]) imageIndex = [fileList[ 0] count] -1 -[imageView curImage];
-						else imageIndex = [imageView curImage];
-					}
-					else imageIndex = 0;
-				}
-				else
-				{
-					imageIndex = 0;
-				}
-				
-				[orientationMatrix selectCellWithTag: 0];
-				
-				curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
-				curConvMenu = [NSLocalizedString(@"No Filter", nil) retain];
-				curWLWWMenu = [NSLocalizedString(@"Default WL & WW", nil) retain];
-				
-				curMovieIndex = 0;
-				maxMovieIndex = 1;
-				subCtrlMaskID = -2;
-				registeredViewer = nil;
-				resampleRatio = 1.0;
-				
-				volumeData[ 0] = v;
-				[volumeData[ 0] retain];
-				
-				direction = 1;
-				
-				[f retain];
-				pixList[ 0] = f;
-				
-				// Prepare pixList for image thick slab
-				for( i = 0; i < [pixList[0] count]; i++)
-				{
-					[[pixList[0] objectAtIndex: i] setArrayPix: pixList[0] :i];
+					[imageView setXFlipped: NO];
+					[imageView setYFlipped: NO];
+					[imageView setRotation: 0];
 				}
 				
-				if( [d count] == 0) d = nil;
-				[d retain];
-				fileList[ 0] = d;
+				[orientationMatrix setEnabled: NO];
+
+				// Release previous data
+				[self finalizeSeriesViewing];
+				
+				
+				[[[BrowserController currentBrowser] managedObjectContext] lock];
 				
 				@try
 				{
-					// Prepare roiList
-					roiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
-					copyRoiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
+					long index2compare;
+					
+					if( [imageView flippedData]) index2compare = [fileList[ 0] count]-1;
+					else index2compare = 0;
+					
+					if( index2compare >= 0 && [d count] > 0 && [fileList[ 0] count] > 0 && [fileList[ 0] objectAtIndex: index2compare] == [d objectAtIndex: 0])
+					{
+						NSLog( @"same series");
+						if( [d count] >= [fileList[ 0] count])
+						{
+							sameSeries = YES;
+							if( [imageView flippedData]) imageIndex = [fileList[ 0] count] -1 -[imageView curImage];
+							else imageIndex = [imageView curImage];
+						}
+						else imageIndex = 0;
+					}
+					else
+					{
+						imageIndex = 0;
+					}
+					
+					[orientationMatrix selectCellWithTag: 0];
+					
+					curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
+					curConvMenu = [NSLocalizedString(@"No Filter", nil) retain];
+					curWLWWMenu = [NSLocalizedString(@"Default WL & WW", nil) retain];
+					
+					curMovieIndex = 0;
+					maxMovieIndex = 1;
+					subCtrlMaskID = -2;
+					registeredViewer = nil;
+					resampleRatio = 1.0;
+					
+					volumeData[ 0] = v;
+					[volumeData[ 0] retain];
+					
+					direction = 1;
+					
+					[f retain];
+					pixList[ 0] = f;
+					
+					// Prepare pixList for image thick slab
 					for( i = 0; i < [pixList[0] count]; i++)
 					{
-						[roiList[0] addObject:[NSMutableArray array]];
-						[copyRoiList[0] addObject:[NSData data]];
+						[[pixList[0] objectAtIndex: i] setArrayPix: pixList[0] :i];
 					}
-					[self loadROI:0];
 					
-					[imageView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage:imageIndex level:'i' reset:!sameSeries];
+					if( [d count] == 0) d = nil;
+					[d retain];
+					fileList[ 0] = d;
 					
-					if( sameSeries)
+					@try
 					{
-						[imageView setIndex: imageIndex];
-				//		[imageView updatePresentationStateFromSeries];
+						// Prepare roiList
+						roiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
+						copyRoiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
+						for( i = 0; i < [pixList[0] count]; i++)
+						{
+							[roiList[0] addObject:[NSMutableArray array]];
+							[copyRoiList[0] addObject:[NSData data]];
+						}
+						[self loadROI:0];
+						
+						[imageView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage:imageIndex level:'i' reset:!sameSeries];
+						
+						if( sameSeries)
+						{
+							[imageView setIndex: imageIndex];
+					//		[imageView updatePresentationStateFromSeries];
+						}
+						else [imageView setIndexWithReset: imageIndex :YES];
 					}
-					else [imageView setIndexWithReset: imageIndex :YES];
-				}
-				@catch( NSException *e)
-				{
-					NSLog(@"Exception change image data: %@", e);
-				}
-				
-				if( imageIndex >= [pixList[0] count])
-					imageIndex = 0;
-				
-				DCMPix *curDCM = [pixList[0] objectAtIndex: imageIndex];
-				
-				loadingPercentage = 0;
-				[self setWindowTitle:self];
-				
-				[slider setMaxValue:[pixList[0] count]-1];
-				[slider setNumberOfTickMarks:[pixList[0] count]];
-				[self adjustSlider];
+					@catch( NSException *e)
+					{
+						NSLog(@"Exception change image data: %@", e);
+					}
 					
-				if([fileList[0] count] == 1)
-				{
-					[speedSlider setEnabled:NO];
-					[slider setEnabled:NO];
-				}
-				else
-				{
-					if( [curDCM cineRate])
-						[speedSlider setFloatValue: [curDCM cineRate]];
-					else if( [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultFrameRate"])
-						[speedSlider setFloatValue: [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultFrameRate"]];
+					if( imageIndex >= [pixList[0] count])
+						imageIndex = 0;
 					
-					[speedSlider setEnabled:YES];
-					[slider setEnabled:YES];
-				}
-				
-				[subCtrlOnOff setState: NSOffState];
-				[convPopup selectItemAtIndex:0];
-				[stacksFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
-				[sliderFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
-				[sliderFusion setEnabled:NO];
-				[activatedFusion setState: NSOffState];
+					DCMPix *curDCM = [pixList[0] objectAtIndex: imageIndex];
+					
+					loadingPercentage = 0;
+					[self setWindowTitle:self];
+					
+					[slider setMaxValue:[pixList[0] count]-1];
+					[slider setNumberOfTickMarks:[pixList[0] count]];
+					[self adjustSlider];
+						
+					if([fileList[0] count] == 1)
+					{
+						[speedSlider setEnabled:NO];
+						[slider setEnabled:NO];
+					}
+					else
+					{
+						if( [curDCM cineRate])
+							[speedSlider setFloatValue: [curDCM cineRate]];
+						else if( [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultFrameRate"])
+							[speedSlider setFloatValue: [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultFrameRate"]];
+						
+						[speedSlider setEnabled:YES];
+						[slider setEnabled:YES];
+					}
+					
+					[subCtrlOnOff setState: NSOffState];
+					[convPopup selectItemAtIndex:0];
+					[stacksFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
+					[sliderFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
+					[sliderFusion setEnabled:NO];
+					[activatedFusion setState: NSOffState];
 
-				[movieRateSlider setEnabled: NO];
-				[moviePosSlider setEnabled: NO];
-				[moviePlayStop setEnabled:NO];
-				[speedText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%0.1f im/s",  @"im/s = images per second"), (float) [self frameRate]*direction]];
+					[movieRateSlider setEnabled: NO];
+					[moviePosSlider setEnabled: NO];
+					[moviePlayStop setEnabled:NO];
+					[speedText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%0.1f im/s",  @"im/s = images per second"), (float) [self frameRate]*direction]];
 
-				[seriesView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage:imageIndex level:'i' reset:!sameSeries];
-				
-				if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
-				{
-					if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
-					{
-						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-							[self ApplyCLUTString: @"B/W Inverse"];
-						else
-							[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
-					}
-					else [self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
+					[seriesView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage:imageIndex level:'i' reset:!sameSeries];
 					
-					if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"OpacityTableNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
+					if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 					{
-						if( [[NSUserDefaults standardUserDefaults] boolForKey:@"PETOpacityTable"])
-							[self ApplyOpacityString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default Opacity Table"]];
+						if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
+						{
+							if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+								[self ApplyCLUTString: @"B/W Inverse"];
+							else
+								[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+						}
+						else [self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
+						
+						if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"OpacityTableNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
+						{
+							if( [[NSUserDefaults standardUserDefaults] boolForKey:@"PETOpacityTable"])
+								[self ApplyOpacityString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default Opacity Table"]];
+							else [self ApplyOpacityString: NSLocalizedString( @"Linear Table", nil)];
+						}
 						else [self ApplyOpacityString: NSLocalizedString( @"Linear Table", nil)];
-					}
-					else [self ApplyOpacityString: NSLocalizedString( @"Linear Table", nil)];
-					
-					if(([[self modality] isEqualToString:@"CR"] || [[self modality] isEqualToString:@"DR"] || [[self modality] isEqualToString:@"DX"] || [[self modality] isEqualToString:@"MG"] || [[self modality] isEqualToString:@"XA"] || [[self modality] isEqualToString:@"RF"]) && [[NSUserDefaults standardUserDefaults] boolForKey:@"automatic12BitTotoku"] && [AppController canDisplay12Bit])
-					{
-						[imageView setIsLUT12Bit:YES];
-						[display12bitToolbarItemMatrix selectCellWithTag:0];
-					}
-				}
-				else
-				{
-					[self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
-					[self ApplyOpacityString: NSLocalizedString( @"Linear Table", nil)];
-				}
-				
-				int curImage = [imageView curImage];
-				if( curImage >= [fileList[ curMovieIndex] count])
-					curImage = 0;
-				
-				NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.study.stateText"];
-				
-				if( status == nil) [StatusPopup selectItemWithTitle: NSLocalizedString(@"empty", nil)];
-				else [StatusPopup selectItemWithTag: [status intValue]];
-				
-				NSString *com = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.comment"];
-				
-				if( com == nil || [com isEqualToString:@""])
-					com = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.study.comment"];
-				
-				if( com == nil || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
-				else [CommentsField setTitle: com];
-				
-				if( [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
-					[[BrowserController currentBrowser] findAndSelectFile: nil image :[fileList[ curMovieIndex] objectAtIndex: curImage] shouldExpand :NO];
-					
-				////////
-				
-				if( [previousPatientUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"]] == NO)
-				{
-					[self buildMatrixPreview];
-					[self matrixPreviewSelectCurrentSeries];
-				}
-				else
-				{
-					[self matrixPreviewSelectCurrentSeries];
-				}
-				
-				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDisplayImagesOfSamePatient"])
-				{
-					NSString *curPatientUID = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"];
-					NSString *curPatientID = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientID"];
-					
-					for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-					{
-						NSString *pUID = [[[v fileList] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"];
-						NSString *pID = [[[v fileList] objectAtIndex:0] valueForKeyPath:@"series.study.patientID"];
 						
-						if( [curPatientUID isEqualToString: pUID] == NO)
+						if(([[self modality] isEqualToString:@"CR"] || [[self modality] isEqualToString:@"DR"] || [[self modality] isEqualToString:@"DX"] || [[self modality] isEqualToString:@"MG"] || [[self modality] isEqualToString:@"XA"] || [[self modality] isEqualToString:@"RF"]) && [[NSUserDefaults standardUserDefaults] boolForKey:@"automatic12BitTotoku"] && [AppController canDisplay12Bit])
 						{
-							if( [curPatientID isEqualToString: pID] == NO)
-								[[v window] close];
+							[imageView setIsLUT12Bit:YES];
+							[display12bitToolbarItemMatrix selectCellWithTag:0];
 						}
 					}
-				}
-				
-				// If same study, same patient and same orientation, try to go the same position (mm) if available
-				if( [previousStudyInstanceUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
-				{
-					float	currentOrientation[ 9];
-					BOOL	equalVector = YES;
-					BOOL	keepFusion = NO;
-					
-					[[pixList[ 0] objectAtIndex:0] orientation: currentOrientation];
-					
-					for( i = 0; i < 9; i++)
+					else
 					{
-						if( previousOrientation[ i] != currentOrientation[ i]) equalVector = NO;
+						[self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
+						[self ApplyOpacityString: NSLocalizedString( @"Linear Table", nil)];
 					}
 					
-					if( equalVector)
-					{
-						float start = [[[fileList[ 0] objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
-						float end = [[[fileList[ 0] objectAtIndex: [fileList[ 0] count]-1] valueForKey:@"sliceLocation"] floatValue];
+					int curImage = [imageView curImage];
+					if( curImage >= [fileList[ curMovieIndex] count])
+						curImage = 0;
+					
+					NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.study.stateText"];
+					
+					if( status == nil) [StatusPopup selectItemWithTitle: NSLocalizedString(@"empty", nil)];
+					else [StatusPopup selectItemWithTag: [status intValue]];
+					
+					NSString *com = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.comment"];
+					
+					if( com == nil || [com isEqualToString:@""])
+						com = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.study.comment"];
+					
+					if( com == nil || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
+					else [CommentsField setTitle: com];
+					
+					if( [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
+						[[BrowserController currentBrowser] findAndSelectFile: nil image :[fileList[ curMovieIndex] objectAtIndex: curImage] shouldExpand :NO];
 						
-						if( start == end)
+					////////
+					
+					if( [previousPatientUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"]] == NO)
+					{
+						[self buildMatrixPreview];
+						[self matrixPreviewSelectCurrentSeries];
+					}
+					else
+					{
+						[self matrixPreviewSelectCurrentSeries];
+					}
+					
+					
+					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDisplayImagesOfSamePatient"])
+					{
+						NSString *curPatientUID = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"];
+						NSString *curPatientID = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientID"];
+						
+						for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 						{
-							[imageView setIndex: previousCurImage];
-							[self adjustSlider];
-							keepFusion = YES;
-						}
-						else
-						{
-							if( start > end)
-							{
-								float temp = end;
-								
-								end = start;
-								start = temp;
-							}
+							NSString *pUID = [[[v fileList] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"];
+							NSString *pID = [[[v fileList] objectAtIndex:0] valueForKeyPath:@"series.study.patientID"];
 							
-							if( previousLocation > start && previousLocation < end)
+							if( [curPatientUID isEqualToString: pUID] == NO)
 							{
-								long	index = 0, i;
-								float   smallestdiff = -1, fdiff;
-								
-								for( i = 0; i < [fileList[ 0] count]; i++)
+								if( [curPatientID isEqualToString: pID] == NO)
+									[[v window] close];
+							}
+						}
+					}
+					
+					// If same study, same patient and same orientation, try to go the same position (mm) if available
+					if( [previousStudyInstanceUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
+					{
+						float	currentOrientation[ 9];
+						BOOL	equalVector = YES;
+						BOOL	keepFusion = NO;
+						
+						[[pixList[ 0] objectAtIndex:0] orientation: currentOrientation];
+						
+						for( i = 0; i < 9; i++)
+						{
+							if( previousOrientation[ i] != currentOrientation[ i]) equalVector = NO;
+						}
+						
+						if( equalVector)
+						{
+							float start = [[[fileList[ 0] objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
+							float end = [[[fileList[ 0] objectAtIndex: [fileList[ 0] count]-1] valueForKey:@"sliceLocation"] floatValue];
+							
+							if( start == end)
+							{
+								[imageView setIndex: previousCurImage];
+								[self adjustSlider];
+								keepFusion = YES;
+							}
+							else
+							{
+								if( start > end)
 								{
-									float slicePosition = [[[fileList[ 0] objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
+									float temp = end;
 									
-									fdiff = fabs( slicePosition - previousLocation);
+									end = start;
+									start = temp;
+								}
+								
+								if( previousLocation > start && previousLocation < end)
+								{
+									long	index = 0, i;
+									float   smallestdiff = -1, fdiff;
 									
-									if( fdiff < smallestdiff || smallestdiff == -1)
+									for( i = 0; i < [fileList[ 0] count]; i++)
 									{
-										smallestdiff = fdiff;
-										index = i;
+										float slicePosition = [[[fileList[ 0] objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
+										
+										fdiff = fabs( slicePosition - previousLocation);
+										
+										if( fdiff < smallestdiff || smallestdiff == -1)
+										{
+											smallestdiff = fdiff;
+											index = i;
+										}
+									}
+									
+									if( index != 0)
+									{
+										if( wasFlipped)
+											index = [fileList[ 0] count] - index;
+										[imageView setIndex: index];
+										[self adjustSlider];
+										keepFusion = YES;
 									}
 								}
-								
-								if( index != 0)
-								{
-									if( wasFlipped)
-										index = [fileList[ 0] count] - index;
-									[imageView setIndex: index];
-									[self adjustSlider];
-									keepFusion = YES;
-								}
 							}
 						}
+						
+						if( keepFusion)
+							if( [[self modality] isEqualToString:@"CT"] == NO) keepFusion = NO;
+						
+						if( keepFusion == NO)
+						{
+							if( blendingController) [self ActivateBlending: nil];
+						}
 					}
-					
-					if( keepFusion)
-						if( [[self modality] isEqualToString:@"CT"] == NO) keepFusion = NO;
-					
-					if( keepFusion == NO)
+					//If study ID changed, cancel the fusion, if existing
+					else
 					{
 						if( blendingController) [self ActivateBlending: nil];
 					}
-				}
-				//If study ID changed, cancel the fusion, if existing
-				else
-				{
-					if( blendingController) [self ActivateBlending: nil];
-				}
-				
-				[previousStudyInstanceUID release];
-				[previousPatientUID release];
-				
-				// Is it only key images?
-				NSArray	*images = fileList[ 0];
-				BOOL onlyKeyImages = NO;	
-				
-				if( [images count] != [[[images objectAtIndex: 0] valueForKeyPath: @"series.images"] count] && postprocessed == NO)
-				{
-					onlyKeyImages = YES;
-					for( NSManagedObject *image in images)
+					
+					[previousStudyInstanceUID release];
+					[previousPatientUID release];
+					
+					// Is it only key images?
+					NSArray	*images = fileList[ 0];
+					BOOL onlyKeyImages = NO;	
+					
+					if( [images count] != [[[images objectAtIndex: 0] valueForKeyPath: @"series.images"] count] && postprocessed == NO)
 					{
-						if( [[image valueForKey:@"isKeyImage"] boolValue] == NO) onlyKeyImages = NO;
+						onlyKeyImages = YES;
+						for( NSManagedObject *image in images)
+						{
+							if( [[image valueForKey:@"isKeyImage"] boolValue] == NO) onlyKeyImages = NO;
+						}
 					}
-				}
-				
-				displayOnlyKeyImages = onlyKeyImages; 
-				[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
-				
-				if( [[self window] isVisible])
-					[imageView becomeMainWindow];	// This will send the image sync order !
-				
-				windowWillClose = NO;
-				
-				[imageView setDrawing: YES];
-				
-				[self setPostprocessed: NO];
-				
-				[self SetSyncButtonBehavior: self];
-				[self turnOffSyncSeriesBetweenStudies: self];
-				
-				[self setUpdateTilingViewsValue: NO];
-				
-				[self selectFirstTilingView];
-				[imageView updateTilingViews];
-				
-				if( previousFusionActivated)
-				{
-					[self setFusionMode: previousFusion];
 					
-					[popFusion selectItemWithTag:previousFusion];
+					displayOnlyKeyImages = onlyKeyImages; 
+					[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
 					
-					[imageView sendSyncMessage: 0];
-				}
+					if( [[self window] isVisible])
+						[imageView becomeMainWindow];	// This will send the image sync order !
+					
+					windowWillClose = NO;
+					
+					[imageView setDrawing: YES];
+					
+					[self setPostprocessed: NO];
+					
+					[self SetSyncButtonBehavior: self];
+					[self turnOffSyncSeriesBetweenStudies: self];
+					
+					[self setUpdateTilingViewsValue: NO];
+					
+					[self selectFirstTilingView];
+					[imageView updateTilingViews];
+					
+					if( previousFusionActivated)
+					{
+						[self setFusionMode: previousFusion];
+						
+						[popFusion selectItemWithTag:previousFusion];
+						
+						[imageView sendSyncMessage: 0];
+					}
 
-				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOMATIC FUSE"])
-					[self blendWindows: nil];
-				
-				[self refreshMenus];
-				
-				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
-				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDCMUpdateCurrentImageNotification object: imageView userInfo: userInfo];
-				
-			//	if( previousColumns != 1 || previousRows != 1)
-			//		[self setImageRows: previousRows columns: previousColumns];
-
-				if( previousColumns != 1 || previousRows != 1)
-				{
-					[imageView release];
-					imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
-					[imageView becomeFirstResponder];
-				}
+					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOMATIC FUSE"])
+						[self blendWindows: nil];
 					
-				[self setCurWLWWMenu: [DCMView findWLWWPreset: [imageView curWL] :[imageView curWW] :[imageView curDCM]]];
+					[self refreshMenus];
+					
+					NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
+					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDCMUpdateCurrentImageNotification object: imageView userInfo: userInfo];
+					
+				//	if( previousColumns != 1 || previousRows != 1)
+				//		[self setImageRows: previousRows columns: previousColumns];
+
+					if( previousColumns != 1 || previousRows != 1)
+					{
+						[imageView release];
+						imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
+						[imageView becomeFirstResponder];
+					}
+						
+					[self setCurWLWWMenu: [DCMView findWLWWPreset: [imageView curWL] :[imageView curWW] :[imageView curDCM]]];
+					
+					nonVolumicDataWarningDisplayed = NO;
+					
+					for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+						[v buildMatrixPreview: NO];
+					
+					NSPoint subtractionOffset = [[imageView curDCM] subPixOffset];
+					[self offsetMatrixSetting:([self threeTestsFivePosibilities: (int)subtractionOffset.y] * 5) + [self threeTestsFivePosibilities: (int)subtractionOffset.x]];
+					
+					[subCtrlSum setFloatValue: 1];
+					[subCtrlPercent setFloatValue: 1];
+				}
+				@catch ( NSException *e)
+				{
+					NSLog( @"***** changeImageData exception : %@", e);
+					[[self window] close];
+				}
 				
-				nonVolumicDataWarningDisplayed = NO;
+				[[[BrowserController currentBrowser] managedObjectContext] unlock];
 				
-				for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-					[v buildMatrixPreview: NO];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixViewerDidChangeNotification object: self userInfo: nil];
 				
-				NSPoint subtractionOffset = [[imageView curDCM] subPixOffset];
-				[self offsetMatrixSetting:([self threeTestsFivePosibilities: (int)subtractionOffset.y] * 5) + [self threeTestsFivePosibilities: (int)subtractionOffset.x]];
+				[self willChangeValueForKey: @"KeyImageCounter"];
+				[self didChangeValueForKey: @"KeyImageCounter"];
 				
-				[subCtrlSum setFloatValue: 1];
-				[subCtrlPercent setFloatValue: 1];
-			}
-			@catch ( NSException *e)
-			{
-				NSLog( @"***** changeImageData exception : %@", e);
-				[[self window] close];
+				[imageView computeColor];
 			}
 			
 			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
@@ -6855,13 +6864,13 @@ return YES;
 			
 			[imageView computeColor];
 		}
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		#ifdef OSIRIX_VIEWER
-		[AppController printStackTrace: e];
-		#endif
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			#ifdef OSIRIX_VIEWER
+			[AppController printStackTrace: e];
+			#endif
+		}
 	}
 	
 	for( ViewerController * v in [ViewerController getDisplayed2DViewers])

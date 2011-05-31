@@ -15,6 +15,7 @@
 #import "CPRGeneratorRequest.h"
 #import "N3BezierPath.h"
 #import "CPRStraightenedOperation.h"
+#import "CPRStretchedOperation.h"
 #import "CPRObliqueSliceOperation.h"
 
 @implementation CPRGeneratorRequest
@@ -91,7 +92,7 @@
     copy.bezierPath = _bezierPath;
     copy.initialNormal = _initialNormal;
     copy.projectionMode = _projectionMode;
-//    copy.vertical = _vertical;
+    //    copy.vertical = _vertical;
     return copy;
 }
 
@@ -128,6 +129,72 @@
 - (Class)operationClass
 {
     return [CPRStraightenedOperation class];
+}
+
+@end
+
+@implementation CPRStretchedGeneratorRequest
+
+@synthesize bezierPath = _bezierPath;
+@synthesize projectionNormal = _projectionNormal;
+@synthesize midHeightPoint = _midHeightPoint;
+
+@synthesize projectionMode = _projectionMode;
+
+- (id)init
+{
+    if ( (self = [super init]) ) {
+        _projectionMode = CPRProjectionModeNone;
+    }
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    CPRStretchedGeneratorRequest *copy;
+    
+    copy = [super copyWithZone:zone];
+    copy.bezierPath = _bezierPath;
+    copy.projectionNormal = _projectionNormal;
+    copy.midHeightPoint = _midHeightPoint;
+    copy.projectionMode = _projectionMode;
+    //    copy.vertical = _vertical;
+    return copy;
+}
+
+- (BOOL)isEqual:(id)object
+{
+    CPRStretchedGeneratorRequest *stretchedGeneratorRequest;
+    
+    if ([object isKindOfClass:[CPRStretchedGeneratorRequest class]]) {
+        stretchedGeneratorRequest = (CPRStretchedGeneratorRequest *)object;
+        if ([super isEqual:object] &&
+            [_bezierPath isEqualToBezierPath:stretchedGeneratorRequest.bezierPath] &&
+            N3VectorEqualToVector(_projectionNormal, stretchedGeneratorRequest.projectionNormal) &&
+            N3VectorEqualToVector(_midHeightPoint, stretchedGeneratorRequest.midHeightPoint) &&
+            _projectionMode == stretchedGeneratorRequest.projectionMode) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (NSUInteger)hash // a not that great hash function....
+{
+    return [super hash] ^ [_bezierPath hash] ^ (NSUInteger)N3VectorLength(_projectionNormal) ^ (NSUInteger)N3VectorLength(_midHeightPoint) ^ (NSUInteger)_projectionMode;
+}
+
+
+- (void)dealloc
+{
+    [_bezierPath release];
+    _bezierPath = nil;
+    [super dealloc];
+}
+
+- (Class)operationClass
+{
+    return [CPRStretchedOperation class];
 }
 
 @end

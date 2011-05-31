@@ -3255,7 +3255,9 @@ static BOOL initialized = NO;
 	#if __LP64__
 	appStartingDate = [[[NSDate date] description] retain];
 	checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 8486];
-	checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] builtInPlugInsPath] stringByAppendingPathComponent: @"sn64"]] retain];
+	checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] builtInPlugInsPath] stringByAppendingPathComponent: @".sn64"]] retain];
+	if( checkSN64String == nil)
+		checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] builtInPlugInsPath] stringByAppendingPathComponent: @"sn64"]] retain];
 	
 	NSNetServiceBrowser *checkSN64Browser = [[NSNetServiceBrowser alloc] init];
 	[checkSN64Browser setDelegate:self];

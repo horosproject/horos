@@ -7035,6 +7035,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 										currTextureWidth + offsetX, 
 										currTextureHeight + offsetY, 
 										false, f_ext_texture_rectangle);		// OVERLAP
+										
 					offsetY += currTextureHeight; // offset drawing position for next texture vertically
 			}
 			offsetX += currTextureWidth; // offset drawing position for next texture horizontally
@@ -11097,6 +11098,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				currHeight = GetNextTextureSize (*tH - offsetY, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size
 				glBindTexture (TEXTRECTMODE, texture[k++]);
 				
+				if( glGetError() != 0)
+					NSLog( @"****** glGetError");
+				
 				glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);
 				
 				if (f_ext_client_storage)
@@ -11167,6 +11171,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					#endif
 					else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
 				}
+				
+				if( glGetError() != 0)
+					NSLog( @"****** glGetError");
 				
 				offsetY += currHeight;
 			}

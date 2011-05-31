@@ -95,6 +95,12 @@ const NSString* const OsirixDataDirName = @"OsiriX Data";
 	switch (mode) {
 		case 0:
 			path = [NSFileManager.defaultManager findSystemFolderOfType:kDocumentsFolderType forDomain:kOnAppropriateDisk];
+#ifdef MACAPPSTORE
+			NSString* temp = [self baseDirPathForPath:path];
+			BOOL isDir;
+			if (![NSFileManager.defaultManager fileExistsAtPath:temp isDirectory:&isDir] || !isDir)
+				path = [NSFileManager.defaultManager userApplicationSupportFolderForApp];
+#endif
 			break;
 		case 1:
 			break;
@@ -103,7 +109,7 @@ const NSString* const OsirixDataDirName = @"OsiriX Data";
 			break;
 	}
 	
-	path = [path stringByAppendingPathComponent:@"OsiriX Data"];
+	path = [self baseDirPathForPath:path];
 	if (!path)
 		N2LogError(@"nil path");
 	else {

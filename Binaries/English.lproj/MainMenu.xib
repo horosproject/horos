@@ -16,6 +16,7 @@
 			<integer value="12473"/>
 			<integer value="14144"/>
 			<integer value="885"/>
+			<integer value="12367"/>
 			<integer value="11761"/>
 			<integer value="12366"/>
 			<integer value="11676"/>
@@ -3625,7 +3626,7 @@
 				<string key="NSWindowContentMaxSize">{9000, 9000}</string>
 				<string key="NSWindowContentMinSize">{600, 600}</string>
 				<object class="NSView" key="NSWindowView" id="1039447468">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSProgressIndicator" id="24598103">
@@ -4565,7 +4566,6 @@
 									<reference key="NSHScroller" ref="435897027"/>
 									<reference key="NSContentView" ref="613998968"/>
 									<reference key="NSHeaderClipView" ref="903567248"/>
-									<reference key="NSCornerView" ref="1005257844"/>
 									<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 								</object>
 								<object class="NSSplitView" id="766578884">
@@ -4851,7 +4851,8 @@
 																<int key="NSPeriodicDelay">200</int>
 																<int key="NSPeriodicInterval">25</int>
 															</object>
-															<reference key="NSSelectedCell" ref="595784327"/>
+															<int key="NSSelectedRow">-1</int>
+															<int key="NSSelectedCol">-1</int>
 															<reference key="NSBackgroundColor" ref="999148946"/>
 															<reference key="NSCellBackgroundColor" ref="762861948"/>
 														</object>
@@ -5184,7 +5185,6 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{1132, 808}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{600, 622}</string>
@@ -8213,13 +8213,13 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 										<object class="NSButton" id="75759050">
 											<reference key="NSNextResponder" ref="89870278"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{62, 7}, {258, 25}}</string>
+											<string key="NSFrame">{{17, 7}, {328, 25}}</string>
 											<reference key="NSSuperview" ref="89870278"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="542622968">
 												<int key="NSCellFlags">-2080244224</int>
 												<int key="NSCellFlags2">134348800</int>
-												<string key="NSContents">More information about OsiriX 64-bit</string>
+												<string key="NSContents">Click here for More informations about OsiriX 64-bit</string>
 												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="75759050"/>
 												<int key="NSButtonFlags">-2038152961</int>
@@ -8715,13 +8715,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="68221115">
 											<reference key="NSNextResponder" ref="639385820"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{62, 7}, {258, 25}}</string>
+											<string key="NSFrame">{{17, 7}, {328, 25}}</string>
 											<reference key="NSSuperview" ref="639385820"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="584079982">
 												<int key="NSCellFlags">-2080244224</int>
 												<int key="NSCellFlags2">134348800</int>
-												<string key="NSContents">More information about OsiriX 64-bit</string>
+												<string key="NSContents">Click here for More informations about OsiriX 64-bit</string>
 												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="68221115"/>
 												<int key="NSButtonFlags">-2038152961</int>
@@ -21170,8 +21170,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<array class="NSMutableArray" key="children">
 							<reference ref="155245957"/>
 							<reference ref="936767100"/>
-							<reference ref="418079109"/>
 							<reference ref="68221115"/>
+							<reference ref="418079109"/>
 						</array>
 						<reference key="parent" ref="600825701"/>
 					</object>
@@ -21192,14 +21192,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="parent" ref="593011016"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">14213</int>
-						<reference key="object" ref="418079109"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="552341223"/>
-						</array>
-						<reference key="parent" ref="593011016"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">14214</int>
 						<reference key="object" ref="68221115"/>
 						<array class="NSMutableArray" key="children">
@@ -21211,11 +21203,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<int key="objectID">14215</int>
 						<reference key="object" ref="584079982"/>
 						<reference key="parent" ref="68221115"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">14216</int>
-						<reference key="object" ref="552341223"/>
-						<reference key="parent" ref="418079109"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">14217</int>
@@ -21298,6 +21285,19 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<int key="objectID">13420</int>
 						<reference key="object" ref="693503370"/>
 						<reference key="parent" ref="419773436"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14213</int>
+						<reference key="object" ref="418079109"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="552341223"/>
+						</array>
+						<reference key="parent" ref="593011016"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14216</int>
+						<reference key="object" ref="552341223"/>
+						<reference key="parent" ref="418079109"/>
 					</object>
 				</array>
 			</object>
@@ -21739,9 +21739,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<integer value="1" key="12356.ImportedFromIB2"/>
 				<string key="12364.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="12364.ImportedFromIB2"/>
-				<string key="12366.IBEditorWindowLastContentRect">{{112, 79}, {495, 249}}</string>
+				<string key="12366.IBEditorWindowLastContentRect">{{456, 320}, {495, 249}}</string>
 				<string key="12366.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="12366.IBWindowTemplateEditedContentRect">{{112, 79}, {495, 249}}</string>
+				<string key="12366.IBWindowTemplateEditedContentRect">{{456, 320}, {495, 249}}</string>
 				<integer value="1" key="12366.ImportedFromIB2"/>
 				<string key="12366.editorWindowContentRectSynchronizationRect">{{189, 497}, {490, 180}}</string>
 				<integer value="0" key="12366.windowTemplate.hasMaxSize"/>
@@ -21909,7 +21909,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<integer value="1" key="12530.ImportedFromIB2"/>
 				<string key="12543.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSAffineTransform" key="12543.IBViewBoundsToFrameTransform">
-					<bytes key="NSTransformStruct">AUJYAABCVAAAA</bytes>
+					<bytes key="NSTransformStruct">AUJIAABCgAAAA</bytes>
 				</object>
 				<integer value="1" key="12543.ImportedFromIB2"/>
 				<string key="12545.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -22979,7 +22979,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="14208.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="14210.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSAffineTransform" key="14210.IBViewBoundsToFrameTransform">
-					<bytes key="NSTransformStruct">AUJYAABCVAAAA</bytes>
+					<bytes key="NSTransformStruct">AUJIAABCgAAAA</bytes>
 				</object>
 				<integer value="1" key="14210.ImportedFromIB2"/>
 				<string key="14211.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -22988,12 +22988,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<integer value="1" key="14212.ImportedFromIB2"/>
 				<string key="14213.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSAffineTransform" key="14213.IBViewBoundsToFrameTransform">
-					<bytes key="NSTransformStruct">P4AAAL+AAADCMAAAwkgAAA</bytes>
+					<bytes key="NSTransformStruct">P4AAAL+AAADCLAAAwkgAAA</bytes>
 				</object>
 				<integer value="1" key="14213.ImportedFromIB2"/>
 				<string key="14214.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSAffineTransform" key="14214.IBViewBoundsToFrameTransform">
-					<bytes key="NSTransformStruct">P4AAAL+AAABCdAAAwfAAAA</bytes>
+					<bytes key="NSTransformStruct">P4AAAL+AAABBiAAAwfAAAA</bytes>
 				</object>
 				<string key="14215.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="14216.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>

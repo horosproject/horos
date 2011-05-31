@@ -3648,48 +3648,67 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)setCurvedPath:(CPRCurvedPath *)newCurvedPath
 {
-	N3Vector initialNormal;
-    N3Vector tangentAtStart;
-    N3Vector previousInitialNormal;
+//	N3Vector initialNormal;
+//    N3Vector tangentAtStart;
+//    N3Vector previousInitialNormal;
+    CGFloat previousAngle;
 	
 	if (newCurvedPath != curvedPath) {
-		previousInitialNormal = curvedPath.initialNormal;
+		previousAngle = curvedPath.angle;
 		[curvedPath release];
 		curvedPath = [newCurvedPath copy];
 
-		if (N3VectorEqualToVector(curvedPath.initialNormal, N3VectorZero)) {
-			tangentAtStart = [curvedPath.bezierPath tangentAtStart];
-			initialNormal = N3VectorNormalize(N3VectorCrossProduct(baseNormal, tangentAtStart));
-			initialNormal = N3VectorApplyTransform(initialNormal, N3AffineTransformMakeRotationAroundVector(straightenedCPRAngle * (M_PI / 180.0), tangentAtStart));
+		if (N3VectorEqualToVector(curvedPath.baseDirection, N3VectorZero)) {
+            curvedPath.baseDirection = baseNormal;
+            curvedPath.angle = straightenedCPRAngle * (M_PI / 180.0);
+            
+//			tangentAtStart = [curvedPath.bezierPath tangentAtStart];
+//			initialNormal = N3VectorNormalize(N3VectorCrossProduct(baseNormal, tangentAtStart));
+//			initialNormal = N3VectorApplyTransform(initialNormal, N3AffineTransformMakeRotationAroundVector(straightenedCPRAngle * (M_PI / 180.0), tangentAtStart));
 			
-			curvedPath.initialNormal = initialNormal; 
+//			curvedPath.initialNormal = initialNormal; 
 		} else {
-			if (N3VectorEqualToVector(previousInitialNormal, self.curvedPath.initialNormal) == NO) {
-				tangentAtStart = [curvedPath.bezierPath tangentAtStart];
-				initialNormal = N3VectorNormalize(N3VectorCrossProduct(baseNormal, tangentAtStart));
-				
-				[self willChangeValueForKey:@"straightenedCPRAngle"];
-				straightenedCPRAngle = N3VectorAngleBetweenVectorsAroundVector(initialNormal, self.curvedPath.initialNormal, tangentAtStart) * (180.0 / M_PI);
+			if (previousAngle != curvedPath.angle) {
+                [self willChangeValueForKey:@"straightenedCPRAngle"];
+				straightenedCPRAngle = curvedPath.angle * (180.0 / M_PI);
 				[self didChangeValueForKey:@"straightenedCPRAngle"];
+//                
+//                
+//				tangentAtStart = [curvedPath.bezierPath tangentAtStart];
+//				initialNormal = N3VectorNormalize(N3VectorCrossProduct(baseNormal, tangentAtStart));
+//				
+//				[self willChangeValueForKey:@"straightenedCPRAngle"];
+//				straightenedCPRAngle = N3VectorAngleBetweenVectorsAroundVector(initialNormal, self.curvedPath.initialNormal, tangentAtStart) * (180.0 / M_PI);
+//				[self didChangeValueForKey:@"straightenedCPRAngle"];
 			}
 		}
-	}
+
+//        if (N3VectorEqualToVector(curvedPath.initialNormal, N3VectorZero)) {
+//			tangentAtStart = [curvedPath.bezierPath tangentAtStart];
+//			initialNormal = N3VectorNormalize(N3VectorCrossProduct(baseNormal, tangentAtStart));
+//			initialNormal = N3VectorApplyTransform(initialNormal, N3AffineTransformMakeRotationAroundVector(straightenedCPRAngle * (M_PI / 180.0), tangentAtStart));
+//			
+//			curvedPath.initialNormal = initialNormal; 
+//		} else {
+//			if (N3VectorEqualToVector(previousInitialNormal, self.curvedPath.initialNormal) == NO) {
+//				tangentAtStart = [curvedPath.bezierPath tangentAtStart];
+//				initialNormal = N3VectorNormalize(N3VectorCrossProduct(baseNormal, tangentAtStart));
+//				
+//				[self willChangeValueForKey:@"straightenedCPRAngle"];
+//				straightenedCPRAngle = N3VectorAngleBetweenVectorsAroundVector(initialNormal, self.curvedPath.initialNormal, tangentAtStart) * (180.0 / M_PI);
+//				[self didChangeValueForKey:@"straightenedCPRAngle"];
+//			}
+//		}
+    }
 }
 
 - (void)setStraightenedCPRAngle:(double)newAngle
 {
-    N3Vector initialNormal;
-    N3Vector tangentAtStart;
-    
     if (straightenedCPRAngle != newAngle) {
 		[self addToUndoQueue:@"curvedPath"];
         straightenedCPRAngle = newAngle;
         
-        tangentAtStart = [curvedPath.bezierPath tangentAtStart];
-        initialNormal = N3VectorNormalize(N3VectorCrossProduct(baseNormal, tangentAtStart));
-        initialNormal = N3VectorApplyTransform(initialNormal, N3AffineTransformMakeRotationAroundVector(straightenedCPRAngle * (M_PI / 180.0), tangentAtStart));
-
-        curvedPath.initialNormal = initialNormal;
+        curvedPath.angle = straightenedCPRAngle * (M_PI / 180.0);
         mprView1.curvedPath = curvedPath;
         mprView2.curvedPath = curvedPath;
         mprView3.curvedPath = curvedPath;
@@ -3699,6 +3718,30 @@ static float deg2rad = 3.14159265358979/180.0;
         bottomTransverseView.curvedPath = curvedPath;
     }
 }
+
+//- (void)setStraightenedCPRAngle:(double)newAngle
+//{
+//    N3Vector initialNormal;
+//    N3Vector tangentAtStart;
+//    
+//    if (straightenedCPRAngle != newAngle) {
+//		[self addToUndoQueue:@"curvedPath"];
+//        straightenedCPRAngle = newAngle;
+//        
+//        tangentAtStart = [curvedPath.bezierPath tangentAtStart];
+//        initialNormal = N3VectorNormalize(N3VectorCrossProduct(baseNormal, tangentAtStart));
+//        initialNormal = N3VectorApplyTransform(initialNormal, N3AffineTransformMakeRotationAroundVector(straightenedCPRAngle * (M_PI / 180.0), tangentAtStart));
+//        
+//        curvedPath.initialNormal = initialNormal;
+//        mprView1.curvedPath = curvedPath;
+//        mprView2.curvedPath = curvedPath;
+//        mprView3.curvedPath = curvedPath;
+//        cprView.curvedPath = curvedPath;
+//        topTransverseView.curvedPath = curvedPath;
+//        middleTransverseView.curvedPath = curvedPath;
+//        bottomTransverseView.curvedPath = curvedPath;
+//    }
+//}
 
 - (NSDictionary*)exportDCMImage16bitWithWidth:(NSUInteger)width height:(NSUInteger)height fullDepth:(BOOL)fullDepth withDicomExport:(DICOMExport *)dicomExport // dicomExport can be nil
 {

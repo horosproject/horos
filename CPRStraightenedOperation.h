@@ -17,7 +17,7 @@
 #import "CPRGeneratorRequest.h"
 
 @interface CPRStraightenedOperation : CPRGeneratorOperation {
-    volatile int32_t _oustandingFillOperationCount __attribute__ ((aligned (4)));
+    volatile int32_t _outstandingFillOperationCount __attribute__ ((aligned (4)));
     
     float *_floatBytes;
     NSMutableSet *_fillOperations;
