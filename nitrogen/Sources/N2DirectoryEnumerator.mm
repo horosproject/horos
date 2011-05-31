@@ -22,6 +22,8 @@
 
 @implementation N2DirectoryEnumerator
 
+@synthesize filesOnly = _filesOnly;
+
 -(id)initWithPath:(NSString*)path maxNumberOfFiles:(NSInteger)m {
 	self = [super init];
 	
@@ -49,8 +51,16 @@
 #pragma mark NSEnumerator API
 
 -(NSArray*)allObjects {
-	[NSException raise:NSGenericException format:@"N2DirectoryEnumerator doesn't provide -allObjects"];
-	return nil;
+	NSMutableArray* all = [NSMutableArray array];
+	
+	id i;
+	do {
+		i = [self nextObject];
+		//NSLog(@"i is %@", i);
+		if (i) [all addObject:i];
+	} while (i);
+	
+	return all;
 }
 
 -(id)nextObject {
@@ -63,18 +73,24 @@
 	NSString* subpath;
 	DIR* dir;
 	while (dir = [self DIRAndSubpath:&subpath]) {
+		//NSLog(@"dir %X subpath %@", dir, subpath);
 		struct dirent* dirp = readdir(dir);
 		if (dirp) {
 			NSString* subsubpath = [fm stringWithFileSystemRepresentation:dirp->d_name length:strlen(dirp->d_name)];
+			//NSLog(@"nextItem %@", subsubpath);
 			if ([subsubpath isEqualToString:@"."] || [subsubpath isEqualToString:@".."])
 				continue;
 			
 			[currpath release];
 			currpath = [(subpath? [subpath stringByAppendingPathComponent:subsubpath] : subsubpath) retain];
-
-			if (dirp->d_type == DT_DIR) {
-				DIR* sdir = opendir([[basepath stringByAppendingPathComponent:currpath] fileSystemRepresentation]);
+			NSString* fullpath = [basepath stringByAppendingPathComponent:currpath];
+			
+			BOOL isDir;
+			if (dirp->d_type == DT_DIR || (dirp->d_type == DT_UNKNOWN && [NSFileManager.defaultManager fileExistsAtPath:fullpath isDirectory:&isDir] && isDir)) {
+				DIR* sdir = opendir([fullpath fileSystemRepresentation]);
+				//NSLog(@"\tPushed");
 				if (sdir) [self pushDIR:sdir subpath:currpath];
+				if (_filesOnly) continue;
 			}
 			
 			return currpath;

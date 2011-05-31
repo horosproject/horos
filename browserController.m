@@ -15,6 +15,7 @@
 #import "DicomDatabase.h"
 #import "DicomDatabase+Routing.h"
 #import "DicomDatabase+DCMTK.h"
+#import "DicomDatabase+Scan.h"
 #import "RemoteDicomDatabase.h"
 #import "SRAnnotation.h"
 #import <DiscRecording/DRDevice.h>
@@ -11378,48 +11379,8 @@ static NSArray*	openSubSeriesArray = nil;
 	[deleteQueue unlock];
 }
 
-+ (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory
-{
-	DicomDirScanDepth++;
-	
-	NSArray *fileNames = nil;
-	NSString *filePath = nil;
-	
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-
-	fileNames = [[NSFileManager defaultManager] directoryContentsAtPath: startDirectory];
-	
-	// First search for files, THEN for directory -> Prefer DICOMDIR at top level !
-	for( NSString *s in fileNames)
-	{
-		filePath = [startDirectory stringByAppendingPathComponent: s];
-		NSString *upperString = [s uppercaseString];
-		if([upperString isEqualToString: @"DICOMDIR"] || [upperString isEqualToString: @"DICOMDIR."])
-		{
-			return filePath;
-		}
-	}
-	
-	// Search for directories
-	BOOL isDirectory;
-	for( NSString *s in fileNames)
-	{
-		if( [s characterAtIndex: 0] != '.')
-		{
-			if ([fileManager fileExistsAtPath:filePath isDirectory: &isDirectory])
-			{
-				if(isDirectory == YES && DicomDirScanDepth < 3)
-				{
-					if((filePath = [BrowserController _findFirstDicomdirOnCDMedia: filePath]) != nil)
-						return filePath;
-				}
-			}
-		}
-	}
-	
-	DicomDirScanDepth--;
-	
-	return nil;
++ (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory { // __deprecated
+	return [DicomDatabase _findDicomdirIn:[startDirectory stringsByAppendingPaths:[[[NSFileManager defaultManager] enumeratorAtPath:startDirectory filesOnly:YES] allObjects]]];
 }
 
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination

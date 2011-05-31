@@ -61,8 +61,14 @@ void _N2LogExceptionVImpl(NSException* e, BOOL logStack, const char* pf, NSStrin
 	}
 }
 	
-void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf) {
-	_N2LogExceptionVImpl(e, logStack, pf, nil, nil);
+void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf, ...) {
+	va_list args;
+	va_start(args, pf);
+
+	id format; va_arg(args, id);
+	_N2LogExceptionVImpl(e, logStack, pf, format, args);
+	
+	va_end(args);
 }
 
 extern void N2LogStackTrace(NSString* format, ...) {

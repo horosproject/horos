@@ -1,4 +1,6 @@
 - MacAppStore (check)
+- Albums refresh
+- badge addfiles
 
 --- tester ˆ fond:
 ----- database switch

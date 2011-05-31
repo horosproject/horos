@@ -731,7 +731,8 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 -(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting { // don't
 }
 
--(void)save:(NSError**)err { // don't
+-(BOOL)save:(NSError**)err { // don't
+	return YES;
 }
 
 -(void)rebuild:(BOOL)complete { // do nothing

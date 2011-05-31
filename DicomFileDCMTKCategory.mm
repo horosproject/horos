@@ -279,18 +279,11 @@ extern NSRecursiveLock *PapyrusLock;
 		DcmDataset *dataset = fileformat.getDataset();
 		
 		//TransferSyntax
-		if (fileformat.getMetaInfo()->findAndGetString(DCM_TransferSyntaxUID, string, OFFalse).good() && string != NULL)
+		if (fileformat.getMetaInfo()->findAndGetString(DCM_TransferSyntaxUID, string, OFFalse).good() && string != NULL 
+			&& [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] isEqualToString:@"1.2.840.10008.1.2.4.100"])
 		{
-			if( [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] isEqualToString:@"1.2.840.10008.1.2.4.100"])
-			{
 				fileType = [[NSString stringWithString:@"DICOMMPEG2"] retain];
 				[dicomElements setObject:fileType forKey:@"fileType"];
-			}
-			else
-			{
-				fileType = [[NSString stringWithString:@"DICOM"] retain];
-				[dicomElements setObject:fileType forKey:@"fileType"];
-			}
 		}
 		else
 		{

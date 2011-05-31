@@ -71,7 +71,7 @@
 		if (![NSThread isMainThread])
 			NSLog( @"***** NSThread we should NOT be here");
 		
-		if ([_threadsController.arrangedObjects containsObject:thread])
+		if ([_threadsController.arrangedObjects containsObject:thread] || [thread isFinished])
 			return;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];

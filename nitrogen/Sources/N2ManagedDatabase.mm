@@ -224,20 +224,25 @@
 	return NO;
 }
 
--(void)save:(NSError**)err {
+-(BOOL)save:(NSError**)err {
 	if (self.isVolatile)
-		return;
+		return YES;
 	NSError* perr = NULL;
 	if (!err) err = &perr;
+	
+	BOOL b = NO;
+	
 	[self lock];
 	@try {
-		[self.managedObjectContext save:err];
+		b = [self.managedObjectContext save:err];
 	} @catch(NSException* e) {
 		if (!*err)
 			*err = [NSError errorWithDomain:@"Exception" code:-1 userInfo:[NSDictionary dictionaryWithObject:e forKey:@"Exception"]];
 	} @finally {
 		[self unlock];
 	}
+	
+	return b;
 }
 
 

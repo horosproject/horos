@@ -414,7 +414,7 @@ extern NSString* O2AlbumDragType;
 - (IBAction) ReBuildDatabaseSheet: (id)sender;
 - (void) previewSliderAction:(id) sender;
 - (void) addHelpMenu;
-+ (NSString*) _findFirstDicomdirOnCDMedia: (NSString*)startDirectory;
++ (NSString*) _findFirstDicomdirOnCDMedia: (NSString*)startDirectory __deprecated;
 + (BOOL)isItCD:(NSString*) path;
 - (void)storeSCPComplete:(id)sender;
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingDicomFile;

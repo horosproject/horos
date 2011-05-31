@@ -36,7 +36,7 @@ extern NSString* RectString(NSRect r);
 extern NSString* PointString(NSPoint p);
 
 extern void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, id arg, ...);
-extern void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf);
+extern void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf, ...);
 
 #define N2LogError(...) _N2LogErrorImpl(__PRETTY_FUNCTION__, __FILE__, __LINE__, __VA_ARGS__)
 #define N2LogDeprecatedCall(...) _N2LogErrorImpl(__PRETTY_FUNCTION__, __FILE__, __LINE__, @"deprecated API usage")

@@ -15,7 +15,10 @@
 	NSString* currpath;
 	NSMutableArray* DIRs;
 	NSUInteger counter, max;
+	BOOL _filesOnly;
 }
+
+@property BOOL filesOnly;
 
 -(id)initWithPath:(NSString*)path maxNumberOfFiles:(NSInteger)n;
 

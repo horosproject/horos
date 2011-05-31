@@ -203,6 +203,10 @@
 		597DA7B41188340500D3BBCF /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A997B15610E0C412004C5BB1 /* SecurityInterface.framework */; };
 		599115F012D7224A00924B5C /* browserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 599115EF12D7224A00924B5C /* browserController.m */; };
 		599115F112D7224A00924B5C /* browserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 599115EF12D7224A00924B5C /* browserController.m */; };
+		59939A3B1393F05F00C07D53 /* NSDate+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59939A391393F05F00C07D53 /* NSDate+N2.h */; };
+		59939A3C1393F05F00C07D53 /* NSDate+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59939A3A1393F05F00C07D53 /* NSDate+N2.mm */; };
+		59939A3D1393F05F00C07D53 /* NSDate+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59939A391393F05F00C07D53 /* NSDate+N2.h */; };
+		59939A3E1393F05F00C07D53 /* NSDate+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59939A3A1393F05F00C07D53 /* NSDate+N2.mm */; };
 		5997895D11B7B3E9002DB107 /* Anonymization.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997894D11B7B3E9002DB107 /* Anonymization.h */; };
 		5997895E11B7B3E9002DB107 /* Anonymization.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997894E11B7B3E9002DB107 /* Anonymization.mm */; };
 		5997895F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997894F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h */; };
@@ -8339,6 +8343,8 @@
 		597BB92F12A7E0F200D0A172 /* NSUserDefaults+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+OsiriX.h"; sourceTree = "<group>"; };
 		597BB93012A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSUserDefaults+OsiriX.mm"; sourceTree = "<group>"; };
 		599115EF12D7224A00924B5C /* browserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = browserController.m; sourceTree = "<group>"; };
+		59939A391393F05F00C07D53 /* NSDate+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+N2.h"; path = "nitrogen/Sources/NSDate+N2.h"; sourceTree = "<group>"; };
+		59939A3A1393F05F00C07D53 /* NSDate+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSDate+N2.mm"; path = "nitrogen/Sources/NSDate+N2.mm"; sourceTree = "<group>"; };
 		5997894D11B7B3E9002DB107 /* Anonymization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Anonymization.h; sourceTree = "<group>"; };
 		5997894E11B7B3E9002DB107 /* Anonymization.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Anonymization.mm; sourceTree = "<group>"; };
 		5997894F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizationCustomTagPanelController.h; sourceTree = "<group>"; };
@@ -13409,6 +13415,8 @@
 		AB10FAFD1129338A009EB238 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
+				59939A391393F05F00C07D53 /* NSDate+N2.h */,
+				59939A3A1393F05F00C07D53 /* NSDate+N2.mm */,
 				59E83A1112FC6556006B930A /* NSManagedObject+N2.h */,
 				59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */,
 				59DC28B411C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.h */,
@@ -19865,6 +19873,7 @@
 				596F42D21383AF3800A3FC33 /* DicomDatabase+Routing.h in Headers */,
 				59B1BAE31385157C00424116 /* DicomDatabase+Clean.h in Headers */,
 				59C33D92138CFCE700FDF823 /* DicomDatabase+Scan.h in Headers */,
+				59939A3D1393F05F00C07D53 /* NSDate+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22093,6 +22102,7 @@
 				596F42D41383AF3800A3FC33 /* DicomDatabase+Routing.h in Headers */,
 				59B1BAE51385157C00424116 /* DicomDatabase+Clean.h in Headers */,
 				59C33D90138CFCE700FDF823 /* DicomDatabase+Scan.h in Headers */,
+				59939A3B1393F05F00C07D53 /* NSDate+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24474,6 +24484,7 @@
 				596F42D31383AF3800A3FC33 /* DicomDatabase+Routing.mm in Sources */,
 				59B1BAE41385157C00424116 /* DicomDatabase+Clean.mm in Sources */,
 				59C33D93138CFCE700FDF823 /* DicomDatabase+Scan.mm in Sources */,
+				59939A3E1393F05F00C07D53 /* NSDate+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25741,6 +25752,7 @@
 				596F42D51383AF3800A3FC33 /* DicomDatabase+Routing.mm in Sources */,
 				59B1BAE61385157C00424116 /* DicomDatabase+Clean.mm in Sources */,
 				59C33D91138CFCE700FDF823 /* DicomDatabase+Scan.mm in Sources */,
+				59939A3C1393F05F00C07D53 /* NSDate+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
