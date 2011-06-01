@@ -101,7 +101,7 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	DLog(@"[ThreadModalForWindowController invalidate]");
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:_thread];
 	[self.thread.threadDictionary removeObjectForKey:NSThreadModalForWindowControllerKey];
-	[NSApp endSheet:self.window];
+	[self.window orderOut:self]; // [NSApp endSheet:self.window];
 }
 
 -(void)threadWillExitNotification:(NSNotification*)notification {
@@ -121,7 +121,8 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 //		return nil;
 //	[[self threadDictionary] setObject:[NSNumber numberWithBool:YES] forKey:ThreadIsCurrentlyModal];
 	if ([NSThread isMainThread]) {
-		return [[[ThreadModalForWindowController alloc] initWithThread:self window:window] autorelease];
+		if (![self isFinished])
+			return [[[ThreadModalForWindowController alloc] initWithThread:self window:window] autorelease];
 	} else [self performSelectorOnMainThread:@selector(startModalForWindow:) withObject:window waitUntilDone:NO];
 	return nil;
 }

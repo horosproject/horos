@@ -45,6 +45,8 @@ extern NSString* const OsirixAddToDBNotification;
 extern const NSString* const OsirixAddToDBNotificationImagesArray;
 extern NSString* const OsirixAddToDBCompleteNotification;
 extern const NSString* const OsirixAddToDBCompleteNotificationImagesArray;
+extern NSString* const _O2AddToDBAnywayNotification;
+extern NSString* const _O2AddToDBAnywayCompleteNotification;
 extern NSString* const OsirixDatabaseObjectsMayFaultNotification; // database objects may soon become invalid
 extern NSString* const OsirixNewStudySelectedNotification;
 extern NSString* const OsirixDidLoadNewObjectNotification;

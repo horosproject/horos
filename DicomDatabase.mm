@@ -1670,22 +1670,25 @@ enum { Compress, Decompress };
 			//						[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourDB:) toTarget: browserController withObject: bonjourFilesToSend];
 			//				}
 			
-			if (postNotifications)
-			{
-				NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-				
-				@try {
-					NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
+			
+			NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+
+			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
+			NSDictionary* userInfo2 = [NSDictionary dictionaryWithObject:completeImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
+
+			@try {
+				[[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:userInfo];
+				[[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:userInfo2];
+				if (postNotifications) {
 					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:self userInfo:userInfo];
-					
-					userInfo = [NSDictionary dictionaryWithObject:completeImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
-					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo:userInfo];
-				} @catch (NSException* e) {
-					N2LogExceptionWithStackTrace(e);
+					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo:userInfo2];
 				}
+			} @catch (NSException* e) {
+				N2LogExceptionWithStackTrace(e);
+			}
 				
-				if ([addedImagesArray count] > 0)// && generatedByOsiriX == NO)
-				{
+			if (postNotifications) {
+				if ([addedImagesArray count] > 0) { // && generatedByOsiriX == NO)
 					dockLabel = [NSString stringWithFormat:@"%d", [addedImagesArray count]];
 					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];
 					growlStringNewStudy = [NSString stringWithFormat: NSLocalizedString(@"%@\r%@", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
@@ -1698,8 +1701,10 @@ enum { Compress, Decompress };
 				if (self.isLocal)
 					[self applyRoutingRules:nil toImages:addedImagesArray];
 				
-				[p release];
 			}
+			
+			[p release];
+			
 		}
 		@catch( NSException *ne)
 		{

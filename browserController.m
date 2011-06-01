@@ -1030,17 +1030,17 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
--(void)observeDatabaseAddNotification:(NSNotification*)notification {
+-(void)_observeDatabaseAddNotification:(NSNotification*)notification {
 	if (![NSThread isMainThread])
-		[self performSelectorOnMainThread:@selector(observeDatabaseAddNotification:) withObject:notification waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(_observeDatabaseAddNotification:) withObject:notification waitUntilDone:NO];
 	else {
 		[self outlineViewRefresh];
 		[self refreshAlbums];
 	}
 }
 
--(void)observeDatabaseObjectsMayFaultNotification:(NSNotification*)notification {
-	NSLog(@"ToDo: [BrowserController observeDatabaseObjectsMayFaultNotification:]");
+-(void)_observeDatabaseObjectsMayFaultNotification:(NSNotification*)notification {
+	NSLog(@"ToDo: [BrowserController _observeDatabaseObjectsMayFaultNotification:]");
 }
 
 -(void)resetToLocalDatabase {
@@ -1114,8 +1114,8 @@ static NSConditionLock *threadLock = nil;
 				[DicomDatabase setActiveLocalDatabase:db];
 			[self selectCurrentDatabaseSource];
 
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseAddNotification:) name:OsirixAddToDBNotification object:_database];
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseObjectsMayFaultNotification:) name:OsirixDatabaseObjectsMayFaultNotification object:_database];
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseAddNotification:) name:_O2AddToDBAnywayNotification object:_database];
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseObjectsMayFaultNotification:) name:OsirixDatabaseObjectsMayFaultNotification object:_database];
 
 		
 			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
