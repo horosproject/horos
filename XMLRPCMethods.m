@@ -238,7 +238,7 @@ static NSTimeInterval lastConnection = 0;
 	
 #pragma mark KillOsiriX			
 	if ( [selName isEqualToString:@"killosirix"])
-		[[AppController sharedAppController] terminate: self];
+		[[AppController sharedAppController] performSelector:@selector(terminate:) withObject:self afterDelay:0];
 
 #pragma mark DownloadURL
 	// ********************************************
