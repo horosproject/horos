@@ -1292,6 +1292,59 @@ extern int splitPosition[ 3];
 }
 
 - (void)_sendNewRequest
+//{
+//    CPRStretchedGeneratorRequest *request;
+//    N3Vector curveDirection;
+//    N3Vector baseNormal;
+//    
+//    if ([_curvedPath.bezierPath elementCount] >= 3)
+//	{
+//		request = [[CPRStraightenedGeneratorRequest alloc] init];
+//
+//		request.pixelsWide = [self bounds].size.width*1.2;
+//		request.pixelsHigh = [self bounds].size.height*1.2;
+//		request.slabWidth = _curvedPath.thickness;
+//		
+//		request.slabSampleDistance = 0;
+//		request.bezierPath = _curvedPath.bezierPath;
+//		request.projectionMode = _clippingRangeMode;
+//		request = [[CPRStretchedGeneratorRequest alloc] init];
+//		
+//        request.pixelsWide = [self bounds].size.width*1.2;
+//        request.pixelsHigh = [self bounds].size.height*1.2;
+//		request.slabWidth = _curvedPath.thickness;
+//
+//        request.slabSampleDistance = 0;
+//        request.bezierPath = _curvedPath.bezierPath;
+//        request.projectionMode = _clippingRangeMode;
+//
+//		curveDirection = N3VectorSubtract([_curvedPath.bezierPath vectorAtEnd], [_curvedPath.bezierPath vectorAtStart]);
+//		baseNormal = N3VectorNormalize(N3VectorCrossProduct(_curvedPath.baseDirection, curveDirection));
+//		request.projectionNormal = N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(_curvedPath.angle, curveDirection));
+//		request.midHeightPoint = [_curvedPath.bezierPath vectorAtStart];
+//
+//        if ([_lastRequest isEqual:request] == NO) {
+//			if (request.slabWidth < 2) {
+//				CPRVolumeData *curvedVolume;
+//				curvedVolume = [CPRGenerator synchronousRequestVolume:request volumeData:_generator.volumeData];
+//				
+//				[_generator runMainRunLoopUntilAllRequestsAreFinished];
+//				[self generator:nil didGenerateVolume:curvedVolume request:request];
+//			} else {
+//				[_generator requestVolume:request];
+//			}
+//			self.lastRequest = request;
+//        }
+//        
+//        [request release];
+//    }
+//	else
+//	{
+//		[self setPixels: nil files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+//	}
+//	
+//    _needsNewRequest = NO;
+//}
 {
     CPRStraightenedGeneratorRequest *request;
     
