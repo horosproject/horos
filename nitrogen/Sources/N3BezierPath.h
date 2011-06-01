@@ -67,7 +67,7 @@ typedef NSInteger N3BezierPathElement;
 - (N3Vector)tangentAtEnd;
 - (N3Vector)normalAtEndWithInitialNormal:(N3Vector)initialNormal;
 - (BOOL)isPlanar;
-- (BOOL)isPlanarWithPlane:(N3PlanePointer)bezierPlane; // try to think of a better signature for this function. This will put the plane in bezierPlane
+- (N3Plane)leastSquaresPlane;
 - (N3BezierPathElement)elementAtIndex:(NSInteger)index;
 - (N3BezierPathElement)elementAtIndex:(NSInteger)index control1:(N3VectorPointer)control1 control2:(N3VectorPointer)control2 endpoint:(N3VectorPointer)endpoint; // Warning: differs from NSBezierPath in that controlVector2 is is not always the end
 

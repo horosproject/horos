@@ -475,7 +475,8 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 {
 	N3Plane plane;
 	
-	if( [self.bezierPath isPlanarWithPlane:&plane]) {
+	if( [self.bezierPath isPlanar]) {
+		plane = [self.bezierPath leastSquaresPlane];
 		if (ABS(N3VectorDotProduct(N3VectorNormalize(self.initialNormal), N3VectorNormalize(plane.normal))) > 0.9999 /*~cos(1deg)*/) {
 			return YES;
 		}
