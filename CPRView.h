@@ -100,8 +100,11 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 @property (nonatomic) BOOL displayTransverseLines;
 @property (nonatomic, readwrite, assign) BOOL displayCrossLines;
 
-- (void) adjustROIsForCPRView;
-- (void) runMainRunLoopUntilAllRequestsAreFinished;
-- (BOOL) planarDeformations;
+- (void)waitUntilPixUpdate; // returns once this view's DCM pix object has been updated to relect any changes made to the view. 
 
 @end
+
+
+
+
+

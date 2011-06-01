@@ -61,6 +61,8 @@ extern const int32_t CPRCurvedPathControlTokenNone;
 
 - (NSArray *)transverseSliceRequestsForSpacing:(CGFloat)spacing outputWidth:(NSUInteger)width outputHeight:(NSUInteger)height mmWide:(CGFloat)mmWide; // mmWide is the how wide in patient coordinates the transverse slice should be
 
+- (BOOL)isPlaneMeasurable; // bad name, but if this is true, we will let folks make measurements on the generated plane
+
 @property (nonatomic, readonly, retain) N3MutableBezierPath *bezierPath;
 @property (nonatomic, readwrite, assign) CGFloat thickness;
 @property (nonatomic, readwrite, assign) N3Vector baseDirection; // a base direction from which to define things such as the initial normal

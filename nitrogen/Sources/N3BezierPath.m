@@ -361,7 +361,12 @@
 
 - (BOOL)isPlanar
 {
-    return N3BezierCoreIsPlanar(_bezierCore);
+    return N3BezierCoreIsPlanar(_bezierCore, NULL);
+}
+
+- (BOOL)isPlanarWithPlane:(N3PlanePointer)bezierPlane
+{
+    return N3BezierCoreIsPlanar(_bezierCore, bezierPlane);
 }
 
 - (N3BezierPathElement)elementAtIndex:(NSInteger)index

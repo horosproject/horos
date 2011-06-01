@@ -19,6 +19,7 @@
 #import "DCMPix.h"
 
 static NSOperationQueue *_synchronousRequestQueue = nil;
+NSString * const _CPRGeneratorRunLoopMode = @"_CPRGeneratorRunLoopMode";
 
 @interface CPRGenerator ()
 
@@ -98,12 +99,12 @@ static NSOperationQueue *_synchronousRequestQueue = nil;
     [super dealloc];
 }
 
-- (void)runMainRunLoopUntilAllRequestsAreFinished
+- (void)runUntilAllRequestsAreFinished
 {
 	assert([NSThread isMainThread]);
 
 	while( [_observedOperations count] > 0) {
-		[[NSRunLoop mainRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+		[[NSRunLoop mainRunLoop] runMode:_CPRGeneratorRunLoopMode beforeDate:[NSDate distantFuture]];
 	}
 }
 
@@ -149,7 +150,8 @@ static NSOperationQueue *_synchronousRequestQueue = nil;
                 @synchronized (_finishedOperations) {
                     [_finishedOperations addObject:generatorOperation];
                 }
-                [self performSelectorOnMainThread:@selector(_didFinishOperation) withObject:nil waitUntilDone:NO];
+                [self performSelectorOnMainThread:@selector(_didFinishOperation) withObject:nil waitUntilDone:NO
+											modes:[NSArray arrayWithObjects:NSRunLoopCommonModes, _CPRGeneratorRunLoopMode, nil]];
             }
         }
     } else {
@@ -181,9 +183,9 @@ static NSOperationQueue *_synchronousRequestQueue = nil;
         
         volumeData = operation.generatedVolume;
         if (volumeData && [operation isCancelled] == NO && sentGeneratedVolume == NO) {
+			[_generatedFrameTimes addObject:[NSDate date]];
+			[self _cullGeneratedFrameTimes];
             if ([_delegate respondsToSelector:@selector(generator:didGenerateVolume:request:)]) {
-                [_generatedFrameTimes addObject:[NSDate date]];
-                [self _cullGeneratedFrameTimes];
                 [_delegate generator:self didGenerateVolume:operation.generatedVolume request:operation.request];
             }
             sentGeneratedVolume = YES;

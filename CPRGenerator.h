@@ -39,7 +39,7 @@
 
 - (void)requestVolume:(CPRGeneratorRequest *)request;
 
-- (void)runMainRunLoopUntilAllRequestsAreFinished;
+- (void)runUntilAllRequestsAreFinished; // must be called on the main thread. Delegate callbacks will happen, but this method will not return until all outstanding requests have been processed
 
 - (CGFloat)frameRate;
 
