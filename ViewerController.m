@@ -13849,6 +13849,19 @@ int i,j,l;
 	return factorPET2SUV;
 }
 
+- (void) recomputePixMinMax
+{
+	for( int y = 0; y < maxMovieIndex; y++)
+	{
+		for( DCMPix * p in pixList[ y])
+		{
+			[p computePixMinPixMax];
+			p.minValueOfSeries = 0;
+			p.maxValueOfSeries = 0;
+		}
+	}
+}
+
 - (void) convertPETtoSUV
 {
 	long	y, x, i;

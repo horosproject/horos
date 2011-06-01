@@ -5670,7 +5670,7 @@ public:
 		}
 		else
 		{
-			if( [controller maximumValue] - [controller minimumValue] > 4095 || [controller maximumValue] - [controller minimumValue] < 50)
+			if([controller maximumValue] - [controller minimumValue] > 4095 || [controller maximumValue] - [controller minimumValue] < 50)
 			{
 				valueFactor = 4095. / ([controller maximumValue] - [controller minimumValue]);
 				OFFSET16 = -[controller minimumValue];

@@ -618,6 +618,7 @@ enum
 - (IBAction) convMatrixAction:(id)sender;
 - (IBAction) changeMatrixSize:(id) sender;
 - (IBAction) computeSum:(id) sender;
+- (void) recomputePixMinMax;
 - (IBAction) endNameWLWW:(id) sender;
 - (IBAction) endSetWLWW:(id) sender;
 - (IBAction) updateSetWLWW:(id) sender;
