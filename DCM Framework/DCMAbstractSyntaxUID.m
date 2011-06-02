@@ -72,6 +72,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	/***/
 	static NSString *XRay3DAngiographicImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.1";
 	static NSString *XRay3DCraniofacialImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.2";
+	static NSString *PhilipsPrivateXRayMFStorage = @"1.3.46.670589.7.8.1618510091";
 	/***/
 	static NSString *XrayAngiographicBiplaneImageStorage = @"1.2.840.10008.5.1.4.1.1.12.3";
 	/***/
@@ -435,6 +436,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			EnhancedXRFImageStorage,
 			XRay3DAngiographicImageStorage,
 			XRay3DCraniofacialImageStorage,
+			PhilipsPrivateXRayMFStorage,
 			nil];
 		
 		@try 
