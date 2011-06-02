@@ -65,6 +65,7 @@ BOOL gUseJPEGColorSpace = NO;
 BOOL gUSEPAPYRUSDCMPIX = YES;
 BOOL gFULL32BITPIPELINE = NO;
 int gSUVAcquisitionTimeField = 0;
+NSDictionary *gCUSTOM_IMAGE_ANNOTATIONS = nil;
 BOOL	anonymizedAnnotations = NO;
 BOOL	runOsiriXInProtectedMode = NO;
 BOOL	quicktimeRunning = NO;
@@ -1236,6 +1237,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		gUseJPEGColorSpace = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"];
 		gFULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 		gSUVAcquisitionTimeField = [[NSUserDefaults standardUserDefaults] integerForKey:@"SUVAcquisitionTimeField"];
+		
+		[gCUSTOM_IMAGE_ANNOTATIONS release];
+		gCUSTOM_IMAGE_ANNOTATIONS = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"] copy];
 		
 #ifdef OSIRIX_LIGHT
 		gUSEPAPYRUSDCMPIX = YES;
@@ -12410,13 +12414,18 @@ END_CREATE_ROIS:
 {
 	@try 
 	{
-		NSDictionary *annotationsDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
-		
 		NSString *modality = [imageObj valueForKeyPath:@"series.modality"]; // imageObj = link to database
-		NSDictionary *annotationsForModality = [annotationsDict objectForKey:modality];
 		
-		if(!annotationsForModality) annotationsForModality = [annotationsDict objectForKey:@"Default"];
-		if([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1) annotationsForModality = [annotationsDict objectForKey:@"Default"];
+		NSDictionary *annotationsForModality = nil;
+		@synchronized( gCUSTOM_IMAGE_ANNOTATIONS)
+		{
+			annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:modality];
+			
+			if(!annotationsForModality) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
+			if([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
+			
+			annotationsForModality = [[annotationsForModality copy] autorelease];
+		}
 		
 		// image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
 		NSArray *keys = [annotationsForModality allKeys];
@@ -12563,9 +12572,10 @@ END_CREATE_ROIS:
 				}
 				if( annotationsOUT)
 				{
-					[PapyrusLock lock];
+					@synchronized( annotationsDictionary)
+					{
 						[annotationsDictionary setObject:annotationsOUT forKey: key];
-					[PapyrusLock unlock];
+					}
 				}
 			}
 		}
@@ -12575,6 +12585,33 @@ END_CREATE_ROIS:
 		NSLog(@"CustomImageAnnotations Exception: %@", e);
 	}
 }
+
+- (NSMutableDictionary*) annotationsDictionary
+{
+	NSMutableDictionary *d = nil;
+	
+	@synchronized( annotationsDictionary)
+	{
+		d = [[annotationsDictionary copy] autorelease];
+	}
+
+	return d;
+}
+
+- (void) setAnnotationsDictionary: (NSMutableDictionary*) d
+{
+	if( d != annotationsDictionary)
+	{
+		@synchronized( annotationsDictionary)
+		{
+			[annotationsDictionary release];
+			annotationsDictionary = nil;
+		}
+		
+		annotationsDictionary = [d retain];
+	}
+}
+
 #endif
 
 @end
