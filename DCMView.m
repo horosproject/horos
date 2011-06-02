@@ -11095,7 +11095,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				glBindTexture (TEXTRECTMODE, texture[k++]);
 				
 				if( glGetError() != 0)
-					NSLog( @"****** glGetError");
+					NSLog( @"****** glGetError: %d", glGetError());
 				
 				glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);
 				
@@ -11127,49 +11127,52 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 				
-				if( intFULL32BITPIPELINE )
-				{					
-					#if __BIG_ENDIAN__
-					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
-					#else
-					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-					#endif
-					else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+				if( currWidth > 0 && currHeight > 0)
+				{
+					if( intFULL32BITPIPELINE )
+					{					
+						#if __BIG_ENDIAN__
+						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+						#else
+						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						#endif
+						else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						else
+						{
+							float min = curWL - curWW / 2;
+							float max = curWL + curWW / 2;
+							
+							if( max-min == 0)
+							{
+								min = [curDCM fullwl] - [curDCM fullww] / 2;
+								max = [curDCM fullwl] + [curDCM fullww] / 2;
+							}
+							
+							glPixelTransferf( GL_RED_BIAS, -min/(max-min));
+							glPixelTransferf( GL_RED_SCALE, 1./(max-min));
+							glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, currWidth, currHeight, 0, GL_LUMINANCE, GL_FLOAT, pBuffer);
+							//GL_RGBA, GL_LUMINANCE, GL_INTENSITY12, GL_INTENSITY16, GL_LUMINANCE12, GL_LUMINANCE16, 
+							// GL_LUMINANCE_FLOAT16_APPLE, GL_LUMINANCE_FLOAT32_APPLE, GL_RGBA_FLOAT32_APPLE, GL_RGBA_FLOAT16_APPLE
+							
+							glPixelTransferf( GL_RED_BIAS, 0);		//glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
+							glPixelTransferf( GL_RED_SCALE, 1);		//glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
+						}
+					}
 					else
 					{
-						float min = curWL - curWW / 2;
-						float max = curWL + curWW / 2;
-						
-						if( max-min == 0)
-						{
-							min = [curDCM fullwl] - [curDCM fullww] / 2;
-							max = [curDCM fullwl] + [curDCM fullww] / 2;
-						}
-						
-						glPixelTransferf( GL_RED_BIAS, -min/(max-min));
-						glPixelTransferf( GL_RED_SCALE, 1./(max-min));
-						glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, currWidth, currHeight, 0, GL_LUMINANCE, GL_FLOAT, pBuffer);
-						//GL_RGBA, GL_LUMINANCE, GL_INTENSITY12, GL_INTENSITY16, GL_LUMINANCE12, GL_LUMINANCE16, 
-						// GL_LUMINANCE_FLOAT16_APPLE, GL_LUMINANCE_FLOAT32_APPLE, GL_RGBA_FLOAT32_APPLE, GL_RGBA_FLOAT16_APPLE
-						
-						glPixelTransferf( GL_RED_BIAS, 0);		//glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
-						glPixelTransferf( GL_RED_SCALE, 1);		//glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
+						#if __BIG_ENDIAN__
+						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+						else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+						#else
+						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						#endif
+						else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
 					}
-				}
-				else
-				{
-					#if __BIG_ENDIAN__
-					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
-					else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
-					#else
-					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-					else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-					#endif
-					else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
 				}
 				
 				if( glGetError() != 0)
-					NSLog( @"****** glGetError");
+					NSLog( @"****** glGetError: %d", glGetError());
 				
 				offsetY += currHeight;
 			}

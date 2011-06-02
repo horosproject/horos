@@ -12562,7 +12562,11 @@ END_CREATE_ROIS:
 					}
 				}
 				if( annotationsOUT)
-					[annotationsDictionary setObject:annotationsOUT forKey: key];
+				{
+					[PapyrusLock lock];
+						[annotationsDictionary setObject:annotationsOUT forKey: key];
+					[PapyrusLock unlock];
+				}
 			}
 		}
 	}
