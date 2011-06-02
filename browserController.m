@@ -5161,47 +5161,47 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [defaults boolForKey:@"AUTOCLEANINGSPACE"])
 	{
-		if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"] == NO && [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"] == NO)
+		NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: currentDatabasePath];
+		
+		unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
+		unsigned long long thousand = 1024;
+		
+		if( [fsattrs objectForKey:NSFileSystemFreeSize] == nil)
 		{
-			NSLog( @"***** WARNING - AUTOCLEANINGSPACE : no options specified !");
+			NSLog( @"*** autoCleanDatabaseFreeSpace [fsattrs objectForKey:NSFileSystemFreeSize] == nil ?? : %@", currentDatabasePath);
+			[pool release];
+			
+			return;
 		}
-		else
+		
+		free /= thousand;
+		free /= thousand;
+		
+		if( lastFreeSpace != free && ([NSDate timeIntervalSinceReferenceDate] - lastFreeSpaceLogTime) > 60*10)
 		{
-			NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: currentDatabasePath];
+			lastFreeSpace = free;
+			lastFreeSpaceLogTime = [NSDate timeIntervalSinceReferenceDate];
 			
-			unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
-			unsigned long long thousand = 1024;
+			NSLog(@"HD Free Space: %d MB", (long) free);
+		}
+		
+		isAutoCleanDatabaseRunning = YES;
+		
+		unsigned long long freeMemoryRequested = [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] longLongValue];
+		
+		if( sender == 0L)	// Received by the NSTimer : have a larger amount of free memory !
+			freeMemoryRequested = (float) freeMemoryRequested * 1.3;
+		
+		if( free < freeMemoryRequested)
+		{
+			NSLog(@"------------------- Limit Reached - Starting autoCleanDatabaseFreeSpace");
 			
-			if( [fsattrs objectForKey:NSFileSystemFreeSize] == nil)
+			if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"] == NO && [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"] == NO)
 			{
-				NSLog( @"*** autoCleanDatabaseFreeSpace [fsattrs objectForKey:NSFileSystemFreeSize] == nil ?? : %@", currentDatabasePath);
-				[pool release];
-				
-				return;
+				NSLog( @"------------------- WARNING - AUTOCLEANINGSPACE : no options specified ! -> nothing is deleted...");
 			}
-			
-			free /= thousand;
-			free /= thousand;
-			
-			if( lastFreeSpace != free && ([NSDate timeIntervalSinceReferenceDate] - lastFreeSpaceLogTime) > 60*10)
+			else
 			{
-				lastFreeSpace = free;
-				lastFreeSpaceLogTime = [NSDate timeIntervalSinceReferenceDate];
-				
-				NSLog(@"HD Free Space: %d MB", (long) free);
-			}
-			
-			isAutoCleanDatabaseRunning = YES;
-			
-			unsigned long long freeMemoryRequested = [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] longLongValue];
-			
-			if( sender == 0L)	// Received by the NSTimer : have a larger amount of free memory !
-				freeMemoryRequested = (float) freeMemoryRequested * 1.3;
-			
-			if( free < freeMemoryRequested)
-			{
-				NSLog(@"------------------- Limit Reached - Starting autoCleanDatabaseFreeSpace");
-				
 				NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
 				NSArray					*studiesArray = nil;
 				NSMutableArray			*unlockedStudies = nil;
