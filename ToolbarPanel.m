@@ -193,7 +193,7 @@ static int increment = 0;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WindowDidMoveNotification:) name:NSWindowDidMoveNotification object:0];
 	
 	[super windowDidLoad];
-	[self.window setMovable:NO];
+	[self.window safelySetMovable:NO];
 	
 	emptyToolbar = [[NSToolbar alloc] initWithIdentifier: [NSString stringWithFormat:@"nstoolbar osirix %d", increment++]];
 	[emptyToolbar setDelegate: self];

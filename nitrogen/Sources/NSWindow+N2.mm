@@ -16,6 +16,12 @@
 #import "N2Operators.h"
 
 
+@interface NSWindow (ActuallyInCocoa)
+
+-(void)setMovable:(BOOL)flag;
+
+@end
+
 @implementation NSWindow (N2)
 
 -(NSSize)contentSizeForFrameSize:(NSSize)frameSize {
@@ -32,6 +38,12 @@
 	
 	NSRect windowFrame = [NSWindow contentRectForFrameRect:self.frame styleMask:self.styleMask];
 	return windowFrame.size.height-NSHeight([[self contentView] frame]);
+}
+
+-(void)safelySetMovable:(BOOL)flag {
+	if ([self respondsToSelector:@selector(setMovable:)])
+		[self setMovable:flag];
+	else NSLog(@"Warning: -[NSWindow setMovable] is not available");
 }
 
 @end

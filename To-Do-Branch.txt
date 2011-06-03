@@ -1,6 +1,4 @@
 - MacAppStore (check)
-- Albums refresh
-- badge addfiles
 
 --- tester ˆ fond:
 ----- database switch
@@ -11,5 +9,5 @@
 ------- autorouting
 ----- bonjour
 
-- WarningsWindowController
-- BrowserController+Albums
+- WarningsWindowController un jour
+- BrowserController+Albums un jour

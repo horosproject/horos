@@ -108,7 +108,7 @@
 }
 
 -(BrowserSource*)sourceAtRow:(int)row {
-	return [_sourcesArrayController.arrangedObjects objectAtIndex:row];
+	return ([_sourcesArrayController.arrangedObjects count] > row)? [_sourcesArrayController.arrangedObjects objectAtIndex:row] : nil;
 }
 
 -(int)rowForSource:(BrowserSource*)source {
