@@ -7710,7 +7710,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 						else if( [[annot objectAtIndex:j] isEqualToString: @"PatientName"])
 						{
-							if( annotFull == ANNOTATIONS)
+							if( annotFull == ANNOTATIONS && [[dcmFilesList objectAtIndex: 0] valueForKeyPath:@"series.study.name"])
 								[tempString appendString: [[dcmFilesList objectAtIndex: 0] valueForKeyPath:@"series.study.name"]];
 						}
 						else if( fullText)
