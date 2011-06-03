@@ -48,7 +48,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	BOOL				isOriginDefined;
 	double				originX /**< x position of image origin */ , originY /**< y Position of image origin */ , originZ /**< Z position of image origin*/;
 	double				orientation[ 9];  /**< pointer to orientation vectors  */
-	NSString			*frameOfReferenceUID;
 
 //	pixel representation
 	BOOL				fIsSigned;
@@ -75,7 +74,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 // DICOM params needed for SUV calculations
 	float				patientsWeight;
 	NSString			*repetitiontime, *echotime, *flipAngle, *laterality;
-	NSString			*viewPosition, *patientPosition, *acquisitionDate, *SOPClassUID;
+	NSString			*viewPosition, *patientPosition, *acquisitionDate, *SOPClassUID, *frameofReferenceUID;
 	BOOL				hasSUV, SUVConverted;
 	NSString			*units, *decayCorrection;
 	float				decayFactor, factorPET2SUV;
@@ -228,9 +227,7 @@ Note setter is different to not break existing usage. :-( */
 /** Slice location */
 @property(readonly) double originX, originY, originZ;
 @property(readonly) BOOL isOriginDefined;
-
-/** Frame Of Reference UID */
-@property(copy) NSString *frameOfReferenceUID;
+@property(retain) NSString *frameofReferenceUID;
 
 - (void)setOrigin :(float*) o;
 - (void)setOriginDouble :(double*) o;

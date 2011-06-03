@@ -441,7 +441,7 @@
 			{
 				curPix = [[DCMPix alloc] initWithData: nil :32 :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
-				curPix.frameOfReferenceUID = firstPix.frameOfReferenceUID;
+				curPix.frameofReferenceUID = firstPix.frameofReferenceUID;
 				[newPixListX addObject: curPix];
 				[curPix release];
 			}
@@ -453,7 +453,7 @@
 			{
 				curPix = [[DCMPix alloc] initWithData: nil :32 :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
-				curPix.frameOfReferenceUID = firstPix.frameOfReferenceUID;
+				curPix.frameofReferenceUID = firstPix.frameofReferenceUID;
 				[newPixListY addObject: curPix];
 				[curPix release];
 			}
