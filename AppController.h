@@ -257,6 +257,7 @@ extern AppController* OsiriX;
 
 -(void)setReceivingIcon;
 -(void)unsetReceivingIcon;
+-(void)setBadgeLabel:(NSString*)label;
 
 @end
 

@@ -1650,9 +1650,8 @@ enum { Compress, Decompress };
 		[studiesArrayStudyInstanceUID release];
 		[studiesArray release];
 		
-		NSString *dockLabel = nil;
-		NSString *growlString = nil;
-		NSString *growlStringNewStudy = nil;
+		NSString* growlString = nil;
+		NSString* growlStringNewStudy = nil;
 		
 		@try
 		{
@@ -1671,12 +1670,10 @@ enum { Compress, Decompress };
 			//				}
 			
 			
-			NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-
-			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
-			NSDictionary* userInfo2 = [NSDictionary dictionaryWithObject:completeImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
-
+			NSAutoreleasePool* pool = [NSAutoreleasePool new];
 			@try {
+				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
+				NSDictionary* userInfo2 = [NSDictionary dictionaryWithObject:completeImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
 				[[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:userInfo];
 				[[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:userInfo2];
 				if (postNotifications) {
@@ -1685,25 +1682,19 @@ enum { Compress, Decompress };
 				}
 			} @catch (NSException* e) {
 				N2LogExceptionWithStackTrace(e);
+			} @finally {
+				[pool release];
 			}
 				
 			if (postNotifications) {
 				if ([addedImagesArray count] > 0) { // && generatedByOsiriX == NO)
-					dockLabel = [NSString stringWithFormat:@"%d", [addedImagesArray count]];
 					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];
 					growlStringNewStudy = [NSString stringWithFormat: NSLocalizedString(@"%@\r%@", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
 				}
 				
-				[dockLabel retain];
-				[growlString retain];
-				[growlStringNewStudy retain];
-				
 				if (self.isLocal)
 					[self applyRoutingRules:nil toImages:addedImagesArray];
-				
 			}
-			
-			[p release];
 			
 		}
 		@catch( NSException *ne)
@@ -1728,25 +1719,14 @@ enum { Compress, Decompress };
 		}
 		
 		if (addFailed == NO) {
-			// TODO: lots of things in this block
-			
-			//				if (dockLabel)
-			//					[browserController performSelectorOnMainThread:@selector( setDockLabel:) withObject: dockLabel waitUntilDone:NO];
-			//				
-			//				if (growlString)
-			//					[browserController performSelectorOnMainThread:@selector( setGrowlMessage:) withObject: growlString waitUntilDone:NO];
-			
-			//				if (newStudy) {
-			//					if (growlStringNewStudy)
-			//						[browserController performSelectorOnMainThread:@selector( setGrowlMessageNewStudy:) withObject: growlStringNewStudy waitUntilDone:NO];
-			//				}
-			
 			self.timeOfLastModification = [NSDate timeIntervalSinceReferenceDate];
+			if (postNotifications) {
+				if (growlString)
+					[self performSelectorOnMainThread:@selector(_growlImagesAdded:) withObject:growlString waitUntilDone:NO];
+				if (newStudy && growlStringNewStudy)
+					[self performSelectorOnMainThread:@selector(_growlNewStudy:) withObject:growlStringNewStudy waitUntilDone:NO];
+			}
 		}
-		
-		[dockLabel release]; dockLabel = nil;
-		[growlString release]; growlString = nil;
-		[growlStringNewStudy release]; growlStringNewStudy = nil;
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
@@ -1756,10 +1736,21 @@ enum { Compress, Decompress };
 	return addedImagesArray;
 }
 
--(void)importFilesFromIncomingDir {
+-(void)_growlImagesAdded:(NSString*)message {
+	[AppController.sharedAppController growlTitle:NSLocalizedString(@"Incoming Files", nil) description:message name:@"newfiles"];
+}
+
+-(void)_growlNewStudy:(NSString*)message {
+	[AppController.sharedAppController growlTitle:NSLocalizedString(@"New Study", nil) description:message name:@"newstudy"];
+}
+
+
+
+-(NSInteger)importFilesFromIncomingDir {
 	NSMutableArray* compressedPathArray = [NSMutableArray array];
 	NSThread* thread = [NSThread currentThread];
 	BOOL listenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
+	NSArray* addedFiles = nil;
 	
 	[thread enterOperation];
 	thread.status = NSLocalizedString(@"Listing files...", nil);
@@ -1770,7 +1761,7 @@ enum { Compress, Decompress };
 	@try {
 		if ([self isFileSystemFreeSizeLimitReached]) {
 			// TODO: autoclean and recheck..
-			return;
+			return 0;
 		}
 		
 		NSMutableArray *filesArray = [NSMutableArray array];
@@ -1987,7 +1978,7 @@ enum { Compress, Decompress };
 			}
 			
 			thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %d files...", nil), filesArray.count];
-			NSArray* addedFiles = [[self addFilesAtPaths:filesArray] valueForKey:@"completePath"];
+			addedFiles = [[self addFilesAtPaths:filesArray] valueForKey:@"completePath"];
 			
 			if (!addedFiles) // Add failed.... Keep these files: move them back to the INCOMING folder and try again later....
 			{
@@ -2030,14 +2021,19 @@ enum { Compress, Decompress };
 	[OsiriX unsetReceivingIcon];
 
 	[thread exitOperation];
+	return addedFiles.count;
 }
 
--(void)importFilesFromIncomingDirThread:(id)obj {
+-(void)importFilesFromIncomingDirThread {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	@try {
 		NSThread* thread = [NSThread currentThread];
 		thread.name = NSLocalizedString(@"Adding incoming files...", nil);
-		[self importFilesFromIncomingDir];
+		NSInteger importCount = [self importFilesFromIncomingDir];
+		
+		if (self == DicomDatabase.activeLocalDatabase)
+			[AppController.sharedAppController performSelectorOnMainThread:@selector(setBadgeLabel:) withObject:(importCount? [[NSNumber numberWithInteger:importCount] stringValue] : nil) waitUntilDone:NO];
+		
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
@@ -2051,7 +2047,7 @@ enum { Compress, Decompress };
 	
 	if ([_importFilesFromIncomingDirLock tryLock])
 		@try {
-			[self performSelectorInBackground:@selector(importFilesFromIncomingDirThread:) withObject:nil]; // TODO: NSOperationQueues pls
+			[self performSelectorInBackground:@selector(importFilesFromIncomingDirThread) withObject:nil]; // TODO: NSOperationQueues pls
 		} @catch (NSException* e) {
 			N2LogExceptionWithStackTrace(e);
 		} @finally {

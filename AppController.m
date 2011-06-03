@@ -4954,4 +4954,9 @@ static NSMutableDictionary* _receivingDict = nil;
 	[self _receivingIconSet:NO];
 }
 
+-(void)setBadgeLabel:(NSString*)label {
+	[[NSApp dockTile] setBadgeLabel:label];
+	[[NSApp dockTile] display];
+}
+
 @end

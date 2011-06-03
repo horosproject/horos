@@ -440,22 +440,6 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (void) setDockLabel:(NSString*) label
-{
-	[[[NSApplication sharedApplication] dockTile] setBadgeLabel: label];
-	[[[NSApplication sharedApplication] dockTile] display];
-}
-
-- (void) setGrowlMessage:(NSString*) message
-{
-	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Incoming Files", nil) description: message name: @"newfiles"];
-}
-
-- (void) setGrowlMessageNewStudy:(NSString*) message
-{
-	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"New Study", nil) description: message name: @"newstudy"];
-}
-
 #pragma deprecated (addFilesToDatabase:)
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray { // __deprecated
 	return [_database addFilesAtPaths:newFilesArray];
