@@ -188,7 +188,7 @@ static NSMutableDictionary* databasesDictionary = nil;
 		NSLog(@"\tself.rc = 0, zombies arising..?");
 	
 	@synchronized(databasesDictionary) {
-		if (rc == 1 && [[databasesDictionary allValues] containsObject:self]) {
+		if (rc == 1 && [databasesDictionary keyForObject:self]) {
 			NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", self.managedObjectContext.registeredObjects.count);
 
 			//[managedObjectContext invalidate];
