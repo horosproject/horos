@@ -76,7 +76,7 @@
 }
 
 -(void)threadWillExitNotification:(NSNotification*)notification {
-	[self.window orderOut:self]; // [NSApp endSheet:self.window];
+	[NSApp endSheet:self.window];
 	[self close];
 	[self autorelease];
 }
