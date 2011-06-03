@@ -289,14 +289,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
 	if( DEFAULTSSET == NO)
 	{
-		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"TOOLKITPARSER3"])
+		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"TOOLKITPARSER4"])
 		{
 			NSUserDefaults *sd = [NSUserDefaults standardUserDefaults];
 			
 			DEFAULTSSET = YES;
 			
 			PREFERPAPYRUSFORCD = [sd integerForKey: @"PREFERPAPYRUSFORCD"];
-			TOOLKITPARSER = [sd integerForKey: @"TOOLKITPARSER3"];
+			TOOLKITPARSER = [sd integerForKey: @"TOOLKITPARSER4"];
 			
 			#ifdef OSIRIX_LIGHT
 			TOOLKITPARSER = 2;
@@ -332,7 +332,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			DEFAULTSSET = YES;
 			
 			PREFERPAPYRUSFORCD = [[dict objectForKey: @"PREFERPAPYRUSFORCD"] intValue];
-			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER3"] intValue];
+			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER4"] intValue];
 			
 			COMMENTSFROMDICOMFILES = [[dict objectForKey: @"CommentsFromDICOMFiles"] intValue];
 			COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];

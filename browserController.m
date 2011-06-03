@@ -4634,7 +4634,7 @@ static NSConditionLock *threadLock = nil;
 	
 	long durationFor1000;
 	
-	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER3"] == 0)
+	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER4"] == 0)
 	{
 		durationFor1000 = 18;
 		[warning setHidden: NO];
