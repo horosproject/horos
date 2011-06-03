@@ -483,7 +483,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 								  toContext: [self managedObjectContext]
 								 toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
 								  onlyDICOM: YES 
-						   notifyAddedFiles: YES
+						   notifyAddedFiles: NO
 						parseExistingObject: YES
 								   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : @"/tmp"
 						  generatedByOsiriX: YES];

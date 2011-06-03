@@ -2884,7 +2884,7 @@ static NSConditionLock *threadLock = nil;
 //		cachedAlbumsManagedObjectContext = nil;
 //	}
 	
-	DicomDatabase* database = [self.database retain];
+	DicomDatabase* database = [self.database independentDatabase];
 	if (database) @try {
 		if(/* displayEmptyDatabase == NO &&-*/ computeNumberOfStudiesForAlbums == NO) {
 			computeNumberOfStudiesForAlbums = YES;
@@ -2922,7 +2922,7 @@ static NSConditionLock *threadLock = nil;
 					[NoOfStudies addObject: [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]];
 			}
 			
-			@synchronized( albumNoOfStudiesCache) {
+			@synchronized(albumNoOfStudiesCache) {
 				[albumNoOfStudiesCache removeAllObjects];
 				[albumNoOfStudiesCache addObjectsFromArray: NoOfStudies];
 			}
@@ -2947,18 +2947,12 @@ static NSConditionLock *threadLock = nil;
 	[self performSelector:@selector(computeNumberOfStudiesForAlbums) withObject:nil afterDelay:20];
 }
 
-- (void)refreshAlbums
-{
-//	@synchronized( [BrowserController currentBrowser])
-//	{
-//		cachedAlbumsManagedObjectContext = nil;
-//	}
-//	
-//	
-//	if ( displayEmptyDatabase == NO && [[self window] isVisible] == YES)
-//	{
-		[NSThread detachNewThreadSelector: @selector(computeNumberOfStudiesForAlbums) toTarget:self withObject: nil];
-//	}
+- (void)refreshAlbums {
+	//@synchronized (self) {
+	//	cachedAlbumsManagedObjectContext = nil;
+	//}
+
+	[NSThread detachNewThreadSelector: @selector(computeNumberOfStudiesForAlbums) toTarget:self withObject: nil];
 }
 
 - (void)refreshDatabase: (id)sender
@@ -7986,7 +7980,7 @@ static BOOL needToRezoom;
 }
 - (NSArray*) albumArray
 {
-	NSArray *albumsArray = [BrowserController albumsInContext: [self managedObjectContext]];
+	NSArray *albumsArray = [_database albums];
 	
 	return [[NSArray arrayWithObject: [NSDictionary dictionaryWithObject: NSLocalizedString(@"Database", nil) forKey:@"name"]] arrayByAddingObjectsFromArray: albumsArray];
 }
@@ -8335,7 +8329,7 @@ static BOOL needToRezoom;
 		
 		[albumTable setDropRow:row dropOperation:NSTableViewDropOn];
 		
-		return NSTableViewDropAbove;
+		return NSDragOperationLink;
 	}
 	
 	return NSDragOperationNone;

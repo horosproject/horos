@@ -13,6 +13,7 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "BrowserController.h"
+#import "Notifications.h"
 
 
 @interface DicomDatabase ()
@@ -290,6 +291,12 @@
 						}
 //						[wait close];
 //						[wait release];
+						
+						// refresh database
+						[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:nil];
+						[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:nil];
+						[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBNotification object:self userInfo:nil];
+						[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo:nil];						
 					}
 					
 				} @catch (NSException* e) {
@@ -506,9 +513,11 @@
 			
 			NSLog(@"------------------- Finishing autoCleanDatabaseFreeSpace");
 			
-			// This will do a outlineViewRefresh
-//			if( [newFilesConditionLock tryLock])
-//				[newFilesConditionLock unlockWithCondition: 1];
+			// refresh database
+			[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:nil];
+			[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:nil];
+			[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBNotification object:self userInfo:nil];
+			[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo:nil];
 		}
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);

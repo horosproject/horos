@@ -40,6 +40,7 @@
 
 -(NSManagedObjectContext*)independentContext:(BOOL)independent;
 -(NSManagedObjectContext*)independentContext;
+-(id)independentDatabase;
 
 -(NSEntityDescription*)entityForName:(NSString*)name;
 -(NSManagedObject*)objectWithID:(NSString*)theId;

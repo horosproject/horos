@@ -167,7 +167,7 @@ static NSMutableDictionary* databasesDictionary = nil;
 	
 	if (db)
 		@synchronized(databasesDictionary) {
-			if (![[databasesDictionary allValues] containsObject:db])
+			if (![[databasesDictionary allValues] containsObject:db] && ![databasesDictionary objectForKey:db.baseDirPath])
 				[databasesDictionary setObject:db forKey:db.baseDirPath];
 		}
 }
@@ -187,18 +187,16 @@ static NSMutableDictionary* databasesDictionary = nil;
 	if (rc == 0)
 		NSLog(@"\tself.rc = 0, zombies arising..?");
 	
-	if (rc == 1) {
-		NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", self.managedObjectContext.registeredObjects.count);
+	@synchronized(databasesDictionary) {
+		if (rc == 1 && [[databasesDictionary allValues] containsObject:self]) {
+			NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", self.managedObjectContext.registeredObjects.count);
 
-		
-		//[managedObjectContext invalidate];
-		
-		
-			
-		if (self.managedObjectContext.retainCount /*- self.managedObjectContext.registeredObjects.count*/ == 1) {
-			NSLog(@"\t\tThe context seems to be retained only by the database and by its registered objects.. We can release the database!");
-			@synchronized(databasesDictionary) {
-				[databasesDictionary removeObjectForKey:[databasesDictionary keyForObject:self]];
+			//[managedObjectContext invalidate];
+				
+			if (self.managedObjectContext.retainCount /*- self.managedObjectContext.registeredObjects.count*/ == 1) {
+				NSLog(@"\t\tThe context seems to be retained only by the database and by its registered objects.. We can release the database!");
+					id key = [databasesDictionary keyForObject:self];
+					if (key) [databasesDictionary removeObjectForKey:key];
 			}
 		}
 	}
@@ -639,7 +637,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	return [context executeFetchRequest:req error:NULL];
 }
 
--(NSArray*)albums { // TODO: cache!
+-(NSArray*)albums {
 	NSArray* albums = [DicomDatabase albumsInContext:self.managedObjectContext];
 	NSSortDescriptor* sd = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
 	return [albums sortedArrayUsingDescriptors:[NSArray arrayWithObject: sd]];
@@ -1674,11 +1672,11 @@ enum { Compress, Decompress };
 			@try {
 				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
 				NSDictionary* userInfo2 = [NSDictionary dictionaryWithObject:completeImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
-				[[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:userInfo];
-				[[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:userInfo2];
+				[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:userInfo];
+				[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:userInfo2];
 				if (postNotifications) {
-					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:self userInfo:userInfo];
-					[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo:userInfo2];
+					[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBNotification object:self userInfo:userInfo];
+					[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo:userInfo2];
 				}
 			} @catch (NSException* e) {
 				N2LogExceptionWithStackTrace(e);
