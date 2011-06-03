@@ -55,14 +55,18 @@
 		[super displayIfNeeded];
 }*/
 
--(void)setFrame:(NSRect)windowFrame display:(BOOL)displayViews animate:(BOOL)performAnimation {
+/*-(void)setFrame:(NSRect)windowFrame display:(BOOL)displayViews animate:(BOOL)performAnimation {
 	return [super setFrame:windowFrame display:displayViews animate:NO];
+}*/
+
+-(NSTimeInterval)animationResizeTime:(NSRect)newFrame {
+	return 0;
 }
 
 -(NSRect)constrainFrameRect:(NSRect)frameRect toScreen:(NSScreen*)screen {
-	return frameRect;
+	return frameRect; // not movable, and OsiriX knows where to place toolbars ;)
 }
 
-@synthesize willClose;
+// @synthesize willClose;
 
 @end

@@ -20,9 +20,9 @@
 /** \brief Window with only a toolbar */
 @interface ToolBarNSWindow : NSPanel
 {
-	BOOL willClose;
+//	BOOL willClose;
 }
 
-@property BOOL willClose;
+//@property BOOL willClose;
 
 @end

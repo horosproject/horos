@@ -239,7 +239,7 @@ static int increment = 0;
 {
 	if( toolbar == tb)
 	{
-		((ToolBarNSWindow*) [self window]).willClose = YES;
+//		((ToolBarNSWindow*) [self window]).willClose = YES;
 		
 		[[self window] orderOut: self];
 		
@@ -258,7 +258,7 @@ static int increment = 0;
 		
 		viewer = 0;
 		
-		((ToolBarNSWindow*) [self window]).willClose = NO;
+//		((ToolBarNSWindow*) [self window]).willClose = NO;
 	}
 }
 
