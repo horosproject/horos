@@ -2339,7 +2339,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					
                     [dicomExport setDefaultWWWL:windowWidth :windowLevel];
 					
-					if( [cprView planarDeformations] == NO)
+					if( [cprView.curvedPath isPlaneMeasurable])
 						[dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
                     
 					f = [dicomExport writeDCMFile: nil];
@@ -2352,7 +2352,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			}
 			else // CPR8BitRGBExportImageFormat
 			{
-				BOOL exportSpacingAndOrigin = ![cprView planarDeformations];
+				BOOL exportSpacingAndOrigin = [cprView.curvedPath isPlaneMeasurable];
 				
 				[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: exportSpacingAndOrigin]];
 			}
@@ -2425,7 +2425,7 @@ static float deg2rad = 3.14159265358979/180.0;
 						mprView1.curvedPath.initialNormal = N3VectorApplyTransform( initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [curvedPath.bezierPath tangentAtStart]));
 						[self CPRViewDidEditCurvedPath: mprView1];
 						
-						[cprView runMainRunLoopUntilAllRequestsAreFinished];
+						[cprView waitUntilPixUpdate];
                         // transverse view use synchronous generators, so this is no longer needed
 //						[topTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 //						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
@@ -2492,7 +2492,7 @@ static float deg2rad = 3.14159265358979/180.0;
                             
                             [dicomExport setDefaultWWWL:windowWidth :windowLevel];
 							
-							if( [cprView planarDeformations] == NO)
+							if([cprView.curvedPath isPlaneMeasurable])
 								[dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
 							
                             f = [dicomExport writeDCMFile: nil];

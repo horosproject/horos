@@ -65,6 +65,7 @@ BOOL gUseJPEGColorSpace = NO;
 BOOL gUSEPAPYRUSDCMPIX = YES;
 BOOL gFULL32BITPIPELINE = NO;
 int gSUVAcquisitionTimeField = 0;
+NSDictionary *gCUSTOM_IMAGE_ANNOTATIONS = nil;
 BOOL	anonymizedAnnotations = NO;
 BOOL	runOsiriXInProtectedMode = NO;
 BOOL	quicktimeRunning = NO;
@@ -1178,7 +1179,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @implementation DCMPix
 
 @synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation, subtractedfImage;
-@synthesize frameNo, notAbleToLoadImage, shutterPolygonal, SOPClassUID;
+@synthesize frameNo, notAbleToLoadImage, shutterPolygonal, SOPClassUID, frameofReferenceUID;
 @synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV, slope, offset;
 @synthesize isRGB, pwidth = width, pheight = height;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
@@ -1188,7 +1189,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize DCMPixShutterRectOriginX = shutterRect_x;
 @synthesize DCMPixShutterRectOriginY = shutterRect_y;
 
-@synthesize frameOfReferenceUID, repetitiontime, echotime;
+@synthesize repetitiontime, echotime;
 @synthesize flipAngle, laterality, viewPosition, patientPosition;
 
 @synthesize serieNo, pixArray, pixPos, transferFunctionPtr;
@@ -1236,6 +1237,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		gUseJPEGColorSpace = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"];
 		gFULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 		gSUVAcquisitionTimeField = [[NSUserDefaults standardUserDefaults] integerForKey:@"SUVAcquisitionTimeField"];
+		
+		[gCUSTOM_IMAGE_ANNOTATIONS release];
+		gCUSTOM_IMAGE_ANNOTATIONS = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"] copy];
 		
 #ifdef OSIRIX_LIGHT
 		gUSEPAPYRUSDCMPIX = YES;
@@ -3396,7 +3400,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	memcpy( copy->orientation, self->orientation, sizeof orientation);
 	
-	copy->frameOfReferenceUID = [self->frameOfReferenceUID retain];
+	copy.frameofReferenceUID = self.frameofReferenceUID;
 	
 	copy->isRGB = self->isRGB;
 	copy->cineRate = self->cineRate;
@@ -5038,11 +5042,6 @@ END_CREATE_ROIS:
 
 - (void) dcmFrameworkLoad0x0018: (DCMObject*) dcmObject
 {
-	if( [dcmObject attributeValueWithName:@"FrameofReferenceUID"])
-	{
-		[frameOfReferenceUID release];
-		frameOfReferenceUID = [[dcmObject attributeValueWithName:@"FrameofReferenceUID"] retain];
-	}
 	if( [dcmObject attributeValueWithName:@"PatientsWeight"]) patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
 	
 	if( [dcmObject attributeValueWithName:@"SliceThickness"]) sliceThickness = [[dcmObject attributeValueWithName:@"SliceThickness"] floatValue];
@@ -5181,6 +5180,8 @@ END_CREATE_ROIS:
 		[laterality release];
 		laterality = [[dcmObject attributeValueWithName:@"Laterality"] retain];	
 	}
+		
+	self.frameofReferenceUID = [dcmObject attributeValueWithName: @"FrameofReferenceUID"];
 }
 
 - (void) dcmFrameworkLoad0x0028: (DCMObject*) dcmObject
@@ -6457,13 +6458,6 @@ END_CREATE_ROIS:
 	PapyULong nbVal;
 	int elemType, i;
 	
-	val = Papy3GetElement (theGroupP, papFrameofReferenceUIDGr, &nbVal, &elemType);
-	if ( val)
-	{
-		[frameOfReferenceUID release];
-		frameOfReferenceUID = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
-	}
-	
 	val = Papy3GetElement (theGroupP, papSliceThicknessGr, &nbVal, &elemType);
 	if ( val)
 		sliceThickness = atof( val->a);
@@ -6743,6 +6737,10 @@ END_CREATE_ROIS:
 		[laterality release];
 		laterality = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 	}
+	
+	val = Papy3GetElement (theGroupP, papFrameofReferenceUIDGr, &nbVal, &elemType);
+	if ( val)
+		self.frameofReferenceUID = [NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding];
 	
 	if( laterality == nil)
 	{
@@ -7288,7 +7286,6 @@ END_CREATE_ROIS:
 	orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
 	orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
 	
-	frameOfReferenceUID = 0;
 	sliceThickness = 0;
 	spacingBetweenSlices = 0;
 	repetitiontime = 0;
@@ -11996,8 +11993,7 @@ END_CREATE_ROIS:
 		fullwl = 0;
 		
 		[self kill8bitsImage];
-
-		[frameOfReferenceUID release];				frameOfReferenceUID = nil;
+		
 		[acquisitionTime release];					acquisitionTime = nil;
 		[acquisitionDate release];					acquisitionDate = nil;
 		[radiopharmaceuticalStartTime release];		radiopharmaceuticalStartTime = nil;
@@ -12042,7 +12038,6 @@ END_CREATE_ROIS:
 	
 	if( shutterPolygonal) free( shutterPolygonal);
 	
-	[frameOfReferenceUID release];
 	[transferFunction release];
 	[positionerPrimaryAngle release];
 	[positionerSecondaryAngle release];
@@ -12059,6 +12054,7 @@ END_CREATE_ROIS:
 	[decayCorrection release];
 	[generatedName release];
 	[SOPClassUID release];
+	[frameofReferenceUID release];
 	
 	if( fExternalOwnedImage == nil)
 	{
@@ -12410,13 +12406,18 @@ END_CREATE_ROIS:
 {
 	@try 
 	{
-		NSDictionary *annotationsDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
-		
 		NSString *modality = [imageObj valueForKeyPath:@"series.modality"]; // imageObj = link to database
-		NSDictionary *annotationsForModality = [annotationsDict objectForKey:modality];
 		
-		if(!annotationsForModality) annotationsForModality = [annotationsDict objectForKey:@"Default"];
-		if([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1) annotationsForModality = [annotationsDict objectForKey:@"Default"];
+		NSDictionary *annotationsForModality = nil;
+		@synchronized( gCUSTOM_IMAGE_ANNOTATIONS)
+		{
+			annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:modality];
+			
+			if(!annotationsForModality) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
+			if([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
+			
+			annotationsForModality = [[annotationsForModality copy] autorelease];
+		}
 		
 		// image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
 		NSArray *keys = [annotationsForModality allKeys];
@@ -12562,7 +12563,12 @@ END_CREATE_ROIS:
 					}
 				}
 				if( annotationsOUT)
-					[annotationsDictionary setObject:annotationsOUT forKey: key];
+				{
+					@synchronized( annotationsDictionary)
+					{
+						[annotationsDictionary setObject:annotationsOUT forKey: key];
+					}
+				}
 			}
 		}
 	}
@@ -12571,6 +12577,33 @@ END_CREATE_ROIS:
 		NSLog(@"CustomImageAnnotations Exception: %@", e);
 	}
 }
+
+- (NSMutableDictionary*) annotationsDictionary
+{
+	NSMutableDictionary *d = nil;
+	
+	@synchronized( annotationsDictionary)
+	{
+		d = [[annotationsDictionary copy] autorelease];
+	}
+
+	return d;
+}
+
+- (void) setAnnotationsDictionary: (NSMutableDictionary*) d
+{
+	if( d != annotationsDictionary)
+	{
+		@synchronized( annotationsDictionary)
+		{
+			[annotationsDictionary release];
+			annotationsDictionary = nil;
+		}
+		
+		annotationsDictionary = [d retain];
+	}
+}
+
 #endif
 
 @end

@@ -951,8 +951,8 @@ static NSDate *lastWarningDate = nil;
 	for( int i = 0; i < numberOfScreens; i++)
 		toolbarPanel[ i] = [[ToolbarPanelController alloc] initForScreen: i];
 	
-	for( int i = 0; i < numberOfScreens; i++)
-		[toolbarPanel[ i] fixSize];
+/*	for( int i = 0; i < numberOfScreens; i++)
+		[toolbarPanel[ i] fixSize];*/
 }
 
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame

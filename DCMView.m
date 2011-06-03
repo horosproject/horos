@@ -3735,6 +3735,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( curDCM)
 		[instructions setObject: curDCM forKey: @"DCMPix"];
 	
+	if( curDCM.frameofReferenceUID)
+		[instructions setObject: curDCM.frameofReferenceUID forKey: @"frameofReferenceUID"];
+	
 	[instructions setObject: [NSNumber numberWithFloat: syncRelativeDiff] forKey: @"offsetsync"];
 	[instructions setObject: [NSNumber numberWithFloat: location[0]] forKey: @"point3DX"];
 	[instructions setObject: [NSNumber numberWithFloat: location[1]] forKey: @"point3DY"];
@@ -6198,11 +6201,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	NSMutableDictionary *instructions = [NSMutableDictionary dictionary]; 
 	
+	DCMPix *p = [dcmPixList objectAtIndex:curImage];
+	
 	[instructions setObject: self forKey: @"view"];
 	[instructions setObject: [NSNumber numberWithInt: pos] forKey: @"Pos"];
 	[instructions setObject: [NSNumber numberWithInt: inc] forKey: @"Direction"];
-	[instructions setObject: [NSNumber numberWithFloat: [[dcmPixList objectAtIndex:curImage] sliceLocation]] forKey: @"Location"];
+	[instructions setObject: [NSNumber numberWithFloat: [p sliceLocation]] forKey: @"Location"];
 	[instructions setObject: [NSNumber numberWithFloat: syncRelativeDiff] forKey: @"offsetsync"];
+	
+	if( p.frameofReferenceUID)
+		[instructions setObject: p.frameofReferenceUID forKey: @"frameofReferenceUID"];
 	
 	if( [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"])
 		[instructions setObject: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"]; 
@@ -6399,11 +6407,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			int			pos = [[instructions valueForKey: @"Pos"] intValue];
 			float		loc = [[instructions valueForKey: @"Location"] floatValue];
 			NSString	*oStudyId = [instructions valueForKey: @"studyID"];
+			NSString	*oFrameofReferenceUID = [instructions valueForKey: @"frameofReferenceUID"];
 			DCMPix		*oPix = [instructions valueForKey: @"DCMPix"];
 			DCMPix		*oPix2 = [instructions valueForKey: @"DCMPix2"];
 			DCMView		*otherView = [instructions valueForKey: @"view"];
 			float		destPoint3D[ 3];
 			BOOL		point3D = NO;
+			BOOL		same3DReferenceWorld = NO;
 			
 			if( otherView == blendingView || self == [otherView blendingView])
 			{
@@ -6434,14 +6444,25 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				point3D = YES;
 			}
 			
+			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]])
+			{
+				if( curDCM.frameofReferenceUID && oFrameofReferenceUID)
+				{
+					if( [oFrameofReferenceUID isEqualToString: curDCM.frameofReferenceUID])
+						same3DReferenceWorld = YES;
+				}
+				else
+					same3DReferenceWorld = YES;
+			}
+			
 			BOOL registeredViewer = NO;
 			
 			if( [[self windowController] registeredViewer] == [otherView windowController] || [[otherView windowController] registeredViewer] == [self windowController])
 				registeredViewer = YES;
 			
-			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer || [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] == NO || syncSeriesIndex != -1)  // We received a message from the keyWindow -> display the slice cut to our window!
+			if( same3DReferenceWorld || registeredViewer || [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] == NO || syncSeriesIndex != -1)  // We received a message from the keyWindow -> display the slice cut to our window!
 			{
-				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
+				if( same3DReferenceWorld || registeredViewer)
 				{
 					// Double-Click -> find the nearest point on our plane, go to this plane and draw the intersection!
 					if( point3D)
@@ -6517,7 +6538,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 										if( registeredViewer == NO)
 										{
 											// Manual sync
-											if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] == NO || syncSeriesIndex != -1)
+											if( same3DReferenceWorld == NO || syncSeriesIndex != -1)
 											{						
 												if( [otherView syncSeriesIndex] != -1)
 												{
@@ -6590,11 +6611,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					if( flippedData) curImage -= diff;
 					else curImage += diff;
 					
-					if( curImage < 0)
-					{
-						curImage += [dcmPixList count];
-					}
-
+					if( curImage < 0) curImage += [dcmPixList count];
 					if( curImage >= [dcmPixList count]) curImage -= [dcmPixList count];
 				 }
 				
@@ -6605,14 +6622,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					else [self setIndexWithReset:curImage :YES];
 				}
 				
-				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
+				if( same3DReferenceWorld || registeredViewer)
 				{
 					if( [ViewerController isFrontMost2DViewer: [otherView window]])
 					{
-						if( ([oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer))
-						{
+						if( same3DReferenceWorld || registeredViewer)
 							[self computeSlice: oPix :oPix2];
-						}
 						else
 						{
 							sliceFromTo[ 0][ 0] = HUGE_VALF;
@@ -11099,7 +11114,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				glBindTexture (TEXTRECTMODE, texture[k++]);
 				
 				if( glGetError() != 0)
-					NSLog( @"****** glGetError");
+					NSLog( @"****** glGetError: %d", glGetError());
 				
 				glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);
 				
@@ -11131,49 +11146,52 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 				
-				if( intFULL32BITPIPELINE )
-				{					
-					#if __BIG_ENDIAN__
-					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
-					#else
-					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-					#endif
-					else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+				if( currWidth > 0 && currHeight > 0)
+				{
+					if( intFULL32BITPIPELINE )
+					{					
+						#if __BIG_ENDIAN__
+						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+						#else
+						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						#endif
+						else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						else
+						{
+							float min = curWL - curWW / 2;
+							float max = curWL + curWW / 2;
+							
+							if( max-min == 0)
+							{
+								min = [curDCM fullwl] - [curDCM fullww] / 2;
+								max = [curDCM fullwl] + [curDCM fullww] / 2;
+							}
+							
+							glPixelTransferf( GL_RED_BIAS, -min/(max-min));
+							glPixelTransferf( GL_RED_SCALE, 1./(max-min));
+							glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, currWidth, currHeight, 0, GL_LUMINANCE, GL_FLOAT, pBuffer);
+							//GL_RGBA, GL_LUMINANCE, GL_INTENSITY12, GL_INTENSITY16, GL_LUMINANCE12, GL_LUMINANCE16, 
+							// GL_LUMINANCE_FLOAT16_APPLE, GL_LUMINANCE_FLOAT32_APPLE, GL_RGBA_FLOAT32_APPLE, GL_RGBA_FLOAT16_APPLE
+							
+							glPixelTransferf( GL_RED_BIAS, 0);		//glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
+							glPixelTransferf( GL_RED_SCALE, 1);		//glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
+						}
+					}
 					else
 					{
-						float min = curWL - curWW / 2;
-						float max = curWL + curWW / 2;
-						
-						if( max-min == 0)
-						{
-							min = [curDCM fullwl] - [curDCM fullww] / 2;
-							max = [curDCM fullwl] + [curDCM fullww] / 2;
-						}
-						
-						glPixelTransferf( GL_RED_BIAS, -min/(max-min));
-						glPixelTransferf( GL_RED_SCALE, 1./(max-min));
-						glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, currWidth, currHeight, 0, GL_LUMINANCE, GL_FLOAT, pBuffer);
-						//GL_RGBA, GL_LUMINANCE, GL_INTENSITY12, GL_INTENSITY16, GL_LUMINANCE12, GL_LUMINANCE16, 
-						// GL_LUMINANCE_FLOAT16_APPLE, GL_LUMINANCE_FLOAT32_APPLE, GL_RGBA_FLOAT32_APPLE, GL_RGBA_FLOAT16_APPLE
-						
-						glPixelTransferf( GL_RED_BIAS, 0);		//glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
-						glPixelTransferf( GL_RED_SCALE, 1);		//glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
+						#if __BIG_ENDIAN__
+						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+						else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+						#else
+						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						#endif
+						else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
 					}
-				}
-				else
-				{
-					#if __BIG_ENDIAN__
-					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
-					else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
-					#else
-					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-					else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-					#endif
-					else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
 				}
 				
 				if( glGetError() != 0)
-					NSLog( @"****** glGetError");
+					NSLog( @"****** glGetError: %d", glGetError());
 				
 				offsetY += currHeight;
 			}

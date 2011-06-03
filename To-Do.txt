@@ -2,17 +2,16 @@
 - Web Server: create albums and add studies to albums (admin)
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
 - Web Server: add Bonjour Service, add Locations parameter, display in Sources
-- CPR : support all measurements if in same plane
 - DICOM ECG
-- Pediatric QR age button
-- Activate 8-bit TIFF, JPEG, export // Add PNG
+- Activate 8-bit TIFF, JPEG, export (10.6) // Add PNG
 - DB Autocleaning: limit number of # studies/images, % of HD space
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
 - Every web portal user's specific studies list in Albums
-- MagnifyWithEvent, rotateWithEvent for SR, VR, MPR
+- MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
 - Two Steps DICOM Editing
 - Tool to create a new series from key images of a study
 - Tomographie rotational angio
+- Adapt endoscopy fly through to curved mar (cardiac ct)
 - Echo/US : map zone
 - DICOM Listener: preferences to force re-index
 - QR : Local Comments, Local Status versus Distant Comments, Distant Status

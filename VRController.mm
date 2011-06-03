@@ -436,6 +436,35 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
 	
 	self.deleteValue = minimumValue;
+	
+	if( [[viewer2D modality] isEqualToString: @"CT"] && maximumValue - minimumValue > 8192)
+	{
+		NSLog( @"-- modality is CT && pixel dynamic > 8192 -> clip values to -1024 && +7168");
+		
+		NSLog( @"-- current maxValueOfSeries = %f", maximumValue);
+		NSLog( @"-- current minValueOfSeries = %f", minimumValue);
+		
+		for( int x = 0; x < maxMovieIndex; x++)
+		{
+			vImage_Buffer srcf;
+			
+			DCMPix *firstObject = [pixList[ x] objectAtIndex: 0];
+			
+			srcf.height = [firstObject pheight] * [pixList[ x] count];
+			srcf.width = [firstObject pwidth];
+			srcf.rowBytes = [firstObject pwidth] * sizeof(float);
+			srcf.data = (void*) [volumeData[ x] bytes];
+			
+			vImageClip_PlanarF( &srcf, &srcf, 7168, -1024, 0);
+		}
+		
+		[viewer2D recomputePixMinMax];
+		
+		[self computeMinMax];
+		
+		NSLog( @"-- new maxValueOfSeries = %f", maximumValue);
+		NSLog( @"-- new minValueOfSeries = %f", minimumValue);
+	}
 }
 
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:(NSString*) m mode:(NSString*) renderingMode

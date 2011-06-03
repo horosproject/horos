@@ -35,7 +35,7 @@
 + (long) hiddenHeight;
 + (long) exposedHeight;
 - (void) setToolbar :(NSToolbar*) tb viewer:(ViewerController*) v;
-- (void) fixSize;
+//- (void) fixSize;
 - (void) toolbarWillClose :(NSToolbar*) tb;
 - (id)initForScreen: (long) s;
 - (NSToolbar*) toolbar;

@@ -5365,20 +5365,20 @@ static ViewerController *draggedController = nil;
 	NSToolbarItem *item = [[notif userInfo] objectForKey: @"item"];
 	if( [retainedToolbarItems containsObject: item] == NO) [retainedToolbarItems addObject: item];
 	
-	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+/*	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{		
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[toolbarPanel[ i] fixSize];
-	}
+	}*/
 }  
 
 - (void) toolbarDidRemoveItem: (NSNotification *) notif
 {
-	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+/*	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[toolbarPanel[ i] fixSize];
-	}
+	}*/
 }
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem
@@ -13893,6 +13893,19 @@ int i,j,l;
 - (float) factorPET2SUV
 {
 	return factorPET2SUV;
+}
+
+- (void) recomputePixMinMax
+{
+	for( int y = 0; y < maxMovieIndex; y++)
+	{
+		for( DCMPix * p in pixList[ y])
+		{
+			[p computePixMinPixMax];
+			p.minValueOfSeries = 0;
+			p.maxValueOfSeries = 0;
+		}
+	}
 }
 
 - (void) convertPETtoSUV

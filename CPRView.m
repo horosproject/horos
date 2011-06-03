@@ -93,6 +93,7 @@ extern int splitPosition[ 3];
 - (void)_sendDidEditDisplayInfo;
 
 - (void)_updateGeneratedHeight;
+- (void)_adjustROIs;
 
 - (void)_drawVerticalLines:(NSArray *)verticalLines;
 
@@ -368,14 +369,6 @@ extern int splitPosition[ 3];
 	else [super drawTextualData: size :annotations];
 }
 
-- (BOOL) planarDeformations
-{
-	if( [self.curvedPath.bezierPath isPlanar] && ([[self windowController] straightenedCPRAngle] >= 358 || [[self windowController] straightenedCPRAngle] <= 2))
-		return NO;
-	else
-		return YES;
-}
-
 - (void) drawRect:(NSRect)rect
 {
 	if( rect.size.width > 10)
@@ -384,7 +377,7 @@ extern int splitPosition[ 3];
 		[self _sendNewRequestIfNeeded];
 		_processingRequest = NO;    
 		
-		[self adjustROIsForCPRView];
+		[self _adjustROIs];
 		
 		[super drawRect: rect];
 	}
@@ -849,65 +842,6 @@ extern int splitPosition[ 3];
 	}
 }
 
-- (void) adjustROIsForCPRView
-{
-	if( [self planarDeformations])
-	{
-		for( int i = 0; i < curRoiList.count; i++ )
-		{
-			ROI *r = [curRoiList objectAtIndex:i];
-			if( r.type != tMesure && r.type != tText && r.type != tArrow)
-			{
-				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
-				[curRoiList removeObjectAtIndex:i];
-				i--;
-			}
-			else
-				r.displayCMOrPixels = YES; // We don't want the value in pixels
-		}
-		
-		for( ROI *c in curRoiList)
-		{
-			if( c.type == tMesure)
-			{
-				NSMutableArray *points = c.points;
-				
-				NSPoint A = [[points objectAtIndex: 0] point];
-				NSPoint B = [[points objectAtIndex: 1] point];
-				
-				if( fabs( A.x - B.x) > 4 || fabs( A.y - B.y) > 4)
-				{
-					if( fabs( A.x - B.x) > fabs( A.y - B.y) || A.y == [curDCM pheight] / 2)
-					{
-						// Horizontal length -> centered in y, and horizontal
-						
-						A.y = [curDCM pheight] / 2;
-						B.y = [curDCM pheight] / 2;
-						
-						[[points objectAtIndex: 0] setPoint: A];
-						[[points objectAtIndex: 1] setPoint: B];
-					}
-					else
-					{
-						// Vectical length -> vertical
-						
-						A.x = B.x;
-						
-						[[points objectAtIndex: 0] setPoint: A];
-						[[points objectAtIndex: 1] setPoint: B];
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		for( ROI *r in curRoiList)
-			r.displayCMOrPixels = YES;
-	}
-	
-	[self setNeedsDisplay: YES];
-}
 
 - (void)mouseDown:(NSEvent *)event
 {
@@ -1222,10 +1156,10 @@ extern int splitPosition[ 3];
 {
 }
 
-- (void) runMainRunLoopUntilAllRequestsAreFinished
+- (void)waitUntilPixUpdate
 {
 	[self _sendNewRequestIfNeeded];
-	[_generator runMainRunLoopUntilAllRequestsAreFinished];
+	[_generator runUntilAllRequestsAreFinished];
 }
 
 + (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRViewClippingRangeMode)clippingRangeMode
@@ -1292,6 +1226,59 @@ extern int splitPosition[ 3];
 }
 
 - (void)_sendNewRequest
+//{
+//    CPRStretchedGeneratorRequest *request;
+//    N3Vector curveDirection;
+//    N3Vector baseNormal;
+//    
+//    if ([_curvedPath.bezierPath elementCount] >= 3)
+//	{
+//		request = [[CPRStraightenedGeneratorRequest alloc] init];
+//
+//		request.pixelsWide = [self bounds].size.width*1.2;
+//		request.pixelsHigh = [self bounds].size.height*1.2;
+//		request.slabWidth = _curvedPath.thickness;
+//		
+//		request.slabSampleDistance = 0;
+//		request.bezierPath = _curvedPath.bezierPath;
+//		request.projectionMode = _clippingRangeMode;
+//		request = [[CPRStretchedGeneratorRequest alloc] init];
+//		
+//        request.pixelsWide = [self bounds].size.width*1.2;
+//        request.pixelsHigh = [self bounds].size.height*1.2;
+//		request.slabWidth = _curvedPath.thickness;
+//
+//        request.slabSampleDistance = 0;
+//        request.bezierPath = _curvedPath.bezierPath;
+//        request.projectionMode = _clippingRangeMode;
+//
+//		curveDirection = N3VectorSubtract([_curvedPath.bezierPath vectorAtEnd], [_curvedPath.bezierPath vectorAtStart]);
+//		baseNormal = N3VectorNormalize(N3VectorCrossProduct(_curvedPath.baseDirection, curveDirection));
+//		request.projectionNormal = N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(_curvedPath.angle, curveDirection));
+//		request.midHeightPoint = [_curvedPath.bezierPath vectorAtStart];
+//
+//        if ([_lastRequest isEqual:request] == NO) {
+//			if (request.slabWidth < 2) {
+//				CPRVolumeData *curvedVolume;
+//				curvedVolume = [CPRGenerator synchronousRequestVolume:request volumeData:_generator.volumeData];
+//				
+//				[_generator runMainRunLoopUntilAllRequestsAreFinished];
+//				[self generator:nil didGenerateVolume:curvedVolume request:request];
+//			} else {
+//				[_generator requestVolume:request];
+//			}
+//			self.lastRequest = request;
+//        }
+//        
+//        [request release];
+//    }
+//	else
+//	{
+//		[self setPixels: nil files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+//	}
+//	
+//    _needsNewRequest = NO;
+//}
 {
     CPRStraightenedGeneratorRequest *request;
     
@@ -1314,7 +1301,7 @@ extern int splitPosition[ 3];
 				CPRVolumeData *curvedVolume;
 				curvedVolume = [CPRGenerator synchronousRequestVolume:request volumeData:_generator.volumeData];
 				
-				[_generator runMainRunLoopUntilAllRequestsAreFinished];
+				[_generator runUntilAllRequestsAreFinished];
 				[self generator:nil didGenerateVolume:curvedVolume request:request];
 			} else {
 				[_generator requestVolume:request];
@@ -1361,6 +1348,66 @@ extern int splitPosition[ 3];
             [_delegate CPRViewDidChangeGeneratedHeight:self];
         }        
     }
+}
+
+- (void)_adjustROIs
+{
+	if([self.curvedPath isPlaneMeasurable] == NO)
+	{
+		for( int i = 0; i < curRoiList.count; i++ )
+		{
+			ROI *r = [curRoiList objectAtIndex:i];
+			if( r.type != tMesure && r.type != tText && r.type != tArrow)
+			{
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
+				[curRoiList removeObjectAtIndex:i];
+				i--;
+			}
+			else
+				r.displayCMOrPixels = YES; // We don't want the value in pixels
+		}
+		
+		for( ROI *c in curRoiList)
+		{
+			if( c.type == tMesure)
+			{
+				NSMutableArray *points = c.points;
+				
+				NSPoint A = [[points objectAtIndex: 0] point];
+				NSPoint B = [[points objectAtIndex: 1] point];
+				
+				if( fabs( A.x - B.x) > 4 || fabs( A.y - B.y) > 4)
+				{
+					if( fabs( A.x - B.x) > fabs( A.y - B.y) || A.y == [curDCM pheight] / 2)
+					{
+						// Horizontal length -> centered in y, and horizontal
+						
+						A.y = [curDCM pheight] / 2;
+						B.y = [curDCM pheight] / 2;
+						
+						[[points objectAtIndex: 0] setPoint: A];
+						[[points objectAtIndex: 1] setPoint: B];
+					}
+					else
+					{
+						// Vectical length -> vertical
+						
+						A.x = B.x;
+						
+						[[points objectAtIndex: 0] setPoint: A];
+						[[points objectAtIndex: 1] setPoint: B];
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		for( ROI *r in curRoiList)
+			r.displayCMOrPixels = YES;
+	}
+	
+	[self setNeedsDisplay: YES];
 }
 
 - (void)_drawVerticalLines:(NSArray *)verticalLines

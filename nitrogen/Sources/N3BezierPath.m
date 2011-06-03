@@ -361,7 +361,12 @@
 
 - (BOOL)isPlanar
 {
-    return N3BezierCoreIsPlanar(_bezierCore);
+    return N3BezierCoreIsPlanar(_bezierCore, NULL);
+}
+
+- (N3Plane)leastSquaresPlane
+{
+	return N3BezierCoreLeastSquaresPlane(_bezierCore);
 }
 
 - (N3BezierPathElement)elementAtIndex:(NSInteger)index

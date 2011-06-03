@@ -1392,15 +1392,22 @@ CGFloat N3BezierCoreMeanDistanceToPlane(N3BezierCoreRef bezierCore, N3Plane plan
     return totalDistance / (CGFloat)segmentCount;
 }
 
-bool N3BezierCoreIsPlanar(N3BezierCoreRef bezierCore)
+bool N3BezierCoreIsPlanar(N3BezierCoreRef bezierCore, N3PlanePointer bezierCorePlane)
 {
     N3Plane plane;
     CGFloat meanDistance;
+	bool isPlanar;
     
     plane = N3BezierCoreLeastSquaresPlane(bezierCore);
     meanDistance = N3BezierCoreMeanDistanceToPlane(bezierCore, plane);
     
-    return meanDistance < 1.0;
+    isPlanar = meanDistance < 1.0;
+	
+	if (isPlanar && bezierCorePlane) {
+		*bezierCorePlane = plane;
+	}
+	
+	return isPlanar;
 }
 
 

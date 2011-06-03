@@ -471,6 +471,19 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     return requests;
 }
 
+- (BOOL)isPlaneMeasurable
+{
+	N3Plane plane;
+	
+	if( [self.bezierPath isPlanar]) {
+		plane = [self.bezierPath leastSquaresPlane];
+		if (ABS(N3VectorDotProduct(N3VectorNormalize(self.initialNormal), N3VectorNormalize(plane.normal))) > 0.9999 /*~cos(1deg)*/) {
+			return YES;
+		}
+	}
+	return NO;
+}
+
 - (CGFloat)leftTransverseSectionPosition
 {
     return MAX(_transverseSectionPosition - _transverseSectionSpacing/[_bezierPath length], 0.0);

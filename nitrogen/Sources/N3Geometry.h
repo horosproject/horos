@@ -57,7 +57,16 @@ extern const N3Plane N3PlaneInvalid;
 typedef N3Vector *N3VectorPointer;
 typedef N3Vector *N3VectorArray;
 
+typedef N3Line *N3LinePointer;
+typedef N3Line *N3LineArray;
+
+typedef N3Plane *N3PlanePointer;
+typedef N3Plane *N3PlaneArray;
+
 typedef CATransform3D N3AffineTransform;
+
+typedef N3AffineTransform *N3AffineTransformPointer;
+typedef N3AffineTransform *N3AffineTransformArray;
 
 extern const N3Vector N3VectorZero;
 
