@@ -176,25 +176,25 @@ static NSMutableDictionary* databasesDictionary = nil;
 	NSInteger prc;
 	@synchronized(self) {
 		prc = self.retainCount;
-		if (prc <= 2)
-			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, self.managedObjectContext.retainCount); 
+//		if (prc <= 2)
+//			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, self.managedObjectContext.retainCount); 
 		[super release];
 	}
 	
 	NSInteger rc = prc-1;
-	if (rc == 1)
-		NSLog(@"\tself.rc = %d, managedObjectContext.rc = %d ", self.retainCount, self.managedObjectContext.retainCount);
-	if (rc == 0)
-		NSLog(@"\tself.rc = 0, zombies arising..?");
+//	if (rc == 1)
+//		NSLog(@"\tself.rc = %d, managedObjectContext.rc = %d ", self.retainCount, self.managedObjectContext.retainCount);
+//	if (rc == 0)
+//		NSLog(@"\tself.rc = 0, zombies arising..?");
 	
 	@synchronized(databasesDictionary) {
 		if (rc == 1 && [databasesDictionary keyForObject:self]) {
-			NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", self.managedObjectContext.registeredObjects.count);
+//			NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", self.managedObjectContext.registeredObjects.count);
 
 			//[managedObjectContext invalidate];
 				
 			if (self.managedObjectContext.retainCount /*- self.managedObjectContext.registeredObjects.count*/ == 1) {
-				NSLog(@"\t\tThe context seems to be retained only by the database and by its registered objects.. We can release the database!");
+//				NSLog(@"\t\tThe context seems to be retained only by the database and by its registered objects.. We can release the database!");
 					id key = [databasesDictionary keyForObject:self];
 					if (key) [databasesDictionary removeObjectForKey:key];
 			}
@@ -2761,19 +2761,19 @@ enum { Compress, Decompress };
 	NSString *templateFile;
 	
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
-	NSLog( @"%@", templateFile);
+//	NSLog( @"%@", templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:nil];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"] toPath:templateFile handler:nil];
 	
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
-	NSLog( @"%@", templateFile);
+//	NSLog( @"%@", templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:nil];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"] toPath:templateFile handler:nil];
 	
 	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"];
-	NSLog( @"%@", templateFile);
+//	NSLog( @"%@", templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportSeriesTemplate.html"] toPath:templateFile handler:nil];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"] toPath:templateFile handler:nil];
 	
 	// HTML-extra directory
 	NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingPathComponent:@"html-extra/"];
@@ -2783,7 +2783,7 @@ enum { Compress, Decompress };
 	// CSS file
 	NSString *cssFile = [htmlExtraDirectory stringByAppendingPathComponent:@"style.css"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStyle.css"] toPath:cssFile handler:nil];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStyle.css"] toPath:cssFile handler:nil];
 	
 }
 
