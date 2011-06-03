@@ -847,7 +847,6 @@ enum
 - (void)deselectAllROIs;
 - (void) refreshToolbar;
 - (void) redrawToolbar;
-- (void) reloadAnnotations;
 - (NSScrollView*) previewMatrixScrollView;
 
 #pragma mark-

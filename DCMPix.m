@@ -66,7 +66,6 @@ BOOL gUSEPAPYRUSDCMPIX = YES;
 BOOL gFULL32BITPIPELINE = NO;
 int gSUVAcquisitionTimeField = 0;
 NSDictionary *gCUSTOM_IMAGE_ANNOTATIONS = nil;
-BOOL	anonymizedAnnotations = NO;
 BOOL	runOsiriXInProtectedMode = NO;
 BOOL	quicktimeRunning = NO;
 NSLock	*quicktimeThreadLock = nil;
@@ -12181,16 +12180,6 @@ END_CREATE_ROIS:
 
 #ifdef OSIRIX_VIEWER
 
-+ (BOOL) setAnonymizedAnnotations: (BOOL) v
-{
-	if( anonymizedAnnotations != v)
-	{
-		anonymizedAnnotations = v;
-		return YES;
-	}
-	else return NO;
-}
-
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(PapyShort)fileNb;
 {
 	NSMutableString *field = [NSMutableString string];
@@ -12461,11 +12450,8 @@ END_CREATE_ROIS:
 								#endif
 								else
 									value = nil;
-									
-								if( anonymizedAnnotations)
-								{
-									if( [[field objectForKey:@"group"] intValue] == 0x0010 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @" ";
-								}
+								
+								if( [[field objectForKey:@"group"] intValue] == 0x0010 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @"PatientName";
 								
 								if( [[field objectForKey:@"group"] intValue] == 0x0002 && [[field objectForKey:@"element"] intValue] == 0x0010)
 								{
@@ -12491,10 +12477,7 @@ END_CREATE_ROIS:
 								{
 									value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
 									
-									if( anonymizedAnnotations)
-									{
-										if( [fieldName isEqualToString:@"name"]) value = @" ";
-									}
+									if( [fieldName isEqualToString:@"name"]) value = @"PatientName";
 								}
 								
 								if(value==nil) value = @"-";

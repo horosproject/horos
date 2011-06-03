@@ -666,8 +666,6 @@ Note setter is different to not break existing usage. :-( */
 - (NSString*) getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject;
 #endif
 
-/** Set flag to anonymize the annotations */
-+ (BOOL) setAnonymizedAnnotations: (BOOL) v;
 #endif
 
 @end
