@@ -157,7 +157,7 @@
 	<key>CFBundleExecutable</key>
 	<string>OsiriX App</string>
 	<key>CFBundleGetInfoString</key>
-	<string>OsiriX v.3.9.1</string>
+	<string>OsiriX v.3.9.2</string>
 	<key>CFBundleIconFile</key>
 	<string>Osirix.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -169,7 +169,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.9.1</string>
+	<string>3.9.2</string>
 	<key>CFBundleSignature</key>
 	<string>OsiX</string>
 	<key>CFBundleURLTypes</key>
@@ -188,7 +188,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>3.9.1</string>
+	<string>3.9.2</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.medical</string>
 	<key>LSCanProvideIMVideoDataSource</key>
