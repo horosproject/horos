@@ -18,6 +18,16 @@
 #import "VRController.h"
 #import "N3Geometry.h"
 #import "CPRCurvedPath.h"
+#import "CPRProjectionOperation.h"
+
+enum _CPRViewClippingRangeMode {
+    CPRViewClippingRangeVRMode = CPRProjectionModeVR, // don't use this, it is not implemented
+    CPRViewClippingRangeMIPMode = CPRProjectionModeMIP,
+    CPRViewClippingRangeMinIPMode = CPRProjectionModeMinIP,
+    CPRViewClippingRangeMeanMode = CPRProjectionModeMean
+};
+typedef CPRProjectionMode CPRViewClippingRangeMode;
+
 
 @class CPRController;
 @class CPRDisplayInfo;

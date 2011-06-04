@@ -18,6 +18,12 @@
 #import "VRController.h"
 #import "VRView.h"
 
+enum _CPRType {
+    CPRStraightenedType = 0,
+    CPRStretchedType = 0
+};
+typedef NSInteger CPRType;
+
 enum _CPRExportImageFormat {
     CPR8BitRGBExportImageFormat = 0,
     CPR16BitExportImageFormat = 1,
@@ -69,6 +75,8 @@ typedef NSInteger CPRExportRotationSpan;
 	IBOutlet NSSplitView *horizontalSplit1, *horizontalSplit2, *verticalSplit;
     IBOutlet NSView *tbStraightenedCPRAngle;
     double straightenedCPRAngle; // this is in degrees, the CPRView uses radians
+    IBOutlet NSView *tbCPRType;
+    CPRType CPRType;
     
     CPRVolumeData *cprVolumeData;
     CPRCurvedPath *curvedPath;
@@ -167,6 +175,7 @@ typedef NSInteger CPRExportRotationSpan;
 @property BOOL curvedPathCreationMode;
 @property (retain) NSColor *curvedPathColor;
 @property double straightenedCPRAngle;
+@property CPRType CPRType;
 
 // export related properties
 @property (nonatomic, retain) NSString *exportSeriesName;

@@ -18,14 +18,6 @@
 #import "CPRGenerator.h"
 #import "CPRProjectionOperation.h"
 
-enum _CPRViewClippingRangeMode {
-    CPRViewClippingRangeVRMode = CPRProjectionModeVR, // don't use this, it is not implemented
-    CPRViewClippingRangeMIPMode = CPRProjectionModeMIP,
-    CPRViewClippingRangeMinIPMode = CPRProjectionModeMinIP,
-    CPRViewClippingRangeMeanMode = CPRProjectionModeMean
-};
-typedef CPRProjectionMode CPRViewClippingRangeMode;
-
 @class CPRVolumeData;
 @class CPRCurvedPath;
 @class CPRDisplayInfo;
@@ -65,7 +57,8 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
     
     BOOL _drawAllNodes;
     
-    BOOL _processingRequest;
+    BOOL _processingRequest; // synchronous new image requests are generated in drawRect, but code that handles the new image calls' setNeedsDisplay,
+                            // so this variable is used to short circuit setNeedsDisplay while the image is being generated.
     BOOL _needsNewRequest;
 	
 	BOOL _displayCrossLines;
@@ -100,7 +93,7 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 @property (nonatomic) BOOL displayTransverseLines;
 @property (nonatomic, readwrite, assign) BOOL displayCrossLines;
 
-- (void)waitUntilPixUpdate; // returns once this view's DCM pix object has been updated to relect any changes made to the view. 
+- (void)waitUntilPixUpdate; // returns once this view's DCM pix object has been updated to reflect any changes made to the view. 
 
 @end
 
