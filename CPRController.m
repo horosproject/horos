@@ -2354,7 +2354,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			{
 				BOOL exportSpacingAndOrigin = [cprView.curvedPath isPlaneMeasurable];
 				
-				[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: exportSpacingAndOrigin]];
+				[producedFiles addObject: [[cprView reformationView] exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: exportSpacingAndOrigin]];
 			}
 		}
 		else if (self.exportSequenceType == CPRSeriesExportSequenceType) // A 3D rotation or batch sequence
@@ -2431,7 +2431,7 @@ static float deg2rad = 3.14159265358979/180.0;
 //						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 //						[bottomTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 						
-						[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: NO]];
+						[producedFiles addObject: [[cprView reformationView] exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: NO]];
 					}
 					
 					[pool release];

@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import "CPRView.h"
+#import "CPRStraightenedView.h"
 #import "CPRGenerator.h"
 #import "CPRGeneratorRequest.h"
 #import "CPRVolumeData.h"
@@ -33,7 +33,7 @@
 extern BOOL frameZoomed;
 extern int splitPosition[ 3];
 
-@interface _CPRViewPlaneRun : NSObject
+@interface _CPRStraightenedViewPlaneRun : NSObject
 {
     NSRange _range;
     NSMutableArray *_distances;
@@ -44,12 +44,12 @@ extern int splitPosition[ 3];
 
 @end
 
-@interface N3BezierPath (CPRViewPlaneRunAdditions)
-- (id)initWithCPRViewPlaneRun:(_CPRViewPlaneRun *)planeRun heightPixelsPerMm:(CGFloat)pixelsPerMm;
+@interface N3BezierPath (CPRStraightenedViewPlaneRunAdditions)
+- (id)initWithCPRStraightenedViewPlaneRun:(_CPRStraightenedViewPlaneRun *)planeRun heightPixelsPerMm:(CGFloat)pixelsPerMm;
 @end
 
 
-@implementation _CPRViewPlaneRun
+@implementation _CPRStraightenedViewPlaneRun
 
 @synthesize range = _range;
 @synthesize distances = _distances;
@@ -72,7 +72,7 @@ extern int splitPosition[ 3];
 @end
 
 
-@interface CPRView ()
+@interface CPRStraightenedView ()
 
 @property (nonatomic, readwrite, retain) CPRVolumeData *curvedVolumeData; // the volume data that was generated
 @property (nonatomic, readwrite, retain) CPRStraightenedGeneratorRequest *lastRequest;
@@ -115,7 +115,7 @@ extern int splitPosition[ 3];
 @end
 
 
-@implementation CPRView
+@implementation CPRStraightenedView
 
 @synthesize delegate = _delegate;
 @synthesize volumeData = _volumeData;
@@ -409,7 +409,7 @@ extern int splitPosition[ 3];
 	NSArray *verticalLines;
 	NSNumber *indexNumber;
 	NSString *planeName;
-	_CPRViewPlaneRun *planeRun;
+	_CPRStraightenedViewPlaneRun *planeRun;
     CGLContextObj cgl_ctx;
     
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    
@@ -1440,7 +1440,7 @@ extern int splitPosition[ 3];
 	CGFloat pixelsPerMm;
 	NSInteger i;
 	N3Vector planePointVector;
-	_CPRViewPlaneRun *planeRun;
+	_CPRStraightenedViewPlaneRun *planeRun;
     double pixToSubdrawRectOpenGLTransform[16];
 	CGLContextObj cgl_ctx;
     CGFloat pheight_2;
@@ -1480,7 +1480,7 @@ extern int splitPosition[ 3];
 	N3VectorArray points;
 	N3Vector bottom;
 	N3Vector top;
-	_CPRViewPlaneRun *planeRun;
+	_CPRStraightenedViewPlaneRun *planeRun;
 	NSRange range;
 	NSInteger aboveOrBelow;
 	NSInteger prevAboveOrBelow;
@@ -1523,7 +1523,7 @@ extern int splitPosition[ 3];
 		
 		if (bottomPointAbove != topPointAbove) {
 			if (planeRun == nil) { //start a new run
-				planeRun = [[_CPRViewPlaneRun alloc] init];
+				planeRun = [[_CPRStraightenedViewPlaneRun alloc] init];
 				range = planeRun.range;
 				if (i != 0) {
 					range.location = i-1;
@@ -1665,7 +1665,7 @@ extern int splitPosition[ 3];
 	CGFloat distance;
 	CGFloat minDistance;
 	CGFloat relativePosition;
-	_CPRViewPlaneRun *planeRun;
+	_CPRStraightenedViewPlaneRun *planeRun;
 	N3MutableBezierPath *planeRunBezierPath;
 	
 	pointVector = N3VectorMakeFromNSPoint(point);
@@ -1674,7 +1674,7 @@ extern int splitPosition[ 3];
 	closestVector = N3VectorZero;
     
 	for (planeRun in planeRuns) {
-		planeRunBezierPath = [[N3MutableBezierPath alloc] initWithCPRViewPlaneRun:planeRun heightPixelsPerMm:pixelsPerMm];
+		planeRunBezierPath = [[N3MutableBezierPath alloc] initWithCPRStraightenedViewPlaneRun:planeRun heightPixelsPerMm:pixelsPerMm];
 		[planeRunBezierPath applyAffineTransform:N3AffineTransformMakeTranslation(0, (CGFloat)curDCM.pheight/2.0, 0)];
 		[planeRunBezierPath applyAffineTransform:N3AffineTransformInvert([self viewToPixTransform])];
 		
@@ -1824,7 +1824,7 @@ extern int splitPosition[ 3];
 
 @implementation N3BezierPath (CPRViewPlaneRunAdditions)
 
-- (id)initWithCPRViewPlaneRun:(_CPRViewPlaneRun *)planeRun heightPixelsPerMm:(CGFloat)pixelsPerMm
+- (id)initWithCPRStraightenedViewPlaneRun:(_CPRStraightenedViewPlaneRun *)planeRun heightPixelsPerMm:(CGFloat)pixelsPerMm
 {
 	NSInteger i;
 	N3MutableBezierPath *mutableBezierPath;
