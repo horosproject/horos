@@ -76,7 +76,7 @@ typedef NSInteger CPRExportRotationSpan;
     IBOutlet NSView *tbStraightenedCPRAngle;
     double straightenedCPRAngle; // this is in degrees, the CPRView uses radians
     IBOutlet NSView *tbCPRType;
-    CPRType CPRType;
+    CPRType cprType;
     
     CPRVolumeData *cprVolumeData;
     CPRCurvedPath *curvedPath;
@@ -175,7 +175,7 @@ typedef NSInteger CPRExportRotationSpan;
 @property BOOL curvedPathCreationMode;
 @property (retain) NSColor *curvedPathColor;
 @property double straightenedCPRAngle;
-@property CPRType CPRType;
+@property CPRType cprType;
 
 // export related properties
 @property (nonatomic, retain) NSString *exportSeriesName;

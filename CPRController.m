@@ -56,7 +56,7 @@ static float deg2rad = 3.14159265358979/180.0;
 @synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit1, horizontalSplit2, verticalSplit, lowLOD;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, blendingModeAvailable;
-@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, CPRType;
+@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType;
 
 // export related synthesize
 @synthesize exportSeriesName;
@@ -3724,6 +3724,14 @@ static float deg2rad = 3.14159265358979/180.0;
         topTransverseView.curvedPath = curvedPath;
         middleTransverseView.curvedPath = curvedPath;
         bottomTransverseView.curvedPath = curvedPath;
+    }
+}
+
+- (void)setCprType:(CPRType)newCprType
+{
+    if (newCprType != cprType) {
+        cprType = newCprType;
+        cprView.reformationType = cprType;
     }
 }
 
