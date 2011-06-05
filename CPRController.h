@@ -50,7 +50,7 @@ enum _CPRExportRotationSpan {
 typedef NSInteger CPRExportRotationSpan;
 
 @class CPRMPRDCMView;
-@class CPRStraightenedView;
+@class CPRView;
 @class CPRCurvedPath;
 @class CPRDisplayInfo;
 @class CPRTransverseView;
@@ -70,7 +70,7 @@ typedef NSInteger CPRExportRotationSpan;
 	IBOutlet NSPopUpButton *popupRoi;
 	
 	IBOutlet CPRMPRDCMView *mprView1, *mprView2, *mprView3;
-    IBOutlet CPRStraightenedView *cprView;
+    IBOutlet CPRView *cprView;
     IBOutlet CPRTransverseView *topTransverseView, *middleTransverseView, *bottomTransverseView;
 	IBOutlet NSSplitView *horizontalSplit1, *horizontalSplit2, *verticalSplit;
     IBOutlet NSView *tbStraightenedCPRAngle;

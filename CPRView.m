@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import "CPRStraightenedView.h"
+#import "CPRView.h"
 #import "CPRGenerator.h"
 #import "CPRGeneratorRequest.h"
 #import "CPRVolumeData.h"
@@ -72,7 +72,7 @@ extern int splitPosition[ 3];
 @end
 
 
-@interface CPRStraightenedView ()
+@interface CPRView ()
 
 @property (nonatomic, readwrite, retain) CPRVolumeData *curvedVolumeData; // the volume data that was generated
 @property (nonatomic, readwrite, retain) CPRStraightenedGeneratorRequest *lastRequest;
@@ -115,7 +115,7 @@ extern int splitPosition[ 3];
 @end
 
 
-@implementation CPRStraightenedView
+@implementation CPRView
 
 @synthesize delegate = _delegate;
 @synthesize volumeData = _volumeData;

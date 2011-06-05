@@ -5081,8 +5081,8 @@
 		CE90550E12F5B64300263AB6 /* CPRTransverseView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054E812F5B64200263AB6 /* CPRTransverseView.m */; };
 		CE90550F12F5B64300263AB6 /* CPRUnsignedInt16ImageRep.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054E912F5B64200263AB6 /* CPRUnsignedInt16ImageRep.h */; };
 		CE90551012F5B64300263AB6 /* CPRUnsignedInt16ImageRep.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054EA12F5B64200263AB6 /* CPRUnsignedInt16ImageRep.m */; };
-		CE90551112F5B64300263AB6 /* CPRStraightenedView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054EB12F5B64200263AB6 /* CPRStraightenedView.h */; };
-		CE90551212F5B64300263AB6 /* CPRStraightenedView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054EC12F5B64300263AB6 /* CPRStraightenedView.m */; };
+		CE90551112F5B64300263AB6 /* CPRView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054EB12F5B64200263AB6 /* CPRView.h */; };
+		CE90551212F5B64300263AB6 /* CPRView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054EC12F5B64300263AB6 /* CPRView.m */; };
 		CE90551312F5B64300263AB6 /* CPRVolumeData.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054ED12F5B64300263AB6 /* CPRVolumeData.h */; };
 		CE90551412F5B64300263AB6 /* CPRVolumeData.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054EE12F5B64300263AB6 /* CPRVolumeData.m */; };
 		CE90551812F5B68100263AB6 /* CPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE90551612F5B68100263AB6 /* CPR.xib */; };
@@ -11867,8 +11867,8 @@
 		CE9054E812F5B64200263AB6 /* CPRTransverseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRTransverseView.m; sourceTree = "<group>"; };
 		CE9054E912F5B64200263AB6 /* CPRUnsignedInt16ImageRep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRUnsignedInt16ImageRep.h; sourceTree = "<group>"; };
 		CE9054EA12F5B64200263AB6 /* CPRUnsignedInt16ImageRep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRUnsignedInt16ImageRep.m; sourceTree = "<group>"; };
-		CE9054EB12F5B64200263AB6 /* CPRStraightenedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRStraightenedView.h; sourceTree = "<group>"; };
-		CE9054EC12F5B64300263AB6 /* CPRStraightenedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRStraightenedView.m; sourceTree = "<group>"; };
+		CE9054EB12F5B64200263AB6 /* CPRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRView.h; sourceTree = "<group>"; };
+		CE9054EC12F5B64300263AB6 /* CPRView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRView.m; sourceTree = "<group>"; };
 		CE9054ED12F5B64300263AB6 /* CPRVolumeData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRVolumeData.h; sourceTree = "<group>"; };
 		CE9054EE12F5B64300263AB6 /* CPRVolumeData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRVolumeData.m; sourceTree = "<group>"; };
 		CE90551712F5B68100263AB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CPR.xib; sourceTree = "<group>"; };
@@ -16961,8 +16961,8 @@
 				CE9054E812F5B64200263AB6 /* CPRTransverseView.m */,
 				CE9054E912F5B64200263AB6 /* CPRUnsignedInt16ImageRep.h */,
 				CE9054EA12F5B64200263AB6 /* CPRUnsignedInt16ImageRep.m */,
-				CE9054EB12F5B64200263AB6 /* CPRStraightenedView.h */,
-				CE9054EC12F5B64300263AB6 /* CPRStraightenedView.m */,
+				CE9054EB12F5B64200263AB6 /* CPRView.h */,
+				CE9054EC12F5B64300263AB6 /* CPRView.m */,
 				4F00A9E7139A779200ABD529 /* CPRStretchedView.h */,
 				4F00A9E3139A778000ABD529 /* CPRStretchedView.m */,
 				CE9054ED12F5B64300263AB6 /* CPRVolumeData.h */,
@@ -19745,7 +19745,7 @@
 				CE90550B12F5B64300263AB6 /* CPRStraightenedOperation.h in Headers */,
 				CE90550D12F5B64300263AB6 /* CPRTransverseView.h in Headers */,
 				CE90550F12F5B64300263AB6 /* CPRUnsignedInt16ImageRep.h in Headers */,
-				CE90551112F5B64300263AB6 /* CPRStraightenedView.h in Headers */,
+				CE90551112F5B64300263AB6 /* CPRView.h in Headers */,
 				CE90551312F5B64300263AB6 /* CPRVolumeData.h in Headers */,
 				84A9D49612F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */,
 				59E8352712F9ABAC006B930A /* N2ManagedDatabase.h in Headers */,
@@ -24334,7 +24334,7 @@
 				CE90550C12F5B64300263AB6 /* CPRStraightenedOperation.m in Sources */,
 				CE90550E12F5B64300263AB6 /* CPRTransverseView.m in Sources */,
 				CE90551012F5B64300263AB6 /* CPRUnsignedInt16ImageRep.m in Sources */,
-				CE90551212F5B64300263AB6 /* CPRStraightenedView.m in Sources */,
+				CE90551212F5B64300263AB6 /* CPRView.m in Sources */,
 				CE90551412F5B64300263AB6 /* CPRVolumeData.m in Sources */,
 				59E8352812F9ABAC006B930A /* N2ManagedDatabase.mm in Sources */,
 				59E83A1412FC6556006B930A /* NSManagedObject+N2.mm in Sources */,
