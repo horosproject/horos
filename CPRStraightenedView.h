@@ -24,7 +24,7 @@
 @class CPRStraightenedGeneratorRequest;
 @class StringTexture;
 
-@interface CPRView : DCMView <CPRGeneratorDelegate>
+@interface CPRStraightenedView : DCMView <CPRGeneratorDelegate>
 {
     id<CPRViewDelegate> _delegate;
     

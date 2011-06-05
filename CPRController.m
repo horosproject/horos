@@ -25,7 +25,7 @@
 #import "CPRCurvedPath.h"
 #import "CPRDisplayInfo.h"
 #import "N3BezierPath.h"
-#import "CPRView.h"
+#import "CPRStraightenedView.h"
 #import "CPRVolumeData.h"
 #import "N3BezierCoreAdditions.h"
 #import "CPRTransverseView.h"

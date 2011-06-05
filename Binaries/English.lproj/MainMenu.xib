@@ -3,16 +3,14 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">10J869</string>
-		<string key="IBDocument.InterfaceBuilderVersion">823</string>
+		<string key="IBDocument.InterfaceBuilderVersion">851</string>
 		<string key="IBDocument.AppKitVersion">1038.35</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">823</string>
+			<string key="NS.object.0">851</string>
 		</object>
-		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="12367"/>
-		</array>
+		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs"/>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</array>
@@ -8069,7 +8067,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{213, 50}</string>
 				<object class="NSView" key="NSWindowView" id="600825701">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="706317537">
 							<reference key="NSNextResponder" ref="600825701"/>
@@ -8745,7 +8743,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{495, 249}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{213, 72}</string>
@@ -8907,7 +8904,7 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 										</object>
 										<string key="decimalSeparator">.</string>
 										<integer value="1000" key="formatterBehavior"/>
-										<string key="groupingSeparator">'</string>
+										<string key="groupingSeparator">,</string>
 										<object class="NSLocale" key="locale">
 											<string key="NS.identifier">fr_CH</string>
 										</object>
@@ -8931,7 +8928,7 @@ YXZhaWxhYmxlIHRvIHJlYnVpbGQgdGhlIGRhdGFiYXNlOg</string>
 									<reference key="NS.max" ref="194147893"/>
 									<nil key="NS.rounding"/>
 									<string key="NS.decimal">.</string>
-									<string key="NS.thousand">'</string>
+									<string key="NS.thousand">,</string>
 									<bool key="NS.hasthousands">YES</bool>
 									<bool key="NS.localized">YES</bool>
 									<bool key="NS.allowsfloats">YES</bool>
@@ -24149,7 +24146,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="bottomTransverseView">CPRTransverseView</string>
-						<string key="cprView">CPRView</string>
+						<string key="cprView">CPRStraightenedView</string>
 						<string key="dcmSeriesView">NSView</string>
 						<string key="dcmWindow">NSWindow</string>
 						<string key="horizontalSplit1">NSSplitView</string>
@@ -24187,7 +24184,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="cprView">
 							<string key="name">cprView</string>
-							<string key="candidateClassName">CPRView</string>
+							<string key="candidateClassName">CPRStraightenedView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="dcmSeriesView">
 							<string key="name">dcmSeriesView</string>
@@ -24331,19 +24328,19 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">CPRStraightenedView</string>
+					<string key="superclassName">DCMView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBUserSource</string>
+						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">CPRTransverseView</string>
 					<string key="superclassName">DCMView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">CPRTransverseView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">CPRView</string>
-					<string key="superclassName">DCMView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">CPRView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
