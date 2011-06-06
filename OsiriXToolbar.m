@@ -15,9 +15,10 @@
 #import "OsiriXToolbar.h"
 #import "ViewerController.h"
 #import "ToolbarPanel.h"
+#import "NSWindow+N2.h"
 
-extern  ToolbarPanelController  *toolbarPanel[ 10];
-extern  BOOL					USETOOLBARPANEL;
+extern  ToolbarPanelController *toolbarPanel[ 10];
+extern  BOOL USETOOLBARPANEL;
 
 @implementation OsiriXToolbar
 
