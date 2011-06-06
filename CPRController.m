@@ -56,7 +56,7 @@ static float deg2rad = 3.14159265358979/180.0;
 @synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit1, horizontalSplit2, verticalSplit, lowLOD;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, blendingModeAvailable;
-@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle;
+@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType;
 
 // export related synthesize
 @synthesize exportSeriesName;
@@ -2354,7 +2354,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			{
 				BOOL exportSpacingAndOrigin = [cprView.curvedPath isPlaneMeasurable];
 				
-				[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: exportSpacingAndOrigin]];
+				[producedFiles addObject: [[cprView reformationView] exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: exportSpacingAndOrigin]];
 			}
 		}
 		else if (self.exportSequenceType == CPRSeriesExportSequenceType) // A 3D rotation or batch sequence
@@ -2431,7 +2431,7 @@ static float deg2rad = 3.14159265358979/180.0;
 //						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 //						[bottomTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 						
-						[producedFiles addObject: [cprView exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: NO]];
+						[producedFiles addObject: [[cprView reformationView] exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: NO]];
 					}
 					
 					[pool release];
@@ -3153,7 +3153,15 @@ static float deg2rad = 3.14159265358979/180.0;
 //		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbLOD frame]), NSHeight([tbLOD frame]))];
 //    }
 //    else
-	if ([itemIdent isEqualToString: @"tbStraightenedCPRAngle"])
+	if ([itemIdent isEqualToString: @"tbCPRType"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Reformation Type",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Reformation Type",nil)];
+		
+		[toolbarItem setView: tbCPRType];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbCPRType frame]), NSHeight([tbCPRType frame]))];
+    }    
+	else if ([itemIdent isEqualToString: @"tbStraightenedCPRAngle"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Curved MPR Angle",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Curved MPR Angle",nil)];
@@ -3294,7 +3302,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3303,7 +3311,7 @@ static float deg2rad = 3.14159265358979/180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 	//@"tbLOD"
 }
 
@@ -3716,6 +3724,14 @@ static float deg2rad = 3.14159265358979/180.0;
         topTransverseView.curvedPath = curvedPath;
         middleTransverseView.curvedPath = curvedPath;
         bottomTransverseView.curvedPath = curvedPath;
+    }
+}
+
+- (void)setCprType:(CPRType)newCprType
+{
+    if (newCprType != cprType) {
+        cprType = newCprType;
+        cprView.reformationType = cprType;
     }
 }
 

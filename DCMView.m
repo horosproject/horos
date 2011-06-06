@@ -643,18 +643,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( previousANNOTATIONS != ANNOTATIONS)
 	{
-		if( ANNOTATIONS == annotBase) reload = [DCMPix setAnonymizedAnnotations: YES];
-		else if( ANNOTATIONS == annotFull) reload = [DCMPix setAnonymizedAnnotations: NO];
-		
 		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 		{
 			[v refresh];
-			if( reload) [v reloadAnnotations];
 			
 			NSArray	*relatedViewers = [[AppController sharedAppController] FindRelatedViewers: [v pixList]];
 			for( NSWindowController *r in relatedViewers)
 				[[r window] display];
-				
 		}
 		
 		if( reload) [[BrowserController currentBrowser] refreshMatrix: self];		// This will refresh the DCMView of the BrowserController
@@ -675,15 +670,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	BOOL reload = NO;
 	
-	if( ANNOTATIONS == annotBase) reload = [DCMPix setAnonymizedAnnotations: YES];
-	else if( ANNOTATIONS == annotFull) reload = [DCMPix setAnonymizedAnnotations: NO];
-	
-	NSArray		*viewers = [ViewerController getDisplayed2DViewers];
+	NSArray *viewers = [ViewerController getDisplayed2DViewers];
 	
 	for( ViewerController *v in viewers)
 	{
 		[v refresh];
-		if( reload) [v reloadAnnotations];
 	}
 }
 
@@ -2094,7 +2085,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					
 				}
-				else NSLog( @"*** DCMView ! ****** It's not a DICOM image ?");
+				else NSLog( @"*** DCMView ! ****** It's not a DICOM image ? SOP Class UID: %@", sopclassuid);
 			}
 			
 			if( [stringID isEqualToString:@"previewDatabase"] == NO)
@@ -7707,18 +7698,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f mm Location: %0.2f mm", nil), curDCM.sliceThickness, curDCM.sliceLocation];
 								}
 							} 
-							else if( curDCM.viewPosition || curDCM.patientPosition )
+							else if( curDCM.viewPosition || curDCM.patientPosition)
 							{
-
 								 if ( curDCM.viewPosition ) [tempString appendFormat: NSLocalizedString( @"Position: %@ ", nil), curDCM.viewPosition];	 
 								 if ( curDCM.patientPosition )
 								 {	 
-									if(curDCM.viewPosition) [tempString appendString: curDCM.patientPosition];	 
+									if(curDCM.viewPosition) [tempString appendString: curDCM.patientPosition];
 									else [tempString appendFormat: NSLocalizedString( @"Position: %@ ", nil), curDCM.patientPosition];	 
 								 }	 
 							}
 						}
-						else if(fullText)
+						else if( [[annot objectAtIndex:j] isEqualToString: @"PatientName"])
+						{
+							if( annotFull == ANNOTATIONS && [[dcmFilesList objectAtIndex: 0] valueForKeyPath:@"series.study.name"])
+								[tempString appendString: [[dcmFilesList objectAtIndex: 0] valueForKeyPath:@"series.study.name"]];
+						}
+						else if( fullText)
 						{
 							[tempString appendFormat:@" %@", [annot objectAtIndex:j]];
 							useStringTexture = YES;
