@@ -8504,23 +8504,24 @@ static BOOL needToRezoom;
 				
 				if( [loadList count])
 				{
-					NSManagedObject*  curFile = [loadList objectAtIndex: 0];
+					DicomImage*  curFile = [loadList objectAtIndex: 0];
 					[curFile setValue:[NSDate date] forKeyPath:@"series.dateOpened"];
 					[curFile setValue:[NSDate date] forKeyPath:@"series.study.dateOpened"];
 					
+					long h = [[curFile valueForKey:@"height"] intValue];
+					long w = [[curFile valueForKey:@"width"] intValue];
+
 					if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
 					{
 						multiFrame = YES;
-						
-						mem += ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue] +1) * [[curFile valueForKey:@"numberOfFrames"] intValue];
-						memBlock += ([[curFile valueForKey:@"width"] intValue]) * ([[curFile valueForKey:@"height"] intValue]) * [[curFile valueForKey:@"numberOfFrames"] intValue];
+						nsgncgfytgfphgtphg6p
+						mem += ([w w +1) * (h +1) * [[curFile valueForKey:@"numberOfFrames"] intValue];
+						memBlock += (w) * (h) * [[curFile valueForKey:@"numberOfFrames"] intValue];
 					}
 					else
 					{
 						for( curFile in loadList)
 						{
-							long h = [[curFile valueForKey:@"height"] intValue];
-							long w = [[curFile valueForKey:@"width"] intValue];
 							
 							if( w*h < 256*256)
 							{

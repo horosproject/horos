@@ -121,7 +121,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		path = [basepath stringByAppendingPathComponent:path];
 //		NSLog(@"\n\n%@", path);
 		NSString* temp;
-
+		NSInteger tempi;
+		
 		NSMutableDictionary* item = [NSMutableDictionary dictionaryWithObject:path forKey:@"filePath"];
 
 		NSMutableDictionary* elements = [NSMutableDictionary dictionary];
@@ -170,8 +171,10 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0090)] stringValue] forKey:@"referringPhysiciansName"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1050)] stringValue] forKey:@"performingPhysiciansName"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0008)] integerNumberValue] forKey:@"numberOfFrames"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0010)] integerNumberValue] forKey:@"height"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0011)] integerNumberValue] forKey:@"width"];
+		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0010)] integerValue];
+		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : -1] forKey:@"height"];
+		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0011)] integerValue];
+		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : -1] forKey:@"width"];
 		
 /*		[item setObject:path forKey:@"date"];
 		[item setObject:path forKey:@"seriesDICOMUID"];
