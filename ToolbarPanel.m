@@ -94,8 +94,6 @@ static int increment = 0;
 	{
 		toolbar = nil;
 		
-		firstTime = YES;
-		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidChangeScreenParameters:) name:NSApplicationDidChangeScreenParametersNotification object:NSApp];
 		
 		if( [AppController hasMacOSXSnowLeopard])
@@ -348,18 +346,6 @@ static int increment = 0;
 		
 		if( [[viewer window] isKeyWindow])
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
-	}
-	
-	if( firstTime)
-	{
-		firstTime = NO;
-		
-		NSLog( @"----- first time toolbar : %d", screen);
-		
-		[[self window] setToolbar: emptyToolbar];
-		[[self window] toggleToolbarShown: self];
-		[[self window] toggleToolbarShown: self];
-		[[self window] setToolbar: toolbar];
 	}
 }
 

@@ -26,7 +26,6 @@
 	NSToolbar				*emptyToolbar;
 	ViewerController		*viewer;
 	BOOL					dontReenter;
-	BOOL					firstTime;
 }
 
 @property (readonly) ViewerController *viewer;
