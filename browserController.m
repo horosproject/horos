@@ -8514,9 +8514,9 @@ static BOOL needToRezoom;
 					if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
 					{
 						multiFrame = YES;
-						nsgncgfytgfphgtphg6p
-						mem += ([w w +1) * (h +1) * [[curFile valueForKey:@"numberOfFrames"] intValue];
-						memBlock += (w) * (h) * [[curFile valueForKey:@"numberOfFrames"] intValue];
+						// nsgncgfytgfphgtphg6p
+						mem += (w+1) * (h+1) * [[curFile valueForKey:@"numberOfFrames"] intValue];
+						memBlock += w * h * [[curFile valueForKey:@"numberOfFrames"] intValue];
 					}
 					else
 					{
