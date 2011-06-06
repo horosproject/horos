@@ -74,14 +74,11 @@ static int increment = 0;
 	
 	NSRect screenRect = [[[NSScreen screens] objectAtIndex:screen] visibleFrame];
 	
-	NSLog(@"SCREEN %d %@", screen, NSStringFromRect(screenRect));
-	
 	NSRect dstframe;
 	dstframe.size.height = [ToolbarPanelController fixedHeight];
 	dstframe.size.width = screenRect.size.width;
 	dstframe.origin.x = screenRect.origin.x;
 	dstframe.origin.y = screenRect.origin.y + screenRect.size.height - dstframe.size.height + [ToolbarPanelController hiddenHeight];
-//	NSLog(@"\t%@ (%f + %f - %f + %d = %f)", NSStringFromRect(dstframe), screenRect.origin.y, screenRect.size.height, dstframe.size.height, [ToolbarPanelController hiddenHeight], dstframe.origin.y);
 	
 	[[self window] setFrame:dstframe display:YES];
 }
