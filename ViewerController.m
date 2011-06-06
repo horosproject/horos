@@ -5363,20 +5363,20 @@ static ViewerController *draggedController = nil;
 	NSToolbarItem *item = [[notif userInfo] objectForKey: @"item"];
 	if( [retainedToolbarItems containsObject: item] == NO) [retainedToolbarItems addObject: item];
 	
-	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+/*	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{		
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[toolbarPanel[ i] fixSize];
-	}
+	}*/
 }  
 
 - (void) toolbarDidRemoveItem: (NSNotification *) notif
 {
-	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+/*	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[toolbarPanel[ i] fixSize];
-	}
+	}*/
 }
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem
