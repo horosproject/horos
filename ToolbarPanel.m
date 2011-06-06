@@ -39,7 +39,7 @@ static int increment = 0;
 	return [self fixedHeight] - [self hiddenHeight];
 }
 
-- (void) checkPosition
+/*- (void) checkPosition
 {
 	if( [[NSScreen screens] count] > screen)
 	{
@@ -48,7 +48,7 @@ static int increment = 0;
 //		[[self window] setFrameTopLeftPoint: o];		// fixSize will be called by this function
 //		[self fixSize];
 	}
-}
+}*/
 
 /*- (void) fixSize
 {
@@ -74,15 +74,16 @@ static int increment = 0;
 	
 	NSRect screenRect = [[[NSScreen screens] objectAtIndex:screen] visibleFrame];
 	
-	NSLog(@"RECT %d %@", screen, NSStringFromRect(screenRect));
+	NSLog(@"SCREEN %d %@", screen, NSStringFromRect(screenRect));
 	
 	NSRect dstframe;
 	dstframe.size.height = [ToolbarPanelController fixedHeight];
 	dstframe.size.width = screenRect.size.width;
 	dstframe.origin.x = screenRect.origin.x;
 	dstframe.origin.y = screenRect.origin.y + screenRect.size.height - dstframe.size.height + [ToolbarPanelController hiddenHeight];
+//	NSLog(@"\t%@ (%f + %f - %f + %d = %f)", NSStringFromRect(dstframe), screenRect.origin.y, screenRect.size.height, dstframe.size.height, [ToolbarPanelController hiddenHeight], dstframe.origin.y);
 	
-	[[self window] setFrame: dstframe display: NO];
+	[[self window] setFrame:dstframe display:YES];
 }
 
 - (id)initForScreen: (long) s
@@ -160,7 +161,7 @@ static int increment = 0;
 		return;
 	}
 	
-	[self checkPosition];
+	//[self checkPosition];
 	
 	if( [[[aNotification object] windowController] isKindOfClass:[ViewerController class]])
 	{
@@ -211,7 +212,7 @@ static int increment = 0;
 	
 	[[self window] setLevel: NSNormalWindowLevel];
 	
-	[self checkPosition];
+//	[self checkPosition];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -343,7 +344,7 @@ static int increment = 0;
 	
 	if( toolbar)
 	{
-		[self checkPosition];
+		[self applicationDidChangeScreenParameters:nil];
 		
 		if( [[viewer window] isKeyWindow])
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
