@@ -18,23 +18,21 @@
 
 @implementation ToolBarNSWindow
 
-- (BOOL) canBecomeMainWindow
-{
-	[self setDelegate: self];
+- (BOOL) canBecomeMainWindow {
+//	[self setDelegate: self];
 	return NO;
 }
 
-- (BOOL) canBecomeKeyWindow
-{
+- (BOOL) canBecomeKeyWindow {
 	return YES;
 }
 
-- (void)windowDidResize:(NSNotification *)notification
+/*- (void)windowDidResize:(NSNotification *)notification
 {
-	[ (ToolbarPanelController*) [self windowController] fixSize];
-}
+//	[ (ToolbarPanelController*) [self windowController] fixSize];
+}*/
 
-- (void)setFrame:(NSRect)windowFrame display:(BOOL)displayViews
+/*- (void)setFrame:(NSRect)windowFrame display:(BOOL)displayViews
 {
 	if( willClose == NO)
 	{
@@ -43,28 +41,32 @@
 			[super setFrame: windowFrame display:displayViews];
 		}
 	}
-}
+}*/
 
-- (void)display
+/*- (void)display
 {
 	if( [self toolbar] &&  willClose == NO)
 		[super display];
-}
+}*/
 
-- (void)displayIfNeeded
+/*- (void)displayIfNeeded
 {
 	if( [self toolbar] &&  willClose == NO)
 		[super displayIfNeeded];
-}
+}*/
 
-- (void)setFrame:(NSRect)windowFrame display:(BOOL)displayViews animate:(BOOL)performAnimation
-{
-	return [self setFrame: windowFrame display:displayViews];
+/*-(void)setFrame:(NSRect)windowFrame display:(BOOL)displayViews animate:(BOOL)performAnimation {
+	return [super setFrame:windowFrame display:displayViews animate:NO];
+}*/
+
+-(NSTimeInterval)animationResizeTime:(NSRect)newFrame {
+	return 0;
 }
 
 -(NSRect)constrainFrameRect:(NSRect)frameRect toScreen:(NSScreen*)screen {
-	return frameRect;
+	return frameRect; // not movable, and OsiriX knows where to place toolbars ;)
 }
 
-@synthesize willClose;
+// @synthesize willClose;
+
 @end
