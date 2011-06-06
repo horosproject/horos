@@ -65,7 +65,7 @@ void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf, ...) {
 	va_list args;
 	va_start(args, pf);
 
-	id format; va_arg(args, id);
+	id format; format = va_arg(args, id);
 	_N2LogExceptionVImpl(e, logStack, pf, format, args);
 	
 	va_end(args);

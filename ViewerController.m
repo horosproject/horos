@@ -3935,7 +3935,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				{
 					for( i = 0; i < [series count]; i++)
 					{
-						NSManagedObject	*curSeries = [series objectAtIndex:i];
+						DicomSeries* curSeries = [series objectAtIndex:i];
 						
 						NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
 						
@@ -4031,33 +4031,30 @@ static volatile int numberOfThreadsForRelisce = 0;
 								
 									[dcmPix CheckLoad];
 									
-									if( dcmPix && dcmPix.notAbleToLoadImage == NO)
+									if (dcmPix && dcmPix.notAbleToLoadImage == NO)
 									{
-										NSImage *img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
+										img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 										
-										if( img)
-										{
-											[cell setImage: img];
+										if (img) {
+											[cell setImage:img];
 											
-											if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
-												[curSeries setValue: [BrowserController produceJPEGThumbnail: img] forKey:@"thumbnail"];
+											if ([[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
+												curSeries.thumbnail = [BrowserController produceJPEGThumbnail:img];
 										}
-										else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
+										else [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
 										
-										[dcmPix release];
 									}
-									else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
+									else [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
+									
+									if (dcmPix)
+										[dcmPix release];
 								}
-								@catch (NSException * e) 
-								{
-									NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-									#ifdef OSIRIX_VIEWER
-									[AppController printStackTrace: e];
-									#endif
-									[cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
+								@catch (NSException* e) {
+									N2LogExceptionWithStackTrace(e);
+									[cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
 								}
-							}
-							else [cell setImage: img];
+							} else
+								[cell setImage:img];
 						}
 						
 						index++;
