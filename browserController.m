@@ -695,8 +695,6 @@ static NSConditionLock *threadLock = nil;
 	BOOL isBonjour = [browserController isBonjour: context];
 	NSMutableArray *bonjourFilesToSend = nil;
 	
-	if( mountedVolume)
-		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"someImagesAreMounted"];
 	
 	if( isBonjour)
 		bonjourFilesToSend = [NSMutableArray array];
@@ -826,6 +824,9 @@ static NSConditionLock *threadLock = nil;
 		
 		if( [splash aborted]) break;
 	}
+	
+	if( mountedVolume)
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"someImagesAreMounted"];
 	
 	[context retain];
 	[context lock];
@@ -19014,6 +19015,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( [seriesArray count] > 0)
 		{
+			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"someImagesAreMounted"];
+			
 			NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
 			
 			@try
@@ -19072,8 +19075,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[context release];
 		
 		DatabaseIsEdited = NO;
-		
-		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"someImagesAreMounted"];
 	}
 }
 
