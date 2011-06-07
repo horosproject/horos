@@ -6437,7 +6437,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]])
 			{
-				if( curDCM.frameofReferenceUID && oFrameofReferenceUID)
+				if( curDCM.frameofReferenceUID && oFrameofReferenceUID && [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFrameofReferenceUID"])
 				{
 					if( [oFrameofReferenceUID isEqualToString: curDCM.frameofReferenceUID])
 						same3DReferenceWorld = YES;
