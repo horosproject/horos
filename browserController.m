@@ -695,6 +695,9 @@ static NSConditionLock *threadLock = nil;
 	BOOL isBonjour = [browserController isBonjour: context];
 	NSMutableArray *bonjourFilesToSend = nil;
 	
+	if( mountedVolume)
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"someImagesAreMounted"];
+	
 	if( isBonjour)
 		bonjourFilesToSend = [NSMutableArray array];
 	
@@ -18985,6 +18988,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) removeMountedImages: (NSString*) sNewDrive
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"someImagesAreMounted"] == NO)
+		return;
+	
 	// FIND ALL images that ARE NOT local, and REMOVE non-available images
 	NSManagedObjectContext *context = self.managedObjectContext;
 	NSManagedObjectModel *model = self.managedObjectModel;
@@ -19066,6 +19072,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[context release];
 		
 		DatabaseIsEdited = NO;
+		
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"someImagesAreMounted"];
 	}
 }
 
