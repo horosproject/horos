@@ -1415,14 +1415,9 @@ bool N3BezierCoreGetBoundingPlanesForNormal(N3BezierCoreRef bezierCore, N3Vector
     N3BezierCoreRef flattenedBezierCore;
 	N3BezierCoreIteratorRef bezierCoreIterator;
     N3Vector endpoint;
-    N3Vector xVector;
-    N3Vector yVector;
-    N3Vector zVector;
-    N3Vector zTransformVector;
     CGFloat z;
     CGFloat minZ;
     CGFloat maxZ;
-    N3AffineTransform transform;
     N3Plane topPlane;
     N3Plane bottomPlane;
     
@@ -1431,23 +1426,9 @@ bool N3BezierCoreGetBoundingPlanesForNormal(N3BezierCoreRef bezierCore, N3Vector
     minZ = CGFLOAT_MAX;
     maxZ = -CGFLOAT_MAX;
     
-    zVector = N3VectorNormalize(normal);
-    xVector = N3VectorANormalVector(zVector);
-    yVector = N3VectorCrossProduct(zVector, xVector);
-    
-    transform = N3AffineTransformIdentity;
-    *((N3Vector *)(&transform.m11)) = xVector;
-    *((N3Vector *)(&transform.m21)) = yVector;
-    *((N3Vector *)(&transform.m31)) = zVector;
-    
-    transform = N3AffineTransformInvert(transform);
-    zTransformVector.x = transform.m13;
-    zTransformVector.y = transform.m23;
-    zTransformVector.z = transform.m33;
-    
-    topPlane.normal = zVector;
+    topPlane.normal = N3VectorNormalize(normal);
     topPlane.point = N3VectorZero;
-    bottomPlane.normal = zVector;
+    bottomPlane.normal = topPlane.normal;
     bottomPlane.point = N3VectorZero;
 
     if (N3BezierCoreHasCurve(bezierCore)) {
@@ -1464,7 +1445,7 @@ bool N3BezierCoreGetBoundingPlanesForNormal(N3BezierCoreRef bezierCore, N3Vector
     while (!N3BezierCoreIteratorIsAtEnd(bezierCoreIterator)) {
         N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, NULL, NULL, &endpoint);
         
-        z = N3VectorDotProduct(endpoint, zTransformVector);
+        z = N3VectorDotProduct(endpoint, normal);
         
         if (z < minZ) {
             minZ = z;
@@ -1472,7 +1453,7 @@ bool N3BezierCoreGetBoundingPlanesForNormal(N3BezierCoreRef bezierCore, N3Vector
         }
         
         if (z > maxZ) {
-            minZ = z;
+            maxZ = z;
             topPlane.point = endpoint;
         }
     }
