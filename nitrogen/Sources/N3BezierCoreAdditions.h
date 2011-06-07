@@ -63,7 +63,9 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCopyProjectedToPlane(N3BezierCor
 
 N3Plane N3BezierCoreLeastSquaresPlane(N3BezierCoreRef bezierCore);
 CGFloat N3BezierCoreMeanDistanceToPlane(N3BezierCoreRef bezierCore, N3Plane plane);
-bool N3BezierCoreIsPlanar(N3BezierCoreRef bezierCore, N3PlanePointer bezierCorePlane);
+bool N3BezierCoreIsPlanar(N3BezierCoreRef bezierCore, N3PlanePointer bezierCorePlane); // pass NULL for bezierCorePlane if you don't care
+
+bool N3BezierCoreGetBoundingPlanesForNormal(N3BezierCoreRef bezierCore, N3Vector normal, N3PlanePointer topPlanePtr, N3PlanePointer bottomPlanePtr); // returns true on success
 
 CF_EXTERN_C_END
 

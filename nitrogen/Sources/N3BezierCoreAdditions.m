@@ -1410,7 +1410,85 @@ bool N3BezierCoreIsPlanar(N3BezierCoreRef bezierCore, N3PlanePointer bezierCoreP
 	return isPlanar;
 }
 
+bool N3BezierCoreGetBoundingPlanesForNormal(N3BezierCoreRef bezierCore, N3Vector normal, N3PlanePointer topPlanePtr, N3PlanePointer bottomPlanePtr)
+{
+    N3BezierCoreRef flattenedBezierCore;
+	N3BezierCoreIteratorRef bezierCoreIterator;
+    N3Vector endpoint;
+    N3Vector xVector;
+    N3Vector yVector;
+    N3Vector zVector;
+    N3Vector zTransformVector;
+    CGFloat z;
+    CGFloat minZ;
+    CGFloat maxZ;
+    N3AffineTransform transform;
+    N3Plane topPlane;
+    N3Plane bottomPlane;
+    
+    assert(N3VectorIsZero(normal) == false);
+    
+    minZ = CGFLOAT_MAX;
+    maxZ = -CGFLOAT_MAX;
+    
+    zVector = N3VectorNormalize(normal);
+    xVector = N3VectorANormalVector(zVector);
+    yVector = N3VectorCrossProduct(zVector, xVector);
+    
+    transform = N3AffineTransformIdentity;
+    *((N3Vector *)(&transform.m11)) = xVector;
+    *((N3Vector *)(&transform.m21)) = yVector;
+    *((N3Vector *)(&transform.m31)) = zVector;
+    
+    transform = N3AffineTransformInvert(transform);
+    zTransformVector.x = transform.m13;
+    zTransformVector.y = transform.m23;
+    zTransformVector.z = transform.m33;
+    
+    topPlane.normal = zVector;
+    topPlane.point = N3VectorZero;
+    bottomPlane.normal = zVector;
+    bottomPlane.point = N3VectorZero;
 
+    if (N3BezierCoreHasCurve(bezierCore)) {
+        flattenedBezierCore = N3BezierCoreCreateMutableCopy(bezierCore);
+        N3BezierCoreFlatten((N3MutableBezierCoreRef)flattenedBezierCore, N3BezierDefaultFlatness);
+    } else {
+        flattenedBezierCore = N3BezierCoreRetain(bezierCore); 
+    }
+    
+    bezierCoreIterator = N3BezierCoreIteratorCreateWithBezierCore(flattenedBezierCore);
+    N3BezierCoreRelease(flattenedBezierCore);
+    flattenedBezierCore = NULL;
+
+    while (!N3BezierCoreIteratorIsAtEnd(bezierCoreIterator)) {
+        N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, NULL, NULL, &endpoint);
+        
+        z = N3VectorDotProduct(endpoint, zTransformVector);
+        
+        if (z < minZ) {
+            minZ = z;
+            bottomPlane.point = endpoint;
+        }
+        
+        if (z > maxZ) {
+            minZ = z;
+            topPlane.point = endpoint;
+        }
+    }
+    
+    N3BezierCoreIteratorRelease(bezierCoreIterator);
+    
+    if (topPlanePtr) {
+        *topPlanePtr = topPlane;
+    }
+    
+    if (bottomPlanePtr) {
+        *bottomPlanePtr = bottomPlane;
+    }
+    
+    return true;
+}
 
 
 

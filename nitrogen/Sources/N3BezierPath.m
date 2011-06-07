@@ -369,6 +369,22 @@
 	return N3BezierCoreLeastSquaresPlane(_bezierCore);
 }
 
+- (N3Plane)topBoundingPlaneForNormal:(N3Vector)normal
+{
+    N3Plane plane;
+    
+    N3BezierCoreGetBoundingPlanesForNormal(_bezierCore, normal, &plane, NULL);
+    return plane;
+}
+
+- (N3Plane)bottomBoundingPlaneForNormal:(N3Vector)normal
+{
+    N3Plane plane;
+    
+    N3BezierCoreGetBoundingPlanesForNormal(_bezierCore, normal, NULL, &plane);
+    return plane;
+}
+
 - (N3BezierPathElement)elementAtIndex:(NSInteger)index
 {
     return [self elementAtIndex:index control1:NULL control2:NULL endpoint:NULL];

@@ -221,14 +221,6 @@
 	if( [self windowController] == nil)
 		return;
     
-    //    static NSDate *lastDate = nil;
-    //    if (lastDate == nil) {
-    //        lastDate = [[NSDate date] retain];
-    //    }
-    //    
-    //    [lastDate release];
-    //    lastDate = [[NSDate date] retain];
-    
     NSUInteger i;
     NSMutableArray *pixArray;
     DCMPix *newPix;
@@ -396,7 +388,8 @@
         curveDirection = N3VectorSubtract([_curvedPath.bezierPath vectorAtEnd], [_curvedPath.bezierPath vectorAtStart]);
         baseNormal = N3VectorNormalize(N3VectorCrossProduct(_curvedPath.baseDirection, curveDirection));
         request.projectionNormal = N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(_curvedPath.angle, curveDirection));
-        request.midHeightPoint = [_curvedPath.bezierPath vectorAtStart];
+        request.midHeightPoint = N3VectorScalarMultiply(N3VectorAdd([_curvedPath.bezierPath topBoundingPlaneForNormal:request.projectionNormal].point, 
+                                                                    [_curvedPath.bezierPath bottomBoundingPlaneForNormal:request.projectionNormal].point), 0.5);
         //        request.vertical = NO;
         
         if ([_lastRequest isEqual:request] == NO) {
