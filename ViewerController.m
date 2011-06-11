@@ -7182,7 +7182,7 @@ return YES;
 		}
 		
 		// You CANNOT call ANY GUI functions if you are NOT in the MAIN thread !!!!!!!!!!!!!!!!!!
-		[self performSelectorOnMainThread:@selector( enableSubtraction) withObject:nil waitUntilDone: YES];
+		[self performSelectorOnMainThread:@selector( enableSubtraction) withObject:nil waitUntilDone: NO];
 		
 #pragma mark PET	
 		

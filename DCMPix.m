@@ -2995,11 +2995,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (BOOL) isLoaded
 {
-	BOOL f;
-	if( fImage) f = YES;
-	else f = NO;
+	BOOL isLoaded = NO;
 	
-	return f;
+	[checking lock];
+	
+	if( fImage)
+		isLoaded = YES;
+	
+	[checking unlock];
+	
+	return isLoaded;
 }
 
 - (float*) fImage
@@ -6458,22 +6463,22 @@ END_CREATE_ROIS:
 	int elemType, i;
 	
 	val = Papy3GetElement (theGroupP, papSliceThicknessGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 		sliceThickness = atof( val->a);
 	
 	val = Papy3GetElement (theGroupP, papSpacingBetweenSlicesGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 		spacingBetweenSlices = atof( val->a);
 	
 	val = Papy3GetElement (theGroupP, papRepetitionTimeGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 	{
 		[repetitiontime release];
 		repetitiontime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papEchoTimeGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 	{
 		[echotime release];
 		echotime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
@@ -6487,42 +6492,42 @@ END_CREATE_ROIS:
 	}
 	
 	val = Papy3GetElement (theGroupP, papFlipAngleGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 	{
 		[flipAngle release];
 		flipAngle = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papViewPositionGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 	{
 		[viewPosition release];
 		viewPosition = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papPositionerPrimaryAngleGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 	{
 		[positionerPrimaryAngle release];
 		positionerPrimaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papPositionerSecondaryAngleGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 	{
 		[positionerSecondaryAngle release];
 		positionerSecondaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papPatientPositionGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 	{
 		[patientPosition release];
 		patientPosition = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
-	if (!cineRate && val != NULL) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
+	if (!cineRate && val && val->a) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 	
 	// Ultrasounds pixel spacing
 	if( [modalityString isEqualToString:@"US"])
@@ -6598,7 +6603,7 @@ END_CREATE_ROIS:
 	if(!cineRate)
 	{
 		val = Papy3GetElement (theGroupP, papFrameDelayGr, &nbVal, &elemType);
-		if ( val)
+		if ( val && val->a)
 		{
 			if( atof( val->a) > 0)
 				cineRate = 1000./atof( val->a);
@@ -6608,7 +6613,7 @@ END_CREATE_ROIS:
 	if(!cineRate)
 	{
 		val = Papy3GetElement (theGroupP, papFrameTimeVectorGr, &nbVal, &elemType);
-		if ( val)
+		if ( val && val->a)
 		{
 			if( atof( val->a) > 0)
 				cineRate = 1000./atof( val->a);
@@ -6618,7 +6623,7 @@ END_CREATE_ROIS:
 	if( gUseShutter)
 	{
 		val = Papy3GetElement (theGroupP, papShutterShapeGr, &nbVal, &elemType);
-		if ( val)
+		if ( val && val->a)
 		{
 			PapyULong nbtmp;
 			
@@ -6731,20 +6736,20 @@ END_CREATE_ROIS:
 	}
 	
 	val = Papy3GetElement (theGroupP, papImageLateralityGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 	{
 		[laterality release];
 		laterality = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papFrameofReferenceUIDGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 		self.frameofReferenceUID = [NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding];
 	
 	if( laterality == nil)
 	{
 		val = Papy3GetElement (theGroupP, papLateralityGr, &nbVal, &elemType);
-		if ( val)
+		if ( val && val->a)
 		{
 			[laterality release];
 			laterality = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
@@ -6828,11 +6833,11 @@ END_CREATE_ROIS:
 	}
 	
 	val = Papy3GetElement (theGroupP, papWindowCenterGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 		savedWL = atof( val->a);
 	
 	val = Papy3GetElement (theGroupP, papWindowWidthGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && val->a)
 	{
 		savedWW = atof( val->a);
 		if(  savedWW < 0) savedWW =-savedWW;
@@ -6967,7 +6972,7 @@ END_CREATE_ROIS:
 					
 					// extract the RED palette clut data
 					val = Papy3GetElement (theGroupP, papSegmentedRedPaletteColorLookupTableDataGr, &nbVal, &elemType);
-					if ( val)
+					if ( val && val->a)
 					{
 						unsigned short  *ptrs =  (unsigned short*) val->a;
 						nbVal = theGroupP[ papSegmentedRedPaletteColorLookupTableDataGr].length / 2;
@@ -7022,7 +7027,7 @@ END_CREATE_ROIS:
 					
 					// extract the GREEN palette clut data
 					val = Papy3GetElement (theGroupP, papSegmentedGreenPaletteColorLookupTableDataGr, &nbVal, &elemType);
-					if ( val)
+					if ( val && val->a)
 					{
 						unsigned short  *ptrs =  (unsigned short*) val->a;
 						nbVal = theGroupP[ papSegmentedGreenPaletteColorLookupTableDataGr].length / 2;
@@ -7076,7 +7081,7 @@ END_CREATE_ROIS:
 					
 					// extract the BLUE palette clut data
 					val = Papy3GetElement (theGroupP, papSegmentedBluePaletteColorLookupTableDataGr, &nbVal, &elemType);
-					if ( val)
+					if ( val && val->a)
 					{
 						unsigned short  *ptrs =  (unsigned short*) val->a;
 						nbVal = theGroupP[ papSegmentedBluePaletteColorLookupTableDataGr].length / 2;
@@ -7157,7 +7162,7 @@ END_CREATE_ROIS:
 				
 				// extract the RED palette clut data
 				val = Papy3GetElement (theGroupP, papRedPaletteCLUTDataGr, &nbVal, &elemType);
-				if ( val)
+				if ( val && val->a)
 				{
 					unsigned short  *ptrs =  (unsigned short*) val->a;
 					for ( int j = 0; j < clutEntryR; j++, ptrs++) clutRed [j] = (int) (*ptrs/256);
@@ -7167,14 +7172,14 @@ END_CREATE_ROIS:
 				
 				// extract the GREEN palette clut data
 				val = Papy3GetElement (theGroupP, papGreenPaletteCLUTDataGr, &nbVal, &elemType);
-				if ( val)
+				if ( val && val->a)
 				{
 					unsigned short  *ptrs = (unsigned short*) val->a;
 					for ( int j = 0; j < clutEntryG; j++, ptrs++) clutGreen [j] = (int) (*ptrs/256);
 				}
 				// extract the BLUE palette clut data
 				val = Papy3GetElement (theGroupP, papBluePaletteCLUTDataGr, &nbVal, &elemType);
-				if ( val)
+				if ( val && val->a)
 				{
 					unsigned short  *ptrs =  (unsigned short*) val->a;
 					for ( int j = 0; j < clutEntryB; j++, ptrs++) clutBlue [j] = (int) (*ptrs/256);
@@ -7184,7 +7189,7 @@ END_CREATE_ROIS:
 			{
 				// extract the RED palette clut data
 				val = Papy3GetElement (theGroupP, papRedPaletteCLUTDataGr, &nbVal, &elemType);
-				if ( val)
+				if ( val && val->a)
 				{
 					unsigned short  *ptrs =  (unsigned short*) val->a;
 					for ( int j = 0; j < clutEntryR; j++, ptrs++) clutRed [j] = (int) (*ptrs);
@@ -7193,14 +7198,14 @@ END_CREATE_ROIS:
 				
 				// extract the GREEN palette clut data
 				val = Papy3GetElement (theGroupP, papGreenPaletteCLUTDataGr, &nbVal, &elemType);
-				if ( val)
+				if ( val && val->a)
 				{
 					unsigned short  *ptrs =  (unsigned short*) val->a;
 					for ( int j = 0; j < clutEntryG; j++, ptrs++) clutGreen [j] = (int) (*ptrs);
 				}
 				// extract the BLUE palette clut data
 				val = Papy3GetElement (theGroupP, papBluePaletteCLUTDataGr, &nbVal, &elemType);
-				if ( val)
+				if ( val && val->a)
 				{
 					unsigned short  *ptrs =  (unsigned short*) val->a;
 					for ( int j = 0; j < clutEntryB; j++, ptrs++) clutBlue [j] = (int) (*ptrs);
@@ -7324,7 +7329,7 @@ END_CREATE_ROIS:
 			if( theGroupP)
 			{
 				val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType);
-				if ( val) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
+				if ( val && val->a) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 				
 				int priority[ 8];
 
@@ -7391,17 +7396,17 @@ END_CREATE_ROIS:
 				}
 				
 				val = Papy3GetElement (theGroupP, papModalityGr, &nbVal, &elemType);
-				if (val != NULL) modalityString = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+				if ( val && val->a) modalityString = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
 				
 				val = Papy3GetElement (theGroupP, papSOPClassUIDGr, &nbVal, &elemType);
-				if (val != NULL) self.SOPClassUID = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+				if ( val && val->a) self.SOPClassUID = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
 			}
 			
 			theGroupP = (SElement*) [self getPapyGroup: 0x0010];
 			if( theGroupP)
 			{
 				val = Papy3GetElement (theGroupP, papPatientsWeightGr, &nbVal, &elemType);
-				if ( val) patientsWeight = atof( val->a);
+				if ( val && val->a) patientsWeight = atof( val->a);
 				else patientsWeight = 0;
 			}
 			
@@ -7426,11 +7431,11 @@ END_CREATE_ROIS:
 				if( theGroupP)
 				{
 					val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType);
-					if( val) units = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
+					if( val && val->a) units = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 					else units = nil;
 					
 					val = Papy3GetElement (theGroupP, papDecayCorrectionGr, &pos, &elemType);
-					if( val) decayCorrection = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
+					if( val && val->a) decayCorrection = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 					else decayCorrection = nil;
 					
 	//				val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType);
@@ -7439,7 +7444,7 @@ END_CREATE_ROIS:
 					decayFactor = 1.0;
 					
 					val = Papy3GetElement (theGroupP, papFrameReferenceTimeGr, &pos, &elemType);
-					if( val) frameReferenceTime = atof( val->a);
+					if( val && val->a) frameReferenceTime = atof( val->a);
 					else frameReferenceTime = 0.0;
 					
 					val = Papy3GetElement (theGroupP, papRadiopharmaceuticalInformationSequenceGr, &pos, &elemType);
@@ -7459,10 +7464,13 @@ END_CREATE_ROIS:
 									if ( gr->group == 0x0018)
 									{
 										val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType);
-										radionuclideTotalDose = val? atof( val->a) : 0.0;
+										if( val && val->a)
+											radionuclideTotalDose = atof( val->a);
+										else
+											radionuclideTotalDose = 0.0;
 										
 										val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType);
-										if( val && acquisitionDate)
+										if( val && val->a && acquisitionDate)
 										{
 											NSString *pharmaTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
 											NSString *completeDate = [acquisitionDate stringByAppendingString: pharmaTime];
@@ -7474,8 +7482,11 @@ END_CREATE_ROIS:
 										}
 										
 										val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType);
-										halflife = val? atof( val->a) : 0.0;
-										
+										if( val && val->a)
+											halflife = atof( val->a);
+										else
+											halflife = 0;
+											
 										break;
 									}
 								}
@@ -7915,7 +7926,7 @@ END_CREATE_ROIS:
 					//			if ( val) oRows	= val->us;
 					
 					val = Papy3GetElement (theGroupP, papOverlayTypeGr, &nbVal, &elemType);
-					if ( val) oType	= val->a[ 0];
+					if ( val && val->a) oType = val->a[ 0];
 					
 					val = Papy3GetElement (theGroupP, papOriginGr, &nbVal, &elemType);
 					if ( val)
@@ -7970,7 +7981,7 @@ END_CREATE_ROIS:
 					
 					if( nbVal > 0)
 					{
-						if( val->a)
+						if( val && val->a)
 							philipsFactor = atof( val->a);
 					}
 				}

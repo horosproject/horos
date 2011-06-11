@@ -840,6 +840,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 -(NSString*) completePathWithDownload:(BOOL) download
 {
+	if( completePathCache && download == NO)
+		return completePathCache;
+		
 	BrowserController *cB = [BrowserController currentBrowser];
 	BOOL isBonjour = [cB  isBonjour: [self managedObjectContext]];
 	

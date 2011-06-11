@@ -2159,14 +2159,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[dcmRoiList release];
 	dcmRoiList = nil;
 	
-	[dcmFilesList release];
-	dcmFilesList = nil;
+	@synchronized( self)
+	{
+		[dcmFilesList release];
+		dcmFilesList = nil;
+		
+		[dcmPixList release];
+		dcmPixList = nil;
+	}
 	
 	[curDCM release];
 	curDCM = nil;
-	
-	[dcmPixList release];
-	dcmPixList = nil;
 	
 	[dcmExportPlugin release];
 	dcmExportPlugin = nil;
@@ -12444,35 +12447,36 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSLog(@"Warning, could not lock pixel buffer base address in %s - error %ld", __func__, (long)err);
 		return NO;
 	}
-    @synchronized (self) {
-    // Create a CGBitmapContext with the CVPixelBuffer.  Parameters /must/ match 
-    // pixel format returned in getPixelBufferPixelFormat:, above, width and
-    // height should be read from the provided CVPixelBuffer.
-    size_t width = CVPixelBufferGetWidth(buffer); 
-    size_t height = CVPixelBufferGetHeight(buffer);
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef cgContext = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer),
-                                                   width, height,
-                                                   8,
-                                                   CVPixelBufferGetBytesPerRow(buffer),
-                                                   colorSpace,
-                                                   kCGImageAlphaPremultipliedFirst);
-    CGColorSpaceRelease(colorSpace);
-    
-    // Derive an NSGraphicsContext, make it current, and ask our SlideshowView 
-    // to draw.
-    NSGraphicsContext *context = [NSGraphicsContext graphicsContextWithGraphicsPort:cgContext flipped:NO];
-    [NSGraphicsContext setCurrentContext:context];
-	//get NSImage and draw in the rect
-	
-    [self drawImage: [self nsimage:NO] inBounds:NSMakeRect(0.0, 0.0, width, height)];
-    [context flushGraphics];
-    
-    // Clean up - remember to unlock the pixel buffer's base address (we locked
-    // it above so that we could draw into it).
-    CGContextRelease(cgContext);
-    CVPixelBufferUnlockBaseAddress(buffer, 0);
-    }
+    @synchronized (self)
+	{
+		// Create a CGBitmapContext with the CVPixelBuffer.  Parameters /must/ match 
+		// pixel format returned in getPixelBufferPixelFormat:, above, width and
+		// height should be read from the provided CVPixelBuffer.
+		size_t width = CVPixelBufferGetWidth(buffer); 
+		size_t height = CVPixelBufferGetHeight(buffer);
+		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+		CGContextRef cgContext = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer),
+													   width, height,
+													   8,
+													   CVPixelBufferGetBytesPerRow(buffer),
+													   colorSpace,
+													   kCGImageAlphaPremultipliedFirst);
+		CGColorSpaceRelease(colorSpace);
+		
+		// Derive an NSGraphicsContext, make it current, and ask our SlideshowView 
+		// to draw.
+		NSGraphicsContext *context = [NSGraphicsContext graphicsContextWithGraphicsPort:cgContext flipped:NO];
+		[NSGraphicsContext setCurrentContext:context];
+		//get NSImage and draw in the rect
+		
+		[self drawImage: [self nsimage:NO] inBounds:NSMakeRect(0.0, 0.0, width, height)];
+		[context flushGraphics];
+		
+		// Clean up - remember to unlock the pixel buffer's base address (we locked
+		// it above so that we could draw into it).
+		CGContextRelease(cgContext);
+		CVPixelBufferUnlockBaseAddress(buffer, 0);
+	}
     return YES;
 }
 

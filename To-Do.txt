@@ -64,6 +64,8 @@ for i in `ls *.a`; do lipo -create "$i" "$i"ppc -output "$i"final; done
 
 for i in `ls`; do ibtool "$i" --compile "$i"; done
 
+for i in `ls`; do lipo -remove ppc7400 "$i" -output "$i"; done
+
 VTK MODIFICATIONS : 
 
 Optimizations:

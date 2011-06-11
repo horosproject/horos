@@ -454,7 +454,6 @@ Note setter is different to not break existing usage. :-( */
 - (NSPoint) subMinMax:(float*)input :(float*)subfImage;
 - (void) setSubtractedfImage:(float*)mask :(NSPoint)smm;
 - (float*) subtractImages:(float*)input :(float*)subfImage;
-- (BOOL) isLoaded;
 - (void) fImageTime:(float)newTime;
 - (float) fImageTime;
 - (void) freefImageWhenDone:(BOOL) b;
@@ -595,6 +594,7 @@ Note setter is different to not break existing usage. :-( */
 
 /** Calls CheckLoadIn when needed */
 - (void) CheckLoad;
+- (BOOL) isLoaded;
 
 /** Compute the float pointer for the image data */
 - (float*) computefImage;
