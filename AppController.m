@@ -1592,7 +1592,21 @@ static NSDate *lastWarningDate = nil;
 	{
 		mainMenu = [NSApp mainMenu];
 		viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
-		mainOpacityMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Opacity", nil)] submenu];
+		if( viewerMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... viewerMenu == nil -> viewerMenu == itemAtIndex == 5");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"2D Viewer", nil));
+			viewerMenu = [[mainMenu itemAtIndex: 5]  submenu];
+			NSLog( @"***** Selected item: %@", [viewerMenu title]);
+		}
+		mainOpacityMenu = [[viewerMenu itemWithTitle: NSLocalizedString(@"Opacity", nil)] submenu];
+		if( mainOpacityMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... mainOpacityMenu == nil -> mainOpacityMenu == itemAtIndex == 38");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"Opacity", nil));
+			mainOpacityMenu = [[viewerMenu itemAtIndex: 38]  submenu];
+			NSLog( @"***** Selected item: %@", [mainOpacityMenu title]);
+		}
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] != previousOpacityKeys)
@@ -1629,8 +1643,23 @@ static NSDate *lastWarningDate = nil;
 	if( mainMenuWLWWMenu == nil)
 	{
 		mainMenu = [NSApp mainMenu];
-		viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+		viewerMenu = [[mainMenu itemWithTitle: NSLocalizedString(@"2D Viewer", nil)] submenu];
+		if( viewerMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... viewerMenu == nil -> viewerMenu == itemAtIndex == 5");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"2D Viewer", nil));
+			viewerMenu = [[mainMenu itemAtIndex: 5]  submenu];
+			NSLog( @"***** Selected item: %@", [viewerMenu title]);
+		}
+		
 		mainMenuWLWWMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
+		if( mainMenuWLWWMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... mainMenuWLWWMenu == nil -> mainMenuWLWWMenu == itemAtIndex == 35");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"Window Width & Level", nil));
+			mainMenuWLWWMenu = [[viewerMenu itemAtIndex: 35]  submenu];
+			NSLog( @"***** Selected item: %@", [mainMenuWLWWMenu title]);
+		}
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] != previousWLWWKeys)
@@ -1675,7 +1704,21 @@ static NSDate *lastWarningDate = nil;
 	{
 		mainMenu = [NSApp mainMenu];
 		viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
-		mainMenuConvMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Convolution Filters", nil)] submenu];
+		if( viewerMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... viewerMenu == nil -> viewerMenu == itemAtIndex == 5");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"2D Viewer", nil));
+			viewerMenu = [[mainMenu itemAtIndex: 5]  submenu];
+			NSLog( @"***** Selected item: %@", [viewerMenu title]);
+		}
+		mainMenuConvMenu = [[viewerMenu itemWithTitle: NSLocalizedString(@"Convolution Filters", nil)] submenu];
+		if( mainMenuConvMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... mainMenuConvMenu == nil -> mainMenuConvMenu == itemAtIndex == 39");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"Convolution Filters", nil));
+			mainMenuConvMenu = [[viewerMenu itemAtIndex: 39]  submenu];
+			NSLog( @"***** Selected item: %@", [mainMenuConvMenu title]);
+		}
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] != previousConvKeys)
@@ -1714,7 +1757,21 @@ static NSDate *lastWarningDate = nil;
 	{
 		mainMenu = [NSApp mainMenu];
 		viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+		if( viewerMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... viewerMenu == nil -> viewerMenu == itemAtIndex == 5");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"2D Viewer", nil));
+			viewerMenu = [[mainMenu itemAtIndex: 5]  submenu];
+			NSLog( @"***** Selected item: %@", [viewerMenu title]);
+		}
 		mainMenuCLUTMenu = [[[viewerMenu itemWithTitle:NSLocalizedString(@"Color Look Up Table", nil)] submenu] retain];
+		if( mainMenuCLUTMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... mainMenuCLUTMenu == nil -> mainMenuCLUTMenu == itemAtIndex == 36");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"Color Look Up Table", nil));
+			mainMenuCLUTMenu = [[viewerMenu itemAtIndex: 36]  submenu];
+			NSLog( @"***** Selected item: %@", [mainMenuCLUTMenu title]);
+		}
     }
 
 	if( [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] != previousCLUTKeys)

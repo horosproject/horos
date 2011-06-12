@@ -219,7 +219,7 @@ genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m
 - X Check if OsiriX Lite works...
 - Check up-to-date zip packages in Binaries folder
 - Check weasis permissions: everyone: read only
-- Localization: check if smart album editor is correctly displayed
+- Localization: check if smart album editor is correctly displayed; Check  CLUT, Opacity, WLWW menus in 2D Menu (Search for itemWithTitle:); Check Export DICOM 2D Viewer (Spanish)
 - Test DB migration from previous version
 - OsiriX Lite Upload
 - X QuickLook

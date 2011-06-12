@@ -2160,8 +2160,32 @@ static volatile int numberOfThreadsForRelisce = 0;
 		/******************* WW/WL menu items **********************/
 		NSMenu *mainMenu = [NSApp mainMenu];
 		NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+		if( viewerMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... viewerMenu == nil -> viewerMenu == itemAtIndex == 5");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"2D Viewer", nil));
+			viewerMenu = [[mainMenu itemAtIndex: 5]  submenu];
+			NSLog( @"***** Selected item: %@", [viewerMenu title]);
+		}
+		
 		NSMenu *fileMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"File", nil)] submenu];
+		if( fileMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... fileMenu == nil -> fileMenu == itemAtIndex == 1");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"File", nil));
+			fileMenu = [[mainMenu itemAtIndex: 1]  submenu];
+			NSLog( @"***** Selected item: %@", [fileMenu title]);
+		}
+		
 		NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
+		if( presetsMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... presetsMenu == nil -> presetsMenu == itemAtIndex == 35");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"Window Width & Level", nil));
+			presetsMenu = [[viewerMenu itemAtIndex: 35]  submenu];
+			NSLog( @"***** Selected item: %@", [presetsMenu title]);
+		}
+		
 		NSMenu *menu = [presetsMenu copy];
 		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""];
 		[item setSubmenu:menu];
@@ -2213,6 +2237,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		// Tiling
 		NSMenu *tilingMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Image Tiling", nil)] submenu];
+		if( tilingMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... tilingMenu == nil -> tilingMenu == itemAtIndex == 42");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"Image Tiling", nil));
+			tilingMenu = [[viewerMenu itemAtIndex: 42] submenu];
+			NSLog( @"***** Selected item: %@", [tilingMenu title]);
+		}
 		menu = [tilingMenu copy];
 		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Image Tiling", nil) action: nil keyEquivalent:@""];
 		[item setSubmenu:menu];
@@ -2237,6 +2268,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 		/********** Orientation submenu ************/ 
 		
 		NSMenu *orientationMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Orientation", nil)] submenu];
+		if( orientationMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... orientationMenu == nil -> orientationMenu == itemAtIndex == 8");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"Orientation", nil));
+			orientationMenu = [[viewerMenu itemAtIndex: 8]  submenu];
+			NSLog( @"***** Selected item: %@", [orientationMenu title]);
+		}
+		
 		menu = [orientationMenu copy];
 		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Orientation", nil) action: nil keyEquivalent:@""];
 		[item setSubmenu:menu];
@@ -2246,6 +2285,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 		/*************Export submenu**************/
 		NSMenu *exportMenu = [[fileMenu itemWithTitle:NSLocalizedString(@"Export", nil)] submenu];
+		if( exportMenu == nil)
+		{
+			NSLog( @"***** NSLocalization bug.... exportMenu == nil -> exportMenu == itemAtIndex == 8");
+			NSLog( @"Not found item: %@", NSLocalizedString(@"Export", nil));
+			exportMenu = [[fileMenu itemAtIndex: 8]  submenu];
+			NSLog( @"***** Selected item: %@", [exportMenu title]);
+		}
+		
 		menu = [exportMenu copy];
 		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil keyEquivalent:@""];
 		[item setSubmenu:menu];
