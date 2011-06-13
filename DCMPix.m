@@ -2997,12 +2997,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	BOOL isLoaded = NO;
 	
-	[checking lock];
+	if( [checking tryLock])
+	{
+		if( fImage)
+			isLoaded = YES;
 	
-	if( fImage)
-		isLoaded = YES;
-	
-	[checking unlock];
+		[checking unlock];
+	}
 	
 	return isLoaded;
 }
