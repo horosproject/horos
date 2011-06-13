@@ -952,6 +952,9 @@ static NSTimeInterval lastConnection = 0;
         NSData *data = [(id)CFHTTPMessageCopyBody(request) autorelease];
         NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithData:data options:NSXMLNodeOptionsNone error:&error] autorelease];
 		
+		if( error)
+			NSLog( @"***** %@", error);
+		
 		NSString *encoding = [doc characterEncoding];
 		
         NSArray *array = [doc nodesForXPath:@"//methodName" error:&error];
