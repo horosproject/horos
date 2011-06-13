@@ -13,9 +13,11 @@
 =========================================================================*/
 
 #import "NSString+N2.h"
+#import "NSData+N2.h"
 #import "NSMutableString+N2.h"
 #include <cmath>
 #include <sys/stat.h>
+#include <CommonCrypto/CommonDigest.h>
 
 
 NSString* N2NonNullString(NSString* s) {
@@ -341,6 +343,23 @@ NSString* N2NonNullString(NSString* s) {
 
 -(BOOL)isEmail { // from DHValidation
     return [[NSPredicate predicateWithFormat:@"SELF MATCHES %@", @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"] evaluateWithObject:self];
+}
+
+-(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator {
+	NSInteger i = [self rangeOfCharacterFromSet:charset].location;
+	if (i != NSNotFound) {
+		if (part1) *part1 = [self substringToIndex:i];
+		if (separator) *separator = [self characterAtIndex:i];
+		if (part2) *part2 = [self substringFromIndex:i+1];
+	} else {
+		if (part1) *part1 = self;
+		if (separator) *separator = nil;
+		if (part2) *part2 = nil;
+	}
+}
+
+-(NSString*)md5 {
+	return [[(NSData*)[NSData dataWithBytesNoCopy:(void*)self.UTF8String length:strlen(self.UTF8String) freeWhenDone:NO] md5] hex];
 }
 
 @end

@@ -194,8 +194,7 @@
 }
 
 -(void)lifecycle {
-	[super lifecycle];
-	if (_waitingToClose && _hasSpaceAvailable)
+	if (_waitingToClose)
 		[self close];
 }
 
