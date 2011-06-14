@@ -87,6 +87,12 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	[conditionLock unlock];
 	[conditionLock release];
 	[thread release];
+	
+	if (io.count) {
+		id lo = [io lastObject];
+		if ([lo isKindOfClass:NSException.class])
+			@throw lo;
+	}
 }
 
 +(void)sendSynchronousRequestThread:(NSMutableArray*)io {
@@ -284,8 +290,8 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 
 -(void)stream:(NSStream*)stream handleEvent:(NSStreamEvent)event {
 //#ifdef DEBUG
-	NSString* NSEventName[] = {@"NSStreamEventNone", @"NSStreamEventOpenCompleted", @"NSStreamEventHasBytesAvailable", @"NSStreamEventHasSpaceAvailable", @"NSStreamEventErrorOccurred", @"NSStreamEventEndEncountered"};
-	NSLog(@"%@ stream:%@ handleEvent:%@", self, stream, NSEventName[(int)log2(event)+1]);
+//	NSString* NSEventName[] = {@"NSStreamEventNone", @"NSStreamEventOpenCompleted", @"NSStreamEventHasBytesAvailable", @"NSStreamEventHasSpaceAvailable", @"NSStreamEventErrorOccurred", @"NSStreamEventEndEncountered"};
+//	NSLog(@"%@ stream:%@ handleEvent:%@", self, stream, NSEventName[(int)log2(event)+1]);
 //#endif
 	
 	if (event == NSStreamEventOpenCompleted)
