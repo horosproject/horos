@@ -1,16 +1,16 @@
 /*=========================================================================
-  Program:   OsiriX
-
-  Copyright (c) OsiriX Team
-  All rights reserved.
-  Distributed under GNU - LGPL
-  
-  See http://www.osirix-viewer.com/copyright.html for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.
-=========================================================================*/
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
 #undef DEBUG
 
@@ -33,7 +33,7 @@
 
 @property(readonly) NSInvocation* invocation;
 
--(id)initWithAddress:(NSString*)address port:(NSInteger)port dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context;
+-(id)initWithAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context;
 
 @end
 
@@ -43,9 +43,13 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 @implementation N2Connection
 @synthesize address = _address, status = _status, maximumReadSizePerEvent = _maximumReadSizePerEvent;
 
-+(NSData*)sendSynchronousRequest:(NSData*)request toHost:(NSHost*)host port:(NSInteger)port {
++(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port {
+	return [self sendSynchronousRequest:request toAddress:address port:port tls:NO];
+}
+
++(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag {
 	NSConditionLock* conditionLock = [[NSConditionLock alloc] initWithCondition:0]; 
-	NSMutableArray* io = [NSMutableArray arrayWithObjects: conditionLock, [NSThread currentThread], request, host, [NSNumber numberWithInteger:port], nil];
+	NSMutableArray* io = [NSMutableArray arrayWithObjects: conditionLock, [NSThread currentThread], request, address, [NSNumber numberWithInteger:port], [NSNumber numberWithBool:tlsFlag], nil];
 	
 	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(sendSynchronousRequestThread:) object:io];
 	[thread start];
@@ -54,23 +58,31 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	[conditionLock release];
 	[thread release];
 	
-	NSData* response = io.count? [io lastObject] : nil;
+	id response = io.count? [io lastObject] : nil;
+	if ([response isKindOfClass:NSException.class])
+		@throw response;
 	return response;
 } 
 
-+(void)sendSynchronousRequest:(NSData*)request toHost:(NSHost*)host port:(NSInteger)port dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context {
++(void)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context {
+	[self sendSynchronousRequest:request toAddress:address port:port tls:NO dataHandlerTarget:target selector:selector context:context];
+}
+
++(void)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context  {
+	if (!request) request = [NSData data];
+	
 	NSConditionLock* conditionLock = [[NSConditionLock alloc] initWithCondition:0]; 
-	NSMutableArray* io = [NSMutableArray arrayWithObjects: conditionLock, [NSThread currentThread], request? request : [NSData data], host, [NSNumber numberWithInteger:port], target, [NSValue valueWithPointer:selector], [NSValue valueWithPointer:context], nil];
+	NSMutableArray* io = [NSMutableArray arrayWithObjects: conditionLock, [NSThread currentThread], request, address, [NSNumber numberWithInteger:port], [NSNumber numberWithBool:tlsFlag], target, [NSValue valueWithPointer:selector], [NSValue valueWithPointer:context], nil];
 	
 	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(sendSynchronousRequestThread:) object:io];
 	[thread start];
 	[conditionLock lockWhenCondition:1];
 	
-//	if (io.count == 9) {
-//		NSInvocation* invocation = [io objectAtIndex:7];
-//		[invocation invoke];
-//		[conditionLock unlockWithCondition:0];
-//	}
+	//	if (io.count == 9) {
+	//		NSInvocation* invocation = [io objectAtIndex:7];
+	//		[invocation invoke];
+	//		[conditionLock unlockWithCondition:0];
+	//	}
 	
 	[conditionLock unlock];
 	[conditionLock release];
@@ -81,21 +93,22 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSConditionLock* conditionLock = [io objectAtIndex:0];
 	NSThread* motherThread = [io objectAtIndex:1];
-
+	
+	N2Connection* c = nil;
 	@try {
 		NSData* request = [io objectAtIndex:2]; 
-		NSHost* host = [io objectAtIndex:3];
+		NSString* address = [io objectAtIndex:3];
 		NSInteger port = [[io objectAtIndex:4] integerValue];
+		BOOL tlsFlag = [[io objectAtIndex:5] boolValue];
 		
-		N2Connection* c;
-		if (io.count == 8) {
-			id dataHandlerTarget = [io objectAtIndex:5];
-			SEL dataHandlerSelector = (SEL)[[io objectAtIndex:6] pointerValue];
-			void* dataHandlerContext = [[io objectAtIndex:7] pointerValue];
-			c = [[N2ConnectionWithDelegateHandler alloc] initWithAddress:host.address port:port dataHandlerTarget:dataHandlerTarget selector:dataHandlerSelector context:dataHandlerContext];
-//			[io addObject:((N2ConnectionWithDelegateHandler*)c).invocation];
+		if (io.count == 9) {
+			id dataHandlerTarget = [io objectAtIndex:6];
+			SEL dataHandlerSelector = (SEL)[[io objectAtIndex:7] pointerValue];
+			void* dataHandlerContext = [[io objectAtIndex:8] pointerValue];
+			c = [[N2ConnectionWithDelegateHandler alloc] initWithAddress:address port:port tls:tlsFlag dataHandlerTarget:dataHandlerTarget selector:dataHandlerSelector context:dataHandlerContext];
+			//			[io addObject:((N2ConnectionWithDelegateHandler*)c).invocation];
 		} else {
-			c = [[N2Connection alloc] initWithAddress:host.address port:port];
+			c = [[N2Connection alloc] initWithAddress:address port:port tls:tlsFlag];
 		}
 		
 		c.maximumReadSizePerEvent = 1024*32;
@@ -108,10 +121,10 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 		[io removeAllObjects];
 		[io addObject:[c readData:0]];
 		
-		[c release];
 	} @catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
+		[io addObject:e];
 	} @finally {
+		[c release];
 		[pool release];
 		[conditionLock lockWhenCondition:0];
 		[conditionLock unlockWithCondition:1];
@@ -122,12 +135,20 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	return [self initWithAddress:address port:port is:nil os:nil];
 }
 
-
 -(id)initWithAddress:(NSString*)address port:(NSInteger)port is:(NSInputStream*)is os:(NSOutputStream*)os {
+	return [self initWithAddress:address port:port tls:NO is:is os:os];
+}
+
+-(id)initWithAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag {
+	return [self initWithAddress:address port:port tls:tlsFlag is:nil os:nil];
+}
+
+-(id)initWithAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag is:(NSInputStream*)is os:(NSOutputStream*)os {
 	self = [super init];
 	
 	_address = [address retain];
 	_port = port;
+	_tlsFlag = tlsFlag;
 	
 	_inputBuffer = [[NSMutableData alloc] initWithCapacity:1024];
 	_outputBuffer = [[NSMutableData alloc] initWithCapacity:1024];
@@ -142,6 +163,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	return self;
 }
 
+
 -(void)reconnectToAddress:(NSString*)address port:(NSInteger)port {
 	[_address release];
 	_address = [address retain];
@@ -150,7 +172,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 }
 
 -(void)dealloc {
-//	DLog(@"[N2Connection dealloc]");
+	//	NSLog(@"[N2Connection dealloc]");
 	[self close];
 	[_inputBuffer release];
 	[_outputBuffer release];
@@ -171,21 +193,43 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	[self open];
 }
 
--(void)open {
-	[self setStatus:N2ConnectionStatusOpening];
-	[_inputStream setDelegate:self];
-	[_inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+-(void)startTLS {
+	_tlsFlag = YES;
+	NSMutableDictionary* settings = [NSMutableDictionary dictionary];
+	[settings setObject:NSStreamSocketSecurityLevelNegotiatedSSL forKey:(NSString*)kCFStreamSSLLevel];
+	[settings setObject:_address forKey:(NSString*)kCFStreamSSLPeerName];
+	[_inputStream setProperty:settings forKey:(NSString*)kCFStreamPropertySSLSettings];
+	[_outputStream setProperty:settings forKey:(NSString*)kCFStreamPropertySSLSettings];
 	[_inputStream open];
-	[_outputStream setDelegate:self];
-	[_outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[_outputStream open];
+}
+
+-(void)open {
+	if (self.status == N2ConnectionStatusConnecting) {
+		[self setStatus:N2ConnectionStatusOpening];
+		[_inputStream setDelegate:self];
+		[_outputStream setDelegate:self];
+		[_inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+		[_outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	}
+	
+	if (_tlsFlag)
+		[self startTLS];
+	else {
+		[_inputStream open];
+		[_outputStream open];
+	}
+}
+
+-(BOOL)isSecure {
+	return _tlsFlag;
 }
 
 -(void)setStatus:(N2ConnectionStatus)status {
 	if (status == _status)
 		return;
 	
-	//NSString* N2ConnectionStatusName[] = {@"N2ConnectionStatusClosed", @"N2ConnectionStatusConnecting", @"N2ConnectionStatusOpening", @"N2ConnectionStatusOk"};
+	// NSString* N2ConnectionStatusName[] = {@"N2ConnectionStatusClosed", @"N2ConnectionStatusConnecting", @"N2ConnectionStatusOpening", @"N2ConnectionStatusOk"};
 	// DLog(@"%@ setting status: %@", self, N2ConnectionStatusName[status]);
 	
 	_status = status;
@@ -197,16 +241,15 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	if ([self status] == N2ConnectionStatusClosed)
 		return;
 	[self setStatus:N2ConnectionStatusClosed];
+	//	NSLog(@"Close %d", self.retainCount);
 	
-	if (_outputStream) {
+	if (_outputStream)
 		[_outputStream close];
-		[_outputStream release]; _outputStream = NULL;
-	}
+	[_outputStream release]; _outputStream = NULL;
 	
-	if (_inputStream) {
+	if (_inputStream)
 		[_inputStream close];
-		[_inputStream release]; _inputStream = NULL;
-	}
+	[_inputStream release]; _inputStream = NULL;
 	
 	_handleOpenCompleted = 0;
 }
@@ -217,7 +260,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 }
 
 -(void)handleData:(NSMutableData*)data {
-//	[data setLength:0];
+	//	[data setLength:0];
 }
 
 -(void)trySendingDataNow {
@@ -225,12 +268,14 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	if (length) {
 		NSUInteger sentLength = [_outputStream write:(uint8_t*)[_outputBuffer bytes] maxLength:length];
 		if (sentLength != -1) {
-			// DLog(@"%@ Sent %d bytes", self, sentLength);
+			//			NSLog(@"%@ Sent %d bytes (of %d)", self, sentLength, length);
 			[_outputBuffer replaceBytesInRange:NSMakeRange(0,sentLength) withBytes:nil length:0];
-			if (!_outputBuffer.length)
+			if (!_outputBuffer.length) {
+				//				NSLog(@"All data sent");
 				[self connectionFinishedSendingData];
+			}
 		} else
-			DLog(@"%@ send error: %@", self, [_outputStream streamError]);
+			DLog(@"%@ Send error: %@", self, [_outputStream streamError]);
 	}
 }
 
@@ -238,15 +283,15 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 }
 
 -(void)stream:(NSStream*)stream handleEvent:(NSStreamEvent)event {
-#ifdef DEBUG
+	//#ifdef DEBUG
 	NSString* NSEventName[] = {@"NSStreamEventNone", @"NSStreamEventOpenCompleted", @"NSStreamEventHasBytesAvailable", @"NSStreamEventHasSpaceAvailable", @"NSStreamEventErrorOccurred", @"NSStreamEventEndEncountered"};
-	//NSLog(@"%@ stream:%@ handleEvent:%@", self, stream, NSEventName[(int)log2(event)+1]);
-#endif
+	NSLog(@"%@ stream:%@ handleEvent:%@", self, stream, NSEventName[(int)log2(event)+1]);
+	//#endif
 	
 	if (event == NSStreamEventOpenCompleted)
 		if (++_handleOpenCompleted == 2) {
 			[self setStatus:N2ConnectionStatusOk];
-//			[self trySendingDataNow];
+			//			[self trySendingDataNow];
 		}
 	
 	if (stream == _inputStream && event == NSStreamEventHasBytesAvailable) {
@@ -261,10 +306,10 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 			
 			if (length > 0) {
 				// DLog(@"%@ Read %d Bytes", self, length);
-//				std::cerr << [[NSString stringWithFormat:@"%@ Read %d Bytes", self, length] UTF8String] << ": ";
-//				for (int i = 0; i < length; ++i)
-//					std::cerr << (int)buffer[i] << " ";
-//				std::cerr << std::endl;
+				//				std::cerr << [[NSString stringWithFormat:@"%@ Read %d Bytes", self, length] UTF8String] << ": ";
+				//				for (int i = 0; i < length; ++i)
+				//					std::cerr << (int)buffer[i] << " ";
+				//				std::cerr << std::endl;
 				readSizeForThisEvent += length;
 				[_inputBuffer appendBytes:buffer length:length];
 			} else
@@ -280,8 +325,13 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	if (stream == _outputStream && event == NSStreamEventHasSpaceAvailable && [_outputBuffer length])
 		[self performSelector:@selector(trySendingDataNow) withObject:nil afterDelay:0];
 	
-	if (event == NSStreamEventErrorOccurred || event == NSStreamEventEndEncountered)
+	if (event == NSStreamEventEndEncountered)
+		[stream close];
+	
+	if (event == NSStreamEventErrorOccurred) {
+		NSLog(@"Stream error: %@ %@", stream.streamError, stream.streamError.userInfo);
 		[self close];
+	}
 }
 
 -(void)streamHandleEvent:(NSArray*)io {
@@ -321,14 +371,15 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 
 
 /*
--(NSString*)host2ipv6:(NSString*)host {
-	
-}
+ -(NSString*)host2ipv6:(NSString*)host {
+ 
+ }
+ 
+ +(BOOL)host:(NSString*)host1 isEqualToHost:(NSString*)host2 {
+ return [[self host2ipv6:host1] isEqual:[self host2ipv6:host2]];
+ }
+ */
 
-+(BOOL)host:(NSString*)host1 isEqualToHost:(NSString*)host2 {
-	return [[self host2ipv6:host1] isEqual:[self host2ipv6:host2]];
-}
-*/
 @end
 
 
@@ -336,9 +387,9 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 
 @synthesize invocation = _invocation;
 
--(id)initWithAddress:(NSString*)address port:(NSInteger)port dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context {
-	if ((self = [super initWithAddress:address port:port])) {
-		_invocation = [[NSInvocation invocationWithMethodSignature:[[self class] instanceMethodSignatureForSelector:@selector(_dummyMethod:handleData:context:)]] retain];
+-(id)initWithAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context {
+	if ((self = [super initWithAddress:address port:port tls:tlsFlag])) {
+		_invocation = [[NSInvocation invocationWithMethodSignature:[N2ConnectionWithDelegateHandler instanceMethodSignatureForSelector:@selector(_connection:dummyDataHandler:context:)]] retain];
 		[_invocation setSelector:selector];
 		[_invocation setTarget:target];
 		[_invocation setArgument:&self atIndex:2];
@@ -348,13 +399,24 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	return self;
 }
 
--(NSInteger)_dummyMethod:(N2Connection*)connection handleData:(NSData*)data context:(void*)context {
+-(NSInteger)_connection:(N2Connection*)connection dummyDataHandler:(NSData*)data context:(void*)context {
 	return 0;
 }
 
 -(void)dealloc {
 	[_invocation release];
 	[super dealloc];
+}
+
+-(void)stream:(NSStream*)stream handleEvent:(NSStreamEvent)event {
+	[super stream:stream handleEvent:event];
+	
+	if (event == NSStreamEventEndEncountered) {
+		id null = nil;
+		[_invocation setArgument:&null atIndex:3];
+		[_invocation invoke];
+	}
+	
 }
 
 -(void)handleData:(NSMutableData*)data {

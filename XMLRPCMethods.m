@@ -257,9 +257,7 @@ static NSTimeInterval lastConnection = 0;
 		{
 			if(1 != [paramDict count] && 2 != [paramDict count])
 			{
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
-				[mess setResponse:response];
-				CFRelease(response);
+				[self postError: 400 version: vers message: mess];
 				return;
 			}
 			// *****
@@ -315,9 +313,7 @@ static NSTimeInterval lastConnection = 0;
 		{
 			if (2 != [paramDict count] && 1 != [paramDict count])
 			{
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
-				[mess setResponse:response];
-				CFRelease(response);
+				[self postError: 400 version: vers message: mess];
 				return;
 			}
 			// *****
@@ -388,9 +384,7 @@ static NSTimeInterval lastConnection = 0;
 		{
 			if (3 != [paramDict count])
 			{
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
-				[mess setResponse:response];
-				CFRelease(response);
+				[self postError: 400 version: vers message: mess];
 				return;
 			}
 			// *****
@@ -467,9 +461,7 @@ static NSTimeInterval lastConnection = 0;
 		{
 			if (1 != [paramDict count])
 			{
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
-				[mess setResponse:response];
-				CFRelease(response);
+				[self postError: 400 version: vers message: mess];
 				return;
 			}
 			// *****
@@ -508,9 +500,7 @@ static NSTimeInterval lastConnection = 0;
 		{
 			if (1 != [paramDict count])
 			{
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
-				[mess setResponse:response];
-				CFRelease(response);
+				[self postError: 400 version: vers message: mess];
 				return;
 			}
 			// *****
@@ -707,9 +697,7 @@ static NSTimeInterval lastConnection = 0;
 		{
 			if (1 != [paramDict count])
 			{
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
-				[mess setResponse:response];
-				CFRelease(response);
+				[self postError: 400 version: vers message: mess];
 				return;
 			}
 			
@@ -753,9 +741,7 @@ static NSTimeInterval lastConnection = 0;
 		{
 			if (1 != [paramDict count])
 			{
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
-				[mess setResponse:response];
-				CFRelease(response);
+				[self postError: 400 version: vers message: mess];
 				return;
 			}
 			
@@ -800,9 +786,7 @@ static NSTimeInterval lastConnection = 0;
 		{
 			if (2 != [paramDict count])
 			{
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
-				[mess setResponse:response];
-				CFRelease(response);
+				[self postError: 400 version: vers message: mess];
 				return;
 			}
 			// *****
@@ -866,9 +850,7 @@ static NSTimeInterval lastConnection = 0;
 		{
 			if (1 != [paramDict count])
 			{
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
-				[mess setResponse:response];
-				CFRelease(response);
+				[self postError: 400 version: vers message: mess];
 				return;
 			}
 			// *****
@@ -905,9 +887,7 @@ static NSTimeInterval lastConnection = 0;
 		{
 			if (1 != [paramDict count])
 			{
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
-				[mess setResponse:response];
-				CFRelease(response);
+				[self postError: 400 version: vers message: mess];
 				return;
 			}
 			// *****
@@ -927,6 +907,20 @@ static NSTimeInterval lastConnection = 0;
 	}
 }
 
+- (void) postError: (NSInteger) err version: (NSString*) vers message: (HTTPServerRequest *)mess 
+{
+	CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, err, NULL, (CFStringRef) vers); // Bad Request
+	NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%d</value></member></struct></value></param></params></methodResponse>", err];
+	NSLog( @"***** xml error returned: %@", xml);
+	NSError *error = nil;
+	NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+	NSData *data = [doc XMLData];
+	CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
+	CFHTTPMessageSetBody(response, (CFDataRef)data);
+	[mess setResponse:response];
+	CFRelease(response);
+}
+
 - (void)HTTPConnectionProtected:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
     CFHTTPMessageRef request = [mess request];
@@ -937,18 +931,18 @@ static NSTimeInterval lastConnection = 0;
 //	NSLog( @"%@", allHeaderFields);
 	
     NSString *vers = [(id)CFHTTPMessageCopyVersion(request) autorelease];
-    if (!vers) {
-        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 505, NULL, vers ? (CFStringRef)vers : kCFHTTPVersion1_0); // Version Not Supported
-        [mess setResponse:response];
-        CFRelease(response);
+    if (!vers)
+	{
+        [self postError: 505 version: vers message: mess];
+		
         return;
     }
 
     NSString *method = [(id)CFHTTPMessageCopyRequestMethod(request) autorelease];
-    if (!method) {
-        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
-        [mess setResponse:response];
-        CFRelease(response);
+    if (!method)
+	{
+        [self postError: 400 version: vers message: mess];
+		
         return;
     }
 	
@@ -957,6 +951,9 @@ static NSTimeInterval lastConnection = 0;
         NSError *error = nil;
         NSData *data = [(id)CFHTTPMessageCopyBody(request) autorelease];
         NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithData:data options:NSXMLNodeOptionsNone error:&error] autorelease];
+		
+		if( error)
+			NSLog( @"***** %@", error);
 		
 		NSString *encoding = [doc characterEncoding];
 		
@@ -1010,9 +1007,7 @@ static NSTimeInterval lastConnection = 0;
 			
 			if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)
 			{
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 404, NULL, (CFStringRef) vers); // Not found
-				[mess setResponse:response];
-				CFRelease(response);
+				[self postError: 404 version: vers message: mess];
 				
 				NSLog( @"**** unable to understand this xml-rpc message: %@", selName);
 				NSLog( @"%@", doc);
@@ -1033,17 +1028,13 @@ static NSTimeInterval lastConnection = 0;
 			}
 		}
 		NSLog( @"**** Bad Request : methodName?");
+		[self postError: 400 version: vers message: mess];
 		
-        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef) vers); // Bad Request
-        [mess setResponse:response];
-        CFRelease(response);
         return;
     }
 
 	NSLog( @"**** Bad Request: we accept only http POST");
 
-    CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, (CFStringRef) vers); // Method Not Allowed
-    [mess setResponse:response];
-    CFRelease(response);
+   [self postError: 405 version: vers message: mess];
 }
 @end

@@ -6119,48 +6119,57 @@ static BOOL withReset = NO;
 	{
 		if( ![v windowWillClose])
 		{
+			NSArray *vFileList = nil;
+			NSArray *vPixList = nil;
+			NSData *volumeData = nil;
+			
 			@synchronized( [v imageView])
 			{
 				// We need to temporarly retain all these objects, because this function is called on a separated thread (matrixLoadIcons)
-				NSArray *vFileList = [[v fileList] copy];
-				NSArray *vPixList = [[v pixList] copy];
-				NSData *volumeData = [[v volumeData] retain];
-				
-				@try
-				{
-					for( int i = 0 ; i < [vFileList count]; i++)
-					{
-						NSString *path = [[vFileList objectAtIndex: i] valueForKey:@"completePath"];
-						
-						if( [path isEqualToString: pathToFind])
-						{
-							DCMPix *dcmPix = [[vPixList objectAtIndex: i] copy];
-							if( dcmPix)
-							{
-								float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
-								if( fImage)
-								{
-									memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
-									[dcmPix setfImage: fImage];
-									[dcmPix freefImageWhenDone: YES];
-								
-									returnPix = [dcmPix autorelease];
-								}
-								else
-									[dcmPix release];
-							}
-						}
-					}
-				}
-				@catch (NSException * e) 
-				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-					[AppController printStackTrace: e];
-				}
-				[volumeData release];
-				[vFileList release];
-				[vPixList release];
+				vFileList = [[v fileList] copy];
+				vPixList = [[v pixList] copy];
+				volumeData = [[v volumeData] retain];
 			}
+			
+			@try
+			{
+				NSUInteger i = [[vFileList valueForKey: @"completePath"] indexOfObject: pathToFind];
+				
+				if( i != NSNotFound)
+				{
+					DCMPix *dcmPix = [vPixList objectAtIndex: i];
+					
+					[dcmPix.checking lock];
+					
+					[dcmPix CheckLoad];
+					
+					if( [dcmPix isLoaded])
+					{
+						DCMPix *dcmPixCopy = [[vPixList objectAtIndex: i] copy];
+						
+						float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+						if( fImage)
+						{
+							memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
+							[dcmPixCopy setfImage: fImage];
+							[dcmPixCopy freefImageWhenDone: YES];
+						
+							returnPix = [dcmPixCopy autorelease];
+						}
+						else
+							[dcmPixCopy release];
+					}
+					[dcmPix.checking unlock];
+				}
+			}
+			@catch (NSException * e) 
+			{
+				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+				[AppController printStackTrace: e];
+			}
+			[volumeData release];
+			[vFileList release];
+			[vPixList release];
 		}
 	}
 	
@@ -6987,70 +6996,66 @@ static BOOL withReset = NO;
 	NSMutableArray					*ipreviewPixThumbnails = [dict valueForKey: @"previewPixThumbnails"];
 	NSMutableArray					*ipreviewPix = [dict valueForKey: @"previewPix"];
 	
-	@synchronized( imageView)
+	@try
 	{
-		@try
+		for( int i = 0; i < filesPaths.count; i++)
 		{
-			for( int i = 0; i < filesPaths.count; i++)
-			{
-				NSImage		*thumbnail = nil;
-				
-				thumbnail = [ipreviewPixThumbnails objectAtIndex: i];
-				
-				int frame = 0;
-				if( [[[files objectAtIndex: i] valueForKey: @"numberOfFrames"] intValue] > 1) frame = [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue]/2;
-				
-				if( [[files objectAtIndex: i] valueForKey: @"frameID"]) frame = [[[files objectAtIndex: i] valueForKey:@"frameID"] intValue];
-				
-				DCMPix *dcmPix = [[self getDCMPixFromViewerIfAvailable: [filesPaths objectAtIndex:i]] retain];
-				
-				if( dcmPix == nil)
-					dcmPix = [[DCMPix alloc] initWithPath: [filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:![_database isLocal] imageObj: [files objectAtIndex: i]];
-				
-				if( dcmPix)
-				{
-					if( thumbnail == notFoundImage)
-					{
-						if( [DCMAbstractSyntaxUID isStructuredReport: [[files objectAtIndex: i] valueForKeyPath: @"series.seriesSOPClassUID"]])
-						{
-							[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: [NSImage imageNamed: @"pdf.tif"]];
-						}
-						else
-						{
-							[dcmPix revert: NO];	// <- Kill the raw data
-							thumbnail = [dcmPix generateThumbnailImageWithWW: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowLevel"] floatValue]];
-							[dcmPix revert: NO];	// <- Kill the raw data
-							
-							if( thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
-							
-							[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
-						}
-					}
-					
-					[ipreviewPix addObject: dcmPix];
-					[dcmPix release];
-					
-					if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
-						i = [filesPaths count];
-				}
-				else
-				{
-					dcmPix = [[DCMPix alloc] myinitEmpty];
-					[ipreviewPix addObject: dcmPix];
-					[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: notFoundImage];
-					[dcmPix release];
-				}
-			}
+			NSImage	*thumbnail = nil;
 			
-			if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
-				[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:nil waitUntilDone: NO];
+			thumbnail = [ipreviewPixThumbnails objectAtIndex: i];
+			
+			int frame = 0;
+			if( [[[files objectAtIndex: i] valueForKey: @"numberOfFrames"] intValue] > 1) frame = [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue]/2;
+			
+			if( [[files objectAtIndex: i] valueForKey: @"frameID"]) frame = [[[files objectAtIndex: i] valueForKey:@"frameID"] intValue];
+			
+			DCMPix *dcmPix = [[self getDCMPixFromViewerIfAvailable: [filesPaths objectAtIndex:i]] retain];
+			
+			if( dcmPix == nil)
+				dcmPix = [[DCMPix alloc] initWithPath: [filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:![_database isLocal] imageObj: [files objectAtIndex: i]];
+			
+			if( dcmPix)
+			{
+				if( thumbnail == notFoundImage)
+				{
+					if( [DCMAbstractSyntaxUID isStructuredReport: [[files objectAtIndex: i] valueForKeyPath: @"series.seriesSOPClassUID"]])
+					{
+						[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: [NSImage imageNamed: @"pdf.tif"]];
+					}
+					else
+					{
+						thumbnail = [dcmPix generateThumbnailImageWithWW: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowLevel"] floatValue]];
+						[dcmPix revert: NO];	// <- Kill the raw data
+						
+						if( thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
+						
+						[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
+					}
+				}
+				
+				[ipreviewPix addObject: dcmPix];
+				[dcmPix release];
+				
+				if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
+					i = [filesPaths count];
+			}
+			else
+			{
+				dcmPix = [[DCMPix alloc] myinitEmpty];
+				[ipreviewPix addObject: dcmPix];
+				[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: notFoundImage];
+				[dcmPix release];
+			}
 		}
 		
-		@catch( NSException *ne)
-		{
-			NSLog(@"matrixLoadIcons exception: %@", ne.description);
-			[AppController printStackTrace: ne];
-		}
+		if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
+			[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:nil waitUntilDone: NO];
+	}
+	
+	@catch( NSException *ne)
+	{
+		NSLog(@"matrixLoadIcons exception: %@", ne.description);
+		[AppController printStackTrace: ne];
 	}
 	
     [pool release];
@@ -14483,6 +14488,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) removeMountedImages: (NSString*) sNewDrive
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"someImagesAreMounted"] == NO)
+		return;
+	
 	// FIND ALL images that ARE NOT local, and REMOVE non-available images
 	NSManagedObjectContext *context = self.managedObjectContext;
 	NSManagedObjectModel *model = self.managedObjectModel;
@@ -14506,6 +14514,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( [seriesArray count] > 0)
 		{
+			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"someImagesAreMounted"];
+			
 			NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
 			
 			@try

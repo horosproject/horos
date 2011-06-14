@@ -231,14 +231,14 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 
 -(NSString*)fetchDatabaseVersion {
 	NSMutableData* request = [NSMutableData dataWithBytes:"DBVER" length:6];
-	NSData* response = [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	return [[[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding] autorelease];
 }
 
 -(BOOL)fetchIsPasswordProtected {
 	NSMutableData* request = [NSMutableData dataWithBytes:"ISPWD" length:6];
-	NSData* response = [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:NSLocalizedString(InvalidResponseExceptionMessage, nil)];
 	return NSSwapBigIntToHost(*((int*)response.bytes))? YES : NO;
@@ -247,7 +247,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 -(BOOL)fetchIsRightPassword:(NSString*)password {
 	NSMutableData* request = [NSMutableData dataWithBytes:"PASWD" length:6];
 	[RemoteDicomDatabase _data:request appendStringUTF8:password];
-	NSData* response = [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:NSLocalizedString(InvalidResponseExceptionMessage, nil)];
 	return NSSwapBigIntToHost(*((int*)response.bytes))? YES : NO;
@@ -255,7 +255,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 
 -(unsigned int)fetchDatabaseIndexSize {
 	NSMutableData* request = [NSMutableData dataWithBytes:"DBSIZ" length:6];
-	NSData* response = [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:NSLocalizedString(InvalidResponseExceptionMessage, nil)];
 	return NSSwapBigIntToHost(*((int*)response.bytes));
@@ -295,7 +295,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 	
 	NSData* request = [NSMutableData dataWithBytes:"DATAB" length:6];
 	NSArray* context = [NSArray arrayWithObjects: thread, [NSNumber numberWithUnsignedInteger:databaseIndexSize], fileStream, [N2MutableUInteger mutableUIntegerWithUInteger:0], nil];
-	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDatabaseIndex:context:) context:context];
+	[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDatabaseIndex:context:) context:context];
 	
 	[fileStream close];
 	[thread exitOperation];
@@ -332,22 +332,22 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 
 -(NSTimeInterval)fetchDatabaseTimestamp {
 	NSMutableData* request = [NSMutableData dataWithBytes:"VERSI" length:6];
-	NSData* response = [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	if (response.length != sizeof(NSSwappedDouble)) [NSException raise:NSInternalInconsistencyException format:NSLocalizedString(InvalidResponseExceptionMessage, nil)];
 	return NSSwapBigDoubleToHost(*((NSSwappedDouble*)response.bytes));
 }
 
-+(NSDictionary*)fetchDicomDestinationInfoForHost:(NSHost*)host port:(NSInteger)port {
++(NSDictionary*)fetchDicomDestinationInfoForAddress:(NSString*)address port:(NSInteger)port {
 	if (!port) port = 8780;
 	NSMutableData* request = [NSMutableData dataWithBytes:"GETDI" length:6];
-	NSData* response = [N2Connection sendSynchronousRequest:request toHost:host port:port];
+	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:address port:port];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	return [NSUnarchiver unarchiveObjectWithData:response];
 }
 
 -(NSDictionary*)fetchDicomDestinationInfo {
-	return [RemoteDicomDatabase fetchDicomDestinationInfoForHost:self.host port:self.port];
+	return [RemoteDicomDatabase fetchDicomDestinationInfoForAddress:self.address port:self.port];
 }
 
 -(void)update {
@@ -437,7 +437,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 	NSData* pathData = [path dataUsingEncoding:NSUnicodeStringEncoding];
 	[RemoteDicomDatabase _data:request appendInt:pathData.length];
 	[request appendData:pathData];
-	NSData* response = [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	return [[[NSString alloc] initWithData:response encoding:NSUnicodeStringEncoding] autorelease];
 }
@@ -447,7 +447,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 	[RemoteDicomDatabase _data:request appendStringUTF8:object.objectID.URIRepresentation.absoluteString];
 	[RemoteDicomDatabase _data:request appendStringUTF8: [value isKindOfClass:NSNumber.class]? [value stringValue] : value];
 	[RemoteDicomDatabase _data:request appendStringUTF8:key];
-	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 	_timestamp = [self fetchDatabaseTimestamp];
 }
 
@@ -469,7 +469,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	NSMutableData* request = [NSMutableData dataWithBytes:command length:6];
 	[RemoteDicomDatabase _data:request appendStringUTF8:params.description];
 	
-	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 	
 	_timestamp = [self fetchDatabaseTimestamp];
 }
@@ -513,7 +513,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 				[RemoteDicomDatabase _data:count appendInt:filesInRequest.count];
 				[request replaceBytesInRange:NSMakeRange(6,count.length) withBytes:count.bytes length:count.length];
 				
-				[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+				[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 				
 				[request setLength:6+count.length];
 				[filesInRequest removeAllObjects];
@@ -583,7 +583,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	
 	NSMutableArray* context = [NSMutableArray arrayWithObjects: [N2MutableUInteger mutableUIntegerWithUInteger:0], nil];
 
-	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDataForImage:context:) context:context];
+	[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDataForImage:context:) context:context];
 
 	if ([NSFileManager.defaultManager fileExistsAtPath:localPath])
 		return localPath;
@@ -699,7 +699,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	[RemoteDicomDatabase _data:request appendInt:data.length];
 	[request appendData:data];
 	
-	return [N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	return [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 }
 
 -(void)storeScuImages:(NSArray*)dicomImages toDestinationAETitle:(NSString*)aet address:(NSString*)address port:(NSInteger)port transferSyntax:(int)exsTransferSyntax {
@@ -719,7 +719,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	for (NSString* path in imagePaths)
 		[RemoteDicomDatabase _data:request appendStringUTF8:path];
 	
-	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port];
+	[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 }
 
 #pragma mark Special

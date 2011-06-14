@@ -320,7 +320,18 @@
 	@try {
 		if( [NSUserDefaults.standardUserDefaults boolForKey:@"AUTOCLEANINGSPACE"])
 		{
-			int freeMemoryRequested = [[NSUserDefaults.standardUserDefaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue];
+			unsigned long long freeMemoryRequested = 0;
+			NSString* acss = [NSUserDefaults.standardUserDefaults stringForKey:@"AUTOCLEANINGSPACESIZE"];
+			
+			if( [acss floatValue] < 0) // Percentages !
+			{
+				NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
+				unsigned long long diskSize = [[fsattrs objectForKey:NSFileSystemSize] unsignedLongLongValue]/1024/1024;
+
+				double percentage = - (float) [acss floatValue] / 100.;
+				freeMemoryRequested = diskSize * percentage;
+			}
+			else freeMemoryRequested = [acss longLongValue];
 			
 			// if (sender == 0L)	// Received by the NSTimer : have a larger amount of free memory !
 				freeMemoryRequested = 1.3*freeMemoryRequested;

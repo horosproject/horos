@@ -23,5 +23,6 @@
 -(NSData*)initWithBase64:(NSString*)base64;
 -(NSString*)base64;
 -(NSString*)hex;
+-(NSData*)md5;
 
 @end

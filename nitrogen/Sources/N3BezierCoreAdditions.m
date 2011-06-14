@@ -1410,7 +1410,66 @@ bool N3BezierCoreIsPlanar(N3BezierCoreRef bezierCore, N3PlanePointer bezierCoreP
 	return isPlanar;
 }
 
+bool N3BezierCoreGetBoundingPlanesForNormal(N3BezierCoreRef bezierCore, N3Vector normal, N3PlanePointer topPlanePtr, N3PlanePointer bottomPlanePtr)
+{
+    N3BezierCoreRef flattenedBezierCore;
+	N3BezierCoreIteratorRef bezierCoreIterator;
+    N3Vector endpoint;
+    CGFloat z;
+    CGFloat minZ;
+    CGFloat maxZ;
+    N3Plane topPlane;
+    N3Plane bottomPlane;
+    
+    assert(N3VectorIsZero(normal) == false);
+    
+    minZ = CGFLOAT_MAX;
+    maxZ = -CGFLOAT_MAX;
+    
+    topPlane.normal = N3VectorNormalize(normal);
+    topPlane.point = N3VectorZero;
+    bottomPlane.normal = topPlane.normal;
+    bottomPlane.point = N3VectorZero;
 
+    if (N3BezierCoreHasCurve(bezierCore)) {
+        flattenedBezierCore = N3BezierCoreCreateMutableCopy(bezierCore);
+        N3BezierCoreFlatten((N3MutableBezierCoreRef)flattenedBezierCore, N3BezierDefaultFlatness);
+    } else {
+        flattenedBezierCore = N3BezierCoreRetain(bezierCore); 
+    }
+    
+    bezierCoreIterator = N3BezierCoreIteratorCreateWithBezierCore(flattenedBezierCore);
+    N3BezierCoreRelease(flattenedBezierCore);
+    flattenedBezierCore = NULL;
+
+    while (!N3BezierCoreIteratorIsAtEnd(bezierCoreIterator)) {
+        N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, NULL, NULL, &endpoint);
+        
+        z = N3VectorDotProduct(endpoint, normal);
+        
+        if (z < minZ) {
+            minZ = z;
+            bottomPlane.point = endpoint;
+        }
+        
+        if (z > maxZ) {
+            maxZ = z;
+            topPlane.point = endpoint;
+        }
+    }
+    
+    N3BezierCoreIteratorRelease(bezierCoreIterator);
+    
+    if (topPlanePtr) {
+        *topPlanePtr = topPlane;
+    }
+    
+    if (bottomPlanePtr) {
+        *bottomPlanePtr = bottomPlane;
+    }
+    
+    return true;
+}
 
 
 

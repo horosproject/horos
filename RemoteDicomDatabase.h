@@ -50,7 +50,7 @@
 -(void)removeStudies:(NSArray*)dicomStudies fromAlbum:(DicomAlbum*)dicomAlbum;
 -(void)object:(NSManagedObject*)object setValue:(id)value forKey:(NSString*)key;
 
-+(NSDictionary*)fetchDicomDestinationInfoForHost:(NSHost*)host port:(NSInteger)port;
++(NSDictionary*)fetchDicomDestinationInfoForAddress:(NSString*)address port:(NSInteger)port;
 -(NSDictionary*)fetchDicomDestinationInfo;
 
 -(void)storeScuImages:(NSArray*)dicomImages toDestinationAETitle:(NSString*)aet address:(NSString*)address port:(NSInteger)port transferSyntax:(int)exsTransferSyntax;

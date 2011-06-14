@@ -840,9 +840,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	return [[[sc URLForPersistentStore: [stores lastObject]] path] stringByDeletingLastPathComponent];
 }
 
--(NSString*) completePathWithDownload:(BOOL)download {
+-(NSString*) completePathWithDownload:(BOOL) download
+{
+	if( completePathCache && download == NO)
+		return completePathCache;
+		
 	DicomDatabase* db = [DicomDatabase databaseForContext:self.managedObjectContext];
-	
 	
 	if( completePathCache)
 	{

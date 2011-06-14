@@ -4,7 +4,6 @@
 - Web Server: add Bonjour Service, add Locations parameter, display in Sources
 - DICOM ECG
 - Activate 8-bit TIFF, JPEG, export (10.6) // Add PNG
-- DB Autocleaning: limit number of # studies/images, % of HD space
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
 - Every web portal user's specific studies list in Albums
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
@@ -63,6 +62,8 @@ for i in `ls *.*`; do mv "$i" "$i"ppc; done
 for i in `ls *.a`; do lipo -create "$i" "$i"ppc -output "$i"final; done
 
 for i in `ls`; do ibtool "$i" --compile "$i"; done
+
+for i in `ls`; do lipo -remove ppc7400 "$i" -output "$i"; done
 
 VTK MODIFICATIONS : 
 
@@ -217,7 +218,7 @@ genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m
 - X Check if OsiriX Lite works...
 - Check up-to-date zip packages in Binaries folder
 - Check weasis permissions: everyone: read only
-- Localization: check if smart album editor is correctly displayed
+- Localization: check if smart album editor is correctly displayed; Check  CLUT, Opacity, WLWW menus in 2D Menu (Search for itemWithTitle:); Check Export DICOM 2D Viewer (Spanish)
 - Test DB migration from previous version
 - OsiriX Lite Upload
 - X QuickLook

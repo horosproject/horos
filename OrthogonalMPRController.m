@@ -1052,8 +1052,21 @@
 			/******************* WW/WL menu items **********************/
 			NSMenu *mainMenu = [NSApp mainMenu];
 			NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
-			NSMenu *fileMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"File", nil)] submenu];
+			if( viewerMenu == nil)
+			{
+				NSLog( @"***** NSLocalization bug.... viewerMenu == nil -> viewerMenu == itemAtIndex == 5");
+				NSLog( @"Not found item: %@", NSLocalizedString(@"2D Viewer", nil));
+				viewerMenu = [[mainMenu itemAtIndex: 5]  submenu];
+				NSLog( @"***** Selected item: %@", [viewerMenu title]);
+			}
 			NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
+			if( presetsMenu == nil)
+			{
+				NSLog( @"***** NSLocalization bug.... presetsMenu == nil -> presetsMenu == itemAtIndex == 35");
+				NSLog( @"Not found item: %@", NSLocalizedString(@"Window Width & Level", nil));
+				presetsMenu = [[viewerMenu itemAtIndex: 35]  submenu];
+				NSLog( @"***** Selected item: %@", [presetsMenu title]);
+			}
 			NSMenu *menu = [presetsMenu copy];
 			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""];
 			[item setSubmenu:menu];
@@ -1093,29 +1106,7 @@
 			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""];
 			[contextual addItem:item];
 			[item release];
-
-			/********** Orientation submenu ************/ 
 			
-			NSMenu *orientationMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Orientation", nil)] submenu];
-			menu = [orientationMenu copy];
-			for( i = 0; i < [menu numberOfItems]; i++) [[menu itemAtIndex: i] setState: NSOffState];
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Orientation", nil) action: nil keyEquivalent:@""];
-			[item setSubmenu:menu];
-			[contextual addItem:item];
-			[item release];
-			[menu release];
-
-			//Export Added 12/5/05
-			/*************Export submenu**************/
-			NSMenu *exportMenu = [[fileMenu itemWithTitle:NSLocalizedString(@"Export", nil)] submenu];
-			menu = [exportMenu copy];
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil keyEquivalent:@""];
-			[item setSubmenu:menu];
-			[contextual addItem:item];
-			[item release];
-			[menu release];
-			
-
 			[submenu release];
 	}
 	

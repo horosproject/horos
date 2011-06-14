@@ -48,6 +48,10 @@ extern NSString* N2NonNullString(NSString* s);
 
 -(BOOL)isEmail;
 
+-(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator;
+
+-(NSString*)md5;
+
 @end
 
 @interface NSAttributedString (N2)

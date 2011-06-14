@@ -990,6 +990,8 @@ enum { Compress, Decompress };
 				break;
 		}
 		
+		if( mountedVolume)
+			[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"someImagesAreMounted"];
 		
 		// Find all current studies
 		
