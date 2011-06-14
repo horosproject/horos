@@ -4,7 +4,6 @@
 - Web Server: add Bonjour Service, add Locations parameter, display in Sources
 - DICOM ECG
 - Activate 8-bit TIFF, JPEG, export (10.6) // Add PNG
-- DB Autocleaning: limit number of # studies/images, % of HD space
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
 - Every web portal user's specific studies list in Albums
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)

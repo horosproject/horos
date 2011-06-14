@@ -5167,6 +5167,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: currentDatabasePath];
 		
+		unsigned long long diskSize = [[fsattrs objectForKey:NSFileSystemSize] unsignedLongLongValue];
 		unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
 		unsigned long long thousand = 1024;
 		
@@ -5181,6 +5182,9 @@ static NSConditionLock *threadLock = nil;
 		free /= thousand;
 		free /= thousand;
 		
+		diskSize /= thousand;
+		diskSize /= thousand;
+		
 		if( lastFreeSpace != free && ([NSDate timeIntervalSinceReferenceDate] - lastFreeSpaceLogTime) > 60*10)
 		{
 			lastFreeSpace = free;
@@ -5191,7 +5195,14 @@ static NSConditionLock *threadLock = nil;
 		
 		isAutoCleanDatabaseRunning = YES;
 		
-		unsigned long long freeMemoryRequested = [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] longLongValue];
+		unsigned long long freeMemoryRequested = 0;
+		
+		if( [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] floatValue] < 0) // Percentages !
+		{
+			double percentage = - (float) [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] floatValue] / 100.;
+			freeMemoryRequested = diskSize * percentage;
+		}
+		else freeMemoryRequested = [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] longLongValue];
 		
 		if( sender == 0L)	// Received by the NSTimer : have a larger amount of free memory !
 			freeMemoryRequested = (float) freeMemoryRequested * 1.3;
