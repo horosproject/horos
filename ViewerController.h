@@ -339,6 +339,7 @@ enum
 	IBOutlet NSWindow		*injectionTimeWindow;
 	
 	int						isDataVolumicIn4DLevel;
+	int						previousFullscreenColumns, previousFullscreenRows, previousFullscreenCurImage, previousFullscreenViewIndex;
 }
 @property(retain) NSCalendarDate *injectionDateTime;
 @property(readonly) short currentOrientationTool;

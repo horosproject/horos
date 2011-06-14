@@ -255,9 +255,8 @@
     }
 	if( ctag >= 0)
     {
-		DCMView *view;
-		for (view in imageViews)
-        [view setCurrentTool: ctag];
+		for (DCMView *view in imageViews)
+			[view setCurrentTool: ctag];
     }
 }
 

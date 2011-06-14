@@ -829,6 +829,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"0" forKey: @"COPYDATABASE"];
 	#endif
 	[defaultValues setObject: @"0" forKey: @"SUVCONVERSION"];
+	[defaultValues setObject: @"1" forKey: @"NoImageTilingInFullscreen"];
 	[defaultValues setObject: @"0" forKey: @"AUTOCLEANINGCOMMENTS"];
 	[defaultValues setObject: @"" forKey: @"AUTOCLEANINGCOMMENTSTEXT"];
 	[defaultValues setObject: @"0" forKey: @"AUTOCLEANINGDONTCONTAIN"];

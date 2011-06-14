@@ -10279,7 +10279,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							 force8bits: YES
 						removeGraphical: NO
 						   squarePixels: YES
-							   allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"]
+							   allTiles: [[NSUserDefaults standardUserDefaults] boolForKey: @"includeAllTiledViews"]
 					 allowSmartCropping: [[NSUserDefaults standardUserDefaults] boolForKey: @"allowSmartCropping"]
 								 origin: nil
 								spacing: nil

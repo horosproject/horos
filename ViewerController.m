@@ -3259,39 +3259,57 @@ static volatile int numberOfThreadsForRelisce = 0;
 //	float scaleValue = [imageView scaleValue];
 	
 	[self setUpdateTilingViewsValue: YES];
-	
 	[self selectFirstTilingView];
 	
     if( FullScreenOn == YES) // we need to go back to non-full screen
     {
         [StartingWindow setContentView: contentView];
-    
+		
         [FullScreenWindow setDelegate:nil];
         [FullScreenWindow close];
 		[FullScreenWindow release];
         
         FullScreenOn = NO;
 		
-		NSRect	rr = [StartingWindow frame];
+		NSRect rr = [StartingWindow frame];
 		
 		rr.size.width--;
 		[StartingWindow setFrame: rr display: NO];
 		rr.size.width++;
 		[StartingWindow setFrame: rr display: YES];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NoImageTilingInFullscreen"] && (previousFullscreenColumns != 1 || previousFullscreenRows != 1))
+		{
+			[imageView setIndex: previousFullscreenCurImage];
+			[self setImageRows: previousFullscreenRows columns: previousFullscreenColumns];
+			[[self window] makeFirstResponder: [[seriesView imageViews] objectAtIndex: previousFullscreenViewIndex]];
+		}
 	}
     else // FullScreenOn == false
     {
         unsigned int windowStyle;
-        NSRect       contentRect;
+        NSRect contentRect;
         
+		previousFullscreenColumns = [imageView columns];
+		previousFullscreenRows = [imageView rows];
+		int selectedIndex = [imageView curImage];
+		previousFullscreenViewIndex = [[seriesView imageViews] indexOfObject: imageView]; 
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NoImageTilingInFullscreen"] && (previousFullscreenColumns != 1 || previousFullscreenRows != 1))
+			[self setImageRows: 1 columns: 1];
+		
+		previousFullscreenCurImage = [imageView curImage];
+		
+		[imageView setIndex: selectedIndex];
+		
 		NSRect frame = [[[splitView subviews] objectAtIndex: 0] frame];
 		int previous = frame.size.width;
 		frame.size.width = 0;
 		[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
 		
         StartingWindow = [self window];
-        windowStyle    = NSBorderlessWindowMask; 
-        contentRect    = [[NSScreen mainScreen] frame];
+        windowStyle = NSBorderlessWindowMask; 
+        contentRect = [[NSScreen mainScreen] frame];
         FullScreenWindow = [[NSFullScreenWindow alloc] initWithContentRect:contentRect styleMask: windowStyle backing:NSBackingStoreBuffered defer: NO];
         if(FullScreenWindow != nil)
         {
@@ -3320,8 +3338,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[self setUpdateTilingViewsValue : NO];
 	
-	[self selectFirstTilingView];
-	
+//	[self selectFirstTilingView];
 //	[imageView setScaleValue: scaleValue];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"])
