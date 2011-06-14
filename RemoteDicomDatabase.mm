@@ -295,7 +295,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 	
 	NSData* request = [NSMutableData dataWithBytes:"DATAB" length:6];
 	NSArray* context = [NSArray arrayWithObjects: thread, [NSNumber numberWithUnsignedInteger:databaseIndexSize], fileStream, [N2MutableUInteger mutableUIntegerWithUInteger:0], nil];
-	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port dataHandlerTarget:self selector:@selector(_handleData_fetchDatabaseIndex:context:) context:context];
+	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDatabaseIndex:context:) context:context];
 	
 	[fileStream close];
 	[thread exitOperation];
@@ -308,7 +308,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 	return path;
 }
 
--(NSInteger)_handleData_fetchDatabaseIndex:(NSData*)data context:(NSArray*)context {
+-(NSInteger)_connection:(N2Connection*)connection handleData_fetchDatabaseIndex:(NSData*)data context:(NSArray*)context {
 	NSThread* thread = [context objectAtIndex:0];
 	NSInteger databaseIndexSize = [[context objectAtIndex:1] unsignedIntegerValue];
 	NSOutputStream* fileStream = [context objectAtIndex:2];
@@ -583,14 +583,14 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	
 	NSMutableArray* context = [NSMutableArray arrayWithObjects: [N2MutableUInteger mutableUIntegerWithUInteger:0], nil];
 
-	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port dataHandlerTarget:self selector:@selector(_handleData_fetchDataForImage:context:) context:context];
+	[N2Connection sendSynchronousRequest:request toHost:self.host port:self.port dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDataForImage:context:) context:context];
 
 	if ([NSFileManager.defaultManager fileExistsAtPath:localPath])
 		return localPath;
 	return nil;
 }
 
--(NSInteger)_handleData_fetchDataForImage:(NSData*)data context:(NSMutableArray*)context {
+-(NSInteger)_connection:(N2Connection*)connection handleData_fetchDataForImage:(NSData*)data context:(NSMutableArray*)context {
 	N2MutableUInteger* state = [context objectAtIndex:0];
 	int readSize = 0;
 	

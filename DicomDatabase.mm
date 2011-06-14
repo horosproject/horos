@@ -1641,7 +1641,7 @@ enum { Compress, Decompress };
 			}
 			@catch (NSException* e)
 			{
-				N2LogExceptionWithStackTrace(e, @"Parser failed for file: %@", newFile);
+				N2LogExceptionWithStackTrace(e);
 			}
 		}
 		

@@ -31,6 +31,152 @@
 		592FD7FD13390188008BADC7 /* N2DirectoryEnumerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592FD7FB13390188008BADC7 /* N2DirectoryEnumerator.mm */; };
 		595B87EC1116DC870026B899 /* N2UserDefaultsTest.h in Headers */ = {isa = PBXBuildFile; fileRef = 595B87EA1116DC870026B899 /* N2UserDefaultsTest.h */; };
 		595B88261116E1550026B899 /* N2UserDefaultsTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 595B87EB1116DC870026B899 /* N2UserDefaultsTest.mm */; };
+		595CA68F13A11CE800A24CB2 /* N2StepView.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6330D10428715003F4069 /* N2StepView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69013A11CE800A24CB2 /* N2Step.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331110428715003F4069 /* N2Step.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69113A11CE800A24CB2 /* N2Steps.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331310428715003F4069 /* N2Steps.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69213A11CE800A24CB2 /* N2View.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331510428715003F4069 /* N2View.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69313A11CE800A24CB2 /* N2StepsView.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331810428715003F4069 /* N2StepsView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69413A11CE800A24CB2 /* N2Window.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331910428715003F4069 /* N2Window.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69513A11CE800A24CB2 /* N2Pair.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331C10428715003F4069 /* N2Pair.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69613A11CE800A24CB2 /* N2Operators.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331E10428715003F4069 /* N2Operators.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69713A11CE800A24CB2 /* N2SingletonObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332310428715003F4069 /* N2SingletonObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69813A11CE800A24CB2 /* N2Debug.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332410428715003F4069 /* N2Debug.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69913A11CE800A24CB2 /* N2DisclosureBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332710428715003F4069 /* N2DisclosureBox.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69A13A11CE800A24CB2 /* NSTextView+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332910428715003F4069 /* NSTextView+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69B13A11CE800A24CB2 /* NSString+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332B10428715003F4069 /* NSString+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69C13A11CE800A24CB2 /* NSData+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332D10428715003F4069 /* NSData+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69D13A11CE800A24CB2 /* NSButton+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332F10428715003F4069 /* NSButton+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69E13A11CE800A24CB2 /* NSBitmapImageRep+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6333110428715003F4069 /* NSBitmapImageRep+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA69F13A11CE800A24CB2 /* NS(Attributed)String+Geometrics.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6333310428715003F4069 /* NS(Attributed)String+Geometrics.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6A013A11CE800A24CB2 /* N2DisclosureButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6333410428715003F4069 /* N2DisclosureButtonCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6A113A11CE800A24CB2 /* Nitrogen.pch in Headers */ = {isa = PBXBuildFile; fileRef = 59A636A7104298C0003F4069 /* Nitrogen.pch */; settings = {ATTRIBUTES = (); }; };
+		595CA6A213A11CE800A24CB2 /* NSImage+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A63F3E1042DB51003F4069 /* NSImage+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6A313A11CE800A24CB2 /* N2Panel.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A641BA1042E108003F4069 /* N2Panel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6A413A11CE800A24CB2 /* N2ButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 598E50301043CB90005BCDC7 /* N2ButtonCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6A513A11CE800A24CB2 /* NSColor+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E6DD0F105E3DBD002C8245 /* NSColor+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6A613A11CE800A24CB2 /* NSDictionary+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59CF7A381068CDEA00A4444F /* NSDictionary+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6A713A11CE800A24CB2 /* N2Connection.h in Headers */ = {isa = PBXBuildFile; fileRef = 59CF837E1069301700A4444F /* N2Connection.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6A813A11CE800A24CB2 /* N2ConnectionListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 59CF83811069301700A4444F /* N2ConnectionListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6A913A11CE800A24CB2 /* N2XMLRPCConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 59CF83861069302D00A4444F /* N2XMLRPCConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6AA13A11CE800A24CB2 /* NSInvocation+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59CF838C1069306800A4444F /* NSInvocation+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6AB13A11CE800A24CB2 /* ISO8601DateFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 59CF83A91069309F00A4444F /* ISO8601DateFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6AC13A11CE800A24CB2 /* N2XMLRPC.h in Headers */ = {isa = PBXBuildFile; fileRef = 598D1D0F1070D63400EE85EA /* N2XMLRPC.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6AD13A11CE800A24CB2 /* NSURL+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E7A179108C9ACF007F82BA /* NSURL+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6AE13A11CE800A24CB2 /* NSPanel+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E7AA78108DDA4C007F82BA /* NSPanel+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6AF13A11CE800A24CB2 /* N2Shell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5915D5EE1099D8CC0024F610 /* N2Shell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6B013A11CE800A24CB2 /* N2Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D8755B10AABD1900AAA0FE /* N2Layout.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6B113A11CE800A24CB2 /* N2ColumnLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D8755F10AABE2200AAA0FE /* N2ColumnLayout.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6B213A11CE800A24CB2 /* NSView+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D8756410AAC39C00AAA0FE /* NSView+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6B313A11CE800A24CB2 /* N2Exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D8757910AAC94900AAA0FE /* N2Exceptions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6B413A11CE800A24CB2 /* N2CellDescriptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D875A610AAEE8000AAA0FE /* N2CellDescriptor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6B513A11CE800A24CB2 /* N2MinMax.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D875AA10AAEF2000AAA0FE /* N2MinMax.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6B613A11CE800A24CB2 /* N2Alignment.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D8775B10AC0F7C00AAA0FE /* N2Alignment.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6B713A11CE800A24CB2 /* N2Resizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D8899D10B1812500AAA0FE /* N2Resizer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6B813A11CE800A24CB2 /* NSMutableDictionary+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D892CA10B2E8D100AAA0FE /* NSMutableDictionary+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6B913A11CE800A24CB2 /* N2Button.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D89B8710B3FFAE00AAA0FE /* N2Button.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6BA13A11CE800A24CB2 /* NSImageView+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596F881210C6CCDC007D6C82 /* NSImageView+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		595CA6BB13A11CE800A24CB2 /* N2ColorWell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E924CC110F25CD0006FFFB /* N2ColorWell.h */; };
+		595CA6BC13A11CE800A24CB2 /* N2UserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E924D0110F277B0006FFFB /* N2UserDefaults.h */; };
+		595CA6BD13A11CE800A24CB2 /* N2PopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 5903BBA01111E15D00F4358B /* N2PopUpButton.h */; };
+		595CA6BE13A11CE800A24CB2 /* N2UserDefaultsTest.h in Headers */ = {isa = PBXBuildFile; fileRef = 595B87EA1116DC870026B899 /* N2UserDefaultsTest.h */; };
+		595CA6BF13A11CE800A24CB2 /* NSWindow+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3CA118ABA6E00880192 /* NSWindow+N2.h */; };
+		595CA6C013A11CE800A24CB2 /* N2AdaptiveBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997856111B6767B002DB107 /* N2AdaptiveBox.h */; };
+		595CA6C113A11CE800A24CB2 /* N2CustomTitledPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997856611B676DA002DB107 /* N2CustomTitledPopUpButtonCell.h */; };
+		595CA6C213A11CE800A24CB2 /* N2FlippedView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997856C11B676F8002DB107 /* N2FlippedView.h */; };
+		595CA6C313A11CE800A24CB2 /* N2HexadecimalNumberFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997857011B67701002DB107 /* N2HexadecimalNumberFormatter.h */; };
+		595CA6C413A11CE800A24CB2 /* N2HighlightImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997857411B6770C002DB107 /* N2HighlightImageButtonCell.h */; };
+		595CA6C513A11CE800A24CB2 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997857811B6771B002DB107 /* N2ImageView.h */; };
+		595CA6C613A11CE800A24CB2 /* NSFileManager+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997857C11B67788002DB107 /* NSFileManager+N2.h */; };
+		595CA6C713A11CE800A24CB2 /* NSUserDefaultsController+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997858C11B67851002DB107 /* NSUserDefaultsController+N2.h */; };
+		595CA6C813A11CE800A24CB2 /* NSXMLNode+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28DB11C6164000DAD5B4 /* NSXMLNode+N2.h */; };
+		595CA6C913A11CE800A24CB2 /* N2CSV.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28DF11C6164F00DAD5B4 /* N2CSV.h */; };
+		595CA6CA13A11CE800A24CB2 /* NSAppleEventDescriptor+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28E311C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h */; };
+		595CA6CB13A11CE800A24CB2 /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F4AF11F4822E0047A90D /* N2ImageButtonCell.h */; };
+		595CA6CC13A11CE800A24CB2 /* N2WebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD0A1212898800176E39 /* N2WebServiceClient.h */; };
+		595CA6CD13A11CE800A24CB2 /* N2RedundantWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD1712128D3300176E39 /* N2RedundantWebServiceClient.h */; };
+		595CA6CE13A11CE800A24CB2 /* N2SOAPWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD2512128DAE00176E39 /* N2SOAPWebServiceClient.h */; };
+		595CA6CF13A11CE800A24CB2 /* N2XMLRPCWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD2D12128E8700176E39 /* N2XMLRPCWebServiceClient.h */; };
+		595CA6D013A11CE800A24CB2 /* N2WSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD311212CA7D00176E39 /* N2WSDL.h */; };
+		595CA6D113A11CE800A24CB2 /* NSMutableString+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59ECEA7D12AE36A7003231BF /* NSMutableString+N2.h */; };
+		595CA6D213A11CE800A24CB2 /* N2Task.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E5234F12BF5DC30094E668 /* N2Task.h */; };
+		595CA6D313A11CE800A24CB2 /* N2DirectoryEnumerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 592FD7FA13390188008BADC7 /* N2DirectoryEnumerator.h */; };
+		595CA6D413A11CE800A24CB2 /* NSThread+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EE49051369AC7E0002A7F8 /* NSThread+N2.h */; };
+		595CA6D513A11CE800A24CB2 /* NSException+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EE490D1369ACB00002A7F8 /* NSException+N2.h */; };
+		595CA6D713A11CE800A24CB2 /* PopUpArrows.png in Resources */ = {isa = PBXBuildFile; fileRef = 5903BBA61111E3B800F4358B /* PopUpArrows.png */; };
+		595CA6DB13A11CE800A24CB2 /* N2StepView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6330C10428715003F4069 /* N2StepView.mm */; };
+		595CA6DC13A11CE800A24CB2 /* N2Window.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6330E10428715003F4069 /* N2Window.mm */; };
+		595CA6DD13A11CE800A24CB2 /* N2Steps.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6331010428715003F4069 /* N2Steps.mm */; };
+		595CA6DE13A11CE800A24CB2 /* N2StepsView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6331410428715003F4069 /* N2StepsView.mm */; };
+		595CA6DF13A11CE800A24CB2 /* N2Step.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6331710428715003F4069 /* N2Step.mm */; };
+		595CA6E013A11CE800A24CB2 /* N2View.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6331A10428715003F4069 /* N2View.mm */; };
+		595CA6E113A11CE800A24CB2 /* N2Pair.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6331B10428715003F4069 /* N2Pair.mm */; };
+		595CA6E213A11CE800A24CB2 /* N2Operators.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6331D10428715003F4069 /* N2Operators.mm */; };
+		595CA6E313A11CE800A24CB2 /* N2DisclosureButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332110428715003F4069 /* N2DisclosureButtonCell.mm */; };
+		595CA6E413A11CE800A24CB2 /* N2SingletonObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332210428715003F4069 /* N2SingletonObject.mm */; };
+		595CA6E513A11CE800A24CB2 /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332610428715003F4069 /* N2Debug.mm */; };
+		595CA6E613A11CE800A24CB2 /* NSTextView+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332810428715003F4069 /* NSTextView+N2.mm */; };
+		595CA6E713A11CE800A24CB2 /* NSString+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332A10428715003F4069 /* NSString+N2.mm */; };
+		595CA6E813A11CE800A24CB2 /* NSData+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332C10428715003F4069 /* NSData+N2.mm */; };
+		595CA6E913A11CE800A24CB2 /* NSButton+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332E10428715003F4069 /* NSButton+N2.mm */; };
+		595CA6EA13A11CE800A24CB2 /* NSBitmapImageRep+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6333010428715003F4069 /* NSBitmapImageRep+N2.mm */; };
+		595CA6EB13A11CE800A24CB2 /* NS(Attributed)String+Geometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = 59A6333210428715003F4069 /* NS(Attributed)String+Geometrics.m */; };
+		595CA6EC13A11CE800A24CB2 /* N2DisclosureBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6333510428715003F4069 /* N2DisclosureBox.mm */; };
+		595CA6ED13A11CE800A24CB2 /* NSImage+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A63F3F1042DB51003F4069 /* NSImage+N2.mm */; };
+		595CA6EE13A11CE800A24CB2 /* N2Panel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A641BB1042E108003F4069 /* N2Panel.mm */; };
+		595CA6EF13A11CE800A24CB2 /* N2ButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 598E50311043CB90005BCDC7 /* N2ButtonCell.mm */; };
+		595CA6F013A11CE800A24CB2 /* NSColor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E6DD10105E3DBD002C8245 /* NSColor+N2.mm */; };
+		595CA6F113A11CE800A24CB2 /* NSDictionary+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59CF7A391068CDEA00A4444F /* NSDictionary+N2.mm */; };
+		595CA6F213A11CE800A24CB2 /* N2Connection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59CF837F1069301700A4444F /* N2Connection.mm */; };
+		595CA6F313A11CE800A24CB2 /* N2ConnectionListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59CF83801069301700A4444F /* N2ConnectionListener.mm */; };
+		595CA6F413A11CE800A24CB2 /* N2XMLRPCConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59CF83871069302D00A4444F /* N2XMLRPCConnection.mm */; };
+		595CA6F513A11CE800A24CB2 /* NSInvocation+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59CF838B1069306800A4444F /* NSInvocation+N2.mm */; };
+		595CA6F613A11CE800A24CB2 /* ISO8601DateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 59CF83AA1069309F00A4444F /* ISO8601DateFormatter.m */; };
+		595CA6F713A11CE800A24CB2 /* N2XMLRPC.mm in Sources */ = {isa = PBXBuildFile; fileRef = 598D1D101070D63400EE85EA /* N2XMLRPC.mm */; };
+		595CA6F813A11CE800A24CB2 /* NSURL+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E7A17A108C9ACF007F82BA /* NSURL+N2.mm */; };
+		595CA6F913A11CE800A24CB2 /* NSPanel+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E7AA79108DDA4C007F82BA /* NSPanel+N2.mm */; };
+		595CA6FA13A11CE800A24CB2 /* N2Shell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5915D5EF1099D8CC0024F610 /* N2Shell.mm */; };
+		595CA6FB13A11CE800A24CB2 /* N2Layout.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D8755C10AABD1900AAA0FE /* N2Layout.mm */; };
+		595CA6FC13A11CE800A24CB2 /* N2ColumnLayout.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D8756010AABE2200AAA0FE /* N2ColumnLayout.mm */; };
+		595CA6FD13A11CE800A24CB2 /* NSView+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D8756510AAC39C00AAA0FE /* NSView+N2.mm */; };
+		595CA6FE13A11CE800A24CB2 /* N2Exceptions.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D8757A10AAC94900AAA0FE /* N2Exceptions.mm */; };
+		595CA6FF13A11CE800A24CB2 /* N2CellDescriptor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D875A710AAEE8000AAA0FE /* N2CellDescriptor.mm */; };
+		595CA70013A11CE800A24CB2 /* N2MinMax.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D875AB10AAEF2000AAA0FE /* N2MinMax.mm */; };
+		595CA70113A11CE800A24CB2 /* N2Alignment.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D8775C10AC0F7C00AAA0FE /* N2Alignment.mm */; };
+		595CA70213A11CE800A24CB2 /* N2Resizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D8899E10B1812500AAA0FE /* N2Resizer.mm */; };
+		595CA70313A11CE800A24CB2 /* NSMutableDictionary+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D892CB10B2E8D100AAA0FE /* NSMutableDictionary+N2.mm */; };
+		595CA70413A11CE800A24CB2 /* N2Button.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D89B8810B3FFAE00AAA0FE /* N2Button.mm */; };
+		595CA70513A11CE800A24CB2 /* NSImageView+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596F881310C6CCDC007D6C82 /* NSImageView+N2.mm */; };
+		595CA70613A11CE800A24CB2 /* N2ColorWell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E924CD110F25CD0006FFFB /* N2ColorWell.mm */; };
+		595CA70713A11CE800A24CB2 /* N2UserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E924D1110F277B0006FFFB /* N2UserDefaults.mm */; };
+		595CA70813A11CE800A24CB2 /* N2PopUpButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5903BBA11111E15D00F4358B /* N2PopUpButton.mm */; };
+		595CA70913A11CE800A24CB2 /* NSWindow+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3CB118ABA6E00880192 /* NSWindow+N2.mm */; };
+		595CA70A13A11CE800A24CB2 /* N2AdaptiveBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997856211B6767B002DB107 /* N2AdaptiveBox.mm */; };
+		595CA70B13A11CE800A24CB2 /* N2CustomTitledPopUpButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997856711B676DA002DB107 /* N2CustomTitledPopUpButtonCell.mm */; };
+		595CA70C13A11CE800A24CB2 /* N2FlippedView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997856D11B676F8002DB107 /* N2FlippedView.mm */; };
+		595CA70D13A11CE800A24CB2 /* N2HexadecimalNumberFormatter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997857111B67701002DB107 /* N2HexadecimalNumberFormatter.mm */; };
+		595CA70E13A11CE800A24CB2 /* N2HighlightImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997857511B6770C002DB107 /* N2HighlightImageButtonCell.mm */; };
+		595CA70F13A11CE800A24CB2 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997857911B6771B002DB107 /* N2ImageView.mm */; };
+		595CA71013A11CE800A24CB2 /* NSFileManager+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997857D11B67788002DB107 /* NSFileManager+N2.mm */; };
+		595CA71113A11CE800A24CB2 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997858D11B67851002DB107 /* NSUserDefaultsController+N2.mm */; };
+		595CA71213A11CE800A24CB2 /* NSXMLNode+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28DC11C6164000DAD5B4 /* NSXMLNode+N2.mm */; };
+		595CA71313A11CE800A24CB2 /* N2CSV.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E011C6164F00DAD5B4 /* N2CSV.mm */; };
+		595CA71413A11CE800A24CB2 /* NSAppleEventDescriptor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E411C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm */; };
+		595CA71513A11CE800A24CB2 /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F4B011F4822E0047A90D /* N2ImageButtonCell.mm */; };
+		595CA71613A11CE800A24CB2 /* N2WebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD0B1212898800176E39 /* N2WebServiceClient.mm */; };
+		595CA71713A11CE800A24CB2 /* N2RedundantWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD1812128D3300176E39 /* N2RedundantWebServiceClient.mm */; };
+		595CA71813A11CE800A24CB2 /* N2SOAPWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD2612128DAE00176E39 /* N2SOAPWebServiceClient.mm */; };
+		595CA71913A11CE800A24CB2 /* N2XMLRPCWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD2E12128E8700176E39 /* N2XMLRPCWebServiceClient.mm */; };
+		595CA71A13A11CE800A24CB2 /* N2WSDL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD321212CA7D00176E39 /* N2WSDL.mm */; };
+		595CA71B13A11CE800A24CB2 /* NSMutableString+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59ECEA7E12AE36A7003231BF /* NSMutableString+N2.mm */; };
+		595CA71C13A11CE800A24CB2 /* N2Task.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E5235012BF5DC30094E668 /* N2Task.mm */; };
+		595CA71D13A11CE800A24CB2 /* N2DirectoryEnumerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592FD7FB13390188008BADC7 /* N2DirectoryEnumerator.mm */; };
+		595CA71E13A11CE800A24CB2 /* NSThread+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EE49061369AC7E0002A7F8 /* NSThread+N2.mm */; };
+		595CA71F13A11CE800A24CB2 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EE490E1369ACB00002A7F8 /* NSException+N2.mm */; };
+		595CA72113A11CE800A24CB2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		595CA72213A11CE800A24CB2 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59A63F481042DC22003F4069 /* Accelerate.framework */; };
+		595CA72313A11CE800A24CB2 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D6A5FE840307C02AAC07 /* AppKit.framework */; };
+		595CA72413A11CE800A24CB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
+		595CA72513A11CE800A24CB2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59F5F88C11F5D9A10047A90D /* QuartzCore.framework */; };
 		596EB3CC118ABA6E00880192 /* NSWindow+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3CA118ABA6E00880192 /* NSWindow+N2.h */; };
 		596EB3CD118ABA6E00880192 /* NSWindow+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3CB118ABA6E00880192 /* NSWindow+N2.mm */; };
 		596F881410C6CCDC007D6C82 /* NSImageView+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596F881210C6CCDC007D6C82 /* NSImageView+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -197,6 +343,8 @@
 		592FD7FB13390188008BADC7 /* N2DirectoryEnumerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2DirectoryEnumerator.mm; sourceTree = "<group>"; };
 		595B87EA1116DC870026B899 /* N2UserDefaultsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2UserDefaultsTest.h; path = "Unit Tests/N2UserDefaultsTest.h"; sourceTree = SOURCE_ROOT; };
 		595B87EB1116DC870026B899 /* N2UserDefaultsTest.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2UserDefaultsTest.mm; path = "Unit Tests/N2UserDefaultsTest.mm"; sourceTree = SOURCE_ROOT; };
+		595CA72813A11CE800A24CB2 /* Nitrogen.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Nitrogen.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		595CA72913A11CE800A24CB2 /* Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info copy.plist"; path = "Resources/Info copy.plist"; sourceTree = "<group>"; };
 		596EB3CA118ABA6E00880192 /* NSWindow+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWindow+N2.h"; sourceTree = "<group>"; };
 		596EB3CB118ABA6E00880192 /* NSWindow+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSWindow+N2.mm"; sourceTree = "<group>"; };
 		596F881210C6CCDC007D6C82 /* NSImageView+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImageView+N2.h"; sourceTree = "<group>"; };
@@ -343,6 +491,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		595CA72013A11CE800A24CB2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				595CA72113A11CE800A24CB2 /* Cocoa.framework in Frameworks */,
+				595CA72213A11CE800A24CB2 /* Accelerate.framework in Frameworks */,
+				595CA72313A11CE800A24CB2 /* AppKit.framework in Frameworks */,
+				595CA72413A11CE800A24CB2 /* Foundation.framework in Frameworks */,
+				595CA72513A11CE800A24CB2 /* QuartzCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8DC2EF560486A6940098B216 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -363,6 +523,7 @@
 			children = (
 				8DC2EF5B0486A6940098B216 /* Nitrogen.framework */,
 				591403A21105B88A00D6A504 /* Unit Tests.octest */,
+				595CA72813A11CE800A24CB2 /* Nitrogen.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -394,6 +555,7 @@
 			children = (
 				5903BBA61111E3B800F4358B /* PopUpArrows.png */,
 				591403CE1105BDCF00D6A504 /* Info.plist */,
+				595CA72913A11CE800A24CB2 /* Info copy.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -701,6 +863,84 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		595CA68E13A11CE800A24CB2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				595CA68F13A11CE800A24CB2 /* N2StepView.h in Headers */,
+				595CA69013A11CE800A24CB2 /* N2Step.h in Headers */,
+				595CA69113A11CE800A24CB2 /* N2Steps.h in Headers */,
+				595CA69213A11CE800A24CB2 /* N2View.h in Headers */,
+				595CA69313A11CE800A24CB2 /* N2StepsView.h in Headers */,
+				595CA69413A11CE800A24CB2 /* N2Window.h in Headers */,
+				595CA69513A11CE800A24CB2 /* N2Pair.h in Headers */,
+				595CA69613A11CE800A24CB2 /* N2Operators.h in Headers */,
+				595CA69713A11CE800A24CB2 /* N2SingletonObject.h in Headers */,
+				595CA69813A11CE800A24CB2 /* N2Debug.h in Headers */,
+				595CA69913A11CE800A24CB2 /* N2DisclosureBox.h in Headers */,
+				595CA69A13A11CE800A24CB2 /* NSTextView+N2.h in Headers */,
+				595CA69B13A11CE800A24CB2 /* NSString+N2.h in Headers */,
+				595CA69C13A11CE800A24CB2 /* NSData+N2.h in Headers */,
+				595CA69D13A11CE800A24CB2 /* NSButton+N2.h in Headers */,
+				595CA69E13A11CE800A24CB2 /* NSBitmapImageRep+N2.h in Headers */,
+				595CA69F13A11CE800A24CB2 /* NS(Attributed)String+Geometrics.h in Headers */,
+				595CA6A013A11CE800A24CB2 /* N2DisclosureButtonCell.h in Headers */,
+				595CA6A113A11CE800A24CB2 /* Nitrogen.pch in Headers */,
+				595CA6A213A11CE800A24CB2 /* NSImage+N2.h in Headers */,
+				595CA6A313A11CE800A24CB2 /* N2Panel.h in Headers */,
+				595CA6A413A11CE800A24CB2 /* N2ButtonCell.h in Headers */,
+				595CA6A513A11CE800A24CB2 /* NSColor+N2.h in Headers */,
+				595CA6A613A11CE800A24CB2 /* NSDictionary+N2.h in Headers */,
+				595CA6A713A11CE800A24CB2 /* N2Connection.h in Headers */,
+				595CA6A813A11CE800A24CB2 /* N2ConnectionListener.h in Headers */,
+				595CA6A913A11CE800A24CB2 /* N2XMLRPCConnection.h in Headers */,
+				595CA6AA13A11CE800A24CB2 /* NSInvocation+N2.h in Headers */,
+				595CA6AB13A11CE800A24CB2 /* ISO8601DateFormatter.h in Headers */,
+				595CA6AC13A11CE800A24CB2 /* N2XMLRPC.h in Headers */,
+				595CA6AD13A11CE800A24CB2 /* NSURL+N2.h in Headers */,
+				595CA6AE13A11CE800A24CB2 /* NSPanel+N2.h in Headers */,
+				595CA6AF13A11CE800A24CB2 /* N2Shell.h in Headers */,
+				595CA6B013A11CE800A24CB2 /* N2Layout.h in Headers */,
+				595CA6B113A11CE800A24CB2 /* N2ColumnLayout.h in Headers */,
+				595CA6B213A11CE800A24CB2 /* NSView+N2.h in Headers */,
+				595CA6B313A11CE800A24CB2 /* N2Exceptions.h in Headers */,
+				595CA6B413A11CE800A24CB2 /* N2CellDescriptor.h in Headers */,
+				595CA6B513A11CE800A24CB2 /* N2MinMax.h in Headers */,
+				595CA6B613A11CE800A24CB2 /* N2Alignment.h in Headers */,
+				595CA6B713A11CE800A24CB2 /* N2Resizer.h in Headers */,
+				595CA6B813A11CE800A24CB2 /* NSMutableDictionary+N2.h in Headers */,
+				595CA6B913A11CE800A24CB2 /* N2Button.h in Headers */,
+				595CA6BA13A11CE800A24CB2 /* NSImageView+N2.h in Headers */,
+				595CA6BB13A11CE800A24CB2 /* N2ColorWell.h in Headers */,
+				595CA6BC13A11CE800A24CB2 /* N2UserDefaults.h in Headers */,
+				595CA6BD13A11CE800A24CB2 /* N2PopUpButton.h in Headers */,
+				595CA6BE13A11CE800A24CB2 /* N2UserDefaultsTest.h in Headers */,
+				595CA6BF13A11CE800A24CB2 /* NSWindow+N2.h in Headers */,
+				595CA6C013A11CE800A24CB2 /* N2AdaptiveBox.h in Headers */,
+				595CA6C113A11CE800A24CB2 /* N2CustomTitledPopUpButtonCell.h in Headers */,
+				595CA6C213A11CE800A24CB2 /* N2FlippedView.h in Headers */,
+				595CA6C313A11CE800A24CB2 /* N2HexadecimalNumberFormatter.h in Headers */,
+				595CA6C413A11CE800A24CB2 /* N2HighlightImageButtonCell.h in Headers */,
+				595CA6C513A11CE800A24CB2 /* N2ImageView.h in Headers */,
+				595CA6C613A11CE800A24CB2 /* NSFileManager+N2.h in Headers */,
+				595CA6C713A11CE800A24CB2 /* NSUserDefaultsController+N2.h in Headers */,
+				595CA6C813A11CE800A24CB2 /* NSXMLNode+N2.h in Headers */,
+				595CA6C913A11CE800A24CB2 /* N2CSV.h in Headers */,
+				595CA6CA13A11CE800A24CB2 /* NSAppleEventDescriptor+N2.h in Headers */,
+				595CA6CB13A11CE800A24CB2 /* N2ImageButtonCell.h in Headers */,
+				595CA6CC13A11CE800A24CB2 /* N2WebServiceClient.h in Headers */,
+				595CA6CD13A11CE800A24CB2 /* N2RedundantWebServiceClient.h in Headers */,
+				595CA6CE13A11CE800A24CB2 /* N2SOAPWebServiceClient.h in Headers */,
+				595CA6CF13A11CE800A24CB2 /* N2XMLRPCWebServiceClient.h in Headers */,
+				595CA6D013A11CE800A24CB2 /* N2WSDL.h in Headers */,
+				595CA6D113A11CE800A24CB2 /* NSMutableString+N2.h in Headers */,
+				595CA6D213A11CE800A24CB2 /* N2Task.h in Headers */,
+				595CA6D313A11CE800A24CB2 /* N2DirectoryEnumerator.h in Headers */,
+				595CA6D413A11CE800A24CB2 /* NSThread+N2.h in Headers */,
+				595CA6D513A11CE800A24CB2 /* NSException+N2.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8DC2EF500486A6940098B216 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -801,6 +1041,27 @@
 			productReference = 591403A21105B88A00D6A504 /* Unit Tests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
+		595CA68D13A11CE800A24CB2 /* Nitrogen GC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 595CA72613A11CE800A24CB2 /* Build configuration list for PBXNativeTarget "Nitrogen GC" */;
+			buildPhases = (
+				595CA68E13A11CE800A24CB2 /* Headers */,
+				595CA6D613A11CE800A24CB2 /* Resources */,
+				595CA6D813A11CE800A24CB2 /* Change Info.plist Version */,
+				595CA6D913A11CE800A24CB2 /* Copy Headers and Create Nitrogen.h */,
+				595CA6DA13A11CE800A24CB2 /* Sources */,
+				595CA72013A11CE800A24CB2 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Nitrogen GC";
+			productInstallPath = "$(HOME)/Library/Frameworks";
+			productName = Nitrogen;
+			productReference = 595CA72813A11CE800A24CB2 /* Nitrogen.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		8DC2EF4F0486A6940098B216 /* Nitrogen */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB91AD08733DA50010E9CD /* Build configuration list for PBXNativeTarget "Nitrogen" */;
@@ -844,6 +1105,7 @@
 			targets = (
 				8DC2EF4F0486A6940098B216 /* Nitrogen */,
 				591403A11105B88A00D6A504 /* Unit Tests */,
+				595CA68D13A11CE800A24CB2 /* Nitrogen GC */,
 			);
 		};
 /* End PBXProject section */
@@ -853,6 +1115,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		595CA6D613A11CE800A24CB2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				595CA6D713A11CE800A24CB2 /* PopUpArrows.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -879,6 +1149,34 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		595CA6D813A11CE800A24CB2 /* Change Info.plist Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Change Info.plist Version";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "cd \"${PROJECT_DIR}\"\nSVNVERSION=`/usr/bin/svnversion -n | /usr/bin/sed -e 's/^[^:]*://;s/[A-Za-z]/+/'`\nif [ -n \"${DEBUG:+x}\" ]; then\n\tSVNVERSION=\"${SVNVERSION}d\"\nfi\n\nPLISTPATH=\"${PROJECT_DIR}/Resources/Info.plist\"\nINFOVERSION=`/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' \"$PLISTPATH\"`\n\nVERSION=\"$INFOVERSION b$SVNVERSION\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $VERSION\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nINFOVERSIONSTR=`/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' \"$PLISTPATH\"`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString ${INFOVERSIONSTR/__VERSION__/$VERSION}\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nexit 0";
+		};
+		595CA6D913A11CE800A24CB2 /* Copy Headers and Create Nitrogen.h */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Headers and Create Nitrogen.h";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /usr/bin/perl;
+			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $root = \"$ENV{PROJECT_DIR}/Sources\";\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Nitrogen_h, \">\", \"$destination/Nitrogen.h\" or die $!;\n\nprint Nitrogen_h \"#ifndef __Nitrogen\\n#define __Nitrogen\\n\\n\";\n\nopendir(DIR, $root);\nmy @files = readdir(DIR);\nforeach (@files) {\n\tmy $filename = $_;\n\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\tcopy(\"$root/$filename\", \"$destination/\".(basename $filename)) or die \"Copy failed: $!\";\n\tprint Nitrogen_h \"#include <Nitrogen/$filename>\\n\";\n}\n\nprint Nitrogen_h \"\\n#endif\\n\";\nclose Nitrogen_h;\n\nexit 0;";
 		};
 		597C97A71109B75D00794DF3 /* Change Info.plist Version */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -918,6 +1216,82 @@
 				597C87C61108A0E100794DF3 /* DebugTest.mm in Sources */,
 				597C87C91108A0FF00794DF3 /* NSTextViewOptimalSizeTest.mm in Sources */,
 				595B88261116E1550026B899 /* N2UserDefaultsTest.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		595CA6DA13A11CE800A24CB2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				595CA6DB13A11CE800A24CB2 /* N2StepView.mm in Sources */,
+				595CA6DC13A11CE800A24CB2 /* N2Window.mm in Sources */,
+				595CA6DD13A11CE800A24CB2 /* N2Steps.mm in Sources */,
+				595CA6DE13A11CE800A24CB2 /* N2StepsView.mm in Sources */,
+				595CA6DF13A11CE800A24CB2 /* N2Step.mm in Sources */,
+				595CA6E013A11CE800A24CB2 /* N2View.mm in Sources */,
+				595CA6E113A11CE800A24CB2 /* N2Pair.mm in Sources */,
+				595CA6E213A11CE800A24CB2 /* N2Operators.mm in Sources */,
+				595CA6E313A11CE800A24CB2 /* N2DisclosureButtonCell.mm in Sources */,
+				595CA6E413A11CE800A24CB2 /* N2SingletonObject.mm in Sources */,
+				595CA6E513A11CE800A24CB2 /* N2Debug.mm in Sources */,
+				595CA6E613A11CE800A24CB2 /* NSTextView+N2.mm in Sources */,
+				595CA6E713A11CE800A24CB2 /* NSString+N2.mm in Sources */,
+				595CA6E813A11CE800A24CB2 /* NSData+N2.mm in Sources */,
+				595CA6E913A11CE800A24CB2 /* NSButton+N2.mm in Sources */,
+				595CA6EA13A11CE800A24CB2 /* NSBitmapImageRep+N2.mm in Sources */,
+				595CA6EB13A11CE800A24CB2 /* NS(Attributed)String+Geometrics.m in Sources */,
+				595CA6EC13A11CE800A24CB2 /* N2DisclosureBox.mm in Sources */,
+				595CA6ED13A11CE800A24CB2 /* NSImage+N2.mm in Sources */,
+				595CA6EE13A11CE800A24CB2 /* N2Panel.mm in Sources */,
+				595CA6EF13A11CE800A24CB2 /* N2ButtonCell.mm in Sources */,
+				595CA6F013A11CE800A24CB2 /* NSColor+N2.mm in Sources */,
+				595CA6F113A11CE800A24CB2 /* NSDictionary+N2.mm in Sources */,
+				595CA6F213A11CE800A24CB2 /* N2Connection.mm in Sources */,
+				595CA6F313A11CE800A24CB2 /* N2ConnectionListener.mm in Sources */,
+				595CA6F413A11CE800A24CB2 /* N2XMLRPCConnection.mm in Sources */,
+				595CA6F513A11CE800A24CB2 /* NSInvocation+N2.mm in Sources */,
+				595CA6F613A11CE800A24CB2 /* ISO8601DateFormatter.m in Sources */,
+				595CA6F713A11CE800A24CB2 /* N2XMLRPC.mm in Sources */,
+				595CA6F813A11CE800A24CB2 /* NSURL+N2.mm in Sources */,
+				595CA6F913A11CE800A24CB2 /* NSPanel+N2.mm in Sources */,
+				595CA6FA13A11CE800A24CB2 /* N2Shell.mm in Sources */,
+				595CA6FB13A11CE800A24CB2 /* N2Layout.mm in Sources */,
+				595CA6FC13A11CE800A24CB2 /* N2ColumnLayout.mm in Sources */,
+				595CA6FD13A11CE800A24CB2 /* NSView+N2.mm in Sources */,
+				595CA6FE13A11CE800A24CB2 /* N2Exceptions.mm in Sources */,
+				595CA6FF13A11CE800A24CB2 /* N2CellDescriptor.mm in Sources */,
+				595CA70013A11CE800A24CB2 /* N2MinMax.mm in Sources */,
+				595CA70113A11CE800A24CB2 /* N2Alignment.mm in Sources */,
+				595CA70213A11CE800A24CB2 /* N2Resizer.mm in Sources */,
+				595CA70313A11CE800A24CB2 /* NSMutableDictionary+N2.mm in Sources */,
+				595CA70413A11CE800A24CB2 /* N2Button.mm in Sources */,
+				595CA70513A11CE800A24CB2 /* NSImageView+N2.mm in Sources */,
+				595CA70613A11CE800A24CB2 /* N2ColorWell.mm in Sources */,
+				595CA70713A11CE800A24CB2 /* N2UserDefaults.mm in Sources */,
+				595CA70813A11CE800A24CB2 /* N2PopUpButton.mm in Sources */,
+				595CA70913A11CE800A24CB2 /* NSWindow+N2.mm in Sources */,
+				595CA70A13A11CE800A24CB2 /* N2AdaptiveBox.mm in Sources */,
+				595CA70B13A11CE800A24CB2 /* N2CustomTitledPopUpButtonCell.mm in Sources */,
+				595CA70C13A11CE800A24CB2 /* N2FlippedView.mm in Sources */,
+				595CA70D13A11CE800A24CB2 /* N2HexadecimalNumberFormatter.mm in Sources */,
+				595CA70E13A11CE800A24CB2 /* N2HighlightImageButtonCell.mm in Sources */,
+				595CA70F13A11CE800A24CB2 /* N2ImageView.mm in Sources */,
+				595CA71013A11CE800A24CB2 /* NSFileManager+N2.mm in Sources */,
+				595CA71113A11CE800A24CB2 /* NSUserDefaultsController+N2.mm in Sources */,
+				595CA71213A11CE800A24CB2 /* NSXMLNode+N2.mm in Sources */,
+				595CA71313A11CE800A24CB2 /* N2CSV.mm in Sources */,
+				595CA71413A11CE800A24CB2 /* NSAppleEventDescriptor+N2.mm in Sources */,
+				595CA71513A11CE800A24CB2 /* N2ImageButtonCell.mm in Sources */,
+				595CA71613A11CE800A24CB2 /* N2WebServiceClient.mm in Sources */,
+				595CA71713A11CE800A24CB2 /* N2RedundantWebServiceClient.mm in Sources */,
+				595CA71813A11CE800A24CB2 /* N2SOAPWebServiceClient.mm in Sources */,
+				595CA71913A11CE800A24CB2 /* N2XMLRPCWebServiceClient.mm in Sources */,
+				595CA71A13A11CE800A24CB2 /* N2WSDL.mm in Sources */,
+				595CA71B13A11CE800A24CB2 /* NSMutableString+N2.mm in Sources */,
+				595CA71C13A11CE800A24CB2 /* N2Task.mm in Sources */,
+				595CA71D13A11CE800A24CB2 /* N2DirectoryEnumerator.mm in Sources */,
+				595CA71E13A11CE800A24CB2 /* NSThread+N2.mm in Sources */,
+				595CA71F13A11CE800A24CB2 /* NSException+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1012,7 +1386,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1025,7 +1403,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Sources/Nitrogen.pch;
 				INFOPLIST_FILE = Resources/Info.plist;
-				INSTALL_PATH = "@executable_path/../Frameworks";
+				INSTALL_PATH = "@loader_path/../Frameworks";
 				MACH_O_TYPE = mh_dylib;
 				PRODUCT_NAME = Nitrogen;
 				WRAPPER_EXTENSION = framework;
@@ -1086,6 +1464,35 @@
 			};
 			name = Development;
 		};
+		595CA72713A11CE800A24CB2 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = B;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Sources/Nitrogen.pch;
+				INFOPLIST_FILE = "Resources/Info copy.plist";
+				INSTALL_PATH = "@loader_path/../Frameworks";
+				MACH_O_TYPE = mh_dylib;
+				PRODUCT_NAME = Nitrogen;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Development;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1109,6 +1516,14 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				591403A41105B88A00D6A504 /* Development */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Development;
+		};
+		595CA72613A11CE800A24CB2 /* Build configuration list for PBXNativeTarget "Nitrogen GC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				595CA72713A11CE800A24CB2 /* Development */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;

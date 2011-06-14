@@ -60,7 +60,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 
 +(void)sendSynchronousRequest:(NSData*)request toHost:(NSHost*)host port:(NSInteger)port dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context {
 	NSConditionLock* conditionLock = [[NSConditionLock alloc] initWithCondition:0]; 
-	NSMutableArray* io = [NSMutableArray arrayWithObjects: conditionLock, [NSThread currentThread], request, host, [NSNumber numberWithInteger:port], target, [NSValue valueWithPointer:selector], [NSValue valueWithPointer:context], nil];
+	NSMutableArray* io = [NSMutableArray arrayWithObjects: conditionLock, [NSThread currentThread], request? request : [NSData data], host, [NSNumber numberWithInteger:port], target, [NSValue valueWithPointer:selector], [NSValue valueWithPointer:context], nil];
 	
 	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(sendSynchronousRequestThread:) object:io];
 	[thread start];
@@ -99,7 +99,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 		}
 		
 		c.maximumReadSizePerEvent = 1024*32;
-		[c writeData:request];
+		if (request.length) [c writeData:request];
 		
 		while (c.status != N2ConnectionStatusClosed && !motherThread.isCancelled) {
 			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
@@ -185,7 +185,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 	if (status == _status)
 		return;
 	
-	NSString* N2ConnectionStatusName[] = {@"N2ConnectionStatusClosed", @"N2ConnectionStatusConnecting", @"N2ConnectionStatusOpening", @"N2ConnectionStatusOk"};
+	//NSString* N2ConnectionStatusName[] = {@"N2ConnectionStatusClosed", @"N2ConnectionStatusConnecting", @"N2ConnectionStatusOpening", @"N2ConnectionStatusOk"};
 	// DLog(@"%@ setting status: %@", self, N2ConnectionStatusName[status]);
 	
 	_status = status;
@@ -338,16 +338,17 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 
 -(id)initWithAddress:(NSString*)address port:(NSInteger)port dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context {
 	if ((self = [super initWithAddress:address port:port])) {
-		_invocation = [[NSInvocation invocationWithMethodSignature:[N2ConnectionWithDelegateHandler instanceMethodSignatureForSelector:@selector(dummyDataHandler:context:)]] retain];
+		_invocation = [[NSInvocation invocationWithMethodSignature:[[self class] instanceMethodSignatureForSelector:@selector(_dummyMethod:handleData:context:)]] retain];
 		[_invocation setSelector:selector];
 		[_invocation setTarget:target];
-		[_invocation setArgument:&context atIndex:3];
+		[_invocation setArgument:&self atIndex:2];
+		[_invocation setArgument:&context atIndex:4];
 	}
 	
 	return self;
 }
 
--(NSInteger)dummyDataHandler:(NSData*)data context:(void*)context {
+-(NSInteger)_dummyMethod:(N2Connection*)connection handleData:(NSData*)data context:(void*)context {
 	return 0;
 }
 
@@ -357,7 +358,7 @@ const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDi
 }
 
 -(void)handleData:(NSMutableData*)data {
-	[_invocation setArgument:&data atIndex:2];
+	[_invocation setArgument:&data atIndex:3];
 	[_invocation invoke];
 	NSInteger handledDataSize;
 	[_invocation getReturnValue:&handledDataSize];
