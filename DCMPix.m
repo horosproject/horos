@@ -1180,7 +1180,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation, subtractedfImage;
 @synthesize frameNo, notAbleToLoadImage, shutterPolygonal, SOPClassUID, frameofReferenceUID;
 @synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV, slope, offset;
-@synthesize isRGB, pwidth = width, pheight = height;
+@synthesize isRGB, pwidth = width, pheight = height, checking;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
 
 @synthesize DCMPixShutterRectWidth = shutterRect_w;
@@ -2968,14 +2968,20 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) freefImageWhenDone:(BOOL) b
 {
+	[checking lock];
+	
 	if( b)
 		fExternalOwnedImage = nil;
 	else
 		fExternalOwnedImage = fImage;
+	
+	[checking unlock];
 }
 
 -(void) setfImage:(float*) ptr
 {
+	[checking lock];
+	
 	if( fExternalOwnedImage == nil)
 	{
 		if( fImage != nil)
@@ -2991,6 +2997,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	if( fExternalOwnedImage)
 		fExternalOwnedImage = fImage;
+	
+	[checking unlock];
 }
 
 - (BOOL) isLoaded

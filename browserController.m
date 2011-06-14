@@ -9369,23 +9369,27 @@ static BOOL withReset = NO;
 				{
 					DCMPix *dcmPix = [vPixList objectAtIndex: i];
 					
+					[dcmPix.checking lock];
+					
 					[dcmPix CheckLoad];
 					
 					if( [dcmPix isLoaded])
 					{
-						dcmPix = [[vPixList objectAtIndex: i] copy];
+						DCMPix *dcmPixCopy = [[vPixList objectAtIndex: i] copy];
+						
 						float *fImage = (float*) malloc( dcmPix.pheight*dcmPix.pwidth*sizeof( float));
 						if( fImage)
 						{
 							memcpy( fImage, dcmPix.fImage, dcmPix.pheight*dcmPix.pwidth*sizeof( float));
-							[dcmPix setfImage: fImage];
-							[dcmPix freefImageWhenDone: YES];
+							[dcmPixCopy setfImage: fImage];
+							[dcmPixCopy freefImageWhenDone: YES];
 						
-							returnPix = [dcmPix autorelease];
+							returnPix = [dcmPixCopy autorelease];
 						}
 						else
-							[dcmPix release];
+							[dcmPixCopy release];
 					}
+					[dcmPix.checking unlock];
 				}
 			}
 			@catch (NSException * e) 

@@ -190,7 +190,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 @property long frameNo;
 @property(setter=setID:) long ID;
-
+@property (readonly) NSRecursiveLock *checking;
 @property float minValueOfSeries, maxValueOfSeries, factorPET2SUV;
 
 // Dimensions in pixels
