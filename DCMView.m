@@ -3119,7 +3119,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				for( long i = 0; i < [curRoiList count]; i++)
 				{
-					[[curRoiList objectAtIndex:i] mouseRoiUp: tempPt];
+					[[curRoiList objectAtIndex:i] mouseRoiUp: tempPt scaleValue: (float) scaleValue];
 					
 					if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 					{
@@ -4124,6 +4124,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					BOOL roiFound = NO;
 					
 					if (!(([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSShiftKeyMask)))
+					{
 						for( i = 0; i < [curRoiList count] && !roiFound; i++)
 						{
 							if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
@@ -4132,6 +4133,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								roiFound = YES;
 							}
 						}
+					}
 					
 			//		if (roiFound)
 			//			if (curROI == [curRoiList objectAtIndex: selected])
@@ -4180,16 +4182,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							
 							// Bring the selected ROI to the first position in array
 							ROI *roi = [curRoiList objectAtIndex: selected];
+							
+							int previousMode = roi.ROImode;
+							
 							[[self windowController] bringToFrontROI: roi];
 							
-							selected = [curRoiList indexOfObject: roi];//0;
+							selected = [curRoiList indexOfObject: roi];
 							
-							long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES];
-							if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO];
+							long roiVal = [roi clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES];
+							if( roiVal == ROI_sleep)
+								roiVal = [roi clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO];
 							
 							if( [self is2DViewer])
-								[[self windowController] setMode:roiVal toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]]; // change the mode to the whole group before the selected ROI!
-							[[curRoiList objectAtIndex: selected] setROIMode: roiVal];
+								[[self windowController] setMode:roiVal toROIGroupWithID:[roi groupID]]; // change the mode to the whole group before the selected ROI!
+							
+							[roi setROIMode: roiVal];
 												
 							NSArray *winList = [[NSApplication sharedApplication] windows];
 							BOOL	found = NO;
@@ -4202,7 +4209,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 									{
 										found = YES;
 										
-										[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[self windowController]];
+										[[[winList objectAtIndex:i] windowController] setROI: roi :[self windowController]];
 										if( clickCount > 1)
 											[[winList objectAtIndex:i] makeKeyAndOrderFront: self];
 									}
@@ -4212,7 +4219,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								{
 									if( found == NO)
 									{
-										ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: [curRoiList objectAtIndex: selected] :[self windowController]];
+										ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: roi :[self windowController]];
 										[roiWin showWindow:self];
 									}
 								}

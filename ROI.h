@@ -71,7 +71,7 @@ enum
 	BOOL			_hasIsSpline, _isSpline;
 	
 	long			type;
-	long			mode;
+	long			mode, previousMode;
 	BOOL			needQuartz;
 	
 	float			thickness;
@@ -170,6 +170,7 @@ enum
 - (void) setColor:(RGBColor) a globally: (BOOL) g;
 - (void) setThickness:(float) a globally: (BOOL) g;
 - (void) setOpacity:(float)newOpacity globally: (BOOL) g;
+- (void) addPointUnderMouse: (NSPoint) pt scale:(float) scale;
 
 /** Set default ROI name (if not set, then default name is the currentTool) */
 + (void) setDefaultName:(NSString*) n;
@@ -290,6 +291,7 @@ enum
 
 /** Modify roi on mouse up */
 - (BOOL) mouseRoiUp:(NSPoint) pt;
+- (BOOL) mouseRoiUp:(NSPoint) pt scaleValue: (float) scaleValue;
 
 /** Returns YES if roi is valid */
 - (BOOL) valid;
@@ -401,8 +403,9 @@ enum
 @property BOOL displayTextualData;
 @property(readonly) NSPoint clickPoint;
 
--(NSMutableArray*)splinePoints;
--(NSMutableArray*)splinePoints:(float) scale;
--(NSMutableArray*)splineZPositions;
+-(NSMutableArray*) splinePoints;
+-(NSMutableArray*) splinePoints:(float) scale;
+-(NSMutableArray*) splinePoints:(float) scale correspondingSegmentArray: (NSMutableArray**) correspondingSegmentArray;
+-(NSMutableArray*) splineZPositions;
 
 @end

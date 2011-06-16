@@ -41,7 +41,7 @@ static BOOL ROIDefaultsLoaded = NO;
 static BOOL splineForROI = NO;
 static BOOL displayCobbAngle = NO;
 
-int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
+int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt, double scale)
 {
 	NSPoint p1, p2;
 	long long  i, j;
@@ -222,7 +222,44 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	}
 
 	*newPt = calloc(totNewPt, sizeof(NSPoint));
-
+	if( newPt == nil)
+	{
+		if( !a) 		free(a);
+		if( !c) 		free(c);
+		if( !cx)		free(cx);
+		if( !cy)		free(cy);
+		if( !d) 		free(d);
+		if( !g) 		free(g);
+		if( !gam)		free(gam);
+		if( !h) 		free(h);
+		if( !px)		free(px);
+		if( !py)		free(py);
+		
+		return 0;
+	}
+	
+	if( correspondingSegmentPt)
+	{
+		*correspondingSegmentPt = calloc(totNewPt, sizeof(long));
+		if( *correspondingSegmentPt == nil)
+		{
+			free( newPt);
+			
+			if( !a) 		free(a);
+			if( !c) 		free(c);
+			if( !cx)		free(cx);
+			if( !cy)		free(cy);
+			if( !d) 		free(d);
+			if( !g) 		free(g);
+			if( !gam)		free(gam);
+			if( !h) 		free(h);
+			if( !px)		free(px);
+			if( !py)		free(py);
+			
+			return 0;
+		}
+	}
+		
 	int tt = 0;
 	// for each interval
 	for (i=1; i<nb-2; i++)
@@ -244,6 +281,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		p1.y = aay;
 
 		(*newPt)[tt]=p1;
+		if( correspondingSegmentPt)
+			(*correspondingSegmentPt)[tt]=i-1;
 		tt++;
 		
 		for (j = 1; j <= h[i]; j++)
@@ -251,6 +290,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			p2.x = (aax + bbx * (double)j + ccx * (double)(j * j) + ddx * (double)(j * j * j));
 			p2.y = (aay + bby * (double)j + ccy * (double)(j * j) + ddy * (double)(j * j * j));
 			(*newPt)[tt]=p2;
+			if( correspondingSegmentPt)
+				(*correspondingSegmentPt)[tt]=i-1;
 			tt++;
 		}//endfor points in 1 interval
 	}//endfor each interval
@@ -1816,6 +1857,50 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	offsetTextBox_y += o.y;
 }
 
+- (void) addPointUnderMouse: (NSPoint) pt scale:(float) scale
+{
+	switch( type)
+	{
+		case tOPolygon:
+		case tCPolygon:
+		case tPencil:
+		{
+			BOOL nearPoint = NO;
+			
+			// Is it near from existing points?
+			for( MyPoint *p in points)
+			{
+				if( [p isNearToPoint: pt :scale :[[curView curDCM] pixelRatio]])
+					nearPoint = YES;
+			}
+			
+			if( nearPoint == NO)
+			{
+				float distance;
+				NSMutableArray *correspondingSegments = nil;
+				NSMutableArray *splinePoints = [self splinePoints: scale correspondingSegmentArray: &correspondingSegments];
+				
+				if( [splinePoints count] > 0)
+				{
+					int i;
+					for( i = 0; i < ([splinePoints count] - 1); i++ )
+					{					
+						[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:(i+1)] point] :&distance];
+						
+						if( distance*scale < 5.0)
+						{
+							// Add a point here, if distant from existing points.
+							[points insertObject: [MyPoint point: pt] atIndex: [[correspondingSegments objectAtIndex: i] intValue] +1];
+							break;
+						}
+					}
+				}
+			}
+		}
+		break;
+	}
+}
+
 - (long) clickInROI:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale :(BOOL) testDrawRect
 {
 	NSRect		arect;
@@ -1825,11 +1910,10 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		return ROI_sleep;
 	
 	if( mode == ROI_drawing)
-	{
 		return ROI_sleep;
-	}
 	
 	clickInTextBox = NO;
+	previousMode = mode;
 	
 	if( testDrawRect)
 	{
@@ -2225,7 +2309,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (BOOL)mouseRoiDownIn:(NSPoint)pt :(int)slice :(float)scale
 {
-	MyPoint				*mypt;
+	MyPoint	*mypt;
 	
 	if( selectable == NO)
 	{
@@ -2622,6 +2706,11 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (BOOL) mouseRoiUp:(NSPoint) pt
 {
+	return [self mouseRoiUp: pt scaleValue: 1];
+}
+
+- (BOOL) mouseRoiUp:(NSPoint) pt scaleValue: (float) scaleValue
+{
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys:@"mouseUp", @"action", nil]];
 	
 	previousPoint.x = previousPoint.y = -1000;
@@ -2641,7 +2730,12 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		}
 	}
 	
+	if( clickPoint.x == pt.x && clickPoint.y == pt.y && previousMode == mode && (mode == ROI_selected || mode == ROI_selectedModify))
+	{
+		[self addPointUnderMouse: pt scale: scaleValue];
+	}
 	
+	NSLog( @"mouseUp");
 	
 	return YES;
 }
@@ -6056,7 +6150,12 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	canResizeLayer = boo;
 }
 
--(NSMutableArray*)splinePoints:(float) scale;
+-(NSMutableArray*) splinePoints:(float) scale;
+{
+	return [self splinePoints: scale correspondingSegmentArray: nil];
+}
+
+-(NSMutableArray*) splinePoints:(float) scale correspondingSegmentArray: (NSMutableArray**) correspondingSegmentArray
 {
 	// activated in the prefs
 	if ([self isSpline] == NO) return [self points];
@@ -6086,12 +6185,29 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 		pts[[points count]] = [[points objectAtIndex:0] point]; // we add the first point as the last one to smooth the spline
 							
 	NSPoint *splinePts;
-	long newNb = spline(pts, nb, &splinePts, scale);
+	
+	long newNb = 0;
+	long *correspondingSegments = nil;
+	
+	if( correspondingSegmentArray)
+		newNb = spline( pts, nb, &splinePts, &correspondingSegments, scale);
+	else 
+		newNb = spline( pts, nb, &splinePts, nil, scale);
 	
 	NSMutableArray *newPoints = [NSMutableArray array];
 	for(long i=0; i<newNb; i++)
 	{
 		[newPoints addObject:[MyPoint point:splinePts[i]]];
+	}
+	
+	if( correspondingSegmentArray)
+	{
+		*correspondingSegmentArray = [NSMutableArray array];
+		
+		for(long i=0; i<newNb; i++)
+		{
+			[*correspondingSegmentArray addObject: [NSNumber numberWithLong: correspondingSegments[ i]]];
+		}
 	}
 
 	if(newNb) free(splinePts);
@@ -6132,7 +6248,7 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 		pts[[zPositions count]] = NSMakePoint([[zPositions objectAtIndex:0] floatValue], 0.0); // we add the first point as the last one to smooth the spline
 							
 	NSPoint *splinePts;
-	long newNb = spline(pts, nb, &splinePts, 1);
+	long newNb = spline(pts, nb, &splinePts, nil, 1);
 	
 	NSMutableArray *newPoints = [NSMutableArray array];
 	for(long i=0; i<newNb; i++)

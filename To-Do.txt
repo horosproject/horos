@@ -1,3 +1,5 @@
+- ROI: Add points to Polygon or Pencil ROIs 
+
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
@@ -17,7 +19,6 @@
 - 'Archived' field (comments?)
 - Custom DB time interval: floating panel
 - 3D ROI -> 2D Viewer
-- ROI Polygon: add a point
 - Front/Back button: SR
 - CD partial import
 - crash PowerCrush
