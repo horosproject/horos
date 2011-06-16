@@ -164,9 +164,11 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 					}
 					
 					searchString = [newComponents componentsJoinedByString:@" "];
+					searchString = [searchString stringByReplacingOccurrencesOfString: @"\"" withString: @"\'"];
+					searchString = [searchString stringByReplacingOccurrencesOfString: @"\'" withString: @"\\'"];
 					
 					[search appendFormat:@"name CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
-					browsePredicate = [NSPredicate predicateWithFormat:search];
+					browsePredicate = [NSPredicate predicateWithFormat: search];
 				}
 				else
 					if ([parameters objectForKey:@"searchID"])
