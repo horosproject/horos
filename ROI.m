@@ -2735,8 +2735,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		[self addPointUnderMouse: pt scale: scaleValue];
 	}
 	
-	NSLog( @"mouseUp");
-	
 	return YES;
 }
 
