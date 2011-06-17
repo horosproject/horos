@@ -88,11 +88,11 @@
 #pragma mark NSDirectoryEnumerator API
 
 -(NSDictionary*)fileAttributes {
-	return [NSFileManager.defaultManager attributesOfItemAtPath:[basepath stringByAppendingPathComponent:currpath] error:NULL];
+	return [[NSFileManager defaultManager] attributesOfItemAtPath:[basepath stringByAppendingPathComponent:currpath] error:NULL];
 }
 
 -(NSDictionary*)directoryAttributes {
-	return [NSFileManager.defaultManager attributesOfItemAtPath:[basepath stringByAppendingPathComponent:currpath] error:NULL];
+	return [[NSFileManager defaultManager] attributesOfItemAtPath:[basepath stringByAppendingPathComponent:currpath] error:NULL];
 }
 
 -(void)skipDescendants {

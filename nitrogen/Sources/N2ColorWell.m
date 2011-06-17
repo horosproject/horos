@@ -14,7 +14,7 @@
 
 #import "N2ColorWell.h"
 #import "NSButton+N2.h"
-#import <algorithm>
+//#import <algorithm>
 
 @interface N2ColorWellCell : NSButtonCell {
 }
@@ -27,7 +27,7 @@
 	
 	[super drawBezelWithFrame:frame inView:colorWell];
 	
-	NSRect colorRect = NSInsetRect(frame, std::max(CGFloat(5), frame.size.width/10), std::max(CGFloat(3), frame.size.height/3));
+	NSRect colorRect = NSInsetRect(frame, MAX((CGFloat)5, frame.size.width/10), MAX((CGFloat)3, frame.size.height/3));
 	[[[colorWell color] colorWithAlphaComponent:0.5] setFill];
 	[[NSBezierPath bezierPathWithRoundedRect:colorRect xRadius:colorRect.size.height/2 yRadius:colorRect.size.height/2] fill];
 	colorRect = NSInsetRect(colorRect, 1, 1);

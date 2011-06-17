@@ -27,6 +27,7 @@
 	return [[self descriptor] view:view];
 }
 
+
 +(N2CellDescriptor*)descriptorWithWidthConstraints:(const N2MinMax&)widthConstraints {
 	return [[self descriptor] widthConstraints:widthConstraints];
 }

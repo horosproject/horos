@@ -14,8 +14,15 @@
 
 #import <Cocoa/Cocoa.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 extern NSString* N2NonNullString(NSString* s);
+
+#ifdef __cplusplus
+}
+#endif
 
 @interface NSString (N2)
 

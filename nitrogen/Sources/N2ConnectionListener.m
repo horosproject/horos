@@ -20,8 +20,8 @@
 #include <arpa/inet.h>
 #include <sys/un.h>
 
-const NSString* N2ConnectionListenerOpenedConnectionNotification = @"N2ConnectionListenerOpenedConnectionNotification";
-const NSString* N2ConnectionListenerOpenedConnection = @"N2ConnectionListenerOpenedConnection";
+NSString* const N2ConnectionListenerOpenedConnectionNotification = @"N2ConnectionListenerOpenedConnectionNotification";
+NSString* const N2ConnectionListenerOpenedConnection = @"N2ConnectionListenerOpenedConnection";
 
 @implementation N2ConnectionListener
 
@@ -56,7 +56,7 @@ const NSString* N2ConnectionListenerOpenedConnection = @"N2ConnectionListenerOpe
 	
 }
 
-static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
+static void _accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
 	N2ConnectionListener* listener = (N2ConnectionListener*)info;
 	if (type != kCFSocketAcceptCallBack)
 		return;
@@ -164,7 +164,7 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:N2ConnectionStatusDidChangeNotification object:NULL];
 	
 	CFSocketContext socketCtxt = {0, self, NULL, NULL, NULL};
-	ipv4socket = CFSocketCreate(kCFAllocatorDefault, PF_LOCAL, SOCK_STREAM, IPPROTO_IP, kCFSocketAcceptCallBack, (CFSocketCallBack)&accept, &socketCtxt);
+	ipv4socket = CFSocketCreate(kCFAllocatorDefault, PF_LOCAL, SOCK_STREAM, IPPROTO_IP, kCFSocketAcceptCallBack, (CFSocketCallBack)&_accept, &socketCtxt);
 	if (!ipv4socket)
 		[NSException raise:NSGenericException format:@"Could not create listening socket."];
 	
@@ -176,7 +176,7 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 	local.sun_family = AF_LOCAL;
 	strncpy(local.sun_path, [path UTF8String], 103); local.sun_path[103] = 0;
 	unlink(local.sun_path);
-	NSData* address = [NSData dataWithBytes:&local length:sizeof(sockaddr_un)];
+	NSData* address = [NSData dataWithBytes:&local length:sizeof(local)];
 	
 	if (kCFSocketSuccess != CFSocketSetAddress(ipv4socket, (CFDataRef)address)) {
 		//		if (error) *error = [[NSError alloc] initWithDomain:TCPServerErrorDomain code:kTCPServerCouldNotBindToIPv4Address userInfo:nil];

@@ -17,9 +17,9 @@
 #import "N2Connection.h"
 #import "N2Debug.h"
 #import "NSThread+N2.h"
-#include <math.h>
-#include <algorithm>
-#include <iostream>
+//#include <math.h>
+//#include <algorithm>
+//#include <iostream>
 
 @interface N2Connection ()
 
@@ -38,7 +38,7 @@
 @end
 
 
-const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChangeNotification";
+NSString* const N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChangeNotification";
 
 @implementation N2Connection
 @synthesize address = _address, status = _status, maximumReadSizePerEvent = _maximumReadSizePerEvent;

@@ -14,14 +14,15 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern const NSString* N2ConnectionStatusDidChangeNotification;
+extern NSString* const N2ConnectionStatusDidChangeNotification;
 
-enum N2ConnectionStatus {
+enum {
 	N2ConnectionStatusClosed = 0,
 	N2ConnectionStatusConnecting,
 	N2ConnectionStatusOpening,
 	N2ConnectionStatusOk
 };
+typedef	NSInteger N2ConnectionStatus;
 
 @interface N2Connection : NSObject {
 	NSString* _address;

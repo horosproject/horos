@@ -21,6 +21,7 @@ typedef struct N2MinMax {
 } N2MinMax;
 
 N2MinMax N2MakeMinMax(CGFloat min, CGFloat max);
+#ifdef __cplusplus
 N2MinMax N2MakeMinMax(CGFloat val);
 N2MinMax N2MakeMinMax();
 N2MinMax N2MakeMin(CGFloat min);
@@ -30,3 +31,4 @@ void N2ExtendMinMax(N2MinMax& n2minmax, CGFloat value);
 N2MinMax N2ComposeMinMax(const N2MinMax& mm1, const N2MinMax& mm2);
 N2MinMax operator+(const N2MinMax& mm1, const N2MinMax& mm2);
 N2MinMax operator+(const N2MinMax& mm, const CGFloat& f);
+#endif

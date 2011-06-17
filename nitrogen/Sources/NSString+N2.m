@@ -15,7 +15,7 @@
 #import "NSString+N2.h"
 #import "NSData+N2.h"
 #import "NSMutableString+N2.h"
-#include <cmath>
+//#include <cmath>
 #include <sys/stat.h>
 #include <CommonCrypto/CommonDigest.h>
 
@@ -59,7 +59,7 @@ NSString* N2NonNullString(NSString* s) {
 +(NSString*)sizeString:(unsigned long long)size { // From http://snippets.dzone.com/posts/show/3038 with slight modifications
     if (size<1023)
         return [NSString stringWithFormat:@"%i octets", size];
-    float floatSize = float(size) / 1024;
+    float floatSize = (float)size / 1024;
     if (floatSize<1023)
         return [NSString stringWithFormat:@"%1.1f KO", floatSize];
     floatSize = floatSize / 1024;
@@ -72,11 +72,11 @@ NSString* N2NonNullString(NSString* s) {
 +(NSString*)timeString:(NSTimeInterval)time {
 	NSString* unit; unsigned value;
 	if (time < 60-1) {
-		unit = @"seconde"; value = std::ceil(time);
+		unit = @"seconde"; value = ceil(time);
 	} else if (time < 3600-1) {
-		unit = @"minute"; value = std::ceil(time/60);
+		unit = @"minute"; value = ceil(time/60);
 	} else {
-		unit = @"heure"; value = std::ceil(time/3600);
+		unit = @"heure"; value = ceil(time/3600);
 	}
 	
 	return [NSString stringWithFormat:@"%d %@%@", value, unit, value==1? @"" : @"s"];
@@ -97,7 +97,9 @@ NSString* N2NonNullString(NSString* s) {
 }
 
 -(NSString*)urlEncodedString /* deprecated */ {
-	static const NSDictionary* chars = [[NSDictionary dictionaryWithObjectsAndKeys:
+	static NSDictionary* chars = nil;
+	if (!chars)
+		chars = [[NSDictionary alloc] initWithObjectsAndKeys:
 											@"%3B", @";",
 											@"%2F", @"/",
 											@"%3F", @"?",
@@ -116,7 +118,7 @@ NSString* N2NonNullString(NSString* s) {
 											@"%28", @"(",
 											@"%29", @")",
 											@"%2A", @"*",
-										NULL] retain];
+										NULL];
 	
 	NSMutableString* temp = [[self mutableCopy] autorelease];
 	for (NSString* k in chars)
@@ -125,13 +127,15 @@ NSString* N2NonNullString(NSString* s) {
 }
 
 -(NSString*)xmlEscapedString:(BOOL)unescape {
-	static const NSDictionary* chars = [[NSDictionary dictionaryWithObjectsAndKeys:
+	static NSDictionary* chars = nil;
+	if (!chars)
+		chars = [[NSDictionary alloc] initWithObjectsAndKeys:
 										 @"&lt;", @"<",
 										 @"&gt;", @">",
 									/*	 @"&amp;", @"&",	*/
 										 @"&apos;", @"'",
 										 @"&quot;", @"\"",
-										 NULL] retain];
+										 NULL];
 	
 	NSMutableString* temp = [self.mutableCopy autorelease];
 	// amp first!!
@@ -353,7 +357,7 @@ NSString* N2NonNullString(NSString* s) {
 		if (part2) *part2 = [self substringFromIndex:i+1];
 	} else {
 		if (part1) *part1 = self;
-		if (separator) *separator = nil;
+		if (separator) *separator = 0;
 		if (part2) *part2 = nil;
 	}
 }

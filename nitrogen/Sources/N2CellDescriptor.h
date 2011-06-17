@@ -36,12 +36,16 @@
 
 +(N2CellDescriptor*)descriptor;
 +(N2CellDescriptor*)descriptorWithView:(NSView*)view;
+#ifdef __cplusplus
 +(N2CellDescriptor*)descriptorWithWidthConstraints:(const N2MinMax&)widthConstraints;
 +(N2CellDescriptor*)descriptorWithWidthConstraints:(const N2MinMax&)widthConstraints alignment:(N2Alignment)alignment;
+#endif
 
 -(N2CellDescriptor*)view:(NSView*)view;
 -(N2CellDescriptor*)alignment:(N2Alignment)alignment;
+#ifdef __cplusplus
 -(N2CellDescriptor*)widthConstraints:(const N2MinMax&)widthConstraints;
+#endif
 //-(N2CellDescriptor*)rowSpan:(NSUInteger)rowSpan;
 -(N2CellDescriptor*)colSpan:(NSUInteger)colSpan;
 -(N2CellDescriptor*)invasivity:(CGFloat)invasivity;
@@ -52,7 +56,9 @@
 -(NSRect)sizeAdjust;
 
 #pragma mark Deprecated
+#ifdef __cplusplus
 -(N2CellDescriptor*)initWithWidthConstraints:(const N2MinMax&)widthConstraints alignment:(N2Alignment)alignment DEPRECATED_ATTRIBUTE;
+#endif
 
 @end
 

@@ -14,10 +14,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-enum HTTPMethod {
+enum {
 	HTTPGet,
 	HTTPPost
 };
+typedef NSInteger HTTPMethod;
 
 @interface N2WebServiceClient : NSObject {
 	NSURL* _url;
