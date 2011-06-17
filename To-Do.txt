@@ -41,6 +41,9 @@
 - DICOM Printing 1/1 size, fit to size
 - Add DB toolbar to QR window
 - Key Series
+- Vertical mode for CPR
+- Hanging protocols based on Workspace state
+- Support for DICOM Worklist SCU for prefetching
 
 Cours
 - Basics:
