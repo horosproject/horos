@@ -1,4 +1,6 @@
 - ROI: Add points to Polygon or Pencil ROIs 
+- Option to switch to 1x1 when going to fullscreen if tiling mode is not 1x1
+- Find Previous/Next Key image will scan the entire study, instead of only current series
 
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
@@ -12,7 +14,7 @@
 - Two Steps DICOM Editing
 - Tool to create a new series from key images of a study
 - Tomographie rotational angio
-- Adapt endoscopy fly through to curved mar (cardiac ct)
+- Adapt endoscopy fly through to curved mpr (cardiac ct)
 - Echo/US : map zone
 - DICOM Listener: preferences to force re-index
 - QR : Local Comments, Local Status versus Distant Comments, Distant Status
@@ -21,7 +23,6 @@
 - 3D ROI -> 2D Viewer
 - Front/Back button: SR
 - CD partial import
-- crash PowerCrush
 - Save default order for albums
 - VTK 5.6 GPUVolumeRendering
 - VTK Crash : PowerCrust
@@ -40,7 +41,6 @@
 - DICOM Printing 1/1 size, fit to size
 - Add DB toolbar to QR window
 - Key Series
-- For the existing `find next key image' and `find previous key image' function, the function is limited to a particular series and the search will stop at the first/last key image within a series. I would like to suggest the find option can proceed to the first key image of next series or the last key image of previous series towards the first and last key image of a particular series, probably within the same study but may also extend to different studies of the same patient. 
 
 Cours
 - Basics:

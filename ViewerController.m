@@ -494,16 +494,10 @@ return YES;
 	{
 		if( postprocessed == NO)
 		{
-			for( int x = 0 ; x < [fileList[ curMovieIndex] count]; x++)
-			{
-				NSManagedObject *o = [fileList[ curMovieIndex] objectAtIndex: x];
-				
-				if( [[o valueForKey: @"isKeyImage"] boolValue] == YES)
-				{
-					valid = YES;
-					break;
-				}
-			}
+			DicomStudy *s = [[imageView seriesObj] valueForKey:@"study"];
+			
+			if( [[s keyImages] count])
+				valid = YES;
 		}
 	}
 	else if( [item action] == @selector( loadWindowsState:))
@@ -19667,6 +19661,7 @@ int i,j,l;
 	
 	if( tag == 0)
 	{
+		// First find in this series
 		for( int i = [imageView curImage]+1; i < [fileList[ curMovieIndex] count]; i++)
 		{
 			NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
@@ -19680,8 +19675,6 @@ int i,j,l;
 				return;
 			}
 		}
-		
-		NSBeep();
 	}
 	else
 	{
@@ -19696,6 +19689,119 @@ int i,j,l;
 				[self adjustSlider];
 				[imageView displayIfNeeded];
 				return;
+			}
+		}
+	}
+	
+	if( [imageView flippedData]) tag = !tag; // We RE-inverse the tag !
+	
+	if( tag == 0)
+	{
+		//Nothing found -> search in next series
+		NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[imageView seriesObj] valueForKey:@"study"]];
+		
+		NSUInteger indexOfObject = [seriesArray indexOfObject: [imageView seriesObj]];
+		if( indexOfObject != NSNotFound)
+		{
+			for( int i = indexOfObject+1; i < seriesArray.count; i++)
+			{
+				if( [[[seriesArray objectAtIndex: i] keyImages] count])
+				{
+					//Load this series
+					[[BrowserController currentBrowser] loadSeries :[seriesArray objectAtIndex: i] :self :YES keyImagesOnly: displayOnlyKeyImages];
+					
+					[self matrixPreviewSelectCurrentSeries];
+					[self updateNavigator];
+					
+					if( [imageView flippedData])
+					{
+						for( int i = [fileList[ curMovieIndex] count]-1; i >= 0 ; i--)
+						{
+							NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
+							
+							if( [[image valueForKey:@"isKeyImage"] boolValue])
+							{
+								[imageView setIndex: i];
+								[imageView sendSyncMessage: 0];
+								[self adjustSlider];
+								[imageView displayIfNeeded];
+								return;
+							}
+						}
+					}
+					else
+					{
+						for( int i = 0; i < [fileList[ curMovieIndex] count]; i++)
+						{
+							NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
+							
+							if( [[image valueForKey:@"isKeyImage"] boolValue])
+							{
+								[imageView setIndex: i];
+								[imageView sendSyncMessage: 0];
+								[self adjustSlider];
+								[imageView displayIfNeeded];
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		NSBeep();
+	}
+	else
+	{
+		//Nothing found -> search in next series
+		NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[imageView seriesObj] valueForKey:@"study"]];
+		
+		NSUInteger indexOfObject = [seriesArray indexOfObject: [imageView seriesObj]];
+		if( indexOfObject != NSNotFound)
+		{
+			for( int i = indexOfObject-1; i >= 0; i++)
+			{
+				if( [[[seriesArray objectAtIndex: i] keyImages] count])
+				{
+					//Load this series
+					[[BrowserController currentBrowser] loadSeries :[seriesArray objectAtIndex: i] :self :YES keyImagesOnly: displayOnlyKeyImages];
+					
+					[self matrixPreviewSelectCurrentSeries];
+					[self updateNavigator];
+					
+					if( [imageView flippedData] == NO)
+					{
+						for( int i = [fileList[ curMovieIndex] count]-1; i >= 0 ; i--)
+						{
+							NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
+							
+							if( [[image valueForKey:@"isKeyImage"] boolValue])
+							{
+								[imageView setIndex: i];
+								[imageView sendSyncMessage: 0];
+								[self adjustSlider];
+								[imageView displayIfNeeded];
+								return;
+							}
+						}
+					}
+					else
+					{
+						for( int i = 0; i < [fileList[ curMovieIndex] count]; i++)
+						{
+							NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
+							
+							if( [[image valueForKey:@"isKeyImage"] boolValue])
+							{
+								[imageView setIndex: i];
+								[imageView sendSyncMessage: 0];
+								[self adjustSlider];
+								[imageView displayIfNeeded];
+								return;
+							}
+						}
+					}
+				}
 			}
 		}
 		
