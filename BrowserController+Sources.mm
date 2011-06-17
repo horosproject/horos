@@ -530,46 +530,46 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		N2LogExceptionWithStackTrace(e);
 	}
 		
-	/*OSStatus err;
-	 kern_return_t kr;
-	 
-	 FSRef ref;
-	 err = FSPathMakeRef((const UInt8*)[path fileSystemRepresentation], &ref, nil);
-	 if (err != noErr) return;
-	 FSCatalogInfo catInfo;
-	 err = FSGetCatalogInfo(&ref, kFSCatInfoVolume, &catInfo, nil, nil, nil);
-	 if (err != noErr) return;
-	 
-	 GetVolParmsInfoBuffer gvpib;
-	 HParamBlockRec hpbr;
-	 hpbr.ioParam.ioNamePtr = NULL;
-	 hpbr.ioParam.ioVRefNum = catInfo.volume;
-	 hpbr.ioParam.ioBuffer = (Ptr)&gvpib;
-	 hpbr.ioParam.ioReqCount = sizeof(gvpib);
-	 err = PBHGetVolParmsSync(&hpbr);
-	 if (err != noErr) return;
-	 
-	 NSString* bsdName = [NSString stringWithCString:(char*)gvpib.vMDeviceID];
-	 NSLog(@"we are mounting %@ ||| %@", path, bsdName);
-	 
-	 CFDictionaryRef matchingDict = IOBSDNameMatching(kIOMasterPortDefault, 0, (const char*)gvpib.vMDeviceID);
-	 io_iterator_t ioIterator = nil;
-	 kr = IOServiceGetMatchingServices(kIOMasterPortDefault, matchingDict, &ioIterator);
-	 if (kr != kIOReturnSuccess) return;
-	 
-	 io_service_t ioService;
-	 while (ioService = IOIteratorNext(ioIterator)) {
-	 CFTypeRef data = IORegistryEntrySearchCFProperty(ioService, kIOServicePlane, CFSTR("BSD Name"), kCFAllocatorDefault, kIORegistryIterateRecursively);
-	 NSLog(@"\t%@", data);
-	 io_name_t ioName;
-	 IORegistryEntryGetName(ioService, ioName);
-	 NSLog(@"\t\t%s", ioName);
-	 
-	 CFRelease(data);
-	 IOObjectRelease(ioService);
-	 }
-	 
-	 IOObjectRelease(ioIterator);*/
+/*	OSStatus err;
+	kern_return_t kr;
+	
+	FSRef ref;
+	err = FSPathMakeRef((const UInt8*)[path fileSystemRepresentation], &ref, nil);
+	if (err != noErr) return;
+	FSCatalogInfo catInfo;
+	err = FSGetCatalogInfo(&ref, kFSCatInfoVolume, &catInfo, nil, nil, nil);
+	if (err != noErr) return;
+	
+	GetVolParmsInfoBuffer gvpib;
+	HParamBlockRec hpbr;
+	hpbr.ioParam.ioNamePtr = NULL;
+	hpbr.ioParam.ioVRefNum = catInfo.volume;
+	hpbr.ioParam.ioBuffer = (Ptr)&gvpib;
+	hpbr.ioParam.ioReqCount = sizeof(gvpib);
+	err = PBHGetVolParmsSync(&hpbr);
+	if (err != noErr) return;
+	
+	NSString* bsdName = [NSString stringWithCString:(char*)gvpib.vMDeviceID];
+	NSLog(@"we are mounting %@ ||| %@", path, bsdName);
+	
+	CFDictionaryRef matchingDict = IOBSDNameMatching(kIOMasterPortDefault, 0, (const char*)gvpib.vMDeviceID);
+	io_iterator_t ioIterator = nil;
+	kr = IOServiceGetMatchingServices(kIOMasterPortDefault, matchingDict, &ioIterator);
+	if (kr != kIOReturnSuccess) return;
+	
+	io_service_t ioService;
+	while (ioService = IOIteratorNext(ioIterator)) {
+		CFTypeRef data = IORegistryEntrySearchCFProperty(ioService, kIOServicePlane, CFSTR("BSD Name"), kCFAllocatorDefault, kIORegistryIterateRecursively);
+		NSLog(@"\t%@", data);
+		io_name_t ioName;
+		IORegistryEntryGetName(ioService, ioName);
+		NSLog(@"\t\t%s", ioName);
+		
+		CFRelease(data);
+		IOObjectRelease(ioService);
+	}
+	
+	IOObjectRelease(ioIterator);*/
 }
 
 -(void)_observeVolumeNotification:(NSNotification*)notification {
@@ -779,12 +779,20 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[super dealloc];
 }
 
+//-(NSString*)_bcsChars:(NSString*)s {
+//	NSMutableString* r = [NSMutableString stringWithFormat:@"%d, %@ -", s.length, s];
+//	for (NSInteger i = 0; i < s.length; ++i)
+//		[r appendFormat:@" %04x", [s characterAtIndex:i]];
+//	return r;
+//}
+
 -(void)willDisplayCell:(ImageAndTextCell*)cell {
 	[super willDisplayCell:cell];
 	
+//	NSLog(@"%@", [self _bcsChars:self.devicePath]);
 	NSImage* im = [NSWorkspace.sharedWorkspace iconForFile:self.devicePath];
 	im.size = [im sizeByScalingProportionallyToSize: cell.image? cell.image.size : NSMakeSize(16,16) ];
-	if (im) cell.image = im;
+	cell.image = im;
 }
 
 -(BOOL)isRemovable {

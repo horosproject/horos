@@ -307,13 +307,23 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 #pragma mark-
 
+-(void)_updateMetaData_size {
+	DicomFile* df = [[DicomFile alloc] init:[self completePath]];
+	[self setStoredWidth:[NSNumber numberWithLong:[df getWidth]]];
+	[self setStoredHeight:[NSNumber numberWithLong:[df getHeight]]];
+	[df release];
+}
+
 - (NSNumber*) height
 {
-	if( height) return height;
+	if (height) return height;
 	
-	NSNumber	*f = [self primitiveValueForKey:@"storedHeight"];
-	
-	if( f == nil) f = [NSNumber numberWithInt: 512];
+	NSNumber* f = [self primitiveValueForKey:@"storedHeight"];
+	if (f == nil) f = [NSNumber numberWithInt: 512];
+	else if ([f integerValue] == NSNotFound) {
+		[self _updateMetaData_size];
+		f = [self primitiveValueForKey:@"storedHeight"];
+	}
 	
 	[height release];
 	height = [f retain];
@@ -338,11 +348,14 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (NSNumber*) width
 {
-	if( width) return width;
+	if (width) return width;
 	
-	NSNumber	*f = [self primitiveValueForKey:@"storedWidth"];
-	
-	if( f == nil) f = [NSNumber numberWithInt: 512];
+	NSNumber* f = [self primitiveValueForKey:@"storedWidth"];
+	if (f == nil) f = [NSNumber numberWithInt: 512];
+	else if ([f integerValue] == NSNotFound) {
+		[self _updateMetaData_size];
+		f = [self primitiveValueForKey:@"storedWidth"];
+	}
 	
 	[width release];
 	width = [f retain];

@@ -8513,13 +8513,11 @@ static BOOL needToRezoom;
 					[curFile setValue:[NSDate date] forKeyPath:@"series.dateOpened"];
 					[curFile setValue:[NSDate date] forKeyPath:@"series.study.dateOpened"];
 					
-					long h = [[curFile valueForKey:@"height"] intValue];
-					long w = [[curFile valueForKey:@"width"] intValue];
-
 					if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
 					{
 						multiFrame = YES;
-						// nsgncgfytgfphgtphg6p
+						long h = [[curFile height] intValue];
+						long w = [[curFile width] intValue];
 						mem += (w+1) * (h+1) * [[curFile valueForKey:@"numberOfFrames"] intValue];
 						memBlock += w * h * [[curFile valueForKey:@"numberOfFrames"] intValue];
 					}
@@ -8527,6 +8525,8 @@ static BOOL needToRezoom;
 					{
 						for( curFile in loadList)
 						{
+							long h = [[curFile height] intValue];
+							long w = [[curFile width] intValue];
 							
 							if( w*h < 256*256)
 							{
