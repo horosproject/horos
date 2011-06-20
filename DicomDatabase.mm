@@ -582,6 +582,9 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				_dataFileIndex.unsignedIntegerValue = t;
 			}
 			
+			if (!_dataFileIndex.unsignedIntegerValue)
+				_dataFileIndex.unsignedIntegerValue = 1;
+			
 			DLog(@"   -[DicomDatabase computeDataFileIndex] for %@ computed %ld", self.sqlFilePath, _dataFileIndex.unsignedIntegerValue);
 		} @catch (NSException* e) {
 			N2LogExceptionWithStackTrace(e);

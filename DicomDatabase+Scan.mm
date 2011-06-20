@@ -12,6 +12,7 @@
 #import "dcdicdir.h"
 #import "NSString+N2.h"
 #import "NSFileManager+N2.h"
+#import "DicomImage.h"
 
 @interface _DicomDatabaseScanDcmElement : NSObject {
 	DcmElement* _element;
@@ -172,9 +173,9 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1050)] stringValue] forKey:@"performingPhysiciansName"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0008)] integerNumberValue] forKey:@"numberOfFrames"];
 		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0010)] integerValue];
-		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : NSNotFound] forKey:@"height"];
+		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : O2DicomImageSizeUnknown] forKey:@"height"];
 		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0011)] integerValue];
-		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : NSNotFound] forKey:@"width"];
+		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : O2DicomImageSizeUnknown] forKey:@"width"];
 		
 /*		[item setObject:path forKey:@"date"];
 		[item setObject:path forKey:@"seriesDICOMUID"];
@@ -196,7 +197,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[elements removeObjectForKey:_dcmElementKey(0x0004,0x1400)]; // OffsetOfTheNextDirectoryRecord = 0
 		[elements removeObjectForKey:_dcmElementKey(0x0004,0x1410)]; // RecordInUseFlag = 65535
 		[elements removeObjectForKey:_dcmElementKey(0x0004,0x1420)]; // OffsetOfReferencedLowerLevelDirectoryEntity = 0
-		[elements removeObjectForKey:_dcmElementKey(0x0004,0x1430)]; // DirectoryRecordType = IMAGE // TODO: doc?
+		[elements removeObjectForKey:_dcmElementKey(0x0004,0x1430)]; // DirectoryRecordType = IMAGE
 		[elements removeObjectForKey:_dcmElementKey(0x0008,0x0005)]; // SpecificCharacterSet = ISO_IR 100
 		[elements removeObjectForKey:_dcmElementKey(0x0008,0x0008)]; // ImageType = ORIGINAL\PRIMARY
 		[elements removeObjectForKey:_dcmElementKey(0x0008,0x0081)]; // InstitutionAddress = 
@@ -220,7 +221,13 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	return [self _itemsInRecord:record context:[NSMutableArray array] basePath:basepath];
 }
 
--(NSString*)_fixedPathForPath:(NSString*)path { // path was listed in DICOMDIR and [NSFileManager.defaultManager fileExistsAtPath:path] says NO
+-(NSString*)_fixedPathForPath:(NSString*)path withPaths:(NSArray*)allpaths { // path was listed in DICOMDIR and [NSFileManager.defaultManager fileExistsAtPath:path] says NO
+	NSString* cutpath = [path stringByDeletingPathExtension];
+	
+	for (NSString* ipath in allpaths)
+		if ([[ipath stringByDeletingPathExtension] isEqualToString:cutpath])
+			return ipath;
+	
 	return nil;
 }
 
@@ -231,13 +238,13 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	DcmDirectoryRecord& record = dcmdir.getRootRecord();
 	NSArray* items = [self _itemsInRecord:&record basePath:[path stringByDeletingLastPathComponent]];
 	
-	// file paths are sometimes wrong the DICOMDIR, se if these files exist
-	for (NSInteger i = items.count-1; i >= 0; --i) {
-		NSMutableDictionary* item = [items objectAtIndex:i];
+	// file paths are sometimes wrong the DICOMDIR, see if these files exist
+	for (NSMutableDictionary* item in items) {
 		NSString* filepath = [item objectForKey:@"filePath"];
-		if (![NSFileManager.defaultManager fileExistsAtPath:path]) { // reference invalid, try and find the file...
-			NSString* fixedpath = [self _fixedPathForPath:path];
-			if (fixedpath) [item setObject:fixedpath forKey:@"filePath"];
+		
+		if (![NSFileManager.defaultManager fileExistsAtPath:filepath]) { // reference invalid, try and find the file...
+			filepath = [self _fixedPathForPath:filepath withPaths:allpaths];
+			if (filepath) [item setObject:filepath forKey:@"filePath"];
 		}
 	}
 	

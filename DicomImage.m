@@ -307,6 +307,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 #pragma mark-
 
+const NSInteger O2DicomImageSizeUnknown = NSNotFound;
+
 -(void)_updateMetaData_size {
 	DicomFile* df = [[DicomFile alloc] init:[self completePath]];
 	[self setStoredWidth:[NSNumber numberWithLong:[df getWidth]]];
@@ -320,7 +322,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	
 	NSNumber* f = [self primitiveValueForKey:@"storedHeight"];
 	if (f == nil) f = [NSNumber numberWithInt: 512];
-	else if ([f integerValue] == NSNotFound) {
+	else if ([f integerValue] == O2DicomImageSizeUnknown) {
 		[self _updateMetaData_size];
 		f = [self primitiveValueForKey:@"storedHeight"];
 	}
@@ -352,7 +354,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	
 	NSNumber* f = [self primitiveValueForKey:@"storedWidth"];
 	if (f == nil) f = [NSNumber numberWithInt: 512];
-	else if ([f integerValue] == NSNotFound) {
+	else if ([f integerValue] == O2DicomImageSizeUnknown) {
 		[self _updateMetaData_size];
 		f = [self primitiveValueForKey:@"storedWidth"];
 	}
