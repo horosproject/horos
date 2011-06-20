@@ -14,6 +14,7 @@
 
 
 #import <N2Operators.h>
+#include <cmath>
 
 
 NSString* N2LinesDontInterceptException = @"N2LinesDontInterceptException";
@@ -33,10 +34,6 @@ CGFloat NSLimit(const CGFloat v, const CGFloat min, const CGFloat max) {
 
 
 /// NSSize
-
-#ifdef __cplusplus
-
-#include <cmath>
 
 namespace n2 {
 	
@@ -403,6 +400,4 @@ BOOL operator!=(const NSRect& r1, const NSRect& r2) {
 NSPoint RectBR(const NSRect& r) {
 	return r.origin+r.size;
 }
-
-#endif
 

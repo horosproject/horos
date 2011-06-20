@@ -27,8 +27,7 @@
 }
 
 +(N2UserDefaults*)defaultsForIdentifier:(NSString*)identifier {
-	static NSMutableDictionary* Defaults = nil;
-	if (!Defaults) Defaults = [[NSMutableDictionary alloc] initWithCapacity:4];
+	static NSMutableDictionary* Defaults = [[NSMutableDictionary alloc] initWithCapacity:4];
 
 	N2UserDefaults* defaults = [Defaults objectForKey:identifier];
 	if (defaults) return defaults;

@@ -14,7 +14,7 @@
 
 #import "NSBitmapImageRep+N2.h"
 #import <Accelerate/Accelerate.h>
-//#include <algorithm>
+#include <algorithm>
 #include <stack>
 
 @implementation NSBitmapImageRep (N2)
@@ -24,7 +24,7 @@
 		for (int x = [self pixelsWide]-1; x >= 0; --x) {
 			CGFloat saturation, brightness, alpha;
 			[[[self colorAtX:x y:y] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] getHue:NULL saturation:&saturation brightness:&brightness alpha:&alpha];
-			[self setColor:[NSColor colorWithDeviceHue:[color hueComponent] saturation:[color saturationComponent] brightness:MAX(0.75, brightness) alpha:alpha] atX:x y:y];
+			[self setColor:[NSColor colorWithDeviceHue:[color hueComponent] saturation:[color saturationComponent] brightness:std::max((CGFloat).75, brightness) alpha:alpha] atX:x y:y];
 		}
 }
 

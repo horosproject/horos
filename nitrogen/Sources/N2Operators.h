@@ -21,8 +21,6 @@ CGFloat NSLimit(const CGFloat v, const CGFloat min, const CGFloat max);
 
 #pragma mark NSSize
 
-#ifdef __cplusplus
-
 namespace n2 {
 	NSSize floor(const NSSize& s);
 	NSSize ceil(const NSSize& s);
@@ -129,5 +127,3 @@ NSRect operator-(const NSRect& r, const NSSize& s);
 BOOL operator==(const NSRect& r1, const NSRect& r2);
 BOOL operator!=(const NSRect& r1, const NSRect& r2);
 NSPoint RectBR(const NSRect& r);
-
-#endif

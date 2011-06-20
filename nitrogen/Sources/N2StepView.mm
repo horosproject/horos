@@ -42,13 +42,13 @@
 	if ([[notification name] isEqualToString:N2StepDidBecomeActiveNotification]) {
 	//	[(NSButton*)self.step.enclosedView.nextKeyView setKeyEquivalent:@"\r"];
 		[[(NSButton*)self.step.defaultButton cell] setBackgroundColor:[NSColor colorWithCalibratedRed:.5 green:.66 blue:1 alpha:.5]];
-		self.fillColor = [[NSColor grayColor] colorWithAlphaComponent:0.25];
+		self.fillColor = [NSColor.grayColor colorWithAlphaComponent:0.25];
 		[self expand:self];
 	} else {
 		if (![_step shouldStayVisibleWhenInactive]) [self collapse:self];
 	//	[(NSButton*)self.step.enclosedView.nextKeyView setKeyEquivalent:@""];
 		[[(NSButton*)self.step.defaultButton cell] setBackgroundColor:[NSColor colorWithCalibratedRed:0 green:0 blue:0 alpha:0]];
-		self.fillColor = [[NSColor grayColor] colorWithAlphaComponent:0];
+		self.fillColor = [NSColor.grayColor colorWithAlphaComponent:0];
 	}
 }
 

@@ -80,7 +80,7 @@
 -(NSString*)confirmNoIndexDirectoryAtPath:(NSString*)path {
 	NSString* pathWithExt;
 	NSString* pathWithoutExt;
-	NSString* const ext = @".noindex";
+	const NSString* const ext = @".noindex";
 	
 	if ([path hasSuffix:ext]) {
 		pathWithExt = path;

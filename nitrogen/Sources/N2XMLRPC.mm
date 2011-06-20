@@ -109,7 +109,7 @@
 	if ([o isKindOfClass:[NSNumber class]])
 		switch ([(NSNumber*)o objCType][0]) {
 			case 'c':
-				return [NSString stringWithFormat:@"<boolean>%d</boolean>", (int)[(NSNumber*)o boolValue]];
+				return [NSString stringWithFormat:@"<boolean>%d</boolean>", int([(NSNumber*)o boolValue])];
 			case 'i':
 				return [NSString stringWithFormat:@"<int>%d</int>", [(NSNumber*)o intValue]];
 			case 'f':

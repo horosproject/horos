@@ -14,15 +14,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 extern NSString* N2NonNullString(NSString* s);
-
-#ifdef __cplusplus
-}
-#endif
 
 @interface NSString (N2)
 
@@ -53,10 +46,6 @@ extern NSString* N2NonNullString(NSString* s);
 -(NSArray*)componentsWithLength:(NSUInteger)len;
 
 -(BOOL)isEmail;
-
--(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator;
-
--(NSString*)md5;
 
 @end
 

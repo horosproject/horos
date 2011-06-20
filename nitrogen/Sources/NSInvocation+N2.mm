@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import "NSInvocation+N2.h"
-//#include <sstream>
+#include <sstream>
 
 @implementation NSInvocation (N2)
 

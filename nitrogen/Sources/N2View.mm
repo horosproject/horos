@@ -84,19 +84,15 @@ NSString* N2ViewBoundsSizeDidChangeNotificationOldBoundsSize = @"oldBoundsSize";
 }*/
 
 -(NSSize)optimalSize {
-	if (_layout) {
-		NSSize ls = [_layout optimalSize];
-		return NSMakeSize(ceilf(ls.width), ceilf(ls.height));
-	} 
-	return [self frame].size;
+	if (_layout)
+		return n2::ceil([_layout optimalSize]);
+	else return [self frame].size;	
 }
 
 -(NSSize)optimalSizeForWidth:(CGFloat)width {
-	if (_layout) {
-		NSSize ls = [_layout optimalSizeForWidth:width];
-		return NSMakeSize(ceilf(ls.width), ceilf(ls.height));
-	}
-	return [self frame].size;
+	if (_layout)
+		return n2::ceil([_layout optimalSizeForWidth:width]);
+	else return [self frame].size;
 }
 
 @end

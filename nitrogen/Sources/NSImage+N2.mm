@@ -14,7 +14,7 @@
 
 
 #import "NSImage+N2.h"
-//#include <algorithm>
+#include <algorithm>
 #import <Accelerate/Accelerate.h>
 //#include <boost/numeric/ublas/matrix.hpp>
 //#include <fftw3.h>

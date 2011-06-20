@@ -29,7 +29,7 @@
 }
 
 -(id)initWithSize:(NSSize)size {
-	return [self initWithFrame:NSMakeRect(0,0, size.width, size.height)];
+	return [self initWithFrame:NSMakeRect(NSZeroPoint, size)];
 }
 
 -(NSRect)sizeAdjust {

@@ -34,9 +34,7 @@ NSString* RectString(NSRect r) {
 
 @end
 
-#ifdef __cplusplus
 extern "C" {
-#endif
 
 void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, NSString* format, ...) {
 	va_list args;
@@ -72,6 +70,4 @@ extern void N2LogStackTrace(NSString* format, ...) {
 	va_end(args);
 }
 
-#ifdef __cplusplus
 }
-#endif

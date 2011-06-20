@@ -15,10 +15,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef uint8_t N2Alignment;
 
 extern const N2Alignment N2Top;
@@ -27,7 +23,3 @@ extern const N2Alignment N2Left;
 extern const N2Alignment N2Right;
 
 extern NSRect NSRectCenteredInRect(NSRect r, NSRect r2);
-
-#ifdef __cplusplus
-}
-#endif
