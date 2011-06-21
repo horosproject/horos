@@ -4,7 +4,7 @@
 
 - PN: Limit to 64
 - Copy/Paste
-- Toolbar bug, Create default albums
+- Toolbar bug
 
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
