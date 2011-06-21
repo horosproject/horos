@@ -82,6 +82,7 @@
 #import "NSImage+N2.h"
 #import "NSFileManager+N2.h"
 #import "WADODownload.h"
+#import "DICOMExport.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -9221,6 +9222,74 @@ static NSConditionLock *threadLock = nil;
 	
 	return string;
 }
+
+#ifndef OSIRIX_LIGHT
+- (IBAction) paste: (id)sender
+{
+	// If the clipboard contains an image -> generate a SC DICOM file corresponding to the selected patient
+	if( [[NSPasteboard generalPasteboard] dataForType: NSTIFFPboardType])
+	{
+		NSImage *image = [[[NSImage alloc] initWithData: [[NSPasteboard generalPasteboard] dataForType: NSTIFFPboardType]] autorelease];
+		
+		NSArray *currentSelection = [self databaseSelection];
+		if ([currentSelection count] > 0)
+		{
+			id selection = [currentSelection objectAtIndex:0];
+			NSString *source;
+			
+			if ([[[selection entity] name] isEqualToString:@"Study"]) 
+				source = [[[[[selection valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject] valueForKey:@"completePath"];
+			else
+				source = [[[selection valueForKey:@"images"] anyObject] valueForKey:@"completePath"];
+			
+			DICOMExport *e = [[[DICOMExport alloc] init] autorelease];
+			
+			[e setSeriesDescription: [NSString stringWithFormat: NSLocalizedString( @"Clipboard - %@", nil), [BrowserController DateTimeWithSecondsFormat: [NSDate date]]]];
+			
+			NSBitmapImageRep *rep = (NSBitmapImageRep*) [image bestRepresentationForDevice:nil];
+			
+			if ([rep isMemberOfClass: [NSBitmapImageRep class]])
+			{
+				[e setSourceFile: source];
+				
+				int bpp = [rep bitsPerPixel] / [rep samplesPerPixel];
+				int spp = [rep samplesPerPixel];
+				
+				if( [rep bitsPerPixel] == 32 && spp == 3)
+				{
+					bpp = 8;
+					spp = 4;
+				}
+				
+				[e setPixelData: [rep bitmapData] samplesPerPixel: spp bitsPerSample: bpp width:[rep pixelsWide] height:[rep pixelsHigh]];
+				
+				if( [rep isPlanar])
+					NSLog( @"********** BrowserController Paste : Planar is not yet supported....");
+				else
+				{
+					NSString *f = [e writeDCMFile: nil];
+					
+					if( f)
+					{
+						[BrowserController addFiles: [NSArray arrayWithObject: f]
+										  toContext: [self managedObjectContext]
+										 toDatabase: self
+										  onlyDICOM: YES 
+								   notifyAddedFiles: YES
+								parseExistingObject: YES
+										   dbFolder: [self documentsDirectory]
+								  generatedByOsiriX: YES];
+					
+						return;
+					}
+				}
+			}
+		}
+	}
+	
+	NSBeep();
+}
+#endif
 
 - (IBAction) copy: (id)sender
 {

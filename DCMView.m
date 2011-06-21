@@ -1500,6 +1500,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 		[self setNeedsDisplay:YES];
 	}
+	
+	// Create a DICOM SC for this patient
+	if( [[NSPasteboard generalPasteboard] dataForType: NSTIFFPboardType])
+	{
+		[[BrowserController currentBrowser] paste: self];
+	}
 }
 
 -(IBAction) copy:(id) sender

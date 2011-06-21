@@ -445,6 +445,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (int) askForZIPPassword: (NSString*) file destination: (NSString*) destination;
 - (IBAction) reparseIn3D:(id) sender;
 - (IBAction) reparseIn4D:(id) sender;
+- (IBAction) paste: (id)sender;
 
 //- (short) createAnonymizedFile:(NSString*) srcFile :(NSString*) dstFile;
 
