@@ -1,7 +1,7 @@
 - ROI: Add points to Polygon or Pencil ROIs 
 - Option to switch to 1x1 when going to fullscreen if tiling mode is not 1x1
 - Find Previous/Next Key image will scan the entire study, instead of only current series
-- Paste an image in a viewer or in the database window will create a DICOM SC image for the selected patient
+- Paste an image in a viewer or in the database window: it will create a DICOM SC image for the selected patient
 
 - Toolbar bug
 
