@@ -114,7 +114,6 @@ const NSString* const OsirixDataDirName = @"OsiriX Data";
 		N2LogError(@"nil path");
 	else {
 		[NSFileManager.defaultManager confirmDirectoryAtPath:path];
-		[NSFileManager.defaultManager confirmDirectoryAtPath:[path stringByAppendingPathComponent:@"REPORTS"]]; // TODO: why? not here...
 	}
 	
 	return path;
@@ -462,12 +461,6 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	return [self entityForName:DicomDatabaseLogEntryEntityName];
 }
 
-/*-(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
-	NSLog(@"******* DO NOT CALL THIS FUNCTION - NOT FINISHED / BUGGED : %s", __PRETTY_FUNCTION__); // TODO: once BrowserController / DicomDatabase doubles are solved, REMOVE THIS METHOD as it is defined in N2ManagedDatabase
-	[NSException raise:NSGenericException format:@"DicomDatabase NOT READY for complete usage (contextAtPath:)"];
-	return nil;
-}*/
-
 +(NSString*)sqlFilePathForBasePath:(NSString*)basePath {
 	return [basePath stringByAppendingPathComponent:SqlFileName];
 }
@@ -633,14 +626,13 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	}
 
 	@synchronized(_dataFileIndex) {
+		NSString* dataDirPath = self.dataDirPath;
+		[NSFileManager.defaultManager confirmNoIndexDirectoryAtPath:dataDirPath]; // old impl only did this every 3 secs..
+		
 		if (!_dataFileIndex.unsignedIntegerValue)
 			[self computeDataFileIndex];
-		
-		NSString* dataDirPath = self.dataDirPath;
-		[NSFileManager.defaultManager confirmNoIndexDirectoryAtPath:dataDirPath]; // TODO: old impl only did this every 3 secs..
-		
 		[_dataFileIndex increment];
-		long long defaultFolderSizeForDB = [BrowserController DefaultFolderSizeForDB]; // TODO: hmm..
+		long long defaultFolderSizeForDB = [BrowserController DefaultFolderSizeForDB];
 		
 		BOOL fileExists = NO, firstExists = YES;
 		do {
@@ -734,8 +726,6 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	}
 	
 	[self save:nil];
-	
-	// TODO: refreshAlbums
 }
 
 -(void)modifyDefaultAlbums {
@@ -1779,8 +1769,6 @@ enum { Compress, Decompress };
 	[AppController.sharedAppController growlTitle:NSLocalizedString(@"New Study", nil) description:message name:@"newstudy"];
 }
 
-
-
 -(NSInteger)importFilesFromIncomingDir {
 	NSMutableArray* compressedPathArray = [NSMutableArray array];
 	NSThread* thread = [NSThread currentThread];
@@ -1795,8 +1783,11 @@ enum { Compress, Decompress };
 	[_importFilesFromIncomingDirLock lock];
 	@try {
 		if ([self isFileSystemFreeSizeLimitReached]) {
-			// TODO: autoclean and recheck..
-			return 0;
+			[self cleanForFreeSpace];
+			if ([self isFileSystemFreeSizeLimitReached]) {
+				NSLog(@"WARNING! THE DATABASE DISK IS FULL!!");
+				return 0;
+			}
 		}
 		
 		NSMutableArray *filesArray = [NSMutableArray array];
@@ -2080,7 +2071,12 @@ enum { Compress, Decompress };
 	//if ([[AppController sharedAppController] isSessionInactive])
 	//	return;
 	
-	if ([_importFilesFromIncomingDirLock tryLock])
+	if ([_importFilesFromIncomingDirLock tryLock]) {
+		if ([BrowserController isHardDiskFull]) {
+			[NSFileManager.defaultManager removeItemAtPath:[self incomingDirPath] error:nil]; // Kill the incoming directory
+			[[AppController sharedAppController] growlTitle:NSLocalizedString(@"Warning", nil) description: NSLocalizedString(@"The database volume is full! Incoming files are ignored.", nil) name:@"newfiles"];
+		}
+		
 		@try {
 			[self performSelectorInBackground:@selector(importFilesFromIncomingDirThread) withObject:nil]; // TODO: NSOperationQueues pls
 		} @catch (NSException* e) {
@@ -2088,16 +2084,8 @@ enum { Compress, Decompress };
 		} @finally {
 			[_importFilesFromIncomingDirLock unlock];
 		}
-	else NSLog(@"Warning: couldn't initiate import of incoming files");
-	
-//	// TODO: HARD DISK CHECK
-//	if ([BrowserController isHardDiskFull])
-//	{
-//		// Kill the incoming directory
-//		[[NSFileManager defaultManager] removeItemAtPath: [self INCOMINGPATH] error: nil];
-//		
-//		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"WARNING", nil) description: NSLocalizedString(@"Hard Disk is Full ! Cannot accept more files.", nil) name:@"newfiles"];
-//	}	
+	} else
+		NSLog(@"Warning: couldn't initiate import of incoming files");
 }
 
 +(void)importFilesFromIncomingDirTimerCallback:(NSTimer*)timer {
@@ -2634,73 +2622,20 @@ enum { Compress, Decompress };
 	}
 }
 
-- (void)checkForExistingReportForStudy:(NSManagedObject*)study {
+-(void)checkForExistingReportForStudy:(DicomStudy*)study {
 #ifndef OSIRIX_LIGHT
-	@try {
-		// Is there a report?
-		NSString	*reportsBasePath = self.reportsDirPath;
-		NSString	*reportPath = nil;
-		
-		// TODO: use FOREACH loop...`
-		
-		if (reportPath == nil)
-		{
-			reportPath = [reportsBasePath stringByAppendingFormat:@"%@.pages",[Reports getUniqueFilename: study]];
-			if ([[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-		
-		if (reportPath == nil)
-		{
-			reportPath = [reportsBasePath stringByAppendingFormat:@"%@.odt",[Reports getUniqueFilename: study]];
-			if ([[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-		
-		if (reportPath == nil)
-		{
-			reportPath = [reportsBasePath stringByAppendingFormat:@"%@.doc",[Reports getUniqueFilename: study]];
-			if ([[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-		
-		if (reportPath == nil)
-		{
-			reportPath = [reportsBasePath stringByAppendingFormat:@"%@.rtf",[Reports getUniqueFilename: study]];
-			if ([[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-		
-		if (reportPath == nil)
-		{
-			reportPath = [reportsBasePath stringByAppendingFormat:@"%@.pages",[Reports getOldUniqueFilename: study]];
-			if ([[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-		
-		if (reportPath == nil)
-		{
-			reportPath = [reportsBasePath stringByAppendingFormat:@"%@.rtf",[Reports getOldUniqueFilename: study]];
-			if ([[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-		
-		if (reportPath == nil)
-		{
-			reportPath = [reportsBasePath stringByAppendingFormat:@"%@.doc",[Reports getOldUniqueFilename: study]];
-			if ([[NSFileManager defaultManager] fileExistsAtPath: reportPath])
-				[study setValue:reportPath forKey:@"reportURL"];
-			else reportPath = nil;
-		}
-	}
-	@catch ( NSException *e)
-	{
+	@try { // is there a report?
+		NSArray* filenames = [NSArray arrayWithObjects: [Reports getUniqueFilename:study], [Reports getOldUniqueFilename:study], NULL];
+		NSArray* extensions = [NSArray arrayWithObjects: @"pages", @"odt", @"doc", @"rtf", NULL];
+		for (NSString* filename in filenames)
+			for (NSString* extension in extensions) {
+				NSString* reportPath = [self.reportsDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", filename, extension]];
+				if ([NSFileManager.defaultManager fileExistsAtPath:reportPath]) {
+					study.reportURL = reportPath;
+					return;
+				}
+			}
+	} @catch ( NSException *e) {
 		N2LogExceptionWithStackTrace(e);
 	}
 #endif
