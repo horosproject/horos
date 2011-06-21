@@ -1549,6 +1549,9 @@ extern "C"
 							}
 						}
 						
+						if( [[searchFieldName stringValue] length] >= 64)
+							[searchFieldName setStringValue: [[searchFieldName stringValue] substringToIndex: 64]];
+						
 						NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 						
 						if ([filterValue length] > 0)
