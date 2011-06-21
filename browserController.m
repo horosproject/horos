@@ -861,6 +861,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void)defaultAlbums:(id)sender {
 	[self.database addDefaultAlbums];
+	[self refreshAlbums];
 }
 
 // ------------------
@@ -16494,7 +16495,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 { return [[DicomDatabase activeLocalDatabase] incomingDirPathC]; }
 
 - (NSString*)INCOMINGPATH { // __deprecated
-	return [[DicomDatabase activeLocalDatabase] incomingDirPath];
+	return [_database incomingDirPath];
 }
 
 + (NSString *) defaultDocumentsDirectory { // __deprecated

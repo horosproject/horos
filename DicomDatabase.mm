@@ -1112,7 +1112,7 @@ enum { Compress, Decompress };
 			
 			@try {
 				NSMutableDictionary *curDict = [dicomFilesArray objectAtIndex:i];
-				NSLog(@"curDict: %@", curDict);
+//				NSLog(@"curDict: %@", curDict);
 				
 				newFile = [curDict objectForKey:@"filePath"];
 				

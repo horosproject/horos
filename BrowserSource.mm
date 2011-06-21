@@ -61,8 +61,8 @@
 }
 
 -(BOOL)isEqualToSource:(BrowserSource*)other {
-	if (self.type != other.type)
-		return NO;
+	//if (self.type != other.type)
+	//	return NO;
 	
 	if (self.dictionary && self.dictionary == other.dictionary)
 		return YES;
@@ -138,6 +138,10 @@
 }
 
 -(BOOL)isRemovable {
+	return NO;
+}
+
+-(BOOL)isVolatile {
 	return NO;
 }
 

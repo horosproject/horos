@@ -11,10 +11,18 @@
 
 @class DicomDatabase, ImageAndTextCell;
 
-enum { BrowserSourceTypeDefault, BrowserSourceTypeLocal, BrowserSourceTypeRemote, BrowserSourceTypeDicom, BrowserSourceTypeOther };
+enum {
+	BrowserSourceTypeDefault = 10,
+	BrowserSourceTypeLocal = 20,
+	BrowserSourceTypeRemote = 30,
+	BrowserSourceTypeDicom = 40,
+	BrowserSourceTypeOther = 50
+};
+typedef NSInteger BrowserSourceType;
+
 
 @interface BrowserSource : NSObject {
-	NSInteger _type;
+	BrowserSourceType _type;
 	NSString* _location;
 	NSString* _description;
 	NSDictionary* _dictionary;
@@ -26,7 +34,7 @@ enum { BrowserSourceTypeDefault, BrowserSourceTypeLocal, BrowserSourceTypeRemote
 +(id)browserSourceForAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 +(id)browserSourceForDicomNodeAtAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 
-@property(readonly) NSInteger type;
+@property(readonly) BrowserSourceType type;
 @property(retain) NSString* location;
 @property(retain) NSString* description;
 @property(retain) NSDictionary* dictionary;
@@ -40,6 +48,7 @@ enum { BrowserSourceTypeDefault, BrowserSourceTypeLocal, BrowserSourceTypeRemote
 -(void)willDisplayCell:(ImageAndTextCell*)cell;
 
 -(BOOL)isRemovable;
+-(BOOL)isVolatile;
 -(NSString*)toolTip;
 
 @end

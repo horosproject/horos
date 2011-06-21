@@ -13,6 +13,7 @@
 #import "NSString+N2.h"
 #import "NSFileManager+N2.h"
 #import "DicomImage.h"
+#import "DicomFile.h"
 
 @interface _DicomDatabaseScanDcmElement : NSObject {
 	DcmElement* _element;
@@ -210,6 +211,10 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[items addObject:item];
 	}
 	
+	if (context.count == 6) {
+		NSLog(@"THUMBBBBBBBBBBBBBBBBBBBBBBBNAAAAAAAAIL!!!");
+	}
+	
 	for (unsigned long i = 0; i < record->cardSub(); ++i)
 		[items addObjectsFromArray:[self _itemsInRecord:record->getSub(i) context:context basePath:basepath]];
 	
@@ -270,13 +275,10 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	NSThread* thread = [NSThread currentThread];
 	[thread enterOperation];
 	
-	BOOL isDir;
-	NSFileManager* fm = NSFileManager.defaultManager;
-	
-	NSMutableArray* dicomImages = [NSMutableArray array];
+	NSArray* dicomImages = [NSMutableArray array];
 
 	thread.status = NSLocalizedString(@"Scanning directories...", nil);
-	NSArray* allpaths = [path stringsByAppendingPaths:[[fm enumeratorAtPath:path filesOnly:YES] allObjects]];
+	NSArray* allpaths = [path stringsByAppendingPaths:[[NSFileManager.defaultManager enumeratorAtPath:path filesOnly:YES] allObjects]];
 	
 	// first read the DICOMDIR file
 	thread.status = NSLocalizedString(@"Looking for DICOMDIR...", nil);
@@ -284,16 +286,34 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	if (dicomdirPath) {
 		NSLog(@"Scanning DICOMDIR at %@", dicomdirPath);
 		thread.status = NSLocalizedString(@"Reading DICOMDIR...", nil);
-		[dicomImages addObjectsFromArray:[self scanDicomdirAt:dicomdirPath withPaths:allpaths]];
+		dicomImages = [self scanDicomdirAt:dicomdirPath withPaths:allpaths];
 	}
 	
 	NSLog(@"DICOMDIR referenced %d images", dicomImages.count);
 	
 	if (!dicomImages.count) {
+		NSMutableArray* dicomFilePaths = [NSMutableArray array];
+		
+		thread.status = NSLocalizedString(@"Looking for DICOM files...", nil);
+		for (NSInteger i = 0; i < allpaths.count; ++i) {
+			thread.progress = 1.0*i/allpaths.count;
+			NSString* path = [allpaths objectAtIndex:i];
+			if ([DicomFile isDICOMFile:path])
+				[dicomFilePaths addObject:path];
+		}
+		
+		dicomImages = [self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO mountedVolume:YES];
 	}
 	
-	
-	
+	thread.status = NSLocalizedString(@"Generating series thumbnails...", nil);
+	NSMutableArray* dicomSeries	= [NSMutableArray array];
+	for (DicomImage* di in dicomImages)
+		if (![dicomSeries containsObject:di.series])
+			[dicomSeries addObject:di.series];
+	for (NSInteger i = 0; i < dicomSeries.count; ++i) {
+		thread.progress = 1.0*i/dicomSeries.count;
+		[[dicomSeries objectAtIndex:i] thumbnail];
+	}
 	
 	
 	

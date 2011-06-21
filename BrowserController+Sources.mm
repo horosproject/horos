@@ -721,6 +721,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	return YES;
 }
 
+-(BOOL)isVolatile {
+	return YES;
+}
+
 @end
 
 @implementation MountedBrowserSource
@@ -739,6 +743,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		thread.name = NSLocalizedString(@"Scanning disc...", nil);
 		[ThreadsManager.defaultManager addThreadAndStart:thread];
 		[_database scanAtPath:self.devicePath];
+		if ([NSUserDefaults.standardUserDefaults boolForKey:@"autoSelectSourceCDDVD"])
+			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSource:) withObject:self waitUntilDone:NO];
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
@@ -802,6 +808,16 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(NSString*)toolTip {
 	return self.devicePath;
 }
+
+-(BrowserSourceType)type {
+	return (BrowserSourceTypeLocal+BrowserSourceTypeDefault)/2;
+}
+
+-(BOOL)isVolatile {
+	return YES;
+}
+
+
 
 @end
 
