@@ -9231,15 +9231,14 @@ static NSConditionLock *threadLock = nil;
 	if( [[NSPasteboard generalPasteboard] dataForType: NSTIFFPboardType])
 	{
 		NSImage *image = [[[NSImage alloc] initWithData: [[NSPasteboard generalPasteboard] dataForType: NSTIFFPboardType]] autorelease];
-		NSString *source = nil;
 		
 		if( sourceFile)
 		{
-			if( [[NSFileManager defaultManager] fileExistsAtPath: sourceFile])
-				source = sourceFile;
+			if( [[NSFileManager defaultManager] fileExistsAtPath: sourceFile] == NO)
+				sourceFile = nil;
 		}
 		
-		if( source == nil)
+		if( sourceFile == nil)
 		{
 			NSMutableArray *images = [NSMutableArray array];
 			
@@ -9247,7 +9246,7 @@ static NSConditionLock *threadLock = nil;
 			else [self filesForDatabaseOutlineSelection: images];
 			
 			if( [images count])
-				source = [[images objectAtIndex: 0] valueForKey:@"completePath"];
+				sourceFile = [[images objectAtIndex: 0] valueForKey:@"completePath"];
 		}
 		
 		DICOMExport *e = [[[DICOMExport alloc] init] autorelease];
@@ -9258,7 +9257,7 @@ static NSConditionLock *threadLock = nil;
 		
 		if ([rep isMemberOfClass: [NSBitmapImageRep class]])
 		{
-			[e setSourceFile: source];
+			[e setSourceFile: sourceFile];
 			
 			int bpp = [rep bitsPerPixel] / [rep samplesPerPixel];
 			int spp = [rep samplesPerPixel];
