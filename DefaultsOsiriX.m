@@ -903,7 +903,9 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"exportOrientationIn3DExport"];
 	[defaultValues setObject:@"240" forKey:@"WADOTimeout"];
 	[defaultValues setObject:@"50" forKey:@"WADOMaximumConcurrentDownloads"];
-
+	[defaultValues setObject:@"1" forKey:@"autoSelectSourceCDDVD"];
+	[defaultValues setObject:@"1" forKey:@"ScanDiskIfDICOMDIRZero"];
+	
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
 	#else

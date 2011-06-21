@@ -17,19 +17,7 @@
 #import <Foundation/Foundation.h>
 
 
-NSString* const O2AutoSelectCDDVDSource = @"autoSelectSourceCDDVD";
-NSString* const O2ScanCDDVDIfNoFilesFromDICOMDIR = @"ScanDiskIfDICOMDIRZero";
-
 @implementation NSUserDefaults (OsiriX)
-
-+(void)load {
-	NSDictionary* d = [[NSDictionary alloc] initWithObjectsAndKeys:
-					   [NSNumber numberWithBool:YES], O2AutoSelectCDDVDSource,
-					   [NSNumber numberWithBool:YES], O2ScanCDDVDIfNoFilesFromDICOMDIR,
-					   NULL];
-	[self.standardUserDefaults registerDefaults:d];
-	[d release];
-}
 
 #pragma mark General
 
