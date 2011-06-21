@@ -9224,64 +9224,71 @@ static NSConditionLock *threadLock = nil;
 }
 
 #ifndef OSIRIX_LIGHT
-- (IBAction) paste: (id)sender
+
+- (IBAction) pasteImageForSourceFile: (NSString*) sourceFile
 {
 	// If the clipboard contains an image -> generate a SC DICOM file corresponding to the selected patient
 	if( [[NSPasteboard generalPasteboard] dataForType: NSTIFFPboardType])
 	{
 		NSImage *image = [[[NSImage alloc] initWithData: [[NSPasteboard generalPasteboard] dataForType: NSTIFFPboardType]] autorelease];
+		NSString *source = nil;
 		
-		NSArray *currentSelection = [self databaseSelection];
-		if ([currentSelection count] > 0)
+		if( sourceFile)
 		{
-			id selection = [currentSelection objectAtIndex:0];
-			NSString *source;
+			if( [[NSFileManager defaultManager] fileExistsAtPath: sourceFile])
+				source = sourceFile;
+		}
+		
+		if( source == nil)
+		{
+			NSMutableArray *images = [NSMutableArray array];
 			
-			if ([[[selection entity] name] isEqualToString:@"Study"]) 
-				source = [[[[[selection valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject] valueForKey:@"completePath"];
-			else
-				source = [[[selection valueForKey:@"images"] anyObject] valueForKey:@"completePath"];
+			if( [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: images];
+			else [self filesForDatabaseOutlineSelection: images];
 			
-			DICOMExport *e = [[[DICOMExport alloc] init] autorelease];
+			if( [images count])
+				source = [[images objectAtIndex: 0] valueForKey:@"completePath"];
+		}
+		
+		DICOMExport *e = [[[DICOMExport alloc] init] autorelease];
+		
+		[e setSeriesDescription: [NSString stringWithFormat: NSLocalizedString( @"Clipboard - %@", nil), [BrowserController DateTimeWithSecondsFormat: [NSDate date]]]];
+		
+		NSBitmapImageRep *rep = (NSBitmapImageRep*) [image bestRepresentationForDevice:nil];
+		
+		if ([rep isMemberOfClass: [NSBitmapImageRep class]])
+		{
+			[e setSourceFile: source];
 			
-			[e setSeriesDescription: [NSString stringWithFormat: NSLocalizedString( @"Clipboard - %@", nil), [BrowserController DateTimeWithSecondsFormat: [NSDate date]]]];
+			int bpp = [rep bitsPerPixel] / [rep samplesPerPixel];
+			int spp = [rep samplesPerPixel];
 			
-			NSBitmapImageRep *rep = (NSBitmapImageRep*) [image bestRepresentationForDevice:nil];
-			
-			if ([rep isMemberOfClass: [NSBitmapImageRep class]])
+			if( [rep bitsPerPixel] == 32 && spp == 3)
 			{
-				[e setSourceFile: source];
+				bpp = 8;
+				spp = 4;
+			}
+			
+			[e setPixelData: [rep bitmapData] samplesPerPixel: spp bitsPerSample: bpp width:[rep pixelsWide] height:[rep pixelsHigh]];
+			
+			if( [rep isPlanar])
+				NSLog( @"********** BrowserController Paste : Planar is not yet supported....");
+			else
+			{
+				NSString *f = [e writeDCMFile: nil];
 				
-				int bpp = [rep bitsPerPixel] / [rep samplesPerPixel];
-				int spp = [rep samplesPerPixel];
-				
-				if( [rep bitsPerPixel] == 32 && spp == 3)
+				if( f)
 				{
-					bpp = 8;
-					spp = 4;
-				}
+					[BrowserController addFiles: [NSArray arrayWithObject: f]
+									  toContext: [self managedObjectContext]
+									 toDatabase: self
+									  onlyDICOM: YES 
+							   notifyAddedFiles: YES
+							parseExistingObject: YES
+									   dbFolder: [self documentsDirectory]
+							  generatedByOsiriX: YES];
 				
-				[e setPixelData: [rep bitmapData] samplesPerPixel: spp bitsPerSample: bpp width:[rep pixelsWide] height:[rep pixelsHigh]];
-				
-				if( [rep isPlanar])
-					NSLog( @"********** BrowserController Paste : Planar is not yet supported....");
-				else
-				{
-					NSString *f = [e writeDCMFile: nil];
-					
-					if( f)
-					{
-						[BrowserController addFiles: [NSArray arrayWithObject: f]
-										  toContext: [self managedObjectContext]
-										 toDatabase: self
-										  onlyDICOM: YES 
-								   notifyAddedFiles: YES
-								parseExistingObject: YES
-										   dbFolder: [self documentsDirectory]
-								  generatedByOsiriX: YES];
-					
-						return;
-					}
+					return;
 				}
 			}
 		}
@@ -9289,6 +9296,13 @@ static NSConditionLock *threadLock = nil;
 	
 	NSBeep();
 }
+
+
+- (IBAction) paste: (id)sender
+{
+	[self pasteImageForSourceFile: nil];
+}
+	 
 #endif
 
 - (IBAction) copy: (id)sender

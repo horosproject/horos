@@ -1461,6 +1461,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[[self windowController] redo: sender];
 }
 
+#ifndef OSIRIX_LIGHT
 - (void)paste:(id)sender
 {
     NSPasteboard *pb = [NSPasteboard generalPasteboard];
@@ -1501,12 +1502,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[self setNeedsDisplay:YES];
 	}
 	
-	// Create a DICOM SC for this patient
-	if( [[NSPasteboard generalPasteboard] dataForType: NSTIFFPboardType])
-	{
-		[[BrowserController currentBrowser] paste: self];
-	}
+	id winCtrl = self.windowController;
+	if ([winCtrl respondsToSelector:@selector( paste:)])
+		[winCtrl paste: sender];
 }
+#endif
 
 -(IBAction) copy:(id) sender
 {

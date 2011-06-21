@@ -445,7 +445,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (int) askForZIPPassword: (NSString*) file destination: (NSString*) destination;
 - (IBAction) reparseIn3D:(id) sender;
 - (IBAction) reparseIn4D:(id) sender;
-- (IBAction) paste: (id)sender;
+- (void) selectThisStudy: (id)study;
 
 //- (short) createAnonymizedFile:(NSString*) srcFile :(NSString*) dstFile;
 
@@ -537,6 +537,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 
 #ifndef OSIRIX_LIGHT
+- (IBAction) paste: (id)sender;
+- (IBAction) pasteImageForSourceFile: (NSString*) sourceFile;
 - (void) decompressDICOMJPEG: (NSArray*) array;
 //- (void) decompressWaitIncrementation: (NSNumber*) n;
 - (void) compressDICOMJPEG:(NSArray*) array;
