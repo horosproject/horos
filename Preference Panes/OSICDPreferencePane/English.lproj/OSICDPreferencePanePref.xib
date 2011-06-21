@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="98"/>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -63,7 +63,7 @@
 										<object class="NSButton" id="980907261">
 											<reference key="NSNextResponder" ref="284310877"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{16, 143}, {657, 18}}</string>
+											<string key="NSFrame">{{17, 143}, {657, 18}}</string>
 											<reference key="NSSuperview" ref="284310877"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="867122110">
@@ -90,7 +90,7 @@
 										<object class="NSButton" id="102423531">
 											<reference key="NSNextResponder" ref="284310877"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{16, 123}, {657, 18}}</string>
+											<string key="NSFrame">{{17, 123}, {657, 18}}</string>
 											<reference key="NSSuperview" ref="284310877"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="12722064">
@@ -111,7 +111,7 @@
 										<object class="NSMatrix" id="468243953">
 											<reference key="NSNextResponder" ref="284310877"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{16, 79}, {654, 38}}</string>
+											<string key="NSFrame">{{17, 79}, {654, 38}}</string>
 											<reference key="NSSuperview" ref="284310877"/>
 											<bool key="NSEnabled">YES</bool>
 											<int key="NSNumRows">2</int>
@@ -234,7 +234,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="947728721">
 											<reference key="NSNextResponder" ref="284310877"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{311, 99}, {362, 18}}</string>
+											<string key="NSFrame">{{312, 99}, {362, 18}}</string>
 											<reference key="NSSuperview" ref="284310877"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="734149438">
@@ -255,7 +255,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSMatrix" id="108541256">
 											<reference key="NSNextResponder" ref="284310877"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{17, 13}, {518, 58}}</string>
+											<string key="NSFrame">{{18, 13}, {518, 58}}</string>
 											<reference key="NSSuperview" ref="284310877"/>
 											<bool key="NSEnabled">YES</bool>
 											<int key="NSNumRows">3</int>
@@ -370,11 +370,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<reference key="NSFont" ref="500324374"/>
 										</object>
 									</object>
-									<string key="NSFrame">{{2, 2}, {688, 169}}</string>
+									<string key="NSFrame">{{2, 2}, {689, 169}}</string>
 									<reference key="NSSuperview" ref="158522742"/>
 								</object>
 							</object>
-							<string key="NSFrame">{{17, 159}, {692, 189}}</string>
+							<string key="NSFrame">{{16, 159}, {693, 189}}</string>
 							<reference key="NSSuperview" ref="365080541"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
@@ -443,7 +443,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSButtonCell" key="NSCell" id="438206977">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Include Weasi, a multi-platform DICOM viewer (Mac, Windows and Linux, 16 MB)</string>
+												<string key="NSContents">Include Weasis, a multi-platform DICOM viewer (Mac, Windows and Linux, 16 MB)</string>
 												<reference key="NSSupport" ref="255335428"/>
 												<reference key="NSControlView" ref="49825180"/>
 												<int key="NSButtonFlags">1211912703</int>
@@ -485,7 +485,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSButtonCell" key="NSCell" id="526324683">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Copy an HTML/Quicktime version of the images, readable by any web browser</string>
+												<string key="NSContents">Include an HTML/Quicktime version of the images, readable by any web browser</string>
 												<reference key="NSSupport" ref="255335428"/>
 												<reference key="NSControlView" ref="313292628"/>
 												<int key="NSButtonFlags">1211912703</int>
@@ -506,7 +506,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSButtonCell" key="NSCell" id="579790439">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Prefer standard JPEG instead of JPEG2000 compression</string>
+												<string key="NSContents">Prefer standard JPEG instead of JPEG2000 compression for DICOM files</string>
 												<reference key="NSSupport" ref="255335428"/>
 												<reference key="NSControlView" ref="184313264"/>
 												<int key="NSButtonFlags">1211912703</int>
@@ -614,12 +614,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="154481161">
-				<object class="NSMutableArray" key="NSDeclaredKeys">
-					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>autoSelectSourceCDDVD</string>
-					<string>ScanDiscIfDICOMDIRZero</string>
-					<string>ScanDiskIfDICOMDIRZero</string>
-				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 		</object>

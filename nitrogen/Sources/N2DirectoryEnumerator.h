@@ -16,9 +16,11 @@
 	NSMutableArray* DIRs;
 	NSUInteger counter, max;
 	BOOL _filesOnly;
+	BOOL _recursive;
 }
 
 @property BOOL filesOnly;
+@property BOOL recursive;
 
 -(id)initWithPath:(NSString*)path maxNumberOfFiles:(NSInteger)n;
 

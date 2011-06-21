@@ -257,6 +257,11 @@
 }
 
 -(N2DirectoryEnumerator*)enumeratorAtPath:(NSString*)path filesOnly:(BOOL)filesOnly {
+	return [self enumeratorAtPath:path filesOnly:filesOnly recursive:YES];
+}
+
+
+-(N2DirectoryEnumerator*)enumeratorAtPath:(NSString*)path filesOnly:(BOOL)filesOnly recursive:(BOOL)recursive {
 	N2DirectoryEnumerator* de = [[[N2DirectoryEnumerator alloc] initWithPath:path maxNumberOfFiles:-1] autorelease];
 	de.filesOnly = filesOnly;
 	return de;

@@ -23,6 +23,7 @@
 @implementation N2DirectoryEnumerator
 
 @synthesize filesOnly = _filesOnly;
+@synthesize recursive = _recursive;
 
 -(id)initWithPath:(NSString*)path maxNumberOfFiles:(NSInteger)m {
 	self = [super init];
@@ -87,9 +88,11 @@
 			
 			BOOL isDir;
 			if (dirp->d_type == DT_DIR || (dirp->d_type == DT_UNKNOWN && [NSFileManager.defaultManager fileExistsAtPath:fullpath isDirectory:&isDir] && isDir)) {
-				DIR* sdir = opendir([fullpath fileSystemRepresentation]);
-				//NSLog(@"\tPushed");
-				if (sdir) [self pushDIR:sdir subpath:currpath];
+				if (_recursive) {
+					DIR* sdir = opendir([fullpath fileSystemRepresentation]);
+					//NSLog(@"\tPushed");
+					if (sdir) [self pushDIR:sdir subpath:currpath];
+				}
 				if (_filesOnly) continue;
 			}
 			

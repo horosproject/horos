@@ -261,6 +261,13 @@ static DicomDatabase* activeLocalDatabase = nil;
 	}
 }
 
+-(id)independentDatabase {
+	DicomDatabase* idd = [super independentDatabase];
+	[idd->_dataFileIndex release];
+	idd->_dataFileIndex = [_dataFileIndex retain];
+	return idd;
+}
+
 #pragma mark Instance
 
 @synthesize baseDirPath = _baseDirPath, dataBaseDirPath = _dataBaseDirPath, dataFileIndex = _dataFileIndex, name = _name, timeOfLastModification = _timeOfLastModification;
@@ -320,8 +327,6 @@ static DicomDatabase* activeLocalDatabase = nil;
 	strncpy(baseDirPathC, self.baseDirPath.fileSystemRepresentation, sizeof(baseDirPathC));
 	strncpy(incomingDirPathC, self.incomingDirPath.fileSystemRepresentation, sizeof(incomingDirPathC));
 	strncpy(tempDirPathC, self.tempDirPath.fileSystemRepresentation, sizeof(tempDirPathC));
-	
-	[self computeDataFileIndex];
 	
 	// if a TOBEINDEXED dir exists, move it into INCOMING so we will import the data
 	
@@ -538,29 +543,50 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(NSUInteger)computeDataFileIndex {
 	DLog(@"In -[DicomDatabase computeDataFileIndex] for %@ initially %ld", self.sqlFilePath, _dataFileIndex.unsignedIntegerValue);
 	
+	BOOL hereBecauseZero = (_dataFileIndex.unsignedIntegerValue == 0);
 	@synchronized(_dataFileIndex) {
+		if (hereBecauseZero && _dataFileIndex.unsignedIntegerValue != 0)
+			return _dataFileIndex.unsignedIntegerValue += 1;
 		@try {
 			NSString* path = self.dataDirPath;
+//			NSLog(@"Path is %@", path);
 
-			// delete empty dirs and scan for files with number names // TODO: this is too slow for NAS systems
-			for (NSString* f in [NSFileManager.defaultManager contentsOfDirectoryAtPath:path error:nil]) {
+			// delete empty dirs and scan for files with number names
+			NSArray* fs = [[NSFileManager.defaultManager enumeratorAtPath:path filesOnly:NO recursive:NO] allObjects]; // [NSFileManager.defaultManager contentsOfDirectoryAtPath:path error:nil];
+//			NSLog(@"Scanning %d dirs", fs.count);
+			for (NSString* f in fs) {
+//				NSLog(@"Scanning dir %@", f);
 				NSString* fpath = [path stringByAppendingPathComponent:f];
-				NSDictionary* fattr = [NSFileManager.defaultManager fileAttributesAtPath:fpath traverseLink:YES];
+				//NSDictionary* fattr = [NSFileManager.defaultManager fileAttributesAtPath:fpath traverseLink:YES];
+				//NSLog(@"Has %d attrs", fattr.count);
 				
 				// check if this folder is empty, and delete it if necessary
-				if ([[fattr objectForKey:NSFileType] isEqualToString:NSFileTypeDirectory]) {
-					int numberOfValidFiles = 0;
-					
-					for (NSString* s in [NSFileManager.defaultManager contentsOfDirectoryAtPath:fpath error:nil])
-						if ([[s stringByDeletingPathExtension] integerValue] > 0)
-							numberOfValidFiles++;
-					
-					if (!numberOfValidFiles)
-						[NSFileManager.defaultManager removeItemAtPath:fpath error:nil];
-					else {
-						NSUInteger fi = [f integerValue];
-						if (fi > _dataFileIndex.unsignedIntegerValue)
-							_dataFileIndex.unsignedIntegerValue = fi;
+				BOOL isDir;
+				if ([NSFileManager.defaultManager fileExistsAtPath:fpath isDirectory:&isDir] && isDir) {
+					NSAutoreleasePool* pool = [NSAutoreleasePool new];
+					@try {
+						BOOL hasValidFiles = NO;
+						
+//						NSLog(@"Content of %@", f);
+						N2DirectoryEnumerator* n2de = [NSFileManager.defaultManager enumeratorAtPath:fpath filesOnly:NO recursive:NO];
+						NSString* s;
+						while (s = [n2de nextObject]) // [NSFileManager.defaultManager contentsOfDirectoryAtPath:fpath error:nil])
+							if ([[s stringByDeletingPathExtension] integerValue] > 0) {
+								hasValidFiles = YES;
+								break;
+							}
+						
+						if (!hasValidFiles)
+							[NSFileManager.defaultManager removeItemAtPath:fpath error:nil];
+						else {
+							NSUInteger fi = [f integerValue];
+							if (fi > _dataFileIndex.unsignedIntegerValue)
+								_dataFileIndex.unsignedIntegerValue = fi;
+						}
+					} @catch (NSException* e) {
+						N2LogExceptionWithStackTrace(e);
+					} @finally {
+						[pool release];
 					}
 				}
 			}
@@ -568,11 +594,14 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			// scan directories
 			
 			if (_dataFileIndex.unsignedIntegerValue > 0) {
+//				NSLog(@"datafileindex is %d", _dataFileIndex.unsignedIntegerValue);
+				
 				NSInteger t = _dataFileIndex.unsignedIntegerValue;
 				t -= [BrowserController DefaultFolderSizeForDB];
 				if (t < 0) t = 0;
 				
-				NSArray* paths = [NSFileManager.defaultManager contentsOfDirectoryAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", _dataFileIndex.unsignedIntegerValue]] error:nil];
+				NSArray* paths = [[NSFileManager.defaultManager enumeratorAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", _dataFileIndex.unsignedIntegerValue]] filesOnly:NO recursive:NO] allObjects]; // [NSFileManager.defaultManager contentsOfDirectoryAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", _dataFileIndex.unsignedIntegerValue]] error:nil];
+//				NSLog(@"contains %d files", paths.count);
 				for (NSString* s in paths) {
 					long si = [[s stringByDeletingPathExtension] integerValue];
 					if (si > t)
@@ -604,6 +633,9 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	}
 
 	@synchronized(_dataFileIndex) {
+		if (!_dataFileIndex.unsignedIntegerValue)
+			[self computeDataFileIndex];
+		
 		NSString* dataDirPath = self.dataDirPath;
 		[NSFileManager.defaultManager confirmNoIndexDirectoryAtPath:dataDirPath]; // TODO: old impl only did this every 3 secs..
 		
