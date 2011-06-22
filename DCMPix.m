@@ -7085,7 +7085,7 @@ END_CREATE_ROIS:
 							}
 						}
 						found16 = YES; 	// this is used to let us know we have to look for the other element */
-						NSLog(@"%d", xxindex);
+//						NSLog(@"%d", xxindex);
 					}//endif
 					
 					// extract the BLUE palette clut data
@@ -8323,14 +8323,17 @@ END_CREATE_ROIS:
 									}
 				#endif
 									
-									for( y = 0; y < height; y++)
+									if( shortRed && shortGreen && shortBlue)
 									{
-										for( x = 0; x < width; x++)
+										for( y = 0; y < height; y++)
 										{
-											pixel = bufPtr[y*width + x];
-											tmpImage[y*width*3 + x*3 + 0] = shortRed[ pixel];
-											tmpImage[y*width*3 + x*3 + 1] = shortGreen[ pixel];
-											tmpImage[y*width*3 + x*3 + 2] = shortBlue[ pixel];
+											for( x = 0; x < width; x++)
+											{
+												pixel = bufPtr[y*width + x];
+												tmpImage[y*width*3 + x*3 + 0] = shortRed[ pixel];
+												tmpImage[y*width*3 + x*3 + 1] = shortGreen[ pixel];
+												tmpImage[y*width*3 + x*3 + 2] = shortBlue[ pixel];
+											}
 										}
 									}
 									
@@ -8341,9 +8344,13 @@ END_CREATE_ROIS:
 									oImage = (short*) tmpImage;
 									goImageSize[ fileNb] = width * height * 3;
 									
-									free( shortRed);
-									free( shortGreen);
-									free( shortBlue);
+									if( shortRed) free( shortRed);
+									if( shortGreen) free( shortGreen);
+									if( shortBlue) free( shortBlue);
+									
+									shortRed = nil;
+									shortGreen = nil;
+									shortBlue = nil;
 								}
 								
 								// we need to know how the pixels are stored
@@ -12114,6 +12121,10 @@ END_CREATE_ROIS:
 	[checking unlock];
 	[checking release];
 	checking = nil;
+
+	if( shortRed) free( shortRed);
+	if( shortGreen) free( shortGreen);
+	if( shortBlue) free( shortBlue);
 	
     [super dealloc];
 }
