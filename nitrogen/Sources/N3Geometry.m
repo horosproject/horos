@@ -284,6 +284,11 @@ void N3VectorCrossProductWithVectors(N3VectorArray vectors1, const N3VectorArray
     }
 }
 
+N3Vector N3VectorLerp(N3Vector vector1, N3Vector vector2, CGFloat t)
+{
+    return N3VectorAdd(N3VectorScalarMultiply(vector1, 1.0 - t), N3VectorScalarMultiply(vector2, t));
+}
+
 N3Vector N3VectorBend(N3Vector vectorToBend, N3Vector originalDirection, N3Vector newDirection) // this aught to be re-written to be more numerically stable!
 {
     N3AffineTransform rotateTransform;
