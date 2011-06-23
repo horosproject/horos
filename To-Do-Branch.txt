@@ -1,5 +1,5 @@
 BUGs:
-- Auto-retrieve bug (check for already here: GRAF JEAN)
+- Auto-retrieve bug (check for already here: 46150)
 - Thread Cells (sometimes empty and staying forever… (Auto QA, no errors)
 
 - MacAppStore (check)
