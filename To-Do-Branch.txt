@@ -1,3 +1,7 @@
+BUGs:
+- Auto-retrieve bug (check for already here: GRAF JEAN)
+- Thread Cells (sometimes empty and staying forever… (Auto QA, no errors)
+
 - MacAppStore (check)
 
 --- tester à fond:
