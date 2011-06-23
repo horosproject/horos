@@ -46,21 +46,18 @@
 - Vertical mode for CPR
 - Hanging protocols based on Workspace state
 - Support for DICOM Worklist SCU for prefetching
+- Password DB in keychain
+- Preferences for Status menu in DB
+- Is it possible to place keyed images into a report automatically when generating a report?
+
+------------------------------------------------------------------------------------------------------------------------
 
 Cours
 - Basics:
 - dmg, export dicom cd, html export
 - web server
 
-- Report modality - study description
-- WADO Client/Server
-- Hanging Protocol
-
-- Password DB in keychain
-- Preferences for Status menu in DB
-- Merge Exports to Quicktime, Files, DICOM Files, DICOM Node
-- Is it possible to place keyed images into a report automatically when generating a report?
-- Worklist DICOM
+------------------------------------------------------------------------------------------------------------------------
 
 for i in `ls -a | grep plugin`; do tempfile="`basename "$i" .plugin`.osirixplugin"; mv $i $tempfile; done;
 
@@ -199,24 +196,9 @@ OpenJPEG optimization:
 make CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386 -arch x86_64 -O3 -fPIC -msse -msse2 -msse3 -ffast-math -funroll-loops -ftree-vectorize -fomit-frame-pointer" LDFLAGS="-syslibroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386 -arch x86_64" osx
 
 
-
-- Un meilleur support des normes DICOM network: C-FIND, C-MOVE, C-GET, C-STORE. Actuellement le C-FIND est particulièrement lent: plusieurs secondes. Et plus grave, il réponds partiellement à la requête: par exemple, un C-FIND en fin de journée sur les CT du jour ne donnera pas toute la liste, mais se limitera aux 20 premiers. Il semble qu'il y ait un timeout? Ce mauvais support de la norme DICOM limite énormément l'intégration du PACS avec d'autres systèmes (3D workstations, téléradiologie, etc.)
-
-
-- Performances de transfert en C-MOVE, C-STORE. Pourquoi la vitesse de transfert est-elle si lente? Environ 2-3 MB/s? (Le reseau de LaTour est maintenant en ethernet 1 Gb) On pourrait espérer au minimum un débit de 10 MB/s depuis le serveur.
+------------------------------------------------------------------------------------------------------------------------
 
 
-- Le support d'une syntaxe de compression. Le PACS supporte-t-il la compression JPEG2000 lossless? ou un autre à la norme DICOM?
-
-
-- Support du WADO: dans l'idée de créer dans un avenir proche un 'portal web' pour les cliniciens externes, le serveur PACS devrait être facilement interfacable à un serveur web. Le support de la norme WADO permettrait une intégration facile.
-ftp://medical.nema.org/medical/dicom/2008/08_18pu.pdf
-
-
-- L'indexation des fichiers DICOM par une base de données indépendante: toujours dans l'optique d'un portal web, cela permettrait de coupler le PACS au logiciel dcm4chee, qui offre la norme WADO et un viewer web: oviyam (http://oviyam.raster.in/), par exemple. Est-ce qu'une indexation des fichiers par un autre logiciel est-elle 'officiellement' supportée?
-
-
-- Concernant le viewer, y a-t-il un support de la fusion d'image? Avec l'installation prochaine du SPECT-CT, la fusion d'image sera nécessaire pour l'interprétation des images. Sinon, ces examens devront être lus et interprétés uniquement sur la station Philips livrée avec le SPECT-CT. La même question se reposera si on installe un PET-CT dans l'avenir.
 
 // Release
 - X Bundle Version
