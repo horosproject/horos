@@ -7231,8 +7231,6 @@ END_CREATE_ROIS:
 		} // endif ...extraction of the color palette
 	}
 	
-	[PapyrusLock unlock];
-	
 	if( gUseVOILUT)
 	{
 		val = Papy3GetElement (theGroupP, papVOILUTSequenceGr, &pos, &elemType);
@@ -7275,6 +7273,8 @@ END_CREATE_ROIS:
 			}
 		}
 	}
+	
+	[PapyrusLock unlock];
 }
 
 - (BOOL) loadDICOMPapyrus

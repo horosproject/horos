@@ -130,6 +130,8 @@
 
 - (void) WADODownload: (NSArray*) urlToDownload
 {
+	urlToDownload = [[NSSet setWithArray: urlToDownload] allObjects]; // UNIQUE OBJECTS !
+	
 	if( [urlToDownload count])
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

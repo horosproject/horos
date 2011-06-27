@@ -9423,7 +9423,7 @@ static BOOL withReset = NO;
 	withReset = NO;
 }
 
-- (DCMPix*) getDCMPixFromViewerIfAvailable: (NSString*) pathToFind
+- (DCMPix*) getDCMPixFromViewerIfAvailable: (NSString*) pathToFind frameNumber: (int) frameNumber
 {
 	DCMPix *returnPix = nil;
 	
@@ -9446,7 +9446,23 @@ static BOOL withReset = NO;
 			
 			@try
 			{
-				NSUInteger i = [[vFileList valueForKey: @"completePath"] indexOfObject: pathToFind];
+				NSUInteger i = NSNotFound;
+				
+				if( frameNumber == 0)
+					i = [[vFileList valueForKey: @"completePath"] indexOfObject: pathToFind];
+				else
+				{
+					for( int x = 0 ; x < vFileList.count; x++)
+					{
+						DicomImage *image = [vFileList objectAtIndex: x];
+						
+						if( [image.completePath isEqualToString: pathToFind] && [image.frameID intValue] == frameNumber)
+						{
+							i = x;
+							break;
+						}
+					}
+				}
 				
 				if( i != NSNotFound)
 				{
@@ -9514,7 +9530,7 @@ static BOOL withReset = NO;
 				DCMPix *dcmPix = nil;
 				
 				//Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
-				dcmPix = [[self getDCMPixFromViewerIfAvailable: [image valueForKey:@"completePath"]] retain];
+				dcmPix = [[self getDCMPixFromViewerIfAvailable: [image valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
 				
 				if( dcmPix == nil)
 					dcmPix = [[DCMPix alloc] initWithPath: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
@@ -9562,7 +9578,7 @@ static BOOL withReset = NO;
 						{
 							DCMPix *dcmPix = nil;
 							
-							dcmPix = [[self getDCMPixFromViewerIfAvailable: [imageObj valueForKey:@"completePath"]] retain];
+							dcmPix = [[self getDCMPixFromViewerIfAvailable: [imageObj valueForKey:@"completePath"] frameNumber: [[imageObj valueForKey: @"frameID"] intValue]] retain];
 							
 							if( dcmPix == nil)
 								dcmPix = [[DCMPix alloc] initWithPath: [imageObj valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :nil :[[imageObj valueForKey: @"frameID"] intValue] :[[imageObj valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: imageObj];
@@ -9608,7 +9624,7 @@ static BOOL withReset = NO;
 						{
 							DCMPix *dcmPix = nil;
 							
-							dcmPix = [[self getDCMPixFromViewerIfAvailable: [[images objectAtIndex: 0] valueForKey:@"completePath"]] retain];
+							dcmPix = [[self getDCMPixFromViewerIfAvailable: [[images objectAtIndex: 0] valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
 							
 							if( dcmPix == nil)
 								dcmPix = [[DCMPix alloc] initWithPath: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
@@ -10341,7 +10357,7 @@ static BOOL withReset = NO;
 			
 			if( [[files objectAtIndex: i] valueForKey: @"frameID"]) frame = [[[files objectAtIndex: i] valueForKey:@"frameID"] intValue];
 			
-			DCMPix *dcmPix = [[self getDCMPixFromViewerIfAvailable: [filesPaths objectAtIndex:i]] retain];
+			DCMPix *dcmPix = [[self getDCMPixFromViewerIfAvailable: [filesPaths objectAtIndex:i] frameNumber: frame] retain];
 			
 			if( dcmPix == nil)
 				dcmPix = [[DCMPix alloc] initWithPath: [filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
