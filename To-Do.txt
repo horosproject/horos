@@ -1,3 +1,8 @@
+- OsiriX MD version
+- PET-CT align 3D Box
+- OsiriX MD QR French?
+- Prostate 4D parsing
+
 - ROI: Add points to Polygon or Pencil ROIs 
 - Option to switch to 1x1 when going to fullscreen if tiling mode is not 1x1
 - Find Previous/Next Key image will scan the entire study, instead of only current series
