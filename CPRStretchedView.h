@@ -17,6 +17,7 @@
 @class CPRDisplayInfo;
 @class CPRStretchedGeneratorRequest;
 @class StringTexture;
+@class N3BezierPath;
 
 @interface CPRStretchedView : DCMView <CPRGeneratorDelegate> {
     id<CPRViewDelegate> _delegate;
@@ -39,6 +40,9 @@
     BOOL _processingRequest; // synchronous new image requests are generated in drawRect, but code that handles the new image calls' setNeedsDisplay,
                             // so this variable is used to short circuit setNeedsDisplay while the image is being generated.
     BOOL _needsNewRequest;
+    
+    N3BezierPath *_centerlinePath;
+    CGFloat _centerlineProjectedLength;
 }
 
 @property (nonatomic, readwrite, assign) id<CPRViewDelegate> delegate;

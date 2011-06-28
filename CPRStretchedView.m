@@ -22,11 +22,13 @@
 #import "StringTexture.h"
 #import "NSColor+N2.h"
 
+#define _extraWidthFactor 1.2
 
 @interface CPRStretchedView ()
 
 @property (nonatomic, readwrite, retain) CPRVolumeData *curvedVolumeData; // the volume data that was generated
 @property (nonatomic, readwrite, retain) CPRStretchedGeneratorRequest *lastRequest;
+@property (nonatomic, readonly) N3BezierPath *centerlinePath;
 
 + (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRViewClippingRangeMode)clippingRangeMode;
 
@@ -42,6 +44,8 @@
 - (void)_sendDidEditDisplayInfo;
 
 - (void)_updateGeneratedHeight;
+
+- (N3BezierPath *)_generateCenterlinePathAndProjectedLength:(CGFloat *)projectedLength;
 
 @end
 
@@ -79,7 +83,9 @@
     _displayInfo = nil;
     [_lastRequest release];
     _lastRequest = nil;
-		
+    [_centerlinePath release];
+    _centerlinePath = nil;
+    
     [super dealloc];
 }
 
@@ -180,6 +186,12 @@
 
 - (void)subDrawRect:(NSRect)rect
 {
+    double pixToSubdrawRectOpenGLTransform[16];
+ 	CGFloat pixelsPerMm;
+    CGFloat pheight_2;
+	NSInteger i;
+    N3Vector endpoint;
+    N3BezierPath *centerline;
     CGLContextObj cgl_ctx;
     
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    
@@ -187,8 +199,33 @@
 	glEnable(GL_POLYGON_SMOOTH);
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
+    
+    centerline = [self centerlinePath];
+    pixelsPerMm = (CGFloat)curDCM.pwidth/_centerlineProjectedLength;
+    pheight_2 = (CGFloat)curDCM.pheight/2.0;
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+    glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
+    // draw the centerline.
+    
+    glColor3f(0, 1, 0);
+    glBegin(GL_LINE_STRIP);
+    for (i = 0; i < [centerline elementCount]; i++) {
+        [centerline elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
+        endpoint.y *= pixelsPerMm;
+        endpoint.y += pheight_2;
+        glVertex2d(endpoint.x, endpoint.y);
+    }
+    glEnd();
+    
+    glPopMatrix();
+ 
+    // the centerline is a series of point, maybe even ideally saved as a CPRBezierPath
+    
+    
 	// Red Square
 	if( [[self window] firstResponder] == self && stringID == nil)
 	{
@@ -238,6 +275,11 @@
     self.curvedVolumeData = volume;
     
     pixArray = [[NSMutableArray alloc] init];
+    
+    // blow away local caches of overlay lines
+    [_centerlinePath release];
+    _centerlinePath = nil;
+    _centerlinePath = 0;
     
     for (i = 0; i < self.curvedVolumeData.pixelsDeep; i++)
 	{
@@ -303,6 +345,15 @@
 {
 	[self _sendNewRequestIfNeeded];
 	[_generator runUntilAllRequestsAreFinished];
+}
+
+- (N3BezierPath*)centerlinePath
+{
+    if (_centerlinePath == nil) {
+        _centerlinePath = [[self _generateCenterlinePathAndProjectedLength:&_centerlineProjectedLength] retain];
+    }
+    
+    return _centerlinePath;
 }
 
 + (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRViewClippingRangeMode)clippingRangeMode
@@ -378,8 +429,8 @@
 	{
         request = [[CPRStretchedGeneratorRequest alloc] init];
         
-        request.pixelsWide = [self bounds].size.width*1.2;
-        request.pixelsHigh = [self bounds].size.height*1.2;
+        request.pixelsWide = [self bounds].size.width*_extraWidthFactor;
+        request.pixelsHigh = [self bounds].size.height*_extraWidthFactor;
 		request.slabWidth = _curvedPath.thickness;
         
         request.slabSampleDistance = 0;
@@ -388,8 +439,8 @@
         curveDirection = N3VectorSubtract([_curvedPath.bezierPath vectorAtEnd], [_curvedPath.bezierPath vectorAtStart]);
         baseNormal = N3VectorNormalize(N3VectorCrossProduct(_curvedPath.baseDirection, curveDirection));
         request.projectionNormal = N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(_curvedPath.angle, curveDirection));
-        request.midHeightPoint = N3VectorScalarMultiply(N3VectorAdd([_curvedPath.bezierPath topBoundingPlaneForNormal:request.projectionNormal].point, 
-                                                                    [_curvedPath.bezierPath bottomBoundingPlaneForNormal:request.projectionNormal].point), 0.5);
+        request.midHeightPoint = N3VectorLerp([_curvedPath.bezierPath topBoundingPlaneForNormal:request.projectionNormal].point, 
+                                              [_curvedPath.bezierPath bottomBoundingPlaneForNormal:request.projectionNormal].point, 0.5);
         //        request.vertical = NO;
         
         if ([_lastRequest isEqual:request] == NO) {
@@ -446,5 +497,99 @@
     }
 }
 
+// the ditances in the centerline point will corespond to, x - pixels generated horizonatally, y - distance from the midline in mm, z - relative distance along the original bezier path
+- (N3BezierPath *)_generateCenterlinePathAndProjectedLength:(CGFloat *)projectedLength;
+{
+    NSInteger pixelsWide;
+    NSUInteger numVectors;
+    N3Vector midHeightPoint;
+    N3Vector curveDirection;
+    N3Vector baseNormal;
+    N3Vector projectionNormal;
+    N3BezierCoreRef flattenedBezierCore;
+    N3BezierCoreRef projectedBezierCore;
+    CGFloat projectedBezierLength;
+    CGFloat sampleSpacing;
+    N3VectorArray vectors;
+    CGFloat *relativePositions;
+    N3MutableBezierPath *centerlinePath;
+    N3Vector newPoint;
+    NSInteger i;
+
+    // figure out how many horizonatal pixels we will have
+    pixelsWide = [self bounds].size.width*_extraWidthFactor;
+    curveDirection = N3VectorSubtract([_curvedPath.bezierPath vectorAtEnd], [_curvedPath.bezierPath vectorAtStart]);
+    baseNormal = N3VectorNormalize(N3VectorCrossProduct(_curvedPath.baseDirection, curveDirection));
+    projectionNormal = N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(_curvedPath.angle, curveDirection));
+    projectionNormal = N3VectorNormalize(projectionNormal);
+    midHeightPoint = N3VectorLerp([_curvedPath.bezierPath topBoundingPlaneForNormal:projectionNormal].point, 
+                                  [_curvedPath.bezierPath bottomBoundingPlaneForNormal:projectionNormal].point, 0.5);
+    
+    flattenedBezierCore = N3BezierCoreCreateFlattenedCopy([_curvedPath.bezierPath N3BezierCore], N3BezierDefaultFlatness);
+    projectedBezierCore = N3BezierCoreCreateCopyProjectedToPlane(flattenedBezierCore, N3PlaneMake(N3VectorZero, projectionNormal));
+    projectedBezierLength = N3BezierCoreLength(projectedBezierCore);
+    sampleSpacing = projectedBezierLength / (CGFloat)pixelsWide;
+
+    vectors = malloc(sizeof(N3Vector) * pixelsWide);
+    relativePositions = malloc(sizeof(CGFloat) * pixelsWide);
+    
+    numVectors = N3BezierCoreGetProjectedVectorInfo(flattenedBezierCore, sampleSpacing, 0, projectionNormal, vectors, NULL, NULL, relativePositions, pixelsWide);
+    
+    if (numVectors > 0) {
+        while (numVectors < pixelsWide) { // make sure that the full array is filled and that there is not a vector that did not get filled due to roundoff error
+            vectors[numVectors] = vectors[numVectors - 1];
+            relativePositions[numVectors] = relativePositions[numVectors - 1];
+            numVectors++;
+        }
+    } else { // there are no vectors at all to copy from, so just zero out everthing
+        while (numVectors < pixelsWide) { // make sure that the full array is filled and that there is not a vector that did not get filled due to roundoff error
+            vectors[numVectors] = N3VectorZero;
+            relativePositions[numVectors] = 0;
+            numVectors++;
+        }
+    }
+    
+    
+    centerlinePath = [N3MutableBezierPath bezierPath];
+    
+    if (numVectors) {
+        newPoint.x = 0;
+        newPoint.y = N3VectorDotProduct(N3VectorSubtract(vectors[0], midHeightPoint), projectionNormal);
+        newPoint.y = N3VectorLength(N3VectorProject(N3VectorSubtract(vectors[0], midHeightPoint), projectionNormal));
+        newPoint.z = relativePositions[0];
+        
+        [centerlinePath moveToVector:newPoint];
+    }
+    
+    for (i = 1; i < numVectors; i++) {
+        newPoint.x = i;
+        newPoint.y = N3VectorDotProduct(N3VectorSubtract(vectors[i], midHeightPoint), projectionNormal);
+        newPoint.z = relativePositions[i];
+        
+        [centerlinePath lineToVector:newPoint];
+    }
+    
+    N3BezierCoreRelease(flattenedBezierCore);
+    N3BezierCoreRelease(projectedBezierCore);
+    free(vectors);
+    free(relativePositions);
+    
+    if (projectedLength) {
+        *projectedLength = projectedBezierLength;
+    }
+    
+    return centerlinePath;
+}
+
+
 @end
+
+
+
+
+
+
+
+
+
 
