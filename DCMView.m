@@ -2395,10 +2395,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
 			if( curImage < 0) curImage = 0;
 			
-			[curDCM release];
+			DCMPix *pix2beReleased = curDCM;
 			curDCM = [[dcmPixList objectAtIndex:curImage] retain];
-
+			
 			[curDCM CheckLoad];
+			
+			[pix2beReleased release]; // This will allow us to keep the cached group for a multi frame image
 			
 			[curRoiList release];
 			
