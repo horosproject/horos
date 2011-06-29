@@ -2574,7 +2574,261 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			NoOfFrames = gArrNbImages [fileNb];
 			NoOfSeries = 1;
-
+			
+			// Is it a multi frame DICOM files? We need to parse these sequences for the correct sliceLocation value !
+			theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x5200);
+			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+			{
+				UValue_T *val3 = nil;
+//				// ****** ****** ****** ************************************************************************
+//				// SHARED FRAME
+//				// ****** ****** ****** ************************************************************************
+//				
+//				val = Papy3GetElement ( theGroupP, papSharedFunctionalGroupsSequence, &nbVal, &itemType);
+//				
+//				// there is an element
+//				if ( val)
+//				{
+//					// there is a sequence
+//					if (val->sq)
+//					{
+//						// get a pointer to the first element of the list
+//						Papy_List *dcmList = val->sq->object->item;
+//						
+//						// loop through the elements of the sequence
+//						while (dcmList != NULL)
+//						{
+//							SElement * gr = (SElement *) dcmList->object->group;
+//							
+//							switch( gr->group)
+//							{
+//								case 0x0020:
+//									val3 = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &itemType);
+//									if (val3 != NULL && nbVal >= 1)
+//									{
+//										// there is a sequence
+//										if (val3->sq)
+//										{
+//											Papy_List *PixelMatrixSeq = val3->sq->object->item;
+//											
+//											// loop through the elements of the sequence
+//											while (PixelMatrixSeq)
+//											{
+//												SElement * gr = (SElement *) PixelMatrixSeq->object->group;
+//												
+//												switch( gr->group)
+//												{
+//													case 0x0020:
+//													{
+//														float location = [self getSliceLocationFromPapyrusGroup: gr];
+//														
+//														[dicomElements setObject: [NSNumber numberWithFloat: location] forKey:@"sliceLocation"];
+//													}
+//													break;
+//												}
+//												
+//												// get the next element of the list
+//												PixelMatrixSeq = PixelMatrixSeq->next;
+//											}
+//										}
+//									}
+//									break;
+//							}
+//							// get the next element of the list
+//							dcmList = dcmList->next;
+//						} // while ...loop through the sequence
+//					} // if ...there is a sequence of groups
+//				} // if ...val is not NULL
+				
+				// ****** ****** ****** ************************************************************************
+				// PER FRAME
+				// ****** ****** ****** ************************************************************************
+				
+				long frameCount = 0;
+				
+				val = Papy3GetElement ( theGroupP, papPerFrameFunctionalGroupsSequence, &nbVal, &itemType);
+				
+				// there is an element
+				if ( val)
+				{
+					// there is a sequence
+					if (val->sq)
+					{
+						// get a pointer to the first element of the list
+						Papy_List *dcmList = val->sq;
+						
+						NSMutableArray *sliceLocationArray = [NSMutableArray array];
+						
+						// loop through the elements of the sequence
+						while (dcmList)
+						{
+							if( dcmList->object->item)
+							{
+								float originMultiFrame[ 3], orientationMultiFrame[ 9];
+								
+								originMultiFrame[0] = originMultiFrame[1] = originMultiFrame[2] = 0;
+								orientationMultiFrame[ 0] = 1;	orientationMultiFrame[ 1] = 0;		orientationMultiFrame[ 2] = 0;
+								orientationMultiFrame[ 3] = 0;	orientationMultiFrame[ 4] = 1;		orientationMultiFrame[ 5] = 0;
+								
+								{
+									Papy_List *groupsForFrame = dcmList->object->item;
+									
+									while( groupsForFrame)
+									{
+										if( groupsForFrame->object->group)
+										{
+											SElement * gr = (SElement *) groupsForFrame->object->group;
+											
+											switch( gr->group)
+											{
+												case 0x0020:
+													val = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &itemType);
+													if (val != NULL && nbVal >= 1)
+													{
+														// there is a sequence
+														if (val->sq)
+														{
+															// get a pointer to the first element of the list
+															Papy_List *seq = val->sq->object->item;
+															
+															// loop through the elements of the sequence
+															while (seq)
+															{
+																SElement * gr = (SElement *) seq->object->group;
+																
+																switch( gr->group)
+																{
+																	case 0x0020:
+																	{
+																		val = Papy3GetElement ( gr, papImagePositionPatientGr, &nbVal, &itemType);
+																		if (val != NULL && val->a && validAPointer( itemType))
+																		{
+																			UValue_T *tmp = val;
+																			
+																			originMultiFrame[0] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
+																			
+																			if( nbVal > 1)
+																			{
+																				tmp++;
+																				originMultiFrame[1] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
+																			}
+																			
+																			if( nbVal > 2)
+																			{
+																				tmp++;
+																				originMultiFrame[2] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
+																			}
+																		}
+																	}
+																	break;
+																}
+																
+																// get the next element of the list
+																seq = seq->next;
+															}
+														}
+													}
+													
+													val = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &itemType);
+													if (val != NULL && nbVal >= 1)
+													{
+														// there is a sequence
+														if (val->sq)
+														{
+															// get a pointer to the first element of the list
+															Papy_List *seq = val->sq->object->item;
+															
+															// loop through the elements of the sequence
+															while (seq)
+															{
+																SElement * gr = (SElement *) seq->object->group;
+																
+																switch( gr->group)
+																{
+																	case 0x0020:
+																	{
+																		val = Papy3GetElement( gr, papImageOrientationPatientGr, &nbVal, &itemType);
+																		if (val != NULL && val->a && validAPointer( itemType))
+																		{
+																			UValue_T *tmp = val;
+																			if( nbVal != 6)
+																			{
+																				NSLog(@"Orientation is NOT 6 !!!");
+																				if( nbVal > 6) nbVal = 6;
+																			}
+																			for (int j = 0; j < nbVal; j++)
+																			{
+																				orientationMultiFrame[ j]  = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
+																				tmp++;
+																			}
+																			
+																			for (int j = nbVal; j < 6; j++)
+																				orientationMultiFrame[ j] = 0;
+																			
+																			// Compute normal vector
+																			orientationMultiFrame[ 6] = orientationMultiFrame[ 1]*orientationMultiFrame[ 5] - orientationMultiFrame[ 2]*orientationMultiFrame[ 4];
+																			orientationMultiFrame[ 7] = orientationMultiFrame[ 2]*orientationMultiFrame[ 3] - orientationMultiFrame[ 0]*orientationMultiFrame[ 5];
+																			orientationMultiFrame[ 8] = orientationMultiFrame[ 0]*orientationMultiFrame[ 4] - orientationMultiFrame[ 1]*orientationMultiFrame[ 3];		
+																		}
+																		
+																		float location = 0;
+																		
+																		if( fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 7]) && fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 8]))
+																			location = originMultiFrame[ 0];
+																		
+																		if( fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 8]))
+																			location = originMultiFrame[ 1];
+																		
+																		if( fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 7]))
+																			location = originMultiFrame[ 2];
+																		
+																		[sliceLocationArray addObject: [NSNumber numberWithFloat: location]];
+																	}
+																	break;
+																}
+																
+																// get the next element of the list
+																seq = seq->next;
+															}
+														}
+													}
+													break;
+											} // switch( gr->group)
+										} // if( groupsForFrame->object->item)
+										
+										if( groupsForFrame)
+										{
+											// get the next element of the list
+											groupsForFrame = groupsForFrame->next;
+										}
+									} // while groupsForFrame
+								}
+							}
+							
+							if( dcmList)
+							{
+								// get the next element of the list
+								dcmList = dcmList->next;
+								
+								frameCount++;
+							}
+						} // while ...loop through the sequence
+						
+						if( sliceLocationArray.count)
+						{
+							if( NoOfFrames == sliceLocationArray.count)
+								[dicomElements setObject: sliceLocationArray forKey:@"sliceLocationArray"];
+							else
+								NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%d, %d)", NoOfFrames, sliceLocationArray.count);
+						}
+					} // if ...there is a sequence of groups
+				} // if ...val is not NULL
+				
+				theErr = Papy3GroupFree (&theGroupP, TRUE);
+				
+				if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+			}
+			
 			if( patientID == nil) patientID = [[NSString alloc] initWithString:@""];
 		}
 		
