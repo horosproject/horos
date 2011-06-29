@@ -5648,7 +5648,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		avoidChangeWLWWRecursive = YES;
 		
-		if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO) return;
+		if( curImage == -1 || [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO) return;
 		
 		BOOL updateMenu = NO;
 		
@@ -11562,7 +11562,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		
-		if( [aView curDCM])
+		if( [aView curDCM] && curImage >= 0)
 		{
 			if( [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
 			{
@@ -11583,7 +11583,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			self.xFlipped = aView.xFlipped;
 			self.yFlipped = aView.yFlipped;
 			
-			//blending
+			// Blending
 			if (blendingView != aView.blendingView)
 				self.blendingView = aView.blendingView;
 			if (blendingFactor != aView.blendingFactor)

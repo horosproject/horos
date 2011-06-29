@@ -5023,7 +5023,7 @@ END_CREATE_ROIS:
 				
 				dcmObject = [dic objectForKey: @"dcmObject"];
 				[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
-				retainedCacheGroup = YES;
+				retainedCacheGroup = dic;
 			}
 			else
 			{
@@ -5035,7 +5035,7 @@ END_CREATE_ROIS:
 				
 					[dic setValue: dcmObject forKey: @"dcmObject"];
 					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
-					retainedCacheGroup = YES;
+					retainedCacheGroup = dic;
 					
 					[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
 				}
@@ -5376,7 +5376,7 @@ END_CREATE_ROIS:
 			
 			dcmObject = [dic objectForKey: @"dcmObject"];
 			[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
-			retainedCacheGroup = YES;
+			retainedCacheGroup = dic;
 		}
 		else
 		{
@@ -5388,7 +5388,7 @@ END_CREATE_ROIS:
 				
 				[dic setValue: dcmObject forKey: @"dcmObject"];
 				[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
-				retainedCacheGroup = YES;
+				retainedCacheGroup = dic;
 				
 				[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
 			}
@@ -6281,7 +6281,7 @@ END_CREATE_ROIS:
 				[cachedPapyGroups setObject: cachedGroupsForThisFile forKey: srcFile];
 				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: fileNb]  forKey: @"fileNb"];
 				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
-				retainedCacheGroup = YES;
+				retainedCacheGroup = cachedGroupsForThisFile;
 				
 				if( [cachedPapyGroups count] >= kMax_file_open)
 					NSLog( @"******* WARNING: Too much files opened for Papyrus Toolkit");
@@ -6299,7 +6299,7 @@ END_CREATE_ROIS:
 			if( group == 0L)
 			{
 				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
-				retainedCacheGroup = YES;
+				retainedCacheGroup = cachedGroupsForThisFile;
 			}
 		}
 		
@@ -6417,10 +6417,10 @@ END_CREATE_ROIS:
 		{
 			NSMutableDictionary *cachedGroupsForThisFile = [cachedDCMFrameworkFiles valueForKey: srcFile];
 			
-			if( cachedGroupsForThisFile && retainedCacheGroup)
+			if( cachedGroupsForThisFile && retainedCacheGroup == cachedGroupsForThisFile)
 			{
 				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile objectForKey: @"count"] intValue]-1] forKey: @"count"];
-				retainedCacheGroup = NO;
+				retainedCacheGroup = nil;
 				
 				if( [[cachedGroupsForThisFile objectForKey: @"count"] intValue] <= 0)
 					[cachedDCMFrameworkFiles removeObjectForKey: srcFile];
@@ -6443,10 +6443,10 @@ END_CREATE_ROIS:
 	{
 		NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
 	
-		if( cachedGroupsForThisFile && retainedCacheGroup)
+		if( cachedGroupsForThisFile && retainedCacheGroup == cachedGroupsForThisFile)
 		{
 			[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile objectForKey: @"count"] intValue]-1] forKey: @"count"];
-			retainedCacheGroup = NO;
+			retainedCacheGroup = nil;
 			
 			if( [[cachedGroupsForThisFile objectForKey: @"count"] intValue] <= 0)
 			{

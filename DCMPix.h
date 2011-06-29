@@ -187,7 +187,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	
 	int					savedHeightInDB, savedWidthInDB;
 	
-	BOOL				retainedCacheGroup;
+	id					retainedCacheGroup;
 }
 
 @property long frameNo;
