@@ -434,6 +434,10 @@
 		8417221A10D8DB93001A833F /* basicHTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417221810D8DB93001A833F /* basicHTTPServer.m */; };
 		841722B010D90595001A833F /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 841722AE10D90595001A833F /* DDKeychain.h */; };
 		841722B110D90595001A833F /* DDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 841722AF10D90595001A833F /* DDKeychain.m */; };
+		84281FFE13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */; };
+		84281FFF13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */; };
+		8428200013BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */; };
+		8428200113BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */; };
 		843F847B12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
 		843F847C12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
@@ -8508,6 +8512,8 @@
 		8417221810D8DB93001A833F /* basicHTTPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = basicHTTPServer.m; sourceTree = "<group>"; };
 		841722AE10D90595001A833F /* DDKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDKeychain.h; path = cocoahttpserver/DDKeychain.h; sourceTree = "<group>"; };
 		841722AF10D90595001A833F /* DDKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDKeychain.m; path = cocoahttpserver/DDKeychain.m; sourceTree = "<group>"; };
+		84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N2OpenGLViewWithSplitsWindow.m; path = nitrogen/Sources/N2OpenGLViewWithSplitsWindow.m; sourceTree = "<group>"; };
+		84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2OpenGLViewWithSplitsWindow.h; path = nitrogen/Sources/N2OpenGLViewWithSplitsWindow.h; sourceTree = "<group>"; };
 		843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDicomPrintPref.h; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrintPref.h"; sourceTree = SOURCE_ROOT; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		844719AF0FD8EF50003BFDF8 /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -13314,6 +13320,8 @@
 				AB10FAE61129338A009EB238 /* N2Panel.mm */,
 				AB10FAE71129338A009EB238 /* N2Window.h */,
 				AB10FAE81129338A009EB238 /* N2Window.mm */,
+				84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */,
+				84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */,
 				AB10FAE91129338A009EB238 /* N2Layout.h */,
 				AB10FAEA1129338A009EB238 /* N2Layout.mm */,
 				AB10FAEB1129338A009EB238 /* N2ColumnLayout.h */,
@@ -19796,6 +19804,7 @@
 				4FC5E3F6138AB91E00CB635F /* CPRStretchedOperation.h in Headers */,
 				4F00A9E8139A779200ABD529 /* CPRStretchedView.h in Headers */,
 				4F368CA4139B7E1D00BE3D1C /* CPRView.h in Headers */,
+				84281FFF13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22014,6 +22023,7 @@
 				CEB98C631335085D0083F3FD /* OSICDPreferencePanePref.h in Headers */,
 				59B696661337C957009356ED /* N2DirectoryEnumerator.h in Headers */,
 				84E1924713699BBB008DCFC8 /* WADODownload.h in Headers */,
+				8428200113BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24388,6 +24398,7 @@
 				4FC5E3F7138AB91E00CB635F /* CPRStretchedOperation.m in Sources */,
 				4F00A9E4139A778000ABD529 /* CPRStretchedView.m in Sources */,
 				4F368CA5139B7E1D00BE3D1C /* CPRView.m in Sources */,
+				84281FFE13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25645,6 +25656,7 @@
 				CEB98C641335085D0083F3FD /* OSICDPreferencePanePref.m in Sources */,
 				59B696671337C957009356ED /* N2DirectoryEnumerator.mm in Sources */,
 				84E1924813699BBB008DCFC8 /* WADODownload.m in Sources */,
+				8428200013BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

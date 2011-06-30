@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10J869</string>
+		<string key="IBDocument.SystemVersion">10K540</string>
 		<string key="IBDocument.InterfaceBuilderVersion">823</string>
-		<string key="IBDocument.AppKitVersion">1038.35</string>
+		<string key="IBDocument.AppKitVersion">1038.36</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3610,7 +3610,7 @@
 				<string key="NSWindowRect">{{397, 191}, {1132, 808}}</string>
 				<int key="NSWTFlags">1618477056</int>
 				<string key="NSWindowTitle">Local DICOM Database</string>
-				<string key="NSWindowClass">NSWindow</string>
+				<string key="NSWindowClass">N2OpenGLViewWithSplitsWindow</string>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
@@ -21598,9 +21598,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<integer value="1" key="12356.ImportedFromIB2"/>
 				<string key="12364.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="12364.ImportedFromIB2"/>
-				<string key="12366.IBEditorWindowLastContentRect">{{456, 320}, {495, 249}}</string>
+				<string key="12366.IBEditorWindowLastContentRect">{{321, 320}, {495, 249}}</string>
 				<string key="12366.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="12366.IBWindowTemplateEditedContentRect">{{456, 320}, {495, 249}}</string>
+				<string key="12366.IBWindowTemplateEditedContentRect">{{321, 320}, {495, 249}}</string>
 				<integer value="1" key="12366.ImportedFromIB2"/>
 				<string key="12366.editorWindowContentRectSynchronizationRect">{{189, 497}, {490, 180}}</string>
 				<integer value="0" key="12366.windowTemplate.hasMaxSize"/>
@@ -23245,6 +23245,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="newFilesGUIUpdate:">id</string>
 						<string key="newViewerDICOM:">id</string>
 						<string key="openDatabase:">id</string>
+						<string key="paste:">id</string>
+						<string key="pasteImageForSourceFile:">NSString</string>
 						<string key="pdfPreview:">id</string>
 						<string key="previewPerformAnimation:">id</string>
 						<string key="previewSliderAction:">id</string>
@@ -23450,6 +23452,14 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBActionInfo" key="openDatabase:">
 							<string key="name">openDatabase:</string>
 							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="paste:">
+							<string key="name">paste:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="pasteImageForSourceFile:">
+							<string key="name">pasteImageForSourceFile:</string>
+							<string key="candidateClassName">NSString</string>
 						</object>
 						<object class="IBActionInfo" key="pdfPreview:">
 							<string key="name">pdfPreview:</string>
@@ -24168,6 +24178,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="shadingsPresetsController">ShadingArrayController</string>
 						<string key="tbAxisColors">NSView</string>
 						<string key="tbBlending">NSView</string>
+						<string key="tbCPRType">NSView</string>
 						<string key="tbLOD">NSView</string>
 						<string key="tbMovie">NSView</string>
 						<string key="tbShading">NSView</string>
@@ -24261,6 +24272,10 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">tbBlending</string>
 							<string key="candidateClassName">NSView</string>
 						</object>
+						<object class="IBToOneOutletInfo" key="tbCPRType">
+							<string key="name">tbCPRType</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="tbLOD">
 							<string key="name">tbLOD</string>
 							<string key="candidateClassName">NSView</string>
@@ -24340,7 +24355,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">CPRView</string>
-					<string key="superclassName">DCMView</string>
+					<string key="superclassName">NSView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">CPRView.h</string>
@@ -25674,6 +25689,14 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">N2OpenGLViewWithSplitsWindow</string>
+					<string key="superclassName">NSWindow</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">nitrogen/Sources/N2OpenGLViewWithSplitsWindow.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

@@ -3757,7 +3757,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		if( [note object] == [previewMatrixScrollView contentView])
 		{
-			BOOL syncThumbnails = [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"];
+			BOOL syncThumbnails = [[NSUserDefaults standardUserDefaults] boolForKey: @"syncPreviewList"];
 			
 			if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask)
 				syncThumbnails = !syncThumbnails;
@@ -3786,6 +3786,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[splitView saveDefault:@"SPLITVIEWER"];
 	}
+}
+
+-(void)splitViewWillResizeSubviews:(NSNotification *)notification
+{
+	OSIWindow *window = (OSIWindow*)self.window;
+	
+	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
+		[window disableUpdatesUntilFlush];
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset

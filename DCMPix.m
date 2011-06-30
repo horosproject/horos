@@ -5022,8 +5022,13 @@ END_CREATE_ROIS:
 				NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
 				
 				dcmObject = [dic objectForKey: @"dcmObject"];
-				[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
-				retainedCacheGroup = dic;
+				
+				if( retainedCacheGroup == nil)
+				{
+					[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
+					retainedCacheGroup = dic;
+				}
+				else NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
 			}
 			else
 			{
@@ -5035,6 +5040,10 @@ END_CREATE_ROIS:
 				
 					[dic setValue: dcmObject forKey: @"dcmObject"];
 					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
+					
+					if( retainedCacheGroup != nil)
+						NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+					
 					retainedCacheGroup = dic;
 					
 					[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
@@ -5375,8 +5384,13 @@ END_CREATE_ROIS:
 			NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
 			
 			dcmObject = [dic objectForKey: @"dcmObject"];
-			[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
-			retainedCacheGroup = dic;
+			
+			if( retainedCacheGroup == nil)
+			{
+				[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
+				retainedCacheGroup = dic;
+			}
+			else NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
 		}
 		else
 		{
@@ -5387,8 +5401,12 @@ END_CREATE_ROIS:
 				NSMutableDictionary *dic = [NSMutableDictionary dictionary];
 				
 				[dic setValue: dcmObject forKey: @"dcmObject"];
-				[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
-				retainedCacheGroup = dic;
+				if( retainedCacheGroup == nil)
+				{
+					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
+					retainedCacheGroup = dic;
+				}
+				else NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
 				
 				[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
 			}
@@ -6281,6 +6299,10 @@ END_CREATE_ROIS:
 				[cachedPapyGroups setObject: cachedGroupsForThisFile forKey: srcFile];
 				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: fileNb]  forKey: @"fileNb"];
 				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
+				
+				if( retainedCacheGroup != nil)
+					NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+				
 				retainedCacheGroup = cachedGroupsForThisFile;
 				
 				if( [cachedPapyGroups count] >= kMax_file_open)
@@ -6298,8 +6320,12 @@ END_CREATE_ROIS:
 			
 			if( group == 0L)
 			{
-				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
-				retainedCacheGroup = cachedGroupsForThisFile;
+				if( retainedCacheGroup == nil)
+				{
+					[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
+					retainedCacheGroup = cachedGroupsForThisFile;
+				}
+				else NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
 			}
 		}
 		

@@ -65,6 +65,7 @@
 #import "DicomStudy.h"
 #import "DicomAlbum.h"
 #import "PluginManager.h"
+#import "N2OpenGLViewWithSplitsWindow.h"
 #import "XMLController.h"
 #import "WebPortalConnection.h"
 #import "Notifications.h"
@@ -10528,6 +10529,14 @@ static BOOL withReset = NO;
 			[splitViewVert adjustSubviews];
 		}
 	}
+}
+
+-(void)splitViewWillResizeSubviews:(NSNotification *)notification
+{
+	N2OpenGLViewWithSplitsWindow *window = (N2OpenGLViewWithSplitsWindow*)self.window;
+	
+	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
+		[window disableUpdatesUntilFlush];
 }
 
 - (void)splitViewDidResizeSubviews: (NSNotification *)aNotification
