@@ -3673,6 +3673,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( [[splitView subviews] count] > 1)
 	{
+		[self splitViewWillResizeSubviews: nil];
+		
 		frameLeft =  previous  = [[[splitView subviews] objectAtIndex: 0] frame];
 		frameRight = [[[splitView subviews] objectAtIndex: 1] frame];
 		
@@ -6478,6 +6480,8 @@ return YES;
 			else
 			{
 				// *****************
+				[imageView setDrawing: NO];
+				
 				
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixViewerWillChangeNotification object: self userInfo: nil];
 				
@@ -6491,7 +6495,7 @@ return YES;
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCloseViewerNotification object: self userInfo: nil];
 				
 				windowWillClose = YES;
-				[imageView setDrawing: NO];
+				
 
 				[self setUpdateTilingViewsValue: YES];
 
@@ -6819,8 +6823,6 @@ return YES;
 					
 					windowWillClose = NO;
 					
-					[imageView setDrawing: YES];
-					
 					[self setPostprocessed: NO];
 					
 					[self SetSyncButtonBehavior: self];
@@ -6870,6 +6872,9 @@ return YES;
 					
 					[subCtrlSum setFloatValue: 1];
 					[subCtrlPercent setFloatValue: 1];
+					
+					[imageView setDrawing: YES];
+					[imageView setNeedsDisplay: YES];
 				}
 				@catch ( NSException *e)
 				{
@@ -8375,6 +8380,8 @@ return YES;
 	int previousFusion = [popFusion selectedTag];
 	int previousCurImage = [imageView curImage];
 	
+	imageView.drawing = NO;
+	
 	[seriesView setFlippedData: ![imageView flippedData]];
 	[self setFusionMode: 0];
 	
@@ -8386,6 +8393,8 @@ return YES;
 	
 	if( activatedFusionState == NSOnState)
 		[self setFusionMode: previousFusion];
+	
+	imageView.drawing = YES;
 	
 	[popFusion selectItemWithTag:previousFusion];
 	

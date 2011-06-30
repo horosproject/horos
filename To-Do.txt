@@ -1,5 +1,6 @@
 - OsiriX MD version
 - OsiriX MD QR French?
+- Thumbnails auto/hide in fullscreen
 
 - ROI: Add points to Polygon or Pencil ROIs 
 - Option to switch to 1x1 when going to fullscreen if tiling mode is not 1x1
