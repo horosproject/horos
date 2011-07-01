@@ -3703,11 +3703,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) autoHideMatrix
 {
 	BOOL hide = NO;
+	NSWindow *window = nil;
 	
-	if( [[self window] isKeyWindow] == NO) hide = YES;
-	if( [[self window] isMainWindow] == NO) hide = YES;
-
-	NSPoint	mouse = [[self window] mouseLocationOutsideOfEventStream];
+	if( [self FullScreenON] == NO)
+	{
+		window = self.window;
+		if( [window isKeyWindow] == NO) hide = YES;
+		if( [window isMainWindow] == NO) hide = YES;
+	}
+	else
+		window = FullScreenWindow;
+	
+	NSPoint	mouse = [window mouseLocationOutsideOfEventStream];
 	
 	if( hide == NO)
 	{
@@ -4608,15 +4615,13 @@ static ViewerController *draggedController = nil;
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
-	if( ![[self window] isVisible])
+	if( ![[self window] isVisible] && ![self FullScreenON])
 		return;
 	
 	if( windowWillClose) return;
 	
 	if (AUTOHIDEMATRIX)
-	{
 		[self autoHideMatrix];
-	}
 	
 //	if( [self checkFrameSize])
 //	{

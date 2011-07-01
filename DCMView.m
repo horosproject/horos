@@ -3452,13 +3452,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 -(void) mouseMoved: (NSEvent*) theEvent
 {
 	if( ![[self window] isVisible])
-		return;
+	{
+		if( [self is2DViewer] && [[self windowController] FullScreenON])
+		{
+			
+		}
+		else
+			return;
+	}
 	
 	if ([self eventToPlugins:theEvent]) return;
 	
 	if( !drawing) return;
-	
-	if( [[self window] isVisible] == NO) return;
 	
 	if( [self is2DViewer] == YES)
 	{
@@ -3640,7 +3645,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		
 		if ([self is2DViewer] == YES)
-			[super mouseMoved: theEvent];
+			[[self windowController] mouseMoved: theEvent];
 	}
 	@catch (NSException * e)
 	{
