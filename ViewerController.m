@@ -3725,20 +3725,42 @@ static volatile int numberOfThreadsForRelisce = 0;
 		else hide = YES;
 	}
 	
-	NSMutableArray *scaleValues = [NSMutableArray array];
-	for( DCMView * v in [seriesView imageViews])
-		[scaleValues addObject: [NSNumber numberWithFloat: v.scaleValue]];
+	BOOL isCurrentlyVisible = NO;
 	
-	[self setMatrixVisible: !hide];
-	
-	int i = 0;
-	for( DCMView * v in [seriesView imageViews])
+	if( [[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
+		isCurrentlyVisible = YES;
+		
+	if( isCurrentlyVisible == hide)
 	{
-		[v displayIfNeeded];
-		v.scaleValue = [[scaleValues objectAtIndex: i++] floatValue];
+		NSMutableArray *scaleValues = [NSMutableArray array];
+		NSMutableArray *originValues = [NSMutableArray array];
+		
+		for( DCMView * v in [seriesView imageViews])
+		{
+			[scaleValues addObject: [NSNumber numberWithFloat: v.scaleValue]];
+			[originValues addObject: NSStringFromPoint( v.origin)];
+		}
+		
+		[self setMatrixVisible: !hide];
+		
+		NSDisableScreenUpdates();
+		
+		int i = 0;
+		for( DCMView * v in [seriesView imageViews])
+		{
+			[v displayIfNeeded];
+			v.scaleValue = [[scaleValues objectAtIndex: i] floatValue];
+			v.origin = NSPointFromString( [originValues objectAtIndex: i]);
+			i++;
+		}
+		
+		[self propagateSettings];
+		
+		for( DCMView * v in [seriesView imageViews])
+			[v displayIfNeeded];
+		
+		NSEnableScreenUpdates();
 	}
-	
-	[self propagateSettings];
 }
 
 - (NSScrollView*) previewMatrixScrollView
