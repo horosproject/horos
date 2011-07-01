@@ -54,7 +54,7 @@
 #ifdef STATIC_DICOM_LIB
 #define PREVIEWSIZE 512
 #else
-#define PREVIEWSIZE 70.0
+#define PREVIEWSIZE 68
 #endif
 
 BOOL gUserDefaultsSet = NO;
