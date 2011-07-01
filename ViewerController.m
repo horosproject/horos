@@ -3693,6 +3693,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			imageView.dontEnterReshape = YES;
 			
+//			[NSAnimationContext beginGrouping];
+//			[[NSAnimationContext currentContext] setDuration: 1];
+//			[[[[splitView subviews] objectAtIndex: 0] animator] setFrameSize: frameLeft.size];
+//			[[[[splitView subviews] objectAtIndex: 1] animator] setFrameSize: frameRight.size];
+//			[splitView adjustSubviews];
+//			[NSAnimationContext endGrouping];
+			
 			[[[splitView subviews] objectAtIndex: 0] setFrameSize: frameLeft.size];
 			[[[splitView subviews] objectAtIndex: 1] setFrameSize: frameRight.size];
 			[splitView adjustSubviews];
