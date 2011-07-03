@@ -1,4 +1,3 @@
-- WL/WW Prostate 4x4
 - OsiriX MD version
 - OsiriX MD QR French?
 
