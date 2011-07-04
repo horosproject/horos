@@ -20855,7 +20855,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		return [password stringValue];
 	}
 	
-	return @"";
+	return nil;
 }
 
 - (long) currentBonjourService

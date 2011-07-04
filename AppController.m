@@ -4851,6 +4851,8 @@ static BOOL initialized = NO;
 		[[[viewersList objectAtIndex: keyWindow] window] makeKeyAndOrderFront:self];
 		[[viewersList objectAtIndex: keyWindow] propagateSettings];
 		
+		NSDisableScreenUpdates();
+		
 		for( id v in viewersList)
 		{
 			if( [v isKindOfClass:[ViewerController class]])
@@ -4871,6 +4873,8 @@ static BOOL initialized = NO;
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"])
 			[[viewersList objectAtIndex: keyWindow] syncThumbnails];
+			
+		NSEnableScreenUpdates();
 	}
 	
 	for( id obj in winList)

@@ -1496,6 +1496,18 @@ extern const char *GetPrivateIP();
 					
 					password = [[interfaceOsiriX askPassword] retain];
 					
+					if( password == nil)
+					{
+						[[[BrowserController currentBrowser] managedObjectContext] unlock];
+						[waitWindow end];
+						[waitWindow release];
+						waitWindow = nil;
+						
+						serviceBeingResolvedIndex = -1;
+						
+						return nil;
+					}
+					
 					wrongPassword = YES;
 					[self connectToServer: index message:@"PASWD"];
 					[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
