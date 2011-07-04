@@ -152,6 +152,8 @@
 
 - (void)setImageViewMatrixForRows:(int)rows  columns:(int)columns
 {
+	NSDisableScreenUpdates();
+
 	int currentSize = imageRows * imageColumns;
 	int newSize = rows * columns;
 	int i;
@@ -221,6 +223,8 @@
 	imageColumns = columns;
 	
 	if( wasVisible) [[self window] makeKeyAndOrderFront: self];
+	
+	NSEnableScreenUpdates();
 	
 	[self setNeedsDisplay:YES];
 }

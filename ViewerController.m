@@ -3252,6 +3252,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 //	float scaleValue = [imageView scaleValue];
 	
+	NSDisableScreenUpdates();
+	
 	[self setUpdateTilingViewsValue: YES];
 	[self selectFirstTilingView];
 	
@@ -3337,6 +3339,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"])
 		[imageView scaleToFit];
+		
+	NSEnableScreenUpdates();
 }
 
 - (BOOL) FullScreenON { return FullScreenOn;}
