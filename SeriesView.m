@@ -42,8 +42,9 @@
 		
 //		NSLog(@"ImageRows %d imageColumns: %d", imageRows, imageColumns);
 	
-			if (!imageRows)
+		if (!imageRows)
 			imageRows = 1;
+		
 		if (!imageColumns)
 			imageColumns = 1;
 		

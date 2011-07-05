@@ -6713,7 +6713,7 @@ return YES;
 					if( curImage >= [fileList[ curMovieIndex] count])
 						curImage = 0;
 					
-					NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.study.stateText"];
+					NSNumber *status = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.study.stateText"];
 					
 					if( status == nil) [StatusPopup selectItemWithTitle: NSLocalizedString(@"empty", nil)];
 					else [StatusPopup selectItemWithTag: [status intValue]];
@@ -20066,7 +20066,7 @@ int i,j,l;
 	[keyImagePopUpButton setEnabled: YES];
 	
 	// Update Key Image check box
-	if( [[[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] valueForKey:@"isKeyImage"] boolValue] == YES)
+	if( [imageView curImage] >= 0 && [[[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] valueForKey:@"isKeyImage"] boolValue] == YES)
 	{
 		[keyImageCheck setState: NSOnState];
 	}

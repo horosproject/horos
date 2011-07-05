@@ -6198,8 +6198,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (NSDictionary*) syncMessage:(short) inc
 {
-	DCMPix	*thickDCM;
-		
+	DCMPix *thickDCM = nil;
+	
+	if( curImage < 0)
+		return nil;
+	
 	if( curDCM.stack > 1)
 	{
 		long maxVal = flippedData? curImage-(curDCM.stack-1) : curImage+curDCM.stack-1;
@@ -6216,7 +6219,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	NSMutableDictionary *instructions = [NSMutableDictionary dictionary]; 
 	
-	DCMPix *p = [dcmPixList objectAtIndex:curImage];
+	DCMPix *p = [dcmPixList objectAtIndex: curImage];
 	
 	[instructions setObject: self forKey: @"view"];
 	[instructions setObject: [NSNumber numberWithInt: pos] forKey: @"Pos"];
@@ -6247,14 +6250,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     {
 		NSDictionary *instructions = [self syncMessage: inc];
         
-		if( stringID == nil)
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: self userInfo: instructions];
-			
-		// most subclasses just need this. NO sync notification for subclasses.
-		if( blendingView) // We have to reload the blending image..
+		if( instructions)
 		{
-			[self loadTextures];
-			[self setNeedsDisplay: YES];
+			if( stringID == nil)
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: self userInfo: instructions];
+				
+			// most subclasses just need this. NO sync notification for subclasses.
+			if( blendingView) // We have to reload the blending image..
+			{
+				[self loadTextures];
+				[self setNeedsDisplay: YES];
+			}
 		}
     }
 }
@@ -10365,6 +10371,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( x < 0.01 ) return;
 	if( x > 100) return;
 	if( isnan( x)) return;
+	if( curImage < 0) return;
 	
 	if( x != scaleValue)
 	{
@@ -10413,6 +10420,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( x < 0.01 ) return;
 	if( x > 100) return;
 	if( isnan( x)) return;
+	if( curImage < 0) return;
+	if( curDCM == nil) return;
 	
 	if( scaleValue != x )
 	{
@@ -10652,6 +10661,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) setOriginX:(float) x Y:(float) y
 {
+	if( curImage < 0) return;
+	if( curDCM == nil) return;
+	
 	if( x > -100000 && x < 100000) x = x;
 	else x = 0;
 
