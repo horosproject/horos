@@ -1772,14 +1772,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
 	
-	NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"html"];
+	NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"xml"];
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
 	{
 		NSTask *aTask = [[[NSTask alloc] init] autorelease];		
 		[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 		[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-		[aTask setArguments: [NSArray arrayWithObjects: filePath, htmlpath, nil]];		
+		[aTask setArguments: [NSArray arrayWithObjects: @"+X1", filePath, htmlpath, nil]];		
 		[aTask launch];
 		[aTask waitUntilExit];		
 		[aTask interrupt];

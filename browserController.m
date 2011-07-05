@@ -8220,14 +8220,14 @@ static NSConditionLock *threadLock = nil;
 				if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
 					[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
 				
-				NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [[im valueForKey: @"completePath"] lastPathComponent]] stringByAppendingPathExtension: @"html"];
+				NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [[im valueForKey: @"completePath"] lastPathComponent]] stringByAppendingPathExtension: @"xml"];
 				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
 				{
 					NSTask *aTask = [[[NSTask alloc] init] autorelease];		
 					[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-					[aTask setArguments: [NSArray arrayWithObjects: [im valueForKey: @"completePath"], htmlpath, nil]];		
+					[aTask setArguments: [NSArray arrayWithObjects: @"+X1", [im valueForKey: @"completePath"], htmlpath, nil]];		
 					[aTask launch];
 					[aTask waitUntilExit];		
 					[aTask interrupt];
@@ -17113,14 +17113,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 				if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
 					[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
 			
-				NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [[curImage valueForKey: @"completePath"] lastPathComponent]] stringByAppendingPathExtension: @"html"];
+				NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [[curImage valueForKey: @"completePath"] lastPathComponent]] stringByAppendingPathExtension: @"xml"];
 				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
 				{
 					NSTask *aTask = [[[NSTask alloc] init] autorelease];		
 					[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-					[aTask setArguments: [NSArray arrayWithObjects: [curImage valueForKey: @"completePath"], htmlpath, nil]];		
+					[aTask setArguments: [NSArray arrayWithObjects: @"+X1", [curImage valueForKey: @"completePath"], htmlpath, nil]];		
 					[aTask launch];
 					[aTask waitUntilExit];		
 					[aTask interrupt];
