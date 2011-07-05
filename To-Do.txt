@@ -1,4 +1,5 @@
 - OsiriX web server doesn't work : MacOS 10.7
+- Tiling mode: don't sync WL/WW
 
 - ROI: Add points to Polygon or Pencil ROIs 
 - Option to switch to 1x1 when going to fullscreen if tiling mode is not 1x1
