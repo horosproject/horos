@@ -9257,6 +9257,7 @@ static NSConditionLock *threadLock = nil;
 		DICOMExport *e = [[[DICOMExport alloc] init] autorelease];
 		
 		[e setSeriesDescription: [NSString stringWithFormat: NSLocalizedString( @"Clipboard - %@", nil), [BrowserController DateTimeWithSecondsFormat: [NSDate date]]]];
+		[e setSeriesNumber: 66532 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 		
 		NSBitmapImageRep *rep = (NSBitmapImageRep*) [image bestRepresentationForDevice:nil];
 		

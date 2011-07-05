@@ -521,7 +521,9 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 //       the delegate if it has one and the default adjustSubviews otherwise.
 //    3) cleans up some other layout, like divider positions
 - (void)resizeSubviewsWithOldSize:(NSSize)oldBoundsSize
-{    
+{
+	NSDisableScreenUpdates();
+	
     [kfNotificationCenter postNotificationName:NSSplitViewWillResizeSubviewsNotification object:self];
     
     if ([kfDelegate respondsToSelector:@selector(splitView:resizeSubviewsWithOldSize:)])
@@ -537,6 +539,8 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     [self kfMoveCollapsedSubviewsOffScreen];
     
     [kfNotificationCenter postNotificationName:NSSplitViewDidResizeSubviewsNotification object:self];
+	
+	NSEnableScreenUpdates();
 }
 
 
