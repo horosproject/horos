@@ -954,7 +954,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"0" forKey: @"useSeriesDescription"];
 	[defaultValues setObject: @"1" forKey: @"combineProjectionSeries"];
 	[defaultValues setObject: @"0" forKey: @"combineProjectionSeriesMode"];
-	[defaultValues setObject: @"1" forKey: @"ListenerCompressionSettings"];
+	[defaultValues setObject: @"0" forKey: @"ListenerCompressionSettings"];
 	[defaultValues setObject: @"localizer,scout" forKey: @"NOLOCALIZER_Strings"];
 	
 	//hot key prefs
