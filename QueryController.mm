@@ -894,13 +894,18 @@ extern "C"
 		{
 			if (![(DCMTKQueryNode *)item children])
 			{
-				performingCFind = YES; // to avoid re-entries during WaitRendering window, and separate thread for cFind
-				
-				[progressIndicator startAnimation:nil];
-				[item queryWithValues:nil];
-				[progressIndicator stopAnimation:nil];
-				
-				performingCFind = NO;
+				@synchronized( self)
+				{
+					if( performingCFind == NO)
+					{
+						performingCFind = YES; // to avoid re-entries during WaitRendering window, and separate thread for cFind
+						
+						[progressIndicator startAnimation:nil];
+						[item queryWithValues:nil];
+						[progressIndicator stopAnimation:nil];
+						performingCFind = NO;
+					}
+				}
 			}
 		}
 		return  (item == nil) ? [resultArray count] : [[(DCMTKQueryNode *) item children] count];
@@ -1931,9 +1936,15 @@ extern "C"
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[progressIndicator startAnimation:nil];
-	performingCFind = YES;
-	[queryManager performQuery: [showErrors boolValue]];
-	performingCFind = NO;
+	@synchronized( self)
+	{
+		if( performingCFind == NO)
+		{
+			performingCFind = YES;
+			[queryManager performQuery: [showErrors boolValue]];
+			performingCFind = NO;
+		}
+	}
 	[progressIndicator stopAnimation:nil];
 	[resultArray sortUsingDescriptors: [self sortArray]];
 	[outlineView reloadData];

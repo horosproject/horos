@@ -9805,6 +9805,7 @@ static BOOL withReset = NO;
 		cell.tag = i;
 		[cell setTransparent: YES];
 		[cell setEnabled: NO];
+		[cell setFont:[NSFont systemFontOfSize:9]];
 		cell.title = NSLocalizedString(@"loading...", nil);
 		cell.image = nil;
 		cell.bezelStyle = NSShadowlessSquareBezelStyle;
