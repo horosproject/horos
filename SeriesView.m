@@ -200,9 +200,12 @@
 		}	
 	}
 	
-	for( id view in imageViews) 
+	for( DCMView *view in imageViews) 
+	{
+		[view setCOPYSETTINGSINSERIESdirectly: [[imageViews objectAtIndex: 0] COPYSETTINGSINSERIES]];
 		[view setRows:rows columns:columns];
-	
+	}
+		
 	[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
 	[[[self window] windowController] setUpdateTilingViewsValue: NO];
 	
