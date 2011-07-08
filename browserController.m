@@ -12327,6 +12327,9 @@ static BOOL needToRezoom;
 			}
 		}
 		
+		BOOL savedAUTOHIDEMATRIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"];
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
+		
 		if( dontShowOpenSubSeries == NO)
 		{
 			if (([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask) || ([self computeEnoughMemory: toOpenArray : nil] == NO) || openSubSeriesFlag == YES)
@@ -12739,6 +12742,7 @@ static BOOL needToRezoom;
 			[movieController startLoadImageThread];
 		}
 		
+		[[NSUserDefaults standardUserDefaults] setBool: savedAUTOHIDEMATRIX forKey:@"AUTOHIDEMATRIX"];		
 	}
 	@catch( NSException *e)
 	{

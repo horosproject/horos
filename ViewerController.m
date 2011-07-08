@@ -151,7 +151,6 @@ static NSString*	GrowingRegionItemIdentifier			= @"GrowingRegion.png";
 
 static NSArray*		DefaultROINames = nil;
 
-static  BOOL AUTOHIDEMATRIX								= NO;
 static	float deg2rad									= 3.14159265358979/180.0; 
 
 static NSMenu *wlwwPresetsMenu = nil;
@@ -2866,14 +2865,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[imageView sendSyncMessage: 0];
 	
-	if (AUTOHIDEMATRIX) [self autoHideMatrix];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"]) [self autoHideMatrix];
 }
 
 -(void) windowDidResignKey:(NSNotification *)aNotification
 {
 	[imageView stopROIEditingForce: YES];
 	
-	if (AUTOHIDEMATRIX) [self autoHideMatrix];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"]) [self autoHideMatrix];
 	
 	if( FullScreenOn == YES) [self fullScreenMenu: self];
 }
@@ -2963,8 +2962,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) refreshToolbar
 {
-	
-	if (AUTOHIDEMATRIX) [self autoHideMatrix];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"]) [self autoHideMatrix];
 	
 	[self redrawToolbar];
 	
@@ -3575,8 +3573,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 	if( ([c rightClick] || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask)) && FullScreenOn == NO) 
 	{
-		
-		
 		ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :nil :YES keyImagesOnly: displayOnlyKeyImages];
 		[newViewer setHighLighted: 1.0];
 		lastHighLightedRow = [sender selectedRow];
@@ -3626,10 +3622,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			if( found == NO)
 			{
+				BOOL savedAUTOHIDEMATRIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"];
+				
+				[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
+				
 				ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
 				
 				[self matrixPreviewSelectCurrentSeries];
 				[self updateNavigator];
+				
+				[[NSUserDefaults standardUserDefaults] setBool: savedAUTOHIDEMATRIX forKey:@"AUTOHIDEMATRIX"];
 			}
 		}
 		else
@@ -3851,7 +3853,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if( pos <  size.width/2) pos = 0;
 		else pos = size.width+13;
 		
-		if (AUTOHIDEMATRIX == NO)
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO)
 		{
 			// Apply show / hide matrix to all viewers
 			if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
@@ -4655,7 +4657,7 @@ static ViewerController *draggedController = nil;
 	
 	if( windowWillClose) return;
 	
-	if (AUTOHIDEMATRIX)
+	if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"])
 		[self autoHideMatrix];
 	
 //	if( [self checkFrameSize])
@@ -18443,7 +18445,6 @@ int i,j,l;
 	roiLock = [[NSLock alloc] init];
 	
 	factorPET2SUV = 1.0;
-	AUTOHIDEMATRIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"];
 	
 	subCtrlMaskID = -2;
 	maxMovieIndex = 1;
