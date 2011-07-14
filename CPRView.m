@@ -179,94 +179,103 @@
 // BOGUS implementations until the stretched CPR View can handle these
 - (N3Plane)orangePlane
 {
-    return _straightenedView.orangePlane;
+    return [[self reformationView] orangePlane];
 }
 
 - (void)setOrangePlane:(N3Plane)orangePlane
 {
-    _straightenedView.orangePlane = orangePlane;
+    [_straightenedView setOrangePlane:orangePlane];
+    [_stretchedView setOrangePlane:orangePlane];
 }
 
 - (N3Plane)purplePlane
 {
-    return _straightenedView.purplePlane;
+    return [[self reformationView] purplePlane];
 }
 
 - (void)setPurplePlane:(N3Plane)purplePlane
 {
-    _straightenedView.purplePlane = purplePlane;
+    [_straightenedView setPurplePlane:purplePlane];
+    [_stretchedView setPurplePlane:purplePlane];
 }
 
 - (N3Plane)bluePlane
 {
-    return _straightenedView.bluePlane;
+    return [[self reformationView] bluePlane];
 }
 
 - (void)setBluePlane:(N3Plane)bluePlane
 {
-    _straightenedView.bluePlane = bluePlane;
+    [_straightenedView setBluePlane:bluePlane];
+    [_stretchedView setBluePlane:bluePlane];
 }
 
 
 - (CGFloat)orangeSlabThickness
 {
-    return _straightenedView.orangeSlabThickness;
+    return [[self reformationView] orangeSlabThickness];
 }
 
 - (void)setOrangeSlabThickness:(CGFloat)orangeSlabThickness
 {
-    _straightenedView.orangeSlabThickness = orangeSlabThickness;
+    [_straightenedView setOrangeSlabThickness:orangeSlabThickness];
+    [_stretchedView setOrangeSlabThickness:orangeSlabThickness];
 }
 
 - (CGFloat)purpleSlabThickness
 {
-    return _straightenedView.purpleSlabThickness;
+    return [[self reformationView] purpleSlabThickness];
 }
 
 - (void)setPurpleSlabThickness:(CGFloat)purpleSlabThickness
 {
-    _straightenedView.purpleSlabThickness = purpleSlabThickness;
+    [_straightenedView setPurpleSlabThickness:purpleSlabThickness];
+    [_stretchedView setPurpleSlabThickness:purpleSlabThickness];
 }
 
 - (CGFloat)blueSlabThickness
 {
-    return _straightenedView.blueSlabThickness;
+    return [[self reformationView] blueSlabThickness];
 }
 
 - (void)setBlueSlabThickness:(CGFloat)blueSlabThickness
 {
-    _straightenedView.blueSlabThickness = blueSlabThickness;
+    [_straightenedView setBlueSlabThickness:blueSlabThickness];
+    [_stretchedView setBlueSlabThickness:blueSlabThickness];
 }
 
 
 - (NSColor *)orangePlaneColor
 {
-    return _straightenedView.orangePlaneColor;
+    return [[self reformationView] orangePlaneColor];
 }
 
 - (void)setOrangePlaneColor:(NSColor *)orangePlaneColor
 {
-    _straightenedView.orangePlaneColor = orangePlaneColor;
+    [_straightenedView setOrangePlaneColor:orangePlaneColor];
+    [_stretchedView setOrangePlaneColor:orangePlaneColor];
 }
 
 - (NSColor *)purplePlaneColor
 {
-    return _straightenedView.purplePlaneColor;
+    return [[self reformationView] purplePlaneColor];
 }
 
 - (void)setPurplePlaneColor:(NSColor *)purplePlaneColor
 {
-    _straightenedView.purplePlaneColor = purplePlaneColor;
+    [_straightenedView setPurplePlaneColor:purplePlaneColor];
+    [_stretchedView setPurplePlaneColor:purplePlaneColor];
 }
 
 - (NSColor *)bluePlaneColor
 {
-    return _straightenedView.bluePlaneColor;
+    return [[self reformationView] bluePlaneColor];
 }
 
 - (void)setBluePlaneColor:(NSColor *)bluePlaneColor
 {
-    _straightenedView.bluePlaneColor = bluePlaneColor;
+    [_straightenedView setBluePlaneColor:bluePlaneColor];
+    [_stretchedView setBluePlaneColor:bluePlaneColor];
 }
 
 - (CPRVolumeData *)curvedVolumeData
@@ -291,12 +300,13 @@
 
 - (BOOL)displayCrossLines
 {
-    return _straightenedView.displayCrossLines;
+    return [[self reformationView] displayCrossLines];
 }
 
 - (void)setDisplayCrossLines:(BOOL)displayCrossLines
 {
-    _straightenedView.displayCrossLines = displayCrossLines;
+    [_straightenedView setDisplayCrossLines:displayCrossLines];
+    [_stretchedView setDisplayCrossLines:displayCrossLines];
 }
 
 @end
