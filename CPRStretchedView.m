@@ -102,6 +102,12 @@
 - (CGFloat)_slabThicknessGetter;
 - (void)_planeColorSetter:(NSColor *)color;
 - (NSColor *)_planeColorGetter;
+- (void)_buildTransverseVerticalLinesAndPlaneRuns;
+- (void)_clearTransversePlanes;
+
+// calls for dealing with intersections with planes
+
+
 
 @end
 
@@ -124,6 +130,7 @@
 @dynamic orangePlaneColor;
 @dynamic purplePlaneColor;
 @dynamic bluePlaneColor;
+@synthesize displayTransverseLines = _displayTransverseLines;
 @synthesize displayCrossLines = _displayCrossLines;
 
 + (BOOL)resolveInstanceMethod:(SEL)selector
@@ -185,7 +192,10 @@
         _planeRuns = [[NSMutableDictionary alloc] init];
         _planeColors = [[NSMutableDictionary alloc] init];
 		_mousePlanePointsInPix = [[NSMutableDictionary alloc] init];
+        _transverseVerticalLines = [[NSMutableDictionary alloc] init];
+		_transversePlaneRuns = [[NSMutableDictionary alloc] init];
         _displayCrossLines = YES;
+        _displayTransverseLines = YES;
     }
     return self;
 }
@@ -217,6 +227,10 @@
     _planeRuns = nil;
     [_planeColors release];
     _planeColors = nil;
+    [_transverseVerticalLines release];
+    _transverseVerticalLines = nil;
+    [_transversePlaneRuns release];
+    _transversePlaneRuns = nil;
     
 	[self _clearAllPlanes];
 	
@@ -274,6 +288,7 @@
     if (curvedPath != _curvedPath) {
         [_curvedPath release];
         _curvedPath = [curvedPath copy];
+        [self _clearTransversePlanes];
         [self _setNeedsNewRequest];
         [self setNeedsDisplay:YES];
     }
@@ -322,6 +337,28 @@
     return _generatedHeight;
 }
 
+- (void) drawTextualData:(NSRect) size :(long) annotations
+{
+	if(_displayTransverseLines)
+	{
+		float length = curDCM.pixelSpacingX * curDCM.pwidth;
+        
+		NSMutableArray *topLeft = [curDCM.annotationsDictionary objectForKey: @"TopLeft"];
+		
+		length *= 0.1; // We want cm
+		
+		[topLeft addObject: [NSArray arrayWithObject: [NSString stringWithFormat: NSLocalizedString( @"A-B : %2.2f cm", nil), length*fabs( _curvedPath.transverseSectionPosition - _curvedPath.leftTransverseSectionPosition)]]];
+		[topLeft addObject: [NSArray arrayWithObject: [NSString stringWithFormat: NSLocalizedString( @"B-C : %2.2f cm", nil), length*fabs( _curvedPath.transverseSectionPosition - _curvedPath.rightTransverseSectionPosition)]]];
+		[topLeft addObject: [NSArray arrayWithObject: [NSString stringWithFormat: NSLocalizedString( @"A-C : %2.2f cm", nil), length*fabs( _curvedPath.leftTransverseSectionPosition - _curvedPath.rightTransverseSectionPosition)]]];
+		
+		[super drawTextualData: size :annotations];
+		
+		[topLeft removeLastObject];
+		[topLeft removeLastObject];
+		[topLeft removeLastObject];
+	}
+	else [super drawTextualData: size :annotations];
+}
 
 - (void)drawRect:(NSRect)rect
 {
@@ -405,7 +442,142 @@
             [self _drawVerticalLines:[self valueForKey:[planeName stringByAppendingString:@"BottomVerticalLines"]]];
         }
     }    
-    // the centerline is a series of point, maybe even ideally saved as a CPRBezierPath
+    
+    // antoine wrote a horrific version of this, I need to do better
+    // bottom line here is that there are planeruns/vertical lines that are not actually planes
+    // and might need to managed seperatly, that would give easy freedom when dealing with line
+    // thickness and alpha. 
+    
+    
+    float exportTransverseSliceInterval = 0;
+	
+	if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
+        exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
+    
+    
+    if( exportTransverseSliceInterval > 0)
+	{
+		glColor4d(1.0, 1.0, 0.0, 1.0);
+		
+		N3MutableBezierPath *flattenedPath = [[_curvedPath.bezierPath mutableCopy] autorelease];
+		[flattenedPath subdivide:N3BezierDefaultSubdivideSegmentLength];
+		[flattenedPath flatten:N3BezierDefaultFlatness];
+		
+		float curveLength = [flattenedPath length];
+		int noOfFrames = ( curveLength / exportTransverseSliceInterval);
+		noOfFrames++;
+		
+		float startingDistance = curveLength - (noOfFrames-1) * exportTransverseSliceInterval;
+		startingDistance /= 2;
+		
+        // we need to find the tangents to the curve at
+        N3VectorArray vectors;
+        N3VectorArray tangents;
+        
+        vectors = malloc(noOfFrames * sizeof(N3Vector));
+        tangents = malloc(noOfFrames * sizeof(N3Vector));
+        noOfFrames = N3BezierCoreGetVectorInfo([_curvedPath.bezierPath N3BezierCore], exportTransverseSliceInterval, startingDistance, N3VectorZero, vectors, tangents, NULL, noOfFrames);
+        
+		for( int i = 0; i < noOfFrames; i++)
+		{
+            N3Plane sliceTransversePlane = N3PlaneMake(vectors[i], tangents[i]);
+            NSArray *slicePlaneRun;
+            NSArray *sliceVerticalSlices;
+            
+            slicePlaneRun = [self _runsForPlane:sliceTransversePlane verticalLineIndexes:&sliceVerticalSlices];
+            
+			glLineWidth(2.0);
+            [self _drawPlaneRuns:slicePlaneRun];
+            [self _drawVerticalLines:sliceVerticalSlices];
+		}
+        
+        free(vectors);
+        free(tangents);
+	}
+	else if(_displayTransverseLines)
+	{
+        NSString *name;
+        
+        [self _buildTransverseVerticalLinesAndPlaneRuns];
+        
+        glColor4d(1.0, 1.0, 0.0, 1.0);
+        
+        for (name in _transverseVerticalLines) {
+            NSArray *transverseVerticalLine = [_transverseVerticalLines objectForKey:name];
+            
+            if ([name isEqualToString:@"center"]) {
+                glLineWidth(2.0);
+            } else {
+                glLineWidth(1.0);
+            }
+            
+            [self _drawVerticalLines:transverseVerticalLine];
+        }
+        for (name in _transversePlaneRuns) {
+            NSArray *transversePlaneRun = [_transversePlaneRuns objectForKey:name];
+            
+            if ([name isEqualToString:@"center"]) {
+                glLineWidth(2.0);
+            } else {
+                glLineWidth(1.0);
+            }
+            
+            [self _drawPlaneRuns:transversePlaneRun];
+        }
+        		
+		// --- Text
+//		if( stanStringAttrib == nil)
+//		{
+//			stanStringAttrib = [[NSMutableDictionary dictionary] retain];
+//			[stanStringAttrib setObject:[NSFont fontWithName:@"Helvetica" size: 14.0] forKey:NSFontAttributeName];
+//			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
+//		}
+//		
+//		if( stringTexA == nil)
+//		{
+//			stringTexA = [[StringTexture alloc] initWithString: @"A"
+//                                                withAttributes:stanStringAttrib
+//                                                 withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+//                                                  withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+//                                               withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+//			[stringTexA setAntiAliasing: YES];
+//		}
+//		if( stringTexB == nil)
+//		{
+//			stringTexB = [[StringTexture alloc] initWithString: @"B"
+//                                                withAttributes:stanStringAttrib
+//                                                 withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+//                                                  withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+//                                               withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+//			[stringTexB setAntiAliasing: YES];
+//		}
+//		if( stringTexC == nil)
+//		{
+//			stringTexC = [[StringTexture alloc] initWithString: @"C"
+//                                                withAttributes:stanStringAttrib
+//                                                 withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+//                                                  withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+//                                               withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+//			[stringTexC setAntiAliasing: YES];
+//		}
+//		
+//		glEnable (GL_TEXTURE_RECTANGLE_EXT);
+//		glEnable(GL_BLEND);
+//		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+//		
+//		float quarter = -(lineAStart.y - lineAEnd.y)/3.;
+//		
+//		glColor4f (0, 0, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(lineAStart.x+1 - [stringTexA frameSize].width, quarter+lineAStart.y+1) ratio: 1];
+//		glColor4f (1, 1, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(lineAStart.x - [stringTexA frameSize].width, quarter+lineAStart.y) ratio: 1];
+//		
+//		glColor4f (0, 0, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(lineBStart.x+1 - [stringTexB frameSize].width/2., quarter+lineBStart.y+1) ratio: 1];
+//		glColor4f (1, 1, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(lineBStart.x - [stringTexB frameSize].width/2., quarter+lineBStart.y) ratio: 1];
+//		
+//		glColor4f (0, 0, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(lineCStart.x+1, quarter+lineCStart.y+1) ratio: 1];
+//		glColor4f (1, 1, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(lineCStart.x, quarter+lineCStart.y) ratio: 1];
+//		
+//		glDisable (GL_TEXTURE_RECTANGLE_EXT);
+	}
     
     
 	// Red Square
@@ -515,6 +687,7 @@
 		[[self curRoiList] addObjectsFromArray: roiArray];
 		
         [self _clearAllPlanes];
+        [self _clearTransversePlanes];
 		[self setNeedsDisplay:YES];
 	}
 	[pixArray release];
@@ -1186,6 +1359,37 @@
         [_planeColors setValue:[NSColor colorWithDeviceRed:1 green:1 blue:1 alpha:1] forKey:planeName];
     }
     return [_planeColors valueForKey:planeName];
+}
+
+- (void)_buildTransverseVerticalLinesAndPlaneRuns
+{
+    N3Plane transversePlane;
+    NSArray *planeRuns;
+    NSArray *verticalLines;
+    
+    transversePlane.point = [_curvedPath.bezierPath vectorAtRelativePosition:[_curvedPath transverseSectionPosition]];
+    transversePlane.normal = [_curvedPath.bezierPath tangentAtRelativePosition:[_curvedPath transverseSectionPosition]];
+    planeRuns = [self _runsForPlane:transversePlane verticalLineIndexes:&verticalLines];
+    [_transverseVerticalLines setObject:verticalLines forKey:@"center"];
+    [_transversePlaneRuns setObject:planeRuns forKey:@"center"];
+    
+    transversePlane.point = [_curvedPath.bezierPath vectorAtRelativePosition:[_curvedPath leftTransverseSectionPosition]];
+    transversePlane.normal = [_curvedPath.bezierPath tangentAtRelativePosition:[_curvedPath leftTransverseSectionPosition]];
+    planeRuns = [self _runsForPlane:transversePlane verticalLineIndexes:&verticalLines];
+    [_transverseVerticalLines setObject:verticalLines forKey:@"left"];
+    [_transversePlaneRuns setObject:planeRuns forKey:@"left"];
+    
+    transversePlane.point = [_curvedPath.bezierPath vectorAtRelativePosition:[_curvedPath rightTransverseSectionPosition]];
+    transversePlane.normal = [_curvedPath.bezierPath tangentAtRelativePosition:[_curvedPath rightTransverseSectionPosition]];
+    planeRuns = [self _runsForPlane:transversePlane verticalLineIndexes:&verticalLines];
+    [_transverseVerticalLines setObject:verticalLines forKey:@"right"];
+    [_transversePlaneRuns setObject:planeRuns forKey:@"right"];
+}
+
+- (void)_clearTransversePlanes
+{
+    [_transverseVerticalLines removeAllObjects];
+    [_transversePlaneRuns removeAllObjects];
 }
 
 @end

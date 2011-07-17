@@ -34,6 +34,9 @@
     NSMutableDictionary *_planeRuns;
     NSMutableDictionary *_planeColors;    
     
+    NSMutableDictionary *_transverseVerticalLines;
+    NSMutableDictionary *_transversePlaneRuns;
+    
     NSMutableDictionary *_mousePlanePointsInPix; // The display info stores on what
 	//	plane and where in 3D the mouse position dots are, but we want to cache where the dots should be drawn in this view.
     
@@ -51,7 +54,8 @@
     BOOL _needsNewRequest;
     
     BOOL _displayCrossLines;
-    
+    BOOL _displayTransverseLines;
+
     N3BezierPath *_centerlinePath;
     CGFloat _centerlineProjectedLength;
 }
@@ -78,6 +82,7 @@
 @property (nonatomic, readwrite, retain) NSColor *purplePlaneColor;
 @property (nonatomic, readwrite, retain) NSColor *bluePlaneColor;
 
+@property (nonatomic, readwrite, assign) BOOL displayTransverseLines;
 @property (nonatomic, readwrite, assign) BOOL displayCrossLines;
 
 - (void)waitUntilPixUpdate; // returns once this view's DCM pix object has been updated to reflect any changes made to the view. 
