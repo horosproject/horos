@@ -104,6 +104,7 @@
 - (NSColor *)_planeColorGetter;
 - (void)_buildTransverseVerticalLinesAndPlaneRuns;
 - (void)_clearTransversePlanes;
+- (N3Vector)_pixVectorForRelativePotion:(CGFloat)relativePosition;
 
 // calls for dealing with intersections with planes
 
@@ -237,6 +238,11 @@
 	[_mousePlanePointsInPix release];
 	_mousePlanePointsInPix = nil;
     
+    [stanStringAttrib release];
+	[stringTexA release];
+	[stringTexB release];
+	[stringTexC release];
+	    
     [super dealloc];
 }
 
@@ -391,6 +397,7 @@
     N3BezierPath *centerline;
     NSString *planeName;
 	NSColor *planeColor;
+    N3AffineTransform pixToSubDrawRectTransform;
 
     CGLContextObj cgl_ctx;
     
@@ -405,7 +412,8 @@
     centerline = [self centerlinePath];
     pixelsPerMm = (CGFloat)curDCM.pwidth/_centerlineProjectedLength;
     pheight_2 = (CGFloat)curDCM.pheight/2.0;
-    
+    pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
+
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -524,47 +532,65 @@
             
             [self _drawPlaneRuns:transversePlaneRun];
         }
-        		
+        
+        N3Vector transverseIntersectionA = [self _pixVectorForRelativePotion:[_curvedPath leftTransverseSectionPosition]];
+        N3Vector transverseIntersectionB = [self _pixVectorForRelativePotion:[_curvedPath transverseSectionPosition]];
+        N3Vector transverseIntersectionC = [self _pixVectorForRelativePotion:[_curvedPath rightTransverseSectionPosition]];
+        
+        transverseIntersectionA = N3VectorApplyTransform(transverseIntersectionA, pixToSubDrawRectTransform);
+        transverseIntersectionB = N3VectorApplyTransform(transverseIntersectionB, pixToSubDrawRectTransform);
+        transverseIntersectionC = N3VectorApplyTransform(transverseIntersectionC, pixToSubDrawRectTransform);
+
+        
 		// --- Text
-//		if( stanStringAttrib == nil)
-//		{
-//			stanStringAttrib = [[NSMutableDictionary dictionary] retain];
-//			[stanStringAttrib setObject:[NSFont fontWithName:@"Helvetica" size: 14.0] forKey:NSFontAttributeName];
-//			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
-//		}
-//		
-//		if( stringTexA == nil)
-//		{
-//			stringTexA = [[StringTexture alloc] initWithString: @"A"
-//                                                withAttributes:stanStringAttrib
-//                                                 withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
-//                                                  withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
-//                                               withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
-//			[stringTexA setAntiAliasing: YES];
-//		}
-//		if( stringTexB == nil)
-//		{
-//			stringTexB = [[StringTexture alloc] initWithString: @"B"
-//                                                withAttributes:stanStringAttrib
-//                                                 withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
-//                                                  withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
-//                                               withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
-//			[stringTexB setAntiAliasing: YES];
-//		}
-//		if( stringTexC == nil)
-//		{
-//			stringTexC = [[StringTexture alloc] initWithString: @"C"
-//                                                withAttributes:stanStringAttrib
-//                                                 withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
-//                                                  withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
-//                                               withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
-//			[stringTexC setAntiAliasing: YES];
-//		}
-//		
-//		glEnable (GL_TEXTURE_RECTANGLE_EXT);
-//		glEnable(GL_BLEND);
-//		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-//		
+		if( stanStringAttrib == nil)
+		{
+			stanStringAttrib = [[NSMutableDictionary dictionary] retain];
+			[stanStringAttrib setObject:[NSFont fontWithName:@"Helvetica" size: 14.0] forKey:NSFontAttributeName];
+			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
+		}
+		
+		if( stringTexA == nil)
+		{
+			stringTexA = [[StringTexture alloc] initWithString: @"A"
+                                                withAttributes:stanStringAttrib
+                                                 withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+                                                  withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+                                               withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+			[stringTexA setAntiAliasing: YES];
+		}
+		if( stringTexB == nil)
+		{
+			stringTexB = [[StringTexture alloc] initWithString: @"B"
+                                                withAttributes:stanStringAttrib
+                                                 withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+                                                  withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+                                               withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+			[stringTexB setAntiAliasing: YES];
+		}
+		if( stringTexC == nil)
+		{
+			stringTexC = [[StringTexture alloc] initWithString: @"C"
+                                                withAttributes:stanStringAttrib
+                                                 withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+                                                  withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+                                               withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+			[stringTexC setAntiAliasing: YES];
+		}
+		
+		glEnable (GL_TEXTURE_RECTANGLE_EXT);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+				
+		glColor4f (0, 0, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(transverseIntersectionA.x+1 - [stringTexA frameSize].width, transverseIntersectionA.y+1) ratio: 1];
+		glColor4f (1, 1, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(transverseIntersectionA.x - [stringTexA frameSize].width, transverseIntersectionA.y) ratio: 1];
+		
+		glColor4f (0, 0, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(transverseIntersectionB.x+1 - [stringTexB frameSize].width/2., transverseIntersectionB.y+1) ratio: 1];
+		glColor4f (1, 1, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(transverseIntersectionB.x - [stringTexB frameSize].width/2., transverseIntersectionB.y) ratio: 1];
+		
+		glColor4f (0, 0, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(transverseIntersectionC.x+1, transverseIntersectionC.y+1) ratio: 1];
+		glColor4f (1, 1, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(transverseIntersectionC.x, transverseIntersectionC.y) ratio: 1];
+		
 //		float quarter = -(lineAStart.y - lineAEnd.y)/3.;
 //		
 //		glColor4f (0, 0, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(lineAStart.x+1 - [stringTexA frameSize].width, quarter+lineAStart.y+1) ratio: 1];
@@ -575,8 +601,8 @@
 //		
 //		glColor4f (0, 0, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(lineCStart.x+1, quarter+lineCStart.y+1) ratio: 1];
 //		glColor4f (1, 1, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(lineCStart.x, quarter+lineCStart.y) ratio: 1];
-//		
-//		glDisable (GL_TEXTURE_RECTANGLE_EXT);
+		
+		glDisable (GL_TEXTURE_RECTANGLE_EXT);
 	}
     
     
@@ -1390,6 +1416,29 @@
 {
     [_transverseVerticalLines removeAllObjects];
     [_transversePlaneRuns removeAllObjects];
+}
+
+- (N3Vector)_pixVectorForRelativePotion:(CGFloat)relativePosition
+{
+    N3Plane relativePositionPlane;
+    NSArray *intersections;
+    N3Vector relativePositionIntersection;
+    CGFloat pixelsPerMm;
+    
+    pixelsPerMm = (CGFloat)curDCM.pwidth/_centerlineProjectedLength;
+
+    relativePositionPlane = N3PlaneMake(N3VectorMake(0, 0, relativePosition), N3VectorMake(0, 0, 1));
+    intersections = [_centerlinePath intersectionsWithPlane:relativePositionPlane];
+    
+    if ([intersections count] == 0) {
+        return N3VectorZero;
+    } 
+    
+    relativePositionIntersection = [[intersections objectAtIndex:0] N3VectorValue];
+    relativePositionIntersection.y *= pixelsPerMm;
+    relativePositionIntersection.y += (CGFloat)curDCM.pheight/2.0;
+    
+    return relativePositionIntersection;
 }
 
 @end

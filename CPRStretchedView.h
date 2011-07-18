@@ -58,6 +58,9 @@
 
     N3BezierPath *_centerlinePath;
     CGFloat _centerlineProjectedLength;
+    
+    NSMutableDictionary *stanStringAttrib;
+	StringTexture *stringTexA, *stringTexB, *stringTexC;
 }
 
 @property (nonatomic, readwrite, assign) id<CPRViewDelegate> delegate;
