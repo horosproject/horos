@@ -1,4 +1,4 @@
-- OsiriX web server doesn't work : MacOS 10.7
+- 10.7: Q&R ?
 - Toolbars: tests with new screen plugged when using OsiriX
 
 - ROI: Add points to Polygon or Pencil ROIs 
@@ -11,7 +11,7 @@
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
 - Web Server: add Bonjour Service, add Locations parameter, display in Sources
 - DICOM ECG
-- Q&R: custom field
+- Q&R: custom field (Performing Physician)
 - Activate 8-bit TIFF, JPEG, export (10.6) // Add PNG
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
 - Every web portal user's specific studies list in Albums
