@@ -47,6 +47,9 @@
     CPRStretchedGeneratorRequest *_lastRequest;
     CGFloat _generatedHeight;
 
+    BOOL _draggingTransverse;
+    BOOL _draggingTransverseSpacing;
+
     NSInteger _editingCurvedPathCount;
     
     BOOL _processingRequest; // synchronous new image requests are generated in drawRect, but code that handles the new image calls' setNeedsDisplay,
@@ -57,6 +60,7 @@
     BOOL _displayTransverseLines;
 
     N3BezierPath *_centerlinePath; // this is the centerline path of the most recently generated DCM
+    N3Vector _midHeightPoint; // a point in patient space that is mid-height in the curDCM
    // CGFloat _centerlineProjectedLength; // this is gone because it should be calulated from the curDCM's sample spacing
     
     NSMutableDictionary *stanStringAttrib;

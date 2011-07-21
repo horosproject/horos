@@ -25,6 +25,9 @@
 
 #define _extraWidthFactor 1.2
 
+extern BOOL frameZoomed;
+extern int splitPosition[ 3];
+
 @interface _CPRStretchedViewPlaneRun : NSObject
 {
     NSRange _range;
@@ -106,6 +109,7 @@
 - (void)_clearTransversePlanes;
 - (N3Vector)_centerlinePixVectorForRelativePosition:(CGFloat)relativePosition;
 - (CGFloat)_relativePositionForPixPoint:(NSPoint)pixPoint;
+- (N3Vector)_vectorForPixPoint:(NSPoint)pixPoint;
 
 // calls for dealing with intersections with planes
 
@@ -428,6 +432,7 @@
     // draw the centerline.
     
     glColor3f(0, 1, 0);
+    glLineWidth(1.0);
     glBegin(GL_LINE_STRIP);
     for (i = 0; i < [centerline elementCount]; i++) {
         [centerline elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
@@ -451,6 +456,7 @@
         glBegin(GL_POINTS);
         glVertex2f(cursorVector.x, cursorVector.y);
         glEnd();
+        glDisable(GL_POINT_SMOOTH);
     }
     
     
@@ -613,21 +619,52 @@
 		
 		glColor4f (0, 0, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(transverseIntersectionC.x+1, transverseIntersectionC.y+1) ratio: 1];
 		glColor4f (1, 1, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(transverseIntersectionC.x, transverseIntersectionC.y) ratio: 1];
-		
-//		float quarter = -(lineAStart.y - lineAEnd.y)/3.;
-//		
-//		glColor4f (0, 0, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(lineAStart.x+1 - [stringTexA frameSize].width, quarter+lineAStart.y+1) ratio: 1];
-//		glColor4f (1, 1, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(lineAStart.x - [stringTexA frameSize].width, quarter+lineAStart.y) ratio: 1];
-//		
-//		glColor4f (0, 0, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(lineBStart.x+1 - [stringTexB frameSize].width/2., quarter+lineBStart.y+1) ratio: 1];
-//		glColor4f (1, 1, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(lineBStart.x - [stringTexB frameSize].width/2., quarter+lineBStart.y) ratio: 1];
-//		
-//		glColor4f (0, 0, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(lineCStart.x+1, quarter+lineCStart.y+1) ratio: 1];
-//		glColor4f (1, 1, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(lineCStart.x, quarter+lineCStart.y) ratio: 1];
-		
+				
 		glDisable (GL_TEXTURE_RECTANGLE_EXT);
 	}
     
+    if( [[self windowController] displayMousePosition] == YES)
+	{
+		// draw the point on the plane lines
+		for (planeName in _mousePlanePointsInPix) 
+		{
+			planeColor = [self valueForKey:[NSString stringWithFormat:@"%@PlaneColor", planeName]];
+			glColor4f ([planeColor redComponent], [planeColor greenComponent], [planeColor blueComponent], [planeColor alphaComponent]);
+			glEnable(GL_POINT_SMOOTH);
+			glPointSize(8);
+			cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue], pixToSubDrawRectTransform);
+			glBegin(GL_POINTS);
+			glVertex2f(cursorVector.x, cursorVector.y);
+			glEnd();	
+		}
+        
+//        if (_displayInfo.mouseTransverseSection != CPRTransverseViewNoneSectionType) {
+//            switch (_displayInfo.mouseTransverseSection) {
+//                case CPRTransverseViewLeftSectionType:
+//                    relativePosition = _curvedPath.leftTransverseSectionPosition;
+//                    break;
+//                case CPRTransverseViewCenterSectionType:
+//                    relativePosition = _curvedPath.transverseSectionPosition;
+//                    break;
+//                case CPRTransverseViewRightSectionType:
+//                    relativePosition = _curvedPath.rightTransverseSectionPosition;
+//                    break;
+//                default:
+//                    relativePosition = 0;
+//                    break;
+//            }
+//            
+//            cursorVector = N3VectorMake((CGFloat)curDCM.pwidth*relativePosition, ((CGFloat)curDCM.pheight/2.0)+(_displayInfo.mouseTransverseSectionDistance*pixelsPerMm), 0);
+//            cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
+//            
+//            glColor4d(1.0, 1.0, 0.0, 1.0);
+//            glEnable(GL_POINT_SMOOTH);
+//            glPointSize(8);
+//            glBegin(GL_POINTS);
+//            glVertex2f(cursorVector.x, cursorVector.y);
+//            glEnd();
+//        }
+    }
     
 	// Red Square
 	if( [[self window] firstResponder] == self && stringID == nil)
@@ -681,6 +718,7 @@
     
     // blow away local caches of overlay lines
     self.centerlinePath = nil;
+    _midHeightPoint = N3VectorZero;
     
     for (i = 0; i < self.curvedVolumeData.pixelsDeep; i++)
 	{
@@ -736,6 +774,7 @@
         [self _clearAllPlanes];
         [self _clearTransversePlanes];
         self.centerlinePath = [self _projectedBezierPathFromStretchedGeneratorRequest:(CPRStretchedGeneratorRequest*)request];
+        _midHeightPoint = [(CPRStretchedGeneratorRequest*)request midHeightPoint];
 		[self setNeedsDisplay:YES];
 	}
 	[pixArray release];
@@ -873,12 +912,41 @@
 			[self _sendDidEditDisplayInfo];
 		}
 		
-//		float exportTransverseSliceInterval = 0;
-//		
-//		if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
-//			exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
-//		
-//		
+		float exportTransverseSliceInterval = 0;
+        NSMutableArray *allTransverseVerticalLines;
+        NSMutableArray *allTransverseRuns;
+        CGFloat transverseLineDistance;
+        CGFloat transverseRunDistance;
+        
+		if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
+			exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
+		
+        allTransverseVerticalLines = [NSMutableArray array];
+        allTransverseRuns = [NSMutableArray array];
+        
+        for (NSArray *values in [_transverseVerticalLines allValues]) {
+            [allTransverseVerticalLines addObjectsFromArray:values];
+        }
+        for (NSArray *values in [_transversePlaneRuns allValues]) {
+            [allTransverseRuns addObjectsFromArray:values];
+        }
+        
+        transverseLineDistance = [self _distanceToPoint:viewPoint onVerticalLines:allTransverseVerticalLines pixVector:NULL volumeVector:NULL];
+        transverseRunDistance = [self _distanceToPoint:viewPoint onPlaneRuns:allTransverseRuns pixVector:NULL volumeVector:NULL];
+
+		if( curDCM.pwidth != 0 && exportTransverseSliceInterval == 0 && _displayTransverseLines && (transverseLineDistance < 5.0 || transverseRunDistance < 5.0))
+		{
+			if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown)
+				[[NSCursor closedHandCursor] set];
+			else
+				[[NSCursor openHandCursor] set];
+		}
+		else
+		{
+			[cursor set];
+			
+			[super mouseMoved:theEvent];
+		}
 //		if( curDCM.pwidth != 0 && exportTransverseSliceInterval == 0 && _displayTransverseLines && ((ABS((pixVector.x/curDCM.pwidth) - _curvedPath.transverseSectionPosition)*curDCM.pwidth < 5.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.leftTransverseSectionPosition)*curDCM.pwidth < 10.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.rightTransverseSectionPosition)*curDCM.pwidth < 10.0)))
 //		{
 //			if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown)
@@ -896,6 +964,253 @@
 	else
 	{
 		[view mouseMoved:theEvent];
+	}
+}
+
+- (void)mouseDown:(NSEvent *)event
+{
+    NSPoint viewPoint;
+    N3Vector pixVector;
+    CGFloat pixWidth;
+    CGFloat relativePosition;
+    NSInteger i;
+    
+    viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
+    pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
+    pixWidth = curDCM.pwidth;
+//    _clickedNode = NO;
+    
+    if (pixWidth == 0.0) {
+        [super mouseDown:event];
+        return;
+    }
+	
+	float exportTransverseSliceInterval = 0;
+    NSMutableArray *outsideTransverseVerticalLines;
+    NSMutableArray *outsideTransverseRuns;
+    CGFloat outsideTransverseLineDistance;
+    CGFloat outsideTransverseRunDistance;
+    CGFloat centerTransverseLineDistance;
+    CGFloat centerTransverseRunDistance;
+    
+    outsideTransverseVerticalLines = [NSMutableArray array];
+    outsideTransverseRuns = [NSMutableArray array];
+    
+    for (NSString *key in _transverseVerticalLines ) {
+        if ([key isEqualToString:@"center"] == NO) {
+            [outsideTransverseVerticalLines addObjectsFromArray:[_transverseVerticalLines objectForKey:key]];
+        }
+    }
+    for (NSString *key in _transversePlaneRuns ) {
+        if ([key isEqualToString:@"center"] == NO) {
+            [outsideTransverseRuns addObjectsFromArray:[_transversePlaneRuns objectForKey:key]];
+        }
+    }
+    
+    outsideTransverseLineDistance = [self _distanceToPoint:viewPoint onVerticalLines:outsideTransverseVerticalLines pixVector:NULL volumeVector:NULL];
+    outsideTransverseRunDistance = [self _distanceToPoint:viewPoint onPlaneRuns:outsideTransverseRuns pixVector:NULL volumeVector:NULL];
+    centerTransverseLineDistance = [self _distanceToPoint:viewPoint onVerticalLines:[_transverseVerticalLines objectForKey:@"center"] pixVector:NULL volumeVector:NULL];
+    centerTransverseRunDistance = [self _distanceToPoint:viewPoint onPlaneRuns:[_transversePlaneRuns objectForKey:@"center"] pixVector:NULL volumeVector:NULL];
+    
+	if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
+		exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
+	
+    if( exportTransverseSliceInterval == 0 && _displayTransverseLines && MIN(centerTransverseLineDistance, centerTransverseRunDistance) < 5.0)
+	{
+		[self _sendWillEditCurvedPath];
+        _draggingTransverse = YES;
+		[self mouseMoved: event];
+    }
+	else if( exportTransverseSliceInterval == 0 && _displayTransverseLines && MIN(outsideTransverseLineDistance, outsideTransverseRunDistance) < 10.0)
+	{
+		[self _sendWillEditCurvedPath];
+        _draggingTransverseSpacing = YES;
+		[self mouseMoved: event];
+    }
+	else
+	{
+//        for (i = 0; i < [_curvedPath.nodes count]; i++)
+//		{
+//            relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
+//            
+//            if (N3VectorDistance(N3VectorMakeFromNSPoint(viewPoint),
+//                                 N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*relativePosition, (CGFloat)curDCM.pheight/2.0, 0), N3AffineTransformInvert([self viewToPixTransform]))) < 10.0) {
+//                if ([_delegate respondsToSelector:@selector(CPRView:setCrossCenter:)]) {
+//                    [_delegate CPRView: [[self windowController] mprView1] setCrossCenter:[[_curvedPath.nodes objectAtIndex:i] N3VectorValue]];
+//                }
+//                _clickedNode = YES;
+//                break;
+//            }
+//        }
+//        if (_clickedNode == NO)
+		{
+			int clickCount = 1;
+			
+			@try
+			{
+				if( [event type] ==	NSLeftMouseDown || [event type] ==	NSRightMouseDown || [event type] ==	NSLeftMouseUp || [event type] == NSRightMouseUp)
+					clickCount = [event clickCount];
+			}
+			@catch (NSException * e)
+			{
+				clickCount = 1;
+			}
+			
+			if( clickCount == 2)
+			{
+				NSPoint tempPt = [self convertPoint: [event locationInWindow] fromView: nil];
+				tempPt = [self ConvertFromNSView2GL:tempPt];
+				
+				CPRController *windowController = [self windowController];
+				
+				long tool = [self getTool: event];
+				
+				if( [self roiTool: tool] && [self clickInROI: tempPt])
+				{
+					[[self windowController] roiGetInfo: self];
+				}
+				else if( frameZoomed == NO)
+				{
+					splitPosition[0] = [[windowController mprView1] frame].origin.x + [[windowController mprView1] frame].size.width;	// vert
+					splitPosition[1] = [[windowController mprView1] frame].origin.y + [[windowController mprView1] frame].size.height;	// hori12
+					splitPosition[2] = [[windowController mprView3] frame].origin.y + [[windowController mprView3] frame].size.height;	// horiz2
+					
+					frameZoomed = YES;
+					
+					[windowController.verticalSplit setPosition: [windowController.verticalSplit minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+					[windowController.horizontalSplit1 setPosition: [windowController.horizontalSplit1 minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+					[windowController.horizontalSplit2 setPosition: [windowController.horizontalSplit2 minPossiblePositionOfDividerAtIndex: 0] ofDividerAtIndex: 0];
+				}
+				else
+				{
+					frameZoomed = NO;
+					[windowController.verticalSplit setPosition: splitPosition[ 0] ofDividerAtIndex: 0];
+					[windowController.horizontalSplit1 setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
+					[windowController.horizontalSplit2 setPosition: splitPosition[ 2] ofDividerAtIndex: 0];
+				}
+			}
+			else
+			{
+				if( [self roiTool: currentTool])
+				{
+					if( currentTool != tText && currentTool != tArrow)
+						currentTool = tMesure;
+				}
+				
+				[super mouseDown:event];
+			}
+        }
+    }
+}
+
+- (void)mouseDragged:(NSEvent *)event
+{
+    NSPoint viewPoint;
+    N3Vector pixVector;
+    CGFloat relativePosition;
+    CGFloat pixWidth;
+    
+//	if( _clickedNode)
+//		return;
+	
+    viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
+    pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
+    pixWidth = curDCM.pwidth;
+    
+    if (pixWidth == 0.0) {
+        [super mouseDragged:event];
+        return;
+    }
+    
+    if (_draggingTransverse)
+	{
+        relativePosition = [self _relativePositionForPixPoint:NSPointFromN3Vector(pixVector)];
+        _curvedPath.transverseSectionPosition = MAX(MIN(relativePosition, 1.0), 0.0);
+		[self _sendDidUpdateCurvedPath];
+        
+		[self _sendWillEditDisplayInfo];
+        _displayInfo.mouseCursorPosition = pixVector.x/pixWidth;
+		[self _sendDidEditDisplayInfo];
+        
+		[self setNeedsDisplay:YES];
+		[self mouseMoved: event];
+    }
+	else if (_draggingTransverseSpacing)
+	{
+        _curvedPath.transverseSectionSpacing = ABS([self _relativePositionForPixPoint:NSPointFromN3Vector(pixVector)]-_curvedPath.transverseSectionPosition)*[_curvedPath.bezierPath length];
+		[self _sendDidUpdateCurvedPath];
+        
+		[self _sendWillEditDisplayInfo];
+        _displayInfo.mouseCursorPosition = [self _relativePositionForPixPoint:NSPointFromN3Vector(pixVector)];
+		[self _sendDidEditDisplayInfo];
+        [self setNeedsDisplay:YES];
+		[self mouseMoved: event];
+    }
+	else
+	{
+		[self _sendWillEditDisplayInfo];
+        _displayInfo.mouseCursorPosition = [self _relativePositionForPixPoint:NSPointFromN3Vector(pixVector)];
+		[self _sendDidEditDisplayInfo];
+        
+        [super mouseDragged:event];
+    }
+}
+
+- (void)mouseUp:(NSEvent *)event
+{
+	if (_draggingTransverse) {
+		_draggingTransverse = NO;
+		[self _sendDidEditCurvedPath];
+	} else if (_draggingTransverseSpacing) {
+		_draggingTransverseSpacing = NO;
+		[self _sendDidEditCurvedPath];
+	}
+    
+    [super mouseUp:event];
+}
+
+
+- (void)scrollWheel:(NSEvent *)theEvent
+{
+	// Scroll/Move transverse lines
+	if( [theEvent modifierFlags] & NSAlternateKeyMask)
+	{
+		CGFloat transverseSectionPosition = MIN(MAX(_curvedPath.transverseSectionPosition + [theEvent deltaY] * .002, 0.0), 1.0); 
+		
+		[self _sendWillEditCurvedPath];
+		_curvedPath.transverseSectionPosition = transverseSectionPosition;
+		[self _sendDidEditCurvedPath];
+		
+		[self _setNeedsNewRequest];
+		[self setNeedsDisplay: YES];
+	}
+	
+	// Scroll/Move transverse lines
+	else if( [theEvent modifierFlags] & NSCommandKeyMask)
+	{
+		CGFloat transverseSectionSpacing = MIN(MAX(_curvedPath.transverseSectionSpacing + [theEvent deltaY] * .4, 0.0), 300); 
+		
+		[self _sendWillEditCurvedPath];
+		_curvedPath.transverseSectionSpacing = transverseSectionSpacing;
+		[self _sendDidEditCurvedPath];
+		
+		[self _setNeedsNewRequest];
+		[self setNeedsDisplay: YES];
+	}
+	else
+	{
+		N3Vector initialNormal;
+		CGFloat angle;
+		
+		angle = [theEvent deltaY] * (M_PI/180);
+		
+		initialNormal = _curvedPath.initialNormal;
+		initialNormal = N3VectorApplyTransform(initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [_curvedPath.bezierPath tangentAtStart]));
+        
+		[self _sendWillEditCurvedPath];
+		_curvedPath.initialNormal = initialNormal;
+		[self _sendDidEditCurvedPath];
+		[self _setNeedsNewRequest];
 	}
 }
 
@@ -1292,13 +1607,9 @@
 						[planeRun.distances addObject:[NSNumber numberWithDouble:halfHeight]];
 					}
 				}
-			}
-            // distance from bottom to 
-            
+			}            
+
             distance = N3VectorDotProduct(N3VectorSubtract(N3LineIntersectionWithPlane(N3LineMakeFromPoints(bottom, top), plane), midHeightPoint), projectionNormal);
-//            distance = N3VectorDotProduct(N3VectorSubtract(vectors[i], bottom), projectionNormal);
-//			distance = N3VectorDotProduct(N3VectorSubtract(N3LineIntersectionWithPlane(N3LineMakeFromPoints(bottom, top), plane), vectors[i]), projectionNormal);
-//			distance = N3VectorDotProduct(N3VectorSubtract(N3LineIntersectionWithPlane(N3LineMakeFromPoints(bottom, top), plane), vectors[i]), projectionNormal);
 			[planeRun.distances addObject:[NSNumber numberWithDouble:distance]];
 			range.length++;
 		} else {
@@ -1338,7 +1649,41 @@
 
 
 - (void)_updateMousePlanePointsForViewPoint:(NSPoint)point // this will modify _mousePlanePointsInPix and _displayInfo
-{}
+{
+	CGFloat lineDistance;
+	CGFloat runDistance;
+	N3Vector linePixVector;
+	N3Vector lineVolumeVector;
+	N3Vector runPixVector;
+	N3Vector runVolumeVector;
+    NSString *planeName;
+    NSArray *verticalLines;
+    NSArray *planeRuns;
+	
+	linePixVector = N3VectorZero;
+	lineVolumeVector = N3VectorZero;
+	runPixVector = N3VectorZero;
+	runVolumeVector = N3VectorZero;
+	
+	[_displayInfo clearAllMouseVectors];
+	[_mousePlanePointsInPix removeAllObjects];
+	
+    for (planeName in _planes) {
+        verticalLines = [self valueForKey:[planeName stringByAppendingString:@"VerticalLines"]];
+        planeRuns = [self valueForKey:[planeName stringByAppendingString:@"PlaneRuns"]];
+        lineDistance = [self _distanceToPoint:point onVerticalLines:verticalLines pixVector:&linePixVector volumeVector:&lineVolumeVector];
+        runDistance = [self _distanceToPoint:point onPlaneRuns:planeRuns pixVector:&runPixVector volumeVector:&runVolumeVector];
+        if (MIN(lineDistance, runDistance) < 30) {
+            if (lineDistance < runDistance) {
+                [_mousePlanePointsInPix setObject:[NSValue valueWithN3Vector:linePixVector] forKey:planeName];
+                [_displayInfo setMouseVector:lineVolumeVector forPlane:planeName];
+            } else {
+                [_mousePlanePointsInPix setObject:[NSValue valueWithN3Vector:runPixVector] forKey:planeName];
+                [_displayInfo setMouseVector:runVolumeVector forPlane:planeName];
+            }
+        }
+    }    
+}
 
 // point and distance are in view coordinates, vector is in patient coordinates closestPoint is in pixCoordinates
 - (CGFloat)_distanceToPoint:(NSPoint)point onVerticalLines:(NSArray *)verticalLines pixVector:(N3VectorPointer)closestPixVectorPtr volumeVector:(N3VectorPointer)volumeVectorPtr;
@@ -1351,10 +1696,10 @@
 	N3Vector lineStart;
 	N3Vector lineEnd;
 	CGFloat height;
-	CGFloat relativePosition;
+//	CGFloat relativePosition;
 	CGFloat distance;
 	CGFloat minDistance;
-	N3Vector normalVector;
+//	N3Vector normalVector;
     
     if ([curDCM pixelSpacingX] == 0) {
         return 0;
@@ -1379,9 +1724,7 @@
 			}
 			
 			if (volumeVectorPtr) {
-				relativePosition = [indexNumber doubleValue]/(CGFloat)curDCM.pwidth;
-				normalVector = [_curvedPath.bezierPath normalAtRelativePosition:relativePosition initialNormal:_curvedPath.initialNormal];
-				*volumeVectorPtr = N3VectorAdd([_curvedPath.bezierPath vectorAtRelativePosition:relativePosition], N3VectorScalarMultiply(normalVector, (pixPointVector.y - (CGFloat)curDCM.pheight/2.0)/ pixelsPerMm));
+                *volumeVectorPtr = [self _vectorForPixPoint:NSPointFromN3Vector(pixVector)];
 			}
 		}
 	}
@@ -1395,10 +1738,10 @@
 	N3Vector closeVector;
 	N3Vector closestVector;
 	N3Vector pointVector;
-	N3Vector normalVector;
+//	N3Vector normalVector;
 	CGFloat distance;
 	CGFloat minDistance;
-	CGFloat relativePosition;
+//	CGFloat relativePosition;
 	_CPRStretchedViewPlaneRun *planeRun;
 	N3MutableBezierPath *planeRunBezierPath;
 	
@@ -1421,19 +1764,16 @@
 		if (distance < minDistance) {
 			minDistance = distance;
 			closestVector = N3VectorApplyTransform(closeVector, [self viewToPixTransform]);
-			closestVector.y -= (CGFloat)curDCM.pheight/2.0;
 		}
 		[planeRunBezierPath release];
 		planeRunBezierPath = nil;
 	}
 	
 	if (closestPixVectorPtr) {
-		*closestPixVectorPtr = N3VectorMake(closestVector.x, closestVector.y + (CGFloat)curDCM.pheight/2.0, 0);
+		*closestPixVectorPtr = N3VectorMake(closestVector.x, closestVector.y, 0);
 	}
 	if (volumeVectorPtr) {
-		relativePosition = closestVector.x/(CGFloat)curDCM.pwidth;
-		normalVector = [_curvedPath.bezierPath normalAtRelativePosition:relativePosition initialNormal:_curvedPath.initialNormal];
-		*volumeVectorPtr = N3VectorAdd([_curvedPath.bezierPath vectorAtRelativePosition:relativePosition], N3VectorScalarMultiply(normalVector, closestVector.y / pixelsPerMm));
+        *volumeVectorPtr = [self _vectorForPixPoint:NSPointFromN3Vector(closestVector)];
 	}
     
 	return minDistance;
@@ -1610,8 +1950,6 @@
     } 
     
     relativePositionIntersection = [[intersections objectAtIndex:0] N3VectorValue];
-//    relativePositionIntersection.y *= pixelsPerMm;
-//    relativePositionIntersection.y += (CGFloat)curDCM.pheight/2.0;
     
     return relativePositionIntersection;
 }
@@ -1635,9 +1973,37 @@
     return MIN(MAX(closestVector.z, 0.0), 1.0);
 }
 
-//- (N3Vector)_vectorForPixPoint:(NSPoint)pixPoint
-//{
-//}
+- (N3Vector)_vectorForPixPoint:(NSPoint)pixPoint
+{
+    N3Plane intersectionPlane;
+    NSArray *intersections;
+    N3Vector intersectionVector;
+    N3Vector vector;
+    CGFloat relativePosition;
+    CGFloat mmPerPixel;
+    CGFloat pixDistance;
+    CGFloat mmDistance;
+    N3Vector curveDirection;
+    N3Vector baseNormal;
+    N3Vector projectionNormal;
+        
+    curveDirection = N3VectorSubtract([_curvedPath.bezierPath vectorAtEnd], [_curvedPath.bezierPath vectorAtStart]);
+    baseNormal = N3VectorNormalize(N3VectorCrossProduct(_curvedPath.baseDirection, curveDirection));
+    projectionNormal = N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(_curvedPath.angle, curveDirection));
+    mmPerPixel = [curDCM pixelSpacingX];
+    intersectionPlane = N3PlaneMake(N3VectorMakeFromNSPoint(pixPoint), N3VectorMake(1.0, 0, 0));
+    intersections = [_centerlinePath intersectionsWithPlane:intersectionPlane];
+    if ([intersections count] == 0) {
+        return N3VectorZero;
+    }
+    intersectionVector = [[intersections objectAtIndex:0] N3VectorValue];
+    relativePosition = intersectionVector.z;
+    vector = [_curvedPath.bezierPath vectorAtRelativePosition:relativePosition];
+    pixDistance = pixPoint.y - intersectionVector.y;
+    mmDistance = pixDistance * mmPerPixel;
+    
+    return N3VectorAdd(vector, N3VectorScalarMultiply(projectionNormal, mmDistance));
+}
 
 @end
 
