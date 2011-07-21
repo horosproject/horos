@@ -56,8 +56,8 @@
     BOOL _displayCrossLines;
     BOOL _displayTransverseLines;
 
-    N3BezierPath *_centerlinePath;
-    CGFloat _centerlineProjectedLength;
+    N3BezierPath *_centerlinePath; // this is the centerline path of the most recently generated DCM
+   // CGFloat _centerlineProjectedLength; // this is gone because it should be calulated from the curDCM's sample spacing
     
     NSMutableDictionary *stanStringAttrib;
 	StringTexture *stringTexA, *stringTexB, *stringTexC;

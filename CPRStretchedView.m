@@ -67,7 +67,7 @@
 
 @property (nonatomic, readwrite, retain) CPRVolumeData *curvedVolumeData; // the volume data that was generated
 @property (nonatomic, readwrite, retain) CPRStretchedGeneratorRequest *lastRequest;
-@property (nonatomic, readonly) N3BezierPath *centerlinePath;
+@property (nonatomic, readwrite, retain) N3BezierPath *centerlinePath;
 
 + (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRViewClippingRangeMode)clippingRangeMode;
 
@@ -84,7 +84,7 @@
 
 - (void)_updateGeneratedHeight;
 
-- (N3BezierPath *)_generateCenterlinePathAndProjectedLength:(CGFloat *)projectedLength;
+- (N3BezierPath *)_projectedBezierPathFromStretchedGeneratorRequest:(CPRStretchedGeneratorRequest *)generatorRequest;
 
 - (void)_drawVerticalLines:(NSArray *)verticalLines;
 
@@ -104,7 +104,8 @@
 - (NSColor *)_planeColorGetter;
 - (void)_buildTransverseVerticalLinesAndPlaneRuns;
 - (void)_clearTransversePlanes;
-- (N3Vector)_pixVectorForRelativePotion:(CGFloat)relativePosition;
+- (N3Vector)_centerlinePixVectorForRelativePosition:(CGFloat)relativePosition;
+- (CGFloat)_relativePositionForPixPoint:(NSPoint)pixPoint;
 
 // calls for dealing with intersections with planes
 
@@ -133,6 +134,7 @@
 @dynamic bluePlaneColor;
 @synthesize displayTransverseLines = _displayTransverseLines;
 @synthesize displayCrossLines = _displayCrossLines;
+@synthesize centerlinePath = _centerlinePath;
 
 + (BOOL)resolveInstanceMethod:(SEL)selector
 {
@@ -398,6 +400,7 @@
     NSString *planeName;
 	NSColor *planeColor;
     N3AffineTransform pixToSubDrawRectTransform;
+    N3Vector cursorVector;
 
     CGLContextObj cgl_ctx;
     
@@ -408,9 +411,12 @@
 	glEnable(GL_LINE_SMOOTH);
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
+    if ([curDCM pixelSpacingX] == 0) {
+        return;
+    }
     
     centerline = [self centerlinePath];
-    pixelsPerMm = (CGFloat)curDCM.pwidth/_centerlineProjectedLength;
+    pixelsPerMm = 1.0/[curDCM pixelSpacingX];
     pheight_2 = (CGFloat)curDCM.pheight/2.0;
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
 
@@ -425,11 +431,28 @@
     glBegin(GL_LINE_STRIP);
     for (i = 0; i < [centerline elementCount]; i++) {
         [centerline elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
-        endpoint.y *= pixelsPerMm;
-        endpoint.y += pheight_2;
+//        endpoint.y *= pixelsPerMm;
+//        endpoint.y += pheight_2;
         glVertex2d(endpoint.x, endpoint.y);
     }
     glEnd();
+    
+    
+    glColor4d(0.0, 1.0, 0.0, 0.8);
+    
+    if ( [[self windowController] displayMousePosition] == YES && _displayInfo.mouseCursorHidden == NO)
+	{
+        cursorVector = [self _centerlinePixVectorForRelativePosition:_displayInfo.mouseCursorPosition];
+//        cursorVector = N3VectorMake(curDCM.pwidth * _displayInfo.mouseCursorPosition, (CGFloat)curDCM.pheight/2.0, 0);
+        
+        glEnable(GL_POINT_SMOOTH);
+        glPointSize(8);
+        
+        glBegin(GL_POINTS);
+        glVertex2f(cursorVector.x, cursorVector.y);
+        glEnd();
+    }
+    
     
     glPopMatrix();
  
@@ -533,9 +556,9 @@
             [self _drawPlaneRuns:transversePlaneRun];
         }
         
-        N3Vector transverseIntersectionA = [self _pixVectorForRelativePotion:[_curvedPath leftTransverseSectionPosition]];
-        N3Vector transverseIntersectionB = [self _pixVectorForRelativePotion:[_curvedPath transverseSectionPosition]];
-        N3Vector transverseIntersectionC = [self _pixVectorForRelativePotion:[_curvedPath rightTransverseSectionPosition]];
+        N3Vector transverseIntersectionA = [self _centerlinePixVectorForRelativePosition:[_curvedPath leftTransverseSectionPosition]];
+        N3Vector transverseIntersectionB = [self _centerlinePixVectorForRelativePosition:[_curvedPath transverseSectionPosition]];
+        N3Vector transverseIntersectionC = [self _centerlinePixVectorForRelativePosition:[_curvedPath rightTransverseSectionPosition]];
         
         transverseIntersectionA = N3VectorApplyTransform(transverseIntersectionA, pixToSubDrawRectTransform);
         transverseIntersectionB = N3VectorApplyTransform(transverseIntersectionB, pixToSubDrawRectTransform);
@@ -657,9 +680,7 @@
     pixArray = [[NSMutableArray alloc] init];
     
     // blow away local caches of overlay lines
-    [_centerlinePath release];
-    _centerlinePath = nil;
-    _centerlinePath = 0;
+    self.centerlinePath = nil;
     
     for (i = 0; i < self.curvedVolumeData.pixelsDeep; i++)
 	{
@@ -714,6 +735,7 @@
 		
         [self _clearAllPlanes];
         [self _clearTransversePlanes];
+        self.centerlinePath = [self _projectedBezierPathFromStretchedGeneratorRequest:(CPRStretchedGeneratorRequest*)request];
 		[self setNeedsDisplay:YES];
 	}
 	[pixArray release];
@@ -729,14 +751,154 @@
 	[_generator runUntilAllRequestsAreFinished];
 }
 
-- (N3BezierPath*)centerlinePath
+- (void)mouseEntered:(NSEvent *)theEvent
 {
-    if (_centerlinePath == nil) {
-        _centerlinePath = [[self _generateCenterlinePathAndProjectedLength:&_centerlineProjectedLength] retain];
-    }
-    
-    return _centerlinePath;
+	[self _sendWillEditDisplayInfo];
+    _displayInfo.mouseCursorHidden = NO;
+	[self _sendDidEditDisplayInfo];
+    [super mouseEntered:theEvent];
 }
+
+- (void)mouseExited:(NSEvent *)theEvent
+{
+	[self _sendWillEditDisplayInfo];
+    _displayInfo.mouseCursorHidden = YES;
+	[_displayInfo clearAllMouseVectors];
+    _displayInfo.mouseTransverseSection = CPRTransverseViewNoneSectionType;
+    _displayInfo.mouseTransverseSectionDistance = 0;
+	[self _sendDidEditDisplayInfo];
+    [_mousePlanePointsInPix removeAllObjects];
+	
+//    self.drawAllNodes = NO;
+    
+    [self setNeedsDisplay:YES];
+    
+    [super mouseExited:theEvent];
+}
+
+- (void)mouseMoved:(NSEvent *)theEvent
+{
+	NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];
+	
+	if( view == self)
+	{
+		NSPoint viewPoint;
+		NSPoint planePoint;
+		N3Vector pixVector;
+		N3Line line;
+		NSInteger i;
+		BOOL overNode;
+		NSInteger hoverNodeIndex;
+		CGFloat relativePosition;
+        CGFloat distance;
+        CGFloat minDistance;
+		BOOL didChangeHover;
+		NSString *planeName;
+		N3Vector vector;
+		
+		viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+		
+		if( NSPointInRect( viewPoint, [self bounds]) == NO)
+			return;
+		
+		pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
+		
+		if (NSPointInRect(viewPoint, self.bounds) && curDCM.pwidth > 0) {
+			[self _sendWillEditDisplayInfo];
+			_displayInfo.mouseCursorPosition = [self _relativePositionForPixPoint:NSPointFromN3Vector(pixVector)];
+//			_displayInfo.mouseCursorPosition = MIN(MAX(pixVector.x/(CGFloat)curDCM.pwidth, 0.0), 1.0);
+			[self setNeedsDisplay:YES];
+            
+			[self _updateMousePlanePointsForViewPoint:viewPoint];  // this will modify _mousePlanePointsInPix and _displayInfo
+			
+            // test to see if the mouse is near a trasverse line
+//            _displayInfo.mouseTransverseSection = CPRTransverseViewNoneSectionType;
+//            _displayInfo.mouseTransverseSectionDistance = 0.0;
+//            if (_displayTransverseLines) {
+//                distance = ABS(pixVector.x - _curvedPath.leftTransverseSectionPosition*(CGFloat)curDCM.pwidth);
+//                minDistance = distance;
+//                if (distance < 20.0) {
+//                    _displayInfo.mouseTransverseSection = CPRTransverseViewLeftSectionType;
+//                    _displayInfo.mouseTransverseSectionDistance = (pixVector.y - ((CGFloat)curDCM.pheight/2.0))*([_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth);
+//                }
+//                distance = ABS(pixVector.x - _curvedPath.rightTransverseSectionPosition*(CGFloat)curDCM.pwidth);
+//                if (distance < 20.0 && distance < minDistance) {
+//                    _displayInfo.mouseTransverseSection = CPRTransverseViewRightSectionType;
+//                    _displayInfo.mouseTransverseSectionDistance = (pixVector.y - ((CGFloat)curDCM.pheight/2.0))*([_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth);
+//                    minDistance = distance;
+//                }
+//                distance = ABS(pixVector.x - _curvedPath.transverseSectionPosition*(CGFloat)curDCM.pwidth);
+//                if (distance < 20.0 && distance < minDistance) {
+//                    _displayInfo.mouseTransverseSection = CPRTransverseViewCenterSectionType;
+//                    _displayInfo.mouseTransverseSectionDistance = (pixVector.y - ((CGFloat)curDCM.pheight/2.0))*([_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth);
+//                }
+//            }            
+            
+//			line = N3LineMake(N3VectorMake(0, (CGFloat)curDCM.pheight / 2.0, 0), N3VectorMake(1, 0, 0));
+//			line = N3LineApplyTransform(line, N3AffineTransformInvert([self viewToPixTransform]));
+//			
+//			if (N3VectorDistanceToLine(N3VectorMakeFromNSPoint(viewPoint), line) < 20.0) {
+//				self.drawAllNodes = YES;
+//			} else {
+//				self.drawAllNodes = NO;
+//			}
+			
+//			overNode = NO;
+//			hoverNodeIndex = 0;
+//			if (self.drawAllNodes) {
+//				for (i = 0; i < [_curvedPath.nodes count]; i++) {
+//					relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
+//					
+//					if (N3VectorDistance(N3VectorMakeFromNSPoint(viewPoint),
+//                                         N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*relativePosition, (CGFloat)curDCM.pheight/2.0, 0), N3AffineTransformInvert([self viewToPixTransform]))) < 10.0) {
+//						overNode = YES;
+//						hoverNodeIndex = i;
+//						break;
+//					}
+//				}
+//				
+//				if (overNode) {
+//					if (_displayInfo.hoverNodeHidden == YES || _displayInfo.hoverNodeIndex != hoverNodeIndex) {
+//						_displayInfo.hoverNodeHidden = NO;
+//						_displayInfo.hoverNodeIndex = hoverNodeIndex;
+//					}
+//				} else {
+//					if (_displayInfo.hoverNodeHidden == NO) {
+//						_displayInfo.hoverNodeHidden = YES;
+//						_displayInfo.hoverNodeIndex = 0;
+//					}
+//				}
+//			}
+			
+			[self _sendDidEditDisplayInfo];
+		}
+		
+//		float exportTransverseSliceInterval = 0;
+//		
+//		if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
+//			exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
+//		
+//		
+//		if( curDCM.pwidth != 0 && exportTransverseSliceInterval == 0 && _displayTransverseLines && ((ABS((pixVector.x/curDCM.pwidth) - _curvedPath.transverseSectionPosition)*curDCM.pwidth < 5.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.leftTransverseSectionPosition)*curDCM.pwidth < 10.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.rightTransverseSectionPosition)*curDCM.pwidth < 10.0)))
+//		{
+//			if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown)
+//				[[NSCursor closedHandCursor] set];
+//			else
+//				[[NSCursor openHandCursor] set];
+//		}
+//		else
+//		{
+//			[cursor set];
+//			
+//			[super mouseMoved:theEvent];
+//		}
+	}
+	else
+	{
+		[view mouseMoved:theEvent];
+	}
+}
+
 
 + (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRViewClippingRangeMode)clippingRangeMode
 {
@@ -879,19 +1041,19 @@
     }
 }
 
-// the ditances in the centerline point will corespond to, x - pixels generated horizonatally, y - distance from the midline in mm, z - relative distance along the original bezier path
-- (N3BezierPath *)_generateCenterlinePathAndProjectedLength:(CGFloat *)projectedLength;
+- (N3BezierPath *)_projectedBezierPathFromStretchedGeneratorRequest:(CPRStretchedGeneratorRequest *)generatorRequest
 {
     NSInteger pixelsWide;
+    NSInteger pixelsHigh;
     NSUInteger numVectors;
     N3Vector midHeightPoint;
     N3Vector curveDirection;
-    N3Vector baseNormal;
     N3Vector projectionNormal;
     N3BezierCoreRef flattenedBezierCore;
     N3BezierCoreRef projectedBezierCore;
     CGFloat projectedBezierLength;
     CGFloat sampleSpacing;
+    CGFloat pixelsPerMm;
     N3VectorArray vectors;
     CGFloat *relativePositions;
     N3MutableBezierPath *centerlinePath;
@@ -899,15 +1061,14 @@
     NSInteger i;
 
     // figure out how many horizonatal pixels we will have
-    pixelsWide = [self bounds].size.width*_extraWidthFactor;
-    curveDirection = N3VectorSubtract([_curvedPath.bezierPath vectorAtEnd], [_curvedPath.bezierPath vectorAtStart]);
-    baseNormal = N3VectorNormalize(N3VectorCrossProduct(_curvedPath.baseDirection, curveDirection));
-    projectionNormal = N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(_curvedPath.angle, curveDirection));
-    projectionNormal = N3VectorNormalize(projectionNormal);
-    midHeightPoint = N3VectorLerp([_curvedPath.bezierPath topBoundingPlaneForNormal:projectionNormal].point, 
-                                  [_curvedPath.bezierPath bottomBoundingPlaneForNormal:projectionNormal].point, 0.5);
+    pixelsWide = [generatorRequest pixelsWide];
+    pixelsHigh = [generatorRequest pixelsHigh];
+    curveDirection = N3VectorSubtract([generatorRequest.bezierPath vectorAtEnd], [generatorRequest.bezierPath vectorAtStart]);
+    projectionNormal = N3VectorNormalize(generatorRequest.projectionNormal);
+    midHeightPoint = N3VectorLerp([generatorRequest.bezierPath topBoundingPlaneForNormal:projectionNormal].point, 
+                                  [generatorRequest.bezierPath bottomBoundingPlaneForNormal:projectionNormal].point, 0.5);
     
-    flattenedBezierCore = N3BezierCoreCreateFlattenedCopy([_curvedPath.bezierPath N3BezierCore], N3BezierDefaultFlatness);
+    flattenedBezierCore = N3BezierCoreCreateFlattenedCopy([generatorRequest.bezierPath N3BezierCore], N3BezierDefaultFlatness);
     projectedBezierCore = N3BezierCoreCreateCopyProjectedToPlane(flattenedBezierCore, N3PlaneMake(N3VectorZero, projectionNormal));
     projectedBezierLength = N3BezierCoreLength(projectedBezierCore);
     sampleSpacing = projectedBezierLength / (CGFloat)pixelsWide;
@@ -937,6 +1098,8 @@
     if (numVectors) {
         newPoint.x = 0;
         newPoint.y = N3VectorLength(N3VectorProject(N3VectorSubtract(vectors[0], midHeightPoint), projectionNormal));
+        newPoint.y /= sampleSpacing;
+        newPoint.y += (CGFloat)pixelsHigh/2.0;
         newPoint.z = relativePositions[0];
         
         [centerlinePath moveToVector:newPoint];
@@ -945,6 +1108,8 @@
     for (i = 1; i < numVectors; i++) {
         newPoint.x = i;
         newPoint.y = N3VectorDotProduct(N3VectorSubtract(vectors[i], midHeightPoint), projectionNormal);
+        newPoint.y /= sampleSpacing;
+        newPoint.y += (CGFloat)pixelsHigh/2.0;
         newPoint.z = relativePositions[i];
         
         [centerlinePath lineToVector:newPoint];
@@ -954,12 +1119,8 @@
     N3BezierCoreRelease(projectedBezierCore);
     free(vectors);
     free(relativePositions);
-    
-    if (projectedLength) {
-        *projectedLength = projectedBezierLength;
-    }
-    
-    return centerlinePath;
+        
+    return centerlinePath;    
 }
 
 - (void)_drawVerticalLines:(NSArray *)verticalLines
@@ -997,9 +1158,13 @@
 	CGLContextObj cgl_ctx;
     CGFloat pheight_2;
     
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    	
-//	pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
-    pixelsPerMm = (CGFloat)curDCM.pwidth/_centerlineProjectedLength;
+    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+  	
+    if ([curDCM pixelSpacingX] == 0) {
+        return;
+    }
+    
+    pixelsPerMm = 1.0/[curDCM pixelSpacingX];
 
     pheight_2 = (CGFloat)curDCM.pheight/2.0;
     
@@ -1191,11 +1356,14 @@
 	CGFloat minDistance;
 	N3Vector normalVector;
     
+    if ([curDCM pixelSpacingX] == 0) {
+        return 0;
+    }
+    
 	pixToViewTransform = N3AffineTransformInvert([self viewToPixTransform]);
 	minDistance = CGFLOAT_MAX;
 	pixPointVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(point), [self viewToPixTransform]);
-//	pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
-    pixelsPerMm = (CGFloat)curDCM.pwidth/_centerlineProjectedLength;
+    pixelsPerMm = 1.0/[curDCM pixelSpacingX];
 
     
 	for (indexNumber in verticalLines) {
@@ -1234,9 +1402,12 @@
 	_CPRStretchedViewPlaneRun *planeRun;
 	N3MutableBezierPath *planeRunBezierPath;
 	
+    if ([curDCM pixelSpacingX] == 0) {
+        return 0;
+    }
+    
 	pointVector = N3VectorMakeFromNSPoint(point);
-//	pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
-    pixelsPerMm = (CGFloat)curDCM.pwidth/_centerlineProjectedLength;
+    pixelsPerMm = 1.0/[curDCM pixelSpacingX];
 
 	minDistance = CGFLOAT_MAX;
 	closestVector = N3VectorZero;
@@ -1418,28 +1589,55 @@
     [_transversePlaneRuns removeAllObjects];
 }
 
-- (N3Vector)_pixVectorForRelativePotion:(CGFloat)relativePosition
+- (N3Vector)_centerlinePixVectorForRelativePosition:(CGFloat)relativePosition
 {
     N3Plane relativePositionPlane;
     NSArray *intersections;
     N3Vector relativePositionIntersection;
     CGFloat pixelsPerMm;
     
-    pixelsPerMm = (CGFloat)curDCM.pwidth/_centerlineProjectedLength;
+    if ([curDCM pixelSpacingX] == 0) {
+        return N3VectorZero;
+    }
+    
+    pixelsPerMm = 1.0/[curDCM pixelSpacingX];
 
     relativePositionPlane = N3PlaneMake(N3VectorMake(0, 0, relativePosition), N3VectorMake(0, 0, 1));
-    intersections = [_centerlinePath intersectionsWithPlane:relativePositionPlane];
+    intersections = [self.centerlinePath intersectionsWithPlane:relativePositionPlane];
     
     if ([intersections count] == 0) {
         return N3VectorZero;
     } 
     
     relativePositionIntersection = [[intersections objectAtIndex:0] N3VectorValue];
-    relativePositionIntersection.y *= pixelsPerMm;
-    relativePositionIntersection.y += (CGFloat)curDCM.pheight/2.0;
+//    relativePositionIntersection.y *= pixelsPerMm;
+//    relativePositionIntersection.y += (CGFloat)curDCM.pheight/2.0;
     
     return relativePositionIntersection;
 }
+
+- (CGFloat)_relativePositionForPixPoint:(NSPoint)pixPoint
+{
+    CGFloat pixelsPerMm;
+    N3Line pixLine;
+    N3Vector closestVector;
+    
+    if (_centerlinePath == nil) {
+        return 0;
+    }
+    
+    closestVector = N3VectorZero;
+    pixLine.point = N3VectorMakeFromNSPoint(pixPoint);
+    pixLine.vector = N3VectorMake(0, 0, 1.0);
+    
+    [_centerlinePath relativePositionClosestToLine:pixLine closestVector:&closestVector];
+    
+    return MIN(MAX(closestVector.z, 0.0), 1.0);
+}
+
+//- (N3Vector)_vectorForPixPoint:(NSPoint)pixPoint
+//{
+//}
 
 @end
 
