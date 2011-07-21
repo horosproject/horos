@@ -136,7 +136,21 @@
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = e;
 	req.predicate = p;
-	return [managedObjectContext executeFetchRequest:req error:NULL];
+    
+    
+    NSArray *objects = nil;
+    
+    [managedObjectContext lock];
+    
+    @try {
+        NSArray *objects = [managedObjectContext executeFetchRequest:req error:NULL];
+    }
+    @catch (NSException *e) {
+       NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+    }
+    [managedObjectContext unlock];
+    
+    return objects;
 }
 
 -(void)save:(NSError**)err {

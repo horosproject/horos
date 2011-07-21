@@ -472,7 +472,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 - (NSObject<HTTPResponse>*)httpResponseForMethod:(NSString*)method URI:(NSString*)path
 {
-	NSString* url = [[(id)CFHTTPMessageCopyRequestURL(request) autorelease] description];
+	NSString* url = [[(id)CFHTTPMessageCopyRequestURL(request) autorelease] relativeString];
 	
 	// parse the URL to find the parameters (if any)
 	NSArray *urlComponenents = [url componentsSeparatedByString:@"?"];
@@ -980,7 +980,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 - (void) fillSessionAndUserVariables
 {
 	NSString* method = [NSMakeCollectable(CFHTTPMessageCopyRequestMethod(request)) autorelease];
-	NSString* url = [[(id)CFHTTPMessageCopyRequestURL(request) autorelease] description];
+	NSString* url = [[(id)CFHTTPMessageCopyRequestURL(request) autorelease] relativeString];
 	DLog(@"HTTP %@ %@", method, url);
 	
 //	NSDictionary* headers = [(id)CFHTTPMessageCopyAllHeaderFields(request) autorelease];
@@ -999,7 +999,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	}
 	
 	if ([method isEqualToString:@"GET"]) { // no session, GET... check for tokens
-		NSString* url = [[NSMakeCollectable(CFHTTPMessageCopyRequestURL(request)) autorelease] description];
+		NSString* url = [[NSMakeCollectable(CFHTTPMessageCopyRequestURL(request)) autorelease] relativeString];
 		NSArray* urlComponenents = [url componentsSeparatedByString:@"?"];
 		if (urlComponenents.count > 1) {
 			NSDictionary* params = [WebPortalConnection ExtractParams:urlComponenents.lastObject];
