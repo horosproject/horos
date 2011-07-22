@@ -855,7 +855,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				patientID = [[NSString alloc] initWithString:name];
 				study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				Modality = [[NSString alloc] initWithString:extension];
-				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+				date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
 				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				fileType = [[NSString stringWithString:@"IMAGE"] retain];
 				
@@ -915,7 +915,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				Modality = [[NSString alloc] initWithString:extension];
-				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+				date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
 				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				fileType = [[NSString stringWithString:@"IMAGE"] retain];
 				
@@ -1168,9 +1168,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NoOfFrames = NSSwapLittleShortToHost(header.npic);
 			NoOfSeries = 1;
 			
-			date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+			date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
 			
-			NSLog(@"File has h x w x d %d x %d x %d",height,width,NoOfFrames);
+			//NSLog(@"File has h x w x d %d x %d x %d",height,width,NoOfFrames);
 			int bytesPerPixel=1;
 			// if 8bit, byte_format==1 otherwise 16bit
 			if (NSSwapLittleShortToHost(header.byte_format)!=1)
@@ -1492,7 +1492,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 
 
-			date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+			date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
 			
 			[dicomElements setObject:studyID forKey:@"studyID"];
 			[dicomElements setObject:study forKey:@"studyDescription"];
@@ -1561,7 +1561,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				Modality = [[NSString alloc] initWithString:@"ANZ"];
 				
 				date = [[NSCalendarDate alloc] initWithString:[NSString stringWithCString: Analyze->hist.exp_date encoding: NSISOLatin1StringEncoding] calendarFormat:@"%Y%m%d"];
-				if(date == nil) date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+				if(date == nil) date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
 				
 				short endian = Analyze->dime.dim[ 0];		// dim[0] 
 				if ((endian < 0) || (endian > 15)) 
@@ -2221,7 +2221,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				study = [[NSString alloc] initWithString:@"unnamed"];
 				Modality = [[NSString alloc] initWithString:@"OT"];
-				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+				date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
 				serie = [[NSString alloc] initWithString:@"unnamed"];
 				
 				[dicomElements setObject:date forKey:@"studyDate"];
@@ -2565,7 +2565,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 				{
 					val = Papy3GetElement (theGroupP, papStudyCommentsGr, &nbVal, &itemType);
-					if (val != NULL && val->a && validAPointer( itemType) & strlen( val->a) > 0 && [dicomElements objectForKey: @"commentsAutoFill"] == nil)
+					if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0 && [dicomElements objectForKey: @"commentsAutoFill"] == nil)
 						[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"studyComments"];
 						
 					theErr = Papy3GroupFree (&theGroupP, TRUE);
@@ -2819,7 +2819,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 							if( NoOfFrames == sliceLocationArray.count)
 								[dicomElements setObject: sliceLocationArray forKey:@"sliceLocationArray"];
 							else
-								NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%d, %d)", NoOfFrames, sliceLocationArray.count);
+								NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%ld, %d)", NoOfFrames, sliceLocationArray.count);
 						}
 					} // if ...there is a sequence of groups
 				} // if ...val is not NULL
@@ -2971,7 +2971,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if( converted)
 	{
 		if ([[NSFileManager defaultManager] fileExistsAtPath:converted])
-			[[NSFileManager defaultManager] removeFileAtPath:converted handler: nil];
+			[[NSFileManager defaultManager] removeItemAtPath: converted error: nil];
 	}
 	else
 	{
@@ -3026,7 +3026,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				id			commentsField;
 				NSString	*grel = [NSString stringWithFormat:@"%04X,%04X", COMMENTSGROUP, COMMENTSELEMENT];
 				
-				if (commentsField = [dcmObject attributeValueForKey: grel])
+				if((commentsField = [dcmObject attributeValueForKey: grel]))
 				{
 					if( [commentsField isKindOfClass: [NSString class]])
 						[dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
@@ -3093,14 +3093,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		NSMutableArray	*imageTypeArray = [NSMutableArray arrayWithArray: [dcmObject attributeArrayWithName:@"ImageType"]];
 		if( [imageTypeArray count] > 2)
 		{
-			if (imageType = [[[dcmObject attributeArrayWithName:@"ImageType"] objectAtIndex: 2] retain]) //ImageType		
+			if((imageType = [[[dcmObject attributeArrayWithName:@"ImageType"] objectAtIndex: 2] retain])) //ImageType		
 				[dicomElements setObject:imageType forKey:@"imageType"];
 		}
 			
-		if (SOPUID =[[dcmObject attributeValueForKey:@"0008,0018"] retain])	//SOPInstanceUID 
+		if((SOPUID =[[dcmObject attributeValueForKey:@"0008,0018"] retain]))	//SOPInstanceUID 
 			[dicomElements setObject:SOPUID forKey:@"SOPUID"];
 			
-		if (study = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"StudyDescription"]] retain])
+		if((study = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"StudyDescription"]] retain]))
 			[dicomElements setObject:study forKey:@"studyDescription"];
 		else
 		{
@@ -3108,7 +3108,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:study forKey:@"studyDescription"];
 		}
 		
-		if (Modality = [[dcmObject attributeValueWithName:@"Modality"] retain])
+		if((Modality = [[dcmObject attributeValueWithName:@"Modality"] retain]))
 			[dicomElements setObject:Modality forKey:@"modality"];
 		else
 		{
@@ -3167,7 +3167,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if ([[dcmObject attributeValueForKey:@"0008,0018"] isEqualToString:@"1.2.840.10008.5.1.4.1.1.7"] == YES) modalityNoSC=FALSE; //JF20070103
 		
-		if (serie = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"SeriesDescription"]] retain])
+		if ((serie = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"SeriesDescription"]] retain]))
 			[dicomElements setObject:serie forKey:@"seriesDescription"];
 		else if ((serie = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"instanceNumber"]] retain]) && modalityNoSC)
 			[dicomElements setObject:serie forKey:@"seriesDescription"]; //JF20070103
@@ -3190,7 +3190,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if ([dcmObject attributeValueWithName:@"AccessionNumber"])
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"AccessionNumber"] forKey:@"accessionNumber"];
 			
-		if (name = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"PatientsName"]] retain])
+		if ((name = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"PatientsName"]] retain]))
 			[dicomElements setObject:name forKey:@"patientName"];
 		else
 		{
@@ -3198,7 +3198,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:name forKey:@"patientName"];
 		}
 			
-		if (patientID = [[dcmObject attributeValueWithName:@"PatientID"] retain])
+		if ((patientID = [[dcmObject attributeValueWithName:@"PatientID"] retain]))
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"PatientID"] forKey:@"patientID"];
 		else
 		{
@@ -3236,7 +3236,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //				[dicomElements setObject: manufacturer forKey:@"manufacturer"];
 //		}
 		
-		if (imageID = [dcmObject attributeValueWithName:@"InstanceNumber"])
+		if ((imageID = [dcmObject attributeValueWithName:@"InstanceNumber"]))
 		{
 			int val = [imageID intValue];
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];		
@@ -3290,22 +3290,22 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		// Series Number
 		
-		if (seriesNo = [[dcmObject attributeValueWithName:@"SeriesNumber"] retain])
+		if ((seriesNo = [[dcmObject attributeValueWithName:@"SeriesNumber"] retain]))
 		{
 		}
 		else
 			seriesNo = [[NSString alloc] initWithString: @"0"];
 		[dicomElements setObject:[NSNumber numberWithInt:[seriesNo intValue]] forKey:@"seriesNumber"];
 			
-		if (serieID = [[dcmObject attributeValueWithName:@"SeriesInstanceUID"] retain])
+		if ((serieID = [[dcmObject attributeValueWithName:@"SeriesInstanceUID"] retain]))
 		{
 			[dicomElements setObject: serieID forKey:@"seriesDICOMUID"];
 		}
 			
-		if (studyID = [[dcmObject attributeValueWithName:@"StudyInstanceUID"] retain])
+		if ((studyID = [[dcmObject attributeValueWithName:@"StudyInstanceUID"] retain]))
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"StudyInstanceUID"] forKey:@"studyID"];
 			
-		if (studyIDs = [[dcmObject attributeValueWithName:@"StudyID"] retain])
+		if ((studyIDs = [[dcmObject attributeValueWithName:@"StudyID"] retain]))
 		{
 		}
 		else 

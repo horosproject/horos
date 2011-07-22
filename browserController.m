@@ -2308,7 +2308,7 @@ static NSConditionLock *threadLock = nil;
 			
 		[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", server, @"server", nil] waitUntilDone: NO];
 		
-		[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"Sending failed. Will re-try later...", nil)];
+		[NSThread currentThread].status = NSLocalizedString( @"Sending failed. Will re-try later...", nil);
 		[NSThread sleepForTimeInterval: 4];
 		
 		// We will try again later...
@@ -5735,7 +5735,7 @@ static NSConditionLock *threadLock = nil;
 		else description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [dict valueForKey:@"Description"]];
 		
 	}
-	else description = [description stringByAppendingFormat:NSLocalizedString(@"Local Database / ", nil)];
+	else description = [description stringByAppendingString:NSLocalizedString(@"Local Database / ", nil)];
 	
 	// ********************
 	// ALBUMS
@@ -5763,7 +5763,7 @@ static NSConditionLock *threadLock = nil;
 			}
 		}
 	}
-	else description = [description stringByAppendingFormat:NSLocalizedString(@"No album selected", nil)];
+	else description = [description stringByAppendingString: NSLocalizedString(@"No album selected", nil)];
 	
 	// ********************
 	// TIME INTERVAL
@@ -11761,7 +11761,7 @@ static BOOL needToRezoom;
 	}
 	
 	// Then we add the files to the sql file
-	[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"Indexing the files...", nil)];
+	[NSThread currentThread].status = NSLocalizedString( @"Indexing the files...", nil);
 	[self addFilesToDatabase: dstFiles onlyDICOM: NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
 						
 	[pool release];
@@ -18761,7 +18761,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		delete = 0;
 	}
 	
-	WaitRendering *wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Receiving files from iDisk", nil)]];
+	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Receiving files from iDisk", nil)];
 	[wait setCancel: YES];
 	[wait showWindow:self];
 	

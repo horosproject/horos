@@ -671,9 +671,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				[self sendImages:selectedImages toDicomNode:dicomDestination];
 				[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Dicom send to node %@ initiated.", @"Web Portal, study, dicom send, success"), [[dicomDestination objectForKey:@"AETitle"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 			} else
-				[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")]];
+				[response.tokens addError: NSLocalizedString(@"Dicom send failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")];
 		} else
-			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: cannot identify node.", @"Web Portal, study, dicom send, error")]];
+			[response.tokens addError: NSLocalizedString(@"Dicom send failed: cannot identify node.", @"Web Portal, study, dicom send, error")];
 	}
 	
 	if ([[parameters objectForKey:@"WADOURLsRetrieve"] isEqual:@"WADOURLsRetrieve"] && study && [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"])
@@ -709,7 +709,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			return;
 		}
 		else
-			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"WADO URL Retrieve failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")]];
+			[response.tokens addError: NSLocalizedString(@"WADO URL Retrieve failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")];
 	}
 	
 	if ([[parameters objectForKey:@"shareStudy"] isEqual:@"shareStudy"] && study) {
@@ -741,7 +741,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUser.name]];
 		} else
-			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Study share failed: cannot identify user.", @"Web Portal, study, share, error")]];
+			[response.tokens addError: NSLocalizedString(@"Study share failed: cannot identify user.", @"Web Portal, study, share, error")];
 	}
 	
 	[response.tokens setObject:[WebPortalProxy createWithObject:study transformer:DicomStudyTransformer.create] forKey:@"Study"];
