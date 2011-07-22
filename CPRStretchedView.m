@@ -436,8 +436,6 @@ extern int splitPosition[ 3];
     glBegin(GL_LINE_STRIP);
     for (i = 0; i < [centerline elementCount]; i++) {
         [centerline elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
-//        endpoint.y *= pixelsPerMm;
-//        endpoint.y += pheight_2;
         glVertex2d(endpoint.x, endpoint.y);
     }
     glEnd();
@@ -448,7 +446,6 @@ extern int splitPosition[ 3];
     if ( [[self windowController] displayMousePosition] == YES && _displayInfo.mouseCursorHidden == NO)
 	{
         cursorVector = [self _centerlinePixVectorForRelativePosition:_displayInfo.mouseCursorPosition];
-//        cursorVector = N3VectorMake(curDCM.pwidth * _displayInfo.mouseCursorPosition, (CGFloat)curDCM.pheight/2.0, 0);
         
         glEnable(GL_POINT_SMOOTH);
         glPointSize(8);
@@ -479,12 +476,6 @@ extern int splitPosition[ 3];
             [self _drawVerticalLines:[self valueForKey:[planeName stringByAppendingString:@"BottomVerticalLines"]]];
         }
     }    
-    
-    // antoine wrote a horrific version of this, I need to do better
-    // bottom line here is that there are planeruns/vertical lines that are not actually planes
-    // and might need to managed seperatly, that would give easy freedom when dealing with line
-    // thickness and alpha. 
-    
     
     float exportTransverseSliceInterval = 0;
 	
@@ -947,19 +938,6 @@ extern int splitPosition[ 3];
 			
 			[super mouseMoved:theEvent];
 		}
-//		if( curDCM.pwidth != 0 && exportTransverseSliceInterval == 0 && _displayTransverseLines && ((ABS((pixVector.x/curDCM.pwidth) - _curvedPath.transverseSectionPosition)*curDCM.pwidth < 5.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.leftTransverseSectionPosition)*curDCM.pwidth < 10.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.rightTransverseSectionPosition)*curDCM.pwidth < 10.0)))
-//		{
-//			if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown)
-//				[[NSCursor closedHandCursor] set];
-//			else
-//				[[NSCursor openHandCursor] set];
-//		}
-//		else
-//		{
-//			[cursor set];
-//			
-//			[super mouseMoved:theEvent];
-//		}
 	}
 	else
 	{
@@ -1696,10 +1674,8 @@ extern int splitPosition[ 3];
 	N3Vector lineStart;
 	N3Vector lineEnd;
 	CGFloat height;
-//	CGFloat relativePosition;
 	CGFloat distance;
 	CGFloat minDistance;
-//	N3Vector normalVector;
     
     if ([curDCM pixelSpacingX] == 0) {
         return 0;
@@ -1738,10 +1714,8 @@ extern int splitPosition[ 3];
 	N3Vector closeVector;
 	N3Vector closestVector;
 	N3Vector pointVector;
-//	N3Vector normalVector;
 	CGFloat distance;
 	CGFloat minDistance;
-//	CGFloat relativePosition;
 	_CPRStretchedViewPlaneRun *planeRun;
 	N3MutableBezierPath *planeRunBezierPath;
 	

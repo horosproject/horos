@@ -15,7 +15,13 @@
 #import <Cocoa/Cocoa.h>
 #import "DCMView.h"
 #import "CPRMPRDCMView.h"
- 
+
+enum _CPRTransverseViewReformationDisplayStyle { 
+    CPRTransverseViewStraightenedReformationDisplayStyle = 0,
+    CPRTransverseViewStretchedReformationDisplayStyle = 1,
+};
+typedef NSInteger CPRTransverseViewReformationDisplayStyle;
+
 // horrible name! rename me!
 enum _CPRTransverseViewSectionType { 
     CPRTransverseViewNoneSectionType = -1,
@@ -47,7 +53,8 @@ typedef NSInteger CPRTransverseViewSection;
     BOOL _needsNewRequest;
 	
 	BOOL displayCrossLines;
-	
+	CPRTransverseViewReformationDisplayStyle _reformationDisplayStyle;
+    
 	CGFloat _renderingScale;
 	
 	float previousScale;
@@ -64,5 +71,8 @@ typedef NSInteger CPRTransverseViewSection;
 @property (nonatomic, readwrite, retain) CPRVolumeData *volumeData;
 @property (nonatomic, readwrite, assign) CGFloat renderingScale;
 @property (nonatomic, readwrite, assign) BOOL displayCrossLines;
+
+@property (nonatomic, readwrite, assign) CPRTransverseViewReformationDisplayStyle reformationDisplayStyle;
+
 
 @end

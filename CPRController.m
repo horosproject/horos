@@ -3734,6 +3734,9 @@ static float deg2rad = 3.14159265358979/180.0;
     if (newCprType != cprType) {
         cprType = newCprType;
         cprView.reformationType = cprType;
+        topTransverseView.reformationDisplayStyle = cprType;
+        middleTransverseView.reformationDisplayStyle = cprType;
+        bottomTransverseView.reformationDisplayStyle = cprType;
     }
 }
 
