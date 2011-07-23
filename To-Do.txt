@@ -223,6 +223,3 @@ genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m
 - 64bitExtension : Kagi Blurb AND in products list for CD/DVD backup AND in pixmeo MySQL DB (Constants, Products) web site
 - Update Downloads.html
 - Update versionLeopard.xml
-
-MacAppStore:
-- dSYM files (directly edit proj file)
