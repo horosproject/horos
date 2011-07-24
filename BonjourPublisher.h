@@ -17,7 +17,7 @@
 
 /** \brief  Shares DB with Bonjour */
 
-@interface BonjourPublisher : NSObject
+@interface BonjourPublisher : NSObject <NSNetServiceDelegate>
 {
 	BOOL				dbPublished;
 	

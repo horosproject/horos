@@ -28,7 +28,7 @@
 
 #define CHECK NSLog(@"Applescript result code = %d", ok);
 
-@interface ShellMainClass : NSApplication
+@interface ShellMainClass : NSApplication <NSApplicationDelegate>
 {
 }
 

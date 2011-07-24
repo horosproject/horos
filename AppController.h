@@ -92,7 +92,7 @@ extern "C"
 @end
 #endif
 
-@interface AppController : NSObject	<GrowlApplicationBridgeDelegate>
+@interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, GrowlApplicationBridgeDelegate>
 {
 	IBOutlet BrowserController		*browserController;
 

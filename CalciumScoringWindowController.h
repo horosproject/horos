@@ -23,7 +23,8 @@ Manages the Window for creating Calcium Scoring ROIs
 
 /** \brief Manages the Window for creating Calcium Scoring ROIs*/
 
-@interface CalciumScoringWindowController : NSWindowController {
+@interface CalciumScoringWindowController : NSWindowController <NSWindowDelegate>
+{
 	ViewerController		*_viewer, *_resultsViewer;
 	int						_ctType;
 	int						_lowerThreshold;

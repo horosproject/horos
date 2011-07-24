@@ -61,7 +61,7 @@ enum
 
 /** \brief Window Controller for 2D Viewer*/
 
-@interface ViewerController : OSIWindowController  <Schedulable>
+@interface ViewerController : OSIWindowController  <Schedulable, NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
 	NSLock	*ThreadLoadImageLock;
 	NSLock	*roiLock;

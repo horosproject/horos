@@ -1,4 +1,4 @@
-- 10.7: Q&R ?
+- 10.7: Q&R? Bonjour Sharing?
 - Toolbars: tests with new screen plugged when using OsiriX
 - OsiriX.sdef: add to 10.5 version
 

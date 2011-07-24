@@ -46,7 +46,7 @@
 
 
 // This class represents each incoming client connection.
-@interface basicHTTPConnection : NSObject {
+@interface basicHTTPConnection : NSObject <NSStreamDelegate> {
 @private
     id delegate;
     NSData *peerAddress;

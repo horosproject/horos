@@ -19,7 +19,7 @@
 
 @class DRTrack;
 /** \brief Window Controller for DICOM disk burning */
-@interface BurnerWindowController : NSWindowController
+@interface BurnerWindowController : NSWindowController <NSWindowDelegate>
 {
 	volatile BOOL burning, isIrisAnimation;
 	NSMutableArray *nodeArray;

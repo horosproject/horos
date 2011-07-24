@@ -42,7 +42,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 *	and manges the database
 */
 
-@interface BrowserController : NSWindowController   //NSObject
+@interface BrowserController : NSWindowController <NSTableViewDelegate, NSDrawerDelegate, NSMatrixDelegate, NSToolbarDelegate>   //NSObject
 {
 	NSManagedObjectModel			*managedObjectModel;//, *userManagedObjectModel;
     NSManagedObjectContext			*managedObjectContext;//, *userManagedObjectContext;

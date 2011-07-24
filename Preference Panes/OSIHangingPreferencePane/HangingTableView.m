@@ -21,7 +21,7 @@
 - (void)keyDown:(NSEvent *)event{
 	unichar c = [[event characters] characterAtIndex:0];
 	if ((c == NSDeleteCharacter || c == NSBackspaceCharacter) && [self selectedRow] > 0) {
-			[[self delegate] deleteSelectedRow:self];
+			[(OSIHangingPreferencePanePref*)[self delegate] deleteSelectedRow:self];
 	}
 	else
 		 [super keyDown:event];

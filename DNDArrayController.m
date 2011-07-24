@@ -26,7 +26,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 {
 	if( _authView == nil || [_authView authorizationState] == SFAuthorizationViewUnlockedState)
 	{
-		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Server", nil), NSLocalizedString(@"Are you sure you want to delete the selected item?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn)
+		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Are you sure you want to delete the selected item?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn)
 		{
 			[self removeObjectAtArrangedObjectIndex: [tableView selectedRow]];
 		}

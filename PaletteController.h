@@ -21,7 +21,7 @@ PURPOSE.
 
 /** \brief  Window Controller for ROI palette */
 
-@interface PaletteController : NSWindowController
+@interface PaletteController : NSWindowController <NSWindowDelegate>
 {
 	ViewerController			*viewer;
 	IBOutlet NSSegmentedControl	*modeControl;

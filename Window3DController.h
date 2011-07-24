@@ -35,7 +35,7 @@
 
 /** \brief Base Window Controller for 3D viewers */
 
-@interface Window3DController : OSIWindowController
+@interface Window3DController : OSIWindowController <NSWindowDelegate>
 {
 	IBOutlet NSWindow				*setWLWWWindow;
     IBOutlet NSTextField			*wlset, *fromset;

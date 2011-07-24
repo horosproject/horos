@@ -22,10 +22,9 @@
 
 
 /** \brief Thick Slab window coontroller */
-@interface ThickSlabController : NSWindowController {
-
+@interface ThickSlabController : NSWindowController <NSWindowDelegate>
+{
 	IBOutlet	ThickSlabVR		*view;
-
 }
 
 -(id) init;

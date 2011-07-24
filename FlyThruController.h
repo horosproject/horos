@@ -25,8 +25,8 @@
 /** \brief Window Controller for FlyThru
 */
 
-@interface FlyThruController : NSWindowController {
-
+@interface FlyThruController : NSWindowController <NSWindowDelegate>
+{
 	IBOutlet NSMatrix		*LOD;
 	IBOutlet NSBox			*boxPlay;
 	IBOutlet NSBox			*boxExport;

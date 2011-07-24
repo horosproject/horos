@@ -24,7 +24,7 @@
 
 /** \brief  Window Controller for ROI Volume display */
 
-@interface ROIVolumeController : Window3DController
+@interface ROIVolumeController : Window3DController <NSWindowDelegate>
 {
     IBOutlet ROIVolumeView			*view;
 	IBOutlet NSTextField			*volumeField, *seriesName;

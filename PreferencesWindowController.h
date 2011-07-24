@@ -22,7 +22,7 @@
 
 
 /** \brief Window Controller for Preferences */
-@interface PreferencesWindowController : NSWindowController
+@interface PreferencesWindowController : NSWindowController <NSWindowDelegate>
 {
 	IBOutlet NSScrollView* scrollView;
 	IBOutlet PreferencesView* panesListView;

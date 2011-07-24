@@ -25,7 +25,7 @@ typedef enum
 	idle = -1
 } MouseEventType;
 
-@interface NavigatorView : NSOpenGLView
+@interface NavigatorView : NSOpenGLView <NSWindowDelegate>
 {
 	NSMutableArray *thumbnailsTextureArray;
 	int thumbnailWidth, thumbnailHeight;

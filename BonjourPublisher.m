@@ -584,7 +584,7 @@ extern const char *GetPrivateIP();
 							
 							@catch (NSException * e)
 							{
-								NSLog(@"Exception in BonjourPublisher ADDAL: %@");
+								NSLog(@"Exception in BonjourPublisher ADDAL");
 							}
 							
 							NSError *error = nil;
@@ -636,7 +636,7 @@ extern const char *GetPrivateIP();
 							
 							@catch (NSException * e)
 							{
-								NSLog(@"Exception in BonjourPublisher REMAL: %@");
+								NSLog(@"Exception in BonjourPublisher REMAL");
 							}
 							
 							NSError *error = nil;

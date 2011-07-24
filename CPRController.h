@@ -56,7 +56,7 @@ typedef NSInteger CPRExportRotationSpan;
 @class CPRTransverseView;
 @class CPRVolumeData;
 
-@interface CPRController : Window3DController <CPRViewDelegate>
+@interface CPRController : Window3DController <CPRViewDelegate, NSToolbarDelegate>
 {
 	// To avoid the Cocoa bindings memory leak bug...
 	IBOutlet NSObjectController *ob;

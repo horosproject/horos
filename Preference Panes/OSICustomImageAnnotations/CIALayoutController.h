@@ -21,7 +21,7 @@
 
 @class OSICustomImageAnnotations;
 
-@interface CIALayoutController : NSWindowController
+@interface CIALayoutController : NSWindowController <NSTokenFieldDelegate>
 {
 	OSICustomImageAnnotations *prefPane;
 	

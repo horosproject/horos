@@ -31,7 +31,7 @@
 
 
 /** \brief Window Controller for Surface Rendering */
-@interface SRController : Window3DController
+@interface SRController : Window3DController <NSWindowDelegate, NSToolbarDelegate>
 {
     IBOutlet NSSlider       *LODSlider;
     IBOutlet NSView         *toolsView, *LODView, *BlendingView, *export3DView, *perspectiveView;
