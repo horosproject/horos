@@ -14,6 +14,7 @@
 
 #import "Scripting_Additions.h"
 #import "BrowserController.h"
+#import "AppController.h"
 
 @implementation OsiriXScripts
 
@@ -40,10 +41,11 @@
 
 - (id)performDefaultImplementation
 {
+	id ASReply = nil;
 	NSString *command = [[self commandDescription] commandName];
-
+    
 	NSLog( @"%@", command);
-
+    
 	if( [command isEqualToString:@"SelectImageFile"])
 	{
 		NSString	*convertedPath = [self posixStylePathFromHfsPath:[[self arguments] objectForKey:@"FileName"] isDirectory: FALSE];
@@ -76,7 +78,29 @@
 	if( [command isEqualToString:@"OpenViewerForSelected"]) [[BrowserController currentBrowser] viewerDICOM: self];
 	if( [command isEqualToString:@"DeleteSelected"]) [[BrowserController currentBrowser] delItem: self];
 	
-    return nil;
+    /*
+     * Code added by Kanteron Systems
+     */
+	if ([command isEqualToString:@"invoke XMLPRC method"]) {
+		NSLog(@"invoke XMLPRC method");
+		// We extact the arguments if any 
+		NSDictionary *paramDict = nil;
+		if  ([[self arguments] objectForKey:@"XMLRPCParams"])
+			paramDict = [NSDictionary dictionaryWithDictionary:[[[self arguments] objectForKey:@"XMLRPCParams"] objectAtIndex:0]];
+		
+		// The XMLRPC method is the direct parameter in AppleScript 
+		NSString *xmlrpcMethodName = [self directParameter];
+		NSMutableDictionary *httpServerMessage = [[NSMutableDictionary alloc] initWithCapacity:2];
+		[httpServerMessage setValue:[NSNumber numberWithBool:NO] forKey:@"Processed"];
+        
+		[[[AppController sharedAppController] XMLRPCServer] processXMLRPCMessage:xmlrpcMethodName httpServerMessage:httpServerMessage HTTPServerRequest:nil version:(NSString*)kCFHTTPVersion1_0 paramDict:paramDict encoding:@"UTF-8"];
+		// Check if the XMLRPC Method added some result for AppleScript. If not, the reply to AppleScript will be nil.
+		ASReply = [httpServerMessage valueForKey:@"ASResponse"];
+		
+		// We have to make sure the server message gets released once the results are passed to AppleScript:
+		[httpServerMessage autorelease];	
+	}	
+    return ASReply;
 }
 
 @end

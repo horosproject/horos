@@ -905,6 +905,31 @@ static NSTimeInterval lastConnection = 0;
 			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
 		}
 	}
+    
+    if ([selName isEqualToString:@"pathtofrontdcm"])
+	{
+		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+		{
+			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
+			ViewerController *frontViewer = [ViewerController frontMostDisplayed2DViewer];
+			NSString	*path = @"";
+			if (frontViewer){ // is there a front viewer?
+				path  = [[BrowserController currentBrowser] getLocalDCMPath:[[frontViewer fileList] objectAtIndex:[[frontViewer imageView] curImage]] :0];
+				if (paramDict && [[paramDict valueForKey:@"onlyfilename"] isEqualToString:@"yes"]) path = [path lastPathComponent];
+			}
+			// We must build an AppleScript response 'cause Applescript doesn't understand XMLRPC responses. The response is a dictionary.
+			id ASResponse;
+			ASResponse = [NSDictionary dictionaryWithObject:path forKey:@"currentDCMPath"];
+			[httpServerMessage setValue:ASResponse forKey: @"ASResponse"];
+			
+			NSString *xmlrpcresponse = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>currentDCMPath</name><value>%@</value></member></struct></value></param></params></methodResponse>", path];
+			
+			NSError *error = nil;
+			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString: xmlrpcresponse options:NSXMLNodeOptionsNone error:&error] autorelease];
+			[httpServerMessage setValue:doc forKey:@"NSXMLDocumentResponse"];
+            [httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+		}
+	}
 }
 
 - (void) postError: (NSInteger) err version: (NSString*) vers message: (HTTPServerRequest *)mess 

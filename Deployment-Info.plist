@@ -231,5 +231,7 @@
 			</dict>
 		</dict>
 	</array>
+	<key>OSAScriptingDefinition</key>
+	<string>OsiriX.def</string>
 </dict>
 </plist>

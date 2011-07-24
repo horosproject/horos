@@ -55,8 +55,8 @@
 					<characters key="NS.bytes">View</characters>
 				</object>
 				<nil key="NSUserInterfaceItemIdentifier"/>
-				<string key="NSWindowContentMaxSize">{284, 80}</string>
-				<string key="NSWindowContentMinSize">{284, 80}</string>
+				<string key="NSWindowContentMaxSize">{284, 95}</string>
+				<string key="NSWindowContentMinSize">{284, 95}</string>
 				<object class="NSView" key="NSWindowView" id="724188631">
 					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
@@ -162,8 +162,8 @@
 					<reference key="NSNextKeyView" ref="509925426"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
-				<string key="NSMinSize">{284, 80}</string>
-				<string key="NSMaxSize">{284, 80}</string>
+				<string key="NSMinSize">{284, 95}</string>
+				<string key="NSMaxSize">{284, 95}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 		</object>

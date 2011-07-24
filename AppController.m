@@ -787,7 +787,7 @@ static NSDate *lastWarningDate = nil;
 
 @implementation AppController
 
-@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive;
+@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, XMLRPCServer;
 
 - (void) pause
 {

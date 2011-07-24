@@ -5155,6 +5155,8 @@
 		CE9DD285086B35050058DD2A /* DicomStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD281086B35050058DD2A /* DicomStudy.h */; };
 		CE9DD286086B35050058DD2A /* DicomSeries.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD282086B35050058DD2A /* DicomSeries.h */; };
 		CE9DD287086B35050058DD2A /* DicomSeries.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD283086B35050058DD2A /* DicomSeries.m */; };
+		CE9E11D013DBB5DD008B2848 /* OsiriX.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE9E11CF13DBB5DD008B2848 /* OsiriX.sdef */; };
+		CE9E11D113DBB5DD008B2848 /* OsiriX.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE9E11CF13DBB5DD008B2848 /* OsiriX.sdef */; };
 		CEA20537073A810100F0DAB7 /* iPhoto.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA20533073A810100F0DAB7 /* iPhoto.h */; };
 		CEA20538073A810100F0DAB7 /* iPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA20534073A810100F0DAB7 /* iPhoto.m */; };
 		CEA337BC06AD9BF6006D2357 /* iDiskGet.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEA337BA06AD9BF6006D2357 /* iDiskGet.icns */; };
@@ -6782,8 +6784,6 @@
 		CEC705B410A5C844008935EA /* iDiskSend.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEA337BB06AD9BF6006D2357 /* iDiskSend.icns */; };
 		CEC705B510A5C844008935EA /* Mail.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE279EEE06AEFB87008315C8 /* Mail.icns */; };
 		CEC705B610A5C844008935EA /* iChat.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1335E806B02DC000B7FC03 /* iChat.icns */; };
-		CEC705B710A5C844008935EA /* OsiriX.scriptSuite in Resources */ = {isa = PBXBuildFile; fileRef = CEE2144C06B95D3900368199 /* OsiriX.scriptSuite */; };
-		CEC705B810A5C844008935EA /* OsiriX.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */; };
 		CEC705B910A5C844008935EA /* trash.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE74824006C9701200FFA74C /* trash.icns */; };
 		CEC705BA10A5C844008935EA /* ContrastCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */; };
 		CEC705BB10A5C844008935EA /* RotateCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */; };
@@ -7952,8 +7952,6 @@
 		CEDF6E1D0B46FF40008B45B8 /* DICOMPrint.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEDF6E1C0B46FF40008B45B8 /* DICOMPrint.mm */; };
 		CEE1922E08636FA100DED1F0 /* DicomImage.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE1922C08636FA100DED1F0 /* DicomImage.m */; };
 		CEE1922F08636FA100DED1F0 /* DicomImage.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE1922D08636FA100DED1F0 /* DicomImage.h */; };
-		CEE2144E06B95D3900368199 /* OsiriX.scriptSuite in Resources */ = {isa = PBXBuildFile; fileRef = CEE2144C06B95D3900368199 /* OsiriX.scriptSuite */; };
-		CEE2146806B95E0100368199 /* OsiriX.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */; };
 		CEE619EF0912C73000C31D78 /* OrientationWidget.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEE619EE0912C73000C31D78 /* OrientationWidget.tif */; };
 		CEE6717D077D5ECF00E4BB10 /* SyncLock.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEE67176077D5ECE00E4BB10 /* SyncLock.tif */; };
 		CEE72C091101F14A00758DCA /* BrowserControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */; };
@@ -11896,6 +11894,7 @@
 		CE9DD281086B35050058DD2A /* DicomStudy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomStudy.h; sourceTree = "<group>"; };
 		CE9DD282086B35050058DD2A /* DicomSeries.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomSeries.h; sourceTree = "<group>"; };
 		CE9DD283086B35050058DD2A /* DicomSeries.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomSeries.m; sourceTree = "<group>"; };
+		CE9E11CF13DBB5DD008B2848 /* OsiriX.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = OsiriX.sdef; sourceTree = "<group>"; };
 		CEA048460C76E2A600B4CA0A /* DICOMQuickLook.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DICOMQuickLook.xcodeproj; path = ../DICOMQuickLook/DICOMQuickLook.xcodeproj; sourceTree = SOURCE_ROOT; };
 		CEA20533073A810100F0DAB7 /* iPhoto.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = iPhoto.h; sourceTree = "<group>"; };
 		CEA20534073A810100F0DAB7 /* iPhoto.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = iPhoto.m; sourceTree = "<group>"; };
@@ -12057,8 +12056,6 @@
 		CEDF6E1C0B46FF40008B45B8 /* DICOMPrint.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DICOMPrint.mm; sourceTree = "<group>"; };
 		CEE1922C08636FA100DED1F0 /* DicomImage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomImage.m; sourceTree = "<group>"; };
 		CEE1922D08636FA100DED1F0 /* DicomImage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomImage.h; sourceTree = "<group>"; };
-		CEE2144C06B95D3900368199 /* OsiriX.scriptSuite */ = {isa = PBXFileReference; explicitFileType = text.plist.scriptSuite; fileEncoding = 30; path = OsiriX.scriptSuite; sourceTree = "<group>"; };
-		CEE2145706B95D9D00368199 /* English */ = {isa = PBXFileReference; explicitFileType = text.plist.scriptTerminology; fileEncoding = 30; name = English; path = English.lproj/OsiriX.scriptTerminology; sourceTree = "<group>"; };
 		CEE619EE0912C73000C31D78 /* OrientationWidget.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OrientationWidget.tif; sourceTree = "<group>"; };
 		CEE67176077D5ECE00E4BB10 /* SyncLock.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncLock.tif; sourceTree = "<group>"; };
 		CEE73FC708F44724002A395F /* FVTiff.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FVTiff.h; sourceTree = "<group>"; };
@@ -12578,8 +12575,6 @@
 				CE286C100964196C001A4573 /* Localizable.strings */,
 				CE5F9D730AE813A40042280F /* localizedTemplatesPages */,
 				ABD7BC4D063F00A900E24B0E /* NIH.plist */,
-				CEE2144C06B95D3900368199 /* OsiriX.scriptSuite */,
-				CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */,
 				CE5EABBF0935E702006D85DD /* Rainbow.plist */,
 				CE5EABBE0935E702006D85DD /* Rainbow2.plist */,
 				CE5EABBD0935E702006D85DD /* Rainbow3.plist */,
@@ -12590,6 +12585,7 @@
 				ABBA8D9A065AB90200A1F89C /* VR Bones.plist */,
 				CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */,
 				ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */,
+				CE9E11CF13DBB5DD008B2848 /* OsiriX.sdef */,
 				B7CDAC730AB3003200068D70 /* PAGES */,
 			);
 			name = Resources;
@@ -22369,8 +22365,6 @@
 				CEA337BD06AD9BF6006D2357 /* iDiskSend.icns in Resources */,
 				CE279EF006AEFB87008315C8 /* Mail.icns in Resources */,
 				CE1335EA06B02DC000B7FC03 /* iChat.icns in Resources */,
-				CEE2144E06B95D3900368199 /* OsiriX.scriptSuite in Resources */,
-				CEE2146806B95E0100368199 /* OsiriX.scriptTerminology in Resources */,
 				CE74824206C9701200FFA74C /* trash.icns in Resources */,
 				BFD4BFFC06F2A96900EC9A90 /* ContrastCursor.tif in Resources */,
 				BFD4BFFD06F2A96900EC9A90 /* RotateCursor.tif in Resources */,
@@ -22700,6 +22694,7 @@
 				CEB98C6B1335086B0083F3FD /* OSIAutoroutingPreferencePanePref.xib in Resources */,
 				CEB98C791335087D0083F3FD /* OSI3DPreferencePanePref.xib in Resources */,
 				CEB98C851335088C0083F3FD /* AYDicomPrintPref.xib in Resources */,
+				CE9E11D013DBB5DD008B2848 /* OsiriX.sdef in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22790,8 +22785,6 @@
 				CEC705B410A5C844008935EA /* iDiskSend.icns in Resources */,
 				CEC705B510A5C844008935EA /* Mail.icns in Resources */,
 				CEC705B610A5C844008935EA /* iChat.icns in Resources */,
-				CEC705B710A5C844008935EA /* OsiriX.scriptSuite in Resources */,
-				CEC705B810A5C844008935EA /* OsiriX.scriptTerminology in Resources */,
 				CEC705B910A5C844008935EA /* trash.icns in Resources */,
 				CEC705BA10A5C844008935EA /* ContrastCursor.tif in Resources */,
 				CEC705BB10A5C844008935EA /* RotateCursor.tif in Resources */,
@@ -23060,6 +23053,7 @@
 				CEB98C4F1335084F0083F3FD /* OSICustomImageAnnotations.xib in Resources */,
 				CEB98C5A1335084F0083F3FD /* Security.tiff in Resources */,
 				CEB98C621335085D0083F3FD /* OSICDPreferencePanePref.xib in Resources */,
+				CE9E11D113DBB5DD008B2848 /* OsiriX.sdef in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26256,14 +26250,6 @@
 				CEB98C821335088C0083F3FD /* English */,
 			);
 			name = AYDicomPrintPref.xib;
-			sourceTree = "<group>";
-		};
-		CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CEE2145706B95D9D00368199 /* English */,
-			);
-			name = OsiriX.scriptTerminology;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
