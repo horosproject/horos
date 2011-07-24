@@ -1,5 +1,6 @@
 - 10.7: Q&R ?
 - Toolbars: tests with new screen plugged when using OsiriX
+- OsiriX.sdef: add to 10.5 version
 
 - ROI: Add points to Polygon or Pencil ROIs 
 - Option to switch to 1x1 when going to fullscreen if tiling mode is not 1x1
