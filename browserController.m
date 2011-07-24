@@ -18241,6 +18241,32 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"] == YES && exportAborted == NO)
 		{
+            for( int i = 0; i < [filesToExport count]; i++)
+            {
+                NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+				NSMutableString *name;
+				NSString *tempPath;
+				
+				if( !addDICOMDIR)  
+					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
+				else
+				{
+					if ([(NSString*)[curImage valueForKeyPath: @"series.study.name"] length] > 8)
+						name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
+					else
+						name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
+                    
+					NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+					name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
+                    
+					[BrowserController replaceNotAdmitted: name];
+                    
+					tempPath = [path stringByAppendingPathComponent:name];
+				}
+                
+                [[NSFileManager defaultManager] removeItemAtPath: [tempPath stringByAppendingPathExtension: @"zip"] error: nil];
+            }
+            
 			for( int i = 0; i < [filesToExport count]; i++)
 			{
 				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
