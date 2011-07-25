@@ -1,4 +1,4 @@
-- Apple-Shift-E CPR
+- CPR export
 - 10.7: Bonjour Sharing?
 - Toolbars: tests with new screen plugged when using OsiriX
 - OsiriX.sdef: add to 10.5 version

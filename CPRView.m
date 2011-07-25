@@ -118,6 +118,65 @@
     [_stretchedView setCurrentTool:i];
 }
 
+-(NSImage*) nsimage
+{
+    if (_reformationType == CPRViewStraightenedReformationType)
+    {
+        return [_straightenedView nsimage];
+    } else {
+        return [_stretchedView nsimage];
+    }
+}
+
+-(NSImage*) nsimage:(BOOL) bo
+{
+    if (_reformationType == CPRViewStraightenedReformationType)
+    {
+        return [_straightenedView nsimage: bo];
+    } else {
+        return [_stretchedView nsimage: bo];
+    }
+}
+
+-(NSImage*) nsimage:(BOOL) bo allViewers: (BOOL) all
+{
+    if (_reformationType == CPRViewStraightenedReformationType)
+    {
+        return [_straightenedView nsimage: bo allViewers: all];
+    } else {
+        return [_stretchedView nsimage: bo allViewers: all];
+    }
+}
+
+-(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
+{
+    if (_reformationType == CPRViewStraightenedReformationType)
+    {
+        return [_straightenedView getRawPixels: width : height : spp : bpp : screenCapture : force8bits];
+    } else {
+        return [_stretchedView getRawPixels: width : height : spp : bpp : screenCapture : force8bits];
+    }
+}
+
+- (unsigned char*) getRawPixelsWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allTiles:(BOOL) allTiles allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing
+{
+    if (_reformationType == CPRViewStraightenedReformationType)
+    {
+        return [_straightenedView getRawPixelsWidth: width height: height spp: spp bpp: bpp screenCapture: screenCapture force8bits: force8bits removeGraphical: removeGraphical squarePixels: squarePixels allTiles: allTiles allowSmartCropping: allowSmartCropping origin: imOrigin spacing: imSpacing];
+    } else {
+        return [_stretchedView getRawPixelsWidth: width height: height spp: spp bpp: bpp screenCapture: screenCapture force8bits: force8bits removeGraphical: removeGraphical squarePixels: squarePixels allTiles: allTiles allowSmartCropping: allowSmartCropping origin: imOrigin spacing: imSpacing];
+    }
+}
+
+- (unsigned char*) getRawPixelsWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allTiles:(BOOL) allTiles allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing offset:(int*) offset isSigned:(BOOL*) isSigned
+{
+    if (_reformationType == CPRViewStraightenedReformationType)
+    {
+        return [_straightenedView getRawPixelsWidth: width height: height spp: spp bpp: bpp screenCapture: screenCapture force8bits: force8bits removeGraphical: removeGraphical squarePixels: squarePixels allTiles: allTiles allowSmartCropping: allowSmartCropping origin: imOrigin spacing: imSpacing offset: offset isSigned: isSigned];
+    } else {
+        return [_stretchedView getRawPixelsWidth: width height: height spp: spp bpp: bpp screenCapture: screenCapture force8bits: force8bits removeGraphical: removeGraphical squarePixels: squarePixels allTiles: allTiles allowSmartCropping: allowSmartCropping origin: imOrigin spacing: imSpacing offset: offset isSigned: isSigned];
+    }
+}
 
 #pragma mark standard CPRView Methods
 
