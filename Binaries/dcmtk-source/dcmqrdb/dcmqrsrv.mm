@@ -1428,7 +1428,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					
 					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextIndependentContext: YES];
 					[staticContext retain];
-					[staticContext lock]; //Try to avoid deadlock
+//					[staticContext lock]; //Try to avoid deadlock
 					
 					@try
 					{
@@ -1526,7 +1526,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 					}
 					
-					[staticContext unlock];
+//					[staticContext unlock];
 					[staticContext release];
 					staticContext = nil;
 				}
