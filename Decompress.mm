@@ -759,7 +759,8 @@ int main(int argc, const char *argv[])
 					
 					NSView *viewToPrint = [[[webView mainFrame] frameView] documentView];
 					NSPrintOperation *printOp = [NSPrintOperation printOperationWithView: viewToPrint printInfo: printInfo];
-					[printOp setShowPanels: NO];
+					[printOp setShowsPrintPanel: NO];
+					[printOp setShowsProgressPanel: NO];
 					[printOp runOperation];
 				}
 			}

@@ -3840,103 +3840,102 @@ NS_ENDHANDLER
 	return nil;
 }
 
-- (NSImage *)imageAtIndex:(int)index ww:(float)ww  wl:(float)wl{
-	float min;
-	float max;
-	//NSLog(@"pre ww: %f wl:%f", ww, wl);
-	//get min and max
-	if (ww == 0.0 && wl == 0.0) {
-		ww = [[_dcmObject attributeValueWithName:@"WindowWidth"] floatValue]; 
-		wl = [[_dcmObject attributeValueWithName:@"WindowCenter"] floatValue]; 
-			//NSLog(@"ww: %f  wl: %f", ww, wl);
-	}
-	min = wl - ww/2;
-	max = wl + ww/2;
-	
-	NSData *data = [self decodeFrameAtIndex:(int)index];
-	NSImage *image = [[[NSImage alloc] init] autorelease];
-	float rescaleIntercept, rescaleSlope;
-	int spp;
-	unsigned char *bmd;
-	NSString *colorSpaceName;
-	
-	if ([_dcmObject attributeValueWithName:@"RescaleIntercept"] != nil)
-            rescaleIntercept = ([[_dcmObject attributeValueWithName:@"RescaleIntercept"] floatValue]);
-	else 
-            rescaleIntercept = 0.0;
-            
-    //rescale Slope
-	if ([_dcmObject attributeValueWithName:@"RescaleSlope" ] != nil) 
-		rescaleSlope = [[_dcmObject attributeValueWithName:@"RescaleSlope" ] floatValue];
-	else 
-		rescaleSlope = 1.0;
-		
-	if( rescaleSlope == 0)
-		rescaleSlope = 1.0;
-	
-		// color 
-	NSString *pi = [_dcmObject attributeValueWithName:@"PhotometricInterpretation"]; 
-	if ([pi isEqualToString:@"RGB"] || ([pi hasPrefix:@"YBR"] || [pi isEqualToString:@"PALETTE"]) ) {
-		bmd = (unsigned char *)[data bytes];
-		spp = 3;
-		colorSpaceName = NSCalibratedRGBColorSpace;
-	
-	}
-	// 8 bit gray
-	else if (_pixelDepth <= 8) {
-		bmd = (unsigned char *)[data bytes];
-		spp = 1;
-		colorSpaceName = NSCalibratedBlackColorSpace;
-	}
-	//16 bit gray
-	else {
-	//convert to Float
-		
-		NSMutableData *data8 = [NSMutableData dataWithLength:_rows*_columns];
-		vImage_Buffer src16, dstf, dst8;
-		dstf.height = src16.height = dst8.height=  _rows;
-		dstf.width = src16.width = dst8.width =  _columns;
-		src16.rowBytes = _columns*2;
-		dstf.rowBytes = _columns*sizeof(float);
-		dst8.rowBytes = _columns;
-		
-		src16.data = (unsigned short *)[data bytes];
-		dstf.data = malloc(_rows*_columns * sizeof(float) + 100);
-		dst8.data = (unsigned char *)[data8 mutableBytes];
-		if (_isSigned)
-			vImageConvert_16SToF( &src16, &dstf, rescaleIntercept, rescaleSlope, 0);
-		else
-			vImageConvert_16UToF( &src16, &dstf, rescaleIntercept, rescaleSlope, 0);
-			
-		
-		vImageConvert_PlanarFtoPlanar8 (
-				 &dstf, 
-				 &dst8, 
-				max, 
-				min, 
-				0		
-		);
-		//NSLog(@"max %f min: %f intercept: %f, slope: %f", max, min, rescaleIntercept, rescaleSlope);
-		free(dstf.data);	
-		bmd = (unsigned char*) dst8.data;
-		spp =1;
-		colorSpaceName = NSCalibratedWhiteColorSpace;
-		
-	}
-	NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:&bmd
-	pixelsWide:_columns 
-	pixelsHigh:_rows 
-	bitsPerSample:8 
-	samplesPerPixel:spp 
-	hasAlpha:NO 
-	isPlanar:NO 
-	colorSpaceName:colorSpaceName 		
-	bytesPerRow:0
-	bitsPerPixel:0];
-				
-	[image addRepresentation:rep];
-	return image;
-}
+//- (NSImage *)imageAtIndex:(int)index ww:(float)ww  wl:(float)wl{
+//	float min;
+//	float max;
+//	//NSLog(@"pre ww: %f wl:%f", ww, wl);
+//	//get min and max
+//	if (ww == 0.0 && wl == 0.0) {
+//		ww = [[_dcmObject attributeValueWithName:@"WindowWidth"] floatValue]; 
+//		wl = [[_dcmObject attributeValueWithName:@"WindowCenter"] floatValue]; 
+//			//NSLog(@"ww: %f  wl: %f", ww, wl);
+//	}
+//	min = wl - ww/2;
+//	max = wl + ww/2;
+//	
+//	NSData *data = [self decodeFrameAtIndex:(int)index];
+//	NSImage *image = [[[NSImage alloc] init] autorelease];
+//	float rescaleIntercept, rescaleSlope;
+//	int spp;
+//	unsigned char *bmd;
+//	NSString *colorSpaceName;
+//	
+//	if ([_dcmObject attributeValueWithName:@"RescaleIntercept"] != nil)
+//            rescaleIntercept = ([[_dcmObject attributeValueWithName:@"RescaleIntercept"] floatValue]);
+//	else 
+//            rescaleIntercept = 0.0;
+//            
+//    //rescale Slope
+//	if ([_dcmObject attributeValueWithName:@"RescaleSlope" ] != nil) 
+//		rescaleSlope = [[_dcmObject attributeValueWithName:@"RescaleSlope" ] floatValue];
+//	else 
+//		rescaleSlope = 1.0;
+//		
+//	if( rescaleSlope == 0)
+//		rescaleSlope = 1.0;
+//	
+//		// color 
+//	NSString *pi = [_dcmObject attributeValueWithName:@"PhotometricInterpretation"]; 
+//	if ([pi isEqualToString:@"RGB"] || ([pi hasPrefix:@"YBR"] || [pi isEqualToString:@"PALETTE"]))
+//	{
+//		bmd = (unsigned char *)[data bytes];
+//		spp = 3;
+//		colorSpaceName = NSCalibratedRGBColorSpace;
+//	}
+//	// 8 bit gray
+//	else if (_pixelDepth <= 8) {
+//		bmd = (unsigned char *)[data bytes];
+//		spp = 1;
+//		colorSpaceName = NSCalibratedBlackColorSpace; // deprecated in 10.6: we need to manually invert the bytes
+//	}
+//	//16 bit gray
+//	else {
+//	//convert to Float
+//		NSMutableData *data8 = [NSMutableData dataWithLength:_rows*_columns];
+//		vImage_Buffer src16, dstf, dst8;
+//		dstf.height = src16.height = dst8.height=  _rows;
+//		dstf.width = src16.width = dst8.width =  _columns;
+//		src16.rowBytes = _columns*2;
+//		dstf.rowBytes = _columns*sizeof(float);
+//		dst8.rowBytes = _columns;
+//		
+//		src16.data = (unsigned short *)[data bytes];
+//		dstf.data = malloc(_rows*_columns * sizeof(float) + 100);
+//		dst8.data = (unsigned char *)[data8 mutableBytes];
+//		if (_isSigned)
+//			vImageConvert_16SToF( &src16, &dstf, rescaleIntercept, rescaleSlope, 0);
+//		else
+//			vImageConvert_16UToF( &src16, &dstf, rescaleIntercept, rescaleSlope, 0);
+//			
+//		
+//		vImageConvert_PlanarFtoPlanar8 (
+//				 &dstf, 
+//				 &dst8, 
+//				max, 
+//				min, 
+//				0		
+//		);
+//		//NSLog(@"max %f min: %f intercept: %f, slope: %f", max, min, rescaleIntercept, rescaleSlope);
+//		free(dstf.data);	
+//		bmd = (unsigned char*) dst8.data;
+//		spp = 1;
+//		colorSpaceName = NSCalibratedWhiteColorSpace;
+//		
+//	}
+//	NSBitmapImageRep *rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:&bmd
+//	pixelsWide:_columns 
+//	pixelsHigh:_rows 
+//	bitsPerSample:8 
+//	samplesPerPixel:spp 
+//	hasAlpha:NO 
+//	isPlanar:NO 
+//	colorSpaceName:colorSpaceName 		
+//	bytesPerRow:0
+//	bitsPerPixel:0] autorelease];
+//				
+//	[image addRepresentation:rep];
+//	return image;
+//}
 
 /*
 - (NSXMLNode *)xmlNode{
