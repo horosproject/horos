@@ -95,7 +95,14 @@ void createSwfMovie(NSArray* inputFiles, NSString* path);
 
 int main(int argc, const char *argv[])
 {
-	NSAutoreleasePool	*pool	= [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	// To avoid:
+	// http://lists.apple.com/archives/quicktime-api/2007/Aug/msg00008.html
+	// _NXCreateWindow: error setting window property (1002)
+	// _NXTermWindow: error releasing window (1002)
+	[NSApplication sharedApplication];
+	
 	
 	//	argv[ 1] : in path
 	//	argv[ 2] : what
