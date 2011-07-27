@@ -16,8 +16,6 @@
 #import "NSUserDefaultsController+OsiriX.h"
 
 
-extern NSString* const O2AutoSelectCDDVDSource;
-
 @interface NSUserDefaults (OsiriX)
 
 #pragma mark General

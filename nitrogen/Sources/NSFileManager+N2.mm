@@ -223,7 +223,7 @@
 		}
 		CFRelease(url);
 	}
-	return [(NSString *)resolvedPath autorelease];	
+	return [(NSString*)resolvedPath autorelease];	
 }
 
 -(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path {
@@ -264,6 +264,7 @@
 -(N2DirectoryEnumerator*)enumeratorAtPath:(NSString*)path filesOnly:(BOOL)filesOnly recursive:(BOOL)recursive {
 	N2DirectoryEnumerator* de = [[[N2DirectoryEnumerator alloc] initWithPath:path maxNumberOfFiles:-1] autorelease];
 	de.filesOnly = filesOnly;
+	de.recursive = recursive;
 	return de;
 }
 

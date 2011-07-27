@@ -22,6 +22,7 @@
 #import "BrowserController.h"
 #import "SRAnnotation.h"
 #import "NSThread+N2.h"
+#import "N2Debug.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -135,19 +136,16 @@
 			NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
 			
 			NSTask *theTask = [[NSTask alloc] init];
-			@try
-			{
-				[theTask setArguments: [[NSArray arrayWithObjects: dest, @"compress", nil] arrayByAddingObjectsFromArray: subArray]];
-				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+			@try {
+				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
+				[theTask setArguments:[[NSArray arrayWithObjects: dest, @"compress", nil] arrayByAddingObjectsFromArray: subArray]];
 				[theTask launch];
-				while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+				[theTask waitUntilExit];
+			} @catch (NSException *e) {
+				N2LogExceptionWithStackTrace(e);
 			}
-			@catch ( NSException *e)
-			{
-				NSLog( @"***** compressDICOMWithJPEG exception : %@", e);
-			}
-			[theTask release];
 			
+			[theTask release];
 			free( objs);
 		}
 		
@@ -284,27 +282,20 @@
 		{
 			[files getObjects: objs range: range];
 			
-			NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
+			NSArray* subArray = [NSArray arrayWithObjects:objs count:no];
 			
-			NSTask *theTask = [[NSTask alloc] init];
-			
-			@try
-			{
-				NSArray *parameters = [[NSArray arrayWithObjects: dest, @"decompressList", nil] arrayByAddingObjectsFromArray: subArray];
-				
-				[theTask setArguments: parameters];
-				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+			NSTask* theTask = [[NSTask alloc] init];
+			@try {
+				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
+				[theTask setArguments:[[NSArray arrayWithObjects: dest, @"decompressList", nil] arrayByAddingObjectsFromArray: subArray]];
 				[theTask launch];
-				
-				while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+				[theTask waitUntilExit];
+			} @catch (NSException *e) {
+				N2LogExceptionWithStackTrace(e);
 			}
-			@catch ( NSException *e)
-			{
-				NSLog( @"***** decompressDICOMList exception : %@", e);
-			}
-			[theTask release];
 			
-			free( objs);
+			[theTask release];
+			free(objs);
 		}
 		
 		i += no;

@@ -107,7 +107,6 @@ extern const NSString* const DicomDatabaseLogEntryEntityName;
 -(NSArray*)albums;
 +(NSArray*)albumsInContext:(NSManagedObjectContext*)context; // this method should be private, but is declared because called from deprecated api
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string;
--(void)resetAlbumsCache;
 
 #pragma mark Add files
 -(NSArray*)addFilesAtPaths:(NSArray*)paths;

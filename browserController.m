@@ -1097,7 +1097,7 @@ static NSConditionLock *threadLock = nil;
 //			[self didChangeValueForKey:@"database"];
 			if ([db isLocal] && [NSUserDefaults canActivateAnyLocalDatabase])
 				[DicomDatabase setActiveLocalDatabase:db];
-			[self selectCurrentDatabaseSource];
+			if (db) [self selectCurrentDatabaseSource];
 
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseAddNotification:) name:_O2AddToDBAnywayNotification object:_database];
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseObjectsMayFaultNotification:) name:OsirixDatabaseObjectsMayFaultNotification object:_database];
@@ -1672,7 +1672,7 @@ static NSConditionLock *threadLock = nil;
 				}
 				else
 				{
-					[NSThread currentThread].status = [NSString stringWithFormat: @"%d %@", [filesInput count]-i, i==1? NSLocalizedString( @"file", nil) : NSLocalizedString( @"files", nil) ];
+					[NSThread currentThread].status = [NSString stringWithFormat: @"%d %@ left", [filesInput count]-i, i==1? NSLocalizedString( @"file", nil) : NSLocalizedString( @"files", nil) ];
 					[NSThread currentThread].progress = (float) (i+1) / [filesInput count];
 				}
 			}
@@ -7728,11 +7728,11 @@ static BOOL withReset = NO;
 		case 2:	// Remove
 			if( albumTable.selectedRow > 0)
 			{
-				if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete an album", nil),
-												 NSLocalizedString(@"Are you sure you want to delete this album?", nil),
-												 NSLocalizedString(@"OK",nil),
-												 NSLocalizedString(@"Cancel",nil),
-												 nil) == NSAlertDefaultReturn)
+				if (NSRunInformationalAlertPanelRelativeToWindow(NSLocalizedString(@"Delete an album", nil),
+																 NSLocalizedString(@"Are you sure you want to delete this album?", nil),
+																 NSLocalizedString(@"OK",nil),
+																 NSLocalizedString(@"Cancel",nil),
+																 nil, self.window) == NSAlertDefaultReturn)
 				{
 					NSManagedObjectContext	*context = self.managedObjectContext;
 					

@@ -61,8 +61,8 @@
 }
 
 -(BOOL)isEqualToSource:(BrowserSource*)other {
-	//if (self.type != other.type)
-	//	return NO;
+	if (self.type != other.type)
+		return NO;
 	
 	if (self.dictionary && self.dictionary == other.dictionary)
 		return YES;
@@ -134,19 +134,24 @@
 
 -(NSComparisonResult)compare:(BrowserSource*)other {
 	if (self.type != other.type) return self.type > other.type;
+	if ([self subtypeForSorting] != [other subtypeForSorting]) return [self subtypeForSorting] > [other subtypeForSorting];
 	return [self.description caseInsensitiveCompare:other.description];
-}
-
--(BOOL)isRemovable {
-	return NO;
 }
 
 -(BOOL)isVolatile {
 	return NO;
 }
 
+-(BOOL)isReadOnly {
+	return NO;
+}
+
 -(NSString*)toolTip {
 	return nil;
+}
+
+-(NSInteger)subtypeForSorting {
+	return 0;
 }
 
 @end

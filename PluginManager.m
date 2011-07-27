@@ -429,12 +429,17 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		#ifndef OSIRIX_LIGHT
 		for (NSString* path in paths)
 		{
+			NSArray* donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:NSCharacterSet.newlineCharacterSet];
+			
+			if ([donotloadnames containsObject:@"*"])
+				break;
+			
 			NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
 			NSString *name;
 			
 			while ( name = [e nextObject] )
 			{
-				if ( [[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"])
+				if (([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"]) && ![donotloadnames containsObject:[name stringByDeletingPathExtension]])
 				{
 					if( [pluginsNames valueForKey: [[name lastPathComponent] stringByDeletingPathExtension]])
 					{

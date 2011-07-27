@@ -291,6 +291,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 
 -(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c { // reminder: context may be nil (assigned in -[N2ManagedDatabase initWithPath:] after calling this method)
 	p = [DicomDatabase baseDirPathForPath:p];
+	NSLog(@"DicomDatabase initWithPath:%@", p);
 	p = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:p];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:p];
 	
@@ -738,10 +739,6 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	}
 }
 
--(void)resetAlbumsCache {
-	// TODO: serseursurhesihi
-}
-
 #pragma mark Lifecycle
 
 -(BOOL)isFileSystemFreeSizeLimitReached {
@@ -829,7 +826,7 @@ enum { Compress, Decompress };
 //	[thread pushLevel];
 	thread.name = [NSString stringWithFormat:nameFormat, paths.count];
 	thread.status = NSLocalizedString(@"Waiting for similar threads to complete...", nil);
-
+	
 	[_processFilesLock lock];
 	@try {
 		thread.status = NSLocalizedString(@"Processing...", nil);

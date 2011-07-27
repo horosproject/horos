@@ -13,7 +13,10 @@
 #import "NSString+N2.h"
 #import "NSFileManager+N2.h"
 #import "DicomImage.h"
+#import "N2Debug.h"
 #import "DicomFile.h"
+#import "MutableArrayCategory.h"
+#import "BrowserController.h"
 
 @interface _DicomDatabaseScanDcmElement : NSObject {
 	DcmElement* _element;
@@ -281,28 +284,72 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	NSArray* allpaths = [path stringsByAppendingPaths:[[NSFileManager.defaultManager enumeratorAtPath:path filesOnly:YES] allObjects]];
 	
 	// first read the DICOMDIR file
-	thread.status = NSLocalizedString(@"Looking for DICOMDIR...", nil);
-	NSString* dicomdirPath = [[self class] _findDicomdirIn:allpaths];
-	if (dicomdirPath) {
-		NSLog(@"Scanning DICOMDIR at %@", dicomdirPath);
-		thread.status = NSLocalizedString(@"Reading DICOMDIR...", nil);
-		dicomImages = [self scanDicomdirAt:dicomdirPath withPaths:allpaths];
+	if ([NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) {
+		thread.status = NSLocalizedString(@"Looking for DICOMDIR...", nil);
+		NSString* dicomdirPath = [[self class] _findDicomdirIn:allpaths];
+		if (dicomdirPath) {
+			NSLog(@"Scanning DICOMDIR at %@", dicomdirPath);
+			thread.status = NSLocalizedString(@"Reading DICOMDIR...", nil);
+			dicomImages = [self scanDicomdirAt:dicomdirPath withPaths:allpaths];
+		}
+		
+	//	NSLog(@"DICOMDIR referenced %d images: %@", dicomImages.count, [dicomImages valueForKey:@"completePath"]);
 	}
 	
-	NSLog(@"DICOMDIR referenced %d images", dicomImages.count);
-	
-	if (!dicomImages.count) {
+	if ((![NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) || (!dicomImages.count && [NSUserDefaults.standardUserDefaults boolForKey:@"ScanDiskIfDICOMDIRZero"])) {
 		NSMutableArray* dicomFilePaths = [NSMutableArray array];
 		
 		thread.status = NSLocalizedString(@"Looking for DICOM files...", nil);
+		thread.supportsCancel = YES;
 		for (NSInteger i = 0; i < allpaths.count; ++i) {
 			thread.progress = 1.0*i/allpaths.count;
 			NSString* path = [allpaths objectAtIndex:i];
 			if ([DicomFile isDICOMFile:path])
 				[dicomFilePaths addObject:path];
+			if (thread.isCancelled)
+				return;
 		}
 		
 		dicomImages = [self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO mountedVolume:YES];
+	}
+	
+	if ([NSUserDefaults.standardUserDefaults boolForKey:@"MOUNT"] && dicomImages.count) { // copy into database on mount
+		thread.name = NSLocalizedString(@"Copying files from media...", nil);
+		
+//		DicomDatabase* db = [DicomDatabase activeLocalDatabase];
+		
+		NSMutableArray* paths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
+		[paths removeDuplicatedStrings];
+		
+		int progress = 0;
+		thread.progress = 0;
+		
+		[BrowserController.currentBrowser performSelector:@selector(copyFilesThread:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:
+																								  paths, @"filesInput",
+																								  [NSNumber numberWithBool:YES], @"mountedVolume",
+																								  [NSNumber numberWithBool:YES], @"copyFiles",
+																								  NULL]];
+	
+		/*for (NSString* frompath in paths) {
+			NSString* topath = nil;
+			int i = 0;
+			do {
+				topath = [db.incomingDirPath stringByAppendingPathComponent:[frompath lastPathComponent]];
+			} while ([NSFileManager.defaultManager fileExistsAtPath:topath]);
+			
+			[NSFileManager.defaultManager copyItemAtPath:frompath toPath:topath error:NULL];
+
+			thread.progress = CGFloat(++progress)/paths.count;
+		}*/
+		
+		if ([NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"]) {
+			thread.status = NSLocalizedString(@"Ejecting...", nil);
+			thread.progress = -1;
+			
+			[NSWorkspace.sharedWorkspace unmountAndEjectDeviceAtPath:path];
+			
+			return;
+		}
 	}
 	
 	thread.status = NSLocalizedString(@"Generating series thumbnails...", nil);
@@ -310,10 +357,13 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	for (DicomImage* di in dicomImages)
 		if (![dicomSeries containsObject:di.series])
 			[dicomSeries addObject:di.series];
-	for (NSInteger i = 0; i < dicomSeries.count; ++i) {
-		thread.progress = 1.0*i/dicomSeries.count;
-		[[dicomSeries objectAtIndex:i] thumbnail];
-	}
+	for (NSInteger i = 0; i < dicomSeries.count; ++i)
+		@try {
+			thread.progress = 1.0*i/dicomSeries.count;
+			[[dicomSeries objectAtIndex:i] thumbnail];
+		} @catch (NSException* e) {
+			N2LogExceptionWithStackTrace(e);
+		}
 	
 	
 	
@@ -325,6 +375,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[NSThread sleepForTimeInterval:0.1];
 	}
 	*/
+	
 	[thread exitOperation];
 }
 

@@ -12,11 +12,11 @@
 @class DicomDatabase, ImageAndTextCell;
 
 enum {
-	BrowserSourceTypeDefault = 10,
-	BrowserSourceTypeLocal = 20,
-	BrowserSourceTypeRemote = 30,
-	BrowserSourceTypeDicom = 40,
-	BrowserSourceTypeOther = 50
+	BrowserSourceTypeDefault,
+	BrowserSourceTypeLocal,
+	BrowserSourceTypeRemote,
+	BrowserSourceTypeDicom,
+	BrowserSourceTypeOther
 };
 typedef NSInteger BrowserSourceType;
 
@@ -47,8 +47,10 @@ typedef NSInteger BrowserSourceType;
 
 -(void)willDisplayCell:(ImageAndTextCell*)cell;
 
--(BOOL)isRemovable;
--(BOOL)isVolatile;
+-(BOOL)isVolatile; // like bonjour sources, CD/DVDs, ...
+-(BOOL)isReadOnly;
 -(NSString*)toolTip;
+
+-(NSInteger)subtypeForSorting;
 
 @end

@@ -90,8 +90,17 @@
 	[self.thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:NULL];
 }
 
+-(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
+	[self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
+}
+
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
-	if (obj == self.thread)
+	if (obj == self.thread) {
+		if (![NSThread isMainThread]) {
+			[self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], NULL] waitUntilDone:NO];
+			return;
+		}
+		
 		if ([keyPath isEqual:NSThreadStatusKey]) {
 			[self.view setNeedsDisplayInRect: [self.view rectOfRow:[self.manager.threads indexOfObject:self.thread]]];
 			return;
@@ -105,6 +114,7 @@
 			[self.cancelButton setEnabled:self.thread.supportsCancel];
 			return;
 		}
+	}
 	
 	[super observeValueForKeyPath:keyPath ofObject:obj change:change context:context];
 }

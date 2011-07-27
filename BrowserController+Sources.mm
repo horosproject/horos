@@ -52,6 +52,9 @@
 @end
 
 @interface DefaultBrowserSource : BrowserSource
+
++(DefaultBrowserSource*)source;
+
 @end
 
 @interface BonjourBrowserSource : BrowserSource {
@@ -82,7 +85,7 @@
 -(void)awakeSources {
 	[_sourcesArrayController setSortDescriptors:[NSArray arrayWithObjects: [[[NSSortDescriptor alloc] initWithKey:@"self" ascending:YES] autorelease], NULL]];
 	[_sourcesArrayController setAutomaticallyRearrangesObjects:YES];
-	[_sourcesArrayController addObject:[DefaultBrowserSource browserSourceForLocalPath:DicomDatabase.defaultDatabase.baseDirPath]];
+	[_sourcesArrayController addObject:[DefaultBrowserSource source]];
 	[_sourcesArrayController setSelectsInsertedObjects:NO];
 	
 	_sourcesHelper = [[BrowserSourcesHelper alloc] initWithBrowser:self];
@@ -119,6 +122,8 @@
 }
 
 -(BrowserSource*)sourceForDatabase:(DicomDatabase*)database {
+	if (database == [DicomDatabase defaultDatabase])
+		return [DefaultBrowserSource source];
 	if (database.isLocal)
 		return [BrowserSource browserSourceForLocalPath:database.baseDirPath];
 	else return [BrowserSource browserSourceForAddress:[NSString stringWithFormat:@"%@:%d", [(RemoteDicomDatabase*)database address], [(RemoteDicomDatabase*)database port]] description:nil dictionary:nil];	
@@ -142,7 +147,8 @@
 	}
 	
 	NSInteger i = [self rowForDatabase:_database];
-	if (i == -1) {
+	if (i == -1 && _database != [DicomDatabase defaultDatabase]) {
+		[self rowForDatabase:_database];
 		NSDictionary* source = [NSDictionary dictionaryWithObjectsAndKeys: [_database.baseDirPath stringByDeletingLastPathComponent], @"Path", [_database.baseDirPath.stringByDeletingLastPathComponent.lastPathComponent stringByAppendingString:@" DB"], @"Description", nil];
 		[NSUserDefaults.standardUserDefaults setObject:[[NSUserDefaults.standardUserDefaults objectForKey:@"localDatabasePaths"] arrayByAddingObject:source] forKey:@"localDatabasePaths"];
 		i = [self rowForDatabase:_database];
@@ -524,12 +530,27 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		if (ibs.type == BrowserSourceTypeLocal && [ibs.location hasPrefix:path])
 			return; // device is somehow already listed as a source
 	
-	@try {
-		[_browser.sources addObject:[MountedBrowserSource browserSourceForDevicePath:path description:path.lastPathComponent dictionary:nil]];
-	} @catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
-		
+	NSTask* task = [[NSTask alloc] init];
+	[task setLaunchPath:@"/usr/sbin/diskutil"];
+	[task setArguments:[NSArray arrayWithObjects: @"info", @"-plist", path, NULL]];
+	[task setStandardError:[NSPipe pipe]];
+	[task setStandardOutput:[task standardError]];
+	[task launch];
+	[task waitUntilExit];
+	NSData* output = [[[[[task standardError] fileHandleForReading] readDataToEndOfFile] retain] autorelease];
+	[task release];
+	
+	NSDictionary* result = [NSPropertyListSerialization propertyListFromData:output mutabilityOption:NSPropertyListImmutable format:0 errorDescription:NULL];
+
+	if ([[result objectForKey:@"OpticalMediaType"] length])
+		@try {
+			[_browser.sources addObject:[MountedBrowserSource browserSourceForDevicePath:path description:path.lastPathComponent dictionary:nil]];
+		} @catch (NSException* e) {
+			N2LogExceptionWithStackTrace(e);
+		}
+	
+	
+	
 /*	OSStatus err;
 	kern_return_t kr;
 	
@@ -671,6 +692,13 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 @implementation DefaultBrowserSource
 
++(DefaultBrowserSource*)source {
+	static DefaultBrowserSource* source = nil;
+	if (!source)
+		source = [[DefaultBrowserSource browserSourceForLocalPath:DicomDatabase.defaultDatabase.baseDirPath] retain];
+	return source;
+}
+
 -(void)willDisplayCell:(ImageAndTextCell*)cell {
 	cell.font = [NSFont boldSystemFontOfSize:11];
 	cell.image = [NSImage imageNamed:@"osirix16x16.tif"];
@@ -717,10 +745,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	return port;
 }
 
--(BOOL)isRemovable {
-	return YES;
-}
-
 -(BOOL)isVolatile {
 	return YES;
 }
@@ -733,6 +757,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)initiateVolumeScan {
 	_database = [[DicomDatabase databaseAtPath:self.location] retain];
+	for (NSManagedObject* obj in _database.albums)
+		[_database.managedObjectContext deleteObject:obj];
 	[self performSelectorInBackground:@selector(volumeScanThread) withObject:nil];
 }
 
@@ -743,7 +769,13 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		thread.name = NSLocalizedString(@"Scanning disc...", nil);
 		[ThreadsManager.defaultManager addThreadAndStart:thread];
 		[_database scanAtPath:self.devicePath];
-		if ([NSUserDefaults.standardUserDefaults boolForKey:@"autoSelectSourceCDDVD"])
+		
+		if (![[_database objectsForEntity:_database.imageEntity] count]) {
+			[[[BrowserController currentBrowser] sources] removeObject:self];
+			return;
+		}
+		
+		if ([NSUserDefaults.standardUserDefaults boolForKey:@"autoSelectSourceCDDVD"] && [NSFileManager.defaultManager fileExistsAtPath:self.devicePath])
 			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSource:) withObject:self waitUntilDone:NO];
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
@@ -801,19 +833,15 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	cell.image = im;
 }
 
--(BOOL)isRemovable {
-	return YES;
-}
-
 -(NSString*)toolTip {
 	return self.devicePath;
 }
 
--(BrowserSourceType)type {
-	return (BrowserSourceTypeLocal+BrowserSourceTypeDefault)/2;
+-(BOOL)isVolatile {
+	return YES;
 }
 
--(BOOL)isVolatile {
+-(BOOL)isReadOnly {
 	return YES;
 }
 

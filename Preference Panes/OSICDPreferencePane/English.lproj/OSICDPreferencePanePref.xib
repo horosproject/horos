@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10J869</string>
+		<string key="IBDocument.SystemVersion">10K549</string>
 		<string key="IBDocument.InterfaceBuilderVersion">851</string>
-		<string key="IBDocument.AppKitVersion">1038.35</string>
+		<string key="IBDocument.AppKitVersion">1038.36</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="6"/>
+			<integer value="98"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -36,7 +36,7 @@
 			<object class="NSWindowTemplate" id="118841857">
 				<int key="NSWindowStyleMask">7</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{57, 267}, {726, 364}}</string>
+				<string key="NSWindowRect">{{57, 247}, {726, 384}}</string>
 				<int key="NSWTFlags">1081606144</int>
 				<string key="NSWindowTitle">&lt;&lt; do not localize &gt;&gt;</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -63,13 +63,13 @@
 										<object class="NSButton" id="980907261">
 											<reference key="NSNextResponder" ref="284310877"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{17, 143}, {657, 18}}</string>
+											<string key="NSFrame">{{17, 163}, {657, 18}}</string>
 											<reference key="NSSuperview" ref="284310877"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="867122110">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Automatically copy all images into the database when a disk is mounted</string>
+												<string key="NSContents">Automatically copy all images into the database when a disk is inserted</string>
 												<object class="NSFont" key="NSSupport" id="255335428">
 													<string key="NSName">LucidaGrande</string>
 													<double key="NSSize">13</double>
@@ -90,15 +90,36 @@
 										<object class="NSButton" id="102423531">
 											<reference key="NSNextResponder" ref="284310877"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{17, 123}, {657, 18}}</string>
+											<string key="NSFrame">{{17, 143}, {657, 18}}</string>
 											<reference key="NSSuperview" ref="284310877"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="12722064">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Automatically select the source when a disk is mounted</string>
+												<string key="NSContents">Eject the disk when the copy is completed</string>
 												<reference key="NSSupport" ref="255335428"/>
 												<reference key="NSControlView" ref="102423531"/>
+												<int key="NSButtonFlags">1211912703</int>
+												<int key="NSButtonFlags2">2</int>
+												<reference key="NSAlternateImage" ref="879291054"/>
+												<string key="NSAlternateContents"/>
+												<string key="NSKeyEquivalent"/>
+												<int key="NSPeriodicDelay">200</int>
+												<int key="NSPeriodicInterval">25</int>
+											</object>
+										</object>
+										<object class="NSButton" id="550653012">
+											<reference key="NSNextResponder" ref="284310877"/>
+											<int key="NSvFlags">256</int>
+											<string key="NSFrame">{{17, 123}, {657, 18}}</string>
+											<reference key="NSSuperview" ref="284310877"/>
+											<bool key="NSEnabled">YES</bool>
+											<object class="NSButtonCell" key="NSCell" id="568305960">
+												<int key="NSCellFlags">67239424</int>
+												<int key="NSCellFlags2">0</int>
+												<string key="NSContents">Automatically select the source when a disk is inserted</string>
+												<reference key="NSSupport" ref="255335428"/>
+												<reference key="NSControlView" ref="550653012"/>
 												<int key="NSButtonFlags">1211912703</int>
 												<int key="NSButtonFlags2">2</int>
 												<reference key="NSAlternateImage" ref="879291054"/>
@@ -370,11 +391,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<reference key="NSFont" ref="500324374"/>
 										</object>
 									</object>
-									<string key="NSFrame">{{2, 2}, {689, 169}}</string>
+									<string key="NSFrame">{{2, 2}, {689, 189}}</string>
 									<reference key="NSSuperview" ref="158522742"/>
 								</object>
 							</object>
-							<string key="NSFrame">{{16, 159}, {693, 189}}</string>
+							<string key="NSFrame">{{16, 159}, {693, 209}}</string>
 							<reference key="NSSuperview" ref="365080541"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
@@ -606,7 +627,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<bool key="NSTransparent">NO</bool>
 						</object>
 					</object>
-					<string key="NSFrameSize">{726, 364}</string>
+					<string key="NSFrameSize">{726, 384}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
@@ -614,6 +635,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="154481161">
+				<object class="NSMutableArray" key="NSDeclaredKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>MOUNT</string>
+					<string>CDDVDEjectAfterAutoCopy</string>
+				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 		</object>
@@ -826,22 +852,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.autoSelectSourceCDDVD</string>
-						<reference key="source" ref="102423531"/>
-						<reference key="destination" ref="154481161"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="102423531"/>
-							<reference key="NSDestination" ref="154481161"/>
-							<string key="NSLabel">value: values.autoSelectSourceCDDVD</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.autoSelectSourceCDDVD</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">207</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.ScanDiskIfDICOMDIRZero</string>
 						<reference key="source" ref="947728721"/>
 						<reference key="destination" ref="154481161"/>
@@ -855,6 +865,54 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">209</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.autoSelectSourceCDDVD</string>
+						<reference key="source" ref="550653012"/>
+						<reference key="destination" ref="154481161"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="550653012"/>
+							<reference key="NSDestination" ref="154481161"/>
+							<string key="NSLabel">value: values.autoSelectSourceCDDVD</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.autoSelectSourceCDDVD</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">212</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.MOUNT</string>
+						<reference key="source" ref="102423531"/>
+						<reference key="destination" ref="154481161"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="102423531"/>
+							<reference key="NSDestination" ref="154481161"/>
+							<string key="NSLabel">enabled: values.MOUNT</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.MOUNT</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">214</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.CDDVDEjectAfterAutoCopy</string>
+						<reference key="source" ref="102423531"/>
+						<reference key="destination" ref="154481161"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="102423531"/>
+							<reference key="NSDestination" ref="154481161"/>
+							<string key="NSLabel">value: values.CDDVDEjectAfterAutoCopy</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.CDDVDEjectAfterAutoCopy</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">215</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -907,9 +965,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="980907261"/>
 							<reference ref="102423531"/>
+							<reference ref="550653012"/>
 							<reference ref="468243953"/>
-							<reference ref="108541256"/>
 							<reference ref="947728721"/>
+							<reference ref="108541256"/>
 						</object>
 						<reference key="parent" ref="365080541"/>
 					</object>
@@ -922,8 +981,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="500457483"/>
 							<reference ref="313292628"/>
 							<reference ref="184313264"/>
-							<reference ref="742342778"/>
 							<reference ref="49825180"/>
+							<reference ref="742342778"/>
 						</object>
 						<reference key="parent" ref="365080541"/>
 					</object>
@@ -1122,6 +1181,20 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="84108953"/>
 						<reference key="parent" ref="742342778"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">210</int>
+						<reference key="object" ref="550653012"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="568305960"/>
+						</object>
+						<reference key="parent" ref="158522742"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">211</int>
+						<reference key="object" ref="568305960"/>
+						<reference key="parent" ref="550653012"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -1200,6 +1273,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>202.IBPluginDependency</string>
 					<string>202.IBViewBoundsToFrameTransform</string>
 					<string>203.IBPluginDependency</string>
+					<string>210.IBAttributePlaceholdersKey</string>
+					<string>210.IBPluginDependency</string>
+					<string>210.IBViewBoundsToFrameTransform</string>
+					<string>210.ImportedFromIB2</string>
+					<string>211.IBPluginDependency</string>
 					<string>6.IBPluginDependency</string>
 					<string>6.ImportedFromIB2</string>
 					<string>98.IBPluginDependency</string>
@@ -1223,7 +1301,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABBgAAAwuYAAA</bytes>
+						<bytes key="NSTransformStruct">P4AAAL+AAABBiAAAwxEAAA</bytes>
 					</object>
 					<integer value="1"/>
 					<object class="NSMutableDictionary">
@@ -1261,7 +1339,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABBiAAAwooAAA</bytes>
+						<bytes key="NSTransformStruct">P4AAAL+AAABBkAAAwsYAAA</bytes>
 					</object>
 					<integer value="1"/>
 					<object class="NSMutableDictionary">
@@ -1269,14 +1347,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="IBToolTipAttribute" key="NS.object.0">
 							<string key="name">ToolTip</string>
 							<reference key="object" ref="257334181"/>
-							<string key="toolTip">Search to media to find all DICOM images.</string>
+							<string key="toolTip">Scan the media to find all DICOM images.</string>
 						</object>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{-980, 551}, {726, 364}}</string>
+					<string>{{-980, 531}, {726, 384}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{-980, 551}, {726, 364}}</string>
+					<string>{{-980, 531}, {726, 384}}</string>
 					<integer value="1"/>
 					<string>{{102, 1105}, {726, 451}}</string>
 					<integer value="0"/>
@@ -1285,7 +1363,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{224.663, 10}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">AUGIAABDGwAAA</bytes>
+						<bytes key="NSTransformStruct">AUGIAABBgAAAA</bytes>
 					</object>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1327,33 +1405,46 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="IBToolTipAttribute" key="NS.object.0">
 							<string key="name">ToolTip</string>
 							<reference key="object" ref="102423531"/>
-							<string key="toolTip">Copy images to local database.</string>
+							<string key="toolTip">Once an inserted disk is successfully indexed, it is automatically selected</string>
 						</object>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABBgAAAwwsAAA</bytes>
+						<bytes key="NSTransformStruct">P4AAAL+AAABBiAAAwzgAAA</bytes>
 					</object>
 					<integer value="1"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<object class="NSMutableDictionary">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<reference key="dict.sortedKeys" ref="0"/>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+						</object>
+					</object>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<object class="NSAffineTransform">
+						<bytes key="NSTransformStruct">P4AAAL+AAABDnAAAwxEAAA</bytes>
+					</object>
+					<integer value="1"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<object class="NSAffineTransform">
+						<bytes key="NSTransformStruct">P4AAAL+AAABDbAAAwegAAA</bytes>
+					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSMutableDictionary">
 						<string key="NS.key.0">ToolTip</string>
 						<object class="IBToolTipAttribute" key="NS.object.0">
 							<string key="name">ToolTip</string>
-							<reference key="object" ref="947728721"/>
-							<string key="toolTip">Copy images to local database.</string>
+							<reference key="object" ref="550653012"/>
+							<string key="toolTip">Once an inserted disk is successfully indexed, it is automatically selected</string>
 						</object>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABDm4AAwuwAAA</bytes>
+						<bytes key="NSTransformStruct">P4AAAL+AAABBsAAAwzMAAA</bytes>
 					</object>
 					<integer value="1"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABDlYAAwkwAAA</bytes>
-					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
@@ -1364,7 +1455,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="IBToolTipAttribute" key="NS.object.0">
 							<string key="name">ToolTip</string>
 							<reference key="object" ref="1023620656"/>
-							<string key="toolTip">Use DICOMDIR on the media to find to load the images.</string>
+							<string key="toolTip">Use DICOMDIR on the media to load the images.</string>
 						</object>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1387,7 +1478,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">209</int>
+			<int key="maxID">215</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

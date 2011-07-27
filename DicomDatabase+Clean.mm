@@ -90,8 +90,6 @@
 	@try {
 		NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 		
-		[self resetAlbumsCache];
-		
 		// Log cleaning
 		if ([self tryLock])
 			@try {

@@ -33,6 +33,7 @@
 	currpath = nil;
 	basepath = [path retain];
 	DIRs = [[NSMutableArray alloc] init];
+	_recursive = YES;
 	
 	DIR* dir = opendir(path.fileSystemRepresentation);
 	if (dir) [self pushDIR:dir subpath:NULL];
