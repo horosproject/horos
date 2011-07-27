@@ -5042,6 +5042,8 @@
 		CE7BBFDC0C82DCA5000AD12F /* libtiffOsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiffOsiriX.a */; };
 		CE7C7E950CF2201F0028A7F2 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */; };
 		CE7E5D4506AC8DDC0058C3AA /* Anonymizer.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */; };
+		CE7F0CAB13E047C200A2B404 /* OsiriX.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE7F0CAA13E047C200A2B404 /* OsiriX.sdef */; };
+		CE7F0CAC13E047C200A2B404 /* OsiriX.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE7F0CAA13E047C200A2B404 /* OsiriX.sdef */; };
 		CE81E2A50FDA9F00000D3D96 /* OsiriX.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = CE8D057D0FD8505000165DDE /* OsiriX.framework */; };
 		CE85FF5D10E6764100175CEB /* OpenGLScreenReader.m in Sources */ = {isa = PBXBuildFile; fileRef = A930149310DA63C200AF0051 /* OpenGLScreenReader.m */; };
 		CE882AC60C889B6500D4F982 /* XMLRPCMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */; };
@@ -6785,8 +6787,6 @@
 		CEC705B410A5C844008935EA /* iDiskSend.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEA337BB06AD9BF6006D2357 /* iDiskSend.icns */; };
 		CEC705B510A5C844008935EA /* Mail.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE279EEE06AEFB87008315C8 /* Mail.icns */; };
 		CEC705B610A5C844008935EA /* iChat.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1335E806B02DC000B7FC03 /* iChat.icns */; };
-		CEC705B710A5C844008935EA /* OsiriX.scriptSuite in Resources */ = {isa = PBXBuildFile; fileRef = CEE2144C06B95D3900368199 /* OsiriX.scriptSuite */; };
-		CEC705B810A5C844008935EA /* OsiriX.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */; };
 		CEC705B910A5C844008935EA /* trash.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE74824006C9701200FFA74C /* trash.icns */; };
 		CEC705BA10A5C844008935EA /* ContrastCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */; };
 		CEC705BB10A5C844008935EA /* RotateCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */; };
@@ -7955,8 +7955,6 @@
 		CEDF6E1D0B46FF40008B45B8 /* DICOMPrint.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEDF6E1C0B46FF40008B45B8 /* DICOMPrint.mm */; };
 		CEE1922E08636FA100DED1F0 /* DicomImage.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE1922C08636FA100DED1F0 /* DicomImage.m */; };
 		CEE1922F08636FA100DED1F0 /* DicomImage.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE1922D08636FA100DED1F0 /* DicomImage.h */; };
-		CEE2144E06B95D3900368199 /* OsiriX.scriptSuite in Resources */ = {isa = PBXBuildFile; fileRef = CEE2144C06B95D3900368199 /* OsiriX.scriptSuite */; };
-		CEE2146806B95E0100368199 /* OsiriX.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */; };
 		CEE619EF0912C73000C31D78 /* OrientationWidget.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEE619EE0912C73000C31D78 /* OrientationWidget.tif */; };
 		CEE6717D077D5ECF00E4BB10 /* SyncLock.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEE67176077D5ECE00E4BB10 /* SyncLock.tif */; };
 		CEE72C091101F14A00758DCA /* BrowserControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */; };
@@ -11836,6 +11834,7 @@
 		CE7A0F1A0AED55E700540017 /* ShellMainClass.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ShellMainClass.mm; sourceTree = "<group>"; };
 		CE7BBFD40C82DCA5000AD12F /* libtiffOsiriX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtiffOsiriX.a; sourceTree = "<group>"; };
 		CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Anonymizer.icns; sourceTree = "<group>"; };
+		CE7F0CAA13E047C200A2B404 /* OsiriX.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.sdef; path = OsiriX.sdef; sourceTree = "<group>"; };
 		CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLRPCMethods.h; sourceTree = "<group>"; };
 		CE882AC50C889B6500D4F982 /* XMLRPCMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLRPCMethods.m; sourceTree = "<group>"; };
 		CE88575A08AF938800B72DA7 /* ROIVolumeView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeView.h; sourceTree = "<group>"; };
@@ -12059,8 +12058,6 @@
 		CEDF6E1C0B46FF40008B45B8 /* DICOMPrint.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DICOMPrint.mm; sourceTree = "<group>"; };
 		CEE1922C08636FA100DED1F0 /* DicomImage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomImage.m; sourceTree = "<group>"; };
 		CEE1922D08636FA100DED1F0 /* DicomImage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomImage.h; sourceTree = "<group>"; };
-		CEE2144C06B95D3900368199 /* OsiriX.scriptSuite */ = {isa = PBXFileReference; explicitFileType = text.plist.scriptSuite; fileEncoding = 30; path = OsiriX.scriptSuite; sourceTree = "<group>"; };
-		CEE2145706B95D9D00368199 /* English */ = {isa = PBXFileReference; explicitFileType = text.plist.scriptTerminology; fileEncoding = 30; name = English; path = English.lproj/OsiriX.scriptTerminology; sourceTree = "<group>"; };
 		CEE619EE0912C73000C31D78 /* OrientationWidget.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OrientationWidget.tif; sourceTree = "<group>"; };
 		CEE67176077D5ECE00E4BB10 /* SyncLock.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncLock.tif; sourceTree = "<group>"; };
 		CEE73FC708F44724002A395F /* FVTiff.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FVTiff.h; sourceTree = "<group>"; };
@@ -12567,6 +12564,7 @@
 				ABD7BC2E063EFD8D00E24B0E /* BlackBody.plist */,
 				ABBFDA3F063480490011BD0A /* Deployment-Info.plist */,
 				ABFDE81610A8003100E33E0F /* Deployment-Info OsiriXLite.plist */,
+				CE7F0CAA13E047C200A2B404 /* OsiriX.sdef */,
 				ABD7BC4C063F00A900E24B0E /* Flow.plist */,
 				ABD7BC50063F00A900E24B0E /* GEcolor.plist */,
 				ABD7BC51063F00A900E24B0E /* GrayRainbow.plist */,
@@ -12580,8 +12578,6 @@
 				CE286C100964196C001A4573 /* Localizable.strings */,
 				CE5F9D730AE813A40042280F /* localizedTemplatesPages */,
 				ABD7BC4D063F00A900E24B0E /* NIH.plist */,
-				CEE2144C06B95D3900368199 /* OsiriX.scriptSuite */,
-				CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */,
 				CE5EABBF0935E702006D85DD /* Rainbow.plist */,
 				CE5EABBE0935E702006D85DD /* Rainbow2.plist */,
 				CE5EABBD0935E702006D85DD /* Rainbow3.plist */,
@@ -22370,8 +22366,6 @@
 				CEA337BD06AD9BF6006D2357 /* iDiskSend.icns in Resources */,
 				CE279EF006AEFB87008315C8 /* Mail.icns in Resources */,
 				CE1335EA06B02DC000B7FC03 /* iChat.icns in Resources */,
-				CEE2144E06B95D3900368199 /* OsiriX.scriptSuite in Resources */,
-				CEE2146806B95E0100368199 /* OsiriX.scriptTerminology in Resources */,
 				CE74824206C9701200FFA74C /* trash.icns in Resources */,
 				BFD4BFFC06F2A96900EC9A90 /* ContrastCursor.tif in Resources */,
 				BFD4BFFD06F2A96900EC9A90 /* RotateCursor.tif in Resources */,
@@ -22701,6 +22695,7 @@
 				CEB98C6B1335086B0083F3FD /* OSIAutoroutingPreferencePanePref.xib in Resources */,
 				CEB98C791335087D0083F3FD /* OSI3DPreferencePanePref.xib in Resources */,
 				CEB98C851335088C0083F3FD /* AYDicomPrintPref.xib in Resources */,
+				CE7F0CAB13E047C200A2B404 /* OsiriX.sdef in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22791,8 +22786,6 @@
 				CEC705B410A5C844008935EA /* iDiskSend.icns in Resources */,
 				CEC705B510A5C844008935EA /* Mail.icns in Resources */,
 				CEC705B610A5C844008935EA /* iChat.icns in Resources */,
-				CEC705B710A5C844008935EA /* OsiriX.scriptSuite in Resources */,
-				CEC705B810A5C844008935EA /* OsiriX.scriptTerminology in Resources */,
 				CEC705B910A5C844008935EA /* trash.icns in Resources */,
 				CEC705BA10A5C844008935EA /* ContrastCursor.tif in Resources */,
 				CEC705BB10A5C844008935EA /* RotateCursor.tif in Resources */,
@@ -23061,6 +23054,7 @@
 				CEB98C4F1335084F0083F3FD /* OSICustomImageAnnotations.xib in Resources */,
 				CEB98C5A1335084F0083F3FD /* Security.tiff in Resources */,
 				CEB98C621335085D0083F3FD /* OSICDPreferencePanePref.xib in Resources */,
+				CE7F0CAC13E047C200A2B404 /* OsiriX.sdef in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26259,14 +26253,6 @@
 			name = AYDicomPrintPref.xib;
 			sourceTree = "<group>";
 		};
-		CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CEE2145706B95D9D00368199 /* English */,
-			);
-			name = OsiriX.scriptTerminology;
-			sourceTree = "<group>";
-		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -26471,7 +26457,6 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",
@@ -26551,7 +26536,7 @@
 					AYDicomPrint,
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 			};
 			name = Development;
 		};
@@ -26723,7 +26708,7 @@
 					AYDicomPrint,
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 			};
 			name = "Deployment 32-bit";
 		};
@@ -27026,7 +27011,7 @@
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",
 				);
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 				WARNING_CFLAGS = "";
 			};
 			name = "Deployment 64-bit";
@@ -27404,7 +27389,6 @@
 					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",
