@@ -272,7 +272,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @property BOOL rtstructProgressBar;
 @property float rtstructProgressPercent;
-@property NSTimeInterval databaseLastModification;
+@property (nonatomic) NSTimeInterval databaseLastModification;
 @property(readonly) NSMutableArray *viewersListToReload, *viewersListToRebuild;
 @property(readonly) NSConditionLock* newFilesConditionLock;
 @property(readonly) NSMutableDictionary *databaseIndexDictionary;
@@ -383,7 +383,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSString*) getDatabaseFolderFor: (NSString*) path;
 - (NSString*) getDatabaseIndexFileFor: (NSString*) path;
 - (IBAction) copyToDBFolder: (id) sender;
-- (void) setCurrentBonjourService:(int) index;
+- (void) setCurrentBonjourService:(long) index;
 - (IBAction)customize:(id)sender;
 - (IBAction)showhide:(id)sender;
 - (IBAction) selectAll3DSeries:(id) sender;

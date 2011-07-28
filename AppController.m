@@ -623,7 +623,7 @@ NSRect screenFrame()
 				{
 					frame = [[[NSScreen screens] objectAtIndex:i] frame];
 					if (frame.size.height == height && frame.size.width == singleWidth)
-						width =+ frame.size.width;
+						width = frame.size.width;
 				}	
 				screenRect = NSMakeRect([[[NSScreen screens] objectAtIndex:1] frame].origin.x, 
 										[[[NSScreen screens] objectAtIndex:1] frame].origin.y,
@@ -643,7 +643,7 @@ NSRect screenFrame()
 			{
 				frame = [[[NSScreen screens] objectAtIndex:i] frame];
 				if (frame.size.height == height && frame.size.width == singleWidth)
-					width =+ frame.size.width;
+					width = frame.size.width;
 			}
 			screenRect = NSMakeRect([[[NSScreen screens] objectAtIndex:0] frame].origin.x, 
 										[[[NSScreen screens] objectAtIndex:0] frame].origin.y,
@@ -2832,7 +2832,7 @@ static BOOL initialized = NO;
 					exit(0);
 				}
 				
-				NSLog(@"Number of processors: %d", MPProcessors ());
+				NSLog(@"Number of processors: %lu", MPProcessors ());
 				
 				#ifdef NDEBUG
 				#else

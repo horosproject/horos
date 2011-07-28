@@ -254,7 +254,7 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 //		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];		
 	}
 	
-	NSLog( @"******* tryLockDuring failed for this lock: %@ (%d sec)", c, sec);
+	NSLog( @"******* tryLockDuring failed for this lock: %@ (%f sec)", c, sec);
 	
 	return NO;
 }
@@ -5196,7 +5196,7 @@ static NSConditionLock *threadLock = nil;
 			lastFreeSpace = free;
 			lastFreeSpaceLogTime = [NSDate timeIntervalSinceReferenceDate];
 			
-			NSLog(@"HD Free Space: %d MB", (long) free);
+			NSLog(@"HD Free Space: %ld MB", (long) free);
 		}
 		
 		isAutoCleanDatabaseRunning = YES;
@@ -7140,7 +7140,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	@catch ( NSException *e)
 	{
-		NSLog( @"******** proceedDeleteObjects exception : %", e);
+		NSLog( @"******** proceedDeleteObjects exception : %@", e);
 		[AppController printStackTrace: e];
 	}
 	
@@ -12249,7 +12249,7 @@ static BOOL needToRezoom;
 			if( memBlock >= max4GB)
 			{
 				memBlock = 0;	// 4-GB Limit
-				NSLog(@"4-GB Memory limit for 32-bit application...", (memBlock) / (1024 * 1024));
+				NSLog(@"4-GB Memory limit for 32-bit application...");
 			}
 			#endif
 			
@@ -12262,7 +12262,7 @@ static BOOL needToRezoom;
 			{
 				enoughMemory = NO;
 				
-				NSLog(@"Failed to allocate memory for: %d Mb", (memBlock) / (1024 * 1024));
+				NSLog(@"Failed to allocate memory for: %llu Mb", (memBlock) / (1024 * 1024));
 			}
 		}
 		
@@ -12408,7 +12408,7 @@ static BOOL needToRezoom;
 						{
 							memTestFailed = YES;
 							
-							NSLog(@"Failed to allocate memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
+							NSLog(@"Failed to allocate memory for: %lu Mb", (memBlock * sizeof(float)) / (1024 * 1024));
 						}
 					}
 					memBlockSize[ x] = memBlock;
@@ -12501,11 +12501,11 @@ static BOOL needToRezoom;
 			{
 				char **memBlockTestPtr = calloc( [toOpenArray count], sizeof( char*));
 				
-				NSLog(@"4D Viewer TOTAL: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
+				NSLog(@"4D Viewer TOTAL: %lu Mb", (mem * sizeof(float)) / (1024 * 1024));
 				for( unsigned long x = 0; x < [toOpenArray count]; x++)
 				{
 					memBlockTestPtr[ x] = malloc(memBlockSize[ x] * sizeof(float));
-					NSLog(@"4D Viewer: I will try to allocate: %d Mb", (memBlockSize[ x]* sizeof(float)) / (1024 * 1024));
+					NSLog(@"4D Viewer: I will try to allocate: %lu Mb", (memBlockSize[ x]* sizeof(float)) / (1024 * 1024));
 					
 					if( memBlockTestPtr[ x] == nil) notEnoughMemory = YES;
 				}
@@ -17189,7 +17189,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 							
 							if( cineRateSet == NO && [dcmPix cineRate])
 							{
-								cineRateSet == YES;
 								[[NSUserDefaults standardUserDefaults] setInteger: [dcmPix cineRate] forKey:@"quicktimeExportRateValue"];
 							}
 						}
@@ -20895,7 +20894,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return [bonjourServicesList selectedRow] - 1;
 }
 
-- (void)setCurrentBonjourService: (int)index
+- (void)setCurrentBonjourService: (long)index
 {
 	dontLoadSelectionSource = YES;
 	[bonjourServicesList selectRowIndexes: [NSIndexSet indexSetWithIndex: index+1] byExtendingSelection: NO];
@@ -21214,6 +21213,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[logWindowController close];
 	[logWindowController release];
 	logWindowController = nil;
+}
+
+- (NSString *) searchString
+{
+    return _searchString;
 }
 
 - (void)setSearchString: (NSString *)searchString
