@@ -202,8 +202,6 @@ make CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386 -arch
 
 ------------------------------------------------------------------------------------------------------------------------
 
-
-
 // Release
 - X Bundle Version
 - X Localizations strings:
