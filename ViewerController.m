@@ -11099,7 +11099,7 @@ short				matrix[25];
 		}
 		@catch ( NSException *e)
 		{
-			NSLog( @"****** saveROI exception : %@");
+			NSLog( @"****** saveROI exception : %@", e);
 		}
 		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	}

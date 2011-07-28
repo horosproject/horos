@@ -115,7 +115,7 @@ static id aedesc_to_id(AEDesc *desc)
 	
 	[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 	
-	NSMutableAttributedString	*rtf = [[NSMutableAttributedString alloc] initWithString: file];
+	NSMutableAttributedString	*rtf = [[[NSMutableAttributedString alloc] initWithString: file] autorelease];
 	
 	[[rtf RTFFromRange:rtf.range documentAttributes: nil] writeToFile: path atomically:YES]; // To support full encoding in MicroSoft Word
 	
@@ -652,7 +652,7 @@ CHECK;
 	}
 	
 	// decompress the gzipped index.xml.gz file in the .pages bundle
-	NSTask *gzip = [[NSTask alloc] init];
+	NSTask *gzip = [[[NSTask alloc] init] autorelease];
 	[gzip setLaunchPath:@"/usr/bin/gzip"];
 	[gzip setCurrentDirectoryPath:aPath];
 	[gzip setArguments:[NSArray arrayWithObjects:@"-d", @"index.xml.gz", nil]];
@@ -668,7 +668,7 @@ CHECK;
 		NSLog(@"Pages Report creation  failed. Cause: Gzip -d failed.");
 		return NO;
 	}
-	[gzip release];
+    
 	// read the xml file and find & replace templated string with patient's datas
 	NSString *indexFilePath = [NSString stringWithFormat:@"%@/index.xml", aPath];
 	NSError *xmlError = nil;

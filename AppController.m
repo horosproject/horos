@@ -2385,9 +2385,6 @@ static NSDate *lastWarningDate = nil;
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
 {
 	long				i;
-	NSMutableArray		*filesArray = [NSMutableArray array];
-	NSMutableArray		*pluginsArray = [NSMutableArray array];
-	NSFileManager       *defaultManager = [NSFileManager defaultManager];
 	BOOL                isDirectory;
 
 	if([filenames count] == 1) // for iChat Theatre... (drag & drop a DICOM file on the video chat window)
@@ -5028,7 +5025,6 @@ static BOOL initialized = NO;
 	long clutBarsCopy = [[NSUserDefaults standardUserDefaults] integerForKey:@"CLUTBARS"];
 	BOOL noInterpolationCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
 	BOOL highQInterpolationCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"SOFTWAREINTERPOLATION"];
-	BOOL full32bitPipeCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 	
 	float pixData[] = {0,1,1,0};
 	DCMPix* dcmPix = [[DCMPix alloc] initWithData:pixData :32 :2 :2 :1 :1 :0 :0 :0];

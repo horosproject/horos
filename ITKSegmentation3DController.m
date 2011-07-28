@@ -87,7 +87,8 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 {
 	// Is it already available for this viewer??
 	id seg = [ITKSegmentation3DController segmentationControllerForViewer: v];
-	if( seg) return seg;
+	if( seg)
+        return [seg retain];
 	
 	// Else create a new one !
 
