@@ -1758,6 +1758,211 @@ enum { Compress, Decompress };
 	return addedImagesArray;
 }
 
+-(void)copyFilesThread:(NSDictionary*)dict {
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	
+	//	[autoroutingInProgress lock];
+	
+	BOOL first = YES, studySelected = NO, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
+	NSArray *filesInput = [dict objectForKey: @"filesInput"];
+	
+	int total = 0;
+	
+	for( int i = 0; i < [filesInput count];)
+	{
+		NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
+		
+		@try
+		{
+			NSMutableArray *copiedFiles = [NSMutableArray array];
+			
+			NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
+			
+			if( [[dict objectForKey: @"mountedVolume"] boolValue] == YES && [[dict objectForKey: @"copyFiles"] boolValue] == NO)
+				twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 20.0;
+			
+			for( ; i < [filesInput count] && twentySeconds > [NSDate timeIntervalSinceReferenceDate]; i++)
+			{
+				NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
+				
+				if( [[dict objectForKey: @"copyFiles"] boolValue])
+				{
+					NSString *extension = [srcPath pathExtension];
+					
+					if( [extension isEqualToString:@""])
+						extension = [NSString stringWithString:@"dcm"]; 
+					
+					if( [extension length] > 4 || [extension length] < 3)
+						extension = [NSString stringWithString:@"dcm"];
+					
+					dstPath = [self uniquePathForNewDataFileWithExtension:extension];
+					
+					NSError* err = nil;
+					if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error:&err])
+					{
+						if( [extension isEqualToString: @"dcm"] == NO)
+						{
+							DicomFile *dcmFile = [[[DicomFile alloc] init: dstPath] autorelease];
+							
+							if( [[[dcmFile dicomElements] objectForKey: @"fileType"] hasPrefix: @"DICOM"])
+							{
+								NSString *newPathExtension = [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"dcm"];
+								
+								[[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newPathExtension error: nil];
+								
+								dstPath = newPathExtension;
+							}
+						}
+						
+						[copiedFiles addObject: dstPath];
+					}
+					else
+						NSLog( @"***** copyItemAtPath %@ failed : %@", srcPath, err);
+				}
+				else
+				{
+					if( [[NSFileManager defaultManager] fileExistsAtPath: srcPath])
+					{
+						if( [[dict objectForKey: @"mountedVolume"] boolValue])
+						{
+							@try
+							{
+								if( [[[DicomFile alloc] init: srcPath] autorelease]) // Pre-load for CD/DVD in cache
+								{
+									[copiedFiles addObject: srcPath];
+								}
+								else NSLog( @"**** DicomFile *curFile = nil");
+							}
+							@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
+						}
+						else
+						{
+							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
+							{
+								// Pre-load for faster validating
+								NSData *d = [NSData dataWithContentsOfFile: srcPath];
+							}
+							[copiedFiles addObject: srcPath];
+						}
+					}
+				}
+				
+				if( [NSThread currentThread].isCancelled)
+					break;
+				
+				if( i == [filesInput count]-1 || twentySeconds <= [NSDate timeIntervalSinceReferenceDate])
+				{
+					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
+					{
+						if( i == [filesInput count]-1)
+							[NSThread currentThread].progress = -1;
+						
+						[NSThread currentThread].status =  NSLocalizedString( @"Validating the files...", nil);
+					}
+					else
+					{
+						if( i == [filesInput count]-1)
+						{
+							[NSThread currentThread].progress = 1;
+							[NSThread currentThread].status =  NSLocalizedString( @"Done. Finishing...", nil);
+						}
+						else
+							[NSThread currentThread].status =  NSLocalizedString( @"Indexing the files...", nil);
+					}
+				}
+				else
+				{
+					[NSThread currentThread].status = [NSString stringWithFormat: @"%d %@ left", [filesInput count]-i, i==1? NSLocalizedString( @"file", nil) : NSLocalizedString( @"files", nil) ];
+					[NSThread currentThread].progress = (float) (i+1) / [filesInput count];
+				}
+			}
+			
+			BOOL succeed = YES;
+			
+#ifndef OSIRIX_LIGHT
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
+				succeed = [DicomDatabase testFiles: copiedFiles];
+#endif
+			
+			NSArray *objects = nil;
+			
+			if( succeed)
+			{
+				BOOL mountedVolume = [[dict objectForKey: @"mountedVolume"] boolValue];
+				
+				if( [[dict objectForKey: @"copyFiles"] boolValue])
+					mountedVolume = NO;
+				
+				objects = 	   [BrowserController addFiles: copiedFiles
+												toContext: [[BrowserController currentBrowser] managedObjectContext]
+											   toDatabase: [BrowserController currentBrowser]
+												onlyDICOM: onlyDICOM 
+										 notifyAddedFiles: YES
+									  parseExistingObject: NO
+												 dbFolder: [[BrowserController currentBrowser] documentsDirectory]
+										generatedByOsiriX: NO
+											mountedVolume: mountedVolume];
+				
+				total += [copiedFiles count];
+			}
+			else
+			{
+				for( NSString * f in copiedFiles)
+					[[NSFileManager defaultManager]removeItemAtPath: f error: nil];
+			}
+			
+			if( [objects count])
+			{
+				if( studySelected == NO)
+				{
+					if( [[dict objectForKey: @"selectStudy"] boolValue])
+						[self performSelectorOnMainThread: @selector( selectThisStudy:) withObject: [[objects objectAtIndex: 0] valueForKeyPath: @"series.study"] waitUntilDone: NO];
+					
+					studySelected = YES;
+				}
+				
+				BrowserController* bc = [BrowserController currentBrowser];
+				if (bc.database == self && bc.albumTable.selectedRow > 0 && [[dict objectForKey:@"addToAlbum"] boolValue])
+				{
+					NSManagedObject *album = [bc.albumArray objectAtIndex:bc.albumTable.selectedRow];
+					
+					if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
+					{
+						NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
+						
+						for( NSManagedObject *object in objects)
+						{
+							[studies addObject: [object valueForKeyPath:@"series.study"]];
+							[[object valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
+						}
+					}
+				}
+			}
+			
+			if( [NSThread currentThread].isCancelled)
+				break;
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"copyFilesThread exception: %@", e);
+			[AppController printStackTrace: e];
+		}
+		
+		[pool2 release];
+	}
+	
+	//	[autoroutingInProgress unlock];
+	
+	if( [[dict objectForKey: @"ejectCDDVD"] boolValue] == YES && [[dict objectForKey: @"copyFiles"] boolValue] == YES)
+	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EJECTCDDVD"])
+			[[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath: [filesInput objectAtIndex:0]];
+	}
+	
+	[pool release];
+}
+
+
 -(void)_growlImagesAdded:(NSString*)message {
 	[AppController.sharedAppController growlTitle:NSLocalizedString(@"Incoming Files", nil) description:message name:@"newfiles"];
 }

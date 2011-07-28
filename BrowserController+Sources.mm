@@ -658,6 +658,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	}
 	
 	if (row < [_browser sourcesCount]) {
+		if ([[_browser sourceAtRow:row] isReadOnly])
+			return NSDragOperationNone;
 		[tableView setDropRow:row dropOperation:NSTableViewDropOn];
 		return NSTableViewDropAbove;
 	}
@@ -708,10 +710,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	return NSLocalizedString(@"Local Default Database", nil);
 }
 
--(NSComparisonResult)compare:(BrowserSource*)other {
-	if ([self isKindOfClass:DefaultBrowserSource.class]) return NSOrderedAscending;
-	else if ([other isKindOfClass:DefaultBrowserSource.class]) return NSOrderedDescending;
-	return [super compare:other];
+-(NSInteger)subtypeForSorting {
+	return NSIntegerMin;
 }
 
 @end
@@ -843,6 +843,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(BOOL)isReadOnly {
 	return YES;
+}
+
+-(NSInteger)subtypeForSorting {
+	return NSIntegerMin+1;
 }
 
 

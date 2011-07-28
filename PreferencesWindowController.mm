@@ -125,7 +125,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(void)addPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image toGroupWithName:(NSString*)groupName
 {
-	Class builtinPrefPaneClass = NSClassFromString( resourceName);
+	Class builtinPrefPaneClass = NSClassFromString(resourceName);
 	
 	if( builtinPrefPaneClass)
 	{
@@ -336,7 +336,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		NSString* title = context? context.title : NSLocalizedString(@"OsiriX Preferences", NULL);
 		
 		[self.window setTitle:title];
-
+		
 		[context.pane willSelect];
 		[flippedDocumentView setFrameSize:view.frame.size];
 		[flippedDocumentView addSubview:view];

@@ -274,14 +274,18 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	return candidate;
 }
 
--(void)scanAtPath:(NSString*)path {
+-(void)_requestZipPassword:(NSArray*)args {
+	[BrowserController.currentBrowser askForZIPPassword:[args objectAtIndex:0] destination:[args objectAtIndex:1]];
+}
+
+-(void)scanAtPath:(NSString*)path isVolume:(BOOL)isVolume {
 	NSThread* thread = [NSThread currentThread];
 	[thread enterOperation];
 	
 	NSArray* dicomImages = [NSMutableArray array];
 
 	thread.status = NSLocalizedString(@"Scanning directories...", nil);
-	NSArray* allpaths = [path stringsByAppendingPaths:[[NSFileManager.defaultManager enumeratorAtPath:path filesOnly:YES] allObjects]];
+	NSMutableArray* allpaths = [[[path stringsByAppendingPaths:[[NSFileManager.defaultManager enumeratorAtPath:path filesOnly:YES] allObjects]] mutableCopy] autorelease];
 	
 	// first read the DICOMDIR file
 	if ([NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) {
@@ -304,8 +308,26 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		for (NSInteger i = 0; i < allpaths.count; ++i) {
 			thread.progress = 1.0*i/allpaths.count;
 			NSString* path = [allpaths objectAtIndex:i];
-			if ([DicomFile isDICOMFile:path])
+			
+			if ([DicomFile isDICOMFile:path]) {
 				[dicomFilePaths addObject:path];
+			} else if ([path.pathExtension isEqualToString:@"zip"] || [path.pathExtension isEqualToString:@"osirixzip"]) {
+				[thread enterOperation];
+				thread.status = NSLocalizedString(@"Processing ZIP file...", @"");
+
+				// unzip file to a temporary place and add the files to allpaths
+				[NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
+				NSString* tempPath = [NSFileManager.defaultManager tmpFilePathInDir:self.tempDirPath];
+				[NSFileManager.defaultManager confirmDirectoryAtPath:tempPath];
+				
+				if ([BrowserController unzipFile:path withPassword:nil destination:tempPath] == NO) { // needs password
+					[self performSelectorOnMainThread:@selector(_requestZipPassword:) withObject:[NSArray arrayWithObjects: path, tempPath, NULL] waitUntilDone:YES];
+				}
+				
+				[self scanAtPath:tempPath isVolume:NO];
+				[thread exitOperation];
+			}
+			
 			if (thread.isCancelled)
 				return;
 		}
@@ -324,11 +346,11 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		int progress = 0;
 		thread.progress = 0;
 		
-		[BrowserController.currentBrowser performSelector:@selector(copyFilesThread:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:
-																								  paths, @"filesInput",
-																								  [NSNumber numberWithBool:YES], @"mountedVolume",
-																								  [NSNumber numberWithBool:YES], @"copyFiles",
-																								  NULL]];
+		[DicomDatabase.activeLocalDatabase performSelector:@selector(copyFilesThread:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:
+																	  paths, @"filesInput",
+																	  [NSNumber numberWithBool:YES], @"mountedVolume",
+																	  [NSNumber numberWithBool:YES], @"copyFiles",
+																	  NULL]];
 	
 		/*for (NSString* frompath in paths) {
 			NSString* topath = nil;
@@ -342,7 +364,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 			thread.progress = CGFloat(++progress)/paths.count;
 		}*/
 		
-		if ([NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"]) {
+		if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"]) {
 			thread.status = NSLocalizedString(@"Ejecting...", nil);
 			thread.progress = -1;
 			
@@ -377,6 +399,10 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	*/
 	
 	[thread exitOperation];
+}
+
+-(void)scanAtPath:(NSString*)path {
+	[self scanAtPath:path isVolume:YES];
 }
 
 @end
