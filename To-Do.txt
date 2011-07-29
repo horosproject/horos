@@ -1,4 +1,3 @@
-- 10.7: WADO Retrieve, NSMutableArray bug
 - Toolbars: tests with new screen plugged when using OsiriX
 
 - ROI: Add points to Polygon or Pencil ROIs 
