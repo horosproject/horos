@@ -10,6 +10,7 @@
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
 - Web Server: add Bonjour Service, add Locations parameter, display in Sources
 - DICOM ECG
+- SUV on PET 3D Panel (3D MIP)
 - Q&R: custom field (Performing Physician)
 - Activate 8-bit TIFF, JPEG, export (10.6) // Add PNG
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
@@ -202,17 +203,17 @@ make CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386 -arch
 ------------------------------------------------------------------------------------------------------------------------
 
 // Release
-- X Bundle Version
-- X Localizations strings:
+- Bundle Version
+- Localizations strings:
 genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h -macRoman
-- X Check if OsiriX Lite works...
+- Check if OsiriX Lite works...
 - Check up-to-date zip packages in Binaries folder
 - Check weasis permissions: everyone: read only
 - Localization: check if smart album editor is correctly displayed; Check  CLUT, Opacity, WLWW menus in 2D Menu (Search for itemWithTitle:); Check Export DICOM 2D Viewer (Spanish)
 - Test DB migration from previous version
 - OsiriX Lite Upload
-- X QuickLook
-- X Update plugins
+- QuickLook
+- Update plugins
 - For international version, compile nib files (for i in `ls`; do ibtool "$i" --compile "$i"; done)
 - For international version, manually resign
 - codesign -vvv /Applications/OsiriX.app
