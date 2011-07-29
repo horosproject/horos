@@ -1432,7 +1432,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					
 					@try
 					{
-						[DCMNetServiceDelegate DICOMServersList];
+                        [DCMNetServiceDelegate DICOMServersList];
 						
 						/* spawn a sub-process to handle the association */
 						pid = (int)(fork());
@@ -1452,6 +1452,11 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 								t.status = [NSString stringWithFormat: NSLocalizedString( @"Address: %s", nil), assoc->params->DULparams.callingPresentationAddress];
 							[[ThreadsManager defaultManager] addThreadAndStart: t];
 							
+							// Father
+							[NSThread sleepForTimeInterval: 0.2]; // To allow the creation of lock_process file with corresponding pid
+							
+							[NSThread detachNewThreadSelector: @selector(waitUnlockFileWithPID:) toTarget: [AppController sharedAppController] withObject: [NSNumber numberWithInt: pid]];
+							
 							/* the child will handle the association, we can drop it */
 							cond = ASC_dropAssociation(assoc);
 							if (cond.bad())
@@ -1466,11 +1471,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 								//DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
 								DimseCondition::dump(cond);
 							}
-							
-							// Father
-							[NSThread sleepForTimeInterval: 0.2]; // To allow the creation of lock_process file with corresponding pid
-							
-							[NSThread detachNewThreadSelector: @selector(waitUnlockFileWithPID:) toTarget: [AppController sharedAppController] withObject: [NSNumber numberWithInt: pid]];
 							
 //							waitUnlockFileWithPID( pid);
 //							

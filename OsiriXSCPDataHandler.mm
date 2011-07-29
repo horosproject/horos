@@ -1352,6 +1352,10 @@ extern NSManagedObjectContext *staticContext;
 		[findArray release];
 		findArray = nil;
 		
+         #define FETCHNUMBER 50
+        
+        findArray = [NSArray array];
+        
 		@try
 		{
 			if( seriesLevelPredicate) // First find at series level, then move to image level
@@ -1361,18 +1365,39 @@ extern NSManagedObjectContext *staticContext;
 				[seriesRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
 				[seriesRequest setPredicate: seriesLevelPredicate];
 				
-				NSArray *allSeries = [context executeFetchRequest: seriesRequest error: &error];
-				
-				findArray = [NSArray array];
-				
+                NSArray *newObjects = nil;
+                NSArray *allSeries = [NSArray array];
+                
+                [seriesRequest setFetchLimit: FETCHNUMBER];
+                do
+                {
+                    newObjects = [context executeFetchRequest: seriesRequest error: &error];
+                    allSeries = [allSeries arrayByAddingObjectsFromArray: newObjects];
+                    
+                    [seriesRequest setFetchOffset: [seriesRequest fetchOffset] + FETCHNUMBER];
+                }
+                while( [newObjects count]);
+                
 				for( id series in allSeries)
 					findArray = [findArray arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
 				
 				findArray = [findArray filteredArrayUsingPredicate: predicate];
 			}
 			else
-				findArray = [context executeFetchRequest:request error:&error];
-			
+            {
+                NSArray *newObjects = nil;
+               
+                [request setFetchLimit: FETCHNUMBER];
+                do
+                {
+                    newObjects = [context executeFetchRequest: request error: &error];
+                    findArray = [findArray arrayByAddingObjectsFromArray: newObjects];
+                    
+                    [request setFetchOffset: [request fetchOffset] + FETCHNUMBER];
+                }
+                while( [newObjects count]);
+			}
+            
 			if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
 				findArray = [findArray filteredArrayUsingPredicate: compressedSOPInstancePredicate];
 			

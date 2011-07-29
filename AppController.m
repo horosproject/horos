@@ -2492,8 +2492,8 @@ static NSDate *lastWarningDate = nil;
 	
 	if( rc < 0)
 	{
+        NSLog( @"******* waitUnlockFile : child process died... %d / %d", rc, errno);
 		kill( pid, 15);
-		NSLog( @"******* waitUnlockFile : child process died...");
 	}
 	
 	unlink( dir);

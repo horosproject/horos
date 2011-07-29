@@ -6009,7 +6009,7 @@ static NSConditionLock *threadLock = nil;
 	[pool release];
 }
 
-- (void) seachDeadProcesses
+- (void) searchDeadProcesses
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
@@ -6057,7 +6057,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[self testAutorouting];
 	
-	[NSThread detachNewThreadSelector: @selector( seachDeadProcesses) toTarget: self withObject: nil];
+	[NSThread detachNewThreadSelector: @selector( searchDeadProcesses) toTarget: self withObject: nil];
 	
 	if( bonjourDownloading) return;
 	if( DatabaseIsEdited) return;
