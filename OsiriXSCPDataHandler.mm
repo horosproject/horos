@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#define FETCHNUMBER 50
+#define FETCHNUMBER 30
 
 #import "OsiriXSCPDataHandler.h"
 #import "DicomFile.h"
