@@ -1,4 +1,5 @@
 - Toolbars: tests with new screen plugged when using OsiriX
+- 10.7 : DICOM TLS (64)
 
 - ROI: Add points to Polygon or Pencil ROIs 
 - Option to switch to 1x1 when going to fullscreen if tiling mode is not 1x1
@@ -203,21 +204,23 @@ make CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386 -arch
 ------------------------------------------------------------------------------------------------------------------------
 
 // Release
-- Bundle Version
-- Localizations strings:
+- X CPR
+- X Bundle Version
+- X Localizations strings:
 genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h -macRoman
-- Check if OsiriX Lite works...
-- Check up-to-date zip packages in Binaries folder
-- Check weasis permissions: everyone: read only
-- Localization: check if smart album editor is correctly displayed; Check  CLUT, Opacity, WLWW menus in 2D Menu (Search for itemWithTitle:); Check Export DICOM 2D Viewer (Spanish)
-- Test DB migration from previous version
+- X Check if OsiriX Lite works...
+- X Check up-to-date zip packages in Binaries folder
+- X Check non-debug lib for KDU & Papyrus in 64-bit
+- X Check weasis permissions: everyone: read only
+- X Localization: check if smart album editor is correctly displayed; Check  CLUT, Opacity, WLWW menus in 2D Menu (Search for itemWithTitle:); Check Export DICOM 2D Viewer (Spanish)
+- X Test DB migration from previous version
 - OsiriX Lite Upload
-- QuickLook
-- Update plugins
-- For international version, compile nib files (for i in `ls`; do ibtool "$i" --compile "$i"; done)
-- For international version, manually resign
-- codesign -vvv /Applications/OsiriX.app
-- 64bitExtension : upload osirix-viewer.com
-- 64bitExtension : Kagi Blurb AND in products list for CD/DVD backup AND in pixmeo MySQL DB (Constants, Products) web site
-- Update Downloads.html
-- Update versionLeopard.xml
+- X QuickLook
+- X Update plugins
+- X For international version, compile nib files (for i in `ls`; do ibtool "$i" --compile "$i"; done)
+- X For international version, manually resign
+- X codesign -vvv /Applications/OsiriX.app
+- X 64bitExtension : upload osirix-viewer.com
+- X 64bitExtension : Kagi Blurb AND in products list for CD/DVD backup AND in pixmeo MySQL DB (Constants, Products) web site
+- X Update Downloads.html
+- X Update versionLeopard.xml
