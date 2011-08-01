@@ -1,5 +1,5 @@
 - Toolbars: tests with new screen plugged when using OsiriX
-- 10.7 : DICOM TLS (64)
+- 10.7 : DICOM TLS (64), Weasis
 
 - ROI: Add points to Polygon or Pencil ROIs 
 - Option to switch to 1x1 when going to fullscreen if tiling mode is not 1x1
