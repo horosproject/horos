@@ -33,7 +33,7 @@
 	
 	if (( c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && [self selectedRow] >= 0 && [self numberOfRows] > 0)
 	{
-		[[self delegate] deleteSelectedRow:self];
+		[(DNDArrayController*)[self delegate] deleteSelectedRow:self];
 	}
 	else
 		[super keyDown:event];
